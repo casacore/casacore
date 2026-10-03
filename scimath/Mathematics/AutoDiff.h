@@ -271,12 +271,12 @@ class AutoDiff {
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // total number of derivatives is ndiffs, the nth derivative is one, and all
   // others are zero.
-  AutoDiff(const T &v, const uInt ndiffs, const uInt n);
+  AutoDiff(const T &v, const unsigned int ndiffs, const unsigned int n);
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // total number of derivatives is ndiffs.
   // All derivatives are zero.
-  AutoDiff(const T &v, const uInt ndiffs);
+  AutoDiff(const T &v, const unsigned int ndiffs);
 
   // Construct one from another
   AutoDiff(const AutoDiff<T> &other);
@@ -322,14 +322,14 @@ class AutoDiff {
   // Returns a specific derivative. The second set does not check for
   // a valid which; the first set does through Vector addressing.
   // <group>
-  T &derivative(uInt which) { return grad_p(which); }
-  const T &derivative(uInt which) const { return grad_p(which); }
-  T &deriv(uInt which) { return grad_p[which]; }
-  const T &deriv(uInt which) const { return grad_p[which]; }
+  T &derivative(unsigned int which) { return grad_p(which); }
+  const T &derivative(unsigned int which) const { return grad_p(which); }
+  T &deriv(unsigned int which) { return grad_p[which]; }
+  const T &deriv(unsigned int which) const { return grad_p[which]; }
   // </group>
 
   // Return total number of derivatives
-  uInt nDerivatives() const { return nd_p; }
+  unsigned int nDerivatives() const { return nd_p; }
 
   // Is it a constant, i.e., with zero derivatives?
   bool isConstant() const { return nd_p == 0; }
@@ -339,7 +339,7 @@ class AutoDiff {
   //  The function value
   T val_p;
   // The number of derivatives
-  uInt nd_p;
+  unsigned int nd_p;
   // The derivatives
   Vector<T> grad_p;
 };

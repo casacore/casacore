@@ -141,13 +141,13 @@ class ImageStatistics : public LatticeStatistics<T> {
   // and memory usage.
   bool setNewImage(const ImageInterface<T>& image, bool clone = true);
 
-  void setPrecision(Int precision);
+  void setPrecision(int precision);
 
   void setBlc(const IPosition& blc);
 
   IPosition getBlc() const;
 
-  Int getPrecision() const;
+  int getPrecision() const;
 
   // list robust statistics? Should be called before display()
   void showRobust(const bool show);
@@ -172,7 +172,7 @@ class ImageStatistics : public LatticeStatistics<T> {
   const ImageInterface<T>* pInImage_p;
   std::shared_ptr<const ImageInterface<T>> _inImPtrMgr;
   IPosition blc_;
-  Int precision_;
+  int precision_;
   bool _showRobust, _recordMessages, _listStats;
   mutable vector<String> _messages;
 
@@ -184,10 +184,10 @@ class ImageStatistics : public LatticeStatistics<T> {
 
   // Get beam area in pixels if possible. Return false if the beam area could not be
   // calculated.
-  virtual bool _getBeamArea(Array<Double>& beamArea, String& msg) const;
+  virtual bool _getBeamArea(Array<double>& beamArea, String& msg) const;
 
   // List min and max with world coordinates
-  virtual void listMinMax(std::ostringstream& osMin, std::ostringstream& osMax, Int oWidth,
+  virtual void listMinMax(std::ostringstream& osMin, std::ostringstream& osMax, int oWidth,
                           DataType type);
 
   // List the statistics
@@ -200,7 +200,7 @@ class ImageStatistics : public LatticeStatistics<T> {
 
   // If <src>isFluxDensity</src> is false, then the computed value is
   // a flux (ie flux density integrated over a spectral extent)
-  Quantum<AccumType> _flux(bool& isFluxDensity, AccumType sum, Double beamAreaInPixels) const;
+  Quantum<AccumType> _flux(bool& isFluxDensity, AccumType sum, double beamAreaInPixels) const;
 
   bool _computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
                     const Array<AccumType>& sum);
@@ -236,7 +236,7 @@ class ImageStatistics : public LatticeStatistics<T> {
 };
 
 // # Declare extern templates for often used types.
-extern template class ImageStatistics<Float>;
+extern template class ImageStatistics<float>;
 
 }  // namespace casacore
 

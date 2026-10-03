@@ -70,7 +70,8 @@ IPosition FITSQualityMask::shape() const {
   IPosition mm_shape(data_shape.nelements() + 1);
 
   // set the shape
-  for (uInt index = 0; index < data_shape.nelements(); index++) mm_shape(index) = data_shape(index);
+  for (unsigned int index = 0; index < data_shape.nelements(); index++)
+    mm_shape(index) = data_shape(index);
   mm_shape(mm_shape.nelements() - 1) = 2;
 
   return mm_shape;
@@ -79,7 +80,7 @@ IPosition FITSQualityMask::shape() const {
 bool FITSQualityMask::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   // get the section dimension
   IPosition shp = section.length();
-  uInt ndim = section.ndim();
+  unsigned int ndim = section.ndim();
 
   // resize the buffer
   if (!buffer.shape().isEqual(shp)) buffer.resize(shp);
@@ -88,7 +89,7 @@ bool FITSQualityMask::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   IPosition tmpStart(ndim - 1);
   IPosition tmpEnd(ndim - 1);
   IPosition tmpStride(ndim - 1);
-  for (uInt index = 0; index < ndim - 1; index++) {
+  for (unsigned int index = 0; index < ndim - 1; index++) {
     tmpStart(index) = section.start()(index);
     tmpEnd(index) = section.end()(index);
     tmpStride(index) = section.stride()(index);
@@ -109,7 +110,7 @@ bool FITSQualityMask::doGetSlice(Array<bool>& buffer, const Slicer& section) {
     // for data mask
     IPosition subStart(ndim);
     IPosition subEnd(ndim);
-    for (uInt index = 0; index < ndim - 1; index++) {
+    for (unsigned int index = 0; index < ndim - 1; index++) {
       subStart(index) = 0;
       subEnd(index) = shp(index) - 1;
     }
@@ -157,7 +158,7 @@ bool FITSQualityMask::doGetSlice(Array<bool>& buffer, const Slicer& section) {
     // for data mask values
     IPosition subStart(ndim);
     IPosition subEnd(ndim);
-    for (uInt index = 0; index < ndim - 1; index++) {
+    for (unsigned int index = 0; index < ndim - 1; index++) {
       subStart(index) = 0;
       subEnd(index) = shp(index) - 1;
     }
@@ -188,7 +189,7 @@ bool FITSQualityMask::doGetSlice(Array<bool>& buffer, const Slicer& section) {
     // for error mask values
     IPosition subStart(ndim);
     IPosition subEnd(ndim);
-    for (uInt index = 0; index < ndim - 1; index++) {
+    for (unsigned int index = 0; index < ndim - 1; index++) {
       subStart(index) = 0;
       subEnd(index) = shp(index) - 1;
     }
@@ -229,9 +230,9 @@ void FITSQualityMask::doPutSlice(const Array<bool>&, const IPosition&, const IPo
 
 void FITSQualityMask::setFilterZero(bool filterZero) { itsFilterZero = filterZero; }
 
-bool FITSQualityMask::filterNaN(bool* pMask, const Float* pData, const uInt nelems) {
+bool FITSQualityMask::filterNaN(bool* pMask, const float* pData, const unsigned int nelems) {
   // loop over all elements
-  for (uInt i = 0; i < nelems; i++) {
+  for (unsigned int i = 0; i < nelems; i++) {
     // set defaults;
     // blanked values are NaNs.
     pMask[i] = true;
@@ -241,13 +242,13 @@ bool FITSQualityMask::filterNaN(bool* pMask, const Float* pData, const uInt nele
   return true;
 }
 
-bool FITSQualityMask::filterZeroNaN(bool* pMask, const Float* pData, const uInt nelems) {
+bool FITSQualityMask::filterZeroNaN(bool* pMask, const float* pData, const unsigned int nelems) {
   // loop over all elements
-  for (uInt i = 0; i < nelems; i++) {
+  for (unsigned int i = 0; i < nelems; i++) {
     // set defaults;
     // blanked values are NaNs and "0.0"
     pMask[i] = true;
-    if (isNaN(pData[i]) || pData[i] == (Float)0.0) pMask[i] = false;
+    if (isNaN(pData[i]) || pData[i] == (float)0.0) pMask[i] = false;
   }
   return true;
 }

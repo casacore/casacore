@@ -99,12 +99,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Put a C-style array of n elements.
 // First the number of elements is put, thereafter all values.
 template <class T>
-void putAipsIO(AipsIO& aios, uInt n, const T* data);
+void putAipsIO(AipsIO& aios, unsigned int n, const T* data);
 
 // Get n elements into an already available C-style array.
 // The data buffer must be large enough to hold n values.
 template <class T>
-void getAipsIO(AipsIO& aios, uInt n, T* data);
+void getAipsIO(AipsIO& aios, unsigned int n, T* data);
 
 // Get elements into a C-style array to be allocated on the heap.
 // First the number of elements will be read. The array will be allocated
@@ -116,28 +116,28 @@ void getAipsIO(AipsIO& aios, uInt n, T* data);
 // overload on <src>T*& data</src> iso. <src>T** data</src>.
 // </note>
 template <class T>
-void getnewAipsIO(AipsIO& aios, uInt& n, T** data);
+void getnewAipsIO(AipsIO& aios, unsigned int& n, T** data);
 
 // </group>
 
 // # Specializations for the builtin data types.
-#define AIPSIO_FUNC_SPEC(T)                                                         \
-  inline void putAipsIO(AipsIO& aios, uInt n, const T* data) { aios.put(n, data); } \
-  inline void getAipsIO(AipsIO& aios, uInt n, T* data) { aios.get(n, data); }       \
-  inline void getnewAipsIO(AipsIO& aios, uInt& n, T** data) { aios.getnew(n, *data); }
+#define AIPSIO_FUNC_SPEC(T)                                                                 \
+  inline void putAipsIO(AipsIO& aios, unsigned int n, const T* data) { aios.put(n, data); } \
+  inline void getAipsIO(AipsIO& aios, unsigned int n, T* data) { aios.get(n, data); }       \
+  inline void getnewAipsIO(AipsIO& aios, unsigned int& n, T** data) { aios.getnew(n, *data); }
 
 // # These macros expand to generate the appropriate inline functions
 // # for the built-in data types.
 
 AIPSIO_FUNC_SPEC(bool)
-AIPSIO_FUNC_SPEC(Char)
-AIPSIO_FUNC_SPEC(uChar)
+AIPSIO_FUNC_SPEC(char)
+AIPSIO_FUNC_SPEC(unsigned char)
 AIPSIO_FUNC_SPEC(short)
 AIPSIO_FUNC_SPEC(unsigned short)
 AIPSIO_FUNC_SPEC(int)
 AIPSIO_FUNC_SPEC(unsigned int)
-AIPSIO_FUNC_SPEC(Int64)
-AIPSIO_FUNC_SPEC(uInt64)
+AIPSIO_FUNC_SPEC(int64_t)
+AIPSIO_FUNC_SPEC(uint64_t)
 AIPSIO_FUNC_SPEC(float)
 AIPSIO_FUNC_SPEC(double)
 AIPSIO_FUNC_SPEC(Complex)

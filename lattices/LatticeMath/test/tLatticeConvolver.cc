@@ -42,7 +42,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void print(const Lattice<Float>& psf, const Lattice<Float>& model, const Lattice<Float>& result) {
+void print(const Lattice<float>& psf, const Lattice<float>& model, const Lattice<float>& result) {
   cout << "Psf: " << psf.get() << endl;
   cout << "Model: " << model.get() << endl;
   cout << "Result: " << result.get() << endl;
@@ -51,24 +51,24 @@ void print(const Lattice<Float>& psf, const Lattice<Float>& model, const Lattice
 int main() {
   try {
     {
-      TempLattice<Float> psf(IPosition(4, 16, 5, 1, 9));
+      TempLattice<float> psf(IPosition(4, 16, 5, 1, 9));
       psf.set(0.0f);
       psf.putAt(1.0f, psf.shape() / 2);
-      const LatticeConvolver<Float> c(psf);
+      const LatticeConvolver<float> c(psf);
       AlwaysAssert(c.shape() == psf.shape(), AipsError);
       AlwaysAssert(c.fftShape() == psf.shape(), AipsError);
       AlwaysAssert(c.psfShape() == psf.shape(), AipsError);
       AlwaysAssert(c.type() == ConvEnums::CIRCULAR, AipsError);
-      TempLattice<Float> extractedPsf(psf.shape());
+      TempLattice<float> extractedPsf(psf.shape());
       // test the getPsf function (tests the FFT's but not padding)
       c.getPsf(extractedPsf);
-      AlwaysAssert(allNear(extractedPsf.get(), psf.get(), NumericTraits<Float>::epsilon),
+      AlwaysAssert(allNear(extractedPsf.get(), psf.get(), NumericTraits<float>::epsilon),
                    AipsError);
     }
     {
       // test 1-D convolution with a large variety of model/psf shapes
       const IPosition evenPsfShape(1, 10);
-      TempLattice<Float> evenPsf1D(evenPsfShape);
+      TempLattice<float> evenPsf1D(evenPsfShape);
       evenPsf1D.set(0.0f);
       evenPsf1D.putAt(0.2f, evenPsfShape * 0);
       evenPsf1D.putAt(0.5f, evenPsfShape / 2 - 1);
@@ -78,30 +78,30 @@ int main() {
       {
         // psfShape = 10, imageShape = 4, linear
         IPosition imageShape(1, 4);
-        LatticeConvolver<Float> c(evenPsf1D, imageShape);
+        LatticeConvolver<float> c(evenPsf1D, imageShape);
         AlwaysAssert(c.shape() == imageShape, AipsError);
         AlwaysAssert(c.fftShape() == IPosition(1, 7), AipsError);
         AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> model(imageShape);
+          TempLattice<float> model(imageShape);
           model.set(0.0);
           model.putAt(2.0, IPosition(1, 0));
           model.putAt(5.0, model.shape() - 1);
-          TempLattice<Float> result(model.shape());
+          TempLattice<float> result(model.shape());
           c.linear(result, model);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 2)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 2)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          TempLattice<Float> psf(evenPsfShape);
+          TempLattice<float> psf(evenPsfShape);
           c.getPsf(psf);
-          Array<Float> psfArr = psf.get();
-          AlwaysAssert(allNear(psf.get(), evenPsf1D.get(), NumericTraits<Float>::epsilon),
+          Array<float> psfArr = psf.get();
+          AlwaysAssert(allNear(psf.get(), evenPsf1D.get(), NumericTraits<float>::epsilon),
                        AipsError);
           // psfShape = 10, imageShape = 4, circular
           model.set(0.0);
@@ -112,13 +112,13 @@ int main() {
           AlwaysAssert(c.fftShape() == IPosition(1, 10), AipsError);
           AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
           AlwaysAssert(c.type() == ConvEnums::CIRCULAR, AipsError);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 2)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 2)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 10, imageShape = 5, linear
@@ -129,21 +129,21 @@ int main() {
         AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> model(imageShape);
+          TempLattice<float> model(imageShape);
           model.set(0.0);
           model.putAt(2.0, IPosition(1, 0));
           model.putAt(5.0, model.shape() - 1);
-          TempLattice<Float> result(model.shape());
+          TempLattice<float> result(model.shape());
           c.linear(result, model);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 5.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 5.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
           // psfShape = 10, imageShape = 5, circular
           model.set(0.0);
@@ -154,15 +154,15 @@ int main() {
           AlwaysAssert(c.fftShape() == IPosition(1, 10), AipsError);
           AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
           AlwaysAssert(c.type() == ConvEnums::CIRCULAR, AipsError);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 5.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 5.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 10, imageShape = 6, linear
@@ -173,23 +173,23 @@ int main() {
         AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> model(imageShape);
+          TempLattice<float> model(imageShape);
           model.set(0.0);
           model.putAt(2.0, IPosition(1, 0));
           model.putAt(5.0, model.shape() - 1);
-          TempLattice<Float> result(model.shape());
+          TempLattice<float> result(model.shape());
           c.linear(result, model);
-          AlwaysAssert(near(result(IPosition(1, 0)), 3.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 3.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 2.7f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 2.7f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 5)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 5)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 10, imageShape = 10, linear
@@ -200,30 +200,30 @@ int main() {
         AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 1.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 1.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 5)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 5)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 8)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 8)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 9)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 9)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 10, imageShape = 11, linear
@@ -234,32 +234,32 @@ int main() {
         AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 0.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 0.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 5)), 1.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 5)), 1.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 8)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 8)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 9)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 9)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 10)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 10)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 10, imageShape = 9, linear
@@ -270,33 +270,33 @@ int main() {
         AlwaysAssert(c.psfShape() == evenPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 1.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 1.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 0.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 0.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 5)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 5)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 7)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 7)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 8)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 8)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
       }
       const IPosition oddPsfShape(1, 11);
-      TempLattice<Float> oddPsf1D(oddPsfShape);
+      TempLattice<float> oddPsf1D(oddPsfShape);
       oddPsf1D.set(0.0f);
       oddPsf1D.putAt(0.2f, oddPsfShape * 0);
       oddPsf1D.putAt(0.5f, oddPsfShape / 2 - 1);
@@ -306,24 +306,24 @@ int main() {
       {
         // psfShape = 11, imageShape = 4, linear
         IPosition imageShape(1, 4);
-        LatticeConvolver<Float> c(oddPsf1D, imageShape);
+        LatticeConvolver<float> c(oddPsf1D, imageShape);
         AlwaysAssert(c.shape() == imageShape, AipsError);
         AlwaysAssert(c.fftShape() == IPosition(1, 7), AipsError);
         AlwaysAssert(c.psfShape() == oddPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 2)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 2)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 11, imageShape = 5, linear
@@ -334,20 +334,20 @@ int main() {
         AlwaysAssert(c.psfShape() == oddPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 3)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 3)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 11, imageShape = 6, linear
@@ -358,22 +358,22 @@ int main() {
         AlwaysAssert(c.psfShape() == oddPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 3.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 3.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 5)), 5.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 5)), 5.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 11, imageShape = 11, linear
@@ -384,32 +384,32 @@ int main() {
         AlwaysAssert(c.psfShape() == oddPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 4)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 4)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 5)), 1.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 5)), 1.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 8)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 8)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 9)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 9)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 10)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 10)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 11, imageShape = 12, linear
@@ -420,34 +420,34 @@ int main() {
         AlwaysAssert(c.psfShape() == oddPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 4)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 4)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 5)), 0.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 5)), 0.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 6)), 1.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 6)), 1.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 8)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 8)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 9)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 9)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 10)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 10)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 11)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 11)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
         // psfShape = 11, imageShape = 10, linear
@@ -458,31 +458,31 @@ int main() {
         AlwaysAssert(c.psfShape() == oddPsfShape, AipsError);
         AlwaysAssert(c.type() == ConvEnums::LINEAR, AipsError);
         {
-          TempLattice<Float> result(imageShape);
+          TempLattice<float> result(imageShape);
           result.set(0.0);
           result.putAt(2.0, IPosition(1, 0));
           result.putAt(5.0, result.shape() - 1);
           c.linear(result);
           //	  print(oddPsf1D, result, result);
-          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 0)), 2.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 1)), 0.6f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 2)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 3)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 4)), 1.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 4)), 1.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 5)), 0.2f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 5)), 0.2f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 6)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(nearAbs(result(IPosition(1, 7)), 0.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 8)), 2.5f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 8)), 2.5f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
-          AlwaysAssert(near(result(IPosition(1, 9)), 5.0f, 10 * NumericTraits<Float>::epsilon),
+          AlwaysAssert(near(result(IPosition(1, 9)), 5.0f, 10 * NumericTraits<float>::epsilon),
                        AipsError);
         }
       }

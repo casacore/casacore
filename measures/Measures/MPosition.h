@@ -119,9 +119,9 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition>> {
   MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2);
   MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2, const MPosition::Ref &rf);
   MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt2, MPosition::Types rf);
-  MPosition(const Quantity &dt0, const Quantum<Vector<Double>> &dt);
-  MPosition(const Quantity &dt0, const Quantum<Vector<Double>> &dt, const MPosition::Ref &rf);
-  MPosition(const Quantity &dt0, const Quantum<Vector<Double>> &dt, MPosition::Types rf);
+  MPosition(const Quantity &dt0, const Quantum<Vector<double>> &dt);
+  MPosition(const Quantity &dt0, const Quantum<Vector<double>> &dt, const MPosition::Ref &rf);
+  MPosition(const Quantity &dt0, const Quantum<Vector<double>> &dt, MPosition::Types rf);
   MPosition(const Measure *dt);
   MPosition(const MeasValue *dt);
   // </group>
@@ -149,9 +149,9 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition>> {
   //   <li> AipsError in the uInt interface if illegal code given
   // </thrown>
   // <group>
-  static MPosition::Types castType(uInt tp);
+  static MPosition::Types castType(unsigned int tp);
   static const String &showType(MPosition::Types tp);
-  static const String &showType(uInt tp);
+  static const String &showType(unsigned int tp);
   // </group>
   // Translate string to reference code
   // <group>
@@ -172,8 +172,8 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition>> {
   // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
-  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
+  virtual const String *allTypes(int &nall, int &nextra, const unsigned int *&typ) const;
+  static const String *allMyTypes(int &nall, int &nextra, const unsigned int *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
@@ -190,9 +190,9 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition>> {
 
   // Get Measure data
   // <group>
-  Quantum<Vector<Double>> get(const Unit &inunit) const;
-  Quantum<Vector<Double>> getAngle() const;
-  Quantum<Vector<Double>> getAngle(const Unit &inunit) const;
+  Quantum<Vector<double>> get(const Unit &inunit) const;
+  Quantum<Vector<double>> getAngle() const;
+  Quantum<Vector<double>> getAngle(const Unit &inunit) const;
   // </group>
 
   // Make copy

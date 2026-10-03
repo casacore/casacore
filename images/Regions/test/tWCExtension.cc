@@ -44,20 +44,20 @@ void doIt() {
 
   // Test for region that only gets stretched.
   {
-    Vector<Int> absRel(3);
+    Vector<int> absRel(3);
     absRel = RegionType::Abs;
-    Vector<Quantum<Double>> blc(3);
-    Vector<Quantum<Double>> trc(3);
+    Vector<Quantum<double>> blc(3);
+    Vector<Quantum<double>> trc(3);
     IPosition axes(3);
     axes(0) = 1;
     axes(1) = 2;
     axes(2) = 0;
-    blc(0) = Quantum<Double>(1.0, "pix");
-    blc(1) = Quantum<Double>(1.0, "pix");
-    blc(2) = Quantum<Double>(10.0, "pix");
-    trc(0) = Quantum<Double>(1.0, "pix");
-    trc(1) = Quantum<Double>(1.0, "pix");
-    trc(2) = Quantum<Double>(14.0, "pix");
+    blc(0) = Quantum<double>(1.0, "pix");
+    blc(1) = Quantum<double>(1.0, "pix");
+    blc(2) = Quantum<double>(10.0, "pix");
+    trc(0) = Quantum<double>(1.0, "pix");
+    trc(1) = Quantum<double>(1.0, "pix");
+    trc(2) = Quantum<double>(14.0, "pix");
     WCBox box(blc, trc, axes, cSys, absRel);
     {
       LCRegion* regptr = box.toLCRegion(cSys, IPosition(3, 30, 40, 50));
@@ -65,17 +65,17 @@ void doIt() {
       cout << bbox.start() << bbox.end() << endl;
       delete regptr;
     }
-    Vector<Int> absRel2(2);
+    Vector<int> absRel2(2);
     absRel2 = RegionType::Abs;
-    Vector<Quantum<Double>> blc2(2);
-    Vector<Quantum<Double>> trc2(2);
+    Vector<Quantum<double>> blc2(2);
+    Vector<Quantum<double>> trc2(2);
     IPosition axes2(2);
     axes2(0) = 1;
     axes2(1) = 2;
-    blc2(0) = Quantum<Double>(3.0, "pix");
-    blc2(1) = Quantum<Double>(5.0, "pix");
-    trc2(0) = Quantum<Double>(10.0, "pix");
-    trc2(1) = Quantum<Double>(15.0, "pix");
+    blc2(0) = Quantum<double>(3.0, "pix");
+    blc2(1) = Quantum<double>(5.0, "pix");
+    trc2(0) = Quantum<double>(10.0, "pix");
+    trc2(1) = Quantum<double>(15.0, "pix");
     WCBox sbox(blc2, trc2, axes2, cSys, absRel2);
     {
       LCRegion* regptr = sbox.toLCRegion(cSys, IPosition(3, 30, 40, 50));
@@ -94,14 +94,14 @@ void doIt() {
 
   // Test for region that only gets extended.
   {
-    Vector<Int> absRel(1);
+    Vector<int> absRel(1);
     absRel = RegionType::Abs;
-    Vector<Quantum<Double>> blc(1);
-    Vector<Quantum<Double>> trc(1);
+    Vector<Quantum<double>> blc(1);
+    Vector<Quantum<double>> trc(1);
     IPosition axes(1);
     axes(0) = 1;
-    blc(0) = Quantum<Double>(1.0, "pix");
-    trc(0) = Quantum<Double>(5.0, "pix");
+    blc(0) = Quantum<double>(1.0, "pix");
+    trc(0) = Quantum<double>(5.0, "pix");
     WCBox box(blc, trc, axes, cSys, absRel);
     {
       LCRegion* regptr = box.toLCRegion(cSys, IPosition(3, 30, 40, 50));
@@ -109,17 +109,17 @@ void doIt() {
       cout << bbox.start() << bbox.end() << endl;
       delete regptr;
     }
-    Vector<Int> absRel2(2);
+    Vector<int> absRel2(2);
     absRel2 = RegionType::Abs;
-    Vector<Quantum<Double>> blc2(2);
-    Vector<Quantum<Double>> trc2(2);
+    Vector<Quantum<double>> blc2(2);
+    Vector<Quantum<double>> trc2(2);
     IPosition axes2(2);
     axes2(0) = 2;
     axes2(1) = 0;
-    blc2(0) = Quantum<Double>(3.0, "pix");
-    blc2(1) = Quantum<Double>(5.0, "pix");
-    trc2(0) = Quantum<Double>(10.0, "pix");
-    trc2(1) = Quantum<Double>(15.0, "pix");
+    blc2(0) = Quantum<double>(3.0, "pix");
+    blc2(1) = Quantum<double>(5.0, "pix");
+    trc2(0) = Quantum<double>(10.0, "pix");
+    trc2(1) = Quantum<double>(15.0, "pix");
     WCBox sbox(blc2, trc2, axes2, cSys, absRel2);
     {
       LCRegion* regptr = sbox.toLCRegion(cSys, IPosition(3, 30, 40, 50));
@@ -138,17 +138,17 @@ void doIt() {
 
   // Test for region that gets stretched and extended.
   {
-    Vector<Int> absRel(2);
+    Vector<int> absRel(2);
     absRel = RegionType::Abs;
-    Vector<Quantum<Double>> blc(2);
-    Vector<Quantum<Double>> trc(2);
+    Vector<Quantum<double>> blc(2);
+    Vector<Quantum<double>> trc(2);
     IPosition axes(2);
     axes(0) = 2;
     axes(1) = 0;
-    blc(0) = Quantum<Double>(1.0, "pix");
-    blc(1) = Quantum<Double>(2.0, "pix");
-    trc(0) = Quantum<Double>(1.0, "pix");
-    trc(1) = Quantum<Double>(8.0, "pix");
+    blc(0) = Quantum<double>(1.0, "pix");
+    blc(1) = Quantum<double>(2.0, "pix");
+    trc(0) = Quantum<double>(1.0, "pix");
+    trc(1) = Quantum<double>(8.0, "pix");
     WCBox box(blc, trc, axes, cSys, absRel);
     {
       LCRegion* regptr = box.toLCRegion(cSys, IPosition(3, 30, 40, 50));
@@ -156,17 +156,17 @@ void doIt() {
       cout << bbox.start() << bbox.end() << endl;
       delete regptr;
     }
-    Vector<Int> absRel2(2);
+    Vector<int> absRel2(2);
     absRel2 = RegionType::Abs;
-    Vector<Quantum<Double>> blc2(2);
-    Vector<Quantum<Double>> trc2(2);
+    Vector<Quantum<double>> blc2(2);
+    Vector<Quantum<double>> trc2(2);
     IPosition axes2(2);
     axes2(0) = 1;
     axes2(1) = 2;
-    blc2(0) = Quantum<Double>(3.0, "pix");
-    blc2(1) = Quantum<Double>(5.0, "pix");
-    trc2(0) = Quantum<Double>(10.0, "pix");
-    trc2(1) = Quantum<Double>(15.0, "pix");
+    blc2(0) = Quantum<double>(3.0, "pix");
+    blc2(1) = Quantum<double>(5.0, "pix");
+    trc2(0) = Quantum<double>(10.0, "pix");
+    trc2(1) = Quantum<double>(15.0, "pix");
     WCBox sbox(blc2, trc2, axes2, cSys, absRel2);
     {
       LCRegion* regptr = sbox.toLCRegion(cSys, IPosition(3, 30, 40, 50));
@@ -181,17 +181,17 @@ void doIt() {
       cout << bbox.start() << bbox.end() << endl;
       delete regptr;
     }
-    Vector<Double> x(3);
-    Vector<Double> y(3);
+    Vector<double> x(3);
+    Vector<double> y(3);
     x[0] = 3;
     x[1] = 3;
     x[2] = 8;
     y[0] = 3;
     y[1] = 8;
     y[2] = 3;
-    Quantum<Vector<Double>> xq(x);
+    Quantum<Vector<double>> xq(x);
     xq.setUnit("pix");
-    Quantum<Vector<Double>> yq(y);
+    Quantum<Vector<double>> yq(y);
     yq.setUnit("pix");
     IPosition pixelAxes(2);
     pixelAxes[0] = 0;
@@ -199,11 +199,11 @@ void doIt() {
 
     WCPolygon poly(xq, yq, pixelAxes, cSys);
     IPosition axes3(1, 2);
-    Vector<Quantum<Double>> blc3(1);
-    Vector<Quantum<Double>> trc3(1);
-    blc3(0) = Quantum<Double>(3.0, "pix");
-    trc3(0) = Quantum<Double>(10.0, "pix");
-    Vector<Int> absRel3(1, RegionType::Abs);
+    Vector<Quantum<double>> blc3(1);
+    Vector<Quantum<double>> trc3(1);
+    blc3(0) = Quantum<double>(3.0, "pix");
+    trc3(0) = Quantum<double>(10.0, "pix");
+    Vector<int> absRel3(1, RegionType::Abs);
     WCBox ebox(blc3, trc3, axes3, cSys, absRel3);
     WCExtension wcspoly(poly, ebox);
 
@@ -211,9 +211,9 @@ void doIt() {
       LCRegion* regptr = wcspoly.toLCRegion(cSys, IPosition(3, 30, 40, 50));
       Array<bool> mask = regptr->get();
       IPosition shape = mask.shape();
-      for (Int k = 0; k < shape[2]; k++) {
-        for (Int j = shape[1] - 1; j >= 0; j--) {
-          for (Int i = 0; i < shape[0]; i++) {
+      for (int k = 0; k < shape[2]; k++) {
+        for (int j = shape[1] - 1; j >= 0; j--) {
+          for (int i = 0; i < shape[0]; i++) {
             cout << regptr->getAt(IPosition(3, i, j, k)) << " ";
           }
           cout << endl;
@@ -225,8 +225,8 @@ void doIt() {
   }
 }
 
-Int inIPos(Int val, const IPosition& ipos) {
-  for (uInt i = 0; i < ipos.nelements(); i++) {
+int inIPos(int val, const IPosition& ipos) {
+  for (unsigned int i = 0; i < ipos.nelements(); i++) {
     if (val == ipos(i)) {
       return i;
     }
@@ -249,14 +249,14 @@ void testRegionBox(const CoordinateSystem& cSys, const IPosition& regAxes,
   // All axes have length 1 in it (so they can all be stretched).
   // First create a temporary box with axes in normal order.
   // Create the final box from it with required axes in required order.
-  Vector<Int> absRel(4);
+  Vector<int> absRel(4);
   absRel = RegionType::Abs;
-  Vector<Quantum<Double>> blc(4);
-  Vector<Quantum<Double>> trc(4);
-  blc(0) = Quantum<Double>(regBlc(0), "pix");
-  blc(1) = Quantum<Double>(regBlc(1), "pix");
-  blc(2) = Quantum<Double>(regBlc(2), "pix");
-  blc(3) = Quantum<Double>(regBlc(3), "pix");
+  Vector<Quantum<double>> blc(4);
+  Vector<Quantum<double>> trc(4);
+  blc(0) = Quantum<double>(regBlc(0), "pix");
+  blc(1) = Quantum<double>(regBlc(1), "pix");
+  blc(2) = Quantum<double>(regBlc(2), "pix");
+  blc(3) = Quantum<double>(regBlc(3), "pix");
   trc(0) = blc(0);
   trc(1) = blc(1);
   trc(2) = blc(2);
@@ -264,11 +264,11 @@ void testRegionBox(const CoordinateSystem& cSys, const IPosition& regAxes,
   WCBox reg1(blc, trc, cSys, absRel);
   WCBox region(reg1.splitBox(regAxes));
   // Set up blc and trc which get the extend box shape.
-  uInt ndbox = boxAxes.nelements();
+  unsigned int ndbox = boxAxes.nelements();
   IPosition boxBlc(ndbox);
   IPosition boxTrc(ndbox);
-  for (uInt i = 0; i < ndbox; i++) {
-    Int axis = boxAxes(i);
+  for (unsigned int i = 0; i < ndbox; i++) {
+    int axis = boxAxes(i);
     if (inIPos(axis, regAxes) >= 0) {
       boxBlc(i) = strBlc(axis);
       boxTrc(i) = strTrc(axis);
@@ -276,14 +276,14 @@ void testRegionBox(const CoordinateSystem& cSys, const IPosition& regAxes,
       boxBlc(i) = extBlc(axis);
       boxTrc(i) = extTrc(axis);
     }
-    blc(axis) = Quantum<Double>(boxBlc(i), "pix");
-    trc(axis) = Quantum<Double>(boxTrc(i), "pix");
+    blc(axis) = Quantum<double>(boxBlc(i), "pix");
+    trc(axis) = Quantum<double>(boxTrc(i), "pix");
   }
   // Also fill in the expected blc and trc.
   IPosition resBlc(4, 0, 0, 0, 0);
   IPosition resTrc(latShape - 1);
-  for (Int i = 0; i < 4; i++) {
-    Int axis = inIPos(i, boxAxes);
+  for (int i = 0; i < 4; i++) {
+    int axis = inIPos(i, boxAxes);
     if (axis >= 0) {
       resBlc(i) = boxBlc(axis);
       resTrc(i) = boxTrc(axis);
@@ -310,15 +310,15 @@ void testRegionBox(const CoordinateSystem& cSys, const IPosition& regAxes,
 
 void testRegion(const CoordinateSystem& cSys, const IPosition& regAxes) {
   // Now test the region with all possible extend boxes.
-  for (Int i0 = 0; i0 < 4; i0++) {
+  for (int i0 = 0; i0 < 4; i0++) {
     testRegionBox(cSys, regAxes, IPosition(1, i0));
-    for (Int i1 = 0; i1 < 4; i1++) {
+    for (int i1 = 0; i1 < 4; i1++) {
       if (i1 != i0) {
         testRegionBox(cSys, regAxes, IPosition(2, i0, i1));
-        for (Int i2 = 0; i2 < 4; i2++) {
+        for (int i2 = 0; i2 < 4; i2++) {
           if (i2 != i0 && i2 != i1) {
             testRegionBox(cSys, regAxes, IPosition(3, i0, i1, i2));
-            for (Int i3 = 0; i3 < 4; i3++) {
+            for (int i3 = 0; i3 < 4; i3++) {
               if (i3 != i0 && i3 != i1 && i3 != i2) {
                 testRegionBox(cSys, regAxes, IPosition(4, i0, i1, i2, i3));
               }
@@ -333,15 +333,15 @@ void testRegion(const CoordinateSystem& cSys, const IPosition& regAxes) {
 void testAll() {
   CoordinateSystem cSys(CoordinateUtil::defaultCoords4D());
   // Test all possible 1,2,3,4D regions (with axes in all possible orders).
-  for (Int i0 = 0; i0 < 4; i0++) {
+  for (int i0 = 0; i0 < 4; i0++) {
     testRegion(cSys, IPosition(1, i0));
-    for (Int i1 = 0; i1 < 4; i1++) {
+    for (int i1 = 0; i1 < 4; i1++) {
       if (i1 != i0) {
         testRegion(cSys, IPosition(2, i0, i1));
-        for (Int i2 = 0; i2 < 4; i2++) {
+        for (int i2 = 0; i2 < 4; i2++) {
           if (i2 != i0 && i2 != i1) {
             testRegion(cSys, IPosition(3, i0, i1, i2));
-            for (Int i3 = 0; i3 < 4; i3++) {
+            for (int i3 = 0; i3 < 4; i3++) {
               if (i3 != i0 && i3 != i1 && i3 != i2) {
                 testRegion(cSys, IPosition(4, i0, i1, i2, i3));
               }

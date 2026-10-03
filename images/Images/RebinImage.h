@@ -134,7 +134,7 @@ class RebinImage : public ImageInterface<T> {
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Function which changes the shape of the RebinImage.
   // Throws an exception as resizing an RebinImage is not possible.
@@ -170,11 +170,11 @@ class RebinImage : public ImageInterface<T> {
   virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();

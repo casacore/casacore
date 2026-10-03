@@ -1677,16 +1677,16 @@ class TestFFTShift {
     for (int it = 0; it < iterations; it++) {
       cout << "--- zero shift ----------------------------------------------------" << endl;
 
-      uInt whichAxis = 1;
-      Double relshift = 0.;
+      unsigned int whichAxis = 1;
+      double relshift = 0.;
       Array<S> inVal;
       inVal.assign(a);
 
       server.fftshift(inVal, whichAxis, relshift, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = inVal(IPosition(2, i, j)) - a(IPosition(2, i, j));
             cout << i << " " << j << " " << inVal(IPosition(2, i, j)) << " "
                  << a(IPosition(2, i, j)) << endl;
@@ -1704,8 +1704,8 @@ class TestFFTShift {
       server.fftshift(inVal, whichAxis, relshift, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = inVal(IPosition(2, i, j)) - expect(IPosition(2, i, j));
             cout << i << " " << j << " " << inVal(IPosition(2, i, j)) << " "
                  << expect(IPosition(2, i, j)) << endl;
@@ -1726,8 +1726,8 @@ class TestFFTShift {
                       false);  // two consecutive shifts should shift by 1 channel
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = inVal(IPosition(2, i, j)) - expectc(IPosition(2, i, j));
             cout << i << " " << j << " " << inVal(IPosition(2, i, j)) << " "
                  << expectc(IPosition(2, i, j)) << endl;
@@ -1744,8 +1744,8 @@ class TestFFTShift {
       server.fftshift(b, whichAxis, relshift, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = b(IPosition(2, j, i)) - expect(IPosition(2, i, j));
             cout << i << " " << j << " " << b(IPosition(2, j, i)) << " "
                  << expect(IPosition(2, i, j)) << endl;
@@ -1769,8 +1769,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, inFlags, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = outVal(IPosition(2, i, j)) - expect(IPosition(2, i, j));
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << " "
                  << expect(IPosition(2, i, j)) << endl;
@@ -1792,8 +1792,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = outVal(IPosition(2, i, j)) - expectb(IPosition(2, i, j));
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << " "
                  << expectb(IPosition(2, i, j)) << endl;
@@ -1813,8 +1813,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = outVal(IPosition(2, i, j)) - a(IPosition(2, i, j));
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << " "
                  << a(IPosition(2, i, j)) << endl;
@@ -1840,8 +1840,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, inVal, inFlags, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = outVal(IPosition(2, i, j)) - expectc(IPosition(2, i, j));
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << " "
                  << expectc(IPosition(2, i, j)) << endl;
@@ -1862,8 +1862,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             DComplex diff = outVal(IPosition(2, i, j)) - expectd(IPosition(2, i, j));
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << " "
                  << expectd(IPosition(2, i, j)) << endl;
@@ -1884,8 +1884,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
                  << expflagse(IPosition(2, i, j)) << endl;
@@ -1903,8 +1903,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
                  << expflagse2(IPosition(2, i, j)) << endl;
@@ -1921,8 +1921,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
                  << expflagse2(IPosition(2, i, j)) << endl;
@@ -1939,8 +1939,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
                  << expflagse2(IPosition(2, i, j)) << endl;
@@ -1957,8 +1957,8 @@ class TestFFTShift {
       server.fftshift(outVal, outFlag, a, aflags2, whichAxis, relshift, true, false);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
             cout << i << " " << j << " " << outVal(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
                  << expflagse2(IPosition(2, i, j)) << endl;
@@ -1980,9 +1980,9 @@ class TestFFTShift {
       server.fftshift(routVal, outFlag, ra, inFlags, whichAxis, relshift, true);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
-            Double diff = routVal(IPosition(2, i, j)) - rexpect(IPosition(2, i, j));
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
+            double diff = routVal(IPosition(2, i, j)) - rexpect(IPosition(2, i, j));
             cout << i << " " << j << " " << routVal(IPosition(2, i, j)) << " "
                  << rexpect(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
@@ -2003,9 +2003,9 @@ class TestFFTShift {
       server.fftshift(routVal, outFlag, ra, aflags, whichAxis, relshift, true);
 
       {
-        for (uInt i = 0; i < 2; i++) {
-          for (uInt j = 0; j < 10; j++) {
-            Double diff = routVal(IPosition(2, i, j)) - rexpectb(IPosition(2, i, j));
+        for (unsigned int i = 0; i < 2; i++) {
+          for (unsigned int j = 0; j < 10; j++) {
+            double diff = routVal(IPosition(2, i, j)) - rexpectb(IPosition(2, i, j));
             cout << i << " " << j << " " << routVal(IPosition(2, i, j)) << " "
                  << rexpectb(IPosition(2, i, j)) << endl;
             cout << "flag " << i << " " << j << " " << outFlag(IPosition(2, i, j)) << " "
@@ -2219,8 +2219,8 @@ int main() {
     // - inplace / copy
     // - const / non-const input
 
-    run_tests<Float, Complex>();
-    run_tests<Double, DComplex>();
+    run_tests<float, Complex>();
+    run_tests<double, DComplex>();
 
   } catch (std::exception &x) {
     cerr << x.what() << endl;

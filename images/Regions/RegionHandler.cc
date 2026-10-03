@@ -96,7 +96,8 @@ ImageRegion RegionHandler::makeMask(const LatticeBase&, const String&) {
   return ImageRegion();
 }
 
-String RegionHandler::makeUniqueRegionName(const std::string& rootName, uInt startNumber) const {
+String RegionHandler::makeUniqueRegionName(const std::string& rootName,
+                                           unsigned int startNumber) const {
   while (true) {
     std::ostringstream oss;
     oss << startNumber;

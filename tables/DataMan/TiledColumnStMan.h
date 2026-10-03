@@ -165,7 +165,7 @@ class TiledColumnStMan : public TiledStMan {
   // default value is used.
   // <group>
   TiledColumnStMan(const String& hypercolumnName, const IPosition& tileShape,
-                   uInt64 maximumCacheSize = 0);
+                   uint64_t maximumCacheSize = 0);
   TiledColumnStMan(const String& hypercolumnName, const Record& spec);
   // </group>
 

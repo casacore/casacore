@@ -177,13 +177,13 @@ class FuncExprData {
   // The compilation state descriptor
   struct ExprCompState {
     // Old index of low RPS boundary
-    uInt rpslow;
+    unsigned int rpslow;
     // # of values available on value stack
-    uInt nval;
+    unsigned int nval;
     // Argument count
-    uInt argcnt;
+    unsigned int argcnt;
     // Previous saved program counter
-    uInt pcptr;
+    unsigned int pcptr;
   };
   // The operator description: code; priority; # of arguments; # of arguments
   // used up (or produced for functions)
@@ -195,15 +195,15 @@ class FuncExprData {
     // The category
     opCategories category;
     // Execution priority
-    uInt priority;
+    unsigned int priority;
     // # of arguments necessary (or minimum)
-    uInt narg;
+    unsigned int narg;
     // max # of arguments (for function)
-    uInt nmaxarg;
+    unsigned int nmaxarg;
     // # of results produced/used
-    Int nresult;
+    int nresult;
     // code info (like par/x index; jump distance
-    Int info;
+    int info;
     // special action
     specAction special;
     // state

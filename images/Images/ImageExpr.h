@@ -196,11 +196,11 @@ class ImageExpr : public ImageInterface<T> {
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Handle the (un)locking and syncing.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();

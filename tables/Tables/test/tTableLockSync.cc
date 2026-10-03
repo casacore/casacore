@@ -57,9 +57,9 @@
 void a() {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ScalarColumnDesc<Int>("col1"));
-  td.addColumn(ScalarColumnDesc<Int>("col2"));
-  td.addColumn(ScalarColumnDesc<Int>("col3"));
+  td.addColumn(ScalarColumnDesc<int>("col1"));
+  td.addColumn(ScalarColumnDesc<int>("col2"));
+  td.addColumn(ScalarColumnDesc<int>("col3"));
   td.addColumn(ScalarColumnDesc<String>("cols"));
   td.addColumn(ArrayColumnDesc<float>("Pol", IPosition(1, 16), ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<float>("Freq", 1, ColumnDesc::FixedShape));
@@ -67,7 +67,7 @@ void a() {
   td.addColumn(ArrayColumnDesc<float>("Data2", 2, ColumnDesc::FixedShape));
   td.defineHypercolumn("TSMExample", 2, stringToVector("Data"), stringToVector("Pol,Freq"));
   td.defineHypercolumn("TSMExample2", 3, stringToVector("Data2"));
-  td.rwKeywordSet().define("k0", Int(0));
+  td.rwKeywordSet().define("k0", int(0));
 
   // Now create a new table from the description.
   SetupNewTable newtab("tTableLockSync_tmp.tab", td, Table::New);
@@ -102,9 +102,9 @@ void b(bool noReadLocking, bool permLocking) {
   } catch (std::exception& x) {
     cout << "table is write-locked" << endl;
   }
-  ScalarColumn<Int> col1(tab, "col1");
-  ScalarColumn<Int> col2(tab, "col2");
-  ScalarColumn<Int> col3(tab, "col3");
+  ScalarColumn<int> col1(tab, "col1");
+  ScalarColumn<int> col2(tab, "col2");
+  ScalarColumn<int> col3(tab, "col3");
   ScalarColumn<String> cols(tab, "cols");
   ArrayColumn<float> freq(tab, "Freq");
   ArrayColumn<float> pol(tab, "Pol");
@@ -115,7 +115,7 @@ void b(bool noReadLocking, bool permLocking) {
   Vector<float> polValues(16);
   Matrix<float> dataValues(IPosition(2, 16, 25));
   Matrix<float> data2Values(IPosition(2, 16, 25));
-  Int opt, rownr, val;
+  int opt, rownr, val;
   while (true) {
     cout << "0=quit, 1=quit/delete, 2=rdlock, 3=rdlockw, 4=wrlock, 5=wrlockw, 6=unlock" << endl;
     cout << "7=status, 8=get, 9=put, 10=rdkey, 11=wrkey, 12=flush, 13=resync" << endl;
@@ -171,8 +171,8 @@ void b(bool noReadLocking, bool permLocking) {
           if (opt == 9) {
             cout << "value: ";
             cin >> val;
-            if (rownr >= Int(tab.nrow())) {
-              Int n = 1 + rownr - tab.nrow();
+            if (rownr >= int(tab.nrow())) {
+              int n = 1 + rownr - tab.nrow();
               tab.addRow(n);
               cout << "added " << n << " rows" << endl;
             }
@@ -189,7 +189,7 @@ void b(bool noReadLocking, bool permLocking) {
             pol.put(rownr, polValues);
             data2.put(rownr, data2Values);
           } else {
-            if (rownr >= Int(tab.nrow())) {
+            if (rownr >= int(tab.nrow())) {
               cout << "Only " << tab.nrow() << " rows in table" << endl;
             } else {
               cout << "Row " << rownr << " has value " << col1(rownr) << ' ' << col2(rownr) << ' '

@@ -185,7 +185,7 @@ std::string DynLib::tryCasacorePath(const std::string& library, const std::strin
   if (!path.empty()) {
     // Split using : as delimiter.
     Vector<string> parts = strToVector(path, ':');
-    for (uInt j = 0; j < parts.size(); ++j) {
+    for (unsigned int j = 0; j < parts.size(); ++j) {
       if (!parts[j].empty()) {
         string libDir = parts[j] + '/';
         // Check if shared library can be found there.

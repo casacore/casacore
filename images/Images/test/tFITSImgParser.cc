@@ -162,7 +162,7 @@ int main(int argc, const char* argv[]) {
       /*
       // this is the full call including a mask image
       // retrieve all information on an extension expression
-      Int data_HDU, error_HDU, mask_HDU, mask_value;
+      int data_HDU, error_HDU, mask_HDU, mask_value;
       String error_type, mask_type;
       fitsImg2.get_quality_data("[IFU3.SCI, IFU3.DQ]", data_HDU, error_HDU, error_type, mask_HDU,
       mask_type, mask_value);
@@ -177,7 +177,7 @@ int main(int argc, const char* argv[]) {
            */
 
       // retrieve all information on an extension expression
-      Int data_HDU, error_HDU, mask_HDU, mask_value;
+      int data_HDU, error_HDU, mask_HDU, mask_value;
       String error_type, mask_type;
       fitsImg2.get_quality_data("[IFU2.SCI, IFU2.ERR]", data_HDU, error_HDU, error_type, mask_HDU,
                                 mask_type, mask_value);

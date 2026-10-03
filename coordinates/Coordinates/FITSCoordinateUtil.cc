@@ -65,14 +65,14 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
-                                      const CoordinateSystem& cSys, bool oneRelative, Char prefix,
+                                      const CoordinateSystem& cSys, bool oneRelative, char prefix,
                                       bool writeWCS, bool preferVelocity, bool opticalVelocity,
                                       bool preferWavelength, bool airWavelength) const {
   LogIO os(LogOrigin("FITSCoordinateUtil", "toFITSHeader", WHERE));
 
   // Validation
 
-  const Int n = cSys.nWorldAxes();
+  const int n = cSys.nWorldAxes();
   String sprefix(1, prefix);
   if (header.isDefined(sprefix + "rval") || header.isDefined(sprefix + "rpix") ||
       header.isDefined(sprefix + "delt") || header.isDefined(sprefix + "type") ||
@@ -83,7 +83,7 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
     return false;
   }
 
-  Double offset = 0.0;
+  double offset = 0.0;
   if (oneRelative) {
     offset = 1.0;
   }
@@ -94,24 +94,24 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
 
   // Find the sky coordinate, if any
 
-  Int skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
-  Int longAxis = -1, latAxis = -1;
+  int skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
+  int longAxis = -1, latAxis = -1;
 
   // Find the spectral axis, if any
 
-  Int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
-  Int specAxis = -1;
+  int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
+  int specAxis = -1;
 
   // Find the Stokes axis if any.
 
-  Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
-  Int stokesAxis = -1;
+  int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
+  int stokesAxis = -1;
 
   // If any axes have been removed from a coordinate, you find it out here.
 
-  Int i;
+  int i;
   for (i = 0; i < n; i++) {
-    Int c, a;
+    int c, a;
     coordsys.findWorldAxis(c, a, i);
     if (c == skyCoord) {
       if (a == 0) {
@@ -135,7 +135,7 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
   // If we have any tabular axes that aren't pure linear and are not optical velo or wavelength,
   // report that the table will be lost.
 
-  Int tabCoord = -1;
+  int tabCoord = -1;
   while ((tabCoord = cSys.findCoordinate(Coordinate::TABULAR, tabCoord)) > 0) {
     if (cSys.tabularCoordinate(tabCoord).pixelValues().nelements() > 0 &&
         !(((preferVelocity && opticalVelocity) || preferWavelength) && tabCoord == specCoord)) {
@@ -180,12 +180,12 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
   // Generate keywords.  If we find we have a DC with one of the
   // axes removed, it will be linearized here.
 
-  Double longPole, latPole;
-  Vector<Double> crval, crpix, cdelt, pvi_ma;
+  double longPole, latPole;
+  Vector<double> crval, crpix, cdelt, pvi_ma;
   // crota is deprecated for FITS output
   //	Vector<Double> crota;
   Vector<String> ctype, cunit;
-  Matrix<Double> pc;
+  Matrix<double> pc;
   bool isNCP = false;
   if (!generateFITSKeywords(os, isNCP, longPole, latPole, crval, crpix, cdelt,
                             // crota,
@@ -204,16 +204,16 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
   // If there are more world than pixel axes, we will need to add
   // degenerate pixel axes and modify the shape.
 
-  if (Int(coordsys.nPixelAxes()) < n) {
+  if (int(coordsys.nPixelAxes()) < n) {
     IPosition shapetmp = shape;
     shape.resize(n);
-    Vector<Double> crpixtmp = crpix.copy();
+    Vector<double> crpixtmp = crpix.copy();
     crpix.resize(n);
-    Int count = 0;
-    for (Int worldAxis = 0; worldAxis < n; worldAxis++) {
-      Int coordinate, axisInCoordinate;
+    int count = 0;
+    for (int worldAxis = 0; worldAxis < n; worldAxis++) {
+      int coordinate, axisInCoordinate;
       coordsys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
-      Int pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
+      int pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
       if (pixelAxis >= 0) {
         // We have a pixel axis
         shape(worldAxis) = shapetmp(count);
@@ -233,7 +233,7 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
   if (skyCoord >= 0) {
     const DirectionCoordinate& dCoord = coordsys.directionCoordinate(skyCoord);
     MDirection::Types radecsys = dCoord.directionType();
-    Double equinox = -1.0;
+    double equinox = -1.0;
     String radesys = "";
     switch (radecsys) {
       case MDirection::J2000:
@@ -274,7 +274,7 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
 
   // Actually write the header
 
-  if (writeWCS && Int(coordsys.nPixelAxes()) == n) {
+  if (writeWCS && int(coordsys.nPixelAxes()) == n) {
     header.define("pc", pc);
   } else if (writeWCS) {
     os << LogIO::SEVERE
@@ -292,7 +292,7 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
 
   if (skyCoord >= 0 && pvi_ma.nelements() > 0) {
     if (!writeWCS) {
-      for (uInt k = 0; k < pvi_ma.nelements(); k++) {
+      for (unsigned int k = 0; k < pvi_ma.nelements(); k++) {
         if (!casacore::nearAbs(pvi_ma(k), 0.0)) {
           os << LogIO::WARN
              << "Projection parameters not all zero.Information lost in FITS"
@@ -304,7 +304,7 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
     } else {
       // determine which axis is the "latitude" axis, i.e. DEC or xLAT
       int theLatAxisNum = -1;
-      for (uInt k = 0; k < ctype.nelements(); k++) {
+      for (unsigned int k = 0; k < ctype.nelements(); k++) {
         std::string theType(ctype[k]);
         if (theType.substr(0, 3) == "DEC" || theType.substr(1, 3) == "LAT") {
           theLatAxisNum = k;
@@ -346,17 +346,17 @@ bool FITSCoordinateUtil::toFITSHeader(RecordInterface& header, IPosition& shape,
   return ok;
 }
 
-bool FITSCoordinateUtil::toFITSHeaderStokes(Vector<Double>& crval, Vector<Double>& crpix,
-                                            Vector<Double>& cdelt, LogIO& os,
-                                            const CoordinateSystem& coordsys, Int stokesAxis,
-                                            Int stokesCoord) const {
-  Vector<Int> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
-  Int inc = 1;
+bool FITSCoordinateUtil::toFITSHeaderStokes(Vector<double>& crval, Vector<double>& crpix,
+                                            Vector<double>& cdelt, LogIO& os,
+                                            const CoordinateSystem& coordsys, int stokesAxis,
+                                            int stokesCoord) const {
+  Vector<int> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
+  int inc = 1;
   bool inorder = true;
   if (stokes.nelements() > 1) {
     inc = Stokes::FITSValue(Stokes::StokesTypes(stokes(1))) -
           Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
-    for (uInt k = 2; k < stokes.nelements(); k++) {
+    for (unsigned int k = 2; k < stokes.nelements(); k++) {
       if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(k))) -
            Stokes::FITSValue(Stokes::StokesTypes(stokes(k - 1)))) != inc) {
         inorder = false;
@@ -377,13 +377,13 @@ bool FITSCoordinateUtil::toFITSHeaderStokes(Vector<Double>& crval, Vector<Double
 }
 
 bool FITSCoordinateUtil::generateFITSKeywords(
-    LogIO&, bool& isNCP, Double& longPole, Double& latPole, Vector<Double>& crval,
-    Vector<Double>& crpix, Vector<Double>& cdelt,
+    LogIO&, bool& isNCP, double& longPole, double& latPole, Vector<double>& crval,
+    Vector<double>& crpix, Vector<double>& cdelt,
     // Vector<Double>& crota,
-    Vector<Double>& pvi_ma, Vector<String>& ctype, Vector<String>& cunit, Matrix<Double>& pc,
-    const CoordinateSystem& cSys, Int skyCoord, Int longAxis, Int latAxis, Int specAxis,
-    Int stokesAxis, bool, Double offset, const String&) const {
-  const Int n = cSys.nWorldAxes();
+    Vector<double>& pvi_ma, Vector<String>& ctype, Vector<String>& cunit, Matrix<double>& pc,
+    const CoordinateSystem& cSys, int skyCoord, int longAxis, int latAxis, int specAxis,
+    int stokesAxis, bool, double offset, const String&) const {
+  const int n = cSys.nWorldAxes();
   crval = cSys.referenceValue();
   crpix = cSys.referencePixel() + offset;
   cdelt = cSys.increment();
@@ -400,7 +400,7 @@ bool FITSCoordinateUtil::generateFITSKeywords(
     latPole = dCoord.longLatPoles()(3);
     //
     const DirectionCoordinate& dc = cSys.directionCoordinate(skyCoord);
-    Double reflat = 0.;
+    double reflat = 0.;
     if (latAxis >= 0) {
       reflat = M_PI / 180.0 * crval(latAxis);
     }
@@ -410,7 +410,7 @@ bool FITSCoordinateUtil::generateFITSKeywords(
   }
   //
   ctype = cSys.worldAxisNames();
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     if (i == longAxis || i == latAxis) {
       if (i == longAxis) {
         ctype[i] = cctype[0];
@@ -436,18 +436,18 @@ bool FITSCoordinateUtil::generateFITSKeywords(
   // CUNIT is case sensitive.
 
   cunit = cSys.worldAxisUnits();
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     if (cunit(i).length() > 8) {
       cunit(i).resize(8);
     }
     while (cunit(i).length() < 8) cunit(i) += " ";
   }
   //
-  Matrix<Double> imageLT = cSys.linearTransform();
+  Matrix<double> imageLT = cSys.linearTransform();
   pc = imageLT;
   // need to transpose to conform with FITSKeywordUtil
-  for (uInt i = 0; i < imageLT.nrow(); i++) {
-    for (uInt j = 0; j < imageLT.ncolumn(); j++) {
+  for (unsigned int i = 0; i < imageLT.nrow(); i++) {
+    for (unsigned int j = 0; j < imageLT.ncolumn(); j++) {
       pc(i, j) = imageLT(j, i);
     }
   }
@@ -455,9 +455,9 @@ bool FITSCoordinateUtil::generateFITSKeywords(
   return true;
 }
 
-bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& cSys,
+bool FITSCoordinateUtil::fromFITSHeader(int& stokesFITSValue, CoordinateSystem& cSys,
                                         RecordInterface& recHeader, const Vector<String>& header,
-                                        const IPosition& shape, uInt which) const
+                                        const IPosition& shape, unsigned int which) const
 
 {
   // this method takes header converts it into cSys and puts the remainer into recHeader
@@ -577,8 +577,8 @@ bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& 
   bool print(false);
   if (print) {
     cerr << "Header Cards " << endl;
-    for (Int i = 0; i < nkeys; i++) {
-      uInt pt = i * 80;
+    for (int i = 0; i < nkeys; i++) {
+      unsigned int pt = i * 80;
       char* pChar3 = &pChar2[pt];
       String s(pChar3, 80);
       cerr << s << endl;
@@ -598,13 +598,13 @@ bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& 
     os << LogIO::SEVERE << "wcs FITS parse error with error code " << status << LogIO::POST;
     return false;
   }
-  if (uInt(nwcs) == 0) {
+  if (static_cast<unsigned int>(nwcs) == 0) {
     os << LogIO::NORMAL
        << "No WCS compliant coordinate representation found. Will try to continue ..."
        << LogIO::POST;
     cardsToRecord(os, recHeader, pChar2);
     return false;
-  } else if (which >= uInt(nwcs)) {
+  } else if (which >= static_cast<unsigned int>(nwcs)) {
     os << LogIO::WARN << "Requested WCS # " << which
        << " (zero-based) exceeds the number available, i.e. must be smaller than " << nwcs
        << LogIO::POST;
@@ -618,7 +618,7 @@ bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& 
   String newHdr;
   if (saveCards.size() > 0) {
     newHdr = String(pChar2);
-    for (uInt i = 0; i < saveCards.size(); ++i) {
+    for (unsigned int i = 0; i < saveCards.size(); ++i) {
       newHdr.append(saveCards[i]);
     }
     pChar2 = newHdr.data();
@@ -658,10 +658,10 @@ bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& 
   int stat[NWCSFIX];
   ctrl = 7;  // Do all unsafe unit corrections
   // wcsfix needs Int shape, so copy it.
-  std::vector<Int> tmpshp(shape.begin(), shape.end());
+  std::vector<int> tmpshp(shape.begin(), shape.end());
 
   bool doAbort = false;
-  uInt eCount = 0;
+  unsigned int eCount = 0;
   if (wcsfix(ctrl, &(tmpshp[0]), &wcsPtr[which], stat) > 0) {
     for (int i = 0; i < NWCSFIX; i++) {
       int err = stat[i];
@@ -691,13 +691,13 @@ bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& 
 
   // Now fish out the various coordinates from the wcs structure and build the CoordinateSystem
 
-  Vector<Int> dirAxes;
-  Vector<Int> linAxes;
-  Int longAxis = -1;
-  Int latAxis = -1;
-  Int specAxis = -1;
-  Int stokesAxis = -1;
-  const uInt nAxes = wcsPtr[which].naxis;
+  Vector<int> dirAxes;
+  Vector<int> linAxes;
+  int longAxis = -1;
+  int latAxis = -1;
+  int specAxis = -1;
+  int stokesAxis = -1;
+  const unsigned int nAxes = wcsPtr[which].naxis;
 
   if (nAxes > shape.size()) {
     os << LogIO::NORMAL << "The WCS for this image contains " << nAxes - shape.size()
@@ -746,16 +746,16 @@ bool FITSCoordinateUtil::fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& 
 
   // Now we need to work out the transpose order of the CS
 
-  Vector<Int> order(nAxes);
-  Int nspecial = 0;  // Anything other than linear
+  Vector<int> order(nAxes);
+  int nspecial = 0;  // Anything other than linear
                      //
   if (longAxis >= 0) nspecial++;
   if (latAxis >= 0) nspecial++;
   if (stokesAxis >= 0) nspecial++;
   if (specAxis >= 0) nspecial++;
   //
-  Int linused = 0;
-  for (Int i = 0; i < Int(nAxes); i++) {
+  int linused = 0;
+  for (int i = 0; i < int(nAxes); i++) {
     if (i == longAxis) {
       order(i) = 0;  // long is always first if it exist
     } else if (i == latAxis) {
@@ -799,7 +799,7 @@ static bool do_sub_wcs(const ::wcsprm& wcs, int& nsub, Block<int>& axes, ::wcspr
   }
 }
 
-bool FITSCoordinateUtil::addDirectionCoordinate(CoordinateSystem& cSys, Vector<Int>& dirAxes,
+bool FITSCoordinateUtil::addDirectionCoordinate(CoordinateSystem& cSys, Vector<int>& dirAxes,
                                                 const ::wcsprm& wcs, LogIO& os) const {
   // Extract wcs structure pertaining to Direction Coordinate
 
@@ -854,7 +854,7 @@ bool FITSCoordinateUtil::addDirectionCoordinate(CoordinateSystem& cSys, Vector<I
   return ok;
 }
 
-bool FITSCoordinateUtil::addLinearCoordinate(CoordinateSystem& cSys, Vector<Int>& linAxes,
+bool FITSCoordinateUtil::addLinearCoordinate(CoordinateSystem& cSys, Vector<int>& linAxes,
                                              const ::wcsprm& wcs, LogIO& os) const {
   // Extract wcs structure pertaining to Linear Coordinate
 
@@ -916,8 +916,8 @@ void FITSCoordinateUtil::wcsInit(::wcsprm& wcsDest) {
 #endif
 }
 
-bool FITSCoordinateUtil::addStokesCoordinate(CoordinateSystem& cSys, Int& stokesAxis,
-                                             Int& stokesFITSValue, const ::wcsprm& wcs,
+bool FITSCoordinateUtil::addStokesCoordinate(CoordinateSystem& cSys, int& stokesAxis,
+                                             int& stokesFITSValue, const ::wcsprm& wcs,
                                              const IPosition& shape, LogIO& os) const {
   // Extract wcs structure pertaining to Stokes Coordinate
 
@@ -939,13 +939,13 @@ bool FITSCoordinateUtil::addStokesCoordinate(CoordinateSystem& cSys, Int& stokes
     // Try to create StokesCoordinate
 
     stokesAxis = axes[0] - 1;  // 1 -> 0 rel
-    uInt stokesAxisShape = 1;
-    if (stokesAxis < (Int)shape.size()) {
+    unsigned int stokesAxisShape = 1;
+    if (stokesAxis < (int)shape.size()) {
       stokesAxisShape = shape(stokesAxis);
     }
     bool warnStokes = stokesFITSValue > 0;
     stokesFITSValue = -1;
-    Vector<Int> stokes(1);
+    Vector<int> stokes(1);
     stokes = 1;
     StokesCoordinate c(stokes);  // No default constructor
     String errMsg;
@@ -964,7 +964,7 @@ bool FITSCoordinateUtil::addStokesCoordinate(CoordinateSystem& cSys, Int& stokes
   return ok;
 }
 
-bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, Int& specAxis,
+bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, int& specAxis,
                                                const ::wcsprm& wcs, const IPosition& shape,
                                                LogIO& os) const {
   // Extract wcs structure pertaining to Spectral Coordinate
@@ -976,8 +976,8 @@ bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, Int& spec
   wcsInit(wcsDest);
   bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
-  uInt nc = 1;
-  if (axes[0] - 1 < (Int)shape.nelements()) {
+  unsigned int nc = 1;
+  if (axes[0] - 1 < (int)shape.nelements()) {
     nc = shape(axes[0] - 1);  // the number of channels of the spectral axis
   }
 
@@ -1008,27 +1008,27 @@ bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, Int& spec
         os << LogIO::WARN << errMsg << LogIO::POST;
         ok = false;
       }
-      Double cRval = wcsDest.crval[0];
-      Double cRpix = wcsDest.crpix[0];
-      Double cDelt = wcsDest.cdelt[0];
-      Double cPc = wcsDest.pc[0];
-      Vector<Double> wavelengths(nc);
+      double cRval = wcsDest.crval[0];
+      double cRpix = wcsDest.crpix[0];
+      double cDelt = wcsDest.cdelt[0];
+      double cPc = wcsDest.pc[0];
+      Vector<double> wavelengths(nc);
 
       // cout << "crval " << cRval << " crpix " << cRpix << " pc " << cPc << " cdelt " << cDelt <<
       // endl;
 
       String waveUnit = String(wcsDest.cunit[0]);
-      Double restFrequency = wcs.restfrq;
+      double restFrequency = wcs.restfrq;
       if (restFrequency == 0.) {
         if (wcs.restwav != 0.) {
           restFrequency = C::c / wcs.restwav;
         }
       }
 
-      for (uInt i = 0; i < nc; i++) {
+      for (unsigned int i = 0; i < nc; i++) {
         wavelengths(i) =
             cRval +
-            cDelt * cPc * (Double(i + 1) - cRpix);  // +1 because FITS works 1-based
+            cDelt * cPc * (double(i + 1) - cRpix);  // +1 because FITS works 1-based
                                                     // cout << "wave i " << i << " " <<
                                                     // wavelengths(i) << " " << waveUnit << endl;
       }
@@ -1066,11 +1066,11 @@ bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, Int& spec
         os << LogIO::WARN << errMsg << LogIO::POST;
         ok = false;
       }
-      Double cRval = wcsDest.crval[0];
-      Double cRpix = wcsDest.crpix[0];
-      Double cDelt = wcsDest.cdelt[0];
-      Double cPc = wcsDest.pc[0];
-      Double restFrequency = wcs.restfrq;
+      double cRval = wcsDest.crval[0];
+      double cRpix = wcsDest.crpix[0];
+      double cDelt = wcsDest.cdelt[0];
+      double cPc = wcsDest.pc[0];
+      double restFrequency = wcs.restfrq;
       if (restFrequency == 0.) {
         if (wcs.restwav != 0.) {
           restFrequency = C::c / wcs.restwav;
@@ -1080,7 +1080,7 @@ bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, Int& spec
           ok = false;
         }
       }
-      Vector<Double> frequencies(nc);
+      Vector<double> frequencies(nc);
 
       // cout << "crval " << cRval << " crpix " << cRpix << " pc " << cPc << " cdelt " << cDelt <<
       // endl; cout << "restfrq " << restFrequency << " cunit " << String(wcsDest.cunit[0]) << endl;
@@ -1088,10 +1088,10 @@ bool FITSCoordinateUtil::addSpectralCoordinate(CoordinateSystem& cSys, Int& spec
       Unit uCunit(String(wcsDest.cunit[0]));
       Unit mps("m/s");
 
-      for (uInt i = 0; i < nc; i++) {
-        Quantity velQ(cRval + cDelt * cPc * (Double(i + 1) - cRpix),
+      for (unsigned int i = 0; i < nc; i++) {
+        Quantity velQ(cRval + cDelt * cPc * (double(i + 1) - cRpix),
                       uCunit);  // +1 because FITS works 1-based
-        Double vel = velQ.getValue(mps);
+        double vel = velQ.getValue(mps);
         if (vel > -C::c) {
           frequencies(i) = restFrequency / (vel / C::c + 1.);  // in Hz
         } else {
@@ -1203,7 +1203,7 @@ bool FITSCoordinateUtil::directionSystemFromWCS(LogIO& os, MDirection::Types& ty
 
   //
   bool eqIsDefined = !undefined(wcs.equinox);
-  Double equinox(0.0);
+  double equinox(0.0);
   if (eqIsDefined) equinox = wcs.equinox;
   bool eqIs1950(false);
   bool eqIs1950VLA(false);
@@ -1367,7 +1367,7 @@ bool FITSCoordinateUtil::frequencySystemFromWCS(LogIO& os, MFrequency::Types& ty
       type = MFrequency::Undefined;
       return true;
     } else {  // velref was given
-      Int vref = wcs.velref;
+      int vref = wcs.velref;
       os << LogIO::NORMAL << "No SPECSYS but found (deprecated) VELREF keyword with value " << vref
          << LogIO::POST;
       if (vref > 256) {
@@ -1461,8 +1461,8 @@ bool FITSCoordinateUtil::frequencySystemFromWCS(LogIO& os, MFrequency::Types& ty
 }
 
 bool FITSCoordinateUtil::stokesCoordinateFromWCS(LogIO& os, StokesCoordinate& coord,
-                                                 Int& stokesFITSValue, String& errMsg,
-                                                 const ::wcsprm& wcs, uInt shape,
+                                                 int& stokesFITSValue, String& errMsg,
+                                                 const ::wcsprm& wcs, unsigned int shape,
                                                  bool warnStokes) const {
   // For the StokesCoordinate, the shape is not separable from the coordinate
 
@@ -1477,17 +1477,17 @@ bool FITSCoordinateUtil::stokesCoordinateFromWCS(LogIO& os, StokesCoordinate& co
 
   // Fish out values
 
-  Double crpix = wcs.crpix[0] - 1.0;  // Make 0-rel
-  Double crval = wcs.crval[0];
-  Double cdelt = wcs.cdelt[0];
+  double crpix = wcs.crpix[0] - 1.0;  // Make 0-rel
+  double crval = wcs.crval[0];
+  double cdelt = wcs.cdelt[0];
   //
-  Vector<Int> stokes(shape);
-  for (uInt k = 0; k < shape; k++) {
-    Double tmp = crval + (k - crpix) * cdelt;
+  Vector<int> stokes(shape);
+  for (unsigned int k = 0; k < shape; k++) {
+    double tmp = crval + (k - crpix) * cdelt;
     if (tmp >= 0) {
-      stokes(k) = Int(tmp + 0.01);
+      stokes(k) = int(tmp + 0.01);
     } else {
-      stokes(k) = Int(tmp - 0.01);
+      stokes(k) = int(tmp - 0.01);
     }
     //
     if (stokes(k) == 0) {
@@ -1568,9 +1568,9 @@ ObsInfo FITSCoordinateUtil::getObsInfo(LogIO& os, RecordInterface& header,
   bool mjdIsDefined = !undefined(wcs.mjdobs);
   bool dateObsDefined = wcs.dateobs[0] != '\0';
   if (mjdIsDefined) {
-    Double mjdObs = wcs.mjdobs;
+    double mjdObs = wcs.mjdobs;
     //
-    MEpoch dateObs(Quantum<Double>(mjdObs, "d"), timeSystem);
+    MEpoch dateObs(Quantum<double>(mjdObs, "d"), timeSystem);
     oi.setObsDate(dateObs);
   } else if (dateObsDefined) {
     //      String dateObsStr(wcs.dateobs[0]);
@@ -1587,7 +1587,7 @@ ObsInfo FITSCoordinateUtil::getObsInfo(LogIO& os, RecordInterface& header,
   // Remove fields from record
 
   Vector<String> cards = ObsInfo::keywordNamesFITS();
-  for (uInt i = 0; i < cards.nelements(); i++) {
+  for (unsigned int i = 0; i < cards.nelements(); i++) {
     if (header.isDefined(cards(i))) header.removeField(cards[i]);
   }
   //
@@ -1596,13 +1596,13 @@ ObsInfo FITSCoordinateUtil::getObsInfo(LogIO& os, RecordInterface& header,
 
 Vector<String> FITSCoordinateUtil::cTypeFromDirection(bool& isNCP, const Projection& proj,
                                                       const Vector<String>& axisNames,
-                                                      Double refLat, bool printError) {
+                                                      double refLat, bool printError) {
   //
   // RefLat in radians
   //
   {
     DirectionCoordinate dc(MDirection::J2000, proj, 0, refLat, 1e-5, -1e-5,
-                           Matrix<Double>::identity(2), 0, 0);
+                           Matrix<double>::identity(2), 0, 0);
     isNCP = dc.isNCP();
   }
   return cTypeFromDirection(proj, axisNames, printError);
@@ -1614,7 +1614,7 @@ Vector<String> FITSCoordinateUtil::cTypeFromDirection(const Projection& proj,
   LogIO os(LogOrigin("FITSCoordinateUtil", "cTypeFromDirection", WHERE));
   Vector<String> ctype(2);
 
-  for (uInt i = 0; i < 2; i++) {
+  for (unsigned int i = 0; i < 2; i++) {
     String name = axisNames(i);
     while (name.length() < 4) {
       name += "-";
@@ -1697,7 +1697,8 @@ Vector<String> FITSCoordinateUtil::cTypeFromDirection(const Projection& proj,
 
 void FITSCoordinateUtil::setWCS(::wcsprm& wcs) const { Coordinate::set_wcs(wcs); }
 
-bool FITSCoordinateUtil::getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header)
+bool FITSCoordinateUtil::getCDFromHeader(Matrix<double>& cd, unsigned int n,
+                                         const RecordInterface& header)
 //
 // We have to read the CDj_i cards and ultimately pack them into the
 // WCS linprm structure in the right order.
@@ -1736,8 +1737,8 @@ bool FITSCoordinateUtil::getCDFromHeader(Matrix<Double>& cd, uInt n, const Recor
   cd = 0.0;
   cd.diagonal() = 1.0;
   //
-  for (uInt i = 0; i < n; i++) {
-    for (uInt j = 0; j < n; j++) {
+  for (unsigned int i = 0; i < n; i++) {
+    for (unsigned int j = 0; j < n; j++) {
       ostringstream oss;
       oss << "cd" << j + 1 << "_" << i + 1;
       String field(oss.str());
@@ -1752,8 +1753,9 @@ bool FITSCoordinateUtil::getCDFromHeader(Matrix<Double>& cd, uInt n, const Recor
   return true;
 }
 
-void FITSCoordinateUtil::getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Double>& pc, uInt n,
-                                         const RecordInterface& header, const String& sprefix) {
+void FITSCoordinateUtil::getPCFromHeader(LogIO& os, int& rotationAxis, Matrix<double>& pc,
+                                         unsigned int n, const RecordInterface& header,
+                                         const String& sprefix) {
   if (header.isDefined("pc")) {
     // Unlikely to encounter this, as the current WCS papers
     // use the CD rather than PC matrix. The Casacore user binding
@@ -1771,7 +1773,7 @@ void FITSCoordinateUtil::getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Do
       os << "The PC matrix must be square" << LogIO::EXCEPTION;
     }
   } else if (header.isDefined(sprefix + "rota")) {
-    Vector<Double> crota;
+    Vector<double> crota;
     header.get(sprefix + "rota", crota);
 
     // Turn crota into PC matrix
@@ -1782,7 +1784,7 @@ void FITSCoordinateUtil::getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Do
 
     // We can only handle one non-zero angle
 
-    for (uInt i = 0; i < crota.nelements(); i++) {
+    for (unsigned int i = 0; i < crota.nelements(); i++) {
       if (!casacore::near(crota(i), 0.0)) {
         if (rotationAxis >= 0) {
           os << LogIO::SEVERE
@@ -1832,15 +1834,15 @@ void FITSCoordinateUtil::cardsToRecord(LogIO& os, RecordInterface& rec, char* pH
 {
   // Specific keywords to be located
 
-  const uInt nKeyIds = 0;
+  const unsigned int nKeyIds = 0;
   ::fitskeyid keyids[1];
 
   // Parse the header
 
   // sanitize to avoid segfaults in fitshdr
   bool crlfwarned = false;
-  for (uInt i = 0; i < strlen(pHeader) - 1; i++) {
-    uInt headerchar = pHeader[i];
+  for (unsigned int i = 0; i < strlen(pHeader) - 1; i++) {
+    unsigned int headerchar = pHeader[i];
     if ((headerchar == 10) || (headerchar == 13)) {
       if (!crlfwarned) {
         os << LogIO::WARN << "HEADER contains LF and/or CR characters!" << LogIO::POST;
@@ -1862,7 +1864,7 @@ void FITSCoordinateUtil::cardsToRecord(LogIO& os, RecordInterface& rec, char* pH
   }
 
   //
-  for (Int i = 0; i < nCards; i++) {
+  for (int i = 0; i < nCards; i++) {
     Record subRec;
     //
     String name(keys[i].keyword);
@@ -1881,7 +1883,7 @@ void FITSCoordinateUtil::cardsToRecord(LogIO& os, RecordInterface& rec, char* pH
       }
       case 2:  // 32-bit Int
       {
-        Int value(keys[i].keyvalue.i);
+        int value(keys[i].keyvalue.i);
         subRec.define("value", value);
         break;
       }
@@ -1898,7 +1900,7 @@ void FITSCoordinateUtil::cardsToRecord(LogIO& os, RecordInterface& rec, char* pH
       }
       case 5:  // Floating point
       {
-        Double value(keys[i].keyvalue.f);
+        double value(keys[i].keyvalue.f);
         subRec.define("value", value);
         break;
       }
@@ -1954,14 +1956,14 @@ void FITSCoordinateUtil::fixCoordinate(Coordinate& c, LogIO& os) const {
   return;
 
   //
-  Vector<Double> cdelt = c.increment();
-  Vector<Double> crval = c.referenceValue();
+  Vector<double> cdelt = c.increment();
+  Vector<double> crval = c.referenceValue();
   //
-  const uInt n = cdelt.nelements();
+  const unsigned int n = cdelt.nelements();
   Coordinate::Type type = c.type();
   String sType = c.showType();
   //
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     if (casacore::near(cdelt(i), 0.0)) {
       if (type == Coordinate::DIRECTION) {
         cdelt[i] = M_PI / 180.0;  // 1 deg

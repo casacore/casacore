@@ -74,7 +74,7 @@ GaussianBeam ImageInfo::defaultRestoringBeam() {
   return x;
 }
 
-GaussianBeam ImageInfo::restoringBeam(const Int channel, const Int polarization) const {
+GaussianBeam ImageInfo::restoringBeam(const int channel, const int polarization) const {
   if (_beams.empty()) {
     // return a null beam
     return defaultRestoringBeam();
@@ -117,10 +117,10 @@ bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
       Quantity major, minor, pa;
       String s[20];
       int n = split(line, s, 20, RXwhite);
-      for (Int i = 0; i < n; i++) {
+      for (int i = 0; i < n; i++) {
         if (StringContains(s[i], "BMAJ")) {
           istringstream oss(s[i + 1].c_str());
-          Double x;
+          double x;
           oss >> x;
           if (x <= 0) {
             return false;
@@ -128,7 +128,7 @@ bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
           major = Quantity(x, Unit(String("deg")));
         } else if (StringContains(s[i], "BMIN")) {
           istringstream oss(s[i + 1].c_str());
-          Double x;
+          double x;
           oss >> x;
           if (x <= 0) {
             return false;
@@ -136,7 +136,7 @@ bool ImageInfo::getRestoringBeam(LoggerHolder& logger) {
           minor = Quantity(x, Unit(String("deg")));
         } else if (StringContains(s[i], "BPA")) {
           istringstream oss(s[i + 1].c_str());
-          Double x;
+          double x;
           oss >> x;
           pa = Quantity(x, Unit(String("deg")));
         }
@@ -210,7 +210,7 @@ String ImageInfo::imageType(ImageInfo::ImageTypes type) {
 
 ImageInfo::ImageTypes ImageInfo::imageType(String type) {
   String typeUp = upcase(type);
-  for (uInt i = 0; i < ImageInfo::nTypes; i++) {
+  for (unsigned int i = 0; i < ImageInfo::nTypes; i++) {
     ImageInfo::ImageTypes t0 = static_cast<ImageInfo::ImageTypes>(i);
     String t1Up = upcase(ImageInfo::imageType(t0));
     if (t1Up == typeUp) {
@@ -220,7 +220,7 @@ ImageInfo::ImageTypes ImageInfo::imageType(String type) {
   return defaultImageType();
 }
 
-ImageInfo::ImageTypes ImageInfo::imageTypeFromFITS(Int value) {
+ImageInfo::ImageTypes ImageInfo::imageTypeFromFITS(int value) {
   if (value == 0) {
     return ImageInfo::Beam;
   } else if (value == 8) {
@@ -306,7 +306,7 @@ bool ImageInfo::toFITS(String& error, RecordInterface& outRecord) const {
     }
   } else {
     if (!outRecord.isFixed()) {
-      Int field = outRecord.fieldNumber("bmaj");
+      int field = outRecord.fieldNumber("bmaj");
       if (field >= 0) outRecord.removeField(field);
       field = outRecord.fieldNumber("bmin");
       if (field >= 0) outRecord.removeField(field);
@@ -321,7 +321,7 @@ bool ImageInfo::toFITS(String& error, RecordInterface& outRecord) const {
     outRecord.define("btype", type);
   } else {
     if (!outRecord.isFixed()) {
-      Int field = outRecord.fieldNumber("btype");
+      int field = outRecord.fieldNumber("btype");
       if (field >= 0) outRecord.removeField(field);
     }
   }
@@ -345,7 +345,7 @@ bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header) {
     const RecordInterface& subRec0 = header.asRecord("bmaj");
     const RecordInterface& subRec1 = header.asRecord("bmin");
     const RecordInterface& subRec2 = header.asRecord("bpa");
-    Double bmaj, bmin, bpa;
+    double bmaj, bmin, bpa;
     try {
       subRec0.get(0, bmaj);
       subRec1.get(0, bmin);
@@ -484,13 +484,13 @@ ImageInfo::ImageTypes ImageInfo::MiriadImageType(const String& type) {
   return ImageInfo::Undefined;
 }
 
-void ImageInfo::setBeam(const Int channel, const Int stokes, const Quantity& majAx,
+void ImageInfo::setBeam(const int channel, const int stokes, const Quantity& majAx,
                         const Quantity& minAx, const Quantity& pa) {
   GaussianBeam beam(majAx, minAx, pa);
   setBeam(channel, stokes, beam);
 }
 
-void ImageInfo::setBeam(const Int channel, const Int stokes, const GaussianBeam& beam) {
+void ImageInfo::setBeam(const int channel, const int stokes, const GaussianBeam& beam) {
   ThrowIf(_beams.empty(),
           "Logic error: setAllBeams() or setBeams() must be called prior to setBeam()");
   _beams.setBeam(channel, stokes, beam);
@@ -498,13 +498,13 @@ void ImageInfo::setBeam(const Int channel, const Int stokes, const GaussianBeam&
 
 void ImageInfo::setBeams(const ImageBeamSet& beams) { _beams = beams; }
 
-void ImageInfo::setAllBeams(const uInt nChannels, const uInt nPolarizations,
+void ImageInfo::setAllBeams(const unsigned int nChannels, const unsigned int nPolarizations,
                             const GaussianBeam& beam) {
   _beams.resize(nChannels, nPolarizations);
   _beams.set(beam);
 }
 
-Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
+Record ImageInfo::beamToRecord(const int channel, const int stokes) const {
   if (_beams.nelements() == 0) {
     return Record();
   }
@@ -515,14 +515,14 @@ Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
 
   // return all multi beams in a record
   Record myRec;
-  uInt nchan = _beams.nchan();
-  uInt nstokes = _beams.nstokes();
+  unsigned int nchan = _beams.nchan();
+  unsigned int nstokes = _beams.nstokes();
   rstat.define("nChannels", nchan);
   rstat.define("nStokes", nstokes);
   Record beamRec;
-  for (uInt i = 0; i < nchan; i++) {
+  for (unsigned int i = 0; i < nchan; i++) {
     Record chanRec;
-    for (uInt j = 0; j < nstokes; j++) {
+    for (unsigned int j = 0; j < nstokes; j++) {
       chanRec.defineRecord("*" + ValueToString(j), _beams(i, j).toRecord());
     }
     beamRec.defineRecord("*" + ValueToString(i), chanRec);
@@ -545,16 +545,16 @@ logSink << "Image " << imageName << " has no direction coordinate so "
       << "cannot have per plane beams." << LogIO::EXCEPTION;
     }
    */
-  uInt beamChannels = _beams.nchan();
-  uInt crdChannels = 1;
+  unsigned int beamChannels = _beams.nchan();
+  unsigned int crdChannels = 1;
   if (coords.hasSpectralAxis()) {
-    Int specAxisNum = coords.spectralAxisNumber();
+    int specAxisNum = coords.spectralAxisNumber();
     crdChannels = shape[specAxisNum];
   }
-  uInt beamStokes = _beams.nstokes();
-  uInt crdStokes = 1;
+  unsigned int beamStokes = _beams.nstokes();
+  unsigned int crdStokes = 1;
   if (coords.hasPolarizationCoordinate()) {
-    Int polAxisNum = coords.polarizationAxisNumber();
+    int polAxisNum = coords.polarizationAxisNumber();
     crdStokes = shape[polAxisNum];
   }
   // Either the imageinfo has 1 channel or crdChannels channels.
@@ -570,7 +570,7 @@ logSink << "Image " << imageName << " has no direction coordinate so "
   }
 }
 
-void ImageInfo::_checkBeamShape(uInt& nchan, uInt& npol, const IPosition& shape,
+void ImageInfo::_checkBeamShape(unsigned int& nchan, unsigned int& npol, const IPosition& shape,
                                 const CoordinateSystem& csys) const {
   nchan = 0;
   if (csys.hasSpectralAxis()) {
@@ -586,10 +586,10 @@ void ImageInfo::_checkBeamShape(uInt& nchan, uInt& npol, const IPosition& shape,
 
 void ImageInfo::combineBeams(const ImageInfo& infoThat, const IPosition& shapeThis,
                              const IPosition& shapeThat, const CoordinateSystem& csysThis,
-                             const CoordinateSystem& csysThat, Int axis, bool relax, LogIO& os) {
+                             const CoordinateSystem& csysThat, int axis, bool relax, LogIO& os) {
   ImageBeamSet beamSet;
   // Check if coord shape and beam shape match.
-  uInt nchan1, npol1, nchan2, npol2;
+  unsigned int nchan1, npol1, nchan2, npol2;
   if (hasBeam()) {
     this->_checkBeamShape(nchan1, npol1, shapeThis, csysThis);
   }
@@ -615,8 +615,9 @@ void ImageInfo::combineBeams(const ImageInfo& infoThat, const IPosition& shapeTh
   _beams = beamSet;
 }
 
-uInt ImageInfo::setInfoSplitBeamSet(uInt ndone, const ImageInfo& concatInfo, const IPosition& shape,
-                                    const CoordinateSystem& csys, Int concatAxis) {
+unsigned int ImageInfo::setInfoSplitBeamSet(unsigned int ndone, const ImageInfo& concatInfo,
+                                            const IPosition& shape, const CoordinateSystem& csys,
+                                            int concatAxis) {
   // Copy the non-beam info.
   _warnBeam = concatInfo._warnBeam;
   itsImageType = concatInfo.itsImageType;
@@ -642,13 +643,13 @@ uInt ImageInfo::setInfoSplitBeamSet(uInt ndone, const ImageInfo& concatInfo, con
   return 1;
 }
 
-void ImageInfo::concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int nchanThis,
-                                Int nchanThat, bool, LogIO&) const {
+void ImageInfo::concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, int nchanThis,
+                                int nchanThat, bool, LogIO&) const {
   // Determine the number of beams for the axes in both sets.
-  Int nc1 = _beams.nchan();
-  Int np1 = _beams.nstokes();
-  Int nc2 = infoThat.getBeamSet().nchan();
-  Int np2 = infoThat.getBeamSet().nstokes();
+  int nc1 = _beams.nchan();
+  int np1 = _beams.nstokes();
+  int nc2 = infoThat.getBeamSet().nchan();
+  int np2 = infoThat.getBeamSet().nstokes();
   AlwaysAssert(nc1 == nchanThis || nc1 == 1, AipsError);
   AlwaysAssert(nc2 == nchanThat || nc2 == 1, AipsError);
   AlwaysAssert(np1 == np2 || np1 == 1 || np2 == 1, AipsError);
@@ -662,29 +663,29 @@ void ImageInfo::concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoTha
   }
   // Determine nr of output beams in both axes.
   // The concat axis is the sum of the image axes.
-  Int nc = nchanThis + nchanThat;
-  Int np = max(np1, np2);
+  int nc = nchanThis + nchanThat;
+  int np = max(np1, np2);
   // Now concatenate the beams.
   beamsOut.resize(nc, np);
-  for (Int ip = 0; ip < np; ++ip) {
-    for (Int ic = 0; ic < nchanThis; ++ic) {
+  for (int ip = 0; ip < np; ++ip) {
+    for (int ic = 0; ic < nchanThis; ++ic) {
       beamsOut.setBeam(ic, ip, _beams.getBeam(ic, ip));
     }
   }
-  for (Int ip = 0; ip < np; ++ip) {
-    for (Int ic = 0; ic < nchanThat; ++ic) {
+  for (int ip = 0; ip < np; ++ip) {
+    for (int ic = 0; ic < nchanThat; ++ic) {
       beamsOut.setBeam(ic + nchanThis, ip, infoThat.getBeamSet().getBeam(ic, ip));
     }
   }
 }
 
-void ImageInfo::concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int npolThis,
-                               Int npolThat, bool, LogIO&) const {
+void ImageInfo::concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, int npolThis,
+                               int npolThat, bool, LogIO&) const {
   // Determine the number of beams for the axes in both sets.
-  Int nc1 = _beams.nchan();
-  Int np1 = _beams.nstokes();
-  Int nc2 = infoThat.getBeamSet().nchan();
-  Int np2 = infoThat.getBeamSet().nstokes();
+  int nc1 = _beams.nchan();
+  int np1 = _beams.nstokes();
+  int nc2 = infoThat.getBeamSet().nchan();
+  int np2 = infoThat.getBeamSet().nstokes();
   AlwaysAssert(np1 == npolThis || np1 == 1, AipsError);
   AlwaysAssert(np2 == npolThat || np2 == 1, AipsError);
   AlwaysAssert(nc1 == nc2 || nc1 == 1 || nc2 == 1, AipsError);
@@ -698,17 +699,17 @@ void ImageInfo::concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat
   }
   // Determine nr of output beams in both axes.
   // The concat axis is the sum of the image axes.
-  Int np = npolThis + npolThat;
-  Int nc = max(nc1, nc2);
+  int np = npolThis + npolThat;
+  int nc = max(nc1, nc2);
   // Now concatenate the beams.
   beamsOut.resize(nc, np);
-  for (Int ip = 0; ip < npolThis; ++ip) {
-    for (Int ic = 0; ic < nc; ++ic) {
+  for (int ip = 0; ip < npolThis; ++ip) {
+    for (int ic = 0; ic < nc; ++ic) {
       beamsOut.setBeam(ic, ip, _beams.getBeam(ic, ip));
     }
   }
-  for (Int ip = 0; ip < npolThat; ++ip) {
-    for (Int ic = 0; ic < nc; ++ic) {
+  for (int ip = 0; ip < npolThat; ++ip) {
+    for (int ic = 0; ic < nc; ++ic) {
       beamsOut.setBeam(ic, ip + npolThis, infoThat.getBeamSet().getBeam(ic, ip));
     }
   }
@@ -717,15 +718,15 @@ void ImageInfo::concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat
 void ImageInfo::mergeBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, bool relax,
                            LogIO& os) const {
   // Determine the number of beams for the axes in both sets.
-  Int nc1 = _beams.nchan();
-  Int np1 = _beams.nstokes();
-  Int nc2 = infoThat.getBeamSet().nchan();
-  Int np2 = infoThat.getBeamSet().nstokes();
+  int nc1 = _beams.nchan();
+  int np1 = _beams.nstokes();
+  int nc2 = infoThat.getBeamSet().nchan();
+  int np2 = infoThat.getBeamSet().nstokes();
   AlwaysAssert(nc1 == nc2 || nc1 == 1 || nc2 == 1, AipsError);
   AlwaysAssert(np1 == np2 || np1 == 1 || np2 == 1, AipsError);
   // Determine nr of output beams in both axes.
-  Int nc = max(nc1, nc2);
-  Int np = max(np1, np2);
+  int nc = max(nc1, nc2);
+  int np = max(np1, np2);
   if (nc1 == nc && np1 == np) {
     if (!_beams.equivalent(infoThat.getBeamSet())) {
       logMessage(_warnBeam, os, relax, "Beams of images are not equivalent",
@@ -761,13 +762,13 @@ void ImageInfo::logMessage(bool& warn, LogIO& os, bool relax, const String& msg1
   }
 }
 
-Double ImageInfo::getBeamAreaInPixels(Int channel, Int stokes,
+double ImageInfo::getBeamAreaInPixels(int channel, int stokes,
                                       const DirectionCoordinate& dc) const {
   ThrowIf(!hasBeam(), "There is no beam set associated with this object");
   return getBeamAreaInPixels(restoringBeam(channel, stokes), dc);
 }
 
-Double ImageInfo::getBeamAreaInPixels(const GaussianBeam& beam, const DirectionCoordinate& dc) {
+double ImageInfo::getBeamAreaInPixels(const GaussianBeam& beam, const DirectionCoordinate& dc) {
   Quantity pixelArea = dc.getPixelArea();
   return beam.getArea(pixelArea.getUnit()) / pixelArea.getValue();
 }

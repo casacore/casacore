@@ -99,9 +99,9 @@ class LSQTraits {
   // Defining type
   typedef T value_type;
   // Numeric base type
-  typedef Char base;
+  typedef char base;
   // Numeric type
-  typedef Char num_type;
+  typedef char num_type;
   // Number of basic numeric type elements
   enum { size = 0 };
 };
@@ -112,10 +112,10 @@ class LSQTraits {
 #define LSQTraits_F LSQTraits
 // <summary>LSQTraits specialization for Float</summary>
 template <>
-class LSQTraits_F<Float> {
+class LSQTraits_F<float> {
  public:
-  typedef Float value_type;
-  typedef Float base;
+  typedef float value_type;
+  typedef float base;
   typedef LSQReal num_type;
   enum { size = 1 };
 };
@@ -127,10 +127,10 @@ class LSQTraits_F<Float> {
 #define LSQTraits_D LSQTraits
 // <summary>LSQTraits specialization for Double</summary>
 template <>
-class LSQTraits_D<Double> {
+class LSQTraits_D<double> {
  public:
-  typedef Double value_type;
-  typedef Double base;
+  typedef double value_type;
+  typedef double base;
   typedef LSQReal num_type;
   enum { size = 1 };
 };
@@ -142,10 +142,10 @@ class LSQTraits_D<Double> {
 #define LSQTraits_CD LSQTraits
 // <summary>LSQTraits specialization for DComplex </summary>
 template <>
-class LSQTraits_CD<std::complex<Double>> {
+class LSQTraits_CD<std::complex<double>> {
  public:
-  typedef std::complex<Double> value_type;
-  typedef Double base;
+  typedef std::complex<double> value_type;
+  typedef double base;
   typedef LSQComplex num_type;
   enum { size = 2 };
 };
@@ -157,10 +157,10 @@ class LSQTraits_CD<std::complex<Double>> {
 #define LSQTraits_CF LSQTraits
 // <summary>LSQTraits specialization for Complex </summary>
 template <>
-class LSQTraits_CF<std::complex<Float>> {
+class LSQTraits_CF<std::complex<float>> {
  public:
-  typedef std::complex<Float> value_type;
-  typedef Float base;
+  typedef std::complex<float> value_type;
+  typedef float base;
   typedef LSQComplex num_type;
   enum { size = 2 };
 };

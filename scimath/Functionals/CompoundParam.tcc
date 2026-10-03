@@ -43,11 +43,11 @@ CompoundParam<T>::CompoundParam(const CompoundParam<T> &other)
       paroff_p(other.paroff_p.nelements()),
       funpar_p(other.funpar_p.nelements()),
       locpar_p(other.locpar_p.nelements()) {
-  for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {
     functionPtr_p[i] = other.functionPtr_p[i]->clone();
     paroff_p[i] = other.paroff_p[i];
   }
-  for (uInt i = 0; i < funpar_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < funpar_p.nelements(); ++i) {
     funpar_p[i] = other.funpar_p[i];
     locpar_p[i] = other.locpar_p[i];
   }
@@ -55,7 +55,7 @@ CompoundParam<T>::CompoundParam(const CompoundParam<T> &other)
 
 template <class T>
 CompoundParam<T>::~CompoundParam() {
-  for (uInt i = 0; i < functionPtr_p.nelements(); i++) {
+  for (unsigned int i = 0; i < functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i];
     functionPtr_p[i] = 0;
   }
@@ -66,19 +66,19 @@ CompoundParam<T> &CompoundParam<T>::operator=(const CompoundParam<T> &other) {
   if (this != &other) {
     Function<T>::operator=(other);
     ndim_p = other.ndim_p;
-    for (uInt i = 0; i < functionPtr_p.nelements(); i++) {
+    for (unsigned int i = 0; i < functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i];
       functionPtr_p[i] = 0;
     }
     functionPtr_p = Block<Function<T> *>(other.functionPtr_p.nelements());
-    paroff_p = Block<uInt>(other.paroff_p.nelements());
-    funpar_p = Block<uInt>(other.funpar_p.nelements());
-    locpar_p = Block<uInt>(other.locpar_p.nelements());
-    for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
+    paroff_p = Block<unsigned int>(other.paroff_p.nelements());
+    funpar_p = Block<unsigned int>(other.funpar_p.nelements());
+    locpar_p = Block<unsigned int>(other.locpar_p.nelements());
+    for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.functionPtr_p[i]->clone();
       paroff_p[i] = other.paroff_p[i];
     }
-    for (uInt i = 0; i < funpar_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < funpar_p.nelements(); ++i) {
       funpar_p[i] = other.funpar_p[i];
       locpar_p[i] = other.locpar_p[i];
     }
@@ -90,30 +90,30 @@ CompoundParam<T> &CompoundParam<T>::operator=(const CompoundParam<T> &other) {
 
 // Member functions
 template <class T>
-uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
+unsigned int CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   if (functionPtr_p.nelements() != 0 && newFunction.ndim() != ndim_p) {
     throw(
         AipsError("CompoundParam::addFunction() -- "
                   "Inconsistent function dimension"));
   }
   // Add the function
-  uInt i = functionPtr_p.nelements();
+  unsigned int i = functionPtr_p.nelements();
   functionPtr_p.resize(i + 1);
   functionPtr_p[i] = newFunction.clone();
   ndim_p = functionPtr_p[i]->ndim();
   // Set parameters
-  uInt np = nparameters();
+  unsigned int np = nparameters();
   paroff_p.resize(i + 1);
   paroff_p[i] = np;
   FunctionParam<T> old(param_p);
   param_p = FunctionParam<T>(np + newFunction.nparameters());
   funpar_p.resize(np + newFunction.nparameters());
   locpar_p.resize(np + newFunction.nparameters());
-  for (uInt j = 0; j < np; ++j) {
+  for (unsigned int j = 0; j < np; ++j) {
     param_p[j] = old[j];
     param_p.mask(j) = old.mask(j);
   }
-  for (uInt j = np; j < np + newFunction.nparameters(); ++j) {
+  for (unsigned int j = np; j < np + newFunction.nparameters(); ++j) {
     param_p[j] = newFunction[j - np];
     param_p.mask(j) = newFunction.mask(j - np);
     funpar_p[j] = i;

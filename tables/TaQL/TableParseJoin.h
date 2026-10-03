@@ -72,7 +72,7 @@ class TableParseJoin {
   explicit TableParseJoin(TableParseQuery*);
 
   // Add a join table nr, name, or object to the container.
-  void addTable(Int tabnr, const String& name, const Table& table, const String& shorthand,
+  void addTable(int tabnr, const String& name, const Table& table, const String& shorthand,
                 const std::vector<const Table*>& tempTables,
                 const std::vector<TableParseQuery*>& stack);
 
@@ -83,7 +83,7 @@ class TableParseJoin {
   // # In the initialization phase of TaQLJoin, the itsJoin pointer
   // # is not set. In that case the given row id is already the original
   // # rownr in the join table and should be returned as such.
-  Int64 findRow(const TableExprId& id) const;
+  int64_t findRow(const TableExprId& id) const;
 
  private:
   // Split the ON condition recursively into its AND parts.
@@ -94,8 +94,8 @@ class TableParseJoin {
 
   // Tell how many tables in the exprTables vector are the same as those
   // in the tables vector.
-  uInt findMatchingTables(const std::vector<Table>& exprTables,
-                          const std::vector<Table>& tables) const;
+  unsigned int findMatchingTables(const std::vector<Table>& exprTables,
+                                  const std::vector<Table>& tables) const;
 
   // Check if all join tables in the vector have the same number of rows.
   rownr_t checkNrow(const std::vector<Table>&) const;
@@ -109,10 +109,10 @@ class TableParseJoin {
   std::vector<Table> itsFromTables;
   std::vector<Table> itsJoinTables;
   // # Index in TableParseQuery's vector of joins; <0 is no parent join.
-  Int itsParentJoinIndex;
+  int itsParentJoinIndex;
   std::shared_ptr<TaQLJoinBase> itsJoin;
-  mutable Int64 itsLastMainRow;  // Last main table row looked for
-  mutable Int64 itsLastJoinRow;  // Join table row matching itsLastMainRow
+  mutable int64_t itsLastMainRow;  // Last main table row looked for
+  mutable int64_t itsLastJoinRow;  // Join table row matching itsLastMainRow
 };
 
 }  // namespace casacore

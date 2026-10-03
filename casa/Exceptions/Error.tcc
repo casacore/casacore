@@ -32,7 +32,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class t>
-indexError<t>::indexError(t oI, const Char *str, Category c) : IndexError(str, c), oIndex(oI) {}
+indexError<t>::indexError(t oI, const char *str, Category c) : IndexError(str, c), oIndex(oI) {}
 
 template <class t>
 indexError<t>::indexError(t oI, const String &str, Category c) : IndexError(str, c), oIndex(oI) {}
@@ -41,7 +41,7 @@ template <class t>
 indexError<t>::~indexError() noexcept {}
 
 template <class t>
-duplError<t>::duplError(t oI, const Char *str, Category c) : DuplError(str, c), oKey(oI) {}
+duplError<t>::duplError(t oI, const char *str, Category c) : DuplError(str, c), oKey(oI) {}
 
 template <class t>
 duplError<t>::duplError(t oI, const String &str, Category c) : DuplError(str, c), oKey(oI) {}

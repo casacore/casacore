@@ -56,11 +56,11 @@ void writeData(bool autoScale) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
-  td.addColumn(ArrayColumnDesc<Short>("target1"));
-  td.addColumn(ArrayColumnDesc<Float>("source1"));
-  td.addColumn(ArrayColumnDesc<Float>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-  td.addColumn(ScalarColumnDesc<Float>("scale1"));
-  td.addColumn(ScalarColumnDesc<Float>("offset1"));
+  td.addColumn(ArrayColumnDesc<short>("target1"));
+  td.addColumn(ArrayColumnDesc<float>("source1"));
+  td.addColumn(ArrayColumnDesc<float>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+  td.addColumn(ScalarColumnDesc<float>("scale1"));
+  td.addColumn(ScalarColumnDesc<float>("offset1"));
 
   // Now create a new table from the description.
   SetupNewTable newtab("tCompressFloat_tmp.data", td, Table::New);
@@ -71,17 +71,17 @@ void writeData(bool autoScale) {
   Table tab(newtab, 10);
 
   // Fill the table via the virtual columns.
-  ArrayColumn<Float> source1(tab, "source1");
-  ArrayColumn<Float> source2(tab, "source2");
-  ScalarColumn<Float> scale1(tab, "scale1");
-  ScalarColumn<Float> offset1(tab, "offset1");
+  ArrayColumn<float> source1(tab, "source1");
+  ArrayColumn<float> source2(tab, "source2");
+  ScalarColumn<float> scale1(tab, "scale1");
+  ScalarColumn<float> offset1(tab, "offset1");
 
-  Cube<Float> arrf(IPosition(3, 2, 3, 4));
-  uInt i;
+  Cube<float> arrf(IPosition(3, 2, 3, 4));
+  unsigned int i;
   i = 2;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
-      for (uInt i0 = 0; i0 < 2; i0++) {
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
+      for (unsigned int i0 = 0; i0 < 2; i0++) {
         arrf(i0, i1, i2) = i;
         i += 6;
       }
@@ -96,10 +96,10 @@ void writeData(bool autoScale) {
       source1.put(i, arrf);
     }
     source2.put(i, arrf);
-    arrf += (Float)(6 * arrf.nelements());
+    arrf += (float)(6 * arrf.nelements());
   }
   // Write the 5th row in Slices.
-  arrf -= (Float)(5 * 6 * arrf.nelements());
+  arrf -= (float)(5 * 6 * arrf.nelements());
   source1.setShape(5, arrf.shape());
   for (i = 0; i < 3; i++) {
     source1.putSlice(5, Slicer(IPosition(3, 0, i, 0), IPosition(3, 2, 1, 4)),
@@ -121,23 +121,23 @@ bool checkData(bool autoScale) {
   bool ok = true;
   // Read back the table.
   Table tab("tCompressFloat_tmp.data");
-  ArrayColumn<Float> source1(tab, "source1");
-  ArrayColumn<Float> source2(tab, "source2");
-  ArrayColumn<Short> target1(tab, "target1");
-  Cube<Short> arri1(IPosition(3, 2, 3, 4));
-  Cube<Short> arrvali(IPosition(3, 2, 3, 4));
-  Cube<Float> arrf1(IPosition(3, 2, 3, 4));
-  Cube<Float> arrvalf(IPosition(3, 2, 3, 4));
+  ArrayColumn<float> source1(tab, "source1");
+  ArrayColumn<float> source2(tab, "source2");
+  ArrayColumn<short> target1(tab, "target1");
+  Cube<short> arri1(IPosition(3, 2, 3, 4));
+  Cube<short> arrvali(IPosition(3, 2, 3, 4));
+  Cube<float> arrf1(IPosition(3, 2, 3, 4));
+  Cube<float> arrvalf(IPosition(3, 2, 3, 4));
   RefRows refrows(1, 9, 2);
   Slicer slicer(IPosition(3, 0, 1, 0), IPosition(3, 2, 2, 2), IPosition(3, 1, 1, 2));
-  Array<Float> arrCol1(source1.getColumn());
-  Array<Float> arrColSlice1(source1.getColumn(slicer));
-  Array<Float> arrCells1(source1.getColumnCells(refrows));
-  Array<Float> arrCellsSlice1(source1.getColumnCells(refrows, slicer));
-  Array<Float> arrCol2(source2.getColumn());
-  Array<Float> arrColSlice2(source2.getColumn(slicer));
-  Array<Float> arrCells2(source2.getColumnCells(refrows));
-  Array<Float> arrCellsSlice2(source2.getColumnCells(refrows, slicer));
+  Array<float> arrCol1(source1.getColumn());
+  Array<float> arrColSlice1(source1.getColumn(slicer));
+  Array<float> arrCells1(source1.getColumnCells(refrows));
+  Array<float> arrCellsSlice1(source1.getColumnCells(refrows, slicer));
+  Array<float> arrCol2(source2.getColumn());
+  Array<float> arrColSlice2(source2.getColumn(slicer));
+  Array<float> arrCells2(source2.getColumnCells(refrows));
+  Array<float> arrCellsSlice2(source2.getColumnCells(refrows, slicer));
   Slicer slicercol(IPosition(4, 0, 1, 0, 0), IPosition(4, 2, 2, 2, 10), IPosition(4, 1, 1, 2, 1));
   Slicer slicercells(IPosition(4, 0, 0, 0, 1), IPosition(4, 2, 3, 4, 5), IPosition(4, 1, 1, 1, 2));
   Slicer slicercsl(IPosition(4, 0, 1, 0, 1), IPosition(4, 2, 2, 2, 5), IPosition(4, 1, 1, 2, 2));
@@ -147,18 +147,18 @@ bool checkData(bool autoScale) {
   AlwaysAssertExit(allEQ(arrColSlice2, arrCol2(slicercol)));
   AlwaysAssertExit(allEQ(arrCells2, arrCol2(slicercells)));
   AlwaysAssertExit(allEQ(arrCellsSlice2, arrCol2(slicercsl)));
-  uInt i = 0;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
-      for (uInt i0 = 0; i0 < 2; i0++) {
+  unsigned int i = 0;
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
+      for (unsigned int i0 = 0; i0 < 2; i0++) {
         arrf1(i0, i1, i2) = 2 + 6 * i;
         arri1(i0, i1, i2) = 3 * i - 1;
         i++;
       }
     }
   }
-  ArrayIterator<Float> iter1(arrCol1, 3);
-  ArrayIterator<Float> iter2(arrCol2, 3);
+  ArrayIterator<float> iter1(arrCol1, 3);
+  ArrayIterator<float> iter2(arrCol2, 3);
   for (i = 0; i < 10; i++) {
     cout << "get row " << i << endl;
     source1.get(i, arrvalf);
@@ -188,8 +188,8 @@ bool checkData(bool autoScale) {
     }
     AlwaysAssertExit(allEQ(arrvalf, iter2.array()));
     AlwaysAssertExit(allEQ(arrvalf(slicer), source2.getSlice(i, slicer)));
-    arrf1 += (Float)(6 * arrf1.nelements());
-    arri1 += (Short)(3 * arri1.nelements());
+    arrf1 += (float)(6 * arrf1.nelements());
+    arri1 += (short)(3 * arri1.nelements());
     iter1.next();
     iter2.next();
   }
@@ -201,13 +201,13 @@ void testSpeed() {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class TableDesc";
-    td.addColumn(ArrayColumnDesc<Short>("target1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ArrayColumnDesc<Float>("source1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ArrayColumnDesc<Float>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ArrayColumnDesc<Short>("target3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ArrayColumnDesc<Float>("source3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ScalarColumnDesc<Float>("scale1"));
-    td.addColumn(ScalarColumnDesc<Float>("offset1"));
+    td.addColumn(ArrayColumnDesc<short>("target1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ArrayColumnDesc<float>("source1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ArrayColumnDesc<float>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ArrayColumnDesc<short>("target3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ArrayColumnDesc<float>("source3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ScalarColumnDesc<float>("scale1"));
+    td.addColumn(ScalarColumnDesc<float>("offset1"));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tCompressFloat_tmp.data", td, Table::New);
@@ -220,17 +220,17 @@ void testSpeed() {
     Table tab(newtab, 10000);
 
     // Fill the table via the virtual columns.
-    ArrayColumn<Float> source1(tab, "source1");
-    ArrayColumn<Float> source2(tab, "source2");
-    ScalarColumn<Float> scale1(tab, "scale1");
-    ScalarColumn<Float> offset1(tab, "offset1");
+    ArrayColumn<float> source1(tab, "source1");
+    ArrayColumn<float> source2(tab, "source2");
+    ScalarColumn<float> scale1(tab, "scale1");
+    ScalarColumn<float> offset1(tab, "offset1");
 
-    Cube<Float> arrf(IPosition(3, 2, 3, 4));
-    uInt i;
+    Cube<float> arrf(IPosition(3, 2, 3, 4));
+    unsigned int i;
     i = 2;
-    for (uInt i2 = 0; i2 < 4; i2++) {
-      for (uInt i1 = 0; i1 < 3; i1++) {
-        for (uInt i0 = 0; i0 < 2; i0++) {
+    for (unsigned int i2 = 0; i2 < 4; i2++) {
+      for (unsigned int i1 = 0; i1 < 3; i1++) {
+        for (unsigned int i0 = 0; i0 < 2; i0++) {
           arrf(i0, i1, i2) = i;
           i += 6;
         }
@@ -241,18 +241,18 @@ void testSpeed() {
       offset1.put(i, 4.);
       source1.put(i, arrf);
       source2.put(i, arrf);
-      arrf += (Float)(6 * arrf.nelements());
+      arrf += (float)(6 * arrf.nelements());
     }
   }
   {
     {
       // Time reading back column source1.
       Table tab("tCompressFloat_tmp.data");
-      ArrayColumn<Float> source(tab, "source1");
-      Cube<Float> arrvalf(IPosition(3, 2, 3, 4));
+      ArrayColumn<float> source(tab, "source1");
+      Cube<float> arrvalf(IPosition(3, 2, 3, 4));
       Timer timer;
-      uInt nrow = tab.nrow();
-      for (uInt i = 0; i < nrow; i++) {
+      unsigned int nrow = tab.nrow();
+      for (unsigned int i = 0; i < nrow; i++) {
         source.get(i, arrvalf);
       }
       timer.show();
@@ -260,11 +260,11 @@ void testSpeed() {
     {
       // Time reading back column source2.
       Table tab("tCompressFloat_tmp.data");
-      ArrayColumn<Float> source(tab, "source2");
-      Cube<Float> arrvalf(IPosition(3, 2, 3, 4));
+      ArrayColumn<float> source(tab, "source2");
+      Cube<float> arrvalf(IPosition(3, 2, 3, 4));
       Timer timer;
-      uInt nrow = tab.nrow();
-      for (uInt i = 0; i < nrow; i++) {
+      unsigned int nrow = tab.nrow();
+      for (unsigned int i = 0; i < nrow; i++) {
         source.get(i, arrvalf);
       }
       timer.show();
@@ -272,11 +272,11 @@ void testSpeed() {
     {
       // Time reading back column source3.
       Table tab("tCompressFloat_tmp.data");
-      ArrayColumn<Float> source(tab, "source3");
-      Cube<Float> arrvalf(IPosition(3, 2, 3, 4));
+      ArrayColumn<float> source(tab, "source3");
+      Cube<float> arrvalf(IPosition(3, 2, 3, 4));
       Timer timer;
-      uInt nrow = tab.nrow();
-      for (uInt i = 0; i < nrow; i++) {
+      unsigned int nrow = tab.nrow();
+      for (unsigned int i = 0; i < nrow; i++) {
         source.get(i, arrvalf);
       }
       timer.show();
@@ -284,7 +284,7 @@ void testSpeed() {
     {
       // Time reading back column source1.
       Table tab("tCompressFloat_tmp.data");
-      ArrayColumn<Float> source(tab, "source1");
+      ArrayColumn<float> source(tab, "source1");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -292,7 +292,7 @@ void testSpeed() {
     {
       // Time reading back column source2.
       Table tab("tCompressFloat_tmp.data");
-      ArrayColumn<Float> source(tab, "source2");
+      ArrayColumn<float> source(tab, "source2");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -300,7 +300,7 @@ void testSpeed() {
     {
       // Time reading back column source3.
       Table tab("tCompressFloat_tmp.data");
-      ArrayColumn<Float> source(tab, "source3");
+      ArrayColumn<float> source(tab, "source3");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -309,7 +309,7 @@ void testSpeed() {
 }
 
 int main() {
-  Int sts = 0;
+  int sts = 0;
   try {
     writeData(false);
     if (!checkData(false)) sts = 1;

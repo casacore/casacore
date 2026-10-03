@@ -186,13 +186,13 @@ class GaussianND : public GaussianNDParam<T> {
   //  covariance defaults to 0.0,
   //  <group>
   GaussianND() : GaussianNDParam<T>() {}
-  explicit GaussianND(uInt ndim) : GaussianNDParam<T>(ndim) {}
-  GaussianND(uInt ndim, const T &height) : GaussianNDParam<T>(ndim, height) {}
-  GaussianND(uInt ndim, const T &height, const Vector<T> &mean)
+  explicit GaussianND(unsigned int ndim) : GaussianNDParam<T>(ndim) {}
+  GaussianND(unsigned int ndim, const T &height) : GaussianNDParam<T>(ndim, height) {}
+  GaussianND(unsigned int ndim, const T &height, const Vector<T> &mean)
       : GaussianNDParam<T>(ndim, height, mean) {}
-  GaussianND(uInt ndim, const T &height, const Vector<T> &mean, const Vector<T> &variance)
+  GaussianND(unsigned int ndim, const T &height, const Vector<T> &mean, const Vector<T> &variance)
       : GaussianNDParam<T>(ndim, height, mean, variance) {}
-  GaussianND(uInt ndim, const T &height, const Vector<T> &mean, const Matrix<T> &covar)
+  GaussianND(unsigned int ndim, const T &height, const Vector<T> &mean, const Matrix<T> &covar)
       : GaussianNDParam<T>(ndim, height, mean, covar) {}
   // </group>
 

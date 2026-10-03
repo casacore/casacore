@@ -113,7 +113,7 @@ String SubTableDesc::className() const { return "SubTableDesc"; }
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void SubTableDesc::putDesc(AipsIO& ios) const {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   ios << tabDescTyp_p;
   ios << byName_p;
   if (!byName_p) {
@@ -122,7 +122,7 @@ void SubTableDesc::putDesc(AipsIO& ios) const {
 }
 
 void SubTableDesc::getDesc(AipsIO& ios) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   ios >> tabDescTyp_p;
   ios >> byName_p;

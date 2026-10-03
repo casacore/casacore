@@ -447,12 +447,12 @@ void HDF5Image<T>::check_conformance(const Lattice<T>& other) {
 }
 
 template <class T>
-uInt HDF5Image<T>::advisedMaxPixels() const {
+unsigned int HDF5Image<T>::advisedMaxPixels() const {
   return map_p.advisedMaxPixels();
 }
 
 template <class T>
-IPosition HDF5Image<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition HDF5Image<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return map_p.niceCursorShape(maxPixels);
 }
 

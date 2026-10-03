@@ -36,7 +36,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::operator=(const SquareMatrix<T, n>& m) {
   type_p = m.type_p;
   switch (type_p) {
@@ -44,32 +44,32 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator=(const SquareMatrix<T, n>& m) {
       a_p[0][0] = m.a_p[0][0];
       break;
     case Diagonal: {
-      for (Int i = 0; i < n; i++) a_p[i][i] = m.a_p[i][i];
+      for (int i = 0; i < n; i++) a_p[i][i] = m.a_p[i][i];
       break;
     }
     case General: {
       const T* pm = &m.a_p[0][0];
       T* pa_p = &a_p[0][0];
-      for (Int i = 0; i < n * n; i++) *pa_p++ = *pm++;
+      for (int i = 0; i < n * n; i++) *pa_p++ = *pm++;
     }
   }
   return *this;
 }
 // # not accepted out of line by native compiler- moved inline
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::operator=(const Vector<T>& v) {
-  for (Int i = 0; i < n; i++) a_p[i][i] = v(i);
+  for (int i = 0; i < n; i++) a_p[i][i] = v(i);
   type_p = Diagonal;
   return *this;
 }
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::operator=(const Matrix<T>& m) {
-  for (Int i = 0; i < n; i++)
-    for (Int j = 0; j < n; j++) a_p[i][j] = m(i, j);
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++) a_p[i][j] = m(i, j);
   type_p = General;
   return *this;
 }
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::operator+=(const SquareMatrix<T, n>& other) {
   switch (type_p) {
     case ScalarId:
@@ -80,15 +80,15 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator+=(const SquareMatrix<T, n>& oth
         }
         case Diagonal: {
           T tmp = a_p[0][0];
-          for (Int i = 0; i < n; i++) a_p[i][i] = tmp + other.a_p[i][i];
+          for (int i = 0; i < n; i++) a_p[i][i] = tmp + other.a_p[i][i];
           type_p = Diagonal;
           return *this;
         }
         case General: {
           T tmp = a_p[0][0];
-          for (Int i = 0; i < n; i++) {
+          for (int i = 0; i < n; i++) {
             a_p[i][i] = tmp + other.a_p[i][i];
-            for (Int j = 0; j < n; j++)
+            for (int j = 0; j < n; j++)
               if (i != j) a_p[i][j] = other.a_p[i][j];
           }
           type_p = General;
@@ -98,17 +98,17 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator+=(const SquareMatrix<T, n>& oth
     case Diagonal:
       switch (other.type_p) {
         case ScalarId: {
-          for (Int i = 0; i < n; i++) a_p[i][i] += other.a_p[0][0];
+          for (int i = 0; i < n; i++) a_p[i][i] += other.a_p[0][0];
           return *this;
         }
         case Diagonal: {
-          for (Int i = 0; i < n; i++) a_p[i][i] += other.a_p[i][i];
+          for (int i = 0; i < n; i++) a_p[i][i] += other.a_p[i][i];
           return *this;
         }
         case General: {
-          for (Int i = 0; i < n; i++) {
+          for (int i = 0; i < n; i++) {
             a_p[i][i] += other.a_p[i][i];
-            for (Int j = 0; j < n; j++)
+            for (int j = 0; j < n; j++)
               if (i != j) a_p[i][j] = other.a_p[i][j];
           }
           type_p = General;
@@ -119,17 +119,17 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator+=(const SquareMatrix<T, n>& oth
     default:
       switch (other.type_p) {
         case ScalarId: {
-          for (Int i = 0; i < n; i++) a_p[i][i] += other.a_p[0][0];
+          for (int i = 0; i < n; i++) a_p[i][i] += other.a_p[0][0];
           return *this;
         }
         case Diagonal: {
-          for (Int i = 0; i < n; i++) a_p[i][i] += other.a_p[i][i];
+          for (int i = 0; i < n; i++) a_p[i][i] += other.a_p[i][i];
           return *this;
         }
         case General: {
           const T* po = &other.a_p[0][0];
           T* pa_p = &a_p[0][0];
-          for (Int i = 0; i < n * n; i++) *(pa_p++) += *po++;
+          for (int i = 0; i < n * n; i++) *(pa_p++) += *po++;
           return *this;
         }
       }
@@ -137,7 +137,7 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator+=(const SquareMatrix<T, n>& oth
   return *this;
 }
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(const SquareMatrix<T, n>& other) {
   switch (type_p) {
     case ScalarId:
@@ -148,7 +148,7 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(const SquareMatrix<T, n>& oth
         }
         case Diagonal: {
           T tmp = a_p[0][0];
-          for (Int i = 0; i < n; i++) {
+          for (int i = 0; i < n; i++) {
             a_p[i][i] = tmp;
             a_p[i][i] *= other.a_p[i][i];
           }
@@ -157,8 +157,8 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(const SquareMatrix<T, n>& oth
         }
         case General: {
           T tmp = a_p[0][0];
-          for (Int i = 0; i < n; i++)
-            for (Int j = 0; j < n; j++) {
+          for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
               a_p[i][j] = tmp;
               a_p[i][j] *= other.a_p[i][j];
             }
@@ -170,19 +170,19 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(const SquareMatrix<T, n>& oth
     case Diagonal:
       switch (other.type_p) {
         case ScalarId: {
-          for (Int i = 0; i < n; i++) a_p[i][i] *= other.a_p[0][0];
+          for (int i = 0; i < n; i++) a_p[i][i] *= other.a_p[0][0];
           return *this;
         }
         case Diagonal: {
-          for (Int i = 0; i < n; i++) a_p[i][i] *= other.a_p[i][i];
+          for (int i = 0; i < n; i++) a_p[i][i] *= other.a_p[i][i];
           return *this;
         }
         case General: {
           T a[n];
-          Int i;
+          int i;
           for (i = 0; i < n; i++) a[i] = a_p[i][i];
           for (i = 0; i < n; i++) {
-            for (Int j = 0; j < n; j++) {
+            for (int j = 0; j < n; j++) {
               a_p[i][j] = a[i];
               a_p[i][j] *= other.a_p[i][j];
             }
@@ -195,25 +195,25 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(const SquareMatrix<T, n>& oth
     case General:
       switch (other.type_p) {
         case ScalarId: {
-          for (Int i = 0; i < n; i++)
-            for (Int j = 0; j < n; j++) a_p[i][j] *= other.a_p[0][0];
+          for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) a_p[i][j] *= other.a_p[0][0];
           return *this;
         }
         case Diagonal: {
-          for (Int i = 0; i < n; i++)
-            for (Int j = 0; j < n; j++) a_p[i][j] *= other.a_p[j][j];
+          for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) a_p[i][j] *= other.a_p[j][j];
           return *this;
         }
           //      case General:
         default: {
           T a[n], tmp;
-          for (Int i = 0; i < n; i++) {
-            Int j;
+          for (int i = 0; i < n; i++) {
+            int j;
             for (j = 0; j < n; j++) a[j] = a_p[i][j];
             for (j = 0; j < n; j++) {
               a_p[i][j] = a[0];
               a_p[i][j] *= other.a_p[0][j];
-              for (Int k = 1; k < n; k++) {
+              for (int k = 1; k < n; k++) {
                 // #a_p[i][j]+=a[k]*other.a_p[k][j]; inlining fails
                 tmp = a[k];
                 tmp *= other.a_p[k][j];
@@ -227,26 +227,26 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(const SquareMatrix<T, n>& oth
   }
   return *this;
 }
-template <class T, Int n>
-SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(Float f) {
+template <class T, int n>
+SquareMatrix<T, n>& SquareMatrix<T, n>::operator*=(float f) {
   switch (type_p) {
     case ScalarId:
       a_p[0][0] *= f;
       break;
     case Diagonal: {
-      for (Int i = 0; i < n; i++) a_p[i][i] *= f;
+      for (int i = 0; i < n; i++) a_p[i][i] *= f;
       break;
     }
     case General: {
       T* pa_p = &a_p[0][0];
-      for (Int i = 0; i < n * n; i++) *pa_p++ *= f;
+      for (int i = 0; i < n * n; i++) *pa_p++ *= f;
     }
   }
   return *this;
 }
 
 /* fails to compile - use explicitly instantiated global function instead
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T,n*n>& SquareMatrix<T,n>::directProduct(SquareMatrix<T,n*n>& dp,
 const SquareMatrix<T,n>& other) const
 {
@@ -260,14 +260,14 @@ const SquareMatrix<T,n>& other) const
             }
             case Diagonal: {
                 T tmp=a_p[0][0];
-                for (Int i=0; i<n*n; i++) dp.a_p[i][i]=tmp*other.a_p[i%n][i%n];
+                for (int i=0; i<n*n; i++) dp.a_p[i][i]=tmp*other.a_p[i%n][i%n];
                 dp.type_p=Diagonal;
                 return dp;
             }
             case General: {
                 T tmp=a_p[0][0];
-                for (Int i=0; i<n*n; i++)
-                    for (Int j=0; j<n*n; j++) {
+                for (int i=0; i<n*n; i++)
+                    for (int j=0; j<n*n; j++) {
                         if (i/n == j/n) dp.a_p[i][j]=tmp*other.a_p[i%n][j%n];
                         else dp.a_p[i][j]=T();
                     }
@@ -279,19 +279,19 @@ const SquareMatrix<T,n>& other) const
         switch (other.type_p) {
             case ScalarId: {
                 T tmp=other.a_p[0][0];
-                for (Int i=0; i<n*n; i++) dp.a_p[i][i]=a_p[i/n][i/n]*tmp;
+                for (int i=0; i<n*n; i++) dp.a_p[i][i]=a_p[i/n][i/n]*tmp;
                 dp.type_p=Diagonal;
                 return dp;
             }
             case Diagonal: {
-                for (Int i=0; i<n*n; i++)
+                for (int i=0; i<n*n; i++)
                     dp.a_p[i][i]=a_p[i/n][i/n]*other.a_p[i%n][i%n];
                 dp.type_p=Diagonal;
                 return dp;
             }
             case General: {
-                for (Int i=0; i<n*n; i++) {
-                    for (Int j=0; j<n*n; j++) {
+                for (int i=0; i<n*n; i++) {
+                    for (int j=0; j<n*n; j++) {
                         if (i/n == j/n)
                             dp.a_p[i][j]=a_p[i/n][i/n]*other.a_p[i%n][j%n];
                         else dp.a_p[i][j]=T();
@@ -305,8 +305,8 @@ const SquareMatrix<T,n>& other) const
         switch (other.type_p) {
             case ScalarId: {
                 T tmp=other.a_p[0][0];
-                for (Int i=0; i<n*n; i++)
-                    for (Int j=0; j<n*n; j++) {
+                for (int i=0; i<n*n; i++)
+                    for (int j=0; j<n*n; j++) {
                         if (i%n == j%n) dp.a_p[i][j]=a_p[i/n][j/n]*tmp;
                         else dp.a_p[i][j]=T();
                     }
@@ -314,8 +314,8 @@ const SquareMatrix<T,n>& other) const
                 return dp;
             }
             case Diagonal: {
-                for (Int i=0; i<n*n; i++)
-                    for (Int j=0; j<n*n; j++) {
+                for (int i=0; i<n*n; i++)
+                    for (int j=0; j<n*n; j++) {
                         if (i%n == j%n)
                             dp.a_p[i][j]=a_p[i/n][j/n]*other.a_p[i%n][j%n];
                         else dp.a_p[i][j]=T();
@@ -324,8 +324,8 @@ const SquareMatrix<T,n>& other) const
                 return dp;
             }
             case General: {
-                for (Int i=0; i<n*n; i++)
-                    for (Int j=0; j<n*n; j++)
+                for (int i=0; i<n*n; i++)
+                    for (int j=0; j<n*n; j++)
                         dp.a_p[i][j]=a_p[i/n][j/n]*other.a_p[i%n][j%n];
                 dp.type_p=General;
                 return dp;
@@ -336,7 +336,7 @@ const SquareMatrix<T,n>& other) const
 */
 // # above instantiated for T=Complex, n=2 in SquareMatrix2.cc
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::conj() {
   switch (type_p) {
     case ScalarId: {
@@ -344,19 +344,19 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::conj() {
       return *this;
     }
     case Diagonal: {
-      for (Int i = 0; i < n; i++) a_p[i][i] = std::conj(a_p[i][i]);
+      for (int i = 0; i < n; i++) a_p[i][i] = std::conj(a_p[i][i]);
       return *this;
     }
       //      case General:
     default: {
-      for (Int i = 0; i < n; i++)
-        for (Int j = 0; j < n; j++) a_p[i][j] = std::conj(a_p[i][j]);
+      for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) a_p[i][j] = std::conj(a_p[i][j]);
       return *this;
     }
   }
 }
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::adjoint() {
   switch (type_p) {
     case ScalarId: {
@@ -364,13 +364,13 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::adjoint() {
       return *this;
     }
     case Diagonal: {
-      for (Int i = 0; i < n; i++) a_p[i][i] = std::conj(a_p[i][i]);
+      for (int i = 0; i < n; i++) a_p[i][i] = std::conj(a_p[i][i]);
       return *this;
     }
     case General: {
-      for (Int i = 0; i < n; i++) {
+      for (int i = 0; i < n; i++) {
         a_p[i][i] = std::conj(a_p[i][i]);
-        for (Int j = i + 1; j < n; j++) {
+        for (int j = i + 1; j < n; j++) {
           T tmp = std::conj(a_p[i][j]);
           a_p[i][j] = std::conj(a_p[j][i]);
           a_p[j][i] = tmp;
@@ -382,21 +382,21 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::adjoint() {
   return *this;
 }
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::conj(SquareMatrix<T, n>& result) {
   result = *this;
   result.conj();
   return result;
 }
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::adjoint(SquareMatrix<T, n>& result) {
   result = *this;
   result.adjoint();
   return result;
 }
 
-template <class T, Int n>
+template <class T, int n>
 SquareMatrix<T, n>& SquareMatrix<T, n>::inverse(SquareMatrix<T, n>& result) const {
   switch (type_p) {
     case ScalarId: {
@@ -405,7 +405,7 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::inverse(SquareMatrix<T, n>& result) cons
       return result;
     }
     case Diagonal: {
-      for (Int i = 0; i < n; i++) result.a_p[i][i] = T(1) / a_p[i][i];
+      for (int i = 0; i < n; i++) result.a_p[i][i] = T(1) / a_p[i][i];
       result.type_p = Diagonal;
       return result;
     }
@@ -436,30 +436,30 @@ SquareMatrix<T, n>& SquareMatrix<T, n>::inverse(SquareMatrix<T, n>& result) cons
   }
 }
 
-template <class T, Int n>
+template <class T, int n>
 Matrix<T>& SquareMatrix<T, n>::matrix(Matrix<T>& result) const {
   result.resize(n, n);
   switch (type_p) {
     case ScalarId: {
       result = T();
-      for (Int i = 0; i < n; i++) result(i, i) = a_p[0][0];
+      for (int i = 0; i < n; i++) result(i, i) = a_p[0][0];
       return result;
     }
     case Diagonal: {
       result = T();
-      for (Int i = 0; i < n; i++) result(i, i) = a_p[i][i];
+      for (int i = 0; i < n; i++) result(i, i) = a_p[i][i];
       return result;
     }
       //      case General:
     default: {
-      for (Int i = 0; i < n; i++)
-        for (Int j = 0; j < n; j++) result(i, j) = a_p[i][j];
+      for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) result(i, j) = a_p[i][j];
       return result;
     }
   }
 }
 
-template <class T, Int n>
+template <class T, int n>
 T& SquareMatrix<T, n>::throwInvAccess() {
   throw(
       AipsError("SquareMatrix - attempt to change element that is "

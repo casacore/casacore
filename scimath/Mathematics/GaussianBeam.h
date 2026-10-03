@@ -95,13 +95,13 @@ class GaussianBeam {
   const Quantity& getMajor() const;
 
   // returns the value portion of the major axis in the specified units
-  Double getMajor(const Unit& u) const;
+  double getMajor(const Unit& u) const;
 
   // returns the minor axis in the same units as it had at construction
   const Quantity& getMinor() const;
 
   // returns the value portion of the minor axis in the specified units
-  Double getMinor(const Unit& u) const;
+  double getMinor(const Unit& u) const;
 
   // returns the position angle's value as it was at construction,
   // unless <src>unwrap</src> is true, in which case the value of the angle
@@ -110,11 +110,11 @@ class GaussianBeam {
   Quantity getPA(const bool unwrap = true) const;
 
   // returns the value portion of the position angle in the specified units
-  Double getPA(const Unit& u, const bool unwrap = true) const;
+  double getPA(const Unit& u, const bool unwrap = true) const;
 
   // returns the beam area in the specified <src>unit</src>, which much conform to
   // solid angle units.
-  Double getArea(const Unit& unit) const;
+  double getArea(const Unit& unit) const;
 
   // is this object a null beam (ie is either its major and/or minor axis zero)?
   bool isNull() const;
@@ -151,7 +151,7 @@ ostream& operator<<(ostream& os, const GaussianBeam& beam);
 
 LogIO& operator<<(LogIO& os, const GaussianBeam& beam);
 
-bool near(const GaussianBeam& left, const GaussianBeam& other, const Double relWidthTol,
+bool near(const GaussianBeam& left, const GaussianBeam& other, const double relWidthTol,
           const Quantity& absPaTol);
 
 }  // namespace casacore

@@ -35,7 +35,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constants
 //  Default convergence criterium
 template <class T>
-const Double NonLinearFit<T>::CRITERIUM = 0.001;
+const double NonLinearFit<T>::CRITERIUM = 0.001;
 
 // # Constructors
 template <class T>
@@ -83,7 +83,7 @@ template <class T>
 NonLinearFit<T>::~NonLinearFit() {}
 
 template <class T>
-void NonLinearFit<T>::setMaxIter(uInt maxIter) {
+void NonLinearFit<T>::setMaxIter(unsigned int maxIter) {
   maxiter_p = (maxIter > 0 ? maxIter : 1);
   curiter_p = (curiter_p > maxiter_p ? maxiter_p : curiter_p);
 }

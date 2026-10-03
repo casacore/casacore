@@ -127,7 +127,7 @@ class ImageUtilities {
   // axis.
   template <typename T>
   static void bin(MaskedArray<T>& out, Coordinate& coordOut, const MaskedArray<T>& in,
-                  const Coordinate& coordIn, uInt axis, uInt bin);
+                  const Coordinate& coordIn, unsigned int axis, unsigned int bin);
 
   // This function converts pixel coordinates to world coordinates. You
   // specify a vector of pixel coordinates (<src>pixels</src>) for only one
@@ -141,9 +141,9 @@ class ImageUtilities {
   // element is returned as "?"    Returns <src>false</src> if the lengths of
   // <<src>blc</src> and <src>trc</src> are not equal to the number of pixel axes
   // in the coordinate system.
-  static bool pixToWorld(Vector<String>& sWorld, const CoordinateSystem& cSys, const Int& pixelAxis,
-                         const Vector<Int>& cursorAxes, const IPosition& blc, const IPosition& trc,
-                         const Vector<Double>& pixels, const Int& prec,
+  static bool pixToWorld(Vector<String>& sWorld, const CoordinateSystem& cSys, const int& pixelAxis,
+                         const Vector<int>& cursorAxes, const IPosition& blc, const IPosition& trc,
+                         const Vector<double>& pixels, const int& prec,
                          const bool usePrecForMixed = false);
 
   // Convert long axis names "Right Ascension", "Declination", "Frequency" and
@@ -155,13 +155,13 @@ class ImageUtilities {
   // Currently no checks are done to ensure the pixel array size and
   // mapShape are compatible; the caller is responsible for this check.
   static void writeImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-                         const String& imageName, const Array<Float>& pixels, LogIO& log,
+                         const String& imageName, const Array<float>& pixels, LogIO& log,
                          const Array<bool>& pixelMask = Array<bool>());
 
   static GaussianBeam makeFakeBeam(LogIO& logIO, const CoordinateSystem& csys,
                                    bool suppressWarnings = false);
 
-  static void getUnitAndDoppler(String& xUnit, String& doppler, const uInt axis,
+  static void getUnitAndDoppler(String& xUnit, String& doppler, const unsigned int axis,
                                 const CoordinateSystem& csys);
 };
 

@@ -44,7 +44,7 @@ T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, bool doTryGenSort) cons
   }
   // # Try if we can use the faster GenSort when we have one key only.
   if (doTryGenSort && nrkey_p == 1) {
-    uInt n = keys_p[0]->tryGenSort(indexVector, nrrec, opt);
+    unsigned int n = keys_p[0]->tryGenSort(indexVector, nrrec, opt);
     if (n > 0) {
       return n;
     }
@@ -63,7 +63,7 @@ T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, bool doTryGenSort) cons
 #ifdef _OPENMP
   nthr = omp_get_max_threads();
   // Do not use more threads than there are values.
-  if (uInt(nthr) > nrrec) nthr = nrrec;
+  if (static_cast<unsigned int>(nthr) > nrrec) nthr = nrrec;
 #endif
   if (type == DefaultSort) {
     type = (nrrec < 1000 || nthr == 1 ? QuickSort : ParSort);
@@ -141,7 +141,7 @@ T Sort::doUnique(Vector<T>& uniqueVector, Vector<size_t>& changeKey,
   T nruniq = 1;
   size_t idxComp;
   for (T i = 1; i < nrrec; i++) {
-    Int cmp = compareChangeIdx(inx[i - 1], inx[i], idxComp);
+    int cmp = compareChangeIdx(inx[i - 1], inx[i], idxComp);
     if (cmp != 1 && cmp != -1) {
       change[nruniq - 1] = idxComp;
       uniq[nruniq++] = i;
@@ -271,7 +271,7 @@ void Sort::merge(T* inx, T* tmp, T nrrec, T* index, T nparts) const {
 template <typename T>
 T Sort::insSort(T nrrec, T* inx) const {
   for (T i = 1; i < nrrec; i++) {
-    Int64 j = i;
+    int64_t j = i;
     T cur = inx[i];
     while (--j >= 0 && compare(inx[j], cur) <= 0) {
       inx[j + 1] = inx[j];
@@ -289,13 +289,13 @@ T Sort::insSortNoDup(T nrrec, T* inx) const {
   T nr = 1;
   int cmp = 0;
   for (T i = 1; i < nrrec; i++) {
-    Int64 j = nr;
+    int64_t j = nr;
     T cur = inx[i];
     // Continue as long as key is out of order.
     while (--j >= 0 && (cmp = compare(inx[j], cur)) == 0) {
     }
     if (j < 0 || cmp == 2) {  // no equal key
-      for (Int64 k = nr - 1; k > j; k--) {
+      for (int64_t k = nr - 1; k > j; k--) {
         inx[k + 1] = inx[k];  // now shift to right
       }
       inx[j + 1] = cur;  // insert in right place

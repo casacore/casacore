@@ -44,7 +44,7 @@
 int main() {
   try {
     // Direction Coordinate
-    Matrix<Double> xform(2, 2);  // 1
+    Matrix<double> xform(2, 2);  // 1
     xform = 0.0;
     xform.diagonal() = 1.0;                                           // 2
     DirectionCoordinate radec(MDirection::J2000,                      // 3
@@ -59,7 +59,7 @@ int main() {
     units = "deg";                   //  9
     radec.setWorldAxisUnits(units);  // 10
 
-    Vector<Double> world(2), pixel(2);  // 11
+    Vector<double> world(2), pixel(2);  // 11
     pixel = 138.0;                      // 12
 
     bool ok = radec.toWorld(world, pixel);                // 13
@@ -76,14 +76,14 @@ int main() {
     cout << world << " ---> " << pixel << endl;
 
     // StokesCoordinate
-    Vector<Int> iquv(4);  // 20
+    Vector<int> iquv(4);  // 20
     iquv(0) = Stokes::I;
     iquv(1) = Stokes::Q;  // 21
     iquv(2) = Stokes::U;
     iquv(3) = Stokes::V;            // 22
     StokesCoordinate stokes(iquv);  // 23
 
-    Int plane;                              // 24
+    int plane;                              // 24
     ok = stokes.toPixel(plane, Stokes::Q);  // 25
     if (!ok) {
       cout << "Error: " << stokes.errorMessage() << endl;
@@ -153,7 +153,7 @@ int main() {
     cout << world << " ---> " << pixel << endl;
 
     // CoordinateSystem::transpose
-    Vector<Int> tran(4);
+    Vector<int> tran(4);
     tran(0) = 0;
     tran(1) = 1;
     tran(2) = 3;

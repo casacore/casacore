@@ -121,13 +121,13 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
   //
   IPosition shapeIn = latIn.shape();
   IPosition shapeOut = latOut.shape();
-  uInt nDim = shapeIn.nelements();
+  unsigned int nDim = shapeIn.nelements();
   IPosition axisPath = IPosition::makeAxisPath(nDim, axes);
 
   // Make input iterator
 
-  Int nxIn = shapeIn(axes(0));
-  Int nyIn = shapeIn(axes(1));
+  int nxIn = shapeIn(axes(0));
+  int nyIn = shapeIn(axes(1));
   IPosition cursorShapeIn(2, nxIn, nyIn);
   LatticeStepper stepIn(shapeIn, cursorShapeIn, axes, axisPath);
   RO_MaskedLatticeIterator<T> itIn(latIn, stepIn);
@@ -135,8 +135,8 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
 
   // Make output iterators
 
-  Int nxOut = shapeOut(axes(0));
-  Int nyOut = shapeOut(axes(1));
+  int nxOut = shapeOut(axes(0));
+  int nyOut = shapeOut(axes(1));
   IPosition cursorShapeOut(2, nxOut, nyOut);
   LatticeStepper stepOut(shapeOut, cursorShapeOut, axes, axisPath);
   LatticeIterator<T> itOut(latOut, stepOut);
@@ -150,16 +150,16 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
   // Matrices for plane by plane iteration results
 
   Matrix<T> sumOut(nxOut, nyOut);
-  Matrix<Float> nPtsOut(nxOut, nyOut);
+  Matrix<float> nPtsOut(nxOut, nyOut);
   Matrix<bool> maskOut(nxOut, nyOut);
 
   // Iterate through image, plane by plane.  The algorithm is too
   // complicated if I iterate tile by tile
 
-  Int lxOff = (nxOut - 1) / 2;
-  Int lyOff = (nyOut - 1) / 2;
-  Int lx = 0;
-  Int ly = 0;
+  int lxOff = (nxOut - 1) / 2;
+  int lyOff = (nyOut - 1) / 2;
+  int lx = 0;
+  int ly = 0;
   //
   for (itIn.reset(), itOut.reset(); !itIn.atEnd(); itIn++, itOut++) {
     if (showProgress) {
@@ -187,10 +187,10 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
     //
     ArrayAccessor<T, Axis<1>> jjItS(sumOut);  // Inner loops
     ArrayAccessor<T, Axis<0>> iiItS(sumOut);
-    ArrayAccessor<Float, Axis<1>> jjItN(nPtsOut);  // Inner loops
-    ArrayAccessor<Float, Axis<0>> iiItN(nPtsOut);
+    ArrayAccessor<float, Axis<1>> jjItN(nPtsOut);  // Inner loops
+    ArrayAccessor<float, Axis<0>> iiItN(nPtsOut);
     //
-    Int i, j, ii, jj, id, jd;
+    int i, j, ii, jj, id, jd;
     if (inIsMasked) {
       // Create Mask accessors
 
@@ -268,8 +268,8 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
 
     typename Array<T>::iterator outIter;
     typename Array<T>::iterator sumIter;
-    typename Array<Float>::iterator nIter;
-    typename Array<Float>::iterator nIterEnd = nPtsOut.end();
+    typename Array<float>::iterator nIter;
+    typename Array<float>::iterator nIterEnd = nPtsOut.end();
     for (outIter = itOut.rwMatrixCursor().begin(), sumIter = sumOut.begin(),
         nIter = nPtsOut.begin();
          nIter != nIterEnd; ++nIter, ++sumIter, ++outIter) {

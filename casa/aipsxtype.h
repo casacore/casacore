@@ -26,6 +26,8 @@
 #ifndef CASA_AIPSXTYPE_H
 #define CASA_AIPSXTYPE_H
 
+#include <cstdint>
+
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Define the extra non-standard types used by Casacore
@@ -33,15 +35,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // A guaranteed 64-bit long integer (for a.o. large file systems).
 // An implementation must support the + and - operators.
-typedef long long Int64;
-typedef unsigned long long uInt64;
+[[deprecated("Use int64_t")]]
+typedef int64_t Int64;
+[[deprecated("Use uint64_t")]]
+typedef uint64_t uInt64;
 
 // All FITS code seems to assume longs are 4 bytes. Currently
 // this corresponds to an "int" on all useful platforms.
 typedef int FitsLong;
 
 // Define the type of a row number in a table.
-typedef uInt64 rownr_t;
+typedef uint64_t rownr_t;
 
 }  // namespace casacore
 

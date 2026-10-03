@@ -66,7 +66,7 @@ void SSMStringHandler::init() {
   memset(itsIntBuf, 0, itsIntSize);
 }
 
-void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, const String& string) {
+void SSMStringHandler::replace(int bucketNr, int offset, int length, const String& string) {
   // Check if current bucket is wanted bucket, else get wanted bucket.
   if (bucketNr != itsCurrentBucket) {
     getBucket(bucketNr);
@@ -80,7 +80,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, const Strin
   }
 }
 
-void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLength,
+void SSMStringHandler::replace(int bucketNr, int offset, int length, int totalLength,
                                const Array<String>& string, bool handleShape) {
   const IPosition& aShape = string.shape();
 
@@ -93,23 +93,23 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLe
   const String* aString = string.getStorage(deleteIt);
 
   if (handleShape) {
-    CanonicalConversion::fromLocal(itsIntBuf, (uInt)aShape.nelements());
+    CanonicalConversion::fromLocal(itsIntBuf, (unsigned int)aShape.nelements());
     replaceData(offset, itsIntSize, itsIntBuf);
 
-    for (uInt i = 0; i < aShape.nelements(); i++) {
-      CanonicalConversion::fromLocal(itsIntBuf, Int(aShape(i)));
+    for (unsigned int i = 0; i < aShape.nelements(); i++) {
+      CanonicalConversion::fromLocal(itsIntBuf, int(aShape(i)));
       replaceData(offset, itsIntSize, itsIntBuf);
     }
     CanonicalConversion::fromLocal(itsIntBuf, 1);
     replaceData(offset, itsIntSize, itsIntBuf);
   }
 
-  for (uInt i = 0; i < string.nelements(); i++) {
+  for (unsigned int i = 0; i < string.nelements(); i++) {
     //
     // Made it a uInt so the SGI compiler could figure out which overloaded
     // function to use, since it seemed confused by string::size_t -> size_t
     //
-    CanonicalConversion::fromLocal(itsIntBuf, uInt(aString[i].length()));
+    CanonicalConversion::fromLocal(itsIntBuf, static_cast<unsigned int>(aString[i].length()));
     replaceData(offset, itsIntSize, itsIntBuf);
     replaceData(offset, aString[i].length(), aString[i].c_str());
   }
@@ -122,18 +122,18 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLe
   }
 }
 
-void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLength,
+void SSMStringHandler::replace(int bucketNr, int offset, int length, int totalLength,
                                const IPosition& aShape) {
   // Check if current bucket is wanted bucket, else get wanted bucket.
   if (bucketNr != itsCurrentBucket) {
     getBucket(bucketNr);
   }
 
-  CanonicalConversion::fromLocal(itsIntBuf, uInt(aShape.nelements()));
+  CanonicalConversion::fromLocal(itsIntBuf, static_cast<unsigned int>(aShape.nelements()));
   replaceData(offset, itsIntSize, itsIntBuf);
 
-  for (uInt i = 0; i < aShape.nelements(); i++) {
-    CanonicalConversion::fromLocal(itsIntBuf, Int(aShape(i)));
+  for (unsigned int i = 0; i < aShape.nelements(); i++) {
+    CanonicalConversion::fromLocal(itsIntBuf, int(aShape(i)));
     replaceData(offset, itsIntSize, itsIntBuf);
   }
 
@@ -147,9 +147,9 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLe
   }
 }
 
-void SSMStringHandler::replaceData(Int& offset, Int length, const Char* data) {
+void SSMStringHandler::replaceData(int& offset, int length, const char* data) {
   while (length > 0) {
-    Int nCopy = length;
+    int nCopy = length;
     if (length > itsLength - offset) {
       nCopy = itsLength - offset;
     }
@@ -165,9 +165,9 @@ void SSMStringHandler::replaceData(Int& offset, Int length, const Char* data) {
   }
 }
 
-void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const String& string) {
+void SSMStringHandler::put(int& bucketNr, int& offset, int& length, const String& string) {
   if (length > 0) {
-    if (static_cast<Int>(string.length()) > length || string.length() == 0) {
+    if (static_cast<int>(string.length()) > length || string.length() == 0) {
       remove(bucketNr, offset, length);
       bucketNr = 0;
       offset = 0;
@@ -197,7 +197,7 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const String
   // if Bucket available but string doesn't fit and space < 50 get
   // a new bucket anyway.
 
-  if (static_cast<Int>(string.length()) > itsLength - itsUsedLength &&
+  if (static_cast<int>(string.length()) > itsLength - itsUsedLength &&
       itsLength - itsUsedLength < 50) {
     getNewBucket(false);
   }
@@ -208,14 +208,14 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const String
   putData(length, string.c_str());
 }
 
-void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const Array<String>& string,
+void SSMStringHandler::put(int& bucketNr, int& offset, int& length, const Array<String>& string,
                            bool handleShape) {
   const IPosition& aShape = string.shape();
-  Int totalLength = 0;
+  int totalLength = 0;
   bool deleteIt;
   const String* aString = string.getStorage(deleteIt);
 
-  for (uInt i = 0; i < string.nelements(); i++) {
+  for (unsigned int i = 0; i < string.nelements(); i++) {
     totalLength += aString[i].length() + itsIntSize;
   }
 
@@ -265,32 +265,32 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const Array<
   length = totalLength;
 
   if (handleShape) {
-    CanonicalConversion::fromLocal(itsIntBuf, uInt(aShape.nelements()));
+    CanonicalConversion::fromLocal(itsIntBuf, static_cast<unsigned int>(aShape.nelements()));
     putData(itsIntSize, itsIntBuf);
 
-    for (uInt i = 0; i < string.ndim(); i++) {
-      CanonicalConversion::fromLocal(itsIntBuf, Int(aShape(i)));
+    for (unsigned int i = 0; i < string.ndim(); i++) {
+      CanonicalConversion::fromLocal(itsIntBuf, int(aShape(i)));
       putData(itsIntSize, itsIntBuf);
     }
     CanonicalConversion::fromLocal(itsIntBuf, 1);
     putData(itsIntSize, itsIntBuf);
   }
 
-  for (uInt i = 0; i < string.nelements(); i++) {
+  for (unsigned int i = 0; i < string.nelements(); i++) {
     //
     // Made it a uInt so the SGI compiler could figure out which overloaded
     // function to use, since it seemed confused by string::size_t -> size_t
     //
-    CanonicalConversion::fromLocal(itsIntBuf, uInt(aString[i].length()));
+    CanonicalConversion::fromLocal(itsIntBuf, static_cast<unsigned int>(aString[i].length()));
     putData(itsIntSize, itsIntBuf);
     putData(aString[i].length(), aString[i].c_str());
   }
   string.freeStorage(aString, deleteIt);
 }
 
-void SSMStringHandler::putData(Int length, const Char* data) {
+void SSMStringHandler::putData(int length, const char* data) {
   while (length > 0) {
-    Int toDo = length;
+    int toDo = length;
     if (toDo > itsLength - itsUsedLength) {
       toDo = itsLength - itsUsedLength;
     }
@@ -306,9 +306,9 @@ void SSMStringHandler::putData(Int length, const Char* data) {
   }
 }
 
-void SSMStringHandler::getData(Int length, Char* data, Int& offset) {
+void SSMStringHandler::getData(int length, char* data, int& offset) {
   while (length > 0) {
-    Int nCopy = itsUsedLength - offset;
+    int nCopy = itsUsedLength - offset;
     if (length < nCopy) {
       nCopy = length;
     }
@@ -323,12 +323,12 @@ void SSMStringHandler::getData(Int length, Char* data, Int& offset) {
   }
 }
 
-void SSMStringHandler::remove(Int bucketNr, Int offset, Int length) {
+void SSMStringHandler::remove(int bucketNr, int offset, int length) {
   if (itsCurrentBucket != bucketNr) {
     getBucket(bucketNr);
   }
 
-  Int n = itsLength - offset;
+  int n = itsLength - offset;
   if (length < n) {
     n = length;
   }
@@ -351,7 +351,7 @@ void SSMStringHandler::remove(Int bucketNr, Int offset, Int length) {
   // Check if continuation in next bucket
   length -= n;
   if (length > 0) {
-    Int next = itsNextBucket;
+    int next = itsNextBucket;
     // We are deleting this concatenated string
     itsNextBucket = -1;
     offset = 0;
@@ -359,12 +359,12 @@ void SSMStringHandler::remove(Int bucketNr, Int offset, Int length) {
   }
 }
 
-void SSMStringHandler::get(String& string, Int bucket, Int offset, Int length) {
-  if (itsCurrentBucket != static_cast<Int>(bucket)) {
+void SSMStringHandler::get(String& string, int bucket, int offset, int length) {
+  if (itsCurrentBucket != static_cast<int>(bucket)) {
     getBucket(bucket);
   }
   string.resize(length);      // resize storage which adds trailing 0
-  Char* data = &(string[0]);  // get actual string
+  char* data = &(string[0]);  // get actual string
   getData(length, data, offset);
   // terminate string for old strings
 #ifdef USE_OLD_STRING
@@ -372,14 +372,14 @@ void SSMStringHandler::get(String& string, Int bucket, Int offset, Int length) {
 #endif
 }
 
-void SSMStringHandler::get(Array<String>& string, Int bucket, Int offset, Int length,
+void SSMStringHandler::get(Array<String>& string, int bucket, int offset, int length,
                            bool handleShape) {
   IPosition aShape;
-  uInt aFilledFlag = 0;
+  unsigned int aFilledFlag = 0;
   String emptyString;
 
   if (length > 0) {
-    if (itsCurrentBucket != static_cast<Int>(bucket)) {
+    if (itsCurrentBucket != static_cast<int>(bucket)) {
       getBucket(bucket);
     }
     aFilledFlag = 1;
@@ -396,7 +396,7 @@ void SSMStringHandler::get(Array<String>& string, Int bucket, Int offset, Int le
   bool deleteIt;
   String* aString = string.getStorage(deleteIt);
 
-  for (uInt i = 0; i < string.nelements(); i++) {
+  for (unsigned int i = 0; i < string.nelements(); i++) {
     if (aFilledFlag == 0) {
       aString[i] = emptyString;
     } else {
@@ -404,10 +404,10 @@ void SSMStringHandler::get(Array<String>& string, Int bucket, Int offset, Int le
       // getdata, so you don't need to do it here again...
       getData(itsIntSize, itsIntBuf, offset);
 
-      Int aL = 0;
+      int aL = 0;
       CanonicalConversion::toLocal(aL, itsIntBuf);
       aString[i].resize(aL);        // resize storage which adds trailing 0
-      Char* aS = &(aString[i][0]);  // get actual string
+      char* aS = &(aString[i][0]);  // get actual string
       // get next string. Beware, offset resetting will be done in
       // getdata, so you don't need to do it here again...
       getData(aL, aS, offset);
@@ -420,8 +420,8 @@ void SSMStringHandler::get(Array<String>& string, Int bucket, Int offset, Int le
   string.putStorage(aString, deleteIt);
 }
 
-void SSMStringHandler::putShape(Int& bucketNr, Int& offset, Int& length, const IPosition& aShape) {
-  Int totalLength = 0;
+void SSMStringHandler::putShape(int& bucketNr, int& offset, int& length, const IPosition& aShape) {
+  int totalLength = 0;
 
   if (itsLastBucket == -1) {
     getNewBucket(false);
@@ -466,11 +466,11 @@ void SSMStringHandler::putShape(Int& bucketNr, Int& offset, Int& length, const I
   offset = itsUsedLength;
   length = totalLength;
 
-  CanonicalConversion::fromLocal(itsIntBuf, uInt(aShape.nelements()));
+  CanonicalConversion::fromLocal(itsIntBuf, static_cast<unsigned int>(aShape.nelements()));
   putData(itsIntSize, itsIntBuf);
 
-  for (uInt i = 0; i < aShape.nelements(); i++) {
-    CanonicalConversion::fromLocal(itsIntBuf, Int(aShape(i)));
+  for (unsigned int i = 0; i < aShape.nelements(); i++) {
+    CanonicalConversion::fromLocal(itsIntBuf, int(aShape(i)));
     putData(itsIntSize, itsIntBuf);
   }
 
@@ -479,19 +479,19 @@ void SSMStringHandler::putShape(Int& bucketNr, Int& offset, Int& length, const I
   putData(itsIntSize, itsIntBuf);
 }
 
-void SSMStringHandler::getShape(IPosition& aShape, Int bucket, Int& offset, Int) {
-  if (itsCurrentBucket != static_cast<Int>(bucket)) {
+void SSMStringHandler::getShape(IPosition& aShape, int bucket, int& offset, int) {
+  if (itsCurrentBucket != static_cast<int>(bucket)) {
     getBucket(bucket);
   }
 
   getData(itsIntSize, itsIntBuf, offset);
 
-  Int nDim = 0;
+  int nDim = 0;
   CanonicalConversion::toLocal(nDim, itsIntBuf);
   aShape.resize(nDim);
 
-  Int tmp;
-  for (Int i = 0; i < nDim; i++) {
+  int tmp;
+  for (int i = 0; i < nDim; i++) {
     getData(itsIntSize, itsIntBuf, offset);
     CanonicalConversion::toLocal(tmp, itsIntBuf);
     aShape(i) = tmp;
@@ -502,7 +502,7 @@ void SSMStringHandler::flush() {
   if (isChanged) {
     AlwaysAssert(itsCurrentBucket != -1, AipsError);
     // save old bucket
-    Char* aPtr = itsSSMPtr->getBucket(itsCurrentBucket);
+    char* aPtr = itsSSMPtr->getBucket(itsCurrentBucket);
     CanonicalConversion::fromLocal(aPtr + itsIntSize, itsUsedLength);
     CanonicalConversion::fromLocal(aPtr + itsIntSize * 2, itsNDeleted);
     CanonicalConversion::fromLocal(aPtr + itsIntSize * 3, itsNextBucket);
@@ -512,7 +512,7 @@ void SSMStringHandler::flush() {
   }
 }
 
-void SSMStringHandler::getBucket(uInt bucketNr, bool isNew) {
+void SSMStringHandler::getBucket(unsigned int bucketNr, bool isNew) {
   // check if itsCurrentBuffer is in use, if so save this one first
   flush();
   itsCurrentBucket = bucketNr;
@@ -526,7 +526,7 @@ void SSMStringHandler::getBucket(uInt bucketNr, bool isNew) {
 }
 
 void SSMStringHandler::getNewBucket(bool doConcat) {
-  Int bucketNr = itsSSMPtr->getNewBucket();
+  int bucketNr = itsSSMPtr->getNewBucket();
   if (doConcat) {
     itsNextBucket = bucketNr;
 

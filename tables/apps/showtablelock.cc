@@ -41,7 +41,7 @@ void showVerbose(const String& lockFileName) {
   // Thereafter interpret the data read.
   lfile.getInfo(data.memoryIO());
   rownr_t nrrow;
-  uInt nrcolumn;
+  unsigned int nrcolumn;
   bool tableChanged;
   Block<bool> dataManChanged;
   data.read(nrrow, nrcolumn, tableChanged, dataManChanged);
@@ -80,9 +80,9 @@ int main(int argc, char* argv[]) {
       return 1;
     }
     String lockFileName(tablename + "/table.lock");
-    uInt pid = 0;
+    unsigned int pid = 0;
     bool permLocked = false;
-    uInt type = LockFile::showLock(pid, permLocked, lockFileName);
+    unsigned int type = LockFile::showLock(pid, permLocked, lockFileName);
     String perm;
     if (permLocked) {
       perm = "permanently ";

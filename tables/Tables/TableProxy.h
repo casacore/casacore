@@ -108,7 +108,7 @@ class TableProxy {
 
   // Create a table with given name and description, etc.
   TableProxy(const String& tableName, const Record& lockOptions, const String& endianFormat,
-             const String& memType, Int64 nrow, const Record& tableDesc, const Record& dmInfo);
+             const String& memType, int64_t nrow, const Record& tableDesc, const Record& dmInfo);
 
   // Create a table object to concatenate a number of similar tables.
   // The keyword set of the first table is take as the keyword set of the
@@ -141,7 +141,7 @@ class TableProxy {
   // The string can be obtained using getAsciiFormat.
   TableProxy(const String& fileName, const String& headerName, const String& tableName,
              bool autoHeader, const IPosition& autoShape, const String& separator,
-             const String& commentMarker, Int64 firstLine, Int64 lastLine,
+             const String& commentMarker, int64_t firstLine, int64_t lastLine,
              const Vector<String>& columnNames = Vector<String>(),
              const Vector<String>& dataTypes = Vector<String>());
 
@@ -156,7 +156,7 @@ class TableProxy {
 
   // Select the given rows from the table and create a new (reference) table.
   // If outName is not empty, the new table is made persistent with that name.
-  TableProxy selectRows(const Vector<Int64>& rownrs, const String& outName);
+  TableProxy selectRows(const Vector<int64_t>& rownrs, const String& outName);
 
   // Reopen the table for read/write.
   void reopenRW();
@@ -175,7 +175,7 @@ class TableProxy {
   String endianFormat() const;
 
   // Acquire a (read or write) lock on the table.
-  void lock(bool mode, Int nattempts);
+  void lock(bool mode, int nattempts);
 
   // Release a lock on the table.
   void unlock();
@@ -216,7 +216,7 @@ class TableProxy {
   // shaped, the shape of the first cell is used and a warning message is
   // returned.
   String toAscii(const String& asciiFile, const String& headerFile, const Vector<String>& columns,
-                 const String& sep, const Vector<Int>& precision, bool useBrackets);
+                 const String& sep, const Vector<int>& precision, bool useBrackets);
 
   // Rename the table
   void rename(const String& newTableName);
@@ -228,7 +228,7 @@ class TableProxy {
 
   // Copy rows from one table to another.
   // If startOut<0, it is set to the end of the output table.
-  void copyRows(TableProxy& out, Int64 startIn, Int64 startOut, Int64 nrow);
+  void copyRows(TableProxy& out, int64_t startIn, int64_t startOut, int64_t nrow);
 
   // Close and delete the table.
   void deleteTable(bool checkSubTables);
@@ -249,7 +249,7 @@ class TableProxy {
   bool isWritable() const;
 
   // Set the maximum cache size for the given column in the table.
-  void setMaximumCacheSize(const String& columnName, Int nbytes);
+  void setMaximumCacheSize(const String& columnName, int nbytes);
 
   // Add one or more columns to the table.
   void addColumns(const Record& tableDesc, const Record& dminfo, bool addToParent);
@@ -261,35 +261,35 @@ class TableProxy {
   void removeColumns(const Vector<String>& columnNames);
 
   // Add rows to the table.
-  void addRow(Int64 nrow);
+  void addRow(int64_t nrow);
 
   // Remove rows from the table.
-  void removeRow(const Vector<Int64>& rownrs);
+  void removeRow(const Vector<int64_t>& rownrs);
 
   // Get some or all values from a column in the table.
   // row is the starting row number (0-relative).
   // nrow=-1 means until the end of the table.
   // incr is the step in row number.
   // <group>
-  ValueHolder getColumn(const String& columnName, Int64 row, Int64 nrow, Int64 incr);
-  void getColumnVH(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
+  ValueHolder getColumn(const String& columnName, int64_t row, int64_t nrow, int64_t incr);
+  void getColumnVH(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
                    const ValueHolder& vh);
-  Record getVarColumn(const String& columnName, Int64 row, Int64 nrow, Int64 incr);
+  Record getVarColumn(const String& columnName, int64_t row, int64_t nrow, int64_t incr);
   // </group>
 
   // Get some or all value slices from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   // <group>
-  ValueHolder getColumnSlice(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                             const Vector<Int>& blc, const Vector<Int>& trc,
-                             const Vector<Int>& inc);
+  ValueHolder getColumnSlice(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
+                             const Vector<int>& blc, const Vector<int>& trc,
+                             const Vector<int>& inc);
   ValueHolder getColumnSliceIP(const String& columnName, const IPosition& blc, const IPosition& trc,
-                               const IPosition& inc, Int64 row, Int64 nrow, Int64 incr);
-  void getColumnSliceVH(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                        const Vector<Int>& blc, const Vector<Int>& trc, const Vector<Int>& inc,
+                               const IPosition& inc, int64_t row, int64_t nrow, int64_t incr);
+  void getColumnSliceVH(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
+                        const Vector<int>& blc, const Vector<int>& trc, const Vector<int>& inc,
                         const ValueHolder& vh);
   void getColumnSliceVHIP(const String& columnName, const IPosition& blc, const IPosition& trc,
-                          const IPosition& inc, Int64 row, Int64 nrow, Int64 incr,
+                          const IPosition& inc, int64_t row, int64_t nrow, int64_t incr,
                           const ValueHolder& vh);
   // </group>
 
@@ -298,64 +298,65 @@ class TableProxy {
   // nrow=-1 means until the end of the table.
   // incr is the step in row number.
   // <group>
-  void putColumn(const String& columnName, Int64 row, Int64 nrow, Int64 incr, const ValueHolder&);
-  void putVarColumn(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
+  void putColumn(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
+                 const ValueHolder&);
+  void putVarColumn(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
                     const Record& values);
   // </group>
 
   // Put some or all value slices into a column in the table.
   // <group>
-  void putColumnSlice(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                      const Vector<Int>& blc, const Vector<Int>& trc, const Vector<Int>& inc,
+  void putColumnSlice(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
+                      const Vector<int>& blc, const Vector<int>& trc, const Vector<int>& inc,
                       const ValueHolder&);
   void putColumnSliceIP(const String& columnName, const ValueHolder&, const IPosition& blc,
-                        const IPosition& trc, const IPosition& inc, Int64 row, Int64 nrow,
-                        Int64 incr);
+                        const IPosition& trc, const IPosition& inc, int64_t row, int64_t nrow,
+                        int64_t incr);
   // </group>
 
   // Tests if the contents of a cell are defined.
   // Only a column with variable shaped arrays can have an empty cell.
-  bool cellContentsDefined(const String& columnName, Int64 rownr);
+  bool cellContentsDefined(const String& columnName, int64_t rownr);
 
   // Get a value from a column in the table.
-  ValueHolder getCell(const String& columnName, Int64 row);
-  void getCellVH(const String& columnName, Int64 row, const ValueHolder& vh);
+  ValueHolder getCell(const String& columnName, int64_t row);
+  void getCellVH(const String& columnName, int64_t row, const ValueHolder& vh);
 
   // Get a value slice from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   // <group>
-  ValueHolder getCellSlice(const String& columnName, Int64 row, const Vector<Int>& blc,
-                           const Vector<Int>& trc, const Vector<Int>& inc);
-  ValueHolder getCellSliceIP(const String& columnName, Int64 row, const IPosition& blc,
+  ValueHolder getCellSlice(const String& columnName, int64_t row, const Vector<int>& blc,
+                           const Vector<int>& trc, const Vector<int>& inc);
+  ValueHolder getCellSliceIP(const String& columnName, int64_t row, const IPosition& blc,
                              const IPosition& trc, const IPosition& inc);
-  void getCellSliceVH(const String& columnName, Int64 row, const Vector<Int>& blc,
-                      const Vector<Int>& trc, const Vector<Int>& inc, const ValueHolder& vh);
-  void getCellSliceVHIP(const String& columnName, Int64 row, const IPosition& blc,
+  void getCellSliceVH(const String& columnName, int64_t row, const Vector<int>& blc,
+                      const Vector<int>& trc, const Vector<int>& inc, const ValueHolder& vh);
+  void getCellSliceVHIP(const String& columnName, int64_t row, const IPosition& blc,
                         const IPosition& trc, const IPosition& inc, const ValueHolder& vh);
   // </group>
 
   // Put a value into a column in the table.
-  void putCell(const String& columnName, const Vector<Int64>& rownrs, const ValueHolder&);
+  void putCell(const String& columnName, const Vector<int64_t>& rownrs, const ValueHolder&);
 
   // Put a value slice into a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   // <group>
-  void putCellSlice(const String& columnName, Int64 row, const Vector<Int>& blc,
-                    const Vector<Int>& trc, const Vector<Int>& inc, const ValueHolder&);
-  void putCellSliceIP(const String& columnName, Int64 row, const ValueHolder&, const IPosition& blc,
-                      const IPosition& trc, const IPosition& inc);
+  void putCellSlice(const String& columnName, int64_t row, const Vector<int>& blc,
+                    const Vector<int>& trc, const Vector<int>& inc, const ValueHolder&);
+  void putCellSliceIP(const String& columnName, int64_t row, const ValueHolder&,
+                      const IPosition& blc, const IPosition& trc, const IPosition& inc);
   // </group>
 
   // Get the shape of one or more cells in a column as a vector of Strings
   // containing the shapes as [a,b,c].
   // If the shape is fixed, a single String is returned.
-  Vector<String> getColumnShapeString(const String& columnName, Int64 rownr, Int64 nrow, Int64 incr,
-                                      bool cOrder = false);
+  Vector<String> getColumnShapeString(const String& columnName, int64_t rownr, int64_t nrow,
+                                      int64_t incr, bool cOrder = false);
 
   // Get a table or column keyword value in the table.
   // If the columnName is empty, a given keyword is a table keyword.
   // The keyword can be given as a name or a 0-based index.
-  ValueHolder getKeyword(const String& columnName, const String& keywordName, Int keywordIndex);
+  ValueHolder getKeyword(const String& columnName, const String& keywordName, int keywordIndex);
 
   // Get the table or column keyword values in the table.
   // If the columnName is empty, the table keyword values are returned.
@@ -366,7 +367,7 @@ class TableProxy {
   // The keyword can be given as a name or a 0-based number.
   // The value should be a record containing the value of the keyword.
   // The value can be any type (including a record).
-  void putKeyword(const String& columnName, const String& keywordName, Int keywordIndex,
+  void putKeyword(const String& columnName, const String& keywordName, int keywordIndex,
                   bool makeSubRecord, const ValueHolder&);
 
   // Define multiple table or column keywords in the table.
@@ -378,7 +379,7 @@ class TableProxy {
 
   // Remove a table or column keyword from the table.
   // If the column name is empty, a table keyword is removed.
-  void removeKeyword(const String& columnName, const String& keywordName, Int keywordIndex);
+  void removeKeyword(const String& columnName, const String& keywordName, int keywordIndex);
 
   // Get the names of all field in a record in the table.
   // If the column name is empty, the table keywords are used.
@@ -386,7 +387,7 @@ class TableProxy {
   // Otherwise the names of all fields in the keyword value are returned.
   // In that case the value has to be a record.
   Vector<String> getFieldNames(const String& columnName, const String& keywordName,
-                               Int keywordIndex);
+                               int keywordIndex);
 
   // Get table name.
   String tableName();
@@ -395,16 +396,16 @@ class TableProxy {
   Vector<String> getPartNames(bool recursive);
 
   // Get #columns of the table.
-  Int ncolumns();
+  int ncolumns();
 
   // Get #rows of the table.
-  Int64 nrows();
+  int64_t nrows();
 
   // Get the shape (#columns, #rows) of the table.
-  Vector<Int64> shape();
+  Vector<int64_t> shape();
 
   // Get the row numbers of the table.
-  Vector<Int64> rowNumbers(TableProxy& other);
+  Vector<int64_t> rowNumbers(TableProxy& other);
 
   // Get all column names in the table.
   Vector<String> columnNames();
@@ -413,7 +414,7 @@ class TableProxy {
   bool isScalarColumn(const String& columnName);
 
   // Return the data type of the column as:
-  //  Bool, UChar, Short, UShort, Int, UInt, Int64,
+  //  Bool, UChar, Short, UShort, Int, UInt, int64_t,
   //  Float, Double, Complex, DComplex, String, Table, or unknown.
   String columnDataType(const String& columnName);
 
@@ -505,7 +506,7 @@ class TableProxy {
   static bool addArrayColumnDesc(TableDesc& tableDesc, const String& valueType,
                                  const String& columnName, const String& comment,
                                  const String& dataManagerType, const String& dataManagerGroup,
-                                 int options, Int ndim, const Vector<Int64>& shape, bool cOrder,
+                                 int options, int ndim, const Vector<int64_t>& shape, bool cOrder,
                                  String& message);
 
   // Make a record containing the column description.
@@ -526,7 +527,7 @@ class TableProxy {
 
   // Check if the new shape is still the same.
   // <br> same:   0=first time;   1=still the same;   2=different
-  static void stillSameShape(Int& same, IPosition& shape, const IPosition& newShape);
+  static void stillSameShape(int& same, IPosition& shape, const IPosition& newShape);
 
   // Copy the array contents of the record fields to a single array.
   // This can only be done if the shape is constant.
@@ -541,7 +542,7 @@ class TableProxy {
     shp.append(IPosition(1, rec.size()));
     Array<T> arr(shp);
     ArrayIterator<T> iter(arr, tmp.ndim());
-    for (uInt i = 0; i < rec.size(); ++i, iter.next()) {
+    for (unsigned int i = 0; i < rec.size(); ++i, iter.next()) {
       rec.get(i, iter.array());
     }
     return arr;
@@ -553,61 +554,61 @@ class TableProxy {
 
   // Print the data in a table cell for toAscii.
   // <group>
-  void printValueHolder(const ValueHolder& vh, ostream& os, const String& sep, Int prec,
+  void printValueHolder(const ValueHolder& vh, ostream& os, const String& sep, int prec,
                         bool useBrackets) const;
   template <typename T>
   void printArray(const Array<T>& arr, ostream& os, const String& sep) const;
   void printArrayValue(ostream& os, bool v, const String&) const { os << v; }
-  void printArrayValue(ostream& os, Int v, const String&) const { os << v; }
-  void printArrayValue(ostream& os, Int64 v, const String&) const { os << v; }
-  void printArrayValue(ostream& os, Double v, const String&) const { os << v; }
+  void printArrayValue(ostream& os, int v, const String&) const { os << v; }
+  void printArrayValue(ostream& os, int64_t v, const String&) const { os << v; }
+  void printArrayValue(ostream& os, double v, const String&) const { os << v; }
   void printArrayValue(ostream& os, const DComplex& v, const String&) const { os << v; }
   void printArrayValue(ostream& os, const String& v, const String&) const { os << '"' << v << '"'; }
   // </group>
 
   // Sync table to get correct nr of rows and check the row number.
   // It returns the nr of table rows.
-  Int64 getRowsCheck(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                     const String& caller);
+  int64_t getRowsCheck(const String& columnName, int64_t row, int64_t nrow, int64_t incr,
+                       const String& caller);
 
   // Sync table to get correct nr of rows and check the row number.
   // Fill the slicer with the possibly expanded blc,trc,inc.
   // It returns the nr of table rows.
-  Int64 getRowsSliceCheck(Slicer& slicer, const String& columnName, Int64 row, Int64 nrow,
-                          Int64 incr, const IPosition& blc, const IPosition& trc,
-                          const IPosition& inc, const String& caller);
+  int64_t getRowsSliceCheck(Slicer& slicer, const String& columnName, int64_t row, int64_t nrow,
+                            int64_t incr, const IPosition& blc, const IPosition& trc,
+                            const IPosition& inc, const String& caller);
 
   // Check if the column name and row numbers are valid.
   // Return the recalculated nrow so that it does not exceed #rows.
-  Int64 checkRowColumn(Table& table, const String& colName, Int64 rownr, Int64 nrow, Int64 incr,
-                       const String& caller);
+  int64_t checkRowColumn(Table& table, const String& colName, int64_t rownr, int64_t nrow,
+                         int64_t incr, const String& caller);
 
   // Make an empty array (with 1 axis) of the correct datatype.
   ValueHolder makeEmptyArray(DataType dtype);
 
   // Get values from the column.
   // Nrow<0 means till the end of the column.
-  ValueHolder getValueFromTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr,
+  ValueHolder getValueFromTable(const String& colName, int64_t rownr, int64_t nrow, int64_t incr,
                                 bool isCell);
-  void getValueFromTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr, bool isCell,
-                         const ValueHolder& vh);
+  void getValueFromTable(const String& colName, int64_t rownr, int64_t nrow, int64_t incr,
+                         bool isCell, const ValueHolder& vh);
 
   // Get value slices from the column.
   // Nrow<0 means till the end of the column.
-  ValueHolder getValueSliceFromTable(const String& colName, const Slicer& slicer, Int64 rownr,
-                                     Int64 nrow, Int64 incr, bool isCell);
-  void getValueSliceFromTable(const String& colName, const Slicer& slicer, Int64 rownr, Int64 nrow,
-                              Int64 incr, bool isCell, const ValueHolder& vh);
+  ValueHolder getValueSliceFromTable(const String& colName, const Slicer& slicer, int64_t rownr,
+                                     int64_t nrow, int64_t incr, bool isCell);
+  void getValueSliceFromTable(const String& colName, const Slicer& slicer, int64_t rownr,
+                              int64_t nrow, int64_t incr, bool isCell, const ValueHolder& vh);
 
   // Put values into the column.
   // Nrow<0 means till the end of the column.
-  void putValueInTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr, bool isCell,
-                       const ValueHolder&);
+  void putValueInTable(const String& colName, int64_t rownr, int64_t nrow, int64_t incr,
+                       bool isCell, const ValueHolder&);
 
   // Put value slices into the column.
   // Nrow<0 means till the end of the column.
-  void putValueSliceInTable(const String& colName, const Slicer& slicer, Int64 rownr, Int64 nrow,
-                            Int64 incr, bool isCell, const ValueHolder&);
+  void putValueSliceInTable(const String& colName, const Slicer& slicer, int64_t rownr,
+                            int64_t nrow, int64_t incr, bool isCell, const ValueHolder&);
 
   // Split the keyname into its separate parts (separator is .).
   // Check if each part exists and is a subrecord (except last part).

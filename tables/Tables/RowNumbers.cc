@@ -38,13 +38,13 @@ RowNumbers::RowNumbers(const std::vector<rownr_t>& rows) {
   std::copy(rows.begin(), rows.end(), this->cbegin());
 }
 
-RowNumbers::RowNumbers(const Vector<uInt>& rows) {
+RowNumbers::RowNumbers(const Vector<unsigned int>& rows) {
   // Resize the Vector in the parent class and convert to it.
   resize(rows.size());
   convertArray(*this, rows);
 }
 
-RowNumbers::RowNumbers(const std::vector<uInt>& rows) {
+RowNumbers::RowNumbers(const std::vector<unsigned int>& rows) {
   // Resize the Vector in the parent class and convert to it.
   resize(rows.size());
   std::copy(rows.begin(), rows.end(), this->cbegin());
@@ -55,9 +55,9 @@ Array<rownr_t>& RowNumbers::operator=(const Array<rownr_t>& other) {
   return *this;
 }
 
-Vector<uInt> RowNumbers::convertRownrVector(const Vector<rownr_t>& rows64) {
-  AlwaysAssert(allLE(rows64, rownr_t(std::numeric_limits<uInt>::max())), AipsError);
-  Vector<uInt> rows(rows64.size());
+Vector<unsigned int> RowNumbers::convertRownrVector(const Vector<rownr_t>& rows64) {
+  AlwaysAssert(allLE(rows64, rownr_t(std::numeric_limits<unsigned int>::max())), AipsError);
+  Vector<unsigned int> rows(rows64.size());
   convertArray(rows, rows64);
   return rows;
 }

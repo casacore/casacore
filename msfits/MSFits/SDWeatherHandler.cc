@@ -116,15 +116,15 @@ void SDWeatherHandler::resetRow(const Record &row) {
   initRow(dummyHandledCols, row);
 }
 
-void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
-                            Vector<Double> &timeRange) {
+void SDWeatherHandler::fill(const Record &row, int antennaId, double time,
+                            Vector<double> &timeRange) {
   // don't bother unless there is something there and something to add
   if (msWeather_p && (humidityId_p >= 0 || tambientId_p >= 0 || pressureId_p >= 0 ||
                       dewpointId_p >= 0 || windspeeId_p >= 0 || winddireId_p >= 0 ||
                       (H2OField_p.isAttached() && !isNaN(*H2OField_p) && !isInf(*H2OField_p)) ||
                       (ionosElectronField_p.isAttached() && !isNaN(*ionosElectronField_p) &&
                        !isInf(*ionosElectronField_p)))) {
-    Float thisHumidity, thisTambient, thisDewpoint, thisWindspee, thisWinddire, thisPressure;
+    float thisHumidity, thisTambient, thisDewpoint, thisWindspee, thisWinddire, thisPressure;
     thisHumidity = thisTambient = thisDewpoint = thisWindspee = thisWinddire = thisPressure = 0.0;
 
     if (humidityId_p >= 0)
@@ -187,8 +187,8 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
     newRow = newRow || antennaId != msWeatherCols_p->antennaId()(rownr_p);
     ;
 
-    Double interval = timeRange(1) - timeRange(0);
-    Double thisTime = time;
+    double interval = timeRange(1) - timeRange(0);
+    double thisTime = time;
     // or should former MS time and interval be used here instead
     if (timeField_p.isAttached()) {
       thisTime = *timeField_p;
@@ -202,10 +202,10 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
       // if the time falls within the row interval of the row time
       // or the row time falls within the interval of time, then the rows overlap and
       // can be reused
-      Double rowTime = msWeatherCols_p->time()(rownr_p);
-      Double rowInterval = msWeatherCols_p->interval()(rownr_p);
-      Double rid2 = rowInterval / 2.0;
-      Double id2 = interval / 2.0;
+      double rowTime = msWeatherCols_p->time()(rownr_p);
+      double rowInterval = msWeatherCols_p->interval()(rownr_p);
+      double rid2 = rowInterval / 2.0;
+      double id2 = interval / 2.0;
       newRow = !(((time - id2) < (rowTime + rid2)) && ((rowTime - rid2) < (time + id2)));
     }
 
@@ -285,9 +285,9 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
     } else {
       // reuse this row, make sure that the time range is fully set
       // and place the time in the center of it
-      Double rowTime = msWeatherCols_p->time()(rownr_p);
-      Double rowInterval = msWeatherCols_p->interval()(rownr_p);
-      Double minTime, maxTime;
+      double rowTime = msWeatherCols_p->time()(rownr_p);
+      double rowInterval = msWeatherCols_p->interval()(rownr_p);
+      double minTime, maxTime;
       minTime = min(time - interval / 2.0, rowTime - rowInterval / 2.0);
       maxTime = max(time + interval / 2.0, rowTime + rowInterval / 2.0);
       msWeatherCols_p->time().put(rownr_p, (maxTime + minTime) / 2.0);
@@ -352,7 +352,7 @@ void SDWeatherHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, co
     MSWeather::addColumnToDesc(td, MSWeather::WIND_DIRECTION);
     MSWeather::addColumnToDesc(td, MSWeather::WIND_DIRECTION_FLAG);
   }
-  for (uInt i = 0; i < td.ncolumn(); i++) {
+  for (unsigned int i = 0; i < td.ncolumn(); i++) {
     msWeather_p->addColumn(td[i]);
   }
 
@@ -374,7 +374,7 @@ void SDWeatherHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   winddireId_p = row.fieldNumber("WINDDIRE");
   if (winddireId_p >= 0) handledCols(winddireId_p) = true;
 
-  Int tmp;
+  int tmp;
   tmp = row.fieldNumber("WEATHER_H2O");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     H2OField_p.attachToRecord(row, tmp);

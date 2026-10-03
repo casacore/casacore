@@ -102,7 +102,7 @@ class UnitDim {
 
  protected:
   void init();
-  void init(Int pos);
+  void init(int pos);
 
  private:
   // # Constructors
@@ -114,7 +114,7 @@ class UnitDim {
 
   // Construct a unit dimension with a one in the indicated position (as
   // Dim enumerator) and zeroes in all other units
-  UnitDim(Int pos) { init(pos); }
+  UnitDim(int pos) { init(pos); }
 
   // # Operators
   //  Assignment (copy semantics)
@@ -139,18 +139,18 @@ class UnitDim {
 
   // # General Member Functions
   //  Raise all SI defining units to an integer power
-  UnitDim pow(Int p);
+  UnitDim pow(int p);
 
   // Get the tag for specified dimension
-  static const String &dimName(uInt which);
+  static const String &dimName(unsigned int which);
 
   // Get the full name for the specified dimension
-  static const String &dimFull(uInt which);
+  static const String &dimFull(unsigned int which);
 
   // # Data Members
   //  1-byte vector to contain the dimensions of the defining SI units
   //  (using same storage as Long vector for speed reasons)
-  Long unitLong[UNITDIM_DLNUMBER];
+  long unitLong[UNITDIM_DLNUMBER];
   signed char *unitDim;
 };
 

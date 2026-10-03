@@ -129,7 +129,7 @@ class Precession {
  public:
   // # Constants
   //  Default interval to be used for linear approximation (in days)
-  static constexpr Double INTV = 0.1;
+  static constexpr double INTV = 0.1;
 
   // # Enumerations
   //  Types of known precession calculations (at 1995/09/04 STANDARD ==
@@ -151,7 +151,7 @@ class Precession {
   // Copy constructor (deep copy)
   Precession(const Precession &other);
   // Constructor with epoch in Julian days
-  explicit Precession(PrecessionTypes type, Double catepoch = 0);
+  explicit Precession(PrecessionTypes type, double catepoch = 0);
   // Copy assignment (deep copy)
   Precession &operator=(const Precession &other);
 
@@ -161,15 +161,15 @@ class Precession {
   // # Operators
   //  Return the precession angles (for IAU2000 including
   //  the IAU 2000 corrections) at the specified epoch (in MJD; TT for IAU2000).
-  const Euler &operator()(Double epoch);
+  const Euler &operator()(double epoch);
 
   // # General Member Functions
   //  Return derivative of precession (d<sup>-1</sup>)
-  const Euler &derivative(Double epoch);
+  const Euler &derivative(double epoch);
   // Re-initialise Precession object
   // <group>
   void init();
-  void init(PrecessionTypes type, Double catepoch = 0);
+  void init(PrecessionTypes type, double catepoch = 0);
   // </group>
   // Refresh calculations
   void refresh();
@@ -179,29 +179,29 @@ class Precession {
   //  Method to be used
   PrecessionTypes method_p;
   // Fixed epoch to be used (MJD)
-  Double fixedEpoch_p;
+  double fixedEpoch_p;
   // Fixed epoch in centuries from base epoch
-  Double T_p;
+  double T_p;
   // Length of century (depending on Bessel or Julian days)
-  Double cent_p;
+  double cent_p;
   // Reference epoch;
-  Double refEpoch_p;
+  double refEpoch_p;
   // Check epoch
-  Double checkEpoch_p;
+  double checkEpoch_p;
   // Polynomial coefficients for zeta,z,theta
-  Polynomial<Double> zeta_p[3];
+  Polynomial<double> zeta_p[3];
   // Cached calculated angles
-  Double pval_p[3];
+  double pval_p[3];
   // Cached derivatives
-  Double dval_p[3];
+  double dval_p[3];
   // To reference results, and use a few in interim calculations, results are
   // saced in a circular buffer.
   // Current result pointer
-  Int lres_p;
+  int lres_p;
   // Last calculation
   Euler result_p[4];
   // Interpolation interval aipsrc registration
-  inline static uInt myInterval_reg;
+  inline static unsigned int myInterval_reg;
   inline static std::once_flag initialize_once_flag;
   static void initialize();
 
@@ -211,7 +211,7 @@ class Precession {
   // Create correct default fixedEpoch and catalogue epoch data
   void fillEpoch();
   // Calculate precession angles for time t
-  void calcPrec(Double t);
+  void calcPrec(double t);
 };
 
 }  // namespace casacore

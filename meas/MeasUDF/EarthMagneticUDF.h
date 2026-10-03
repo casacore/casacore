@@ -101,8 +101,8 @@ class EarthMagneticUDF : public UDFBase {
   virtual void setup(const Table&, const TaQLStyle&);
 
   // Get the value.
-  virtual Double getDouble(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
 
  private:
   // # Data members.
@@ -111,7 +111,7 @@ class EarthMagneticUDF : public UDFBase {
   EpochEngine itsEpochEngine;
   PositionEngine itsPositionEngine;
   FuncType itsType;
-  Int itsValueType;
+  int itsValueType;
   MEarthMagnetic::Types itsRefType;
 };
 

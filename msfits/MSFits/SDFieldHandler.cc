@@ -98,25 +98,25 @@ void SDFieldHandler::resetRow(const Record &row) {
   initRow(dummyCols, row);
 }
 
-void SDFieldHandler::fill(const Record &, const String &name, Int directionRefType,
-                          const Matrix<Double> &directionPoly, Double time, Int sourceId) {
+void SDFieldHandler::fill(const Record &, const String &name, int directionRefType,
+                          const Matrix<double> &directionPoly, double time, int sourceId) {
   // don't bother unless there is something there
   if (msField_p) {
     bool found = false;
     bool checkPhase, checkRef;
     checkPhase = checkRef = false;
-    Matrix<Double> dirPoly = directionPoly;
-    Matrix<Double> phasePoly = directionPoly;
-    Matrix<Double> referencePoly = directionPoly;
-    Int npoly = dirPoly.nrow() - 1;
+    Matrix<double> dirPoly = directionPoly;
+    Matrix<double> phasePoly = directionPoly;
+    Matrix<double> referencePoly = directionPoly;
+    int npoly = dirPoly.nrow() - 1;
 
     // adjustments to the above given possible former MS columns
     if (delayDirField_p.isAttached()) {
       // old MS 1 is always accompanied by a delayDirRateField_p
       if (delayDirRateField_p.isAttached()) {
         // only use this if the rate is non-zero AND non-inf AND not a NaN
-        Vector<Double> ddRate(*delayDirRateField_p);
-        Double d0, d1;
+        Vector<double> ddRate(*delayDirRateField_p);
+        double d0, d1;
         d0 = ddRate(0);
         d1 = ddRate(1);
         if (!near(d0, 0.0) && !near(d1, 0.0) && !isInf(d0) && !isInf(d1) && !isNaN(d0) &&
@@ -137,8 +137,8 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
       // old MS 1 is always accompanied by a phaseDirRateField_p
       if (phaseDirRateField_p.isAttached()) {
         // only use this if the rate is non-zero AND non-inf AND not a NaN
-        Vector<Double> pdRate(*phaseDirRateField_p);
-        Double p0, p1;
+        Vector<double> pdRate(*phaseDirRateField_p);
+        double p0, p1;
         p0 = pdRate(0);
         p1 = pdRate(1);
         if (!near(p0, 0.0) && !near(p1, 0.0) && !isInf(p0) && !isInf(p1) && !isNaN(p0) &&
@@ -159,8 +159,8 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
       // old MS 1 is always accompanied by a referenceDirRateField_p
       if (referenceDirRateField_p.isAttached()) {
         // only use this if the rate is non-zero AND non-inf AND not a NaN
-        Vector<Double> rdRate(*referenceDirRateField_p);
-        Double r0, r1;
+        Vector<double> rdRate(*referenceDirRateField_p);
+        double r0, r1;
         r0 = rdRate(0);
         r1 = rdRate(1);
         if (!near(r0, 0.0) && !near(r1, 0.0) && !isInf(r0) && !isInf(r1) && !isNaN(r0) &&
@@ -179,8 +179,8 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 
     if (fieldIdField_p.isAttached() && *fieldIdField_p >= 0) {
       // see if this row can be reused
-      Int thisRow = *fieldIdField_p;
-      bool found = thisRow >= 0 && uInt(thisRow) < msField_p->nrow();
+      int thisRow = *fieldIdField_p;
+      bool found = thisRow >= 0 && static_cast<unsigned int>(thisRow) < msField_p->nrow();
       found = found && msFieldCols_p->sourceId()(thisRow) == sourceId;
       if (found && codeField_p.isAttached()) {
         found = *codeField_p == msFieldCols_p->code()(thisRow);
@@ -206,9 +206,9 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
       *sourceIdKey_p = sourceId;
       *timeKey_p = time;
       Vector<rownr_t> rows = index_p->getRowNumbers();
-      uInt i = 0;
+      unsigned int i = 0;
       while (i < rows.nelements() && !found) {
-        uInt thisRow = rows(i);
+        unsigned int thisRow = rows(i);
         found = npoly == msFieldCols_p->numPoly()(thisRow);
         found = found && allEQ(msFieldCols_p->delayDir()(thisRow), dirPoly);
         // that is enough for a standard SDFITS fill, the following additional

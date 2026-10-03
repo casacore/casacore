@@ -207,7 +207,7 @@ class ArrayMeasColumn : public TableMeasColumn {
   // it to the given reference.
   // <group>
   Array<M> convert(rownr_t rownr, const MeasRef<M>& measRef) const;
-  Array<M> convert(rownr_t rownr, uInt refCode) const;
+  Array<M> convert(rownr_t rownr, unsigned int refCode) const;
   // </group>
 
   // Get the column's reference.
@@ -227,7 +227,7 @@ class ArrayMeasColumn : public TableMeasColumn {
   // a false <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode(uInt refCode, bool tableMustBeEmpty = true);
+  void setDescRefCode(unsigned int refCode, bool tableMustBeEmpty = true);
   void setDescOffset(const Measure& offset, bool tableMustBeEmpty = true);
   void setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty = true);
   // </group>
@@ -243,10 +243,10 @@ class ArrayMeasColumn : public TableMeasColumn {
 
  private:
   // # Column which contains the Measure's actual data.
-  ArrayColumn<Double>* itsDataCol;
+  ArrayColumn<double>* itsDataCol;
   // # Its MeasRef code column when references are variable.
-  ScalarColumn<Int>* itsRefIntCol;
-  ArrayColumn<Int>* itsArrRefIntCol;
+  ScalarColumn<int>* itsRefIntCol;
+  ArrayColumn<int>* itsArrRefIntCol;
   // # Its MeasRef column when references are variable and stored as Strings.
   ScalarColumn<String>* itsRefStrCol;
   ArrayColumn<String>* itsArrRefStrCol;

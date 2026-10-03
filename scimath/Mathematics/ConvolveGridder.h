@@ -50,21 +50,21 @@ class ConvolveGridder : public Gridder<Domain, Range> {
 
   virtual bool degrid(const Array<Range>& gridded, const Vector<Domain>& position, Range& value);
 
-  Vector<Double>& cFunction();
+  Vector<double>& cFunction();
 
-  Vector<Int>& cSupport();
+  Vector<int>& cSupport();
 
-  Int& cSampling();
+  int& cSampling();
 
  protected:
-  virtual Range correctionFactor1D(Int loc, Int len);
+  virtual Range correctionFactor1D(int loc, int len);
 
  private:
-  Vector<Double> convFunc;
-  Vector<Int> supportVec;
-  Vector<Int> loc;
-  Int sampling;
-  Int support;
+  Vector<double> convFunc;
+  Vector<int> supportVec;
+  Vector<int> loc;
+  int sampling;
+  int support;
   String cType;
 
  public:

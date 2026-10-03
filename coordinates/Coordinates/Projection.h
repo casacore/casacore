@@ -159,11 +159,11 @@ class Projection {
   Projection(Projection::Type which = CAR);
 
   // Construct a projection from FITS CTYPE keywords
-  Projection(const String &ctypeLin, const String &ctypeLat, const Vector<Double> &parameters);
+  Projection(const String &ctypeLin, const String &ctypeLat, const Vector<double> &parameters);
 
   // Construct a projection which needs parameters. The parameter vector must be
   // the length of the required number of parameters.
-  Projection(Projection::Type which, const Vector<Double> &parameters);
+  Projection(Projection::Type which, const Vector<double> &parameters);
 
   // Copy constructor (copy semantics).
   Projection(const Projection &other);
@@ -191,20 +191,20 @@ class Projection {
   // What is the minimum number of parameters that have to be supplied?
   // What are the parameter values?
   // <group>
-  static uInt nParameters(Projection::Type proj);
-  static uInt nMinParameters(Projection::Type proj);
-  const Vector<Double> &parameters() const;
+  static unsigned int nParameters(Projection::Type proj);
+  static unsigned int nMinParameters(Projection::Type proj);
+  const Vector<double> &parameters() const;
   // </group>
 
   // Comparison to fractional tolerance.
-  bool near(const Projection &other, Double tol = 1.0e-6) const;
+  bool near(const Projection &other, double tol = 1.0e-6) const;
 
   // Is this projection a 'zenithal' projection
   static bool isZenithal(Projection::Type proj);
 
  private:
   Projection::Type which_p;
-  Vector<Double> parameters_p;
+  Vector<double> parameters_p;
 
   void validate(const bool verbose = false);
   Projection::Type type(String &ctypeLong, String &ctypeLat) const;
@@ -212,7 +212,7 @@ class Projection {
 
 // #---------- Inlines --------------------------------------------------------------
 inline Projection::Type Projection::type() const { return which_p; }
-inline const Vector<Double> &Projection::parameters() const { return parameters_p; }
+inline const Vector<double> &Projection::parameters() const { return parameters_p; }
 
 }  // namespace casacore
 

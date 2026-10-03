@@ -39,10 +39,10 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void a(uInt);
+void a(unsigned int);
 
 int main(int argc, const char* argv[]) {
-  uInt nr = 500;
+  unsigned int nr = 500;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nr;
@@ -57,13 +57,13 @@ int main(int argc, const char* argv[]) {
 }
 
 // First build a description.
-void a(uInt nrrow) {
+void a(unsigned int nrrow) {
   // Build the table description.
   TableDesc td("tTableDesc", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<Int>("ac"));
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<int>("ac"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.addColumn(ScalarColumnDesc<float>("ae"));
   td.addColumn(ScalarColumnDesc<String>("af"));
   td.addColumn(ArrayColumnDesc<float>("arr2", 0));

@@ -98,12 +98,12 @@ class ConcatScalarColumn : public ConcatColumn {
 
   // Handle the creation and deletion of sort keys.
   // <group>
-  virtual void makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, int order,
                            std::shared_ptr<ArrayBase>& dataSave);
-  virtual void makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, int order,
                               const Vector<rownr_t>& rownrs, std::shared_ptr<ArrayBase>& dataSave);
   virtual void fillSortKey(const Vector<T>* vecPtr, Sort& sortobj,
-                           std::shared_ptr<BaseCompare>& cmpObj, Int order);
+                           std::shared_ptr<BaseCompare>& cmpObj, int order);
   // </group>
 };
 

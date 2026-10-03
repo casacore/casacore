@@ -35,8 +35,8 @@
 int main() {
   cout << "---------------- test FunctionOrder ---------------" << endl;
   {
-    FunctionOrder<Double> x;
-    FunctionOrder<Double> z;
+    FunctionOrder<double> x;
+    FunctionOrder<double> z;
     String errormsg;
     Record y;
     cout << "x: " << x << endl;

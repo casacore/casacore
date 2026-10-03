@@ -94,19 +94,19 @@ class CLInterpolator2D {
   // Note that only a copy of the lattice pointer is made.
   // Thereafter the virtual function preset() is called to give a derived
   // class the opportunity to do some initial work.
-  void set(MaskedLattice<T>* lattice, const AxesMapping& axesMap, uInt axis1, uInt axis2,
-           uInt curveAxis);
+  void set(MaskedLattice<T>* lattice, const AxesMapping& axesMap, unsigned int axis1,
+           unsigned int axis2, unsigned int curveAxis);
 
   // Get the data for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
   // The Slicer is fixed and the buffer has the correct shape.
-  virtual void getData(Array<T>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+  virtual void getData(Array<T>& buffer, const Vector<float>& x, const Vector<float>& y,
                        const Slicer& section) = 0;
 
   // Get the mask for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
   // The Slicer is fixed and the buffer has the correct shape.
-  virtual void getMask(Array<bool>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+  virtual void getMask(Array<bool>& buffer, const Vector<float>& x, const Vector<float>& y,
                        const Slicer& section) = 0;
 
  protected:
@@ -122,9 +122,9 @@ class CLInterpolator2D {
 
   MaskedLattice<T>* itsLatticePtr;
   AxesMapping itsAxesMap;
-  uInt itsAxis1;
-  uInt itsAxis2;
-  uInt itsCurveAxis;
+  unsigned int itsAxis1;
+  unsigned int itsAxis2;
+  unsigned int itsCurveAxis;
   bool itsIsRef;  // true = lattice returns array reference
 };
 

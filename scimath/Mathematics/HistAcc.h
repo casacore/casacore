@@ -118,8 +118,8 @@ class HistAcc {
   // specified, they will be determined automatically from the
   // first nBuff input values (which are stored in a temporary buffer).
   // <group>
-  HistAcc(const uInt nBuff);                          // # fully automatic
-  HistAcc(const uInt nBuff, const T width);           // # semi-automatic
+  HistAcc(const unsigned int nBuff);                  // # fully automatic
+  HistAcc(const unsigned int nBuff, const T width);   // # semi-automatic
   HistAcc(const T low, const T high, const T width);  // # fully specified
   HistAcc(const HistAcc&);                            // # copy an existing one
   ~HistAcc() { ; }
@@ -144,13 +144,13 @@ class HistAcc {
 
   // Empty all bins whose contents is < nmin (e.g. nmin=2).
   // This is useful to remove `noise' values from the histogram.
-  void emptyBinsWithLessThan(const uInt nmin);
+  void emptyBinsWithLessThan(const unsigned int nmin);
 
   // The median is the 50-percentile (getPercentile(50)), i.e. the
   // value which has 50 percent of the input values below it.
   // Calculation takes into account the spurious
   // input values, i.e. values that fell outside the bins.
-  std::optional<T> getPercentile(const Float p);
+  std::optional<T> getPercentile(const float p);
   std::optional<T> getMedian();
 
   // All bins have the same width.
@@ -163,11 +163,11 @@ class HistAcc {
   // The return value is the nr of histogram bins, and is invalid
   // if the number is zero. The given blocks/vectors are resized,
   // and contain the contents and centre values of the bins.
-  std::optional<uInt> getHistogram(Block<uInt>& bins, Block<T>& values);
+  std::optional<unsigned int> getHistogram(Block<unsigned int>& bins, Block<T>& values);
 
   // Get the nr of `spurious' values, i.e. the ones that fell
   // outside the defined bins.
-  uInt getSpurious(uInt& tooSmall, uInt& tooLarge);
+  unsigned int getSpurious(unsigned int& tooSmall, unsigned int& tooLarge);
 
   // Print histogram.
   // <group>
@@ -175,15 +175,15 @@ class HistAcc {
   // </group>
 
  private:
-  Block<uInt> itsBinContents;  // # Contents of histogram bins
-  Block<T> itsBinHighLimit;    // # High limit of each bin
-  T itsUserDefinedBinWidth;    // # if defined
+  Block<unsigned int> itsBinContents;  // # Contents of histogram bins
+  Block<T> itsBinHighLimit;            // # High limit of each bin
+  T itsUserDefinedBinWidth;            // # if defined
 
   StatAcc<T> itsStatAcc;  // # private Statistics Accumulator
 
-  bool itsAutoDefineMode;  // # If true: automatic mode
-  Block<T> itsBuffer;      // # temporary storage of input T-values
-  uInt itsBufferContents;  // # nr of T-values in buffer
+  bool itsAutoDefineMode;          // # If true: automatic mode
+  Block<T> itsBuffer;              // # temporary storage of input T-values
+  unsigned int itsBufferContents;  // # nr of T-values in buffer
 
   // Accumulate a single value into the histogram.
   void put1(const T);
@@ -194,7 +194,7 @@ class HistAcc {
   // Internal helper functions for the automatic definition of
   // histogram parameters, using the contents of itsBuffer.
   // <group>
-  void initBuffer(const uInt size);
+  void initBuffer(const unsigned int size);
   void putBuffer(const T v);  // # add input value to itsBuffer
   void clearBuffer();         // # transfer from buffer to bins
   void autoDefineBins();
@@ -203,7 +203,7 @@ class HistAcc {
   // Other internal helper function(s).
   // <group>
   void init();
-  std::optional<T> getBinValue(const uInt index) const;  // # bin centre value
+  std::optional<T> getBinValue(const unsigned int index) const;  // # bin centre value
   // </group>
 };
 

@@ -208,7 +208,7 @@ std::shared_ptr<Quantum<Vector<T>>> ScalarQuantColumn<T>::getColumn(const Unit& 
     Vector<T>& val = qv->getValue();
     itsDataCol->getColumn(val);
     Quantum<T> q;
-    for (uInt i = 0; i < val.size(); ++i) {
+    for (unsigned int i = 0; i < val.size(); ++i) {
       get(i, q, unitOut);
       val[i] = q.getValue();
     }

@@ -37,8 +37,8 @@ ArraySampledFunctional<T>::ArraySampledFunctional()
 template <class T>
 ArraySampledFunctional<T>::ArraySampledFunctional(const T &data)
     : theRefData(data), theEnd(data.endPosition()), theLastAxis(0), theNelements(0) {
-  const uInt ndim = theEnd.nelements();
-  for (uInt i = 0; i < ndim; i++)
+  const unsigned int ndim = theEnd.nelements();
+  for (unsigned int i = 0; i < ndim; i++)
     if (theEnd(i) > 0) theLastAxis = i;
   theNelements = theEnd(theLastAxis) + 1;
   theEnd(theLastAxis) = 0;
@@ -64,7 +64,7 @@ ArraySampledFunctional<T> &ArraySampledFunctional<T>::operator=(ArraySampledFunc
 }
 
 template <class T>
-T ArraySampledFunctional<T>::operator()(const uInt &index) const {
+T ArraySampledFunctional<T>::operator()(const unsigned int &index) const {
   IPosition blc(theEnd.nelements(), 0);
   blc(theLastAxis) = index;
   IPosition trc(theEnd);
@@ -79,7 +79,7 @@ T ArraySampledFunctional<T>::operator()(const uInt &index) const {
 }
 
 template <class T>
-const T ArraySampledFunctional<T>::operator()(const uInt &index) {
+const T ArraySampledFunctional<T>::operator()(const unsigned int &index) {
   IPosition blc(theEnd.nelements(), 0);
   blc(theLastAxis) = index;
   theEnd(theLastAxis) = index;
@@ -87,7 +87,7 @@ const T ArraySampledFunctional<T>::operator()(const uInt &index) {
 }
 
 template <class T>
-uInt ArraySampledFunctional<T>::nelements() const {
+unsigned int ArraySampledFunctional<T>::nelements() const {
   return theNelements;
 }
 

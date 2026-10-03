@@ -213,7 +213,7 @@ bool LELBinaryBool::prepareScalarExpr() {
 
   // In case of OR and AND, the result is invalid if both operands are invalid.
   // In case of EQ and NE, the result is invalid if one operand is invalid.
-  uInt nrinv = 0;
+  unsigned int nrinv = 0;
   if (LELInterface<bool>::replaceScalarExpr(pLeftExpr_p)) {
     nrinv++;
     if (op_p != LELBinaryEnums::OR && op_p != LELBinaryEnums::AND) {
@@ -231,7 +231,7 @@ bool LELBinaryBool::prepareScalarExpr() {
 
 String LELBinaryBool::className() const { return String("LELBinaryBool"); }
 
-bool LELBinaryBool::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELBinaryBool::lock(FileLocker::LockType type, unsigned int nattempts) {
   if (!pLeftExpr_p->lock(type, nattempts)) {
     return false;
   }

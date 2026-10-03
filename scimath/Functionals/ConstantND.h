@@ -108,7 +108,7 @@ class ConstantND : public ConstantNDParam<T> {
   // # Constructors
   //  Construct a constant in an a space of dimensionality <src>m</src>.  By
   //  default, the constant value is initialised to zero, and <src>m=0</src>
-  explicit ConstantND(const uInt m = 0) : ConstantNDParam<T>(m) { ; };
+  explicit ConstantND(const unsigned int m = 0) : ConstantNDParam<T>(m) { ; };
   // Copy constructor/assignment (deep copy)
   // <group>
   ConstantND(const ConstantND<T> &other) : ConstantNDParam<T>(other) {};
@@ -164,7 +164,7 @@ class ConstantND_PS<AutoDiff<T>> : public ConstantNDParam<AutoDiff<T>> {
   // # Construct
   //  Constructors a constant in a space of dimensionality <src>m</src>.  By
   //  default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit ConstantND_PS(const uInt m = 0) : ConstantNDParam<AutoDiff<T>>(m) {};
+  explicit ConstantND_PS(const unsigned int m = 0) : ConstantNDParam<AutoDiff<T>>(m) {};
   // Copy constructor/assignment (deep copy)
   // <group>
   ConstantND_PS(const ConstantND_PS<AutoDiff<T>> &other) : ConstantNDParam<AutoDiff<T>>(other) {};

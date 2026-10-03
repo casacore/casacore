@@ -67,7 +67,7 @@ bool LELCoordinates::hasCoordinates() const {
 }
 
 // Check if the coordinates of this and that conform.
-Int LELCoordinates::compare(const LELCoordinates& that) const {
+int LELCoordinates::compare(const LELCoordinates& that) const {
   if (isNull() || that.isNull()) {
     return 9;
   }

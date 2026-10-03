@@ -68,7 +68,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
-                          Table& table, uInt rowNumber)
+                          Table& table, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)),
       map_p(shape, table, "map", rowNumber),
       regionPtr_p(0) {
@@ -79,14 +79,16 @@ PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coord
 
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
-                          const String& filename, TableLock::LockOption lockMode, uInt rowNumber)
+                          const String& filename, TableLock::LockOption lockMode,
+                          unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   makePagedImage(shape, coordinateInfo, filename, TableLock(lockMode), rowNumber);
 }
 
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
-                          const String& filename, const TableLock& lockOptions, uInt rowNumber)
+                          const String& filename, const TableLock& lockOptions,
+                          unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   makePagedImage(shape, coordinateInfo, filename, lockOptions, rowNumber);
 }
@@ -94,7 +96,7 @@ PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coord
 template <class T>
 void PagedImage<T>::makePagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
                                    const String& filename, const TableLock& lockOptions,
-                                   uInt rowNumber) {
+                                   unsigned int rowNumber) {
   SetupNewTable newtab(filename, TableDesc(), Table::New);
   Table tab(newtab, lockOptions);
   map_p = PagedArray<T>(shape, tab, "map", rowNumber);
@@ -105,7 +107,7 @@ void PagedImage<T>::makePagedImage(const TiledShape& shape, const CoordinateSyst
 
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
-                          const String& filename, uInt rowNumber)
+                          const String& filename, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   SetupNewTable newtab(filename, TableDesc(), Table::New);
   Table tab(newtab);
@@ -116,7 +118,7 @@ PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coord
 }
 
 template <class T>
-PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, uInt rowNumber)
+PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)),
       map_p(table, "map", rowNumber),
       regionPtr_p(0) {
@@ -126,7 +128,7 @@ PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, uInt rowNumber)
 }
 
 template <class T>
-PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec, uInt rowNumber)
+PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   Table tab(filename);
   map_p = PagedArray<T>(tab, "map", rowNumber);
@@ -137,21 +139,21 @@ PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec, uInt rowNu
 
 template <class T>
 PagedImage<T>::PagedImage(const String& filename, const TableLock& lockOptions, MaskSpecifier spec,
-                          uInt rowNumber)
+                          unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   makePagedImage(filename, lockOptions, spec, rowNumber);
 }
 
 template <class T>
 PagedImage<T>::PagedImage(const String& filename, TableLock::LockOption lockMode,
-                          MaskSpecifier spec, uInt rowNumber)
+                          MaskSpecifier spec, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
   makePagedImage(filename, TableLock(lockMode), spec, rowNumber);
 }
 
 template <class T>
 void PagedImage<T>::makePagedImage(const String& filename, const TableLock& lockOptions,
-                                   const MaskSpecifier& spec, uInt rowNumber) {
+                                   const MaskSpecifier& spec, unsigned int rowNumber) {
   Table tab(filename, lockOptions);
   map_p = PagedArray<T>(tab, "map", rowNumber);
   attach_logtable();
@@ -327,7 +329,7 @@ String PagedImage<T>::name(bool stripPath) const {
 }
 
 template <class T>
-uInt PagedImage<T>::rowNumber() const {
+unsigned int PagedImage<T>::rowNumber() const {
   return map_p.rowNumber();
 }
 
@@ -453,7 +455,7 @@ LatticeIterInterface<T>* PagedImage<T>::makeIter(const LatticeNavigator& navigat
 
 template <class T>
 bool PagedImage<T>::ok() const {
-  Int okay = (map_p.ndim() == coordinates().nPixelAxes());
+  int okay = (map_p.ndim() == coordinates().nPixelAxes());
   return okay ? true : false;
 }
 
@@ -557,12 +559,12 @@ void PagedImage<T>::check_conformance(const Lattice<T>& other) {
 }
 
 template <class T>
-uInt PagedImage<T>::maximumCacheSize() const {
+unsigned int PagedImage<T>::maximumCacheSize() const {
   return map_p.maximumCacheSize();
 }
 
 template <class T>
-void PagedImage<T>::setMaximumCacheSize(uInt howManyPixels) {
+void PagedImage<T>::setMaximumCacheSize(unsigned int howManyPixels) {
   map_p.setMaximumCacheSize(howManyPixels);
   if (regionPtr_p != 0) {
     regionPtr_p->setMaximumCacheSize(howManyPixels);
@@ -579,7 +581,7 @@ void PagedImage<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPos
 }
 
 template <class T>
-void PagedImage<T>::setCacheSizeInTiles(uInt howManyTiles) {
+void PagedImage<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
   map_p.setCacheSizeInTiles(howManyTiles);
   if (regionPtr_p != 0) {
     regionPtr_p->setCacheSizeInTiles(howManyTiles);
@@ -605,12 +607,12 @@ void PagedImage<T>::showCacheStatistics(ostream& os) const {
 }
 
 template <class T>
-uInt PagedImage<T>::advisedMaxPixels() const {
+unsigned int PagedImage<T>::advisedMaxPixels() const {
   return map_p.advisedMaxPixels();
 }
 
 template <class T>
-IPosition PagedImage<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition PagedImage<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return map_p.niceCursorShape(maxPixels);
 }
 
@@ -637,7 +639,7 @@ Table& PagedImage<T>::getTable(void* imagePtr, bool writable) {
 }
 
 template <class T>
-bool PagedImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool PagedImage<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return map_p.lock(type, nattempts);
 }
 template <class T>

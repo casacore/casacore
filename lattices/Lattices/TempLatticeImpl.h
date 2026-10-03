@@ -74,8 +74,8 @@ class TempLatticeImpl {
   // (this algorithm may change). Setting maxMemoryInMB to zero will force
   // the lattice to disk.
   // <group>
-  TempLatticeImpl(const TiledShape& shape, Int maxMemoryInMB);
-  TempLatticeImpl(const TiledShape& shape, Double maxMemoryInMB);
+  TempLatticeImpl(const TiledShape& shape, int maxMemoryInMB);
+  TempLatticeImpl(const TiledShape& shape, double maxMemoryInMB);
   // </group>
 
   // The destructor removes the Lattice from memory and if necessary disk.
@@ -144,22 +144,22 @@ class TempLatticeImpl {
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  uInt advisedMaxPixels() const {
+  unsigned int advisedMaxPixels() const {
     doReopen();
     return itsLatticePtr->advisedMaxPixels();
   }
 
   // Get the best cursor shape.
-  IPosition doNiceCursorShape(uInt maxPixels) {
+  IPosition doNiceCursorShape(unsigned int maxPixels) {
     doReopen();
     return itsLatticePtr->niceCursorShape(maxPixels);
   }
 
   // Maximum size - not necessarily all used. In pixels.
-  uInt maximumCacheSize() const { return itsLatticePtr->maximumCacheSize(); }
+  unsigned int maximumCacheSize() const { return itsLatticePtr->maximumCacheSize(); }
 
   // Set the maximum (allowed) cache size as indicated.
-  void setMaximumCacheSize(uInt howManyPixels) {
+  void setMaximumCacheSize(unsigned int howManyPixels) {
     itsLatticePtr->setMaximumCacheSize(howManyPixels);
   }
 
@@ -174,7 +174,9 @@ class TempLatticeImpl {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  void setCacheSizeInTiles(uInt howManyTiles) { itsLatticePtr->setCacheSizeInTiles(howManyTiles); }
+  void setCacheSizeInTiles(unsigned int howManyTiles) {
+    itsLatticePtr->setCacheSizeInTiles(howManyTiles);
+  }
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -235,7 +237,7 @@ class TempLatticeImpl {
   TempLatticeImpl<T>& operator=(const TempLatticeImpl<T>& other);
 
   // Initialize the object.
-  void init(const TiledShape& shape, Double maxMemoryInMB = -1);
+  void init(const TiledShape& shape, double maxMemoryInMB = -1);
 
   // Do the actual reopen of the temporarily closed table (if not open already).
   void tempReopen() const;

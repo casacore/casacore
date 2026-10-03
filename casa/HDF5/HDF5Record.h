@@ -104,7 +104,7 @@ class HDF5Record {
                         RecordInterface& rec);
 
   // Read a scalar string from an attribute and add it to the record.
-  static void readScaString(hid_t attrId, Int sz, const String& name, RecordInterface& rec);
+  static void readScaString(hid_t attrId, int sz, const String& name, RecordInterface& rec);
 
   // Read a array of strings from an atrribute and add it to the record.
   static void readArrString(hid_t attrId, const IPosition&, const String& name,
@@ -154,11 +154,11 @@ class HDF5Record {
   static void writeArrString(hid_t parentHid, const String& name, const Array<String>& value);
 
   // Write a field containing an empty array.
-  static void writeEmptyArray(hid_t groupHid, const String& name, Int rank, DataType dtype);
+  static void writeEmptyArray(hid_t groupHid, const String& name, int rank, DataType dtype);
 
   // Write a field containing a fixed length scalar value.
   template <typename T>
-  static void writeSca(hid_t parentHid, const String& name, const RecordInterface& rec, Int i) {
+  static void writeSca(hid_t parentHid, const String& name, const RecordInterface& rec, int i) {
     T value;
     rec.get(i, value);
     HDF5DataType dtype((T*)0);
@@ -167,7 +167,7 @@ class HDF5Record {
 
   // Write a field containing an array of fixed length elements.
   template <typename T>
-  static void writeArr(hid_t parentHid, const String& name, const RecordInterface& rec, Int i) {
+  static void writeArr(hid_t parentHid, const String& name, const RecordInterface& rec, int i) {
     Array<T> value;
     rec.get(i, value);
     HDF5DataType dtype((T*)0);

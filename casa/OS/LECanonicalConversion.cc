@@ -161,9 +161,9 @@ LECANONICALCONVERSION_DO(CONVERT_LECAN_INT, SIZE_LECAN_INT, toLocalInt, fromLoca
 LECANONICALCONVERSION_DO(CONVERT_LECAN_UINT, SIZE_LECAN_UINT, toLocalUInt, fromLocalUInt,
                          byteToLocalUInt, byteFromLocalUInt, unsigned int)
 LECANONICALCONVERSION_DO(CONVERT_LECAN_INT64, SIZE_LECAN_INT64, toLocalInt64, fromLocalInt64,
-                         byteToLocalInt64, byteFromLocalInt64, Int64)
+                         byteToLocalInt64, byteFromLocalInt64, int64_t)
 LECANONICALCONVERSION_DO(CONVERT_LECAN_UINT64, SIZE_LECAN_UINT64, toLocalUInt64, fromLocalUInt64,
-                         byteToLocalUInt64, byteFromLocalUInt64, uInt64)
+                         byteToLocalUInt64, byteFromLocalUInt64, uint64_t)
 LECANONICALCONVERSION_DO(CONVERT_LECAN_FLOAT, SIZE_LECAN_FLOAT, toLocalFloat, fromLocalFloat,
                          byteToLocalFloat, byteFromLocalFloat, float)
 LECANONICALCONVERSION_DO(CONVERT_LECAN_DOUBLE, SIZE_LECAN_DOUBLE, toLocalDouble, fromLocalDouble,

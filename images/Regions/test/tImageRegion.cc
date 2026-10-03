@@ -34,7 +34,7 @@ int main() {
   String myname = "tmp.im";
   int ret = 0;
   try {
-    PagedImage<Float> im(TiledShape(IPosition(4, 1)), CoordinateUtil::defaultCoords4D(), myname);
+    PagedImage<float> im(TiledShape(IPosition(4, 1)), CoordinateUtil::defaultCoords4D(), myname);
     im.flush();
     vector<String> names;
     names.push_back("tmp.im");
@@ -44,9 +44,9 @@ int main() {
     names.push_back("./tmp.im");
     names.push_back("$PWD/tmp.im");
     // various escaping tests for fromLatticeExpession
-    uInt lastGood = 3;
-    for (uInt i = 0; i < names.size(); i++) {
-      for (uInt j = 0; j < names.size(); j++) {
+    unsigned int lastGood = 3;
+    for (unsigned int i = 0; i < names.size(); i++) {
+      for (unsigned int j = 0; j < names.size(); j++) {
         String expr = names[i] + " == " + names[j];
         try {
           ImageRegion* z = ImageRegion::fromLatticeExpression(expr);

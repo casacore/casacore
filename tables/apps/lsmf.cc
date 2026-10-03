@@ -43,7 +43,7 @@ void show(const std::shared_ptr<MultiFileBase>& mfile, bool showbl, const String
   if (showbl) {
     cout << "  freeblocks = " << mfile->freeBlocks() << endl;
   }
-  for (uInt i = 0; i < mfile->nfile(); ++i) {
+  for (unsigned int i = 0; i < mfile->nfile(); ++i) {
     const MultiFileInfo& info = mfile->info()[i];
     cout << ' ' << info.name << "   size=" << info.fsize
          << "   nblocks=" << (info.fsize + mfile->blockSize() - 1) / mfile->blockSize() << endl;

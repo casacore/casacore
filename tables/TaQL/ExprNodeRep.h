@@ -248,7 +248,7 @@ class TableExprNodeRep {
   };
 
   // Construct a node.
-  TableExprNodeRep(NodeDataType, ValueType, OperType, ArgType, ExprType, Int ndim,
+  TableExprNodeRep(NodeDataType, ValueType, OperType, ArgType, ExprType, int ndim,
                    const IPosition& shape);
 
   // This constructor is called from the derived TableExprNodeRep.
@@ -284,7 +284,7 @@ class TableExprNodeRep {
 
   // Get the unit conversion factor.
   // Default 1 is returned.
-  virtual Double getUnitFactor() const;
+  virtual double getUnitFactor() const;
 
   // Flatten the node tree by adding the node and its children to the vector.
   virtual void flattenTree(std::vector<TableExprNodeRep*>&);
@@ -305,8 +305,8 @@ class TableExprNodeRep {
   // operator on the resulting values.
   // <group>
   virtual bool getBool(const TableExprId& id);
-  virtual Int64 getInt(const TableExprId& id);
-  virtual Double getDouble(const TableExprId& id);
+  virtual int64_t getInt(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
   virtual TaqlRegex getRegex(const TableExprId& id);
@@ -319,8 +319,8 @@ class TableExprNodeRep {
   // operator on the resulting values.
   // <group>
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
   virtual MArray<MVTime> getArrayDate(const TableExprId& id);
@@ -329,14 +329,14 @@ class TableExprNodeRep {
   // General get functions for template purposes.
   // <group>
   void get(const TableExprId& id, bool& value) { value = getBool(id); }
-  void get(const TableExprId& id, Int64& value) { value = getInt(id); }
-  void get(const TableExprId& id, Double& value) { value = getDouble(id); }
+  void get(const TableExprId& id, int64_t& value) { value = getInt(id); }
+  void get(const TableExprId& id, double& value) { value = getDouble(id); }
   void get(const TableExprId& id, DComplex& value) { value = getDComplex(id); }
   void get(const TableExprId& id, MVTime& value) { value = getDate(id); }
   void get(const TableExprId& id, String& value) { value = getString(id); }
   void get(const TableExprId& id, MArray<bool>& value) { value = getArrayBool(id); }
-  void get(const TableExprId& id, MArray<Int64>& value) { value = getArrayInt(id); }
-  void get(const TableExprId& id, MArray<Double>& value) { value = getArrayDouble(id); }
+  void get(const TableExprId& id, MArray<int64_t>& value) { value = getArrayInt(id); }
+  void get(const TableExprId& id, MArray<double>& value) { value = getArrayDouble(id); }
   void get(const TableExprId& id, MArray<DComplex>& value) { value = getArrayDComplex(id); }
   void get(const TableExprId& id, MArray<MVTime>& value) { value = getArrayDate(id); }
   void get(const TableExprId& id, MArray<String>& value) { value = getArrayString(id); }
@@ -346,8 +346,8 @@ class TableExprNodeRep {
   // This is useful if one could give an argument as scalar or array.
   // <group>
   MArray<bool> getBoolAS(const TableExprId& id);
-  MArray<Int64> getIntAS(const TableExprId& id);
-  MArray<Double> getDoubleAS(const TableExprId& id);
+  MArray<int64_t> getIntAS(const TableExprId& id);
+  MArray<double> getDoubleAS(const TableExprId& id);
   MArray<DComplex> getDComplexAS(const TableExprId& id);
   MArray<String> getStringAS(const TableExprId& id);
   MArray<MVTime> getDateAS(const TableExprId& id);
@@ -358,14 +358,14 @@ class TableExprNodeRep {
   // thus tests if it is equal to the given value.
   // <group>
   virtual bool contains(const TableExprId& id, bool value);
-  virtual bool contains(const TableExprId& id, Int64 value);
-  virtual bool contains(const TableExprId& id, Double value);
+  virtual bool contains(const TableExprId& id, int64_t value);
+  virtual bool contains(const TableExprId& id, double value);
   virtual bool contains(const TableExprId& id, DComplex value);
   virtual bool contains(const TableExprId& id, String value);
   virtual bool contains(const TableExprId& id, MVTime value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<bool>& value);
-  virtual MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value);
-  virtual MArray<bool> contains(const TableExprId& id, const MArray<Double>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<int64_t>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<double>& value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<String>& value);
   virtual MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value);
@@ -387,14 +387,14 @@ class TableExprNodeRep {
   // returned by function <src>getColumnDataType</src>.
   // <group>
   virtual Array<bool> getColumnBool(const Vector<rownr_t>& rownrs);
-  virtual Array<uChar> getColumnuChar(const Vector<rownr_t>& rownrs);
-  virtual Array<Short> getColumnShort(const Vector<rownr_t>& rownrs);
-  virtual Array<uShort> getColumnuShort(const Vector<rownr_t>& rownrs);
-  virtual Array<Int> getColumnInt(const Vector<rownr_t>& rownrs);
-  virtual Array<uInt> getColumnuInt(const Vector<rownr_t>& rownrs);
-  virtual Array<Int64> getColumnInt64(const Vector<rownr_t>& rownrs);
-  virtual Array<Float> getColumnFloat(const Vector<rownr_t>& rownrs);
-  virtual Array<Double> getColumnDouble(const Vector<rownr_t>& rownrs);
+  virtual Array<unsigned char> getColumnuChar(const Vector<rownr_t>& rownrs);
+  virtual Array<short> getColumnShort(const Vector<rownr_t>& rownrs);
+  virtual Array<unsigned short> getColumnuShort(const Vector<rownr_t>& rownrs);
+  virtual Array<int> getColumnInt(const Vector<rownr_t>& rownrs);
+  virtual Array<unsigned int> getColumnuInt(const Vector<rownr_t>& rownrs);
+  virtual Array<int64_t> getColumnInt64(const Vector<rownr_t>& rownrs);
+  virtual Array<float> getColumnFloat(const Vector<rownr_t>& rownrs);
+  virtual Array<double> getColumnDouble(const Vector<rownr_t>& rownrs);
   virtual Array<Complex> getColumnComplex(const Vector<rownr_t>& rownrs);
   virtual Array<DComplex> getColumnDComplex(const Vector<rownr_t>& rownrs);
   virtual Array<String> getColumnString(const Vector<rownr_t>& rownrs);
@@ -451,7 +451,7 @@ class TableExprNodeRep {
   void setAttributes(const Record&);
 
   // Get the fixed dimensionality (same for all rows).
-  Int ndim() const;
+  int ndim() const;
 
   // Get the fixed shape (same for all rows).
   const IPosition& shape() const;
@@ -465,7 +465,7 @@ class TableExprNodeRep {
   virtual bool isDefined(const TableExprId& id);
 
   // Show the expression tree.
-  virtual void show(ostream&, uInt indent) const;
+  virtual void show(ostream&, unsigned int indent) const;
 
   // Replace a node with a constant expression by node with its value.
   static TENShPtr replaceConstNode(const TENShPtr& node);
@@ -475,7 +475,7 @@ class TableExprNodeRep {
   virtual void adaptSetUnits(const Unit&);
 
   // Create a range object from a column and an interval.
-  static void createRange(Block<TableExprRange>&, TableExprNodeColumn*, Double start, Double end);
+  static void createRange(Block<TableExprRange>&, TableExprNodeColumn*, double start, double end);
 
   // Create a empty range object.
   static void createRange(Block<TableExprRange>&);
@@ -492,7 +492,7 @@ class TableExprNodeRep {
   OperType optype_p;     // # operator type
   ArgType argtype_p;     // # argument types
   ExprType exprtype_p;   // # Constant or Variable
-  Int ndim_p;            // # Fixed dimensionality of node values
+  int ndim_p;            // # Fixed dimensionality of node values
                          // # -1 = variable dimensionality
   IPosition shape_p;     // # Fixed shape of node values
   Unit unit_p;           // # Unit of the values
@@ -557,7 +557,7 @@ class TableExprNodeBinary : public TableExprNodeRep {
   ~TableExprNodeBinary() override = default;
 
   // Show the expression tree.
-  void show(ostream&, uInt indent) const override;
+  void show(ostream&, unsigned int indent) const override;
 
   // Flatten the node tree by adding the node and its children to the vector.
   void flattenTree(std::vector<TableExprNodeRep*>&) override;
@@ -643,7 +643,7 @@ class TableExprNodeMulti : public TableExprNodeRep {
   ~TableExprNodeMulti() override = default;
 
   // Show the expression tree.
-  void show(ostream&, uInt indent) const override;
+  void show(ostream&, unsigned int indent) const override;
 
   // Flatten the node tree by adding the node and its children to the vector.
   void flattenTree(std::vector<TableExprNodeRep*>&) override;
@@ -651,7 +651,8 @@ class TableExprNodeMulti : public TableExprNodeRep {
   // Check number of arguments
   // low <= number_of_args <= high
   // It throws an exception if wrong number of arguments.
-  static uInt checkNumOfArg(uInt low, uInt high, const std::vector<TENShPtr>& nodes);
+  static unsigned int checkNumOfArg(unsigned int low, unsigned int high,
+                                    const std::vector<TENShPtr>& nodes);
 
   // Get the child nodes.
   const std::vector<TENShPtr>& getChildren() const { return operands_p; }
@@ -659,7 +660,7 @@ class TableExprNodeMulti : public TableExprNodeRep {
   // Check datatype of nodes and return output type.
   // It also sets the expected data type of the operands (from dtIn).
   // Conversion of Int,Double.String to Date is by default possible.
-  static NodeDataType checkDT(Block<Int>& dtypeOper, NodeDataType dtIn, NodeDataType dtOut,
+  static NodeDataType checkDT(Block<int>& dtypeOper, NodeDataType dtIn, NodeDataType dtOut,
                               const std::vector<TENShPtr>& nodes, bool dateConv = true);
 
  protected:
@@ -694,7 +695,7 @@ inline const Record& TableExprNodeRep::attributes() const { return attributes_p;
 inline void TableExprNodeRep::setAttributes(const Record& attributes) { attributes_p = attributes; }
 
 // # Get the fixed dimensionality of the node.
-inline Int TableExprNodeRep::ndim() const { return ndim_p; }
+inline int TableExprNodeRep::ndim() const { return ndim_p; }
 
 // # Get the fixed shape of the node.
 inline const IPosition& TableExprNodeRep::shape() const { return shape_p; }

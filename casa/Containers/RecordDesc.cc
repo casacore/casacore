@@ -31,17 +31,17 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ostream& RecordDesc::put(ostream& os) const {
-  Int i;
+  int i;
   // There must be a better way to handle indentation, e.g. a manipulator.
   // If control leaves abnormally the indentation might be wrong.
-  static Int indentLevel = -1;
+  static int indentLevel = -1;
   indentLevel++;
   String indentation;
   for (i = 0; i < indentLevel * 4; i++) {
     indentation += " ";
   }
 
-  Int n = nfields();
+  int n = nfields();
   for (i = 0; i < n; i++) {
     os << indentation << i << "  " << name(i) << " : ";
     if (isSubRecord(i)) {
@@ -66,11 +66,11 @@ ostream& RecordDesc::put(ostream& os) const {
 
 AipsIO& RecordDesc::put(AipsIO& os) const {
   os.putstart("RecordDesc", 2);  // version 2
-  Int n = nfields();
+  int n = nfields();
   os << n;
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     os << name(i);
-    os << Int(type(i));
+    os << int(type(i));
     if (isSubRecord(i)) {
       os << subRecord(i);
     } else if (isArray(i)) {
@@ -85,16 +85,16 @@ AipsIO& RecordDesc::put(AipsIO& os) const {
 }
 
 AipsIO& RecordDesc::get(AipsIO& os) {
-  uInt version = os.getstart("RecordDesc");
+  unsigned int version = os.getstart("RecordDesc");
   // Clear the description.
   *this = RecordDesc();
-  Int n;
+  int n;
   String name, descName, comment;
-  Int type;
+  int type;
   IPosition shape;
   RecordDesc sub;
   os >> n;
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     os >> name;
     os >> type;
     switch (type) {

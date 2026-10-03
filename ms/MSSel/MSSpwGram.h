@@ -68,12 +68,12 @@ class TableExprNode;
 
 // Declare the bison parser (is implemented by bison command).
 int msSpwGramParseCommand(const MeasurementSet* ms, const String& command);
-int msSpwGramParseCommand(const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
-                          Matrix<Int>& selectedChanIDs);
+int msSpwGramParseCommand(const MeasurementSet* ms, const String& command, Vector<int>& selectedIDs,
+                          Matrix<int>& selectedChanIDs);
 int msSpwGramParseCommand(const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable,
                           const TableExprNode& colAsTEN, const String& command,
-                          Vector<Int>& selectedIDs, Matrix<Int>& selectedChans,
-                          Vector<Int>& selectedDDIDs);
+                          Vector<int>& selectedIDs, Matrix<int>& selectedChans,
+                          Vector<int>& selectedDDIDs);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -85,7 +85,7 @@ void msSpwGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msSpwGramPosition();
+int& msSpwGramPosition();
 
 // Declare the input routine for flex/bison.
 int msSpwGramInput(char* buf, int max_size);

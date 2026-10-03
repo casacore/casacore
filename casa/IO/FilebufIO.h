@@ -95,26 +95,26 @@ class FilebufIO : public ByteIO {
   // Construct from the given file descriptor.
   // Note that the destructor and the detach function implicitly close
   // the file descriptor.
-  explicit FilebufIO(int fd, uInt bufferSize = 16384);
+  explicit FilebufIO(int fd, unsigned int bufferSize = 16384);
 
   // Attach to the given file descriptor.
   // Note that the destructor and the detach function implicitly close
   // the file descriptor.
-  void attach(int fd, uInt bufferSize = 16384);
+  void attach(int fd, unsigned int bufferSize = 16384);
 
   // The destructor closes the file when it was owned and opened and not
   // closed yet.
   virtual ~FilebufIO();
 
   // Write the number of bytes.
-  virtual void write(Int64 size, const void* buf);
+  virtual void write(int64_t size, const void* buf);
 
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
   // false. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
-  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
+  virtual int64_t read(int64_t size, void* buf, bool throwException = true);
 
   // Flush the current buffer.
   virtual void flush();
@@ -123,10 +123,10 @@ class FilebufIO : public ByteIO {
   virtual void resync();
 
   // Truncate the file to the given size.
-  virtual void truncate(Int64 size);
+  virtual void truncate(int64_t size);
 
   // Get the length of the byte stream.
-  virtual Int64 length();
+  virtual int64_t length();
 
   // Is the IO stream readable?
   virtual bool isReadable() const;
@@ -141,7 +141,7 @@ class FilebufIO : public ByteIO {
   virtual String fileName() const;
 
   // Get the buffer size.
-  uInt bufferSize() const { return itsBufSize; }
+  unsigned int bufferSize() const { return itsBufSize; }
 
  protected:
   // Detach the FILE. Close it when needed.
@@ -155,38 +155,38 @@ class FilebufIO : public ByteIO {
 
   // Reset the position pointer to the given value. It returns the
   // new position.
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
 
   // Set a new buffer size.
   // If a buffer was already existing, flush and delete it.
-  void setBuffer(Int64 bufSize);
+  void setBuffer(int64_t bufSize);
 
   // Write a buffer of given length into the file at given offset.
-  void writeBuffer(Int64 offset, const char* buf, Int64 size);
+  void writeBuffer(int64_t offset, const char* buf, int64_t size);
 
   // Read a buffer of given length from the file at given offset.
-  Int64 readBuffer(Int64 offset, char* buf, Int64 size, bool throwException);
+  int64_t readBuffer(int64_t offset, char* buf, int64_t size, bool throwException);
 
   // Write a block into the stream at the current offset.
   // It is guaranteed that the block fits in a single buffer.
-  void writeBlock(Int64 size, const char* buf);
+  void writeBlock(int64_t size, const char* buf);
 
   // Read a block from the stream at the current offset.
   // It is guaranteed that the block fits in a single buffer.
-  Int64 readBlock(Int64 size, char* buf, bool throwException);
+  int64_t readBlock(int64_t size, char* buf, bool throwException);
 
  private:
   bool itsSeekable;
   bool itsReadable;
   bool itsWritable;
   int itsFile;
-  Int64 itsBufSize;  // the buffer size
-  Int64 itsBufLen;   // the current buffer length used
+  int64_t itsBufSize;  // the buffer size
+  int64_t itsBufLen;   // the current buffer length used
   char* itsBuffer;
-  Int64 itsBufOffset;   // file offset of current buffer
-  Int64 itsOffset;      // current file offset
-  Int64 itsSeekOffset;  // offset last seeked
-  bool itsDirty;        // data written into current buffer?
+  int64_t itsBufOffset;   // file offset of current buffer
+  int64_t itsOffset;      // current file offset
+  int64_t itsSeekOffset;  // offset last seeked
+  bool itsDirty;          // data written into current buffer?
 
   // Copy constructor, should not be used.
   FilebufIO(const FilebufIO& that);

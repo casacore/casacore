@@ -128,7 +128,7 @@ class LatticeConcat : public MaskedLattice<T> {
   // all internal lattice copies to be
   // opened/closed on demand, rather than just being left open.
   // This prevents open file limits being reached
-  LatticeConcat(uInt axis, bool tempClose = true);
+  LatticeConcat(unsigned int axis, bool tempClose = true);
 
   // Default constructor.  Sets the concatenation axis to 0
   // and tempClose is true
@@ -148,10 +148,10 @@ class LatticeConcat : public MaskedLattice<T> {
   void setLattice(MaskedLattice<T>& lattice);
 
   // Return the number of lattices set so far
-  uInt nlattices() const { return lattices_p.nelements(); }
+  unsigned int nlattices() const { return lattices_p.nelements(); }
 
   // Returns the current concatenation axis (0 relative)
-  uInt axis() const { return axis_p; }
+  unsigned int axis() const { return axis_p; }
 
   // Set the tempClose state.
   void setTempClose(bool tmpClose) { tempClose_p = tmpClose; }
@@ -161,14 +161,14 @@ class LatticeConcat : public MaskedLattice<T> {
 
   // Returns the number of dimensions of the *input* lattices (may be different
   // by one from output lattice).  Returns 0 if none yet set.
-  uInt latticeDim() const;
+  unsigned int latticeDim() const;
 
   // Return pointer for specified lattice.  Do not delete it.
-  MaskedLattice<T>* lattice(uInt i) const { return lattices_p[i]; }
+  MaskedLattice<T>* lattice(unsigned int i) const { return lattices_p[i]; }
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -181,8 +181,8 @@ class LatticeConcat : public MaskedLattice<T> {
   // LatticeConcat object in a fully closed state.  So always pair
   // a reopen with a tempClose.
   // <group>
-  void tempClose(uInt which);
-  void reopen(uInt which);
+  void tempClose(unsigned int which);
+  void reopen(unsigned int which);
   // </group>
 
   // Name.  Since many lattices may go into the concatenation, the name
@@ -219,7 +219,7 @@ class LatticeConcat : public MaskedLattice<T> {
   // Return the best cursor shape.  This isn't very meaningful  for a LatticeConcat
   // Lattice since it isn't on disk !  But if you do copy it out, this is
   // what you should use.  The maxPixels aregument is ignored.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Do the actual get of the data.
   // The return value is always false, thus the buffer does not reference
@@ -240,26 +240,26 @@ class LatticeConcat : public MaskedLattice<T> {
 
  private:
   Block<MaskedLattice<T>*> lattices_p;
-  uInt axis_p;
+  unsigned int axis_p;
   IPosition shape_p;
   bool isMasked_p, dimUpOne_p, tempClose_p;
   LatticeConcat<bool>* pPixelMask_p;
   //
-  void checkAxis(uInt axis, uInt ndim) const;
+  void checkAxis(unsigned int axis, unsigned int ndim) const;
   //
   void setup1(IPosition& blc, IPosition& trc, IPosition& stride, IPosition& blc2, IPosition& trc2,
               IPosition& blc3, IPosition& trc3, IPosition& stride3, const Slicer& section);
-  Slicer setup2(bool& first, IPosition& blc2, IPosition& trc2, Int shape2, Int axis,
-                const IPosition& blc, const IPosition& trc, const IPosition& stride, Int start);
-  bool getSlice1(Array<T>& buffer, const Slicer& section, uInt nLattices);
-  bool getSlice2(Array<T>& buffer, const Slicer& section, uInt nLattices);
+  Slicer setup2(bool& first, IPosition& blc2, IPosition& trc2, int shape2, int axis,
+                const IPosition& blc, const IPosition& trc, const IPosition& stride, int start);
+  bool getSlice1(Array<T>& buffer, const Slicer& section, unsigned int nLattices);
+  bool getSlice2(Array<T>& buffer, const Slicer& section, unsigned int nLattices);
   bool putSlice1(const Array<T>& buffer, const IPosition& where, const IPosition& stride,
-                 uInt nLattices);
+                 unsigned int nLattices);
 
   bool putSlice2(const Array<T>& buffer, const IPosition& where, const IPosition& stride,
-                 uInt nLattices);
-  bool getMaskSlice1(Array<bool>& buffer, const Slicer& section, uInt nLattices);
-  bool getMaskSlice2(Array<bool>& buffer, const Slicer& section, uInt nLattices);
+                 unsigned int nLattices);
+  bool getMaskSlice1(Array<bool>& buffer, const Slicer& section, unsigned int nLattices);
+  bool getMaskSlice2(Array<bool>& buffer, const Slicer& section, unsigned int nLattices);
 };
 
 }  // namespace casacore

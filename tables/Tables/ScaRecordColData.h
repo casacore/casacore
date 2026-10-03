@@ -141,10 +141,10 @@ class ScalarRecordColumnData : public PlainColumn {
   // Add this column and its data to the Sort object.
   // Sorting on records is not supported, so an exception is thrown.
   // <group>
-  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, int order,
                            std::shared_ptr<ArrayBase>& dataSave);
   // Do it only for the given row numbers.
-  virtual void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, int order,
                               const Vector<rownr_t>& rownrs, std::shared_ptr<ArrayBase>& dataSave);
   // </group>
 

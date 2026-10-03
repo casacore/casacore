@@ -37,10 +37,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class BFEngineMask {
  public:
   // Form the mask as given.
-  explicit BFEngineMask(uInt mask = 0xffffffff);
+  explicit BFEngineMask(unsigned int mask = 0xffffffff);
 
   // Form the mask from the given keywords defining the bits.
-  BFEngineMask(const Array<String>& keys, uInt defaultMask);
+  BFEngineMask(const Array<String>& keys, unsigned int defaultMask);
 
   // Make the mask from the given keywords defining the bits.
   void makeMask(const TableColumn& column);
@@ -53,14 +53,14 @@ class BFEngineMask {
   void toRecord(RecordInterface& spec, const String& prefix) const;
 
   // Get the mask.
-  uInt getMask() const { return itsMask; }
+  unsigned int getMask() const { return itsMask; }
 
   // Get the mask keywords.
   const Array<String>& getKeys() const { return itsMaskKeys; }
 
  private:
   Array<String> itsMaskKeys;
-  uInt itsMask;
+  unsigned int itsMask;
 };
 
 // <summary>

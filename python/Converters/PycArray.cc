@@ -68,7 +68,7 @@ ValueHolder casa_array_from_python::makeArrayFromDict(PyObject* obj_ptr) {
   dict d = extract<dict>(obj_ptr)();
   IPosition shp = extract<IPosition>(d.get("shape").ptr())();
   Array<String> arr = extract<Vector<String>>(d.get("array").ptr())();
-  if (Int(arr.size()) != shp.product()) {
+  if (int(arr.size()) != shp.product()) {
     throw AipsError("PycArray: array size mismatches the shape");
   }
   return ValueHolder(arr.reform(shp));
@@ -88,14 +88,14 @@ object makePyArrayObject(casacore::Array<String> const& arr) {
 
 // Instantiate the templates.
 template boost::python::object makePyArrayObject(casacore::Array<bool> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<uChar> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Short> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<uShort> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Int> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<uInt> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Int64> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Float> const& arr);
-template boost::python::object makePyArrayObject(casacore::Array<Double> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<unsigned char> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<short> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<unsigned short> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<int> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<unsigned int> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<int64_t> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<float> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<double> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<Complex> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<DComplex> const& arr);
 

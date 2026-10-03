@@ -55,10 +55,10 @@
 #include <casacore/casa/namespace.h>
 bool checkInfo(const LatticeExprNode& expr, const IPosition& shape, const bool shouldBeScalar,
                const bool undefinedScalar, const DataType dtype, const bool emptyShape = false);
-bool compareScalarFloat(const LatticeExprNode expr, const LatticeExprNode expr2, const Float bFVal,
+bool compareScalarFloat(const LatticeExprNode expr, const LatticeExprNode expr2, const float bFVal,
                         const IPosition shape);
 bool compareScalarDouble(const LatticeExprNode expr, const LatticeExprNode expr2,
-                         const Double bDVal, const IPosition shape);
+                         const double bDVal, const IPosition shape);
 bool compareScalarComplex(const LatticeExprNode expr, const LatticeExprNode expr2,
                           const Complex bCVal, const IPosition shape);
 bool compareScalarDComplex(const LatticeExprNode expr, const LatticeExprNode expr2,
@@ -66,12 +66,12 @@ bool compareScalarDComplex(const LatticeExprNode expr, const LatticeExprNode exp
 bool compareScalarBool(const LatticeExprNode expr, const LatticeExprNode expr2, const bool bBVal,
                        const IPosition shape);
 
-bool checkFloat(const LatticeExprNode& expr, const Float result, const IPosition& shape,
+bool checkFloat(const LatticeExprNode& expr, const float result, const IPosition& shape,
                 const bool shouldBeScalar, const bool undefinedScalar);
-bool checkFloatRepl(const LatticeExprNode& expr, const Float result, const IPosition& shape,
-                    const Array<Float>& replArray, Float replScalar, bool isReplScalar);
+bool checkFloatRepl(const LatticeExprNode& expr, const float result, const IPosition& shape,
+                    const Array<float>& replArray, float replScalar, bool isReplScalar);
 
-bool checkDouble(const LatticeExprNode& expr, const Double result, const IPosition& shape,
+bool checkDouble(const LatticeExprNode& expr, const double result, const IPosition& shape,
                  const bool shouldBeScalar, const bool undefinedScalar);
 
 bool checkComplex(const LatticeExprNode& expr, const Complex result, const IPosition& shape,
@@ -88,14 +88,14 @@ bool checkBoolRepl(const LatticeExprNode& expr, const bool result, const IPositi
 
 bool checkMask(const LatticeExprNode& expr, bool hasMask, const Array<bool>& result);
 
-bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
-          const MaskedLattice<Float>& cF, const MaskedLattice<Double>& bD,
-          const MaskedLattice<Double>& cD, const MaskedLattice<Complex>& bC,
+bool doIt(const MaskedLattice<float>& aF, const MaskedLattice<float>& bF,
+          const MaskedLattice<float>& cF, const MaskedLattice<double>& bD,
+          const MaskedLattice<double>& cD, const MaskedLattice<Complex>& bC,
           const MaskedLattice<Complex>& cC, const MaskedLattice<DComplex>& bDC,
           const MaskedLattice<DComplex>& cDC, const MaskedLattice<bool>& aB,
-          const MaskedLattice<bool>& bB, const MaskedLattice<bool>& cB, Float bFVal, Float cFVal,
-          Double bDVal, Double cDVal, Complex bCVal, Complex cCVal, DComplex bDCVal,
-          DComplex cDCVal, bool aBVal, bool bBVal, bool cBVal, uInt nb) {
+          const MaskedLattice<bool>& bB, const MaskedLattice<bool>& cB, float bFVal, float cFVal,
+          double bDVal, double cDVal, Complex bCVal, Complex cCVal, DComplex bDCVal,
+          DComplex cDCVal, bool aBVal, bool bBVal, bool cBVal, unsigned int nb) {
   bool ok = true;
   IPosition shape = aF.shape();
 
@@ -108,9 +108,9 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
   cout << "LatticeExprNode (constant T) " << endl;
   {
     cout << "  Int " << endl;
-    Int bIVal = Int(bFVal);
+    int bIVal = int(bFVal);
     LatticeExprNode expr(bIVal);
-    if (!checkFloat(expr, Float(bIVal), shape, true, false)) ok = false;
+    if (!checkFloat(expr, float(bIVal), shape, true, false)) ok = false;
   }
 
   {
@@ -154,14 +154,14 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
   cout << "LatticeExprNode(std::shared_ptr<LELInterface<T>>&) " << endl;
   {
     cout << "  Float" << endl;
-    auto pExpr = std::make_shared<LELUnaryConst<Float>>(bFVal);
+    auto pExpr = std::make_shared<LELUnaryConst<float>>(bFVal);
     LatticeExprNode expr(pExpr);
     LatticeExprNode expr2(bFVal);
     if (!compareScalarFloat(expr, expr2, bFVal, shape)) ok = false;
   }
   {
     cout << "  Double" << endl;
-    auto pExpr = std::make_shared<LELUnaryConst<Double>>(bDVal);
+    auto pExpr = std::make_shared<LELUnaryConst<double>>(bDVal);
     LatticeExprNode expr(pExpr);
     LatticeExprNode expr2(bDVal);
     if (!compareScalarDouble(expr, expr2, bDVal, shape)) ok = false;
@@ -1551,7 +1551,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  Complex Array" << endl;
     LatticeExprNode expr1(bC);
     LatticeExprNode expr2 = sum(expr1);
-    if (!checkComplex(expr2, Float(nb) * bCVal, shape, true, false)) ok = false;
+    if (!checkComplex(expr2, float(nb) * bCVal, shape, true, false)) ok = false;
   }
   cout << "nelements" << endl;
   {
@@ -1570,13 +1570,13 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  Float Array" << endl;
     LatticeExprNode expr1(bF);
     LatticeExprNode expr2 = nelements(expr1);
-    if (!checkDouble(expr2, Double(nb), shape, true, false)) ok = false;
+    if (!checkDouble(expr2, double(nb), shape, true, false)) ok = false;
   }
   {
     cout << "  Complex Array" << endl;
     LatticeExprNode expr1(bC);
     LatticeExprNode expr2 = nelements(expr1);
-    if (!checkDouble(expr2, Double(nb), shape, true, false)) ok = false;
+    if (!checkDouble(expr2, double(nb), shape, true, false)) ok = false;
   }
   cout << "ndim" << endl;
   {
@@ -1607,13 +1607,13 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
   {
     cout << "  Float Scalar" << endl;
     LatticeExprNode expr1(bFVal);
-    LatticeExprNode expr2 = length(expr1, Float(0));
+    LatticeExprNode expr2 = length(expr1, float(0));
     if (!checkFloat(expr2, 1.0, shape, true, false)) ok = false;
   }
   {
     cout << "  Complex Scalar" << endl;
     LatticeExprNode expr1(bCVal);
-    LatticeExprNode expr2 = length(expr1, Double(0));
+    LatticeExprNode expr2 = length(expr1, double(0));
     if (!checkFloat(expr2, 1.0, shape, true, false)) ok = false;
   }
   {
@@ -1653,7 +1653,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  Bool Array" << endl;
     LatticeExprNode expr1(bB);
     LatticeExprNode expr2 = ntrue(expr1);
-    Double result;
+    double result;
     if (bBVal) {
       result = nb;
     } else {
@@ -1666,7 +1666,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  Bool Array" << endl;
     LatticeExprNode expr1(bB);
     LatticeExprNode expr2 = nfalse(expr1);
-    Double result;
+    double result;
     if (!bBVal) {
       result = nb;
     } else {
@@ -1837,7 +1837,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode expr1(bFVal);
     LatticeExprNode expr2(cFVal);
     LatticeExprNode expr3 = amp(expr1, expr2);
-    Float result = sqrt(bFVal * bFVal + cFVal * cFVal);
+    float result = sqrt(bFVal * bFVal + cFVal * cFVal);
     if (!checkFloat(expr3, result, shape, true, false)) ok = false;
   }
   {
@@ -1853,7 +1853,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode expr1(bF);
     LatticeExprNode expr2(cF);
     LatticeExprNode expr3 = amp(expr1, expr2);
-    Float result = sqrt(bFVal * bFVal + cFVal * cFVal);
+    float result = sqrt(bFVal * bFVal + cFVal * cFVal);
     if (!checkFloat(expr3, result, shape, false, false)) ok = false;
     if (!checkMask(expr3, (bF.isMasked() || cF.isMasked()), bF.getMask() && cF.getMask()))
       ok = false;
@@ -1872,7 +1872,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode expr1(bFVal);
     LatticeExprNode expr2(cFVal);
     LatticeExprNode expr3 = pa(expr1, expr2);
-    Float result = 90.0 / M_PI * atan2(bFVal, cFVal);
+    float result = 90.0 / M_PI * atan2(bFVal, cFVal);
     if (!checkFloat(expr3, result, shape, true, false)) ok = false;
   }
   {
@@ -1880,7 +1880,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode expr1(bF);
     LatticeExprNode expr2(cF);
     LatticeExprNode expr3 = pa(expr1, expr2);
-    Float result = 90.0 / M_PI * atan2(bFVal, cFVal);
+    float result = 90.0 / M_PI * atan2(bFVal, cFVal);
     if (!checkFloat(expr3, result, shape, false, false)) ok = false;
     if (!checkMask(expr3, (bF.isMasked() || cF.isMasked()), bF.getMask() && cF.getMask()))
       ok = false;
@@ -1890,7 +1890,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode expr1(bDVal);
     LatticeExprNode expr2(cDVal);
     LatticeExprNode expr3 = pa(expr1, expr2);
-    Double result = 90.0 / M_PI * atan2(bDVal, cDVal);
+    double result = 90.0 / M_PI * atan2(bDVal, cDVal);
     if (!checkDouble(expr3, result, shape, true, false)) ok = false;
   }
   {
@@ -1898,7 +1898,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode expr1(bD);
     LatticeExprNode expr2(cD);
     LatticeExprNode expr3 = pa(expr1, expr2);
-    Double result = 90.0 / M_PI * atan2(bDVal, cDVal);
+    double result = 90.0 / M_PI * atan2(bDVal, cDVal);
     if (!checkDouble(expr3, result, shape, false, false)) ok = false;
   }
   cout << "mask" << endl;
@@ -2049,22 +2049,22 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     LatticeExprNode nodeBin(binfac);
     //
     IPosition binI(shapeIn.nelements());
-    for (uInt i = 0; i < binI.nelements(); i++) {
+    for (unsigned int i = 0; i < binI.nelements(); i++) {
       binI[i] = 2;
     }
     //
     {
       cout << "  Float" << endl;
-      ArrayLattice<Float> lat(shapeIn);
+      ArrayLattice<float> lat(shapeIn);
       lat.set(1.0);
-      SubLattice<Float> mLat(lat);
-      RebinLattice<Float> rL(mLat, binI);
+      SubLattice<float> mLat(lat);
+      RebinLattice<float> rL(mLat, binI);
       IPosition shapeBin = rL.shape();
       //
       LatticeExprNode expr = rebin(mLat, nodeBin);
-      const Array<Float>& data = expr.getArrayFloat();
+      const Array<float>& data = expr.getArrayFloat();
       AlwaysAssert(data.shape().isEqual(shapeBin), AipsError);
-      AlwaysAssert(allNear(data, Float(1.0), Float(1.0e-6)), AipsError);
+      AlwaysAssert(allNear(data, float(1.0), float(1.0e-6)), AipsError);
       AlwaysAssert(allNear(data, rL.get(), 1.0e-6), AipsError);
       //
       bool hasMask = rL.isMasked();
@@ -2072,16 +2072,16 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     }
     {
       cout << "  Double" << endl;
-      ArrayLattice<Double> lat(shapeIn);
+      ArrayLattice<double> lat(shapeIn);
       lat.set(1.0);
-      SubLattice<Double> mLat(lat);
-      RebinLattice<Double> rL(mLat, binI);
+      SubLattice<double> mLat(lat);
+      RebinLattice<double> rL(mLat, binI);
       IPosition shapeBin = rL.shape();
       //
       LatticeExprNode expr = rebin(mLat, nodeBin);
-      const Array<Double>& data = expr.getArrayDouble();
+      const Array<double>& data = expr.getArrayDouble();
       AlwaysAssert(data.shape().isEqual(shapeBin), AipsError);
-      AlwaysAssert(allNear(data, Double(1.0), Double(1.0e-6)), AipsError);
+      AlwaysAssert(allNear(data, double(1.0), double(1.0e-6)), AipsError);
       AlwaysAssert(allNear(data, rL.get(), 1.0e-6), AipsError);
       //
       bool hasMask = rL.isMasked();
@@ -2254,7 +2254,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  from Double Scalar" << endl;
     LatticeExprNode expr1(bDVal);
     LatticeExprNode expr2 = toFloat(expr1);
-    if (!checkFloat(expr2, Float(bDVal), shape, true, false)) ok = false;
+    if (!checkFloat(expr2, float(bDVal), shape, true, false)) ok = false;
   }
   {
     cout << "  from Float Array" << endl;
@@ -2267,7 +2267,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  from Double Array" << endl;
     LatticeExprNode expr1(bD);
     LatticeExprNode expr2 = toFloat(expr1);
-    if (!checkFloat(expr2, Float(bDVal), shape, false, false)) ok = false;
+    if (!checkFloat(expr2, float(bDVal), shape, false, false)) ok = false;
     if (!checkMask(expr2, bF.isMasked(), bF.getMask())) ok = false;
   }
   cout << "toDouble" << endl;
@@ -2275,7 +2275,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  from Float Scalar" << endl;
     LatticeExprNode expr1(bFVal);
     LatticeExprNode expr2 = toDouble(expr1);
-    if (!checkDouble(expr2, Double(bFVal), shape, true, false)) ok = false;
+    if (!checkDouble(expr2, double(bFVal), shape, true, false)) ok = false;
   }
   {
     cout << "  from Double Scalar" << endl;
@@ -2287,7 +2287,7 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
     cout << "  from Float Array" << endl;
     LatticeExprNode expr1(bF);
     LatticeExprNode expr2 = toDouble(expr1);
-    if (!checkDouble(expr2, Double(bFVal), shape, false, false)) ok = false;
+    if (!checkDouble(expr2, double(bFVal), shape, false, false)) ok = false;
   }
   {
     cout << "  from Double Scalar" << endl;
@@ -2412,33 +2412,33 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
   {
     cout << "  from Float" << endl;
     LatticeExprNode expr1(bF);
-    LatticeExpr<Float> expr2 = (LatticeExpr<Float>)expr1;
+    LatticeExpr<float> expr2 = (LatticeExpr<float>)expr1;
     LatticeExprNode expr3(expr2);
-    if (!checkFloat(expr3, Float(bFVal), shape, false, false)) ok = false;
+    if (!checkFloat(expr3, float(bFVal), shape, false, false)) ok = false;
     if (!checkMask(expr3, bF.isMasked(), bF.getMask())) ok = false;
   }
   {
     cout << "  from Double" << endl;
     LatticeExprNode expr1(bD);
-    LatticeExpr<Float> expr2 = (LatticeExpr<Float>)expr1;
+    LatticeExpr<float> expr2 = (LatticeExpr<float>)expr1;
     LatticeExprNode expr3(expr2);
-    if (!checkFloat(expr3, Float(bDVal), shape, false, false)) ok = false;
+    if (!checkFloat(expr3, float(bDVal), shape, false, false)) ok = false;
     if (!checkMask(expr3, bF.isMasked(), bF.getMask())) ok = false;
   }
   cout << "LatticeExpr<Double>()" << endl;
   {
     cout << "  from Float" << endl;
     LatticeExprNode expr1(bF);
-    LatticeExpr<Double> expr2 = (LatticeExpr<Double>)expr1;
+    LatticeExpr<double> expr2 = (LatticeExpr<double>)expr1;
     LatticeExprNode expr3(expr2);
-    if (!checkDouble(expr3, Double(bFVal), shape, false, false)) ok = false;
+    if (!checkDouble(expr3, double(bFVal), shape, false, false)) ok = false;
   }
   {
     cout << "  from Double" << endl;
     LatticeExprNode expr1(bD);
-    LatticeExpr<Double> expr2 = (LatticeExpr<Double>)expr1;
+    LatticeExpr<double> expr2 = (LatticeExpr<double>)expr1;
     LatticeExprNode expr3(expr2);
-    if (!checkDouble(expr3, Double(bDVal), shape, false, false)) ok = false;
+    if (!checkDouble(expr3, double(bDVal), shape, false, false)) ok = false;
   }
   cout << "LatticeExpr<Complex>()" << endl;
   {
@@ -2512,14 +2512,14 @@ bool doIt(const MaskedLattice<Float>& aF, const MaskedLattice<Float>& bF,
   return ok;
 }
 
-bool compareScalarFloat(const LatticeExprNode expr, const LatticeExprNode expr2, const Float bVal,
+bool compareScalarFloat(const LatticeExprNode expr, const LatticeExprNode expr2, const float bVal,
                         const IPosition shape) {
-  LELArray<Float> Arr(shape);
-  LELArray<Float> Arr2(shape);
+  LELArray<float> Arr(shape);
+  LELArray<float> Arr2(shape);
   // Test LELArray copy constructor and assignment.
-  LELArray<Float> Arrt(Arr);
+  LELArray<float> Arrt(Arr);
   Arrt = Arr2;
-  Float result, result2;
+  float result, result2;
   IPosition origin(shape);
   origin = 0;
   Slicer region(origin, shape);
@@ -2561,11 +2561,11 @@ bool compareScalarFloat(const LatticeExprNode expr, const LatticeExprNode expr2,
   return ok;
 }
 
-bool compareScalarDouble(const LatticeExprNode expr, const LatticeExprNode expr2, const Double bVal,
+bool compareScalarDouble(const LatticeExprNode expr, const LatticeExprNode expr2, const double bVal,
                          const IPosition shape) {
-  LELArray<Double> Arr(shape);
-  LELArray<Double> Arr2(shape);
-  Double result, result2;
+  LELArray<double> Arr(shape);
+  LELArray<double> Arr2(shape);
+  double result, result2;
   IPosition origin(shape);
   origin = 0;
   Slicer region(origin, shape);
@@ -2787,11 +2787,11 @@ bool checkInfo(const LatticeExprNode& expr, const IPosition& shape, const bool s
   return ok;
 }
 
-bool checkFloat(const LatticeExprNode& expr, const Float result, const IPosition& shape,
+bool checkFloat(const LatticeExprNode& expr, const float result, const IPosition& shape,
                 const bool shouldBeScalar, const bool undefinedScalar) {
   bool ok = checkInfo(expr, shape, shouldBeScalar, undefinedScalar, TpFloat);
-  Float result2;
-  LELArray<Float> Arr(shape);
+  float result2;
+  LELArray<float> Arr(shape);
   IPosition origin(shape);
   origin = 0;
   Slicer region(origin, shape);
@@ -2820,10 +2820,10 @@ bool checkFloat(const LatticeExprNode& expr, const Float result, const IPosition
   return ok;
 }
 
-bool checkFloatRepl(const LatticeExprNode& expr, const Float result, const IPosition& shape,
-                    const Array<Float>& replArray, Float replScalar, bool isReplScalar) {
+bool checkFloatRepl(const LatticeExprNode& expr, const float result, const IPosition& shape,
+                    const Array<float>& replArray, float replScalar, bool isReplScalar) {
   bool ok = checkInfo(expr, shape, false, false, TpFloat);
-  LELArray<Float> Arr(shape);
+  LELArray<float> Arr(shape);
   IPosition origin(shape);
   origin = 0;
   Slicer region(origin, shape);
@@ -2837,13 +2837,13 @@ bool checkFloatRepl(const LatticeExprNode& expr, const Float result, const IPosi
   } else {
     bool delres, delmask, delrepl;
     const bool* mask = Arr.mask().getStorage(delmask);
-    const Float* res = Arr.value().getStorage(delres);
-    const Float* repl = 0;
+    const float* res = Arr.value().getStorage(delres);
+    const float* repl = 0;
     if (!isReplScalar) {
       repl = replArray.getStorage(delrepl);
     }
-    uInt n = Arr.value().nelements();
-    for (uInt i = 0; i < n; i++) {
+    unsigned int n = Arr.value().nelements();
+    for (unsigned int i = 0; i < n; i++) {
       if (!mask[i]) {
         if (!isReplScalar) {
           replScalar = repl[i];
@@ -2870,11 +2870,11 @@ bool checkFloatRepl(const LatticeExprNode& expr, const Float result, const IPosi
   return ok;
 }
 
-bool checkDouble(const LatticeExprNode& expr, const Double result, const IPosition& shape,
+bool checkDouble(const LatticeExprNode& expr, const double result, const IPosition& shape,
                  const bool shouldBeScalar, const bool undefinedScalar) {
   bool ok = true;
-  Double result2;
-  LELArray<Double> Arr(shape);
+  double result2;
+  LELArray<double> Arr(shape);
   IPosition origin(shape);
   origin = 0;
   Slicer region(origin, shape);
@@ -3102,8 +3102,8 @@ bool checkBoolRepl(const LatticeExprNode& expr, const bool result, const IPositi
     if (!isReplScalar) {
       repl = replArray.getStorage(delrepl);
     }
-    uInt n = Arr.value().nelements();
-    for (uInt i = 0; i < n; i++) {
+    unsigned int n = Arr.value().nelements();
+    for (unsigned int i = 0; i < n; i++) {
       if (!mask[i]) {
         if (!isReplScalar) {
           replScalar = repl[i];
@@ -3149,14 +3149,14 @@ bool checkMask(const LatticeExprNode& expr, bool hasMask, const Array<bool>& res
       break;
     }
     case TpFloat: {
-      LELArray<Float> arr(result.shape());
+      LELArray<float> arr(result.shape());
       expr.eval(arr, region);
       isMasked = arr.isMasked();
       if (isMasked) mask = arr.mask();
       break;
     }
     case TpDouble: {
-      LELArray<Double> arr(result.shape());
+      LELArray<double> arr(result.shape());
       expr.eval(arr, region);
       isMasked = arr.isMasked();
       if (isMasked) mask = arr.mask();
@@ -3205,8 +3205,8 @@ int main(int argc, const char* argv[]) {
     inp.readArguments(argc, argv);
     cout << "<<<" << endl;
 
-    const uInt nx = inp.getInt("nx");
-    const uInt ny = inp.getInt("ny");
+    const unsigned int nx = inp.getInt("nx");
+    const unsigned int ny = inp.getInt("ny");
 
     //
     // The use of these tiny ArrayLattices means this test program
@@ -3230,26 +3230,26 @@ int main(int argc, const char* argv[]) {
 
     // FLoat Lattices
 
-    ArrayLattice<Float> aF(shape);
-    ArrayLattice<Float> bF(shape);
-    ArrayLattice<Float> cF(shape);
-    Float aFVal = 0.0;
+    ArrayLattice<float> aF(shape);
+    ArrayLattice<float> bF(shape);
+    ArrayLattice<float> cF(shape);
+    float aFVal = 0.0;
     aF.set(aFVal);
-    Float bFVal = 1.0;
+    float bFVal = 1.0;
     bF.set(1.0);
-    Float cFVal = 2.0;
+    float cFVal = 2.0;
     cF.set(cFVal);
 
     // Double Lattices
 
-    ArrayLattice<Double> aD(shape);
-    ArrayLattice<Double> bD(shape);
-    ArrayLattice<Double> cD(shape);
-    Double aDVal = 0.0;
+    ArrayLattice<double> aD(shape);
+    ArrayLattice<double> bD(shape);
+    ArrayLattice<double> cD(shape);
+    double aDVal = 0.0;
     aD.set(aDVal);
-    Double bDVal = 1.0;
+    double bDVal = 1.0;
     bD.set(1.0);
-    Double cDVal = 2.0;
+    double cDVal = 2.0;
     cD.set(cDVal);
 
     // Complex Lattices
@@ -3297,16 +3297,16 @@ int main(int argc, const char* argv[]) {
     LCPixelSet mask2(mat2, box);
     LCPixelSet mask3(mat3, box);
 
-    if (!doIt(SubLattice<Float>(aF), SubLattice<Float>(bF), SubLattice<Float>(cF),
-              SubLattice<Double>(bD), SubLattice<Double>(cD), SubLattice<Complex>(bC),
+    if (!doIt(SubLattice<float>(aF), SubLattice<float>(bF), SubLattice<float>(cF),
+              SubLattice<double>(bD), SubLattice<double>(cD), SubLattice<Complex>(bC),
               SubLattice<Complex>(cC), SubLattice<DComplex>(bDC), SubLattice<DComplex>(cDC),
               SubLattice<bool>(aB), SubLattice<bool>(bB), SubLattice<bool>(cB), bFVal, cFVal, bDVal,
               cDVal, bCVal, cCVal, bDCVal, cDCVal, aBVal, bBVal, cBVal, 4)) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask1), SubLattice<Float>(bF, mask2),
-              SubLattice<Float>(cF, mask3), SubLattice<Double>(bD, mask2),
-              SubLattice<Double>(cD, mask3), SubLattice<Complex>(bC, mask2),
+    if (!doIt(SubLattice<float>(aF, mask1), SubLattice<float>(bF, mask2),
+              SubLattice<float>(cF, mask3), SubLattice<double>(bD, mask2),
+              SubLattice<double>(cD, mask3), SubLattice<Complex>(bC, mask2),
               SubLattice<Complex>(cC, mask3), SubLattice<DComplex>(bDC, mask2),
               SubLattice<DComplex>(cDC, mask3), SubLattice<bool>(aB, mask1),
               SubLattice<bool>(bB, mask2), SubLattice<bool>(cB, mask3), bFVal, cFVal, bDVal, cDVal,
@@ -3315,9 +3315,9 @@ int main(int argc, const char* argv[]) {
     }
     mat2 = false;
     mask2 = LCPixelSet(mat2, box);
-    if (!doIt(SubLattice<Float>(aF, mask1), SubLattice<Float>(bF, mask2),
-              SubLattice<Float>(cF, mask3), SubLattice<Double>(bD, mask2),
-              SubLattice<Double>(cD, mask3), SubLattice<Complex>(bC, mask2),
+    if (!doIt(SubLattice<float>(aF, mask1), SubLattice<float>(bF, mask2),
+              SubLattice<float>(cF, mask3), SubLattice<double>(bD, mask2),
+              SubLattice<double>(cD, mask3), SubLattice<Complex>(bC, mask2),
               SubLattice<Complex>(cC, mask3), SubLattice<DComplex>(bDC, mask2),
               SubLattice<DComplex>(cDC, mask3), SubLattice<bool>(aB, mask1),
               SubLattice<bool>(bB, mask2), SubLattice<bool>(cB, mask3), bFVal, cFVal, bDVal, cDVal,

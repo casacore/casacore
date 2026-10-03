@@ -95,20 +95,20 @@ class FunctionOrder : public RecordTransformable {
   //  Get and set the various parameters (no check for index range).
   //  Automatic extension for write.
   //  <group>
-  Int &getInt(const uInt n);
-  const Int &getInt(const uInt n) const;
-  T &getPar(const uInt n);
-  const T &getPar(const uInt n) const;
+  int &getInt(const unsigned int n);
+  const int &getInt(const unsigned int n) const;
+  T &getPar(const unsigned int n);
+  const T &getPar(const unsigned int n) const;
   String &getString();
   const String &getString() const;
-  T &getScale(const uInt n);
-  const T &getScale(const uInt n) const;
-  T &getCenter(const uInt n);
-  const T &getCenter(const uInt n) const;
-  T &getWidth(const uInt n);
-  const T &getWidth(const uInt n) const;
-  const Function<T> &getFunction(const uInt n) const;
-  void setFunction(const uInt n, Function<T> &other);
+  T &getScale(const unsigned int n);
+  const T &getScale(const unsigned int n) const;
+  T &getCenter(const unsigned int n);
+  const T &getCenter(const unsigned int n) const;
+  T &getWidth(const unsigned int n);
+  const T &getWidth(const unsigned int n) const;
+  const Function<T> &getFunction(const unsigned int n) const;
+  void setFunction(const unsigned int n, Function<T> &other);
   // </group>
 
   // Create a FunctionOrder from a record
@@ -131,7 +131,7 @@ class FunctionOrder : public RecordTransformable {
   //  All data vectors can be empty
   //  <group>
   //  Integer details (order etc)
-  Vector<Int> int_p;
+  Vector<int> int_p;
   // Double parameters
   Vector<T> double_p;
   // String parameters

@@ -105,7 +105,7 @@ class ConstantNDParam : public Function<T> {
   //  Construct a constant in m-dimensional space.  By
   //  default, the constant value is initialized to zero.
   //  <group>
-  explicit ConstantNDParam(uInt m = 0);
+  explicit ConstantNDParam(unsigned int m = 0);
   // </group>
 
   // Copy constructor (deep copy)
@@ -142,7 +142,7 @@ class ConstantNDParam : public Function<T> {
   };
 
   // What is the dimension of the parameter list
-  virtual uInt ndim() const { return _ndim; };
+  virtual unsigned int ndim() const { return _ndim; };
 
   // # Make members of parent classes known.
  protected:
@@ -152,7 +152,7 @@ class ConstantNDParam : public Function<T> {
   using Function<T>::nparameters;
 
  private:
-  uInt _ndim;
+  unsigned int _ndim;
 };
 
 }  // namespace casacore

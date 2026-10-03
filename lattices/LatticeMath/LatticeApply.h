@@ -146,11 +146,11 @@ class LatticeApply {
   // The default region is the entire input lattice.
   // <group>
   static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
-                        LineCollapser<T, U>& collapser, uInt collapseAxis,
+                        LineCollapser<T, U>& collapser, unsigned int collapseAxis,
                         LatticeProgress* tellProgress = 0);
   static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                         const LatticeRegion& region, LineCollapser<T, U>& collapser,
-                        uInt collapseAxis, LatticeProgress* tellProgress = 0);
+                        unsigned int collapseAxis, LatticeProgress* tellProgress = 0);
   // </group>
 
   // This function iterates line by line through an input lattice and applies
@@ -163,11 +163,11 @@ class LatticeApply {
   // <group>
   static void lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                              const MaskedLattice<T>& latticeIn, LineCollapser<T, U>& collapser,
-                             uInt collapseAxis, LatticeProgress* tellProgress = 0);
+                             unsigned int collapseAxis, LatticeProgress* tellProgress = 0);
 
   static void lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                              const MaskedLattice<T>& latticeIn, const LatticeRegion& region,
-                             LineCollapser<T, U>& collapser, uInt collapseAxis,
+                             LineCollapser<T, U>& collapser, unsigned int collapseAxis,
                              LatticeProgress* tellProgress = 0);
   // </group>
 
@@ -184,10 +184,10 @@ class LatticeApply {
   // <group>
   static void tiledApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                          TiledCollapser<T, U>& collapser, const IPosition& collapseAxes,
-                         Int newOutAxis = -1, LatticeProgress* tellProgress = 0);
+                         int newOutAxis = -1, LatticeProgress* tellProgress = 0);
   static void tiledApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                          const LatticeRegion& region, TiledCollapser<T, U>& collapser,
-                         const IPosition& collapseAxes, Int newOutAxis = -1,
+                         const IPosition& collapseAxes, int newOutAxis = -1,
                          LatticeProgress* tellProgress = 0);
   // </group>
 
@@ -223,9 +223,9 @@ class LatticeApply {
   // -1 means that the function has to find it out itself; it takes the
   // first axis with a length mismatching the corresponding input axis.
   static IPosition prepare(const IPosition& shapeIn, const IPosition& shapeOut,
-                           const IPosition& collapseAxes, Int newOutAxis);
+                           const IPosition& collapseAxes, int newOutAxis);
 
-  static IPosition _chunkShape(uInt axis, const MaskedLattice<T>& latticeIn);
+  static IPosition _chunkShape(unsigned int axis, const MaskedLattice<T>& latticeIn);
 };
 
 }  // namespace casacore

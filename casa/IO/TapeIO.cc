@@ -95,21 +95,21 @@ void TapeIO::attach(const Path& device, bool writable) {
   itsDeviceName = device.absoluteName();
 }
 
-void TapeIO::write(Int64 size, const void* buf) {
+void TapeIO::write(int64_t size, const void* buf) {
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw(AipsError("TapeIO object is not writable"));
   }
-  if (::write(itsDevice, buf, size) != static_cast<Int>(size)) {
+  if (::write(itsDevice, buf, size) != static_cast<int>(size)) {
     throw(AipsError(String("TapeIO: write error: ") + strerror(errno)));
   }
 }
 
-Int64 TapeIO::read(Int64 size, void* buf, bool throwException) {
+int64_t TapeIO::read(int64_t size, void* buf, bool throwException) {
   if (!itsReadable) {
     throw(AipsError("TapeIO::read - tape is not readable"));
   }
-  Int64 bytesRead = ::read(itsDevice, buf, size);
+  int64_t bytesRead = ::read(itsDevice, buf, size);
   if (bytesRead < 0) {
     throw(AipsError(String("TapeIO::read - "
                            " error returned by system call: ") +
@@ -138,7 +138,7 @@ void TapeIO::rewind() {
   struct mtop tapeCommand;
   tapeCommand.mt_op = MTREW;
   tapeCommand.mt_count = 1;
-  Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+  int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
   if (error != 0) {
     throw(AipsError(String("TapeIO::rewind - error returned by ioctl: ") + strerror(errno)));
   }
@@ -146,43 +146,43 @@ void TapeIO::rewind() {
 }
 
 #ifndef CASA_NOTAPE
-void TapeIO::skip(uInt howMany) {
+void TapeIO::skip(unsigned int howMany) {
   if (howMany > 0) {
     struct mtop tapeCommand;
     tapeCommand.mt_op = MTFSF;
     tapeCommand.mt_count = howMany;
-    Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+    int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
     if (error != 0) {
       throw(AipsError(String("TapeIO::skip - error returned by ioctl: ") + strerror(errno)));
     }
   }
 }
 #else
-void TapeIO::skip(uInt) {}
+void TapeIO::skip(unsigned int) {}
 #endif
 
 #ifndef CASA_NOTAPE
-void TapeIO::mark(uInt howMany) {
+void TapeIO::mark(unsigned int howMany) {
   DebugAssert(isWritable(), AipsError);
   if (howMany > 0) {
     struct mtop tapeCommand;
     tapeCommand.mt_op = MTWEOF;
     tapeCommand.mt_count = howMany;
-    Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+    int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
     if (error != 0) {
       throw(AipsError(String("TapeIO::mark - error returned by ioctl: ") + strerror(errno)));
     }
   }
 }
 #else
-void TapeIO::mark(uInt) {}
+void TapeIO::mark(unsigned int) {}
 #endif
 
 bool TapeIO::fixedBlocks() const { return (getBlockSize() != 0) ? true : false; }
 
-uInt TapeIO::fixedBlockSize() const { return getBlockSize(); }
+unsigned int TapeIO::fixedBlockSize() const { return getBlockSize(); }
 
-void TapeIO::setFixedBlockSize(uInt sizeInBytes) {
+void TapeIO::setFixedBlockSize(unsigned int sizeInBytes) {
   DebugAssert(sizeInBytes > 0, AipsError);
   setBlockSize(sizeInBytes);
 }
@@ -194,7 +194,7 @@ void TapeIO::setVariableBlockSize() {
 }
 
 #if (defined(AIPS_SOLARIS) || defined(AIPS_LINUX)) && !defined(CASA_NOTAPE)
-void TapeIO::setBlockSize(uInt sizeInBytes) {
+void TapeIO::setBlockSize(unsigned int sizeInBytes) {
   struct mtop tapeCommand;
 #if defined(AIPS_LINUX)
   tapeCommand.mt_op = MTSETBLK;
@@ -202,21 +202,21 @@ void TapeIO::setBlockSize(uInt sizeInBytes) {
   tapeCommand.mt_op = MTSRSZ;
 #endif
   tapeCommand.mt_count = sizeInBytes;
-  Int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
+  int error = ::ioctl(itsDevice, MTIOCTOP, &tapeCommand);
   if (error != 0) {
     throw(AipsError(String("TapeIO::setVariableBlockSize - ") +
                     String("error returned by ioctl: ") + strerror(errno)));
   }
 #else
-void TapeIO::setBlockSize(uInt) {
+void TapeIO::setBlockSize(unsigned int) {
 #endif
 }
 
-uInt TapeIO::getBlockSize() const {
+unsigned int TapeIO::getBlockSize() const {
 #if (defined(AIPS_SOLARIS) || defined(AIPS_LINUX)) && !defined(CASA_NOTAPE)
 #if defined(AIPS_LINUX)
   struct mtget tapeInquiry;
-  Int error = ::ioctl(itsDevice, MTIOCGET, &tapeInquiry);
+  int error = ::ioctl(itsDevice, MTIOCGET, &tapeInquiry);
   if (error != 0) {
     throw(AipsError(String("TapeIO::setVariableBlockSize - ") +
                     String("error returned by ioctl: ") + strerror(errno)));
@@ -227,7 +227,7 @@ uInt TapeIO::getBlockSize() const {
   struct mtdrivetype_request tapeInquiry;
   tapeInquiry.size = sizeof(struct mtdrivetype);
   tapeInquiry.mtdtp = &tapeInfo;
-  Int error = ::ioctl(itsDevice, MTIOCGETDRIVETYPE, &tapeInquiry);
+  int error = ::ioctl(itsDevice, MTIOCGETDRIVETYPE, &tapeInquiry);
   if (error != 0) {
     throw(AipsError(String("TapeIO::setVariableBlockSize - ") +
                     String("error returned by ioctl: ") + strerror(errno)));
@@ -239,7 +239,7 @@ uInt TapeIO::getBlockSize() const {
 #endif
 }
 
-Int64 TapeIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
+int64_t TapeIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
   switch (dir) {
     case ByteIO::Begin:
       return ::lseek(itsDevice, offset, SEEK_SET);
@@ -251,7 +251,7 @@ Int64 TapeIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
   return ::lseek(itsDevice, offset, SEEK_CUR);
 }
 
-Int64 TapeIO::length() { return -1; }
+int64_t TapeIO::length() { return -1; }
 
 bool TapeIO::isReadable() const { return itsReadable; }
 

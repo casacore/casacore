@@ -104,27 +104,27 @@ class SDPolarizationHandler {
   void resetRow(const Record &row);
 
   // fill - a new row is added only when necessary
-  void fill(const Record &row, const Vector<Int> &stokes);
+  void fill(const Record &row, const Vector<int> &stokes);
 
   // get the current polarization ID
-  Int polarizationId() { return rownr_p; }
+  int polarizationId() { return rownr_p; }
 
  private:
-  RecordFieldPtr<Int> numCorrKey_p;
+  RecordFieldPtr<int> numCorrKey_p;
   ColumnsIndex *index_p;
   MSPolarization *msPol_p;
   MSPolarizationColumns *msPolCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
   // from a pre-existing MS
-  RORecordFieldPtr<Int> numCorrField_p;
-  RORecordFieldPtr<Array<Int>> corrTypeField_p, corrProductField_p;
+  RORecordFieldPtr<int> numCorrField_p;
+  RORecordFieldPtr<Array<int>> corrTypeField_p, corrProductField_p;
   RORecordFieldPtr<bool> flagRowField_p;
 
   // decompose a stokes value into constituent parts for use
   // in making the CORR_PRODUCT matrix
-  void stokesKeys(Int stokesValue, Int &key1, Int &key2);
+  void stokesKeys(int stokesValue, int &key1, int &key2);
 
   // cleanup everything
   void clearAll();

@@ -93,12 +93,12 @@ class TSMShape {
   // symbol AIPS_ARRAY_INDEX_CHECK is defined, "index" will be
   // checked to ensure it is not out of bounds. If this check fails, an
   // AipsError will be thrown.
-  Int operator()(uInt index) const;
+  int operator()(unsigned int index) const;
 
   // The number of elements in this TSMShape. Since TSMShape
   // objects use zero-based indexing, the maximum available index is
   // nelements() - 1.
-  uInt nelements() const;
+  unsigned int nelements() const;
 
   // conform returns true if nelements() == other.nelements().
   bool conform(const TSMShape& other) const;
@@ -151,12 +151,12 @@ class TSMShape {
 
  private:
   IPosition data_p;
-  uInt size_p;  // # Not necessary, but done for speedup
+  unsigned int size_p;  // # Not necessary, but done for speedup
 };
 
-inline uInt TSMShape::nelements() const { return size_p; }
+inline unsigned int TSMShape::nelements() const { return size_p; }
 
-inline Int TSMShape::operator()(uInt index) const { return data_p(index); }
+inline int TSMShape::operator()(unsigned int index) const { return data_p(index); }
 
 inline bool TSMShape::conform(const TSMShape& other) const { return data_p.conform(other.data_p); }
 

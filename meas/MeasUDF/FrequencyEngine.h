@@ -100,14 +100,14 @@ class FrequencyEngine : public MeasEngine<MFrequency> {
   virtual ~FrequencyEngine();
 
   // Get the values.
-  Array<Double> getArrayDouble(const TableExprId& id, int type);
+  Array<double> getArrayDouble(const TableExprId& id, int type);
 
   // Get the frequencies.
   Array<MFrequency> getFrequencies(const TableExprId& id);
 
   // Handle the argument(s) giving the input frequencies and reference type.
   // The frequency can be a column in a table.
-  void handleFrequency(std::vector<TENShPtr>& args, uInt& argnr);
+  void handleFrequency(std::vector<TENShPtr>& args, unsigned int& argnr);
 
   // Set the MeasConvert object.
   void setConverter(MFrequency::Types toType);

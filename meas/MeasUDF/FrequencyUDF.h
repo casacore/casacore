@@ -104,13 +104,13 @@ class FrequencyUDF : public UDFBase {
   virtual void setup(const Table&, const TaQLStyle&);
 
   // Get the value.
-  virtual Double getDouble(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
 
  private:
   // Handle a radial velocity or optionally doppler for REST conversion.
   // It returns true if Doppler is used.
-  bool handleRadVelDoppler(uInt& argnr, bool mustRadVel);
+  bool handleRadVelDoppler(unsigned int& argnr, bool mustRadVel);
 
   // # Data members.
   FrequencyEngine itsEngine;

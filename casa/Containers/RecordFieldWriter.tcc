@@ -56,7 +56,7 @@ UnequalShapeCopier<T>::UnequalShapeCopier(RecordInterface &outRecord, RecordFiel
 
 template <class T>
 void UnequalShapeCopier<T>::writeField() {
-  uInt n = (*out_p).nelements();
+  unsigned int n = (*out_p).nelements();
   AlwaysAssert(n == (*in_p).nelements(), AipsError);
   bool deleteOut, deleteIn;
   T *out = (*out_p).getStorage(deleteOut);

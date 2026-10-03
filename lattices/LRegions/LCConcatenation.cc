@@ -35,7 +35,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 LCConcatenation::LCConcatenation() {}
 
 LCConcatenation::LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions,
-                                 Int extendAxis)
+                                 int extendAxis)
     : LCRegionMulti(takeOver, regions), itsExtendAxis(extendAxis) {
   // Define a box for the entire shape (is length of regions vector)..
   itsExtendBox = LCBox(IPosition(1, 0), IPosition(1, regions.nelements() - 1),
@@ -45,7 +45,7 @@ LCConcatenation::LCConcatenation(bool takeOver, const Block<const LCRegion*>& re
 }
 
 LCConcatenation::LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions,
-                                 Int extendAxis, const LCBox& extendBox)
+                                 int extendAxis, const LCBox& extendBox)
     : LCRegionMulti(takeOver, regions), itsExtendAxis(extendAxis), itsExtendBox(extendBox) {
   // Fill the other members variables and determine the bounding box.
   fill();
@@ -87,22 +87,22 @@ bool LCConcatenation::equals(const LCRegion& other) const {
 
 LCRegion* LCConcatenation::cloneRegion() const { return new LCConcatenation(*this); }
 
-LCRegion* LCConcatenation::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCConcatenation::doTranslate(const Vector<float>& translateVector,
                                        const IPosition& newLatticeShape) const {
-  uInt i;
+  unsigned int i;
   // First translate extendBox.
   // Take appropriate elements from the vectors.
-  Vector<Float> boxTransVec(1);
+  Vector<float> boxTransVec(1);
   IPosition boxLatShape(1);
   boxTransVec(0) = translateVector(itsExtendAxis);
   boxLatShape(0) = newLatticeShape(itsExtendAxis);
   LCBox* boxPtr = (LCBox*)(itsExtendBox.translate(boxTransVec, boxLatShape));
   // Now translate regions.
-  uInt nrr = itsRegionAxes.nelements();
-  Vector<Float> regTransVec(nrr);
+  unsigned int nrr = itsRegionAxes.nelements();
+  Vector<float> regTransVec(nrr);
   IPosition regLatShape(nrr);
   for (i = 0; i < nrr; i++) {
-    uInt axis = itsRegionAxes(i);
+    unsigned int axis = itsRegionAxes(i);
     regTransVec(i) = translateVector(axis);
     regLatShape(i) = newLatticeShape(axis);
   }
@@ -139,17 +139,17 @@ LCConcatenation* LCConcatenation::fromRecord(const TableRecord& rec, const Strin
 void LCConcatenation::fillRegionAxes() {
   // Extend the axes to all of them.
   // The specified axis is the first one, thereafter the remaining axes.
-  uInt nrdim = 1 + regions()[0]->ndim();
+  unsigned int nrdim = 1 + regions()[0]->ndim();
   IPosition allAxes = IPosition::makeAxisPath(nrdim, IPosition(1, itsExtendAxis));
   itsRegionAxes.resize(nrdim - 1);
-  for (uInt i = 1; i < nrdim; i++) {
-    uInt axis = allAxes(i);
+  for (unsigned int i = 1; i < nrdim; i++) {
+    unsigned int axis = allAxes(i);
     itsRegionAxes(i - 1) = axis;
   }
 }
 
 void LCConcatenation::fill() {
-  uInt i;
+  unsigned int i;
   // Check if the basic things are right.
   if (itsExtendBox.ndim() != 1) {
     throw(
@@ -158,21 +158,21 @@ void LCConcatenation::fill() {
   }
   fillRegionAxes();
   // Check if number of regions matches.
-  if (Int(regions().nelements()) != itsExtendBox.shape()(0)) {
+  if (int(regions().nelements()) != itsExtendBox.shape()(0)) {
     throw(
         AipsError("LCConcatenation::LCConcatenation - "
                   "number of regions has to match the range "
                   "specified in extendBox"));
   }
   // Find the minimum/maximum box of the regions.
-  uInt nrr = itsRegionAxes.nelements();
+  unsigned int nrr = itsRegionAxes.nelements();
   IPosition regionBlc(regions()[0]->boundingBox().start());
   IPosition regionTrc(regions()[0]->boundingBox().end());
-  uInt nr = regions().nelements();
+  unsigned int nr = regions().nelements();
   for (i = 1; i < nr; i++) {
     const IPosition& regblc = regions()[i]->boundingBox().start();
     const IPosition& regtrc = regions()[i]->boundingBox().end();
-    for (uInt j = 0; j < nrr; j++) {
+    for (unsigned int j = 0; j < nrr; j++) {
       if (regblc(j) < regionBlc(j)) {
         regionBlc(j) = regblc(j);
       }
@@ -183,13 +183,13 @@ void LCConcatenation::fill() {
   }
   // Make up the lattice shape from the first region and box latticeshape.
   // Fill the bounding box from blc/trc in regions and box.
-  uInt nrdim = nrr + 1;
+  unsigned int nrdim = nrr + 1;
   IPosition latShape(nrdim);
   IPosition blc(nrdim);
   IPosition trc(nrdim);
   const IPosition& regionShp = regions()[0]->latticeShape();
   for (i = 0; i < nrr; i++) {
-    uInt axis = itsRegionAxes(i);
+    unsigned int axis = itsRegionAxes(i);
     latShape(axis) = regionShp(i);
     blc(axis) = regionBlc(i);
     trc(axis) = regionTrc(i);
@@ -206,24 +206,24 @@ void LCConcatenation::fill() {
 void LCConcatenation::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
   buffer = false;
-  uInt i;
+  unsigned int i;
   // Construct a slicer for the regions axes only, since the concatenation
   // has one more axis.
-  uInt nrr = itsRegionAxes.nelements();
+  unsigned int nrr = itsRegionAxes.nelements();
   IPosition blc(nrr);
   IPosition len(nrr);
   IPosition inc(nrr);
   for (i = 0; i < nrr; i++) {
-    uInt axis = itsRegionAxes(i);
+    unsigned int axis = itsRegionAxes(i);
     blc(i) = section.start()(axis);
     len(i) = section.length()(axis);
     inc(i) = section.stride()(axis);
   }
   Slicer regSection(blc, len, inc);
   // Find the start, end and stride of the extendAxis to access.
-  uInt extStart = section.start()(itsExtendAxis);
-  uInt extEnd = section.end()(itsExtendAxis);
-  uInt extInc = section.stride()(itsExtendAxis);
+  unsigned int extStart = section.start()(itsExtendAxis);
+  unsigned int extEnd = section.end()(itsExtendAxis);
+  unsigned int extInc = section.stride()(itsExtendAxis);
   IPosition stbuf(nrr);
   IPosition endbuf(nrr);
   IPosition streg(nrr);
@@ -231,7 +231,7 @@ void LCConcatenation::multiGetSlice(Array<bool>& buffer, const Slicer& section) 
   IPosition bufStart(nrr + 1);
   IPosition bufEnd(nrr + 1);
   IPosition tmpShape(nrr + 1);
-  uInt bufInx = 0;
+  unsigned int bufInx = 0;
   for (i = extStart; i <= extEnd; i += extInc, bufInx++) {
     if (findAreas(stbuf, endbuf, streg, endreg, regSection, i)) {
       Array<bool> tmpbuf;
@@ -239,8 +239,8 @@ void LCConcatenation::multiGetSlice(Array<bool>& buffer, const Slicer& section) 
       reg->doGetSlice(tmpbuf, Slicer(streg, endreg, inc, Slicer::endIsLast));
       // The buffer dimensionality is 1 more than the region's.
       // So the extendAxis needs to be inserted into the IPositions.
-      for (uInt j = 0; j < nrr; j++) {
-        uInt axis = itsRegionAxes(j);
+      for (unsigned int j = 0; j < nrr; j++) {
+        unsigned int axis = itsRegionAxes(j);
         bufStart(axis) = stbuf(j);
         bufEnd(axis) = endbuf(j);
         tmpShape(axis) = tmpbuf.shape()(j);
@@ -256,7 +256,7 @@ void LCConcatenation::multiGetSlice(Array<bool>& buffer, const Slicer& section) 
   }
 }
 
-IPosition LCConcatenation::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCConcatenation::doNiceCursorShape(unsigned int maxPixels) const {
   return Lattice<bool>::doNiceCursorShape(maxPixels);
 }
 

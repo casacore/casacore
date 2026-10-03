@@ -153,9 +153,9 @@ class NonLinearFit : public GenericL2Fit<T> {
  public:
   // # Constants
   //  Default maximum number of iterations (30)
-  static const uInt MAXITER = 30;
+  static const unsigned int MAXITER = 30;
   // Default convergence criterium (0.001)
-  static const Double CRITERIUM;
+  static const double CRITERIUM;
 
   // # Constructors
   //  Create a fitter: the normal way to generate a fitter object. Necessary
@@ -173,21 +173,21 @@ class NonLinearFit : public GenericL2Fit<T> {
 
   // setMaxIter() sets the maximum number of iterations to do before stopping.
   // Default value is 30.
-  void setMaxIter(uInt maxIter = MAXITER);
+  void setMaxIter(unsigned int maxIter = MAXITER);
 
   // getMaxIter() queries what the maximum number of iterations currently is
-  uInt getMaxIter() const { return maxiter_p; };
+  unsigned int getMaxIter() const { return maxiter_p; };
 
   // currentIteration() queries what the current iteration is
-  uInt currentIteration() const { return maxiter_p - curiter_p; };
+  unsigned int currentIteration() const { return maxiter_p - curiter_p; };
 
   // setCriteria() sets the convergence criteria. The actual value and
   // its interpretation depends on the derived class used to do the
   // actual iteration. Default value is 0.001.
-  void setCriteria(const Double criteria = CRITERIUM) { criterium_p = criteria; };
+  void setCriteria(const double criteria = CRITERIUM) { criterium_p = criteria; };
 
   // getCriteria() queries the current criteria
-  Double getCriteria() const { return criterium_p; };
+  double getCriteria() const { return criterium_p; };
 
   // Check to see if the fit has converged
   bool converged() const { return converge_p; };
@@ -195,11 +195,11 @@ class NonLinearFit : public GenericL2Fit<T> {
  protected:
   // #Data
   //  Maximum number of iterations
-  uInt maxiter_p;
+  unsigned int maxiter_p;
   // Current iteration number
-  uInt curiter_p;
+  unsigned int curiter_p;
   // Convergence criteria
-  Double criterium_p;
+  double criterium_p;
   // Has fit converged
   bool converge_p;
 

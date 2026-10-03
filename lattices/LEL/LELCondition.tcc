@@ -108,7 +108,7 @@ String LELCondition<T>::className() const {
 }
 
 template <class T>
-bool LELCondition<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELCondition<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   if (!pExpr_p->lock(type, nattempts)) {
     return false;
   }

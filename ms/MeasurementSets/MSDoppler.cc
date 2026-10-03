@@ -66,7 +66,7 @@ void MSDoppler::addVelDef() {
         TableDesc td;
         addColumnToDesc(td, VELDEF);
         addColumn(td[0]);
-        ScalarColumn<Double> velDef(*this, columnName(VELDEF));
+        ScalarColumn<double> velDef(*this, columnName(VELDEF));
         velDef.fillColumn(0);
       }
     }
@@ -149,7 +149,7 @@ MSTableMaps MSDoppler::initMaps() {
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  unsigned int i;
   for (i = UNDEFINED_KEYWORD + 1; i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }

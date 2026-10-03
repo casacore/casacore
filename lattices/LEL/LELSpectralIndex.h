@@ -94,15 +94,15 @@ class LELSpectralIndex : public LELInterface<T> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
  private:
-  Int itsFreqAxis;
-  Block<Double> itsLogFreq;  // # log(f0/f1)
+  int itsFreqAxis;
+  Block<double> itsLogFreq;  // # log(f0/f1)
   LatticeExprNode arg0_p;
   LatticeExprNode arg1_p;
 };

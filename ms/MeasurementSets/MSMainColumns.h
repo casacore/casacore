@@ -110,118 +110,118 @@ class MSMainColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& antenna1() { return antenna1_p; }
-  ScalarColumn<Int>& antenna2() { return antenna2_p; }
-  ScalarColumn<Int>& arrayId() { return arrayId_p; }
-  ScalarColumn<Int>& dataDescId() { return dataDescId_p; }
-  ScalarColumn<Double>& exposure() { return exposure_p; }
-  ScalarQuantColumn<Double>& exposureQuant() { return exposureQuant_p; }
-  ScalarColumn<Int>& feed1() { return feed1_p; }
-  ScalarColumn<Int>& feed2() { return feed2_p; }
-  ScalarColumn<Int>& fieldId() { return fieldId_p; }
+  ScalarColumn<int>& antenna1() { return antenna1_p; }
+  ScalarColumn<int>& antenna2() { return antenna2_p; }
+  ScalarColumn<int>& arrayId() { return arrayId_p; }
+  ScalarColumn<int>& dataDescId() { return dataDescId_p; }
+  ScalarColumn<double>& exposure() { return exposure_p; }
+  ScalarQuantColumn<double>& exposureQuant() { return exposureQuant_p; }
+  ScalarColumn<int>& feed1() { return feed1_p; }
+  ScalarColumn<int>& feed2() { return feed2_p; }
+  ScalarColumn<int>& fieldId() { return fieldId_p; }
   ArrayColumn<bool>& flag() { return flag_p; }
   ArrayColumn<bool>& flagCategory() { return flagCategory_p; }
   ScalarColumn<bool>& flagRow() { return flagRow_p; }
-  ScalarColumn<Double>& interval() { return interval_p; }
-  ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p; }
-  ScalarColumn<Int>& observationId() { return observationId_p; }
-  ScalarColumn<Int>& processorId() { return processorId_p; }
-  ScalarColumn<Int>& scanNumber() { return scanNumber_p; }
-  ArrayColumn<Float>& sigma() { return sigma_p; }
-  ScalarColumn<Int>& stateId() { return stateId_p; }
-  ScalarColumn<Double>& time() { return time_p; }
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p; }
+  ScalarColumn<double>& interval() { return interval_p; }
+  ScalarQuantColumn<double>& intervalQuant() { return intervalQuant_p; }
+  ScalarColumn<int>& observationId() { return observationId_p; }
+  ScalarColumn<int>& processorId() { return processorId_p; }
+  ScalarColumn<int>& scanNumber() { return scanNumber_p; }
+  ArrayColumn<float>& sigma() { return sigma_p; }
+  ScalarColumn<int>& stateId() { return stateId_p; }
+  ScalarColumn<double>& time() { return time_p; }
+  ScalarQuantColumn<double>& timeQuant() { return timeQuant_p; }
   ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p; }
-  ScalarColumn<Double>& timeCentroid() { return timeCentroid_p; }
-  ScalarQuantColumn<Double>& timeCentroidQuant() { return timeCentroidQuant_p; }
+  ScalarColumn<double>& timeCentroid() { return timeCentroid_p; }
+  ScalarQuantColumn<double>& timeCentroidQuant() { return timeCentroidQuant_p; }
   ScalarMeasColumn<MEpoch>& timeCentroidMeas() { return timeCentroidMeas_p; }
-  ArrayColumn<Double>& uvw() { return uvw_p; }
-  ArrayQuantColumn<Double>& uvwQuant() { return uvwQuant_p; }
+  ArrayColumn<double>& uvw() { return uvw_p; }
+  ArrayQuantColumn<double>& uvwQuant() { return uvwQuant_p; }
   ScalarMeasColumn<Muvw>& uvwMeas() { return uvwMeas_p; }
-  ArrayColumn<Float>& weight() { return weight_p; }
+  ArrayColumn<float>& weight() { return weight_p; }
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Int>& antenna3() { return antenna3_p; }
+  ScalarColumn<int>& antenna3() { return antenna3_p; }
   ScalarColumn<bool>& baselineRef() { return baselineRef_p; }
   ArrayColumn<Complex>& correctedData() { return correctedData_p; }
   ArrayColumn<Complex>& data() { return data_p; }
-  ScalarColumn<Int>& feed3() { return feed3_p; }
-  ArrayColumn<Float>& floatData() { return floatData_p; }
-  ArrayColumn<Float>& imagingWeight() { return imagingWeight_p; }
+  ScalarColumn<int>& feed3() { return feed3_p; }
+  ArrayColumn<float>& floatData() { return floatData_p; }
+  ArrayColumn<float>& imagingWeight() { return imagingWeight_p; }
   ArrayColumn<Complex>& lagData() { return lagData_p; }
   ArrayColumn<Complex>& modelData() { return modelData_p; }
-  ScalarColumn<Int>& phaseId() { return phaseId_p; }
-  ScalarColumn<Int>& pulsarBin() { return pulsarBin_p; }
-  ScalarColumn<Int>& pulsarGateId() { return pulsarGateId_p; }
-  ArrayColumn<Float>& sigmaSpectrum() { return sigmaSpectrum_p; }
-  ScalarColumn<Double>& timeExtraPrec() { return timeExtraPrec_p; }
-  ScalarQuantColumn<Double>& timeExtraPrecQuant() { return timeExtraPrecQuant_p; }
-  ArrayColumn<Double>& uvw2() { return uvw2_p; }
+  ScalarColumn<int>& phaseId() { return phaseId_p; }
+  ScalarColumn<int>& pulsarBin() { return pulsarBin_p; }
+  ScalarColumn<int>& pulsarGateId() { return pulsarGateId_p; }
+  ArrayColumn<float>& sigmaSpectrum() { return sigmaSpectrum_p; }
+  ScalarColumn<double>& timeExtraPrec() { return timeExtraPrec_p; }
+  ScalarQuantColumn<double>& timeExtraPrecQuant() { return timeExtraPrecQuant_p; }
+  ArrayColumn<double>& uvw2() { return uvw2_p; }
   ScalarMeasColumn<Muvw>& uvw2Meas() { return uvw2Meas_p; }
-  ArrayQuantColumn<Double>& uvw2Quant() { return uvw2Quant_p; }
+  ArrayQuantColumn<double>& uvw2Quant() { return uvw2Quant_p; }
   ArrayColumn<Complex>& videoPoint() { return videoPoint_p; }
-  ArrayColumn<Float>& weightSpectrum() { return weightSpectrum_p; }
-  ArrayColumn<Float>& weightSpectrumCorrected() { return weightSpectrumCorrected_p; }
+  ArrayColumn<float>& weightSpectrum() { return weightSpectrum_p; }
+  ArrayColumn<float>& weightSpectrumCorrected() { return weightSpectrumCorrected_p; }
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Int>& antenna1() const { return antenna1_p; }
-  const ScalarColumn<Int>& antenna2() const { return antenna2_p; }
-  const ScalarColumn<Int>& arrayId() const { return arrayId_p; }
-  const ScalarColumn<Int>& dataDescId() const { return dataDescId_p; }
-  const ScalarColumn<Double>& exposure() const { return exposure_p; }
-  const ScalarQuantColumn<Double>& exposureQuant() const { return exposureQuant_p; }
-  const ScalarColumn<Int>& feed1() const { return feed1_p; }
-  const ScalarColumn<Int>& feed2() const { return feed2_p; }
-  const ScalarColumn<Int>& fieldId() const { return fieldId_p; }
+  const ScalarColumn<int>& antenna1() const { return antenna1_p; }
+  const ScalarColumn<int>& antenna2() const { return antenna2_p; }
+  const ScalarColumn<int>& arrayId() const { return arrayId_p; }
+  const ScalarColumn<int>& dataDescId() const { return dataDescId_p; }
+  const ScalarColumn<double>& exposure() const { return exposure_p; }
+  const ScalarQuantColumn<double>& exposureQuant() const { return exposureQuant_p; }
+  const ScalarColumn<int>& feed1() const { return feed1_p; }
+  const ScalarColumn<int>& feed2() const { return feed2_p; }
+  const ScalarColumn<int>& fieldId() const { return fieldId_p; }
   const ArrayColumn<bool>& flag() const { return flag_p; }
   const ArrayColumn<bool>& flagCategory() const { return flagCategory_p; }
   const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
-  const ScalarColumn<Double>& interval() const { return interval_p; }
-  const ScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p; }
-  const ScalarColumn<Int>& observationId() const { return observationId_p; }
-  const ScalarColumn<Int>& processorId() const { return processorId_p; }
-  const ScalarColumn<Int>& scanNumber() const { return scanNumber_p; }
-  const ArrayColumn<Float>& sigma() const { return sigma_p; }
-  const ScalarColumn<Int>& stateId() const { return stateId_p; }
-  const ScalarColumn<Double>& time() const { return time_p; }
-  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p; }
+  const ScalarColumn<double>& interval() const { return interval_p; }
+  const ScalarQuantColumn<double>& intervalQuant() const { return intervalQuant_p; }
+  const ScalarColumn<int>& observationId() const { return observationId_p; }
+  const ScalarColumn<int>& processorId() const { return processorId_p; }
+  const ScalarColumn<int>& scanNumber() const { return scanNumber_p; }
+  const ArrayColumn<float>& sigma() const { return sigma_p; }
+  const ScalarColumn<int>& stateId() const { return stateId_p; }
+  const ScalarColumn<double>& time() const { return time_p; }
+  const ScalarQuantColumn<double>& timeQuant() const { return timeQuant_p; }
   const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p; }
-  const ScalarColumn<Double>& timeCentroid() const { return timeCentroid_p; }
-  const ScalarQuantColumn<Double>& timeCentroidQuant() const { return timeCentroidQuant_p; }
+  const ScalarColumn<double>& timeCentroid() const { return timeCentroid_p; }
+  const ScalarQuantColumn<double>& timeCentroidQuant() const { return timeCentroidQuant_p; }
   const ScalarMeasColumn<MEpoch>& timeCentroidMeas() const { return timeCentroidMeas_p; }
-  const ArrayColumn<Double>& uvw() const { return uvw_p; }
-  const ArrayQuantColumn<Double>& uvwQuant() const { return uvwQuant_p; }
+  const ArrayColumn<double>& uvw() const { return uvw_p; }
+  const ArrayQuantColumn<double>& uvwQuant() const { return uvwQuant_p; }
   const ScalarMeasColumn<Muvw>& uvwMeas() const { return uvwMeas_p; }
-  const ArrayColumn<Float>& weight() const { return weight_p; }
+  const ArrayColumn<float>& weight() const { return weight_p; }
   // </group>
 
   // Access to optional columns
   // <group>
-  const ScalarColumn<Int>& antenna3() const { return antenna3_p; }
+  const ScalarColumn<int>& antenna3() const { return antenna3_p; }
   const ScalarColumn<bool>& baselineRef() const { return baselineRef_p; }
   const ArrayColumn<Complex>& correctedData() const { return correctedData_p; }
   const ArrayColumn<Complex>& data() const { return data_p; }
-  const ScalarColumn<Int>& feed3() const { return feed3_p; }
-  const ArrayColumn<Float>& floatData() const { return floatData_p; }
-  const ArrayColumn<Float>& imagingWeight() const { return imagingWeight_p; }
+  const ScalarColumn<int>& feed3() const { return feed3_p; }
+  const ArrayColumn<float>& floatData() const { return floatData_p; }
+  const ArrayColumn<float>& imagingWeight() const { return imagingWeight_p; }
   const ArrayColumn<Complex>& lagData() const { return lagData_p; }
   const ArrayColumn<Complex>& modelData() const { return modelData_p; }
-  const ScalarColumn<Int>& phaseId() const { return phaseId_p; }
-  const ScalarColumn<Int>& pulsarBin() const { return pulsarBin_p; }
-  const ScalarColumn<Int>& pulsarGateId() const { return pulsarGateId_p; }
-  const ArrayColumn<Float>& sigmaSpectrum() const { return sigmaSpectrum_p; }
-  const ScalarColumn<Double>& timeExtraPrec() const { return timeExtraPrec_p; }
-  const ScalarQuantColumn<Double>& timeExtraPrecQuant() const { return timeExtraPrecQuant_p; }
-  const ArrayColumn<Double>& uvw2() const { return uvw2_p; }
+  const ScalarColumn<int>& phaseId() const { return phaseId_p; }
+  const ScalarColumn<int>& pulsarBin() const { return pulsarBin_p; }
+  const ScalarColumn<int>& pulsarGateId() const { return pulsarGateId_p; }
+  const ArrayColumn<float>& sigmaSpectrum() const { return sigmaSpectrum_p; }
+  const ScalarColumn<double>& timeExtraPrec() const { return timeExtraPrec_p; }
+  const ScalarQuantColumn<double>& timeExtraPrecQuant() const { return timeExtraPrecQuant_p; }
+  const ArrayColumn<double>& uvw2() const { return uvw2_p; }
   const ScalarMeasColumn<Muvw>& uvw2Meas() const { return uvw2Meas_p; }
-  const ArrayQuantColumn<Double>& uvw2Quant() const { return uvw2Quant_p; }
+  const ArrayQuantColumn<double>& uvw2Quant() const { return uvw2Quant_p; }
   const ArrayColumn<Complex>& videoPoint() const { return videoPoint_p; }
-  const ArrayColumn<Float>& weightSpectrum() const { return weightSpectrum_p; }
-  const ArrayColumn<Float>& weightSpectrumCorrected() const { return weightSpectrumCorrected_p; }
+  const ArrayColumn<float>& weightSpectrum() const { return weightSpectrum_p; }
+  const ArrayColumn<float>& weightSpectrumCorrected() const { return weightSpectrumCorrected_p; }
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -270,47 +270,47 @@ class MSMainColumns {
   void attachOptionalCols(const MeasurementSet& ms);
 
   // # required columns
-  ScalarColumn<Int> antenna1_p;
-  ScalarColumn<Int> antenna2_p;
-  ScalarColumn<Int> arrayId_p;
-  ScalarColumn<Int> dataDescId_p;
-  ScalarColumn<Double> exposure_p;
-  ScalarColumn<Int> feed1_p;
-  ScalarColumn<Int> feed2_p;
-  ScalarColumn<Int> fieldId_p;
+  ScalarColumn<int> antenna1_p;
+  ScalarColumn<int> antenna2_p;
+  ScalarColumn<int> arrayId_p;
+  ScalarColumn<int> dataDescId_p;
+  ScalarColumn<double> exposure_p;
+  ScalarColumn<int> feed1_p;
+  ScalarColumn<int> feed2_p;
+  ScalarColumn<int> fieldId_p;
   ArrayColumn<bool> flag_p;
   ArrayColumn<bool> flagCategory_p;
   ScalarColumn<bool> flagRow_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Int> observationId_p;
-  ScalarColumn<Int> processorId_p;
-  ScalarColumn<Int> scanNumber_p;
-  ArrayColumn<Float> sigma_p;
-  ScalarColumn<Int> stateId_p;
-  ScalarColumn<Double> time_p;
-  ScalarColumn<Double> timeCentroid_p;
-  ArrayColumn<Double> uvw_p;
-  ArrayColumn<Float> weight_p;
+  ScalarColumn<double> interval_p;
+  ScalarColumn<int> observationId_p;
+  ScalarColumn<int> processorId_p;
+  ScalarColumn<int> scanNumber_p;
+  ArrayColumn<float> sigma_p;
+  ScalarColumn<int> stateId_p;
+  ScalarColumn<double> time_p;
+  ScalarColumn<double> timeCentroid_p;
+  ArrayColumn<double> uvw_p;
+  ArrayColumn<float> weight_p;
   // # optional columns
-  ScalarColumn<Int> antenna3_p;
+  ScalarColumn<int> antenna3_p;
   ScalarColumn<bool> baselineRef_p;
   ArrayColumn<Complex> data_p;
-  ScalarColumn<Int> feed3_p;
-  ArrayColumn<Float> floatData_p;
+  ScalarColumn<int> feed3_p;
+  ArrayColumn<float> floatData_p;
   ArrayColumn<Complex> lagData_p;
-  ScalarColumn<Int> phaseId_p;
-  ScalarColumn<Int> pulsarBin_p;
-  ScalarColumn<Int> pulsarGateId_p;
-  ArrayColumn<Float> sigmaSpectrum_p;
-  ScalarColumn<Double> timeExtraPrec_p;
-  ArrayColumn<Double> uvw2_p;
+  ScalarColumn<int> phaseId_p;
+  ScalarColumn<int> pulsarBin_p;
+  ScalarColumn<int> pulsarGateId_p;
+  ArrayColumn<float> sigmaSpectrum_p;
+  ScalarColumn<double> timeExtraPrec_p;
+  ArrayColumn<double> uvw2_p;
   ArrayColumn<Complex> videoPoint_p;
-  ArrayColumn<Float> weightSpectrum_p;
-  ArrayColumn<Float> weightSpectrumCorrected_p;
+  ArrayColumn<float> weightSpectrum_p;
+  ArrayColumn<float> weightSpectrumCorrected_p;
 
   // # columns required for synthesis applications - all optional
   ArrayColumn<Complex> correctedData_p;
-  ArrayColumn<Float> imagingWeight_p;
+  ArrayColumn<float> imagingWeight_p;
   ArrayColumn<Complex> modelData_p;
 
   // # Access to Measure columns
@@ -321,14 +321,14 @@ class MSMainColumns {
   ScalarMeasColumn<Muvw> uvw2Meas_p;
 
   // # Access to Quantum columns
-  ScalarQuantColumn<Double> exposureQuant_p;
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
-  ScalarQuantColumn<Double> timeCentroidQuant_p;
-  ArrayQuantColumn<Double> uvwQuant_p;
+  ScalarQuantColumn<double> exposureQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
+  ScalarQuantColumn<double> timeCentroidQuant_p;
+  ArrayQuantColumn<double> uvwQuant_p;
   // # optional Quantum columns
-  ScalarQuantColumn<Double> timeExtraPrecQuant_p;
-  ArrayQuantColumn<Double> uvw2Quant_p;
+  ScalarQuantColumn<double> timeExtraPrecQuant_p;
+  ArrayQuantColumn<double> uvw2Quant_p;
 };
 
 // # Define the RO version for backward compatibility.

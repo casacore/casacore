@@ -99,10 +99,10 @@ class MeasRef : public MRBase {
   // called in MeasBase: </note>
   //   <src> MeasRef(Ms::Types tp); </src>
   // Furthermore, default arguments are not supported with templated classes:
-  explicit MeasRef(const uInt tp);
-  MeasRef(const uInt tp, const Ms &ep);
-  MeasRef(const uInt tp, const MeasFrame &mf);
-  MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep);
+  explicit MeasRef(const unsigned int tp);
+  MeasRef(const unsigned int tp, const Ms &ep);
+  MeasRef(const unsigned int tp, const MeasFrame &mf);
+  MeasRef(const unsigned int tp, const MeasFrame &mf, const Ms &ep);
   // </group>
 
   // # Destructor
@@ -126,7 +126,7 @@ class MeasRef : public MRBase {
   // (and should be interpreted as), but
   // cannot create a virtual function:</note>
   //   <src> Ms::Types getType();</src>
-  virtual uInt getType() const;
+  virtual unsigned int getType() const;
   // Return the frame of reference
   virtual MeasFrame &getFrame();
   // Return the first frame which has specified information. Checking is done in
@@ -152,8 +152,8 @@ class MeasRef : public MRBase {
   // compiler does not accept it, since a virtual function:</note>
   //   <src> void set(Ms::Types tp);</src>
   // <group>
-  virtual void setType(uInt tp);
-  virtual void set(uInt tp);
+  virtual void setType(unsigned int tp);
+  virtual void set(unsigned int tp);
   // </group>
   // Set a new offset
   void set(const Ms &ep);

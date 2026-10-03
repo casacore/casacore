@@ -138,8 +138,8 @@ class ScalarSampledFunctional : public SampledFunctional<T> {
 
   // Define the functions for the SampledFunctional interface
   // <group>
-  virtual T operator()(const uInt &index) const;
-  virtual uInt nelements() const;
+  virtual T operator()(const unsigned int &index) const;
+  virtual unsigned int nelements() const;
   virtual ~ScalarSampledFunctional();
   // </group>
 

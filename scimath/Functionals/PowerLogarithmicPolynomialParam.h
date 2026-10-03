@@ -91,7 +91,7 @@ class PowerLogarithmicPolynomialParam : public Function1D<T> {
   PowerLogarithmicPolynomialParam();
 
   // Makes a polynomial of the specified number of coefficients, all set to zero.
-  explicit PowerLogarithmicPolynomialParam(uInt n);
+  explicit PowerLogarithmicPolynomialParam(unsigned int n);
 
   PowerLogarithmicPolynomialParam(const vector<T> &parms);
 
@@ -127,7 +127,7 @@ class PowerLogarithmicPolynomialParam : public Function1D<T> {
 
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
-  T coefficient(uInt which) const {
+  T coefficient(unsigned int which) const {
     DebugAssert(which <= nparameters(), AipsError);
     return param_p[which];
   }
@@ -136,7 +136,7 @@ class PowerLogarithmicPolynomialParam : public Function1D<T> {
   const Vector<T> &coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>.
-  void setCoefficient(uInt which, const T value) {
+  void setCoefficient(unsigned int which, const T value) {
     DebugAssert(which <= nparameters(), AipsError);
     param_p[which] = value;
   }

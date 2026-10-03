@@ -178,7 +178,7 @@ class LatticeExpr : public MaskedLattice<T> {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   // </group>
@@ -196,7 +196,7 @@ class LatticeExpr : public MaskedLattice<T> {
   virtual IPosition shape() const;
 
   // Return the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Returns the coordinates of the lattice expression.
   virtual LELCoordinates lelCoordinates() const;

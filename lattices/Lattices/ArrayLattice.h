@@ -205,7 +205,7 @@ class ArrayLattice : public Lattice<T> {
 
   // Returns the maximum recommended number of pixels for a cursor.
   // For this class this is equal to the number of pixels in the lattice.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Get a slice in an optimized way (specifically for ArrLatticeIter).
   // It returns in <src>buffer</src> a reference to the lattice array.

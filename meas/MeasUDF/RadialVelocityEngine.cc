@@ -35,7 +35,7 @@ namespace casacore {
 RadialVelocityEngine::RadialVelocityEngine()
     : itsDopplerEngine(0), itsDirectionEngine(0), itsEpochEngine(0), itsPositionEngine(0) {}
 
-void RadialVelocityEngine::handleRadialVelocity(vector<TENShPtr>& args, uInt& argnr) {
+void RadialVelocityEngine::handleRadialVelocity(vector<TENShPtr>& args, unsigned int& argnr) {
   // Initialize type to unknown.
   itsFrame.set(MRadialVelocity());
   itsRefType = MRadialVelocity::N_Types;
@@ -44,7 +44,7 @@ void RadialVelocityEngine::handleRadialVelocity(vector<TENShPtr>& args, uInt& ar
     throw AipsError("Invalid radial velocity given in a MEAS function");
   }
   // Values can be given as [t1,t2,...],reftype
-  uInt nargnr = argnr + 1;
+  unsigned int nargnr = argnr + 1;
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
     if (handleMeasType(args[nargnr], false)) {
@@ -71,7 +71,7 @@ void RadialVelocityEngine::handleValues(TableExprNode& operand, const TableExprI
     radVels.resize(dopplers.shape());
     Array<MDoppler>::const_iterator dopIter = dopplers.begin();
     MRadialVelocity* rvVec = radVels.data();
-    for (uInt i = 0; i < dopplers.size(); ++i, ++dopIter) {
+    for (unsigned int i = 0; i < dopplers.size(); ++i, ++dopIter) {
       rvVec[i] = MRadialVelocity::fromDoppler(*dopIter, itsRefType);
     }
     return;
@@ -85,9 +85,9 @@ void RadialVelocityEngine::handleValues(TableExprNode& operand, const TableExprI
   radVels.resize(values.shape());
   Quantity q(0, unit);
   bool delIt;
-  const Double* valVec = values.getStorage(delIt);
+  const double* valVec = values.getStorage(delIt);
   MRadialVelocity* rvVec = radVels.data();
-  for (uInt i = 0; i < radVels.size(); ++i) {
+  for (unsigned int i = 0; i < radVels.size(); ++i) {
     q.setValue(valVec[i]);
     rvVec[i] = MRadialVelocity(q, MRadialVelocity::Ref(itsRefType, itsFrame));
   }
@@ -150,7 +150,7 @@ Array<MRadialVelocity> RadialVelocityEngine::getRadialVelocities(const TableExpr
   return radVels;
 }
 
-Array<Double> RadialVelocityEngine::getArrayDouble(const TableExprId& id) {
+Array<double> RadialVelocityEngine::getArrayDouble(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   Array<MRadialVelocity> res(getRadialVelocities(id));
   // Get directions, epochs and positions if given.
@@ -167,7 +167,7 @@ Array<Double> RadialVelocityEngine::getArrayDouble(const TableExprId& id) {
     pos.reference(itsPositionEngine->getPositions(id));
   }
   // Convert the radial velocity to the given type for all dir,epoch,pos.
-  Array<Double> out;
+  Array<double> out;
   if (res.size() > 0 && dir.size() > 0 && eps.size() > 0 && pos.size() > 0) {
     IPosition shape = res.shape();
     // Only add the other axes if one of them has multiple values.

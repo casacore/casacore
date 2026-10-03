@@ -149,9 +149,9 @@ class MCEpoch : public MCBase {
 
   // # State machine data
   //  Transition list
-  static uInt ToRef_p[N_Routes][3];
+  static unsigned int ToRef_p[N_Routes][3];
   // Transition matrix
-  static uInt FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
+  static unsigned int FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirInitOnceFlag;
 
@@ -167,7 +167,7 @@ class MCEpoch : public MCBase {
   virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref);
 
   // Create help structures for Measure conversion routines
-  virtual void initConvert(uInt which, MConvertBase &mc);
+  virtual void initConvert(unsigned int which, MConvertBase &mc);
 
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert();

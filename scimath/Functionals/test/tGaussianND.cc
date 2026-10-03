@@ -39,16 +39,16 @@ int main() {
     bool anyFailures = false;
     {
       bool failed = false;
-      GaussianND<Float> default2D;
-      Vector<Float> z(2);
+      GaussianND<float> default2D;
+      Vector<float> z(2);
       z = 0;
-      Float sum = 0;
-      Float inc = .5;
-      for (Float x = -5; x < 5; x += inc) {
+      float sum = 0;
+      float inc = .5;
+      for (float x = -5; x < 5; x += inc) {
         z(0) = x;
-        for (Float y = -5; y < 5; y += inc) {
+        for (float y = -5; y < 5; y += inc) {
           z(1) = y;
-          if (!near(Double(default2D(z)), exp(-(z(0) * z(0) + z(1) * z(1)) / 2) / (2. * M_PI),
+          if (!near(double(default2D(z)), exp(-(z(0) * z(0) + z(1) * z(1)) / 2) / (2. * M_PI),
                     1E-5)) {
             failed = true;
             cout << "Expected value for f(" << z << ") is "
@@ -65,7 +65,7 @@ int main() {
       cout << " the default Gaussian test" << endl;
 
       if (!failed) {
-        if (!near(sum * inc * inc, Float(1.0))) {
+        if (!near(sum * inc * inc, float(1.0))) {
           failed = true;
           cout << "Failed (value was " << sum * inc * inc << ")";
         } else
@@ -76,9 +76,9 @@ int main() {
     }
     {
       bool failed = false;
-      Vector<Float> w(1);
-      GaussianND<Float> g(1), g2;
-      GaussianND<Float> g1(g);
+      Vector<float> w(1);
+      GaussianND<float> g(1), g2;
+      GaussianND<float> g1(g);
       g1.setHeight(2.0f);
       w(0) = 2.0f;
       g1.setVariance(w);
@@ -86,22 +86,22 @@ int main() {
       g2.setHeight(3.0f);
       w(0) = 3.0f;
       g2.setVariance(w);
-      Vector<Float> z(1);
+      Vector<float> z(1);
       z = 0;
-      for (Float x = -2; x < 2; x += .1) {
+      for (float x = -2; x < 2; x += .1) {
         z(0) = x;
-        if (!near(Double(g(z)), exp(-(z(0) * z(0)) / 2) / sqrt(2.0 * M_PI), 1E-5)) {
+        if (!near(double(g(z)), exp(-(z(0) * z(0)) / 2) / sqrt(2.0 * M_PI), 1E-5)) {
           failed = true;
           cout << "Expected value for g(" << z << ") is "
                << exp(-(z(0) * z(0) / 2)) / sqrt(2.0 * M_PI) << " calculated value is " << g(z)
                << endl;
         }
-        if (!near(Double(g1(z)), 2.0 * exp(-(z(0) * z(0)) / 2 / 2), 1E-5)) {
+        if (!near(double(g1(z)), 2.0 * exp(-(z(0) * z(0)) / 2 / 2), 1E-5)) {
           failed = true;
           cout << "Expected value for g1(" << z << ") is " << 2.0 * exp(-(z(0) * z(0) / 2 / 2))
                << " calculated value is " << g1(z) << endl;
         }
-        if (!near(Double(g2(z)), 3.0 * exp(-(z(0) * z(0)) / 2 / 3), 1E-5)) {
+        if (!near(double(g2(z)), 3.0 * exp(-(z(0) * z(0)) / 2 / 3), 1E-5)) {
           failed = true;
           cout << "Expected value for g2(" << z << ") is " << 3.0 * exp(-(z(0) * z(0) / 2 / 3))
                << " calculated value is " << g2(z) << endl;
@@ -116,7 +116,7 @@ int main() {
     }
     {
       bool failed = false;
-      GaussianND<Float> gauss3D(3, 2.0);
+      GaussianND<float> gauss3D(3, 2.0);
       gauss3D.setHeight(1.0);
       if (near(gauss3D.height(), 1.0f))
         cout << "Passed";
@@ -126,17 +126,17 @@ int main() {
       }
       cout << " the set/get height test" << endl;
 
-      Vector<Float> z(3);
+      Vector<float> z(3);
       z = 0;
-      Float sum = 0;
-      Float inc = .5;
-      for (Float x = -5; x < 5; x += inc) {
+      float sum = 0;
+      float inc = .5;
+      for (float x = -5; x < 5; x += inc) {
         z(0) = x;
-        for (Float y = -5; y < 5; y += inc) {
+        for (float y = -5; y < 5; y += inc) {
           z(1) = y;
-          for (Float p = -5; p < 5; p += inc) {
+          for (float p = -5; p < 5; p += inc) {
             z(2) = p;
-            if (!near(Double(gauss3D(z)), exp(-(z(0) * z(0) + z(1) * z(1) + z(2) * z(2)) / 2),
+            if (!near(double(gauss3D(z)), exp(-(z(0) * z(0) + z(1) * z(1) + z(2) * z(2)) / 2),
                       1E-5)) {
               failed = true;
               cout << "Expected value for f(" << z << ") is "
@@ -154,10 +154,10 @@ int main() {
       cout << " the 3-D specified height test" << endl;
 
       if (!failed) {
-        if (!near(sum * inc * inc * inc, pow(Float(2.0 * M_PI), Float(1.5)), 1E-5)) {
+        if (!near(sum * inc * inc * inc, pow(float(2.0 * M_PI), float(1.5)), 1E-5)) {
           failed = true;
           cout << "Failed (value was " << sum * inc * inc * inc << " not "
-               << pow(Float(2.0 * M_PI), Float(1.5)) << ")";
+               << pow(float(2.0 * M_PI), float(1.5)) << ")";
         } else
           cout << "Passed";
         cout << " the total flux test" << endl;
@@ -166,10 +166,10 @@ int main() {
     }
     {
       bool failed = false;
-      Vector<Double> mean(2);
+      Vector<double> mean(2);
       mean(0) = .5;
       mean(1) = -1;
-      GaussianND<Double> gauss2D(2, 1.0, mean);
+      GaussianND<double> gauss2D(2, 1.0, mean);
       mean *= 2.;
       gauss2D.setMean(mean);
       if ((allNear(gauss2D.mean(), mean, 1E-7)))
@@ -180,13 +180,13 @@ int main() {
       }
       cout << " the set/get mean test" << endl;
 
-      Vector<Double> z(2);
+      Vector<double> z(2);
       z = 0;
-      Double sum = 0;
-      Double inc = .25;
-      for (Double x = -4; x < 6; x += inc) {
+      double sum = 0;
+      double inc = .25;
+      for (double x = -4; x < 6; x += inc) {
         z(0) = x;
-        for (Double y = -7; y < 3; y += inc) {
+        for (double y = -7; y < 3; y += inc) {
           z(1) = y;
           if (!near(gauss2D(z), exp(-(square(z(0) - mean(0)) + square(z(1) - mean(1))) / 2),
                     1E-5)) {
@@ -216,16 +216,16 @@ int main() {
     }
     {
       bool failed = false;
-      Vector<Double> mean(3);
+      Vector<double> mean(3);
       mean(0) = .6;
       mean(1) = -.1;
       mean(2) = -.5;
-      Vector<Double> variance(3);
+      Vector<double> variance(3);
       variance(0) = 1;
       variance(1) = .25;
       variance(2) = 0.75;
-      Double height = 2.0;
-      GaussianND<Double> gauss3D(3, height, mean, variance);
+      double height = 2.0;
+      GaussianND<double> gauss3D(3, height, mean, variance);
 
       variance *= 2.;
       gauss3D.setVariance(variance);
@@ -237,15 +237,15 @@ int main() {
       }
       cout << " the set/get variance test" << endl;
 
-      Vector<Double> z(3);
+      Vector<double> z(3);
       z = 0;
-      Double sum = 0;
-      Double inc = .5;
-      for (Double x = -5; x < 7; x += inc) {
+      double sum = 0;
+      double inc = .5;
+      for (double x = -5; x < 7; x += inc) {
         z(0) = x;
-        for (Double y = -5; y < 5; y += inc) {
+        for (double y = -5; y < 5; y += inc) {
           z(1) = y;
-          for (Double p = -5; p < 5; p += inc) {
+          for (double p = -5; p < 5; p += inc) {
             z(2) = p;
             if (!near(gauss3D(z), height * exp(-(square(z(0) - mean(0)) / variance(0) +
                                                  square(z(1) - mean(1)) / variance(1) +
@@ -285,16 +285,16 @@ int main() {
     }
     {
       bool failed = false;
-      Vector<Float> mean(3);
+      Vector<float> mean(3);
       mean(0) = .6;
       mean(1) = -.1;
       mean(2) = -.5;
       mean(0) = 0;
       mean(1) = 0;
       mean(2) = 0;
-      Matrix<Float> corr(3, 3), covariance(3, 3);
-      Vector<Float> variance = covariance.diagonal();
-      covariance = Float(0);
+      Matrix<float> corr(3, 3), covariance(3, 3);
+      Vector<float> variance = covariance.diagonal();
+      covariance = float(0);
       corr(1, 0) = .5;
       corr(2, 0) = .4;
       corr(2, 1) = -.3;
@@ -304,10 +304,10 @@ int main() {
       covariance(1, 0) = corr(1, 0) * sqrt(variance(1) * variance(0));
       covariance(2, 0) = corr(2, 0) * sqrt(variance(2) * variance(0));
       covariance(2, 1) = corr(2, 1) * sqrt(variance(2) * variance(1));
-      Float height = 2.0;
-      GaussianND<Float> gauss3D(3, height, mean, covariance);
+      float height = 2.0;
+      GaussianND<float> gauss3D(3, height, mean, covariance);
 
-      covariance *= Float(2.);
+      covariance *= float(2.);
       covariance(0, 1) = covariance(1, 0);
       covariance(0, 2) = covariance(2, 0);
       covariance(1, 2) = covariance(2, 1);
@@ -320,17 +320,17 @@ int main() {
       }
       cout << " the set/get covariance test" << endl;
       if (!failed) {
-        Vector<Float> z(3);
+        Vector<float> z(3);
         z = 0;
-        Float sum = 0;
-        Float inc = 0.5;
-        Float ev;
+        float sum = 0;
+        float inc = 0.5;
+        float ev;
         z = 0;
-        for (Float x = -12; x < 12; x += inc) {
+        for (float x = -12; x < 12; x += inc) {
           z(0) = x;
-          for (Float y = -2; y < 2; y += inc) {
+          for (float y = -2; y < 2; y += inc) {
             z(1) = y;
-            for (Float p = -5; p < 5; p += inc) {
+            for (float p = -5; p < 5; p += inc) {
               z(2) = p;
               ev = height * exp(-0.5 *
                                 (square(z(0) - mean(0)) * (1 - square(corr(2, 1))) / variance(0) +
@@ -376,7 +376,7 @@ int main() {
       if (!failed) {
         if (gauss3D.nparameters() != 10) failed = true;
         if (!failed) {
-          Vector<Float> parms(10);
+          Vector<float> parms(10);
           parms(0) = 10;
           parms(1) = 1;
           parms(2) = 2;
@@ -388,7 +388,7 @@ int main() {
           parms(8) = 0.2;
           parms(9) = 0.3;
 
-          Matrix<Float> cov(3, 3);
+          Matrix<float> cov(3, 3);
           cov(0, 0) = parms(4);
           cov(1, 1) = parms(5);
           cov(2, 2) = parms(6);
@@ -398,16 +398,16 @@ int main() {
           cov(2, 0) = cov(0, 2);
           cov(1, 2) = parms(9);
           cov(2, 1) = cov(1, 2);
-          Matrix<Float> invertCov(3, 3);
+          Matrix<float> invertCov(3, 3);
           invertCov = invertSymPosDef(cov);
           gauss3D.parameters().setParameters(parms);
           if (!near(gauss3D.height(), parms(0))) failed = true;
-          Vector<Float> mean(3);
+          Vector<float> mean(3);
           mean(0) = parms(1);
           mean(1) = parms(2);
           mean(2) = parms(3);
           if (!(allNear(gauss3D.mean(), mean, 1E-6))) failed = true;
-          Vector<Float> var(3);
+          Vector<float> var(3);
           var(0) = invertCov(0, 0);
           var(1) = invertCov(1, 1);
           var(2) = invertCov(2, 2);
@@ -415,8 +415,8 @@ int main() {
 
           if (!(allNear(gauss3D.covariance(), invertCov, 1E-6))) failed = true;
 
-          for (uInt i = 0; i < 10; i++) gauss3D[i] = Float(2) * gauss3D[i];
-          parms *= Float(2);
+          for (unsigned int i = 0; i < 10; i++) gauss3D[i] = float(2) * gauss3D[i];
+          parms *= float(2);
           if (!(allNear(gauss3D.parameters().getParameters(), parms, 1E-6))) {
             failed = true;
           }

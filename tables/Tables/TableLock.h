@@ -124,7 +124,7 @@ class TableLock {
   // is 0 seconds meaning indefinitely.
   // <group>
   TableLock(LockOption option = DefaultLocking);
-  TableLock(LockOption option, double inspectionInterval, uInt maxWait = 0);
+  TableLock(LockOption option, double inspectionInterval, unsigned int maxWait = 0);
   // </group>
 
   // Copy constructor.
@@ -154,7 +154,7 @@ class TableLock {
   double interval() const;
 
   // Get the maximum wait period in AutoLocking mode.
-  uInt maxWait() const;
+  unsigned int maxWait() const;
 
   // Is table locking disabled (because AIPS_TABLE_NOLOCKING or table.nolocking is set)?
   static bool lockingDisabled();
@@ -162,7 +162,7 @@ class TableLock {
  private:
   LockOption itsOption;
   bool itsReadLocking;
-  uInt itsMaxWait;
+  unsigned int itsMaxWait;
   double itsInterval;
   bool itsIsDefaultLocking;
   bool itsIsDefaultInterval;
@@ -181,7 +181,7 @@ inline bool TableLock::isPermanent() const {
 
 inline double TableLock::interval() const { return itsInterval; }
 
-inline uInt TableLock::maxWait() const { return itsMaxWait; }
+inline unsigned int TableLock::maxWait() const { return itsMaxWait; }
 
 }  // namespace casacore
 

@@ -51,8 +51,8 @@ class MSSelUtil {
   // Takes flagging into account.
   // diffAxis==2,3: row or time, diffAxis==1: channel
   // Handles 3d and 4d data arrays.
-  static Array<Float> diffData(const Array<T>& data, const Array<bool>& flag,
-                               const Array<bool>& flagRow, Int diffAxis, Int window,
+  static Array<float> diffData(const Array<T>& data, const Array<bool>& flag,
+                               const Array<bool>& flagRow, int diffAxis, int window,
                                bool doMedian = false);
 };
 

@@ -143,7 +143,7 @@ class ArrayColumn : public ArrayColumnBase {
   // Get the #dimensions of an array in a particular cell.
   // If the cell does not contain an array, 0 is returned.
   // Use the function isDefined to test if the cell contains an array.
-  uInt ndim(rownr_t rownr) const {
+  unsigned int ndim(rownr_t rownr) const {
     TABLECOLUMNCHECKROW(rownr);
     return baseColPtr_p->ndim(rownr);
   }
@@ -347,7 +347,7 @@ class ArrayColumn : public ArrayColumnBase {
   void put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
            bool preserveTileShape = false);
   // For backward compatibility (otherwise ambigious with put taking Bool).
-  void put(uInt thisRownr, const TableColumn& that, uInt thatRownr,
+  void put(unsigned int thisRownr, const TableColumn& that, unsigned int thatRownr,
            bool preserveTileShape = false) {
     put(rownr_t(thisRownr), that, rownr_t(thatRownr), preserveTileShape);
   }
@@ -430,14 +430,14 @@ class ArrayColumn : public ArrayColumnBase {
 
 // # Explicitly instantiate these templates in ArrayColumn_tmpl.cc
 extern template class ArrayColumn<bool>;
-extern template class ArrayColumn<Char>;
-extern template class ArrayColumn<Short>;
-extern template class ArrayColumn<uShort>;
-extern template class ArrayColumn<Int>;
-extern template class ArrayColumn<uInt>;
-extern template class ArrayColumn<Int64>;
-extern template class ArrayColumn<Float>;
-extern template class ArrayColumn<Double>;
+extern template class ArrayColumn<char>;
+extern template class ArrayColumn<short>;
+extern template class ArrayColumn<unsigned short>;
+extern template class ArrayColumn<int>;
+extern template class ArrayColumn<unsigned int>;
+extern template class ArrayColumn<int64_t>;
+extern template class ArrayColumn<float>;
+extern template class ArrayColumn<double>;
 extern template class ArrayColumn<Complex>;
 extern template class ArrayColumn<DComplex>;
 extern template class ArrayColumn<String>;

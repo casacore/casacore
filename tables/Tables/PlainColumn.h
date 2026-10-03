@@ -122,7 +122,7 @@ class PlainColumn : public BaseColumn {
   virtual ColumnCache& columnCache();
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
-  virtual void setMaximumCacheSize(uInt nbytes);
+  virtual void setMaximumCacheSize(unsigned int nbytes);
 
   // Write the column.
   void putFile(AipsIO&, const TableAttr&);

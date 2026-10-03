@@ -118,7 +118,7 @@ class FitsIO {
   // the trailing end of the blocked data portion.
   OFF_T datasize() const { return m_data_size; }
   // data characteristics
-  Int itemsize() const { return m_item_size; }
+  int itemsize() const { return m_item_size; }
   // for input, size of remaining data
   // for output, size of data written
   OFF_T currsize() const { return m_curr_size; }
@@ -149,7 +149,7 @@ class FitsIO {
 
   char *m_curr;     // pointer to current record
   int m_bytepos;    // current byte position within record
-  Int m_item_size;  // data characteristics
+  int m_item_size;  // data characteristics
   FITS::ValueType m_data_type;
   // uInt m_data_size;
   OFF_T m_data_size;
@@ -170,8 +170,8 @@ class FitsIO {
 class FitsInput : public FitsIO {
   friend int HeaderDataUnit::get_hdr(FITS::HDUType, FitsKeywordList &);
   friend OFF_T HeaderDataUnit::read_all_data(char *);
-  friend int HeaderDataUnit::read_data(char *, Int);
-  friend int HeaderDataUnit::skip(uInt);
+  friend int HeaderDataUnit::read_data(char *, int);
+  friend int HeaderDataUnit::skip(unsigned int);
   friend int HeaderDataUnit::skip();
 
  public:
@@ -242,7 +242,7 @@ class FitsInput : public FitsIO {
 class FitsOutput : public FitsIO {
   friend int HeaderDataUnit::write_hdr(FitsOutput &);
   friend int HeaderDataUnit::write_all_data(FitsOutput &, char *);
-  friend int HeaderDataUnit::write_data(FitsOutput &, char *, Int);
+  friend int HeaderDataUnit::write_data(FitsOutput &, char *, int);
 
  public:
   //<group>
@@ -253,7 +253,7 @@ class FitsOutput : public FitsIO {
   //</group>
   // used by PrimaryArray, BinaryTabelExtention etc to work with the constructor without keyword
   // list.
-  void set_data_info(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, Int is);
+  void set_data_info(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, int is);
   // write a special record. For this the record type must also
   // be to set to FITS::SpecialRecord
   int write_sp(char *rec);
@@ -277,11 +277,11 @@ class FitsOutput : public FitsIO {
 
   // Special interface to class HeaderDataUnit
   //<group>
-  int write_hdr(FitsKeywordList &, FITS::HDUType, FITS::ValueType, OFF_T, Int);
+  int write_hdr(FitsKeywordList &, FITS::HDUType, FITS::ValueType, OFF_T, int);
   // write all data from address
   int write_all(FITS::HDUType, char *, char);
   // write N bytes from address
-  int write(FITS::HDUType, char *, Int, char);
+  int write(FITS::HDUType, char *, int, char);
   //</group>
 };
 

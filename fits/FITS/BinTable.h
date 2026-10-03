@@ -154,9 +154,9 @@ class BinaryTable : public BinaryTableExtension {
   //  This is the Scratch table containing the current row
   Table *currRowTab;
   // The number of elements for each column of the BinaryTableExtension
-  Int *nelem;
+  int *nelem;
   // This is a map from column number to column name
-  std::map<Int, String> *colNames;
+  std::map<int, String> *colNames;
 
   TableRecord kwSet;
 

@@ -169,7 +169,7 @@ class LatticeIterInterface {
   // since construction (or since last reset).  This is a running count of
   // all cursor movement since doing N increments followed by N decrements
   // does not necessarily put the cursor back at the origin of the Lattice.
-  uInt nsteps() const;
+  unsigned int nsteps() const;
 
   // Function which returns the current position of the beginning of the
   // cursor within the Lattice. The returned IPosition will have the same
@@ -283,7 +283,7 @@ inline bool LatticeIterInterface<T>::atEnd() const {
 }
 
 template <class T>
-inline uInt LatticeIterInterface<T>::nsteps() const {
+inline unsigned int LatticeIterInterface<T>::nsteps() const {
   return itsNavPtr->nsteps();
 }
 
@@ -308,7 +308,7 @@ inline IPosition LatticeIterInterface<T>::cursorShape() const {
 }
 
 // # Declare extern templates for often used types.
-extern template class LatticeIterInterface<Float>;
+extern template class LatticeIterInterface<float>;
 
 }  // namespace casacore
 

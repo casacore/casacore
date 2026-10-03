@@ -44,7 +44,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TiledCellStMan::TiledCellStMan() : TiledStMan() {}
 
 TiledCellStMan::TiledCellStMan(const String& hypercolumnName, const IPosition& defaultTileShape,
-                               uInt64 maximumCacheSize)
+                               uint64_t maximumCacheSize)
     : TiledStMan(hypercolumnName, maximumCacheSize), defaultTileShape_p(defaultTileShape) {}
 
 TiledCellStMan::TiledCellStMan(const String& hypercolumnName, const Record& spec)
@@ -84,12 +84,12 @@ void TiledCellStMan::setShape(rownr_t, TSMCube* hypercube, const IPosition& shap
 void TiledCellStMan::setupCheck(const TableDesc& tableDesc, const Vector<String>& dataNames) const {
   // The data columns should only contain arrays matching the
   // dimensionality of the hypercolumn.
-  for (uInt i = 0; i < dataNames.nelements(); i++) {
+  for (unsigned int i = 0; i < dataNames.nelements(); i++) {
     const ColumnDesc& columnDesc = tableDesc.columnDesc(dataNames(i));
     if (!columnDesc.isArray()) {
       throw(TSMError("TiledCellStMan cannot handle scalar column " + dataNames(i)));
     }
-    if (Int(nrdim_p) != columnDesc.ndim()) {
+    if (int(nrdim_p) != columnDesc.ndim()) {
       throw(TSMError("Dimensionality of column " + dataNames(i) +
                      " should be equal to hypercolumn"
                      " definition when used in TiledCellStMan"));
@@ -145,14 +145,14 @@ void TiledCellStMan::readHeader(rownr_t tabNrrow, bool firstTime) {
 
 void TiledCellStMan::addRow64(rownr_t nrow) {
   // Resize block when needed.
-  uInt64 size = cubeSet_p.nelements();
+  uint64_t size = cubeSet_p.nelements();
   if (size < nrrow_p + nrow) {
     size += 32;
     if (size < nrrow_p + nrow) {
       size = nrrow_p + nrow;
     }
     cubeSet_p.resize(size);
-    for (uInt64 i = nrrow_p; i < cubeSet_p.nelements(); i++) {
+    for (uint64_t i = nrrow_p; i < cubeSet_p.nelements(); i++) {
       cubeSet_p[i] = 0;
     }
   }

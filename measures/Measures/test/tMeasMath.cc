@@ -69,10 +69,10 @@ int main() {
 
     cout << "Euler(1,2):     " << Euler(1.0, 2.0) << endl;
     cout << "Euler(10 deg, 20 deg): " << Euler(Quantity(10, "deg"), Quantity(20, "deg")) << endl;
-    Vector<Double> vec2(2);
+    Vector<double> vec2(2);
     vec2(0) = 30;
     vec2(1) = 40;
-    Quantum<Vector<Double>> qu2(vec2, "arcsec");
+    Quantum<Vector<double>> qu2(vec2, "arcsec");
     cout << "Euler(30, 40 arcsec):  " << Euler(qu2) << endl;
 
     cout << "Direction cosines  (MVDirection)..." << endl;
@@ -206,9 +206,9 @@ int main() {
     SolarPos sp1;
 
     UnitVal AUperDay(1e-8, "AU/d");
-    Double factor = AUperDay.getFac();
+    double factor = AUperDay.getFac();
 
-    Double facAU = 1.;
+    double facAU = 1.;
 
     cout << "B1950 precession MJD 45700(1984/01/01): " << pc1(45700.).getAngle("''") << endl;
     cout << "B1950 precession MJD 45700 using derivative from 45701: "
@@ -218,10 +218,10 @@ int main() {
     cout << "with rotation matrix: " << RotMatrix(pc2(45883.125)) << endl;
     cout << "J2000 nutation J1984.5: " << nt1(45883.125).getAngle("\"")
          << (nt1(45883.125)(0) + nt1(45883.125)(2)) / C::arcsec << endl;
-    Vector<Double> tenth(3);
-    tenth = Double(0.1);
-    Vector<Double> hun4(3);
-    hun4 = Double(0.04);
+    Vector<double> tenth(3);
+    tenth = double(0.1);
+    Vector<double> hun4(3);
+    hun4 = double(0.04);
     cout << "J2000 nutation J1984.5 derivative from +0.1 day: "
          << nt1(45883.225).getAngle("\"") - tenth * nt1.derivative(45883.225).getAngle("\"")
          << endl;
@@ -241,7 +241,7 @@ int main() {
                 0.04 * Quantity(nt1.derivativeEqox(45882.04) / C::arcsec, "''")
          << endl;
     cout << "J2000 nutation: " << endl;
-    Double eq;
+    double eq;
     for (eq = 45837.; eq < 45884.; eq++) {
       cout << eq + 0.5 << ": " << nt1(eq).getAngle("\"") << (nt1(eq)(0) + nt1(eq)(2)) / C::arcsec
            << endl;

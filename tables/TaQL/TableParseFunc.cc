@@ -73,7 +73,7 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
   try {
     // The axes of reduction functions such as SUMS can be given as a set or as
     // individual values. Turn it into an Array object.
-    uInt axarg = 1;
+    unsigned int axarg = 1;
     switch (ftype) {
       case TableExprFuncNode::arrfractilesFUNC:
       case TableExprFuncNode::runfractileFUNC:
@@ -137,7 +137,7 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
         if (arguments.size() >= axarg) {
           TableExprNodeSet parms;
           // Add first argument(s) to the parms.
-          for (uInt i = 0; i < axarg; i++) {
+          for (unsigned int i = 0; i < axarg; i++) {
             parms.add(arguments[i]);
           }
           // Now handle the axes arguments.
@@ -150,7 +150,7 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
                 ftype == TableExprFuncNode::areverseFUNC ||
                 ftype == TableExprFuncNode::diagonalFUNC) {
               // Add an empty vector if no arguments given.
-              TableExprNodeSetElem arg((TableExprNode(Vector<Int>())));
+              TableExprNodeSetElem arg((TableExprNode(Vector<int>())));
               parms.add(arg);
             }
           } else if (arguments.size() == axarg + 1 && arguments[axarg]->isSingle()) {
@@ -164,7 +164,7 @@ TableExprNode TableParseFunc::makeFuncNode(TableParseQuery* tpq, const String& f
           if (!axesIsArray) {
             // Combine all axes in a single set and add to parms.
             TableExprNodeSet axes;
-            for (uInt i = axarg; i < arguments.size(); i++) {
+            for (unsigned int i = axarg; i < arguments.size(); i++) {
               const TENSEBShPtr arg = arguments[i];
               const TENShPtr& rep = arg->start();
               if (!rep || !arg->isSingle() || rep->valueType() != TableExprNodeRep::VTScalar ||
@@ -233,8 +233,9 @@ TableExprNode TableParseFunc::makeUDFNode(TableParseQuery* sel, const String& na
   return udf;
 }
 
-TableExprFuncNode::FunctionType TableParseFunc::findFunc(const String& name, uInt narguments,
-                                                         const Vector<Int>& ignoreFuncs) {
+TableExprFuncNode::FunctionType TableParseFunc::findFunc(const String& name,
+                                                         unsigned int narguments,
+                                                         const Vector<int>& ignoreFuncs) {
   // # Determine the function type.
   // # Use the function name in lower case.
   // # Error if functype in ignoreFuncs or if ignoreFuncs is not empty and
@@ -695,7 +696,7 @@ TableExprFuncNode::FunctionType TableParseFunc::findFunc(const String& name, uIn
   }
   // Functions to be ignored are incorrect.
   bool found;
-  linearSearch(found, ignoreFuncs, Int(ftype), ignoreFuncs.size());
+  linearSearch(found, ignoreFuncs, int(ftype), ignoreFuncs.size());
   if (found || (!ignoreFuncs.empty() && ftype >= TableExprFuncNode::FirstAggrFunc)) {
     throw(TableInvExpr("Function '" + funcName + "' can only be used in TaQL"));
   }

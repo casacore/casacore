@@ -119,7 +119,7 @@ String LELLattice<T>::className() const {
 }
 
 template <class T>
-bool LELLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELLattice<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return pLattice_p->lock(type, nattempts);
 }
 template <class T>

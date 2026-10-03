@@ -52,7 +52,7 @@ void testScalar() {
                 MPosition::WGS84);  // near WSRT
   MeasFrame frame(epo, pos);
   {
-    Vector<Double> em =
+    Vector<double> em =
         MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::APP, frame))()
             .getValue()
             .getValue();
@@ -64,15 +64,15 @@ void testScalar() {
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
     AlwaysAssertExit(node.unit().getName() == "nT");
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter(arr1);
+    VectorIterator<double> veciter(arr1);
     cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node.unit().getName() == "nT");
     AlwaysAssertExit(allNear(em, veciter.vector(), 1e-8));
   }
   {
-    Vector<Double> em = MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::J2000))()
+    Vector<double> em = MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::J2000))()
                             .getValue()
                             .getValue();
     cout << "meas=" << em << endl;
@@ -81,16 +81,16 @@ void testScalar() {
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
     AlwaysAssertExit(node.unit().getName() == "nT");
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter(arr1);
+    VectorIterator<double> veciter(arr1);
     cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(allNear(em, veciter.vector(), 1e-8));
   }
   {
     // Convert from nT values instead of deg,deg,nT.
     // The result is the same.
-    Vector<Double> em = MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::B1950))()
+    Vector<double> em = MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::B1950))()
                             .getValue()
                             .getAngle()
                             .getValue();
@@ -101,14 +101,14 @@ void testScalar() {
             .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
     AlwaysAssertExit(node.unit().getName() == "rad");
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 2));
-    VectorIterator<Double> veciter(arr1);
+    VectorIterator<double> veciter(arr1);
     cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(allNear(em, veciter.vector(), 1e-8));
   }
   {
-    Double em = MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::B1950))()
+    double em = MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::B1950))()
                     .getValue()
                     .getLength()
                     .getValue();
@@ -120,7 +120,7 @@ void testScalar() {
     AlwaysAssertExit(node.getNodeRep()->isConstant());
     AlwaysAssertExit(node.isScalar());
     AlwaysAssertExit(node.unit().getName() == "nT");
-    Double arr1 = node.getDouble(0);
+    double arr1 = node.getDouble(0);
     cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(near(em, arr1, 1e-8));
   }
@@ -154,12 +154,12 @@ void testArray() {
   AlwaysAssertExit(node2.getNodeRep()->isConstant());
   /// cout << "taql=" << node1.getArrayDouble(0) << endl;
   /// cout << "taql=" << node2.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   AlwaysAssertExit(arr1.shape() == IPosition(4, 3, 4, 3, 2));
   AlwaysAssertExit(arr2.shape() == IPosition(5, 3, 2, 2, 3, 2));
-  VectorIterator<Double> arr1iter(arr1);
-  VectorIterator<Double> arr2iter(arr2);
+  VectorIterator<double> arr1iter(arr1);
+  VectorIterator<double> arr2iter(arr2);
   // Check with Measures.
   Vector<MEarthMagnetic> coord(4);
   Vector<MEpoch> epo(3);
@@ -183,10 +183,10 @@ void testArray() {
                      MPosition::WGS84);  // near WSRT
   pos[1] = MPosition(Quantity(1000, "m"), Quantity(-60.60417, "deg"), Quantity(-32.8, "deg"),
                      MPosition::WGS84);
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
-    for (uInt ie = 0; ie < epo.size(); ++ie) {
-      for (uInt ic = 0; ic < coord.size(); ++ic) {
-        Vector<Double> dir =
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
+    for (unsigned int ie = 0; ie < epo.size(); ++ie) {
+      for (unsigned int ic = 0; ic < coord.size(); ++ic) {
+        Vector<double> dir =
             MEarthMagnetic::Convert(
                 coord[ic], MEarthMagnetic::Ref(MEarthMagnetic::APP, MeasFrame(epo[ie], pos[ip])))()
                 .getValue()
@@ -234,16 +234,16 @@ void testColumn() {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(!node2.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.nrow() == 3 && node2.nrow() == 3);
-  for (uInt i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     cout << "taql=" << node1.getArrayDouble(i) << ' ' << node1.unit().getName() << endl;
     cout << "taql=" << node2.getArrayDouble(i) << ' ' << node1.unit().getName() << endl;
-    Array<Double> arr1 = node1.getArrayDouble(i);
-    Array<Double> arr2 = node2.getArrayDouble(i);
+    Array<double> arr1 = node1.getArrayDouble(i);
+    Array<double> arr2 = node2.getArrayDouble(i);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(arr2.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
-    Vector<Double> dir;
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
+    Vector<double> dir;
     dir = MEarthMagnetic::Convert(
               coord[i], MEarthMagnetic::Ref(MEarthMagnetic::APP, MeasFrame(epo[i], pos[i])))()
               .getValue()
@@ -264,7 +264,7 @@ void testModel() {
   MeasFrame frame((MEpoch(MVEpoch(dat.day()))), obs);
   MDirection::Ref mvref(MDirection::ITRF, frame);
   MVDirection mvd(obs.getValue());
-  EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"), frame);
+  EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"), frame);
   fm.calculate(mvd);
   cout << "LOS:           " << fm.getLOSField() << endl;
   cout << "Long:          " << fm.getLong() << endl;
@@ -275,7 +275,7 @@ void testModel() {
                                     "18may1998,[3828488.86m,443253.42m,5064977.78m])")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     cout << arr1 << endl;
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(node.unit().getName() == "nT");
@@ -287,7 +287,7 @@ void testModel() {
             "calc meas.igrflos(0,[0,90deg],'AZEL',18may1998,[3828488.86m,443253.42m,5064977.78m])")
             .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     cout << arr1 << endl;
     AlwaysAssertExit(arr1.shape() == IPosition(1, 1));
     AlwaysAssertExit(node.unit().getName() == "nT");
@@ -299,7 +299,7 @@ void testModel() {
             "calc meas.igrflong(0,[0,90deg],'AZEL',18may1998,[3828488.86m,443253.42m,5064977.78m])")
             .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     cout << arr1 << endl;
     AlwaysAssertExit(arr1.shape() == IPosition(1, 1));
     AlwaysAssertExit(node.unit().getName() == "rad");
@@ -317,11 +317,11 @@ void testModelConv() {
   MeasFrame frame((MEpoch(MVEpoch(dat.day()))), obs);
   MDirection::Ref mvref(MDirection::ITRF, frame);
   MVDirection mvd(obs.getValue());
-  EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"), frame);
+  EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"), frame);
   fm.calculate(mvd);
   MEarthMagnetic coord(fm.getField(), MEarthMagnetic::ITRF);
   {
-    Vector<Double> em =
+    Vector<double> em =
         MEarthMagnetic::Convert(coord, MEarthMagnetic::Ref(MEarthMagnetic::APP, frame))()
             .getValue()
             .getValue();
@@ -331,7 +331,7 @@ void testModelConv() {
                                     "18may1998,[3828488.86m,443253.42m,5064977.78m])")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
+    Array<double> arr1 = node.getArrayDouble(0);
     cout << arr1 << endl;
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(node.unit().getName() == "nT");

@@ -132,26 +132,26 @@ class Primes {
  public:
   // This function takes number and returns "True" if number is prime, "False"
   // if it is not.
-  static bool isPrime(uInt number);
+  static bool isPrime(unsigned int number);
 
   // This function returns the closest integer larger than number from the
   // table of primes.  If there is no entry in the table of primes which is
   // larger than number, a zero is returned.
-  static uInt aLargerPrimeThan(uInt number);
+  static unsigned int aLargerPrimeThan(unsigned int number);
 
   // This function finds the next largest prime than number, returns that
   // value and stores it in the table of primes.
-  static uInt nextLargerPrimeThan(uInt number);  // adds to cache
+  static unsigned int nextLargerPrimeThan(unsigned int number);  // adds to cache
 
   // This function returns the smallest factor of number.
-  static uInt smallestPrimeFactor(uInt number);
+  static unsigned int smallestPrimeFactor(unsigned int number);
 
   // This function returns a block, of variable length, with each factor
   // indexed.  For example, if number equaled 4, then the return block would
   // have a length of two, and have a two stored in each cell. One and zero
   // are special cases; this function returns a one-cell block which holds
   // one or zero, respectively.
-  static Block<uInt> factor(uInt number);
+  static Block<unsigned int> factor(unsigned int number);
 
   // This function returns the number of primes stored in the primes table.
   //    static uInt nCachedPrimes()
@@ -167,7 +167,7 @@ class Primes {
   static void initializeCache();
 
   // This is the table which stores the prime numbers.
-  static Block<uInt> cacheTable;
+  static Block<unsigned int> cacheTable;
   static std::mutex theirMutex;
 };
 

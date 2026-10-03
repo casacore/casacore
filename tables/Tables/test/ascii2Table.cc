@@ -93,9 +93,9 @@ void calc(Table& tab, const String& name) {
     return;
   }
 
-  uInt nrrow = tab.nrow();
+  unsigned int nrrow = tab.nrow();
   Vector<double> vec(nrrow);
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     tabcol.getScalar(i, vec(i));
   }
   double vmean = mean(vec);

@@ -90,7 +90,7 @@ void MMapfdIO::flush() {
   }
 }
 
-void MMapfdIO::write(Int64 size, const void* buf) {
+void MMapfdIO::write(int64_t size, const void* buf) {
   if (!itsIsWritable) {
     throw AipsError("MMapfdIO file " + fileName() + " is not writable");
   }
@@ -110,8 +110,8 @@ void MMapfdIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 MMapfdIO::read(Int64 size, void* buf, bool throwException) {
-  Int64 szrd = size;
+int64_t MMapfdIO::read(int64_t size, void* buf, bool throwException) {
+  int64_t szrd = size;
   if (itsPosition >= itsFileSize) {
     szrd = 0;
   } else if (itsPosition + size > itsFileSize) {
@@ -120,26 +120,26 @@ Int64 MMapfdIO::read(Int64 size, void* buf, bool throwException) {
   if (szrd > 0) {
     memcpy(buf, itsPtr + itsPosition, szrd);
     itsPosition += szrd;
-    if (throwException && szrd < Int(size)) {
+    if (throwException && szrd < int(size)) {
       throw AipsError("MMapfdIO::read - " + fileName() + " incorrect number of bytes read");
     }
   }
   return szrd;
 }
 
-Int64 MMapfdIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
+int64_t MMapfdIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
   itsPosition = FiledesIO::doSeek(offset, dir);
   return itsPosition;
 }
 
-const void* MMapfdIO::getReadPointer(Int64 offset) const {
+const void* MMapfdIO::getReadPointer(int64_t offset) const {
   if (offset >= itsFileSize) {
     throw AipsError("MMapfdIO::getReadPointer: beyond EOF of " + fileName());
   }
   return itsPtr + offset;
 }
 
-void* MMapfdIO::getWritePointer(Int64 offset) {
+void* MMapfdIO::getWritePointer(int64_t offset) {
   if (!itsIsWritable) {
     throw AipsError("MMapfdIO file " + fileName() + " is not writable");
   }

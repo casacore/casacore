@@ -495,12 +495,12 @@ MSTableMaps MeasurementSet::initMaps() {
   // define required keywords and columns
   TableDesc& requiredTD = maps.requiredTD_p;
   // all required keywords
-  uInt i;
+  unsigned int i;
   for (i = UNDEFINED_KEYWORD + 1; i <= NUMBER_REQUIRED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }
   // Set MS_VERSION number
-  requiredTD.rwKeywordSet().define("MS_VERSION", Float(2.0));
+  requiredTD.rwKeywordSet().define("MS_VERSION", float(2.0));
 
   // all required columns
   // First define the columns with fixed size arrays
@@ -568,7 +568,7 @@ void MeasurementSet::setMemoryResidentSubtables(const MrsEligibility& mrsEligibi
   // See if the memory resident subtable feature is enabled
 
   AipsrcValue<bool>::find(memoryResidentSubtables_p, getMrsAipsRcBase() + ".enable", false);
-  AipsrcValue<Int>::find(mrsDebugLevel_p, getMrsAipsRcBase() + ".debug.level", 0);
+  AipsrcValue<int>::find(mrsDebugLevel_p, getMrsAipsRcBase() + ".debug.level", 0);
 
   bool mrsEnabled = memoryResidentSubtables_p;
 
@@ -853,10 +853,10 @@ bool MeasurementSet::makeComplexData() {
   addColumn(ArrayColumnDesc<Complex>("DATA", 2));
 
   // now copy data across from FLOAT_DATA
-  ArrayColumn<Float> floatData(*this, MS::columnName(MS::FLOAT_DATA));
+  ArrayColumn<float> floatData(*this, MS::columnName(MS::FLOAT_DATA));
   ArrayColumn<Complex> data(*this, MS::columnName(MS::DATA));
   for (rownr_t i = 0; i < nrow(); i++) {
-    Array<Float> floatArr(floatData(i));
+    Array<float> floatArr(floatData(i));
     Array<Complex> dataArr(floatArr.shape());
     convertArray(dataArr, floatArr);
     data.put(i, dataArr);
@@ -868,11 +868,11 @@ bool MeasurementSet::validateMeasureRefs() {
   bool ok = true;
   // check main table
   {
-    Int nCol = tableDesc().ncolumn();
-    for (Int i = 0; i < nCol; i++) {
-      Int fld = tableDesc()[i].keywordSet().fieldNumber("MEASINFO");
+    int nCol = tableDesc().ncolumn();
+    for (int i = 0; i < nCol; i++) {
+      int fld = tableDesc()[i].keywordSet().fieldNumber("MEASINFO");
       if (fld >= 0) {
-        Int refFld = tableDesc()[i].keywordSet().asRecord(fld).fieldNumber("Ref");
+        int refFld = tableDesc()[i].keywordSet().asRecord(fld).fieldNumber("Ref");
         if (refFld < 0 || tableDesc()[i].keywordSet().asRecord(fld).asString(refFld) == "") {
           cerr << "Missing Measure reference for column " << tableDesc()[i].name() << std::endl;
           ok = false;
@@ -881,15 +881,15 @@ bool MeasurementSet::validateMeasureRefs() {
     }
   }
   // check all subtables
-  Int nKey = keywordSet().nfields();
-  for (Int i = 0; i < nKey; i++) {
+  int nKey = keywordSet().nfields();
+  for (int i = 0; i < nKey; i++) {
     if (keywordSet().type(i) == TpTable) {
       Table tab = keywordSet().asTable(i);
-      Int nCol = tab.tableDesc().ncolumn();
-      for (Int i = 0; i < nCol; i++) {
-        Int fld = tab.tableDesc()[i].keywordSet().fieldNumber("MEASINFO");
+      int nCol = tab.tableDesc().ncolumn();
+      for (int i = 0; i < nCol; i++) {
+        int fld = tab.tableDesc()[i].keywordSet().fieldNumber("MEASINFO");
         if (fld >= 0) {
-          Int refFld = tab.tableDesc()[i].keywordSet().asRecord(fld).fieldNumber("Ref");
+          int refFld = tab.tableDesc()[i].keywordSet().asRecord(fld).fieldNumber("Ref");
           if (refFld < 0 || tab.tableDesc()[i].keywordSet().asRecord(fld).asString(refFld) == "") {
             cerr << "Missing Measure reference for column " << tab.tableDesc()[i].name()
                  << " in subtable " << tab.tableName() << std::endl;
@@ -949,19 +949,19 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field, cons
   thisSelection.setPolnExpr(poln);
   thisSelection.setTaQLExpr(taql);
   TableExprNode exprNode = thisSelection.toTableExprNode(this);
-  Vector<Int> fieldlist = thisSelection.getFieldList();
-  Vector<Int> spwlist = thisSelection.getSpwList();
-  Vector<Int> scanlist = thisSelection.getScanList();
-  Vector<Int> obslist = thisSelection.getObservationList();
-  Vector<Int> antenna1list = thisSelection.getAntenna1List();
-  Vector<Int> antenna2list = thisSelection.getAntenna2List();
-  Matrix<Int> chanlist = thisSelection.getChanList();
-  Matrix<Int> baselinelist = thisSelection.getBaselineList();
-  Vector<Int> ddIDList = thisSelection.getDDIDList();
-  Vector<Int> spwDDIDList = thisSelection.getSPWDDIDList();
-  std::map<Int, Vector<Int>> polMap = thisSelection.getPolMap();
-  std::map<Int, Vector<Vector<Int>>> corrMap = thisSelection.getCorrMap();
-  Vector<Int> allDDIDList;
+  Vector<int> fieldlist = thisSelection.getFieldList();
+  Vector<int> spwlist = thisSelection.getSpwList();
+  Vector<int> scanlist = thisSelection.getScanList();
+  Vector<int> obslist = thisSelection.getObservationList();
+  Vector<int> antenna1list = thisSelection.getAntenna1List();
+  Vector<int> antenna2list = thisSelection.getAntenna2List();
+  Matrix<int> chanlist = thisSelection.getChanList();
+  Matrix<int> baselinelist = thisSelection.getBaselineList();
+  Vector<int> ddIDList = thisSelection.getDDIDList();
+  Vector<int> spwDDIDList = thisSelection.getSPWDDIDList();
+  std::map<int, Vector<int>> polMap = thisSelection.getPolMap();
+  std::map<int, Vector<Vector<int>>> corrMap = thisSelection.getCorrMap();
+  Vector<int> allDDIDList;
   if (ddIDList.nelements() == 0)
     allDDIDList = spwDDIDList;
   else if (spwDDIDList.nelements() == 0)

@@ -53,16 +53,16 @@ void readtab() {
   Timer timer;
   {
     Table tab("tStMan1_tmp.data");
-    uInt nrrow = tab.nrow();
+    unsigned int nrrow = tab.nrow();
     timer.show("table open          ");
-    ScalarColumn<uInt> int1(tab, "int1");
-    for (uInt i = 0; i < nrrow; i++) {
+    ScalarColumn<unsigned int> int1(tab, "int1");
+    for (unsigned int i = 0; i < nrrow; i++) {
       AlwaysAssertExit(int1(i) == i);
     }
     timer.show("table get rows      ");
-    Vector<uInt> vec = int1.getColumn();
+    Vector<unsigned int> vec = int1.getColumn();
     timer.show("table get column    ");
-    for (uInt i = 0; i < nrrow; i++) {
+    for (unsigned int i = 0; i < nrrow; i++) {
       AlwaysAssertExit(vec(i) == i);
     }
     timer.show("table check column  ");
@@ -71,10 +71,10 @@ void readtab() {
 }
 
 // Create and fill a new table.
-void newtab(uInt nrrow, const DataManager& stman, uInt flushnr) {
+void newtab(unsigned int nrrow, const DataManager& stman, unsigned int flushnr) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ScalarColumnDesc<uInt>("int1"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("int1"));
 
   Timer timer;
   {
@@ -86,8 +86,8 @@ void newtab(uInt nrrow, const DataManager& stman, uInt flushnr) {
     newtab.bindAll(stman);
     Table tab(newtab, nrrow);
     timer.show("table rows creation ");
-    ScalarColumn<uInt> int1(tab, "int1");
-    for (uInt i = 0; i < nrrow; i++) {
+    ScalarColumn<unsigned int> int1(tab, "int1");
+    for (unsigned int i = 0; i < nrrow; i++) {
       int1.put(i, i);
     }
     timer.show("table put non-add   ");
@@ -101,8 +101,8 @@ void newtab(uInt nrrow, const DataManager& stman, uInt flushnr) {
     newtab.bindAll(stman);
     Table tab(newtab);
     timer.show("table empty creation");
-    ScalarColumn<uInt> int1(tab, "int1");
-    for (uInt i = 0; i < nrrow; i++) {
+    ScalarColumn<unsigned int> int1(tab, "int1");
+    for (unsigned int i = 0; i < nrrow; i++) {
       tab.addRow();
       int1.put(i, i);
     }
@@ -117,8 +117,8 @@ void newtab(uInt nrrow, const DataManager& stman, uInt flushnr) {
     newtab.bindAll(stman);
     Table tab(newtab, nrrow);
     timer.show("table rows creation ");
-    ScalarColumn<uInt> int1(tab, "int1");
-    for (uInt i = 0; i < nrrow; i++) {
+    ScalarColumn<unsigned int> int1(tab, "int1");
+    for (unsigned int i = 0; i < nrrow; i++) {
       int1.put(i, i);
       if (i > 0 && i % flushnr == 0) {
         tab.flush();
@@ -129,15 +129,15 @@ void newtab(uInt nrrow, const DataManager& stman, uInt flushnr) {
   timer.show("total + destructor  ");
 }
 
-void doTest(uInt nrrow, const DataManager& stman, uInt flushnr) {
+void doTest(unsigned int nrrow, const DataManager& stman, unsigned int flushnr) {
   newtab(nrrow, stman, flushnr);
   readtab();
 }
 
 int main(int argc, const char* argv[]) {
-  uInt nrrow = 100000;
-  uInt bucketSize = 32768;
-  uInt flushnr = 1000;
+  unsigned int nrrow = 100000;
+  unsigned int bucketSize = 32768;
+  unsigned int flushnr = 1000;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nrrow;

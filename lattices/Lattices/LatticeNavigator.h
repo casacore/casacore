@@ -220,7 +220,7 @@ class LatticeNavigator {
   // since construction (or since last reset).  This is a running count of
   // all cursor movement since doing N increments followed by N decrements
   // does not necessarily put the cursor back at the origin of the Lattice.
-  virtual uInt nsteps() const = 0;
+  virtual unsigned int nsteps() const = 0;
 
   // Functions which return the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origin in
@@ -325,8 +325,8 @@ class LatticeNavigator {
   // in the given row of the tiled hypercube.
   // A zero bucket size indicates that the data are not tiled, but in memory.
   // Then a cache size of 0 is returned.
-  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             uInt maxCacheSize, uInt bucketSize) const = 0;
+  virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                                     unsigned int maxCacheSize, unsigned int bucketSize) const = 0;
 
   // Function which returns a pointer to dynamic memory of an exact copy
   // of this LatticeNavigator. It is the responsibility of the caller to

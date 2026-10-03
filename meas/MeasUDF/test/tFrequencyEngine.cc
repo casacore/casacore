@@ -56,14 +56,14 @@ void testScalar() {
   MeasFrame rvframe(coord, epo, pos);
 
   MFrequency freq(Quantity(1e9, "Hz"), MFrequency::LSRK);
-  Double res =
+  double res =
       MFrequency::Convert(freq, MFrequency::Ref(MFrequency::BARY, frame))().getValue().getValue();
   // cout << "meas=" << res << endl;
 
   MRadialVelocity radvel(Quantity(1000, "km/s"),
                          MRadialVelocity::Ref(MRadialVelocity::BARY, rvframe));
   frame.set(radvel);
-  Double res1 =
+  double res1 =
       MFrequency::Convert(freq, MFrequency::Ref(MFrequency::REST, frame))().getValue().getValue();
   // cout << "meas=" << res1 << endl;
   {
@@ -73,7 +73,7 @@ void testScalar() {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << val1 << endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(res, val1, 1e-8));
@@ -86,7 +86,7 @@ void testScalar() {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << val1 << endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(res, val1, 1e-8));
@@ -99,7 +99,7 @@ void testScalar() {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << val1 << endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(res, val1, 1e-8));
@@ -113,7 +113,7 @@ void testScalar() {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << val1 <<endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(res1, val1, 1e-8));
@@ -127,7 +127,7 @@ void testScalar() {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << val1 <<endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(res1, val1, 1e-8));
@@ -142,7 +142,7 @@ void testScalar() {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << val1 << ' '<<val1-1e9<<endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(1e9, val1, 1e-8));
@@ -162,7 +162,7 @@ void testDopplerScalar() {
   {
     TableExprNode node(tableCommand("calc meas.rest(1GHz, 'LSRK', 3.5)").node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(rfreq.getValue().getValue(), val1, 1e-8));
@@ -170,7 +170,7 @@ void testDopplerScalar() {
   {
     TableExprNode node(tableCommand("calc meas.shift(400MHz, 'LSRK', 3.5)").node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Double val1 = node.getDouble(0);
+    double val1 = node.getDouble(0);
     // cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node.unit().getName() == "Hz");
     AlwaysAssertExit(near(bfreq.getValue().getValue(), val1, 1e-8));
@@ -201,20 +201,20 @@ void testArray() {
                           .node());
   AlwaysAssertExit(node1.getNodeRep()->isConstant());
   AlwaysAssertExit(node2.getNodeRep()->isConstant());
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   // cout << "taql=" << arr1 << endl;
   // cout << "taql=" << arr2 << endl;
   AlwaysAssertExit(arr1.shape() == IPosition(5, 1, 2, 4, 3, 2));
   AlwaysAssertExit(arr2.shape() == IPosition(6, 1, 2, 3, 4, 3, 2));
-  VectorIterator<Double> arr1iter(arr1);
-  VectorIterator<Double> arr2iter(arr2);
+  VectorIterator<double> arr1iter(arr1);
+  VectorIterator<double> arr2iter(arr2);
   // Check with Measures.
   Vector<MFrequency> freq(2);
   Vector<MDirection> coord(4);
   Vector<MEpoch> epo(3);
   Vector<MPosition> pos(2);
-  Vector<Double> vel(3);
+  Vector<double> vel(3);
   freq[0] = MFrequency(Quantity(200, "MHz"), MFrequency::BARY);
   freq[1] = MFrequency(Quantity(220, "MHz"), MFrequency::BARY);
   coord[0] = MDirection(Quantity(185.425833, "deg"), Quantity(31.799167, "deg"), MDirection::J2000);
@@ -231,11 +231,11 @@ void testArray() {
   vel[0] = 500;
   vel[1] = 600;
   vel[2] = 700;
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
-    for (uInt ie = 0; ie < epo.size(); ++ie) {
-      for (uInt ic = 0; ic < coord.size(); ++ic) {
-        for (uInt ir = 0; ir < freq.size(); ++ir) {
-          Double fr = MFrequency::Convert(freq[ir],
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
+    for (unsigned int ie = 0; ie < epo.size(); ++ie) {
+      for (unsigned int ic = 0; ic < coord.size(); ++ic) {
+        for (unsigned int ir = 0; ir < freq.size(); ++ir) {
+          double fr = MFrequency::Convert(freq[ir],
                                           MFrequency::Ref(MFrequency::LSRK,
                                                           MeasFrame(coord[ic], epo[ie], pos[ip])))()
                           .getValue()
@@ -247,17 +247,17 @@ void testArray() {
       }
     }
   }
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
-    for (uInt ie = 0; ie < epo.size(); ++ie) {
-      for (uInt ic = 0; ic < coord.size(); ++ic) {
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
+    for (unsigned int ie = 0; ie < epo.size(); ++ie) {
+      for (unsigned int ic = 0; ic < coord.size(); ++ic) {
         MeasFrame frame(coord[ic], epo[ie], pos[ip]);
         MeasFrame rvframe(coord[ic], epo[ie], pos[ip]);
-        for (uInt iv = 0; iv < vel.size(); ++iv) {
+        for (unsigned int iv = 0; iv < vel.size(); ++iv) {
           MRadialVelocity vl(Quantity(vel[iv], "km/s"),
                              MRadialVelocity::Ref(MRadialVelocity::LSRK, rvframe));
           frame.set(vl);
-          for (uInt ir = 0; ir < freq.size(); ++ir) {
-            Double fr = MFrequency::Convert(freq[ir], MFrequency::Ref(MFrequency::REST, frame))()
+          for (unsigned int ir = 0; ir < freq.size(); ++ir) {
+            double fr = MFrequency::Convert(freq[ir], MFrequency::Ref(MFrequency::REST, frame))()
                             .getValue()
                             .getValue();
             // cout << "meas=" << fr << ' '<< arr1iter.vector() << endl;
@@ -285,9 +285,9 @@ void testDopplerArray() {
   AlwaysAssertExit(node1.getNodeRep()->isConstant());
   AlwaysAssertExit(node2.getNodeRep()->isConstant());
   AlwaysAssertExit(node3.getNodeRep()->isConstant());
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
-  Array<Double> arr3 = node3.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr3 = node3.getArrayDouble(0);
   // cout << "taql=" << arr1 << endl;
   // cout << "taql=" << arr2 << endl;
   // cout << "taql=" << arr3 << endl;
@@ -297,8 +297,8 @@ void testDopplerArray() {
   AlwaysAssertExit(arr1.shape() == IPosition(2, 3, 2));
   AlwaysAssertExit(arr2.shape() == IPosition(2, 3, 1));
   AlwaysAssertExit(arr3.shape() == IPosition(2, 3, 1));
-  for (uInt id = 0; id < dop.size(); ++id) {
-    for (uInt ir = 0; ir < freq.size(); ++ir) {
+  for (unsigned int id = 0; id < dop.size(); ++id) {
+    for (unsigned int ir = 0; ir < freq.size(); ++ir) {
       // Get the rest frequency.
       MFrequency rfreq = freq[ir].toRest(dop[id]);
       // cout << "meas=" << rfreq.getValue().getValue()<<endl;
@@ -320,7 +320,7 @@ void testColumn() {
   // Check with Measures.
   Vector<MFrequency> freq(2);
   Vector<MDoppler> dop(2);
-  Vector<Double> vel(4);
+  Vector<double> vel(4);
   Vector<MDirection> coord(2);
   Vector<MEpoch> epo(2);
   Vector<MPosition> pos(2);
@@ -354,15 +354,15 @@ void testColumn() {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(!node2.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.nrow() == 2 && node2.nrow() == 2);
-  for (uInt i = 0; i < 2; ++i) {
-    Double val1 = node1.getDouble(i);
+  for (unsigned int i = 0; i < 2; ++i) {
+    double val1 = node1.getDouble(i);
     // cout << "taql=" << val1 << endl;
-    Array<Double> arr2 = node2.getArrayDouble(i);
+    Array<double> arr2 = node2.getArrayDouble(i);
     // cout << "taql=" << arr2 << endl;
     AlwaysAssertExit(arr2.shape() == IPosition(5, 1, 2, 1, 1, 1));
     MeasFrame frame(coord[i], epo[i], pos[i]);
     MeasFrame rvframe(coord[i], epo[i], pos[i]);
-    Double fr = MFrequency::Convert(freq[i], MFrequency::Ref(MFrequency::BARY, frame))()
+    double fr = MFrequency::Convert(freq[i], MFrequency::Ref(MFrequency::BARY, frame))()
                     .getValue()
                     .getValue();
     // cout << "meas=" << fr << ' '<< val1 << endl;
@@ -371,7 +371,7 @@ void testColumn() {
       MRadialVelocity rv(Quantity(vel[2 * i + j], "m/s"),
                          MRadialVelocity::Ref(MRadialVelocity::BARY, rvframe));
       frame.set(rv);
-      Double fr = MFrequency::Convert(freq[i], MFrequency::Ref(MFrequency::REST, frame))()
+      double fr = MFrequency::Convert(freq[i], MFrequency::Ref(MFrequency::REST, frame))()
                       .getValue()
                       .getValue();
       AlwaysAssertExit(near(fr, arr2.data()[j], 1e-8));
@@ -398,9 +398,9 @@ void testDopplerColumn() {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(!node2.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.nrow() == 2 && node2.nrow() == 2);
-  for (uInt i = 0; i < 2; ++i) {
-    Double val1 = node1.getDouble(i);
-    Double val2 = node2.getDouble(i);
+  for (unsigned int i = 0; i < 2; ++i) {
+    double val1 = node1.getDouble(i);
+    double val2 = node2.getDouble(i);
     // cout << "taql=" << val1 << endl;
     MFrequency rfreq = freq[i].toRest(dop[i]);
     // cout << "meas=" << fr << ' '<< val1 << endl;

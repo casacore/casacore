@@ -38,7 +38,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SSMColumn::SSMColumn(SSMBase* aParent, int aDataType, uInt aColNr)
+SSMColumn::SSMColumn(SSMBase* aParent, int aDataType, unsigned int aColNr)
     : StManColumnBase(aDataType),
       itsSSMPtr(aParent),
       itsExternalSizeBytes(0),
@@ -59,12 +59,12 @@ void SSMColumn::setShapeColumn(const IPosition& aShape) {
   init();
 }
 
-void SSMColumn::setMaxLength(uInt maxLength) {
+void SSMColumn::setMaxLength(unsigned int maxLength) {
   itsMaxLen = maxLength;
   init();
 }
 
-uInt SSMColumn::ndim(rownr_t) { return itsShape.nelements(); }
+unsigned int SSMColumn::ndim(rownr_t) { return itsShape.nelements(); }
 
 IPosition SSMColumn::shape(rownr_t) { return itsShape; }
 
@@ -98,7 +98,7 @@ void SSMColumn::deleteRow(rownr_t aRowNr) {
   int aDT = dataType();
 
   if (aDT == TpString && itsMaxLen == 0) {
-    Int buf[3];
+    int buf[3];
     getRowValue(buf, aRowNr);
     if (buf[2] > 8) {
       itsSSMPtr->getStringHandler()->remove(buf[0], buf[1], buf[2]);
@@ -132,7 +132,7 @@ void SSMColumn::deleteRow(rownr_t aRowNr) {
       char* aFromPtr = getDataPtr() + (aRowNr + 1 - aStartRow) * itsLocalSize;
 
       // decrement anEndrow
-      uInt64 aLength = (anEndRow - aRowNr) * itsLocalSize;
+      uint64_t aLength = (anEndRow - aRowNr) * itsLocalSize;
       memmove(aToPtr, aFromPtr, aLength);
     }
     // Fill cache again with actual itsData.
@@ -160,7 +160,7 @@ void SSMColumn::shiftRows(char* aValue, rownr_t aRowNr, rownr_t aSRow, rownr_t a
   // Shift from aRrowNr on 1 to the left.
   char* aToPtr = aValue + (aRowNr - aSRow) * itsExternalSizeBytes;
   char* aFromPtr = aToPtr + itsExternalSizeBytes;
-  uInt64 aLength = (anERow - aRowNr) * itsExternalSizeBytes;
+  uint64_t aLength = (anERow - aRowNr) * itsExternalSizeBytes;
   memmove(aToPtr, aFromPtr, aLength);
   // Clear last entry (so a putString on a new row finds zeroes).
   memset(aToPtr + aLength, 0, itsExternalSizeBytes);
@@ -170,29 +170,29 @@ void SSMColumn::getBool(rownr_t aRowNr, bool* aValue) {
   getValue(aRowNr);
   *aValue = static_cast<bool*>(itsData)[aRowNr - columnCache().start()];
 }
-void SSMColumn::getuChar(rownr_t aRowNr, uChar* aValue) {
+void SSMColumn::getuChar(rownr_t aRowNr, unsigned char* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<uChar*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<unsigned char*>(itsData)[aRowNr - columnCache().start()];
 }
-void SSMColumn::getShort(rownr_t aRowNr, Short* aValue) {
+void SSMColumn::getShort(rownr_t aRowNr, short* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<Short*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<short*>(itsData)[aRowNr - columnCache().start()];
 }
-void SSMColumn::getuShort(rownr_t aRowNr, uShort* aValue) {
+void SSMColumn::getuShort(rownr_t aRowNr, unsigned short* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<uShort*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<unsigned short*>(itsData)[aRowNr - columnCache().start()];
 }
-void SSMColumn::getInt(rownr_t aRowNr, Int* aValue) {
+void SSMColumn::getInt(rownr_t aRowNr, int* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<Int*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<int*>(itsData)[aRowNr - columnCache().start()];
 }
-void SSMColumn::getuInt(rownr_t aRowNr, uInt* aValue) {
+void SSMColumn::getuInt(rownr_t aRowNr, unsigned int* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<uInt*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<unsigned int*>(itsData)[aRowNr - columnCache().start()];
 }
-void SSMColumn::getInt64(rownr_t aRowNr, Int64* aValue) {
+void SSMColumn::getInt64(rownr_t aRowNr, int64_t* aValue) {
   getValue(aRowNr);
-  *aValue = static_cast<Int64*>(itsData)[aRowNr - columnCache().start()];
+  *aValue = static_cast<int64_t*>(itsData)[aRowNr - columnCache().start()];
 }
 void SSMColumn::getfloat(rownr_t aRowNr, float* aValue) {
   getValue(aRowNr);
@@ -227,7 +227,7 @@ void SSMColumn::getString(rownr_t aRowNr, String* aValue) {
     // Note that if shorter, the string already contains a trailing zero.
     // Set the string to its actual length.
     sp[itsMaxLen] = '\0';
-    uInt len = 0;
+    unsigned int len = 0;
     while (*sp++ != '\0') {
       len++;
     }
@@ -235,7 +235,7 @@ void SSMColumn::getString(rownr_t aRowNr, String* aValue) {
   } else {
     // The string is probably stored indirectly in a string bucket.
     // Get bucketnr, offset, and length.
-    Int buf[3];
+    int buf[3];
     char* strbuf = getRowValue(buf, aRowNr);
 
     // if length <= 8 chars the string can be found in de data bucket
@@ -254,7 +254,7 @@ void SSMColumn::getString(rownr_t aRowNr, String* aValue) {
   }
 }
 
-Char* SSMColumn::getRowValue(Int* data, rownr_t aRowNr) {
+char* SSMColumn::getRowValue(int* data, rownr_t aRowNr) {
   rownr_t aStartRow;
   rownr_t anEndRow;
   char* aValue;
@@ -281,7 +281,7 @@ void SSMColumn::putBool(rownr_t aRowNr, const bool* aValue) {
 
   aDummy = itsSSMPtr->find(aRowNr, itsColNr, aStartRow, anEndRow, columnName());
 
-  uInt64 anOff = aRowNr - aStartRow;
+  uint64_t anOff = aRowNr - aStartRow;
 
   Conversion::boolToBit(aDummy + (anOff / 8), aValue, anOff % 8, 1);
   itsSSMPtr->setBucketDirty();
@@ -290,40 +290,40 @@ void SSMColumn::putBool(rownr_t aRowNr, const bool* aValue) {
     getDataPtr()[aRowNr - columnCache().start()] = *aValue;
   }
 }
-void SSMColumn::putuChar(rownr_t aRowNr, const uChar* aValue) {
+void SSMColumn::putuChar(rownr_t aRowNr, const unsigned char* aValue) {
   putValue(aRowNr, aValue);
   if (aRowNr >= columnCache().start() && aRowNr <= columnCache().end()) {
-    static_cast<uChar*>(itsData)[aRowNr - columnCache().start()] = *aValue;
+    static_cast<unsigned char*>(itsData)[aRowNr - columnCache().start()] = *aValue;
   }
 }
-void SSMColumn::putShort(rownr_t aRowNr, const Short* aValue) {
+void SSMColumn::putShort(rownr_t aRowNr, const short* aValue) {
   putValue(aRowNr, aValue);
   if (aRowNr >= columnCache().start() && aRowNr <= columnCache().end()) {
-    static_cast<Short*>(itsData)[aRowNr - columnCache().start()] = *aValue;
+    static_cast<short*>(itsData)[aRowNr - columnCache().start()] = *aValue;
   }
 }
-void SSMColumn::putuShort(rownr_t aRowNr, const uShort* aValue) {
+void SSMColumn::putuShort(rownr_t aRowNr, const unsigned short* aValue) {
   putValue(aRowNr, aValue);
   if (aRowNr >= columnCache().start() && aRowNr <= columnCache().end()) {
-    static_cast<uShort*>(itsData)[aRowNr - columnCache().start()] = *aValue;
+    static_cast<unsigned short*>(itsData)[aRowNr - columnCache().start()] = *aValue;
   }
 }
-void SSMColumn::putInt(rownr_t aRowNr, const Int* aValue) {
+void SSMColumn::putInt(rownr_t aRowNr, const int* aValue) {
   putValue(aRowNr, aValue);
   if (aRowNr >= columnCache().start() && aRowNr <= columnCache().end()) {
-    static_cast<Int*>(itsData)[aRowNr - columnCache().start()] = *aValue;
+    static_cast<int*>(itsData)[aRowNr - columnCache().start()] = *aValue;
   }
 }
-void SSMColumn::putuInt(rownr_t aRowNr, const uInt* aValue) {
+void SSMColumn::putuInt(rownr_t aRowNr, const unsigned int* aValue) {
   putValue(aRowNr, aValue);
   if (aRowNr >= columnCache().start() && aRowNr <= columnCache().end()) {
-    static_cast<uInt*>(itsData)[aRowNr - columnCache().start()] = *aValue;
+    static_cast<unsigned int*>(itsData)[aRowNr - columnCache().start()] = *aValue;
   }
 }
-void SSMColumn::putInt64(rownr_t aRowNr, const Int64* aValue) {
+void SSMColumn::putInt64(rownr_t aRowNr, const int64_t* aValue) {
   putValue(aRowNr, aValue);
   if (aRowNr >= columnCache().start() && aRowNr <= columnCache().end()) {
-    static_cast<Int64*>(itsData)[aRowNr - columnCache().start()] = *aValue;
+    static_cast<int64_t*>(itsData)[aRowNr - columnCache().start()] = *aValue;
   }
 }
 void SSMColumn::putfloat(rownr_t aRowNr, const float* aValue) {
@@ -359,10 +359,10 @@ void SSMColumn::putString(rownr_t aRowNr, const String* aValue) {
     rownr_t anEndRow;
     char* aDummy = itsSSMPtr->find(aRowNr, itsColNr, aStartRow, anEndRow, columnName());
     itsWriteFunc(aDummy + (aRowNr - aStartRow) * itsExternalSizeBytes, aValue->c_str(),
-                 min(itsMaxLen, aValue->length() + 1));
+                 std::min<ssize_t>(itsMaxLen, aValue->length() + 1));
     itsSSMPtr->setBucketDirty();
   } else {
-    Int buf[3];
+    int buf[3];
     // Try to find out if this value was filled before, in that case we use
     // an overwrite.
     getRowValue(buf, aRowNr);
@@ -413,7 +413,7 @@ void SSMColumn::putValueShortString(rownr_t aRowNr, const void* aValue, const St
 void SSMColumn::getScalarColumnV(ArrayBase& aDataPtr) {
   if (dtype() == TpString) {
     Vector<String>& vec = static_cast<Vector<String>&>(aDataPtr);
-    for (uInt64 i = 0; i < aDataPtr.nelements(); i++) {
+    for (uint64_t i = 0; i < aDataPtr.nelements(); i++) {
       getString(i, &(vec[i]));
     }
   } else {
@@ -445,7 +445,7 @@ void SSMColumn::getColumnValue(void* anArray, rownr_t aNrRows) {
 void SSMColumn::putScalarColumnV(const ArrayBase& aDataPtr) {
   if (dtype() == TpString) {
     const Vector<String>& vec = static_cast<const Vector<String>&>(aDataPtr);
-    for (uInt64 i = 0; i < aDataPtr.nelements(); i++) {
+    for (uint64_t i = 0; i < aDataPtr.nelements(); i++) {
       putString(i, &(vec[i]));
     }
   } else {
@@ -480,7 +480,7 @@ void SSMColumn::putColumnValue(const void* anArray, rownr_t aNrRows) {
 
 void SSMColumn::removeColumn() {
   if (dataType() == TpString && itsMaxLen == 0) {
-    Int buf[3];
+    int buf[3];
     for (rownr_t i = 0; i < itsSSMPtr->getNRow(); i++) {
       getRowValue(buf, i);
       if (buf[2] > 8) {
@@ -509,7 +509,7 @@ void SSMColumn::init() {
       itsNrCopy = 1;
       itsLocalSize = ValType::getTypeSize(TpInt);
       itsExternalSizeBytes = ValType::getCanonicalSize(TpInt, asBigEndian);
-      uInt aNRel;
+      unsigned int aNRel;
       ValType::getCanonicalFunc(TpInt, itsReadFunc, itsWriteFunc, aNRel, asBigEndian);
       itsNrCopy *= aNRel;
       itsExternalSizeBytes *= 3;
@@ -524,7 +524,7 @@ void SSMColumn::init() {
     itsWriteFunc = &Conversion::boolToBit;
   } else {
     itsExternalSizeBytes = ValType::getCanonicalSize(aDT, asBigEndian);
-    uInt aNRel;
+    unsigned int aNRel;
     ValType::getCanonicalFunc(aDT, itsReadFunc, itsWriteFunc, aNRel, asBigEndian);
     itsNrCopy *= aNRel;
     itsExternalSizeBytes *= itsNrElem;

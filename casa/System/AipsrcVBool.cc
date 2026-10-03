@@ -40,11 +40,11 @@ bool AipsrcVector<bool>::find(Vector<bool> &value, const String &keyword) {
     const Regex ws("[ 	]+");
     const std::regex tTrue("^([tT]|[yY]|[1-9])");
     RegexReplaceAll(res, ws, " ");
-    Int m = std::count(res.begin(), res.end(), ' ') + 1;
+    int m = std::count(res.begin(), res.end(), ' ') + 1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<bool>(m);
-    for (Int i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++) {
       value(i) = std::regex_search(nres[i], tTrue);
     }
     delete[] nres;
@@ -57,33 +57,33 @@ bool AipsrcVector<bool>::find(Vector<bool> &value, const String &keyword,
   return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcVector<bool>::registerRC(const String &keyword, const Vector<bool> &deflt) {
+unsigned int AipsrcVector<bool>::registerRC(const String &keyword, const Vector<bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(tlst[n - 1], keyword, deflt);
   return n;
 }
 
-const Vector<bool> AipsrcVector<bool>::get(uInt keyword) {
+const Vector<bool> AipsrcVector<bool>::get(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword - 1];
 }
 
-void AipsrcVector<bool>::set(uInt keyword, const Vector<bool> &deflt) {
+void AipsrcVector<bool>::set(unsigned int keyword, const Vector<bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   tlst[keyword - 1].resize(deflt.nelements());
   tlst[keyword - 1] = deflt;
 }
 
-void AipsrcVector<bool>::save(uInt keyword) {
+void AipsrcVector<bool>::save(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;
-  const Int n = (tlst[keyword - 1]).nelements();
-  for (Int i = 0; i < n; i++) {
+  const int n = (tlst[keyword - 1]).nelements();
+  for (int i = 0; i < n; i++) {
     if ((tlst[keyword - 1])(i)) {
       oss << " true";
     } else {

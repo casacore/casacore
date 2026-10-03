@@ -35,7 +35,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCEpoch::ToRef_p[N_Routes][3] = {
+unsigned int MCEpoch::ToRef_p[N_Routes][3] = {
     {MEpoch::LAST, MEpoch::GAST, 2},  {MEpoch::GAST, MEpoch::LAST, 2},
     {MEpoch::LMST, MEpoch::GMST1, 2}, {MEpoch::GMST1, MEpoch::LMST, 2},
     {MEpoch::GMST1, MEpoch::UT1, 2},  {MEpoch::UT1, MEpoch::GMST1, 2},
@@ -48,7 +48,7 @@ uInt MCEpoch::ToRef_p[N_Routes][3] = {
     {MEpoch::TDT, MEpoch::TCG, 0},    {MEpoch::TCG, MEpoch::TDT, 0},
     {MEpoch::TDB, MEpoch::TCB, 0},    {MEpoch::TCB, MEpoch::TDB, 0}};
 
-uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
+unsigned int MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
 std::once_flag MCEpoch::theirInitOnceFlag;
 
 // # Constructors
@@ -62,12 +62,12 @@ MCEpoch::~MCEpoch() { clearConvert(); }
 // # Member functions
 
 void MCEpoch::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
+  int iin = inref.getType();
   bool iraze = (iin & MEpoch::RAZE);
   iin &= ~MEpoch::EXTRA;
-  Int iout = outref.getType();
+  int iout = outref.getType();
   iout &= ~MEpoch::EXTRA;
-  Int tmp;
+  int tmp;
   while (iin != iout) {
     tmp = FromTo_p[iin][iout];
     iin = ToRef_p[tmp][1];
@@ -87,7 +87,7 @@ void MCEpoch::clearConvert() {
 }
 
 // # Conversion routines
-void MCEpoch::initConvert(uInt which, MConvertBase &mc) {
+void MCEpoch::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
@@ -119,9 +119,9 @@ void MCEpoch::doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MCon
 
 void MCEpoch::doConvert(MVEpoch &in, MRBase &inref, MRBase &outref, const MConvertBase &mc) {
   static MVEpoch mve6713(6713.);
-  Double locLong, eqox, ut, tt, xx;
+  double locLong, eqox, ut, tt, xx;
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case LAST_GAST: {
         MEpoch::Ref::framePosition(inref, outref).getLong(locLong);
@@ -148,7 +148,7 @@ void MCEpoch::doConvert(MVEpoch &in, MRBase &inref, MRBase &outref, const MConve
         in += MeasTable::GMUT0(ut) * MeasData::JDCEN / MeasData::SECinDAY;
         in -= mve6713;
         if (MeasTable::useIAU2000()) {
-          uInt i(0);
+          unsigned int i(0);
           do {
             MVEpoch xe(in);
             ut = xe.get();

@@ -31,7 +31,7 @@
 
 #include <casacore/casa/namespace.h>
 
-void showTime(MVAngle time, uInt format, uInt prec) {
+void showTime(MVAngle time, unsigned int format, unsigned int prec) {
   cout << MVAngle::Format(format, prec) << time << endl;
 }
 

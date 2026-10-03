@@ -82,8 +82,8 @@ bool operator==(const ScanKey& lhs, const ScanKey& rhs) {
   return lhs.obsID == rhs.obsID && lhs.arrayID == rhs.arrayID && lhs.scan == rhs.scan;
 }
 
-std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys) {
-  std::set<Int> scanNumbers;
+std::set<int> scanNumbers(const std::set<ScanKey>& scanKeys) {
+  std::set<int> scanNumbers;
   std::set<ScanKey>::const_iterator iter = scanKeys.begin();
   std::set<ScanKey>::const_iterator end = scanKeys.end();
   while (iter != end) {
@@ -109,10 +109,10 @@ bool operator<(const ArrayKey& lhs, const ArrayKey& rhs) {
   return false;
 }
 
-std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey) {
+std::set<ScanKey> scanKeys(const std::set<int>& scans, const ArrayKey& arrayKey) {
   std::set<ScanKey> scanKeys;
-  std::set<Int>::const_iterator iter = scans.begin();
-  std::set<Int>::const_iterator end = scans.end();
+  std::set<int>::const_iterator iter = scans.begin();
+  std::set<int>::const_iterator end = scans.end();
   ScanKey scanKey;
   scanKey.obsID = arrayKey.obsID;
   scanKey.arrayID = arrayKey.arrayID;

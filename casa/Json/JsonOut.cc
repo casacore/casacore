@@ -180,7 +180,7 @@ void JsonOut::putName(const String& name) {
 void JsonOut::putNull() { itsStream << "null"; }
 
 void JsonOut::put(bool value) { itsStream << (value ? "true" : "false"); }
-void JsonOut::put(Float value) {
+void JsonOut::put(float value) {
   if (!isFinite(value)) {
     putNull();
   } else {
@@ -200,7 +200,7 @@ void JsonOut::put(Float value) {
     itsStream << buf;
   }
 }
-void JsonOut::put(Double value) {
+void JsonOut::put(double value) {
   if (!isFinite(value)) {
     putNull();
   } else {
@@ -244,7 +244,7 @@ void JsonOut::put(const Record& rec) {
   itsLevel++;
   itsFirstName.resize(itsLevel);
   itsFirstName[itsLevel - 1] = true;
-  for (uInt i = 0; i < rec.nfields(); ++i) {
+  for (unsigned int i = 0; i < rec.nfields(); ++i) {
     write(rec.name(i), rec.asValueHolder(i));
   }
   itsLevel--;

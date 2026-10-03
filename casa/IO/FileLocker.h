@@ -100,7 +100,7 @@ class FileLocker {
   // This can be used to lock a segment of the given file.
   // The segment is given by start and length. Length=0 means till the
   // end of the file.
-  explicit FileLocker(int fd, uInt start = 0, uInt length = 0);
+  explicit FileLocker(int fd, unsigned int start = 0, unsigned int length = 0);
 
   ~FileLocker();
 
@@ -109,7 +109,7 @@ class FileLocker {
   // A zero value indicates an infinite number of times (i.e. wait until
   // the lock is acquired).
   // A positive value means it waits 1 second between each attempt.
-  bool acquire(LockType = Write, uInt nattempts = 0);
+  bool acquire(LockType = Write, unsigned int nattempts = 0);
 
   // Release a lock.
   // The return status indicates if an error occurred.
@@ -119,7 +119,7 @@ class FileLocker {
   // Optionally the PID of the process holding the lock is returned.
   // <group>
   bool canLock(LockType = Write);
-  bool canLock(uInt& pid, LockType = Write);
+  bool canLock(unsigned int& pid, LockType = Write);
   // </group>
 
   // Test if the process has a lock for read or write on the file.

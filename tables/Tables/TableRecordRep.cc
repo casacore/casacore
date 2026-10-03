@@ -66,7 +66,7 @@ void TableRecordRep::restructure(const RecordDesc& newDescription, bool recursiv
   datavec_p.resize(nused_p);
   datavec_p = static_cast<void*>(0);
   data_p.resize(nused_p);
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpRecord) {
       if (recursive) {
         data_p[i] = new TableRecord(this, desc_p.subRecord(i));
@@ -82,9 +82,9 @@ void TableRecordRep::restructure(const RecordDesc& newDescription, bool recursiv
   }
 }
 
-Int TableRecordRep::fieldNumber(const String& name) const { return desc_p.fieldNumber(name); }
+int TableRecordRep::fieldNumber(const String& name) const { return desc_p.fieldNumber(name); }
 
-void TableRecordRep::removeData(Int whichField, void* ptr, void* vecptr) {
+void TableRecordRep::removeData(int whichField, void* ptr, void* vecptr) {
   DataType type = desc_p.type(whichField);
   if (type == TpRecord) {
     delete static_cast<TableRecord*>(ptr);
@@ -104,7 +104,7 @@ void TableRecordRep::addFieldToDesc(const String& name, DataType type, const IPo
   }
 }
 
-void TableRecordRep::removeFieldFromDesc(Int whichField) { desc_p.removeField(whichField); }
+void TableRecordRep::removeFieldFromDesc(int whichField) { desc_p.removeField(whichField); }
 
 void TableRecordRep::addField(const String& name, const TableRecord& value,
                               RecordInterface::RecordType type) {
@@ -136,8 +136,8 @@ void TableRecordRep::addField(const String& name, const Table& value,
   addDataPtr(new TableKeyword(value, tableDescName));
 }
 
-void TableRecordRep::defineDataField(Int whichField, DataType type, const void* value) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(nused_p), AipsError);
+void TableRecordRep::defineDataField(int whichField, DataType type, const void* value) {
+  AlwaysAssert(whichField >= 0 && whichField < int(nused_p), AipsError);
   DataType descDtype = desc_p.type(whichField);
   if (type == descDtype) {
     if (type == TpRecord) {
@@ -173,7 +173,7 @@ bool TableRecordRep::conform(const TableRecordRep& other) const {
     return false;
   }
   // Now check for each fixed sub-record and table if it conforms.
-  for (Int i = 0; i < Int(nused_p); i++) {
+  for (int i = 0; i < int(nused_p); i++) {
     if (desc_p.type(i) == TpRecord) {
       const TableRecord& thisRecord = *static_cast<TableRecord*>(const_cast<void*>(data_p[i]));
       if (thisRecord.isFixed()) {
@@ -204,7 +204,7 @@ void TableRecordRep::copyData(const TableRecordRep& other) {
 }
 
 void TableRecordRep::copy_other(const TableRecordRep& other) {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpRecord) {
       *static_cast<TableRecord*>(data_p[i]) =
           *static_cast<TableRecord*>(const_cast<void*>(other.data_p[i]));
@@ -217,15 +217,15 @@ void TableRecordRep::copy_other(const TableRecordRep& other) {
   }
 }
 
-void* TableRecordRep::get_pointer(Int whichField, DataType type, const String& recordType) const {
+void* TableRecordRep::get_pointer(int whichField, DataType type, const String& recordType) const {
   if (recordType != "TableRecord") {
     throw(AipsError("TableRecordRep::get_pointer - field " + desc_p.name(whichField) +
                     " is not of type TableRecord"));
   }
   return get_pointer(whichField, type);
 }
-void* TableRecordRep::get_pointer(Int whichField, DataType type) const {
-  AlwaysAssert(whichField >= 0 && whichField < Int(nused_p), AipsError);
+void* TableRecordRep::get_pointer(int whichField, DataType type) const {
+  AlwaysAssert(whichField >= 0 && whichField < int(nused_p), AipsError);
   DataType descDtype = desc_p.type(whichField);
   if (type == descDtype) {
     return data_p[whichField];
@@ -243,26 +243,26 @@ void* TableRecordRep::get_pointer(Int whichField, DataType type) const {
   return datavec_p[whichField];
 }
 
-void TableRecordRep::closeTable(Int whichField) const {
+void TableRecordRep::closeTable(int whichField) const {
   AlwaysAssert(
-      whichField >= 0 && whichField < Int(desc_p.nfields()) && desc_p.type(whichField) == TpTable,
+      whichField >= 0 && whichField < int(desc_p.nfields()) && desc_p.type(whichField) == TpTable,
       AipsError);
   static_cast<TableKeyword*>(const_cast<void*>(data_p[whichField]))->close();
 }
 
-void TableRecordRep::mergeField(const TableRecordRep& other, Int whichFieldFromOther,
+void TableRecordRep::mergeField(const TableRecordRep& other, int whichFieldFromOther,
                                 RecordInterface::DuplicatesFlag flag) {
   // If the field exists and if flag tells to overwrite,
   // the field is removed first.
   if (flag == RecordInterface::OverwriteDuplicates) {
-    Int fld = desc_p.fieldNumber(other.desc_p.name(whichFieldFromOther));
+    int fld = desc_p.fieldNumber(other.desc_p.name(whichFieldFromOther));
     if (fld >= 0) {
       removeField(fld);
     }
   }
   // Try to add the field to the description.
-  Int nr = desc_p.nfields();
-  Int nrnew = desc_p.mergeField(other.desc_p, whichFieldFromOther, flag);
+  int nr = desc_p.nfields();
+  int nrnew = desc_p.mergeField(other.desc_p, whichFieldFromOther, flag);
   // It succeeded if nfields increased.
   // Then the value can be defined.
   if (nrnew > nr) {
@@ -282,14 +282,14 @@ void TableRecordRep::mergeField(const TableRecordRep& other, Int whichFieldFromO
 }
 
 void TableRecordRep::merge(const TableRecordRep& other, RecordInterface::DuplicatesFlag flag) {
-  Int n = other.desc_p.nfields();
-  for (Int i = 0; i < n; i++) {
+  int n = other.desc_p.nfields();
+  for (int i = 0; i < n; i++) {
     mergeField(other, i, flag);
   }
 }
 
 void TableRecordRep::renameTables(const String& newParentName, const String& oldParentName) {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpTable) {
       static_cast<TableKeyword*>(data_p[i])->renameTable(newParentName, oldParentName);
     }
@@ -297,7 +297,7 @@ void TableRecordRep::renameTables(const String& newParentName, const String& old
 }
 
 void TableRecordRep::closeTables() const {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpTable) {
       static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->close();
     }
@@ -305,7 +305,7 @@ void TableRecordRep::closeTables() const {
 }
 
 void TableRecordRep::flushTables(bool fsync) const {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpTable) {
       static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->flush(fsync);
     }
@@ -313,7 +313,7 @@ void TableRecordRep::flushTables(bool fsync) const {
 }
 
 bool TableRecordRep::areTablesMultiUsed() const {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpTable) {
       if (static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->isMultiUsed(true)) {
         return true;
@@ -323,8 +323,8 @@ bool TableRecordRep::areTablesMultiUsed() const {
   return false;
 }
 
-void TableRecordRep::print(std::ostream& os, Int maxNrValues, const String& indent) const {
-  for (uInt i = 0; i < nused_p; i++) {
+void TableRecordRep::print(std::ostream& os, int maxNrValues, const String& indent) const {
+  for (unsigned int i = 0; i < nused_p; i++) {
     os << indent << desc_p.name(i) << ": ";
     if (desc_p.type(i) == TpRecord) {
       os << '{' << endl;
@@ -339,7 +339,7 @@ void TableRecordRep::print(std::ostream& os, Int maxNrValues, const String& inde
   }
 }
 
-void TableRecordRep::putRecord(AipsIO& os, Int recordType, const TableAttr& parentAttr) const {
+void TableRecordRep::putRecord(AipsIO& os, int recordType, const TableAttr& parentAttr) const {
   os.putstart("TableRecord", 1);  // version 1
   os << desc_p;
   os << recordType;
@@ -348,7 +348,7 @@ void TableRecordRep::putRecord(AipsIO& os, Int recordType, const TableAttr& pare
 }
 
 void TableRecordRep::putData(AipsIO& os, const TableAttr& parentAttr) const {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpRecord) {
       const RecordDesc& desc = desc_p.subRecord(i);
       if (desc.nfields() == 0) {
@@ -364,9 +364,9 @@ void TableRecordRep::putData(AipsIO& os, const TableAttr& parentAttr) const {
   }
 }
 
-void TableRecordRep::getRecord(AipsIO& os, Int& recordType, const TableAttr& parentAttr) {
+void TableRecordRep::getRecord(AipsIO& os, int& recordType, const TableAttr& parentAttr) {
   // Support reading scalar, array, and table keyword sets as records.
-  uInt version;
+  unsigned int version;
   String type = os.getNextType();
   if (type == "ScalarKeywordSet") {
     version = os.getstart("ScalarKeywordSet");
@@ -379,7 +379,7 @@ void TableRecordRep::getRecord(AipsIO& os, Int& recordType, const TableAttr& par
     getTableKeySet(os, version, parentAttr, 2);
     recordType = RecordInterface::Variable;
   } else {
-    uInt version = os.getstart("TableRecord");
+    unsigned int version = os.getstart("TableRecord");
     // Get the description and restructure the record.
     RecordDesc desc;
     os >> desc;
@@ -391,8 +391,8 @@ void TableRecordRep::getRecord(AipsIO& os, Int& recordType, const TableAttr& par
   os.getend();
 }
 
-void TableRecordRep::getData(AipsIO& os, uInt version, const TableAttr& parentAttr) {
-  for (uInt i = 0; i < nused_p; i++) {
+void TableRecordRep::getData(AipsIO& os, unsigned int version, const TableAttr& parentAttr) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     DataType type = desc_p.type(i);
     if (type == TpRecord) {
       const RecordDesc& desc = desc_p.subRecord(i);
@@ -412,7 +412,7 @@ void TableRecordRep::getData(AipsIO& os, uInt version, const TableAttr& parentAt
 }
 
 void TableRecordRep::reopenRW() {
-  for (uInt i = 0; i < nused_p; i++) {
+  for (unsigned int i = 0; i < nused_p; i++) {
     DataType type = desc_p.type(i);
     if (type == TpRecord) {
       static_cast<TableRecord*>(data_p[i])->reopenRW();
@@ -422,8 +422,8 @@ void TableRecordRep::reopenRW() {
   }
 }
 
-void TableRecordRep::getTableKeySet(AipsIO& os, uInt version, const TableAttr& parentAttr,
-                                    uInt type) {
+void TableRecordRep::getTableKeySet(AipsIO& os, unsigned int version, const TableAttr& parentAttr,
+                                    unsigned int type) {
   // First build the description from the map of keyword names and
   // attributes.
   RecordDesc desc;
@@ -437,7 +437,7 @@ void TableRecordRep::getTableKeySet(AipsIO& os, uInt version, const TableAttr& p
   }
   if (type > 1) {
     String key, name;
-    uInt i, n;
+    unsigned int i, n;
     os >> n;
     for (i = 0; i < n; i++) {
       os >> key;   // keyword name
@@ -448,7 +448,7 @@ void TableRecordRep::getTableKeySet(AipsIO& os, uInt version, const TableAttr& p
   // Newer keyword sets may contain nested keyword sets.
   // We do not support reading those, so throw an exception when they exist.
   if (version > 1) {
-    uInt n;
+    unsigned int n;
     os >> n;
     AlwaysAssert(n == 0, AipsError);
   }

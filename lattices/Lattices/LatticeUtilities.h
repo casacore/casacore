@@ -85,14 +85,15 @@ class LatticeUtilities {
 
   // Bin up one axis of MaskedArray (uses Lattices in implementation)
   template <class T>
-  static void bin(MaskedArray<T>& out, const MaskedArray<T>& in, uInt axis, uInt bin);
+  static void bin(MaskedArray<T>& out, const MaskedArray<T>& in, unsigned int axis,
+                  unsigned int bin);
 
   // Add degenerate axes to the lattice if needed (nDim is the desired number of dimensions
   // for the output lattice).  If the shapes are the same, the returned
   // pointer holds a SubLattice.  If a reshape was necessary, the pointer
   // holds an ExtendLattice.  The pointer is the callers responsibility to delete.
   template <class T>
-  static void addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>& latIn, uInt nDim);
+  static void addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>& latIn, unsigned int nDim);
 };
 
 }  // namespace casacore

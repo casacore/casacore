@@ -92,30 +92,30 @@ class MSValidIds {
   // optional subtables) or the indicated row number does not exist
   // in that sub-table where appropriate.
   // <group>
-  Int antenna1(rownr_t rownr) const;
-  Int antenna2(rownr_t rownr) const;
-  Int dataDescId(rownr_t rownr) const;
-  Int fieldId(rownr_t rownr) const;
-  Int observationId(rownr_t rownr) const;
-  Int processorId(rownr_t rownr) const;
-  Int stateId(rownr_t rownr) const;
+  int antenna1(rownr_t rownr) const;
+  int antenna2(rownr_t rownr) const;
+  int dataDescId(rownr_t rownr) const;
+  int fieldId(rownr_t rownr) const;
+  int observationId(rownr_t rownr) const;
+  int processorId(rownr_t rownr) const;
+  int stateId(rownr_t rownr) const;
   // The polarizationId comes from the DATA_DESCRIPTION subtable, so dataDescId must
   // first be valid in order for this to also be valid.
-  Int polarizationId(rownr_t rownr) const;
+  int polarizationId(rownr_t rownr) const;
   // The spectralWindowId comes from the DATA_DESCRIPTION subtable, so dataDescId must
   // first be valid in order for this to also be valid.
-  Int spectralWindowId(rownr_t rownr) const;
+  int spectralWindowId(rownr_t rownr) const;
   // the dopplerId comes from the SPECTRAL_WINDOW subtable so spectralWindowId must
   // first be valid in order for this to also be valid.  Since the DOPPLER subtable
   // is not simply indexed by DOPPLER_ID, the DOPPLER subtable exists and a dopplerId
   // can be found in the SPECTRAL_WINDOW subtable, that value will be returned, whatever
   // it is.
-  Int dopplerId(rownr_t rownr) const;
+  int dopplerId(rownr_t rownr) const;
   // The sourceId comes from the FIELD subtable so fieldId must first be valid
   // in order for this to also be valid.  Since the SOURCE table is also
   // indexed by TIME, the only additional check is that a SOURCE table must
   // exist in order for this to be valid.
-  Int sourceId(rownr_t rownr) const;
+  int sourceId(rownr_t rownr) const;
   // </group>
  private:
   MeasurementSet ms_p;
@@ -124,7 +124,7 @@ class MSValidIds {
   bool hasDoppler_p, hasSource_p;
 
   void clear();
-  Int checkResult(Int testResult, const Table &mstable) const {
+  int checkResult(int testResult, const Table &mstable) const {
     return (testResult < 0 || rownr_t(testResult) >= mstable.nrow()) ? -1 : testResult;
   }
 

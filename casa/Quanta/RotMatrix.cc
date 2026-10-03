@@ -36,37 +36,37 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Constructors
 RotMatrix::RotMatrix() {
-  for (Int i = 0; i < 3; i++)
-    for (Int j = 0; j < 3; j++) {
-      rotat[i][j] = (i == j) ? Double(1.0) : Double(0.0);
+  for (int i = 0; i < 3; i++)
+    for (int j = 0; j < 3; j++) {
+      rotat[i][j] = (i == j) ? double(1.0) : double(0.0);
     }
 }
 
 RotMatrix::RotMatrix(const RotMatrix &other) {
-  for (Int i = 0; i < 3; i++)
-    for (Int j = 0; j < 3; j++) rotat[i][j] = other.rotat[i][j];
+  for (int i = 0; i < 3; i++)
+    for (int j = 0; j < 3; j++) rotat[i][j] = other.rotat[i][j];
 }
 
 RotMatrix &RotMatrix::operator=(const RotMatrix &other) {
   if (this != &other) {
-    for (Int i = 0; i < 3; i++)
-      for (Int j = 0; j < 3; j++) rotat[i][j] = other.rotat[i][j];
+    for (int i = 0; i < 3; i++)
+      for (int j = 0; j < 3; j++) rotat[i][j] = other.rotat[i][j];
   }
   return *this;
 }
 
 RotMatrix::RotMatrix(const Euler &other) {
-  for (Int k = 0; k < 3; k++)
-    for (Int j = 0; j < 3; j++) {
-      rotat[k][j] = (k == j) ? Double(1.0) : Double(0.0);
+  for (int k = 0; k < 3; k++)
+    for (int j = 0; j < 3; j++) {
+      rotat[k][j] = (k == j) ? double(1.0) : double(0.0);
     }
-  for (Int i = 0; i < 3; i++) applySingle(other(i), other.get(i));
+  for (int i = 0; i < 3; i++) applySingle(other(i), other.get(i));
 }
 
-RotMatrix::RotMatrix(const Euler &other, Int ax0, Int ax1, Int ax2) {
-  for (Int i = 0; i < 3; i++)
-    for (Int j = 0; j < 3; j++) {
-      rotat[i][j] = (i == j) ? Double(1.0) : Double(0.0);
+RotMatrix::RotMatrix(const Euler &other, int ax0, int ax1, int ax2) {
+  for (int i = 0; i < 3; i++)
+    for (int j = 0; j < 3; j++) {
+      rotat[i][j] = (i == j) ? double(1.0) : double(0.0);
     }
   DebugAssert(abs(ax0) <= 3 && abs(ax1) <= 3 && abs(ax2) <= 3, AipsError);
   applySingle(other(0), ax0);
@@ -80,9 +80,9 @@ RotMatrix::~RotMatrix() {}
 // # Operators
 
 RotMatrix &RotMatrix::operator*=(const RotMatrix &other) {
-  Double a[3];
-  Int j, k;
-  for (Int i = 0; i < 3; i++) {
+  double a[3];
+  int j, k;
+  for (int i = 0; i < 3; i++) {
     for (j = 0; j < 3; j++) a[j] = rotat[i][j];
     for (j = 0; j < 3; j++) {
       rotat[i][j] = a[0];
@@ -101,43 +101,43 @@ RotMatrix RotMatrix::operator*(const RotMatrix &other) const {
   return result;
 }
 
-Double &RotMatrix::operator()(uInt row, uInt column) {
+double &RotMatrix::operator()(unsigned int row, unsigned int column) {
   DebugAssert(row < 3 && column < 3, AipsError);
   return rotat[row][column];
 }
 
-const Double &RotMatrix::operator()(uInt row, uInt column) const {
+const double &RotMatrix::operator()(unsigned int row, unsigned int column) const {
   DebugAssert(row < 3 && column < 3, AipsError);
   return rotat[row][column];
 }
 
 // # Methods
 
-Matrix<Double> RotMatrix::get() const {
-  Matrix<Double> tmp(3, 3);
-  for (Int row = 0; row < 3; row++)
-    for (Int col = 0; col < 3; col++) tmp(row, col) = rotat[row][col];
+Matrix<double> RotMatrix::get() const {
+  Matrix<double> tmp(3, 3);
+  for (int row = 0; row < 3; row++)
+    for (int col = 0; col < 3; col++) tmp(row, col) = rotat[row][col];
   return tmp;
 }
 
 void RotMatrix::transpose() {
-  Double tmp;
-  for (Int row = 0; row < 3; row++)
-    for (Int col = row + 1; col < 3; col++) {
+  double tmp;
+  for (int row = 0; row < 3; row++)
+    for (int col = row + 1; col < 3; col++) {
       tmp = rotat[row][col];
       rotat[row][col] = rotat[col][row];
       rotat[col][row] = tmp;
     }
 }
 
-void RotMatrix::set(const Matrix<Double> &in) {
-  for (Int row = 0; row < 3; row++)
-    for (Int col = 0; col < 3; col++) rotat[row][col] = in(row, col);
+void RotMatrix::set(const Matrix<double> &in) {
+  for (int row = 0; row < 3; row++)
+    for (int col = 0; col < 3; col++) rotat[row][col] = in(row, col);
 }
 
-void RotMatrix::set(const Vector<Double> &in0, const Vector<Double> &in1,
-                    const Vector<Double> &in2) {
-  for (Int col = 0; col < 3; col++) {
+void RotMatrix::set(const Vector<double> &in0, const Vector<double> &in1,
+                    const Vector<double> &in2) {
+  for (int col = 0; col < 3; col++) {
     rotat[0][col] = in0(col);
     rotat[1][col] = in1(col);
     rotat[2][col] = in2(col);
@@ -149,11 +149,11 @@ ostream &operator<<(ostream &os, const RotMatrix &rot) {
   return os;
 }
 
-void RotMatrix::applySingle(Double angle, Int which) {
+void RotMatrix::applySingle(double angle, int which) {
   if (angle * which != 0.0) {
     RotMatrix tmp;
-    Int i = which % 3;
-    Int j = (i + 1) % 3;
+    int i = which % 3;
+    int j = (i + 1) % 3;
     tmp.rotat[i][i] = tmp.rotat[j][j] = cos(angle);
     tmp.rotat[i][j] = -(tmp.rotat[j][i] = sin(angle));
     this->operator*=(tmp);

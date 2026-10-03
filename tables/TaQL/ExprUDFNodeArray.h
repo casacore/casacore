@@ -96,8 +96,8 @@ class TableExprUDFNodeArray : public TableExprNodeArray {
   // Functions to get the desired result of a function
   // <group>
   MArray<bool> getArrayBool(const TableExprId& id) override;
-  MArray<Int64> getArrayInt(const TableExprId& id) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<int64_t> getArrayInt(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
   MArray<String> getArrayString(const TableExprId& id) override;
   MArray<MVTime> getArrayDate(const TableExprId& id) override;

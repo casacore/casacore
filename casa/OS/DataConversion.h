@@ -126,8 +126,8 @@ class DataConversion {
   virtual size_t toLocal(unsigned short& to, const void* from) const = 0;
   virtual size_t toLocal(int& to, const void* from) const = 0;
   virtual size_t toLocal(unsigned int& to, const void* from) const = 0;
-  virtual size_t toLocal(Int64& to, const void* from) const = 0;
-  virtual size_t toLocal(uInt64& to, const void* from) const = 0;
+  virtual size_t toLocal(int64_t& to, const void* from) const = 0;
+  virtual size_t toLocal(uint64_t& to, const void* from) const = 0;
   virtual size_t toLocal(float& to, const void* from) const = 0;
   virtual size_t toLocal(double& to, const void* from) const = 0;
   // </group>
@@ -145,8 +145,8 @@ class DataConversion {
   virtual size_t toLocal(unsigned short* to, const void* from, size_t nr) const = 0;
   virtual size_t toLocal(int* to, const void* from, size_t nr) const = 0;
   virtual size_t toLocal(unsigned int* to, const void* from, size_t nr) const = 0;
-  virtual size_t toLocal(Int64* to, const void* from, size_t nr) const = 0;
-  virtual size_t toLocal(uInt64* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(int64_t* to, const void* from, size_t nr) const = 0;
+  virtual size_t toLocal(uint64_t* to, const void* from, size_t nr) const = 0;
   virtual size_t toLocal(float* to, const void* from, size_t nr) const = 0;
   virtual size_t toLocal(double* to, const void* from, size_t nr) const = 0;
   // </group>
@@ -164,8 +164,8 @@ class DataConversion {
   virtual size_t fromLocal(void* to, unsigned short from) const = 0;
   virtual size_t fromLocal(void* to, int from) const = 0;
   virtual size_t fromLocal(void* to, unsigned int from) const = 0;
-  virtual size_t fromLocal(void* to, Int64 from) const = 0;
-  virtual size_t fromLocal(void* to, uInt64 from) const = 0;
+  virtual size_t fromLocal(void* to, int64_t from) const = 0;
+  virtual size_t fromLocal(void* to, uint64_t from) const = 0;
   virtual size_t fromLocal(void* to, float from) const = 0;
   virtual size_t fromLocal(void* to, double from) const = 0;
   // </group>
@@ -183,8 +183,8 @@ class DataConversion {
   virtual size_t fromLocal(void* to, const unsigned short* from, size_t nr) const = 0;
   virtual size_t fromLocal(void* to, const int* from, size_t nr) const = 0;
   virtual size_t fromLocal(void* to, const unsigned int* from, size_t nr) const = 0;
-  virtual size_t fromLocal(void* to, const Int64* from, size_t nr) const = 0;
-  virtual size_t fromLocal(void* to, const uInt64* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const int64_t* from, size_t nr) const = 0;
+  virtual size_t fromLocal(void* to, const uint64_t* from, size_t nr) const = 0;
   virtual size_t fromLocal(void* to, const float* from, size_t nr) const = 0;
   virtual size_t fromLocal(void* to, const double* from, size_t nr) const = 0;
   // </group>
@@ -198,8 +198,8 @@ class DataConversion {
   virtual bool canCopy(const unsigned short*) const = 0;
   virtual bool canCopy(const int*) const = 0;
   virtual bool canCopy(const unsigned int*) const = 0;
-  virtual bool canCopy(const Int64*) const = 0;
-  virtual bool canCopy(const uInt64*) const = 0;
+  virtual bool canCopy(const int64_t*) const = 0;
+  virtual bool canCopy(const uint64_t*) const = 0;
   virtual bool canCopy(const float*) const = 0;
   virtual bool canCopy(const double*) const = 0;
   // </group>
@@ -212,8 +212,8 @@ class DataConversion {
   virtual unsigned int externalSize(const unsigned short*) const = 0;
   virtual unsigned int externalSize(const int*) const = 0;
   virtual unsigned int externalSize(const unsigned int*) const = 0;
-  virtual unsigned int externalSize(const Int64*) const = 0;
-  virtual unsigned int externalSize(const uInt64*) const = 0;
+  virtual unsigned int externalSize(const int64_t*) const = 0;
+  virtual unsigned int externalSize(const uint64_t*) const = 0;
   virtual unsigned int externalSize(const float*) const = 0;
   virtual unsigned int externalSize(const double*) const = 0;
   // </group>

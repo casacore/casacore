@@ -155,7 +155,7 @@ void ScalarColumnData<T>::putScalarColumnCells(const RefRows& rownrs, const Arra
 
 template <class T>
 void ScalarColumnData<T>::makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj,
-                                      Int order, std::shared_ptr<ArrayBase>& dataSave) {
+                                      int order, std::shared_ptr<ArrayBase>& dataSave) {
   // # Get the data as a column.
   // # Save the pointer to the vector for deletion by freeSortKey().
   Vector<T>* vecPtr = new Vector<T>(nrow());
@@ -166,7 +166,7 @@ void ScalarColumnData<T>::makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare
 
 template <class T>
 void ScalarColumnData<T>::makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj,
-                                         Int order, const Vector<rownr_t>& rownrs,
+                                         int order, const Vector<rownr_t>& rownrs,
                                          std::shared_ptr<ArrayBase>& dataSave) {
   // # Get the data as a column.
   Vector<T>* vecPtr = new Vector<T>(rownrs.size());
@@ -177,7 +177,7 @@ void ScalarColumnData<T>::makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseComp
 
 template <class T>
 void ScalarColumnData<T>::fillSortKey(const Vector<T>* vecPtr, Sort& sortobj,
-                                      std::shared_ptr<BaseCompare>& cmpObj, Int order) {
+                                      std::shared_ptr<BaseCompare>& cmpObj, int order) {
   // # Pass the real vector storage as the sort data.
   // # Use the compare function if given, otherwise pass data type.
   // # Throw an exception if no compare function is given for
@@ -212,15 +212,15 @@ void ScalarColumnData<T>::freeIterBuf(void*& lastVal, void*& curVal) {
 // # the version is put "manually".
 template <class T>
 void ScalarColumnData<T>::putFileDerived(AipsIO& ios) {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   ios << dataManPtr_p->sequenceNr();
 }
 
 template <class T>
 void ScalarColumnData<T>::getFileDerived(AipsIO& ios, const ColumnSet& colset) {
-  uInt version;
+  unsigned int version;
   ios >> version;
-  uInt seqnr;
+  unsigned int seqnr;
   ios >> seqnr;
   dataManPtr_p = colset.getDataManager(seqnr);
   createDataManagerColumn();

@@ -175,16 +175,16 @@ class File {
 
   // Return the size of the file. If the file
   // does not exist, an exception will be thrown.
-  virtual Int64 size() const;
+  virtual int64_t size() const;
 
   // Return the permissions as a decimal value.
-  uInt readPermissions() const;
+  unsigned int readPermissions() const;
 
   // Set permission with perm. Perm is an octal value.
-  void setPermissions(uInt permissions);
+  void setPermissions(unsigned int permissions);
 
   // Update access time and modification time of a file.
-  void touch(uInt time);
+  void touch(unsigned int time);
 
   // Update access time and modification time of a file. This function
   // updates the file with the current time.
@@ -193,7 +193,7 @@ class File {
   // Time related fucnctions:
   // Return the time when the file was last accessed in seconds since
   // 00:00:00 GMT Jan 1, 1970.
-  uInt accessTime() const;
+  unsigned int accessTime() const;
 
   // Return the time when the file was last accessed
   // as a 26-characters String of the form:
@@ -202,7 +202,7 @@ class File {
 
   // Return the time when the file was last modified in seconds since
   // 00:00:00 GMT Jan 1, 1970.
-  uInt modifyTime() const;
+  unsigned int modifyTime() const;
 
   // Return the time when the file was last modified
   // as a 26-characters String of the form:
@@ -213,7 +213,7 @@ class File {
   // 00:00:00 GMT Jan 1, 1970.
   // It is set both by writing and changing the file status information,
   // such as changes of owner, group, link count, or mode.
-  uInt statusChangeTime() const;
+  unsigned int statusChangeTime() const;
 
   // return the time when the file status was last changed
   // as a 26-characters String of the form:
@@ -294,7 +294,7 @@ class File {
   // Full pathname of the file.
   Path itsPath;
   // A sequence number to generate unique file names.
-  static std::atomic<uInt> uniqueSeqnr_p;
+  static std::atomic<unsigned int> uniqueSeqnr_p;
 };
 
 inline const Path& File::path() const { return itsPath; }

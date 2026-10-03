@@ -54,11 +54,11 @@ int main(int argc, const char* argv[]) {
     inputs.readArguments(argc, argv);
     const String in = inputs.getString("in");
     const bool save = inputs.getBool("save");
-    const Block<Int> factorsU(inputs.getIntArray("factors"));
-    const Block<Int> shapeU(inputs.getIntArray("shape"));
+    const Block<int> factorsU(inputs.getIntArray("factors"));
+    const Block<int> shapeU(inputs.getIntArray("shape"));
     //
-    Int maxMBInMemory = -1;
-    ImageInterface<Float>* pIm = 0;
+    int maxMBInMemory = -1;
+    ImageInterface<float>* pIm = 0;
 
     IPosition shapeIn;
     if (in.empty()) {
@@ -67,22 +67,22 @@ int main(int argc, const char* argv[]) {
           shapeIn = IPosition(2, 32, 32);
         } else {
           shapeIn.resize(shapeU.nelements());
-          for (uInt i = 0; i < shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
+          for (unsigned int i = 0; i < shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
         }
       }
       //
       TiledShape shape2(shapeIn);
       CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, false);
       //
-      pIm = new TempImage<Float>(shape2, cSys, maxMBInMemory);
+      pIm = new TempImage<float>(shape2, cSys, maxMBInMemory);
       pIm->set(1.0);
       //
       TempLattice<bool> inMask(shape2, maxMBInMemory);
       inMask.set(true);
-      TempImage<Float>* pTemp = dynamic_cast<TempImage<Float>*>(pIm);
+      TempImage<float>* pTemp = dynamic_cast<TempImage<float>*>(pIm);
       pTemp->attachMask(inMask);
     } else {
-      pIm = new PagedImage<Float>(in);
+      pIm = new PagedImage<float>(in);
       shapeIn = pIm->shape();
     }
     //
@@ -92,22 +92,22 @@ int main(int argc, const char* argv[]) {
         factors = 2;
       } else {
         factors.resize(factorsU.nelements());
-        for (uInt i = 0; i < factors.nelements(); i++) factors(i) = factorsU[i];
+        for (unsigned int i = 0; i < factors.nelements(); i++) factors(i) = factorsU[i];
       }
     }
     //
-    RebinImage<Float> rebinner(*pIm, factors);
+    RebinImage<float> rebinner(*pIm, factors);
     IPosition shapeOut = rebinner.shape();
     cerr << "factors = " << factors << endl;
     cerr << "shapeIn, shapeOut = " << shapeIn << shapeOut << endl;
     CoordinateSystem cSysOut = rebinner.coordinates();
     //
     {
-      ImageInterface<Float>* pImOut = 0;
+      ImageInterface<float>* pImOut = 0;
       if (save) {
-        pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
+        pImOut = new PagedImage<float>(shapeOut, cSysOut, String("outFile"));
       } else {
-        pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
+        pImOut = new TempImage<float>(shapeOut, cSysOut, maxMBInMemory);
       }
       cerr << "Nice shapes = " << rebinner.niceCursorShape() << pImOut->niceCursorShape() << endl;
       String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
@@ -123,7 +123,7 @@ int main(int argc, const char* argv[]) {
       // verify a spectral axis cannot be regridded if the image has multiple beams
       CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
       TiledShape ts(IPosition(3, 10, 10, 10));
-      TempImage<Float> image(ts, csys);
+      TempImage<float> image(ts, csys);
       ImageInfo info = image.imageInfo();
       info.setAllBeams(
           10, 1, GaussianBeam(Quantity(4, "arcsec"), Quantity(2, "arcsec"), Quantity(0, "deg")));
@@ -132,11 +132,11 @@ int main(int argc, const char* argv[]) {
 
       // rebin non spectral axes should work
       IPosition axes(3, 2, 2, 1);
-      RebinImage<Float> rb(image, axes);
+      RebinImage<float> rb(image, axes);
       axes[2] = 2;
       bool exception = false;
       try {
-        RebinImage<Float> rb1(image, axes);
+        RebinImage<float> rb1(image, axes);
       } catch (std::exception& x) {
         cout << "Exception thrown as expected: " << x.what() << endl;
         exception = true;

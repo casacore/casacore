@@ -53,7 +53,7 @@ class StatsHistogram {
   // the number of desired bins. No padding of the min/max values is done
   // internally, so the caller should do that prior to construction if
   // necessary.
-  StatsHistogram(AccumType minLimit, AccumType maxLimit, uInt nBins);
+  StatsHistogram(AccumType minLimit, AccumType maxLimit, unsigned int nBins);
 
   ~StatsHistogram();
 
@@ -61,7 +61,7 @@ class StatsHistogram {
   AccumType getBinWidth() const;
 
   // get the index of the bin containing the specified value
-  uInt getIndex(AccumType value) const;
+  unsigned int getIndex(AccumType value) const;
 
   // max limit values for all bins
   const std::vector<AccumType>& getMaxBinLimits() const;
@@ -73,11 +73,11 @@ class StatsHistogram {
   AccumType getMinHistLimit() const;
 
   // get the number of bins
-  uInt getNBins() const;
+  unsigned int getNBins() const;
 
  private:
   AccumType _binWidth{0}, _minHistLimit{0}, _maxHistLimit{0};
-  uInt _nBins{0};
+  unsigned int _nBins{0};
   // maximum values for all bins
   std::vector<AccumType> _maxBinLimits{};
 
@@ -85,9 +85,9 @@ class StatsHistogram {
   // specializations (implemented below after the close of the class
   // definition) are used solely to permit compilation. In general, those
   // versions should never actually be called
-  inline static uInt _getUInt(const AccumType& v) { return (uInt)v; }
+  inline static unsigned int _getUInt(const AccumType& v) { return (unsigned int)v; }
 
-  void _minMaxIdxRange(Int& minIdx, Int& maxIdx, AccumType value, bool higher) const;
+  void _minMaxIdxRange(int& minIdx, int& maxIdx, AccumType value, bool higher) const;
 };
 
 // <group>
@@ -95,14 +95,14 @@ class StatsHistogram {
 // general, these versions should never actually be called
 
 template <>
-inline uInt StatsHistogram<casacore::Complex>::_getUInt(const casacore::Complex&) {
+inline unsigned int StatsHistogram<casacore::Complex>::_getUInt(const casacore::Complex&) {
   ThrowCc(
       "Logic Error: This version for complex "
       "data types should never be called");
 }
 
 template <>
-inline uInt StatsHistogram<casacore::DComplex>::_getUInt(const casacore::DComplex&) {
+inline unsigned int StatsHistogram<casacore::DComplex>::_getUInt(const casacore::DComplex&) {
   ThrowCc(
       "Logic Error: This version for complex "
       "data types should never be called");

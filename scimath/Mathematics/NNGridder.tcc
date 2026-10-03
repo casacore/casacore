@@ -74,10 +74,10 @@ bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded, const Vector<
 // Correction factor for 1 dimension. This is the value that
 // must be divided to get a correct flux.
 template <class Domain, class Range>
-Range NNGridder<Domain, Range>::correctionFactor1D(Int loc, Int len) {
-  Int offset = loc - len / 2;
+Range NNGridder<Domain, Range>::correctionFactor1D(int loc, int len) {
+  int offset = loc - len / 2;
   if (offset != 0) {
-    Double arg = M_PI * Double(offset) / Double(len);
+    double arg = M_PI * double(offset) / double(len);
     return std::sin(arg) / arg;
   } else {
     return 1.0;

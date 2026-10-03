@@ -114,7 +114,7 @@ class TableMeasValueDesc {
   // Checking if the column exists is done in the write function.
   // <group>
   TableMeasValueDesc(const String& columnName) : itsColumn(columnName) {}
-  TableMeasValueDesc(const Char* columnName) : itsColumn(columnName) {}
+  TableMeasValueDesc(const char* columnName) : itsColumn(columnName) {}
   // </group>
 
   // Copy constructor.

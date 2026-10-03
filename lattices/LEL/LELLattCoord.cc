@@ -41,9 +41,9 @@ bool LELLattCoord::hasCoordinates() const { return false; }
 
 String LELLattCoord::classname() const { return "LELLattCoord"; }
 
-Int LELLattCoord::compare(const LELLattCoordBase&) const { return 0; }
+int LELLattCoord::compare(const LELLattCoordBase&) const { return 0; }
 
-Int LELLattCoord::doCompare(const LELImageCoord&) const { return 0; }
+int LELLattCoord::doCompare(const LELImageCoord&) const { return 0; }
 
 LatticeExprNode LELLattCoord::makeSubLattice(const LatticeExprNode& expr,
                                              const LattRegionHolder& region) const {
@@ -52,9 +52,9 @@ LatticeExprNode LELLattCoord::makeSubLattice(const LatticeExprNode& expr,
     case TpBool:
       return SubLattice<bool>(LatticeExpr<bool>(expr), latReg);
     case TpFloat:
-      return SubLattice<Float>(LatticeExpr<Float>(expr), latReg);
+      return SubLattice<float>(LatticeExpr<float>(expr), latReg);
     case TpDouble:
-      return SubLattice<Double>(LatticeExpr<Double>(expr), latReg);
+      return SubLattice<double>(LatticeExpr<double>(expr), latReg);
     case TpComplex:
       return SubLattice<Complex>(LatticeExpr<Complex>(expr), latReg);
     case TpDComplex:
@@ -77,9 +77,9 @@ LatticeExprNode LELLattCoord::makeRebinLattice(const LatticeExprNode& expr,
                                                const IPosition& binning) const {
   switch (expr.dataType()) {
     case TpFloat:
-      return RebinLattice<Float>(LatticeExpr<Float>(expr), binning);
+      return RebinLattice<float>(LatticeExpr<float>(expr), binning);
     case TpDouble:
-      return RebinLattice<Double>(LatticeExpr<Double>(expr), binning);
+      return RebinLattice<double>(LatticeExpr<double>(expr), binning);
     case TpComplex:
       return RebinLattice<Complex>(LatticeExpr<Complex>(expr), binning);
     case TpDComplex:
@@ -90,7 +90,7 @@ LatticeExprNode LELLattCoord::makeRebinLattice(const LatticeExprNode& expr,
   return LatticeExprNode();
 }
 
-uInt LELLattCoord::getSpectralInfo(Vector<Double>&, const IPosition&) const {
+unsigned int LELLattCoord::getSpectralInfo(Vector<double>&, const IPosition&) const {
   throw AipsError(
       "LELCoordinates::getSpectralInfo - "
       "no spectral coordinates available");

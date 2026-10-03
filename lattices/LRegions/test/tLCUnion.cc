@@ -36,8 +36,8 @@
 
 #include <casacore/casa/namespace.h>
 void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition& end,
-          const IPosition& center, Float radius) {
-  uInt ndim = latticeShape.nelements();
+          const IPosition& center, float radius) {
+  unsigned int ndim = latticeShape.nelements();
   LCBox box(start, end, latticeShape);
   LCEllipsoid cir(center, radius, latticeShape);
   LCUnion inters(box, cir);

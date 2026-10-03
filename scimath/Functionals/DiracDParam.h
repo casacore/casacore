@@ -110,7 +110,7 @@ class DiracDParam : public Function<T> {
   virtual ~DiracDParam();
 
   // # Operators
-  virtual uInt ndim() const { return 1; }
+  virtual unsigned int ndim() const { return 1; }
 
   // # Member functions
   //  Give name of function

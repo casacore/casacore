@@ -413,9 +413,9 @@ class Block : public BlockTrace {
   void remove(size_t whichOne, bool forceSmaller, ArrayInitPolicy initPolicy) {
     if (whichOne >= get_size()) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-      throw(indexError<uInt>(whichOne,
-                             "Block::remove() - "
-                             "index out of range"));
+      throw(indexError<unsigned int>(whichOne,
+                                     "Block::remove() - "
+                                     "index out of range"));
 #else
       return;
 #endif
@@ -512,9 +512,9 @@ class Block : public BlockTrace {
     // Write it this way to avoid casts; remember index and get_size() are
     // unsigned.
     if ((get_size() == 0) || (index > get_size() - 1)) {
-      throw(indexError<uInt>(index,
-                             "Block::operator[] - "
-                             "index out of range"));
+      throw(indexError<unsigned int>(index,
+                                     "Block::operator[] - "
+                                     "index out of range"));
     };
 #endif
     return array[index];
@@ -522,9 +522,9 @@ class Block : public BlockTrace {
   const T &operator[](size_t index) const {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if ((get_size() == 0) || (index > get_size() - 1)) {
-      throw(indexError<uInt>(index,
-                             "Block::operator[] const - "
-                             "index out of range"));
+      throw(indexError<unsigned int>(index,
+                                     "Block::operator[] const - "
+                                     "index out of range"));
     };
 #endif
     return array[index];
@@ -703,14 +703,14 @@ using PtrBlock [[deprecated(
 
 // # Instantiate extern templates for often used types.
 extern template class Block<bool>;
-extern template class Block<Char>;
-extern template class Block<Short>;
-extern template class Block<uShort>;
-extern template class Block<Int>;
-extern template class Block<uInt>;
-extern template class Block<Int64>;
-extern template class Block<Float>;
-extern template class Block<Double>;
+extern template class Block<char>;
+extern template class Block<short>;
+extern template class Block<unsigned short>;
+extern template class Block<int>;
+extern template class Block<unsigned int>;
+extern template class Block<int64_t>;
+extern template class Block<float>;
+extern template class Block<double>;
 extern template class Block<Complex>;
 extern template class Block<DComplex>;
 extern template class Block<String>;

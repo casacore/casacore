@@ -29,7 +29,7 @@ class AntennaPairStManColumn final : public StManColumn {
    */
   bool isWritable() const final { return true; }
 
-  void getInt(rownr_t row, Int *dataPtr) final {
+  void getInt(rownr_t row, int *dataPtr) final {
     if (is_antenna_2_)
       *dataPtr = file_.ReadAntenna2(row);
     else
@@ -41,7 +41,7 @@ class AntennaPairStManColumn final : public StManColumn {
    * @param rowNr The row number to write the values to.
    * @param dataPtr The data pointer.
    */
-  void putInt(rownr_t row, const Int *dataPtr) final {
+  void putInt(rownr_t row, const int *dataPtr) final {
     if (is_antenna_2_)
       file_.WriteAntenna2(row, *dataPtr);
     else

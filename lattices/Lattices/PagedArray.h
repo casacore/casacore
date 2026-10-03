@@ -396,7 +396,7 @@ class PagedArray : public Lattice<T> {
 
   // Construct a new PagedArray, with the specified shape, in the specified
   // row and column of the supplied Table.
-  PagedArray(const TiledShape& shape, Table& file, const String& columnName, uInt rowNum);
+  PagedArray(const TiledShape& shape, Table& file, const String& columnName, unsigned int rowNum);
 
   // Reconstruct from a pre-existing PagedArray in the default row and
   // column of the supplied Table with the supplied filename.
@@ -408,7 +408,7 @@ class PagedArray : public Lattice<T> {
 
   // Reconstruct from a pre-existing PagedArray in the specified row and
   // column of the supplied Table.
-  PagedArray(Table& file, const String& columnName, uInt rowNum);
+  PagedArray(Table& file, const String& columnName, unsigned int rowNum);
 
   // The copy constructor which uses reference semantics. Copying by value
   // doesn't make sense, because it would require the creation of a
@@ -465,34 +465,34 @@ class PagedArray : public Lattice<T> {
   const ROTiledStManAccessor& accessor() const;
 
   // Returns the current row number of this PagedArray.
-  uInt rowNumber() const;
+  unsigned int rowNumber() const;
 
   // Returns the default row number for a PagedArray.
-  static uInt defaultRow();
+  static unsigned int defaultRow();
 
   // Returns the current tile shape for this PagedArray.
   IPosition tileShape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Set the maximum allowed cache size for all Arrays in this column of the
   // Table.  The actual value used may be smaller. A value of zero means
   // that there is no maximum.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Return the maximum allowed cache size (in pixels) for all Arrays in
   // this column of the Table. The actual cache size may be smaller. A
   // value of zero means that no maximum is currently defined.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the actual cache size for this Array to be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Set the actual cache size for this Array to "fit" the indicated
   // path. This cache is not shared with PagedArrays in other rows and is
@@ -538,11 +538,11 @@ class PagedArray : public Lattice<T> {
                           const IPosition& stride);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Handle the (un)locking.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   // </group>
@@ -584,7 +584,7 @@ class PagedArray : public Lattice<T> {
 
   mutable Table itsTable;
   String itsColumnName;
-  uInt itsRowNumber;
+  unsigned int itsRowNumber;
   mutable bool itsIsClosed;
   mutable bool itsMarkDelete;
   String itsTableName;
@@ -633,12 +633,12 @@ inline const ROTiledStManAccessor& PagedArray<T>::accessor() const {
 }
 
 template <class T>
-inline uInt PagedArray<T>::rowNumber() const {
+inline unsigned int PagedArray<T>::rowNumber() const {
   return itsRowNumber;
 }
 
 template <class T>
-inline uInt PagedArray<T>::defaultRow() {
+inline unsigned int PagedArray<T>::defaultRow() {
   return 0;
 }
 
@@ -650,7 +650,7 @@ void PagedArray<T>::doReopen() const {
 }
 
 // # Declare extern templates for often used types.
-extern template class PagedArray<Float>;
+extern template class PagedArray<float>;
 extern template class PagedArray<Complex>;
 
 }  // namespace casacore

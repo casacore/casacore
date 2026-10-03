@@ -91,12 +91,12 @@ class MSHistoryColumns {
   ArrayColumn<String>& appParams() { return appParams_p; }
   ArrayColumn<String>& cliCommand() { return cliCommand_p; }
   ScalarColumn<String>& message() { return message_p; }
-  ScalarColumn<Int>& objectId() { return objectId_p; }
-  ScalarColumn<Int>& observationId() { return observationId_p; }
+  ScalarColumn<int>& objectId() { return objectId_p; }
+  ScalarColumn<int>& observationId() { return observationId_p; }
   ScalarColumn<String>& origin() { return origin_p; }
   ScalarColumn<String>& priority() { return priority_p; }
-  ScalarColumn<Double>& time() { return time_p; }
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p; }
+  ScalarColumn<double>& time() { return time_p; }
+  ScalarQuantColumn<double>& timeQuant() { return timeQuant_p; }
   ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p; }
   // </group>
 
@@ -106,12 +106,12 @@ class MSHistoryColumns {
   const ArrayColumn<String>& appParams() const { return appParams_p; }
   const ArrayColumn<String>& cliCommand() const { return cliCommand_p; }
   const ScalarColumn<String>& message() const { return message_p; }
-  const ScalarColumn<Int>& objectId() const { return objectId_p; }
-  const ScalarColumn<Int>& observationId() const { return observationId_p; }
+  const ScalarColumn<int>& objectId() const { return objectId_p; }
+  const ScalarColumn<int>& observationId() const { return observationId_p; }
   const ScalarColumn<String>& origin() const { return origin_p; }
   const ScalarColumn<String>& priority() const { return priority_p; }
-  const ScalarColumn<Double>& time() const { return time_p; }
-  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p; }
+  const ScalarColumn<double>& time() const { return time_p; }
+  const ScalarQuantColumn<double>& timeQuant() const { return timeQuant_p; }
   const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p; }
   // </group>
 
@@ -148,17 +148,17 @@ class MSHistoryColumns {
   ArrayColumn<String> appParams_p;
   ArrayColumn<String> cliCommand_p;
   ScalarColumn<String> message_p;
-  ScalarColumn<Int> objectId_p;
-  ScalarColumn<Int> observationId_p;
+  ScalarColumn<int> objectId_p;
+  ScalarColumn<int> observationId_p;
   ScalarColumn<String> origin_p;
   ScalarColumn<String> priority_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<double> time_p;
 
   // # Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   // # Access to Quantum columns
-  ScalarQuantColumn<Double> timeQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
 };
 
 // # Define the RO version for backward compatibility.

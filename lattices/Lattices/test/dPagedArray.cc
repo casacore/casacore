@@ -68,9 +68,9 @@ int main(int argc, const char* argv[]) {
     const String filename("dPagedArray_tmp.data");
     {
       ///      const IPosition arrayShape(4,512,512,4,32);
-      PagedArray<Float> diskArray(arrayShape, filename);
+      PagedArray<float> diskArray(arrayShape, filename);
       cout << "Created a PagedArray of shape " << diskArray.shape() << " ("
-           << diskArray.shape().product() / 1024 / 1024 * sizeof(Float) << " MBytes)" << endl
+           << diskArray.shape().product() / 1024 / 1024 * sizeof(float) << " MBytes)" << endl
            << "in the table called " << diskArray.tableName() << endl;
       Timer timer;
       diskArray.set(0.0f);
@@ -83,11 +83,11 @@ int main(int argc, const char* argv[]) {
     // Read the PagedArray produced in Example 1 and put a Gaussian profile into
     // each spectral channel.
     {
-      PagedArray<Float> diskArray(filename);
+      PagedArray<float> diskArray(filename);
       IPosition shape = diskArray.shape();
       // Time how long it takes to iterate without doing IO.
       {
-        RO_LatticeIterator<Float> iter(diskArray,
+        RO_LatticeIterator<float> iter(diskArray,
                                        TiledLineStepper(shape, diskArray.tileShape(), 3));
         Timer timer;
         for (iter.reset(); !iter.atEnd(); iter++) {
@@ -97,7 +97,7 @@ int main(int argc, const char* argv[]) {
       }
       // Time how long it takes to iterate witt doing input only.
       {
-        RO_LatticeIterator<Float> iter(diskArray,
+        RO_LatticeIterator<float> iter(diskArray,
                                        TiledLineStepper(shape, diskArray.tileShape(), 3));
         Timer timer;
         for (iter.reset(); !iter.atEnd(); iter++) {
@@ -108,14 +108,14 @@ int main(int argc, const char* argv[]) {
       }
       // Construct a Gaussian Profile to be 10 channels wide and centred on
       // channel 16. Its height is 1.0.
-      Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
+      Gaussian1D<float> g(1.0f, 16.0f, 10.0f);
       // Create a vector to cache a sampled version of this profile.
-      Array<Float> profile(IPosition(4, 1, 1, 1, shape(3)));
+      Array<float> profile(IPosition(4, 1, 1, 1, shape(3)));
       indgen(profile);
       ////      profile.apply(g);
       // Now put this profile into every spectral channel in the paged array.
       // This is best done using an iterator.
-      LatticeIterator<Float> iter(diskArray, TiledLineStepper(shape, diskArray.tileShape(), 3));
+      LatticeIterator<float> iter(diskArray, TiledLineStepper(shape, diskArray.tileShape(), 3));
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
         iter.woCursor() = profile;
@@ -129,17 +129,17 @@ int main(int argc, const char* argv[]) {
     // sized chunks.
     {
       Table t(filename, Table::Update);
-      PagedArray<Float> da(t);
+      PagedArray<float> da(t);
       const IPosition latticeShape = da.shape();
-      const Int nx = latticeShape(0);
-      const Int ny = latticeShape(1);
+      const int nx = latticeShape(0);
+      const int ny = latticeShape(1);
       ///      const Int npol = latticeShape(2);
-      const Int nchan = latticeShape(3);
+      const int nchan = latticeShape(3);
       IPosition cursorShape = da.niceCursorShape();
       cursorShape(2) = 1;
       LatticeStepper step(latticeShape, cursorShape);
       step.subSection(IPosition(4, 0), IPosition(4, nx - 1, ny - 1, 0, nchan - 1));
-      LatticeIterator<Float> iter(da, step);
+      LatticeIterator<float> iter(da, step);
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
         iter.rwCursor() *= 10.0f;
@@ -175,13 +175,13 @@ int main(int argc, const char* argv[]) {
     // illustrate the results when running on an Ultra 1/140 with 64MBytes
     // of memory.
     {
-      PagedArray<Float> pa(arrayShape, filename);
+      PagedArray<float> pa(arrayShape, filename);
       const IPosition latticeShape = pa.shape();
       cout << "The tile shape is:" << pa.tileShape() << endl;
       // Setup to access the PagedArray a row at a time
       const IPosition sliceShape(4, latticeShape(0), 1, 1, 1);
       const IPosition stride(4, 1);
-      Array<Float> row(sliceShape);
+      Array<float> row(sliceShape);
       IPosition start(4, 0);
 
       // Set the cache size to enough pixels for one tile only. This uses

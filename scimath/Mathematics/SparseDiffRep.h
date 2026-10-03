@@ -101,7 +101,7 @@ class SparseDiffRep {
   //  Assignment operators
   //  <group>
   SparseDiffRep<T> &operator=(const T &v);
-  SparseDiffRep<T> &operator=(const vector<pair<uInt, T>> &grad);
+  SparseDiffRep<T> &operator=(const vector<pair<unsigned int, T>> &grad);
   SparseDiffRep<T> &operator=(const SparseDiffRep<T> &other);
   void operator*=(const T other);
   void operator/=(const T other);
@@ -118,9 +118,9 @@ class SparseDiffRep {
   //  The function value
   T val_p;
   // The derivatives
-  vector<pair<uInt, T>> grad_p;
+  vector<pair<unsigned int, T>> grad_p;
   // Link to indicate its status (1=linked in stack; 2=used in modules)
-  uInt link_p;
+  unsigned int link_p;
 };
 
 }  // namespace casacore

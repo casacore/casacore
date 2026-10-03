@@ -85,22 +85,22 @@ class MSPrimaryTableHolder {
   // # forwarding functions
 
   // Number of dimensions
-  Int dims() { return hdu_p->dims(); }
+  int dims() { return hdu_p->dims(); }
 
   // Length of i'th axis
-  Int dim(Int i) { return hdu_p->dim(i); }
+  int dim(int i) { return hdu_p->dim(i); }
 
   // Coordinate type
-  Char* ctype(Int i) { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i)); }
+  char* ctype(int i) { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i)); }
 
   // Coordinate reference value
-  Double crval(Int i) { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i)); }
+  double crval(int i) { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i)); }
 
   // Coordinate reference pixel
-  Double crpix(Int i) { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i)); }
+  double crpix(int i) { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i)); }
 
   // Coordinate delta
-  Double cdelt(Int i) { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i)); }
+  double cdelt(int i) { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i)); }
 
   // Keyword of given type
   const FitsKeyword* kw(const FITS::ReservedName& n) { return hdu_p->kw(n); }
@@ -112,7 +112,7 @@ class MSPrimaryTableHolder {
   const FitsKeyword* nextkw() { return hdu_p->nextkw(); }
 
   // Read the next group
-  Int read() {
+  int read() {
     if (pf)
       return pf->read();
     else if (pl)
@@ -128,10 +128,10 @@ class MSPrimaryTableHolder {
 
  private:
   HeaderDataUnit* hdu_p;
-  PrimaryTable<Short>* ps;
+  PrimaryTable<short>* ps;
   PrimaryTable<FitsLong>* pl;
-  PrimaryTable<Float>* pf;
-  PrimaryTable<uChar>* pb;
+  PrimaryTable<float>* pf;
+  PrimaryTable<unsigned char>* pb;
 };
 
 // <summary>
@@ -170,22 +170,22 @@ class MSPrimaryGroupHolder {
   // # forwarding functions
 
   // Number of dimensions
-  Int dims() { return hdu_p->dims(); }
+  int dims() { return hdu_p->dims(); }
 
   // Length of i'th axis
-  Int dim(Int i) { return hdu_p->dim(i); }
+  int dim(int i) { return hdu_p->dim(i); }
 
   // Coordinate type
-  Char* ctype(Int i) { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i)); }
+  char* ctype(int i) { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i)); }
 
   // Coordinate reference value
-  Double crval(Int i) { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i)); }
+  double crval(int i) { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i)); }
 
   // Coordinate reference pixel
-  Double crpix(Int i) { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i)); }
+  double crpix(int i) { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i)); }
 
   // Coordinate delta
-  Double cdelt(Int i) { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i)); }
+  double cdelt(int i) { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i)); }
 
   // Keyword of given type
   const FitsKeyword* kw(const FITS::ReservedName& n) { return hdu_p->kw(n); }
@@ -197,28 +197,28 @@ class MSPrimaryGroupHolder {
   const FitsKeyword* nextkw() { return hdu_p->nextkw(); }
 
   // Number of groups
-  Int gcount() const { return pf ? pf->gcount() : (pl ? pl->gcount() : ps->gcount()); }
+  int gcount() const { return pf ? pf->gcount() : (pl ? pl->gcount() : ps->gcount()); }
 
   // Number of parameters
-  Int pcount() const { return pf ? pf->pcount() : (pl ? pl->pcount() : ps->pcount()); }
+  int pcount() const { return pf ? pf->pcount() : (pl ? pl->pcount() : ps->pcount()); }
 
   // Parameter type
-  Char* ptype(Int i) const { return pf ? pf->ptype(i) : (pl ? pl->ptype(i) : ps->ptype(i)); }
+  char* ptype(int i) const { return pf ? pf->ptype(i) : (pl ? pl->ptype(i) : ps->ptype(i)); }
 
   // Read the next group
-  Int read() { return pf ? pf->read() : (pl ? pl->read() : ps->read()); }
+  int read() { return pf ? pf->read() : (pl ? pl->read() : ps->read()); }
 
   // Get i'th parameter
-  Double parm(Int i) { return pf ? pf->parm(i) : (pl ? pl->parm(i) : ps->parm(i)); }
+  double parm(int i) { return pf ? pf->parm(i) : (pl ? pl->parm(i) : ps->parm(i)); }
 
   // Get group data with index i, scaled and converted to Double
-  Double operator()(Int i) const { return pf ? (*pf)(i) : (pl ? (*pl)(i) : (*ps)(i)); }
+  double operator()(int i) const { return pf ? (*pf)(i) : (pl ? (*pl)(i) : (*ps)(i)); }
 
  private:
   HeaderDataUnit* hdu_p;
-  PrimaryGroup<Short>* ps;
+  PrimaryGroup<short>* ps;
   PrimaryGroup<FitsLong>* pl;
-  PrimaryGroup<Float>* pf;
+  PrimaryGroup<float>* pf;
 };
 
 // <summary>
@@ -263,7 +263,7 @@ class MSFitsInput {
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
   //
-  void readFitsFile(Int obsType = MSTileLayout::Standard);
+  void readFitsFile(int obsType = MSTileLayout::Standard);
 
  private:
   FitsInput* _infile;
@@ -272,36 +272,36 @@ class MSFitsInput {
   MSPrimaryTableHolder _priTable;
   MeasurementSet _ms;
   MSColumns* _msc;
-  Int _nIF;
-  Vector<Int> _nPixel, _corrType;
-  Block<Int> _corrIndex;
-  Matrix<Int> _corrProduct;
+  int _nIF;
+  Vector<int> _nPixel, _corrType;
+  Block<int> _corrIndex;
+  Matrix<int> _corrProduct;
   Vector<String> _coordType;
-  Vector<Double> _refVal, _refPix, _delta;
+  Vector<double> _refVal, _refPix, _delta;
   String _array, _object, _timsys;
-  Double _epoch;
+  double _epoch;
   MDirection::Types _epochRef;  // This is a direction measure reference code
                                 // determined by epoch_p, hence the name and type.
   // unique antennas found in the visibility data
   // NOTE These are 1-based
-  std::set<Int> _uniqueAnts;
+  std::set<int> _uniqueAnts;
   // number of rows in the created MS ANTENNA table
-  Int _nAntRow;
-  Int _nArray;
-  Vector<Double> _receptorAngle;
+  int _nAntRow;
+  int _nArray;
+  Vector<double> _receptorAngle;
   MFrequency::Types _freqsys;
-  Double _restfreq;  // used for images
+  double _restfreq;  // used for images
   bool _addSourceTable;
   LogIO _log;
   Record _header;
-  Double _refFreq;
+  double _refFreq;
   bool _useAltrval;
-  Vector<Double> _chanFreq;
+  Vector<double> _chanFreq;
   bool _newNameStyle;
-  Vector<Double> _obsTime;
+  Vector<double> _obsTime;
 
-  Matrix<Double> _restFreq;  // used for UVFITS
-  Matrix<Double> _sysVel;
+  Matrix<double> _restFreq;  // used for UVFITS
+  Matrix<double> _sysVel;
   bool _msCreated;
 
   // Check that the input is a UV fits file with required contents.
@@ -317,7 +317,7 @@ class MSFitsInput {
   // DATA, FLAG and WEIGHT_SPECTRUM. Use obsType to choose the tiling
   // scheme.
   void setupMeasurementSet(const String& MSFileName, bool useTSM = true,
-                           Int obsType = MSTileLayout::Standard);
+                           int obsType = MSTileLayout::Standard);
 
   ///////////////fillers for primary table form uvfits//////////////////////
   // Read a binary table extension of type AIPS AN and create an antenna table
@@ -361,21 +361,21 @@ class MSFitsInput {
 
   // Fill the main table from the Primary group data
   // if we have enough memory try to do it in mem
-  void fillMSMainTableColWise(Int& nField, Int& nSpW);
+  void fillMSMainTableColWise(int& nField, int& nSpW);
   // else do it row by row
-  void fillMSMainTable(Int& nField, Int& nSpW);
+  void fillMSMainTable(int& nField, int& nSpW);
 
   // fill spectralwindow table from FITS FQ table + header info
-  void fillSpectralWindowTable(BinaryTable& bt, Int nSpW);
+  void fillSpectralWindowTable(BinaryTable& bt, int nSpW);
 
   // fill spectralwindow table from header
   void fillSpectralWindowTable();
 
   // fill Field table from FITS SU table
-  void fillFieldTable(BinaryTable& bt, Int nField);
+  void fillFieldTable(BinaryTable& bt, int nField);
 
   // fill Field table from header (single source fits)
-  void fillFieldTable(Int nField);
+  void fillFieldTable(int nField);
 
   // fill the Pointing table (from Field table, all antennas are assumed
   // to point in the field direction) and possibly the Source table.
@@ -387,7 +387,7 @@ class MSFitsInput {
 
   // Returns the Direction Measure reference for UVW and other appropriate columns
   // in msc_p (which must exist but have empty columns before you can set it!).
-  MDirection::Types getDirectionFrame(Double epoch);
+  MDirection::Types getDirectionFrame(double epoch);
 
   // Check the frame if there is an SU table
   void setFreqFrameVar(BinaryTable& binTab);
@@ -395,21 +395,21 @@ class MSFitsInput {
   // update a the Spectral window post filling if necessary
   void updateSpectralWindowTable();
 
-  void readRandomGroupUVFits(Int obsType);
-  void readPrimaryTableUVFits(Int obsType);
+  void readRandomGroupUVFits(int obsType);
+  void readPrimaryTableUVFits(int obsType);
 
-  std::pair<Int, Int> _extractAntennas(Int antenna1, Int antenna2);
-  std::pair<Int, Int> _extractAntennas(Float baseline);
+  std::pair<int, int> _extractAntennas(int antenna1, int antenna2);
+  std::pair<int, int> _extractAntennas(float baseline);
 
   void _fillSysPowerTable(BinaryTable& bt);
 
   void _doFillSysPowerSingleIF(
-      const String& casaTableName, const ScalarColumn<Double>& timeCol,
-      const ScalarColumn<Float>& intervalCol, const ScalarColumn<Int>& antNoCol,
-      const ScalarColumn<Int>& freqIDCol, const ScalarColumn<Float>& powerDif1Col,
-      const ScalarColumn<Float>& powerSum1Col, const ScalarColumn<Float>& postGain1Col,
-      const ScalarColumn<Float>& powerDif2Col, const ScalarColumn<Float>& powerSum2Col,
-      const ScalarColumn<Float>& postGain2Col);
+      const String& casaTableName, const ScalarColumn<double>& timeCol,
+      const ScalarColumn<float>& intervalCol, const ScalarColumn<int>& antNoCol,
+      const ScalarColumn<int>& freqIDCol, const ScalarColumn<float>& powerDif1Col,
+      const ScalarColumn<float>& powerSum1Col, const ScalarColumn<float>& postGain1Col,
+      const ScalarColumn<float>& powerDif2Col, const ScalarColumn<float>& powerSum2Col,
+      const ScalarColumn<float>& postGain2Col);
 };
 
 }  // namespace casacore

@@ -44,9 +44,9 @@ FITSTimedTable::FITSTimedTable()
   row_next_p = new Record(rowDesc_p);
   AlwaysAssert(row_now_p && row_next_p, AipsError);
 
-  RecordFieldPtr<Double> time_now(*row_now_p, "Time");
+  RecordFieldPtr<double> time_now(*row_now_p, "Time");
   *time_now = 0.0;
-  RecordFieldPtr<Double> time_next(*row_next_p, "Time");
+  RecordFieldPtr<double> time_next(*row_next_p, "Time");
   *time_next = 0.0;
 
   time_now_p.attachToRecord(*row_now_p, 0);
@@ -54,7 +54,7 @@ FITSTimedTable::FITSTimedTable()
   ok_p = true;
 }
 
-FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTime)
+FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, unsigned int whichColumnIsTime)
     : atStart_p(true),
       hasChanged_p(false),
       changePending_p(false),
@@ -75,9 +75,9 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTim
     row_now_p = new Record(rowDesc_p);
     row_next_p = new Record(rowDesc_p);
     AlwaysAssert(row_now_p && row_next_p, AipsError);
-    RecordFieldPtr<Double> time_now(*row_now_p, "Time");
+    RecordFieldPtr<double> time_now(*row_now_p, "Time");
     *time_now = 0.0;
-    RecordFieldPtr<Double> time_next(*row_next_p, "Time");
+    RecordFieldPtr<double> time_next(*row_next_p, "Time");
     *time_next = 0.0;
     time_now_p.attachToRecord(*row_now_p, 0);
     time_next_p.attachToRecord(*row_next_p, 0);
@@ -215,16 +215,16 @@ const Record &FITSTimedTable::currentRow() const { return *row_now_p; }
 
 Record &FITSTimedTable::currentRow() { return *row_now_p; }
 
-Double FITSTimedTable::currentTime() const { return *time_now_p; }
+double FITSTimedTable::currentTime() const { return *time_now_p; }
 
-Double FITSTimedTable::nextTime() {
+double FITSTimedTable::nextTime() {
   if (pastEnd() || how_past_end_p > 0) {
     return 1.0e+30;
   }
   return *time_next_p;
 }
 
-void FITSTimedTable::setTime(Double time) {
+void FITSTimedTable::setTime(double time) {
   if (!table_p) return;
   // time MUST be >= currentTime() unless this is the first row
   // in which case simply give the current row
@@ -258,15 +258,15 @@ void FITSTimedTable::setTime(Double time) {
   // simply return if pastEnd() or time == currentTime()
   if (pastEnd() || time == currentTime()) return;
 
-  Double fraction = (time - currentTime()) / (nextTime() - currentTime());
+  double fraction = (time - currentTime()) / (nextTime() - currentTime());
 
   // for now, we just interpolate TpFloat, TpDouble and TpArrayFloat and TpArrayDouble fields
   // But only when fraction is greater than 0.001
   // This clearly needs a better solution
   // watch for columns in row_now that are missing in row_next
-  uInt nextNr;
+  unsigned int nextNr;
   if (fraction > 0.001) {
-    for (uInt i = 0; i < rowDesc_p.nfields(); i++) {
+    for (unsigned int i = 0; i < rowDesc_p.nfields(); i++) {
       if (changePending_p) {
         nextNr = row_next_p->fieldNumber(rowDesc_p.name(i));
       } else {
@@ -274,23 +274,23 @@ void FITSTimedTable::setTime(Double time) {
       }
       switch (rowDesc_p.type(i)) {
         case TpFloat: {
-          RecordFieldPtr<Float> currField(*row_now_p, i);
-          RecordFieldPtr<Float> nextField(*row_next_p, nextNr);
+          RecordFieldPtr<float> currField(*row_now_p, i);
+          RecordFieldPtr<float> nextField(*row_next_p, nextNr);
           *currField = (*nextField - *currField) * fraction + *currField;
         } break;
         case TpDouble: {
-          RecordFieldPtr<Double> currField(*row_now_p, i);
-          RecordFieldPtr<Double> nextField(*row_next_p, nextNr);
+          RecordFieldPtr<double> currField(*row_now_p, i);
+          RecordFieldPtr<double> nextField(*row_next_p, nextNr);
           *currField = (*nextField - *currField) * fraction + *currField;
         } break;
         case TpArrayFloat: {
-          RecordFieldPtr<Array<Float>> currField(*row_now_p, i);
-          RecordFieldPtr<Array<Float>> nextField(*row_next_p, nextNr);
-          *currField = (*nextField - *currField) * Float(fraction) + *currField;
+          RecordFieldPtr<Array<float>> currField(*row_now_p, i);
+          RecordFieldPtr<Array<float>> nextField(*row_next_p, nextNr);
+          *currField = (*nextField - *currField) * float(fraction) + *currField;
         } break;
         case TpArrayDouble: {
-          RecordFieldPtr<Array<Double>> currField(*row_now_p, i);
-          RecordFieldPtr<Array<Double>> nextField(*row_next_p, nextNr);
+          RecordFieldPtr<Array<double>> currField(*row_now_p, i);
+          RecordFieldPtr<Array<double>> nextField(*row_next_p, nextNr);
           *currField = (*nextField - *currField) * fraction + *currField;
         } break;
         default:

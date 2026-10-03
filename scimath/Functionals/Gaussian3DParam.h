@@ -194,7 +194,7 @@ class Gaussian3DParam : public Function<Type> {
   }
 
   // Return dimensionality
-  virtual uInt ndim() const { return 3; }
+  virtual unsigned int ndim() const { return 3; }
 
   // Get or set the peak height of the Gaussian
   // <group>

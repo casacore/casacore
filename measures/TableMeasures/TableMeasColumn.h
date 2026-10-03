@@ -151,7 +151,7 @@ class TableMeasColumn {
 
  protected:
   // # The measure's value is represented by this many data components.
-  uInt itsNvals;
+  unsigned int itsNvals;
   // # The Measure Column description.
   std::shared_ptr<TableMeasDescBase> itsDescPtr;
   // # The data column.

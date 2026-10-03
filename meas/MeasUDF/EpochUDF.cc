@@ -38,7 +38,7 @@ void EpochUDF::setup(const Table&, const TaQLStyle&) {
   }
   // Get the 'to' reference type.
   // Determine the argnr of the epoch.
-  uInt argnr = 0;
+  unsigned int argnr = 0;
   if (itsType == LAST) {
     itsRefType = MEpoch::LAST;
     itsSidFrac = true;
@@ -79,10 +79,10 @@ void EpochUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType));
 }
 
-Double EpochUDF::getDouble(const TableExprId& id) { return itsEngine.getArrayDouble(id).data()[0]; }
+double EpochUDF::getDouble(const TableExprId& id) { return itsEngine.getArrayDouble(id).data()[0]; }
 
-MArray<Double> EpochUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id));
+MArray<double> EpochUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id));
 }
 
 }  // namespace casacore

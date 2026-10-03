@@ -60,8 +60,8 @@ class MeasuresProxy {
   Record source(const String& str);
   Record line(const String& str);
   Record alltyp(const Record& rec);
-  Quantum<Vector<Double>> posangle(const Record& lrec, const Record& rrec);
-  Quantum<Vector<Double>> separation(const Record& lrec, const Record& rrec);
+  Quantum<Vector<double>> posangle(const Record& lrec, const Record& rrec);
+  Quantum<Vector<double>> separation(const Record& lrec, const Record& rrec);
   Record uvw(const Record& mhrec);
   Record expand(const Record& mhrec);
 
@@ -71,9 +71,9 @@ class MeasuresProxy {
   bool doFrame(const String& in);
   bool makeMeasure(String& error, MeasureHolder& out, const MeasureHolder& in, const String& outref,
                    const Record& off);
-  bool toUvw(String& error, MeasureHolder& out, Vector<Double>& xyz, Vector<Double>& dot,
+  bool toUvw(String& error, MeasureHolder& out, Vector<double>& xyz, Vector<double>& dot,
              const MeasureHolder& in);
-  bool expandIt(String& error, MeasureHolder& out, Vector<Double>& xyz, const MeasureHolder& in);
+  bool expandIt(String& error, MeasureHolder& out, Vector<double>& xyz, const MeasureHolder& in);
   MeasureHolder rec2mh(const Record& rec);
   Record mh2rec(const MeasureHolder& mh);
 

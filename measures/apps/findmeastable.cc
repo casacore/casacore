@@ -51,10 +51,10 @@ int main(int argc, char* argv[]) {
     Table table;
     TableRecord kws;
     ROTableRow row;
-    RORecordFieldPtr<Double> rfp[1];
+    RORecordFieldPtr<double> rfp[1];
     String vs;
-    Double dt;
-    Int N = 0;
+    double dt;
+    int N = 0;
     String rfn[1];
     if (!MeasIERS::getTable(table, kws, row, rfp, vs, dt, N, rfn, tableName,
                             "measures." + tableNameLC + ".directory", "")) {

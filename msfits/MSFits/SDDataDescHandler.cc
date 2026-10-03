@@ -78,13 +78,13 @@ void SDDataDescHandler::attach(MeasurementSet &ms, Vector<bool> &, const Record 
   initAll(ms);
 }
 
-void SDDataDescHandler::fill(const Record &, Int spwinId, Int polId) {
+void SDDataDescHandler::fill(const Record &, int spwinId, int polId) {
   // don't bother unless there is something there
   if (msDataDesc_p) {
     *spwinIdKey_p = spwinId;
     *polIdKey_p = polId;
     bool found = false;
-    uInt foundRow = index_p->getRowNumber(found);
+    unsigned int foundRow = index_p->getRowNumber(found);
     if (found) {
       // we have a winner
       rownr_p = foundRow;

@@ -85,20 +85,20 @@ class MSAntennaIndex {
   virtual ~MSAntennaIndex() {}
 
   // Look up ANTENNA_ID's for a given a regular expression or pattern
-  Vector<Int> matchAntennaRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchAntennaRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up ANTENNA_ID's for a given antenna name, or set of antenna names
-  Vector<Int> matchAntennaName(const String& name);
-  Vector<Int> matchAntennaName(const Vector<String>& names);
+  Vector<int> matchAntennaName(const String& name);
+  Vector<int> matchAntennaName(const Vector<String>& names);
 
   // Look up ANTENNA_ID's for a given antenna station
-  Vector<Int> matchStationRegexOrPattern(const String& pattern, const bool regex = false);
-  Vector<Int> matchStationName(const String& station);
-  Vector<Int> matchStationName(const Vector<String>& station);
+  Vector<int> matchStationRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchStationName(const String& station);
+  Vector<int> matchStationName(const Vector<String>& station);
 
   // Look up ANTENNA_ID's for a given antenna and station name pair
-  Vector<Int> matchAntennaNameAndStation(const String& name, const String& station);
+  Vector<int> matchAntennaNameAndStation(const String& name, const String& station);
 
-  Vector<Int> matchId(const Vector<Int>& sourceId);
+  Vector<int> matchId(const Vector<int>& sourceId);
 
  private:
   // Default constructor
@@ -107,8 +107,8 @@ class MSAntennaIndex {
   MSAntennaColumns msAntennaCols_p;
 
   // Vector cache of antenna id's
-  Vector<Int> antennaIds_p, stationIds_p;
-  Int nrows_p;
+  Vector<int> antennaIds_p, stationIds_p;
+  int nrows_p;
 };
 
 }  // namespace casacore

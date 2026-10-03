@@ -73,7 +73,7 @@ class MaskSpecifier {
   // # Note the const Char* constructor is needed, otherwise "name"
   // # is converted to a Bool by the compiler.
   // <group>
-  MaskSpecifier(const Char* maskName) : itsFlag(false), itsName(maskName) {}
+  MaskSpecifier(const char* maskName) : itsFlag(false), itsName(maskName) {}
   MaskSpecifier(const String& maskName) : itsFlag(false), itsName(maskName) {}
   // </group>
 

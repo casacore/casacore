@@ -56,18 +56,18 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
   bool setntaylorterms(const int& nterms);
 
   // Input : scales
-  bool setscales(const Vector<Float>& scales);
+  bool setscales(const Vector<float>& scales);
 
   // Initialize all the memory being used.
-  bool initialise(Int nx, Int ny);
+  bool initialise(int nx, int ny);
 
   // Set control parameters.
-  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+  bool setcontrol(CleanEnums::CleanType cleanType, const int niter, const float gain,
                   const Quantity& aThreshold, const bool choose);
   // # This function is defined in the base class LatticeCleaner, but was not
   // # defined in the new MultiTermLatticeCleaner.
   // # I (GvD) have added it for the time being.
-  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+  bool setcontrol(CleanEnums::CleanType cleanType, const int niter, const float gain,
                   const Quantity& aThreshold, const Quantity& /*fThreshold*/,
                   const bool choose = true) {
     return setcontrol(cleanType, niter, gain, aThreshold, choose);
@@ -86,7 +86,7 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
   bool setmask(Lattice<T>& mask);
 
   // Run the minor cycle
-  Int mtclean(LatticeCleanProgress* progress = 0);
+  int mtclean(LatticeCleanProgress* progress = 0);
 
   // Output : Model images
   bool getmodel(int order, Lattice<T>& model);
@@ -95,7 +95,7 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
   bool getresidual(int order, Lattice<T>& residual);
 
   // Output : Hessian matrix
-  bool getinvhessian(Matrix<Double>& invhessian);
+  bool getinvhessian(Matrix<double>& invhessian);
 
  private:
   LogIO os;
@@ -114,94 +114,94 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
   using LatticeCleaner<T>::makeBoxesSameSize;
   using LatticeCleaner<T>::validatePsf;
 
-  Int ntaylor_p;     // Number of terms in the Taylor expansion to use.
-  Int psfntaylor_p;  // Number of terms in the Taylor expansion for PSF.
-  Int nscales_p;     // Number of scales to use for the multiscale part.
-  Int nx_p;
-  Int ny_p;
-  Int totalIters_p;
+  int ntaylor_p;     // Number of terms in the Taylor expansion to use.
+  int psfntaylor_p;  // Number of terms in the Taylor expansion for PSF.
+  int nscales_p;     // Number of scales to use for the multiscale part.
+  int nx_p;
+  int ny_p;
+  int totalIters_p;
 
   // Image mask
-  TempLattice<Float>* dirty_p;
+  TempLattice<float>* dirty_p;
   TempLattice<Complex>* dirtyFT_p;
-  TempLattice<Float>* mask_p;
-  TempLattice<Float>* fftmask_p;
+  TempLattice<float>* mask_p;
+  TempLattice<float>* fftmask_p;
 
-  Vector<Float> scaleSizes_p;       // Vector of scale sizes in pixels.
-  Vector<Float> scaleBias_p;        // Vector of scale biases !!
-  Vector<Float> totalScaleFlux_p;   // Vector of total scale fluxes.
-  Vector<Float> totalTaylorFlux_p;  // Vector of total flux in each taylor term.
-  Float weightScaleFactor_p;
-  Float maxPsf_p;
+  Vector<float> scaleSizes_p;       // Vector of scale sizes in pixels.
+  Vector<float> scaleBias_p;        // Vector of scale biases !!
+  Vector<float> totalScaleFlux_p;   // Vector of total scale fluxes.
+  Vector<float> totalTaylorFlux_p;  // Vector of total flux in each taylor term.
+  float weightScaleFactor_p;
+  float maxPsf_p;
 
   IPosition gip, imshape;
-  Int nx, ny, npol_p, nchan;
+  int nx, ny, npol_p, nchan;
   bool donePSF_p, donePSP_p, doneCONV_p;
 
   // h(s) [nx,ny,nscales]
-  Block<TempLattice<Float>*> vecScales_p;
+  Block<TempLattice<float>*> vecScales_p;
   Block<TempLattice<Complex>*> vecScalesFT_p;
 
   // B_k  [nx,ny,ntaylor]
-  Block<TempLattice<Float>*> vecPsf_p;
+  Block<TempLattice<float>*> vecPsf_p;
   Block<TempLattice<Complex>*> vecPsfFT_p;
 
   // I_D : Residual/Dirty Images [nx,ny,ntaylor]
-  Block<TempLattice<Float>*> vecDirty_p;
+  Block<TempLattice<float>*> vecDirty_p;
 
   // I_M : Model Images [nx,ny,ntaylor]
-  Block<TempLattice<Float>*> vecModel_p;
+  Block<TempLattice<float>*> vecModel_p;
 
   // A_{smn} = B_{sm} * B{sn} [nx,ny,ntaylor,ntaylor,nscales,nscales]
   // A_{s1s2mn} = B_{s1m} * B{s2n} [nx,ny,ntaylor,ntaylor,nscales,nscales]
-  Block<TempLattice<Float>*> cubeA_p;
-  Block<LatticeIterator<Float>*> itercubeA_p;
+  Block<TempLattice<float>*> cubeA_p;
+  Block<LatticeIterator<float>*> itercubeA_p;
 
   // R_{sk} = I_D * B_{sk} [nx,ny,ntaylor,nscales]
-  Block<TempLattice<Float>*> matR_p;
-  Block<LatticeIterator<Float>*> itermatR_p;
+  Block<TempLattice<float>*> matR_p;
+  Block<LatticeIterator<float>*> itermatR_p;
 
   // a_{sk} = Solution vectors. [nx,ny,ntaylor,nscales]
-  Block<TempLattice<Float>*> matCoeffs_p;
-  Block<LatticeIterator<Float>*> itermatCoeffs_p;
+  Block<TempLattice<float>*> matCoeffs_p;
+  Block<LatticeIterator<float>*> itermatCoeffs_p;
 
   // Memory to be allocated per TempLattice
-  Double memoryMB_p;
+  double memoryMB_p;
 
   // Solve [A][Coeffs] = [I_D * B]
   // Shape of A : [ntaylor,ntaylor]
-  Block<Matrix<Double>*> matA_p;     // 2D matrix to be inverted.
-  Block<Matrix<Double>*> invMatA_p;  // Inverse of matA_p;
+  Block<Matrix<double>*> matA_p;     // 2D matrix to be inverted.
+  Block<Matrix<double>*> invMatA_p;  // Inverse of matA_p;
 
   // Scratch Lattices and iterators.
   TempLattice<Complex>* cWork_p;
-  TempLattice<Float>* tWork_p;
-  LatticeIterator<Float>* itertWork_p;
+  TempLattice<float>* tWork_p;
+  LatticeIterator<float>* itertWork_p;
 
   LatticeExprNode len_p;
 
-  Float lambda_p;
+  float lambda_p;
 
-  Int numberOfTempLattices(Int nscales, Int ntaylor);
-  Int manageMemory(bool allocate);
+  int numberOfTempLattices(int nscales, int ntaylor);
+  int manageMemory(bool allocate);
 
-  bool findMaxAbsLattice(const TempLattice<Float>& masklat, const Lattice<Float>& lattice,
-                         Float& maxAbs, IPosition& posMaxAbs, bool flip = false);
-  Int addTo(Lattice<Float>& to, const Lattice<Float>& add, Float multiplier);
+  bool findMaxAbsLattice(const TempLattice<float>& masklat, const Lattice<float>& lattice,
+                         float& maxAbs, IPosition& posMaxAbs, bool flip = false);
+  int addTo(Lattice<float>& to, const Lattice<float>& add, float multiplier);
 
-  Int setupFFTMask();
-  Int setupUserMask();
-  Int setupBlobs();
-  Int computeFluxLimit(Float& fluxlimit, Float threshold);
-  Int computeMatrixA();
-  Int computeRHS();
-  Int solveMatrixEqn(Int scale);
-  Int computePenaltyFunction(Int scale, Float& loopgain, bool choosespec);
-  Int updateSolution(IPosition globalmaxpos, Int maxscaleindex, Float loopgain);
-  Int checkConvergence(bool choosespec, Float thresh, Float fluxlimit);
+  int setupFFTMask();
+  int setupUserMask();
+  int setupBlobs();
+  int computeFluxLimit(float& fluxlimit, float threshold);
+  int computeMatrixA();
+  int computeRHS();
+  int solveMatrixEqn(int scale);
+  int computePenaltyFunction(int scale, float& loopgain, bool choosespec);
+  int updateSolution(IPosition globalmaxpos, int maxscaleindex, float loopgain);
+  int checkConvergence(bool choosespec, float thresh, float fluxlimit);
 
-  Int IND2(Int taylor, Int scale);
-  Int IND4(Int taylor1, Int taylor2, Int scale1, Int scale2);
+  int IND2(int taylor, int scale);
+  int IND4(int taylor1, int taylor2, int scale1, int scale2);
 
   bool adbg;
 };

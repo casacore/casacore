@@ -126,10 +126,11 @@ void LatticeUtilities::replicate(Lattice<T>& lat, const Slicer& region, const Ar
 }
 
 template <class T>
-void LatticeUtilities::addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>& latIn, uInt nDim) {
+void LatticeUtilities::addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>& latIn,
+                                         unsigned int nDim) {
   delete pLatOut;
   pLatOut = 0;
-  const uInt dimIn = latIn.ndim();
+  const unsigned int dimIn = latIn.ndim();
   if (nDim < dimIn) {
     throw(AipsError("Input Lattice has more dimensions than desired output Lattice"));
   } else if (nDim == dimIn) {
@@ -146,10 +147,11 @@ void LatticeUtilities::addDegenerateAxes(Lattice<T>*& pLatOut, const Lattice<T>&
 }
 
 template <typename T>
-void LatticeUtilities::bin(MaskedArray<T>& out, const MaskedArray<T>& in, uInt axis, uInt bin) {
+void LatticeUtilities::bin(MaskedArray<T>& out, const MaskedArray<T>& in, unsigned int axis,
+                           unsigned int bin) {
   // Check
 
-  const uInt nDim = in.ndim();
+  const unsigned int nDim = in.ndim();
   AlwaysAssert(axis < nDim, AipsError);
 
   // Make input MaskedLattice

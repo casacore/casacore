@@ -87,13 +87,13 @@ class StManColumnBase : public DataManagerColumn {
   // </group>
 
   // Return the size of an element of the column's data type.
-  Int elemSize() const { return elemSize_p; }
+  int elemSize() const { return elemSize_p; }
 
  private:
   // The data type of the column.
   DataType dtype_p;
   // The size of an element of this data type.
-  Int elemSize_p;
+  int elemSize_p;
 };
 
 }  // namespace casacore

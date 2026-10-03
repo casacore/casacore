@@ -45,7 +45,7 @@
 class MyTestClass : public TableExprData {
  public:
   // Constructor checks if both vectors have equal length.
-  MyTestClass(const Vector<Int>& fld1, const Vector<String>& fld2)
+  MyTestClass(const Vector<int>& fld1, const Vector<String>& fld2)
       : itsFld1(fld1), itsFld2(fld2), itsEntry(0) {
     AlwaysAssert(fld1.nelements() == fld2.nelements(), AipsError);
   }
@@ -53,7 +53,7 @@ class MyTestClass : public TableExprData {
   void next() { itsEntry++; }
   // Note that only the get functions for the possible types are needed.
   // The exception should never be thrown unless things are screwed up.
-  virtual Int64 getInt(const Block<Int>& fieldNrs) const {
+  virtual int64_t getInt(const Block<int>& fieldNrs) const {
     switch (fieldNrs[0]) {
       case 0:
         return itsFld1(itsEntry);
@@ -61,7 +61,7 @@ class MyTestClass : public TableExprData {
         throw AipsError();
     }
   }
-  virtual String getString(const Block<Int>& fieldNrs) const {
+  virtual String getString(const Block<int>& fieldNrs) const {
     switch (fieldNrs[0]) {
       case 1:
         return itsFld2(itsEntry);
@@ -69,7 +69,7 @@ class MyTestClass : public TableExprData {
         throw AipsError();
     }
   }
-  virtual DataType dataType(const Block<Int>& fieldNrs) const {
+  virtual DataType dataType(const Block<int>& fieldNrs) const {
     switch (fieldNrs[0]) {
       case 0:
         return TpInt;
@@ -90,12 +90,12 @@ class MyTestClass : public TableExprData {
   }
 
  private:
-  Vector<Int> itsFld1;
+  Vector<int> itsFld1;
   Vector<String> itsFld2;
-  uInt itsEntry;
+  unsigned int itsEntry;
 };
 
-Vector<uInt> findMatches(const Vector<Int>& fld1, const Vector<String>& fld2) {
+Vector<unsigned int> findMatches(const Vector<int>& fld1, const Vector<String>& fld2) {
   // Make some expression.
   // First create a Record to make the names and types known.
   Record rec(MyTestClass::makeRecord());
@@ -110,10 +110,10 @@ Vector<uInt> findMatches(const Vector<Int>& fld1, const Vector<String>& fld2) {
   MyTestClass subj(fld1, fld2);
   TableExprId eid(subj);
   // The matching entry numbers are stored in a vector.
-  Vector<uInt> result(fld1.nelements());
-  uInt nr = 0;
+  Vector<unsigned int> result(fld1.nelements());
+  unsigned int nr = 0;
   bool valb;
-  for (uInt i = 0; i < fld1.nelements(); i++) {
+  for (unsigned int i = 0; i < fld1.nelements(); i++) {
     expr.get(eid, valb);
     if (valb) {
       result(nr++) = i;
@@ -126,7 +126,7 @@ Vector<uInt> findMatches(const Vector<Int>& fld1, const Vector<String>& fld2) {
 
 int main() {
   try {
-    Vector<Int> fld1(4);
+    Vector<int> fld1(4);
     fld1(0) = 4;
     fld1(1) = 10;
     fld1(2) = 11;
@@ -136,7 +136,7 @@ int main() {
     fld2(1) = "";
     fld2(2) = "axxxa";
     fld2(3) = "axxax";
-    Vector<uInt> m = findMatches(fld1, fld2);
+    Vector<unsigned int> m = findMatches(fld1, fld2);
     AlwaysAssertExit(m.nelements() == 1);
     AlwaysAssertExit(m(0) == 3);
   } catch (std::exception& x) {

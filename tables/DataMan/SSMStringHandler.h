@@ -129,8 +129,8 @@ class SSMStringHandler {
   // Set or get last string bucketnr.
   // Setting is needed when an existing table is opened.
   // <group>
-  void setLastStringBucket(Int lastStringBucket);
-  Int lastStringBucket() const;
+  void setLastStringBucket(int lastStringBucket);
+  int lastStringBucket() const;
   // </group>
 
   // Put a single string or an array of strings into a bucket.
@@ -144,8 +144,8 @@ class SSMStringHandler {
   // If <src>handleShape</src> is true (for variable shaped arrays), the
   // shape will be put first.
   // <group>
-  void put(Int& bucketNr, Int& offset, Int& length, const String& string);
-  void put(Int& bucketNr, Int& offset, Int& length, const Array<String>& string, bool handleShape);
+  void put(int& bucketNr, int& offset, int& length, const String& string);
+  void put(int& bucketNr, int& offset, int& length, const Array<String>& string, bool handleShape);
   // </group>
 
   // Put a single string or an array of strings into a bucket.
@@ -154,25 +154,25 @@ class SSMStringHandler {
   // Otherwise it adds the data to the last string bucket.
   // It fills the offset and bucketnr where stored and the
   // length occupied in the buckets.
-  void putShape(Int& bucketNr, Int& offset, Int& length, const IPosition& aShape);
+  void putShape(int& bucketNr, int& offset, int& length, const IPosition& aShape);
 
   // Get the shape in the given bucket and offset.
   // It sets the offset to the data right after the shape.
   // The IPosition object is resized as needed.
-  void getShape(IPosition& aShape, Int bucket, Int& offset, Int length);
+  void getShape(IPosition& aShape, int bucket, int& offset, int length);
 
   // Remove data with the given length from a bucket.
   // If the data are continued in next bucket(s), they will be
   // removed there as well.
-  void remove(Int bucketNr, Int offset, Int length);
+  void remove(int bucketNr, int offset, int length);
 
   // Get a string or an array of strings.
   // The array must have the correct shape.
   // <src>handleShape</src> will be true for variable shaped arrays
   // indicating that the data are preceeded by the shape.
   // <group>
-  void get(String& string, Int bucket, Int offset, Int length);
-  void get(Array<String>& string, Int bucket, Int offset, Int length, bool handleShape);
+  void get(String& string, int bucket, int offset, int length);
+  void get(Array<String>& string, int bucket, int offset, int length, bool handleShape);
   // </group>
 
   // Flush the currently used string bucket.
@@ -192,7 +192,7 @@ class SSMStringHandler {
   // <br>
   // If <src>isNew</src> is true the bucket is new,
   // so the Ints at its beginning do not have to be interpreted.
-  void getBucket(uInt bucketNr, bool isNew = false);
+  void getBucket(unsigned int bucketNr, bool isNew = false);
 
   // Get a new bucket and make it current.
   // If <src>doConcat</src> is true, the new bucket is a continuation,
@@ -202,44 +202,44 @@ class SSMStringHandler {
 
   // Put the data with the given length at the end of the current bucket.
   // If they do not fit, they are continued in a new bucket.
-  void putData(Int length, const Char* data);
+  void putData(int length, const char* data);
 
   // Get the data with the given length from the curent bucket at the
   // given offset. If sets the offset to the byte after the data read.
   // Continuation buckets are followed (and made current).
-  void getData(Int length, Char* data, Int& offset);
+  void getData(int length, char* data, int& offset);
 
   // Replace the current data with the new data.
   // It is used by <src>put</src> after having assured that the
   // new length does not exceed the current one.
   // It follows continuation buckets as needed.
   // <group>
-  void replace(Int bucketNr, Int offset, Int length, const String& string);
-  void replace(Int bucketNr, Int offset, Int length, Int totalLength, const IPosition& aShape);
-  void replace(Int bucketNr, Int offset, Int length, Int totalLength, const Array<String>& string,
+  void replace(int bucketNr, int offset, int length, const String& string);
+  void replace(int bucketNr, int offset, int length, int totalLength, const IPosition& aShape);
+  void replace(int bucketNr, int offset, int length, int totalLength, const Array<String>& string,
                bool handleShape);
-  void replaceData(Int& offset, Int length, const Char* data);
+  void replaceData(int& offset, int length, const char* data);
   // </group>
 
-  SSMBase* itsSSMPtr;    // Pointer to SSMBase stucture
-  Int itsCurrentBucket;  // bucketnr of current string bucket (-1 is none)
-  Int itsLength;         // length of bucket in use (only the string part)
-  Int itsNDeleted;       // #bytes deleted from the string part of the bucket
-  Int itsUsedLength;     // #bytes used from the string part of the bucket
-  Int itsNextBucket;     // next bucket for long strings
-  char* itsData;         // bucket string data
-  char* itsIntBuf;       // buffer for initialisation params
-  bool isChanged;        // has current bucket been changed?
-  uInt itsIntSize;       // size of integers in this system
-  Int itsLastBucket;     // last string bucket used
-  uInt itsStart;         // Start position of actual data in bucket
+  SSMBase* itsSSMPtr;       // Pointer to SSMBase stucture
+  int itsCurrentBucket;     // bucketnr of current string bucket (-1 is none)
+  int itsLength;            // length of bucket in use (only the string part)
+  int itsNDeleted;          // #bytes deleted from the string part of the bucket
+  int itsUsedLength;        // #bytes used from the string part of the bucket
+  int itsNextBucket;        // next bucket for long strings
+  char* itsData;            // bucket string data
+  char* itsIntBuf;          // buffer for initialisation params
+  bool isChanged;           // has current bucket been changed?
+  unsigned int itsIntSize;  // size of integers in this system
+  int itsLastBucket;        // last string bucket used
+  unsigned int itsStart;    // Start position of actual data in bucket
 };
 
-inline void SSMStringHandler::setLastStringBucket(Int lastStringBucket) {
+inline void SSMStringHandler::setLastStringBucket(int lastStringBucket) {
   itsLastBucket = lastStringBucket;
 }
 
-inline Int SSMStringHandler::lastStringBucket() const { return itsLastBucket; }
+inline int SSMStringHandler::lastStringBucket() const { return itsLastBucket; }
 
 }  // namespace casacore
 

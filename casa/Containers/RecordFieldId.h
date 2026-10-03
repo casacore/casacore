@@ -85,17 +85,17 @@ class RecordInterface;
 class RecordFieldId {
  public:
   // Construct it from a field number.
-  RecordFieldId(Int fieldNumber);
+  RecordFieldId(int fieldNumber);
 
   // Construct it from a field name.
   // <group>
   RecordFieldId(const String& name);
   RecordFieldId(const std::string& name);
-  RecordFieldId(const Char* name);
+  RecordFieldId(const char* name);
   // </group>
 
   // Get the field number.
-  Int fieldNumber() const;
+  int fieldNumber() const;
 
   // Get the field name.
   const String& fieldName() const;
@@ -105,11 +105,11 @@ class RecordFieldId {
 
  private:
   bool byName_p;
-  Int number_p;
+  int number_p;
   String name_p;
 };
 
-inline RecordFieldId::RecordFieldId(Int fieldNumber) : byName_p(false), number_p(fieldNumber) {}
+inline RecordFieldId::RecordFieldId(int fieldNumber) : byName_p(false), number_p(fieldNumber) {}
 
 inline RecordFieldId::RecordFieldId(const String& fieldName)
     : byName_p(true), number_p(-1), name_p(fieldName) {}
@@ -117,10 +117,10 @@ inline RecordFieldId::RecordFieldId(const String& fieldName)
 inline RecordFieldId::RecordFieldId(const std::string& fieldName)
     : byName_p(true), number_p(-1), name_p(fieldName) {}
 
-inline RecordFieldId::RecordFieldId(const Char* fieldName)
+inline RecordFieldId::RecordFieldId(const char* fieldName)
     : byName_p(true), number_p(-1), name_p(fieldName) {}
 
-inline Int RecordFieldId::fieldNumber() const { return number_p; }
+inline int RecordFieldId::fieldNumber() const { return number_p; }
 
 inline const String& RecordFieldId::fieldName() const { return name_p; }
 

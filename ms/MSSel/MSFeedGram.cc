@@ -63,13 +63,13 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSFeedGram = 0;
-static Int posMSFeedGram = 0;
+static int posMSFeedGram = 0;
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 TableExprNode baseMSFeedGramParseCommand(MSFeedParse* parser, const String& command,
-                                         Vector<Int>& selectedFeeds1, Vector<Int>& selectedFeeds2,
-                                         Matrix<Int>& selectedFeedPairs) {
+                                         Vector<int>& selectedFeeds1, Vector<int>& selectedFeeds2,
+                                         Matrix<int>& selectedFeedPairs) {
   try {
     MSFeedGramrestart(MSFeedGramin);
     yy_start = 1;
@@ -92,8 +92,8 @@ TableExprNode baseMSFeedGramParseCommand(MSFeedParse* parser, const String& comm
 
 TableExprNode msFeedGramParseCommand(Table& subTable, TableExprNode& col1TEN,
                                      TableExprNode& col2TEN, const String& command,
-                                     Vector<Int>& selectedFeeds1, Vector<Int>& selectedFeeds2,
-                                     Matrix<Int>& selectedFeedPairs) {
+                                     Vector<int>& selectedFeeds1, Vector<int>& selectedFeeds2,
+                                     Matrix<int>& selectedFeedPairs) {
   TableExprNode feedTEN;
   MSFeedParse thisParser(subTable, col1TEN, col2TEN);
   try {
@@ -107,8 +107,8 @@ TableExprNode msFeedGramParseCommand(Table& subTable, TableExprNode& col1TEN,
 }
 
 TableExprNode msFeedGramParseCommand(MSFeedParse* thisParser, const String& command,
-                                     Vector<Int>& selectedFeeds1, Vector<Int>& selectedFeeds2,
-                                     Matrix<Int>& selectedFeedPairs) {
+                                     Vector<int>& selectedFeeds1, Vector<int>& selectedFeeds2,
+                                     Matrix<int>& selectedFeedPairs) {
   TableExprNode feedTEN;
   try {
     feedTEN = baseMSFeedGramParseCommand(thisParser, command, selectedFeeds1, selectedFeeds2,
@@ -122,8 +122,8 @@ TableExprNode msFeedGramParseCommand(MSFeedParse* thisParser, const String& comm
 }
 
 TableExprNode msFeedGramParseCommand(const MeasurementSet* ms, const String& command,
-                                     Vector<Int>& selectedFeeds1, Vector<Int>& selectedFeeds2,
-                                     Matrix<Int>& selectedFeedPairs) {
+                                     Vector<int>& selectedFeeds1, Vector<int>& selectedFeeds2,
+                                     Matrix<int>& selectedFeedPairs) {
   TableExprNode feedTEN;
   TableExprNode col1AsTEN = ms->col(ms->columnName(MS::FEED1)),
                 col2AsTEN = ms->col(ms->columnName(MS::FEED2));
@@ -140,7 +140,7 @@ TableExprNode msFeedGramParseCommand(const MeasurementSet* ms, const String& com
 }
 
 // # Give the string position.
-Int& msFeedGramPosition() { return posMSFeedGram; }
+int& msFeedGramPosition() { return posMSFeedGram; }
 
 // # Get the next input characters for flex.
 int msFeedGramInput(char* buf, int max_size) {

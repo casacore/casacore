@@ -139,16 +139,16 @@ class Param {
   //</group>
 
   // get a double parameter value; prompt if switch is TRUE
-  Double getDouble(bool do_prompt = false) const;
+  double getDouble(bool do_prompt = false) const;
 
   // get a Block<double> parameter value; prompt if switch is TRUE
-  Block<Double> getDoubleArray(bool do_prompt = false) const;
+  Block<double> getDoubleArray(bool do_prompt = false) const;
 
   // get an Int parameter value; prompt if switch is TRUE
-  Int getInt(bool do_prompt = false) const;
+  int getInt(bool do_prompt = false) const;
 
   // get an Block<Int> parameter value; prompt if switch is TRUE
-  Block<Int> getIntArray(bool do_prompt = false) const;
+  Block<int> getIntArray(bool do_prompt = false) const;
 
   // get a String parameter value; prompt if switch is TRUE
   const String& getString(bool do_prompt = false) const;
@@ -190,10 +190,10 @@ class Param {
   bool isSystem() const { return system; }
 
   // set an index for a program parameter
-  void setIndex(Int inx) { index = inx; }
+  void setIndex(int inx) { index = inx; }
 
   // get the index of a parameter
-  Int getIndex() const { return index; }
+  int getIndex() const { return index; }
 
  private:
   // parameter name
@@ -221,7 +221,7 @@ class Param {
   bool system;
 
   // index for program keywords (>=1)
-  Int index;
+  int index;
 };
 
 }  // namespace casacore

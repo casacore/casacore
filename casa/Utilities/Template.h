@@ -83,7 +83,7 @@ class Template {
   ~Template();
 
   // Operators
-  const String &operator[](uInt n) { return output_p[n]; }
+  const String &operator[](unsigned int n) { return output_p[n]; }
 
   // # Member functions
   //  Clear the object for a re-use.
@@ -95,21 +95,21 @@ class Template {
   void read(const String &filename);
   // </group>
   // Get the number of template entries
-  uInt getCount() const { return count_p; };
+  unsigned int getCount() const { return count_p; };
   // Get the number of template definition lines found
-  uInt getTDCount() const { return tdcount_p; };
+  unsigned int getTDCount() const { return tdcount_p; };
   // Get the number of templates found after all processing
-  uInt getTCount() const { return tcount_p; };
+  unsigned int getTCount() const { return tcount_p; };
   // Get the number of duplicates found
-  uInt getDCount() { return dcount_p; };
+  unsigned int getDCount() { return dcount_p; };
   // Get the various template definition information fields.
   // Meant for testing and special projects only.
   // <group>
-  const String &getTDFlist(uInt n) { return tdflist_p[n]; };
-  const String &getTDlist(uInt n) { return tdlist_p[n]; };
-  const uInt &getTDfile(uInt n) { return tdfile_p[n]; };
-  const uInt &getTDline(uInt n) { return tdline_p[n]; };
-  const String &getTDname(uInt n) { return tdname_p[n]; };
+  const String &getTDFlist(unsigned int n) { return tdflist_p[n]; };
+  const String &getTDlist(unsigned int n) { return tdlist_p[n]; };
+  const unsigned int &getTDfile(unsigned int n) { return tdfile_p[n]; };
+  const unsigned int &getTDline(unsigned int n) { return tdline_p[n]; };
+  const String &getTDname(unsigned int n) { return tdname_p[n]; };
   // </group>
 
   // Canonicalise the template entries in the object. If switch true, do only
@@ -132,19 +132,19 @@ class Template {
   //  Each element is a template entry on a single line
   Block<String> output_p;
   // Count the lines
-  uInt count_p;
+  unsigned int count_p;
   // Count the templates
-  uInt tcount_p;
+  unsigned int tcount_p;
   // Record comment lines
   Block<String> comout_p;
   // And where they originated
-  Block<Int> comptr_p;
+  Block<int> comptr_p;
   // And count the comment lines
-  uInt ccount_p;
+  unsigned int ccount_p;
   // Indicate data split
   bool isSplit_p;
   // Count the duplicates
-  uInt dcount_p;
+  unsigned int dcount_p;
   // Data split of number string (or empty/spaces)
   Block<String> nstring_p;
   // Data split all text
@@ -152,18 +152,18 @@ class Template {
   // Data split name string (first include file)
   Block<String> namstring_p;
   // Data split numeric number
-  Block<uInt> nval_p;
+  Block<unsigned int> nval_p;
 
   // List of files used
   Block<String> tdflist_p;
   // Number of template definitions extracted from input
-  uInt tdcount_p;
+  unsigned int tdcount_p;
   // List of template definitions
   Block<String> tdlist_p;
   // Pointers to in which file in list
-  Block<uInt> tdfile_p;
+  Block<unsigned int> tdfile_p;
   // Line number in file at which template found
-  Block<uInt> tdline_p;
+  Block<unsigned int> tdline_p;
   // List of comparison names
   Block<String> tdname_p;
 
@@ -194,22 +194,22 @@ class Template {
   static const Regex namespaceRE;
 
   // Simple pattern and replacements to make canonical templates files
-  static const uInt Ncanon = 52;
+  static const unsigned int Ncanon = 52;
   static const Regex PATcanon[Ncanon];
   static const String REPcanon[Ncanon];
 
   // For canonical change: replacement of pattern with pattern
-  static const uInt Ncanon2 = 15;
+  static const unsigned int Ncanon2 = 15;
   static const Regex PATcanon20[Ncanon2];
   static const Regex PATcanon21[Ncanon2];
   static const String REPcanon2[Ncanon2];
 
   // Make canonical numbers of 4 digits minimum
-  static const uInt Nnmin = 4;
+  static const unsigned int Nnmin = 4;
   static const Regex PATnmin[Nnmin];
   static const String REPnmin[Nnmin];
   // Make canonical numbers of 4 digits maximum
-  static const uInt Nnmax = 1;
+  static const unsigned int Nnmax = 1;
   static const Regex PATnmax[Nnmax];
   static const Regex REPnmax[Nnmax];
 
@@ -231,7 +231,7 @@ class Template {
   static const Regex snamespaceRE;
 
   // Replacement patterns for ifs in saved line
-  static const uInt Ninif = 5;
+  static const unsigned int Ninif = 5;
   static const String PATinif[Ninif];
   static const String REPinif[Ninif];
 
@@ -253,7 +253,7 @@ class Template {
   // Patterns to make all typedefs comparisons for duplicates possible
   // Note that the first three should be in that position for run-time
   // change on some systems.
-  static const uInt Ntypedef = 23;
+  static const unsigned int Ntypedef = 23;
   static const Regex PATtypedef0[Ntypedef];
   static const Regex PATtypedef1[Ntypedef];
   static String REPtypedef[Ntypedef];

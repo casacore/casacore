@@ -241,7 +241,7 @@ class Chebyshev : public ChebyshevParamModeImpl<T> {
   // create an n-th order Chebyshev polynomial with the coefficients
   // equal to zero.  The bounded domain is [T(-1), T(1)].  The
   // OutOfDomainMode is CONSTANT, and the default value is T(0).
-  explicit Chebyshev(const uInt n) : ChebyshevParamModeImpl<T>(n) {}
+  explicit Chebyshev(const unsigned int n) : ChebyshevParamModeImpl<T>(n) {}
 
   // create a zero-th order Chebyshev polynomical with the first coefficient
   // equal to one.
@@ -279,7 +279,8 @@ class Chebyshev : public ChebyshevParamModeImpl<T> {
   // <linkto class="ChebyshevParam">ChebyshevPara::setMode()</linkto>
   // function.
   // <group>
-  Chebyshev(uInt order, const RecordInterface &mode) : ChebyshevParamModeImpl<T>(order, mode) {}
+  Chebyshev(unsigned int order, const RecordInterface &mode)
+      : ChebyshevParamModeImpl<T>(order, mode) {}
   Chebyshev(const Vector<T> &coeffs, const RecordInterface &mode)
       : ChebyshevParamModeImpl<T>(coeffs, mode) {}
   // </group>

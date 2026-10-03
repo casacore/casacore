@@ -34,12 +34,12 @@
 
 #include <casacore/casa/namespace.h>
 // # Forward Declarations
-bool sortarr(Int*, uInt nr, int);
-bool sortall(Int*, uInt nr, uInt type);
-bool sort2(uInt nr);
+bool sortarr(int*, unsigned int nr, int);
+bool sortall(int*, unsigned int nr, unsigned int type);
+bool sort2(unsigned int nr);
 
 // Define file global variable for cmp-routine.
-static Int* gbla;
+static int* gbla;
 
 // This program tests the speed of the Sort class .
 // It sorts some data in ascending and/or descending order.
@@ -47,23 +47,23 @@ static Int* gbla;
 
 int main(int argc, const char* argv[]) {
   bool success = true;
-  uInt nr = 5000;
+  unsigned int nr = 5000;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nr;
   }
   cout << nr << " elements" << endl;
-  Int* a1 = new Int[nr];
-  Int* a2 = new Int[nr];
-  Int* a3 = new Int[nr];
-  Int* a4 = new Int[nr];
-  Int* a5 = new Int[nr];
-  Int* a6 = new Int[nr];
-  Int* a7 = new Int[nr];
+  int* a1 = new int[nr];
+  int* a2 = new int[nr];
+  int* a3 = new int[nr];
+  int* a4 = new int[nr];
+  int* a5 = new int[nr];
+  int* a6 = new int[nr];
+  int* a7 = new int[nr];
   if (a1 == 0 || a2 == 0 || a3 == 0 || a4 == 0 || a5 == 0 || a6 == 0 || a7 == 0) {
     cout << "Allocation error" << endl;
   }
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     a1[i] = i;
     a2[i] = nr - i;
     a3[i] = rand();
@@ -118,10 +118,10 @@ int main(int argc, const char* argv[]) {
 
 // Comparison routine for UNIX qsort.
 int cmp(const void* i, const void* j) {
-  return ObjCompare<Int>::compare(&gbla[*(uInt*)i], &gbla[*(uInt*)j]);
+  return ObjCompare<int>::compare(&gbla[*(unsigned int*)i], &gbla[*(unsigned int*)j]);
 }
 
-void qksort(Int nr, uInt* inx) {
+void qksort(int nr, unsigned int* inx) {
   if (nr <= 1) {
     return;
   }
@@ -130,17 +130,17 @@ void qksort(Int nr, uInt* inx) {
   // rand is not a particularly good random number generator, but good
   // enough for this purpose.
   // Put this element at the beginning of the array.
-  Int p = rand() % nr;
-  uInt sav = inx[0];
+  int p = rand() % nr;
+  unsigned int sav = inx[0];
   inx[0] = inx[p];
   inx[p] = sav;
   // Now shift all elements < partition-element to the left.
   // If an element is equal, shift every other element to avoid
   // degeneration. This trick is described by Jon Bentley in
   // UNIX Review, October 1992.
-  Int j = 0;
+  int j = 0;
   int cm, sw = 0;
-  for (Int i = 1; i < nr; i++) {
+  for (int i = 1; i < nr; i++) {
     cm = cmp(inx, &inx[i]);
     if (cm > 0 || (cm == 0 && (sw = !sw))) {
       sav = inx[i];
@@ -155,7 +155,7 @@ void qksort(Int nr, uInt* inx) {
   qksort(nr - j - 1, inx + j + 1);
 }
 
-bool sortall(Int* arr, uInt nr, uInt type) {
+bool sortall(int* arr, unsigned int nr, unsigned int type) {
   bool success = true;
   if (nr <= 5000) {
     cout << "InsSort   ";
@@ -176,11 +176,11 @@ bool sortall(Int* arr, uInt nr, uInt type) {
     success = false;
   }
   Timer tim;
-  uInt i;
+  unsigned int i;
   if (type == 0 || (type == 2 && nr <= 10000) || (type == 5 && nr <= 20000) ||
       (type == 10 && nr <= 100000)) {
     cout << "qsort     ";
-    uInt* inx = new uInt[nr];
+    unsigned int* inx = new unsigned int[nr];
     if (inx == 0) {
       cout << "Allocation Error" << endl;
       return false;
@@ -189,7 +189,7 @@ bool sortall(Int* arr, uInt nr, uInt type) {
       inx[i] = i;
     }
     gbla = arr;  // make pointer global for cmp routine
-    qsort((char*)inx, nr, sizeof(uInt), cmp);
+    qsort((char*)inx, nr, sizeof(unsigned int), cmp);
     tim.show();
     for (i = 1; i < nr; i++) {
       if (arr[inx[i]] < arr[inx[i - 1]]) {
@@ -202,7 +202,7 @@ bool sortall(Int* arr, uInt nr, uInt type) {
   }
   cout << "qksort    ";
   tim.mark();
-  uInt* inx = new uInt[nr];
+  unsigned int* inx = new unsigned int[nr];
   if (inx == 0) {
     cout << "Allocation Error" << endl;
     return false;
@@ -225,21 +225,21 @@ bool sortall(Int* arr, uInt nr, uInt type) {
       (type == 10 && nr <= 100000)) {
     cout << "UNIX qsort";
     tim.mark();
-    qsort((char*)arr, nr, sizeof(Int), ObjCompare<Int>::compare);
+    qsort((char*)arr, nr, sizeof(int), ObjCompare<int>::compare);
     tim.show();
   }
   return success;
 }
 
-bool sortarr1(Int* arr, uInt nr, int opt) {
+bool sortarr1(int* arr, unsigned int nr, int opt) {
   bool success = true;
   Sort sort;
   sort.sortKey(arr, TpInt);
-  Vector<uInt> ptr;
+  Vector<unsigned int> ptr;
   Timer tim;
   sort.sort(ptr, nr, opt, false);
   tim.show();
-  for (uInt i = 1; i < nr; i++) {
+  for (unsigned int i = 1; i < nr; i++) {
     if (arr[ptr(i)] < arr[ptr(i - 1)]) {
       cout << "Out of order " << arr[ptr(i)] << "," << arr[ptr(i - 1)] << endl;
       success = false;
@@ -254,16 +254,16 @@ bool sortarr1(Int* arr, uInt nr, int opt) {
   return success;
 }
 
-bool sortarr2(Int* arr, uInt nr, int opt) {
+bool sortarr2(int* arr, unsigned int nr, int opt) {
   bool success = true;
   Sort sort;
-  sort.sortKey(arr, std::shared_ptr<BaseCompare>(new ObjCompare<Int>), 4);
-  Vector<uInt> ptr;
+  sort.sortKey(arr, std::shared_ptr<BaseCompare>(new ObjCompare<int>), 4);
+  Vector<unsigned int> ptr;
   Timer tim;
   sort.sort(ptr, nr, opt);
   /// sort.sort (ptr,nr,opt,false);
   tim.show("  with obj");
-  for (uInt i = 1; i < nr; i++) {
+  for (unsigned int i = 1; i < nr; i++) {
     if (arr[ptr(i)] < arr[ptr(i - 1)]) {
       cout << "Out of order " << arr[ptr(i)] << "," << arr[ptr(i - 1)] << endl;
       success = false;
@@ -278,22 +278,22 @@ bool sortarr2(Int* arr, uInt nr, int opt) {
   return success;
 }
 
-bool sortarr(Int* arr, uInt nr, int opt) {
+bool sortarr(int* arr, unsigned int nr, int opt) {
   //    return sortarr1(arr,nr,opt) && sortarr2(arr,nr,opt);
   return sortarr2(arr, nr, opt);
 }
 
 // Sort two arrays using Sort or in a Combined way.
 // It resembles sorting on baselines.
-bool sort2(uInt nr) {
-  uInt nrbl = 45 * 46 / 2;
-  uInt nrt = (nr + nrbl - 1) / nrbl;
-  Vector<Int> vec1(nrt * nrbl);
-  Vector<Int> vec2(nrt * nrbl);
-  uInt inx = 0;
-  for (uInt i = 0; i < nrt; ++i) {
-    for (Int a1 = 0; a1 < 45; ++a1) {
-      for (Int a2 = 0; a2 <= a1; ++a2) {
+bool sort2(unsigned int nr) {
+  unsigned int nrbl = 45 * 46 / 2;
+  unsigned int nrt = (nr + nrbl - 1) / nrbl;
+  Vector<int> vec1(nrt * nrbl);
+  Vector<int> vec2(nrt * nrbl);
+  unsigned int inx = 0;
+  for (unsigned int i = 0; i < nrt; ++i) {
+    for (int a1 = 0; a1 < 45; ++a1) {
+      for (int a2 = 0; a2 <= a1; ++a2) {
         vec1[inx] = a1;
         vec2[inx] = a2;
         ++inx;
@@ -305,25 +305,25 @@ bool sort2(uInt nr) {
     Sort sort;
     sort.sortKey(vec1.data(), TpInt);
     sort.sortKey(vec2.data(), TpInt);
-    Vector<uInt> inx;
+    Vector<unsigned int> inx;
     sort.sort(inx, vec1.size(), Sort::QuickSort);
     cout << "quicksort2";
     timer.show();
     timer.mark();
-    Vector<uInt> inx1;
+    Vector<unsigned int> inx1;
     sort.sort(inx1, vec1.size(), Sort::ParSort);
     cout << "parsort2  ";
     timer.show();
   }
   {
     Timer timer;
-    Int nrant = 1 + max(max(vec1), max(vec2));
-    Vector<Int> bl(vec1 * nrant);
+    int nrant = 1 + max(max(vec1), max(vec2));
+    Vector<int> bl(vec1 * nrant);
     bl += vec2;
     cout << "  fill    ";
     timer.show();
-    Vector<uInt64> inx;
-    GenSortIndirect<Int, uInt64>::sort(inx, bl);
+    Vector<uint64_t> inx;
+    GenSortIndirect<int, uint64_t>::sort(inx, bl);
     cout << "indsort   ";
     timer.show();
   }

@@ -137,9 +137,9 @@ class TempLattice : public Lattice<T> {
   // (this algorithm may change). Setting maxMemoryInMB to zero will force
   // the lattice to disk.
   // <group>
-  explicit TempLattice(const TiledShape& shape, Int maxMemoryInMB = -1)
+  explicit TempLattice(const TiledShape& shape, int maxMemoryInMB = -1)
       : itsImpl(new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
-  TempLattice(const TiledShape& shape, Double maxMemoryInMB)
+  TempLattice(const TiledShape& shape, double maxMemoryInMB)
       : itsImpl(new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
   // </group>
 
@@ -205,16 +205,16 @@ class TempLattice : public Lattice<T> {
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -225,7 +225,7 @@ class TempLattice : public Lattice<T> {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called

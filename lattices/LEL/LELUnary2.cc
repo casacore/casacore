@@ -92,7 +92,7 @@ bool LELUnaryBool::prepareScalarExpr() {
 
 String LELUnaryBool::className() const { return String("LELUnaryBool"); }
 
-bool LELUnaryBool::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELUnaryBool::lock(FileLocker::LockType type, unsigned int nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 void LELUnaryBool::unlock() { pExpr_p->unlock(); }

@@ -49,7 +49,7 @@ void UDFBase::init(const vector<TENShPtr>& operands, const TableExprInfo& tableI
                    const TaQLStyle& style) {
   // Link to the operands.
   itsOperands.resize(operands.size());
-  for (uInt i = 0; i < operands.size(); ++i) {
+  for (unsigned int i = 0; i < operands.size(); ++i) {
     itsOperands[i] = operands[i];
   }
   setup(tableInfo.table(), style);
@@ -62,24 +62,24 @@ void UDFBase::init(const vector<TENShPtr>& operands, const TableExprInfo& tableI
 }
 
 void UDFBase::flattenTree(std::vector<TableExprNodeRep*>& nodes) {
-  for (uInt i = 0; i < itsOperands.size(); ++i) {
+  for (unsigned int i = 0; i < itsOperands.size(); ++i) {
     itsOperands[i]->flattenTree(nodes);
   }
 }
 
 void UDFBase::setDataType(TableExprNodeRep::NodeDataType dataType) { itsDataType = dataType; }
 
-void UDFBase::setNDim(Int ndim) {
+void UDFBase::setNDim(int ndim) {
   AlwaysAssert(ndim >= -1, AipsError);
   if (itsShape.size() > 0) {
-    AlwaysAssert(ndim == Int(itsShape.size()), AipsError);
+    AlwaysAssert(ndim == int(itsShape.size()), AipsError);
   }
   itsNDim = ndim;
 }
 
 void UDFBase::setShape(const IPosition& shape) {
   if (itsNDim >= 0) {
-    AlwaysAssert(Int(shape.size()) == itsNDim, AipsError);
+    AlwaysAssert(int(shape.size()) == itsNDim, AipsError);
   }
   itsShape = shape;
   itsNDim = itsShape.size();
@@ -96,8 +96,10 @@ void UDFBase::setAggregate(bool isAggregate) { itsIsAggregate = isAggregate; }
 bool UDFBase::getBool(const TableExprId&) {
   throw TableInvExpr("UDFBase::getBool not implemented");
 }
-Int64 UDFBase::getInt(const TableExprId&) { throw TableInvExpr("UDFBase::getInt not implemented"); }
-Double UDFBase::getDouble(const TableExprId&) {
+int64_t UDFBase::getInt(const TableExprId&) {
+  throw TableInvExpr("UDFBase::getInt not implemented");
+}
+double UDFBase::getDouble(const TableExprId&) {
   throw TableInvExpr("UDFBase::getDouble not implemented");
 }
 DComplex UDFBase::getDComplex(const TableExprId&) {
@@ -115,10 +117,10 @@ MVTime UDFBase::getDate(const TableExprId&) {
 MArray<bool> UDFBase::getArrayBool(const TableExprId&) {
   throw TableInvExpr("UDFBase::getArrayBool not implemented");
 }
-MArray<Int64> UDFBase::getArrayInt(const TableExprId&) {
+MArray<int64_t> UDFBase::getArrayInt(const TableExprId&) {
   throw TableInvExpr("UDFBase::getArrayInt not implemented");
 }
-MArray<Double> UDFBase::getArrayDouble(const TableExprId&) {
+MArray<double> UDFBase::getArrayDouble(const TableExprId&) {
   throw TableInvExpr("UDFBase::getArrayDouble not implemented");
 }
 MArray<DComplex> UDFBase::getArrayDComplex(const TableExprId&) {

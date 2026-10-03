@@ -120,10 +120,10 @@ class LatticeCleaner {
   void update(const Lattice<T>& dirty);
 
   // Set a number of scale sizes. The units of the scale are pixels.
-  bool setscales(const Int nscales, const Float scaleInc = 1.0);
+  bool setscales(const int nscales, const float scaleInc = 1.0);
 
   // Set a specific set of scales
-  bool setscales(const Vector<Float>& scales);
+  bool setscales(const Vector<float>& scales);
 
   // Set up control parameters
   // cleanType - type of the cleaning algorithm to use (HOGBOM, MULTISCALE)
@@ -137,19 +137,19 @@ class LatticeCleaner {
   // choose - unused at the moment, specify false. Original meaning is
   // to allow interactive decision on whether to continue iterations.
   // This method always returns true.
-  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+  bool setcontrol(CleanEnums::CleanType cleanType, const int niter, const float gain,
                   const Quantity& aThreshold, const Quantity& fThreshold, const bool choose = true);
 
   // This version of the method disables stopping on fractional threshold
-  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+  bool setcontrol(CleanEnums::CleanType cleanType, const int niter, const float gain,
                   const Quantity& threshold, const bool choose = true);
 
   // return how many iterations we did do
-  Int iteration() const { return itsIteration; }
-  Int numberIterations() const { return itsIteration; }
+  int iteration() const { return itsIteration; }
+  int numberIterations() const { return itsIteration; }
 
   // what iteration number to start on
-  void startingIteration(const Int starting = 0) { itsStartingIter = starting; }
+  void startingIteration(const int starting = 0) { itsStartingIter = starting; }
 
   // Clean an image.
   // return value gives you a hint of what's happening
@@ -158,7 +158,7 @@ class LatticeCleaner {
   // -1 = not converged and stopped on cleaning consecutive smallest scale
   // -2 = not converged and either large scale hit negative or diverging
   // -3 = clean is diverging rather than converging
-  Int clean(Lattice<T>& model, LatticeCleanProgress* progress = 0);
+  int clean(Lattice<T>& model, LatticeCleanProgress* progress = 0);
 
   // Set the mask
   // mask - input mask lattice
@@ -185,7 +185,7 @@ class LatticeCleaner {
   // an ad hoc manner, multiplying the maxima found at each scale by
   // 1.0 - itsSmallScaleBias * itsScaleSizes(scale)/itsScaleSizes(nScalesToClean-1);
   // Typical bias values range from 0.2 to 1.0.
-  void setSmallScaleBias(const Float x = 0.5) { itsSmallScaleBias = x; }
+  void setSmallScaleBias(const float x = 0.5) { itsSmallScaleBias = x; }
 
   // During early iterations of a cycled MS Clean in mosaicing, it common
   // to come across an ocsilatory pattern going between positive and
@@ -196,7 +196,7 @@ class LatticeCleaner {
   // Some algorithms require that the cycles be terminated when the image
   // is dominated by point sources; if we get nStopPointMode of the
   // smallest scale components in a row, we terminate the cycles
-  void stopPointMode(Int nStopPointMode) { itsStopPointMode = nStopPointMode; }
+  void stopPointMode(int nStopPointMode) { itsStopPointMode = nStopPointMode; }
 
   // After completion of cycle, querry this to find out if we stopped because
   // of stopPointMode
@@ -210,14 +210,14 @@ class LatticeCleaner {
   // threshold(iteration) = threshold(0)
   //                        * ( exp( (iteration - startingiteration)/Ndouble )/ 2.718 )
   // If speedup() is NOT invoked, no effect on threshold
-  void speedup(const Float Ndouble);
+  void speedup(const float Ndouble);
 
   // Look at what WE think the residuals look like
   // Assumes the first scale is zero-sized
   Lattice<T>* residual() { return itsDirtyConvScales[0]; }
 
   // Method to return threshold, including any speedup factors
-  Float threshold() const;
+  float threshold() const;
 
   // Method to return the strength optimum achieved at the last clean iteration
   // The output of this method makes sense only if it is called after clean
@@ -231,10 +231,10 @@ class LatticeCleaner {
   bool validatePsf(const Lattice<T>& psf);
 
   // Make an lattice of the specified scale
-  void makeScale(Lattice<T>& scale, const Float& scaleSize);
+  void makeScale(Lattice<T>& scale, const float& scaleSize);
 
   // Make Spheroidal function for scale images
-  Float spheroidal(Float nu);
+  float spheroidal(float nu);
 
   // Find the Peak of the Lattice
   static bool findMaxAbsLattice(const Lattice<T>& lattice, T& maxAbs, IPosition& posMax);
@@ -248,9 +248,9 @@ class LatticeCleaner {
   static void makeBoxesSameSize(IPosition& blc1, IPosition& trc1, IPosition& blc2, IPosition& trc2);
 
   CleanEnums::CleanType itsCleanType;
-  Float itsGain;
-  Int itsMaxNiter;  // maximum possible number of iterations
-  Quantum<Double> itsThreshold;
+  float itsGain;
+  int itsMaxNiter;  // maximum possible number of iterations
+  Quantum<double> itsThreshold;
   TempLattice<T>* itsMask;
   IPosition itsPositionPeakPsf;
 
@@ -264,8 +264,8 @@ class LatticeCleaner {
   TempLattice<T>* itsDirty;
   TempLattice<Complex>* itsXfr;
 
-  Int itsNscales;
-  Vector<Float> itsScaleSizes;
+  int itsNscales;
+  Vector<float> itsScaleSizes;
 
   Block<TempLattice<T>*> itsScales;
   Block<TempLattice<Complex>*> itsScaleXfrs;
@@ -275,40 +275,40 @@ class LatticeCleaner {
 
   bool itsScalesValid;
 
-  Int itsIteration;     // what iteration did we get to?
-  Int itsStartingIter;  // what iteration did we get to?
-  Quantum<Double> itsFracThreshold;
+  int itsIteration;     // what iteration did we get to?
+  int itsStartingIter;  // what iteration did we get to?
+  Quantum<double> itsFracThreshold;
 
-  Float itsMaximumResidual;
+  float itsMaximumResidual;
   T itsStrengthOptimum;
 
-  Vector<Float> itsTotalFluxScale;
-  Float itsTotalFlux;
+  Vector<float> itsTotalFluxScale;
+  float itsTotalFlux;
 
   // Memory to be allocated per TempLattice
-  Double itsMemoryMB;
+  double itsMemoryMB;
 
   // Let the user choose whether to stop
   bool itsChoose;
 
   // Threshold speedup factors:
   bool itsDoSpeedup;  // if false, threshold does not change with iteration
-  Float itsNDouble;
+  float itsNDouble;
 
   // # Stop now?
   // #//  bool stopnow();   Removed on 8-Apr-2004 by GvD
 
   // Calculate index into PsfConvScales
-  Int index(const Int scale, const Int otherscale);
+  int index(const int scale, const int otherscale);
 
   bool destroyScales();
   bool destroyMasks();
 
   bool makeScaleMasks();
   bool itsIgnoreCenterBox;
-  Float itsSmallScaleBias;
+  float itsSmallScaleBias;
   bool itsStopAtLargeScaleNegative;
-  Int itsStopPointMode;
+  int itsStopPointMode;
   bool itsDidStopPointMode;
   bool itsJustStarting;
 

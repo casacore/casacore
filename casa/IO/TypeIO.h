@@ -94,16 +94,16 @@ class TypeIO {
   // If it does not succeed an exception will be thrown.
   // <group>
   virtual size_t write(size_t nvalues, const bool* value);
-  virtual size_t write(size_t nvalues, const Char* value) = 0;
-  virtual size_t write(size_t nvalues, const uChar* value) = 0;
-  virtual size_t write(size_t nvalues, const Short* value) = 0;
-  virtual size_t write(size_t nvalues, const uShort* value) = 0;
-  virtual size_t write(size_t nvalues, const Int* value) = 0;
-  virtual size_t write(size_t nvalues, const uInt* value) = 0;
-  virtual size_t write(size_t nvalues, const Int64* value) = 0;
-  virtual size_t write(size_t nvalues, const uInt64* value) = 0;
-  virtual size_t write(size_t nvalues, const Float* value) = 0;
-  virtual size_t write(size_t nvalues, const Double* value) = 0;
+  virtual size_t write(size_t nvalues, const char* value) = 0;
+  virtual size_t write(size_t nvalues, const unsigned char* value) = 0;
+  virtual size_t write(size_t nvalues, const short* value) = 0;
+  virtual size_t write(size_t nvalues, const unsigned short* value) = 0;
+  virtual size_t write(size_t nvalues, const int* value) = 0;
+  virtual size_t write(size_t nvalues, const unsigned int* value) = 0;
+  virtual size_t write(size_t nvalues, const int64_t* value) = 0;
+  virtual size_t write(size_t nvalues, const uint64_t* value) = 0;
+  virtual size_t write(size_t nvalues, const float* value) = 0;
+  virtual size_t write(size_t nvalues, const double* value) = 0;
   virtual size_t write(size_t nvalues, const Complex* value);
   virtual size_t write(size_t nvalues, const DComplex* value);
   virtual size_t write(size_t nvalues, const String* value);
@@ -115,16 +115,16 @@ class TypeIO {
   // If it does not succeed an exception will be thrown.
   // <group>
   virtual size_t read(size_t nvalues, bool* value);
-  virtual size_t read(size_t nvalues, Char* value) = 0;
-  virtual size_t read(size_t nvalues, uChar* value) = 0;
-  virtual size_t read(size_t nvalues, Short* value) = 0;
-  virtual size_t read(size_t nvalues, uShort* value) = 0;
-  virtual size_t read(size_t nvalues, Int* value) = 0;
-  virtual size_t read(size_t nvalues, uInt* value) = 0;
-  virtual size_t read(size_t nvalues, Int64* value) = 0;
-  virtual size_t read(size_t nvalues, uInt64* value) = 0;
-  virtual size_t read(size_t nvalues, Float* value) = 0;
-  virtual size_t read(size_t nvalues, Double* value) = 0;
+  virtual size_t read(size_t nvalues, char* value) = 0;
+  virtual size_t read(size_t nvalues, unsigned char* value) = 0;
+  virtual size_t read(size_t nvalues, short* value) = 0;
+  virtual size_t read(size_t nvalues, unsigned short* value) = 0;
+  virtual size_t read(size_t nvalues, int* value) = 0;
+  virtual size_t read(size_t nvalues, unsigned int* value) = 0;
+  virtual size_t read(size_t nvalues, int64_t* value) = 0;
+  virtual size_t read(size_t nvalues, uint64_t* value) = 0;
+  virtual size_t read(size_t nvalues, float* value) = 0;
+  virtual size_t read(size_t nvalues, double* value) = 0;
   virtual size_t read(size_t nvalues, Complex* value);
   virtual size_t read(size_t nvalues, DComplex* value);
   virtual size_t read(size_t nvalues, String* value);
@@ -134,8 +134,8 @@ class TypeIO {
   // The seek option defines from which file position the seek is done.
   // -1 is returned if not seekable.
   // <group>
-  Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-  Int64 seek(Int offset, ByteIO::SeekOption = ByteIO::Begin);
+  int64_t seek(int64_t offset, ByteIO::SeekOption = ByteIO::Begin);
+  int64_t seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
   // </group>
 
   // Is the TypeIO stream readable?

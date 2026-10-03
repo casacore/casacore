@@ -125,7 +125,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   }
 
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
 
   // Flatten the node tree by adding the node and its children to the vector.
   virtual void flattenTree(std::vector<TableExprNodeRep*>&) override;
@@ -169,8 +169,8 @@ class TableExprNodeSet : public TableExprNodeRep {
   // Get an array value for this bounded set in the given row.
   // <group>
   MArray<bool> getArrayBool(const TableExprId& id) override;
-  MArray<Int64> getArrayInt(const TableExprId& id) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<int64_t> getArrayInt(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
   MArray<String> getArrayString(const TableExprId& id) override;
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
@@ -179,21 +179,21 @@ class TableExprNodeSet : public TableExprNodeRep {
   // Does a value occur in the set?
   // <group>
   bool contains(const TableExprId& id, bool value) override;
-  bool contains(const TableExprId& id, Int64 value) override;
-  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, int64_t value) override;
+  bool contains(const TableExprId& id, double value) override;
   bool contains(const TableExprId& id, DComplex value) override;
   bool contains(const TableExprId& id, String value) override;
   bool contains(const TableExprId& id, MVTime value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<bool>& value) override;
-  MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<int64_t>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<double>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
   // </group>
 
   // Useful to make overloading clearer (mainly for test programs).
-  bool contains(const TableExprId& id, int value) { return contains(id, Int64(value)); }
+  bool contains(const TableExprId& id, int value) { return contains(id, int64_t(value)); }
   bool contains(const TableExprId& id, const char* value) { return contains(id, String(value)); }
 
   // Let a set node convert itself to the given unit.
@@ -211,10 +211,10 @@ class TableExprNodeSet : public TableExprNodeRep {
   void getArray(MArray<bool>& marr, const TENShPtr& node, const TableExprId& id) const {
     marr.reference(node->getArrayBool(id));
   }
-  void getArray(MArray<Int64>& marr, const TENShPtr& node, const TableExprId& id) const {
+  void getArray(MArray<int64_t>& marr, const TENShPtr& node, const TableExprId& id) const {
     marr.reference(node->getArrayInt(id));
   }
-  void getArray(MArray<Double>& marr, const TENShPtr& node, const TableExprId& id) const {
+  void getArray(MArray<double>& marr, const TENShPtr& node, const TableExprId& id) const {
     marr.reference(node->getArrayDouble(id));
   }
   void getArray(MArray<DComplex>& marr, const TENShPtr& node, const TableExprId& id) const {
@@ -248,7 +248,7 @@ template <typename T>
 MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
   /// TODO: align possible units
   DebugAssert(itsBounded, AipsError);
-  Int64 n = size();
+  int64_t n = size();
   if (hasArrays()) {
     if (itsElems[0]->start()->valueType() != VTArray) {
       throw TableInvExpr("scalar value cannot be given in a nested array");
@@ -262,7 +262,7 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
     Array<T> result(marr.array());
     Array<bool> mask(marr.mask());
     IPosition shp = result.shape();
-    uInt naxes = shp.size();
+    unsigned int naxes = shp.size();
     shp.append(IPosition(1, n));
     IPosition maskShp(shp);
     maskShp[maskShp.size() - 1] = 1;
@@ -275,7 +275,7 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
     IPosition s(shp.size(), 0);
     IPosition e(shp - 1);
     e[naxes] = 0;
-    for (Int64 i = 1; i < n; i++) {
+    for (int64_t i = 1; i < n; i++) {
       if (itsElems[i]->start()->valueType() != VTArray) {
         throw TableInvExpr("scalar value cannot be given in a nested array");
       }
@@ -306,10 +306,10 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
     return MArray<T>(result, mask);
   } else {
     // Combine scalars.
-    Int64 n = size();
-    Int64 cnt = 0;
+    int64_t n = size();
+    int64_t cnt = 0;
     Vector<T> result(n);
-    for (Int64 i = 0; i < n; i++) {
+    for (int64_t i = 0; i < n; i++) {
       itsElems[i]->fillVector(result, cnt, id);
     }
     result.resize(cnt, true);

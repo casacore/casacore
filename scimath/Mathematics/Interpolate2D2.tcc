@@ -34,24 +34,28 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <typename T>
-bool Interpolate2D::interpNearest(T &result, const Vector<Double> &where, const Matrix<T> &data,
+bool Interpolate2D::interpNearest(T &result, const Vector<double> &where, const Matrix<T> &data,
                                   const Matrix<bool> *&maskPtr) const {
   // definition of the 'neighborhood' of outer edge data elements.
-  static const Double half = .5001;
+  static const double half = .5001;
 
   const IPosition &shape = data.shape();
 
-  Double imax = shape(0) - 1.;
-  Double wi = where[0];
+  double imax = shape(0) - 1.;
+  double wi = where[0];
   if (wi < 0. - half || wi > imax + half || imax < 0) return false;
 
-  Double jmax = shape(1) - 1.;
-  Double wj = where[1];
+  double jmax = shape(1) - 1.;
+  double wj = where[1];
   if (wj < 0 - half || wj > jmax + half || jmax < 0) return false;
 
-  uInt i = (wi <= 0.) ? 0 : (wi >= imax) ? uInt(imax) : uInt(wi + .5);
+  unsigned int i = (wi <= 0.)     ? 0
+                   : (wi >= imax) ? static_cast<unsigned int>(imax)
+                                  : static_cast<unsigned int>(wi + .5);
 
-  uInt j = (wj <= 0.) ? 0 : (wj >= jmax) ? uInt(jmax) : uInt(wj + .5);
+  unsigned int j = (wj <= 0.)     ? 0
+                   : (wj >= jmax) ? static_cast<unsigned int>(jmax)
+                                  : static_cast<unsigned int>(wj + .5);
 
   bool dataValid = !maskPtr || (*maskPtr)(i, j);
   if (dataValid) result = data(i, j);
@@ -59,7 +63,7 @@ bool Interpolate2D::interpNearest(T &result, const Vector<Double> &where, const 
 }
 
 template <typename T>
-bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const Matrix<T> &data,
+bool Interpolate2D::interpLinear(T &result, const Vector<double> &where, const Matrix<T> &data,
                                  const Matrix<bool> *&maskPtr) const {
   const IPosition &shape = data.shape();
 
@@ -69,10 +73,10 @@ bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const M
   // Make sure we don't access i+1 or j+1 because the
   // big positive plus 1 may become 0 and then we will spuriously
   // pass the shape test
-  uInt i = Int(where[0]);  // Assuming Int does (1.2 -> 1)
-  uInt j = Int(where[1]);
-  uInt si = uInt(shape(0) - 1);
-  uInt sj = uInt(shape(1) - 1);
+  unsigned int i = int(where[0]);  // Assuming Int does (1.2 -> 1)
+  unsigned int j = int(where[1]);
+  unsigned int si = static_cast<unsigned int>(shape(0) - 1);
+  unsigned int sj = static_cast<unsigned int>(shape(1) - 1);
 
   // Handle edge. Just move start left/down by one,
   if (i == si) --i;
@@ -86,8 +90,8 @@ bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const M
           !(*maskPtr)(i + 1, j + 1))
         return false;
     }
-    Double TT = where[0] - i;
-    Double UU = where[1] - j;
+    double TT = where[0] - i;
+    double UU = where[1] - j;
     result = (1.0 - TT) * (1.0 - UU) * data(i, j) + TT * (1.0 - UU) * data(i + 1, j) +
              TT * UU * data(i + 1, j + 1) + (1.0 - TT) * UU * data(i, j + 1);
     return true;
@@ -96,7 +100,7 @@ bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const M
 }
 
 template <typename T>
-bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &where,
+bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<double> &where,
                                   const Matrix<T> &dataI, const Matrix<T> &dataJ,
                                   const Matrix<bool> &mask) const {
   const IPosition &shape = mask.shape();
@@ -108,25 +112,25 @@ bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &
   // big positive plus 1 may become 0 and then we will spuriously
   // pass the shape test
 
-  uInt i = Int(where[0]);  // Assuming Int does (1.2 -> 1)
-  uInt j = Int(where[1]);
-  uInt si = uInt(shape[0] - 1);
-  uInt sj = uInt(shape[1] - 1);
+  unsigned int i = int(where[0]);  // Assuming Int does (1.2 -> 1)
+  unsigned int j = int(where[1]);
+  unsigned int si = static_cast<unsigned int>(shape[0] - 1);
+  unsigned int sj = static_cast<unsigned int>(shape[1] - 1);
   // Handle edge. Just move start left/down by one,
   if (i == si) --i;
   if (j == sj) --j;
   // 2x2 starting from [i,j]
   // mask==true is a good pixel
   if (i < si && j < sj) {
-    uInt k0 = dataI.steps()[0];
-    uInt k1 = dataI.steps()[1];
+    unsigned int k0 = dataI.steps()[0];
+    unsigned int k1 = dataI.steps()[1];
     const bool *m = &mask(i, j);
     if (!*m || !*(m + k0) || !*(m + k1) || !*(m + k0 + k1)) return false;
-    Double TT = where[0] - i;
-    Double UU = where[1] - j;
-    Double x1 = (1.0 - TT);
-    Double y1 = (1.0 - UU);
-    Double x = x1 * y1;
+    double TT = where[0] - i;
+    double UU = where[1] - j;
+    double x1 = (1.0 - TT);
+    double y1 = (1.0 - UU);
+    double x = x1 * y1;
     const T *dI = &dataI(i, j);
     const T *dJ = &dataJ(i, j);
     resultI = x * *dI;
@@ -150,7 +154,7 @@ bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &
 }
 
 template <typename T>
-bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Matrix<T> &data,
+bool Interpolate2D::interpCubic(T &result, const Vector<double> &where, const Matrix<T> &data,
                                 const Matrix<bool> *&maskPtr) const {
   //
   // bi-cubic interpolation
@@ -168,8 +172,8 @@ bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
   // we use points in a 4 x 4 grid in total (to get derivatives)
   // [i-1,j-1] -> [i+2,j+2]
 
-  Int i = Int(where[0]);
-  Int j = Int(where[1]);
+  int i = int(where[0]);
+  int j = int(where[1]);
 
   // Handle edge (and beyond) by using linear.
 
@@ -183,14 +187,14 @@ bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
 
   // Do it
 
-  Double TT = where[0] - i;
-  Double UU = where[1] - j;
+  double TT = where[0] - i;
+  double UU = where[1] - j;
 
-  Double itsY[4];
-  Double itsY1[4];
-  Double itsY2[4];
-  Double itsY12[4];
-  Double itsC[4][4];
+  double itsY[4];
+  double itsY1[4];
+  double itsY2[4];
+  double itsY12[4];
+  double itsC[4][4];
   //
   // define values of function and its derivatives on the
   // square of points bounding "where"
@@ -220,7 +224,7 @@ bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
   itsY12[1] = data(i + 2, j + 1) + data(i, j - 1) - data(i, j + 1) - data(i + 2, j - 1);
   itsY12[2] = data(i + 2, j + 2) + data(i, j) - data(i, j + 2) - data(i + 2, j);
   itsY12[3] = data(i + 1, j + 2) + data(i - 1, j) - data(i - 1, j + 2) - data(i + 1, j);
-  for (uInt i = 0; i < 4; ++i) {
+  for (unsigned int i = 0; i < 4; ++i) {
     itsY1[i] /= 2.0;
     itsY2[i] /= 2.0;
     itsY12[i] /= 4.0;
@@ -230,7 +234,7 @@ bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
 
   bcucof(itsC, itsY, itsY1, itsY2, itsY12);
   result = 0.0;
-  for (Int i = 3; i >= 0; --i) {
+  for (int i = 3; i >= 0; --i) {
     result = TT * result + ((itsC[i][3] * UU + itsC[i][2]) * UU + itsC[i][1]) * UU + itsC[i][0];
   }
   //
@@ -238,18 +242,18 @@ bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
 }
 
 template <typename T>
-bool Interpolate2D::interpLanczos(T &result, const Vector<Double> &where, const Matrix<T> &data,
+bool Interpolate2D::interpLanczos(T &result, const Vector<double> &where, const Matrix<T> &data,
                                   const Matrix<bool> *&maskPtr) const {
   //
   // Lanczos 2D interpolation
   //
 
   // Hardcoded kernel size
-  const Double a = 3;
+  const double a = 3;
 
   const IPosition &shape = data.shape();
-  const Double x = where[0];
-  const Double y = where[1];
+  const double x = where[0];
+  const double y = where[1];
   const T floorx = std::floor(x);
   const T floory = std::floor(y);
 
@@ -287,7 +291,7 @@ T Interpolate2D::sinc(const T x) const {
 
 // Lanczos interpolation: helper function
 template <typename T>
-T Interpolate2D::L(const T x, const Int a) const {
+T Interpolate2D::L(const T x, const int a) const {
   if (-a < x && x < a) {
     return sinc(x) * sinc(x / a);
   }

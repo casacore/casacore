@@ -87,11 +87,11 @@ class MVDouble : public MeasValue {
   // Copy assignment
   MVDouble &operator=(const MVDouble &other);
   // Constructor from Double
-  MVDouble(Double d);
+  MVDouble(double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVDouble(const Quantity &other);
-  MVDouble(const Quantum<Vector<Double>> &other);
+  MVDouble(const Quantum<Vector<double>> &other);
   // </group>
   // Constructor from Vector. A zero value will be taken for an empty vector,
   // the canonical value for a quantum vector.
@@ -99,7 +99,7 @@ class MVDouble : public MeasValue {
   //  <li> AipsError if vector length > 1
   // </thrown>
   // <group>
-  MVDouble(const Vector<Double> &other);
+  MVDouble(const Vector<double> &other);
   MVDouble(const Vector<Quantity> &other);
   // </group>
 
@@ -108,7 +108,7 @@ class MVDouble : public MeasValue {
 
   // # Operators
   //  Conversion operator
-  operator Double() const;
+  operator double() const;
 
   // Addition
   // <group>
@@ -119,8 +119,8 @@ class MVDouble : public MeasValue {
   // <group>
   bool operator==(const MVDouble &other) const;
   bool operator!=(const MVDouble &other) const;
-  bool near(const MVDouble &other, Double tol = 1e-13) const;
-  bool nearAbs(const MVDouble &other, Double tol = 1e-13) const;
+  bool near(const MVDouble &other, double tol = 1e-13) const;
+  bool nearAbs(const MVDouble &other, double tol = 1e-13) const;
   // </group>
 
   // # General member functions
@@ -134,22 +134,22 @@ class MVDouble : public MeasValue {
   virtual MeasValue *clone() const;
   // Adjust value: taken from base class, a NOP.
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double>> getRecordValue() const;
+  virtual Vector<Quantum<double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<double>> &in);
 
  private:
   // # Data
   //  Value
-  Double val;
+  double val;
 };
 
 }  // namespace casacore

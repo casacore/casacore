@@ -65,9 +65,9 @@ TableRecord::TableRecord(const RecordInterface& other) : RecordInterface(other),
     rep_p = trecp->rep_p;
   } else {
     rep_p.set(new TableRecordRep(other.description()));
-    uInt n = other.nfields();
+    unsigned int n = other.nfields();
     const RecordDesc& desc = description();
-    for (uInt i = 0; i < n; i++) {
+    for (unsigned int i = 0; i < n; i++) {
       DataType dtype = desc.type(i);
       if (dtype == TpRecord) {
         const RecordInterface& subrec = *((RecordInterface*)(other.get_pointer(i, dtype)));
@@ -115,7 +115,7 @@ void TableRecord::assign(const RecordInterface& that) {
   }
 }
 
-void TableRecord::print(ostream& os, Int maxNrValues, const String& indent) const {
+void TableRecord::print(ostream& os, int maxNrValues, const String& indent) const {
   rep_p.ref().print(os, maxNrValues, indent);
 }
 
@@ -127,11 +127,11 @@ TableRecordRep& TableRecord::rwRef() {
 }
 
 const String& TableRecord::comment(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return ref().comment(whichField);
 }
 void TableRecord::setComment(const RecordFieldId& id, const String& comment) {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   rwRef().setComment(whichField, comment);
 }
 
@@ -146,23 +146,23 @@ void TableRecord::restructure(const RecordDesc& newDescription, bool recursive) 
 void TableRecord::setRecordType(RecordType rtype) {
   recordType() = rtype;
   // Iterate through all fields to make the subrecords the required type.
-  uInt nf = nfields();
-  for (uInt i = 0; i < nf; i++) {
+  unsigned int nf = nfields();
+  for (unsigned int i = 0; i < nf; i++) {
     if (type(i) == TpRecord) {
       rwSubRecord(i).setRecordType(rtype);
     }
   }
 }
 
-uInt TableRecord::nfields() const { return description().nfields(); }
-Int TableRecord::fieldNumber(const String& fieldName) const {
+unsigned int TableRecord::nfields() const { return description().nfields(); }
+int TableRecord::fieldNumber(const String& fieldName) const {
   return description().fieldNumber(fieldName);
 }
-DataType TableRecord::type(Int whichField) const { return description().type(whichField); }
+DataType TableRecord::type(int whichField) const { return description().type(whichField); }
 
 void TableRecord::removeField(const RecordFieldId& id) {
   throwIfFixed();
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   rwRef().removeField(whichField);
 }
 
@@ -175,14 +175,14 @@ void TableRecord::addDataField(const String& name, DataType type, const IPositio
   rwRef().addDataField(name, type, shape, fixedShape, value);
 }
 
-void TableRecord::defineDataField(Int whichField, DataType type, const void* value) {
+void TableRecord::defineDataField(int whichField, DataType type, const void* value) {
   rwRef().defineDataField(whichField, type, value);
 }
 
-void* TableRecord::get_pointer(Int whichField, DataType type) const {
+void* TableRecord::get_pointer(int whichField, DataType type) const {
   return ref().get_pointer(whichField, type);
 }
-void* TableRecord::get_pointer(Int whichField, DataType type, const String& recordType) const {
+void* TableRecord::get_pointer(int whichField, DataType type, const String& recordType) const {
   return ref().get_pointer(whichField, type, recordType);
 }
 
@@ -192,7 +192,7 @@ void TableRecord::defineRecord(const RecordFieldId& id, const RecordInterface& v
 }
 void TableRecord::defineRecord(const RecordFieldId& id, const TableRecord& value,
                                RecordInterface::RecordType type) {
-  Int whichField = newIdToNumber(id);
+  int whichField = newIdToNumber(id);
   if (whichField < 0) {
     throwIfFixed();
     String name;
@@ -212,7 +212,7 @@ void TableRecord::defineRecord(const RecordFieldId& id, const TableRecord& value
 
 void TableRecord::defineTable(const RecordFieldId& id, const Table& value,
                               RecordInterface::RecordType type) {
-  Int whichField = newIdToNumber(id);
+  int whichField = newIdToNumber(id);
   if (whichField < 0 && id.byName()) {
     throwIfFixed();
     checkName(id.fieldName(), TpTable);
@@ -227,22 +227,22 @@ const RecordInterface& TableRecord::asRecord(const RecordFieldId& id) const {
 }
 RecordInterface& TableRecord::asrwRecord(const RecordFieldId& id) { return rwSubRecord(id); }
 const TableRecord& TableRecord::subRecord(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const TableRecord*)get_pointer(whichField, TpRecord);
 }
 TableRecord& TableRecord::rwSubRecord(const RecordFieldId& id) {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   rwRef();
   return *(TableRecord*)get_pointer(whichField, TpRecord);
 }
 
 Table TableRecord::asTable(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return ((const TableKeyword*)get_pointer(whichField, TpTable))->table();
 }
 
 Table TableRecord::asTable(const RecordFieldId& id, const TableLock& lockOptions) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   const Table& tab = ((const TableKeyword*)get_pointer(whichField, TpTable))->table(&lockOptions);
   /*
   String name = tab.tableName();
@@ -262,19 +262,19 @@ Table TableRecord::asTable(const RecordFieldId& id, const TableLock& lockOptions
 }
 
 const TableAttr& TableRecord::tableAttributes(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return ((const TableKeyword*)get_pointer(whichField, TpTable))->tableAttributes();
 }
 
 void TableRecord::closeTable(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   ref().closeTable(whichField);
 }
 
 void TableRecord::mergeField(const TableRecord& other, const RecordFieldId& id,
                              DuplicatesFlag flag) {
   throwIfFixed();
-  Int whichField = other.idToNumber(id);
+  int whichField = other.idToNumber(id);
   rwRef().mergeField(other.ref(), whichField, flag);
 }
 
@@ -303,15 +303,15 @@ void TableRecord::getRecord(AipsIO& os, const TableAttr& parentAttr) {
   AlwaysAssert((!isFixed() || nfields() == 0), AipsError);
   // Reading the record type back means casting it from an int
   // to the correct type.
-  Int type;
+  int type;
   rwRef().getRecord(os, type, parentAttr);
   recordType() = (RecordInterface::RecordType)type;
 }
 
 void TableRecord::setTableAttr(const TableRecord& other, const TableAttr& defaultAttr) {
-  uInt n = nfields();
+  unsigned int n = nfields();
   const RecordDesc& desc = description();
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     DataType dtype = desc.type(i);
     if (dtype == TpRecord) {
       // Handle a subrecord (which may contain subtables).
@@ -342,8 +342,8 @@ void TableRecord::setTableAttr(const TableRecord& other, const TableAttr& defaul
 
 Record TableRecord::toRecord() const {
   Record rec;
-  uInt nr = nfields();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = nfields();
+  for (unsigned int i = 0; i < nr; i++) {
     asValueHolder(i).toRecord(rec, name(i));
   }
   return rec;
@@ -361,7 +361,7 @@ ValueHolder TableRecord::asValueHolder(const RecordFieldId& fieldId) const {
 }
 
 void TableRecord::fromRecord(const Record& rec) {
-  for (uInt i = 0; i < rec.nfields(); i++) {
+  for (unsigned int i = 0; i < rec.nfields(); i++) {
     defineFromValueHolder(rec.name(i), ValueHolder::fromRecord(rec, i));
   }
 }

@@ -130,7 +130,9 @@ void ForwardColumnIndexedRow::setShape(rownr_t, const IPosition&) {
   throw(DataManInvOper("setShape not supported by data manager ForwardColumnIndexedRow"));
 }
 
-uInt ForwardColumnIndexedRow::ndim(rownr_t rownr) { return colPtr()->ndim(convertRownr(rownr)); }
+unsigned int ForwardColumnIndexedRow::ndim(rownr_t rownr) {
+  return colPtr()->ndim(convertRownr(rownr));
+}
 
 IPosition ForwardColumnIndexedRow::shape(rownr_t rownr) {
   return colPtr()->shape(convertRownr(rownr));
@@ -167,45 +169,45 @@ void ForwardColumnIndexedRow::putBool(rownr_t, const bool*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getuChar(rownr_t rownr, uChar* dataPtr) {
+void ForwardColumnIndexedRow::getuChar(rownr_t rownr, unsigned char* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putuChar(rownr_t, const uChar*) {
+void ForwardColumnIndexedRow::putuChar(rownr_t, const unsigned char*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getShort(rownr_t rownr, Short* dataPtr) {
+void ForwardColumnIndexedRow::getShort(rownr_t rownr, short* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putShort(rownr_t, const Short*) {
+void ForwardColumnIndexedRow::putShort(rownr_t, const short*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getuShort(rownr_t rownr, uShort* dataPtr) {
+void ForwardColumnIndexedRow::getuShort(rownr_t rownr, unsigned short* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putuShort(rownr_t, const uShort*) {
+void ForwardColumnIndexedRow::putuShort(rownr_t, const unsigned short*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getInt(rownr_t rownr, Int* dataPtr) {
+void ForwardColumnIndexedRow::getInt(rownr_t rownr, int* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putInt(rownr_t, const Int*) {
+void ForwardColumnIndexedRow::putInt(rownr_t, const int*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getuInt(rownr_t rownr, uInt* dataPtr) {
+void ForwardColumnIndexedRow::getuInt(rownr_t rownr, unsigned int* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putuInt(rownr_t, const uInt*) {
+void ForwardColumnIndexedRow::putuInt(rownr_t, const unsigned int*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::getInt64(rownr_t rownr, Int64* dataPtr) {
+void ForwardColumnIndexedRow::getInt64(rownr_t rownr, int64_t* dataPtr) {
   colPtr()->get(convertRownr(rownr), dataPtr);
 }
-void ForwardColumnIndexedRow::putInt64(rownr_t, const Int64*) {
+void ForwardColumnIndexedRow::putInt64(rownr_t, const int64_t*) {
   throw(DataManInvOper("put not supported by data manager ForwardColumnIndexedRow"));
 }
 

@@ -69,7 +69,7 @@ void MSMDirColumn::doCreate(rownr_t nrrow) {
   }
 }
 
-uInt MSMDirColumn::ndim(rownr_t) { return shape_p.nelements(); }
+unsigned int MSMDirColumn::ndim(rownr_t) { return shape_p.nelements(); }
 
 IPosition MSMDirColumn::shape(rownr_t) { return shape_p; }
 
@@ -105,28 +105,28 @@ void MSMDirColumn::getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& arr
       doGetSlice(rownr, slicer, static_cast<Array<bool>&>(arr));
       break;
     case TpUChar:
-      doGetSlice(rownr, slicer, static_cast<Array<uChar>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<unsigned char>&>(arr));
       break;
     case TpShort:
-      doGetSlice(rownr, slicer, static_cast<Array<Short>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<short>&>(arr));
       break;
     case TpUShort:
-      doGetSlice(rownr, slicer, static_cast<Array<uShort>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<unsigned short>&>(arr));
       break;
     case TpInt:
-      doGetSlice(rownr, slicer, static_cast<Array<Int>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<int>&>(arr));
       break;
     case TpUInt:
-      doGetSlice(rownr, slicer, static_cast<Array<uInt>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<unsigned int>&>(arr));
       break;
     case TpInt64:
-      doGetSlice(rownr, slicer, static_cast<Array<Int64>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<int64_t>&>(arr));
       break;
     case TpFloat:
-      doGetSlice(rownr, slicer, static_cast<Array<Float>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<float>&>(arr));
       break;
     case TpDouble:
-      doGetSlice(rownr, slicer, static_cast<Array<Double>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<double>&>(arr));
       break;
     case TpComplex:
       doGetSlice(rownr, slicer, static_cast<Array<Complex>&>(arr));
@@ -148,28 +148,28 @@ void MSMDirColumn::putSliceV(rownr_t rownr, const Slicer& slicer, const ArrayBas
       doPutSlice(rownr, slicer, static_cast<const Array<bool>&>(arr));
       break;
     case TpUChar:
-      doPutSlice(rownr, slicer, static_cast<const Array<uChar>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<unsigned char>&>(arr));
       break;
     case TpShort:
-      doPutSlice(rownr, slicer, static_cast<const Array<Short>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<short>&>(arr));
       break;
     case TpUShort:
-      doPutSlice(rownr, slicer, static_cast<const Array<uShort>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<unsigned short>&>(arr));
       break;
     case TpInt:
-      doPutSlice(rownr, slicer, static_cast<const Array<Int>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<int>&>(arr));
       break;
     case TpUInt:
-      doPutSlice(rownr, slicer, static_cast<const Array<uInt>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<unsigned int>&>(arr));
       break;
     case TpInt64:
-      doPutSlice(rownr, slicer, static_cast<const Array<Int64>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<int64_t>&>(arr));
       break;
     case TpFloat:
-      doPutSlice(rownr, slicer, static_cast<const Array<Float>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<float>&>(arr));
       break;
     case TpDouble:
-      doPutSlice(rownr, slicer, static_cast<const Array<Double>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<double>&>(arr));
       break;
     case TpComplex:
       doPutSlice(rownr, slicer, static_cast<const Array<Complex>&>(arr));

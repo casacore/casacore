@@ -41,15 +41,15 @@ MeasValue::~MeasValue() {}
 
 // # Member functions
 
-Vector<Quantum<Double>> MeasValue::getXRecordValue() const { return Vector<Quantum<Double>>(0); }
+Vector<Quantum<double>> MeasValue::getXRecordValue() const { return Vector<Quantum<double>>(0); }
 
-Vector<Quantum<Double>> MeasValue::getTMRecordValue() const { return getRecordValue(); }
+Vector<Quantum<double>> MeasValue::getTMRecordValue() const { return getRecordValue(); }
 
 void MeasValue::adjust() {}
 
-void MeasValue::adjust(Double &val) { val = 1.0; }
+void MeasValue::adjust(double &val) { val = 1.0; }
 
-void MeasValue::readjust(Double) {}
+void MeasValue::readjust(double) {}
 
 // # Global functions
 ostream &operator<<(ostream &os, const MeasValue &meas) {

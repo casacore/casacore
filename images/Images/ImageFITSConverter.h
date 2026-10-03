@@ -67,10 +67,10 @@ struct ImageFITSHeaderInfo {
   bool applyMask;
   bool needNonOptimalCursor;
   bool hasBlanks;
-  Double bzero;
-  Double bscale;
-  Short minshort;
-  Short maxshort;
+  double bzero;
+  double bscale;
+  short minshort;
+  short maxshort;
   double minPix;
   double maxPix;
   IPosition newShape;
@@ -191,9 +191,9 @@ class ImageFITSConverter {
   //   <li> <src>zeroBlanks</src> If true, allow any blanked pixels are set
   //         to zero rather than NaN
   // </ul>
-  static bool FITSToImage(ImageInterface<Float> *&newImage, String &error, const String &imageName,
-                          const String &fitsName, uInt whichRep = 0, Int whichHDU = 0,
-                          uInt memoryInMB = 64, bool allowOverwrite = false,
+  static bool FITSToImage(ImageInterface<float> *&newImage, String &error, const String &imageName,
+                          const String &fitsName, unsigned int whichRep = 0, int whichHDU = 0,
+                          unsigned int memoryInMB = 64, bool allowOverwrite = false,
                           bool zeroBlanks = false);
 
   // Convert a Casacore image to a FITS file.
@@ -230,17 +230,17 @@ class ImageFITSConverter {
   //        If empty, it defaults to "casacore-"getVersion().
   //   </ul>
   // <group>
-  static bool ImageToFITS(String &error, ImageInterface<Float> &image, const String &fitsName,
-                          uInt memoryInMB = 64, bool preferVelocity = true,
-                          bool opticalVelocity = true, Int BITPIX = -32, Float minPix = 1.0,
-                          Float maxPix = -1.0, bool allowOverwrite = false,
+  static bool ImageToFITS(String &error, ImageInterface<float> &image, const String &fitsName,
+                          unsigned int memoryInMB = 64, bool preferVelocity = true,
+                          bool opticalVelocity = true, int BITPIX = -32, float minPix = 1.0,
+                          float maxPix = -1.0, bool allowOverwrite = false,
                           bool degenerateLast = false, bool verbose = true, bool stokesLast = false,
                           bool preferWavelength = false, bool airWavelength = false,
                           const String &origin = String(), bool history = true);
   static bool ImageHeaderToFITS(String &error, ImageFITSHeaderInfo &fhi,
-                                const ImageInterface<Float> &image, bool preferVelocity = true,
-                                bool opticalVelocity = true, Int BITPIX = -32, Float minPix = 1.0,
-                                Float maxPix = -1.0, bool degenerateLast = false,
+                                const ImageInterface<float> &image, bool preferVelocity = true,
+                                bool opticalVelocity = true, int BITPIX = -32, float minPix = 1.0,
+                                float maxPix = -1.0, bool degenerateLast = false,
                                 bool verbose = true, bool stokesLast = false,
                                 bool preferWavelength = false, bool airWavelength = false,
                                 bool primHead = true, bool allowAppend = true,
@@ -250,16 +250,18 @@ class ImageFITSConverter {
   // Helper function - used to calculate a cursor appropriate for the
   // desired memory use. It's not intended that application programmers
   // call this, but you may if it's useful to you.
-  static IPosition copyCursorShape(String &report, const IPosition &shape, uInt imagePixelSize,
-                                   uInt fitsPixelSize, uInt memoryInMB);
+  static IPosition copyCursorShape(String &report, const IPosition &shape,
+                                   unsigned int imagePixelSize, unsigned int fitsPixelSize,
+                                   unsigned int memoryInMB);
 
   // Recover CoordinateSystem from header.
   // Used keywords are removed from header and the unused ones returned
   // in a Record for ease of use.
   // Degenerate axes may be added to shape if needed.
-  static CoordinateSystem getCoordinateSystem(Int &imageType, RecordInterface &headerRec,
+  static CoordinateSystem getCoordinateSystem(int &imageType, RecordInterface &headerRec,
                                               const Vector<String> &header, LogIO &os,
-                                              uInt whichRep, IPosition &shape, bool dropStokes);
+                                              unsigned int whichRep, IPosition &shape,
+                                              bool dropStokes);
 
   // Recover ImageInfo from header. Used keywords are removed from header
   static ImageInfo getImageInfo(RecordInterface &header);
@@ -286,10 +288,11 @@ class ImageFITSConverter {
   //   <li> <src>primHead</src> Write to a primary HDU.
   //   <li> <src>allowAppend</src> Allow to append extension HDU's.
   // </ul>
-  static bool ImageToFITSOut(String &error, LogIO &os, const ImageInterface<Float> &image,
-                             FitsOutput *output, uInt memoryInMB = 64, bool preferVelocity = true,
-                             bool opticalVelocity = true, Int BITPIX = -32, Float minPix = 1.0,
-                             Float maxPix = -1.0, bool degenerateLast = false, bool verbose = true,
+  static bool ImageToFITSOut(String &error, LogIO &os, const ImageInterface<float> &image,
+                             FitsOutput *output, unsigned int memoryInMB = 64,
+                             bool preferVelocity = true, bool opticalVelocity = true,
+                             int BITPIX = -32, float minPix = 1.0, float maxPix = -1.0,
+                             bool degenerateLast = false, bool verbose = true,
                              bool stokesLast = false, bool preferWavelength = false,
                              bool airWavelength = false, bool primHead = true,
                              bool allowAppend = false, const String &origin = String(),
@@ -301,9 +304,9 @@ class ImageFITSConverter {
   // <ul>
   //   <li> <src>output</src> The FITS output to write to.
   // </ul>
-  static bool QualImgToFITSOut(String &error, LogIO &os, ImageInterface<Float> &image,
-                               FitsOutput *outfile, uInt memoryInMB, bool preferVelocity,
-                               bool opticalVelocity, Int BITPIX, Float minPix, Float maxPix,
+  static bool QualImgToFITSOut(String &error, LogIO &os, ImageInterface<float> &image,
+                               FitsOutput *outfile, unsigned int memoryInMB, bool preferVelocity,
+                               bool opticalVelocity, int BITPIX, float minPix, float maxPix,
                                bool degenerateLast, bool verbose, bool stokesLast,
                                bool preferWavelength, bool airWavelength, const String &origin,
                                bool history);
@@ -336,10 +339,10 @@ class ImageFITSConverter {
 template <class HDUType>
 class ImageFITSConverterImpl {
  public:
-  static void FITSToImage(ImageInterface<Float> *&newImage, String &error,
-                          const String &newImageName, const uInt whichRep, HDUType &fitsImage,
-                          const String &fitsFilename, const DataType dataType,
-                          const uInt memoryInMB = 64, const bool zeroBlanks = false);
+  static void FITSToImage(ImageInterface<float> *&newImage, String &error,
+                          const String &newImageName, const unsigned int whichRep,
+                          HDUType &fitsImage, const String &fitsFilename, const DataType dataType,
+                          const unsigned int memoryInMB = 64, const bool zeroBlanks = false);
 };
 
 }  // namespace casacore

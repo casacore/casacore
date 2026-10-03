@@ -34,12 +34,12 @@
 class VSCExample {
  public:
   VSCExample() : x_p(0), y_p(0) {}
-  VSCExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
+  VSCExample(int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
   static String dataTypeId() { return "VSCExample"; }
-  Int x() const { return x_p; }
+  int x() const { return x_p; }
   float y() const { return y_p; }
   const String& z() const { return z_p; }
-  Int& x() { return x_p; }
+  int& x() { return x_p; }
   float& y() { return y_p; }
   String& z() { return z_p; }
   int operator==(const VSCExample& that) const {
@@ -51,7 +51,7 @@ class VSCExample {
   }
 
  private:
-  Int x_p;
+  int x_p;
   float y_p;
   String z_p;
 };
@@ -134,7 +134,7 @@ class VSCExampleVSCEngine : public VSCEngine<VSCExample> {
   String yTargetName_p;
   String zTargetName_p;
   // Objects for the target columns.
-  ScalarColumn<Int> colx;
+  ScalarColumn<int> colx;
   ScalarColumn<float> coly;
   ScalarColumn<String> colz;
 

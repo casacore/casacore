@@ -79,7 +79,7 @@ class FITSTimedTable : public FITSTabular {
   FITSTimedTable();
   // Note, originalTable cannot be destructed, reopened, ...,during the
   // lifetime of this object.
-  FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTime = 0);
+  FITSTimedTable(FITSTabular *originalTable, unsigned int whichColumnIsTime = 0);
   ~FITSTimedTable();
 
   virtual bool isValid() const;
@@ -100,12 +100,12 @@ class FITSTimedTable : public FITSTabular {
   // Non-floating point values are NOT interpolated but have the value of the
   // most recent actual row.  On the last row of the table, not interpolation
   // is done.
-  virtual void setTime(Double time);
+  virtual void setTime(double time);
   virtual const Record &currentRow() const;
   virtual Record &currentRow();
 
   // What is the time of the current row?
-  Double currentTime() const;
+  double currentTime() const;
 
   // this is true if the last setTime() finished as expected
   // It is false only if the requested time is before the current time
@@ -114,7 +114,7 @@ class FITSTimedTable : public FITSTabular {
 
   // What will the time of the next row be? Returns a very large number if
   // it is past the end of the table.
-  Double nextTime();
+  double nextTime();
 
  private:
   bool atStart_p;
@@ -124,11 +124,11 @@ class FITSTimedTable : public FITSTabular {
   FITSTabular *table_p;
   Record *row_now_p;
   Record *row_next_p;
-  RORecordFieldPtr<Double> time_now_p;
-  RORecordFieldPtr<Double> time_next_p;
+  RORecordFieldPtr<double> time_now_p;
+  RORecordFieldPtr<double> time_next_p;
   RecordDesc rowDesc_p;
-  Int how_past_end_p;
-  uInt timeColumn_p;
+  int how_past_end_p;
+  unsigned int timeColumn_p;
   TableRecord dummyKeywords;
   Record dummyUnits;
   Record dummyDisps;

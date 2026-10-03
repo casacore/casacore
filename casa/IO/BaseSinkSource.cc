@@ -44,10 +44,10 @@ BaseSinkSource& BaseSinkSource::operator=(const BaseSinkSource& sinkSource) {
 
 BaseSinkSource::~BaseSinkSource() {}
 
-Int64 BaseSinkSource::seek(Int64 offset, ByteIO::SeekOption option) {
+int64_t BaseSinkSource::seek(int64_t offset, ByteIO::SeekOption option) {
   return itsTypeIO->seek(offset, option);
 }
-Int64 BaseSinkSource::seek(Int offset, ByteIO::SeekOption option) {
+int64_t BaseSinkSource::seek(int offset, ByteIO::SeekOption option) {
   return itsTypeIO->seek(offset, option);
 }
 

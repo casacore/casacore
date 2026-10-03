@@ -44,8 +44,8 @@ int main() {
     String error;
     QuantumHolder q00, q01;
     Quantity x00(12.5, "km/s");
-    Quantum<Float> x01(30.3, "Jy/a");
-    Quantum<Int> x02(2, "pc3/d");
+    Quantum<float> x01(30.3, "Jy/a");
+    Quantum<int> x02(2, "pc3/d");
     String s00("12:30:00");
     String s01("-97.8 Mpc/a");
     String s02("12.5JY");

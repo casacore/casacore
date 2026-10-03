@@ -86,7 +86,7 @@ class MSObservationIndex {
   virtual ~MSObservationIndex() {}
 
   // Look up OBSERVATION_ID's for a given project code
-  Vector<Int> matchProjectCode(const String& projectCode);
+  Vector<int> matchProjectCode(const String& projectCode);
 
  private:
   // Disallow null constructor
@@ -96,8 +96,8 @@ class MSObservationIndex {
   MSObservationColumns msObservationCols_p;
 
   // Vector cache of observation id's
-  Vector<Int> observationIds_p;
-  Int nrows_p;
+  Vector<int> observationIds_p;
+  int nrows_p;
 };
 
 }  // namespace casacore

@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCBaseline::ToRef_p[N_Routes][3] = {
+unsigned int MCBaseline::ToRef_p[N_Routes][3] = {
     {MBaseline::GALACTIC, MBaseline::J2000, 0},    {MBaseline::GALACTIC, MBaseline::B1950, 2},
     {MBaseline::J2000, MBaseline::GALACTIC, 0},    {MBaseline::B1950, MBaseline::GALACTIC, 2},
     {MBaseline::J2000, MBaseline::B1950, 2},       {MBaseline::J2000, MBaseline::B1950_VLA, 2},
@@ -59,7 +59,7 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
     {MBaseline::ITRF, MBaseline::HADEC, 0},        {MBaseline::HADEC, MBaseline::ITRF, 0},
     {MBaseline::TOPO, MBaseline::HADEC, 0},        {MBaseline::TOPO, MBaseline::APP, 0},
     {MBaseline::ICRS, MBaseline::J2000, 0},        {MBaseline::J2000, MBaseline::ICRS, 0}};
-uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
+unsigned int MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
 std::once_flag MCBaseline::theirInitOnceFlag;
 
 // # Constructors
@@ -71,10 +71,10 @@ MCBaseline::~MCBaseline() { clearConvert(); }
 // # Member functions
 
 void MCBaseline::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
-  Int iout = outref.getType();
+  int iin = inref.getType();
+  int iout = outref.getType();
   if (iin != iout) {
-    Int tmp;
+    int tmp;
     while (iin != iout) {
       tmp = FromTo_p[iin][iout];
       iin = ToRef_p[tmp][1];
@@ -87,7 +87,7 @@ void MCBaseline::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase 
 void MCBaseline::clearConvert() {}
 
 // # Conversion routines
-void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
+void MCBaseline::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
@@ -161,13 +161,13 @@ void MCBaseline::doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const M
 }
 
 void MCBaseline::doConvert(MVBaseline &in, MRBase &inref, MRBase &outref, const MConvertBase &mc) {
-  Double g2;
+  double g2;
   // Planetary aberration factor
-  Double lengthP = 0;
+  double lengthP = 0;
 
   measMath.initFrame(inref, outref);
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case HADEC_ITRF:
         measMath.applyHADECtoITRF(in);

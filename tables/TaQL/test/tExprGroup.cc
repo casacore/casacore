@@ -63,7 +63,7 @@ void check(const TableExprNode& expr, const vector<Record>& recs, bool expVal, c
   TableExprAggrNode& aggr =
       const_cast<TableExprAggrNode&>(dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply(id);
   }
@@ -75,37 +75,37 @@ void check(const TableExprNode& expr, const vector<Record>& recs, bool expVal, c
   }
 }
 
-void check(const TableExprNode& expr, const vector<Record>& recs, Int expVal, const String& str) {
+void check(const TableExprNode& expr, const vector<Record>& recs, int expVal, const String& str) {
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr =
       const_cast<TableExprAggrNode&>(dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply(id);
   }
   func->finish();
-  Int val = func->getInt();
+  int val = func->getInt();
   if (val != expVal) {
     foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
   }
 }
 
-void check(const TableExprNode& expr, const vector<Record>& recs, Double expVal,
+void check(const TableExprNode& expr, const vector<Record>& recs, double expVal,
            const String& str) {
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr =
       const_cast<TableExprAggrNode&>(dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply(id);
   }
   func->finish();
-  Double val = func->getDouble();
+  double val = func->getDouble();
   if (!near(val, expVal, 1.e-10)) {
     foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
@@ -119,7 +119,7 @@ void check(const TableExprNode& expr, const vector<Record>& recs, const DComplex
   TableExprAggrNode& aggr =
       const_cast<TableExprAggrNode&>(dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply(id);
   }
@@ -131,20 +131,20 @@ void check(const TableExprNode& expr, const vector<Record>& recs, const DComplex
   }
 }
 
-void checkLazy(const TableExprNode& expr, const vector<Record>& recs, Double expVal,
+void checkLazy(const TableExprNode& expr, const vector<Record>& recs, double expVal,
                const String& str) {
   cout << "Test lazy " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr =
       const_cast<TableExprAggrNode&>(dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
   funcid.finish();
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  Double val = func->getDouble(*funcid.getIds());
+  double val = func->getDouble(*funcid.getIds());
   if (val != expVal) {
     foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
@@ -160,7 +160,7 @@ void doBool() {
   vecb[4] = true;
   // Define records containing the vector elements.
   vector<Record> recs(vecb.size());
-  for (uInt i = 0; i < vecb.size(); ++i) {
+  for (unsigned int i = 0; i < vecb.size(); ++i) {
     recs[i].define("fld", vecb[i]);
   }
   // Form the expression node from the record field.
@@ -170,26 +170,26 @@ void doBool() {
         "all");
   check(TableExprNode::newFunctionNode(TableExprFuncNode::ganyFUNC, expr), recs, anyTrue(vecb),
         "any");
-  check(TableExprNode::newFunctionNode(TableExprFuncNode::gntrueFUNC, expr), recs, Int(ntrue(vecb)),
+  check(TableExprNode::newFunctionNode(TableExprFuncNode::gntrueFUNC, expr), recs, int(ntrue(vecb)),
         "ntrue");
   check(TableExprNode::newFunctionNode(TableExprFuncNode::gnfalseFUNC, expr), recs,
-        Int(nfalse(vecb)), "nfalse");
+        int(nfalse(vecb)), "nfalse");
 }
 
 void doInt() {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Int> veci(9);
+  Vector<int> veci(9);
   indgen(veci);
   veci[1] = -4;
   veci[6] = 20;
-  Vector<Double> vecd(9);
+  Vector<double> vecd(9);
   indgen(vecd);
   vecd[1] = -4;
   vecd[6] = 20;
   // Define records containing the vector elements.
   vector<Record> recs(veci.size());
-  for (uInt i = 0; i < veci.size(); ++i) {
+  for (unsigned int i = 0; i < veci.size(); ++i) {
     recs[i].define("fld", veci[i]);
   }
   // Form the expression node from the record field.
@@ -225,13 +225,13 @@ void doInt() {
 
 void doDouble() {
   // Define a Vector with values.
-  Vector<Double> vecd(40);
+  Vector<double> vecd(40);
   indgen(vecd);
   vecd[1] = -40;
   vecd[6] = 20;
   // Define records containing the vector elements.
   vector<Record> recs(vecd.size());
-  for (uInt i = 0; i < vecd.size(); ++i) {
+  for (unsigned int i = 0; i < vecd.size(); ++i) {
     recs[i].define("fld", vecd[i]);
   }
   // Form the expression node from the record field.
@@ -271,7 +271,7 @@ void doDComplex() {
   indgen(vecd, DComplex(0.1, 0.2), DComplex(-0.015, 0.025));
   // Define records containing the vector elements.
   vector<Record> recs(vecd.size());
-  for (uInt i = 0; i < vecd.size(); ++i) {
+  for (unsigned int i = 0; i < vecd.size(); ++i) {
     recs[i].define("fld", vecd[i]);
   }
   // Form the expression node from the record field.
@@ -312,20 +312,20 @@ void doBoolArr() {
     check(TableExprNode::newFunctionNode(TableExprFuncNode::ganyFUNC, expr), recs, anyTrue(vecb),
           "any");
     check(TableExprNode::newFunctionNode(TableExprFuncNode::gntrueFUNC, expr), recs,
-          Int(ntrue(vecb)), "ntrue");
+          int(ntrue(vecb)), "ntrue");
     check(TableExprNode::newFunctionNode(TableExprFuncNode::gnfalseFUNC, expr), recs,
-          Int(nfalse(vecb)), "nfalse");
+          int(nfalse(vecb)), "nfalse");
   }
 }
 
 void doIntArr() {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Int> veci(9);
+  Vector<int> veci(9);
   indgen(veci);
   veci[1] = -4;
   veci[6] = 20;
-  Vector<Double> vecd(9);
+  Vector<double> vecd(9);
   indgen(vecd);
   vecd[1] = -4;
   vecd[6] = 20;
@@ -368,11 +368,11 @@ void doIntArr() {
 void doDoubleArr() {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Double> vecd(41);
+  Vector<double> vecd(41);
   indgen(vecd);
   vecd[1] = -40;
   vecd[6] = 20;
-  Vector<Double> vec2;  // # test empty array
+  Vector<double> vec2;  // # test empty array
   // Define records containing part of the vector.
   // The aggregate functions will evaluate all reocrds, thus full vector.
   vector<Record> recs(5);

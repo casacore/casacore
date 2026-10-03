@@ -110,7 +110,7 @@ class SDAntennaHandler {
   void fill(const Record &row);
 
   // get the current antenna ID
-  Int antennaId() { return rownr_p; }
+  int antennaId() { return rownr_p; }
 
   // get the telescope name
   String telescopeName() { return name_p; }
@@ -121,29 +121,29 @@ class SDAntennaHandler {
  private:
   ColumnsIndex *index_p;
   RecordFieldPtr<String> nameKey_p, stationKey_p, mountKey_p;
-  RecordFieldPtr<Double> dishDiameterKey_p;
-  RecordFieldPtr<Int> orbitIdKey_p, phasedIdKey_p;
+  RecordFieldPtr<double> dishDiameterKey_p;
+  RecordFieldPtr<int> orbitIdKey_p, phasedIdKey_p;
   RecordFieldPtr<bool> flagRowKey_p;
   MSAntenna *msAnt_p;
   MSAntennaColumns *msAntCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
   // pointers to fields in record, only used if attached
   RORecordFieldPtr<String> telescopField_p;
 
   // telescope position might be a double or float,
   // just remember its location
-  Int siteLongFldNum_p, siteLatFldNum_p, siteElevFldNum_p;
+  int siteLongFldNum_p, siteLatFldNum_p, siteElevFldNum_p;
 
   String name_p;
   MPosition position_p;
 
   // fields which might exist if this SDFITS was converted from an MS using ms2sdfits
   RORecordFieldPtr<String> mountField_p, msNameField_p, stationField_p;
-  RORecordFieldPtr<Int> orbitIdField_p, phasedArrayIdField_p;
-  RORecordFieldPtr<Double> dishDiameterField_p;
-  RORecordFieldPtr<Array<Double>> offsetField_p, positionField_p;
+  RORecordFieldPtr<int> orbitIdField_p, phasedArrayIdField_p;
+  RORecordFieldPtr<double> dishDiameterField_p;
+  RORecordFieldPtr<Array<double>> offsetField_p, positionField_p;
   RORecordFieldPtr<bool> flagRowField_p;
 
   // I expect these will never be used, nevertheless, put them here just in case I'm wrong

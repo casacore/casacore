@@ -80,10 +80,10 @@ class TableParseGroupby {
   bool isOnlyAggr() const { return itsGroupAggrUsed != 0 && (itsGroupAggrUsed & GROUPBY) == 0; }
 
   // Get the number of aggregation ndes.
-  uInt size() const { return itsAggrNodes.size(); }
+  unsigned int size() const { return itsAggrNodes.size(); }
 
   // Disable applySelection for the column nodes of aggregate functions.
-  uInt disableApplySelection();
+  unsigned int disableApplySelection();
 
   // An exception is thrown if the node uses an aggregate function.
   static void checkAggrFuncs(const TableExprNode& node);
@@ -164,7 +164,7 @@ class TableParseGroupby {
   TableExprNode itsHavingNode;
   // Pointers to the aggregate function nodes.
   std::vector<TableExprNodeRep*> itsAggrNodes;
-  Int itsGroupAggrUsed;
+  int itsGroupAggrUsed;
 };
 
 }  // namespace casacore

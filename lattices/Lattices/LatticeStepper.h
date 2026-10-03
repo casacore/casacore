@@ -289,12 +289,12 @@ class LatticeStepper : public LatticeNavigator {
   // <src>vectorCursor()</src>, etc., in class
   // <linkto class=RO_LatticeIterator>(RO_)LatticeIterator</linkto>.
   LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
-                 const uInt hangOverPolicy = PAD);
+                 const unsigned int hangOverPolicy = PAD);
 
   // Same as the above constructor except that the axis path is explicitly
   // specified. The axis path is described in the synopsis above.
   LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
-                 const IPosition& axisPath, const uInt hangOverPolicy = PAD);
+                 const IPosition& axisPath, const unsigned int hangOverPolicy = PAD);
 
   // Same as the above constructor except that the cursor axes are
   // explicitly specified. This can be useful to avoid that cursor axes
@@ -308,7 +308,7 @@ class LatticeStepper : public LatticeNavigator {
   // <br>See also the example in the synopsis.
   LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
                  const IPosition& cursorAxes, const IPosition& axisPath,
-                 const uInt hangOverPolicy = PAD);
+                 const unsigned int hangOverPolicy = PAD);
 
   // The copy constructor uses copy semantics.
   LatticeStepper(const LatticeStepper& other);
@@ -343,7 +343,7 @@ class LatticeStepper : public LatticeNavigator {
   // all cursor movement (operator++ or operator--), even though
   // N-increments followed by N-decrements will ALWAYS leave the cursor in
   // the original position.
-  virtual uInt nsteps() const;
+  virtual unsigned int nsteps() const;
 
   // Functions which return the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origin
@@ -433,8 +433,8 @@ class LatticeStepper : public LatticeNavigator {
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             uInt maxCacheSize, uInt bucketSize) const;
+  virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                                     unsigned int maxCacheSize, unsigned int bucketSize) const;
 
  private:
   // Prevent the default constructor from being used.
@@ -450,7 +450,7 @@ class LatticeStepper : public LatticeNavigator {
   IPosition itsCursorShape;   // # The shape of the cursor
   IPosition itsCursorPos;     // # The current position of the iterator.
   IPosition itsAxisPath;      // # the heading to follow for the cursor
-  uInt itsNsteps;             // # the number of iterator steps taken thus far;
+  unsigned int itsNsteps;     // # the number of iterator steps taken thus far;
                               // # set to 0 on reset ()
   bool itsEnd;                // # is the cursor beyond the end?
   bool itsStart;              // # is the cursor at the beginning?
@@ -462,7 +462,7 @@ class LatticeStepper : public LatticeNavigator {
                               // # decrement operators if itsNiceFit == false. It
                               // # is used to tell if the cursor "Hangs over"
                               // # the edge of the lattice shape.
-  uInt itsPolicy;             // # what to do if the cursor does hang over
+  unsigned int itsPolicy;     // # what to do if the cursor does hang over
 };
 
 }  // namespace casacore

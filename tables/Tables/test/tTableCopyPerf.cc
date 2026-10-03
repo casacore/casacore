@@ -30,12 +30,12 @@
 using namespace casacore;
 using namespace std;
 
-void testPerf(Int nrowPerf) {
+void testPerf(int nrowPerf) {
   cout << "testPerf with " << nrowPerf << " rows ..." << endl;
   // First create a table.
   TableDesc td;
   td.addColumn(ArrayColumnDesc<Complex>("DATA", IPosition(2, 4, 256)));
-  td.addColumn(ScalarColumnDesc<Int>("SCALAR", 1));
+  td.addColumn(ScalarColumnDesc<int>("SCALAR", 1));
   SetupNewTable newtab("tTableCopyPerf_tmp.data", td, Table::New);
   StandardStMan ssm;
   TiledShapeStMan tsm("DATA_stm", IPosition(3, 4, 256, 4));
@@ -46,7 +46,7 @@ void testPerf(Int nrowPerf) {
   Array<Complex> arr(IPosition(2, 4, 256));
   indgen(arr);
   Timer timer;
-  for (uInt row = 0; row < tab.nrow(); ++row) {
+  for (unsigned int row = 0; row < tab.nrow(); ++row) {
     col.put(row, arr);
   }
   timer.show("put rows");
@@ -65,7 +65,7 @@ void testPerf(Int nrowPerf) {
 }
 
 int main(int argc, const char* argv[]) {
-  Int nrowPerf = 10;
+  int nrowPerf = 10;
   if (argc > 1) {
     nrowPerf = atoi(argv[1]);
   }

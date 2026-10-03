@@ -52,8 +52,8 @@ WCLELMask::WCLELMask(const ImageExpr<bool>& expr)
     : itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
   itsImageExpr = new ImageExpr<bool>(expr);
   const CoordinateSystem& cSys = itsImageExpr->coordinates();
-  uInt naxes = itsImageExpr->ndim();
-  for (uInt i = 0; i < naxes; i++) {
+  unsigned int naxes = itsImageExpr->ndim();
+  for (unsigned int i = 0; i < naxes; i++) {
     addAxisDesc(makeAxisDesc(cSys, i));
   }
 }
@@ -106,8 +106,8 @@ void WCLELMask::init(const LatticeExprNode& expr) {
     // Coordinates are known, so make it a proper Image type.
     itsImageExpr = new ImageExpr<bool>(expr, itsCommand);
     const CoordinateSystem& cSys = itsImageExpr->coordinates();
-    uInt naxes = itsImageExpr->ndim();
-    for (uInt i = 0; i < naxes; i++) {
+    unsigned int naxes = itsImageExpr->ndim();
+    for (unsigned int i = 0; i < naxes; i++) {
       addAxisDesc(makeAxisDesc(cSys, i));
     }
   }
@@ -155,7 +155,7 @@ bool WCLELMask::operator==(const WCRegion& that) const {
 
 WCRegion* WCLELMask::cloneRegion() const { return new WCLELMask(*this); }
 
-uInt WCLELMask::ndim() const {
+unsigned int WCLELMask::ndim() const {
   if (itsLattExpr != 0) {
     return itsLattExpr->ndim();
   }
@@ -199,17 +199,17 @@ LCRegion* WCLELMask::toLCRegion(const CoordinateSystem& cSys, const IPosition& l
 LCRegion* WCLELMask::doToLCRegion(const CoordinateSystem&, const IPosition& latticeShape,
                                   const IPosition& pixelAxesMap, const IPosition& outOrder) const {
   AlwaysAssert(itsImageExpr != 0, AipsError);
-  const uInt naxes = pixelAxesMap.nelements();
+  const unsigned int naxes = pixelAxesMap.nelements();
   const IPosition& shape = itsImageExpr->shape();
   AlwaysAssert(naxes == shape.nelements(), AipsError);
-  for (uInt i = 1; i < naxes; i++) {
+  for (unsigned int i = 1; i < naxes; i++) {
     if (outOrder(i) <= outOrder(i - 1) || pixelAxesMap(i) <= pixelAxesMap(i - 1)) {
       throw AipsError(
           "WCLELMask::toLCRegion - "
           "the order of the mask axes cannot be changed");
     }
   }
-  for (uInt i = 0; i < naxes; i++) {
+  for (unsigned int i = 0; i < naxes; i++) {
     if (shape(i) != latticeShape(pixelAxesMap(i))) {
       throw AipsError(
           "WCLELMask::toLCRegion - "

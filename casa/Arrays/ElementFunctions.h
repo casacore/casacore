@@ -2,6 +2,7 @@
 #define ELEMENT_FUNCTIONS_H
 
 #include <cmath>
+#include <cstdint>
 #include <complex>
 #include <limits>
 
@@ -254,6 +255,11 @@ bool isfinite(const std::complex<T> &val) {
 
 inline int floormod(int x, int y) {
   int r = x % y;
+  if (r != 0 && (x < 0) != (y < 0)) r += y;
+  return r;
+}
+inline long floormod(long x, long y) {
+  long r = x % y;
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }

@@ -191,7 +191,7 @@ class LELInterface {
   // <br>By default the functions do not do anything at all.
   // lock() and hasLock return true.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();

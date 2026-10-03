@@ -97,7 +97,7 @@ class RODataManAccessor {
   String dataManagerName() const { return itsDataManager->dataManagerName(); }
 
   // Get the data manager sequence nr.
-  uInt dataManagerSeqNr() const { return itsDataManager->sequenceNr(); }
+  unsigned int dataManagerSeqNr() const { return itsDataManager->sequenceNr(); }
 
   // Show IO statistics.
   void showCacheStatistics(std::ostream& os) const { itsDataManager->showCacheStatistics(os); }

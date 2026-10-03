@@ -135,7 +135,7 @@ class TiledDataStManAccessor : public ROTiledStManAccessor {
   // the last dimension.
   // The record should contain the id values (to get the correct
   // hypercube) and coordinate values for the elements added.
-  void extendHypercube(uInt incrInLastDim, const Record& values);
+  void extendHypercube(unsigned int incrInLastDim, const Record& values);
 
  private:
   // # Declare the data members.

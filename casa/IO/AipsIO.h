@@ -171,7 +171,7 @@ class AipsIO {
   // <br>If the MultiFileBase pointer is not null, a virtual file in the
   // MultiFileBase will be used instead of a regular file.
   explicit AipsIO(const String& fileName, ByteIO::OpenOption = ByteIO::Old,
-                  uInt filebufSize = 65536,
+                  unsigned int filebufSize = 65536,
                   const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
   // Construct from a stream object derived from ByteIO.
@@ -194,7 +194,8 @@ class AipsIO {
 
   // Open/create file (either a regular file or a MultiFileBase virtual file).
   // An exception is thrown if the object contains an already open file.
-  void open(const String& fileName, ByteIO::OpenOption = ByteIO::Old, uInt filebufSize = 65536,
+  void open(const String& fileName, ByteIO::OpenOption = ByteIO::Old,
+            unsigned int filebufSize = 65536,
             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
   // Open by connecting to the given byte stream.
@@ -229,53 +230,53 @@ class AipsIO {
   // After all values (inclusing nested objects) of the object have
   // been put, a call to putend has to be done.
   // <group>
-  uInt putstart(const String& objectType, uInt objectVersion);
-  uInt putstart(const Char* objectType, uInt objectVersion);
+  unsigned int putstart(const String& objectType, unsigned int objectVersion);
+  unsigned int putstart(const char* objectType, unsigned int objectVersion);
   // </group>
 
   // Put a single value.
   // <group>
   AipsIO& operator<<(const bool& value);
-  AipsIO& operator<<(const Char& value);
-  AipsIO& operator<<(const uChar& value);
+  AipsIO& operator<<(const char& value);
+  AipsIO& operator<<(const unsigned char& value);
   AipsIO& operator<<(const short& value);
   AipsIO& operator<<(const unsigned short& value);
   AipsIO& operator<<(const int& value);
   AipsIO& operator<<(const unsigned int& value);
-  AipsIO& operator<<(const Int64& value);
-  AipsIO& operator<<(const uInt64& value);
+  AipsIO& operator<<(const int64_t& value);
+  AipsIO& operator<<(const uint64_t& value);
   AipsIO& operator<<(const float& value);
   AipsIO& operator<<(const double& value);
   AipsIO& operator<<(const Complex& value);
   AipsIO& operator<<(const DComplex& value);
   AipsIO& operator<<(const String& value);
-  AipsIO& operator<<(const Char* value);
+  AipsIO& operator<<(const char* value);
   // </group>
 
   // Put an array of values with the given number of values.
   // If the flag putNr is set, the number of values is put first.
   // <group>
-  AipsIO& put(uInt nrval, const bool* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const Char* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const uChar* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const short* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const unsigned short* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const int* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const unsigned int* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const Int64* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const uInt64* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const float* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const double* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const Complex* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const DComplex* values, bool putNR = true);
-  AipsIO& put(uInt nrval, const String* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const bool* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const char* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const unsigned char* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const short* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const unsigned short* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const int* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const unsigned int* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const int64_t* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const uint64_t* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const float* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const double* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const Complex* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const DComplex* values, bool putNR = true);
+  AipsIO& put(unsigned int nrval, const String* values, bool putNR = true);
   // </group>
 
   // Put a vector as an array of values
   // For standard types it has the same result as put with putNR=True.
   template <typename T>
   AipsIO& put(const vector<T>& vec) {
-    *this << uInt(vec.size());
+    *this << static_cast<unsigned int>(vec.size());
     for (typename vector<T>::const_iterator iter = vec.begin(); iter != vec.end(); ++iter) {
       *this << *iter;
     }
@@ -287,12 +288,12 @@ class AipsIO {
 
   // End putting an object. It returns the object length (including
   // possible nested objects).
-  uInt putend();
+  unsigned int putend();
 
   // Get and set file-offset.
   // <group>
-  Int64 getpos();
-  Int64 setpos(Int64 offset);
+  int64_t getpos();
+  int64_t setpos(int64_t offset);
   // </group>
 
   // Get the type of the next object stored.
@@ -306,21 +307,21 @@ class AipsIO {
   // After all values (inclusing nested objects) of the object have
   // been read, a call to getend has to be done.
   // <group>
-  uInt getstart(const String& objectType);
-  uInt getstart(const Char* objectType);
+  unsigned int getstart(const String& objectType);
+  unsigned int getstart(const char* objectType);
   // </group>
 
   // Get a single value.
   // <group>
   AipsIO& operator>>(bool& value);
-  AipsIO& operator>>(Char& value);
-  AipsIO& operator>>(uChar& value);
+  AipsIO& operator>>(char& value);
+  AipsIO& operator>>(unsigned char& value);
   AipsIO& operator>>(short& value);
   AipsIO& operator>>(unsigned short& value);
   AipsIO& operator>>(int& value);
   AipsIO& operator>>(unsigned int& value);
-  AipsIO& operator>>(Int64& value);
-  AipsIO& operator>>(uInt64& value);
+  AipsIO& operator>>(int64_t& value);
+  AipsIO& operator>>(uint64_t& value);
   AipsIO& operator>>(float& value);
   AipsIO& operator>>(double& value);
   AipsIO& operator>>(Complex& value);
@@ -331,27 +332,27 @@ class AipsIO {
   // Read in nrval values into the user-supplied values buffer.
   // The buffer must be long enough.
   // <group>
-  AipsIO& get(uInt nrval, bool* values);
-  AipsIO& get(uInt nrval, Char* values);
-  AipsIO& get(uInt nrval, uChar* values);
-  AipsIO& get(uInt nrval, short* values);
-  AipsIO& get(uInt nrval, unsigned short* values);
-  AipsIO& get(uInt nrval, int* values);
-  AipsIO& get(uInt nrval, unsigned int* values);
-  AipsIO& get(uInt nrval, Int64* values);
-  AipsIO& get(uInt nrval, uInt64* values);
-  AipsIO& get(uInt nrval, float* values);
-  AipsIO& get(uInt nrval, double* values);
-  AipsIO& get(uInt nrval, Complex* values);
-  AipsIO& get(uInt nrval, DComplex* values);
-  AipsIO& get(uInt nrval, String* values);
+  AipsIO& get(unsigned int nrval, bool* values);
+  AipsIO& get(unsigned int nrval, char* values);
+  AipsIO& get(unsigned int nrval, unsigned char* values);
+  AipsIO& get(unsigned int nrval, short* values);
+  AipsIO& get(unsigned int nrval, unsigned short* values);
+  AipsIO& get(unsigned int nrval, int* values);
+  AipsIO& get(unsigned int nrval, unsigned int* values);
+  AipsIO& get(unsigned int nrval, int64_t* values);
+  AipsIO& get(unsigned int nrval, uint64_t* values);
+  AipsIO& get(unsigned int nrval, float* values);
+  AipsIO& get(unsigned int nrval, double* values);
+  AipsIO& get(unsigned int nrval, Complex* values);
+  AipsIO& get(unsigned int nrval, DComplex* values);
+  AipsIO& get(unsigned int nrval, String* values);
   // </group>
 
   // Get a vector as an array of values (similar to getnew).
   // It resizes the vector as needed.
   template <typename T>
   AipsIO& get(vector<T>& vec) {
-    uInt sz;
+    unsigned int sz;
     *this >> sz;
     vec.resize(sz);
     for (typename vector<T>::iterator iter = vec.begin(); iter != vec.end(); ++iter) {
@@ -369,27 +370,27 @@ class AipsIO {
   // <warn=caution> Although the buffer is allocated by this function,
   // the user has to delete it (using <src>delete [] values;</src>).
   // <group>
-  AipsIO& getnew(uInt& nrval, bool*& values);
-  AipsIO& getnew(uInt& nrval, Char*& values);
-  AipsIO& getnew(uInt& nrval, uChar*& values);
-  AipsIO& getnew(uInt& nrval, short*& values);
-  AipsIO& getnew(uInt& nrval, unsigned short*& values);
-  AipsIO& getnew(uInt& nrval, int*& values);
-  AipsIO& getnew(uInt& nrval, unsigned int*& values);
-  AipsIO& getnew(uInt& nrval, Int64*& values);
-  AipsIO& getnew(uInt& nrval, uInt64*& values);
-  AipsIO& getnew(uInt& nrval, float*& values);
-  AipsIO& getnew(uInt& nrval, double*& values);
-  AipsIO& getnew(uInt& nrval, Complex*& values);
-  AipsIO& getnew(uInt& nrval, DComplex*& values);
-  AipsIO& getnew(uInt& nrval, String*& values);
+  AipsIO& getnew(unsigned int& nrval, bool*& values);
+  AipsIO& getnew(unsigned int& nrval, char*& values);
+  AipsIO& getnew(unsigned int& nrval, unsigned char*& values);
+  AipsIO& getnew(unsigned int& nrval, short*& values);
+  AipsIO& getnew(unsigned int& nrval, unsigned short*& values);
+  AipsIO& getnew(unsigned int& nrval, int*& values);
+  AipsIO& getnew(unsigned int& nrval, unsigned int*& values);
+  AipsIO& getnew(unsigned int& nrval, int64_t*& values);
+  AipsIO& getnew(unsigned int& nrval, uint64_t*& values);
+  AipsIO& getnew(unsigned int& nrval, float*& values);
+  AipsIO& getnew(unsigned int& nrval, double*& values);
+  AipsIO& getnew(unsigned int& nrval, Complex*& values);
+  AipsIO& getnew(unsigned int& nrval, DComplex*& values);
+  AipsIO& getnew(unsigned int& nrval, String*& values);
   // </group>
 
   // End reading an object. It returns the object length (including
   // possible nested objects).
   // It checks if the entire object has been read (to keep the data
   // stream in sync). If not, an exception is thrown.
-  uInt getend();
+  unsigned int getend();
 
  private:
   // Initialize everything for the open.
@@ -417,7 +418,7 @@ class AipsIO {
   //  1 = file was opened by AipsIO
   //  0 = file not opened
   // -1 = file opened by user (=fd passed)
-  Int opened_p;
+  int opened_p;
   // File open option
   ByteIO::OpenOption fopt_p;
   // <0 = not opened for put
@@ -429,15 +430,15 @@ class AipsIO {
   // >0 = get is possible
   int swget_p;
   // Nested object level
-  uInt level_p;
+  unsigned int level_p;
   // Current size of objlen and objptr
-  uInt maxlev_p;
+  unsigned int maxlev_p;
   // Object length at each level
-  Block<uInt> objlen_p;
+  Block<unsigned int> objlen_p;
   // Object length to be read at each level
-  Block<uInt> objtln_p;
+  Block<unsigned int> objtln_p;
   // Offset of length at each level
-  Block<Int64> objptr_p;
+  Block<int64_t> objptr_p;
   // true = the object type has already been read
   bool hasCachedType_p;
   // The cached object type.
@@ -449,7 +450,7 @@ class AipsIO {
   // Is the file is seekable?
   bool seekable_p;
   // magic value to check sync.
-  static const uInt magicval_p;
+  static const unsigned int magicval_p;
 };
 
 // Return the file option.

@@ -57,8 +57,8 @@ class TableExprGroupKey {
   // Set the key's value.
   // <group>
   void set(bool v) { itsBool = v; }
-  void set(Int64 v) { itsInt64 = v; }
-  void set(Double v) { itsDouble = v; }
+  void set(int64_t v) { itsInt64 = v; }
+  void set(double v) { itsDouble = v; }
   void set(const String& v) { itsString = v; }
   // </group>
 
@@ -71,8 +71,8 @@ class TableExprGroupKey {
  private:
   TableExprNodeRep::NodeDataType itsDT;
   bool itsBool = false;
-  Int64 itsInt64 = 0;
-  Double itsDouble = 0.0;
+  int64_t itsInt64 = 0;
+  double itsDouble = 0.0;
   String itsString;
 };
 
@@ -136,11 +136,11 @@ class TableExprGroupResult {
   TableExprGroupResult(const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets,
                        const vector<std::shared_ptr<vector<TableExprId>>>& ids);
   // Get the nr of groups.
-  uInt ngroup() const { return itsFuncSets.size(); }
+  unsigned int ngroup() const { return itsFuncSets.size(); }
   // Get the set of functions (and their results) for the given group.
-  TableExprGroupFuncSet& funcSet(uInt group) const { return *itsFuncSets[group]; }
+  TableExprGroupFuncSet& funcSet(unsigned int group) const { return *itsFuncSets[group]; }
   // Get the set of TableExprIds for the given group.
-  const vector<TableExprId>& ids(uInt group) const { return *itsIds[group]; }
+  const vector<TableExprId>& ids(unsigned int group) const { return *itsIds[group]; }
 
  private:
   vector<std::shared_ptr<TableExprGroupFuncSet>> itsFuncSets;
@@ -190,9 +190,9 @@ class TableExprGroupFuncBase {
   // The default implementation returns false.
   virtual bool isLazy() const;
   // Get the function's sequence nr.
-  uInt seqnr() const { return itsSeqnr; }
+  unsigned int seqnr() const { return itsSeqnr; }
   // Set the function's sequence nr.
-  void setSeqnr(uInt seqnr) { itsSeqnr = seqnr; }
+  void setSeqnr(unsigned int seqnr) { itsSeqnr = seqnr; }
   // Get the operand's value for the given row and apply it to the aggregation.
   // This function should not be called for lazy classes.
   virtual void apply(const TableExprId& id) = 0;
@@ -208,14 +208,14 @@ class TableExprGroupFuncBase {
   // and do the aggregation.
   // <group>
   virtual bool getBool(const vector<TableExprId>& = vector<TableExprId>());
-  virtual Int64 getInt(const vector<TableExprId>& = vector<TableExprId>());
-  virtual Double getDouble(const vector<TableExprId>& = vector<TableExprId>());
+  virtual int64_t getInt(const vector<TableExprId>& = vector<TableExprId>());
+  virtual double getDouble(const vector<TableExprId>& = vector<TableExprId>());
   virtual DComplex getDComplex(const vector<TableExprId>& = vector<TableExprId>());
   virtual MVTime getDate(const vector<TableExprId>& = vector<TableExprId>());
   virtual String getString(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<bool> getArrayBool(const vector<TableExprId>& = vector<TableExprId>());
-  virtual MArray<Int64> getArrayInt(const vector<TableExprId>& = vector<TableExprId>());
-  virtual MArray<Double> getArrayDouble(const vector<TableExprId>& = vector<TableExprId>());
+  virtual MArray<int64_t> getArrayInt(const vector<TableExprId>& = vector<TableExprId>());
+  virtual MArray<double> getArrayDouble(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<DComplex> getArrayDComplex(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<MVTime> getArrayDate(const vector<TableExprId>& = vector<TableExprId>());
   virtual MArray<String> getArrayString(const vector<TableExprId>& = vector<TableExprId>());
@@ -224,7 +224,7 @@ class TableExprGroupFuncBase {
   // # Data member
   TableExprNodeRep* itsNode;     // refers the node (not owned)
   TableExprNodeRep* itsOperand;  // refers the operand (not owned)
-  uInt itsSeqnr;
+  unsigned int itsSeqnr;
 };
 
 // <summary>
@@ -261,14 +261,14 @@ class TableExprGroupFirst : public TableExprGroupFuncBase {
   virtual ~TableExprGroupFirst();
   virtual void apply(const TableExprId& id);
   virtual bool getBool(const vector<TableExprId>&);
-  virtual Int64 getInt(const vector<TableExprId>&);
-  virtual Double getDouble(const vector<TableExprId>&);
+  virtual int64_t getInt(const vector<TableExprId>&);
+  virtual double getDouble(const vector<TableExprId>&);
   virtual DComplex getDComplex(const vector<TableExprId>&);
   virtual MVTime getDate(const vector<TableExprId>&);
   virtual String getString(const vector<TableExprId>&);
   virtual MArray<bool> getArrayBool(const vector<TableExprId>&);
-  virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
-  virtual MArray<Double> getArrayDouble(const vector<TableExprId>&);
+  virtual MArray<int64_t> getArrayInt(const vector<TableExprId>&);
+  virtual MArray<double> getArrayDouble(const vector<TableExprId>&);
   virtual MArray<DComplex> getArrayDComplex(const vector<TableExprId>&);
   virtual MArray<MVTime> getArrayDate(const vector<TableExprId>&);
   virtual MArray<String> getArrayString(const vector<TableExprId>&);
@@ -333,7 +333,7 @@ class TableExprGroupRowid : public TableExprGroupFuncBase {
   virtual ~TableExprGroupRowid();
   virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
+  virtual MArray<int64_t> getArrayInt(const vector<TableExprId>&);
 };
 
 // <summary>
@@ -353,8 +353,8 @@ class TableExprGroupAggr : public TableExprGroupFuncBase {
   virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
   virtual MArray<bool> getArrayBool(const vector<TableExprId>&);
-  virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
-  virtual MArray<Double> getArrayDouble(const vector<TableExprId>&);
+  virtual MArray<int64_t> getArrayInt(const vector<TableExprId>&);
+  virtual MArray<double> getArrayDouble(const vector<TableExprId>&);
   virtual MArray<DComplex> getArrayDComplex(const vector<TableExprId>&);
   virtual MArray<MVTime> getArrayDate(const vector<TableExprId>&);
   virtual MArray<String> getArrayString(const vector<TableExprId>&);
@@ -462,14 +462,14 @@ class TableExprGroupFuncBool : public TableExprGroupFuncBase {
 // </synopsis>
 class TableExprGroupFuncInt : public TableExprGroupFuncBase {
  public:
-  explicit TableExprGroupFuncInt(TableExprNodeRep* node, Int64 initValue = 0)
+  explicit TableExprGroupFuncInt(TableExprNodeRep* node, int64_t initValue = 0)
       : TableExprGroupFuncBase(node), itsValue(initValue) {}
   virtual ~TableExprGroupFuncInt();
-  virtual Int64 getInt(const vector<TableExprId>&);
-  virtual Double getDouble(const vector<TableExprId>&);
+  virtual int64_t getInt(const vector<TableExprId>&);
+  virtual double getDouble(const vector<TableExprId>&);
 
  protected:
-  Int64 itsValue;
+  int64_t itsValue;
 };
 
 // <summary>
@@ -487,13 +487,13 @@ class TableExprGroupFuncInt : public TableExprGroupFuncBase {
 // </synopsis>
 class TableExprGroupFuncDouble : public TableExprGroupFuncBase {
  public:
-  explicit TableExprGroupFuncDouble(TableExprNodeRep* node, Double initValue = 0)
+  explicit TableExprGroupFuncDouble(TableExprNodeRep* node, double initValue = 0)
       : TableExprGroupFuncBase(node), itsValue(initValue) {}
   virtual ~TableExprGroupFuncDouble();
-  virtual Double getDouble(const vector<TableExprId>&);
+  virtual double getDouble(const vector<TableExprId>&);
 
  protected:
-  Double itsValue;
+  double itsValue;
 };
 
 // <summary>
@@ -612,13 +612,13 @@ class TableExprGroupFuncArrayInt : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupFuncArrayInt(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
   virtual ~TableExprGroupFuncArrayInt();
-  virtual MArray<Int64> getArrayInt(const vector<TableExprId>&);
+  virtual MArray<int64_t> getArrayInt(const vector<TableExprId>&);
 
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
   bool checkShape(const MArrayBase& arr, const String& func);
-  MArray<Int64> itsValue;
+  MArray<int64_t> itsValue;
 };
 
 // <summary>
@@ -638,13 +638,13 @@ class TableExprGroupFuncArrayDouble : public TableExprGroupFuncBase {
  public:
   explicit TableExprGroupFuncArrayDouble(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
   virtual ~TableExprGroupFuncArrayDouble();
-  virtual MArray<Double> getArrayDouble(const vector<TableExprId>&);
+  virtual MArray<double> getArrayDouble(const vector<TableExprId>&);
 
  protected:
   // If not empty, check if the shape matches that of <src>itsValue</src>.
   // If <src>itsValue</src> is still empty, it is sized.
   bool checkShape(const MArrayBase& arr, const String& func);
-  MArray<Double> itsValue;
+  MArray<double> itsValue;
 };
 
 // <summary>

@@ -83,9 +83,9 @@ void a() {
   // Define a group name Engine for the columns intended to be virtual.
   TableDesc td("tTableDesc", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
-  td.addColumn(ScalarColumnDesc<Int>("DATA1"));
+  td.addColumn(ScalarColumnDesc<int>("DATA1"));
   td.addColumn(ScalarColumnDesc<double>("DOUB1", "", "", "Engine"));
-  td.addColumn(ArrayColumnDesc<Int>("DATA2"));
+  td.addColumn(ArrayColumnDesc<int>("DATA2"));
   td.addColumn(ArrayColumnDesc<double>("DOUB2", "", "", "Engine"));
 
   // Now create a new table from the description.
@@ -100,11 +100,11 @@ void a() {
   ScalarColumn<double> doub1(tab, "DOUB1");
   ArrayColumn<double> doub2(tab, "DOUB2");
   Cube<double> arrd(IPosition(3, 2, 3, 4));
-  uInt i;
+  unsigned int i;
   i = 0;
-  for (uInt i2 = 0; i2 < 4; i2++)
-    for (uInt i1 = 0; i1 < 3; i1++)
-      for (uInt i0 = 0; i0 < 2; i0++) {
+  for (unsigned int i2 = 0; i2 < 4; i2++)
+    for (unsigned int i1 = 0; i1 < 3; i1++)
+      for (unsigned int i0 = 0; i0 < 2; i0++) {
         arrd(i0, i1, i2) = i;
         i += 3;
       }
@@ -120,13 +120,13 @@ void b() {
   Table tab("tVirtColEng_tmp.data");
   ScalarColumn<double> doub1(tab, "DOUB1");
   ArrayColumn<double> doub2(tab, "DOUB2");
-  ScalarColumn<Int> data1(tab, "DATA1");
-  ArrayColumn<Int> data2(tab, "DATA2");
-  uInt i;
+  ScalarColumn<int> data1(tab, "DATA1");
+  ArrayColumn<int> data2(tab, "DATA2");
+  unsigned int i;
   double dval;
-  Int ival;
-  Cube<Int> arri(IPosition(3, 2, 3, 4));
-  Cube<Int> arrvali(IPosition(3, 2, 3, 4));
+  int ival;
+  Cube<int> arri(IPosition(3, 2, 3, 4));
+  Cube<int> arrvali(IPosition(3, 2, 3, 4));
   Cube<double> arrd(IPosition(3, 2, 3, 4));
   Cube<double> arrval(IPosition(3, 2, 3, 4));
   Cube<double> arrvalslice(arrval(Slice(0, 1), Slice(0, 1, 2), Slice(0, 2, 2)));
@@ -134,9 +134,9 @@ void b() {
   Slicer nslice(tmp, tmp, tmp, Slicer::endIsLength);
   Slicer nslice2(Slice(0, 1), Slice(0, 1, 2), Slice(0, 2, 2), Slicer::endIsLength);
   i = 0;
-  for (uInt i2 = 0; i2 < 4; i2++)
-    for (uInt i1 = 0; i1 < 3; i1++)
-      for (uInt i0 = 0; i0 < 2; i0++) {
+  for (unsigned int i2 = 0; i2 < 4; i2++)
+    for (unsigned int i1 = 0; i1 < 3; i1++)
+      for (unsigned int i0 = 0; i0 < 2; i0++) {
         arri(i0, i1, i2) = i;
         arrd(i0, i1, i2) = 3 * i;
         i++;
@@ -145,7 +145,7 @@ void b() {
     cout << "get scalar row " << i << endl;
     ival = data1(i);
     dval = doub1(i);
-    if (ival != Int(i) || dval != 2 * i) {
+    if (ival != int(i) || dval != 2 * i) {
       cout << "error in row " << i << ": " << ival << " " << dval << endl;
     }
     data2.get(i, arrvali);
@@ -165,7 +165,7 @@ void b() {
       cout << "error in DOUB2 (partial slice) in row " << i << endl;
     }
     arrd += (double)(3 * arrd.nelements());
-    arri += (Int)(arrd.nelements());
+    arri += (int)(arrd.nelements());
   }
   Vector<double> vec = doub1.getColumn();
   cout << tab.nrow() << " " << vec.nelements() << endl;

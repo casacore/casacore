@@ -112,16 +112,16 @@ void SDMainHandler::resetRow(const Record &row) {
   initRow(dummyHandledCols, row);
 }
 
-void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, Int feedId,
-                         Int dataDescId, Int fieldId, const MVTime &exposure, Int observationId,
-                         const Matrix<Float> &floatData) {
+void SDMainHandler::fill(const Record &row, const MEpoch &time, int antennaId, int feedId,
+                         int dataDescId, int fieldId, const MVTime &exposure, int observationId,
+                         const Matrix<float> &floatData) {
   // don't bother unless there is something there
   if (ms_p) {
     // fill it
-    Int rownr = ms_p->nrow();
+    int rownr = ms_p->nrow();
     ms_p->addRow();
 
-    Int ncorr = floatData.nrow();
+    int ncorr = floatData.nrow();
 
     msCols_p->timeMeas().put(rownr, time);
     msCols_p->antenna1().put(rownr, antennaId);
@@ -131,14 +131,14 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
     msCols_p->dataDescId().put(rownr, dataDescId);
     msCols_p->processorId().put(rownr, -1);
     msCols_p->fieldId().put(rownr, fieldId);
-    Double texp = exposure.get("s").getValue();
+    double texp = exposure.get("s").getValue();
     if (intervalId_p >= 0) {
       msCols_p->interval().put(rownr, row.asDouble(intervalId_p));
     } else {
       msCols_p->interval().put(rownr, texp);
     }
     msCols_p->exposure().put(rownr, texp);
-    Int scanNumber = -1;
+    int scanNumber = -1;
     if (scanNumberId_p >= 0) {
       switch (scanNumberType_p) {
         case TpInt:
@@ -147,7 +147,7 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
           break;
         case TpDouble:
         case TpFloat:
-          scanNumber = Int(row.asDouble(scanNumberId_p) + 0.5);
+          scanNumber = int(row.asDouble(scanNumberId_p) + 0.5);
           break;
         default:
           // a warning should be issued when the type is initially determined
@@ -163,18 +163,18 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
     }
     msCols_p->observationId().put(rownr, observationId);
     msCols_p->stateId().put(rownr, -1);
-    msCols_p->uvw().put(rownr, Vector<Double>(3, 0.0));
+    msCols_p->uvw().put(rownr, Vector<double>(3, 0.0));
     msCols_p->floatData().put(rownr, floatData);
     if (sigmaId_p >= 0) {
       msCols_p->sigma().put(rownr, row.asArrayFloat(sigmaId_p));
     } else {
       // should this be TSYS and exposure based?
-      msCols_p->sigma().put(rownr, Vector<Float>(ncorr, 1.0));
+      msCols_p->sigma().put(rownr, Vector<float>(ncorr, 1.0));
     }
     if (weightId_p >= 0) {
       msCols_p->weight().put(rownr, row.asArrayFloat(weightId_p));
     } else {
-      msCols_p->weight().put(rownr, Vector<Float>(ncorr, 1.0));
+      msCols_p->weight().put(rownr, Vector<float>(ncorr, 1.0));
     }
     if (flagId_p >= 0) {
       msCols_p->flag().put(rownr, row.asArrayBool(flagId_p));

@@ -39,8 +39,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 CompressComplex::CompressComplex(const String& virtualColumnName, const String& storedColumnName,
-                                 Float scale, Float offset)
-    : BaseMappedArrayEngine<Complex, Int>(virtualColumnName, storedColumnName),
+                                 float scale, float offset)
+    : BaseMappedArrayEngine<Complex, int>(virtualColumnName, storedColumnName),
       scale_p(scale),
       offset_p(offset),
       fixed_p(true),
@@ -51,7 +51,7 @@ CompressComplex::CompressComplex(const String& virtualColumnName, const String& 
 CompressComplex::CompressComplex(const String& virtualColumnName, const String& storedColumnName,
                                  const String& scaleColumnName, const String& offsetColumnName,
                                  bool autoScale)
-    : BaseMappedArrayEngine<Complex, Int>(virtualColumnName, storedColumnName),
+    : BaseMappedArrayEngine<Complex, int>(virtualColumnName, storedColumnName),
       scaleName_p(scaleColumnName),
       offsetName_p(offsetColumnName),
       scale_p(0.0),
@@ -62,7 +62,7 @@ CompressComplex::CompressComplex(const String& virtualColumnName, const String& 
       offsetColumn_p(0) {}
 
 CompressComplex::CompressComplex(const Record& spec)
-    : BaseMappedArrayEngine<Complex, Int>(),
+    : BaseMappedArrayEngine<Complex, int>(),
       scale_p(1.0),
       offset_p(0.0),
       fixed_p(true),
@@ -86,7 +86,7 @@ CompressComplex::CompressComplex(const Record& spec)
 }
 
 CompressComplex::CompressComplex(const CompressComplex& that)
-    : BaseMappedArrayEngine<Complex, Int>(that),
+    : BaseMappedArrayEngine<Complex, int>(that),
       scaleName_p(that.scaleName_p),
       offsetName_p(that.offsetName_p),
       scale_p(that.scale_p),
@@ -133,7 +133,7 @@ DataManager* CompressComplex::makeObject(const String&, const Record& spec) {
 void CompressComplex::registerClass() { DataManager::registerCtor(className(), makeObject); }
 
 void CompressComplex::create64(rownr_t initialNrrow) {
-  BaseMappedArrayEngine<Complex, Int>::create64(initialNrrow);
+  BaseMappedArrayEngine<Complex, int>::create64(initialNrrow);
   // Store the various parameters as keywords in this column.
   TableColumn thisCol(table(), virtualName());
   thisCol.rwKeywordSet().define("_CompressComplex_Scale", scale_p);
@@ -146,7 +146,7 @@ void CompressComplex::create64(rownr_t initialNrrow) {
 }
 
 void CompressComplex::prepare() {
-  BaseMappedArrayEngine<Complex, Int>::prepare1();
+  BaseMappedArrayEngine<Complex, int>::prepare1();
   TableColumn thisCol(table(), virtualName());
   thisCol.keywordSet().get("_CompressComplex_Scale", scale_p);
   thisCol.keywordSet().get("_CompressComplex_Offset", offset_p);
@@ -156,17 +156,17 @@ void CompressComplex::prepare() {
   thisCol.keywordSet().get("_CompressComplex_AutoScale", autoScale_p);
   // # Allocate column objects to get scale and offset.
   if (!fixed_p) {
-    scaleColumn_p = new ScalarColumn<Float>(table(), scaleName_p);
-    offsetColumn_p = new ScalarColumn<Float>(table(), offsetName_p);
+    scaleColumn_p = new ScalarColumn<float>(table(), scaleName_p);
+    offsetColumn_p = new ScalarColumn<float>(table(), offsetName_p);
   }
   // Do this at the end, because it might call addRow.
-  BaseMappedArrayEngine<Complex, Int>::prepare2();
+  BaseMappedArrayEngine<Complex, int>::prepare2();
 }
 
 void CompressComplex::reopenRW() {}
 
 void CompressComplex::addRowInit(rownr_t startRow, rownr_t nrrow) {
-  BaseMappedArrayEngine<Complex, Int>::addRowInit(startRow, nrrow);
+  BaseMappedArrayEngine<Complex, int>::addRowInit(startRow, nrrow);
   if (autoScale_p) {
     for (rownr_t i = 0; i < nrrow; i++) {
       scaleColumn_p->put(startRow++, 0.);
@@ -175,16 +175,16 @@ void CompressComplex::addRowInit(rownr_t startRow, rownr_t nrrow) {
 }
 
 // Find minimum and maximum.
-void CompressComplex::findMinMax(Float& minVal, Float& maxVal, const Array<Complex>& array) const {
+void CompressComplex::findMinMax(float& minVal, float& maxVal, const Array<Complex>& array) const {
   setNaN(minVal);
   setNaN(maxVal);
   bool deleteIt;
   const Complex* data = array.getStorage(deleteIt);
-  const Int64 nr = array.nelements();
+  const int64_t nr = array.nelements();
   bool firstTime = true;
-  for (Int64 i = 0; i < nr; i++) {
+  for (int64_t i = 0; i < nr; i++) {
     if (isFinite(data[i].real()) && isFinite(data[i].imag())) {
-      Float tmp = data[i].real();
+      float tmp = data[i].real();
       if (firstTime) {
         minVal = tmp;
         maxVal = tmp;
@@ -207,8 +207,8 @@ void CompressComplex::findMinMax(Float& minVal, Float& maxVal, const Array<Compl
 }
 
 // Find minimum and maximum.
-void CompressComplex::makeScaleOffset(Float& scale, Float& offset, Float minVal,
-                                      Float maxVal) const {
+void CompressComplex::makeScaleOffset(float& scale, float& offset, float minVal,
+                                      float maxVal) const {
   if (isNaN(minVal)) {
     scale = 0;
     offset = 0;
@@ -223,18 +223,18 @@ void CompressComplex::makeScaleOffset(Float& scale, Float& offset, Float minVal,
 }
 
 // Scale/offset an array for get.
-void CompressComplex::scaleOnGet(Float scale, Float offset, Array<Complex>& array,
-                                 const Array<Int>& target) {
+void CompressComplex::scaleOnGet(float scale, float offset, Array<Complex>& array,
+                                 const Array<int>& target) {
   bool deleteIn, deleteOut;
   Complex* out = array.getStorage(deleteOut);
-  const Int* in = target.getStorage(deleteIn);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
-    Int r = in[i] / 65536;
+  const int* in = target.getStorage(deleteIn);
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
+    int r = in[i] / 65536;
     if (r == -32768) {
       setNaN(out[i]);
     } else {
-      Int im = in[i] - r * 65536;
+      int im = in[i] - r * 65536;
       if (im < -32768) {
         r -= 1;
         im += 65536;
@@ -250,18 +250,18 @@ void CompressComplex::scaleOnGet(Float scale, Float offset, Array<Complex>& arra
 }
 
 // Scale/offset an array for put.
-void CompressComplex::scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
-                                 Array<Int>& target) {
+void CompressComplex::scaleOnPut(float scale, float offset, const Array<Complex>& array,
+                                 Array<int>& target) {
   bool deleteIn, deleteOut;
   const Complex* in = array.getStorage(deleteIn);
-  Int* out = target.getStorage(deleteOut);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  int* out = target.getStorage(deleteOut);
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     if (!isFinite(in[i].real()) || !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else {
-      Short s;
-      Float tmp = (in[i].real() - offset) / scale;
+      short s;
+      float tmp = (in[i].real() - offset) / scale;
       if (tmp < 0) {
         float f = ceil(tmp - 0.5);
         if (f < -32767) {
@@ -277,7 +277,7 @@ void CompressComplex::scaleOnPut(Float scale, Float offset, const Array<Complex>
           s = short(f);
         }
       }
-      Int r = int(s) * 65536;
+      int r = int(s) * 65536;
       tmp = (in[i].imag() - offset) / scale;
       if (tmp < 0) {
         float f = ceil(tmp - 0.5);
@@ -301,12 +301,12 @@ void CompressComplex::scaleOnPut(Float scale, Float offset, const Array<Complex>
   target.putStorage(out, deleteOut);
 }
 
-void CompressComplex::scaleColumnOnGet(Array<Complex>& array, const Array<Int>& target) {
+void CompressComplex::scaleColumnOnGet(Array<Complex>& array, const Array<int>& target) {
   if (fixed_p) {
     scaleOnGet(scale_p, offset_p, array, target);
   } else {
     ArrayIterator<Complex> arrayIter(array, array.ndim() - 1);
-    ReadOnlyArrayIterator<Int> targetIter(target, target.ndim() - 1);
+    ReadOnlyArrayIterator<int> targetIter(target, target.ndim() - 1);
     rownr_t rownr = 0;
     while (!arrayIter.pastEnd()) {
       scaleOnGet(getScale(rownr), getOffset(rownr), arrayIter.array(), targetIter.array());
@@ -317,12 +317,12 @@ void CompressComplex::scaleColumnOnGet(Array<Complex>& array, const Array<Int>& 
   }
 }
 
-void CompressComplex::scaleColumnOnPut(const Array<Complex>& array, Array<Int>& target) {
+void CompressComplex::scaleColumnOnPut(const Array<Complex>& array, Array<int>& target) {
   if (fixed_p) {
     scaleOnPut(scale_p, offset_p, array, target);
   } else {
     ReadOnlyArrayIterator<Complex> arrayIter(array, array.ndim() - 1);
-    ArrayIterator<Int> targetIter(target, target.ndim() - 1);
+    ArrayIterator<int> targetIter(target, target.ndim() - 1);
     rownr_t rownr = 0;
     while (!arrayIter.pastEnd()) {
       scaleOnPut(getScale(rownr), getOffset(rownr), arrayIter.array(), targetIter.array());
@@ -348,9 +348,9 @@ void CompressComplex::putArray(rownr_t rownr, const Array<Complex>& array) {
   if (!autoScale_p) {
     scaleOnPut(getScale(rownr), getOffset(rownr), array, buffer_p);
   } else {
-    Float minVal, maxVal;
+    float minVal, maxVal;
     findMinMax(minVal, maxVal, array);
-    Float scale, offset;
+    float scale, offset;
     makeScaleOffset(scale, offset, minVal, maxVal);
     scaleColumn_p->put(rownr, scale);
     offsetColumn_p->put(rownr, offset);
@@ -368,7 +368,7 @@ void CompressComplex::getSlice(rownr_t rownr, const Slicer& slicer, Array<Comple
 }
 
 void CompressComplex::putPart(rownr_t rownr, const Slicer& slicer, const Array<Complex>& array,
-                              Float scale, Float offset) {
+                              float scale, float offset) {
   if (!array.shape().isEqual(buffer_p.shape())) {
     buffer_p.resize(array.shape());
   }
@@ -377,10 +377,10 @@ void CompressComplex::putPart(rownr_t rownr, const Slicer& slicer, const Array<C
 }
 
 void CompressComplex::putFullPart(rownr_t rownr, const Slicer& slicer, Array<Complex>& fullArray,
-                                  const Array<Complex>& partArray, Float minVal, Float maxVal) {
+                                  const Array<Complex>& partArray, float minVal, float maxVal) {
   Array<Complex> subarr = fullArray(slicer.start(), slicer.end(), slicer.stride());
   subarr = partArray;
-  Float scale, offset;
+  float scale, offset;
   makeScaleOffset(scale, offset, minVal, maxVal);
   scaleColumn_p->put(rownr, scale);
   offsetColumn_p->put(rownr, offset);
@@ -399,15 +399,15 @@ void CompressComplex::putSlice(rownr_t rownr, const Slicer& slicer, const Array<
   } else {
     // Get current scale and offset.
     // If no autoscaling, write the part immediately.
-    Float scale = getScale(rownr);
-    Float offset = getOffset(rownr);
+    float scale = getScale(rownr);
+    float offset = getOffset(rownr);
     if (!autoScale_p) {
       putPart(rownr, slicer, array, scale, offset);
     } else {
       // Determine min/max of new slice.
       // scale==0 means that no array data was written yet.
       // In that case initialize array to NaN if the slice has valid data.
-      Float minValArr, maxValArr;
+      float minValArr, maxValArr;
       findMinMax(minValArr, maxValArr, array);
       if (scale == 0) {
         if (!isNaN(minValArr)) {
@@ -422,8 +422,8 @@ void CompressComplex::putSlice(rownr_t rownr, const Slicer& slicer, const Array<
         // Writing the part will do if no valid data in it or if
         // its min/max is within the current min/max.
         // Otherwise we have to rescale using new min/max.
-        Float maxValRow = offset + scale * 65534 / 2;
-        Float minValRow = offset - scale * 65534 / 2;
+        float maxValRow = offset + scale * 65534 / 2;
+        float minValRow = offset - scale * 65534 / 2;
         if (isNaN(minValArr) || (minValArr >= minValRow && maxValArr <= maxValRow)) {
           putPart(rownr, slicer, array, scale, offset);
         } else {
@@ -438,12 +438,12 @@ void CompressComplex::putSlice(rownr_t rownr, const Slicer& slicer, const Array<
 }
 
 void CompressComplex::getArrayColumn(Array<Complex>& array) {
-  Array<Int> target(array.shape());
+  Array<int> target(array.shape());
   column().getColumn(target);
   scaleColumnOnGet(array, target);
 }
 void CompressComplex::putArrayColumn(const Array<Complex>& array) {
-  Array<Int> target(array.shape());
+  Array<int> target(array.shape());
   if (!autoScale_p) {
     scaleColumnOnPut(array, target);
     column().putColumn(target);
@@ -489,13 +489,13 @@ void CompressComplex::putArrayColumnCells(const RefRows& rownrs, const Array<Com
 }
 
 void CompressComplex::getColumnSlice(const Slicer& slicer, Array<Complex>& array) {
-  Array<Int> target(array.shape());
+  Array<int> target(array.shape());
   column().getColumn(slicer, target);
   scaleColumnOnGet(array, target);
 }
 
 void CompressComplex::putColumnSlice(const Slicer& slicer, const Array<Complex>& array) {
-  Array<Int> target(array.shape());
+  Array<int> target(array.shape());
   if (!autoScale_p) {
     scaleColumnOnPut(array, target);
     column().putColumn(slicer, target);
@@ -543,7 +543,7 @@ void CompressComplex::putColumnSliceCells(const RefRows& rownrs, const Slicer& s
 }
 
 CompressComplexSD::CompressComplexSD(const String& virtualColumnName,
-                                     const String& storedColumnName, Float scale, Float offset)
+                                     const String& storedColumnName, float scale, float offset)
     : CompressComplex(virtualColumnName, storedColumnName, scale, offset) {}
 
 CompressComplexSD::CompressComplexSD(const String& virtualColumnName,
@@ -595,17 +595,17 @@ void CompressComplexSD::create64(rownr_t initialNrrow) {
 }
 
 // Find minimum and maximum.
-void CompressComplexSD::findMinMax(Float& minVal, Float& maxVal,
+void CompressComplexSD::findMinMax(float& minVal, float& maxVal,
                                    const Array<Complex>& array) const {
   setNaN(minVal);
   setNaN(maxVal);
   bool deleteIt;
   const Complex* data = array.getStorage(deleteIt);
-  const Int64 nr = array.nelements();
+  const int64_t nr = array.nelements();
   bool firstTime = true;
-  for (Int64 i = 0; i < nr; i++) {
+  for (int64_t i = 0; i < nr; i++) {
     if (isFinite(data[i].real()) && isFinite(data[i].imag())) {
-      Float tmp = data[i].real();
+      float tmp = data[i].real();
       if (firstTime) {
         minVal = tmp;
         maxVal = tmp;
@@ -630,25 +630,25 @@ void CompressComplexSD::findMinMax(Float& minVal, Float& maxVal,
 }
 
 // Scale/offset an array for get.
-void CompressComplexSD::scaleOnGet(Float scale, Float offset, Array<Complex>& array,
-                                   const Array<Int>& target) {
-  Float fullScale = scale / 32768;
-  Float imagScale = scale * 2;
+void CompressComplexSD::scaleOnGet(float scale, float offset, Array<Complex>& array,
+                                   const Array<int>& target) {
+  float fullScale = scale / 32768;
+  float imagScale = scale * 2;
   bool deleteIn, deleteOut;
   Complex* out = array.getStorage(deleteOut);
-  const Int* in = target.getStorage(deleteIn);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
-    Int inval = in[i];
+  const int* in = target.getStorage(deleteIn);
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
+    int inval = in[i];
     if (inval % 2 == 0) {
       inval >>= 1;
       out[i] = Complex(inval * fullScale + offset, 0);
     } else {
-      Int r = inval / 65536;
+      int r = inval / 65536;
       if (r == -32768) {
         setNaN(out[i]);
       } else {
-        Int im = inval - r * 65536;
+        int im = inval - r * 65536;
         if (im < -32768) {
           r -= 1;
           im += 65536;
@@ -666,34 +666,34 @@ void CompressComplexSD::scaleOnGet(Float scale, Float offset, Array<Complex>& ar
 }
 
 // Scale/offset an array for put.
-void CompressComplexSD::scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
-                                   Array<Int>& target) {
-  Float fullScale = scale / 32768;
-  Float imagScale = scale * 2;
+void CompressComplexSD::scaleOnPut(float scale, float offset, const Array<Complex>& array,
+                                   Array<int>& target) {
+  float fullScale = scale / 32768;
+  float imagScale = scale * 2;
   bool deleteIn, deleteOut;
   const Complex* in = array.getStorage(deleteIn);
-  Int* out = target.getStorage(deleteOut);
-  const Int64 nr = array.nelements();
-  for (Int64 i = 0; i < nr; i++) {
+  int* out = target.getStorage(deleteOut);
+  const int64_t nr = array.nelements();
+  for (int64_t i = 0; i < nr; i++) {
     if (!isFinite(in[i].real()) || !isFinite(in[i].imag())) {
       out[i] = -32768 * 65536;
     } else if (in[i].imag() == 0) {
       // Imaginary part =0, so scale real part with 15 bits extra
-      Int s;
-      Float tmp = (in[i].real() - offset) / fullScale;
+      int s;
+      float tmp = (in[i].real() - offset) / fullScale;
       if (tmp < 0) {
         double f = ceil(tmp - 0.5);
-        s = static_cast<Int>(std::max(f, -32768. * 32768));
+        s = static_cast<int>(std::max(f, -32768. * 32768));
       } else {
         double f = floor(tmp + 0.5);
-        s = static_cast<Int>(std::min(f, 32768. * 32768 - 1));
+        s = static_cast<int>(std::min(f, 32768. * 32768 - 1));
       }
       // Shift 1 bit to left and make last bit 0 indicating that imag==0.
       out[i] = s << 1;
     } else {
       // There is an imaginary part, so scale both parts.
-      Short s;
-      Float tmp = (in[i].real() - offset) / scale;
+      short s;
+      float tmp = (in[i].real() - offset) / scale;
       if (tmp < 0) {
         float f = ceil(tmp - 0.5);
         if (f < -32767) {
@@ -709,7 +709,7 @@ void CompressComplexSD::scaleOnPut(Float scale, Float offset, const Array<Comple
           s = short(f);
         }
       }
-      Int r = int(s) * 65536;
+      int r = int(s) * 65536;
       // Scale imaginary with 1 bit less.
       tmp = (in[i].imag() - offset) / imagScale;
       if (tmp < 0) {

@@ -45,7 +45,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 /* static const char*           strpMSPolnGram = 0; */
-static Int posMSPolnGram = 0;
+static int posMSPolnGram = 0;
 
 // MSPolnGramwrap out of namespace
 //------------------------------------------------------------------------------
@@ -57,10 +57,10 @@ static Int posMSPolnGram = 0;
 //------------------------------------------------------------------------------
 //
 int msPolnGramParseCommand(const MeasurementSet* ms, const String& command, TableExprNode& node,
-                           Vector<Int>& selectedDDIDs, std::map<Int, Vector<Int>>& selectedPolnMap,
-                           std::map<Int, Vector<Vector<Int>>>& selectedSetupMap) {
+                           Vector<int>& selectedDDIDs, std::map<int, Vector<int>>& selectedPolnMap,
+                           std::map<int, Vector<Vector<int>>>& selectedSetupMap) {
   try {
-    Int ret;
+    int ret;
     MSPolnParse parser(ms);
     parser.reset();
     // parse command string

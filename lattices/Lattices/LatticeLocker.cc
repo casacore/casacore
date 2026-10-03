@@ -28,7 +28,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LatticeLocker::LatticeLocker(LatticeBase& lattice, FileLocker::LockType type, uInt nattempts)
+LatticeLocker::LatticeLocker(LatticeBase& lattice, FileLocker::LockType type,
+                             unsigned int nattempts)
     : itsLatticePtr(&lattice), itsOwnLock(false), itsHadReadLock(false) {
   if (itsLatticePtr->hasLock(type)) {
     return;

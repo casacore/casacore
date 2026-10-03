@@ -150,7 +150,7 @@ void MSTableIndex::attach(const Table &subTable, const Vector<String> &indexCols
   hasTime_p = tab_p.tableDesc().isColumn("TIME");
   // is there an INTERVAL column, there must also be a TIME
   hasInterval_p = hasTime_p && tab_p.tableDesc().isColumn("INTERVAL");
-  uInt nkeys = indexCols.nelements();
+  unsigned int nkeys = indexCols.nelements();
 
   if (hasTime_p) {
     timeColumn_p.attach(tab_p, "TIME");
@@ -172,7 +172,7 @@ void MSTableIndex::attach(const Table &subTable, const Vector<String> &indexCols
     AlwaysAssert(index_p, AipsError);
 
     RecordDesc keyDesc;
-    for (uInt i = 0; i < nkeys; i++) keyDesc.addField(indexCols(i), TpInt);
+    for (unsigned int i = 0; i < nkeys; i++) keyDesc.addField(indexCols(i), TpInt);
     key_p = new Record(keyDesc);
     AlwaysAssert(key_p, AipsError);
 
@@ -196,7 +196,7 @@ RowNumbers MSTableIndex::getRowNumbers() {
   return lastSearch_p;
 }
 
-Int64 MSTableIndex::getNearestRow(bool &found) {
+int64_t MSTableIndex::getNearestRow(bool &found) {
   // getInternals ensures that lastSearch_p is the match to the integer keys
   getInternals();
   if (!nearestReady_p) {
@@ -237,8 +237,8 @@ void MSTableIndex::nearestTime() {
   // this is only called when we know it is a strict time search and there
   // are elements in lastSearch_p, etc, etc.
   // this should probably be done with a call to binSearch
-  Int thisElem = 0;
-  Int nElem = lastSearch_p.nelements();
+  int thisElem = 0;
+  int nElem = lastSearch_p.nelements();
   bool deleteIt;
   const rownr_t *rowPtr = lastSearch_p.getStorage(deleteIt);
   while (!nearestFound_p && thisElem < nElem) {
@@ -254,8 +254,8 @@ void MSTableIndex::nearestTime() {
     if (thisElem <= 0) {
       thisElem = 0;
     } else {
-      Double lowDiff = time_p - timeVals_p[rowPtr[thisElem - 1]];
-      Double highDiff = timeVals_p[rowPtr[thisElem]] - time_p;
+      double lowDiff = time_p - timeVals_p[rowPtr[thisElem - 1]];
+      double highDiff = timeVals_p[rowPtr[thisElem]] - time_p;
       thisElem = lowDiff > highDiff ? thisElem : thisElem - 1;
     }
   } else if (nElem > 0) {
@@ -279,10 +279,10 @@ void MSTableIndex::nearestTime() {
     }  // we have the correct one
   } else {
     // final check to make sure the intervals satisfy the criteria
-    Double thisLowTime, thisHighTime;
-    Double searchLowTime, searchHighTime;
+    double thisLowTime, thisHighTime;
+    double searchLowTime, searchHighTime;
     if (hasInterval_p) {
-      Double width = intervalVals_p[lastNearest_p];
+      double width = intervalVals_p[lastNearest_p];
       thisLowTime = timeVals_p[lastNearest_p] - width / 2.0;
       thisHighTime = thisLowTime + width;
     } else {
@@ -306,7 +306,7 @@ void MSTableIndex::nearestTime() {
           lastNearest_p++;
         if (lastNearest_p >= 0 && lastNearest_p < nElem) {
           // double check
-          Double width = intervalVals_p[lastNearest_p];
+          double width = intervalVals_p[lastNearest_p];
           thisLowTime = timeVals_p[lastNearest_p] - width / 2.0;
           thisHighTime = thisLowTime + width;
           searchLowTime = time_p - interval_p / 2.0;
@@ -332,12 +332,12 @@ void MSTableIndex::nearestTime() {
 
 void MSTableIndex::makeKeys() {
   // resize as appropriate
-  uInt nKeys = key_p->nfields();
+  unsigned int nKeys = key_p->nfields();
   intKeys_p.resize(nKeys);
   lastKeys_p.resize(nKeys);
   indexKeys_p.resize(index_p->accessKey().nfields());
 
-  for (uInt i = 0; i < nKeys; i++) {
+  for (unsigned int i = 0; i < nKeys; i++) {
     intKeys_p[i].attachToRecord(*key_p, i);
     indexKeys_p[i].attachToRecord(index_p->accessKey(), i);
   }
@@ -372,10 +372,10 @@ void MSTableIndex::getInternals() {
   if (!isNull() && (hasChanged_p || tab_p.nrow() != nrows_p || keysChanged())) {
     nrows_p = tab_p.nrow();
     if (index_p) {
-      uInt nkeys = intKeys_p.nelements();
+      unsigned int nkeys = intKeys_p.nelements();
       lastKeys_p.resize(nkeys);
-      for (uInt i = 0; i < nkeys; i++) {
-        Int thisKey = *(intKeys_p[i]);
+      for (unsigned int i = 0; i < nkeys; i++) {
+        int thisKey = *(intKeys_p[i]);
         *(indexKeys_p[i]) = thisKey;
         lastKeys_p(i) = thisKey;
       }
@@ -395,7 +395,7 @@ void MSTableIndex::getInternals() {
 
 bool MSTableIndex::keysChanged() {
   bool result = false;
-  for (uInt i = 0; i < intKeys_p.nelements(); i++) {
+  for (unsigned int i = 0; i < intKeys_p.nelements(); i++) {
     if (*(intKeys_p[i]) != lastKeys_p(i)) {
       result = true;
       break;

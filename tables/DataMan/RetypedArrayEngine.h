@@ -534,7 +534,7 @@ class RetypedArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType>
   void setShape(rownr_t rownr, const IPosition& shape);
 
   // Get the dimensionality of the array in the given row.
-  uInt ndim(rownr_t rownr);
+  unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // This is done by stripping the first dimension(s) from the shape

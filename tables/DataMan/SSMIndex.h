@@ -86,7 +86,7 @@ class SSMIndex {
   // Create the object with the given number of rows per bucket.
   // Note that the default is needed to create the object for existing
   // tables.
-  explicit SSMIndex(SSMBase* aPtrSSM, uInt rowsPerBucket = 0);
+  explicit SSMIndex(SSMBase* aPtrSSM, unsigned int rowsPerBucket = 0);
 
   ~SSMIndex();
 
@@ -100,13 +100,13 @@ class SSMIndex {
   void recreate();
 
   // Return all the bucketnrs used in this index.
-  Vector<uInt> getBuckets() const;
+  Vector<unsigned int> getBuckets() const;
 
   // Return the nr of buckets used.
-  uInt getNrBuckets() const;
+  unsigned int getNrBuckets() const;
 
   // Set nr of columns use this index.
-  void setNrColumns(Int aNrColumns, uInt aSizeUsed);
+  void setNrColumns(int aNrColumns, unsigned int aSizeUsed);
 
   // Add some rows.
   void addRow(rownr_t aNrRows);
@@ -117,39 +117,39 @@ class SSMIndex {
   // A column is removed.
   // Set the free space at offset for a field with the given nr of bits.
   // It returns the nr of columns still used in this index.
-  Int removeColumn(Int anOffset, uInt nbits);
+  int removeColumn(int anOffset, unsigned int nbits);
 
   // Try to find free space for a field with a given length (best fit).
   // -1 is returned if no fit is found.
   // Otherwise it returns the nr of bytes left unused.
-  Int getFree(Int& anOffset, uInt nbits) const;
+  int getFree(int& anOffset, unsigned int nbits) const;
 
   // reuse the space at offset for a field with the given nr of bits.
   // This is used when column has been added to this bucket.
-  void addColumn(Int anOffset, uInt nbits);
+  void addColumn(int anOffset, unsigned int nbits);
 
   // Delete the given row.
   // It returns the bucket nr if it gets empty, otherwise -1.
-  Int deleteRow(rownr_t aRowNumber);
+  int deleteRow(rownr_t aRowNumber);
 
   // Get the number of rows that fits in ach bucket.
-  uInt getRowsPerBucket() const;
+  unsigned int getRowsPerBucket() const;
 
   // Find the bucket containing the given row.
   // An exception is thrown if not found.
   // It also sets the first and last row number fitting in that bucket.
-  void find(rownr_t aRowNumber, uInt& aBucketNr, rownr_t& aStartRow, rownr_t& anEndRow,
+  void find(rownr_t aRowNumber, unsigned int& aBucketNr, rownr_t& aStartRow, rownr_t& anEndRow,
             const String& colName) const;
 
  private:
   // Get the index of the bucket containing the given row.
-  uInt getIndex(rownr_t aRowNr, const String& colName) const;
+  unsigned int getIndex(rownr_t aRowNr, const String& colName) const;
 
   // # Pointer to specific Storage Manager.
   SSMBase* itsSSMPtr;
 
   // # Nr of entries used in blocks.
-  uInt itsNUsed;
+  unsigned int itsNUsed;
 
   // # Last row nr indexed together with itsBucketNumber
   Block<rownr_t> itsLastRow;
@@ -157,19 +157,19 @@ class SSMIndex {
   // # Bucketnumbers indexed together with itsLastRow.
   // # So itsLastRow[0] contains the last rownumber of the bucket
   // # in itsBucketNumber[0]
-  Block<uInt> itsBucketNumber;
+  Block<unsigned int> itsBucketNumber;
 
   // # Map that contains length/offset pairs for free size (size in bytes).
-  std::map<Int, Int> itsFreeSpace;
+  std::map<int, int> itsFreeSpace;
 
   // # How many rows fit in a bucket?
-  uInt itsRowsPerBucket;
+  unsigned int itsRowsPerBucket;
 
   // # Nr of columns using this index.
-  Int itsNrColumns;
+  int itsNrColumns;
 };
 
-inline uInt SSMIndex::getRowsPerBucket() const { return itsRowsPerBucket; }
+inline unsigned int SSMIndex::getRowsPerBucket() const { return itsRowsPerBucket; }
 
 }  // namespace casacore
 

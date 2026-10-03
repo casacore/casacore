@@ -262,7 +262,7 @@ AutoDiff<T> pow(const AutoDiff<T> &a, const AutoDiff<T> &b) {
   T temp2 = tb * pow(ta, tb - T(1));
   AutoDiff<T> tmp(b);
   tmp.derivatives() *= value * T(log(ta));
-  for (uInt i = 0; i < a.nDerivatives(); i++) {
+  for (unsigned int i = 0; i < a.nDerivatives(); i++) {
     tmp.derivatives()[i] += a.derivatives()[i] * temp2;
   }
   tmp.value() = value;
@@ -481,17 +481,17 @@ bool near(const AutoDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool near(const AutoDiff<T> &left, const AutoDiff<T> &right, const Double tol) {
+bool near(const AutoDiff<T> &left, const AutoDiff<T> &right, const double tol) {
   return near(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool near(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool near(const T &left, const AutoDiff<T> &right, const double tol) {
   return near(left, right.value(), tol);
 }
 
 template <class T>
-bool near(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool near(const AutoDiff<T> &left, const T &right, const double tol) {
   return near(left.value(), right, tol);
 }
 
@@ -511,17 +511,17 @@ bool allnear(const AutoDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right, const Double tol) {
+bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right, const double tol) {
   return near(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool allnear(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool allnear(const T &left, const AutoDiff<T> &right, const double tol) {
   return near(left, right.value(), tol);
 }
 
 template <class T>
-bool allnear(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool allnear(const AutoDiff<T> &left, const T &right, const double tol) {
   return near(left.value(), right, tol);
 }
 
@@ -541,17 +541,17 @@ bool nearAbs(const AutoDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right, const Double tol) {
+bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right, const double tol) {
   return nearAbs(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool nearAbs(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool nearAbs(const T &left, const AutoDiff<T> &right, const double tol) {
   return nearAbs(left, right.value(), tol);
 }
 
 template <class T>
-bool nearAbs(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool nearAbs(const AutoDiff<T> &left, const T &right, const double tol) {
   return nearAbs(left.value(), right, tol);
 }
 
@@ -571,17 +571,17 @@ bool allnearAbs(const AutoDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right, const Double tol) {
+bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right, const double tol) {
   return nearAbs(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool allnearAbs(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool allnearAbs(const T &left, const AutoDiff<T> &right, const double tol) {
   return nearAbs(left, right.value(), tol);
 }
 
 template <class T>
-bool allnearAbs(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool allnearAbs(const AutoDiff<T> &left, const T &right, const double tol) {
   return nearAbs(left.value(), right, tol);
 }
 

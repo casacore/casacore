@@ -33,7 +33,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MultiHDF5::MultiHDF5(const String& name, ByteIO::OpenOption option, Int blockSize)
+MultiHDF5::MultiHDF5(const String& name, ByteIO::OpenOption option, int blockSize)
     : MultiFileBase(name, blockSize, false),  // # no O_DIRECT in HDF5
       itsFile(new HDF5File(itsName, option)),
       itsHDF5(itsFile.get()) {
@@ -41,7 +41,7 @@ MultiHDF5::MultiHDF5(const String& name, ByteIO::OpenOption option, Int blockSiz
 }
 
 MultiHDF5::MultiHDF5(const String& name, const std::shared_ptr<MultiFileBase>& parent,
-                     ByteIO::OpenOption option, Int blockSize)
+                     ByteIO::OpenOption option, int blockSize)
     // Use parent's block size if not specified.
     : MultiFileBase(name, blockSize > 0 ? blockSize : parent->blockSize(), false) {
   // Get the overall HDF5 file object.
@@ -61,7 +61,7 @@ MultiHDF5::MultiHDF5(const String& name, const std::shared_ptr<MultiFileBase>& p
 
 std::shared_ptr<MultiFileBase> MultiHDF5::makeNested(const std::shared_ptr<MultiFileBase>& parent,
                                                      const String& name, ByteIO::OpenOption option,
-                                                     Int blockSize) const {
+                                                     int blockSize) const {
   return std::make_shared<MultiHDF5>(name, parent, option, blockSize);
 }
 
@@ -79,7 +79,7 @@ MultiHDF5::~MultiHDF5() { close(); }
 void MultiHDF5::doOpenFile(MultiFileInfo& info) {
   DebugAssert(!info.group, AipsError);
   info.group.reset(new HDF5Group(*itsHDF5, info.name, true, false));
-  info.dataSet.reset(new HDF5DataSet(*info.group, "FileData", (const uChar*)0));
+  info.dataSet.reset(new HDF5DataSet(*info.group, "FileData", (const unsigned char*)0));
 }
 
 void MultiHDF5::doCloseFile(MultiFileInfo& info) {
@@ -113,8 +113,8 @@ void MultiHDF5::writeHeader() {
   rec.define("blockSize", itsBlockSize);
   rec.define("hdrCounter", itsHdrCounter);
   Vector<String> names(itsInfo.size());
-  Vector<Int64> sizes(itsInfo.size());
-  for (uInt i = 0; i < itsInfo.size(); ++i) {
+  Vector<int64_t> sizes(itsInfo.size());
+  for (unsigned int i = 0; i < itsInfo.size(); ++i) {
     names[i] = itsInfo[i].name;
     sizes[i] = itsInfo[i].fsize;
   }
@@ -126,17 +126,17 @@ void MultiHDF5::writeHeader() {
 void MultiHDF5::readHeader(bool always) {
   Record rec = HDF5Record::readRecord(*itsHDF5, "__MultiHDF5_Header__");
   itsBlockSize = rec.asInt64("blockSize");
-  Int64 hdrCounter = rec.asInt64("hdrCounter");
+  int64_t hdrCounter = rec.asInt64("hdrCounter");
   // Only if needed, interpret the rest of the header.
   if (hdrCounter == itsHdrCounter && !always) {
     return;
   }
   itsHdrCounter = hdrCounter;
   Vector<String> names(rec.asArrayString("names"));
-  Vector<Int64> sizes(rec.asArrayInt64("sizes"));
+  Vector<int64_t> sizes(rec.asArrayInt64("sizes"));
   // Set info fields.
   itsInfo.reserve(names.size());
-  for (uInt i = 0; i < names.size(); ++i) {
+  for (unsigned int i = 0; i < names.size(); ++i) {
     MultiFileInfo info;
     info.name = names[i];
     info.fsize = sizes[i];
@@ -148,7 +148,7 @@ void MultiHDF5::doAddFile(MultiFileInfo& info) {
   // Create a group and dataset for the file.
   info.group.reset(new HDF5Group(*itsHDF5, info.name, false, true));
   info.dataSet.reset(new HDF5DataSet(*info.group, "FileData", IPosition(2, itsBlockSize, 0),
-                                     IPosition(2, itsBlockSize, 1), (const uChar*)0));
+                                     IPosition(2, itsBlockSize, 1), (const unsigned char*)0));
 }
 
 void MultiHDF5::doDeleteFile(MultiFileInfo& info) {
@@ -159,19 +159,19 @@ void MultiHDF5::doDeleteFile(MultiFileInfo& info) {
   HDF5Group::remove(*itsHDF5, info.name);
 }
 
-void MultiHDF5::doTruncateFile(MultiFileInfo&, uInt64) {}
+void MultiHDF5::doTruncateFile(MultiFileInfo&, uint64_t) {}
 
-void MultiHDF5::extend(MultiFileInfo& info, Int64 lastblk) {
+void MultiHDF5::extend(MultiFileInfo& info, int64_t lastblk) {
   info.dataSet->extend(IPosition(2, itsBlockSize, lastblk + 1));
   itsNrBlock = lastblk + 1;
 }
 
-void MultiHDF5::readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) {
+void MultiHDF5::readBlock(MultiFileInfo& info, int64_t blknr, void* buffer) {
   Slicer slicer(IPosition(2, 0, blknr), IPosition(2, itsBlockSize, 1));
   info.dataSet->get(slicer, buffer);
 }
 
-void MultiHDF5::writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) {
+void MultiHDF5::writeBlock(MultiFileInfo& info, int64_t blknr, const void* buffer) {
   Slicer slicer(IPosition(2, 0, blknr), IPosition(2, itsBlockSize, 1));
   info.dataSet->put(slicer, buffer);
 }

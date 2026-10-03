@@ -267,7 +267,7 @@ Vector<String> Table::nonWritableFiles(const String& tableName) {
   if (!isReadable(tabName)) {
     throw(TableError("Table::nonWritableFiles: Table " + tabName + " does not exist"));
   }
-  uInt n = 0;
+  unsigned int n = 0;
   Vector<String> names;
   DirectoryIterator iter(tabName);
   while (!iter.pastEnd()) {
@@ -366,7 +366,7 @@ void Table::open(const String& name, const String& type, int tableOption,
 std::shared_ptr<BaseTable> Table::makeBaseTable(const String& name, const String& type,
                                                 int tableOption, const TableLock& lockOptions,
                                                 const TSMOption& tsmOpt, bool addToCache,
-                                                uInt locknr) {
+                                                unsigned int locknr) {
   std::shared_ptr<BaseTable> baseTabPtr;
   // # Determine the file option for the table.
   // # Only existing tables can be opened.
@@ -376,17 +376,17 @@ std::shared_ptr<BaseTable> Table::makeBaseTable(const String& name, const String
   AipsIO ios(Table::fileName(name), fopt);
   // # Determine the kind of table by reading the type.
   String tp;
-  uInt version = ios.getstart("Table");
+  unsigned int version = ios.getstart("Table");
   if (version > 3) {
     throw TableError("Table version " + std::to_string(version) +
                      " not supported by this version of Casacore");
   }
-  uInt format;
+  unsigned int format;
   rownr_t nrrow;
   if (version > 2) {
     ios >> nrrow;
   } else {
-    uInt n;
+    unsigned int n;
     ios >> n;
     nrrow = n;
   }
@@ -431,7 +431,7 @@ bool Table::hasDataChanged() {
     unlock();
   }
   // Get the modify counter. If different, data have changed.
-  uInt counter = baseTabPtr_p->getModifyCounter();
+  unsigned int counter = baseTabPtr_p->getModifyCounter();
   if (counter != lastModCounter_p) {
     lastModCounter_p = counter;
     return true;
@@ -439,7 +439,7 @@ bool Table::hasDataChanged() {
   return false;
 }
 
-uInt Table::nAutoLocks() { return PlainTable::tableCache().nAutoLocks(); }
+unsigned int Table::nAutoLocks() { return PlainTable::tableCache().nAutoLocks(); }
 
 void Table::relinquishAutoLocks(bool all) { PlainTable::tableCache().relinquishAutoLocks(all); }
 
@@ -576,18 +576,18 @@ Table Table::sort(const String& name, int order, int option) const {
 // # This is converted to a sort with mixed orders.
 Table Table::sort(const Block<String>& names, int order, int option) const {
   // # Expand the order argument into a block.
-  return sort(names, Block<Int>(names.nelements(), order), option);
+  return sort(names, Block<int>(names.nelements(), order), option);
 }
 
 // # Sort on multiple columns and orders.
-Table Table::sort(const Block<String>& names, const Block<Int>& orders, int option) const {
+Table Table::sort(const Block<String>& names, const Block<int>& orders, int option) const {
   // # Insert a block with null compare objects.
   return sort(names, Block<std::shared_ptr<BaseCompare>>(names.nelements()), orders, option);
 }
 
 // # Sort on multiple columns and orders with given functions.
 Table Table::sort(const Block<String>& names, const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
-                  const Block<Int>& orders, int option) const {
+                  const Block<int>& orders, int option) const {
   return Table(baseTabPtr_p->sort(names, cmpObjs, orders, option));
 }
 
@@ -754,13 +754,13 @@ ostream& operator<<(ostream& ios, const Table& tab) {
   ios << tab.tableName();
   ios << "  (";
   ios << tab.tableDesc().ncolumn() << " columns, ";
-  ios << uInt(tab.nrow()) << " rows)";
+  ios << static_cast<unsigned int>(tab.nrow()) << " rows)";
   ios << endl;
   return ios;
 }
 
 void Table::showKeywords(ostream& ios, bool showSubTables, bool showTabKey, bool showColKey,
-                         Int maxVal) const {
+                         int maxVal) const {
   if (showTabKey || showColKey) {
     // Show table and/or column keywords.
     ios << endl << "Keywords of main table " << endl << "----------------------" << endl;
@@ -768,7 +768,7 @@ void Table::showKeywords(ostream& ios, bool showSubTables, bool showTabKey, bool
     if (showSubTables) {
       // Also show them in the subtables.
       TableRecord keyset(keywordSet());
-      for (uInt i = 0; i < keyset.nfields(); ++i) {
+      for (unsigned int i = 0; i < keyset.nfields(); ++i) {
         if (keyset.dataType(i) == TpTable) {
           Table tab(keyset.asTable(i));
           // Do not show if the subtable references the parent table.
@@ -783,7 +783,7 @@ void Table::showKeywords(ostream& ios, bool showSubTables, bool showTabKey, bool
   }
 }
 
-void Table::showKeywordSets(ostream& ios, bool showTabKey, bool showColKey, Int maxVal) const {
+void Table::showKeywordSets(ostream& ios, bool showTabKey, bool showColKey, int maxVal) const {
   bool shown = false;
   if (showTabKey) {
     if (keywordSet().size() > 0) {
@@ -795,7 +795,7 @@ void Table::showKeywordSets(ostream& ios, bool showTabKey, bool showColKey, Int 
   }
   if (showColKey) {
     Vector<String> colNames(tableDesc().columnNames());
-    for (uInt i = 0; i < colNames.size(); ++i) {
+    for (unsigned int i = 0; i < colNames.size(); ++i) {
       TableRecord keys(TableColumn(*this, colNames[i]).keywordSet());
       if (keys.size() > 0) {
         ios << "  Column " << colNames[i] << endl;

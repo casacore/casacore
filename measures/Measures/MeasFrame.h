@@ -215,22 +215,22 @@ class MeasFrame {
   //   <li> AipsError if the specific Measure not yet present in frame
   // </thrown>
   // <group>
-  void resetEpoch(Double val);
-  void resetEpoch(const Vector<Double> &val);
-  void resetEpoch(const Quantum<Double> &val);
-  void resetEpoch(const Quantum<Vector<Double>> &val);
+  void resetEpoch(double val);
+  void resetEpoch(const Vector<double> &val);
+  void resetEpoch(const Quantum<double> &val);
+  void resetEpoch(const Quantum<Vector<double>> &val);
   void resetEpoch(const MVEpoch &val);
   void resetEpoch(const Measure &val);
-  void resetPosition(const Vector<Double> &val);
-  void resetPosition(const Quantum<Vector<Double>> &val);
+  void resetPosition(const Vector<double> &val);
+  void resetPosition(const Quantum<Vector<double>> &val);
   void resetPosition(const MVPosition &val);
   void resetPosition(const Measure &val);
-  void resetDirection(const Vector<Double> &val);
-  void resetDirection(const Quantum<Vector<Double>> &val);
+  void resetDirection(const Vector<double> &val);
+  void resetDirection(const Quantum<Vector<double>> &val);
   void resetDirection(const MVDirection &val);
   void resetDirection(const Measure &val);
-  void resetRadialVelocity(const Vector<Double> &val);
-  void resetRadialVelocity(const Quantum<Vector<Double>> &val);
+  void resetRadialVelocity(const Vector<double> &val);
+  void resetRadialVelocity(const Quantum<Vector<double>> &val);
   void resetRadialVelocity(const MVRadialVelocity &val);
   void resetRadialVelocity(const Measure &val);
   void resetComet(const MeasComet &val);
@@ -250,47 +250,47 @@ class MeasFrame {
   // and the frame is in a calculating state.
   // <group>
   // Get TDB in days
-  bool getTDB(Double &tdb) const;
+  bool getTDB(double &tdb) const;
   // Get UT1 in days
-  bool getUT1(Double &tdb) const;
+  bool getUT1(double &tdb) const;
   // Get TT in days
-  bool getTT(Double &tdb) const;
+  bool getTT(double &tdb) const;
   // Get the ITRF longitude (in rad)
-  bool getLong(Double &tdb) const;
+  bool getLong(double &tdb) const;
   // Get the ITRF latitude (in rad)
-  bool getLat(Double &tdb) const;
+  bool getLat(double &tdb) const;
   // Get the position
   bool getITRF(MVPosition &tdb) const;
   // Get the geocentric position (in m)
-  bool getRadius(Double &tdb) const;
+  bool getRadius(double &tdb) const;
   // Get the geodetic latitude
-  bool getLatGeo(Double &tdb) const;
+  bool getLatGeo(double &tdb) const;
   // Get the LAST (in days)
-  bool getLAST(Double &tdb) const;
+  bool getLAST(double &tdb) const;
   // Get the LAST (in rad)
-  bool getLASTr(Double &tdb) const;
+  bool getLASTr(double &tdb) const;
   // Get J2000 coordinates (direction cosines) and its longitude/latitude (rad)
   // <group>
   bool getJ2000(MVDirection &tdb) const;
-  bool getJ2000Long(Double &tdb) const;
-  bool getJ2000Lat(Double &tdb) const;
+  bool getJ2000Long(double &tdb) const;
+  bool getJ2000Lat(double &tdb) const;
   // </group>
   // Get B1950 coordinates (direction cosines)
   // <group>
   bool getB1950(MVDirection &tdb) const;
-  bool getB1950Long(Double &tdb) const;
-  bool getB1950Lat(Double &tdb) const;
+  bool getB1950Long(double &tdb) const;
+  bool getB1950Lat(double &tdb) const;
   // </group>
   // Get apparent coordinates (direction cosines)
   // <group>
   bool getApp(MVDirection &tdb) const;
-  bool getAppLong(Double &tdb) const;
-  bool getAppLat(Double &tdb) const;
+  bool getAppLong(double &tdb) const;
+  bool getAppLat(double &tdb) const;
   // </group>
   // Get LSR radial velocity (m/s)
-  bool getLSR(Double &tdb) const;
+  bool getLSR(double &tdb) const;
   // Get the comet table reference type
-  bool getCometType(uInt &tdb) const;
+  bool getCometType(unsigned int &tdb) const;
   // Get the comet coordinates
   bool getComet(MVPosition &tdb) const;
   // </group>

@@ -85,21 +85,21 @@ void showTableCache() {
   const TableCache& cache = PlainTable::tableCache();
   Vector<String> lockedTables = cache.getTableNames();
 
-  Int n = lockedTables.nelements();
+  int n = lockedTables.nelements();
   if (n > 0)
     cout << std::endl
          << "####WARNING!!!!: The Table Cache has the following " << n << " entries:" << std::endl;
 
-  for (Int i = 0; i < n; ++i) cout << "    " << i << ": \"" << lockedTables(i) << "\"" << std::endl;
+  for (int i = 0; i < n; ++i) cout << "    " << i << ": \"" << lockedTables(i) << "\"" << std::endl;
 }
 //
 //-------------------------------------------------------------------------
 //
-void printBaselineList(Matrix<Int> list, ostream& os) {
+void printBaselineList(Matrix<int> list, ostream& os) {
   os << "\tBaselines = ";
   IPosition shp = list.shape();
-  for (Int j = 0; j < shp(1); j++) {
-    for (Int i = 0; i < shp(0); i++) os << list(i, j) << " ";
+  for (int j = 0; j < shp(1); j++) {
+    for (int i = 0; i < shp(0); i++) os << list(i, j) << " ";
     os << std::endl << "\t            ";
   }
   os << std::endl;
@@ -107,7 +107,7 @@ void printBaselineList(Matrix<Int> list, ostream& os) {
 //
 //-------------------------------------------------------------------------
 //
-void printInfo(MSSelection& msSelection, Int& nRows) {
+void printInfo(MSSelection& msSelection, int& nRows) {
   cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << std::endl;
   cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << std::endl;
   cout << "\tBE: Ant2         = " << msSelection.getAntenna2List() << std::endl;
@@ -215,7 +215,7 @@ int main(int argc, char** argv) {
       // TableExprNode ten=msSelection.toTableExprNode(&msInterface);
       // cerr << "TEN rows = " << ten.nrow() << std::endl;
 
-      Int nRows = 0;
+      int nRows = 0;
       try {
         msSelection.getSelectedMS(selectedMS);
         nRows = selectedMS.nrow();

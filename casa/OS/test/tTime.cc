@@ -74,7 +74,7 @@ int main() {
   cout << t9 << "\n";
   cout << t9.dayOfMonth() << " " << t9.month() << " " << t9.year() << " " << t9.hours() << " "
        << t9.minutes() << " " << t9.seconds() << "\n";
-  uInt m = 2, y = 1992;
+  unsigned int m = 2, y = 1992;
   cout << "how many days this month " << t9.howManyDaysInMonth() << "\n";
   cout << "how many days february of 1992 " << t9.howManyDaysInMonth(m, y) << "\n";
 
@@ -141,12 +141,12 @@ int main() {
     cout << "seconds elapsed since start: " << startTime.age() << endl;
   }
 
-  Int seconds = t.timeZoneSeconds();
+  int seconds = t.timeZoneSeconds();
   cout << "time zone: " << abs(seconds) << " seconds ";
   cout << (seconds < 0 ? "west" : "east");
   cout << " of UTC" << endl;
 
-  Double days = t.timeZoneDays();
+  double days = t.timeZoneDays();
   cout << "time zone: " << fabs(days) << " days ";
   cout << (days < 0 ? "west" : "east");
   cout << " of UTC" << endl;

@@ -65,14 +65,14 @@ int main() {
 // First build a description.
 void a() {
   // First register the virtual column engine.
-  MappedArrayEngine<float, uShort>::registerClass();
+  MappedArrayEngine<float, unsigned short>::registerClass();
 
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
   td.addColumn(ArrayColumnDesc<DComplex>("target1"));
   td.addColumn(ArrayColumnDesc<Complex>("source1"));
-  td.addColumn(ArrayColumnDesc<uShort>("target2"));
+  td.addColumn(ArrayColumnDesc<unsigned short>("target2"));
   td.addColumn(ArrayColumnDesc<float>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<DComplex>("target3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<Complex>("source3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
@@ -82,7 +82,7 @@ void a() {
   // Create the virtual column engine with the scale factors
   // and bind the columns to them.
   MappedArrayEngine<Complex, DComplex> engine1("source1", "target1");
-  MappedArrayEngine<float, uShort> engine2("source2", "target2");
+  MappedArrayEngine<float, unsigned short> engine2("source2", "target2");
   MappedArrayEngine<Complex, DComplex> engine3("source3", "target3");
   newtab.bindColumn("source1", engine1);
   newtab.bindColumn("source2", engine2);
@@ -96,11 +96,11 @@ void a() {
 
   Cube<Complex> arrd(IPosition(3, 2, 3, 4));
   Cube<float> arrf(IPosition(3, 2, 3, 4));
-  uInt i;
+  unsigned int i;
   i = 2;
-  for (uInt i2 = 0; i2 < 4; i2++)
-    for (uInt i1 = 0; i1 < 3; i1++)
-      for (uInt i0 = 0; i0 < 2; i0++) {
+  for (unsigned int i2 = 0; i2 < 4; i2++)
+    for (unsigned int i1 = 0; i1 < 3; i1++)
+      for (unsigned int i0 = 0; i0 < 2; i0++) {
         arrd(i0, i1, i2) = Complex(i, i + 1);
         arrf(i0, i1, i2) = i;
         i += 6;
@@ -130,13 +130,13 @@ void b() {
   ArrayColumn<float> source2(tab, "source2");
   ArrayColumn<Complex> source3(tab, "source3");
   ArrayColumn<DComplex> target1(tab, "target1");
-  ArrayColumn<uShort> target2(tab, "target2");
+  ArrayColumn<unsigned short> target2(tab, "target2");
   ArrayColumn<DComplex> target3(tab, "target3");
   Cube<DComplex> arri1(IPosition(3, 2, 3, 4));
   Cube<DComplex> arri3(IPosition(3, 2, 3, 4));
   Cube<DComplex> arrvali(IPosition(3, 2, 3, 4));
-  Cube<uShort> arrc2(IPosition(3, 2, 3, 4));
-  Cube<uShort> arrvalc(IPosition(3, 2, 3, 4));
+  Cube<unsigned short> arrc2(IPosition(3, 2, 3, 4));
+  Cube<unsigned short> arrvalc(IPosition(3, 2, 3, 4));
   Cube<Complex> arrd1(IPosition(3, 2, 3, 4));
   Cube<Complex> arrd3(IPosition(3, 2, 3, 4));
   Cube<Complex> arrvald(IPosition(3, 2, 3, 4));
@@ -146,10 +146,10 @@ void b() {
   Slice tmp;
   Slicer nslice(tmp, tmp, tmp, Slicer::endIsLength);
   Slicer nslice2(Slice(0, 1), Slice(0, 1, 2), Slice(0, 2, 2), Slicer::endIsLength);
-  uInt i = 2;
-  for (uInt i2 = 0; i2 < 4; i2++)
-    for (uInt i1 = 0; i1 < 3; i1++)
-      for (uInt i0 = 0; i0 < 2; i0++) {
+  unsigned int i = 2;
+  for (unsigned int i2 = 0; i2 < 4; i2++)
+    for (unsigned int i1 = 0; i1 < 3; i1++)
+      for (unsigned int i0 = 0; i0 < 2; i0++) {
         arrd1(i0, i1, i2) = Complex(i, i + 1);
         arrf2(i0, i1, i2) = i;
         arrd3(i0, i1, i2) = Complex(i + 4, i + 6);
@@ -197,7 +197,7 @@ void b() {
     arrf2 += (float)(6 * arrf2.nelements());
     arrd3 += Complex(6 * arrd3.nelements(), 6 * arrd3.nelements());
     arri1 += DComplex(6 * arri1.nelements(), 6 * arri1.nelements());
-    arrc2 += (uShort)(6 * arrc2.nelements());
+    arrc2 += (unsigned short)(6 * arrc2.nelements());
     arri3 += DComplex(6 * arri3.nelements(), 6 * arri3.nelements());
   }
 }

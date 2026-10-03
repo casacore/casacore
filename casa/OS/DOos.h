@@ -123,20 +123,20 @@ class DOos {
   // <br>1 = time of last access
   // <br>2 = time of last modification
   // <br>3 = time of last status change
-  static Vector<Double> fileTime(const Vector<String>& fileName, Int whichTime = 1,
+  static Vector<double> fileTime(const Vector<String>& fileName, int whichTime = 1,
                                  bool follow = true);
 
   // Return the total size (in bytes) for each file or directory given.
   // For a directory the size of all files (recursively) in it is given.
   // If follow is false, symbolic links are not followed.
   // <group>
-  static Vector<Double> totalSize(const Vector<String>& fileName, bool follow = true);
-  static Double totalSize(const String& fileName, bool follow = true);
+  static Vector<double> totalSize(const Vector<String>& fileName, bool follow = true);
+  static double totalSize(const String& fileName, bool follow = true);
   // </group>
 
   // Return the total size on the devices the given directories are on.
   // If follow is false, symbolic links are not followed.
-  static Vector<Double> freeSpace(const Vector<String>& fileName, bool follow = true);
+  static Vector<double> freeSpace(const Vector<String>& fileName, bool follow = true);
 
   // Copy the file (or directory recursively).
   // If from is a symbolic link and follow is false, only the
@@ -164,7 +164,7 @@ class DOos {
   // See <linkto class=LockFile>LockFile</linkto>\::showLock for details.
   // The second one gives the pid of the process using/locking the table.
   // The third one tells if the table is permanently locked (0 = not).
-  static Vector<Int> lockInfo(const String& tableName);
+  static Vector<int> lockInfo(const String& tableName);
 };
 
 }  // namespace casacore

@@ -173,12 +173,12 @@ void SDAntennaHandler::fill(const Record &row) {
     Vector<rownr_t> foundRows = index_p->getRowNumbers();
     bool found = false;
     MPosition pos;
-    Vector<Double> offset(3, 0.0);
+    Vector<double> offset(3, 0.0);
     if (siteLongFldNum_p >= 0) {
       // construct an MPosition from these values
-      Double siteLong = row.asDouble(siteLongFldNum_p);
-      Double siteLat = row.asDouble(siteLatFldNum_p);
-      Double siteElev = row.asDouble(siteElevFldNum_p);
+      double siteLong = row.asDouble(siteLongFldNum_p);
+      double siteLat = row.asDouble(siteLatFldNum_p);
+      double siteElev = row.asDouble(siteElevFldNum_p);
       pos = MPosition(Quantity(siteLong, "m"), Quantity(siteLat, "deg"), Quantity(siteElev, "deg"),
                       MPosition::WGS84);
     } else {
@@ -186,7 +186,7 @@ void SDAntennaHandler::fill(const Record &row) {
       if (positionField_p.isAttached()) {
         // we write out this column as ITRF with all values in meters
         pos =
-            MPosition(MVPosition(Quantum<Vector<Double>>(*positionField_p, "m")), MPosition::ITRF);
+            MPosition(MVPosition(Quantum<Vector<double>>(*positionField_p, "m")), MPosition::ITRF);
       } else {
         // if this returns false, pos will still be set at its unset value (0,0,0)
         MeasTable::Observatory(pos, *nameKey_p);
@@ -199,7 +199,7 @@ void SDAntennaHandler::fill(const Record &row) {
     }
     if (foundRows.nelements() > 0) {
       // we have at least 1 candidate
-      uInt whichOne = 0;
+      unsigned int whichOne = 0;
       // if there are no positions, stop and use the first one
       if (siteLongFldNum_p < 0) {
         found = true;
@@ -234,7 +234,7 @@ void SDAntennaHandler::fill(const Record &row) {
         msAntCols_p->mount().put(rownr_p, "");
       }
       msAntCols_p->name().put(rownr_p, *nameKey_p);
-      msAntCols_p->offset().put(uInt(rownr_p), offset);
+      msAntCols_p->offset().put(static_cast<unsigned int>(rownr_p), offset);
       msAntCols_p->positionMeas().put(rownr_p, pos);
       if (stationKey_p.isAttached()) {
         msAntCols_p->station().put(rownr_p, *stationKey_p);

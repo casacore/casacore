@@ -85,14 +85,15 @@ class Slicer;
 // # <todo asof="2011/06/17">
 // # </todo>
 
-class FITSQualityImage : public ImageInterface<Float> {
+class FITSQualityImage : public ImageInterface<float> {
  public:
   // Construct a FITSQualityImage from the FITS file name and extensions
   // specified in the input.
   explicit FITSQualityImage(const String& name);
 
   // Construct a FITSQualityImage from the disk FITS file name and extensions.
-  explicit FITSQualityImage(const String& name, uInt whichDataHDU, uInt whichErrorHDU);
+  explicit FITSQualityImage(const String& name, unsigned int whichDataHDU,
+                            unsigned int whichErrorHDU);
 
   // Copy constructor (reference semantics)
   FITSQualityImage(const FITSQualityImage& other);
@@ -106,7 +107,7 @@ class FITSQualityImage : public ImageInterface<Float> {
   // # ImageInterface virtual functions
 
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Given the misc-info of a CASA image (with quality-axis)
   // the misc-info of the data sub-image and the error sub-image
@@ -148,10 +149,10 @@ class FITSQualityImage : public ImageInterface<Float> {
 
   // Do the actual get of the data.
   // Returns false as the data do not reference another Array
-  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<float>& buffer, const Slicer& theSlice);
 
   // The FITSQualityImage is not writable, so this throws an exception.
-  virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<float>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
 
   // Do the actual get of the mask data.   The return value is always
@@ -177,12 +178,12 @@ class FITSQualityImage : public ImageInterface<Float> {
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Check class invariants.
   virtual bool ok() const;
@@ -199,16 +200,16 @@ class FITSQualityImage : public ImageInterface<Float> {
   DataType dataType() const;
 
   // Return the data HDU number
-  uInt whichDataHDU() const { return whichDataHDU_p; }
+  unsigned int whichDataHDU() const { return whichDataHDU_p; }
 
   // Return the error HDU number
-  uInt whichErrorHDU() const { return whichErrorHDU_p; }
+  unsigned int whichErrorHDU() const { return whichErrorHDU_p; }
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -219,7 +220,7 @@ class FITSQualityImage : public ImageInterface<Float> {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -235,9 +236,9 @@ class FITSQualityImage : public ImageInterface<Float> {
   FITSErrorImage* fitserror_p;
   Lattice<bool>* pPixelMask_p;
   TiledShape shape_p;
-  uInt whichDataHDU_p;
-  uInt whichErrorHDU_p;
-  uInt whichMaskHDU_p;
+  unsigned int whichDataHDU_p;
+  unsigned int whichErrorHDU_p;
+  unsigned int whichMaskHDU_p;
   FITSErrorImage::ErrorType errType_p;
   bool isClosed_p;
   bool isDataClosed_p;

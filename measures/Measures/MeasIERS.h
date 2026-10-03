@@ -125,7 +125,7 @@ class MeasIERS {
   typedef void (*CLOSEFUN)();
 
   // # Constants
-  static const Double INTV;
+  static const double INTV;
 
   // # Enumerations
   //  Types of known data
@@ -175,7 +175,7 @@ class MeasIERS {
   // # General Member Functions
   //  Get the value from an IERS table, interpolated for date(in MJD).
   //  The file can be PREDICTED or MEASURED, the type as given in enum.
-  static bool get(Double &returnValue, MeasIERS::Files file, MeasIERS::Types type, Double date);
+  static bool get(double &returnValue, MeasIERS::Files file, MeasIERS::Types type, double date);
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
@@ -187,7 +187,7 @@ class MeasIERS {
   //  <li> AipsError if missing VS_ keywords, columns, or they type is not IERS.
   // </thrown>
   static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-                       RORecordFieldPtr<Double> rfp[], String &vs, Double &dt, Int N,
+                       RORecordFieldPtr<double> rfp[], String &vs, double &dt, int N,
                        const String rfn[], const String &name, const String &rc, const String &dir,
                        const Table *tabin = 0);
 
@@ -204,7 +204,7 @@ class MeasIERS {
   //  <li> AipsError if missing VS_ keywords, required columns, or the type is not IERS.
   // </thrown>
   static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-                       Vector<RORecordFieldPtr<Double>> &rfp, String &vs, Double &dt,
+                       Vector<RORecordFieldPtr<double>> &rfp, String &vs, double &dt,
                        const Vector<String> &reqcols, Vector<String> &optcols, const String &name,
                        const String &rc, const String &dir, const Table *tabin = 0);
 
@@ -248,29 +248,29 @@ class MeasIERS {
   //  ks has VS_DATE, VS_VERSION, VS_CREATE, and VS_TYPE,
   //  and that tab's type is IERS in its info.
   // Returns whether or not it was successful.
-  static bool handle_keywords(Double &dt, String &vs, const TableRecord &ks, const Table &tab);
+  static bool handle_keywords(double &dt, String &vs, const TableRecord &ks, const Table &tab);
 
   // # Data members
   //  Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirCallOnceFlag;
   // Current date
-  static Double dateNow;
+  static double dateNow;
   // Read data (meas - predict)
-  static Vector<Double> ldat[N_Files][N_Types];
+  static Vector<double> ldat[N_Files][N_Types];
   // File names
   static const String tp[N_Files];
   // Check prediction interval
-  static uInt predicttime_reg;
+  static unsigned int predicttime_reg;
   // Use no table
-  static uInt notable_reg;
+  static unsigned int notable_reg;
   // Force prediction
-  static uInt forcepredict_reg;
+  static unsigned int forcepredict_reg;
   // Size of close notification list
-  static uInt sizeNote;
+  static unsigned int sizeNote;
   // Tables notifying that they should be closed
   static CLOSEFUN *toclose;
   // Number of close notifications
-  static uInt nNote;
+  static unsigned int nNote;
 };
 
 // # Inline Implementations

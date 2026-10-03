@@ -68,7 +68,7 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // Constructor
   TableExprFuncNodeArray(TableExprFuncNode::FunctionType, NodeDataType, ValueType,
                          const TableExprNodeSet& source, const vector<TENShPtr>& nodes,
-                         const Block<Int>& dtypeOper, const TaQLStyle&);
+                         const Block<int>& dtypeOper, const TaQLStyle&);
 
   // Destructor
   ~TableExprFuncNodeArray();
@@ -79,8 +79,8 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // 'get' Functions to get the desired result of a function
   // <group>
   virtual MArray<bool> getArrayBool(const TableExprId& id);
-  virtual MArray<Int64> getArrayInt(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<int64_t> getArrayInt(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
   virtual MArray<MVTime> getArrayDate(const TableExprId& id);
@@ -108,22 +108,23 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   // Get the collapse axes for the partial functions.
   // It compares the values with the #dim and removes them if too high.
   // axarg gives the argument nr of the axes.
-  IPosition getAxes(const TableExprId& id, Int ndim, uInt axarg = 1, bool swapRemove = true);
+  IPosition getAxes(const TableExprId& id, int ndim, unsigned int axarg = 1,
+                    bool swapRemove = true);
 
   // Remove axes exceeding ndim.
-  IPosition removeAxes(const IPosition& axes, Int ndim) const;
+  IPosition removeAxes(const IPosition& axes, int ndim) const;
 
   // Get the shape for the array, boxed and running functions.
   // If an axis length < 0, the corresponding main shape axis (if present)
   // is used.
   // axarg gives the argument nr of the shape.
-  const IPosition& getArrayShape(const TableExprId& id, uInt axarg = 1);
+  const IPosition& getArrayShape(const TableExprId& id, unsigned int axarg = 1);
 
   // Get the transpose order of the array axes.
-  IPosition getOrder(const TableExprId& id, Int ndim);
+  IPosition getOrder(const TableExprId& id, int ndim);
 
   // Get the axes for the reverse function.
-  IPosition getReverseAxes(const TableExprId& id, uInt ndim);
+  IPosition getReverseAxes(const TableExprId& id, unsigned int ndim);
 
   // Get the arguments for the diagonals function.
   // They are checked and if needed adapted if the shape is not empty.
@@ -141,11 +142,11 @@ class TableExprFuncNodeArray : public TableExprNodeArray {
   MArray<T> TEFResize(const MArray<T>& arr, const TableExprId& id);
 
   // The angular distance between each pair of the arguments.
-  MArray<Double> angdistx(const MArray<Double>& a1, const MArray<Double>& a2) const;
+  MArray<double> angdistx(const MArray<double>& a1, const MArray<double>& a2) const;
 
   // # Data members
   TableExprFuncNode node_p;
-  Int origin_p;           // # axes origin
+  int origin_p;           // # axes origin
   bool isCOrder_p;        // # axes order
   bool constAxes_p;       // # true = collapse axes are constant
   bool constAlt_p;        // # true = expandAlt_p is constant

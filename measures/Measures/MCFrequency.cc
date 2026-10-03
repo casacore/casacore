@@ -32,8 +32,7 @@
 #include <casacore/measures/Measures/MeasTable.h>
 
 namespace {
-inline void updatePosition(casacore::Double const angle0, casacore::Double const angle1,
-                           casacore::MVPosition &pos) {
+inline void updatePosition(double const angle0, double const angle1, casacore::MVPosition &pos) {
   if (angle1 == 0) {
     pos(0) = std::cos(angle0);
     pos(1) = std::sin(angle0);
@@ -50,7 +49,7 @@ inline void updatePosition(casacore::Double const angle0, casacore::Double const
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCFrequency::ToRef_p[N_Routes][3] = {
+unsigned int MCFrequency::ToRef_p[N_Routes][3] = {
     {MFrequency::LSRD, MFrequency::BARY, 0},    {MFrequency::BARY, MFrequency::LSRD, 0},
     {MFrequency::BARY, MFrequency::GEO, 0},     {MFrequency::GEO, MFrequency::TOPO, 0},
     {MFrequency::GEO, MFrequency::BARY, 0},     {MFrequency::TOPO, MFrequency::GEO, 0},
@@ -59,7 +58,7 @@ uInt MCFrequency::ToRef_p[N_Routes][3] = {
     {MFrequency::BARY, MFrequency::LGROUP, 0},  {MFrequency::LGROUP, MFrequency::BARY, 0},
     {MFrequency::BARY, MFrequency::CMB, 0},     {MFrequency::CMB, MFrequency::BARY, 0},
     {MFrequency::REST, MFrequency::LSRK, 3},    {MFrequency::LSRK, MFrequency::REST, 3}};
-uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
+unsigned int MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
 std::once_flag MCFrequency::theirInitOnceFlag;
 
 // # Constructors
@@ -75,9 +74,9 @@ MCFrequency::~MCFrequency() { clearConvert(); }
 // # Member functions
 
 void MCFrequency::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
-  Int iout = outref.getType();
-  Int tmp;
+  int iin = inref.getType();
+  int iout = outref.getType();
+  int tmp;
   while (iin != iout) {
     if (iin == MFrequency::Undefined || iout == MFrequency::Undefined)
       throw(AipsError("Transformations to/from frame \"Undefined\" are not possible."));
@@ -101,7 +100,7 @@ void MCFrequency::clearConvert() {
 }
 
 // # Conversion routines
-void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
+void MCFrequency::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
 
   if (!MVPOS1) MVPOS1 = new MVPosition();
@@ -159,9 +158,9 @@ void MCFrequency::doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const 
 
 void MCFrequency::doConvert(MVFrequency &in, MRBase &inref, MRBase &outref,
                             const MConvertBase &mc) {
-  Double g1, g2, g3, lengthE, tdbTime;
+  double g1, g2, g3, lengthE, tdbTime;
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case LSRD_BARY: {
         auto const vel = MeasTable::velocityLSR(0);

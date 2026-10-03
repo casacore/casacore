@@ -182,12 +182,12 @@ class MeasJPL {
   // # General Member Functions
   //  Get the values from a DE table, interpolated for date(in MJD(TDB)).
   //  The file can be DE200 or DE405, the type as given in enum.
-  static bool get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
+  static bool get(Vector<double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
                   const MVEpoch &date);
   // Get indicated special constant
-  static bool getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what);
+  static bool getConst(double &res, MeasJPL::Files which, MeasJPL::Codes what);
   // Get filed constant with name nam
-  static bool getConst(Double &res, MeasJPL::Files which, const String &nam);
+  static bool getConst(double &res, MeasJPL::Files which, const String &nam);
 
   // Close the set of JPL tables only. Only call it last at end of program.
   static void closeMeas();
@@ -209,10 +209,10 @@ class MeasJPL {
   static bool initMeasOnce(MeasJPL::Files which);
   static void doInitMeas(MeasJPL::Files which);
   // Get a pointer to the data for the given date. It reads the data if needed.
-  static const Double *fillMeas(Double &intv, MeasJPL::Files which, const MVEpoch &utf);
+  static const double *fillMeas(double &intv, MeasJPL::Files which, const MVEpoch &utf);
   // Interpolate Chebyshev polymomial to res
-  static void interMeas(Double res[], MeasJPL::Files which, Double intv, Double ivf, Int ncf,
-                        Int ncm, Int na, const Double buf[]);
+  static void interMeas(double res[], MeasJPL::Files which, double intv, double ivf, int ncf,
+                        int ncm, int na, const double buf[]);
 
   // # Data members
   //  Object to ensure safe multi-threaded lazy single initialization
@@ -222,26 +222,26 @@ class MeasJPL {
   // Tables present
   static Table t[N_Files];
   // Data column descriptor
-  static ArrayColumn<Double> acc[N_Files];
+  static ArrayColumn<double> acc[N_Files];
   // First (-1) MJD in list
-  static Int mjd0[N_Files];
+  static int mjd0[N_Files];
   // Last MJD in list
-  static Int mjdl[N_Files];
+  static int mjdl[N_Files];
   // Interval in days (i.e., date step between subsequent rows)
-  static Int dmjd[N_Files];
+  static int dmjd[N_Files];
   // File names
   static const String tp[N_Files];
   // Index in record
-  static Int idx[N_Files][3][13];
+  static int idx[N_Files][3][13];
   // Dates of the data read in buffer.
-  static vector<Int> curDate[N_Files];
+  static vector<int> curDate[N_Files];
   // Data read in.
-  static vector<Vector<Double>> dval[N_Files];
+  static vector<Vector<double>> dval[N_Files];
   // Some helper data read from the table keywords
   // <group>
-  static Double aufac[N_Files];
-  static Double emrat[N_Files];
-  static Double cn[N_Files][N_Codes];
+  static double aufac[N_Files];
+  static double emrat[N_Files];
+  static double cn[N_Files][N_Codes];
   // </group>
 };
 

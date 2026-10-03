@@ -68,14 +68,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSSpwGram = 0;
-static Int posMSSpwGram = 0;
+static int posMSSpwGram = 0;
 // MSSpwGramwrap out of namespace
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msSpwGramParseCommand(const MeasurementSet* ms, const String& command) {
   try {
-    Int ret;
+    int ret;
     MSSpwGramrestart(MSSpwGramin);
     yy_start = 1;
     strpMSSpwGram = command.c_str();      // get pointer to command string
@@ -93,10 +93,10 @@ int msSpwGramParseCommand(const MeasurementSet* ms, const String& command) {
   }
 }
 
-int baseMSSpwGramParseCommand(MSSpwParse* parser, const String& command, Vector<Int>& selectedIDs,
-                              Matrix<Int>& selectedChans, Vector<Int>& selectedDDIDs) {
+int baseMSSpwGramParseCommand(MSSpwParse* parser, const String& command, Vector<int>& selectedIDs,
+                              Matrix<int>& selectedChans, Vector<int>& selectedDDIDs) {
   try {
-    Int ret;
+    int ret;
     MSSpwGramrestart(MSSpwGramin);
     yy_start = 1;
     strpMSSpwGram = command.c_str();     // get pointer to command string
@@ -120,16 +120,16 @@ int baseMSSpwGramParseCommand(MSSpwParse* parser, const String& command, Vector<
 
 int msSpwGramParseCommand(const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable,
                           const TableExprNode& colAsTEN, const String& command,
-                          Vector<Int>& selectedIDs, Matrix<Int>& selectedChans,
-                          Vector<Int>& selectedDDIDs) {
+                          Vector<int>& selectedIDs, Matrix<int>& selectedChans,
+                          Vector<int>& selectedDDIDs) {
   MSSpwParse thisParser(spwSubTable, ddSubTable, colAsTEN);
   return baseMSSpwGramParseCommand(&thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
 }
 
-int msSpwGramParseCommand(const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
-                          Matrix<Int>& selectedChans) {
+int msSpwGramParseCommand(const MeasurementSet* ms, const String& command, Vector<int>& selectedIDs,
+                          Matrix<int>& selectedChans) {
   try {
-    Int ret;
+    int ret;
     MSSpwGramrestart(MSSpwGramin);
     yy_start = 1;
     strpMSSpwGram = command.c_str();      // get pointer to command string
@@ -157,7 +157,7 @@ const TableExprNode* msSpwGramParseNode() { return MSSpwParse::node(); }
 void msSpwGramParseDeleteNode() { MSSpwParse::cleanupNode(); }
 
 // # Give the string position.
-Int& msSpwGramPosition() { return posMSSpwGram; }
+int& msSpwGramPosition() { return posMSSpwGram; }
 
 // # Get the next input characters for flex.
 int msSpwGramInput(char* buf, int max_size) {

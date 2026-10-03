@@ -44,7 +44,7 @@ MEpoch* MSTimeParse::daytime = 0x0;
 MeasurementSet* MSTimeParse::ms_p = 0x0;
 TableExprNode* MSTimeParse::otherTens_p = 0x0;
 bool MSTimeParse::defaultTimeComputed = false;
-Matrix<Double> MSTimeParse::timeList(3, 0);
+Matrix<double> MSTimeParse::timeList(3, 0);
 TableExprNode MSTimeParse::columnAsTEN_p;
 MSSelectableMainColumn* MSTimeParse::mainColumn_p = 0x0;
 
@@ -103,12 +103,12 @@ MSTimeParse::MSTimeParse(const MeasurementSet* ms, const TableExprNode& colAsTEN
 // effciency should not be an issue.
 //
 void MSTimeParse::getDefaults() {
-  uInt firstLogicalRow = 0;  // This is the logical first row
+  unsigned int firstLogicalRow = 0;  // This is the logical first row
   // MSMainColumns mainColumns_l(*ms_p);
   //     MSMainColInterface mainColumns_l(*ms_p);
 
   if (!defaultTimeComputed) {
-    uInt i = 0, nrow = (mainColumn_p->flag()).nrow();
+    unsigned int i = 0, nrow = (mainColumn_p->flag()).nrow();
     if (!otherTens_p->isNull()) {
       bool selected = false;
       for (i = 0; i < nrow; i++) {
@@ -149,7 +149,7 @@ void MSTimeParse::getDefaults() {
   //
   // Get the exposure in seconds.
   //
-  ScalarQuantColumn<Double> exposure;
+  ScalarQuantColumn<double> exposure;
   exposure.reference(mainColumn_p->exposureQuant());
   if (ms_p == NULL) {
     // This instance is not attached to an MS (which
@@ -172,7 +172,7 @@ void MSTimeParse::getDefaults() {
   defaultMinute = t0.minutes();
   defaultSeconds = t0.seconds();
   Time t1(defaultYear, defaultMonth, defaultDay, defaultHour, defaultMinute, defaultSeconds);
-  defaultFractionalSec = (Int)((t0 - t1) * 1E3);
+  defaultFractionalSec = (int)((t0 - t1) * 1E3);
 
   defaultTimeComputed = true;
 }
@@ -191,8 +191,8 @@ const TableExprNode* MSTimeParse::addCondition(TableExprNode& condition) {
 //-------------------------------------------------------------------
 //
 const TableExprNode* MSTimeParse::selectTime(const MEpoch& time, bool) {
-  Double timeInSec = toTAIInSec(time);
-  Double dT = MSTimeParse::thisMSTParser->defaultExposure / 2.0;
+  double timeInSec = toTAIInSec(time);
+  double dT = MSTimeParse::thisMSTParser->defaultExposure / 2.0;
 
   //    TableExprNode condition = (abs(ms()->col(colName) - timeInSec) <= dT);
   TableExprNode condition = (abs(columnAsTEN_p - timeInSec) <= dT);
@@ -206,12 +206,12 @@ const TableExprNode* MSTimeParse::selectTime(const MEpoch& time, bool) {
 //-------------------------------------------------------------------
 //
 const TableExprNode* MSTimeParse::selectTimeGT(const MEpoch& lowboundTime, bool) {
-  Double timeInSec = toTAIInSec(lowboundTime);
+  double timeInSec = toTAIInSec(lowboundTime);
   //    TableExprNode condition = (ms()->col(colName) >= timeInSec);
   TableExprNode condition = (columnAsTEN_p >= timeInSec);
 
   //    TableExprNode condition = (columnAsTEN_p >= timeInSec);
-  accumulateTimeList(timeInSec, std::numeric_limits<Double>::max());
+  accumulateTimeList(timeInSec, std::numeric_limits<double>::max());
 
   return addCondition(condition);
 }
@@ -219,7 +219,7 @@ const TableExprNode* MSTimeParse::selectTimeGT(const MEpoch& lowboundTime, bool)
 //-------------------------------------------------------------------
 //
 const TableExprNode* MSTimeParse::selectTimeLT(const MEpoch& upboundTime, bool) {
-  Double timeInSec = toTAIInSec(upboundTime);
+  double timeInSec = toTAIInSec(upboundTime);
   //    TableExprNode condition = (ms()->col(colName) <= timeInSec);
   TableExprNode condition = (columnAsTEN_p <= timeInSec);
 
@@ -233,9 +233,9 @@ const TableExprNode* MSTimeParse::selectTimeLT(const MEpoch& upboundTime, bool) 
 //
 const TableExprNode* MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
                                                   const MEpoch& upboundTime, bool edgeInclusive,
-                                                  Float edgeWidth) {
-  Double upperBound = toTAIInSec(upboundTime);
-  Double lowerBound = toTAIInSec(lowboundTime);
+                                                  float edgeWidth) {
+  double upperBound = toTAIInSec(upboundTime);
+  double lowerBound = toTAIInSec(lowboundTime);
 
   if (lowerBound > upperBound) {
     throw(MSSelectionTimeError("lower bound > upper bound"));
@@ -244,7 +244,7 @@ const TableExprNode* MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
   // edgeWidth < 0, edgeInclusive=F ==> T0~T1 syntax
   // edgeWidth < 0, edgeInclusive=T ==> [T0~T1] syntax
   // edgeWidth = N, edgeInclusive=T ==> N[T0~T1] syntax
-  Float edgeWidth_l =
+  float edgeWidth_l =
       (edgeWidth < 0.0) ? (edgeInclusive == true ? defaultExposure / 2.0 : 0.0) : edgeWidth;
   if (!edgeInclusive) {
     condition = (columnAsTEN_p >= lowerBound && (columnAsTEN_p <= upperBound));
@@ -261,8 +261,8 @@ const TableExprNode* MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
 //-------------------------------------------------------------------
 //
 /*
-const MEpoch *MSTimeParse::dayTimeConvert(Int day, Int hour, Int minute,
-                                          Int second, Int millisec)
+const MEpoch *MSTimeParse::dayTimeConvert(int day, int hour, int minute,
+                                          int second, int millisec)
 {
   if(daytime) delete daytime;
 
@@ -271,7 +271,7 @@ const MEpoch *MSTimeParse::dayTimeConvert(Int day, Int hour, Int minute,
   if (minute == -1) minute=MSTimeParse().minute0();
   if (second == -1) second=MSTimeParse().second0();
   if (millisec == -1) millisec = MSTimeParse().fractionalsec0();
-  Double s = Double(second) + Double(millisec)/1000.0;
+  double s = double(second) + double(millisec)/1000.0;
   Time t(0, 0, day, hour, minute, s);
 
   MVEpoch mv(t.modifiedJulianDay());
@@ -283,11 +283,11 @@ const MEpoch *MSTimeParse::dayTimeConvert(Int day, Int hour, Int minute,
 //
 //-------------------------------------------------------------------
 //
-const MEpoch* MSTimeParse::yearTimeConvert(Int year, Int month, Int day, Int hour, Int minute,
-                                           Int second, Int millisec) {
+const MEpoch* MSTimeParse::yearTimeConvert(int year, int month, int day, int hour, int minute,
+                                           int second, int millisec) {
   if (yeartime) delete yeartime;
 
-  Double s = Double(second) + Double(millisec) / 1000.0;
+  double s = double(second) + double(millisec) / 1000.0;
   Time t(year, month, day, hour, minute, s);
 
   MVEpoch mv(t.modifiedJulianDay());
@@ -301,7 +301,7 @@ const MEpoch* MSTimeParse::yearTimeConvert(const TimeFields& tf) {
   MSTimeParse::thisMSTParser->validate(tf);
   if (yeartime) delete yeartime;
 
-  Double s = Double(tf.sec) + Double(tf.fsec) / 1000.0;
+  double s = double(tf.sec) + double(tf.fsec) / 1000.0;
   Time t(tf.year, tf.month, tf.day, tf.hour, tf.minute, s);
 
   MVEpoch mv(t.modifiedJulianDay());
@@ -318,10 +318,10 @@ const MEpoch* MSTimeParse::yearTimeConvert(const TimeFields& tf) {
 //
 //-------------------------------------------------------------------
 //
-Double MSTimeParse::toTAIInSec(const MEpoch& whatEver) {
+double MSTimeParse::toTAIInSec(const MEpoch& whatEver) {
   //    MEpoch tai=MEpoch::Convert(whatEver,MEpoch::Ref(MEpoch::TAI))();
   MEpoch tai = whatEver;
-  return Double(MVTime(tai.getValue()) * 86400);
+  return double(MVTime(tai.getValue()) * 86400);
 }
 //
 //-------------------------------------------------------------------
@@ -395,8 +395,8 @@ void MSTimeParse::copyDefaults(TimeFields& target, TimeFields& source) {
 //
 //-------------------------------------------------------------------
 //
-void MSTimeParse::accumulateTimeList(const Double t0, const Double t1, const Double dT) {
-  Int n0 = timeList.shape()(1);
+void MSTimeParse::accumulateTimeList(const double t0, const double t1, const double dT) {
+  int n0 = timeList.shape()(1);
   IPosition newShape(timeList.shape());
   newShape(1)++;
   timeList.resize(newShape, true);

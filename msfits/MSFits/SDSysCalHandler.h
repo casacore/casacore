@@ -104,26 +104,26 @@ class SDSysCalHandler {
 
   // fill - a new row is added as necessary, there is no lookback to see if a row could be
   // reused.  Only the current row might be reused.
-  void fill(const Record &row, Int antennaId, Int feedId, Int spectralWindowId, Double time,
-            Vector<Double> timeRange, uInt numReceptors);
+  void fill(const Record &row, int antennaId, int feedId, int spectralWindowId, double time,
+            Vector<double> timeRange, unsigned int numReceptors);
 
  private:
   MSSysCal *msSysCal_p;
   MSSysCalColumns *msSysCalCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
-  uInt nrecpt_p;
+  unsigned int nrecpt_p;
 
-  Int tcalId_p, tsysId_p, trxId_p;
+  int tcalId_p, tsysId_p, trxId_p;
 
   bool hasTsysCol_p, hasTcalCol_p, hasTrxCol_p;
 
   // fields which come from a previous incarnation as a MS
-  RORecordFieldPtr<Double> intervalField_p, timeField_p;
-  RORecordFieldPtr<Float> phaseDiffField_p;
+  RORecordFieldPtr<double> intervalField_p, timeField_p;
+  RORecordFieldPtr<float> phaseDiffField_p;
   RORecordFieldPtr<bool> tcalFlagField_p, trxFlagField_p, tsysFlagField_p, phaseDiffFlagField_p;
-  RORecordFieldPtr<Array<Float>> tcalField_p, trxField_p, tsysField_p;
+  RORecordFieldPtr<Array<float>> tcalField_p, trxField_p, tsysField_p;
 
   // cleanup everything
   void clearAll();

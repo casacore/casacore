@@ -62,7 +62,7 @@ class ArrayColumnDescBase : public BaseColumnDesc {
   // Construct with given parameters.
   ArrayColumnDescBase(const String& name, const String& comment, const String& dataManagerType,
                       const String& dataManagerGroup, DataType, const String& dataTypeId,
-                      Int options, uInt ndim, const IPosition& shape);
+                      int options, unsigned int ndim, const IPosition& shape);
 
   // Copy constructor (copy semantics);
   ArrayColumnDescBase(const ArrayColumnDescBase&);
@@ -118,7 +118,7 @@ class ArrayColumnDescBase : public BaseColumnDesc {
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
-//  Bool, uChar, Short, uShort, Int, uInt, Int64, float, double,
+//  Bool, uChar, Short, uShort, Int, uInt, int64_t, float, double,
 //  Complex, DComplex and String.
 //
 // At table creation time (when a table gets created from a table
@@ -237,7 +237,7 @@ class ArrayColumnDesc : public ArrayColumnDescBase {
   // be defined when creating the table (rows). Ndim>0 means that
   // the arrays in this column must have the given dimensionality.
   // The possible options are defined in ColumnDesc.h.
-  explicit ArrayColumnDesc(const String& name, Int ndim = -1, int options = 0);
+  explicit ArrayColumnDesc(const String& name, int ndim = -1, int options = 0);
 
   // Construct the column with the given name, dimensionality, and comment.
   // The data manager type defaults to the StandardStman storage manager.
@@ -246,7 +246,7 @@ class ArrayColumnDesc : public ArrayColumnDescBase {
   // be defined when creating the table (rows). Ndim>0 means that
   // the arrays in this column must have the given dimensionality.
   // The possible options are defined in ColumnDesc.h.
-  ArrayColumnDesc(const String& name, const String& comment, Int ndim = -1, int options = 0);
+  ArrayColumnDesc(const String& name, const String& comment, int ndim = -1, int options = 0);
 
   // Construct the column with the given name, dimensionality, comment,
   // and default data manager type and group.
@@ -256,7 +256,7 @@ class ArrayColumnDesc : public ArrayColumnDescBase {
   // the arrays in this column must have the given dimensionality.
   // The possible options are defined in ColumnDesc.h.
   ArrayColumnDesc(const String& name, const String& comment, const String& dataManName,
-                  const String& dataManGroup, Int ndim = -1, int options = 0);
+                  const String& dataManGroup, int ndim = -1, int options = 0);
 
   // Construct the column with the given name and shape.
   // The data manager type defaults to the StandardStman storage manager.
@@ -307,14 +307,14 @@ class ArrayColumnDesc : public ArrayColumnDescBase {
 
 // # Explicitly instantiate these templates in ArrColDesc_tmpl.cc
 extern template class ArrayColumnDesc<bool>;
-extern template class ArrayColumnDesc<Char>;
-extern template class ArrayColumnDesc<Short>;
-extern template class ArrayColumnDesc<uShort>;
-extern template class ArrayColumnDesc<Int>;
-extern template class ArrayColumnDesc<uInt>;
-extern template class ArrayColumnDesc<Int64>;
-extern template class ArrayColumnDesc<Float>;
-extern template class ArrayColumnDesc<Double>;
+extern template class ArrayColumnDesc<char>;
+extern template class ArrayColumnDesc<short>;
+extern template class ArrayColumnDesc<unsigned short>;
+extern template class ArrayColumnDesc<int>;
+extern template class ArrayColumnDesc<unsigned int>;
+extern template class ArrayColumnDesc<int64_t>;
+extern template class ArrayColumnDesc<float>;
+extern template class ArrayColumnDesc<double>;
 extern template class ArrayColumnDesc<Complex>;
 extern template class ArrayColumnDesc<DComplex>;
 extern template class ArrayColumnDesc<String>;

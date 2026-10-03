@@ -29,14 +29,14 @@
 // # Instantiate extern templates for often used types.
 namespace casacore {
 template class Block<bool>;
-template class Block<Char>;
-template class Block<Short>;
-template class Block<uShort>;
-template class Block<Int>;
-template class Block<uInt>;
-template class Block<Int64>;
-template class Block<Float>;
-template class Block<Double>;
+template class Block<char>;
+template class Block<short>;
+template class Block<unsigned short>;
+template class Block<int>;
+template class Block<unsigned int>;
+template class Block<int64_t>;
+template class Block<float>;
+template class Block<double>;
 template class Block<Complex>;
 template class Block<DComplex>;
 template class Block<String>;

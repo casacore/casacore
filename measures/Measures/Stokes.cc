@@ -29,7 +29,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Stokes::StokesTypes Stokes::type(Int stokesNumber) {
+Stokes::StokesTypes Stokes::type(int stokesNumber) {
   StokesTypes val = Undefined;
   if (stokesNumber > Undefined && stokesNumber < NumberOfTypes) {
     val = StokesTypes(stokesNumber);
@@ -215,10 +215,10 @@ String Stokes::name(StokesTypes stokesType) {
 }
 
 Vector<String> Stokes::allNames(bool includeUndefined) {
-  uInt size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
+  unsigned int size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
   Vector<String> names(size);
-  uInt idx = 0;
-  for (uInt i = 0; i < NumberOfTypes; i++) {
+  unsigned int idx = 0;
+  for (unsigned int i = 0; i < NumberOfTypes; i++) {
     if (includeUndefined || (StokesTypes)i != Undefined) {
       names[idx] = name((StokesTypes)i);
       idx++;
@@ -227,32 +227,32 @@ Vector<String> Stokes::allNames(bool includeUndefined) {
   return names;
 }
 
-std::optional<Int> Stokes::receptor1(StokesTypes stokesType) {
-  Int rec1 = (stokesType - 1) % 4;
+std::optional<int> Stokes::receptor1(StokesTypes stokesType) {
+  int rec1 = (stokesType - 1) % 4;
   if (rec1 < 2)
     rec1 = 0;
   else
     rec1 = 1;
   if (stokesType > Stokes::V && stokesType < Stokes::RCircular)
-    return std::optional<Int>(rec1);
+    return std::optional<int>(rec1);
   else
-    return std::optional<Int>();
+    return std::optional<int>();
 }
 
-std::optional<Int> Stokes::receptor2(StokesTypes stokesType) {
-  Int rec2 = (stokesType - 1) % 4;
+std::optional<int> Stokes::receptor2(StokesTypes stokesType) {
+  int rec2 = (stokesType - 1) % 4;
   if (rec2 == 0 || rec2 == 2)
     rec2 = 0;
   else
     rec2 = 1;
   if (stokesType > Stokes::V && stokesType < Stokes::RCircular)
-    return std::optional<Int>(rec2);
+    return std::optional<int>(rec2);
   else
-    return std::optional<Int>();
+    return std::optional<int>();
 }
 
-Int Stokes::FITSValue(StokesTypes which) {
-  Int retval;
+int Stokes::FITSValue(StokesTypes which) {
+  int retval;
 
   switch (which) {
     case I:
@@ -298,12 +298,12 @@ Int Stokes::FITSValue(StokesTypes which) {
       retval = 7;
       break;
     default:
-      retval = 100 + Int(which);
+      retval = 100 + int(which);
   }
   return retval;
 }
 
-Stokes::StokesTypes Stokes::fromFITSValue(Int which) {
+Stokes::StokesTypes Stokes::fromFITSValue(int which) {
   StokesTypes retval;
 
   switch (which) {

@@ -54,13 +54,13 @@ void SolarPos::copy(const SolarPos &other) {
   method = other.method;
   checkEpoch = other.checkEpoch;
   checkSunEpoch = other.checkSunEpoch;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     sval[i] = other.sval[i];
     eval[i] = other.eval[i];
     dsval[i] = other.dsval[i];
     deval[i] = other.deval[i];
   }
-  for (Int j = 0; j < 6; j++) {
+  for (int j = 0; j < 6; j++) {
     result[j] = other.result[j];
   }
 }
@@ -70,12 +70,12 @@ SolarPos::~SolarPos() {}
 
 // # Operators
 //  Calculate Solar Position
-const MVPosition &SolarPos::operator()(Double epoch) {
+const MVPosition &SolarPos::operator()(double epoch) {
   calcEarth(epoch);
-  Double dt = epoch - checkEpoch;
+  double dt = epoch - checkEpoch;
   lres++;
   lres %= 6;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result[lres](i) = (-eval[i] - dt * deval[i]);
   }
   // Convert to rectangular
@@ -86,11 +86,11 @@ const MVPosition &SolarPos::operator()(Double epoch) {
 }
 
 // # Member functions
-const MVPosition &SolarPos::baryEarth(Double epoch) {
+const MVPosition &SolarPos::baryEarth(double epoch) {
   calcEarth(epoch);
   calcSun(epoch);
-  Int i;
-  Double dt = epoch - checkEpoch;
+  int i;
+  double dt = epoch - checkEpoch;
   lres++;
   lres %= 6;
   for (i = 0; i < 3; i++) {
@@ -107,12 +107,12 @@ const MVPosition &SolarPos::baryEarth(Double epoch) {
   return result[lres];
 }
 
-const MVPosition &SolarPos::barySun(Double epoch) {
+const MVPosition &SolarPos::barySun(double epoch) {
   calcSun(epoch);
-  Double dt = epoch - checkSunEpoch;
+  double dt = epoch - checkSunEpoch;
   lres++;
   lres %= 6;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result[lres](i) = (-sval[i] - dt * dsval[i]);
   }
   // Convert to rectangular
@@ -122,11 +122,11 @@ const MVPosition &SolarPos::barySun(Double epoch) {
   return result[lres];
 }
 
-const MVPosition &SolarPos::derivative(Double epoch) {
+const MVPosition &SolarPos::derivative(double epoch) {
   calcEarth(epoch);
   lres++;
   lres %= 6;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result[lres](i) = (-deval[i]);
   }
   // Convert to rectangular
@@ -136,12 +136,12 @@ const MVPosition &SolarPos::derivative(Double epoch) {
   return result[lres];
 }
 
-const MVPosition &SolarPos::baryEarthDerivative(Double epoch) {
+const MVPosition &SolarPos::baryEarthDerivative(double epoch) {
   calcEarth(epoch);
   calcSun(epoch);
   lres++;
   lres %= 6;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result[lres](i) = (deval[i] - dsval[i]);
   }
   // Convert to rectangular
@@ -151,11 +151,11 @@ const MVPosition &SolarPos::baryEarthDerivative(Double epoch) {
   return result[lres];
 }
 
-const MVPosition &SolarPos::barySunDerivative(Double epoch) {
+const MVPosition &SolarPos::barySunDerivative(double epoch) {
   calcSun(epoch);
   lres++;
   lres %= 6;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result[lres](i) = (-dsval[i]);
   }
   // Convert to rectangular
@@ -167,7 +167,7 @@ const MVPosition &SolarPos::barySunDerivative(Double epoch) {
 
 void SolarPos::initialize_statics() {
   // Get the interpolation interval
-  interval_reg = AipsrcValue<Double>::registerRC(String("measures.solarpos.d_interval"), Unit("d"),
+  interval_reg = AipsrcValue<double>::registerRC(String("measures.solarpos.d_interval"), Unit("d"),
                                                  Unit("d"), SolarPos::INTV);
   usejpl_reg = AipsrcValue<bool>::registerRC(String("measures.solarpos.b_usejpl"), false);
 }
@@ -177,29 +177,29 @@ void SolarPos::refresh() {
   checkSunEpoch = 1e30;
 }
 
-void SolarPos::calcEarth(Double t) {
-  if (!nearAbs(t, checkEpoch, AipsrcValue<Double>::get(SolarPos::interval_reg))) {
+void SolarPos::calcEarth(double t) {
+  if (!nearAbs(t, checkEpoch, AipsrcValue<double>::get(SolarPos::interval_reg))) {
     checkEpoch = t;
     switch (method) {
       default:
         t = (t - MeasData::MJD2000) / MeasData::JDCEN;
         break;
     }
-    Int i, j;
-    Vector<Double> fa(12), dfa(12);
+    int i, j;
+    Vector<double> fa(12), dfa(12);
     for (i = 0; i < 3; i++) {
-      eval[i] = deval[i] = Double(0);
+      eval[i] = deval[i] = double(0);
     }
-    Double dtmp, ddtmp;
+    double dtmp, ddtmp;
     switch (method) {
       default:
         if (AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
-          Vector<Double> mypl = MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
+          Vector<double> mypl = MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
           for (i = 0; i < 3; i++) {
             eval[i] = mypl(i);
             deval[i] = mypl(i + 3);
           }
-          Vector<Double> mypl1 = MeasTable::Planetary(MeasTable::SUN, checkEpoch);
+          Vector<double> mypl1 = MeasTable::Planetary(MeasTable::SUN, checkEpoch);
           for (i = 0; i < 3; i++) {
             eval[i] -= mypl1(i);
             deval[i] -= mypl1(i + 3);
@@ -209,19 +209,19 @@ void SolarPos::calcEarth(Double t) {
             fa(i) = MeasTable::posArg(i)(t);
             dfa(i) = MeasTable::posArgDeriv(i)(t);
           }
-          std::shared_ptr<Matrix<Double>> mul = MeasTable::mulPosEarthXY(t, 1e-6);
+          std::shared_ptr<Matrix<double>> mul = MeasTable::mulPosEarthXY(t, 1e-6);
           DebugAssert(mul->contiguousStorage(), AipsError);
-          const Double *mulPosEarthXY = mul->data();
+          const double *mulPosEarthXY = mul->data();
           for (i = 0; i < 189; i++) {
             dtmp = ddtmp = 0;
             for (j = 0; j < 12; j++) {
               dtmp += MeasTable::mulPosEarthXYArg(i)[j] * fa[j];
               ddtmp += MeasTable::mulPosEarthXYArg(i)[j] * dfa[j];
             }
-            const Double sinpos0 = sin(dtmp + mulPosEarthXY[0]);
-            const Double cospos0 = cos(dtmp + mulPosEarthXY[0]);
-            const Double sinpos2 = sin(dtmp + mulPosEarthXY[2]);
-            const Double cospos2 = cos(dtmp + mulPosEarthXY[2]);
+            const double sinpos0 = sin(dtmp + mulPosEarthXY[0]);
+            const double cospos0 = cos(dtmp + mulPosEarthXY[0]);
+            const double sinpos2 = sin(dtmp + mulPosEarthXY[2]);
+            const double cospos2 = cos(dtmp + mulPosEarthXY[2]);
             eval[0] += mulPosEarthXY[1] * sinpos0;
             eval[1] += mulPosEarthXY[3] * sinpos2;
             deval[0] += mulPosEarthXY[5] * sinpos0 + mulPosEarthXY[1] * cospos0 * ddtmp;
@@ -230,15 +230,15 @@ void SolarPos::calcEarth(Double t) {
           }
           mul = MeasTable::mulPosEarthZ(t, 1e-6);
           DebugAssert(mul->contiguousStorage(), AipsError);
-          const Double *mulPosEarthZ = mul->data();
+          const double *mulPosEarthZ = mul->data();
           for (i = 0; i < 32; i++) {
             dtmp = ddtmp = 0;
             for (j = 0; j < 12; j++) {
               dtmp += MeasTable::mulPosEarthZArg(i)[j] * fa[j];
               ddtmp += MeasTable::mulPosEarthZArg(i)[j] * dfa[j];
             }
-            const Double sinpos0 = sin(dtmp + mulPosEarthZ[0]);
-            const Double cospos0 = cos(dtmp + mulPosEarthZ[0]);
+            const double sinpos0 = sin(dtmp + mulPosEarthZ[0]);
+            const double cospos0 = cos(dtmp + mulPosEarthZ[0]);
             eval[2] += mulPosEarthZ[1] * sinpos0;
             deval[2] += mulPosEarthZ[3] * sinpos0 + mulPosEarthZ[1] * cospos0 * ddtmp;
             mulPosEarthZ += 4;
@@ -252,24 +252,24 @@ void SolarPos::calcEarth(Double t) {
   }
 }
 
-void SolarPos::calcSun(Double t) {
-  if (!nearAbs(t, checkSunEpoch, AipsrcValue<Double>::get(SolarPos::interval_reg))) {
+void SolarPos::calcSun(double t) {
+  if (!nearAbs(t, checkSunEpoch, AipsrcValue<double>::get(SolarPos::interval_reg))) {
     checkSunEpoch = t;
     switch (method) {
       default:
         t = (t - MeasData::MJD2000) / MeasData::JDCEN;
         break;
     }
-    Int i, j;
-    Vector<Double> fa(12), dfa(12);
+    int i, j;
+    Vector<double> fa(12), dfa(12);
     for (i = 0; i < 3; i++) {
-      sval[i] = dsval[i] = Double(0);
+      sval[i] = dsval[i] = double(0);
     }
-    Double dtmp, ddtmp;
+    double dtmp, ddtmp;
     switch (method) {
       default:
         if (AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
-          Vector<Double> mypl = MeasTable::Planetary(MeasTable::SUN, checkEpoch);
+          Vector<double> mypl = MeasTable::Planetary(MeasTable::SUN, checkEpoch);
           for (i = 0; i < 3; i++) {
             sval[i] = -mypl(i);
             dsval[i] = -mypl(i + 3);
@@ -279,9 +279,9 @@ void SolarPos::calcSun(Double t) {
             fa(i) = MeasTable::posArg(i)(t);
             dfa(i) = MeasTable::posArgDeriv(i)(t);
           }
-          std::shared_ptr<Matrix<Double>> mul = MeasTable::mulPosSunXY(t, 1e-6);
+          std::shared_ptr<Matrix<double>> mul = MeasTable::mulPosSunXY(t, 1e-6);
           DebugAssert(mul->contiguousStorage(), AipsError);
-          const Double *mulPosSunXY = mul->data();
+          const double *mulPosSunXY = mul->data();
           for (i = 0; i < 98; i++) {
             dtmp = ddtmp = 0;
             for (j = 0; j < 12; j++) {
@@ -298,7 +298,7 @@ void SolarPos::calcSun(Double t) {
           }
           mul = MeasTable::mulPosSunZ(t, 1e-6);
           DebugAssert(mul->contiguousStorage(), AipsError);
-          const Double *mulPosSunZ = mul->data();
+          const double *mulPosSunZ = mul->data();
           for (i = 0; i < 29; i++) {
             dtmp = ddtmp = 0;
             for (j = 0; j < 12; j++) {

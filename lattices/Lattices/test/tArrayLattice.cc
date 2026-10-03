@@ -43,47 +43,47 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Int const_arg_func(const Int& val) { return 3 * val; }
+int const_arg_func(const int& val) { return 3 * val; }
 
-Int func(Int val) { return 2 * val * val; }
+int func(int val) { return 2 * val * val; }
 
 int main() {
   try {
     // make an array
-    Array<Float> array1(IPosition(1, 256));
-    Int i;
+    Array<float> array1(IPosition(1, 256));
+    int i;
     for (i = 0; i < 256; i++) {
       array1(IPosition(1, i)) = i;
     }
 
     // make another array
-    Array<Float> array2(IPosition(2, 256, 128));
+    Array<float> array2(IPosition(2, 256, 128));
     for (i = 0; i < 256; i++) {
-      for (Int j = 0; j < 128; j++) {
+      for (int j = 0; j < 128; j++) {
         array2(IPosition(2, i, j)) = i + j;
       }
     }
 
     // default ctor, useless (though legal) until assigned to
-    ArrayLattice<Float> al0;
+    ArrayLattice<float> al0;
 
     // construct a new ArrayLattice, with 'array' as contents, in
-    ArrayLattice<Float> al1(IPosition(1, 256));
+    ArrayLattice<float> al1(IPosition(1, 256));
 
     // construct a new ArrayLattice, with 'array' as contents, with a
-    const ArrayLattice<Float> al2(IPosition(2, 256, 128));
+    const ArrayLattice<float> al2(IPosition(2, 256, 128));
 
     // reconstruct from a pre-existing ArrayLattice in the Table,
-    ArrayLattice<Float> al3(array1);
+    ArrayLattice<float> al3(array1);
 
     // reconstruct from a pre-existing ArrayLattice in the Table, with
     // TableColumn name, and row number (defaults to row zero)
-    const ArrayLattice<Float> al4(array2);
+    const ArrayLattice<float> al4(array2);
 
     // the copy constructor (reference semantics):  passing by value
     // doesn't make sense, because it would require the creation of a
     // temporary (but possibly huge) file on disk
-    ArrayLattice<Float> al5(al3);
+    ArrayLattice<float> al5(al3);
 
     // test reference nature
     AlwaysAssert(near(al3(IPosition(1, 0)), 0.0f, 1E-6), AipsError);
@@ -99,21 +99,21 @@ int main() {
     al0.putAt(33.0, IPosition(2, 0));
     AlwaysAssert(near(al4(IPosition(2, 0)), 33.0f, 1E-6) == false, AipsError);
 
-    ArrayLattice<Int> al6(IPosition(4, 5, 6, 7, 8));
+    ArrayLattice<int> al6(IPosition(4, 5, 6, 7, 8));
     // returns the shape of the ArrayLattice.
     AlwaysAssert(al6.shape() == IPosition(4, 5, 6, 7, 8), AipsError);
     AlwaysAssert(al4.shape() == IPosition(2, 256, 128), AipsError);
 
     // function which extracts an Array of values from a Lattice - a read-only
     // operation.
-    COWPtr<Array<Float>> buffer1;
+    COWPtr<Array<float>> buffer1;
     IPosition start(2, 0, 0), shape(2, 128, 64), stride(2, 2, 2);
     AlwaysAssert(!al4.getSlice(buffer1, start, shape, stride), AipsError);
     AlwaysAssert(near(buffer1.ref()(IPosition(2, 0, 0)), 0.0f, 1E-6), AipsError);
     AlwaysAssert(near(buffer1.ref()(IPosition(2, 127, 0)), 254.f, 1E-6), AipsError);
     AlwaysAssert(near(buffer1.ref()(IPosition(2, 0, 63)), 126.0f, 1E-6), AipsError);
     AlwaysAssert(near(buffer1.ref()(IPosition(2, 127, 63)), 380.f, 1E-6), AipsError);
-    COWPtr<Array<Float>> buffer2;
+    COWPtr<Array<float>> buffer2;
     Slicer theSlice(start, shape, stride);
     AlwaysAssert(!al4.getSlice(buffer2, theSlice), AipsError);
     AlwaysAssert(near(buffer2.ref()(IPosition(2, 0, 0)), 0.0f, 1E-6), AipsError);
@@ -121,14 +121,14 @@ int main() {
     AlwaysAssert(near(buffer2.ref()(IPosition(2, 0, 63)), 126.f, 1E-6), AipsError);
     AlwaysAssert(near(buffer2.ref()(IPosition(2, 127, 63)), 380.f, 1E-6), AipsError);
 
-    Array<Float> buffer3;
+    Array<float> buffer3;
     AlwaysAssert(al0.getSlice(buffer3, start, shape, stride), AipsError);
     AlwaysAssert(near(buffer3(IPosition(2, 0, 0)), 33.0f, 1E-6), AipsError);
     AlwaysAssert(near(buffer3(IPosition(2, 127, 0)), 254.0f, 1E-6), AipsError);
     AlwaysAssert(near(buffer3(IPosition(2, 0, 63)), 126.0f, 1E-6), AipsError);
     AlwaysAssert(near(buffer3(IPosition(2, 127, 63)), 380.0f, 1E-6), AipsError);
 
-    Array<Float> buffer4;
+    Array<float> buffer4;
     AlwaysAssert(al0.getSlice(buffer4, theSlice), AipsError);
     AlwaysAssert(near(buffer4(IPosition(2, 0, 0)), 33.0f, 1E-6), AipsError);
     AlwaysAssert(near(buffer4(IPosition(2, 127, 0)), 254.0f, 1E-6), AipsError);
@@ -147,7 +147,7 @@ int main() {
     AlwaysAssert(al6.getAt(IPosition(4, 1, 2, 3, 4)) == 42, AipsError);
     AlwaysAssert(al6.getAt(IPosition(4, 4, 5, 6, 7)) == 42, AipsError);
 
-    Array<Int> sourceBuffer(IPosition(4, 4));
+    Array<int> sourceBuffer(IPosition(4, 4));
     sourceBuffer = 6;
     // function which places an Array of values within the lattice
     al6.putSlice(sourceBuffer, IPosition(4, 1, 2, 3, 4), IPosition(4, 1));
@@ -212,7 +212,7 @@ int main() {
     AlwaysAssert(al6.getAt(IPosition(4, 4)) == 24, AipsError);
     AlwaysAssert(al6.getAt(IPosition(4, 2, 3, 4, 5)) == 24, AipsError);
 
-    Polynomial<Float> poly(3);
+    Polynomial<float> poly(3);
     poly.setCoefficient(1, 0.5);
     poly.setCoefficient(2, 0.75);
     poly.setCoefficient(3, 1.0);
@@ -226,13 +226,13 @@ int main() {
     IPosition zvector(4, 1, 1, 7, 1);
     LatticeStepper method(al6.shape(), zvector);
     // Lattice and LatticeNavigator constructor
-    RO_LatticeIterator<Int> al6ROIter(al6, method);
+    RO_LatticeIterator<int> al6ROIter(al6, method);
 
     // LatticeNavigator default "BLC to TRC" constructor
-    RO_LatticeIterator<Float> al3ROIter(al3, IPosition(1, 8));
+    RO_LatticeIterator<float> al3ROIter(al3, IPosition(1, 8));
 
     // copy ctor (uses reference sematics)
-    RO_LatticeIterator<Int> al6ROItercopy(al6ROIter);
+    RO_LatticeIterator<int> al6ROItercopy(al6ROIter);
 
     // destructor (cleans up dangling references)
     // virtual ~RO_LatticeIterator();
@@ -265,7 +265,7 @@ int main() {
     AlwaysAssert(al6ROIter.atStart(), AipsError);
 
     // Function which returns a value of "True" if the cursor is at the end.
-    Int I;
+    int I;
     for (I = 0; I < 240; I++) {
       al6ROIter++;
     }
@@ -299,12 +299,12 @@ int main() {
     // Lattice. A call of the function whose return value is
     // inappropriate with reference to the cursor shape as defined by
     // the LatticeNavigator will throw an exception. </note>
-    Vector<Int> zvectdata(al6ROIter.vectorCursor());
+    Vector<int> zvectdata(al6ROIter.vectorCursor());
     AlwaysAssert(allEQ(zvectdata, 24), AipsError);
     AlwaysAssert(zvectdata.ndim() == 1, AipsError);
     AlwaysAssert(zvectdata.shape() == IPosition(1, 7), AipsError);
 
-    Array<Int> zarray(al6ROIter.cursor());
+    Array<int> zarray(al6ROIter.cursor());
     AlwaysAssert(allEQ(zarray, 24), AipsError);
     AlwaysAssert(zarray.ndim() == 4, AipsError);
     AlwaysAssert(zarray.shape() == IPosition(4, 1, 1, 7, 1), AipsError);
@@ -335,13 +335,13 @@ int main() {
     // -------------------Read&Write LatticeIterator--------------------
 
     // Lattice and LatticeNavigator ctor
-    LatticeIterator<Int> al6Iter(al6, newMethod);
+    LatticeIterator<int> al6Iter(al6, newMethod);
 
     // LatticeNavigator default "BLC to TRC" constructor
-    LatticeIterator<Float> al3Iter(al3, IPosition(1, 8));
+    LatticeIterator<float> al3Iter(al3, IPosition(1, 8));
 
     // copy ctor (uses reference sematics)
-    LatticeIterator<Int> copyal6Iter(al6Iter);
+    LatticeIterator<int> copyal6Iter(al6Iter);
 
     // destructor (cleans up dangling references)
     //~LatticeIterator();
@@ -354,12 +354,12 @@ int main() {
     // the function whose return value is inappropriate with reference to the
     // cursor shape as defined by the LatticeNavigator will throw an
     // exception</note>
-    Matrix<Int> xymatdata(al6Iter.matrixCursor());
+    Matrix<int> xymatdata(al6Iter.matrixCursor());
     AlwaysAssert(allEQ(xymatdata, 24), AipsError);
     AlwaysAssert(xymatdata.ndim() == 2, AipsError);
     AlwaysAssert(xymatdata.shape() == xymatrix, AipsError);
 
-    Array<Int> xyarray(al6Iter.cursor());
+    Array<int> xyarray(al6Iter.cursor());
     AlwaysAssert(allEQ(xyarray, 24), AipsError);
     AlwaysAssert(xyarray.ndim() == 4, AipsError);
     AlwaysAssert(xyarray.shape() == IPosition(4, 5, 6, 1, 1), AipsError);
@@ -437,7 +437,7 @@ int main() {
 
     // -------------------- test Iterator very hard ---------------------
     IPosition orientation;
-    Int j, k, l;
+    int j, k, l;
     for (i = 0; i < 4; i++) {
       for (j = 0; j < 4; j++) {
         for (k = 0; k < 4; k++) {
@@ -450,7 +450,7 @@ int main() {
                   // ------------------- integral shaped vectors ----------
                   IPosition xvector(1, 5);
                   LatticeStepper xvectorstepper(al6.shape(), xvector, orientation);
-                  LatticeIterator<Int> xiter(al6, xvectorstepper);
+                  LatticeIterator<int> xiter(al6, xvectorstepper);
                   for (; !xiter.atEnd(); xiter++) {
                   }
                   AlwaysAssert(xiter.nsteps() == 336, AipsError);
@@ -458,14 +458,14 @@ int main() {
 
                   IPosition yvector(2, 1, 6);
                   LatticeStepper yvectorstepper(al6.shape(), yvector, orientation);
-                  LatticeIterator<Int> yiter(al6, yvectorstepper);
+                  LatticeIterator<int> yiter(al6, yvectorstepper);
                   for (; !yiter.atEnd(); yiter++) {
                   }
                   AlwaysAssert(yiter.nsteps() == 280, AipsError);
                   AlwaysAssert(allEQ(yiter.vectorCursor(), 24), AipsError);
 
                   LatticeStepper zvectorstepper(al6.shape(), zvector, orientation);
-                  LatticeIterator<Int> ziter(al6, zvectorstepper);
+                  LatticeIterator<int> ziter(al6, zvectorstepper);
                   for (; !ziter.atEnd(); ziter++) {
                   }
                   AlwaysAssert(ziter.nsteps() == 240, AipsError);
@@ -473,7 +473,7 @@ int main() {
 
                   IPosition tvector(4, 1, 1, 1, 8);
                   LatticeStepper tvectorstepper(al6.shape(), tvector, orientation);
-                  LatticeIterator<Int> titer(al6, tvectorstepper);
+                  LatticeIterator<int> titer(al6, tvectorstepper);
                   for (; !titer.atEnd(); titer++) {
                   }
                   AlwaysAssert(titer.nsteps() == 210, AipsError);
@@ -484,11 +484,11 @@ int main() {
                   IPosition xnonIntgrlvector(1, 3);
                   LatticeStepper xnonIntgrlvectorstepper(al6.shape(), xnonIntgrlvector,
                                                          orientation);
-                  LatticeIterator<Int> nixiter(al6, xnonIntgrlvectorstepper);
+                  LatticeIterator<int> nixiter(al6, xnonIntgrlvectorstepper);
                   for (; !nixiter.atEnd(); nixiter++) {
                   }
                   AlwaysAssert(nixiter.nsteps() == 672, AipsError);
-                  Vector<Int> tester(3);
+                  Vector<int> tester(3);
                   tester.set(24);
                   tester(2) = 0;
                   AlwaysAssert(allEQ(nixiter.vectorCursor(), tester), AipsError);
@@ -496,7 +496,7 @@ int main() {
                   IPosition ynonIntgrlvector(2, 1, 4);
                   LatticeStepper ynonIntgrlvectorstepper(al6.shape(), ynonIntgrlvector,
                                                          orientation);
-                  LatticeIterator<Int> niyiter(al6, ynonIntgrlvectorstepper);
+                  LatticeIterator<int> niyiter(al6, ynonIntgrlvectorstepper);
                   for (; !niyiter.atEnd(); niyiter++) {
                   }
                   AlwaysAssert(niyiter.nsteps() == 560, AipsError);
@@ -509,7 +509,7 @@ int main() {
                   IPosition znonIntgrlvector(3, 1, 1, 4);
                   LatticeStepper znonIntgrlvectorstepper(al6.shape(), znonIntgrlvector,
                                                          orientation);
-                  LatticeIterator<Int> niziter(al6, znonIntgrlvectorstepper);
+                  LatticeIterator<int> niziter(al6, znonIntgrlvectorstepper);
                   for (; !niziter.atEnd(); niziter++) {
                   }
                   AlwaysAssert(niziter.nsteps() == 480, AipsError);
@@ -519,7 +519,7 @@ int main() {
                   IPosition tnonIntgrlvector(4, 1, 1, 1, 5);
                   LatticeStepper tnonIntgrlvectorstepper(al6.shape(), tnonIntgrlvector,
                                                          orientation);
-                  LatticeIterator<Int> nititer(al6, tnonIntgrlvectorstepper);
+                  LatticeIterator<int> nititer(al6, tnonIntgrlvectorstepper);
                   for (; !nititer.atEnd(); nititer++) {
                   }
                   AlwaysAssert(nititer.nsteps() == 420, AipsError);
@@ -532,7 +532,7 @@ int main() {
                   // -------------------------integral matrices----------------------------
 
                   LatticeStepper xymatrixstepper(al6.shape(), xymatrix, orientation);
-                  LatticeIterator<Int> xyiter(al6, xymatrixstepper);
+                  LatticeIterator<int> xyiter(al6, xymatrixstepper);
                   for (; !xyiter.atEnd(); xyiter++) {
                   }
                   AlwaysAssert(xyiter.nsteps() == 56, AipsError);
@@ -540,7 +540,7 @@ int main() {
 
                   IPosition xzmatrix(3, 5, 1, 7);
                   LatticeStepper xzmatrixstepper(al6.shape(), xzmatrix, orientation);
-                  LatticeIterator<Int> xziter(al6, xzmatrixstepper);
+                  LatticeIterator<int> xziter(al6, xzmatrixstepper);
                   for (; !xziter.atEnd(); xziter++) {
                   }
                   AlwaysAssert(xziter.nsteps() == 48, AipsError);
@@ -548,7 +548,7 @@ int main() {
 
                   IPosition xtmatrix(4, 5, 1, 1, 8);
                   LatticeStepper xtmatrixstepper(al6.shape(), xtmatrix, orientation);
-                  LatticeIterator<Int> xtiter(al6, xtmatrixstepper);
+                  LatticeIterator<int> xtiter(al6, xtmatrixstepper);
                   for (; !xtiter.atEnd(); xtiter++) {
                   }
                   AlwaysAssert(xtiter.nsteps() == 42, AipsError);
@@ -556,7 +556,7 @@ int main() {
 
                   IPosition yzmatrix(3, 1, 6, 7);
                   LatticeStepper yzmatrixstepper(al6.shape(), yzmatrix, orientation);
-                  LatticeIterator<Int> yziter(al6, yzmatrixstepper);
+                  LatticeIterator<int> yziter(al6, yzmatrixstepper);
                   for (; !yziter.atEnd(); yziter++) {
                   }
                   AlwaysAssert(yziter.nsteps() == 40, AipsError);
@@ -564,7 +564,7 @@ int main() {
 
                   IPosition ytmatrix(4, 1, 6, 1, 8);
                   LatticeStepper ytmatrixstepper(al6.shape(), ytmatrix, orientation);
-                  LatticeIterator<Int> ytiter(al6, ytmatrixstepper);
+                  LatticeIterator<int> ytiter(al6, ytmatrixstepper);
                   for (; !ytiter.atEnd(); ytiter++) {
                   }
                   AlwaysAssert(ytiter.nsteps() == 35, AipsError);
@@ -572,7 +572,7 @@ int main() {
 
                   IPosition ztmatrix(4, 1, 1, 7, 8);
                   LatticeStepper ztmatrixstepper(al6.shape(), ztmatrix, orientation);
-                  LatticeIterator<Int> ztiter(al6, ztmatrixstepper);
+                  LatticeIterator<int> ztiter(al6, ztmatrixstepper);
                   for (; !ztiter.atEnd(); ztiter++) {
                   }
                   AlwaysAssert(ztiter.nsteps() == 30, AipsError);
@@ -582,11 +582,11 @@ int main() {
 
                   IPosition xyNonItgrlmatrix1(2, 3, 6);
                   LatticeStepper xyNonItgrlmatrix1stepper(al6.shape(), xyNonItgrlmatrix1);
-                  LatticeIterator<Int> nixyiter(al6, xyNonItgrlmatrix1stepper);
+                  LatticeIterator<int> nixyiter(al6, xyNonItgrlmatrix1stepper);
                   for (; !nixyiter.atEnd(); nixyiter++) {
                   }
                   AlwaysAssert(nixyiter.nsteps() == 112, AipsError);
-                  Matrix<Int> test(xyNonItgrlmatrix1);
+                  Matrix<int> test(xyNonItgrlmatrix1);
                   test.set(24);
                   test.row(2) = 0;
                   AlwaysAssert(allEQ(nixyiter.matrixCursor(), test), AipsError);
@@ -594,7 +594,7 @@ int main() {
                   IPosition xyNonItgrlmatrix2(2, 5, 4);
                   LatticeStepper xyNonItgrlmatrix2stepper(al6.shape(), xyNonItgrlmatrix2,
                                                           orientation);
-                  LatticeIterator<Int> ni2xyiter(al6, xyNonItgrlmatrix2stepper);
+                  LatticeIterator<int> ni2xyiter(al6, xyNonItgrlmatrix2stepper);
                   for (; !ni2xyiter.atEnd(); ni2xyiter++) {
                   }
                   AlwaysAssert(ni2xyiter.nsteps() == 112, AipsError);
@@ -607,7 +607,7 @@ int main() {
                   IPosition xyNonItgrlmatrix3(2, 3, 4);
                   LatticeStepper xyNonItgrlmatrix3stepper(al6.shape(), xyNonItgrlmatrix3,
                                                           orientation);
-                  LatticeIterator<Int> ni3xyiter(al6, xyNonItgrlmatrix3stepper);
+                  LatticeIterator<int> ni3xyiter(al6, xyNonItgrlmatrix3stepper);
                   for (; !ni3xyiter.atEnd(); ni3xyiter++) {
                   }
                   AlwaysAssert(ni3xyiter.nsteps() == 224, AipsError);
@@ -622,7 +622,7 @@ int main() {
                   IPosition xzNonItgrlmatrix1(3, 3, 1, 7);
                   LatticeStepper xzNonItgrlmatrix1stepper(al6.shape(), xzNonItgrlmatrix1,
                                                           orientation);
-                  LatticeIterator<Int> nixziter(al6, xzNonItgrlmatrix1stepper);
+                  LatticeIterator<int> nixziter(al6, xzNonItgrlmatrix1stepper);
                   for (; !nixziter.atEnd(); nixziter++) {
                   }
                   AlwaysAssert(nixziter.nsteps() == 96, AipsError);
@@ -634,7 +634,7 @@ int main() {
                   IPosition xzNonItgrlmatrix2(3, 5, 1, 4);
                   LatticeStepper xzNonItgrlmatrix2stepper(al6.shape(), xzNonItgrlmatrix2,
                                                           orientation);
-                  LatticeIterator<Int> ni2xziter(al6, xzNonItgrlmatrix2stepper);
+                  LatticeIterator<int> ni2xziter(al6, xzNonItgrlmatrix2stepper);
                   for (; !ni2xziter.atEnd(); ni2xziter++) {
                   }
                   AlwaysAssert(ni2xziter.nsteps() == 96, AipsError);
@@ -646,7 +646,7 @@ int main() {
                   IPosition xzNonItgrlmatrix3(3, 3, 1, 4);
                   LatticeStepper xzNonItgrlmatrix3stepper(al6.shape(), xzNonItgrlmatrix3,
                                                           orientation);
-                  LatticeIterator<Int> ni3xziter(al6, xzNonItgrlmatrix3stepper);
+                  LatticeIterator<int> ni3xziter(al6, xzNonItgrlmatrix3stepper);
                   for (; !ni3xziter.atEnd(); ni3xziter++) {
                   }
                   AlwaysAssert(ni3xziter.nsteps() == 192, AipsError);
@@ -659,7 +659,7 @@ int main() {
                   IPosition xtNonItgrlmatrix1(4, 3, 1, 1, 8);
                   LatticeStepper xtNonItgrlmatrix1stepper(al6.shape(), xtNonItgrlmatrix1,
                                                           orientation);
-                  LatticeIterator<Int> nixtiter(al6, xtNonItgrlmatrix1stepper);
+                  LatticeIterator<int> nixtiter(al6, xtNonItgrlmatrix1stepper);
                   for (; !nixtiter.atEnd(); nixtiter++) {
                   }
                   AlwaysAssert(nixtiter.nsteps() == 84, AipsError);
@@ -671,7 +671,7 @@ int main() {
                   IPosition xtNonItgrlmatrix2(4, 5, 1, 1, 5);
                   LatticeStepper xtNonItgrlmatrix2stepper(al6.shape(), xtNonItgrlmatrix2,
                                                           orientation);
-                  LatticeIterator<Int> ni2xtiter(al6, xtNonItgrlmatrix2stepper);
+                  LatticeIterator<int> ni2xtiter(al6, xtNonItgrlmatrix2stepper);
                   for (; !ni2xtiter.atEnd(); ni2xtiter++) {
                   }
                   AlwaysAssert(ni2xtiter.nsteps() == 84, AipsError);
@@ -684,7 +684,7 @@ int main() {
                   IPosition xtNonItgrlmatrix3(4, 3, 1, 1, 5);
                   LatticeStepper xtNonItgrlmatrix3stepper(al6.shape(), xtNonItgrlmatrix3,
                                                           orientation);
-                  LatticeIterator<Int> ni3xtiter(al6, xtNonItgrlmatrix3stepper);
+                  LatticeIterator<int> ni3xtiter(al6, xtNonItgrlmatrix3stepper);
                   for (; !ni3xtiter.atEnd(); ni3xtiter++) {
                   }
                   AlwaysAssert(ni3xtiter.nsteps() == 168, AipsError);
@@ -698,7 +698,7 @@ int main() {
                   IPosition yzNonItgrlmatrix1(3, 1, 4, 7);
                   LatticeStepper yzNonItgrlmatrix1stepper(al6.shape(), yzNonItgrlmatrix1,
                                                           orientation);
-                  LatticeIterator<Int> niyziter(al6, yzNonItgrlmatrix1stepper);
+                  LatticeIterator<int> niyziter(al6, yzNonItgrlmatrix1stepper);
                   for (; !niyziter.atEnd(); niyziter++) {
                   }
                   AlwaysAssert(niyziter.nsteps() == 80, AipsError);
@@ -711,7 +711,7 @@ int main() {
                   IPosition yzNonItgrlmatrix2(3, 1, 6, 4);
                   LatticeStepper yzNonItgrlmatrix2stepper(al6.shape(), yzNonItgrlmatrix2,
                                                           orientation);
-                  LatticeIterator<Int> ni2yziter(al6, yzNonItgrlmatrix2stepper);
+                  LatticeIterator<int> ni2yziter(al6, yzNonItgrlmatrix2stepper);
                   for (; !ni2yziter.atEnd(); ni2yziter++) {
                   }
                   AlwaysAssert(ni2yziter.nsteps() == 80, AipsError);
@@ -723,7 +723,7 @@ int main() {
                   IPosition yzNonItgrlmatrix3(3, 1, 4, 4);
                   LatticeStepper yzNonItgrlmatrix3stepper(al6.shape(), yzNonItgrlmatrix3,
                                                           orientation);
-                  LatticeIterator<Int> ni3yziter(al6, yzNonItgrlmatrix3stepper);
+                  LatticeIterator<int> ni3yziter(al6, yzNonItgrlmatrix3stepper);
                   for (; !ni3yziter.atEnd(); ni3yziter++) {
                   }
                   AlwaysAssert(ni3yziter.nsteps() == 160, AipsError);
@@ -737,7 +737,7 @@ int main() {
                   IPosition ytNonItgrlmatrix1(4, 1, 4, 1, 8);
                   LatticeStepper ytNonItgrlmatrix1stepper(al6.shape(), ytNonItgrlmatrix1,
                                                           orientation);
-                  LatticeIterator<Int> niytiter(al6, ytNonItgrlmatrix1stepper);
+                  LatticeIterator<int> niytiter(al6, ytNonItgrlmatrix1stepper);
                   for (; !niytiter.atEnd(); niytiter++) {
                   }
                   AlwaysAssert(niytiter.nsteps() == 70, AipsError);
@@ -750,7 +750,7 @@ int main() {
                   IPosition ytNonItgrlmatrix2(4, 1, 6, 1, 5);
                   LatticeStepper ytNonItgrlmatrix2stepper(al6.shape(), ytNonItgrlmatrix2,
                                                           orientation);
-                  LatticeIterator<Int> ni2ytiter(al6, ytNonItgrlmatrix2stepper);
+                  LatticeIterator<int> ni2ytiter(al6, ytNonItgrlmatrix2stepper);
                   for (; !ni2ytiter.atEnd(); ni2ytiter++) {
                   }
                   AlwaysAssert(ni2ytiter.nsteps() == 70, AipsError);
@@ -763,7 +763,7 @@ int main() {
                   IPosition ytNonItgrlmatrix3(4, 1, 4, 1, 5);
                   LatticeStepper ytNonItgrlmatrix3stepper(al6.shape(), ytNonItgrlmatrix3,
                                                           orientation);
-                  LatticeIterator<Int> ni3ytiter(al6, ytNonItgrlmatrix3stepper);
+                  LatticeIterator<int> ni3ytiter(al6, ytNonItgrlmatrix3stepper);
                   for (; !ni3ytiter.atEnd(); ni3ytiter++) {
                   }
                   AlwaysAssert(ni3ytiter.nsteps() == 140, AipsError);
@@ -778,7 +778,7 @@ int main() {
                   IPosition ztNonItgrlmatrix1(4, 1, 1, 4, 8);
                   LatticeStepper ztNonItgrlmatrix1stepper(al6.shape(), ztNonItgrlmatrix1,
                                                           orientation);
-                  LatticeIterator<Int> niztiter(al6, ztNonItgrlmatrix1stepper);
+                  LatticeIterator<int> niztiter(al6, ztNonItgrlmatrix1stepper);
                   for (; !niztiter.atEnd(); niztiter++) {
                   }
                   AlwaysAssert(niztiter.nsteps() == 60, AipsError);
@@ -790,7 +790,7 @@ int main() {
                   IPosition ztNonItgrlmatrix2(4, 1, 1, 7, 5);
                   LatticeStepper ztNonItgrlmatrix2stepper(al6.shape(), ztNonItgrlmatrix2,
                                                           orientation);
-                  LatticeIterator<Int> ni2ztiter(al6, ztNonItgrlmatrix2stepper);
+                  LatticeIterator<int> ni2ztiter(al6, ztNonItgrlmatrix2stepper);
                   for (; !ni2ztiter.atEnd(); ni2ztiter++) {
                   }
                   AlwaysAssert(ni2ztiter.nsteps() == 60, AipsError);
@@ -803,7 +803,7 @@ int main() {
                   IPosition ztNonItgrlmatrix3(4, 1, 1, 4, 5);
                   LatticeStepper ztNonItgrlmatrix3stepper(al6.shape(), ztNonItgrlmatrix3,
                                                           orientation);
-                  LatticeIterator<Int> ni3ztiter(al6, ztNonItgrlmatrix3stepper);
+                  LatticeIterator<int> ni3ztiter(al6, ztNonItgrlmatrix3stepper);
                   for (; !ni3ztiter.atEnd(); ni3ztiter++) {
                   }
                   AlwaysAssert(ni3ztiter.nsteps() == 120, AipsError);
@@ -823,23 +823,23 @@ int main() {
     // Test of operator+, etc.
     {
       const IPosition latticeShape(4, 4, 16, 15, 8);
-      ArrayLattice<Float> pa(latticeShape);
-      Array<Float> arr(latticeShape);
+      ArrayLattice<float> pa(latticeShape);
+      Array<float> arr(latticeShape);
       indgen(arr);
       pa.put(arr);
       AlwaysAssertExit(allEQ(pa.get(), arr));
       pa += pa;
       AlwaysAssertExit(allEQ(pa.get(), float(2) * arr));
-      pa -= ArrayLattice<Float>(arr);
+      pa -= ArrayLattice<float>(arr);
       AlwaysAssertExit(allEQ(pa.get(), arr));
     }
     // Test of copyData
     {
       const IPosition latticeShape(4, 4, 16, 15, 8);
-      Array<Float> arr(latticeShape);
+      Array<float> arr(latticeShape);
       indgen(arr);
-      ArrayLattice<Float> from(arr.copy());
-      ArrayLattice<Float> to(latticeShape);
+      ArrayLattice<float> from(arr.copy());
+      ArrayLattice<float> to(latticeShape);
       to.copyData(from);
       AlwaysAssertExit(to.asArray()(IPosition(4, 0, 0, 0, 1)) == 960);
       AlwaysAssertExit(allEQ(arr, to.asArray()));

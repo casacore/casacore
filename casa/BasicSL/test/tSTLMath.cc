@@ -33,15 +33,15 @@
 #include <casacore/casa/namespace.h>
 
 void testStdVectorPlus() {
-  std::vector<Int> a(3);
-  std::vector<Int> b(3);
+  std::vector<int> a(3);
+  std::vector<int> b(3);
   a[0] = 0;
   a[1] = 1;
   a[2] = 2;
   b[0] = 5;
   b[1] = 6;
   b[2] = 7;
-  std::vector<Int> c = a + b;
+  std::vector<int> c = a + b;
   AlwaysAssertExit(c.size() == 3 && c[0] == 5 && c[1] == 7 && c[2] == 9);
   std::vector<int> d(2);
   bool caught = false;
@@ -56,11 +56,11 @@ void testStdVectorPlus() {
 }
 
 void testStdVectorDivide() {
-  std::vector<Int> a(3);
+  std::vector<int> a(3);
   a[0] = 0;
   a[1] = 2;
   a[2] = 4;
-  std::vector<Int> b = a / 2;
+  std::vector<int> b = a / 2;
   AlwaysAssertExit(b.size() == 3 && b[0] == 0 && b[1] == 1 && b[2] == 2);
 }
 

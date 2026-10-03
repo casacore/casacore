@@ -43,13 +43,13 @@ TempLatticeImpl<T>::TempLatticeImpl()
     : itsLatticePtr(std::make_shared<ArrayLattice<T>>()), itsIsClosed(false) {}
 
 template <class T>
-TempLatticeImpl<T>::TempLatticeImpl(const TiledShape& shape, Int maxMemoryInMB)
+TempLatticeImpl<T>::TempLatticeImpl(const TiledShape& shape, int maxMemoryInMB)
     : itsIsClosed(false) {
-  init(shape, Double(maxMemoryInMB));
+  init(shape, double(maxMemoryInMB));
 }
 
 template <class T>
-TempLatticeImpl<T>::TempLatticeImpl(const TiledShape& shape, Double maxMemoryInMB)
+TempLatticeImpl<T>::TempLatticeImpl(const TiledShape& shape, double maxMemoryInMB)
     : itsIsClosed(false) {
   init(shape, maxMemoryInMB);
 }
@@ -61,19 +61,19 @@ TempLatticeImpl<T>::~TempLatticeImpl() {
 }
 
 template <class T>
-void TempLatticeImpl<T>::init(const TiledShape& shape, Double maxMemoryInMB) {
-  Double memoryReq = Double(shape.shape().product() * sizeof(T)) / (1024.0 * 1024.0);
-  Double memoryAvail;
+void TempLatticeImpl<T>::init(const TiledShape& shape, double maxMemoryInMB) {
+  double memoryReq = double(shape.shape().product() * sizeof(T)) / (1024.0 * 1024.0);
+  double memoryAvail;
   // maxMemoryInMb = 0.0 forces disk.
   if (maxMemoryInMB < 0.0) {
-    memoryAvail = Double(HostInfo::memoryFree() / 1024) / 2.0;
+    memoryAvail = double(HostInfo::memoryFree() / 1024) / 2.0;
   } else {
     memoryAvail = maxMemoryInMB;
   }
   if (memoryReq > memoryAvail) {
     // Create a table with a unique name in a work directory.
     // We can use exclusive locking, since nobody else should use the table.
-    itsTableName = AppInfo::workFileName(Int(memoryReq), "TempLattice");
+    itsTableName = AppInfo::workFileName(int(memoryReq), "TempLattice");
     SetupNewTable newtab(itsTableName, TableDesc(), Table::Scratch);
     itsTable = Table(newtab, TableLock::PermanentLockingWait);
     itsLatticePtr = std::make_shared<PagedArray<T>>(shape, itsTable);

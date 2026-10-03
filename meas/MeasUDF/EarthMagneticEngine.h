@@ -144,15 +144,15 @@ class EarthMagneticEngine : public MeasEngine<MEarthMagnetic> {
 
   // Get the value type. It also gives the nr of output values per position.
   //  0=default, 1=length (in tesla), 2=angles (in radians)
-  Int valueType() const { return itsValueType; }
+  int valueType() const { return itsValueType; }
 
   // Get the values.
-  Array<Double> getArrayDouble(const TableExprId& id);
+  Array<double> getArrayDouble(const TableExprId& id);
 
   // Handle the argument(s) giving the input earthMagnetics or direction
   // and reference type. The earthMagnetic can be a column in a table.
   // Note that direction (or height) can only be given for reftype IGRF.
-  void handleEarthMagnetic(std::vector<TENShPtr>& args, uInt& argnr);
+  void handleEarthMagnetic(std::vector<TENShPtr>& args, unsigned int& argnr);
 
   // Handle the heights argument.
   void handleHeight(TENShPtr& operand);
@@ -171,14 +171,14 @@ class EarthMagneticEngine : public MeasEngine<MEarthMagnetic> {
   void setDirectionEngine(DirectionEngine& engine);
 
   // Set the types of the result.
-  void set(MEarthMagnetic::Types toRefType, Int toValueType, bool asLOS, bool asLong,
+  void set(MEarthMagnetic::Types toRefType, int toValueType, bool asLOS, bool asLong,
            bool useModel);
 
  private:
   // Strip a possible suffix from the reference type.
   virtual String stripMeasType(const String& type);
-  virtual void deriveAttr(const Unit& unit, Int nval);
-  virtual void setValueType(Int valueType);
+  virtual void deriveAttr(const Unit& unit, int nval);
+  virtual void setValueType(int valueType);
   // Make an MEarthMagnetic from xyz or length,angles.
   MEarthMagnetic makeEarthMagnetic(const Quantity& qh, const Quantity& q1,
                                    const Quantity& q2) const;
@@ -186,7 +186,7 @@ class EarthMagneticEngine : public MeasEngine<MEarthMagnetic> {
   virtual void handleValues(TableExprNode& operand, const TableExprId& id,
                             Array<MEarthMagnetic>& earthMagnetics);
   Array<MEarthMagnetic> getEarthMagnetics(const TableExprId& id);
-  Array<Double> getHeights(const TableExprId& id);
+  Array<double> getHeights(const TableExprId& id);
   void copyEM(const MVEarthMagnetic& em, double*& outPtr);
   void copyLLEM(EarthMagneticMachine& emm, double*& outPtr);
 
@@ -194,9 +194,9 @@ class EarthMagneticEngine : public MeasEngine<MEarthMagnetic> {
   MeasFrame itsFrame;               // # frame used by converter
   EarthMagneticMachine itsMachine;  // # model calculations
   MEarthMagnetic::Convert itsConverter;
-  Int itsValueType;
+  int itsValueType;
   // # 3=xyz flux, -3=angle,flux
-  Int itsToValueType;
+  int itsToValueType;
   bool itsAsLOS;         // # get as line-of-sight?
   bool itsAsLong;        // # get as longitude?
   bool itsUseModel;      // # use model calculation?

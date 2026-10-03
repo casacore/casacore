@@ -152,7 +152,7 @@ class FunctionTraits {
   // Get the value
   static const T &getValue(const T &in) { return in; }
   // Set a value (and possible derivative)
-  static void setValue(T &out, const T &val, const uInt, const uInt) { out = val; }
+  static void setValue(T &out, const T &val, const unsigned int, const unsigned int) { out = val; }
 };
 
 // # Following are specializations. Naming only for documentation
@@ -181,7 +181,7 @@ class FunctionTraits_P<AutoDiff<T>> {
   // Get the value
   static const T &getValue(const Type &in) { return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder, const uInt i) {
+  static void setValue(Type &out, const T &val, const unsigned int nder, const unsigned int i) {
     out = Type(val, nder, i);
   }
 };
@@ -211,7 +211,7 @@ class FunctionTraits_PA<AutoDiffA<T>> {
   // Get the value
   static const T &getValue(const Type &in) { return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder, const uInt i) {
+  static void setValue(Type &out, const T &val, const unsigned int nder, const unsigned int i) {
     out = Type(val, nder, i);
   }
 };
@@ -241,7 +241,7 @@ class FunctionTraits_PX<AutoDiffX<T>> {
   // Get the value
   static const T &getValue(const Type &in) { return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder, const uInt i) {
+  static void setValue(Type &out, const T &val, const unsigned int nder, const unsigned int i) {
     out = Type(val, nder, i);
   }
 };

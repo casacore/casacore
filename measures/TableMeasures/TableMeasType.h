@@ -97,19 +97,19 @@ class TableMeasType {
   const String& type() const;
 
   // Translates the refCode for the descriptors measure type.
-  const String& refType(uInt refCode) const;
+  const String& refType(unsigned int refCode) const;
 
   // Returns the reference code for this object given a string.  Throws
   // an exception if the refString is invalid for this object.
-  uInt refCode(const String& refString) const;
+  unsigned int refCode(const String& refString) const;
 
   // Creates a record from the MeasureHolder.
   void toRecord(RecordInterface& rec);
 
  private:
-  Int itsNtypes;                // # number of refcodes/strings
+  int itsNtypes;                // # number of refcodes/strings
   const String* itsStypes;      // # refcode strings
-  const uInt* itsTyps;          // # refcodes
+  const unsigned int* itsTyps;  // # refcodes
   MeasureHolder itsMeasHolder;  // # Holds the measure
 };
 

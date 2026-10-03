@@ -45,7 +45,7 @@ void showMultiFile(MultiFileBase& mfile) {
        << mfile.nblock() << ' ' << mfile.freeBlocks() << endl;
 }
 
-void makeFile(Int64 blockSize) {
+void makeFile(int64_t blockSize) {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, blockSize);
   AlwaysAssertExit(mfile.isWritable());
   showMultiFile(mfile);
@@ -55,7 +55,7 @@ void readFile() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
   AlwaysAssertExit(!mfile.isWritable());
   showMultiFile(mfile);
-  for (uInt i = 0; i < mfile.info().size(); ++i) {
+  for (unsigned int i = 0; i < mfile.info().size(); ++i) {
     String nm = "file" + std::to_string(i);
     cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
@@ -64,9 +64,9 @@ void readFile() {
 void addFiles() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
   AlwaysAssertExit(mfile.isWritable());
-  Int fid0 = mfile.createFile("file0");
-  Int fid1 = mfile.createFile("file1");
-  Int fid2 = mfile.createFile("file2");
+  int fid0 = mfile.createFile("file0");
+  int fid1 = mfile.createFile("file1");
+  int fid2 = mfile.createFile("file2");
   AlwaysAssertExit(mfile.nfile() == 3 && fid0 == 0 && fid1 == 1 && fid2 == 2);
   showMultiFile(mfile);
   mfile.closeFile(fid0);
@@ -76,21 +76,21 @@ void addFiles() {
 
 void writeFiles1() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
-  Int id0 = mfile.openFile("file0");
-  Int id1 = mfile.openFile("file1");
-  Int id2 = mfile.openFile("file2");
-  Vector<Int64> buf(128);
+  int id0 = mfile.openFile("file0");
+  int id1 = mfile.openFile("file1");
+  int id2 = mfile.openFile("file2");
+  Vector<int64_t> buf(128);
   indgen(buf);
   mfile.write(id0, buf.data(), 1024, 0);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id2, buf.data(), 1024, 0);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id0, buf.data(), 1024, 1024);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id0, buf.data(), 1024, 2048);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id1, buf.data(), 1024, 1024);
-  buf += Int64(128);
+  buf += int64_t(128);
   mfile.write(id2, buf.data(), 1024, 1024);
   cout << mfile.info() << endl;
   mfile.closeFile(id0);
@@ -100,44 +100,44 @@ void writeFiles1() {
 
 void checkFiles1(bool do1 = true) {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
-  Int id0 = mfile.openFile("file0");
-  Int id2 = mfile.openFile("file2");
-  Vector<Int64> buf1(128), buf(128), buff(3 * 128);
+  int id0 = mfile.openFile("file0");
+  int id2 = mfile.openFile("file2");
+  Vector<int64_t> buf1(128), buf(128), buff(3 * 128);
   indgen(buf1);
   mfile.read(id0, buf.data(), 1024, 0);
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id2, buf.data(), 1024, 0);
   if (!allEQ(buf, buf1)) {
     cout << buf << endl;
   }
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id0, buf.data(), 1024, 1024);
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id0, buf.data(), 1024, 2048);
   AlwaysAssertExit(allEQ(buf, buf1));
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   if (do1) {
-    Int id1 = mfile.openFile("file1");
+    int id1 = mfile.openFile("file1");
     mfile.read(id1, buf.data(), 1024, 1024);
     AlwaysAssertExit(allEQ(buf, buf1));
     mfile.closeFile(id1);
   }
-  buf1 += Int64(128);
+  buf1 += int64_t(128);
   mfile.read(id2, buf.data(), 1024, 1024);
   AlwaysAssertExit(allEQ(buf, buf1));
   // Check a single read.
   indgen(buf1);
   mfile.read(id0, buff.data(), 3072, 0);
   AlwaysAssertExit(allEQ(buff(Slice(0, 128)), buf1));
-  AlwaysAssertExit(allEQ(buff(Slice(128, 128)), buf1 + Int64(256)));
-  AlwaysAssertExit(allEQ(buff(Slice(256, 128)), buf1 + Int64(384)));
+  AlwaysAssertExit(allEQ(buff(Slice(128, 128)), buf1 + int64_t(256)));
+  AlwaysAssertExit(allEQ(buff(Slice(256, 128)), buf1 + int64_t(384)));
   mfile.read(id0, buff.data(), 3072 - 24, 8);
   AlwaysAssertExit(allEQ(buff(Slice(0, 127)), buf1(Slice(1, 127))));
-  AlwaysAssertExit(allEQ(buff(Slice(127, 128)), buf1 + Int64(256)));
-  AlwaysAssertExit(allEQ(buff(Slice(255, 126)), buf1(Slice(0, 126)) + Int64(384)));
+  AlwaysAssertExit(allEQ(buff(Slice(127, 128)), buf1 + int64_t(256)));
+  AlwaysAssertExit(allEQ(buff(Slice(255, 126)), buf1(Slice(0, 126)) + int64_t(384)));
   AlwaysAssertExit(buff[380] == 509 && buff[381] == 509);  // check not overwritten
   mfile.closeFile(id0);
   mfile.closeFile(id2);
@@ -147,7 +147,7 @@ void deleteFile() {
   cout << "test deleteFile" << endl;
   {
     MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
-    Int id1 = mfile.openFile("file1");
+    int id1 = mfile.openFile("file1");
     mfile.deleteFile(id1);
     cout << mfile.info() << endl;
   }
@@ -156,9 +156,9 @@ void deleteFile() {
 
 void writeFiles2() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
-  Int id0 = mfile.openFile("file0");
-  Int id2 = mfile.openFile("file2");
-  Vector<Int64> buf(128), buf1(128);
+  int id0 = mfile.openFile("file0");
+  int id2 = mfile.openFile("file2");
+  Vector<int64_t> buf(128), buf1(128);
   indgen(buf);
   mfile.write(id0, buf.data(), 1016, 8);
   mfile.read(id0, buf1.data(), 1024, 0);
@@ -173,8 +173,8 @@ void writeFiles2() {
 void checkFiles2() {
   checkFiles1(false);
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
-  Int id2 = mfile.openFile("file2");
-  Vector<Int64> buf1(2), buf(2);
+  int id2 = mfile.openFile("file2");
+  Vector<int64_t> buf1(2), buf(2);
   indgen(buf1);
   mfile.read(id2, buf.data(), 16, 2048);
   AlwaysAssertExit(allEQ(buf, buf1));
@@ -183,11 +183,11 @@ void checkFiles2() {
 
 void timeExact() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, 32768);
-  Int id = mfile.createFile("file0");
-  Vector<Int64> buf(32768 / 8, 0);
-  for (Int j = 0; j < 2; ++j) {
+  int id = mfile.createFile("file0");
+  Vector<int64_t> buf(32768 / 8, 0);
+  for (int j = 0; j < 2; ++j) {
     Timer timer;
-    for (uInt i = 0; i < 1000; ++i) {
+    for (unsigned int i = 0; i < 1000; ++i) {
       mfile.write(id, buf.data(), 32768, i * 32768);
     }
     mfile.fsync();
@@ -198,11 +198,11 @@ void timeExact() {
 
 void timeDouble() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, 16384);
-  Int id = mfile.createFile("file0");
-  Vector<Int64> buf(32768 / 8, 0);
-  for (Int j = 0; j < 2; ++j) {
+  int id = mfile.createFile("file0");
+  Vector<int64_t> buf(32768 / 8, 0);
+  for (int j = 0; j < 2; ++j) {
     Timer timer;
-    for (uInt i = 0; i < 1000; ++i) {
+    for (unsigned int i = 0; i < 1000; ++i) {
       mfile.write(id, buf.data(), 32768, i * 32768);
     }
     mfile.fsync();
@@ -213,11 +213,11 @@ void timeDouble() {
 
 void timePartly() {
   MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, 32768);
-  Int id = mfile.createFile("file0");
-  Vector<Int64> buf(16384 / 8, 0);
-  for (Int j = 0; j < 2; ++j) {
+  int id = mfile.createFile("file0");
+  Vector<int64_t> buf(16384 / 8, 0);
+  for (int j = 0; j < 2; ++j) {
     Timer timer;
-    for (uInt i = 0; i < 2000; ++i) {
+    for (unsigned int i = 0; i < 2000; ++i) {
       mfile.write(id, buf.data(), 16384, i * 16384);
     }
     mfile.fsync();
@@ -227,10 +227,10 @@ void timePartly() {
 }
 
 void timeMove1() {
-  Vector<Int64> buf1(4, 3);
-  Vector<Int64> buf2(4, 0);
+  Vector<int64_t> buf1(4, 3);
+  Vector<int64_t> buf2(4, 0);
   Timer timer;
-  for (uInt i = 0; i < 5000000; ++i) {
+  for (unsigned int i = 0; i < 5000000; ++i) {
     memcpy(buf2.data(), buf1.data(), 8 * 4);
   }
   timer.show("move1 ");
@@ -240,28 +240,28 @@ typedef void* moveFunc(void*, const void*, size_t);
 void* mymemcpy(void* to, const void* from, size_t n) { return memcpy(to, from, n); }
 
 void timeMove2(moveFunc func) {
-  Vector<Int64> buf1(4, 3);
-  Vector<Int64> buf2(4, 0);
+  Vector<int64_t> buf1(4, 3);
+  Vector<int64_t> buf2(4, 0);
   Timer timer;
-  for (uInt i = 0; i < 5000000; ++i) {
+  for (unsigned int i = 0; i < 5000000; ++i) {
     func(buf2.data(), buf1.data(), 8 * 4);
   }
   timer.show("move2 ");
 }
 
 void timeMove3() {
-  Vector<Int64> buf1(4, 3);
-  Vector<Int64> buf2(4, 0);
+  Vector<int64_t> buf1(4, 3);
+  Vector<int64_t> buf2(4, 0);
   Timer timer;
-  for (uInt i = 0; i < 5000000; ++i) {
-    for (uInt j = 0; j < 4; ++j) {
+  for (unsigned int i = 0; i < 5000000; ++i) {
+    for (unsigned int j = 0; j < 4; ++j) {
       buf2.data()[j] = buf1.data()[j];
     }
   }
   timer.show("move3 ");
 }
 
-void doTest(Int64 blockSize) {
+void doTest(int64_t blockSize) {
   cout << "MultiHDF5 test with blockSize=" << blockSize << endl;
   makeFile(blockSize);
   readFile();
@@ -277,14 +277,14 @@ void doTest(Int64 blockSize) {
   cout << endl;
 }
 
-void testNested(Int64 blockSizeParent, Int64 blockSizeChild) {
+void testNested(int64_t blockSizeParent, int64_t blockSizeChild) {
   cout << "Test nested with block sizes " << blockSizeParent << " and " << blockSizeChild << endl;
   {
     MultiHDF5* parentmf = new MultiHDF5("tMultiHDF5_tmp.nest", ByteIO::New, blockSizeParent);
     std::shared_ptr<MultiFileBase> parent(parentmf);
     MultiHDF5 child("tnested", parent, ByteIO::New, blockSizeChild);
-    Int fidp = parent->createFile("file0");
-    Int fidc = child.createFile("file0");
+    int fidp = parent->createFile("file0");
+    int fidc = child.createFile("file0");
     AlwaysAssertExit(fidp == 1 && fidc == 0);
     showMultiFile(*parent);
     showMultiFile(child);
@@ -295,8 +295,8 @@ void testNested(Int64 blockSizeParent, Int64 blockSizeChild) {
     MultiHDF5* parentmf = new MultiHDF5("tMultiHDF5_tmp.nest", ByteIO::Old);
     std::shared_ptr<MultiFileBase> parent(parentmf);
     MultiHDF5 child("tnested", parent, ByteIO::Old);
-    Int fidp = parent->openFile("file0");
-    Int fidc = child.openFile("file0");
+    int fidp = parent->openFile("file0");
+    int fidc = child.openFile("file0");
     AlwaysAssertExit(fidp == 1 && fidc == 0);
     showMultiFile(*parent);
     showMultiFile(child);

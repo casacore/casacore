@@ -113,15 +113,15 @@ class LogSinkInterface {
   // </group>
 
   // Get number of messages in sink.
-  virtual uInt nelements() const;
+  virtual unsigned int nelements() const;
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime(uInt i) const;
-  virtual String getPriority(uInt i) const;
-  virtual String getMessage(uInt i) const;
-  virtual String getLocation(uInt i) const;
-  virtual String getObjectID(uInt i) const;
+  virtual double getTime(unsigned int i) const;
+  virtual String getPriority(unsigned int i) const;
+  virtual String getMessage(unsigned int i) const;
+  virtual String getLocation(unsigned int i) const;
+  virtual String getObjectID(unsigned int i) const;
   // </group>
 
   // This function must be over-ridden in derived classes. If the filter
@@ -134,7 +134,7 @@ class LogSinkInterface {
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.
-  virtual void writeLocally(Double time, const String &message, const String &priority,
+  virtual void writeLocally(double time, const String &message, const String &priority,
                             const String &location, const String &objectID);
 
   // Clear the local sink (i.e. remove all messages from it).

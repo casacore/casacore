@@ -139,7 +139,7 @@ Path SymLink::followSymLink() const {
   // Do it max. 25 times to avoid endless loops.
   Path result;
   File file(*this);
-  Int count = 0;
+  int count = 0;
   do {
     if (++count > 25) {
       throw(

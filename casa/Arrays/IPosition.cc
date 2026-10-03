@@ -63,11 +63,11 @@ IPosition::IPosition(const Array<int>& other) : size_p(0), data_p(buffer_p) {
   assert(ok());
 }
 
-IPosition::IPosition(const Array<long long>& other) : size_p(0), data_p(buffer_p) {
+IPosition::IPosition(const Array<int64_t>& other) : size_p(0), data_p(buffer_p) {
   if (other.size() > 0) {
     if (other.ndim() != 1) {
       throw(
-          ArrayError("IPosition::IPosition(const Array<long long> &other) - "
+          ArrayError("IPosition::IPosition(const Array<int64_t> &other) - "
                      "other is not one-dimensional"));
     }
     fill(other.size(), other.begin());
@@ -120,9 +120,9 @@ Vector<int> IPosition::asVector() const {
   return retval;
 }
 
-Vector<long long> IPosition::asVector64() const {
+Vector<int64_t> IPosition::asVector64() const {
   assert(ok());
-  Vector<long long> retval(nelements());
+  Vector<int64_t> retval(nelements());
   copy(retval.begin());
   return retval;
 }
@@ -132,7 +132,7 @@ IPosition::IPosition(const std::vector<int>& other) : size_p(0), data_p(buffer_p
   assert(ok());
 }
 
-IPosition::IPosition(const std::vector<long long>& other) : size_p(0), data_p(buffer_p) {
+IPosition::IPosition(const std::vector<int64_t>& other) : size_p(0), data_p(buffer_p) {
   fill(other.size(), other.begin());
   assert(ok());
 }
@@ -144,9 +144,9 @@ std::vector<int> IPosition::asStdVector() const {
   return retval;
 }
 
-std::vector<long long> IPosition::asStdVector64() const {
+std::vector<int64_t> IPosition::asStdVector64() const {
   assert(ok());
-  std::vector<long long> retval(nelements());
+  std::vector<int64_t> retval(nelements());
   copy(retval.begin());
   return retval;
 }
@@ -650,11 +650,11 @@ IPosition min(const IPosition& left, const IPosition& right) {
   return result;
 }
 
-long long IPosition::product() const {
+int64_t IPosition::product() const {
   if (nelements() == 0) {
     return 0;
   }
-  long long total = 1;
+  int64_t total = 1;
   for (size_t i = 0; i < nelements(); i++) {
     total *= data_p[i];
   }
@@ -1010,16 +1010,16 @@ bool IPosition::ok() const {
   return retval;
 }
 
-IPosition toIPositionInArray(long long offset, const IPosition& shape) {
+IPosition toIPositionInArray(int64_t offset, const IPosition& shape) {
   if (!isInsideArray(offset, shape)) {
     throw(
-        ArrayIndexError("IPosition ::toIPositionInArray (long long offset,"
+        ArrayIndexError("IPosition ::toIPositionInArray (int64_t offset,"
                         " const IPosition& shape)"
                         " - Invalid offset."));
   }
 
   IPosition iposition(shape.nelements());
-  long long divisor = 1;
+  int64_t divisor = 1;
 
   size_t ndim = shape.nelements();
   for (size_t idim = 0; idim < ndim; idim++) {
@@ -1030,23 +1030,23 @@ IPosition toIPositionInArray(long long offset, const IPosition& shape) {
   return iposition;
 }
 
-long long toOffsetInArray(const IPosition& iposition, const IPosition& shape) {
+int64_t toOffsetInArray(const IPosition& iposition, const IPosition& shape) {
   if (!(iposition.conform(shape))) {
     throw(
-        ArrayConformanceError("long long ::toOffsetInArray (const IPosition& iposition,"
+        ArrayConformanceError("int64_t ::toOffsetInArray (const IPosition& iposition,"
                               " const IPosition& shape)"
                               " - IPositions do not conform"));
   }
 
   if (!isInsideArray(iposition, shape)) {
     throw(
-        ArrayIndexError("long long ::toOffsetInArray (const IPosition& iposition,"
+        ArrayIndexError("int64_t ::toOffsetInArray (const IPosition& iposition,"
                         " const IPosition& shape)"
                         " - Invalid iposition."));
   }
 
-  long long offset = 0;
-  long long multiplier = 1;
+  int64_t offset = 0;
+  int64_t multiplier = 1;
 
   size_t ndim = shape.nelements();
   for (size_t idim = 0; idim < ndim; idim++) {
@@ -1057,7 +1057,7 @@ long long toOffsetInArray(const IPosition& iposition, const IPosition& shape) {
   return offset;
 }
 
-bool isInsideArray(long long offset, const IPosition& shape) {
+bool isInsideArray(int64_t offset, const IPosition& shape) {
   return (offset < shape.product()) ? true : false;
 }
 

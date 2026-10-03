@@ -209,8 +209,8 @@ class TableColumn;
 // same as 1. lastLine <= 0 means until end-of-file.
 // Note that lines matching the comment marker are also counted.
 String readAsciiTable(const String& filein, const String& tableDescName, const String& tableName,
-                      bool autoHeader = false, Char separator = ' ',
-                      const String& commentMarkerRegex = "", Int firstLine = 1, Int lastLine = -1,
+                      bool autoHeader = false, char separator = ' ',
+                      const String& commentMarkerRegex = "", int firstLine = 1, int lastLine = -1,
                       const IPosition& autoShape = IPosition());
 
 // This form gets the header info in the given vectors.
@@ -218,8 +218,8 @@ String readAsciiTable(const String& filein, const String& tableDescName, const S
 // be given in a header line.
 String readAsciiTable(const String& filein, const String& tableproto, const String& tablename,
                       const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                      Char separator, const String& commentMarkerRegex, Int firstLine,
-                      Int lastLine);
+                      char separator, const String& commentMarkerRegex, int firstLine,
+                      int lastLine);
 
 // This form reads TWO Ascii files. The first file may contain
 // keywords and their values as well as the two lines described above for
@@ -246,13 +246,13 @@ String readAsciiTable(const String& filein, const String& tableproto, const Stri
 // Note that lines matching the comment marker are also counted.
 // <group>
 String readAsciiTable(const String& headerFile, const String& dataFile, const String& tableDescName,
-                      const String& tablename, Char separator = ' ',
-                      const String& commentMarkerRegex = "", Int firstLine = 1, Int lastLine = -1);
+                      const String& tablename, char separator = ' ',
+                      const String& commentMarkerRegex = "", int firstLine = 1, int lastLine = -1);
 // # Note that this char* version is needed, because of the first version
 // # Taking a Bool as the 4th argument.
 String readAsciiTable(const String& headerFile, const String& dataFile, const String& tableDescName,
-                      const char* tablename, Char separator = ' ',
-                      const String& commentMarkerRegex = "", Int firstLine = 1, Int lastLine = -1);
+                      const char* tablename, char separator = ' ',
+                      const String& commentMarkerRegex = "", int firstLine = 1, int lastLine = -1);
 // </group>
 
 // Similar versions as above, but returning a Table object.
@@ -261,20 +261,20 @@ String readAsciiTable(const String& headerFile, const String& dataFile, const St
 // <group>
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& filein,
                      const String& tableDescName, const String& tableName, bool autoHeader = false,
-                     Char separator = ' ', const String& commentMarkerRegex = "", Int firstLine = 1,
-                     Int lastLine = -1, const IPosition& autoShape = IPosition());
+                     char separator = ' ', const String& commentMarkerRegex = "", int firstLine = 1,
+                     int lastLine = -1, const IPosition& autoShape = IPosition());
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& filein,
                      const String& tableproto, const String& tablename,
                      const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                     Char separator, const String& commentMarkerRegex, Int firstLine, Int lastLine);
+                     char separator, const String& commentMarkerRegex, int firstLine, int lastLine);
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& headerFile,
                      const String& dataFile, const String& tableDescName, const String& tablename,
-                     Char separator = ' ', const String& commentMarkerRegex = "", Int firstLine = 1,
-                     Int lastLine = -1);
+                     char separator = ' ', const String& commentMarkerRegex = "", int firstLine = 1,
+                     int lastLine = -1);
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& headerFile,
                      const String& dataFile, const String& tableDescName, const char* tablename,
-                     Char separator = ' ', const String& commentMarkerRegex = "", Int firstLine = 1,
-                     Int lastLine = -1);
+                     char separator = ' ', const String& commentMarkerRegex = "", int firstLine = 1,
+                     int lastLine = -1);
 // </group>
 
 // </group>
@@ -297,12 +297,12 @@ class ReadAsciiTable {
   static String run(const String& headerfile, const String& filein, const String& tableproto,
                     const String& tablename, bool autoHeader, const IPosition& autoShape,
                     const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                    Char separator, const String& commentMarkerRegex, Int firstLine, Int lastLine);
+                    char separator, const String& commentMarkerRegex, int firstLine, int lastLine);
   static Table runt(String& formatString, Table::TableType tableType, const String& headerfile,
                     const String& filein, const String& tableproto, const String& tablename,
                     bool autoHeader, const IPosition& autoShape, const Vector<String>& columnNames,
-                    const Vector<String>& dataTypes, Char separator,
-                    const String& commentMarkerRegex, Int firstLine, Int lastLine);
+                    const Vector<String>& dataTypes, char separator,
+                    const String& commentMarkerRegex, int firstLine, int lastLine);
 
   // Read a position using MVAngle.
   // If isDMS is true, a position with : is treated as DMS instead of HMS.
@@ -331,61 +331,61 @@ class ReadAsciiTable {
   static String doRun(const String& headerfile, const String& filein, const String& tableproto,
                       const String& tablename, bool autoHeader, const IPosition& autoShape,
                       const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                      Char separator, bool testComment, const Regex& commentMarker, Int firstLine,
-                      Int lastLine);
+                      char separator, bool testComment, const Regex& commentMarker, int firstLine,
+                      int lastLine);
 
   // Do the actual work of making and filling the table.
   static Table makeTab(String& formatString, Table::TableType tableType, const String& headerfile,
                        const String& filein, const String& tableproto, const String& tablename,
                        bool autoHeader, const IPosition& autoShape,
                        const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                       Char separator, bool testComment, const Regex& commentMarker, Int firstLine,
-                       Int lastLine);
+                       char separator, bool testComment, const Regex& commentMarker, int firstLine,
+                       int lastLine);
 
   // Get the next line. Skip lines to be ignored.
   // It returns false when no more lines are available.
-  static bool getLine(ifstream& file, Int& lineNumber, char* line, Int lineSize, bool testComment,
-                      const Regex& commentMarker, Int firstLine, Int lastLine);
+  static bool getLine(ifstream& file, int& lineNumber, char* line, int lineSize, bool testComment,
+                      const Regex& commentMarker, int firstLine, int lastLine);
 
   // Get the next part of the line using the separator as delimiter.
   // Leading blanks are ignored.
-  static Int getNext(const Char* string, Int strlen, Char* result, Int& at, Char separator);
+  static int getNext(const char* string, int strlen, char* result, int& at, char separator);
 
   // Derive the types from the values in the first data line.
-  static void getTypes(const IPosition& shape, const Char* in, Int leng, Char* string1,
-                       Char* string2, Char separator);
+  static void getTypes(const IPosition& shape, const char* in, int leng, char* string1,
+                       char* string2, char separator);
 
   // Turn the string into a Bool value.
   // Empty string, value 0 and any value starting with f, F, n or N are false.
   static bool makeBool(const String& str);
 
   // Handle a keyword set.
-  static void handleKeyset(Int lineSize, char* string1, char* first, char* second,
+  static void handleKeyset(int lineSize, char* string1, char* first, char* second,
                            TableRecord& keysets, LogIO& logger, const std::string& fileName,
-                           ifstream& jFile, Int& lineNumber, Char separator, bool testComment,
-                           const Regex& commentMarker, Int firstLine, Int lastLine);
+                           ifstream& jFile, int& lineNumber, char separator, bool testComment,
+                           const Regex& commentMarker, int firstLine, int lastLine);
 
   // Get the shape and type from the type string.
-  static Int getTypeShape(const String& typestr, IPosition& shape, Int& type);
+  static int getTypeShape(const String& typestr, IPosition& shape, int& type);
 
   // Get the next scalar value with the given type from string1.
-  static bool getValue(char* string1, Int lineSize, char* first, Int& at1, Char separator, Int type,
+  static bool getValue(char* string1, int lineSize, char* first, int& at1, char separator, int type,
                        void* value);
 
   // Handle the next scalar with the given type from the data line and
   // put it into the table column.
-  static void handleScalar(char* string1, Int lineSize, char* first, Int& at1, Char separator,
-                           Int type, TableColumn& tabcol, rownr_t rownr);
+  static void handleScalar(char* string1, int lineSize, char* first, int& at1, char separator,
+                           int type, TableColumn& tabcol, rownr_t rownr);
 
   // Get the next array with the given type from string1.
   // It returns the shape (for variable shaped arrays).
-  static IPosition getArray(char* string1, Int lineSize, char* first, Int& at1, Char separator,
-                            const IPosition& shape, Int varAxis, Int type, void* valueBlock);
+  static IPosition getArray(char* string1, int lineSize, char* first, int& at1, char separator,
+                            const IPosition& shape, int varAxis, int type, void* valueBlock);
 
   // Get the next array with the given type from the data line and
   // put it into the table column.
-  static void handleArray(char* string1, Int lineSize, char* first, Int& at1, Char separator,
-                          const IPosition& shape, Int varAxis, Int type, TableColumn& tabcol,
+  static void handleArray(char* string1, int lineSize, char* first, int& at1, char separator,
+                          const IPosition& shape, int varAxis, int type, TableColumn& tabcol,
                           rownr_t rownr);
 };
 

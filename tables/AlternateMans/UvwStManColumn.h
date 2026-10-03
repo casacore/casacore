@@ -28,7 +28,7 @@ class UvwStManColumn final : public StManColumn {
     }
   }
 
-  IPosition shape(uInt) final { return IPosition{3}; }
+  IPosition shape(unsigned int) final { return IPosition{3}; }
 
   IPosition shape(rownr_t) final { return IPosition{3}; }
 

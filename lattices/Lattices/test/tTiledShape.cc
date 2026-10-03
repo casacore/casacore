@@ -70,7 +70,7 @@ void testClass() {
   }
 }
 
-IPosition getVec(uInt nrdim, const String& prompt) {
+IPosition getVec(unsigned int nrdim, const String& prompt) {
   while (true) {
     cout << prompt;
     String str;
@@ -84,7 +84,7 @@ IPosition getVec(uInt nrdim, const String& prompt) {
     } else {
       bool error = false;
       IPosition pos(vec.nelements());
-      for (uInt i = 0; i < vec.nelements(); i++) {
+      for (unsigned int i = 0; i < vec.nelements(); i++) {
         istringstream istr(vec(i));
         istr >> pos(i);
         if (pos(i) < 0) {
@@ -100,7 +100,7 @@ IPosition getVec(uInt nrdim, const String& prompt) {
   }
 }
 
-void testTiling(uInt tileSize) {
+void testTiling(unsigned int tileSize) {
   // Convert the command line argument to shape.
   while (true) {
     IPosition shape = getVec(10, "array shape (end means stop): ");
@@ -130,7 +130,7 @@ int main(int argc, const char* argv[]) {
   }
   try {
     // Get the command line argument as tile size.
-    uInt tileSize;
+    unsigned int tileSize;
     istringstream istr1(argv[1]);
     istr1 >> tileSize;
     testTiling(tileSize);

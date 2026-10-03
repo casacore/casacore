@@ -43,12 +43,12 @@
 class DataClass {
  public:
   DataClass(const IPosition &shape, const LogSink &sink);  // 1
-  void set(Int toWhat);                                    // 2
+  void set(int toWhat);                                    // 2
   LogIO &sink() { return os_p; }                           // 3
-  Array<Int> &data() { return data_p; }                    // 4
-  const Array<Int> &data() const { return data_p; }        // 5
+  Array<int> &data() { return data_p; }                    // 4
+  const Array<int> &data() const { return data_p; }        // 5
  private:                                                  // 6
-  Vector<Int> data_p;                                      // 7
+  Vector<int> data_p;                                      // 7
   LogSink log_sink_p;                                      // 8
   LogIO os_p;                                              // 9
 };
@@ -72,11 +72,11 @@ DataClass::DataClass(const IPosition &shape, const LogSink &sink)
   set(2);                                               // 15
 }
 
-void DataClass::set(Int toWhat) {
+void DataClass::set(int toWhat) {
   os_p << LogIO::NORMAL << LogOrigin("DataClass", "set(Int toWhat)");   // 1
   os_p << "Setting data values to " << toWhat << WHERE << LogIO::POST;  // 2
-  uInt n = data_p.nelements();                                          // 3
-  for (uInt i = 0; i < n; i++) {                                        // 4
+  unsigned int n = data_p.nelements();                                  // 3
+  for (unsigned int i = 0; i < n; i++) {                                // 4
 #ifdef AIPS_DEBUG                                                       // 5
     os_p << LogIO::DEBUGGING << WHERE <<                                // 6
         "Setting element  " << i << " to " << toWhat << LogIO::POST;    // 7
@@ -108,7 +108,7 @@ int main() {
                                                                      // 6
   square(dc);                                                        // 7
                                                                      // 8
-  Float total = sum(dc);                                             // 9
+  float total = sum(dc);                                             // 9
   if (total != 40) {                                                 // 10
     cout << "sum is incorrect" << endl;                              // 11
     return 1;                                                        // 12

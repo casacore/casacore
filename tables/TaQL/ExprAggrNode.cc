@@ -35,7 +35,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableExprAggrNode::TableExprAggrNode(FunctionType ftype, NodeDataType dtype, ValueType vtype,
                                      const TableExprNodeSet& source, const vector<TENShPtr>& nodes,
-                                     const Block<Int>& dtypeOper)
+                                     const Block<int>& dtypeOper)
     : TableExprFuncNode(ftype, dtype, vtype, source, nodes, dtypeOper) {
   // Always treat an aggregate as a variable expression.
   // Otherwise it might be treated as constant and evaluated immediately
@@ -45,7 +45,7 @@ TableExprAggrNode::TableExprAggrNode(FunctionType ftype, NodeDataType dtype, Val
 
 bool TableExprAggrNode::isAggregate() const { return true; }
 
-TableExprFuncNode::NodeDataType TableExprAggrNode::checkOperands(Block<Int>& dtypeOper,
+TableExprFuncNode::NodeDataType TableExprAggrNode::checkOperands(Block<int>& dtypeOper,
                                                                  ValueType& resVT,
                                                                  FunctionType ftype,
                                                                  vector<TENShPtr>& nodes) {
@@ -398,7 +398,7 @@ bool TableExprAggrNode::getBool(const TableExprId& id) {
   TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
   return set.getFuncs()[itsFunc->seqnr()]->getBool();
 }
-Int64 TableExprAggrNode::getInt(const TableExprId& id) {
+int64_t TableExprAggrNode::getInt(const TableExprId& id) {
   const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
   if (itsFunc->isLazy()) {
     return itsFunc->getInt(aid.result().ids(id.rownr()));
@@ -406,7 +406,7 @@ Int64 TableExprAggrNode::getInt(const TableExprId& id) {
   TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
   return set.getFuncs()[itsFunc->seqnr()]->getInt();
 }
-Double TableExprAggrNode::getDouble(const TableExprId& id) {
+double TableExprAggrNode::getDouble(const TableExprId& id) {
   if (dataType() != NTDouble) {
     return TableExprNodeRep::getDouble(id);
   }

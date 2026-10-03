@@ -102,10 +102,10 @@ class TempImage : public ImageInterface<T> {
   // The algorithm is the same as in class
   // <linkto class=TempLattice>TempLattice</linkto>.
   TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-            Int maxMemoryInMB = -1);
+            int maxMemoryInMB = -1);
 
   TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-            Double maxMemoryInMB);
+            double maxMemoryInMB);
 
   // Copy constructor (reference semantics).
   TempImage(const TempImage<T>& other);
@@ -232,16 +232,16 @@ class TempImage : public ImageInterface<T> {
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -252,7 +252,7 @@ class TempImage : public ImageInterface<T> {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -296,7 +296,7 @@ class TempImage : public ImageInterface<T> {
 };
 
 // # Declare extern templates for often used types.
-extern template class TempImage<Float>;
+extern template class TempImage<float>;
 extern template class TempImage<Complex>;
 
 }  // namespace casacore

@@ -125,7 +125,7 @@ class QBase {
   // Get the type of derived Quantum (using QuantumType).
   // All should have:
   // static uInt myType();
-  virtual uInt type() const = 0;
+  virtual unsigned int type() const = 0;
 
  protected:
   // # Data members

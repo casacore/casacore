@@ -89,14 +89,14 @@ class MSObservationColumns {
   ArrayColumn<String>& log() { return log_p; }
   ScalarColumn<String>& observer() { return observer_p; }
   ScalarColumn<String>& project() { return project_p; }
-  ScalarColumn<Double>& releaseDate() { return releaseDate_p; }
-  ScalarQuantColumn<Double>& releaseDateQuant() { return releaseDateQuant_p; }
+  ScalarColumn<double>& releaseDate() { return releaseDate_p; }
+  ScalarQuantColumn<double>& releaseDateQuant() { return releaseDateQuant_p; }
   ScalarMeasColumn<MEpoch>& releaseDateMeas() { return releaseDateMeas_p; }
   ArrayColumn<String>& schedule() { return schedule_p; }
   ScalarColumn<String>& scheduleType() { return scheduleType_p; }
   ScalarColumn<String>& telescopeName() { return telescopeName_p; }
-  ArrayColumn<Double>& timeRange() { return timeRange_p; }
-  ArrayQuantColumn<Double>& timeRangeQuant() { return timeRangeQuant_p; }
+  ArrayColumn<double>& timeRange() { return timeRange_p; }
+  ArrayQuantColumn<double>& timeRangeQuant() { return timeRangeQuant_p; }
   ArrayMeasColumn<MEpoch>& timeRangeMeas() { return timeRangeMeas_p; }
   // </group>
 
@@ -106,14 +106,14 @@ class MSObservationColumns {
   const ArrayColumn<String>& log() const { return log_p; }
   const ScalarColumn<String>& observer() const { return observer_p; }
   const ScalarColumn<String>& project() const { return project_p; }
-  const ScalarColumn<Double>& releaseDate() const { return releaseDate_p; }
-  const ScalarQuantColumn<Double>& releaseDateQuant() const { return releaseDateQuant_p; }
+  const ScalarColumn<double>& releaseDate() const { return releaseDate_p; }
+  const ScalarQuantColumn<double>& releaseDateQuant() const { return releaseDateQuant_p; }
   const ScalarMeasColumn<MEpoch>& releaseDateMeas() const { return releaseDateMeas_p; }
   const ArrayColumn<String>& schedule() const { return schedule_p; }
   const ScalarColumn<String>& scheduleType() const { return scheduleType_p; }
   const ScalarColumn<String>& telescopeName() const { return telescopeName_p; }
-  const ArrayColumn<Double>& timeRange() const { return timeRange_p; }
-  const ArrayQuantColumn<Double>& timeRangeQuant() const { return timeRangeQuant_p; }
+  const ArrayColumn<double>& timeRange() const { return timeRange_p; }
+  const ArrayQuantColumn<double>& timeRangeQuant() const { return timeRangeQuant_p; }
   const ArrayMeasColumn<MEpoch>& timeRangeMeas() const { return timeRangeMeas_p; }
   // </group>
 
@@ -150,19 +150,19 @@ class MSObservationColumns {
   ArrayColumn<String> log_p;
   ScalarColumn<String> observer_p;
   ScalarColumn<String> project_p;
-  ScalarColumn<Double> releaseDate_p;
+  ScalarColumn<double> releaseDate_p;
   ArrayColumn<String> schedule_p;
   ScalarColumn<String> scheduleType_p;
   ScalarColumn<String> telescopeName_p;
-  ArrayColumn<Double> timeRange_p;
+  ArrayColumn<double> timeRange_p;
 
   // # Access to Measure columns
   ScalarMeasColumn<MEpoch> releaseDateMeas_p;
   ArrayMeasColumn<MEpoch> timeRangeMeas_p;
 
   // # Access to Quantum columns
-  ScalarQuantColumn<Double> releaseDateQuant_p;
-  ArrayQuantColumn<Double> timeRangeQuant_p;
+  ScalarQuantColumn<double> releaseDateQuant_p;
+  ArrayQuantColumn<double> timeRangeQuant_p;
 };
 
 // # Define the RO version for backward compatibility.

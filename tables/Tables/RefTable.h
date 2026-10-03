@@ -178,7 +178,7 @@ class RefTable : public BaseTable {
   virtual bool hasLock(FileLocker::LockType) const;
 
   // Try to lock the table for read or write access.
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
 
   // Unlock the table. This will also synchronize the table data,
   // thus force the data to be written to disk.
@@ -197,7 +197,7 @@ class RefTable : public BaseTable {
   virtual void resync();
 
   // Get the modify counter.
-  virtual uInt getModifyCounter() const;
+  virtual unsigned int getModifyCounter() const;
 
   // Test if the parent table is opened as writable.
   virtual bool isWritable() const;
@@ -233,7 +233,7 @@ class RefTable : public BaseTable {
   virtual TableRecord& rwKeywordSet();
 
   // Get a column object using its index.
-  virtual BaseColumn* getColumn(uInt columnIndex) const;
+  virtual BaseColumn* getColumn(unsigned int columnIndex) const;
 
   // Get a column object using its name.
   virtual BaseColumn* getColumn(const String& columnName) const;

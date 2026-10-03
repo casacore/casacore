@@ -261,7 +261,7 @@ bool BaseTable::openedForWrite() const {
 int BaseTable::tableType() const { return Table::Plain; }
 
 void BaseTable::getPartNames(Block<String>& names, bool) const {
-  uInt inx = names.size();
+  unsigned int inx = names.size();
   names.resize(inx + 1);
   names[inx] = name_p;
 }
@@ -301,15 +301,15 @@ void BaseTable::writeStart(AipsIO& ios, bool bigEndian) {
   // Start the object as Table, so class Table can read it back.
   // Version 2 (of PlainTable) does not have its own TableRecord anymore.
   // Use old version if nr of rows fit in an Int, otherwise use new version.
-  if (nrrow_p > rownr_t(std::numeric_limits<Int>::max())) {
+  if (nrrow_p > rownr_t(std::numeric_limits<int>::max())) {
     ios.putstart("Table", 3);
     ios << nrrow_p;
   } else {
     ios.putstart("Table", 2);
-    ios << uInt(nrrow_p);
+    ios << static_cast<unsigned int>(nrrow_p);
   }
   // Write endianity as a uInt, because older tables contain a uInt 0 here.
-  uInt endian = 0;
+  unsigned int endian = 0;
   if (!bigEndian) {
     endian = 1;
   }
@@ -506,7 +506,7 @@ bool BaseTable::isColumnWritable(const String& columnName) const {
   }
   return getColumn(columnName)->isWritable();
 }
-bool BaseTable::isColumnWritable(uInt columnIndex) const {
+bool BaseTable::isColumnWritable(unsigned int columnIndex) const {
   AlwaysAssert(!isNull(), AipsError);
   if (!isWritable()) {
     return false;  // table is not writable
@@ -518,7 +518,7 @@ bool BaseTable::isColumnStored(const String& columnName) const {
   AlwaysAssert(!isNull(), AipsError);
   return getColumn(columnName)->isStored();
 }
-bool BaseTable::isColumnStored(uInt columnIndex) const {
+bool BaseTable::isColumnStored(unsigned int columnIndex) const {
   AlwaysAssert(!isNull(), AipsError);
   return getColumn(columnIndex)->isStored();
 }
@@ -542,7 +542,7 @@ void BaseTable::removeRow(const Vector<rownr_t>& rownrs) {
   Vector<rownr_t> rownrsCopy;
   rownrsCopy = rownrs;
   genSort(rownrsCopy);
-  for (Int64 i = rownrsCopy.nelements() - 1; i >= 0; i--) {
+  for (int64_t i = rownrsCopy.nelements() - 1; i >= 0; i--) {
     removeRow(rownrsCopy(i));
   }
 }
@@ -608,14 +608,14 @@ Vector<rownr_t>& BaseTable::rowStorage() {
 // # Sort a table.
 std::shared_ptr<BaseTable> BaseTable::sort(const Block<String>& names,
                                            const Block<std::shared_ptr<BaseCompare>>& cmpObj,
-                                           const Block<Int>& order, int option,
+                                           const Block<int>& order, int option,
                                            std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
                                            std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
 
 {
   AlwaysAssert(!isNull(), AipsError);
   // # Check if the vectors have equal length.
-  uInt nrkey = names.nelements();
+  unsigned int nrkey = names.nelements();
   if (nrkey != order.nelements()) {
     throw(
         TableInvSort("Length of column sort names and order vectors mismatch"
@@ -625,7 +625,7 @@ std::shared_ptr<BaseTable> BaseTable::sort(const Block<String>& names,
   // # Get the Column pointers.
   // # Check if a sort key is indeed a column of scalars.
   Block<BaseColumn*> sortCol(nrkey);
-  for (uInt i = 0; i < nrkey; i++) {
+  for (unsigned int i = 0; i < nrkey; i++) {
     sortCol[i] = getColumn(names[i]);  // get BaseColumn object
     if (!sortCol[i]->columnDesc().isScalar()) {
       throw(TableInvSort("Sort column " + names[i] + " in table " + name_p + " is not a scalar"));
@@ -638,16 +638,16 @@ std::shared_ptr<BaseTable> BaseTable::sort(const Block<String>& names,
 // # Do the actual sort.
 std::shared_ptr<BaseTable> BaseTable::doSort(Block<BaseColumn*>& sortCol,
                                              const Block<std::shared_ptr<BaseCompare>>& cmpObj,
-                                             const Block<Int>& order, int option,
+                                             const Block<int>& order, int option,
                                              std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
                                              std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange) {
-  uInt nrkey = sortCol.nelements();
+  unsigned int nrkey = sortCol.nelements();
   // # Create a sort object.
   // # Pass all keys (and their data) to it.
   Sort sortobj;
   Block<std::shared_ptr<ArrayBase>> data(nrkey);  // to remember data blocks
   Block<std::shared_ptr<BaseCompare>> cmp(cmpObj);
-  for (uInt i = 0; i < nrkey; i++) {
+  for (unsigned int i = 0; i < nrkey; i++) {
     sortCol[i]->makeSortKey(sortobj, cmp[i], order[i], data[i]);
   }
   // # Create a reference table.
@@ -904,7 +904,7 @@ Vector<rownr_t> BaseTable::logicRows() {
 
 BaseTableIterator* BaseTable::makeIterator(const Block<String>& names,
                                            const Block<std::shared_ptr<BaseCompare>>& cmpObj,
-                                           const Block<Int>& order, int option,
+                                           const Block<int>& order, int option,
                                            bool cacheIterationBoundaries) {
   AlwaysAssert(!isNull(), AipsError);
   if (names.nelements() != order.nelements() || names.nelements() != cmpObj.nelements()) {
@@ -923,7 +923,7 @@ const TableDesc& BaseTable::makeEmptyTableDesc() const {
 }
 
 bool BaseTable::checkRemoveColumn(const Vector<String>& columnNames, bool throwException) const {
-  for (uInt i = 0; i < columnNames.nelements(); i++) {
+  for (unsigned int i = 0; i < columnNames.nelements(); i++) {
     // Check if the column exists.
     if (!tdescPtr_p->isColumn(columnNames(i))) {
       if (throwException) {
@@ -935,7 +935,7 @@ bool BaseTable::checkRemoveColumn(const Vector<String>& columnNames, bool throwE
       return false;
     }
     // Check if the column is specified only once.
-    for (uInt j = i + 1; j < columnNames.nelements(); j++) {
+    for (unsigned int j = i + 1; j < columnNames.nelements(); j++) {
       if (columnNames(i) == columnNames(j)) {
         if (throwException) {
           throw TableInvOper("Table::removeColumn - column " + columnNames(i) +
@@ -974,8 +974,8 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
     os << "  Stored as MultiHDF5 with blocksize " << stopt.blockSize() << endl;
   }
   showStructureExtra(os);
-  uInt maxl = 0;
-  for (uInt i = 0; i < tdesc.ncolumn(); ++i) {
+  unsigned int maxl = 0;
+  for (unsigned int i = 0; i < tdesc.ncolumn(); ++i) {
     if (tdesc[i].name().size() > maxl) {
       maxl = tdesc[i].name().size();
     }
@@ -986,7 +986,7 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
       showColumnInfo(os, tdesc, maxl, tdesc.columnNames(), sortColumns, cOrder);
     }
   } else {
-    for (uInt i = 0; i < dminfo.nfields(); ++i) {
+    for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
       os << endl << " ";
       const Record& dm = dminfo.subRecord(i);
       Record spec;
@@ -1003,7 +1003,7 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
       if (spec.isDefined("HYPERCUBES")) {
         os << "    hypercubes:" << endl;
         const Record& hcubes = spec.subRecord("HYPERCUBES");
-        for (uInt k = 0; k < hcubes.nfields(); ++k) {
+        for (unsigned int k = 0; k < hcubes.nfields(); ++k) {
           const Record& hcube = hcubes.subRecord(k);
           os << "      bucketsize=" << hcube.asInt("BucketSize");
           os << " tileshape=";
@@ -1016,7 +1016,7 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
         }
       }
       bool extra = false;
-      for (uInt j = 0; j < spec.nfields(); j++) {
+      for (unsigned int j = 0; j < spec.nfields(); j++) {
         const String& name = spec.name(j);
         if (name != "SEQNR" && name != "BUCKETSIZE" && name != "HYPERCUBES") {
           if (!extra) {
@@ -1036,7 +1036,7 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
   }
   TableRecord keywords = keywordSet();
   bool hasSub = false;
-  for (uInt i = 0; i < keywords.nfields(); ++i) {
+  for (unsigned int i = 0; i < keywords.nfields(); ++i) {
     if (keywords.dataType(i) == TpTable) {
       if (!hasSub) {
         os << endl << " SubTables:" << endl;
@@ -1046,7 +1046,7 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
     }
   }
   if (hasSub && showSubTables) {
-    for (uInt i = 0; i < keywords.nfields(); ++i) {
+    for (unsigned int i = 0; i < keywords.nfields(); ++i) {
       if (keywords.dataType(i) == TpTable) {
         Table tab = keywords.asTable(i);
         // Do not show if the subtable has the same root as this table.
@@ -1064,17 +1064,17 @@ void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, 
 
 void BaseTable::showStructureExtra(ostream&) const {}
 
-void BaseTable::showColumnInfo(ostream& os, const TableDesc& tdesc, uInt maxl,
+void BaseTable::showColumnInfo(ostream& os, const TableDesc& tdesc, unsigned int maxl,
                                const Array<String>& columnNames, bool sort, bool cOrder) const {
   Vector<String> columns(columnNames);
   if (sort) {
     GenSort<String>::sort(columns);
   }
-  for (uInt j = 0; j < columns.size(); ++j) {
+  for (unsigned int j = 0; j < columns.size(); ++j) {
     const ColumnDesc& cdesc = tdesc[columns[j]];
     TableRecord keywords = cdesc.keywordSet();
     os << "  " << cdesc.name();
-    for (uInt k = 0; k <= maxl - cdesc.name().size(); ++k) {
+    for (unsigned int k = 0; k <= maxl - cdesc.name().size(); ++k) {
       os << ' ';
     }
     os << ValType::getTypeStr(cdesc.dataType());
@@ -1125,7 +1125,7 @@ void BaseTable::showColumnInfo(ostream& os, const TableDesc& tdesc, uInt maxl,
 String BaseTable::makeAbsoluteName(const String& name) const {
   // Make sure the name contains a character not equal to . or /.
   bool ok = false;
-  for (uInt i = 0; i < name.size(); ++i) {
+  for (unsigned int i = 0; i < name.size(); ++i) {
     if (name[i] != '.' && name[i] != '/') {
       ok = true;
       break;

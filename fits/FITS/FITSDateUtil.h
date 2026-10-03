@@ -89,7 +89,7 @@ class FITSDateUtil {
   // no time (equivalent to NEW_DATEONLY).
   static void toFITS(String &date, String &timesys, const MVTime &time,
                      MEpoch::Types system = MEpoch::UTC, DateStyle style = AUTO_PICK,
-                     uInt precision = 12);
+                     unsigned int precision = 12);
 
   // Convert a FITS date string and TIMESYS keyword value into an MVTime and system.
   // Returns false if it can't decode date and timesys. It tries to convert as
@@ -112,7 +112,7 @@ class FITSDateUtil {
   //
   // This is mostly meant to be a helper function for convertDateString, but
   // it may be called by anyone.
-  static uInt findPrecision(const String &fitsDate);
+  static unsigned int findPrecision(const String &fitsDate);
 };
 
 }  // namespace casacore

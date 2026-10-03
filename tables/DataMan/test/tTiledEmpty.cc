@@ -44,7 +44,7 @@ void readTable(const TSMOption&, bool written);
 
 int main() {
   try {
-    for (uInt i = 0; i < 2; ++i) {
+    for (unsigned int i = 0; i < 2; ++i) {
       writeTable(TSMOption::Cache, i == 0);
       readTable(TSMOption::Cache, i == 0);
       readTable(TSMOption::Buffer, i == 0);

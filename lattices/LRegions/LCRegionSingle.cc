@@ -112,7 +112,7 @@ bool LCRegionSingle::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   return false;
 }
 
-IPosition LCRegionSingle::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCRegionSingle::doNiceCursorShape(unsigned int maxPixels) const {
   if (itsHasMask != 0) {
     return itsMaskPtr->niceCursorShape(maxPixels);
   }

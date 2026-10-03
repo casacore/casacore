@@ -103,7 +103,8 @@ class TableLocker {
   // the system waits 1 second between each attempt, so nattempts
   // is more or less equal to a wait period in seconds.
   // An exception is thrown when the lock cannot be acquired.
-  explicit TableLocker(Table& table, FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+  explicit TableLocker(Table& table, FileLocker::LockType = FileLocker::Write,
+                       unsigned int nattempts = 0);
 
   // If locked, the destructor releases the lock and flushes the data.
   ~TableLocker();

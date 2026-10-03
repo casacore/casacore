@@ -85,13 +85,13 @@ class MSDopplerIndex : public MSTableIndex {
   void attach(const MSDoppler &doppler);
 
   // access to the doppler ID key, throws an exception if isNull() is false
-  Int &dopplerId() { return *dopplerId_p; }
+  int &dopplerId() { return *dopplerId_p; }
 
   // access to the source ID key, throws an exception if isNull() is false
-  Int &sourceId() { return *sourceId_p; }
+  int &sourceId() { return *sourceId_p; }
 
  private:
-  RecordFieldPtr<Int> dopplerId_p, sourceId_p;
+  RecordFieldPtr<int> dopplerId_p, sourceId_p;
 
   void attachIds();
 };

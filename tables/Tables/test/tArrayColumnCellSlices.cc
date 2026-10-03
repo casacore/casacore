@@ -39,13 +39,13 @@
 
 using namespace casacore;
 
-uInt nRows = 7;
-uInt nChannels = 5;
-uInt nCorrelations = 3;
-Array<Int> referenceArray(IPosition(3, nCorrelations, nChannels, nRows));
+unsigned int nRows = 7;
+unsigned int nChannels = 5;
+unsigned int nCorrelations = 3;
+Array<int> referenceArray(IPosition(3, nCorrelations, nChannels, nRows));
 
 // Create the table.
-void createTable(DataManager &dataMan, const Array<Int> array, bool useDirect) {
+void createTable(DataManager &dataMan, const Array<int> array, bool useDirect) {
   IPosition shape = array.shape();
   int nCorrelations = shape(0);
   int nChannels = shape(1);
@@ -54,7 +54,7 @@ void createTable(DataManager &dataMan, const Array<Int> array, bool useDirect) {
   // Build the table description.
 
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ArrayColumnDesc<Int>("testArrayColumn", IPosition(2, nCorrelations, nChannels),
+  td.addColumn(ArrayColumnDesc<int>("testArrayColumn", IPosition(2, nCorrelations, nChannels),
                                     useDirect ? ColumnDesc::Direct : ColumnDesc::FixedShape));
 
   // Now create a new table from the description.
@@ -62,7 +62,7 @@ void createTable(DataManager &dataMan, const Array<Int> array, bool useDirect) {
   SetupNewTable newtab("tArrayColumnCellSlices_tmp.data", td, Table::New);
   newtab.bindAll(dataMan);
   Table tab(newtab, nRows, false, Table::LocalEndian);
-  ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
+  ArrayColumn<int> arrayColumn(tab, "testArrayColumn");
 
   // indgen (arrf);
 
@@ -70,10 +70,10 @@ void createTable(DataManager &dataMan, const Array<Int> array, bool useDirect) {
   arrayColumn.putColumnCells(rows, referenceArray);
 }
 
-void clearValues(ArrayColumn<Int> &arrayColumn, Int value = 0) {
+void clearValues(ArrayColumn<int> &arrayColumn, int value = 0) {
   int nRows = referenceArray.shape().last();
 
-  Array<Int> array(referenceArray.shape(), value);
+  Array<int> array(referenceArray.shape(), value);
 
   RefRows rows(0, nRows - 1);  // all rows
 
@@ -81,9 +81,9 @@ void clearValues(ArrayColumn<Int> &arrayColumn, Int value = 0) {
 }
 
 void createReferenceArray(int nCorrelations, int nChannels, int nRows) {
-  for (Int i = 0; i < nRows; i++) {
-    for (Int j = 0; j < nCorrelations; j++) {
-      for (Int k = 0; k < nChannels; k++) {
+  for (int i = 0; i < nRows; i++) {
+    for (int j = 0; j < nCorrelations; j++) {
+      for (int k = 0; k < nChannels; k++) {
         referenceArray(IPosition(3, j, k, i)) = i * 100 + k * 10 + j;
         ;
       }
@@ -91,20 +91,20 @@ void createReferenceArray(int nCorrelations, int nChannels, int nRows) {
   }
 }
 
-void compareToReferenceArray(const Array<Int> other) {
+void compareToReferenceArray(const Array<int> other) {
   AlwaysAssertExit(other.shape().isEqual(referenceArray.shape()));
 
-  for (uInt i = 0; i < nRows; i++) {
-    for (uInt j = 0; j < nCorrelations; j++) {
-      for (uInt k = 0; k < nChannels; k++) {
+  for (unsigned int i = 0; i < nRows; i++) {
+    for (unsigned int j = 0; j < nCorrelations; j++) {
+      for (unsigned int k = 0; k < nChannels; k++) {
         AlwaysAssertExit(referenceArray(IPosition(3, j, k, i)) == other(IPosition(3, j, k, i)));
       }
     }
   }
 }
 
-void readAndCompareArray(ArrayColumn<Int> &arrayColumn) {
-  Array<Int> array(referenceArray.shape(), -2);
+void readAndCompareArray(ArrayColumn<int> &arrayColumn) {
+  Array<int> array(referenceArray.shape(), -2);
   RefRows rows(0, referenceArray.shape().last() - 1);
   arrayColumn.getColumnCells(rows, array);
 
@@ -113,7 +113,7 @@ void readAndCompareArray(ArrayColumn<Int> &arrayColumn) {
 
 void readCellSlices() {
   Table tab("tArrayColumnCellSlices_tmp.data");
-  ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
+  ArrayColumn<int> arrayColumn(tab, "testArrayColumn");
   {
     // Check ColumnSlicer validation logic
     //
@@ -181,7 +181,7 @@ void readCellSlices() {
 
     ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
     RefRows refRows(0, nRows - 1);
-    Array<Int> destination(IPosition(3, nCorrelations, nChannels, nRows));
+    Array<int> destination(IPosition(3, nCorrelations, nChannels, nRows));
 
     arrayColumn.getColumnCells(refRows, columnSlicer, destination);
 
@@ -197,8 +197,8 @@ void readCellSlices() {
     Vector<Slicer *> destinationSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt n1 = nChannels / 2;
-    uInt n2 = nChannels / 2 + nChannels % 2;
+    unsigned int n1 = nChannels / 2;
+    unsigned int n2 = nChannels / 2 + nChannels % 2;
 
     dataSlicer(0) =
         new Slicer(IPosition(2, 0, 0), IPosition(2, nCorrelations, n1), IPosition(2, 1, 1));
@@ -212,7 +212,7 @@ void readCellSlices() {
 
     ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
     RefRows refRows(0, nRows - 1);
-    Array<Int> destination(IPosition(3, nCorrelations, nChannels, nRows));
+    Array<int> destination(IPosition(3, nCorrelations, nChannels, nRows));
 
     arrayColumn.getColumnCells(refRows, columnSlicer, destination);
 
@@ -228,8 +228,8 @@ void readCellSlices() {
     Vector<Slicer *> destinationSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt n1 = nCorrelations / 2;
-    uInt n2 = nCorrelations / 2 + nCorrelations % 2;
+    unsigned int n1 = nCorrelations / 2;
+    unsigned int n2 = nCorrelations / 2 + nCorrelations % 2;
 
     dataSlicer(0) = new Slicer(IPosition(2, 0, 0), IPosition(2, n1, nChannels), IPosition(2, 1, 1));
     destinationSlicer(0) =
@@ -242,7 +242,7 @@ void readCellSlices() {
 
     ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
     RefRows refRows(0, nRows - 1);
-    Array<Int> destination(IPosition(3, nCorrelations, nChannels, nRows));
+    Array<int> destination(IPosition(3, nCorrelations, nChannels, nRows));
 
     arrayColumn.getColumnCells(refRows, columnSlicer, destination);
 
@@ -258,8 +258,8 @@ void readCellSlices() {
     Vector<Slicer *> destinationSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt nChannels1 = nChannels / 2;
-    uInt nChannels2 = nChannels / 2 + nChannels % 2;
+    unsigned int nChannels1 = nChannels / 2;
+    unsigned int nChannels2 = nChannels / 2 + nChannels % 2;
 
     dataSlicer(0) =
         new Slicer(IPosition(2, 0, 0), IPosition(2, nCorrelations, nChannels2), IPosition(2, 1, 2));
@@ -274,7 +274,7 @@ void readCellSlices() {
     ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
     RefRows refRows(0, nRows - 1);
 
-    Array<Int> destination(IPosition(3, nCorrelations, nChannels, nRows));
+    Array<int> destination(IPosition(3, nCorrelations, nChannels, nRows));
 
     arrayColumn.getColumnCells(refRows, columnSlicer, destination);
 
@@ -290,8 +290,8 @@ void readCellSlices() {
     Vector<Slicer *> destinationSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt nCorrelations1 = nCorrelations / 2;
-    uInt nCorrelations2 = nCorrelations / 2 + nCorrelations % 2;
+    unsigned int nCorrelations1 = nCorrelations / 2;
+    unsigned int nCorrelations2 = nCorrelations / 2 + nCorrelations % 2;
 
     dataSlicer(0) =
         new Slicer(IPosition(2, 0, 0), IPosition(2, nCorrelations2, nChannels), IPosition(2, 2, 1));
@@ -306,7 +306,7 @@ void readCellSlices() {
     ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
     RefRows refRows(0, nRows - 1);
 
-    Array<Int> destination(IPosition(3, nCorrelations, nChannels, nRows));
+    Array<int> destination(IPosition(3, nCorrelations, nChannels, nRows));
 
     arrayColumn.getColumnCells(refRows, columnSlicer, destination);
 
@@ -316,7 +316,7 @@ void readCellSlices() {
 
 void writeCellSlices() {
   Table tab("tArrayColumnCellSlices_tmp.data", Table::Update);
-  ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
+  ArrayColumn<int> arrayColumn(tab, "testArrayColumn");
 
   {
     // Check the actual I/O now
@@ -334,7 +334,7 @@ void writeCellSlices() {
 
     ColumnSlicer columnSlicer(shape, dataSlicer, sourceSlicer);
     RefRows refRows(0, nRows - 1);
-    Array<Int> source = referenceArray.copy();
+    Array<int> source = referenceArray.copy();
 
     arrayColumn.putColumnCells(refRows, columnSlicer, source);
 
@@ -350,8 +350,8 @@ void writeCellSlices() {
     Vector<Slicer *> sourceSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt n1 = nChannels / 2;
-    uInt n2 = nChannels / 2 + nChannels % 2;
+    unsigned int n1 = nChannels / 2;
+    unsigned int n2 = nChannels / 2 + nChannels % 2;
 
     dataSlicer(0) =
         new Slicer(IPosition(2, 0, 0), IPosition(2, nCorrelations, n1), IPosition(2, 1, 1));
@@ -365,7 +365,7 @@ void writeCellSlices() {
 
     ColumnSlicer columnSlicer(shape, dataSlicer, sourceSlicer);
     RefRows refRows(0, nRows - 1);
-    Array<Int> source = referenceArray.copy();
+    Array<int> source = referenceArray.copy();
 
     arrayColumn.putColumnCells(refRows, columnSlicer, source);
 
@@ -381,8 +381,8 @@ void writeCellSlices() {
     Vector<Slicer *> sourceSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt n1 = nCorrelations / 2;
-    uInt n2 = nCorrelations / 2 + nCorrelations % 2;
+    unsigned int n1 = nCorrelations / 2;
+    unsigned int n2 = nCorrelations / 2 + nCorrelations % 2;
 
     dataSlicer(0) = new Slicer(IPosition(2, 0, 0), IPosition(2, n1, nChannels), IPosition(2, 1, 1));
     sourceSlicer(0) =
@@ -395,7 +395,7 @@ void writeCellSlices() {
 
     ColumnSlicer columnSlicer(shape, dataSlicer, sourceSlicer);
     RefRows refRows(0, nRows - 1);
-    Array<Int> source = referenceArray.copy();
+    Array<int> source = referenceArray.copy();
 
     arrayColumn.putColumnCells(refRows, columnSlicer, source);
 
@@ -411,8 +411,8 @@ void writeCellSlices() {
     Vector<Slicer *> sourceSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt nChannels1 = nChannels / 2;
-    uInt nChannels2 = nChannels / 2 + nChannels % 2;
+    unsigned int nChannels1 = nChannels / 2;
+    unsigned int nChannels2 = nChannels / 2 + nChannels % 2;
 
     dataSlicer(0) =
         new Slicer(IPosition(2, 0, 0), IPosition(2, nCorrelations, nChannels2), IPosition(2, 1, 2));
@@ -427,7 +427,7 @@ void writeCellSlices() {
     ColumnSlicer columnSlicer(shape, dataSlicer, sourceSlicer);
     RefRows refRows(0, nRows - 1);
 
-    Array<Int> source = referenceArray.copy();
+    Array<int> source = referenceArray.copy();
 
     arrayColumn.putColumnCells(refRows, columnSlicer, source);
 
@@ -443,8 +443,8 @@ void writeCellSlices() {
     Vector<Slicer *> sourceSlicer(2, nullptr);
     IPosition shape(2, nCorrelations, nChannels);
 
-    uInt nCorrelations1 = nCorrelations / 2;
-    uInt nCorrelations2 = nCorrelations / 2 + nCorrelations % 2;
+    unsigned int nCorrelations1 = nCorrelations / 2;
+    unsigned int nCorrelations2 = nCorrelations / 2 + nCorrelations % 2;
 
     dataSlicer(0) =
         new Slicer(IPosition(2, 0, 0), IPosition(2, nCorrelations2, nChannels), IPosition(2, 2, 1));
@@ -459,7 +459,7 @@ void writeCellSlices() {
     ColumnSlicer columnSlicer(shape, dataSlicer, sourceSlicer);
     RefRows refRows(0, nRows - 1);
 
-    Array<Int> source = referenceArray.copy();
+    Array<int> source = referenceArray.copy();
 
     arrayColumn.putColumnCells(refRows, columnSlicer, source);
 

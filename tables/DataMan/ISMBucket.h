@@ -147,47 +147,49 @@ class ISMBucket {
   // and the offset of its current value.
   // It returns the index where the row number can be put in the
   // bucket index.
-  uInt getInterval(uInt colnr, rownr_t rownr, rownr_t bucketNrrow, rownr_t& start, rownr_t& end,
-                   uInt& offset) const;
+  unsigned int getInterval(unsigned int colnr, rownr_t rownr, rownr_t bucketNrrow, rownr_t& start,
+                           rownr_t& end, unsigned int& offset) const;
 
   // Is the bucket large enough to add a value?
-  bool canAddData(uInt leng) const;
+  bool canAddData(unsigned int leng) const;
 
   // Add the data to the data part.
   // It updates the bucket index at the given index.
   // An exception is thrown if the bucket is too small.
-  void addData(uInt colnr, rownr_t rownr, uInt index, const char* data, uInt leng);
+  void addData(unsigned int colnr, rownr_t rownr, unsigned int index, const char* data,
+               unsigned int leng);
 
   // Is the bucket large enough to replace a value?
-  bool canReplaceData(uInt newLeng, uInt oldLeng) const;
+  bool canReplaceData(unsigned int newLeng, unsigned int oldLeng) const;
 
   // Replace a data item.
   // When its length is variable (indicated by fixedLength=0), the old
   // value will be removed and the new one appended at the end.
   // An exception is thrown if the bucket is too small.
-  void replaceData(uInt& offset, const char* data, uInt newLeng, uInt fixedLength);
+  void replaceData(unsigned int& offset, const char* data, unsigned int newLeng,
+                   unsigned int fixedLength);
 
   // Get a pointer to the data for the given offset.
-  const char* get(uInt offset) const;
+  const char* get(unsigned int offset) const;
 
   // Get the length of the data value.
   // It is <src>fixedLength</src> when non-zero,
   // otherwise read it from the data value.
-  uInt getLength(uInt fixedLength, const char* data) const;
+  unsigned int getLength(unsigned int fixedLength, const char* data) const;
 
   // Get access to the offset of the data for given column and row.
   // It allows to change it (used for example by replaceData).
-  uInt& getOffset(uInt colnr, rownr_t rownr);
+  unsigned int& getOffset(unsigned int colnr, rownr_t rownr);
 
   // Get access to the index information for the given column.
   // This is used by ISMColumn when putting the data.
   // <group>
   // Return the row numbers with a stored value.
-  Block<rownr_t>& rowIndex(uInt colnr);
+  Block<rownr_t>& rowIndex(unsigned int colnr);
   // Return the offsets of the values stored in the data part.
-  Block<uInt>& offIndex(uInt colnr);
+  Block<unsigned int>& offIndex(unsigned int colnr);
   // Return the number of values stored.
-  uInt& indexUsed(uInt colnr);
+  unsigned int& indexUsed(unsigned int colnr);
   // </group>
 
   // Split the bucket in the middle.
@@ -200,8 +202,8 @@ class ISMBucket {
   // values in the left bucket. The duplicated Block contains a switch
   // per column indicating if the value is copied.
   rownr_t split(ISMBucket*& left, ISMBucket*& right, Block<bool>& duplicated,
-                rownr_t bucketStartRow, rownr_t bucketNrrow, uInt colnr, rownr_t rownr,
-                uInt lengToAdd);
+                rownr_t bucketStartRow, rownr_t bucketNrrow, unsigned int colnr, rownr_t rownr,
+                unsigned int lengToAdd);
 
   // Determine whether a simple split is possible. If so, do it.
   // This is possible if the new row is at the end of the last bucket,
@@ -216,15 +218,16 @@ class ISMBucket {
 
   // Return the index where the bucket should be split to get
   // two parts with almost identical length.
-  uInt getSplit(uInt totLeng, const Block<uInt>& rowLeng, const Block<uInt>& cumLeng);
+  unsigned int getSplit(unsigned int totLeng, const Block<unsigned int>& rowLeng,
+                        const Block<unsigned int>& cumLeng);
 
   // Remove <src>nr</src> items from data and index part by shifting
   // to the left. The <src>rowIndex</src>, <src>offIndex</src>, and
   // <src>nused</src> get updated. The caller is responsible for
   // removing data when needed (e.g. <src>ISMIndColumn</src> removes
   // the indirect arrays from its file).
-  void shiftLeft(uInt index, uInt nr, Block<rownr_t>& rowIndex, Block<uInt>& offIndex, uInt& nused,
-                 uInt leng);
+  void shiftLeft(unsigned int index, unsigned int nr, Block<rownr_t>& rowIndex,
+                 Block<unsigned int>& offIndex, unsigned int& nused, unsigned int leng);
 
   // Copy the contents of that bucket to this bucket.
   // This is used after a split operation.
@@ -255,20 +258,21 @@ class ISMBucket {
   void show(ostream& os) const;
 
   // Check that there are no repeated rowIds in the bucket
-  bool check(uInt& offendingCol, uInt& offendingIndex, rownr_t& offendingRow,
+  bool check(unsigned int& offendingCol, unsigned int& offendingIndex, rownr_t& offendingRow,
              rownr_t& offendingPrevRow) const;
 
  private:
   // Remove a data item with the given length.
   // If the length is zero, its variable length is read first.
-  void removeData(uInt offset, uInt leng);
+  void removeData(unsigned int offset, unsigned int leng);
 
   // Insert a data value by appending it to the end.
   // It returns the offset of the data value.
-  uInt insertData(const char* data, uInt leng);
+  unsigned int insertData(const char* data, unsigned int leng);
 
   // Copy a data item from this bucket to the other bucket.
-  uInt copyData(ISMBucket& other, uInt colnr, rownr_t toRownr, uInt fromIndex, uInt toIndex) const;
+  unsigned int copyData(ISMBucket& other, unsigned int colnr, rownr_t toRownr,
+                        unsigned int fromIndex, unsigned int toIndex) const;
 
   // Read the data from the storage into this bucket.
   void read(const char* bucketStorage);
@@ -280,29 +284,29 @@ class ISMBucket {
   //  Pointer to the parent storage manager.
   ISMBase* stmanPtr_p;
   // The size (in bytes) of an uInt and rownr_t (used in index, etc.).
-  uInt uIntSize_p;
-  uInt rownrSize_p;
+  unsigned int uIntSize_p;
+  unsigned int rownrSize_p;
   // The size (in bytes) of the data.
-  uInt dataLeng_p;
+  unsigned int dataLeng_p;
   // The size (in bytes) of the index.
-  uInt indexLeng_p;
+  unsigned int indexLeng_p;
   // The row index per column; each index contains the row number
   // of each value stored in the bucket (for that column).
   Block<Block<rownr_t>*> rowIndex_p;
   // The offset index per column; each index contains the offset (in bytes)
   // of each value stored in the bucket (for that column).
-  Block<Block<uInt>*> offIndex_p;
+  Block<Block<unsigned int>*> offIndex_p;
   // Nr of used elements in each index; i.e. the number of stored values
   // per column.
-  Block<uInt> indexUsed_p;
+  Block<unsigned int> indexUsed_p;
   // The data space (in external (e.g. canonical) format).
   char* data_p;
 };
 
-inline const char* ISMBucket::get(uInt offset) const { return data_p + offset; }
-inline Block<rownr_t>& ISMBucket::rowIndex(uInt colnr) { return *(rowIndex_p[colnr]); }
-inline Block<uInt>& ISMBucket::offIndex(uInt colnr) { return *(offIndex_p[colnr]); }
-inline uInt& ISMBucket::indexUsed(uInt colnr) { return indexUsed_p[colnr]; }
+inline const char* ISMBucket::get(unsigned int offset) const { return data_p + offset; }
+inline Block<rownr_t>& ISMBucket::rowIndex(unsigned int colnr) { return *(rowIndex_p[colnr]); }
+inline Block<unsigned int>& ISMBucket::offIndex(unsigned int colnr) { return *(offIndex_p[colnr]); }
+inline unsigned int& ISMBucket::indexUsed(unsigned int colnr) { return indexUsed_p[colnr]; }
 
 }  // namespace casacore
 

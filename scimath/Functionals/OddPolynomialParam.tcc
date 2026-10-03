@@ -36,7 +36,7 @@ template <class T>
 OddPolynomialParam<T>::OddPolynomialParam() : Function1D<T>(1) {}
 
 template <class T>
-OddPolynomialParam<T>::OddPolynomialParam(uInt order) : Function1D<T>(order / 2 + 1) {}
+OddPolynomialParam<T>::OddPolynomialParam(unsigned int order) : Function1D<T>(order / 2 + 1) {}
 
 template <class T>
 OddPolynomialParam<T>::OddPolynomialParam(const OddPolynomialParam<T> &other)

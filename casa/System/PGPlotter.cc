@@ -42,7 +42,8 @@ PGPlotter::PGPlotter(PGPlotterInterface *worker) : worker_p(worker) {
   // Nothing
 }
 
-PGPlotter::PGPlotter(const String &device, uInt mincolors, uInt maxcolors, uInt sizex, uInt sizey) {
+PGPlotter::PGPlotter(const String &device, unsigned int mincolors, unsigned int maxcolors,
+                     unsigned int sizex, unsigned int sizey) {
   *this = create(device, mincolors, maxcolors, sizex, sizey);
 }
 
@@ -59,8 +60,8 @@ PGPlotter::~PGPlotter() {
   // Nothing
 }
 
-PGPlotter PGPlotter::create(const String &device, uInt mincolors, uInt maxcolors, uInt sizex,
-                            uInt sizey) {
+PGPlotter PGPlotter::create(const String &device, unsigned int mincolors, unsigned int maxcolors,
+                            unsigned int sizex, unsigned int sizey) {
   if (creator_p == 0) {
     return PGPlotterNull::createPlotter(device, mincolors, maxcolors, sizex, sizey);
   }
@@ -89,14 +90,14 @@ void PGPlotter::message(const String &text) {
   worker_p->message(text);
 }
 
-Record PGPlotter::curs(Float x, Float y) {
+Record PGPlotter::curs(float x, float y) {
   ok();
   Record retval = worker_p->curs(x, y);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-void PGPlotter::arro(Float x1, Float y1, Float x2, Float y2) {
+void PGPlotter::arro(float x1, float y1, float x2, float y2) {
   ok();
   worker_p->arro(x1, y1, x2, y2);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -114,20 +115,20 @@ void PGPlotter::bbuf() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::box(const String &xopt, Float xtick, Int nxsub, const String &yopt, Float ytick,
-                    Int nysub) {
+void PGPlotter::box(const String &xopt, float xtick, int nxsub, const String &yopt, float ytick,
+                    int nysub) {
   ok();
   worker_p->box(xopt, xtick, nxsub, yopt, ytick, nysub);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::circ(Float xcent, Float ycent, Float radius) {
+void PGPlotter::circ(float xcent, float ycent, float radius) {
   ok();
   worker_p->circ(xcent, ycent, radius);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::draw(Float x, Float y) {
+void PGPlotter::draw(float x, float y) {
   ok();
   worker_p->draw(x, y);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -139,7 +140,7 @@ void PGPlotter::ebuf() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::env(Float xmin, Float xmax, Float ymin, Float ymax, Int just, Int axis) {
+void PGPlotter::env(float xmin, float xmax, float ymin, float ymax, int just, int axis) {
   ok();
   worker_p->env(xmin, xmax, ymin, ymax, just, axis);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -151,21 +152,21 @@ void PGPlotter::eras() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::errb(Int dir, const Vector<Float> &x, const Vector<Float> &y,
-                     const Vector<Float> &e, Float t) {
+void PGPlotter::errb(int dir, const Vector<float> &x, const Vector<float> &y,
+                     const Vector<float> &e, float t) {
   ok();
   worker_p->errb(dir, x, y, e, t);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::erry(const Vector<Float> &x, const Vector<Float> &y1, const Vector<Float> &y2,
-                     Float t) {
+void PGPlotter::erry(const Vector<float> &x, const Vector<float> &y1, const Vector<float> &y2,
+                     float t) {
   ok();
   worker_p->erry(x, y1, y2, t);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::hist(const Vector<Float> &data, Float datmin, Float datmax, Int nbin, Int pcflag) {
+void PGPlotter::hist(const Vector<float> &data, float datmin, float datmax, int nbin, int pcflag) {
   ok();
   worker_p->hist(data, datmin, datmax, nbin, pcflag);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -177,19 +178,19 @@ void PGPlotter::lab(const String &xlbl, const String &ylbl, const String &toplbl
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::line(const Vector<Float> &xpts, const Vector<Float> &ypts) {
+void PGPlotter::line(const Vector<float> &xpts, const Vector<float> &ypts) {
   ok();
   worker_p->line(xpts, ypts);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::move(Float x, Float y) {
+void PGPlotter::move(float x, float y) {
   ok();
   worker_p->move(x, y);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::mtxt(const String &side, Float disp, Float coord, Float fjust, const String &text) {
+void PGPlotter::mtxt(const String &side, float disp, float coord, float fjust, const String &text) {
   ok();
   worker_p->mtxt(side, disp, coord, fjust, text);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -201,59 +202,59 @@ void PGPlotter::page() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::poly(const Vector<Float> &xpts, const Vector<Float> &ypts) {
+void PGPlotter::poly(const Vector<float> &xpts, const Vector<float> &ypts) {
   ok();
   worker_p->poly(xpts, ypts);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::pt(const Vector<Float> &xpts, const Vector<Float> &ypts, Int symbol) {
+void PGPlotter::pt(const Vector<float> &xpts, const Vector<float> &ypts, int symbol) {
   ok();
   worker_p->pt(xpts, ypts, symbol);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::ptxt(Float x, Float y, Float angle, Float fjust, const String &text) {
+void PGPlotter::ptxt(float x, float y, float angle, float fjust, const String &text) {
   ok();
   worker_p->ptxt(x, y, angle, fjust, text);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-Int PGPlotter::qci() {
+int PGPlotter::qci() {
   ok();
-  Int retval = worker_p->qci();
+  int retval = worker_p->qci();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Int PGPlotter::qtbg() {
+int PGPlotter::qtbg() {
   ok();
-  Int retval = worker_p->qtbg();
+  int retval = worker_p->qtbg();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qtxt(Float x, Float y, Float angle, Float fjust, const String &text) {
+Vector<float> PGPlotter::qtxt(float x, float y, float angle, float fjust, const String &text) {
   ok();
-  Vector<Float> retval = worker_p->qtxt(x, y, angle, fjust, text);
+  Vector<float> retval = worker_p->qtxt(x, y, angle, fjust, text);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qwin() {
+Vector<float> PGPlotter::qwin() {
   ok();
-  Vector<Float> retval = worker_p->qwin();
+  Vector<float> retval = worker_p->qwin();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-void PGPlotter::rect(Float x1, Float x2, Float y1, Float y2) {
+void PGPlotter::rect(float x1, float x2, float y1, float y2) {
   ok();
   worker_p->rect(x1, x2, y1, y2);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::sah(Int fs, Float angle, Float vent) {
+void PGPlotter::sah(int fs, float angle, float vent) {
   ok();
   worker_p->sah(fs, angle, vent);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -265,74 +266,74 @@ void PGPlotter::save() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::sch(Float size) {
+void PGPlotter::sch(float size) {
   ok();
   worker_p->sch(size);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::sci(Int ci) {
+void PGPlotter::sci(int ci) {
   ok();
   worker_p->sci(ci);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::scr(Int ci, Float cr, Float cg, Float cb) {
+void PGPlotter::scr(int ci, float cr, float cg, float cb) {
   ok();
   worker_p->scr(ci, cr, cg, cb);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::sfs(Int fs) {
+void PGPlotter::sfs(int fs) {
   ok();
   worker_p->sfs(fs);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::sls(Int ls) {
+void PGPlotter::sls(int ls) {
   ok();
   worker_p->sls(ls);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::slw(Int lw) {
+void PGPlotter::slw(int lw) {
   ok();
   worker_p->slw(lw);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::stbg(Int tbci) {
+void PGPlotter::stbg(int tbci) {
   ok();
   worker_p->stbg(tbci);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::subp(Int nxsub, Int nysub) {
+void PGPlotter::subp(int nxsub, int nysub) {
   ok();
   worker_p->subp(nxsub, nysub);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::svp(Float xleft, Float xright, Float ybot, Float ytop) {
+void PGPlotter::svp(float xleft, float xright, float ybot, float ytop) {
   ok();
   worker_p->svp(xleft, xright, ybot, ytop);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::swin(Float x1, Float x2, Float y1, Float y2) {
+void PGPlotter::swin(float x1, float x2, float y1, float y2) {
   ok();
   worker_p->swin(x1, x2, y1, y2);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::tbox(const String &xopt, Float xtick, Int nxsub, const String &yopt, Float ytick,
-                     Int nysub) {
+void PGPlotter::tbox(const String &xopt, float xtick, int nxsub, const String &yopt, float ytick,
+                     int nysub) {
   ok();
   worker_p->tbox(xopt, xtick, nxsub, yopt, ytick, nysub);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::text(Float x, Float y, const String &text) {
+void PGPlotter::text(float x, float y, const String &text) {
   ok();
   worker_p->text(x, y, text);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -356,7 +357,7 @@ void PGPlotter::vstd() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::wnad(Float x1, Float x2, Float y1, Float y2) {
+void PGPlotter::wnad(float x1, float x2, float y1, float y2) {
   ok();
   worker_p->wnad(x1, x2, y1, y2);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -368,27 +369,27 @@ void PGPlotter::ok() const {
   }
 }
 
-void PGPlotter::conl(const Matrix<Float> &a, Float c, const Vector<Float> &tr, const String &label,
-                     Int intval, Int minint) {
+void PGPlotter::conl(const Matrix<float> &a, float c, const Vector<float> &tr, const String &label,
+                     int intval, int minint) {
   ok();
   worker_p->conl(a, c, tr, label, intval, minint);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::cont(const Matrix<Float> &a, const Vector<Float> &c, bool nc,
-                     const Vector<Float> &tr) {
+void PGPlotter::cont(const Matrix<float> &a, const Vector<float> &c, bool nc,
+                     const Vector<float> &tr) {
   ok();
   worker_p->cont(a, c, nc, tr);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::ctab(const Vector<Float> &l, const Vector<Float> &r, const Vector<Float> &g,
-                     const Vector<Float> &b, Float contra, Float bright) {
+void PGPlotter::ctab(const Vector<float> &l, const Vector<float> &r, const Vector<float> &g,
+                     const Vector<float> &b, float contra, float bright) {
   ok();
   worker_p->ctab(l, r, g, b, contra, bright);
   if (!worker_p->isAttached()) worker_p = 0;
 }
-void PGPlotter::gray(const Matrix<Float> &a, Float fg, Float bg, const Vector<Float> &tr) {
+void PGPlotter::gray(const Matrix<float> &a, float fg, float bg, const Vector<float> &tr) {
   ok();
   worker_p->gray(a, fg, bg, tr);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -400,66 +401,66 @@ void PGPlotter::iden() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::imag(const Matrix<Float> &a, Float a1, Float a2, const Vector<Float> &tr) {
+void PGPlotter::imag(const Matrix<float> &a, float a1, float a2, const Vector<float> &tr) {
   ok();
   worker_p->imag(a, a1, a2, tr);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-Vector<Int> PGPlotter::qcir() {
+Vector<int> PGPlotter::qcir() {
   ok();
-  Vector<Int> retval = worker_p->qcir();
+  Vector<int> retval = worker_p->qcir();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Int> PGPlotter::qcol() {
+Vector<int> PGPlotter::qcol() {
   ok();
-  Vector<Int> retval = worker_p->qcol();
+  Vector<int> retval = worker_p->qcol();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-void PGPlotter::scir(Int icilo, Int icihi) {
+void PGPlotter::scir(int icilo, int icihi) {
   ok();
   worker_p->scir(icilo, icihi);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::sitf(Int itf) {
+void PGPlotter::sitf(int itf) {
   ok();
   worker_p->sitf(itf);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::bin(const Vector<Float> &x, const Vector<Float> &data, bool center) {
+void PGPlotter::bin(const Vector<float> &x, const Vector<float> &data, bool center) {
   ok();
   worker_p->bin(x, data, center);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::conb(const Matrix<Float> &a, const Vector<Float> &c, const Vector<Float> &tr,
-                     Float blank) {
+void PGPlotter::conb(const Matrix<float> &a, const Vector<float> &c, const Vector<float> &tr,
+                     float blank) {
   ok();
   worker_p->conb(a, c, tr, blank);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::cons(const Matrix<Float> &a, const Vector<Float> &c, const Vector<Float> &tr) {
+void PGPlotter::cons(const Matrix<float> &a, const Vector<float> &c, const Vector<float> &tr) {
   ok();
   worker_p->cons(a, c, tr);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::errx(const Vector<Float> &x1, const Vector<Float> &x2, const Vector<Float> &y,
-                     Float t) {
+void PGPlotter::errx(const Vector<float> &x1, const Vector<float> &x2, const Vector<float> &y,
+                     float t) {
   ok();
   worker_p->errx(x1, x2, y, t);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::hi2d(const Matrix<Float> &data, const Vector<Float> &x, Int ioff, Float bias,
-                     bool center, const Vector<Float> &ylims) {
+void PGPlotter::hi2d(const Matrix<float> &data, const Vector<float> &x, int ioff, float bias,
+                     bool center, const Vector<float> &ylims) {
   ok();
   worker_p->hi2d(data, x, ioff, bias, center, ylims);
   if (!worker_p->isAttached()) worker_p = 0;
@@ -471,96 +472,96 @@ void PGPlotter::ldev() {
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-Vector<Float> PGPlotter::len(Int units, const String &string) {
+Vector<float> PGPlotter::len(int units, const String &string) {
   ok();
-  Vector<Float> retval = worker_p->len(units, string);
+  Vector<float> retval = worker_p->len(units, string);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-String PGPlotter::numb(Int mm, Int pp, Int form) {
+String PGPlotter::numb(int mm, int pp, int form) {
   ok();
   String retval = worker_p->numb(mm, pp, form);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-void PGPlotter::panl(Int ix, Int iy) {
+void PGPlotter::panl(int ix, int iy) {
   ok();
   worker_p->panl(ix, iy);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::pap(Float width, Float aspect) {
+void PGPlotter::pap(float width, float aspect) {
   ok();
   worker_p->pap(width, aspect);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::pixl(const Matrix<Int> &ia, Float x1, Float x2, Float y1, Float y2) {
+void PGPlotter::pixl(const Matrix<int> &ia, float x1, float x2, float y1, float y2) {
   ok();
   worker_p->pixl(ia, x1, x2, y1, y2);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::pnts(const Vector<Float> &x, const Vector<Float> &y, const Vector<Int> symbol) {
+void PGPlotter::pnts(const Vector<float> &x, const Vector<float> &y, const Vector<int> symbol) {
   ok();
   worker_p->pnts(x, y, symbol);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-Vector<Float> PGPlotter::qah() {
+Vector<float> PGPlotter::qah() {
   ok();
-  Vector<Float> retval = worker_p->qah();
+  Vector<float> retval = worker_p->qah();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Int PGPlotter::qcf() {
+int PGPlotter::qcf() {
   ok();
-  Int retval = worker_p->qcf();
+  int retval = worker_p->qcf();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Float PGPlotter::qch() {
+float PGPlotter::qch() {
   ok();
-  Float retval = worker_p->qch();
+  float retval = worker_p->qch();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qcr(Int ci) {
+Vector<float> PGPlotter::qcr(int ci) {
   ok();
-  Vector<Float> retval = worker_p->qcr(ci);
+  Vector<float> retval = worker_p->qcr(ci);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qcs(Int units) {
+Vector<float> PGPlotter::qcs(int units) {
   ok();
-  Vector<Float> retval = worker_p->qcs(units);
+  Vector<float> retval = worker_p->qcs(units);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Int PGPlotter::qfs() {
+int PGPlotter::qfs() {
   ok();
-  Int retval = worker_p->qfs();
+  int retval = worker_p->qfs();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qhs() {
+Vector<float> PGPlotter::qhs() {
   ok();
-  Vector<Float> retval = worker_p->qhs();
+  Vector<float> retval = worker_p->qhs();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Int PGPlotter::qid() {
+int PGPlotter::qid() {
   ok();
-  Int retval = worker_p->qid();
+  int retval = worker_p->qid();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
@@ -572,100 +573,100 @@ String PGPlotter::qinf(const String &item) {
   return retval;
 }
 
-Int PGPlotter::qitf() {
+int PGPlotter::qitf() {
   ok();
-  Int retval = worker_p->qitf();
+  int retval = worker_p->qitf();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Int PGPlotter::qls() {
+int PGPlotter::qls() {
   ok();
-  Int retval = worker_p->qls();
+  int retval = worker_p->qls();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Int PGPlotter::qlw() {
+int PGPlotter::qlw() {
   ok();
-  Int retval = worker_p->qlw();
+  int retval = worker_p->qlw();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qpos() {
+Vector<float> PGPlotter::qpos() {
   ok();
-  Vector<Float> retval = worker_p->qpos();
+  Vector<float> retval = worker_p->qpos();
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qvp(Int units) {
+Vector<float> PGPlotter::qvp(int units) {
   ok();
-  Vector<Float> retval = worker_p->qvp(units);
+  Vector<float> retval = worker_p->qvp(units);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::qvsz(Int units) {
+Vector<float> PGPlotter::qvsz(int units) {
   ok();
-  Vector<Float> retval = worker_p->qvsz(units);
+  Vector<float> retval = worker_p->qvsz(units);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Float PGPlotter::rnd(Float x, Int nsub) {
+float PGPlotter::rnd(float x, int nsub) {
   ok();
-  Float retval = worker_p->rnd(x, nsub);
+  float retval = worker_p->rnd(x, nsub);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-Vector<Float> PGPlotter::rnge(Float x1, Float x2) {
+Vector<float> PGPlotter::rnge(float x1, float x2) {
   ok();
-  Vector<Float> retval = worker_p->rnge(x1, x2);
+  Vector<float> retval = worker_p->rnge(x1, x2);
   if (!worker_p->isAttached()) worker_p = 0;
   return retval;
 }
 
-void PGPlotter::scf(Int font) {
+void PGPlotter::scf(int font) {
   ok();
   worker_p->scf(font);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::scrn(Int ci, const String &name) {
+void PGPlotter::scrn(int ci, const String &name) {
   ok();
   worker_p->scrn(ci, name);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::shls(Int ci, Float ch, Float cl, Float cs) {
+void PGPlotter::shls(int ci, float ch, float cl, float cs) {
   ok();
   worker_p->shls(ci, ch, cl, cs);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::shs(Float angle, Float sepn, Float phase) {
+void PGPlotter::shs(float angle, float sepn, float phase) {
   ok();
   worker_p->shs(angle, sepn, phase);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::vect(const Matrix<Float> &a, const Matrix<Float> &b, Float c, Int nc,
-                     const Vector<Float> &tr, Float blank) {
+void PGPlotter::vect(const Matrix<float> &a, const Matrix<float> &b, float c, int nc,
+                     const Vector<float> &tr, float blank) {
   ok();
   worker_p->vect(a, b, c, nc, tr, blank);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::vsiz(Float xleft, Float xright, Float ybot, Float ytop) {
+void PGPlotter::vsiz(float xleft, float xright, float ybot, float ytop) {
   ok();
   worker_p->vsiz(xleft, xright, ybot, ytop);
   if (!worker_p->isAttached()) worker_p = 0;
 }
 
-void PGPlotter::wedg(const String &side, Float disp, Float width, Float fg, Float bg,
+void PGPlotter::wedg(const String &side, float disp, float width, float fg, float bg,
                      const String &label) {
   ok();
   worker_p->wedg(side, disp, width, fg, bg, label);

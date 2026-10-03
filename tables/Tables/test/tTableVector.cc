@@ -44,11 +44,11 @@
 // It writes some timing data to stdout.
 
 void credes();
-void cretab(uInt);
-void dovec(Int);
+void cretab(unsigned int);
+void dovec(int);
 
 int main(int argc, const char* argv[]) {
-  uInt nr = 5000;
+  unsigned int nr = 5000;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nr;
@@ -64,18 +64,18 @@ int main(int argc, const char* argv[]) {
 // are filled in correctly when a row is added to a table.
 void credes() {
   TableDesc txp("tTableVector_tmp", TableDesc::New);
-  txp.addColumn(ScalarColumnDesc<Int>("col1"));
+  txp.addColumn(ScalarColumnDesc<int>("col1"));
   txp.addColumn(ScalarColumnDesc<double>("col2"));
   txp.addColumn(ScalarColumnDesc<float>("col3"));
   txp.addColumn(ScalarColumnDesc<Complex>("col4"));
 }
 
 // Write data into the table.
-void cretab(uInt nr) {
-  uInt i;
+void cretab(unsigned int nr) {
+  unsigned int i;
   SetupNewTable newtab("tTableVector_tmp.data", "tTableVector_tmp", Table::New);
   Table tab(newtab);
-  ScalarColumn<Int> col1(tab, "col1");
+  ScalarColumn<int> col1(tab, "col1");
   ScalarColumn<double> col2(tab, "col2");
   ScalarColumn<float> col3(tab, "col3");
   ScalarColumn<Complex> col4(tab, "col4");
@@ -93,9 +93,9 @@ void cretab(uInt nr) {
   cout << "Filling done" << endl;
 }
 
-void dovec(Int nr) {
-  Int i;
-  Vector<Int> vec(nr);
+void dovec(int nr) {
+  int i;
+  Vector<int> vec(nr);
   Timer tim;
   for (i = 0; i < nr; i++) {
     vec(i) = i;
@@ -103,7 +103,7 @@ void dovec(Int nr) {
   cout << ">>>" << endl;
   tim.show("Initializing Vector     ");
 
-  TableVector<Int> tvec(nr);
+  TableVector<int> tvec(nr);
   tim.mark();
   for (i = 0; i < nr; i++) {
     tvec.set(i, i);
@@ -111,12 +111,12 @@ void dovec(Int nr) {
   tim.show("Initializing TableVector");
 
   tim.mark();
-  TableVector<Int> tvec2 = tvec + 1;
+  TableVector<int> tvec2 = tvec + 1;
   tim.show("Adding constant to TVec ");
   cout << "<<<" << endl;
   cout << tvec2.nelements() << " elements" << endl;
   for (i = 0; i < nr; i++) {
-    Int j = tvec2(i);
+    int j = tvec2(i);
     if (j != i + 1) {
       cout << "error in addition of element " << i << endl;
       cout << tvec(i) << " " << tvec2(i) << endl;
@@ -124,7 +124,7 @@ void dovec(Int nr) {
   }
 
   tim.mark();
-  TableVector<Int> tvec3 = tvec + tvec2;
+  TableVector<int> tvec3 = tvec + tvec2;
   cout << ">>>" << endl;
   tim.show("Adding TVec to TVec     ");
   tim.mark();
@@ -139,7 +139,7 @@ void dovec(Int nr) {
   }
 
   Table tab("tTableVector_tmp.data", Table::Update);
-  TableVector<Int> tvec4(tab, "col1");
+  TableVector<int> tvec4(tab, "col1");
   TableVector<float> tvecFloat(tab, "col3");
   // #    tvecFloat = 3;                            // Should fail when compiling
   cout << "got tvec4" << endl;
@@ -161,8 +161,8 @@ void dovec(Int nr) {
   cout << ">>>" << endl;
   tim.show("Adding TVec to ColVec   ");
   tvec4 = tvec4 + tvec2;
-  Vector<Int> vec2;
-  ScalarColumn<Int> col1(tab, "col1");
+  Vector<int> vec2;
+  ScalarColumn<int> col1(tab, "col1");
   tim.mark();
   col1.getColumn(vec2);
   tim.show("Getting a table column  ");
@@ -189,7 +189,7 @@ void dovec(Int nr) {
   cout << "<<<" << endl;
 
   // Get a vector from the table column vector.
-  Vector<Int> vec3;
+  Vector<int> vec3;
   vec3 = tvec4.makeVector();
   for (i = 0; i < nr; i++) {
     if (vec3(i) != 100000 - i + i + i + 1) {

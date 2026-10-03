@@ -39,13 +39,13 @@ int main() {
     LogOrigin lor("dRemoveAxes", "main()", WHERE);
     LogIO os(lor);
     IPosition d1, d2;
-    Vector<Double> worldReplacement;
-    Vector<Double> pixelReplacement;
+    Vector<double> worldReplacement;
+    Vector<double> pixelReplacement;
     //
     {
       cout << "remove world axes = [0, 1] and associated pixel axes from [ra, dec, freq]" << endl;
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-      Vector<Int> list(1);
+      Vector<int> list(1);
       list(0) = 2;
       bool remove = false;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
@@ -59,7 +59,7 @@ int main() {
       cout << "remove world axes = [2] and associated pixel axes from [ra, dec, freq]" << endl;
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-      Vector<Int> list(1);
+      Vector<int> list(1);
       list(0) = 2;
       bool remove = true;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
@@ -73,7 +73,7 @@ int main() {
       cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-      Vector<Int> list(2);
+      Vector<int> list(2);
       list(0) = 0;
       list(1) = 2;
       bool remove = true;
@@ -89,7 +89,7 @@ int main() {
       cout << "and then world axes = [0, 1] and associated pixel axes " << endl;
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-      Vector<Int> list(1);
+      Vector<int> list(1);
       list(0) = 0;
       bool remove = true;
       if (CoordinateUtil::removeAxes(cSys, worldReplacement, list, remove)) {
@@ -110,13 +110,13 @@ int main() {
     {
       cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-      Vector<Int> list(2);
+      Vector<int> list(2);
       list(0) = 0;
       list(1) = 2;
       bool remove = true;
-      Vector<Double> incr = cSys.increment();
-      Vector<Double> refVal = cSys.referenceValue();
-      Vector<Double> refPix = cSys.referencePixel();
+      Vector<double> incr = cSys.increment();
+      Vector<double> refVal = cSys.referenceValue();
+      Vector<double> refPix = cSys.referencePixel();
 
       worldReplacement.resize(2);
       worldReplacement(0) = (-1 - refPix(list(0))) * incr(list(0)) + refVal(list(0));
@@ -135,7 +135,7 @@ int main() {
       cout << "remove world axes = [0, 2] and associated pixel axes from [ra,dec,freq]" << endl;
       CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
-      Vector<Int> list(2);
+      Vector<int> list(2);
       list(0) = 0;
       list(1) = 2;
       bool remove = true;
@@ -153,7 +153,7 @@ int main() {
       pixelReplacement(0) = -20.0;
       cout << "specified pixel replacement values = " << pixelReplacement << endl;
 
-      Vector<Int> list(1);
+      Vector<int> list(1);
       list(0) = 0;
       bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
@@ -169,7 +169,7 @@ int main() {
       pixelReplacement.resize(1);
       pixelReplacement(0) = +20.0;
       cout << "specified pixel replacement values = " << pixelReplacement << endl;
-      Vector<Int> list(1);
+      Vector<int> list(1);
       list(0) = 1;
       bool remove = true;
       if (CoordinateUtil::removePixelAxes(cSys, pixelReplacement, list, remove)) {
@@ -186,7 +186,7 @@ int main() {
       pixelReplacement(0) = -20.0;
       pixelReplacement(1) = +20.0;
       cout << "specified pixel replacement values = " << pixelReplacement << endl;
-      Vector<Int> list(2);
+      Vector<int> list(2);
       list(0) = 0;
       list(1) = 1;
       bool remove = true;
@@ -204,7 +204,7 @@ int main() {
       pixelReplacement(0) = -20.0;
       pixelReplacement(1) = +20.0;
       cout << "specified pixel replacement values = " << pixelReplacement << endl;
-      Vector<Int> list(2);
+      Vector<int> list(2);
       list(0) = 0;
       list(1) = 2;
       bool remove = true;
@@ -222,7 +222,7 @@ int main() {
       pixelReplacement(0) = -20.0;
       pixelReplacement(1) = +20.0;
       cout << "specified pixel replacement values = " << pixelReplacement << endl;
-      Vector<Int> list(2);
+      Vector<int> list(2);
       list(0) = 1;
       list(1) = 2;
       bool remove = true;

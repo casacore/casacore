@@ -80,7 +80,7 @@ int main() {
   cout << "Assign m2 to me, so me has the number of non-flagged values " << me.nval() << endl;
   cout << "Current median value in me window is " << me.median() << endl;
 
-  Vector<Float> vl(4);
+  Vector<float> vl(4);
   vl(0) = 10.5;
   vl(1) = 4.5;
   vl(2) = 5.5;
@@ -100,7 +100,8 @@ int main() {
 
   bool flag = false;
 
-  cout << "The value takes 4 step back from end " << m1.prevVal(uInt(4), flag) << endl;
+  cout << "The value takes 4 step back from end " << m1.prevVal(static_cast<unsigned int>(4), flag)
+       << endl;
   cout << "The value at the midpoint " << m1.midpoint(flag) << endl;
   cout << "The difference between the current median and the value at the window center "
        << m1.diff(flag) << endl;
@@ -119,7 +120,7 @@ int main() {
        << m1.diff() << endl;
   //  cout << " Number of values in the m1 window " << m1.size() << endl;
 
-  Vector<Float> vl2(7);
+  Vector<float> vl2(7);
   vl2(0) = 1;
   vl2(1) = 2;
   vl2(2) = 3;

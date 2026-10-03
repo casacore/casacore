@@ -152,7 +152,7 @@ void checkConversion(int& error) {
     val[3] = 54;
     val[2] = 78;
     val[1] = 145 - 256;
-    Int64 result;
+    int64_t result;
     VAXConversion::toLocal(&result, val + 1, 1);
     if (result != 2 * 256 * 256 * 256 + 54 * 256 * 256 + 78 * 256 + 145) {
       cout << "invalid Int64 to conversion 1 " << result << endl;
@@ -180,7 +180,7 @@ void checkConversion(int& error) {
     val[3] = 54;
     val[2] = 78;
     val[1] = 100;
-    uInt64 result;
+    uint64_t result;
     VAXConversion::toLocal(&result, val + 1, 1);
     if (result != 128U * 256U * 256U * 256U + 54U * 256U * 256U + 78U * 256U + 100U) {
       cout << "invalid uInt64 to conversion " << result << endl;
@@ -200,8 +200,8 @@ void checkFloat(int& error) {
   unsigned char val[5];
   val[3] = 0;
   val[4] = 1;
-  for (uInt i = 0; i < 2; i++) {
-    for (uInt j = 2; j < 128; j++) {
+  for (unsigned int i = 0; i < 2; i++) {
+    for (unsigned int j = 2; j < 128; j++) {
       val[2] = (i << 7) + j;
       double v;
       if (2 * j >= 128) {
@@ -212,7 +212,7 @@ void checkFloat(int& error) {
       if (i == 1) {
         v *= -1;
       }
-      for (uInt k = 0; k < 128; k++) {
+      for (unsigned int k = 0; k < 128; k++) {
         val[1] = k;
         VAXConversion::toLocal(&f1, val + 1, 1);
         float v1 = v * (double(128 + k) / 256 + double(1) / (256 * 256));
@@ -240,8 +240,8 @@ void checkDouble(int& error) {
   val[6] = 3;
   val[7] = 0;
   val[8] = 5;
-  for (uInt i = 0; i < 2; i++) {
-    for (uInt j = 1; j < 128; j++) {
+  for (unsigned int i = 0; i < 2; i++) {
+    for (unsigned int j = 1; j < 128; j++) {
       val[2] = (i << 7) + j;
       double v;
       if (2 * j < 128) {
@@ -260,7 +260,7 @@ void checkDouble(int& error) {
       if (i == 1) {
         v *= -1;
       }
-      for (uInt k = 0; k < 128; k++) {
+      for (unsigned int k = 0; k < 128; k++) {
         val[1] = k;
         VAXConversion::toLocal(&f1, val + 1, 1);
         double v1 =

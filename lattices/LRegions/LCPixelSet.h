@@ -98,7 +98,7 @@ class LCPixelSet : public LCRegionFixed {
   // Construct another LCPixelSet (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:

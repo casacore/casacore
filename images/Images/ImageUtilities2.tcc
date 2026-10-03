@@ -66,12 +66,13 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
   CoordinateSystem cSys = inImage.coordinates();
   IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
 
-  uInt nExtra = CoordinateUtil::addAxes(cSys, direction, spectral, stokes, linear, tabular, silent);
+  unsigned int nExtra =
+      CoordinateUtil::addAxes(cSys, direction, spectral, stokes, linear, tabular, silent);
 
   if (nExtra > 0) {
-    uInt n = shape.nelements();
+    unsigned int n = shape.nelements();
     shape.resize(n + nExtra, true);
-    for (uInt i = 0; i < nExtra; i++) {
+    for (unsigned int i = 0; i < nExtra; i++) {
       shape(n + i) = 1;
     }
   }
@@ -88,9 +89,9 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
   // Generate output masks
 
   Vector<String> maskNames = inImage.regionNames(RegionHandler::Masks);
-  const uInt nMasks = maskNames.nelements();
+  const unsigned int nMasks = maskNames.nelements();
   if (nMasks > 0) {
-    for (uInt i = 0; i < nMasks; i++) {
+    for (unsigned int i = 0; i < nMasks; i++) {
       pOutImage->makeMask(maskNames(i), true, false, true);
     }
   }
@@ -103,7 +104,7 @@ void ImageUtilities::addDegenerateAxes(LogIO& os, std::unique_ptr<ImageInterface
 
   // Copy masks (directly, can't do via SubImage)
   if (nMasks > 0) {
-    for (uInt i = 0; i < nMasks; i++) {
+    for (unsigned int i = 0; i < nMasks; i++) {
       ImageUtilities::copyMask(*pOutImage, inImage, maskNames(i), maskNames(i), axesSpecifier);
     }
   }
@@ -130,7 +131,7 @@ void ImageUtilities::copyMiscellaneous(ImageInterface<T>& out, const ImageInterf
 
 template <typename T>
 void ImageUtilities::bin(MaskedArray<T>& out, Coordinate& coordOut, const MaskedArray<T>& in,
-                         const Coordinate& coordIn, uInt axis, uInt bin) {
+                         const Coordinate& coordIn, unsigned int axis, unsigned int bin) {
   // Check
 
   AlwaysAssert(coordIn.nPixelAxes() == 1 && coordIn.nWorldAxes() == 1, AipsError);
@@ -143,14 +144,14 @@ void ImageUtilities::bin(MaskedArray<T>& out, Coordinate& coordOut, const Masked
       AipsError);
   //
   const IPosition shapeIn = in.shape();
-  const uInt nDim = shapeIn.nelements();
+  const unsigned int nDim = shapeIn.nelements();
   AlwaysAssert(axis < nDim, AipsError);
 
   // Create CS
 
   CoordinateSystem cSysIn;
   LinearCoordinate linCoord;
-  for (uInt i = 0; i < nDim; i++) {
+  for (unsigned int i = 0; i < nDim; i++) {
     if (i == axis) {
       cSysIn.addCoordinate(coordIn);
     } else {

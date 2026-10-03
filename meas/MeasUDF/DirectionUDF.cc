@@ -48,7 +48,7 @@ void DirectionUDF::setup(const Table&, const TaQLStyle&) {
   }
   // Get the 'to' reference type.
   // Determine the argnr of the epoch.
-  uInt argnr = 0;
+  unsigned int argnr = 0;
   if (itsType == HADEC) {
     itsRefType = MDirection::HADEC;
   } else if (itsType == AZEL) {
@@ -112,17 +112,17 @@ void DirectionUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType, itsType));
 }
 
-Double DirectionUDF::getDouble(const TableExprId& id) {
+double DirectionUDF::getDouble(const TableExprId& id) {
   return getArrayDouble(id).array().data()[0];
 }
 
-MArray<Double> DirectionUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id, itsRiseSet, itsType == DIRCOS));
+MArray<double> DirectionUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id, itsRiseSet, itsType == DIRCOS));
 }
 MArray<MVTime> DirectionUDF::getArrayDate(const TableExprId& id) {
-  Array<Double> res = itsEngine.getArrayDouble(id, itsRiseSet, false);
+  Array<double> res = itsEngine.getArrayDouble(id, itsRiseSet, false);
   Array<MVTime> dates(res.shape());
-  for (uInt i = 0; i < res.size(); ++i) {
+  for (unsigned int i = 0; i < res.size(); ++i) {
     dates.data()[i] = MVTime(res.data()[i]);
   }
   return MArray<MVTime>(dates);

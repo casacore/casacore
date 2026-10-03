@@ -58,26 +58,26 @@ class Quantum;
 
 // <group name=QuantumType>
 
-inline uInt quantumType(const Quantum<Double>*) { return 1; }
-inline uInt quantumType(const Quantum<Float>*) { return 2; }
-inline uInt quantumType(const Quantum<Int>*) { return 3; }
-inline uInt quantumType(const Quantum<DComplex>*) { return 4; }
-inline uInt quantumType(const Quantum<Complex>*) { return 5; }
-inline uInt quantumType(const Quantum<Vector<Double>>*) { return 6; }
-inline uInt quantumType(const Quantum<Vector<Float>>*) { return 7; }
-inline uInt quantumType(const Quantum<Vector<Int>>*) { return 8; }
-inline uInt quantumType(const Quantum<Vector<DComplex>>*) { return 9; }
-inline uInt quantumType(const Quantum<Vector<Complex>>*) { return 10; }
-inline uInt quantumType(const Quantum<Array<Double>>*) { return 11; }
-inline uInt quantumType(const Quantum<Array<Float>>*) { return 12; }
-inline uInt quantumType(const Quantum<Array<Int>>*) { return 13; }
-inline uInt quantumType(const Quantum<Array<DComplex>>*) { return 14; }
-inline uInt quantumType(const Quantum<Array<Complex>>*) { return 15; }
-inline uInt quantumType(const Quantum<Matrix<Double>>*) { return 16; }
-inline uInt quantumType(const Quantum<Matrix<Float>>*) { return 17; }
-inline uInt quantumType(const Quantum<Matrix<Int>>*) { return 18; }
-inline uInt quantumType(const Quantum<Matrix<DComplex>>*) { return 19; }
-inline uInt quantumType(const Quantum<Matrix<Complex>>*) { return 20; }
+inline unsigned int quantumType(const Quantum<double>*) { return 1; }
+inline unsigned int quantumType(const Quantum<float>*) { return 2; }
+inline unsigned int quantumType(const Quantum<int>*) { return 3; }
+inline unsigned int quantumType(const Quantum<DComplex>*) { return 4; }
+inline unsigned int quantumType(const Quantum<Complex>*) { return 5; }
+inline unsigned int quantumType(const Quantum<Vector<double>>*) { return 6; }
+inline unsigned int quantumType(const Quantum<Vector<float>>*) { return 7; }
+inline unsigned int quantumType(const Quantum<Vector<int>>*) { return 8; }
+inline unsigned int quantumType(const Quantum<Vector<DComplex>>*) { return 9; }
+inline unsigned int quantumType(const Quantum<Vector<Complex>>*) { return 10; }
+inline unsigned int quantumType(const Quantum<Array<double>>*) { return 11; }
+inline unsigned int quantumType(const Quantum<Array<float>>*) { return 12; }
+inline unsigned int quantumType(const Quantum<Array<int>>*) { return 13; }
+inline unsigned int quantumType(const Quantum<Array<DComplex>>*) { return 14; }
+inline unsigned int quantumType(const Quantum<Array<Complex>>*) { return 15; }
+inline unsigned int quantumType(const Quantum<Matrix<double>>*) { return 16; }
+inline unsigned int quantumType(const Quantum<Matrix<float>>*) { return 17; }
+inline unsigned int quantumType(const Quantum<Matrix<int>>*) { return 18; }
+inline unsigned int quantumType(const Quantum<Matrix<DComplex>>*) { return 19; }
+inline unsigned int quantumType(const Quantum<Matrix<Complex>>*) { return 20; }
 
 // </group>
 

@@ -34,13 +34,13 @@
 class VACExample {
  public:
   VACExample() : x_p(0), y_p(0) {}
-  VACExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
+  VACExample(int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
   static String dataTypeId() { return "VACExample"; }
-  Int x() const { return x_p; }
+  int x() const { return x_p; }
   float y() const { return y_p; }
 
   const String& z() const { return z_p; }
-  Int& x() { return x_p; }
+  int& x() { return x_p; }
   float& y() { return y_p; }
   String& z() { return z_p; }
   int operator==(const VACExample& that) const {
@@ -52,7 +52,7 @@ class VACExample {
   }
 
  private:
-  Int x_p;
+  int x_p;
   float y_p;
   String z_p;
 };
@@ -139,7 +139,7 @@ class VACExampleVACEngine : public VACEngine<VACExample> {
   String yTargetName_p;
   String zTargetName_p;
   // Objects for the target columns.
-  ArrayColumn<Int> colx;
+  ArrayColumn<int> colx;
   ArrayColumn<float> coly;
   ArrayColumn<String> colz;
 

@@ -33,23 +33,23 @@
 #include <casacore/casa/OS/Path.h>
 
 #include <casacore/casa/namespace.h>
-const Int nrOfTests = 1;
+const int nrOfTests = 1;
 
 int main() {
   {
     bool testBool = true;
-    Short testShort = -30;
-    uShort testuShort = 10;
-    Int testInt = -20;
-    uInt testuInt = 80;
-    Int64 testInt64 = -100000;
-    uInt64 testuInt64 = 100000;
-    Float testFloat = 18.45;
-    Double testDouble = 23.987;
+    short testShort = -30;
+    unsigned short testuShort = 10;
+    int testInt = -20;
+    unsigned int testuInt = 80;
+    int64_t testInt64 = -100000;
+    uint64_t testuInt64 = 100000;
+    float testFloat = 18.45;
+    double testDouble = 23.987;
     Complex testComplex(2, 3);
     DComplex testDComplex(2.5, 3.8);
-    Char testChar = 'A';
-    uChar testuChar = 'B';
+    char testChar = 'A';
+    unsigned char testuChar = 'B';
     String testString("This is a teststring");
 
     auto regularFileIO = std::make_shared<RegularFileIO>(Path("tByteSink_tmp.dat"), ByteIO::New);
@@ -91,18 +91,18 @@ int main() {
   }
   {
     bool testBool;
-    Short testShort;
-    uShort testuShort;
-    Int testInt;
-    uInt testuInt;
-    Int64 testInt64;
-    uInt64 testuInt64;
-    Float testFloat;
-    Double testDouble;
+    short testShort;
+    unsigned short testuShort;
+    int testInt;
+    unsigned int testuInt;
+    int64_t testInt64;
+    uint64_t testuInt64;
+    float testFloat;
+    double testDouble;
     Complex testComplex;
     DComplex testDComplex;
-    Char testChar;
-    uChar testuChar;
+    char testChar;
+    unsigned char testuChar;
     String testString;
 
     auto regularFileIO = std::make_shared<RegularFileIO>(Path("tByteSink_tmp.dat"));

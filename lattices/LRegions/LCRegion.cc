@@ -75,14 +75,14 @@ void LCRegion::handleRename(const String&, bool) {}
 
 LCRegion* LCRegion::translate(const IPosition& translateVector,
                               const IPosition& newLatticeShape) const {
-  uInt nr = translateVector.nelements();
-  Vector<Float> vec(nr);
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = translateVector.nelements();
+  Vector<float> vec(nr);
+  for (unsigned int i = 0; i < nr; i++) {
     vec(i) = translateVector(i);
   }
   return translate(vec, newLatticeShape);
 }
-LCRegion* LCRegion::translate(const Vector<Float>& translateVector,
+LCRegion* LCRegion::translate(const Vector<float>& translateVector,
                               const IPosition& newLatticeShape) const {
   if (translateVector.nelements() != newLatticeShape.nelements()) {
     throw(
@@ -115,18 +115,18 @@ Slicer LCRegion::expand(const Slicer& slicer) const {
   IPosition blc, trc, inc;
   IPosition shape = slicer.inferShapeFromSource(itsBoundingBox.length(), blc, trc, inc);
   const IPosition& start = itsBoundingBox.start();
-  uInt ndim = itsShape.nelements();
-  for (uInt i = 0; i < ndim; i++) {
+  unsigned int ndim = itsShape.nelements();
+  for (unsigned int i = 0; i < ndim; i++) {
     blc(i) += start(i);
   }
   return Slicer(blc, shape, inc);
 }
 IPosition LCRegion::expand(const IPosition& index) const {
-  uInt ndim = itsShape.nelements();
+  unsigned int ndim = itsShape.nelements();
   DebugAssert(index.nelements() == ndim, AipsError);
   IPosition result(ndim);
   const IPosition& start = itsBoundingBox.start();
-  for (uInt i = 0; i < ndim; i++) {
+  for (unsigned int i = 0; i < ndim; i++) {
     DebugAssert(index(i) < itsBoundingBox.length()(i), AipsError);
     result(i) = start(i) + index(i);
   }
@@ -134,12 +134,12 @@ IPosition LCRegion::expand(const IPosition& index) const {
 }
 
 void LCRegion::defineRecordFields(RecordInterface& record, const String& className) const {
-  record.define("isRegion", Int(RegionType::LC));
+  record.define("isRegion", int(RegionType::LC));
   record.define("name", className);
   record.define("comment", itsComment);
 }
 
-uInt LCRegion::ndim() const { return itsShape.nelements(); }
+unsigned int LCRegion::ndim() const { return itsShape.nelements(); }
 
 IPosition LCRegion::shape() const { return itsBoundingBox.length(); }
 

@@ -277,14 +277,14 @@ class Record : public RecordInterface {
 
   // How many fields does this structure have? A convenient synonym for
   // <src>description().nfields()</src>.
-  uInt nfields() const override;
+  unsigned int nfields() const override;
 
   // Get the field number from the field name.
   // -1 is returned if the field name is unknown.
-  Int fieldNumber(const String& fieldName) const override;
+  int fieldNumber(const String& fieldName) const override;
 
   // Get the data type of this field.
-  DataType type(Int whichField) const override;
+  DataType type(int whichField) const override;
 
   // Remove a field from the record.
   // <note role=caution>
@@ -365,7 +365,7 @@ class Record : public RecordInterface {
   // Read the data of a record.
   // This is used to read a subrecord, whose description has
   // already been read.
-  void getData(AipsIO& os, uInt version);
+  void getData(AipsIO& os, unsigned int version);
 
   // Make a unique record representation
   // (to do copy-on-write in RecordFieldPtr).
@@ -374,14 +374,14 @@ class Record : public RecordInterface {
   // Print the contents of the record.
   // Only the first <src>maxNrValues</src> of an array will be printed.
   // A value < 0 means the entire array.
-  void print(std::ostream&, Int maxNrValues = 25, const String& indent = "") const override;
+  void print(std::ostream&, int maxNrValues = 25, const String& indent = "") const override;
 
  protected:
   // Used by the RecordField classes to attach in a type-safe way to the
   // correct field.
   // <group>
-  void* get_pointer(Int whichField, DataType type) const override;
-  void* get_pointer(Int whichField, DataType type, const String& recordType) const override;
+  void* get_pointer(int whichField, DataType type) const override;
+  void* get_pointer(int whichField, DataType type, const String& recordType) const override;
   // </group>
 
   // Return a const reference to the underlying RecordRep.
@@ -397,7 +397,7 @@ class Record : public RecordInterface {
                     const void* value) override;
 
   // Define a value in the given field.
-  void defineDataField(Int whichField, DataType type, const void* value) override;
+  void defineDataField(int whichField, DataType type, const void* value) override;
 
  private:
   // Get the description of this record.
@@ -432,7 +432,7 @@ inline AipsIO& operator>>(AipsIO& os, Record& rec) {
   rec.getRecord(os);
   return os;
 }
-inline void Record::getData(AipsIO& os, uInt version) { rwRef().getData(os, version); }
+inline void Record::getData(AipsIO& os, unsigned int version) { rwRef().getData(os, version); }
 
 }  // namespace casacore
 

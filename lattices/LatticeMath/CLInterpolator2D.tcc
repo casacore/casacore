@@ -47,8 +47,8 @@ CLInterpolator2D<T>& CLInterpolator2D<T>::operator=(const CLInterpolator2D<T>& t
 }
 
 template <class T>
-void CLInterpolator2D<T>::set(MaskedLattice<T>* lattice, const AxesMapping& axesMap, uInt axis1,
-                              uInt axis2, uInt curveAxis) {
+void CLInterpolator2D<T>::set(MaskedLattice<T>* lattice, const AxesMapping& axesMap,
+                              unsigned int axis1, unsigned int axis2, unsigned int curveAxis) {
   itsLatticePtr = lattice;
   itsAxesMap = axesMap;
   itsAxis1 = axis1;

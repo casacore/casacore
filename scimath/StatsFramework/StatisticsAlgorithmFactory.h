@@ -49,7 +49,7 @@ class StatisticsAlgorithmFactory {
 
   ~StatisticsAlgorithmFactory();
 
-  void configureBiweight(Int maxIter = 3, Double c = 6.0);
+  void configureBiweight(int maxIter = 3, double c = 6.0);
 
   void configureClassical();
 
@@ -60,10 +60,10 @@ class StatisticsAlgorithmFactory {
       AccumType centerValue = 0);
 
   // configure to use hinges-fences algorithm
-  void configureHingesFences(Double f);
+  void configureHingesFences(double f);
 
   // configure to use Chauvenet's criterion
-  void configureChauvenet(Double zscore = -1, Int maxIterations = -1);
+  void configureChauvenet(double zscore = -1, int maxIterations = -1);
 
   // copy the data from this object to an object with different template
   // types. Note that the AccumType of <src>other</src> must be the same as
@@ -88,7 +88,7 @@ class StatisticsAlgorithmFactory {
 
   // Throws an exception if the current configuration is not relevant
   // to the hinges-fences algorithm
-  Double hingesFencesFactor() const;
+  double hingesFencesFactor() const;
 
   // Throws an exception if the current configuration is not relevant
   // to the fit-to-half algorithm
@@ -104,7 +104,7 @@ class StatisticsAlgorithmFactory {
  private:
   StatisticsData::ALGORITHM _algorithm;
   // hinges-fences f factor
-  Double _hf;
+  double _hf;
   StatisticsAlgorithmFactoryData::BiweightData _biweightData;
   StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> _fitToHalfData;
   StatisticsAlgorithmFactoryData::ChauvenetData _chauvData;

@@ -165,14 +165,14 @@ class MeasMath {
   void deapplyHADECtoAZEL(MVPosition &in);
   void applyHADECtoAZELGEO(MVPosition &in);
   void deapplyHADECtoAZELGEO(MVPosition &in);
-  void applyJ2000toB1950(MVPosition &in, Double epo, bool doin);
-  void deapplyJ2000toB1950(MVPosition &in, Double epo, bool doin);
+  void applyJ2000toB1950(MVPosition &in, double epo, bool doin);
+  void deapplyJ2000toB1950(MVPosition &in, double epo, bool doin);
   void applyJ2000toB1950(MVPosition &in, bool doin = true);
   void deapplyJ2000toB1950(MVPosition &in, bool doin = true);
   void applyJ2000toB1950_VLA(MVPosition &in, bool doin = true);
   void deapplyJ2000toB1950_VLA(MVPosition &in, bool doin = true);
-  void applyETerms(MVPosition &in, bool doin = true, Double epo = 2000.0);
-  void deapplyETerms(MVPosition &in, bool doin = true, Double epo = 2000.0);
+  void applyETerms(MVPosition &in, bool doin = true, double epo = 2000.0);
+  void deapplyETerms(MVPosition &in, bool doin = true, double epo = 2000.0);
   void applyGALtoJ2000(MVPosition &in);
   void deapplyGALtoJ2000(MVPosition &in);
   void applyGALtoB1950(MVPosition &in);
@@ -192,8 +192,8 @@ class MeasMath {
   void deapplyMECLIPtoJMEAN(MVPosition &in);
   void applyTECLIPtoJTRUE(MVPosition &in);
   void deapplyTECLIPtoJTRUE(MVPosition &in);
-  void applyAPPtoTOPO(MVPosition &in, const Double len, bool doin = true);
-  void deapplyAPPtoTOPO(MVPosition &in, const Double len, bool doin = true);
+  void applyAPPtoTOPO(MVPosition &in, const double len, bool doin = true);
+  void deapplyAPPtoTOPO(MVPosition &in, const double len, bool doin = true);
   // </group>
   // </group>
 
@@ -237,7 +237,7 @@ class MeasMath {
   typedef const Measure *(MeasFrame::*FRFCT)() const;
   // To get frame info
   // <group>
-  typedef bool (MeasFrame::*FRDINFO)(Double &) const;
+  typedef bool (MeasFrame::*FRDINFO)(double &) const;
   typedef bool (MeasFrame::*FRMVDINFO)(MVDirection &) const;
   // </group>
 
@@ -265,14 +265,14 @@ class MeasMath {
   // <group>
   RotMatrix ROTMAT1;
   MVPosition MVPOS1, MVPOS2, MVPOS3, MVPOS4;
-  Double g1, g2, g3, lengthE;
+  double g1, g2, g3, lengthE;
   bool infoOK_p[N_FrameInfo];
-  Double info_p[N_FrameDInfo];
+  double info_p[N_FrameDInfo];
   MVDirection infomvd_p[N_FrameMVDInfo];
   // </group>
   // Aipsrc definition for B1950 epoch (in years)
   static inline std::once_flag initialize_once_flag;
-  static inline uInt b1950_reg_p;
+  static inline unsigned int b1950_reg_p;
 
   // </group>
 

@@ -104,7 +104,7 @@ class SDFITSHandler {
   void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // fill - a new row is always added
-  void fill(const Record &row, const MEpoch &time, const Double &interval);
+  void fill(const Record &row, const MEpoch &time, const double &interval);
 
  private:
   // the output table
@@ -114,7 +114,7 @@ class SDFITSHandler {
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   // the INTERVAL column
-  ScalarQuantColumn<Double> intervalQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
 
   // this copies everything from the row to the table
   CopyRecordToTable *copier_p;

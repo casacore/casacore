@@ -45,7 +45,7 @@
 
 #include <casacore/casa/namespace.h>
 void testVectorROIter(const Lattice<bool>& lattice, bool firstValue, bool alternates) {
-  Int nstep;
+  int nstep;
   const IPosition latticeShape(lattice.shape());
   const IPosition cursorShape(1, latticeShape(0));
   LatticeStepper step(latticeShape, cursorShape);
@@ -69,12 +69,12 @@ int main() {
   try {
     CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
     IPosition latticeShape(3, 4, 8, 11);
-    Array<Float> arr(latticeShape);
+    Array<float> arr(latticeShape);
     indgen(arr);
-    PagedImage<Float> image(latticeShape, cSys, "tWCLELMask_tmp.img");
+    PagedImage<float> image(latticeShape, cSys, "tWCLELMask_tmp.img");
     image.put(arr);
     image.flush();
-    ArrayLattice<Float> arrlat(arr);
+    ArrayLattice<float> arrlat(arr);
     {
       WCLELMask mask(String("fmod(floor(tWCLELMask_tmp.img / 4), 2) == 0"));
       AlwaysAssertExit(mask.ndim() == latticeShape.nelements());
@@ -101,9 +101,9 @@ int main() {
       // Test if the auto-extend works fine.
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
       IPosition shape2(2, 4, 8);
-      Array<Float> arr2(shape2);
+      Array<float> arr2(shape2);
       indgen(arr2);
-      PagedImage<Float> image2(shape2, cSys2, "tWCLELMask_tmp.img2");
+      PagedImage<float> image2(shape2, cSys2, "tWCLELMask_tmp.img2");
       image2.put(arr2);
       image2.flush();
       WCLELMask mask("fmod(floor(tWCLELMask_tmp.img2 / 4), 2) == 0");

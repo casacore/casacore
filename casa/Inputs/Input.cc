@@ -45,7 +45,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // This can be turned off by overriding the default `init' argument.
 //
 
-Input::Input(Int createEnv) : is_closed(false), do_prompt(false), debug_level(0), p_count(0) {
+Input::Input(int createEnv) : is_closed(false), do_prompt(false), debug_level(0), p_count(0) {
   if (createEnv) {
     envCreate("DEBUG", "debug", "0");
     envCreate("HELP", "help", "0");
@@ -93,7 +93,7 @@ void Input::create(const String& key, const String& value, const String& help, c
 
 // CreatePar() is the workhorse function, it is a private member function
 
-void Input::createPar(Int system, const String& key, const String& value, const String& help,
+void Input::createPar(int system, const String& key, const String& value, const String& help,
                       const String& type, const String& range, const String& unit) {
   if (is_closed) {
     String msg = "Input::createPar: " + key + ": Cannot create any more Parameters";
@@ -143,8 +143,8 @@ void Input::close() {
 }
 
 // Query functions
-Double Input::getDouble(const String& key) {
-  Int i = getParam(key);
+double Input::getDouble(const String& key) {
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetDouble: Parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -156,8 +156,8 @@ Double Input::getDouble(const String& key) {
   return x.getDouble();
 }
 
-Block<Double> Input::getDoubleArray(const String& key) {
-  Int i = getParam(key);
+Block<double> Input::getDoubleArray(const String& key) {
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetDoubleArray: Parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -170,7 +170,7 @@ Block<Double> Input::getDoubleArray(const String& key) {
 }
 
 int Input::getInt(const String& key) {
-  Int i = getParam(key);
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetInt: Parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -182,8 +182,8 @@ int Input::getInt(const String& key) {
   return x.getInt();
 }
 
-Block<Int> Input::getIntArray(const String& key) {
-  Int i = getParam(key);
+Block<int> Input::getIntArray(const String& key) {
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetIntArray: Parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -196,7 +196,7 @@ Block<Int> Input::getIntArray(const String& key) {
 }
 
 String Input::getString(const String& key) {
-  Int i = getParam(key);
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetString: Parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -209,7 +209,7 @@ String Input::getString(const String& key) {
 }
 
 bool Input::getBool(const String& key) {
-  Int i = getParam(key);
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::GetBool: Parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -228,7 +228,7 @@ bool Input::put(const String& key, const String& value) {
   if (debug(5)) {
     cout << "PUT> " << key << "=" << value << "\n";
   }
-  Int i = getParam(key);
+  int i = getParam(key);
   if (i < 0) {
     String msg = "Input::Put: parameter " + key + " is unknown.";
     throw(AipsError(msg));
@@ -248,7 +248,7 @@ bool Input::put(const String& key) {
   return put(k.substr(0, inx), k.substr(inx + 1));
 }
 
-Int Input::count() const { return parList_p.size(); }
+int Input::count() const { return parList_p.size(); }
 
 void Input::version(const String& a_version) { version_id = a_version; }
 
@@ -283,8 +283,8 @@ void Input::announce() {
 // Move to the current named Parameter; return 0 if none found
 // A value >= 1 is the index (not used in K_ stuff)
 //
-Int Input::getParam(const String& name) const {
-  for (uInt i = 0; i < parList_p.size(); ++i) {
+int Input::getParam(const String& name) const {
+  for (unsigned int i = 0; i < parList_p.size(); ++i) {
     if (parList_p[i].getKey() == name) {
       return i;
     }
@@ -298,7 +298,7 @@ void Input::prompt(Param& x) const {
     throw(AipsError(msg));
   }
   bool ok = false;
-  Char input[1024];
+  char input[1024];
   while (ok == false) {
     cout << x.getHelp() << " [" << x.getString() << "]: " << x.getKey() << "=";
     cin.getline(input, 80);
@@ -311,7 +311,7 @@ void Input::prompt(Param& x) const {
   }
 }
 
-void Input::envCreate(const Char* env, const String& key, const String& def) {
+void Input::envCreate(const char* env, const String& key, const String& def) {
   String s(EnvironmentVariable::get(env));
   if (s.empty()) {
     s = def;
@@ -336,7 +336,7 @@ void Input::keys() {
 // line arguments in either "keyword=value" or "-keyword value" format. Argv[0]
 // is assumed to be the program name.
 void Input::readArguments(int ac, char const* const* av) {
-  Int i;
+  int i;
   createPar(1, "argv0", av[0], "Program name", "", "", "");
 
   if (debug(5)) {
@@ -398,7 +398,8 @@ void Input::readArguments(int ac, char const* const* av) {
   announce();  // Announce and possibly die here
 }
 
-Vector<bool> Input::makeMaskFromRanges(const String& ranges, uInt length, bool oneRelative) {
+Vector<bool> Input::makeMaskFromRanges(const String& ranges, unsigned int length,
+                                       bool oneRelative) {
   const std::regex single("^[ \t]*[0-9]+[ \t]*$", 1);
   const std::regex range("^[ \t]*[0-9]+[ \t]*-[ \t]*[0-9]+[ \t]*$", 1);
 
@@ -407,18 +408,18 @@ Vector<bool> Input::makeMaskFromRanges(const String& ranges, uInt length, bool o
 
   // Step through the string, comma separated expression by comma separated
   // expression.
-  Int numberOfCommas = std::count(ranges.begin(), ranges.end(), ',');
+  int numberOfCommas = std::count(ranges.begin(), ranges.end(), ',');
   Block<String> expressions(numberOfCommas + 1);
   split(ranges, expressions.storage(), numberOfCommas + 1, ",");
 
-  for (uInt i = 0; i < expressions.nelements(); i++) {
+  for (unsigned int i = 0; i < expressions.nelements(); i++) {
     // Validate
     if (!std::regex_search(expressions[i], single) && !std::regex_search(expressions[i], range)) {
       throw(AipsError(String("Input::makeMaskFromRanges - "
                              "invalid range:") +
                       expressions[i]));
     }
-    Int left, right;
+    int left, right;
     String::size_type inx = expressions[i].find('-');
     if (inx != String::npos) {
       left = atoi(expressions[i].substr(0, inx).c_str());
@@ -430,12 +431,12 @@ Vector<bool> Input::makeMaskFromRanges(const String& ranges, uInt length, bool o
       left -= 1;
       right -= 1;
     }
-    if (left + 1 > Int(mask.nelements()) || right + 1 > Int(mask.nelements()) || left > right) {
+    if (left + 1 > int(mask.nelements()) || right + 1 > int(mask.nelements()) || left > right) {
       throw(AipsError(String("Input::makeMaskFromRanges - "
                              "out of range or end<start ") +
                       ranges));
     }
-    mask(Slice(Int(left), Int(right - left + 1))) = true;
+    mask(Slice(int(left), int(right - left + 1))) = true;
   }
 
   return mask;

@@ -99,16 +99,16 @@ const TableExprNode* MSAntennaParse::setTEN(TableExprNode& condition, BaselineLi
   return &node_p;
 }
 
-const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds,
+const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<int>& antennaIds,
                                                       BaselineListType baselineType, bool negate) {
   TableExprNode condition;
   if ((baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly)) {
-    Int n = antennaIds.nelements();
+    int n = antennaIds.nelements();
     if (n) {
       // condition = ((ms()->col(colName1) == antennaIds[0]) &&
       // 		 (ms()->col(colName2) == antennaIds[0]));
       condition = ((column1AsTEN_p == antennaIds[0]) && (column2AsTEN_p == antennaIds[0]));
-      for (Int i = 1; i < n; i++) {
+      for (int i = 1; i < n; i++) {
         condition =
             condition || ((column1AsTEN_p == antennaIds[i]) && (column2AsTEN_p == antennaIds[i]));
         // ((ms()->col(colName1) == antennaIds[i]) &&
@@ -123,8 +123,8 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
          column2AsTEN_p.in(antennaIds));  //&& ms()->col(colName1) != ms()->col(colName2);
   }
   {
-    Int nrows_p = subTable().nrow();  // ms()->antenna().nrow();
-    Vector<Int> a2(nrows_p);
+    int nrows_p = subTable().nrow();  // ms()->antenna().nrow();
+    Vector<int> a2(nrows_p);
     a2.resize(nrows_p);
     indgen(a2);
 
@@ -139,21 +139,21 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
   return setTEN(condition, baselineType, negate);
 }
 
-void MSAntennaParse::makeAntennaList(Vector<Int>& antList, const Vector<Int>& thisList,
+void MSAntennaParse::makeAntennaList(Vector<int>& antList, const Vector<int>& thisList,
                                      bool negate) {
-  Vector<Int> a2;
+  Vector<int> a2;
   if (negate)
     a2 = -thisList;
   else
     a2 = thisList;
 
-  Vector<Int> tmp1(set_union(a2, antList));
+  Vector<int> tmp1(set_union(a2, antList));
   antList.resize(tmp1.nelements());
   antList = tmp1;
 }
 
-const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds1,
-                                                      const Vector<Int>& antennaIds2,
+const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<int>& antennaIds1,
+                                                      const Vector<int>& antennaIds2,
                                                       BaselineListType baselineType, bool negate) {
   TableExprNode condition;
 
@@ -179,7 +179,7 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& a
   //    MSAntennaIndex msAI(ms()->antenna());
   MSAntennaIndex msAI(subTable());
 
-  Vector<Int> ant = msAI.matchAntennaName(antenna);
+  Vector<int> ant = msAI.matchAntennaName(antenna);
 
   //    TableExprNode condition =(ms()->col(colName1).in(ant) || ms()->col(colName2).in(ant));
   TableExprNode condition = (column1AsTEN_p.in(ant) || column2AsTEN_p.in(ant));
@@ -194,7 +194,7 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& a
   //    MSAntennaIndex msAI(ms()->antenna());
   MSAntennaIndex msAI(subTable());
 
-  Vector<Int> a1 = msAI.matchAntennaName(antenna1), a2 = msAI.matchAntennaName(antenna2);
+  Vector<int> a1 = msAI.matchAntennaName(antenna1), a2 = msAI.matchAntennaName(antenna2);
 
   // TableExprNode condition =
   //   (ms()->col(colName1).in(a1) && ms()->col(colName2).in(a2)) ||
@@ -223,10 +223,10 @@ const TableExprNode* MSAntennaParse::selectLength(const std::vector<double>& len
   Matrix<double> blength = getBaselineLengths();
   Matrix<bool> match(blength.shape());
   match = false;
-  for (Int j = 0; j < blength.shape()[1]; ++j) {
-    for (Int i = 0; i < blength.shape()[0]; ++i) {
+  for (int j = 0; j < blength.shape()[1]; ++j) {
+    for (int i = 0; i < blength.shape()[0]; ++i) {
       double bl = blength(i, j);
-      for (uInt k = 0; k < lengths.size(); k += 2) {
+      for (unsigned int k = 0; k < lengths.size(); k += 2) {
         if (bl >= lengths[k] && bl <= lengths[k + 1]) {
           match(i, j) = true;
         }
@@ -251,8 +251,8 @@ const TableExprNode* MSAntennaParse::selectBLRegex(const std::vector<String>& bl
     }
     Regex re(str);
     // Form all possible baseline names and see it they match.
-    for (uInt j = 0; j < names.size(); ++j) {
-      for (uInt i = 0; i < names.size(); ++i) {
+    for (unsigned int j = 0; j < names.size(); ++j) {
+      for (unsigned int i = 0; i < names.size(); ++i) {
         String bl = names[i] + '&' + names[j];
         if (RegexMatches(bl, re) != neg) {
           match(i, j) = true;
@@ -264,9 +264,9 @@ const TableExprNode* MSAntennaParse::selectBLRegex(const std::vector<String>& bl
 }
 
 const TableExprNode* MSAntennaParse::makeBLNode(const Matrix<bool>& match, bool negate) {
-  vector<Int> ant1, ant2;
-  for (Int i = 0; i < match.shape()[0]; ++i) {
-    for (Int j = 0; j < match.shape()[1]; ++j) {
+  vector<int> ant1, ant2;
+  for (int i = 0; i < match.shape()[0]; ++i) {
+    for (int j = 0; j < match.shape()[1]; ++j) {
       if (match(i, j)) {
         ant1.push_back(i);
         ant2.push_back(j);
@@ -283,8 +283,8 @@ const TableExprNode* MSAntennaParse::makeBLNode(const Matrix<bool>& match, bool 
   }
   TableExprNode condition(false);
   if (ant1.size() > 0) {
-    Array<Int> arrAnt1(IPosition(1, ant1.size()), &(ant1[0]), SHARE);
-    Array<Int> arrAnt2(IPosition(1, ant1.size()), &(ant2[0]), SHARE);
+    Array<int> arrAnt1(IPosition(1, ant1.size()), &(ant1[0]), SHARE);
+    Array<int> arrAnt2(IPosition(1, ant1.size()), &(ant2[0]), SHARE);
     // condition = TableExprNode(any((ms()->col(colName1) == arrAnt1  &&
     //                                ms()->col(colName2) == arrAnt2)));
     condition = TableExprNode(any((column1AsTEN_p == arrAnt1 && column2AsTEN_p == arrAnt2)));
@@ -299,15 +299,15 @@ Matrix<double> MSAntennaParse::getBaselineLengths() {
   // First get the antenna positions.
   vector<Vector<double>> antVec;
   antVec.reserve(msant.nrow());
-  for (uInt i = 0; i < msant.nrow(); ++i) {
+  for (unsigned int i = 0; i < msant.nrow(); ++i) {
     // Convert to ITRF and keep as x,y,z in m.
     antVec.push_back(
         MPosition::Convert(antCols.positionMeas()(i), MPosition::ITRF)().getValue().getValue());
   }
   // Fill in the length of each baseline.
   Matrix<double> blength(antVec.size(), antVec.size());
-  for (uInt j = 0; j < antVec.size(); ++j) {
-    for (uInt i = 0; i < antVec.size(); ++i) {
+  for (unsigned int j = 0; j < antVec.size(); ++j) {
+    for (unsigned int i = 0; i < antVec.size(); ++i) {
       Array<double> diff(antVec[i] - antVec[j]);
       blength(i, j) = sqrt(sum(diff * diff));
     }
@@ -327,15 +327,15 @@ double MSAntennaParse::getUnitFactor(const char* unit) {
   return q.getValue(unit);
 }
 
-bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2,
+bool MSAntennaParse::addBaseline(const Matrix<int>& baselist, const int ant1, const int ant2,
                                  BaselineListType baselineType) {
   bool doAutoCorr;
   doAutoCorr = (baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly);
   if ((ant1 == ant2) && (!doAutoCorr)) return false;
   if ((baselineType == AutoCorrOnly) && (ant1 != ant2)) return false;
 
-  Int n = baselist.shape()(0);
-  for (Int i = 0; i < n; i++) {
+  int n = baselist.shape()(0);
+  for (int i = 0; i < n; i++) {
     if (((baselist(i, 0) == ant1) && (baselist(i, 1) == ant2)) ||
         ((baselist(i, 1) == ant1) && (baselist(i, 0) == ant2))) {
       return false;
@@ -349,18 +349,18 @@ bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, co
 // antenna1 and antenna2.  The baselines list is appended to the
 // existing list.  The required sizing could be done better.
 //
-void MSAntennaParse::makeBaselineList(const Vector<Int>& a1, const Vector<Int>& a2,
-                                      Matrix<Int>& baselist, BaselineListType baselineType,
+void MSAntennaParse::makeBaselineList(const Vector<int>& a1, const Vector<int>& a2,
+                                      Matrix<int>& baselist, BaselineListType baselineType,
                                       bool /*negate*/) {
-  Int n1, n2, nb0;
+  int n1, n2, nb0;
   n1 = a1.nelements();
   n2 = a2.nelements();
   nb0 = baselist.shape()(0);
   IPosition newSize(2, nb0, 2);
 
-  for (Int i1 = 0; i1 < n1; i1++) {
+  for (int i1 = 0; i1 < n1; i1++) {
     for (int i2 = 0; i2 < n2; i2++) {
-      Int ant1, ant2;
+      int ant1, ant2;
       ant1 = a1[i1];
       ant2 = a2[i2];
       if (addBaseline(baselist, ant1, ant2, baselineType)) {

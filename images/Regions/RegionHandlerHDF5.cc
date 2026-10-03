@@ -66,7 +66,7 @@ void RegionHandlerHDF5::setDefaultMask(const String& regionName) {
 }
 
 String RegionHandlerHDF5::getDefaultMask() const {
-  Int field = itsRecord.fieldNumber("Image_defaultmask");
+  int field = itsRecord.fieldNumber("Image_defaultmask");
   if (field < 0) {
     return String();
   }
@@ -77,7 +77,7 @@ bool RegionHandlerHDF5::defineRegion(const String& name, const ImageRegion& regi
                                      RegionHandler::GroupType type, bool overwrite) {
   // First check if the region is already defined in "regions" or "masks".
   // If so, remove it if possible. Otherwise throw an exception.
-  Int groupField = findRegionGroup(name, RegionHandler::Any, false);
+  int groupField = findRegionGroup(name, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (!overwrite) {
       throw(AipsError("RegionHandlerHDF5::defineRegion - file " + file()->getName() +
@@ -110,11 +110,11 @@ bool RegionHandlerHDF5::hasRegion(const String& name, RegionHandler::GroupType t
 bool RegionHandlerHDF5::renameRegion(const String& newName, const String& oldName,
                                      RegionHandler::GroupType type, bool overwrite) {
   // Check that the region exists.
-  Int oldGroupField = findRegionGroup(oldName, type, true);
+  int oldGroupField = findRegionGroup(oldName, type, true);
   // First check if the region is already defined.
   // Check that the region is in the same group as the original.
   // Remove it if overwrite is true. Otherwise throw an exception.
-  Int groupField = findRegionGroup(newName, RegionHandler::Any, false);
+  int groupField = findRegionGroup(newName, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (groupField != oldGroupField) {
       throw(AipsError("RegionHandlerHDF5::renameRegion - file " + file()->getName() +
@@ -154,7 +154,7 @@ bool RegionHandlerHDF5::renameRegion(const String& newName, const String& oldNam
 
 bool RegionHandlerHDF5::removeRegion(const String& name, RegionHandler::GroupType type,
                                      bool throwIfUnknown) {
-  Int groupField = findRegionGroup(name, type, throwIfUnknown);
+  int groupField = findRegionGroup(name, type, throwIfUnknown);
   if (groupField >= 0) {
     ImageRegion* regPtr = getRegion(name, type, true);
     // Delete a possible mask file.
@@ -188,26 +188,26 @@ bool RegionHandlerHDF5::removeRegion(const String& name, RegionHandler::GroupTyp
 }
 
 Vector<String> RegionHandlerHDF5::regionNames(RegionHandler::GroupType type) const {
-  uInt nreg = 0;
-  uInt nmask = 0;
+  unsigned int nreg = 0;
+  unsigned int nmask = 0;
   const RecordDesc* regs = 0;
   const RecordDesc* masks = 0;
   if (type != RegionHandler::Masks) {
-    Int field = itsRecord.fieldNumber("regions");
+    int field = itsRecord.fieldNumber("regions");
     if (field >= 0) {
       regs = &(itsRecord.subRecord(field).description());
       nreg = regs->nfields();
     }
   }
   if (type != RegionHandler::Regions) {
-    Int field = itsRecord.fieldNumber("masks");
+    int field = itsRecord.fieldNumber("masks");
     if (field >= 0) {
       masks = &(itsRecord.subRecord(field).description());
       nmask = masks->nfields();
     }
   }
   Vector<String> names(nreg + nmask);
-  uInt i;
+  unsigned int i;
   for (i = 0; i < nreg; i++) {
     names(i) = regs->name(i);
   }
@@ -219,10 +219,10 @@ Vector<String> RegionHandlerHDF5::regionNames(RegionHandler::GroupType type) con
 
 ImageRegion* RegionHandlerHDF5::getRegion(const String& name, RegionHandler::GroupType type,
                                           bool throwIfUnknown) const {
-  Int groupField = findRegionGroup(name, type, throwIfUnknown);
+  int groupField = findRegionGroup(name, type, throwIfUnknown);
   if (groupField >= 0) {
     const TableRecord& regs = itsRecord.subRecord(groupField);
-    Int field = regs.fieldNumber(name);
+    int field = regs.fieldNumber(name);
     if (field >= 0) {
       return ImageRegion::fromRecord(regs.subRecord(field), file()->getName());
     }
@@ -230,12 +230,12 @@ ImageRegion* RegionHandlerHDF5::getRegion(const String& name, RegionHandler::Gro
   return 0;
 }
 
-Int RegionHandlerHDF5::findRegionGroup(const String& regionName, RegionHandler::GroupType type,
+int RegionHandlerHDF5::findRegionGroup(const String& regionName, RegionHandler::GroupType type,
                                        bool throwIfUnknown) const {
   // Check if the region is defined in "regions" or "masks".
   // If so, return its groupName.
   if (type != RegionHandler::Masks) {
-    Int field = itsRecord.fieldNumber("regions");
+    int field = itsRecord.fieldNumber("regions");
     if (field >= 0) {
       const TableRecord& regs = itsRecord.subRecord(field);
       if (regs.isDefined(regionName)) {
@@ -244,7 +244,7 @@ Int RegionHandlerHDF5::findRegionGroup(const String& regionName, RegionHandler::
     }
   }
   if (type != RegionHandler::Regions) {
-    Int field = itsRecord.fieldNumber("masks");
+    int field = itsRecord.fieldNumber("masks");
     if (field >= 0) {
       const TableRecord& regs = itsRecord.subRecord(field);
       if (regs.isDefined(regionName)) {

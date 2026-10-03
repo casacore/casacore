@@ -49,20 +49,20 @@ class IComplex {
   //  From one or two ints (note for gnu use)
   //  <group>
   IComplex() : re(0), im(0) { ; };
-  IComplex(Int r) : re(r), im(0) { ; };
-  IComplex(Int r, Int i) : re(r), im(i) { ; };
+  IComplex(int r) : re(r), im(0) { ; };
+  IComplex(int r, int i) : re(r), im(i) { ; };
   // </group>
 
   // # Member functions
   //  For use in FITS classes only
   //  <group>
-  Int real() const { return re; };
-  Int imag() const { return im; };
+  int real() const { return re; };
+  int imag() const { return im; };
   // </group>
 
  private:
-  Int re;
-  Int im;
+  int re;
+  int im;
 };
 
 // Show on ostream.

@@ -39,7 +39,7 @@ template <class T>
 LatticeStatsDataProviderBase<T>::~LatticeStatsDataProviderBase() {}
 
 template <class T>
-uInt LatticeStatsDataProviderBase<T>::getMaskStride() {
+unsigned int LatticeStatsDataProviderBase<T>::getMaskStride() {
   return 1;
 }
 
@@ -54,7 +54,7 @@ LatticeStatsDataProviderBase<T>::getRanges() {
 }
 
 template <class T>
-uInt LatticeStatsDataProviderBase<T>::getStride() {
+unsigned int LatticeStatsDataProviderBase<T>::getStride() {
   return 1;
 }
 

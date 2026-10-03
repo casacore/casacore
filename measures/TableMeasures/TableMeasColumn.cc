@@ -81,7 +81,7 @@ bool TableMeasColumn::isScalar() const {
   }
   IPosition shape = itsTabDataCol.shapeColumn();
   if (shape.nelements() == 1) {
-    if (itsNvals == 0 || Int(itsNvals) == shape(0)) {
+    if (itsNvals == 0 || int(itsNvals) == shape(0)) {
       return true;
     }
   }

@@ -86,14 +86,16 @@ class LSQaips : public LSQFit {
   //  default Levenberg-Marquardt adjustment factor
   //  <group>
   //  Assume real
-  LSQaips(uInt nUnknowns, uInt nConstraints = 0) : LSQFit(nUnknowns, nConstraints) { ; }
+  LSQaips(unsigned int nUnknowns, unsigned int nConstraints = 0) : LSQFit(nUnknowns, nConstraints) {
+    ;
+  }
   // Allow explicit complex/real specification
   // <group>
-  LSQaips(uInt nUnknowns, const LSQReal &, uInt nConstraints = 0)
+  LSQaips(unsigned int nUnknowns, const LSQReal &, unsigned int nConstraints = 0)
       : LSQFit(nUnknowns, LSQReal(), nConstraints) {
     ;
   }
-  LSQaips(uInt nUnknowns, const LSQComplex &, uInt nConstraints = 0)
+  LSQaips(unsigned int nUnknowns, const LSQComplex &, unsigned int nConstraints = 0)
       : LSQFit(nUnknowns, LSQComplex(), nConstraints) {
     ;
   }
@@ -140,33 +142,33 @@ class LSQaips : public LSQFit {
   // is used both and input and output. No check on the size is done.
   // <group>
   template <class U>
-  bool solveLoop(uInt &nRank, U *sol, bool doSVD = false) {
+  bool solveLoop(unsigned int &nRank, U *sol, bool doSVD = false) {
     return LSQFit::solveLoop(nRank, sol, doSVD);
   }
   template <class U>
-  bool solveLoop(uInt &nRank, std::complex<U> *sol, bool doSVD = false) {
+  bool solveLoop(unsigned int &nRank, std::complex<U> *sol, bool doSVD = false) {
     return LSQFit::solveLoop(nRank, sol, doSVD);
   }
   template <class U>
-  bool solveLoop(uInt &nRank, U &sol, bool doSVD = false) {
+  bool solveLoop(unsigned int &nRank, U &sol, bool doSVD = false) {
     return LSQFit::solveLoop(nRank, sol, doSVD);
   }
   template <class U>
-  bool solveLoop(uInt &nRank, Vector<U> &sol, bool doSVD = false);
+  bool solveLoop(unsigned int &nRank, Vector<U> &sol, bool doSVD = false);
   template <class U>
-  bool solveLoop(Double &fit, uInt &nRank, U *sol, bool doSVD = false) {
+  bool solveLoop(double &fit, unsigned int &nRank, U *sol, bool doSVD = false) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD);
   }
   template <class U>
-  bool solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, bool doSVD = false) {
+  bool solveLoop(double &fit, unsigned int &nRank, std::complex<U> *sol, bool doSVD = false) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD);
   }
   template <class U>
-  bool solveLoop(Double &fit, uInt &nRank, U &sol, bool doSVD = false) {
+  bool solveLoop(double &fit, unsigned int &nRank, U &sol, bool doSVD = false) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD);
   }
   template <class U>
-  bool solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, bool doSVD = false);
+  bool solveLoop(double &fit, unsigned int &nRank, Vector<U> &sol, bool doSVD = false);
   // </group>
   // Get the covariance matrix. false if an error occurred
   // (of size <src>nUnknowns * nUnknowns</src>)

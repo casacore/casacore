@@ -46,19 +46,19 @@ TiledFileHelper::TiledFileHelper(const String& fileName, const IPosition& shape,
       itsDesc.addColumn(ArrayColumnDesc<bool>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpUChar:
-      itsDesc.addColumn(ArrayColumnDesc<uChar>("DATA", shape, ColumnDesc::FixedShape));
+      itsDesc.addColumn(ArrayColumnDesc<unsigned char>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpShort:
-      itsDesc.addColumn(ArrayColumnDesc<Short>("DATA", shape, ColumnDesc::FixedShape));
+      itsDesc.addColumn(ArrayColumnDesc<short>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpInt:
-      itsDesc.addColumn(ArrayColumnDesc<Int>("DATA", shape, ColumnDesc::FixedShape));
+      itsDesc.addColumn(ArrayColumnDesc<int>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpFloat:
-      itsDesc.addColumn(ArrayColumnDesc<Float>("DATA", shape, ColumnDesc::FixedShape));
+      itsDesc.addColumn(ArrayColumnDesc<float>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpDouble:
-      itsDesc.addColumn(ArrayColumnDesc<Double>("DATA", shape, ColumnDesc::FixedShape));
+      itsDesc.addColumn(ArrayColumnDesc<double>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpComplex:
       itsDesc.addColumn(ArrayColumnDesc<Complex>("DATA", shape, ColumnDesc::FixedShape));

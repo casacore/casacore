@@ -32,7 +32,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class Container, class ElType>
-Int linearSearch(bool& found, const Container& container, const ElType& value, uInt n, uInt lower) {
+int linearSearch(bool& found, const Container& container, const ElType& value, unsigned int n,
+                 unsigned int lower) {
   n += lower;
   while (lower < n) {
     if (container(lower) == value) {
@@ -46,8 +47,8 @@ Int linearSearch(bool& found, const Container& container, const ElType& value, u
 }
 
 template <class Container, class ElType>
-Int linearSearch1(const Container& container, const ElType& value, uInt lower) {
-  uInt n = container.nelements();
+int linearSearch1(const Container& container, const ElType& value, unsigned int lower) {
+  unsigned int n = container.nelements();
   while (lower < n) {
     if (container(lower) == value) {
       return lower;
@@ -58,8 +59,8 @@ Int linearSearch1(const Container& container, const ElType& value, uInt lower) {
 }
 
 template <class Container, class ElType>
-Int linearSearchBrackets(bool& found, const Container& container, const ElType& value, uInt n,
-                         uInt lower) {
+int linearSearchBrackets(bool& found, const Container& container, const ElType& value,
+                         unsigned int n, unsigned int lower) {
   n += lower;
   while (lower < n) {
     if (container[lower] == value) {
@@ -73,8 +74,8 @@ Int linearSearchBrackets(bool& found, const Container& container, const ElType& 
 }
 
 template <class Container, class ElType>
-Int linearSearchBrackets1(const Container& container, const ElType& value, uInt lower) {
-  uInt n = container.nelements();
+int linearSearchBrackets1(const Container& container, const ElType& value, unsigned int lower) {
+  unsigned int n = container.nelements();
   while (lower < n) {
     if (container[lower] == value) {
       return lower;

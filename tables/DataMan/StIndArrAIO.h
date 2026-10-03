@@ -120,7 +120,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
@@ -177,7 +177,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
   // The storage manager.
   StManAipsIO* staioPtr_p;
   // The (unique) sequence number of the column.
-  uInt seqnr_p;
+  unsigned int seqnr_p;
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
   // Switch indicating if the shape is fixed.
@@ -185,7 +185,7 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
   // The version of the object retrieved from a file.
   // Versions < 2 use a StManArrayFile of their own.
   // Newer versions share the one in StManAipsIO.
-  uInt version_p;
+  unsigned int version_p;
   // The file containing the indirect arrays.
   StManArrayFile* iosfile_p;
 
@@ -203,13 +203,13 @@ class StManColumnIndArrayAipsIO : public StManColumnAipsIO {
   // Put the data of a data block.
   // datap is an array of nrval pointers to StIndArray.
   // Only the file offsets get written.
-  void putData(void* datap, uInt nrval, AipsIO&);
+  void putData(void* datap, unsigned int nrval, AipsIO&);
 
   // Get file offsets to the arrays into a data block at the given index.
   // datap is an array of pointers to StIndArray.
   // nrval blocks will be allocated and read starting at datap[index].
   // The actual shape and array data will be read when needed.
-  void getData(void* datap, uInt index, uInt nrval, AipsIO&, uInt version);
+  void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&, unsigned int version);
 };
 
 }  // namespace casacore

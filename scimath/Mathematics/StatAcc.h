@@ -147,11 +147,11 @@ class StatAcc {
   // If weight is omitted, the default=1.
   // <group>
   inline void put(const T v);
-  inline void put(const T v, const Float w);
+  inline void put(const T v, const float w);
   void put(const Array<T>& v);
-  void put(const Array<T>& v, const Array<Float>& w);
+  void put(const Array<T>& v, const Array<float>& w);
   void put(const Block<T>& v);
-  void put(const Block<T>& v, const Block<Float>& w);
+  void put(const Block<T>& v, const Block<float>& w);
   // </group>
 
   // Get statistics results one at a time.
@@ -160,14 +160,14 @@ class StatAcc {
   // Rms is defined w.r.t. the mean, and is the square of Variance.
   // RmsAbs is the root-mean-square of the absolute input values.
   // <group>
-  Double getWtot() const;
-  uInt getCount() const;
-  std::optional<Double> getMin() const;
-  std::optional<Double> getMax() const;
-  std::optional<Double> getMean() const;
-  std::optional<Double> getRms() const;
-  std::optional<Double> getVariance() const;
-  std::optional<Double> getRmsAbs() const;
+  double getWtot() const;
+  unsigned int getCount() const;
+  std::optional<double> getMin() const;
+  std::optional<double> getMax() const;
+  std::optional<double> getMean() const;
+  std::optional<double> getRms() const;
+  std::optional<double> getVariance() const;
+  std::optional<double> getRmsAbs() const;
   // </group>
 
   // Print summary of accumulated statistics.
@@ -181,15 +181,15 @@ class StatAcc {
   // </group>
 
  private:
-  Double itsWtot;   // # Sum of weights
-  Double itsWsum;   // # Sum of weighted values
-  Double itsWssum;  // # Sum of weighted squares
-  Double itsMin;    // # Minimum value
-  Double itsMax;    // # Maximum value
-  uInt itsCount;    // # Number of samples
+  double itsWtot;         // # Sum of weights
+  double itsWsum;         // # Sum of weighted values
+  double itsWssum;        // # Sum of weighted squares
+  double itsMin;          // # Minimum value
+  double itsMax;          // # Maximum value
+  unsigned int itsCount;  // # Number of samples
 
   // Accumulate a single weighted value.
-  void put1(const T, const Float);
+  void put1(const T, const float);
 };
 
 //*************************** inline functions, have to be in StatAcc.h ****
@@ -202,7 +202,7 @@ inline void StatAcc<T>::put(const T v) {
 }
 
 template <class T>
-inline void StatAcc<T>::put(const T v, const Float w) {
+inline void StatAcc<T>::put(const T v, const float w) {
   put1(v, w);
 }
 

@@ -58,7 +58,7 @@ static String theDirName;
 // # In that way they are also deleted in case of exceptions.
 static Block<void*> theNodes;
 static Block<bool> theNodesType;
-static uInt theNrNodes;
+static unsigned int theNrNodes;
 
 // # Hold the last table used to lookup unqualified region names.
 static Table theLastTable;
@@ -72,7 +72,7 @@ static std::shared_ptr<HDF5File> theLastHDF5;
   String savDirName = theDirName;                                   \
   Block<void*> savNodes = theNodes;                                 \
   Block<bool> savNodesType = theNodesType;                          \
-  uInt savNrNodes = theNrNodes;                                     \
+  unsigned int savNrNodes = theNrNodes;                             \
   Table savLastTable = theLastTable;                                \
   std::shared_ptr<HDF5File> savLastHDF5 = theLastHDF5;
 
@@ -99,21 +99,21 @@ bool imageExprParse_hasNoLast() { return (theLastTable.isNull() && !theLastHDF5)
 // # Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
 vector<String> ImageExprParse::theirNames;
-Int ImageExprParse::theirLevel = 0;
+int ImageExprParse::theirLevel = 0;
 
 ImageExprParse::ImageExprParse(bool value) : itsType(TpBool), itsBval(value) {}
 
-ImageExprParse::ImageExprParse(Int value) : itsType(TpInt), itsIval(value) {}
+ImageExprParse::ImageExprParse(int value) : itsType(TpInt), itsIval(value) {}
 
-ImageExprParse::ImageExprParse(Float value) : itsType(TpFloat), itsFval(value) {}
+ImageExprParse::ImageExprParse(float value) : itsType(TpFloat), itsFval(value) {}
 
-ImageExprParse::ImageExprParse(Double value) : itsType(TpDouble), itsDval(value) {}
+ImageExprParse::ImageExprParse(double value) : itsType(TpDouble), itsDval(value) {}
 
 ImageExprParse::ImageExprParse(const Complex& value) : itsType(TpComplex), itsCval(value) {}
 
 ImageExprParse::ImageExprParse(const DComplex& value) : itsType(TpDComplex), itsDCval(value) {}
 
-ImageExprParse::ImageExprParse(const Char* value) : itsType(TpString), itsSval(String(value)) {
+ImageExprParse::ImageExprParse(const char* value) : itsType(TpString), itsSval(String(value)) {
   ThrowIf(itsSval.empty(), "Illegal empty expression");
 }
 
@@ -144,7 +144,7 @@ void ImageExprParse::addNode(ImageExprParse* node) {
   theNrNodes++;
 }
 void ImageExprParse::deleteNodes() {
-  for (uInt i = 0; i < theNrNodes; i++) {
+  for (unsigned int i = 0; i < theNrNodes; i++) {
     if (theNodesType[i]) {
       delete (LatticeExprNode*)(theNodes[i]);
     } else {
@@ -403,7 +403,7 @@ LatticeExprNode ImageExprParse::makeValueList(const Block<LatticeExprNode>& valu
   // First determine the resulting data type (which is the 'highest' one).
   // It also checks if no mix of e.g. bool and numeric is used.
   DataType dtype = values[0].dataType();
-  for (uInt i = 0; i < values.nelements(); i++) {
+  for (unsigned int i = 0; i < values.nelements(); i++) {
     if (!values[i].isScalar()) {
       throw AipsError("ImageExprParse: value in value list is not a scalar");
     }
@@ -412,35 +412,35 @@ LatticeExprNode ImageExprParse::makeValueList(const Block<LatticeExprNode>& valu
   switch (dtype) {
     case TpBool: {
       Vector<bool> vals(values.nelements());
-      for (uInt i = 0; i < vals.nelements(); i++) {
+      for (unsigned int i = 0; i < vals.nelements(); i++) {
         vals[i] = values[i].getBool();
       }
       return LatticeExprNode(ArrayLattice<bool>(vals));
     }
     case TpFloat: {
-      Vector<Float> vals(values.nelements());
-      for (uInt i = 0; i < vals.nelements(); i++) {
+      Vector<float> vals(values.nelements());
+      for (unsigned int i = 0; i < vals.nelements(); i++) {
         vals[i] = values[i].getFloat();
       }
-      return LatticeExprNode(ArrayLattice<Float>(vals));
+      return LatticeExprNode(ArrayLattice<float>(vals));
     }
     case TpDouble: {
-      Vector<Double> vals(values.nelements());
-      for (uInt i = 0; i < vals.nelements(); i++) {
+      Vector<double> vals(values.nelements());
+      for (unsigned int i = 0; i < vals.nelements(); i++) {
         vals[i] = values[i].getDouble();
       }
-      return LatticeExprNode(ArrayLattice<Double>(vals));
+      return LatticeExprNode(ArrayLattice<double>(vals));
     }
     case TpComplex: {
       Vector<Complex> vals(values.nelements());
-      for (uInt i = 0; i < vals.nelements(); i++) {
+      for (unsigned int i = 0; i < vals.nelements(); i++) {
         vals[i] = values[i].getComplex();
       }
       return LatticeExprNode(ArrayLattice<Complex>(vals));
     }
     case TpDComplex: {
       Vector<DComplex> vals(values.nelements());
-      for (uInt i = 0; i < vals.nelements(); i++) {
+      for (unsigned int i = 0; i < vals.nelements(); i++) {
         vals[i] = values[i].getDComplex();
       }
       return LatticeExprNode(ArrayLattice<DComplex>(vals));
@@ -451,7 +451,7 @@ LatticeExprNode ImageExprParse::makeValueList(const Block<LatticeExprNode>& valu
 }
 
 IPosition ImageExprParse::makeBinning(const LatticeExprNode& values) {
-  Vector<Double> vals;
+  Vector<double> vals;
   if (values.dataType() != TpFloat && values.dataType() != TpDouble) {
     throw(AipsError("ImageExprParse: invalid data type for rebin factors"));
   }
@@ -460,9 +460,9 @@ IPosition ImageExprParse::makeBinning(const LatticeExprNode& values) {
     vals[0] = values.getDouble();
   } else {
     if (values.dataType() == TpFloat) {
-      Vector<Float> val(values.getArrayFloat());
+      Vector<float> val(values.getArrayFloat());
       vals.resize(val.nelements());
-      for (uInt i = 0; i < val.nelements(); i++) {
+      for (unsigned int i = 0; i < val.nelements(); i++) {
         vals[i] = val[i];
       }
     } else {
@@ -470,13 +470,13 @@ IPosition ImageExprParse::makeBinning(const LatticeExprNode& values) {
     }
   }
   IPosition binning(vals.nelements());
-  for (uInt i = 0; i < binning.nelements(); i++) {
+  for (unsigned int i = 0; i < binning.nelements(); i++) {
     if (vals[i] <= 0) {
       throw AipsError(
           "ImageExprParse: "
           "binning factor has to be a positive value");
     }
-    binning[i] = Int(0.5 + vals[i]);
+    binning[i] = int(0.5 + vals[i]);
   }
   return binning;
 }
@@ -513,7 +513,7 @@ LatticeExprNode ImageExprParse::makeIndexinNode(const LatticeExprNode& axis,
                                                 const vector<Slice>& slices) {
   // Determine maximum end value.
   size_t maxEnd = 0;
-  for (uInt i = 0; i < slices.size(); i++) {
+  for (unsigned int i = 0; i < slices.size(); i++) {
     if (slices[i].end() > maxEnd) {
       maxEnd = slices[i].end();
     }
@@ -521,7 +521,7 @@ LatticeExprNode ImageExprParse::makeIndexinNode(const LatticeExprNode& axis,
   // Create a vector of that length and initialize to false.
   // Set the vector to true for all ranges.
   Vector<bool> flags(maxEnd + 1, false);
-  for (uInt i = 0; i < slices.size(); i++) {
+  for (unsigned int i = 0; i < slices.size(); i++) {
     const Slice& slice = slices[i];
     for (size_t j = slice.start(); j <= slice.end(); j += slice.inc()) {
       flags[j] = true;
@@ -535,8 +535,8 @@ LatticeExprNode ImageExprParse::makeLRNode() const {
   // If the name is numeric, we have a temporary lattice number.
   // Find it in the block of temporary lattices.
   if (itsType == TpInt) {
-    Int latnr = itsIval - 1;
-    if (latnr < 0 || latnr >= Int(theTempLattices->nelements())) {
+    int latnr = itsIval - 1;
+    if (latnr < 0 || latnr >= int(theTempLattices->nelements())) {
       throw(
           AipsError("ImageExprParse: invalid temporary image "
                     "number given"));
@@ -662,14 +662,14 @@ bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) c
     String type;
     switch (pLatt->dataType()) {
       case TpFloat: {
-        ImageInterface<Float>* img = dynamic_cast<ImageInterface<Float>*>(pLatt);
+        ImageInterface<float>* img = dynamic_cast<ImageInterface<float>*>(pLatt);
         AlwaysAssert(img != 0, AipsError);
         node = LatticeExprNode(*img);
         type = img->imageType();
         break;
       }
       case TpDouble: {
-        ImageInterface<Double>* img = dynamic_cast<ImageInterface<Double>*>(pLatt);
+        ImageInterface<double>* img = dynamic_cast<ImageInterface<double>*>(pLatt);
         AlwaysAssert(img != 0, AipsError);
         node = LatticeExprNode(*img);
         type = img->imageType();
@@ -731,10 +731,10 @@ bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) c
       node = LatticeExprNode(PagedArray<bool>(table, colName, 0));
       break;
     case TpFloat:
-      node = LatticeExprNode(PagedArray<Float>(table, colName, 0));
+      node = LatticeExprNode(PagedArray<float>(table, colName, 0));
       break;
     case TpDouble:
-      node = LatticeExprNode(PagedArray<Double>(table, colName, 0));
+      node = LatticeExprNode(PagedArray<double>(table, colName, 0));
       break;
     case TpComplex:
       node = LatticeExprNode(PagedArray<Complex>(table, colName, 0));
@@ -768,9 +768,9 @@ LatticeExprNode ImageExprParse::makeImageNode(const String& name, const String& 
   LatticeExprNode node;
   if (!Table::isReadable(name)) {
     LatticeBase* lattPtr = ImageOpener::openImage(name, spec);
-    ImageInterface<Float>* img = 0;
+    ImageInterface<float>* img = 0;
     if (lattPtr != 0) {
-      img = dynamic_cast<ImageInterface<Float>*>(lattPtr);
+      img = dynamic_cast<ImageInterface<float>*>(lattPtr);
     }
     if (img == 0) {
       throw AipsError("ImageExprParse: " + name + " has an unknown image type");
@@ -797,7 +797,7 @@ LatticeExprNode ImageExprParse::makeImageNode(const String& name, const String& 
   // Create the node from the lattice (and optional mask).
   switch (dtype) {
     case TpFloat: {
-      node = LatticeExprNode(PagedImage<Float>(table, spec));
+      node = LatticeExprNode(PagedImage<float>(table, spec));
       break;
     }
       /// case TpDouble:
@@ -845,8 +845,8 @@ LatticeExprNode ImageExprParse::makeRegionNode() const {
   // The name should be numeric.
   // Find it in the block of temporary lattices.
   AlwaysAssert(itsType == TpInt, AipsError);
-  Int regnr = itsIval - 1;
-  if (regnr < 0 || regnr >= Int(theTempRegions->nelements())) {
+  int regnr = itsIval - 1;
+  if (regnr < 0 || regnr >= int(theTempRegions->nelements())) {
     throw(
         AipsError("ImageExprParse: invalid temporary region "
                   "number given"));

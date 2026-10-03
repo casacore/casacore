@@ -44,7 +44,7 @@ MVEarthMagnetic::MVEarthMagnetic() : MVPosition() {}
 
 MVEarthMagnetic::MVEarthMagnetic(const MVPosition &other) : MVPosition(other) {}
 
-MVEarthMagnetic::MVEarthMagnetic(Double in) : MVPosition(in) {}
+MVEarthMagnetic::MVEarthMagnetic(double in) : MVPosition(in) {}
 
 MVEarthMagnetic::MVEarthMagnetic(const Quantity &l) : MVPosition() {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
@@ -52,12 +52,12 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l) : MVPosition() {
   xyz(2) = l.getBaseValue();
 }
 
-MVEarthMagnetic::MVEarthMagnetic(Double in0, Double in1, Double in2) : MVPosition(in0, in1, in2) {}
+MVEarthMagnetic::MVEarthMagnetic(double in0, double in1, double in2) : MVPosition(in0, in1, in2) {}
 
-MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1) : MVPosition() {
+MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, double angle0, double angle1) : MVPosition() {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
   l.assure(testUnit);
-  Double loc = std::cos(angle1);
+  double loc = std::cos(angle1);
   xyz(0) = std::cos(angle0) * loc;
   xyz(1) = std::sin(angle0) * loc;
   xyz(2) = std::sin(angle1);
@@ -68,16 +68,16 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantity &angle0, cons
     : MVPosition() {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
   l.assure(testUnit);
-  Double loc = (cos(angle1)).getValue();
+  double loc = (cos(angle1)).getValue();
   xyz(0) = ((cos(angle0)).getValue()) * loc;
   xyz(1) = ((sin(angle0)).getValue()) * loc;
   xyz(2) = (sin(angle1)).getValue();
   readjust(l.getBaseValue());
 }
 
-MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<Double>> &angle) : MVPosition() {
+MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<double>> &angle) : MVPosition() {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
-  uInt i;
+  unsigned int i;
   i = angle.getValue().nelements();
   if (i > 3) {
     throw(AipsError("Illegal vector length in MVEarthMagnetic constructor"));
@@ -85,9 +85,9 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<Double>> &angle) : MVPosit
     angle.assure(testUnit);
     xyz = angle.getBaseValue();
   } else {
-    Vector<Double> tsin = (sin(angle)).getValue();
-    Vector<Double> tcos = (cos(angle)).getValue();
-    xyz = Double(0.0);
+    Vector<double> tsin = (sin(angle)).getValue();
+    Vector<double> tcos = (cos(angle)).getValue();
+    xyz = double(0.0);
     if (i > 1) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -101,10 +101,10 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<Double>> &angle) : MVPosit
   }
 }
 
-MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double>> &angle)
+MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantum<Vector<double>> &angle)
     : MVPosition() {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
-  uInt i;
+  unsigned int i;
   i = angle.getValue().nelements();
   if (i > 3) {
     throw(AipsError("Illegal vector length in MVEarthMagnetic constructor"));
@@ -112,9 +112,9 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double>
     angle.assure(UnitVal::NODIM);
     xyz = angle.getValue();
   } else {
-    Vector<Double> tsin = (sin(angle)).getValue();
-    Vector<Double> tcos = (cos(angle)).getValue();
-    xyz = Double(0.0);
+    Vector<double> tsin = (sin(angle)).getValue();
+    Vector<double> tcos = (cos(angle)).getValue();
+    xyz = double(0.0);
     if (i > 1) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -130,7 +130,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double>
   readjust(l.getBaseValue());
 }
 
-MVEarthMagnetic::MVEarthMagnetic(const Vector<Double> &other) : MVPosition(other) {}
+MVEarthMagnetic::MVEarthMagnetic(const Vector<double> &other) : MVPosition(other) {}
 
 MVEarthMagnetic::MVEarthMagnetic(const Vector<Quantity> &other) : MVPosition() {
   if (!putValue(other)) {
@@ -145,7 +145,7 @@ bool MVEarthMagnetic::operator==(const MVEarthMagnetic &other) const {
 
 bool MVEarthMagnetic::operator!=(const MVEarthMagnetic &other) const { return (!(*this == other)); }
 
-bool MVEarthMagnetic::near(const MVEarthMagnetic &other, Double tol) const {
+bool MVEarthMagnetic::near(const MVEarthMagnetic &other, double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
@@ -153,13 +153,13 @@ bool MVEarthMagnetic::near(const MVEarthMagnetic &other, Quantity tol) const {
   return (separation(other, "rad") <= tol);
 }
 
-bool MVEarthMagnetic::nearAbs(const MVEarthMagnetic &other, Double tol) const {
+bool MVEarthMagnetic::nearAbs(const MVEarthMagnetic &other, double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
-Double MVEarthMagnetic::operator*(const MVEarthMagnetic &other) const {
-  Double tmp = 0.0;
-  for (Int i = 0; i < 3; i++) {
+double MVEarthMagnetic::operator*(const MVEarthMagnetic &other) const {
+  double tmp = 0.0;
+  for (int i = 0; i < 3; i++) {
     tmp += xyz(i) * other.xyz(i);
   }
   return tmp;
@@ -204,14 +204,14 @@ void MVEarthMagnetic::assure(const MeasValue &in) {
 
 void MVEarthMagnetic::adjust() {}
 
-void MVEarthMagnetic::adjust(Double &res) {
+void MVEarthMagnetic::adjust(double &res) {
   res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   }
 }
 
-void MVEarthMagnetic::readjust(Double res) {
+void MVEarthMagnetic::readjust(double res) {
   if (res == 0.0) {
     xyz *= 1e-6;
   } else {
@@ -219,13 +219,13 @@ void MVEarthMagnetic::readjust(Double res) {
   }
 }
 
-Double MVEarthMagnetic::radius() { return (std::sqrt(operator*(*this))); }
+double MVEarthMagnetic::radius() { return (std::sqrt(operator*(*this))); }
 
-Vector<Double> MVEarthMagnetic::get() const {
-  Vector<Double> tmp(3);
+Vector<double> MVEarthMagnetic::get() const {
+  Vector<double> tmp(3);
   tmp(0) = std::sqrt(operator*(*this));
-  Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
-  Double loc = xyz(0) / ln;
+  double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
+  double loc = xyz(0) / ln;
   if (loc == 0) {
     tmp(1) = std::asin(xyz(1) / ln);
   } else {
@@ -235,40 +235,40 @@ Vector<Double> MVEarthMagnetic::get() const {
   return tmp;
 }
 
-const Vector<Double> &MVEarthMagnetic::getValue() const { return xyz; }
+const Vector<double> &MVEarthMagnetic::getValue() const { return xyz; }
 
-Quantum<Vector<Double>> MVEarthMagnetic::getAngle() const {
-  Vector<Double> tp(3), tmp(2);
+Quantum<Vector<double>> MVEarthMagnetic::getAngle() const {
+  Vector<double> tp(3), tmp(2);
   tp = get();
   tmp(0) = tp(1);
   tmp(1) = tp(2);
-  return Quantum<Vector<Double>>(tmp, "rad");
+  return Quantum<Vector<double>>(tmp, "rad");
 }
 
-Quantum<Vector<Double>> MVEarthMagnetic::getAngle(const Unit &unit) const {
+Quantum<Vector<double>> MVEarthMagnetic::getAngle(const Unit &unit) const {
   return getAngle().get(unit);
 }
 
 Quantity MVEarthMagnetic::getLength() const {
-  Double tmp = std::sqrt(operator*(*this));
+  double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp, "nT");
 }
 
 Quantity MVEarthMagnetic::getLength(const Unit &unit) const { return getLength().get(unit); }
 
-Double MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other) const {
-  Vector<Double> t1(3);
-  Vector<Double> t2(3);
+double MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other) const {
+  Vector<double> t1(3);
+  Vector<double> t2(3);
   t1 = get();
   t2 = other.get();
-  Double s1, c1;
+  double s1, c1;
   c1 = std::cos(t1(2)) * std::sin(t2(2)) -
        std::sin(t1(2)) * std::cos(t2(2)) * std::cos(t1(1) - t2(1));
   s1 = -std::cos(t2(2)) * std::sin(t1(1) - t2(1));
   if (s1 != 0 || c1 != 0) {
     return std::atan2(s1, c1);
   } else {
-    return Double(0.0);
+    return double(0.0);
   }
 }
 
@@ -276,13 +276,13 @@ Quantity MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other, const
   return Quantity(earthMagneticAngle(other), "rad").get(unit);
 }
 
-Double MVEarthMagnetic::separation(const MVEarthMagnetic &other) const {
+double MVEarthMagnetic::separation(const MVEarthMagnetic &other) const {
   MVEarthMagnetic t1(*this);
   MVEarthMagnetic t2(other);
   t1.adjust();
   t2.adjust();
   t1 -= t2;
-  Double d1 = t1.radius() / 2.0;
+  double d1 = t1.radius() / 2.0;
   d1 = (d1 < 1.0 ? d1 : 1.0);
   return (2 * std::asin(d1));
 }
@@ -303,42 +303,42 @@ void MVEarthMagnetic::print(ostream &os) const { os << getValue(); }
 
 MeasValue *MVEarthMagnetic::clone() const { return (new MVEarthMagnetic(*this)); }
 
-Vector<Double> MVEarthMagnetic::getVector() const { return xyz; }
+Vector<double> MVEarthMagnetic::getVector() const { return xyz; }
 
-void MVEarthMagnetic::putVector(const Vector<Double> &in) {
+void MVEarthMagnetic::putVector(const Vector<double> &in) {
   if (in.nelements() == 3) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (uInt i = 0; i < in.nelements(); i++) xyz(i) = in(i);
+    for (unsigned int i = 0; i < in.nelements(); i++) xyz(i) = in(i);
   }
 }
 
-Vector<Quantum<Double>> MVEarthMagnetic::getRecordValue() const {
-  Vector<Quantum<Double>> tmp(3);
+Vector<Quantum<double>> MVEarthMagnetic::getRecordValue() const {
+  Vector<Quantum<double>> tmp(3);
   tmp(0) = Quantity(xyz(0), "nT");
   tmp(1) = Quantity(xyz(1), "nT");
   tmp(2) = Quantity(xyz(2), "nT");
   return tmp;
 }
 
-bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
+bool MVEarthMagnetic::putValue(const Vector<Quantum<double>> &in) {
   static const UnitVal testUnit = UnitVal::MASS / UnitVal::TIME / UnitVal::TIME / UnitVal::CURRENT;
-  uInt i;
+  unsigned int i;
   i = in.nelements();
   if (i != 3) return false;
   if (in(0).check(testUnit)) {
     if (in(1).check(testUnit) && in(2).check(testUnit)) {
-      for (uInt j = 0; j < i; j++) {
+      for (unsigned int j = 0; j < i; j++) {
         xyz(j) = in(j).get("nT").getValue();
       }
     } else if (in(1).check(UnitVal::ANGLE) && in(2).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      for (uInt j = 1; j < i; j++) {
+      Vector<double> tsin(2), tcos(2);
+      for (unsigned int j = 1; j < i; j++) {
         tsin(j - 1) = (sin(in(j))).getValue();
         tcos(j - 1) = (cos(in(j))).getValue();
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
@@ -348,13 +348,13 @@ bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
     }
   } else if (in(2).check(testUnit)) {
     if (in(0).check(UnitVal::ANGLE) && in(1).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      Int j;
+      Vector<double> tsin(2), tcos(2);
+      int j;
       for (j = 0; j < 2; j++) {
         tsin(j) = (sin(in(j))).getValue();
         tcos(j) = (cos(in(j))).getValue();
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
@@ -370,9 +370,9 @@ bool MVEarthMagnetic::putValue(const Vector<Quantum<Double>> &in) {
 
 MVEarthMagnetic operator*(const RotMatrix &left, const MVEarthMagnetic &right) {
   MVEarthMagnetic result;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result(i) = 0;
-    for (Int j = 0; j < 3; j++) {
+    for (int j = 0; j < 3; j++) {
       result(i) += left(i, j) * right(j);
     }
   }
@@ -385,34 +385,34 @@ MVEarthMagnetic operator*(const MVEarthMagnetic &left, const RotMatrix &right) {
   return result;
 }
 
-MVEarthMagnetic operator*(Double left, const MVEarthMagnetic &right) {
+MVEarthMagnetic operator*(double left, const MVEarthMagnetic &right) {
   MVEarthMagnetic result(right);
   result *= left;
   return result;
 }
 
-MVEarthMagnetic operator*(const MVEarthMagnetic &left, Double right) {
+MVEarthMagnetic operator*(const MVEarthMagnetic &left, double right) {
   MVEarthMagnetic result(left);
   result *= right;
   return result;
 }
 
-Double operator*(const Vector<Double> &left, const MVEarthMagnetic &right) {
+double operator*(const Vector<double> &left, const MVEarthMagnetic &right) {
   MVEarthMagnetic tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVEarthMagnetic &left, const Vector<Double> &right) {
+double operator*(const MVEarthMagnetic &left, const Vector<double> &right) {
   MVEarthMagnetic tmp(right);
   return (tmp * left);
 }
 
-Double operator*(const MVPosition &left, const MVEarthMagnetic &right) {
+double operator*(const MVPosition &left, const MVEarthMagnetic &right) {
   MVEarthMagnetic tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVEarthMagnetic &left, const MVPosition &right) {
+double operator*(const MVEarthMagnetic &left, const MVPosition &right) {
   MVEarthMagnetic tmp(right);
   return (tmp * left);
 }

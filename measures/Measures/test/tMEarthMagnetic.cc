@@ -113,10 +113,10 @@ int main() {
     cout << "Testing all conversions forward/backward" << endl;
 
     bool isok = true;
-    Vector<Double> tvec(3);
+    Vector<double> tvec(3);
     tvec = 0.0;
-    for (uInt i = MEarthMagnetic::ITRF; i < MEarthMagnetic::N_Types; i++) {
-      for (uInt j = MEarthMagnetic::ITRF; j < MEarthMagnetic::N_Types; j++) {
+    for (unsigned int i = MEarthMagnetic::ITRF; i < MEarthMagnetic::N_Types; i++) {
+      for (unsigned int j = MEarthMagnetic::ITRF; j < MEarthMagnetic::N_Types; j++) {
         MEarthMagnetic::Ref rin(i, frame);
         MEarthMagnetic::Ref rout(j, frame);
         MEarthMagnetic mb0(res, rin);
@@ -144,7 +144,7 @@ int main() {
       if (x != mvb0) cout << "Copy constructor error" << endl;
       x = mvb0;
       if (x != mvb0) cout << "Assignment error" << endl;
-      Vector<Quantum<Double>> vq(3);
+      Vector<Quantum<double>> vq(3);
       vq = Quantity(23, "G");
       x.putValue(vq);
       cout << "putValue:       " << vq << ", " << x << endl;
@@ -159,7 +159,7 @@ int main() {
       cout << "getAngle:       " << x.getAngle("deg") << endl;
       cout << "getlength:      " << x.getLength("G") << endl;
       cout << "radius:         " << x.radius() << endl;
-      Vector<Double> x1(3);
+      Vector<double> x1(3);
       x1(0) = 30;
       x1(1) = 40;
       x1(2) = 0;
@@ -171,7 +171,7 @@ int main() {
       cout << "QV constructor: " << MVEarthMagnetic(x2.getAngle()) << endl;
       cout << "QV constructor: " << MVEarthMagnetic(Quantity(34, "G"), x2.getAngle()) << endl;
       cout << "V constructor:  " << MVEarthMagnetic(x1) << endl;
-      cout << "D constructor:  " << MVEarthMagnetic(Double(78)) << endl;
+      cout << "D constructor:  " << MVEarthMagnetic(double(78)) << endl;
       cout << "operator+:      " << x + x2 << endl;
       cout << "operator-:      " << x - x2 << endl;
       cout << "operator-pre-:  " << -x2 << endl;
@@ -205,7 +205,7 @@ int main() {
       MEarthMagnetic::Types tp;
       MEarthMagnetic::Ref mr;
       cout << "getType:        " << MEarthMagnetic::getType(tp, s0) << ", ";
-      cout << Int(tp) << endl;
+      cout << int(tp) << endl;
       cout << "giveMe:         " << mb.giveMe(mr, s0) << ", ";
       cout << mr << endl;
       cout << "setRefString:   " << mb.setRefString("hadec") << ", ";

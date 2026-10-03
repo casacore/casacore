@@ -104,9 +104,9 @@ void a() {
   }
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ScalarColumnDesc<uInt>("seq"));
-  td.addColumn(ScalarColumnDesc<Int>("col1"));
-  td.addColumn(ScalarColumnDesc<Int>("col2"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("seq"));
+  td.addColumn(ScalarColumnDesc<int>("col1"));
+  td.addColumn(ScalarColumnDesc<int>("col2"));
   td.addColumn(ArrayColumnDesc<float>("Pol", IPosition(1, 16), ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<float>("Freq", 1, ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<float>("Data", 2, ColumnDesc::FixedShape));
@@ -115,7 +115,7 @@ void a() {
                        3, stringToVector("Data"),
                        //			  stringToVector ("Pol,Freq"));
                        stringToVector("Pol,Freq,seq"));
-  td.rwKeywordSet().define("seqnr", uInt(0));
+  td.rwKeywordSet().define("seqnr", static_cast<unsigned int>(0));
 
   // Now create a new table from the description.
   SetupNewTable newtab("tTableLockSync_2_tmp.tab", td, Table::New);
@@ -134,21 +134,21 @@ void a() {
   Table tab(newtab);
 }
 
-void b(const TableLock& lockMode, uInt wait, uInt nrrow, bool show) {
+void b(const TableLock& lockMode, unsigned int wait, unsigned int nrrow, bool show) {
   // Check if user locking.
   bool userLocking = (lockMode.option() == TableLock::UserLocking);
   // Open the table for update.
   Table tab("tTableLockSync_2_tmp.tab", lockMode, Table::Update);
-  ScalarColumn<uInt> seq(tab, "seq");
-  ScalarColumn<Int> col1(tab, "col1");
-  ScalarColumn<Int> col2(tab, "col2");
+  ScalarColumn<unsigned int> seq(tab, "seq");
+  ScalarColumn<int> col1(tab, "col1");
+  ScalarColumn<int> col2(tab, "col2");
   ArrayColumn<float> freq(tab, "Freq");
   ArrayColumn<float> pol(tab, "Pol");
   ArrayColumn<float> data(tab, "Data");
   // Get and update the sequencenumber.
   if (userLocking) tlock(tab, true, show);
   TableRecord& keyset = tab.rwKeywordSet();
-  uInt seqnr = keyset.asuInt("seqnr");
+  unsigned int seqnr = keyset.asuInt("seqnr");
   seqnr++;
   keyset.define("seqnr", seqnr);
   if (userLocking) tunlock(tab, show);
@@ -156,8 +156,8 @@ void b(const TableLock& lockMode, uInt wait, uInt nrrow, bool show) {
   Vector<float> freqValues(25);
   Vector<float> polValues(16);
   Matrix<float> dataValues(IPosition(2, 16, 25));
-  Int rownr, val;
-  for (uInt i = 0; i < nrrow; i++) {
+  int rownr, val;
+  for (unsigned int i = 0; i < nrrow; i++) {
     if (userLocking) tlock(tab, true, show);
     if (show) {
       Time time;
@@ -187,30 +187,30 @@ void b(const TableLock& lockMode, uInt wait, uInt nrrow, bool show) {
   }
 }
 
-void c(const TableLock& lockMode, uInt wait, uInt lastWait, bool show) {
+void c(const TableLock& lockMode, unsigned int wait, unsigned int lastWait, bool show) {
   // Check if user locking.
   bool userLocking = (lockMode.option() == TableLock::UserLocking);
   // Open the table for read.
   Table tab("tTableLockSync_2_tmp.tab", lockMode);
-  ScalarColumn<uInt> seq(tab, "seq");
-  ScalarColumn<Int> col1(tab, "col1");
-  ScalarColumn<Int> col2(tab, "col2");
+  ScalarColumn<unsigned int> seq(tab, "seq");
+  ScalarColumn<int> col1(tab, "col1");
+  ScalarColumn<int> col2(tab, "col2");
   ArrayColumn<float> freq(tab, "Freq");
   ArrayColumn<float> pol(tab, "Pol");
   ArrayColumn<float> data(tab, "Data");
-  Block<uInt> count;
+  Block<unsigned int> count;
   Time* lastTime = 0;
 
   Vector<float> freqValues;
   Vector<float> polValues;
   Matrix<float> dataValues;
-  Int val;
-  uInt oldNrrow = 0;
-  uInt nrrow = 0;
+  int val;
+  unsigned int oldNrrow = 0;
+  unsigned int nrrow = 0;
   while (true) {
     if (userLocking) tlock(tab, false, show);
     nrrow = tab.nrow();
-    for (uInt rownr = oldNrrow; rownr < nrrow; rownr++) {
+    for (unsigned int rownr = oldNrrow; rownr < nrrow; rownr++) {
       if (show) {
         Time time;
         double sec = time.modifiedJulianDay() * 86400;
@@ -218,7 +218,7 @@ void c(const TableLock& lockMode, uInt wait, uInt lastWait, bool show) {
         cout << "Reading row " << rownr << endl;
       }
       val = rownr + 10;
-      Int result;
+      int result;
       result = col1(rownr);
       if (result != val) {
         cout << "col1 in row " << rownr << " has value " << result << endl;
@@ -244,10 +244,10 @@ void c(const TableLock& lockMode, uInt wait, uInt lastWait, bool show) {
              << dataValues(IPosition(2, 15, 24)) << endl;
       }
       result = seq(rownr);
-      uInt nr = count.nelements();
-      if (result >= Int(nr)) {
+      unsigned int nr = count.nelements();
+      if (result >= int(nr)) {
         count.resize(result + 1);
-        for (Int i = nr; i <= result; i++) {
+        for (int i = nr; i <= result; i++) {
           count[i] = 0;
         }
       }
@@ -274,8 +274,8 @@ void c(const TableLock& lockMode, uInt wait, uInt lastWait, bool show) {
   }
   delete lastTime;
   cout << "seqnr\t#rows" << endl;
-  uInt nrread = 0;
-  for (uInt i = 0; i < count.nelements(); i++) {
+  unsigned int nrread = 0;
+  for (unsigned int i = 0; i < count.nelements(); i++) {
     if (count[i] > 0) {
       cout << i << '\t' << count[i] << endl;
       nrread += count[i];
@@ -303,8 +303,8 @@ int main(int argc, const char* argv[]) {
   }
   bool show = (argc > 6);
 
-  uInt var[5];
-  for (uInt i = 0; i < 5; i++) {
+  unsigned int var[5];
+  for (unsigned int i = 0; i < 5; i++) {
     istringstream str(argv[i + 1]);
     str >> var[i];
   }

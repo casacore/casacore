@@ -276,10 +276,10 @@ class DataManager {
   virtual DataManagerColumn* reallocateColumn(DataManagerColumn* column);
 
   // Get the (unique) sequence nr of this data manager.
-  uInt sequenceNr() const { return seqnr_p; }
+  unsigned int sequenceNr() const { return seqnr_p; }
 
   // Get the nr of columns in this data manager (can be zero).
-  uInt ncolumn() const { return nrcol_p; }
+  unsigned int ncolumn() const { return nrcol_p; }
 
   // Have the data to be stored in big or little endian canonical format?
   bool asBigEndian() const { return asBigEndian_p; }
@@ -332,7 +332,7 @@ class DataManager {
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
   // The default implementation does nothing.
-  virtual void setMaximumCacheSize(uInt nMiB);
+  virtual void setMaximumCacheSize(unsigned int nMiB);
 
   // Show the data manager's IO statistics. By default it does nothing.
   virtual void showCacheStatistics(std::ostream&) const;
@@ -388,9 +388,9 @@ class DataManager {
   void throwDataTypeOther(const String& columnName, int dataType) const;
 
  private:
-  uInt nrcol_p;        // # #columns in this st.man.
-  uInt seqnr_p;        // # Unique nr of this st.man. in a Table
-  bool asBigEndian_p;  // # store data in big or little endian
+  unsigned int nrcol_p;  // # #columns in this st.man.
+  unsigned int seqnr_p;  // # Unique nr of this st.man. in a Table
+  bool asBigEndian_p;    // # store data in big or little endian
   TSMOption tsmOption_p;
   std::shared_ptr<MultiFileBase> multiFile_p;  // # Possible MultiFile to use
   Table* table_p;                              // # Table this data manager belongs to
@@ -432,7 +432,7 @@ class DataManager {
   virtual void removeColumn(DataManagerColumn*);
 
   // Set the sequence number of this data manager.
-  void setSeqnr(uInt nr) { seqnr_p = nr; }
+  void setSeqnr(unsigned int nr) { seqnr_p = nr; }
 
   // Link the data manager to the Table object.
   void linkToTable(Table& tab);
@@ -479,13 +479,13 @@ class DataManager {
   // Backward compatibility function using uInt instead of rownr_t.
   // The default implementations throw an exception.
   // <group>
-  virtual void addRow(uInt nrrow);
-  virtual void removeRow(uInt rownr);
-  virtual void create(uInt nrrow);
-  virtual void open(uInt nrrow, AipsIO& ios);
-  virtual uInt open1(uInt nrrow, AipsIO& ios);
-  virtual void resync(uInt nrrow);
-  virtual uInt resync1(uInt nrrow);
+  virtual void addRow(unsigned int nrrow);
+  virtual void removeRow(unsigned int rownr);
+  virtual void create(unsigned int nrrow);
+  virtual void open(unsigned int nrrow, AipsIO& ios);
+  virtual unsigned int open1(unsigned int nrrow, AipsIO& ios);
+  virtual void resync(unsigned int nrrow);
+  virtual unsigned int resync1(unsigned int nrrow);
   // </group>
 
   // Declare the mapping of the data manager type name to a static

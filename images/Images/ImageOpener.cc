@@ -83,7 +83,7 @@ ImageOpener::ImageTypes ImageOpener::imageType(const String& name) {
   } else if (file.isRegular()) {
     // Find file type.
     String base = file.path().baseName();
-    Int i;
+    int i;
     for (i = base.length() - 1; i > 0; i--) {
       if (base[i] == '.') {
         break;
@@ -97,7 +97,7 @@ ImageOpener::ImageTypes ImageOpener::imageType(const String& name) {
     }
     RegularFileIO fio((RegularFile(file)));
     char buf[2880];
-    Int nread = fio.read(2880, buf, false);
+    int nread = fio.read(2880, buf, false);
     if (nread == 2880) {
       String str(buf, 80);
       if (RegexMatches(str, Regex("^SIMPLE *= *T.*"))) {
@@ -129,9 +129,9 @@ LatticeBase* ImageOpener::openPagedImage(const String& fileName, const MaskSpeci
   }
   switch (dtype) {
     case TpFloat:
-      return new PagedImage<Float>(table, spec);
+      return new PagedImage<float>(table, spec);
     case TpDouble:
-      return new PagedImage<Double>(table, spec);
+      return new PagedImage<double>(table, spec);
     case TpComplex:
       return new PagedImage<Complex>(table, spec);
     case TpDComplex:
@@ -152,9 +152,9 @@ LatticeBase* ImageOpener::openHDF5Image(const String& fileName, const MaskSpecif
   DataType dtype = hdf5imagePixelType(fileName);
   switch (dtype) {
     case TpFloat:
-      return new HDF5Image<Float>(fileName, spec);
+      return new HDF5Image<float>(fileName, spec);
     case TpDouble:
-      return new HDF5Image<Double>(fileName, spec);
+      return new HDF5Image<double>(fileName, spec);
     case TpComplex:
       return new HDF5Image<Complex>(fileName, spec);
     case TpDComplex:
@@ -172,9 +172,9 @@ LatticeBase* ImageOpener::openImageConcat(const String& fileName) {
   ToLowerCaseInPlace(dtype);
   LatticeBase* img = 0;
   if (dtype == "float") {
-    img = new ImageConcat<Float>(jmap, fileName);
+    img = new ImageConcat<float>(jmap, fileName);
   } else if (dtype == "double") {
-    img = new ImageConcat<Double>(jmap, fileName);
+    img = new ImageConcat<double>(jmap, fileName);
   } else if (dtype == "complex") {
     img = new ImageConcat<Complex>(jmap, fileName);
   } else if (dtype == "dcomplex") {
@@ -203,10 +203,10 @@ LatticeBase* ImageOpener::openExpr(const String& expr, const Block<LatticeExprNo
   LatticeExprNode node = ImageExprParse::command(expr, nodes, regions);
   switch (node.dataType()) {
     case TpFloat:
-      lattice = new ImageExpr<Float>(LatticeExpr<Float>(node), expr, fileName, jmap);
+      lattice = new ImageExpr<float>(LatticeExpr<float>(node), expr, fileName, jmap);
       break;
     case TpDouble:
-      lattice = new ImageExpr<Double>(LatticeExpr<Double>(node), expr, fileName, jmap);
+      lattice = new ImageExpr<double>(LatticeExpr<double>(node), expr, fileName, jmap);
       break;
     case TpComplex:
       lattice = new ImageExpr<Complex>(LatticeExpr<Complex>(node), expr, fileName, jmap);

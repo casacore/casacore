@@ -141,8 +141,9 @@ class SimButterworthBandpass : public Function1D<T> {
   SimButterworthBandpass();
 
   // create a Butterworth bandpass function.
-  SimButterworthBandpass(const uInt minord, const uInt maxord, const T &mincut = T(-1),
-                         const T &maxcut = T(1), const T &center = T(0), const T &peak = T(1));
+  SimButterworthBandpass(const unsigned int minord, const unsigned int maxord,
+                         const T &mincut = T(-1), const T &maxcut = T(1), const T &center = T(0),
+                         const T &peak = T(1));
 
   // create a fully specified Butterworth bandpass in which the
   // low and high pass orders are stored in a Record
@@ -183,11 +184,11 @@ class SimButterworthBandpass : public Function1D<T> {
 
   // set the order of the Butterworth function for the minimum (high-pass)
   // portion of the bandpass
-  void setMinOrder(uInt order) { nl_p = order; }
+  void setMinOrder(unsigned int order) { nl_p = order; }
 
   // set the order of the Butterworth function for the maximum (low-pass)
   // portion of the bandpass
-  void setMaxOrder(uInt order) { nh_p = order; }
+  void setMaxOrder(unsigned int order) { nh_p = order; }
 
   // return the characteristic minimum (high-pass) cutoff value.  At this
   // x-ordinate value, the function has a value reduced 30 dB from its
@@ -201,11 +202,11 @@ class SimButterworthBandpass : public Function1D<T> {
 
   // return the order of the Butterworth function for the minimum (high-pass)
   // portion of the bandpass
-  uInt getMinOrder() const { return nl_p; }
+  unsigned int getMinOrder() const { return nl_p; }
 
   // return the order of the Butterworth function for the maximum (low-pass)
   // portion of the bandpass
-  uInt getMaxOrder() const { return nh_p; }
+  unsigned int getMaxOrder() const { return nh_p; }
 
   // set the scale of the function by setting its peak value.  By default,
   // the peak value is T(1);
@@ -241,9 +242,9 @@ class SimButterworthBandpass : public Function1D<T> {
  private:
   // # Non-parameter Data
   //  Minimum order
-  uInt nl_p;
+  unsigned int nl_p;
   // Maximum order
-  uInt nh_p;
+  unsigned int nh_p;
 
   // # Make members of parent classes known.
  protected:

@@ -45,13 +45,13 @@ int main() {
     // Test HANNING with shape = 3, peakUnity = true;
     const int SHAPE = 3;
     cout << "Test: method=HANNING, shape=3, peakUnity=true" << endl;
-    Vector<Double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, true);
+    Vector<double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, true);
     if (static_cast<int>(result.size()) != SHAPE) {
       failed = true;
       cout << "Unexpected result size=" << result.size() << " did not match expected size of "
            << SHAPE << endl;
     } else {
-      Vector<Double> expectedResult(SHAPE);
+      Vector<double> expectedResult(SHAPE);
       expectedResult[0] = 0.5;
       expectedResult[1] = 1;
       expectedResult[2] = 0.5;
@@ -75,13 +75,13 @@ int main() {
     // Test HANNING with shape = 3, peakUnity = false;
     const int SHAPE = 3;
     cout << "Test: method=HANNING, shape=3, peakUnity=false" << endl;
-    Vector<Double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, false);
+    Vector<double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, false);
     if (static_cast<int>(result.size()) != SHAPE) {
       failed = true;
       cout << "Unexpected result size=" << result.size() << " did not match expected size of "
            << SHAPE << endl;
     } else {
-      Vector<Double> expectedResult(SHAPE);
+      Vector<double> expectedResult(SHAPE);
       expectedResult[0] = 0.25;
       expectedResult[1] = 0.5;
       expectedResult[2] = 0.25;
@@ -105,13 +105,13 @@ int main() {
     // Test HANNING with shape = 5, peakUnity = true;
     const int SHAPE = 5;
     cout << "Test: method=HANNING, shape=5, peakUnity=true" << endl;
-    Vector<Double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, true);
+    Vector<double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, true);
     if (static_cast<int>(result.size()) != SHAPE) {
       failed = true;
       cout << "Unexpected result size=" << result.size() << " did not match expected size of "
            << SHAPE << endl;
     } else {
-      Vector<Double> expectedResult(SHAPE);
+      Vector<double> expectedResult(SHAPE);
       expectedResult[0] = 0.25;
       expectedResult[1] = 0.75;
       expectedResult[2] = 1;
@@ -137,13 +137,13 @@ int main() {
     // Test HANNING with shape = 5, peakUnity = false;
     const int SHAPE = 5;
     cout << "Test: method=HANNING, shape=5, peakUnity=false" << endl;
-    Vector<Double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, false);
+    Vector<double> result = VectorKernel::make(VectorKernel::HANNING, 0.0, SHAPE, true, false);
     if (static_cast<int>(result.size()) != SHAPE) {
       failed = true;
       cout << "Unexpected result size=" << result.size() << " did not match expected size of "
            << SHAPE << endl;
     } else {
-      Vector<Double> expectedResult(SHAPE);
+      Vector<double> expectedResult(SHAPE);
       expectedResult[0] = 0.08333333;
       expectedResult[1] = 0.25;
       expectedResult[2] = 0.33333333;

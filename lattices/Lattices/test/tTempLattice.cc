@@ -35,26 +35,26 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void doIt(TempLattice<Int>& scratch) {
+void doIt(TempLattice<int>& scratch) {
   scratch.tempClose();
   IPosition shape(3, 1);
   shape(2) = scratch.shape()(2);
   AlwaysAssertExit(scratch.isWritable());
   scratch.tempClose();
-  LatticeIterator<Int> li(scratch, shape);
+  LatticeIterator<int> li(scratch, shape);
   scratch.tempClose();
-  Int i = 0;
+  int i = 0;
   for (li.reset(); !li.atEnd(); li++, i++) {
     li.woCursor() = i;
   }
   shape = scratch.shape();
   shape(2) = 1;
-  COWPtr<Array<Int>> ptrM;
+  COWPtr<Array<int>> ptrM;
   scratch.tempClose();
   scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), false);
   scratch.reopen();
   AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
-  Array<Int> expectedResult(shape);
+  Array<int> expectedResult(shape);
   indgen(expectedResult);
   AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
   ptrM.rwRef() = 0;
@@ -71,12 +71,12 @@ void doIt(TempLattice<Int>& scratch) {
 int main() {
   try {
     {
-      TempLattice<Int> scratch(IPosition(3, 64, 64, 257), 1);
+      TempLattice<int> scratch(IPosition(3, 64, 64, 257), 1);
       AlwaysAssertExit(scratch.isPaged());
       doIt(scratch);
     }
     {
-      TempLattice<Int> small(IPosition(3, 64, 64, 16), 1);
+      TempLattice<int> small(IPosition(3, 64, 64, 16), 1);
       AlwaysAssertExit(small.ok());
       AlwaysAssertExit(!small.isPaged());
       doIt(small);

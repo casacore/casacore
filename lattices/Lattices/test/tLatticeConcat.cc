@@ -39,45 +39,45 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void check(uInt axis, MaskedLattice<Float>& ml, MaskedLattice<Float>& ml1,
-           MaskedLattice<Float>& ml2);
-void check2(MaskedLattice<Float>& ml, MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2);
-void check3(const Slicer& sl, MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2);
-void check4(const Slicer& sl, MaskedLattice<Float>& ml1, Array<Float>& ml2);
-void check5(const Slicer& sl, MaskedLattice<Float>& ml1, Array<bool>& ml2);
-void check6(uInt axis, Lattice<bool>& ml, Lattice<bool>& ml1, Lattice<bool>& ml2);
-void check7(const Slicer& sl, LatticeConcat<Float>& lc, Float val, bool valMask);
+void check(unsigned int axis, MaskedLattice<float>& ml, MaskedLattice<float>& ml1,
+           MaskedLattice<float>& ml2);
+void check2(MaskedLattice<float>& ml, MaskedLattice<float>& ml1, MaskedLattice<float>& ml2);
+void check3(const Slicer& sl, MaskedLattice<float>& ml1, MaskedLattice<float>& ml2);
+void check4(const Slicer& sl, MaskedLattice<float>& ml1, Array<float>& ml2);
+void check5(const Slicer& sl, MaskedLattice<float>& ml1, Array<bool>& ml2);
+void check6(unsigned int axis, Lattice<bool>& ml, Lattice<bool>& ml1, Lattice<bool>& ml2);
+void check7(const Slicer& sl, LatticeConcat<float>& lc, float val, bool valMask);
 
 int main() {
   try {
     // Make some ArrayLattices
 
     IPosition shape(2, 64, 128);
-    Array<Float> a1(shape);
-    Array<Float> a2(shape);
-    Int i, j;
+    Array<float> a1(shape);
+    Array<float> a2(shape);
+    int i, j;
     for (i = 0; i < shape(0); i++) {
       for (j = 0; j < shape(1); j++) {
         a1(IPosition(2, i, j)) = i + j;
         a2(IPosition(2, i, j)) = -i - j;
       }
     }
-    ArrayLattice<Float> l1(a1);
-    ArrayLattice<Float> l2(a2);
-    ArrayLattice<Float> l3(shape);
+    ArrayLattice<float> l1(a1);
+    ArrayLattice<float> l2(a2);
+    ArrayLattice<float> l3(shape);
     l3.set(1.0);
 
     // Make MaskedLattices with no mask
 
-    SubLattice<Float> ml1(l1, true);
-    SubLattice<Float> ml2(l2, true);
-    SubLattice<Float> ml3(l3, true);
+    SubLattice<float> ml1(l1, true);
+    SubLattice<float> ml2(l2, true);
+    SubLattice<float> ml3(l3, true);
 
     // Make some MaskedLattices and give them a mask
 
-    SubLattice<Float> im1(l1, true);
-    SubLattice<Float> im2(l2, true);
-    SubLattice<Float> im3(l3, true);
+    SubLattice<float> im1(l1, true);
+    SubLattice<float> im2(l2, true);
+    SubLattice<float> im3(l3, true);
     //
     ArrayLattice<bool> mask1(shape);
     mask1.set(true);
@@ -91,7 +91,7 @@ int main() {
     //
     {
       cout << "tempClose/reopen/resync/flush" << endl;
-      LatticeConcat<Float> lc(0, true);
+      LatticeConcat<float> lc(0, true);
       lc.setLattice(ml1);
       lc.setLattice(im1);
       lc.reopen();
@@ -121,7 +121,7 @@ int main() {
     //
     {
       cout << "partly pixelMask" << endl;
-      LatticeConcat<Float> lc(0, true);
+      LatticeConcat<float> lc(0, true);
       lc.setLattice(im2);
       lc.setLattice(ml1);
       //
@@ -144,7 +144,7 @@ int main() {
 
       // Concatenate along axis 0
 
-      LatticeConcat<Float> lc(0, false);
+      LatticeConcat<float> lc(0, false);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
 
@@ -167,7 +167,7 @@ int main() {
 
       // Concatenate along axis 1
 
-      LatticeConcat<Float> lc(1, true);
+      LatticeConcat<float> lc(1, true);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
 
@@ -190,7 +190,7 @@ int main() {
 
       // Create axis 2
 
-      LatticeConcat<Float> lc(2);
+      LatticeConcat<float> lc(2);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
 
@@ -214,7 +214,7 @@ int main() {
 
       // Create axis 2
 
-      LatticeConcat<Float> lc(2);
+      LatticeConcat<float> lc(2);
       lc.setLattice(im1);
       lc.setLattice(im2);
 
@@ -239,7 +239,7 @@ int main() {
 
       // Create axis 2
 
-      LatticeConcat<Float> lc(2);
+      LatticeConcat<float> lc(2);
       lc.setLattice(im3);
       lc.setLattice(im3);
       lc.setLattice(im3);
@@ -321,7 +321,7 @@ int main() {
 
       // Create axis 2
 
-      LatticeConcat<Float> lc(2);
+      LatticeConcat<float> lc(2);
       lc.setLattice(im3);
       lc.setLattice(im3);
       lc.setLattice(im3);
@@ -356,7 +356,7 @@ int main() {
         IPosition stride(outShape.nelements(), 1);
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -379,7 +379,7 @@ int main() {
         stride(1) = 3;
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -400,7 +400,7 @@ int main() {
         IPosition stride(outShape.nelements(), 1);
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -424,7 +424,7 @@ int main() {
         stride(2) = 2;
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -441,7 +441,7 @@ int main() {
 
       // Concatenate along axis 0
 
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(im1);
       lc.setLattice(im2);
 
@@ -469,7 +469,7 @@ int main() {
 
       // Concatenate along axis 0
 
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       im3.set(1.0);
       Lattice<bool>& pixelMask = im3.pixelMask();
       pixelMask.set(true);
@@ -555,14 +555,14 @@ int main() {
     {
       cout << "Axis 0, ArrayLattices, various putslices" << endl;
 
-      Array<Float> aa1 = ml1.get();
-      Array<Float> aa2 = ml2.get();
-      ArrayLattice<Float> x1(aa1);
-      ArrayLattice<Float> x2(aa2);
-      SubLattice<Float> m1(x1, true);
-      SubLattice<Float> m2(x2, true);
+      Array<float> aa1 = ml1.get();
+      Array<float> aa2 = ml2.get();
+      ArrayLattice<float> x1(aa1);
+      ArrayLattice<float> x2(aa2);
+      SubLattice<float> m1(x1, true);
+      SubLattice<float> m2(x2, true);
       //
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(m1);
       lc.setLattice(m2);
       IPosition outShape = lc.shape();
@@ -575,7 +575,7 @@ int main() {
         IPosition stride(outShape.nelements(), 1);
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -589,7 +589,7 @@ int main() {
         stride(1) = 3;
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -602,7 +602,7 @@ int main() {
         IPosition stride(outShape.nelements(), 1);
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -617,7 +617,7 @@ int main() {
         stride(1) = 3;
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -631,7 +631,7 @@ int main() {
         IPosition stride(outShape.nelements(), 1);
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -647,7 +647,7 @@ int main() {
         stride(1) = 3;
         Slicer sl(blc, trc, stride, Slicer::endIsLast);
         //
-        Array<Float> tmp0(sl.length());
+        Array<float> tmp0(sl.length());
         tmp0.set(1.0);
         lc.putSlice(tmp0, sl.start(), sl.stride());
         check4(sl, lc, tmp0);
@@ -658,7 +658,7 @@ int main() {
 
     {
       cout << "Testing pixelMask" << endl;
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
       AlwaysAssert(lc.hasPixelMask() == false, AipsError);
@@ -674,7 +674,7 @@ int main() {
       }
     }
     {
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(im1);
       lc.setLattice(im2);
       //
@@ -687,7 +687,7 @@ int main() {
 
     {
       cout << "Testing locking" << endl;
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
       AlwaysAssert(lc.lock(FileLocker::Read, 1), AipsError);
@@ -706,10 +706,10 @@ int main() {
 
     {
       cout << "Testing copy constructor" << endl;
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
-      LatticeConcat<Float> lc2(lc);
+      LatticeConcat<float> lc2(lc);
 
       // Find output shape
 
@@ -725,10 +725,10 @@ int main() {
 
     {
       cout << "Testing assignment " << endl;
-      LatticeConcat<Float> lc(0);
+      LatticeConcat<float> lc(0);
       lc.setLattice(ml1);
       lc.setLattice(ml2);
-      LatticeConcat<Float> lc2;
+      LatticeConcat<float> lc2;
       lc2 = lc;
 
       // Find output shape
@@ -748,7 +748,7 @@ int main() {
 
       // Concatenate along axis 0
 
-      LatticeConcat<Float> lc(10);
+      LatticeConcat<float> lc(10);
       bool ok = true;
       try {
         lc.setLattice(ml1);
@@ -761,8 +761,8 @@ int main() {
       //
       ok = true;
       try {
-        ArrayLattice<Float> l4(IPosition(3, 2, 2, 2));
-        SubLattice<Float> ml4(l4, true);
+        ArrayLattice<float> l4(IPosition(3, 2, 2, 2));
+        SubLattice<float> ml4(l4, true);
         lc.setLattice(ml4);
         ok = false;
       } catch (std::exception& x) {
@@ -781,8 +781,8 @@ int main() {
   return 0;
 }
 
-void check(uInt axis, MaskedLattice<Float>& ml, MaskedLattice<Float>& ml1,
-           MaskedLattice<Float>& ml2) {
+void check(unsigned int axis, MaskedLattice<float>& ml, MaskedLattice<float>& ml1,
+           MaskedLattice<float>& ml2) {
   IPosition shape1 = ml1.shape();
   IPosition shape2 = ml2.shape();
   //
@@ -803,7 +803,7 @@ void check(uInt axis, MaskedLattice<Float>& ml, MaskedLattice<Float>& ml1,
   }
 }
 
-void check2(MaskedLattice<Float>& ml, MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2) {
+void check2(MaskedLattice<float>& ml, MaskedLattice<float>& ml1, MaskedLattice<float>& ml2) {
   IPosition shape1 = ml1.shape();
   IPosition shape2 = ml2.shape();
   IPosition sliceShape(3, shape1(0), shape1(1), 1);
@@ -817,20 +817,20 @@ void check2(MaskedLattice<Float>& ml, MaskedLattice<Float>& ml1, MaskedLattice<F
   AlwaysAssert(allEQ(ml2.getMask(), ml.getMaskSlice(blc, sliceShape, true)), AipsError);
 }
 
-void check3(const Slicer& sl, MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2) {
+void check3(const Slicer& sl, MaskedLattice<float>& ml1, MaskedLattice<float>& ml2) {
   AlwaysAssert(allEQ(ml1.getSlice(sl), ml2.getSlice(sl)), AipsError);
   AlwaysAssert(allEQ(ml1.getMaskSlice(sl), ml2.getMaskSlice(sl)), AipsError);
 }
 
-void check4(const Slicer& sl, MaskedLattice<Float>& ml1, Array<Float>& ml2) {
+void check4(const Slicer& sl, MaskedLattice<float>& ml1, Array<float>& ml2) {
   AlwaysAssert(allEQ(ml1.getSlice(sl), ml2), AipsError);
 }
 
-void check5(const Slicer& sl, MaskedLattice<Float>& ml1, Array<bool>& ml2) {
+void check5(const Slicer& sl, MaskedLattice<float>& ml1, Array<bool>& ml2) {
   AlwaysAssert(allEQ(ml1.getMaskSlice(sl), ml2), AipsError);
 }
 
-void check6(uInt axis, Lattice<bool>& ml, Lattice<bool>& ml1, Lattice<bool>& ml2) {
+void check6(unsigned int axis, Lattice<bool>& ml, Lattice<bool>& ml1, Lattice<bool>& ml2) {
   IPosition shape1 = ml1.shape();
   IPosition shape2 = ml2.shape();
   //
@@ -848,8 +848,8 @@ void check6(uInt axis, Lattice<bool>& ml, Lattice<bool>& ml1, Lattice<bool>& ml2
   }
 }
 
-void check7(const Slicer& sl, LatticeConcat<Float>& lc, Float val, bool valMask) {
-  Double tol(1.0e-6);
+void check7(const Slicer& sl, LatticeConcat<float>& lc, float val, bool valMask) {
+  double tol(1.0e-6);
   AlwaysAssert(allNear(lc.getSlice(sl), val, tol), AipsError);
   AlwaysAssert(allEQ(lc.getMaskSlice(sl), valMask), AipsError);
 }

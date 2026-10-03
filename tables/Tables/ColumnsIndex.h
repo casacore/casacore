@@ -232,8 +232,8 @@ class ColumnsIndex {
   // The function should return -1 if key is less than data,
   // 0 if equal, 1 if greater.
   // <br>An example above shows how a compare function can be used.
-  typedef Int Compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
-                      const Block<Int>& dataTypes, rownr_t index);
+  typedef int Compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+                      const Block<int>& dataTypes, rownr_t index);
 
   // Create an index on the given table for the given column.
   // The column has to be a scalar column.
@@ -364,8 +364,8 @@ class ColumnsIndex {
 
   // Compare the key in <src>fieldPtrs</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
-  static Int compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
-                     const Block<Int>& dataTypes, rownr_t index);
+  static int compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+                     const Block<int>& dataTypes, rownr_t index);
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndex</src> vector (end is not inclusive).
@@ -386,7 +386,7 @@ class ColumnsIndex {
   rownr_t itsNrrow;
   Record* itsLowerKeyPtr;
   Record* itsUpperKeyPtr;
-  Block<Int> itsDataTypes;
+  Block<int> itsDataTypes;
   Block<void*> itsDataVectors;
   Block<void*> itsData;  // # pointer to data in itsDataVectors
   // # The following 2 blocks are actually blocks of RecordFieldPtr<T>*.

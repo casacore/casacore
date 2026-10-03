@@ -175,12 +175,12 @@ bool RebinImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
 }
 
 template <class T>
-uInt RebinImage<T>::advisedMaxPixels() const {
+unsigned int RebinImage<T>::advisedMaxPixels() const {
   return itsRebinPtr->advisedMaxPixels();
 }
 
 template <class T>
-IPosition RebinImage<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition RebinImage<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return itsRebinPtr->niceCursorShape(maxPixels);
 }
 
@@ -191,7 +191,7 @@ LatticeIterInterface<T>* RebinImage<T>::makeIter(const LatticeNavigator& navigat
 }
 
 template <class T>
-bool RebinImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool RebinImage<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsRebinPtr->lock(type, nattempts);
 }
 template <class T>

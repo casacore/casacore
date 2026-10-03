@@ -37,11 +37,11 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName,
-                      Vector<String> *axisNames, Vector<Float> *refPixel,
-                      Vector<Float> *refLocation, Vector<Float> *delta,
-                      std::map<String, Double> *keywords, String *objectName) {
-  Array<Float> data;
+Array<float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName,
+                      Vector<String> *axisNames, Vector<float> *refPixel,
+                      Vector<float> *refLocation, Vector<float> *delta,
+                      std::map<String, double> *keywords, String *objectName) {
+  Array<float> data;
 
   ok = true;
   FitsInput infile(FileName, FITS::Disk);
@@ -75,12 +75,12 @@ Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, Stri
                  delta, keywords, objectName);
     } break;
     case FITS::FLOAT: {
-      PrimaryArray<Float> fitsdata(infile);
+      PrimaryArray<float> fitsdata(infile);
       ReadFITSin(fitsdata, data, ok, ErrorMessage, unitName, axisNames, refPixel, refLocation,
                  delta, keywords, objectName);
     } break;
     case FITS::DOUBLE: {
-      PrimaryArray<Double> fitsdata(infile);
+      PrimaryArray<double> fitsdata(infile);
       ReadFITSin(fitsdata, data, ok, ErrorMessage, unitName, axisNames, refPixel, refLocation,
                  delta, keywords, objectName);
     } break;
@@ -92,11 +92,11 @@ Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, Stri
   return data;
 }
 
-bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
-               const char *unitName, const Vector<String> *axisNames, const Vector<Float> *refPixel,
-               const Vector<Float> *refLocation, const Vector<Float> *delta,
-               const std::map<String, double> *keywords, const char *objectName, Int BITPIX,
-               Float minPix, Float maxPix) {
+bool WriteFITS(const char *FileName, const Array<float> &array, String &ErrorMessage,
+               const char *unitName, const Vector<String> *axisNames, const Vector<float> *refPixel,
+               const Vector<float> *refLocation, const Vector<float> *delta,
+               const std::map<String, double> *keywords, const char *objectName, int BITPIX,
+               float minPix, float maxPix) {
   FitsOutput outfile(FileName, FITS::Disk);
   if (outfile.err()) {
     ErrorMessage = String("Cannot open file for writing: ") + String(FileName);
@@ -106,9 +106,9 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
   FitsKeywordList kw;
   kw.mk(FITS::SIMPLE, true);
 
-  Double bscale, bzero;
-  const Short maxshort = 32767;
-  const Short minshort = -32768;
+  double bscale, bzero;
+  const short maxshort = 32767;
+  const short minshort = -32768;
   if (BITPIX == -32) {
     bscale = 1.0;
     bzero = 0.0;
@@ -118,15 +118,15 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
     if (minPix > maxPix) {
       minMax(minPix, maxPix, array);
     }
-    bscale = Double(maxPix - minPix) / Double(Int(maxshort) - Int(minshort));
-    bzero = Double(minPix) + bscale * (-Double(minshort));
+    bscale = double(maxPix - minPix) / double(int(maxshort) - int(minshort));
+    bzero = double(minPix) + bscale * (-double(minshort));
   } else {
     ErrorMessage = "BITPIX must be -32 (floating point) or 16 (short integer)";
     return false;
   }
 
   kw.mk(FITS::NAXIS, int(array.ndim()));
-  for (Int i = 0; i < Int(array.ndim()); i++) {
+  for (int i = 0; i < int(array.ndim()); i++) {
     kw.mk(i + 1, FITS::NAXIS, int(array.shape()(i)));
   }
   kw.mk(FITS::BSCALE, bscale, "physical = pixel*BSCALE + BZERO");
@@ -140,7 +140,7 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       ErrorMessage = String("axisNames wrong length");
       return false;
     }
-    for (Int i = 0; i < Int(array.ndim()); i++) {
+    for (int i = 0; i < int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CTYPE, (*axisNames)(i).c_str());
     }
   }
@@ -149,7 +149,7 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       ErrorMessage = String("refPixel wrong length");
       return false;
     }
-    for (Int i = 0; i < Int(array.ndim()); i++) {
+    for (int i = 0; i < int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CRPIX, (*refPixel)(i) + 1.0f);
     }
   }
@@ -158,7 +158,7 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       ErrorMessage = String("refLocation wrong length");
       return false;
     }
-    for (Int i = 0; i < Int(array.ndim()); i++) {
+    for (int i = 0; i < int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CRVAL, (*refLocation)(i));
     }
   }
@@ -167,14 +167,14 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       ErrorMessage = String("delta wrong length");
       return false;
     }
-    for (Int i = 0; i < Int(array.ndim()); i++) {
+    for (int i = 0; i < int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CDELT, (*delta)(i));
     }
   }
   if (keywords) {
     for (const auto &elem : *keywords) {
       String key(elem.first);
-      Double val(elem.second);
+      double val(elem.second);
       // FITS requires upper case, length=8 (or less) keywords
       ToUpperCaseInPlace(key);
       if (key.length() > 8) {
@@ -194,16 +194,16 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
 
   switch (BITPIX) {
     case -32: {
-      PrimaryArray<Float> pa(kw);
+      PrimaryArray<float> pa(kw);
       if (pa.err()) {
         ErrorMessage = "Error constructing primary array from keywords";
         return false;
       }
 
       bool deleteIt;
-      const Float *storage = array.getStorage(deleteIt);
+      const float *storage = array.getStorage(deleteIt);
       //*** Cast needed because of misdeclaration (I believe) in hdu.h
-      pa.store((Float *)storage);
+      pa.store((float *)storage);
 
       // I don't think the following adequately check for errors on write.
       if (pa.write_hdr(outfile)) {
@@ -211,7 +211,7 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
         ErrorMessage = "Write error writing keywords";
         return false;
       }
-      if (pa.write(outfile) != Int(array.nelements())) {
+      if (pa.write(outfile) != int(array.nelements())) {
         array.freeStorage(storage, deleteIt);
         ErrorMessage = "Write error writing data";
         return false;
@@ -219,24 +219,24 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       array.freeStorage(storage, deleteIt);
     } break;
     case 16: {
-      PrimaryArray<Short> pa(kw);
+      PrimaryArray<short> pa(kw);
       if (pa.err()) {
         ErrorMessage = "Error constructing primary array from keywords";
         return false;
       }
 
       bool deleteIt;
-      const Float *storage = array.getStorage(deleteIt);
+      const float *storage = array.getStorage(deleteIt);
 
-      Block<Short> storage16(array.nelements());
-      const uInt n = array.nelements();
-      for (uInt i = 0; i < n; i++) {
+      Block<short> storage16(array.nelements());
+      const unsigned int n = array.nelements();
+      for (unsigned int i = 0; i < n; i++) {
         if (storage[i] <= minPix) {
           storage16[i] = minshort;
         } else if (storage[i] >= maxPix) {
           storage16[i] = maxshort;
         } else {
-          storage16[i] = Short((storage[i] - bzero) / bscale);
+          storage16[i] = short((storage[i] - bzero) / bscale);
         }
       }
 
@@ -249,7 +249,7 @@ bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
         ErrorMessage = "Write error writing keywords";
         return false;
       }
-      if (pa.write(outfile) != Int(array.nelements())) {
+      if (pa.write(outfile) != int(array.nelements())) {
         array.freeStorage(storage, deleteIt);
         ErrorMessage = "Write error writing data";
         return false;

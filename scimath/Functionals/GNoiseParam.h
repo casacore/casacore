@@ -85,7 +85,7 @@ class GNoiseParam : public Function<T> {
   //  mean=0, var=1.0
   //  <group>
   GNoiseParam();
-  GNoiseParam(const Double &mean, const Double &var);
+  GNoiseParam(const double &mean, const double &var);
   // </group>
 
   // Copy constructor (deep copy)
@@ -100,7 +100,7 @@ class GNoiseParam : public Function<T> {
   virtual ~GNoiseParam();
 
   // # Operators
-  virtual uInt ndim() const { return 0; }
+  virtual unsigned int ndim() const { return 0; }
 
   // # Member functions
   //  Give name of function

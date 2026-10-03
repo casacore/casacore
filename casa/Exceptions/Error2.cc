@@ -43,11 +43,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 AipsError::AipsError(Category c) : message(), category(c) { AddStackTrace(); }
 
-AipsError::AipsError(const Char* str, Category c) : message(str), category(c) { AddStackTrace(); }
+AipsError::AipsError(const char* str, Category c) : message(str), category(c) { AddStackTrace(); }
 
 AipsError::AipsError(const String& str, Category c) : message(str), category(c) { AddStackTrace(); }
 
-AipsError::AipsError(const String& msg, const String& filename, uInt lineNumber, Category c)
+AipsError::AipsError(const String& msg, const String& filename, unsigned int lineNumber, Category c)
     : category(c) {
   std::ostringstream os;
   os << msg << " at File: " << filename << ", line: " << lineNumber;
@@ -115,7 +115,7 @@ String AipsError::getStackTrace() const {
 
 #endif
 
-void AipsError::throwIf(bool condition, const String& message, const char* file, Int line,
+void AipsError::throwIf(bool condition, const String& message, const char* file, int line,
                         const char* func) {
   // If the condition is met then throw an AipsError
   if (condition) {
@@ -125,7 +125,7 @@ void AipsError::throwIf(bool condition, const String& message, const char* file,
   }
 }
 
-void AipsError::throwIfError(int errorCode, const String& prefix, const char* file, Int line,
+void AipsError::throwIfError(int errorCode, const String& prefix, const char* file, int line,
                              const char* func) {
   // If the provided error code is not equal to success (0) then
   // throw an AipsError using the provided prefix and then details
@@ -139,7 +139,7 @@ void AipsError::throwIfError(int errorCode, const String& prefix, const char* fi
 }
 
 AipsError AipsError::repackageAipsError(AipsError& error, const String& message, const char* file,
-                                        Int line, const char* func) {
+                                        int line, const char* func) {
   std::ostringstream os;
   AipsError tmp(message, file, line);
   os << "+++Exception: " << tmp.getMesg() << ".\n...Thrown by " << func << ": "
@@ -156,7 +156,7 @@ DuplError::~DuplError() noexcept {}
 SystemCallError::SystemCallError(const String& funcName, int error, Category c)
     : AipsError("Error in " + funcName + ": " + errorMessage(error), c), itsError(error) {}
 SystemCallError::SystemCallError(int error, const std::string& msg, const std::string& filename,
-                                 uInt lineNumber, Category c)
+                                 unsigned int lineNumber, Category c)
     : AipsError(msg + FormatString(": errno=%d: %s", error, errorMessage(error).c_str()), filename,
                 lineNumber, c),
       itsError(error) {}
@@ -170,7 +170,7 @@ String SystemCallError::errorMessage(int error) {
 }
 
 // Exception which causes an abort instead of continuing
-AbortError::AbortError(const Char* str, Category c) : AipsError(str, c) {
+AbortError::AbortError(const char* str, Category c) : AipsError(str, c) {
   cerr << "An unrecoverable error occurred: " << endl;
   cerr << str << endl;
 #ifndef CASACORE_NOEXIT

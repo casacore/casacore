@@ -108,34 +108,34 @@ class MSTimeParse : public MSParse {
   const TableExprNode* selectTimeGT(const MEpoch& lowboundTime, bool daytime = false);
   const TableExprNode* selectTimeLT(const MEpoch& upboundTime, bool daytime = false);
   const TableExprNode* selectTimeRange(const MEpoch& lowboundTime, const MEpoch& upboundTime,
-                                       bool daytime = false, Float edgeWidth = -1.0);
-  Matrix<Double> selectedTimes() { return timeList; }
+                                       bool daytime = false, float edgeWidth = -1.0);
+  Matrix<double> selectedTimes() { return timeList; }
   const TableExprNode* addCondition(TableExprNode& condition);
 
   /*
-  static const MEpoch *dayTimeConvert(Int day=-1, Int hour = -1,
-                                      Int minute = -1, Int second = -1,
-                                      Int millisec = -1);
+  static const MEpoch *dayTimeConvert(int day=-1, int hour = -1,
+                                      int minute = -1, int second = -1,
+                                      int millisec = -1);
   */
 
   static void setDefaults(TimeFields& tf, bool dataOrigin = true);
   void getDefaults();
   static void copyDefaults(TimeFields& target, TimeFields& source);
-  static const MEpoch* yearTimeConvert(Int year = -1, Int month = -1, Int day = -1, Int hour = -1,
-                                       Int minute = -1, Int second = -1, Int millisec = -1);
+  static const MEpoch* yearTimeConvert(int year = -1, int month = -1, int day = -1, int hour = -1,
+                                       int minute = -1, int second = -1, int millisec = -1);
   static const MEpoch* yearTimeConvert(const TimeFields& tf);
 
   // Get table expression node object.
   static const TableExprNode* node();
 
-  Int year0() { return defaultYear; }
-  Int month0() { return defaultMonth; }
-  Int day0() { return defaultDay; }
-  Int hour0() { return defaultHour; }
-  Int minute0() { return defaultMinute; }
-  Int second0() { return defaultSeconds; }
-  Int fractionalsec0() { return defaultFractionalSec; }
-  Double defaultInteg() { return defaultExposure; }
+  int year0() { return defaultYear; }
+  int month0() { return defaultMonth; }
+  int day0() { return defaultDay; }
+  int hour0() { return defaultHour; }
+  int minute0() { return defaultMinute; }
+  int second0() { return defaultSeconds; }
+  int fractionalsec0() { return defaultFractionalSec; }
+  double defaultInteg() { return defaultExposure; }
 
   static void validate(const TimeFields& tf);
   static void reset() { timeList.resize(3, 0); }
@@ -151,16 +151,16 @@ class MSTimeParse : public MSParse {
   static bool defaultTimeComputed;
   MVTime firstRowTime;
   static MeasurementSet* ms_p;
-  static Double toTAIInSec(const MEpoch& time);
+  static double toTAIInSec(const MEpoch& time);
   static MEpoch* yeartime;
   static MEpoch* daytime;
-  Int defaultYear, defaultMonth, defaultDay, defaultHour, defaultMinute, defaultSeconds,
+  int defaultYear, defaultMonth, defaultDay, defaultHour, defaultMinute, defaultSeconds,
       defaultFractionalSec;
-  Double defaultExposure;
+  double defaultExposure;
   const String colName;
   bool honourRowFlags_p;
-  static Matrix<Double> timeList;
-  void accumulateTimeList(const Double t0, const Double t1, const Double dT = -1);
+  static Matrix<double> timeList;
+  void accumulateTimeList(const double t0, const double t1, const double dT = -1);
   static MSTimeParse* thisMSTParser;
   static TableExprNode columnAsTEN_p;
   static MSSelectableMainColumn* mainColumn_p;

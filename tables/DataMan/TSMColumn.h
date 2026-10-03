@@ -119,7 +119,7 @@ class TSMColumn : public StManColumnBase {
   TSMDataColumn* makeDataColumn();
 
   // Make a TSM coordinate column object.
-  TSMCoordColumn* makeCoordColumn(uInt axesNumber);
+  TSMCoordColumn* makeCoordColumn(unsigned int axesNumber);
 
   // Make a TSM id column object.
   TSMIdColumn* makeIdColumn();

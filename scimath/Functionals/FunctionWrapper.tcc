@@ -64,19 +64,19 @@ FunctionWrapper<T>::FunctionWrapper(T (*f)(const T &, const Vector<T> &), const 
     : WrapperParam<T>(par), doit_p(new WrapperData<T, T, Vector<T>, true, true>(f, 1)) {}
 
 template <class T>
-FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &), const Int dim)
+FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &), const int dim)
     : WrapperParam<T>(0), doit_p(new WrapperData<T, Vector<T>, T, true, false>(f, dim)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &, const T &), const T &par,
-                                    const uInt dim)
+                                    const unsigned int dim)
     : WrapperParam<T>(1), doit_p(new WrapperData<T, Vector<T>, T, true, true>(f, dim)) {
   param_p[0] = par;
 }
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T (*f)(const Vector<T> &, const Vector<T> &),
-                                    const Vector<T> &par, const uInt dim)
+                                    const Vector<T> &par, const unsigned int dim)
     : WrapperParam<T>(par), doit_p(new WrapperData<T, Vector<T>, Vector<T>, true, true>(f, dim)) {}
 
 template <class T>
@@ -101,7 +101,7 @@ T FunctionWrapper<T>::eval(typename Function<T>::FunctionArg x) const {
 
 // # Member functions
 template <class T>
-uInt FunctionWrapper<T>::ndim() const {
+unsigned int FunctionWrapper<T>::ndim() const {
   return (doit_p ? doit_p->ndim() : 0);
 }
 

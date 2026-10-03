@@ -103,7 +103,7 @@ class MeasEngine : public BaseEngine {
   bool handleMeasType(const TENShPtr& operand, bool doThrow);
 
   // Make the expression result attributes.
-  Record makeAttributes(typename M::Types refType, Int valueType = 1) const;
+  Record makeAttributes(typename M::Types refType, int valueType = 1) const;
 
  protected:
   // Handle the operand representing an array of Meas values.

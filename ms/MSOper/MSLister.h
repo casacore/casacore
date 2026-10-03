@@ -148,15 +148,15 @@ class MSLister {
 
   // Page size for various formats, output devices (default for landscape
   // printing).
-  void setPage(const uInt width = 120, const uInt height = 20);
+  void setPage(const unsigned int width = 120, const unsigned int height = 20);
 
   // Format for output, ie data display precision.
-  void setFormat(const uInt ndec = 2);
+  void setFormat(const unsigned int ndec = 2);
 
   // User choices for list precision (sensible defaults):
   //   (time precision for user interface is fraction of sec)
-  void setPrecision(const Int precTime = 1, const Int precUVDist = 0, const Int precAmpl = 3,
-                    const int precPhase = 1, const Int precWeight = 0);
+  void setPrecision(const int precTime = 1, const int precUVDist = 0, const int precAmpl = 3,
+                    const int precPhase = 1, const int precWeight = 0);
 
   // List the visibilities, with optional data selection and output
   // specification.
@@ -170,8 +170,8 @@ class MSLister {
   // Set uv-data selection via MSSelection
   void selectvis(const String& timerange = "", const String& spw = "", const String& scan = "",
                  const String& field = "", const String& baseline = "", const String& uvrange = "",
-                 const String& chanmode = "none", const Int& nchan = 1, const Int& start = 0,
-                 const Int& step = 1, const MRadialVelocity& mStart = MRadialVelocity(),
+                 const String& chanmode = "none", const int& nchan = 1, const int& start = 0,
+                 const int& step = 1, const MRadialVelocity& mStart = MRadialVelocity(),
                  const MRadialVelocity& mStep = MRadialVelocity(), const String& correlation = "",
                  const String& array = "", const String& observation = "",
                  const String& msSelect = "");
@@ -199,7 +199,7 @@ class MSLister {
   // pols_p holds the polarization names contained in the MS
   // in the same order that the polarization data are listed in the
   // main table.
-  void _polarizationSetup(const uInt selPolID);
+  void _polarizationSetup(const unsigned int selPolID);
 
   // Parse the correlation parameter value; fill indexPols_p to output
   // selected polarizations.  If correlation is empty, all polarizations
@@ -207,7 +207,7 @@ class MSLister {
   void polarizationParse(String correlation);
 
   // Calculate column width for a Vector<String>
-  Int columnWidth(const Vector<String> antNames);
+  int columnWidth(const Vector<String> antNames);
 
   // Pointer to the MS
   MeasurementSet* pMS_p;
@@ -223,45 +223,45 @@ class MSLister {
   MSSelector mss_p;
 
   // List of channels
-  Matrix<Int> chanList_p;
+  Matrix<int> chanList_p;
   // true if listing multiple channels.
   bool multiChan_p;
 
   // Pol counters
-  uInt npols_p;
+  unsigned int npols_p;
 
   // SpW/Pol info from subtables
   Vector<String> pols_p;
-  Vector<Double> freqs_p;
+  Vector<double> freqs_p;
 
   // SpWId map from DDIs:
-  Vector<Int> spwins_p;
+  Vector<int> spwins_p;
   // true if listing multiple spws
   bool multiSpw_p;
 
   // Polarization indexing variables; for polarization (correlation) selection.
-  Vector<Int> indexPols_p;
-  uInt nIndexPols_p;
+  Vector<int> indexPols_p;
+  unsigned int nIndexPols_p;
 
   // Field width variables
-  uInt wTime_p, wAnt1_p, wAnt2_p, wIntrf_p, wUVDist_p, wUVW_p;
-  uInt wFld_p, wSpW_p, wChn_p;
-  uInt wAmpl_p, wPhase_p, wWeight_p, wVis_p, wFlag_p;
-  uInt wTotal_p;
+  unsigned int wTime_p, wAnt1_p, wAnt2_p, wIntrf_p, wUVDist_p, wUVW_p;
+  unsigned int wFld_p, wSpW_p, wChn_p;
+  unsigned int wAmpl_p, wPhase_p, wWeight_p, wVis_p, wFlag_p;
+  unsigned int wTotal_p;
 
   // Order of magnitude control (digits to left of decimal, including sign)
-  uInt oTime_p, oUVDist_p, oUVW_p;
-  uInt oAmpl_p, oPhase_p;
-  uInt oWeight_p;
+  unsigned int oTime_p, oUVDist_p, oUVW_p;
+  unsigned int oAmpl_p, oPhase_p;
+  unsigned int oWeight_p;
 
   // Precision control (digits to right of decimal point)
   //   (precTime_p includes hhmmss, so 7 yields hh:mm:ss.s)
-  Int precTime_p, precUVDist_p, precUVW_p;
-  Int precAmpl_p, precPhase_p;
-  Int precWeight_p;
+  int precTime_p, precUVDist_p, precUVW_p;
+  int precAmpl_p, precPhase_p;
+  int precWeight_p;
 
   // Page params
-  Int pageWidth_p, pageHeight_p, nDecimal_p;
+  int pageWidth_p, pageHeight_p, nDecimal_p;
   String date_p, lastdate_p;
 
   // for assigning desired columns from the ms

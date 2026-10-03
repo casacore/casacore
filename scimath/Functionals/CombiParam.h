@@ -117,21 +117,21 @@ class CombiParam : public Function<T> {
   CombiParam(const CombiParam<T> &other);
   CombiParam(const CombiParam<T> &other, bool)
       : Function<T>(other), ndim_p(other.ndim_p), functionPtr_p(other.functionPtr_p.nelements()) {
-    for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
     }
   }
   template <class W>
   CombiParam(const CombiParam<W> &other)
       : Function<T>(other), ndim_p(other.ndim()), functionPtr_p(other.nFunctions()) {
-    for (uInt i = 0; i < nFunctions(); ++i) {
+    for (unsigned int i = 0; i < nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneAD();
     }
   }
   template <class W>
   CombiParam(const CombiParam<W> &other, bool)
       : Function<T>(other), ndim_p(other.ndim()), functionPtr_p(other.nFunctions()) {
-    for (uInt i = 0; i < nFunctions(); ++i) {
+    for (unsigned int i = 0; i < nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();
     }
   }
@@ -155,31 +155,31 @@ class CombiParam : public Function<T> {
   // of the function just added.
   // The default initial parameter value (<src>a(i)</src>) is
   // initialized to 1. The parameter mask is set <src>true</src>.
-  uInt addFunction(const Function<T> &newFunction);
+  unsigned int addFunction(const Function<T> &newFunction);
 
   // Return the total number of functions.  The number is equal to the
   // number of functions that have been added.
-  uInt nFunctions() const { return nparameters(); }
+  unsigned int nFunctions() const { return nparameters(); }
 
   // Return a reference to a specific Function in the combination.
   // <group>
-  const Function<T> &function(uInt which) const {
+  const Function<T> &function(unsigned int which) const {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]);
   }
-  const Function<T> &function(uInt which) {
+  const Function<T> &function(unsigned int which) {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]);
   }
   // </group>
 
   // Returns the dimension of functions in the linear combination
-  virtual uInt ndim() const { return ndim_p; }
+  virtual unsigned int ndim() const { return ndim_p; }
 
  protected:
   // # Data
   //  Number of dimensions of underlying functions
-  uInt ndim_p;
+  unsigned int ndim_p;
 
   // Pointer to each added function
   Block<Function<T> *> functionPtr_p;

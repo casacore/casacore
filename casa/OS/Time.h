@@ -98,7 +98,8 @@ class Time {
   //  <li>  year. Beware, because '94' refers to the early Christian era, not
   // the 20th century.
   // </ul>
-  Time(uInt year, uInt month, uInt day, uInt hour = 0, uInt min = 0, double sec = 0.0);
+  Time(unsigned int year, unsigned int month, unsigned int day, unsigned int hour = 0,
+       unsigned int min = 0, double sec = 0.0);
 
   // Copy constructor
   Time(const Time& time);
@@ -143,7 +144,8 @@ class Time {
 
   // reset date to the present instant
   void now();
-  void setDate(uInt year, uInt month, uInt day, uInt hour = 0, uInt min = 0, double sec = 0.0);
+  void setDate(unsigned int year, unsigned int month, unsigned int day, unsigned int hour = 0,
+               unsigned int min = 0, double sec = 0.0);
 
   // number of seconds which have elapsed since Time object was created
   // or reset
@@ -151,35 +153,35 @@ class Time {
 
   // Return the seconds, minutes or hour part of the time.
   // <group>
-  uInt seconds();
+  unsigned int seconds();
   double dseconds();
-  uInt minutes();
-  uInt hours();
+  unsigned int minutes();
+  unsigned int hours();
   // </group>
 
-  uInt dayOfMonth();
-  uInt month();
+  unsigned int dayOfMonth();
+  unsigned int month();
 
-  uInt year();
+  unsigned int year();
 
-  uInt dayOfWeek();
+  unsigned int dayOfWeek();
 
-  uInt dayOfYear();
+  unsigned int dayOfYear();
 
-  static uInt howManyDaysInMonth();
+  static unsigned int howManyDaysInMonth();
 
-  static uInt howManyDaysInMonth(uInt month, uInt year);
+  static unsigned int howManyDaysInMonth(unsigned int month, unsigned int year);
 
   static bool isLeapYear();
 
-  static bool isLeapYear(uInt year);
+  static bool isLeapYear(unsigned int year);
 
   // Returns the difference, in seconds, between UTC and local time.
   // Negative values are west of GMT, positive are east.
-  static Int timeZoneSeconds();
+  static int timeZoneSeconds();
   // Same as timeZoneSeconds(), but returns fractional days rather
   // than seconds.
-  static Double timeZoneDays();
+  static double timeZoneDays();
   // Returns a string, e.g. "EST" or "MDT", describing the current
   // local time zone.
   static String timeZoneName();
@@ -187,7 +189,7 @@ class Time {
  protected:
   // Modified Julian day number
   // 40587 modified Julian day number = 00:00:00 January 1, 1970, GMT.
-  uInt mJulianDay;
+  unsigned int mJulianDay;
   // the fraction of the day
   double mJulianDayfrac;
 };

@@ -56,7 +56,7 @@ TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column,
 TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column, const Vector<Unit>& u)
     : itsColName(column), itsUnitsName(u.nelements()) {
   checkColumn(td);
-  for (uInt i = 0; i < u.nelements(); i++) {
+  for (unsigned int i = 0; i < u.nelements(); i++) {
     itsUnitsName(i) = u(i).getName();
   }
 }
@@ -68,7 +68,7 @@ TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column,
   checkUnitsColumn(td);
 }
 
-TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column, const Char* unitsCol)
+TableQuantumDesc::TableQuantumDesc(const TableDesc& td, const String& column, const char* unitsCol)
     : itsColName(column), itsUnitsColName(unitsCol) {
   checkColumn(td);
   checkUnitsColumn(td);
@@ -95,7 +95,7 @@ TableQuantumDesc* TableQuantumDesc::reconstruct(const TableDesc& td, const Strin
   TableQuantumDesc* p = 0;
   const TableRecord& columnKeyset = td[columnName].keywordSet();
   String refString;
-  Int fnr = columnKeyset.fieldNumber("VariableUnits");
+  int fnr = columnKeyset.fieldNumber("VariableUnits");
   if (fnr >= 0) {
     String unitColName = columnKeyset.asString(fnr);
     p = new TableQuantumDesc(td, columnName, unitColName);

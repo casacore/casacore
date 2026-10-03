@@ -89,7 +89,7 @@ class SSMIndColumn : public SSMColumn {
  public:
   // Create a column of the given data type.
   // It keeps the pointer to its parent (but does not own it).
-  SSMIndColumn(SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMIndColumn(SSMBase* aParent, int aDataType, unsigned int aColNr);
 
   // Frees up the storage.
   ~SSMIndColumn();
@@ -103,7 +103,7 @@ class SSMIndColumn : public SSMColumn {
   // An array of 'fixed length' strings is not handled specially,
   // thus this function is ignored.
   // It is needed to override the bahviour of the base class.
-  virtual void setMaxLength(uInt maxLength);
+  virtual void setMaxLength(unsigned int maxLength);
 
   // Add (newNrrow-oldNrrow) rows to the column.
   virtual void addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit);
@@ -112,7 +112,7 @@ class SSMIndColumn : public SSMColumn {
   virtual void setShapeColumn(const IPosition& aShape);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim(rownr_t aRowNr);
+  virtual unsigned int ndim(rownr_t aRowNr);
 
   // Set the shape of the array in the given row and allocate the array
   // in the file.

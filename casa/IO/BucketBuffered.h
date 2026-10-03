@@ -74,7 +74,8 @@ class BucketBuffered : public BucketBase {
   // bucketSize*nrOfBuckets bytes.
   // If the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketBuffered(BucketFile* file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets);
+  BucketBuffered(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+                 unsigned int nrOfBuckets);
 
   virtual ~BucketBuffered();
 
@@ -82,10 +83,11 @@ class BucketBuffered : public BucketBase {
   char* getBuffer() { return itsBuffer; }
 
   // Read the given part into the internal buffer at the given offset.
-  void read(uInt bucketNr, uInt bucketOffset, uInt nbytes, uInt bufferOffset = 0);
+  void read(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes,
+            unsigned int bufferOffset = 0);
 
   // Write the given part from the internal buffer.
-  void write(uInt bucketNr, uInt bucketOffset, uInt nbytes);
+  void write(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes);
 
  private:
   // Copy constructor is not possible.
@@ -101,11 +103,11 @@ class BucketBuffered : public BucketBase {
   virtual void doResync();
 
   // Extend the file with the given number of buckets.
-  virtual void doExtend(uInt nrBucket);
+  virtual void doExtend(unsigned int nrBucket);
 
   // Initialize the bucket buffer.
   // The uninitialized buckets before this bucket are also initialized.
-  virtual void initializeBuckets(uInt bucketNr);
+  virtual void initializeBuckets(unsigned int bucketNr);
 
   // Data buffer.
   char* itsBuffer;

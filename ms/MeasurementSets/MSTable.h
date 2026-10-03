@@ -46,28 +46,28 @@ class Block;
 // </summary>
 struct MSTableMaps {
   // ColEnum -> name
-  std::map<Int, String> columnMap_p;
+  std::map<int, String> columnMap_p;
   // ColEnum -> DataType
-  std::map<Int, Int> colDTypeMap_p;
+  std::map<int, int> colDTypeMap_p;
   // ColEnum -> comment string
-  std::map<Int, String> colCommentMap_p;
+  std::map<int, String> colCommentMap_p;
   // ColEnum -> UNIT string
-  std::map<Int, String> colUnitMap_p;
+  std::map<int, String> colUnitMap_p;
   // ColEnum -> MEASURE_TYPE string
-  std::map<Int, String> colMeasureTypeMap_p;
+  std::map<int, String> colMeasureTypeMap_p;
   // KeyEnum -> name
-  std::map<Int, String> keywordMap_p;
+  std::map<int, String> keywordMap_p;
   // KeyEnum -> DataType
-  std::map<Int, Int> keyDTypeMap_p;
+  std::map<int, int> keyDTypeMap_p;
   // KeyEnum -> comment string
-  std::map<Int, String> keyCommentMap_p;
+  std::map<int, String> keyCommentMap_p;
   // The required TableDesc
   TableDesc requiredTD_p;
 
   // Convert a name to a ColEnum or KeyEnum.
-  Int columnType(const String& name) const { return mapType(columnMap_p, name); }
-  Int keywordType(const String& name) const { return mapType(keywordMap_p, name); }
-  Int mapType(const std::map<Int, String>&, const String& name) const;
+  int columnType(const String& name) const { return mapType(columnMap_p, name); }
+  int keywordType(const String& name) const { return mapType(keywordMap_p, name); }
+  int mapType(const std::map<int, String>&, const String& name) const;
 };
 
 // <summary>
@@ -153,7 +153,9 @@ class MSTable : public Table {
   bool isColumnWritable(const String& columnName) const {
     return Table::isColumnWritable(columnName);
   }
-  bool isColumnWritable(uInt columnIndex) const { return Table::isColumnWritable(columnIndex); }
+  bool isColumnWritable(unsigned int columnIndex) const {
+    return Table::isColumnWritable(columnIndex);
+  }
   // </group>
 
   // Information about scalar vs array of a column
@@ -189,14 +191,14 @@ class MSTable : public Table {
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  static void addColumnToDesc(TableDesc& tabDesc, ColEnum which, Int ndim = -1,
+  static void addColumnToDesc(TableDesc& tabDesc, ColEnum which, int ndim = -1,
                               const String& refCol = "");
   // add a column to a TableDesc, defining the shape and setting
   // the ColumnDesc option (Fixed, Undefined, Direct)
   // For Measure columns you can define a variable reference column.
   static void addColumnToDesc(TableDesc& tabDesc, ColEnum which, const IPosition& shape,
                               ColumnDesc::Option option, const String& refCol = "");
-  static void addColumnToDesc(MSTableMaps&, ColEnum which, Int ndim = -1,
+  static void addColumnToDesc(MSTableMaps&, ColEnum which, int ndim = -1,
                               const String& refCol = "");
   // add a column to a TableDesc, defining the shape and setting
   // the ColumnDesc option (Fixed, Undefined, Direct)

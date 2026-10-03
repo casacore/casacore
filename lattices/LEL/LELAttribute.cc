@@ -51,7 +51,7 @@ LELAttribute::LELAttribute(bool isMasked, const IPosition& shape, const IPositio
   }
 }
 
-LELAttribute::LELAttribute(uInt regionNdim)
+LELAttribute::LELAttribute(unsigned int regionNdim)
     : isScalar_p(false),
       isReduced_p(false),
       isRegion_p(true),
@@ -125,7 +125,7 @@ LELAttribute::LELAttribute(const LELAttribute& leftAttr, const LELAttribute& rig
       }
       if (rightAttr.coordinates().hasCoordinates()) {
         if (coords_p.hasCoordinates()) {
-          Int result = leftAttr.coordinates().compare(rightAttr.coordinates());
+          int result = leftAttr.coordinates().compare(rightAttr.coordinates());
           if (matchAxes) {
             if (result != 0) {
               throw AipsError(
@@ -167,13 +167,13 @@ LELAttribute& LELAttribute::operator=(const LELAttribute& other) {
   return *this;
 }
 
-Int LELAttribute::compareCoord(const LELAttribute& other) const {
+int LELAttribute::compareCoord(const LELAttribute& other) const {
   // Both scalars is always equal.
   if (isScalar() || other.isScalar()) {
     return 0;
   }
   // Compare coordinates; exit if not equal.
-  Int result = coordinates().compare(other.coordinates());
+  int result = coordinates().compare(other.coordinates());
   if (result != 0) {
     return result;
   }
@@ -184,7 +184,7 @@ Int LELAttribute::compareCoord(const LELAttribute& other) const {
   if (thisShape.nelements() != thatShape.nelements()) {
     return 8;
   }
-  for (uInt i = 0; i < thisShape.nelements(); i++) {
+  for (unsigned int i = 0; i < thisShape.nelements(); i++) {
     if (thisShape(i) != thatShape(i)) {
       if (thisShape(i) == 1 && thatShape(i) > 1) {
         // This is subset of that; check if not already the other way.

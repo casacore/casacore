@@ -43,7 +43,7 @@ T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) con
   /// zero");
   ///	}
   T lnx = log(x[0]);
-  Int j = nparameters();
+  int j = nparameters();
   T accum = param_p[--j];
   while (--j >= 1) {
     accum *= lnx;

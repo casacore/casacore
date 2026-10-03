@@ -144,7 +144,7 @@ MSTableMaps MSField::initMaps() {
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  unsigned int i;
   for (i = UNDEFINED_KEYWORD + 1; i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }
@@ -166,7 +166,7 @@ MSField MSField::referenceCopy(const String& newTableName,
   return MSField(MSTable<MSFieldEnums>::referenceCopy(newTableName, writableColumns));
 }
 
-bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
+bool MSField::addEphemeris(const unsigned int id, const String& inputEphemTableName,
                            const String& comment) {
   bool rval = false;
   if ((inputEphemTableName.empty() && comment.empty()) || Table::isReadable(inputEphemTableName)) {
@@ -176,13 +176,13 @@ bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
       if (this->isWritable()) {
         try {
           this->addColumn(
-              ScalarColumnDesc<Int>(ephemerisId, "Ephemeris id, pointer to EPHEMERIS table"),
+              ScalarColumnDesc<int>(ephemerisId, "Ephemeris id, pointer to EPHEMERIS table"),
               false);
         } catch (...) {
           return false;
         }
         // initialize to -1
-        ScalarColumn<Int> fld(*this, ephemerisId);
+        ScalarColumn<int> fld(*this, ephemerisId);
         for (rownr_t i = 0; i < this->nrow(); i++) {
           fld.put(i, -1);
         }
@@ -204,7 +204,7 @@ bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
   return rval;
 }
 
-bool MSField::removeEphemeris(const uInt id) {
+bool MSField::removeEphemeris(const unsigned int id) {
   bool rval = true;
   Directory fieldDir(Path(this->tableName()).absoluteName());
   std::stringstream ss;
@@ -212,11 +212,11 @@ bool MSField::removeEphemeris(const uInt id) {
   Regex ephemTableRegex(Regex::fromPattern(ss.str()));
   Vector<String> candidates =
       fieldDir.find(ephemTableRegex, true, false);  // followSymLinks=True, recursive=False
-  for (uInt i = 0; i < candidates.size(); i++) {
+  for (unsigned int i = 0; i < candidates.size(); i++) {
     Table tTab(fieldDir.path().absoluteName() + "/" + candidates(i));
     tTab.markForDelete();
   }
-  for (uInt i = 0; i < candidates.size(); i++) {
+  for (unsigned int i = 0; i < candidates.size(); i++) {
     if (Table::isReadable(candidates(i))) {
       rval = false;
     }

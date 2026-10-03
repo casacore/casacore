@@ -113,14 +113,14 @@ class MVDirection : public MVPosition {
   MVDirection(const MVPosition &other);
   // Constructs with elevation = 0.
   // <group>
-  MVDirection(Double in0);
+  MVDirection(double in0);
   MVDirection(const Quantity &angle0);
   // </group>
   // Creates a specified vector
-  MVDirection(Double in0, Double in1, Double in2);
+  MVDirection(double in0, double in1, double in2);
   // Creates the direction cosines from specified angles along equator (azimuth)
   // and towards pole (,elevation).
-  MVDirection(Double angle0, Double angle1);
+  MVDirection(double angle0, double angle1);
   // Creates the direction cosines from specified angles
   // <thrown>
   //    <li> AipsError if quantities not in angle format
@@ -132,7 +132,7 @@ class MVDirection : public MVPosition {
   // <thrown>
   //  <li> AipsError if more than 3 values or incorrect units
   // </thrown>
-  MVDirection(const Quantum<Vector<Double>> &angle);
+  MVDirection(const Quantum<Vector<double>> &angle);
   // </group>
   // Create from Vector. Assumes angles if less than or equal than 2 elements.
   // Assumes direction cosines if 3 elements.
@@ -140,7 +140,7 @@ class MVDirection : public MVPosition {
   //  <li> AipsError if more than 3 elements
   // </thrown>
   // <group>
-  MVDirection(const Vector<Double> &other);
+  MVDirection(const Vector<double> &other);
   MVDirection(const Vector<Quantity> &other);
   // </group>
 
@@ -163,29 +163,29 @@ class MVDirection : public MVPosition {
   // Adjust the direction cosines to a length of 1
   virtual void adjust();
   // Adjust the direction cosines to a length of 1 and return the length value
-  virtual void adjust(Double &res);
+  virtual void adjust(double &res);
   // Re-adjust : taken from MVPosition.
   //
   // Clone data
   virtual MeasValue *clone() const;
   // Generate a 2-vector of angles (in rad)
-  Vector<Double> get() const;
+  Vector<double> get() const;
   // Get the latitude angle (rad)
-  Double getLat() const;
+  double getLat() const;
   // and with specified units
   Quantity getLat(const Unit &unit) const;
   // Get the position angle between the directions. I.e. the angle between
   // the direction from one to the pole, and from one to the other.
   // <group>
-  Double positionAngle(const MVPosition &other) const;
-  Double positionAngle(const MVDirection &other) const;
+  double positionAngle(const MVPosition &other) const;
+  double positionAngle(const MVDirection &other) const;
   Quantity positionAngle(const MVPosition &other, const Unit &unit) const;
   Quantity positionAngle(const MVDirection &other, const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.
   // <group>
-  Double separation(const MVPosition &other) const;
-  Double separation(const MVDirection &other) const;
+  double separation(const MVPosition &other) const;
+  double separation(const MVDirection &other) const;
   Quantity separation(const MVPosition &other, const Unit &unit) const;
   Quantity separation(const MVDirection &other, const Unit &unit) const;
   // </group>
@@ -195,32 +195,32 @@ class MVDirection : public MVPosition {
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double>> getRecordValue() const;
-  virtual Vector<Quantum<Double>> getXRecordValue() const;
-  virtual Vector<Quantum<Double>> getTMRecordValue() const;
+  virtual Vector<Quantum<double>> getRecordValue() const;
+  virtual Vector<Quantum<double>> getXRecordValue() const;
+  virtual Vector<Quantum<double>> getTMRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<double>> &in);
   // Set the internal value, using the longitude and latitude (in rad) given
-  void setAngle(Double angle0, Double angle1);
+  void setAngle(double angle0, double angle1);
   // Shift the direction in longitude (radians if Double) and/or latitude.
   // If the trueAngle switch is true, the longitude shift will be in
   // angular units perpendicular to the direction to the pole at the shifted
   // latitude, along a great circle.
   // <group>
-  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, bool trueAngle = false);
-  void shift(Double lng, Double lat, bool trueAngle = false);
+  void shift(const Quantum<double> &lng, const Quantum<double> &lat, bool trueAngle = false);
+  void shift(double lng, double lat, bool trueAngle = false);
   void shiftLongitude(const Quantity &lng, bool trueAngle = false);
-  void shiftLongitude(Double lng, bool trueAngle = false);
-  void shiftLatitude(const Quantum<Double> &lat, bool trueAngle = false);
-  void shiftLatitude(Double lat, bool trueAngle = false);
+  void shiftLongitude(double lng, bool trueAngle = false);
+  void shiftLatitude(const Quantum<double> &lat, bool trueAngle = false);
+  void shiftLatitude(double lat, bool trueAngle = false);
   void shift(const MVDirection &shft, bool trueAngle = false);
   // </group>
   // Shift over an angle off in the direction pa. pa is measured from North,
   // in the direction of increasing longitude.
   // <group>
-  void shiftAngle(const Quantum<Double> &off, const Quantum<Double> &pa);
-  void shiftAngle(Double off, Double pa);
+  void shiftAngle(const Quantum<double> &off, const Quantum<double> &pa);
+  void shiftAngle(double off, double pa);
   // </group>
 
  protected:

@@ -36,7 +36,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
+unsigned int MCEarthMagnetic::ToRef_p[N_Routes][3] = {
     {MEarthMagnetic::GALACTIC, MEarthMagnetic::J2000, 0},
     {MEarthMagnetic::GALACTIC, MEarthMagnetic::B1950, 2},
     {MEarthMagnetic::J2000, MEarthMagnetic::GALACTIC, 0},
@@ -81,7 +81,7 @@ uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
     {MEarthMagnetic::TOPO, MEarthMagnetic::APP, 0},
     {MEarthMagnetic::ICRS, MEarthMagnetic::J2000, 0},
     {MEarthMagnetic::J2000, MEarthMagnetic::ICRS, 0}};
-uInt MCEarthMagnetic::FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
+unsigned int MCEarthMagnetic::FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
 std::once_flag MCEarthMagnetic::theirInitOnceFlag;
 
 // # Constructors
@@ -97,8 +97,8 @@ MCEarthMagnetic::~MCEarthMagnetic() { clearConvert(); }
 // # Member functions
 
 void MCEarthMagnetic::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
-  Int iout = outref.getType();
+  int iin = inref.getType();
+  int iout = outref.getType();
   if (iin != iout) {
     bool iplan = (iin & MEarthMagnetic::EXTRA);
     bool oplan = (iout & MEarthMagnetic::EXTRA);
@@ -110,7 +110,7 @@ void MCEarthMagnetic::getConvert(MConvertBase &mc, const MRBase &inref, const MR
       iin = MEarthMagnetic::ITRF;
     }
     if (oplan) iout = MEarthMagnetic::ITRF;
-    Int tmp;
+    int tmp;
     while (iin != iout) {
       tmp = FromTo_p[iin][iout];
       iin = ToRef_p[tmp][1];
@@ -128,7 +128,7 @@ void MCEarthMagnetic::clearConvert() {
 }
 
 // # Conversion routines
-void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
+void MCEarthMagnetic::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
   if (!MVPOS1) MVPOS1 = new MVPosition();
 
@@ -240,14 +240,14 @@ void MCEarthMagnetic::doConvert(MeasValue &in, MRBase &inref, MRBase &outref,
 
 void MCEarthMagnetic::doConvert(MVEarthMagnetic &in, MRBase &inref, MRBase &outref,
                                 const MConvertBase &mc) {
-  Double g2, tdbTime;
+  double g2, tdbTime;
   // Planetary aberration factor
-  Double lengthP = 0;
+  double lengthP = 0;
   EarthField::EarthFieldTypes modID(EarthField::IGRF);
 
   measMath.initFrame(inref, outref);
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case HADEC_ITRF:
         measMath.applyHADECtoITRF(in);

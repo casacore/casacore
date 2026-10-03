@@ -34,7 +34,7 @@ using namespace casacore;
 %union {
   const TableExprNode* node;
   char * str;
-  Double dval, uvrange[2];
+  double dval, uvrange[2];
 }
 
 %token <str> UNIT
@@ -113,7 +113,7 @@ uvwdistexpr:     fnumwithunits
 		   // $$ = MSUvDistParse::thisMSUParser->selectUVRange($2+EPS, std::numeric_limits<Float>::max(), 
 		   // 						    MSUvDistGramlexGlobalUnits);
 		   $$[0]=$2+EPS;
-		   $$[1]=std::numeric_limits<Float>::max();
+		   $$[1]=std::numeric_limits<float>::max();
 		 }
                | uvwdistexpr COLON FNUMBER PERCENT
                  {

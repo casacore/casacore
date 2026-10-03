@@ -98,7 +98,7 @@ class TSMCubeBuff : public TSMCube {
   // can be added later with setShape. That is only used by TiledCellStMan.
   // <br> The fileOffset argument is meant for class TiledFileAccess.
   TSMCubeBuff(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
-              const IPosition& tileShape, const Record& values, Int64 fileOffset);
+              const IPosition& tileShape, const Record& values, int64_t fileOffset);
 
   // Reconstruct the hypercube by reading its data from the AipsIO stream.
   // It will link itself to the correct TSMFile. The TSMFile objects
@@ -125,18 +125,19 @@ class TSMCubeBuff : public TSMCube {
 
   // Extend the last dimension of the cube with the given number.
   // The record can contain the coordinates of the elements added.
-  void extend(uInt64 nr, const Record& coordValues, const TSMColumn* lastCoordColumn) override;
+  void extend(uint64_t nr, const Record& coordValues, const TSMColumn* lastCoordColumn) override;
 
   // Read or write a section in the cube.
   // It is assumed that the section buffer is long enough.
-  void accessSection(const IPosition& start, const IPosition& end, char* section, uInt colnr,
-                     uInt localPixelSize, uInt externalPixelSize, bool writeFlag) override;
+  void accessSection(const IPosition& start, const IPosition& end, char* section,
+                     unsigned int colnr, unsigned int localPixelSize,
+                     unsigned int externalPixelSize, bool writeFlag) override;
 
   // Read or write a section in a strided way.
   // It is assumed that the section buffer is long enough.
   void accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
-                     char* section, uInt colnr, uInt localPixelSize, uInt externalPixelSize,
-                     bool writeFlag) override;
+                     char* section, unsigned int colnr, unsigned int localPixelSize,
+                     unsigned int externalPixelSize, bool writeFlag) override;
 
   // Set the cache size for the given slice and access path.
   void setCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
@@ -150,7 +151,7 @@ class TSMCubeBuff : public TSMCube {
   // The cacheSize has to be given in buckets.
   // <br>The flag <src>userSet</src> inidicates if the cache size is set by
   // the user (by an Accessor object) or automatically (by TSMDataColumn).
-  void setCacheSize(uInt cacheSize, bool forceSmaller, bool userSet) override;
+  void setCacheSize(unsigned int cacheSize, bool forceSmaller, bool userSet) override;
 
  private:
   // Get the cache object.

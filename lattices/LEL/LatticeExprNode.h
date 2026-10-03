@@ -260,8 +260,8 @@ LatticeExprNode toDouble(const LatticeExprNode& expr);
 LatticeExprNode toComplex(const LatticeExprNode& expr);
 LatticeExprNode toDComplex(const LatticeExprNode& expr);
 LatticeExprNode toBool(const LatticeExprNode& expr);
-LatticeExprNode convertType(const LatticeExprNode& expr, const Float*);
-LatticeExprNode convertType(const LatticeExprNode& expr, const Double*);
+LatticeExprNode convertType(const LatticeExprNode& expr, const float*);
+LatticeExprNode convertType(const LatticeExprNode& expr, const double*);
 LatticeExprNode convertType(const LatticeExprNode& expr, const Complex*);
 LatticeExprNode convertType(const LatticeExprNode& expr, const DComplex*);
 LatticeExprNode convertType(const LatticeExprNode& expr, const bool*);
@@ -497,12 +497,11 @@ class LatticeExprNode {
 
   // Unary constant expression constructors.
   // <group>
-  LatticeExprNode(Int64 constant);
-  LatticeExprNode(Int constant);
-  LatticeExprNode(uInt constant);
-  LatticeExprNode(Long constant);
-  LatticeExprNode(Float constant);
-  LatticeExprNode(Double constant);
+  LatticeExprNode(int64_t constant);
+  LatticeExprNode(int constant);
+  LatticeExprNode(unsigned int constant);
+  LatticeExprNode(float constant);
+  LatticeExprNode(double constant);
   LatticeExprNode(const Complex& constant);
   LatticeExprNode(const DComplex& constant);
   LatticeExprNode(bool constant);
@@ -513,13 +512,13 @@ class LatticeExprNode {
 
   // Lattice expression (gets Lattice pixels) constructors.
   // <group>
-  LatticeExprNode(const Lattice<Float>& lattice);
-  LatticeExprNode(const Lattice<Double>& lattice);
+  LatticeExprNode(const Lattice<float>& lattice);
+  LatticeExprNode(const Lattice<double>& lattice);
   LatticeExprNode(const Lattice<Complex>& lattice);
   LatticeExprNode(const Lattice<DComplex>& lattice);
   LatticeExprNode(const Lattice<bool>& lattice);
-  LatticeExprNode(const MaskedLattice<Float>& lattice);
-  LatticeExprNode(const MaskedLattice<Double>& lattice);
+  LatticeExprNode(const MaskedLattice<float>& lattice);
+  LatticeExprNode(const MaskedLattice<double>& lattice);
   LatticeExprNode(const MaskedLattice<Complex>& lattice);
   LatticeExprNode(const MaskedLattice<DComplex>& lattice);
   LatticeExprNode(const MaskedLattice<bool>& lattice);
@@ -552,8 +551,8 @@ class LatticeExprNode {
 
   // Convert the expression to another data type.
   // <group>
-  std::shared_ptr<LELInterface<Float>> makeFloat() const;
-  std::shared_ptr<LELInterface<Double>> makeDouble() const;
+  std::shared_ptr<LELInterface<float>> makeFloat() const;
+  std::shared_ptr<LELInterface<double>> makeDouble() const;
   std::shared_ptr<LELInterface<Complex>> makeComplex() const;
   std::shared_ptr<LELInterface<DComplex>> makeDComplex() const;
   std::shared_ptr<LELInterface<bool>> makeBool() const;
@@ -563,8 +562,8 @@ class LatticeExprNode {
   // One can be sure that the result is not a reference to another array.
   // This function should be used by LatticeExpr and other users.
   // <group>
-  void eval(LELArray<Float>& result, const Slicer& section) const;
-  void eval(LELArray<Double>& result, const Slicer& section) const;
+  void eval(LELArray<float>& result, const Slicer& section) const;
+  void eval(LELArray<double>& result, const Slicer& section) const;
   void eval(LELArray<Complex>& result, const Slicer& section) const;
   void eval(LELArray<DComplex>& result, const Slicer& section) const;
   void eval(LELArray<bool>& result, const Slicer& section) const;
@@ -576,10 +575,10 @@ class LatticeExprNode {
   // This function is meant for internal use by the LEL classes and
   // should not be used externally.
   // <group>
-  void evalRef(LELArrayRef<Float>& result, const Slicer& section) const {
+  void evalRef(LELArrayRef<float>& result, const Slicer& section) const {
     pExprFloat_p->evalRef(result, section);
   }
-  void evalRef(LELArrayRef<Double>& result, const Slicer& section) const {
+  void evalRef(LELArrayRef<double>& result, const Slicer& section) const {
     pExprDouble_p->evalRef(result, section);
   }
   void evalRef(LELArrayRef<Complex>& result, const Slicer& section) const {
@@ -597,13 +596,13 @@ class LatticeExprNode {
   // and "get*" functions do the same thing, they just have
   // a slightly different interface.
   // <group>
-  void eval(Float& result) const;
-  void eval(Double& result) const;
+  void eval(float& result) const;
+  void eval(double& result) const;
   void eval(Complex& result) const;
   void eval(DComplex& result) const;
   void eval(bool& result) const;
-  Float getFloat() const;
-  Double getDouble() const;
+  float getFloat() const;
+  double getDouble() const;
   Complex getComplex() const;
   DComplex getDComplex() const;
   bool getBool() const;
@@ -611,8 +610,8 @@ class LatticeExprNode {
 
   // Evaluate the expression (in case it is a constant array).
   // <group>
-  Array<Float> getArrayFloat() const;
-  Array<Double> getArrayDouble() const;
+  Array<float> getArrayFloat() const;
+  Array<double> getArrayDouble() const;
   Array<Complex> getArrayComplex() const;
   Array<DComplex> getArrayDComplex() const;
   Array<bool> getArrayBool() const;
@@ -650,8 +649,8 @@ class LatticeExprNode {
   // Ideally this function is private, but alas it is needed in LELFunction1D,
   // operator==, and more (too many to make them friend).
   // <group>
-  LatticeExprNode(const std::shared_ptr<LELInterface<Float>>& expr);
-  LatticeExprNode(const std::shared_ptr<LELInterface<Double>>& expr);
+  LatticeExprNode(const std::shared_ptr<LELInterface<float>>& expr);
+  LatticeExprNode(const std::shared_ptr<LELInterface<double>>& expr);
   LatticeExprNode(const std::shared_ptr<LELInterface<Complex>>& expr);
   LatticeExprNode(const std::shared_ptr<LELInterface<DComplex>>& expr);
   LatticeExprNode(const std::shared_ptr<LELInterface<bool>>& expr);
@@ -667,12 +666,12 @@ class LatticeExprNode {
   // (i.e. that axes may be missing).
   // <br>The expectArray argument tells if the result should be an array
   // which is the case if one of the arguments is an array.
-  static LELAttribute checkArg(const Block<LatticeExprNode>& arg, const Block<Int>& argType,
+  static LELAttribute checkArg(const Block<LatticeExprNode>& arg, const Block<int>& argType,
                                bool expectArray, bool matchAxes = true);
 
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
   // <group>
-  bool lock(FileLocker::LockType, uInt nattempts);
+  bool lock(FileLocker::LockType, unsigned int nattempts);
   void unlock();
   bool hasLock(FileLocker::LockType) const;
   void resync();
@@ -681,8 +680,8 @@ class LatticeExprNode {
  private:
   // Make the object from a LELInterface* pointer.
   // <group>
-  LatticeExprNode(LELInterface<Float>* expr);
-  LatticeExprNode(LELInterface<Double>* expr);
+  LatticeExprNode(LELInterface<float>* expr);
+  LatticeExprNode(LELInterface<double>* expr);
   LatticeExprNode(LELInterface<Complex>* expr);
   LatticeExprNode(LELInterface<DComplex>* expr);
   LatticeExprNode(LELInterface<bool>* expr);
@@ -739,7 +738,7 @@ class LatticeExprNode {
   // nodes have a coordinate system.
   // It is done by creating an ExtendLattice object for the node
   // with the lower dimensionality.
-  static Int makeEqualDim(LatticeExprNode& expr0, LatticeExprNode& expr1);
+  static int makeEqualDim(LatticeExprNode& expr0, LatticeExprNode& expr1);
 
   // Do the preparation for the evaluation.
   void doPrepare() const;
@@ -751,8 +750,8 @@ class LatticeExprNode {
   bool isInvalid_p;
   IPosition iposition_p;
   const LELAttribute* pAttr_p;
-  std::shared_ptr<LELInterface<Float>> pExprFloat_p;
-  std::shared_ptr<LELInterface<Double>> pExprDouble_p;
+  std::shared_ptr<LELInterface<float>> pExprFloat_p;
+  std::shared_ptr<LELInterface<double>> pExprDouble_p;
   std::shared_ptr<LELInterface<Complex>> pExprComplex_p;
   std::shared_ptr<LELInterface<DComplex>> pExprDComplex_p;
   std::shared_ptr<LELInterface<bool>> pExprBool_p;
@@ -765,10 +764,10 @@ inline LatticeExprNode operator^(const LatticeExprNode& left, const LatticeExprN
   return pow(left, right);
 }
 
-inline LatticeExprNode convertType(const LatticeExprNode& expr, const Float*) {
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const float*) {
   return toFloat(expr);
 }
-inline LatticeExprNode convertType(const LatticeExprNode& expr, const Double*) {
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const double*) {
   return toDouble(expr);
 }
 inline LatticeExprNode convertType(const LatticeExprNode& expr, const Complex*) {

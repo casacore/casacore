@@ -100,10 +100,10 @@ class VectorKernel {
   // the kernel length will be the max of the provided shape and an
   // autoestimate (e.g. from +/- 5sigma limits for a Gaussian).
   // <group>
-  static Vector<Double> make(KernelTypes kernelType, Double width, uInt shape, bool useShapeExactly,
-                             bool peakIsUnity = false);
-  static Vector<Float> make(KernelTypes kernelType, Float width, uInt shape, bool useShapeExactly,
-                            bool peakIsUnity = false);
+  static Vector<double> make(KernelTypes kernelType, double width, unsigned int shape,
+                             bool useShapeExactly, bool peakIsUnity = false);
+  static Vector<float> make(KernelTypes kernelType, float width, unsigned int shape,
+                            bool useShapeExactly, bool peakIsUnity = false);
   // </group>
 
   // Helper function to convert a string containing a list of desired smoothed kernel types
@@ -112,8 +112,8 @@ class VectorKernel {
   // A new value is added to the output vector (which is resized appropriately) if any of the
   // substrings "boxcar", "gaussian" or "hanning" (actually "box", "gauss", and "hann"
   // will do) is present.
-  static Vector<Int> toKernelTypes(const String& kernels, const std::regex& delimiter);
-  static Vector<Int> toKernelTypes(const Vector<String>& kernels);
+  static Vector<int> toKernelTypes(const String& kernels, const std::regex& delimiter);
+  static Vector<int> toKernelTypes(const Vector<String>& kernels);
   static VectorKernel::KernelTypes toKernelType(const String& kernel);
   static String fromKernelType(KernelTypes kernelType);
 };

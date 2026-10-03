@@ -129,11 +129,11 @@ class SparseDiffX : public SparseDiff<T> {
 
   // A function f(x0,x1,...,xn,...) with a value of v.
   // The nth derivative is one, and all others are zero.
-  SparseDiffX(const T &v, const uInt n) : SparseDiff<T>(v, n) {}
+  SparseDiffX(const T &v, const unsigned int n) : SparseDiff<T>(v, n) {}
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // nth derivative is der, and all other derivatives are zero.
-  SparseDiffX(const T &v, const uInt n, const T &der) : SparseDiff<T>(v, n, der) {}
+  SparseDiffX(const T &v, const unsigned int n, const T &der) : SparseDiff<T>(v, n, der) {}
 
   // Construct one from another
   SparseDiffX(const SparseDiff<T> &other) : SparseDiff<T>(other) {}
@@ -148,13 +148,13 @@ class SparseDiffX : public SparseDiff<T> {
   }
 
   // Assignment operator.  Add a gradient to variable.
-  SparseDiffX<T> &operator=(const pair<uInt, T> &der) {
+  SparseDiffX<T> &operator=(const pair<unsigned int, T> &der) {
     SparseDiff<T>::operator=(der);
     return *this;
   }
 
   // Assignment operator.  Assign gradients to variable.
-  SparseDiffX<T> &operator=(const vector<pair<uInt, T>> &der) {
+  SparseDiffX<T> &operator=(const vector<pair<unsigned int, T>> &der) {
     SparseDiff<T>::operator=(der);
     return *this;
   }

@@ -179,10 +179,10 @@ class Path {
   bool isStrictlyPosix() const;
 
   // Return length of path name
-  uInt length() const;
+  unsigned int length() const;
 
   // Return the maximum length a path name can have.
-  uInt maxLength() const;
+  unsigned int maxLength() const;
 
   // Return the basename of the path; this is only the name of the file.
   // It takes it from the expanded path name.
@@ -231,10 +231,10 @@ class Path {
 
   // Define the maximum number of bytes in a pathname
   // This definition does not use Posix values.
-  static uInt getMaxPathNameSize();
+  static unsigned int getMaxPathNameSize();
   // Define the maximum number of bytes in a filename
   // This definition does not use Posix values.
-  static uInt getMaxNameSize();
+  static unsigned int getMaxNameSize();
 
   // This function is used by expandedName to replace the tilde and to
   // expand the environment variables
@@ -250,7 +250,7 @@ class Path {
 
   // This function is used by expandName and absoluteName. It sets the
   // integer "count" on the next slash or on the end of a string
-  void getNextName(const String& inString, uInt& count) const;
+  void getNextName(const String& inString, unsigned int& count) const;
 };
 
 inline const String& Path::originalName() const { return itsOriginalPathName; }

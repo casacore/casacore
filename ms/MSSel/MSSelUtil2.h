@@ -35,16 +35,16 @@ template <class T>
 class MSSelUtil2 {
  public:
   // reorder data from 3d (corr,chan,row) to 4d (corr,chan,ifr,time)
-  static void reorderData(Array<T>& data, const Vector<Int>& ifrSlot, Int nIfr,
-                          const Vector<Int>& timeSlot, Int nTime, const T& defvalue);
+  static void reorderData(Array<T>& data, const Vector<int>& ifrSlot, int nIfr,
+                          const Vector<int>& timeSlot, int nTime, const T& defvalue);
 
   // reorder data from 4d (corr,chan,ifr,time) to 3d (corr,chan,row)
-  static void reorderData(Array<T>& data, const Matrix<Int64>& rowIndex, Int64 nRow);
+  static void reorderData(Array<T>& data, const Matrix<int64_t>& rowIndex, int64_t nRow);
 
   // average data (with flags & weights applied) over it's last axis (time or
   // row), return in data (overwritten), dataFlag gives new flags.
   static void timeAverage(Array<bool>& dataFlag, Array<T>& data, const Array<bool>& flag,
-                          const Array<Float>& weight);
+                          const Array<float>& weight);
 };
 }  // namespace casacore
 

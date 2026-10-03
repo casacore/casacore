@@ -305,7 +305,7 @@ int main() {
 
       beamSet = ImageBeamSet(3, 4, beam0);
       IPosition gotPos;
-      for (uInt i = 0; i < 4; i++) {
+      for (unsigned int i = 0; i < 4; i++) {
         GaussianBeam gotBeam = beamSet.getMaxAreaBeamForPol(gotPos, i);
         AlwaysAssert(gotBeam == beam0, AipsError);
         AlwaysAssert(gotPos == IPosition(2, 0, i), AipsError);
@@ -320,7 +320,7 @@ int main() {
       beamSet.setBeam(2, 1, beam1);
       GaussianBeam beam2(Quantity(3, "arcsec"), Quantity(2, "arcsec"), Quantity(20, "deg"));
       beamSet.setBeam(1, 1, beam2);
-      for (uInt i = 0; i < 4; i++) {
+      for (unsigned int i = 0; i < 4; i++) {
         GaussianBeam gotBeam = beamSet.getMaxAreaBeamForPol(gotPos, i);
         if (i == 1) {
           AlwaysAssert(gotBeam == beam1, AipsError);
@@ -348,7 +348,7 @@ int main() {
       }
 
       beamSet = ImageBeamSet(4, 4, beam0);
-      for (uInt i = 0; i < 4; i++) {
+      for (unsigned int i = 0; i < 4; i++) {
         GaussianBeam gotBeam = beamSet.getMaxAreaBeamForPol(gotPos, i);
         AlwaysAssert(gotBeam == beam0, AipsError);
         AlwaysAssert(gotPos == IPosition(2, 0, i), AipsError);
@@ -363,7 +363,7 @@ int main() {
       beamSet.setBeam(1, 1, beam2);
       GaussianBeam beam3(Quantity(4.5, "arcsec"), Quantity(3, "arcsec"), Quantity(20, "deg"));
       beamSet.setBeam(0, 1, beam3);
-      for (uInt i = 0; i < 4; i++) {
+      for (unsigned int i = 0; i < 4; i++) {
         GaussianBeam gotBeam = beamSet.getMaxAreaBeamForPol(gotPos, i);
         if (i == 1) {
           AlwaysAssert(gotBeam == beam1, AipsError);
@@ -488,7 +488,7 @@ int main() {
     {
       cout << "*** Test getMedianAreaBeam()" << endl;
       Matrix<GaussianBeam> beams(3, 4);
-      uInt count = 1;
+      unsigned int count = 1;
       Matrix<GaussianBeam>::iterator iter = beams.begin();
       Matrix<GaussianBeam>::iterator end = beams.end();
       Quantity radius;

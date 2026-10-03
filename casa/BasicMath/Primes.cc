@@ -31,17 +31,17 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // The minimum size for the cacheTable
-const uInt MINSIZE = 31;
+const unsigned int MINSIZE = 31;
 
-Block<uInt> Primes::cacheTable;
+Block<unsigned int> Primes::cacheTable;
 std::mutex Primes::theirMutex;
 
-bool Primes::isPrime(uInt number) {
+bool Primes::isPrime(unsigned int number) {
   if (number < 2) return false;
   return (smallestPrimeFactor(number) == number ? true : false);
 }
 
-uInt Primes::aLargerPrimeThan(uInt number) {
+unsigned int Primes::aLargerPrimeThan(unsigned int number) {
   std::lock_guard<std::mutex> lock(theirMutex);
   // If number is equal to or larger than the last (and largest) element in
   // the table of primes, this function returns zero; otherwise, this
@@ -51,8 +51,8 @@ uInt Primes::aLargerPrimeThan(uInt number) {
 
   if (number >= cacheTable[cacheTable.nelements() - 1]) return 0;
 
-  Int index = -1;
-  for (uInt i = cacheTable.nelements(); i > 0; i--) {
+  int index = -1;
+  for (unsigned int i = cacheTable.nelements(); i > 0; i--) {
     if (cacheTable[(i - 1)] > number) {
       index = (i - 1);
     }
@@ -60,9 +60,9 @@ uInt Primes::aLargerPrimeThan(uInt number) {
   return cacheTable[index];
 }
 
-uInt Primes::nextLargerPrimeThan(uInt number) {
+unsigned int Primes::nextLargerPrimeThan(unsigned int number) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt i;
+  unsigned int i;
   // This function increments number until it is prime.  It finds the next
   // entry in the table of primes which is larger, and stores this entry's
   // index number.  The table is resized to accomodate another entry, and
@@ -74,7 +74,7 @@ uInt Primes::nextLargerPrimeThan(uInt number) {
   }
   while (!isPrime(++number)) {
   }
-  uInt index = cacheTable.nelements();
+  unsigned int index = cacheTable.nelements();
   for (i = cacheTable.nelements(); i > 0; i--) {
     if (cacheTable[(i - 1)] == number) {
       return number;
@@ -91,7 +91,7 @@ uInt Primes::nextLargerPrimeThan(uInt number) {
   return number;
 }
 
-uInt Primes::smallestPrimeFactor(uInt number) {
+unsigned int Primes::smallestPrimeFactor(unsigned int number) {
   // This function checks for factors: if found, the first (smallest) one is
   // returned, otherwise the original value is returned.
 
@@ -101,27 +101,28 @@ uInt Primes::smallestPrimeFactor(uInt number) {
   if ((number % 2) == 0) return 2;
   if ((number % 3) == 0) return 3;
 
-  for (uInt i = 5, k = 7, sq = (uInt)(sqrt(Double(number)) + 1); i < sq; i = i + 6, k = k + 6) {
+  for (unsigned int i = 5, k = 7, sq = (unsigned int)(sqrt(double(number)) + 1); i < sq;
+       i = i + 6, k = k + 6) {
     if ((number % i) == 0) return i;
     if ((number % k) == 0) return k;
   }
   return number;
 }
 
-Block<uInt> Primes::factor(uInt number) {
+Block<unsigned int> Primes::factor(unsigned int number) {
   // If number is zero or one, this function returns a one-cell block
   // containing number; otherwise this fuction continues to resize the
   // block by one and store the next smallest factor of number in the
   // block until number equals the product of all the factors stored
   // in the block.
 
-  Block<uInt> multiples;
+  Block<unsigned int> multiples;
 
   if (number < 2) {
     multiples.resize(1);
     multiples[0] = number;
   } else {
-    for (uInt index = 0; number > 1; index++) {
+    for (unsigned int index = 0; number > 1; index++) {
       multiples.resize(index + 1);
       multiples[index] = smallestPrimeFactor(number);
       number = number / multiples[index];

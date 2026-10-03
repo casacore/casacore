@@ -35,18 +35,18 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, Int ndim, int opt)
+ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, int ndim, int opt)
     : ArrayColumnDescBase(name, "", "", "", ValType::getType(static_cast<T*>(0)),
                           valDataTypeId(static_cast<T*>(0)), opt, ndim, IPosition()) {}
 
 template <class T>
-ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment, Int ndim, int opt)
+ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment, int ndim, int opt)
     : ArrayColumnDescBase(name, comment, "", "", ValType::getType(static_cast<T*>(0)),
                           valDataTypeId(static_cast<T*>(0)), opt, ndim, IPosition()) {}
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment,
-                                    const String& dataManName, const String& dataManGroup, Int ndim,
+                                    const String& dataManName, const String& dataManGroup, int ndim,
                                     int opt)
     : ArrayColumnDescBase(name, comment, dataManName, dataManGroup,
                           ValType::getType(static_cast<T*>(0)), valDataTypeId(static_cast<T*>(0)),

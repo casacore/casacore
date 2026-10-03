@@ -48,7 +48,7 @@
 // with tTableIter.out.
 
 void credes();
-void cretab(uInt);
+void cretab(unsigned int);
 void doiter0();
 void doiter1();
 void doiter2();
@@ -56,7 +56,7 @@ void doiter3();
 void test_cache_boundaries();
 
 int main(int argc, const char* argv[]) {
-  uInt nr = 5000;
+  unsigned int nr = 5000;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nr;
@@ -76,22 +76,22 @@ int main(int argc, const char* argv[]) {
 // are filled in correctly when a row is added to a table.
 void credes() {
   TableDesc txp("tTableIter_tmp", TableDesc::New);
-  txp.addColumn(ScalarColumnDesc<Int>("col1"));
+  txp.addColumn(ScalarColumnDesc<int>("col1"));
   txp.addColumn(ScalarColumnDesc<double>("col2"));
   txp.addColumn(ScalarColumnDesc<float>("col3"));
   txp.addColumn(ScalarColumnDesc<Complex>("col4"));
 }
 
 // Write data into the table.
-void cretab(uInt nr) {
-  Int i;
+void cretab(unsigned int nr) {
+  int i;
   SetupNewTable newtab("tTableIter_tmp.data", "tTableIter_tmp", Table::New);
   Table tab(newtab, nr);
-  ScalarColumn<Int> col1(tab, "col1");
+  ScalarColumn<int> col1(tab, "col1");
   ScalarColumn<double> col2(tab, "col2");
   ScalarColumn<float> col3(tab, "col3");
   ScalarColumn<Complex> col4(tab, "col4");
-  for (i = 0; i < Int(nr); i++) {
+  for (i = 0; i < int(nr); i++) {
     col1.put(i, (100000 + i) % 10);
     col2.put(i, (i + 1) % 105);
     col3.put(i, (i + 2) % 75);
@@ -105,7 +105,7 @@ void doiter0() {
   Table tab("tTableIter_tmp.data");
   Block<String> iv0;
   TableIterator iter0(tab, iv0);
-  Int nr = 0;
+  int nr = 0;
   while (!iter0.pastEnd()) {
     t = iter0.table();
     AlwaysAssertExit(t.nrow() == tab.nrow());
@@ -131,11 +131,11 @@ void doiter1() {
   Block<String> iv0(1);
   iv0[0] = "col1";
   TableIterator iter0(tab, iv0);
-  Int nr = 0;
+  int nr = 0;
   while (!iter0.pastEnd()) {
     t = iter0.table();
-    ScalarColumn<Int> col1(t, "col1");
-    Vector<Int> vec;
+    ScalarColumn<int> col1(t, "col1");
+    Vector<int> vec;
     col1.getColumn(vec);
     cout << t.nrow() << " ";
     if (!allEQ(vec, nr)) {
@@ -156,8 +156,8 @@ void doiter1() {
   nr = 0;
   while (!iter0.pastEnd()) {
     t = iter0.table();
-    ScalarColumn<Int> col1(t, "col1");
-    Vector<Int> vec;
+    ScalarColumn<int> col1(t, "col1");
+    Vector<int> vec;
     col1.getColumn(vec);
     cout << t.nrow() << " ";
     if (!allEQ(vec, nr)) {
@@ -177,14 +177,14 @@ void doiter2() {
   iv1[0] = "col2";
   iv1[1] = "col1";
   TableIterator iter1(tab1, iv1);
-  Int nr = 0;
-  Int l1 = -1;
+  int nr = 0;
+  int l1 = -1;
   double l2 = -1;
   while (!iter1.pastEnd()) {
     t1 = iter1.table();
-    ScalarColumn<Int> col1(t1, "col1");
+    ScalarColumn<int> col1(t1, "col1");
     ScalarColumn<double> col2(t1, "col2");
-    Vector<Int> vec1;
+    Vector<int> vec1;
     col1.getColumn(vec1);
     Vector<double> vec2;
     col2.getColumn(vec2);
@@ -209,8 +209,8 @@ void doiter3() {
   Block<String> iv1(1);
   iv1[0] = "col3";
   Block<std::shared_ptr<BaseCompare>> compObj(1);
-  compObj[0].reset(new CompareIntervalReal<Float>(10., 0.));
-  Block<Int> orders(1);
+  compObj[0].reset(new CompareIntervalReal<float>(10., 0.));
+  Block<int> orders(1);
   orders[0] = TableIterator::Ascending;
   TableIterator iter1(tab1, iv1, compObj, orders);
 
@@ -259,13 +259,13 @@ void doiter3() {
 
   iter1.reset();
 
-  Int nr = 0;
+  int nr = 0;
   float l3 = -1;
   while (!iter1.pastEnd()) {
     t1 = iter1.table();
     cout << t1.nrow() << " ";
-    ScalarColumn<Float> col3(t1, "col3");
-    Vector<Float> vec3;
+    ScalarColumn<float> col3(t1, "col3");
+    Vector<float> vec3;
     col3.getColumn(vec3);
     if (max(vec3) - min(vec3) > 9.5) {
       cout << "Interval order error" << endl;
@@ -289,7 +289,7 @@ void test_cache_boundaries() {
   sortCols[0] = "col2";
   sortCols[1] = "col1";
   Block<std::shared_ptr<BaseCompare>> compObj(2);  // use default compares
-  Block<Int> orders(2);
+  Block<int> orders(2);
   orders[0] = TableIterator::Ascending;
   orders[1] = TableIterator::Ascending;
   TableIterator iter1(tab1, sortCols, compObj, orders);
@@ -302,11 +302,11 @@ void test_cache_boundaries() {
     auto iter1Table = iter1.table();
     auto iter2Table = iter2.table();
     AlwaysAssertExit(iter2Table.nrow() == iter1Table.nrow());
-    ScalarColumn<Int> iter1Col1(iter1Table, "col1");
+    ScalarColumn<int> iter1Col1(iter1Table, "col1");
     ScalarColumn<double> iter1Col2(iter1Table, "col2");
     ScalarColumn<float> iter1Col3(iter1Table, "col3");
     ScalarColumn<Complex> iter1Col4(iter1Table, "col4");
-    ScalarColumn<Int> iter2Col1(iter2Table, "col1");
+    ScalarColumn<int> iter2Col1(iter2Table, "col1");
     ScalarColumn<double> iter2Col2(iter2Table, "col2");
     ScalarColumn<float> iter2Col3(iter2Table, "col3");
     ScalarColumn<Complex> iter2Col4(iter2Table, "col4");

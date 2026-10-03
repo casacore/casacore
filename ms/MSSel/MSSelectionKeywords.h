@@ -245,13 +245,13 @@ class MSSelectionKeywords {
   MSSelectionKeywords& operator=(const MSSelectionKeywords& other);
 
   // Get the static map.
-  static std::map<String, Int>& getMap();
+  static std::map<String, int>& getMap();
 
   // Get the static reverse map.
   static Block<String>& getReverseMap();
 
   // Create an initialized map.
-  static std::map<String, Int> initMap();
+  static std::map<String, int> initMap();
 
   // Create an initialized reverse map.
   static Block<String> initReverseMap();

@@ -223,7 +223,7 @@ class Gaussian2DParam : public Function<T> {
   // # Operators
 
   // Variable dimensionality
-  virtual uInt ndim() const { return 2; }
+  virtual unsigned int ndim() const { return 2; }
 
   // # Member functions
   //  Give name of function

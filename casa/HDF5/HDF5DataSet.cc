@@ -40,37 +40,37 @@ HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const 
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const uChar* type)
+                         const IPosition& tileShape, const unsigned char* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Short* type)
+                         const IPosition& tileShape, const short* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Int* type)
+                         const IPosition& tileShape, const int* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Int64* type)
+                         const IPosition& tileShape, const int64_t* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Float* type)
+                         const IPosition& tileShape, const float* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Double* type)
+                         const IPosition& tileShape, const double* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
@@ -98,32 +98,32 @@ HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const 
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const uChar* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const unsigned char* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Short* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const short* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Int* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const int* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Int64* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const int64_t* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Float* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const float* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Double* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const double* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
@@ -156,7 +156,7 @@ void HDF5DataSet::create(const HDF5Object& parentHid, const String& name, const 
   itsShape = shape;
   itsTileShape = IPosition(shape.nelements(), 1);
   // Trailing elements already have value 1; set the first elements.
-  for (uInt i = 0; i < tileShape.nelements(); ++i) {
+  for (unsigned int i = 0; i < tileShape.nelements(); ++i) {
     if (shape[i] > 0) {
       itsTileShape[i] = std::min(tileShape[i], shape[i]);
     }
@@ -169,7 +169,7 @@ void HDF5DataSet::create(const HDF5Object& parentHid, const String& name, const 
   int rank = itsShape.nelements();
   Block<hsize_t> ls = HDF5DataType::fromShape(itsShape);
   Block<hsize_t> maxls(ls);
-  for (uInt i = 0; i < maxls.size(); ++i) {
+  for (unsigned int i = 0; i < maxls.size(); ++i) {
     if (maxls[i] == 0) {
       maxls[i] = H5S_UNLIMITED;
     }
@@ -253,14 +253,14 @@ void HDF5DataSet::close() {
   itsDaplid.close();
 }
 
-void HDF5DataSet::setCacheSize(uInt nchunks) {
+void HDF5DataSet::setCacheSize(unsigned int nchunks) {
   // Setting the cache size takes only effect when opening the dataset.
   // So close it first.
   closeDataSet();
   // Use LRU caching (4th argument is 0).
   // Hash size should be a prime according to the HDF5 documentation and
   // preferably 100 times the nr of chunks. This seems excessive, so use 20x.
-  uInt nhash = 1;
+  unsigned int nhash = 1;
   if (nchunks > 1) {
     nhash = Primes::nextLargerPrimeThan(nchunks * 100);
   }
@@ -369,7 +369,7 @@ void HDF5DataSet::extend(const IPosition& shape) {
   // Extend the data set if one of the axes is larger than the current shape.
   IPosition newShape(itsShape);
   bool ext = false;
-  for (uInt i = 0; i < shape.size(); ++i) {
+  for (unsigned int i = 0; i < shape.size(); ++i) {
     if (shape[i] > newShape[i]) {
       newShape[i] = shape[i];
       ext = true;
@@ -397,7 +397,7 @@ void HDF5DataSet::open(const HDF5Object&, const String&) { HDF5Object::throwNoHD
 
 void HDF5DataSet::close() {}
 
-void HDF5DataSet::setCacheSize(uInt) {}
+void HDF5DataSet::setCacheSize(unsigned int) {}
 
 DataType HDF5DataSet::getDataType(hid_t, const String&) { return TpOther; }
 

@@ -59,7 +59,7 @@ MeasureHolder::MeasureHolder(const MeasureHolder &other)
     : RecordTransformable(), mvhold_p(0), convertmv_p(false) {
   if (other.hold_p) hold_p.reset(other.hold_p->clone());
   createMV(other.mvhold_p.nelements());
-  for (uInt i = 0; i < mvhold_p.nelements(); i++) {
+  for (unsigned int i = 0; i < mvhold_p.nelements(); i++) {
     mvhold_p[i] = other.mvhold_p[i]->clone();
   }
 }
@@ -76,7 +76,7 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
       hold_p.reset();
     }
     createMV(other.mvhold_p.nelements());
-    for (uInt i = 0; i < mvhold_p.nelements(); i++) {
+    for (unsigned int i = 0; i < mvhold_p.nelements(); i++) {
       mvhold_p[i] = other.mvhold_p[i]->clone();
     }
   }
@@ -225,7 +225,7 @@ bool MeasureHolder::fromRecord(String &error, const RecordInterface &in) {
       }
     }
     QuantumHolder q0, q1, q2;
-    uInt n(0);
+    unsigned int n(0);
     if (in.isDefined(String("m0")) && in.type(in.idToNumber(RecordFieldId("m0"))) == TpRecord) {
       if (!q0.fromRecord(error, in.asRecord(RecordFieldId("m0")))) {
         return false;
@@ -258,7 +258,7 @@ bool MeasureHolder::fromRecord(String &error, const RecordInterface &in) {
       error += String("Illegal quantity in MeasureHolder::fromRecord\n");
       return false;
     }
-    uInt nel(0);
+    unsigned int nel(0);
     if (n > 0) nel = q0.asQuantumVectorDouble().getValue().nelements();
     if (n > 1 && nel != q1.asQuantumVectorDouble().getValue().nelements()) {
       error += String("Illegal number of values in MeasureHolder m1\n");
@@ -270,7 +270,7 @@ bool MeasureHolder::fromRecord(String &error, const RecordInterface &in) {
     }
     if (nel > 1) {
       makeMV(nel);
-      for (uInt i = nel - 1; i < nel; i--) {
+      for (unsigned int i = nel - 1; i < nel; i--) {
         if (n > 0)
           vq(0) = Quantity(q0.asQuantumVectorDouble().getValue()(i),
                            q0.asQuantumVectorDouble().getFullUnit());
@@ -315,9 +315,9 @@ bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
       out.defineRecord(RecordFieldId("offset"), offs);
     }
     // Make sure units available
-    Vector<Quantum<Double>> res = hold_p->getData()->getRecordValue();
-    uInt n(res.nelements());
-    uInt nel(nelements());
+    Vector<Quantum<double>> res = hold_p->getData()->getRecordValue();
+    unsigned int n(res.nelements());
+    unsigned int nel(nelements());
     Record val;
     // Single value only
     if (!convertmv_p || nel == 0) {
@@ -334,10 +334,10 @@ bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
         out.defineRecord(RecordFieldId("m0"), val);
       }
     } else {  // multiple values
-      Vector<Double> m2(nel);
-      Vector<Double> m1(nel);
-      Vector<Double> m0(nel);
-      for (uInt i = 0; i < nelements(); i++) {
+      Vector<double> m2(nel);
+      Vector<double> m1(nel);
+      Vector<double> m0(nel);
+      for (unsigned int i = 0; i < nelements(); i++) {
         if (!mvhold_p[i]) {
           error += String("No value specified in MeasureHolder::toRecord\n");
           return false;
@@ -348,17 +348,17 @@ bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
         if (n > 0) m0(i) = res(0).getValue();
       }
       if (n > 2) {
-        if (!QuantumHolder(Quantum<Vector<Double>>(m2, res(2).getFullUnit())).toRecord(error, val))
+        if (!QuantumHolder(Quantum<Vector<double>>(m2, res(2).getFullUnit())).toRecord(error, val))
           return false;
         out.defineRecord(RecordFieldId("m2"), val);
       }
       if (n > 1) {
-        if (!QuantumHolder(Quantum<Vector<Double>>(m1, res(1).getFullUnit())).toRecord(error, val))
+        if (!QuantumHolder(Quantum<Vector<double>>(m1, res(1).getFullUnit())).toRecord(error, val))
           return false;
         out.defineRecord(RecordFieldId("m1"), val);
       }
       if (n > 0) {
-        if (!QuantumHolder(Quantum<Vector<Double>>(m0, res(0).getFullUnit())).toRecord(error, val))
+        if (!QuantumHolder(Quantum<Vector<double>>(m0, res(0).getFullUnit())).toRecord(error, val))
           return false;
         out.defineRecord(RecordFieldId("m0"), val);
       }
@@ -399,7 +399,7 @@ const String &MeasureHolder::ident() const {
   return myid;
 }
 
-bool MeasureHolder::setMV(uInt pos, const MeasValue &in) {
+bool MeasureHolder::setMV(unsigned int pos, const MeasValue &in) {
   if (mvhold_p.nelements() > pos)
     mvhold_p[pos] = in.clone();
   else
@@ -408,7 +408,7 @@ bool MeasureHolder::setMV(uInt pos, const MeasValue &in) {
   return true;
 }
 
-MeasValue *MeasureHolder::getMV(uInt pos) const {
+MeasValue *MeasureHolder::getMV(unsigned int pos) const {
   if (mvhold_p.nelements() > pos)
     return mvhold_p[pos];
   else
@@ -455,13 +455,13 @@ bool MeasureHolder::getType(String &error, const String &in) {
   return true;
 }
 
-void MeasureHolder::createMV(uInt n) {
-  for (uInt i = 0; i < mvhold_p.nelements(); i++) {
+void MeasureHolder::createMV(unsigned int n) {
+  for (unsigned int i = 0; i < mvhold_p.nelements(); i++) {
     delete mvhold_p[i];
     mvhold_p[i] = 0;
   }
   mvhold_p.resize(n);
-  for (uInt i = 0; i < mvhold_p.nelements(); i++) mvhold_p[i] = 0;
+  for (unsigned int i = 0; i < mvhold_p.nelements(); i++) mvhold_p[i] = 0;
 }
 
 }  // namespace casacore

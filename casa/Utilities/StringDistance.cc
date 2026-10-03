@@ -72,7 +72,7 @@ bool StringDistance::match(const String& target) const {
   return doDistance(itsSource, t, itsCountSwaps, itsMatrix) <= itsMaxDistance;
 }
 
-Int StringDistance::distance(const String& target) const {
+int StringDistance::distance(const String& target) const {
   String t(target);
   if (itsIgnoreBlanks) {
     t = removeBlanks(target);
@@ -86,13 +86,13 @@ Int StringDistance::distance(const String& target) const {
   return doDistance(itsSource, t, itsCountSwaps, itsMatrix);
 }
 
-Int StringDistance::distance(const String& source, const String& target, bool countSwaps) {
-  Matrix<Int> matrix(source.size() + 1, target.size() + 1);
+int StringDistance::distance(const String& source, const String& target, bool countSwaps) {
+  Matrix<int> matrix(source.size() + 1, target.size() + 1);
   return doDistance(source, target, countSwaps, matrix);
 }
 
-Int StringDistance::doDistance(const String& source, const String& target, bool countSwaps,
-                               Matrix<Int>& matrix) {
+int StringDistance::doDistance(const String& source, const String& target, bool countSwaps,
+                               Matrix<int>& matrix) {
   int n = source.size();
   int m = target.size();
   if (n == 0) {

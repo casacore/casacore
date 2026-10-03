@@ -120,10 +120,10 @@ class ROIncrementalStManAccessor : public RODataManAccessor {
   // be made large enough for a future file extnsion.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize(uInt aSize, bool canExceedNrBuckets = true);
+  void setCacheSize(unsigned int aSize, bool canExceedNrBuckets = true);
 
   // Get the cache size (in buckets).
-  uInt cacheSize() const;
+  unsigned int cacheSize() const;
 
   // Clear the caches used by the hypercubes in this storage manager.
   // It will flush the caches as needed and remove all buckets from them
@@ -137,10 +137,10 @@ class ROIncrementalStManAccessor : public RODataManAccessor {
   void showBucketLayout(ostream& os) const;
 
   // Check that there are no repeated rowIds in the buckets comprising this ISM
-  bool checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
-                         uInt& offendingBucketNrow, uInt& offendingBucketNr, uInt& offendingCol,
-                         uInt& offendingIndex, rownr_t& offendingRow,
-                         rownr_t& offendingPrevRow) const;
+  bool checkBucketLayout(unsigned int& offendingCursor, rownr_t& offendingBucketStartRow,
+                         unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr,
+                         unsigned int& offendingCol, unsigned int& offendingIndex,
+                         rownr_t& offendingRow, rownr_t& offendingPrevRow) const;
 
  private:
   // # Declare the data members.

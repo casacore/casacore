@@ -53,9 +53,9 @@ void StManColumnAipsIO::initData(void*, rownr_t) {}
 // # Write all data into AipsIO.
 void StManColumnAipsIO::putFile(rownr_t nrval, AipsIO& ios) {
   ios.putstart("StManColumnAipsIO", 2);  // class version 2
-  ios << uInt(nrval);
-  uInt nr;
-  for (uInt i = 1; i <= nrext_p; i++) {
+  ios << static_cast<unsigned int>(nrval);
+  unsigned int nr;
+  for (unsigned int i = 1; i <= nrext_p; i++) {
     nr = ncum_p[i] - ncum_p[i - 1];
     if (nr > nrval) {
       nr = nrval;
@@ -69,28 +69,28 @@ void StManColumnAipsIO::putFile(rownr_t nrval, AipsIO& ios) {
   ios.putend();
 }
 
-void StManColumnAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {
+void StManColumnAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) {
   switch (dtype()) {
     case TpBool:
       ios.put(nrval, (bool*)dp);
       break;
     case TpUChar:
-      ios.put(nrval, (uChar*)dp);
+      ios.put(nrval, (unsigned char*)dp);
       break;
     case TpShort:
-      ios.put(nrval, (Short*)dp);
+      ios.put(nrval, (short*)dp);
       break;
     case TpUShort:
-      ios.put(nrval, (uShort*)dp);
+      ios.put(nrval, (unsigned short*)dp);
       break;
     case TpInt:
-      ios.put(nrval, (Int*)dp);
+      ios.put(nrval, (int*)dp);
       break;
     case TpUInt:
-      ios.put(nrval, (uInt*)dp);
+      ios.put(nrval, (unsigned int*)dp);
       break;
     case TpInt64:
-      ios.put(nrval, (Int64*)dp);
+      ios.put(nrval, (int64_t*)dp);
       break;
     case TpFloat:
       ios.put(nrval, (float*)dp);
@@ -114,8 +114,8 @@ void StManColumnAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {
 
 // # Read all data from AipsIO.
 void StManColumnAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
-  uInt version = ios.getstart("StManColumnAipsIO");
-  uInt nr;
+  unsigned int version = ios.getstart("StManColumnAipsIO");
+  unsigned int nr;
   // # Get and check nr of values.
   ios >> nr;
   if (nr != nrval) {
@@ -125,7 +125,7 @@ void StManColumnAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
   if (nrval > 0) {
     resize(nrval);
     void* datap = data_p[1];
-    uInt nrd = 0;
+    unsigned int nrd = 0;
     while (nrd < nrval) {
       ios >> nr;
       if (nr == 0) {
@@ -142,30 +142,31 @@ void StManColumnAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
   columnCache().invalidate();
 }
 
-void StManColumnAipsIO::getData(void* datap, uInt inx, uInt nrval, AipsIO& ios, uInt) {
-  uInt nr;
+void StManColumnAipsIO::getData(void* datap, unsigned int inx, unsigned int nrval, AipsIO& ios,
+                                unsigned int) {
+  unsigned int nr;
   ios >> nr;
   switch (dtype()) {
     case TpBool:
       ios.get(nrval, (bool*)datap + inx);
       break;
     case TpUChar:
-      ios.get(nrval, (uChar*)datap + inx);
+      ios.get(nrval, (unsigned char*)datap + inx);
       break;
     case TpShort:
-      ios.get(nrval, (Short*)datap + inx);
+      ios.get(nrval, (short*)datap + inx);
       break;
     case TpUShort:
-      ios.get(nrval, (uShort*)datap + inx);
+      ios.get(nrval, (unsigned short*)datap + inx);
       break;
     case TpInt:
-      ios.get(nrval, (Int*)datap + inx);
+      ios.get(nrval, (int*)datap + inx);
       break;
     case TpUInt:
-      ios.get(nrval, (uInt*)datap + inx);
+      ios.get(nrval, (unsigned int*)datap + inx);
       break;
     case TpInt64:
-      ios.get(nrval, (Int64*)datap + inx);
+      ios.get(nrval, (int64_t*)datap + inx);
       break;
     case TpFloat:
       ios.get(nrval, (float*)datap + inx);
@@ -251,7 +252,7 @@ bool StManAipsIO::flush(AipsIO&, bool) {
   if (!hasPut_p) {
     return false;
   }
-  uInt i;
+  unsigned int i;
   AipsIO ios(fileName(), ByteIO::New);
   ios.putstart("StManAipsIO", 2);  // version 2
   // # Write the number of rows and columns and the column types.
@@ -261,7 +262,7 @@ bool StManAipsIO::flush(AipsIO&, bool) {
   ios << stmanName_p;  // this is added in version 2
   ios << sequenceNr();
   ios << uniqnr_p;
-  ios << uInt(nrrow_p);
+  ios << static_cast<unsigned int>(nrrow_p);
   ios << ncolumn();
   for (i = 0; i < ncolumn(); i++) {
     ios << colSet_p[i]->dataType();
@@ -277,7 +278,7 @@ bool StManAipsIO::flush(AipsIO&, bool) {
 void StManAipsIO::create64(rownr_t nrrow) {
   nrrow_p = nrrow;
   // # Let the column create something if needed.
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     colSet_p[i]->doCreate(nrrow);
   }
   setHasPut();
@@ -289,9 +290,9 @@ rownr_t StManAipsIO::resync64(rownr_t nrrow) {
     iosfile_p->resync();
   }
   AipsIO ios(fileName());
-  uInt version = ios.getstart("StManAipsIO");
+  unsigned int version = ios.getstart("StManAipsIO");
   // # Get and check the number of rows and columns and the column types.
-  uInt i, nrr, nrc, snr;
+  unsigned int i, nrr, nrc, snr;
   int dt;
   if (version > 1) {
     ios >> stmanName_p;
@@ -329,7 +330,7 @@ rownr_t StManAipsIO::resync64(rownr_t nrrow) {
     if (nrrow > nrr) {
       colSet_p[i]->addRow(nrrow, nrr);
     } else if (nrrow < nrr) {
-      for (uInt r = nrrow; r < nrr; r++) {
+      for (unsigned int r = nrrow; r < nrr; r++) {
         colSet_p[i]->remove(nrrow);
       }
     }
@@ -347,7 +348,7 @@ StManArrayFile* StManAipsIO::openArrayFile(ByteIO::OpenOption opt) {
 }
 
 void StManAipsIO::reopenRW() {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     colSet_p[i]->reopenRW();
   }
 }

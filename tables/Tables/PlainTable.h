@@ -102,9 +102,9 @@ class PlainTable : public BaseTable {
   // Construct the object for an existing table.
   // It opens the table file, reads the table control information
   // and creates and initializes the required storage managers.
-  PlainTable(AipsIO&, uInt version, const String& name, const String& type, rownr_t nrrow,
+  PlainTable(AipsIO&, unsigned int version, const String& name, const String& type, rownr_t nrrow,
              int option, const TableLock& lockOptions, const TSMOption& tsmOption, bool addToCache,
-             uInt locknr);
+             unsigned int locknr);
 
   // The destructor flushes (i.e. writes) the table if it is opened
   // for output and not marked for delete.
@@ -156,7 +156,7 @@ class PlainTable : public BaseTable {
   virtual bool hasLock(FileLocker::LockType) const;
 
   // Try to lock the table for read or write access.
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
 
   // Unlock the table. This will also synchronize the table data,
   // thus force the data to be written to disk.
@@ -180,7 +180,7 @@ class PlainTable : public BaseTable {
   virtual void resync();
 
   // Get the modify counter.
-  virtual uInt getModifyCounter() const;
+  virtual unsigned int getModifyCounter() const;
 
   // Set the table to being changed.
   virtual void setTableChanged();
@@ -207,7 +207,7 @@ class PlainTable : public BaseTable {
   virtual TableRecord& rwKeywordSet();
 
   // Get a column object using its index.
-  virtual BaseColumn* getColumn(uInt columnIndex) const;
+  virtual BaseColumn* getColumn(unsigned int columnIndex) const;
 
   // Get a column object using its name.
   virtual BaseColumn* getColumn(const String& columnName) const;

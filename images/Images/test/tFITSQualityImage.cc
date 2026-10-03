@@ -47,17 +47,17 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-bool allNear(const Array<Float> &data, const Array<bool> &dataMask, const Array<Float> &fits,
-             const Array<bool> &fitsMask, Float tol = 1.0e-5);
+bool allNear(const Array<float> &data, const Array<bool> &dataMask, const Array<float> &fits,
+             const Array<bool> &fitsMask, float tol = 1.0e-5);
 bool checkRecFieldString(String &error, const RecordInterface &theRec, const String &theField,
                          const String &theValue);
 bool testQualFITSInfo(const TableRecord &dataInfo, const TableRecord &errorInfo,
                       const String &sciHDU, const String &errHDU, const String &errType);
-bool testQualImg(FITSQualityImage &fQualImg, const String &in, const uInt &hdu_sci,
-                 const uInt &hdu_err, const bool &print, const Int &size);
+bool testQualImg(FITSQualityImage &fQualImg, const String &in, const unsigned int &hdu_sci,
+                 const unsigned int &hdu_err, const bool &print, const int &size);
 
 template <class T>
-void printArray(T array, Int size, String pre = "printArray");
+void printArray(T array, int size, String pre = "printArray");
 
 int main(int argc, const char *argv[]) {
   try {
@@ -76,10 +76,10 @@ int main(int argc, const char *argv[]) {
     inputs.readArguments(argc, argv);
     String in_fits = inputs.getString("in_fits");
     String in_ext = inputs.getString("in_ext");
-    const uInt hdu_sci = inputs.getInt("hdu_sci");
-    const uInt hdu_err = inputs.getInt("hdu_err");
+    const unsigned int hdu_sci = inputs.getInt("hdu_sci");
+    const unsigned int hdu_err = inputs.getInt("hdu_err");
     const bool print = inputs.getBool("print");
-    const Int size = inputs.getInt("size");
+    const int size = inputs.getInt("size");
     //
     if (in_fits.empty()) {
       in_fits = "qualityimage.fits";
@@ -189,15 +189,15 @@ int main(int argc, const char *argv[]) {
   return 0;
 }
 
-bool allNear(const Array<Float> &data, const Array<bool> &dataMask, const Array<Float> &fits,
-             const Array<bool> &fitsMask, Float tol) {
+bool allNear(const Array<float> &data, const Array<bool> &dataMask, const Array<float> &fits,
+             const Array<bool> &fitsMask, float tol) {
   bool deletePtrData, deletePtrDataMask, deletePtrFITS, deletePtrFITSMask;
-  const Float *pData = data.getStorage(deletePtrData);
-  const Float *pFITS = fits.getStorage(deletePtrFITS);
+  const float *pData = data.getStorage(deletePtrData);
+  const float *pFITS = fits.getStorage(deletePtrFITS);
   const bool *pDataMask = dataMask.getStorage(deletePtrDataMask);
   const bool *pFITSMask = fitsMask.getStorage(deletePtrFITSMask);
   //
-  for (uInt i = 0; i < data.nelements(); i++) {
+  for (unsigned int i = 0; i < data.nelements(); i++) {
     if (pDataMask[i] != pFITSMask[i]) {
       cerr << "masks differ" << endl;
       return false;
@@ -301,11 +301,11 @@ bool testQualFITSInfo(const TableRecord &dataInfo, const TableRecord &errorInfo,
   return true;
 }
 
-bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci,
-                 const uInt &hdu_err, const bool &print, const Int &size) {
+bool testQualImg(FITSQualityImage &fitsQI, const String &in, const unsigned int &hdu_sci,
+                 const unsigned int &hdu_err, const bool &print, const int &size) {
   {
     // make sure the last axis has two pixels
-    uInt ndim = fitsQI.ndim();
+    unsigned int ndim = fitsQI.ndim();
     IPosition shape = fitsQI.shape();
     if (shape(ndim - 1) != 2) {
       String msg = "Last dimension should be 2 but is: " + ValueToString(shape(ndim - 1));
@@ -315,7 +315,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
   {
     // make sure a quality coordinate axis exists
     CoordinateSystem cSys = fitsQI.coordinates();
-    Int qCoord = cSys.findCoordinate(Coordinate::QUALITY);
+    int qCoord = cSys.findCoordinate(Coordinate::QUALITY);
     if (qCoord < 0) {
       String msg = String("The image does not contain a quality coordinate axis!");
       throw(AipsError(msg));
@@ -428,7 +428,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     }
   }
   {
-    Array<Float> mmData;
+    Array<float> mmData;
     Array<bool> mmMask;
 
     // dimension the start and end points
@@ -446,9 +446,9 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
       printArray(mmMask, size, "Mask = ");
     }
 
-    Array<Float> fitsDData;
+    Array<float> fitsDData;
     Array<bool> fitsDMask;
-    Array<Float> fitsEData;
+    Array<float> fitsEData;
     Array<bool> fitsEMask;
 
     // dimension the start and end points
@@ -456,7 +456,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     IPosition fStart(fitsQI.ndim() - 1, 0);
     IPosition fStride(fitsQI.ndim() - 1, 1);
     IPosition fEnd(fitsQI.ndim() - 1);
-    for (uInt i = 0; i < fitsQI.ndim() - 1; i++) {
+    for (unsigned int i = 0; i < fitsQI.ndim() - 1; i++) {
       fEnd(i) = end(i);
     }
 
@@ -476,7 +476,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
       printArray(fitsEMask, size, "feMask = ");
     }
 
-    Array<Float> tmpData;
+    Array<float> tmpData;
     Array<bool> tmpMask;
 
     // extract the data values from the quality
@@ -510,7 +510,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     }
   }
   {
-    Array<Float> mmData;
+    Array<float> mmData;
     Array<bool> mmMask;
 
     // dimension the start and end points
@@ -529,7 +529,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
       printArray(mmMask, size, "MaskII = ");
     }
 
-    Array<Float> fitsDData;
+    Array<float> fitsDData;
     Array<bool> fitsDMask;
 
     // dimension the start and end points
@@ -537,7 +537,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     IPosition fStart(fitsQI.ndim() - 1, 0);
     IPosition fStride(fitsQI.ndim() - 1, 1);
     IPosition fEnd(fitsQI.ndim() - 1);
-    for (uInt i = 0; i < fitsQI.ndim() - 1; i++) {
+    for (unsigned int i = 0; i < fitsQI.ndim() - 1; i++) {
       fEnd(i) = end(i);
     }
 
@@ -551,7 +551,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
       printArray(fitsDMask, size, "fMaskII = ");
     }
 
-    Array<Float> tmpData;
+    Array<float> tmpData;
     Array<bool> tmpMask;
 
     // extract the error values from the quality
@@ -570,7 +570,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     }
   }
   {
-    Array<Float> mmData;
+    Array<float> mmData;
     Array<bool> mmMask;
 
     // dimension the start and end points
@@ -590,7 +590,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
       printArray(mmMask, size, "MaskIII = ");
     }
 
-    Array<Float> fitsEData;
+    Array<float> fitsEData;
     Array<bool> fitsEMask;
 
     // dimension the start and end points
@@ -598,7 +598,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     IPosition fStart(fitsQI.ndim() - 1, 0);
     IPosition fStride(fitsQI.ndim() - 1, 1);
     IPosition fEnd(fitsQI.ndim() - 1);
-    for (uInt i = 0; i < fitsQI.ndim() - 1; i++) {
+    for (unsigned int i = 0; i < fitsQI.ndim() - 1; i++) {
       fEnd(i) = end(i);
     }
 
@@ -612,7 +612,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
       printArray(fitsEMask, size, "feMaskIII = ");
     }
 
-    Array<Float> tmpData;
+    Array<float> tmpData;
     Array<bool> tmpMask;
 
     // extract the data values from the quality
@@ -634,9 +634,9 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
     // test assignment
     FITSQualityImage secImg = fitsQI;
 
-    Array<Float> mmData;
+    Array<float> mmData;
     Array<bool> mmMask;
-    Array<Float> mmDataII;
+    Array<float> mmDataII;
     Array<bool> mmMaskII;
 
     // dimension the start and end points
@@ -668,12 +668,12 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
   }
   {
     // test the clone method
-    ImageInterface<Float> *pFitsMM = fitsQI.cloneII();
-    Array<Float> fCloneArray = pFitsMM->get();
+    ImageInterface<float> *pFitsMM = fitsQI.cloneII();
+    Array<float> fCloneArray = pFitsMM->get();
     Array<bool> fCloneMask = pFitsMM->getMask();
     CoordinateSystem fCloneCS = pFitsMM->coordinates();
 
-    Array<Float> fOrigArray = fitsQI.get();
+    Array<float> fOrigArray = fitsQI.get();
     Array<bool> fOrigMask = fitsQI.getMask();
     CoordinateSystem fOrigCS = fitsQI.coordinates();
     if (print) {
@@ -722,11 +722,11 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const uInt &hdu_sci
 }
 
 template <class T>
-void printArray(T array, Int size, String pre) {
+void printArray(T array, int size, String pre) {
   T tmpArray;
   IPosition start(array.ndim(), 0);
   IPosition end(array.shape() - 1);
-  for (uInt i = 0; i < array.ndim(); i++)
+  for (unsigned int i = 0; i < array.ndim(); i++)
     if (end(i) > size - 1) end(i) = size - 1;
   tmpArray.reference(array(start, end));
   cerr << "\n" << pre << tmpArray;

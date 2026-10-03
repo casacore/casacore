@@ -33,8 +33,8 @@
 
 #include <casacore/casa/namespace.h>
 void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition& end,
-          const IPosition& center, Int radius) {
-  uInt ndim = start.nelements();
+          const IPosition& center, int radius) {
+  unsigned int ndim = start.nelements();
   // Show output of simple circle.
   LCEllipsoid cir(center, radius, latticeShape);
   LatticeRegion reg1(cir);

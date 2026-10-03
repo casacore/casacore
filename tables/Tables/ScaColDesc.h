@@ -66,7 +66,7 @@ class ColumnSet;
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
-//  Bool, uChar, Short, uShort, Int, uInt, Int64, float, double,
+//  Bool, uChar, Short, uShort, Int, uInt, int64_t, float, double,
 //  Complex, DComplex and String.
 // <p>
 // At table creation time (when a table gets created from a table
@@ -234,14 +234,14 @@ class ScalarColumnDesc : public BaseColumnDesc {
 
 // # Explicitly instantiate these templates in ScaColDesc_tmpl.cc
 extern template class ScalarColumnDesc<bool>;
-extern template class ScalarColumnDesc<Char>;
-extern template class ScalarColumnDesc<Short>;
-extern template class ScalarColumnDesc<uShort>;
-extern template class ScalarColumnDesc<Int>;
-extern template class ScalarColumnDesc<uInt>;
-extern template class ScalarColumnDesc<Int64>;
-extern template class ScalarColumnDesc<Float>;
-extern template class ScalarColumnDesc<Double>;
+extern template class ScalarColumnDesc<char>;
+extern template class ScalarColumnDesc<short>;
+extern template class ScalarColumnDesc<unsigned short>;
+extern template class ScalarColumnDesc<int>;
+extern template class ScalarColumnDesc<unsigned int>;
+extern template class ScalarColumnDesc<int64_t>;
+extern template class ScalarColumnDesc<float>;
+extern template class ScalarColumnDesc<double>;
 extern template class ScalarColumnDesc<Complex>;
 extern template class ScalarColumnDesc<DComplex>;
 extern template class ScalarColumnDesc<String>;

@@ -178,11 +178,11 @@ class StringFITSFieldCopier : public FITSFieldCopier {
   // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
   virtual void copyToFITS() {
-    Int fitslength = fits_p->nelements();
-    Int reclength = (*(*rec_p)).length();
-    Int minlength = fitslength < reclength ? fitslength : reclength;
+    int fitslength = fits_p->nelements();
+    int reclength = (*(*rec_p)).length();
+    int minlength = fitslength < reclength ? fitslength : reclength;
     const char *chars = (**rec_p).c_str();
-    Int i;
+    int i;
     for (i = 0; i < minlength; i++) {
       (*fits_p)(i) = chars[i];
     }
@@ -251,16 +251,16 @@ class ArrayFITSFieldCopier : public FITSFieldCopier {
   // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
   virtual void copyToFITS() {
-    uInt nfits = fits_p->nelements();
-    uInt narray = (**rec_p).nelements();
-    uInt nmin = narray < nfits ? narray : nfits;
+    unsigned int nfits = fits_p->nelements();
+    unsigned int narray = (**rec_p).nelements();
+    unsigned int nmin = narray < nfits ? narray : nfits;
     bool deleteIt;
     const recordType *rptr = (**rec_p).getStorage(deleteIt);
-    for (uInt i = 0; i < nmin; i++) {
+    for (unsigned int i = 0; i < nmin; i++) {
       (*fits_p)(i) = rptr[i];
     }
     // pad with nulls
-    for (uInt i = nmin; i < nfits; i++) {
+    for (unsigned int i = nmin; i < nfits; i++) {
       (*fits_p)(i) = recordType(0);
     }
     (**rec_p).freeStorage(rptr, deleteIt);
@@ -288,15 +288,15 @@ class VariableArrayFITSFieldCopier : public FITSFieldCopier {
   // Copy the current contents of the input RORecordFieldPtr to the
   // output FitsField
   virtual void copyToFITS() {
-    uInt nfits = fits_p->nelements();
-    uInt narray = (**rec_p).nelements();
-    uInt nmin = narray < nfits ? narray : nfits;
+    unsigned int nfits = fits_p->nelements();
+    unsigned int narray = (**rec_p).nelements();
+    unsigned int nmin = narray < nfits ? narray : nfits;
     bool deleteIt;
     const recordType *rptr = (**rec_p).getStorage(deleteIt);
-    for (uInt i = 0; i < nmin; i++) {
+    for (unsigned int i = 0; i < nmin; i++) {
       (*fits_p)(i) = rptr[i];
     }
-    for (uInt i = nmin; i < nfits; i++) {
+    for (unsigned int i = nmin; i < nfits; i++) {
       (*fits_p)(i) = recordType(0);
     }
     (**rec_p).freeStorage(rptr, deleteIt);
@@ -304,15 +304,15 @@ class VariableArrayFITSFieldCopier : public FITSFieldCopier {
     String thisTDIR;
     FITSKeywordUtil::toTDIM(thisTDIR, (**rec_p).shape());
     // and store it in the tdir_p FitsField
-    Int fitslength = tdir_p->nelements();
-    Int reclength = thisTDIR.length();
-    Int minlength = fitslength < reclength ? fitslength : reclength;
+    int fitslength = tdir_p->nelements();
+    int reclength = thisTDIR.length();
+    int minlength = fitslength < reclength ? fitslength : reclength;
     const char *chars = thisTDIR.c_str();
-    Int i;
+    int i;
     for (i = 0; i < minlength; i++) {
       (*tdir_p)(i) = chars[i];
     }
-    for (Int i = minlength; i < fitslength; i++) {
+    for (int i = minlength; i < fitslength; i++) {
       (*tdir_p)(i) = '\0';  // null terminate if possible
     }
   }

@@ -204,14 +204,14 @@ class TableExprData {
   // Get the shape of the given field.
   // Need only be implemented if there are arrays in the data.
   // The default implementation returns an empty IPosition.
-  virtual IPosition shape(const Block<Int>& fieldNrs) const;
+  virtual IPosition shape(const Block<int>& fieldNrs) const;
 
   // Get the data type of the given field.
   // Note that TpArray types have to be returned for arrays.
   // If the field is unknown, TpOther should be returned.
   // It is used for the isdefined function to check if the field
   // is really defined.
-  virtual DataType dataType(const Block<Int>& fieldNrs) const = 0;
+  virtual DataType dataType(const Block<int>& fieldNrs) const = 0;
 
   // Get a scalar in the given type.
   // This might involve converting for Double and DComplex.
@@ -219,11 +219,11 @@ class TableExprData {
   // The default <src>getDouble</src> invokes <src>getInt</src>.
   // The default <src>getDComplex</src> invokes <src>getDouble</src>.
   // <group>
-  virtual bool getBool(const Block<Int>& fieldNrs) const;
-  virtual Int64 getInt(const Block<Int>& fieldNrs) const;
-  virtual Double getDouble(const Block<Int>& fieldNrs) const;
-  virtual DComplex getDComplex(const Block<Int>& fieldNrs) const;
-  virtual String getString(const Block<Int>& fieldNrs) const;
+  virtual bool getBool(const Block<int>& fieldNrs) const;
+  virtual int64_t getInt(const Block<int>& fieldNrs) const;
+  virtual double getDouble(const Block<int>& fieldNrs) const;
+  virtual DComplex getDComplex(const Block<int>& fieldNrs) const;
+  virtual String getString(const Block<int>& fieldNrs) const;
   // </group>
 
   // Get an array in the given type.
@@ -232,11 +232,11 @@ class TableExprData {
   // The default <src>getArrayDComplex</src> invokes
   // <src>getArrayDouble</src>.
   // <group>
-  virtual Array<bool> getArrayBool(const Block<Int>& fieldNrs) const;
-  virtual Array<Int64> getArrayInt(const Block<Int>& fieldNrs) const;
-  virtual Array<Double> getArrayDouble(const Block<Int>& fieldNrs) const;
-  virtual Array<DComplex> getArrayDComplex(const Block<Int>& fieldNrs) const;
-  virtual Array<String> getArrayString(const Block<Int>& fieldNrs) const;
+  virtual Array<bool> getArrayBool(const Block<int>& fieldNrs) const;
+  virtual Array<int64_t> getArrayInt(const Block<int>& fieldNrs) const;
+  virtual Array<double> getArrayDouble(const Block<int>& fieldNrs) const;
+  virtual Array<DComplex> getArrayDComplex(const Block<int>& fieldNrs) const;
+  virtual Array<String> getArrayString(const Block<int>& fieldNrs) const;
   // </group>
 };
 

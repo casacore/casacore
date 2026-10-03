@@ -80,21 +80,21 @@ class FittingProxy {
   FittingProxy();
   virtual ~FittingProxy();
 
-  Int getid();
-  Record getstate(Int id);
-  bool init(Int id, Int n, Int tp, Double colfac, Double lmfac);
-  bool done(Int id);
-  bool reset(Int id);
-  bool set(Int id, Int nin, Int tpin, Double colfac, Double lmfac);
-  Record functional(Int id, const Record& fnc, const Vector<Double>& xval,
-                    const Vector<Double>& yval, const Vector<Double>& wt, Int mxit,
+  int getid();
+  Record getstate(int id);
+  bool init(int id, int n, int tp, double colfac, double lmfac);
+  bool done(int id);
+  bool reset(int id);
+  bool set(int id, int nin, int tpin, double colfac, double lmfac);
+  Record functional(int id, const Record& fnc, const Vector<double>& xval,
+                    const Vector<double>& yval, const Vector<double>& wt, int mxit,
                     const Record& constraint);
-  Record linear(Int id, const Record& fnc, const Vector<Double>& xval, const Vector<Double>& yval,
-                const Vector<Double>& wt, const Record& constraint);
-  Record cxfunctional(Int id, const Record& fnc, const Vector<DComplex>& xval,
-                      const Vector<DComplex>& yval, const Vector<DComplex>& wt, Int mxit,
+  Record linear(int id, const Record& fnc, const Vector<double>& xval, const Vector<double>& yval,
+                const Vector<double>& wt, const Record& constraint);
+  Record cxfunctional(int id, const Record& fnc, const Vector<DComplex>& xval,
+                      const Vector<DComplex>& yval, const Vector<DComplex>& wt, int mxit,
                       const Record& constraint);
-  Record cxlinear(Int id, const Record& fnc, const Vector<DComplex>& xval,
+  Record cxlinear(int id, const Record& fnc, const Vector<DComplex>& xval,
                   const Vector<DComplex>& yval, const Vector<DComplex>& wt,
                   const Record& constraint);
 
@@ -110,28 +110,28 @@ class FittingProxy {
     // # Method
     //  Set a fitter pointer (real or complex)
     //  <group>
-    void setFitter(GenericL2Fit<Double>* ptr);
+    void setFitter(GenericL2Fit<double>* ptr);
     void setFitterCX(GenericL2Fit<DComplex>* ptr);
     // </group>
     // Get a fitter pointer (real or complex)
     // <group>
-    GenericL2Fit<Double>* const& getFitter() const;
+    GenericL2Fit<double>* const& getFitter() const;
     GenericL2Fit<DComplex>* const& getFitterCX() const;
     // </group>
     // Set the status
-    void setStatus(Int n, Int typ, Double colfac, Double lmfac);
+    void setStatus(int n, int typ, double colfac, double lmfac);
     // Get the number of terms in condition equation
-    Int getNceq() const { return nceq_p; };
+    int getNceq() const { return nceq_p; };
     // Get the number of unknowns
-    Int getN() const { return n_p; };
+    int getN() const { return n_p; };
     // Get the number of real unknowns
-    Int getNreal() const { return nreal_p; };
+    int getNreal() const { return nreal_p; };
     // Get the type
-    Int getType() const { return typ_p; };
+    int getType() const { return typ_p; };
     // Get the collinearity factor
-    Double getColfac() const { return colfac_p; };
+    double getColfac() const { return colfac_p; };
     // Get the Levenberg-Marquardt factor
-    Double getLMfac() const { return lmfac_p; };
+    double getLMfac() const { return lmfac_p; };
     // Set solution done or not
     void setSolved(bool solved);
     // Solution done?
@@ -145,30 +145,30 @@ class FittingProxy {
     // # Data
     //  Pointer to a Fitting Machine: real or complex
     //  <group>
-    casacore::GenericL2Fit<Double>* fitter_p;
+    casacore::GenericL2Fit<double>* fitter_p;
     casacore::GenericL2Fit<DComplex>* fitterCX_p;
     // </group>
     // Number of unknowns
-    Int n_p;
+    int n_p;
     // Number of terms in condition equation
-    Int nceq_p;
+    int nceq_p;
     // Number of real unknowns
-    Int nreal_p;
+    int nreal_p;
     // Type
-    Int typ_p;
+    int typ_p;
     // Collinearity factor
-    Double colfac_p;
+    double colfac_p;
     // Levenberg-Marquardt factor
-    Double lmfac_p;
+    double lmfac_p;
     // Solution done?
     bool soldone_p;
     // System's rank deficiency
-    uInt nr_p;
+    unsigned int nr_p;
   };
   // # Member functions
   // # Data
   //  Number of FitType obkects present
-  uInt nFitter_p;
+  unsigned int nFitter_p;
   // List of FitTypes
   FitType** list_p;
 };

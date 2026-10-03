@@ -37,8 +37,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # This file defines classes derived from TableExprNode representing
 // # the data type and operator in a table expression.
 // #
-// # Data types Bool, Int64, Double, DComplex and String are used.
-// # Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
+// # Data types Bool, int64_t, Double, DComplex and String are used.
+// # Char, uChar, Short, uShort, Int, and uInt are converted to int64_t,
 // # Float to Double, and Complex to DComplex.
 // # Binary operators ==, >=, >, <, <= and != are recognized.
 // # Also &&, ||, and unary ! are recognized.
@@ -735,7 +735,7 @@ class TableExprNodeArrayGEDate : public TableExprNodeArray {
 // Only the Bool get function is defined, because the result of a
 // compare is always a Bool.
 // The right hand side can be optimized if it contains a constant array which
-// can be replaced by an std::unordered_set<Int64> or a Block<Bool>.
+// can be replaced by an std::unordered_set<int64_t> or a Block<Bool>.
 // </synopsis>
 
 class TableExprNodeArrayINInt : public TableExprNodeArray {

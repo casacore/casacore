@@ -37,7 +37,7 @@ RecordFieldPtr<T>::RecordFieldPtr() : parent_p(nullptr), fieldNumber_p(-1) {
 }
 
 template <class T>
-RecordFieldPtr<T>::RecordFieldPtr(RecordInterface& record, Int whichField) {
+RecordFieldPtr<T>::RecordFieldPtr(RecordInterface& record, int whichField) {
   attachToRecord(record, whichField);
 }
 
@@ -51,7 +51,7 @@ void RecordFieldPtr<T>::attachToRecord(RecordInterface& record, const RecordFiel
   attachToRecord(record, record.idToNumber(id));
 }
 template <class T>
-void RecordFieldPtr<T>::attachToRecord(RecordInterface& record, Int whichField) {
+void RecordFieldPtr<T>::attachToRecord(RecordInterface& record, int whichField) {
   parent_p = &record;
   fieldNumber_p = whichField;
   get();  // check type
@@ -70,24 +70,24 @@ T& RecordFieldPtr<T>::operator*() {
 }
 
 template <>
-inline const Table* RecordFieldPtr<Table>::get_typed_ptr(RecordInterface* record, Int fieldNumber) {
+inline const Table* RecordFieldPtr<Table>::get_typed_ptr(RecordInterface* record, int fieldNumber) {
   return static_cast<const Table*>(record->get_pointer(fieldNumber, TpOther));
 }
 
 template <>
 inline const Record* RecordFieldPtr<Record>::get_typed_ptr(RecordInterface* record,
-                                                           Int fieldNumber) {
+                                                           int fieldNumber) {
   return static_cast<const Record*>(record->get_pointer(fieldNumber, TpRecord, "Record"));
 }
 
 template <>
 inline const TableRecord* RecordFieldPtr<TableRecord>::get_typed_ptr(RecordInterface* record,
-                                                                     Int fieldNumber) {
+                                                                     int fieldNumber) {
   return static_cast<const TableRecord*>(record->get_pointer(fieldNumber, TpRecord, "TableRecord"));
 }
 
 template <class T>
-inline const T* RecordFieldPtr<T>::get_typed_ptr(RecordInterface* record, Int fieldNumber) {
+inline const T* RecordFieldPtr<T>::get_typed_ptr(RecordInterface* record, int fieldNumber) {
   return static_cast<const T*>(record->get_pointer(fieldNumber, whatType<T>()));
 }
 

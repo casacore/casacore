@@ -30,8 +30,8 @@ namespace casacore {
 
 BaseEngine::~BaseEngine() {}
 
-void BaseEngine::adaptForConstant(const IPosition& shapeConstants, uInt nvalues) {
-  uInt size = shapeConstants.product();
+void BaseEngine::adaptForConstant(const IPosition& shapeConstants, unsigned int nvalues) {
+  unsigned int size = shapeConstants.product();
   // Set to shape if not empty.
   if (size > 0) {
     itsIsConst = true;
@@ -65,7 +65,7 @@ void BaseEngine::extendBase(const BaseEngine& engine, bool skipFirstAxis) {
   // ndim=0 means a scalar.
   // ndim>0 is a known dimensionality (but shape might be unknown).
   IPosition shp = engine.shape();
-  Int ndim = engine.ndim();
+  int ndim = engine.ndim();
   IPosition shape;
   if (skipFirstAxis) {
     // Remove first axis (for e.g. position and direction).
@@ -94,9 +94,9 @@ void BaseEngine::extendBase(const BaseEngine& engine, bool skipFirstAxis) {
   }
 }
 
-void BaseEngine::deriveAttr(const Unit&, Int) {}
+void BaseEngine::deriveAttr(const Unit&, int) {}
 
-void BaseEngine::setValueType(Int) {}
+void BaseEngine::setValueType(int) {}
 
 String BaseEngine::stripMeasType(const String& type) { return type; }
 

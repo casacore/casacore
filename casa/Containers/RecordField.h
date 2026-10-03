@@ -115,14 +115,14 @@ class RecordFieldPtr {
   // Attach this field pointer to the given field. If it does not exist
   // an exception is thrown.
   // <group>
-  RecordFieldPtr(RecordInterface& record, Int whichField);
+  RecordFieldPtr(RecordInterface& record, int whichField);
   RecordFieldPtr(RecordInterface& record, const RecordFieldId&);
   // </group>
 
   // Change our pointer to the supplied field. If it doesn't exist an
   // exception is thrown.
   // <group>
-  void attachToRecord(RecordInterface& record, Int whichField);
+  void attachToRecord(RecordInterface& record, int whichField);
   void attachToRecord(RecordInterface& record, const RecordFieldId&);
   // </group>
 
@@ -154,7 +154,7 @@ class RecordFieldPtr {
   void setComment(const String& comment);
 
   // Return the fieldnumber of this field.
-  Int fieldNumber() const { return fieldNumber_p; }
+  int fieldNumber() const { return fieldNumber_p; }
 
   // Return the name of the field.
   String name() const { return parent_p->name(fieldNumber_p); }
@@ -170,10 +170,10 @@ class RecordFieldPtr {
   bool isAttached() const { return parent_p; }
 
  private:
-  static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
+  static const T* get_typed_ptr(RecordInterface* record, int fieldNumber);
 
   RecordInterface* parent_p;
-  Int fieldNumber_p;
+  int fieldNumber_p;
 };
 
 // <summary>
@@ -203,7 +203,7 @@ template <class T>
 class RORecordFieldPtr {
  public:
   RORecordFieldPtr() {}
-  RORecordFieldPtr(const RecordInterface& record, Int whichField)
+  RORecordFieldPtr(const RecordInterface& record, int whichField)
       : fieldPtr_p((RecordInterface&)record, whichField) {}
   RORecordFieldPtr(const RecordInterface& record, const RecordFieldId& id)
       : fieldPtr_p((RecordInterface&)record, id) {}
@@ -216,7 +216,7 @@ class RORecordFieldPtr {
 
   ~RORecordFieldPtr() {}
 
-  void attachToRecord(const RecordInterface& record, Int whichField) {
+  void attachToRecord(const RecordInterface& record, int whichField) {
     fieldPtr_p.attachToRecord((RecordInterface&)record, whichField);
   }
   void attachToRecord(const RecordInterface& record, const RecordFieldId& id) {
@@ -228,7 +228,7 @@ class RORecordFieldPtr {
 
   const String& comment() const { return fieldPtr_p.comment(); }
 
-  Int fieldNumber() const { return fieldPtr_p.fieldNumber(); }
+  int fieldNumber() const { return fieldPtr_p.fieldNumber(); }
 
   void detach() { fieldPtr_p.detach(); }
   bool isAttached() const { return fieldPtr_p.isAttached(); }

@@ -51,7 +51,7 @@ ChebyshevParam<T>::ChebyshevParam()
       mode_p(ChebyshevEnums::CONSTANT) {}
 
 template <class T>
-ChebyshevParam<T>::ChebyshevParam(const uInt n)
+ChebyshevParam<T>::ChebyshevParam(const unsigned int n)
     : Function1D<T>(n + 1),
       def_p(T(0)),
       minx_p(T(-1)),
@@ -59,7 +59,7 @@ ChebyshevParam<T>::ChebyshevParam(const uInt n)
       mode_p(ChebyshevEnums::CONSTANT) {}
 
 template <class T>
-ChebyshevParam<T>::ChebyshevParam(const uInt n, const RecordInterface &)
+ChebyshevParam<T>::ChebyshevParam(const unsigned int n, const RecordInterface &)
     : Function1D<T>(n + 1),
       def_p(T(0)),
       minx_p(T(-1)),
@@ -128,16 +128,16 @@ void ChebyshevParam<T>::setCoefficients(const Vector<T> &coeffs) {
         "ChebyshevParam<T>::setCoeffiecients(): "
         "empty Vector passed");
   }
-  for (uInt i = 0; i < coeffs.nelements(); ++i) setCoefficient(i, coeffs[i]);
+  for (unsigned int i = 0; i < coeffs.nelements(); ++i) setCoefficient(i, coeffs[i]);
 }
 
 template <class T>
-void ChebyshevParam<T>::setCoefficient(const uInt which, const T &value) {
+void ChebyshevParam<T>::setCoefficient(const unsigned int which, const T &value) {
   if (which >= nparameters()) {
-    uInt sz = nparameters();
+    unsigned int sz = nparameters();
     FunctionParam<T> cfp(param_p);
     param_p = FunctionParam<T>(which + 1);
-    for (uInt i = 0; i < sz; ++i) {
+    for (unsigned int i = 0; i < sz; ++i) {
       param_p[i] = cfp[i];
       param_p.mask(i) = cfp.mask(i);
     }
@@ -158,23 +158,23 @@ void ChebyshevParam<T>::derivativeCoeffs(Vector<T> &coeffs, const T &xmin, const
   // take the derivative
   Vector<T> &dce = coeffs;
   dce.resize(ce.nelements() - 1);
-  for (uInt i = 1; i < ce.nelements(); ++i) dce(i - 1) = T(2 * i) * ce(i) / (xmax - xmin);
+  for (unsigned int i = 1; i < ce.nelements(); ++i) dce(i - 1) = T(2 * i) * ce(i) / (xmax - xmin);
   // convert back to ChebyshevParam
   powerToChebyshev(dce);
 }
 
 template <class T>
 void ChebyshevParam<T>::powerToChebyshev(Vector<T> &coeffs) {
-  uInt n = coeffs.nelements();
+  unsigned int n = coeffs.nelements();
   // Create an inverse transformation matrix
   Matrix<T> poly(n, n, T(0));
   poly(0, 0) = T(1);
   poly(1, 1) = T(1);
   T scale;
-  for (uInt i = 2; i < n; i++) {
+  for (unsigned int i = 2; i < n; i++) {
     scale = T(1) / pow(T(2), T(i - 1));
-    Int j;
-    uInt k;
+    int j;
+    unsigned int k;
     for (j = i, k = 1; j > 1; j -= 2, k++) {
       poly(j, i) = scale;
       scale *= T((i - k + 1) / k);
@@ -183,29 +183,29 @@ void ChebyshevParam<T>::powerToChebyshev(Vector<T> &coeffs) {
     if (j == 0) poly(j, i) /= 2;
   }
   // multiply transformation matrix by coefficient vector
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     coeffs(i) *= poly(i, i);
-    for (uInt k = i + 2; k < n; k += 2) coeffs(i) += poly(i, k) * coeffs(k);
+    for (unsigned int k = i + 2; k < n; k += 2) coeffs(i) += poly(i, k) * coeffs(k);
   }
 }
 
 template <class T>
 void ChebyshevParam<T>::chebyshevToPower(Vector<T> &coeffs) {
-  uInt n = coeffs.nelements();
+  unsigned int n = coeffs.nelements();
   // Create a transformation matrix
   Matrix<T> cheb(n, n, T(0));
   cheb(0, 0) = T(1);
   cheb(1, 1) = T(1);
-  for (uInt i = 2; i < n; i++) {
-    for (Int j = i; j > 0; j -= 2) {
+  for (unsigned int i = 2; i < n; i++) {
+    for (int j = i; j > 0; j -= 2) {
       if (j > 1) cheb(j - 2, i) -= cheb(j - 2, i - 2);
       cheb(j, i) += T(2) * cheb(j - 1, i - 1);
     }
   }
   // multiply transformation matrix by coefficient vector
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     coeffs(i) *= cheb(i, i);
-    for (uInt k = i + 2; k < n; k += 2) coeffs(i) += cheb(i, k) * coeffs(k);
+    for (unsigned int k = i + 2; k < n; k += 2) coeffs(i) += cheb(i, k) * coeffs(k);
   }
 }
 
@@ -254,7 +254,7 @@ void ChebyshevParamModeImpl<T>::setMode(const RecordInterface &in) {
     if (in.type(in.idToNumber(fld)) == TpString) {
       String mode;
       in.get(fld, mode);
-      uInt match = MUString::minimaxNC(mode, modes_s);
+      unsigned int match = MUString::minimaxNC(mode, modes_s);
       if (mode.length() > 0 && match < modes_s.nelements())
         setOutOfIntervalMode(static_cast<ChebyshevEnums::OutOfIntervalMode>(match));
       else
@@ -312,7 +312,7 @@ void ChebyshevParamModeImpl<AutoDiff<T>>::setMode(const RecordInterface &in) {
     if (in.type(in.idToNumber(fld)) == TpString) {
       String mode;
       in.get(fld, mode);
-      uInt match = MUString::minimaxNC(mode, this->modes_s);
+      unsigned int match = MUString::minimaxNC(mode, this->modes_s);
       if (mode.length() > 0 && match < this->modes_s.nelements())
         this->setOutOfIntervalMode(static_cast<ChebyshevEnums::OutOfIntervalMode>(match));
       else
@@ -370,7 +370,7 @@ void ChebyshevParamModeImpl<AutoDiffA<T>>::setMode(const RecordInterface &in) {
     if (in.type(in.idToNumber(fld)) == TpString) {
       String mode;
       in.get(fld, mode);
-      uInt match = MUString::minimaxNC(mode, this->modes_s);
+      unsigned int match = MUString::minimaxNC(mode, this->modes_s);
       if (mode.length() > 0 && match < this->modes_s.nelements())
         this->setOutOfIntervalMode(static_cast<ChebyshevEnums::OutOfIntervalMode>(match));
       else

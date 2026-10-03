@@ -42,25 +42,25 @@
 #include <casacore/casa/namespace.h>
 void doIt(TypeIO* io) {
   // Save current file position.
-  Int64 position = io->seek(0, ByteIO::Current);
+  int64_t position = io->seek(0, ByteIO::Current);
 
   AlwaysAssertExit(io->isReadable());
   AlwaysAssertExit(io->isWritable());
   AlwaysAssertExit(io->isSeekable());
 
   bool testBool = true;
-  Short testShort = -30;
-  uShort testuShort = 10;
-  Int testInt = -20;
-  uInt testuInt = 80;
-  Int64 testInt64 = -100000;
-  uInt64 testuInt64 = 100000;
-  Float testFloat = 18.5;
-  Double testDouble = 23.5;
+  short testShort = -30;
+  unsigned short testuShort = 10;
+  int testInt = -20;
+  unsigned int testuInt = 80;
+  int64_t testInt64 = -100000;
+  uint64_t testuInt64 = 100000;
+  float testFloat = 18.5;
+  double testDouble = 23.5;
   Complex testComplex(2, 3);
   DComplex testDComplex(2.5, 3.8);
-  Char testChar = 'A';
-  uChar testuChar = 'B';
+  char testChar = 'A';
+  unsigned char testuChar = 'B';
   String testString("This is a teststring");
 
   io->write(1, &testBool);
@@ -81,18 +81,18 @@ void doIt(TypeIO* io) {
   io->seek(position);
 
   bool tBool;
-  Short tShort;
-  uShort tuShort;
-  Int tInt;
-  uInt tuInt;
-  Int64 tInt64;
-  uInt64 tuInt64;
-  Float tFloat;
-  Double tDouble;
+  short tShort;
+  unsigned short tuShort;
+  int tInt;
+  unsigned int tuInt;
+  int64_t tInt64;
+  uint64_t tuInt64;
+  float tFloat;
+  double tDouble;
   Complex tComplex;
   DComplex tDComplex;
-  Char tChar;
-  uChar tuChar;
+  char tChar;
+  unsigned char tuChar;
   String tString;
 
   io->read(1, &tBool);

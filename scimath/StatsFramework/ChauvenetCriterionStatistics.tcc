@@ -35,8 +35,8 @@
 namespace casacore {
 
 CASA_STATD
-ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(Double zscore,
-                                                                       Int maxIterations)
+ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(double zscore,
+                                                                       int maxIterations)
     : ConstrainedRangeStatistics<CASA_STATP>(
           std::shared_ptr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
               new ConstrainedRangeQuantileComputer<CASA_STATP>(&this->_getDataset()))),
@@ -93,8 +93,8 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
   if (_rangeIsSet) {
     return;
   }
-  uInt maxI = _maxIterations >= 0 ? _maxIterations : 1000;
-  uInt64 prevNpts = 0;
+  unsigned int maxI = _maxIterations >= 0 ? _maxIterations : 1000;
+  uint64_t prevNpts = 0;
   StatsData<AccumType> sd;
   while (_niter <= maxI) {
     if (_niter == 0) {
@@ -102,18 +102,18 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
       sd = cs.getStatistics();
     } else {
       sd = this->getStatistics();
-      if ((uInt64)sd.npts == prevNpts) {
+      if ((uint64_t)sd.npts == prevNpts) {
         break;
       }
     }
-    Double zScore = _zscore >= 0 ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
+    double zScore = _zscore >= 0 ? _zscore : ZScoreCalculator::getMaxZScore((uint64_t)sd.npts);
     auto range = std::make_shared<std::pair<AccumType, AccumType>>(sd.mean - zScore * sd.stddev,
                                                                    sd.mean + zScore * sd.stddev);
     ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
     // _rangeIsSet is set here to prevent infinite
     // recursion on next loop iteration
     _rangeIsSet = true;
-    prevNpts = (uInt64)sd.npts;
+    prevNpts = (uint64_t)sd.npts;
     ++_niter;
   }
   --_niter;

@@ -42,38 +42,38 @@ Array<bool> arrb() {
   arrb(IPosition(4, 0, 0, 2, 0)) = true;
   return arrb;
 }
-Array<uChar> arruc() {
-  Array<uChar> arruc(IPosition(1, 1));
+Array<unsigned char> arruc() {
+  Array<unsigned char> arruc(IPosition(1, 1));
   indgen(arruc);
   return arruc;
 }
-Array<Short> arrs() {
-  Array<Short> arrs(IPosition(2, 3, 4));
+Array<short> arrs() {
+  Array<short> arrs(IPosition(2, 3, 4));
   indgen(arrs);
   return arrs;
 }
-Array<Int> arri() {
-  Array<Int> arri(IPosition(3, 2, 2, 2));
+Array<int> arri() {
+  Array<int> arri(IPosition(3, 2, 2, 2));
   indgen(arri);
   return arri;
 }
-Array<uInt> arrui() {
-  Array<uInt> arrui(IPosition(1, 5));
+Array<unsigned int> arrui() {
+  Array<unsigned int> arrui(IPosition(1, 5));
   indgen(arrui, 32768u * 65536u);
   return arrui;
 }
-Array<Int64> arri64() {
-  Array<Int64> arri(IPosition(3, 2, 2, 2));
-  indgen(arri, Int64(2e10));
+Array<int64_t> arri64() {
+  Array<int64_t> arri(IPosition(3, 2, 2, 2));
+  indgen(arri, int64_t(2e10));
   return arri;
 }
-Array<Float> arrf() {
-  Array<Float> arrf(IPosition(1, 3));
+Array<float> arrf() {
+  Array<float> arrf(IPosition(1, 3));
   indgen(arrf);
   return arrf;
 }
-Array<Double> arrd() {
-  Array<Double> arrd(IPosition(1, 5));
+Array<double> arrd() {
+  Array<double> arrd(IPosition(1, 5));
   indgen(arrd);
   return arrd;
 }
@@ -101,13 +101,13 @@ Array<String> arrstremp() {
 }
 
 Array<bool> emparrb() { return Array<bool>(IPosition(4, 0)); }
-Array<uChar> emparruc() { return Array<uChar>(IPosition(0, 0)); }
-Array<Short> emparrs() { return Array<Short>(IPosition(0, 0)); }
-Array<Int> emparri() { return Array<Int>(IPosition(0, 0)); }
-Array<uInt> emparrui() { return Array<uInt>(IPosition(1, 0)); }
-Array<Int64> emparri64() { return Array<Int64>(IPosition(2, 0)); }
-Array<Float> emparrf() { return Array<Float>(IPosition(2, 0)); }
-Array<Double> emparrd() { return Array<Double>(IPosition(1, 0)); }
+Array<unsigned char> emparruc() { return Array<unsigned char>(IPosition(0, 0)); }
+Array<short> emparrs() { return Array<short>(IPosition(0, 0)); }
+Array<int> emparri() { return Array<int>(IPosition(0, 0)); }
+Array<unsigned int> emparrui() { return Array<unsigned int>(IPosition(1, 0)); }
+Array<int64_t> emparri64() { return Array<int64_t>(IPosition(2, 0)); }
+Array<float> emparrf() { return Array<float>(IPosition(2, 0)); }
+Array<double> emparrd() { return Array<double>(IPosition(1, 0)); }
 Array<Complex> emparrc() { return Array<Complex>(IPosition(2, 0, 0)); }
 Array<DComplex> emparrdc() { return Array<DComplex>(IPosition(2, 0, 0)); }
 Array<String> emparrstr() { return Array<String>(IPosition(0, 0)); }
@@ -119,7 +119,7 @@ void checkRecord(const RecordInterface& rec) {
   AlwaysAssertExit(rec.asShort("short") == -2);
   AlwaysAssertExit(rec.asInt("int") == 2);
   AlwaysAssertExit(rec.asuInt("uint") == 21);
-  AlwaysAssertExit(rec.asInt64("int64") == Int64(1e10));
+  AlwaysAssertExit(rec.asInt64("int64") == int64_t(1e10));
   AlwaysAssertExit(rec.asFloat("float") == 3.);
   AlwaysAssertExit(rec.asDouble("double") == -2.1);
   AlwaysAssertExit(rec.asComplex("complex") == Complex(-2.1, 1.1));
@@ -174,20 +174,20 @@ int main() {
     // Create a record and nested record.
     Record rec1;
     rec1.define("bool", true);
-    rec1.define("uchar", (uChar)1);
-    rec1.define("short", (Short)-2);
-    rec1.define("int", (Int)2);
-    rec1.define("uint", (uInt)21);
-    rec1.define("int64", Int64(1e10));
-    rec1.define("float", (Float)3.);
-    rec1.define("double", (Double)-2.1);
+    rec1.define("uchar", (unsigned char)1);
+    rec1.define("short", (short)-2);
+    rec1.define("int", (int)2);
+    rec1.define("uint", (unsigned int)21);
+    rec1.define("int64", int64_t(1e10));
+    rec1.define("float", (float)3.);
+    rec1.define("double", (double)-2.1);
     rec1.define("complex", Complex(-2.1, 1.1));
     rec1.define("dcomplex", DComplex(-2.2, 1.2));
     rec1.define("arrstring", arrstr());
     rec1.define("string", "abc");
     Record rec2;
     rec2.defineRecord("rec1", rec1);
-    rec2.define("double", (Double)3.14);
+    rec2.define("double", (double)3.14);
     rec2.defineRecord("rec1a", rec1);
     Record rec3;
     rec3.defineRecord("rec2", rec2);

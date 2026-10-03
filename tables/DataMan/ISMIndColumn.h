@@ -95,7 +95,7 @@ class ISMIndColumn : public ISMColumn {
  public:
   // Create a column of the given data type.
   // It keeps the pointer to its parent (but does not own it).
-  ISMIndColumn(ISMBase* parent, int dataType, uInt colnr);
+  ISMIndColumn(ISMBase* parent, int dataType, unsigned int colnr);
 
   // Frees up the storage.
   virtual ~ISMIndColumn();
@@ -113,7 +113,7 @@ class ISMIndColumn : public ISMColumn {
   virtual void setShapeColumn(const IPosition& shape);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Set the shape of the array in the given row and allocate the array
   // in the file.
@@ -207,7 +207,7 @@ class ISMIndColumn : public ISMColumn {
   StIndArray* putArrayPtr(rownr_t rownr, const IPosition& shape, bool copyData);
 
   // The (unique) sequence number of the column.
-  uInt seqnr_p;
+  unsigned int seqnr_p;
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
   // Switch indicating if the shape is fixed.

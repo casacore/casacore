@@ -68,16 +68,16 @@ int main() {
 // First build a description.
 void a() {
   // First register the virtual column engine.
-  ScaledComplexData<Complex, Short>::registerClass();
-  ScaledComplexData<DComplex, Int>::registerClass();
+  ScaledComplexData<Complex, short>::registerClass();
+  ScaledComplexData<DComplex, int>::registerClass();
 
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ArrayColumnDesc<Int>("target1"));
+  td.addColumn(ArrayColumnDesc<int>("target1"));
   td.addColumn(ArrayColumnDesc<DComplex>("source1"));
-  td.addColumn(ArrayColumnDesc<Short>("target2"));
+  td.addColumn(ArrayColumnDesc<short>("target2"));
   td.addColumn(ArrayColumnDesc<Complex>("source2", "", IPosition(2, 3, 4), ColumnDesc::Direct));
-  td.addColumn(ArrayColumnDesc<Int>("target3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+  td.addColumn(ArrayColumnDesc<int>("target3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<DComplex>("source3", "", IPosition(2, 3, 4), ColumnDesc::Direct));
   td.addColumn(ScalarColumnDesc<DComplex>("scale3"));
 
@@ -85,11 +85,11 @@ void a() {
   SetupNewTable newtab("tScaledComplexData_tmp.data", td, Table::New);
   // Create the virtual column engine with the scale factors
   // and bind the columns to them.
-  ScaledComplexData<DComplex, Int> engine1("source1", "target1", DComplex(2.0, 3.0),
+  ScaledComplexData<DComplex, int> engine1("source1", "target1", DComplex(2.0, 3.0),
                                            DComplex(4.0, 5.0));
-  ScaledComplexData<Complex, Short> engine2("source2", "target2", Complex(6.0, 7.0),
+  ScaledComplexData<Complex, short> engine2("source2", "target2", Complex(6.0, 7.0),
                                             Complex(2.0, 3.0));
-  ScaledComplexData<DComplex, Int> engine3("source3", "target3", "scale3");
+  ScaledComplexData<DComplex, int> engine3("source3", "target3", "scale3");
   newtab.bindColumn("source1", engine1);
   newtab.bindColumn("source2", engine2);
   newtab.bindColumn("source3", engine3);
@@ -103,9 +103,9 @@ void a() {
 
   Matrix<DComplex> arrd(IPosition(2, 3, 4));
   Matrix<Complex> arrf(IPosition(2, 3, 4));
-  Int i = 0;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
+  int i = 0;
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
       arrd(i1, i2) = DComplex(4 + i, 2 + i);
       arrf(i1, i2) = Complex(8 + i, 3 + i);
       i += 420;
@@ -141,14 +141,14 @@ void b() {
   ArrayColumn<DComplex> source1(tab, "source1");
   ArrayColumn<Complex> source2(tab, "source2");
   ArrayColumn<DComplex> source3(tab, "source3");
-  ArrayColumn<Int> target1(tab, "target1");
-  ArrayColumn<Short> target2(tab, "target2");
-  ArrayColumn<Int> target3(tab, "target3");
-  Cube<Int> arri1(IPosition(3, 2, 3, 4));
-  Cube<Int> arri3(IPosition(3, 2, 3, 4));
-  Cube<Int> arrvali(IPosition(3, 2, 3, 4));
-  Cube<Short> arrc2(IPosition(3, 2, 3, 4));
-  Cube<Short> arrvalc(IPosition(3, 2, 3, 4));
+  ArrayColumn<int> target1(tab, "target1");
+  ArrayColumn<short> target2(tab, "target2");
+  ArrayColumn<int> target3(tab, "target3");
+  Cube<int> arri1(IPosition(3, 2, 3, 4));
+  Cube<int> arri3(IPosition(3, 2, 3, 4));
+  Cube<int> arrvali(IPosition(3, 2, 3, 4));
+  Cube<short> arrc2(IPosition(3, 2, 3, 4));
+  Cube<short> arrvalc(IPosition(3, 2, 3, 4));
   Matrix<DComplex> arrd1(IPosition(2, 3, 4));
   Matrix<DComplex> arrd3(IPosition(2, 3, 4));
   Matrix<DComplex> arrvald(IPosition(2, 3, 4));
@@ -158,14 +158,14 @@ void b() {
   Slice tmp;
   Slicer nslice(tmp, tmp, Slicer::endIsLength);
   Slicer nslice2(Slice(0, 1, 2), Slice(0, 2, 2), Slicer::endIsLength);
-  for (uInt j = 0; j < 10; j++) {
+  for (unsigned int j = 0; j < 10; j++) {
     {
-      Int sc1 = 1 + j % 3;
-      Int sc2 = 1 + j % 4;
-      Int i = 0;
-      for (uInt i2 = 0; i2 < 4; i2++) {
-        for (uInt i1 = 0; i1 < 3; i1++) {
-          Int val = j * 840 + i;
+      int sc1 = 1 + j % 3;
+      int sc2 = 1 + j % 4;
+      int i = 0;
+      for (unsigned int i2 = 0; i2 < 4; i2++) {
+        for (unsigned int i1 = 0; i1 < 3; i1++) {
+          int val = j * 840 + i;
           arrd1(i1, i2) = DComplex(val + 4, val + 2);
           arrf2(i1, i2) = Complex(val + 8, val + 3);
           arrd3(i1, i2) = arrd1(i1, i2) + DComplex(2, 22);
@@ -234,11 +234,11 @@ void b() {
   {
     Cube<DComplex> arrd1(IPosition(3, 3, 4, 10));
     Slicer nslice2(Slice(0, 2, 1), Slice(1, 2, 2), Slicer::endIsLength);
-    for (uInt j = 0; j < 10; j++) {
-      Int i = 0;
-      for (uInt i2 = 0; i2 < 4; i2++) {
-        for (uInt i1 = 0; i1 < 3; i1++) {
-          Int val = j * 840 + i;
+    for (unsigned int j = 0; j < 10; j++) {
+      int i = 0;
+      for (unsigned int i2 = 0; i2 < 4; i2++) {
+        for (unsigned int i1 = 0; i1 < 3; i1++) {
+          int val = j * 840 + i;
           arrd1(i1, i2, j) = DComplex(val + 4, val + 2);
           i += 420;
         }

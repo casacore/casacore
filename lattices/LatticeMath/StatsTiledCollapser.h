@@ -119,15 +119,15 @@ class StatsTiledCollapser : public TiledCollapser<T, U> {
   virtual ~StatsTiledCollapser() {}
 
   // Initialize process, making some checks
-  virtual void init(uInt nOutPixelsPerCollapse);
+  virtual void init(unsigned int nOutPixelsPerCollapse);
 
   // Initialiaze the accumulator
-  virtual void initAccumulator(uInt64 n1, uInt64 n3);
+  virtual void initAccumulator(uint64_t n1, uint64_t n3);
 
   // Process the data in the current chunk.
-  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const bool* inMask,
-                       uInt dataIncr, uInt maskIncr, uInt nrval, const IPosition& startPos,
-                       const IPosition& shape);
+  virtual void process(unsigned int accumIndex1, unsigned int accumIndex3, const T* inData,
+                       const bool* inMask, unsigned int dataIncr, unsigned int maskIncr,
+                       unsigned int nrval, const IPosition& startPos, const IPosition& shape);
 
   // End the accumulation process and return the result arrays
   virtual void endAccumulator(Array<U>& result, Array<bool>& resultMask, const IPosition& shape);
@@ -147,17 +147,17 @@ class StatsTiledCollapser : public TiledCollapser<T, U> {
   // Accumulators for sum, sum squared, number of points
   // minimum, and maximum
 
-  std::shared_ptr<Block<Double>> _npts;
+  std::shared_ptr<Block<double>> _npts;
   std::shared_ptr<Block<U>> _sum, _sumSq, _mean, _variance, _nvariance, _sigma;
   std::shared_ptr<Block<T>> _min, _max;
   std::shared_ptr<Block<bool>> _initMinMax;
 
-  uInt64 _n1, _n3;
+  uint64_t _n1, _n3;
 
-  void _convertNPts(Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+  void _convertNPts(double*& nptsPtr, std::shared_ptr<Block<double>> npts,
                     std::shared_ptr<Block<DComplex>> nptsComplex) const;
 
-  void _convertNPts(DComplex*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+  void _convertNPts(DComplex*& nptsPtr, std::shared_ptr<Block<double>> npts,
                     std::shared_ptr<Block<DComplex>> nptsComplex) const;
 };
 

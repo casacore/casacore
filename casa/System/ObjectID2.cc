@@ -29,13 +29,13 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-uInt hashFunc(const ObjectID& key) {
+unsigned int hashFunc(const ObjectID& key) {
   // We should check to see if this hash is any good
-  uInt result = 0;
+  unsigned int result = 0;
   result |= key.sequence() & 0xff;
   result |= (key.pid() & 0xff) << 8;
   result |= (key.creationTime() & 0xff) << 16;
-  result |= uInt(key.hostName()[0]) << 24;
+  result |= static_cast<unsigned int>(key.hostName()[0]) << 24;
   return result;
 }
 
@@ -57,7 +57,7 @@ String ObjectID::extractIDs(Block<ObjectID>& objectIDs, const String& command) {
     if (!oid.fromString(error, str.substr(index, pos - index))) {
       result += str.substr(index - 11, pos - index + 13);
     } else {
-      uInt n = objectIDs.nelements() + 1;
+      unsigned int n = objectIDs.nelements() + 1;
       objectIDs.resize(n);
       objectIDs[n - 1] = oid;
       char buf[16];

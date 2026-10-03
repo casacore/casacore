@@ -40,7 +40,7 @@ void FrequencyUDF::setup(const Table&, const TaQLStyle&) {
   // Get the 'to' reference type.
   // Determine the argnr of the epoch.
   bool needRadVel = false;
-  uInt argnr = 0;
+  unsigned int argnr = 0;
   if (itsType == REST) {
     itsRefType = MFrequency::REST;
   } else if (itsType != SHIFT) {
@@ -119,12 +119,12 @@ void FrequencyUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType));
 }
 
-bool FrequencyUDF::handleRadVelDoppler(uInt& argnr, bool mustRadVel) {
+bool FrequencyUDF::handleRadVelDoppler(unsigned int& argnr, bool mustRadVel) {
   // In the REST function a radial velocity or doppler can be used.
   // They can be distinguished by unit or type, so the velocity unit
   // and/or a type is required for radial velocity.
   if (operands().size() > argnr) {
-    uInt argnrOld = argnr;
+    unsigned int argnrOld = argnr;
     if (!operands()[argnr]->unit().empty()) {
       try {
         itsRadVelEngine.handleRadialVelocity(operands(), argnr);
@@ -149,12 +149,12 @@ bool FrequencyUDF::handleRadVelDoppler(uInt& argnr, bool mustRadVel) {
   throw AipsError("No radial velocity nor doppler given in MEAS.REST function");
 }
 
-Double FrequencyUDF::getDouble(const TableExprId& id) {
+double FrequencyUDF::getDouble(const TableExprId& id) {
   return getArrayDouble(id).array().data()[0];
 }
 
-MArray<Double> FrequencyUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id, itsType));
+MArray<double> FrequencyUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id, itsType));
 }
 
 }  // namespace casacore

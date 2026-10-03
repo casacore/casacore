@@ -41,10 +41,10 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Gaussian2D<Double> addModel(Array<Float>& pixels, Double height, Double x, Double y, Double major,
-                            Double minor, Double pa);
+Gaussian2D<double> addModel(Array<float>& pixels, double height, double x, double y, double major,
+                            double minor, double pa);
 
-void addNoise(Array<Float>& pixels, Array<Float>& sigma, Double noise);
+void addNoise(Array<float>& pixels, Array<float>& sigma, double noise);
 
 int main(int argc, const char* argv[]) {
   try {
@@ -66,17 +66,17 @@ int main(int argc, const char* argv[]) {
     inputs.create("exclude", "0.0", "exclude");
     //
     inputs.readArguments(argc, argv);
-    const Int nModels = inputs.getInt("nmodels");
-    const Double noise = inputs.getDouble("noise");
-    Double major = inputs.getDouble("major");
-    Double minor = inputs.getDouble("minor");
-    Double pa = inputs.getDouble("pa") * M_PI / 180.0;  // +x -> +y
-    const Int nx = inputs.getInt("nx");
-    const Int ny = inputs.getInt("ny");
+    const int nModels = inputs.getInt("nmodels");
+    const double noise = inputs.getDouble("noise");
+    double major = inputs.getDouble("major");
+    double minor = inputs.getDouble("minor");
+    double pa = inputs.getDouble("pa") * M_PI / 180.0;  // +x -> +y
+    const int nx = inputs.getInt("nx");
+    const int ny = inputs.getInt("ny");
     /// const bool norm = inputs.getBool("norm");
-    const Block<Int> mask = inputs.getIntArray("mask");
-    const Block<Double> includeRange = inputs.getDoubleArray("include");
-    const Block<Double> excludeRange = inputs.getDoubleArray("exclude");
+    const Block<int> mask = inputs.getIntArray("mask");
+    const Block<double> includeRange = inputs.getDoubleArray("include");
+    const Block<double> excludeRange = inputs.getDoubleArray("exclude");
     //
     LogOrigin lor("tFit2D", "main()", WHERE);
     LogIO logger(lor);
@@ -84,13 +84,13 @@ int main(int argc, const char* argv[]) {
     Fit2D fitter(logger);
     //
     IPosition shape(2, nx, ny);
-    Array<Float> pixels(shape, Float(0));
-    Array<Float> sigma(shape);
-    Matrix<Double> saveEstimate(nModels, 6);
+    Array<float> pixels(shape, float(0));
+    Array<float> sigma(shape);
+    Matrix<double> saveEstimate(nModels, 6);
     //
-    Double xsep = nx / nModels;
-    Double ysep = ny / nModels;
-    Double xPos, yPos;
+    double xsep = nx / nModels;
+    double ysep = ny / nModels;
+    double xPos, yPos;
     if (nModels == 1) {
       xPos = nx / 2.0;
       yPos = ny / 2.0;
@@ -98,23 +98,23 @@ int main(int argc, const char* argv[]) {
       xPos = xsep / 2.0;
       yPos = ysep / 2.0;
     }
-    Double height = 1.0;
+    double height = 1.0;
 
     //
-    Vector<Double> trueHeight(nModels);
-    Vector<Double> trueX(nModels);
-    Vector<Double> trueY(nModels);
-    Vector<Double> trueMajor(nModels);
-    Vector<Double> trueMinor(nModels);
-    Vector<Double> truePA(nModels);
+    Vector<double> trueHeight(nModels);
+    Vector<double> trueX(nModels);
+    Vector<double> trueY(nModels);
+    Vector<double> trueMajor(nModels);
+    Vector<double> trueMinor(nModels);
+    Vector<double> truePA(nModels);
     //
     Vector<bool> saveMask;
-    Vector<Double> startParameters;
+    Vector<double> startParameters;
     Vector<bool> parameterMask;
-    for (Int i = 0; i < nModels; i++) {
+    for (int i = 0; i < nModels; i++) {
       // Add model to data array
 
-      Gaussian2D<Double> gauss2d = addModel(pixels, height, xPos, yPos, major, minor, pa);
+      Gaussian2D<double> gauss2d = addModel(pixels, height, xPos, yPos, major, minor, pa);
       trueHeight(i) = height;
       trueX(i) = xPos;
       trueY(i) = yPos;
@@ -124,9 +124,9 @@ int main(int argc, const char* argv[]) {
 
       // Set Parameters mask
 
-      Vector<Double> parameters(gauss2d.nparameters());
+      Vector<double> parameters(gauss2d.nparameters());
       parameterMask = Vector<bool>(gauss2d.nparameters(), true);
-      for (uInt j = 0; j < parameters.nelements(); j++) {
+      for (unsigned int j = 0; j < parameters.nelements(); j++) {
         parameters(j) = gauss2d[j];
         if (mask[j] == 0) {
           parameterMask(j) = false;
@@ -146,7 +146,7 @@ int main(int argc, const char* argv[]) {
       // Set starting guess
 
       startParameters = parameters.copy();
-      for (uInt j = 0; j < parameters.nelements(); j++) {
+      for (unsigned int j = 0; j < parameters.nelements(); j++) {
         startParameters(j) = parameters(j) * 0.9;
       }
       saveEstimate.row(i) = startParameters;
@@ -198,16 +198,16 @@ int main(int argc, const char* argv[]) {
       //      }
       //
       cout << endl << "Number of models = " << fitter.nModels() << endl;
-      for (uInt i = 0; i < fitter.nModels(); i++) {
-        Vector<Double> xx(5);
+      for (unsigned int i = 0; i < fitter.nModels(); i++) {
+        Vector<double> xx(5);
         xx(0) = trueHeight(i);
         xx(1) = trueX(i);
         xx(2) = trueY(i);
         xx(3) = trueMajor(i);
         xx(4) = truePA(i);
         //
-        Vector<Double> solution = fitter.availableSolution(i);
-        Vector<Double> errors = fitter.availableErrors(i);
+        Vector<double> solution = fitter.availableSolution(i);
+        Vector<double> errors = fitter.availableErrors(i);
 
         cout << "Model " << i << " of type " << Fit2D::type(fitter.type(i)) << endl;
         cout << "   Estimate      = " << saveEstimate.row(i) << endl;
@@ -218,8 +218,8 @@ int main(int argc, const char* argv[]) {
         cout << "   SNR           = " << solution / errors << endl;
       }
       //
-      Array<Float> resid;
-      Array<Float> model;
+      Array<float> resid;
+      Array<float> model;
       fitter.residual(resid, model, pixels);
       cout << "Residual min and max = " << min(resid) << " " << max(resid) << endl;
     } else {
@@ -279,7 +279,7 @@ int main(int argc, const char* argv[]) {
 
       LogIO logger;
       Fit2D fitter2(logger);
-      Vector<Double> param = fitter2.estimate(Fit2D::GAUSSIAN, psf);
+      Vector<double> param = fitter2.estimate(Fit2D::GAUSSIAN, psf);
 
       cout << "Estimate " << param << endl;
 
@@ -302,11 +302,11 @@ int main(int argc, const char* argv[]) {
     }
 
     Fit2D fitter3(logger);
-    fitter3.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
-    Array<Float> pixels3 = pixels.copy();
+    fitter3.addModel(Fit2D::LEVEL, Vector<double>(1, 4.5));
+    Array<float> pixels3 = pixels.copy();
     pixels3.set(4.5);
 
-    Double noise3 = 1;
+    double noise3 = 1;
     // cout << "noise " << noise3 << endl;
 
     addNoise(pixels3, sigma, noise3);
@@ -319,12 +319,12 @@ int main(int argc, const char* argv[]) {
     cout << "Number of points     = " << fitter3.numberPoints() << endl;
 
     Fit2D fitter4(logger);
-    Array<Float> pixels4 = pixels3;
+    Array<float> pixels4 = pixels3;
     pixels4.set(5);
     pixels4 += pixels.copy();
 
     fitter4.addModel(Fit2D::GAUSSIAN, startParameters, parameterMask);
-    fitter4.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
+    fitter4.addModel(Fit2D::LEVEL, Vector<double>(1, 4.5));
     fitter4.fit(pixels4, sigma);
     cout << "const solution " << fitter4.availableSolution() << endl;
     cout << "const error " << fitter4.availableErrors() << endl;
@@ -333,8 +333,8 @@ int main(int argc, const char* argv[]) {
     cout << "Number of points     = " << fitter4.numberPoints() << endl;
 
     /*
-       fitter.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
-       Array<Float> pixels4 = pixels + pixels3;
+       fitter.addModel(Fit2D::LEVEL, Vector<double>(1, 4.5));
+       Array<float> pixels4 = pixels + pixels3;
        fitter.fit(pixels4, sigma);
        cout << "const solution " << fitter.availableSolution() << endl;
        cout << "const error " << fitter.availableErrors() << endl;
@@ -348,9 +348,9 @@ int main(int argc, const char* argv[]) {
   }
 }
 
-Gaussian2D<Double> addModel(Array<Float>& pixels, Double height, Double xcen, Double ycen,
-                            Double major, Double minor, Double pa) {
-  Gaussian2D<Double> gauss2d;
+Gaussian2D<double> addModel(Array<float>& pixels, double height, double xcen, double ycen,
+                            double major, double minor, double pa) {
+  Gaussian2D<double> gauss2d;
   gauss2d.setHeight(height);
   gauss2d.setMajorAxis(major);
   gauss2d.setMinorAxis(minor);
@@ -360,17 +360,17 @@ Gaussian2D<Double> addModel(Array<Float>& pixels, Double height, Double xcen, Do
                                           //
   IPosition shape = pixels.shape();
   IPosition loc(2);
-  for (Int j = 0; j < shape(1); j++) {
-    for (Int i = 0; i < shape(0); i++) {
+  for (int j = 0; j < shape(1); j++) {
+    for (int i = 0; i < shape(0); i++) {
       loc(0) = i;
       loc(1) = j;
-      pixels(loc) += gauss2d(Double(i), Double(j));
+      pixels(loc) += gauss2d(double(i), double(j));
     }
   }
   return gauss2d;
 }
 
-void addNoise(Array<Float>& pixels, Array<Float>& sigma, Double noise) {
+void addNoise(Array<float>& pixels, Array<float>& sigma, double noise) {
   sigma = 1.0;
   if (noise > 0.0) sigma = noise;
   //
@@ -378,8 +378,8 @@ void addNoise(Array<Float>& pixels, Array<Float>& sigma, Double noise) {
   Normal noiseGen(&generator, 0.0, noise);
   //
   bool deleteIt;
-  Float* pData = pixels.getStorage(deleteIt);
-  for (Int k = 0; k < pixels.shape().product(); k++) {
+  float* pData = pixels.getStorage(deleteIt);
+  for (int k = 0; k < pixels.shape().product(); k++) {
     pData[k] += noiseGen();
   }
   pixels.putStorage(pData, deleteIt);

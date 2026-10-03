@@ -112,10 +112,10 @@ class RecordRep {
   virtual ~RecordRep();
 
   // Get the comment for this field.
-  const String& comment(Int whichField) const;
+  const String& comment(int whichField) const;
 
   // Set the comment for this field.
-  void setComment(Int whichField, const String& comment);
+  void setComment(int whichField, const String& comment);
 
   // Describes the current structure of this Record.
   const RecordDesc& description() const;
@@ -142,13 +142,13 @@ class RecordRep {
 
   // Copy a data field.
   // This can only handle scalars and arrays.
-  void copyDataField(DataType type, Int whichField, const void* that) const;
+  void copyDataField(DataType type, int whichField, const void* that) const;
 
   // Remove a field from the record.
-  void removeField(Int whichField);
+  void removeField(int whichField);
 
   // Rename the given field.
-  void renameField(const String& newName, Int whichField);
+  void renameField(const String& newName, int whichField);
 
   // Add a field with the given name and value to the record.
   // The data type of the field is determined by the data type of the value.
@@ -164,7 +164,7 @@ class RecordRep {
   // When the field and value data type mismatch, type promotion
   // of scalars will be done if possible. If not possible, an exception
   // is thrown.
-  void defineDataField(Int whichField, DataType type, const void* value);
+  void defineDataField(int whichField, DataType type, const void* value);
 
   // Put the description and data of the Record.
   // It also puts the fixedFlag attribute (of the mother object).
@@ -172,7 +172,7 @@ class RecordRep {
 
   // Get the description and data of the Record.
   // It also gets the fixedFlag attribute (of the mother object).
-  void getRecord(AipsIO& os, Int& recordType);
+  void getRecord(AipsIO& os, int& recordType);
 
   // Put the data of a record.
   // This is used to write a subrecord, whose description has
@@ -182,17 +182,17 @@ class RecordRep {
   // Read the data of a record.
   // This is used to read a subrecord, whose description has
   // already been read.
-  void getData(AipsIO& os, uInt version);
+  void getData(AipsIO& os, unsigned int version);
 
   // Used by the RecordFieldPtr classes to attach in a type-safe way to the
   // correct field.
   // <group>
-  void* get_pointer(Int whichField, DataType type) const;
-  void* get_pointer(Int whichField, DataType type, const String& recordType) const;
+  void* get_pointer(int whichField, DataType type) const;
+  void* get_pointer(int whichField, DataType type, const String& recordType) const;
   // </group>
 
   // Merge a field from another record into this record.
-  void mergeField(const RecordRep& other, Int whichFieldFromOther, RecordInterface::DuplicatesFlag);
+  void mergeField(const RecordRep& other, int whichFieldFromOther, RecordInterface::DuplicatesFlag);
 
   // Merge all fields from the other record into this record.
   void merge(const RecordRep& other, RecordInterface::DuplicatesFlag);
@@ -201,25 +201,25 @@ class RecordRep {
   // Print the contents of the record.
   // Only the first <src>maxNrValues</src> of an array will be printed.
   // A value < 0 means the entire array.
-  void print(std::ostream&, Int maxNrValues = 25, const String& indent = "") const;
+  void print(std::ostream&, int maxNrValues = 25, const String& indent = "") const;
 
  protected:
   // Utility functions to avoid code duplication in the public member
   // functions.
   // <group>
-  void delete_myself(uInt nfields);
+  void delete_myself(unsigned int nfields);
   void copy_other(const RecordRep& other);
   // </group>
 
   // Get the field number for a given name.
-  virtual Int fieldNumber(const String& name) const;
+  virtual int fieldNumber(const String& name) const;
 
   // Add the data pointer to the data block.
   // The block is extended when needed.
   void addDataPtr(void* ptr);
 
   // Remove a data pointer add the given index.
-  void removeDataPtr(Int index);
+  void removeDataPtr(int index);
 
   // Check if the shape of the data array matches the shape of a
   // fixed-shaped array in the description.
@@ -231,10 +231,10 @@ class RecordRep {
                               bool fixedShape);
 
   // Remove a data field.
-  virtual void removeData(Int whichField, void* ptr, void* vecptr);
+  virtual void removeData(int whichField, void* ptr, void* vecptr);
 
   // Remove a field from the description.
-  virtual void removeFieldFromDesc(Int whichField);
+  virtual void removeFieldFromDesc(int whichField);
 
   // Create a data field for the given type and shape.
   // This can only handle scalars and arrays.
@@ -250,7 +250,7 @@ class RecordRep {
 
   // Print a data field.
   // This can only handle scalars and arrays.
-  void printDataField(std::ostream& os, DataType type, const String& indent, Int maxNrValues,
+  void printDataField(std::ostream& os, DataType type, const String& indent, int maxNrValues,
                       const void* ptr) const;
 
   // Put a data field.
@@ -264,11 +264,11 @@ class RecordRep {
   // Make an array for a scalar data field.
   // It shares the data, so a change in the data is reflected in the array.
   // It is used to be able to access a scalar as an 1D array.
-  void makeDataVec(Int whichField, DataType type);
+  void makeDataVec(int whichField, DataType type);
 
   // Get a Scalar/ArrayKeywordSet object as a Record.
   // (type 0 = ScalarKeywordSet;  type 1 = ArrayKeywordSet).
-  void getKeySet(AipsIO& os, uInt version, uInt type);
+  void getKeySet(AipsIO& os, unsigned int version, unsigned int type);
 
   // Get the description of a keyword set as a RecordDesc.
   void getKeyDesc(AipsIO& os, RecordDesc& desc);
@@ -286,18 +286,18 @@ class RecordRep {
   // Pointers to a vector of a scalar (to access a scalar as an array).
   Block<void*> datavec_p;
   // #Entries used in data_p.
-  uInt nused_p;
+  unsigned int nused_p;
 };
 
 inline const RecordDesc& RecordRep::description() const { return desc_p; }
 
-inline const String& RecordRep::comment(Int whichField) const { return desc_p.comment(whichField); }
+inline const String& RecordRep::comment(int whichField) const { return desc_p.comment(whichField); }
 
-inline void RecordRep::setComment(Int whichField, const String& comment) {
+inline void RecordRep::setComment(int whichField, const String& comment) {
   desc_p.setComment(whichField, comment);
 }
 
-inline void RecordRep::renameField(const String& newName, Int whichField) {
+inline void RecordRep::renameField(const String& newName, int whichField) {
   desc_p.renameField(newName, whichField);
 }
 

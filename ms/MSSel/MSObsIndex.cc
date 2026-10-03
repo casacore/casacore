@@ -53,7 +53,7 @@ MSObservationIndex::MSObservationIndex(const MSObservation& observationTable)
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSObservationIndex::matchProjectCode(const String& projectCode) {
+Vector<int> MSObservationIndex::matchProjectCode(const String& projectCode) {
   // Match a project code
   // Input:
   //    projectCode        const String&            Project code
@@ -64,7 +64,7 @@ Vector<Int> MSObservationIndex::matchProjectCode(const String& projectCode) {
   // Match the project code
   // by row and correlation index
   LogicalArray maskArray(msObservationCols_p.project().getColumn() == projectCode);
-  MaskedArray<Int> maskObsIds(observationIds_p, maskArray);
+  MaskedArray<int> maskObsIds(observationIds_p, maskArray);
   return maskObsIds.getCompressedArray();
 }
 

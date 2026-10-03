@@ -286,7 +286,7 @@ class TableQuantumDesc {
   // # cannot choose between String and Unit.
   //<group>
   TableQuantumDesc(const TableDesc& td, const String& column, const String& unitCol);
-  TableQuantumDesc(const TableDesc& td, const String& column, const Char* unitCol);
+  TableQuantumDesc(const TableDesc& td, const String& column, const char* unitCol);
   //</group>
 
   // Copy constructor (copy semantics).

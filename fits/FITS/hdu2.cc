@@ -178,7 +178,7 @@ bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
   }
 
   // OK, got'em
-  Int bitpix = p_bitpix->asInt();  // get value of BITPIX
+  int bitpix = p_bitpix->asInt();  // get value of BITPIX
   switch (bitpix) {
     case 8:
       dtype = FITS::BYTE;
@@ -240,7 +240,7 @@ bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 // of dimensions is also determined.  This routine assumes that hdu type
 // has been appropriately set, but it may be changed in the process.  Data
 // type is also determined.
-bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize, Int &dims,
+bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize, int &dims,
                                   FITS::HDUType &htype, FITS::ValueType &dtype,
                                   FITSErrorHandler errhandler, HDUErrs &st) {
   datasize = 0;
@@ -248,7 +248,7 @@ bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize, Int &dim
   dtype = FITS::NOVALUE;
   if (htype == FITS::NotAHDU) return true;
 
-  Int bitpix = kw(FITS::BITPIX)->asInt();  // get value of BITPIX
+  int bitpix = kw(FITS::BITPIX)->asInt();  // get value of BITPIX
   dims = kw(FITS::NAXIS)->asInt();         // get value of NAXIS
   switch (bitpix) {
     case 8:
@@ -581,7 +581,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, FITSErrorHandler e
   // cout << "[HeaderDataUnit::HeaderDataUnit] no_dims=" << no_dims << endl;
 
   if (no_dims > 0) {
-    if ((dimn = new Int[no_dims]) == 0) {
+    if ((dimn = new int[no_dims]) == 0) {
       errmsg(NOMEM, "[HeaderDataUnit::HeaderDataUnit] Cannot allocate memory.");
       no_dims = 0;
       return;
@@ -681,7 +681,7 @@ bool HeaderDataUnit::init_data_unit(FITS::HDUType t) {
     return false;
   }
   if (no_dims > 0) {
-    if ((dimn = new Int[no_dims]) == 0) {
+    if ((dimn = new int[no_dims]) == 0) {
       errmsg(NOMEM, "Cannot allocate memory[HeaderDataUnit::init_data_unit]");
       no_dims = 0;
       return false;
@@ -732,11 +732,11 @@ char *HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
 //=============================================================================
 Vector<String> HeaderDataUnit::kwlist_str(bool length80) { return fin->kwlist_str(length80); }
 //=============================================================================
-int HeaderDataUnit::read_data(char *addr, Int nb) {
+int HeaderDataUnit::read_data(char *addr, int nb) {
   return (fin ? fin->read(hdu_type, addr, nb) : 0);
 }
 //=============================================================================
-int HeaderDataUnit::write_data(FitsOutput &f, char *addr, Int nb) {
+int HeaderDataUnit::write_data(FitsOutput &f, char *addr, int nb) {
   return f.write(hdu_type, addr, nb, pad_char);
 }
 //=============================================================================
@@ -748,7 +748,7 @@ int HeaderDataUnit::write_all_data(FitsOutput &f, char *addr) {
   return f.write_all(hdu_type, addr, pad_char);
 }
 //=============================================================================
-int HeaderDataUnit::skip(uInt n) { return (fin ? fin->skip(hdu_type, n) : 0); }
+int HeaderDataUnit::skip(unsigned int n) { return (fin ? fin->skip(hdu_type, n) : 0); }
 //=============================================================================
 int HeaderDataUnit::skip() {
   if (fin) fin->skip_all(hdu_type);
@@ -1000,7 +1000,7 @@ void AsciiTableExtension::at_assign() {
   author_x = assign(FITS::AUTHOR);
   referenc_x = assign(FITS::REFERENC);
   if (tfields_x == 0) return;
-  tbcol_x = new Int[tfields_x];
+  tbcol_x = new int[tfields_x];
   tform_x = new char *[tfields_x];
   tscal_x = new double[tfields_x];
   tzero_x = new double[tfields_x];
@@ -1046,10 +1046,10 @@ void AsciiTableExtension::at_assign() {
 
   // Allocate space for field pointer and create the fields
   fld = new FitsBase *[tfields()];
-  fits_offset = new uInt[tfields()];
-  fits_width = new uInt[tfields()];
+  fits_offset = new unsigned int[tfields()];
+  fits_width = new unsigned int[tfields()];
   format = new char *[tfields()];
-  table_offset = new uInt[tfields()];
+  table_offset = new unsigned int[tfields()];
   data_addr = new void *[tfields()];
   if (fld == 0 || fits_offset == 0 || fits_width == 0 || format == 0 || table_offset == 0 ||
       data_addr == 0) {
@@ -1467,7 +1467,7 @@ BinaryTableExtension::~BinaryTableExtension() {
 void BinaryTableExtension::bt_assign() {
   int i, j, n;
   size_t row_align;
-  uInt ne;
+  unsigned int ne;
   const char *s;
   const char *p;
   int *dd;
@@ -1553,8 +1553,8 @@ void BinaryTableExtension::bt_assign() {
 
   // Allocate space for field pointer and create the fields
   fld = new FitsBase *[tfields()];
-  fits_offset = new uInt[tfields()];
-  table_offset = new uInt[tfields()];
+  fits_offset = new unsigned int[tfields()];
+  table_offset = new unsigned int[tfields()];
   data_addr = new void *[tfields()];
   if (fld == 0 || fits_offset == 0 || table_offset == 0 || data_addr == 0) {
     errmsg(NOMEM, "Cannot allocate memory");
@@ -1969,7 +1969,7 @@ int BinaryTableExtension::set_next(int n) {
   return n;
 }
 //================================================================================
-void BinaryTableExtension::set_fitsrow(Int n) {
+void BinaryTableExtension::set_fitsrow(int n) {
   curr_row = n;
   unsigned char *addr = &table[(curr_row - beg_row) * tablerowsize];
   if (isoptimum) fitsrow = addr;
@@ -1985,7 +1985,7 @@ int BinaryTableExtension::write(FitsOutput &fout) {
     return (write_data(fout, (char *)table, n));  // It was above. GYL
   } else {
     // write rows from beg_row to end_row
-    for (n = uInt(beg_row); n <= uInt(end_row); ++n) {
+    for (n = static_cast<unsigned int>(beg_row); n <= static_cast<unsigned int>(end_row); ++n) {
       set_fitsrow(n);
       if (writerow(fout) == -1) return -1;
     }

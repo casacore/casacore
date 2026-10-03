@@ -46,7 +46,7 @@ LCRegionMulti::LCRegionMulti(bool takeOver, const LCRegion* region1, const LCReg
                              const LCRegion* region7, const LCRegion* region8,
                              const LCRegion* region9, const LCRegion* region10)
     : LCRegion(region1->latticeShape()), itsRegions(10) {
-  uInt n = 0;
+  unsigned int n = 0;
   itsRegions[n++] = region1;
   if (region2 != 0) itsRegions[n++] = region2;
   if (region3 != 0) itsRegions[n++] = region3;
@@ -74,15 +74,15 @@ LCRegionMulti::LCRegionMulti(const LCRegion* regionPtr, const IPosition& lattice
 
 LCRegionMulti::LCRegionMulti(const LCRegionMulti& other)
     : LCRegion(other), itsHasMask(other.itsHasMask), itsRegions(other.itsRegions.nelements()) {
-  uInt nr = itsRegions.nelements();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = itsRegions.nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     itsRegions[i] = other.itsRegions[i]->cloneRegion();
   }
 }
 
 LCRegionMulti::~LCRegionMulti() {
-  uInt nr = itsRegions.nelements();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = itsRegions.nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     delete itsRegions[i];
   }
 }
@@ -91,14 +91,14 @@ LCRegionMulti& LCRegionMulti::operator=(const LCRegionMulti& other) {
   if (this != &other) {
     LCRegion::operator=(other);
     itsHasMask = other.itsHasMask;
-    uInt nr = itsRegions.nelements();
-    for (uInt j = 0; j < nr; j++) {
+    unsigned int nr = itsRegions.nelements();
+    for (unsigned int j = 0; j < nr; j++) {
       delete itsRegions[j];
       itsRegions[j] = 0;
     }
     itsRegions.resize(other.itsRegions.nelements(), true);
     nr = itsRegions.nelements();
-    for (uInt i = 0; i < nr; i++) {
+    for (unsigned int i = 0; i < nr; i++) {
       itsRegions[i] = other.itsRegions[i]->cloneRegion();
     }
   }
@@ -108,10 +108,10 @@ LCRegionMulti& LCRegionMulti::operator=(const LCRegionMulti& other) {
 bool LCRegionMulti::hasMask() const { return (itsHasMask >= 0); }
 
 void LCRegionMulti::multiTranslate(Block<const LCRegion*>& regions,
-                                   const Vector<Float>& translateVector,
+                                   const Vector<float>& translateVector,
                                    const IPosition& newLatticeShape) const {
   regions.resize(itsRegions.nelements(), true);
-  for (uInt i = 0; i < itsRegions.nelements(); i++) {
+  for (unsigned int i = 0; i < itsRegions.nelements(); i++) {
     regions[i] = itsRegions[i]->translate(translateVector, newLatticeShape);
   }
 }
@@ -129,11 +129,11 @@ bool LCRegionMulti::equals(const LCRegion& other) const {
   }
   // The regions do not have to be in the same order.
   // It makes it a bit slower.
-  uInt nr = itsRegions.nelements();
+  unsigned int nr = itsRegions.nelements();
   Vector<bool> used(nr, false);
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     bool found = false;
-    for (uInt j = 0; j < nr; j++) {
+    for (unsigned int j = 0; j < nr; j++) {
       if (!used(j)) {
         if (*itsRegions[i] == *(that.itsRegions[j])) {
           used(j) = true;
@@ -151,7 +151,7 @@ bool LCRegionMulti::equals(const LCRegion& other) const {
 
 void LCRegionMulti::init(bool takeOver) {
   itsHasMask = 0;
-  for (uInt i = 0; i < itsRegions.nelements(); i++) {
+  for (unsigned int i = 0; i < itsRegions.nelements(); i++) {
     AlwaysAssert(itsRegions[i] != 0, AipsError);
     if (itsRegions[i]->latticeShape() != latticeShape()) {
       throw(
@@ -166,8 +166,8 @@ void LCRegionMulti::init(bool takeOver) {
 
 void LCRegionMulti::fillHasMask() {
   itsHasMask = -1;
-  uInt maxNelem = 0;
-  for (uInt i = 0; i < itsRegions.nelements(); i++) {
+  unsigned int maxNelem = 0;
+  for (unsigned int i = 0; i < itsRegions.nelements(); i++) {
     if (itsRegions[i]->hasMask() && itsRegions[i]->nelements() > maxNelem) {
       itsHasMask = i;
     }
@@ -175,9 +175,9 @@ void LCRegionMulti::fillHasMask() {
 }
 
 bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart,
-                              IPosition& regEnd, const Slicer& section, uInt regNr) const {
+                              IPosition& regEnd, const Slicer& section, unsigned int regNr) const {
   DebugAssert(regNr < itsRegions.nelements(), AipsError);
-  uInt nrdim = section.ndim();
+  unsigned int nrdim = section.ndim();
   bufStart.resize(nrdim);
   bufEnd.resize(nrdim);
   regStart.resize(nrdim);
@@ -186,13 +186,13 @@ bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
   const IPosition& rstart = itsRegions[regNr]->boundingBox().start();
   const IPosition& rend = itsRegions[regNr]->boundingBox().end();
   bool overlap = true;
-  for (uInt j = 0; j < nrdim; j++) {
-    Int bstart = bboxstart(j);
-    Int secst = section.start()(j);  // section start in bounding box
-    Int secend = section.end()(j);   // section end in bounding box
-    Int secinc = section.stride()(j);
-    Int regst = rstart(j) - bstart;  // region start in bounding box
-    Int regend = rend(j) - bstart;   // region end in bounding box
+  for (unsigned int j = 0; j < nrdim; j++) {
+    int bstart = bboxstart(j);
+    int secst = section.start()(j);  // section start in bounding box
+    int secend = section.end()(j);   // section end in bounding box
+    int secinc = section.stride()(j);
+    int regst = rstart(j) - bstart;  // region start in bounding box
+    int regend = rend(j) - bstart;   // region end in bounding box
                                      // Exit if there is no overlap between this region and the
                                      // requested section in the entire bounding box.
     if (regst > secend || regend < secst) {
@@ -215,7 +215,7 @@ bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
     // They tell the caller where to get the required pixels from
     // this region and where to store them in the buffer.
     if (secinc == 1) {
-      Int diff = secst - regst;
+      int diff = secst - regst;
       if (diff >= 0) {
         regStart(j) = diff;  // section starts at or after region
         bufStart(j) = 0;
@@ -238,12 +238,12 @@ bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
       // the actual start in the region must be on a stride alignment.
       // It is also possible that the increment is such that the
       // entire region is skipped.
-      Int diff = secst - regst;
+      int diff = secst - regst;
       if (diff >= 0) {
         regStart(j) = diff;
         bufStart(j) = 0;
       } else {
-        Int diffalign = 1 + (-1 - diff) / secinc;
+        int diffalign = 1 + (-1 - diff) / secinc;
         regStart(j) = diffalign * secinc + diff;
         bufStart(j) = diffalign;
       }
@@ -265,8 +265,8 @@ bool LCRegionMulti::findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition&
 
 TableRecord LCRegionMulti::makeRecord(const String& tableName) const {
   TableRecord rec;
-  Int nr = itsRegions.nelements();
-  for (Int i = 0; i < nr; i++) {
+  int nr = itsRegions.nelements();
+  for (int i = 0; i < nr; i++) {
     rec.defineRecord(i, itsRegions[i]->toRecord(tableName));
   }
   rec.define("nr", nr);
@@ -275,9 +275,9 @@ TableRecord LCRegionMulti::makeRecord(const String& tableName) const {
 
 void LCRegionMulti::unmakeRecord(Block<const LCRegion*>& regions, const TableRecord& rec,
                                  const String& tableName) {
-  Int nr = rec.asInt("nr");
+  int nr = rec.asInt("nr");
   regions.resize(nr, true);
-  for (Int i = 0; i < nr; i++) {
+  for (int i = 0; i < nr; i++) {
     regions[i] = LCRegion::fromRecord(rec.asRecord(i), tableName);
   }
 }
@@ -292,7 +292,7 @@ bool LCRegionMulti::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   return false;
 }
 
-IPosition LCRegionMulti::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCRegionMulti::doNiceCursorShape(unsigned int maxPixels) const {
   if (itsHasMask >= 0) {
     return itsRegions[itsHasMask]->niceCursorShape(maxPixels);
   }

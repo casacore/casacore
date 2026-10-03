@@ -34,14 +34,14 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SSMIndStringColumn::SSMIndStringColumn(SSMBase* aParent, int aDataType, uInt aColNr)
+SSMIndStringColumn::SSMIndStringColumn(SSMBase* aParent, int aDataType, unsigned int aColNr)
     : SSMDirColumn(aParent, aDataType, aColNr) {}
 
 SSMIndStringColumn::~SSMIndStringColumn() {}
 
 void SSMIndStringColumn::setShape(rownr_t aRowNr, const IPosition& aShape) {
   DebugAssert(itsShape.nelements() == 0, AipsError);
-  Int buf[3];
+  int buf[3];
   // Try to find out if this value was filled before, in that case we use
   // an overwrite.
   getRowValue(buf, aRowNr);
@@ -55,7 +55,7 @@ IPosition SSMIndStringColumn::shape(rownr_t aRowNr) {
   }
 
   IPosition aShape;
-  Int buf[3];
+  int buf[3];
 
   getRowValue(buf, aRowNr);
   if (buf[2] > 0) {
@@ -74,19 +74,19 @@ bool SSMIndStringColumn::isShapeDefined(rownr_t aRowNr) {
   if (itsShape.nelements() != 0) {
     return true;
   } else {
-    Int buf[3];
+    int buf[3];
     getRowValue(buf, aRowNr);
     return buf[2] != 0;
   }
 }
 
-uInt SSMIndStringColumn::ndim(rownr_t aRowNr) { return shape(aRowNr).nelements(); }
+unsigned int SSMIndStringColumn::ndim(rownr_t aRowNr) { return shape(aRowNr).nelements(); }
 
 void SSMIndStringColumn::getArrayV(rownr_t aRowNr, ArrayBase& aDataPtr) {
   if (itsShape.nelements() != 0) {
     SSMDirColumn::getArrayV(aRowNr, aDataPtr);
   } else {
-    Int buf[3];
+    int buf[3];
     getRowValue(buf, aRowNr);
     if (buf[2] == 0) {
       throw DataManInvOper("SSMIndStringColumn::getArrayStringV: no array in row " +
@@ -102,7 +102,7 @@ void SSMIndStringColumn::putArrayV(rownr_t aRowNr, const ArrayBase& aDataPtr) {
   if (itsShape.nelements() != 0) {
     SSMDirColumn::putArrayV(aRowNr, aDataPtr);
   } else {
-    Int buf[3];
+    int buf[3];
     // Try to find out if this value was filled before, in that case we use
     // an overwrite.
     getRowValue(buf, aRowNr);

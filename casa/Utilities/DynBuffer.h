@@ -90,7 +90,7 @@ class DynBuffer {
  public:
   // Allocate a first buffer of the specified number of bytes
   // (default 4096). When the allocation fails, an exception is thrown.
-  DynBuffer(uInt nrOfBytes = 4096);
+  DynBuffer(unsigned int nrOfBytes = 4096);
 
   // Remove the whole buffer, i.e. the first buffer and all the
   // buffers appended to it.
@@ -106,7 +106,7 @@ class DynBuffer {
   // When not all values fit in the current buffer, new buffer space
   // is added (probably non-contiguous). If that allocation fails an
   // exception is thrown.
-  uInt alloc(uInt nrOfValues, uInt valueSize, Char*& ptr);
+  unsigned int alloc(unsigned int nrOfValues, unsigned int valueSize, char*& ptr);
 
   // Remove buffer <src>nrOfBuffer</src> and the buffers appended to it,
   // and re-initialize the current buffer. By default we keep the first
@@ -116,7 +116,7 @@ class DynBuffer {
   // space taken up by data that you no longer need, and that the
   // first buffer is often big enough to hold further data. So, you
   // only remove the first buffer in special cases.
-  void remove(uInt nrOfBuffer = 1);
+  void remove(unsigned int nrOfBuffer = 1);
 
   // Prepare for data retrieval (set up for looping through the buffers).
   void nextstart();
@@ -124,7 +124,7 @@ class DynBuffer {
   // Get the pointer to the next buffer and its used length in bytes.
   // The function returns a <src>false</src> value if there are no more
   // buffers.
-  bool next(uInt& usedLength, Char*& ptr);
+  bool next(unsigned int& usedLength, char*& ptr);
 
  private:
   // Get the next buffer for storing <src>nrOfValues</src> values of
@@ -136,30 +136,30 @@ class DynBuffer {
   // space), the next buffer already allocated (if there is one), or
   // a newly allocated and linked-in buffer. If, in the last case,
   // the allocation fails an exception is thrown.
-  uInt newbuf(uInt nrOfValues, uInt valueSize);
+  unsigned int newbuf(unsigned int nrOfValues, unsigned int valueSize);
 
   // size of 1st buffer and min. bufsize
-  uInt bufsz_p;
+  unsigned int bufsz_p;
   // buffernr for next function
-  Int nextbuf_p;
+  int nextbuf_p;
   // current buffernr
-  Int curbuf_p;
+  int curbuf_p;
   // nr of buffers allocated
-  Int nrbuf_p;
+  int nrbuf_p;
   // size of Blocks
-  Int maxnrbuf_p;
+  int maxnrbuf_p;
   // used length per buffer
-  Block<uInt> uselen_p;
+  Block<unsigned int> uselen_p;
   // total length per buffer
-  Block<uInt> totlen_p;
+  Block<unsigned int> totlen_p;
   // pointer to buffer
-  Block<Char*> bufptr_p;
+  Block<char*> bufptr_p;
   // used length of current buffer
-  uInt curuselen_p;
+  unsigned int curuselen_p;
   // total length of current buffer
-  uInt curtotlen_p;
+  unsigned int curtotlen_p;
   // pointer to current buffer
-  Char* curbufptr_p;
+  char* curbufptr_p;
 };
 
 // # Allocate buffer space for the nrOfValues values.
@@ -167,8 +167,8 @@ class DynBuffer {
 // # Use a more specialized function if not all values fit.
 // # In this way the function can be kept small and thus used inline.
 // # newbuf will seldom be required, unless large vectors are stored.
-inline uInt DynBuffer::alloc(uInt nrOfValues, uInt valueSize, Char*& ptr) {
-  uInt n = nrOfValues;
+inline unsigned int DynBuffer::alloc(unsigned int nrOfValues, unsigned int valueSize, char*& ptr) {
+  unsigned int n = nrOfValues;
   if (n * valueSize > curtotlen_p - curuselen_p) {
     n = newbuf(nrOfValues, valueSize);
   }

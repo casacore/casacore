@@ -92,7 +92,7 @@ class RotMatrix {
   // Make from an Euler
   RotMatrix(const Euler &other);
   // Make from an Euler around specified axes
-  RotMatrix(const Euler &other, Int ax0, Int ax1, Int ax2);
+  RotMatrix(const Euler &other, int ax0, int ax1, int ax2);
   // Copy assignment
   RotMatrix &operator=(const RotMatrix &other);
 
@@ -108,32 +108,32 @@ class RotMatrix {
 
   // Return the indicated element
   // <group>
-  Double &operator()(uInt row, uInt column);
-  const Double &operator()(uInt row, uInt column) const;
+  double &operator()(unsigned int row, unsigned int column);
+  const double &operator()(unsigned int row, unsigned int column) const;
   // </group>
 
   // # Methods
   // Get as Matrix
-  Matrix<Double> get() const;
+  Matrix<double> get() const;
 
   // Transpose the rotation matrix
   void transpose();
 
   // Fill Rotation matrix from Matrix
-  void set(const Matrix<Double> &in);
+  void set(const Matrix<double> &in);
 
   // Fill Rotation matrix from 3 (row) vectors
-  void set(const Vector<Double> &in0, const Vector<Double> &in1, const Vector<Double> &in2);
+  void set(const Vector<double> &in0, const Vector<double> &in1, const Vector<double> &in2);
 
  private:
   // # Data
   //  The rotation matrix (3x3)
-  Double rotat[3][3];
+  double rotat[3][3];
 
   // # Member functions
   //  Apply to a rotation matrix a further rotation of angle around the specified
   //  axis which (0 or 1 or 2).
-  void applySingle(Double angle, Int which);
+  void applySingle(double angle, int which);
 };
 
 }  // namespace casacore

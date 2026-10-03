@@ -123,8 +123,8 @@ class DirectionUDF : public UDFBase {
   virtual void setup(const Table&, const TaQLStyle&);
 
   // Get the value.
-  virtual Double getDouble(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<MVTime> getArrayDate(const TableExprId& id);
 
  private:

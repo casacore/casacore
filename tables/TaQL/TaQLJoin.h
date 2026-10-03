@@ -52,7 +52,7 @@ class TaQLJoinBase {
   virtual ~TaQLJoinBase() = default;
 
   // Find the row number. <0 means not found.
-  virtual Int64 findRow(const TableExprId&) = 0;
+  virtual int64_t findRow(const TableExprId&) = 0;
 };
 
 // <summary>
@@ -69,14 +69,14 @@ class TaQLJoinBase {
 
 class TaQLJoinRow : public TaQLJoinBase {
  public:
-  TaQLJoinRow(Int64 row) : itsRow(row) {}
+  TaQLJoinRow(int64_t row) : itsRow(row) {}
   ~TaQLJoinRow() override = default;
 
   // Return the row number.
-  Int64 findRow(const TableExprId&) override;
+  int64_t findRow(const TableExprId&) override;
 
  private:
-  Int64 itsRow;
+  int64_t itsRow;
 };
 
 // <summary>
@@ -150,7 +150,7 @@ class TaQLJoin : public TaQLJoinBase {
   ~TaQLJoin() override = default;
 
   // Find the row number in the join table for the given row in the main table.
-  Int64 findRow(const TableExprId&) override;
+  int64_t findRow(const TableExprId&) override;
 
   // From the given level on create nested TaQLJoin nodes.
   // It use makeOptDiscrete or makeOptInterval to create the appropriate
@@ -214,8 +214,8 @@ class TaQLJoinColumn : public TableExprNodeRep {
   // to the row number in the join table.
   // <group>
   MArray<bool> getArrayBool(const TableExprId& id) override;
-  MArray<Int64> getArrayInt(const TableExprId& id) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<int64_t> getArrayInt(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
   MArray<String> getArrayString(const TableExprId& id) override;
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
@@ -260,22 +260,22 @@ class TaQLJoinColumnInt : public TaQLJoinColumn {
  public:
   TaQLJoinColumnInt(const TENShPtr& columnNode, const TableParseJoin&);
   ~TaQLJoinColumnInt() override = default;
-  Int64 getInt(const TableExprId& id) override;
+  int64_t getInt(const TableExprId& id) override;
   void clear() override;
 
  private:
-  Vector<Int64> itsData;
+  Vector<int64_t> itsData;
 };
 
 class TaQLJoinColumnDouble : public TaQLJoinColumn {
  public:
   TaQLJoinColumnDouble(const TENShPtr& columnNode, const TableParseJoin&);
   ~TaQLJoinColumnDouble() override = default;
-  Double getDouble(const TableExprId& id) override;
+  double getDouble(const TableExprId& id) override;
   void clear() override;
 
  private:
-  Vector<Double> itsData;
+  Vector<double> itsData;
 };
 
 class TaQLJoinColumnDComplex : public TaQLJoinColumn {
@@ -330,7 +330,7 @@ class TaQLJoinRowid : public TableExprNodeRep {
   // Get the data (rowid in join table) for the given id.
   // Using the Join object it maps the row number in the main table
   // to the row number in the join table.
-  Int64 getInt(const TableExprId& id) override;
+  int64_t getInt(const TableExprId& id) override;
 
  private:
   TableExprInfo itsTabInfo;

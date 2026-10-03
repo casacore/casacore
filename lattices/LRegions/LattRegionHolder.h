@@ -130,7 +130,7 @@ class LattRegionHolder {
   // </group>
 
   // Get the dimensionality.
-  uInt ndim() const;
+  unsigned int ndim() const;
 
   // Convert to a LatticeRegion using the given shape.
   LatticeRegion toLatticeRegion(const IPosition& shape) const;
@@ -150,12 +150,12 @@ class LattRegionHolder {
 
  protected:
   // Construct for the given dimensionality (for derived classes).
-  explicit LattRegionHolder(uInt ndim);
+  explicit LattRegionHolder(unsigned int ndim);
 
  private:
   LCRegion* itsLC;
   LCSlicer* itsSlicer;
-  uInt itsNdim;
+  unsigned int itsNdim;
 };
 
 inline bool LattRegionHolder::isLCRegion() const { return (itsLC != 0); }
@@ -163,7 +163,7 @@ inline bool LattRegionHolder::isLCSlicer() const { return (itsSlicer != 0); }
 inline bool LattRegionHolder::operator!=(const LattRegionHolder& other) const {
   return (!operator==(other));
 }
-inline uInt LattRegionHolder::ndim() const { return itsNdim; }
+inline unsigned int LattRegionHolder::ndim() const { return itsNdim; }
 
 }  // namespace casacore
 

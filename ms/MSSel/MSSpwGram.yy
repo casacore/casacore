@@ -36,11 +36,11 @@
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
-  Float fval2[2], fval4[4],fval;
+  float fval2[2], fval4[4],fval;
   char * str;
-  Int ival;
-  Vector<Float>* fv;
-  Vector<Int>* iv;
+  int ival;
+  Vector<float>* fv;
+  Vector<int>* iv;
 }
 
 
@@ -80,7 +80,7 @@
 %{
   #include <limits.h>
   int MSSpwGramlex (YYSTYPE*);
-  void checkSpwError(Vector<Int>& list, ostringstream& msg, const char *token)
+  void checkSpwError(Vector<int>& list, ostringstream& msg, const char *token)
   {
     if (list.nelements() == 0)
       {
@@ -107,7 +107,7 @@ SpwStatement: FullExpr
 
 PhyVal: FNUMBER
            { 
-	     Float f;
+	     float f;
 	     sscanf($1,"%f",&f);
 	     $$ = f;
 	     free($1);
@@ -184,14 +184,14 @@ IndexRange: PhyVal DASH PhyVal
 	       if ($1 > $3)
 		 throw(MSSelectionSpwParseError(String("Spw expression: Start of "
 						       "range greater than end of range")));
-	       $$[0] = (Int)$1;
-	       $$[1] = (Int)$3;
+	       $$[0] = (int)$1;
+	       $$[1] = (int)$3;
 	       $$[2] = 0;       // The Step
 	       $$[3] = MSSpwIndex::MSSPW_INDEX;
 	     }
           | IndexRange CARET PhyVal
              {
-	       $$[2] = (Int)$3;
+	       $$[2] = (int)$3;
              }
           | CARET PhyVal
              {
@@ -218,8 +218,8 @@ FreqRange: IndexRange
 ;
 OneFreq:  PhyVal
            {
-	     //	     cout << "Index = " << (Int)$1 << endl;
-	     $$[0] = (Int)$1; // The Index
+	     //	     cout << "Index = " << (int)$1 << endl;
+	     $$[0] = (int)$1; // The Index
 	     $$[1] = MSSpwIndex::MSSPW_INDEX; // The index code
 	   } 
         | Physical 
@@ -246,20 +246,20 @@ FListElements: FreqRange
 ;
 FreqList: FListElements
            {
-	     $$ = new Vector<Float>(0);
-	     Int N0=(*($$)).nelements();
-             Int N1=N0+4; 
+	     $$ = new Vector<float>(0);
+	     int N0=(*($$)).nelements();
+             int N1=N0+4; 
 	     (*($$)).resize(N1,true);  // Resize the existing list
-	      for(Int i=N0;i<N1;i++)
-		(*($$))(i) = (Float)($1[i-N0]);
+	      for(int i=N0;i<N1;i++)
+		(*($$))(i) = (float)($1[i-N0]);
 	   } 
         | FreqList SEMICOLON FListElements
            {
              $$ = $1;
-	     Int N0=(*($$)).nelements();
-             Int N1=N0+4;
+	     int N0=(*($$)).nelements();
+             int N1=N0+4;
 	      (*($$)).resize(N1,true);  // Resize the existing list
-	      for(Int i=N0;i<N1;i++)
+	      for(int i=N0;i<N1;i++)
 		(*($$))(i) = $3[i-N0];
 	   }
         ;
@@ -275,7 +275,7 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	$$=new Vector<Int>(myMSSI.matchName($1));
+	$$=new Vector<int>(myMSSI.matchName($1));
 	
 	ostringstream m; m << "No match found for ";
 	checkSpwError(*($$), m, $1);
@@ -294,7 +294,7 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	$$ = new Vector<Int>(myMSSI.matchRegexOrPattern($1));
+	$$ = new Vector<int>(myMSSI.matchRegexOrPattern($1));
 	
 	ostringstream m; m << "No match found for ";
 	checkSpwError(*($$), m, $1);
@@ -313,7 +313,7 @@ Spw: IDENTIFIER
 	//
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	$$ = new Vector<Int>(myMSSI.matchRegexOrPattern($1));
+	$$ = new Vector<int>(myMSSI.matchRegexOrPattern($1));
 	
 	ostringstream m; m << "No match found for ";
 	checkSpwError(*($$), m, $1);
@@ -327,14 +327,14 @@ Spw: IDENTIFIER
 	ostringstream m,tok; m << "No spw ID found for > ";
 	if ($2[1] == static_cast<int>(MSSpwIndex::MSSPW_INDEX))
 	  {
-	    $$ = new Vector<Int>(myMSSI.matchGT((Int)$2[0]));
-	    // m << (Int)$2[0];
-	    tok << (Int)$2[0];
+	    $$ = new Vector<int>(myMSSI.matchGT((int)$2[0]));
+	    // m << (int)$2[0];
+	    tok << (int)$2[0];
 	  }
 	else
 	  {
-	    $$ = new Vector<Int>(myMSSI.matchGT($2));
-	    // m << (Double)$2[0] << "Hz";
+	    $$ = new Vector<int>(myMSSI.matchGT($2));
+	    // m << (double)$2[0] << "Hz";
 	    tok << "Hz";
 	  }
 	
@@ -347,15 +347,15 @@ Spw: IDENTIFIER
 	ostringstream m, tok; m << "No spw ID found for < ";
 	if ($2[1] == static_cast<int>(MSSpwIndex::MSSPW_INDEX))
 	  {
-	    $$ = new Vector<Int>(myMSSI.matchLT((Int)$2[0]));
- 	    // m << (Int)$2[0];
-	    tok << (Int)$2[0];
+	    $$ = new Vector<int>(myMSSI.matchLT((int)$2[0]));
+ 	    // m << (int)$2[0];
+	    tok << (int)$2[0];
 	  }
 	else
 	  {
-	    $$ = new Vector<Int>(myMSSI.matchLT($2));
-	    // m << (Double)$2[0] << "Hz";
-	    tok << (Double)$2[0] << "Hz";
+	    $$ = new Vector<int>(myMSSI.matchLT($2));
+	    // m << (double)$2[0] << "Hz";
+	    tok << (double)$2[0] << "Hz";
 	  }
 	
 	checkSpwError(*($$), m, tok.str().c_str());
@@ -367,15 +367,15 @@ Spw: IDENTIFIER
 	ostringstream m,tok; m << "No spw ID found ";
 	if ($1[1] == static_cast<int>(MSSpwIndex::MSSPW_INDEX))
 	  {
-	    $$ = new Vector<Int>(myMSSI.matchGTAndLT((Int)$1[0],(Int)$3[0]));
-	    //m << (Int)$1[0] << "<>" << (Int)$3[0];
-	    tok << (Int)$1[0] << "<>" << (Int)$3[0];
+	    $$ = new Vector<int>(myMSSI.matchGTAndLT((int)$1[0],(int)$3[0]));
+	    //m << (int)$1[0] << "<>" << (int)$3[0];
+	    tok << (int)$1[0] << "<>" << (int)$3[0];
 	  }
 	else
 	  {
-	    $$ = new Vector<Int>(myMSSI.matchGTAndLT($1,$3));
-	    //m << (Double)$1[0] << "<>" << (Double)$3[0] << "Hz";
-	    tok << (Double)$1[0] << "<>" << (Double)$3[0] << "Hz";
+	    $$ = new Vector<int>(myMSSI.matchGTAndLT($1,$3));
+	    //m << (double)$1[0] << "<>" << (double)$3[0] << "Hz";
+	    tok << (double)$1[0] << "<>" << (double)$3[0] << "Hz";
 	  }
 	
 	checkSpwError(*($$), m, tok.str().c_str());
@@ -384,10 +384,10 @@ Spw: IDENTIFIER
       {
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	$$ = new Vector<Int>(myMSSI.matchFrequencyRange($2[0],$2[0],true));
+	$$ = new Vector<int>(myMSSI.matchFrequencyRange($2[0],$2[0],true));
 	
 	ostringstream m,tok; m << "No spw ID found ~= ";
-	tok << (Int)$2[0];
+	tok << (int)$2[0];
 	checkSpwError(*($$), m, tok.str().c_str());
       }
    | FreqList 
@@ -395,13 +395,13 @@ Spw: IDENTIFIER
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
 
-	Int nSpec;
+	int nSpec;
 	// cout << (*($1)) << "  " << endl;
 	// cout << "FreqList ";
 	// if ((*($1))[3] == MSSpwIndex::MSSPW_INDEX) cout << "Index ";
 	// if ((*($1))[3] == MSSpwIndex::MSSPW_INDEXRANGE) cout << "IndexRange ";
 	// if ((*($1))[3] == MSSpwIndex::MSSPW_UNITHZ) cout << "FreqRange ";
-	$$ = new Vector<Int>(myMSSI.convertToSpwIndex($1[0],nSpec)); 
+	$$ = new Vector<int>(myMSSI.convertToSpwIndex($1[0],nSpec)); 
 	/*   cout << (*($$)) << endl; */
 	delete $1;
 	myMSSI.matchNameAsIntID(*($$));
@@ -411,11 +411,11 @@ FullSpec: Spw
             {
 	      //	      MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	      MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	      Vector<Int> varifiedSpwList=myMSSI.matchId(*($1));
+	      Vector<int> varifiedSpwList=myMSSI.matchId(*($1));
 	      //	      $$ = MSSpwParse().selectSpwIdsFromIDList(varifiedSpwList);
-	      Int nFSpec;
-	      Vector<Float> dummy(0);
-	      Vector<Int> chanList = myMSSI.convertToChannelIndex(varifiedSpwList,dummy, nFSpec);
+	      int nFSpec;
+	      Vector<float> dummy(0);
+	      Vector<int> chanList = myMSSI.convertToChannelIndex(varifiedSpwList,dummy, nFSpec);
 
 	      MSSpwParse::thisMSSParser->selectChannelsFromIDList(varifiedSpwList, chanList, nFSpec);
 	      $$ = MSSpwParse::thisMSSParser->selectSpwIdsFromIDList(varifiedSpwList,false);
@@ -425,10 +425,10 @@ FullSpec: Spw
             {
 	      //	      MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	      MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
-	      Vector<Int> varifiedSpwList=myMSSI.matchId(*($1));
-	      //Vector<Int> varifiedSpwList=(*($1));
-	      Int nFSpecs;
-	      Vector<Int> chanList = myMSSI.convertToChannelIndex(varifiedSpwList, (*($3)), nFSpecs);
+	      Vector<int> varifiedSpwList=myMSSI.matchId(*($1));
+	      //Vector<int> varifiedSpwList=(*($1));
+	      int nFSpecs;
+	      Vector<int> chanList = myMSSI.convertToChannelIndex(varifiedSpwList, (*($3)), nFSpecs);
 	      //
 	      // This just fills in the chan. list structure (to be
 	      // returned for MSSelection::getChanList()).  The name

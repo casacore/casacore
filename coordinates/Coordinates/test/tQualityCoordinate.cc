@@ -37,13 +37,13 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/namespace.h>
 
-QualityCoordinate makeCoordinate(Vector<Int>& whichQuality, Vector<String>& qualityStrings);
+QualityCoordinate makeCoordinate(Vector<int>& whichQuality, Vector<String>& qualityStrings);
 
-void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose = true);
+void doit(QualityCoordinate& lc, const Vector<int>& whichQuality, bool verbose = true);
 
-void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose = true);
+void doit2(QualityCoordinate& lc, const Vector<int>& whichQuality, bool verbose = true);
 
-void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
+void doit3(QualityCoordinate& lc, const Vector<int>& whichQuality,
            const Vector<String>& qualityStrings, bool verbose);
 
 void doit4(QualityCoordinate& lc, bool verbose);
@@ -52,7 +52,7 @@ void doit6(QualityCoordinate& lc, bool verbose);
 
 int main() {
   try {
-    Vector<Int> whichQuality;
+    Vector<int> whichQuality;
     Vector<String> qualityStrings;
     bool verbose = false;
 
@@ -68,7 +68,7 @@ int main() {
       if (!lc.near(lc2)) {
         throw(AipsError("Failed near test 1"));
       }
-      Vector<Int> excludeAxes(1, 0);
+      Vector<int> excludeAxes(1, 0);
       if (!lc.near(lc2, excludeAxes)) {
         throw(AipsError("Failed near test 2"));
       }
@@ -104,7 +104,7 @@ int main() {
   return (0);
 }
 
-QualityCoordinate makeCoordinate(Vector<Int>& whichQuality, Vector<String>& qualityStrings) {
+QualityCoordinate makeCoordinate(Vector<int>& whichQuality, Vector<String>& qualityStrings) {
   // choose all quality types
   whichQuality.resize(2);
   whichQuality(0) = Quality::DATA;
@@ -118,7 +118,7 @@ QualityCoordinate makeCoordinate(Vector<Int>& whichQuality, Vector<String>& qual
   return QualityCoordinate(whichQuality);
 }
 
-void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose) {
+void doit(QualityCoordinate& lc, const Vector<int>& whichQuality, bool verbose) {
   // Test copy constructor
   {
     QualityCoordinate lc2(lc);
@@ -130,7 +130,7 @@ void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose) 
 
   // Test assignment
   {
-    Vector<Int> whichQuality2(1);
+    Vector<int> whichQuality2(1);
     whichQuality2(0) = Quality::DATA;
     QualityCoordinate lc2 = QualityCoordinate(whichQuality2);
     lc2 = lc;
@@ -253,16 +253,16 @@ void doit(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose) 
   delete plc2;
 }
 
-void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose) {
-  Vector<Double> crval(1);
-  crval(0) = Double(whichQuality(0));
+void doit2(QualityCoordinate& lc, const Vector<int>& whichQuality, bool verbose) {
+  Vector<double> crval(1);
+  crval(0) = double(whichQuality(0));
   if (!allEQ(crval, lc.referenceValue())) {
     throw(AipsError("Failed reference value recovery test"));
   }
   if (verbose) cout << "Passed reference value recovery test!" << endl;
 
   //
-  Vector<Double> cdelt(1);
+  Vector<double> cdelt(1);
   cdelt(0) = 1.0;
   if (!allEQ(cdelt, lc.increment())) {
     throw(AipsError("Failed increment recovery test"));
@@ -270,7 +270,7 @@ void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose)
   if (verbose) cout << "Passed increment recovery test!" << endl;
 
   //
-  Vector<Double> crpix(1);
+  Vector<double> crpix(1);
   crpix(0) = 0.0;
   if (!allEQ(crpix, lc.referencePixel())) {
     throw(AipsError("Failed reference pixel recovery test"));
@@ -278,7 +278,7 @@ void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose)
   if (verbose) cout << "Passed reference pixel recovery test!" << endl;
 
   //
-  Matrix<Double> xform(1, 1);
+  Matrix<double> xform(1, 1);
   xform(0, 0) = 1.0;
   if (!allEQ(xform, lc.linearTransform())) {
     throw(AipsError("Failed Quality transform recovery test"));
@@ -286,10 +286,10 @@ void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose)
   if (verbose) cout << "Passed quality transform recovery test!" << endl;
 
   //
-  Vector<Double> oldRefVal = lc.referenceValue();
-  Vector<Double> oldIncr = lc.increment();
-  Vector<Double> oldRefPix = lc.referencePixel();
-  Matrix<Double> oldLinTr = lc.linearTransform();
+  Vector<double> oldRefVal = lc.referenceValue();
+  Vector<double> oldIncr = lc.increment();
+  Vector<double> oldRefPix = lc.referencePixel();
+  Matrix<double> oldLinTr = lc.linearTransform();
 
   crval(0) = 111.1;
   if (!lc.setReferenceValue(crval)) {
@@ -341,12 +341,12 @@ void doit2(QualityCoordinate& lc, const Vector<Int>& whichQuality, bool verbose)
   if (verbose) cout << "Passed linear transform set/recovery test!" << endl;
 }
 
-void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
+void doit3(QualityCoordinate& lc, const Vector<int>& whichQuality,
            const Vector<String>& qualityStrings, bool verbose) {
   //
   // Test conversion
   //
-  Vector<Double> pixel(1), world;
+  Vector<double> pixel(1), world;
   pixel(0) = lc.referencePixel()(0);
   if (!lc.toWorld(world, pixel)) {
     throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
@@ -354,7 +354,7 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
   if (verbose) cout << "Passed toWorld conversion!" << endl;
 
   //
-  Vector<Double> pixel2(1);
+  Vector<double> pixel2(1);
   if (!lc.toPixel(pixel2, world)) {
     throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
   }
@@ -374,8 +374,8 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
   }
 
   //
-  Int pixel3;
-  for (Int i = 0; i < Int(whichQuality.nelements()); i++) {
+  int pixel3;
+  for (int i = 0; i < int(whichQuality.nelements()); i++) {
     Quality::QualityTypes sType = Quality::type(lc.quality()(i));
     Quality::QualityTypes sType2;
     if (!lc.toPixel(pixel3, sType)) {
@@ -395,7 +395,7 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
     if (verbose) cout << "Passed coordinate conversion and reflection!" << endl;
 
     //
-    Double w = QualityCoordinate::toWorld(sType);
+    double w = QualityCoordinate::toWorld(sType);
     sType2 = QualityCoordinate::toWorld(w);
     if (sType != sType2) {
       throw(AipsError(String("Coordinate conversion and reflection failed because ") +
@@ -408,7 +408,7 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
   // Formatting
   //
   String unit;
-  for (uInt i = 0; i < whichQuality.nelements(); i++) {
+  for (unsigned int i = 0; i < whichQuality.nelements(); i++) {
     pixel(0) = i;
     if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
@@ -426,7 +426,7 @@ void doit3(QualityCoordinate& lc, const Vector<Int>& whichQuality,
 
 void doit4(QualityCoordinate& lc, bool verbose) {
   Vector<bool> axes(lc.nWorldAxes(), true);
-  Vector<Int> shape(lc.nPixelAxes(), 10);
+  Vector<int> shape(lc.nPixelAxes(), 10);
   bool failed = false;
   Coordinate* pC = 0;
   try {
@@ -445,7 +445,7 @@ void doit4(QualityCoordinate& lc, bool verbose) {
 void doit5(bool verbose) {
   // Test setQuality
   {
-    Vector<Int> quality(1);
+    Vector<int> quality(1);
     quality(0) = Quality::DATA;
     Vector<String> qualityStrings(1);
     qualityStrings(0) = String("DATA");
@@ -461,7 +461,7 @@ void doit5(bool verbose) {
     lc.setQuality(quality);
 
     //
-    Vector<Int> quality2 = lc.quality();
+    Vector<int> quality2 = lc.quality();
     AlwaysAssert(quality2.nelements() == 2, AipsError);
     AlwaysAssert(Quality::type(quality2(0)) == Quality::DATA, AipsError);
     AlwaysAssert(Quality::type(quality2(1)) == Quality::ERROR, AipsError);
@@ -474,7 +474,7 @@ void doit5(bool verbose) {
 
 void doit6(QualityCoordinate& lc, bool verbose) {
   {
-    Vector<Double> absPix(1);
+    Vector<double> absPix(1);
     absPix(0) = 0.0;
     lc.makePixelRelative(absPix);
     if (!allNear(absPix, 0.0, 1.0e-05))
@@ -483,7 +483,7 @@ void doit6(QualityCoordinate& lc, bool verbose) {
       cout << "Succeeded to convert value to relative!" << endl;
   }
   {
-    Vector<Double> relPix(1);
+    Vector<double> relPix(1);
     relPix(0) = 0.0;
     lc.makePixelAbsolute(relPix);
     if (!allNear(relPix, 0.0, 1.0e-05))
@@ -500,7 +500,7 @@ void doit6(QualityCoordinate& lc, bool verbose) {
       cout << "Succeeded to find doNear values!" << endl;
     delete lc2;
 
-    Vector<Int> newQuality(1);
+    Vector<int> newQuality(1);
     newQuality.resize(1);
     newQuality(0) = Quality::ERROR;
     Coordinate* lc3 = new QualityCoordinate(newQuality);

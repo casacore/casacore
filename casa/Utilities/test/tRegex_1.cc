@@ -31,7 +31,7 @@
 #include <casacore/casa/namespace.h>
 
 int main() {
-  const Int ntests = 32;
+  const int ntests = 32;
   String p[ntests];
   p[0] = "^().+|$";
   p[1] = "\\,";

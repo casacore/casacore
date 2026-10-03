@@ -45,20 +45,20 @@ void showWithTables(ostream& os, const TaQLMultiNode& with) {
 
 TaQLConstNodeRep::TaQLConstNodeRep(bool value)
     : TaQLNodeRep(TaQLNode_Const), itsType(CTBool), itsIsTableName(false), itsBValue(value) {}
-TaQLConstNodeRep::TaQLConstNodeRep(Int64 value)
+TaQLConstNodeRep::TaQLConstNodeRep(int64_t value)
     : TaQLNodeRep(TaQLNode_Const),
       itsType(CTInt),
       itsIsTableName(false),
       itsIValue(value),
       itsRValue(value),
       itsCValue(value, 0.) {}
-TaQLConstNodeRep::TaQLConstNodeRep(Double value)
+TaQLConstNodeRep::TaQLConstNodeRep(double value)
     : TaQLNodeRep(TaQLNode_Const),
       itsType(CTReal),
       itsIsTableName(false),
       itsRValue(value),
       itsCValue(value, 0.) {}
-TaQLConstNodeRep::TaQLConstNodeRep(Double value, const String& unit)
+TaQLConstNodeRep::TaQLConstNodeRep(double value, const String& unit)
     : TaQLNodeRep(TaQLNode_Const),
       itsType(CTReal),
       itsIsTableName(false),
@@ -79,7 +79,7 @@ TaQLConstNodeRep::TaQLConstNodeRep(const MVTime& value)
       itsRValue(value),
       itsCValue(value, 0.),
       itsTValue(value) {}
-TaQLConstNodeRep::TaQLConstNodeRep(Int64 value, const String& subTableName)
+TaQLConstNodeRep::TaQLConstNodeRep(int64_t value, const String& subTableName)
     : TaQLNodeRep(TaQLNode_Const),
       itsType(CTInt),
       itsIsTableName(true),
@@ -179,7 +179,7 @@ TaQLNode TaQLConstNodeRep::restore(AipsIO& aio) {
       return new TaQLConstNodeRep(value);
     }
     case CTInt: {
-      Int64 value;
+      int64_t value;
       aio >> value;
       if (isTableName) {
         String name;
@@ -190,7 +190,7 @@ TaQLNode TaQLConstNodeRep::restore(AipsIO& aio) {
       }
     }
     case CTReal: {
-      Double value;
+      double value;
       aio >> value;
       return new TaQLConstNodeRep(value, unit);
     }
@@ -219,9 +219,9 @@ TaQLRegexNodeRep::TaQLRegexNodeRep(const String& regex)
       itsNegate(false),
       itsIgnoreBlanks(false),
       itsMaxDistance(-1) {
-  Int sz = regex.size();
+  int sz = regex.size();
   AlwaysAssert(sz >= 4 && regex[sz - 1] != ' ', AipsError);
-  Int inx = 0;
+  int inx = 0;
   if (regex[0] == '!') {
     itsNegate = true;
     ++inx;
@@ -255,7 +255,7 @@ TaQLRegexNodeRep::TaQLRegexNodeRep(const String& regex)
   }
 }
 TaQLRegexNodeRep::TaQLRegexNodeRep(const String& value, bool caseInsensitive, bool negate,
-                                   bool ignoreBlanks, Int maxDistance)
+                                   bool ignoreBlanks, int maxDistance)
     : TaQLNodeRep(TaQLNode_Regex),
       itsValue(value),
       itsCaseInsensitive(caseInsensitive),
@@ -287,7 +287,7 @@ void TaQLRegexNodeRep::save(AipsIO& aio) const {
 TaQLNode TaQLRegexNodeRep::restore(AipsIO& aio) {
   String value;
   bool caseInsensitive, negate, ignoreBlanks;
-  Int maxDistance;
+  int maxDistance;
   aio >> value >> caseInsensitive >> negate >> ignoreBlanks >> maxDistance;
   return new TaQLRegexNodeRep(value, caseInsensitive, negate, ignoreBlanks, maxDistance);
 }
@@ -459,7 +459,7 @@ TaQLNodeResult TaQLMultiNodeRep::visit(TaQLNodeVisitor& visitor) const {
 }
 void TaQLMultiNodeRep::show(std::ostream& os) const {
   os << itsPrefix;
-  for (uInt i = 0; i < itsNodes.size(); ++i) {
+  for (unsigned int i = 0; i < itsNodes.size(); ++i) {
     if (i != 0) {
       os << (i % itsIncr == 0 ? itsSep : itsSep2);
     }
@@ -469,13 +469,13 @@ void TaQLMultiNodeRep::show(std::ostream& os) const {
 }
 void TaQLMultiNodeRep::save(AipsIO& aio) const {
   aio << itsIsSetOrArray << itsPrefix << itsPostfix << itsSep << itsSep2 << itsIncr;
-  aio << uInt(itsNodes.size());
-  for (uInt i = 0; i < itsNodes.size(); ++i) {
+  aio << static_cast<unsigned int>(itsNodes.size());
+  for (unsigned int i = 0; i < itsNodes.size(); ++i) {
     itsNodes[i].saveNode(aio);
   }
 }
 TaQLMultiNode TaQLMultiNodeRep::restore(AipsIO& aio) {
-  uInt size, incr;
+  unsigned int size, incr;
   bool isSetOrArray;
   String prefix, postfix, sep, sep2;
   aio >> isSetOrArray >> prefix >> postfix >> sep >> sep2 >> incr;
@@ -483,7 +483,7 @@ TaQLMultiNode TaQLMultiNodeRep::restore(AipsIO& aio) {
   std::unique_ptr<TaQLMultiNodeRep> node(new TaQLMultiNodeRep(prefix, postfix, isSetOrArray));
   node->setSeparator(sep);
   node->setSeparator(incr, sep2);
-  for (uInt i = 0; i < size; ++i) {
+  for (unsigned int i = 0; i < size; ++i) {
     node->add(TaQLNode::restoreNode(aio));
   }
   return node.release();
@@ -1148,7 +1148,7 @@ TaQLInsertNodeRep::TaQLInsertNodeRep(const TaQLMultiNode& with, const TaQLMultiN
   values.setPPFix("VALUES [", "]");
   // The nodes in the list are of type TaQLUpdExprNodeRep.
   const std::vector<TaQLNode>& nodes = insert.getMultiRep()->getNodes();
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     const TaQLUpdExprNodeRep* rep = dynamic_cast<const TaQLUpdExprNodeRep*>(nodes[i].getRep());
     AlwaysAssert(rep, AipsError);
     if (rep->itsIndices1.isValid() || rep->itsIndices2.isValid()) {
@@ -1520,7 +1520,7 @@ TaQLNode TaQLAddColNodeRep::restore(AipsIO& aio) {
   return new TaQLAddColNodeRep(cols, dminfo);
 }
 
-TaQLRenDropNodeRep::TaQLRenDropNodeRep(Int type, const TaQLMultiNode& names)
+TaQLRenDropNodeRep::TaQLRenDropNodeRep(int type, const TaQLMultiNode& names)
     : TaQLNodeRep(TaQLNode_RenDrop), itsType(type), itsNames(names) {}
 TaQLNodeResult TaQLRenDropNodeRep::visit(TaQLNodeVisitor& visitor) const {
   return visitor.visitRenDropNode(*this);
@@ -1542,7 +1542,7 @@ void TaQLRenDropNodeRep::save(AipsIO& aio) const {
   itsNames.saveNode(aio);
 }
 TaQLNode TaQLRenDropNodeRep::restore(AipsIO& aio) {
-  Int type;
+  int type;
   aio >> type;
   TaQLMultiNode names = TaQLNode::restoreMultiNode(aio);
   return new TaQLRenDropNodeRep(type, names);

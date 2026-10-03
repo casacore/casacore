@@ -45,7 +45,7 @@ void PositionUDF::setup(const Table&, const TaQLStyle&) {
   }
   // Get the 'to' reference and value type.
   // Determine the argnr of the position.
-  uInt argnr = 0;
+  unsigned int argnr = 0;
   if (itsType == ITRFXYZ) {
     itsRefType = MPosition::ITRF;
     itsValueType = 3;
@@ -105,12 +105,12 @@ void PositionUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType, itsValueType));
 }
 
-Double PositionUDF::getDouble(const TableExprId& id) {
+double PositionUDF::getDouble(const TableExprId& id) {
   return itsEngine.getArrayDouble(id, itsRefType, itsValueType).data()[0];
 }
 
-MArray<Double> PositionUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id, itsRefType, itsValueType));
+MArray<double> PositionUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id, itsRefType, itsValueType));
 }
 
 }  // namespace casacore

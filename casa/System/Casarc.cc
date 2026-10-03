@@ -153,11 +153,11 @@ void Casarc::put(const std::string &keyword, const std::string &value) {
     } else {
       strftime(buf, 512, "# added %F %T\n", localtime(&tv.tv_sec));
     }
-    Int lng = strlen(buf);
+    int lng = strlen(buf);
     AlwaysAssert(write(fd, buf, lng) == lng, AipsError);
-    AlwaysAssert(write(fd, keyword.c_str(), keyword.length()) == Int(keyword.length()), AipsError);
+    AlwaysAssert(write(fd, keyword.c_str(), keyword.length()) == int(keyword.length()), AipsError);
     AlwaysAssert(write(fd, ": ", 2) == 2, AipsError);
-    AlwaysAssert(write(fd, value.c_str(), value.length()) == Int(value.length()), AipsError);
+    AlwaysAssert(write(fd, value.c_str(), value.length()) == int(value.length()), AipsError);
     AlwaysAssert(write(fd, "\n", 1) == 1, AipsError);
     unlock(fd);
   } else {

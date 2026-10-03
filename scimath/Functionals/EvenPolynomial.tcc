@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Operators
 template <class T>
 T EvenPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
-  Int j = nparameters();
+  int j = nparameters();
   T accum = param_p[--j];
   while (--j >= 0) {
     accum *= x[0];

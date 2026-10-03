@@ -46,18 +46,18 @@
 // test functions, all return the number of errors unless otherwise stated
 // test PredefinedColumns static functions in MeasurementSet
 
-uInt tColumnStatics() {
+unsigned int tColumnStatics() {
   // ensure that the conversions are consistent
-  uInt errCount = 0;
+  unsigned int errCount = 0;
 
-  for (Int i = 1; i < MS::NUMBER_PREDEFINED_COLUMNS; i++) {
+  for (int i = 1; i < MS::NUMBER_PREDEFINED_COLUMNS; i++) {
     MS::PredefinedColumns pdcol = MS::PredefinedColumns(i);
     MS::columnDataType(pdcol);
     String pdname = MS::columnName(pdcol);
     MS::PredefinedColumns pdtype = MS::columnType(pdname);
     if (pdtype != pdcol) {
       cerr << "Inconsistency found for column : " << pdname << std::endl;
-      cerr << "  Type : " << Int(pdtype) << " should be : " << Int(pdcol) << std::endl;
+      cerr << "  Type : " << int(pdtype) << " should be : " << int(pdcol) << std::endl;
       errCount++;
     }
 
@@ -65,7 +65,7 @@ uInt tColumnStatics() {
     pdtype = MS::columnType("NotAPredefinedColumn");
     if (pdtype != MS::UNDEFINED_COLUMN) {
       cerr << "columnType returned a valid PredefinedColumn for \"NotAPredefinedColumn\""
-           << Int(pdtype) << std::endl;
+           << int(pdtype) << std::endl;
       errCount++;
     }
 
@@ -81,19 +81,19 @@ uInt tColumnStatics() {
 
 // test PredefinedKeywords static functions in MeasurementSet
 
-uInt tKeywordStatics() {
-  uInt errCount = 0;
+unsigned int tKeywordStatics() {
+  unsigned int errCount = 0;
 
   // MS::PredefinedKeywords
 
-  for (uInt i = 1; i < MS::NUMBER_PREDEFINED_KEYWORDS; i++) {
+  for (unsigned int i = 1; i < MS::NUMBER_PREDEFINED_KEYWORDS; i++) {
     MS::PredefinedKeywords pdkey = MS::PredefinedKeywords(i);
     String pdname = MS::keywordName(pdkey);
     MS::PredefinedKeywords pdtype = MS::keywordType(pdname);
     // this MUST be valid and it must have the same value as pdkey
     if (pdtype != pdkey) {
       cerr << "Inconsistency found for keyword : " << pdname << std::endl;
-      cerr << "  Type : " << Int(pdtype) << " should be : " << Int(pdkey) << std::endl;
+      cerr << "  Type : " << int(pdtype) << " should be : " << int(pdkey) << std::endl;
       errCount++;
     }
 
@@ -108,13 +108,13 @@ uInt tKeywordStatics() {
 
 // test addColumnToDesc static for all possible columns
 
-uInt tAddAllColumns() {
-  uInt errCount = 0;
+unsigned int tAddAllColumns() {
+  unsigned int errCount = 0;
 
   // test addColumnToDesc for all possible columns
   {
     TableDesc testTD;
-    for (uInt i = 1; i < MS::NUMBER_PREDEFINED_COLUMNS; i++) {
+    for (unsigned int i = 1; i < MS::NUMBER_PREDEFINED_COLUMNS; i++) {
       MS::addColumnToDesc(testTD, MS::PredefinedColumns(i));
     }
     //	testTD.show();
@@ -128,15 +128,15 @@ uInt tAddAllColumns() {
 
 // Test most of the non-static functions
 
-uInt tNonStatic(const String& sdmsName) {
-  uInt errCount = 0;
+unsigned int tNonStatic(const String& sdmsName) {
+  unsigned int errCount = 0;
 
   TableDesc td(MS::requiredTableDesc());
   // Add the DATA column and compress it.
   MS::addColumnToDesc(td, MS::FLOAT_DATA, 2);
   MS::addColumnCompression(td, MS::FLOAT_DATA);
   // add one column, not a PredefinedColumn
-  td.addColumn(ScalarColumnDesc<Double>("test_column"));
+  td.addColumn(ScalarColumnDesc<double>("test_column"));
   td.defineHypercolumn("TiledData", 3, stringToVector("FLOAT_DATA"));
 
   SetupNewTable setup(sdmsName, td, Table::New);
@@ -150,7 +150,7 @@ uInt tNonStatic(const String& sdmsName) {
   Record dminfo = ms.dataManagerInfo();
   // Check that the CompressFloat engine is created.
   bool fnd = false;
-  for (uInt i = 0; i < dminfo.nfields(); i++) {
+  for (unsigned int i = 0; i < dminfo.nfields(); i++) {
     if (dminfo.subRecord(i).asString("TYPE") == "CompressFloat") {
       Vector<String> vec = dminfo.subRecord(i).asArrayString("COLUMNS");
       if (vec.nelements() == 1 && vec(0) == "FLOAT_DATA") {
@@ -166,7 +166,7 @@ uInt tNonStatic(const String& sdmsName) {
   AlwaysAssertExit(ms.isColumnStored("SIGMA"));
   // Check that the compressed column uses TiledShapeStMan.
   fnd = false;
-  for (uInt i = 0; i < dminfo.nfields(); i++) {
+  for (unsigned int i = 0; i < dminfo.nfields(); i++) {
     if (dminfo.subRecord(i).asString("TYPE") == "TiledShapeStMan") {
       Vector<String> vec = dminfo.subRecord(i).asArrayString("COLUMNS");
       if (vec.nelements() == 1 && vec(0) == "FLOAT_DATA_COMPRESSED") {
@@ -178,11 +178,11 @@ uInt tNonStatic(const String& sdmsName) {
 
   ms.createDefaultSubtables(Table::New);
 
-  ArrayColumn<Float> fldata(ms, MS::columnName(MS::FLOAT_DATA));
+  ArrayColumn<float> fldata(ms, MS::columnName(MS::FLOAT_DATA));
   ScalarColumn<bool> flrow(ms, MS::columnName(MS::FLAG_ROW));
-  for (Int i = 0; i < 10; i++) {
-    Matrix<Float> arr(4, 2);
-    arr = Float(i);
+  for (int i = 0; i < 10; i++) {
+    Matrix<float> arr(4, 2);
+    arr = float(i);
     fldata.put(i, arr);
     flrow.put(i, false);
   }
@@ -275,8 +275,8 @@ uInt tNonStatic(const String& sdmsName) {
 
 // Test constructors not tested by tNonStatic()
 
-uInt tConstructors(const String& msName) {
-  uInt errCount = 0;
+unsigned int tConstructors(const String& msName) {
+  unsigned int errCount = 0;
   // test default constructor
   MeasurementSet tms0;
 
@@ -445,8 +445,8 @@ uInt tConstructors(const String& msName) {
 
 // test referenceCopy()
 
-uInt tReferenceCopy(const String& msName, const String& refMSName) {
-  uInt errCount = 0;
+unsigned int tReferenceCopy(const String& msName, const String& refMSName) {
+  unsigned int errCount = 0;
 
   // open an existing table (we need Update to be able to make a writeable
   // reference table, even if we're not writing to the original table)
@@ -458,7 +458,7 @@ uInt tReferenceCopy(const String& msName, const String& refMSName) {
     MeasurementSet refCopyMS = ms.referenceCopy(refMSName, writableColumn);
     Vector<String> colNames(refCopyMS.tableDesc().columnNames());
     // tests below will be useful when we can open the table with Old
-    for (uInt i = 0; i < colNames.nelements(); i++) {
+    for (unsigned int i = 0; i < colNames.nelements(); i++) {
       if (refCopyMS.isColumnWritable(colNames(i))) {
         // if so, it had better be TIME
         if (colNames(i) != MS::columnName(MS::TIME)) {
@@ -483,8 +483,8 @@ uInt tReferenceCopy(const String& msName, const String& refMSName) {
 
 // test null MS
 
-uInt tNullMS(const String& msName) {
-  uInt errCount = 0;
+unsigned int tNullMS(const String& msName) {
+  unsigned int errCount = 0;
   {
     // Test construction and destruction of null MS.
     MeasurementSet ms;
@@ -535,9 +535,9 @@ uInt tNullMS(const String& msName) {
 
 // test exceptions in constructions
 
-uInt tSetupNewTabError() {
+unsigned int tSetupNewTabError() {
   // this tests the errors in the constructor from a SetupNewTable
-  uInt errCount = 0;
+  unsigned int errCount = 0;
 
   // make a bogus TableDesc
   TableDesc td;
@@ -561,8 +561,8 @@ uInt tSetupNewTabError() {
   return errCount;
 }
 
-uInt tDestructorError(const String& sdmsName) {
-  uInt errCount = 0;
+unsigned int tDestructorError(const String& sdmsName) {
+  unsigned int errCount = 0;
 
   bool thrown = false;
   try {
@@ -581,7 +581,7 @@ uInt tDestructorError(const String& sdmsName) {
   return errCount;
 }
 
-void checkErrors(uInt newErrors) {
+void checkErrors(unsigned int newErrors) {
   if (newErrors > 0) {
     cout << newErrors << " errors!" << std::endl;
   } else {
@@ -591,8 +591,8 @@ void checkErrors(uInt newErrors) {
 
 int main() {
   try {
-    uInt errCount = 0;
-    uInt newErrors;
+    unsigned int errCount = 0;
+    unsigned int newErrors;
 
     String msName = "tMeasurementSet_tmp.Table";
     String refMSName = "tMeasurementSet_tmp.Ref-Table";

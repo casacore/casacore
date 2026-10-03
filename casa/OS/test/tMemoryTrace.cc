@@ -31,9 +31,9 @@
 #include <casacore/casa/namespace.h>
 
 void doit() {
-  Block<Int> bl1(10);
+  Block<int> bl1(10);
   bl1.resize(20);
-  Block<Double> bl2(3, 4.);
+  Block<double> bl2(3, 4.);
 }
 
 int main() {

@@ -48,8 +48,8 @@ template <class AccumType, class DataIterator, class MaskIterator = const bool*,
 class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CASA_STATP> {
   using LimitPair = std::pair<AccumType, AccumType>;
   using LimitPairVectorIter = typename std::vector<LimitPair>::const_iterator;
-  using IndexValueMap = typename std::map<uInt64, AccumType>;
-  using IndexSet = std::set<uInt64>;
+  using IndexValueMap = typename std::map<uint64_t, AccumType>;
+  using IndexSet = std::set<uint64_t>;
 
  public:
   ClassicalQuantileComputer() = delete;
@@ -69,13 +69,14 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
 
   // Caller is responsible for passing correct values of mynpts, mymin, and
   // mymax; no checking is done for correctness in this method.
-  virtual AccumType getMedian(uInt64 mynpts, AccumType mymin, AccumType mymax,
-                              uInt binningThreshholdSizeBytes, bool persistSortedArray, uInt nBins);
+  virtual AccumType getMedian(uint64_t mynpts, AccumType mymin, AccumType mymax,
+                              unsigned int binningThreshholdSizeBytes, bool persistSortedArray,
+                              unsigned int nBins);
 
   // get the median of the absolute deviation about the median of the data.
-  virtual AccumType getMedianAbsDevMed(uInt64 mynpts, AccumType mymin, AccumType mymax,
-                                       uInt binningThreshholdSizeBytes, bool persistSortedArray,
-                                       uInt nBins);
+  virtual AccumType getMedianAbsDevMed(uint64_t mynpts, AccumType mymin, AccumType mymax,
+                                       unsigned int binningThreshholdSizeBytes,
+                                       bool persistSortedArray, unsigned int nBins);
 
   // If one needs to compute both the median and QuantileComputer values, it
   // is better to call getMedianAndQuantiles() rather than getMedian() and
@@ -84,18 +85,19 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // the quantiles are returned in the <src>quantiles</src> map. Values in the
   // <src>fractions</src> set represent the locations in the CDF and should be
   // between 0 and 1, exclusive.
-  virtual AccumType getMedianAndQuantiles(std::map<Double, AccumType>& quantiles,
-                                          const std::set<Double>& fractions, uInt64 mynpts,
+  virtual AccumType getMedianAndQuantiles(std::map<double, AccumType>& quantiles,
+                                          const std::set<double>& fractions, uint64_t mynpts,
                                           AccumType mymin, AccumType mymax,
-                                          uInt binningThreshholdSizeBytes, bool persistSortedArray,
-                                          uInt nBins);
+                                          unsigned int binningThreshholdSizeBytes,
+                                          bool persistSortedArray, unsigned int nBins);
 
   // Get the specified Quantiles. <src>fractions</src> must be between 0 and
   // 1, noninclusive.
-  virtual std::map<Double, AccumType> getQuantiles(const std::set<Double>& fractions, uInt64 mynpts,
-                                                   AccumType mymin, AccumType mymax,
-                                                   uInt binningThreshholdSizeBytes,
-                                                   bool persistSortedArray, uInt nBins);
+  virtual std::map<double, AccumType> getQuantiles(const std::set<double>& fractions,
+                                                   uint64_t mynpts, AccumType mymin,
+                                                   AccumType mymax,
+                                                   unsigned int binningThreshholdSizeBytes,
+                                                   bool persistSortedArray, unsigned int nBins);
 
   // reset the private fields
   virtual void reset();
@@ -107,62 +109,65 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // <src>hist</src>. Each array within <src>binCounts</src> will have the
   // same number of elements as the number of bins in its corresponding
   // histogram in <src>hist</src>.
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
                          std::vector<std::shared_ptr<AccumType>>& sameVal,
-                         std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
-                         uInt dataStride, const std::vector<StatsHistogram<AccumType>>& hist,
-                         const std::vector<AccumType>& maxLimit) const;
-
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
-                         std::vector<std::shared_ptr<AccumType>>& sameVal,
-                         std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
-                         uInt dataStride, const DataRanges& ranges, bool isInclude,
+                         std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr,
+                         unsigned int dataStride,
                          const std::vector<StatsHistogram<AccumType>>& hist,
                          const std::vector<AccumType>& maxLimit) const;
 
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
                          std::vector<std::shared_ptr<AccumType>>& sameVal,
-                         std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
-                         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+                         std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr,
+                         unsigned int dataStride, const DataRanges& ranges, bool isInclude,
                          const std::vector<StatsHistogram<AccumType>>& hist,
                          const std::vector<AccumType>& maxLimit) const;
 
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
                          std::vector<std::shared_ptr<AccumType>>& sameVal,
-                         std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
-                         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+                         std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr,
+                         unsigned int dataStride, const MaskIterator& maskBegin,
+                         unsigned int maskStride,
+                         const std::vector<StatsHistogram<AccumType>>& hist,
+                         const std::vector<AccumType>& maxLimit) const;
+
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
+                         std::vector<std::shared_ptr<AccumType>>& sameVal,
+                         std::vector<bool>& allSame, const DataIterator& dataBegin, uint64_t nr,
+                         unsigned int dataStride, const MaskIterator& maskBegin,
+                         unsigned int maskStride, const DataRanges& ranges, bool isInclude,
+                         const std::vector<StatsHistogram<AccumType>>& hist,
+                         const std::vector<AccumType>& maxLimit) const;
+
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
+                         std::vector<std::shared_ptr<AccumType>>& sameVal,
+                         std::vector<bool>& allSame, const DataIterator& dataBegin,
+                         const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+                         const std::vector<StatsHistogram<AccumType>>& hist,
+                         const std::vector<AccumType>& maxLimit) const;
+
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
+                         std::vector<std::shared_ptr<AccumType>>& sameVal,
+                         std::vector<bool>& allSame, const DataIterator& dataBegin,
+                         const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
                          const DataRanges& ranges, bool isInclude,
                          const std::vector<StatsHistogram<AccumType>>& hist,
                          const std::vector<AccumType>& maxLimit) const;
 
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
                          std::vector<std::shared_ptr<AccumType>>& sameVal,
                          std::vector<bool>& allSame, const DataIterator& dataBegin,
-                         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                         const std::vector<StatsHistogram<AccumType>>& hist,
-                         const std::vector<AccumType>& maxLimit) const;
-
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
-                         std::vector<std::shared_ptr<AccumType>>& sameVal,
-                         std::vector<bool>& allSame, const DataIterator& dataBegin,
-                         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
+                         const WeightsIterator& weightsBegin, uint64_t nr, unsigned int dataStride,
+                         const MaskIterator& maskBegin, unsigned int maskStride,
                          const DataRanges& ranges, bool isInclude,
                          const std::vector<StatsHistogram<AccumType>>& hist,
                          const std::vector<AccumType>& maxLimit) const;
 
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
+  virtual void _findBins(std::vector<std::vector<uint64_t>>& binCounts,
                          std::vector<std::shared_ptr<AccumType>>& sameVal,
                          std::vector<bool>& allSame, const DataIterator& dataBegin,
-                         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                         bool isInclude, const std::vector<StatsHistogram<AccumType>>& hist,
-                         const std::vector<AccumType>& maxLimit) const;
-
-  virtual void _findBins(std::vector<std::vector<uInt64>>& binCounts,
-                         std::vector<std::shared_ptr<AccumType>>& sameVal,
-                         std::vector<bool>& allSame, const DataIterator& dataBegin,
-                         const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                         const MaskIterator& maskBegin, uInt maskStride,
+                         const WeightsIterator& weightBegin, uint64_t nr, unsigned int dataStride,
+                         const MaskIterator& maskBegin, unsigned int maskStride,
                          const std::vector<StatsHistogram<AccumType>>& hist,
                          const std::vector<AccumType>& maxLimit) const;
   // </group>
@@ -170,42 +175,47 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   //<group>
   // populate an unsorted array with valid data.
   // no weights, no mask, no ranges
-  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
-                              uInt dataStride) const;
+  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
+                              uint64_t nr, unsigned int dataStride) const;
 
   // ranges
-  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
-                              uInt dataStride, const DataRanges& ranges, bool isInclude) const;
+  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
+                              uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
+                              bool isInclude) const;
 
-  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
-                              uInt dataStride, const MaskIterator& maskBegin,
-                              uInt maskStride) const;
+  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
+                              uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                              unsigned int maskStride) const;
 
   // mask and ranges
-  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
-                              uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-                              const DataRanges& ranges, bool isInclude) const;
+  virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
+                              uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                              unsigned int maskStride, const DataRanges& ranges,
+                              bool isInclude) const;
 
   // weights
   virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                              const WeightsIterator& weightsBegin, uInt64 nr,
-                              uInt dataStride) const;
+                              const WeightsIterator& weightsBegin, uint64_t nr,
+                              unsigned int dataStride) const;
 
   // weights and ranges
   virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                              const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                              const DataRanges& ranges, bool isInclude) const;
+                              const WeightsIterator& weightsBegin, uint64_t nr,
+                              unsigned int dataStride, const DataRanges& ranges,
+                              bool isInclude) const;
 
   // weights and mask
   virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                              const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                              const MaskIterator& maskBegin, uInt maskStride) const;
+                              const WeightsIterator& weightBegin, uint64_t nr,
+                              unsigned int dataStride, const MaskIterator& maskBegin,
+                              unsigned int maskStride) const;
 
   // weights, mask, ranges
   virtual void _populateArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                              const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                              const MaskIterator& maskBegin, uInt maskStride,
-                              const DataRanges& ranges, bool isInclude) const;
+                              const WeightsIterator& weightBegin, uint64_t nr,
+                              unsigned int dataStride, const MaskIterator& maskBegin,
+                              unsigned int maskStride, const DataRanges& ranges,
+                              bool isInclude) const;
   // </group>
 
   // <group>
@@ -215,97 +225,103 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // used assumes this). Once the sum of the lengths of all arrays equals
   // <src>maxCount</src> the method will return with no further processing.
   // no weights, no mask, no ranges
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
-                               const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                               const IncludeLimits& includeLimits, uInt64 maxCount) const;
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
+                               const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+                               const IncludeLimits& includeLimits, uint64_t maxCount) const;
 
   // ranges
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
-                               const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
+                               const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
                                const DataRanges& ranges, bool isInclude,
-                               const IncludeLimits& includeLimits, uInt64 maxCount) const;
+                               const IncludeLimits& includeLimits, uint64_t maxCount) const;
 
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
-                               const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                               const MaskIterator& maskBegin, uInt maskStride,
-                               const IncludeLimits& includeLimits, uInt64 maxCount) const;
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
+                               const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+                               const MaskIterator& maskBegin, unsigned int maskStride,
+                               const IncludeLimits& includeLimits, uint64_t maxCount) const;
 
   // mask and ranges
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
-                               const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                               const MaskIterator& maskBegin, uInt maskStride,
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
+                               const DataIterator& dataBegin, uint64_t nr, unsigned int dataStride,
+                               const MaskIterator& maskBegin, unsigned int maskStride,
                                const DataRanges& ranges, bool isInclude,
-                               const IncludeLimits& includeLimits, uInt64 maxCount) const;
+                               const IncludeLimits& includeLimits, uint64_t maxCount) const;
 
   // weights
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
                                const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                               uInt64 nr, uInt dataStride, const IncludeLimits& includeLimits,
-                               uInt64 maxCount) const;
+                               uint64_t nr, unsigned int dataStride,
+                               const IncludeLimits& includeLimits, uint64_t maxCount) const;
 
   // weights and ranges
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
                                const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                               uInt64 nr, uInt dataStride, const DataRanges& ranges, bool isInclude,
-                               const IncludeLimits& includeLimits, uInt64 maxCount) const;
+                               uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
+                               bool isInclude, const IncludeLimits& includeLimits,
+                               uint64_t maxCount) const;
 
   // weights and mask
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
                                const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-                               uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                               uInt maskStride, const IncludeLimits& includeLimits,
-                               uInt64 maxCount) const;
+                               uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                               unsigned int maskStride, const IncludeLimits& includeLimits,
+                               uint64_t maxCount) const;
 
   // weights, mask, ranges
-  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
+  virtual void _populateArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
                                const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-                               uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                               uInt maskStride, const DataRanges& ranges, bool isInclude,
-                               const IncludeLimits& includeLimits, uInt64 maxCount) const;
+                               uint64_t nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                               unsigned int maskStride, const DataRanges& ranges, bool isInclude,
+                               const IncludeLimits& includeLimits, uint64_t maxCount) const;
   // </group>
 
   // <group>
   // no weights, no mask, no ranges
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  uInt64 nr, uInt dataStride, uInt maxElements) const;
+                                  uint64_t nr, unsigned int dataStride,
+                                  unsigned int maxElements) const;
 
   // ranges
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  uInt64 nr, uInt dataStride, const DataRanges& ranges,
-                                  bool isInclude, uInt maxElements) const;
+                                  uint64_t nr, unsigned int dataStride, const DataRanges& ranges,
+                                  bool isInclude, unsigned int maxElements) const;
 
   // mask
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                                  uInt maskStride, uInt maxElements) const;
+                                  uint64_t nr, unsigned int dataStride,
+                                  const MaskIterator& maskBegin, unsigned int maskStride,
+                                  unsigned int maxElements) const;
 
   // mask and ranges
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                                  uInt maskStride, const DataRanges& ranges, bool isInclude,
-                                  uInt maxElements) const;
+                                  uint64_t nr, unsigned int dataStride,
+                                  const MaskIterator& maskBegin, unsigned int maskStride,
+                                  const DataRanges& ranges, bool isInclude,
+                                  unsigned int maxElements) const;
 
   // weights
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                                  uInt maxElements) const;
+                                  const WeightsIterator& weightBegin, uint64_t nr,
+                                  unsigned int dataStride, unsigned int maxElements) const;
 
   // weights and ranges
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                                  const DataRanges& ranges, bool isInclude, uInt maxElements) const;
+                                  const WeightsIterator& weightsBegin, uint64_t nr,
+                                  unsigned int dataStride, const DataRanges& ranges, bool isInclude,
+                                  unsigned int maxElements) const;
 
   // weights and mask
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                                  const MaskIterator& maskBegin, uInt maskStride,
-                                  uInt maxElements) const;
+                                  const WeightsIterator& weightBegin, uint64_t nr,
+                                  unsigned int dataStride, const MaskIterator& maskBegin,
+                                  unsigned int maskStride, unsigned int maxElements) const;
 
   // weights, mask, ranges
   virtual bool _populateTestArray(std::vector<AccumType>& ary, const DataIterator& dataBegin,
-                                  const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                                  const MaskIterator& maskBegin, uInt maskStride,
-                                  const DataRanges& ranges, bool isInclude, uInt maxElements) const;
+                                  const WeightsIterator& weightBegin, uint64_t nr,
+                                  unsigned int dataStride, const MaskIterator& maskBegin,
+                                  unsigned int maskStride, const DataRanges& ranges, bool isInclude,
+                                  unsigned int maxElements) const;
   // </group>
 
   // get values from sorted array if the array is small enough to be held in
@@ -315,8 +331,8 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // If true is returned, the values map will contain a map of index to value.
   // It is the caller's responsibility to check that <src>mynpts</src> is not
   // 0; no checking is done here.
-  bool _valuesFromSortedArray(std::map<uInt64, AccumType>& values, uInt64 mynpts,
-                              const std::set<uInt64>& indices, uInt64 maxArraySize,
+  bool _valuesFromSortedArray(std::map<uint64_t, AccumType>& values, uint64_t mynpts,
+                              const std::set<uint64_t>& indices, uint64_t maxArraySize,
                               bool persistSortedArray);
 
  private:
@@ -331,23 +347,23 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // to be in the higher index bin. <src>sameVal</src> will be non-null if all
   // the good values in the histogram range are the same. In that case, the
   // value held will be the value of each of those data points.
-  std::vector<std::vector<uInt64>> _binCounts(std::vector<std::shared_ptr<AccumType>>& sameVal,
-                                              const std::vector<StatsHistogram<AccumType>>& hist);
+  std::vector<std::vector<uint64_t>> _binCounts(std::vector<std::shared_ptr<AccumType>>& sameVal,
+                                                const std::vector<StatsHistogram<AccumType>>& hist);
 
-  void _computeBins(std::vector<std::vector<uInt64>>& bins,
+  void _computeBins(std::vector<std::vector<uint64_t>>& bins,
                     std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<bool>& allSame,
                     DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
-                    uInt64 count, const std::vector<StatsHistogram<AccumType>>& hist,
+                    uint64_t count, const std::vector<StatsHistogram<AccumType>>& hist,
                     const std::vector<AccumType>& maxLimit,
                     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk);
 
   void _computeDataArray(std::vector<AccumType>& ary, DataIterator dataIter, MaskIterator maskIter,
-                         WeightsIterator weightsIter, uInt64 dataCount,
+                         WeightsIterator weightsIter, uint64_t dataCount,
                          const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk);
 
-  void _computeDataArrays(std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
+  void _computeDataArrays(std::vector<std::vector<AccumType>>& arys, uint64_t& currentCount,
                           DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
-                          uInt64 dataCount, const IncludeLimits& includeLimits, uInt64 maxCount,
+                          uint64_t dataCount, const IncludeLimits& includeLimits, uint64_t maxCount,
                           const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk);
 
   // Create an unsorted array of the complete data set. If
@@ -357,7 +373,7 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   void _createDataArray(std::vector<AccumType>& array);
 
   void _createDataArrays(std::vector<std::vector<AccumType>>& arrays,
-                         const IncludeLimits& includeLimits, uInt64 maxCount);
+                         const IncludeLimits& includeLimits, uint64_t maxCount);
 
   // extract data from multiple histograms given by <src>hist</src>.
   // <src>dataIndices</src> represent the indices of the sorted arrays of
@@ -369,24 +385,24 @@ class ClassicalQuantileComputer : public StatisticsAlgorithmQuantileComputer<CAS
   // non-overlapping histograms and the histograms should be specified in
   // ascending order.
   std::vector<IndexValueMap> _dataFromMultipleBins(
-      const std::vector<StatsHistogram<AccumType>>& hist, uInt64 maxArraySize,
-      const std::vector<IndexSet>& dataIndices, uInt nBins);
+      const std::vector<StatsHistogram<AccumType>>& hist, uint64_t maxArraySize,
+      const std::vector<IndexSet>& dataIndices, unsigned int nBins);
 
-  std::vector<IndexValueMap> _dataFromSingleBins(const std::vector<uInt64>& binNpts,
-                                                 uInt64 maxArraySize,
+  std::vector<IndexValueMap> _dataFromSingleBins(const std::vector<uint64_t>& binNpts,
+                                                 uint64_t maxArraySize,
                                                  const IncludeLimits& binLimits,
                                                  const std::vector<IndexSet>& dataIndices,
-                                                 uInt nBins);
+                                                 unsigned int nBins);
 
   // get the values for the specified indices in the sorted array of all good
   // data
-  IndexValueMap _indicesToValues(uInt64 mynpts, AccumType mymin, AccumType mymax,
-                                 uInt64 maxArraySize, const IndexSet& dataIndices,
-                                 bool persistSortedArray, uInt nBins);
+  IndexValueMap _indicesToValues(uint64_t mynpts, AccumType mymin, AccumType mymax,
+                                 uint64_t maxArraySize, const IndexSet& dataIndices,
+                                 bool persistSortedArray, unsigned int nBins);
 
   // get the index (for odd npts) or indices (for even npts) of the median of
   // the sorted array.
-  static IndexSet _medianIndices(uInt64 mynpts);
+  static IndexSet _medianIndices(uint64_t mynpts);
 };
 
 }  // namespace casacore

@@ -105,7 +105,7 @@ void doIt(RegionHandler& reghand) {
   AlwaysAssertExit(regptr == 0);
 
   // Create a lattice and mask and make it default region.
-  PagedArray<Float> lattice(shape, "tRegionHandler_tmp.lat");
+  PagedArray<float> lattice(shape, "tRegionHandler_tmp.lat");
   reghand.defineRegion("reg2", reghand.makeMask(lattice, "reg2"), RegionHandler::Masks);
   reghand.setDefaultMask("reg2");
   AlwaysAssertExit(reghand.getDefaultMask() == "reg2");

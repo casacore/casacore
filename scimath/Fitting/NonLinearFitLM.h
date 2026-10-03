@@ -110,9 +110,9 @@ class NonLinearFitLM : public NonLinearFit<T> {
  private:
   // # Data
   //  The parameter that makes this the Levenberg-Marquardt method.
-  Double lamda_p;
+  double lamda_p;
   // The current fit state
-  Double fitit_p;
+  double fitit_p;
 
  protected:
   // # Make members of parent classes known.

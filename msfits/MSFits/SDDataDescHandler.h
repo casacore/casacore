@@ -104,18 +104,18 @@ class SDDataDescHandler {
   void resetRow(const Record &) { rownr_p = -1; }
 
   // fill - a new row is added only when necessary
-  void fill(const Record &row, Int spwinId, Int polId);
+  void fill(const Record &row, int spwinId, int polId);
 
   // get the current dataDesc ID
-  Int dataDescId() { return rownr_p; }
+  int dataDescId() { return rownr_p; }
 
  private:
-  RecordFieldPtr<Int> spwinIdKey_p, polIdKey_p;
+  RecordFieldPtr<int> spwinIdKey_p, polIdKey_p;
   ColumnsIndex *index_p;
   MSDataDescription *msDataDesc_p;
   MSDataDescColumns *msDataDescCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
   // cleanup everything
   void clearAll();

@@ -97,14 +97,14 @@ const TableExprNode* MSFeedParse::setTEN(TableExprNode& condition, BaselineListT
   return &node_p;
 }
 
-const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds,
+const TableExprNode* MSFeedParse::selectFeedIds(const Vector<int>& feedIds,
                                                 BaselineListType baselineType, bool negate) {
   TableExprNode condition;
   if ((baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly)) {
-    Int n = feedIds.nelements();
+    int n = feedIds.nelements();
     if (n) {
       condition = ((column1AsTEN_p == feedIds[0]) && (column2AsTEN_p == feedIds[0]));
-      for (Int i = 1; i < n; i++) {
+      for (int i = 1; i < n; i++) {
         condition = condition || ((column1AsTEN_p == feedIds[i]) && (column2AsTEN_p == feedIds[i]));
       }
     }
@@ -114,11 +114,11 @@ const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds,
   {
     // cannot use indgen for this, rows of feed table may have same feed ID
     MSFeedColumns* msfc = new MSFeedColumns(subTable());
-    Vector<Int> f2 = msfc->feedId().getColumn();
+    Vector<int> f2 = msfc->feedId().getColumn();
     delete msfc;
     /*
-    Int nrows_p = subTable().nrow();
-    Vector<Int> f2(nrows_p);
+    int nrows_p = subTable().nrow();
+    Vector<int> f2(nrows_p);
     f2.resize(nrows_p);
     indgen(f2);
     */
@@ -133,20 +133,20 @@ const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds,
   return setTEN(condition, baselineType, negate);
 }
 
-void MSFeedParse::makeFeedList(Vector<Int>& feedList, const Vector<Int>& thisList, bool negate) {
-  Vector<Int> f2;
+void MSFeedParse::makeFeedList(Vector<int>& feedList, const Vector<int>& thisList, bool negate) {
+  Vector<int> f2;
   if (negate)
     f2 = -thisList;
   else
     f2 = thisList;
 
-  Vector<Int> tmp1(set_union(f2, feedList));
+  Vector<int> tmp1(set_union(f2, feedList));
   feedList.resize(tmp1.nelements());
   feedList = tmp1;
 }
 
-const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds1,
-                                                const Vector<Int>& feedIds2,
+const TableExprNode* MSFeedParse::selectFeedIds(const Vector<int>& feedIds1,
+                                                const Vector<int>& feedIds2,
                                                 BaselineListType baselineType, bool negate) {
   TableExprNode condition;
 
@@ -163,15 +163,15 @@ const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds1,
   return setTEN(condition, baselineType, negate);
 }
 
-bool MSFeedParse::addFeedPair(const Matrix<Int>& feedpairlist, const Int feed1, const Int feed2,
+bool MSFeedParse::addFeedPair(const Matrix<int>& feedpairlist, const int feed1, const int feed2,
                               BaselineListType baselineType) {
   bool doAutoCorr;
   doAutoCorr = (baselineType == AutoCorrAlso) || (baselineType == AutoCorrOnly);
   if ((feed1 == feed2) && (!doAutoCorr)) return false;
   if ((baselineType == AutoCorrOnly) && (feed1 != feed2)) return false;
 
-  Int n = feedpairlist.shape()(0);
-  for (Int i = 0; i < n; i++) {
+  int n = feedpairlist.shape()(0);
+  for (int i = 0; i < n; i++) {
     if (((feedpairlist(i, 0) == feed1) && (feedpairlist(i, 1) == feed2)) ||
         ((feedpairlist(i, 1) == feed1) && (feedpairlist(i, 0) == feed2))) {
       return false;
@@ -184,18 +184,18 @@ bool MSFeedParse::addFeedPair(const Matrix<Int>& feedpairlist, const Int feed1, 
 // feed1 and feed2.  The feed pairs list is appended to the
 // existing list.  The required sizing could be done better.
 //
-void MSFeedParse::makeFeedPairList(const Vector<Int>& f1, const Vector<Int>& f2,
-                                   Matrix<Int>& feedpairlist, BaselineListType baselineType,
+void MSFeedParse::makeFeedPairList(const Vector<int>& f1, const Vector<int>& f2,
+                                   Matrix<int>& feedpairlist, BaselineListType baselineType,
                                    bool /*negate*/) {
-  Int n1, n2, nb0;
+  int n1, n2, nb0;
   n1 = f1.nelements();
   n2 = f2.nelements();
   nb0 = feedpairlist.shape()(0);
   IPosition newSize(2, nb0, 2);
 
-  for (Int i1 = 0; i1 < n1; i1++) {
+  for (int i1 = 0; i1 < n1; i1++) {
     for (int i2 = 0; i2 < n2; i2++) {
-      Int feed1, feed2;
+      int feed1, feed2;
       feed1 = f1[i1];
       feed2 = f2[i2];
       if (addFeedPair(feedpairlist, feed1, feed2, baselineType)) {

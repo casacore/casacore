@@ -149,12 +149,12 @@ class InterpolateArray1D {
   // values in the pol-chan plane are interpolated to produce the output
   // pol-chan plane.
   static void interpolate(Array<Range>& yout, const Vector<Domain>& xout, const Vector<Domain>& xin,
-                          const Array<Range>& yin, Int method);
+                          const Array<Range>& yin, int method);
 
   // deprecated version of previous function using Blocks - no longer needed
   // now that Vector has a fast index operator [].
   static void interpolate(Array<Range>& yout, const Block<Domain>& xout, const Block<Domain>& xin,
-                          const Array<Range>& yin, Int method);
+                          const Array<Range>& yin, int method);
 
   // Interpolate in the last dimension of array yin whose x coordinates
   // along this dimension are given by xin.
@@ -170,14 +170,14 @@ class InterpolateArray1D {
   // are copied to output).
   static void interpolate(Array<Range>& yout, Array<bool>& youtFlags, const Vector<Domain>& xout,
                           const Vector<Domain>& xin, const Array<Range>& yin,
-                          const Array<bool>& yinFlags, Int method, bool goodIsTrue = false,
+                          const Array<bool>& yinFlags, int method, bool goodIsTrue = false,
                           bool extrapolate = false);
 
   // deprecated version of previous function using Blocks - no longer needed
   // now that Vector has a fast index operator [].
   static void interpolate(Array<Range>& yout, Array<bool>& youtFlags, const Block<Domain>& xout,
                           const Block<Domain>& xin, const Array<Range>& yin,
-                          const Array<bool>& yinFlags, Int method, bool goodIsTrue = false,
+                          const Array<bool>& yinFlags, int method, bool goodIsTrue = false,
                           bool extrapolate = false);
 
   // Interpolate in the middle axis in 3D array (yin) whose x coordinates along the
@@ -186,7 +186,7 @@ class InterpolateArray1D {
   // Currently only linear interpolation method is implemented.
   // TODO: add support for nearest neiborhood, cubic, and cubic spline.
   static void interpolatey(Cube<Range>& yout, const Vector<Domain>& xout, const Vector<Domain>& xin,
-                           const Cube<Range>& yin, Int method);
+                           const Cube<Range>& yin, int method);
 
   // Interpolate in the middle dimension of 3D array yin whose x coordinates
   // along this dimension are given by xin.
@@ -202,37 +202,37 @@ class InterpolateArray1D {
   // TODO: add support for nearest neiborhood, cubic, and cubic spline.
   static void interpolatey(Cube<Range>& yout, Cube<bool>& youtFlags, const Vector<Domain>& xout,
                            const Vector<Domain>& xin, const Cube<Range>& yin,
-                           const Cube<bool>& yinFlags, Int method, bool goodIsTrue = false,
+                           const Cube<bool>& yinFlags, int method, bool goodIsTrue = false,
                            bool extrapolate = false);
 
  private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
-  static void interpolatePtr(Block<Range*>& yout, Int ny, const Vector<Domain>& xout,
-                             const Vector<Domain>& xin, const Block<const Range*>& yin, Int method);
+  static void interpolatePtr(Block<Range*>& yout, int ny, const Vector<Domain>& xout,
+                             const Vector<Domain>& xin, const Block<const Range*>& yin, int method);
 
   // Interpolate the y-vectors of length ny from x values xin to xout.
   // Take flagging into account
-  static void interpolatePtr(Block<Range*>& yout, Block<bool*>& youtFlags, Int ny,
+  static void interpolatePtr(Block<Range*>& yout, Block<bool*>& youtFlags, int ny,
                              const Vector<Domain>& xout, const Vector<Domain>& xin,
                              const Block<const Range*>& yin, const Block<const bool*>& yinFlags,
-                             Int method, bool goodIsTrue, bool extrapolate);
+                             int method, bool goodIsTrue, bool extrapolate);
 
   // Interpolate along yaxis
-  static void interpolateyPtr(Block<Range*>& yout, Int na, Int nb, Int nc,
+  static void interpolateyPtr(Block<Range*>& yout, int na, int nb, int nc,
                               const Vector<Domain>& xout, const Vector<Domain>& xin,
-                              const Block<const Range*>& yin, Int method);
+                              const Block<const Range*>& yin, int method);
 
   // Take flagging into account
-  static void interpolateyPtr(Block<Range*>& yout, Block<bool*>& youtFlags, Int na, Int nb, Int nc,
+  static void interpolateyPtr(Block<Range*>& yout, Block<bool*>& youtFlags, int na, int nb, int nc,
                               const Vector<Domain>& xout, const Vector<Domain>& xin,
                               const Block<const Range*>& yin, const Block<const bool*>& yinFlags,
-                              Int method, bool goodIsTrue, bool extrapolate);
+                              int method, bool goodIsTrue, bool extrapolate);
 
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.
-  static void polynomialInterpolation(Block<Range*>& yout, Int ny, const Vector<Domain>& xout,
+  static void polynomialInterpolation(Block<Range*>& yout, int ny, const Vector<Domain>& xout,
                                       const Vector<Domain>& xin, const Block<const Range*>& yin,
-                                      Int order);
+                                      int order);
 };
 
 }  // namespace casacore

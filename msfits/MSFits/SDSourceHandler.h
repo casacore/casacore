@@ -104,10 +104,10 @@ class SDSourceHandler {
   void resetRow(const Record &);
 
   // fill - a source is unique in source name and code
-  void fill(const Record &row, Int spectralWindowId);
+  void fill(const Record &row, int spectralWindowId);
 
   // get the current source ID
-  Int sourceId() { return sourceId_p; }
+  int sourceId() { return sourceId_p; }
 
  private:
   RecordFieldPtr<String> nameKey_p, codeKey_p;
@@ -116,14 +116,14 @@ class SDSourceHandler {
   MSSourceColumns *msSourceCols_p;
 
   // the current source ID
-  Int sourceId_p;
+  int sourceId_p;
 
   // the next source ID to use
-  Int nextSourceId_p;
+  int nextSourceId_p;
 
   // fields possibly mined from the SDFITS row
   // floating point fields that we can't be certain of their type
-  Int restfreq_p, vframe_p;
+  int restfreq_p, vframe_p;
   // String fields
   RORecordFieldPtr<String> transiti_p, molecule_p, object_p, obsmode_p;
 
@@ -131,9 +131,9 @@ class SDSourceHandler {
   bool hasTransition_p, hasRestFreq_p, hasSysVel_p, hasPosition_p;
 
   // fields which might come from a pre-existin MS
-  RORecordFieldPtr<Int> calibrationGroupField_p, pulsarIdField_p;
-  RORecordFieldPtr<Double> timeField_p, intervalField_p;
-  RORecordFieldPtr<Array<Double>> directionField_p, positionField_p, properMotionField_p;
+  RORecordFieldPtr<int> calibrationGroupField_p, pulsarIdField_p;
+  RORecordFieldPtr<double> timeField_p, intervalField_p;
+  RORecordFieldPtr<Array<double>> directionField_p, positionField_p, properMotionField_p;
 
   // cleanup everything
   void clearAll();

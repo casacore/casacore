@@ -214,7 +214,7 @@ class GenericL2Fit : public LSQaips {
  public:
   // # Constants
   //  Default collinearity test for SVD
-  const Double COLLINEARITY;
+  const double COLLINEARITY;
 
   // # Constructors
   //  Create a fitter: the normal way to generate a fitter object. Necessary
@@ -252,7 +252,7 @@ class GenericL2Fit : public LSQaips {
   // <group>
   template <class U>
   bool setConstraint(
-      const uInt n, const Function<U, U> &function,
+      const unsigned int n, const Function<U, U> &function,
       const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0)) {
     if (n >= constrFun_p.nelements() || !ptr_derive_p ||
@@ -264,10 +264,10 @@ class GenericL2Fit : public LSQaips {
     return setConstraintEx(n, x, y);
   }
   bool setConstraint(
-      const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
+      const unsigned int n, const Vector<typename FunctionTraits<T>::BaseType> &x,
       const typename FunctionTraits<T>::BaseType y = typename FunctionTraits<T>::BaseType(0));
-  bool setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y =
-                                       typename FunctionTraits<T>::BaseType(0));
+  bool setConstraint(const unsigned int n, const typename FunctionTraits<T>::BaseType y =
+                                               typename FunctionTraits<T>::BaseType(0));
   bool addConstraint(
       const Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType>
           &function,
@@ -282,7 +282,7 @@ class GenericL2Fit : public LSQaips {
   // Set the collinearity factor as the square of the sine of the
   // minimum angle allowed between input vectors (default zero for non-SVD,
   // 1e-8 for SVD)
-  void setCollinearity(const Double cln);
+  void setCollinearity(const double cln);
 
   // Set sigma values to be interpreted as weight (i.e. 1/sigma/sigma).
   // A value of zero or -1 will be skipped. The switch will stay in effect
@@ -306,22 +306,23 @@ class GenericL2Fit : public LSQaips {
   }
   // </group>
   // Return the number of fitted parameters
-  uInt fittedNumber() const { return aCount_ai; }
+  unsigned int fittedNumber() const { return aCount_ai; }
 
   // Return the number of constraints, and pointers to constraint functions.
   // A <src>0-pointer</src> will be returned if no such constraint present.
   // This pointer should never be destroyed.
   // <group>
-  uInt NConstraints() { return constrFun_p.nelements(); }
+  unsigned int NConstraints() { return constrFun_p.nelements(); }
   Function<typename FunctionTraits<T>::DiffType, typename FunctionTraits<T>::DiffType> *
-  getConstraint(const uInt n) {
+  getConstraint(const unsigned int n) {
     return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]);
   }
   // </group>
 
   // Return the nth constraint equation derived from SVD
   // Note that the number present will be given by <src>getDeficiency()</src>
-  Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> getSVDConstraint(uInt n);
+  Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> getSVDConstraint(
+      unsigned int n);
   // Set the parameter values. The input is a vector of parameters; all
   // or only the masked ones' values will be set, using the input values
   // <group>
@@ -381,7 +382,7 @@ class GenericL2Fit : public LSQaips {
   // Obtain the chi squared. It has already been calculated during the
   // fitting process.
   // <group>
-  Double chiSquare() const { return getChi(); }
+  double chiSquare() const { return getChi(); }
   // </group>
 
   // Get the errors on the solved values
@@ -395,8 +396,8 @@ class GenericL2Fit : public LSQaips {
 
   // Get covariance matrix
   // <group>
-  Matrix<Double> compuCovariance();
-  void compuCovariance(Matrix<Double> &cov);
+  Matrix<double> compuCovariance();
+  void compuCovariance(Matrix<double> &cov);
   // </group>
 
   // Generate the normal equations by one or more calls to the
@@ -441,12 +442,12 @@ class GenericL2Fit : public LSQaips {
   // valid solution will have the same rank as the number of unknowns (or
   // double that number in the complex case). For SVD solutions the
   // rank could be less.
-  uInt getRank() const { return (solved_p ? nUnknowns() - getDeficiency() : 0); }
+  unsigned int getRank() const { return (solved_p ? nUnknowns() - getDeficiency() : 0); }
 
  protected:
   // #Data
   //  Adjustable
-  uInt aCount_ai;
+  unsigned int aCount_ai;
   // SVD indicator
   bool svd_p;
   // Function to use in evaluating condition equation
@@ -466,9 +467,9 @@ class GenericL2Fit : public LSQaips {
   Block<typename FunctionTraits<T>::BaseType *> constrVal_p;
   // </group>
   // Number of available parameters
-  uInt pCount_p;
+  unsigned int pCount_p;
   // Number of dimensions of input data
-  uInt ndim_p;
+  unsigned int ndim_p;
   // No normal equations yet.
   bool needInit_p;
   // Have solution
@@ -479,7 +480,7 @@ class GenericL2Fit : public LSQaips {
   // Interpret as weights rather than as sigma the given values.
   bool asweight_p;
   // The rank of the solution
-  uInt nr_p;
+  unsigned int nr_p;
   // Condition equation parameters (for number of adjustable parameters)
   mutable Vector<typename FunctionTraits<T>::BaseType> condEq_p;
   // Equation for all available parameters
@@ -526,16 +527,16 @@ class GenericL2Fit : public LSQaips {
                      const bool model = false);
   // Function to get evaluated functional value
   typename FunctionTraits<T>::BaseType getVal_p(
-      const Array<typename FunctionTraits<T>::BaseType> &x, uInt j, uInt i) const;
+      const Array<typename FunctionTraits<T>::BaseType> &x, unsigned int j, unsigned int i) const;
   // Initialise the fitter with number of solvable parameters
-  void initfit_p(uInt parcnt);
+  void initfit_p(unsigned int parcnt);
   // Return number of condition equations and check sizes x, y, sigma
   // <thrown>
   //  <li> Aipserror if size inconsistencies
   // </thrown>
-  uInt testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
-                   const Vector<typename FunctionTraits<T>::BaseType> &y,
-                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma);
+  unsigned int testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
+                           const Vector<typename FunctionTraits<T>::BaseType> &y,
+                           const Vector<typename FunctionTraits<T>::BaseType> *const sigma);
   // Reset all the input
   void resetFunction();
 
@@ -546,7 +547,7 @@ class GenericL2Fit : public LSQaips {
   //  Set function properties
   void setFunctionEx();
   // Set Constraint properties
-  bool setConstraintEx(const uInt n, const Vector<typename FunctionTraits<T>::BaseType> &x,
+  bool setConstraintEx(const unsigned int n, const Vector<typename FunctionTraits<T>::BaseType> &x,
                        const typename FunctionTraits<T>::BaseType y);
 };
 

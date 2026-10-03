@@ -161,7 +161,7 @@ class TableIterator {
   // is used, the data are sorted on the interval, not on the value.
   // One should consider to do an explicitsort on value and no iteration sort.
   // </note>
-  TableIterator(const Table&, const Block<String>& columnNames, const Block<Int>& orders,
+  TableIterator(const Table&, const Block<String>& columnNames, const Block<int>& orders,
                 Option = ParSort);
   // Give the iteration order per column.
   // Give an optional compare object per column.
@@ -174,7 +174,7 @@ class TableIterator {
   // break existing applications that change the comparison objects
   // (cmpObjs) between iterations.
   TableIterator(const Table&, const Block<String>& columnNames,
-                const Block<std::shared_ptr<BaseCompare>>& cmpObjs, const Block<Int>& orders,
+                const Block<std::shared_ptr<BaseCompare>>& cmpObjs, const Block<int>& orders,
                 Option = ParSort, bool cacheIterationBoundaries = false);
   // </group>
 
