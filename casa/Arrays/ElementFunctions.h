@@ -258,8 +258,13 @@ inline int floormod(int x, int y) {
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
-inline int64_t floormod(int64_t x, int64_t y) {
-  int64_t r = x % y;
+inline long floormod(long x, long y) {
+  long r = x % y;
+  if (r != 0 && (x < 0) != (y < 0)) r += y;
+  return r;
+}
+inline long long floormod(long long x, long long y) {
+  long long r = x % y;
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
