@@ -199,7 +199,7 @@ void doVector() {
 
 void doArray() {
   vector<JsonValue> zvec;
-  Int v = 0;
+  int v = 0;
   for (int i = 0; i < 4; ++i) {
     vector<JsonValue> yvec;
     for (int j = 0; j < 3; ++j) {

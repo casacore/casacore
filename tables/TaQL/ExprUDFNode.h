@@ -102,7 +102,7 @@ class TableExprUDFNode : public TableExprNodeMulti {
   // <group>
   bool getBool(const TableExprId& id) override;
   Int64 getInt(const TableExprId& id) override;
-  Double getDouble(const TableExprId& id) override;
+  double getDouble(const TableExprId& id) override;
   DComplex getDComplex(const TableExprId& id) override;
   String getString(const TableExprId& id) override;
   TaqlRegex getRegex(const TableExprId& id) override;

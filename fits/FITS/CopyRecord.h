@@ -80,7 +80,7 @@ class CopyRecordToTable {
   // Set the mapping between fields and columns. In particular,
   // inputMap(fieldNumber) -> columnNumber.
   CopyRecordToTable(Table &outputTable, const RecordInterface &inputBuffer,
-                    const Vector<Int> inputMap);
+                    const Vector<int> inputMap);
 
   // assignment constructor, reference semantics
   CopyRecordToTable(const CopyRecordToTable &other);
@@ -92,45 +92,45 @@ class CopyRecordToTable {
 
   // Copy from the record (which must still exist) to the given row number
   // of the table (which must also still exist).
-  void copy(uInt rownr);
+  void copy(unsigned int rownr);
 
  private:
   // We could just have a TableColumn for scalars, but we'd need all of
   // the array types anyway.
   Block<ScalarColumn<bool> *> table_bool;
-  Block<ScalarColumn<uChar> *> table_char;
-  Block<ScalarColumn<Short> *> table_short;
-  Block<ScalarColumn<Int> *> table_int;
-  Block<ScalarColumn<Float> *> table_float;
-  Block<ScalarColumn<Double> *> table_double;
+  Block<ScalarColumn<unsigned char> *> table_char;
+  Block<ScalarColumn<short> *> table_short;
+  Block<ScalarColumn<int> *> table_int;
+  Block<ScalarColumn<float> *> table_float;
+  Block<ScalarColumn<double> *> table_double;
   Block<ScalarColumn<Complex> *> table_complex;
   Block<ScalarColumn<DComplex> *> table_dcomplex;
   Block<ScalarColumn<String> *> table_string;
   Block<ArrayColumn<bool> *> table_array_bool;
-  Block<ArrayColumn<uChar> *> table_array_char;
-  Block<ArrayColumn<Short> *> table_array_short;
-  Block<ArrayColumn<Int> *> table_array_int;
-  Block<ArrayColumn<Float> *> table_array_float;
-  Block<ArrayColumn<Double> *> table_array_double;
+  Block<ArrayColumn<unsigned char> *> table_array_char;
+  Block<ArrayColumn<short> *> table_array_short;
+  Block<ArrayColumn<int> *> table_array_int;
+  Block<ArrayColumn<float> *> table_array_float;
+  Block<ArrayColumn<double> *> table_array_double;
   Block<ArrayColumn<Complex> *> table_array_complex;
   Block<ArrayColumn<DComplex> *> table_array_dcomplex;
   Block<ArrayColumn<String> *> table_array_string;
 
   Block<RORecordFieldPtr<bool>> record_bool;
-  Block<RORecordFieldPtr<uChar>> record_char;
-  Block<RORecordFieldPtr<Short>> record_short;
-  Block<RORecordFieldPtr<Int>> record_int;
-  Block<RORecordFieldPtr<Float>> record_float;
-  Block<RORecordFieldPtr<Double>> record_double;
+  Block<RORecordFieldPtr<unsigned char>> record_char;
+  Block<RORecordFieldPtr<short>> record_short;
+  Block<RORecordFieldPtr<int>> record_int;
+  Block<RORecordFieldPtr<float>> record_float;
+  Block<RORecordFieldPtr<double>> record_double;
   Block<RORecordFieldPtr<Complex>> record_complex;
   Block<RORecordFieldPtr<DComplex>> record_dcomplex;
   Block<RORecordFieldPtr<String>> record_string;
   Block<RORecordFieldPtr<Array<bool>>> record_array_bool;
-  Block<RORecordFieldPtr<Array<uChar>>> record_array_char;
-  Block<RORecordFieldPtr<Array<Short>>> record_array_short;
-  Block<RORecordFieldPtr<Array<Int>>> record_array_int;
-  Block<RORecordFieldPtr<Array<Float>>> record_array_float;
-  Block<RORecordFieldPtr<Array<Double>>> record_array_double;
+  Block<RORecordFieldPtr<Array<unsigned char>>> record_array_char;
+  Block<RORecordFieldPtr<Array<short>>> record_array_short;
+  Block<RORecordFieldPtr<Array<int>>> record_array_int;
+  Block<RORecordFieldPtr<Array<float>>> record_array_float;
+  Block<RORecordFieldPtr<Array<double>>> record_array_double;
   Block<RORecordFieldPtr<Array<Complex>>> record_array_complex;
   Block<RORecordFieldPtr<Array<DComplex>>> record_array_dcomplex;
   Block<RORecordFieldPtr<Array<String>>> record_array_string;
@@ -181,7 +181,7 @@ class CopyRecordToRecord {
   // Set the mapping between fields and columns. In particular,
   // inputMap(fieldNumber) -> outputFieldNumber.
   CopyRecordToRecord(RecordInterface &outputBuffer, const RecordInterface &inputBuffer,
-                     const Vector<Int> inputMap);
+                     const Vector<int> inputMap);
 
   ~CopyRecordToRecord();
 
@@ -196,39 +196,39 @@ class CopyRecordToRecord {
   CopyRecordToRecord &operator=(const CopyRecordToRecord &);
 
   Block<RORecordFieldPtr<bool>> in_record_bool;
-  Block<RORecordFieldPtr<uChar>> in_record_char;
-  Block<RORecordFieldPtr<Short>> in_record_short;
-  Block<RORecordFieldPtr<Int>> in_record_int;
-  Block<RORecordFieldPtr<Float>> in_record_float;
-  Block<RORecordFieldPtr<Double>> in_record_double;
+  Block<RORecordFieldPtr<unsigned char>> in_record_char;
+  Block<RORecordFieldPtr<short>> in_record_short;
+  Block<RORecordFieldPtr<int>> in_record_int;
+  Block<RORecordFieldPtr<float>> in_record_float;
+  Block<RORecordFieldPtr<double>> in_record_double;
   Block<RORecordFieldPtr<Complex>> in_record_complex;
   Block<RORecordFieldPtr<DComplex>> in_record_dcomplex;
   Block<RORecordFieldPtr<String>> in_record_string;
   Block<RORecordFieldPtr<Array<bool>>> in_record_array_bool;
-  Block<RORecordFieldPtr<Array<uChar>>> in_record_array_char;
-  Block<RORecordFieldPtr<Array<Short>>> in_record_array_short;
-  Block<RORecordFieldPtr<Array<Int>>> in_record_array_int;
-  Block<RORecordFieldPtr<Array<Float>>> in_record_array_float;
-  Block<RORecordFieldPtr<Array<Double>>> in_record_array_double;
+  Block<RORecordFieldPtr<Array<unsigned char>>> in_record_array_char;
+  Block<RORecordFieldPtr<Array<short>>> in_record_array_short;
+  Block<RORecordFieldPtr<Array<int>>> in_record_array_int;
+  Block<RORecordFieldPtr<Array<float>>> in_record_array_float;
+  Block<RORecordFieldPtr<Array<double>>> in_record_array_double;
   Block<RORecordFieldPtr<Array<Complex>>> in_record_array_complex;
   Block<RORecordFieldPtr<Array<DComplex>>> in_record_array_dcomplex;
   Block<RORecordFieldPtr<Array<String>>> in_record_array_string;
 
   Block<RecordFieldPtr<bool>> out_record_bool;
-  Block<RecordFieldPtr<uChar>> out_record_char;
-  Block<RecordFieldPtr<Short>> out_record_short;
-  Block<RecordFieldPtr<Int>> out_record_int;
-  Block<RecordFieldPtr<Float>> out_record_float;
-  Block<RecordFieldPtr<Double>> out_record_double;
+  Block<RecordFieldPtr<unsigned char>> out_record_char;
+  Block<RecordFieldPtr<short>> out_record_short;
+  Block<RecordFieldPtr<int>> out_record_int;
+  Block<RecordFieldPtr<float>> out_record_float;
+  Block<RecordFieldPtr<double>> out_record_double;
   Block<RecordFieldPtr<Complex>> out_record_complex;
   Block<RecordFieldPtr<DComplex>> out_record_dcomplex;
   Block<RecordFieldPtr<String>> out_record_string;
   Block<RecordFieldPtr<Array<bool>>> out_record_array_bool;
-  Block<RecordFieldPtr<Array<uChar>>> out_record_array_char;
-  Block<RecordFieldPtr<Array<Short>>> out_record_array_short;
-  Block<RecordFieldPtr<Array<Int>>> out_record_array_int;
-  Block<RecordFieldPtr<Array<Float>>> out_record_array_float;
-  Block<RecordFieldPtr<Array<Double>>> out_record_array_double;
+  Block<RecordFieldPtr<Array<unsigned char>>> out_record_array_char;
+  Block<RecordFieldPtr<Array<short>>> out_record_array_short;
+  Block<RecordFieldPtr<Array<int>>> out_record_array_int;
+  Block<RecordFieldPtr<Array<float>>> out_record_array_float;
+  Block<RecordFieldPtr<Array<double>>> out_record_array_double;
   Block<RecordFieldPtr<Array<Complex>>> out_record_array_complex;
   Block<RecordFieldPtr<Array<DComplex>>> out_record_array_dcomplex;
   Block<RecordFieldPtr<Array<String>>> out_record_array_string;

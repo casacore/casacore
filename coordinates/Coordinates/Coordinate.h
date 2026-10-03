@@ -188,8 +188,8 @@ class Coordinate {
   // coordinates (the pixel coordinate would be a pixel number along the slice,
   // whereas the world axes would continue to be RA/DEC).
   // <group>
-  virtual uInt nPixelAxes() const = 0;
-  virtual uInt nWorldAxes() const = 0;
+  virtual unsigned int nPixelAxes() const = 0;
+  virtual unsigned int nWorldAxes() const = 0;
   // </group>
 
   // Convert an absolute pixel position to an absolute world position or vice
@@ -202,9 +202,9 @@ class Coordinate {
   // (such as can be present in spectral and direction coordinates), it
   // is used. Else, the native frame is used for the conversion.
   // <group>
-  virtual bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
+  virtual bool toWorld(Vector<double>& world, const Vector<double>& pixel,
                        bool useConversionFrame = true) const = 0;
-  virtual bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const = 0;
+  virtual bool toPixel(Vector<double>& pixel, const Vector<double>& world) const = 0;
   // </group>
 
   // Mixed absolute pixel/world coordinate conversion.
@@ -238,10 +238,10 @@ class Coordinate {
   // Returns true if the conversion succeeds, otherwise it returns false and
   // <src>errorMessage()</src> contains an error message. The output vectors
   // are resized.
-  virtual bool toMix(Vector<Double>& worldOut, Vector<Double>& pixelOut,
-                     const Vector<Double>& worldIn, const Vector<Double>& pixelIn,
+  virtual bool toMix(Vector<double>& worldOut, Vector<double>& pixelOut,
+                     const Vector<double>& worldIn, const Vector<double>& pixelIn,
                      const Vector<bool>& worldAxes, const Vector<bool>& pixelAxes,
-                     const Vector<Double>& worldMin, const Vector<Double>& worldMax) const;
+                     const Vector<double>& worldMin, const Vector<double>& worldMax) const;
 
   // Set the world min and max ranges, for use in function <src>toMix</src>, for
   // a lattice of the given shape for this coordinate. The default implementation
@@ -253,8 +253,8 @@ class Coordinate {
   // <group>
   virtual bool setWorldMixRanges(const IPosition& shape);
   virtual void setDefaultWorldMixRanges();
-  Vector<Double> worldMixMin() const { return worldMin_p; };
-  Vector<Double> worldMixMax() const { return worldMax_p; };
+  Vector<double> worldMixMin() const { return worldMin_p; };
+  Vector<double> worldMixMax() const { return worldMax_p; };
   //</group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
@@ -267,9 +267,9 @@ class Coordinate {
   // <src>toWorld</src> and <src>toPixel</src>, but for maximum efficiency these should be
   // overridden.
   // <group>
-  virtual bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
+  virtual bool toWorldMany(Matrix<double>& world, const Matrix<double>& pixel,
                            Vector<bool>& failures) const;
-  virtual bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
+  virtual bool toPixelMany(Matrix<double>& pixel, const Matrix<double>& world,
                            Vector<bool>& failures) const;
   // </group>
 
@@ -278,10 +278,10 @@ class Coordinate {
   // Vectors must be length <src>nPixelAxes()</src> or
   // <src>nWorldAxes()</src> or memory access errors will occur
   // <group>
-  virtual void makePixelRelative(Vector<Double>& pixel) const;
-  virtual void makePixelAbsolute(Vector<Double>& pixel) const;
-  virtual void makeWorldRelative(Vector<Double>& world) const;
-  virtual void makeWorldAbsolute(Vector<Double>& world) const;
+  virtual void makePixelRelative(Vector<double>& pixel) const;
+  virtual void makePixelAbsolute(Vector<double>& pixel) const;
+  virtual void makeWorldRelative(Vector<double>& world) const;
+  virtual void makeWorldAbsolute(Vector<double>& world) const;
   // </group>
 
   // Make absolute coordinates relative and vice versa with respect
@@ -289,26 +289,26 @@ class Coordinate {
   // as needed. Vectors must be length <src>nPixelAxes()</src> or
   // <src>nWorldAxes()</src> or memory access errors will occur
   // <group>
-  virtual void makeWorldAbsoluteRef(Vector<Double>& world, const Vector<Double>& refVal) const;
+  virtual void makeWorldAbsoluteRef(Vector<double>& world, const Vector<double>& refVal) const;
   // </group>
 
   // Batch up a lot of absolute/relative transformations.
   // Parameters as above  for
   // <src>toWorldMany</src> and <src>toPixelMany</src>
   // <group>
-  virtual void makePixelRelativeMany(Matrix<Double>& pixel) const;
-  virtual void makePixelAbsoluteMany(Matrix<Double>& pixel) const;
-  virtual void makeWorldRelativeMany(Matrix<Double>& world) const;
-  virtual void makeWorldAbsoluteMany(Matrix<Double>& world) const;
+  virtual void makePixelRelativeMany(Matrix<double>& pixel) const;
+  virtual void makePixelAbsoluteMany(Matrix<double>& pixel) const;
+  virtual void makeWorldRelativeMany(Matrix<double>& world) const;
+  virtual void makeWorldAbsoluteMany(Matrix<double>& world) const;
   // </group>
 
   // Return the requested attributed.
   // <group>
   virtual Vector<String> worldAxisNames() const = 0;
-  virtual Vector<Double> referencePixel() const = 0;
-  virtual Matrix<Double> linearTransform() const = 0;
-  virtual Vector<Double> increment() const = 0;
-  virtual Vector<Double> referenceValue() const = 0;
+  virtual Vector<double> referencePixel() const = 0;
+  virtual Matrix<double> linearTransform() const = 0;
+  virtual Vector<double> increment() const = 0;
+  virtual Vector<double> referenceValue() const = 0;
   virtual Vector<String> worldAxisUnits() const = 0;
   // </group>
 
@@ -316,10 +316,10 @@ class Coordinate {
   // change the internal values, they do not cause any recomputation.
   // <group>
   virtual bool setWorldAxisNames(const Vector<String>& names) = 0;
-  virtual bool setReferencePixel(const Vector<Double>& refPix) = 0;
-  virtual bool setLinearTransform(const Matrix<Double>& xform) = 0;
-  virtual bool setIncrement(const Vector<Double>& inc) = 0;
-  virtual bool setReferenceValue(const Vector<Double>& refval) = 0;
+  virtual bool setReferencePixel(const Vector<double>& refPix) = 0;
+  virtual bool setLinearTransform(const Matrix<double>& xform) = 0;
+  virtual bool setIncrement(const Vector<double>& inc) = 0;
+  virtual bool setReferenceValue(const Vector<double>& refval) = 0;
   // </group>
 
   // Change the units. Adjust the increment and
@@ -337,7 +337,7 @@ class Coordinate {
   // associated with all the axes of the Coordinate. Currently the
   // output reference pixel is always shape/2.
   virtual Coordinate* makeFourierCoordinate(const Vector<bool>& axes,
-                                            const Vector<Int>& shape) const;
+                                            const Vector<int>& shape) const;
 
   // If the last conversion to world or pixel coordinates resulted in an
   // error, report that error. If the last conversion succeeded, it is
@@ -349,9 +349,9 @@ class Coordinate {
   // Don't compare on specified axes in Coordinate. If the comparison
   // returns false, <src>errorMessage()</src> contains a message.
   // <group>
-  virtual bool near(const Coordinate& other, Double tol = 1.0e-6) const = 0;
-  virtual bool near(const Coordinate& other, const Vector<Int>& excludeAxes,
-                    Double tol = 1.0e-6) const = 0;
+  virtual bool near(const Coordinate& other, double tol = 1.0e-6) const = 0;
+  virtual bool near(const Coordinate& other, const Vector<int>& excludeAxes,
+                    double tol = 1.0e-6) const = 0;
   // </group>
 
   // Provide a common interface to getting formatted representations of
@@ -411,15 +411,15 @@ class Coordinate {
   // the default precision is used.
   //
   //<group>
-  virtual void getPrecision(Int& precision, Coordinate::formatType& format, bool showAsAbsolute,
-                            Int defPrecScientific, Int defPrecFixed, Int defPrecTime) const;
-  virtual String format(String& units, Coordinate::formatType format, Double worldValue, uInt axis,
-                        bool isAbsolute = true, bool showAsAbsolute = true, Int precision = -1,
+  virtual void getPrecision(int& precision, Coordinate::formatType& format, bool showAsAbsolute,
+                            int defPrecScientific, int defPrecFixed, int defPrecTime) const;
+  virtual String format(String& units, Coordinate::formatType format, double worldValue, unsigned int axis,
+                        bool isAbsolute = true, bool showAsAbsolute = true, int precision = -1,
                         bool usePrecForMixed = false) const;
 
   String formatQuantity(String& units, Coordinate::formatType format,
-                        const Quantum<Double>& worldValue, uInt axis, bool isAbsolute = true,
-                        bool showAsAbsolute = true, Int precision = -1);
+                        const Quantum<double>& worldValue, unsigned int axis, bool isAbsolute = true,
+                        bool showAsAbsolute = true, int precision = -1);
   //</group>
 
   // Used for persistence. Derived classes will have similar static
@@ -435,7 +435,7 @@ class Coordinate {
   // The default implementation should be ok for all Coordinate types
   // except Stokes and Quality...
   virtual bool doNearPixel(const Coordinate& other, const Vector<bool>& thisAxes,
-                           const Vector<bool>& otherAxes, Double tol = 1.0e-6) const;
+                           const Vector<bool>& otherAxes, double tol = 1.0e-6) const;
 
   // return the result of rotating the coordinate clockwise through the specified angle.
   // Rotation occurs about the reference pixel.
@@ -443,7 +443,7 @@ class Coordinate {
   // as the input type. It is the caller's responsibility to delete the returned pointer
   // when done with it to prevent a memory leak.
   // This method ultimately just changes the input coordinate's linear transform matrix.
-  virtual Coordinate* rotate(const Quantum<Double>& angle) const;
+  virtual Coordinate* rotate(const Quantum<double>& angle) const;
 
   // Call wcsset on the wcs structure
   static void set_wcs(::wcsprm& wcs);
@@ -471,24 +471,24 @@ class Coordinate {
   void set_error(const String& errorMsg) const;
 
   //
-  bool find_scale_factor(String& error, Vector<Double>& factor, const Vector<String>& units,
+  bool find_scale_factor(String& error, Vector<double>& factor, const Vector<String>& units,
                          const Vector<String>& oldUnits);
 
   // Tries to find a canonical unit for input unit (e.g.  GHz -> Hz), and
   // tells you the output name and unit for the Fourier coordinate
   // pairing with the canonical unit
   void fourierUnits(String& nameOut, String& unitOut, String& unitInCanon, Coordinate::Type type,
-                    Int axis, const String& unitIn, const String& nameIn) const;
+                    int axis, const String& unitIn, const String& nameIn) const;
 
   // Functions to interconvert pixel<->world via wcs.  These functions are called
   // explicitly by the to{world,Pixel} functions in the appropriate wcs-based derived
   // classes.
   // <group>
-  bool toWorldWCS(Vector<Double>& world, const Vector<Double>& pixel, wcsprm& wcs) const;
-  bool toPixelWCS(Vector<Double>& pixel, const Vector<Double>& world, wcsprm& wcs) const;
-  bool toWorldManyWCS(Matrix<Double>& world, const Matrix<Double>& pixel, Vector<bool>& failures,
+  bool toWorldWCS(Vector<double>& world, const Vector<double>& pixel, wcsprm& wcs) const;
+  bool toPixelWCS(Vector<double>& pixel, const Vector<double>& world, wcsprm& wcs) const;
+  bool toWorldManyWCS(Matrix<double>& world, const Matrix<double>& pixel, Vector<bool>& failures,
                       wcsprm& wcs) const;
-  bool toPixelManyWCS(Matrix<Double>& pixel, const Matrix<Double>& world, Vector<bool>& failures,
+  bool toPixelManyWCS(Matrix<double>& pixel, const Matrix<double>& world, Vector<bool>& failures,
                       wcsprm& wcs) const;
 
   // Functions for handling conversion between the current units and
@@ -496,33 +496,33 @@ class Coordinate {
   // derived class.
   // <src>convertFrom</src>
   // <group>
-  void toCurrentMany(Matrix<Double>& world, const Vector<Double>& toCurrentFactors) const;
-  void fromCurrentMany(Matrix<Double>& world, const Vector<Double>& toCurrentFactors) const;
+  void toCurrentMany(Matrix<double>& world, const Vector<double>& toCurrentFactors) const;
+  void fromCurrentMany(Matrix<double>& world, const Vector<double>& toCurrentFactors) const;
   // </group>
 
   // Functions for handling conversion between the current reference frame
   // and the native one. The default implementations do nothing.  They
   // should be over-ridden in the derived classes.
   // <group>
-  virtual void convertTo(Vector<Double>&) const {}
-  virtual void convertFrom(Vector<Double>&) const {}
+  virtual void convertTo(Vector<double>&) const {}
+  virtual void convertFrom(Vector<double>&) const {}
   // </group>
 
   // Functions for handling conversion between the current reference frame
   // and the native one for many conversions.  These functions just
   // call the virtual functions for single conversions.
   // <group>
-  void convertToMany(Matrix<Double>& world) const;
-  void convertFromMany(Matrix<Double>& world) const;
+  void convertToMany(Matrix<double>& world) const;
+  void convertFromMany(Matrix<double>& world) const;
   // </group>
 
   // Interconvert between wcs PC cards and Matrix xForm format
-  void pcToXform(Matrix<Double>& xForm, const wcsprm& wcs) const;
-  void xFormToPC(wcsprm& wcs, const Matrix<Double>& xForm) const;
+  void pcToXform(Matrix<double>& xForm, const wcsprm& wcs) const;
+  void xFormToPC(wcsprm& wcs, const Matrix<double>& xForm) const;
   // </group>
 
   // toMix ranges.  Should be set by derived class.
-  Vector<Double> worldMin_p, worldMax_p;
+  Vector<double> worldMin_p, worldMax_p;
 
  private:
   mutable String error_p;
@@ -530,8 +530,8 @@ class Coordinate {
   // Check format type
   void checkFormat(Coordinate::formatType& format, const bool absolute) const;
 
-  void makeWorldAbsRelMany(Matrix<Double>& value, bool toAbs) const;
-  void makePixelAbsRelMany(Matrix<Double>& value, bool toAbs) const;
+  void makeWorldAbsRelMany(Matrix<double>& value, bool toAbs) const;
+  void makePixelAbsRelMany(Matrix<double>& value, bool toAbs) const;
 };
 
 // ###### Inlines

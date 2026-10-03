@@ -42,17 +42,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class Domain, class Range>
 void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, const Vector<Domain>& xout,
                                                     const Vector<Domain>& xin,
-                                                    const Array<Range>& yin, Int method) {
-  const uInt ndim = yin.ndim();
-  Int nxin = xin.nelements(), nxout = xout.nelements();
+                                                    const Array<Range>& yin, int method) {
+  const unsigned int ndim = yin.ndim();
+  int nxin = xin.nelements(), nxout = xout.nelements();
   IPosition yinShape = yin.shape();
   DebugAssert(nxin == yinShape(ndim - 1), AipsError);
 
   bool deleteYin, deleteYout;
   const Range* pyin = yin.getStorage(deleteYin);
-  Int yStep = 1;
-  Int i;
-  for (i = 0; i < Int(ndim) - 1; i++) yStep *= yinShape(i);
+  int yStep = 1;
+  int i;
+  for (i = 0; i < int(ndim) - 1; i++) yStep *= yinShape(i);
   IPosition youtShape = yinShape;
   youtShape(ndim - 1) = nxout;
   yout.resize(youtShape);
@@ -72,7 +72,7 @@ void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, const Ve
 template <class Domain, class Range>
 void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, const Block<Domain>& xout,
                                                     const Block<Domain>& xin,
-                                                    const Array<Range>& yin, Int method) {
+                                                    const Array<Range>& yin, int method) {
   Vector<Domain> vxout(xout.begin(), xout.end());
   Vector<Domain> vxin(xin.begin(), xin.end());
   interpolate(yout, vxout, vxin, yin, method);
@@ -83,10 +83,10 @@ void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, Array<bo
                                                     const Vector<Domain>& xout,
                                                     const Vector<Domain>& xin,
                                                     const Array<Range>& yin,
-                                                    const Array<bool>& yinFlags, Int method,
+                                                    const Array<bool>& yinFlags, int method,
                                                     bool goodIsTrue, bool extrapolate) {
-  const uInt ndim = yin.ndim();
-  Int nxin = xin.nelements(), nxout = xout.nelements();
+  const unsigned int ndim = yin.ndim();
+  int nxin = xin.nelements(), nxout = xout.nelements();
   IPosition yinShape = yin.shape();
   DebugAssert(nxin == yinShape(ndim - 1), AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);
@@ -94,9 +94,9 @@ void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, Array<bo
   bool deleteYin, deleteYout, deleteYinFlags, deleteYoutFlags;
   const Range* pyin = yin.getStorage(deleteYin);
   const bool* pyinFlags = yinFlags.getStorage(deleteYinFlags);
-  Int yStep = 1;
-  Int i;
-  for (i = 0; i < Int(ndim) - 1; i++) yStep *= yinShape(i);
+  int yStep = 1;
+  int i;
+  for (i = 0; i < int(ndim) - 1; i++) yStep *= yinShape(i);
   IPosition youtShape = yinShape;
   youtShape(ndim - 1) = nxout;
   yout.resize(youtShape);
@@ -131,7 +131,7 @@ void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, Array<bo
                                                     const Block<Domain>& xout,
                                                     const Block<Domain>& xin,
                                                     const Array<Range>& yin,
-                                                    const Array<bool>& yinFlags, Int method,
+                                                    const Array<bool>& yinFlags, int method,
                                                     bool goodIsTrue, bool extrapolate) {
   Vector<Domain> vxout(xout.begin(), xout.end());
   Vector<Domain> vxin(xin.begin(), xin.end());
@@ -141,17 +141,17 @@ void InterpolateArray1D<Domain, Range>::interpolate(Array<Range>& yout, Array<bo
 template <class Domain, class Range>
 void InterpolateArray1D<Domain, Range>::interpolatey(Cube<Range>& yout, const Vector<Domain>& xout,
                                                      const Vector<Domain>& xin,
-                                                     const Cube<Range>& yin, Int method) {
-  Int nxout = xout.nelements();
+                                                     const Cube<Range>& yin, int method) {
+  int nxout = xout.nelements();
   IPosition yinShape = yin.shape();
   // check the number of elements in y
   DebugAssert(xin.nelements() == yinShape(2), AipsError);
 
   bool deleteYin, deleteYout;
   const Range* pyin = yin.getStorage(deleteYin);
-  Int na = yinShape(0);
-  Int nb = yinShape(1);
-  Int nc = yinShape(2);
+  int na = yinShape(0);
+  int nb = yinShape(1);
+  int nc = yinShape(2);
   IPosition youtShape = yinShape;
   youtShape(1) = nxout;  // pick y of cube
   // youtShape(2)=nxout;  // pick z of cube
@@ -160,7 +160,7 @@ void InterpolateArray1D<Domain, Range>::interpolatey(Cube<Range>& yout, const Ve
 
   Block<const Range*> yinPtrs(na * nb * nc);
   Block<Range*> youtPtrs(na * nxout * nc);
-  Int i;
+  int i;
   for (i = 0; i < (na * nb * nc); i++) yinPtrs[i] = pyin + i;
   for (i = 0; i < (na * nxout * nc); i++) {
     youtPtrs[i] = pyout + i;
@@ -176,9 +176,9 @@ void InterpolateArray1D<Domain, Range>::interpolatey(Cube<Range>& yout, Cube<boo
                                                      const Vector<Domain>& xout,
                                                      const Vector<Domain>& xin,
                                                      const Cube<Range>& yin,
-                                                     const Cube<bool>& yinFlags, Int method,
+                                                     const Cube<bool>& yinFlags, int method,
                                                      bool goodIsTrue, bool extrapolate) {
-  Int nxout = xout.nelements();
+  int nxout = xout.nelements();
   IPosition yinShape = yin.shape();
   DebugAssert(xin.nelements() == yinShape(2), AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);
@@ -186,9 +186,9 @@ void InterpolateArray1D<Domain, Range>::interpolatey(Cube<Range>& yout, Cube<boo
   bool deleteYin, deleteYout, deleteYinFlags, deleteYoutFlags;
   const Range* pyin = yin.getStorage(deleteYin);
   const bool* pyinFlags = yinFlags.getStorage(deleteYinFlags);
-  Int na = yinShape(0);
-  Int nb = yinShape(1);
-  Int nc = yinShape(2);
+  int na = yinShape(0);
+  int nb = yinShape(1);
+  int nc = yinShape(2);
   IPosition youtShape = yinShape;
   youtShape(1) = nxout;  // pick y of cube
   yout.resize(youtShape);
@@ -201,7 +201,7 @@ void InterpolateArray1D<Domain, Range>::interpolatey(Cube<Range>& yout, Cube<boo
   Block<const bool*> yinFlagPtrs(na * nb * nc);
   Block<Range*> youtPtrs(na * nxout * nc);
   Block<bool*> youtFlagPtrs(na * nxout * nc);
-  Int i;
+  int i;
   for (i = 0; i < (na * nb * nc); i++) {
     yinPtrs[i] = pyin + i;
     yinFlagPtrs[i] = pyinFlags + i;
@@ -219,34 +219,34 @@ void InterpolateArray1D<Domain, Range>::interpolatey(Cube<Range>& yout, Cube<boo
 }
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, Int ny,
+void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, int ny,
                                                        const Vector<Domain>& xout,
                                                        const Vector<Domain>& xin,
-                                                       const Block<const Range*>& yin, Int method) {
-  uInt nElements = xin.nelements();
+                                                       const Block<const Range*>& yin, int method) {
+  unsigned int nElements = xin.nelements();
   AlwaysAssert(nElements > 0, AipsError);
   Domain x_req;
   switch (method) {
     case nearestNeighbour:  // This does nearest neighbour interpolation
     {
-      for (uInt i = 0; i < xout.nelements(); i++) {
+      for (unsigned int i = 0; i < xout.nelements(); i++) {
         x_req = xout[i];
         bool found;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements) {
-          for (Int j = 0; j < ny; j++) yout[i][j] = yin[nElements - 1][j];
+          for (int j = 0; j < ny; j++) yout[i][j] = yin[nElements - 1][j];
         } else if (where == 0) {
-          for (Int j = 0; j < ny; j++) yout[i][j] = yin[0][j];
+          for (int j = 0; j < ny; j++) yout[i][j] = yin[0][j];
         } else {
           // The following works for both ascending/descending xin
           Domain nextdiff = abs(xin[where] - x_req);      // forward diff
           Domain prevdiff = abs(xin[where - 1] - x_req);  // backward diff
           if (nextdiff < prevdiff) {
             // closer to next
-            for (Int j = 0; j < ny; j++) yout[i][j] = yin[where][j];
+            for (int j = 0; j < ny; j++) yout[i][j] = yin[where][j];
           } else {
             // closer to previous
-            for (Int j = 0; j < ny; j++) yout[i][j] = yin[where - 1][j];
+            for (int j = 0; j < ny; j++) yout[i][j] = yin[where - 1][j];
           }
         }
       }
@@ -254,25 +254,25 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, Int 
     }
     case linear:  // Linear interpolation is the default
     {
-      for (uInt i = 0; i < xout.nelements(); i++) {
+      for (unsigned int i = 0; i < xout.nelements(); i++) {
         x_req = xout[i];
         bool found;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements)
           where--;
         else if (where == 0)
           where++;
         Domain x2 = xin[where];
-        Int ind2 = where;
+        int ind2 = where;
         where--;
         Domain x1 = xin[where];
-        Int ind1 = where;
+        int ind1 = where;
         if (nearAbs(x1, x2))
           throw(
               AipsError("Interpolate1D::operator()"
                         " data has repeated x values"));
         Domain frac = (x_req - x1) / (x2 - x1);
-        for (Int j = 0; j < ny; j++)
+        for (int j = 0; j < ny; j++)
           yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
         //    return y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
       }
@@ -301,7 +301,7 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, Int 
       // storage t, is used to hold the right hand side.
       Block<Domain> t(nElements);
       t[0] = 0;
-      for (Int j = 0; j < ny; j++) {
+      for (int j = 0; j < ny; j++) {
         y2[0] = Range(0);
         y2[nElements - 1] = y2[0];
         Domain c = xin[1] - xin[0];
@@ -311,10 +311,10 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, Int 
                         " data has repeated x values"));
         Domain a, b, delta;
         const Domain six = 6;
-        const Float one = 1;
+        const float one = 1;
         Range r;
-        Int i;
-        for (i = 1; i < Int(nElements) - 1; i++) {
+        int i;
+        for (i = 1; i < int(nElements) - 1; i++) {
           a = c;
           b = Domain(2) * (xin[i + 1] - xin[i - 1]);
           if (nearAbs(xin[i + 1], xin[i]))
@@ -334,14 +334,14 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, Int 
         }
         // The second part of the solution is to do the back-substitution to
         // iteratively obtain the second derivatives.
-        for (i = Int(nElements) - 2; i > 1; i--) {
+        for (i = int(nElements) - 2; i > 1; i--) {
           y2[i] -= t[i] * y2[i + 1];
         }
 
-        for (i = 0; i < Int(xout.nelements()); i++) {
+        for (i = 0; i < int(xout.nelements()); i++) {
           x_req = xout[i];
           bool found;
-          uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+          unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
           if (where == nElements)
             where--;
           else if (where == 0)
@@ -375,26 +375,26 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(Block<Range*>& yout, Int 
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain, Range>::interpolatePtr(
-    Block<Range*>& yout, Block<bool*>& youtFlags, Int ny, const Vector<Domain>& xout,
+    Block<Range*>& yout, Block<bool*>& youtFlags, int ny, const Vector<Domain>& xout,
     const Vector<Domain>& xin, const Block<const Range*>& yin, const Block<const bool*>& yinFlags,
-    Int method, bool goodIsTrue, bool extrapolate) {
-  uInt nElements = xin.nelements();
+    int method, bool goodIsTrue, bool extrapolate) {
+  unsigned int nElements = xin.nelements();
   Domain x_req;
   bool flag = !(goodIsTrue);
   switch (method) {
     case nearestNeighbour:  // This does nearest neighbour interpolation
     {
-      for (Int i = 0; i < Int(xout.nelements()); i++) {
+      for (int i = 0; i < int(xout.nelements()); i++) {
         x_req = xout[i];
         bool found;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements) {
-          for (Int j = 0; j < ny; j++) {
+          for (int j = 0; j < ny; j++) {
             yout[i][j] = yin[nElements - 1][j];
             youtFlags[i][j] = (extrapolate ? yinFlags[nElements - 1][j] : flag);
           }
         } else if (where == 0) {
-          for (Int j = 0; j < ny; j++) {
+          for (int j = 0; j < ny; j++) {
             yout[i][j] = yin[0][j];
             youtFlags[i][j] = ((x_req == xin[0]) || extrapolate ? yinFlags[0][j] : flag);
           }
@@ -404,13 +404,13 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
           Domain prevdiff = abs(xin[where - 1] - x_req);  // backward diff
           if (nextdiff < prevdiff) {
             // closer to next
-            for (Int j = 0; j < ny; j++) {
+            for (int j = 0; j < ny; j++) {
               yout[i][j] = yin[where][j];
               youtFlags[i][j] = yinFlags[where][j];
             }
           } else {
             // closer to previous
-            for (Int j = 0; j < ny; j++) {
+            for (int j = 0; j < ny; j++) {
               yout[i][j] = yin[where - 1][j];
               youtFlags[i][j] = yinFlags[where - 1][j];
             }
@@ -421,11 +421,11 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
     }
     case linear:  // Linear interpolation is the default
     {
-      for (Int i = 0; i < Int(xout.nelements()); i++) {
+      for (int i = 0; i < int(xout.nelements()); i++) {
         x_req = xout[i];
         bool found;
         bool discard = false;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements) {
           discard = !extrapolate;
           where--;
@@ -434,10 +434,10 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
           where++;
         }
         Domain x2 = xin[where];
-        Int ind2 = where;
+        int ind2 = where;
         where--;
         Domain x1 = xin[where];
-        Int ind1 = where;
+        int ind1 = where;
         if (nearAbs(x1, x2))
           throw(
               AipsError("Interpolate1D::operator()"
@@ -449,12 +449,12 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
         if (frac > limit && frac < 1. - limit) {
           // cout << "two: frac "  << setprecision(12) << xfrac << endl;
           if (goodIsTrue) {
-            for (Int j = 0; j < ny; j++) {
+            for (int j = 0; j < ny; j++) {
               yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
               youtFlags[i][j] = (discard ? flag : yinFlags[ind1][j] && yinFlags[ind2][j]);
             }
           } else {
-            for (Int j = 0; j < ny; j++) {
+            for (int j = 0; j < ny; j++) {
               yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
               youtFlags[i][j] = (discard ? flag : yinFlags[ind1][j] || yinFlags[ind2][j]);
             }
@@ -463,12 +463,12 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
           // only one of the channels is involved
           // cout << "one: frac "  << setprecision(12) << xfrac << endl;
           if (frac <= limit) {
-            for (Int j = 0; j < ny; j++) {
+            for (int j = 0; j < ny; j++) {
               yout[i][j] = yin[ind1][j];
               youtFlags[i][j] = (discard ? flag : yinFlags[ind1][j]);
             }
           } else {  // frac >= 1.-limit
-            for (Int j = 0; j < ny; j++) {
+            for (int j = 0; j < ny; j++) {
               yout[i][j] = yin[ind2][j];
               youtFlags[i][j] = (discard ? flag : yinFlags[ind2][j]);
             }
@@ -481,11 +481,11 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
     {
       // TODO: implement flags properly - ie don't use flagged points
       polynomialInterpolation(yout, ny, xout, xin, yin, 3);
-      for (uInt i = 0; i < xout.nelements(); i++) {
+      for (unsigned int i = 0; i < xout.nelements(); i++) {
         Domain x_req = xout[i];
         bool found;
         bool discard = false;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements) {
           where--;
           discard = !extrapolate;
@@ -493,15 +493,15 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
           where++;
           discard = (x_req != xin[0]) && (!extrapolate);
         }
-        Int ind2 = where;
+        int ind2 = where;
         where--;
-        Int ind1 = where;
+        int ind1 = where;
         if (goodIsTrue) {
-          for (Int j = 0; j < ny; j++) {
+          for (int j = 0; j < ny; j++) {
             youtFlags[i][j] = (discard ? flag : yinFlags[ind1][j] && yinFlags[ind2][j]);
           }
         } else {
-          for (Int j = 0; j < ny; j++) {
+          for (int j = 0; j < ny; j++) {
             youtFlags[i][j] = (discard ? flag : yinFlags[ind1][j] || yinFlags[ind2][j]);
           }
         }
@@ -527,7 +527,7 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
       // storage t, is used to hold the right hand side.
       Block<Domain> t(nElements);
       t[0] = 0;
-      for (Int j = 0; j < ny; j++) {
+      for (int j = 0; j < ny; j++) {
         y2[0] = Range(0);
         y2[nElements - 1] = y2[0];
         Domain c = xin[1] - xin[0];
@@ -537,10 +537,10 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
                         " data has repeated x values"));
         Domain a, b, delta;
         const Domain six = 6;
-        const Float one = 1;
+        const float one = 1;
         Range r;
-        Int i;
-        for (i = 1; i < Int(nElements) - 1; i++) {
+        int i;
+        for (i = 1; i < int(nElements) - 1; i++) {
           a = c;
           b = Domain(2) * (xin[i + 1] - xin[i - 1]);
           if (nearAbs(xin[i + 1], xin[i]))
@@ -564,11 +564,11 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
           y2[i] -= t[i] * y2[i + 1];
         }
 
-        for (i = 0; i < Int(xout.nelements()); i++) {
+        for (i = 0; i < int(xout.nelements()); i++) {
           x_req = xout[i];
           bool found;
           bool discard = false;
-          uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+          unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
           if (where == nElements) {
             where--;
             discard = !extrapolate;
@@ -610,12 +610,12 @@ void InterpolateArray1D<Domain, Range>::interpolatePtr(
 }
 
 template <class Domain, class Range>
-void InterpolateArray1D<Domain, Range>::interpolateyPtr(Block<Range*>& yout, Int na, Int nb, Int nc,
+void InterpolateArray1D<Domain, Range>::interpolateyPtr(Block<Range*>& yout, int na, int nb, int nc,
                                                         const Vector<Domain>& xout,
                                                         const Vector<Domain>& xin,
                                                         const Block<const Range*>& yin,
-                                                        Int method) {
-  uInt nElements = xin.nelements();
+                                                        int method) {
+  unsigned int nElements = xin.nelements();
   AlwaysAssert(nElements > 0, AipsError);
   Domain x_req;
   switch (method) {
@@ -627,32 +627,32 @@ void InterpolateArray1D<Domain, Range>::interpolateyPtr(Block<Range*>& yout, Int
     }
     case linear:  // Linear interpolation is the default
     {
-      Int h;
-      Int nxout = xout.nelements();
-      for (Int j = 0; j < nxout; j++) {
+      int h;
+      int nxout = xout.nelements();
+      for (int j = 0; j < nxout; j++) {
         x_req = xout[j];
         bool found;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements)
           where--;
         else if (where == 0)
           where++;
         Domain x2 = xin[where];
-        Int ind2 = where;
+        int ind2 = where;
         where--;
         Domain x1 = xin[where];
-        Int ind1 = where;
+        int ind1 = where;
         if (nearAbs(x1, x2))
           throw(
               AipsError("Interpolate1D::operator()"
                         " data has repeated x values"));
         Domain frac = (x_req - x1) / (x2 - x1);
-        for (Int k = 0; k < nc; k++) {
-          for (Int i = 0; i < na; i++) {
+        for (int k = 0; k < nc; k++) {
+          for (int i = 0; i < na; i++) {
             // column major
             h = i + j * na + k * na * nxout;
-            Int xind1 = i + ind1 * na + k * na * nb;
-            Int xind2 = i + ind2 * na + k * na * nb;
+            int xind1 = i + ind1 * na + k * na * nb;
+            int xind2 = i + ind2 * na + k * na * nb;
             yout[h][0] = yin[xind1][0] + frac * (yin[xind2][0] - yin[xind1][0]);
             //    return y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
           }
@@ -676,10 +676,10 @@ void InterpolateArray1D<Domain, Range>::interpolateyPtr(Block<Range*>& yout, Int
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain, Range>::interpolateyPtr(
-    Block<Range*>& yout, Block<bool*>& youtFlags, Int na, Int nb, Int nc,
+    Block<Range*>& yout, Block<bool*>& youtFlags, int na, int nb, int nc,
     const Vector<Domain>& xout, const Vector<Domain>& xin, const Block<const Range*>& yin,
-    const Block<const bool*>& yinFlags, Int method, bool goodIsTrue, bool extrapolate) {
-  uInt nElements = xin.nelements();
+    const Block<const bool*>& yinFlags, int method, bool goodIsTrue, bool extrapolate) {
+  unsigned int nElements = xin.nelements();
   Domain x_req;
   bool flag = !(goodIsTrue);
   switch (method) {
@@ -691,13 +691,13 @@ void InterpolateArray1D<Domain, Range>::interpolateyPtr(
     }
     case linear:  // Linear interpolation is the default
     {
-      Int h;
-      Int nxout = xout.nelements();
-      for (Int j = 0; j < nxout; j++) {
+      int h;
+      int nxout = xout.nelements();
+      for (int j = 0; j < nxout; j++) {
         x_req = xout[j];
         bool found;
         bool discard = false;
-        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        unsigned int where = binarySearchBrackets(found, xin, x_req, nElements);
         if (where == nElements) {
           discard = !extrapolate;
           where--;
@@ -706,10 +706,10 @@ void InterpolateArray1D<Domain, Range>::interpolateyPtr(
           where++;
         }
         Domain x2 = xin[where];
-        Int ind2 = where;
+        int ind2 = where;
         where--;
         Domain x1 = xin[where];
-        Int ind1 = where;
+        int ind1 = where;
         if (nearAbs(x1, x2))
           throw(
               AipsError("Interpolate1D::operator()"
@@ -718,22 +718,22 @@ void InterpolateArray1D<Domain, Range>::interpolateyPtr(
 
         //    y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
         if (goodIsTrue) {
-          for (Int k = 0; k < nc; k++) {
-            for (Int i = 0; i < na; i++) {
+          for (int k = 0; k < nc; k++) {
+            for (int i = 0; i < na; i++) {
               // column major
               h = i + j * na + k * na * nxout;
-              Int xind1 = i + ind1 * na + k * na * nb;
-              Int xind2 = i + ind2 * na + k * na * nb;
+              int xind1 = i + ind1 * na + k * na * nb;
+              int xind2 = i + ind2 * na + k * na * nb;
               yout[h][0] = yin[xind1][0] + frac * (yin[xind2][0] - yin[xind1][0]);
               youtFlags[h][0] = (discard ? flag : yinFlags[xind1][0] && yinFlags[xind2][0]);
             }
           }
         } else {
-          for (Int k = 0; k < nc; k++) {
-            for (Int i = 0; i < na; i++) {
+          for (int k = 0; k < nc; k++) {
+            for (int i = 0; i < na; i++) {
               h = i + j * na + k * na * nxout;
-              Int xind1 = i + ind1 * na + k * na * nb;
-              Int xind2 = i + ind2 * na + k * na * nb;
+              int xind1 = i + ind1 * na + k * na * nb;
+              int xind2 = i + ind2 * na + k * na * nb;
               yout[h][0] = yin[xind1][0] + frac * (yin[xind2][0] - yin[xind1][0]);
               youtFlags[h][0] = (discard ? flag : yinFlags[xind1][0] || yinFlags[xind2][0]);
             }
@@ -759,26 +759,26 @@ void InterpolateArray1D<Domain, Range>::interpolateyPtr(
 // Interpolate the y-vectors of length ny from x values xin to xout
 // using polynomial interpolation with specified order
 template <class Domain, class Range>
-void InterpolateArray1D<Domain, Range>::polynomialInterpolation(Block<Range*>& yout, Int ny,
+void InterpolateArray1D<Domain, Range>::polynomialInterpolation(Block<Range*>& yout, int ny,
                                                                 const Vector<Domain>& xout,
                                                                 const Vector<Domain>& xin,
                                                                 const Block<const Range*>& yin,
-                                                                Int order) {
+                                                                int order) {
   // Based on Nevilles Algorithm (Numerical Recipies 2nd ed., Section 3.1)
   // x is the point we want to estimate, n is the number of points to use
   // in the interpolation, and offset controls which n points are used
   // (normally the nearest points)
 
   // n = #points used in interpolation
-  Int n = order + 1;
+  int n = order + 1;
   Block<Range> c(n), d(n);
   Block<Domain> x(n);
-  Int nElements = xin.nelements();
+  int nElements = xin.nelements();
   DebugAssert((n <= nElements), AipsError);
-  for (Int i = 0; i < Int(xout.nelements()); i++) {
+  for (int i = 0; i < int(xout.nelements()); i++) {
     Domain x_req = xout[i];
     bool found;
-    Int where = binarySearchBrackets(found, xin, x_req, nElements);
+    int where = binarySearchBrackets(found, xin, x_req, nElements);
     if (where > 1 && where < nElements - 1)
       where = where - n / 2;
     else if (where <= 1)
@@ -786,10 +786,10 @@ void InterpolateArray1D<Domain, Range>::polynomialInterpolation(Block<Range*>& y
     else
       where = nElements - n;
 
-    for (Int j = 0; j < ny; j++) {
-      Int offset = where;
+    for (int j = 0; j < ny; j++) {
+      int offset = where;
       // copy the x, y data into the working arrays
-      for (Int i2 = 0; i2 < n; i2++) {
+      for (int i2 = 0; i2 < n; i2++) {
         d[i2] = c[i2] = yin[offset][j];
         x[i2] = xin[offset];
         offset++;
@@ -797,10 +797,10 @@ void InterpolateArray1D<Domain, Range>::polynomialInterpolation(Block<Range*>& y
       // Now do the interpolation using the rather opaque algorithm
       Range w, y;
       y = c[0];
-      const Float one = 1;
-      for (Int k = 1; k < n; k++) {
+      const float one = 1;
+      for (int k = 1; k < n; k++) {
         // Calculate new C's and D's for each iteration
-        for (Int l = 0; l < n - k; l++) {
+        for (int l = 0; l < n - k; l++) {
           if (nearAbs(x[l + k], x[l]))
             throw(
                 AipsError("Interpolate1D::polynomialInterpolation"

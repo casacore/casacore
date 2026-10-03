@@ -153,7 +153,7 @@ class RegionHandlerMemory : public RegionHandler {
   // (i.e. the field number of the "regions" or "masks" field).
   // -1 is returned if the region does not exist.
   // <br>Optionally an exception is thrown if the region does not exist.
-  Int findRegionGroup(const String& regionName, RegionHandler::GroupType = Any,
+  int findRegionGroup(const String& regionName, RegionHandler::GroupType = Any,
                       bool throwIfUnknown = true) const;
 
   // Find a region..

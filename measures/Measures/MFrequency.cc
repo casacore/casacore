@@ -78,7 +78,7 @@ void MFrequency::assure(const Measure &in) {
   }
 }
 
-MFrequency::Types MFrequency::castType(uInt tp) {
+MFrequency::Types MFrequency::castType(unsigned int tp) {
   MFrequency::checkMyTypes();
 
   if ((tp & MFrequency::EXTRA) == 0) {
@@ -100,17 +100,17 @@ const String &MFrequency::showType(MFrequency::Types tp) {
   return ename[tp & ~MFrequency::EXTRA];
 }
 
-const String &MFrequency::showType(uInt tp) {
+const String &MFrequency::showType(unsigned int tp) {
   return MFrequency::showType(MFrequency::castType(tp));
 }
 
-const String *MFrequency::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
-  static const Int N_name = 10;
-  static const Int N_extra = 1;
+const String *MFrequency::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
+  static const int N_name = 10;
+  static const int N_extra = 1;
   static const String tname[N_name] = {"REST", "LSRK",    "LSRD",   "BARY", "GEO",
                                        "TOPO", "GALACTO", "LGROUP", "CMB",  "Undefined"};
 
-  static const uInt oname[N_name] = {MFrequency::REST,     MFrequency::LSRK,   MFrequency::LSRD,
+  static const unsigned int oname[N_name] = {MFrequency::REST,     MFrequency::LSRK,   MFrequency::LSRD,
                                      MFrequency::BARY,     MFrequency::GEO,    MFrequency::TOPO,
                                      MFrequency::GALACTO,  MFrequency::LGROUP, MFrequency::CMB,
                                      MFrequency::Undefined};
@@ -122,16 +122,16 @@ const String *MFrequency::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
   return tname;
 }
 
-const String *MFrequency::allTypes(Int &nall, Int &nextra, const uInt *&typ) const {
+const String *MFrequency::allTypes(int &nall, int &nextra, const unsigned int *&typ) const {
   return MFrequency::allMyTypes(nall, nextra, typ);
 }
 
 bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+  const unsigned int *oname;
+  int nall, nex;
   const String *tname = MFrequency::allMyTypes(nall, nex, oname);
 
-  Int i = Measure::giveMe(in, nall, tname);
+  int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
     return false;
@@ -152,16 +152,16 @@ void MFrequency::checkMyTypes() {
   static bool first(true);
   if (first) {
     first = false;
-    Int nall, nex;
-    const uInt *typ;
+    int nall, nex;
+    const unsigned int *typ;
     const String *const tps = MFrequency::allMyTypes(nall, nex, typ);
     MFrequency::Types tp;
-    for (Int i = 0; i < nall; i++) {
-      AlwaysAssert(MFrequency::getType(tp, MFrequency::showType(typ[i])) && tp == Int(typ[i]) &&
-                       MFrequency::getType(tp, tps[i]) && tp == Int(typ[i]),
+    for (int i = 0; i < nall; i++) {
+      AlwaysAssert(MFrequency::getType(tp, MFrequency::showType(typ[i])) && tp == int(typ[i]) &&
+                       MFrequency::getType(tp, tps[i]) && tp == int(typ[i]),
                    AipsError);
     }
-    for (Int i = 0; i < N_Types; i++) {
+    for (int i = 0; i < N_Types; i++) {
       AlwaysAssert(MFrequency::getType(tp, MFrequency::showType(i)) && tp == i, AipsError);
     }
   }
@@ -203,20 +203,20 @@ String MFrequency::getRefString() const { return MFrequency::showType(ref.getTyp
 Quantity MFrequency::get(const Unit &un) const { return data.get(un); }
 
 MDoppler MFrequency::toDoppler(const MVFrequency &rest) {
-  Double t = data / rest;
+  double t = data / rest;
   t *= t;
   return MDoppler(MVDoppler((1 - t) / (1 + t)), MDoppler::BETA);
 }
 
 MDoppler MFrequency::toDoppler(const MVFrequency &rest) const {
-  Double t = data / rest;
+  double t = data / rest;
   t *= t;
   return MDoppler(MVDoppler((1 - t) / (1 + t)), MDoppler::BETA);
 }
 
 MDoppler MFrequency::toDoppler(const Measure &in, const MVFrequency &rest) {
   MFrequency::assure(in);
-  Double t = ((MVFrequency *)(in.getData()))->getValue() / rest.getValue();
+  double t = ((MVFrequency *)(in.getData()))->getValue() / rest.getValue();
   t *= t;
   return MDoppler(MVDoppler((1 - t) / (1 + t)), MDoppler::BETA);
 }
@@ -227,7 +227,7 @@ MFrequency MFrequency::fromDoppler(const MDoppler &dop, const MVFrequency &rest)
 
 MFrequency MFrequency::fromDoppler(const MDoppler &dop, const MVFrequency &rest,
                                    MFrequency::Types type) {
-  Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
+  double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
   t = (1 - t) / (1 + t);
   return MFrequency(MVFrequency(sqrt(t) * rest.getValue()), type);
 }
@@ -235,13 +235,13 @@ MFrequency MFrequency::fromDoppler(const MDoppler &dop, const MVFrequency &rest,
 MFrequency MFrequency::fromDoppler(const Measure &dop, const MVFrequency &rest,
                                    MFrequency::Types type) {
   MDoppler::assure(dop);
-  Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
+  double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
   t = (1 - t) / (1 + t);
   return MFrequency(MVFrequency(sqrt(t) * rest.getValue()), type);
 }
 
 MFrequency MFrequency::toRest(const MDoppler &dop) const {
-  Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
+  double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
   t = (1 - t) / (1 + t);
   return MFrequency(MVFrequency(data.getValue() / sqrt(t)), MFrequency::REST);
 }
@@ -249,7 +249,7 @@ MFrequency MFrequency::toRest(const MDoppler &dop) const {
 MFrequency MFrequency::toRest(const Measure &in, const Measure &dop) {
   MDoppler::assure(dop);
   MFrequency::assure(in);
-  Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
+  double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
   t = (1 - t) / (1 + t);
   return MFrequency(MVFrequency(((MVFrequency *)(in.getData()))->getValue() / sqrt(t)),
                     MFrequency::REST);

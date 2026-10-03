@@ -100,9 +100,9 @@ bool LCHDF5Mask::equals(const LCRegion& other) const {
 
 LCRegion* LCHDF5Mask::cloneRegion() const { return new LCHDF5Mask(*this); }
 
-uInt LCHDF5Mask::advisedMaxPixels() const { return itsMask.advisedMaxPixels(); }
+unsigned int LCHDF5Mask::advisedMaxPixels() const { return itsMask.advisedMaxPixels(); }
 
-IPosition LCHDF5Mask::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCHDF5Mask::doNiceCursorShape(unsigned int maxPixels) const {
   return itsMask.niceCursorShape(maxPixels);
 }
 
@@ -113,7 +113,7 @@ LatticeIterInterface<bool>* LCHDF5Mask::makeIter(const LatticeNavigator& navigat
 
 void LCHDF5Mask::flush() { itsMask.flush(); }
 
-LCRegion* LCHDF5Mask::doTranslate(const Vector<Float>&, const IPosition&) const {
+LCRegion* LCHDF5Mask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCHDF5Mask cannot be translated.
   throw(AipsError("LCHDF5Mask::translate is not supported"));
   return 0;

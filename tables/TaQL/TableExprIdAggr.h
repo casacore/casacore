@@ -89,7 +89,7 @@ class TableExprIdAggr : public TableExprId {
   const TableExprGroupResult& result() const { return *itsResult; }
 
   // Get the magic value (to check if correct).
-  uInt getMagicValue() const { return itsMagicValue; }
+  unsigned int getMagicValue() const { return itsMagicValue; }
 
   // Cast a TableExprId object to TableExprIdAggr. It checks if the cast
   // is correct by checking the magic value.
@@ -100,7 +100,7 @@ class TableExprIdAggr : public TableExprId {
   }
 
  private:
-  uInt itsMagicValue;
+  unsigned int itsMagicValue;
   std::shared_ptr<TableExprGroupResult> itsResult;
 };
 

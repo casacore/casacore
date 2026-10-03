@@ -127,7 +127,7 @@ void ScalarColumn<T>::getColumnRange(const Slicer& rowRange, Vector<T>& vec, boo
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
   // # When the entire column is accessed, use that function.
-  if (blc(0) == 0 && shp(0) == Int(nrrow) && inc(0) == 1) {
+  if (blc(0) == 0 && shp(0) == int(nrrow) && inc(0) == 1) {
     getColumn(vec, resize);
   } else {
     getColumnCells(RefRows(blc(0), trc(0), inc(0)), vec, resize);
@@ -185,7 +185,7 @@ void ScalarColumn<T>::putColumnRange(const Slicer& rowRange, const Vector<T>& ve
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
   // # When the entire column is accessed, use that function.
-  if (blc(0) == 0 && shp(0) == Int(nrrow) && inc(0) == 1) {
+  if (blc(0) == 0 && shp(0) == int(nrrow) && inc(0) == 1) {
     putColumn(vec);
   } else {
     putColumnCells(RefRows(blc(0), trc(0), inc(0)), vec);

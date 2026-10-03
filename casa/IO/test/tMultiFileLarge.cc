@@ -45,8 +45,8 @@ namespace casacore {
 // it makes it possible to test such an index.
 class MultiFileLarge : public MultiFile {
  public:
-  MultiFileLarge(const String& name, ByteIO::OpenOption option, Int blockSize, bool useODirect,
-                 bool useCRC, Int testMode)
+  MultiFileLarge(const String& name, ByteIO::OpenOption option, int blockSize, bool useODirect,
+                 bool useCRC, int testMode)
       : MultiFile(name, option, blockSize, useODirect, useCRC), itsTestMode(testMode) {}
   ~MultiFileLarge() override { flush(); }
   void readBlock(MultiFileInfo&, Int64, void*) override;
@@ -56,7 +56,7 @@ class MultiFileLarge : public MultiFile {
   void writeHeaderTest() override;
 
  private:
-  Int itsTestMode;
+  int itsTestMode;
 };
 
 void MultiFileLarge::readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) {
@@ -111,7 +111,7 @@ void readFile(const String& name) {
   MultiFile mfile(name, ByteIO::Old);
   AlwaysAssertExit(!mfile.isWritable());
   mfile.show(cout);
-  for (uInt i = 0; i < mfile.info().size(); ++i) {
+  for (unsigned int i = 0; i < mfile.info().size(); ++i) {
     String nm = "file" + std::to_string(i);
     cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
@@ -122,8 +122,8 @@ void testLarge(bool oDirect, bool useCRC, int testMode) {
   {
     // Use 4 KB blocks, but optionally use test mode (do not write actual data).
     MultiFileLarge mfile("tMultiFileLarge_tmp.dat", ByteIO::New, 4096, oDirect, useCRC, testMode);
-    Int fid0 = mfile.createFile("file0");
-    Int fid1 = mfile.createFile("file1");
+    int fid0 = mfile.createFile("file0");
+    int fid1 = mfile.createFile("file1");
     Vector<Int64> buf(4096 / sizeof(Int64));
     indgen(buf);
     Int64 offs0 = 0;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
   //    testMode > 0:  create 1000000 blocks without writing data and exit prematurely
   //    testMode < 0:  read the file produced by testMode>0
   try {
-    Int testMode = 0;  // normal
+    int testMode = 0;  // normal
     if (argc > 1) {
       testMode = atoi(argv[1]);
     }

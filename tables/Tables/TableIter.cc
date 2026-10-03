@@ -36,7 +36,7 @@ TableIterator::TableIterator() : tabIterPtr_p(0) {}
 TableIterator::TableIterator(const Table& tab, const String& key, Order order, Option option)
     : tabIterPtr_p(0) {
   Block<String> keys(1, key);
-  Block<Int> ord(1, order);
+  Block<int> ord(1, order);
   Block<std::shared_ptr<BaseCompare>> cmpObj(1);
   tabIterPtr_p = tab.baseTablePtr()->makeIterator(keys, cmpObj, ord, option);
   next();  // get first subtable
@@ -45,13 +45,13 @@ TableIterator::TableIterator(const Table& tab, const String& key, Order order, O
 TableIterator::TableIterator(const Table& tab, const Block<String>& keys, Order order,
                              Option option)
     : tabIterPtr_p(0) {
-  Block<Int> ord(keys.nelements(), order);
+  Block<int> ord(keys.nelements(), order);
   Block<std::shared_ptr<BaseCompare>> cmpObj(keys.nelements());
   tabIterPtr_p = tab.baseTablePtr()->makeIterator(keys, cmpObj, ord, option);
   next();  // get first subtable
 }
 
-TableIterator::TableIterator(const Table& tab, const Block<String>& keys, const Block<Int>& orders,
+TableIterator::TableIterator(const Table& tab, const Block<String>& keys, const Block<int>& orders,
                              Option option)
     : tabIterPtr_p(0) {
   Block<std::shared_ptr<BaseCompare>> cmpObj(keys.nelements());
@@ -61,7 +61,7 @@ TableIterator::TableIterator(const Table& tab, const Block<String>& keys, const 
 
 TableIterator::TableIterator(const Table& tab, const Block<String>& keys,
                              const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
-                             const Block<Int>& orders, Option option, bool cacheIterationBoundaries)
+                             const Block<int>& orders, Option option, bool cacheIterationBoundaries)
     : tabIterPtr_p(0) {
   tabIterPtr_p =
       tab.baseTablePtr()->makeIterator(keys, cmpObjs, orders, option, cacheIterationBoundaries);

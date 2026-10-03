@@ -59,7 +59,7 @@ class BucketBase {
   // bucketSize*nrOfBuckets bytes.
   // If the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketBase(BucketFile* file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets);
+  BucketBase(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets);
 
   // Detach the file. The BucketFile is not closed.
   virtual ~BucketBase();
@@ -74,15 +74,15 @@ class BucketBase {
   // Resynchronize the object (after another process updated the file).
   // It remaps the file if the nr of buckets has changed.
   // the new sizes.
-  virtual void resync(uInt nrBucket);
+  virtual void resync(unsigned int nrBucket);
 
   // Get the current nr of buckets in the file.
-  uInt nBucket() const { return itsCurNrOfBuckets; }
+  unsigned int nBucket() const { return itsCurNrOfBuckets; }
 
   // Extend the file with the given number of buckets.
   // The buckets get initialized when they are acquired
   // (using getBucket) for the first time.
-  void extend(uInt nrBucket);
+  void extend(unsigned int nrBucket);
 
   // Set that data has been written.
   void setWritten() { itsHasWritten = true; }
@@ -102,22 +102,22 @@ class BucketBase {
 
   // Do the actual extension of the file.
   // Note that itsNewNrOfBuckets has been increased before doExtend is called.
-  virtual void doExtend(uInt nrBucket) = 0;
+  virtual void doExtend(unsigned int nrBucket) = 0;
 
   // Initialize the bucket buffer.
   // The uninitialized buckets before this bucket are also initialized.
-  virtual void initializeBuckets(uInt bucketNr) = 0;
+  virtual void initializeBuckets(unsigned int bucketNr) = 0;
 
   // The file used.
   BucketFile* itsFile;
   // The starting offsets of the buckets in the file.
   Int64 itsStartOffset;
   // The bucket size.
-  uInt itsBucketSize;
+  unsigned int itsBucketSize;
   // The current nr of buckets in the file.
-  uInt itsCurNrOfBuckets;
+  unsigned int itsCurNrOfBuckets;
   // The new nr of buckets in the file (after extension).
-  uInt itsNewNrOfBuckets;
+  unsigned int itsNewNrOfBuckets;
   // Have data been written?
   bool itsHasWritten;
 };

@@ -111,7 +111,7 @@ class Adios2StMan::impl {
   static constexpr const char *SPEC_FIELD_OPERATOR_PARAMS = "OPERATORPARAMS";
 
   void configureAdios();
-  uInt ncolumn() const { return parent.ncolumn(); }
+  unsigned int ncolumn() const { return parent.ncolumn(); }
   String fileName() const { return parent.fileName(); }
 };
 

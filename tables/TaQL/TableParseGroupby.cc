@@ -41,7 +41,7 @@ void TableParseGroupby::handleGroupby(const std::vector<TableExprNode>& nodes, b
   if (rollup) {
     throw TableInvExpr("ROLLUP is not supported yet in the GROUPBY");
   }
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     checkAggrFuncs(nodes[i]);
     if (!nodes[i].isScalar()) {
       throw TableInvExpr("GROUPBY column/expression must result in a scalar value");
@@ -63,10 +63,10 @@ void TableParseGroupby::findGroupAggr(const Block<TableExprNode>& columnNodes, b
   std::vector<TableExprNodeRep*> aggr;
   // Get possible aggregate functions used in column nodes and HAVING.
   // Note that column nodes are also used by UPDATE and INSERT commands.
-  for (uInt i = 0; i < columnNodes.size(); ++i) {
+  for (unsigned int i = 0; i < columnNodes.size(); ++i) {
     getAggrNodes(columnNodes[i], aggr);
   }
-  uInt nselAggr = aggr.size();
+  unsigned int nselAggr = aggr.size();
   if (!itsHavingNode.isNull()) {
     getAggrNodes(itsHavingNode, aggr);
   }
@@ -98,12 +98,12 @@ void TableParseGroupby::findGroupAggr(const Block<TableExprNode>& columnNodes, b
   itsAggrNodes = aggr;
 }
 
-uInt TableParseGroupby::disableApplySelection() {
+unsigned int TableParseGroupby::disableApplySelection() {
   // Column nodes used in aggregate functions should not adhere applySelection.
-  uInt ndis = 0;
-  for (uInt i = 0; i < itsAggrNodes.size(); ++i) {
+  unsigned int ndis = 0;
+  for (unsigned int i = 0; i < itsAggrNodes.size(); ++i) {
     std::vector<TableExprNodeRep*> colNodes = TableExprNodeUtil::getColumnNodes(itsAggrNodes[i]);
-    for (uInt j = 0; j < colNodes.size(); ++j) {
+    for (unsigned int j = 0; j < colNodes.size(); ++j) {
       colNodes[j]->disableApplySelection();
       ndis++;
     }
@@ -158,7 +158,7 @@ std::shared_ptr<TableExprGroupResult> TableParseGroupby::aggregate(Vector<rownr_
   // Get the aggregate functions to be evaluated lazily.
   std::vector<TableExprNodeRep*> immediateNodes;
   std::vector<TableExprNodeRep*> lazyNodes;
-  for (uInt i = 0; i < itsAggrNodes.size(); ++i) {
+  for (unsigned int i = 0; i < itsAggrNodes.size(); ++i) {
     itsAggrNodes[i]->makeGroupAggrFunc();
     if (itsAggrNodes[i]->isLazyAggregate()) {
       lazyNodes.push_back(itsAggrNodes[i]);
@@ -166,20 +166,20 @@ std::shared_ptr<TableExprGroupResult> TableParseGroupby::aggregate(Vector<rownr_
       immediateNodes.push_back(itsAggrNodes[i]);
     }
   }
-  uInt nimmediate = immediateNodes.size();
+  unsigned int nimmediate = immediateNodes.size();
   // For lazy nodes a vector of TableExprId-s needs to be filled per group.
   // So add a node collecting the ids.
   // Note that this node must be alive after the if, so define outside if.
   TableExprAggrNode expridNode(TableExprFuncNode::gexpridFUNC, TableExprNodeRep::NTInt,
                                TableExprNodeRep::VTArray, TableExprNodeSet(),
-                               std::vector<TENShPtr>(), Block<Int>());
+                               std::vector<TENShPtr>(), Block<int>());
   if (!lazyNodes.empty()) {
     immediateNodes.push_back(&expridNode);
   }
   std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets;
   // Use a faster way for a single groupby key.
   if (itsGroupbyNodes.size() == 1 && itsGroupbyNodes[0].dataType() == TpDouble) {
-    funcSets = singleKey<Double>(immediateNodes, rownrs);
+    funcSets = singleKey<double>(immediateNodes, rownrs);
   } else if (itsGroupbyNodes.size() == 1 && itsGroupbyNodes[0].dataType() == TpInt) {
     funcSets = singleKey<Int64>(immediateNodes, rownrs);
   } else {
@@ -192,9 +192,9 @@ std::shared_ptr<TableExprGroupResult> TableParseGroupby::aggregate(Vector<rownr_
   std::vector<std::shared_ptr<std::vector<TableExprId>>> ids;
   ids.reserve(funcSets.size());
   rownr_t n = 0;
-  for (uInt i = 0; i < funcSets.size(); ++i) {
+  for (unsigned int i = 0; i < funcSets.size(); ++i) {
     const std::vector<std::shared_ptr<TableExprGroupFuncBase>>& funcs = funcSets[i]->getFuncs();
-    for (uInt j = 0; j < funcs.size(); ++j) {
+    for (unsigned int j = 0; j < funcs.size(); ++j) {
       funcs[j]->finish();
     }
     resRownrs[n++] = funcSets[i]->getId().rownr();
@@ -236,7 +236,7 @@ std::vector<std::shared_ptr<TableExprGroupFuncSet>> TableParseGroupby::multiKey(
   // A map<key,int> is used to keep track of the results where the int
   // is the index in a vector of a set of aggregate function objects.
   std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets;
-  std::map<TableExprGroupKeySet, Int> keyFuncMap;
+  std::map<TableExprGroupKeySet, int> keyFuncMap;
   // Create the set of groupby key objects.
   TableExprGroupKeySet keySet(itsGroupbyNodes);
   // Loop through all rows.
@@ -245,8 +245,8 @@ std::vector<std::shared_ptr<TableExprGroupFuncSet>> TableParseGroupby::multiKey(
   for (rownr_t i = 0; i < rownrs.size(); ++i) {
     rowid.setRownr(rownrs[i]);
     keySet.fill(itsGroupbyNodes, rowid);
-    Int groupnr = funcSets.size();
-    std::map<TableExprGroupKeySet, Int>::iterator iter = keyFuncMap.find(keySet);
+    int groupnr = funcSets.size();
+    std::map<TableExprGroupKeySet, int>::iterator iter = keyFuncMap.find(keySet);
     if (iter == keyFuncMap.end()) {
       keyFuncMap[keySet] = groupnr;
       funcSets.push_back(std::make_shared<TableExprGroupFuncSet>(nodes));

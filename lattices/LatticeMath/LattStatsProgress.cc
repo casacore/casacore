@@ -34,7 +34,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LattStatsProgress::~LattStatsProgress() {}
 
-void LattStatsProgress::operator++(Int) {
+void LattStatsProgress::operator++(int) {
   ++_currentStep;
   _meter->update(_currentStep);
 }
@@ -50,13 +50,13 @@ void LattStatsProgress::initDerived()
   // calls this initDerived function
   //
 
-  _meter = std::make_shared<ProgressMeter>(0.0, Double(expectedNsteps()),
+  _meter = std::make_shared<ProgressMeter>(0.0, double(expectedNsteps()),
                                            String("Generate Storage Image"),
                                            String("Accumulation Iterations"), String(""),
-                                           String(""), true, max(1, Int(expectedNsteps() / 20)));
+                                           String(""), true, max(1, int(expectedNsteps() / 20)));
 }
 
-void LattStatsProgress::nstepsDone(uInt nsteps) {
+void LattStatsProgress::nstepsDone(unsigned int nsteps) {
   _currentStep = nsteps;
   _meter->update(_currentStep);
 }

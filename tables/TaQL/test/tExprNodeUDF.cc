@@ -78,12 +78,12 @@ class TestUDFAggr : public UDFBase {
 
 void makeTable() {
   TableDesc td;
-  td.addColumn(ScalarColumnDesc<Int>("ANTENNA1"));
+  td.addColumn(ScalarColumnDesc<int>("ANTENNA1"));
   SetupNewTable newtab("tExprNodeUDF_tmp.tab", td, Table::New);
   Table tab(newtab);
-  ScalarColumn<Int> ant1(tab, "ANTENNA1");
+  ScalarColumn<int> ant1(tab, "ANTENNA1");
   tab.addRow(10);
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     ant1.put(i, i % 3);
   }
 }
@@ -121,7 +121,7 @@ int main() {
       AlwaysAssertExit(aggrNodes.size() == 1);
       AlwaysAssertExit(aggrNodes[0]->isLazyAggregate());
       std::shared_ptr<std::vector<TableExprId>> ids(new std::vector<TableExprId>());
-      for (uInt i = 0; i < tab.nrow(); ++i) {
+      for (unsigned int i = 0; i < tab.nrow(); ++i) {
         ids->push_back(TableExprId(i));
       }
       std::vector<std::shared_ptr<std::vector<TableExprId>>> idVec(1, ids);
@@ -131,7 +131,7 @@ int main() {
       aid.setRownr(0);
       Int64 val = node2.getInt(aid);
       cout << "aggregated value=" << val << endl;
-      Vector<Int> colval(ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
+      Vector<int> colval(ScalarColumn<int>(tab, "ANTENNA1").getColumn());
       AlwaysAssertExit(val == sum(colval * colval * colval));
     }
   } catch (std::exception& x) {

@@ -45,7 +45,7 @@ struct TConvert {
     cout << "bool " << in << endl;
     return in;
   }
-  Int testint(Int in) {
+  int testint(int in) {
     cout << "Int " << in << endl;
     return in;
   }
@@ -53,15 +53,15 @@ struct TConvert {
     cout << "Int64 " << in << endl;
     return in;
   }
-  Int testssize(::ssize_t in) {
+  int testssize(::ssize_t in) {
     cout << "ssize " << in << endl;
     return in;
   }
-  Float testfloat(Float in) {
+  float testfloat(float in) {
     cout << "Float " << in << endl;
     return in;
   }
-  Double testdouble(Double in) {
+  double testdouble(double in) {
     cout << "Double " << in << endl;
     return in;
   }
@@ -97,7 +97,7 @@ struct TConvert {
     cout << "VecBool " << in << endl;
     return in;
   }
-  Vector<Int> testvecint(const Vector<int>& in) {
+  Vector<int> testvecint(const Vector<int>& in) {
     cout << "VecInt " << in << endl;
     return in;
   }
@@ -113,11 +113,11 @@ struct TConvert {
     cout << "vecbool " << in << endl;
     return in;
   }
-  std::vector<uInt> teststdvecuint(const std::vector<uInt>& in) {
+  std::vector<unsigned int> teststdvecuint(const std::vector<unsigned int>& in) {
     cout << "vecuInt " << in << endl;
     return in;
   }
-  std::vector<std::vector<uInt>> teststdvecvecuint(const std::vector<std::vector<uInt>>& in) {
+  std::vector<std::vector<unsigned int>> teststdvecvecuint(const std::vector<std::vector<unsigned int>>& in) {
     cout << "vecvecuInt " << in << endl;
     return in;
   }
@@ -168,8 +168,8 @@ BOOST_PYTHON_MODULE(_tConvert) {
   casacore::python::register_convert_casa_valueholder();
   casacore::python::register_convert_casa_record();
   casacore::python::register_convert_std_vector<bool>();
-  casacore::python::register_convert_std_vector<casacore::uInt>();
-  casacore::python::register_convert_std_vector<std::vector<casacore::uInt>>();
+  casacore::python::register_convert_std_vector<unsigned int>();
+  casacore::python::register_convert_std_vector<std::vector<unsigned int>>();
   casacore::python::register_convert_std_vector<casacore::ValueHolder>();
 
   // Execute the test.

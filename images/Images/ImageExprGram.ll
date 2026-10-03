@@ -82,7 +82,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
  /* Literals */
 {DCOMPLEX} {
             imageExprGramPosition() += yyleng;
-            Double value;
+            double value;
 	    sscanf (ImageExprGramtext, "%lf%*c", &value);
             lvalp->val = new ImageExprParse (DComplex (0, value));
 	    ImageExprParse::addNode (lvalp->val);
@@ -90,7 +90,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 	  }
 {COMPLEX} {
             imageExprGramPosition() += yyleng;
-            Float value;
+            float value;
 	    sscanf (ImageExprGramtext, "%f%*c", &value);
             lvalp->val = new ImageExprParse (Complex (0, value));
 	    ImageExprParse::addNode (lvalp->val);
@@ -104,14 +104,14 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 	  }
 {FLOAT}   {
             imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (Float(atof(ImageExprGramtext)));
+            lvalp->val = new ImageExprParse (float(atof(ImageExprGramtext)));
 	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {INT}     {
             imageExprGramPosition() += yyleng;
-            Int ival = atoi(ImageExprGramtext);
-            Double dval = atof(ImageExprGramtext);
+            int ival = atoi(ImageExprGramtext);
+            double dval = atof(ImageExprGramtext);
             if (ival < dval-0.1  ||  ival > dval+0.1) {
                 lvalp->val = new ImageExprParse (dval);
             } else {
@@ -143,7 +143,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 	  }
 {INDEXN}  {
             imageExprGramPosition() += yyleng;
-            Int ival = atoi(ImageExprGramtext+5);
+            int ival = atoi(ImageExprGramtext+5);
             lvalp->val = new ImageExprParse (ival);
 	    ImageExprParse::addNode (lvalp->val);
             return INDEXN;

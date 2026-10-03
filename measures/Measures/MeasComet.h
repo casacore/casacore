@@ -146,26 +146,26 @@ class MeasComet {
   // Get the direction type
   MDirection::Types getType() const;
   // Get the start of the table (in MJD)
-  Double getStart() const;
+  double getStart() const;
   // Get the end of the table (in MJD)
-  Double getEnd() const;
+  double getEnd() const;
   // Get number of entries
-  Int nelements() const;
+  int nelements() const;
   // Get a comet position
-  bool get(MVPosition &returnValue, Double date) const;
+  bool get(MVPosition &returnValue, double date) const;
   // Get the local on-disk direction.  Returns false if the time or sub-observer
   // longitude and latitude are unavailable, true on success.
-  bool getDisk(MVDirection &returnValue, Double date) const;
+  bool getDisk(MVDirection &returnValue, double date) const;
   // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
-  bool getRadVel(MVRadialVelocity &returnValue, Double date) const;
+  bool getRadVel(MVRadialVelocity &returnValue, double date) const;
 
   // Return the temperature in K, or -1 if the table does not have it.
   // If squawk is true an error message will also be posted.
-  Double getTemperature(const bool squawk);
+  double getTemperature(const bool squawk);
 
   // Return the mean radius in AU, or -1 if the table does not have it.
   // If squawk is true an error message will also be posted.
-  Double getMeanRad(const bool squawk);
+  double getMeanRad(const bool squawk);
 
   // Create a clone
   MeasComet *clone() const;
@@ -175,7 +175,7 @@ class MeasComet {
 
   // Convenience function that returns ks[kw] in units of unit, setting
   // success.
-  static Double get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
+  static double get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
                                      bool &success);
 
   // Convenience function that returns the absolute path to the ephemeris table
@@ -191,12 +191,12 @@ class MeasComet {
   //  Initialise table from the name given
   bool initMeas(const String &which, const Table *tabin = 0);
   // Fill Table lines
-  bool fillMeas(Double utf) const;
+  bool fillMeas(double utf) const;
 
   // Helper functions for accessing ldat_p.  index should be either 0 or 1, but
   // that isn't checked!
-  MVPosition getRelPosition(const uInt index) const;
-  MVDirection getDiskLongLat(const uInt index) const;  // Must not be called if !haveDiskLongLat_p
+  MVPosition getRelPosition(const unsigned int index) const;
+  MVDirection getDiskLongLat(const unsigned int index) const;  // Must not be called if !haveDiskLongLat_p
 
   // Try to read mean_rad_p and temperature_p, returning whether or not it was
   // successful.  (but the real mark of success is whether or not they are
@@ -218,13 +218,13 @@ class MeasComet {
   // Row descriptions
   ROTableRow row_p;
   // First MJD in list - 1.0 * dmjd_p
-  Double mjd0_p;
+  double mjd0_p;
   // Last MJD in list
-  Double mjdl_p;
+  double mjdl_p;
   // Increment in rows
-  Double dmjd_p;
+  double dmjd_p;
   // Number of rows
-  Int nrow_p;
+  int nrow_p;
   // Name of comet
   String name_p;
   // Position on Earth
@@ -239,21 +239,21 @@ class MeasComet {
   // Whether or not the sub-observer longitude and latitude are available.
   bool haveDiskLongLat_p;
 
-  uInt ncols_p;  // # of columns.
+  unsigned int ncols_p;  // # of columns.
 
   // These may be initialized _inside_ the c'tors, but the order here is
   // unimportant:
 
   // Field pointers
-  Vector<RORecordFieldPtr<Double>> rfp_p;
+  Vector<RORecordFieldPtr<double>> rfp_p;
   // Lines in memory
-  mutable Int lnr_p[2];  // Why are these mutables here?
+  mutable int lnr_p[2];  // Why are these mutables here?
   // Last read data (measlow - meashigh)
-  mutable Vector<Double> ldat_p[2];  // They allow declaring a const
+  mutable Vector<double> ldat_p[2];  // They allow declaring a const
                                      // which isn't.
   bool haveTriedExtras_p;
-  Double temperature_p;
-  Double mean_rad_p;
+  double temperature_p;
+  double mean_rad_p;
   bool hasPosrefsys_p;
   MDirection::Types posrefsystype_p;
 };

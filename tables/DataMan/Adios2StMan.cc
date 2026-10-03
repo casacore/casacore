@@ -244,14 +244,14 @@ Adios2StMan::impl::~impl() {
     itsAdiosEngine->EndStep();
     itsAdiosEngine->Close();
   }
-  for (uInt i = 0; i < ncolumn(); ++i) {
+  for (unsigned int i = 0; i < ncolumn(); ++i) {
     delete itsColumnPtrBlk[i];
   }
 }
 
 static adios2::Params to_adios2_params(const Record &record) {
   adios2::Params params;
-  for (Int i = 0; i != Int(record.size()); i++) {
+  for (int i = 0; i != int(record.size()); i++) {
     params[record.name(i)] = record.asString(i);
   }
   return params;
@@ -282,7 +282,7 @@ DataManager *Adios2StMan::impl::makeObject(const String &aDataManName, const Rec
   }
   if (spec.isDefined(SPEC_FIELD_TRANSPORT_PARAMS)) {
     auto &record = spec.asRecord(SPEC_FIELD_TRANSPORT_PARAMS);
-    for (Int i = 0; i != Int(record.size()); i++) {
+    for (int i = 0; i != int(record.size()); i++) {
       auto name = record.name(i);
       auto params = to_adios2_params(record.asRecord(i));
       params["Name"] = name;
@@ -291,7 +291,7 @@ DataManager *Adios2StMan::impl::makeObject(const String &aDataManName, const Rec
   }
   if (spec.isDefined(SPEC_FIELD_OPERATOR_PARAMS)) {
     auto &record = spec.asRecord(SPEC_FIELD_OPERATOR_PARAMS);
-    for (Int i = 0; i != Int(record.size()); i++) {
+    for (int i = 0; i != int(record.size()); i++) {
       auto variable = record.name(i);
       auto params = to_adios2_params(record.asRecord(i));
       params["Variable"] = variable;
@@ -367,7 +367,7 @@ void Adios2StMan::impl::create64(rownr_t aNrRows) {
   itsAdiosEngine =
       std::make_shared<adios2::Engine>(itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Write));
   itsAdiosEngine->BeginStep();
-  for (uInt i = 0; i < ncolumn(); ++i) {
+  for (unsigned int i = 0; i < ncolumn(); ++i) {
     itsColumnPtrBlk[i]->create(itsAdiosEngine, 'w');
   }
 }
@@ -377,7 +377,7 @@ rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios) {
   itsAdiosEngine =
       std::make_shared<adios2::Engine>(itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Read));
   itsAdiosEngine->BeginStep();
-  for (uInt i = 0; i < ncolumn(); ++i) {
+  for (unsigned int i = 0; i < ncolumn(); ++i) {
     itsColumnPtrBlk[i]->create(itsAdiosEngine, 'r');
   }
 

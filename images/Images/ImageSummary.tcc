@@ -91,7 +91,7 @@ ImageSummary<T>& ImageSummary<T>::operator=(const ImageSummary<T>& other)
 }
 
 template <class T>
-Int ImageSummary<T>::ndim() const
+int ImageSummary<T>::ndim() const
 //
 // Retrieve number of image dimension
 //
@@ -125,49 +125,49 @@ Vector<String> ImageSummary<T>::axisNames(bool pixelOrder) const {
   // Every pixel axs must have a world axis, so don't check for removal
   //
   Vector<String> tmp2(cSys_p.nPixelAxes());
-  for (uInt pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
-    Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+  for (unsigned int pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
+    int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
     tmp2(pixelAxis) = tmp(worldAxis);
   }
   return tmp2;
 }
 
 template <class T>
-Vector<Double> ImageSummary<T>::referencePixels(bool oneRel) const
+Vector<double> ImageSummary<T>::referencePixels(bool oneRel) const
 //
 // Get reference pixels for the pixel axes
 //
 {
-  Vector<Double> off(cSys_p.nPixelAxes(), 0.0);
+  Vector<double> off(cSys_p.nPixelAxes(), 0.0);
   if (oneRel) off.set(1.0);
   return cSys_p.referencePixel().copy() + off;
 }
 
 template <class T>
-Vector<Double> ImageSummary<T>::referenceValues(bool pixelOrder) const {
-  Vector<Double> tmp(cSys_p.referenceValue());
+Vector<double> ImageSummary<T>::referenceValues(bool pixelOrder) const {
+  Vector<double> tmp(cSys_p.referenceValue());
   if (!pixelOrder) return tmp.copy();
   //
   // Every pixel axs must have a world axis, so don't check for removal
   //
-  Vector<Double> tmp2(cSys_p.nPixelAxes());
-  for (uInt pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
-    Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+  Vector<double> tmp2(cSys_p.nPixelAxes());
+  for (unsigned int pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
+    int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
     tmp2(pixelAxis) = tmp(worldAxis);
   }
   return tmp2;
 }
 
 template <class T>
-Vector<Double> ImageSummary<T>::axisIncrements(bool pixelOrder) const {
-  Vector<Double> tmp(cSys_p.increment());
+Vector<double> ImageSummary<T>::axisIncrements(bool pixelOrder) const {
+  Vector<double> tmp(cSys_p.increment());
   if (!pixelOrder) return tmp.copy();
   //
   // Every pixel axs must have a world axis, so don't check for removal
   //
-  Vector<Double> tmp2(cSys_p.nPixelAxes());
-  for (uInt pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
-    Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+  Vector<double> tmp2(cSys_p.nPixelAxes());
+  for (unsigned int pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
+    int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
     tmp2(pixelAxis) = tmp(worldAxis);
   }
   return tmp2;
@@ -181,8 +181,8 @@ Vector<String> ImageSummary<T>::axisUnits(bool pixelOrder) const {
   // Every pixel axs must have a world axis, so don't check for removal
   //
   Vector<String> tmp2(cSys_p.nPixelAxes());
-  for (uInt pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
-    Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+  for (unsigned int pixelAxis = 0; pixelAxis < cSys_p.nPixelAxes(); pixelAxis++) {
+    int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
     tmp2(pixelAxis) = tmp(worldAxis);
   }
   return tmp2;
@@ -221,14 +221,14 @@ String ImageSummary<T>::telescope() const {
 }
 
 template <class T>
-bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<Double>& restFreq) const {
+bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<double>& restFreq) const {
   bool ok = false;
-  Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
+  int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
   if (spectralAxis >= 0) {
-    Int coordinate, axisInCoordinate;
+    int coordinate, axisInCoordinate;
     cSys_p.findPixelAxis(coordinate, axisInCoordinate, spectralAxis);
     //
-    Double rf = cSys_p.spectralCoordinate(coordinate).restFrequency();
+    double rf = cSys_p.spectralCoordinate(coordinate).restFrequency();
     if (rf > 0.0) {
       restFreq.setValue(rf);
       restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
@@ -253,12 +253,12 @@ bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<Double>& res
 template <class T>
 bool ImageSummary<T>::frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const {
   bool ok;
-  Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
+  int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
   if (spectralAxis >= 0) {
-    Int coordinate, axisInCoordinate;
+    int coordinate, axisInCoordinate;
     cSys_p.findPixelAxis(coordinate, axisInCoordinate, spectralAxis);
     //
-    freqType = cSys_p.spectralCoordinate(uInt(coordinate)).frequencySystem();
+    freqType = cSys_p.spectralCoordinate(static_cast<unsigned int>(coordinate)).frequencySystem();
     freqTypeString = MFrequency::showType(freqType);
     ok = true;
   } else {
@@ -271,12 +271,12 @@ bool ImageSummary<T>::frequencySystem(String& freqTypeString, MFrequency::Types&
 template <class T>
 bool ImageSummary<T>::directionSystem(String& dirTypeString, MDirection::Types& dirType) const {
   bool ok;
-  Vector<Int> pixelAxes, worldAxes;
-  Int coordinate;
+  Vector<int> pixelAxes, worldAxes;
+  int coordinate;
   CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys_p);
   if (coordinate >= 0) {
     ok = true;
-    dirType = cSys_p.directionCoordinate(uInt(coordinate)).directionType();
+    dirType = cSys_p.directionCoordinate(static_cast<unsigned int>(coordinate)).directionType();
     dirTypeString = MDirection::showType(dirType);
   } else {
     ok = false;
@@ -383,7 +383,7 @@ template <class T>
 String ImageSummary<T>::makeMasksString() const {
   const String defaultMask = defaultMaskName();
   const Vector<String> masks = maskNames();
-  const uInt nMasks = masks.nelements();
+  const unsigned int nMasks = masks.nelements();
   if (nMasks == 0) {
     if (hasAMask()) {
       return String("Parent is masked");
@@ -401,8 +401,8 @@ String ImageSummary<T>::makeMasksString() const {
   }
   //
   oss << " [";
-  uInt j = 0;
-  for (uInt i = 0; i < nMasks; i++) {
+  unsigned int j = 0;
+  for (unsigned int i = 0; i < nMasks; i++) {
     if (masks(i) != defaultMask) {
       if (j > 0) {
         oss << ", ";
@@ -418,12 +418,12 @@ String ImageSummary<T>::makeMasksString() const {
 template <class T>
 String ImageSummary<T>::makeRegionsString() const {
   const Vector<String> regions = regionNames();
-  const uInt nRegions = regions.nelements();
+  const unsigned int nRegions = regions.nelements();
   if (nRegions == 0) return String("None");
   //
   ostringstream oss;
-  uInt j = 0;
-  for (uInt i = 0; i < nRegions; i++) {
+  unsigned int j = 0;
+  for (unsigned int i = 0; i < nRegions; i++) {
     if (j > 0) {
       oss << ", ";
     }

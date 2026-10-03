@@ -41,17 +41,17 @@
 // Create the lattice cube.
 void makeCube(bool useHDF, const IPosition& cubeShape, const IPosition& tileShape) {
   TiledShape tshape(cubeShape, tileShape);
-  Lattice<Float>* lattice = 0;
+  Lattice<float>* lattice = 0;
   if (useHDF) {
     cout << "Creating tLatticePerf_tmp.hdf with shape " << cubeShape << " and tile shape "
          << tileShape << endl;
     cout << "HDF5    ";
-    lattice = new HDF5Lattice<Float>(tshape, "tLatticePerf_tmp.hdf");
+    lattice = new HDF5Lattice<float>(tshape, "tLatticePerf_tmp.hdf");
   } else {
     cout << "Creating tLatticePerf_tmp.tab with shape " << cubeShape << " and tile shape "
          << tileShape << endl;
     cout << "CCTS    ";
-    lattice = new PagedArray<Float>(tshape, "tLatticePerf_tmp.tab");
+    lattice = new PagedArray<float>(tshape, "tLatticePerf_tmp.tab");
   }
   Timer timer;
   lattice->set(0);
@@ -59,39 +59,39 @@ void makeCube(bool useHDF, const IPosition& cubeShape, const IPosition& tileShap
   timer.show("create  ");
 }
 
-void getLine(const Lattice<Float>& lattice, uInt axis) {
+void getLine(const Lattice<float>& lattice, unsigned int axis) {
   Timer timer;
   TiledLineStepper nav(lattice.shape(), lattice.niceCursorShape(), axis);
-  RO_LatticeIterator<Float> iter(lattice, nav);
+  RO_LatticeIterator<float> iter(lattice, nav);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.cursor();
   }
   timer.show("getLine ");
 }
 
-void getPlane(const Lattice<Float>& lattice, uInt nonAxis) {
+void getPlane(const Lattice<float>& lattice, unsigned int nonAxis) {
   Timer timer;
   IPosition cursorShape = lattice.shape();
   cursorShape[nonAxis] = 1;
   LatticeStepper nav(lattice.shape(), cursorShape);
-  RO_LatticeIterator<Float> iter(lattice, nav);
+  RO_LatticeIterator<float> iter(lattice, nav);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.cursor();
   }
   timer.show("getPlane");
 }
 
-void getTiles(const Lattice<Float>& lattice) {
+void getTiles(const Lattice<float>& lattice) {
   Timer timer;
   TileStepper nav(lattice.shape(), lattice.niceCursorShape());
-  RO_LatticeIterator<Float> iter(lattice, nav);
+  RO_LatticeIterator<float> iter(lattice, nav);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.cursor();
   }
   timer.show("getTiles");
 }
 
-void getCube(const Lattice<Float>& lattice, const String& trav) {
+void getCube(const Lattice<float>& lattice, const String& trav) {
   if (trav == "x") {
     cout << "x  ";
     getLine(lattice, 0);
@@ -137,10 +137,10 @@ int main(int argc, char* argv[]) {
       bool useHDF = (argc > 2 && argv[2][0] == '1');
       if (useHDF) {
         cout << "HDF5 ";
-        getCube(HDF5Lattice<Float>("tLatticePerf_tmp.hdf"), argv[1]);
+        getCube(HDF5Lattice<float>("tLatticePerf_tmp.hdf"), argv[1]);
       } else {
         cout << "CCTS ";
-        getCube(PagedArray<Float>("tLatticePerf_tmp.tab"), argv[1]);
+        getCube(PagedArray<float>("tLatticePerf_tmp.tab"), argv[1]);
       }
     }
   } catch (std::exception& x) {

@@ -151,9 +151,9 @@ void docomm() {
 // Show the required columns.
 // First test if they exist and contain scalars or arrays.
 void showtab(const Table& tab, const Vector<String>& colnam) {
-  uInt nrcol = 0;
+  unsigned int nrcol = 0;
   Block<TableColumn*> tableColumns(colnam.nelements());
-  for (uInt i = 0; i < colnam.nelements(); i++) {
+  for (unsigned int i = 0; i < colnam.nelements(); i++) {
     if (!tab.tableDesc().isColumn(colnam(i))) {
       cout << "Column " << colnam(i) << " does not exist" << endl;
     } else {
@@ -171,8 +171,8 @@ void showtab(const Table& tab, const Vector<String>& colnam) {
     return;
   }
 
-  for (uInt i = 0; i < tab.nrow(); i++) {
-    for (uInt j = 0; j < nrcol; j++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
+    for (unsigned int j = 0; j < nrcol; j++) {
       if (tableColumns[j]->columnDesc().isArray()) {
         cout << " shape=" << tableColumns[j]->shape(i);
       } else {
@@ -195,7 +195,7 @@ void showtab(const Table& tab, const Vector<String>& colnam) {
     cout << endl;
   }
 
-  for (uInt i = 0; i < nrcol; i++) {
+  for (unsigned int i = 0; i < nrcol; i++) {
     delete tableColumns[i];
   }
 }
@@ -281,7 +281,7 @@ void showExpr(const TableExprNode& expr) {
           break;
         }
         case TpDouble: {
-          MArray<Double> arr;
+          MArray<double> arr;
           expr.get(i, arr);
           cout << arr.array();
           break;
@@ -351,12 +351,12 @@ void seltab(const String& str) {
     // Show the selected column names.
     // Add _COUNT_ column if counting is done.
     if (s == "count") {
-      uInt nrcol = vecstr.size();
+      unsigned int nrcol = vecstr.size();
       vecstr.resize(nrcol + 1, true);
       vecstr[nrcol] = "_COUNT_";
     }
     cout << vecstr.nelements() << " selected columns: ";
-    for (uInt i = 0; i < vecstr.nelements(); i++) {
+    for (unsigned int i = 0; i < vecstr.nelements(); i++) {
       cout << " " << vecstr(i);
     }
     cout << endl;

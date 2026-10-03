@@ -178,13 +178,13 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   // Get the scalar value in the given row.
   // <group>
   void getBool(rownr_t rownr, bool* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getuChar(rownr_t rownr, uChar* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getShort(rownr_t rownr, Short* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getuShort(rownr_t rownr, uShort* dataPtr) override {
+  void getuChar(rownr_t rownr, unsigned char* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getShort(rownr_t rownr, short* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getuShort(rownr_t rownr, unsigned short* dataPtr) override {
     getVirtualScalar(this, rownr, dataPtr);
   }
-  void getInt(rownr_t rownr, Int* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
-  void getuInt(rownr_t rownr, uInt* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getInt(rownr_t rownr, int* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
+  void getuInt(rownr_t rownr, unsigned int* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getInt64(rownr_t rownr, Int64* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getfloat(rownr_t rownr, float* dataPtr) override { getVirtualScalar(this, rownr, dataPtr); }
   void getdouble(rownr_t rownr, double* dataPtr) override {
@@ -209,19 +209,19 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
   void putBool(rownr_t rownr, const bool* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
-  void putuChar(rownr_t rownr, const uChar* dataPtr) override {
+  void putuChar(rownr_t rownr, const unsigned char* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
-  void putShort(rownr_t rownr, const Short* dataPtr) override {
+  void putShort(rownr_t rownr, const short* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
-  void putuShort(rownr_t rownr, const uShort* dataPtr) override {
+  void putuShort(rownr_t rownr, const unsigned short* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
-  void putInt(rownr_t rownr, const Int* dataPtr) override {
+  void putInt(rownr_t rownr, const int* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
-  void putuInt(rownr_t rownr, const uInt* dataPtr) override {
+  void putuInt(rownr_t rownr, const unsigned int* dataPtr) override {
     putVirtualScalar(this, rownr, dataPtr);
   }
   void putInt64(rownr_t rownr, const Int64* dataPtr) override {
@@ -270,16 +270,16 @@ class VirtualScalarColumn : public VirtualScalarColumnBase {
 // </synopsis>
 // <group name=get_putVirtualScalar>
 template <class T>
-inline void getVirtualScalar(VirtualScalarColumn<T>* col, uInt rownr, T* dataPtr) {
+inline void getVirtualScalar(VirtualScalarColumn<T>* col, unsigned int rownr, T* dataPtr) {
   col->get(rownr, *dataPtr);
 }
-inline void getVirtualScalar(DataManagerColumn* col, uInt, void*) { col->throwGet(); }
+inline void getVirtualScalar(DataManagerColumn* col, unsigned int, void*) { col->throwGet(); }
 
 template <class T>
-inline void putVirtualScalar(VirtualScalarColumn<T>* col, uInt rownr, const T* dataPtr) {
+inline void putVirtualScalar(VirtualScalarColumn<T>* col, unsigned int rownr, const T* dataPtr) {
   col->put(rownr, *dataPtr);
 }
-inline void putVirtualScalar(DataManagerColumn* col, uInt, const void*) { col->throwPut(); }
+inline void putVirtualScalar(DataManagerColumn* col, unsigned int, const void*) { col->throwPut(); }
 // </group>
 
 }  // namespace casacore

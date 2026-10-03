@@ -246,7 +246,7 @@ class ScaledComplexData : public BaseMappedArrayEngine<VirtualType, StoredType> 
   virtual void setShape(rownr_t rownr, const IPosition& shape);
 
   // Get the dimensionality of the array in the given row.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // This is done by stripping the first dimension from the shape

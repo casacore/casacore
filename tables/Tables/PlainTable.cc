@@ -156,9 +156,9 @@ void PlainTable::PlainTableCommon(SetupNewTable& newtab, rownr_t nrrow, bool ini
   }
 }
 
-PlainTable::PlainTable(AipsIO&, uInt version, const String& tabname, const String& type,
+PlainTable::PlainTable(AipsIO&, unsigned int version, const String& tabname, const String& type,
                        rownr_t nrrow, int opt, const TableLock& lockOptions,
-                       const TSMOption& tsmOption, bool addToCache, uInt locknr)
+                       const TSMOption& tsmOption, bool addToCache, unsigned int locknr)
     : BaseTable(tabname, opt, nrrow),
       tableChanged_p(false),
       addToCache_p(addToCache),
@@ -183,7 +183,7 @@ PlainTable::PlainTable(AipsIO&, uInt version, const String& tabname, const Strin
   } else {
     lockPtr_p->getInfo(lockSync_p.memoryIO());
   }
-  uInt ncolumn;
+  unsigned int ncolumn;
   bool tableChanged;
   Block<bool> dmChanged;
   lockSync_p.read(nrrow_p, ncolumn, tableChanged, dmChanged);
@@ -204,11 +204,11 @@ PlainTable::PlainTable(AipsIO&, uInt version, const String& tabname, const Strin
   if (version > 2) {
     ios >> nrrow;
   } else {
-    uInt n;
+    unsigned int n;
     ios >> n;
     nrrow = n;
   }
-  uInt format;
+  unsigned int format;
   ios >> format;
   bigEndian_p = (format == 0);
   ios >> tp;
@@ -385,7 +385,7 @@ void PlainTable::mergeLock(const TableLock& lockOptions) {
   }
 }
 bool PlainTable::hasLock(FileLocker::LockType type) const { return lockPtr_p->hasLock(type); }
-bool PlainTable::lock(FileLocker::LockType type, uInt nattempts) {
+bool PlainTable::lock(FileLocker::LockType type, unsigned int nattempts) {
   // # When the table is already locked (read locked is sufficient),
   // # no synchronization is needed (other processes could not write).
   bool noSync = hasLock(FileLocker::Read);
@@ -404,7 +404,7 @@ bool PlainTable::lock(FileLocker::LockType type, uInt nattempts) {
     if (!noSync) {
       // Older readonly table files may have empty locksync data.
       // Skip the sync-ing in that case.
-      uInt ncolumn;
+      unsigned int ncolumn;
       rownr_t nrrow;
       if (!lockSync_p.read(nrrow, ncolumn, tableChanged, colSetPtr_p->dataManChanged())) {
         tableChanged = false;
@@ -451,7 +451,7 @@ void PlainTable::autoReleaseLock(bool always) { lockPtr_p->autoRelease(always); 
 
 void PlainTable::setTableChanged() { tableChanged_p = true; }
 
-uInt PlainTable::getModifyCounter() const { return lockSync_p.getModifyCounter(); }
+unsigned int PlainTable::getModifyCounter() const { return lockSync_p.getModifyCounter(); }
 
 void PlainTable::flush(bool fsync, bool recursive) {
   if (openedForWrite()) {
@@ -469,7 +469,7 @@ void PlainTable::resync() {
   lockPtr_p->getInfo(lockSync_p.memoryIO());
   // Older readonly table files may have empty locksync data.
   // Skip the sync-ing in that case.
-  uInt ncolumn;
+  unsigned int ncolumn;
   rownr_t nrrow;
   if (lockSync_p.read(nrrow, ncolumn, tableChanged, colSetPtr_p->dataManChanged())) {
     if (ncolumn != tableDesc().ncolumn()) {
@@ -568,7 +568,7 @@ TableRecord& PlainTable::rwKeywordSet() {
 }
 
 // # Get a column object.
-BaseColumn* PlainTable::getColumn(uInt columnIndex) const {
+BaseColumn* PlainTable::getColumn(unsigned int columnIndex) const {
   return colSetPtr_p->getColumn(columnIndex);
 }
 BaseColumn* PlainTable::getColumn(const String& columnName) const {

@@ -47,13 +47,13 @@ void showpar3(JsonKVMap& par3) {
   jout.putArray(Vector<Int64>(par3["i1"].getVecInt()), String(), true);
   cout << endl;
   cout << par3["i1"].getDouble() << ' ';
-  jout.putArray(Vector<Double>(par3["i1"].getVecDouble()), String(), true);
+  jout.putArray(Vector<double>(par3["i1"].getVecDouble()), String(), true);
   cout << endl;
   cout << par3["i1"].getDComplex() << ' ';
   jout.putArray(Vector<DComplex>(par3["i1"].getVecDComplex()), String(), true);
   cout << endl;
   cout << par3["d1"].getDouble() << ' ';
-  jout.putArray(Vector<Double>(par3["d1"].getVecDouble()), String(), true);
+  jout.putArray(Vector<double>(par3["d1"].getVecDouble()), String(), true);
   cout << endl;
   cout << par3["d1"].getDComplex() << ' ';
   jout.putArray(Vector<DComplex>(par3["d1"].getVecDComplex()), String(), true);

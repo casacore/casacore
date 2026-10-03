@@ -65,7 +65,7 @@ ConcatTable::ConcatTable(const Block<Table>& tables, const Block<String>& subTab
     throw TableError("ConcatTable: at least one table has to be given");
   }
   rows_p.reserve(tables.nelements() + 1);
-  for (uInt i = 0; i < tables.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables.nelements(); ++i) {
     rows_p.add(tables_p[i].nrow());
   }
   nrrow_p = rows_p.nrow();
@@ -110,7 +110,7 @@ void ConcatTable::addInfo() {
   tableInfo() = tables_p[0].tableInfo();
   // Add a line for each table.
   tableInfo().readmeAddLine("Virtual concatenation of the following tables:");
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     if (subDirName_p.empty()) {
       tableInfo().readmeAddLine("  " + tables_p[i].tableName());
     } else {
@@ -122,20 +122,20 @@ void ConcatTable::addInfo() {
 
 void ConcatTable::getPartNames(Block<String>& names, bool recursive) const {
   if (recursive) {
-    for (uInt i = 0; i < tables_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
       tables_p[i].baseTablePtr()->getPartNames(names, recursive);
     }
   } else {
-    uInt inx = names.size();
+    unsigned int inx = names.size();
     names.resize(inx + tables_p.nelements());
-    for (uInt i = 0; i < tables_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
       names[inx + i] = tables_p[i].tableName();
     }
   }
 }
 
 void ConcatTable::reopenRW() {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].reopenRW();
   }
   option_p = Table::Update;
@@ -149,20 +149,20 @@ bool ConcatTable::isMultiUsed(bool) const { return false; }
 
 const TableLock& ConcatTable::lockOptions() const { return tables_p[0].lockOptions(); }
 void ConcatTable::mergeLock(const TableLock& lockOptions) {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].baseTablePtr()->mergeLock(lockOptions);
   }
 }
 bool ConcatTable::hasLock(FileLocker::LockType type) const {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     if (!tables_p[i].hasLock(type)) {
       return false;
     }
   }
   return true;
 }
-bool ConcatTable::lock(FileLocker::LockType type, uInt nattempts) {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+bool ConcatTable::lock(FileLocker::LockType type, unsigned int nattempts) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     if (!tables_p[i].lock(type, nattempts)) {
       return false;
     }
@@ -170,14 +170,14 @@ bool ConcatTable::lock(FileLocker::LockType type, uInt nattempts) {
   return true;
 }
 void ConcatTable::unlock() {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].unlock();
   }
 }
 
 void ConcatTable::flush(bool fsync, bool recursive) {
   // Flush the underlying table.
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].flush(fsync, recursive);
   }
   if (!isMarkedForDelete()) {
@@ -188,12 +188,12 @@ void ConcatTable::flush(bool fsync, bool recursive) {
 }
 
 void ConcatTable::resync() {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].resync();
   }
 }
 
-uInt ConcatTable::getModifyCounter() const {
+unsigned int ConcatTable::getModifyCounter() const {
   return tables_p[0].baseTablePtr()->getModifyCounter();
 }
 
@@ -216,8 +216,8 @@ void ConcatTable::writeConcatTable(bool) {
     ios.putstart("ConcatTable", 0);
     // Make the name of the base tables relative to this table.
     // First move a table if subDirName_p is set.
-    ios << uInt(tables_p.nelements());
-    for (uInt i = 0; i < tables_p.nelements(); ++i) {
+    ios << static_cast<unsigned int>(tables_p.nelements());
+    for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
       if (!subDirName_p.empty()) {
         tables_p[i].rename(sdName + Path(tables_p[i].tableName()).baseName(), Table::New);
       }
@@ -237,13 +237,13 @@ void ConcatTable::writeConcatTable(bool) {
 void ConcatTable::getConcat(AipsIO& ios, int option, const TableLock& lockOptions,
                             const TSMOption& tsmOption) {
   // # Open the file, read name and type of root and read object data.
-  uInt nrtab;
+  unsigned int nrtab;
   Block<String> rootNames;
-  Int version = ios.getstart("ConcatTable");
+  int version = ios.getstart("ConcatTable");
   AlwaysAssert(version == 0, AipsError);
   ios >> nrtab;
   rootNames.resize(nrtab);
-  for (uInt i = 0; i < nrtab; ++i) {
+  for (unsigned int i = 0; i < nrtab; ++i) {
     ios >> rootNames[i];
     rootNames[i] = Path::addDirectory(rootNames[i], tableName());
   }
@@ -260,7 +260,7 @@ void ConcatTable::openTables(const Block<String>& tableNames, int option,
   // # Open the tables referenced to.
   tables_p.resize(tableNames.nelements());
   rows_p.reserve(tableNames.nelements() + 1);
-  for (uInt i = 0; i < tableNames.nelements(); ++i) {
+  for (unsigned int i = 0; i < tableNames.nelements(); ++i) {
     Table tab;
     if (option == Table::Old) {
       tab = Table(tableNames[i], lockOptions, Table::Old, tsmOption);
@@ -278,7 +278,7 @@ void ConcatTable::initialize() {
   std::vector<std::shared_ptr<TableDesc>> actualDesc(tables_p.nelements());
   ;
   bool equalDataTypes;
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     actualDesc[i] = std::make_shared<TableDesc>(tables_p[i].actualTableDesc());
     if (actualDesc[i]->columnDescSet().isEqual(actualDesc[0]->columnDescSet(), equalDataTypes)) {
       if (equalDataTypes) {
@@ -289,11 +289,11 @@ void ConcatTable::initialize() {
   }
   // For fixed shaped arrays check if all tables have the same shape.
   // If not, clear dimensionality and options.
-  for (uInt i = 0; i < actualDesc[0]->ncolumn(); ++i) {
+  for (unsigned int i = 0; i < actualDesc[0]->ncolumn(); ++i) {
     ColumnDesc& colDesc = actualDesc[0]->rwColumnDesc(i);
     if (colDesc.isArray() && (colDesc.options() & ColumnDesc::FixedShape) != 0) {
       bool sameShape = true;
-      for (uInt j = 1; j < tables_p.nelements(); ++j) {
+      for (unsigned int j = 1; j < tables_p.nelements(); ++j) {
         const ColumnDesc& cd = actualDesc[j]->columnDesc(i);
         if ((cd.options() & ColumnDesc::FixedShape) == 0 || !colDesc.shape().isEqual(cd.shape())) {
           sameShape = false;
@@ -320,9 +320,9 @@ void ConcatTable::handleSubTables() {
   // Check for each subtable if it exists in all tables.
   // If fine, create a ConcatTable for each subtable.
   Block<Table> subtables(tables_p.nelements());
-  for (uInt i = 0; i < subTableNames_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < subTableNames_p.nelements(); ++i) {
     const String& tname = subTableNames_p[i];
-    for (uInt j = 0; j < tables_p.nelements(); ++j) {
+    for (unsigned int j = 0; j < tables_p.nelements(); ++j) {
       subtables[j] = tables_p[j].keywordSet().asTable(tname);
     }
     Table concSubtab(subtables);
@@ -333,13 +333,13 @@ void ConcatTable::handleSubTables() {
 // # Read description and #rows.
 void ConcatTable::getLayout(TableDesc& desc, AipsIO& ios) {
   // # Open the file, read name and type of root and read object data.
-  uInt nrtab;
+  unsigned int nrtab;
   Block<String> rootNames, subNames;
-  Int version = ios.getstart("ConcatTable");
+  int version = ios.getstart("ConcatTable");
   AlwaysAssert(version == 0, AipsError);
   ios >> nrtab;
   rootNames.resize(nrtab);
-  for (uInt i = 0; i < nrtab; ++i) {
+  for (unsigned int i = 0; i < nrtab; ++i) {
     ios >> rootNames[i];
   }
   ios >> subNames;
@@ -350,7 +350,7 @@ void ConcatTable::getLayout(TableDesc& desc, AipsIO& ios) {
 // # Create a ConcatColumn object for all columns in the description.
 // # Insert it with the name in the column map.
 void ConcatTable::makeConcatCol() {
-  for (uInt i = 0; i < tdescPtr_p->ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdescPtr_p->ncolumn(); i++) {
     const ColumnDesc& cd = tdescPtr_p->columnDesc(i);
     colMap_p.insert(std::make_pair(cd.name(), cd.makeConcatColumn(this)));
   }
@@ -358,7 +358,7 @@ void ConcatTable::makeConcatCol() {
 
 Block<BaseColumn*> ConcatTable::getRefColumns(const String& columnName) {
   Block<BaseColumn*> cols(tables_p.nelements());
-  for (uInt i = 0; i < cols.nelements(); ++i) {
+  for (unsigned int i = 0; i < cols.nelements(); ++i) {
     cols[i] = tables_p[i].baseTablePtr()->getColumn(columnName);
   }
   return cols;
@@ -366,7 +366,7 @@ Block<BaseColumn*> ConcatTable::getRefColumns(const String& columnName) {
 
 // # Test if the table is writable.
 bool ConcatTable::isWritable() const {
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     if (!tables_p[i].isWritable()) {
       return false;
     }
@@ -405,7 +405,7 @@ BaseColumn* ConcatTable::getColumn(const String& columnName) const {
   tdescPtr_p->columnDesc(columnName);  // check if column exists
   return colMap_p.at(columnName);
 }
-BaseColumn* ConcatTable::getColumn(uInt columnIndex) const {
+BaseColumn* ConcatTable::getColumn(unsigned int columnIndex) const {
   const String& name = tdescPtr_p->columnDesc(columnIndex).name();
   return colMap_p.at(name);
 }
@@ -417,7 +417,7 @@ void ConcatTable::addConcatCol(const ColumnDesc& columnDesc) {
 }
 
 void ConcatTable::addConcatCol(const TableDesc& tdesc) {
-  for (uInt i = 0; i < tdesc.ncolumn(); ++i) {
+  for (unsigned int i = 0; i < tdesc.ncolumn(); ++i) {
     addConcatCol(tdesc[i]);
   }
 }
@@ -438,7 +438,7 @@ void ConcatTable::checkAddColumn(const String& name, bool addToParent) {
 
 void ConcatTable::addColumn(const ColumnDesc& columnDesc, bool addToParent) {
   checkAddColumn(columnDesc.name(), addToParent);
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(columnDesc, addToParent);
   }
   addConcatCol(columnDesc);
@@ -447,7 +447,7 @@ void ConcatTable::addColumn(const ColumnDesc& columnDesc, bool addToParent) {
 void ConcatTable::addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
                             bool addToParent) {
   checkAddColumn(columnDesc.name(), addToParent);
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(columnDesc, dataManager, byName, addToParent);
   }
   addConcatCol(columnDesc);
@@ -456,7 +456,7 @@ void ConcatTable::addColumn(const ColumnDesc& columnDesc, const String& dataMana
 void ConcatTable::addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
                             bool addToParent) {
   checkAddColumn(columnDesc.name(), addToParent);
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(columnDesc, dataManager, addToParent);
   }
   addConcatCol(columnDesc);
@@ -466,11 +466,11 @@ void ConcatTable::addColumn(const TableDesc& tableDesc, const DataManager& dataM
                             bool addToParent) {
   // First check if all columns exist and can be added or not.
   // Collect all columns to be added to the parent.
-  for (uInt i = 0; i < tableDesc.ncolumn(); ++i) {
+  for (unsigned int i = 0; i < tableDesc.ncolumn(); ++i) {
     checkAddColumn(tableDesc[i].name(), addToParent);
   }
   // Add to the parents.
-  for (uInt i = 0; i < tables_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < tables_p.nelements(); ++i) {
     tables_p[i].addColumn(tableDesc, dataManager, addToParent);
   }
   addConcatCol(tableDesc);
@@ -500,7 +500,7 @@ DataManager* ConcatTable::findDataManager(const String& name, bool byColumn) con
 }
 
 void ConcatTable::showStructureExtra(std::ostream& os) const {
-  for (uInt i = 0; i < tables_p.size(); ++i) {
+  for (unsigned int i = 0; i < tables_p.size(); ++i) {
     os << (i == 0 ? "concat " : "       ");
     os << tables_p[i].tableName() << " (" << tables_p[i].nrow() << " rows, "
        << tables_p[i].tableDesc().ncolumn() << " columns)" << endl;

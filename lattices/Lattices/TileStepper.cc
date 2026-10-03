@@ -45,10 +45,10 @@ TileStepper::TileStepper(const IPosition& latticeShape, const IPosition& tileSha
       itsNsteps(0),
       itsEnd(false),
       itsStart(true) {
-  const uInt nrdim = latticeShape.nelements();
+  const unsigned int nrdim = latticeShape.nelements();
   AlwaysAssert(nrdim > 0, AipsError);
   AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
-  for (uInt i = 0; i < nrdim; i++) {
+  for (unsigned int i = 0; i < nrdim; i++) {
     itsAxisPath(i) = i;
   }
   reset();
@@ -70,7 +70,7 @@ TileStepper::TileStepper(const IPosition& latticeShape, const IPosition& tileSha
       itsNsteps(0),
       itsEnd(false),
       itsStart(true) {
-  const uInt nrdim = latticeShape.nelements();
+  const unsigned int nrdim = latticeShape.nelements();
   AlwaysAssert(nrdim > 0, AipsError);
   AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
   reset();
@@ -144,7 +144,7 @@ bool TileStepper::operator++(int) {
     empty = false;
     // # Calculate the first and last pixel in the tile taking the
     // # increment into account.
-    Int nrdim = itsCurBlc.nelements();
+    int nrdim = itsCurBlc.nelements();
     for (int i = 0; i < nrdim; i++) {
       if (itsCurTrc(i) > itsTrc(i)) {
         itsCurTrc(i) = itsTrc(i);
@@ -193,7 +193,7 @@ bool TileStepper::operator--(int) {
     empty = false;
     // # Calculate the first and last pixel in the tile taking the
     // # increment into account.
-    Int nrdim = itsCurBlc.nelements();
+    int nrdim = itsCurBlc.nelements();
     for (int i = 0; i < nrdim; i++) {
       if (itsCurTrc(i) > itsTrc(i)) {
         itsCurTrc(i) = itsTrc(i);
@@ -232,7 +232,7 @@ void TileStepper::reset() {
   //  cout << itsCurBlc << itsCurTrc << "   ";
   // # Calculate the first and last pixel in the tile taking the
   // # increment into account.
-  Int nrdim = itsCurBlc.nelements();
+  int nrdim = itsCurBlc.nelements();
   for (int i = 0; i < nrdim; i++) {
     if (itsCurTrc(i) > itsTrc(i)) {
       itsCurTrc(i) = itsTrc(i);
@@ -261,7 +261,7 @@ bool TileStepper::atEnd() const {
   return itsEnd;
 }
 
-uInt TileStepper::nsteps() const {
+unsigned int TileStepper::nsteps() const {
   DebugAssert(ok() == true, AipsError);
   return itsNsteps;
 }
@@ -349,7 +349,7 @@ const IPosition& TileStepper::axisPath() const {
   return itsAxisPath;
 }
 
-uInt TileStepper::calcCacheSize(const IPosition&, const IPosition&, uInt, uInt) const {
+unsigned int TileStepper::calcCacheSize(const IPosition&, const IPosition&, unsigned int, unsigned int) const {
   // Cache needs to be 1 tile only.
   return 1;
 }
@@ -362,7 +362,7 @@ LatticeNavigator* TileStepper::clone() const {
 bool TileStepper::ok() const {
   ostringstream str;
   str << "TileStepper::ok - ";
-  const uInt latticeDim = itsTiler.ndim();
+  const unsigned int latticeDim = itsTiler.ndim();
   // Check the cursor shape is OK
   if (itsTileShape.nelements() != latticeDim) {
     str << "cursor shape " << itsTileShape << " has wrong number of dimensions (ie. not "
@@ -370,10 +370,10 @@ bool TileStepper::ok() const {
     throw AipsError(String(str.str()));
     return false;
   }
-  for (uInt i = 0; i < latticeDim; i++) {
+  for (unsigned int i = 0; i < latticeDim; i++) {
     // the cursor shape must be <= the corresponding lattice axes AND
     // a cursor shape with an axis of length zero makes no sense
-    if (itsTileShape(i) > Int(itsTiler.shape(i)) || itsTileShape(i) <= 0) {
+    if (itsTileShape(i) > int(itsTiler.shape(i)) || itsTileShape(i) <= 0) {
       str << "cursor shape " << itsTileShape << " is too big or small for lattice shape "
           << itsTiler.shape();
       throw AipsError(String(str.str()));
@@ -406,8 +406,8 @@ bool TileStepper::ok() const {
     return false;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
-  for (uInt n = 0; n < latticeDim; n++) {
-    if (itsAxisPath(n) >= Int(latticeDim)) {
+  for (unsigned int n = 0; n < latticeDim; n++) {
+    if (itsAxisPath(n) >= int(latticeDim)) {
       str << "axis path " << itsAxisPath << " has elements bigger than the lattice dim -1 (ie. "
           << latticeDim - 1 << ')';
       throw AipsError(String(str.str()));
@@ -416,8 +416,8 @@ bool TileStepper::ok() const {
   }
 
   // each itsAxisPath value must be unique
-  for (uInt k = 0; k < (latticeDim - 1); k++) {
-    for (uInt j = k + 1; j < latticeDim; j++) {
+  for (unsigned int k = 0; k < (latticeDim - 1); k++) {
+    for (unsigned int j = k + 1; j < latticeDim; j++) {
       if (itsAxisPath(k) == itsAxisPath(j)) {
         str << "axis path " << itsAxisPath << " does not have unique elements";
         throw AipsError(String(str.str()));

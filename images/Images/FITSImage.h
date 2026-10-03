@@ -101,13 +101,13 @@ class FitsInput;
 // # <todo asof="2001/02/09">
 // # </todo>
 
-class FITSImage : public ImageInterface<Float> {
+class FITSImage : public ImageInterface<float> {
  public:
   // Construct a FITSImage from the disk FITS file name  and extension and apply mask.
-  explicit FITSImage(const String& name, uInt whichRep = 0, uInt whichHDU = 0);
+  explicit FITSImage(const String& name, unsigned int whichRep = 0, unsigned int whichHDU = 0);
 
   // Construct a FITSImage from the disk FITS file name and extension and apply mask or not.
-  FITSImage(const String& name, const MaskSpecifier& mask, uInt whichRep = 0, uInt whichHDU = 0);
+  FITSImage(const String& name, const MaskSpecifier& mask, unsigned int whichRep = 0, unsigned int whichHDU = 0);
 
   // Copy constructor (reference semantics)
   FITSImage(const FITSImage& other);
@@ -128,12 +128,12 @@ class FITSImage : public ImageInterface<Float> {
   static String get_fitsname(const String& fullname);
 
   // Get the extension index for any extension specification given in the full name
-  static uInt get_hdunum(const String& fullname);
+  static unsigned int get_hdunum(const String& fullname);
 
   // # ImageInterface virtual functions
 
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Get the image type (returns FITSImage).
   virtual String imageType() const;
@@ -174,10 +174,10 @@ class FITSImage : public ImageInterface<Float> {
 
   // Do the actual get of the data.
   // Returns false as the data do not reference another Array
-  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.
-  virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<float>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
 
   // # LatticeBase virtual functions
@@ -199,12 +199,12 @@ class FITSImage : public ImageInterface<Float> {
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -222,13 +222,13 @@ class FITSImage : public ImageInterface<Float> {
   DataType internalDataType() const { return dataType_p; }
 
   // Return the HDU number
-  uInt whichHDU() const { return whichHDU_p; }
+  unsigned int whichHDU() const { return whichHDU_p; }
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -239,7 +239,7 @@ class FITSImage : public ImageInterface<Float> {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -259,18 +259,18 @@ class FITSImage : public ImageInterface<Float> {
   std::shared_ptr<TiledFileAccess> pTiledFile_p;
   std::unique_ptr<Lattice<bool>> pPixelMask_p;
   TiledShape shape_p;
-  Float scale_p;
-  Float offset_p;
-  Short shortMagic_p;
-  uChar uCharMagic_p;
-  Int longMagic_p;
+  float scale_p;
+  float offset_p;
+  short shortMagic_p;
+  unsigned char uCharMagic_p;
+  int longMagic_p;
   bool hasBlanks_p;
   DataType dataType_p;
   Int64 fileOffset_p;
   bool isClosed_p;
   bool filterZeroMask_p;
-  uInt whichRep_p;
-  uInt whichHDU_p;
+  unsigned int whichRep_p;
+  unsigned int whichHDU_p;
   bool _hasBeamsTable;
 
   // Reopen the image if needed.
@@ -286,24 +286,24 @@ class FITSImage : public ImageInterface<Float> {
 
   // Fish things out of the FITS file
   void getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& info,
-                          Unit& brightnessUnit, RecordInterface& miscInfo, Int& recsize, Int& recno,
-                          FITS::ValueType& dataType, Float& scale, Float& offset, uChar& uCharMagic,
-                          Short& shortMagic, Int& longMagic, bool& hasBlanks, const String& name,
-                          uInt whichRep, uInt whichHDU);
+                          Unit& brightnessUnit, RecordInterface& miscInfo, int& recsize, int& recno,
+                          FITS::ValueType& dataType, float& scale, float& offset, unsigned char& uCharMagic,
+                          short& shortMagic, int& longMagic, bool& hasBlanks, const String& name,
+                          unsigned int whichRep, unsigned int whichHDU);
 
   // Crack a primary header
   template <typename T>
   void crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                   Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale, Float& offset,
-                   uChar& magicUChar, Short& magicShort, Int& magicLong, bool& hasBlanks, LogIO& os,
-                   FitsInput& infile, uInt whichRep);
+                   Unit& brightnessUnit, RecordInterface& miscInfo, float& scale, float& offset,
+                   unsigned char& magicUChar, short& magicShort, int& magicLong, bool& hasBlanks, LogIO& os,
+                   FitsInput& infile, unsigned int whichRep);
 
   // Crack an image extension header
   template <typename T>
   void crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                      Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale, Float& offset,
-                      uChar& uCharMagic, Short& magicShort, Int& magicLong, bool& hasBlanks,
-                      LogIO& os, FitsInput& infile, uInt whichRep);
+                      Unit& brightnessUnit, RecordInterface& miscInfo, float& scale, float& offset,
+                      unsigned char& uCharMagic, short& magicShort, int& magicLong, bool& hasBlanks,
+                      LogIO& os, FitsInput& infile, unsigned int whichRep);
 };
 
 }  // namespace casacore

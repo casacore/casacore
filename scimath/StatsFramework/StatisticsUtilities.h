@@ -63,7 +63,7 @@ class StatisticsUtilities {
   // wnvariance = sum((weight_i*(x_i - mean)**2)
   // npts is a Double rather than an Int64 because of compilation issues when
   // T is a Complex
-  inline static void accumulate(Double& npts, AccumType& sum, AccumType& mean,
+  inline static void accumulate(double& npts, AccumType& sum, AccumType& mean,
                                 const AccumType& datum);
 
   // in order to optimize performance, no checking is done for the
@@ -71,14 +71,14 @@ class StatisticsUtilities {
   // calling this method, and shouldn't call this method if the weight is 0.
   // Expect a segfault because of division by zero if sumweights and weight
   // are both zero.
-  inline static void waccumulate(Double& npts, AccumType& sumweights, AccumType& wsum,
+  inline static void waccumulate(double& npts, AccumType& sumweights, AccumType& wsum,
                                  AccumType& wmean, const AccumType& datum, const AccumType& weight);
 
-  inline static void accumulate(Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+  inline static void accumulate(double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
                                 AccumType& sumsq, const AccumType& datum);
 
   // wsumsq is the weighted sum of squares, sum(w_i*x_i*x_i)
-  inline static void waccumulate(Double& npts, AccumType& sumweights, AccumType& wsum,
+  inline static void waccumulate(double& npts, AccumType& sumweights, AccumType& wsum,
                                  AccumType& wmean, AccumType& wnvariance, AccumType& wsumsq,
                                  const AccumType& datum, const AccumType& weight);
   // </group>
@@ -87,19 +87,19 @@ class StatisticsUtilities {
   // The assignment operator of class LocationType should use copy, not
   // reference, semantics.
   template <class LocationType>
-  inline static void accumulate(Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+  inline static void accumulate(double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
                                 AccumType& sumsq, AccumType& datamin, AccumType& datamax,
                                 LocationType& minpos, LocationType& maxpos, const AccumType& datum,
                                 const LocationType& location);
 
   template <class LocationType, class DataType>
-  inline static void accumulate(Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+  inline static void accumulate(double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
                                 AccumType& sumsq, DataType& datamin, DataType& datamax,
                                 LocationType& minpos, LocationType& maxpos, const DataType& datum,
                                 const LocationType& location);
 
   template <class LocationType>
-  inline static void waccumulate(Double& npts, AccumType& sumofweights, AccumType& sum,
+  inline static void waccumulate(double& npts, AccumType& sumofweights, AccumType& sum,
                                  AccumType& mean, AccumType& nvariance, AccumType& sumsq,
                                  AccumType& datamin, AccumType& datamax, LocationType& minpos,
                                  LocationType& maxpos, const AccumType& datum,
@@ -122,24 +122,24 @@ class StatisticsUtilities {
   // point. The actual point is accumulated, as is a "virtual" point that is
   // symmetric about the specified center. Of course, the trivial relationship
   // that the mean is the specified center is used to simplify things
-  inline static void accumulateSym(Double& npts, AccumType& nvariance, AccumType& sumsq,
+  inline static void accumulateSym(double& npts, AccumType& nvariance, AccumType& sumsq,
                                    const AccumType& datum, const AccumType& center);
 
   // wsumsq is the weighted sum of squares, sum(w_i*x_i*x_i)
-  inline static void waccumulateSym(Double& npts, AccumType& sumweights, AccumType& wnvariance,
+  inline static void waccumulateSym(double& npts, AccumType& sumweights, AccumType& wnvariance,
                                     AccumType& wsumsq, const AccumType& datum,
                                     const AccumType& weight, const AccumType& center);
 
   // <src>maxpos</src> and <src>minpos</src> refer to actual, not
   // virtually created, data only.
   template <class LocationType>
-  inline static void accumulateSym(Double& npts, AccumType& nvariance, AccumType& sumsq,
+  inline static void accumulateSym(double& npts, AccumType& nvariance, AccumType& sumsq,
                                    AccumType& datamin, AccumType& datamax, LocationType& minpos,
                                    LocationType& maxpos, const AccumType& datum,
                                    const LocationType& location, const AccumType& center);
 
   template <class LocationType>
-  inline static void waccumulateSym(Double& npts, AccumType& sumofweights, AccumType& nvariance,
+  inline static void waccumulateSym(double& npts, AccumType& sumofweights, AccumType& nvariance,
                                     AccumType& sumsq, AccumType& datamin, AccumType& datamax,
                                     LocationType& minpos, LocationType& maxpos,
                                     const AccumType& datum, const AccumType& weight,
@@ -163,7 +163,7 @@ class StatisticsUtilities {
       std::vector<BinCountArray>& bins, std::vector<std::shared_ptr<AccumType>>& sameVal,
       std::vector<bool>& allSame, const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
       const std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]>& tSameVal,
-      const std::unique_ptr<std::vector<bool>[]>& tAllSame, uInt nThreadsMax);
+      const std::unique_ptr<std::vector<bool>[]>& tAllSame, unsigned int nThreadsMax);
 
   // use two statistics sets to get the statistics set that would
   // result in combining the two data sets used to produce the
@@ -174,9 +174,9 @@ class StatisticsUtilities {
   static StatsData<AccumType> combine(const std::vector<StatsData<AccumType>>& stats);
 
   template <class DataIterator, class MaskIterator, class WeightsIterator>
-  static uInt nThreadsMax(const StatsDataProvider<CASA_STATP>* const dataProvider);
+  static unsigned int nThreadsMax(const StatsDataProvider<CASA_STATP>* const dataProvider);
 
-  static uInt threadIdx();
+  static unsigned int threadIdx();
 
  private:
   const static AccumType TWO;

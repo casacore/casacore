@@ -114,7 +114,7 @@ class TableColumn {
   //        TableColumn tabcol(tab,i);
   //    }
   // </srcblock>
-  TableColumn(const Table&, uInt columnIndex);
+  TableColumn(const Table&, unsigned int columnIndex);
 
   // Copy constructor (reference semantics).
   TableColumn(const TableColumn&);
@@ -144,7 +144,7 @@ class TableColumn {
   void attach(const Table& table, const String& columnName) {
     reference(TableColumn(table, columnName));
   }
-  void attach(const Table& table, uInt columnIndex) { reference(TableColumn(table, columnIndex)); }
+  void attach(const Table& table, unsigned int columnIndex) { reference(TableColumn(table, columnIndex)); }
   // </group>
 
   // Test if the object is null, i.e. does not reference a column.
@@ -192,7 +192,7 @@ class TableColumn {
   // Get the global #dimensions of an array (ie. for all cells in column).
   // This is always set for fixed shape arrays.
   // Otherwise, 0 will be returned.
-  uInt ndimColumn() const { return baseColPtr_p->ndimColumn(); }
+  unsigned int ndimColumn() const { return baseColPtr_p->ndimColumn(); }
 
   // Get the global shape of an array (ie. for all cells in the column).
   // This is always set for fixed shape arrays.
@@ -210,7 +210,7 @@ class TableColumn {
   bool hasContent(rownr_t rownr = 0) const;
 
   // Get the #dimensions of an array in a particular cell.
-  uInt ndim(rownr_t rownr) const {
+  unsigned int ndim(rownr_t rownr) const {
     TABLECOLUMNCHECKROW(rownr);
     return baseColPtr_p->ndim(rownr);
   }
@@ -235,23 +235,23 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
-  void getScalar(rownr_t rownr, uChar& value) const {
+  void getScalar(rownr_t rownr, unsigned char& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
-  void getScalar(rownr_t rownr, Short& value) const {
+  void getScalar(rownr_t rownr, short& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
-  void getScalar(rownr_t rownr, uShort& value) const {
+  void getScalar(rownr_t rownr, unsigned short& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
-  void getScalar(rownr_t rownr, Int& value) const {
+  void getScalar(rownr_t rownr, int& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
-  void getScalar(rownr_t rownr, uInt& value) const {
+  void getScalar(rownr_t rownr, unsigned int& value) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, value);
   }
@@ -285,11 +285,11 @@ class TableColumn {
   // This can only be used for scalar columns with a standard data type.
   // <group>
   bool asBool(rownr_t rownr) const;
-  uChar asuChar(rownr_t rownr) const;
-  Short asShort(rownr_t rownr) const;
-  uShort asuShort(rownr_t rownr) const;
-  Int asInt(rownr_t rownr) const;
-  uInt asuInt(rownr_t rownr) const;
+  unsigned char asuChar(rownr_t rownr) const;
+  short asShort(rownr_t rownr) const;
+  unsigned short asuShort(rownr_t rownr) const;
+  int asInt(rownr_t rownr) const;
+  unsigned int asuInt(rownr_t rownr) const;
   Int64 asInt64(rownr_t rownr) const;
   float asfloat(rownr_t rownr) const;
   double asdouble(rownr_t rownr) const;
@@ -307,23 +307,23 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
-  void getScalarValue(rownr_t rownr, uChar* value, const String&) const {
+  void getScalarValue(rownr_t rownr, unsigned char* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
-  void getScalarValue(rownr_t rownr, Short* value, const String&) const {
+  void getScalarValue(rownr_t rownr, short* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
-  void getScalarValue(rownr_t rownr, uShort* value, const String&) const {
+  void getScalarValue(rownr_t rownr, unsigned short* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
-  void getScalarValue(rownr_t rownr, Int* value, const String&) const {
+  void getScalarValue(rownr_t rownr, int* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
-  void getScalarValue(rownr_t rownr, uInt* value, const String&) const {
+  void getScalarValue(rownr_t rownr, unsigned int* value, const String&) const {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->getScalar(rownr, *value);
   }
@@ -390,23 +390,23 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const uChar& value) {
+  void putScalar(rownr_t rownr, const unsigned char& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const Short& value) {
+  void putScalar(rownr_t rownr, const short& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const uShort& value) {
+  void putScalar(rownr_t rownr, const unsigned short& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const Int& value) {
+  void putScalar(rownr_t rownr, const int& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const uInt& value) {
+  void putScalar(rownr_t rownr, const unsigned int& value) {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
@@ -434,7 +434,7 @@ class TableColumn {
     TABLECOLUMNCHECKROW(rownr);
     baseColPtr_p->putScalar(rownr, value);
   }
-  void putScalar(rownr_t rownr, const Char* value) { putScalar(rownr, String(value)); }
+  void putScalar(rownr_t rownr, const char* value) { putScalar(rownr, String(value)); }
   // </group>
 
   // Check if the row number is valid.
@@ -442,7 +442,7 @@ class TableColumn {
   void checkRowNumber(rownr_t rownr) const { baseTabPtr_p->checkRowNumber(rownr); }
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
-  void setMaximumCacheSize(uInt nbytes) const { baseColPtr_p->setMaximumCacheSize(nbytes); }
+  void setMaximumCacheSize(unsigned int nbytes) const { baseColPtr_p->setMaximumCacheSize(nbytes); }
 
  protected:
   BaseTable* baseTabPtr_p;

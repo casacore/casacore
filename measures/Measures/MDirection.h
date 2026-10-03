@@ -260,9 +260,9 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   MDirection(const Quantity &dt, const Quantity &dt1);
   MDirection(const Quantity &dt, const Quantity &dt1, const MDirection::Ref &rf);
   MDirection(const Quantity &dt, const Quantity &dt1, MDirection::Types rf);
-  MDirection(const Quantum<Vector<Double>> &dt);
-  MDirection(const Quantum<Vector<Double>> &dt, const MDirection::Ref &rf);
-  MDirection(const Quantum<Vector<Double>> &dt, MDirection::Types rf);
+  MDirection(const Quantum<Vector<double>> &dt);
+  MDirection(const Quantum<Vector<double>> &dt, const MDirection::Ref &rf);
+  MDirection(const Quantum<Vector<double>> &dt, MDirection::Types rf);
   MDirection(const Measure *dt);
   MDirection(const MeasValue *dt);
   MDirection(const MDirection::Ref &rf);
@@ -288,16 +288,16 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // Assert you are a direction
   static void assure(const Measure &in);
   // Tell me the global type (like GRADEC) for tp (tp like MDirection::J2000)
-  static MDirection::GlobalTypes globalType(uInt tp);
+  static MDirection::GlobalTypes globalType(unsigned int tp);
   // Translate reference code tp. The uInt version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
   //   <li> AipsError in the uInt interface if illegal code given
   // </thrown>
   // <group>
-  static MDirection::Types castType(uInt tp);
+  static MDirection::Types castType(unsigned int tp);
   static const String &showType(MDirection::Types tp);
-  static const String &showType(uInt tp);
+  static const String &showType(unsigned int tp);
   // </group>
   // Translate string to reference code
   // <group>
@@ -315,8 +315,8 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
-  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
+  virtual const String *allTypes(int &nall, int &nextra, const unsigned int *&typ) const;
+  static const String *allMyTypes(int &nall, int &nextra, const unsigned int *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
@@ -335,8 +335,8 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
 
   // Get Measure data
   // <group>
-  Quantum<Vector<Double>> getAngle() const;
-  Quantum<Vector<Double>> getAngle(const Unit &inunit) const;
+  Quantum<Vector<double>> getAngle() const;
+  Quantum<Vector<double>> getAngle(const Unit &inunit) const;
   // </group>
   // Shift the direction in longitude (radians if Double) and/or latitude.
   // If the trueAngle switch is true, the longitude shift will be in
@@ -344,12 +344,12 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // circle. See <linkto class=MVDirection>MVDirection</linkto>
   // for more details.
   // <group>
-  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, bool trueAngle = false);
-  void shift(Double lng, Double lat, bool trueAngle = false);
+  void shift(const Quantum<double> &lng, const Quantum<double> &lat, bool trueAngle = false);
+  void shift(double lng, double lat, bool trueAngle = false);
   void shiftLongitude(const Quantity &lng, bool trueAngle = false);
-  void shiftLongitude(Double lng, bool trueAngle = false);
-  void shiftLatitude(const Quantum<Double> &lat, bool trueAngle = false);
-  void shiftLatitude(Double lat, bool trueAngle = false);
+  void shiftLongitude(double lng, bool trueAngle = false);
+  void shiftLatitude(const Quantum<double> &lat, bool trueAngle = false);
+  void shiftLatitude(double lat, bool trueAngle = false);
   void shift(const MVDirection &shft, bool trueAngle = false);
   // </group>
   // Shift over an angle off in the direction pa. pa is measured from North,
@@ -357,8 +357,8 @@ class MDirection : public MeasBase<MVDirection, MeasRef<MDirection>> {
   // See <linkto class=MVDirection>MVDirection</linkto>
   // for implementation.
   // <group>
-  void shiftAngle(const Quantum<Double> &off, const Quantum<Double> &pa);
-  void shiftAngle(Double off, Double pa);
+  void shiftAngle(const Quantum<double> &off, const Quantum<double> &pa);
+  void shiftAngle(double off, double pa);
   // </group>
 
   // Make a copy

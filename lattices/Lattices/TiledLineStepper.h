@@ -193,7 +193,7 @@ class TiledLineStepper : public LatticeNavigator {
   // tileShape identical to the Lattice tileShape. This can be obtained by
   // <src>lat.niceCursorShape(lat.advisedMaxPixels())</src>
   // where <src>lat</src> is a Lattice object.
-  TiledLineStepper(const IPosition& latticeShape, const IPosition& tileShape, const uInt axis);
+  TiledLineStepper(const IPosition& latticeShape, const IPosition& tileShape, const unsigned int axis);
 
   // The copy constructor uses copy semantics.
   TiledLineStepper(const TiledLineStepper& other);
@@ -228,7 +228,7 @@ class TiledLineStepper : public LatticeNavigator {
   // all cursor movement (operator++ or operator--), even though
   // N-increments followed by N-decrements will always leave the cursor in
   // the original position.
-  virtual uInt nsteps() const;
+  virtual unsigned int nsteps() const;
 
   // Function which returns the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origin
@@ -312,8 +312,8 @@ class TiledLineStepper : public LatticeNavigator {
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             uInt maxCacheSize, uInt bucketSize) const;
+  virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                             unsigned int maxCacheSize, unsigned int bucketSize) const;
 
  private:
   // Prevent the default constructor from being used.
@@ -330,8 +330,8 @@ class TiledLineStepper : public LatticeNavigator {
   IPosition itsCursorShape;       // # The shape of the cursor for itsIndexer
   IPosition itsTileShape;         // # The tile shape (= itsTiler cursor shape)
   IPosition itsAxisPath;          // # Path for traversing
-  uInt itsNsteps;                 // # The number of iterator steps taken so far;
-  uInt itsAxis;                   // # The axis containing the data vector
+  unsigned int itsNsteps;                 // # The number of iterator steps taken so far;
+  unsigned int itsAxis;                   // # The axis containing the data vector
   bool itsEnd;                    // # Is the cursor beyond the end?
   bool itsStart;                  // # Is the cursor at the beginning?
 };

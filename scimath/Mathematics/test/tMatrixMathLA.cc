@@ -33,7 +33,7 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Matrix<Double> ind(3, 3);
+  Matrix<double> ind(3, 3);
   ind(0, 0) = 2;
   ind(0, 1) = 8;
   ind(0, 2) = 6;
@@ -44,7 +44,7 @@ int main() {
   ind(2, 1) = -1;
   ind(2, 2) = 1;
 
-  Matrix<Double> outd(3, 3);
+  Matrix<double> outd(3, 3);
   outd(0, 0) = 0;
   outd(0, 1) = 7;
   outd(0, 2) = 14;
@@ -60,7 +60,7 @@ int main() {
 
   // Now test the other types - Float/Complex/DComplex
 
-  Matrix<Float> inf(3, 3), outf(3, 3);
+  Matrix<float> inf(3, 3), outf(3, 3);
   convertArray(inf, ind);
   convertArray(outf, outd);
   AlwaysAssertExit(allNearAbs(invert(inf), outf, 0.00001));

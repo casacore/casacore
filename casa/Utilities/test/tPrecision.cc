@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-void testit(const Vector<Double>& x, const Vector<Double>& y, const uInt expectedPrecision) {
+void testit(const Vector<double>& x, const Vector<double>& y, const unsigned int expectedPrecision) {
   std::ostringstream testStream;
   testStream << "x = " << x[0] << " +/- " << x[1] << ", y ";
   if (y.size() == 0) {
@@ -45,7 +45,7 @@ void testit(const Vector<Double>& x, const Vector<Double>& y, const uInt expecte
   testStream << "results in a precision of " << expectedPrecision;
 
   cout << "*** " << testStream.str() << " ***" << endl;
-  uInt precision = precisionForValueErrorPairs(x, y);
+  unsigned int precision = precisionForValueErrorPairs(x, y);
   cout << "prec=" << precision << endl;
   cout << fixed << setprecision(precision) << "x = " << x[0] << " +/- " << x[1] << endl;
   if (y.size() == 2) {
@@ -57,9 +57,9 @@ void testit(const Vector<Double>& x, const Vector<Double>& y, const uInt expecte
 int main() {
   try {
     std::ostringstream test;
-    Vector<Double> x(2, 0);
-    Vector<Double> y;
-    uInt expected = 3;
+    Vector<double> x(2, 0);
+    Vector<double> y;
+    unsigned int expected = 3;
     testit(x, y, expected);
 
     x[0] = 5;

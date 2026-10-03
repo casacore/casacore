@@ -72,20 +72,20 @@ int main(int argc, const char* argv[]) {
     const String in = inputs.getString("in");
     const bool save = inputs.getBool("save");
     const String method = inputs.getString("method");
-    const Block<Int> axesU(inputs.getIntArray("axes"));
-    const Block<Int> shapeU(inputs.getIntArray("shape"));
+    const Block<int> axesU(inputs.getIntArray("axes"));
+    const Block<int> shapeU(inputs.getIntArray("shape"));
     const bool replicate = inputs.getBool("replicate");
-    const Int decimate = inputs.getInt("decimate");
+    const int decimate = inputs.getInt("decimate");
     const bool onDisk = inputs.getBool("disk");
     const bool dbl = inputs.getBool("double");
-    const Int dbg = inputs.getInt("dbg");
+    const int dbg = inputs.getInt("dbg");
     const bool force = inputs.getBool("force");
     const bool reuse = inputs.getBool("reuse");
     //
-    Int maxMBInMemory = -1;
+    int maxMBInMemory = -1;
     if (onDisk) maxMBInMemory = 0;
     //
-    ImageInterface<Float>* pIm = 0;
+    ImageInterface<float>* pIm = 0;
 
     IPosition shapeIn;
     if (in.empty()) {
@@ -94,22 +94,22 @@ int main(int argc, const char* argv[]) {
           shapeIn = IPosition(2, 256, 256);
         } else {
           shapeIn.resize(shapeU.nelements());
-          for (uInt i = 0; i < shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
+          for (unsigned int i = 0; i < shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
         }
       }
       //
       TiledShape shape2(shapeIn);
       CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, false);
       //
-      pIm = new TempImage<Float>(shape2, cSys, maxMBInMemory);
+      pIm = new TempImage<float>(shape2, cSys, maxMBInMemory);
       pIm->set(1.0);
       //
       TempLattice<bool> inMask(shape2, maxMBInMemory);
       inMask.set(true);
-      TempImage<Float>* pTemp = dynamic_cast<TempImage<Float>*>(pIm);
+      TempImage<float>* pTemp = dynamic_cast<TempImage<float>*>(pIm);
       pTemp->attachMask(inMask);
     } else {
-      pIm = new PagedImage<Float>(in);
+      pIm = new PagedImage<float>(in);
       shapeIn = pIm->shape();
     }
     //
@@ -118,20 +118,20 @@ int main(int argc, const char* argv[]) {
       if (axesU.nelements() == 1 && axesU[0] == -10) {
       } else {
         axes.resize(axesU.nelements());
-        for (uInt i = 0; i < axes.nelements(); i++) axes(i) = axesU[i];
+        for (unsigned int i = 0; i < axes.nelements(); i++) axes(i) = axesU[i];
       }
     }
     //
     IPosition shapeOut;
     CoordinateSystem cSysOut = pIm->coordinates();
     if (dbl) {
-      Vector<Double> incr = cSysOut.increment().copy();
-      Vector<Double> refp = cSysOut.referencePixel().copy();
-      Vector<Double> refv = cSysOut.referenceValue().copy();
+      Vector<double> incr = cSysOut.increment().copy();
+      Vector<double> refp = cSysOut.referencePixel().copy();
+      Vector<double> refv = cSysOut.referenceValue().copy();
       //
       shapeOut = shapeIn;
-      for (uInt i = 0; i < axes.nelements(); i++) {
-        uInt j = axes(i);
+      for (unsigned int i = 0; i < axes.nelements(); i++) {
+        unsigned int j = axes(i);
         shapeOut(j) = 2 * shapeIn(j);
         incr(j) = incr(j) / 2.0;
         refp(j) = shapeOut(j) / 2.0;  // Center
@@ -142,20 +142,20 @@ int main(int argc, const char* argv[]) {
       if (shapeU.nelements() == 1 && shapeU[0] == -10) {
         shapeOut = 2 * shapeIn;
       } else if (shapeU.nelements() > 0) {
-        for (uInt i = 0; i < shapeU.nelements(); i++) {
+        for (unsigned int i = 0; i < shapeU.nelements(); i++) {
           shapeOut(i) = shapeU[i];
         }
       }
     }
     cerr << "shapeIn, shapeOut = " << shapeIn << shapeOut << endl;
     //
-    ImageRegrid<Float> regridder;
+    ImageRegrid<float> regridder;
     {
-      ImageInterface<Float>* pImOut = 0;
+      ImageInterface<float>* pImOut = 0;
       if (save) {
-        pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
+        pImOut = new PagedImage<float>(shapeOut, cSysOut, String("outFile"));
       } else {
-        pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
+        pImOut = new TempImage<float>(shapeOut, cSysOut, maxMBInMemory);
       }
       String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
       pImOut->makeMask(maskName, true, true, true, true);
@@ -167,17 +167,17 @@ int main(int argc, const char* argv[]) {
     }
     //
     if (reuse) {
-      ImageInterface<Float>* pImOut = 0;
+      ImageInterface<float>* pImOut = 0;
       if (save) {
-        pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFileReused"));
+        pImOut = new PagedImage<float>(shapeOut, cSysOut, String("outFileReused"));
       } else {
-        pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
+        pImOut = new TempImage<float>(shapeOut, cSysOut, maxMBInMemory);
       }
       String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
       pImOut->makeMask(maskName, true, true, true, true);
       //
       Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
-      Cube<Double> grid;
+      Cube<double> grid;
       Matrix<bool> gridMask;
       regridder.get2DCoordinateGrid(grid, gridMask);
       regridder.set2DCoordinateGrid(grid, gridMask);
@@ -198,7 +198,7 @@ int main(int argc, const char* argv[]) {
       LogIO os;
       cout << "1" << endl;
       std::set<Coordinate::Type> coordsToRegrid;
-      CoordinateSystem cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
+      CoordinateSystem cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
                                                                        IPosition(2, 0, 1));
       AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);
@@ -207,7 +207,7 @@ int main(int argc, const char* argv[]) {
       cTo = CoordinateUtil::defaultCoords2D();
       cout << "2" << endl;
 
-      cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
+      cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
                                                       IPosition(2, 0, 1));
       AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);
@@ -216,7 +216,7 @@ int main(int argc, const char* argv[]) {
       cTo = CoordinateUtil::defaultCoords3D();
       cout << "3" << endl;
 
-      cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
+      cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
                                                       IPosition(2, 0, 1));
       AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);
@@ -224,19 +224,19 @@ int main(int argc, const char* argv[]) {
       cout << "4" << endl;
 
       cOut =
-          ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(1, 2));
+          ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(1, 2));
       AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) == coordsToRegrid.end(), AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(), AipsError);
       cout << "5" << endl;
 
-      cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition());
+      cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition());
       AlwaysAssert(coordsToRegrid.size() == 2, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(), AipsError);
       cout << "6" << endl;
 
-      cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
+      cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
                                                       IPosition(3, 0, 1, 2));
       AlwaysAssert(coordsToRegrid.size() == 2, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);
@@ -244,13 +244,13 @@ int main(int argc, const char* argv[]) {
       cout << "7" << endl;
       cIn = CoordinateUtil::defaultCoords4D();
       cTo = CoordinateUtil::defaultCoords4D();
-      cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition());
+      cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition());
       AlwaysAssert(coordsToRegrid.size() == 2, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(), AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::STOKES) == coordsToRegrid.end(), AipsError);
       cout << "8" << endl;
-      cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
+      cOut = ImageRegrid<float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn,
                                                       IPosition(3, 0, 1, 2));
       AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
       AlwaysAssert(coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(), AipsError);

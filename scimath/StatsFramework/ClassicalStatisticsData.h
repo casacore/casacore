@@ -38,9 +38,9 @@ class ClassicalStatisticsData {
 
   ClassicalStatisticsData(const ClassicalStatisticsData&) = delete;
 
-  static const uInt CACHE_PADDING;
+  static const unsigned int CACHE_PADDING;
 
-  static const uInt BLOCK_SIZE;
+  static const unsigned int BLOCK_SIZE;
 
   ~ClassicalStatisticsData() {}
 };

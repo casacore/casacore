@@ -36,34 +36,34 @@
 
 #include <casacore/casa/namespace.h>
 
-void sortall(Int*, uInt, int, Sort::Order, bool);
+void sortall(int*, unsigned int, int, Sort::Order, bool);
 
-uInt doSort(Vector<uInt>& inx, const Int* arr, uInt nr, Sort::Order ord, int type) {
+unsigned int doSort(Vector<unsigned int>& inx, const int* arr, unsigned int nr, Sort::Order ord, int type) {
   inx.resize(nr);
   indgen(inx);
   if ((type & Sort::QuickSort) != 0) {
-    return GenSortIndirect<Int, uInt>::quickSort(inx.data(), arr, nr, ord, type);
+    return GenSortIndirect<int, unsigned int>::quickSort(inx.data(), arr, nr, ord, type);
   } else if ((type & Sort::HeapSort) != 0) {
-    return GenSortIndirect<Int, uInt>::heapSort(inx.data(), arr, nr, ord, type);
+    return GenSortIndirect<int, unsigned int>::heapSort(inx.data(), arr, nr, ord, type);
   } else if ((type & Sort::InsSort) != 0) {
-    return GenSortIndirect<Int, uInt>::insSort(inx.data(), arr, nr, ord, type);
+    return GenSortIndirect<int, unsigned int>::insSort(inx.data(), arr, nr, ord, type);
   }
   return genSort(inx, arr, nr, ord, type);
 }
 
-uInt doSort(Int* arr, uInt nr, Sort::Order ord, int type) {
+unsigned int doSort(int* arr, unsigned int nr, Sort::Order ord, int type) {
   if ((type & Sort::QuickSort) != 0) {
-    return GenSort<Int>::quickSort(arr, nr, ord, type);
+    return GenSort<int>::quickSort(arr, nr, ord, type);
   } else if ((type & Sort::HeapSort) != 0) {
-    return GenSort<Int>::heapSort(arr, nr, ord, type);
+    return GenSort<int>::heapSort(arr, nr, ord, type);
   } else if ((type & Sort::InsSort) != 0) {
-    return GenSort<Int>::insSort(arr, nr, ord, type);
+    return GenSort<int>::insSort(arr, nr, ord, type);
   }
   return genSort(arr, nr, ord, type);
 }
 
 int main(int argc, const char* argv[]) {
-  uInt nr = 4000;
+  unsigned int nr = 4000;
   int type = Sort::DefaultSort;
   Sort::Order ord = Sort::Ascending;
   if (argc > 1) {
@@ -103,12 +103,12 @@ int main(int argc, const char* argv[]) {
   }
   cout << endl;
 
-  Int* a1 = new Int[nr];
-  Int* a2 = new Int[nr];
-  Int* a3 = new Int[nr];
-  Int* a4 = new Int[nr];
-  Int* a5 = new Int[nr];
-  for (uInt i = 0; i < nr; i++) {
+  int* a1 = new int[nr];
+  int* a2 = new int[nr];
+  int* a3 = new int[nr];
+  int* a4 = new int[nr];
+  int* a5 = new int[nr];
+  for (unsigned int i = 0; i < nr; i++) {
     a1[i] = i;
     a2[i] = nr - i;
     a3[i] = rand();
@@ -135,33 +135,33 @@ int main(int argc, const char* argv[]) {
   // test N^2 quicksort input to check introsort fallback
   // would crash due to large recursion without fallback
   nr = 150000;
-  uInt* indx = new uInt[nr];
-  Int* data = new Int[nr];
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int* indx = new unsigned int[nr];
+  int* data = new int[nr];
+  for (unsigned int i = 0; i < nr; i++) {
     data[i] = 1;
     indx[i] = i + 1;
   }
   indx[nr - 1] = 0;
-  GenSortIndirect<Int, uInt>::quickSort(indx, data, nr, Sort::Ascending, 0);
-  for (uInt i = 0; i < nr; i++) {
+  GenSortIndirect<int, unsigned int>::quickSort(indx, data, nr, Sort::Ascending, 0);
+  for (unsigned int i = 0; i < nr; i++) {
     data[i] = i;
   }
   data[nr - 1] = -1;
-  GenSort<Int>::quickSort(data, nr, Sort::Ascending, 0);
+  GenSort<int>::quickSort(data, nr, Sort::Ascending, 0);
   delete[] indx;
   delete[] data;
 
   return 0;  // exit with success status
 }
 
-void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
+void sortall(int* arr, unsigned int nr, int type, Sort::Order ord, bool showFlag) {
   if (nr <= 5000000) {
     // Do an indirect sort for 'smaller' arrays only.
-    Vector<uInt> inx(nr);
-    Vector<uInt> index(nr);
+    Vector<unsigned int> inx(nr);
+    Vector<unsigned int> index(nr);
     indgen(index);  // fill with 0,1,2,...
     Timer tim1;
-    Int n1 = doSort(inx, arr, nr, ord, type);
+    int n1 = doSort(inx, arr, nr, ord, type);
     cout << ":  Indirect / direct" << endl;
     if (!showFlag) {
       cout << ">>> Resulting number may vary" << endl;
@@ -174,7 +174,7 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
     tim1.show();
     cout << "<<<" << endl;
     if (ord == Sort::Ascending) {
-      for (Int i = 1; i < n1; i++) {
+      for (int i = 1; i < n1; i++) {
         if (arr[inx(i)] < arr[inx(i - 1)]) {
           cout << "asc order error on index " << i << endl;
           break;
@@ -185,7 +185,7 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
         }
       }
     } else {
-      for (Int i = 1; i < n1; i++) {
+      for (int i = 1; i < n1; i++) {
         if (arr[inx(i)] > arr[inx(i - 1)]) {
           cout << "desc order error on index " << i << endl;
           break;
@@ -197,7 +197,7 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
       }
     }
     if ((type & Sort::NoDuplicates) != 0) {
-      for (Int i = 1; i < n1; i++) {
+      for (int i = 1; i < n1; i++) {
         if (arr[inx(i)] == arr[inx(i - 1)]) {
           cout << "dupl error on index " << i << endl;
           break;
@@ -207,14 +207,14 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
   }
 
   // Save the original array.
-  Int* cparr = new Int[nr];
-  memcpy(cparr, arr, nr * sizeof(Int));
-  Int* cp2arr = new Int[nr];
-  memcpy(cp2arr, arr, nr * sizeof(Int));
+  int* cparr = new int[nr];
+  memcpy(cparr, arr, nr * sizeof(int));
+  int* cp2arr = new int[nr];
+  memcpy(cp2arr, arr, nr * sizeof(int));
 
   // Do an in-place sort.
   Timer tim;
-  Int n = doSort(arr, nr, ord, type);
+  int n = doSort(arr, nr, ord, type);
   if (!showFlag) {
     cout << ">>>" << endl;
   }
@@ -226,14 +226,14 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
   tim.show();
   cout << "<<<" << endl;
   if (ord == Sort::Ascending) {
-    for (Int i = 1; i < n; i++) {
+    for (int i = 1; i < n; i++) {
       if (arr[i] < arr[i - 1]) {
         cout << "asc order error on index " << i << endl;
         break;
       }
     }
   } else {
-    for (Int i = 1; i < n; i++) {
+    for (int i = 1; i < n; i++) {
       if (arr[i] > arr[i - 1]) {
         cout << "desc order error on index " << i << endl;
         break;
@@ -241,7 +241,7 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
     }
   }
   if ((type & Sort::NoDuplicates) != 0) {
-    for (Int i = 1; i < n; i++) {
+    for (int i = 1; i < n; i++) {
       if (arr[i] == arr[i - 1]) {
         cout << "dupl error on index " << i << endl;
         break;
@@ -253,16 +253,16 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
   // When duplicates were skipped, the array has to be copied again.
   // Note that n instead of nr has to be used.
   if ((type & Sort::NoDuplicates) != 0) {
-    memcpy(cparr, arr, n * sizeof(Int));
+    memcpy(cparr, arr, n * sizeof(int));
   }
   // First do it indirectly (for smaller arrays only).
   if (nr <= 5000000) {
     tim.mark();
-    uInt kth = GenSortIndirect<Int, uInt>::kthLargest(cparr, n, n / 2);
+    unsigned int kth = GenSortIndirect<int, unsigned int>::kthLargest(cparr, n, n / 2);
     cout << ">>> ind kthLar: ";
     tim.show();
     cout << "<<<" << endl;
-    uInt mid = n / 2;
+    unsigned int mid = n / 2;
     if (ord == Sort::Descending) {
       mid = (n - 1) / 2;
     }
@@ -271,11 +271,11 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
     }
   }
   tim.mark();
-  Int kth = GenSort<Int>::kthLargest(cparr, n, n / 2);
+  int kth = GenSort<int>::kthLargest(cparr, n, n / 2);
   cout << ">>> kthLar:     ";
   tim.show();
   cout << "<<<" << endl;
-  uInt mid = n / 2;
+  unsigned int mid = n / 2;
   if (ord == Sort::Descending) {
     mid = (n - 1) / 2;
   }
@@ -285,14 +285,14 @@ void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
   // Test STL algorithms.
   cout << ">>>" << endl;
   if ((type & Sort::NoDuplicates) != 0) {
-    memcpy(cparr, arr, n * sizeof(Int));
+    memcpy(cparr, arr, n * sizeof(int));
   } else {
-    memcpy(cparr, cp2arr, n * sizeof(Int));
+    memcpy(cparr, cp2arr, n * sizeof(int));
   }
   tim.mark();
   std::nth_element(cparr, cparr + n / 2, cparr + n);
   tim.show("STL-nth         ");
-  memcpy(cparr, cp2arr, nr * sizeof(Int));
+  memcpy(cparr, cp2arr, nr * sizeof(int));
   tim.mark();
   std::sort(cp2arr, cp2arr + nr);
   tim.show("STL-sort        ");

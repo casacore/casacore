@@ -44,22 +44,22 @@
 #include <casacore/casa/namespace.h>
 int main() {
   const char *file = "test.fits";
-  Matrix<Float> m(512, 512), m2;
+  Matrix<float> m(512, 512), m2;
 
   // Create a wedge; rows in a matrix normally are columns in an image,
   // i.e. the result might be the transpose of what you expect.
-  for (uInt i = 0; i < 512; i++) {
+  for (unsigned int i = 0; i < 512; i++) {
     m.row(i) = float(i);
   }
 
   // Create the "optional" information
-  std::map<String, Double> mapout, mapin;
+  std::map<String, double> mapout, mapin;
   String unitout, unitin;
   unitout = "Jy";
   Vector<String> namesout(2), namesin(2);
   namesout(0) = "X";
   namesout(1) = "Y";
-  Vector<Float> refout(2), refin(2), locout(2), locin(2), deltaout(2), deltain(2);
+  Vector<float> refout(2), refin(2), locout(2), locin(2), deltaout(2), deltain(2);
   refout = 0.0f;
   locout = 1.0f;
   deltaout = 1.0f;

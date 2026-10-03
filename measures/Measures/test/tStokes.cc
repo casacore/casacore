@@ -35,7 +35,7 @@
 #include <casacore/casa/namespace.h>
 int main() {
   try {
-    Int polint;
+    int polint;
     String polstr;
 
     polint = 5;
@@ -87,7 +87,7 @@ int main() {
     } catch (std::exception& x) {
       cout << " Caught exception of receptor correctly." << endl;
     }
-    for (uInt i = 0; i < Stokes::NumberOfTypes; i++) {
+    for (unsigned int i = 0; i < Stokes::NumberOfTypes; i++) {
       if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i))) != Stokes::type(i)) {
         cerr << "Stokes FITS value conversion failed" << endl;
         cerr << "  FITSValue(" << i << ") = " << Stokes::FITSValue(Stokes::type(i)) << endl;
@@ -97,7 +97,7 @@ int main() {
     }
     Vector<String> allNames = Stokes::allNames();
     cout << "All names: ";
-    for (uInt i = 0; i < allNames.size(); i++) {
+    for (unsigned int i = 0; i < allNames.size(); i++) {
       cout << allNames[i] << " ";
     }
     cout << endl;

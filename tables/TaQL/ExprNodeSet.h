@@ -125,7 +125,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   }
 
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
 
   // Flatten the node tree by adding the node and its children to the vector.
   virtual void flattenTree(std::vector<TableExprNodeRep*>&) override;
@@ -170,7 +170,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   // <group>
   MArray<bool> getArrayBool(const TableExprId& id) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
   MArray<String> getArrayString(const TableExprId& id) override;
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
@@ -180,13 +180,13 @@ class TableExprNodeSet : public TableExprNodeRep {
   // <group>
   bool contains(const TableExprId& id, bool value) override;
   bool contains(const TableExprId& id, Int64 value) override;
-  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, double value) override;
   bool contains(const TableExprId& id, DComplex value) override;
   bool contains(const TableExprId& id, String value) override;
   bool contains(const TableExprId& id, MVTime value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<bool>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<double>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
@@ -214,7 +214,7 @@ class TableExprNodeSet : public TableExprNodeRep {
   void getArray(MArray<Int64>& marr, const TENShPtr& node, const TableExprId& id) const {
     marr.reference(node->getArrayInt(id));
   }
-  void getArray(MArray<Double>& marr, const TENShPtr& node, const TableExprId& id) const {
+  void getArray(MArray<double>& marr, const TENShPtr& node, const TableExprId& id) const {
     marr.reference(node->getArrayDouble(id));
   }
   void getArray(MArray<DComplex>& marr, const TENShPtr& node, const TableExprId& id) const {
@@ -262,7 +262,7 @@ MArray<T> TableExprNodeSet::toArray(const TableExprId& id) const {
     Array<T> result(marr.array());
     Array<bool> mask(marr.mask());
     IPosition shp = result.shape();
-    uInt naxes = shp.size();
+    unsigned int naxes = shp.size();
     shp.append(IPosition(1, n));
     IPosition maskShp(shp);
     maskShp[maskShp.size() - 1] = 1;

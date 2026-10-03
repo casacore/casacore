@@ -230,12 +230,12 @@ class SCSL {
   //         space from that of the input and output arrays.
   // </dl>
   // <group>
-  static void ccfft(Int isign, Int n, Float scale, Complex* x, Complex* y, Float* table,
-                    Float* work, Int isys);
-  static void ccfft(Int isign, Int n, Double scale, DComplex* x, DComplex* y, Double* table,
-                    Double* work, Int isys);
-  static void zzfft(Int isign, Int n, Double scale, DComplex* x, DComplex* y, Double* table,
-                    Double* work, Int isys);
+  static void ccfft(int isign, int n, float scale, Complex* x, Complex* y, float* table,
+                    float* work, int isys);
+  static void ccfft(int isign, int n, double scale, DComplex* x, DComplex* y, double* table,
+                    double* work, int isys);
+  static void zzfft(int isign, int n, double scale, DComplex* x, DComplex* y, double* table,
+                    double* work, int isys);
   // </group>
 
   // <src>scfft/dzfft</src> computes the FFT of the real array x, and it stores
@@ -522,18 +522,18 @@ class SCSL {
   //         arrays.
   // </dl>
   // <group>
-  static void scfft(Int isign, Int n, Float scale, Float* x, Complex* y, Float* table, Float* work,
-                    Int isys);
-  static void scfft(Int isign, Int n, Double scale, Double* x, DComplex* y, Double* table,
-                    Double* work, Int isys);
-  static void dzfft(Int isign, Int n, Double scale, Double* x, DComplex* y, Double* table,
-                    Double* work, Int isys);
-  static void csfft(Int isign, Int n, Float scale, Complex* x, Float* y, Float* table, Float* work,
-                    Int isys);
-  static void csfft(Int isign, Int n, Double scale, DComplex* x, Double* y, Double* table,
-                    Double* work, Int isys);
-  static void zdfft(Int isign, Int n, Double scale, DComplex* x, Double* y, Double* table,
-                    Double* work, Int isys);
+  static void scfft(int isign, int n, float scale, float* x, Complex* y, float* table, float* work,
+                    int isys);
+  static void scfft(int isign, int n, double scale, double* x, DComplex* y, double* table,
+                    double* work, int isys);
+  static void dzfft(int isign, int n, double scale, double* x, DComplex* y, double* table,
+                    double* work, int isys);
+  static void csfft(int isign, int n, float scale, Complex* x, float* y, float* table, float* work,
+                    int isys);
+  static void csfft(int isign, int n, double scale, DComplex* x, double* y, double* table,
+                    double* work, int isys);
+  static void zdfft(int isign, int n, double scale, DComplex* x, double* y, double* table,
+                    double* work, int isys);
   // </group>
 
   // <src>ccfftm/zzfftm</src> computes the FFT of each column of the
@@ -768,10 +768,10 @@ class SCSL {
   //         of the input and output arrays.
   // </dl>
   // <group>
-  static void ccfftm(Int isign, Int n, Int lot, Float scale, Complex* x, Int ldx, Complex* y,
-                     Int ldy, Float* table, Float* work, Int isys);
-  static void zzfftm(Int isign, Int n, Int lot, Double scale, DComplex* x, Int ldx, DComplex* y,
-                     Int ldy, Double* table, Double* work, Int isys);
+  static void ccfftm(int isign, int n, int lot, float scale, Complex* x, int ldx, Complex* y,
+                     int ldy, float* table, float* work, int isys);
+  static void zzfftm(int isign, int n, int lot, double scale, DComplex* x, int ldx, DComplex* y,
+                     int ldy, double* table, double* work, int isys);
   // </group>
 
   // <src>scfftm/dzfftm</src> computes the FFT of each column of the real matrix
@@ -1102,14 +1102,14 @@ class SCSL {
   //         arrays.
   // </dl>
   // <group>
-  static void scfftm(Int isign, Int n, Int lot, Float scale, Float* x, Int ldx, Complex* y, Int ldy,
-                     Float* table, Float* work, Int isys);
-  static void dzfftm(Int isign, Int n, Int lot, Double scale, Double* x, Int ldx, DComplex* y,
-                     Int ldy, Double* table, Double* work, Int isys);
-  static void csfftm(Int isign, Int n, Int lot, Float scale, Complex* x, Int ldx, Float* y, Int ldy,
-                     Float* table, Float* work, Int isys);
-  static void zdfftm(Int isign, Int n, Int lot, Double scale, DComplex* x, Int ldx, Double* y,
-                     Int ldy, Double* table, Double* work, Int isys);
+  static void scfftm(int isign, int n, int lot, float scale, float* x, int ldx, Complex* y, int ldy,
+                     float* table, float* work, int isys);
+  static void dzfftm(int isign, int n, int lot, double scale, double* x, int ldx, DComplex* y,
+                     int ldy, double* table, double* work, int isys);
+  static void csfftm(int isign, int n, int lot, float scale, Complex* x, int ldx, float* y, int ldy,
+                     float* table, float* work, int isys);
+  static void zdfftm(int isign, int n, int lot, double scale, DComplex* x, int ldx, double* y,
+                     int ldy, double* table, double* work, int isys);
   // </group>
 
   // These routines compute the two-dimensional complex Fast Fourier
@@ -1333,10 +1333,10 @@ class SCSL {
   //         of the input and output arrays.
   // </dl>
   // <group>
-  static void ccfft2d(Int isign, Int n1, Int n2, Float scale, Complex* x, Int ldx, Complex* y,
-                      Int ldy, Float* table, Float* work, Int isys);
-  static void zzfft2d(Int isign, Int n1, Int n2, Double scale, DComplex* x, Int ldx, DComplex* y,
-                      Int ldy, Double* table, Double* work, Int isys);
+  static void ccfft2d(int isign, int n1, int n2, float scale, Complex* x, int ldx, Complex* y,
+                      int ldy, float* table, float* work, int isys);
+  static void zzfft2d(int isign, int n1, int n2, double scale, DComplex* x, int ldx, DComplex* y,
+                      int ldy, double* table, double* work, int isys);
   // </group>
 
   // <src>scfft2d/dzfft2d</src> computes the two-dimensional Fast Fourier
@@ -1635,14 +1635,14 @@ class SCSL {
   //         of the input and output arrays.
   // </dl>
   // <group>
-  static void scfft2d(Int isign, Int n1, Int n2, Float scale, Float* x, Int ldx, Complex* y,
-                      Int ldy, Float* table, Float* work, Int isys);
-  static void dzfft2d(Int isign, Int n1, Int n2, Double scale, Double* x, Int ldx, DComplex* y,
-                      Int ldy, Double* table, Double* work, Int isys);
-  static void csfft2d(Int isign, Int n1, Int n2, Float scale, Complex* x, Int ldx, Float* y,
-                      Int ldy, Float* table, Float* work, Int isys);
-  static void zdfft2d(Int isign, Int n1, Int n2, Double scale, DComplex* x, Int ldx, Double* y,
-                      Int ldy, Double* table, Double* work, Int isys);
+  static void scfft2d(int isign, int n1, int n2, float scale, float* x, int ldx, Complex* y,
+                      int ldy, float* table, float* work, int isys);
+  static void dzfft2d(int isign, int n1, int n2, double scale, double* x, int ldx, DComplex* y,
+                      int ldy, double* table, double* work, int isys);
+  static void csfft2d(int isign, int n1, int n2, float scale, Complex* x, int ldx, float* y,
+                      int ldy, float* table, float* work, int isys);
+  static void zdfft2d(int isign, int n1, int n2, double scale, DComplex* x, int ldx, double* y,
+                      int ldy, double* table, double* work, int isys);
   // </group>
 
   // These routines compute the three-dimensional complex FFT of the
@@ -1861,11 +1861,11 @@ class SCSL {
   //
   // </dl>
   // <group>
-  static void ccfft3d(Int isign, Int n1, Int n2, Int n3, Float scale, Complex* x, Int ldx, Int ldx2,
-                      Complex* y, Int ldy, Int ldy2, Float* table, Float* work, Int isys);
-  static void zzfft3d(Int isign, Int n1, Int n2, Int n3, Double scale, DComplex* x, Int ldx,
-                      Int ldx2, DComplex* y, Int ldy, Int ldy2, Double* table, Double* work,
-                      Int isys);
+  static void ccfft3d(int isign, int n1, int n2, int n3, float scale, Complex* x, int ldx, int ldx2,
+                      Complex* y, int ldy, int ldy2, float* table, float* work, int isys);
+  static void zzfft3d(int isign, int n1, int n2, int n3, double scale, DComplex* x, int ldx,
+                      int ldx2, DComplex* y, int ldy, int ldy2, double* table, double* work,
+                      int isys);
   // </group>
 
   // These are C++ wrapper functions for the 3D real-to-complex and
@@ -2182,15 +2182,15 @@ class SCSL {
   //
   // </dl>
   // <group>
-  static void scfft3d(Int isign, Int n1, Int n2, Int n3, Float scale, Float* x, Int ldx, Int ldx2,
-                      Complex* y, Int ldy, Int ldy2, Float* table, Float* work, Int isys);
-  static void dzfft3d(Int isign, Int n1, Int n2, Int n3, Double scale, Double* x, Int ldx, Int ldx2,
-                      DComplex* y, Int ldy, Int ldy2, Double* table, Double* work, Int isys);
-  static void csfft3d(Int isign, Int n1, Int n2, Int n3, Float scale, Complex* x, Int ldx, Int ldx2,
-                      Float* y, Int ldy, Int ldy2, Float* table, Float* work, Int isys);
-  static void zdfft3d(Int isign, Int n1, Int n2, Int n3, Double scale, DComplex* x, Int ldx,
-                      Int ldx2, Double* y, Int ldy, Int ldy2, Double* table, Double* work,
-                      Int isys);
+  static void scfft3d(int isign, int n1, int n2, int n3, float scale, float* x, int ldx, int ldx2,
+                      Complex* y, int ldy, int ldy2, float* table, float* work, int isys);
+  static void dzfft3d(int isign, int n1, int n2, int n3, double scale, double* x, int ldx, int ldx2,
+                      DComplex* y, int ldy, int ldy2, double* table, double* work, int isys);
+  static void csfft3d(int isign, int n1, int n2, int n3, float scale, Complex* x, int ldx, int ldx2,
+                      float* y, int ldy, int ldy2, float* table, float* work, int isys);
+  static void zdfft3d(int isign, int n1, int n2, int n3, double scale, DComplex* x, int ldx,
+                      int ldx2, double* y, int ldy, int ldy2, double* table, double* work,
+                      int isys);
   // </group>
 };
 

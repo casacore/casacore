@@ -90,7 +90,7 @@ Table createSubTable(Table& parent, const String& subName, const TableDesc& desc
                      const Record& dmInfo, const TableLock& lockOptions, rownr_t nrrow,
                      bool initialize, Table::EndianFormat endian, const TSMOption& tsmOpt) {
   // See if the subtable and its keyword already exist.
-  Int inx = parent.keywordSet().fieldNumber(subName);
+  int inx = parent.keywordSet().fieldNumber(subName);
   if (inx >= 0) {
     if (parent.keywordSet().type(inx) != TpTable) {
       throw TableError("Subtable " + subName + " cannot be created in " + parent.tableName() +
@@ -187,7 +187,7 @@ void deleteSubTable(Table& parent, const String& subtableName, bool checkSubTabl
   Table subtab = parent.keywordSet().asTable(subtableName);
   subtab.markForDelete();
   // If there, remove the keyword referring the subtable.
-  Int inx = parent.keywordSet().fieldNumber(subtableName);
+  int inx = parent.keywordSet().fieldNumber(subtableName);
   if (inx >= 0) {
     if (parent.keywordSet().type(inx) == TpTable) {
       parent.reopenRW();
@@ -199,10 +199,10 @@ void deleteSubTable(Table& parent, const String& subtableName, bool checkSubTabl
 // # The logic is similar to that in Table::open.
 rownr_t getLayout(TableDesc& desc, const String& tableName) {
   rownr_t nrow;
-  uInt format;
+  unsigned int format;
   String tp;
   AipsIO ios(Table::fileName(getFullName(tableName)));
-  uInt version = ios.getstart("Table");
+  unsigned int version = ios.getstart("Table");
   if (version > 3) {
     throw TableError("Table version " + std::to_string(version) +
                      " not supported by TableUtil in this version of Casacore");
@@ -210,7 +210,7 @@ rownr_t getLayout(TableDesc& desc, const String& tableName) {
   if (version > 2) {
     ios >> nrow;
   } else {
-    uInt n;
+    unsigned int n;
     ios >> n;
     nrow = n;
   }
@@ -266,7 +266,7 @@ std::pair<Table, String> findParentTable(const String& fullName, const TableLock
       // Get name of last subtable.
       lastPart = names[names.size() - 1];
       // Check if all subtables exist, except last one.
-      for (uInt i = 1; i < names.size() - 1; ++i) {
+      for (unsigned int i = 1; i < names.size() - 1; ++i) {
         if (!tab.keywordSet().isDefined(names[i])) {
           msg = "subtable " + names[i] + " is unknown";
           break;

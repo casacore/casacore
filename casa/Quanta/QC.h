@@ -164,129 +164,129 @@ class QC {
   // # change above to the documentation of the public data members.
 
   // vel of light
-  inline static const Quantum<Double> &c() {
-    static Quantum<Double> result(C::c, "m/s");
+  inline static const Quantum<double> &c() {
+    static Quantum<double> result(C::c, "m/s");
     return result;
   }
 
   // Gravitational constant
-  inline static const Quantum<Double> &G() {
-    static Quantum<Double> result(6.67259e-11, "N.m2/kg2");
+  inline static const Quantum<double> &G() {
+    static Quantum<double> result(6.67259e-11, "N.m2/kg2");
     return result;
   }
 
   // Planck
-  inline static const Quantum<Double> &h() {
-    static Quantum<Double> result(6.6260755e-34, "J.s");
+  inline static const Quantum<double> &h() {
+    static Quantum<double> result(6.6260755e-34, "J.s");
     return result;
   }
 
   // HI line
-  inline static const Quantum<Double> &HI() {
-    static Quantum<Double> result(1420.405751786, "MHz");
+  inline static const Quantum<double> &HI() {
+    static Quantum<double> result(1420.405751786, "MHz");
     return result;
   }
 
   // Gas constant
-  inline static Quantum<Double> &R() {
-    static Quantum<Double> result(8.314510, "J/K/mol");
+  inline static Quantum<double> &R() {
+    static Quantum<double> result(8.314510, "J/K/mol");
     return result;
   }
 
   // Avogadro
-  inline static const Quantum<Double> &NA() {
-    static Quantum<Double> result(6.0221367e+23, "mol-1");
+  inline static const Quantum<double> &NA() {
+    static Quantum<double> result(6.0221367e+23, "mol-1");
     return result;
   }
 
   // electron charge
-  inline static const Quantum<Double> &e() {
-    static Quantum<Double> result(1.60217733e-19, "C");
+  inline static const Quantum<double> &e() {
+    static Quantum<double> result(1.60217733e-19, "C");
     return result;
   }
 
   // proton mass
-  inline static const Quantum<Double> &mp() {
-    static Quantum<Double> result(1.6726231e-27, "kg");
+  inline static const Quantum<double> &mp() {
+    static Quantum<double> result(1.6726231e-27, "kg");
     return result;
   }
 
   // mp/me
-  inline static const Quantum<Double> &mp_me() {
-    static Quantum<Double> result(1836.152701, "");
+  inline static const Quantum<double> &mp_me() {
+    static Quantum<double> result(1836.152701, "");
     return result;
   }
 
   // permeability vacuum
-  inline static const Quantum<Double> &mu0() {
-    static Quantum<Double> result(4.0e-7 * M_PI, "H/m");
+  inline static const Quantum<double> &mu0() {
+    static Quantum<double> result(4.0e-7 * M_PI, "H/m");
     return result;
   }
 
   // permittivity vacuum
-  inline static const Quantum<Double> &epsilon0() {
-    static Quantum<Double> result(1.0 / (4.0e-7 * M_PI * C::c * C::c), "F/m");
+  inline static const Quantum<double> &epsilon0() {
+    static Quantum<double> result(1.0 / (4.0e-7 * M_PI * C::c * C::c), "F/m");
     return result;
   }
 
   // Boltzmann
-  inline static const Quantum<Double> &k() {
-    static Quantum<Double> result(8.314510 / 6.0221367e+23, "J/K");
+  inline static const Quantum<double> &k() {
+    static Quantum<double> result(8.314510 / 6.0221367e+23, "J/K");
     return result;
   }
 
   // Faraday
-  inline static const Quantum<Double> &F() {
-    static Quantum<Double> result(6.0221367e+23 * 1.60217733e-19, "C/mol");
+  inline static const Quantum<double> &F() {
+    static Quantum<double> result(6.0221367e+23 * 1.60217733e-19, "C/mol");
     return result;
   }
 
   // mass electron
-  inline static const Quantum<Double> &me() {
-    static Quantum<Double> result(1.6726231e-27 / 1836.152701, "kg");
+  inline static const Quantum<double> &me() {
+    static Quantum<double> result(1.6726231e-27 / 1836.152701, "kg");
     return result;
   }
 
   // radius electron
-  inline static const Quantum<Double> &re() {
-    static Quantum<Double> result(2.8179e-15, "m");
+  inline static const Quantum<double> &re() {
+    static Quantum<double> result(2.8179e-15, "m");
     return result;
   }
 
   // Bohr's radius
-  inline static const Quantum<Double> &a0() {
-    static Quantum<Double> result(5.2918e-11, "m");
+  inline static const Quantum<double> &a0() {
+    static Quantum<double> result(5.2918e-11, "m");
     return result;
   }
 
   // Solar radius
-  inline static const Quantum<Double> &R0() {
-    static Quantum<Double> result(6.9599e+08, "m");
+  inline static const Quantum<double> &R0() {
+    static Quantum<double> result(6.9599e+08, "m");
     return result;
   }
 
   // IAU Gaussian grav. const **2
-  inline static const Quantum<Double> &k2() {
-    const Double IAU_k = 0.01720209895;
-    static Quantum<Double> result(IAU_k * IAU_k, "AU3/d2/S0");
+  inline static const Quantum<double> &k2() {
+    const double IAU_k = 0.01720209895;
+    static Quantum<double> result(IAU_k * IAU_k, "AU3/d2/S0");
     return result;
   }
 
   // quarter turn = 90 degrees = pi/2 radians
-  inline static const Quantum<Double> &qTurn() {
-    static Quantum<Double> result(90.0, "deg");
+  inline static const Quantum<double> &qTurn() {
+    static Quantum<double> result(90.0, "deg");
     return result;
   }
 
   // half turn = 180 degrees = pi radians
-  inline static const Quantum<Double> &hTurn() {
-    static Quantum<Double> result(180.0, "deg");
+  inline static const Quantum<double> &hTurn() {
+    static Quantum<double> result(180.0, "deg");
     return result;
   }
 
   // full turn = 360 degrees = 2pi radians
-  inline static const Quantum<Double> &fTurn() {
-    static Quantum<Double> result(360.0, "deg");
+  inline static const Quantum<double> &fTurn() {
+    static Quantum<double> result(360.0, "deg");
     return result;
   }
 };

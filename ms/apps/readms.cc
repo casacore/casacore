@@ -163,7 +163,7 @@ String makeMSName(int seqnr, const String& msName) {
   return name;
 }
 
-void showParmsHDF5(const IPosition& tileShape, uInt tileSize, uInt nspw, const Record& attr) {
+void showParmsHDF5(const IPosition& tileShape, unsigned int tileSize, unsigned int nspw, const Record& attr) {
   cout << " nms       = " << myNPart << "    " << myMsName << std::endl;
   cout << " nthread   = " << OMP::maxThreads() << std::endl;
   cout << " nant      = " << attr.asInt("NAntenna") << "   (" << attr.asInt("NBaseline")
@@ -241,7 +241,7 @@ void showParms() {
   if (ms.tableDesc().isColumn("DATA")) {
     dataShape = ArrayColumn<Complex>(ms, "DATA").shape(0);
   } else {
-    dataShape = ArrayColumn<Float>(ms, "FLOAT_DATA").shape(0);
+    dataShape = ArrayColumn<float>(ms, "FLOAT_DATA").shape(0);
   }
   cout << " nchan     = " << dataShape[1] << std::endl;
   cout << " startchan = " << myStartChan << std::endl;
@@ -345,15 +345,15 @@ void readRows(ArrayColumn<Complex>& dataCol, ArrayColumn<float>& floatDataCol,
 
 Int64 readNoIter(MeasurementSet& tab, Int64& niter) {
   Array<Complex> data;
-  Array<Float> floatData;
+  Array<float> floatData;
   Array<bool> flags;
-  Array<Float> weights;
+  Array<float> weights;
   ArrayColumn<Complex> dataCol;
   if (myReadData) dataCol.attach(tab, "DATA");
-  ArrayColumn<Float> floatDataCol;
+  ArrayColumn<float> floatDataCol;
   if (myReadFloatData) floatDataCol.attach(tab, "FLOAT_DATA");
   ArrayColumn<bool> flagCol(tab, "FLAG");
-  ArrayColumn<Float> weightSpectrumCol;
+  ArrayColumn<float> weightSpectrumCol;
   if (myReadWeightSpectrum) weightSpectrumCol.attach(tab, "WEIGHT_SPECTRUM");
   const RecordInterface& attr = tab.keywordSet().asRecord("ATTR");
   rownr_t ntoread = attr.asInt("NBaseline");
@@ -508,7 +508,7 @@ void showCacheStatistics(const MeasurementSet& ms) {
 void setTSMCacheSize(const Table& tab, const String& columnName, int cacheSize) {
   if (cacheSize > 0) {
     ROTiledStManAccessor acc(tab, columnName, true);
-    for (uInt i = 0; i < acc.nhypercubes(); ++i) {
+    for (unsigned int i = 0; i < acc.nhypercubes(); ++i) {
       acc.setHypercubeCacheSize(i, cacheSize);
     }
   }
@@ -522,9 +522,9 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
     IPosition shp(hflag->shape());
     shp[2] = 1;
     Array<Complex> data(shp);
-    Array<Float> fdata(shp);
+    Array<float> fdata(shp);
     Array<bool> flags(shp);
-    Array<Float> weights(shp);
+    Array<float> weights(shp);
     IPosition s(3, 0);
     IPosition e(shp - 1);
     Slicer slicer(s, shp);
@@ -555,7 +555,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
       hdata->get(slicer, data);
     }
     if (myReadFloatData) {
-      Array<Float> fdata(shp);
+      Array<float> fdata(shp);
       hfloatdata->get(slicer, fdata);
     }
     if (myReadFlag) {
@@ -563,7 +563,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
       hflag->get(slicer, flags);
     }
     if (myReadWeightSpectrum) {
-      Array<Float> weights(shp);
+      Array<float> weights(shp);
       hweight->get(slicer, weights);
     }
   }
@@ -581,9 +581,9 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
   if (myReadRowWise) {
     shp[2] = 1;
     Array<Complex> data(shp);
-    Array<Float> fdata(shp);
+    Array<float> fdata(shp);
     Array<bool> flags(shp);
-    Array<Float> weights(shp);
+    Array<float> weights(shp);
     // Make a slicer with length 1.
     s[2] = 1;
     Slicer slicer(s, shp);
@@ -611,7 +611,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
       hdata->get(slicer, data);
     }
     if (myReadFloatData) {
-      Array<Float> fdata(shp);
+      Array<float> fdata(shp);
       hfloatdata->get(slicer, fdata);
     }
     if (myReadFlag) {
@@ -619,7 +619,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
       hflag->get(slicer, flags);
     }
     if (myReadWeightSpectrum) {
-      Array<Float> weights(shp);
+      Array<float> weights(shp);
       hweight->get(slicer, weights);
     }
   }
@@ -671,7 +671,7 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
   HDF5File hfile(name, ByteIO::Old);
   // There is a group per spectral window. Get all groups.
   std::vector<String> groupNames(HDF5Group::linkNames(hfile));
-  for (uInt i = 0; i < groupNames.size(); ++i) {
+  for (unsigned int i = 0; i < groupNames.size(); ++i) {
     HDF5Group hspw(hfile, groupNames[i]);
     // Get the attributes.
     Record attr(HDF5Record::readRecord(hspw, "ATTR"));
@@ -681,8 +681,8 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
     std::shared_ptr<HDF5DataSet> hflag = std::make_shared<HDF5DataSet>(hspw, "FLAG", (bool*)0);
     IPosition shape = hflag->shape();
     IPosition tileShape = hflag->tileShape();
-    uInt tileSize = 0;
-    uInt cacheSize = (shape[1] + tileShape[1] - 1) / tileShape[1];
+    unsigned int tileSize = 0;
+    unsigned int cacheSize = (shape[1] + tileShape[1] - 1) / tileShape[1];
     if (myReadFlag) {
       hflag->setCacheSize(myCacheSizeFlag == 0 ? cacheSize : myCacheSizeFlag);
     }
@@ -703,7 +703,7 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
         tileShape = hdata->tileShape();
         if (myReadFloatData) {
           hfloatdata->setCacheSize(myCacheSizeData == 0 ? cacheSize : myCacheSizeData);
-          tileSize = tileShape.product() * sizeof(Float);
+          tileSize = tileShape.product() * sizeof(float);
         }
       } catch (const std::exception&) {
         myReadFloatData = false;

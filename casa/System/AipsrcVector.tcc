@@ -44,11 +44,11 @@ bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword) {
   if (x) {
     const Regex ws("[ 	]+");
     RegexReplaceAll(res, ws, " ");
-    Int m = std::count(res.begin(), res.end(), ' ') + 1;
+    int m = std::count(res.begin(), res.end(), ' ') + 1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
-    for (Int i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++) {
       istringstream instr(nres[i]);
       instr >> value(i);
     }
@@ -70,12 +70,12 @@ bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &
   if (x) {
     const Regex ws("[ 	]+");
     RegexReplaceAll(res, ws, " ");
-    Int m = std::count(res.begin(), res.end(), ' ') + 1;
+    int m = std::count(res.begin(), res.end(), ' ') + 1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
-    Quantum<Double> qres;
-    for (Int i = 0; i < m; i++) {
+    Quantum<double> qres;
+    for (int i = 0; i < m; i++) {
       istringstream instr(nres[i]);
       instr >> qres;
       if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
@@ -93,41 +93,41 @@ bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &
 }
 
 template <class T>
-uInt AipsrcVector<T>::registerRC(const String &keyword, const Vector<T> &deflt) {
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+unsigned int AipsrcVector<T>::registerRC(const String &keyword, const Vector<T> &deflt) {
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(tlst[n - 1], keyword, deflt);
   return n;
 }
 
 template <class T>
-uInt AipsrcVector<T>::registerRC(const String &keyword, const Unit &defun, const Unit &resun,
+unsigned int AipsrcVector<T>::registerRC(const String &keyword, const Unit &defun, const Unit &resun,
                                  const Vector<T> &deflt) {
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(tlst[n - 1], keyword, defun, resun, deflt);
   return n;
 }
 
 template <class T>
-const Vector<T> AipsrcVector<T>::get(uInt keyword) {
+const Vector<T> AipsrcVector<T>::get(unsigned int keyword) {
   AlwaysAssert(keyword > 0 && keyword <= tlst.nelements(), AipsError);
   return tlst[keyword - 1];
 }
 
 template <class T>
-void AipsrcVector<T>::set(uInt keyword, const Vector<T> &deflt) {
+void AipsrcVector<T>::set(unsigned int keyword, const Vector<T> &deflt) {
   AlwaysAssert(keyword > 0 && keyword <= tlst.nelements(), AipsError);
   tlst[keyword - 1].resize(deflt.nelements());
   tlst[keyword - 1] = deflt;
 }
 
 template <class T>
-void AipsrcVector<T>::save(uInt keyword) {
+void AipsrcVector<T>::save(unsigned int keyword) {
   AlwaysAssert(keyword > 0 && keyword <= tlst.nelements(), AipsError);
   ostringstream oss;
-  const Int n = (tlst[keyword - 1]).nelements();
-  for (Int i = 0; i < n; i++) oss << " " << (tlst[keyword - 1])(i);
+  const int n = (tlst[keyword - 1]).nelements();
+  for (int i = 0; i < n; i++) oss << " " << (tlst[keyword - 1])(i);
   Aipsrc::save(ntlst[keyword - 1], oss.str());
 }
 

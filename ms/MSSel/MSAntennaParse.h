@@ -112,13 +112,13 @@ class MSAntennaParse : public MSParse {
   }
 
   // Add the given antennae selection.
-  const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds,
+  const TableExprNode* selectAntennaIds(const Vector<int>& antennaIds,
                                         BaselineListType baselineType = CrossOnly,
                                         bool negate = false);
 
   // Add the given baseline selection.
-  const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds1,
-                                        const Vector<Int>& antennaIds2,
+  const TableExprNode* selectAntennaIds(const Vector<int>& antennaIds1,
+                                        const Vector<int>& antennaIds2,
                                         BaselineListType baselineType = CrossOnly,
                                         bool negate = false);
 
@@ -143,9 +143,9 @@ class MSAntennaParse : public MSParse {
 
   // Get a pointer to the table expression node object.
   TableExprNode node() const { return node_p; }
-  const Vector<Int>& selectedAnt1() const { return ant1List; }
-  const Vector<Int>& selectedAnt2() const { return ant2List; }
-  const Matrix<Int>& selectedBaselines() const { return baselineList; }
+  const Vector<int>& selectedAnt1() const { return ant1List; }
+  const Vector<int>& selectedAnt2() const { return ant2List; }
+  const Matrix<int>& selectedBaselines() const { return baselineList; }
 
   // Get the factor to convert the given unit to m.
   static double getUnitFactor(const char* unit);
@@ -164,10 +164,10 @@ class MSAntennaParse : public MSParse {
   const TableExprNode* setTEN(TableExprNode& condition, BaselineListType baselineType = CrossOnly,
                               bool negate = false);
   Matrix<double> getBaselineLengths();
-  void makeBaselineList(const Vector<Int>& a1, const Vector<Int>& a2, Matrix<Int>& b,
+  void makeBaselineList(const Vector<int>& a1, const Vector<int>& a2, Matrix<int>& b,
                         BaselineListType baselineType = CrossOnly, bool negate = false);
-  void makeAntennaList(Vector<Int>& antList, const Vector<Int>& thisList, bool negate = false);
-  bool addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2,
+  void makeAntennaList(Vector<int>& antList, const Vector<int>& thisList, bool negate = false);
+  bool addBaseline(const Matrix<int>& baselist, const int ant1, const int ant2,
                    BaselineListType baselineType = CrossOnly);
 
   // # Data members.
@@ -180,8 +180,8 @@ class MSAntennaParse : public MSParse {
  private:
   TableExprNode node_p;
   const String colName1, colName2;
-  Vector<Int> ant1List, ant2List;
-  Matrix<Int> baselineList;
+  Vector<int> ant1List, ant2List;
+  Matrix<int> baselineList;
   MSAntenna msSubTable_p;
   static TableExprNode column1AsTEN_p, column2AsTEN_p;
 };

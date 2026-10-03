@@ -284,7 +284,7 @@ class Measure {
   //  </srcblock>
   //  <group>
   virtual void set(const MeasValue &dt) = 0;
-  virtual bool putValue(const Vector<Quantum<Double>> &in) = 0;
+  virtual bool putValue(const Vector<Quantum<double>> &in) = 0;
   // </group>
   // Set the offset in the reference (false if non-matching Measure)
   virtual bool setOffset(const Measure &in) = 0;
@@ -348,7 +348,7 @@ class Measure {
   //			              const uInt *&typ);
   // </srcblock>
   // <group>
-  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
+  virtual const String *allTypes(int &nall, int &nextra, const unsigned int *&typ) const;
   // </group>
   //
   // Check if all internal tables of types (both enum and String) are
@@ -370,7 +370,7 @@ class Measure {
   // strings to check against (tname), and its length (N_name). The check
   // is case insensitive and mini-max. A return value less than N_name indicates
   // success.
-  static uInt giveMe(const String &in, Int N_name, const String tname[]);
+  static unsigned int giveMe(const String &in, int N_name, const String tname[]);
   // Each class should have a function to return its reference:
   // <srcblock>
   //  	Measure::Ref getRef() const;

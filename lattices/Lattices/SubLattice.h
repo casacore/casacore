@@ -179,7 +179,7 @@ class SubLattice : public MaskedLattice<T> {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   // </group>
@@ -233,7 +233,7 @@ class SubLattice : public MaskedLattice<T> {
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Get or put a single element in the lattice.
   // <group>
@@ -260,7 +260,7 @@ class SubLattice : public MaskedLattice<T> {
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Set the axes mapping from the specification.
   const AxesMapping& getAxesMap() const { return itsAxesMap; }
@@ -324,7 +324,7 @@ class SubLattice : public MaskedLattice<T> {
 
 // # Declare extern templates for often used types.
 extern template class SubLattice<bool>;
-extern template class SubLattice<Float>;
+extern template class SubLattice<float>;
 
 }  // namespace casacore
 

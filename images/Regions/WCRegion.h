@@ -116,19 +116,19 @@ class WCRegion {
   // (e.g. WCLELMask) that may not be the case.
   // The default implementation returns the number of axes in the
   // axes description.
-  virtual uInt ndim() const;
+  virtual unsigned int ndim() const;
 
   // Get the description of all axes.
   const Record& getAxesDesc() const;
 
   // Get the description of the given axis.
   // It is a record containing some fields describing the axis.
-  const Record& getAxisDesc(uInt axis) const;
+  const Record& getAxisDesc(unsigned int axis) const;
 
   // Return the axis number of the description of an axis in the full
   // axes description.
   // -1 is returned if not found.
-  Int axisNr(const Record& desc, const Record& axesDesc) const;
+  int axisNr(const Record& desc, const Record& axesDesc) const;
 
   // Are both axis descriptions equal?
   bool isAxisDescEqual(const Record& desc1, const Record& desc2) const;
@@ -189,7 +189,7 @@ class WCRegion {
   void addAxisDesc(const Record& axisDesc);
 
   // Make a description of a pixel axis in the coordinate system.
-  Record makeAxisDesc(const CoordinateSystem& cSys, uInt pixelAxis) const;
+  Record makeAxisDesc(const CoordinateSystem& cSys, unsigned int pixelAxis) const;
 
   // Make a description of all pixel axes in the coordinate system
   // (in pixel axes order).
@@ -207,7 +207,7 @@ class WCRegion {
                                  const IPosition& extendAxes) const = 0;
 
   // Convert relative to absolute world as needed
-  void makeWorldAbsolute(Vector<Double>& world, const Vector<Int>& absRel,
+  void makeWorldAbsolute(Vector<double>& world, const Vector<int>& absRel,
                          const CoordinateSystem& cSys, const IPosition& shape) const;
 
   static void unitInit();
@@ -215,8 +215,8 @@ class WCRegion {
   void checkAxes(const IPosition& pixelAxes, const CoordinateSystem& cSys,
                  const Vector<String>& quantityUnits) const;
 
-  static void convertPixel(Double& pixel, const Double& value, const String& unit, const Int absRel,
-                           const Double refPix, const Int shape);
+  static void convertPixel(double& pixel, const double& value, const String& unit, const int absRel,
+                           const double refPix, const int shape);
 
  private:
   String itsComment;

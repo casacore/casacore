@@ -57,8 +57,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-FITSImage::FITSImage(const String& name, uInt whichRep, uInt whichHDU)
-    : ImageInterface<Float>(),
+FITSImage::FITSImage(const String& name, unsigned int whichRep, unsigned int whichHDU)
+    : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
       scale_p(1.0),
@@ -77,9 +77,9 @@ FITSImage::FITSImage(const String& name, uInt whichRep, uInt whichHDU)
   setup();
 }
 
-FITSImage::FITSImage(const String& name, const MaskSpecifier& maskSpec, uInt whichRep,
-                     uInt whichHDU)
-    : ImageInterface<Float>(),
+FITSImage::FITSImage(const String& name, const MaskSpecifier& maskSpec, unsigned int whichRep,
+                     unsigned int whichHDU)
+    : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
       maskSpec_p(maskSpec),
@@ -100,7 +100,7 @@ FITSImage::FITSImage(const String& name, const MaskSpecifier& maskSpec, uInt whi
 }
 
 FITSImage::FITSImage(const FITSImage& other)
-    : ImageInterface<Float>(other),
+    : ImageInterface<float>(other),
       name_p(other.name_p),
       fullname_p(other.fullname_p),
       maskSpec_p(other.maskSpec_p),
@@ -132,7 +132,7 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
 //
 {
   if (this != &other) {
-    ImageInterface<Float>::operator=(other);
+    ImageInterface<float>::operator=(other);
     //
     pTiledFile_p = other.pTiledFile_p;  // shared pointer
                                         //
@@ -174,7 +174,7 @@ void FITSImage::registerOpenFunction() {
 String FITSImage::get_fitsname(const String& fullname) {
   String fullname_l;
   String fitsname;
-  Int close_bracepos, open_bracepos, fullname_length;
+  int close_bracepos, open_bracepos, fullname_length;
 
   fullname_l = fullname;
   TrimInPlace(fullname_l);
@@ -213,18 +213,18 @@ String FITSImage::get_fitsname(const String& fullname) {
 }
 
 //
-uInt FITSImage::get_hdunum(const String& fullname) {
+unsigned int FITSImage::get_hdunum(const String& fullname) {
   String extname = String("");
 
   String fullname_l;
   String fitsname;
   String extstring;
-  Int fullname_length, comma_pos;
+  int fullname_length, comma_pos;
 
-  Int extver = -1;
-  Int extindex = -1;
-  Int fitsindex = -1;
-  uInt hduindex = 0;
+  int extver = -1;
+  int extindex = -1;
+  int fitsindex = -1;
+  unsigned int hduindex = 0;
 
   fullname_l = fullname;
   TrimInPlace(fullname_l);
@@ -287,7 +287,7 @@ uInt FITSImage::get_hdunum(const String& fullname) {
     FITSExtInfo fei = FITSExtInfo(fip.fitsname(true), extindex, extname, extver, true);
     fitsindex = fip.get_index(fei);
     if (fitsindex > -1)
-      hduindex = (uInt)fitsindex;
+      hduindex = (unsigned int)fitsindex;
     else
       throw(AipsError("Extension " + extstring + " does not exist in " + fitsname));
   } else {
@@ -300,7 +300,7 @@ uInt FITSImage::get_hdunum(const String& fullname) {
   return hduindex;
 }
 
-ImageInterface<Float>* FITSImage::cloneII() const { return new FITSImage(*this); }
+ImageInterface<float>* FITSImage::cloneII() const { return new FITSImage(*this); }
 
 String FITSImage::imageType() const { return className(); }
 
@@ -315,20 +315,20 @@ const LatticeRegion* FITSImage::getRegionPtr() const { return 0; }
 
 IPosition FITSImage::shape() const { return shape_p.shape(); }
 
-uInt FITSImage::advisedMaxPixels() const { return shape_p.tileShape().product(); }
+unsigned int FITSImage::advisedMaxPixels() const { return shape_p.tileShape().product(); }
 
-IPosition FITSImage::doNiceCursorShape(uInt) const { return shape_p.tileShape(); }
+IPosition FITSImage::doNiceCursorShape(unsigned int) const { return shape_p.tileShape(); }
 
 void FITSImage::resize(const TiledShape&) {
   throw(AipsError("FITSImage::resize - a FITSImage is not writable"));
 }
 
-bool FITSImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
+bool FITSImage::doGetSlice(Array<float>& buffer, const Slicer& section) {
   reopenIfNeeded();
   if (pTiledFile_p->dataType() == TpFloat) {
     pTiledFile_p->get(buffer, section);
   } else if (pTiledFile_p->dataType() == TpDouble) {
-    Array<Double> tmp;
+    Array<double> tmp;
     pTiledFile_p->get(tmp, section);
     buffer.resize(tmp.shape());
     convertArray(buffer, tmp);
@@ -342,7 +342,7 @@ bool FITSImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   return false;  // Not a reference
 }
 
-void FITSImage::doPutSlice(const Array<Float>&, const IPosition&, const IPosition&) {
+void FITSImage::doPutSlice(const Array<float>&, const IPosition&, const IPosition&) {
   throw(
       AipsError("FITSImage::putSlice - "
                 "is not possible as FITSImage is not writable"));
@@ -414,14 +414,14 @@ void FITSImage::reopen() {
   }
 }
 
-uInt FITSImage::maximumCacheSize() const {
+unsigned int FITSImage::maximumCacheSize() const {
   reopenIfNeeded();
   return pTiledFile_p->maximumCacheSize() / ValType::getTypeSize(dataType_p);
 }
 
-void FITSImage::setMaximumCacheSize(uInt howManyPixels) {
+void FITSImage::setMaximumCacheSize(unsigned int howManyPixels) {
   reopenIfNeeded();
-  const uInt sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
+  const unsigned int sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
   pTiledFile_p->setMaximumCacheSize(sizeInBytes);
 }
 
@@ -431,7 +431,7 @@ void FITSImage::setCacheSizeFromPath(const IPosition& sliceShape, const IPositio
   pTiledFile_p->setCacheSize(sliceShape, windowStart, windowLength, axisPath);
 }
 
-void FITSImage::setCacheSizeInTiles(uInt howManyTiles) {
+void FITSImage::setCacheSizeInTiles(unsigned int howManyTiles) {
   reopenIfNeeded();
   pTiledFile_p->setCacheSize(howManyTiles);
 }
@@ -455,7 +455,7 @@ void FITSImage::setup() {
   name_p = get_fitsname(fullname_p);
 
   // Determine the HDU index from the extension specification
-  uInt HDUnum = get_hdunum(fullname_p);
+  unsigned int HDUnum = get_hdunum(fullname_p);
 
   // Compare the HDU index given directly and
   // the one extracted from the name
@@ -490,8 +490,8 @@ void FITSImage::setup() {
   IPosition shape;
   ImageInfo imageInfo;
   Unit brightnessUnit;
-  Int recno;
-  Int recsize;  // Should be 2880 bytes (unless blocking used)
+  int recno;
+  int recsize;  // Should be 2880 bytes (unless blocking used)
   FITS::ValueType dataType;
   Record miscInfo;
 
@@ -596,11 +596,11 @@ void FITSImage::open() {
 }
 
 void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                                   Unit& brightnessUnit, RecordInterface& miscInfo, Int& recordsize,
-                                   Int& recordnumber, FITS::ValueType& dataType, Float& scale,
-                                   Float& offset, uChar& uCharMagic, Short& shortMagic,
-                                   Int& longMagic, bool& hasBlanks, const String& name,
-                                   uInt whichRep, uInt whichHDU) {
+                                   Unit& brightnessUnit, RecordInterface& miscInfo, int& recordsize,
+                                   int& recordnumber, FITS::ValueType& dataType, float& scale,
+                                   float& offset, unsigned char& uCharMagic, short& shortMagic,
+                                   int& longMagic, bool& hasBlanks, const String& name,
+                                   unsigned int whichRep, unsigned int whichHDU) {
   LogIO os(LogOrigin("FITSImage", "getImageAttributes", WHERE));
   File fitsfile(name);
   if (!fitsfile.exists() || !fitsfile.isReadable() || !fitsfile.isRegular()) {
@@ -621,7 +621,7 @@ void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, Ima
   //
   // Advance to the right HDU
   //
-  for (uInt i = 0; i < whichHDU; i++) {
+  for (unsigned int i = 0; i < whichHDU; i++) {
     infile.skip_hdu();
     if (infile.err()) {
       throw(AipsError("Error advancing to image in file " + name));
@@ -662,36 +662,36 @@ void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, Ima
   // Crack header
   if (!whichHDU_p) {
     if (dataType == FITS::FLOAT) {
-      crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackHeader<float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                          uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::DOUBLE) {
-      crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackHeader<double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                           uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::LONG) {
-      crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset, uCharMagic,
+      crackHeader<int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset, uCharMagic,
                        shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::SHORT) {
-      crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackHeader<short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                          uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::BYTE) {
-      crackHeader<uChar>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackHeader<unsigned char>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                          uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     }
   } else {
     if (dataType == FITS::FLOAT) {
-      crackExtHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackExtHeader<float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                             uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::DOUBLE) {
-      crackExtHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackExtHeader<double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                              uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::LONG) {
-      crackExtHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackExtHeader<int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                           uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::SHORT) {
-      crackExtHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackExtHeader<short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                             uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     } else if (dataType == FITS::BYTE) {
-      crackExtHeader<uChar>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
+      crackExtHeader<unsigned char>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale, offset,
                             uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     }
   }

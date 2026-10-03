@@ -45,8 +45,8 @@ MSArrayParse::MSArrayParse(const MeasurementSet* ms)
   parsedIDList_p.resize(0);
 }
 
-std::vector<Int>& MSArrayParse::accumulateIDs(const Int id0, const Int id1) {
-  Vector<Int> theIDs;
+std::vector<int>& MSArrayParse::accumulateIDs(const int id0, const int id1) {
+  Vector<int> theIDs;
   if (id1 < 0) {
     parsedIDList_p.push_back(id0);
     theIDs.resize(1);
@@ -63,16 +63,16 @@ std::vector<Int>& MSArrayParse::accumulateIDs(const Int id0, const Int id1) {
   return parsedIDList_p;
 }
 
-void MSArrayParse::appendToIDList(const Vector<Int>& v) {
-  Int currentSize = idList.nelements();
-  Int n = v.nelements() + currentSize;
-  Int j = 0;
+void MSArrayParse::appendToIDList(const Vector<int>& v) {
+  int currentSize = idList.nelements();
+  int n = v.nelements() + currentSize;
+  int j = 0;
 
   idList.resize(n, true);
-  for (Int i = currentSize; i < n; i++) idList[i] = v[j++];
+  for (int i = currentSize; i < n; i++) idList[i] = v[j++];
 }
 
-const TableExprNode* MSArrayParse::selectRangeGTAndLT(const Int& n0, const Int& n1) {
+const TableExprNode* MSArrayParse::selectRangeGTAndLT(const int& n0, const int& n1) {
   TableExprNode condition = TableExprNode((ms()->col(colName) > n0) && (ms()->col(colName) < n1));
   if ((n0 < 0) || (n1 < 0) || (n1 <= n0)) {
     std::ostringstream os;
@@ -80,16 +80,16 @@ const TableExprNode* MSArrayParse::selectRangeGTAndLT(const Int& n0, const Int& 
        << " (upper bound)";
     throw(MSSelectionArrayParseError(os.str()));
   }
-  Vector<Int> tmp(n1 - n0 - 1);
-  Int j = n0 + 1;
-  for (uInt i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
+  Vector<int> tmp(n1 - n0 - 1);
+  int j = n0 + 1;
+  for (unsigned int i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSArrayParse::selectRangeGEAndLE(const Int& n0, const Int& n1) {
+const TableExprNode* MSArrayParse::selectRangeGEAndLE(const int& n0, const int& n1) {
   TableExprNode condition = TableExprNode((ms()->col(colName) >= n0) && (ms()->col(colName) <= n1));
   if ((n0 < 0) || (n1 < 0) || (n1 <= n0)) {
     std::ostringstream os;
@@ -97,16 +97,16 @@ const TableExprNode* MSArrayParse::selectRangeGEAndLE(const Int& n0, const Int& 
        << " (upper bound)";
     throw(MSSelectionArrayParseError(os.str()));
   }
-  Vector<Int> tmp(n1 - n0 + 1);
-  Int j = n0;
-  for (uInt i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
+  Vector<int> tmp(n1 - n0 + 1);
+  int j = n0;
+  for (unsigned int i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSArrayParse::selectArrayIds(const Vector<Int>& arrayids) {
+const TableExprNode* MSArrayParse::selectArrayIds(const Vector<int>& arrayids) {
   if (arrayids.size() > 0) {
     TableExprNode condition = TableExprNode(ms()->col(colName).in(arrayids));
 
@@ -116,46 +116,46 @@ const TableExprNode* MSArrayParse::selectArrayIds(const Vector<Int>& arrayids) {
   return &node_p;
 }
 
-const TableExprNode* MSArrayParse::selectArrayIdsGT(const Vector<Int>& arrayids) {
+const TableExprNode* MSArrayParse::selectArrayIdsGT(const Vector<int>& arrayids) {
   TableExprNode condition = TableExprNode(ms()->col(colName) > arrayids[0]);
 
-  Int n = maxArrays_p - arrayids[0] + 1, j;
-  Vector<Int> tmp(n);
+  int n = maxArrays_p - arrayids[0] + 1, j;
+  Vector<int> tmp(n);
   j = arrayids[0] + 1;
-  for (Int i = 0; i < n; i++) tmp[i] = j++;
+  for (int i = 0; i < n; i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSArrayParse::selectArrayIdsLT(const Vector<Int>& arrayids) {
+const TableExprNode* MSArrayParse::selectArrayIdsLT(const Vector<int>& arrayids) {
   TableExprNode condition = TableExprNode(ms()->col(colName) < arrayids[0]);
-  Vector<Int> tmp(arrayids[0]);
-  for (Int i = 0; i < arrayids[0]; i++) tmp[i] = i;
+  Vector<int> tmp(arrayids[0]);
+  for (int i = 0; i < arrayids[0]; i++) tmp[i] = i;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSArrayParse::selectArrayIdsGTEQ(const Vector<Int>& arrayids) {
+const TableExprNode* MSArrayParse::selectArrayIdsGTEQ(const Vector<int>& arrayids) {
   TableExprNode condition = TableExprNode(ms()->col(colName) >= arrayids[0]);
 
-  Int n = maxArrays_p - arrayids[0] + 1, j;
-  Vector<Int> tmp(n);
+  int n = maxArrays_p - arrayids[0] + 1, j;
+  Vector<int> tmp(n);
   j = arrayids[0];
-  for (Int i = 0; i < n; i++) tmp[i] = j++;
+  for (int i = 0; i < n; i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSArrayParse::selectArrayIdsLTEQ(const Vector<Int>& arrayids) {
+const TableExprNode* MSArrayParse::selectArrayIdsLTEQ(const Vector<int>& arrayids) {
   TableExprNode condition = TableExprNode(ms()->col(colName) <= arrayids[0]);
-  Vector<Int> tmp(arrayids[0] + 1);
-  for (Int i = 0; i <= arrayids[0]; i++) tmp[i] = i;
+  Vector<int> tmp(arrayids[0] + 1);
+  for (int i = 0; i <= arrayids[0]; i++) tmp[i] = i;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 

@@ -29,12 +29,12 @@
 
 #include <casacore/casa/namespace.h>
 void doIt() {
-  uInt maxbits = 35;
+  unsigned int maxbits = 35;
   // Create bit vectors
   BitVector b;
   BitVector c(maxbits, true);
   BitVector d;
-  uInt i;
+  unsigned int i;
   b.resize(maxbits);
 
   for (i = 0; i < (maxbits / 2); i++) {

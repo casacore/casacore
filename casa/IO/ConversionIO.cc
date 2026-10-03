@@ -31,7 +31,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ConversionIO::ConversionIO(const std::shared_ptr<DataConversion>& dataConversion,
-                           const std::shared_ptr<ByteIO>& byteIO, uInt bufferLength)
+                           const std::shared_ptr<ByteIO>& byteIO, unsigned int bufferLength)
     : TypeIO(byteIO),
       itsConversion(dataConversion),
       itsBuffer(new char[bufferLength]),
@@ -64,22 +64,22 @@ ConversionIO& ConversionIO::operator=(const ConversionIO& that) {
 ConversionIO::~ConversionIO() { delete[] itsBuffer; }
 
 template <typename T>
-void ConversionIO::initType(uInt& size, bool& copy) const {
+void ConversionIO::initType(unsigned int& size, bool& copy) const {
   copy = itsConversion->canCopyGeneric<T>();
   size = itsConversion->externalSizeGeneric<T>();
 }
 
 void ConversionIO::init() {
-  initType<Char>(itsSizeChar, itsCopyChar);
-  initType<uChar>(itsSizeuChar, itsCopyuChar);
-  initType<Short>(itsSizeShort, itsCopyShort);
-  initType<uShort>(itsSizeuShort, itsCopyuShort);
-  initType<Int>(itsSizeInt, itsCopyInt);
-  initType<uInt>(itsSizeuInt, itsCopyuInt);
+  initType<char>(itsSizeChar, itsCopyChar);
+  initType<unsigned char>(itsSizeuChar, itsCopyuChar);
+  initType<short>(itsSizeShort, itsCopyShort);
+  initType<unsigned short>(itsSizeuShort, itsCopyuShort);
+  initType<int>(itsSizeInt, itsCopyInt);
+  initType<unsigned int>(itsSizeuInt, itsCopyuInt);
   initType<Int64>(itsSizeInt64, itsCopyInt64);
   initType<uInt64>(itsSizeuInt64, itsCopyuInt64);
-  initType<Float>(itsSizeFloat, itsCopyFloat);
-  initType<Double>(itsSizeDouble, itsCopyDouble);
+  initType<float>(itsSizeFloat, itsCopyFloat);
+  initType<double>(itsSizeDouble, itsCopyDouble);
 }
 
 size_t ConversionIO::write(size_t nvalues, const bool* value) {
@@ -144,23 +144,23 @@ size_t ConversionIO::readGeneric(size_t nvalues, T* value, size_t type_size, boo
   return size;
 }
 
-size_t ConversionIO::write(size_t nvalues, const Char* data) {
-  return writeGeneric<Char>(nvalues, data, itsSizeChar, itsCopyChar);
+size_t ConversionIO::write(size_t nvalues, const char* data) {
+  return writeGeneric<char>(nvalues, data, itsSizeChar, itsCopyChar);
 }
-size_t ConversionIO::write(size_t nvalues, const uChar* data) {
-  return writeGeneric<uChar>(nvalues, data, itsSizeuChar, itsCopyuChar);
+size_t ConversionIO::write(size_t nvalues, const unsigned char* data) {
+  return writeGeneric<unsigned char>(nvalues, data, itsSizeuChar, itsCopyuChar);
 }
-size_t ConversionIO::write(size_t nvalues, const Short* data) {
-  return writeGeneric<Short>(nvalues, data, itsSizeShort, itsCopyShort);
+size_t ConversionIO::write(size_t nvalues, const short* data) {
+  return writeGeneric<short>(nvalues, data, itsSizeShort, itsCopyShort);
 }
-size_t ConversionIO::write(size_t nvalues, const uShort* data) {
-  return writeGeneric<uShort>(nvalues, data, itsSizeuShort, itsCopyuShort);
+size_t ConversionIO::write(size_t nvalues, const unsigned short* data) {
+  return writeGeneric<unsigned short>(nvalues, data, itsSizeuShort, itsCopyuShort);
 }
-size_t ConversionIO::write(size_t nvalues, const Int* data) {
-  return writeGeneric<Int>(nvalues, data, itsSizeInt, itsCopyInt);
+size_t ConversionIO::write(size_t nvalues, const int* data) {
+  return writeGeneric<int>(nvalues, data, itsSizeInt, itsCopyInt);
 }
-size_t ConversionIO::write(size_t nvalues, const uInt* data) {
-  return writeGeneric<uInt>(nvalues, data, itsSizeuInt, itsCopyuInt);
+size_t ConversionIO::write(size_t nvalues, const unsigned int* data) {
+  return writeGeneric<unsigned int>(nvalues, data, itsSizeuInt, itsCopyuInt);
 }
 size_t ConversionIO::write(size_t nvalues, const Int64* data) {
   return writeGeneric<Int64>(nvalues, data, itsSizeInt64, itsCopyInt64);
@@ -168,30 +168,30 @@ size_t ConversionIO::write(size_t nvalues, const Int64* data) {
 size_t ConversionIO::write(size_t nvalues, const uInt64* data) {
   return writeGeneric<uInt64>(nvalues, data, itsSizeuInt64, itsCopyuInt64);
 }
-size_t ConversionIO::write(size_t nvalues, const Float* data) {
-  return writeGeneric<Float>(nvalues, data, itsSizeFloat, itsCopyFloat);
+size_t ConversionIO::write(size_t nvalues, const float* data) {
+  return writeGeneric<float>(nvalues, data, itsSizeFloat, itsCopyFloat);
 }
-size_t ConversionIO::write(size_t nvalues, const Double* data) {
-  return writeGeneric<Double>(nvalues, data, itsSizeDouble, itsCopyDouble);
+size_t ConversionIO::write(size_t nvalues, const double* data) {
+  return writeGeneric<double>(nvalues, data, itsSizeDouble, itsCopyDouble);
 }
 
-size_t ConversionIO::read(size_t nvalues, Char* data) {
-  return readGeneric<Char>(nvalues, data, itsSizeChar, itsCopyChar);
+size_t ConversionIO::read(size_t nvalues, char* data) {
+  return readGeneric<char>(nvalues, data, itsSizeChar, itsCopyChar);
 }
-size_t ConversionIO::read(size_t nvalues, uChar* data) {
-  return readGeneric<uChar>(nvalues, data, itsSizeuChar, itsCopyuChar);
+size_t ConversionIO::read(size_t nvalues, unsigned char* data) {
+  return readGeneric<unsigned char>(nvalues, data, itsSizeuChar, itsCopyuChar);
 }
-size_t ConversionIO::read(size_t nvalues, Short* data) {
-  return readGeneric<Short>(nvalues, data, itsSizeShort, itsCopyShort);
+size_t ConversionIO::read(size_t nvalues, short* data) {
+  return readGeneric<short>(nvalues, data, itsSizeShort, itsCopyShort);
 }
-size_t ConversionIO::read(size_t nvalues, uShort* data) {
-  return readGeneric<uShort>(nvalues, data, itsSizeuShort, itsCopyuShort);
+size_t ConversionIO::read(size_t nvalues, unsigned short* data) {
+  return readGeneric<unsigned short>(nvalues, data, itsSizeuShort, itsCopyuShort);
 }
-size_t ConversionIO::read(size_t nvalues, Int* data) {
-  return readGeneric<Int>(nvalues, data, itsSizeInt, itsCopyInt);
+size_t ConversionIO::read(size_t nvalues, int* data) {
+  return readGeneric<int>(nvalues, data, itsSizeInt, itsCopyInt);
 }
-size_t ConversionIO::read(size_t nvalues, uInt* data) {
-  return readGeneric<uInt>(nvalues, data, itsSizeuInt, itsCopyuInt);
+size_t ConversionIO::read(size_t nvalues, unsigned int* data) {
+  return readGeneric<unsigned int>(nvalues, data, itsSizeuInt, itsCopyuInt);
 }
 size_t ConversionIO::read(size_t nvalues, Int64* data) {
   return readGeneric<Int64>(nvalues, data, itsSizeInt64, itsCopyInt64);
@@ -199,11 +199,11 @@ size_t ConversionIO::read(size_t nvalues, Int64* data) {
 size_t ConversionIO::read(size_t nvalues, uInt64* data) {
   return readGeneric<uInt64>(nvalues, data, itsSizeuInt64, itsCopyuInt64);
 }
-size_t ConversionIO::read(size_t nvalues, Float* data) {
-  return readGeneric<Float>(nvalues, data, itsSizeFloat, itsCopyFloat);
+size_t ConversionIO::read(size_t nvalues, float* data) {
+  return readGeneric<float>(nvalues, data, itsSizeFloat, itsCopyFloat);
 }
-size_t ConversionIO::read(size_t nvalues, Double* data) {
-  return readGeneric<Double>(nvalues, data, itsSizeDouble, itsCopyDouble);
+size_t ConversionIO::read(size_t nvalues, double* data) {
+  return readGeneric<double>(nvalues, data, itsSizeDouble, itsCopyDouble);
 }
 
 }  // namespace casacore

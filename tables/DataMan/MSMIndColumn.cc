@@ -79,7 +79,7 @@ bool MSMIndColumn::isShapeDefined(rownr_t rownr) {
   return (getArrayPtr(rownr) == 0 ? false : true);
 }
 
-uInt MSMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
+unsigned int MSMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
 
 IPosition MSMIndColumn::shape(rownr_t rownr) { return getShape(rownr)->shape(); }
 
@@ -125,7 +125,7 @@ void MSMIndColumn::getSliceV(rownr_t rownr, const Slicer& ns, ArrayBase& arr) {
                      false);
       break;
     case TpUChar:
-      arr.assignBase(Array<uChar>(shp, static_cast<uChar*>(data->data()), SHARE)(blc, trc, inc),
+      arr.assignBase(Array<unsigned char>(shp, static_cast<unsigned char*>(data->data()), SHARE)(blc, trc, inc),
                      false);
       break;
     case TpShort:
@@ -133,14 +133,14 @@ void MSMIndColumn::getSliceV(rownr_t rownr, const Slicer& ns, ArrayBase& arr) {
                      false);
       break;
     case TpUShort:
-      arr.assignBase(Array<uShort>(shp, static_cast<uShort*>(data->data()), SHARE)(blc, trc, inc),
+      arr.assignBase(Array<unsigned short>(shp, static_cast<unsigned short*>(data->data()), SHARE)(blc, trc, inc),
                      false);
       break;
     case TpInt:
-      arr.assignBase(Array<Int>(shp, static_cast<Int*>(data->data()), SHARE)(blc, trc, inc), false);
+      arr.assignBase(Array<int>(shp, static_cast<int*>(data->data()), SHARE)(blc, trc, inc), false);
       break;
     case TpUInt:
-      arr.assignBase(Array<uInt>(shp, static_cast<uInt*>(data->data()), SHARE)(blc, trc, inc),
+      arr.assignBase(Array<unsigned int>(shp, static_cast<unsigned int*>(data->data()), SHARE)(blc, trc, inc),
                      false);
       break;
     case TpInt64:
@@ -183,22 +183,22 @@ void MSMIndColumn::putSliceV(rownr_t rownr, const Slicer& ns, const ArrayBase& a
           .assignBase(arr, false);
       break;
     case TpUChar:
-      Array<uChar>(shp, static_cast<uChar*>(data->data()), SHARE)(blc, trc, inc)
+      Array<unsigned char>(shp, static_cast<unsigned char*>(data->data()), SHARE)(blc, trc, inc)
           .assignBase(arr, false);
       break;
     case TpShort:
-      Array<Short>(shp, static_cast<Short*>(data->data()), SHARE)(blc, trc, inc)
+      Array<short>(shp, static_cast<short*>(data->data()), SHARE)(blc, trc, inc)
           .assignBase(arr, false);
       break;
     case TpUShort:
-      Array<uShort>(shp, static_cast<uShort*>(data->data()), SHARE)(blc, trc, inc)
+      Array<unsigned short>(shp, static_cast<unsigned short*>(data->data()), SHARE)(blc, trc, inc)
           .assignBase(arr, false);
       break;
     case TpInt:
-      Array<Int>(shp, static_cast<Int*>(data->data()), SHARE)(blc, trc, inc).assignBase(arr, false);
+      Array<int>(shp, static_cast<int*>(data->data()), SHARE)(blc, trc, inc).assignBase(arr, false);
       break;
     case TpUInt:
-      Array<uInt>(shp, static_cast<uInt*>(data->data()), SHARE)(blc, trc, inc)
+      Array<unsigned int>(shp, static_cast<unsigned int*>(data->data()), SHARE)(blc, trc, inc)
           .assignBase(arr, false);
       break;
     case TpInt64:

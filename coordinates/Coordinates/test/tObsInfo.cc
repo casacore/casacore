@@ -54,7 +54,7 @@ int main() {
   //
   AlwaysAssertExit(oi.isPointingCenterInitial());
   MVDirection dmvd = oi.defaultPointingCenter();
-  Vector<Double> v = dmvd.get();
+  Vector<double> v = dmvd.get();
   AlwaysAssertExit(near(v(0), 0.0));
   AlwaysAssertExit(near(v(1), 0.0));
   MPosition telPos(MVPosition(Quantity(10, "m"), Quantity(-6, "deg"), Quantity(50, "deg")),
@@ -92,7 +92,7 @@ int main() {
 
   //
   ObsInfo oi2a;
-  Double dateVal = 55000.5;
+  double dateVal = 55000.5;
   oi2a.setTelescope("telescope2")
       .setObserver("observer2")
       .setObsDate(MVEpoch(dateVal))
@@ -137,33 +137,33 @@ int main() {
 
   {
     Record rec3;
-    Double x = 0;
+    double x = 0;
     rec3.define("telescope", x);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
   }
   {
     Record rec3;
-    Double x = 0;
+    double x = 0;
     rec3.define("observer", x);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
   }
   {
     Record rec3;
-    Double x = 0;
+    double x = 0;
     rec3.define("obsdate", x);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
   }
   {
     Record rec3;
     Record rec4;
-    Double x = 0;
+    double x = 0;
     rec4.define("doggies", x);
     rec3.defineRecord("obsdate", rec4);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
   }
   {
     Record rec3;
-    Double x = 0;
+    double x = 0;
     rec3.define("pointingcenter", x);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
   }
@@ -176,7 +176,7 @@ int main() {
   {
     Record rec3;
     Record rec4;
-    Double x(0);
+    double x(0);
     rec4.define("value", x);
     rec3.defineRecord("pointingcenter", rec4);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
@@ -184,9 +184,9 @@ int main() {
   {
     Record rec3;
     Record rec4;
-    Vector<Double> x(2);
+    Vector<double> x(2);
     rec4.define("value", x);
-    Double y = 0.0;
+    double y = 0.0;
     rec4.define("initial", y);
     rec3.defineRecord("pointingcenter", rec4);
     AlwaysAssertExit(!oi3.fromRecord(error, rec3));
@@ -204,7 +204,7 @@ int main() {
   // the record accepted by fromFITS contains fields as subrecords
   //  -- a round trip is therefore not possible directly.
   Record rec3;
-  for (uInt i = 0; i < rec2.nfields(); ++i) {
+  for (unsigned int i = 0; i < rec2.nfields(); ++i) {
     Record subrec;
     if (rec2.dataType(i) == TpDouble) {
       subrec.define("value", rec2.asDouble(i));

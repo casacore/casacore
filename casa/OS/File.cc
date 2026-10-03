@@ -39,7 +39,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-std::atomic<uInt> File::uniqueSeqnr_p(0);
+std::atomic<unsigned int> File::uniqueSeqnr_p(0);
 
 File::File() {
   // Sets itsPath on the current working directory
@@ -200,16 +200,16 @@ Int64 File::size() const {
   return buf.st_size;
 }
 
-uInt File::readPermissions() const {
+unsigned int File::readPermissions() const {
   // Returns the permissions as a decimal value. The value
   // is extracted from buf.
   struct fileSTAT buf;
   getstat(&buf);
-  return (uInt(buf.st_mode & 07) + (uInt(buf.st_mode & 070) >> 3) * 10 +
-          (uInt(buf.st_mode & 0700) >> 6) * 100);
+  return (static_cast<unsigned int>(buf.st_mode & 07) + (static_cast<unsigned int>(buf.st_mode & 070) >> 3) * 10 +
+          (static_cast<unsigned int>(buf.st_mode & 0700) >> 6) * 100);
 }
 
-void File::setPermissions(uInt permissions) {
+void File::setPermissions(unsigned int permissions) {
   // Changes the permissions by using chmod, the value must be
   // an octal value.
   chmod((itsPath.expandedName()).c_str(), long(permissions));
@@ -219,8 +219,8 @@ Path File::newUniqueName(const String& directory, const String& prefix) {
   // create an new unique name
   char str[32];
   // fill str with the pid and the unique number
-  uInt seqnr = uniqueSeqnr_p.fetch_add(1);
-  snprintf(str, sizeof(str), "%i_%i", Int(getpid()), seqnr);
+  unsigned int seqnr = uniqueSeqnr_p.fetch_add(1);
+  snprintf(str, sizeof(str), "%i_%i", int(getpid()), seqnr);
   if (directory.empty() || directory.back() == '/') {
     return Path(directory + prefix + str);
   }
@@ -234,7 +234,7 @@ Path File::newUniqueName(const String& directory) {
   return newUniqueName(directory, "");
 }
 
-void File::touch(uInt time) {
+void File::touch(unsigned int time) {
   // Uses the function utime to set the access time and the
   // modification time.
   utimbuf times;
@@ -253,7 +253,7 @@ void File::touch() {
   }
 }
 
-uInt File::accessTime() const {
+unsigned int File::accessTime() const {
   // The struct is filled in by mylstat, and the accesstime
   // is returned.
   struct fileSTAT buf;
@@ -269,7 +269,7 @@ String File::accessTimeString() const {
   return String(asctime(localtime(&buf.st_atime)));
 }
 
-uInt File::modifyTime() const {
+unsigned int File::modifyTime() const {
   // The struct is filled in by mylstat, and the modificationtime
   // is returned.
   struct fileSTAT buf;
@@ -292,7 +292,7 @@ File::FileWriteStatus File::getWriteStatus() const {
   return (canCreate() ? CREATABLE : NOT_CREATABLE);
 }
 
-uInt File::statusChangeTime() const {
+unsigned int File::statusChangeTime() const {
   // The struct is filled in by mylstat, and the statusChangetime
   // is returned.
   struct fileSTAT buf;

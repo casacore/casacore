@@ -34,7 +34,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableExprNodeRecordField::TableExprNodeRecordField(DataType dtype, const Block<Int>& fieldNumbers)
+TableExprNodeRecordField::TableExprNodeRecordField(DataType dtype, const Block<int>& fieldNumbers)
     : TableExprNodeBinary(NTNumeric, VTScalar, OtField, Constant),
       fieldNrs_p(fieldNumbers),
       lastEntry_p(fieldNumbers.nelements() - 1) {
@@ -81,15 +81,15 @@ bool TableExprNodeRecordField::isDefined(const TableExprId& id) {
     dtype = id.data().dataType(fieldNrs_p);
   } else {
     const RecordInterface* recPtr = &(id.record());
-    for (uInt i = 0; i < lastEntry_p; i++) {
+    for (unsigned int i = 0; i < lastEntry_p; i++) {
       RecordDesc desc = recPtr->description();
-      if (fieldNrs_p[i] >= Int(desc.nfields()) || !desc.isSubRecord(fieldNrs_p[i])) {
+      if (fieldNrs_p[i] >= int(desc.nfields()) || !desc.isSubRecord(fieldNrs_p[i])) {
         return false;
       }
       recPtr = &(recPtr->asRecord(fieldNrs_p[i]));
     }
     RecordDesc desc = recPtr->description();
-    if (fieldNrs_p[lastEntry_p] >= Int(desc.nfields())) {
+    if (fieldNrs_p[lastEntry_p] >= int(desc.nfields())) {
       return false;
     }
     dtype = desc.type(fieldNrs_p[lastEntry_p]);
@@ -127,7 +127,7 @@ Int64 TableExprNodeRecordField::getInt(const TableExprId& id) {
   }
   return getRecord(id).asInt64(fieldNrs_p[lastEntry_p]);
 }
-Double TableExprNodeRecordField::getDouble(const TableExprId& id) {
+double TableExprNodeRecordField::getDouble(const TableExprId& id) {
   if (id.byData()) {
     return id.data().getDouble(fieldNrs_p);
   }
@@ -148,14 +148,14 @@ String TableExprNodeRecordField::getString(const TableExprId& id) {
 
 const RecordInterface& TableExprNodeRecordField::getRecord(const TableExprId& id) const {
   const RecordInterface* recPtr = &(id.record());
-  for (uInt i = 0; i < lastEntry_p; i++) {
+  for (unsigned int i = 0; i < lastEntry_p; i++) {
     recPtr = &(recPtr->asRecord(fieldNrs_p[i]));
   }
   return *recPtr;
 }
 
 TableExprNodeRecordFieldArray::TableExprNodeRecordFieldArray(DataType dtype,
-                                                             const Block<Int>& fieldNumbers)
+                                                             const Block<int>& fieldNumbers)
     : TableExprNodeArray(NTNumeric, OtField),
       fieldNrs_p(fieldNumbers),
       lastEntry_p(fieldNumbers.nelements() - 1) {
@@ -206,15 +206,15 @@ bool TableExprNodeRecordFieldArray::isDefined(const TableExprId& id) {
     dtype = id.data().dataType(fieldNrs_p);
   } else {
     const RecordInterface* recPtr = &(id.record());
-    for (uInt i = 0; i < lastEntry_p; i++) {
+    for (unsigned int i = 0; i < lastEntry_p; i++) {
       RecordDesc desc = recPtr->description();
-      if (fieldNrs_p[i] >= Int(desc.nfields()) || !desc.isSubRecord(fieldNrs_p[i])) {
+      if (fieldNrs_p[i] >= int(desc.nfields()) || !desc.isSubRecord(fieldNrs_p[i])) {
         return false;
       }
       recPtr = &(recPtr->asRecord(fieldNrs_p[i]));
     }
     RecordDesc desc = recPtr->description();
-    if (fieldNrs_p[lastEntry_p] >= Int(desc.nfields())) {
+    if (fieldNrs_p[lastEntry_p] >= int(desc.nfields())) {
       return false;
     }
     dtype = desc.type(fieldNrs_p[lastEntry_p]);
@@ -255,11 +255,11 @@ MArray<Int64> TableExprNodeRecordFieldArray::getArrayInt(const TableExprId& id) 
   return MArray<Int64>(getRecord(id).toArrayInt64(fieldNrs_p[lastEntry_p]));
 }
 
-MArray<Double> TableExprNodeRecordFieldArray::getArrayDouble(const TableExprId& id) {
+MArray<double> TableExprNodeRecordFieldArray::getArrayDouble(const TableExprId& id) {
   if (id.byData()) {
-    return MArray<Double>(id.data().getArrayDouble(fieldNrs_p));
+    return MArray<double>(id.data().getArrayDouble(fieldNrs_p));
   }
-  return MArray<Double>(getRecord(id).toArrayDouble(fieldNrs_p[lastEntry_p]));
+  return MArray<double>(getRecord(id).toArrayDouble(fieldNrs_p[lastEntry_p]));
 }
 
 MArray<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex(const TableExprId& id) {
@@ -278,7 +278,7 @@ MArray<String> TableExprNodeRecordFieldArray::getArrayString(const TableExprId& 
 
 const RecordInterface& TableExprNodeRecordFieldArray::getRecord(const TableExprId& id) const {
   const RecordInterface* recPtr = &(id.record());
-  for (uInt i = 0; i < lastEntry_p; i++) {
+  for (unsigned int i = 0; i < lastEntry_p; i++) {
     recPtr = &(recPtr->asRecord(fieldNrs_p[i]));
   }
   return *recPtr;

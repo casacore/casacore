@@ -39,9 +39,9 @@
 int main() {
   cout << "Host: " << HostInfo::hostName() << endl;
   cout << "Process ID: " << HostInfo::processID() << endl;
-  Double s = HostInfo::secondsFrom1970();
+  double s = HostInfo::secondsFrom1970();
   cout << "Time in seconds from 1970/1/1: " << s << " (about "
-       << Int(s / 3600.0 / 24.0 / 365.25 * 10.0 + 0.5) / 10.0 << " years)" << endl;
+       << int(s / 3600.0 / 24.0 / 365.25 * 10.0 + 0.5) / 10.0 << " years)" << endl;
   cout << "Number of CPUs: " << HostInfo::numCPUs() << endl;
   cout << "Physical Memory: " << HostInfo::memoryTotal() << "K [ " << HostInfo::memoryUsed()
        << " used, " << HostInfo::memoryFree() << " free ]" << endl;
@@ -63,18 +63,18 @@ int main() {
        << HostInfo::swapFree() << " free ]" << endl;
 
   // OK, we can't do much of a test, but we can do a bit of one:
-  Int id = HostInfo::processID();
+  int id = HostInfo::processID();
   AlwaysAssertExit(id == HostInfo::processID());  // make sure no chang
 
-  Int cpus = HostInfo::numCPUs();
+  int cpus = HostInfo::numCPUs();
   AlwaysAssertExit(cpus == HostInfo::numCPUs());  // make sure no chang
 
-  Int memory = HostInfo::memoryTotal();
+  int memory = HostInfo::memoryTotal();
   AlwaysAssertExit(memory == HostInfo::memoryTotal());  // make sure no chang
 
-  Double now = HostInfo::secondsFrom1970();
+  double now = HostInfo::secondsFrom1970();
   sleep(1);
-  Double diff = HostInfo::secondsFrom1970() - now;
+  double diff = HostInfo::secondsFrom1970() - now;
   AlwaysAssertExit(diff >= 0);
 
   // No good way to test hostName, other than using the same library call

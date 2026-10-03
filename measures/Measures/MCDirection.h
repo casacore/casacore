@@ -182,14 +182,14 @@ class MCDirection : public MCBase {
 
   // # Cached Data
   MVPosition *MVPOS1, *MVPOS2, *MVPOS3;
-  Vector<Double> *VEC61, *VEC62, *VEC63;
+  Vector<double> *VEC61, *VEC62, *VEC63;
   MeasMath measMath;
 
   // # State machine data
   //  Transition list
-  static uInt ToRef_p[N_Routes][3];
+  static unsigned int ToRef_p[N_Routes][3];
   // Transition matrix
-  static uInt FromTo_p[MDirection::N_Types][MDirection::N_Types];
+  static unsigned int FromTo_p[MDirection::N_Types][MDirection::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirInitOnceFlag;
 
@@ -205,7 +205,7 @@ class MCDirection : public MCBase {
   virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref);
 
   // Create help structures for Measure conversion routines
-  virtual void initConvert(uInt which, MConvertBase &mc);
+  virtual void initConvert(unsigned int which, MConvertBase &mc);
 
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert();

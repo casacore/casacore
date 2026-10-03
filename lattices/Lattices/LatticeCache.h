@@ -96,7 +96,7 @@ class LatticeCache {
  public:
   // Constructor: cachesize in units of T. tileOverlap is the fractional
   // overlap between neighbouring tile.
-  LatticeCache(Lattice<T>& image, Int cacheSize, IPosition tileShape, Vector<Float>& tileOverlap,
+  LatticeCache(Lattice<T>& image, int cacheSize, IPosition tileShape, Vector<float>& tileOverlap,
                bool additive);
 
   LatticeCache(const LatticeCache<T>& other);
@@ -129,27 +129,27 @@ class LatticeCache {
  protected:
   LatticeCache() {};
 
-  Int numberTiles;
+  int numberTiles;
   IPosition tileShape;
-  Vector<Int> tileShapeVec, tileOffsetVec;
-  Vector<Float> tileOverlap;
+  Vector<int> tileShapeVec, tileOffsetVec;
+  Vector<float> tileOverlap;
   bool additive;
 
-  Int cacheSize;
-  Int cacheAccesses;
-  Int cacheHits;
-  Int cacheMisses;
-  Int cacheReads;
-  Int cacheWrites;
+  int cacheSize;
+  int cacheAccesses;
+  int cacheHits;
+  int cacheMisses;
+  int cacheReads;
+  int cacheWrites;
 
-  Int getFreeTile(bool readonly);
+  int getFreeTile(bool readonly);
 
   Block<IPosition> tileLocs;
-  Block<Int> tileSequence;
+  Block<int> tileSequence;
   Block<Array<T>> tileContents;
 
-  void writeTile(Int tile);
-  void readTile(Int tile, bool readonly);
+  void writeTile(int tile);
+  void readTile(int tile, bool readonly);
 
   Lattice<T>* image_p;
 };

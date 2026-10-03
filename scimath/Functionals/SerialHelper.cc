@@ -56,7 +56,7 @@ void SerialHelper::checkFuncType(const String& ftype) const {
 }
 
 template <>
-void getArrayVal<bool>(bool& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<bool>(bool& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -74,7 +74,7 @@ void getArrayVal<bool>(bool& val, Int, const Record& gr, const String& name, uIn
   }
 }
 template <>
-void getArrayVal<Short>(Short& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<short>(short& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -82,7 +82,7 @@ void getArrayVal<Short>(Short& val, Int, const Record& gr, const String& name, u
       val = gr.asShort(RecordFieldId(name));
       break;
     case TpArrayShort: {
-      Array<Short> tmp = gr.asArrayShort(RecordFieldId(name));
+      Array<short> tmp = gr.asArrayShort(RecordFieldId(name));
       val = tmp(IPosition(tmp.nelements(), index));
     } break;
     default:
@@ -92,7 +92,7 @@ void getArrayVal<Short>(Short& val, Int, const Record& gr, const String& name, u
   }
 }
 template <>
-void getArrayVal<Int>(Int& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<int>(int& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -100,7 +100,7 @@ void getArrayVal<Int>(Int& val, Int, const Record& gr, const String& name, uInt 
       val = gr.asInt(RecordFieldId(name));
       break;
     case TpArrayInt: {
-      Array<Int> tmp = gr.asArrayInt(RecordFieldId(name));
+      Array<int> tmp = gr.asArrayInt(RecordFieldId(name));
       val = tmp(IPosition(tmp.nelements(), index));
     } break;
     default:
@@ -110,7 +110,7 @@ void getArrayVal<Int>(Int& val, Int, const Record& gr, const String& name, uInt 
   }
 }
 template <>
-void getArrayVal<Float>(Float& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<float>(float& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -118,7 +118,7 @@ void getArrayVal<Float>(Float& val, Int, const Record& gr, const String& name, u
       val = gr.asFloat(RecordFieldId(name));
       break;
     case TpArrayFloat: {
-      Array<Float> tmp = gr.asArrayFloat(RecordFieldId(name));
+      Array<float> tmp = gr.asArrayFloat(RecordFieldId(name));
       val = tmp(IPosition(tmp.nelements(), index));
     } break;
     default:
@@ -128,7 +128,7 @@ void getArrayVal<Float>(Float& val, Int, const Record& gr, const String& name, u
   }
 }
 template <>
-void getArrayVal<Double>(Double& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<double>(double& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -136,7 +136,7 @@ void getArrayVal<Double>(Double& val, Int, const Record& gr, const String& name,
       val = gr.asDouble(RecordFieldId(name));
       break;
     case TpArrayDouble: {
-      Array<Double> tmp = gr.asArrayDouble(RecordFieldId(name));
+      Array<double> tmp = gr.asArrayDouble(RecordFieldId(name));
       val = tmp(IPosition(tmp.nelements(), index));
     } break;
     default:
@@ -146,7 +146,7 @@ void getArrayVal<Double>(Double& val, Int, const Record& gr, const String& name,
   }
 }
 template <>
-void getArrayVal<Complex>(Complex& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<Complex>(Complex& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -164,7 +164,7 @@ void getArrayVal<Complex>(Complex& val, Int, const Record& gr, const String& nam
   }
 }
 template <>
-void getArrayVal<DComplex>(DComplex& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<DComplex>(DComplex& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -182,7 +182,7 @@ void getArrayVal<DComplex>(DComplex& val, Int, const Record& gr, const String& n
   }
 }
 template <>
-void getArrayVal<String>(String& val, Int, const Record& gr, const String& name, uInt index) {
+void getArrayVal<String>(String& val, int, const Record& gr, const String& name, unsigned int index) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   switch (gr.dataType(RecordFieldId(name))) {
@@ -201,7 +201,7 @@ void getArrayVal<String>(String& val, Int, const Record& gr, const String& name,
 }
 
 template <>
-void getArray<bool>(Array<bool>& val, Int, const Record& gr, const String& name) {
+void getArray<bool>(Array<bool>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayBool)
@@ -210,7 +210,7 @@ void getArray<bool>(Array<bool>& val, Int, const Record& gr, const String& name)
   val = gr.asArrayBool(RecordFieldId(name));
 }
 template <>
-void getArray<Short>(Array<Short>& val, Int, const Record& gr, const String& name) {
+void getArray<short>(Array<short>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayShort)
@@ -219,7 +219,7 @@ void getArray<Short>(Array<Short>& val, Int, const Record& gr, const String& nam
   val = gr.asArrayShort(RecordFieldId(name));
 }
 template <>
-void getArray<Int>(Array<Int>& val, Int, const Record& gr, const String& name) {
+void getArray<int>(Array<int>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayInt)
@@ -228,7 +228,7 @@ void getArray<Int>(Array<Int>& val, Int, const Record& gr, const String& name) {
   val = gr.asArrayInt(RecordFieldId(name));
 }
 template <>
-void getArray<Float>(Array<Float>& val, Int, const Record& gr, const String& name) {
+void getArray<float>(Array<float>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayFloat)
@@ -237,7 +237,7 @@ void getArray<Float>(Array<Float>& val, Int, const Record& gr, const String& nam
   val = gr.asArrayFloat(RecordFieldId(name));
 }
 template <>
-void getArray<Double>(Array<Double>& val, Int, const Record& gr, const String& name) {
+void getArray<double>(Array<double>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayDouble)
@@ -246,7 +246,7 @@ void getArray<Double>(Array<Double>& val, Int, const Record& gr, const String& n
   val = gr.asArrayDouble(RecordFieldId(name));
 }
 template <>
-void getArray<Complex>(Array<Complex>& val, Int, const Record& gr, const String& name) {
+void getArray<Complex>(Array<Complex>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayComplex)
@@ -255,7 +255,7 @@ void getArray<Complex>(Array<Complex>& val, Int, const Record& gr, const String&
   val = gr.asArrayComplex(RecordFieldId(name));
 }
 template <>
-void getArray<DComplex>(Array<DComplex>& val, Int, const Record& gr, const String& name) {
+void getArray<DComplex>(Array<DComplex>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayDComplex)
@@ -264,7 +264,7 @@ void getArray<DComplex>(Array<DComplex>& val, Int, const Record& gr, const Strin
   val = gr.asArrayDComplex(RecordFieldId(name));
 }
 template <>
-void getArray<String>(Array<String>& val, Int, const Record& gr, const String& name) {
+void getArray<String>(Array<String>& val, int, const Record& gr, const String& name) {
   if (!gr.isDefined(name)) throw FieldNotFoundError(name);
   // std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
   if (gr.dataType(RecordFieldId(name)) != TpArrayString)
@@ -273,11 +273,11 @@ void getArray<String>(Array<String>& val, Int, const Record& gr, const String& n
   val = gr.asArrayString(RecordFieldId(name));
 }
 
-void SerialHelper::get(bool& val, const String& name, uInt index) const {
+void SerialHelper::get(bool& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtBOOL, gr, name, index);
 }
 
-void SerialHelper::get(String& val, const String& name, uInt index) const {
+void SerialHelper::get(String& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtSTRING, gr, name, index);
 }
 
@@ -286,27 +286,27 @@ void SerialHelper::get(String& val, const String& name, uInt index) const {
 //      getArrayVal(val, Array::BYTE, gr, name, index);
 //  }
 
-void SerialHelper::get(Short& val, const String& name, uInt index) const {
+void SerialHelper::get(short& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtSHORT, gr, name, index);
 }
 
-void SerialHelper::get(Int& val, const String& name, uInt index) const {
+void SerialHelper::get(int& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtINT, gr, name, index);
 }
 
-void SerialHelper::get(Float& val, const String& name, uInt index) const {
+void SerialHelper::get(float& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtFLOAT, gr, name, index);
 }
 
-void SerialHelper::get(Double& val, const String& name, uInt index) const {
+void SerialHelper::get(double& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtDOUBLE, gr, name, index);
 }
 
-void SerialHelper::get(Complex& val, const String& name, uInt index) const {
+void SerialHelper::get(Complex& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtCOMPLEX, gr, name, index);
 }
 
-void SerialHelper::get(DComplex& val, const String& name, uInt index) const {
+void SerialHelper::get(DComplex& val, const String& name, unsigned int index) const {
   getArrayVal(val, SerialHelper::shtDCOMPLEX, gr, name, index);
 }
 
@@ -314,19 +314,19 @@ void SerialHelper::get(Array<bool>& val, const String& name) const {
   getArray(val, SerialHelper::shtBOOL, gr, name);
 }
 
-void SerialHelper::get(Array<Short>& val, const String& name) const {
+void SerialHelper::get(Array<short>& val, const String& name) const {
   getArray(val, SerialHelper::shtSHORT, gr, name);
 }
 
-void SerialHelper::get(Array<Int>& val, const String& name) const {
+void SerialHelper::get(Array<int>& val, const String& name) const {
   getArray(val, SerialHelper::shtINT, gr, name);
 }
 
-void SerialHelper::get(Array<Float>& val, const String& name) const {
+void SerialHelper::get(Array<float>& val, const String& name) const {
   getArray(val, SerialHelper::shtFLOAT, gr, name);
 }
 
-void SerialHelper::get(Array<Double>& val, const String& name) const {
+void SerialHelper::get(Array<double>& val, const String& name) const {
   getArray(val, SerialHelper::shtDOUBLE, gr, name);
 }
 
@@ -353,8 +353,8 @@ void SerialHelper::get(Record& val, const String& name) const {
 /*
 
 template <class V>
-void getArrayVal(V &val, Int gtype, const Record& gr,
-                      const String& name, uInt index)
+void getArrayVal(V &val, int gtype, const Record& gr,
+                      const String& name, unsigned int index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     if (gr.dataType(RecordFieldId(name)) != TpArray)
@@ -373,7 +373,7 @@ void getArrayVal(V &val, Int gtype, const Record& gr,
 
 /*
 template <class V>
-void getArray(Array<V> &val, Int gtype, const Record& gr,
+void getArray(Array<V> &val, int gtype, const Record& gr,
                    const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);

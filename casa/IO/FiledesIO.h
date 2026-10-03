@@ -149,8 +149,8 @@ class FiledesIO : public ByteIO {
   // Some static convenience functions for file create/open/close.
   // Close is only done if the fd is non-negative.
   // <group>
-  static int create(const Char* name, int mode = 0666);
-  static int open(const Char* name, bool writable = false, bool throwExcp = true);
+  static int create(const char* name, int mode = 0666);
+  static int open(const char* name, bool writable = false, bool throwExcp = true);
   static void close(int fd);
   // </group>
 

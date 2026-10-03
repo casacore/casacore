@@ -126,8 +126,8 @@ class ArraySampledFunctional : public SampledFunctional<T> {
 
   // Define the functions for the SampledFunction interface
   // <group>
-  virtual T operator()(const uInt &index) const;
-  virtual uInt nelements() const;
+  virtual T operator()(const unsigned int &index) const;
+  virtual unsigned int nelements() const;
   virtual ~ArraySampledFunctional();
   // </group>
 
@@ -135,14 +135,14 @@ class ArraySampledFunctional : public SampledFunctional<T> {
   // because it does not need to create as many temporary objects or copy the
   // Array data.
   // <group>
-  const T operator()(const uInt &index);
+  const T operator()(const unsigned int &index);
   // </group>
 
  private:
   T theRefData;
   IPosition theEnd;
-  uInt theLastAxis;
-  uInt theNelements;
+  unsigned int theLastAxis;
+  unsigned int theNelements;
 };
 
 }  // namespace casacore

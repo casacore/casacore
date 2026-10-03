@@ -88,7 +88,7 @@ void TSMDataColumn::setShapeTiled(rownr_t rownr, const IPosition& shape,
     stmanPtr_p->setShape(rownr, hypercube, shape, tileShape);
   } else {
     bool eq = true;
-    for (uInt i = 0; i < shape.size(); ++i) {
+    for (unsigned int i = 0; i < shape.size(); ++i) {
       if (shape[i] != cubeShape[i]) {
         eq = false;
       }
@@ -131,7 +131,7 @@ IPosition TSMDataColumn::shape(rownr_t rownr) {
                          columnName() + " in " + stmanPtr_p->fileName()));
   }
   IPosition shape(stmanPtr_p->nrCoordVector());
-  for (uInt i = 0; i < shape.nelements(); i++) {
+  for (unsigned int i = 0; i < shape.nelements(); i++) {
     shape(i) = cubeShape(i);
   }
   return shape;
@@ -149,7 +149,7 @@ void TSMDataColumn::accessCell(rownr_t rownr, const void* dataPtr, bool writeFla
   IPosition end;
   TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, end);
   IPosition start(end);
-  for (uInt i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
+  for (unsigned int i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
     start(i) = 0;
     end(i)--;
   }
@@ -177,7 +177,7 @@ void TSMDataColumn::accessCellSlice(rownr_t rownr, const Slicer& ns, const void*
   // Set the correct start and end of the slice in the hypercube.
   // A slice of the data cell is accessed, thus copy the Slicer
   // info for the vector coordinates.
-  for (uInt i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
+  for (unsigned int i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
     start(i) = blc(i);
     end(i) = trc(i);
     stride(i) = inc(i);
@@ -189,9 +189,9 @@ void TSMDataColumn::accessCellSlice(rownr_t rownr, const Slicer& ns, const void*
     if (!stmanPtr_p->userSetCache(rownr)) {
       // The main access path is assumed to be along the full slice
       // dimensions.
-      uInt naxis = 0;
+      unsigned int naxis = 0;
       IPosition axisPath(end.nelements());
-      for (uInt i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
+      for (unsigned int i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
         if (blc(i) == 0 && trc(i) == endcp(i)) {
           axisPath(naxis++) = i;
         }
@@ -235,7 +235,7 @@ void TSMDataColumn::accessColumnSlice(const Slicer& ns, const void* dataPtr, boo
   // The entire column is accessed, thus all scalar coordinates.
   // A slice of each data cell is accessed, thus copy the Slicer
   // info for the vector coordinates.
-  for (uInt i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
+  for (unsigned int i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
     start(i) = blc(i);
     end(i) = trc(i);
     stride(i) = inc(i);
@@ -247,15 +247,15 @@ void TSMDataColumn::accessColumnSlice(const Slicer& ns, const void* dataPtr, boo
     if (!stmanPtr_p->userSetCache(0)) {
       // The main access path is assumed to be along the full slice
       // dimensions.
-      uInt naxis = 0;
+      unsigned int naxis = 0;
       IPosition axisPath(end.nelements());
-      for (uInt i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
+      for (unsigned int i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
         if (blc(i) == 0 && trc(i) == endcp(i)) {
           axisPath(naxis++) = i;
         }
       }
       // The further access path is along the trailing axes.
-      for (uInt i = stmanPtr_p->nrCoordVector(); i < axisPath.nelements(); i++) {
+      for (unsigned int i = stmanPtr_p->nrCoordVector(); i < axisPath.nelements(); i++) {
         axisPath(naxis++) = i;
       }
       axisPath.resize(naxis);
@@ -271,7 +271,7 @@ void TSMDataColumn::accessColumnSlice(const Slicer& ns, const void* dataPtr, boo
 void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& arrShape,
                                       const void* dataPtr, bool writeFlag) {
   char* data = (char*)(dataPtr);
-  uInt lastAxis = arrShape.nelements() - 1;
+  unsigned int lastAxis = arrShape.nelements() - 1;
   IPosition cellShape = arrShape.getFirst(lastAxis);
   uInt64 chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt64 nrinc = 0;
@@ -313,7 +313,7 @@ void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& ar
           accessFullCells(lastCube, data, writeFlag, start, end, incr);
           data += (nrinc + 1) * chunkSize;
         } else {
-          for (uInt i = 0; i < lastAxis; i++) {
+          for (unsigned int i = 0; i < lastAxis; i++) {
             start(i) = 0;
             end(i) = rowpos(i) - 1;
             incr(i) = 1;
@@ -351,7 +351,7 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
                                            const IPosition& arrShape, const void* dataPtr,
                                            bool writeFlag) {
   char* data = (char*)(dataPtr);
-  uInt lastAxis = arrShape.nelements() - 1;
+  unsigned int lastAxis = arrShape.nelements() - 1;
   uInt64 chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt64 nrinc = 0;
   Int64 lastRowPos = 0;
@@ -393,7 +393,7 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
         } else {
           IPosition blc, trc, inc;
           ns.inferShapeFromSource(shape(rownr), blc, trc, inc);
-          for (uInt i = 0; i < lastAxis; i++) {
+          for (unsigned int i = 0; i < lastAxis; i++) {
             start(i) = blc(i);
             end(i) = trc(i);
             incr(i) = inc(i);
@@ -442,10 +442,10 @@ void TSMDataColumn::accessSlicedCells(TSMCube* hypercube, char* dataPtr, bool wr
   if (!stmanPtr_p->userSetCache(0)) {
     // The main access path is assumed to be along the full slice
     // dimensions.
-    uInt naxis = 0;
+    unsigned int naxis = 0;
     IPosition axisPath(end.nelements());
     IPosition sliceShp = hypercube->cubeShape();
-    for (uInt i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
+    for (unsigned int i = 0; i < stmanPtr_p->nrCoordVector(); i++) {
       if (start(i) == 0 && end(i) == sliceShp(i) - 1) {
         axisPath(naxis++) = i;
       }
@@ -455,7 +455,7 @@ void TSMDataColumn::accessSlicedCells(TSMCube* hypercube, char* dataPtr, bool wr
     if (hypercube->getLastColAccess() != TSMCube::ColumnSliceAccess ||
         !sliceShp.isEqual(hypercube->getLastColSlice())) {
       // The further access path is along the trailing axes.
-      for (uInt i = stmanPtr_p->nrCoordVector(); i < axisPath.nelements(); i++) {
+      for (unsigned int i = stmanPtr_p->nrCoordVector(); i < axisPath.nelements(); i++) {
         axisPath(naxis++) = i;
       }
       axisPath.resize(naxis);

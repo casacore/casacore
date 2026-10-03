@@ -33,8 +33,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-BucketBuffered::BucketBuffered(BucketFile* file, Int64 startOffset, uInt bucketSize,
-                               uInt nrOfBuckets)
+BucketBuffered::BucketBuffered(BucketFile* file, Int64 startOffset, unsigned int bucketSize,
+                               unsigned int nrOfBuckets)
     : BucketBase(file, startOffset, bucketSize, nrOfBuckets), itsBuffer(0) {
   AlwaysAssert(itsFile->bufferedFile() != 0, AipsError);
   // Allocate a buffer that can hold a bucket.
@@ -43,23 +43,23 @@ BucketBuffered::BucketBuffered(BucketFile* file, Int64 startOffset, uInt bucketS
 
 BucketBuffered::~BucketBuffered() { delete[] itsBuffer; }
 
-void BucketBuffered::read(uInt bucketNr, uInt bucketOffset, uInt nbytes, uInt bufferOffset) {
+void BucketBuffered::read(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes, unsigned int bufferOffset) {
   if (bucketNr >= itsNewNrOfBuckets) {
-    throw(indexError<Int>(bucketNr));
+    throw(indexError<int>(bucketNr));
   }
   itsFile->bufferedFile()->seek(itsStartOffset + Int64(bucketNr) * itsBucketSize + bucketOffset);
   // When doing read/write, it can happen that not all bytes are written yet.
   // So accept it if not all bytes could be read.
-  uInt nread = itsFile->bufferedFile()->read(nbytes, itsBuffer + bufferOffset, false);
+  unsigned int nread = itsFile->bufferedFile()->read(nbytes, itsBuffer + bufferOffset, false);
   if (nread < nbytes) {
     memset(itsBuffer + bufferOffset + nread, 0, nbytes - nread);
   }
 }
 
-void BucketBuffered::write(uInt bucketNr, uInt bucketOffset, uInt nbytes) {
+void BucketBuffered::write(unsigned int bucketNr, unsigned int bucketOffset, unsigned int nbytes) {
   if (bucketNr >= itsCurNrOfBuckets) {
     if (bucketNr >= itsNewNrOfBuckets) {
-      throw(indexError<Int>(bucketNr));
+      throw(indexError<int>(bucketNr));
     }
     itsCurNrOfBuckets = bucketNr + 1;
   }
@@ -80,13 +80,13 @@ void BucketBuffered::doFlush() {
 
 void BucketBuffered::doResync() {}
 
-void BucketBuffered::doExtend(uInt) {
+void BucketBuffered::doExtend(unsigned int) {
   // Extend the file by writing the last byte.
   itsBuffer[0] = 0;
   write(itsNewNrOfBuckets - 1, itsBucketSize - 1, 1);
 }
 
-void BucketBuffered::initializeBuckets(uInt bucketNr) {
+void BucketBuffered::initializeBuckets(unsigned int bucketNr) {
   // Initialize this bucket and all uninitialized ones before it.
   if (itsCurNrOfBuckets <= bucketNr) {
     memset(itsBuffer, 0, itsBucketSize);

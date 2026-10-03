@@ -78,7 +78,7 @@ void MDoppler::assure(const Measure &in) {
   }
 }
 
-MDoppler::Types MDoppler::castType(uInt tp) {
+MDoppler::Types MDoppler::castType(unsigned int tp) {
   MDoppler::checkMyTypes();
   AlwaysAssert(tp < MDoppler::N_Types, AipsError);
   return static_cast<MDoppler::Types>(tp);
@@ -91,15 +91,15 @@ const String &MDoppler::showType(MDoppler::Types tp) {
   return tname[tp];
 }
 
-const String &MDoppler::showType(uInt tp) { return MDoppler::showType(MDoppler::castType(tp)); }
+const String &MDoppler::showType(unsigned int tp) { return MDoppler::showType(MDoppler::castType(tp)); }
 
-const String *MDoppler::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
-  static const Int N_name = 8;
-  static const Int N_extra = 0;
+const String *MDoppler::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
+  static const int N_name = 8;
+  static const int N_extra = 0;
   static const String tname[N_name] = {"RADIO", "Z",       "RATIO", "BETA",
                                        "GAMMA", "OPTICAL", "TRUE",  "RELATIVISTIC"};
 
-  static const uInt oname[N_name] = {MDoppler::RADIO, MDoppler::Z, MDoppler::RATIO, MDoppler::BETA,
+  static const unsigned int oname[N_name] = {MDoppler::RADIO, MDoppler::Z, MDoppler::RATIO, MDoppler::BETA,
                                      MDoppler::GAMMA, MDoppler::Z, MDoppler::BETA,  MDoppler::BETA};
 
   MDoppler::checkMyTypes();
@@ -109,7 +109,7 @@ const String *MDoppler::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
   return tname;
 }
 
-const String *MDoppler::allTypes(Int &nall, Int &nextra, const uInt *&typ) const {
+const String *MDoppler::allTypes(int &nall, int &nextra, const unsigned int *&typ) const {
   return MDoppler::allMyTypes(nall, nextra, typ);
 }
 
@@ -120,27 +120,27 @@ void MDoppler::checkMyTypes() {
   static bool first(true);
   if (first) {
     first = false;
-    Int nall, nex;
-    const uInt *typ;
+    int nall, nex;
+    const unsigned int *typ;
     const String *const tps = MDoppler::allMyTypes(nall, nex, typ);
     MDoppler::Types tp;
-    for (Int i = 0; i < nall; i++) {
-      AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(typ[i])) && tp == Int(typ[i]) &&
-                       MDoppler::getType(tp, tps[i]) && tp == Int(typ[i]),
+    for (int i = 0; i < nall; i++) {
+      AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(typ[i])) && tp == int(typ[i]) &&
+                       MDoppler::getType(tp, tps[i]) && tp == int(typ[i]),
                    AipsError);
     }
-    for (Int i = 0; i < N_Types; i++) {
+    for (int i = 0; i < N_Types; i++) {
       AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(i)) && tp == i, AipsError);
     }
   }
 }
 
 bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+  const unsigned int *oname;
+  int nall, nex;
   const String *tname = MDoppler::allMyTypes(nall, nex, oname);
 
-  Int i = Measure::giveMe(in, nall, tname);
+  int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
     return false;
@@ -184,24 +184,24 @@ Quantity MDoppler::get(const Unit &un) const { return data.get(un); }
 
 Measure *MDoppler::clone() const { return (new MDoppler(*this)); }
 
-Vector<Double> MDoppler::shiftFrequency(const Vector<Double> &freq) const {
-  Vector<Double> tmp(freq.nelements());
-  Double factor = sqrt((1 - data.getValue()) / (1 + data.getValue()));
-  for (uInt i = 0; i < freq.nelements(); ++i) tmp[i] = freq[i] * factor;
+Vector<double> MDoppler::shiftFrequency(const Vector<double> &freq) const {
+  Vector<double> tmp(freq.nelements());
+  double factor = sqrt((1 - data.getValue()) / (1 + data.getValue()));
+  for (unsigned int i = 0; i < freq.nelements(); ++i) tmp[i] = freq[i] * factor;
   return tmp;
 }
 
-Quantum<Vector<Double>> MDoppler::shiftFrequency(const Quantum<Vector<Double>> &freq) const {
-  Vector<Double> tmp(freq.getValue().nelements());
+Quantum<Vector<double>> MDoppler::shiftFrequency(const Quantum<Vector<double>> &freq) const {
+  Vector<double> tmp(freq.getValue().nelements());
   tmp = freq.getValue();
-  Double factor = sqrt((1 - data.getValue()) / (1 + data.getValue()));
-  for (uInt i = 0; i < tmp.nelements(); ++i) {
+  double factor = sqrt((1 - data.getValue()) / (1 + data.getValue()));
+  for (unsigned int i = 0; i < tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(Quantity(tmp[i], freq.getFullUnit())).getValue() * factor;
   }
-  for (uInt i = 0; i < tmp.nelements(); ++i) {
+  for (unsigned int i = 0; i < tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
   }
-  return Quantum<Vector<Double>>(tmp, freq.getFullUnit());
+  return Quantum<Vector<double>>(tmp, freq.getFullUnit());
 }
 
 }  // namespace casacore

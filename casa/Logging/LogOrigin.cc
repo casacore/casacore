@@ -97,9 +97,9 @@ LogOrigin &LogOrigin::objectID(const ObjectID &id) {
   return *this;
 }
 
-uInt LogOrigin::line() const { return line_p; }
+unsigned int LogOrigin::line() const { return line_p; }
 
-LogOrigin &LogOrigin::line(uInt which) {
+LogOrigin &LogOrigin::line(unsigned int which) {
   line_p = which;
   return *this;
 }
@@ -166,7 +166,7 @@ ostream &operator<<(ostream &os, const LogOrigin &origin) {
   return os;
 }
 
-SourceLocation SourceLocation::canonicalize(const char *file, Int line) {
+SourceLocation SourceLocation::canonicalize(const char *file, int line) {
   SourceLocation location;
   location.fileName = file;
   location.lineNumber = line;

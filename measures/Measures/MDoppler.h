@@ -207,9 +207,9 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler>> {
   //   <li> AipsError in the uInt interface if illegal code given
   // </thrown>
   // <group>
-  static MDoppler::Types castType(uInt tp);
+  static MDoppler::Types castType(unsigned int tp);
   static const String &showType(MDoppler::Types tp);
-  static const String &showType(uInt tp);
+  static const String &showType(unsigned int tp);
   // </group>
   // Translate string to reference code
   // <group>
@@ -227,8 +227,8 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler>> {
   // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
-  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
+  virtual const String *allTypes(int &nall, int &nextra, const unsigned int *&typ) const;
+  static const String *allMyTypes(int &nall, int &nextra, const unsigned int *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when
@@ -250,8 +250,8 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler>> {
   // simple Double inputs, it is assumed that the values are linearly dependent
   // on frequency. I.e. frequencies given as wavelength or time cannot be used.
   // <group>
-  Vector<Double> shiftFrequency(const Vector<Double> &freq) const;
-  Quantum<Vector<Double>> shiftFrequency(const Quantum<Vector<Double>> &freq) const;
+  Vector<double> shiftFrequency(const Vector<double> &freq) const;
+  Quantum<Vector<double>> shiftFrequency(const Quantum<Vector<double>> &freq) const;
   // </group>
 
   // Make a copy

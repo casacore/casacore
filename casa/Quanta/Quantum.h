@@ -37,7 +37,7 @@ template <class T>
 class Quantum;
 
 // # Typedefs
-typedef Quantum<Double> Quantity;
+typedef Quantum<double> Quantity;
 
 // <summary>
 // Quantities (i.e. dimensioned values)
@@ -418,8 +418,8 @@ class Quantum : public QBase {
   virtual void print(ostream &os) const;
   // Get the type (using QuantumType) of derived Quantum (faster than Strings)
   // <group>
-  virtual uInt type() const;
-  static uInt myType();
+  virtual unsigned int type() const;
+  static unsigned int myType();
   // </group>
 
  private:
@@ -439,7 +439,7 @@ bool readQuantity(Quantity &res, const String &in);
 // </group>
 
 // # Declare extern templates for often used types.
-extern template class Quantum<Double>;
+extern template class Quantum<double>;
 
 }  // namespace casacore
 

@@ -103,7 +103,7 @@ class SDHistoryHandler {
   void resetRow(const Record &row);
 
   // fill - a new row is added on each call, the message time stamp is the current time
-  void fill(const Record &row, Int observationId, const String &message, const String &priority);
+  void fill(const Record &row, int observationId, const String &message, const String &priority);
 
  private:
   MSHistory *msHis_p;

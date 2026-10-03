@@ -105,7 +105,7 @@ class StManColumnArrayAipsIO : public StManColumnAipsIO {
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
@@ -141,19 +141,19 @@ class StManColumnArrayAipsIO : public StManColumnAipsIO {
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.
-  uInt nrelem_p;
+  unsigned int nrelem_p;
 
   // Delete the array at the given index.
   void deleteArray(rownr_t index);
 
   // Put the data of a data block.
   // datap is an array of nrval pointers to arrays.
-  virtual void putData(void* datap, uInt nrval, AipsIO&);
+  virtual void putData(void* datap, unsigned int nrval, AipsIO&);
 
   // Get data arrays into a data block at the given index.
   // datap is an array of pointers to arrays. nrval arrays will
   // be allocated and read starting at datap[index].
-  virtual void getData(void* datap, uInt index, uInt nrval, AipsIO&, uInt version);
+  virtual void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&, unsigned int version);
 };
 
 }  // namespace casacore

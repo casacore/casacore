@@ -131,7 +131,7 @@ class ScalarColumn : public TableColumn {
   // <group>
   void get(rownr_t rownr, T& value) const {
     TABLECOLUMNCHECKROW(rownr);
-    Int off = colCachePtr_p->offset(rownr);
+    int off = colCachePtr_p->offset(rownr);
     if (off >= 0) {
       value = ((T*)(colCachePtr_p->dataPtr()))[off];
     } else {
@@ -246,14 +246,14 @@ class ScalarColumn : public TableColumn {
 
 // # Explicitly instantiate these templates in ScalarColumn_tmpl.cc
 extern template class ScalarColumn<bool>;
-extern template class ScalarColumn<Char>;
-extern template class ScalarColumn<Short>;
-extern template class ScalarColumn<uShort>;
-extern template class ScalarColumn<Int>;
-extern template class ScalarColumn<uInt>;
+extern template class ScalarColumn<char>;
+extern template class ScalarColumn<short>;
+extern template class ScalarColumn<unsigned short>;
+extern template class ScalarColumn<int>;
+extern template class ScalarColumn<unsigned int>;
 extern template class ScalarColumn<Int64>;
-extern template class ScalarColumn<Float>;
-extern template class ScalarColumn<Double>;
+extern template class ScalarColumn<float>;
+extern template class ScalarColumn<double>;
 extern template class ScalarColumn<Complex>;
 extern template class ScalarColumn<DComplex>;
 extern template class ScalarColumn<String>;

@@ -29,39 +29,39 @@
 namespace casacore {
 
 HourangleColumn::~HourangleColumn() {}
-void HourangleColumn::get(rownr_t rowNr, Double& data) { data = itsEngine->getHA(itsAntNr, rowNr); }
+void HourangleColumn::get(rownr_t rowNr, double& data) { data = itsEngine->getHA(itsAntNr, rowNr); }
 
 ParAngleColumn::~ParAngleColumn() {}
-void ParAngleColumn::get(rownr_t rowNr, Double& data) { data = itsEngine->getPA(itsAntNr, rowNr); }
+void ParAngleColumn::get(rownr_t rowNr, double& data) { data = itsEngine->getPA(itsAntNr, rowNr); }
 
 LASTColumn::~LASTColumn() {}
-void LASTColumn::get(rownr_t rowNr, Double& data) { data = itsEngine->getLAST(itsAntNr, rowNr); }
+void LASTColumn::get(rownr_t rowNr, double& data) { data = itsEngine->getLAST(itsAntNr, rowNr); }
 
 HaDecColumn::~HaDecColumn() {}
 IPosition HaDecColumn::shape(rownr_t) { return IPosition(1, 2); }
 bool HaDecColumn::isShapeDefined(rownr_t) { return true; }
-void HaDecColumn::getArray(rownr_t rowNr, Array<Double>& data) {
+void HaDecColumn::getArray(rownr_t rowNr, Array<double>& data) {
   itsEngine->getHaDec(itsAntNr, rowNr, data);
 }
 
 AzElColumn::~AzElColumn() {}
 IPosition AzElColumn::shape(rownr_t) { return IPosition(1, 2); }
 bool AzElColumn::isShapeDefined(rownr_t) { return true; }
-void AzElColumn::getArray(rownr_t rowNr, Array<Double>& data) {
+void AzElColumn::getArray(rownr_t rowNr, Array<double>& data) {
   itsEngine->getAzEl(itsAntNr, rowNr, data);
 }
 
 ItrfColumn::~ItrfColumn() {}
 IPosition ItrfColumn::shape(rownr_t) { return IPosition(1, 2); }
 bool ItrfColumn::isShapeDefined(rownr_t) { return true; }
-void ItrfColumn::getArray(rownr_t rowNr, Array<Double>& data) {
+void ItrfColumn::getArray(rownr_t rowNr, Array<double>& data) {
   itsEngine->getItrf(itsAntNr, rowNr, data);
 }
 
 UVWJ2000Column::~UVWJ2000Column() {}
 IPosition UVWJ2000Column::shape(rownr_t) { return IPosition(1, 3); }
 bool UVWJ2000Column::isShapeDefined(rownr_t) { return true; }
-void UVWJ2000Column::getArray(rownr_t rowNr, Array<Double>& data) {
+void UVWJ2000Column::getArray(rownr_t rowNr, Array<double>& data) {
   itsEngine->getNewUVW(false, rowNr, data);
 }
 

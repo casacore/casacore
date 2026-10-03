@@ -35,7 +35,7 @@ template <class T>
 GNoiseParam<T>::GNoiseParam() : Function<T>(0), genit_p(), noise_p(&genit_p, 0.0, 1.0) {}
 
 template <class T>
-GNoiseParam<T>::GNoiseParam(const Double &mean, const Double &var)
+GNoiseParam<T>::GNoiseParam(const double &mean, const double &var)
     : Function<T>(0), genit_p(), noise_p(&genit_p, mean, var) {}
 
 template <class T>

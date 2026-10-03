@@ -84,7 +84,7 @@ bool LELInterface<T>::replaceScalarExpr(std::shared_ptr<LELInterface<T>>& expr) 
 }
 
 template <class T>
-bool LELInterface<T>::lock(FileLocker::LockType, uInt) {
+bool LELInterface<T>::lock(FileLocker::LockType, unsigned int) {
   return true;
 }
 template <class T>

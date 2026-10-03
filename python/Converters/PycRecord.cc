@@ -34,8 +34,8 @@ namespace python {
 boost::python::dict casa_record_to_python::makeobject(Record const& rec) {
   boost::python::dict d;
   // Copy over the record field by field
-  uInt nf = rec.nfields();
-  for (uInt i = 0; i < nf; i++) {
+  unsigned int nf = rec.nfields();
+  for (unsigned int i = 0; i < nf; i++) {
     d.setdefault((std::string const&)(rec.name(i)),
                  casa_value_to_python::makeobject(rec.asValueHolder(i)));
   }

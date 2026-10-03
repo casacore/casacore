@@ -244,7 +244,7 @@ class TableParseQuery {
   TableExprNode handleFunc(const String& name, const TableExprNodeSet& arguments, const TaQLStyle&);
 
   // Add a column to the list of column names.
-  void handleColumn(Int type, const String& name, const TableExprNode& expr, const String& newName,
+  void handleColumn(int type, const String& name, const TableExprNode& expr, const String& newName,
                     const String& nameMask, const String& newDtype);
 
   // Finish the addition of columns to the list of column names.
@@ -383,7 +383,7 @@ class TableParseQuery {
   TableParseProject tableProject_p;
   // # Name and type of the resulting table (from GIVING part).
   String resultName_p;
-  uInt resultType_p;     // # 0-unknown 1=memory 2=scratch 3=plain
+  unsigned int resultType_p;     // # 0-unknown 1=memory 2=scratch 3=plain
   bool resultCreated_p;  // # Has the result table been created?
   StorageOption storageOption_p;
   Table::EndianFormat endianFormat_p;

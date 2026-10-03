@@ -46,15 +46,15 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <typename T>
 void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                            Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale,
-                            Float& offset, uChar& magicUChar, Short& magicShort, Int& magicInt,
-                            bool& hasBlanks, LogIO& os, FitsInput& infile, uInt whichRep) {
+                            Unit& brightnessUnit, RecordInterface& miscInfo, float& scale,
+                            float& offset, unsigned char& magicUChar, short& magicShort, int& magicInt,
+                            bool& hasBlanks, LogIO& os, FitsInput& infile, unsigned int whichRep) {
   // Shape
   PrimaryArray<T> fitsImage(infile);
-  Int ndim = fitsImage.dims();
+  int ndim = fitsImage.dims();
 
   shape.resize(ndim);
-  for (Int i = 0; i < ndim; i++) {
+  for (int i = 0; i < ndim; i++) {
     shape(i) = fitsImage.dim(i);
   }
 
@@ -65,7 +65,7 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
 
   Record headerRec;
   bool dropStokes = true;
-  Int stokesFITSValue = 1;
+  int stokesFITSValue = 1;
   cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header, os, whichRep,
                                                  shape, dropStokes);
   ndim = shape.nelements();
@@ -77,7 +77,7 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
 
   DataType dataType = whatType<T>();
   //
-  Int bitpix;
+  int bitpix;
   Record subRec = headerRec.asRecord("bitpix");
   subRec.get("value", bitpix);
   headerRec.removeField("bitpix");
@@ -107,8 +107,8 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
 
   // Scale and blank (will only be present for Int and Short)
 
-  Double s = 1.0;
-  Double o = 0.0;
+  double s = 1.0;
+  double o = 0.0;
   if (headerRec.isDefined("bscale")) {
     subRec = headerRec.asRecord("bscale");
     subRec.get("value", s);
@@ -127,7 +127,7 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
   hasBlanks = false;
   if (headerRec.isDefined("blank")) {
     subRec = headerRec.asRecord("blank");
-    Int m;
+    int m;
     subRec.get("value", m);
     headerRec.removeField("blank");
     if (dataType == TpUChar) {
@@ -202,16 +202,16 @@ void FITSImage::crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo&
 
 template <typename T>
 void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                               Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale,
-                               Float& offset, uChar& magicUChar, Short& magicShort, Int& magicInt,
-                               bool& hasBlanks, LogIO& os, FitsInput& infile, uInt whichRep) {
+                               Unit& brightnessUnit, RecordInterface& miscInfo, float& scale,
+                               float& offset, unsigned char& magicUChar, short& magicShort, int& magicInt,
+                               bool& hasBlanks, LogIO& os, FitsInput& infile, unsigned int whichRep) {
   // Shape
 
   ImageExtension<T> fitsImage(infile);
-  Int ndim = fitsImage.dims();
+  int ndim = fitsImage.dims();
 
   shape.resize(ndim);
-  for (Int i = 0; i < ndim; i++) {
+  for (int i = 0; i < ndim; i++) {
     shape(i) = fitsImage.dim(i);
   }
 
@@ -223,7 +223,7 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 
   Record headerRec;
   bool dropStokes = true;
-  Int stokesFITSValue = 1;
+  int stokesFITSValue = 1;
   cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header, os, whichRep,
                                                  shape, dropStokes);
   ndim = shape.nelements();
@@ -234,7 +234,7 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 
   DataType dataType = whatType<T>();
   //
-  Int bitpix;
+  int bitpix;
   Record subRec = headerRec.asRecord("bitpix");
   subRec.get("value", bitpix);
   headerRec.removeField("bitpix");
@@ -264,8 +264,8 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 
   // Scale and blank (will only be present for Int and Short)
 
-  Double s = 1.0;
-  Double o = 0.0;
+  double s = 1.0;
+  double o = 0.0;
   if (headerRec.isDefined("bscale")) {
     subRec = headerRec.asRecord("bscale");
     subRec.get("value", s);
@@ -284,7 +284,7 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
   hasBlanks = false;
   if (headerRec.isDefined("blank")) {
     subRec = headerRec.asRecord("blank");
-    Int m;
+    int m;
     subRec.get("value", m);
     headerRec.removeField("blank");
     if (dataType == TpUChar) {
@@ -361,14 +361,14 @@ void FITSImage::crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageIn
 }
 
 /*
-template void FITSImage::crackHeader<Double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt); template
-void FITSImage::crackHeader<Float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt); template
-void FITSImage::crackHeader<Int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt); template
-void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
-RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
+template void FITSImage::crackHeader<double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int); template
+void FITSImage::crackHeader<float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int); template
+void FITSImage::crackHeader<int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int); template
+void FITSImage::crackHeader<short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &,
+RecordInterface &, float &, float &, short &, int &, Bool &, LogIO &, FitsInput &, unsigned int);
 */
 
 }  // namespace casacore

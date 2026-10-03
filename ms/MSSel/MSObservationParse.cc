@@ -50,15 +50,15 @@ MSObservationParse::MSObservationParse(const MeasurementSet* ms, const MSObserva
     : MSParse(ms, "Observation"), colName(MS::columnName(MS::OBSERVATION_ID)), maxObs_p(1000) {
   idList.resize(0);
   parsedIDList_p.resize(0);
-  Int nrows = obsSubTable.nrow();
+  int nrows = obsSubTable.nrow();
   obsIDList_p.resize(nrows);
   indgen(obsIDList_p);
   columnAsTEN_p = colAsTEN;
   maxObs_p = nrows;
 }
 
-std::vector<Int>& MSObservationParse::accumulateIDs(const Int id0, const Int id1) {
-  Vector<Int> theIDs;
+std::vector<int>& MSObservationParse::accumulateIDs(const int id0, const int id1) {
+  Vector<int> theIDs;
   if (id1 < 0) {
     parsedIDList_p.push_back(id0);
     theIDs.resize(1);
@@ -76,16 +76,16 @@ std::vector<Int>& MSObservationParse::accumulateIDs(const Int id0, const Int id1
   return parsedIDList_p;
 }
 
-void MSObservationParse::appendToIDList(const Vector<Int>& v) {
-  Int currentSize = idList.nelements();
-  Int n = v.nelements() + currentSize;
-  Int j = 0;
+void MSObservationParse::appendToIDList(const Vector<int>& v) {
+  int currentSize = idList.nelements();
+  int n = v.nelements() + currentSize;
+  int j = 0;
 
   idList.resize(n, true);
-  for (Int i = currentSize; i < n; i++) idList[i] = v[j++];
+  for (int i = currentSize; i < n; i++) idList[i] = v[j++];
 }
 
-const TableExprNode* MSObservationParse::selectRangeGTAndLT(const Int& n0, const Int& n1) {
+const TableExprNode* MSObservationParse::selectRangeGTAndLT(const int& n0, const int& n1) {
   // TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
   // 					     (ms()->col(colName) < n1));
   TableExprNode condition = TableExprNode((columnAsTEN_p > n0) && (columnAsTEN_p < n1));
@@ -95,9 +95,9 @@ const TableExprNode* MSObservationParse::selectRangeGTAndLT(const Int& n0, const
        << " (upper bound)";
     throw(MSSelectionObservationParseError(os.str()));
   }
-  Vector<Int> tmp(n1 - n0 - 1);
-  Int j = n0 + 1;
-  for (uInt i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
+  Vector<int> tmp(n1 - n0 - 1);
+  int j = n0 + 1;
+  for (unsigned int i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
   appendToIDList(tmp);
 
   addCondition(node_p, condition);
@@ -105,7 +105,7 @@ const TableExprNode* MSObservationParse::selectRangeGTAndLT(const Int& n0, const
   return &node_p;
 }
 
-const TableExprNode* MSObservationParse::selectRangeGEAndLE(const Int& n0, const Int& n1) {
+const TableExprNode* MSObservationParse::selectRangeGEAndLE(const int& n0, const int& n1) {
   // TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
   // 					     (ms()->col(colName) <= n1));
   TableExprNode condition = TableExprNode((columnAsTEN_p >= n0) && (columnAsTEN_p <= n1));
@@ -115,9 +115,9 @@ const TableExprNode* MSObservationParse::selectRangeGEAndLE(const Int& n0, const
        << " (upper bound)";
     throw(MSSelectionObservationParseError(os.str()));
   }
-  Vector<Int> tmp(n1 - n0 + 1);
-  Int j = n0;
-  for (uInt i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
+  Vector<int> tmp(n1 - n0 + 1);
+  int j = n0;
+  for (unsigned int i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
   appendToIDList(tmp);
 
   addCondition(node_p, condition);
@@ -125,7 +125,7 @@ const TableExprNode* MSObservationParse::selectRangeGEAndLE(const Int& n0, const
   return &node_p;
 }
 
-const TableExprNode* MSObservationParse::selectObservationIds(const Vector<Int>& scanids) {
+const TableExprNode* MSObservationParse::selectObservationIds(const Vector<int>& scanids) {
   if (scanids.size() > 0) {
     //	cerr << "Selecting disjoint list: " << scanids << std::endl;
     // TableExprNode condition = TableExprNode(ms()->col(colName).in(scanids));
@@ -136,57 +136,57 @@ const TableExprNode* MSObservationParse::selectObservationIds(const Vector<Int>&
   return &node_p;
 }
 
-const TableExprNode* MSObservationParse::selectObservationIdsGT(const Vector<Int>& scanids) {
+const TableExprNode* MSObservationParse::selectObservationIdsGT(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p > scanids[0]);
 
-  Int n = maxObs_p - scanids[0] + 1, j;
-  Vector<Int> tmp(n);
+  int n = maxObs_p - scanids[0] + 1, j;
+  Vector<int> tmp(n);
   j = scanids[0] + 1;
-  for (Int i = 0; i < n; i++) tmp[i] = j++;
+  for (int i = 0; i < n; i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSObservationParse::selectObservationIdsLT(const Vector<Int>& scanids) {
+const TableExprNode* MSObservationParse::selectObservationIdsLT(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p < scanids[0]);
-  Vector<Int> tmp(scanids[0]);
-  for (Int i = 0; i < scanids[0]; i++) tmp[i] = i;
+  Vector<int> tmp(scanids[0]);
+  for (int i = 0; i < scanids[0]; i++) tmp[i] = i;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSObservationParse::selectObservationIdsGTEQ(const Vector<Int>& scanids) {
+const TableExprNode* MSObservationParse::selectObservationIdsGTEQ(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p >= scanids[0]);
 
-  Int n = maxObs_p - scanids[0] + 1, j;
-  Vector<Int> tmp(n);
+  int n = maxObs_p - scanids[0] + 1, j;
+  Vector<int> tmp(n);
   j = scanids[0];
-  for (Int i = 0; i < n; i++) tmp[i] = j++;
+  for (int i = 0; i < n; i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSObservationParse::selectObservationIdsLTEQ(const Vector<Int>& scanids) {
+const TableExprNode* MSObservationParse::selectObservationIdsLTEQ(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p <= scanids[0]);
-  Vector<Int> tmp(scanids[0] + 1);
-  for (Int i = 0; i <= scanids[0]; i++) tmp[i] = i;
+  Vector<int> tmp(scanids[0] + 1);
+  for (int i = 0; i <= scanids[0]; i++) tmp[i] = i;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-Vector<Int> MSObservationParse::selectedIDs() { return set_intersection(obsIDList_p, idList); }
+Vector<int> MSObservationParse::selectedIDs() { return set_intersection(obsIDList_p, idList); }
 
 const TableExprNode MSObservationParse::node() { return node_p; }
 

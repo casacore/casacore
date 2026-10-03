@@ -28,13 +28,13 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 #if defined(USE_THREADS)
-std::atomic<uInt> uIntSequence::next(1);  // start at 1 to stay in sync with RegSequence, FIXME fix
+std::atomic<unsigned int> uIntSequence::next(1);  // start at 1 to stay in sync with RegSequence, FIXME fix
                                           // comment, RegSequnce no longer exists
 #else
-uInt uIntSequence::next = 1;
+unsigned int uIntSequence::next = 1;
 #endif
 
-uInt uIntSequence::SgetNext() {
+unsigned int uIntSequence::SgetNext() {
 #if defined(USE_THREADS)
   return next.fetch_add(1);
 #else

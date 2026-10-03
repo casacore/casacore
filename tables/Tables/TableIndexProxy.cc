@@ -81,7 +81,7 @@ void TableIndexProxy::setChanged(const Vector<String>& columnNames) {
       arrIndex_p->setChanged();
     }
   } else {
-    for (uInt i = 0; i < columnNames.nelements(); i++) {
+    for (unsigned int i = 0; i < columnNames.nelements(); i++) {
       if (scaIndex_p != 0) {
         scaIndex_p->setChanged(columnNames(i));
       } else {

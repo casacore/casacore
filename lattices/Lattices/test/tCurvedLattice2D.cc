@@ -40,19 +40,19 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void doIt(MaskedLattice<Int>& lat, uInt axis1, uInt axis2, uInt curveAxis) {
+void doIt(MaskedLattice<int>& lat, unsigned int axis1, unsigned int axis2, unsigned int curveAxis) {
   // Make a straight line from (1,0) to the trc.
   IPosition shp = lat.shape();
-  Int xtop = shp(axis1);
-  Int ytop = shp(axis2);
-  Int nr = xtop - 1;
+  int xtop = shp(axis1);
+  int ytop = shp(axis2);
+  int nr = xtop - 1;
   if (nr > ytop) nr = ytop;
   PixelCurve1D pc(1, 0, nr, nr - 1, nr);
-  CurvedLattice2D<Int> clat(lat, CLIPNearest2D<Int>(), pc, axis1, axis2, curveAxis);
+  CurvedLattice2D<int> clat(lat, CLIPNearest2D<int>(), pc, axis1, axis2, curveAxis);
   // Compose expected output shape.
   IPosition outshp(shp.nelements() - 1);
-  uInt axnr = 0;
-  for (uInt i = 0; i < shp.nelements(); i++) {
+  unsigned int axnr = 0;
+  for (unsigned int i = 0; i < shp.nelements(); i++) {
     if (axnr == curveAxis) outshp[axnr++] = nr;
     if (i != axis1 && i != axis2) {
       outshp[axnr++] = shp[i];
@@ -67,8 +67,8 @@ void doIt(MaskedLattice<Int>& lat, uInt axis1, uInt axis2, uInt curveAxis) {
   AlwaysAssertExit(clat.hasPixelMask() == lat.hasPixelMask());
   AlwaysAssertExit(clat.isPaged() == lat.isPaged());
   // Read all the data of the original and curved lattice.
-  Array<Int> cdata = clat.get();
-  Array<Int> alldata = lat.get();
+  Array<int> cdata = clat.get();
+  Array<int> alldata = lat.get();
   // Compare if they are equal.
   IPosition cblc(outshp.nelements(), 0);
   IPosition ctrc(outshp - 1);
@@ -76,19 +76,19 @@ void doIt(MaskedLattice<Int>& lat, uInt axis1, uInt axis2, uInt curveAxis) {
   IPosition ablc(alldata.ndim(), 0);
   IPosition atrc(alldata.shape() - 1);
   outshp[curveAxis] = 1;
-  for (Int i = 0; i < nr; i++) {
+  for (int i = 0; i < nr; i++) {
     cblc[curveAxis] = i;
     ctrc[curveAxis] = i;
     ablc[axis1] = i + 1;
     atrc[axis1] = i + 1;
     ablc[axis2] = i;
     atrc[axis2] = i;
-    Array<Int> achunk = alldata(ablc, atrc);
+    Array<int> achunk = alldata(ablc, atrc);
     AlwaysAssert(allEQ(achunk.reform(outshp), cdata(cblc, ctrc)), AipsError);
   }
   // Iterate through the curved lattice and check if the data match.
-  RO_LatticeIterator<Int> iter(clat, outshp);
-  Int i = 0;
+  RO_LatticeIterator<int> iter(clat, outshp);
+  int i = 0;
   for (iter.reset(); !iter.atEnd(); iter++) {
     cblc[curveAxis] = i;
     ctrc[curveAxis] = i;
@@ -97,14 +97,14 @@ void doIt(MaskedLattice<Int>& lat, uInt axis1, uInt axis2, uInt curveAxis) {
   }
 }
 
-void doIt2(const Lattice<Int>& lattice) {
-  SubLattice<Int> mlat(lattice);
+void doIt2(const Lattice<int>& lattice) {
+  SubLattice<int> mlat(lattice);
   doIt(mlat, 0, 1, 0);
   doIt(mlat, 1, 0, 0);
 }
 
-void doIt3(const Lattice<Int>& lattice) {
-  SubLattice<Int> mlat(lattice);
+void doIt3(const Lattice<int>& lattice) {
+  SubLattice<int> mlat(lattice);
   doIt(mlat, 0, 1, 1);
   doIt(mlat, 0, 1, 0);
   doIt(mlat, 0, 2, 1);
@@ -123,31 +123,31 @@ int main(int argc, const char* argv[]) {
   try {
     {
       const IPosition latticeShape(2, 16, 12);
-      Array<Int> arr(latticeShape);
+      Array<int> arr(latticeShape);
       indgen(arr);
-      ArrayLattice<Int> lattice(arr);
+      ArrayLattice<int> lattice(arr);
       doIt2(lattice);
-      PagedArray<Int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
+      PagedArray<int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
       pa.put(arr);
       doIt2(pa);
     }
     {
       const IPosition latticeShape(3, 16, 12, 4);
-      Array<Int> arr(latticeShape);
+      Array<int> arr(latticeShape);
       indgen(arr);
-      ArrayLattice<Int> lattice(arr);
+      ArrayLattice<int> lattice(arr);
       doIt3(lattice);
-      PagedArray<Int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
+      PagedArray<int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
       pa.put(arr);
       doIt3(pa);
     }
     {
       const IPosition latticeShape(4, 16, 12, 4, 32);
-      Array<Int> arr(latticeShape);
+      Array<int> arr(latticeShape);
       indgen(arr);
-      ArrayLattice<Int> lattice(arr);
+      ArrayLattice<int> lattice(arr);
       doIt3(lattice);
-      PagedArray<Int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
+      PagedArray<int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
       pa.put(arr);
       doIt3(pa);
     }
@@ -160,40 +160,40 @@ int main(int argc, const char* argv[]) {
       inp.create("ny", "64", "Number of pixels along the y-axis", "int");
       inp.create("nz", "64", "Number of pixels along the z-axis", "int");
       inp.readArguments(argc, argv);
-      const uInt nx = inp.getInt("nx");
-      const uInt ny = inp.getInt("ny");
-      const uInt nz = inp.getInt("nz");
+      const unsigned int nx = inp.getInt("nx");
+      const unsigned int ny = inp.getInt("ny");
+      const unsigned int nz = inp.getInt("nz");
       IPosition latticeShape(3, nx, ny, nz);
       {
-        PagedArray<Int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
-        Array<Int> arr(IPosition(3, nx, ny, 1));
+        PagedArray<int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
+        Array<int> arr(IPosition(3, nx, ny, 1));
         indgen(arr);
-        LatticeIterator<Int> iter(pa, IPosition(3, nx, ny, 1));
+        LatticeIterator<int> iter(pa, IPosition(3, nx, ny, 1));
         for (iter.reset(); !iter.atEnd(); iter++) {
           iter.woCursor() = arr;
-          arr += Int(arr.nelements());
+          arr += int(arr.nelements());
         }
         cout << "Filled PagedArray with shape " << latticeShape << endl;
       }
-      PagedArray<Int> pa("tCurvedLattice2D_tmp.pa");
-      SubLattice<Int> mlat(pa);
+      PagedArray<int> pa("tCurvedLattice2D_tmp.pa");
+      SubLattice<int> mlat(pa);
       // Make a straight line from (0,0) to the trc.
       IPosition shp = pa.shape();
-      Int xtop = shp(0);
-      Int ytop = shp(1);
-      Int nr = xtop;
+      int xtop = shp(0);
+      int ytop = shp(1);
+      int nr = xtop;
       if (nr > ytop) nr = ytop;
       PixelCurve1D pc(0, 0, shp(0) - 1, shp(1) - 1, nr);
       cout << "nr=" << nr << endl;
       {
-        CurvedLattice2D<Int> clat(mlat, CLIPNearest2D<Int>(), pc, 0, 1, 0);
+        CurvedLattice2D<int> clat(mlat, CLIPNearest2D<int>(), pc, 0, 1, 0);
         Timer timer;
         clat.get();
         timer.show("curved 0,1,0");
         pa.showCacheStatistics(cout);
       }
       {
-        CurvedLattice2D<Int> clat(mlat, CLIPNearest2D<Int>(), pc, 0, 1, 1);
+        CurvedLattice2D<int> clat(mlat, CLIPNearest2D<int>(), pc, 0, 1, 1);
         Timer timer;
         clat.get();
         timer.show("curved 0,1,1");

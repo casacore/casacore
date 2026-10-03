@@ -181,7 +181,7 @@ class DataManagerColumn {
 
   // Set the maximum length of the value (can be used for strings).
   // By default the maximum length is ignored.
-  virtual void setMaxLength(uInt maxLength);
+  virtual void setMaxLength(unsigned int maxLength);
 
   // Set the shape of all (fixed-shaped) arrays in the column.
   // Effectively it is the same as setShapeColumn, but it also sets
@@ -206,7 +206,7 @@ class DataManagerColumn {
 
   // Get the dimensionality of the item in the given row.
   // By default it returns shape(rownr).nelements().
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the item in the given row.
   // By default it returns a zero-length IPosition (for a scalar value).
@@ -235,11 +235,11 @@ class DataManagerColumn {
   // declare all virtual functions with the same name in a derived class.
   // <group>
   void get(rownr_t rownr, bool* dataPtr) { getBool(rownr, dataPtr); }
-  void get(rownr_t rownr, uChar* dataPtr) { getuChar(rownr, dataPtr); }
-  void get(rownr_t rownr, Short* dataPtr) { getShort(rownr, dataPtr); }
-  void get(rownr_t rownr, uShort* dataPtr) { getuShort(rownr, dataPtr); }
-  void get(rownr_t rownr, Int* dataPtr) { getInt(rownr, dataPtr); }
-  void get(rownr_t rownr, uInt* dataPtr) { getuInt(rownr, dataPtr); }
+  void get(rownr_t rownr, unsigned char* dataPtr) { getuChar(rownr, dataPtr); }
+  void get(rownr_t rownr, short* dataPtr) { getShort(rownr, dataPtr); }
+  void get(rownr_t rownr, unsigned short* dataPtr) { getuShort(rownr, dataPtr); }
+  void get(rownr_t rownr, int* dataPtr) { getInt(rownr, dataPtr); }
+  void get(rownr_t rownr, unsigned int* dataPtr) { getuInt(rownr, dataPtr); }
   void get(rownr_t rownr, Int64* dataPtr) { getInt64(rownr, dataPtr); }
   void get(rownr_t rownr, float* dataPtr) { getfloat(rownr, dataPtr); }
   void get(rownr_t rownr, double* dataPtr) { getdouble(rownr, dataPtr); }
@@ -259,11 +259,11 @@ class DataManagerColumn {
   // declare all virtual functions with the same name in a derived class.
   // <group>
   void put(rownr_t rownr, const bool* dataPtr) { putBool(rownr, dataPtr); }
-  void put(rownr_t rownr, const uChar* dataPtr) { putuChar(rownr, dataPtr); }
-  void put(rownr_t rownr, const Short* dataPtr) { putShort(rownr, dataPtr); }
-  void put(rownr_t rownr, const uShort* dataPtr) { putuShort(rownr, dataPtr); }
-  void put(rownr_t rownr, const Int* dataPtr) { putInt(rownr, dataPtr); }
-  void put(rownr_t rownr, const uInt* dataPtr) { putuInt(rownr, dataPtr); }
+  void put(rownr_t rownr, const unsigned char* dataPtr) { putuChar(rownr, dataPtr); }
+  void put(rownr_t rownr, const short* dataPtr) { putShort(rownr, dataPtr); }
+  void put(rownr_t rownr, const unsigned short* dataPtr) { putuShort(rownr, dataPtr); }
+  void put(rownr_t rownr, const int* dataPtr) { putInt(rownr, dataPtr); }
+  void put(rownr_t rownr, const unsigned int* dataPtr) { putuInt(rownr, dataPtr); }
   void put(rownr_t rownr, const Int64* dataPtr) { putInt64(rownr, dataPtr); }
   void put(rownr_t rownr, const float* dataPtr) { putfloat(rownr, dataPtr); }
   void put(rownr_t rownr, const double* dataPtr) { putdouble(rownr, dataPtr); }
@@ -390,11 +390,11 @@ class DataManagerColumn {
   // The default implementation throws an "invalid operation" exception.
   // <group>
   virtual void getBool(rownr_t rownr, bool* dataPtr);
-  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
-  virtual void getShort(rownr_t rownr, Short* dataPtr);
-  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
-  virtual void getInt(rownr_t rownr, Int* dataPtr);
-  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
+  virtual void getuChar(rownr_t rownr, unsigned char* dataPtr);
+  virtual void getShort(rownr_t rownr, short* dataPtr);
+  virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
+  virtual void getInt(rownr_t rownr, int* dataPtr);
+  virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
   virtual void getInt64(rownr_t rownr, Int64* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
@@ -409,11 +409,11 @@ class DataManagerColumn {
   // The default implementation throws an "invalid operation" exception.
   // <group>
   virtual void putBool(rownr_t rownr, const bool* dataPtr);
-  virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
-  virtual void putShort(rownr_t rownr, const Short* dataPtr);
-  virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
-  virtual void putInt(rownr_t rownr, const Int* dataPtr);
-  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
+  virtual void putuChar(rownr_t rownr, const unsigned char* dataPtr);
+  virtual void putShort(rownr_t rownr, const short* dataPtr);
+  virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr);
+  virtual void putInt(rownr_t rownr, const int* dataPtr);
+  virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr);
   virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
   virtual void putfloat(rownr_t rownr, const float* dataPtr);
   virtual void putdouble(rownr_t rownr, const double* dataPtr);
@@ -428,15 +428,15 @@ class DataManagerColumn {
   void getValueGeneric(rownr_t rownr, T* dataPtr) {
     if constexpr (std::is_same_v<T, bool>) {
       getBool(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, uChar>) {
+    } else if constexpr (std::is_same_v<T, unsigned char>) {
       getuChar(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, Short>) {
+    } else if constexpr (std::is_same_v<T, short>) {
       getShort(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, uShort>) {
+    } else if constexpr (std::is_same_v<T, unsigned short>) {
       getuShort(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, Int>) {
+    } else if constexpr (std::is_same_v<T, int>) {
       getInt(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, uInt>) {
+    } else if constexpr (std::is_same_v<T, unsigned int>) {
       getuInt(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, Int64>) {
       getInt64(rownr, dataPtr);
@@ -459,15 +459,15 @@ class DataManagerColumn {
   void putValueGeneric(rownr_t rownr, const T* dataPtr) {
     if constexpr (std::is_same_v<T, bool>) {
       putBool(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, uChar>) {
+    } else if constexpr (std::is_same_v<T, unsigned char>) {
       putuChar(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, Short>) {
+    } else if constexpr (std::is_same_v<T, short>) {
       putShort(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, uShort>) {
+    } else if constexpr (std::is_same_v<T, unsigned short>) {
       putuShort(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, Int>) {
+    } else if constexpr (std::is_same_v<T, int>) {
       putInt(rownr, dataPtr);
-    } else if constexpr (std::is_same_v<T, uInt>) {
+    } else if constexpr (std::is_same_v<T, unsigned int>) {
       putuInt(rownr, dataPtr);
     } else if constexpr (std::is_same_v<T, Int64>) {
       putInt64(rownr, dataPtr);

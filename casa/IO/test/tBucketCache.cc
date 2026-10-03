@@ -36,8 +36,8 @@
 
 void a(bool);
 void b(bool);
-void c(uInt bufSize);
-void d(uInt bufSize);
+void c(unsigned int bufSize);
+void d(unsigned int bufSize);
 
 int main(int argc, const char*[]) {
   try {
@@ -58,7 +58,7 @@ int main(int argc, const char*[]) {
   return 0;  // exit with success status
 }
 
-static uInt counter = 0;
+static unsigned int counter = 0;
 
 // The toLocal and fromLocal function.
 // These versions copy the buffer in a reversed way.
@@ -89,11 +89,11 @@ void aFromLocal(void*, char* data, const char* local) {
 void aDeleteBuffer(void*, char* buffer) { delete[] buffer; }
 char* aInitBuffer(void*) {
   char* ptr = new char[32768];
-  for (uInt i = 0; i < 32768; i++) {
+  for (unsigned int i = 0; i < 32768; i++) {
     ptr[i] = 0;
   }
-  *(Int*)ptr = ++counter;
-  *(Int*)(ptr + 32760) = counter;
+  *(int*)ptr = ++counter;
+  *(int*)(ptr + 32760) = counter;
   return ptr;
 }
 
@@ -112,10 +112,10 @@ void a(bool) {
   BucketFile file("tBucketCache_tmp.data");
   file.open();
   BucketCache cache(&file, 512, 32768, 5, 10, 0, aToLocal, aFromLocal, aInitBuffer, aDeleteBuffer);
-  uInt i;
+  unsigned int i;
   union {
     char buf[32768];
-    Int bufi[32768 / 4];
+    int bufi[32768 / 4];
   };
   for (i = 0; i < 32768; i++) {
     buf[i] = 0;
@@ -130,10 +130,10 @@ void a(bool) {
   }
   cache.extend(10);
   char* data = cache.getBucket(110);
-  *(Int*)data = 110;
-  *(Int*)(data + 32760) = 110;
+  *(int*)data = 110;
+  *(int*)(data + 32760) = 110;
   cache.setDirty();
-  Int rec[128];
+  int rec[128];
   for (i = 0; i < 128; i++) {
     rec[i] = i;
   }
@@ -148,8 +148,8 @@ void b(bool) {
   // Open the file.
   BucketFile file("tBucketCache_tmp.data", false);
   file.open();
-  Int i;
-  Int rec[128];
+  int i;
+  int rec[128];
   file.read((char*)rec, 512);
   for (i = 1; i < 128; i++) {
     if (rec[i] != i) {
@@ -166,14 +166,14 @@ void b(bool) {
   }
   for (i = 0; i < 5; i++) {
     char* buf = cache.getBucket(i);
-    if (*(Int*)buf != i + 1 || *(Int*)(buf + 32760) != i + 1) {
+    if (*(int*)buf != i + 1 || *(int*)(buf + 32760) != i + 1) {
       cout << "Error in bucket " << i << endl;
     }
   }
   cache.resize(20);
   for (i = 0; i < 100; i++) {
     char* buf = cache.getBucket(i + 5);
-    if (*(Int*)buf != i + 1 || *(Int*)(buf + 32760) != i + 10) {
+    if (*(int*)buf != i + 1 || *(int*)(buf + 32760) != i + 10) {
       cout << "Error in bucket " << i + 5 << endl;
     }
   }
@@ -181,11 +181,11 @@ void b(bool) {
   for (i = 0; i < 10; i++) {
     char* buf = cache.getBucket(i + 105);
     if (i == 5) {
-      if (*(Int*)buf != 110 || *(Int*)(buf + 32760) != 110) {
+      if (*(int*)buf != 110 || *(int*)(buf + 32760) != 110) {
         cout << "Error in bucket " << i << endl;
       }
     } else {
-      if (*(Int*)buf != i + 6 || *(Int*)(buf + 32760) != i + 6) {
+      if (*(int*)buf != i + 6 || *(int*)(buf + 32760) != i + 6) {
         cout << "Error in bucket " << i + 105 << endl;
       }
     }
@@ -193,18 +193,18 @@ void b(bool) {
   cout << "checked " << cache.nBucket() << " buckets" << endl;
 }
 
-void c(uInt) {
+void c(unsigned int) {
   Timer timer;
   // Open the file.
   BucketFile file("tBucketCache_tmp.data", false);
   file.open();
-  uInt i;
-  Int rec[128];
+  unsigned int i;
+  int rec[128];
   file.read((char*)rec, 512);
   BucketCache cache(&file, 512, 32768, rec[0], 10, 0, aToLocal, aFromLocal, aInitBuffer,
                     aDeleteBuffer);
   cache.get((char*)rec, 512, 512 + cache.nBucket() * 32768);
-  for (uInt j = 0; j < 25; j++) {
+  for (unsigned int j = 0; j < 25; j++) {
     for (i = 0; i < 100; i++) {
       cache.getBucket(i);
     }
@@ -215,18 +215,18 @@ void c(uInt) {
   cout << "<<<" << endl;
 }
 
-void d(uInt) {
+void d(unsigned int) {
   Timer timer;
   // Open the file.
   BucketFile file("tBucketCache_tmp.data", false);
   file.open();
-  uInt i;
-  Int rec[128];
+  unsigned int i;
+  int rec[128];
   file.read((char*)rec, 512);
   BucketCache cache(&file, 512, 32768, rec[0], 10, 0, bToLocal, bFromLocal, aInitBuffer,
                     aDeleteBuffer);
   cache.get((char*)rec, 512, 512 + cache.nBucket() * 32768);
-  for (uInt j = 0; j < 50; j++) {
+  for (unsigned int j = 0; j < 50; j++) {
     for (i = 0; i < 100; i++) {
       cache.getBucket(i);
     }

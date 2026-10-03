@@ -55,13 +55,13 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // MaskedLatticeStatsDataProvider each loop (in that case, you probably will want
   // to create a single object before the loop and use setLattice() to update
   // its lattice).
-  MaskedLatticeStatsDataProvider(MaskedLattice<T>& lattice, uInt iteratorLimitBytes = 4096 * 4096);
+  MaskedLatticeStatsDataProvider(MaskedLattice<T>& lattice, unsigned int iteratorLimitBytes = 4096 * 4096);
 
   ~MaskedLatticeStatsDataProvider();
 
   void operator++();
 
-  uInt estimatedSteps() const;
+  unsigned int estimatedSteps() const;
 
   // Are there any data sets left to provide?
   bool atEnd() const;
@@ -82,7 +82,7 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   const bool* getMask();
 
   // returns something reasonable based on the lattice size.
-  uInt getNMaxThreads() const;
+  unsigned int getNMaxThreads() const;
 
   // Does the current data set have an associated mask?
   bool hasMask() const;
@@ -102,7 +102,7 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // MaskedLatticeStatsDataProvider each loop (in that case, you probably will want
   // to create a single object before the loop and use setLattice() to update
   // its lattice).
-  void setLattice(const MaskedLattice<T>& lattice, uInt iteratorLimitBytes = 4096 * 4096);
+  void setLattice(const MaskedLattice<T>& lattice, unsigned int iteratorLimitBytes = 4096 * 4096);
 
   // <group>
   // see base class documentation.
@@ -118,7 +118,7 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   const T* _currentPtr;
   const bool* _currentMaskPtr;
   bool _delData, _delMask, _atEnd;
-  uInt _nMaxThreads;
+  unsigned int _nMaxThreads;
 
   void _freeStorage();
 };

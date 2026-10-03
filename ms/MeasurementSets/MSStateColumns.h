@@ -77,28 +77,28 @@ class MSStateColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Double>& cal() { return cal_p; }
-  ScalarQuantColumn<Double>& calQuant() { return calQuant_p; }
+  ScalarColumn<double>& cal() { return cal_p; }
+  ScalarQuantColumn<double>& calQuant() { return calQuant_p; }
   ScalarColumn<bool>& flagRow() { return flagRow_p; }
-  ScalarColumn<Double>& load() { return load_p; }
-  ScalarQuantColumn<Double>& loadQuant() { return loadQuant_p; }
+  ScalarColumn<double>& load() { return load_p; }
+  ScalarQuantColumn<double>& loadQuant() { return loadQuant_p; }
   ScalarColumn<String>& obsMode() { return obsMode_p; }
   ScalarColumn<bool>& ref() { return ref_p; }
   ScalarColumn<bool>& sig() { return sig_p; }
-  ScalarColumn<Int>& subScan() { return subScan_p; }
+  ScalarColumn<int>& subScan() { return subScan_p; }
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Double>& cal() const { return cal_p; }
-  const ScalarQuantColumn<Double>& calQuant() const { return calQuant_p; }
+  const ScalarColumn<double>& cal() const { return cal_p; }
+  const ScalarQuantColumn<double>& calQuant() const { return calQuant_p; }
   const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
-  const ScalarColumn<Double>& load() const { return load_p; }
-  const ScalarQuantColumn<Double>& loadQuant() const { return loadQuant_p; }
+  const ScalarColumn<double>& load() const { return load_p; }
+  const ScalarQuantColumn<double>& loadQuant() const { return loadQuant_p; }
   const ScalarColumn<String>& obsMode() const { return obsMode_p; }
   const ScalarColumn<bool>& ref() const { return ref_p; }
   const ScalarColumn<bool>& sig() const { return sig_p; }
-  const ScalarColumn<Int>& subScan() const { return subScan_p; }
+  const ScalarColumn<int>& subScan() const { return subScan_p; }
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -111,9 +111,9 @@ class MSStateColumns {
   // to see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int64 matchState(const Quantum<Double>& stateCalQ, const Quantum<Double>& stateLoadQ,
+  Int64 matchState(const Quantum<double>& stateCalQ, const Quantum<double>& stateLoadQ,
                    const String& stateObsMode, const bool& stateRef, const bool& stateSig,
-                   const Int& stateSubScan, const Quantum<Double>& tolerance, Int64 tryRow = -1);
+                   const int& stateSubScan, const Quantum<double>& tolerance, Int64 tryRow = -1);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -130,17 +130,17 @@ class MSStateColumns {
   MSStateColumns& operator=(const MSStateColumns&);
 
   // # required columns
-  ScalarColumn<Double> cal_p;
+  ScalarColumn<double> cal_p;
   ScalarColumn<bool> flagRow_p;
-  ScalarColumn<Double> load_p;
+  ScalarColumn<double> load_p;
   ScalarColumn<String> obsMode_p;
   ScalarColumn<bool> ref_p;
   ScalarColumn<bool> sig_p;
-  ScalarColumn<Int> subScan_p;
+  ScalarColumn<int> subScan_p;
 
   // Access to Quantum columns
-  ScalarQuantColumn<Double> calQuant_p;
-  ScalarQuantColumn<Double> loadQuant_p;
+  ScalarQuantColumn<double> calQuant_p;
+  ScalarQuantColumn<double> loadQuant_p;
 };
 
 // # Define the RO version for backward compatibility.

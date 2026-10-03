@@ -75,7 +75,7 @@ ImageConcat<T>::ImageConcat()
       isContig_p(true) {}
 
 template <class T>
-ImageConcat<T>::ImageConcat(uInt axis, bool tempClose, bool combineMiscInfo)
+ImageConcat<T>::ImageConcat(unsigned int axis, bool tempClose, bool combineMiscInfo)
     : latticeConcat_p(axis, tempClose),
       combineMiscInfo_p(combineMiscInfo),
       warnAxisNames_p(true),
@@ -161,13 +161,13 @@ ImageConcat<T>::ImageConcat(const JsonKVMap& jmap, const String& fileName)
       fileName_p(Path(fileName).absoluteName()) {
   // This must be the opposite of function save.
   AlwaysAssert(jmap.getInt("Version", 1) == 1, AipsError);
-  uInt axis = jmap.get("Axis").getInt();
+  unsigned int axis = jmap.get("Axis").getInt();
   bool tmpClose = jmap.getBool("TempClose", true);
   Vector<String> names(jmap.get("Images").getArrayString());
   latticeConcat_p = LatticeConcat<T>(axis, tmpClose);
   // Combine miscinfo if not defined in the Json file.
   combineMiscInfo_p = !jmap.isDefined("MiscInfo");
-  for (uInt i = 0; i < names.size(); ++i) {
+  for (unsigned int i = 0; i < names.size(); ++i) {
     // Add directory of parent as needed.
     String name = Path::addDirectory(names[i], fileName_p);
     LatticeBase* latt = ImageOpener::openImage(name);
@@ -191,7 +191,7 @@ template <class T>
 void ImageConcat<T>::save(const String& fileName) const {
   // Note that an ImageConcat is opened by ImageOpener.
   // Check that all images used are persistent.
-  for (uInt i = 0; i < latticeConcat_p.nlattices(); ++i) {
+  for (unsigned int i = 0; i < latticeConcat_p.nlattices(); ++i) {
     if (!latticeConcat_p.lattice(i)->isPersistent()) {
       throw AipsError(
           "ImageConcat cannot be made persistent, because one of "
@@ -215,7 +215,7 @@ void ImageConcat<T>::save(const String& fileName) const {
   jout.write("Axis", latticeConcat_p.axis());
   jout.write("TempClose", latticeConcat_p.isTempClose());
   Vector<String> names(latticeConcat_p.nlattices());
-  for (uInt i = 0; i < latticeConcat_p.nlattices(); ++i) {
+  for (unsigned int i = 0; i < latticeConcat_p.nlattices(); ++i) {
     String name = latticeConcat_p.lattice(i)->name(false);
     String fname = Path(name).absoluteName();
     // Make path relative to parent, so parent can be moved.
@@ -243,8 +243,8 @@ bool ImageConcat<T>::setImageInfo(const ImageInfo& info) {
   // Set the ImageInfo in each individual image.
   // If the ImageConcat and the BeamInfo are along the frequency or stokes axis,
   // take the appropriate subset.
-  uInt ndone = 0;
-  for (uInt i = 0; i < latticeConcat_p.nlattices(); ++i) {
+  unsigned int ndone = 0;
+  for (unsigned int i = 0; i < latticeConcat_p.nlattices(); ++i) {
     ImageInterface<T>& img = dynamic_cast<ImageInterface<T>&>(*(latticeConcat_p.lattice(i)));
     ImageInfo ii = img.imageInfo();
     ndone +=
@@ -270,7 +270,7 @@ template <class T>
 void ImageConcat<T>::setImage(ImageInterface<T>& image, bool relax) {
   LogIO os(LogOrigin("ImageConcat", __func__, WHERE));
   // How many images have we set so far ?
-  const uInt nIm = latticeConcat_p.nlattices();
+  const unsigned int nIm = latticeConcat_p.nlattices();
   IPosition oldShape = nIm > 0 ? this->shape() : IPosition();
 
   // LatticeConcat allows the dimensionality to increase by
@@ -313,8 +313,8 @@ void ImageConcat<T>::setImage(ImageInterface<T>& image, bool relax) {
     const CoordinateSystem& cSys = image.coordinates();
     ThrowIf(cSys.nCoordinates() != cSys0.nCoordinates(),
             "Images have inconsistent numbers of coordinates");
-    Int coord0, axisInCoordinate0;
-    Int coord, axisInCoordinate;
+    int coord0, axisInCoordinate0;
+    int coord, axisInCoordinate;
     cSys0.findPixelAxis(coord0, axisInCoordinate0, latticeConcat_p.axis());
     cSys.findPixelAxis(coord, axisInCoordinate, latticeConcat_p.axis());
     ThrowIf(coord0 < 0 || coord < 0, "Pixel axis has been removed for concatenation axis");
@@ -375,7 +375,7 @@ void ImageConcat<T>::setLattice(MaskedLattice<T>& lattice) {
 
   // How many images have we set so far ?
 
-  const uInt nIm = latticeConcat_p.nlattices();
+  const unsigned int nIm = latticeConcat_p.nlattices();
 
   // Must have already set an image before we can set a lattice
 
@@ -433,19 +433,19 @@ bool ImageConcat<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) 
 }
 
 template <class T>
-IPosition ImageConcat<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition ImageConcat<T>::doNiceCursorShape(unsigned int maxPixels) const {
   // Return the smallest cursor shape along the non X-Y direction from the constituent images
   if (nimages() > 0) {
     /// if image has 1 or  2 axes return cursor shape of first image
     if (shape().nelements() <= 2) {
       return image(0).niceCursorShape(maxPixels);
     }
-    Vector<Int> dirpixaxes, dirworldaxes;
-    Int coordaxis;
+    Vector<int> dirpixaxes, dirworldaxes;
+    int coordaxis;
     CoordinateUtil::findDirectionAxes(dirpixaxes, dirworldaxes, coordaxis, coordinates());
     Int64 minprod = std::numeric_limits<Int64>::max();
-    Int minimage = -1;
-    for (uInt k = 0; k < nimages(); ++k) {
+    int minimage = -1;
+    for (unsigned int k = 0; k < nimages(); ++k) {
       IPosition curshape = image(k).niceCursorShape(maxPixels);
       Int64 prod = curshape.product() / Int64(curshape(dirpixaxes(0)) * curshape(dirpixaxes(1)));
       if (prod < minprod) {
@@ -473,7 +473,7 @@ LatticeIterInterface<T>* ImageConcat<T>::makeIter(const LatticeNavigator& nav, b
 
 template <class T>
 void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateSystem& cSys1,
-                                      const CoordinateSystem& cSys2, LogIO& os, uInt axis,
+                                      const CoordinateSystem& cSys2, LogIO& os, unsigned int axis,
                                       bool relax) {
   //
   // cSys1 from last image
@@ -487,17 +487,17 @@ void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateS
   // convert pixel -1 to Stokes.  Bloody Stokes.  coord already checked
   // to be consistent
 
-  Int coord, axisInCoordinate;
+  int coord, axisInCoordinate;
   cSys2.findPixelAxis(coord, axisInCoordinate, axis);
   if (cSys2.type(coord) == Coordinate::STOKES) {
     // See if we can make a Stokes coordinate from all the previous
     // Stokes and the new Stokes.  If we can, its ok
 
-    Vector<Int> stokes = makeNewStokes(coordinates().stokesCoordinate(coord).stokes(),
+    Vector<int> stokes = makeNewStokes(coordinates().stokesCoordinate(coord).stokes(),
                                        cSys2.stokesCoordinate(coord).stokes());
 
     if (stokes.nelements() == 0) {
-      String coordType = cSys1.spectralAxisNumber() == (Int)axis ? "Spectral" : "Tabular";
+      String coordType = cSys1.spectralAxisNumber() == (int)axis ? "Spectral" : "Tabular";
       ImageInfo::logMessage(
           warnContig_p, os, relax,
           "Images are not contiguous along the "
@@ -506,13 +506,13 @@ void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateS
       isContig_p = false;
     }
   } else {
-    Int worldAxis;
-    Double axisVal1 = coordConvert(worldAxis, os, cSys1, axis, Double(shape1(axis) - 1));
-    Double axisVal2 = coordConvert(worldAxis, os, cSys2, axis, Double(-1.0));
+    int worldAxis;
+    double axisVal1 = coordConvert(worldAxis, os, cSys1, axis, double(shape1(axis) - 1));
+    double axisVal2 = coordConvert(worldAxis, os, cSys2, axis, double(-1.0));
 
-    Double inc = cSys1.increment()(worldAxis);
+    double inc = cSys1.increment()(worldAxis);
     if (abs(axisVal2 - axisVal1) > 0.01 * abs(inc)) {
-      String coordType = cSys1.spectralAxisNumber() == (Int)axis ? "Spectral" : "Tabular";
+      String coordType = cSys1.spectralAxisNumber() == (int)axis ? "Spectral" : "Tabular";
       ImageInfo::logMessage(
           warnContig_p, os, relax,
           "Images are not contiguous along the "
@@ -524,10 +524,10 @@ void ImageConcat<T>::_checkContiguous(const IPosition& shape1, const CoordinateS
 }
 
 template <class T>
-Double ImageConcat<T>::coordConvert(Int& worldAxis, LogIO& os, const CoordinateSystem& cSys,
-                                    uInt axis, Double pixelCoord) const {
-  Vector<Double> pixel(cSys.nPixelAxes());
-  Vector<Double> world(cSys.nWorldAxes());
+double ImageConcat<T>::coordConvert(int& worldAxis, LogIO& os, const CoordinateSystem& cSys,
+                                    unsigned int axis, double pixelCoord) const {
+  Vector<double> pixel(cSys.nPixelAxes());
+  Vector<double> world(cSys.nWorldAxes());
   //
   pixel = cSys.referencePixel();
   pixel(axis) = pixelCoord;
@@ -550,7 +550,7 @@ void ImageConcat<T>::checkNonConcatAxisCoordinates(LogIO& os, const ImageInterfa
 // set. The ImageSummary objects gives us the descriptors in pixel
 // axis order
 {
-  const uInt axis = latticeConcat_p.axis();
+  const unsigned int axis = latticeConcat_p.axis();
   ImageSummary<T> sumIn(imageIn);
   //
   if (latticeConcat_p.isTempClose()) latticeConcat_p.reopen(0);
@@ -560,15 +560,15 @@ void ImageConcat<T>::checkNonConcatAxisCoordinates(LogIO& os, const ImageInterfa
   if (latticeConcat_p.isTempClose()) latticeConcat_p.tempClose(0);
   //
   bool pixelOrder = true;
-  const uInt dim = sumIn.ndim();
-  Vector<Double> refPix = sumIn.referencePixels();
-  Vector<Double> refPix0 = sum0.referencePixels();
-  Vector<Double> refVal = sumIn.referenceValues(pixelOrder);
-  Vector<Double> refVal0 = sum0.referenceValues(pixelOrder);
-  Vector<Double> inc = sumIn.axisIncrements(pixelOrder);
-  Vector<Double> inc0 = sum0.axisIncrements(pixelOrder);
+  const unsigned int dim = sumIn.ndim();
+  Vector<double> refPix = sumIn.referencePixels();
+  Vector<double> refPix0 = sum0.referencePixels();
+  Vector<double> refVal = sumIn.referenceValues(pixelOrder);
+  Vector<double> refVal0 = sum0.referenceValues(pixelOrder);
+  Vector<double> inc = sumIn.axisIncrements(pixelOrder);
+  Vector<double> inc0 = sum0.axisIncrements(pixelOrder);
   //
-  for (uInt j = 0; j < dim; j++) {
+  for (unsigned int j = 0; j < dim; j++) {
     if (j != axis) {
       if (!near(refPix(j), refPix0(j))) {
         ImageInfo::logMessage(warnRefPix_p, os, relax,
@@ -609,14 +609,14 @@ void ImageConcat<T>::setCoordinates()
   // different handling
 
   CoordinateSystem cSys = coordinates();
-  const uInt axis = latticeConcat_p.axis();
+  const unsigned int axis = latticeConcat_p.axis();
 
-  Int coord, axisInCoord;
+  int coord, axisInCoord;
   cSys.findPixelAxis(coord, axisInCoord, axis);
 
-  const uInt nIm = latticeConcat_p.nlattices();
-  const uInt iIm = nIm - 1;
-  Vector<Int> stokes;
+  const unsigned int nIm = latticeConcat_p.nlattices();
+  const unsigned int iIm = nIm - 1;
+  Vector<int> stokes;
   // we always must update the world values, because even if
   // the currently added image is contiguous, the next image to be added might not
   // be
@@ -640,10 +640,10 @@ void ImageConcat<T>::setCoordinates()
         // last Stokes already in coordinates() + 1.  WIll only work
         // if results in a useable Stokes axis
 
-        Vector<Int> stokes1 = coordinates().stokesCoordinate(coord).stokes();
-        Int last = stokes1(stokes1.nelements() - 1);
-        const uInt shape = latticeConcat_p.lattice(nIm - 1)->shape()(axis);
-        Vector<Int> stokes2(shape, 0);
+        Vector<int> stokes1 = coordinates().stokesCoordinate(coord).stokes();
+        int last = stokes1(stokes1.nelements() - 1);
+        const unsigned int shape = latticeConcat_p.lattice(nIm - 1)->shape()(axis);
+        Vector<int> stokes2(shape, 0);
         indgen(stokes2, last + 1, 1);
         stokes = makeNewStokes(stokes1, stokes2);
       }
@@ -655,7 +655,7 @@ void ImageConcat<T>::setCoordinates()
         os << "axis is Stokes and result would be illegal" << LogIO::EXCEPTION;
       } else {
         StokesCoordinate tmp(stokes);
-        cSys.replaceCoordinate(tmp, uInt(coord));
+        cSys.replaceCoordinate(tmp, static_cast<unsigned int>(coord));
         if (!ImageInterface<T>::setCoordinateInfo(cSys)) {
           os << "Failed to save new CoordinateSystem with StokesCoordinate" << LogIO::EXCEPTION;
         }
@@ -666,7 +666,7 @@ void ImageConcat<T>::setCoordinates()
     // The first lattice is enforced to be an image.  Always use its units and names
 
     String unit, name;
-    Int worldAxis = cSys.pixelAxisToWorldAxis(axis);
+    int worldAxis = cSys.pixelAxisToWorldAxis(axis);
     unit = cSys.worldAxisUnits()(worldAxis);
     name = cSys.worldAxisNames()(worldAxis);
 
@@ -680,10 +680,10 @@ void ImageConcat<T>::setCoordinates()
         SpectralCoordinate origSpCoord = cSys.spectralCoordinate();
         SpectralCoordinate newSp(origSpCoord.frequencySystem(false), worldValues_p,
                                  origSpCoord.restFrequency());
-        cSys.replaceCoordinate(newSp, uInt(coord));
+        cSys.replaceCoordinate(newSp, static_cast<unsigned int>(coord));
       } else {
         TabularCoordinate tc(pixelValues_p, worldValues_p, unit, name);
-        cSys.replaceCoordinate(tc, uInt(coord));
+        cSys.replaceCoordinate(tc, static_cast<unsigned int>(coord));
       }
       if (!ImageInterface<T>::setCoordinateInfo(cSys)) {
         String ctype = originalAxisType_p == Coordinate::SPECTRAL ? "Spectral" : "Tabular";
@@ -703,10 +703,10 @@ void ImageConcat<T>::setCoordinates()
 }
 
 template <class T>
-void ImageConcat<T>::_updatePixelAndWorldValues(uInt iIm) {
-  const uInt nPixelsOld = pixelValues_p.nelements();
-  uInt axis = latticeConcat_p.axis();
-  const uInt shapeNew = latticeConcat_p.lattice(iIm)->shape()(axis);
+void ImageConcat<T>::_updatePixelAndWorldValues(unsigned int iIm) {
+  const unsigned int nPixelsOld = pixelValues_p.nelements();
+  unsigned int axis = latticeConcat_p.axis();
+  const unsigned int shapeNew = latticeConcat_p.lattice(iIm)->shape()(axis);
   pixelValues_p.resize(nPixelsOld + shapeNew, true);
   worldValues_p.resize(nPixelsOld + shapeNew, true);
   if (isImage_p(iIm)) {
@@ -719,14 +719,14 @@ void ImageConcat<T>::_updatePixelAndWorldValues(uInt iIm) {
     if (latticeConcat_p.isTempClose()) {
       latticeConcat_p.tempClose(iIm);
     }
-    Vector<Double> p = cSys2.referencePixel();
-    Vector<Double> w = cSys2.referenceValue();
+    Vector<double> p = cSys2.referencePixel();
+    Vector<double> w = cSys2.referenceValue();
     // For each pixel in concatenation axis for this image, find world
     // and pixel values
 
-    Int worldAxis = cSys2.pixelAxisToWorldAxis(axis);
-    for (uInt j = 0; j < shapeNew; j++) {
-      p(axis) = Double(j);
+    int worldAxis = cSys2.pixelAxisToWorldAxis(axis);
+    for (unsigned int j = 0; j < shapeNew; j++) {
+      p(axis) = double(j);
       if (cSys2.toWorld(w, p)) {
         pixelValues_p(nPixelsOld + j) = p(axis) + nPixelsOld;
         worldValues_p(nPixelsOld + j) = w(worldAxis);
@@ -736,15 +736,15 @@ void ImageConcat<T>::_updatePixelAndWorldValues(uInt iIm) {
     }
   } else {
     // iIm = 0 will always be an image.  Make up world values for lattices based on interpolation
-    Double winc;
+    double winc;
     if (iIm == 1) {
       winc = worldValues_p(0) / 10.0;
     } else {
       winc = worldValues_p(iIm - 1) - worldValues_p(iIm - 2);
     }
-    Double ww = worldValues_p(iIm - 1) + winc;
-    for (uInt j = 0; j < shapeNew; j++) {
-      pixelValues_p(nPixelsOld + j) = Double(j) + nPixelsOld;
+    double ww = worldValues_p(iIm - 1) + winc;
+    for (unsigned int j = 0; j < shapeNew; j++) {
+      pixelValues_p(nPixelsOld + j) = double(j) + nPixelsOld;
       worldValues_p(nPixelsOld + j) = ww;
       ww += winc;
     }
@@ -752,8 +752,8 @@ void ImageConcat<T>::_updatePixelAndWorldValues(uInt iIm) {
 }
 
 template <class T>
-Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1, const Vector<Int>& stokes2) {
-  Vector<Int> stokes = concatenateArray(stokes1, stokes2);
+Vector<int> ImageConcat<T>::makeNewStokes(const Vector<int>& stokes1, const Vector<int>& stokes2) {
+  Vector<int> stokes = concatenateArray(stokes1, stokes2);
   bool ok = true;
   try {
     StokesCoordinate tmp(stokes);
@@ -764,13 +764,13 @@ Vector<Int> ImageConcat<T>::makeNewStokes(const Vector<Int>& stokes1, const Vect
   if (ok) {
     return stokes;
   } else {
-    Vector<Int> tmp;
+    Vector<int> tmp;
     return tmp;
   }
 }
 
 template <class T>
-bool ImageConcat<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool ImageConcat<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return latticeConcat_p.lock(type, nattempts);
 }
 template <class T>

@@ -56,7 +56,7 @@ UnitName &UnitName::operator=(const UnitName &other) {
 
 ostream &operator<<(ostream &os, const UnitName &name) {
   static String FillString("                                ");
-  Int i = os.precision();
+  int i = os.precision();
   os << name.basicTag << FillString.substr(0, 10 - name.basicTag.length()) << "(" << name.basicName
      << ")" << FillString.substr(0, 27 - name.basicName.length()) << setprecision(12)
      << name.basicKind << setprecision(i);

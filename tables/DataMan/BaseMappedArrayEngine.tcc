@@ -200,7 +200,7 @@ bool BaseMappedArrayEngine<VirtualType, StoredType>::isShapeDefined(rownr_t rown
 }
 
 template <class VirtualType, class StoredType>
-uInt BaseMappedArrayEngine<VirtualType, StoredType>::ndim(rownr_t rownr) {
+unsigned int BaseMappedArrayEngine<VirtualType, StoredType>::ndim(rownr_t rownr) {
   return column_p->ndim(rownr);
 }
 

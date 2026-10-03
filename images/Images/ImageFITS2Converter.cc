@@ -72,9 +72,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 const String ImageFITSConverter::CASAMBM = "casambm";
 
-bool ImageFITSConverter::FITSToImage(ImageInterface<Float>*& newImage, String& error,
-                                     const String& imageName, const String& fitsName, uInt whichRep,
-                                     Int whichHDU, uInt memoryInMB, bool allowOverwrite,
+bool ImageFITSConverter::FITSToImage(ImageInterface<float>*& newImage, String& error,
+                                     const String& imageName, const String& fitsName, unsigned int whichRep,
+                                     int whichHDU, unsigned int memoryInMB, bool allowOverwrite,
                                      bool zeroBlanks) {
   LogIO os(LogOrigin("ImageFITSConverter"));
 
@@ -113,11 +113,11 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<Float>*& newImage, String& e
   //
   // Advance to the right HDU
   //
-  Int theHDU = whichHDU;
-  Int numHDU = infile.getnumhdu();
+  int theHDU = whichHDU;
+  int numHDU = infile.getnumhdu();
   if (whichHDU < 0) {
     // look for first readable HDU
-    for (Int i = 0; i < numHDU; i++) {
+    for (int i = 0; i < numHDU; i++) {
       os << LogIO::NORMAL << "Processing HDU " << i << LogIO::POST;
       if (infile.err() || infile.rectype() != FITS::HDURecord ||
           (infile.hdutype() != FITS::PrimaryArrayHDU &&
@@ -136,7 +136,7 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<Float>*& newImage, String& e
       return false;
     }
   } else {
-    for (Int i = 0; i < whichHDU; i++) {
+    for (int i = 0; i < whichHDU; i++) {
       if (infile.skip_hdu() || infile.err()) {
         error = "Error advancing to image in file: " + fitsName;
         return false;
@@ -199,13 +199,13 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<Float>*& newImage, String& e
           break;
         case FITS::FLOAT:
           if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-            PrimaryArray<Float> fitsdata(infile);
-            ImageFITSConverterImpl<PrimaryArray<Float>>::FITSToImage(
+            PrimaryArray<float> fitsdata(infile);
+            ImageFITSConverterImpl<PrimaryArray<float>>::FITSToImage(
                 newImage, error, imageName, whichRep, fitsdata, fitsName, TpFloat, memoryInMB,
                 zeroBlanks);
           } else {
-            ImageExtension<Float> fitsdata(infile);
-            ImageFITSConverterImpl<ImageExtension<Float>>::FITSToImage(
+            ImageExtension<float> fitsdata(infile);
+            ImageFITSConverterImpl<ImageExtension<float>>::FITSToImage(
                 newImage, error, imageName, whichRep, fitsdata, fitsName, TpFloat, memoryInMB,
                 zeroBlanks);
           }
@@ -213,13 +213,13 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<Float>*& newImage, String& e
           break;
         case FITS::DOUBLE:
           if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-            PrimaryArray<Double> fitsdata(infile);
-            ImageFITSConverterImpl<PrimaryArray<Double>>::FITSToImage(
+            PrimaryArray<double> fitsdata(infile);
+            ImageFITSConverterImpl<PrimaryArray<double>>::FITSToImage(
                 newImage, error, imageName, whichRep, fitsdata, fitsName, TpDouble, memoryInMB,
                 zeroBlanks);
           } else {
-            ImageExtension<Double> fitsdata(infile);
-            ImageFITSConverterImpl<ImageExtension<Double>>::FITSToImage(
+            ImageExtension<double> fitsdata(infile);
+            ImageFITSConverterImpl<ImageExtension<double>>::FITSToImage(
                 newImage, error, imageName, whichRep, fitsdata, fitsName, TpDouble, memoryInMB,
                 zeroBlanks);
           }
@@ -269,9 +269,9 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<Float>*& newImage, String& e
   return true;
 }
 
-bool ImageFITSConverter::ImageToFITS(String& error, ImageInterface<Float>& image,
-                                     const String& fitsName, uInt memoryInMB, bool preferVelocity,
-                                     bool opticalVelocity, Int BITPIX, Float minPix, Float maxPix,
+bool ImageFITSConverter::ImageToFITS(String& error, ImageInterface<float>& image,
+                                     const String& fitsName, unsigned int memoryInMB, bool preferVelocity,
+                                     bool opticalVelocity, int BITPIX, float minPix, float maxPix,
                                      bool allowOverwrite, bool degenerateLast, bool verbose,
                                      bool stokesLast, bool preferWavelength, bool airWavelength,
                                      const String& origin, bool history) {
@@ -310,23 +310,23 @@ bool ImageFITSConverter::ImageToFITS(String& error, ImageInterface<Float>& image
 }
 
 IPosition ImageFITSConverter::copyCursorShape(String& report, const IPosition& shape,
-                                              uInt imagePixelSize, uInt fitsPixelSize,
-                                              uInt memoryInMB) {
+                                              unsigned int imagePixelSize, unsigned int fitsPixelSize,
+                                              unsigned int memoryInMB) {
   // We could make this more sophisticated by querying the actual tile
   // shape. However, the image will basically always need all but the
   // last dimension in memory for efficient traversal.
   // This function should err on the side of making a too-small cursor.
 
-  const uInt ndim = shape.nelements();
+  const unsigned int ndim = shape.nelements();
 
   // *2 because the pixels might exist in a buffer as well. We should
   // be able to do away with that.
-  uInt maxPixels = memoryInMB * 1024 * 1024 / (imagePixelSize * 2 + fitsPixelSize * 2);
+  unsigned int maxPixels = memoryInMB * 1024 * 1024 / (imagePixelSize * 2 + fitsPixelSize * 2);
 
   maxPixels /= 2;  // because 1/2 the pixels are in FITS, 1/2 in Image
 
-  Int axis = ndim - 1;
-  if (shape.product() > Int(maxPixels)) {
+  int axis = ndim - 1;
+  if (shape.product() > int(maxPixels)) {
     while (--axis >= 0 && shape(axis) == 1) {
       ;  // Nothing
     }
@@ -336,9 +336,9 @@ IPosition ImageFITSConverter::copyCursorShape(String& report, const IPosition& s
     axis = 0;  // If we have a 1D image
   }
 
-  uInt prod = 1;
-  uInt i;
-  for (i = 0; Int(i) <= axis; i++) {
+  unsigned int prod = 1;
+  unsigned int i;
+  for (i = 0; int(i) <= axis; i++) {
     prod *= shape(i);
   }
   // Correct for the probable tile shape
@@ -366,12 +366,12 @@ IPosition ImageFITSConverter::copyCursorShape(String& report, const IPosition& s
 
   IPosition cursorShape(ndim);
   cursorShape = 1;
-  for (i = 0; Int(i) <= axis; i++) {
+  for (i = 0; int(i) <= axis; i++) {
     cursorShape(i) = shape(i);
   }
 
   std::ostringstream buffer;
-  if (axis == Int(ndim) - 1) {
+  if (axis == int(ndim) - 1) {
     buffer << "All pixels fit in memory";
   } else {
     switch (axis) {
@@ -393,10 +393,10 @@ IPosition ImageFITSConverter::copyCursorShape(String& report, const IPosition& s
   return cursorShape;
 }
 
-CoordinateSystem ImageFITSConverter::getCoordinateSystem(Int& stokesFITSValue,
+CoordinateSystem ImageFITSConverter::getCoordinateSystem(int& stokesFITSValue,
                                                          RecordInterface& headerRec,
                                                          const Vector<String>& header, LogIO& os,
-                                                         uInt whichRep, IPosition& shape,
+                                                         unsigned int whichRep, IPosition& shape,
                                                          bool dropStokes) {
   // Get CS and return un-used cards in a Record for further use
 
@@ -409,7 +409,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem(Int& stokesFITSValue,
 
     CoordinateSystem cSys2;
     Vector<String> names(shape.nelements());
-    for (uInt i = 0; i < names.nelements(); i++) {
+    for (unsigned int i = 0; i < names.nelements(); i++) {
       std::ostringstream oss;
       oss << i;
       names(i) = "linear" + oss.str();
@@ -423,10 +423,10 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem(Int& stokesFITSValue,
   if (shape.nelements() != cSys.nPixelAxes()) {
     IPosition shape2;
     if (cSys.nPixelAxes() > shape.nelements()) {
-      Int nDeg = cSys.nPixelAxes() - shape.nelements();
+      int nDeg = cSys.nPixelAxes() - shape.nelements();
       shape2.resize(cSys.nPixelAxes());
       shape2 = 1;
-      for (uInt i = 0; i < shape.nelements(); i++) shape2(i) = shape(i);
+      for (unsigned int i = 0; i < shape.nelements(); i++) shape2(i) = shape(i);
       shape.resize(0);
       shape = shape2;
       //
@@ -443,23 +443,23 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem(Int& stokesFITSValue,
   // pseudo-STokes value (e.g. optical dpeth) on it.  This is stored
   // in ImageInfo instead.
 
-  Int after = -1;
-  Int c = cSys.findCoordinate(Coordinate::STOKES, after);
+  int after = -1;
+  int c = cSys.findCoordinate(Coordinate::STOKES, after);
   if (dropStokes && c >= 0 && stokesFITSValue >= 0) {
-    uInt nS = cSys.stokesCoordinate(c).stokes().nelements();
+    unsigned int nS = cSys.stokesCoordinate(c).stokes().nelements();
     if (nS == 1) {
       CoordinateSystem cSys2;
-      for (uInt i = 0; i < cSys.nCoordinates(); i++) {
+      for (unsigned int i = 0; i < cSys.nCoordinates(); i++) {
         if (cSys.type(i) != Coordinate::STOKES) {
           cSys2.addCoordinate(cSys.coordinate(i));
         }
       }
       //
-      uInt dropAxis = cSys.pixelAxes(c)(0);
+      unsigned int dropAxis = cSys.pixelAxes(c)(0);
       cSys = cSys2;
       IPosition shape2(cSys.nPixelAxes());
-      uInt j = 0;
-      for (uInt i = 0; i < shape.nelements(); i++) {
+      unsigned int j = 0;
+      for (unsigned int i = 0; i < shape.nelements(); i++) {
         if (i != dropAxis) {
           shape2(j) = shape(i);
           j++;
@@ -503,19 +503,19 @@ void ImageFITSConverter::readBeamsTable(ImageInfo& info, const String& filename,
   switch (type) {
       // advance to correct location in the input
     case TpFloat: {
-      PrimaryArray<Float> fitsImage(input);
+      PrimaryArray<float> fitsImage(input);
       break;
     }
     case TpDouble: {
-      PrimaryArray<Double> fitsImage(input);
+      PrimaryArray<double> fitsImage(input);
       break;
     }
     case TpInt: {
-      PrimaryArray<Int> fitsImage(input);
+      PrimaryArray<int> fitsImage(input);
       break;
     }
     case TpShort: {
-      PrimaryArray<Short> fitsImage(input);
+      PrimaryArray<short> fitsImage(input);
       break;
     }
     default: {
@@ -543,15 +543,15 @@ void ImageFITSConverter::readBeamsTable(ImageInfo& info, const String& filename,
   LogIO os;
   os << LogOrigin("ImageFITSConverter", __FUNCTION__) << LogIO::NORMAL
      << "Loading multiple beams from BEAMS table" << LogIO::POST;
-  uInt nChan = beamTable.keywordSet().asuInt("NCHAN");
-  uInt nPol = beamTable.keywordSet().asuInt("NPOL");
+  unsigned int nChan = beamTable.keywordSet().asuInt("NCHAN");
+  unsigned int nPol = beamTable.keywordSet().asuInt("NPOL");
 
   info.setAllBeams(nChan, nPol, GaussianBeam::NULL_BEAM);
-  ScalarColumn<Float> bmaj(beamTable, "BMAJ");
-  ScalarColumn<Float> bmin(beamTable, "BMIN");
-  ScalarColumn<Float> bpa(beamTable, "BPA");
-  ScalarColumn<Int> chan(beamTable, "CHAN");
-  ScalarColumn<Int> pol(beamTable, "POL");
+  ScalarColumn<float> bmaj(beamTable, "BMAJ");
+  ScalarColumn<float> bmin(beamTable, "BMIN");
+  ScalarColumn<float> bpa(beamTable, "BPA");
+  ScalarColumn<int> chan(beamTable, "CHAN");
+  ScalarColumn<int> pol(beamTable, "POL");
 
   String bmajUnit = bmaj.keywordSet().asString("TUNIT");
   String bminUnit = bmin.keywordSet().asString("TUNIT");
@@ -560,7 +560,7 @@ void ImageFITSConverter::readBeamsTable(ImageInfo& info, const String& filename,
   Quantity xmaj(0, bmajUnit);
   Quantity xmin(0, bminUnit);
   Quantity xpa(0, bpaUnit);
-  for (uInt i = 0; i < beamTable.nrow(); i++) {
+  for (unsigned int i = 0; i < beamTable.nrow(); i++) {
     xmaj.setValue(bmaj(i));
     xmin.setValue(bmin(i));
     xpa.setValue(bpa(i));
@@ -644,8 +644,8 @@ bool ImageFITSConverter::extractMiscInfo(RecordInterface& miscInfo, const Record
 //
 {
   bool ok = true;
-  const uInt n = header.nfields();
-  for (uInt i = 0; i < n; i++) {
+  const unsigned int n = header.nfields();
+  for (unsigned int i = 0; i < n; i++) {
     String name = header.name(i);
     if (header.type(i) == TpRecord) {
       Record subRec = header.asRecord(i);
@@ -679,7 +679,7 @@ void ImageFITSConverter::restoreHistory(LoggerHolder& logger, ConstFitsKeywordLi
   Vector<String> lines;
   String groupType;
   kw.first();
-  uInt n;
+  unsigned int n;
   while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) != 0) {
     if (groupType == "LOGTABLE") {
       FITSHistoryUtil::fromHISTORY(logger, lines, n, true);
@@ -732,9 +732,9 @@ bool ImageFITSConverter::removeFile(String& error, const File& outFile, const St
 }
 
 bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& fhi,
-                                           const ImageInterface<Float>& image, bool preferVelocity,
-                                           bool opticalVelocity, Int BITPIX, Float minPix,
-                                           Float maxPix, bool degenerateLast, bool verbose,
+                                           const ImageInterface<float>& image, bool preferVelocity,
+                                           bool opticalVelocity, int BITPIX, float minPix,
+                                           float maxPix, bool degenerateLast, bool verbose,
                                            bool stokesLast, bool preferWavelength,
                                            bool airWavelength, bool primHead, bool allowAppend,
                                            const String& origin, bool history) {
@@ -758,23 +758,23 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
   //
   IPosition shape = image.shape();
   fhi.newShape = shape;
-  const uInt ndim = shape.nelements();
+  const unsigned int ndim = shape.nelements();
   fhi.cursorOrder.resize(ndim);  // to be used later in the actual data copying
-  for (uInt i = 0; i < ndim; i++) {
+  for (unsigned int i = 0; i < ndim; i++) {
     fhi.cursorOrder(i) = i;
   }
   fhi.needNonOptimalCursor =
       false;  // the default value for the case no axis reordering is necessary
   if (stokesLast || degenerateLast) {
-    Vector<Int> order(ndim);
+    Vector<int> order(ndim);
     Vector<String> cNames = cSys.worldAxisNames();
-    uInt nStokes = 0;  // number of stokes axes
+    unsigned int nStokes = 0;  // number of stokes axes
     if (stokesLast) {
-      for (uInt i = 0; i < ndim; i++) {  // loop over axes
+      for (unsigned int i = 0; i < ndim; i++) {  // loop over axes
         order(i) = i;
         fhi.newShape(i) = shape(i);
       }
-      for (uInt i = 0; i < ndim; i++) {  // loop over axes
+      for (unsigned int i = 0; i < ndim; i++) {  // loop over axes
         if (cNames(i) == "Stokes") {     // swap to back
           nStokes++;
           order(ndim - nStokes) = i;
@@ -789,18 +789,18 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
     }
     if (degenerateLast) {
       // make sure the stokes axes stay where they are now
-      for (uInt i = ndim - nStokes; i < ndim; i++) {
+      for (unsigned int i = ndim - nStokes; i < ndim; i++) {
         order(i) = i;
       }
-      uInt j = 0;
-      for (uInt i = 0; i < ndim - nStokes; i++) {  // loop over axes
+      unsigned int j = 0;
+      for (unsigned int i = 0; i < ndim - nStokes; i++) {  // loop over axes
         if (shape(i) > 1) {                        // axis is not degenerate
           order(j) = i;                            // put it in front, keeping order
           fhi.newShape(j) = shape(i);
           j++;
         }
       }
-      for (uInt i = 0; i < ndim - nStokes; i++) {  // loop over axes again
+      for (unsigned int i = 0; i < ndim - nStokes; i++) {  // loop over axes again
         if (shape(i) == 1) {                       // axis is degenerate
           order(j) = i;
           fhi.newShape(j) = shape(i);
@@ -809,9 +809,9 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
       }
       cSys.transpose(order, order);  // apply the degenerate reordering
     }
-    for (uInt i = 0; i < ndim; i++) {
+    for (unsigned int i = 0; i < ndim; i++) {
       fhi.cursorOrder(i) = order(i);
-      if (order(i) != (Int)i) {
+      if (order(i) != (int)i) {
         fhi.needNonOptimalCursor = true;
       }
     }
@@ -854,19 +854,19 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
       // Set up iterator
       //
       IPosition cursorShape(image.niceCursorShape());
-      RO_MaskedLatticeIterator<Float> iter(
+      RO_MaskedLatticeIterator<float> iter(
           image, LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));
       ProgressMeter meter(0.0, 1.0 * shape.product(), "Searching pixels", "", "", "", true,
                           shape.product() / cursorShape.product() / 50);
       //
       // Iterate
       //
-      uInt count = 0;
+      unsigned int count = 0;
       bool deleteMaskPtr, deletePtr;
       for (iter.reset(); !iter.atEnd(); iter++) {
-        const Array<Float>& cursor = iter.cursor();
-        const Float* cptr = cursor.getStorage(deletePtr);
-        const uInt n = cursor.nelements();
+        const Array<float>& cursor = iter.cursor();
+        const float* cptr = cursor.getStorage(deletePtr);
+        const unsigned int n = cursor.nelements();
         //
         if (fhi.applyMask) {
           if (!fhi.pMask->shape().isEqual(cursor.shape())) {
@@ -877,7 +877,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
           //
           // If a pixel is a NaN or the mask is false, it goes out as a NaN
           //
-          for (uInt i = 0; i < n; i++) {
+          for (unsigned int i = 0; i < n; i++) {
             if (isNaN(cptr[i]) || !maskPtr[i]) {
               fhi.hasBlanks = true;
             } else {
@@ -891,7 +891,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
           }
           fhi.pMask->freeStorage(maskPtr, deleteMaskPtr);
         } else {
-          for (uInt i = 0; i < n; i++) {
+          for (unsigned int i = 0; i < n; i++) {
             if (isNaN(cptr[i])) {
               fhi.hasBlanks = true;
             } else {
@@ -913,7 +913,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
     // Make sure bscale does not come out to be zero
 
     if (::casacore::near(minPix, maxPix)) {
-      if (::casacore::near(Float(0.0), maxPix)) {
+      if (::casacore::near(float(0.0), maxPix)) {
         maxPix = 1.0;
       } else {
         maxPix = maxPix + 0.01 * maxPix;
@@ -921,11 +921,11 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
     }
     //
     if (fhi.hasBlanks) {
-      fhi.bscale = Double(maxPix - minPix) / Double(Int(fhi.maxshort) - Int(fhi.minshort + 1));
-      fhi.bzero = Double(minPix) + fhi.bscale * (-Double(fhi.minshort + 1));
+      fhi.bscale = double(maxPix - minPix) / double(int(fhi.maxshort) - int(fhi.minshort + 1));
+      fhi.bzero = double(minPix) + fhi.bscale * (-double(fhi.minshort + 1));
     } else {
-      fhi.bscale = Double(maxPix - minPix) / Double(Int(fhi.maxshort) - Int(fhi.minshort));
-      fhi.bzero = Double(minPix) + fhi.bscale * (-Double(fhi.minshort));
+      fhi.bscale = double(maxPix - minPix) / double(int(fhi.maxshort) - int(fhi.minshort));
+      fhi.bzero = double(minPix) + fhi.bscale * (-double(fhi.minshort));
     }
   } else {
     error = "BITPIX must be -32 (floating point) or 16 (short integer)";
@@ -938,8 +938,8 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
 
   if (fhi.applyMask && !fhi.hasBlanks) fhi.applyMask = false;
   //
-  Vector<Int> naxis(ndim);
-  uInt i;
+  Vector<int> naxis(ndim);
+  unsigned int i;
   for (i = 0; i < ndim; i++) {
     naxis(i) = fhi.newShape(i);
   }
@@ -986,8 +986,8 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
           " a simple linear coordinate system."
        << LogIO::POST;
     //
-    uInt n = cSys.nWorldAxes();
-    Matrix<Double> pc(n, n);
+    unsigned int n = cSys.nWorldAxes();
+    Matrix<double> pc(n, n);
     pc = 0.0;
     pc.diagonal() = 1.0;
     LinearCoordinate linear(cSys.worldAxisNames(), cSys.worldAxisUnits(), cSys.referenceValue(),
@@ -1010,7 +1010,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
 
   if (naxis.nelements() != shapeCopy.nelements()) {
     naxis.resize(shapeCopy.nelements());
-    for (uInt j = 0; j < shapeCopy.nelements(); j++) {
+    for (unsigned int j = 0; j < shapeCopy.nelements(); j++) {
       naxis(j) = shapeCopy(j);
     }
     header.define("NAXIS", naxis);
@@ -1019,7 +1019,7 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
   // Add in the fields from miscInfo that we can
   //
   const auto miscInfo = image.miscInfo();
-  const uInt nmisc = miscInfo.nfields();
+  const unsigned int nmisc = miscInfo.nfields();
   for (i = 0; i < nmisc; i++) {
     String tmp0 = miscInfo.name(i);
     String miscname(tmp0.substr(0, 8));
@@ -1164,9 +1164,9 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
     const LoggerHolder& logger = image.logger();
     //
     vector<String> historyChunk;
-    uInt nstrings;
+    unsigned int nstrings;
     bool aipsppFormat;
-    uInt firstLine = 0;
+    unsigned int firstLine = 0;
     while (1) {
       firstLine =
           FITSHistoryUtil::toHISTORY(historyChunk, aipsppFormat, nstrings, firstLine, logger);
@@ -1186,9 +1186,9 @@ bool ImageFITSConverter::ImageHeaderToFITS(String& error, ImageFITSHeaderInfo& f
 }
 
 bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
-                                        const ImageInterface<Float>& image, FitsOutput* outfile,
-                                        uInt memoryInMB, bool preferVelocity, bool opticalVelocity,
-                                        Int BITPIX, Float minPix, Float maxPix, bool degenerateLast,
+                                        const ImageInterface<float>& image, FitsOutput* outfile,
+                                        unsigned int memoryInMB, bool preferVelocity, bool opticalVelocity,
+                                        int BITPIX, float minPix, float maxPix, bool degenerateLast,
                                         bool verbose, bool stokesLast, bool preferWavelength,
                                         bool airWavelength, bool primHead, bool allowAppend,
                                         const String& origin, bool history) {
@@ -1205,7 +1205,7 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
   IPosition shape = image.shape();
   String report;
   IPosition newCursorShape =
-      ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float), sizeof(Float), memoryInMB);
+      ImageFITSConverter::copyCursorShape(report, shape, sizeof(float), sizeof(float), memoryInMB);
   if (fhi.needNonOptimalCursor && fhi.newShape.nelements() > 0) {
     // use cursor the size of one image row in order to enable axis re-ordering
     newCursorShape.resize(1);
@@ -1219,31 +1219,31 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
   //
   // If this fails, more development is needed
   //
-  AlwaysAssert(sizeof(Float) == sizeof(float), AipsError);
-  AlwaysAssert(sizeof(Short) == sizeof(short), AipsError);
+  AlwaysAssert(sizeof(float) == sizeof(float), AipsError);
+  AlwaysAssert(sizeof(short) == sizeof(short), AipsError);
   try {
-    Int nIter = max(1, shape.product() / newCursorShape.product());
-    Int iUpdate = max(1, nIter / 20);
+    int nIter = max(1, shape.product() / newCursorShape.product());
+    int iUpdate = max(1, nIter / 20);
     //
     ProgressMeter* pMeter = 0;
     if (verbose)
       pMeter = new ProgressMeter(0.0, 1.0 * shape.product(), "Image to FITS", "Pixels copied", "",
                                  "", true, iUpdate);
-    uInt count = 0;
-    Double curpixels = 1.0 * newCursorShape.product();
+    unsigned int count = 0;
+    double curpixels = 1.0 * newCursorShape.product();
     //
     LatticeStepper stepper(shape, newCursorShape, fhi.cursorOrder);
-    RO_MaskedLatticeIterator<Float> iter(image, stepper);
-    const Int bufferSize = newCursorShape.product();
+    RO_MaskedLatticeIterator<float> iter(image, stepper);
+    const int bufferSize = newCursorShape.product();
 
-    PrimaryArray<Float>* fits32 = 0;
-    PrimaryArray<Short>* fits16 = 0;
+    PrimaryArray<float>* fits32 = 0;
+    PrimaryArray<short>* fits16 = 0;
 
     if (BITPIX == -32) {
       if (primHead) {
-        fits32 = new PrimaryArray<Float>(fhi.kw);
+        fits32 = new PrimaryArray<float>(fhi.kw);
       } else {
-        fits32 = new ImageExtension<Float>(fhi.kw);
+        fits32 = new ImageExtension<float>(fhi.kw);
       }
       if (fits32 == 0 || fits32->err()) {
         error = "Error creating FITS file from keywords";
@@ -1256,9 +1256,9 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
       }
     } else if (BITPIX == 16) {
       if (primHead) {
-        fits16 = new PrimaryArray<Short>(fhi.kw);
+        fits16 = new PrimaryArray<short>(fhi.kw);
       } else {
-        fits16 = new ImageExtension<Short>(fhi.kw);
+        fits16 = new ImageExtension<short>(fhi.kw);
       }
       if (fits16 == 0 || fits16->err()) {
         error = "Error creating FITS file from keywords";
@@ -1273,18 +1273,18 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
       AlwaysAssert(0, AipsError);  // NOTREACHED
     }
 
-    Short* buffer16 = 0;  // Use this to write the scaled shorts into
+    short* buffer16 = 0;  // Use this to write the scaled shorts into
     if (fits16) {
-      buffer16 = new Short[bufferSize];
+      buffer16 = new short[bufferSize];
       AlwaysAssert(buffer16, AipsError);
     }
     //
     // Iterate through the image.
     //
     for (iter.reset(); !iter.atEnd(); iter++) {
-      const Array<Float>& cursor = iter.cursor();
+      const Array<float>& cursor = iter.cursor();
       bool deletePtr;
-      const Float* ptr = cursor.getStorage(deletePtr);
+      const float* ptr = cursor.getStorage(deletePtr);
       //
       const bool* maskPtr = 0;
       bool deleteMaskPtr;
@@ -1298,13 +1298,13 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
       //
       //       pMeter->update((count*1.0 - 0.5)*curpixels);
       //
-      const uInt nPts = cursor.nelements();
+      const unsigned int nPts = cursor.nelements();
       error = "";
-      Int n = 0;
+      int n = 0;
       if (fits32) {
         if (fhi.applyMask) {
-          Float* ptr2 = new float[nPts];
-          for (uInt j = 0; j < nPts; j++) {
+          float* ptr2 = new float[nPts];
+          for (unsigned int j = 0; j < nPts; j++) {
             if (maskPtr[j]) {
               ptr2[j] = ptr[j];
             } else {
@@ -1317,7 +1317,7 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
         } else {
           fits32->store(ptr, bufferSize);
         }
-        Int hduErr = 0;
+        int hduErr = 0;
         if (!(hduErr = fits32->err())) {
           n = fits32->write(*outfile);
           if (n != bufferSize) {
@@ -1335,7 +1335,7 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
         short blankOffset = fhi.hasBlanks ? 1 : 0;
         //
         if (fhi.applyMask) {
-          for (Int j = 0; j < bufferSize; j++) {
+          for (int j = 0; j < bufferSize; j++) {
             //                    if (ptr[j] != ptr[j] || maskPtr[j]) {
             if (isNaN(ptr[j]) || !maskPtr[j]) {
               buffer16[j] = fhi.minshort;
@@ -1345,12 +1345,12 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
               } else if (ptr[j] < fhi.minPix) {
                 buffer16[j] = fhi.minshort + blankOffset;
               } else {
-                buffer16[j] = Short((ptr[j] - fhi.bzero) / fhi.bscale);
+                buffer16[j] = short((ptr[j] - fhi.bzero) / fhi.bscale);
               }
             }
           }
         } else {
-          for (Int j = 0; j < bufferSize; j++) {
+          for (int j = 0; j < bufferSize; j++) {
             //                    if (ptr[j] != ptr[j]) {
             if (isNaN(ptr[j])) {
               buffer16[j] = fhi.minshort;
@@ -1360,13 +1360,13 @@ bool ImageFITSConverter::ImageToFITSOut(String& error, LogIO& os,
               } else if (ptr[j] < fhi.minPix) {
                 buffer16[j] = fhi.minshort + blankOffset;
               } else {
-                buffer16[j] = Short((ptr[j] - fhi.bzero) / fhi.bscale);
+                buffer16[j] = short((ptr[j] - fhi.bzero) / fhi.bscale);
               }
             }
           }
         }
         fits16->store(buffer16, bufferSize);
-        Int hduErr = 0;
+        int hduErr = 0;
         if (!(hduErr = fits16->err())) {
           n = fits16->write(*outfile);
           if (n != bufferSize) {
@@ -1442,15 +1442,15 @@ void ImageFITSConverter::_writeBeamsTable(FitsOutput* const& outfile, const Imag
   extraKeywords.define("EXTVER", 1);
   extraKeywords.define("XTENSION", "BINTABLE");
   extraKeywords.setComment("XTENSION", "Binary extension");
-  extraKeywords.define("NCHAN", (Int)info.getBeamSet().nchan());
-  extraKeywords.define("NPOL", (Int)info.getBeamSet().nstokes());
+  extraKeywords.define("NCHAN", (int)info.getBeamSet().nchan());
+  extraKeywords.define("NPOL", (int)info.getBeamSet().nstokes());
   FITSTableWriter writer(outfile, desc, stringLengths, info.getBeamSet().nelements(), extraKeywords,
                          units, false);
-  RecordFieldPtr<Float> bmaj(writer.row(), "BMAJ");
-  RecordFieldPtr<Float> bmin(writer.row(), "BMIN");
-  RecordFieldPtr<Float> bpa(writer.row(), "BPA");
-  RecordFieldPtr<Int> chan(writer.row(), "CHAN");
-  RecordFieldPtr<Int> pol(writer.row(), "POL");
+  RecordFieldPtr<float> bmaj(writer.row(), "BMAJ");
+  RecordFieldPtr<float> bmin(writer.row(), "BMIN");
+  RecordFieldPtr<float> bpa(writer.row(), "BPA");
+  RecordFieldPtr<int> chan(writer.row(), "CHAN");
+  RecordFieldPtr<int> pol(writer.row(), "POL");
   const ImageBeamSet& beamSet = info.getBeamSet();
   IPosition axisPath(2, 0, 1);
   ArrayPositionIterator iter(beamSet.shape(), axisPath, false);
@@ -1467,10 +1467,10 @@ void ImageFITSConverter::_writeBeamsTable(FitsOutput* const& outfile, const Imag
   }
 }
 
-bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterface<Float>& image,
-                                          FitsOutput* outfile, uInt memoryInMB, bool preferVelocity,
-                                          bool opticalVelocity, Int BITPIX, Float minPix,
-                                          Float maxPix, bool degenerateLast, bool verbose,
+bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterface<float>& image,
+                                          FitsOutput* outfile, unsigned int memoryInMB, bool preferVelocity,
+                                          bool opticalVelocity, int BITPIX, float minPix,
+                                          float maxPix, bool degenerateLast, bool verbose,
                                           bool stokesLast, bool preferWavelength,
                                           bool airWavelength, const String& origin, bool history) {
   // check whether the image is a generic FITS image
@@ -1526,12 +1526,12 @@ bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterfa
 
     // find the quality axis
     CoordinateSystem cSys = image.coordinates();
-    Int qualAx = cSys.findCoordinate(Coordinate::QUALITY);
-    Vector<Int> nPixelQual = cSys.pixelAxes(qualAx);
-    uInt nAxisQual = nPixelQual(0);
+    int qualAx = cSys.findCoordinate(Coordinate::QUALITY);
+    Vector<int> nPixelQual = cSys.pixelAxes(qualAx);
+    unsigned int nAxisQual = nPixelQual(0);
 
     // build a slicer for the data
-    Int qualIndex;
+    int qualIndex;
     if (!(cSys.qualityCoordinate(qualAx)).toPixel(qualIndex, Quality::DATA)) {
       error = "Could not locate DATA index in quality coordinate!";
       return false;
@@ -1543,7 +1543,7 @@ bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterfa
     Slicer subSlicer(startPos, lengthPos, Slicer::endIsLength);
 
     // create the data sub-image and set the metadata
-    SubImage<Float>* subData = new SubImage<Float>(image, subSlicer, AxesSpecifier(false));
+    SubImage<float>* subData = new SubImage<float>(image, subSlicer, AxesSpecifier(false));
     subData->setMiscInfo(dataExtMiscInfo);
 
     // put the data sub-image to FITSOut
@@ -1567,7 +1567,7 @@ bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterfa
     subSlicer = Slicer(startPos, lengthPos, Slicer::endIsLength);
 
     // create the error sub-image and set the metadata
-    SubImage<Float>* subError = new SubImage<Float>(image, subSlicer, AxesSpecifier(false));
+    SubImage<float>* subError = new SubImage<float>(image, subSlicer, AxesSpecifier(false));
     subError->setMiscInfo(errorExtMiscInfo);
 
     // put the error sub-image to FITSOut

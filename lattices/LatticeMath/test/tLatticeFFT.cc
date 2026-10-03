@@ -40,18 +40,18 @@
 int main() {
   try {
     {
-      const uInt nz = 3;
-      const uInt ny = 8;
-      const uInt nx = (ny + 2) / 2;
+      const unsigned int nz = 3;
+      const unsigned int ny = 8;
+      const unsigned int nx = (ny + 2) / 2;
       const IPosition cShape(3, nx, ny, nz);
       const IPosition rShape(3, ny, ny, nz);
       PagedArray<Complex> cArr(cShape);
-      PagedArray<Float> rArr(rShape);
+      PagedArray<float> rArr(rShape);
       IPosition centre = cShape / 2;
       {  // test the fft2d function
         cArr.set(Complex(1, 0));
         LatticeFFT::cfft2d(cArr);
-        uInt i;
+        unsigned int i;
         for (i = 0; i < nz; i++) {
           centre(2) = i;
           AlwaysAssert(near(cArr.getAt(centre), Complex(nx * ny, 0), 1E-5), AipsError);
@@ -121,7 +121,7 @@ int main() {
         whichAxes(2) = false;
         LatticeFFT::rcfft(cArr, rArr, whichAxes, false);
         centre = 0;
-        for (uInt i = 0; i < nz; i++) {
+        for (unsigned int i = 0; i < nz; i++) {
           centre(2) = i;
           AlwaysAssert(near(cArr.getAt(centre), Complex(ny * ny, 0), 1E-5), AipsError);
           cArr.putAt(Complex(0, 0), centre);
@@ -140,7 +140,7 @@ int main() {
         AlwaysAssert(near(rArr.getAt(centre), 1.0f, 1E-5), AipsError);
         rArr.putAt(0.0f, centre);
         {
-          RO_LatticeIterator<Float> iter(rArr);
+          RO_LatticeIterator<float> iter(rArr);
           for (iter.reset(); !iter.atEnd(); iter++) {
             AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 1E-5), AipsError);
           }
@@ -151,13 +151,13 @@ int main() {
         whichAxes(2) = false;
         LatticeFFT::crfft(rArr, cArr, whichAxes, false);
         centre = 0;
-        for (uInt i = 0; i < nz; i++) {
+        for (unsigned int i = 0; i < nz; i++) {
           centre(2) = i;
           AlwaysAssert(near(rArr.getAt(centre), 1.0f, 1E-5), AipsError);
           rArr.putAt(0.0f, centre);
         }
         {
-          RO_LatticeIterator<Float> iter(rArr);
+          RO_LatticeIterator<float> iter(rArr);
           for (iter.reset(); !iter.atEnd(); iter++) {
             AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 1E-5), AipsError);
           }

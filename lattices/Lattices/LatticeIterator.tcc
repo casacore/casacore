@@ -133,7 +133,7 @@ bool RO_LatticeIterator<T>::atEnd() const {
 }
 
 template <class T>
-uInt RO_LatticeIterator<T>::nsteps() const {
+unsigned int RO_LatticeIterator<T>::nsteps() const {
   return itsIterPtr->nsteps();
 }
 

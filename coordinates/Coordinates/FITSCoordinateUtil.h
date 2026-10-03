@@ -100,7 +100,7 @@ class FITSCoordinateUtil {
   // # Much of the work in to/from fits should be moved to the individual
   // # classes.
   bool toFITSHeader(RecordInterface& header, IPosition& shape, const CoordinateSystem& cSys,
-                    bool oneRelative, Char prefix = 'c', bool writeWCS = true,
+                    bool oneRelative, char prefix = 'c', bool writeWCS = true,
                     bool preferVelocity = true, bool opticalVelocity = true,
                     bool preferWavelength = false, bool airWavelength = false) const;
 
@@ -115,43 +115,43 @@ class FITSCoordinateUtil {
   // Otherwise no warning is issued.
   // # cf comment in toFITS.
   //<group>
-  bool fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& coordsys, RecordInterface& recHeader,
-                      const Vector<String>& header, const IPosition& shape, uInt which = 0) const;
+  bool fromFITSHeader(int& stokesFITSValue, CoordinateSystem& coordsys, RecordInterface& recHeader,
+                      const Vector<String>& header, const IPosition& shape, unsigned int which = 0) const;
   //</group>
 
   // Helper function to create a FITS style CTYPE vector from the
   // axis names from a DirectionCoordinate
   static Vector<String> cTypeFromDirection(bool& isNCP, const Projection& proj,
-                                           const Vector<String>& axisNames, Double refLat,
+                                           const Vector<String>& axisNames, double refLat,
                                            bool printError);
   static Vector<String> cTypeFromDirection(const Projection& proj, const Vector<String>& axisNames,
                                            bool printError);
 
  private:
   // Generate actual FITS keywords
-  bool generateFITSKeywords(LogIO& os, bool& isNCP, Double& longPole, Double& latPole,
-                            Vector<Double>& crval, Vector<Double>& crpix, Vector<Double>& cdelt,
+  bool generateFITSKeywords(LogIO& os, bool& isNCP, double& longPole, double& latPole,
+                            Vector<double>& crval, Vector<double>& crpix, Vector<double>& cdelt,
                             // #   Vector<Double>& crota,
                             // #   Vector<Double>& projp,
-                            Vector<Double>& pvi_ma, Vector<String>& ctype, Vector<String>& cunit,
-                            Matrix<Double>& pc, const CoordinateSystem& cSys, Int skyCoord,
-                            Int longAxis, Int latAxis, Int specAxis, Int stokesAxis, bool writeWCS,
-                            Double offset, const String& sprefix) const;
+                            Vector<double>& pvi_ma, Vector<String>& ctype, Vector<String>& cunit,
+                            Matrix<double>& pc, const CoordinateSystem& cSys, int skyCoord,
+                            int longAxis, int latAxis, int specAxis, int stokesAxis, bool writeWCS,
+                            double offset, const String& sprefix) const;
 
   // Special Stokes processing  for conversion to FITS header
-  bool toFITSHeaderStokes(Vector<Double>& crval, Vector<Double>& crpix, Vector<Double>& cdelt,
-                          LogIO& os, const CoordinateSystem& coordsys, Int stokesAxis,
-                          Int stokesCoord) const;
+  bool toFITSHeaderStokes(Vector<double>& crval, Vector<double>& crpix, Vector<double>& cdelt,
+                          LogIO& os, const CoordinateSystem& coordsys, int stokesAxis,
+                          int stokesCoord) const;
 
   // Look for Coordinate type and add to CS
   // <group>
-  bool addDirectionCoordinate(CoordinateSystem& cSys, Vector<Int>& axes, const wcsprm& wcs,
+  bool addDirectionCoordinate(CoordinateSystem& cSys, Vector<int>& axes, const wcsprm& wcs,
                               LogIO& os) const;
-  bool addSpectralCoordinate(CoordinateSystem& cSys, Int& axis, const wcsprm& wcs,
+  bool addSpectralCoordinate(CoordinateSystem& cSys, int& axis, const wcsprm& wcs,
                              const IPosition& shape, LogIO& os) const;
-  bool addStokesCoordinate(CoordinateSystem& cSys, Int& axis, Int& stokesFITSValue,
+  bool addStokesCoordinate(CoordinateSystem& cSys, int& axis, int& stokesFITSValue,
                            const wcsprm& wcs, const IPosition& shape, LogIO& os) const;
-  bool addLinearCoordinate(CoordinateSystem& cSys, Vector<Int>& axes, const wcsprm& wcs,
+  bool addLinearCoordinate(CoordinateSystem& cSys, Vector<int>& axes, const wcsprm& wcs,
                            LogIO& os) const;
   // </group>
 
@@ -161,8 +161,8 @@ class FITSCoordinateUtil {
                               const wcsprm& wcs) const;
   bool frequencySystemFromWCS(LogIO& os, MFrequency::Types& type, String& errMsg,
                               const wcsprm& wcs) const;
-  bool stokesCoordinateFromWCS(LogIO& os, StokesCoordinate& coord, Int& stokesFITSValue,
-                               String& errMSg, const wcsprm& wcs, uInt shape,
+  bool stokesCoordinateFromWCS(LogIO& os, StokesCoordinate& coord, int& stokesFITSValue,
+                               String& errMSg, const wcsprm& wcs, unsigned int shape,
                                bool warnStokes) const;
   // </group>
 
@@ -173,10 +173,10 @@ class FITSCoordinateUtil {
   void setWCS(wcsprm& wcs) const;
 
   // Decode CD cards from FITS file header (Record interface)
-  bool getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header);
+  bool getCDFromHeader(Matrix<double>& cd, unsigned int n, const RecordInterface& header);
 
   // Decode PC matrix from FITS header (Record interface)
-  void getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Double>& pc, uInt n,
+  void getPCFromHeader(LogIO& os, int& rotationAxis, Matrix<double>& pc, unsigned int n,
                        const RecordInterface& header, const String& sprefix);
 
   // Helper function to convert a wcs structure holding FITS keywords

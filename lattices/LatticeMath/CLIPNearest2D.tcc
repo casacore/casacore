@@ -42,7 +42,7 @@ CLIPNearest2D<T>* CLIPNearest2D<T>::clone() const {
 }
 
 template <class T>
-void CLIPNearest2D<T>::getData(Array<T>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+void CLIPNearest2D<T>::getData(Array<T>& buffer, const Vector<float>& x, const Vector<float>& y,
                                const Slicer& section) {
   // Determine the shape and positions w.r.t. the original lattice.
   IPosition shp = itsAxesMap.shapeToOld(buffer.shape());
@@ -61,9 +61,9 @@ void CLIPNearest2D<T>::getData(Array<T>& buffer, const Vector<Float>& x, const V
     shp.append(IPosition(1, buffer.shape()[itsCurveAxis]));
     Array<T> data = buffer.reform(shp);
     ArrayIterator<T> iter(data, shp.nelements() - 1);
-    for (uInt i = 0; i < x.nelements(); i++) {
-      blc[itsAxis1] = Int(x[i] + 0.5);
-      blc[itsAxis2] = Int(y[i] + 0.5);
+    for (unsigned int i = 0; i < x.nelements(); i++) {
+      blc[itsAxis1] = int(x[i] + 0.5);
+      blc[itsAxis2] = int(y[i] + 0.5);
       // Some lattices (e.g. ArrayLattice) return an Array referencing
       // the original data. That would destroy the ArrayIter internals,
       // so in that case we copy the data.
@@ -79,12 +79,12 @@ void CLIPNearest2D<T>::getData(Array<T>& buffer, const Vector<Float>& x, const V
   } else {
     IPosition start = IPosition(buffer.ndim(), 0);
     IPosition end = buffer.shape() - 1;
-    for (uInt i = 0; i < x.nelements(); i++) {
+    for (unsigned int i = 0; i < x.nelements(); i++) {
       start(itsCurveAxis) = i;
       end(itsCurveAxis) = i;
       Array<T> data = buffer(start, end).reform(shp);
-      blc[itsAxis1] = Int(x[i] + 0.5);
-      blc[itsAxis2] = Int(y[i] + 0.5);
+      blc[itsAxis1] = int(x[i] + 0.5);
+      blc[itsAxis2] = int(y[i] + 0.5);
       if (itsIsRef) {
         data = itsLatticePtr->getSlice(blc, leng, incr);
       } else {
@@ -97,7 +97,7 @@ void CLIPNearest2D<T>::getData(Array<T>& buffer, const Vector<Float>& x, const V
 }
 
 template <class T>
-void CLIPNearest2D<T>::getMask(Array<bool>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+void CLIPNearest2D<T>::getMask(Array<bool>& buffer, const Vector<float>& x, const Vector<float>& y,
                                const Slicer& section) {
   // Determine the shape and positions w.r.t. the original lattice.
   IPosition shp = itsAxesMap.shapeToOld(buffer.shape());
@@ -116,9 +116,9 @@ void CLIPNearest2D<T>::getMask(Array<bool>& buffer, const Vector<Float>& x, cons
     shp.append(IPosition(1, buffer.shape()[itsCurveAxis]));
     Array<bool> data = buffer.reform(shp);
     ArrayIterator<bool> iter(data, shp.nelements() - 1);
-    for (uInt i = 0; i < x.nelements(); i++) {
-      blc[itsAxis1] = Int(x[i] + 0.5);
-      blc[itsAxis2] = Int(y[i] + 0.5);
+    for (unsigned int i = 0; i < x.nelements(); i++) {
+      blc[itsAxis1] = int(x[i] + 0.5);
+      blc[itsAxis2] = int(y[i] + 0.5);
       // Some lattices (e.g. ArrayLattice) return an Array referencing
       // the original data. That would destroy the ArrayIter internals,
       // so we use a reference and copy the data if needed.
@@ -132,12 +132,12 @@ void CLIPNearest2D<T>::getMask(Array<bool>& buffer, const Vector<Float>& x, cons
   } else {
     IPosition start = IPosition(buffer.ndim(), 0);
     IPosition end = buffer.shape() - 1;
-    for (uInt i = 0; i < x.nelements(); i++) {
+    for (unsigned int i = 0; i < x.nelements(); i++) {
       start(itsCurveAxis) = i;
       end(itsCurveAxis) = i;
       Array<bool> data = buffer(start, end).reform(shp);
-      blc[itsAxis1] = Int(x[i] + 0.5);
-      blc[itsAxis2] = Int(y[i] + 0.5);
+      blc[itsAxis1] = int(x[i] + 0.5);
+      blc[itsAxis2] = int(y[i] + 0.5);
       Array<bool> ref(data);
       bool isRef = itsLatticePtr->getMaskSlice(ref, blc, leng, incr);
       if (isRef) {

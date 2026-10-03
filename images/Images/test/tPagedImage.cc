@@ -62,9 +62,9 @@ String removeDir(const String& msg) {
   return s;
 }
 
-Float const_arg_func(const Float& val) { return 3.0 * val; }
+float const_arg_func(const float& val) { return 3.0 * val; }
 
-Float func(Float val) { return 2.0 * val * val; }
+float func(float val) { return 2.0 * val * val; }
 
 Table makeScrTable(const String& name) {
   SetupNewTable setup(name, TableDesc(), Table::Scratch);
@@ -84,8 +84,8 @@ void testTempCloseDelete() {
   // Check image gets deleted if marked for delete.
   {
     TiledShape tiledShape(shape);
-    PagedImage<Float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
-    img.putAt(Float(1.0), IPosition(2, 1, 1));
+    PagedImage<float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(float(1.0), IPosition(2, 1, 1));
     img.table().markForDelete();
   }
   // Check image gets deleted if marked for delete,
@@ -94,8 +94,8 @@ void testTempCloseDelete() {
   {
     IPosition shape(2, 32, 64);
     TiledShape tiledShape(shape);
-    PagedImage<Float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
-    img.putAt(Float(1.0), IPosition(2, 1, 1));
+    PagedImage<float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(float(1.0), IPosition(2, 1, 1));
     img.table().markForDelete();
     img.tempClose();
   }
@@ -105,11 +105,11 @@ void testTempCloseDelete() {
   {
     IPosition shape(2, 32, 64);
     TiledShape tiledShape(shape);
-    PagedImage<Float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
-    img.putAt(Float(1.0), IPosition(2, 1, 1));
+    PagedImage<float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(float(1.0), IPosition(2, 1, 1));
     img.table().markForDelete();
     img.tempClose();
-    img.putAt(Float(1.0), IPosition(2, 0, 0));
+    img.putAt(float(1.0), IPosition(2, 0, 0));
   }
   AlwaysAssertExit(!File("tPagedImage_tmp.imgtc").exists());
   // Check image does not get deleted if first marked for delete,
@@ -117,11 +117,11 @@ void testTempCloseDelete() {
   {
     IPosition shape(2, 32, 64);
     TiledShape tiledShape(shape);
-    PagedImage<Float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
-    img.putAt(Float(1.0), IPosition(2, 1, 1));
+    PagedImage<float> img(tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(float(1.0), IPosition(2, 1, 1));
     img.table().markForDelete();
     img.tempClose();
-    img.putAt(Float(1.0), IPosition(2, 0, 0));
+    img.putAt(float(1.0), IPosition(2, 0, 0));
     img.table().unmarkForDelete();
   }
   AlwaysAssertExit(File("tPagedImage_tmp.imgtc").exists());
@@ -139,44 +139,44 @@ int main() {
 
     {
       Table table = makeScrTable(String("tPagedImage_tmp.img1"));
-      PagedImage<Float> pIm(tiledShape, cSys, table);
+      PagedImage<float> pIm(tiledShape, cSys, table);
     }
     {
-      PagedImage<Float> pIm(tiledShape, cSys, String("tPagedImage_tmp.img2"));
+      PagedImage<float> pIm(tiledShape, cSys, String("tPagedImage_tmp.img2"));
     }
     {
-      PagedImage<Float> pIm(tiledShape, cSys, String("tPagedImage_tmp.img3"),
+      PagedImage<float> pIm(tiledShape, cSys, String("tPagedImage_tmp.img3"),
                             TableLock(TableLock::AutoLocking));
     }
     TableUtil::deleteTable(String("tPagedImage_tmp.img3"));
     {
       Table table = makeScrTable(String("tPagedImage_tmp.img4"));
-      PagedImage<Float> pIm(tiledShape, cSys, table);
-      PagedImage<Float> pIm2(table);
+      PagedImage<float> pIm(tiledShape, cSys, table);
+      PagedImage<float> pIm2(table);
     }
     {
       Table table = makeNewTable(String("tPagedImage_tmp.img5"));
-      PagedImage<Float> pIm(tiledShape, cSys, table);
+      PagedImage<float> pIm(tiledShape, cSys, table);
     }
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"));
     }
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"), TableLock(TableLock::AutoLocking));
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"), TableLock(TableLock::AutoLocking));
     }
     //
     // Test copy constructor.  This is by reference so test that
     // this is so
     //
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
-      PagedImage<Float> pIm2(pIm);
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"));
+      PagedImage<float> pIm2(pIm);
       pIm.tempClose();
-      pIm.putAt(Float(1.0), IPosition(2, 0, 0));
-      AlwaysAssert((pIm(IPosition(2, 0, 0)) == Float(1.0)), AipsError);
-      pIm2.putAt(Float(10.0), IPosition(2, 0, 0));
-      AlwaysAssert((pIm2(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
-      AlwaysAssert((pIm(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
+      pIm.putAt(float(1.0), IPosition(2, 0, 0));
+      AlwaysAssert((pIm(IPosition(2, 0, 0)) == float(1.0)), AipsError);
+      pIm2.putAt(float(10.0), IPosition(2, 0, 0));
+      AlwaysAssert((pIm2(IPosition(2, 0, 0)) == float(10.0)), AipsError);
+      AlwaysAssert((pIm(IPosition(2, 0, 0)) == float(10.0)), AipsError);
       //
       AlwaysAssert(pIm(IPosition(2, 0, 0)) == pIm.getAt(IPosition(2, 0, 0)), AipsError);
     }
@@ -185,14 +185,14 @@ int main() {
     // this is so
     //
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
-      PagedImage<Float> pIm2(pIm);
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"));
+      PagedImage<float> pIm2(pIm);
       pIm2 = pIm;
-      pIm.putAt(Float(1.0), IPosition(2, 0, 0));
-      AlwaysAssert((pIm(IPosition(2, 0, 0)) == Float(1.0)), AipsError);
-      pIm2.putAt(Float(10.0), IPosition(2, 0, 0));
-      AlwaysAssert((pIm2.getAt(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
-      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
+      pIm.putAt(float(1.0), IPosition(2, 0, 0));
+      AlwaysAssert((pIm(IPosition(2, 0, 0)) == float(1.0)), AipsError);
+      pIm2.putAt(float(10.0), IPosition(2, 0, 0));
+      AlwaysAssert((pIm2.getAt(IPosition(2, 0, 0)) == float(10.0)), AipsError);
+      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == float(10.0)), AipsError);
       //
       AlwaysAssert(pIm(IPosition(2, 0, 0)) == pIm.getAt(IPosition(2, 0, 0)), AipsError);
     }
@@ -202,37 +202,37 @@ int main() {
     // They are by reference too.
     //
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
-      pIm.putAt(Float(1.0), IPosition(2, 0, 0));
-      AlwaysAssert((pIm(IPosition(2, 0, 0)) == Float(1.0)), AipsError);
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"));
+      pIm.putAt(float(1.0), IPosition(2, 0, 0));
+      AlwaysAssert((pIm(IPosition(2, 0, 0)) == float(1.0)), AipsError);
       //
-      Lattice<Float>* lat = pIm.clone();
+      Lattice<float>* lat = pIm.clone();
       AlwaysAssert(pIm.shape() == lat->shape(), AipsError);
       //
-      lat->putAt(Float(10.0), IPosition(2, 0, 0));
-      AlwaysAssert(((*lat).getAt(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
-      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
+      lat->putAt(float(10.0), IPosition(2, 0, 0));
+      AlwaysAssert(((*lat).getAt(IPosition(2, 0, 0)) == float(10.0)), AipsError);
+      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == float(10.0)), AipsError);
       delete lat;
     }
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
-      pIm.putAt(Float(1.0), IPosition(2, 0, 0));
-      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == Float(1.0)), AipsError);
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"));
+      pIm.putAt(float(1.0), IPosition(2, 0, 0));
+      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == float(1.0)), AipsError);
       //
-      Lattice<Float>* ii = pIm.cloneII();
+      Lattice<float>* ii = pIm.cloneII();
       AlwaysAssert(pIm.shape() == ii->shape(), AipsError);
 
       //
-      ii->putAt(Float(10.0), IPosition(2, 0, 0));
-      AlwaysAssert(((*ii).getAt(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
-      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == Float(10.0)), AipsError);
+      ii->putAt(float(10.0), IPosition(2, 0, 0));
+      AlwaysAssert(((*ii).getAt(IPosition(2, 0, 0)) == float(10.0)), AipsError);
+      AlwaysAssert((pIm.getAt(IPosition(2, 0, 0)) == float(10.0)), AipsError);
       delete ii;
     }
     //
     // Test some miscellaneous little things
     //
     {
-      PagedImage<Float> pIm(String("tPagedImage_tmp.img5"));
+      PagedImage<float> pIm(String("tPagedImage_tmp.img5"));
       //
       AlwaysAssert(imagePixelType(String("tPagedImage_tmp.img5")) == TpFloat,  // Global function
                    AipsError);
@@ -276,8 +276,8 @@ int main() {
       AlwaysAssert(pIm.units().getName() == "Jy", AipsError);
       //
       TableRecord rec;
-      rec.define("x", Double(1.0));
-      rec.define("y", Double(2.0));
+      rec.define("x", double(1.0));
+      rec.define("y", double(2.0));
       pIm.tempClose();
       pIm.setMiscInfo(rec);
       pIm.tempClose();
@@ -287,8 +287,8 @@ int main() {
       AlwaysAssert(rec2.isDefined("y"), AipsError);
       AlwaysAssert(rec2.dataType("x") == TpDouble, AipsError);
       AlwaysAssert(rec2.dataType("y") == TpDouble, AipsError);
-      AlwaysAssert(rec2.asDouble("x") == Double(1.0), AipsError);
-      AlwaysAssert(rec2.asDouble("y") == Double(2.0), AipsError);
+      AlwaysAssert(rec2.asDouble("x") == double(1.0), AipsError);
+      AlwaysAssert(rec2.asDouble("y") == double(2.0), AipsError);
       //
       //       cout << "Cache size = " << pIm.maximumCacheSize() << endl;
       pIm.setCacheSizeFromPath(shape, IPosition(2, 0, 0), shape, IPosition(2, 0, 1));
@@ -330,54 +330,54 @@ int main() {
       IPosition shape2(2, 5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      PagedImage<Float> pIm(tiledShape2, cSys2, table);
+      PagedImage<float> pIm(tiledShape2, cSys2, table);
       //
       // Fill (slowly so use small image)
       //
       IPosition pos(2);
-      for (Int i = 0; i < shape2(0); i++) {
-        for (Int j = 0; j < shape2(1); j++) {
+      for (int i = 0; i < shape2(0); i++) {
+        for (int j = 0; j < shape2(1); j++) {
           pos(0) = i;
           pos(1) = j;
-          pIm.putAt(Float(i * j), pos);
+          pIm.putAt(float(i * j), pos);
         }
       }
       //
       Slicer slice(IPosition(2, 0, 0), shape2, IPosition(2, 1, 1));
-      Array<Float> data;
+      Array<float> data;
       pIm.doGetSlice(data, slice);
       AlwaysAssert(data.shape() == shape2, AipsError);
       //
-      for (Int i = 0; i < shape2(0); i++) {
-        for (Int j = 0; j < shape2(1); j++) {
+      for (int i = 0; i < shape2(0); i++) {
+        for (int j = 0; j < shape2(1); j++) {
           pos(0) = i;
           pos(1) = j;
           AlwaysAssert(data(pos) == pIm.getAt(pos), AipsError);
         }
       }
       //
-      data* Float(20.0);
+      data* float(20.0);
       pIm.doPutSlice(data, IPosition(2, 0, 0), IPosition(2, 1, 1));
-      for (Int i = 0; i < shape2(0); i++) {
-        for (Int j = 0; j < shape2(1); j++) {
+      for (int i = 0; i < shape2(0); i++) {
+        for (int j = 0; j < shape2(1); j++) {
           pos(0) = i;
           pos(1) = j;
           AlwaysAssert(data(pos) == pIm.getAt(pos), AipsError);
         }
       }
       //
-      Array<Float> data2(data.copy());
+      Array<float> data2(data.copy());
       data.resize(IPosition(2, 2, 2));
       data.set(0.0);
       pIm.doPutSlice(data, IPosition(2, 0, 0), IPosition(2, 1, 1));
       pos(0) = 0;
       pos(1) = 0;
-      AlwaysAssert(pIm(IPosition(2, 0, 0)) == Float(0.0), AipsError);
-      AlwaysAssert(pIm(IPosition(2, 0, 1)) == Float(0.0), AipsError);
-      AlwaysAssert(pIm(IPosition(2, 1, 0)) == Float(0.0), AipsError);
-      AlwaysAssert(pIm(IPosition(2, 1, 1)) == Float(0.0), AipsError);
-      for (Int i = 2; i < shape2(0); i++) {
-        for (Int j = 2; j < shape2(1); j++) {
+      AlwaysAssert(pIm(IPosition(2, 0, 0)) == float(0.0), AipsError);
+      AlwaysAssert(pIm(IPosition(2, 0, 1)) == float(0.0), AipsError);
+      AlwaysAssert(pIm(IPosition(2, 1, 0)) == float(0.0), AipsError);
+      AlwaysAssert(pIm(IPosition(2, 1, 1)) == float(0.0), AipsError);
+      for (int i = 2; i < shape2(0); i++) {
+        for (int j = 2; j < shape2(1); j++) {
           pos(0) = i;
           pos(1) = j;
           AlwaysAssert(data2(pos) == pIm.getAt(pos), AipsError);
@@ -392,27 +392,27 @@ int main() {
       IPosition shape2(2, 5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      PagedImage<Float> pIm(tiledShape2, cSys2, table);
+      PagedImage<float> pIm(tiledShape2, cSys2, table);
       //
       IPosition pos(2);
-      Array<Float> data(shape2);
-      for (Int i = 0; i < shape2(0); i++) {
-        for (Int j = 0; j < shape2(1); j++) {
+      Array<float> data(shape2);
+      for (int i = 0; i < shape2(0); i++) {
+        for (int j = 0; j < shape2(1); j++) {
           pos(0) = i;
           pos(1) = j;
-          data(pos) = Float(i * j);
+          data(pos) = float(i * j);
         }
       }
       pIm.doPutSlice(data, IPosition(2, 0, 0), IPosition(2, 1, 1));
       //
-      ArrayLattice<Float> lat(shape2);
-      lat.set(Float(10.0));
+      ArrayLattice<float> lat(shape2);
+      lat.set(float(10.0));
       pIm += lat;
-      Array<Float> data2(data.copy());
-      data2 += Float(10.0);
+      Array<float> data2(data.copy());
+      data2 += float(10.0);
       //
       Slicer slice(IPosition(2, 0, 0), shape2, IPosition(2, 1, 1));
-      Array<Float> data3;
+      Array<float> data3;
       pIm.doGetSlice(data3, slice);
       //
       AlwaysAssert(allNear(data3, data2, 1e-6), AipsError);
@@ -425,33 +425,33 @@ int main() {
       IPosition shape2(2, 5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      PagedImage<Float> pIm(tiledShape2, cSys2, table);
+      PagedImage<float> pIm(tiledShape2, cSys2, table);
       pIm.set(3.0);
-      AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
+      AlwaysAssert(allEQ(pIm.get(), float(3.0)), AipsError);
       //
       // 2 * x * x
       //
       pIm.apply(&func);
-      AlwaysAssert(allNear(pIm.get(), Float(18.0), Double(1e-6)), AipsError);
+      AlwaysAssert(allNear(pIm.get(), float(18.0), double(1e-6)), AipsError);
       //
       // 3 * x (const arg)
       //
       pIm.set(3.0);
-      AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
+      AlwaysAssert(allEQ(pIm.get(), float(3.0)), AipsError);
       pIm.apply(&const_arg_func);
-      AlwaysAssert(allNear(pIm.get(), Float(9.0), Double(1e-6)), AipsError);
+      AlwaysAssert(allNear(pIm.get(), float(9.0), double(1e-6)), AipsError);
       //
       // Polynomial 1 + 2x + 3x**2
       //
       pIm.set(3.0);
-      AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
+      AlwaysAssert(allEQ(pIm.get(), float(3.0)), AipsError);
       //
-      Polynomial<Float> poly(3);
+      Polynomial<float> poly(3);
       poly.setCoefficient(1, 1.0);
       poly.setCoefficient(2, 2.0);
       poly.setCoefficient(3, 3.0);
       pIm.apply(poly);
-      AlwaysAssert(allNear(pIm.get(), poly(3.0), Double(1e-6)), AipsError);
+      AlwaysAssert(allNear(pIm.get(), poly(3.0), double(1e-6)), AipsError);
     }
     //
     // test table function.  I don't really know what else to do with it.
@@ -461,7 +461,7 @@ int main() {
       IPosition shape2(2, 5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      PagedImage<Float> pIm(tiledShape2, cSys2, table);
+      PagedImage<float> pIm(tiledShape2, cSys2, table);
       pIm.set(1.0);
       //
       Table t = pIm.table();
@@ -475,19 +475,19 @@ int main() {
       IPosition shape2(2, 128, 256);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      PagedImage<Float> pIm(tiledShape2, cSys2, table);
+      PagedImage<float> pIm(tiledShape2, cSys2, table);
       pIm.set(1.0);
       //
-      LatticeIterator<Float> it(pIm);
+      LatticeIterator<float> it(pIm);
       while (!it.atEnd()) {
-        AlwaysAssert(allEQ(it.cursor(), Float(1.0)), AipsError);
+        AlwaysAssert(allEQ(it.cursor(), float(1.0)), AipsError);
         it++;
       }
     }
     {
       // per plane beam support
       String name = "tPagedImage_tmp_afsdf.im";
-      PagedImage<Float> temp(TiledShape(IPosition(4, 64, 64, 4, 16)),
+      PagedImage<float> temp(TiledShape(IPosition(4, 64, 64, 4, 16)),
                              CoordinateUtil::defaultCoords4D(), name);
       ImageInfo info = temp.imageInfo();
       Quantity maj(5, "arcsec");
@@ -509,8 +509,8 @@ int main() {
       } catch (std::exception& x) {
       }
       AlwaysAssert(ok, AipsError);
-      for (uInt i = 0; i < 4; i++) {
-        for (uInt j = 0; j < 16; j++) {
+      for (unsigned int i = 0; i < 4; i++) {
+        for (unsigned int j = 0; j < 16; j++) {
           info.setBeam(j, i, maj, min, pa);
         }
       }

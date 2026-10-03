@@ -63,7 +63,7 @@ void testScalar() {
                                      "6.60417deg, 52.8deg, 'WGS84')'m/s'")
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
-    Double val1 = node1.getDouble(0);
+    double val1 = node1.getDouble(0);
     // cout << "taql=" << val1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "m/s");
     AlwaysAssertExit(near(nrv.getValue(), val1, 1e-8));
@@ -75,14 +75,14 @@ void testDopplerScalar() {
   // Make a radvel from a Z doppler.
   MDoppler dop(Quantity(2.5), MDoppler::Z);
   MRadialVelocity mvel(MRadialVelocity::fromDoppler(dop));
-  Double vel = mvel.getValue().getValue() / 1000.;  // km/s
+  double vel = mvel.getValue().getValue() / 1000.;  // km/s
   // cout << "meas=" << vel << endl;
   {
     TableExprNode node1(tableCommand("calc meas.radvel('LSRK',"
                                      "2.5, 'Z')")
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
-    Double val1 = node1.getDouble(0);
+    double val1 = node1.getDouble(0);
     // cout << "taql=" << val1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "km/s");
     AlwaysAssertExit(near(vel, val1, 1e-8));
@@ -112,7 +112,7 @@ void testArray() {
                                      "6.60417deg, 52.8deg, 'WGS84')'m/s'")
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     // cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(arr1.shape() == IPosition(1, 2));
     AlwaysAssertExit(node1.unit().getName() == "m/s");
@@ -128,15 +128,15 @@ void testDopplerArray() {
   MDoppler dop2(Quantity(1.5), MDoppler::RADIO);
   MRadialVelocity mvel1(MRadialVelocity::fromDoppler(dop1));
   MRadialVelocity mvel2(MRadialVelocity::fromDoppler(dop2));
-  Double vel1 = mvel1.getValue().getValue() / 1000.;  // km/s
-  Double vel2 = mvel2.getValue().getValue() / 1000.;  // km/s
+  double vel1 = mvel1.getValue().getValue() / 1000.;  // km/s
+  double vel2 = mvel2.getValue().getValue() / 1000.;  // km/s
   // cout << "meas=" << vel1 << endl;
   {
     TableExprNode node1(tableCommand("calc meas.radvel('LSRK',"
                                      "[2.5,1.5], 'RADIO')")
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     // cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "km/s");
     AlwaysAssertExit(near(vel1, arr1.data()[0], 1e-8));
@@ -159,8 +159,8 @@ void testColumn() {
       MRadialVelocity::Convert(rv1a, MRadialVelocity::Ref(MRadialVelocity::GEO))();
   MRadialVelocity nrv2a =
       MRadialVelocity::Convert(rv2a, MRadialVelocity::Ref(MRadialVelocity::GEO))();
-  Double vel1a = nrv1a.getValue().getValue() / 1000.;  // km/s
-  Double vel2a = nrv2a.getValue().getValue() / 1000.;  // km/s
+  double vel1a = nrv1a.getValue().getValue() / 1000.;  // km/s
+  double vel2a = nrv2a.getValue().getValue() / 1000.;  // km/s
 
   MDirection coord2(Quantity(175.425833, "deg"), Quantity(41.799167, "deg"), MDirection::J2000);
   MEpoch epo2(Quantity(50417.625, "d"));  // 14-may-1996/15:00
@@ -174,8 +174,8 @@ void testColumn() {
       MRadialVelocity::Convert(rv1b, MRadialVelocity::Ref(MRadialVelocity::GEO))().getValue();
   MRadialVelocity nrv2b =
       MRadialVelocity::Convert(rv2b, MRadialVelocity::Ref(MRadialVelocity::GEO))().getValue();
-  Double vel1b = nrv1b.getValue().getValue() / 1000.;  // km/s
-  Double vel2b = nrv2b.getValue().getValue() / 1000.;  // km/s
+  double vel1b = nrv1b.getValue().getValue() / 1000.;  // km/s
+  double vel2b = nrv2b.getValue().getValue() / 1000.;  // km/s
   // cout << "meas=" <<  vel1a<<' '<<vel2a<<' '<<vel1b<<' '<<vel2b<< endl;
 
   TableExprNode node1(tableCommand("using style python calc meas.rv ('GEO',"
@@ -185,12 +185,12 @@ void testColumn() {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
   AlwaysAssertExit(node1.unit().getName() == "km/s");
-  Array<Double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
   // cout << "taql=" << arr1 << endl;
   AlwaysAssertExit(arr1.shape() == IPosition(1, 2));
   AlwaysAssertExit(near(vel1a, arr1.data()[0], 1e-8));
   AlwaysAssertExit(near(vel2a, arr1.data()[1], 1e-8));
-  Array<Double> arr2 = node1.getArrayDouble(1);
+  Array<double> arr2 = node1.getArrayDouble(1);
   AlwaysAssertExit(arr2.shape() == IPosition(1, 2));
   AlwaysAssertExit(near(vel1b, arr2.data()[0], 1e-8));
   AlwaysAssertExit(near(vel2b, arr2.data()[1], 1e-8));
@@ -203,8 +203,8 @@ void testDopplerColumn() {
   MDoppler dop2(Quantity(0.3, ""), MDoppler::RADIO);
   MRadialVelocity mvel1(MRadialVelocity::fromDoppler(dop1));
   MRadialVelocity mvel2(MRadialVelocity::fromDoppler(dop2));
-  Double vel1 = mvel1.getValue().getValue() / 1000.;  // km/s
-  Double vel2 = mvel2.getValue().getValue() / 1000.;  // km/s
+  double vel1 = mvel1.getValue().getValue() / 1000.;  // km/s
+  double vel2 = mvel2.getValue().getValue() / 1000.;  // km/s
   /// cout << "meas=" << ndop << endl;
   TableExprNode node1(tableCommand("calc meas.radvel('LSRK',DOPPCOL)"
                                    " from tRadialVelocityEngine_tmp.tab")
@@ -212,10 +212,10 @@ void testDopplerColumn() {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.getNodeRep()->valueType() == TableExprNodeRep::VTScalar);
   AlwaysAssertExit(node1.unit().getName() == "km/s");
-  Double val1 = node1.getDouble(0);
+  double val1 = node1.getDouble(0);
   /// cout << "taql=" << val1 << endl;
   AlwaysAssertExit(near(vel1, val1, 1e-8));
-  Double val2 = node1.getDouble(1);
+  double val2 = node1.getDouble(1);
   /// cout << "taql=" << val2 << endl;
   AlwaysAssertExit(near(vel2, val2, 1e-8));
 }

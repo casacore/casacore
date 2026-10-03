@@ -89,7 +89,7 @@ class EvenPolynomial : public EvenPolynomialParam<T> {
   EvenPolynomial() : EvenPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero.
-  explicit EvenPolynomial(uInt order) : EvenPolynomialParam<T>(order) {}
+  explicit EvenPolynomial(unsigned int order) : EvenPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   EvenPolynomial(const EvenPolynomial<T> &other) : EvenPolynomialParam<T>(other) {}
@@ -146,7 +146,7 @@ class EvenPolynomial_PS<AutoDiff<T>> : public EvenPolynomialParam<AutoDiff<T>> {
   //  Constructs one dimensional EvenPolynomials.
   //  <group>
   EvenPolynomial_PS() : EvenPolynomialParam<AutoDiff<T>>() {}
-  explicit EvenPolynomial_PS(uInt order) : EvenPolynomialParam<AutoDiff<T>>(order) {}
+  explicit EvenPolynomial_PS(unsigned int order) : EvenPolynomialParam<AutoDiff<T>>(order) {}
   // </group>
 
   // Copy constructor (deep copy)

@@ -134,38 +134,38 @@ class PagedImage : public ImageInterface<T> {
   // Construct a new Image from shape and coordinate information.
   // Data will be stored in the argument table.
   PagedImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo, Table& table,
-             uInt rowNumber = 0);
+             unsigned int rowNumber = 0);
 
   // Construct a new Image from shape and coordinate information. Table
   // will be stored in the named file.
   PagedImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-             const String& nameOfNewFile, uInt rowNumber = 0);
+             const String& nameOfNewFile, unsigned int rowNumber = 0);
 
   // Construct a new Image from shape and coordinate information. Table
   // will be stored in the named file.
   // The lock options may be specified
   // <group>
   PagedImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-             const String& nameOfNewFile, TableLock::LockOption, uInt rowNumber = 0);
+             const String& nameOfNewFile, TableLock::LockOption, unsigned int rowNumber = 0);
   PagedImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-             const String& nameOfNewFile, const TableLock& lockOptions, uInt rowNumber = 0);
+             const String& nameOfNewFile, const TableLock& lockOptions, unsigned int rowNumber = 0);
   // </group>
 
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
-  explicit PagedImage(Table& table, MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
+  explicit PagedImage(Table& table, MaskSpecifier = MaskSpecifier(), unsigned int rowNumber = 0);
 
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
-  explicit PagedImage(const String& filename, MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
+  explicit PagedImage(const String& filename, MaskSpecifier = MaskSpecifier(), unsigned int rowNumber = 0);
 
   // Reconstruct an image from a pre-existing file with Locking.
   // By default the default pixelmask (if available) is used.
   // <group>
   PagedImage(const String& filename, TableLock::LockOption, MaskSpecifier = MaskSpecifier(),
-             uInt rowNumber = 0);
+             unsigned int rowNumber = 0);
   PagedImage(const String& filename, const TableLock& lockOptions, MaskSpecifier = MaskSpecifier(),
-             uInt rowNumber = 0);
+             unsigned int rowNumber = 0);
   // </group>
 
   // Copy constructor (reference semantics).
@@ -230,7 +230,7 @@ class PagedImage : public ImageInterface<T> {
   virtual String name(bool stripPath = false) const;
 
   // Return the current TableColumn row number.
-  uInt rowNumber() const;
+  unsigned int rowNumber() const;
 
   // Return the shape of the image.
   virtual IPosition shape() const;
@@ -316,16 +316,16 @@ class PagedImage : public ImageInterface<T> {
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -336,7 +336,7 @@ class PagedImage : public ImageInterface<T> {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -349,7 +349,7 @@ class PagedImage : public ImageInterface<T> {
   // Unlocking also unlocks the logtable and a possible mask table.
   // Locking only locks the image itself.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   // </group>
@@ -393,9 +393,9 @@ class PagedImage : public ImageInterface<T> {
   void applyMaskSpecifier(const MaskSpecifier&);
   void applyMask(const String& maskName);
   void makePagedImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-                      const String& nameOfNewFile, const TableLock& lockOptions, uInt rowNumber);
+                      const String& nameOfNewFile, const TableLock& lockOptions, unsigned int rowNumber);
   void makePagedImage(const String& filename, const TableLock& lockOptions, const MaskSpecifier&,
-                      uInt rowNumber);
+                      unsigned int rowNumber);
 
   const Table& table() const { return const_cast<PagedImage<T>*>(this)->table(); }
 
@@ -431,7 +431,7 @@ DataType imagePixelType(const String& fileName);
 // </group>
 
 // # Declare extern templates for often used types.
-extern template class PagedImage<Float>;
+extern template class PagedImage<float>;
 extern template class PagedImage<Complex>;
 
 }  // namespace casacore

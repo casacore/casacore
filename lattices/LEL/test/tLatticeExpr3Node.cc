@@ -44,9 +44,9 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-bool checkFloat(const LatticeExprNode& expr, const SubLattice<Float>& lat, const LCRegion& region) {
-  SubLattice<Float> sublat(lat, region);
-  Array<Float> result;
+bool checkFloat(const LatticeExprNode& expr, const SubLattice<float>& lat, const LCRegion& region) {
+  SubLattice<float> sublat(lat, region);
+  Array<float> result;
   result = sublat.get();
   Array<bool> mask;
   if (sublat.isMasked()) {
@@ -64,7 +64,7 @@ bool checkFloat(const LatticeExprNode& expr, const SubLattice<Float>& lat, const
     return false;
   }
   // Get the result (value and optional mask).
-  LELArray<Float> arr(shape);
+  LELArray<float> arr(shape);
   IPosition origin(shape);
   origin = 0;
   Slicer slice(origin, shape);
@@ -92,7 +92,7 @@ bool checkFloat(const LatticeExprNode& expr, const SubLattice<Float>& lat, const
   return true;
 }
 
-bool doIt(const SubLattice<Float>& aF, const LCRegion& region1, const LCRegion& region2) {
+bool doIt(const SubLattice<float>& aF, const LCRegion& region1, const LCRegion& region2) {
   bool ok = true;
   LatticeExprNode node(aF);
   if (!checkFloat(node[region1], aF, region1)) ok = false;
@@ -109,20 +109,20 @@ int main() {
   bool ok = true;
   try {
     IPosition shape(2, 5, 5);
-    Array<Float> arra(shape);
-    indgen(arra, Float(1), Float(1));
-    ArrayLattice<Float> aF(arra);
+    Array<float> arra(shape);
+    indgen(arra, float(1), float(1));
+    ArrayLattice<float> aF(arra);
     LCBox box1(shape);
     LCBox box2(IPosition(2, 0, 0), shape - 2, shape);
     LCEllipsoid cir1(IPosition(2, 2, 2), 3, shape);
     LCEllipsoid cir2(IPosition(2, 1, 3), 3, shape);
-    if (!doIt(SubLattice<Float>(aF), box1, box2)) {
+    if (!doIt(SubLattice<float>(aF), box1, box2)) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF), cir1, box1)) {
+    if (!doIt(SubLattice<float>(aF), cir1, box1)) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF), box2, cir2)) {
+    if (!doIt(SubLattice<float>(aF), box2, cir2)) {
       ok = false;
     }
 
@@ -130,7 +130,7 @@ int main() {
     mat1 = true;
     mat1(IPosition(2, 1, 0)) = false;
     LCPixelSet mask1(mat1, LCBox(shape));
-    SubLattice<Float> sublat(aF, mask1);
+    SubLattice<float> sublat(aF, mask1);
     if (!doIt(sublat, box1, box2)) {
       ok = false;
     }

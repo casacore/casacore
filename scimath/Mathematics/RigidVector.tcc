@@ -31,26 +31,26 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-template <class T, Int n>
+template <class T, int n>
 RigidVector<T, n>& RigidVector<T, n>::operator*=(const SquareMatrix<T, n>& m) {
   switch (m.type_p) {
     case SquareMatrix<T, n>::ScalarId: {
-      for (Int i = 0; i < n; i++) v_p[i] *= m.a_p[0][0];
+      for (int i = 0; i < n; i++) v_p[i] *= m.a_p[0][0];
       return *this;
     }
     case SquareMatrix<T, n>::Diagonal: {
-      for (Int i = 0; i < n; i++) v_p[i] *= m.a_p[i][i];
+      for (int i = 0; i < n; i++) v_p[i] *= m.a_p[i][i];
       return *this;
     }
     //  case SquareMatrix<T,n>::General:
     default: {
       T v[n], tmp;
-      Int i;
+      int i;
       for (i = 0; i < n; i++) v[i] = v_p[i];
       for (i = 0; i < n; i++) {
         v_p[i] = m.a_p[i][0];
         v_p[i] *= v[0];
-        for (Int j = 1; j < n; j++) {
+        for (int j = 1; j < n; j++) {
           // #v_p[i]+=m.a_p[i][j]*v[j]; inlining fails
           tmp = m.a_p[i][j];
           tmp *= v[j];
@@ -61,10 +61,10 @@ RigidVector<T, n>& RigidVector<T, n>::operator*=(const SquareMatrix<T, n>& m) {
     }
   }
 }
-template <class T, Int n>
+template <class T, int n>
 RigidVector<T, n> sqrt(const RigidVector<T, n>& v) {
   RigidVector<T, n> tmp;
-  for (Int i = 0; i < n; i++) tmp.v_p[i] = ::sqrt(v.v_p[i]);
+  for (int i = 0; i < n; i++) tmp.v_p[i] = ::sqrt(v.v_p[i]);
   return tmp;
 }
 

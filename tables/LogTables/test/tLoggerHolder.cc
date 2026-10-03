@@ -67,7 +67,7 @@ void doIt(bool tempClose) {
     AlwaysAssertExit(tab.nrow() == 1);
   }
 
-  uInt nmsg = 0;
+  unsigned int nmsg = 0;
   for (LoggerHolder::const_iterator iter = logger2.begin(); iter != logger2.end(); iter++) {
     cout << iter->time() << ' ' << (*iter).message() << endl;
     nmsg++;

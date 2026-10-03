@@ -151,7 +151,7 @@ AipsIO& operator>>(AipsIO& ios, ColumnDesc& cd) {
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void ColumnDesc::putFile(AipsIO& ios, const TableAttr& parentAttr) const {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   // # First write the exact column type, then its data.
   ios << colPtr_p->className();
   colPtr_p->putFile(ios, parentAttr);
@@ -159,7 +159,7 @@ void ColumnDesc::putFile(AipsIO& ios, const TableAttr& parentAttr) const {
 
 // # Get from AipsIO.
 void ColumnDesc::getFile(AipsIO& ios, const TableAttr& parentAttr) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   String tp;
   ios >> tp;
@@ -219,15 +219,15 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap() {
 
   ScalarColumnDesc<bool> scdb("x");
   regMap.insert(std::make_pair(scdb.className(), &scdb.makeDesc));
-  ScalarColumnDesc<uChar> scduc("x");
+  ScalarColumnDesc<unsigned char> scduc("x");
   regMap.insert(std::make_pair(scduc.className(), &scduc.makeDesc));
-  ScalarColumnDesc<Short> scds("x");
+  ScalarColumnDesc<short> scds("x");
   regMap.insert(std::make_pair(scds.className(), &scds.makeDesc));
-  ScalarColumnDesc<uShort> scdus("x");
+  ScalarColumnDesc<unsigned short> scdus("x");
   regMap.insert(std::make_pair(scdus.className(), &scdus.makeDesc));
-  ScalarColumnDesc<Int> scdi("x");
+  ScalarColumnDesc<int> scdi("x");
   regMap.insert(std::make_pair(scdi.className(), &scdi.makeDesc));
-  ScalarColumnDesc<uInt> scdui("x");
+  ScalarColumnDesc<unsigned int> scdui("x");
   regMap.insert(std::make_pair(scdui.className(), &scdui.makeDesc));
   ScalarColumnDesc<Int64> scdi64("x");
   regMap.insert(std::make_pair(scdi64.className(), &scdi64.makeDesc));
@@ -247,15 +247,15 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap() {
 
   ArrayColumnDesc<bool> acdb("x");
   regMap.insert(std::make_pair(acdb.className(), &acdb.makeDesc));
-  ArrayColumnDesc<uChar> acduc("x");
+  ArrayColumnDesc<unsigned char> acduc("x");
   regMap.insert(std::make_pair(acduc.className(), &acduc.makeDesc));
-  ArrayColumnDesc<Short> acds("x");
+  ArrayColumnDesc<short> acds("x");
   regMap.insert(std::make_pair(acds.className(), &acds.makeDesc));
-  ArrayColumnDesc<uShort> acdus("x");
+  ArrayColumnDesc<unsigned short> acdus("x");
   regMap.insert(std::make_pair(acdus.className(), &acdus.makeDesc));
-  ArrayColumnDesc<Int> acdi("x");
+  ArrayColumnDesc<int> acdi("x");
   regMap.insert(std::make_pair(acdi.className(), &acdi.makeDesc));
-  ArrayColumnDesc<uInt> acdui("x");
+  ArrayColumnDesc<unsigned int> acdui("x");
   regMap.insert(std::make_pair(acdui.className(), &acdui.makeDesc));
   ArrayColumnDesc<Int64> acdi64("x");
   regMap.insert(std::make_pair(acdi64.className(), &acdi64.makeDesc));

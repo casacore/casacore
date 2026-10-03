@@ -29,7 +29,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-BucketBase::BucketBase(BucketFile* file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets)
+BucketBase::BucketBase(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets)
     : itsFile(file),
       itsStartOffset(startOffset),
       itsBucketSize(bucketSize),
@@ -66,7 +66,7 @@ bool BucketBase::flush() {
   return false;
 }
 
-void BucketBase::resync(uInt nrBucket) {
+void BucketBase::resync(unsigned int nrBucket) {
   // Remap the file (if extended).
   if (nrBucket > itsNewNrOfBuckets) {
     doResync();
@@ -75,7 +75,7 @@ void BucketBase::resync(uInt nrBucket) {
   itsCurNrOfBuckets = nrBucket;
 }
 
-void BucketBase::extend(uInt nrBucket) {
+void BucketBase::extend(unsigned int nrBucket) {
   // Extend the file by writing the last byte.
   if (nrBucket > 0) {
     itsNewNrOfBuckets += nrBucket;

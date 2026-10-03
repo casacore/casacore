@@ -82,49 +82,49 @@ void testMain(bool doExcep) {
 
   // A scalar column of MDirection.  Static reference so no addional
   // columns required.
-  ArrayColumnDesc<Double> cdMDir("MDirColumn", "Simple mdirection column", IPosition(1, 2),
+  ArrayColumnDesc<double> cdMDir("MDirColumn", "Simple mdirection column", IPosition(1, 2),
                                  ColumnDesc::Direct);
 
   // A scalar MEpoch column with a fixed offset and reference.  Fixed
   // references and offsets do not need additional columns as they are
   // stored as keywords.
-  ScalarColumnDesc<Double> cdTOffset("TimeOffset", "MEpoch column with fix reference and offset");
+  ScalarColumnDesc<double> cdTOffset("TimeOffset", "MEpoch column with fix reference and offset");
 
   // The following three columns will be used to set up a Scalar MEpoch
   // column with variable references and offsets.  3 columns are needed.
   // The "main" column where the MEpoch will be stored
-  ScalarColumnDesc<Double> cdTime("Time1", "An MEpoch column");
+  ScalarColumnDesc<double> cdTime("Time1", "An MEpoch column");
   // For the offsets. Offsets are also measures so this is effectively
   // another measure column.
-  ScalarColumnDesc<Double> cdVarOffset("TimeVarOffset", "Variable Offset col");
+  ScalarColumnDesc<double> cdVarOffset("TimeVarOffset", "Variable Offset col");
   // an int column for the variable references
-  ScalarColumnDesc<Int> cdTimeRef("TimeRef", "Reference column for Time1");
+  ScalarColumnDesc<int> cdTimeRef("TimeRef", "Reference column for Time1");
 
   // a scalar measure column with a variable string reference
   // a column for the measures.  No offset or it is to be static so
   // no offset column required.
   // The "main" column.
-  ScalarColumnDesc<Double> cdMEVS("MEpochVarStr", "Another MEpoch column");
+  ScalarColumnDesc<double> cdMEVS("MEpochVarStr", "Another MEpoch column");
   // a string column for the variable string references
   ScalarColumnDesc<String> cdTimeRefStr("TimeRefStr", "String variable reference column");
 
   // An array measure column with a variable (int) reference
   // A column for the measures
-  ArrayColumnDesc<Double> cdTimeArr("Time1Arr", "An MEpoch array column");
+  ArrayColumnDesc<double> cdTimeArr("Time1Arr", "An MEpoch array column");
   // An int column for the variable references.
-  ScalarColumnDesc<Int> cdTimeArrRef("TimeArrRef", "VarRef co for TimeArr");
+  ScalarColumnDesc<int> cdTimeArrRef("TimeArrRef", "VarRef co for TimeArr");
 
   // An array measure column with a variable (int) reference array column
   // and a variable offset column
-  ArrayColumnDesc<Double> cdTime2Arr("Time2Arr", "An MEpoch array column");
+  ArrayColumnDesc<double> cdTime2Arr("Time2Arr", "An MEpoch array column");
   // the offset column
-  ArrayColumnDesc<Double> cdTime2ArrOffset("Time2ArrOffset", "Offset column for Time2Arr");
+  ArrayColumnDesc<double> cdTime2ArrOffset("Time2ArrOffset", "Offset column for Time2Arr");
   // the reference column
-  ArrayColumnDesc<Int> cdTime2ArrRef("Time2ArrRef", "Ref column for Time2Arr");
+  ArrayColumnDesc<int> cdTime2ArrRef("Time2ArrRef", "Ref column for Time2Arr");
 
   // An array measure column with variable (string) reference array column
   // The "main" date column
-  ArrayColumnDesc<Double> cdTime3Arr("Time3Arr", "An MEpoch array column");
+  ArrayColumnDesc<double> cdTime3Arr("Time3Arr", "An MEpoch array column");
   // The string array column for the references
   ArrayColumnDesc<String> cdTime3StrRef("Time3ArrStrRef", "Array string reference column");
 
@@ -132,18 +132,18 @@ void testMain(bool doExcep) {
   // a scalar (per row) offset column.
   // That is, one reference stored per row
   // The "main" date column
-  ArrayColumnDesc<Double> cdTime4Arr("Time4Arr", "An MEpoch array column");
+  ArrayColumnDesc<double> cdTime4Arr("Time4Arr", "An MEpoch array column");
   // A scalar column for the references
   ScalarColumnDesc<String> cdTime4StrRef("Time4StrRef", "Scalar int reference column");
   // An array column for the variable offsets.  Even though we want to
   // stored offsets per row the column must be an Array column because
   // offsets are Measures, i.e., offsets are stored in a Measure column
-  ScalarColumnDesc<Double> cdTime4ScaOffset("Time4ScaOffset", "Scalar offset column");
+  ScalarColumnDesc<double> cdTime4ScaOffset("Time4ScaOffset", "Scalar offset column");
 
   // a "spare" column used for testing purposes
-  ArrayColumnDesc<Double> cdTestCol("SpareCol1", "Test of exception column");
+  ArrayColumnDesc<double> cdTestCol("SpareCol1", "Test of exception column");
   // a spare offset column
-  ArrayColumnDesc<Double> cdTestArrOffset("SpareArrOffset", "Spare int array column");
+  ArrayColumnDesc<double> cdTestArrOffset("SpareArrOffset", "Spare int array column");
 
   // All of the above column descriptors are added to the table as usual
   td.addColumn(cdTime);
@@ -317,7 +317,7 @@ void testMain(bool doExcep) {
   }
   {
     td.show(cout);
-    for (uInt i = 0; i < td.ncolumn(); i++) {
+    for (unsigned int i = 0; i < td.ncolumn(); i++) {
       cout << "* " << td[i].name() << endl;
       showKeys(td[i].keywordSet(), "    ");
     }
@@ -414,7 +414,7 @@ void testMain(bool doExcep) {
   // Define some commonly used values.
   MVEpoch mvobsTime((MVTime(1996, 5, 17, (8 + 18. / 60.) / 24.)));
   MEpoch obsTime(mvobsTime, MEpoch::UTC);
-  const uInt tabRows = 5;
+  const unsigned int tabRows = 5;
 
   {
     // Finally create the table
@@ -560,7 +560,7 @@ void testMain(bool doExcep) {
 
     cout << "Adding a few MEpochs to column TimeOffset...\n";
     MEpoch tm(MVEpoch(1234.));
-    uInt i;
+    unsigned int i;
     for (i = 0; i < tabRows; i++) {
       tm.set(MVEpoch(1234 + (i / 10.0)));
       timeCol.put(i, tm);
@@ -634,12 +634,12 @@ void testMain(bool doExcep) {
     cout << "Reopening the table read-only and reading contents...\n";
     Table tab("tTableMeasures_tmp.tab", Table::Old);
     MEpoch::ScalarColumn timeColRead(tab, "TimeOffset");
-    ScalarColumn<Double> timeColSimple(tab, "TimeOffset");
+    ScalarColumn<double> timeColSimple(tab, "TimeOffset");
     MEpoch tm;
-    for (uInt i = 0; i < tabRows; i++) {
+    for (unsigned int i = 0; i < tabRows; i++) {
       AlwaysAssertExit(timeColRead.isDefined(i));
       timeColRead.get(i, tm);
-      AlwaysAssertExit(near(tm.get("s"), Quantum<Double>(timeColSimple(i), "s"), 1.e-10));
+      AlwaysAssertExit(near(tm.get("s"), Quantum<double>(timeColSimple(i), "s"), 1.e-10));
       AlwaysAssertExit(tm.getRef().getType() == MEpoch::GAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm.getRef().offset());
       AlwaysAssertExit(offptr != 0);
@@ -687,7 +687,7 @@ void testMain(bool doExcep) {
 
     cout << "Filling the MDirection column MDirColumn\n";
     MDirection mdir;
-    for (uInt i = 0; i < tabRows; i++) {
+    for (unsigned int i = 0; i < tabRows; i++) {
       MDirection mdir(Quantity(20, "deg"), Quantity(53, "deg"));
       cout << "put: " << mdir << endl;
       mdirCol.put(i, mdir);
@@ -702,7 +702,7 @@ void testMain(bool doExcep) {
       cout << "Error: reference is variable!\n";
     }
     cout << "Reading from MDirection column MDirColumn\n";
-    for (uInt i = 0; i < tabRows; i++) {
+    for (unsigned int i = 0; i < tabRows; i++) {
       cout << "retrieve: " << mdirCol(i) << endl;
     }
   }
@@ -809,7 +809,7 @@ void testMain(bool doExcep) {
     MEpoch::ArrayColumn arrayCol(tmpArrCol);
 
     MEpoch last(Quantity(13.45, "h"), MEpoch::Ref(MEpoch::TAI));
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       last.set(Quantity(13.45 + i, "h"));
       ev(i) = last;
     }
@@ -832,7 +832,7 @@ void testMain(bool doExcep) {
     } else {
       cout << "FAIL - there should be something in row 0!\n";
     }
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(ew(i).getRef().getType() == MEpoch::TAI);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(ew(i).getRef().offset());
       AlwaysAssertExit(offptr != 0);
@@ -842,7 +842,7 @@ void testMain(bool doExcep) {
     }
 
     Vector<MEpoch> tm1 = arrayCol.convert(0, MEpoch::UTC);
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm1(i).getRef().getType() == MEpoch::UTC);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm1(i).getRef().offset());
       AlwaysAssertExit(offptr == 0);
@@ -851,7 +851,7 @@ void testMain(bool doExcep) {
     }
 
     Vector<MEpoch> tm2 = arrayCol.convert(0, tm1(0));
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm2(i).getRef().getType() == MEpoch::UTC);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm2(i).getRef().offset());
       AlwaysAssertExit(offptr == 0);
@@ -863,7 +863,7 @@ void testMain(bool doExcep) {
     MeasTable::Observatory(mpobs, "WSRT");
     MEpoch::Ref mref(MEpoch::LAST, MeasFrame(mpobs));
     Vector<MEpoch> tm3 = arrayCol.convert(0, mref);
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm3(i).getRef().getType() == MEpoch::LAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm3(i).getRef().offset());
       AlwaysAssertExit(offptr == 0);
@@ -872,7 +872,7 @@ void testMain(bool doExcep) {
     }
 
     Vector<MEpoch> tm5 = arrayCol.convert(0, tm3(0));
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm5(i).getRef().getType() == MEpoch::LAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm5(i).getRef().offset());
       AlwaysAssertExit(offptr == 0);
@@ -900,7 +900,7 @@ void testMain(bool doExcep) {
     Vector<MEpoch> ew;
     arrayCol.get(0, ew, true);
     ew = arrayCol(0);
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(ew(i).getRef().getType() == MEpoch::TAI);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(ew(i).getRef().offset());
       AlwaysAssertExit(offptr != 0);
@@ -923,7 +923,7 @@ void testMain(bool doExcep) {
     MEpoch utcE(Quantity(1.45, "h"), MEpoch::Ref(MEpoch::UTC));
     MEpoch taiE(Quantity(1.45, "h"), MEpoch::Ref(MEpoch::TAI));
     Vector<MEpoch> inArr(10);
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       if (i % 2 == 0) {
         utcE.set(Quantity(11.45 + i, "h"));
         utcE.setOffset(MEpoch(Quantity(12. - i, "h")));
@@ -935,7 +935,7 @@ void testMain(bool doExcep) {
       }
     }
     cout << "Adding vectors to the test measure column\n";
-    for (uInt i = 0; i < tabRows; i++) {
+    for (unsigned int i = 0; i < tabRows; i++) {
       testCopy.put(i, inArr);
     }
 
@@ -946,7 +946,7 @@ void testMain(bool doExcep) {
     testAttach.get(0, outArr, true);
     const MEpoch* offptr;
     const MEpoch* offptrin;
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(i).getRef().getType());
       AlwaysAssertExit(near(outArr(i).get("s"), inArr(i).get("s"), 1.e-10));
       offptr = dynamic_cast<const MEpoch*>(outArr(i).getRef().offset());
@@ -983,11 +983,11 @@ void testMain(bool doExcep) {
     MEpoch::ArrayColumn varStrRefColtmp;
     varStrRefColtmp.attach(tab, "Time3Arr");
     MEpoch::ArrayColumn varStrRefCol = varStrRefColtmp;
-    for (uInt i = 0; i < tabRows; i++) {
+    for (unsigned int i = 0; i < tabRows; i++) {
       varStrRefCol.put(i, inArr);
     }
     varStrRefCol.get(0, outArr, true);
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(i).getRef().getType());
       offptrin = dynamic_cast<const MEpoch*>(inArr(i).getRef().offset());
       offptr = dynamic_cast<const MEpoch*>(outArr(i).getRef().offset());
@@ -1012,11 +1012,11 @@ void testMain(bool doExcep) {
     // Only one reference and offset are stored per row.  The reference
     // and offset stored is taken from the first element of each
     // Measure array stored.
-    for (uInt i = 0; i < tabRows; i++) {
+    for (unsigned int i = 0; i < tabRows; i++) {
       scaStrRefCol.put(i, inArr);
     }
     scaStrRefCol.get(0, outArr, true);
-    for (uInt i = 0; i < 10; i++) {
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(0).getRef().getType());
       offptrin = dynamic_cast<const MEpoch*>(inArr(0).getRef().offset());
       offptr = dynamic_cast<const MEpoch*>(outArr(i).getRef().offset());
@@ -1027,9 +1027,9 @@ void testMain(bool doExcep) {
     }
 
     // Check that the column can be accessed as a quantum.
-    ArrayQuantColumn<Double> qcol(tab, "Time4Arr");
-    Vector<Quantum<Double>> q = qcol(0);
-    for (uInt i = 0; i < 10; i++) {
+    ArrayQuantColumn<double> qcol(tab, "Time4Arr");
+    Vector<Quantum<double>> q = qcol(0);
+    for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(near(outArr(i).get("d"), q(i), 1.e-10));
     }
 
@@ -1077,14 +1077,14 @@ void testMain(bool doExcep) {
 // type:      LAST LMST GMST1 GAST UT1 UT2 UTC
 // old code:   0    1     2    8    4   5
 // new code:   0    1     2    5    8   3   4
-void getRef1(Vector<String>& curTypes, Vector<uInt>& curCodes, const MeasureHolder& measHolder) {
+void getRef1(Vector<String>& curTypes, Vector<unsigned int>& curCodes, const MeasureHolder& measHolder) {
   TableMeasRefDesc::defaultTypesFunc(curTypes, curCodes, measHolder);
   AlwaysAssertExit(curTypes.nelements() > 10);
   curCodes[3] = 8;
   curTypes.resize(6, true);
   curCodes.resize(6, true);
 }
-void getRef2(Vector<String>& curTypes, Vector<uInt>& curCodes, const MeasureHolder& measHolder) {
+void getRef2(Vector<String>& curTypes, Vector<unsigned int>& curCodes, const MeasureHolder& measHolder) {
   TableMeasRefDesc::defaultTypesFunc(curTypes, curCodes, measHolder);
   AlwaysAssertExit(curTypes.nelements() > 10);
   curTypes.resize(7, true);
@@ -1102,7 +1102,7 @@ bool check(const MEpoch& ep1, const MEpoch& ep2) {
 }
 bool check(const Vector<MEpoch>& ep1, const Vector<MEpoch>& ep2) {
   if (ep1.size() != ep2.size()) return false;
-  for (uInt i = 0; i < ep1.size(); ++i) {
+  for (unsigned int i = 0; i < ep1.size(); ++i) {
     if (!check(ep1[i], ep2[i])) {
       return false;
     }
@@ -1116,7 +1116,7 @@ void testRefCodeChg() {
   // Make a few vectors for array tests.
   Vector<MEpoch> va(2);
   Vector<MEpoch> vb(3);
-  Vector<Int> vbi(3);
+  Vector<int> vbi(3);
   va[0] = MEpoch(Quantity(10, "d"), MEpoch::Types(8));
   va[1] = MEpoch(Quantity(11, "d"), MEpoch::Types(8));
   vb[0] = MEpoch(Quantity(10, "d"), MEpoch::Types(4));
@@ -1129,12 +1129,12 @@ void testRefCodeChg() {
   {
     TableDesc td;
     // Create a MEpoch column with variable integer refcode.
-    ScalarColumnDesc<Double> cdTime("Time");
-    ScalarColumnDesc<Int> cdTimeRef("TimeRef");
-    ArrayColumnDesc<Double> cdATime("ATime");
-    ScalarColumnDesc<Int> cdATimeRef("ATimeRef");
-    ArrayColumnDesc<Double> cdBTime("BTime");
-    ArrayColumnDesc<Int> cdBTimeRef("BTimeRef");
+    ScalarColumnDesc<double> cdTime("Time");
+    ScalarColumnDesc<int> cdTimeRef("TimeRef");
+    ArrayColumnDesc<double> cdATime("ATime");
+    ScalarColumnDesc<int> cdATimeRef("ATimeRef");
+    ArrayColumnDesc<double> cdBTime("BTime");
+    ArrayColumnDesc<int> cdBTimeRef("BTimeRef");
     td.addColumn(cdTime);
     td.addColumn(cdTimeRef);
     td.addColumn(cdATime);
@@ -1174,9 +1174,9 @@ void testRefCodeChg() {
     MEpoch::ScalarColumn tmpCol(tab, "Time");
     MEpoch::ArrayColumn tmpACol(tab, "ATime");
     MEpoch::ArrayColumn tmpBCol(tab, "BTime");
-    ScalarColumn<Int> refCol(tab, "TimeRef");
-    ScalarColumn<Int> refACol(tab, "ATimeRef");
-    ArrayColumn<Int> refBCol(tab, "BTimeRef");
+    ScalarColumn<int> refCol(tab, "TimeRef");
+    ScalarColumn<int> refACol(tab, "ATimeRef");
+    ArrayColumn<int> refBCol(tab, "BTimeRef");
     AlwaysAssertExit(refCol(0) == 0);
     AlwaysAssertExit(refCol(1) == 1);
     AlwaysAssertExit(refCol(2) == 2);
@@ -1198,7 +1198,7 @@ void testRefCodeChg() {
   // old tables (without these keywords) can be checked.
   {
     Table tab("tTableMeasures_tmp.tab", Table::Update);
-    ScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<double> timCol(tab, "Time");
     TableRecord& kw = timCol.rwKeywordSet();
     TableRecord& mkw = kw.rwSubRecord("MEASINFO");
     mkw.removeField("TabRefTypes");
@@ -1208,7 +1208,7 @@ void testRefCodeChg() {
   // Check the values again.
   {
     Table tab("tTableMeasures_tmp.tab");
-    ScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<double> timCol(tab, "Time");
     const TableRecord& kw = timCol.keywordSet();
     const TableRecord& mkw = kw.subRecord("MEASINFO");
     AlwaysAssertExit(!mkw.isDefined("TabRefCodes"));
@@ -1229,7 +1229,7 @@ void testRefCodeChg() {
   // Make sure they exist again. Check the values.
   {
     Table tab("tTableMeasures_tmp.tab");
-    ScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<double> timCol(tab, "Time");
     const TableRecord& kw = timCol.keywordSet();
     const TableRecord& mkw = kw.subRecord("MEASINFO");
     AlwaysAssertExit(mkw.isDefined("TabRefCodes"));
@@ -1253,7 +1253,7 @@ void testRefCodeChg() {
   // Check the remapped values.
   {
     Table tab("tTableMeasures_tmp.tab");
-    ScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<double> timCol(tab, "Time");
     const TableRecord& kw = timCol.keywordSet();
     const TableRecord& mkw = kw.subRecord("MEASINFO");
     AlwaysAssertExit(mkw.isDefined("TabRefCodes"));
@@ -1294,9 +1294,9 @@ void testRefCodeChg() {
     MEpoch::ScalarColumn tmpCol(tab, "Time");
     MEpoch::ArrayColumn tmpACol(tab, "ATime");
     MEpoch::ArrayColumn tmpBCol(tab, "BTime");
-    ScalarColumn<Int> refCol(tab, "TimeRef");
-    ScalarColumn<Int> refACol(tab, "ATimeRef");
-    ArrayColumn<Int> refBCol(tab, "BTimeRef");
+    ScalarColumn<int> refCol(tab, "TimeRef");
+    ScalarColumn<int> refACol(tab, "ATimeRef");
+    ArrayColumn<int> refBCol(tab, "BTimeRef");
     AlwaysAssertExit(refCol(0) == 0);
     AlwaysAssertExit(refCol(1) == 9);
     AlwaysAssertExit(refCol(2) == 2);

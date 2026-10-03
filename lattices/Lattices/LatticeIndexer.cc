@@ -63,7 +63,7 @@ LatticeIndexer::LatticeIndexer(const IPosition& shape, const IPosition& blc, con
   AlwaysAssert(blc.nelements() == itsNdim, AipsError);
   AlwaysAssert(trc.nelements() == itsNdim, AipsError);
   AlwaysAssert(inc.nelements() == itsNdim, AipsError);
-  for (uInt i = 0; i < itsNdim; i++) {
+  for (unsigned int i = 0; i < itsNdim; i++) {
     AlwaysAssert(blc(i) >= 0 && blc(i) < itsFullShape(i), AipsError);
     AlwaysAssert(trc(i) < itsFullShape(i) && trc(i) >= blc(i), AipsError);
     AlwaysAssert(inc(i) > 0 && inc(i) <= itsFullShape(i), AipsError);
@@ -126,14 +126,14 @@ void LatticeIndexer::resize(const IPosition& newShape) {
 }
 
 // Returns the length of the requested axis in the parent Lattice
-uInt LatticeIndexer::fullShape(uInt axis) const {
+unsigned int LatticeIndexer::fullShape(unsigned int axis) const {
   DebugAssert(ok() == true, AipsError);
   AlwaysAssert(axis < itsNdim, AipsError);
   return itsFullShape(axis);
 }
 
 // Returns the length of the requested axis in the sub-Lattice
-uInt LatticeIndexer::shape(uInt axis) const {
+unsigned int LatticeIndexer::shape(unsigned int axis) const {
   DebugAssert(ok() == true, AipsError);
   AlwaysAssert(axis < itsNdim, AipsError);
   return itsShape(axis);
@@ -141,7 +141,7 @@ uInt LatticeIndexer::shape(uInt axis) const {
 
 // function to return the increments along the requested axis of the
 // Lattice.
-uInt LatticeIndexer::increment(uInt axis) const {
+unsigned int LatticeIndexer::increment(unsigned int axis) const {
   DebugAssert(ok() == true, AipsError);
   AlwaysAssert(axis < itsNdim, AipsError);
   return itsAxisInc(axis);
@@ -149,7 +149,7 @@ uInt LatticeIndexer::increment(uInt axis) const {
 
 // function to return the offset on the specified axes between the
 // sub-Lattice and the parent one.
-uInt LatticeIndexer::offset(uInt axis) const {
+unsigned int LatticeIndexer::offset(unsigned int axis) const {
   DebugAssert(ok() == true, AipsError);
   AlwaysAssert(axis < itsNdim, AipsError);
   return itsOffset(axis);
@@ -200,11 +200,11 @@ bool LatticeIndexer::tiledCursorMove(bool incr, IPosition& cursorPos, const IPos
   AlwaysAssert(cursorPos.nelements() == itsNdim, AipsError);
   AlwaysAssert(cursorShape.nelements() == itsNdim, AipsError);
   AlwaysAssert(cursorHeading.nelements() == itsNdim, AipsError);
-  for (uInt i = 0; i < itsNdim; i++) {
+  for (unsigned int i = 0; i < itsNdim; i++) {
     AlwaysAssert(cursorShape(i) > 0, AipsError);
   }
-  uInt activeAxis;
-  uInt indexToActiveAxis = 0;
+  unsigned int activeAxis;
+  unsigned int indexToActiveAxis = 0;
   IPosition candidateCursorPos(cursorPos);
 
   while (indexToActiveAxis < itsNdim) {
@@ -241,7 +241,7 @@ bool LatticeIndexer::tiledCursorMove(bool incr, IPosition& cursorPos, const IPos
 bool LatticeIndexer::isInside(const IPosition& index) const {
   DebugAssert(ok() == true, AipsError);
   AlwaysAssert(index.nelements() == itsNdim, AipsError);
-  for (uInt i = 0; i < itsNdim; i++) {
+  for (unsigned int i = 0; i < itsNdim; i++) {
     if ((index(i) < 0) || (index(i) >= itsShape(i))) {
       return false;
     }
@@ -266,7 +266,7 @@ void LatticeIndexer::subSection(const IPosition& blc, const IPosition& trc, cons
   AlwaysAssert(blc.nelements() == itsNdim, AipsError);
   AlwaysAssert(trc.nelements() == itsNdim, AipsError);
   AlwaysAssert(inc.nelements() == itsNdim, AipsError);
-  for (uInt i = 0; i < itsNdim; i++) {
+  for (unsigned int i = 0; i < itsNdim; i++) {
     AlwaysAssert(blc(i) >= 0, AipsError);
     AlwaysAssert(trc(i) < itsShape(i), AipsError);
     AlwaysAssert(blc(i) <= trc(i), AipsError);
@@ -328,7 +328,7 @@ bool LatticeIndexer::ok() const {
     throw AipsError(str.str());
     return false;
   }
-  for (uInt i = 0; i < itsNdim; i++) {
+  for (unsigned int i = 0; i < itsNdim; i++) {
     if (itsFullShape(i) < 0) {
       str << "lattice shape " << itsFullShape << " has a negative element";
       throw AipsError(str.str());
@@ -340,7 +340,7 @@ bool LatticeIndexer::ok() const {
     throw AipsError(String(str.str()));
     return false;
   }
-  for (uInt j = 0; j < itsNdim; j++) {
+  for (unsigned int j = 0; j < itsNdim; j++) {
     if (itsAxisInc(j) <= 0 || itsAxisInc(j) > itsFullShape(j)) {
       str << "axis increments " << itsAxisInc << " are negative OR larger than lattice shape "
           << itsFullShape;
@@ -353,7 +353,7 @@ bool LatticeIndexer::ok() const {
     throw AipsError(String(str.str()));
     return false;
   }
-  for (uInt k = 0; k < itsNdim; k++) {
+  for (unsigned int k = 0; k < itsNdim; k++) {
     if (itsOffset(k) < 0 || itsOffset(k) >= itsFullShape(k)) {
       str << "offset " << itsOffset << " is larger than lattice shape " << itsFullShape
           << " or negative";
@@ -367,7 +367,7 @@ bool LatticeIndexer::ok() const {
     throw AipsError(String(str.str()));
     return false;
   }
-  for (uInt m = 0; m < itsNdim; m++) {
+  for (unsigned int m = 0; m < itsNdim; m++) {
     if (itsShape(m) <= 0 || itsShape > itsFullShape(m)) {
       str << "sub-lattice shape " << itsShape
           << " is less than or equal to zero or larger than lattice shape " << itsFullShape;

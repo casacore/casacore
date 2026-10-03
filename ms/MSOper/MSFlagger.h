@@ -118,7 +118,7 @@ class MSFlagger {
   // Available directions are: TIME, CHANNEL
   // Returns statistics over the buffer: median for times and channels,
   // average absolute deviation over times, channels and all pixels.
-  Record diffDataBuffer(const String& direction, Int window = 1, bool doMedian = false);
+  Record diffDataBuffer(const String& direction, int window = 1, bool doMedian = false);
 
   // Return the contents of the internal data buffer, including the flags
   // as a Record
@@ -130,7 +130,7 @@ class MSFlagger {
   // A value of zero or less will skip the corresponding clip operation.
   // Clipping will be done repeatedly, recalculating the deviations, until
   // no more points are clipped.
-  bool clipDataBuffer(Float pixelLevel, Float timeLevel, Float channelLevel);
+  bool clipDataBuffer(float pixelLevel, float timeLevel, float channelLevel);
 
   // Replace the flags in the buffer with those in the supplied record.
   // This allows interactive flagging from glish to be written back to the
@@ -151,14 +151,14 @@ class MSFlagger {
   // FLAG_ROW and FLAG columns. Returns false if FLAG_HISTORY already exists.
   // The first flagging bit is filled with the flags as found in the MS,
   // subsequent bits can be used for user generated flags.
-  bool createFlagHistory(Int nHis = 2);
+  bool createFlagHistory(int nHis = 2);
 
   // Apply the flags in the FLAG_HISTORY column to the FLAG and FLAG_ROW
   // columns. Returns false if FLAG_HISTORY doesn't exist.
   // The default argument will apply the currently active flag level
   // (as specified by the FLAG_LEVEL column keyword).
   // Sets the current level to the flag level restored.
-  bool restoreFlags(Int level = -1);
+  bool restoreFlags(int level = -1);
 
   // Save the current flags to the FLAG_HISTORY. Save to the currently
   // active level or (newLevel=True) the next highest level (if available).
@@ -166,30 +166,30 @@ class MSFlagger {
   bool saveFlags(bool newLevel);
 
   // Return the current flaglevel (value of FLAG_LEVEL keyword)
-  Int flagLevel();
+  int flagLevel();
 
  protected:
   // fill the FLAG_HISTORY column from the FLAG and FLAG_ROW column
-  void fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab);
+  void fillFlagHist(int nHis, int numCorr, int numChan, Table& tab);
 
   // find the HypercubeId column for a tiled column (if any)
   bool findHypercubeId(String& hyperCubeId, const String& column, const Table& tab);
 
   // copy the flags to the flag history
-  void saveToFlagHist(Int level, Table& tab);
+  void saveToFlagHist(int level, Table& tab);
 
   // copy the flag history back to the flags
-  void applyFlagHist(Int level, Table& tab);
+  void applyFlagHist(int level, Table& tab);
 
   // get buffer statistics - med=median, ad=average absolute deviation,
   // T=Time, F=Frequency.
-  void getStats(Array<Float>& medTF, Array<Float>& adTF, Array<Float>& medT, Array<Float>& medFmedT,
-                Array<Float>& adT, Array<Float>& medF, Array<Float>& medTmedF, Array<Float>& adF,
-                const Array<Float>& diff, const Array<bool>& flag, const Array<bool>& flagRow);
+  void getStats(Array<float>& medTF, Array<float>& adTF, Array<float>& medT, Array<float>& medFmedT,
+                Array<float>& adT, Array<float>& medF, Array<float>& medTmedF, Array<float>& adF,
+                const Array<float>& diff, const Array<bool>& flag, const Array<bool>& flagRow);
 
   // add the statistics to a buffer
   void addStats(Record& buf, const Array<bool>& flag, const Array<bool> flagRow,
-                const Array<Float>& data);
+                const Array<float>& data);
 
   // reorder from 2d to 1d (removing ifr axis)
   void reorderFlagRow(Array<bool>& flagRow);
@@ -197,7 +197,7 @@ class MSFlagger {
   // collapse array "in" (with absolute differences)
   // along specified axis by taking medians by profile taking into account
   // the flags.
-  void diffMedian(Array<Float>& out, const Array<Float>& in, Int axis, const Array<bool>& flag);
+  void diffMedian(Array<float>& out, const Array<float>& in, int axis, const Array<bool>& flag);
 
   // apply the row flags to the data flags and v.v.
   void applyRowFlags(Array<bool>& flag, Array<bool>& flagRow);

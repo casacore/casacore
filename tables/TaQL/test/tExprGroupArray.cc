@@ -73,7 +73,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
@@ -93,7 +93,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
@@ -119,19 +119,19 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
 }
 
 void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
-               const Array<Double>& expVal, const String& str) {
+               const Array<double>& expVal, const String& str) {
   cout << "Test Double " << str << endl;
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
   funcid.finish();
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  MArray<Double> val = func->getArrayDouble(*funcid.getIds());
+  MArray<double> val = func->getArrayDouble(*funcid.getIds());
   if (!allNear(val.array(), expVal, 1.e-10)) {
     foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
@@ -145,7 +145,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
@@ -165,7 +165,7 @@ void checkHist(const TableExprNode& expr, const std::vector<Record>& recs,
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply(id);
   }
@@ -215,11 +215,11 @@ void doIntArr() {
 
 void doDoubleArr() {
   // Define an Array with values.
-  Cube<Double> arr(5, 3, 1);
+  Cube<double> arr(5, 3, 1);
   indgen(arr, 10., 2.);
   // Define records containing equal parts of the array.
   std::vector<Record> recs(arr.shape()[2]);
-  MatrixIterator<Double> iter(arr);
+  MatrixIterator<double> iter(arr);
   int i = 0;
   while (!iter.pastEnd()) {
     recs[i++].define("fld", iter.matrix());
@@ -230,8 +230,8 @@ void doDoubleArr() {
   checkLazy(TableExprNode::newFunctionNode(TableExprFuncNode::gaggrFUNC, expr), recs, arr, "gaggr");
   // Do a test of the histogram function (8 bins between 12 and 36).
   Vector<Int64> hist(10, 0);
-  for (uInt i = 0; i < arr.size(); ++i) {
-    Double v = arr.data()[i];
+  for (unsigned int i = 0; i < arr.size(); ++i) {
+    double v = arr.data()[i];
     if (v < 12) {
       hist[0]++;
     } else if (v > 36) {

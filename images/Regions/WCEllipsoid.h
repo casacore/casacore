@@ -80,8 +80,8 @@ class WCEllipsoid : public WCRegion {
   // <src>theta</src> is the angle between the <src>pixelAxis0</src> and
   // the major axis of the ellipse.
   WCEllipsoid(const Quantity& xcenter, const Quantity& ycenter, const Quantity& majorAxis,
-              const Quantity& minorAxis, const Quantity& theta, const uInt pixelAxis0,
-              const uInt pixelAxis1, const CoordinateSystem& cSys,
+              const Quantity& minorAxis, const Quantity& theta, const unsigned int pixelAxis0,
+              const unsigned int pixelAxis1, const CoordinateSystem& cSys,
               const RegionType::AbsRelType absRel = RegionType::Abs);
 
   WCEllipsoid(const WCEllipsoid& that);

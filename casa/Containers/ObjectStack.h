@@ -116,7 +116,7 @@ class ObjectStack {
   bool empty() { return stack_p.empty(); };
 
   // return the stack extend (for debugging use and checking mainly)
-  uInt nelements() const { return stack_p.size(); };
+  unsigned int nelements() const { return stack_p.size(); };
 
  private:
   // # Data

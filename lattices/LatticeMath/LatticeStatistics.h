@@ -236,7 +236,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // Set the cursor axes (0 relative).  A return value of <src>false</src>
   // indicates you have asked for an invalid axis.  The default state of the class
   // is to set the cursor axes to all axes in the lattice.
-  bool setAxes(const Vector<Int>& cursorAxes);
+  bool setAxes(const Vector<int>& cursorAxes);
 
   // You may specify a pixel intensity range as either one for which
   // all pixels in that range are included or one for which all pixels
@@ -272,17 +272,17 @@ class LatticeStatistics : public LatticeStatsBase {
 
   bool display();
 
-  bool getLayerStats(String& stats, Double area, Int zAxis = -1, Int zLayer = -1, Int hAxis = -1,
-                     Int hLayer = -1);
+  bool getLayerStats(String& stats, double area, int zAxis = -1, int zLayer = -1, int hAxis = -1,
+                     int hLayer = -1);
 
   typedef std::pair<String, String> stat_element;
   typedef std::list<stat_element> stat_list;
-  bool getLayerStats(stat_list& stats, Double area, Int zAxis = -1, Int zLayer = -1, Int hAxis = -1,
-                     Int hLayer = -1);
+  bool getLayerStats(stat_list& stats, double area, int zAxis = -1, int zLayer = -1, int hAxis = -1,
+                     int hLayer = -1);
 
   // Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
   // has been called, or if one of the active "display" or "get*" methods has been called.
-  Vector<Int> displayAxes() const { return displayAxes_p; }
+  Vector<int> displayAxes() const { return displayAxes_p; }
 
   // Recover the desired Statistic into an array.  If you choose to use
   // the T version, be aware that the values in the AccumType version of the
@@ -352,7 +352,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // If no reconfiguration is necessary, false is returned.
 
   // configure to use biweight algorithm.
-  bool configureBiweight(Int maxIter, Double c);
+  bool configureBiweight(int maxIter, double c);
 
   // configure object to use Classical Statistics
   // The time, t_x, it takes to compute classical statistics using algorithm x, can
@@ -375,7 +375,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // <group>
   bool configureClassical();
 
-  bool configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
+  bool configureClassical(double aOld, double bOld, double aNew, double bNew);
   // </group>
 
   // configure to use fit to half algorithm.
@@ -385,10 +385,10 @@ class LatticeStatistics : public LatticeStatsBase {
       AccumType centerValue = 0);
 
   // configure to use hinges-fences algorithm
-  bool configureHingesFences(Double f);
+  bool configureHingesFences(double f);
 
   // configure to use Chauvenet's criterion
-  bool configureChauvenet(Double zscore = -1, Int maxIterations = -1);
+  bool configureChauvenet(double zscore = -1, int maxIterations = -1);
 
   // <group>
   // The force* methods are really only for testing. They in general shouldn't
@@ -404,7 +404,7 @@ class LatticeStatistics : public LatticeStatsBase {
   void forceAllowCodeDecideWhichAlgortihmToUse();
 
   // get number of iterations associated with Chauvenet criterion algorithm
-  std::map<String, uInt> getChauvenetNiter() const { return _chauvIters; }
+  std::map<String, unsigned int> getChauvenetNiter() const { return _chauvIters; }
 
   // should quantile-like stats (median, quartiles, medabsdevmed) be computed?
   // When the stats framework is used, It is better to set this before computing
@@ -416,7 +416,7 @@ class LatticeStatistics : public LatticeStatsBase {
 
  protected:
   LogIO os_p;
-  Vector<Int> cursorAxes_p, displayAxes_p;
+  Vector<int> cursorAxes_p, displayAxes_p;
   bool goodParameterStatus_p;
   bool haveLogger_p, fixedMinMax_p;
 
@@ -437,11 +437,11 @@ class LatticeStatistics : public LatticeStatsBase {
   // question cannot compute flux density values. The default implementation returns false.
   virtual bool _canDoFlux() const { return false; }
 
-  virtual Quantum<AccumType> _flux(bool&, AccumType, Double) const {
+  virtual Quantum<AccumType> _flux(bool&, AccumType, double) const {
     ThrowCc("Logic Error: This object cannot compute flux density");
   }
 
-  virtual void listMinMax(ostringstream& osMin, ostringstream& osMax, Int oWidth, DataType type);
+  virtual void listMinMax(ostringstream& osMin, ostringstream& osMax, int oWidth, DataType type);
 
   //
 
@@ -457,7 +457,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // Have a look at the implementation to see what you really
   // have to do.
   virtual bool listStats(bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
-  virtual bool listLayerStats(const Matrix<AccumType>& ord, ostringstream& rslt, Int zLayer);
+  virtual bool listLayerStats(const Matrix<AccumType>& ord, ostringstream& rslt, int zLayer);
 
   // Given a location in the storage lattice, convert those locations on the
   // non-statistics axis (the last one) and optionally account for the
@@ -467,7 +467,7 @@ class LatticeStatistics : public LatticeStatsBase {
   // Non-virtual functions
   //
   // set stream manipulators
-  void setStream(std::ostream& os, Int oPrec);
+  void setStream(std::ostream& os, int oPrec);
 
   // get the storage lattice shape
   inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }
@@ -500,7 +500,7 @@ class LatticeStatistics : public LatticeStatsBase {
   std::shared_ptr<const MaskedLattice<T>> _inLatPtrMgr;
 
   std::shared_ptr<TempLattice<AccumType>> pStoreLattice_p;
-  Vector<Int> nxy_p, statsToPlot_p;
+  Vector<int> nxy_p, statsToPlot_p;
   Vector<T> range_p;
   bool noInclude_p, noExclude_p;
 
@@ -511,9 +511,9 @@ class LatticeStatistics : public LatticeStatsBase {
   bool doneFullMinMax_p;
 
   StatisticsAlgorithmFactory<AccumType, const T*, const bool*> _saf;
-  std::map<String, uInt> _chauvIters;
+  std::map<String, unsigned int> _chauvIters;
 
-  Double _aOld, _bOld, _aNew, _bNew;
+  double _aOld, _bOld, _aNew, _bNew;
 
   // unset means let the code decide
   std::unique_ptr<LatticeStatsAlgorithm> _latticeStatsAlgortihm;
@@ -587,7 +587,7 @@ class LatticeStatistics : public LatticeStatsBase {
   void _configureDataProviders(LatticeStatsDataProvider<T>& lattDP,
                                MaskedLatticeStatsDataProvider<T>& maskedLattDP) const;
 
-  void _doStatsLoop(uInt nsets, std::shared_ptr<LattStatsProgress> progressMeter);
+  void _doStatsLoop(unsigned int nsets, std::shared_ptr<LattStatsProgress> progressMeter);
 
   void _computeStatsUsingArrays(std::shared_ptr<LattStatsProgress> progressMeter,
                                 const IPosition& cursorShape);
@@ -595,7 +595,7 @@ class LatticeStatistics : public LatticeStatsBase {
   void _computeStatsUsingLattDataProviders(LatticeStepper& stepper, SubLattice<T> subLat,
                                            Slicer& slicer,
                                            std::shared_ptr<LattStatsProgress> progressMeter,
-                                           uInt nsets);
+                                           unsigned int nsets);
 
   IPosition _cursorShapeForArrayMethod(uInt64 setSize) const;
 
@@ -603,7 +603,7 @@ class LatticeStatistics : public LatticeStatsBase {
       std::vector<std::shared_ptr<StatisticsAlgorithm<AccumType, typename Array<T>::const_iterator,
                                                       Array<bool>::const_iterator>>>& sa,
       T& overallMin, T& overallMax, IPosition& arrayShape, std::vector<Array<T>>& dataArray,
-      std::vector<Array<bool>>& maskArray, std::vector<IPosition>& curPos, uInt nthreads,
+      std::vector<Array<bool>>& maskArray, std::vector<IPosition>& curPos, unsigned int nthreads,
       bool isChauv, bool isMasked, bool isReal, std::shared_ptr<const DataRanges> range);
 
   void _fillStorageLattice(T currentMin, T currentMax, const IPosition& curPos,
@@ -623,7 +623,7 @@ class LatticeStatistics : public LatticeStatsBase {
 };
 
 // # Declare extern templates for often used types.
-extern template class LatticeStatistics<Float>;
+extern template class LatticeStatistics<float>;
 
 }  // namespace casacore
 

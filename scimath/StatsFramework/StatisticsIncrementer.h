@@ -44,27 +44,27 @@ class StatisticsIncrementer {
   // <src>loopCount</src> is always incremented by one, independent of the
   // value of <src>dataStride</src> and <src>maskStride</src>
 
-  inline static void increment(DataIterator& datum, uInt64& loopCount, uInt dataStride) {
+  inline static void increment(DataIterator& datum, uInt64& loopCount, unsigned int dataStride) {
     std::advance(datum, dataStride);
     ++loopCount;
   }
 
   inline static void increment(DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
-                               uInt dataStride) {
+                               unsigned int dataStride) {
     std::advance(datum, dataStride);
     std::advance(weight, dataStride);
     ++loopCount;
   }
 
   inline static void increment(DataIterator& datum, uInt64& loopCount, MaskIterator& mask,
-                               uInt dataStride, uInt maskStride) {
+                               unsigned int dataStride, unsigned int maskStride) {
     std::advance(datum, dataStride);
     std::advance(mask, maskStride);
     ++loopCount;
   }
 
   inline static void increment(DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
-                               MaskIterator& mask, uInt dataStride, uInt maskStride) {
+                               MaskIterator& mask, unsigned int dataStride, unsigned int maskStride) {
     std::advance(datum, dataStride);
     std::advance(weight, dataStride);
     std::advance(mask, maskStride);

@@ -173,8 +173,8 @@ void HDF5Lattice<T>::doPutSlice(const Array<T>& sourceArray, const IPosition& wh
   checkWritable();
   bool deleteIt;
   const T* data = sourceArray.getStorage(deleteIt);
-  const uInt arrDim = sourceArray.ndim();
-  const uInt latDim = ndim();
+  const unsigned int arrDim = sourceArray.ndim();
+  const unsigned int latDim = ndim();
   AlwaysAssert(arrDim <= latDim, AipsError);
   if (arrDim == latDim) {
     Slicer section(where, sourceArray.shape(), stride, Slicer::endIsLength);
@@ -193,21 +193,21 @@ IPosition HDF5Lattice<T>::tileShape() const {
 }
 
 template <typename T>
-uInt HDF5Lattice<T>::advisedMaxPixels() const {
+unsigned int HDF5Lattice<T>::advisedMaxPixels() const {
   return tileShape().product();
 }
 
 template <typename T>
-IPosition HDF5Lattice<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition HDF5Lattice<T>::doNiceCursorShape(unsigned int maxPixels) const {
   IPosition retval = tileShape();
-  if (retval.product() > Int(maxPixels)) {
+  if (retval.product() > int(maxPixels)) {
     retval = Lattice<T>::doNiceCursorShape(maxPixels);
   }
   return retval;
 }
 
 template <class T>
-void HDF5Lattice<T>::setCacheSizeInTiles(uInt howManyTiles) {
+void HDF5Lattice<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
   itsDataSet->setCacheSize(howManyTiles);
 }
 

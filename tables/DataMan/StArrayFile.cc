@@ -41,8 +41,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-StManArrayFile::StManArrayFile(const String& fname, ByteIO::OpenOption fop, uInt version,
-                               bool bigEndian, uInt bufferSize,
+StManArrayFile::StManArrayFile(const String& fname, ByteIO::OpenOption fop, unsigned int version,
+                               bool bigEndian, unsigned int bufferSize,
                                const std::shared_ptr<MultiFileBase>& mfile)
     : leng_p(16), version_p(version), hasPut_p(false) {
   // The maximum version is 1.
@@ -111,7 +111,7 @@ void StManArrayFile::resync() {
     put(version_p);
     iofil_p->write(1, &leng_p);
     // # Put a 0 to fill up the buffer and make valgrind happy.
-    put(Int(0));
+    put(int(0));
     hasPut_p = true;
   }
 }
@@ -123,68 +123,19 @@ void StManArrayFile::setpos(Int64 pos) {
   }
 }
 
-void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const Float* data) {
-  setpos(fileOff + arrayOff * sizeFloat_p);
-  iofil_p->write(nr, data);
-  hasPut_p = true;
-}
-
-uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Float*) {
-  return putRes(shape, offset, sizeFloat_p);
-}
-
-void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, Float* data) {
-  setpos(fileOff + arrayOff * sizeFloat_p);
-  iofil_p->read(nr, data);
-}
-
-void StManArrayFile::copyArrayFloat(Int64 to, Int64 from, uInt64 nr) {
-  copyData(to, from, nr * sizeFloat_p);
-}
-
-// # Put a vector at the given offset.
-#define STMANARRAYFILE_PUTGET(T, SIZEDTYPE)                                           \
-  void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const T* data) { \
-    setpos(fileOff + arrayOff * SIZEDTYPE);                                           \
-    iofil_p->write(nr, data);                                                         \
-    hasPut_p = true;                                                                  \
-  }                                                                                   \
-  uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const T*) {    \
-    return putRes(shape, offset, SIZEDTYPE);                                          \
-  }                                                                                   \
-  void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, T* data) {       \
-    setpos(fileOff + arrayOff * SIZEDTYPE);                                           \
-    iofil_p->read(nr, data);                                                          \
-  }                                                                                   \
-  void StManArrayFile::aips_name2(copyArray, T)(Int64 to, Int64 from, uInt64 nr) {    \
-    copyData(to, from, nr * SIZEDTYPE);                                               \
-  }
-
-STMANARRAYFILE_PUTGET(Char, sizeChar_p)
-STMANARRAYFILE_PUTGET(uChar, sizeuChar_p)
-STMANARRAYFILE_PUTGET(Short, sizeShort_p)
-STMANARRAYFILE_PUTGET(uShort, sizeuShort_p)
-STMANARRAYFILE_PUTGET(Int, sizeInt_p)
-STMANARRAYFILE_PUTGET(uInt, sizeuInt_p)
-STMANARRAYFILE_PUTGET(Int64, sizeInt64_p)
-STMANARRAYFILE_PUTGET(uInt64, sizeuInt64_p)
-// #//STMANARRAYFILE_PUTGET(Float, sizeFloat_p)
-STMANARRAYFILE_PUTGET(Double, sizeDouble_p)
-// #//STMANARRAYFILE_PUTGET(long double, sizeLDouble_p)
-
 // # Handle it for Bool.
 void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const bool* data) {
   // # Bools are stored as bits, thus a bit more complex.
   uInt64 start = arrayOff / 8;
-  uInt stbit = arrayOff - 8 * start;
+  unsigned int stbit = arrayOff - 8 * start;
   uInt64 end = (arrayOff + nr) / 8;
-  uInt endbit = arrayOff + nr - 8 * end;
+  unsigned int endbit = arrayOff + nr - 8 * end;
   if (endbit != 0) {
     end++;
   }
   // # Allocate a buffer of the required length.
   // # Read first and/or last byte when partially accessed.
-  uChar* buf = new uChar[end - start];
+  unsigned char* buf = new unsigned char[end - start];
   if (endbit != 0) {
     setpos(fileOff + end - 1);
     iofil_p->read(1, buf + end - start - 1);
@@ -200,20 +151,20 @@ void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const bool* d
   hasPut_p = true;
   delete[] buf;
 }
-uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const bool*) {
+unsigned int StManArrayFile::putShape(const IPosition& shape, Int64& offset, const bool*) {
   return putRes(shape, offset, 0.125);
 }
 void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, bool* data) {
   // # Bools are stored as bits, thus a bit more complex.
   uInt64 start = arrayOff / 8;
-  uInt stbit = arrayOff - 8 * start;
+  unsigned int stbit = arrayOff - 8 * start;
   uInt64 end = (arrayOff + nr) / 8;
-  uInt endbit = arrayOff + nr - 8 * end;
+  unsigned int endbit = arrayOff + nr - 8 * end;
   if (endbit != 0) {
     end++;
   }
   // # Allocate a buffer of the required length.
-  uChar* buf = new uChar[end - start];
+  unsigned char* buf = new unsigned char[end - start];
   setpos(fileOff + start);
   iofil_p->read(end - start, buf);
   Conversion::bitToBool(data, buf, stbit, nr);
@@ -227,16 +178,16 @@ void StManArrayFile::copyArrayBool(Int64 to, Int64 from, uInt64 nr) {
 // # A Complex consists of 2 float values.
 // # For a string its file offset gets stored (as a uInt), while the
 // # string itself will be put at the end of the file.
-uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Complex*) {
+unsigned int StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Complex*) {
   return putRes(shape, offset, 2 * sizeFloat_p);
 }
-uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const DComplex*) {
+unsigned int StManArrayFile::putShape(const IPosition& shape, Int64& offset, const DComplex*) {
   return putRes(shape, offset, 2 * sizeDouble_p);
 }
-uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const String*) {
-  uInt n = putRes(shape, offset, sizeuInt_p);
+unsigned int StManArrayFile::putShape(const IPosition& shape, Int64& offset, const String*) {
+  unsigned int n = putRes(shape, offset, sizeuInt_p);
   uInt64 nr = shape.product();
-  Block<uInt> data(nr, 0u);
+  Block<unsigned int> data(nr, 0u);
   put(offset + n, 0, nr, data.storage());
   return n;
 }
@@ -244,12 +195,12 @@ uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Strin
 // # Put a complex vector at the given file offset.
 void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const Complex* data) {
   setpos(fileOff + arrayOff * 2 * sizeFloat_p);
-  iofil_p->write(2 * nr, (const Float*)data);
+  iofil_p->write(2 * nr, (const float*)data);
   hasPut_p = true;
 }
 void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const DComplex* data) {
   setpos(fileOff + arrayOff * 2 * sizeDouble_p);
-  iofil_p->write(2 * nr, (const Double*)data);
+  iofil_p->write(2 * nr, (const double*)data);
   hasPut_p = true;
 }
 
@@ -258,7 +209,7 @@ void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const String*
   // # Get file offset for string offset array.
   // # Allocate a buffer to hold 4096 string offsets.
   Int64 offs = fileOff + arrayOff * sizeuInt_p;
-  uInt buf[4096];
+  unsigned int buf[4096];
   uInt64 n;
   while (nr > 0) {
     n = (nr < 4096 ? nr : 4096);
@@ -268,7 +219,7 @@ void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const String*
       // Note: this should be fixed one time and make it uInt64.
       AlwaysAssert(leng_p < Int64(65536) * 65536, DataManError);
       buf[i] = leng_p;
-      leng_p += put(uInt(data->length()));  // write string length
+      leng_p += put(static_cast<unsigned int>(data->length()));  // write string length
       leng_p += iofil_p->write(data->length(), data->c_str());
       data++;
     }
@@ -283,11 +234,11 @@ void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const String*
 // # Get a complex vector at the given file offset.
 void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, Complex* data) {
   setpos(fileOff + arrayOff * 2 * sizeFloat_p);
-  iofil_p->read(2 * nr, (Float*)data);
+  iofil_p->read(2 * nr, (float*)data);
 }
 void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, DComplex* data) {
   setpos(fileOff + arrayOff * 2 * sizeDouble_p);
-  iofil_p->read(2 * nr, (Double*)data);
+  iofil_p->read(2 * nr, (double*)data);
 }
 
 // # Get a string at the given file offset.
@@ -295,9 +246,9 @@ void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, String* data)
   // # Get file offset for string offset array.
   // # Allocate a buffer to hold 4096 string offsets.
   Int64 offs = fileOff + arrayOff * sizeuInt_p;
-  uInt buf[4096];
+  unsigned int buf[4096];
   uInt64 n;
-  uInt l;
+  unsigned int l;
   while (nr > 0) {
     n = (nr < 4096 ? nr : 4096);
     setpos(offs);
@@ -340,7 +291,7 @@ void StManArrayFile::copyArrayString(Int64 to, Int64 from, uInt64 nr) {
 
 // # Copy the data of the given length from one file offset to another.
 void StManArrayFile::copyData(Int64 to, Int64 from, uInt64 length) {
-  uChar buffer[32768];
+  unsigned char buffer[32768];
   for (uInt64 n = 0; length > 0; length -= n) {
     n = (length < 32768 ? length : 32768);
     setpos(from);
@@ -355,25 +306,25 @@ void StManArrayFile::copyData(Int64 to, Int64 from, uInt64 length) {
 // # increasing the length.
 // # Take care it is at 8 byte boundary.
 // # Write something in the last byte to make sure the file is extended.
-uInt StManArrayFile::putRes(const IPosition& shape, Int64& offset, float lenElem) {
+unsigned int StManArrayFile::putRes(const IPosition& shape, Int64& offset, float lenElem) {
   leng_p = 8 * ((leng_p + 7) / 8);
   offset = leng_p;
-  uInt n = 0;
+  unsigned int n = 0;
   setpos(leng_p);
   // Put reference count in higher versions only.
   if (version_p > 0) {
-    n += put(uInt(1));
+    n += put(static_cast<unsigned int>(1));
   }
-  n += put(uInt(shape.nelements()));
-  for (uInt i = 0; i < shape.nelements(); i++) {
-    n += put(Int(shape(i)));
+  n += put(static_cast<unsigned int>(shape.nelements()));
+  for (unsigned int i = 0; i < shape.nelements(); i++) {
+    n += put(int(shape(i)));
   }
   // Add length of shape and of entire array to file length.
   // Take care of rounding (needed for Bool case).
   leng_p += n;
   leng_p += Int64(double(shape.product()) * lenElem + 0.95);
   setpos(leng_p - 1);
-  Char c = 0;
+  char c = 0;
   iofil_p->write(1, &c);
   hasPut_p = true;
   return n;
@@ -381,18 +332,18 @@ uInt StManArrayFile::putRes(const IPosition& shape, Int64& offset, float lenElem
 
 // # Get the shape at the given file offset
 // # and returns its length in the file.
-uInt StManArrayFile::getShape(Int64 fileOff, IPosition& shape) {
+unsigned int StManArrayFile::getShape(Int64 fileOff, IPosition& shape) {
   setpos(fileOff);
-  uInt n = 0;
+  unsigned int n = 0;
   if (version_p > 0) {
-    uInt refCount;
+    unsigned int refCount;
     n = get(refCount);
   }
-  uInt nr;
+  unsigned int nr;
   n += get(nr);
   shape.resize(nr);
-  Int tmp;
-  for (uInt i = 0; i < nr; i++) {
+  int tmp;
+  for (unsigned int i = 0; i < nr; i++) {
     n += get(tmp);
     shape(i) = tmp;
   }
@@ -400,18 +351,18 @@ uInt StManArrayFile::getShape(Int64 fileOff, IPosition& shape) {
 }
 
 // # Update the reference count.
-uInt StManArrayFile::getRefCount(Int64 offset) {
+unsigned int StManArrayFile::getRefCount(Int64 offset) {
   if (version_p == 0) {
     return 1;
   }
   setpos(offset);
-  uInt refCount;
+  unsigned int refCount;
   get(refCount);
   return refCount;
 }
 
 // # Update the reference count.
-void StManArrayFile::putRefCount(uInt refCount, Int64 offset) {
+void StManArrayFile::putRefCount(unsigned int refCount, Int64 offset) {
   // For version 0 only a dummy put (i.e. value 1) is allowed.
   if (version_p == 0) {
     AlwaysAssert(refCount == 1, AipsError);

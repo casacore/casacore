@@ -44,8 +44,8 @@ IPosition LatticeNavigator::subLatticeShape() const { return latticeShape(); }
 
 IPosition LatticeNavigator::hangOverBlc() const {
   IPosition blc(relativePosition());
-  const uInt ndim = blc.nelements();
-  for (uInt n = 0; n < ndim; n++)
+  const unsigned int ndim = blc.nelements();
+  for (unsigned int n = 0; n < ndim; n++)
     if (blc(n) < 0) blc(n) = 0;
   return blc;
 }
@@ -53,9 +53,9 @@ IPosition LatticeNavigator::hangOverBlc() const {
 IPosition LatticeNavigator::hangOverTrc() const {
   IPosition trc(relativeEndPosition());
   const IPosition latticeShape(subLatticeShape());
-  const uInt ndim = trc.nelements();
+  const unsigned int ndim = trc.nelements();
   DebugAssert(latticeShape.nelements() == ndim, AipsError);
-  for (uInt n = 0; n < ndim; n++)
+  for (unsigned int n = 0; n < ndim; n++)
     if (trc(n) >= latticeShape(n)) trc(n) = latticeShape(n) - 1;
   return trc;
 }

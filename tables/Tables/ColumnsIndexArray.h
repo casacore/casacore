@@ -264,7 +264,7 @@ class ColumnsIndexArray {
 
   // Compare the key in <src>fieldPtr</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
-  static Int compare(void* fieldPtr, void* dataPtr, Int dataType, rownr_t index);
+  static int compare(void* fieldPtr, void* dataPtr, int dataType, rownr_t index);
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
@@ -273,10 +273,10 @@ class ColumnsIndexArray {
 
   // Get the data if the column is an array.
   // <group>
-  void getArray(Vector<uChar>& result, const String& name);
-  void getArray(Vector<Short>& result, const String& name);
-  void getArray(Vector<Int>& result, const String& name);
-  void getArray(Vector<uInt>& result, const String& name);
+  void getArray(Vector<unsigned char>& result, const String& name);
+  void getArray(Vector<short>& result, const String& name);
+  void getArray(Vector<int>& result, const String& name);
+  void getArray(Vector<unsigned int>& result, const String& name);
   void getArray(Vector<Int64>& result, const String& name);
   void getArray(Vector<String>& result, const String& name);
   // </group>
@@ -289,7 +289,7 @@ class ColumnsIndexArray {
   rownr_t itsNrrow;
   Record* itsLowerKeyPtr;
   Record* itsUpperKeyPtr;
-  Int itsDataType;
+  int itsDataType;
   void* itsDataVector;
   void* itsData;  // # pointer to data in itsDataVector
   // # The following 2 blocks are actually blocks of RecordFieldPtr<T>*.

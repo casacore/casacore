@@ -46,9 +46,9 @@ int main() {
 
     std::vector<String> history;
     bool aipsppFormat = true;
-    uInt nstrings, nread;
+    unsigned int nstrings, nread;
     nstrings = nread = 0;
-    nread = FITSHistoryUtil::toHISTORY(history, aipsppFormat, nstrings, uInt(0), logger);
+    nread = FITSHistoryUtil::toHISTORY(history, aipsppFormat, nstrings, static_cast<unsigned int>(0), logger);
     // there are 2 things inserted here, so nread should be 2
     AlwaysAssertExit(nread == 2);
 
@@ -78,14 +78,14 @@ int main() {
     // now retrieve stuff from kwl
     Vector<String> stringsOut;
     String groupType;
-    uInt n;
+    unsigned int n;
     ConstFitsKeywordList ckwl(kwl);
     ckwl.first();
     while ((n = FITSHistoryUtil::getHistoryGroup(stringsOut, groupType, ckwl)) != 0) {
       LoggerHolder logOut(false);
       if (groupType == "LOGTABLE") {
         FITSHistoryUtil::fromHISTORY(logOut, stringsOut, n, true);
-        Int iterCount = 0;
+        int iterCount = 0;
         LoggerHolder::const_iterator origIter = logger.begin();
         for (LoggerHolder::const_iterator iter = logOut.begin(); iter != logOut.end(); iter++) {
           AlwaysAssertExit(origIter != logger.end());
@@ -107,12 +107,12 @@ int main() {
         AlwaysAssertExit(n == 4);
       } else if (groupType == "OTHER") {
         AlwaysAssertExit(n == otherHistory.size());
-        for (uInt i = 0; i < otherHistory.size(); i++) {
+        for (unsigned int i = 0; i < otherHistory.size(); i++) {
           AlwaysAssertExit(otherHistory[i] == stringsOut(i));
         }
       } else {
         AlwaysAssertExit(n == moreHistory.size());
-        for (uInt i = 0; i < moreHistory.size(); i++) {
+        for (unsigned int i = 0; i < moreHistory.size(); i++) {
           AlwaysAssertExit(moreHistory[i] == stringsOut(i));
         }
       }

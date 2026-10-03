@@ -90,10 +90,10 @@ class MSTableImpl {
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  static void addColumnToDesc(TableDesc& td, const String& colName, Int colDType,
+  static void addColumnToDesc(TableDesc& td, const String& colName, int colDType,
                               const String& colComment, const String& colUnit,
-                              const String& colMeasure, Int ndim, const IPosition& shape,
-                              Int option, const String& refCol);
+                              const String& colMeasure, int ndim, const IPosition& shape,
+                              int option, const String& refCol);
 
   // add a keyword to a TableDesc
   // An exception is thrown for an invalid data type.  This indicates a
@@ -101,7 +101,7 @@ class MSTableImpl {
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  static void addKeyToDesc(TableDesc& td, const String& keyName, Int keyDType,
+  static void addKeyToDesc(TableDesc& td, const String& keyName, int keyDType,
                            const String& keyComment);
 
   // add a MeasureColumn for the specified Measure, with default reference
@@ -116,16 +116,16 @@ class MSTableImpl {
   static SetupNewTable& setupCompression(SetupNewTable&);
 
   // Define an entry in the column maps
-  static void colMapDef(std::map<Int, String>& colMap, std::map<Int, Int>& colDTypeMap,
-                        std::map<Int, String>& colCommentMap, std::map<Int, String>& colUnitMap,
-                        std::map<Int, String>& colMeasureTypeMap, Int col, const String& colName,
-                        Int colType, const String& colComment, const String& colUnit,
+  static void colMapDef(std::map<int, String>& colMap, std::map<int, int>& colDTypeMap,
+                        std::map<int, String>& colCommentMap, std::map<int, String>& colUnitMap,
+                        std::map<int, String>& colMeasureTypeMap, int col, const String& colName,
+                        int colType, const String& colComment, const String& colUnit,
                         const String& colMeasureType);
 
   // Define an entry in the keyword maps
-  static void keyMapDef(std::map<Int, String>& keyMap, std::map<Int, Int>& keyDTypeMap,
-                        std::map<Int, String>& keyCommentMap, Int key, const String& keyName,
-                        Int keyType, const String& keyComment);
+  static void keyMapDef(std::map<int, String>& keyMap, std::map<int, int>& keyDTypeMap,
+                        std::map<int, String>& keyCommentMap, int key, const String& keyName,
+                        int keyType, const String& keyComment);
 
   // tableDesc convenience functions
   // <group>

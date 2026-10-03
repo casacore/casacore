@@ -89,7 +89,7 @@ PagedArray<T>::PagedArray(const TiledShape& shape, Table& file)
 
 template <class T>
 PagedArray<T>::PagedArray(const TiledShape& shape, Table& file, const String& columnName,
-                          uInt rowNumber)
+                          unsigned int rowNumber)
     : itsTable(file),
       itsColumnName(columnName),
       itsRowNumber(rowNumber),
@@ -128,7 +128,7 @@ PagedArray<T>::PagedArray(Table& file)
 }
 
 template <class T>
-PagedArray<T>::PagedArray(Table& file, const String& columnName, uInt rowNumber)
+PagedArray<T>::PagedArray(Table& file, const String& columnName, unsigned int rowNumber)
     : itsTable(file),
       itsColumnName(columnName),
       itsRowNumber(rowNumber),
@@ -248,8 +248,8 @@ void PagedArray<T>::doPutSlice(const Array<T>& sourceArray, const IPosition& whe
                                const IPosition& stride) {
   // Create a writable column object in case not existing yet.
   getRWArray();
-  const uInt arrDim = sourceArray.ndim();
-  const uInt latDim = ndim();
+  const unsigned int arrDim = sourceArray.ndim();
+  const unsigned int latDim = ndim();
   AlwaysAssert(arrDim <= latDim, AipsError);
   if (arrDim == latDim) {
     Slicer section(where, sourceArray.shape(), stride, Slicer::endIsLength);
@@ -268,34 +268,34 @@ IPosition PagedArray<T>::tileShape() const {
 }
 
 template <class T>
-uInt PagedArray<T>::advisedMaxPixels() const {
+unsigned int PagedArray<T>::advisedMaxPixels() const {
   return tileShape().product();
 }
 
 template <class T>
-IPosition PagedArray<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition PagedArray<T>::doNiceCursorShape(unsigned int maxPixels) const {
   IPosition retval = tileShape();
-  if (retval.product() > Int(maxPixels)) {
+  if (retval.product() > int(maxPixels)) {
     retval = Lattice<T>::doNiceCursorShape(maxPixels);
   }
   return retval;
 }
 
 template <class T>
-void PagedArray<T>::setMaximumCacheSize(uInt howManyPixels) {
+void PagedArray<T>::setMaximumCacheSize(unsigned int howManyPixels) {
   doReopen();
-  const uInt sizeInBytes = howManyPixels * sizeof(T);
+  const unsigned int sizeInBytes = howManyPixels * sizeof(T);
   itsAccessor.setMaximumCacheSize(sizeInBytes);
 }
 
 template <class T>
-uInt PagedArray<T>::maximumCacheSize() const {
+unsigned int PagedArray<T>::maximumCacheSize() const {
   doReopen();
   return itsAccessor.maximumCacheSize() / sizeof(T);
 }
 
 template <class T>
-void PagedArray<T>::setCacheSizeInTiles(uInt howManyTiles) {
+void PagedArray<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
   doReopen();
   itsAccessor.setCacheSize(itsRowNumber, howManyTiles);
 }
@@ -390,7 +390,7 @@ void PagedArray<T>::makeArray(const TiledShape& shape) {
   IPosition latShape = shape.shape();
   IPosition tileShape = shape.tileShape();
   // Create a new column if it does not already exist.
-  const uInt ndim = latShape.nelements();
+  const unsigned int ndim = latShape.nelements();
   bool newColumn = false;
   if (!itsTable.tableDesc().isColumn(itsColumnName)) {
     newColumn = true;
@@ -408,15 +408,15 @@ void PagedArray<T>::makeArray(const TiledShape& shape) {
   // if table doesn't have enough rows to match our row number
   // then add rows and fill them with empty arrays
   const IPosition emptyShape(ndim, 1);
-  const uInt rows = itsTable.nrow();
+  const unsigned int rows = itsTable.nrow();
   if (rows <= itsRowNumber) {
     itsTable.addRow(itsRowNumber - rows + 1);
-    for (uInt r = rows; r < itsRowNumber; r++) {
+    for (unsigned int r = rows; r < itsRowNumber; r++) {
       itsArray.setShape(r, emptyShape);
     }
   }
   if (newColumn) {
-    for (uInt r = 0; r < rows; r++) {
+    for (unsigned int r = 0; r < rows; r++) {
       if (r != itsRowNumber) {
         itsArray.setShape(r, emptyShape);
       }
@@ -461,7 +461,7 @@ String PagedArray<T>::defaultComment() {
 }
 
 template <class T>
-bool PagedArray<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool PagedArray<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   doReopen();
   return itsTable.lock(type, nattempts);
 }

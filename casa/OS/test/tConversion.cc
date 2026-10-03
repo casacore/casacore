@@ -35,8 +35,8 @@
 // Check optimized conversions.
 void checkAll() {
   cout << "checkAll ..." << endl;
-  uChar bits[256];
-  for (uInt i = 0; i < 256; ++i) {
+  unsigned char bits[256];
+  for (unsigned int i = 0; i < 256; ++i) {
     bits[i] = i;
   }
   bool flagArr[8 * 260];
@@ -46,10 +46,10 @@ void checkAll() {
   flags = (bool*)(8 * (((unsigned long long)flags - 1) / 8 + 1));
   cout << "  aligned flag pointer " << flags << endl;
   Conversion::bitToBool(flags, bits, 8 * 256);
-  for (uInt i = 0; i < 256; ++i) {
-    uInt val = 0;
-    uInt tmp = 1;
-    for (uInt j = 0; j < 8; ++j) {
+  for (unsigned int i = 0; i < 256; ++i) {
+    unsigned int val = 0;
+    unsigned int tmp = 1;
+    for (unsigned int j = 0; j < 8; ++j) {
       if (flags[i * 8 + j]) {
         val += tmp;
       }
@@ -57,19 +57,19 @@ void checkAll() {
     }
     AlwaysAssertExit(val == bits[i]);
   }
-  uChar out[256];
+  unsigned char out[256];
   Conversion::boolToBit(out, flags, 8 * 256);
-  for (uInt i = 0; i < 256; ++i) {
+  for (unsigned int i = 0; i < 256; ++i) {
     AlwaysAssertExit(out[i] == bits[i]);
   }
 }
 
 int main() {
-  uInt nbool = 100;
-  uInt nbyte = (100 + 7) / 8;
+  unsigned int nbool = 100;
+  unsigned int nbyte = (100 + 7) / 8;
   bool* data = new bool[nbool];
-  uChar* bits = new uChar[nbyte];
-  uInt i;
+  unsigned char* bits = new unsigned char[nbyte];
+  unsigned int i;
 
   // # Initialize all bits and check if resulting Bools are all false.
   for (i = 0; i < nbyte; i++) {

@@ -128,11 +128,11 @@ class StManColumnAipsIO : public MSMColumn {
 
   // Put the data (nrval elements) in an extension (starting at datap)
   // into AipsIO.
-  virtual void putData(void* datap, uInt nrval, AipsIO&);
+  virtual void putData(void* datap, unsigned int nrval, AipsIO&);
 
   // Get data (nrval elements) into an extension (starting at datap
   // plus the given index).
-  virtual void getData(void* datap, uInt index, uInt nrval, AipsIO&, uInt version);
+  virtual void getData(void* datap, unsigned int index, unsigned int nrval, AipsIO&, unsigned int version);
 };
 
 // <summary>
@@ -212,7 +212,7 @@ class StManAipsIO : public MSMBase {
   // Get a unique column number for the column
   // (it is only unique for this storage manager).
   // This is used by StManIndArrayColumnAipsIO to create a unique file name.
-  uInt uniqueNr() { return uniqnr_p++; }
+  unsigned int uniqueNr() { return uniqnr_p++; }
 
   // Make the object from the string.
   // This function gets registered in the DataManager "constructor" map.
@@ -258,7 +258,7 @@ class StManAipsIO : public MSMBase {
   // </group>
 
   // Unique nr for column in this storage manager.
-  uInt uniqnr_p;
+  unsigned int uniqnr_p;
   // The file containing the indirect arrays.
   StManArrayFile* iosfile_p;
 };

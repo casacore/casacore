@@ -91,23 +91,23 @@ bool TiledDataStMan::flush(AipsIO&, bool fsync) {
 void TiledDataStMan::readHeader(rownr_t tabNrrow, bool firstTime) {
   // Open the header file and read data from it.
   AipsIO* headerFile = headerFileOpen();
-  uInt version = headerFile->getstart("TiledDataStMan");
+  unsigned int version = headerFile->getstart("TiledDataStMan");
   // Let the base class read and initialize its data.
-  uInt hdrVersion = headerFileGet(*headerFile, tabNrrow, firstTime, -1);
+  unsigned int hdrVersion = headerFileGet(*headerFile, tabNrrow, firstTime, -1);
   // Read the data for this object.
   // Version 1 was not incremented at the change to rownr_t, but the
   // parent class TiledStMan was. So test that version as well.
   if (version == 1 && hdrVersion < 3) {
-    uInt nrow;
+    unsigned int nrow;
     *headerFile >> nrow;
     nrrowLast_p = nrow;
   } else {
     *headerFile >> nrrowLast_p;
   }
   if (version == 1) {
-    uInt nused;
+    unsigned int nused;
     *headerFile >> nused;
-    std::vector<uInt> rowMap;
+    std::vector<unsigned int> rowMap;
     *headerFile >> rowMap;
     rowMap_p.insert(rowMap_p.end(), rowMap.begin(), rowMap.end());
     *headerFile >> cubeMap_p >> posMap_p;
@@ -137,7 +137,7 @@ void TiledDataStMan::addHypercube(const IPosition& cubeShape, const IPosition& t
   // Check the hypercube definition and create the hypercube.
   checkAddHypercube(cubeShape, values);
   TSMCube* hypercube = makeHypercube(cubeShape, tileShape, values);
-  uInt ncube = cubeSet_p.nelements();
+  unsigned int ncube = cubeSet_p.nelements();
   cubeSet_p.resize(ncube + 1);
   cubeSet_p[ncube] = hypercube;
   // Update the row map with the number of pixels in last dimension.
@@ -148,7 +148,7 @@ void TiledDataStMan::extendHypercube(uInt64 incrInLastDim, const Record& values)
   // Check if id values are correctly given.
   // Get the hypercube using the id values.
   checkValues(idColSet_p, values);
-  Int cubeNr = getCubeIndex(values);
+  int cubeNr = getCubeIndex(values);
   if (cubeNr < 0) {
     throw(TSMError("extendHypercube with unknown id values"));
   }
@@ -163,7 +163,7 @@ void TiledDataStMan::extendHypercube(uInt64 incrInLastDim, const Record& values)
   setDataChanged();
 }
 
-void TiledDataStMan::updateRowMap(uInt cubeNr, uInt64 incrInLastDim) {
+void TiledDataStMan::updateRowMap(unsigned int cubeNr, uInt64 incrInLastDim) {
   if (incrInLastDim == 0) {
     return;
   }
@@ -189,7 +189,7 @@ TSMCube* TiledDataStMan::getHypercube(rownr_t rownr, IPosition& position) {
   }
   // Find the closest row number in the map (equal or less).
   bool found;
-  uInt index = binarySearchBrackets(found, rowMap_p, rownr, rowMap_p.size());
+  unsigned int index = binarySearchBrackets(found, rowMap_p, rownr, rowMap_p.size());
   if (!found) {
     index--;
   }
@@ -204,7 +204,7 @@ TSMCube* TiledDataStMan::getHypercube(rownr_t rownr, IPosition& position) {
   const IPosition& shape = hypercube->cubeShape();
   position.resize(0);
   position = shape;
-  for (uInt i = nrCoordVector_p; i < nrdim_p - 1; i++) {
+  for (unsigned int i = nrCoordVector_p; i < nrdim_p - 1; i++) {
     position(i) = rowDiff % shape(i);
     rowDiff /= shape(i);
   }

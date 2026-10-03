@@ -37,7 +37,7 @@
 using namespace casacore;
 using namespace std;
 
-void testCreate(ImageInterface<Float>& image) {
+void testCreate(ImageInterface<float>& image) {
   cout << "testCreate ..." << endl;
   ImageAttrHandler& attrHand(image.attrHandler(true));
   cout << "GOT HANDLER" << endl;
@@ -53,25 +53,25 @@ void testCreate(ImageInterface<Float>& image) {
 }
 
 void testCreateCasa(const String& imageName) {
-  PagedImage<Float> image(IPosition(2, 128, 128), CoordinateUtil::defaultCoords2D(), imageName);
+  PagedImage<float> image(IPosition(2, 128, 128), CoordinateUtil::defaultCoords2D(), imageName);
   testCreate(image);
 }
 
 void testCreateHDF5(const String& imageName) {
-  HDF5Image<Float> image(IPosition(2, 128, 128), CoordinateUtil::defaultCoords2D(), imageName);
+  HDF5Image<float> image(IPosition(2, 128, 128), CoordinateUtil::defaultCoords2D(), imageName);
   testCreate(image);
 }
 
-ImageInterface<Float>* doOpen(const String& imageName) {
+ImageInterface<float>* doOpen(const String& imageName) {
   LatticeBase* latt = ImageOpener::openImage(imageName);
-  ImageInterface<Float>* image = dynamic_cast<ImageInterface<Float>*>(latt);
+  ImageInterface<float>* image = dynamic_cast<ImageInterface<float>*>(latt);
   AlwaysAssertExit(image);
   return image;
 }
 
 void testRead(const String& imageName) {
   cout << "testRead ..." << endl;
-  ImageInterface<Float>* image = doOpen(imageName);
+  ImageInterface<float>* image = doOpen(imageName);
   ImageAttrHandler& attrHand(image->attrHandler());
   cout << attrHand.groupNames() << endl;
   ImageAttrGroup& group = attrHand.openGroup("testGroup1");
@@ -81,19 +81,19 @@ void testRead(const String& imageName) {
 
 void testUpdate(const String& imageName) {
   cout << endl << "testUpdate ..." << endl;
-  ImageInterface<Float>* image = doOpen(imageName);
+  ImageInterface<float>* image = doOpen(imageName);
   ImageAttrHandler& attrHand(image->attrHandler());
   ImageAttrGroup& group1 = attrHand.openGroup("testGroup1");
-  Array<Int> arr1(IPosition(1, 4));
+  Array<int> arr1(IPosition(1, 4));
   indgen(arr1);
   group1.putData("attr2", 0, ValueHolder(arr1));
   ImageAttrGroup& group2 = attrHand.createGroup("testGroup2");
-  Array<Int> arr2(IPosition(1, 3));
+  Array<int> arr2(IPosition(1, 3));
   indgen(arr2);
   Vector<String> measInfo(2);
   measInfo[0] = "direction";
   measInfo[1] = "J2000";
-  for (uInt rownr = 0; rownr < 4; ++rownr) {
+  for (unsigned int rownr = 0; rownr < 4; ++rownr) {
     group2.putData("attr2", rownr, ValueHolder(arr2), Vector<String>(1, "rad"), measInfo);
     arr2 += 3;
   }
@@ -102,14 +102,14 @@ void testUpdate(const String& imageName) {
 
 void testCopy(const String& nameIn, const String& nameOut, bool hdf5) {
   cout << endl << "testCopy " << nameIn << " to " << nameOut << endl;
-  ImageInterface<Float>* image = doOpen(nameIn);
-  ImageInterface<Float>* newImage = 0;
+  ImageInterface<float>* image = doOpen(nameIn);
+  ImageInterface<float>* newImage = 0;
   if (hdf5) {
     cout << ">>> to HDF5<<<" << endl;
-    newImage = new HDF5Image<Float>(image->shape(), image->coordinates(), nameOut);
+    newImage = new HDF5Image<float>(image->shape(), image->coordinates(), nameOut);
   } else {
     cout << ">>> to Casa<<<" << endl;
-    newImage = new PagedImage<Float>(image->shape(), image->coordinates(), nameOut);
+    newImage = new PagedImage<float>(image->shape(), image->coordinates(), nameOut);
   }
   newImage->copyData(*image);
   ImageUtilities::copyMiscellaneous(*newImage, *image);
@@ -119,16 +119,16 @@ void testCopy(const String& nameIn, const String& nameOut, bool hdf5) {
 
 void testSub(const String& nameIn, const String& nameOut, bool hdf5) {
   cout << endl << "testSub " << nameIn << " to " << nameOut << endl;
-  ImageInterface<Float>* image = doOpen(nameIn);
+  ImageInterface<float>* image = doOpen(nameIn);
   IPosition shp = image->shape();
-  SubImage<Float> subimg(*image, Slicer(IPosition(shp.size(), 0), (shp + 1) / 2));
-  ImageInterface<Float>* newImage = 0;
+  SubImage<float> subimg(*image, Slicer(IPosition(shp.size(), 0), (shp + 1) / 2));
+  ImageInterface<float>* newImage = 0;
   if (hdf5) {
     cout << ">>> to HDF5<<<" << endl;
-    newImage = new HDF5Image<Float>(subimg.shape(), subimg.coordinates(), nameOut);
+    newImage = new HDF5Image<float>(subimg.shape(), subimg.coordinates(), nameOut);
   } else {
     cout << ">>> to Casa<<<" << endl;
-    newImage = new PagedImage<Float>(subimg.shape(), subimg.coordinates(), nameOut);
+    newImage = new PagedImage<float>(subimg.shape(), subimg.coordinates(), nameOut);
   }
   newImage->copyData(subimg);
   ImageUtilities::copyMiscellaneous(*newImage, subimg);
@@ -138,16 +138,16 @@ void testSub(const String& nameIn, const String& nameOut, bool hdf5) {
 
 void showAll(const String& imageName) {
   cout << endl << "image = " << imageName << endl;
-  ImageInterface<Float>* image = doOpen(imageName);
+  ImageInterface<float>* image = doOpen(imageName);
   ImageAttrHandler& attrHand(image->attrHandler());
   Vector<String> groupNames = attrHand.groupNames();
-  for (uInt i = 0; i < groupNames.size(); ++i) {
+  for (unsigned int i = 0; i < groupNames.size(); ++i) {
     ImageAttrGroup& group = attrHand.openGroup(groupNames[i]);
     cout << "Attribute group " << groupNames[i] << "  nrows=" << group.nrows() << endl;
     Vector<String> attrNames = group.attrNames();
-    for (uInt j = 0; j < attrNames.size(); ++j) {
+    for (unsigned int j = 0; j < attrNames.size(); ++j) {
       cout << attrNames[j] << ": ";
-      for (uInt rownr = 0; rownr < group.nrows(); ++rownr) {
+      for (unsigned int rownr = 0; rownr < group.nrows(); ++rownr) {
         cout << group.getData(attrNames[j], rownr) << ",";
       }
       cout << "  " << group.getUnit(attrNames[j]) << "  " << group.getMeasInfo(attrNames[j])

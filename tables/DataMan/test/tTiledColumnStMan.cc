@@ -110,7 +110,7 @@ void writeFixed(const TSMOption& tsmOpt) {
   ScalarColumn<float> time(table, "Time");
   Matrix<float> array(IPosition(2, 16, 20));
   Matrix<float> result(IPosition(2, 16, 20));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < 51; i++) {
     table.addRow();
@@ -172,7 +172,7 @@ void readTable(const TSMOption& tsmOpt, bool readKeys) {
   timeValue = 34;
   Matrix<float> array(IPosition(2, 16, 20));
   Matrix<float> result(IPosition(2, 16, 20));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < table.nrow(); i++) {
     data.get(i, result);
@@ -213,7 +213,7 @@ void readTable(const TSMOption& tsmOpt, bool readKeys) {
       cout << "shape of getColumn result is incorrect" << endl;
     } else {
       indgen(array);
-      uInt i = 0;
+      unsigned int i = 0;
       ArrayIterator<float> iter(result, 2);
       while (!iter.pastEnd()) {
         if (!allEQ(iter.array(), array)) {
@@ -231,7 +231,7 @@ void readTable(const TSMOption& tsmOpt, bool readKeys) {
 
   // Get slices in the entire column.
   {
-    uInt i, j;
+    unsigned int i, j;
     Cube<float> array(1, 1, 51);
     for (i = 0; i < 51; i++) {
       array(0, 0, i) = 200 * i;
@@ -253,7 +253,7 @@ void readTable(const TSMOption& tsmOpt, bool readKeys) {
 
   // Get strided slices in the entire column.
   {
-    uInt i, j;
+    unsigned int i, j;
     Cube<float> array(2, 2, 51);
     for (i = 0; i < 51; i++) {
       array(0, 0, i) = 200 * i;
@@ -280,7 +280,7 @@ void readTable(const TSMOption& tsmOpt, bool readKeys) {
 
   // Get slices from each cell.
   {
-    uInt i, j, k;
+    unsigned int i, j, k;
     Matrix<float> array(2, 4);
     Array<float> result;
     for (k = 0; k < table.nrow(); k++) {
@@ -307,7 +307,7 @@ void readTable(const TSMOption& tsmOpt, bool readKeys) {
 
   // Get a strided slice from each cell.
   {
-    uInt i, j, k;
+    unsigned int i, j, k;
     Matrix<float> array(8, 5);
     Array<float> result;
     for (k = 0; k < table.nrow(); k++) {
@@ -368,7 +368,7 @@ void writeNoHyper(const TSMOption& tsmOpt) {
   ScalarColumn<float> time(table, "Time");
   Matrix<float> array(IPosition(2, 16, 20));
   Matrix<float> result(IPosition(2, 16, 20));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < 51; i++) {
     table.addRow();
@@ -428,7 +428,7 @@ void extendOnly(const TSMOption& tsmOpt) {
   Table table(newtab, 0, false, Table::LocalEndian, tsmOpt);
 
   ArrayColumn<float> weight(table, "Weight");
-  uInt i;
+  unsigned int i;
   for (i = 0; i < 51; i++) {
     table.addRow();
   }

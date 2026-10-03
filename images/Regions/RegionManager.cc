@@ -78,7 +78,7 @@ RegionManager::~RegionManager() {
  *************************************************************/
 
 // Private method
-String RegionManager::absreltype(const Int absrelval) {
+String RegionManager::absreltype(const int absrelval) {
   *itsLog << LogOrigin("RegionManager", "absreltype");
 
   if (absrelval == RegionType::Abs)
@@ -113,8 +113,8 @@ bool RegionManager::isWorldRegion(const ImageRegion& reg) { return reg.isWCRegio
  **  Make BOX region routines                               **
  *************************************************************/
 
-Record* RegionManager::box(const Vector<Double>& blc, const Vector<Double>& trc,
-                           const Vector<Double>& inc, const String& absrel, const bool frac,
+Record* RegionManager::box(const Vector<double>& blc, const Vector<double>& trc,
+                           const Vector<double>& inc, const String& absrel, const bool frac,
                            const String& comment) {
   *itsLog << LogOrigin("RegionManager", "box");
   /*   if(blc.nelements() != trc.nelements())
@@ -132,8 +132,8 @@ Record* RegionManager::box(const Vector<Double>& blc, const Vector<Double>& trc,
   return leRecord;
 }
 
-Record* RegionManager::box(const Vector<Double>& blc, const Vector<Double>& trc,
-                           const Vector<Int>& shape, const String& comment) {
+Record* RegionManager::box(const Vector<double>& blc, const Vector<double>& trc,
+                           const Vector<int>& shape, const String& comment) {
   ThrowIf(blc.nelements() != trc.nelements(), "blc and trc do not have the same shape");
   IPosition latShape(shape);
   LCBox lcbox(blc, trc, latShape);
@@ -146,11 +146,11 @@ Record* RegionManager::box(const Vector<Double>& blc, const Vector<Double>& trc,
 }
 
 ImageRegion* RegionManager::wbox(const Vector<Quantity>& blc, const Vector<Quantity>& trc,
-                                 const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                                 const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                                  const String& absrel) {
   *itsLog << LogOrigin("RegionManager", "wbox");
   RegionType::AbsRelType leType = RegionType::absRelTypeFromString(absrel);
-  Vector<Int> absRel(blc.nelements(), leType);
+  Vector<int> absRel(blc.nelements(), leType);
   WCBox worldbox;
 
   if (pixelaxes.nelements() > 0 && pixelaxes[0] < 0) {
@@ -163,14 +163,14 @@ ImageRegion* RegionManager::wbox(const Vector<Quantity>& blc, const Vector<Quant
 }
 
 Record* RegionManager::wbox(const Vector<Quantity>& blc, const Vector<Quantity>& trc,
-                            const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                            const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                             const String& absrel, const String& comment) {
   setcoordsys(csys);
   return wbox(blc, trc, pixelaxes, absrel, comment);
 }
 
 Record* RegionManager::wbox(const Vector<Quantity>& blc, const Vector<Quantity>& trc,
-                            const Vector<Int>& pixelaxes, const String& absrel,
+                            const Vector<int>& pixelaxes, const String& absrel,
                             const String& comment) {
   if (!itsCSys) {
     ThrowCc("CoordinateSystem has not been set");
@@ -188,7 +188,7 @@ void RegionManager::toQuantity(Quantity& out, const String& in) {
   QuantumHolder qh;
   if (const size_t pix_pos = leString.find("pix"); pix_pos != std::string::npos) {
     leString = leString.substr(0, pix_pos);
-    Double value = atof(leString.c_str());
+    double value = atof(leString.c_str());
     out = Quantity(value, "pix");
   } else {
     String error;
@@ -201,27 +201,27 @@ void RegionManager::toQuantity(Quantity& out, const String& in) {
   }
 }
 Record* RegionManager::wbox(const Vector<String>& blc, const Vector<String>& trc,
-                            const Vector<Int>& pixelaxes, const String& absrel,
+                            const Vector<int>& pixelaxes, const String& absrel,
                             const String& comment) {
   ThrowIf(!itsCSys, "Coordinate system has not been set");
   Vector<Quantity> losBlc(blc.nelements());
   Vector<Quantity> losTrc(trc.nelements());
   QuantumHolder qh;
   // Stokes is not known in Quantity
-  Int stInd = itsCSys->findCoordinate(Coordinate::STOKES);
-  StokesCoordinate stCoord(Vector<Int>(1, Stokes::I));
-  Int wSt = -1;
+  int stInd = itsCSys->findCoordinate(Coordinate::STOKES);
+  StokesCoordinate stCoord(Vector<int>(1, Stokes::I));
+  int wSt = -1;
   if (stInd >= 0) {
     wSt = (itsCSys->worldAxes(stInd))[0];
     stCoord = itsCSys->stokesCoordinate(stInd);
   }
-  for (Int k = 0; k < blc.shape()(0); ++k) {
+  for (int k = 0; k < blc.shape()(0); ++k) {
     if (k != wSt) {
       toQuantity(losBlc[k], blc[k]);
       toQuantity(losTrc[k], trc[k]);
     } else {
       // Stokes is not known in Quantity...have to convert them to pix
-      Int stpix = -1;
+      int stpix = -1;
       if (blc[k].find("pix") != std::string::npos)
         toQuantity(losBlc[k], blc[k]);
       else if (stCoord.toPixel(stpix, Stokes::type(blc[k])))
@@ -238,7 +238,7 @@ Record* RegionManager::wbox(const Vector<String>& blc, const Vector<String>& trc
 }
 
 Record* RegionManager::wbox(const Vector<String>& blc, const Vector<String>& trc,
-                            const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                            const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                             const String& absrel, const String& comment) {
   setcoordsys(csys);
   return wbox(blc, trc, pixelaxes, absrel, comment);
@@ -249,10 +249,10 @@ Record* RegionManager::wbox(const Vector<String>& blc, const Vector<String>& trc
  *************************************************************/
 
 ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Quantity>& y,
-                                     const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                                     const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                                      const String& absrel) {
   *itsLog << LogOrigin("RegionManager", "wpolygon");
-  Vector<Int> pixax = pixelaxes;
+  Vector<int> pixax = pixelaxes;
   if (pixax.nelements() > 0 && pixax[0] < 0) {
     pixax.resize(2);
     pixax(0) = 0;
@@ -263,9 +263,9 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
     throw(AipsError("Y values of vertices not same length as the X values"));
 
   // Now lets convert everything to one unit in this instance the the pix unit
-  uInt nvertices = y.nelements();
-  Vector<Double> leX(nvertices);
-  Vector<Double> leY(nvertices);
+  unsigned int nvertices = y.nelements();
+  Vector<double> leX(nvertices);
+  Vector<double> leY(nvertices);
   String xUnit = csys.worldAxisUnits()[pixax[0]];
   String yUnit = csys.worldAxisUnits()[pixax[1]];
   //  Vector<Int> worldaxes(2);
@@ -273,14 +273,14 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
   // worldaxes(1)=csys.pixelAxisToWorldAxis(pixax[1]);
   const DirectionCoordinate& dirCoor =
       csys.directionCoordinate(csys.findCoordinate(Coordinate::DIRECTION));
-  Vector<Double> world = csys.referenceValue();
-  Vector<Double> pixel(world.nelements());
-  for (uInt k = 0; k < nvertices; ++k) {
+  Vector<double> world = csys.referenceValue();
+  Vector<double> pixel(world.nelements());
+  for (unsigned int k = 0; k < nvertices; ++k) {
     if (StringContains(x[k].getUnit(), "pix") && StringContains(y[k].getUnit(), "pix")) {
-      Vector<Double> lepix(2);
+      Vector<double> lepix(2);
       lepix[0] = x[k].getValue();
       lepix[1] = y[k].getValue();
-      Vector<Double> lemonde(2);
+      Vector<double> lemonde(2);
       dirCoor.toWorld(lemonde, lepix);
       leX[k] = lemonde[0];
       leY[k] = lemonde[1];
@@ -297,8 +297,8 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
       */
     }
   }
-  Quantum<Vector<Double>> elX(leX, xUnit);
-  Quantum<Vector<Double>> elY(leY, yUnit);
+  Quantum<Vector<double>> elX(leX, xUnit);
+  Quantum<Vector<double>> elY(leY, yUnit);
 
   RegionType::AbsRelType leType = RegionType::absRelTypeFromString(absrel);
   WCPolygon worldpoly(elX, elY, IPosition(pixax), csys, leType);
@@ -306,7 +306,7 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
   return leRegion;
 }
 ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Quantity>& y,
-                                     const Vector<Int>& pixelaxes, const String& absrel) {
+                                     const Vector<int>& pixelaxes, const String& absrel) {
   *itsLog << LogOrigin("RegionManager", "wpolygon");
   if (itsCSys) {
     return wpolygon(x, y, pixelaxes, *itsCSys, absrel);
@@ -317,8 +317,8 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
 }
 
 ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
-                                     const Quantity& b, const Quantity& pa, const uInt pixelAxis0,
-                                     const uInt pixelAxis1, const CoordinateSystem& csys,
+                                     const Quantity& b, const Quantity& pa, const unsigned int pixelAxis0,
+                                     const unsigned int pixelAxis1, const CoordinateSystem& csys,
                                      const String& absrel) {
   RegionType::AbsRelType leType = RegionType::absRelTypeFromString(absrel);
   WCEllipsoid wellipse(xc, yc, a, b, pa, pixelAxis0, pixelAxis1, csys, leType);
@@ -326,8 +326,8 @@ ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, con
 }
 
 ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
-                                     const Quantity& b, const Quantity& pa, const uInt pixelAxis0,
-                                     const uInt pixelAxis1, const String& absrel) const {
+                                     const Quantity& b, const Quantity& pa, const unsigned int pixelAxis0,
+                                     const unsigned int pixelAxis1, const String& absrel) const {
   *itsLog << LogOrigin("RegionManager", __FUNCTION__);
   if (!itsCSys) {
     throw(AipsError("CoordinateSystem not set in RegionManager tool"));
@@ -336,7 +336,7 @@ ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, con
 }
 
 ImageRegion* RegionManager::wsphere(const Vector<Quantity>& center, const Quantity& radius,
-                                    const Vector<Int>& pixelAxes, const CoordinateSystem& csys,
+                                    const Vector<int>& pixelAxes, const CoordinateSystem& csys,
                                     const String& absrel
 
 ) {
@@ -346,7 +346,7 @@ ImageRegion* RegionManager::wsphere(const Vector<Quantity>& center, const Quanti
 }
 
 ImageRegion* RegionManager::wsphere(const Vector<Quantity>& center, const Quantity& radius,
-                                    const Vector<Int>& pixelAxes, const String& absrel) const {
+                                    const Vector<int>& pixelAxes, const String& absrel) const {
   *itsLog << LogOrigin("RegionManager", __FUNCTION__);
   if (!itsCSys) {
     throw(AipsError("CoordinateSystem not set in RegionManager tool"));
@@ -355,7 +355,7 @@ ImageRegion* RegionManager::wsphere(const Vector<Quantity>& center, const Quanti
 }
 
 ImageRegion* RegionManager::wellipsoid(const Vector<Quantity>& center,
-                                       const Vector<Quantity>& radii, const Vector<Int>& pixelAxes,
+                                       const Vector<Quantity>& radii, const Vector<int>& pixelAxes,
                                        const CoordinateSystem& csys, const String& absrel) {
   RegionType::AbsRelType leType = RegionType::absRelTypeFromString(absrel);
   WCEllipsoid ellipsoid(center, radii, pixelAxes, csys, leType);
@@ -363,7 +363,7 @@ ImageRegion* RegionManager::wellipsoid(const Vector<Quantity>& center,
 }
 
 ImageRegion* RegionManager::wellipsoid(const Vector<Quantity>& center,
-                                       const Vector<Quantity>& radii, const Vector<Int>& pixelAxes,
+                                       const Vector<Quantity>& radii, const Vector<int>& pixelAxes,
                                        const String& absrel) const {
   *itsLog << LogOrigin("RegionManager", __FUNCTION__);
   if (!itsCSys) {
@@ -374,9 +374,9 @@ ImageRegion* RegionManager::wellipsoid(const Vector<Quantity>& center,
 
 ImageRegion* RegionManager::wshell(const Vector<Quantity>& center,
                                    const Vector<Quantity>& innerRadii,
-                                   const Vector<Quantity>& outerRadii, const Vector<Int>& pixelAxes,
+                                   const Vector<Quantity>& outerRadii, const Vector<int>& pixelAxes,
                                    const CoordinateSystem& csys, const String& absrel) {
-  for (uInt i = 0; i < innerRadii.size(); i++) {
+  for (unsigned int i = 0; i < innerRadii.size(); i++) {
     if (innerRadii[i].getValue() > outerRadii[i].getValue(innerRadii[i].getUnit())) {
       throw AipsError("RegionManager::" + std::string(__FUNCTION__) + ": For radius " +
                       ValueToString(i) + " inner radius " + ValueToString(innerRadii[i]) +
@@ -392,7 +392,7 @@ ImageRegion* RegionManager::wshell(const Vector<Quantity>& center,
 
 ImageRegion* RegionManager::wshell(const Vector<Quantity>& center,
                                    const Vector<Quantity>& innerRadii,
-                                   const Vector<Quantity>& outerRadii, const Vector<Int>& pixelAxes,
+                                   const Vector<Quantity>& outerRadii, const Vector<int>& pixelAxes,
                                    const String& absrel) const {
   *itsLog << LogOrigin("RegionManager", __FUNCTION__);
   if (!itsCSys) {
@@ -541,7 +541,7 @@ ImageRegion* RegionManager::doConcatenation(const Block<const ImageRegion*>& reg
                                             const TableRecord& box) {
   *itsLog << LogOrigin("RegionManager", "doConcatenation");
 
-  for (uInt i = 0; regions.nelements(); i++)
+  for (unsigned int i = 0; regions.nelements(); i++)
     *itsLog << LogIO::DEBUGGING << "\nregion " << i
             << "'s type (WCRegion/LCRegion/LCSLicer): " << regions[i]->isWCRegion() << "/"
             << regions[i]->isLCRegion() << "/" << regions[i]->isLCSlicer() << LogIO::POST;
@@ -566,7 +566,7 @@ ImageRegion* RegionManager::doConcatenation(const Record& regions, const TableRe
   Block<const ImageRegion*> imageRegions(regions.nfields());
   ImageRegion* reg = 0;
   TableRecord tblRec;
-  for (uInt i = 0; i < (regions.nfields()); i++) {
+  for (unsigned int i = 0; i < (regions.nfields()); i++) {
     tblRec.assign(regions.asRecord(casacore::RecordFieldId(0)));
     reg = ImageRegion::fromRecord(tblRec, "");
     imageRegions[i] = reg;
@@ -649,8 +649,8 @@ String RegionManager::imageRegionToTable(const String& tabName, const ImageRegio
   if (regtab.hasRegion(newName) || newName == "") newName = regtab.makeUniqueRegionName(regName, 0);
   if (asmask) {
     try {
-      PagedImage<Float> myimage(tabName);
-      SubImage<Float> subim(myimage, imreg, true);
+      PagedImage<float> myimage(tabName);
+      SubImage<float> subim(myimage, imreg, true);
       ImageRegion outreg = myimage.makeMask(newName, false, false);
       LCRegion& mask = outreg.asMask();
       LatticeRegion latReg = imreg.toLatticeRegion(myimage.coordinates(), myimage.shape());

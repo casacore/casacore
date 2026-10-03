@@ -41,7 +41,7 @@ StatsTiledCollapser<T, U>::StatsTiledCollapser(const Vector<T>& pixelRange, bool
       _maxpos(0) {}
 
 template <class T, class U>
-void StatsTiledCollapser<T, U>::init(uInt nOutPixelsPerCollapse) {
+void StatsTiledCollapser<T, U>::init(unsigned int nOutPixelsPerCollapse) {
   AlwaysAssert(nOutPixelsPerCollapse == LatticeStatsBase::NACCUM, AipsError);
 }
 
@@ -49,7 +49,7 @@ template <class T, class U>
 void StatsTiledCollapser<T, U>::initAccumulator(uInt64 n1, uInt64 n3) {
   _sum = std::make_shared<Block<U>>(n1 * n3);
   _sumSq = std::make_shared<Block<U>>(n1 * n3);
-  _npts = std::make_shared<Block<Double>>(n1 * n3);
+  _npts = std::make_shared<Block<double>>(n1 * n3);
   _mean = std::make_shared<Block<U>>(n1 * n3);
   _variance = std::make_shared<Block<U>>(n1 * n3);
   _sigma = std::make_shared<Block<U>>(n1 * n3);
@@ -74,9 +74,9 @@ void StatsTiledCollapser<T, U>::initAccumulator(uInt64 n1, uInt64 n3) {
 }
 
 template <class T, class U>
-void StatsTiledCollapser<T, U>::process(uInt index1, uInt index3, const T* pInData,
-                                        const bool* pInMask, uInt dataIncr, uInt maskIncr,
-                                        uInt nrval, const IPosition& startPos,
+void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3, const T* pInData,
+                                        const bool* pInMask, unsigned int dataIncr, unsigned int maskIncr,
+                                        unsigned int nrval, const IPosition& startPos,
                                         const IPosition& shape) {
   // Process the data in the current chunk.   Everything in this
   // chunk belongs in one output location in the storage
@@ -84,7 +84,7 @@ void StatsTiledCollapser<T, U>::process(uInt index1, uInt index3, const T* pInDa
   uInt64 index = index1 + index3 * _n1;
   U& sum = (*_sum)[index];
   U& sumSq = (*_sumSq)[index];
-  Double& nPts = (*_npts)[index];
+  double& nPts = (*_npts)[index];
   T& dataMin = (*_min)[index];
   T& dataMax = (*_max)[index];
   U& mean = (*_mean)[index];
@@ -206,57 +206,57 @@ void StatsTiledCollapser<T, U>::endAccumulator(Array<U>& result, Array<bool>& re
   uInt64 i, j;
   U* resptr_root = resptr;
   for (i = 0; i < _n3; ++i) {
-    resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::NPTS) * _n1);
     objcopy(resptr, nPtsPtr, _n1);
     nPtsPtr += _n1;
 
-    resptr = resptr_root + (Int(LatticeStatsBase::SUM) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::SUM) * _n1);
     objcopy(resptr, sumPtr, _n1);
     sumPtr += _n1;
 
-    resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::SUMSQ) * _n1);
     objcopy(resptr, sumSqPtr, _n1);
     sumSqPtr += _n1;
 
-    resptr = resptr_root + (Int(LatticeStatsBase::MEAN) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::MEAN) * _n1);
     objcopy(resptr, meanPtr, _n1);
     meanPtr += _n1;
 
-    resptr = resptr_root + (Int(LatticeStatsBase::VARIANCE) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::VARIANCE) * _n1);
     objcopy(resptr, variancePtr, _n1);
     variancePtr += _n1;
 
-    resptr = resptr_root + (Int(LatticeStatsBase::SIGMA) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::SIGMA) * _n1);
     objcopy(resptr, sigmaPtr, _n1);
     sigmaPtr += _n1;
 
-    resptr = resptr_root + (Int(LatticeStatsBase::MIN) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::MIN) * _n1);
     for (j = 0; j < _n1; ++j) {
       convertScalar(*resptr++, *minPtr++);
     }
 
-    resptr = resptr_root + (Int(LatticeStatsBase::MAX) * _n1);
+    resptr = resptr_root + (int(LatticeStatsBase::MAX) * _n1);
     for (j = 0; j < _n1; ++j) {
       convertScalar(*resptr++, *maxPtr++);
     }
 
-    resptr_root += _n1 * Int(LatticeStatsBase::NACCUM);
+    resptr_root += _n1 * int(LatticeStatsBase::NACCUM);
   }
   result.putStorage(res, deleteRes);
 }
 
 template <class T, class U>
-void StatsTiledCollapser<T, U>::_convertNPts(Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+void StatsTiledCollapser<T, U>::_convertNPts(double*& nptsPtr, std::shared_ptr<Block<double>> npts,
                                              std::shared_ptr<Block<DComplex>>) const {
   nptsPtr = npts->storage();
 }
 
 template <class T, class U>
 void StatsTiledCollapser<T, U>::_convertNPts(DComplex*& nptsPtr,
-                                             std::shared_ptr<Block<Double>> npts,
+                                             std::shared_ptr<Block<double>> npts,
                                              std::shared_ptr<Block<DComplex>> nptsComplex) const {
   DComplex* storage = nptsComplex->storage();
-  Double* realStorage = npts->storage();
+  double* realStorage = npts->storage();
   for (uInt64 i = 0; i < _n1 * _n3; ++i) {
     /// C++11 storage[i].real(realStorage[i]);
     /// C++11 storage[i].imag(0);

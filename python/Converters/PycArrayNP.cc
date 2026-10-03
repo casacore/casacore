@@ -197,27 +197,27 @@ ValueHolder makeScalar(PyObject* obj_ptr, int type) {
       }
       case NPY_INT8: {
         ::npy_int8* ptr = (::npy_int8*)buffer;
-        return ValueHolder(Short(*ptr));
+        return ValueHolder(short(*ptr));
       }
       case NPY_UINT8: {
         ::npy_uint8* ptr = (::npy_uint8*)buffer;
-        return ValueHolder(uShort(*ptr));
+        return ValueHolder(static_cast<unsigned short>(*ptr));
       }
       case NPY_INT16: {
         ::npy_int16* ptr = (::npy_int16*)buffer;
-        return ValueHolder(Short(*ptr));
+        return ValueHolder(short(*ptr));
       }
       case NPY_UINT16: {
         ::npy_uint16* ptr = (::npy_uint16*)buffer;
-        return ValueHolder(uShort(*ptr));
+        return ValueHolder(static_cast<unsigned short>(*ptr));
       }
       case NPY_INT32: {
         ::npy_int32* ptr = (::npy_int32*)buffer;
-        return ValueHolder(Int(*ptr));
+        return ValueHolder(int(*ptr));
       }
       case NPY_UINT32: {
         ::npy_uint32* ptr = (::npy_uint32*)buffer;
-        return ValueHolder(uInt(*ptr));
+        return ValueHolder(static_cast<unsigned int>(*ptr));
       }
       case NPY_INT64: {
         ::npy_int64* ptr = (::npy_int64*)buffer;
@@ -254,18 +254,18 @@ void register_convert_arrayscalars() {
   // Register as casa types.
   // A type like ssize_t maps to Int or Long (depending on machine).
   array_scalar_from_python<bool>();
-  array_scalar_from_python<Char>();
-  array_scalar_from_python<uChar>();
-  array_scalar_from_python<Short>();
-  array_scalar_from_python<uShort>();
-  array_scalar_from_python<Int>();
-  array_scalar_from_python<uInt>();
-  array_scalar_from_python<Long>();
-  array_scalar_from_python<uLong>();
+  array_scalar_from_python<char>();
+  array_scalar_from_python<unsigned char>();
+  array_scalar_from_python<short>();
+  array_scalar_from_python<unsigned short>();
+  array_scalar_from_python<int>();
+  array_scalar_from_python<unsigned int>();
+  array_scalar_from_python<long>();
+  array_scalar_from_python<unsigned long>();
   array_scalar_from_python<Int64>();
   array_scalar_from_python<uInt64>();
-  array_scalar_from_python<Float>();
-  array_scalar_from_python<Double>();
+  array_scalar_from_python<float>();
+  array_scalar_from_python<double>();
   array_scalar_from_python<Complex>();
   array_scalar_from_python<DComplex>();
 }

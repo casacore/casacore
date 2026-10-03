@@ -86,18 +86,18 @@ class LatticeProgress {
   // Initialize the process.
   // It sets the expected number of steps and
   // calls initDerived, so a derived class can initialize itself.
-  void init(uInt expectedNsteps);
+  void init(unsigned int expectedNsteps);
 
   // Tell the number of steps done so far.
   // The default implementation does nothing. A derived class
   // should call the ProgressMeter function <src>update</src>
-  virtual void nstepsDone(uInt nsteps);
+  virtual void nstepsDone(unsigned int nsteps);
 
   // The process has ended.
   virtual void done();
 
   // Recovers the expected number of total steps.
-  uInt expectedNsteps() const { return itsExpectedNsteps; }
+  unsigned int expectedNsteps() const { return itsExpectedNsteps; }
 
  protected:
   // Let a derived class initialize itself.
@@ -107,7 +107,7 @@ class LatticeProgress {
   virtual void initDerived();
 
  private:
-  uInt itsExpectedNsteps;
+  unsigned int itsExpectedNsteps;
 };
 
 }  // namespace casacore

@@ -118,7 +118,7 @@ class TableCache {
 
   // Determine the number of locked tables opened with the AutoLock option
   // (Locked table means locked for read and/or write).
-  uInt nAutoLocks();
+  unsigned int nAutoLocks();
 
   // Unlock locked tables opened with the AutoLock option.
   // If <src>all=True</src> all such tables will be unlocked.

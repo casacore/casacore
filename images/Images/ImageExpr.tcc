@@ -230,7 +230,7 @@ bool ImageExpr<T>::isWritable() const {
 }
 
 template <class T>
-IPosition ImageExpr<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition ImageExpr<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return latticeExpr_p.niceCursorShape(maxPixels);
 }
 
@@ -251,7 +251,7 @@ bool ImageExpr<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
 }
 
 template <class T>
-bool ImageExpr<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool ImageExpr<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return latticeExpr_p.lock(type, nattempts);
 }
 template <class T>

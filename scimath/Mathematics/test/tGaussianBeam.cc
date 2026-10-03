@@ -122,8 +122,8 @@ int main() {
     AlwaysAssert(beam4 == beam3, AipsError);
     {
       cout << "Test  setPA() and getPA() using unwrapping" << endl;
-      Double u = 60;
-      for (Double d = -660; d <= 660; d += 30, u += 30) {
+      double u = 60;
+      for (double d = -660; d <= 660; d += 30, u += 30) {
         if (u > 90) {
           u -= 180;
         }

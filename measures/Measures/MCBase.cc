@@ -39,21 +39,21 @@ MCBase::~MCBase() {}
 // # Operators
 
 // # Member functions
-void MCBase::makeState(uInt *state, const uInt ntyp, const uInt nrout, const uInt list[][3]) {
+void MCBase::makeState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]) {
   // Make trees
-  uInt *tcnt = new uInt[ntyp];
-  uInt *tree = new uInt[ntyp * ntyp];
+  unsigned int *tcnt = new unsigned int[ntyp];
+  unsigned int *tree = new unsigned int[ntyp * ntyp];
   bool *visit = new bool[ntyp];
-  uInt *mcnt = new uInt[ntyp * ntyp];
-  for (uInt j = 0; j < ntyp; j++) {
+  unsigned int *mcnt = new unsigned int[ntyp * ntyp];
+  for (unsigned int j = 0; j < ntyp; j++) {
     tcnt[j] = 0;
     visit[j] = false;
-    for (uInt i = 0; i < ntyp; i++) {
+    for (unsigned int i = 0; i < ntyp; i++) {
       mcnt[i * ntyp + j] = 100 * nrout;
       state[i * ntyp + j] = nrout;
     }
   }
-  for (uInt i = 0; i < nrout; i++) {
+  for (unsigned int i = 0; i < nrout; i++) {
     tree[list[i][0] * ntyp + tcnt[list[i][0]]] = i;
     tcnt[list[i][0]]++;
     // Fill one-step transitions
@@ -61,10 +61,10 @@ void MCBase::makeState(uInt *state, const uInt ntyp, const uInt nrout, const uIn
     state[list[i][0] * ntyp + list[i][1]] = i;
   }
   // Find shortest route
-  for (uInt i = 0; i < ntyp; i++) {
-    for (uInt j = 0; j < ntyp; j++) {
+  for (unsigned int i = 0; i < ntyp; i++) {
+    for (unsigned int j = 0; j < ntyp; j++) {
       if (i != j) {
-        uInt len = 0;
+        unsigned int len = 0;
         bool okall = true;
         findState(len, state, mcnt, okall, visit, tcnt, tree, i, j, ntyp, nrout, list);
       }
@@ -77,22 +77,22 @@ void MCBase::makeState(uInt *state, const uInt ntyp, const uInt nrout, const uIn
   delete[] mcnt;
 }
 
-bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, bool &okall, bool *visit,
-                       const uInt *tcnt, const uInt *tree, const uInt &in, const uInt &out,
-                       const uInt ntyp, const uInt nrout, const uInt list[][3]) {
+bool MCBase::findState(unsigned int &len, unsigned int *state, unsigned int *mcnt, bool &okall, bool *visit,
+                       const unsigned int *tcnt, const unsigned int *tree, const unsigned int &in, const unsigned int &out,
+                       const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]) {
   // Check loop
   if (visit[in]) return false;
-  uInt minlen = 100 * nrout;
-  uInt res = nrout;
+  unsigned int minlen = 100 * nrout;
+  unsigned int res = nrout;
   // Check if path already known
   if (mcnt[in * ntyp + out] != 100 * nrout) {
     minlen = mcnt[in * ntyp + out];
     res = state[in * ntyp + out];
   } else {
-    for (uInt i = 0; i < tcnt[in]; i++) {
-      uInt loclen = 1 + list[tree[in * ntyp + i]][2];
+    for (unsigned int i = 0; i < tcnt[in]; i++) {
+      unsigned int loclen = 1 + list[tree[in * ntyp + i]][2];
       visit[in] = true;
-      uInt nin = list[tree[in * ntyp + i]][1];
+      unsigned int nin = list[tree[in * ntyp + i]][1];
       if (findState(loclen, state, mcnt, okall, visit, tcnt, tree, nin, out, ntyp, nrout, list)) {
         if (loclen < minlen) {
           minlen = loclen;
@@ -112,16 +112,16 @@ bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, bool &okall, bool *vi
   return true;
 }
 
-String MCBase::showState(uInt *state, const uInt ntyp, const uInt, const uInt list[][3]) {
+String MCBase::showState(unsigned int *state, const unsigned int ntyp, const unsigned int, const unsigned int list[][3]) {
   ostringstream oss;
   oss << "   |";
-  for (uInt i = 0; i < ntyp; i++) oss << setw(3) << i;
+  for (unsigned int i = 0; i < ntyp; i++) oss << setw(3) << i;
   oss << "\n";
-  for (uInt j = 0; j < 3 * ntyp + 4; j++) oss << '-';
+  for (unsigned int j = 0; j < 3 * ntyp + 4; j++) oss << '-';
   oss << "\n";
-  for (uInt i = 0; i < ntyp; i++) {
+  for (unsigned int i = 0; i < ntyp; i++) {
     oss << setw(3) << i << '|';
-    for (uInt j = 0; j < ntyp; j++) {
+    for (unsigned int j = 0; j < ntyp; j++) {
       if (i == j) {
         oss << " --";
       } else {
@@ -130,7 +130,7 @@ String MCBase::showState(uInt *state, const uInt ntyp, const uInt, const uInt li
     }
     oss << "\n";
     oss << "   |";
-    for (uInt k = 0; k < ntyp; k++) {
+    for (unsigned int k = 0; k < ntyp; k++) {
       if (i == k) {
         oss << "   ";
       } else {

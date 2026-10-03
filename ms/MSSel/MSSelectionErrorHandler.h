@@ -73,7 +73,7 @@ class MSSelectionErrorHandler {
   virtual void handleError(MSSelectionError&);
 
   const std::vector<String>& getMessages() const { return messageList; }
-  Int nMessages() const { return messageList.size(); }
+  int nMessages() const { return messageList.size(); }
 
  protected:
   std::vector<String> tokenList, messageList;

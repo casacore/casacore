@@ -31,17 +31,17 @@
 
 #include <casacore/casa/namespace.h>
 
-void showTime(MVTime time, uInt format, uInt prec) {
+void showTime(MVTime time, unsigned int format, unsigned int prec) {
   cout << MVTime::Format(format, prec) << time << endl;
 }
 
-void checkTime(const String& str, uInt yy, uInt mm, uInt dd, uInt h, uInt m, uInt s, double ss,
+void checkTime(const String& str, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int h, unsigned int m, unsigned int s, double ss,
                bool chk = true) {
   Quantity q;
   AlwaysAssertExit(MVTime::read(q, str, chk));
   MVTime mvtm(q);
   Time tm = mvtm.getTime();
-  AlwaysAssertExit(mvtm.year() == Int(yy));
+  AlwaysAssertExit(mvtm.year() == int(yy));
   AlwaysAssertExit(mvtm.month() == mm);
   AlwaysAssertExit(mvtm.monthday() == dd);
   AlwaysAssertExit(tm.year() == yy);

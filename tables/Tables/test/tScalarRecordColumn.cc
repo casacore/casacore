@@ -79,7 +79,7 @@ void a() {
   ab1.putColumn(vec1);
   TableRecord rec1;
   TableRecord rec3;
-  uInt i;
+  unsigned int i;
   // Check if they are empty.
   // Fill each cell with a record (add a field for each row).
   AlwaysAssertExit(vec1.nelements() == 10);
@@ -107,7 +107,7 @@ void a() {
   for (i = 0; i < 10; i++) {
     ab1.get(i, rec1);
     AlwaysAssertExit(rec1.nfields() == i + 1);
-    for (uInt j = 0; j <= i; j++) {
+    for (unsigned int j = 0; j <= i; j++) {
       AlwaysAssertExit(rec1.asuInt(j) == j);
     }
     ab3.get(i, rec1);
@@ -150,13 +150,13 @@ void b() {
   ScalarColumn<TableRecord> ab3(tab, "ab3");
   Vector<TableRecord> vec = ab1.getColumn();
   TableRecord rec;
-  uInt i;
+  unsigned int i;
   // Check if the columns are written and read back correctly.
   for (i = 0; i < 10; i++) {
     ab1.get(i, rec);
     AlwaysAssertExit(rec.nfields() == i + 1);
     AlwaysAssertExit(vec(i).nfields() == i + 1);
-    for (uInt j = 0; j <= i; j++) {
+    for (unsigned int j = 0; j <= i; j++) {
       AlwaysAssertExit(rec.asuInt(j) == j);
       AlwaysAssertExit(vec(i).asuInt(j) == j);
     }
@@ -178,7 +178,7 @@ void b() {
   AlwaysAssertExit(vec.nelements() == 4);
   for (i = 0; i < 4; i++) {
     AlwaysAssertExit(vec(i).nfields() == i + 2);
-    for (uInt j = 0; j <= i + 1; j++) {
+    for (unsigned int j = 0; j <= i + 1; j++) {
       AlwaysAssertExit(vec(i).asuInt(j) == j);
     }
   }

@@ -88,8 +88,8 @@ void TableCopy::copyRows(Table& out, const Table& in, rownr_t startout, rownr_t 
   const TableDesc& tdesc = in.tableDesc();
   // Only copy the columns that exist in the input table.
   Vector<String> cols(columns.nelements());
-  uInt nrcol = 0;
-  for (uInt i = 0; i < columns.nelements(); i++) {
+  unsigned int nrcol = 0;
+  for (unsigned int i = 0; i < columns.nelements(); i++) {
     if (tdesc.isColumn(columns(i))) {
       cols(nrcol++) = columns(i);
     }
@@ -122,7 +122,7 @@ void TableCopy::copySubTables(Table& out, const Table& in, bool noRows, const Bl
                 omit);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
-  for (uInt i = 0; i < outDesc.ncolumn(); i++) {
+  for (unsigned int i = 0; i < outDesc.ncolumn(); i++) {
     // Only writable columns can have keywords defined, thus subtables.
     if (out.isColumnWritable(i)) {
       const String& name = outDesc[i].name();
@@ -140,7 +140,7 @@ void TableCopy::copySubTables(Table& out, const Table& in, bool noRows, const Bl
 void TableCopy::copySubTables(TableRecord& outKeys, const TableRecord& inKeys,
                               const String& outName, Table::TableType outType, const Table& in,
                               bool noRows, const Block<String>& omit) {
-  for (uInt i = 0; i < inKeys.nfields(); i++) {
+  for (unsigned int i = 0; i < inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
       Table inTab = inKeys.asTable(i);
       // Skip a subtable that has to be omitted.

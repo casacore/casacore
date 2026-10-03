@@ -28,19 +28,19 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-const Double& NumericTraits<Float>::epsilon = FLT_EPSILON;
-const Double& NumericTraits<Double>::epsilon = DBL_EPSILON;
-const Double& NumericTraits<Complex>::epsilon = FLT_EPSILON;
-const Double& NumericTraits<DComplex>::epsilon = DBL_EPSILON;
+const double& NumericTraits<float>::epsilon = FLT_EPSILON;
+const double& NumericTraits<double>::epsilon = DBL_EPSILON;
+const double& NumericTraits<Complex>::epsilon = FLT_EPSILON;
+const double& NumericTraits<DComplex>::epsilon = DBL_EPSILON;
 
-const Double& NumericTraits<Float>::minimum = FLT_MIN;
-const Double& NumericTraits<Double>::minimum = DBL_MIN;
-const Double& NumericTraits<Complex>::minimum = FLT_MIN;
-const Double& NumericTraits<DComplex>::minimum = DBL_MIN;
+const double& NumericTraits<float>::minimum = FLT_MIN;
+const double& NumericTraits<double>::minimum = DBL_MIN;
+const double& NumericTraits<Complex>::minimum = FLT_MIN;
+const double& NumericTraits<DComplex>::minimum = DBL_MIN;
 
-const Double& NumericTraits<Float>::maximum = FLT_MAX;
-const Double& NumericTraits<Double>::maximum = DBL_MAX;
-const Double& NumericTraits<Complex>::maximum = FLT_MAX;
-const Double& NumericTraits<DComplex>::maximum = DBL_MAX;
+const double& NumericTraits<float>::maximum = FLT_MAX;
+const double& NumericTraits<double>::maximum = DBL_MAX;
+const double& NumericTraits<Complex>::maximum = FLT_MAX;
+const double& NumericTraits<DComplex>::maximum = DBL_MAX;
 
 }  // namespace casacore

@@ -166,8 +166,8 @@ class JsonOut {
   template <typename T>
   void put(T value);
   void put(bool value);
-  void put(Float value);
-  void put(Double value);
+  void put(float value);
+  void put(double value);
   void put(const Complex& value);
   void put(const DComplex& value);
   void put(const char* value);

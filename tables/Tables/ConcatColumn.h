@@ -119,13 +119,13 @@ class ConcatColumn : public BaseColumn {
   virtual void setShape(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
 
   // Get the global #dimensions of an array (i.e. for all rows).
-  virtual uInt ndimColumn() const;
+  virtual unsigned int ndimColumn() const;
 
   // Get the global shape of an array (i.e. for all rows).
   virtual IPosition shapeColumn() const;
 
   // Get the #dimensions of an array in a particular cell.
-  virtual uInt ndim(rownr_t rownr) const;
+  virtual unsigned int ndim(rownr_t rownr) const;
 
   // Get the shape of an array in a particular cell.
   virtual IPosition shape(rownr_t rownr) const;
@@ -202,7 +202,7 @@ class ConcatColumn : public BaseColumn {
   virtual ColumnCache& columnCache();
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
-  virtual void setMaximumCacheSize(uInt nbytes);
+  virtual void setMaximumCacheSize(unsigned int nbytes);
 
   // Allocate value buffers for the table iterator.
   // Also get a comparison function if undefined.
@@ -243,7 +243,7 @@ class ConcatColumn : public BaseColumn {
  protected:
   // Set the column cache to the cache of the given table.
   // The row numbers will be adjusted as needed.
-  void setColumnCache(uInt tableNr, const ColumnCache&) const;
+  void setColumnCache(unsigned int tableNr, const ColumnCache&) const;
 
   // # Data members
   ConcatTable* refTabPtr_p;

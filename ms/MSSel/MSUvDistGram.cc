@@ -67,14 +67,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSUvDistGram = 0;
-static Int posMSUvDistGram = 0;
+static int posMSUvDistGram = 0;
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msUvDistGramParseCommand(const MeasurementSet* ms, const String& command,
-                             Matrix<Double>& selectedUVRange, Vector<bool>& units) {
+                             Matrix<double>& selectedUVRange, Vector<bool>& units) {
   try {
-    Int ret;
+    int ret;
     MSUvDistGramrestart(MSUvDistGramin);
     yy_start = 1;
     strpMSUvDistGram = command.c_str();      // get pointer to command string
@@ -95,7 +95,7 @@ int msUvDistGramParseCommand(const MeasurementSet* ms, const String& command,
 }
 int msUvDistGramParseCommand(const MeasurementSet* ms, const String& command) {
   try {
-    Int ret;
+    int ret;
     MSUvDistGramrestart(MSUvDistGramin);
     yy_start = 1;
     strpMSUvDistGram = command.c_str();      // get pointer to command string
@@ -117,7 +117,7 @@ const TableExprNode* msUvDistGramParseNode() { return MSUvDistParse::node(); }
 void msUvDistGramParseDeleteNode() { return MSUvDistParse::cleanup(); }
 
 // # Give the string position.
-Int& msUvDistGramPosition() { return posMSUvDistGram; }
+int& msUvDistGramPosition() { return posMSUvDistGram; }
 
 // # Get the next input characters for flex.
 int msUvDistGramInput(char* buf, int max_size) {

@@ -84,7 +84,7 @@ class RegularFileIO : public FilebufIO {
   // the internal buffer in the underlying <linkto class=FilebufIO>
   // FilebufIO</linkto> object. A zero length uses an appropriate default.
   explicit RegularFileIO(const RegularFile& regularFile, ByteIO::OpenOption = ByteIO::Old,
-                         uInt filebufSize = 0);
+                         unsigned int filebufSize = 0);
 
   ~RegularFileIO();
 

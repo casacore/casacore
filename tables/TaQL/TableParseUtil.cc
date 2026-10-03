@@ -63,7 +63,7 @@ namespace TableParseUtil {
 // so usually something like my.ms::ANTENNA is the only 'complicated' spec used.
 // Note that splitting on a dot as in option 7) is done after trying that part as an
 // ordinary table name to handle .. in a case such as '../my.tab::SUB' correctly.
-Table getTable(Int tabnr, const String& name, const Table& ftab,
+Table getTable(int tabnr, const String& name, const Table& ftab,
                const std::vector<const Table*>& tempTables,
                const std::vector<TableParseQuery*>& stack, bool alwaysOpen) {
   // A table from a nested query.
@@ -72,8 +72,8 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
   }
   // Split the name into its subtable parts using :: as separator.
   Table table;
-  uInt stSub = 0;
-  uInt stPart = 0;
+  unsigned int stSub = 0;
+  unsigned int stPart = 0;
   Vector<String> subs = stringToVector(name, std::regex("::"));
   // No part, except first one, can be empty (unless :: is given).
   if (name != "::") {
@@ -106,7 +106,7 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
   } else {
     if (tabnr >= 0) {
       // Temporary table number (1-based) given.
-      if (tabnr < 1 || tabnr > Int(tempTables.size()) || tempTables[tabnr - 1] == 0) {
+      if (tabnr < 1 || tabnr > int(tempTables.size()) || tempTables[tabnr - 1] == 0) {
         throw(TableInvExpr("Invalid temporary table number given in " + name));
       }
       table = *(tempTables[tabnr - 1]);
@@ -135,9 +135,9 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
   // Now process all parts in all subtable names, where the first name or
   // first part might need to be skipped because already processed.
   const TableRecord* keywords = &(table.keywordSet());
-  for (uInt k = stSub; k < subs.size(); ++k) {
+  for (unsigned int k = stSub; k < subs.size(); ++k) {
     Vector<String> parts = stringToVector(subs[k], '.');
-    for (uInt p = stPart; p < parts.size(); ++p) {
+    for (unsigned int p = stPart; p < parts.size(); ++p) {
       // See if the first part is a column name. If so, it must be the last part
       // in this name, but not be the last name.
       if (k < subs.size() - 1 && stPart == parts.size() - 1 &&
@@ -146,7 +146,7 @@ Table getTable(Int tabnr, const String& name, const Table& ftab,
       } else if (subs[k] != ".") {
         // . indicates first available table.
         // The last keyword must be a Table; the others nested TableRecords.
-        Int fieldNr = keywords->fieldNumber(parts[p]);
+        int fieldNr = keywords->fieldNumber(parts[p]);
         if (fieldNr < 0) {
           throw TableInvExpr(parts[p] + " is an unknown keyword/subtable" +
                              (p == 1 && k < subs.size() - 1 ? " (or column)" : "") + " in " + name);
@@ -202,7 +202,7 @@ bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
     restName = columnName;
   }
   Vector<String> fldNam;
-  uInt stfld = 0;
+  unsigned int stfld = 0;
   shorthand = "";
   if (isKey) {
     // There should be something after the ::
@@ -273,7 +273,7 @@ bool splitName(String& shorthand, String& columnName, Vector<String>& fieldNames
     }
   }
   fieldNames.resize(fldNam.size() - stfld);
-  for (uInt i = stfld; i < fldNam.size(); i++) {
+  for (unsigned int i = stfld; i < fldNam.size(); i++) {
     if (fldNam(i).empty()) {
       if (checkError) {
         throw(TableInvExpr("Name " + name + " has empty field names"));
@@ -429,10 +429,10 @@ String getTypeString(const String& typeStr, DataType type) {
 Block<String> getStoredColumns(const Table& tab) {
   Block<String> names;
   const TableDesc& tdesc = tab.tableDesc();
-  for (uInt i = 0; i < tdesc.ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdesc.ncolumn(); i++) {
     const String& colnm = tdesc[i].name();
     if (tab.isColumnStored(colnm)) {
-      uInt inx = names.size();
+      unsigned int inx = names.size();
       names.resize(inx + 1);
       names[inx] = colnm;
     }
@@ -457,23 +457,23 @@ TableExprNode getColSet(const Table& table) {
         break;
       case TpUChar:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<uChar>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<unsigned char>(tabcol).getColumn());
         break;
       case TpShort:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<Short>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<short>(tabcol).getColumn());
         break;
       case TpUShort:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<uShort>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<unsigned short>(tabcol).getColumn());
         break;
       case TpInt:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<Int>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<int>(tabcol).getColumn());
         break;
       case TpUInt:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<uInt>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ScalarColumn<unsigned int>(tabcol).getColumn());
         break;
       case TpInt64:
         tsnptr =
@@ -481,11 +481,11 @@ TableExprNode getColSet(const Table& table) {
         break;
       case TpFloat:
         tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(
-            ScalarColumn<Float>(tabcol).getColumn());
+            ScalarColumn<float>(tabcol).getColumn());
         break;
       case TpDouble:
         tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(
-            ScalarColumn<Double>(tabcol).getColumn());
+            ScalarColumn<double>(tabcol).getColumn());
         break;
       case TpComplex:
         tsnptr = std::make_shared<TableExprNodeArrayConstDComplex>(
@@ -510,22 +510,22 @@ TableExprNode getColSet(const Table& table) {
         break;
       case TpUChar:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<uChar>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<unsigned char>(tabcol).getColumn());
         break;
       case TpShort:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<Short>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<short>(tabcol).getColumn());
         break;
       case TpUShort:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<uShort>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<unsigned short>(tabcol).getColumn());
         break;
       case TpInt:
-        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<Int>(tabcol).getColumn());
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<int>(tabcol).getColumn());
         break;
       case TpUInt:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<uInt>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstInt>(ArrayColumn<unsigned int>(tabcol).getColumn());
         break;
       case TpInt64:
         tsnptr =
@@ -533,11 +533,11 @@ TableExprNode getColSet(const Table& table) {
         break;
       case TpFloat:
         tsnptr =
-            std::make_shared<TableExprNodeArrayConstDouble>(ArrayColumn<Float>(tabcol).getColumn());
+            std::make_shared<TableExprNodeArrayConstDouble>(ArrayColumn<float>(tabcol).getColumn());
         break;
       case TpDouble:
         tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(
-            ArrayColumn<Double>(tabcol).getColumn());
+            ArrayColumn<double>(tabcol).getColumn());
         break;
       case TpComplex:
         tsnptr = std::make_shared<TableExprNodeArrayConstDComplex>(

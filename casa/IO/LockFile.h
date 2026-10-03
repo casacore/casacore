@@ -189,7 +189,7 @@ class LockFile {
   // <br> The <src>noLocking</src> argument is used to indicate that
   // no locking is needed. It means that acquiring a lock always succeeds.
   explicit LockFile(const String& fileName, double inspectInterval = 0, bool create = false,
-                    bool addToRequestList = true, bool mustExist = true, uInt seqnr = 0,
+                    bool addToRequestList = true, bool mustExist = true, unsigned int seqnr = 0,
                     bool permLocking = false, bool noLocking = false);
 
   // The destructor does not delete the file, because it is not known
@@ -214,9 +214,9 @@ class LockFile {
   // it does not succeed.
   // 0 means forever, while 1 means do not retry.
   // <group>
-  bool acquire(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
-  bool acquire(MemoryIO& info, FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
-  bool acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts);
+  bool acquire(FileLocker::LockType = FileLocker::Write, unsigned int nattempts = 0);
+  bool acquire(MemoryIO& info, FileLocker::LockType = FileLocker::Write, unsigned int nattempts = 0);
+  bool acquire(MemoryIO* info, FileLocker::LockType type, unsigned int nattempts);
   // </group>
 
   // Release a lock and write the information (if given) into the lock file.
@@ -254,7 +254,7 @@ class LockFile {
   const String& name() const;
 
   // Get the block of request id's.
-  const Block<Int>& reqIds() const;
+  const Block<int>& reqIds() const;
 
   // Get the request id's and the info from the lock file.
   void getInfo(MemoryIO& info);
@@ -272,7 +272,7 @@ class LockFile {
   // <br>If locked, it also tells if it is permanently locked.
   // <br>An exception is thrown if the file does not exist or cannot
   // be opened.
-  static uInt showLock(uInt& pid, bool& permLocked, const String& fileName);
+  static unsigned int showLock(unsigned int& pid, bool& permLocked, const String& fileName);
 
  private:
   // The copy constructor cannot be used (its semantics are too difficult).
@@ -285,7 +285,7 @@ class LockFile {
   // it from canonical to local format.
   // If the buffer is too short (i.e. does not contain the value),
   // a zero value is returned.
-  Int getInt(const uChar* buffer, uInt leng, uInt offset) const;
+  int getInt(const unsigned char* buffer, unsigned int leng, unsigned int offset) const;
 
   // Add the request id of this process to the list.
   void addReqId();
@@ -301,10 +301,10 @@ class LockFile {
   void putReqId(int fd) const;
 
   // Convert the request id from canonical to local format.
-  void convReqId(const uChar* buffer, uInt leng);
+  void convReqId(const unsigned char* buffer, unsigned int leng);
 
   // Get the number of request id's.
-  Int getNrReqId() const;
+  int getNrReqId() const;
 
   // # The member variables.
   FileLocker itsLocker;
@@ -315,20 +315,20 @@ class LockFile {
   double itsInterval;  // # interval between inspections
   Time itsLastTime;    // # time of last inspection
   String itsName;      // # Name of lock file
-  uInt itsPid;
-  uInt itsHostId;
-  Block<Int> itsReqId;  // # Id's of processes requesting lock
+  unsigned int itsPid;
+  unsigned int itsHostId;
+  Block<int> itsReqId;  // # Id's of processes requesting lock
                         // # First value contains #req id's
                         // # Thereafter pid, hostid
-  Int itsInspectCount;  // # The number of times inspect() has
+  int itsInspectCount;  // # The number of times inspect() has
                         // # been called since the last elapsed
                         // # time check.
 };
 
-inline bool LockFile::acquire(FileLocker::LockType type, uInt nattempts) {
+inline bool LockFile::acquire(FileLocker::LockType type, unsigned int nattempts) {
   return acquire(0, type, nattempts);
 }
-inline bool LockFile::acquire(MemoryIO& info, FileLocker::LockType type, uInt nattempts) {
+inline bool LockFile::acquire(MemoryIO& info, FileLocker::LockType type, unsigned int nattempts) {
   return acquire(&info, type, nattempts);
 }
 inline bool LockFile::release() { return release(0); }
@@ -342,7 +342,7 @@ inline bool LockFile::hasLock(FileLocker::LockType type) const {
 inline int LockFile::lastError() const { return itsLocker.lastError(); }
 inline String LockFile::lastMessage() const { return itsLocker.lastMessage(); }
 inline const String& LockFile::name() const { return itsName; }
-inline const Block<Int>& LockFile::reqIds() const { return itsReqId; }
+inline const Block<int>& LockFile::reqIds() const { return itsReqId; }
 
 }  // namespace casacore
 

@@ -101,7 +101,7 @@ void writeFixed(const TSMOption& tsmOpt) {
   ArrayColumn<float> weight(table, "Weight");
   Matrix<float> array(IPosition(2, 16, 25));
   Matrix<float> result(IPosition(2, 16, 25));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < 101; i++) {
     table.addRow();
@@ -149,7 +149,7 @@ void readTable(const TSMOption& tsmOpt) {
   indgen(polValues, float(300));
   Matrix<float> array(IPosition(2, 16, 25));
   Matrix<float> result(IPosition(2, 16, 25));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < table.nrow(); i++) {
     data.get(i, result);
@@ -198,7 +198,7 @@ void writeVar(const TSMOption& tsmOpt) {
   ArrayColumn<float> weight(table, "Weight");
   Matrix<float> array(IPosition(2, 16, 25));
   Matrix<float> result(IPosition(2, 16, 25));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < 5; i++) {
     table.addRow();
@@ -246,7 +246,7 @@ void writeFixVar(const TSMOption& tsmOpt) {
   ArrayColumn<float> weight(table, "Weight");
   Matrix<float> array(IPosition(2, 16, 25));
   Matrix<float> result(IPosition(2, 16, 25));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < 5; i++) {
     table.addRow();
@@ -296,7 +296,7 @@ void writeNoHyper(const TSMOption& tsmOpt) {
   ArrayColumn<float> weight(table, "Weight");
   Matrix<float> array(IPosition(2, 16, 25));
   Matrix<float> result(IPosition(2, 16, 25));
-  uInt i;
+  unsigned int i;
   indgen(array);
   for (i = 0; i < 101; i++) {
     table.addRow();

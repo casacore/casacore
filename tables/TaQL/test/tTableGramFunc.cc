@@ -71,7 +71,7 @@ int checkScaBool(const String& func, const String& arg, bool expResult) {
   return 0;
 }
 
-int checkScaInt(const String& func, const String& arg, Int expResult) {
+int checkScaInt(const String& func, const String& arg, int expResult) {
   ntest++;
   String comm = "using style python calc " + func + '(' + arg + ')';
   try {
@@ -96,7 +96,7 @@ int checkScaInt(const String& func, const String& arg, Int expResult) {
   return 0;
 }
 
-int checkScaDouble(const String& func, const String& arg, Double expResult,
+int checkScaDouble(const String& func, const String& arg, double expResult,
                    const String& unit = String(), double tol = 1e-5) {
   ntest++;
   String comm = "using style python calc " + func + '(' + arg + ')';

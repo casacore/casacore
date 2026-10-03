@@ -90,7 +90,7 @@ LatticeSlice1D<T>& LatticeSlice1D<T>::operator=(const LatticeSlice1D<T>& other) 
 
 template <class T>
 void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D& curve,
-                                 uInt axis0, uInt axis1, const IPosition& coord) {
+                                 unsigned int axis0, unsigned int axis1, const IPosition& coord) {
   AlwaysAssert(itsLatticePtr, AipsError);
   AlwaysAssert(axis0 < itsLatticePtr->ndim(), AipsError);
   AlwaysAssert(axis1 < itsLatticePtr->ndim(), AipsError);
@@ -110,7 +110,7 @@ void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const Pixe
 
 template <class T>
 void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const IPosition& blc,
-                                 const IPosition& trc, uInt nPts) {
+                                 const IPosition& trc, unsigned int nPts) {
   AlwaysAssert(itsLatticePtr, AipsError);
 
   // Find plane of slice
@@ -130,8 +130,8 @@ void LatticeSlice1D<T>::getSlice(Vector<T>& data, Vector<bool>& mask, const IPos
 }
 
 template <class T>
-void LatticeSlice1D<T>::getPosition(uInt& axis0, uInt& axis1, Vector<Float>& x, Vector<Float>& y,
-                                    Vector<Float>& distance) const {
+void LatticeSlice1D<T>::getPosition(unsigned int& axis0, unsigned int& axis1, Vector<float>& x, Vector<float>& y,
+                                    Vector<float>& distance) const {
   x.resize(0);
   x = itsX;
   y.resize(0);
@@ -139,7 +139,7 @@ void LatticeSlice1D<T>::getPosition(uInt& axis0, uInt& axis1, Vector<Float>& x, 
   //
   distance.resize(x.nelements());
   distance[0] = 0.0;
-  for (uInt i = 1; i < x.nelements(); i++) {
+  for (unsigned int i = 1; i < x.nelements(); i++) {
     distance[i] = sqrt(square(x[i] - x[i - 1]) + square(y[i] - y[i - 1])) + distance[i - 1];
   }
   //
@@ -154,7 +154,7 @@ void LatticeSlice1D<T>::checkCurve(IPosition& blc, IPosition& trc, const IPositi
                                    const PixelCurve1D& curve) {
   // Check
 
-  const uInt nDim = itsLatticePtr->ndim();
+  const unsigned int nDim = itsLatticePtr->ndim();
   if (coord.nelements() != nDim) {
     throw(AipsError("coord must be of length number of image dimensions"));
   }
@@ -162,7 +162,7 @@ void LatticeSlice1D<T>::checkCurve(IPosition& blc, IPosition& trc, const IPositi
   // Check curve in domain of lattice [-0.5 -> shape-0.5]
 
   const IPosition shape = itsLatticePtr->shape();
-  const uInt nPts = curve.npoints();
+  const unsigned int nPts = curve.npoints();
   curve.getPixelCoord(itsX, itsY, 0u, nPts - 1, 1u);
   if (itsX[0] < -0.5 || itsY[0] < -0.5) {
     throw(AipsError("x or y start of curve falls outside of lattice"));
@@ -175,7 +175,7 @@ void LatticeSlice1D<T>::checkCurve(IPosition& blc, IPosition& trc, const IPositi
 
   blc.resize(nDim);
   trc.resize(nDim);
-  for (uInt i = 0; i < nDim; i++) {
+  for (unsigned int i = 0; i < nDim; i++) {
     if (i == itsAxis0) {
       blc(i) = 0;
       trc(i) = shape(itsAxis0) - 1;
@@ -191,7 +191,7 @@ void LatticeSlice1D<T>::checkCurve(IPosition& blc, IPosition& trc, const IPositi
 
 template <class T>
 void LatticeSlice1D<T>::findPlane(const IPosition& blc, const IPosition& trc) {
-  const uInt nDim = itsLatticePtr->ndim();
+  const unsigned int nDim = itsLatticePtr->ndim();
   //
   if (blc.nelements() != nDim) {
     throw(AipsError("blc must be of length number of image dimensions"));
@@ -204,10 +204,10 @@ void LatticeSlice1D<T>::findPlane(const IPosition& blc, const IPosition& trc) {
   // assumed to hold the plane to extract the slice from.
 
   IPosition shape = trc - blc + 1;
-  Int axis0 = -1;
-  Int axis1 = -1;
-  uInt n = 0;
-  for (uInt i = 0; i < shape.nelements(); i++) {
+  int axis0 = -1;
+  int axis1 = -1;
+  unsigned int n = 0;
+  for (unsigned int i = 0; i < shape.nelements(); i++) {
     if (shape(i) > 1) {
       n++;
       if (axis0 == -1) {
@@ -242,10 +242,10 @@ void LatticeSlice1D<T>::doGetSlice(Vector<T>& data, Vector<bool>& mask, const Pi
 
   // Interpolate
 
-  const uInt nPts = itsX.nelements();
+  const unsigned int nPts = itsX.nelements();
   data.resize(nPts);
   mask.resize(nPts);
-  for (uInt i = 0; i < nPts; i++) {
+  for (unsigned int i = 0; i < nPts; i++) {
     itsPos[0] = itsX[i];
     itsPos[1] = itsY[i];
     mask[i] = itsInterpPtr->interp(data[i], itsPos, dataIn, maskIn);

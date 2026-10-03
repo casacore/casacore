@@ -38,8 +38,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 BaseColumnDesc::BaseColumnDesc(const String& name, const String& comment, const String& dataManType,
-                               const String& dataManGroup, DataType dt, const String& dtId, Int opt,
-                               uInt ndim, const IPosition& shape, bool isScalar, bool isArray,
+                               const String& dataManGroup, DataType dt, const String& dtId, int opt,
+                               unsigned int ndim, const IPosition& shape, bool isScalar, bool isArray,
                                bool isTable)
     : colName_p(name),
       comment_p(comment),
@@ -149,7 +149,7 @@ void BaseColumnDesc::setDefaultDataManager(bool always) {
 }
 
 // Dimensionality can only be changed if not set yet.
-void BaseColumnDesc::setNdim(uInt ndim) {
+void BaseColumnDesc::setNdim(unsigned int ndim) {
   if (!isArray()) {
     throw(TableInvOper("setNdim: column " + colName_p + " is no array"));
   }
@@ -170,7 +170,7 @@ void BaseColumnDesc::setShape(const IPosition& shape) {
   if (shape_p.nelements() > 0) {
     throw(TableInvOper("setShape(): shape of column " + colName_p + " already defined"));
   }
-  if (nrdim_p > 0 && Int(shape.nelements()) != nrdim_p) {
+  if (nrdim_p > 0 && int(shape.nelements()) != nrdim_p) {
     throw(TableInvOper("setShape(): dimensionality of column " + colName_p +
                        " mismatches new shape"));
   }
@@ -191,7 +191,7 @@ void BaseColumnDesc::setShape(const IPosition& shape, bool directOption) {
   }
 }
 
-void BaseColumnDesc::setOptions(Int options) {
+void BaseColumnDesc::setOptions(int options) {
   option_p = options;
   // # Option Direct forces FixedShape.
   if ((option_p & ColumnDesc::Direct) == ColumnDesc::Direct) {
@@ -210,7 +210,7 @@ void BaseColumnDesc::setOptions(Int options) {
   }
 }
 
-void BaseColumnDesc::setMaxLength(uInt maxLength) {
+void BaseColumnDesc::setMaxLength(unsigned int maxLength) {
   if (dtype_p != TpString) {
     throw(TableInvOper("setMaxLength: column " + colName_p + " contains no string values"));
   }
@@ -230,12 +230,12 @@ TableDesc* BaseColumnDesc::tableDesc() {
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void BaseColumnDesc::putFile(AipsIO& ios, const TableAttr& parentAttr) const {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   ios << colName_p;
   ios << comment_p;
   ios << dataManType_p;
   ios << dataManGroup_p;
-  Int dt = dtype_p;
+  int dt = dtype_p;
   ios << dt;
   ios << option_p;
   ios << nrdim_p;
@@ -248,13 +248,13 @@ void BaseColumnDesc::putFile(AipsIO& ios, const TableAttr& parentAttr) const {
 }
 
 void BaseColumnDesc::getFile(AipsIO& ios, const TableAttr& parentAttr) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   ios >> colName_p;
   ios >> comment_p;
   ios >> dataManType_p;
   ios >> dataManGroup_p;
-  Int dtype;
+  int dtype;
   ios >> dtype;
   if (dtype != dtype_p) {
     throw(

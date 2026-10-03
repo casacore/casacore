@@ -61,7 +61,7 @@ class ChauvenetCriterionStatistics : public ConstrainedRangeStatistics<CASA_STAT
   // <src>maxIterations</src> is the maximum number of iterations to use
   // before stopping. If negative, continue iterating until the set zscore or
   // Chauvenet's criterion is met (ie that there are no remaining outliers).
-  ChauvenetCriterionStatistics(Double zscore = -1, Int maxIterations = 0);
+  ChauvenetCriterionStatistics(double zscore = -1, int maxIterations = 0);
 
   ChauvenetCriterionStatistics(const ChauvenetCriterionStatistics<CASA_STATP>& other);
 
@@ -89,13 +89,13 @@ class ChauvenetCriterionStatistics : public ConstrainedRangeStatistics<CASA_STAT
   void setCalculateAsAdded(bool c);
 
   // get the number of iterations
-  uInt getNiter() const { return _niter; }
+  unsigned int getNiter() const { return _niter; }
 
  private:
-  Double _zscore{-1};
-  Int _maxIterations{0};
+  double _zscore{-1};
+  int _maxIterations{0};
   bool _rangeIsSet{false};
-  uInt _niter{0};
+  unsigned int _niter{0};
 
   void _setRange();
 };

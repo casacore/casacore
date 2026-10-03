@@ -42,8 +42,8 @@
 // When an argument is given, no exceptions will be thrown.
 // This can be used to check if no memory leaks occur in normal operation.
 
-uInt countFiles(DirectoryIterator& iter) {
-  uInt n = 0;
+unsigned int countFiles(DirectoryIterator& iter) {
+  unsigned int n = 0;
   while (!iter.pastEnd()) {
     n++;
     iter++;

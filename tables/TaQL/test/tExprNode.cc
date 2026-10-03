@@ -57,7 +57,7 @@ void checkScaBool(const String& str, TableExprId& exprid, const TableExprNode& e
 }
 
 void checkScaInt(const String& str, TableExprId& exprid, const TableExprNode& expr,
-                 const Int& value) {
+                 const int& value) {
   cout << "checkScaInt " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpInt64);
   Int64 val;
@@ -69,10 +69,10 @@ void checkScaInt(const String& str, TableExprId& exprid, const TableExprNode& ex
 }
 
 void checkScaDouble(const String& str, TableExprId& exprid, const TableExprNode& expr,
-                    const Double& value) {
+                    const double& value) {
   cout << "checkScaDouble " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpDouble);
-  Double val;
+  double val;
   expr.get(exprid, val);
   if (!near(val, value, 1.e-10)) {
     foundError = true;
@@ -110,9 +110,9 @@ void checkScaDate(const String& str, TableExprId& exprid, const TableExprNode& e
   AlwaysAssertExit(expr.dataType() == TpQuantity);
   MVTime val;
   expr.get(exprid, val);
-  if (!near(Double(val), Double(value), 1.e-10)) {
+  if (!near(double(val), double(value), 1.e-10)) {
     foundError = true;
-    cout << str << ": found value " << Double(val) << "; expected " << Double(value) << endl;
+    cout << str << ": found value " << double(val) << "; expected " << double(value) << endl;
   }
 }
 
@@ -129,12 +129,12 @@ void checkArrBool(const String& str, TableExprId& exprid, const TableExprNode& e
 }
 
 void checkArrInt(const String& str, TableExprId& exprid, const TableExprNode& expr,
-                 const Array<Int>& value) {
+                 const Array<int>& value) {
   cout << "checkArrInt " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpInt64);
   MArray<Int64> val64;
   expr.get(exprid, val64);
-  Array<Int> val(val64.shape());
+  Array<int> val(val64.shape());
   convertArray(val, val64.array());
   if (!allEQ(val, value)) {
     foundError = true;
@@ -143,10 +143,10 @@ void checkArrInt(const String& str, TableExprId& exprid, const TableExprNode& ex
 }
 
 void checkArrDouble(const String& str, TableExprId& exprid, const TableExprNode& expr,
-                    const Array<Double>& value) {
+                    const Array<double>& value) {
   cout << "checkArrDouble " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpDouble);
-  MArray<Double> val;
+  MArray<double> val;
   expr.get(exprid, val);
   if (!allNear(val.array(), value, 1.e-10)) {
     foundError = true;
@@ -196,7 +196,7 @@ void doIt() {
   // Define arrays for various data types with the same values,
   // so they can be used when checking results.
   IPosition shp(2, 4, 5);
-  Vector<Int> shpVec(2);
+  Vector<int> shpVec(2);
   convertArray(shpVec, shp.asVector());
   Matrix<bool> arrb1(shp);
   arrb1 = true;
@@ -205,45 +205,45 @@ void doIt() {
   arrb2 = true;
   arrb2(2, 3) = false;
   arrb2(1, 4) = false;
-  Matrix<Int> arrbi(shp);
+  Matrix<int> arrbi(shp);
   arrbi = 0;
   arrbi(2, 3) = 1;
-  Matrix<Double> arrbd(shp);
+  Matrix<double> arrbd(shp);
   arrbd = 1.;
   arrbd(2, 3) = 0.;
-  Matrix<Int> arri1(shp);
-  Matrix<Double> arrid1(shp);
+  Matrix<int> arri1(shp);
+  Matrix<double> arrid1(shp);
   Matrix<DComplex> arriz1(shp);
   indgen(arri1, -1);
   indgen(arrid1, -1.);
   indgen(arriz1, DComplex(-1., 0));
-  Matrix<Int> arrisign(shp);
-  Matrix<Double> arridsign(shp);
-  Matrix<Double> arridarg(shp);
+  Matrix<int> arrisign(shp);
+  Matrix<double> arridsign(shp);
+  Matrix<double> arridarg(shp);
   arrisign = 1;
   arrisign.data()[0] = -1;
   convertArray(arridarg, arrisign);
   arridarg = (arridarg - 1.) * M_PI / -2.;
   arrisign.data()[1] = 0;
   convertArray(arridsign, arrisign);
-  Matrix<Int> arri2(shp);
-  Matrix<Double> arrid2(shp);
+  Matrix<int> arri2(shp);
+  Matrix<double> arrid2(shp);
   Matrix<DComplex> arriz2(shp);
   indgen(arri2, 100, 2);
   indgen(arrid2, 100., 2.);
   indgen(arriz2, DComplex(100., 0.), DComplex(2., 0.));
-  Matrix<Double> arrd1(shp);
+  Matrix<double> arrd1(shp);
   Matrix<DComplex> arrdz1(shp);
-  Matrix<Double> arrdsign(shp);
-  Matrix<Int> arrdi1(shp);
+  Matrix<double> arrdsign(shp);
+  Matrix<int> arrdi1(shp);
   indgen(arrd1, -222.1, 20.);
   indgen(arrdz1, DComplex(-222.1, 0.), DComplex(20., 0.));
   arrdsign = 1.;
   arrdsign(IPosition(2, 0, 0), IPosition(2, 3, 2)) = -1.;
   convertArray(arrdi1, arrd1);
-  Matrix<Double> arrdzero(shp);
+  Matrix<double> arrdzero(shp);
   arrdzero = 0.;
-  Matrix<Double> arrd2(shp);
+  Matrix<double> arrd2(shp);
   Matrix<DComplex> arrdz2(shp);
   indgen(arrd2, 300., 2.);
   indgen(arrdz2, DComplex(300., 0.), DComplex(2., 0.));
@@ -263,26 +263,26 @@ void doIt() {
   AlwaysAssertExit(arrs1.size() == 4);
   Vector<String> arrs2 = stringToVector("s1, s12, s123, s1234");
   Matrix<String> mats1(shp);
-  for (Int i = 0; i < shp[1]; ++i) {
+  for (int i = 0; i < shp[1]; ++i) {
     mats1[i] = arrs1;
   }
   // Do the same for scalars.
   bool sb1 = true;
   bool sb2 = false;
-  Int si1 = 1;
-  Double sid1 = si1;
+  int si1 = 1;
+  double sid1 = si1;
   DComplex siz1 = sid1;
-  Int si2 = 2;
-  Double sid2 = si2;
+  int si2 = 2;
+  double sid2 = si2;
   DComplex siz2 = sid2;
-  Double sd1 = 3.1;
-  Array<Double> sd1arr(shp);
+  double sd1 = 3.1;
+  Array<double> sd1arr(shp);
   sd1arr = sd1;
   DComplex sdz1(sd1);
   Array<DComplex> sdz1arr(shp);
   sdz1arr = sdz1;
-  Double sd2 = -4;
-  Array<Double> sd2arr(shp);
+  double sd2 = -4;
+  Array<double> sd2arr(shp);
   sd2arr = sd2;
   DComplex sdz2(sd2);
   Array<DComplex> sdz2arr(shp);
@@ -722,7 +722,7 @@ void doIt() {
   checkArrDouble("imag az", exprid, imag(earrz1), imag(arrz1));
   checkScaInt("integer si", exprid, integer(esi1), si1);
   checkArrInt("integer ai", exprid, integer(earri1), arri1);
-  checkScaInt("integer sd", exprid, integer(esd1), Int(sd1));
+  checkScaInt("integer sd", exprid, integer(esd1), int(sd1));
   checkArrInt("integer ad", exprid, integer(earrd1), arrdi1);
   checkScaDComplex("complex si", exprid, formComplex(esi1, 0), siz1);
   checkArrDComplex("complex ai", exprid, formComplex(earri1, 0), arriz1);

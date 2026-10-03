@@ -109,7 +109,7 @@ class ArrayColumnBase : public TableColumn {
   // Get the #dimensions of an array in a particular cell.
   // If the cell does not contain an array, 0 is returned.
   // Use the function isDefined to test if the cell contains an array.
-  uInt ndim(rownr_t rownr) const {
+  unsigned int ndim(rownr_t rownr) const {
     TABLECOLUMNCHECKROW(rownr);
     return baseColPtr_p->ndim(rownr);
   }

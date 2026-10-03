@@ -44,13 +44,13 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LinearCoordinate::LinearCoordinate(uInt naxis) : Coordinate() {
-  Vector<Double> refVal(naxis), refPix(naxis), incr(naxis);
-  Matrix<Double> pc(naxis, naxis);
+LinearCoordinate::LinearCoordinate(unsigned int naxis) : Coordinate() {
+  Vector<double> refVal(naxis), refPix(naxis), incr(naxis);
+  Matrix<double> pc(naxis, naxis);
   Vector<String> names(naxis), units(naxis);
   //
   pc = 0.0;
-  for (uInt i = 0; i < naxis; i++) {
+  for (unsigned int i = 0; i < naxis; i++) {
     refVal[i] = 0.0;
     refPix[i] = 0.0;
     incr[i] = 1.0;
@@ -65,30 +65,30 @@ LinearCoordinate::LinearCoordinate(uInt naxis) : Coordinate() {
 }
 
 LinearCoordinate::LinearCoordinate(const Vector<String>& names, const Vector<String>& units,
-                                   const Vector<Double>& refVal, const Vector<Double>& inc,
-                                   const Matrix<Double>& pc, const Vector<Double>& refPix)
+                                   const Vector<double>& refVal, const Vector<double>& inc,
+                                   const Matrix<double>& pc, const Vector<double>& refPix)
     : Coordinate() {
-  uInt naxis = names.nelements();
+  unsigned int naxis = names.nelements();
   makeWCS(wcs_p, naxis, refPix, refVal, inc, pc, units, names);
   //
   setDefaultWorldMixRanges();
 }
 
 LinearCoordinate::LinearCoordinate(const Vector<String>& names,
-                                   const Vector<Quantum<Double>>& refVal,
-                                   const Vector<Quantum<Double>>& inc, const Matrix<Double>& pc,
-                                   const Vector<Double>& refPix)
+                                   const Vector<Quantum<double>>& refVal,
+                                   const Vector<Quantum<double>>& inc, const Matrix<double>& pc,
+                                   const Vector<double>& refPix)
     : Coordinate() {
   // Check dimensions
 
-  const uInt n = names.nelements();
+  const unsigned int n = names.nelements();
   AlwaysAssert(refVal.nelements() == n && inc.nelements() == n && pc.nrow() == n &&
                    pc.ncolumn() == n && refPix.nelements() == n,
                AipsError);
   //
-  Vector<Double> cdelt(n), crval(n);
+  Vector<double> cdelt(n), crval(n);
   Vector<String> units(n);
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     if (refVal[i].isConform(inc[i])) {
       // Assign
 
@@ -117,7 +117,7 @@ LinearCoordinate::LinearCoordinate(const ::wcsprm& wcs, bool oneRel) : Coordinat
   copy_wcs(wcs, wcs_p);
   set_wcs(wcs_p);
   //
-  for (Int i = 0; i < wcs_p.naxis; i++) {
+  for (int i = 0; i < wcs_p.naxis; i++) {
     // Make 0-rel
 
     if (oneRel) wcs_p.crpix[i] -= 1.0;
@@ -156,64 +156,64 @@ Coordinate::Type LinearCoordinate::type() const { return Coordinate::LINEAR; }
 
 String LinearCoordinate::showType() const { return String("Linear"); }
 
-uInt LinearCoordinate::nPixelAxes() const { return wcs_p.naxis; }
+unsigned int LinearCoordinate::nPixelAxes() const { return wcs_p.naxis; }
 
-uInt LinearCoordinate::nWorldAxes() const { return nPixelAxes(); }
+unsigned int LinearCoordinate::nWorldAxes() const { return nPixelAxes(); }
 
-bool LinearCoordinate::toWorld(Vector<Double>& world, const Vector<Double>& pixel, bool) const {
+bool LinearCoordinate::toWorld(Vector<double>& world, const Vector<double>& pixel, bool) const {
   return toWorldWCS(world, pixel, wcs_p);
 }
 
-bool LinearCoordinate::toPixel(Vector<Double>& pixel, const Vector<Double>& world) const {
+bool LinearCoordinate::toPixel(Vector<double>& pixel, const Vector<double>& world) const {
   return toPixelWCS(pixel, world, wcs_p);
 }
 
 Vector<String> LinearCoordinate::worldAxisNames() const {
-  const uInt n = nPixelAxes();
+  const unsigned int n = nPixelAxes();
   Vector<String> tmp(n);
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     tmp[i] = String(wcs_p.ctype[i]);
   }
   return tmp;
 }
 
 Vector<String> LinearCoordinate::worldAxisUnits() const {
-  const uInt n = nWorldAxes();
+  const unsigned int n = nWorldAxes();
   Vector<String> tmp(n);
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     tmp[i] = String(wcs_p.cunit[i]);
   }
   return tmp;
 }
 
-Vector<Double> LinearCoordinate::referenceValue() const {
-  const uInt n = nWorldAxes();
-  Vector<Double> tmp(n);
-  for (uInt i = 0; i < n; i++) {
+Vector<double> LinearCoordinate::referenceValue() const {
+  const unsigned int n = nWorldAxes();
+  Vector<double> tmp(n);
+  for (unsigned int i = 0; i < n; i++) {
     tmp[i] = wcs_p.crval[i];
   }
   return tmp;
 }
 
-Vector<Double> LinearCoordinate::increment() const {
-  const uInt n = nWorldAxes();
-  Vector<Double> tmp(n);
-  for (uInt i = 0; i < n; i++) {
+Vector<double> LinearCoordinate::increment() const {
+  const unsigned int n = nWorldAxes();
+  Vector<double> tmp(n);
+  for (unsigned int i = 0; i < n; i++) {
     tmp[i] = wcs_p.cdelt[i];
   }
   return tmp;
 }
 
-Matrix<Double> LinearCoordinate::linearTransform() const {
-  Matrix<Double> tmp;
+Matrix<double> LinearCoordinate::linearTransform() const {
+  Matrix<double> tmp;
   pcToXform(tmp, wcs_p);
   return tmp;
 }
 
-Vector<Double> LinearCoordinate::referencePixel() const {
-  const uInt n = nPixelAxes();
-  Vector<Double> tmp(n);
-  for (uInt i = 0; i < n; i++) {
+Vector<double> LinearCoordinate::referencePixel() const {
+  const unsigned int n = nPixelAxes();
+  Vector<double> tmp(n);
+  for (unsigned int i = 0; i < n; i++) {
     tmp[i] = wcs_p.crpix[i];
   }
   return tmp;
@@ -224,7 +224,7 @@ bool LinearCoordinate::setWorldAxisNames(const Vector<String>& names) {
   if (!ok) {
     set_error("names vector has the wrong size");
   } else {
-    for (uInt i = 0; i < nWorldAxes(); i++) {
+    for (unsigned int i = 0; i < nWorldAxes(); i++) {
       strcpy(wcs_p.ctype[i], names[i].c_str());
     }
   }
@@ -233,10 +233,10 @@ bool LinearCoordinate::setWorldAxisNames(const Vector<String>& names) {
 }
 
 bool LinearCoordinate::setWorldAxisUnits(const Vector<String>& units) {
-  Vector<Double> d1 = increment();
+  Vector<double> d1 = increment();
   bool ok = Coordinate::setWorldAxisUnits(units);
   if (ok) {
-    for (uInt i = 0; i < nWorldAxes(); i++) {
+    for (unsigned int i = 0; i < nWorldAxes(); i++) {
       strcpy(wcs_p.cunit[i], units[i].c_str());
     }
 
@@ -250,7 +250,7 @@ bool LinearCoordinate::setWorldAxisUnits(const Vector<String>& units) {
 bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String>& units) {
   bool ok = units.nelements() == nWorldAxes();
   if (ok) {
-    for (uInt i = 0; i < nWorldAxes(); i++) {
+    for (unsigned int i = 0; i < nWorldAxes(); i++) {
       strcpy(wcs_p.cunit[i], units[i].c_str());
     }
   } else {
@@ -259,12 +259,12 @@ bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String>& units) {
   return ok;
 }
 
-bool LinearCoordinate::setReferencePixel(const Vector<Double>& refPix) {
+bool LinearCoordinate::setReferencePixel(const Vector<double>& refPix) {
   bool ok = (refPix.nelements() == nWorldAxes());
   if (!ok) {
     set_error("reference pixel vector has the wrong size");
   } else {
-    for (uInt i = 0; i < nWorldAxes(); i++) {
+    for (unsigned int i = 0; i < nWorldAxes(); i++) {
       wcs_p.crpix[i] = refPix[i];
     }
     set_wcs(wcs_p);
@@ -272,7 +272,7 @@ bool LinearCoordinate::setReferencePixel(const Vector<Double>& refPix) {
   return ok;
 }
 
-bool LinearCoordinate::setLinearTransform(const Matrix<Double>& pc) {
+bool LinearCoordinate::setLinearTransform(const Matrix<double>& pc) {
   bool ok = (pc.nrow() == nWorldAxes() && pc.ncolumn() == nWorldAxes());
   if (!ok) {
     set_error("Transform matrix has the wrong size");
@@ -284,12 +284,12 @@ bool LinearCoordinate::setLinearTransform(const Matrix<Double>& pc) {
   return ok;
 }
 
-bool LinearCoordinate::setIncrement(const Vector<Double>& inc) {
+bool LinearCoordinate::setIncrement(const Vector<double>& inc) {
   bool ok = (inc.nelements() == nWorldAxes());
   if (!ok) {
     set_error("increment vector has the wrong size");
   } else {
-    for (uInt i = 0; i < nWorldAxes(); i++) {
+    for (unsigned int i = 0; i < nWorldAxes(); i++) {
       wcs_p.cdelt[i] = inc[i];
     }
     set_wcs(wcs_p);
@@ -298,12 +298,12 @@ bool LinearCoordinate::setIncrement(const Vector<Double>& inc) {
   return ok;
 }
 
-bool LinearCoordinate::setReferenceValue(const Vector<Double>& refval) {
+bool LinearCoordinate::setReferenceValue(const Vector<double>& refval) {
   bool ok = (refval.nelements() == nWorldAxes());
   if (!ok) {
     set_error("reference value vector has the wrong size");
   } else {
-    for (uInt i = 0; i < nWorldAxes(); i++) {
+    for (unsigned int i = 0; i < nWorldAxes(); i++) {
       wcs_p.crval[i] = refval[i];
     }
     set_wcs(wcs_p);
@@ -312,13 +312,13 @@ bool LinearCoordinate::setReferenceValue(const Vector<Double>& refval) {
   return ok;
 }
 
-bool LinearCoordinate::near(const Coordinate& other, Double tol) const {
-  Vector<Int> excludeAxes;
+bool LinearCoordinate::near(const Coordinate& other, double tol) const {
+  Vector<int> excludeAxes;
   return near(other, excludeAxes, tol);
 }
 
-bool LinearCoordinate::near(const Coordinate& other, const Vector<Int>& excludeAxes,
-                            Double tol) const {
+bool LinearCoordinate::near(const Coordinate& other, const Vector<int>& excludeAxes,
+                            double tol) const {
   if (other.type() != this->type()) {
     set_error("Comparison is not with another LinearCoordinate");
     return false;
@@ -332,12 +332,12 @@ bool LinearCoordinate::near(const Coordinate& other, const Vector<Int>& excludeA
   Vector<String> names2(lCoord.worldAxisNames());
   Vector<String> units1(worldAxisUnits());
   Vector<String> units2(lCoord.worldAxisUnits());
-  Vector<Double> crval1(referenceValue());
-  Vector<Double> crval2(lCoord.referenceValue());
-  Vector<Double> cdelt1(increment());
-  Vector<Double> cdelt2(lCoord.increment());
-  Vector<Double> crpix1(referencePixel());
-  Vector<Double> crpix2(lCoord.referencePixel());
+  Vector<double> crval1(referenceValue());
+  Vector<double> crval2(lCoord.referenceValue());
+  Vector<double> cdelt1(increment());
+  Vector<double> cdelt2(lCoord.increment());
+  Vector<double> crpix1(referencePixel());
+  Vector<double> crpix2(lCoord.referencePixel());
   //
   if (names1.nelements() != names2.nelements()) {
     set_error("The LinearCoordinates have differing numbers of world axis names");
@@ -369,10 +369,10 @@ bool LinearCoordinate::near(const Coordinate& other, const Vector<Int>& excludeA
   Vector<bool> exclude(nPixelAxes());
   exclude = false;
   bool found;
-  uInt j = 0;
-  uInt i;
+  unsigned int j = 0;
+  unsigned int i;
   for (i = 0; i < nPixelAxes(); i++) {
-    if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0) exclude(j++) = true;
+    if (linearSearch(found, excludeAxes, int(i), excludeAxes.nelements()) >= 0) exclude(j++) = true;
   }
 
   // Check the descriptors
@@ -460,8 +460,8 @@ bool LinearCoordinate::near(const Coordinate& other, const Vector<Int>& excludeA
   //
   // Check the matrix.
 
-  Matrix<Double> pc1 = linearTransform();
-  Matrix<Double> pc2 = lCoord.linearTransform();
+  Matrix<double> pc1 = linearTransform();
+  Matrix<double> pc2 = lCoord.linearTransform();
   if (pc1.nrow() != pc2.nrow()) {
     set_error(String("The LinearCoordinates have different PC matrix shapes"));
     return false;
@@ -475,11 +475,11 @@ bool LinearCoordinate::near(const Coordinate& other, const Vector<Int>& excludeA
   // or column with that number.  E.g., values pertaining to axis "i" will
   // be found in all entries of row "i" and all entries of column "i".
 
-  for (uInt j = 0; j < pc1.nrow(); j++) {
-    Vector<Double> row1 = pc1.row(j);
-    Vector<Double> row2 = pc2.row(j);
+  for (unsigned int j = 0; j < pc1.nrow(); j++) {
+    Vector<double> row1 = pc1.row(j);
+    Vector<double> row2 = pc2.row(j);
     if (!exclude(j)) {
-      for (uInt i = 0; i < row1.nelements(); i++) {
+      for (unsigned int i = 0; i < row1.nelements(); i++) {
         if (!exclude(i)) {
           if (!casacore::near(row1(i), row2(i), tol)) {
             set_error(String("The LinearCoordinates have different PC matrices"));
@@ -520,22 +520,22 @@ LinearCoordinate* LinearCoordinate::restore(const RecordInterface& container,
   // We should probably do more type-checking as well as checking
   // for existence of the fields.
 
-  Vector<Double> crval(subrec.toArrayDouble("crval"));
+  Vector<double> crval(subrec.toArrayDouble("crval"));
   //
   if (!subrec.isDefined("crpix")) {
     return 0;
   }
-  Vector<Double> crpix(subrec.toArrayDouble("crpix"));
+  Vector<double> crpix(subrec.toArrayDouble("crpix"));
   //
   if (!subrec.isDefined("cdelt")) {
     return 0;
   }
-  Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
+  Vector<double> cdelt(subrec.toArrayDouble("cdelt"));
   //
   if (!subrec.isDefined("pc")) {
     return 0;
   }
-  Matrix<Double> pc(subrec.toArrayDouble("pc"));
+  Matrix<double> pc(subrec.toArrayDouble("pc"));
   //
   if (!subrec.isDefined("axes")) {
     return 0;
@@ -557,7 +557,7 @@ LinearCoordinate* LinearCoordinate::restore(const RecordInterface& container,
 Coordinate* LinearCoordinate::clone() const { return new LinearCoordinate(*this); }
 
 Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
-                                                    const Vector<Int>& shape) const
+                                                    const Vector<int>& shape) const
 //
 // axes says which axes in the coordinate are to be transformed
 // shape is the shape of the image for all axes in this coordinate
@@ -567,8 +567,8 @@ Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
     set_error("Invalid number of specified axes");
     return 0;
   }
-  uInt nT = 0;
-  for (uInt i = 0; i < nPixelAxes(); i++)
+  unsigned int nT = 0;
+  for (unsigned int i = 0; i < nPixelAxes(); i++)
     if (axes[i]) nT++;
   if (nT == 0) {
     set_error("You have not specified any axes to transform");
@@ -590,17 +590,17 @@ Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
   Vector<String> unitsOut = worldAxisUnits().copy();
   Vector<String> namesOut(worldAxisNames().copy());
   //
-  Vector<Double> crval2(referenceValue().copy());
-  Vector<Double> crpix(referencePixel().copy());
-  Vector<Double> scale(nPixelAxes(), 1.0);
+  Vector<double> crval2(referenceValue().copy());
+  Vector<double> crpix(referencePixel().copy());
+  Vector<double> scale(nPixelAxes(), 1.0);
   //
-  for (uInt i = 0; i < nPixelAxes(); i++) {
+  for (unsigned int i = 0; i < nPixelAxes(); i++) {
     if (axes[i]) {
       crval2[i] = 0.0;
       Coordinate::fourierUnits(namesOut[i], unitsOut[i], unitsCanon[i], Coordinate::LINEAR, i,
                                units[i], names[i]);
-      scale[i] = 1.0 / Double(shape[i]);
-      crpix[i] = Int(shape[i] / 2);
+      scale[i] = 1.0 / double(shape[i]);
+      crpix[i] = int(shape[i] / 2);
     }
   }
 
@@ -631,9 +631,9 @@ Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
   return pLinear;
 }
 
-void LinearCoordinate::makeWCS(::wcsprm& wcs, uInt naxis, const Vector<Double>& refPix,
-                               const Vector<Double>& refVal, const Vector<Double>& incr,
-                               const Matrix<Double>& pc, const Vector<String>& units,
+void LinearCoordinate::makeWCS(::wcsprm& wcs, unsigned int naxis, const Vector<double>& refPix,
+                               const Vector<double>& refVal, const Vector<double>& incr,
+                               const Matrix<double>& pc, const Vector<String>& units,
                                const Vector<String>& names) {
   AlwaysAssert(refPix.nelements() == naxis && refVal.nelements() == naxis &&
                    incr.nelements() == naxis && pc.nrow() == naxis && pc.ncolumn() == naxis &&
@@ -647,7 +647,7 @@ void LinearCoordinate::makeWCS(::wcsprm& wcs, uInt naxis, const Vector<Double>& 
 
   // Assign values
 
-  for (uInt i = 0; i < naxis; i++) {
+  for (unsigned int i = 0; i < naxis; i++) {
     wcs.crpix[i] = refPix[i];
     wcs.crval[i] = refVal[i];
     wcs.cdelt[i] = incr[i];

@@ -215,7 +215,7 @@ class TaQLJoinColumn : public TableExprNodeRep {
   // <group>
   MArray<bool> getArrayBool(const TableExprId& id) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
   MArray<String> getArrayString(const TableExprId& id) override;
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
@@ -271,11 +271,11 @@ class TaQLJoinColumnDouble : public TaQLJoinColumn {
  public:
   TaQLJoinColumnDouble(const TENShPtr& columnNode, const TableParseJoin&);
   ~TaQLJoinColumnDouble() override = default;
-  Double getDouble(const TableExprId& id) override;
+  double getDouble(const TableExprId& id) override;
   void clear() override;
 
  private:
-  Vector<Double> itsData;
+  Vector<double> itsData;
 };
 
 class TaQLJoinColumnDComplex : public TaQLJoinColumn {

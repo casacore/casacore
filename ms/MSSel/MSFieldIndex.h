@@ -86,32 +86,32 @@ class MSFieldIndex {
   virtual ~MSFieldIndex() {}
 
   // Look up a single name in FIELD.NAME or FIELD.CODE
-  Vector<Int> matchFieldNameOrCode(const String& name);
+  Vector<int> matchFieldNameOrCode(const String& name);
   // Look up FIELD_ID's for a given field name, or set of field names
-  Vector<Int> matchFieldName(const String& name);
-  Vector<Int> matchFieldName(const Vector<String>& names);
+  Vector<int> matchFieldName(const String& name);
+  Vector<int> matchFieldName(const Vector<String>& names);
 
   // ADD for file name wildcard selection
-  Vector<Int> matchSubFieldName(const String& name);
+  Vector<int> matchSubFieldName(const String& name);
 
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchFieldRegexOrPattern(const String& pattern, const bool regex = false);
-  Vector<Int> matchFieldNameRegexOrPattern(const String& pattern, const bool regex = false);
-  Vector<Int> matchFieldCodeRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchFieldRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchFieldNameRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchFieldCodeRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up FIELD_ID's for a given source id
-  Vector<Int> matchSourceId(const Int& sourceId);
-  Vector<Int> matchSourceId(const Vector<Int>& sourceIds);
-  void matchIdAgainstNames(Vector<Int>& ids);
-  Vector<Int> validateIndices(const Vector<Int>& sourceIds);
+  Vector<int> matchSourceId(const int& sourceId);
+  Vector<int> matchSourceId(const Vector<int>& sourceIds);
+  void matchIdAgainstNames(Vector<int>& ids);
+  Vector<int> validateIndices(const Vector<int>& sourceIds);
 
   // Add for field code selection
-  Vector<Int> matchFieldCode(const String& code);
+  Vector<int> matchFieldCode(const String& code);
 
-  Vector<Int> maskFieldIDs(const Vector<Int>& ids);
+  Vector<int> maskFieldIDs(const Vector<int>& ids);
 
-  Vector<Int> matchFieldIDLT(const Int n);
-  Vector<Int> matchFieldIDGT(const Int n);
-  Vector<Int> matchFieldIDGTAndLT(const Int n0, const int n1);
+  Vector<int> matchFieldIDLT(const int n);
+  Vector<int> matchFieldIDGT(const int n);
+  Vector<int> matchFieldIDGTAndLT(const int n0, const int n1);
 
  private:
   // Disallow null constructor
@@ -121,8 +121,8 @@ class MSFieldIndex {
   MSFieldColumns msFieldCols_p;
 
   // Vector cache of field id's
-  Vector<Int> fieldIds_p;
-  Int nrows_p;
+  Vector<int> fieldIds_p;
+  int nrows_p;
 };
 
 }  // namespace casacore

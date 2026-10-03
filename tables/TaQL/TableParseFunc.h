@@ -80,8 +80,8 @@ class TableParseFunc {
   // Find the function code belonging to a function name.
   // Functions to be ignored can be given (as function type values).
   // If the function name is unknown, NRFUNC is returned.
-  static TableExprFuncNode::FunctionType findFunc(const String& name, uInt narguments,
-                                                  const Vector<Int>& ignoreFuncs);
+  static TableExprFuncNode::FunctionType findFunc(const String& name, unsigned int narguments,
+                                                  const Vector<int>& ignoreFuncs);
 };
 
 }  // namespace casacore

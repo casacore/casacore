@@ -93,28 +93,28 @@ void DataManager::setProperties(const Record&) {}
 bool DataManager::isStorageManager() const { return true; }
 
 void DataManager::create64(rownr_t nrrow) {
-  AlwaysAssert(nrrow <= std::numeric_limits<uInt>::max(), AipsError);
-  create(uInt(nrrow));
+  AlwaysAssert(nrrow <= std::numeric_limits<unsigned int>::max(), AipsError);
+  create(static_cast<unsigned int>(nrrow));
 }
 
-rownr_t DataManager::open64(rownr_t nrrow, AipsIO& ios) { return open1(uInt(nrrow), ios); }
+rownr_t DataManager::open64(rownr_t nrrow, AipsIO& ios) { return open1(static_cast<unsigned int>(nrrow), ios); }
 
 rownr_t DataManager::resync64(rownr_t nrrow) {
-  AlwaysAssert(nrrow < std::numeric_limits<uInt>::max(), AipsError);
-  return resync1(uInt(nrrow));
+  AlwaysAssert(nrrow < std::numeric_limits<unsigned int>::max(), AipsError);
+  return resync1(static_cast<unsigned int>(nrrow));
 }
 
-uInt DataManager::open1(uInt nrrow, AipsIO& ios) {
+unsigned int DataManager::open1(unsigned int nrrow, AipsIO& ios) {
   open(nrrow, ios);
   return nrrow;
 }
 
-uInt DataManager::resync1(uInt nrrow) {
+unsigned int DataManager::resync1(unsigned int nrrow) {
   resync(nrrow);
   return nrrow;
 }
 
-void DataManager::create(uInt) {
+void DataManager::create(unsigned int) {
   {
     throw DataManInvOper(
         "DataManager::create not implemented for "
@@ -123,7 +123,7 @@ void DataManager::create(uInt) {
   }
 }
 
-void DataManager::open(uInt, AipsIO&) {
+void DataManager::open(unsigned int, AipsIO&) {
   {
     throw DataManInvOper(
         "DataManager::open not implemented for "
@@ -132,7 +132,7 @@ void DataManager::open(uInt, AipsIO&) {
   }
 }
 
-void DataManager::resync(uInt) {
+void DataManager::resync(unsigned int) {
   {
     throw DataManInvOper(
         "DataManager::resync not implemented for "
@@ -143,7 +143,7 @@ void DataManager::resync(uInt) {
 
 void DataManager::reopenRW() {}
 
-void DataManager::setMaximumCacheSize(uInt) {}
+void DataManager::setMaximumCacheSize(unsigned int) {}
 
 void DataManager::showCacheStatistics(ostream&) const {}
 
@@ -258,23 +258,23 @@ bool DataManager::canRemoveColumn() const { return false; }
 bool DataManager::canRenameColumn() const { return true; }
 
 void DataManager::addRow64(rownr_t nrrow) {
-  AlwaysAssert(nrrow < std::numeric_limits<uInt>::max(), AipsError);
-  addRow(uInt(nrrow));
+  AlwaysAssert(nrrow < std::numeric_limits<unsigned int>::max(), AipsError);
+  addRow(static_cast<unsigned int>(nrrow));
 }
 
 void DataManager::removeRow64(rownr_t rownr) {
-  AlwaysAssert(rownr < std::numeric_limits<uInt>::max(), AipsError);
-  removeRow(uInt(rownr));
+  AlwaysAssert(rownr < std::numeric_limits<unsigned int>::max(), AipsError);
+  removeRow(static_cast<unsigned int>(rownr));
 }
 
-void DataManager::addRow(uInt) {
+void DataManager::addRow(unsigned int) {
   throw DataManInvOper(
       "DataManager::addRow not allowed for "
       "data manager type " +
       dataManagerType());
 }
 
-void DataManager::removeRow(uInt) {
+void DataManager::removeRow(unsigned int) {
   throw DataManInvOper(
       "DataManager::removeRow not allowed for "
       "data manager type " +
@@ -401,11 +401,11 @@ std::map<String, DataManagerCtor> DataManager::initRegisterMap() {
   theirRegisterMap.insert(
       std::make_pair(VirtualTaQLColumn::className(), VirtualTaQLColumn::makeObject));
   theirRegisterMap.insert(
-      std::make_pair(BitFlagsEngine<uChar>::className(), BitFlagsEngine<uChar>::makeObject));
+      std::make_pair(BitFlagsEngine<unsigned char>::className(), BitFlagsEngine<unsigned char>::makeObject));
   theirRegisterMap.insert(
-      std::make_pair(BitFlagsEngine<Short>::className(), BitFlagsEngine<Short>::makeObject));
+      std::make_pair(BitFlagsEngine<short>::className(), BitFlagsEngine<short>::makeObject));
   theirRegisterMap.insert(
-      std::make_pair(BitFlagsEngine<Int>::className(), BitFlagsEngine<Int>::makeObject));
+      std::make_pair(BitFlagsEngine<int>::className(), BitFlagsEngine<int>::makeObject));
 
   return regMap;
 }

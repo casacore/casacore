@@ -136,12 +136,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <group>
 // This version of the function is for containers that use () for indexing.
 template <class Container, class ElType>
-Int binarySearch(bool &found, const Container &container, const ElType &value, uInt n,
-                 Int lower = 0);
+int binarySearch(bool &found, const Container &container, const ElType &value, unsigned int n,
+                 int lower = 0);
 // This version of the function is for containers that use [] for indexing.
 template <class Container, class ElType>
-Int binarySearchBrackets(bool &found, const Container &container, const ElType &value, uInt n,
-                         Int lower = 0);
+int binarySearchBrackets(bool &found, const Container &container, const ElType &value, unsigned int n,
+                         int lower = 0);
 // </group>
 // </group>
 

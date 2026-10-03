@@ -61,7 +61,7 @@ void TaQLNodeHandler::popStack() {
   itsStack.resize(itsStack.size() - 1);
 }
 void TaQLNodeHandler::clearStack() {
-  for (Int i = itsStack.size() - 1; i >= 0; --i) {
+  for (int i = itsStack.size() - 1; i >= 0; --i) {
     delete itsStack[i];
   }
   itsStack.resize(0);
@@ -198,7 +198,7 @@ TaQLNodeResult TaQLNodeHandler::visitMultiNode(const TaQLMultiNodeRep& node) {
   TableExprNodeSet* set = new TableExprNodeSet();
   hrval->setExprSet(set);
   hrval->setExpr(TableExprNode(set));  // takes care of deletion
-  for (uInt i = 0; i < node.itsNodes.size(); ++i) {
+  for (unsigned int i = 0; i < node.itsNodes.size(); ++i) {
     if (!node.itsNodes[i].isValid()) {
       throw TableInvExpr(
           "TaQLNodeHandler::visitMultiNode - "
@@ -354,7 +354,7 @@ TaQLNodeResult TaQLNodeHandler::visitColNode(const TaQLColNodeRep& node) {
   } else if (node.itsExpr.nodeType() == TaQLNode_Regex) {
     // A wildcarded column name has an int value >= 0.
     TaQLRegexNodeRep* regexNode = (TaQLRegexNodeRep*)(node.itsExpr.getRep());
-    Int val = 0;
+    int val = 0;
     if (regexNode->itsCaseInsensitive) val = val | 1;
     if (regexNode->itsNegate) val = val | 2;
     hrval->setInt(val);
@@ -379,7 +379,7 @@ TaQLNodeResult TaQLNodeHandler::visitColumnsNode(const TaQLColumnsNodeRep& node)
   if (node.itsNodes.isValid()) {
     const TaQLMultiNodeRep* columns = node.itsNodes.getMultiRep();
     const std::vector<TaQLNode>& nodes = columns->itsNodes;
-    for (uInt i = 0; i < nodes.size(); ++i) {
+    for (unsigned int i = 0; i < nodes.size(); ++i) {
       TaQLNodeResult result = visitNode(nodes[i]);
       const TaQLNodeHRValue& res = getHR(result);
       topStack()->handleColumn(res.getInt(), res.getString(), res.getExpr(), res.getAlias(),
@@ -395,7 +395,7 @@ TaQLNodeResult TaQLNodeHandler::visitJoinNode(const TaQLJoinNodeRep& node) {
   TableParseJoin& joinObj = topStack()->addJoin();
   AlwaysAssert(node.itsTables.isValid(), AipsError);
   const std::vector<TaQLNode>& nodes = node.itsTables.getMultiRep()->itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     TaQLNodeResult result = visitNode(nodes[i]);
     const TaQLNodeHRValue& res = getHR(result);
     joinObj.addTable(res.getInt(), res.getString(), res.getTable(), res.getAlias(), itsTempTables,
@@ -411,7 +411,7 @@ TaQLNodeResult TaQLNodeHandler::visitGroupNode(const TaQLGroupNodeRep& node) {
   const TaQLMultiNodeRep* keys = node.itsNodes.getMultiRep();
   const std::vector<TaQLNode>& nodes = keys->itsNodes;
   std::vector<TableExprNode> outnodes(nodes.size());
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     TaQLNodeResult result = visitNode(nodes[i]);
     outnodes[i] = getHR(result).getExpr();
   }
@@ -429,7 +429,7 @@ TaQLNodeResult TaQLNodeHandler::visitSortNode(const TaQLSortNodeRep& node) {
   const TaQLMultiNodeRep* keys = node.itsKeys.getMultiRep();
   const std::vector<TaQLNode>& nodes = keys->itsNodes;
   std::vector<TableParseSortKey> outkeys(nodes.size());
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     AlwaysAssert(nodes[i].nodeType() == TaQLNode_SortKey, AipsError);
     TaQLSortKeyNodeRep* keyNode = (TaQLSortKeyNodeRep*)(nodes[i].getRep());
     TaQLNodeResult result = visitNode(keyNode->itsChild);
@@ -787,11 +787,11 @@ Record TaQLNodeHandler::handleMultiRecFld(const TaQLNode& node) {
   AlwaysAssert(node.nodeType() == TaQLNode_Multi, AipsError);
   const TaQLMultiNodeRep* mnode = (const TaQLMultiNodeRep*)(node.getRep());
   const std::vector<TaQLNode>& vals = mnode->itsNodes;
-  for (uInt i = 0; i < vals.size(); ++i) {
+  for (unsigned int i = 0; i < vals.size(); ++i) {
     AlwaysAssert(vals[i].nodeType() == TaQLNode_RecFld, AipsError);
   }
   Record rec;
-  for (uInt i = 0; i < vals.size(); ++i) {
+  for (unsigned int i = 0; i < vals.size(); ++i) {
     TaQLNodeResult result = visitNode(vals[i]);
     const TaQLNodeHRValue& res = getHR(result);
     if (res.getValueHolder().dataType() == TpRecord) {
@@ -819,7 +819,7 @@ TaQLNodeResult TaQLNodeHandler::visitAltTabNode(const TaQLAltTabNodeRep& node) {
   curSel->handleAltTab();
   const TaQLMultiNodeRep& clist = *(node.itsCommands.getMultiRep());
   const std::vector<TaQLNode>& commands = clist.itsNodes;
-  for (uInt i = 0; i < commands.size(); ++i) {
+  for (unsigned int i = 0; i < commands.size(); ++i) {
     visitNode(commands[i]);
   }
   TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
@@ -842,7 +842,7 @@ TaQLNodeResult TaQLNodeHandler::visitSetKeyNode(const TaQLSetKeyNodeRep& node) {
   // Get the value.
   const TaQLMultiNodeRep& nodelist = *(node.itsKeyVals.getMultiRep());
   const std::vector<TaQLNode>& nodes = nodelist.itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     TaQLNodeResult result = visitNode(nodes[i]);
     const TaQLNodeHRValue& res = getHR(result);
     topStack()->handleSetKey(res.getString(), res.getDtype(), res.getValueHolder());
@@ -855,7 +855,7 @@ TaQLNodeResult TaQLNodeHandler::visitRenDropNode(const TaQLRenDropNodeRep& node)
   const TaQLMultiNodeRep& nodelist = *(node.itsNames.getMultiRep());
   const std::vector<TaQLNode>& nodes = nodelist.itsNodes;
   Vector<String> names(nodes.size());
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     AlwaysAssert(nodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
     TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(nodes[i].getRep());
     names[i] = colNode->itsName;
@@ -865,7 +865,7 @@ TaQLNodeResult TaQLNodeHandler::visitRenDropNode(const TaQLRenDropNodeRep& node)
   if (node.itsType == 0) {
     // Rename columns.
     AlwaysAssert(names.size() % 2 == 0, AipsError);
-    for (uInt i = 0; i < names.size(); i += 2) {
+    for (unsigned int i = 0; i < names.size(); i += 2) {
       tab.renameColumn(names[i + 1], names[i]);
     }
   } else if (node.itsType == 1) {
@@ -874,12 +874,12 @@ TaQLNodeResult TaQLNodeHandler::visitRenDropNode(const TaQLRenDropNodeRep& node)
   } else if (node.itsType == 2) {
     // Rename keywords.
     AlwaysAssert(names.size() % 2 == 0, AipsError);
-    for (uInt i = 0; i < names.size(); i += 2) {
+    for (unsigned int i = 0; i < names.size(); i += 2) {
       topStack()->handleRenameKey(names[i], names[i + 1]);
     }
   } else if (node.itsType == 3) {
     // Remove keywords
-    for (uInt i = 0; i < names.size(); ++i) {
+    for (unsigned int i = 0; i < names.size(); ++i) {
       topStack()->handleRemoveKey(names[i]);
     }
   } else {
@@ -912,7 +912,7 @@ void TaQLNodeHandler::handleTables(const TaQLMultiNode& node, bool addToFromList
     return;
   }
   const std::vector<TaQLNode>& nodes = node.getMultiRep()->itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     TaQLNodeResult result = visitNode(nodes[i]);
     const TaQLNodeHRValue& res = getHR(result);
     topStack()->tableList().addTable(res.getInt(), res.getString(), res.getTable(), res.getAlias(),
@@ -925,7 +925,7 @@ void TaQLNodeHandler::handleJoins(const TaQLMultiNode& node) {
     return;  // no joins
   }
   const std::vector<TaQLNode>& nodes = node.getMultiRep()->itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     visitNode(nodes[i]);
   }
 }
@@ -933,7 +933,7 @@ void TaQLNodeHandler::handleJoins(const TaQLMultiNode& node) {
 TaQLNodeResult TaQLNodeHandler::visitConcTabNode(const TaQLConcTabNodeRep& node) {
   const std::vector<TaQLNode>& nodes = node.itsTables.getMultiRep()->itsNodes;
   std::vector<Table> tables;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     TaQLNodeResult result = visitNode(nodes[i]);
     const TaQLNodeHRValue& res = getHR(result);
     const String& name = res.getString();
@@ -948,21 +948,21 @@ TaQLNodeResult TaQLNodeHandler::visitConcTabNode(const TaQLConcTabNodeRep& node)
       if (nms.empty()) {
         throw TableInvExpr("No matching tables found for " + name);
       }
-      for (uInt j = 0; j < nms.size(); ++j) {
+      for (unsigned int j = 0; j < nms.size(); ++j) {
         tables.push_back(TableParseUtil::getTable(res.getInt(), nms[j], res.getTable(),
                                                   itsTempTables, itsStack));
       }
     }
   }
   Block<Table> tabs(tables.size());
-  for (uInt i = 0; i < tables.size(); ++i) {
+  for (unsigned int i = 0; i < tables.size(); ++i) {
     tabs[i] = tables[i];
   }
   Block<String> subtables;
   if (node.itsSubTables.isValid()) {
     const std::vector<TaQLNode>& names = node.itsSubTables.getMultiRep()->itsNodes;
     subtables.resize(names.size());
-    for (uInt i = 0; i < names.size(); ++i) {
+    for (unsigned int i = 0; i < names.size(); ++i) {
       TaQLNodeResult result = visitNode(names[i]);
       const TaQLNodeHRValue& res = getHR(result);
       subtables[i] = res.getExpr().getString(0);
@@ -995,7 +995,7 @@ TaQLNodeResult TaQLNodeHandler::visitShowNode(const TaQLShowNodeRep& node) {
       curSel->tableList().addTable(res.getInt(), res.getString(), res.getTable(), res.getAlias(),
                                    true, itsTempTables, itsStack);
       parts[1] = res.getString();
-      for (uInt i = 2; i < nodes.size(); ++i) {
+      for (unsigned int i = 2; i < nodes.size(); ++i) {
         TaQLNodeResult result = visitNode(nodes[i]);
         const TaQLNodeHRValue& res = getHR(result);
         parts[i] = res.getExpr().getString(0);
@@ -1004,7 +1004,7 @@ TaQLNodeResult TaQLNodeHandler::visitShowNode(const TaQLShowNodeRep& node) {
       doInfo = false;
       popStack();
     } else {
-      for (uInt i = 1; i < nodes.size(); ++i) {
+      for (unsigned int i = 1; i < nodes.size(); ++i) {
         TaQLNodeResult result = visitNode(nodes[i]);
         const TaQLNodeHRValue& res = getHR(result);
         parts[i] = res.getExpr().getString(0);
@@ -1027,7 +1027,7 @@ TaQLNodeResult TaQLNodeHandler::visitCopyColNode(const TaQLCopyColNodeRep& node)
   const std::vector<TaQLNode>& nodes = nodelist.itsNodes;
   std::vector<String> names(nodes.size());
   // Get the names of the new and old columns.
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     AlwaysAssert(nodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
     TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(nodes[i].getRep());
     names[i] = colNode->itsName;
@@ -1036,7 +1036,7 @@ TaQLNodeResult TaQLNodeHandler::visitCopyColNode(const TaQLCopyColNodeRep& node)
   Table tab(topStack()->getTable());
   // Add entries for each column copy.
   AlwaysAssert(names.size() % 2 == 0, AipsError);
-  for (uInt i = 0; i < names.size(); i += 2) {
+  for (unsigned int i = 0; i < names.size(); i += 2) {
     // Take the description for the new column from the old one.
     topStack()->handleColSpec(names[i], names[i + 1], String(), Record());
     // Add an update command.
@@ -1075,7 +1075,7 @@ void TaQLNodeHandler::handleHaving(const TaQLNode& node) {
 void TaQLNodeHandler::handleUpdate(const TaQLMultiNode& node) {
   const TaQLMultiNodeRep& updates = *(node.getMultiRep());
   const std::vector<TaQLNode>& nodes = updates.itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     AlwaysAssert(nodes[i].nodeType() == TaQLNode_UpdExpr, AipsError);
     visitNode(nodes[i]);
   }
@@ -1088,7 +1088,7 @@ void TaQLNodeHandler::handleInsCol(const TaQLMultiNode& node) {
   }
   const TaQLMultiNodeRep& cols = *(node.getMultiRep());
   const std::vector<TaQLNode>& nodes = cols.itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     // Handle each column name.
     AlwaysAssert(nodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
     TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(nodes[i].getRep());
@@ -1102,8 +1102,8 @@ void TaQLNodeHandler::handleInsVal(const TaQLNode& node) {
   const std::vector<TaQLNode>& anodes = avals.itsNodes;
   std::vector<TableExprNode> exprs;
   AlwaysAssert(anodes.size() > 0, AipsError);
-  uInt nval = 0;
-  for (uInt i = 0; i < anodes.size(); ++i) {
+  unsigned int nval = 0;
+  for (unsigned int i = 0; i < anodes.size(); ++i) {
     // Handle the first insert expression.
     AlwaysAssert(anodes[i].nodeType() == TaQLNode_Multi, AipsError);
     const TaQLMultiNodeRep& vals = dynamic_cast<const TaQLMultiNodeRep&>(*anodes[i].getRep());
@@ -1116,7 +1116,7 @@ void TaQLNodeHandler::handleInsVal(const TaQLNode& node) {
         throw TableInvExpr("Different nr of values given in INSERT");
       }
     }
-    for (uInt j = 0; j < nodes.size(); ++j) {
+    for (unsigned int j = 0; j < nodes.size(); ++j) {
       TaQLNodeResult eres = visitNode(nodes[j]);
       TableExprNode expr = getHR(eres).getExpr();
       exprs.push_back(expr);
@@ -1148,7 +1148,7 @@ void TaQLNodeHandler::handleLikeDrop(const TaQLMultiNode& node) {
     AlwaysAssert(nodes[1].nodeType() == TaQLNode_Multi, AipsError);
     const TaQLMultiNodeRep& nodeList = *(const TaQLMultiNodeRep*)(nodes[1].getRep());
     const std::vector<TaQLNode>& colNodes = nodeList.itsNodes;
-    for (uInt i = 0; i < colNodes.size(); ++i) {
+    for (unsigned int i = 0; i < colNodes.size(); ++i) {
       AlwaysAssert(colNodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
       TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(colNodes[i].getRep());
       if (desc.isColumn(colNode->itsName)) {
@@ -1170,7 +1170,7 @@ void TaQLNodeHandler::handleColSpecs(const TaQLMultiNode& node) {
   }
   const TaQLMultiNodeRep& cols = *(node.getMultiRep());
   const std::vector<TaQLNode>& nodes = cols.itsNodes;
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     // Handle each column specification.
     AlwaysAssert(nodes[i].nodeType() == TaQLNode_ColSpec, AipsError);
     visitNode(nodes[i]);

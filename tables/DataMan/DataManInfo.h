@@ -104,7 +104,7 @@ class DataManInfo {
   // exist in of the the dm-s in the <src>dminfo</src> record.
   // If so, a suffix _i is added where i makes the name unique.
   // The excludeDM-th dm is excluded, so comparing to itself can be avoided.
-  static String uniqueName(const Record& dminfo, const String& name, Int excludeDM = -1);
+  static String uniqueName(const Record& dminfo, const String& name, int excludeDM = -1);
 
   // Merge the second DataManagerInfo record into the first one.
   // If the same column occurs in both records, the second one is used.
@@ -158,7 +158,7 @@ class DataManInfo {
   //  <li>Columns in the dmindex-th dminfo record are merged into newdm,
   //      so mergeInfo can redefine that dm in the overall dminfo.
   // </ul>
-  static void mergeColumns(Record& dminfo, uInt dmindex, Record& newdm);
+  static void mergeColumns(Record& dminfo, unsigned int dmindex, Record& newdm);
 };
 
 }  // namespace casacore

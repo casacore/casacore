@@ -93,12 +93,12 @@ class MSSpwParse : public MSParse {
              const TableExprNode& columnAsTEN);
   ~MSSpwParse() { columnAsTEN_p = TableExprNode(); };
 
-  const TableExprNode* selectSpwIdsFromIDList(const Vector<Int>& spwIds, const bool addTen = true,
+  const TableExprNode* selectSpwIdsFromIDList(const Vector<int>& spwIds, const bool addTen = true,
                                               const bool addIDs = true);
-  const TableExprNode* selectSpwIdsFromFreqList(const Vector<Float>& spwIds, const Float factor);
-  void selectChannelsFromIDList(Vector<Int>& spwIds, Vector<Int>& chanIDList, Int nFSpec);
+  const TableExprNode* selectSpwIdsFromFreqList(const Vector<float>& spwIds, const float factor);
+  void selectChannelsFromIDList(Vector<int>& spwIds, Vector<int>& chanIDList, int nFSpec);
 
-  void selectChannelsFromDefaultList(Vector<Int>& spwIds, Vector<Int>& chanDefaultList);
+  void selectChannelsFromDefaultList(Vector<int>& spwIds, Vector<int>& chanDefaultList);
   const TableExprNode* endOfCeremony(const TableExprNode& ten);
 
   //    const TableExprNode *selectSpwOrSource(const String& fieldName);
@@ -107,9 +107,9 @@ class MSSpwParse : public MSParse {
   static const TableExprNode* node();
   static MSSpwParse* thisMSSParser;
   static std::shared_ptr<MSSelectionErrorHandler> thisMSSpwErrorHandler;
-  static Vector<Int> selectedDDIDs() { return ddidList; }
-  static Vector<Int> selectedIDs() { return idList; }
-  static Matrix<Int> selectedChanIDs() { return chanList; }
+  static Vector<int> selectedDDIDs() { return ddidList; }
+  static Vector<int> selectedIDs() { return idList; }
+  static Matrix<int> selectedChanIDs() { return chanList; }
   static void reset() {
     idList.resize(0);
     chanList.resize(0, 0);
@@ -129,8 +129,8 @@ class MSSpwParse : public MSParse {
 
  private:
   static TableExprNode* node_p;
-  static Vector<Int> idList, ddidList;
-  static Matrix<Int> chanList;
+  static Vector<int> idList, ddidList;
+  static Matrix<int> chanList;
   MSSpectralWindow spwSubTable_p;
   MSDataDescription ddSubTable_p;
   static TableExprNode columnAsTEN_p;

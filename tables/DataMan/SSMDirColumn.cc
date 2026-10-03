@@ -30,12 +30,12 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SSMDirColumn::SSMDirColumn(SSMBase* aParent, int aDataType, uInt aColNr)
+SSMDirColumn::SSMDirColumn(SSMBase* aParent, int aDataType, unsigned int aColNr)
     : SSMColumn(aParent, aDataType, aColNr) {}
 
 SSMDirColumn::~SSMDirColumn() {}
 
-void SSMDirColumn::setMaxLength(uInt) {}
+void SSMDirColumn::setMaxLength(unsigned int) {}
 
 void SSMDirColumn::deleteRow(rownr_t aRowNr) {
   char* aValue;
@@ -77,7 +77,7 @@ void SSMDirColumn::getArrayV(rownr_t aRowNr, ArrayBase& aDataPtr) {
     arr.putStorage(data, deleteIt);
   } else if (dtype() == TpString) {
     // Strings are stored indirectly.
-    Int buf[3];
+    int buf[3];
     getRowValue(buf, aRowNr);
     Array<String>& arr = static_cast<Array<String>&>(aDataPtr);
     itsSSMPtr->getStringHandler()->get(arr, buf[0], buf[1], buf[2], false);
@@ -112,7 +112,7 @@ void SSMDirColumn::putArrayV(rownr_t aRowNr, const ArrayBase& aDataPtr) {
     arr.freeStorage(data, deleteIt);
   } else if (dtype() == TpString) {
     // Strings are stored indirectly.
-    Int buf[3];
+    int buf[3];
     getRowValue(buf, aRowNr);
     const Array<String>& arr = static_cast<const Array<String>&>(aDataPtr);
     itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], arr, false);

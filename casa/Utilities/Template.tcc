@@ -414,13 +414,13 @@ void Template::reset() {
   tdcount_p = 0;
   tdflist_p.resize(0);
   // Make sure all (known) variable typedefs are catered for
-  if (typeid(FitsLong) == typeid(Int)) REPtypedef[0] = "Int";
-  if (typeid(lDouble) == typeid(Double)) REPtypedef[1] = "Double";
-  if (typeid(Long) == typeid(Int)) REPtypedef[2] = "Int";
+  if (typeid(FitsLong) == typeid(int)) REPtypedef[0] = "Int";
+  if (typeid(long double) == typeid(double)) REPtypedef[1] = "Double";
+  if (typeid(long) == typeid(int)) REPtypedef[2] = "Int";
 }
 
 void Template::read(const Vector<String> &files) {
-  for (uInt i = 0; i < files.nelements(); i++) {  // for each file...
+  for (unsigned int i = 0; i < files.nelements(); i++) {  // for each file...
     read(files(i));
   }
 }
@@ -437,7 +437,7 @@ void Template::read(const String &filename) {
   tdflist_p[tdflist_p.nelements() - 1] = filename;
   String extracted;  // a single input line
   String combine;    // a full combined line
-  uInt c1 = 0;       // the input line count
+  unsigned int c1 = 0;       // the input line count
   bool ok(true);
   while (ok && (((extracted = ""), (ok = getline(file, extracted))) || !combine.empty())) {
     c1++;  // Count input lines
@@ -506,7 +506,7 @@ void Template::read(const String &filename) {
       cerr << "Warning: illegal entry commented out near line " << c1 << " in " << filename
            << ":\n\t" << extracted(0, ((extracted.length() <= 60) ? extracted.length() : 60))
            << " ..." << endl;
-      for (uInt j = 0; j < extracted.length(); j += 60) {
+      for (unsigned int j = 0; j < extracted.length(); j += 60) {
         ostringstream text;
         text << "#." << j / 60 << ".\t"
              << extracted(j, ((extracted.length() - j <= 60) ? extracted.length() : 60));
@@ -523,10 +523,10 @@ void Template::canonical(const bool tmplonly) {
   String lpat;  // A run-time pattern
   String lrep;  // A run-time replacement
   if (!tmplonly) {
-    for (uInt i = 0; i < count_p; i++) {
+    for (unsigned int i = 0; i < count_p; i++) {
       combine = output_p[i];
-      for (uInt j = 0; j < Ncanon; j++) combine.gsub(PATcanon[j], REPcanon[j]);
-      for (uInt j = 0; j < Ncanon2; j++) {
+      for (unsigned int j = 0; j < Ncanon; j++) combine.gsub(PATcanon[j], REPcanon[j]);
+      for (unsigned int j = 0; j < Ncanon2; j++) {
         while (combine.contains(PATcanon20[j])) {
           lpat = combine.at(PATcanon20[j]);
           lpat = lpat.through(PATcanon20[j]);
@@ -535,10 +535,10 @@ void Template::canonical(const bool tmplonly) {
           combine.gsub(lpat, lrep);
         }
       }
-      for (uInt j = 0; j < Nnmin; j++) {
+      for (unsigned int j = 0; j < Nnmin; j++) {
         if (combine.contains(PATnmin[j])) combine = REPnmin[j] + combine;
       }
-      for (uInt j = 0; j < Nnmax; j++) {
+      for (unsigned int j = 0; j < Nnmax; j++) {
         if (combine.contains(PATnmax[j])) combine = combine.from(REPnmax[j]);
       }
       output_p[i] = combine;
@@ -546,10 +546,10 @@ void Template::canonical(const bool tmplonly) {
   }
   // Do all template entries
   tdname_p.resize(tdcount_p);
-  for (uInt i = 0; i < tdcount_p; i++) {
+  for (unsigned int i = 0; i < tdcount_p; i++) {
     combine = tdlist_p[i];
-    for (uInt j = 0; j < Ncanon; j++) combine.gsub(PATcanon[j], REPcanon[j]);
-    for (uInt j = 0; j < Ncanon2; j++) {
+    for (unsigned int j = 0; j < Ncanon; j++) combine.gsub(PATcanon[j], REPcanon[j]);
+    for (unsigned int j = 0; j < Ncanon2; j++) {
       while (combine.contains(PATcanon20[j])) {
         lpat = combine.at(PATcanon20[j]);
         lpat = lpat.through(PATcanon20[j]);
@@ -565,7 +565,7 @@ void Template::canonical(const bool tmplonly) {
     tdlist_p[i] = combine;
 
     // Cater for typedef usage
-    for (uInt j = 0; j < Ntypedef; j++) {
+    for (unsigned int j = 0; j < Ntypedef; j++) {
       // Make sure no infinite loops
       if (REPtypedef[j] != PATtypedef1[j].regexp()) {
         while (combine.contains(PATtypedef0[j])) {
@@ -580,7 +580,7 @@ void Template::canonical(const bool tmplonly) {
     // Remove all spaces, and just count 'const' since they can be at
     // different places.
     combine.gsub(mulsp, nullsp);
-    combine += Char('0' + combine.gsub(constsp, nullsp));
+    combine += char('0' + combine.gsub(constsp, nullsp));
     tdname_p[i] = combine;
   }
 }
@@ -594,7 +594,7 @@ void Template::splitName() {
   namstring_p.resize(count_p);
   nval_p.resize(count_p);
   // Split
-  for (uInt i = 0; i < count_p; i++) {
+  for (unsigned int i = 0; i < count_p; i++) {
     nstring_p[i] = output_p[i].through(splitnum);
     allstring_p[i] = output_p[i].after(splitnum);
     namstring_p[i] = allstring_p[i].through(splitnam);
@@ -607,7 +607,7 @@ void Template::sortName(const bool renumber) {
   // Split first if necessary
   splitName();
   // Indexes and specify sort
-  Vector<uInt> inx;
+  Vector<unsigned int> inx;
   Sort sort;
   sort.sortKey(allstring_p.storage(), TpString);
   sort.sortKey(nstring_p.storage(), TpString);
@@ -616,8 +616,8 @@ void Template::sortName(const bool renumber) {
   // Make numbers
   if (renumber) {
     String prev;
-    uInt ident(0);
-    for (uInt j = 0; j < count_p; j++) {
+    unsigned int ident(0);
+    for (unsigned int j = 0; j < count_p; j++) {
       if (namstring_p[inx(j)] == prev) {
         ident += 10;
       } else {
@@ -630,14 +630,14 @@ void Template::sortName(const bool renumber) {
     }
   } else {
     String prev;
-    Int pid(0);
-    uInt mid(0);
-    for (uInt k = 0; k < count_p; k++) {
+    int pid(0);
+    unsigned int mid(0);
+    for (unsigned int k = 0; k < count_p; k++) {
       if (prev.empty()) {
         prev = namstring_p[inx(k)];
         pid = k;
         mid = 990;
-        uInt j = k;
+        unsigned int j = k;
         while (j < count_p && namstring_p[inx(j)] == prev) {
           mid = (nval_p[inx(j)] > mid) ? nval_p[inx(j)] : mid;
           j++;
@@ -652,7 +652,7 @@ void Template::sortName(const bool renumber) {
           nval_p[inx(k)] = mid;
           mid += 10;
         } else {
-          for (Int j = k - 1; j >= pid; j--) {
+          for (int j = k - 1; j >= pid; j--) {
             if (nval_p[inx(k)] == nval_p[inx(j)]) {
               ostringstream text;
               text << mid;
@@ -670,14 +670,14 @@ void Template::sortName(const bool renumber) {
     }
   }
   // Make new full line
-  for (uInt j = 0; j < count_p; j++) {
+  for (unsigned int j = 0; j < count_p; j++) {
     output_p[j] = nstring_p[inx(j)] + allstring_p[inx(j)];
   }
   // Re-sort comments
-  for (uInt j = 0; j < ccount_p; j++) {
-    if (comptr_p[j] >= 0 && comptr_p[j] < Int(count_p)) {
-      for (uInt j3 = 0; j3 < count_p; j3++) {
-        if (comptr_p[j] == Int(inx(j3))) {
+  for (unsigned int j = 0; j < ccount_p; j++) {
+    if (comptr_p[j] >= 0 && comptr_p[j] < int(count_p)) {
+      for (unsigned int j3 = 0; j3 < count_p; j3++) {
+        if (comptr_p[j] == int(inx(j3))) {
           comptr_p[j] = j3;
           break;
         }
@@ -689,48 +689,48 @@ void Template::sortName(const bool renumber) {
 void Template::writeOut(ostream &os, const bool warn) {
   // Constants
   static const String sp = " ";
-  const Int Nsplit = 2000;  // # of fields in one entry must fit in here
+  const int Nsplit = 2000;  // # of fields in one entry must fit in here
 
   // Local data
   String spf[Nsplit];  // Fields in full line
-  Int c1 = 0;          // Output line count
+  int c1 = 0;          // Output line count
   bool cwarn = false;  // Do not give a compressed warning
   // Write initial comments
-  for (uInt j = 0; j < ccount_p; j++) {  // initial comments
+  for (unsigned int j = 0; j < ccount_p; j++) {  // initial comments
     if (comptr_p[j] < 0) {
       os << comout_p[j] << endl;
       c1++;
     }
   }
-  for (uInt i = 0; i < count_p; i++) {
+  for (unsigned int i = 0; i < count_p; i++) {
     // Split output at spaces
-    uInt nsp = split(output_p[i], spf, Nsplit, sp);
-    uInt k = 0;
-    uInt p = 0;
-    Int c = 0;  // Level of indentation for #if
+    unsigned int nsp = split(output_p[i], spf, Nsplit, sp);
+    unsigned int k = 0;
+    unsigned int p = 0;
+    int c = 0;  // Level of indentation for #if
     bool pr = true;
     String w;  // Line indentation
     String v;  // Line start pattern
-    for (uInt j = 0; j <= nsp; j++) {
+    for (unsigned int j = 0; j <= nsp; j++) {
       // If not the first element of a line; or it is the last
       if (j == nsp || spf[j] == "template" || spf[j] == "#endif" || spf[j] == "#else" ||
           spf[j] == "/=/" || spf[j].contains(sifRE) || spf[j].contains(stypedefRE) ||
           spf[j].contains(sauxtemplRE) || spf[j].contains(snamespaceRE)) {
         if (k != 0) {
           v = "";
-          for (uInt m = p; m < p + k; m++) {  // all fields found till now
+          for (unsigned int m = p; m < p + k; m++) {  // all fields found till now
             if (pr && v.length() > 40) {
               os << w << v << endl;
               v = "= ";     // Indicate follow-on include
               w = "     ";  // Indent
-              for (Int i1 = 0; i1 < c; i1++) w += "  ";
+              for (int i1 = 0; i1 < c; i1++) w += "  ";
             }
             v += spf[m] + sp;
           }
           c1++;
           // Format the fields after #if
           if (v.contains(sifRE)) {
-            for (uInt j3 = 0; j3 < Ninif; j3++) v.gsub(PATinif[j3], REPinif[j3]);
+            for (unsigned int j3 = 0; j3 < Ninif; j3++) v.gsub(PATinif[j3], REPinif[j3]);
           }
           // Format fields in template and count them
           if (v.contains(stemRE)) {
@@ -763,7 +763,7 @@ void Template::writeOut(ostream &os, const bool warn) {
         p = j;
         w = "     ";
         if (spf[j] == "#endif" || spf[j] == "#else") c--;
-        for (Int i1 = 0; i1 < c; i1++) w += "  ";
+        for (int i1 = 0; i1 < c; i1++) w += "  ";
         if (spf[j] == "#else" && c < 0)
           cerr << "SEVERE: #else without #if "
                   "near line "
@@ -785,22 +785,22 @@ void Template::writeOut(ostream &os, const bool warn) {
     while (c > 0) {
       c--;
       w = "     ";
-      for (Int i1 = 0; i1 < c; i1++) w += "  ";
+      for (int i1 = 0; i1 < c; i1++) w += "  ";
       c1++;
       cerr << "Warning: included missing #endif "
               "at line "
            << c1 << endl;
       os << w << "#endif" << endl;
     }
-    for (uInt j1 = 0; j1 < ccount_p; j1++) {  // comments
-      if (comptr_p[j1] == Int(i)) {
+    for (unsigned int j1 = 0; j1 < ccount_p; j1++) {  // comments
+      if (comptr_p[j1] == int(i)) {
         c1++;
         os << comout_p[j1] << endl;
       }
     }
   }
-  for (uInt j2 = 0; j2 < ccount_p; j2++) {  // comments
-    if (comptr_p[j2] >= Int(count_p)) {
+  for (unsigned int j2 = 0; j2 < ccount_p; j2++) {  // comments
+    if (comptr_p[j2] >= int(count_p)) {
       c1++;
       os << comout_p[j2] << endl;
     }
@@ -814,16 +814,16 @@ void Template::writeOut(ostream &os, const bool warn) {
 
 void Template::writeDup(ostream &os, const String &userFile, bool isSys) {
   // Sort the name list
-  Vector<uInt> inx;
+  Vector<unsigned int> inx;
   Sort sort;
   sort.sortKey(tdname_p.storage(), TpString);
   sort.sort(inx, tdcount_p);
-  uInt i(0);  // Count the entries
+  unsigned int i(0);  // Count the entries
   // Scan all entries for groups
   dcount_p = 0;
   while (i < tdcount_p) {
-    uInt n = 0;  // Length of group
-    for (uInt j = i; j < tdcount_p; j++) {
+    unsigned int n = 0;  // Length of group
+    for (unsigned int j = i; j < tdcount_p; j++) {
       if (tdname_p[inx(j)] == tdname_p[inx(i)])
         n++;
       else
@@ -836,10 +836,10 @@ void Template::writeDup(ostream &os, const String &userFile, bool isSys) {
       if (isSys) {
         doit = false;
         // Check if _ReposFiller mentioned
-        for (uInt j = i; j < i + n; j++) {
+        for (unsigned int j = i; j < i + n; j++) {
           if (tdflist_p[tdfile_p[inx(j)]].contains(reposName)) doit = true;
           // Check for same file duplicates
-          for (uInt k = j + 1; k < i + n; k++) {
+          for (unsigned int k = j + 1; k < i + n; k++) {
             if (tdflist_p[tdfile_p[inx(j)]] == tdflist_p[tdfile_p[inx(k)]]) doit = true;
           }
           if (doit) break;
@@ -847,7 +847,7 @@ void Template::writeDup(ostream &os, const String &userFile, bool isSys) {
       }
       if (doit) {
         os << "---------------------------------------------" << endl;
-        for (uInt j = i; j < i + n; j++) {
+        for (unsigned int j = i; j < i + n; j++) {
           os << tdlist_p[inx(j)] << "   " << tdflist_p[tdfile_p[inx(j)]] << " line "
              << tdline_p[inx(j)];
           if (tdflist_p[tdfile_p[inx(j)]] == userFile)

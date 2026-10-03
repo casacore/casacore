@@ -136,12 +136,12 @@ class UDFMSCal : public UDFBase {
   enum SelType { BASELINE, CORR, TIME, UVDIST, SPW, FIELD, FEED, ARRAY, SCAN, STATE, OBS };
 
   // Create object the given ColType and SelType.
-  UDFMSCal(ColType, Int arg);
+  UDFMSCal(ColType, int arg);
 
   // Create the object for getting a value from a column in a subtable.
   // <group>
   explicit UDFMSCal(const String& funcName);
-  UDFMSCal(const String& funcName, const String& subtabName, const String& idColName, Int arg = 0);
+  UDFMSCal(const String& funcName, const String& subtabName, const String& idColName, int arg = 0);
   UDFMSCal(const String& funcName, const String& subtabName, const String& idColName,
            const String& colName);
   // </group>
@@ -203,12 +203,12 @@ class UDFMSCal : public UDFBase {
   // Get the value.
   virtual bool getBool(const TableExprId& id);
   virtual Int64 getInt(const TableExprId& id);
-  virtual Double getDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
   virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
 
@@ -230,23 +230,23 @@ class UDFMSCal : public UDFBase {
   void setupGetValue(const Table& table, std::vector<TENShPtr>& operands);
 
   // Setup getting the wavelength information.
-  void setupWvls(const Table& table, std::vector<TENShPtr>& operands, uInt nargMax);
+  void setupWvls(const Table& table, std::vector<TENShPtr>& operands, unsigned int nargMax);
 
   // Get the rownr in the subtable for GetValue.
   // If itsArg==1 it uses indirection using itsDDIds.
   Int64 getRowNr(const TableExprId& id);
 
   // Convert the UVW coordinates to wavelengths for the full spectrum.
-  Array<Double> toWvls(const TableExprId&);
+  Array<double> toWvls(const TableExprId&);
 
   // # Data members.
   MSCalEngine itsEngine;
   StokesConverter itsStokesConv;
   TableExprNode itsDataNode;  // # for stokes, selections and getvalues
   TableExprNode itsIdNode;    // # node giving rowid for getvalues
-  ArrayColumn<Double> itsUvwCol;
+  ArrayColumn<double> itsUvwCol;
   ColType itsType;
-  Int itsArg;  // # antnr or SelType or getValueType
+  int itsArg;  // # antnr or SelType or getValueType
                // # -1 subtable can be empty
                // #  0 normal subtable
                // #  1 indirect subtable via DATA_DESC_ID
@@ -256,11 +256,11 @@ class UDFMSCal : public UDFBase {
   String itsSubColName;
   // # Preallocate arrays to avoid having to construct them too often.
   // # Makes it thread-unsafe though.
-  Vector<Double> itsTmpVector;
-  Array<Double> itsTmpUvwWvl;
-  Vector<Int> itsDDIds;  // # spw or pol ids from DATA_DESCRIPTION
-  vector<Double> itsWavel;
-  vector<Vector<Double>> itsWavels;
+  Vector<double> itsTmpVector;
+  Array<double> itsTmpUvwWvl;
+  Vector<int> itsDDIds;  // # spw or pol ids from DATA_DESCRIPTION
+  vector<double> itsWavel;
+  vector<Vector<double>> itsWavels;
 };
 
 // <summary>

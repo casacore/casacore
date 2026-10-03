@@ -58,7 +58,7 @@ class RegionManager {
   RegionManager();
   RegionManager(const CoordinateSystem& csys);
   virtual ~RegionManager();
-  String absreltype(const Int absrelval = 0);
+  String absreltype(const int absrelval = 0);
 
   // Some little but useful tidbits.
   static bool isPixelRegion(const ImageRegion& reg);
@@ -67,65 +67,65 @@ class RegionManager {
   const CoordinateSystem& getcoordsys() const;
 
   // LCSlicer box
-  Record* box(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
+  Record* box(const Vector<double>& blc, const Vector<double>& trc, const Vector<double>& inc,
               const String& absrel, const bool frac, const String& comment = "");
   // LCBox box
-  static Record* box(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Int>& shape,
+  static Record* box(const Vector<double>& blc, const Vector<double>& trc, const Vector<int>& shape,
                      const String& comment = "");
   Record* wbox(const Vector<Quantity>& blc, const Vector<Quantity>& trc,
-               const Vector<Int>& pixelaxes, const CoordinateSystem& csys, const String& absrel,
+               const Vector<int>& pixelaxes, const CoordinateSystem& csys, const String& absrel,
                const String& comment);
-  Record* wbox(const Vector<String>& blc, const Vector<String>& trc, const Vector<Int>& pixelaxes,
+  Record* wbox(const Vector<String>& blc, const Vector<String>& trc, const Vector<int>& pixelaxes,
                const CoordinateSystem& csys, const String& absrel, const String& comment);
   Record* wbox(const Vector<Quantity>& blc, const Vector<Quantity>& trc,
-               const Vector<Int>& pixelaxes, const String& absrel, const String& comment);
-  Record* wbox(const Vector<String>& blc, const Vector<String>& trc, const Vector<Int>& pixelaxes,
+               const Vector<int>& pixelaxes, const String& absrel, const String& comment);
+  Record* wbox(const Vector<String>& blc, const Vector<String>& trc, const Vector<int>& pixelaxes,
                const String& absrel, const String& comment);
   ImageRegion* wbox(const Vector<Quantity>& blc, const Vector<Quantity>& trc,
-                    const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                    const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                     const String& absrel = "abs");
   // Wpolygon with coordsys and if pixelaxes[0] is -1 then its assumed
   // to be 0,1,...
   ImageRegion* wpolygon(const Vector<Quantity>& x, const Vector<Quantity>& y,
-                        const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                        const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                         const String& absrel);
   // wpolygon version without csys...throws an exception if
   // setcoordsys is not run
   ImageRegion* wpolygon(const Vector<Quantity>& x, const Vector<Quantity>& y,
-                        const Vector<Int>& pixelaxes, const String& absrel);
+                        const Vector<int>& pixelaxes, const String& absrel);
 
   static ImageRegion* wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
-                               const Quantity& b, const Quantity& pa, const uInt pixelAxis0,
-                               const uInt pixelAxis1, const CoordinateSystem& csys,
+                               const Quantity& b, const Quantity& pa, const unsigned int pixelAxis0,
+                               const unsigned int pixelAxis1, const CoordinateSystem& csys,
                                const String& absrel);
 
   // wellipse version without csys...throws an exception if
   // setcoordsys is not run
   ImageRegion* wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
-                        const Quantity& b, const Quantity& pa, const uInt pixelAxis0,
-                        const uInt pixelAxis1, const String& absrel) const;
+                        const Quantity& b, const Quantity& pa, const unsigned int pixelAxis0,
+                        const unsigned int pixelAxis1, const String& absrel) const;
 
   static ImageRegion* wsphere(const Vector<Quantity>& center, const Quantity& radius,
-                              const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                              const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                               const String& absrel);
   // wsphere version without csys...throws an exception if
   // setcoordsys is not run
   ImageRegion* wsphere(const Vector<Quantity>& center, const Quantity& radius,
-                       const Vector<Int>& pixelaxes, const String& absrel) const;
+                       const Vector<int>& pixelaxes, const String& absrel) const;
 
   static ImageRegion* wellipsoid(const Vector<Quantity>& center, const Vector<Quantity>& radii,
-                                 const Vector<Int>& pixelaxes, const CoordinateSystem& csys,
+                                 const Vector<int>& pixelaxes, const CoordinateSystem& csys,
                                  const String& absrel);
 
   ImageRegion* wellipsoid(const Vector<Quantity>& center, const Vector<Quantity>& radii,
-                          const Vector<Int>& pixelaxes, const String& absrel) const;
+                          const Vector<int>& pixelaxes, const String& absrel) const;
 
   static ImageRegion* wshell(const Vector<Quantity>& center, const Vector<Quantity>& innerRadii,
-                             const Vector<Quantity>& outerRadii, const Vector<Int>& pixelaxes,
+                             const Vector<Quantity>& outerRadii, const Vector<int>& pixelaxes,
                              const CoordinateSystem& csys, const String& absrel);
 
   ImageRegion* wshell(const Vector<Quantity>& center, const Vector<Quantity>& innerRadii,
-                      const Vector<Quantity>& outerRadii, const Vector<Int>& pixelaxes,
+                      const Vector<Quantity>& outerRadii, const Vector<int>& pixelaxes,
                       const String& absrel) const;
 
   static ImageRegion* wmask(const String& command);

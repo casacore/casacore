@@ -53,9 +53,9 @@ Int64 MSPolarizationColumns::match(const Vector<Stokes::StokesTypes>& polType, I
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the corrType to Integers.
-  const Int nCorr = polType.nelements();
-  Vector<Int> polInt(nCorr);
-  for (Int p = 0; p < nCorr; p++) {
+  const int nCorr = polType.nelements();
+  Vector<int> polInt(nCorr);
+  for (int p = 0; p < nCorr; p++) {
     polInt(p) = polType(p);
   }
   // Main matching loop
@@ -81,15 +81,15 @@ Int64 MSPolarizationColumns::match(const Vector<Stokes::StokesTypes>& polType, I
   return -1;
 }
 
-bool MSPolarizationColumns::matchCorrType(rownr_t row, const Vector<Int>& polType) const {
+bool MSPolarizationColumns::matchCorrType(rownr_t row, const Vector<int>& polType) const {
   DebugAssert(row < nrow(), AipsError);
   return allEQ(corrType()(row), polType);
 }
 
-bool MSPolarizationColumns::matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const {
+bool MSPolarizationColumns::matchCorrProduct(rownr_t row, const Matrix<int>& polProduct) const {
   DebugAssert(row < nrow(), AipsError);
   // The static cast is a work around for an SGI compiler Bug
-  return allEQ(corrProduct()(row), static_cast<const Matrix<Int>&>(polProduct));
+  return allEQ(corrProduct()(row), static_cast<const Matrix<int>&>(polProduct));
 }
 
 }  // namespace casacore

@@ -294,16 +294,16 @@ class WCBox : public WCRegion {
   // order of the values is in the order of the pixel axes
   // in the given coordinate system.
   // <group>
-  WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& trc,
-        const CoordinateSystem& cSys, const Vector<Int>& absRel);
+  WCBox(const Vector<Quantum<double>>& blc, const Vector<Quantum<double>>& trc,
+        const CoordinateSystem& cSys, const Vector<int>& absRel);
   // </group>
 
   // Construct from vectors of world coordinates
   // defining the box corners.   You specify the pixel
   // axis order of the world values.
   // <group>
-  WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& trc,
-        const IPosition& pixelAxes, const CoordinateSystem& cSys, const Vector<Int>& absRel);
+  WCBox(const Vector<Quantum<double>>& blc, const Vector<Quantum<double>>& trc,
+        const IPosition& pixelAxes, const CoordinateSystem& cSys, const Vector<int>& absRel);
   // </group>
 
   // Construct from the bounding box of an  <src>LCRegion</src>.
@@ -351,20 +351,20 @@ class WCBox : public WCRegion {
   virtual String type() const;
 
  private:
-  Vector<Quantum<Double>> itsBlc;
-  Vector<Quantum<Double>> itsTrc;
+  Vector<Quantum<double>> itsBlc;
+  Vector<Quantum<double>> itsTrc;
   IPosition itsPixelAxes;
   CoordinateSystem itsCSys;
-  Vector<Int> itsAbsRel;
+  Vector<int> itsAbsRel;
   bool itsNull;
 
   // Check units of quanta are consistent with CoordinateSystem
-  void checkUnits(const IPosition& pixelAxes, const Vector<Quantum<Double>>& values,
+  void checkUnits(const IPosition& pixelAxes, const Vector<Quantum<double>>& values,
                   const CoordinateSystem& cSys);
 
   // Convert relative pixels to absolute or fill in defaults
-  void convertPixel(Double& pixel, const Quantum<Double>& value, const Int absRel,
-                    const Double refPix, const Int shape, const bool isBlc) const;
+  void convertPixel(double& pixel, const Quantum<double>& value, const int absRel,
+                    const double refPix, const int shape, const bool isBlc) const;
 };
 
 }  // namespace casacore

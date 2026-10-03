@@ -144,13 +144,13 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   // Set the maximum length of a 'fixed length' string.
   // It is only called (right after the constructor) if the string has
   // a fixed length.
-  virtual void setMaxLength(uInt maxLength);
+  virtual void setMaxLength(unsigned int maxLength);
 
   // Functions to return column info.
   // <group>
   virtual int dataType() const;
   virtual bool isWritable() const;
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
   virtual IPosition shape(rownr_t rownr);
   virtual bool isShapeDefined(rownr_t rownr);
   // </group>
@@ -174,11 +174,11 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   // Get the scalar value in the given row.
   // <group>
   virtual void getBool(rownr_t rownr, bool* dataPtr);
-  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
-  virtual void getShort(rownr_t rownr, Short* dataPtr);
-  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
-  virtual void getInt(rownr_t rownr, Int* dataPtr);
-  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
+  virtual void getuChar(rownr_t rownr, unsigned char* dataPtr);
+  virtual void getShort(rownr_t rownr, short* dataPtr);
+  virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
+  virtual void getInt(rownr_t rownr, int* dataPtr);
+  virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
   virtual void getInt64(rownr_t rownr, Int64* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
@@ -221,17 +221,17 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   String itsStyle;         // # TaQL style
   TableExprNode* itsNode;  // # compiled TaQL expression
   IPosition itsShape;      // # The shape of the column.
-  uInt itsMaxLen;          // # The maximum length of a 'fixed length' string.
+  unsigned int itsMaxLen;          // # The maximum length of a 'fixed length' string.
   union {
     bool itsBool;  // # Constant scalar values
-    uChar itsuChar;
-    Short itsShort;
-    uShort itsuShort;
-    Int itsInt;
-    uInt itsuInt;
+    unsigned char itsuChar;
+    short itsShort;
+    unsigned short itsuShort;
+    int itsInt;
+    unsigned int itsuInt;
     Int64 itsInt64;
-    Float itsFloat;
-    Double itsDouble;
+    float itsFloat;
+    double itsDouble;
   };
   Complex itsComplex;
   DComplex itsDComplex;

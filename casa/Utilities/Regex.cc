@@ -59,22 +59,22 @@ void Regex::operator=(const String& str) {
   itsStr = str;
 }
 
-String::size_type Regex::match(const Char* s, String::size_type len, String::size_type pos) const {
-  Int ps = static_cast<Int>(pos);
+String::size_type Regex::match(const char* s, String::size_type len, String::size_type pos) const {
+  int ps = static_cast<int>(pos);
   if (ps < 0) {
     ps += len;
   }
   if (ps < 0) return String::npos;
   // A zero-length string can match .*
   // Therefore try fullMatch for such a case.
-  if (ps == static_cast<Int>(len) && fullMatch(s + ps, 0)) {
+  if (ps == static_cast<int>(len) && fullMatch(s + ps, 0)) {
     return 0;
   }
-  if (ps >= static_cast<Int>(len)) return String::npos;
-  Int matchlen;
+  if (ps >= static_cast<int>(len)) return String::npos;
+  int matchlen;
   String::size_type res = search(s, len, matchlen, ps);
   if (res != String::npos) {
-    if (static_cast<Int>(res) == ps) {
+    if (static_cast<int>(res) == ps) {
       res = matchlen;
     } else {
       res = String::npos;  // no match from start on
@@ -83,17 +83,17 @@ String::size_type Regex::match(const Char* s, String::size_type len, String::siz
   return res;
 }
 
-bool Regex::fullMatch(const Char* s, String::size_type len) const {
+bool Regex::fullMatch(const char* s, String::size_type len) const {
   return std::regex_match(s, s + len, *this);
 }
 
-String::size_type Regex::search(const Char* s, String::size_type len, Int& matchlen,
-                                Int pos) const {
+String::size_type Regex::search(const char* s, String::size_type len, int& matchlen,
+                                int pos) const {
   // Searching from the end means trying to match from the end on.
   if (pos < 0) {
     return searchBack(s, len, matchlen, -pos);
   }
-  if (pos >= static_cast<Int>(len)) return String::npos;
+  if (pos >= static_cast<int>(len)) return String::npos;
   std::cmatch result;
   if (std::regex_search(s + pos, s + len, result, *this)) {
     matchlen = result.length(0);
@@ -103,12 +103,12 @@ String::size_type Regex::search(const Char* s, String::size_type len, Int& match
   return String::npos;  // no match
 }
 
-String::size_type Regex::searchBack(const Char* s, String::size_type len, Int& matchlen,
-                                    uInt pos) const {
+String::size_type Regex::searchBack(const char* s, String::size_type len, int& matchlen,
+                                    unsigned int pos) const {
   if (pos >= len) {
     return String::npos;
   }
-  for (Int p = len - pos; p >= 0; --p) {
+  for (int p = len - pos; p >= 0; --p) {
     String::size_type ml = match(s, len, p);
     if (ml != String::npos) {
       matchlen = ml;
@@ -119,9 +119,9 @@ String::size_type Regex::searchBack(const Char* s, String::size_type len, Int& m
   return String::npos;  // no match
 }
 
-String::size_type Regex::find(const Char* s, String::size_type len, Int& matchlen,
+String::size_type Regex::find(const char* s, String::size_type len, int& matchlen,
                               String::size_type pos) const {
-  Int xpos = pos;
+  int xpos = pos;
   if (xpos < 0) return String::npos;
   return search(s, len, matchlen, xpos);
 }
@@ -129,15 +129,15 @@ String::size_type Regex::find(const Char* s, String::size_type len, Int& matchle
 ostream& operator<<(ostream& ios, const Regex& exp) { return ios << exp.itsStr; }
 
 String Regex::toEcma(const String& rx) {
-  Int inbrcount = -1;
+  int inbrcount = -1;
   bool inBracket = false;
   bool charClass = false;
   bool escaped = false;
-  uInt pattLeng = rx.length();
+  unsigned int pattLeng = rx.length();
   String result;
   result.reserve(rx.size());
-  for (uInt i = 0; i < pattLeng; i++) {
-    Char c = rx[i];
+  for (unsigned int i = 0; i < pattLeng; i++) {
+    char c = rx[i];
     if (escaped) {
       escaped = false;
       if (c >= '1' && c <= '9') {
@@ -210,17 +210,17 @@ String Regex::toEcma(const String& rx) {
 
 String Regex::fromPattern(const String& pattern) {
   enum CState { stream, bracketopen, escapechar };
-  uInt bracecount = 0;
-  Int inbrcount = -1;
+  unsigned int bracecount = 0;
+  int inbrcount = -1;
   bool skipChar = false;
   bool charClass = false;
-  vector<Int> emptySubStr;
-  uInt pattLeng = pattern.length();
+  vector<int> emptySubStr;
+  unsigned int pattLeng = pattern.length();
   String result;
   result.reserve(3 * pattLeng);
   CState state = stream;
-  for (uInt i = 0; i < pattLeng; i++) {
-    Char c = pattern[i];
+  for (unsigned int i = 0; i < pattLeng; i++) {
+    char c = pattern[i];
     switch (state) {
       case stream:
         switch (c) {
@@ -351,11 +351,11 @@ String Regex::fromSQLPattern(const String& pattern) {
   // AFAIK there are no special escape characters.
   // So simply replace them by * and %.
   // Escape all special regex characters.
-  uInt strLeng = pattern.length();
+  unsigned int strLeng = pattern.length();
   String result;
   result.reserve(2 * strLeng);
-  for (uInt i = 0; i < strLeng; i++) {
-    Char c = pattern[i];
+  for (unsigned int i = 0; i < strLeng; i++) {
+    char c = pattern[i];
     switch (c) {
       case '%':
         result.push_back('.');
@@ -389,11 +389,11 @@ String Regex::fromSQLPattern(const String& pattern) {
 }
 
 String Regex::fromString(const String& str) {
-  uInt strLeng = str.length();
+  unsigned int strLeng = str.length();
   String result;
   result.reserve(2 * strLeng);
-  for (uInt i = 0; i < strLeng; i++) {
-    Char c = str[i];
+  for (unsigned int i = 0; i < strLeng; i++) {
+    char c = str[i];
     // Escape special characters.
     switch (c) {
       case '^':
@@ -419,15 +419,15 @@ String Regex::fromString(const String& str) {
 }
 
 String Regex::makeCaseInsensitive(const String& str) {
-  uInt strLeng = str.length();
+  unsigned int strLeng = str.length();
   String result;
   result.reserve(4 * strLeng);
   bool inBracket = false;
   bool openBracket = false;
   bool escaped = false;
   bool charClass = false;
-  for (uInt i = 0; i < strLeng; i++) {
-    Char c = str[i];
+  for (unsigned int i = 0; i < strLeng; i++) {
+    char c = str[i];
     if (escaped) {
       result.push_back(c);
       escaped = false;

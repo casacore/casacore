@@ -53,22 +53,22 @@ MSFieldIndex::MSFieldIndex(const MSField& field) : msFieldCols_p(field) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern, const bool regex) {
-  Vector<Int> IDs;
+Vector<int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern, const bool regex) {
+  Vector<int> IDs;
   IDs = matchFieldNameRegexOrPattern(pattern, regex);
   if (IDs.nelements() == 0) IDs = matchFieldCodeRegexOrPattern(pattern, regex);
   return IDs;
 }
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern, const bool regex) {
+Vector<int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern, const bool regex) {
   // Match a field name to a set of field id's
   // Input:
   //    name             const String&            Field name to match
   // Output:
   //    matchFieldName   Vector<Int>              Matching field id's
   //
-  Int pos = 0;
+  int pos = 0;
   Regex reg;
   //   String strippedPattern = stripWhite(pattern);
   const String& strippedPattern = pattern;
@@ -91,28 +91,28 @@ Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern, co
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     String sname = stripWhite(names(i));  // Strip leading and trailing blanks
-    Int ret = RegexMatches(sname, reg, pos);
+    int ret = RegexMatches(sname, reg, pos);
     maskArray(i) = ((ret > 0) && !flagRow(i));
   }
 
-  MaskedArray<Int> maskFieldID(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldID(fieldIds_p, maskArray);
   return maskFieldID.getCompressedArray();
 }
 
-Vector<Int> MSFieldIndex::maskFieldIDs(const Vector<Int>& ids) {
-  Vector<Int> tmp = set_intersection(fieldIds_p, ids);
+Vector<int> MSFieldIndex::maskFieldIDs(const Vector<int>& ids) {
+  Vector<int> tmp = set_intersection(fieldIds_p, ids);
   return tmp;
 }
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern, const bool regex) {
+Vector<int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern, const bool regex) {
   // Match a field name to a set of field id's
   // Input:
   //    name             const String&            Field name to match
   // Output:
   //    matchFieldName   Vector<Int>              Matching field id's
   //
-  Int pos = 0;
+  int pos = 0;
   Regex reg;
   if (regex)
     reg = pattern;
@@ -126,24 +126,24 @@ Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern, co
   LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
-    Int ret = RegexMatches(codes(i), reg, pos);
+    int ret = RegexMatches(codes(i), reg, pos);
     maskArray(i) = ((ret > 0) && !flagRow(i));
   }
 
-  MaskedArray<Int> maskFieldID(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldID(fieldIds_p, maskArray);
   return maskFieldID.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
-Vector<Int> MSFieldIndex::matchFieldNameOrCode(const String& name) {
-  Vector<Int> IDs;
+Vector<int> MSFieldIndex::matchFieldNameOrCode(const String& name) {
+  Vector<int> IDs;
   IDs = matchFieldName(name);
   if (IDs.nelements() == 0) IDs = matchFieldCode(name);
   return IDs;
 }
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldName(const String& name) {
+Vector<int> MSFieldIndex::matchFieldName(const String& name) {
   // Match a field name to a set of field id's
   // Input:
   //    name             const String&            Field name to match
@@ -152,20 +152,20 @@ Vector<Int> MSFieldIndex::matchFieldName(const String& name) {
   //
   Vector<String> strippedNames = msFieldCols_p.name().getColumn();
   IPosition sh = strippedNames.shape();
-  for (Int i = 0; i < sh(0); i++) {
+  for (int i = 0; i < sh(0); i++) {
     String name = strippedNames(i);
     strippedNames(i) = stripWhite(name);
   }
 
   LogicalArray maskArray = (strippedNames == name && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
 
   return maskFieldId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldCode(const String& code) {
+Vector<int> MSFieldIndex::matchFieldCode(const String& code) {
   // Match a field code to a set of field id's
   // Input:
   //    code             const String&            Field code to match
@@ -173,21 +173,21 @@ Vector<Int> MSFieldIndex::matchFieldCode(const String& code) {
   //    matchFieldCode   Vector<Int>              Matching field id's
   //
   Vector<String> strippedCodes = msFieldCols_p.code().getColumn();
-  Int n = strippedCodes.shape()(0);
+  int n = strippedCodes.shape()(0);
 
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     String name = strippedCodes(i);
     strippedCodes(i) = stripWhite(name);
   }
 
   LogicalArray maskArray = (strippedCodes == code && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
   return maskFieldId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchSubFieldName(const String& name) {
+Vector<int> MSFieldIndex::matchSubFieldName(const String& name) {
   // Match a field name to a set of field id's
   // Input:
   //    name             const String&            Field name to match
@@ -196,32 +196,32 @@ Vector<Int> MSFieldIndex::matchSubFieldName(const String& name) {
   //
 
   Vector<String> fieldnames = msFieldCols_p.name().getColumn();
-  uInt len = fieldnames.nelements();
+  unsigned int len = fieldnames.nelements();
   Vector<bool> matchfieldnames(len, false);
-  for (uInt j = 0; j < len; j++) {
+  for (unsigned int j = 0; j < len; j++) {
     if (stripWhite(fieldnames[j]).find(name) != std::string::npos) matchfieldnames(j) = true;
   }
   LogicalArray maskArray(matchfieldnames && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
   return maskFieldId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names) {
+Vector<int> MSFieldIndex::matchFieldName(const Vector<String>& names) {
   // Match a set of field names to a set of field id's
   // Input:
   //    names            const Vector<String>&    Field names to match
   // Output:
   //    matchFieldNames  Vector<Int>              Matching field id's
   //
-  Vector<Int> matchedFieldIds;
+  Vector<int> matchedFieldIds;
   // Match each field name individually
-  for (uInt fld = 0; fld < names.nelements(); fld++) {
+  for (unsigned int fld = 0; fld < names.nelements(); fld++) {
     // Add to list of field id's
-    Vector<Int> currentMatch = matchFieldName(names(fld));
+    Vector<int> currentMatch = matchFieldName(names(fld));
     if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedFieldIds);
+      Vector<int> temp(matchedFieldIds);
       matchedFieldIds.resize(matchedFieldIds.nelements() + currentMatch.nelements(), true);
       matchedFieldIds = concatenateArray(temp, currentMatch);
     }
@@ -231,7 +231,7 @@ Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchSourceId(const Int& sourceId) {
+Vector<int> MSFieldIndex::matchSourceId(const int& sourceId) {
   // Match a source id to a set of field id's
   // Input:
   //    sourceId        const Int&               Source id to match
@@ -240,26 +240,26 @@ Vector<Int> MSFieldIndex::matchSourceId(const Int& sourceId) {
   //
   LogicalArray maskArray =
       (msFieldCols_p.sourceId().getColumn() == sourceId && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
   return maskFieldId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds) {
+Vector<int> MSFieldIndex::matchSourceId(const Vector<int>& sourceIds) {
   // Match a set of source id's to a set of field id's
   // Input:
   //    sourceIds       const Vector<Int>&       Source id's to match
   // Output:
   //    matchSourceIds  Vector<Int>              Matching field id's
   //
-  Vector<Int> matchedFieldIds;
+  Vector<int> matchedFieldIds;
   // Match each field name individually
-  for (uInt fld = 0; fld < sourceIds.nelements(); fld++) {
+  for (unsigned int fld = 0; fld < sourceIds.nelements(); fld++) {
     // Add to list of field id's
-    Vector<Int> currentMatch = matchSourceId(sourceIds(fld));
+    Vector<int> currentMatch = matchSourceId(sourceIds(fld));
     if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedFieldIds);
+      Vector<int> temp(matchedFieldIds);
       matchedFieldIds.resize(matchedFieldIds.nelements() + currentMatch.nelements(), true);
       matchedFieldIds = concatenateArray(temp, currentMatch);
     }
@@ -268,24 +268,24 @@ Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds) {
 }
 
 //-------------------------------------------------------------------------
-Vector<Int> MSFieldIndex::matchFieldIDLT(const Int n) {
+Vector<int> MSFieldIndex::matchFieldIDLT(const int n) {
   LogicalArray maskArray = (fieldIds_p < n && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
   return maskFieldId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
-Vector<Int> MSFieldIndex::matchFieldIDGT(const Int n) {
+Vector<int> MSFieldIndex::matchFieldIDGT(const int n) {
   LogicalArray maskArray = (fieldIds_p > n && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
   return maskFieldId.getCompressedArray();
 }
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1) {
+Vector<int> MSFieldIndex::matchFieldIDGTAndLT(const int n0, const int n1) {
   LogicalArray maskArray =
       (fieldIds_p > n0 && fieldIds_p < n1 && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  MaskedArray<int> maskFieldId(fieldIds_p, maskArray);
   return maskFieldId.getCompressedArray();
 }
 //-------------------------------------------------------------------------
@@ -294,7 +294,7 @@ Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1) {
 // names.  If a match is found, the element is replaced with the
 // matched name ID (sub-table row number).  Elements less than the
 // number of fields are left unmodified.
-void MSFieldIndex::matchIdAgainstNames(Vector<Int>& list) {
+void MSFieldIndex::matchIdAgainstNames(Vector<int>& list) {
   for (unsigned int i = 0; i < list.nelements(); i++)
     if ((unsigned int)list[i] >= fieldIds_p.nelements()) {
       std::stringstream ss;
@@ -304,17 +304,17 @@ void MSFieldIndex::matchIdAgainstNames(Vector<Int>& list) {
     }
 }
 //-------------------------------------------------------------------------
-Vector<Int> MSFieldIndex::validateIndices(const Vector<Int>& ids) {
+Vector<int> MSFieldIndex::validateIndices(const Vector<int>& ids) {
   //
   // If any of the IDs is out of range, produce a warning message (and
   // a tip for more reasonable behaviour), and attempt the
   // integar-as-name parsing (yuck) and produce a warning based on
   // the result.
   //
-  Vector<Int> modifiedIds(ids);  // Make a writeable copy
-  vector<Int> outOfRangeIdList, intAsNameIdList;
-  for (uInt i = 0; i < ids.nelements(); i++)
-    if ((ids[i] < 0) || (ids[i] > (Int)fieldIds_p.nelements() - 1)) {
+  Vector<int> modifiedIds(ids);  // Make a writeable copy
+  vector<int> outOfRangeIdList, intAsNameIdList;
+  for (unsigned int i = 0; i < ids.nelements(); i++)
+    if ((ids[i] < 0) || (ids[i] > (int)fieldIds_p.nelements() - 1)) {
       std::ostringstream intAsName;
       outOfRangeIdList.push_back(ids[i]);
       //	  throw(MSSelectionFieldParseError(Mesg.str()));
@@ -323,7 +323,7 @@ Vector<Int> MSFieldIndex::validateIndices(const Vector<Int>& ids) {
       // Integar-as-name parsing
       //
       intAsName << ids[i];
-      Vector<Int> intAsNameID = matchFieldNameOrCode(intAsName.str());
+      Vector<int> intAsNameID = matchFieldNameOrCode(intAsName.str());
       if (intAsNameID.nelements() > 0) {
         modifiedIds[i] = intAsNameID[0];
         intAsNameIdList.push_back(ids[i]);
@@ -333,14 +333,14 @@ Vector<Int> MSFieldIndex::validateIndices(const Vector<Int>& ids) {
   if (outOfRangeIdList.size()) {
     std::ostringstream Mesg;
     Mesg << "Field Expression: Found out-of-range index(s) in the list (";
-    for (uInt i = 0; i < outOfRangeIdList.size(); i++) Mesg << outOfRangeIdList[i] << " ";
+    for (unsigned int i = 0; i < outOfRangeIdList.size(); i++) Mesg << outOfRangeIdList[i] << " ";
     Mesg << ")" << " [TIP: Double-quoted strings forces name matching]";
     logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
   }
   if (intAsNameIdList.size()) {
     std::ostringstream Mesg;
     Mesg << "Field Expression: Successfully parsed \"";
-    for (uInt i = 0; i < intAsNameIdList.size(); i++) Mesg << intAsNameIdList[i] << " ";
+    for (unsigned int i = 0; i < intAsNameIdList.size(); i++) Mesg << intAsNameIdList[i] << " ";
     Mesg << "\" as name(s) and failed for the rest (please ensure this is what you intended).";
     logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
   }

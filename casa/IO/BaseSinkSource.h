@@ -86,7 +86,7 @@ class BaseSinkSource {
   // The seek option defines from which position the seek is done.
   // <group>
   Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-  Int64 seek(Int offset, ByteIO::SeekOption = ByteIO::Begin);
+  Int64 seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
   // </group>
 
   // Is the SinkSource readable?

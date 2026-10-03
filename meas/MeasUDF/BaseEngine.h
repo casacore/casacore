@@ -99,7 +99,7 @@ class BaseEngine {
   // If nvalues=1, the first axis is removed from the shape.
   // Note that the shape might have been set to the column's shape if a
   // measure column is used.
-  void adaptForConstant(const IPosition& shapeConstant, uInt nvalues = 0);
+  void adaptForConstant(const IPosition& shapeConstant, unsigned int nvalues = 0);
 
   // Extend the shape (if not empty) with the engine's shape.
   // If the engine is not const, itsIsConst is cleared.
@@ -109,7 +109,7 @@ class BaseEngine {
   const IPosition& shape() const { return itsShape; }
 
   // Get the output dimensionality.
-  Int ndim() const { return itsNDim; }
+  int ndim() const { return itsNDim; }
 
   // Get the unit of the function's result.
   const Unit& unit() const { return itsOutUnit; }
@@ -123,11 +123,11 @@ class BaseEngine {
  protected:
   // Let a derived class derive its attributes.
   // The default implementation does nothing.
-  virtual void deriveAttr(const Unit& unit, Int nval);
+  virtual void deriveAttr(const Unit& unit, int nval);
 
   // Let a derived class set its value type.
   // By default is does nothing.
-  virtual void setValueType(Int valueType);
+  virtual void setValueType(int valueType);
 
   // Let a derived class strip part of the reference type.
   // The default implementation returns the full type string.
@@ -136,7 +136,7 @@ class BaseEngine {
   // # Data members.
   bool itsIsConst;
   IPosition itsShape;
-  Int itsNDim;  // <0 unknown shape, 0 scalar, >0 known shape
+  int itsNDim;  // <0 unknown shape, 0 scalar, >0 known shape
   Unit itsInUnit;
   Unit itsOutUnit;
   TableExprNode itsExprNode;

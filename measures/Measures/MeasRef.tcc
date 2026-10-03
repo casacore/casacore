@@ -51,27 +51,27 @@ MeasRef<Ms> &MeasRef<Ms>::operator=(const MeasRef<Ms> &other) {
 }
 
 template <class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp) {
+MeasRef<Ms>::MeasRef(const unsigned int tp) {
   create();
   rep_p->type = Ms::castType(tp);
 }
 
 template <class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep) {
+MeasRef<Ms>::MeasRef(const unsigned int tp, const Ms &ep) {
   create();
   rep_p->type = Ms::castType(tp);
   rep_p->offmp = std::make_unique<Ms>(ep);
 }
 
 template <class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf) {
+MeasRef<Ms>::MeasRef(const unsigned int tp, const MeasFrame &mf) {
   create();
   rep_p->type = Ms::castType(tp);
   rep_p->frame = mf;
 }
 
 template <class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep) {
+MeasRef<Ms>::MeasRef(const unsigned int tp, const MeasFrame &mf, const Ms &ep) {
   create();
   rep_p->type = Ms::castType(tp);
   rep_p->offmp = std::make_unique<Ms>(ep);
@@ -112,7 +112,7 @@ const String &MeasRef<Ms>::showMe() {
 }
 
 template <class Ms>
-uInt MeasRef<Ms>::getType() const {
+unsigned int MeasRef<Ms>::getType() const {
   return (!empty() ? rep_p->type : 0);
 }
 
@@ -183,12 +183,12 @@ const Measure *MeasRef<Ms>::offset() const {
 }
 
 template <class Ms>
-void MeasRef<Ms>::setType(uInt tp) {
+void MeasRef<Ms>::setType(unsigned int tp) {
   set(tp);
 }
 
 template <class Ms>
-void MeasRef<Ms>::set(uInt tp) {
+void MeasRef<Ms>::set(unsigned int tp) {
   create();
   rep_p->type = Ms::castType(tp);
 }

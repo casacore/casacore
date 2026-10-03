@@ -35,51 +35,51 @@
 int main() {
   try {
     {
-      Float x;
+      float x;
       setNaN(x);
       AlwaysAssert(isNaN(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Double x = floatNaN();
+      double x = floatNaN();
       AlwaysAssert(isNaN(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Float x = doubleNaN();
+      float x = doubleNaN();
       AlwaysAssert(isNaN(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Double x;
+      double x;
       setNaN(x);
       AlwaysAssert(isNaN(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Float x;
+      float x;
       setInf(x);
       AlwaysAssert(isInf(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Double x = floatInf();
+      double x = floatInf();
       AlwaysAssert(isInf(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Float x = doubleInf();
+      float x = doubleInf();
       AlwaysAssert(isInf(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Double x;
+      double x;
       setInf(x);
       AlwaysAssert(isInf(x), AipsError);
       AlwaysAssert(!isFinite(x), AipsError);
     }
     {
-      Double x = 321.544;
+      double x = 321.544;
       AlwaysAssert(roundDouble(x) == 320, AipsError);
       AlwaysAssert(roundDouble(x, 3) == 322, AipsError);
       x = 21.45554;

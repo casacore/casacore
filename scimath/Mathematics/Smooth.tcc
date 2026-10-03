@@ -45,8 +45,8 @@ void Smooth<T>::hanning(Vector<T>& out, Vector<bool>& outmask, Vector<T>& in, Ve
   DebugAssert(out.shape().isEqual(in.shape()), AipsError);
   DebugAssert(outmask.shape().isEqual(mask.shape()), AipsError);
 
-  Vector<Vector<Float>> weights(8);
-  Vector<Float> vals(3);
+  Vector<Vector<float>> weights(8);
+  Vector<float> vals(3);
   vals = 0.0;
   weights[0] = vals;  // FFF
   vals[0] = 1.0;
@@ -93,10 +93,10 @@ void Smooth<T>::hanning(Vector<T>& out, Vector<bool>& outmask, Vector<T>& in, Ve
   out[0] = in[0];
   outmask[0] = mask[0];
 
-  uInt nelm1 = in.nelements() - 1;
+  unsigned int nelm1 = in.nelements() - 1;
 
-  uInt m;
-  Vector<Float>* w;
+  unsigned int m;
+  Vector<float>* w;
 
   if (nelm1 > 0) {
     m = 2 * (mask[0] == TrueIsGood) + 4 * (mask[1] == TrueIsGood);
@@ -129,7 +129,7 @@ void Smooth<T>::hanning(Vector<T>& out, Vector<bool>& outmask, Vector<T>& in, Ve
 
   // loop from 1..n-2
 
-  for (uInt i = 1; i < nelm1; i++) {
+  for (unsigned int i = 1; i < nelm1; i++) {
     m = (mask[i - 1] == TrueIsGood) + 2 * (mask[i] == TrueIsGood) + 4 * (mask[i + 1] == TrueIsGood);
     w = &(weights[m]);
     if (weighted[m]) {
@@ -153,7 +153,7 @@ void Smooth<T>::hanning(Array<T>& out, Array<bool>& outmask, Array<T>& in, Array
   Matrix<T> mout(out);
   Matrix<bool> mmask(mask);
   Matrix<bool> moutmask(outmask);
-  for (uInt i = 0; i < in.shape()[0]; i++) {
+  for (unsigned int i = 0; i < in.shape()[0]; i++) {
     Vector<T> vout(mout.row(i));
     Vector<bool> voutMask(moutmask.row(i));
     Vector<T> vin(min.row(i));

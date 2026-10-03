@@ -242,9 +242,9 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency>> {
   //   <li> AipsError in the uInt interface if illegal code given
   // </thrown>
   // <group>
-  static MFrequency::Types castType(uInt tp);
+  static MFrequency::Types castType(unsigned int tp);
   static const String &showType(MFrequency::Types tp);
-  static const String &showType(uInt tp);
+  static const String &showType(unsigned int tp);
   // </group>
   // Translate string to reference code
   // <group>
@@ -266,8 +266,8 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency>> {
   // nextra the number of specials (like planets) that should be at
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String *allTypes(Int &nall, Int &nextra, const uInt *&typ) const;
-  static const String *allMyTypes(Int &nall, Int &nextra, const uInt *&typ);
+  virtual const String *allTypes(int &nall, int &nextra, const unsigned int *&typ) const;
+  static const String *allMyTypes(int &nall, int &nextra, const unsigned int *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are
   // complete and correct. This function is called automatically if and when

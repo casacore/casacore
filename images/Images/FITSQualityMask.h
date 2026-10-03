@@ -130,15 +130,15 @@ class FITSQualityMask : public Lattice<bool> {
   FITSQualityMask();
 
   // Mask out ONLY NaN's
-  bool filterNaN(bool* pMask, const float* pData, const uInt nelems);
+  bool filterNaN(bool* pMask, const float* pData, const unsigned int nelems);
 
   // Mask out NaN's and values 0.0
-  bool filterZeroNaN(bool* pMask, const Float* pData, const uInt nelems);
+  bool filterZeroNaN(bool* pMask, const float* pData, const unsigned int nelems);
 
   //
   FITSImage* itsFitsData;
   FITSErrorImage* itsFitsError;
-  Array<Float> itsBuffer;
+  Array<float> itsBuffer;
   bool itsFilterZero;
 };
 

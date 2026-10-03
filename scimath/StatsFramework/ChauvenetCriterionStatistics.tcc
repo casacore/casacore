@@ -35,8 +35,8 @@
 namespace casacore {
 
 CASA_STATD
-ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(Double zscore,
-                                                                       Int maxIterations)
+ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(double zscore,
+                                                                       int maxIterations)
     : ConstrainedRangeStatistics<CASA_STATP>(
           std::shared_ptr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
               new ConstrainedRangeQuantileComputer<CASA_STATP>(&this->_getDataset()))),
@@ -93,7 +93,7 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
   if (_rangeIsSet) {
     return;
   }
-  uInt maxI = _maxIterations >= 0 ? _maxIterations : 1000;
+  unsigned int maxI = _maxIterations >= 0 ? _maxIterations : 1000;
   uInt64 prevNpts = 0;
   StatsData<AccumType> sd;
   while (_niter <= maxI) {
@@ -106,7 +106,7 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         break;
       }
     }
-    Double zScore = _zscore >= 0 ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
+    double zScore = _zscore >= 0 ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
     auto range = std::make_shared<std::pair<AccumType, AccumType>>(sd.mean - zScore * sd.stddev,
                                                                    sd.mean + zScore * sd.stddev);
     ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);

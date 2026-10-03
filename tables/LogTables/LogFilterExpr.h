@@ -64,12 +64,12 @@ class LogFilterExpr : public TableExprData {
 
   // Get the data.
   // <group>
-  virtual Double getDouble(const Block<Int>& fieldNrs) const;
-  virtual String getString(const Block<Int>& fieldNrs) const;
+  virtual double getDouble(const Block<int>& fieldNrs) const;
+  virtual String getString(const Block<int>& fieldNrs) const;
   // </group>
 
   // Get the data type of the various values.
-  virtual DataType dataType(const Block<Int>& fieldNrs) const;
+  virtual DataType dataType(const Block<int>& fieldNrs) const;
 
  private:
   TableExprNode* itsExpr;

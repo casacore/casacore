@@ -35,38 +35,38 @@
 #include <fcntl.h>
 
 #include <casacore/casa/namespace.h>
-void checkLength(ByteIO& fio, uInt& curLength, uInt addLength) {
+void checkLength(ByteIO& fio, unsigned int& curLength, unsigned int addLength) {
   curLength += addLength;
   AlwaysAssertExit(fio.length() == curLength);
 }
 
 static bool valb = true;
-static Short vals = -3;
-static uShort valus = 2;
-static Int vali = 1000;
-static uInt valui = 32768;
+static short vals = -3;
+static unsigned short valus = 2;
+static int vali = 1000;
+static unsigned int valui = 32768;
 static Int64 vall = -14793;
 static uInt64 valul = 17;
 static float valf = 1.2;
 static double vald = -3.14;
 
-void checkValues(ByteIO& fio, uShort incr) {
+void checkValues(ByteIO& fio, unsigned short incr) {
   fio.seek(0);
-  uInt curLength = fio.length();
+  unsigned int curLength = fio.length();
   bool resb;
   AlwaysAssertExit(fio.read(sizeof(bool), &resb) == sizeof(bool));
   AlwaysAssertExit(resb == valb);
-  Short ress;
-  AlwaysAssertExit(fio.read(sizeof(Short), &ress) == sizeof(Short));
+  short ress;
+  AlwaysAssertExit(fio.read(sizeof(short), &ress) == sizeof(short));
   AlwaysAssertExit(ress == vals - incr);
-  uShort resus;
-  AlwaysAssertExit(fio.read(sizeof(uShort), &resus) == sizeof(uShort));
+  unsigned short resus;
+  AlwaysAssertExit(fio.read(sizeof(unsigned short), &resus) == sizeof(unsigned short));
   AlwaysAssertExit(resus == valus + incr);
-  Int resi;
-  AlwaysAssertExit(fio.read(sizeof(Int), &resi) == sizeof(Int));
+  int resi;
+  AlwaysAssertExit(fio.read(sizeof(int), &resi) == sizeof(int));
   AlwaysAssertExit(resi == vali);
-  uInt resui;
-  AlwaysAssertExit(fio.read(sizeof(uInt), &resui) == sizeof(uInt));
+  unsigned int resui;
+  AlwaysAssertExit(fio.read(sizeof(unsigned int), &resui) == sizeof(unsigned int));
   AlwaysAssertExit(resui == valui);
   Int64 resl;
   AlwaysAssertExit(fio.read(sizeof(Int64), &resl) == sizeof(Int64));
@@ -84,18 +84,18 @@ void checkValues(ByteIO& fio, uShort incr) {
 }
 
 void doIt(ByteIO& fio) {
-  uInt length = 0;
+  unsigned int length = 0;
   AlwaysAssertExit(fio.length() == 0);
   fio.write(sizeof(bool), &valb);
   checkLength(fio, length, sizeof(bool));
-  fio.write(sizeof(Short), &vals);
-  checkLength(fio, length, sizeof(Short));
-  fio.write(sizeof(uShort), &valus);
-  checkLength(fio, length, sizeof(uShort));
-  fio.write(sizeof(Int), &vali);
-  checkLength(fio, length, sizeof(Int));
-  fio.write(sizeof(uInt), &valui);
-  checkLength(fio, length, sizeof(uInt));
+  fio.write(sizeof(short), &vals);
+  checkLength(fio, length, sizeof(short));
+  fio.write(sizeof(unsigned short), &valus);
+  checkLength(fio, length, sizeof(unsigned short));
+  fio.write(sizeof(int), &vali);
+  checkLength(fio, length, sizeof(int));
+  fio.write(sizeof(unsigned int), &valui);
+  checkLength(fio, length, sizeof(unsigned int));
   fio.write(sizeof(Int64), &vall);
   checkLength(fio, length, sizeof(Int64));
   fio.write(sizeof(uInt64), &valul);
@@ -107,23 +107,23 @@ void doIt(ByteIO& fio) {
 
   checkValues(fio, 0);
 
-  fio.seek(Int(sizeof(bool)));
+  fio.seek(int(sizeof(bool)));
   AlwaysAssertExit(fio.length() == length);
-  uShort incr = 100;
-  Short vals1 = vals - incr;
-  Short ress;
-  fio.write(sizeof(Short), &vals1);
-  fio.seek(Int(sizeof(bool)));
-  AlwaysAssertExit(fio.read(sizeof(Short), &ress) == sizeof(Short));
+  unsigned short incr = 100;
+  short vals1 = vals - incr;
+  short ress;
+  fio.write(sizeof(short), &vals1);
+  fio.seek(int(sizeof(bool)));
+  AlwaysAssertExit(fio.read(sizeof(short), &ress) == sizeof(short));
   AlwaysAssertExit(ress == vals1);
-  uShort valus1 = valus + incr;
-  uShort resus;
-  fio.write(sizeof(uShort), &valus1);
-  fio.seek(Int(-sizeof(uShort)), ByteIO::Current);
-  AlwaysAssertExit(fio.read(sizeof(uShort), &resus) == sizeof(uShort));
+  unsigned short valus1 = valus + incr;
+  unsigned short resus;
+  fio.write(sizeof(unsigned short), &valus1);
+  fio.seek(int(-sizeof(unsigned short)), ByteIO::Current);
+  AlwaysAssertExit(fio.read(sizeof(unsigned short), &resus) == sizeof(unsigned short));
   AlwaysAssertExit(resus == valus1);
-  Int resi;
-  AlwaysAssertExit(fio.read(sizeof(Int), &resi) == sizeof(Int));
+  int resi;
+  AlwaysAssertExit(fio.read(sizeof(int), &resi) == sizeof(int));
   AlwaysAssertExit(resi == vali);
   AlwaysAssertExit(fio.length() == length);
 
@@ -133,18 +133,18 @@ void doIt(ByteIO& fio) {
   Int64 offset = sizeof(bool);
   incr = 100;
   vals1 = vals - incr;
-  fio.pwrite(sizeof(Short), offset, &vals1);
-  AlwaysAssertExit(fio.pread(sizeof(Short), offset, &ress) == sizeof(Short));
+  fio.pwrite(sizeof(short), offset, &vals1);
+  AlwaysAssertExit(fio.pread(sizeof(short), offset, &ress) == sizeof(short));
   AlwaysAssertExit(ress == vals1);
   fio.seek(offset);
-  AlwaysAssertExit(fio.read(sizeof(Short), &ress) == sizeof(Short));
+  AlwaysAssertExit(fio.read(sizeof(short), &ress) == sizeof(short));
   AlwaysAssertExit(ress == vals1);
-  offset += sizeof(Short);
+  offset += sizeof(short);
   valus1 = valus + incr;
-  fio.pwrite(sizeof(uShort), offset, &valus1);
-  AlwaysAssertExit(fio.pread(sizeof(uShort), offset, &resus) == sizeof(uShort));
+  fio.pwrite(sizeof(unsigned short), offset, &valus1);
+  AlwaysAssertExit(fio.pread(sizeof(unsigned short), offset, &resus) == sizeof(unsigned short));
   AlwaysAssertExit(resus == valus1);
-  AlwaysAssertExit(fio.read(sizeof(uShort), &ress) == sizeof(uShort));
+  AlwaysAssertExit(fio.read(sizeof(unsigned short), &ress) == sizeof(unsigned short));
   AlwaysAssertExit(resus == valus1);
 
   checkValues(fio, incr);
@@ -157,16 +157,16 @@ void checkReopen() {
     checkValues(fio, 100);
     fio.reopenRW();
     fio.seek(Int64(sizeof(bool)));
-    Short vals;
-    fio.read(sizeof(Short), &vals);
+    short vals;
+    fio.read(sizeof(short), &vals);
     vals -= 50;
     fio.seek(Int64(sizeof(bool)));
-    fio.write(sizeof(Short), &vals);
-    uShort valus;
-    fio.read(sizeof(uShort), &valus);
+    fio.write(sizeof(short), &vals);
+    unsigned short valus;
+    fio.read(sizeof(unsigned short), &valus);
     valus += 50;
-    fio.seek(Int(-sizeof(uShort)), ByteIO::Current);
-    fio.write(sizeof(uShort), &valus);
+    fio.seek(int(-sizeof(unsigned short)), ByteIO::Current);
+    fio.write(sizeof(unsigned short), &valus);
     checkValues(fio, 150);
   }
 
@@ -191,19 +191,19 @@ void checkReopen() {
 
 void testMemoryIO() {
   {
-    uChar buf[10];
+    unsigned char buf[10];
     MemoryIO membuf(buf, sizeof(buf), ByteIO::New, 6);
     doIt(membuf);
-    AlwaysAssertExit(membuf.getBuffer() != (const uChar*)&buf);
+    AlwaysAssertExit(membuf.getBuffer() != (const unsigned char*)&buf);
     Int64 length = membuf.length();
-    Int incr = 20;
+    int incr = 20;
     membuf.seek(incr, ByteIO::End);
     AlwaysAssertExit(membuf.length() == length + incr);
     checkValues(membuf, 100);
     char val;
     Int64 lincr = incr;
     membuf.seek(-lincr, ByteIO::End);
-    for (Int i = 0; i < incr; i++) {
+    for (int i = 0; i < incr; i++) {
       membuf.read(1, &val);
       AlwaysAssertExit(val == 0);
     }
@@ -213,11 +213,11 @@ void testMemoryIO() {
       cout << x.what() << endl;  // read beyond object
     }
     try {
-      membuf.seek(Int(-(length + incr + 1)), ByteIO::Current);
+      membuf.seek(int(-(length + incr + 1)), ByteIO::Current);
     } catch (std::exception& x) {
       cout << x.what() << endl;  // negative seek
     }
-    membuf.seek(Int(-(length + incr)), ByteIO::Current);
+    membuf.seek(int(-(length + incr)), ByteIO::Current);
   }
   {
     char buf[10];
@@ -232,7 +232,7 @@ void testMemoryIO() {
     } catch (std::exception& x) {  // not expandable
       cout << x.what() << endl;
     }
-    AlwaysAssertExit(membuf.getBuffer() == (const uChar*)buf);
+    AlwaysAssertExit(membuf.getBuffer() == (const unsigned char*)buf);
   }
   {
     char* buf = new char[10];
@@ -247,7 +247,7 @@ void testMemoryIO() {
     } catch (std::exception& x) {  // not expandable
       cout << x.what() << endl;
     }
-    AlwaysAssertExit(membuf.getBuffer() == (const uChar*)buf);
+    AlwaysAssertExit(membuf.getBuffer() == (const unsigned char*)buf);
   }
 }
 
@@ -272,7 +272,7 @@ int main() {
     }
     checkReopen();
     // Do regular io for various buffer sizes.
-    for (uInt bs = 1; bs < 100; bs++) {
+    for (unsigned int bs = 1; bs < 100; bs++) {
       RegularFileIO file1(RegularFile("tByteIO_tmp.data"), ByteIO::New, bs);
       doIt(file1);
     }

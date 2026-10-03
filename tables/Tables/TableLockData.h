@@ -80,11 +80,11 @@ class TableLockData : public TableLock {
   // Create the <src>LockFile</src> object and acquire a read or write
   // lock when permanent locking is in effect.
   // It throws an exception when acquiring the lock failed.
-  void makeLock(const String& name, bool create, FileLocker::LockType, uInt locknr = 0);
+  void makeLock(const String& name, bool create, FileLocker::LockType, unsigned int locknr = 0);
 
   // Acquire a read or write lock.
   // It throws an exception when acquire failed while it had to wait.
-  bool acquire(MemoryIO* info, FileLocker::LockType, uInt nattempts);
+  bool acquire(MemoryIO* info, FileLocker::LockType, unsigned int nattempts);
 
   // Release the lock. When always==false, the lock is not released
   // when a permanent lock is used.

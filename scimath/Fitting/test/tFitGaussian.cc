@@ -32,24 +32,24 @@
 
 #include <casacore/casa/namespace.h>
 
-void printfparameters(Function<Double> &f);
-void printparameters(Matrix<Double> &m);
-void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casacore::Double> &f,
-                Float range, uInt n, casacore::Matrix<casacore::Double> &components);
-Int ipow(Int base, uInt power);
+void printfparameters(Function<double> &f);
+void printparameters(Matrix<double> &m);
+void createdata(casacore::Matrix<double> &pos, casacore::Vector<double> &f,
+                float range, unsigned int n, casacore::Matrix<double> &components);
+int ipow(int base, unsigned int power);
 
 int main() {
   bool fail = 0;
-  casacore::Matrix<casacore::Double> pos;
-  casacore::Vector<casacore::Double> f;
+  casacore::Matrix<double> pos;
+  casacore::Vector<double> f;
 
-  casacore::Matrix<casacore::Double> components;
-  casacore::Matrix<casacore::Double> estimate;
-  casacore::Matrix<casacore::Double> retryfactors;
-  casacore::Matrix<casacore::Double> solution;
-  casacore::Matrix<casacore::Double> errors;
+  casacore::Matrix<double> components;
+  casacore::Matrix<double> estimate;
+  casacore::Matrix<double> retryfactors;
+  casacore::Matrix<double> solution;
+  casacore::Matrix<double> errors;
 
-  FitGaussian<casacore::Double> fitgauss;
+  FitGaussian<double> fitgauss;
 
   cout << "TEST 1:  1 Gaussian in 1 Dimension." << endl;
 
@@ -368,33 +368,33 @@ int main() {
   return fail;
 }
 
-void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casacore::Double> &f,
-                Float range, uInt n, casacore::Matrix<casacore::Double> &components) {
-  uInt i = 0;
-  uInt dim = components.ncolumn() / 3;
-  uInt imax = ipow(n, dim);
+void createdata(casacore::Matrix<double> &pos, casacore::Vector<double> &f,
+                float range, unsigned int n, casacore::Matrix<double> &components) {
+  unsigned int i = 0;
+  unsigned int dim = components.ncolumn() / 3;
+  unsigned int imax = ipow(n, dim);
 
   pos.resize(imax, dim);
   f.resize(imax);
 
   // set up functions
-  Block<Gaussian1D<Double>> datagauss1d((dim == 1) * components.nrow());
-  Block<Gaussian2D<Double>> datagauss2d((dim == 2) * components.nrow());
-  Block<Gaussian3D<Double>> datagauss3d((dim == 3) * components.nrow());
-  for (uInt g = 0; g < components.nrow(); g++)
-    for (uInt p = 0; p < components.ncolumn(); p++) {
+  Block<Gaussian1D<double>> datagauss1d((dim == 1) * components.nrow());
+  Block<Gaussian2D<double>> datagauss2d((dim == 2) * components.nrow());
+  Block<Gaussian3D<double>> datagauss3d((dim == 3) * components.nrow());
+  for (unsigned int g = 0; g < components.nrow(); g++)
+    for (unsigned int p = 0; p < components.ncolumn(); p++) {
       if (dim == 1) datagauss1d[g][p] = components(g, p);
       if (dim == 2) datagauss2d[g][p] = components(g, p);
       if (dim == 3) datagauss3d[g][p] = components(g, p);
     }
 
   // create the data
-  casacore::Vector<casacore::Double> curpos(dim);
+  casacore::Vector<double> curpos(dim);
   curpos = -range;
-  Float inc = 2.0 * range / (n - 1);
+  float inc = 2.0 * range / (n - 1);
   while (i < imax) {
     f(i) = 0;
-    for (uInt g = 0; g < components.nrow(); g++) {
+    for (unsigned int g = 0; g < components.nrow(); g++) {
       if (dim == 1) f(i) += datagauss1d[g](curpos);
       if (dim == 2) f(i) += datagauss2d[g](curpos);
       if (dim == 3) f(i) += datagauss3d[g](curpos(0), curpos(1), curpos(2));  //!
@@ -404,7 +404,7 @@ void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casaco
     // cout << i << ") " << curpos << " = " << f(i) << endl;
 
     curpos(dim - 1) += inc;
-    for (uInt a = dim - 1; a > 0; a--)
+    for (unsigned int a = dim - 1; a > 0; a--)
       if (curpos(a) >= range + inc * 0.1) {
         curpos(a) = -range;
         curpos(a - 1) += inc;
@@ -414,15 +414,15 @@ void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casaco
   }
 }
 
-void printfparameters(Function<Double> &f) {
-  uInt p;
+void printfparameters(Function<double> &f) {
+  unsigned int p;
   for (p = 0; p < f.nparameters() - 1; p++) cout << f[p] << ", ";
   cout << f[p] << endl;
 }
 
-void printparameters(Matrix<Double> &m) {
+void printparameters(Matrix<double> &m) {
   cout.precision(3);
-  uInt g, p;
+  unsigned int g, p;
   for (g = 0; g < m.nrow(); g++) {
     for (p = 0; p < m.ncolumn() - 1; p++) cout << m(g, p) << ", ";
     cout << m(g, p) << endl;
@@ -430,8 +430,8 @@ void printparameters(Matrix<Double> &m) {
   }
 }
 
-Int ipow(Int base, uInt power) {
-  Int ans = 1;
+int ipow(int base, unsigned int power) {
+  int ans = 1;
   while (power--) ans *= base;
   return ans;
 }

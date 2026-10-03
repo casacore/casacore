@@ -126,13 +126,13 @@ class BaseColumn {
   virtual void setShape(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
 
   // Get the global #dimensions of an array (ie. for all rows).
-  virtual uInt ndimColumn() const;
+  virtual unsigned int ndimColumn() const;
 
   // Get the global shape of an array (ie. for all rows).
   virtual IPosition shapeColumn() const;
 
   // Get the #dimensions of an array in a particular cell.
-  virtual uInt ndim(rownr_t rownr) const;
+  virtual unsigned int ndim(rownr_t rownr) const;
 
   // Get the shape of an array in a particular cell.
   virtual IPosition shape(rownr_t rownr) const;
@@ -224,11 +224,11 @@ class BaseColumn {
   // with the same length. So only Int64 can handle all integer values.
   // <group>
   void getScalar(rownr_t rownr, bool& value) const;
-  void getScalar(rownr_t rownr, uChar& value) const;
-  void getScalar(rownr_t rownr, Short& value) const;
-  void getScalar(rownr_t rownr, uShort& value) const;
-  void getScalar(rownr_t rownr, Int& value) const;
-  void getScalar(rownr_t rownr, uInt& value) const;
+  void getScalar(rownr_t rownr, unsigned char& value) const;
+  void getScalar(rownr_t rownr, short& value) const;
+  void getScalar(rownr_t rownr, unsigned short& value) const;
+  void getScalar(rownr_t rownr, int& value) const;
+  void getScalar(rownr_t rownr, unsigned int& value) const;
   void getScalar(rownr_t rownr, Int64& value) const;
   void getScalar(rownr_t rownr, float& value) const;
   void getScalar(rownr_t rownr, double& value) const;
@@ -246,18 +246,18 @@ class BaseColumn {
   // This can only be used for scalar columns with a standard data type.
   // <group>
   void putScalar(rownr_t rownr, const bool& value);
-  void putScalar(rownr_t rownr, const uChar& value);
-  void putScalar(rownr_t rownr, const Short& value);
-  void putScalar(rownr_t rownr, const uShort& value);
-  void putScalar(rownr_t rownr, const Int& value);
-  void putScalar(rownr_t rownr, const uInt& value);
+  void putScalar(rownr_t rownr, const unsigned char& value);
+  void putScalar(rownr_t rownr, const short& value);
+  void putScalar(rownr_t rownr, const unsigned short& value);
+  void putScalar(rownr_t rownr, const int& value);
+  void putScalar(rownr_t rownr, const unsigned int& value);
   void putScalar(rownr_t rownr, const Int64& value);
   void putScalar(rownr_t rownr, const float& value);
   void putScalar(rownr_t rownr, const double& value);
   void putScalar(rownr_t rownr, const Complex& value);
   void putScalar(rownr_t rownr, const DComplex& value);
   void putScalar(rownr_t rownr, const String& value);
-  void putScalar(rownr_t rownr, const Char* value) { putScalar(rownr, String(value)); }
+  void putScalar(rownr_t rownr, const char* value) { putScalar(rownr, String(value)); }
   void putScalar(rownr_t rownr, const TableRecord& value);
   // </group>
 
@@ -265,17 +265,17 @@ class BaseColumn {
   virtual ColumnCache& columnCache() = 0;
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
-  virtual void setMaximumCacheSize(uInt nbytes) = 0;
+  virtual void setMaximumCacheSize(unsigned int nbytes) = 0;
 
   // Add this column and its data to the Sort object.
   // It may allocate some storage on the heap, which will be saved
   // in the argument dataSave.
   // The function freeSortKey must be called to free this storage.
   // <group>
-  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, int order,
                            std::shared_ptr<ArrayBase>& dataSave);
   // Do it only for the given row numbers.
-  virtual void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, int order,
                               const Vector<rownr_t>& rownrs, std::shared_ptr<ArrayBase>& dataSave);
   // </group>
 

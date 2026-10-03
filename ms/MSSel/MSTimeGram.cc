@@ -72,7 +72,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSTimeGram = 0;
-static Int posMSTimeGram = 0;
+static int posMSTimeGram = 0;
 extern MSTimeParse* thisMSTParser;
 
 // # Parse the command.
@@ -80,8 +80,8 @@ extern MSTimeParse* thisMSTParser;
 //----------------------------------------------------------------------------
 
 int baseMSTimeGramParseCommand(MSTimeParse* parser, const String& command,
-                               Matrix<Double>& selectedTimeList) {
-  Int ret;
+                               Matrix<double>& selectedTimeList) {
+  int ret;
   try {
     MSTimeGramrestart(MSTimeGramin);
     yy_start = 1;
@@ -103,7 +103,7 @@ int baseMSTimeGramParseCommand(MSTimeParse* parser, const String& command,
 int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
                            const TableExprNode& colAsTEN,
                            MSSelectableMainColumn& msMainColInterface,
-                           const TableExprNode& otherTens, Matrix<Double>& selectedTimeList) {
+                           const TableExprNode& otherTens, Matrix<double>& selectedTimeList) {
   MSTimeParse* thisParser = new MSTimeParse(ms, colAsTEN, msMainColInterface, otherTens);
   int ret;
   try {
@@ -117,7 +117,7 @@ int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
 }
 
 int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
-                           const TableExprNode& otherTens, Matrix<Double>& selectedTimeList) {
+                           const TableExprNode& otherTens, Matrix<double>& selectedTimeList) {
   MSTimeParse* thisParser = new MSTimeParse(ms, otherTens);
   int ret;
   try {
@@ -152,8 +152,8 @@ int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
 }
 int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
                            const TableExprNode& otherTens) {
-  Matrix<Double> timeList;
-  Int ret;
+  Matrix<double> timeList;
+  int ret;
   try {
     MSTimeGramrestart(MSTimeGramin);
     yy_start = 1;
@@ -179,7 +179,7 @@ void msTimeGramParseDeleteNode() { return MSTimeParse::cleanup(); }
 
 // # Give the string position.
 //----------------------------------------------------------------------------
-Int& msTimeGramPosition() { return posMSTimeGram; }
+int& msTimeGramPosition() { return posMSTimeGram; }
 
 // # Get the next input characters for flex.
 //----------------------------------------------------------------------------
@@ -235,8 +235,8 @@ String msTimeGramRemoveEscapes(const String& in) {
 //   }
 
 //----------------------------------------------------------------------------
-void msTimeGramSetTimeFields(struct TimeFields& tf, Int year, Int month, Int day, Int hour,
-                             Int minute, Int sec, Int fsec) {
+void msTimeGramSetTimeFields(struct TimeFields& tf, int year, int month, int day, int hour,
+                             int minute, int sec, int fsec) {
   tf.year = year;
   tf.month = month;
   tf.day = day;

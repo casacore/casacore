@@ -43,14 +43,14 @@ template <class T>
 AutoDiff<T>::AutoDiff(const T &v) : val_p(v), nd_p(0), grad_p(0) {}
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt n)
+AutoDiff<T>::AutoDiff(const T &v, const unsigned int ndiffs, const unsigned int n)
     : val_p(v), nd_p(ndiffs), grad_p(ndiffs) {
   grad_p = T(0);
   grad_p[n] = T(1);
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs) : val_p(v), nd_p(ndiffs), grad_p(ndiffs) {
+AutoDiff<T>::AutoDiff(const T &v, const unsigned int ndiffs) : val_p(v), nd_p(ndiffs), grad_p(ndiffs) {
   grad_p = T(0);
 }
 
@@ -96,7 +96,7 @@ void AutoDiff<T>::operator*=(const AutoDiff<T> &other) {
       grad_p = other.grad_p * val_p;
     } else {
       AlwaysAssert(nd_p == other.nd_p, AipsError);
-      for (uInt i = 0; i < nd_p; i++) {
+      for (unsigned int i = 0; i < nd_p; i++) {
         grad_p[i] = val_p * other.grad_p[i] + other.val_p * grad_p[i];
       }
     }
@@ -116,7 +116,7 @@ void AutoDiff<T>::operator/=(const AutoDiff<T> &other) {
       /// val_p = other.val_p;
     } else {
       AlwaysAssert(nd_p == other.nd_p, AipsError);
-      for (uInt i = 0; i < nd_p; i++) {
+      for (unsigned int i = 0; i < nd_p; i++) {
         grad_p[i] = grad_p[i] / other.val_p - val_p * other.grad_p[i] / temp;
       }
     }

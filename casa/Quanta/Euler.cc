@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Constructors
 Euler::Euler() : euler(3), axes(3) {
-  euler = Double(0.0);
+  euler = double(0.0);
   indgen(axes, 1, 1);
 }
 
@@ -55,14 +55,14 @@ Euler &Euler::operator=(const Euler &other) {
   return *this;
 }
 
-Euler::Euler(Double in0, Double in1, Double in2) : euler(3), axes(3) {
+Euler::Euler(double in0, double in1, double in2) : euler(3), axes(3) {
   euler(0) = in0;
   euler(1) = in1;
   euler(2) = in2;
   indgen(axes, 1, 1);
 }
 
-Euler::Euler(Double in0, uInt ax0, Double in1, uInt ax1, Double in2, uInt ax2) : euler(3), axes(3) {
+Euler::Euler(double in0, unsigned int ax0, double in1, unsigned int ax1, double in2, unsigned int ax2) : euler(3), axes(3) {
   DebugAssert(ax0 <= 3 && ax1 <= 3 && ax2 <= 3, AipsError);
   euler(0) = in0;
   euler(1) = in1;
@@ -93,7 +93,7 @@ Euler::Euler(const Quantity &in0, const Quantity &in1, const Quantity &in2) : eu
   indgen(axes, 1, 1);
 }
 
-Euler::Euler(const Quantity &in0, uInt ax0) : euler(3), axes(3) {
+Euler::Euler(const Quantity &in0, unsigned int ax0) : euler(3), axes(3) {
   DebugAssert(ax0 <= 3, AipsError);
   euler(0) = Euler::makeRad(in0);
   euler(1) = 0;
@@ -102,7 +102,7 @@ Euler::Euler(const Quantity &in0, uInt ax0) : euler(3), axes(3) {
   axes(1) = 0;
   axes(2) = 0;
 }
-Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1) : euler(3), axes(3) {
+Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1) : euler(3), axes(3) {
   DebugAssert(ax0 <= 3 && ax1 <= 3, AipsError);
   euler(0) = Euler::makeRad(in0);
   euler(1) = Euler::makeRad(in1);
@@ -111,8 +111,8 @@ Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1) : eul
   axes(1) = ax1;
   axes(2) = 0;
 }
-Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1, const Quantity &in2,
-             uInt ax2)
+Euler::Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1, const Quantity &in2,
+             unsigned int ax2)
     : euler(3), axes(3) {
   DebugAssert(ax0 <= 3 && ax1 <= 3 && ax2 <= 3, AipsError);
   euler(0) = Euler::makeRad(in0);
@@ -123,10 +123,10 @@ Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1, const
   axes(2) = ax2;
 }
 
-Euler::Euler(const Quantum<Vector<Double>> &in) : euler(3), axes(3) {
-  Int i;
-  Vector<Double> tmp = Euler::makeRad(in);
-  Int j = tmp.size();
+Euler::Euler(const Quantum<Vector<double>> &in) : euler(3), axes(3) {
+  int i;
+  Vector<double> tmp = Euler::makeRad(in);
+  int j = tmp.size();
   j = min(j, 3);
   for (i = 0; i < j; i++) {
     euler(i) = tmp(i);
@@ -137,11 +137,11 @@ Euler::Euler(const Quantum<Vector<Double>> &in) : euler(3), axes(3) {
   indgen(axes, 1, 1);
 }
 
-Euler::Euler(const Quantum<Vector<Double>> &in, const Vector<uInt> &ax) : euler(3), axes(3) {
-  Vector<Double> tmp = Euler::makeRad(in);
-  Int j = tmp.size();
+Euler::Euler(const Quantum<Vector<double>> &in, const Vector<unsigned int> &ax) : euler(3), axes(3) {
+  Vector<double> tmp = Euler::makeRad(in);
+  int j = tmp.size();
   j = min(j, 3);
-  Int i = ax.size();
+  int i = ax.size();
   j = min(j, i);
   for (i = 0; i < j; i++) {
     DebugAssert(ax(i) <= 3, AipsError);
@@ -160,7 +160,7 @@ Euler::~Euler() {}
 // # Operators
 Euler Euler::operator-() const {
   Euler tmp;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     tmp.euler(i) = -euler(2 - i);
     tmp.axes(i) = axes(2 - i);
   }
@@ -193,47 +193,47 @@ Euler Euler::operator-(const Euler &right) const {
   return tmp;
 }
 
-Double &Euler::operator()(uInt which) {
+double &Euler::operator()(unsigned int which) {
   DebugAssert(which < 3, AipsError);
   return euler(which);
 }
 
-const Double &Euler::operator()(uInt which) const {
+const double &Euler::operator()(unsigned int which) const {
   DebugAssert(which < 3, AipsError);
   return euler(which);
 }
 
 // # Member functions
 
-Double Euler::makeRad(const Quantity &in) {
+double Euler::makeRad(const Quantity &in) {
   in.assure(UnitVal::ANGLE);
   return in.get().getValue();
 }
 
-Vector<Double> Euler::makeRad(const Quantum<Vector<Double>> &in) {
+Vector<double> Euler::makeRad(const Quantum<Vector<double>> &in) {
   in.assure(UnitVal::ANGLE);
   return in.get().getValue();
 }
 
-Quantum<Vector<Double>> Euler::getAngle() const { return Quantum<Vector<Double>>(euler, "rad"); }
+Quantum<Vector<double>> Euler::getAngle() const { return Quantum<Vector<double>>(euler, "rad"); }
 
-Quantum<Vector<Double>> Euler::getAngle(const Unit &unit) const {
-  return Quantum<Vector<Double>>(euler, "rad").get(unit);
+Quantum<Vector<double>> Euler::getAngle(const Unit &unit) const {
+  return Quantum<Vector<double>>(euler, "rad").get(unit);
 }
 
-void Euler::set(uInt which, uInt ax) {
+void Euler::set(unsigned int which, unsigned int ax) {
   DebugAssert(which < 3 && ax <= 3, AipsError);
   axes(which) = ax;
 }
 
-void Euler::set(uInt ax0, uInt ax1, uInt ax2) {
+void Euler::set(unsigned int ax0, unsigned int ax1, unsigned int ax2) {
   DebugAssert(ax0 <= 3 && ax1 <= 3 && ax2 <= 3, AipsError);
   axes(0) = ax0;
   axes(1) = ax1;
   axes(2) = ax2;
 }
 
-Int Euler::get(uInt which) const {
+int Euler::get(unsigned int which) const {
   DebugAssert(which < 3, AipsError);
   return axes(which);
 }

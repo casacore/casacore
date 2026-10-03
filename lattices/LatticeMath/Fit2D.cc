@@ -105,21 +105,21 @@ Fit2D& Fit2D::operator=(const Fit2D& other)
   return *this;
 }
 
-uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters,
+unsigned int Fit2D::addModel(Fit2D::Types type, const Vector<double>& parameters,
                      const Vector<bool>& parameterMask) {
-  const uInt nModels = itsTypeList.nelements() + 1;
+  const unsigned int nModels = itsTypeList.nelements() + 1;
   itsTypeList.resize(nModels, true);
   //
   if (type == Fit2D::LEVEL) {
-    ConstantND<AutoDiff<Double>> myconst(2);
-    myconst[0] = AutoDiff<Double>(parameters(0), 1, 0);
+    ConstantND<AutoDiff<double>> myconst(2);
+    myconst[0] = AutoDiff<double>(parameters(0), 1, 0);
     myconst.mask(0) = parameterMask(0);
     itsFunction.addFunction(myconst);
     itsTypeList(nModels - 1) = Fit2D::LEVEL;
   } else if (type == Fit2D::DISK) {
     itsLogger << "Fit2D - Disk fitting not yet implemented" << LogIO::EXCEPTION;
   } else if (type == Fit2D::PLANE) {
-    HyperPlane<AutoDiff<Double>> plane(3);
+    HyperPlane<AutoDiff<double>> plane(3);
     if (parameters.nelements() != 3) {
       itsLogger << "Fit2D - illegal number of parameters in addModel" << LogIO::EXCEPTION;
     }
@@ -128,7 +128,7 @@ uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters,
     //
     // Create functional
     //
-    Gaussian2D<AutoDiff<Double>> gauss2d;
+    Gaussian2D<AutoDiff<double>> gauss2d;
     if (parameters.nelements() != gauss2d.nparameters()) {
       itsLogger << "Fit2D - illegal number of parameters in addModel" << LogIO::EXCEPTION;
     }
@@ -142,31 +142,31 @@ uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters,
     // the same as fixing the minor axis, which is what the Fit2D interface
     // claims to do.  I don't know how to solve this presently.
     //
-    Int ii = Gaussian2D<Float>::HEIGHT;
-    gauss2d[ii] = AutoDiff<Double>(parameters(0), gauss2d.nparameters(), ii);  // flux
+    int ii = Gaussian2D<float>::HEIGHT;
+    gauss2d[ii] = AutoDiff<double>(parameters(0), gauss2d.nparameters(), ii);  // flux
     gauss2d.mask(ii) = parameterMask(0);
 
-    ii = Gaussian2D<Float>::XCENTER;
-    gauss2d[ii] = AutoDiff<Double>(parameters(1), gauss2d.nparameters(), ii);  // x
+    ii = Gaussian2D<float>::XCENTER;
+    gauss2d[ii] = AutoDiff<double>(parameters(1), gauss2d.nparameters(), ii);  // x
     gauss2d.mask(ii) = parameterMask(1);
 
-    ii = Gaussian2D<Float>::YCENTER;
-    gauss2d[ii] = AutoDiff<Double>(parameters(2), gauss2d.nparameters(), ii);  // y
+    ii = Gaussian2D<float>::YCENTER;
+    gauss2d[ii] = AutoDiff<double>(parameters(2), gauss2d.nparameters(), ii);  // y
     gauss2d.mask(ii) = parameterMask(2);
 
-    ii = Gaussian2D<Float>::YWIDTH;
-    gauss2d[ii] = AutoDiff<Double>(parameters(3), gauss2d.nparameters(), ii);  // major
+    ii = Gaussian2D<float>::YWIDTH;
+    gauss2d[ii] = AutoDiff<double>(parameters(3), gauss2d.nparameters(), ii);  // major
     gauss2d.mask(ii) = parameterMask(3);
 
-    ii = Gaussian2D<Float>::RATIO;
-    Double ratio = parameters(4) / parameters(3);
-    gauss2d[ii] = AutoDiff<Double>(ratio, gauss2d.nparameters(), ii);  // ratio
+    ii = Gaussian2D<float>::RATIO;
+    double ratio = parameters(4) / parameters(3);
+    gauss2d[ii] = AutoDiff<double>(ratio, gauss2d.nparameters(), ii);  // ratio
     gauss2d.mask(ii) = parameterMask(4);
 
-    ii = Gaussian2D<Float>::PANGLE;
-    Double pa = paToGauss2D(parameters(5));
+    ii = Gaussian2D<float>::PANGLE;
+    double pa = paToGauss2D(parameters(5));
     piRange(pa);
-    gauss2d[ii] = AutoDiff<Double>(pa, gauss2d.nparameters(), ii);  // p.a.
+    gauss2d[ii] = AutoDiff<double>(pa, gauss2d.nparameters(), ii);  // p.a.
     gauss2d.mask(ii) = parameterMask(5);
     //
     // Add it to function we are going to fit
@@ -178,12 +178,12 @@ uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters,
   return nModels - 1;
 }
 
-uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters) {
+unsigned int Fit2D::addModel(Fit2D::Types type, const Vector<double>& parameters) {
   Vector<bool> parameterMask(parameters.nelements(), true);
   return addModel(type, parameters, parameterMask);
 }
 
-uInt Fit2D::nModels() const { return itsFunction.nFunctions(); }
+unsigned int Fit2D::nModels() const { return itsFunction.nFunctions(); }
 
 Vector<bool> Fit2D::convertMask(const String mask, Fit2D::Types type) {
   Vector<bool> parameterMask;
@@ -220,8 +220,8 @@ Vector<bool> Fit2D::convertMask(const String mask, Fit2D::Types type) {
   return parameterMask;
 }
 
-uInt Fit2D::nParameters(Fit2D::Types type) {
-  uInt n = 0;
+unsigned int Fit2D::nParameters(Fit2D::Types type) {
+  unsigned int n = 0;
   if (type == Fit2D::LEVEL) {
     throw(AipsError("Fit2D - Level fitting not yet implemented"));
   } else if (type == Fit2D::DISK) {
@@ -232,26 +232,26 @@ uInt Fit2D::nParameters(Fit2D::Types type) {
   return n;
 }
 
-Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
-                                  const MaskedLattice<Float>& data) {
-  Array<Float> pixels = data.get(true);
+Fit2D::ErrorTypes Fit2D::residual(Array<float>& resid, Array<float>& model,
+                                  const MaskedLattice<float>& data) {
+  Array<float> pixels = data.get(true);
   return residual(resid, model, pixels);
 }
 
-Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
-                                  const Lattice<Float>& data) {
-  Array<Float> pixels = data.get(true);
+Fit2D::ErrorTypes Fit2D::residual(Array<float>& resid, Array<float>& model,
+                                  const Lattice<float>& data) {
+  Array<float> pixels = data.get(true);
   return residual(resid, model, pixels);
 }
 
-void Fit2D::setIncludeRange(Double minVal, Double maxVal) {
+void Fit2D::setIncludeRange(double minVal, double maxVal) {
   itsPixelRange.resize(2);
   itsPixelRange(0) = min(minVal, maxVal);
   itsPixelRange(1) = max(minVal, maxVal);
   itsInclude = true;
 }
 
-void Fit2D::setExcludeRange(Double minVal, Double maxVal) {
+void Fit2D::setExcludeRange(double minVal, double maxVal) {
   itsPixelRange.resize(2);
   itsPixelRange(0) = min(minVal, maxVal);
   itsPixelRange(1) = max(minVal, maxVal);
@@ -287,29 +287,29 @@ Fit2D::Types Fit2D::type(const String& type) {
   return tmp2;
 }
 
-Fit2D::Types Fit2D::type(uInt which) {
+Fit2D::Types Fit2D::type(unsigned int which) {
   if (which >= itsFunction.nFunctions()) {
     itsLogger << "Fit2D::type - illegal model index" << LogIO::EXCEPTION;
   }
   return (Fit2D::Types)itsTypeList(which);
 }
 
-Vector<Double> Fit2D::availableSolution() const
+Vector<double> Fit2D::availableSolution() const
 //
 // Conversion of Gaussian models from axial ratio
 // to minor axis is done
 //
 {
-  const uInt nF = itsFunction.nFunctions();
-  Vector<Double> sol(itsFunction.nparameters());
-  for (uInt i = 0, l = 0; i < nF; i++) {
-    Vector<Double> sol2 = availableSolution(i).copy();
-    for (uInt j = 0; j < sol2.nelements(); j++) sol(l++) = sol2(j);
+  const unsigned int nF = itsFunction.nFunctions();
+  Vector<double> sol(itsFunction.nparameters());
+  for (unsigned int i = 0, l = 0; i < nF; i++) {
+    Vector<double> sol2 = availableSolution(i).copy();
+    for (unsigned int j = 0; j < sol2.nelements(); j++) sol(l++) = sol2(j);
   }
   return sol;
 }
 
-Vector<Double> Fit2D::availableSolution(uInt which) const
+Vector<double> Fit2D::availableSolution(unsigned int which) const
 //
 //  For Gaussian models, convert axial ratio to minor axis
 //  and fiddle position angle to be that of the major axis,
@@ -317,7 +317,7 @@ Vector<Double> Fit2D::availableSolution(uInt which) const
 //
 {
   if (!itsValidSolution) {
-    Vector<Double> tmp;
+    Vector<double> tmp;
     return tmp;
   }
   //
@@ -325,21 +325,21 @@ Vector<Double> Fit2D::availableSolution(uInt which) const
     itsLogger << "Fit2D::availableSolution - illegal model index" << LogIO::EXCEPTION;
   }
   //
-  uInt iStart;
-  Vector<Double> sol = availableSolution(iStart, which).copy();
+  unsigned int iStart;
+  Vector<double> sol = availableSolution(iStart, which).copy();
   //
   // Convert Gaussian solution axial ratio to major/minor axis.
   // sol2(3) may be the major or minor axis after fitting.
   // The solution may have a negative axial ratio
   //
   if (itsTypeList(which) == Fit2D::GAUSSIAN) {
-    Int iY = Gaussian2D<Float>::YWIDTH;
-    Int iR = Gaussian2D<Float>::RATIO;
-    Int iPA = Gaussian2D<Float>::PANGLE;
+    int iY = Gaussian2D<float>::YWIDTH;
+    int iR = Gaussian2D<float>::RATIO;
+    int iPA = Gaussian2D<float>::PANGLE;
     //
-    Double other = abs(sol(iY) * sol(iR));
-    Double ywidth = abs(sol(iY));
-    Double major, minor, pa;
+    double other = abs(sol(iY) * sol(iR));
+    double ywidth = abs(sol(iY));
+    double major, minor, pa;
     if (ywidth > other) {
       major = ywidth;
       minor = other;
@@ -362,7 +362,7 @@ Vector<Double> Fit2D::availableSolution(uInt which) const
   return sol;
 }
 
-Vector<Double> Fit2D::availableSolution(uInt& iStart, uInt which) const {
+Vector<double> Fit2D::availableSolution(unsigned int& iStart, unsigned int which) const {
   //
   // Loop over models and figure out where the model of
   // interest starts in the solution vector. Returns
@@ -373,7 +373,7 @@ Vector<Double> Fit2D::availableSolution(uInt& iStart, uInt which) const {
   //
   // Find the number of available parameters for the model of interest
   //
-  uInt nP = itsFunction.function(which).nparameters();
+  unsigned int nP = itsFunction.function(which).nparameters();
   if (itsSolution.nelements() < iStart + nP) {
     itsLogger << LogIO::SEVERE
               << "Fit2D::availableSolution - "
@@ -381,33 +381,33 @@ Vector<Double> Fit2D::availableSolution(uInt& iStart, uInt which) const {
               << LogIO::POST;
   }
   //
-  Vector<Double> sol(nP);
-  for (uInt i = 0; i < nP; i++) sol(i) = itsSolution(iStart + i);
+  Vector<double> sol(nP);
+  for (unsigned int i = 0; i < nP; i++) sol(i) = itsSolution(iStart + i);
   return sol;
 }
 
-Vector<Double> Fit2D::availableErrors() const
+Vector<double> Fit2D::availableErrors() const
 //
 // Conversion of Gaussian models from axial ratio
 // to minor axis is done
 //
 {
-  const uInt nF = itsFunction.nFunctions();
-  Vector<Double> errors(itsFunction.nparameters());
-  for (uInt i = 0, l = 0; i < nF; i++) {
-    Vector<Double> errors2 = availableErrors(i).copy();
-    for (uInt j = 0; j < errors2.nelements(); j++) errors(l++) = errors2(j);
+  const unsigned int nF = itsFunction.nFunctions();
+  Vector<double> errors(itsFunction.nparameters());
+  for (unsigned int i = 0, l = 0; i < nF; i++) {
+    Vector<double> errors2 = availableErrors(i).copy();
+    for (unsigned int j = 0; j < errors2.nelements(); j++) errors(l++) = errors2(j);
   }
   return errors;
 }
 
-Vector<Double> Fit2D::availableErrors(uInt which) const
+Vector<double> Fit2D::availableErrors(unsigned int which) const
 //
 //  For Gaussian models, convert axial ratio to minor axis
 //
 {
   if (!itsValidSolution) {
-    Vector<Double> tmp;
+    Vector<double> tmp;
     return tmp;
   }
   //
@@ -415,9 +415,9 @@ Vector<Double> Fit2D::availableErrors(uInt which) const
     itsLogger << "Fit2D::availableErrors - illegal model index" << LogIO::EXCEPTION;
   }
   //
-  uInt iStart;
-  Vector<Double> errors = availableErrors(iStart, which).copy();
-  Vector<Double> sol = availableSolution(iStart, which).copy();
+  unsigned int iStart;
+  Vector<double> errors = availableErrors(iStart, which).copy();
+  Vector<double> sol = availableSolution(iStart, which).copy();
   //
   // Convert Gaussian solution axial ratio to major/minor axis.
   // ratio  = other / YWIDTH
@@ -425,29 +425,29 @@ Vector<Double> Fit2D::availableErrors(uInt which) const
   //
   //
   if (itsTypeList(which) == Fit2D::GAUSSIAN) {
-    Int iY = Gaussian2D<Float>::YWIDTH;
-    Int iR = Gaussian2D<Float>::RATIO;
+    int iY = Gaussian2D<float>::YWIDTH;
+    int iR = Gaussian2D<float>::RATIO;
     //
-    Double other = abs(sol(iY) * sol(iR));
-    Double yWidth = abs(sol(iY));
-    Double ratio = abs(sol(iR));
+    double other = abs(sol(iY) * sol(iR));
+    double yWidth = abs(sol(iY));
+    double ratio = abs(sol(iR));
     //
-    Double sigRatio = errors(iR);
-    Double sigYWidth = errors(iY);
+    double sigRatio = errors(iR);
+    double sigYWidth = errors(iY);
 
     /*
     // Use standard propagation of errors to get error in other
 
-          Double f1 = sigRatio * sigRatio / ratio / ratio;
-          Double f2 = sigYWidth * sigYWidth / yWidth / yWidth;
-          Double sigOther = other * sqrt(f1 + f2);
+          double f1 = sigRatio * sigRatio / ratio / ratio;
+          double f2 = sigYWidth * sigYWidth / yWidth / yWidth;
+          double sigOther = other * sqrt(f1 + f2);
     */
 
     // The propagation errors are too large.  Try using
     // same fractional error...  I need to find better ways
     // to deal with the Gaussian as wdith and ratio
 
-    Double sigOther = other * (sigRatio / ratio);
+    double sigOther = other * (sigRatio / ratio);
 
     /*
     cerr << "ratio, major, other = " << ratio << ", " << yWidth << ", " << other << endl;
@@ -470,7 +470,7 @@ Vector<Double> Fit2D::availableErrors(uInt which) const
   return errors;
 }
 
-Vector<Double> Fit2D::availableErrors(uInt& iStart, uInt which) const {
+Vector<double> Fit2D::availableErrors(unsigned int& iStart, unsigned int which) const {
   //
   // Loop over models and figure out where the model of
   // interest starts in the solution vector.
@@ -479,7 +479,7 @@ Vector<Double> Fit2D::availableErrors(uInt& iStart, uInt which) const {
   //
   // Find the number of available parameters for the model of interest
   //
-  uInt nP = itsFunction.function(which).nparameters();
+  unsigned int nP = itsFunction.function(which).nparameters();
   if (itsErrors.nelements() < iStart + nP) {
     itsLogger << LogIO::SEVERE
               << "Fit2D::availableErrors - "
@@ -487,52 +487,52 @@ Vector<Double> Fit2D::availableErrors(uInt& iStart, uInt which) const {
               << LogIO::POST;
   }
   //
-  Vector<Double> errors(nP, 0.0);
-  for (uInt i = 0; i < nP; i++) errors(i) = itsErrors(iStart + i);
+  Vector<double> errors(nP, 0.0);
+  for (unsigned int i = 0; i < nP; i++) errors(i) = itsErrors(iStart + i);
   return errors;
 }
 
 String Fit2D::errorMessage() const { return itsErrorMessage; }
 
-uInt Fit2D::numberIterations() const { return itsFitter.currentIteration(); }
+unsigned int Fit2D::numberIterations() const { return itsFitter.currentIteration(); }
 
-Double Fit2D::chiSquared() const {
+double Fit2D::chiSquared() const {
   if (!itsValidSolution) {
     return -1.0;
   }
   return itsChiSquared;
 }
 
-uInt Fit2D::numberPoints() const { return itsNumberPoints; }
+unsigned int Fit2D::numberPoints() const { return itsNumberPoints; }
 
-Vector<Double> Fit2D::getParams(uInt which) const
+Vector<double> Fit2D::getParams(unsigned int which) const
 //
 // Recover the available parameters for this model
 // from the SumFunction
 //
 {
-  Vector<Double> params(itsFunction.function(which).nparameters());
-  for (uInt i = 0; i < params.nelements(); i++) {
+  Vector<double> params(itsFunction.function(which).nparameters());
+  for (unsigned int i = 0; i < params.nelements(); i++) {
     params(i) = itsFunction.function(which).parameters().getParameters()(i).value();
   }
   return params;
 }
 
-void Fit2D::setParams(const Vector<Double>& params, uInt which)
+void Fit2D::setParams(const Vector<double>& params, unsigned int which)
 //
 // Set the available parameters for this model
 // from the SumFunction
 //
 {
-  for (uInt i = 0; i < params.nelements(); i++) {
+  for (unsigned int i = 0; i < params.nelements(); i++) {
     itsFunction[itsFunction.parameterOffset(which) + i].value() = params[i];
   }
 }
 
 // Private functions
 
-Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values, const Matrix<Double>& pos,
-                                 const Vector<Double>& weights)
+Fit2D::ErrorTypes Fit2D::fitData(const Vector<double>& values, const Matrix<double>& pos,
+                                 const Vector<double>& weights)
 //
 // Do the actual fit
 //
@@ -580,7 +580,7 @@ Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values, const Matrix<Doub
   return status;
 }
 
-void Fit2D::piRange(Double& pa) const
+void Fit2D::piRange(double& pa) const
 //
 // Put angle in radians in range +/- pi
 //

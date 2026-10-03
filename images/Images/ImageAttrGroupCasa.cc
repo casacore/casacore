@@ -45,7 +45,7 @@ void ImageAttrGroupCasa::flush() {
   }
 }
 
-uInt ImageAttrGroupCasa::nrows() const { return itsTable.table().nrow(); }
+unsigned int ImageAttrGroupCasa::nrows() const { return itsTable.table().nrow(); }
 
 bool ImageAttrGroupCasa::hasAttr(const String& attrName) const {
   return itsTable.table().tableDesc().isColumn(attrName);
@@ -63,15 +63,15 @@ DataType ImageAttrGroupCasa::dataType(const String& attrName) const {
   return TpOther;
 }
 
-ValueHolder ImageAttrGroupCasa::getData(const String& attrName, uInt rownr) {
+ValueHolder ImageAttrGroupCasa::getData(const String& attrName, unsigned int rownr) {
   ValueHolder value(itsTable.getCell(attrName, rownr));
   if (value.isNull()) {
-    value = ValueHolder(Array<Int>());
+    value = ValueHolder(Array<int>());
   }
   return value;
 }
 
-Record ImageAttrGroupCasa::getDataRow(uInt rownr) {
+Record ImageAttrGroupCasa::getDataRow(unsigned int rownr) {
   ROTableRow tabrow(itsTable.table());
   // Transform TableRecord to Record.
   return ValueHolder(tabrow.get(rownr)).asRecord();
@@ -97,7 +97,7 @@ Vector<String> ImageAttrGroupCasa::getMeasInfo(const String& attrName) {
   return Vector<String>();
 }
 
-void ImageAttrGroupCasa::putData(const String& attrName, uInt rownr, const ValueHolder& data,
+void ImageAttrGroupCasa::putData(const String& attrName, unsigned int rownr, const ValueHolder& data,
                                  const Vector<String>& units, const Vector<String>& measInfo) {
   itsTable.reopenRW();
   // If needed, add the column for the attribute.
@@ -123,8 +123,8 @@ void ImageAttrGroupCasa::putData(const String& attrName, uInt rownr, const Value
   itsTable.putCell(attrName, Vector<Int64>(1, rownr), data);
 }
 
-void ImageAttrGroupCasa::checkRows(const std::string& attrName, uInt rownr) {
-  uInt nrow = itsTable.nrows();
+void ImageAttrGroupCasa::checkRows(const std::string& attrName, unsigned int rownr) {
+  unsigned int nrow = itsTable.nrows();
   // A new row can only be added right after the last row.
   if (rownr > nrow) {
     throw AipsError("ImageAttrGroupCasa: row " + ValueToString(rownr) + " of attribute " +
@@ -157,22 +157,22 @@ bool ImageAttrGroupCasa::addNewColumn(const String& attrName, const ValueHolder&
     case TpUShort:
     case TpInt:
     case TpUInt:
-      tab.addColumn(ScalarColumnDesc<Int>(attrName));
+      tab.addColumn(ScalarColumnDesc<int>(attrName));
       break;
     case TpArrayInt:
-      tab.addColumn(ArrayColumnDesc<Int>(attrName));
+      tab.addColumn(ArrayColumnDesc<int>(attrName));
       break;
     case TpFloat:
-      tab.addColumn(ScalarColumnDesc<Float>(attrName));
+      tab.addColumn(ScalarColumnDesc<float>(attrName));
       break;
     case TpArrayFloat:
-      tab.addColumn(ArrayColumnDesc<Float>(attrName));
+      tab.addColumn(ArrayColumnDesc<float>(attrName));
       break;
     case TpDouble:
-      tab.addColumn(ScalarColumnDesc<Double>(attrName));
+      tab.addColumn(ScalarColumnDesc<double>(attrName));
       break;
     case TpArrayDouble:
-      tab.addColumn(ArrayColumnDesc<Double>(attrName));
+      tab.addColumn(ArrayColumnDesc<double>(attrName));
       break;
     case TpComplex:
       tab.addColumn(ScalarColumnDesc<Complex>(attrName));

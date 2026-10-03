@@ -51,7 +51,7 @@ void showDataIter(ostream& os, ITER begin, const ITER& end, const char* sep, con
 template <typename T>
 AipsIO& operator>>(AipsIO& ios, std::vector<T>& v) {
   ios.getstart("Block");
-  uInt nr;
+  unsigned int nr;
   ios >> nr;
   v.resize(nr);
   getAipsIO(ios, nr, v.data());
@@ -61,7 +61,7 @@ AipsIO& operator>>(AipsIO& ios, std::vector<T>& v) {
 template <typename T>
 AipsIO& operator<<(AipsIO& ios, const std::vector<T>& v) {
   ios.putstart("Block", 1);
-  putAipsIO(ios, (uInt)v.size(), v.data());
+  putAipsIO(ios, (unsigned int)v.size(), v.data());
   ios.putend();
   return ios;
 }
@@ -76,10 +76,10 @@ AipsIO& operator>>(AipsIO& ios, std::map<K, V>& m) {
   m.clear();
   // Now read in the values and store them into the map.
   ios >> val;  // old default value; ignored
-  uInt nr, ni;
+  unsigned int nr, ni;
   ios >> nr;
   ios >> ni;  // old incr; ignored
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     ios >> key;
     ios >> val;
     m.insert(std::make_pair(key, val));
@@ -92,8 +92,8 @@ template <typename K, typename V>
 AipsIO& operator<<(AipsIO& ios, const std::map<K, V>& m) {
   ios.putstart("SimpleOrderedMap", 1);
   ios << V();  // old default value; ignored
-  ios << uInt(m.size());
-  ios << uInt(1);  // old incr; ignored
+  ios << static_cast<unsigned int>(m.size());
+  ios << static_cast<unsigned int>(1);  // old incr; ignored
   for (const auto& x : m) {
     ios << x.first;
     ios << x.second;

@@ -236,7 +236,7 @@ simexpr:   LPAREN orexpr RPAREN
 
 scalarlist: scalarlist COMMA orexpr {
                $$ = $1;
-	       uInt nr = $$->nelements();
+	       unsigned int nr = $$->nelements();
 	       $$->resize (nr+1);
 	       (*$$)[nr] = *$3;
 	    }

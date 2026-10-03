@@ -177,7 +177,7 @@ class TileStepper : public LatticeNavigator {
   // all cursor movement (operator++ or operator--), even though
   // N-increments followed by N-decrements will always leave the cursor in
   // the original position.
-  virtual uInt nsteps() const;
+  virtual unsigned int nsteps() const;
 
   // Function which returns the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origin
@@ -249,8 +249,8 @@ class TileStepper : public LatticeNavigator {
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                             uInt maxCacheSize, uInt bucketSize) const;
+  virtual unsigned int calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                             unsigned int maxCacheSize, unsigned int bucketSize) const;
 
  private:
   // Prevent the default constructor from being used.
@@ -266,7 +266,7 @@ class TileStepper : public LatticeNavigator {
   IPosition itsAxisPath;         // # Path for traversing
   IPosition itsCurBlc;           // # Blc of the current position.
   IPosition itsCurTrc;           // # Trc of the current position.
-  uInt itsNsteps;                // # The number of iterator steps taken so far
+  unsigned int itsNsteps;                // # The number of iterator steps taken so far
   bool itsEnd;                   // # Is the cursor beyond the end?
   bool itsStart;                 // # Is the cursor at the beginning?
 };

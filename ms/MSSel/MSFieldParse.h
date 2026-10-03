@@ -87,12 +87,12 @@ class MSFieldParse : public MSParse {
   MSFieldParse(const MSField& fieldSubTable, const TableExprNode& columnAsTEN);
   ~MSFieldParse() { columnAsTEN_p = TableExprNode(); }
 
-  const TableExprNode* selectFieldIds(const Vector<Int>& fieldIds);
+  const TableExprNode* selectFieldIds(const Vector<int>& fieldIds);
 
   // Get table expression node object.
   static const TableExprNode* node();
   static MSFieldParse* thisMSFParser;
-  static Vector<Int> selectedIDs() { return idList; }
+  static Vector<int> selectedIDs() { return idList; }
   static void reset();
   static void cleanup() {
     if (node_p) delete node_p;
@@ -103,7 +103,7 @@ class MSFieldParse : public MSParse {
  private:
   static TableExprNode* node_p;
   const String colName;
-  static Vector<Int> idList;
+  static Vector<int> idList;
   MSField msFieldSubTable_p;
   static TableExprNode columnAsTEN_p;
 };

@@ -82,8 +82,8 @@ static DataType fitsDataType(FITS::ValueType fitsType) {
 // its length   A null character terminates the string
 // and trailing spaces are not considered as part of the
 // string
-uInt charLength(const char *cptr, uInt maxLength) {
-  uInt length = 0;
+unsigned int charLength(const char *cptr, unsigned int maxLength) {
+  unsigned int length = 0;
   // watch for any null termination
   while (length < maxLength && cptr[length] != '\0') {
     length++;
@@ -136,7 +136,7 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu, bool allKeywords) 
         break;
       case FITS::STRING: {
         const char *cptr = key->asString();
-        uInt length = charLength(cptr, key->valStrlen());
+        unsigned int length = charLength(cptr, key->valStrlen());
         keywords.define(name, String(cptr, length));
       } break;
       case FITS::FLOAT:
@@ -173,16 +173,16 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu, bool allKeywords) 
 
 RecordDesc FITSTabular::descriptionFromHDU(BinaryTableExtension &hdu) {
   RecordDesc description;
-  uInt ncol = hdu.ncols();
+  unsigned int ncol = hdu.ncols();
 
   // this is needed here
   Record subStringInfo = subStringShapeFromHDU(hdu);
 
   IPosition shape;
-  for (uInt i = 0; i < ncol; i++) {
+  for (unsigned int i = 0; i < ncol; i++) {
     DataType type = fitsDataType(hdu.field(i).fieldtype());
     shape.resize(hdu.field(i).dims());
-    for (uInt j = 0; j < shape.nelements(); j++) {
+    for (unsigned int j = 0; j < shape.nelements(); j++) {
       shape(j) = hdu.field(i).dim(j);
     }
     String colname(hdu.ttype(i));
@@ -204,7 +204,7 @@ RecordDesc FITSTabular::descriptionFromHDU(BinaryTableExtension &hdu) {
       // is this a substring convention
       if (subStringInfo.isDefined(colname)) {
         const Record info(subStringInfo.asRecord(colname));
-        Int nelem = info.asInt("NELEM");
+        int nelem = info.asInt("NELEM");
         if (nelem > 0) {
           // fixed shape
           description.addField(colname, type, IPosition(1, nelem));
@@ -233,10 +233,10 @@ RecordDesc FITSTabular::descriptionFromHDU(BinaryTableExtension &hdu) {
 
 Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu) {
   Record subStringShapes;
-  uInt ncol = hdu.ncols();
+  unsigned int ncol = hdu.ncols();
 
   Regex trailing(" *$");  // trailing blanks
-  for (uInt i = 0; i < ncol; i++) {
+  for (unsigned int i = 0; i < ncol; i++) {
     String colname(hdu.ttype(i));
     RTrimInPlace(colname, ' ');
     String tform(hdu.tform(i));
@@ -251,21 +251,21 @@ Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu) {
       String::size_type slinx = sstr.find('/');
       if (slinx != String::npos) {
         // two integers separate by a the slash
-        Int maxChars = atol(sstr.substr(0, slinx).c_str());
-        Int delim = atol(sstr.substr(slinx + 1).c_str());
+        int maxChars = atol(sstr.substr(0, slinx).c_str());
+        int delim = atol(sstr.substr(slinx + 1).c_str());
         info.define("NCHAR", maxChars);
         info.define("NELEM", -1);
-        info.define("DELIM", String(1, Char(delim)));
+        info.define("DELIM", String(1, char(delim)));
       } else {
         // it must be just an integer at this point
-        Int nchars = atol(sstr.c_str());
+        int nchars = atol(sstr.c_str());
         // fixed shape String array
         // determine the shape given nchars
-        Int nelem = hdu.field(i).nelements() / nchars;
+        int nelem = hdu.field(i).nelements() / nchars;
         if (nelem < 1) nelem = 1;
         info.define("NCHAR", nchars);
         info.define("NELEM", nelem);
-        info.define("DELIM", String(1, Char('\0')));
+        info.define("DELIM", String(1, char('\0')));
       }
       subStringShapes.defineRecord(colname, info);
     }
@@ -275,9 +275,9 @@ Record FITSTabular::subStringShapeFromHDU(BinaryTableExtension &hdu) {
 
 Record FITSTabular::unitsFromHDU(BinaryTableExtension &hdu) {
   Record units;
-  uInt ncol = hdu.ncols();
+  unsigned int ncol = hdu.ncols();
 
-  for (uInt i = 0; i < ncol; i++) {
+  for (unsigned int i = 0; i < ncol; i++) {
     String colname(hdu.ttype(i));
     RTrimInPlace(colname, ' ');
     String unitval(hdu.tunit(i));
@@ -289,9 +289,9 @@ Record FITSTabular::unitsFromHDU(BinaryTableExtension &hdu) {
 
 Record FITSTabular::displayFormatsFromHDU(BinaryTableExtension &hdu) {
   Record disps;
-  uInt ncol = hdu.ncols();
+  unsigned int ncol = hdu.ncols();
 
-  for (uInt i = 0; i < ncol; i++) {
+  for (unsigned int i = 0; i < ncol; i++) {
     String colname(hdu.ttype(i));
     RTrimInPlace(colname, ' ');
     String dispval(hdu.tdisp(i));
@@ -303,14 +303,14 @@ Record FITSTabular::displayFormatsFromHDU(BinaryTableExtension &hdu) {
 
 Record FITSTabular::nullsFromHDU(BinaryTableExtension &hdu) {
   Record nulls;
-  uInt ncol = hdu.ncols();
+  unsigned int ncol = hdu.ncols();
 
   // strangely, the first arg to hdu.kw is a reference
   // to a FITS::ReservedName (not even a const reference)
   // So, since I can't put FITS::TNULL there, I need to
   // make it a variable, first.  Argh.
   FITS::ReservedName tnull = FITS::TNULL;
-  for (uInt i = 0; i < ncol; i++) {
+  for (unsigned int i = 0; i < ncol; i++) {
     // only if column is BYTE, SHORT, LONG and
     // tscal == 1.0 and tzero = 0.0, i.e. no promotion will be done
     // also, make sure it has a TNULL keyword in the original
@@ -338,7 +338,7 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
   Record disps = fitstabular.displayFormats();
   Record nulls = fitstabular.nulls();
 
-  for (uInt i = 0; i < desc.nfields(); i++) {
+  for (unsigned int i = 0; i < desc.nfields(); i++) {
     if (!desc.isArray(i)) {
       // it shouldn't be necessary to set the default value here
       // but it seem to be
@@ -351,42 +351,42 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
         // td.addColumn(ScalarColumnDesc<Bool>(desc.name(i), desc.comment(i)));
         break;
         case TpChar: {
-          ScalarColumnDesc<Char> scd(desc.name(i), desc.comment(i));
+          ScalarColumnDesc<char> scd(desc.name(i), desc.comment(i));
           scd.setDefault(ValType::undefChar());
           td.addColumn(scd);
         }
         // td.addColumn(ScalarColumnDesc<Char>(desc.name(i), desc.comment(i)));
         break;
         case TpUChar: {
-          ScalarColumnDesc<uChar> scd(desc.name(i), desc.comment(i));
+          ScalarColumnDesc<unsigned char> scd(desc.name(i), desc.comment(i));
           scd.setDefault(ValType::undefUChar());
           td.addColumn(scd);
         }
         // td.addColumn(ScalarColumnDesc<uChar>(desc.name(i), desc.comment(i)));
         break;
         case TpShort: {
-          ScalarColumnDesc<Short> scd(desc.name(i), desc.comment(i));
+          ScalarColumnDesc<short> scd(desc.name(i), desc.comment(i));
           scd.setDefault(ValType::undefShort());
           td.addColumn(scd);
         }
         // td.addColumn(ScalarColumnDesc<Short>(desc.name(i), desc.comment(i)));
         break;
         case TpInt: {
-          ScalarColumnDesc<Int> scd(desc.name(i), desc.comment(i));
+          ScalarColumnDesc<int> scd(desc.name(i), desc.comment(i));
           scd.setDefault(ValType::undefInt());
           td.addColumn(scd);
         }
         // td.addColumn(ScalarColumnDesc<Int>(desc.name(i), desc.comment(i)));
         break;
         case TpFloat: {
-          ScalarColumnDesc<Float> scd(desc.name(i), desc.comment(i));
+          ScalarColumnDesc<float> scd(desc.name(i), desc.comment(i));
           scd.setDefault(ValType::undefFloat());
           td.addColumn(scd);
         }
         // td.addColumn(ScalarColumnDesc<Float>(desc.name(i), desc.comment(i)));
         break;
         case TpDouble: {
-          ScalarColumnDesc<Double> scd(desc.name(i), desc.comment(i));
+          ScalarColumnDesc<double> scd(desc.name(i), desc.comment(i));
           scd.setDefault(ValType::undefDouble());
           td.addColumn(scd);
         }
@@ -421,7 +421,7 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
     } else {
       bool fixedShape = true;
       IPosition shape = desc.shape(i);
-      Int options = 0;
+      int options = 0;
       if (shape.nelements() == 1 && shape(0) == -1) {
         fixedShape = false;
       } else {
@@ -444,49 +444,49 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
         case TpChar:
         case TpArrayChar:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<Char>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(ArrayColumnDesc<char>(desc.name(i), desc.comment(i), shape, options));
           } else {
-            td.addColumn(ArrayColumnDesc<Char>(desc.name(i), desc.comment(i)));
+            td.addColumn(ArrayColumnDesc<char>(desc.name(i), desc.comment(i)));
           }
           break;
         case TpUChar:
         case TpArrayUChar:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<uChar>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(ArrayColumnDesc<unsigned char>(desc.name(i), desc.comment(i), shape, options));
           } else {
-            td.addColumn(ArrayColumnDesc<uChar>(desc.name(i), desc.comment(i)));
+            td.addColumn(ArrayColumnDesc<unsigned char>(desc.name(i), desc.comment(i)));
           }
           break;
         case TpShort:
         case TpArrayShort:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<Short>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(ArrayColumnDesc<short>(desc.name(i), desc.comment(i), shape, options));
           } else {
-            td.addColumn(ArrayColumnDesc<Short>(desc.name(i), desc.comment(i)));
+            td.addColumn(ArrayColumnDesc<short>(desc.name(i), desc.comment(i)));
           }
           break;
         case TpInt:
         case TpArrayInt:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<Int>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(ArrayColumnDesc<int>(desc.name(i), desc.comment(i), shape, options));
           } else {
-            td.addColumn(ArrayColumnDesc<Int>(desc.name(i), desc.comment(i)));
+            td.addColumn(ArrayColumnDesc<int>(desc.name(i), desc.comment(i)));
           }
           break;
         case TpFloat:
         case TpArrayFloat:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<Float>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(ArrayColumnDesc<float>(desc.name(i), desc.comment(i), shape, options));
           } else {
-            td.addColumn(ArrayColumnDesc<Float>(desc.name(i), desc.comment(i)));
+            td.addColumn(ArrayColumnDesc<float>(desc.name(i), desc.comment(i)));
           }
           break;
         case TpDouble:
         case TpArrayDouble:
           if (fixedShape) {
-            td.addColumn(ArrayColumnDesc<Double>(desc.name(i), desc.comment(i), shape, options));
+            td.addColumn(ArrayColumnDesc<double>(desc.name(i), desc.comment(i), shape, options));
           } else {
-            td.addColumn(ArrayColumnDesc<Double>(desc.name(i), desc.comment(i)));
+            td.addColumn(ArrayColumnDesc<double>(desc.name(i), desc.comment(i)));
           }
           break;
         case TpComplex:
@@ -533,7 +533,7 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
   return td;
 }
 
-FITSTable::FITSTable(uInt whichHDU, bool allKeywords)
+FITSTable::FITSTable(unsigned int whichHDU, bool allKeywords)
     : hdu_nr_p(whichHDU),
       row_nr_p(-1),
       raw_table_p(0),
@@ -550,7 +550,7 @@ FITSTable::FITSTable(uInt whichHDU, bool allKeywords)
   isValid_p = false;
 }
 
-FITSTable::FITSTable(const String &fileName, uInt whichHDU, bool allKeywords)
+FITSTable::FITSTable(const String &fileName, unsigned int whichHDU, bool allKeywords)
     : hdu_nr_p(whichHDU),
       row_nr_p(-1),
       raw_table_p(0),
@@ -610,7 +610,7 @@ bool FITSTable::reopen(const String &fileName) {
       return false;
   }
 
-  uInt i;
+  unsigned int i;
   for (i = 1; i < hdu_nr_p && !io_p->err(); i++) {
     io_p->skip_hdu();
   }
@@ -658,8 +658,8 @@ bool FITSTable::reopen(const String &fileName) {
         description_p.type(i) == TpString) {
       String tdim = description_p.name(i);
       tdim = tdim.substr(4);
-      Int which = atol(tdim.c_str()) - 1;
-      if (which >= 0 && which < Int(tdims_p.nelements())) {
+      int which = atol(tdim.c_str()) - 1;
+      if (which >= 0 && which < int(tdims_p.nelements())) {
         anyReshaped = true;
         tdims_p[which] = i;
       }
@@ -708,10 +708,10 @@ bool FITSTable::reopen(const String &fileName) {
   if (raw_table_p->pcount()) {
     raw_table_p->read(raw_table_p->nrows());
     if (raw_table_p->notnull(raw_table_p->theap())) {
-      uInt heapOffset = raw_table_p->theap() - raw_table_p->rowsize() * raw_table_p->nrows();
+      unsigned int heapOffset = raw_table_p->theap() - raw_table_p->rowsize() * raw_table_p->nrows();
       // skip to the start of the heap
       // I don't see any way except to read these bogus bytes
-      Block<Char> junk(heapOffset);
+      Block<char> junk(heapOffset);
       raw_table_p->ExtensionHeaderDataUnit::read(junk.storage(), heapOffset);
     }
     theheap_p = new char[raw_table_p->pcount()];
@@ -733,34 +733,34 @@ bool FITSTable::reopen(const String &fileName) {
         row_fields_p[i] = new RecordFieldPtr<Array<bool>>(row_p, i);
         break;
       case TpUChar:
-        row_fields_p[i] = new RecordFieldPtr<uChar>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<unsigned char>(row_p, i);
         break;
       case TpArrayUChar:
-        row_fields_p[i] = new RecordFieldPtr<Array<uChar>>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<Array<unsigned char>>(row_p, i);
         break;
       case TpShort:
-        row_fields_p[i] = new RecordFieldPtr<Short>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<short>(row_p, i);
         break;
       case TpArrayShort:
-        row_fields_p[i] = new RecordFieldPtr<Array<Short>>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<Array<short>>(row_p, i);
         break;
       case TpInt:
-        row_fields_p[i] = new RecordFieldPtr<Int>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<int>(row_p, i);
         break;
       case TpArrayInt:
-        row_fields_p[i] = new RecordFieldPtr<Array<Int>>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<Array<int>>(row_p, i);
         break;
       case TpFloat:
-        row_fields_p[i] = new RecordFieldPtr<Float>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<float>(row_p, i);
         break;
       case TpArrayFloat:
-        row_fields_p[i] = new RecordFieldPtr<Array<Float>>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<Array<float>>(row_p, i);
         break;
       case TpDouble:
-        row_fields_p[i] = new RecordFieldPtr<Double>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<double>(row_p, i);
         break;
       case TpArrayDouble:
-        row_fields_p[i] = new RecordFieldPtr<Array<Double>>(row_p, i);
+        row_fields_p[i] = new RecordFieldPtr<Array<double>>(row_p, i);
         break;
       case TpComplex:
         row_fields_p[i] = new RecordFieldPtr<Complex>(row_p, i);
@@ -791,12 +791,12 @@ bool FITSTable::reopen(const String &fileName) {
   // set up things necessary fo VADESC cols
   // this is only necessary if a heap exists
   if (theheap_p) {
-    Int ncols = raw_table_p->ncols();
+    int ncols = raw_table_p->ncols();
     vatypes_p.resize(raw_table_p->ncols());
     vaptr_p.resize(raw_table_p->ncols());
     va_p = new VADescFitsField[ncols];
     AlwaysAssert(va_p, AipsError);
-    for (i = 0; i < uInt(raw_table_p->ncols()); i++) {
+    for (i = 0; i < static_cast<unsigned int>(raw_table_p->ncols()); i++) {
       vaptr_p[i] = 0;
       vatypes_p[i] = FITS::NOVALUE;
       if (raw_table_p->field(i).fieldtype() == FITS::VADESC) {
@@ -814,18 +814,18 @@ bool FITSTable::reopen(const String &fileName) {
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::BIT: {
-            Int nbytes = maxsize / 8;
+            int nbytes = maxsize / 8;
             if (maxsize % 8) nbytes++;
             maxsize = nbytes;
           }
             // fall through to BYTE for actual allocation
             CASACORE_FALLTHROUGH;
           case FITS::BYTE:
-            vaptr_p[i] = (void *)(new uChar[maxsize]);
+            vaptr_p[i] = (void *)(new unsigned char[maxsize]);
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::SHORT:
-            vaptr_p[i] = (void *)(new Short[maxsize]);
+            vaptr_p[i] = (void *)(new short[maxsize]);
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::LONG:
@@ -833,15 +833,15 @@ bool FITSTable::reopen(const String &fileName) {
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::CHAR:
-            vaptr_p[i] = (void *)(new Char[maxsize]);
+            vaptr_p[i] = (void *)(new char[maxsize]);
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::FLOAT:
-            vaptr_p[i] = (void *)(new Float[maxsize]);
+            vaptr_p[i] = (void *)(new float[maxsize]);
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::DOUBLE:
-            vaptr_p[i] = (void *)(new Double[maxsize]);
+            vaptr_p[i] = (void *)(new double[maxsize]);
             AlwaysAssert(vaptr_p[i], AipsError);
             break;
           case FITS::COMPLEX:
@@ -885,9 +885,9 @@ void FITSTable::next() {
 // What an ugly function! Simplify somehow!
 void FITSTable::fill_row() {
   // fill the current row into the Row object.
-  for (uInt i = 0; i < nfields_p; i++) {
+  for (unsigned int i = 0; i < nfields_p; i++) {
     // get the scaling factors
-    Double zero, scale;
+    double zero, scale;
     zero = raw_table_p->tzero(i);
     scale = raw_table_p->tscal(i);
     // get any necessary shapes
@@ -898,12 +898,12 @@ void FITSTable::fill_row() {
       if (tdims_p[i] >= 0) {
         // get the shape from the tdim column
         // get it from the raw fits since it might not have been filled yet
-        Int tdfield = tdims_p[i];
+        int tdfield = tdims_p[i];
         DebugAssert(field_types_p[tdfield] == TpString, AipsError);
         FitsField<char> &fitsRef = (FitsField<char> &)(raw_table_p->field(tdfield));
         // look for the true end of the string
         char *cptr = (char *)fitsRef.data();
-        uInt length = fitsRef.nelements();
+        unsigned int length = fitsRef.nelements();
         while (length > 0 && (cptr[length - 1] == '\0' || cptr[length - 1] == ' ')) {
           length--;
         }
@@ -912,9 +912,9 @@ void FITSTable::fill_row() {
         tdim = tdim.substr(tdim.find('(') + 1);
         tdim = tdim.substr(0, tdim.find(')'));
         // count up the number of commas
-        Int ncommas = std::count(tdim.begin(), tdim.end(), ',');
+        int ncommas = std::count(tdim.begin(), tdim.end(), ',');
         shape.resize(ncommas + 1, false);
-        for (Int j = 0; j < ncommas; j++) {
+        for (int j = 0; j < ncommas; j++) {
           String::size_type inx = tdim.find(',');
           String field = tdim.substr(0, inx);
           tdim = tdim.substr(inx + 1);
@@ -942,7 +942,7 @@ void FITSTable::fill_row() {
           DebugAssert(field_types_p[i] == TpArrayBool, AipsError);
           RecordFieldPtr<Array<bool>> &rowRef = *((RecordFieldPtr<Array<bool>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
@@ -965,7 +965,7 @@ void FITSTable::fill_row() {
           DebugAssert(field_types_p[i] == TpArrayBool, AipsError);
           RecordFieldPtr<Array<bool>> &rowRef = *((RecordFieldPtr<Array<bool>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
@@ -986,7 +986,7 @@ void FITSTable::fill_row() {
           FitsField<char> &fitsRef = (FitsField<char> &)(raw_table_p->field(i));
           RecordFieldPtr<String> &rowRef = *((RecordFieldPtr<String> *)row_fields_p[i]);
           char *cptr = (char *)fitsRef.data();
-          uInt length = charLength(cptr, fitsRef.nelements());
+          unsigned int length = charLength(cptr, fitsRef.nelements());
           (*rowRef) = String(cptr, length);
         } else {
           DebugAssert(field_types_p[i] == TpArrayString, AipsError);
@@ -994,19 +994,19 @@ void FITSTable::fill_row() {
           RecordFieldPtr<Array<String>> &rowRef =
               *((RecordFieldPtr<Array<String>> *)row_fields_p[i]);
           char *cptr = (char *)fitsRef.data();
-          uInt length = charLength(cptr, fitsRef.nelements());
+          unsigned int length = charLength(cptr, fitsRef.nelements());
           String rawValue(cptr, length);
           // figure out a way to cache this to make it faster
           Record info(subStrShapes_p.asRecord(fieldName));
-          Int nels = info.asInt("NELEM");
-          Int nchar = info.asInt("NCHAR");
+          int nels = info.asInt("NELEM");
+          int nchar = info.asInt("NCHAR");
           Vector<String> result;
           if (nels > 0) {
             // fixed shape
             result.resize(nels);
             // and just do them all
-            Int curr = 0;
-            for (Int z = 0; z < nels; z++) {
+            int curr = 0;
+            for (int z = 0; z < nels; z++) {
               result(z) = rawValue.substr(curr, nchar);
               curr += nchar;
             }
@@ -1017,7 +1017,7 @@ void FITSTable::fill_row() {
             nels = SubStringCount(rawValue, delim) + 1;
             result.resize(nels);
             (*rowRef).resize(result.shape());
-            for (Int z = 0; z < (nels - 1); z++) {
+            for (int z = 0; z < (nels - 1); z++) {
               String::size_type inx = rawValue.find(delim);
               result(z) = rawValue.substr(0, inx);
               rawValue = rawValue.substr(inx + delim.size());
@@ -1032,46 +1032,46 @@ void FITSTable::fill_row() {
       case FITS::BYTE: {
         FitsField<unsigned char> &fitsRef = (FitsField<unsigned char> &)(raw_table_p->field(i));
         if (field_types_p[i] == TpUChar) {
-          RecordFieldPtr<uChar> &rowRef = *((RecordFieldPtr<uChar> *)row_fields_p[i]);
+          RecordFieldPtr<unsigned char> &rowRef = *((RecordFieldPtr<unsigned char> *)row_fields_p[i]);
           (*rowRef) = fitsRef();
         } else {
           if (promoted_p[i]) {
             DebugAssert(field_types_p[i] == TpArrayDouble || field_types_p[i] == TpDouble,
                         AipsError);
             if (field_types_p[i] == TpArrayDouble) {
-              RecordFieldPtr<Array<Double>> &rowRef =
-                  *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<double>> &rowRef =
+                  *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
               // does this need to be reshaped?
-              Int n = raw_table_p->field(i).nelements();
+              int n = raw_table_p->field(i).nelements();
               if (tdims_p[i] >= 0) {
                 (*rowRef).resize(shape);
                 n = shape.product();
               }
               bool deleteIt;
-              Double *data = (*rowRef).getStorage(deleteIt);
+              double *data = (*rowRef).getStorage(deleteIt);
               while (n) {
                 n--;
-                data[n] = Double(fitsRef(n));
+                data[n] = double(fitsRef(n));
               }
               (*rowRef).putStorage(data, deleteIt);
               *rowRef *= scale;
               *rowRef += zero;
             } else {
-              RecordFieldPtr<Double> &rowRef = *((RecordFieldPtr<Double> *)row_fields_p[i]);
-              (*rowRef) = Double(fitsRef()) * scale + zero;
+              RecordFieldPtr<double> &rowRef = *((RecordFieldPtr<double> *)row_fields_p[i]);
+              (*rowRef) = double(fitsRef()) * scale + zero;
             }
           } else {
             DebugAssert(field_types_p[i] == TpArrayUChar, AipsError);
-            RecordFieldPtr<Array<uChar>> &rowRef =
-                *((RecordFieldPtr<Array<uChar>> *)row_fields_p[i]);
+            RecordFieldPtr<Array<unsigned char>> &rowRef =
+                *((RecordFieldPtr<Array<unsigned char>> *)row_fields_p[i]);
             // does this need to be reshaped?
-            Int n = raw_table_p->field(i).nelements();
+            int n = raw_table_p->field(i).nelements();
             if (tdims_p[i] >= 0) {
               (*rowRef).resize(shape);
               n = shape.product();
             }
             bool deleteIt;
-            uChar *data = (*rowRef).getStorage(deleteIt);
+            unsigned char *data = (*rowRef).getStorage(deleteIt);
             while (n) {
               n--;
               data[n] = fitsRef(n);
@@ -1083,46 +1083,46 @@ void FITSTable::fill_row() {
       case FITS::SHORT: {
         FitsField<short> &fitsRef = (FitsField<short> &)(raw_table_p->field(i));
         if (field_types_p[i] == TpShort) {
-          RecordFieldPtr<Short> &rowRef = *((RecordFieldPtr<Short> *)row_fields_p[i]);
+          RecordFieldPtr<short> &rowRef = *((RecordFieldPtr<short> *)row_fields_p[i]);
           (*rowRef) = fitsRef();
         } else {
           if (promoted_p[i]) {
             DebugAssert(field_types_p[i] == TpArrayDouble || field_types_p[i] == TpDouble,
                         AipsError);
             if (field_types_p[i] == TpArrayDouble) {
-              RecordFieldPtr<Array<Double>> &rowRef =
-                  *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<double>> &rowRef =
+                  *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
               // does this need to be reshaped?
-              Int n = raw_table_p->field(i).nelements();
+              int n = raw_table_p->field(i).nelements();
               if (tdims_p[i] >= 0) {
                 (*rowRef).resize(shape);
                 n = shape.product();
               }
               bool deleteIt;
-              Double *data = (*rowRef).getStorage(deleteIt);
+              double *data = (*rowRef).getStorage(deleteIt);
               while (n) {
                 n--;
-                data[n] = Double(fitsRef(n));
+                data[n] = double(fitsRef(n));
               }
               (*rowRef).putStorage(data, deleteIt);
               *rowRef *= scale;
               *rowRef += zero;
             } else {
-              RecordFieldPtr<Double> &rowRef = *((RecordFieldPtr<Double> *)row_fields_p[i]);
-              (*rowRef) = Double(fitsRef()) * scale + zero;
+              RecordFieldPtr<double> &rowRef = *((RecordFieldPtr<double> *)row_fields_p[i]);
+              (*rowRef) = double(fitsRef()) * scale + zero;
             }
           } else {
             DebugAssert(field_types_p[i] == TpArrayShort, AipsError);
-            RecordFieldPtr<Array<Short>> &rowRef =
-                *((RecordFieldPtr<Array<Short>> *)row_fields_p[i]);
+            RecordFieldPtr<Array<short>> &rowRef =
+                *((RecordFieldPtr<Array<short>> *)row_fields_p[i]);
             // does this need to be reshaped?
-            Int n = raw_table_p->field(i).nelements();
+            int n = raw_table_p->field(i).nelements();
             if (tdims_p[i] >= 0) {
               (*rowRef).resize(shape);
               n = shape.product();
             }
             bool deleteIt;
-            Short *data = (*rowRef).getStorage(deleteIt);
+            short *data = (*rowRef).getStorage(deleteIt);
             while (n) {
               n--;
               data[n] = fitsRef(n);
@@ -1134,45 +1134,45 @@ void FITSTable::fill_row() {
       case FITS::LONG: {
         FitsField<FitsLong> &fitsRef = (FitsField<FitsLong> &)(raw_table_p->field(i));
         if (field_types_p[i] == TpInt) {
-          RecordFieldPtr<Int> &rowRef = *((RecordFieldPtr<Int> *)row_fields_p[i]);
+          RecordFieldPtr<int> &rowRef = *((RecordFieldPtr<int> *)row_fields_p[i]);
           (*rowRef) = fitsRef();
         } else {
           if (promoted_p[i]) {
             DebugAssert(field_types_p[i] == TpArrayDouble || field_types_p[i] == TpDouble,
                         AipsError);
             if (field_types_p[i] == TpArrayDouble) {
-              RecordFieldPtr<Array<Double>> &rowRef =
-                  *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<double>> &rowRef =
+                  *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
               // does this need to be reshaped?
-              Int n = raw_table_p->field(i).nelements();
+              int n = raw_table_p->field(i).nelements();
               if (tdims_p[i] >= 0) {
                 (*rowRef).resize(shape);
                 n = shape.product();
               }
               bool deleteIt;
-              Double *data = (*rowRef).getStorage(deleteIt);
+              double *data = (*rowRef).getStorage(deleteIt);
               while (n) {
                 n--;
-                data[n] = Double(fitsRef(n));
+                data[n] = double(fitsRef(n));
               }
               (*rowRef).putStorage(data, deleteIt);
               *rowRef *= scale;
               *rowRef += zero;
             } else {
-              RecordFieldPtr<Double> &rowRef = *((RecordFieldPtr<Double> *)row_fields_p[i]);
-              (*rowRef) = Double(fitsRef()) * scale + zero;
+              RecordFieldPtr<double> &rowRef = *((RecordFieldPtr<double> *)row_fields_p[i]);
+              (*rowRef) = double(fitsRef()) * scale + zero;
             }
           } else {
             DebugAssert(field_types_p[i] == TpArrayInt, AipsError);
-            RecordFieldPtr<Array<Int>> &rowRef = *((RecordFieldPtr<Array<Int>> *)row_fields_p[i]);
+            RecordFieldPtr<Array<int>> &rowRef = *((RecordFieldPtr<Array<int>> *)row_fields_p[i]);
             // does this need to be reshaped?
-            Int n = raw_table_p->field(i).nelements();
+            int n = raw_table_p->field(i).nelements();
             if (tdims_p[i] >= 0) {
               (*rowRef).resize(shape);
               n = shape.product();
             }
             bool deleteIt;
-            Int *data = (*rowRef).getStorage(deleteIt);
+            int *data = (*rowRef).getStorage(deleteIt);
             while (n) {
               n--;
               data[n] = fitsRef(n);
@@ -1184,45 +1184,45 @@ void FITSTable::fill_row() {
       case FITS::FLOAT: {
         FitsField<float> &fitsRef = (FitsField<float> &)(raw_table_p->field(i));
         if (field_types_p[i] == TpFloat) {
-          RecordFieldPtr<Float> &rowRef = *((RecordFieldPtr<Float> *)row_fields_p[i]);
-          (*rowRef) = Float(fitsRef() * scale + zero);
+          RecordFieldPtr<float> &rowRef = *((RecordFieldPtr<float> *)row_fields_p[i]);
+          (*rowRef) = float(fitsRef() * scale + zero);
         } else {
           DebugAssert(field_types_p[i] == TpArrayFloat, AipsError);
-          RecordFieldPtr<Array<Float>> &rowRef = *((RecordFieldPtr<Array<Float>> *)row_fields_p[i]);
+          RecordFieldPtr<Array<float>> &rowRef = *((RecordFieldPtr<Array<float>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
           }
           bool deleteIt;
-          Float *data = (*rowRef).getStorage(deleteIt);
+          float *data = (*rowRef).getStorage(deleteIt);
           while (n) {
             n--;
             data[n] = fitsRef(n);
           }
           (*rowRef).putStorage(data, deleteIt);
-          *rowRef *= Float(scale);
-          *rowRef += Float(zero);
+          *rowRef *= float(scale);
+          *rowRef += float(zero);
         }
       } break;
       case FITS::DOUBLE: {
         FitsField<double> &fitsRef = (FitsField<double> &)(raw_table_p->field(i));
         if (field_types_p[i] == TpDouble) {
-          RecordFieldPtr<Double> &rowRef = *((RecordFieldPtr<Double> *)row_fields_p[i]);
+          RecordFieldPtr<double> &rowRef = *((RecordFieldPtr<double> *)row_fields_p[i]);
           (*rowRef) = fitsRef() * scale + zero;
         } else {
           DebugAssert(field_types_p[i] == TpArrayDouble, AipsError);
-          RecordFieldPtr<Array<Double>> &rowRef =
-              *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+          RecordFieldPtr<Array<double>> &rowRef =
+              *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
           }
           bool deleteIt;
-          Double *data = (*rowRef).getStorage(deleteIt);
+          double *data = (*rowRef).getStorage(deleteIt);
           while (n) {
             n--;
             data[n] = fitsRef(n);
@@ -1243,7 +1243,7 @@ void FITSTable::fill_row() {
           RecordFieldPtr<Array<Complex>> &rowRef =
               *((RecordFieldPtr<Array<Complex>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
@@ -1269,7 +1269,7 @@ void FITSTable::fill_row() {
           RecordFieldPtr<Array<DComplex>> &rowRef =
               *((RecordFieldPtr<Array<DComplex>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
@@ -1295,7 +1295,7 @@ void FITSTable::fill_row() {
           RecordFieldPtr<Array<DComplex>> &rowRef =
               *((RecordFieldPtr<Array<DComplex>> *)row_fields_p[i]);
           // does this need to be reshaped?
-          Int n = raw_table_p->field(i).nelements();
+          int n = raw_table_p->field(i).nelements();
           if (tdims_p[i] >= 0) {
             (*rowRef).resize(shape);
             n = shape.product();
@@ -1322,7 +1322,7 @@ void FITSTable::fill_row() {
             (*rowRef).resize(shape);
             bool deleteIt;
             bool *data = (*rowRef).getStorage(deleteIt);
-            Int n = shape.product();
+            int n = shape.product();
             while (n) {
               n--;
               data[n] = vptr[n];
@@ -1330,7 +1330,7 @@ void FITSTable::fill_row() {
             (*rowRef).putStorage(data, deleteIt);
           } break;
           case FITS::BIT: {
-            uChar *vptr = (uChar *)(vaptr_p[i]);
+            unsigned char *vptr = (unsigned char *)(vaptr_p[i]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             DebugAssert(field_types_p[i] == TpArrayBool, AipsError);
             RecordFieldPtr<Array<bool>> &rowRef = *((RecordFieldPtr<Array<bool>> *)row_fields_p[i]);
@@ -1338,10 +1338,10 @@ void FITSTable::fill_row() {
             (*rowRef).resize(shape);
             bool deleteIt;
             bool *data = (*rowRef).getStorage(deleteIt);
-            Int n = shape.product();
-            Int whichByte = n / 8 - 1;
+            int n = shape.product();
+            int whichByte = n / 8 - 1;
             if (n % 8) whichByte++;
-            uChar mask = 0200;
+            unsigned char mask = 0200;
             while (n) {
               n--;
               if (n % 8 == 7) whichByte--;
@@ -1351,41 +1351,41 @@ void FITSTable::fill_row() {
           } break;
           case FITS::CHAR: {
             // the sub string convention can't be used here
-            Char *vptr = (Char *)(vaptr_p[i]);
+            char *vptr = (char *)(vaptr_p[i]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             DebugAssert(field_types_p[i] == TpString, AipsError);
             RecordFieldPtr<String> &rowRef = *((RecordFieldPtr<String> *)row_fields_p[i]);
-            uInt length = charLength(vptr, thisva.num());
+            unsigned int length = charLength(vptr, thisva.num());
             (*rowRef) = String(vptr, length);
           } break;
           case FITS::BYTE: {
-            uChar *vptr = (uChar *)(vaptr_p[i]);
+            unsigned char *vptr = (unsigned char *)(vaptr_p[i]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             if (promoted_p[i]) {
               DebugAssert(field_types_p[i] == TpArrayDouble, AipsError);
-              RecordFieldPtr<Array<Double>> &rowRef =
-                  *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<double>> &rowRef =
+                  *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
               // need to shape the output array
               (*rowRef).resize(shape);
               bool deleteIt;
-              Double *data = (*rowRef).getStorage(deleteIt);
-              Int n = shape.product();
+              double *data = (*rowRef).getStorage(deleteIt);
+              int n = shape.product();
               while (n) {
                 n--;
-                data[n] = Double(vptr[n]);
+                data[n] = double(vptr[n]);
               }
               (*rowRef).putStorage(data, deleteIt);
               *rowRef *= scale;
               *rowRef += zero;
             } else {
               DebugAssert(field_types_p[i] == TpArrayUChar, AipsError);
-              RecordFieldPtr<Array<uChar>> &rowRef =
-                  *((RecordFieldPtr<Array<uChar>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<unsigned char>> &rowRef =
+                  *((RecordFieldPtr<Array<unsigned char>> *)row_fields_p[i]);
               // need to shape the output array
               (*rowRef).resize(shape);
               bool deleteIt;
-              uChar *data = (*rowRef).getStorage(deleteIt);
-              Int n = shape.product();
+              unsigned char *data = (*rowRef).getStorage(deleteIt);
+              int n = shape.product();
               while (n) {
                 n--;
                 data[n] = vptr[n];
@@ -1394,33 +1394,33 @@ void FITSTable::fill_row() {
             }
           } break;
           case FITS::SHORT: {
-            Short *vptr = (Short *)(vaptr_p[i]);
+            short *vptr = (short *)(vaptr_p[i]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             if (promoted_p[i]) {
               DebugAssert(field_types_p[i] == TpArrayDouble, AipsError);
-              RecordFieldPtr<Array<Double>> &rowRef =
-                  *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<double>> &rowRef =
+                  *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
               // need to shape the output array
               (*rowRef).resize(shape);
               bool deleteIt;
-              Double *data = (*rowRef).getStorage(deleteIt);
-              Int n = shape.product();
+              double *data = (*rowRef).getStorage(deleteIt);
+              int n = shape.product();
               while (n) {
                 n--;
-                data[n] = Double(vptr[n]);
+                data[n] = double(vptr[n]);
               }
               (*rowRef).putStorage(data, deleteIt);
               *rowRef *= scale;
               *rowRef += zero;
             } else {
               DebugAssert(field_types_p[i] == TpArrayShort, AipsError);
-              RecordFieldPtr<Array<Short>> &rowRef =
-                  *((RecordFieldPtr<Array<Short>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<short>> &rowRef =
+                  *((RecordFieldPtr<Array<short>> *)row_fields_p[i]);
               // need to shape the output array
               (*rowRef).resize(shape);
               bool deleteIt;
-              Short *data = (*rowRef).getStorage(deleteIt);
-              Int n = shape.product();
+              short *data = (*rowRef).getStorage(deleteIt);
+              int n = shape.product();
               while (n) {
                 n--;
                 data[n] = vptr[n];
@@ -1433,28 +1433,28 @@ void FITSTable::fill_row() {
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             if (promoted_p[i]) {
               DebugAssert(field_types_p[i] == TpArrayDouble, AipsError);
-              RecordFieldPtr<Array<Double>> &rowRef =
-                  *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<double>> &rowRef =
+                  *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
               // need to shape the output array
               (*rowRef).resize(shape);
               bool deleteIt;
-              Double *data = (*rowRef).getStorage(deleteIt);
-              Int n = shape.product();
+              double *data = (*rowRef).getStorage(deleteIt);
+              int n = shape.product();
               while (n) {
                 n--;
-                data[n] = Double(vptr[n]);
+                data[n] = double(vptr[n]);
               }
               (*rowRef).putStorage(data, deleteIt);
               *rowRef *= scale;
               *rowRef += zero;
             } else {
               DebugAssert(field_types_p[i] == TpArrayInt, AipsError);
-              RecordFieldPtr<Array<Int>> &rowRef = *((RecordFieldPtr<Array<Int>> *)row_fields_p[i]);
+              RecordFieldPtr<Array<int>> &rowRef = *((RecordFieldPtr<Array<int>> *)row_fields_p[i]);
               // need to shape the output array
               (*rowRef).resize(shape);
               bool deleteIt;
-              Int *data = (*rowRef).getStorage(deleteIt);
-              Int n = shape.product();
+              int *data = (*rowRef).getStorage(deleteIt);
+              int n = shape.product();
               while (n) {
                 n--;
                 data[n] = vptr[n];
@@ -1463,35 +1463,35 @@ void FITSTable::fill_row() {
             }
           } break;
           case FITS::FLOAT: {
-            Float *vptr = (Float *)(vaptr_p[i]);
+            float *vptr = (float *)(vaptr_p[i]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             DebugAssert(field_types_p[i] == TpArrayFloat, AipsError);
-            RecordFieldPtr<Array<Float>> &rowRef =
-                *((RecordFieldPtr<Array<Float>> *)row_fields_p[i]);
+            RecordFieldPtr<Array<float>> &rowRef =
+                *((RecordFieldPtr<Array<float>> *)row_fields_p[i]);
             // need to shape the output array
             (*rowRef).resize(shape);
             bool deleteIt;
-            Float *data = (*rowRef).getStorage(deleteIt);
-            Int n = shape.product();
+            float *data = (*rowRef).getStorage(deleteIt);
+            int n = shape.product();
             while (n) {
               n--;
               data[n] = vptr[n];
             }
             (*rowRef).putStorage(data, deleteIt);
-            *rowRef *= Float(scale);
-            *rowRef += Float(zero);
+            *rowRef *= float(scale);
+            *rowRef += float(zero);
           } break;
           case FITS::DOUBLE: {
-            Double *vptr = (Double *)(vaptr_p[i]);
+            double *vptr = (double *)(vaptr_p[i]);
             FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()), thisva.num());
             DebugAssert(field_types_p[i] == TpArrayDouble, AipsError);
-            RecordFieldPtr<Array<Double>> &rowRef =
-                *((RecordFieldPtr<Array<Double>> *)row_fields_p[i]);
+            RecordFieldPtr<Array<double>> &rowRef =
+                *((RecordFieldPtr<Array<double>> *)row_fields_p[i]);
             // need to shape the output array
             (*rowRef).resize(shape);
             bool deleteIt;
-            Double *data = (*rowRef).getStorage(deleteIt);
-            Int n = shape.product();
+            double *data = (*rowRef).getStorage(deleteIt);
+            int n = shape.product();
             while (n) {
               n--;
               data[n] = vptr[n];
@@ -1510,7 +1510,7 @@ void FITSTable::fill_row() {
             (*rowRef).resize(shape);
             bool deleteIt;
             Complex *data = (*rowRef).getStorage(deleteIt);
-            Int n = shape.product();
+            int n = shape.product();
             while (n) {
               n--;
               const Complex &val = vptr[n];
@@ -1528,7 +1528,7 @@ void FITSTable::fill_row() {
             (*rowRef).resize(shape);
             bool deleteIt;
             DComplex *data = (*rowRef).getStorage(deleteIt);
-            Int n = shape.product();
+            int n = shape.product();
             while (n) {
               n--;
               const DComplex &val = vptr[n];
@@ -1556,7 +1556,7 @@ void FITSTable::clear_self() {
   delete io_p;
   io_p = 0;
 
-  uInt i;
+  unsigned int i;
   for (i = 0; i < nfields_p; i++) {
     switch (field_types_p[i]) {
       case TpBool:
@@ -1566,34 +1566,34 @@ void FITSTable::clear_self() {
         delete (RecordFieldPtr<Array<bool>> *)row_fields_p[i];
         break;
       case TpUChar:
-        delete (RecordFieldPtr<uChar> *)row_fields_p[i];
+        delete (RecordFieldPtr<unsigned char> *)row_fields_p[i];
         break;
       case TpArrayUChar:
-        delete (RecordFieldPtr<Array<uChar>> *)row_fields_p[i];
+        delete (RecordFieldPtr<Array<unsigned char>> *)row_fields_p[i];
         break;
       case TpShort:
-        delete (RecordFieldPtr<Short> *)row_fields_p[i];
+        delete (RecordFieldPtr<short> *)row_fields_p[i];
         break;
       case TpArrayShort:
-        delete (RecordFieldPtr<Array<Short>> *)row_fields_p[i];
+        delete (RecordFieldPtr<Array<short>> *)row_fields_p[i];
         break;
       case TpInt:
-        delete (RecordFieldPtr<Int> *)row_fields_p[i];
+        delete (RecordFieldPtr<int> *)row_fields_p[i];
         break;
       case TpArrayInt:
-        delete (RecordFieldPtr<Array<Int>> *)row_fields_p[i];
+        delete (RecordFieldPtr<Array<int>> *)row_fields_p[i];
         break;
       case TpFloat:
-        delete (RecordFieldPtr<Float> *)row_fields_p[i];
+        delete (RecordFieldPtr<float> *)row_fields_p[i];
         break;
       case TpArrayFloat:
-        delete (RecordFieldPtr<Array<Float>> *)row_fields_p[i];
+        delete (RecordFieldPtr<Array<float>> *)row_fields_p[i];
         break;
       case TpDouble:
-        delete (RecordFieldPtr<Double> *)row_fields_p[i];
+        delete (RecordFieldPtr<double> *)row_fields_p[i];
         break;
       case TpArrayDouble:
-        delete (RecordFieldPtr<Array<Double>> *)row_fields_p[i];
+        delete (RecordFieldPtr<Array<double>> *)row_fields_p[i];
         break;
       case TpComplex:
         delete (RecordFieldPtr<Complex> *)row_fields_p[i];
@@ -1625,25 +1625,25 @@ void FITSTable::clear_self() {
           delete[] (FitsLogical *)vaptr_p[i];
           break;
         case FITS::BIT:
-          delete[] (uChar *)vaptr_p[i];
+          delete[] (unsigned char *)vaptr_p[i];
           break;
         case FITS::BYTE:
-          delete[] (uChar *)vaptr_p[i];
+          delete[] (unsigned char *)vaptr_p[i];
           break;
         case FITS::CHAR:
-          delete[] (Char *)vaptr_p[i];
+          delete[] (char *)vaptr_p[i];
           break;
         case FITS::SHORT:
-          delete[] (Short *)vaptr_p[i];
+          delete[] (short *)vaptr_p[i];
           break;
         case FITS::LONG:
           delete[] (FitsLong *)vaptr_p[i];
           break;
         case FITS::FLOAT:
-          delete[] (Float *)vaptr_p[i];
+          delete[] (float *)vaptr_p[i];
           break;
         case FITS::DOUBLE:
-          delete[] (Double *)vaptr_p[i];
+          delete[] (double *)vaptr_p[i];
           break;
         case FITS::COMPLEX:
           delete[] (Complex *)vaptr_p[i];
@@ -1677,12 +1677,12 @@ void FITSTable::clear_self() {
 
 const Record &FITSTable::currentRow() const { return row_p; }
 
-void FITSTable::move(Int torow) {
+void FITSTable::move(int torow) {
   // we can only move within the table and only ahead
   // if this table contains no rows, moving is impossible, just return
   if (nrow() == 0) return;
   if (torow < rownr()) torow = rownr();
-  if (torow >= Int(nrow())) torow = Int(nrow()) - 1;
+  if (torow >= int(nrow())) torow = int(nrow()) - 1;
   // if we are already there, just return
   if (torow == rownr()) return;
 
@@ -1705,8 +1705,8 @@ bool FITSTable::pastEnd() const {
 bool FITSTable::virtualColumns(const Vector<String> &keyNames) {
   // move keyNames
   bool result = true;
-  for (uInt i = 0; i < keyNames.nelements(); i++) {
-    Int fieldNumber = keywords_p.fieldNumber(keyNames(i));
+  for (unsigned int i = 0; i < keyNames.nelements(); i++) {
+    int fieldNumber = keywords_p.fieldNumber(keyNames(i));
     if (fieldNumber >= 0) {
       switch (keywords_p.type(fieldNumber)) {
         case TpBool: {
@@ -1715,32 +1715,32 @@ bool FITSTable::virtualColumns(const Vector<String> &keyNames) {
           row_p.define(keyNames(i), value);
         } break;
         case TpUChar: {
-          uChar value;
+          unsigned char value;
           keywords_p.get(keyNames(i), value);
           row_p.define(keyNames(i), value);
         } break;
         case TpShort: {
-          Short value;
+          short value;
           keywords_p.get(keyNames(i), value);
           row_p.define(keyNames(i), value);
         } break;
         case TpInt: {
-          Int value;
+          int value;
           keywords_p.get(keyNames(i), value);
           row_p.define(keyNames(i), value);
         } break;
         case TpUInt: {
-          uInt value;
+          unsigned int value;
           keywords_p.get(keyNames(i), value);
           row_p.define(keyNames(i), value);
         } break;
         case TpFloat: {
-          Float value;
+          float value;
           keywords_p.get(keyNames(i), value);
           row_p.define(keyNames(i), value);
         } break;
         case TpDouble: {
-          Double value;
+          double value;
           keywords_p.get(keyNames(i), value);
           row_p.define(keyNames(i), value);
         } break;

@@ -121,8 +121,8 @@ void Directory::checkPath() {
   }
 }
 
-uInt Directory::nEntries() const {
-  uInt nentries = 0;
+unsigned int Directory::nEntries() const {
+  unsigned int nentries = 0;
   DirectoryIterator iter(*this);
   while (!iter.pastEnd()) {
     nentries++;
@@ -144,7 +144,7 @@ bool Directory::isEmpty() const {
   return true;
 }
 
-Double Directory::freeSpace() const {
+double Directory::freeSpace() const {
 #if defined(AIPS_CRAY_PGI)
   return 1e37;
 #else
@@ -157,7 +157,7 @@ Double Directory::freeSpace() const {
     throw(AipsError("Directory::freeSpace error on " + itsFile.path().expandedName() + ": " +
                     strerror(errno)));
   }
-  Double bsize = buf.f_bsize;
+  double bsize = buf.f_bsize;
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
   // # The fragment size usually contains the true block size.
   if (buf.f_frsize > 0) {
@@ -352,7 +352,7 @@ void Directory::move(const Path& target, bool overwrite) {
 Vector<String> Directory::find(const Regex& regexp, bool followSymLinks, bool recursive) const {
   DirectoryIterator iter(*this);
   Vector<String> myentries(10);
-  uInt count = 0;
+  unsigned int count = 0;
   while (!iter.pastEnd()) {
     // #//        if (iter.name().contains (regexp)) {
     if (RegexMatches(iter.name(), regexp)) {
@@ -378,7 +378,7 @@ Vector<String> Directory::find(const Regex& regexp, bool followSymLinks, bool re
         Vector<String> subentries = subdir.find(regexp);
         String basename = iter.name() + "/";
         subentries = basename + subentries;
-        uInt oldsize = myentries.nelements();
+        unsigned int oldsize = myentries.nelements();
         myentries.resize(oldsize + subentries.nelements(), true);
         myentries(Slice(oldsize, subentries.nelements())) = subentries;
       }
@@ -396,11 +396,11 @@ Vector<String> Directory::shellExpand(const Vector<String>& files, bool stripPat
 //
 {
   Vector<String> expInNames;
-  uInt nExpInNames = 0;
-  uInt k = 0;
+  unsigned int nExpInNames = 0;
+  unsigned int k = 0;
   Regex exp;
   //
-  for (uInt i = 0; i < files.nelements(); i++) {
+  for (unsigned int i = 0; i < files.nelements(); i++) {
     // Find the directory of this file.
 
     Path path(files(i));
@@ -424,12 +424,12 @@ Vector<String> Directory::shellExpand(const Vector<String>& files, bool stripPat
     // Add the path back on to each name
 
     if (stripPath) {
-      for (uInt j = 0; j < expFiles.nelements(); j++) {
+      for (unsigned int j = 0; j < expFiles.nelements(); j++) {
         expInNames(k) = expFiles(j);
         k++;
       }
     } else {
-      for (uInt j = 0; j < expFiles.nelements(); j++) {
+      for (unsigned int j = 0; j < expFiles.nelements(); j++) {
         expInNames(k) = Path::addDirectory("./" + expFiles(j), path.absoluteName());
         k++;
       }

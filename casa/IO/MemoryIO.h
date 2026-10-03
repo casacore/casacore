@@ -175,7 +175,7 @@ class MemoryIO : public ByteIO {
   // Get the buffer containing the data.
   // <br>The length of the data in the buffer can be obtained using the
   // length() function.
-  const uChar* getBuffer() const;
+  const unsigned char* getBuffer() const;
 
   // Get the length of the data in the buffer.
   virtual Int64 length();
@@ -205,7 +205,7 @@ class MemoryIO : public ByteIO {
   // buffer and the MemoryIO object is not expandable.
   // <note role=warning> You should not use the supplied pointer to write
   // more than length data points to the buffer</note>
-  uChar* setBuffer(uInt64 length);
+  unsigned char* setBuffer(uInt64 length);
 
   // tell the MemoryIO object how much of its internal buffer is valid
   // data. You only need to use this function if you are directly writing to
@@ -236,7 +236,7 @@ class MemoryIO : public ByteIO {
   // # when the buffer cannot be expanded.
   bool expand(uInt64 minSize);
 
-  uChar* itsBuffer;
+  unsigned char* itsBuffer;
   Int64 itsAlloc;
   Int64 itsExpandSize;
   Int64 itsUsed;
@@ -247,7 +247,7 @@ class MemoryIO : public ByteIO {
 };
 
 inline void MemoryIO::clear() { itsUsed = itsPosition = 0; }
-inline const uChar* MemoryIO::getBuffer() const { return itsBuffer; }
+inline const unsigned char* MemoryIO::getBuffer() const { return itsBuffer; }
 inline uInt64 MemoryIO::allocated() const { return itsAlloc; }
 inline uInt64 MemoryIO::expandSize() const { return itsExpandSize; }
 

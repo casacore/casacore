@@ -190,7 +190,7 @@ void RetypedArrayEngine<S, T>::setShape(rownr_t rownr, const IPosition& shape) {
 }
 
 template <class S, class T>
-uInt RetypedArrayEngine<S, T>::ndim(rownr_t rownr) {
+unsigned int RetypedArrayEngine<S, T>::ndim(rownr_t rownr) {
   return column().ndim(rownr) - shape_p.nelements();
 }
 
@@ -217,7 +217,7 @@ template <class S, class T>
 Slicer RetypedArrayEngine<S, T>::getStoredSlicer(const Slicer& virtualSlicer) const {
   // # Determine the element dimensionality.
   // # Make the Slicer such that all values of the element are used.
-  uInt ndim = shape_p.nelements();
+  unsigned int ndim = shape_p.nelements();
   return Slicer(IPosition(ndim, 0).concatenate(virtualSlicer.start()),
                 IPosition(ndim, Slicer::MimicSource).concatenate(virtualSlicer.end()),
                 IPosition(ndim, 1).concatenate(virtualSlicer.stride()), Slicer::endIsLast);
@@ -238,7 +238,7 @@ IPosition RetypedArrayEngine<S, T>::checkShape(const Array<S>& source, const Arr
   // # which are formed by the first axes in the stored.
   // # Their shape cannot be greater than the real virtual element shape.
   IPosition elemShape(shape_p.nelements());
-  uInt i;  // used later
+  unsigned int i;  // used later
   for (i = 0; i < shape_p.nelements(); i++) {
     if (tShape(i) > shape_p(i)) {
       throw(DataManInvOper("RetypedArrayEngine: stored shape > virtual"));
@@ -246,7 +246,7 @@ IPosition RetypedArrayEngine<S, T>::checkShape(const Array<S>& source, const Arr
     elemShape(i) = tShape(i);
   }
   // # Check if remaining sizes in stored shape match virtual shape.
-  for (uInt j = 0; j < sShape.nelements(); j++) {
+  for (unsigned int j = 0; j < sShape.nelements(); j++) {
     if (sShape(j) != tShape(i++)) {
       throw(
           DataManInvOper("RetypedArrayEngine: stored/virtual shape"

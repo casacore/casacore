@@ -72,7 +72,7 @@ class TableParseJoin {
   explicit TableParseJoin(TableParseQuery*);
 
   // Add a join table nr, name, or object to the container.
-  void addTable(Int tabnr, const String& name, const Table& table, const String& shorthand,
+  void addTable(int tabnr, const String& name, const Table& table, const String& shorthand,
                 const std::vector<const Table*>& tempTables,
                 const std::vector<TableParseQuery*>& stack);
 
@@ -94,7 +94,7 @@ class TableParseJoin {
 
   // Tell how many tables in the exprTables vector are the same as those
   // in the tables vector.
-  uInt findMatchingTables(const std::vector<Table>& exprTables,
+  unsigned int findMatchingTables(const std::vector<Table>& exprTables,
                           const std::vector<Table>& tables) const;
 
   // Check if all join tables in the vector have the same number of rows.
@@ -109,7 +109,7 @@ class TableParseJoin {
   std::vector<Table> itsFromTables;
   std::vector<Table> itsJoinTables;
   // # Index in TableParseQuery's vector of joins; <0 is no parent join.
-  Int itsParentJoinIndex;
+  int itsParentJoinIndex;
   std::shared_ptr<TaQLJoinBase> itsJoin;
   mutable Int64 itsLastMainRow;  // Last main table row looked for
   mutable Int64 itsLastJoinRow;  // Join table row matching itsLastMainRow

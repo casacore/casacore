@@ -129,23 +129,23 @@ class TapeIO : public ByteIO {
 
   // skip the specified number of files (ie tape marks) on the tape. Throws an
   // exception if you try to skip past the last filemark.
-  virtual void skip(uInt howMany = 1);
+  virtual void skip(unsigned int howMany = 1);
 
   // write the specified number of filemarks.
-  virtual void mark(uInt howMany = 1);
+  virtual void mark(unsigned int howMany = 1);
 
   // returns true if the tape device is configured to use a fixed block size
   bool fixedBlocks() const;
 
   // returns the block size in bytes. Returns zero if the device is configured
   // to use variable length blocks.
-  uInt fixedBlockSize() const;
+  unsigned int fixedBlockSize() const;
 
   // Configure the tape device to use fixed length blocks of the specified
   // size. The size must be bigger than zero (dugh!). Values bigger than 64k
   // may cause problems on some systems. Currently this function only does
   // anything under Solaris and Linux systems.
-  void setFixedBlockSize(uInt sizeInBytes);
+  void setFixedBlockSize(unsigned int sizeInBytes);
 
   // Configure the tape device to use variable length blocks. Currently this
   // function only does anything under Solaris and Linux systems.
@@ -198,8 +198,8 @@ class TapeIO : public ByteIO {
   TapeIO(const TapeIO& that);
   TapeIO& operator=(const TapeIO& that);
 
-  void setBlockSize(uInt sizeInBytes);
-  uInt getBlockSize() const;
+  void setBlockSize(unsigned int sizeInBytes);
+  unsigned int getBlockSize() const;
 
   int itsDevice;
   bool itsOwner;

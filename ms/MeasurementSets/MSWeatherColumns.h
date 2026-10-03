@@ -83,75 +83,75 @@ class MSWeatherColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& antennaId() { return antennaId_p; }
-  ScalarColumn<Double>& interval() { return interval_p; }
-  ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p; }
-  ScalarColumn<Double>& time() { return time_p; }
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p; }
+  ScalarColumn<int>& antennaId() { return antennaId_p; }
+  ScalarColumn<double>& interval() { return interval_p; }
+  ScalarQuantColumn<double>& intervalQuant() { return intervalQuant_p; }
+  ScalarColumn<double>& time() { return time_p; }
+  ScalarQuantColumn<double>& timeQuant() { return timeQuant_p; }
   ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p; }
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Float>& dewPoint() { return dewPoint_p; }
-  ScalarQuantColumn<Float>& dewPointQuant() { return dewPointQuant_p; }
+  ScalarColumn<float>& dewPoint() { return dewPoint_p; }
+  ScalarQuantColumn<float>& dewPointQuant() { return dewPointQuant_p; }
   ScalarColumn<bool>& dewPointFlag() { return dewPointFlag_p; }
-  ScalarColumn<Float>& H2O() { return H2O_p; }
-  ScalarQuantColumn<Float>& H2OQuant() { return H2OQuant_p; }
+  ScalarColumn<float>& H2O() { return H2O_p; }
+  ScalarQuantColumn<float>& H2OQuant() { return H2OQuant_p; }
   ScalarColumn<bool>& H2OFlag() { return H2OFlag_p; }
-  ScalarColumn<Float>& ionosElectron() { return ionosElectron_p; }
-  ScalarQuantColumn<Float>& ionosElectronQuant() { return ionosElectronQuant_p; }
+  ScalarColumn<float>& ionosElectron() { return ionosElectron_p; }
+  ScalarQuantColumn<float>& ionosElectronQuant() { return ionosElectronQuant_p; }
   ScalarColumn<bool>& ionosElectronFlag() { return ionosElectronFlag_p; }
-  ScalarColumn<Float>& pressure() { return pressure_p; }
-  ScalarQuantColumn<Float>& pressureQuant() { return pressureQuant_p; }
+  ScalarColumn<float>& pressure() { return pressure_p; }
+  ScalarQuantColumn<float>& pressureQuant() { return pressureQuant_p; }
   ScalarColumn<bool>& pressureFlag() { return pressureFlag_p; }
-  ScalarColumn<Float>& relHumidity() { return relHumidity_p; }
+  ScalarColumn<float>& relHumidity() { return relHumidity_p; }
   ScalarColumn<bool>& relHumidityFlag() { return relHumidityFlag_p; }
-  ScalarColumn<Float>& temperature() { return temperature_p; }
-  ScalarQuantColumn<Float>& temperatureQuant() { return temperatureQuant_p; }
+  ScalarColumn<float>& temperature() { return temperature_p; }
+  ScalarQuantColumn<float>& temperatureQuant() { return temperatureQuant_p; }
   ScalarColumn<bool>& temperatureFlag() { return temperatureFlag_p; }
-  ScalarColumn<Float>& windDirection() { return windDirection_p; }
-  ScalarQuantColumn<Float>& windDirectionQuant() { return windDirectionQuant_p; }
+  ScalarColumn<float>& windDirection() { return windDirection_p; }
+  ScalarQuantColumn<float>& windDirectionQuant() { return windDirectionQuant_p; }
   ScalarColumn<bool>& windDirectionFlag() { return windDirectionFlag_p; }
-  ScalarColumn<Float>& windSpeed() { return windSpeed_p; }
-  ScalarQuantColumn<Float>& windSpeedQuant() { return windSpeedQuant_p; }
+  ScalarColumn<float>& windSpeed() { return windSpeed_p; }
+  ScalarQuantColumn<float>& windSpeedQuant() { return windSpeedQuant_p; }
   ScalarColumn<bool>& windSpeedFlag() { return windSpeedFlag_p; }
   // </group>
 
   // Const access to columns
   // <group>
-  const ScalarColumn<Int>& antennaId() const { return antennaId_p; }
-  const ScalarColumn<Double>& interval() const { return interval_p; }
-  const ScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p; }
-  const ScalarColumn<Double>& time() const { return time_p; }
-  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p; }
+  const ScalarColumn<int>& antennaId() const { return antennaId_p; }
+  const ScalarColumn<double>& interval() const { return interval_p; }
+  const ScalarQuantColumn<double>& intervalQuant() const { return intervalQuant_p; }
+  const ScalarColumn<double>& time() const { return time_p; }
+  const ScalarQuantColumn<double>& timeQuant() const { return timeQuant_p; }
   const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p; }
   // </group>
 
   // Access to optional columns
   // <group>
-  const ScalarColumn<Float>& dewPoint() const { return dewPoint_p; }
-  const ScalarQuantColumn<Float>& dewPointQuant() const { return dewPointQuant_p; }
+  const ScalarColumn<float>& dewPoint() const { return dewPoint_p; }
+  const ScalarQuantColumn<float>& dewPointQuant() const { return dewPointQuant_p; }
   const ScalarColumn<bool>& dewPointFlag() const { return dewPointFlag_p; }
-  const ScalarColumn<Float>& H2O() const { return H2O_p; }
+  const ScalarColumn<float>& H2O() const { return H2O_p; }
   const ScalarColumn<bool>& H2OFlag() const { return H2OFlag_p; }
-  const ScalarQuantColumn<Float>& H2OQuant() const { return H2OQuant_p; }
-  const ScalarColumn<Float>& ionosElectron() const { return ionosElectron_p; }
-  const ScalarQuantColumn<Float>& ionosElectronQuant() const { return ionosElectronQuant_p; }
+  const ScalarQuantColumn<float>& H2OQuant() const { return H2OQuant_p; }
+  const ScalarColumn<float>& ionosElectron() const { return ionosElectron_p; }
+  const ScalarQuantColumn<float>& ionosElectronQuant() const { return ionosElectronQuant_p; }
   const ScalarColumn<bool>& ionosElectronFlag() const { return ionosElectronFlag_p; }
-  const ScalarColumn<Float>& pressure() const { return pressure_p; }
-  const ScalarQuantColumn<Float>& pressureQuant() const { return pressureQuant_p; }
+  const ScalarColumn<float>& pressure() const { return pressure_p; }
+  const ScalarQuantColumn<float>& pressureQuant() const { return pressureQuant_p; }
   const ScalarColumn<bool>& pressureFlag() const { return pressureFlag_p; }
-  const ScalarColumn<Float>& relHumidity() const { return relHumidity_p; }
+  const ScalarColumn<float>& relHumidity() const { return relHumidity_p; }
   const ScalarColumn<bool>& relHumidityFlag() const { return relHumidityFlag_p; }
-  const ScalarColumn<Float>& temperature() const { return temperature_p; }
-  const ScalarQuantColumn<Float>& temperatureQuant() const { return temperatureQuant_p; }
+  const ScalarColumn<float>& temperature() const { return temperature_p; }
+  const ScalarQuantColumn<float>& temperatureQuant() const { return temperatureQuant_p; }
   const ScalarColumn<bool>& temperatureFlag() const { return temperatureFlag_p; }
-  const ScalarColumn<Float>& windDirection() const { return windDirection_p; }
-  const ScalarQuantColumn<Float>& windDirectionQuant() const { return windDirectionQuant_p; }
+  const ScalarColumn<float>& windDirection() const { return windDirection_p; }
+  const ScalarQuantColumn<float>& windDirectionQuant() const { return windDirectionQuant_p; }
   const ScalarColumn<bool>& windDirectionFlag() const { return windDirectionFlag_p; }
-  const ScalarColumn<Float>& windSpeed() const { return windSpeed_p; }
-  const ScalarQuantColumn<Float>& windSpeedQuant() const { return windSpeedQuant_p; }
+  const ScalarColumn<float>& windSpeed() const { return windSpeed_p; }
+  const ScalarQuantColumn<float>& windSpeedQuant() const { return windSpeedQuant_p; }
   const ScalarColumn<bool>& windSpeedFlag() const { return windSpeedFlag_p; }
   // </group>
 
@@ -191,41 +191,41 @@ class MSWeatherColumns {
   bool isNull_p;
 
   // # required columns
-  ScalarColumn<Int> antennaId_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<int> antennaId_p;
+  ScalarColumn<double> interval_p;
+  ScalarColumn<double> time_p;
   // # optional columns
-  ScalarColumn<Float> dewPoint_p;
+  ScalarColumn<float> dewPoint_p;
   ScalarColumn<bool> dewPointFlag_p;
-  ScalarColumn<Float> H2O_p;
+  ScalarColumn<float> H2O_p;
   ScalarColumn<bool> H2OFlag_p;
-  ScalarColumn<Float> ionosElectron_p;
+  ScalarColumn<float> ionosElectron_p;
   ScalarColumn<bool> ionosElectronFlag_p;
-  ScalarColumn<Float> pressure_p;
+  ScalarColumn<float> pressure_p;
   ScalarColumn<bool> pressureFlag_p;
-  ScalarColumn<Float> relHumidity_p;
+  ScalarColumn<float> relHumidity_p;
   ScalarColumn<bool> relHumidityFlag_p;
-  ScalarColumn<Float> temperature_p;
+  ScalarColumn<float> temperature_p;
   ScalarColumn<bool> temperatureFlag_p;
-  ScalarColumn<Float> windDirection_p;
+  ScalarColumn<float> windDirection_p;
   ScalarColumn<bool> windDirectionFlag_p;
-  ScalarColumn<Float> windSpeed_p;
+  ScalarColumn<float> windSpeed_p;
   ScalarColumn<bool> windSpeedFlag_p;
 
   // # Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   // # Access to Quantum columns
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
   // # optional Quantum columns
-  ScalarQuantColumn<Float> dewPointQuant_p;
-  ScalarQuantColumn<Float> H2OQuant_p;
-  ScalarQuantColumn<Float> ionosElectronQuant_p;
-  ScalarQuantColumn<Float> pressureQuant_p;
-  ScalarQuantColumn<Float> temperatureQuant_p;
-  ScalarQuantColumn<Float> windDirectionQuant_p;
-  ScalarQuantColumn<Float> windSpeedQuant_p;
+  ScalarQuantColumn<float> dewPointQuant_p;
+  ScalarQuantColumn<float> H2OQuant_p;
+  ScalarQuantColumn<float> ionosElectronQuant_p;
+  ScalarQuantColumn<float> pressureQuant_p;
+  ScalarQuantColumn<float> temperatureQuant_p;
+  ScalarQuantColumn<float> windDirectionQuant_p;
+  ScalarQuantColumn<float> windSpeedQuant_p;
 };
 
 // # Define the RO version for backward compatibility.

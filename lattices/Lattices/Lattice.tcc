@@ -60,19 +60,19 @@ T Lattice<T>::operator()(const IPosition& where) const {
 
 template <class T>
 bool Lattice<T>::get(COWPtr<Array<T>>& buffer, bool removeDegenerateAxes) const {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   return getSlice(buffer, Slicer(IPosition(nd, 0), shape()), removeDegenerateAxes);
 }
 
 template <class T>
 bool Lattice<T>::get(Array<T>& buffer, bool removeDegenerateAxes) {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   return getSlice(buffer, Slicer(IPosition(nd, 0), shape()), removeDegenerateAxes);
 }
 
 template <class T>
 Array<T> Lattice<T>::get(bool removeDegenerateAxes) const {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   return getSlice(Slicer(IPosition(nd, 0), shape()), removeDegenerateAxes);
 }
 
@@ -174,7 +174,7 @@ void Lattice<T>::putSlice(const Array<T>& sourceBuffer, const IPosition& where) 
 
 template <class T>
 void Lattice<T>::put(const Array<T>& sourceBuffer) {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   doPutSlice(sourceBuffer, IPosition(nd, 0), IPosition(nd, 1));
 }
 
@@ -303,10 +303,10 @@ LatticeIterInterface<T>* Lattice<T>::makeIter(const LatticeNavigator& nav, bool 
 }
 
 template <class T>
-uInt Lattice<T>::advisedMaxPixels() const {
+unsigned int Lattice<T>::advisedMaxPixels() const {
   // The returned number of pixels is always a power of two for unknown
   // reasons, and occupies between 4 and 8 MBytes
-  return (uInt)pow(2.0, ceil(log(4.0 * 1024.0 * 1024.0 / sizeof(T)) / log(2.0)));
+  return (unsigned int)pow(2.0, ceil(log(4.0 * 1024.0 * 1024.0 / sizeof(T)) / log(2.0)));
 }
 
 }  // namespace casacore

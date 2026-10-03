@@ -80,14 +80,14 @@ class MSConcat : public MSColumns {
                      const String& obsidAndProcAndScanTableName = "");
 
   void concatenate(const MeasurementSet& otherMS,
-                   const uInt handling = 0,         // # 0 (default): complete concat of all tables
+                   const unsigned int handling = 0,         // # 0 (default): complete concat of all tables
                                                     // # 1 : don't concatenate the MAIN table
                                                     // # 2 : don't concatenate the POINTING table
                                                     // # 3 : neither concat MAIN nor POINTING table
                    const String& destMSName = "");  // # support for virtual concat
 
-  void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol);
-  void setWeightScale(const Float weightScale);
+  void setTolerance(Quantum<double>& freqTol, Quantum<double>& dirTol);
+  void setWeightScale(const float weightScale);
   void setRespectForFieldName(
       const bool respectFieldName);  // # If true, fields of same direction are not merged
                                      // # if their name is different
@@ -96,25 +96,25 @@ class MSConcat : public MSColumns {
   MSConcat();
   static IPosition isFixedShape(const TableDesc& td);
   static IPosition getShape(const MSDataDescColumns& ddCols, const MSSpWindowColumns& spwCols,
-                            const MSPolarizationColumns& polCols, uInt whichShape);
+                            const MSPolarizationColumns& polCols, unsigned int whichShape);
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const MSMainColumns& otherCols) const;
   bool checkEphIdInField(const MSFieldColumns& otherFldCol) const;
-  bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
-  bool copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices);
-  bool copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAndIndices);
-  bool copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAndIndices);
-  bool copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& newAndIndices);
-  bool copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& newAndIndices);
+  bool copyPointing(const MSPointing& otherPoint, const Block<unsigned int>& newAntIndices);
+  bool copyPointingB(MSPointing& otherPoint, const Block<unsigned int>& newAntIndices);
+  bool copySysCal(const MSSysCal& otherSysCal, const Block<unsigned int>& newAndIndices);
+  bool copyWeather(const MSWeather& otherWeather, const Block<unsigned int>& newAndIndices);
+  bool copyGainCurve(const MeasurementSet& otherMS, const Block<unsigned int>& newAndIndices);
+  bool copyPhaseCal(const MeasurementSet& otherMS, const Block<unsigned int>& newAndIndices);
   bool copyEOP(const MeasurementSet& otherMS);
-  Int copyObservation(const MSObservation& otherObs, const bool remRedunObsId = true);
+  int copyObservation(const MSObservation& otherObs, const bool remRedunObsId = true);
   // # by default remove redundant observation table rows
-  Int copyProcessor(const MSProcessor& otherObs, const bool remRedunProcId = true);
+  int copyProcessor(const MSProcessor& otherObs, const bool remRedunProcId = true);
   // # by default remove redundant processor table rows
-  Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed& otherFeed);
-  Block<uInt> copyState(const MSState& otherState);
-  Block<uInt> copyField(const MeasurementSet& otherms);
-  Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw, const MSPolarization& otherPol,
+  Block<unsigned int> copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed& otherFeed);
+  Block<unsigned int> copyState(const MSState& otherState);
+  Block<unsigned int> copyField(const MeasurementSet& otherms);
+  Block<unsigned int> copySpwAndPol(const MSSpectralWindow& otherSpw, const MSPolarization& otherPol,
                             const MSDataDescription& otherDD);
   bool copySource(const MeasurementSet& otherms);
   bool updateSource();
@@ -126,26 +126,26 @@ class MSConcat : public MSColumns {
   bool obsRowsEquivalent(const MSObservationColumns& obsCol, const rownr_t& rowi,
                          const rownr_t& rowj);
 
-  bool procRowsEquivalent(const MSProcessorColumns& procCol, const uInt& rowi, const uInt& rowj);
+  bool procRowsEquivalent(const MSProcessorColumns& procCol, const unsigned int& rowi, const unsigned int& rowj);
 
   void updateModelDataKeywords(MeasurementSet& ms);
 
   MeasurementSet itsMS;
   IPosition itsFixedShape;
-  Quantum<Double> itsFreqTol;
-  Quantum<Double> itsDirTol;
-  Float itsWeightScale;
+  Quantum<double> itsFreqTol;
+  Quantum<double> itsDirTol;
+  float itsWeightScale;
   bool itsRespectForFieldName;
   Vector<bool> itsChanReversed;
-  std::map<Int, Int> newSourceIndex_p;
-  std::map<Int, Int> newSourceIndex2_p;
-  std::map<Int, Int> newSPWIndex_p;
-  std::map<Int, Int> newObsIndexA_p;
-  std::map<Int, Int> newObsIndexB_p;
-  std::map<Int, Int> otherObsIdsWithCounterpart_p;
-  std::map<Int, Int> newProcIndexA_p;
-  std::map<Int, Int> newProcIndexB_p;
-  std::map<Int, Int> solSystObjects_p;
+  std::map<int, int> newSourceIndex_p;
+  std::map<int, int> newSourceIndex2_p;
+  std::map<int, int> newSPWIndex_p;
+  std::map<int, int> newObsIndexA_p;
+  std::map<int, int> newObsIndexB_p;
+  std::map<int, int> otherObsIdsWithCounterpart_p;
+  std::map<int, int> newProcIndexA_p;
+  std::map<int, int> newProcIndexB_p;
+  std::map<int, int> solSystObjects_p;
 
   bool doSource_p;
   bool doSource2_p;
@@ -181,7 +181,7 @@ bool areEQ(const ArrayColumn<T>& col, rownr_t row_i, rownr_t row_j) {
   return rval;
 }
 
-inline Int getMapValue(const std::map<Int, Int>& m, Int k) {
+inline int getMapValue(const std::map<int, int>& m, int k) {
   auto iter = m.find(k);
   return (iter == m.end() ? -1 : iter->second);
 }

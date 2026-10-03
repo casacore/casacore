@@ -67,7 +67,7 @@ int main() {
     cout << "------------------- Conversions ------" << endl;
     cout << "1410 MHz to RADIO: " << vm.makeVelocity(1.41) << endl;
     cout << "1410 MHz to RADIO: " << vm(MVFrequency(Quantity(1.41, "GHz"))) << endl;
-    Double bck(vm.makeVelocity(1.41).getValue());
+    double bck(vm.makeVelocity(1.41).getValue());
     cout << "Back:              " << vm.makeFrequency(bck) << endl;
     cout << "Back:              " << vm(MVDoppler(Quantity(bck, "km/s"))) << endl;
     vm.set(MFrequency::TOPO);
@@ -76,13 +76,13 @@ int main() {
     frqref.set(MFrequency(Quantity(1.405, "GHz")));
     cout << "Frequency offset:  " << *(frqref.offset()) << endl;
     vm.set(frqref);
-    Vector<Double> fx(3);
+    Vector<double> fx(3);
     fx(0) = 0;
     fx(1) = 0.005;
     fx(2) = 0.010;
     cout << "Frequency list:    " << fx << endl;
     cout << "List to RADIO:     " << vm.makeVelocity(fx) << endl;
-    Vector<Double> vbck(vm.makeVelocity(fx).getValue());
+    Vector<double> vbck(vm.makeVelocity(fx).getValue());
     cout << "Back:              " << vm.makeFrequency(vbck) << endl;
     velref.set(MDoppler(Quantity(1000, "km/s"), MDoppler::RADIO));
     cout << "Velocity offset:   " << *(velref.offset()) << endl;

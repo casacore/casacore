@@ -68,8 +68,8 @@ class TableExprNode;
 
 // The top level interface to the parser.
 int msPolnGramParseCommand(const MeasurementSet* ms, const String& command, TableExprNode& node,
-                           Vector<Int>& selectedDDIDs, std::map<Int, Vector<Int>>& selectedPolnMap,
-                           std::map<Int, Vector<Vector<Int>>>& selectedSetupMap);
+                           Vector<int>& selectedDDIDs, std::map<int, Vector<int>>& selectedPolnMap,
+                           std::map<int, Vector<Vector<int>>>& selectedSetupMap);
 
 // The error handler.
 // It throws an exception with the current token.

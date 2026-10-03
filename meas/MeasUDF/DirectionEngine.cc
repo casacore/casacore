@@ -34,13 +34,13 @@ DirectionEngine::DirectionEngine() : itsEpochEngine(0), itsPositionEngine(0) {}
 
 DirectionEngine::~DirectionEngine() {}
 
-void DirectionEngine::handleDirection(const vector<TENShPtr>& args, uInt& argnr, bool riseSet,
+void DirectionEngine::handleDirection(const vector<TENShPtr>& args, unsigned int& argnr, bool riseSet,
                                       bool asDirCos) {
   // Initialize to unknown reference type.
   itsRefType = MDirection::N_Types;
   // Normally directions must be given in an array, but a single one
   // can be 2 or 3 scalars.
-  uInt nargnr = argnr + 1;
+  unsigned int nargnr = argnr + 1;
   bool asScalar = false;
   TENShPtr scalar3;
   // A string means that object names (e.g. MOON) are given.
@@ -135,7 +135,7 @@ void DirectionEngine::handleNames(const TENShPtr& operand) {
   Array<String> names = operand->getStringAS(0).array();
   itsConstants.resize(names.shape());
   itsH.resize(names.size());
-  for (uInt i = 0; i < names.size(); ++i) {
+  for (unsigned int i = 0; i < names.size(); ++i) {
     String name(names.data()[i]);
     ToUpperCaseInPlace(name);
     itsH[i] = 0;
@@ -203,7 +203,7 @@ void DirectionEngine::handleNames(const TENShPtr& operand) {
 
 void DirectionEngine::handleValues(TableExprNode& operand, const TableExprId& id,
                                    Array<MDirection>& directions) {
-  Array<Double> values = operand.getArrayDouble(id);
+  Array<double> values = operand.getArrayDouble(id);
   IPosition shape = values.shape();
   int nrv = 0;
   Unit unit(operand.unit());
@@ -235,9 +235,9 @@ void DirectionEngine::handleValues(TableExprNode& operand, const TableExprId& id
   Quantity q1(0, unit);
   Quantity q2(0, unit);
   bool delIt;
-  const Double* valVec = values.getStorage(delIt);
+  const double* valVec = values.getStorage(delIt);
   MDirection* dirVec = directions.data();
-  for (uInt i = 0; i < directions.size(); ++i) {
+  for (unsigned int i = 0; i < directions.size(); ++i) {
     if (nrv == 2) {
       q1.setValue(valVec[i * 2]);
       q2.setValue(valVec[i * 2 + 1]);
@@ -283,7 +283,7 @@ Array<MDirection> DirectionEngine::getDirections(const TableExprId& id) {
   return directions;
 }
 
-Array<Double> DirectionEngine::getArrayDouble(const TableExprId& id, bool riseSet, bool asDirCos) {
+Array<double> DirectionEngine::getArrayDouble(const TableExprId& id, bool riseSet, bool asDirCos) {
   DebugAssert(id.byRow(), AipsError);
   Array<MDirection> res(getDirections(id));
   // Get epochs and positions if given.
@@ -297,7 +297,7 @@ Array<Double> DirectionEngine::getArrayDouble(const TableExprId& id, bool riseSe
     pos.reference(itsPositionEngine->getPositions(id));
   }
   // Convert the direction to the given type for all epochs and positions.
-  Array<Double> out;
+  Array<double> out;
   if (res.size() > 0 && eps.size() > 0 && pos.size() > 0) {
     // 2 or 3 values per MDirection
     IPosition shape(1, asDirCos ? 3 : 2);
@@ -320,7 +320,7 @@ Array<Double> DirectionEngine::getArrayDouble(const TableExprId& id, bool riseSe
         if (itsEpochEngine) {
           itsFrame.resetEpoch(*epsIter);
         }
-        uInt hIndex = 0;
+        unsigned int hIndex = 0;
         for (Array<MDirection>::const_contiter resIter = res.cbegin(); resIter != res.cend();
              ++resIter, ++hIndex) {
           if (riseSet) {
@@ -332,13 +332,13 @@ Array<Double> DirectionEngine::getArrayDouble(const TableExprId& id, bool riseSe
             MDirection mdir = itsConverter();
             if (asDirCos) {
               // Get direction cosines.
-              Vector<Double> md(mdir.getValue().getValue());
+              Vector<double> md(mdir.getValue().getValue());
               *outPtr++ = md[0];
               *outPtr++ = md[1];
               *outPtr++ = md[2];
             } else {
               // Get angles as radians.
-              Vector<Double> md(mdir.getValue().get());
+              Vector<double> md(mdir.getValue().get());
               *outPtr++ = md[0];
               *outPtr++ = md[1];
             }

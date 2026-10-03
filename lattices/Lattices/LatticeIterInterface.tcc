@@ -261,7 +261,7 @@ void LatticeIterInterface<T>::readData(bool doRead) {
       itsBuffer = overHangVal;
       // Fill in the appropriate region with the bit that does not overhang.
       // Use the same method as above to deal with possible references.
-      const uInt nrdim = extractShape.nelements();
+      const unsigned int nrdim = extractShape.nelements();
       Array<T> subArr(itsCursor(IPosition(nrdim, 0), extractShape - 1));
       bool isARef = itsLattPtr->getSlice(subArr, start, extractShape, incr);
       if (isARef) {
@@ -292,7 +292,7 @@ void LatticeIterInterface<T>::rewriteData() {
       } else {
         // Write the appropriate region.
         IPosition extractShape = 1 + (itsNavPtr->endPosition() - start) / incr;
-        const uInt nrdim = extractShape.nelements();
+        const unsigned int nrdim = extractShape.nelements();
         Array<T> subArr(itsCursor(IPosition(nrdim, 0), extractShape - 1));
         itsLattPtr->putSlice(subArr, start, incr);
       }
@@ -316,7 +316,7 @@ template <class T>
 void LatticeIterInterface<T>::allocateCurPtr() {
   const IPosition cursorShape(itsNavPtr->cursorShape());
   const IPosition realShape(cursorShape.nonDegenerate(itsCursorAxes));
-  const uInt ndim = realShape.nelements();
+  const unsigned int ndim = realShape.nelements();
   AlwaysAssert(ndim > 0, AipsError);
   switch (ndim) {
     case 1:

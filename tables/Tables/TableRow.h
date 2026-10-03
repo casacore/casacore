@@ -232,7 +232,7 @@ class ROTableRow {
   // Put a value in the given field in the TableRecord into the
   // given row and column.
   // This is a helper function for class TableRow.
-  void putField(rownr_t rownr, const TableRecord& record, Int whichColumn, Int whichField);
+  void putField(rownr_t rownr, const TableRecord& record, int whichColumn, int whichField);
 
   // Set the switch to reread when the current row has been put.
   void setReread(rownr_t rownr);
@@ -253,7 +253,7 @@ class ROTableRow {
   // # Block to tell if the corresponding column value is defined.
   mutable Block<bool> itsDefined;
   // # A cache for itsRecord.nfields()
-  uInt itsNrused;
+  unsigned int itsNrused;
   // # The last rownr read (-1 is nothing read yet).
   mutable Int64 itsLastRow;
   // # A switch to indicate that the last row has to be reread.
@@ -280,7 +280,7 @@ class ROTableRow {
   void deleteObjects();
 
   template <typename Type>
-  void PutFieldArray(rownr_t rownr, const TableRecord& record, Int whichColumn, Int whichField);
+  void PutFieldArray(rownr_t rownr, const TableRecord& record, int whichColumn, int whichField);
 };
 
 // <summary>

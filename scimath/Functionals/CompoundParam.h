@@ -112,11 +112,11 @@ class CompoundParam : public Function<T> {
         paroff_p(other.paroff_p.nelements()),
         funpar_p(other.funpar_p.nelements()),
         locpar_p(other.locpar_p.nelements()) {
-    for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.functionPtr_p[i]->clone();
       paroff_p[i] = other.paroff_p[i];
     }
-    for (uInt i = 0; i < funpar_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < funpar_p.nelements(); ++i) {
       funpar_p[i] = other.funpar_p[i];
       locpar_p[i] = other.locpar_p[i];
     }
@@ -129,11 +129,11 @@ class CompoundParam : public Function<T> {
         paroff_p(other.nFunctions()),
         funpar_p(other.nparameters()),
         locpar_p(other.nparameters()) {
-    for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.function(i).cloneAD();
       paroff_p[i] = other.parameterOffset(i);
     }
-    for (uInt i = 0; i < funpar_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < funpar_p.nelements(); ++i) {
       funpar_p[i] = other.parameterFunction(i);
       locpar_p[i] = other.parameterLocation(i);
     }
@@ -146,11 +146,11 @@ class CompoundParam : public Function<T> {
         paroff_p(other.nFunctions()),
         funpar_p(other.nparameters()),
         locpar_p(other.nparameters()) {
-    for (uInt i = 0; i < functionPtr_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();
       paroff_p[i] = other.parameterOffset(i);
     }
-    for (uInt i = 0; i < funpar_p.nelements(); ++i) {
+    for (unsigned int i = 0; i < funpar_p.nelements(); ++i) {
       funpar_p[i] = other.parameterFunction(i);
       locpar_p[i] = other.parameterLocation(i);
     }
@@ -172,51 +172,51 @@ class CompoundParam : public Function<T> {
   // Add a function to the sum. All functions must have the same
   // <src>ndim()</src> as the first one. Returns the (zero relative) number
   // of the function just added.
-  uInt addFunction(const Function<T> &newFunction);
+  unsigned int addFunction(const Function<T> &newFunction);
 
   // Return the number of functions in the sum.
-  uInt nFunctions() const { return functionPtr_p.nelements(); }
+  unsigned int nFunctions() const { return functionPtr_p.nelements(); }
 
   // Return a reference to a specific Function.
   // <group>
-  const Function<T> &function(uInt which) const {
+  const Function<T> &function(unsigned int which) const {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]);
   }
   // </group>
   // Get the offset in function parameterlist for function which
-  uInt parameterOffset(uInt which) const {
+  unsigned int parameterOffset(unsigned int which) const {
     DebugAssert(nFunctions() > which, AipsError);
     return paroff_p[which];
   }
   // Get the function number belonging to parameter list element which
-  uInt parameterFunction(uInt which) const {
+  unsigned int parameterFunction(unsigned int which) const {
     DebugAssert(nparameters() > which, AipsError);
     return funpar_p[which];
   }
   // Return locpar
-  uInt parameterLocation(uInt which) const {
+  unsigned int parameterLocation(unsigned int which) const {
     DebugAssert(nparameters() > which, AipsError);
     return locpar_p[which];
   }
   // Returns the dimension of functions in the linear combination
-  virtual uInt ndim() const { return ndim_p; }
+  virtual unsigned int ndim() const { return ndim_p; }
 
  private:
   // # Data
   //  Number of dimensions of underlying functions
-  uInt ndim_p;
+  unsigned int ndim_p;
 
  protected:
   // # Data
   //  Pointer to each added function
   Block<Function<T> *> functionPtr_p;
   // Index of offset for each function to its parameters in general list
-  Block<uInt> paroff_p;
+  Block<unsigned int> paroff_p;
   // Index of function belonging to parameter
-  Block<uInt> funpar_p;
+  Block<unsigned int> funpar_p;
   // Index of local parameter
-  Block<uInt> locpar_p;
+  Block<unsigned int> locpar_p;
 
   // # Make members of parent classes known.
  protected:

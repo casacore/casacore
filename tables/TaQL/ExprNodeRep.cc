@@ -54,7 +54,7 @@ TableExprNodeRep::TableExprNodeRep(NodeDataType dtype, ValueType vtype, OperType
       ndim_p(0) {}
 
 TableExprNodeRep::TableExprNodeRep(NodeDataType dtype, ValueType vtype, OperType optype,
-                                   ArgType argtype, ExprType exprtype, Int ndim,
+                                   ArgType argtype, ExprType exprtype, int ndim,
                                    const IPosition& shape)
     : dtype_p(dtype),
       vtype_p(vtype),
@@ -70,12 +70,12 @@ bool TableExprNodeRep::isAggregate() const { return false; }
 
 void TableExprNodeRep::optimize() {}
 
-void TableExprNodeRep::show(ostream& os, uInt indent) const {
-  for (uInt i = 0; i < indent; i++) {
+void TableExprNodeRep::show(ostream& os, unsigned int indent) const {
+  for (unsigned int i = 0; i < indent; i++) {
     os << ' ';
   }
-  os << Int(dtype_p) << ' ' << Int(vtype_p) << ' ' << Int(optype_p) << ' ' << Int(exprtype_p) << ' '
-     << Int(argtype_p) << ' ' << ndim_p << ' ' << shape_p << endl;
+  os << int(dtype_p) << ' ' << int(vtype_p) << ' ' << int(optype_p) << ' ' << int(exprtype_p) << ' '
+     << int(argtype_p) << ' ' << ndim_p << ' ' << shape_p << endl;
 }
 
 void TableExprNodeRep::disableApplySelection() {}
@@ -91,7 +91,7 @@ void TableExprNodeRep::setUnit(const Unit& unit) {
   }
 }
 
-Double TableExprNodeRep::getUnitFactor() const { return 1.; }
+double TableExprNodeRep::getUnitFactor() const { return 1.; }
 
 void TableExprNodeRep::adaptSetUnits(const Unit&) {}
 
@@ -125,7 +125,7 @@ void TableExprNodeRep::ranges(Block<TableExprRange>& blrange) { blrange.resize(0
 void TableExprNodeRep::createRange(Block<TableExprRange>& blrange) { blrange.resize(0, true); }
 
 void TableExprNodeRep::createRange(Block<TableExprRange>& blrange, TableExprNodeColumn* tsn,
-                                   Double st, Double end) {
+                                   double st, double end) {
   if (tsn == 0) {
     blrange.resize(0, true);
   } else {
@@ -156,7 +156,7 @@ Int64 TableExprNodeRep::getInt(const TableExprId&) {
   TableExprNode::throwInvDT("(getInt not implemented)");
   return 0;
 }
-Double TableExprNodeRep::getDouble(const TableExprId& id) { return getInt(id); }
+double TableExprNodeRep::getDouble(const TableExprId& id) { return getInt(id); }
 DComplex TableExprNodeRep::getDComplex(const TableExprId& id) { return getDouble(id); }
 String TableExprNodeRep::getString(const TableExprId&) {
   TableExprNode::throwInvDT("(getString not implemented)");
@@ -178,9 +178,9 @@ MArray<Int64> TableExprNodeRep::getArrayInt(const TableExprId&) {
   TableExprNode::throwInvDT("(getArrayInt not implemented)");
   return MArray<Int64>();
 }
-MArray<Double> TableExprNodeRep::getArrayDouble(const TableExprId& id) {
+MArray<double> TableExprNodeRep::getArrayDouble(const TableExprId& id) {
   MArray<Int64> tmp(getArrayInt(id));
-  MArray<Double> res;
+  MArray<double> res;
   res.fill(tmp);
   return res;
 }
@@ -213,13 +213,13 @@ MArray<Int64> TableExprNodeRep::getIntAS(const TableExprId& id) {
   res[0] = getInt(id);
   return MArray<Int64>(res);
 }
-MArray<Double> TableExprNodeRep::getDoubleAS(const TableExprId& id) {
+MArray<double> TableExprNodeRep::getDoubleAS(const TableExprId& id) {
   if (valueType() == VTArray) {
     return getArrayDouble(id);
   }
-  Vector<Double> res(1);
+  Vector<double> res(1);
   res[0] = getDouble(id);
-  return MArray<Double>(res);
+  return MArray<double>(res);
 }
 MArray<DComplex> TableExprNodeRep::getDComplexAS(const TableExprId& id) {
   if (valueType() == VTArray) {
@@ -252,7 +252,7 @@ bool TableExprNodeRep::contains(const TableExprId& id, bool value) {
 bool TableExprNodeRep::contains(const TableExprId& id, Int64 value) {
   return (value == getInt(id));
 }
-bool TableExprNodeRep::contains(const TableExprId& id, Double value) {
+bool TableExprNodeRep::contains(const TableExprId& id, double value) {
   return (value == getDouble(id));
 }
 bool TableExprNodeRep::contains(const TableExprId& id, DComplex value) {
@@ -270,7 +270,7 @@ MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<bool
 MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Int64>& value) {
   return (getInt(id) == value);
 }
-MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Double>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<double>& value) {
   return (getDouble(id) == value);
 }
 MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<DComplex>& value) {
@@ -294,32 +294,32 @@ Array<bool> TableExprNodeRep::getColumnBool(const Vector<rownr_t>& rownrs) {
   }
   return arr;
 }
-Array<uChar> TableExprNodeRep::getColumnuChar(const Vector<rownr_t>&) {
+Array<unsigned char> TableExprNodeRep::getColumnuChar(const Vector<rownr_t>&) {
   TableExprNode::throwInvDT("(getColumnuChar not implemented)");
-  return Array<uChar>();
+  return Array<unsigned char>();
 }
-Array<Short> TableExprNodeRep::getColumnShort(const Vector<rownr_t>&) {
+Array<short> TableExprNodeRep::getColumnShort(const Vector<rownr_t>&) {
   TableExprNode::throwInvDT("(getColumnShort not implemented)");
-  return Array<Short>();
+  return Array<short>();
 }
-Array<uShort> TableExprNodeRep::getColumnuShort(const Vector<rownr_t>&) {
+Array<unsigned short> TableExprNodeRep::getColumnuShort(const Vector<rownr_t>&) {
   TableExprNode::throwInvDT("(getColumnuShort not implemented)");
-  return Array<uShort>();
+  return Array<unsigned short>();
 }
-Array<Int> TableExprNodeRep::getColumnInt(const Vector<rownr_t>& rownrs) {
+Array<int> TableExprNodeRep::getColumnInt(const Vector<rownr_t>& rownrs) {
   TableExprId id;
   rownr_t nrrow = rownrs.size();
-  Array<Int> arr(IPosition(1, nrrow));
-  Int* vec = arr.data();
+  Array<int> arr(IPosition(1, nrrow));
+  int* vec = arr.data();
   for (rownr_t i = 0; i < nrrow; i++) {
     id.setRownr(rownrs[i]);
     vec[i] = getInt(id);
   }
   return arr;
 }
-Array<uInt> TableExprNodeRep::getColumnuInt(const Vector<rownr_t>&) {
+Array<unsigned int> TableExprNodeRep::getColumnuInt(const Vector<rownr_t>&) {
   TableExprNode::throwInvDT("(getColumnuInt not implemented)");
-  return Array<uInt>();
+  return Array<unsigned int>();
 }
 Array<Int64> TableExprNodeRep::getColumnInt64(const Vector<rownr_t>& rownrs) {
   TableExprId id;
@@ -332,15 +332,15 @@ Array<Int64> TableExprNodeRep::getColumnInt64(const Vector<rownr_t>& rownrs) {
   }
   return arr;
 }
-Array<Float> TableExprNodeRep::getColumnFloat(const Vector<rownr_t>&) {
+Array<float> TableExprNodeRep::getColumnFloat(const Vector<rownr_t>&) {
   TableExprNode::throwInvDT("(getColumnFloat not implemented)");
-  return Array<Float>();
+  return Array<float>();
 }
-Array<Double> TableExprNodeRep::getColumnDouble(const Vector<rownr_t>& rownrs) {
+Array<double> TableExprNodeRep::getColumnDouble(const Vector<rownr_t>& rownrs) {
   TableExprId id;
   rownr_t nrrow = rownrs.size();
-  Array<Double> arr(IPosition(1, nrrow));
-  Double* vec = arr.data();
+  Array<double> arr(IPosition(1, nrrow));
+  double* vec = arr.data();
   for (rownr_t i = 0; i < nrrow; i++) {
     id.setRownr(rownrs[i]);
     vec[i] = getDouble(id);
@@ -504,7 +504,7 @@ TableExprNodeBinary::TableExprNodeBinary(NodeDataType tp, const TableExprNodeRep
   optype_p = oper;
 }
 
-void TableExprNodeBinary::show(ostream& os, uInt indent) const {
+void TableExprNodeBinary::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
   if (lnode_p != 0) {
     lnode_p->show(os, indent + 2);
@@ -627,15 +627,15 @@ TableExprNodeRep TableExprNodeBinary::getCommonTypes(const TENShPtr& left, const
   }
   // Get dimensionality and shape of result.
   IPosition shape;
-  Int ndim = -1;
+  int ndim = -1;
   if (leftVtype == VTScalar && rightVtype == VTScalar) {
     ndim = 0;
   } else {
     // Check if the 2 operands have matching dimensionality and shape.
     // This can only be done if they are fixed.
     // Also determine the resulting dimensionality and shape.
-    Int leftNdim = left->ndim();
-    Int rightNdim = right->ndim();
+    int leftNdim = left->ndim();
+    int rightNdim = right->ndim();
     if (leftNdim > 0) {
       ndim = leftNdim;
       if (rightNdim > 0 && leftNdim != rightNdim) {
@@ -805,9 +805,9 @@ TableExprNodeMulti::TableExprNodeMulti(NodeDataType tp, ValueType vtype, OperTyp
                                        const TableExprNodeRep& source)
     : TableExprNodeRep(tp, vtype, oper, source.exprType()) {}
 
-void TableExprNodeMulti::show(ostream& os, uInt indent) const {
+void TableExprNodeMulti::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
-  for (uInt j = 0; j < operands_p.size(); j++) {
+  for (unsigned int j = 0; j < operands_p.size(); j++) {
     if (operands_p[j] != 0) {
       operands_p[j]->show(os, indent + 2);
     }
@@ -816,7 +816,7 @@ void TableExprNodeMulti::show(ostream& os, uInt indent) const {
 
 void TableExprNodeMulti::flattenTree(std::vector<TableExprNodeRep*>& nodes) {
   nodes.push_back(this);
-  for (uInt j = 0; j < operands_p.size(); j++) {
+  for (unsigned int j = 0; j < operands_p.size(); j++) {
     if (operands_p[j] != 0) {
       operands_p[j]->flattenTree(nodes);
     }
@@ -829,7 +829,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc() {
 
 bool TableExprNodeRep::isLazyAggregate() const { return true; }
 
-uInt TableExprNodeMulti::checkNumOfArg(uInt low, uInt high, const vector<TENShPtr>& nodes) {
+unsigned int TableExprNodeMulti::checkNumOfArg(unsigned int low, unsigned int high, const vector<TENShPtr>& nodes) {
   if (nodes.size() < low) {
     throw(TableInvExpr("too few function arguments"));
   } else if (nodes.size() > high) {
@@ -838,11 +838,11 @@ uInt TableExprNodeMulti::checkNumOfArg(uInt low, uInt high, const vector<TENShPt
   return nodes.size();
 }
 
-TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT(Block<Int>& dtypeOper, NodeDataType dtIn,
+TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT(Block<int>& dtypeOper, NodeDataType dtIn,
                                                            NodeDataType dtOut,
                                                            const vector<TENShPtr>& nodes,
                                                            bool dateConv) {
-  uInt nelem = nodes.size();
+  unsigned int nelem = nodes.size();
   dtypeOper.resize(nelem);
   dtypeOper.set(dtIn);
   // NTAny means that it can be any type.
@@ -865,7 +865,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT(Block<Int>& dtypeOper
     // NTNumeric -> dtIn must be NTComplex or NTDouble or NTInt
     //              and set resultType to the highest type of dtIn
     resultType = (dtOut == NTDouCom ? NTDouble : NTInt);
-    for (uInt i = 0; i < nelem; i++) {
+    for (unsigned int i = 0; i < nelem; i++) {
       if (nodes[i]->dataType() == NTComplex) {
         resultType = NTComplex;
       } else if (nodes[i]->dataType() == NTDouble) {
@@ -880,7 +880,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT(Block<Int>& dtypeOper
     // NTReal -> dtIn must be NTDouble or NTInt
     //           and set resultType to the highest type of dtIn
     resultType = (dtOut == NTDouCom ? NTDouble : NTInt);
-    for (uInt i = 0; i < nelem; i++) {
+    for (unsigned int i = 0; i < nelem; i++) {
       if (nodes[i]->dataType() == NTDouble) {
         resultType = NTDouble;
       } else if (nodes[i]->dataType() != NTInt) {
@@ -889,7 +889,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT(Block<Int>& dtypeOper
     }
   } else {
     // Data types of the nodes must match dtIn
-    for (uInt i = 0; i < nelem; i++) {
+    for (unsigned int i = 0; i < nelem; i++) {
       // Double or String to Date conversion can be possible.
       if (nodes[i]->dataType() != dtIn) {
         if (dateConv && dtIn == NTDate) {

@@ -40,7 +40,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ISMIndColumn::ISMIndColumn(ISMBase* smptr, int dataType, uInt colnr)
+ISMIndColumn::ISMIndColumn(ISMBase* smptr, int dataType, unsigned int colnr)
     : ISMColumn(smptr, dataType, colnr),
       seqnr_p(smptr->uniqueNr()),
       shapeIsFixed_p(false),
@@ -68,7 +68,7 @@ void ISMIndColumn::doCreate(ISMBucket* bucket) {
   lastRowPut_p = 0;
   *(Int64*)lastValue_p = 0;
   char* buffer = stmanPtr_p->tempBuffer();
-  uInt leng = writeFunc_p(buffer, lastValue_p, 1);
+  unsigned int leng = writeFunc_p(buffer, lastValue_p, 1);
   bucket->addData(colnr_p, 0, 0, buffer, leng);
 }
 void ISMIndColumn::getFile(rownr_t nrrow) {
@@ -166,7 +166,7 @@ bool ISMIndColumn::isShapeDefined(rownr_t rownr) {
   return (getArrayPtr(rownr) == 0 ? false : true);
 }
 
-uInt ISMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
+unsigned int ISMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
 
 IPosition ISMIndColumn::shape(rownr_t rownr) { return getShape(rownr)->shape(); }
 

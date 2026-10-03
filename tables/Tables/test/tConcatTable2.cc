@@ -44,18 +44,18 @@
 // </summary>
 
 // First build a description.
-void fill(const String& name, const String& name2, Int stval) {
-  const Int nrrow = 10;
+void fill(const String& name, const String& name2, int stval) {
+  const int nrrow = 10;
   {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.addColumn(ScalarColumnDesc<bool>("abool"));
-    td.addColumn(ScalarColumnDesc<uChar>("auchar"));
-    td.addColumn(ScalarColumnDesc<Short>("ashort"));
-    td.addColumn(ScalarColumnDesc<Int>("aint"));
-    td.addColumn(ScalarColumnDesc<uInt>("auint"));
-    td.addColumn(ScalarColumnDesc<Float>("afloat"));
-    td.addColumn(ScalarColumnDesc<Double>("adouble"));
+    td.addColumn(ScalarColumnDesc<unsigned char>("auchar"));
+    td.addColumn(ScalarColumnDesc<short>("ashort"));
+    td.addColumn(ScalarColumnDesc<int>("aint"));
+    td.addColumn(ScalarColumnDesc<unsigned int>("auint"));
+    td.addColumn(ScalarColumnDesc<float>("afloat"));
+    td.addColumn(ScalarColumnDesc<double>("adouble"));
     td.addColumn(ScalarColumnDesc<Complex>("acomplex"));
     td.addColumn(ScalarColumnDesc<DComplex>("adcomplex"));
     td.addColumn(ScalarColumnDesc<String>("astring"));
@@ -79,17 +79,17 @@ void fill(const String& name, const String& name2, Int stval) {
   AlwaysAssertExit(tab.nrow() == 10);
   AlwaysAssertExit(tab.keywordSet().nfields() == 2);
   ScalarColumn<bool> abool(tab, "abool");
-  ScalarColumn<uChar> auchar(tab, "auchar");
-  ScalarColumn<Short> ashort(tab, "ashort");
-  ScalarColumn<Int> aint(tab, "aint");
-  ScalarColumn<uInt> auint(tab, "auint");
-  ScalarColumn<Float> afloat(tab, "afloat");
-  ScalarColumn<Double> adouble(tab, "adouble");
+  ScalarColumn<unsigned char> auchar(tab, "auchar");
+  ScalarColumn<short> ashort(tab, "ashort");
+  ScalarColumn<int> aint(tab, "aint");
+  ScalarColumn<unsigned int> auint(tab, "auint");
+  ScalarColumn<float> afloat(tab, "afloat");
+  ScalarColumn<double> adouble(tab, "adouble");
   ScalarColumn<Complex> acomplex(tab, "acomplex");
   ScalarColumn<DComplex> adcomplex(tab, "adcomplex");
   ScalarColumn<String> astring(tab, "astring");
   char str[16];
-  for (Int i = 0; i < nrrow; i++) {
+  for (int i = 0; i < nrrow; i++) {
     abool.put(i, (stval % 2 == 0));
     auchar.put(i, stval);
     ashort.put(i, stval);
@@ -120,8 +120,8 @@ void fill(const String& name, const String& name2, Int stval) {
   }
 }
 
-void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, bool reorder = true,
-                uInt nrow = 10) {
+void checkTable(const Table& tab, unsigned int nkey, unsigned int nsubrow, int stval, bool reorder = true,
+                unsigned int nrow = 10) {
   AlwaysAssertExit(tab.nrow() == nrow);
   AlwaysAssertExit(tab.keywordSet().nfields() == nkey);
   AlwaysAssertExit(tab.keywordSet().asInt("key1") == 1);
@@ -130,20 +130,20 @@ void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, bool reord
     AlwaysAssertExit(tab.keywordSet().asTable("keysub").nrow() == nsubrow);
   }
   ScalarColumn<bool> abool(tab, "abool");
-  ScalarColumn<uChar> auchar(tab, "auchar");
-  ScalarColumn<Short> ashort(tab, "ashort");
-  ScalarColumn<Int> aint(tab, "aint");
-  ScalarColumn<uInt> auint(tab, "auint");
-  ScalarColumn<Float> afloat(tab, "afloat");
-  ScalarColumn<Double> adouble(tab, "adouble");
+  ScalarColumn<unsigned char> auchar(tab, "auchar");
+  ScalarColumn<short> ashort(tab, "ashort");
+  ScalarColumn<int> aint(tab, "aint");
+  ScalarColumn<unsigned int> auint(tab, "auint");
+  ScalarColumn<float> afloat(tab, "afloat");
+  ScalarColumn<double> adouble(tab, "adouble");
   ScalarColumn<Complex> acomplex(tab, "acomplex");
   ScalarColumn<DComplex> adcomplex(tab, "adcomplex");
   ScalarColumn<String> astring(tab, "astring");
   char str[8];
   // Values are stored as: 0 1 2 5 6 7 8 9 3 4
-  for (uInt i = 0; i < tab.nrow(); i++) {
-    Int row = i % 10;
-    Int rowd = i - row;
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
+    int row = i % 10;
+    int rowd = i - row;
     if (reorder) {
       if (row >= 5) {
         row -= 2;
@@ -156,7 +156,7 @@ void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, bool reord
     AlwaysAssertExit(auchar(row) == stval);
     AlwaysAssertExit(ashort(row) == stval);
     AlwaysAssertExit(aint(row) == stval);
-    AlwaysAssertExit(auint(row) == uInt(stval));
+    AlwaysAssertExit(auint(row) == static_cast<unsigned int>(stval));
     AlwaysAssertExit(afloat(row) == stval);
     AlwaysAssertExit(adouble(row) == stval);
     AlwaysAssertExit(acomplex(row) == Complex(stval, 0));
@@ -167,9 +167,9 @@ void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, bool reord
   }
 }
 
-void check(const String& name, uInt nkey, Int stval) { checkTable(Table(name), nkey, 10, stval); }
+void check(const String& name, unsigned int nkey, int stval) { checkTable(Table(name), nkey, 10, stval); }
 
-void checkComb(const String& name1, const String& name2, uInt nkey, Int stval) {
+void checkComb(const String& name1, const String& name2, unsigned int nkey, int stval) {
   Block<Table> tabs(2);
   tabs[0] = Table(name1);
   tabs[1] = Table(name2);
@@ -177,7 +177,7 @@ void checkComb(const String& name1, const String& name2, uInt nkey, Int stval) {
   checkTable(tab, nkey, 10, stval, true, 20);
 }
 
-void checkSplit(const String& name, uInt nkey, Int stval) {
+void checkSplit(const String& name, unsigned int nkey, int stval) {
   Table tab(name);
   // Split and concatenate the table such that we get the original order.
   // Values are stored as: 0 1 2 5 6 7 8 9 3 4
@@ -188,11 +188,11 @@ void checkSplit(const String& name, uInt nkey, Int stval) {
   checkTable(Table(tabs), nkey, 10, stval, false);
 }
 
-void checkFull(const String& name, Int stval) {
+void checkFull(const String& name, int stval) {
   Table tab(name);
   // Make a ConcatTable of a table for each row.
   Block<Table> tabs(10);
-  for (uInt i = 0; i < 10; ++i) {
+  for (unsigned int i = 0; i < 10; ++i) {
     tabs[i] = tab(tab.nodeRownr() == i);
   }
   // Concatenate the subtable, so we get a subtable of 10*10 rows.
@@ -201,7 +201,7 @@ void checkFull(const String& name, Int stval) {
   // Check each subtable.
   Table subtab = ctab.keywordSet().asTable("keysub");
   // Check if each part of 10 rows is correct.
-  for (Int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 10; ++i) {
     checkTable(subtab(subtab.nodeRownr() >= 10 * i && subtab.nodeRownr() < 10 * (i + 1)), 2, 10,
                21);
   }

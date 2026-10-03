@@ -60,7 +60,7 @@ void checkMatchInt(const TableExprNodeSetElem& tset, Int64 val, bool result) {
   AlwaysAssertExit(res == result);
 }
 
-void checkMatchDouble(const TableExprNodeSetElem& tset, Double val, bool result) {
+void checkMatchDouble(const TableExprNodeSetElem& tset, double val, bool result) {
   cout << "checkMatchDouble " << val << ' ' << result << endl;
   bool res = false;
   tset.getElem()->matchDouble(&res, &val, 1, 0);
@@ -97,7 +97,7 @@ void checkMatchString(const TableExprNodeSetElem& tset, const String& val, bool 
 }
 
 void checkMatchDate(const TableExprNodeSetElem& tset, MVTime val, bool result) {
-  cout << "checkMatchDate " << Double(val) << ' ' << result << endl;
+  cout << "checkMatchDate " << double(val) << ' ' << result << endl;
   bool res = false;
   tset.getElem()->matchDate(&res, &val, 1, 0);
   AlwaysAssertExit(res == result);
@@ -277,11 +277,11 @@ void doDiscreteDouble() {
     TableExprNodeSetElem tset(&st, &end, &incr, false);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, true, true, true, false, "dm"));
-    Vector<Double> vec;
+    Vector<double> vec;
     Int64 cnt = 0;
     tset.getElem()->fillVector(vec, cnt, 0);
     vec.resize(cnt, true);
-    Vector<Double> exp(46);
+    Vector<double> exp(46);
     indgen(exp, 1., 0.2);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
     checkMatchDouble(tset, 3., true);
@@ -290,11 +290,11 @@ void doDiscreteDouble() {
   {
     TableExprNodeSetElem tset(&stn, &endn, &incrn, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTDouble, true, true, true, true, false));
-    Vector<Double> vec;
+    Vector<double> vec;
     Int64 cnt = 0;
     tset.getElem()->fillVector(vec, cnt, 0);
     vec.resize(cnt, true);
-    Vector<Double> exp(36);
+    Vector<double> exp(36);
     indgen(exp, 100., -2.5);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
     checkMatchDouble(tset, 100., true);
@@ -305,7 +305,7 @@ void doDiscreteDouble() {
   {
     TableExprNodeSetElem tset(&stn, 0, &incrn, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTDouble, true, false, true, true, false));
-    Vector<Double> vec;
+    Vector<double> vec;
     Int64 cnt = 0;
     tset.getElem()->fillVector(vec, cnt, 0);
     AlwaysAssertExit(cnt == 0);
@@ -318,13 +318,13 @@ void doDiscreteDouble() {
     TableExprNodeSetElem tset(&st, &end, &incr, true);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, true, true, true, false, "dm"));
-    Vector<Double> vec(25);
+    Vector<double> vec(25);
     vec[0] = 0.6;
     vec[1] = 0.8;
     Int64 cnt = 2;
     tset.getElem()->fillVector(vec, cnt, 0);
     vec.resize(cnt, true);
-    Vector<Double> exp(48);
+    Vector<double> exp(48);
     indgen(exp, 0.6, 0.2);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
@@ -332,11 +332,11 @@ void doDiscreteDouble() {
     TableExprNodeSetElem tset(&st, &end, 0, true);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, true, false, true, false, "dm"));
-    Vector<Double> vec;
+    Vector<double> vec;
     Int64 cnt = 0;
     tset.getElem()->fillVector(vec, cnt, 0);
     vec.resize(cnt, true);
-    Vector<Double> exp(10);
+    Vector<double> exp(10);
     indgen(exp, 1., 1.);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
@@ -344,21 +344,21 @@ void doDiscreteDouble() {
     TableExprNodeSetElem tset(&st, 0, 0, true);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, false, false, true, false, "dm"));
-    Vector<Double> vec;
+    Vector<double> vec;
     Int64 cnt = 0;
     tset.getElem()->fillVector(vec, cnt, 0);
     vec.resize(cnt, true);
-    AlwaysAssertExit(allNear(Vector<Double>(), vec, 1e-13));
+    AlwaysAssertExit(allNear(Vector<double>(), vec, 1e-13));
   }
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, false, false, true, true, "dm"));
-    Vector<Double> vec;
+    Vector<double> vec;
     Int64 cnt = 0;
     tset.getElem()->fillVector(vec, cnt, 0);
     vec.resize(cnt, true);
-    AlwaysAssertExit(allNear(Vector<Double>(1, 1.), vec, 1e-13));
+    AlwaysAssertExit(allNear(Vector<double>(1, 1.), vec, 1e-13));
     checkMatchDouble(tset, 1., true);
     checkMatchDouble(tset, -2., false);
   }
@@ -422,9 +422,9 @@ void doDiscreteDate() {
     Int64 cnt = 0;
     tset.getElem()->fillVector(vect, cnt, 0);
     vect.resize(cnt, true);
-    Vector<Double> vec(vect.size());
+    Vector<double> vec(vect.size());
     convertArray(vec, vect);
-    Vector<Double> exp(5);
+    Vector<double> exp(5);
     indgen(exp, 54926.5, 7.);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
     checkMatchDate(tset, 54926.5, true);
@@ -437,9 +437,9 @@ void doDiscreteDate() {
     Int64 cnt = 0;
     tset.getElem()->fillVector(vect, cnt, 0);
     vect.resize(cnt, true);
-    Vector<Double> vec(vect.size());
+    Vector<double> vec(vect.size());
     convertArray(vec, vect);
-    Vector<Double> exp(5);
+    Vector<double> exp(5);
     indgen(exp, 54926.5, 7.);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
@@ -450,9 +450,9 @@ void doDiscreteDate() {
     Int64 cnt = 0;
     tset.getElem()->fillVector(vect, cnt, 0);
     vect.resize(cnt, true);
-    Vector<Double> vec(vect.size());
+    Vector<double> vec(vect.size());
     convertArray(vec, vect);
-    Vector<Double> exp(32);
+    Vector<double> exp(32);
     indgen(exp, 54926.5);
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
@@ -463,9 +463,9 @@ void doDiscreteDate() {
     Int64 cnt = 0;
     tset.getElem()->fillVector(vect, cnt, 0);
     vect.resize(cnt, true);
-    Vector<Double> vec(vect.size());
+    Vector<double> vec(vect.size());
     convertArray(vec, vect);
-    AlwaysAssertExit(allNear(Vector<Double>(), vec, 1e-13));
+    AlwaysAssertExit(allNear(Vector<double>(), vec, 1e-13));
   }
   {
     TableExprNodeSetElem tset(st);
@@ -474,9 +474,9 @@ void doDiscreteDate() {
     Int64 cnt = 0;
     tset.getElem()->fillVector(vect, cnt, 0);
     vect.resize(cnt, true);
-    Vector<Double> vec(vect.size());
+    Vector<double> vec(vect.size());
     convertArray(vec, vect);
-    AlwaysAssertExit(allNear(Vector<Double>(1, 54926.5), vec, 1e-13));
+    AlwaysAssertExit(allNear(Vector<double>(1, 54926.5), vec, 1e-13));
     checkMatchDate(tset, 54926.5, true);
     checkMatchDate(tset, 54926.6, false);
   }
@@ -709,7 +709,7 @@ void doMidWidthDate() {
 
 void doErrors() {
   cout << "Trying erroneous commands ..." << endl;
-  Vector<Int> vec({1, 2});
+  Vector<int> vec({1, 2});
   TableExprNode nullNode;
   TableExprNode boolNode(true);
   TableExprNode arrNode(vec);

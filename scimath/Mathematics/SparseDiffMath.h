@@ -184,13 +184,13 @@ bool operator!=(const SparseDiff<T> &left, const SparseDiff<T> &right);
 template <class T>
 bool near(const SparseDiff<T> &left, const SparseDiff<T> &right);
 template <class T>
-bool near(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol);
+bool near(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol);
 template <class T>
-bool allnear(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol);
+bool allnear(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol);
 template <class T>
-bool nearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol);
+bool nearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol);
 template <class T>
-bool allnearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol);
+bool allnearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol);
 // </group>
 // Compare a SparseDiff and a constant
 // <group>
@@ -209,13 +209,13 @@ bool operator!=(const SparseDiff<T> &left, const T &right);
 template <class T>
 bool near(const SparseDiff<T> &left, const T &right);
 template <class T>
-bool near(const SparseDiff<T> &left, const T &right, const Double tol);
+bool near(const SparseDiff<T> &left, const T &right, const double tol);
 template <class T>
-bool allnear(const SparseDiff<T> &left, const T &right, const Double tol);
+bool allnear(const SparseDiff<T> &left, const T &right, const double tol);
 template <class T>
-bool nearAbs(const SparseDiff<T> &left, const T &right, const Double tol);
+bool nearAbs(const SparseDiff<T> &left, const T &right, const double tol);
 template <class T>
-bool allnearAbs(const SparseDiff<T> &left, const T &right, const Double tol);
+bool allnearAbs(const SparseDiff<T> &left, const T &right, const double tol);
 // </group>
 // Compare a constant and a SparseDiff
 // <group>
@@ -232,13 +232,13 @@ bool operator==(const T &left, const SparseDiff<T> &right);
 template <class T>
 bool operator!=(const T &left, const SparseDiff<T> &right);
 template <class T>
-bool near(const T &left, const SparseDiff<T> &right, const Double tol);
+bool near(const T &left, const SparseDiff<T> &right, const double tol);
 template <class T>
-bool allnear(const T &left, const SparseDiff<T> &right, const Double tol);
+bool allnear(const T &left, const SparseDiff<T> &right, const double tol);
 template <class T>
-bool nearAbs(const T &left, const SparseDiff<T> &right, const Double tol);
+bool nearAbs(const T &left, const SparseDiff<T> &right, const double tol);
 template <class T>
-bool allnearAbs(const T &left, const SparseDiff<T> &right, const Double tol);
+bool allnearAbs(const T &left, const SparseDiff<T> &right, const double tol);
 // </group>
 // Test special values
 // <group>

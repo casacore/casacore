@@ -33,32 +33,32 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ValueHolder::ValueHolder(bool value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(uChar value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(Short value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(uShort value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(Int value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(uInt value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(unsigned char value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(short value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(unsigned short value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(int value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(unsigned int value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(Int64 value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(Float value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(Double value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(float value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(double value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Complex& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const DComplex& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Char* value) : itsRep(new ValueHolderRep(String(value))) {}
+ValueHolder::ValueHolder(const char* value) : itsRep(new ValueHolderRep(String(value))) {}
 ValueHolder::ValueHolder(const String& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<bool>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<uChar>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<Short>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<uShort>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<Int>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<uInt>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<unsigned char>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<short>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<unsigned short>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<int>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<unsigned int>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<Int64>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<Float>& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<Double>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<float>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<double>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<Complex>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<DComplex>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<String>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Record& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(uInt ndim, bool dummy) : itsRep(new ValueHolderRep(ndim, dummy)) {}
+ValueHolder::ValueHolder(unsigned int ndim, bool dummy) : itsRep(new ValueHolderRep(ndim, dummy)) {}
 
 ValueHolder::ValueHolder(const ValueHolder& that) : itsRep(that.itsRep) {}
 

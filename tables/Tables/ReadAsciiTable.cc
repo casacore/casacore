@@ -52,19 +52,19 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-const Int lineSize = 32768;
+const int lineSize = 32768;
 
 // # Helper function.
 // # Read a line and ignore lines to be skipped.
-bool ReadAsciiTable::getLine(ifstream& file, Int& lineNumber, char* line, Int lineSize,
-                             bool testComment, const Regex& commentMarker, Int firstLine,
-                             Int lastLine) {
-  Int dummy;
+bool ReadAsciiTable::getLine(ifstream& file, int& lineNumber, char* line, int lineSize,
+                             bool testComment, const Regex& commentMarker, int firstLine,
+                             int lastLine) {
+  int dummy;
   while (true) {
     if (!file.getline(line, lineSize)) {
       return false;
     }
-    Int nch = file.gcount();
+    int nch = file.gcount();
     // Remove linefeed or newline.
     if (nch > 0) nch--;
     // Remove possible carriage return.
@@ -91,11 +91,11 @@ bool ReadAsciiTable::getLine(ifstream& file, Int& lineNumber, char* line, Int li
 // # It updates at and returns the length of the value retrieved.
 // # Quotes around strings are removed
 // # -1 is returned if no more values are found.
-Int ReadAsciiTable::getNext(const Char* string, Int strlen, Char* result, Int& at, Char separator) {
-  Int i = 0;
+int ReadAsciiTable::getNext(const char* string, int strlen, char* result, int& at, char separator) {
+  int i = 0;
   bool found = false;
   bool quoted = false;
-  Char ihave;
+  char ihave;
   // The next few lines are needed to treat e.g. a trailing comma as
   // a value.
   bool hasNext = false;
@@ -149,10 +149,10 @@ Int ReadAsciiTable::getNext(const Char* string, Int strlen, Char* result, Int& a
   return -1;
 }
 
-void ReadAsciiTable::getTypes(const IPosition& shape, const Char* in, Int leng, Char* string1,
-                              Char* string2, Char separator) {
-  Int at = 0;
-  Int i = 0;
+void ReadAsciiTable::getTypes(const IPosition& shape, const char* in, int leng, char* string1,
+                              char* string2, char separator) {
+  int at = 0;
+  int i = 0;
   // # When constructing str in the while loop (in the else branch),
   // # a compiler bug appeared on RH systems.
   // # Therefore assignment is used instead.
@@ -179,7 +179,7 @@ void ReadAsciiTable::getTypes(const IPosition& shape, const Char* in, Int leng, 
     string2[0] = '\0';
     if (shape.nelements() > 0) {
       ostringstream ostr;
-      for (uInt i = 0; i < shape.nelements(); i++) {
+      for (unsigned int i = 0; i < shape.nelements(); i++) {
         if (i > 0) {
           ostr << ',';
         }
@@ -206,18 +206,18 @@ bool ReadAsciiTable::makeBool(const String& str) {
 }
 
 // # Read a keyword set and add it to keysets.
-void ReadAsciiTable::handleKeyset(Int lineSize, char* string1, char* first, char* second,
+void ReadAsciiTable::handleKeyset(int lineSize, char* string1, char* first, char* second,
                                   TableRecord& keysets, LogIO& logger, const std::string& fileName,
-                                  ifstream& jFile, Int& lineNumber, Char separator,
-                                  bool testComment, const Regex& commentMarker, Int firstLine,
-                                  Int lastLine) {
+                                  ifstream& jFile, int& lineNumber, char separator,
+                                  bool testComment, const Regex& commentMarker, int firstLine,
+                                  int lastLine) {
   TableRecord keyset;
 
   // Get the column name in case it is a column keywordset.
   String colName;
-  Int atl = 0;
+  int atl = 0;
   getNext(string1, lineSize, first, atl, ' ');
-  Int d4 = getNext(string1, lineSize, second, atl, ' ');
+  int d4 = getNext(string1, lineSize, second, atl, ' ');
   if (d4 > 0) {
     colName = second;
   }
@@ -241,9 +241,9 @@ void ReadAsciiTable::handleKeyset(Int lineSize, char* string1, char* first, char
     }
 
     // Read the first two fields (name and type) of a KEYWORD line
-    Int at3 = 0;
-    Int done3 = getNext(string1, lineSize, first, at3, ' ');
-    Int done4 = getNext(string1, lineSize, second, at3, ' ');
+    int at3 = 0;
+    int done3 = getNext(string1, lineSize, first, at3, ' ');
+    int done4 = getNext(string1, lineSize, second, at3, ' ');
     if (done3 <= 0 || done4 <= 0) {
       throw AipsError("ReadAsciiTable: no keyword name or type in line " +
                       std::to_string(lineNumber) + " of " + fileName);
@@ -257,8 +257,8 @@ void ReadAsciiTable::handleKeyset(Int lineSize, char* string1, char* first, char
     } else {
       // Convert the type string to shape and type.
       IPosition keyShape;
-      Int keyRAT;
-      Int varAxis = getTypeShape(keyType, keyShape, keyRAT);
+      int keyRAT;
+      int varAxis = getTypeShape(keyType, keyShape, keyRAT);
       // If no shape is given, the keyword can be a vector.
       bool shpDefined = keyShape.nelements() > 0;
       if (!shpDefined) {
@@ -279,48 +279,48 @@ void ReadAsciiTable::handleKeyset(Int lineSize, char* string1, char* first, char
           }
         } break;
         case RATShort: {
-          Block<Short> values;
+          Block<short> values;
           IPosition shp = getArray(string1, lineSize, first, at3, separator, keyShape, varAxis,
                                    keyRAT, &values);
           if (!shpDefined && shp(0) == 1) {
             keyset.define(keyName, values[0]);
           } else {
-            Array<Short> array(shp, values.storage(), SHARE);
+            Array<short> array(shp, values.storage(), SHARE);
             keyset.define(keyName, array);
           }
         } break;
         case RATInt: {
-          Block<Int> values;
+          Block<int> values;
           IPosition shp = getArray(string1, lineSize, first, at3, separator, keyShape, varAxis,
                                    keyRAT, &values);
           if (!shpDefined && shp(0) == 1) {
             keyset.define(keyName, values[0]);
           } else {
-            Array<Int> array(shp, values.storage(), SHARE);
+            Array<int> array(shp, values.storage(), SHARE);
             keyset.define(keyName, array);
           }
         } break;
         case RATFloat: {
-          Block<Float> values;
+          Block<float> values;
           IPosition shp = getArray(string1, lineSize, first, at3, separator, keyShape, varAxis,
                                    keyRAT, &values);
           if (!shpDefined && shp(0) == 1) {
             keyset.define(keyName, values[0]);
           } else {
-            Array<Float> array(shp, values.storage(), SHARE);
+            Array<float> array(shp, values.storage(), SHARE);
             keyset.define(keyName, array);
           }
         } break;
         case RATDouble:
         case RATDMS:
         case RATHMS: {
-          Block<Double> values;
+          Block<double> values;
           IPosition shp = getArray(string1, lineSize, first, at3, separator, keyShape, varAxis,
                                    keyRAT, &values);
           if (!shpDefined && shp(0) == 1) {
             keyset.define(keyName, values[0]);
           } else {
-            Array<Double> array(shp, values.storage(), SHARE);
+            Array<double> array(shp, values.storage(), SHARE);
             keyset.define(keyName, array);
           }
         } break;
@@ -370,9 +370,9 @@ void ReadAsciiTable::handleKeyset(Int lineSize, char* string1, char* first, char
   }
 }
 
-Int ReadAsciiTable::getTypeShape(const String& typestr, IPosition& shape, Int& type) {
+int ReadAsciiTable::getTypeShape(const String& typestr, IPosition& shape, int& type) {
   shape.resize(0);
-  Int varAxis = -1;
+  int varAxis = -1;
   // Split at each comma.
   Vector<String> vec = stringToVector(typestr);
   // The first value can be something like I10, so find first digit.
@@ -397,7 +397,7 @@ Int ReadAsciiTable::getTypeShape(const String& typestr, IPosition& shape, Int& t
   Regex num("[0-9]+");
   // Check value and convert to integers.
   // One variable shaped axis is possible.
-  for (uInt i = 0; i < vec.nelements(); i++) {
+  for (unsigned int i = 0; i < vec.nelements(); i++) {
     if (!RegexMatches(vec(i), num)) {
       throw AipsError("ReadAsciiTable: invalid shape value '" + vec(i) + "' in type string '" +
                       typestr + "'");
@@ -457,7 +457,7 @@ double ReadAsciiTable::stringToPos(const String& str, bool isDMS) {
   bool needSep = false;
   bool needNum = true;
   pos.reserve(strc.size());
-  for (uInt i = 0; i < strc.size(); ++i) {
+  for (unsigned int i = 0; i < strc.size(); ++i) {
     char ch = strc[i];
     if (ch == ' ') {
       foundBlanks = true;
@@ -494,12 +494,12 @@ double ReadAsciiTable::stringToPos(const String& str, bool isDMS) {
   return val;
 }
 
-bool ReadAsciiTable::getValue(char* string1, Int lineSize, char* first, Int& at1, Char separator,
-                              Int type, void* value) {
-  Float f1 = 0, f2 = 0;
-  Double d1 = 0, d2 = 0;
+bool ReadAsciiTable::getValue(char* string1, int lineSize, char* first, int& at1, char separator,
+                              int type, void* value) {
+  float f1 = 0, f2 = 0;
+  double d1 = 0, d2 = 0;
   bool more = true;
-  Int done1 = getNext(string1, lineSize, first, at1, separator);
+  int done1 = getNext(string1, lineSize, first, at1, separator);
   if (done1 < 0) {
     more = false;
     done1 = 0;
@@ -513,40 +513,40 @@ bool ReadAsciiTable::getValue(char* string1, Int lineSize, char* first, Int& at1
         break;
       case RATShort:
         if (done1 > 0) {
-          istringstream(dum) >> *(Short*)value;
+          istringstream(dum) >> *(short*)value;
         } else {
-          *(Short*)value = 0;
+          *(short*)value = 0;
         }
         break;
       case RATInt:
         if (done1 > 0) {
-          istringstream(dum) >> *(Int*)value;
+          istringstream(dum) >> *(int*)value;
         } else {
-          *(Int*)value = 0;
+          *(int*)value = 0;
         }
         break;
       case RATFloat:
         if (done1 > 0) {
-          istringstream(dum) >> *(Float*)value;
+          istringstream(dum) >> *(float*)value;
         } else {
-          *(Float*)value = 0;
+          *(float*)value = 0;
         }
         break;
       case RATDouble:
         if (done1 > 0) {
-          istringstream(dum) >> *(Double*)value;
+          istringstream(dum) >> *(double*)value;
         } else {
-          *(Double*)value = 0;
+          *(double*)value = 0;
         }
         break;
       case RATString:
         *(String*)value = String(first, done1);
         break;
       case RATDMS:
-        *(Double*)value = stringToPos(String(first, done1), true);
+        *(double*)value = stringToPos(String(first, done1), true);
         break;
       case RATHMS:
-        *(Double*)value = stringToPos(String(first, done1), false);
+        *(double*)value = stringToPos(String(first, done1), false);
         break;
       case RATComX:
         if (done1 > 0) {
@@ -599,8 +599,8 @@ bool ReadAsciiTable::getValue(char* string1, Int lineSize, char* first, Int& at1
   return more;
 }
 
-void ReadAsciiTable::handleScalar(char* string1, Int lineSize, char* first, Int& at1,
-                                  Char separator, Int type, TableColumn& tabcol, rownr_t rownr) {
+void ReadAsciiTable::handleScalar(char* string1, int lineSize, char* first, int& at1,
+                                  char separator, int type, TableColumn& tabcol, rownr_t rownr) {
   switch (type) {
     case RATBool: {
       bool value = false;
@@ -608,24 +608,24 @@ void ReadAsciiTable::handleScalar(char* string1, Int lineSize, char* first, Int&
       tabcol.putScalar(rownr, value);
     } break;
     case RATShort: {
-      Short value = 0;
+      short value = 0;
       getValue(string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar(rownr, value);
     } break;
     case RATInt: {
-      Int value = 0;
+      int value = 0;
       getValue(string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar(rownr, value);
     } break;
     case RATFloat: {
-      Float value = 0;
+      float value = 0;
       getValue(string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar(rownr, value);
     } break;
     case RATDouble:
     case RATDMS:
     case RATHMS: {
-      Double value = 0;
+      double value = 0;
       getValue(string1, lineSize, first, at1, separator, type, &value);
       tabcol.putScalar(rownr, value);
     } break;
@@ -649,12 +649,12 @@ void ReadAsciiTable::handleScalar(char* string1, Int lineSize, char* first, Int&
   }
 }
 
-IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int& at1,
-                                   Char separator, const IPosition& shape, Int varAxis, Int type,
+IPosition ReadAsciiTable::getArray(char* string1, int lineSize, char* first, int& at1,
+                                   char separator, const IPosition& shape, int varAxis, int type,
                                    void* valueBlock) {
   IPosition shp(shape);
-  uInt nelem = shp.product();
-  uInt nfound = 0;
+  unsigned int nelem = shp.product();
+  unsigned int nfound = 0;
   switch (type) {
     case RATBool: {
       Block<bool>& data = *(Block<bool>*)valueBlock;
@@ -682,10 +682,10 @@ IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int
       }
     } break;
     case RATShort: {
-      Block<Short>& data = *(Block<Short>*)valueBlock;
+      Block<short>& data = *(Block<short>*)valueBlock;
       data.resize(nelem);
-      data = Short(0);
-      Short value;
+      data = short(0);
+      short value;
       while (getValue(string1, lineSize, first, at1, separator, type, &value)) {
         if (nfound == data.nelements()) {
           data.resize(2 * nfound, true, true);
@@ -702,15 +702,15 @@ IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int
           if (nelem > data.nelements()) {
             data.resize(nelem, true, true);
           }
-          objset(&data[nfound], Short(0), nelem - nfound);
+          objset(&data[nfound], short(0), nelem - nfound);
         }
       }
     } break;
     case RATInt: {
-      Block<Int>& data = *(Block<Int>*)valueBlock;
+      Block<int>& data = *(Block<int>*)valueBlock;
       data.resize(nelem);
       data = false;
-      Int value;
+      int value;
       while (getValue(string1, lineSize, first, at1, separator, type, &value)) {
         if (nfound == data.nelements()) {
           data.resize(2 * nfound, true, true);
@@ -732,10 +732,10 @@ IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int
       }
     } break;
     case RATFloat: {
-      Block<Float>& data = *(Block<Float>*)valueBlock;
+      Block<float>& data = *(Block<float>*)valueBlock;
       data.resize(nelem);
-      data = Float(0);
-      Float value;
+      data = float(0);
+      float value;
       while (getValue(string1, lineSize, first, at1, separator, type, &value)) {
         if (nfound == data.nelements()) {
           data.resize(2 * nfound, true, true);
@@ -752,17 +752,17 @@ IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int
           if (nelem > data.nelements()) {
             data.resize(nelem, true, true);
           }
-          objset(&data[nfound], Float(0), nelem - nfound);
+          objset(&data[nfound], float(0), nelem - nfound);
         }
       }
     } break;
     case RATDouble:
     case RATDMS:
     case RATHMS: {
-      Block<Double>& data = *(Block<Double>*)valueBlock;
+      Block<double>& data = *(Block<double>*)valueBlock;
       data.resize(nelem);
-      data = Double(0);
-      Double value;
+      data = double(0);
+      double value;
       while (getValue(string1, lineSize, first, at1, separator, type, &value)) {
         if (nfound == data.nelements()) {
           data.resize(2 * nfound, true, true);
@@ -779,7 +779,7 @@ IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int
           if (nelem > data.nelements()) {
             data.resize(nelem, true, true);
           }
-          objset(&data[nfound], Double(0), nelem - nfound);
+          objset(&data[nfound], double(0), nelem - nfound);
         }
       }
     } break;
@@ -864,8 +864,8 @@ IPosition ReadAsciiTable::getArray(char* string1, Int lineSize, char* first, Int
   return shp;
 }
 
-void ReadAsciiTable::handleArray(char* string1, Int lineSize, char* first, Int& at1, Char separator,
-                                 const IPosition& shape, Int varAxis, Int type, TableColumn& tabcol,
+void ReadAsciiTable::handleArray(char* string1, int lineSize, char* first, int& at1, char separator,
+                                 const IPosition& shape, int varAxis, int type, TableColumn& tabcol,
                                  rownr_t rownr) {
   switch (type) {
     case RATBool: {
@@ -876,34 +876,34 @@ void ReadAsciiTable::handleArray(char* string1, Int lineSize, char* first, Int& 
       ArrayColumn<bool>(tabcol).put(rownr, array);
     } break;
     case RATShort: {
-      Block<Short> data;
+      Block<short> data;
       IPosition shp =
           getArray(string1, lineSize, first, at1, separator, shape, varAxis, type, &data);
-      Array<Short> array(shp, data.storage(), SHARE);
-      ArrayColumn<Short>(tabcol).put(rownr, array);
+      Array<short> array(shp, data.storage(), SHARE);
+      ArrayColumn<short>(tabcol).put(rownr, array);
     } break;
     case RATInt: {
-      Block<Int> data;
+      Block<int> data;
       IPosition shp =
           getArray(string1, lineSize, first, at1, separator, shape, varAxis, type, &data);
-      Array<Int> array(shp, data.storage(), SHARE);
-      ArrayColumn<Int>(tabcol).put(rownr, array);
+      Array<int> array(shp, data.storage(), SHARE);
+      ArrayColumn<int>(tabcol).put(rownr, array);
     } break;
     case RATFloat: {
-      Block<Float> data;
+      Block<float> data;
       IPosition shp =
           getArray(string1, lineSize, first, at1, separator, shape, varAxis, type, &data);
-      Array<Float> array(shp, data.storage(), SHARE);
-      ArrayColumn<Float>(tabcol).put(rownr, array);
+      Array<float> array(shp, data.storage(), SHARE);
+      ArrayColumn<float>(tabcol).put(rownr, array);
     } break;
     case RATDouble:
     case RATDMS:
     case RATHMS: {
-      Block<Double> data;
+      Block<double> data;
       IPosition shp =
           getArray(string1, lineSize, first, at1, separator, shape, varAxis, type, &data);
-      Array<Double> array(shp, data.storage(), SHARE);
-      ArrayColumn<Double>(tabcol).put(rownr, array);
+      Array<double> array(shp, data.storage(), SHARE);
+      ArrayColumn<double>(tabcol).put(rownr, array);
     } break;
     case RATString: {
       Block<String> data;
@@ -935,8 +935,8 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
                               const String& headerfile, const String& filein,
                               const String& tableproto, const String& tablename, bool autoHeader,
                               const IPosition& autoShape, const Vector<String>& columnNames,
-                              const Vector<String>& dataTypes, Char separator, bool testComment,
-                              const Regex& commentMarker, Int firstLine, Int lastLine) {
+                              const Vector<String>& dataTypes, char separator, bool testComment,
+                              const Regex& commentMarker, int firstLine, int lastLine) {
   char string1[lineSize], string2[lineSize], stringsav[lineSize];
   char first[lineSize], second[lineSize];
   Block<String> nameOfColumn(100);
@@ -959,8 +959,8 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
 
   // Determine if header and data are in one file.
   bool oneFile = (headerfile == filein);
-  Int firstHeaderLine = 1;
-  Int lastHeaderLine = -1;
+  int firstHeaderLine = 1;
+  int lastHeaderLine = -1;
   if (oneFile) {
     firstHeaderLine = firstLine;
     lastHeaderLine = lastLine;
@@ -981,7 +981,7 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
 
   // Read the first line. It will be KEYWORDS or NAMES OF COLUMNS
 
-  Int lineNumber = 0;
+  int lineNumber = 0;
   if (!getLine(jFile, lineNumber, string1, lineSize, testComment, commentMarker, firstHeaderLine,
                lastHeaderLine)) {
     throw AipsError("ReadAsciiTable: cannot read first header line of " + headerfile);
@@ -1059,16 +1059,16 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
       tstrOfColumn[i] = dataTypes[i];
     }
   } else {
-    Char sep1 = separator;
-    Char sep2 = separator;
+    char sep1 = separator;
+    char sep2 = separator;
     if (String(string1).find(separator) == String::npos) sep1 = ' ';
     if (String(string2).find(separator) == String::npos) sep2 = ' ';
-    Int done1 = 0, done2 = 0, at1 = 0, at2 = 0;
+    int done1 = 0, done2 = 0, at1 = 0, at2 = 0;
     while (done1 >= 0) {
       done1 = getNext(string1, lineSize, first, at1, sep1);
       done2 = getNext(string2, lineSize, second, at2, sep2);
       if (done1 > 0 && done2 > 0) {
-        if (nrcol >= Int(nameOfColumn.nelements())) {
+        if (nrcol >= int(nameOfColumn.nelements())) {
           nameOfColumn.resize(2 * nrcol, true, true);
           tstrOfColumn.resize(2 * nrcol, true, true);
         }
@@ -1096,10 +1096,10 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
   // Create the TABLE Columns for these variables
 
   Block<IPosition> shapeOfColumn(nrcol);
-  Block<Int> typeOfColumn(nrcol);
-  Int varAxis = 0;
+  Block<int> typeOfColumn(nrcol);
+  int varAxis = 0;
 
-  for (Int i5 = 0; i5 < nrcol; i5++) {
+  for (int i5 = 0; i5 < nrcol; i5++) {
     varAxis = getTypeShape(tstrOfColumn[i5], shapeOfColumn[i5], typeOfColumn[i5]);
     if (varAxis >= 0 && i5 != nrcol - 1) {
       throw AipsError(
@@ -1108,7 +1108,7 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
     }
     if (shapeOfColumn[i5].nelements() > 0) {
       IPosition shape;
-      Int option = 0;
+      int option = 0;
       if (varAxis < 0) {
         shape = shapeOfColumn[i5];
         option = ColumnDesc::Direct | ColumnDesc::FixedShape;
@@ -1118,20 +1118,20 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
           td.addColumn(ArrayColumnDesc<bool>(nameOfColumn[i5], shape, option));
           break;
         case RATShort:
-          td.addColumn(ArrayColumnDesc<Short>(nameOfColumn[i5], shape, option));
+          td.addColumn(ArrayColumnDesc<short>(nameOfColumn[i5], shape, option));
           break;
         case RATInt:
-          td.addColumn(ArrayColumnDesc<Int>(nameOfColumn[i5], shape, option));
+          td.addColumn(ArrayColumnDesc<int>(nameOfColumn[i5], shape, option));
           break;
         case RATFloat:
-          td.addColumn(ArrayColumnDesc<Float>(nameOfColumn[i5], shape, option));
+          td.addColumn(ArrayColumnDesc<float>(nameOfColumn[i5], shape, option));
           break;
         case RATDouble:
-          td.addColumn(ArrayColumnDesc<Double>(nameOfColumn[i5], shape, option));
+          td.addColumn(ArrayColumnDesc<double>(nameOfColumn[i5], shape, option));
           break;
         case RATDMS:
         case RATHMS: {
-          td.addColumn(ArrayColumnDesc<Double>(nameOfColumn[i5], shape, option));
+          td.addColumn(ArrayColumnDesc<double>(nameOfColumn[i5], shape, option));
           ColumnDesc& cd = td.rwColumnDesc(nameOfColumn[i5]);
           cd.rwKeywordSet().define("QuantumUnits", Vector<String>(1, "rad"));
         } break;
@@ -1153,18 +1153,18 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
           td.addColumn(ScalarColumnDesc<bool>(nameOfColumn[i5]));
           break;
         case RATShort:
-          td.addColumn(ScalarColumnDesc<Short>(nameOfColumn[i5]));
+          td.addColumn(ScalarColumnDesc<short>(nameOfColumn[i5]));
           break;
         case RATInt:
-          td.addColumn(ScalarColumnDesc<Int>(nameOfColumn[i5]));
+          td.addColumn(ScalarColumnDesc<int>(nameOfColumn[i5]));
           break;
         case RATFloat:
-          td.addColumn(ScalarColumnDesc<Float>(nameOfColumn[i5]));
+          td.addColumn(ScalarColumnDesc<float>(nameOfColumn[i5]));
           break;
         case RATDouble:
         case RATDMS:
         case RATHMS:
-          td.addColumn(ScalarColumnDesc<Double>(nameOfColumn[i5]));
+          td.addColumn(ScalarColumnDesc<double>(nameOfColumn[i5]));
           break;
         case RATString:
           td.addColumn(ScalarColumnDesc<String>(nameOfColumn[i5]));
@@ -1190,7 +1190,7 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
 
   // Write keywordsets.
 
-  for (uInt i = 0; i < keysets.nfields(); i++) {
+  for (unsigned int i = 0; i < keysets.nfields(); i++) {
     String colnm = keysets.name(i);
     if (colnm.empty()) {
       tab.rwKeywordSet() = keysets.subRecord(i);
@@ -1206,7 +1206,7 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
   }
 
   TableColumn* tabcol = new TableColumn[nrcol];
-  for (Int i = 0; i < nrcol; i++) {
+  for (int i = 0; i < nrcol; i++) {
     tabcol[i].reference(TableColumn(tab, nameOfColumn[i]));
   }
   rownr_t rownr = 0;
@@ -1225,9 +1225,9 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
   while (cont) {
     at1 = 0;
     tab.addRow();
-    for (Int i6 = 0; i6 < nrcol; i6++) {
+    for (int i6 = 0; i6 < nrcol; i6++) {
       if (shapeOfColumn[i6].nelements() > 0) {
-        Int varAx = (i6 == nrcol - 1 ? varAxis : -1);
+        int varAx = (i6 == nrcol - 1 ? varAxis : -1);
         handleArray(string1, lineSize, first, at1, separator, shapeOfColumn[i6], varAx,
                     typeOfColumn[i6], tabcol[i6], rownr);
       } else {
@@ -1248,8 +1248,8 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
 String ReadAsciiTable::doRun(const String& headerfile, const String& filein,
                              const String& tableproto, const String& tablename, bool autoHeader,
                              const IPosition& autoShape, const Vector<String>& columnNames,
-                             const Vector<String>& dataTypes, Char separator, bool testComment,
-                             const Regex& commentMarker, Int firstLine, Int lastLine) {
+                             const Vector<String>& dataTypes, char separator, bool testComment,
+                             const Regex& commentMarker, int firstLine, int lastLine) {
   String formatString;
   Table tab = makeTab(formatString, Table::Plain, headerfile, filein, tableproto, tablename,
                       autoHeader, autoShape, columnNames, dataTypes, separator, testComment,
@@ -1260,8 +1260,8 @@ String ReadAsciiTable::doRun(const String& headerfile, const String& filein,
 String ReadAsciiTable::run(const String& headerfile, const String& filein, const String& tableproto,
                            const String& tablename, bool autoHeader, const IPosition& autoShape,
                            const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                           Char separator, const String& commentMarkerRegex, Int firstLine,
-                           Int lastLine) {
+                           char separator, const String& commentMarkerRegex, int firstLine,
+                           int lastLine) {
   if (firstLine < 1) {
     firstLine = 1;
   }
@@ -1284,8 +1284,8 @@ Table ReadAsciiTable::runt(String& formatString, Table::TableType tableType,
                            const String& headerfile, const String& filein, const String& tableproto,
                            const String& tablename, bool autoHeader, const IPosition& autoShape,
                            const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                           Char separator, const String& commentMarkerRegex, Int firstLine,
-                           Int lastLine) {
+                           char separator, const String& commentMarkerRegex, int firstLine,
+                           int lastLine) {
   if (firstLine < 1) {
     firstLine = 1;
   }
@@ -1305,8 +1305,8 @@ Table ReadAsciiTable::runt(String& formatString, Table::TableType tableType,
 }
 
 String readAsciiTable(const String& filein, const String& tableproto, const String& tablename,
-                      bool autoHeader, Char separator, const String& commentMarkerRegex,
-                      Int firstLine, Int lastLine, const IPosition& autoShape) {
+                      bool autoHeader, char separator, const String& commentMarkerRegex,
+                      int firstLine, int lastLine, const IPosition& autoShape) {
   Vector<String> dumvec;
   return ReadAsciiTable::run(filein, filein, tableproto, tablename, autoHeader, autoShape, dumvec,
                              dumvec, separator, commentMarkerRegex, firstLine, lastLine);
@@ -1314,23 +1314,23 @@ String readAsciiTable(const String& filein, const String& tableproto, const Stri
 
 String readAsciiTable(const String& filein, const String& tableproto, const String& tablename,
                       const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                      Char separator, const String& commentMarkerRegex, Int firstLine,
-                      Int lastLine) {
+                      char separator, const String& commentMarkerRegex, int firstLine,
+                      int lastLine) {
   return ReadAsciiTable::run(filein, filein, tableproto, tablename, false, IPosition(), columnNames,
                              dataTypes, separator, commentMarkerRegex, firstLine, lastLine);
 }
 
 String readAsciiTable(const String& headerfile, const String& filein, const String& tableproto,
-                      const String& tablename, Char separator, const String& commentMarkerRegex,
-                      Int firstLine, Int lastLine) {
+                      const String& tablename, char separator, const String& commentMarkerRegex,
+                      int firstLine, int lastLine) {
   Vector<String> dumvec;
   return ReadAsciiTable::run(headerfile, filein, tableproto, tablename, false, IPosition(), dumvec,
                              dumvec, separator, commentMarkerRegex, firstLine, lastLine);
 }
 
 String readAsciiTable(const String& headerfile, const String& filein, const String& tableproto,
-                      const char* tablename, Char separator, const String& commentMarkerRegex,
-                      Int firstLine, Int lastLine) {
+                      const char* tablename, char separator, const String& commentMarkerRegex,
+                      int firstLine, int lastLine) {
   Vector<String> dumvec;
   return ReadAsciiTable::run(headerfile, filein, tableproto, String(tablename), false, IPosition(),
                              dumvec, dumvec, separator, commentMarkerRegex, firstLine, lastLine);
@@ -1338,7 +1338,7 @@ String readAsciiTable(const String& headerfile, const String& filein, const Stri
 
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& filein,
                      const String& tableproto, const String& tablename, bool autoHeader,
-                     Char separator, const String& commentMarkerRegex, Int firstLine, Int lastLine,
+                     char separator, const String& commentMarkerRegex, int firstLine, int lastLine,
                      const IPosition& autoShape) {
   Vector<String> dumvec;
   return ReadAsciiTable::runt(formatString, tableType, filein, filein, tableproto, tablename,
@@ -1349,8 +1349,8 @@ Table readAsciiTable(String& formatString, Table::TableType tableType, const Str
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& filein,
                      const String& tableproto, const String& tablename,
                      const Vector<String>& columnNames, const Vector<String>& dataTypes,
-                     Char separator, const String& commentMarkerRegex, Int firstLine,
-                     Int lastLine) {
+                     char separator, const String& commentMarkerRegex, int firstLine,
+                     int lastLine) {
   return ReadAsciiTable::runt(formatString, tableType, filein, filein, tableproto, tablename, false,
                               IPosition(), columnNames, dataTypes, separator, commentMarkerRegex,
                               firstLine, lastLine);
@@ -1358,8 +1358,8 @@ Table readAsciiTable(String& formatString, Table::TableType tableType, const Str
 
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& headerfile,
                      const String& filein, const String& tableproto, const String& tablename,
-                     Char separator, const String& commentMarkerRegex, Int firstLine,
-                     Int lastLine) {
+                     char separator, const String& commentMarkerRegex, int firstLine,
+                     int lastLine) {
   Vector<String> dumvec;
   return ReadAsciiTable::runt(formatString, tableType, headerfile, filein, tableproto, tablename,
                               false, IPosition(), dumvec, dumvec, separator, commentMarkerRegex,
@@ -1368,8 +1368,8 @@ Table readAsciiTable(String& formatString, Table::TableType tableType, const Str
 
 Table readAsciiTable(String& formatString, Table::TableType tableType, const String& headerfile,
                      const String& filein, const String& tableproto, const char* tablename,
-                     Char separator, const String& commentMarkerRegex, Int firstLine,
-                     Int lastLine) {
+                     char separator, const String& commentMarkerRegex, int firstLine,
+                     int lastLine) {
   Vector<String> dumvec;
   return ReadAsciiTable::runt(formatString, tableType, headerfile, filein, tableproto,
                               String(tablename), false, IPosition(), dumvec, dumvec, separator,

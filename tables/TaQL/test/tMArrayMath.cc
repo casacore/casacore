@@ -219,21 +219,21 @@ void doTestMixed() {
   m2[1] = false;
   m2[2] = true;
   m2[3] = false;
-  Vector<Int> v1(4);
+  Vector<int> v1(4);
   v1[0] = 3;
   v1[1] = 5;
   v1[2] = -2;
   v1[3] = -5;
-  Vector<Int> v2(4);
+  Vector<int> v2(4);
   v2[0] = -4;
   v2[1] = 8;
   v2[2] = 9;
   v2[3] = -3;
-  MArray<Int> ma1(v1, m1);
-  MArray<Int> ma2(v2, m2);
-  MArray<Int> ma3 = ma1 + ma2;
+  MArray<int> ma1(v1, m1);
+  MArray<int> ma2(v2, m2);
+  MArray<int> ma3 = ma1 + ma2;
   Vector<bool> m3(ma3.mask());
-  Vector<Int> v3(ma3.array());
+  Vector<int> v3(ma3.array());
   AlwaysAssertExit(m3[0] && m3[1] && m3[2] && !m3[3]);
   AlwaysAssertExit(v3[0] == -1 && v3[1] == 13 && v3[2] == 7 && v3[3] == -8);
   AlwaysAssertExit(sum(ma1) == -2);
@@ -250,11 +250,11 @@ void doTestMixed() {
 
 void doTestReduce() {
   // Test the full reduction functions.
-  Vector<Double> v(20);
+  Vector<double> v(20);
   indgen(v);
   Vector<bool> m(20, false);
-  MArray<Double> ma(v, m);
-  Double mn = mean(ma);
+  MArray<double> ma(v, m);
+  double mn = mean(ma);
   AlwaysAssertExit(near(mean(ma), mean(v)));
   AlwaysAssertExit(near(variance(ma, 1), variance(v)));
   AlwaysAssertExit(near(variance(ma, mn, 1), variance(v, mn)));
@@ -265,11 +265,11 @@ void doTestReduce() {
   AlwaysAssertExit(near(rms(ma), rms(v)));
   AlwaysAssertExit(near(median(ma), median(v)));
   AlwaysAssertExit(near(fractile(ma, 0.4), fractile(v, 0.4)));
-  Vector<Double> vec = ma.flatten();
+  Vector<double> vec = ma.flatten();
   AlwaysAssertExit(allEQ(v, vec));
   m[0] = m[18] = true;
   ma.setMask(m);
-  Vector<Double> v1(18);
+  Vector<double> v1(18);
   indgen(v1, 1.);
   v1[17] = 19;
   mn = mean(ma);
@@ -283,58 +283,58 @@ void doTestReduce() {
   AlwaysAssertExit(near(rms(ma), rms(v1)));
   AlwaysAssertExit(near(median(ma), median(v1)));
   AlwaysAssertExit(near(fractile(ma, 0.4), fractile(v1, 0.4)));
-  Vector<Double> vec1 = ma.flatten();
+  Vector<double> vec1 = ma.flatten();
   AlwaysAssertExit(allEQ(v1, vec1));
 }
 
 void doTestPartial() {
   // Test the partial reduction functions.
-  Cube<Int> arr(2, 3, 4);
+  Cube<int> arr(2, 3, 4);
   Cube<bool> mask(2, 3, 4);
   arr = 1;
   mask = false;
   arr(1, 1, 1) = 101;
   // First do MArray tests without a a mask.
   // The result must be equal to the Array counterpart.
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr), IPosition(1, 0)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr), IPosition(1, 0)).array(),
                          partialSums(arr, IPosition(1, 0))));
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialSums(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr), IPosition(1, 2)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr), IPosition(1, 2)).array(),
                          partialSums(arr, IPosition(1, 2))));
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr, mask), IPosition(2, 0, 1)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr, mask), IPosition(2, 0, 1)).array(),
                          partialSums(arr, IPosition(2, 0, 1))));
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr, mask), IPosition(2, 0, 2)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr, mask), IPosition(2, 0, 2)).array(),
                          partialSums(arr, IPosition(2, 0, 2))));
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr, mask), IPosition(2, 1, 2)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr, mask), IPosition(2, 1, 2)).array(),
                          partialSums(arr, IPosition(2, 1, 2))));
-  AlwaysAssertExit(allEQ(partialSums(MArray<Int>(arr, mask), IPosition(3, 0, 1, 2)).array(),
+  AlwaysAssertExit(allEQ(partialSums(MArray<int>(arr, mask), IPosition(3, 0, 1, 2)).array(),
                          partialSums(arr, IPosition(3, 0, 1, 2))));
-  AlwaysAssertExit(allEQ(partialSumSqrs(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialSumSqrs(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialSumSqrs(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialProducts(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialProducts(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialProducts(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialMins(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialMins(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialMins(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialMaxs(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialMaxs(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialMaxs(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialMeans(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialMeans(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialMeans(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialVariances(MArray<Int>(arr), IPosition(1, 1), 1).array(),
+  AlwaysAssertExit(allEQ(partialVariances(MArray<int>(arr), IPosition(1, 1), 1).array(),
                          partialVariances(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialStddevs(MArray<Int>(arr), IPosition(1, 1), 1).array(),
+  AlwaysAssertExit(allEQ(partialStddevs(MArray<int>(arr), IPosition(1, 1), 1).array(),
                          partialStddevs(arr, IPosition(1, 1), 1)));
-  AlwaysAssertExit(allEQ(partialAvdevs(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialAvdevs(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialAvdevs(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialRmss(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialRmss(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialRmss(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialMedians(MArray<Int>(arr), IPosition(1, 1)).array(),
+  AlwaysAssertExit(allEQ(partialMedians(MArray<int>(arr), IPosition(1, 1)).array(),
                          partialMedians(arr, IPosition(1, 1))));
-  AlwaysAssertExit(allEQ(partialFractiles(MArray<Int>(arr), IPosition(1, 1), 0.6).array(),
+  AlwaysAssertExit(allEQ(partialFractiles(MArray<int>(arr), IPosition(1, 1), 0.6).array(),
                          partialFractiles(arr, IPosition(1, 1), 0.6)));
   // Now do MArray tests with a mask.
   mask(0, 2, 3) = mask(1, 2, 3) = mask(0, 1, 2) = true;
-  Matrix<Int> ares(3, 4);
+  Matrix<int> ares(3, 4);
   ares = 2;
   ares(1, 1) = 102;
   ares(1, 2) = 1;
@@ -342,35 +342,35 @@ void doTestPartial() {
   Matrix<bool> mres(3, 4);
   mres = false;
   mres(2, 3) = true;
-  MArray<Int> ma(partialSums(MArray<Int>(arr, mask), IPosition(1, 0)));
+  MArray<int> ma(partialSums(MArray<int>(arr, mask), IPosition(1, 0)));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 2;
   ares(1, 1) = 1 + 101 * 101;
   ares(1, 2) = 1;
   ares(2, 3) = 0;
-  ma = partialSumSqrs(MArray<Int>(arr, mask), IPosition(1, 0));
+  ma = partialSumSqrs(MArray<int>(arr, mask), IPosition(1, 0));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(2, 3) = 0;
-  ma = partialMins(MArray<Int>(arr, mask), IPosition(1, 0));
+  ma = partialMins(MArray<int>(arr, mask), IPosition(1, 0));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(1, 1) = 101;
   ares(2, 3) = 0;
-  ma = partialMaxs(MArray<Int>(arr, mask), IPosition(1, 0));
+  ma = partialMaxs(MArray<int>(arr, mask), IPosition(1, 0));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(1, 1) = 51;
   ares(2, 3) = 0;
-  ma = partialMeans(MArray<Int>(arr, mask), IPosition(1, 0));
+  ma = partialMeans(MArray<int>(arr, mask), IPosition(1, 0));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(1, 1) = 51;
   ares(2, 3) = 0;
-  ma = partialMedians(MArray<Int>(arr, mask), IPosition(1, 0), true);
+  ma = partialMedians(MArray<int>(arr, mask), IPosition(1, 0), true);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares(1, 1) = 1;
-  ma = partialFractiles(MArray<Int>(arr, mask), IPosition(1, 0), 0.5);
+  ma = partialFractiles(MArray<int>(arr, mask), IPosition(1, 0), 0.5);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   // Do other tests with doubles.
   Array<double> arrd(arr.shape());
@@ -396,42 +396,42 @@ void doTestPartial() {
 
 void doTestBoxed() {
   // Test the boxed reduction functions.
-  Cube<Int> arr(2, 3, 4);
+  Cube<int> arr(2, 3, 4);
   Cube<bool> mask(2, 3, 4);
   arr = 1;
   mask = false;
   arr(1, 1, 1) = 101;
-  AlwaysAssertExit(allEQ(boxedSums(MArray<Int>(arr), IPosition(1, 1)).array(),
-                         boxedArrayMath(arr, IPosition(1, 1), SumFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedSums(MArray<Int>(arr), IPosition(1, 2)).array(),
-                         boxedArrayMath(arr, IPosition(1, 2), SumFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedSums(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), SumFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedSumSqrs(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), SumSqrFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedProducts(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), ProductFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedMins(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MinFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedMaxs(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MaxFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedMeans(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MeanFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedVariances(MArray<Int>(arr), IPosition(2, 2, 2, 2), 1).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), VarianceFunc<Int>(1))));
-  AlwaysAssertExit(allEQ(boxedStddevs(MArray<Int>(arr), IPosition(2, 2, 2, 2), 1).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), StddevFunc<Int>(1))));
-  AlwaysAssertExit(allEQ(boxedAvdevs(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), AvdevFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedRmss(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), RmsFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedMedians(MArray<Int>(arr), IPosition(2, 2, 2, 2)).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MedianFunc<Int>())));
-  AlwaysAssertExit(allEQ(boxedFractiles(MArray<Int>(arr), IPosition(2, 2, 2, 2), 0.6).array(),
-                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), FractileFunc<Int>(0.6))));
+  AlwaysAssertExit(allEQ(boxedSums(MArray<int>(arr), IPosition(1, 1)).array(),
+                         boxedArrayMath(arr, IPosition(1, 1), SumFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedSums(MArray<int>(arr), IPosition(1, 2)).array(),
+                         boxedArrayMath(arr, IPosition(1, 2), SumFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedSums(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), SumFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedSumSqrs(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), SumSqrFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedProducts(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), ProductFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedMins(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MinFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedMaxs(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MaxFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedMeans(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MeanFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedVariances(MArray<int>(arr), IPosition(2, 2, 2, 2), 1).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), VarianceFunc<int>(1))));
+  AlwaysAssertExit(allEQ(boxedStddevs(MArray<int>(arr), IPosition(2, 2, 2, 2), 1).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), StddevFunc<int>(1))));
+  AlwaysAssertExit(allEQ(boxedAvdevs(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), AvdevFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedRmss(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), RmsFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedMedians(MArray<int>(arr), IPosition(2, 2, 2, 2)).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), MedianFunc<int>())));
+  AlwaysAssertExit(allEQ(boxedFractiles(MArray<int>(arr), IPosition(2, 2, 2, 2), 0.6).array(),
+                         boxedArrayMath(arr, IPosition(2, 2, 2, 2), FractileFunc<int>(0.6))));
   // Now do MArray tests with a mask.
   mask(0, 2, 3) = mask(1, 2, 3) = mask(0, 1, 2) = true;
-  Cube<Int> ares(1, 3, 4);
+  Cube<int> ares(1, 3, 4);
   ares = 2;
   ares(0, 1, 1) = 102;
   ares(0, 1, 2) = 1;
@@ -440,41 +440,41 @@ void doTestBoxed() {
   mres = false;
   mres(0, 2, 3) = true;
 
-  MArray<Int> ma(boxedSums(MArray<Int>(arr, mask), IPosition(1, 2)));
+  MArray<int> ma(boxedSums(MArray<int>(arr, mask), IPosition(1, 2)));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 2;
   ares(0, 1, 1) = 1 + 101 * 101;
   ares(0, 1, 2) = 1;
   ares(0, 2, 3) = 0;
 
-  ma = boxedSumSqrs(MArray<Int>(arr, mask), IPosition(1, 2));
+  ma = boxedSumSqrs(MArray<int>(arr, mask), IPosition(1, 2));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(0, 2, 3) = 0;
 
-  ma = boxedMins(MArray<Int>(arr, mask), IPosition(1, 2));
+  ma = boxedMins(MArray<int>(arr, mask), IPosition(1, 2));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(0, 1, 1) = 101;
   ares(0, 2, 3) = 0;
 
-  ma = boxedMaxs(MArray<Int>(arr, mask), IPosition(1, 2));
+  ma = boxedMaxs(MArray<int>(arr, mask), IPosition(1, 2));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(0, 1, 1) = 51;
   ares(0, 2, 3) = 0;
 
-  ma = boxedMeans(MArray<Int>(arr, mask), IPosition(1, 2));
+  ma = boxedMeans(MArray<int>(arr, mask), IPosition(1, 2));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares = 1;
   ares(0, 1, 1) = 51;
   ares(0, 2, 3) = 0;
 
-  ma = boxedMedians(MArray<Int>(arr, mask), IPosition(1, 2), true);
+  ma = boxedMedians(MArray<int>(arr, mask), IPosition(1, 2), true);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   ares(0, 1, 1) = 1;
 
-  ma = boxedFractiles(MArray<Int>(arr, mask), IPosition(1, 2), 0.5);
+  ma = boxedFractiles(MArray<int>(arr, mask), IPosition(1, 2), 0.5);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
 
   // Do other tests with doubles.
@@ -504,27 +504,27 @@ void doTestBoxed() {
 
 void doTestSliding() {
   // Test the sliding reduction functions.
-  Cube<Int> arr(4, 5, 6);
+  Cube<int> arr(4, 5, 6);
   Cube<bool> mask(4, 5, 6);
   indgen(arr);
   mask = false;
   // An empty box results in the array itself.
-  AlwaysAssertExit(allEQ(slidingSums(MArray<Int>(arr, mask), IPosition(), false).array(), arr));
+  AlwaysAssertExit(allEQ(slidingSums(MArray<int>(arr, mask), IPosition(), false).array(), arr));
   // But with a mask the result is 0.
   mask = true;
-  MArray<Int> ma1 = slidingSums(MArray<Int>(arr, mask), IPosition(), false);
+  MArray<int> ma1 = slidingSums(MArray<int>(arr, mask), IPosition(), false);
   AlwaysAssertExit(allEQ(ma1.array(), 0));
   AlwaysAssertExit(allEQ(ma1.mask(), mask));
   // Test without filling the edge (with and without mask).
   mask = false;
-  MArray<Int> a1(slidingSums(MArray<Int>(arr, mask), IPosition(2, 1, 2), false));
-  Array<Int> a2(slidingArrayMath(arr, IPosition(2, 1, 2), SumFunc<Int>(), false));
+  MArray<int> a1(slidingSums(MArray<int>(arr, mask), IPosition(2, 1, 2), false));
+  Array<int> a2(slidingArrayMath(arr, IPosition(2, 1, 2), SumFunc<int>(), false));
   AlwaysAssertExit(a1.shape() == IPosition(3, 2, 1, 6));
   AlwaysAssertExit(allEQ(a1.array(), a2));
   AlwaysAssertExit(allEQ(a1.mask(), false));
   // Test with filling the edge (with and without mask).
-  a1.reference(slidingSums(MArray<Int>(arr, mask), IPosition(2, 1, 2), true));
-  a2.reference(slidingArrayMath(arr, IPosition(2, 1, 2), SumFunc<Int>(), true));
+  a1.reference(slidingSums(MArray<int>(arr, mask), IPosition(2, 1, 2), true));
+  a2.reference(slidingArrayMath(arr, IPosition(2, 1, 2), SumFunc<int>(), true));
   AlwaysAssertExit(a1.shape() == IPosition(3, 4, 5, 6));
   AlwaysAssertExit(allEQ(a1.array(), a2));
   Cube<bool> expMask(4, 5, 6);
@@ -533,7 +533,7 @@ void doTestSliding() {
   AlwaysAssertExit(allEQ(a1.mask(), expMask));
   // Test with some mask bits set.
   mask(0, 2, 3) = mask(1, 2, 3) = mask(2, 2, 3) = mask(1, 1, 2) = true;
-  Cube<Int> ares = slidingSums(MArray<Int>(arr), IPosition(1, 1), false).array();
+  Cube<int> ares = slidingSums(MArray<int>(arr), IPosition(1, 1), false).array();
   ares(0, 2, 3) = 0;
   ares(1, 2, 3) = 71;
   ares(0, 1, 2) = 44 + 46;
@@ -541,52 +541,52 @@ void doTestSliding() {
   Cube<bool> mres(2, 5, 6);
   mres = false;
   mres(0, 2, 3) = true;
-  MArray<Int> ma(slidingSums(MArray<Int>(arr, mask), IPosition(1, 1), false));
+  MArray<int> ma(slidingSums(MArray<int>(arr, mask), IPosition(1, 1), false));
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
   // Now test the various functions (with and without a mask).
-  ares = slidingArrayMath(arr, IPosition(1, 1), SumSqrFunc<Int>(), false);
-  AlwaysAssertExit(allEQ(slidingSumSqrs(MArray<Int>(arr), IPosition(1, 1), false).array(), ares));
+  ares = slidingArrayMath(arr, IPosition(1, 1), SumSqrFunc<int>(), false);
+  AlwaysAssertExit(allEQ(slidingSumSqrs(MArray<int>(arr), IPosition(1, 1), false).array(), ares));
   ares(0, 2, 3) = 0;
   ares(1, 2, 3) = 71 * 71;
   ares(0, 1, 2) = 44 * 44 + 46 * 46;
   ares(1, 1, 2) = 46 * 46 + 47 * 47;
-  ma = slidingSumSqrs(MArray<Int>(arr, mask), IPosition(1, 1), false);
+  ma = slidingSumSqrs(MArray<int>(arr, mask), IPosition(1, 1), false);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
 
-  ares = slidingArrayMath(arr, IPosition(1, 1), ProductFunc<Int>(), false);
-  AlwaysAssertExit(allEQ(slidingProducts(MArray<Int>(arr), IPosition(1, 1), false).array(), ares));
+  ares = slidingArrayMath(arr, IPosition(1, 1), ProductFunc<int>(), false);
+  AlwaysAssertExit(allEQ(slidingProducts(MArray<int>(arr), IPosition(1, 1), false).array(), ares));
   ares(0, 2, 3) = 0;
   ares(1, 2, 3) = 71;
   ares(0, 1, 2) = 44 * 46;
   ares(1, 1, 2) = 46 * 47;
-  ma = slidingProducts(MArray<Int>(arr, mask), IPosition(1, 1), false);
+  ma = slidingProducts(MArray<int>(arr, mask), IPosition(1, 1), false);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
 
-  ares = slidingArrayMath(arr, IPosition(1, 1), MinFunc<Int>(), false);
-  AlwaysAssertExit(allEQ(slidingMins(MArray<Int>(arr), IPosition(1, 1), false).array(), ares));
+  ares = slidingArrayMath(arr, IPosition(1, 1), MinFunc<int>(), false);
+  AlwaysAssertExit(allEQ(slidingMins(MArray<int>(arr), IPosition(1, 1), false).array(), ares));
   ares(0, 2, 3) = 0;
   ares(1, 2, 3) = 71;
   ares(0, 1, 2) = 44;
   ares(1, 1, 2) = 46;
-  ma = slidingMins(MArray<Int>(arr, mask), IPosition(1, 1), false);
+  ma = slidingMins(MArray<int>(arr, mask), IPosition(1, 1), false);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
 
-  ares = slidingArrayMath(arr, IPosition(1, 1), MaxFunc<Int>(), false);
-  AlwaysAssertExit(allEQ(slidingMaxs(MArray<Int>(arr), IPosition(1, 1), false).array(), ares));
+  ares = slidingArrayMath(arr, IPosition(1, 1), MaxFunc<int>(), false);
+  AlwaysAssertExit(allEQ(slidingMaxs(MArray<int>(arr), IPosition(1, 1), false).array(), ares));
   ares(0, 2, 3) = 0;
   ares(1, 2, 3) = 71;
   ares(0, 1, 2) = 46;
   ares(1, 1, 2) = 47;
-  ma = slidingMaxs(MArray<Int>(arr, mask), IPosition(1, 1), false);
+  ma = slidingMaxs(MArray<int>(arr, mask), IPosition(1, 1), false);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
 
-  ares = slidingArrayMath(arr, IPosition(1, 1), MeanFunc<Int>(), false);
-  AlwaysAssertExit(allEQ(slidingMeans(MArray<Int>(arr), IPosition(1, 1), false).array(), ares));
+  ares = slidingArrayMath(arr, IPosition(1, 1), MeanFunc<int>(), false);
+  AlwaysAssertExit(allEQ(slidingMeans(MArray<int>(arr), IPosition(1, 1), false).array(), ares));
   ares(0, 2, 3) = 0;
   ares(1, 2, 3) = 71;
   ares(0, 1, 2) = 45;
   ares(1, 1, 2) = 46;
-  ma = slidingMeans(MArray<Int>(arr, mask), IPosition(1, 1), false);
+  ma = slidingMeans(MArray<int>(arr, mask), IPosition(1, 1), false);
   AlwaysAssertExit(allEQ(ma.array(), ares) && allEQ(ma.mask(), mres));
 
   // Do other tests with doubles.
@@ -658,8 +658,8 @@ void doTestSliding() {
 }
 
 void doTestNull() {
-  MArray<Int> m1(Vector<Int>(2, 16), Vector<bool>(2, true));
-  MArray<Int> m2;
+  MArray<int> m1(Vector<int>(2, 16), Vector<bool>(2, true));
+  MArray<int> m2;
   AlwaysAssertExit((m1 + m2).isNull());
   AlwaysAssertExit((m2 - m1).isNull());
   AlwaysAssertExit(sin(m2).isNull());
@@ -672,15 +672,15 @@ void doTestNull() {
 
 void doPerf() {
   // Do a bit of performance testing.
-  Cube<Int> a(200, 200, 200);
+  Cube<int> a(200, 200, 200);
   a = 1;
   Timer timer;
-  partialArrayMath(a, IPosition(1, 1), SumFunc<Int>());
+  partialArrayMath(a, IPosition(1, 1), SumFunc<int>());
   timer.show("unmasked");
   Cube<bool> mask(200, 200, 200);
   mask = false;
   timer.mark();
-  partialSums(MArray<Int>(a, mask), IPosition(1, 1));
+  partialSums(MArray<int>(a, mask), IPosition(1, 1));
   timer.show("masked  ");
   timer.mark();
   partialSums(a, IPosition(1, 1));
@@ -704,9 +704,9 @@ int main() {
     cout << "doTestComplex<DComplex>" << endl;
     doTestComplex<DComplex>();
     cout << "doTestComplexReal<Float>" << endl;
-    doTestComplexReal<Float>();
+    doTestComplexReal<float>();
     cout << "doTestComplexReal<Double>" << endl;
-    doTestComplexReal<Double>();
+    doTestComplexReal<double>();
     cout << "doTestMixed" << endl;
     doTestMixed();
     cout << "doTestReduce" << endl;

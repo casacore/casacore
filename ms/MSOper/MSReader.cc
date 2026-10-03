@@ -66,8 +66,8 @@ MSReader::MSReader(const MeasurementSet &ms)
       itsWeather2Id(-1) {
   // assign indexes to every table to start with
   TableRecord kwSet(itsMS.keywordSet());
-  uInt idCount = 0;
-  for (uInt i = 0; i < kwSet.nfields(); i++) {
+  unsigned int idCount = 0;
+  for (unsigned int i = 0; i < kwSet.nfields(); i++) {
     if (kwSet.type(i) == TpTable) {
       itsTabId[kwSet.name(i)] = idCount;
       idCount++;
@@ -200,7 +200,7 @@ MSReader::MSReader(const MeasurementSet &ms)
 
   // HISTORY - not handled here, this is a required table
   // make sure its marked as undefined in the ID map and mark it as handled here
-  Int histId = itsTabId.at("HISTORY");
+  int histId = itsTabId.at("HISTORY");
   if (histId >= 0) {
     itsTabId["HISTORY"] = -1;
     handledTab(histId) = true;
@@ -281,7 +281,7 @@ MSReader::MSReader(const MeasurementSet &ms)
   // and now, for everything not handled above, also fill in itsTableNames
   Vector<String> tableNames(idCount);
   for (const auto &x : itsTabId) {
-    Int tabId = x.second;
+    int tabId = x.second;
     if (tabId >= 0) {
       String tabName = x.first;
       tableNames(tabId) = tabName;
@@ -293,8 +293,8 @@ MSReader::MSReader(const MeasurementSet &ms)
     }
   }
   // copy the non-empty values in tableNames to itsTableNames
-  uInt nameCount = 0;
-  for (uInt i = 0; i < tableNames.nelements(); i++) {
+  unsigned int nameCount = 0;
+  for (unsigned int i = 0; i < tableNames.nelements(); i++) {
     if (tableNames(i).length() > 0) {
       itsTableNames(nameCount++) = tableNames(i);
     }
@@ -317,47 +317,47 @@ void MSReader::gotoRow(rownr_t which) {
   itsRowNumbers[itsMainId] = which;
 
   // simple indexes first
-  Int ant1Id = itsIds.antenna1(which);
+  int ant1Id = itsIds.antenna1(which);
   if (ant1Id >= 0) {
     itsTabRows[itsAnt1Id].get(ant1Id);
     itsRowNumbers[itsAnt1Id] = ant1Id;
   }
-  Int ant2Id = itsIds.antenna1(which);
+  int ant2Id = itsIds.antenna1(which);
   if (ant2Id >= 0) {
     itsTabRows[itsAnt2Id].get(ant2Id);
     itsRowNumbers[itsAnt2Id] = ant2Id;
   }
-  Int ddId = itsIds.dataDescId(which);
+  int ddId = itsIds.dataDescId(which);
   if (ddId >= 0) {
     itsTabRows[itsDDId].get(ddId);
     itsRowNumbers[itsDDId] = ddId;
   }
-  Int obsId = itsIds.observationId(which);
+  int obsId = itsIds.observationId(which);
   if (obsId >= 0) {
     itsTabRows[itsObsId].get(obsId);
     itsRowNumbers[itsObsId] = obsId;
   }
-  Int polId = itsIds.polarizationId(which);
+  int polId = itsIds.polarizationId(which);
   if (polId >= 0) {
     itsTabRows[itsPolId].get(polId);
     itsRowNumbers[itsPolId] = polId;
   }
-  Int spwId = itsIds.spectralWindowId(which);
+  int spwId = itsIds.spectralWindowId(which);
   if (spwId >= 0) {
     itsTabRows[itsSpwId].get(spwId);
     itsRowNumbers[itsSpwId] = spwId;
   }
-  Int fieldId = itsIds.fieldId(which);
+  int fieldId = itsIds.fieldId(which);
   if (fieldId >= 0) {
     itsTabRows[itsFieldId].get(fieldId);
     itsRowNumbers[itsFieldId] = fieldId;
   }
-  Int procId = itsIds.processorId(which);
+  int procId = itsIds.processorId(which);
   if (procId >= 0) {
     itsTabRows[itsProcId].get(procId);
     itsRowNumbers[itsProcId] = procId;
   }
-  Int stateId = itsIds.stateId(which);
+  int stateId = itsIds.stateId(which);
   if (stateId >= 0) {
     itsTabRows[itsStateId].get(stateId);
     itsRowNumbers[itsStateId] = stateId;
@@ -367,8 +367,8 @@ void MSReader::gotoRow(rownr_t which) {
   // these all need the time and interval
   const MEpoch time = itsMSCols.timeMeas()(which);
   const Quantity interval = itsMSCols.intervalQuant()(which);
-  Double stime = time.getValue().getTime().getValue(itsSecUnit);
-  Double sint = interval.getValue(itsSecUnit);
+  double stime = time.getValue().getTime().getValue(itsSecUnit);
+  double sint = interval.getValue(itsSecUnit);
 
   // DOPPLER - optional
   bool found;
@@ -385,8 +385,8 @@ void MSReader::gotoRow(rownr_t which) {
 
   // FEED1, with ANTENNA1
   itsFeed1Index.antennaId() = ant1Id;
-  Int feed1 = itsMSCols.feed1()(which);
-  Int feed2 = itsMSCols.feed2()(which);
+  int feed1 = itsMSCols.feed1()(which);
+  int feed2 = itsMSCols.feed2()(which);
   itsFeed1Index.feedId() = feed1;
   itsFeed1Index.spectralWindowId() = spwId;
   itsFeed1Index.time() = stime;
@@ -518,7 +518,7 @@ void MSReader::gotoRow(rownr_t which) {
   }
 
   // any think in itsIndexes
-  for (uInt i = 0; i < itsIndexes.nelements(); i++) {
+  for (unsigned int i = 0; i < itsIndexes.nelements(); i++) {
     if (!itsIndexes[i].isNull()) {
       itsIndexes[i].time() = stime;
       itsIndexes[i].interval() = sint;
@@ -533,20 +533,20 @@ void MSReader::gotoRow(rownr_t which) {
 
 const RecordInterface &MSReader::tableRow(const String &name) const {
   if (itsTabId.find(name) == itsTabId.end()) return emptyRecord;
-  Int tabId = itsTabId.at(name);
+  int tabId = itsTabId.at(name);
   return itsTabRows[tabId].record();
 }
 
 Int64 MSReader::rowNumber(const String &name) const {
   if (itsTabId.find(name) == itsTabId.end()) return -1;
-  Int tabId = itsTabId.at(name);
+  int tabId = itsTabId.at(name);
   return itsRowNumbers[tabId];
 }
 
 // Return a reference to the named subtable
 const Table &MSReader::table(const String &name) const {
   if (itsTabId.find(name) == itsTabId.end()) return emptyTable;
-  Int tabId = itsTabId.at(name);
+  int tabId = itsTabId.at(name);
   return itsTabRows[tabId].table();
 }
 

@@ -104,25 +104,25 @@ class NewMSSimulator {
 
   // Set maximum amount of data (bytes) to be written into any one
   // scratch column hypercube
-  void setMaxData(const Double maxData = 2e9) { maxData_p = maxData; }
+  void setMaxData(const double maxData = 2e9) { maxData_p = maxData; }
 
   // set the antenna and array data. These are written immediately to the
   // existing MS. The same model is used for the other init infor.
-  void initAnt(const String& telname, const Vector<Double>& x, const Vector<Double>& y,
-               const Vector<Double>& z, const Vector<Double>& dishDiameter,
-               const Vector<Double>& offset, const Vector<String>& mount,
+  void initAnt(const String& telname, const Vector<double>& x, const Vector<double>& y,
+               const Vector<double>& z, const Vector<double>& dishDiameter,
+               const Vector<double>& offset, const Vector<String>& mount,
                const Vector<String>& name, const Vector<String>& padname, const String& coordsystem,
                const MPosition& mRefLocation);
   // get the info back
-  bool getAnt(String& telescope, Int& nAnt, Matrix<Double>* antXYZ, Vector<Double>& antDiam,
-              Vector<Double>& offset, Vector<String>& mount, Vector<String>& name,
+  bool getAnt(String& telescope, int& nAnt, Matrix<double>* antXYZ, Vector<double>& antDiam,
+              Vector<double>& offset, Vector<String>& mount, Vector<String>& name,
               Vector<String>& padname, String& coordsystem, MPosition& mRefLocation);
 
   // set the observed fields
   void initFields(const String& sourceName, const MDirection& sourceDirection,
                   const String& calCode);
 
-  bool getFields(Int& nField, Vector<String>& sourceName, Vector<MDirection>& sourceDirection,
+  bool getFields(int& nField, Vector<String>& sourceName, Vector<MDirection>& sourceDirection,
                  Vector<String>& calCode);
 
   // set the Feeds;  brain dead version
@@ -131,23 +131,23 @@ class NewMSSimulator {
   bool getFeedMode(String& mode);
 
   // set the Feeds;  Smart version
-  void initFeeds(const String& mode, const Vector<Double>& x, const Vector<Double>& y,
+  void initFeeds(const String& mode, const Vector<double>& x, const Vector<double>& y,
                  const Vector<String>& pol);
 
   // set the spectral windows information
-  void initSpWindows(const String& spWindowName, const Int& nChan, const Quantity& startFreq,
+  void initSpWindows(const String& spWindowName, const int& nChan, const Quantity& startFreq,
                      const Quantity& freqInc, const Quantity& freqRes,
                      const MFrequency::Types& freqType, const String& stokesString);
 
-  bool getSpWindows(Int& nSpw, Vector<String>& spWindowName, Vector<Int>& nChan,
+  bool getSpWindows(int& nSpw, Vector<String>& spWindowName, Vector<int>& nChan,
                     Vector<Quantity>& startFreq, Vector<Quantity>& freqInc,
                     Vector<String>& stokesString);
 
-  void setFractionBlockageLimit(const Double fraclimit) { fractionBlockageLimit_p = fraclimit; }
+  void setFractionBlockageLimit(const double fraclimit) { fractionBlockageLimit_p = fraclimit; }
 
   void setElevationLimit(const Quantity& ellimit) { elevationLimit_p = ellimit; }
 
-  void setAutoCorrelationWt(const Float autocorrwt) { autoCorrelationWt_p = autocorrwt; }
+  void setAutoCorrelationWt(const float autocorrwt) { autoCorrelationWt_p = autocorrwt; }
 
   void settimes(const Quantity& qIntegrationTime, const bool useHourAngles, const MEpoch& mRefTime);
 
@@ -181,35 +181,35 @@ class NewMSSimulator {
   NewMSSimulator() {}
 
   // # Data Members
-  Double fractionBlockageLimit_p;
+  double fractionBlockageLimit_p;
   Quantity elevationLimit_p;
-  Float autoCorrelationWt_p;
+  float autoCorrelationWt_p;
   String telescope_p;
   Quantity qIntegrationTime_p;
   bool useHourAngle_p;
   bool hourAngleDefined_p;
   MEpoch mRefTime_p;
-  Double t_offset_p;
-  Double dataWritten_p;
-  Int hyperCubeID_p;
+  double t_offset_p;
+  double dataWritten_p;
+  int hyperCubeID_p;
   bool hasHyperCubes_p;
-  Int lastSpWID_p;
-  Int lastNchan_p;
+  int lastSpWID_p;
+  int lastNchan_p;
 
   std::shared_ptr<MeasurementSet> ms_p;
 
   TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p;
 
-  Double maxData_p;
+  double maxData_p;
 
-  void local2global(Vector<Double>& xReturned, Vector<Double>& yReturned, Vector<Double>& zReturned,
-                    const MPosition& mRefLocation, const Vector<Double>& xIn,
-                    const Vector<Double>& yIn, const Vector<Double>& zIn);
+  void local2global(Vector<double>& xReturned, Vector<double>& yReturned, Vector<double>& zReturned,
+                    const MPosition& mRefLocation, const Vector<double>& xIn,
+                    const Vector<double>& yIn, const Vector<double>& zIn);
 
-  void longlat2global(Vector<Double>& xReturned, Vector<Double>& yReturned,
-                      Vector<Double>& zReturned, const MPosition& mRefLocation,
-                      const Vector<Double>& xIn, const Vector<Double>& yIn,
-                      const Vector<Double>& zIn);
+  void longlat2global(Vector<double>& xReturned, Vector<double>& yReturned,
+                      Vector<double>& zReturned, const MPosition& mRefLocation,
+                      const Vector<double>& xIn, const Vector<double>& yIn,
+                      const Vector<double>& zIn);
 
   // Returns the fractional blockage of one antenna by another
   // We will want to put this somewhere else eventually, but I don't yet know where!
@@ -217,18 +217,18 @@ class NewMSSimulator {
   // fraction1: fraction of antenna 1 that is blocked by 2
   // fraction2: fraction of antenna 2 that is blocked by 1
   // hint: at least one of the two will be 0.0
-  void blockage(Double& fraction1, Double& fraction2,
-                const Vector<Double>& uvw,  // uvw in same units as diam!
-                const Double diam1, const Double diam2);
+  void blockage(double& fraction1, double& fraction2,
+                const Vector<double>& uvw,  // uvw in same units as diam!
+                const double diam1, const double diam2);
 
   String formatDirection(const MDirection&);
-  String formatTime(const Double);
+  String formatTime(const double);
 
-  void addHyperCubes(const Int id, const Int nBase, const Int nChan, const Int nCorr);
+  void addHyperCubes(const int id, const int nBase, const int nChan, const int nCorr);
 
   void defaults();
 
-  bool calcAntUVW(MEpoch& epoch, MDirection& refdir, Matrix<Double>& uvwAnt);
+  bool calcAntUVW(MEpoch& epoch, MDirection& refdir, Matrix<double>& uvwAnt);
 };
 
 }  // namespace casacore

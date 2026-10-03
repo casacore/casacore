@@ -121,19 +121,19 @@ class RecordDesc {
   // variable sized array.
   // If of sub-record type, the sub-record is free format.
   // Returns the number of fields in the description.
-  uInt addField(const String& fieldName, DataType dataType);
+  unsigned int addField(const String& fieldName, DataType dataType);
 
   // Add an array field of the indicated type. The DataType is promoted
   // from a scalar type to an array type if necessary, e.g.,
   // <src>TpInt ->TpArrayInt</src>.  Returns the number of fields in
   // the description.
   // A shape of [-1] indicates a variable shape.
-  uInt addField(const String& fieldName, DataType scalarOrArrayType, const IPosition& shape);
+  unsigned int addField(const String& fieldName, DataType scalarOrArrayType, const IPosition& shape);
 
   // Add a Record field to the description. This allows hierarchical
   // descriptions to be developed. Returns the number of fields in the
   // description.
-  uInt addField(const String& fieldName, const RecordDesc& subDesc);
+  unsigned int addField(const String& fieldName, const RecordDesc& subDesc);
 
   // Add a Table field to the description. The Table description has the
   // given name. Returns the number of fields in the description.
@@ -147,89 +147,89 @@ class RecordDesc {
   // it, while <linkto class=Record>Record</linkto> cannot and throws an
   // exception when a record description containing a table field is used.
   // </note>
-  uInt addTable(const String& fieldName, const String& tableDescName);
+  unsigned int addTable(const String& fieldName, const String& tableDescName);
 
   // Get the comment for this field.
-  const String& comment(Int whichField) const;
+  const String& comment(int whichField) const;
 
   // Set the comment for this field.
-  void setComment(Int whichField, const String& comment);
+  void setComment(int whichField, const String& comment);
 
   // Set the shape for this field.
   // An exception will be thrown if the field is no array.
-  void setShape(Int whichField, const IPosition& shape);
+  void setShape(int whichField, const IPosition& shape);
 
   // Merge a single field from other.  If allowDuplicates is true, silently
   // throw away fields if one with the same name and type already exists,
   // otherwise an exception is thrown.  Conflicting types always cause an
   // exception. Returns the number of fields in the description.
-  uInt mergeField(
-      const RecordDesc& other, Int whichFieldFromOther,
+  unsigned int mergeField(
+      const RecordDesc& other, int whichFieldFromOther,
       RecordInterface::DuplicatesFlag DuplicateAction = RecordInterface::ThrowOnDuplicates);
 
   // Add all the fields from another RecordDesc to the current objects.
   // It returns the new number of fields.
-  uInt merge(const RecordDesc& other,
+  unsigned int merge(const RecordDesc& other,
              RecordInterface::DuplicatesFlag DuplicateAction = RecordInterface::ThrowOnDuplicates);
 
   // Remove the given field from the description.
   // It returns the new number of fields.
-  uInt removeField(Int whichField);
+  unsigned int removeField(int whichField);
 
   // Rename the given field.
-  void renameField(const String& newName, Int whichField);
+  void renameField(const String& newName, int whichField);
 
   // Returns the index of the field named fieldName. Returns -1 if fieldName
   // does not exist.
-  Int fieldNumber(const String& fieldName) const;
+  int fieldNumber(const String& fieldName) const;
 
   // Number of fields in the description.
-  uInt nfields() const;
+  unsigned int nfields() const;
 
   // What is the type of the given field. Returns TpRecord if the field is
   // a sub-Record.
-  DataType type(Int whichField) const;
+  DataType type(int whichField) const;
 
   // What is the name of the given field.
-  const String& name(Int whichField) const;
+  const String& name(int whichField) const;
 
   // Create a name for a field defined by index as *i (similar to glish).
   // It takes care that the resulting name is unique by adding a suffix _j
   // when needed.
-  String makeName(Int whichField) const;
+  String makeName(int whichField) const;
 
   // Make the given name unique by adding a suffix _j when needed.
   // j is the minimal number needed to make it unique.
   String uniqueName(const String& name) const;
 
   // Returns true if whichField is an array.
-  bool isArray(Int whichField) const;
+  bool isArray(int whichField) const;
 
   // Returns true if whichField is a scalar.
-  bool isScalar(Int whichField) const;
+  bool isScalar(int whichField) const;
 
   // Returns true if whichField is a sub-record.
-  bool isSubRecord(Int whichField) const;
+  bool isSubRecord(int whichField) const;
 
   // Returns true if whichField is a table.
-  bool isTable(Int whichField) const;
+  bool isTable(int whichField) const;
 
   // What is the shape of the given field. Returns [1] if the field is a
   // scalar, table or, sub-record, [-1] if it is a variable length array,
   // and the actual shape for a fixed length array.
-  const IPosition& shape(Int whichField) const;
+  const IPosition& shape(int whichField) const;
 
   // What is the name of the table description.
   // Returns an empty string when the field is no table.
-  const String& tableDescName(Int whichField) const;
+  const String& tableDescName(int whichField) const;
 
   // If whichField is a sub-record return its description.
   // Otherwise an exception is thrown.
   // The non-const version is named differently to prevent accidental
   // use of the non-const version.
   // <group>
-  const RecordDesc& subRecord(Int whichField) const;
-  RecordDesc& rwSubRecord(Int whichField);
+  const RecordDesc& subRecord(int whichField) const;
+  RecordDesc& rwSubRecord(int whichField);
   // </group>
 
   // This and other compare equal if the field types and shapes are identical
@@ -302,96 +302,96 @@ inline RecordDesc& RecordDesc::operator=(const RecordDesc& other) {
 
 inline RecordDesc::~RecordDesc() {}
 
-inline uInt RecordDesc::addField(const String& fieldName, DataType dataType) {
+inline unsigned int RecordDesc::addField(const String& fieldName, DataType dataType) {
   return desc_p.rwRef().addField(fieldName, dataType);
 }
 
-inline uInt RecordDesc::addField(const String& fieldName, DataType scalarOrArrayType,
+inline unsigned int RecordDesc::addField(const String& fieldName, DataType scalarOrArrayType,
                                  const IPosition& shape) {
   return desc_p.rwRef().addArray(fieldName, scalarOrArrayType, shape);
 }
 
-inline uInt RecordDesc::addField(const String& fieldName, const RecordDesc& subDesc) {
+inline unsigned int RecordDesc::addField(const String& fieldName, const RecordDesc& subDesc) {
   return desc_p.rwRef().addRecord(fieldName, subDesc);
 }
 
-inline uInt RecordDesc::addTable(const String& fieldName, const String& tableDescName) {
+inline unsigned int RecordDesc::addTable(const String& fieldName, const String& tableDescName) {
   return desc_p.rwRef().addTable(fieldName, tableDescName);
 }
 
-inline const String& RecordDesc::comment(Int whichField) const {
+inline const String& RecordDesc::comment(int whichField) const {
   return desc_p.ref().comment(whichField);
 }
 
-inline void RecordDesc::setComment(Int whichField, const String& comment) {
+inline void RecordDesc::setComment(int whichField, const String& comment) {
   desc_p.rwRef().setComment(whichField, comment);
 }
 
-inline void RecordDesc::setShape(Int whichField, const IPosition& shape) {
+inline void RecordDesc::setShape(int whichField, const IPosition& shape) {
   desc_p.rwRef().setShape(whichField, shape);
 }
 
-inline uInt RecordDesc::mergeField(const RecordDesc& other, Int whichFieldFromOther,
+inline unsigned int RecordDesc::mergeField(const RecordDesc& other, int whichFieldFromOther,
                                    RecordInterface::DuplicatesFlag duplicateAction) {
   return desc_p.rwRef().mergeField(other.desc_p.ref(), whichFieldFromOther, duplicateAction);
 }
 
-inline uInt RecordDesc::merge(const RecordDesc& other,
+inline unsigned int RecordDesc::merge(const RecordDesc& other,
                               RecordInterface::DuplicatesFlag duplicateAction) {
   return desc_p.rwRef().merge(other.desc_p.ref(), duplicateAction);
 }
 
-inline uInt RecordDesc::removeField(Int whichField) {
+inline unsigned int RecordDesc::removeField(int whichField) {
   return desc_p.rwRef().removeField(whichField);
 }
 
-inline void RecordDesc::renameField(const String& newName, Int whichField) {
+inline void RecordDesc::renameField(const String& newName, int whichField) {
   desc_p.rwRef().renameField(newName, whichField);
 }
 
-inline Int RecordDesc::fieldNumber(const String& fieldName) const {
+inline int RecordDesc::fieldNumber(const String& fieldName) const {
   return desc_p.ref().fieldNumber(fieldName);
 }
 
-inline uInt RecordDesc::nfields() const { return desc_p.ref().nfields(); }
+inline unsigned int RecordDesc::nfields() const { return desc_p.ref().nfields(); }
 
-inline DataType RecordDesc::type(Int whichField) const { return desc_p.ref().type(whichField); }
+inline DataType RecordDesc::type(int whichField) const { return desc_p.ref().type(whichField); }
 
 inline String RecordDesc::uniqueName(const String& name) const {
   return desc_p.ref().uniqueName(name);
 }
 
-inline String RecordDesc::makeName(Int whichField) const {
+inline String RecordDesc::makeName(int whichField) const {
   return desc_p.ref().makeName(whichField);
 }
 
-inline const String& RecordDesc::name(Int whichField) const {
+inline const String& RecordDesc::name(int whichField) const {
   return desc_p.ref().name(whichField);
 }
 
-inline bool RecordDesc::isArray(Int whichField) const { return desc_p.ref().isArray(whichField); }
+inline bool RecordDesc::isArray(int whichField) const { return desc_p.ref().isArray(whichField); }
 
-inline bool RecordDesc::isScalar(Int whichField) const { return desc_p.ref().isScalar(whichField); }
+inline bool RecordDesc::isScalar(int whichField) const { return desc_p.ref().isScalar(whichField); }
 
-inline bool RecordDesc::isSubRecord(Int whichField) const {
+inline bool RecordDesc::isSubRecord(int whichField) const {
   return desc_p.ref().isSubRecord(whichField);
 }
 
-inline bool RecordDesc::isTable(Int whichField) const { return desc_p.ref().isTable(whichField); }
+inline bool RecordDesc::isTable(int whichField) const { return desc_p.ref().isTable(whichField); }
 
-inline const IPosition& RecordDesc::shape(Int whichField) const {
+inline const IPosition& RecordDesc::shape(int whichField) const {
   return desc_p.ref().shape(whichField);
 }
 
-inline const String& RecordDesc::tableDescName(Int whichField) const {
+inline const String& RecordDesc::tableDescName(int whichField) const {
   return desc_p.ref().tableDescName(whichField);
 }
 
-inline const RecordDesc& RecordDesc::subRecord(Int whichField) const {
+inline const RecordDesc& RecordDesc::subRecord(int whichField) const {
   return desc_p.ref().subRecord(whichField);
 }
 
-inline RecordDesc& RecordDesc::rwSubRecord(Int whichField) {
+inline RecordDesc& RecordDesc::rwSubRecord(int whichField) {
   return desc_p.rwRef().subRecord(whichField);
 }
 

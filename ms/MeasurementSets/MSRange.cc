@@ -74,20 +74,20 @@ MSRange& MSRange::operator=(const MSRange& other) {
 }
 
 bool MSRange::checkShapes() {
-  Int n = ddId_p.nelements();
+  int n = ddId_p.nelements();
   // check already done
   if (n > 0 && spwId_p.nelements() > 0) return constantShape_p;
   constantShape_p = true;
   if (n == 0) {
-    ScalarColumn<Int> dd(ms_p, MS::columnName(MS::DATA_DESC_ID));
-    Vector<Int> ddId = scalarRange(dd);
+    ScalarColumn<int> dd(ms_p, MS::columnName(MS::DATA_DESC_ID));
+    Vector<int> ddId = scalarRange(dd);
     ddId_p = ddId;
   }
-  Int n2 = ddId_p.nelements();
+  int n2 = ddId_p.nelements();
   MSDataDescColumns ddc(ms_p.dataDescription());
   spwId_p.resize(n2);
   polId_p.resize(n2);
-  for (Int i = 0; i < n2; i++) {
+  for (int i = 0; i < n2; i++) {
     spwId_p(i) = ddc.spectralWindowId()(ddId_p(i));
     polId_p(i) = ddc.polarizationId()(ddId_p(i));
   }
@@ -97,7 +97,7 @@ bool MSRange::checkShapes() {
   // in the main table
   MSSpWindowColumns spwc(ms_p.spectralWindow());
   MSPolarizationColumns polc(ms_p.polarization());
-  for (Int i = 1; i < n2; i++) {
+  for (int i = 1; i < n2; i++) {
     if (spwc.numChan()(spwId_p(i)) != spwc.numChan()(spwId_p(i - 1)) ||
         polc.numCorr()(polId_p(i)) != polc.numCorr()(polId_p(i - 1))) {
       constantShape_p = false;
@@ -109,12 +109,12 @@ bool MSRange::checkShapes() {
 
 Record MSRange::range(const Vector<String>& items, bool useFlags, bool oneBased) {
   LogIO os;
-  Int n = items.nelements();
-  Vector<Int> keys(n);
+  int n = items.nelements();
+  Vector<int> keys(n);
   // translate strings to enums
-  Int k = 0;
+  int k = 0;
   String keyword;
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     keyword = downcase(items(i));
     keys(k) = MSS::field(keyword);
     if (keys(k) != MSS::UNDEFINED) {
@@ -127,9 +127,9 @@ Record MSRange::range(const Vector<String>& items, bool useFlags, bool oneBased)
   return range(keys, useFlags, oneBased);
 }
 
-Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
+Record MSRange::range(const Vector<int>& keys, bool useFlags, bool oneBased) {
   LogIO os;
-  const Int option = Sort::HeapSort | Sort::NoDuplicates;
+  const int option = Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order = Sort::Ascending;
 
   Record out(RecordInterface::Variable);
@@ -141,11 +141,11 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
   Matrix<bool> want(nFuncType, nDataType, false);
   // use HeapSort as it's performance is guaranteed, quicksort is often
   // extremely slow (O(n*n)) for inputs with many successive duplicates
-  Matrix<Double> uvw;
+  Matrix<double> uvw;
   bool shapeChangesWarning = false;
-  Int n = keys.nelements();
+  int n = keys.nelements();
   String keyword;
-  for (Int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     // get the enum and the keyword value
     MSS::Field fld = MSS::Field(keys(i));
     keyword = MSS::keyword(fld);
@@ -180,11 +180,11 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
       case MSS::CORR_NAMES:
       case MSS::CORR_TYPES: {
         if (checkShapes()) {
-          Matrix<Int> corrTypes = msc.polarization().corrType().getColumnCells(RowNumbers(polId_p));
+          Matrix<int> corrTypes = msc.polarization().corrType().getColumnCells(RowNumbers(polId_p));
           if (fld == MSS::CORR_NAMES) {
             Matrix<String> names(corrTypes.shape());
             for (rownr_t k = 0; k < names.nrow(); k++) {
-              for (uInt j = 0; j < names.ncolumn(); j++) {
+              for (unsigned int j = 0; j < names.ncolumn(); j++) {
                 names(k, j) = Stokes::name(Stokes::type(corrTypes(k, j)));
               }
             }
@@ -223,7 +223,7 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
         want(Data, ObsFloat) = true;
         break;
       case MSS::IFR_NUMBER: {
-        Vector<Int> ifr = ifrNumbers(msc.antenna1(), msc.antenna2());
+        Vector<int> ifr = ifrNumbers(msc.antenna1(), msc.antenna2());
         if (oneBased) ifr += 1001;
         out.define(keyword, ifr);
       } break;
@@ -255,8 +255,8 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
         Record phasedir(RecordInterface::Variable);
         // return 0th order position only
         rownr_t nField = ms_p.field().nrow();
-        Matrix<Double> phaseDir(2, nField);
-        Vector<Double> dir(2);
+        Matrix<double> phaseDir(2, nField);
+        Vector<double> dir(2);
         for (rownr_t i = 0; i < nField; i++) {
           dir = msc.field().phaseDirMeas(i).getAngle().getValue();
           phaseDir(0, i) = dir(0);
@@ -294,8 +294,8 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
         break;
       case MSS::SIGMA:
         if (checkShapes()) {
-          Vector<Float> range(2);
-          Array<Float> sig;
+          Vector<float> range(2);
+          Array<float> sig;
           if (sel_p)
             sig = sel_p->getWeight(msc.sigma(), true);
           else
@@ -307,33 +307,33 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
         }
         break;
       case MSS::TIME: {
-        Vector<Double> time(2);
+        Vector<double> time(2);
         ::casacore::minMax(time(0), time(1), msc.time().getColumn());
         out.define(keyword, time);
       } break;
       case MSS::TIMES: {
-        Vector<Double> times = msc.time().getColumn();
-        Int64 n = GenSort<Double>::sort(times, order, option);
+        Vector<double> times = msc.time().getColumn();
+        Int64 n = GenSort<double>::sort(times, order, option);
         out.define(keyword, times(Slice(0, n)));
       } break;
       case MSS::U:
       case MSS::V:
       case MSS::W: {
-        Int index = fld - MSS::U;
-        Vector<Double> range(2);
+        int index = fld - MSS::U;
+        Vector<double> range(2);
         if (uvw.nelements() == 0) uvw = msc.uvw().getColumn();
         ::casacore::minMax(range(0), range(1), uvw.row(index));
         out.define(keyword, range);
       } break;
       case MSS::UVDIST: {
         if (uvw.nelements() == 0) uvw = msc.uvw().getColumn();
-        Array<Double> u2, v2;
+        Array<double> u2, v2;
         u2 = uvw.row(0);
         v2 = uvw.row(1);
         u2 *= u2;
         v2 *= v2;
         u2 += v2;
-        Vector<Double> uvrange(2);
+        Vector<double> uvrange(2);
         ::casacore::minMax(uvrange(0), uvrange(1), u2);
         uvrange(0) = sqrt(uvrange(0));
         uvrange(1) = sqrt(uvrange(1));
@@ -341,8 +341,8 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
       } break;
       case MSS::WEIGHT:
         if (checkShapes()) {
-          Vector<Float> range(2);
-          Array<Float> wt;
+          Vector<float> range(2);
+          Array<float> wt;
           if (sel_p)
             wt = sel_p->getWeight(msc.weight());
           else
@@ -360,7 +360,7 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
   }
   // throw away the uvw data (if any)
   uvw.resize(0, 0);
-  for (Int dataType = Observed; dataType < nDataType; dataType++) {
+  for (int dataType = Observed; dataType < nDataType; dataType++) {
     bool needCol2 = false;
     if (anyEQ(want.column(dataType), true)) {
       ArrayColumn<Complex> colData1, colData2;
@@ -379,9 +379,9 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
         if (!colData1.isNull() && (!needCol2 || !colData2.isNull())) {
           if (checkShapes()) {
             if (anyEQ(want(Slice(Amp, 4), dataType), true)) {
-              Matrix<Float> minmax(2, 4);
+              Matrix<float> minmax(2, 4);
               Vector<bool> funcSel(4);
-              for (Int funcType = Amp; funcType <= Imag; funcType++) {
+              for (int funcType = Amp; funcType <= Imag; funcType++) {
                 funcSel[funcType] = want(funcType, dataType);
               }
               minMax(minmax, funcSel, colData1, colData2, msc.flag(), dataType, useFlags);
@@ -409,7 +409,7 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
               funcName(Phase) = "phase";
               funcName(Real) = "real";
               funcName(Imag) = "imaginary";
-              for (Int funcType = Amp; funcType <= Imag; funcType++) {
+              for (int funcType = Amp; funcType <= Imag; funcType++) {
                 if (want(funcType, dataType)) {
                   out.define(name + funcName(funcType), minmax.column(funcType));
                 }
@@ -432,7 +432,7 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
       } else {
         if (!msc.floatData().isNull()) {
           if (checkShapes()) {
-            Vector<Float> amp(2);
+            Vector<float> amp(2);
             minMax(amp(0), amp(1), msc.floatData(), msc.flag(), useFlags);
             out.define("float_data", amp);
           }
@@ -452,44 +452,44 @@ Record MSRange::range(const Vector<Int>& keys, bool useFlags, bool oneBased) {
 }
 
 Record MSRange::range(MSS::Field item, bool useFlags) {
-  Vector<Int> key(1);
+  Vector<int> key(1);
   key(0) = item;
   return range(key, useFlags);
 }
 
-void MSRange::setBlockSize(Int blockSize) {
+void MSRange::setBlockSize(int blockSize) {
   if (blockSize > 0) blockSize_p = blockSize;
 }
 
-void MSRange::scalarRange(Record& out, const String& item, const ScalarColumn<Int>& id,
+void MSRange::scalarRange(Record& out, const String& item, const ScalarColumn<int>& id,
                           bool oneBased) {
-  Vector<Int> ids = scalarRange(id);
+  Vector<int> ids = scalarRange(id);
   if (oneBased) ids += 1;
   out.define(item, ids);
 }
 
-Vector<Int> MSRange::scalarRange(const ScalarColumn<Int>& id) {
-  const Int option = Sort::HeapSort | Sort::NoDuplicates;
+Vector<int> MSRange::scalarRange(const ScalarColumn<int>& id) {
+  const int option = Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order = Sort::Ascending;
-  Vector<Int> idvec = id.getColumn();
-  Int64 n = GenSort<Int>::sort(idvec, order, option);
-  Vector<Int> ids = idvec(Slice(0, n));
+  Vector<int> idvec = id.getColumn();
+  Int64 n = GenSort<int>::sort(idvec, order, option);
+  Vector<int> ids = idvec(Slice(0, n));
   return ids;
 }
 
-void MSRange::minMax(Float& mini, Float& maxi, const ArrayColumn<Float>& data,
+void MSRange::minMax(float& mini, float& maxi, const ArrayColumn<float>& data,
                      const ArrayColumn<bool>& flag, bool useFlags) {
   IPosition shp = data.shape(0);
   rownr_t nrow = data.nrow();
-  rownr_t numrow = rownr_t(blockSize_p * 1.0e6 / (sizeof(Float) * shp(0) * shp(1)));
+  rownr_t numrow = rownr_t(blockSize_p * 1.0e6 / (sizeof(float) * shp(0) * shp(1)));
   for (rownr_t start = 0; start < nrow; start += numrow) {
     rownr_t n = min(numrow, nrow - start);
-    Float minf, maxf;
+    float minf, maxf;
     Slicer rowSlicer(Slice(start, n));
     if (sel_p) {
       Array<bool> avFlag;
       Array<bool> flags = sel_p->getAveragedFlag(avFlag, flag, rowSlicer);
-      Array<Float> avData;
+      Array<float> avData;
       sel_p->getAveragedData(avData, flags, data, rowSlicer);
       if (useFlags) {
         ::casacore::minMax(minf, maxf, avData(!avFlag));
@@ -497,7 +497,7 @@ void MSRange::minMax(Float& mini, Float& maxi, const ArrayColumn<Float>& data,
         ::casacore::minMax(minf, maxf, avData);
       }
     } else {
-      Array<Float> tData = data.getColumnRange(rowSlicer);
+      Array<float> tData = data.getColumnRange(rowSlicer);
       if (useFlags) {
         Array<bool> tFlag = flag.getColumnRange(rowSlicer);
         ::casacore::minMax(minf, maxf, tData(!tFlag));
@@ -515,15 +515,15 @@ void MSRange::minMax(Float& mini, Float& maxi, const ArrayColumn<Float>& data,
   }
 }
 
-void MSRange::minMax(Matrix<Float>& minmax, const Vector<bool>& funcSel,
+void MSRange::minMax(Matrix<float>& minmax, const Vector<bool>& funcSel,
                      const ArrayColumn<Complex>& data1, const ArrayColumn<Complex>& data2,
-                     const ArrayColumn<bool>& flag, Int dataType, bool useFlags) {
+                     const ArrayColumn<bool>& flag, int dataType, bool useFlags) {
   IPosition shp = data1.shape(0);
   rownr_t nrow = data1.nrow();
   rownr_t numrow = rownr_t(blockSize_p * 1.0e6 / (sizeof(Complex) * shp(0) * shp(1)));
   for (rownr_t start = 0; start < nrow; start += numrow) {
     rownr_t n = min(numrow, nrow - start);
-    Vector<Float> minf(4), maxf(4);
+    Vector<float> minf(4), maxf(4);
     Slicer rowSlicer(Slice(start, n));
     Array<Complex> avData;
     if (sel_p) {
@@ -575,24 +575,24 @@ void MSRange::minMax(Matrix<Float>& minmax, const Vector<bool>& funcSel,
         minmax.row(0) = minf;
         minmax.row(1) = maxf;
       } else {
-        minmax.row(0) = ::casacore::min(static_cast<Array<Float>>(minmax.row(0)),
-                                        static_cast<Array<Float>>(minf));
-        minmax.row(1) = ::casacore::max(static_cast<Array<Float>>(minmax.row(1)),
-                                        static_cast<Array<Float>>(maxf));
+        minmax.row(0) = ::casacore::min(static_cast<Array<float>>(minmax.row(0)),
+                                        static_cast<Array<float>>(minf));
+        minmax.row(1) = ::casacore::max(static_cast<Array<float>>(minmax.row(1)),
+                                        static_cast<Array<float>>(maxf));
       }
     }
   }
 }
 
-Vector<Int> MSRange::ifrNumbers(const ScalarColumn<Int>& ant1, const ScalarColumn<Int>& ant2) {
-  const Int option = Sort::HeapSort | Sort::NoDuplicates;
+Vector<int> MSRange::ifrNumbers(const ScalarColumn<int>& ant1, const ScalarColumn<int>& ant2) {
+  const int option = Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order = Sort::Ascending;
-  Vector<Int> a1 = ant1.getColumn();
-  Array<Int> a2 = ant2.getColumn();
+  Vector<int> a1 = ant1.getColumn();
+  Array<int> a2 = ant2.getColumn();
   DebugAssert(max(a1) < 1000 && max(a2) < 1000, AipsError);
   a1 *= 1000;
   a1 += a2;
-  Int64 n = GenSort<Int>::sort(a1, order, option);
+  Int64 n = GenSort<int>::sort(a1, order, option);
   return a1(Slice(0, n));
 }
 

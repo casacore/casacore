@@ -61,7 +61,7 @@ void TableExprNodeSetElemBase::adaptSetUnits(const Unit& unit) {
   }
 }
 
-void TableExprNodeSetElemBase::show(ostream& os, uInt indent) const {
+void TableExprNodeSetElemBase::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
   if (itsStart) {
     os << "start: ";
@@ -96,7 +96,7 @@ void TableExprNodeSetElemBase::fillVector(Vector<bool>&, Int64&, const TableExpr
 void TableExprNodeSetElemBase::fillVector(Vector<Int64>&, Int64&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<Int64>");
 }
-void TableExprNodeSetElemBase::fillVector(Vector<Double>&, Int64&, const TableExprId&) const {
+void TableExprNodeSetElemBase::fillVector(Vector<double>&, Int64&, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::fillVector<Double>");
 }
 void TableExprNodeSetElemBase::fillVector(Vector<DComplex>&, Int64&, const TableExprId&) const {
@@ -115,7 +115,7 @@ void TableExprNodeSetElemBase::matchBool(bool*, const bool*, size_t, const Table
 void TableExprNodeSetElemBase::matchInt(bool*, const Int64*, size_t, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::matchInt");
 }
-void TableExprNodeSetElemBase::matchDouble(bool*, const Double*, size_t, const TableExprId&) const {
+void TableExprNodeSetElemBase::matchDouble(bool*, const double*, size_t, const TableExprId&) const {
   throw TableInvExpr("TableExprNodeSetElem::matchDouble");
 }
 void TableExprNodeSetElemBase::matchDComplex(bool*, const DComplex*, size_t,
@@ -172,7 +172,7 @@ TENShPtr TableExprNodeSetElemBase::evalExpr(const TENShPtr& expr, const TableExp
   return res;
 }
 
-void TableExprNodeSetElemBase::getStart(const TableExprId& id, Double& v) const {
+void TableExprNodeSetElemBase::getStart(const TableExprId& id, double& v) const {
   if (itsStart->dataType() == NTDate) {
     v = itsStart->getDate(id);  // gets converted to days
   } else {
@@ -180,7 +180,7 @@ void TableExprNodeSetElemBase::getStart(const TableExprId& id, Double& v) const 
   }
 }
 
-void TableExprNodeSetElemBase::getEnd(const TableExprId& id, Double& v) const {
+void TableExprNodeSetElemBase::getEnd(const TableExprId& id, double& v) const {
   if (itsEnd->dataType() == NTDate) {
     v = itsEnd->getDate(id);  // gets converted to days
   } else {
@@ -237,7 +237,7 @@ void TableExprNodeSetElemSingle::fillVector(Vector<Int64>& vec, Int64& cnt,
   }
   vec(cnt++) = itsStart->getInt(id);
 }
-void TableExprNodeSetElemSingle::fillVector(Vector<Double>& vec, Int64& cnt,
+void TableExprNodeSetElemSingle::fillVector(Vector<double>& vec, Int64& cnt,
                                             const TableExprId& id) const {
   Int64 n = vec.size();
   if (n < cnt + 1) {
@@ -316,7 +316,7 @@ void TableExprNodeSetElemSingle::matchInt(bool* match, const Int64* value, size_
     }
   }
 }
-void TableExprNodeSetElemSingle::matchDouble(bool* match, const Double* value, size_t nval,
+void TableExprNodeSetElemSingle::matchDouble(bool* match, const double* value, size_t nval,
                                              const TableExprId& id) const {
   bool* lastVal = match + nval;
   if (itsStart->valueType() == VTArray) {
@@ -329,7 +329,7 @@ void TableExprNodeSetElemSingle::matchDouble(bool* match, const Double* value, s
       match++;
     }
   } else {
-    Double start = itsStart->getDouble(id);
+    double start = itsStart->getDouble(id);
     while (match < lastVal) {
       if (*value == start) {
         *match = true;
@@ -494,17 +494,17 @@ void TableExprNodeSetElemDiscrete::fillVector(Vector<Int64>& vec, Int64& cnt,
     start += incr;
   }
 }
-void TableExprNodeSetElemDiscrete::fillVector(Vector<Double>& vec, Int64& cnt,
+void TableExprNodeSetElemDiscrete::fillVector(Vector<double>& vec, Int64& cnt,
                                               const TableExprId& id) const {
-  Double start = !itsStart ? 0 : itsStart->getDouble(id);
-  Double end = !itsEnd ? start : itsEnd->getDouble(id);
-  Double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
+  double start = !itsStart ? 0 : itsStart->getDouble(id);
+  double end = !itsEnd ? start : itsEnd->getDouble(id);
+  double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
   Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
   if (itsEndExcl && nval > 0) {
-    Double rngend = start + (nval - 1) * incr;
+    double rngend = start + (nval - 1) * incr;
     if (near(rngend, end) || (end == 0 && nearAbs(rngend, end))) {
       nval -= 1;
     }
@@ -520,15 +520,15 @@ void TableExprNodeSetElemDiscrete::fillVector(Vector<Double>& vec, Int64& cnt,
 }
 void TableExprNodeSetElemDiscrete::fillVector(Vector<MVTime>& vec, Int64& cnt,
                                               const TableExprId& id) const {
-  Double start = !itsStart ? 0 : Double(itsStart->getDate(id));
-  Double end = !itsEnd ? start : Double(itsEnd->getDate(id));
-  Double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
+  double start = !itsStart ? 0 : double(itsStart->getDate(id));
+  double end = !itsEnd ? start : double(itsEnd->getDate(id));
+  double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
   Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
   if (itsEndExcl && nval > 0) {
-    Double rngend = start + (nval - 1) * incr;
+    double rngend = start + (nval - 1) * incr;
     if (near(rngend, end) || (end == 0 && nearAbs(rngend, end))) {
       nval -= 1;
     }
@@ -575,18 +575,18 @@ void TableExprNodeSetElemDiscrete::matchInt(bool* match, const Int64* value, siz
     match++;
   }
 }
-void TableExprNodeSetElemDiscrete::matchDouble(bool* match, const Double* value, size_t nval,
+void TableExprNodeSetElemDiscrete::matchDouble(bool* match, const double* value, size_t nval,
                                                const TableExprId& id) const {
-  Double start = !itsStart ? 0 : itsStart->getDouble(id);
-  Double end = !itsEnd ? start : itsEnd->getDouble(id);
-  Double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
+  double start = !itsStart ? 0 : itsStart->getDouble(id);
+  double end = !itsEnd ? start : itsEnd->getDouble(id);
+  double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
   bool* lastVal = match + nval;
   end -= start;
   while (match < lastVal) {
-    Double tmp = *value - start;
+    double tmp = *value - start;
     if (incr > 0) {
       if (tmp >= 0 && (!itsEnd || tmp < end || (!itsEndExcl && tmp == end))) {
         if (near(tmp, incr * Int64(tmp / incr + 0.5))) {
@@ -606,16 +606,16 @@ void TableExprNodeSetElemDiscrete::matchDouble(bool* match, const Double* value,
 }
 void TableExprNodeSetElemDiscrete::matchDate(bool* match, const MVTime* value, size_t nval,
                                              const TableExprId& id) const {
-  Double start = !itsStart ? 0 : Double(itsStart->getDate(id));
-  Double end = !itsEnd ? start : Double(itsEnd->getDate(id));
-  Double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
+  double start = !itsStart ? 0 : double(itsStart->getDate(id));
+  double end = !itsEnd ? start : double(itsEnd->getDate(id));
+  double incr = !itsIncr ? 1 : itsIncr->getDouble(id);
   if (incr == 0) {
     throw TableInvExpr("Increment in a range must be non-zero");
   }
   bool* lastVal = match + nval;
   end -= start;
   while (match < lastVal) {
-    Double tmp = Double(*value) - start;
+    double tmp = double(*value) - start;
     if (incr > 0) {
       if (tmp >= 0 && (!itsEnd || tmp < end || (!itsEndExcl && tmp == end))) {
         if (near(tmp, incr * Int64(tmp / incr + 0.5))) {
@@ -721,13 +721,13 @@ bool TableExprNodeSetElemCont::isLeftClosed() const { return itsLeftClosed; }
 
 bool TableExprNodeSetElemCont::isRightClosed() const { return itsRightClosed; }
 
-void TableExprNodeSetElemCont::matchDouble(bool* match, const Double* value, size_t nval,
+void TableExprNodeSetElemCont::matchDouble(bool* match, const double* value, size_t nval,
                                            const TableExprId& id) const {
-  Double start = !itsStart ? 0 : itsStart->getDouble(id);
-  Double end = !itsEnd ? start : itsEnd->getDouble(id);
+  double start = !itsStart ? 0 : itsStart->getDouble(id);
+  double end = !itsEnd ? start : itsEnd->getDouble(id);
   bool* lastVal = match + nval;
   while (match < lastVal) {
-    Double tmp = *value;
+    double tmp = *value;
     if ((!itsStart || tmp > start || (itsLeftClosed && tmp == start)) &&
         (!itsEnd || tmp < end || (itsRightClosed && tmp == end))) {
       *match = true;
@@ -760,11 +760,11 @@ void TableExprNodeSetElemCont::matchString(bool* match, const String* value, siz
 
 void TableExprNodeSetElemCont::matchDate(bool* match, const MVTime* value, size_t nval,
                                          const TableExprId& id) const {
-  Double start = !itsStart ? 0 : Double(itsStart->getDate(id));
-  Double end = !itsEnd ? start : Double(itsEnd->getDate(id));
+  double start = !itsStart ? 0 : double(itsStart->getDate(id));
+  double end = !itsEnd ? start : double(itsEnd->getDate(id));
   bool* lastVal = match + nval;
   while (match < lastVal) {
-    Double tmp = *value;
+    double tmp = *value;
     if ((!itsStart || tmp > start || (itsLeftClosed && tmp == start)) &&
         (!itsEnd || tmp < end || (itsRightClosed && tmp == end))) {
       *match = true;
@@ -806,11 +806,11 @@ TableExprNodeSetElemMidWidth::TableExprNodeSetElemMidWidth(const TableExprNode& 
 }
 
 TENSEBShPtr TableExprNodeSetElemMidWidth::evaluate(const TableExprId& id) const {
-  Double start, end, mid, width;
+  double start, end, mid, width;
   getEnd(id, width);
   if (width == 0) {
-    start = std::numeric_limits<Double>::lowest();
-    end = std::numeric_limits<Double>::max();
+    start = std::numeric_limits<double>::lowest();
+    end = std::numeric_limits<double>::max();
   } else {
     getStart(id, mid);
     start = mid - width * 0.5;
@@ -831,21 +831,21 @@ TENSEBShPtr TableExprNodeSetElemMidWidth::evaluate(const TableExprId& id) const 
 
 bool TableExprNodeSetElemMidWidth::isMidWidth() const { return true; }
 
-void TableExprNodeSetElemMidWidth::matchDouble(bool* match, const Double* value, size_t nval,
+void TableExprNodeSetElemMidWidth::matchDouble(bool* match, const double* value, size_t nval,
                                                const TableExprId& id) const {
-  Double width = itsEnd->getDouble(id);
-  Double start, end;
+  double width = itsEnd->getDouble(id);
+  double start, end;
   if (width == 0) {
-    start = std::numeric_limits<Double>::lowest();
-    end = std::numeric_limits<Double>::max();
+    start = std::numeric_limits<double>::lowest();
+    end = std::numeric_limits<double>::max();
   } else {
-    Double mid = itsStart->getDouble(id);
+    double mid = itsStart->getDouble(id);
     start = mid - width * 0.5;
     end = mid + width * 0.5;
   }
   bool* lastVal = match + nval;
   while (match < lastVal) {
-    Double tmp = *value;
+    double tmp = *value;
     if (tmp >= start && tmp <= end) {
       *match = true;
     }
@@ -856,13 +856,13 @@ void TableExprNodeSetElemMidWidth::matchDouble(bool* match, const Double* value,
 
 void TableExprNodeSetElemMidWidth::matchDate(bool* match, const MVTime* value, size_t nval,
                                              const TableExprId& id) const {
-  Double mid = Double(itsStart->getDate(id));
-  Double width = Double(itsEnd->getDouble(id));
-  Double start = mid - width * 0.5;
-  Double end = mid + width * 0.5;
+  double mid = double(itsStart->getDate(id));
+  double width = double(itsEnd->getDouble(id));
+  double start = mid - width * 0.5;
+  double end = mid + width * 0.5;
   bool* lastVal = match + nval;
   while (match < lastVal) {
-    Double tmp = *value;
+    double tmp = *value;
     if (tmp >= start && tmp <= end) {
       *match = true;
     }

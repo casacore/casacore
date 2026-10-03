@@ -35,7 +35,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {{MRadialVelocity::LSRD, MRadialVelocity::BARY, 0},
+unsigned int MCRadialVelocity::ToRef_p[N_Routes][3] = {{MRadialVelocity::LSRD, MRadialVelocity::BARY, 0},
                                                {MRadialVelocity::BARY, MRadialVelocity::LSRD, 0},
                                                {MRadialVelocity::BARY, MRadialVelocity::GEO, 0},
                                                {MRadialVelocity::GEO, MRadialVelocity::TOPO, 2},
@@ -49,7 +49,7 @@ uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {{MRadialVelocity::LSRD, MRadialVe
                                                {MRadialVelocity::LGROUP, MRadialVelocity::BARY, 0},
                                                {MRadialVelocity::BARY, MRadialVelocity::CMB, 0},
                                                {MRadialVelocity::CMB, MRadialVelocity::BARY, 0}};
-uInt MCRadialVelocity::FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
+unsigned int MCRadialVelocity::FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
 std::once_flag MCRadialVelocity::theirInitOnceFlag;
 
 // # Constructors
@@ -65,9 +65,9 @@ MCRadialVelocity::~MCRadialVelocity() { clearConvert(); }
 // # Member functions
 
 void MCRadialVelocity::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
-  Int iout = outref.getType();
-  Int tmp;
+  int iin = inref.getType();
+  int iout = outref.getType();
+  int tmp;
   while (iin != iout) {
     tmp = FromTo_p[iin][iout];
     iin = ToRef_p[tmp][1];
@@ -88,7 +88,7 @@ void MCRadialVelocity::clearConvert() {
 }
 
 // # Conversion routines
-void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
+void MCRadialVelocity::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
 
   if (!MVPOS1) MVPOS1 = new MVPosition();
@@ -141,9 +141,9 @@ void MCRadialVelocity::doConvert(MeasValue &in, MRBase &inref, MRBase &outref,
 
 void MCRadialVelocity::doConvert(MVRadialVelocity &in, MRBase &inref, MRBase &outref,
                                  const MConvertBase &mc) {
-  Double g1, g2, g3, lengthE, tdbTime;
+  double g1, g2, g3, lengthE, tdbTime;
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case LSRD_BARY: {
         *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));

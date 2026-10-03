@@ -317,7 +317,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const {
       if (nrVal == 0) {
         return LELScalar<T>();  // no element found
       }
-      return T(sumVal / Double(nrVal));
+      return T(sumVal / double(nrVal));
     }
     case LELFunctionEnums::SUM: {
       if (pExpr_p->isScalar()) {
@@ -387,7 +387,7 @@ String LELFunction1D<T>::className() const {
 }
 
 template <class T>
-bool LELFunction1D<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunction1D<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 template <class T>
@@ -559,7 +559,7 @@ String LELFunctionReal1D<T>::className() const {
 }
 
 template <class T>
-bool LELFunctionReal1D<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionReal1D<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 template <class T>
@@ -590,7 +590,7 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
       // # The 1st argument must be Bool, the 2nd and 3rd must be T.
       // # The arguments do not need to be lattices.
 
-      Block<Int> argType(3);
+      Block<int> argType(3);
       argType[0] = TpBool;
       argType[1] = whatType<T>();
       argType[2] = whatType<T>();
@@ -612,7 +612,7 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
                       "first argument of function REPLACE cannot be "
                       " a scalar"));
       }
-      Block<Int> argType(2);
+      Block<int> argType(2);
       argType[0] = whatType<T>();
       argType[1] = whatType<T>();
       LatticeExprNode::checkArg(exp, argType, false);
@@ -949,7 +949,7 @@ String LELFunctionND<T>::className() const {
 }
 
 template <class T>
-bool LELFunctionND<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELFunctionND<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   for (size_t i = 0; i < arg_p.nelements(); i++) {
     if (!arg_p[i].lock(type, nattempts)) {
       return false;

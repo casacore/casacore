@@ -29,12 +29,12 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCDoppler::ToRef_p[N_Routes][3] = {
+unsigned int MCDoppler::ToRef_p[N_Routes][3] = {
     {MDoppler::RADIO, MDoppler::RATIO, 0}, {MDoppler::Z, MDoppler::RATIO, 0},
     {MDoppler::BETA, MDoppler::RATIO, 0},  {MDoppler::GAMMA, MDoppler::RATIO, 0},
     {MDoppler::RATIO, MDoppler::RADIO, 0}, {MDoppler::RATIO, MDoppler::Z, 0},
     {MDoppler::RATIO, MDoppler::BETA, 0},  {MDoppler::RATIO, MDoppler::GAMMA, 0}};
-uInt MCDoppler::FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
+unsigned int MCDoppler::FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
 std::once_flag MCDoppler::theirInitOnceFlag;
 
 // # Constructors
@@ -48,9 +48,9 @@ MCDoppler::~MCDoppler() { clearConvert(); }
 // # Member functions
 
 void MCDoppler::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
-  Int iout = outref.getType();
-  Int tmp;
+  int iin = inref.getType();
+  int iout = outref.getType();
+  int tmp;
   while (iin != iout) {
     tmp = FromTo_p[iin][iout];
     iin = ToRef_p[tmp][1];
@@ -62,7 +62,7 @@ void MCDoppler::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &
 void MCDoppler::clearConvert() {}
 
 // # Conversion routines
-void MCDoppler::initConvert(uInt which, MConvertBase &mc) {
+void MCDoppler::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
@@ -81,9 +81,9 @@ void MCDoppler::doConvert(MVDoppler &in, MRBase &inref, MRBase &outref, const MC
     outref.getType();
   }  // to stop warning
 
-  Double t = (Double)in;
+  double t = (double)in;
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case RADIO_RATIO:
         t = 1 - t;

@@ -61,7 +61,7 @@ class TableExprAggrNodeArray : public TableExprFuncNodeArray {
   // Constructor.
   TableExprAggrNodeArray(TableExprFuncNode::FunctionType, NodeDataType, ValueType,
                          const TableExprNodeSet& source, const vector<TENShPtr>& nodes,
-                         const Block<Int>& dtypeOper, const TaQLStyle& style);
+                         const Block<int>& dtypeOper, const TaQLStyle& style);
 
   // This node does aggregation.
   virtual bool isAggregate() const;
@@ -79,7 +79,7 @@ class TableExprAggrNodeArray : public TableExprFuncNodeArray {
   // <group>
   virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
   virtual MArray<MVTime> getArrayDate(const TableExprId& id);

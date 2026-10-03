@@ -67,8 +67,8 @@ void a(bool) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.addColumn(ScalarColumnDesc<DComplex>("ag"));
   td.addColumn(ArrayColumnDesc<float>("arr1", 3, ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<String>("arr2", 0));
@@ -89,15 +89,15 @@ void a(bool) {
   AlwaysAssertExit(row.rowNumber() == -1);
   TableRecord rec(row.record().description(), RecordInterface::Variable);
   AlwaysAssertExit(row.record().nfields() == 6);
-  RecordFieldPtr<Int> ab(rec, 0);
-  RecordFieldPtr<uInt> ad(rec, 1);
+  RecordFieldPtr<int> ab(rec, 0);
+  RecordFieldPtr<unsigned int> ad(rec, 1);
   RecordFieldPtr<DComplex> ag(rec, 2);
   RecordFieldPtr<Array<float>> arr1(rec, 3);
   RecordFieldPtr<Array<String>> arr2(rec, 4);
   RecordFieldPtr<TableRecord> recfld(rec, 5);
   ArrayColumn<float> arr3(tab, "arr3");
   TableRecord r1;
-  Int i;
+  int i;
   for (i = 0; i < 10; i++) {
     ab.define(i);
     ad.define(i + 2);
@@ -113,19 +113,19 @@ void a(bool) {
     arrf += (float)(arrf.nelements());
   }
   // Test if the record has an extra field.
-  rec.define("extraField", Int(1));
+  rec.define("extraField", int(1));
   row.putMatchingFields(9, rec);
   AlwaysAssertExit(row.rowNumber() == -1);
 
-  ScalarColumn<Int> colab(tab, "ab");
-  ScalarColumn<uInt> colad(tab, "ad");
+  ScalarColumn<int> colab(tab, "ab");
+  ScalarColumn<unsigned int> colad(tab, "ad");
   ScalarColumn<DComplex> colag(tab, "ag");
   ScalarColumn<TableRecord> colrec(tab, "rec");
   ArrayColumn<float> colarr1(tab, "arr1");
   ArrayColumn<String> colarr2(tab, "arr2");
   ArrayColumn<float> colarr3(tab, "arr3");
-  Int abval;
-  uInt adval;
+  int abval;
+  unsigned int adval;
   DComplex agval;
   TableRecord recval;
   Cube<float> arrval(IPosition(3, 2, 3, 4));
@@ -136,15 +136,15 @@ void a(bool) {
     colab.get(i, abval);
     colad.get(i, adval);
     colag.get(i, agval);
-    if (abval != i || Int(adval) != i + 2 || agval != DComplex(i + 3, -i - 1)) {
+    if (abval != i || int(adval) != i + 2 || agval != DComplex(i + 3, -i - 1)) {
       cout << "error in row " << i << ": " << abval << ", " << adval << ", " << agval << endl;
     }
     colrec.get(i, recval);
-    if (Int(recval.nfields()) != i + 1) {
+    if (int(recval.nfields()) != i + 1) {
       cout << "error in row " << i << ": " << recval.nfields() << " fields; expected " << i + 1
            << endl;
     } else {
-      for (Int j = 0; j <= i; j++) {
+      for (int j = 0; j <= i; j++) {
         if (recval.asInt(j) != j) {
           cout << "error in row " << i << ": invalid record" << endl;
         }
@@ -201,8 +201,8 @@ void b(bool doExcp) {
   }
   ROTableRow rowx(tab, stringToVector("ab,arr1"));
   ROTableRow rowy(tab, stringToVector("ab,bcd,arr1"), true);
-  RORecordFieldPtr<Int> ab(rowx.record(), 0);
-  RORecordFieldPtr<uInt> ad(rowy.record(), 0);
+  RORecordFieldPtr<int> ab(rowx.record(), 0);
+  RORecordFieldPtr<unsigned int> ad(rowy.record(), 0);
   RORecordFieldPtr<DComplex> ag(rowy.record(), 1);
   RORecordFieldPtr<Array<float>> arr1(rowx.record(), 1);
   RORecordFieldPtr<Array<String>> arr2(rowy.record(), 2);
@@ -212,13 +212,13 @@ void b(bool doExcp) {
       stringToVector("a,bc,def,ghij,klmno,qprstu,vxxyzab,"
                      "cdefghij,klmnopqrs,tuvwxyzabc"));
   indgen(arrf);
-  Int i;
+  int i;
   for (i = 0; i < 10; i++) {
     cout << "get scalar row " << i << endl;
     rowx.get(i);
     AlwaysAssertExit(rowx.rowNumber() == i);
     rowy.get(i);
-    if (*ab != i || Int(*ad) != i + 2 || *ag != DComplex(i + 3, -i - 1)) {
+    if (*ab != i || int(*ad) != i + 2 || *ag != DComplex(i + 3, -i - 1)) {
       cout << "error in row " << i << ": " << *ab << ", " << *ad << ", " << *ag << endl;
     }
     if (!allEQ(*arr1, arrf)) {
@@ -257,12 +257,12 @@ void b(bool doExcp) {
 }
 
 // This function times how fast it can read data back.
-void c(Int nrow) {
+void c(int nrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.addColumn(ScalarColumnDesc<DComplex>("ag"));
   td.addColumn(ArrayColumnDesc<float>("arr1", 3, ColumnDesc::Direct));
 
@@ -276,11 +276,11 @@ void c(Int nrow) {
   cout << ">>>" << endl;
   Timer timer;
   TableRow row(tab);
-  RecordFieldPtr<Int> ab(row.record(), 0);
-  RecordFieldPtr<uInt> ad(row.record(), 1);
+  RecordFieldPtr<int> ab(row.record(), 0);
+  RecordFieldPtr<unsigned int> ad(row.record(), 1);
   RecordFieldPtr<DComplex> ag(row.record(), 2);
   RecordFieldPtr<Array<float>> arr1(row.record(), 3);
-  Int i;
+  int i;
   for (i = 0; i < nrow; i++) {
     ab.define(i);
     ad.define(i + 2);
@@ -293,11 +293,11 @@ void c(Int nrow) {
   // Now time how long it takes to read it back as columns and
   // as rows.
   timer.mark();
-  ScalarColumn<Int> colab(tab, "ab");
-  ScalarColumn<uInt> colad(tab, "ad");
+  ScalarColumn<int> colab(tab, "ab");
+  ScalarColumn<unsigned int> colad(tab, "ad");
   ScalarColumn<DComplex> colag(tab, "ag");
-  Int abval;
-  uInt adval;
+  int abval;
+  unsigned int adval;
   DComplex agval;
   for (i = 0; i < nrow; i++) {
     colab.get(i, abval);
@@ -316,8 +316,8 @@ void c(Int nrow) {
 
   timer.mark();
   ROTableRow rowx(tab, stringToVector("ab,ad,ag"));
-  RORecordFieldPtr<Int> abr(rowx.record(), 0);
-  RORecordFieldPtr<uInt> adr(rowx.record(), 1);
+  RORecordFieldPtr<int> abr(rowx.record(), 0);
+  RORecordFieldPtr<unsigned int> adr(rowx.record(), 1);
   RORecordFieldPtr<DComplex> agr(rowx.record(), 2);
   for (i = 0; i < nrow; i++) {
     rowx.get(i);
@@ -335,7 +335,7 @@ void c(Int nrow) {
 }
 
 int main(int argc, const char* argv[]) {
-  uInt nr = 500;
+  unsigned int nr = 500;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nr;

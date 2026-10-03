@@ -43,19 +43,19 @@ template <class U>
 bool LSQaips::getCovariance(Array<U> &covar) {
   if (!invertRect()) return false;
   covar.resize();
-  uInt n = nUnknowns() / LSQTraits<U>::size;
+  unsigned int n = nUnknowns() / LSQTraits<U>::size;
   covar.resize(IPosition(2, n, n));
   return LSQFit::getCovariance(covar.data());
 }
 
 template <class U>
-bool LSQaips::solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, bool doSVD) {
+bool LSQaips::solveLoop(double &fit, unsigned int &nRank, Vector<U> &sol, bool doSVD) {
   VectorSTLIterator<U> solit(sol);
   return LSQFit::solveLoop(fit, nRank, solit, doSVD);
 }
 
 template <class U>
-bool LSQaips::solveLoop(uInt &nRank, Vector<U> &sol, bool doSVD) {
+bool LSQaips::solveLoop(unsigned int &nRank, Vector<U> &sol, bool doSVD) {
   VectorSTLIterator<U> solit(sol);
   return LSQFit::solveLoop(nRank, solit, doSVD);
 }

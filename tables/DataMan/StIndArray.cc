@@ -59,10 +59,10 @@ void StIndArray::getShape(StManArrayFile& ios) {
   }
 }
 
-uInt StIndArray::refCount(StManArrayFile& ios) { return ios.getRefCount(fileOffset_p); }
+unsigned int StIndArray::refCount(StManArrayFile& ios) { return ios.getRefCount(fileOffset_p); }
 
 void StIndArray::incrementRefCount(StManArrayFile& ios) {
-  uInt refCount = ios.getRefCount(fileOffset_p);
+  unsigned int refCount = ios.getRefCount(fileOffset_p);
   refCount++;
   ios.putRefCount(refCount, fileOffset_p);
 #ifdef AIPS_TRACE
@@ -71,7 +71,7 @@ void StIndArray::incrementRefCount(StManArrayFile& ios) {
 }
 
 void StIndArray::decrementRefCount(StManArrayFile& ios) {
-  uInt refCount = ios.getRefCount(fileOffset_p);
+  unsigned int refCount = ios.getRefCount(fileOffset_p);
   refCount--;
   ios.putRefCount(refCount, fileOffset_p);
 #ifdef AIPS_TRACE
@@ -93,19 +93,19 @@ bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& sh
       arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<bool*>(0));
       break;
     case TpUChar:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<uChar*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned char*>(0));
       break;
     case TpShort:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<Short*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<short*>(0));
       break;
     case TpUShort:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<uShort*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned short*>(0));
       break;
     case TpInt:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<Int*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<int*>(0));
       break;
     case TpUInt:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<uInt*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned int*>(0));
       break;
     case TpInt64:
       arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<Int64*>(0));
@@ -206,19 +206,19 @@ void StIndArray::getArrayV(StManArrayFile& ios, ArrayBase& arr, DataType dtype) 
       ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<bool*>(value));
       break;
     case TpUChar:
-      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<uChar*>(value));
+      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<unsigned char*>(value));
       break;
     case TpShort:
-      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<Short*>(value));
+      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<short*>(value));
       break;
     case TpUShort:
-      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<uShort*>(value));
+      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<unsigned short*>(value));
       break;
     case TpInt:
-      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<Int*>(value));
+      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<int*>(value));
       break;
     case TpUInt:
-      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<uInt*>(value));
+      ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<unsigned int*>(value));
       break;
     case TpInt64:
       ios.get(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<Int64*>(value));
@@ -256,19 +256,19 @@ void StIndArray::putArrayV(StManArrayFile& ios, const ArrayBase& arr, DataType d
       ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const bool*>(value));
       break;
     case TpUChar:
-      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const uChar*>(value));
+      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const unsigned char*>(value));
       break;
     case TpShort:
-      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const Short*>(value));
+      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const short*>(value));
       break;
     case TpUShort:
-      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const uShort*>(value));
+      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const unsigned short*>(value));
       break;
     case TpInt:
-      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const Int*>(value));
+      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const int*>(value));
       break;
     case TpUInt:
-      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const uInt*>(value));
+      ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const unsigned int*>(value));
       break;
     case TpInt64:
       ios.put(fileOffset_p + arrOffset_p, 0, shape_p.product(), static_cast<const Int64*>(value));
@@ -400,7 +400,7 @@ void StIndArray::getSliceData(StManArrayFile& ios, const Slicer& ns, void* value
                               void (*getVec)(StManArrayFile&, Int64, uInt64, uInt64, uInt64, uInt64,
                                              void*)) {
   // # Check if the shape of the slice and user array match.
-  uInt ndim = ns.ndim();
+  unsigned int ndim = ns.ndim();
   IPosition blc(ndim), trc(ndim), inc(ndim), shape(ndim);
   shape = ns.inferShapeFromSource(shape_p, blc, trc, inc);
   checkShape(userShape, shape);
@@ -422,7 +422,7 @@ void StIndArray::getSliceData(StManArrayFile& ios, const Slicer& ns, void* value
       // # the table array.
       pos = iter.pos();
       uInt64 offset = 0;
-      for (uInt i = ndim - 1; i > 0; i--) {
+      for (unsigned int i = ndim - 1; i > 0; i--) {
         offset += blc(i) + pos(i) * inc(i);
         offset *= shape_p(i - 1);
       }
@@ -439,7 +439,7 @@ void StIndArray::putSliceData(StManArrayFile& ios, const Slicer& ns, const void*
                               const IPosition& userShape,
                               void (*putVec)(StManArrayFile&, Int64, uInt64, uInt64, uInt64, uInt64,
                                              const void*)) {
-  uInt ndim = ns.ndim();
+  unsigned int ndim = ns.ndim();
   IPosition blc(ndim), trc(ndim), inc(ndim), shape(ndim);
   shape = ns.inferShapeFromSource(shape_p, blc, trc, inc);
   checkShape(userShape, shape);
@@ -454,7 +454,7 @@ void StIndArray::putSliceData(StManArrayFile& ios, const Slicer& ns, const void*
     while (!iter.pastEnd()) {
       pos = iter.pos();
       uInt64 offset = 0;
-      for (uInt i = ndim - 1; i > 0; i--) {
+      for (unsigned int i = ndim - 1; i > 0; i--) {
         offset += blc(i) + pos(i) * inc(i);
         offset *= shape_p(i - 1);
       }

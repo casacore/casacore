@@ -34,11 +34,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 RNG::~RNG() {}
 
-Float RNG::asFloat() {
+float RNG::asFloat() {
   // used to access floats as unsigned Int's
   union PrivateRNGSingleType {
-    Float flt;
-    uInt intgr;
+    float flt;
+    unsigned int intgr;
   };
   PrivateRNGSingleType result;
   result.flt = 1.0f;
@@ -48,17 +48,17 @@ Float RNG::asFloat() {
   return result.flt;
 }
 
-Double RNG::asDouble() {
+double RNG::asDouble() {
   // used to access Doubles as two unsigned integers
   union PrivateRNGDoubleType {
-    Double dbl;
-    uInt intgr[2];
+    double dbl;
+    unsigned int intgr[2];
   };
 
   PrivateRNGDoubleType result;
   result.dbl = 1.0;
-  uInt iMsb = asuInt() & 0xfffff;
-  uInt iLsb = asuInt();
+  unsigned int iMsb = asuInt() & 0xfffff;
+  unsigned int iLsb = asuInt();
 #if defined(AIPS_LITTLE_ENDIAN)
   result.intgr[0] |= iLsb;
   result.intgr[1] |= iMsb;
@@ -157,7 +157,7 @@ Double RNG::asDouble() {
 
 //      Part of the table on page 28 of Knuth, vol II. This allows us
 //      to adjust the size of the table at the expense of shorter sequences.
-static Int randomStateTable[][3] = {
+static int randomStateTable[][3] = {
     {3, 7, 16},    {4, 9, 32},    {3, 10, 32},   {1, 11, 32},   {1, 15, 64},   {3, 17, 128},
     {7, 18, 128},  {3, 20, 128},  {2, 21, 128},  {1, 22, 128},  {5, 23, 128},  {3, 25, 128},
     {2, 29, 128},  {3, 31, 128},  {13, 33, 256}, {2, 35, 256},  {11, 36, 256}, {14, 39, 256},
@@ -167,7 +167,7 @@ static Int randomStateTable[][3] = {
 // spatial permutation table
 //      RANDOM_PERM_SIZE must be a power of two
 #define RANDOM_PERM_SIZE 64
-uInt randomPermutations[RANDOM_PERM_SIZE] = {
+unsigned int randomPermutations[RANDOM_PERM_SIZE] = {
     0xffffffff, 0x00000000, 0x00000000, 0x00000000,  // 3210
     0x0000ffff, 0x00ff0000, 0x00000000, 0xff000000,  // 2310
     0xff0000ff, 0x0000ff00, 0x00000000, 0x00ff0000,  // 3120
@@ -191,7 +191,7 @@ uInt randomPermutations[RANDOM_PERM_SIZE] = {
 
 //      SEED_TABLE_SIZE must be a power of 2
 #define SEED_TABLE_SIZE 32
-static uInt seedTable[SEED_TABLE_SIZE] = {
+static unsigned int seedTable[SEED_TABLE_SIZE] = {
     0xbdcc47e5, 0x54aea45d, 0xec0df859, 0xda84637b, 0xc8c6cb4f, 0x35574b01, 0x28260b7d, 0x0d07fdbf,
     0x9faaeeb0, 0x613dd169, 0x5ce2d818, 0x85b9e706, 0xab2469db, 0xda02b0dc, 0x45c60d6e, 0xffe49d10,
     0x7224fea3, 0xf9684fc9, 0xfc7ee074, 0x326ce92a, 0x366d13b5, 0x17aaa731, 0xeb83a675, 0x7781cb32,
@@ -204,11 +204,11 @@ static uInt seedTable[SEED_TABLE_SIZE] = {
 //
 // LC_A = 251^2, ~= sqrt(2^32) = 66049
 // LC_C = result of a long trial & error series = 3907864577
-static const uInt LC_A = 66049;
-static const uInt LC_C = 3907864577u;
-static inline uInt LCG(uInt x) { return x * LC_A + LC_C; }
+static const unsigned int LC_A = 66049;
+static const unsigned int LC_C = 3907864577u;
+static inline unsigned int LCG(unsigned int x) { return x * LC_A + LC_C; }
 
-ACG::ACG(uInt seed, Int size)
+ACG::ACG(unsigned int seed, int size)
     : itsInitSeed(seed),
       itsInitTblEntry(0),
       itsStatePtr(0),
@@ -219,7 +219,7 @@ ACG::ACG(uInt seed, Int size)
       itsJ(0),
       itsK(0) {
   //    Determine the size of the state table
-  Int l;
+  int l;
   for (l = 0; randomStateTable[l][0] != -1 && randomStateTable[l][1] < size; l++) {
   }
 
@@ -232,7 +232,7 @@ ACG::ACG(uInt seed, Int size)
   itsAuxSize = randomStateTable[itsInitTblEntry][2];
 
   //    Allocate the state table & the auxillary table in a single malloc
-  itsStatePtr = new uInt[itsStateSize + itsAuxSize];
+  itsStatePtr = new unsigned int[itsStateSize + itsAuxSize];
   AlwaysAssert(itsStatePtr != 0, AipsError);
   itsAuxStatePtr = &itsStatePtr[itsStateSize];
 
@@ -240,7 +240,7 @@ ACG::ACG(uInt seed, Int size)
 }
 
 void ACG::reset() {
-  uInt u;
+  unsigned int u;
 
   if (itsInitSeed < SEED_TABLE_SIZE) {
     u = seedTable[itsInitSeed];
@@ -251,17 +251,17 @@ void ACG::reset() {
   itsJ = randomStateTable[itsInitTblEntry][0] - 1;
   itsK = randomStateTable[itsInitTblEntry][1] - 1;
 
-  for (Int i = 0; i < itsStateSize; i++) {
+  for (int i = 0; i < itsStateSize; i++) {
     itsStatePtr[i] = u = LCG(u);
   }
-  for (Int i = 0; i < itsAuxSize; i++) {
+  for (int i = 0; i < itsAuxSize; i++) {
     itsAuxStatePtr[i] = u = LCG(u);
   }
 
   // Get rid of compiler warning - hopefully the authors of this class knew
   // what they were doing
-  itsK = static_cast<Short>(u % itsStateSize);
-  Int tailBehind = (itsStateSize - randomStateTable[itsInitTblEntry][0]);
+  itsK = static_cast<short>(u % itsStateSize);
+  int tailBehind = (itsStateSize - randomStateTable[itsInitTblEntry][0]);
   itsJ = itsK - tailBehind;
   if (itsJ < 0) {
     itsJ += itsStateSize;
@@ -275,22 +275,22 @@ ACG::~ACG() {
   itsAuxStatePtr = itsStatePtr = 0;
 }
 
-uInt ACG::asuInt() {
-  uInt result = itsStatePtr[itsK] + itsStatePtr[itsJ];
+unsigned int ACG::asuInt() {
+  unsigned int result = itsStatePtr[itsK] + itsStatePtr[itsJ];
   itsStatePtr[itsK] = result;
   itsJ = (itsJ <= 0) ? (itsStateSize - 1) : (itsJ - 1);
   itsK = (itsK <= 0) ? (itsStateSize - 1) : (itsK - 1);
 
   // Get rid of compiler warning - hopefully the authors of this class knew
   // what they were doing
-  Short auxIndex = static_cast<Short>((result >> 24) & (itsAuxSize - 1));
-  uInt auxACG = itsAuxStatePtr[auxIndex];
+  short auxIndex = static_cast<short>((result >> 24) & (itsAuxSize - 1));
+  unsigned int auxACG = itsAuxStatePtr[auxIndex];
   itsAuxStatePtr[auxIndex] = lcgRecurr = LCG(lcgRecurr);
 
   // 3c is a magic number. We are doing four masks here, so we
   // do not want to run off the end of the permutation table.
   // This insures that we have always got four entries left.
-  uInt* perm = &randomPermutations[result & 0x3c];
+  unsigned int* perm = &randomPermutations[result & 0x3c];
   result = *(perm++) & auxACG;
   result |= *(perm++) & ((auxACG << 24) | ((auxACG >> 8) & 0xffffff));
   result |= *(perm++) & ((auxACG << 16) | ((auxACG >> 16) & 0xffff));
@@ -298,13 +298,13 @@ uInt ACG::asuInt() {
   return result;
 }
 
-MLCG::MLCG(Int seed1, Int seed2) : itsInitSeedOne(seed1), itsInitSeedTwo(seed2) { reset(); }
+MLCG::MLCG(int seed1, int seed2) : itsInitSeedOne(seed1), itsInitSeedTwo(seed2) { reset(); }
 
 MLCG::~MLCG() {}
 
 void MLCG::reset() {
-  Int seed1 = itsInitSeedOne;
-  Int seed2 = itsInitSeedTwo;
+  int seed1 = itsInitSeedOne;
+  int seed2 = itsInitSeedTwo;
   //  Most people pick stupid seed numbers that do not have enough
   //  bits. In this case, if they pick a small seed number, we
   //  map that to a specific seed.
@@ -334,8 +334,8 @@ void MLCG::reset() {
   itsSeedTwo = (itsSeedTwo % 2147483397) + 1;
 }
 
-uInt MLCG::asuInt() {
-  Int k = itsSeedOne % 53668;
+unsigned int MLCG::asuInt() {
+  int k = itsSeedOne % 53668;
 
   itsSeedOne = 40014 * (itsSeedOne - k * 53668) - k * 12211;
   if (itsSeedOne < 0) {
@@ -348,11 +348,11 @@ uInt MLCG::asuInt() {
     itsSeedTwo += 2147483399;
   }
 
-  Int z = itsSeedOne - itsSeedTwo;
+  int z = itsSeedOne - itsSeedTwo;
   if (z < 1) {
     z += 2147483562;
   }
-  return static_cast<uInt>(z);
+  return static_cast<unsigned int>(z);
 }
 
 Random::~Random() {}
@@ -395,7 +395,7 @@ Random::Types Random::asType(const String& str) {
   ToUpperCaseInPlace(canonicalCase);
   Random::Types t;
   String s2;
-  for (uInt i = 0; i < NUMBER_TYPES; i++) {
+  for (unsigned int i = 0; i < NUMBER_TYPES; i++) {
     t = static_cast<Random::Types>(i);
     s2 = Random::asString(t);
     if (s2 == canonicalCase) {
@@ -436,11 +436,11 @@ Random* Random::construct(Random::Types type, RNG* gen) {
   }
 }
 
-Vector<Double> Random::defaultParameters(Random::Types type) {
+Vector<double> Random::defaultParameters(Random::Types type) {
   MLCG gen;
   const std::unique_ptr<Random> ranPtr(construct(type, &gen));
   if (!ranPtr) {
-    return Vector<Double>();
+    return Vector<double>();
   } else {
     return ranPtr->parameters();
   }
@@ -448,15 +448,15 @@ Vector<Double> Random::defaultParameters(Random::Types type) {
 
 Binomial::~Binomial() {}
 
-Binomial::Binomial(RNG* gen, uInt n, Double p) : Random(gen), itsN(n), itsP(p) {
+Binomial::Binomial(RNG* gen, unsigned int n, double p) : Random(gen), itsN(n), itsP(p) {
   AlwaysAssert(p >= 0.0 && p <= 1.0 && n > 0, AipsError);
 }
 
-Double Binomial::operator()() { return static_cast<Double>(asInt()); }
+double Binomial::operator()() { return static_cast<double>(asInt()); }
 
-uInt Binomial::asInt() {
-  uInt result = 0;
-  for (uInt i = 0; i < itsN; i++) {
+unsigned int Binomial::asInt() {
+  unsigned int result = 0;
+  for (unsigned int i = 0; i < itsN; i++) {
     if (itsRNG->asDouble() < itsP) {
       result++;
     }
@@ -464,88 +464,88 @@ uInt Binomial::asInt() {
   return result;
 }
 
-void Binomial::n(uInt newN) {
+void Binomial::n(unsigned int newN) {
   AlwaysAssert(newN > 0, AipsError);
   itsN = newN;
 }
 
-void Binomial::n(Double newN) {
+void Binomial::n(double newN) {
   AlwaysAssert(newN >= 0.5, AipsError);
-  n(static_cast<uInt>(newN));
+  n(static_cast<unsigned int>(newN));
 }
 
-void Binomial::p(Double newP) {
+void Binomial::p(double newP) {
   AlwaysAssert(newP >= 0.0 && newP <= 1.0, AipsError);
   itsP = newP;
 }
 
-void Binomial::setParameters(const Vector<Double>& pars) {
+void Binomial::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   n(pars(0));
   p(pars(1));
 }
 
-Vector<Double> Binomial::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> Binomial::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = n();
   retVal(1) = p();
   return retVal;
 }
 
-bool Binomial::checkParameters(const Vector<Double>& pars) const {
+bool Binomial::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && pars(0) >= 0.5 && pars(1) >= 0.0 && pars(1) <= 1.0;
 }
 
-DiscreteUniform::DiscreteUniform(RNG* gen, Int low, Int high)
+DiscreteUniform::DiscreteUniform(RNG* gen, int low, int high)
     : Random(gen), itsLow(low), itsHigh(high), itsDelta(calcDelta(itsLow, itsHigh)) {
   AlwaysAssert(itsLow <= itsHigh, AipsError);
 }
 
 DiscreteUniform::~DiscreteUniform() {}
 
-Double DiscreteUniform::operator()() { return static_cast<Double>(asInt()); }
+double DiscreteUniform::operator()() { return static_cast<double>(asInt()); }
 
-Int DiscreteUniform::asInt() {
-  return itsLow + static_cast<Int>(std::floor(itsDelta * itsRNG->asDouble()));
+int DiscreteUniform::asInt() {
+  return itsLow + static_cast<int>(std::floor(itsDelta * itsRNG->asDouble()));
 }
 
-void DiscreteUniform::low(Int x) {
+void DiscreteUniform::low(int x) {
   AlwaysAssert(x <= itsHigh, AipsError);
   itsLow = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
-void DiscreteUniform::high(Int x) {
+void DiscreteUniform::high(int x) {
   AlwaysAssert(itsLow <= x, AipsError);
   itsHigh = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
-void DiscreteUniform::range(Int low, Int high) {
+void DiscreteUniform::range(int low, int high) {
   AlwaysAssert(low <= high, AipsError);
   itsLow = low;
   itsHigh = high;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
-void DiscreteUniform::setParameters(const Vector<Double>& pars) {
+void DiscreteUniform::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
-  range(static_cast<Int>(pars(0)), static_cast<Int>(pars(1)));
+  range(static_cast<int>(pars(0)), static_cast<int>(pars(1)));
 }
 
-Vector<Double> DiscreteUniform::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> DiscreteUniform::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = low();
   retVal(1) = high();
   return retVal;
 }
 
-bool DiscreteUniform::checkParameters(const Vector<Double>& pars) const {
+bool DiscreteUniform::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && pars(0) <= pars(1);
 }
 
-Double DiscreteUniform::calcDelta(Int low, Int high) {
-  return static_cast<Double>((high - low) + 1);
+double DiscreteUniform::calcDelta(int low, int high) {
+  return static_cast<double>((high - low) + 1);
 }
 
 Erlang::~Erlang() {}
@@ -553,88 +553,88 @@ Erlang::~Erlang() {}
 void Erlang::setState() {
   AlwaysAssert(!nearAbs(itsMean, 0.0), AipsError);
   AlwaysAssert(itsVariance > 0, AipsError);
-  itsK = static_cast<Int>((itsMean * itsMean) / itsVariance + 0.5);
+  itsK = static_cast<int>((itsMean * itsMean) / itsVariance + 0.5);
   itsK = (itsK > 0) ? itsK : 1;
   itsA = itsK / itsMean;
 }
 
-Double Erlang::operator()() {
-  Double prod = 1.0;
-  for (Int i = 0; i < itsK; i++) {
+double Erlang::operator()() {
+  double prod = 1.0;
+  for (int i = 0; i < itsK; i++) {
     prod *= itsRNG->asDouble();
   }
   return -log(prod) / itsA;
 }
 
-void Erlang::setParameters(const Vector<Double>& pars) {
+void Erlang::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
   variance(pars(1));
 }
 
-Vector<Double> Erlang::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> Erlang::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = mean();
   retVal(1) = variance();
   return retVal;
 }
 
-bool Erlang::checkParameters(const Vector<Double>& pars) const {
+bool Erlang::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0;
 }
 
-Geometric::Geometric(RNG* gen, Double probability) : Random(gen), itsProbability(probability) {
+Geometric::Geometric(RNG* gen, double probability) : Random(gen), itsProbability(probability) {
   AlwaysAssert(itsProbability >= 0.0 && itsProbability < 1.0, AipsError);
 }
 
 Geometric::~Geometric() {}
 
-Double Geometric::operator()() { return static_cast<Double>(asInt()); }
+double Geometric::operator()() { return static_cast<double>(asInt()); }
 
-uInt Geometric::asInt() {
-  uInt samples;
+unsigned int Geometric::asInt() {
+  unsigned int samples;
   for (samples = 0; itsRNG->asDouble() > itsProbability; samples++) {
   }
   return samples;
 }
 
-void Geometric::probability(Double x) {
+void Geometric::probability(double x) {
   itsProbability = x;
   AlwaysAssert(itsProbability >= 0.0 && itsProbability < 1.0, AipsError);
 }
 
-void Geometric::setParameters(const Vector<Double>& pars) {
+void Geometric::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   probability(pars(0));
 }
 
-Vector<Double> Geometric::parameters() const { return Vector<Double>(1, probability()); }
+Vector<double> Geometric::parameters() const { return Vector<double>(1, probability()); }
 
-bool Geometric::checkParameters(const Vector<Double>& pars) const {
+bool Geometric::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 1 && pars(0) >= 0.0 && pars(0) < 1.0;
 }
 
 HyperGeometric::~HyperGeometric() {}
 
-Double HyperGeometric::operator()() {
-  const Double d = (itsRNG->asDouble() > itsP) ? (1.0 - itsP) : itsP;
+double HyperGeometric::operator()() {
+  const double d = (itsRNG->asDouble() > itsP) ? (1.0 - itsP) : itsP;
   return -itsMean * log(itsRNG->asDouble()) / (2.0 * d);
 }
 
-void HyperGeometric::setParameters(const Vector<Double>& pars) {
+void HyperGeometric::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
   variance(pars(1));
 }
 
-Vector<Double> HyperGeometric::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> HyperGeometric::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = mean();
   retVal(1) = variance();
   return retVal;
 }
 
-bool HyperGeometric::checkParameters(const Vector<Double>& pars) const {
+bool HyperGeometric::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0 &&
          square(pars(0)) <= pars(1);
 }
@@ -643,11 +643,11 @@ void HyperGeometric::setState() {
   AlwaysAssert(itsVariance > 0.0, AipsError);
   AlwaysAssert(!near(itsMean, 0.0), AipsError);
   AlwaysAssert(itsMean * itsMean <= itsVariance, AipsError);
-  const Double z = itsVariance / (itsMean * itsMean);
+  const double z = itsVariance / (itsMean * itsMean);
   itsP = 0.5 * (1.0 - sqrt((z - 1.0) / (z + 1.0)));
 }
 
-Normal::Normal(RNG* gen, Double mean, Double variance)
+Normal::Normal(RNG* gen, double mean, double variance)
     : Random(gen), itsMean(mean), itsVariance(variance), itsCached(false), itsCachedValue(0) {
   AlwaysAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
@@ -659,21 +659,21 @@ Normal::~Normal() {}
 //      This is the ``polar'' method.
 //      We actually generate two IID normal distribution variables.
 //      We cache the one & return the other.
-Double Normal::operator()() {
+double Normal::operator()() {
   if (itsCached) {
     itsCached = false;
     return itsCachedValue * itsStdDev + itsMean;
   }
 
   for (;;) {
-    const Double u1 = itsRNG->asDouble();
-    const Double u2 = itsRNG->asDouble();
-    const Double v1 = 2 * u1 - 1;
-    const Double v2 = 2 * u2 - 1;
-    const Double w = (v1 * v1) + (v2 * v2);
+    const double u1 = itsRNG->asDouble();
+    const double u2 = itsRNG->asDouble();
+    const double v1 = 2 * u1 - 1;
+    const double v2 = 2 * u2 - 1;
+    const double w = (v1 * v1) + (v2 * v2);
     if (w <= 1) {
-      const Double y = sqrt((-2 * log(w)) / w);
-      const Double x1 = v1 * y;
+      const double y = sqrt((-2 * log(w)) / w);
+      const double x1 = v1 * y;
       itsCachedValue = v2 * y;
       itsCached = true;
       return x1 * itsStdDev + itsMean;
@@ -681,32 +681,32 @@ Double Normal::operator()() {
   }
 }
 
-void Normal::mean(Double x) { itsMean = x; }
+void Normal::mean(double x) { itsMean = x; }
 
-void Normal::variance(Double x) {
+void Normal::variance(double x) {
   itsVariance = x;
   AlwaysAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
 }
 
-void Normal::setParameters(const Vector<Double>& pars) {
+void Normal::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
   variance(pars(1));
 }
 
-Vector<Double> Normal::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> Normal::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = mean();
   retVal(1) = variance();
   return retVal;
 }
 
-bool Normal::checkParameters(const Vector<Double>& pars) const {
+bool Normal::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && pars(1) > 0.0;
 }
 
-LogNormal::LogNormal(RNG* gen, Double mean, Double variance)
+LogNormal::LogNormal(RNG* gen, double mean, double variance)
     : Normal(gen), itsLogMean(mean), itsLogVar(variance) {
   setState();
 }
@@ -714,177 +714,177 @@ LogNormal::LogNormal(RNG* gen, Double mean, Double variance)
 LogNormal::~LogNormal() {}
 
 //      See Simulation, Modelling & Analysis by Law & Kelton, pp260
-Double LogNormal::operator()() { return std::pow(M_E, this->Normal::operator()()); }
+double LogNormal::operator()() { return std::pow(M_E, this->Normal::operator()()); }
 
-void LogNormal::mean(Double x) {
+void LogNormal::mean(double x) {
   itsLogMean = x;
   setState();
 }
 
-void LogNormal::variance(Double x) {
+void LogNormal::variance(double x) {
   itsLogVar = x;
   setState();
 }
 
 void LogNormal::setState() {
-  const Double m2 = itsLogMean * itsLogMean;
+  const double m2 = itsLogMean * itsLogMean;
   AlwaysAssert(!near(m2, 0.0), AipsError);
   this->Normal::mean(log(m2 / sqrt(itsLogVar + m2)));
   AlwaysAssert(!near(m2 + itsLogVar, 0.0), AipsError);
   this->Normal::variance(log((itsLogVar + m2) / m2));
 }
 
-void LogNormal::setParameters(const Vector<Double>& pars) {
+void LogNormal::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
   variance(pars(1));
 }
 
-Vector<Double> LogNormal::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> LogNormal::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = mean();
   retVal(1) = variance();
   return retVal;
 }
 
-bool LogNormal::checkParameters(const Vector<Double>& pars) const {
+bool LogNormal::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0;
 }
 
-NegativeExpntl::NegativeExpntl(RNG* gen, Double mean) : Random(gen) { itsMean = mean; }
+NegativeExpntl::NegativeExpntl(RNG* gen, double mean) : Random(gen) { itsMean = mean; }
 
 NegativeExpntl::~NegativeExpntl() {}
 
-Double NegativeExpntl::operator()() { return -itsMean * log(itsRNG->asDouble()); }
+double NegativeExpntl::operator()() { return -itsMean * log(itsRNG->asDouble()); }
 
-void NegativeExpntl::mean(Double x) { itsMean = x; }
+void NegativeExpntl::mean(double x) { itsMean = x; }
 
-void NegativeExpntl::setParameters(const Vector<Double>& pars) {
+void NegativeExpntl::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
 }
 
-Vector<Double> NegativeExpntl::parameters() const { return Vector<Double>(1, mean()); }
+Vector<double> NegativeExpntl::parameters() const { return Vector<double>(1, mean()); }
 
-bool NegativeExpntl::checkParameters(const Vector<Double>& pars) const {
+bool NegativeExpntl::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 1;
 }
 
-Poisson::Poisson(RNG* gen, Double mean) : Random(gen) {
+Poisson::Poisson(RNG* gen, double mean) : Random(gen) {
   AlwaysAssert(mean >= 0.0, AipsError);
   itsMean = mean;
 }
 
 Poisson::~Poisson() {}
 
-Double Poisson::operator()() { return static_cast<Double>(asInt()); }
+double Poisson::operator()() { return static_cast<double>(asInt()); }
 
-uInt Poisson::asInt() {
-  const Double bound = exp(-1.0 * itsMean);
-  uInt count = 0;
+unsigned int Poisson::asInt() {
+  const double bound = exp(-1.0 * itsMean);
+  unsigned int count = 0;
 
-  for (Double product = 1.0; product >= bound; product *= itsRNG->asDouble()) {
+  for (double product = 1.0; product >= bound; product *= itsRNG->asDouble()) {
     count++;
   }
   return count - 1;
 }
 
-void Poisson::mean(Double x) {
+void Poisson::mean(double x) {
   AlwaysAssert(x >= 0.0, AipsError);
   itsMean = x;
 }
 
-void Poisson::setParameters(const Vector<Double>& pars) {
+void Poisson::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
 }
 
-Vector<Double> Poisson::parameters() const { return Vector<Double>(1, mean()); }
+Vector<double> Poisson::parameters() const { return Vector<double>(1, mean()); }
 
-bool Poisson::checkParameters(const Vector<Double>& pars) const {
+bool Poisson::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 1 && pars(0) >= 0.0;
 }
 
-Uniform::Uniform(RNG* gen, Double low, Double high)
+Uniform::Uniform(RNG* gen, double low, double high)
     : Random(gen), itsLow(low), itsHigh(high), itsDelta(calcDelta(itsLow, itsHigh)) {
   AlwaysAssert(itsLow < itsHigh, AipsError);
 }
 
 Uniform::~Uniform() {}
 
-Double Uniform::operator()() { return itsLow + itsDelta * itsRNG->asDouble(); }
+double Uniform::operator()() { return itsLow + itsDelta * itsRNG->asDouble(); }
 
-void Uniform::low(Double x) {
+void Uniform::low(double x) {
   AlwaysAssert(x < itsHigh, AipsError);
   itsLow = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
-void Uniform::high(Double x) {
+void Uniform::high(double x) {
   AlwaysAssert(itsLow < x, AipsError);
   itsHigh = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
-void Uniform::range(Double low, Double high) {
+void Uniform::range(double low, double high) {
   AlwaysAssert(low < high, AipsError);
   itsHigh = high;
   itsLow = low;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
-void Uniform::setParameters(const Vector<Double>& pars) {
+void Uniform::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   range(pars(0), pars(1));
 }
 
-Vector<Double> Uniform::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> Uniform::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = low();
   retVal(1) = high();
   return retVal;
 }
 
-bool Uniform::checkParameters(const Vector<Double>& pars) const {
+bool Uniform::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && pars(0) < pars(1);
 }
 
-Double Uniform::calcDelta(Double low, Double high) { return static_cast<Double>(high - low); }
+double Uniform::calcDelta(double low, double high) { return static_cast<double>(high - low); }
 
 Weibull::~Weibull() {}
 
 //      See Simulation, Modelling & Analysis by Law & Kelton, pp259
 //      This is the ``polar'' method.
-Weibull::Weibull(RNG* gen, Double alpha, Double beta)
+Weibull::Weibull(RNG* gen, double alpha, double beta)
     : Random(gen), itsAlpha(alpha), itsBeta(beta), itsInvAlpha(0) {
   setState();
 }
 
-Double Weibull::operator()() {
+double Weibull::operator()() {
   return std::pow(itsBeta * (-log(1.0 - itsRNG->asDouble())), itsInvAlpha);
 }
 
-void Weibull::alpha(Double x) {
+void Weibull::alpha(double x) {
   itsAlpha = x;
   setState();
 }
 
-void Weibull::beta(Double x) { itsBeta = x; }
+void Weibull::beta(double x) { itsBeta = x; }
 
-void Weibull::setParameters(const Vector<Double>& pars) {
+void Weibull::setParameters(const Vector<double>& pars) {
   AlwaysAssert(checkParameters(pars), AipsError);
   alpha(pars(0));
   beta(pars(1));
 }
 
-Vector<Double> Weibull::parameters() const {
-  Vector<Double> retVal(2);
+Vector<double> Weibull::parameters() const {
+  Vector<double> retVal(2);
   retVal(0) = alpha();
   retVal(1) = beta();
   return retVal;
 }
 
-bool Weibull::checkParameters(const Vector<Double>& pars) const {
+bool Weibull::checkParameters(const Vector<double>& pars) const {
   return pars.nelements() == 2 && !nearAbs(pars(0), 0.0) && pars(1) > 0.0;
 }
 

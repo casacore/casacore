@@ -123,8 +123,8 @@ class Interpolate2D {
   // and pixel coordinate.  Returns false if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  bool interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data) const;
-  bool interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data,
+  bool interp(float &result, const Vector<double> &where, const Matrix<float> &data) const;
+  bool interp(float &result, const Vector<double> &where, const Matrix<float> &data,
               const Matrix<bool> &mask) const;
   // </group>
 
@@ -132,8 +132,8 @@ class Interpolate2D {
   // and pixel coordinate.  Returns false if coordinate out of range or data
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  bool interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data) const;
-  bool interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data,
+  bool interp(double &result, const Vector<double> &where, const Matrix<double> &data) const;
+  bool interp(double &result, const Vector<double> &where, const Matrix<double> &data,
               const Matrix<bool> &mask) const;
   // </group>
 
@@ -142,8 +142,8 @@ class Interpolate2D {
   // are masked.  No shape integrity checking is done (see above). The real
   // and imaginary parts are treated independently (see CAS-11375).
   // <group>
-  bool interp(Complex &result, const Vector<Double> &where, const Matrix<Complex> &data) const;
-  bool interp(Complex &result, const Vector<Double> &where, const Matrix<Complex> &data,
+  bool interp(Complex &result, const Vector<double> &where, const Matrix<Complex> &data) const;
+  bool interp(Complex &result, const Vector<double> &where, const Matrix<Complex> &data,
               const Matrix<bool> &mask) const;
   // </group>
 
@@ -152,8 +152,8 @@ class Interpolate2D {
   // are masked.  No shape integrity checking is done (see above). The real
   // and imaginary parts are treated independently (see CAS-11375).
   // <group>
-  bool interp(DComplex &result, const Vector<Double> &where, const Matrix<DComplex> &data) const;
-  bool interp(DComplex &result, const Vector<Double> &where, const Matrix<DComplex> &data,
+  bool interp(DComplex &result, const Vector<double> &where, const Matrix<DComplex> &data) const;
+  bool interp(DComplex &result, const Vector<double> &where, const Matrix<DComplex> &data,
               const Matrix<bool> &mask) const;
   // </group>
 
@@ -161,11 +161,11 @@ class Interpolate2D {
   // The first call transfers to the second call. It is assumed that the
   // structure (shape, steps) of the mask and data files are the same.
   // <group>
-  bool interp(Double &resultI, Double &resultJ, const Vector<Double> &where,
-              const Matrix<Double> &dataI, const Matrix<Double> &dataJ,
+  bool interp(double &resultI, double &resultJ, const Vector<double> &where,
+              const Matrix<double> &dataI, const Matrix<double> &dataJ,
               const Matrix<bool> &mask) const;
   template <typename T>
-  bool interpLinear2(T &resultI, T &resultJ, const Vector<Double> &where, const Matrix<T> &dataI,
+  bool interpLinear2(T &resultI, T &resultJ, const Vector<double> &where, const Matrix<T> &dataI,
                      const Matrix<T> &dataJ, const Matrix<bool> &mask) const;
   // </group>
 
@@ -174,7 +174,7 @@ class Interpolate2D {
   // out of range. The result is false if any data value in the interpolation
   // grid are false (bad), else true.  No shape integrity checking is done.
   // <group>
-  bool interp(bool &result, const Vector<Double> &where, const Matrix<bool> &data) const;
+  bool interp(bool &result, const Vector<double> &where, const Matrix<bool> &data) const;
   // </group>
 
   // Convert string ("nearest", "linear", "cubic", "lanczos") to interpolation
@@ -183,49 +183,49 @@ class Interpolate2D {
 
  private:
   // Are any of the mask pixels bad ? Returns false if no mask.
-  bool anyBadMaskPixels(const Matrix<bool> *&mask, Int i1, Int i2, Int j1, Int j2) const;
+  bool anyBadMaskPixels(const Matrix<bool> *&mask, int i1, int i2, int j1, int j2) const;
 
   // nearest neighbour interpolation
   template <typename T>
-  bool interpNearest(T &result, const Vector<Double> &where, const Matrix<T> &data,
+  bool interpNearest(T &result, const Vector<double> &where, const Matrix<T> &data,
                      const Matrix<bool> *&maskPtr) const;
-  bool interpNearestBool(bool &result, const Vector<Double> &where, const Matrix<bool> &data) const;
+  bool interpNearestBool(bool &result, const Vector<double> &where, const Matrix<bool> &data) const;
 
   // bi-linear interpolation
   template <typename T>
-  bool interpLinear(T &result, const Vector<Double> &where, const Matrix<T> &data,
+  bool interpLinear(T &result, const Vector<double> &where, const Matrix<T> &data,
                     const Matrix<bool> *&maskPtr) const;
-  bool interpLinearBool(bool &result, const Vector<Double> &where, const Matrix<bool> &data) const;
+  bool interpLinearBool(bool &result, const Vector<double> &where, const Matrix<bool> &data) const;
 
   // bi-cubic interpolation
   template <typename T>
-  bool interpCubic(T &result, const Vector<Double> &where, const Matrix<T> &data,
+  bool interpCubic(T &result, const Vector<double> &where, const Matrix<T> &data,
                    const Matrix<bool> *&maskPtr) const;
-  bool interpCubicBool(bool &result, const Vector<Double> &where, const Matrix<bool> &data) const;
+  bool interpCubicBool(bool &result, const Vector<double> &where, const Matrix<bool> &data) const;
 
   // Lanczos interpolation
   template <typename T>
-  bool interpLanczos(T &result, const Vector<Double> &where, const Matrix<T> &data,
+  bool interpLanczos(T &result, const Vector<double> &where, const Matrix<T> &data,
                      const Matrix<bool> *&maskPtr) const;
-  bool interpLanczosBool(bool &result, const Vector<Double> &where, const Matrix<bool> &data) const;
+  bool interpLanczosBool(bool &result, const Vector<double> &where, const Matrix<bool> &data) const;
   // Lanczos interpolation: helper functions
   template <typename T>
   T sinc(const T x) const;
   template <typename T>
-  T L(const T x, const Int a) const;
+  T L(const T x, const int a) const;
 
   // helping routine from numerical recipes
-  void bcucof(Double c[4][4], const Double y[4], const Double y1[4], const Double y2[4],
-              const Double y12[4]) const;
+  void bcucof(double c[4][4], const double y[4], const double y1[4], const double y2[4],
+              const double y12[4]) const;
 
   // Typedefs for function pointers
-  typedef bool (Interpolate2D::*FuncPtrFloat)(Float &result, const Vector<Double> &where,
-                                              const Matrix<Float> &data,
+  typedef bool (Interpolate2D::*FuncPtrFloat)(float &result, const Vector<double> &where,
+                                              const Matrix<float> &data,
                                               const Matrix<bool> *&maskPtr) const;
-  typedef bool (Interpolate2D::*FuncPtrDouble)(Double &result, const Vector<Double> &where,
-                                               const Matrix<Double> &data,
+  typedef bool (Interpolate2D::*FuncPtrDouble)(double &result, const Vector<double> &where,
+                                               const Matrix<double> &data,
                                                const Matrix<bool> *&maskPtr) const;
-  typedef bool (Interpolate2D::*FuncPtrBool)(bool &result, const Vector<Double> &where,
+  typedef bool (Interpolate2D::*FuncPtrBool)(bool &result, const Vector<double> &where,
                                              const Matrix<bool> &data) const;
   //
   FuncPtrFloat itsFuncPtrFloat;

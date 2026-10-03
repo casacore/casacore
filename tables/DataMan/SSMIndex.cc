@@ -37,19 +37,19 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SSMIndex::SSMIndex(SSMBase* aSSMPtr, uInt rowsPerBucket)
+SSMIndex::SSMIndex(SSMBase* aSSMPtr, unsigned int rowsPerBucket)
     : itsSSMPtr(aSSMPtr), itsNUsed(0), itsRowsPerBucket(rowsPerBucket), itsNrColumns(0) {}
 
 SSMIndex::~SSMIndex() {}
 
 void SSMIndex::get(AipsIO& anOs) {
-  uInt version = anOs.getstart("SSMIndex");
+  unsigned int version = anOs.getstart("SSMIndex");
   anOs >> itsNUsed;
   anOs >> itsRowsPerBucket;
   anOs >> itsNrColumns;
   anOs >> itsFreeSpace;
   if (version == 1) {
-    Block<uInt> tmp;
+    Block<unsigned int> tmp;
     getBlock(anOs, tmp);
     itsLastRow.resize(tmp.size());
     for (size_t i = 0; i < tmp.size(); ++i) {
@@ -64,7 +64,7 @@ void SSMIndex::get(AipsIO& anOs) {
 
 void SSMIndex::put(AipsIO& anOs) const {
   // Try to be forward compatible by trying to write the row numbers as uInt.
-  uInt version = 1;
+  unsigned int version = 1;
   if (itsNUsed > 0 && itsLastRow[itsNUsed - 1] > DataManager::MAXROWNR32) {
     version = 2;
   }
@@ -74,8 +74,8 @@ void SSMIndex::put(AipsIO& anOs) const {
   anOs << itsNrColumns;
   anOs << itsFreeSpace;
   if (version == 1) {
-    Block<uInt> tmp(itsNUsed);
-    for (uInt i = 0; i < itsNUsed; ++i) {
+    Block<unsigned int> tmp(itsNUsed);
+    for (unsigned int i = 0; i < itsNUsed; ++i) {
       tmp[i] = itsLastRow[i];
     }
     putBlock(anOs, tmp);
@@ -92,12 +92,12 @@ void SSMIndex::showStatistics(ostream& anOs) const {
   anOs << "Rows Per bucket    : " << itsRowsPerBucket << endl;
   anOs << "Nr of Columns      : " << itsNrColumns << endl;
   if (itsNrColumns > 0) {
-    for (uInt i = 0; i < itsNUsed; i++) {
+    for (unsigned int i = 0; i < itsNUsed; i++) {
       anOs << "BucketNr[" << i << "]  : " << itsBucketNumber[i] << " - LastRow[" << i
            << "]   : " << itsLastRow[i] << endl;
     }
     anOs << "Freespace entries: " << itsFreeSpace.size() << endl;
-    Int i = 0;
+    int i = 0;
     for (const auto& x : itsFreeSpace) {
       anOs << "Offset[" << i << "]: " << x.first << "  -  nrBytes[" << i << "]: " << x.second
            << endl;
@@ -107,10 +107,10 @@ void SSMIndex::showStatistics(ostream& anOs) const {
   anOs << endl;
 }
 
-void SSMIndex::setNrColumns(Int aNrColumns, uInt aSizeUsed) {
+void SSMIndex::setNrColumns(int aNrColumns, unsigned int aSizeUsed) {
   itsNrColumns = aNrColumns;
   // Determine if there is some free space left at the end of the bucket.
-  Int nfree = itsSSMPtr->getBucketSize() - aSizeUsed;
+  int nfree = itsSSMPtr->getBucketSize() - aSizeUsed;
   if (nfree > 0) {
     itsFreeSpace.insert(std::make_pair(aSizeUsed, nfree));
   }
@@ -144,12 +144,12 @@ void SSMIndex::addRow(rownr_t aNrRows) {
   // which is cheaper.
   // Take in account that NrRows can be bigger then itsRowsPerBucket !
 
-  uInt aNr = (aNrRows + itsRowsPerBucket - 1) / itsRowsPerBucket;
+  unsigned int aNr = (aNrRows + itsRowsPerBucket - 1) / itsRowsPerBucket;
 
-  uInt aNewNr = itsNUsed + aNr;
-  uInt aOldNr = itsLastRow.nelements();
+  unsigned int aNewNr = itsNUsed + aNr;
+  unsigned int aOldNr = itsLastRow.nelements();
   if (aNewNr > aOldNr) {
-    uInt newSize = aOldNr * 2;
+    unsigned int newSize = aOldNr * 2;
     if (aNewNr < newSize) {
       aNewNr = newSize;
     }
@@ -162,7 +162,7 @@ void SSMIndex::addRow(rownr_t aNrRows) {
 
   while (aNrRows > 0) {
     itsBucketNumber[itsNUsed] = itsSSMPtr->getNewBucket();
-    uInt toAdd = std::min(aNrRows, rownr_t(itsRowsPerBucket));
+    unsigned int toAdd = std::min(aNrRows, rownr_t(itsRowsPerBucket));
     lastRow += toAdd;
     aNrRows -= toAdd;
     itsLastRow[itsNUsed] = lastRow - 1;
@@ -170,12 +170,12 @@ void SSMIndex::addRow(rownr_t aNrRows) {
   }
 }
 
-Int SSMIndex::deleteRow(rownr_t aRowNr) {
+int SSMIndex::deleteRow(rownr_t aRowNr) {
   // Decrement the rowNrs of all the intervals after the row to be removed
-  uInt anIndex = getIndex(aRowNr, String());
+  unsigned int anIndex = getIndex(aRowNr, String());
   bool isEmpty = false;
 
-  for (uInt i = anIndex; i < itsNUsed; i++) {
+  for (unsigned int i = anIndex; i < itsNUsed; i++) {
     if (itsLastRow[i] > 0) {
       itsLastRow[i]--;
     } else {
@@ -186,13 +186,13 @@ Int SSMIndex::deleteRow(rownr_t aRowNr) {
   // If this bucket is empty, add to free list and remove from itsLastRow
   // and itsBucketNumber.
 
-  Int anEmptyBucket = -1;
+  int anEmptyBucket = -1;
 
-  Int last = -1;
+  int last = -1;
   if (anIndex > 0) {
     last = itsLastRow[anIndex - 1];
   }
-  if (static_cast<Int>(itsLastRow[anIndex]) == last || isEmpty) {
+  if (static_cast<int>(itsLastRow[anIndex]) == last || isEmpty) {
     anEmptyBucket = itsBucketNumber[anIndex];
     if (anIndex + 1 < itsNUsed) {
       objmove(&itsLastRow[anIndex], &itsLastRow[anIndex + 1], itsNUsed - anIndex - 1);
@@ -207,9 +207,9 @@ Int SSMIndex::deleteRow(rownr_t aRowNr) {
 
 void SSMIndex::recreate() { itsNUsed = 0; }
 
-uInt SSMIndex::getIndex(rownr_t aRowNumber, const String& colName) const {
+unsigned int SSMIndex::getIndex(rownr_t aRowNumber, const String& colName) const {
   bool isFound;
-  uInt anIndex = binarySearchBrackets(isFound, itsLastRow, aRowNumber, itsNUsed);
+  unsigned int anIndex = binarySearchBrackets(isFound, itsLastRow, aRowNumber, itsNUsed);
   if (anIndex >= itsNUsed) {
     throw TableError("SSMIndex::getIndex - access to non-existing row " +
                      String(std::to_string(aRowNumber)) + " in column " + colName + " of table " +
@@ -218,9 +218,9 @@ uInt SSMIndex::getIndex(rownr_t aRowNumber, const String& colName) const {
   return anIndex;
 }
 
-Int SSMIndex::removeColumn(Int anOffset, uInt nbits) {
+int SSMIndex::removeColumn(int anOffset, unsigned int nbits) {
   // set freespace (total in bytes).
-  uInt aLength = (itsRowsPerBucket * nbits + 7) / 8;
+  unsigned int aLength = (itsRowsPerBucket * nbits + 7) / 8;
   itsFreeSpace.insert(std::make_pair(anOffset, aLength));
 
   itsNrColumns--;
@@ -228,18 +228,18 @@ Int SSMIndex::removeColumn(Int anOffset, uInt nbits) {
 
   // See if space can be combined
   // That is possible if two or more entries are adjacent.
-  std::map<Int, Int>::iterator next = itsFreeSpace.begin();
-  std::map<Int, Int>::iterator curr = next;
+  std::map<int, int>::iterator next = itsFreeSpace.begin();
+  std::map<int, int>::iterator curr = next;
   next++;
   while (next != itsFreeSpace.end()) {
-    Int aK = curr->first;
-    Int aV = curr->second;
+    int aK = curr->first;
+    int aV = curr->second;
     if (aK + aV == next->first) {
       // Adjacent; combine current with next by adding its free space.
       curr->second += next->second;
       // Remove next such that the iterator is still valid.
       // Thus first increment, then erase.
-      std::map<Int, Int>::iterator nextsav = next;
+      std::map<int, int>::iterator nextsav = next;
       ++next;
       itsFreeSpace.erase(nextsav);
     } else {
@@ -250,25 +250,25 @@ Int SSMIndex::removeColumn(Int anOffset, uInt nbits) {
   return (itsNrColumns);
 }
 
-Vector<uInt> SSMIndex::getBuckets() const {
-  Vector<uInt> aBucketList(itsNUsed);
-  for (uInt i = 0; i < itsNUsed; i++) {
+Vector<unsigned int> SSMIndex::getBuckets() const {
+  Vector<unsigned int> aBucketList(itsNUsed);
+  for (unsigned int i = 0; i < itsNUsed; i++) {
     aBucketList(i) = itsBucketNumber[i];
   }
   return aBucketList;
 }
 
-Int SSMIndex::getFree(Int& anOffset, uInt nbits) const {
-  Int aLength = (itsRowsPerBucket * nbits + 7) / 8;
+int SSMIndex::getFree(int& anOffset, unsigned int nbits) const {
+  int aLength = (itsRowsPerBucket * nbits + 7) / 8;
   // returnvalue: -1  :  No fit
   //               0  :  Best fit at anOffset
   //            other :  Nr of bytes left after fit
 
-  Int bestLength = -1;
+  int bestLength = -1;
 
   // try to find if there's a place to (best) fit data with a given length
   for (const auto& x : itsFreeSpace) {
-    Int aV = x.second;
+    int aV = x.second;
     if (aV == aLength) {
       anOffset = x.first;
       // Perfect fit found, don't need to continue
@@ -286,23 +286,23 @@ Int SSMIndex::getFree(Int& anOffset, uInt nbits) const {
   }
 }
 
-void SSMIndex::addColumn(Int anOffset, uInt nbits) {
-  Int aLength = (itsRowsPerBucket * nbits + 7) / 8;
-  Int aV = itsFreeSpace.at(anOffset);
+void SSMIndex::addColumn(int anOffset, unsigned int nbits) {
+  int aLength = (itsRowsPerBucket * nbits + 7) / 8;
+  int aV = itsFreeSpace.at(anOffset);
   itsNrColumns++;
   itsFreeSpace.erase(anOffset);
   if (aLength != aV) {
     DebugAssert(aLength < aV, AipsError);
     // more space then needed, remap extra space
-    Int anO = anOffset + aLength;
+    int anO = anOffset + aLength;
     aV -= aLength;
     itsFreeSpace.insert(std::make_pair(anO, aV));
   }
 }
 
-void SSMIndex::find(rownr_t aRowNumber, uInt& aBucketNr, rownr_t& aStartRow, rownr_t& anEndRow,
+void SSMIndex::find(rownr_t aRowNumber, unsigned int& aBucketNr, rownr_t& aStartRow, rownr_t& anEndRow,
                     const String& colName) const {
-  uInt anIndex = getIndex(aRowNumber, colName);
+  unsigned int anIndex = getIndex(aRowNumber, colName);
   aBucketNr = itsBucketNumber[anIndex];
   anEndRow = itsLastRow[anIndex];
   aStartRow = 0;

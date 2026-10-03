@@ -43,18 +43,18 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // This function creates the CRC lookup table.
 // It is executed thread-safe on the first time called.
-static const std::array<uInt, 256>& CRCTable() {
-  static std::array<uInt, 256> result = []() -> std::array<uInt, 256> {
-    std::array<uInt, 256> res;
+static const std::array<unsigned int, 256>& CRCTable() {
+  static std::array<unsigned int, 256> result = []() -> std::array<unsigned int, 256> {
+    std::array<unsigned int, 256> res;
 
-    const uInt polynom = 0x4c11db7;
-    const uInt highbit = (uInt)1 << (32 - 1);
+    const unsigned int polynom = 0x4c11db7;
+    const unsigned int highbit = (unsigned int)1 << (32 - 1);
     // make CRC lookup table used by table algorithms
     for (int i = 0; i < 256; i++) {
-      uInt crc = i;
+      unsigned int crc = i;
       crc <<= 32 - 8;
       for (int j = 0; j < 8; j++) {
-        uInt bit = crc & highbit;
+        unsigned int bit = crc & highbit;
         crc <<= 1;
         if (bit) crc ^= polynom;
       }
@@ -95,7 +95,7 @@ static const std::array<uInt, 256>& CRCTable() {
   problem because data blocks will be removed very seldomly.
  */
 
-MultiFile::MultiFile(const String& name, ByteIO::OpenOption option, Int blockSize, bool useODirect,
+MultiFile::MultiFile(const String& name, ByteIO::OpenOption option, int blockSize, bool useODirect,
                      bool useCRC)
     : MultiFileBase(name, blockSize, useODirect),
       itsNrContUsed{0, 0},
@@ -106,7 +106,7 @@ MultiFile::MultiFile(const String& name, ByteIO::OpenOption option, Int blockSiz
 }
 
 MultiFile::MultiFile(const String& name, const std::shared_ptr<MultiFileBase>& parent,
-                     ByteIO::OpenOption option, Int blockSize)
+                     ByteIO::OpenOption option, int blockSize)
     // Use parent's block size if not specified.
     // A child MultiFile does not use CRC.
     : MultiFileBase(name, blockSize > 0 ? blockSize : parent->blockSize(), false),
@@ -119,7 +119,7 @@ MultiFile::MultiFile(const String& name, const std::shared_ptr<MultiFileBase>& p
 
 std::shared_ptr<MultiFileBase> MultiFile::makeNested(const std::shared_ptr<MultiFileBase>& parent,
                                                      const String& name, ByteIO::OpenOption option,
-                                                     Int blockSize) const {
+                                                     int blockSize) const {
   return std::make_shared<MultiFile>(name, parent, option, blockSize);
 }
 
@@ -168,9 +168,9 @@ void MultiFile::writeHeader() {
   AipsIO aio(cio);
   itsHdrCounter++;
   Int64 zero64 = 0;
-  uInt zero32 = 0;
+  unsigned int zero32 = 0;
   char char8[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-  Int version = 2;
+  int version = 2;
   // Start with a zero to distinguish it from version 1.
   // The first value in version 1 is always > 0.
   cio->write(1, &zero64);
@@ -202,7 +202,7 @@ void MultiFile::writeHeader() {
   Int64 todo = mio->length();
   DebugAssert(static_cast<uInt64>(todo) <= mio->allocated(), AipsError);
   Int64 totalSize =
-      todo + 2 * sizeof(uInt) +
+      todo + 2 * sizeof(unsigned int) +
       (2 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
   // Allocate a temp buffer if header too large or if O_DIRECT.
   // This buffer is used by writeRemainder and
@@ -220,11 +220,11 @@ void MultiFile::writeHeader() {
     cio->write(2, itsNrContUsed);
   }
   // Writing the first part of the header is done as the last step.
-  uChar* buf = const_cast<uChar*>(mio->getBuffer());
+  unsigned char* buf = const_cast<unsigned char*>(mio->getBuffer());
   todo = mio->length();
   CanonicalConversion::fromLocal(buf + 32, todo);  // header size
   if (itsUseCRC) {
-    uInt crc = calcCRC(buf, todo);
+    unsigned int crc = calcCRC(buf, todo);
     crc = calcCRC(buf, todo);
     CanonicalConversion::fromLocal(buf + 28, crc);
   }
@@ -258,7 +258,7 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   Int64 ncont = (todo + contBlkSize - 1) / contBlkSize;
   Int64 ncontNew = std::max(ncont, ncontOld);
   while (true) {
-    Int64 szCont = (todo + 2 * sizeof(uInt) + (ncontOther + ncontNew + 2) * sizeof(Int64));
+    Int64 szCont = (todo + 2 * sizeof(unsigned int) + (ncontOther + ncontNew + 2) * sizeof(Int64));
     ncont = (szCont + contBlkSize - 1) / contBlkSize;
     if (ncont <= ncontNew) {
       break;
@@ -276,7 +276,7 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   cio.write(2, itsNrContUsed);
   // Write the continuation blocks.
   const std::vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
-  const uChar* remHdr = mio.getBuffer() + itsBlockSize;
+  const unsigned char* remHdr = mio.getBuffer() + itsBlockSize;
   todo = mio.length() - itsBlockSize;
   writeHeaderShow(ncont, todo);
   for (Int64 i = 0; i < ncont; ++i) {
@@ -288,7 +288,7 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
     itsIO->pwrite(itsBlockSize, hdrContNrs[i] * itsBlockSize, iobuf);
   }
   // Store first continuation blocknr in header.
-  uChar* buf = const_cast<uChar*>(mio.getBuffer());
+  unsigned char* buf = const_cast<unsigned char*>(mio.getBuffer());
   CanonicalConversion::fromLocal(buf + 8, hdrContNrs[0]);
   // Swap continuation sets.
   itsHdrContInx = newContInx;
@@ -305,7 +305,7 @@ void MultiFile::writeVector(CanonicalIO& cio, const std::vector<Int64>& index) {
   }
 }
 
-void MultiFile::writeVector(CanonicalIO& cio, const std::vector<uInt>& index) {
+void MultiFile::writeVector(CanonicalIO& cio, const std::vector<unsigned int>& index) {
   // Write in the same way as AipsIO is doing.
   Int64 sz = index.size();
   cio.write(1, &sz);
@@ -325,7 +325,7 @@ void MultiFile::readVector(CanonicalIO& cio, std::vector<Int64>& index) {
   }
 }
 
-void MultiFile::readVector(CanonicalIO& cio, std::vector<uInt>& index) {
+void MultiFile::readVector(CanonicalIO& cio, std::vector<unsigned int>& index) {
   Int64 sz;
   cio.read(1, &sz);
   if (sz > 0) {
@@ -428,7 +428,7 @@ void MultiFile::readHeaderVersion1(Int64 headerSize, std::vector<char>& buf) {
   auto mio = std::make_shared<MemoryIO>(&(buf[leadSize]), headerSize - leadSize);
   auto cio = std::make_shared<CanonicalIO>(mio);
   AipsIO aio(cio);
-  Int version = aio.getstart("MultiFile");
+  int version = aio.getstart("MultiFile");
   AlwaysAssert(version == 1, AipsError);
   aio >> itsNrBlock;
   getInfoVersion1(aio, itsInfo);
@@ -441,8 +441,8 @@ void MultiFile::readHeaderVersion2(std::vector<char>& buf) {
   AlwaysAssert(leadSize == 24, AipsError);
   Int64 contBlockNr = 0;
   Int64 headerSize;
-  uInt headerCRC = 0;
-  Int version;
+  unsigned int headerCRC = 0;
+  int version;
   // For version 2 and higher the next 40 bytes have to be read.
   buf.resize(leadSize + 40);
   itsIO->pread(40, leadSize, &(buf[leadSize]));
@@ -476,9 +476,9 @@ void MultiFile::readHeaderVersion2(std::vector<char>& buf) {
   // Check the CRC if needed.
   if (itsUseCRC) {
     // Set headerCRC in buffer to 0 to calculate the correct CRC.
-    uInt zero32 = 0;
+    unsigned int zero32 = 0;
     CanonicalConversion::fromLocal(&(buf[28]), zero32);
-    uInt crc = calcCRC(buf.data(), headerSize);
+    unsigned int crc = calcCRC(buf.data(), headerSize);
     if (crc != headerCRC) {
       throw AipsError("MultiFile header CRC mismatch in " + fileName());
     }
@@ -487,7 +487,7 @@ void MultiFile::readHeaderVersion2(std::vector<char>& buf) {
   auto mio = std::make_shared<MemoryIO>(&(buf[leadSize]), headerSize - leadSize);
   auto cio = std::make_shared<CanonicalIO>(mio);
   AipsIO aio(cio);
-  Int vers = aio.getstart("MultiFile");
+  int vers = aio.getstart("MultiFile");
   AlwaysAssert(vers == version, AipsError);
   aio >> itsInfo;
   aio.getend();
@@ -570,7 +570,7 @@ void MultiFile::truncateIfNeeded() {
   // Possibly check here if cont.blocks are stored at the end. If so,
   // move them upfront if possible by using first free blocks. !!!!!
   // Truncate the file for free blocks at the end of the file.
-  Int lastBlock = itsNrBlock - 1;
+  int lastBlock = itsNrBlock - 1;
   size_t i = 0;
   for (; i < itsFreeBlocks.size(); ++i) {
     if (itsFreeBlocks[i] != lastBlock) {
@@ -633,18 +633,18 @@ void MultiFile::storeCRC(const void* buffer, Int64 blknr) {
 
 void MultiFile::checkCRC(const void* buffer, Int64 blknr) const {
   AlwaysAssert(blknr < Int64(itsCRC.size()), AipsError);
-  uInt crc = calcCRC(buffer, itsBlockSize);
+  unsigned int crc = calcCRC(buffer, itsBlockSize);
   if (crc != itsCRC[blknr]) {
     throw AipsError("Mismatch in CRC of MultiFile block " + std::to_string(blknr));
   }
 }
 
-uInt MultiFile::calcCRC(const void* buffer, Int64 size) const {
+unsigned int MultiFile::calcCRC(const void* buffer, Int64 size) const {
   // The algorithm is taken from crctester.c by Sven Reifegerste
   // (www.zorc/reflex)
   // See also https://www.lammertbies.nl/comm/info/crc-calculation
-  const uChar* buf = static_cast<const uChar*>(buffer);
-  const uInt crcinit = 0x46af6449;
+  const unsigned char* buf = static_cast<const unsigned char*>(buffer);
+  const unsigned int crcinit = 0x46af6449;
   // # The above value is calculated from:
   // #         const uInt highbit = (uInt)1<<(32-1);
   // #		crcinit = 0xffffffff;
@@ -655,7 +655,7 @@ uInt MultiFile::calcCRC(const void* buffer, Int64 size) const {
   // #			if (bit) crcinit|= highbit;
   // #		}
   //  Normal lookup table algorithm with augmented zero bytes.
-  uInt crc = crcinit;
+  unsigned int crc = crcinit;
   for (Int64 i = 0; i < size; ++i) {
     crc = ((crc << 8) | buf[i]) ^ CRCTable()[(crc >> (32 - 8)) & 0xff];
   }

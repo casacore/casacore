@@ -64,7 +64,7 @@ class StreamIO : public ByteIO {
   // Construct a stream that is attached to the specified host on the specified
   // portnumber. Name lookup is not currently done so that the dotted quad
   // notation must be used.
-  StreamIO(const String& hostname, uShort portNumber);
+  StreamIO(const String& hostname, unsigned short portNumber);
 
   // The destructor closes the file.
   virtual ~StreamIO();

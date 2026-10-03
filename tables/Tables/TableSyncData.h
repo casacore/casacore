@@ -86,7 +86,7 @@ class TableSyncData {
   // Update the synchronization data and write it into the MemoryIO object.
   // This function is called when a table flush is done to reflect
   // if anything has changed compared to the previous flush.
-  void write(rownr_t nrrow, uInt nrcolumn, bool tableChanged, const Block<bool>& dataManChanged);
+  void write(rownr_t nrrow, unsigned int nrcolumn, bool tableChanged, const Block<bool>& dataManChanged);
 
   // Update the synchronization data and write it into the MemoryIO object.
   // This function should be used by an external filler when it flushes
@@ -97,7 +97,7 @@ class TableSyncData {
   // This function is called when a lock is acquired to see if
   // table data has to be reread.
   // <br>It returns false when the MemoryIO object is empty.
-  bool read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged, Block<bool>& dataManChanged);
+  bool read(rownr_t& nrrow, unsigned int& nrcolumn, bool& tableChanged, Block<bool>& dataManChanged);
 
   // Get the MemoryIO object.
   // This is used to let <src>LockFile</src> read or write the
@@ -105,21 +105,21 @@ class TableSyncData {
   MemoryIO& memoryIO();
 
   // Get the modify counter.
-  uInt getModifyCounter() const;
+  unsigned int getModifyCounter() const;
 
  private:
   // # Member variables.
   rownr_t itsNrrow;
-  Int itsNrcolumn;
-  uInt itsModifyCounter;
-  uInt itsTableChangeCounter;
-  Block<uInt> itsDataManChangeCounter;
+  int itsNrcolumn;
+  unsigned int itsModifyCounter;
+  unsigned int itsTableChangeCounter;
+  Block<unsigned int> itsDataManChangeCounter;
   std::shared_ptr<MemoryIO> itsMemIO;
   AipsIO itsAipsIO;
 };
 
 inline MemoryIO& TableSyncData::memoryIO() { return *itsMemIO; }
-inline uInt TableSyncData::getModifyCounter() const { return itsModifyCounter; }
+inline unsigned int TableSyncData::getModifyCounter() const { return itsModifyCounter; }
 
 }  // namespace casacore
 

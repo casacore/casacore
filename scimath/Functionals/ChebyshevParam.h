@@ -173,7 +173,7 @@ class ChebyshevParam : public Function1D<T> {
   // create an n-th order Chebyshev polynomial with the coefficients
   // equal to zero.  The bounded domain is [T(-1), T(1)].  The
   // OutOfDomainMode is CONSTANT, and the default value is T(0).
-  explicit ChebyshevParam(const uInt n);
+  explicit ChebyshevParam(const unsigned int n);
 
   // create a zero-th order Chebyshev polynomical with the first coefficient
   // equal to one.
@@ -208,7 +208,7 @@ class ChebyshevParam : public Function1D<T> {
   // The fields recognized by this class are those documented for the
   // setMode() function below.
   // <group>
-  ChebyshevParam(uInt order, const RecordInterface &mode);
+  ChebyshevParam(unsigned int order, const RecordInterface &mode);
   ChebyshevParam(const Vector<T> &coeffs, const RecordInterface &mode);
   // </group>
 
@@ -246,7 +246,7 @@ class ChebyshevParam : public Function1D<T> {
   // be decreased (even if the highest order coefficient is set to zero).
   // To lower the order, use setCoefficients() with a Vector having the
   // desired number of coefficients.
-  void setCoefficient(const uInt which, const T &value);
+  void setCoefficient(const unsigned int which, const T &value);
 
   // return the current set of coefficients into a given Vector.
   const Vector<T> &getCoefficients() const;
@@ -254,13 +254,13 @@ class ChebyshevParam : public Function1D<T> {
   // return a particular coefficient.
   //   which is the coefficient order (i.e. 0 refers to the constant offset).
   //     If which is out of range, zero is returned.
-  T getCoefficient(const uInt which) const {
+  T getCoefficient(const unsigned int which) const {
     return ((which < nparameters()) ? param_p[which] : T(0));
   }
 
   // return the number of coeefficients currently loaded.  This does not
   // guarantee that the coefficients are non-zero
-  uInt nCoefficients() const { return nparameters(); }
+  unsigned int nCoefficients() const { return nparameters(); }
 
   // set the Chebyshev interval for this function.  The function will
   // be scaled and shifted to such that the central bounded range of the
@@ -307,7 +307,7 @@ class ChebyshevParam : public Function1D<T> {
 
   // return the order of this polynomial.  This returns the value of
   // nCoefficients()-1;
-  uInt order() const { return param_p.nelements() - 1; }
+  unsigned int order() const { return param_p.nelements() - 1; }
 
   // transform a set of Chebyshev polynomial coefficients into a set
   // representing the series' derivative.  coeffs should be assuming
@@ -368,7 +368,7 @@ class ChebyshevParamModeImpl : public ChebyshevParam<T> {
  public:
   ChebyshevParamModeImpl() : ChebyshevParam<T>() {}
 
-  explicit ChebyshevParamModeImpl(const uInt n) : ChebyshevParam<T>(n) {}
+  explicit ChebyshevParamModeImpl(const unsigned int n) : ChebyshevParam<T>(n) {}
 
   ChebyshevParamModeImpl(const T &min, const T &max,
                          typename ChebyshevEnums::OutOfIntervalMode mode = ChebyshevEnums::CONSTANT,
@@ -380,7 +380,7 @@ class ChebyshevParamModeImpl : public ChebyshevParam<T> {
                          const T &defval = T(0))
       : ChebyshevParam<T>(coeffs, min, max, mode, defval) {}
 
-  ChebyshevParamModeImpl(uInt order, const RecordInterface &mode) : ChebyshevParam<T>(order, mode) {
+  ChebyshevParamModeImpl(unsigned int order, const RecordInterface &mode) : ChebyshevParam<T>(order, mode) {
     setMode(mode);
   }
   ChebyshevParamModeImpl(const Vector<T> &coeffs, const RecordInterface &mode)
@@ -446,7 +446,7 @@ class ChebyshevParamModeImpl_PS<AutoDiff<T>> : public ChebyshevParam<AutoDiff<T>
  public:
   ChebyshevParamModeImpl_PS() : ChebyshevParam<AutoDiff<T>>() {}
 
-  explicit ChebyshevParamModeImpl_PS(const uInt n) : ChebyshevParam<AutoDiff<T>>(n) {}
+  explicit ChebyshevParamModeImpl_PS(const unsigned int n) : ChebyshevParam<AutoDiff<T>>(n) {}
 
   ChebyshevParamModeImpl_PS(
       const AutoDiff<T> &min, const AutoDiff<T> &max,
@@ -460,7 +460,7 @@ class ChebyshevParamModeImpl_PS<AutoDiff<T>> : public ChebyshevParam<AutoDiff<T>
       const AutoDiff<T> &defval = AutoDiff<T>(0))
       : ChebyshevParam<AutoDiff<T>>(coeffs, min, max, mode, defval) {}
 
-  ChebyshevParamModeImpl_PS(uInt order, const RecordInterface &mode)
+  ChebyshevParamModeImpl_PS(unsigned int order, const RecordInterface &mode)
       : ChebyshevParam<AutoDiff<T>>(order, mode) {}
   ChebyshevParamModeImpl_PS(const Vector<AutoDiff<T>> &coeffs, const RecordInterface &mode)
       : ChebyshevParam<AutoDiff<T>>(coeffs, mode) {}
@@ -498,7 +498,7 @@ class ChebyshevParamModeImpl_PSA<AutoDiffA<T>> : public ChebyshevParam<AutoDiffA
  public:
   ChebyshevParamModeImpl_PSA() : ChebyshevParam<AutoDiffA<T>>() {}
 
-  explicit ChebyshevParamModeImpl_PSA(const uInt n) : ChebyshevParam<AutoDiffA<T>>(n) {}
+  explicit ChebyshevParamModeImpl_PSA(const unsigned int n) : ChebyshevParam<AutoDiffA<T>>(n) {}
 
   ChebyshevParamModeImpl_PSA(
       const AutoDiffA<T> &min, const AutoDiffA<T> &max,
@@ -512,7 +512,7 @@ class ChebyshevParamModeImpl_PSA<AutoDiffA<T>> : public ChebyshevParam<AutoDiffA
       const AutoDiffA<T> &defval = AutoDiffA<T>(0))
       : ChebyshevParam<AutoDiffA<T>>(coeffs, min, max, mode, defval) {}
 
-  ChebyshevParamModeImpl_PSA(uInt order, const RecordInterface &mode)
+  ChebyshevParamModeImpl_PSA(unsigned int order, const RecordInterface &mode)
       : ChebyshevParam<AutoDiffA<T>>(order, mode) {}
   ChebyshevParamModeImpl_PSA(const Vector<AutoDiffA<T>> &coeffs, const RecordInterface &mode)
       : ChebyshevParam<AutoDiffA<T>>(coeffs, mode) {}

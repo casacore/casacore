@@ -39,12 +39,12 @@ using namespace std;
 #define TESTFUNCTOR1(NAME, FUNC)                                       \
   {                                                                    \
     std::transform(v1.begin(), v1.end(), res.begin(), NAME<double>()); \
-    for (uInt i = 0; i < res.size(); ++i) {                            \
+    for (unsigned int i = 0; i < res.size(); ++i) {                            \
       AlwaysAssertExit(near(res[i], FUNC(v1[i])));                     \
     }                                                                  \
     res = v1;                                                          \
     transformInPlace(res.begin(), res.end(), NAME<double>());          \
-    for (uInt i = 0; i < res.size(); ++i) {                            \
+    for (unsigned int i = 0; i < res.size(); ++i) {                            \
       AlwaysAssertExit(near(res[i], FUNC(v1[i])));                     \
     }                                                                  \
   }
@@ -52,12 +52,12 @@ using namespace std;
 #define TESTFUNCTOR2(NAME, FUNC)                                                   \
   {                                                                                \
     std::transform(v1.begin(), v1.end(), v2.begin(), res.begin(), NAME<double>()); \
-    for (uInt i = 0; i < res.size(); ++i) {                                        \
+    for (unsigned int i = 0; i < res.size(); ++i) {                                        \
       AlwaysAssertExit(near(res[i], FUNC(v1[i], v2[i])));                          \
     }                                                                              \
     res = v1;                                                                      \
     transformInPlace(res.begin(), res.end(), v2.begin(), NAME<double>());          \
-    for (uInt i = 0; i < res.size(); ++i) {                                        \
+    for (unsigned int i = 0; i < res.size(); ++i) {                                        \
       AlwaysAssertExit(near(res[i], FUNC(v1[i], v2[i])));                          \
     }                                                                              \
   }
@@ -65,7 +65,7 @@ using namespace std;
 #define TESTFUNCTORB1(NAME, FUNC)                                      \
   {                                                                    \
     std::transform(v1.begin(), v1.end(), reb.begin(), NAME<double>()); \
-    for (uInt i = 0; i < reb.size(); ++i) {                            \
+    for (unsigned int i = 0; i < reb.size(); ++i) {                            \
       AlwaysAssertExit(reb[i] == FUNC(v1[i]));                         \
     }                                                                  \
   }
@@ -73,7 +73,7 @@ using namespace std;
 #define TESTFUNCTORB2(NAME, FUNC)                                                  \
   {                                                                                \
     std::transform(v1.begin(), v1.end(), v2.begin(), reb.begin(), NAME<double>()); \
-    for (uInt i = 0; i < reb.size(); ++i) {                                        \
+    for (unsigned int i = 0; i < reb.size(); ++i) {                                        \
       AlwaysAssertExit(reb[i] == FUNC(v1[i], v2[i]));                              \
     }                                                                              \
   }
@@ -106,7 +106,7 @@ int main() {
     vector<double> v2(10);
     vector<double> res(10);
     vector<bool> reb(10);
-    for (uInt i = 0; i < v1.size(); ++i) {
+    for (unsigned int i = 0; i < v1.size(); ++i) {
       v1[i] = (i + 1) * 0.05;
       v2[i] = (i + 3) * 0.025;
     }
@@ -140,7 +140,7 @@ int main() {
 
     {
       std::transform(v1.begin(), v1.end(), v2.begin(), res.begin(), SumSqrDiff<double>(0.25));
-      for (uInt i = 0; i < res.size(); ++i) {
+      for (unsigned int i = 0; i < res.size(); ++i) {
         AlwaysAssertExit(near(res[i], v1[i] + (v2[i] - 0.25) * (v2[i] - 0.25)));
       }
     }

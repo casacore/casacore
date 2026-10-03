@@ -36,7 +36,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt, bool constant) {
+static bool testFunc(Array<float> *ptr, const Array<float> &array, bool deleteIt, bool constant) {
   COWPtr<Array<float>> COW(ptr, deleteIt, constant);
 
   // only const T functions may be used through the pointer.
@@ -56,7 +56,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   // data as const.  This allows non-const data operations be used to fill a
   // const acting version of COWPtr.
   // note:  this deletes the old ptr and resets it.
-  Array<Float> *foobar = new Array<float>(IPosition(2, 5, 5));
+  Array<float> *foobar = new Array<float>(IPosition(2, 5, 5));
   *foobar = 0.0;
   COW.set(foobar, deleteIt, constant);
 
@@ -75,8 +75,8 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   }
 
   // assignment operator with reference semantics
-  Array<Float> *fooAlso = new Array<Float>(array);
-  COW = COWPtr<Array<Float>>(fooAlso, deleteIt, constant);
+  Array<float> *fooAlso = new Array<float>(array);
+  COW = COWPtr<Array<float>>(fooAlso, deleteIt, constant);
   AlwaysAssert(allEQ(*COW, array), AipsError);
 
   //-------------------- test default ctor---------------------------
@@ -88,8 +88,8 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   AlwaysAssert(deflt.isNull() == true, AipsError);
 
   // assignment operator with reference semantics
-  Array<Float> *fooAgain = new Array<Float>(array);
-  deflt = COWPtr<Array<Float>>(fooAgain, deleteIt, constant);
+  Array<float> *fooAgain = new Array<float>(array);
+  deflt = COWPtr<Array<float>>(fooAgain, deleteIt, constant);
 
   // only const T functions may be used through the pointer.
   AlwaysAssert(deflt->nelements() == 128, AipsError);
@@ -125,7 +125,7 @@ static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt
   // ------------------test copy ctor-----------------------
 
   // copy ctor with reference semantics
-  COWPtr<Array<Float>> copy(COW);
+  COWPtr<Array<float>> copy(COW);
 
   // only const T functions may be used through the pointer.
   AlwaysAssert(copy->nelements() == 128, AipsError);
@@ -186,7 +186,7 @@ int main() {
     // we have four permutations
 
     // Case 0: a const which controls the ptr.
-    Array<Float> *ptr = new Array<float>(array.copy());
+    Array<float> *ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
     AlwaysAssert(testFunc(ptr, array, true, true), AipsError);
 

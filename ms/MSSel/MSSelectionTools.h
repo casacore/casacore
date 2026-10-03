@@ -34,8 +34,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Get the intersection or union of IDs (such as FieldId).
-Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2);
-Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2);
+Vector<int> set_intersection(const Vector<int>& v1, const Vector<int>& v2);
+Vector<int> set_union(const Vector<int>& v1, const Vector<int>& v2);
 
 // Collective selection returning a selected MS.
 bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS, const String& outMSName = "",
@@ -64,7 +64,7 @@ bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
                 const String& taQLExpr = "", const String& polnExpr = "",
                 const String& scanExpr = "", const String& arrayExpr = "",
                 const String& stateExpr = "", const String& obsExpr = "",
-                const Int defaultChanStep = 1, MSSelection* mss = NULL);
+                const int defaultChanStep = 1, MSSelection* mss = NULL);
 
 // Added feedExpr
 bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
@@ -75,7 +75,7 @@ bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
                  const String& taQLExpr = "", const String& polnExpr = "",
                  const String& scanExpr = "", const String& arrayExpr = "",
                  const String& stateExpr = "", const String& obsExpr = "",
-                 const String& feedExpr = "", const Int defaultChanStep = 1,
+                 const String& feedExpr = "", const int defaultChanStep = 1,
                  MSSelection* mss = NULL);
 
 bool getSelectedTable(Table& selectedTab, const Table& baseTab, TableExprNode& fullTEN,

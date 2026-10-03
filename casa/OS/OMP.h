@@ -38,7 +38,7 @@ namespace OMP {
 // OpenMP sets it to the env.var. OMP_NUM_THREADS. If undefined, it is
 // the number of cores.
 // If OpenMP is not used, 1 is returned.
-inline uInt maxThreads() {
+inline unsigned int maxThreads() {
 #ifdef _OPENMP
   return omp_get_max_threads();
 #else
@@ -46,20 +46,20 @@ inline uInt maxThreads() {
 #endif
 }
 // Backward
-uInt nMaxThreads();
+unsigned int nMaxThreads();
 
 // Set the number of threads to use. Note it can be overridden
 // for a parallel section by 'omp parallel num_threads(n)'.
 // Nothing is done if OpenMP is not used.
 #ifdef _OPENMP
-inline void setNumThreads(uInt n) { omp_set_num_threads(n); }
+inline void setNumThreads(unsigned int n) { omp_set_num_threads(n); }
 #else
-inline void setNumThreads(uInt) {}
+inline void setNumThreads(unsigned int) {}
 #endif
 
 // Get the number of threads used in a parallel piece of code.
 // If OpenMP is not used, 1 is returned.
-inline uInt numThreads() {
+inline unsigned int numThreads() {
 #ifdef _OPENMP
   return omp_get_num_threads();
 #else
@@ -69,7 +69,7 @@ inline uInt numThreads() {
 
 // Get the thread number (0 till numThreads).
 // If OpenMP is not used, 0 is returned.
-inline uInt threadNum() {
+inline unsigned int threadNum() {
 #ifdef _OPENMP
   return omp_get_thread_num();
 #else

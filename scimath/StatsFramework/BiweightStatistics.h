@@ -118,7 +118,7 @@ template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
  public:
-  BiweightStatistics(Int maxNiter = 3, Double c = 6.0);
+  BiweightStatistics(int maxNiter = 3, double c = 6.0);
 
   // copy semantics
   BiweightStatistics(const BiweightStatistics<CASA_STATP>& other);
@@ -139,37 +139,37 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   virtual AccumType getMedian(std::shared_ptr<uInt64> knownNpts = nullptr,
                               std::shared_ptr<AccumType> knownMin = nullptr,
                               std::shared_ptr<AccumType> knownMax = nullptr,
-                              uInt binningThreshholdSizeBytes = 4096 * 4096,
-                              bool persistSortedArray = false, uInt nBins = 10000);
+                              unsigned int binningThreshholdSizeBytes = 4096 * 4096,
+                              bool persistSortedArray = false, unsigned int nBins = 10000);
 
-  virtual AccumType getMedianAndQuantiles(std::map<Double, AccumType>& quantileToValue,
-                                          const std::set<Double>& quantiles,
+  virtual AccumType getMedianAndQuantiles(std::map<double, AccumType>& quantileToValue,
+                                          const std::set<double>& quantiles,
                                           std::shared_ptr<uInt64> knownNpts = nullptr,
                                           std::shared_ptr<AccumType> knownMin = nullptr,
                                           std::shared_ptr<AccumType> knownMax = nullptr,
-                                          uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                          bool persistSortedArray = false, uInt nBins = 10000);
+                                          unsigned int binningThreshholdSizeBytes = 4096 * 4096,
+                                          bool persistSortedArray = false, unsigned int nBins = 10000);
 
   virtual AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
                                        std::shared_ptr<AccumType> knownMin = nullptr,
                                        std::shared_ptr<AccumType> knownMax = nullptr,
-                                       uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                       bool persistSortedArray = false, uInt nBins = 10000);
+                                       unsigned int binningThreshholdSizeBytes = 4096 * 4096,
+                                       bool persistSortedArray = false, unsigned int nBins = 10000);
 
-  virtual std::map<Double, AccumType> getQuantiles(const std::set<Double>& quantiles,
+  virtual std::map<double, AccumType> getQuantiles(const std::set<double>& quantiles,
                                                    std::shared_ptr<uInt64> npts = nullptr,
                                                    std::shared_ptr<AccumType> min = nullptr,
                                                    std::shared_ptr<AccumType> max = nullptr,
-                                                   uInt binningThreshholdSizeBytes = 4096 * 4096,
+                                                   unsigned int binningThreshholdSizeBytes = 4096 * 4096,
                                                    bool persistSortedArray = false,
-                                                   uInt nBins = 10000);
+                                                   unsigned int nBins = 10000);
 
   virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat);
   // </group>
 
   // returns the number of iterations performed to
   // compute the current location and scale values
-  Int getNiter() const;
+  int getNiter() const;
 
   // reset object to initial state. Clears all private fields including data,
   // accumulators, etc.
@@ -192,8 +192,8 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   virtual StatsData<AccumType> _getStatistics();
 
  private:
-  Double _c{0};
-  Int _niter{0}, _maxNiter{0};
+  double _c{0};
+  int _niter{0}, _maxNiter{0};
   AccumType _location{0}, _scale{0};
   std::pair<AccumType, AccumType> _range{};
   // _npts is the number of points computed using ClassicalStatistics
@@ -228,105 +228,105 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   // sx_M2w4 = sum((x_i - _location)^2 * (1 - u_i^2)^4) = sum((x_i - _location)^2 * w_i^4)
   // ww_4u2 = sum((1 - u_i^2) * (1 - 5*u_i^2)) = sum(w_i * (w_i - 4*u_i^2))
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-                             const DataIterator& dataBegin, uInt64 nr, uInt dataStride) const;
+                             const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-                             const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+                             const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
                              const DataRanges& ranges, bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-                             const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                             const MaskIterator& maskBegin, uInt maskStride) const;
+                             const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+                             const MaskIterator& maskBegin, unsigned int maskStride) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-                             const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                             const MaskIterator& maskBegin, uInt maskStride,
+                             const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride,
+                             const MaskIterator& maskBegin, unsigned int maskStride,
                              const DataRanges& ranges, bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                             uInt64 nr, uInt dataStride) const;
+                             uInt64 nr, unsigned int dataStride) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                             uInt64 nr, uInt dataStride, const DataRanges& ranges,
+                             uInt64 nr, unsigned int dataStride, const DataRanges& ranges,
                              bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                             uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                             uInt maskStride, const DataRanges& ranges, bool isInclude) const;
+                             uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                             unsigned int maskStride, const DataRanges& ranges, bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-                             uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                             uInt maskStride) const;
+                             uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+                             unsigned int maskStride) const;
   // </group>
 
   // <group>
   // sxw2 = sum(x_i*(1 - u_i^2)^2)
   // sw2 = sum((1-u_i^2)^2)
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
-                     uInt dataStride) const;
+                     unsigned int dataStride) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
-                     uInt dataStride, const DataRanges& ranges, bool isInclude) const;
+                     unsigned int dataStride, const DataRanges& ranges, bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
-                     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride) const;
+                     unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
-                     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+                     unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
                      const DataRanges& ranges, bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-                     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride) const;
+                     const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-                     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
+                     const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
                      const DataRanges& ranges, bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-                     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+                     const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
+                     const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
                      bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-                     const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                     const MaskIterator& maskBegin, uInt maskStride) const;
+                     const WeightsIterator& weightBegin, uInt64 nr, unsigned int dataStride,
+                     const MaskIterator& maskBegin, unsigned int maskStride) const;
   // </group>
 
   // <group>
   // sx_M2w4 = sum((x_i - _location)^2 * (1 - u_i^2)^4) = sum((x_i - _location)^2 * w_i^4)
   // ww_4u2 = sum((1 - u_i^2) * (1 - 5*u_i^2)) = sum(w_i * (w_i - 4*u_i^2))
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-                  uInt dataStride) const;
+                  unsigned int dataStride) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-                  uInt dataStride, const DataRanges& ranges, bool isInclude) const;
+                  unsigned int dataStride, const DataRanges& ranges, bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-                  uInt dataStride, const MaskIterator& maskBegin, uInt maskStride) const;
+                  unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-                  uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+                  unsigned int dataStride, const MaskIterator& maskBegin, unsigned int maskStride,
                   const DataRanges& ranges, bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-                  const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride) const;
+                  const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-                  const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
+                  const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
                   const DataRanges& ranges, bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-                  const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                  const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+                  const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride,
+                  const MaskIterator& maskBegin, unsigned int maskStride, const DataRanges& ranges,
                   bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-                  const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-                  const MaskIterator& maskBegin, uInt maskStride) const;
+                  const WeightsIterator& weightBegin, uInt64 nr, unsigned int dataStride,
+                  const MaskIterator& maskBegin, unsigned int maskStride) const;
   // </group>
 };
 

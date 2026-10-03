@@ -219,13 +219,13 @@ class MeasureHolder : public RecordTransformable {
   // Do we write MeasValues to record?
   bool writeMV() const { return convertmv_p; }
   // Make a block of n MeasValues
-  void makeMV(uInt n) { createMV(n); }
+  void makeMV(unsigned int n) { createMV(n); }
   // Get number of MeasValue pointers in block
-  uInt nelements() const { return mvhold_p.nelements(); }
+  unsigned int nelements() const { return mvhold_p.nelements(); }
   // Set a measvalue at position pos (false if illegal pos)
-  bool setMV(uInt pos, const MeasValue &in);
+  bool setMV(unsigned int pos, const MeasValue &in);
   // Get a pointer to a MeasValue (or 0)
-  MeasValue *getMV(uInt pos) const;
+  MeasValue *getMV(unsigned int pos) const;
 
  private:
   // # Data Members
@@ -243,7 +243,7 @@ class MeasureHolder : public RecordTransformable {
   bool getType(String &error, const String &in);
   // </group>
   // Make a MeasValue block of pointers of length n
-  void createMV(uInt n);
+  void createMV(unsigned int n);
 };
 
 }  // namespace casacore

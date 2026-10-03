@@ -86,35 +86,35 @@ class MSFeedIndex : public MSTableIndex {
   void attach(const MSFeed& feed);
 
   // access to the antenna ID key, throws an exception if isNull() is false
-  Int& antennaId() { return *antennaId_p; }
+  int& antennaId() { return *antennaId_p; }
 
   // access to the feed ID key, throws an exception if isNull() is false
-  Int& feedId() { return *feedId_p; }
+  int& feedId() { return *feedId_p; }
 
   // access to the spectral window ID key, throws an exception if isNull() is false
-  Int& spectralWindowId() { return *spwId_p; }
+  int& spectralWindowId() { return *spwId_p; }
 
   // return feed id.'s (and associated row numbers) for a given antenna id.,
   // polzn type and receptor angle
-  Vector<Int> matchFeedPolznAndAngle(const Int& antennaId, const Vector<String>& polznType,
-                                     const Vector<Float>& receptorAngle, const Float& tol,
-                                     Vector<Int>& rowNumbers);
+  Vector<int> matchFeedPolznAndAngle(const int& antennaId, const Vector<String>& polznType,
+                                     const Vector<float>& receptorAngle, const float& tol,
+                                     Vector<int>& rowNumbers);
 
   // return feed id.'s (and associated row numbers) for a given antenna id.
-  Vector<Int> matchAntennaId(const Int& antennaId, Vector<Int>& rowNumbers);
+  Vector<int> matchAntennaId(const int& antennaId, Vector<int>& rowNumbers);
 
   // return valid feed id.'s for a given list of feed id.'s.
-  Vector<Int> matchFeedId(const Vector<Int>& sourceId);
+  Vector<int> matchFeedId(const Vector<int>& sourceId);
 
  protected:
   // the specialized compare function to pass to the
   // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1
   // values for the SPECTRAL_WINDOW_ID
-  static Int compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
-                     const Block<Int>& dataTypes, rownr_t index);
+  static int compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+                     const Block<int>& dataTypes, rownr_t index);
 
  private:
-  RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;
+  RecordFieldPtr<int> antennaId_p, feedId_p, spwId_p;
 
   // Pointer to FEED columns accessor
   MSFeedColumns* msFeedCols_p;

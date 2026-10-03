@@ -43,12 +43,12 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-bool allNear(const Array<Float>& data, const Array<bool>& dataMask, const Array<Float>& fits,
-             const Array<bool>& fitsMask, Float tol = 1.0e-5);
+bool allNear(const Array<float>& data, const Array<bool>& dataMask, const Array<float>& fits,
+             const Array<bool>& fitsMask, float tol = 1.0e-5);
 
-bool cleanZero(Array<Float>& data, Array<bool>& dataMask);
+bool cleanZero(Array<float>& data, Array<bool>& dataMask);
 
-void printArray(const FITSErrorImage fitsErrImage, const Int size);
+void printArray(const FITSErrorImage fitsErrImage, const int size);
 
 int main(int argc, const char* argv[]) {
   try {
@@ -64,9 +64,9 @@ int main(int argc, const char* argv[]) {
 
     inputs.readArguments(argc, argv);
     String in = inputs.getString("in");
-    uInt hdunum = (uInt)inputs.getInt("hdunum");
+    unsigned int hdunum = (unsigned int)inputs.getInt("hdunum");
     const bool print = inputs.getBool("print");
-    const Int size = inputs.getInt("size");
+    const int size = inputs.getInt("size");
     const bool verbose = inputs.getBool("verbose");
 
     // Give a default image and extension
@@ -134,7 +134,7 @@ int main(int argc, const char* argv[]) {
 
     // Convert from FITS as a comparison
     String error;
-    ImageInterface<Float>* pTempImage = 0;
+    ImageInterface<float>* pTempImage = 0;
     String imageName;
     if (!ImageFITSConverter::FITSToImage(pTempImage, error, imageName, in, 0, hdunum)) {
       os << error << LogIO::EXCEPTION;
@@ -142,8 +142,8 @@ int main(int argc, const char* argv[]) {
     if (verbose) cerr << "Converted from FITS as comparison." << endl;
 
     // Get the data and compare the array, masks and coords
-    Array<Float> fitsArray = fitsErrImage.get();
-    Array<Float> dataArray = pTempImage->get();
+    Array<float> fitsArray = fitsErrImage.get();
+    Array<float> dataArray = pTempImage->get();
     Array<bool> fitsMask = fitsErrImage.getMask();
     Array<bool> dataMask = pTempImage->getMask();
     CoordinateSystem fitsCS = fitsErrImage.coordinates();
@@ -155,8 +155,8 @@ int main(int argc, const char* argv[]) {
 
     // Test Clone
     // Get the data and compare the array, masks and coords
-    ImageInterface<Float>* pFitsImage = fitsErrImage.cloneII();
-    Array<Float> fitsArray2 = pFitsImage->get();
+    ImageInterface<float>* pFitsImage = fitsErrImage.cloneII();
+    Array<float> fitsArray2 = pFitsImage->get();
     Array<bool> fitsMask2 = pFitsImage->getMask();
     CoordinateSystem fitsCS2 = pFitsImage->coordinates();
     delete pFitsImage;
@@ -172,7 +172,7 @@ int main(int argc, const char* argv[]) {
     if (verbose) cerr << "Checked for ErrorType in copied instance." << endl;
 
     // Get the data and compare the array, masks and coords
-    Array<Float> fitsArray3 = fitsErrImage2.get();
+    Array<float> fitsArray3 = fitsErrImage2.get();
     Array<bool> fitsMask3 = fitsErrImage2.getMask();
     CoordinateSystem fitsCS3 = fitsErrImage2.coordinates();
     AlwaysAssert(allNear(dataArray, dataMask, fitsArray3, fitsMask3), AipsError);
@@ -209,7 +209,7 @@ int main(int argc, const char* argv[]) {
     fitsArray3 = fitsErrImage2.get();
     fitsMask3 = fitsErrImage2.getMask();
     fitsCS3 = fitsErrImage2.coordinates();
-    Array<Float> tmpData = dataArray * dataArray;
+    Array<float> tmpData = dataArray * dataArray;
     AlwaysAssert(allNear(tmpData, dataMask, fitsArray3, fitsMask3), AipsError);
     AlwaysAssert(fitsCS2.near(dataCS), AipsError);
     if (verbose) cerr << "Compared data and coordinate systems in RMSE image." << endl;
@@ -234,7 +234,7 @@ int main(int argc, const char* argv[]) {
     fitsArray3 = fitsErrImage2.get();
     fitsMask3 = fitsErrImage2.getMask();
     fitsCS3 = fitsErrImage2.coordinates();
-    tmpData = (Float)1.0 / dataArray;  // somehow, the (Float) is essential
+    tmpData = (float)1.0 / dataArray;  // somehow, the (Float) is essential
     cleanZero(dataArray, dataMask);
     AlwaysAssert(allNear(tmpData, dataMask, fitsArray3, fitsMask3), AipsError);
     AlwaysAssert(fitsCS2.near(dataCS), AipsError);
@@ -260,7 +260,7 @@ int main(int argc, const char* argv[]) {
     fitsArray3 = fitsErrImage2.get();
     fitsMask3 = fitsErrImage2.getMask();
     fitsCS3 = fitsErrImage2.coordinates();
-    tmpData = (Float)1.0 / (dataArray * dataArray);  // somehow, the (Float) is essential
+    tmpData = (float)1.0 / (dataArray * dataArray);  // somehow, the (Float) is essential
     AlwaysAssert(allNear(tmpData, dataMask, fitsArray3, fitsMask3), AipsError);
     AlwaysAssert(fitsCS2.near(dataCS), AipsError);
     if (verbose) cerr << "Compared data and coordinate systems in an INVRMSE image." << endl;
@@ -278,15 +278,15 @@ int main(int argc, const char* argv[]) {
   return 0;
 }
 
-bool allNear(const Array<Float>& data, const Array<bool>& dataMask, const Array<Float>& fits,
-             const Array<bool>& fitsMask, Float tol) {
+bool allNear(const Array<float>& data, const Array<bool>& dataMask, const Array<float>& fits,
+             const Array<bool>& fitsMask, float tol) {
   bool deletePtrData, deletePtrDataMask, deletePtrFITS, deletePtrFITSMask;
-  const Float* pData = data.getStorage(deletePtrData);
-  const Float* pFITS = fits.getStorage(deletePtrFITS);
+  const float* pData = data.getStorage(deletePtrData);
+  const float* pFITS = fits.getStorage(deletePtrFITS);
   const bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
   const bool* pFITSMask = fitsMask.getStorage(deletePtrFITSMask);
   //
-  for (uInt i = 0; i < data.nelements(); i++) {
+  for (unsigned int i = 0; i < data.nelements(); i++) {
     if (pDataMask[i] != pFITSMask[i]) {
       cerr << "masks differ" << endl;
       return false;
@@ -308,14 +308,14 @@ bool allNear(const Array<Float>& data, const Array<bool>& dataMask, const Array<
   return true;
 }
 
-bool cleanZero(Array<Float>& data, Array<bool>& dataMask) {
+bool cleanZero(Array<float>& data, Array<bool>& dataMask) {
   bool deletePtrData, deletePtrDataMask;
-  const Float* pData = data.getStorage(deletePtrData);
+  const float* pData = data.getStorage(deletePtrData);
   bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
 
   //
-  for (uInt i = 0; i < data.nelements(); i++) {
-    if (pDataMask[i] && pData[i] == (Float)0.0) {
+  for (unsigned int i = 0; i < data.nelements(); i++) {
+    if (pDataMask[i] && pData[i] == (float)0.0) {
       pDataMask[i] = false;
     }
   }
@@ -325,10 +325,10 @@ bool cleanZero(Array<Float>& data, Array<bool>& dataMask) {
   return true;
 }
 
-void printArray(const FITSErrorImage fitsErrImage, const Int size) {
+void printArray(const FITSErrorImage fitsErrImage, const int size) {
   IPosition start(fitsErrImage.ndim(), 0);
   IPosition shape(fitsErrImage.shape());
-  for (uInt i = 0; i < fitsErrImage.ndim(); i++) {
+  for (unsigned int i = 0; i < fitsErrImage.ndim(); i++) {
     if (shape(i) > size) shape(i) = size;
   }
   cerr << "Data = " << fitsErrImage.getSlice(start, shape) << endl;

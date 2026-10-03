@@ -85,10 +85,10 @@ class MSWeatherIndex : public MSTableIndex {
   void attach(const MSWeather &weather);
 
   // access to the antenna ID key, throws an exception if isNull() is false
-  Int &antennaId() { return *antennaId_p; }
+  int &antennaId() { return *antennaId_p; }
 
  private:
-  RecordFieldPtr<Int> antennaId_p;
+  RecordFieldPtr<int> antennaId_p;
 
   void attachIds();
 };

@@ -44,7 +44,7 @@
 
 namespace casacore {
 
-UDFMSCal::UDFMSCal(ColType type, Int arg) : itsType(type), itsArg(arg) {
+UDFMSCal::UDFMSCal(ColType type, int arg) : itsType(type), itsArg(arg) {
   if (itsType == DELAY) {
     // Default column to use for delays.
     itsEngine.setDirColName("DELAY_DIR");
@@ -54,7 +54,7 @@ UDFMSCal::UDFMSCal(ColType type, Int arg) : itsType(type), itsArg(arg) {
 UDFMSCal::UDFMSCal(const String& funcName) : itsType(GETVALUE), itsArg(0), itsFuncName(funcName) {}
 
 UDFMSCal::UDFMSCal(const String& funcName, const String& subtabName, const String& idcolName,
-                   Int arg)
+                   int arg)
     : itsType(GETVALUE),
       itsArg(arg),
       itsFuncName(funcName),
@@ -238,13 +238,13 @@ void UDFMSCal::setupDir(TENShPtr& operand) {
     // Make sure the unit is rad.
     // Turn the array into a vector.
     TableExprNodeUnit::adaptUnit(operand, "rad");
-    Array<Double> dirs(operand->getArrayDouble(0).array());
+    Array<double> dirs(operand->getArrayDouble(0).array());
     if (dirs.size() != 2) {
       throw AipsError(
           "Argument to MSCAL function is not an array "
           "of 2 values");
     }
-    Vector<Double> dirVec(dirs.reform(IPosition(1, dirs.size())));
+    Vector<double> dirVec(dirs.reform(IPosition(1, dirs.size())));
     itsEngine.setDirection(
         MDirection(Quantity(dirVec[0], "rad"), Quantity(dirVec[1], "rad"), MDirection::J2000));
   } else if (operand->dataType() == TableExprNodeRep::NTString) {
@@ -275,7 +275,7 @@ void UDFMSCal::setupDir(TENShPtr& operand) {
   }
 }
 
-void UDFMSCal::setupWvls(const Table& table, vector<TENShPtr>& operands, uInt nargMax) {
+void UDFMSCal::setupWvls(const Table& table, vector<TENShPtr>& operands, unsigned int nargMax) {
   // There must be at least 1 argument (data).
   if (operands.size() > nargMax) {
     throw AipsError("No arguments should be given to MSCAL.UVWWVL");
@@ -284,11 +284,11 @@ void UDFMSCal::setupWvls(const Table& table, vector<TENShPtr>& operands, uInt na
   // Divide by lightspeed for conversion to wavelengths.
   // Determine the maximum nr of frequencies in a band.
   Table spwTab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
-  ScalarColumn<Double> refCol(spwTab, "REF_FREQUENCY");
-  ArrayColumn<Double> freqCol(spwTab, "CHAN_FREQ");
+  ScalarColumn<double> refCol(spwTab, "REF_FREQUENCY");
+  ArrayColumn<double> freqCol(spwTab, "CHAN_FREQ");
   itsWavel.reserve(spwTab.nrow());
   itsWavels.reserve(spwTab.nrow());
-  uInt nfreq = 0;
+  unsigned int nfreq = 0;
   for (rownr_t i = 0; i < spwTab.nrow(); ++i) {
     itsWavel.push_back(refCol(i) / C::c);
     itsWavels.push_back(freqCol(i) / C::c);
@@ -305,7 +305,7 @@ void UDFMSCal::setupWvls(const Table& table, vector<TENShPtr>& operands, uInt na
   itsIdNode = table.col(itsIdColName);
   // Get the spectal window ids.
   Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
-  ScalarColumn<Int>(ddtab, "SPECTRAL_WINDOW_ID").getColumn(itsDDIds);
+  ScalarColumn<int>(ddtab, "SPECTRAL_WINDOW_ID").getColumn(itsDDIds);
 }
 
 void UDFMSCal::setupStokes(const Table& table, vector<TENShPtr>& operands) {
@@ -353,7 +353,7 @@ void UDFMSCal::setupStokes(const Table& table, vector<TENShPtr>& operands) {
   if (polTable.nrow() == 0) {
     throw AipsError("POLARIZATION subtable of " + table.tableName() + " is empty");
   }
-  Vector<Int> inTypes(ArrayColumn<Int>(polTable, "CORR_TYPE")(0));
+  Vector<int> inTypes(ArrayColumn<int>(polTable, "CORR_TYPE")(0));
   // Convert the output string types to ints.
   // First convert abbrevs.
   if (type == "IQUV" || type == "STOKES") {
@@ -369,8 +369,8 @@ void UDFMSCal::setupStokes(const Table& table, vector<TENShPtr>& operands) {
         "No polarization types given in second argument of "
         "MSCAL.STOKES");
   }
-  Vector<Int> outTypes(types.size());
-  for (uInt i = 0; i < types.size(); ++i) {
+  Vector<int> outTypes(types.size());
+  for (unsigned int i = 0; i < types.size(); ++i) {
     outTypes[i] = Stokes::type(types[i]);
   }
   itsStokesConv.setConversion(outTypes, inTypes, rescale);
@@ -406,9 +406,9 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
       if (table.tableDesc().isColumn("ANTENNA2")) {
         a2 = TableExprNode(table.col("ANTENNA2"));
       }
-      Vector<Int> selectedAnts1;
-      Vector<Int> selectedAnts2;
-      Matrix<Int> selectedBaselines;
+      Vector<int> selectedAnts1;
+      Vector<int> selectedAnts2;
+      Matrix<int> selectedBaselines;
       std::shared_ptr<MSSelectionErrorHandler> curHandler =
           std::make_shared<UDFMSCalErrorHandler>();
       MSAntennaParse::thisMSAErrorHandler.swap(curHandler);
@@ -431,7 +431,7 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
     case TIME: {
       MeasurementSet ms(table);
       TableExprNode node(table.col("TIME"));
-      Matrix<Double> times;
+      Matrix<double> times;
       MSMainColInterface tmp;
       if (msTimeGramParseCommand(&ms, selStr, TableExprNode(), tmp, node, times) == 0) {
         itsDataNode = *(msTimeGramParseNode());
@@ -449,8 +449,8 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
       Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
       Table spwtab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
       TableExprNode colAsTEN = table.col("DATA_DESC_ID");
-      Vector<Int> spwid, spwDDID;
-      Matrix<Int> chanid;
+      Vector<int> spwid, spwDDID;
+      Matrix<int> chanid;
       if (msSpwGramParseCommand(MSSpectralWindow(spwtab), MSDataDescription(ddtab), colAsTEN,
                                 selStr, spwid, chanid, spwDDID) == 0) {
         itsDataNode = *(msSpwGramParseNode());
@@ -460,7 +460,7 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
     case FIELD: {
       Table fieldtab(table.keywordSet().asTable("FIELD"));
       TableExprNode colAsTEN = table.col("FIELD_ID");
-      Vector<Int> fldid;
+      Vector<int> fldid;
       itsDataNode = msFieldGramParseCommand(fieldtab, colAsTEN, selStr, fldid);
       msFieldGramParseDeleteNode();
     } break;
@@ -471,9 +471,9 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
       if (table.tableDesc().isColumn("FEED2")) {
         f2 = TableExprNode(table.col("FEED2"));
       }
-      Vector<Int> selectedFeed1;
-      Vector<Int> selectedFeed2;
-      Matrix<Int> selectedFeedPairs;
+      Vector<int> selectedFeed1;
+      Vector<int> selectedFeed2;
+      Matrix<int> selectedFeedPairs;
       std::shared_ptr<MSSelectionErrorHandler> curHandler =
           std::make_shared<UDFMSCalErrorHandler>();
       MSFeedParse::thisMSFErrorHandler.swap(curHandler);
@@ -488,19 +488,19 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
     } break;
     case ARRAY: {
       MeasurementSet ms(table);
-      Vector<Int> arrid;
-      Int maxArr = 1000;
+      Vector<int> arrid;
+      int maxArr = 1000;
       itsDataNode = msArrayGramParseCommand(&ms, selStr, arrid, maxArr);
     } break;
     case SCAN: {
       MeasurementSet ms(table);
-      Vector<Int> scanid;
-      Int maxScan = 1000;
+      Vector<int> scanid;
+      int maxScan = 1000;
       itsDataNode = msScanGramParseCommand(&ms, selStr, scanid, maxScan);
     } break;
     case STATE: {
       MeasurementSet ms(table);
-      Vector<Int> stateid;
+      Vector<int> stateid;
       std::shared_ptr<MSSelectionErrorHandler> curHandler =
           std::make_shared<UDFMSCalErrorHandler>();
       MSStateParse::thisMSSErrorHandler.swap(curHandler);
@@ -517,7 +517,7 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
     } break;
     case OBS: {
       MeasurementSet ms(table);
-      Vector<Int> obsid;
+      Vector<int> obsid;
       //        Int maxObs=1000;
       TableExprNode colAsTEN = table.col("OBSERVATION_ID");
       itsDataNode = msObservationGramParseCommand(&ms, ms.observation(), colAsTEN, selStr, obsid);
@@ -535,7 +535,7 @@ void UDFMSCal::setupGetValue(const Table& table, vector<TENShPtr>& operands) {
     idinx = 1;
     if (itsSubTabName.empty()) idinx = 2;
   }
-  uInt nargReq = idinx;
+  unsigned int nargReq = idinx;
   // Id column must be given if id (ANTENNA1/2) is not part of function name.
   if (itsIdColName.empty()) nargReq++;
   if (operands.size() != nargReq) {
@@ -575,7 +575,7 @@ void UDFMSCal::setupGetValue(const Table& table, vector<TENShPtr>& operands) {
       // Subtable has an indirection via the DATA_DESCRIPTION.
       // Get the ids of the required column.
       Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
-      ScalarColumn<Int>(ddtab, itsIdColName).getColumn(itsDDIds);
+      ScalarColumn<int>(ddtab, itsIdColName).getColumn(itsDDIds);
       itsIdColName = "DATA_DESC_ID";
     }
     // Create the id node.
@@ -616,16 +616,16 @@ Int64 UDFMSCal::getRowNr(const TableExprId& id) {
   return rownr;
 }
 
-Array<Double> UDFMSCal::toWvls(const TableExprId& id) {
-  const Vector<Double>& wvl = itsWavels[itsDDIds[itsIdNode.getInt(id)]];
-  Double* ptr = itsTmpUvwWvl.data();
-  for (uInt i = 0; i < wvl.size(); ++i) {
+Array<double> UDFMSCal::toWvls(const TableExprId& id) {
+  const Vector<double>& wvl = itsWavels[itsDDIds[itsIdNode.getInt(id)]];
+  double* ptr = itsTmpUvwWvl.data();
+  for (unsigned int i = 0; i < wvl.size(); ++i) {
     for (int j = 0; j < 3; ++j) {
       *ptr++ = wvl[i] * itsTmpVector[j];
     }
   }
   // Return the correct part of the array.
-  if (itsTmpUvwWvl.shape()[1] == Int(wvl.size())) {
+  if (itsTmpUvwWvl.shape()[1] == int(wvl.size())) {
     return itsTmpUvwWvl;
   }
   return itsTmpUvwWvl(IPosition(2, 0, 0), IPosition(2, 2, wvl.size() - 1));
@@ -662,7 +662,7 @@ Int64 UDFMSCal::getInt(const TableExprId& id) {
   }
 }
 
-Double UDFMSCal::getDouble(const TableExprId& id) {
+double UDFMSCal::getDouble(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   switch (itsType) {
     case HA:
@@ -748,43 +748,43 @@ MArray<Int64> UDFMSCal::getArrayInt(const TableExprId& id) {
   }
 }
 
-MArray<Double> UDFMSCal::getArrayDouble(const TableExprId& id) {
+MArray<double> UDFMSCal::getArrayDouble(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   switch (itsType) {
     case HADEC:
       itsEngine.getHaDec(itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case AZEL:
       itsEngine.getAzEl(itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case ITRF:
       itsEngine.getItrf(itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case UVWWVL:
       itsUvwCol.get(id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case UVWWVLS:
       itsUvwCol.get(id.rownr(), itsTmpVector);
-      return MArray<Double>(toWvls(id));
+      return MArray<double>(toWvls(id));
     case NEWUVW:
       itsEngine.getNewUVW(itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case NEWUVWWVL:
       itsEngine.getNewUVW(itsArg, id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case NEWUVWWVLS:
       itsEngine.getNewUVW(itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(toWvls(id));
+      return MArray<double>(toWvls(id));
     case STOKES: {
       // Unfortunately stokes weight conversion is only defined for Float,
       // while TableExprNode only has Double.
       // So conversions are necessary for the time being.
       // In the future we can add Double support to StokesConverter.
-      MArray<Double> datad;
-      Array<Float> dataf, outf;
-      Array<Double> outd;
+      MArray<double> datad;
+      Array<float> dataf, outf;
+      Array<double> outd;
       itsDataNode.get(id, datad);
       dataf.resize(datad.shape());
       convertArray(dataf, datad.array());
@@ -792,12 +792,12 @@ MArray<Double> UDFMSCal::getArrayDouble(const TableExprId& id) {
       outd.resize(outf.shape());
       convertArray(outd, outf);
       if (!datad.hasMask()) {
-        return MArray<Double>(outd);
+        return MArray<double>(outd);
       }
       // Combine the mask elements.
       Array<bool> mask;
       itsStokesConv.convert(mask, datad.mask());
-      return MArray<Double>(outd, mask);
+      return MArray<double>(outd, mask);
     }
     case GETVALUE:
       return itsDataNode.getDoubleAS(getRowNr(id));

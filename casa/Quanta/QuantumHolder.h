@@ -166,8 +166,8 @@ class QuantumHolder : public RecordTransformable {
   //  <li> AipsError if holder empty
   // </thrown>
   // <group>
-  Int nelements() const;
-  Int ndim() const;
+  int nelements() const;
+  int ndim() const;
   // </group>
 
   // Get a Quantum from the holder (with lifetime as long
@@ -178,20 +178,20 @@ class QuantumHolder : public RecordTransformable {
   // </thrown>
   // <group>
   const QBase &asQuantum() const;
-  const Quantum<Double> &asQuantity();
-  const Quantum<Double> &asQuantumDouble();
-  const Quantum<Float> &asQuantumFloat();
-  const Quantum<Int> &asQuantumInt();
+  const Quantum<double> &asQuantity();
+  const Quantum<double> &asQuantumDouble();
+  const Quantum<float> &asQuantumFloat();
+  const Quantum<int> &asQuantumInt();
   const Quantum<Complex> &asQuantumComplex();
   const Quantum<DComplex> &asQuantumDComplex();
-  const Quantum<Vector<Double>> &asQuantumVectorDouble();
-  const Quantum<Vector<Float>> &asQuantumVectorFloat();
-  const Quantum<Vector<Int>> &asQuantumVectorInt();
+  const Quantum<Vector<double>> &asQuantumVectorDouble();
+  const Quantum<Vector<float>> &asQuantumVectorFloat();
+  const Quantum<Vector<int>> &asQuantumVectorInt();
   const Quantum<Vector<Complex>> &asQuantumVectorComplex();
   const Quantum<Vector<DComplex>> &asQuantumVectorDComplex();
-  const Quantum<Array<Double>> &asQuantumArrayDouble();
-  const Quantum<Array<Float>> &asQuantumArrayFloat();
-  const Quantum<Array<Int>> &asQuantumArrayInt();
+  const Quantum<Array<double>> &asQuantumArrayDouble();
+  const Quantum<Array<float>> &asQuantumArrayFloat();
+  const Quantum<Array<int>> &asQuantumArrayInt();
   const Quantum<Array<Complex>> &asQuantumArrayComplex();
   const Quantum<Array<DComplex>> &asQuantumArrayDComplex();
   // </group>
@@ -228,9 +228,9 @@ class QuantumHolder : public RecordTransformable {
 
   // # General member functions
   //  Convert to a different real scalar quantum
-  void toReal(const uInt &tp);
+  void toReal(const unsigned int &tp);
   // Convert to a different complex scalar quantum
-  void toComplex(const uInt &tp);
+  void toComplex(const unsigned int &tp);
   // Convert scalar to Vector
   void toVector();
   // Convert scalar to Array

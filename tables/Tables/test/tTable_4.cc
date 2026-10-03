@@ -64,7 +64,7 @@ TableDesc makeDesc(bool ask) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   String stman, stmanname;
-  Int op;
+  int op;
   while (true) {
     try {
       if (ask) {
@@ -99,15 +99,15 @@ TableDesc makeDesc(bool ask) {
         }
 
         if (op == 1) {
-          td.addColumn(ScalarColumnDesc<uInt>(strs(0), "", stman, stmanname));
+          td.addColumn(ScalarColumnDesc<unsigned int>(strs(0), "", stman, stmanname));
         } else if (op == 2) {
-          td.addColumn(ArrayColumnDesc<uInt>(strs(0), "", stman, stmanname, IPosition(1, 10),
+          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname, IPosition(1, 10),
                                              ColumnDesc::Direct));
         } else if (op == 3) {
-          td.addColumn(ArrayColumnDesc<uInt>(strs(0), "", stman, stmanname, IPosition(1, 10),
+          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname, IPosition(1, 10),
                                              ColumnDesc::FixedShape));
         } else if (op == 4) {
-          td.addColumn(ArrayColumnDesc<uInt>(strs(0), "", stman, stmanname));
+          td.addColumn(ArrayColumnDesc<unsigned int>(strs(0), "", stman, stmanname));
         }
       } else {
         break;
@@ -118,7 +118,7 @@ TableDesc makeDesc(bool ask) {
   }
   // Create the hypercolumn descriptions for all tiled columns.
   std::map<String, String> hcmap;
-  for (uInt i = 0; i < td.ncolumn(); i++) {
+  for (unsigned int i = 0; i < td.ncolumn(); i++) {
     const ColumnDesc& cd = td.columnDesc(i);
     if (cd.dataManagerType() == "TiledShapeStMan") {
       std::map<String, String>::iterator iter = hcmap.find(cd.dataManagerGroup());
@@ -131,7 +131,7 @@ TableDesc makeDesc(bool ask) {
   }
   for (auto& x : hcmap) {
     Vector<String> vec = stringToVector(x.second);
-    uInt ndim = 2;
+    unsigned int ndim = 2;
     if (td.columnDesc(vec(0)).isScalar()) {
       ndim = 1;
     }
@@ -141,18 +141,18 @@ TableDesc makeDesc(bool ask) {
   return td;
 }
 
-void putData(Table& tab, const TableDesc& td, uInt startrow, uInt nrow) {
-  for (uInt i = 0; i < td.ncolumn(); i++) {
+void putData(Table& tab, const TableDesc& td, unsigned int startrow, unsigned int nrow) {
+  for (unsigned int i = 0; i < td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td.columnDesc(i);
     if (cdesc.isScalar()) {
-      ScalarColumn<uInt> col(tab, cdesc.name());
-      for (uInt i = 0; i < nrow; i++) {
+      ScalarColumn<unsigned int> col(tab, cdesc.name());
+      for (unsigned int i = 0; i < nrow; i++) {
         col.put(startrow + i, startrow + i);
       }
     } else {
-      ArrayColumn<uInt> col(tab, cdesc.name());
-      Vector<uInt> vec(10);
-      for (uInt i = 0; i < nrow; i++) {
+      ArrayColumn<unsigned int> col(tab, cdesc.name());
+      Vector<unsigned int> vec(10);
+      for (unsigned int i = 0; i < nrow; i++) {
         vec = startrow + i;
         col.put(startrow + i, vec);
       }
@@ -160,18 +160,18 @@ void putData(Table& tab, const TableDesc& td, uInt startrow, uInt nrow) {
   }
 }
 
-void checkData(const Table& tab, const TableDesc& td, uInt startrow, uInt nrow) {
-  for (uInt i = 0; i < td.ncolumn(); i++) {
+void checkData(const Table& tab, const TableDesc& td, unsigned int startrow, unsigned int nrow) {
+  for (unsigned int i = 0; i < td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td.columnDesc(i);
     if (cdesc.isScalar()) {
-      ScalarColumn<uInt> col(tab, cdesc.name());
-      for (uInt i = 0; i < nrow; i++) {
+      ScalarColumn<unsigned int> col(tab, cdesc.name());
+      for (unsigned int i = 0; i < nrow; i++) {
         AlwaysAssert(col(startrow + i) == startrow + i, AipsError);
       }
     } else {
-      ArrayColumn<uInt> col(tab, cdesc.name());
-      Vector<uInt> vec(10);
-      for (uInt i = 0; i < nrow; i++) {
+      ArrayColumn<unsigned int> col(tab, cdesc.name());
+      Vector<unsigned int> vec(10);
+      for (unsigned int i = 0; i < nrow; i++) {
         vec = startrow + i;
         AlwaysAssert(allEQ(col(startrow + i), vec), AipsError);
       }
@@ -218,7 +218,7 @@ void doTable(bool ask, const TableDesc& td) {
   SetupNewTable newtab("tTable_4_tmp.data", td, Table::New);
   Table tab(newtab);
 
-  Int op;
+  int op;
   while (true) {
     try {
       if (ask) {
@@ -241,7 +241,7 @@ void doTable(bool ask, const TableDesc& td) {
         tab.removeColumn(stringToVector(str));
         cout << " Removed columns " << str << endl;
       } else if (op == 4) {
-        uInt n = tab.nrow();
+        unsigned int n = tab.nrow();
         tab.addRow();
         putData(tab, tab.tableDesc(), n, 1);
         cout << " Added and initialized 1 row" << endl;
@@ -257,7 +257,7 @@ void doTable(bool ask, const TableDesc& td) {
         tab.actualTableDesc().show(cout);
         Record rec = tab.dataManagerInfo();
         cout << "Data Managers:" << endl;
-        for (uInt i = 0; i < rec.nfields(); i++) {
+        for (unsigned int i = 0; i < rec.nfields(); i++) {
           const Record& subrec = rec.subRecord(i);
           cout << " Type=" << subrec.asString("TYPE");
           cout << " Name=" << subrec.asString("NAME");

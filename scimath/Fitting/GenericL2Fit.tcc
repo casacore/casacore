@@ -95,11 +95,11 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other)
       valder_p(typename FunctionTraits<T>::DiffType(0)),
       consvd_p(0) {
   if (other.ptr_derive_p) ptr_derive_p = other.ptr_derive_p->clone();
-  for (uInt i = 0; i < other.constrFun_p.nelements(); ++i)
+  for (unsigned int i = 0; i < other.constrFun_p.nelements(); ++i)
     constrFun_p[i] = other.constrFun_p[i]->clone();
-  for (uInt i = 0; i < other.constrArg_p.nelements(); ++i)
+  for (unsigned int i = 0; i < other.constrArg_p.nelements(); ++i)
     constrArg_p[i] = new Vector<typename FunctionTraits<T>::BaseType>(other.constrArg_p[i]->copy());
-  for (uInt i = 0; i < other.constrVal_p.nelements(); ++i)
+  for (unsigned int i = 0; i < other.constrVal_p.nelements(); ++i)
     constrVal_p[i] = new typename FunctionTraits<T>::BaseType(*(other.constrVal_p[i]));
   condEq_p = other.condEq_p;
   fullEq_p = other.fullEq_p;
@@ -123,14 +123,14 @@ GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
     else
       ptr_derive_p = 0;
     constrFun_p.resize(other.constrFun_p.nelements());
-    for (uInt i = 0; i < other.constrFun_p.nelements(); ++i)
+    for (unsigned int i = 0; i < other.constrFun_p.nelements(); ++i)
       constrFun_p[i] = other.constrFun_p[i]->clone();
     constrArg_p.resize(other.constrArg_p.nelements());
-    for (uInt i = 0; i < other.constrArg_p.nelements(); ++i)
+    for (unsigned int i = 0; i < other.constrArg_p.nelements(); ++i)
       constrArg_p[i] =
           new Vector<typename FunctionTraits<T>::BaseType>(other.constrArg_p[i]->copy());
     constrVal_p.resize(other.constrVal_p.nelements());
-    for (uInt i = 0; i < other.constrVal_p.nelements(); ++i)
+    for (unsigned int i = 0; i < other.constrVal_p.nelements(); ++i)
       constrVal_p[i] = new typename FunctionTraits<T>::BaseType(*(other.constrVal_p[i]));
     pCount_p = other.pCount_p;
     ndim_p = other.ndim_p;
@@ -167,7 +167,7 @@ void GenericL2Fit<T>::setFunctionEx() {
 }
 
 template <class T>
-bool GenericL2Fit<T>::setConstraintEx(const uInt n,
+bool GenericL2Fit<T>::setConstraintEx(const unsigned int n,
                                       const Vector<typename FunctionTraits<T>::BaseType> &x,
                                       const typename FunctionTraits<T>::BaseType y) {
   delete constrArg_p[n];
@@ -176,7 +176,7 @@ bool GenericL2Fit<T>::setConstraintEx(const uInt n,
   delete constrVal_p[n];
   constrVal_p[n] = 0;
   constrVal_p[n] = new typename FunctionTraits<T>::BaseType(y);
-  for (uInt i = 0; i < pCount_p; ++i) {
+  for (unsigned int i = 0; i < pCount_p; ++i) {
     (*constrFun_p[n])[i] =
         typename FunctionTraits<T>::DiffType((*constrFun_p[n])[i].value(), pCount_p, i);
   }
@@ -184,7 +184,7 @@ bool GenericL2Fit<T>::setConstraintEx(const uInt n,
 }
 
 template <class T>
-bool GenericL2Fit<T>::setConstraint(const uInt n,
+bool GenericL2Fit<T>::setConstraint(const unsigned int n,
                                     const Vector<typename FunctionTraits<T>::BaseType> &x,
                                     const typename FunctionTraits<T>::BaseType y) {
   if (!ptr_derive_p) return false;
@@ -193,7 +193,7 @@ bool GenericL2Fit<T>::setConstraint(const uInt n,
 }
 
 template <class T>
-bool GenericL2Fit<T>::setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y) {
+bool GenericL2Fit<T>::setConstraint(const unsigned int n, const typename FunctionTraits<T>::BaseType y) {
   if (!ptr_derive_p) return false;
   HyperPlane<typename FunctionTraits<T>::DiffType> function(ptr_derive_p->nparameters());
   Vector<typename FunctionTraits<T>::BaseType> x(function.ndim());
@@ -204,7 +204,7 @@ template <class T>
 bool GenericL2Fit<T>::addConstraint(const Function<typename FunctionTraits<T>::DiffType> &function,
                                     const Vector<typename FunctionTraits<T>::BaseType> &x,
                                     const typename FunctionTraits<T>::BaseType y) {
-  uInt n = constrFun_p.nelements();
+  unsigned int n = constrFun_p.nelements();
   constrFun_p.resize(n + 1);
   constrFun_p[n] = 0;
   constrArg_p.resize(n + 1);
@@ -242,27 +242,27 @@ void GenericL2Fit<T>::asSVD(const bool svd) {
 template <class T>
 void GenericL2Fit<T>::setParameterValues(
     const Vector<typename FunctionTraits<T>::BaseType> &parms) {
-  for (uInt i = 0; i < pCount_p; ++i) (*ptr_derive_p)[i].value() = parms[i];
+  for (unsigned int i = 0; i < pCount_p; ++i) (*ptr_derive_p)[i].value() = parms[i];
 }
 
 template <class T>
 void GenericL2Fit<T>::setMaskedParameterValues(
     const Vector<typename FunctionTraits<T>::BaseType> &parms) {
-  for (uInt i = 0, k = 0; i < pCount_p; ++i) {
+  for (unsigned int i = 0, k = 0; i < pCount_p; ++i) {
     if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = parms[k++];
   }
 }
 
 template <class T>
 Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base>
-GenericL2Fit<T>::getSVDConstraint(uInt n) {
+GenericL2Fit<T>::getSVDConstraint(unsigned int n) {
   Vector<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> tmp(pCount_p, 0.0);
   if (n >= consvd_p.nelements()) {
     throw(
         AipsError("GenericL2Fit::getSVDConstraint(n)"
                   " -- Illegal constraint number"));
   }
-  for (uInt i = 0, k = 0; i < pCount_p; ++i) {
+  for (unsigned int i = 0, k = 0; i < pCount_p; ++i) {
     if (ptr_derive_p->mask(i)) tmp[i] = consvd_p[n][k++];
   }
   return tmp;
@@ -362,7 +362,7 @@ const Vector<typename FunctionTraits<T>::BaseType> &GenericL2Fit<T>::errors() co
     ferrors_p = true;
     ferr_p.resize(pCount_p);
     ferr_p = 0;
-    for (uInt i = 0, k = 0; i < pCount_p; ++i) {
+    for (unsigned int i = 0, k = 0; i < pCount_p; ++i) {
       if (ptr_derive_p->mask(i)) ferr_p[i] = err_p[k++];
     }
   }
@@ -376,7 +376,7 @@ bool GenericL2Fit<T>::errors(Vector<typename FunctionTraits<T>::BaseType> &err) 
       ferrors_p = true;
       ferr_p.resize(pCount_p);
       ferr_p = 0;
-      for (uInt i = 0, k = 0; i < pCount_p; ++i) {
+      for (unsigned int i = 0, k = 0; i < pCount_p; ++i) {
         if (ptr_derive_p->mask(i)) ferr_p[i] = err_p[k++];
       }
     }
@@ -387,24 +387,24 @@ bool GenericL2Fit<T>::errors(Vector<typename FunctionTraits<T>::BaseType> &err) 
 }
 
 template <class T>
-Matrix<Double> GenericL2Fit<T>::compuCovariance() {
-  Matrix<Double> tmp;
+Matrix<double> GenericL2Fit<T>::compuCovariance() {
+  Matrix<double> tmp;
   compuCovariance(tmp);
   return tmp;
 }
 
 template <class T>
-void GenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
-  Double *tmp = new Double[nUnknowns() * nUnknowns()];
+void GenericL2Fit<T>::compuCovariance(Matrix<double> &cov) {
+  double *tmp = new double[nUnknowns() * nUnknowns()];
   getCovariance(tmp);
   IPosition iw(2, pCount_p, pCount_p);
   if (!(cov.shape().conform(iw) && cov.shape() == iw)) {
     cov.resize();
     cov.resize(iw);
   }
-  for (uInt i = 0, l = 0; i < pCount_p; i++) {
+  for (unsigned int i = 0, l = 0; i < pCount_p; i++) {
     if (ptr_derive_p->mask(i)) {
-      for (uInt j = 0, k = 0; j < pCount_p; j++) {
+      for (unsigned int j = 0, k = 0; j < pCount_p; j++) {
         if (ptr_derive_p->mask(j))
           cov(j, i) = tmp[nUnknowns() * k++ + l];
         else
@@ -412,7 +412,7 @@ void GenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
       }
       l++;
     } else
-      for (uInt j = 0; j < pCount_p; j++) cov(j, i) = 0;
+      for (unsigned int j = 0; j < pCount_p; j++) cov(j, i) = 0;
   }
   delete[] tmp;
 }
@@ -466,7 +466,7 @@ bool GenericL2Fit<T>::residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 }
 
 template <class T>
-void GenericL2Fit<T>::initfit_p(uInt parcnt) {
+void GenericL2Fit<T>::initfit_p(unsigned int parcnt) {
   if (needInit_p) {
     needInit_p = false;
     solved_p = false;
@@ -482,7 +482,7 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
     ferr_p.resize(pCount_p);
     valder_p = typename FunctionTraits<T>::DiffType(0, pCount_p);
     if (ptr_derive_p) {
-      for (uInt i = 0; i < pCount_p; ++i) {
+      for (unsigned int i = 0; i < pCount_p; ++i) {
         (*ptr_derive_p)[i] =
             typename FunctionTraits<T>::DiffType((*ptr_derive_p)[i].value(), pCount_p, i);
       }
@@ -492,10 +492,10 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
 }
 
 template <class T>
-uInt GenericL2Fit<T>::testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
+unsigned int GenericL2Fit<T>::testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
                                   const Vector<typename FunctionTraits<T>::BaseType> &y,
                                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma) {
-  uInt xRows = (x.ndim() == 1 || x.ndim() == 2) ? x.shape()(0) : 0;
+  unsigned int xRows = (x.ndim() == 1 || x.ndim() == 2) ? x.shape()(0) : 0;
   if (xRows * ndim_p != y.nelements() * ndim_p || (sigma && xRows != sigma->nelements())) {
     throw(
         AipsError("GenericL2Fit::buildNormalMatrix()"
@@ -517,7 +517,7 @@ void GenericL2Fit<T>::resetFunction() {
   solved_p = false;
   errors_p = false;
   ferrors_p = false;
-  for (uInt i = 0; i < constrFun_p.nelements(); i++) {
+  for (unsigned int i = 0; i < constrFun_p.nelements(); i++) {
     delete constrFun_p[i];
     constrFun_p[i] = 0;
     delete constrArg_p[i];
@@ -533,7 +533,7 @@ void GenericL2Fit<T>::resetFunction() {
 
 template <class T>
 typename FunctionTraits<T>::BaseType GenericL2Fit<T>::getVal_p(
-    const Array<typename FunctionTraits<T>::BaseType> &x, uInt, uInt i) const {
+    const Array<typename FunctionTraits<T>::BaseType> &x, unsigned int, unsigned int i) const {
   if (ptr_derive_p) {
     if (x.ndim() == 1) {
       valder_p =
@@ -541,7 +541,7 @@ typename FunctionTraits<T>::BaseType GenericL2Fit<T>::getVal_p(
     } else {
       const Matrix<typename FunctionTraits<T>::BaseType> &xt =
           static_cast<const Matrix<typename FunctionTraits<T>::BaseType> &>(x);
-      for (uInt k = 0; k < ndim_p; k++) arg_p[k] = xt.row(i)[k];
+      for (unsigned int k = 0; k < ndim_p; k++) arg_p[k] = xt.row(i)[k];
       valder_p = (*ptr_derive_p)(arg_p);
     }
   }
@@ -555,12 +555,12 @@ void GenericL2Fit<T>::buildMatrix(const Array<typename FunctionTraits<T>::BaseTy
                                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
                                   const Vector<bool> *const mask) {
   if (!needInit_p) needInit_p = solved_p;
-  uInt nrows = testInput_p(x, y, sigma);
+  unsigned int nrows = testInput_p(x, y, sigma);
   typename FunctionTraits<T>::BaseType b(0.0);
   typename FunctionTraits<T>::BaseType sig(1.0);
   VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);
   ptr_derive_p->lockParam();  // Parameters will not change during loop
-  for (uInt i = 0; i < nrows; i++) {
+  for (unsigned int i = 0; i < nrows; i++) {
     if (mask && !((*mask)[i])) continue;
     if (sigma) {
       if ((*sigma)[i] == typename FunctionTraits<T>::BaseType(0) ||
@@ -574,7 +574,7 @@ void GenericL2Fit<T>::buildMatrix(const Array<typename FunctionTraits<T>::BaseTy
     }
     if (ptr_derive_p) {
       b = y(i) - getVal_p(x, 0, i);
-      for (uInt j = 0, k = 0; j < pCount_p; j++) {
+      for (unsigned int j = 0, k = 0; j < pCount_p; j++) {
         if (ptr_derive_p->mask(j)) condEq_p[k++] = fullEq_p[j];
       }
     }
@@ -586,18 +586,18 @@ void GenericL2Fit<T>::buildMatrix(const Array<typename FunctionTraits<T>::BaseTy
 template <class T>
 void GenericL2Fit<T>::buildConstraint() {
   VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);
-  for (uInt i = 0; i < constrFun_p.nelements(); ++i) {  // all constraints
+  for (unsigned int i = 0; i < constrFun_p.nelements(); ++i) {  // all constraints
     // Copy parameters from function to be fitted
-    for (uInt j = 0; j < pCount_p; ++j) (*constrFun_p[i])[j].value() = (*ptr_derive_p)[j].value();
+    for (unsigned int j = 0; j < pCount_p; ++j) (*constrFun_p[i])[j].value() = (*ptr_derive_p)[j].value();
     typename FunctionTraits<T>::BaseType b(*constrVal_p[i]);  // known value
     // Get arguments
     carg_p.resize(constrArg_p[i]->nelements());
-    for (uInt k = 0; k < constrArg_p[i]->nelements(); ++k) carg_p[k] = (*constrArg_p[i])[k];
+    for (unsigned int k = 0; k < constrArg_p[i]->nelements(); ++k) carg_p[k] = (*constrArg_p[i])[k];
     // calculate constraint equations
     valder_p = (*constrFun_p[i])(carg_p);
     valder_p.derivatives(fullEq_p);
     b -= valder_p.value();
-    for (uInt j = 0, k = 0; j < pCount_p; ++j) {
+    for (unsigned int j = 0, k = 0; j < pCount_p; ++j) {
       if (ptr_derive_p->mask(j)) condEq_p[k++] = fullEq_p[j];
     }
     if (i < nConstraints())
@@ -609,9 +609,9 @@ void GenericL2Fit<T>::buildConstraint() {
 
 template <class T>
 void GenericL2Fit<T>::fillSVDConstraints() {
-  uInt n = LSQFit::getDeficiency();
+  unsigned int n = LSQFit::getDeficiency();
   consvd_p.resize(n);
-  for (uInt i = 0; i < n; ++i) {
+  for (unsigned int i = 0; i < n; ++i) {
     consvd_p[i].resize(aCount_ai);
     VectorSTLIterator<typename LSQTraits<typename FunctionTraits<T>::BaseType>::base> conit(
         consvd_p[i]);
@@ -624,15 +624,15 @@ bool GenericL2Fit<T>::buildResidual(Vector<typename FunctionTraits<T>::BaseType>
                                     const Array<typename FunctionTraits<T>::BaseType> &x,
                                     const Vector<typename FunctionTraits<T>::BaseType> *const sol,
                                     const bool model) {
-  uInt nrows =
+  unsigned int nrows =
       testInput_p(x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0));
   if (sol && sol->nelements() != pCount_p) return false;
-  for (uInt i = 0; i < nrows; i++) {
+  for (unsigned int i = 0; i < nrows; i++) {
     if (ptr_derive_p) {
       if (model) y[i] = typename FunctionTraits<T>::BaseType(0);
       y[i] -= getVal_p(x, 0, i);
       if (sol) {
-        for (uInt j = 0; j < pCount_p; j++) {
+        for (unsigned int j = 0; j < pCount_p; j++) {
           if (ptr_derive_p->mask(j)) y[i] -= sol->operator()(j) * fullEq_p[j];
         }
       }

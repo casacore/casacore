@@ -45,13 +45,13 @@
 #include <casacore/casa/namespace.h>
 
 void doitFloat(LogIO& os);
-void do1DFloat(const Vector<Float>& results, const Vector<bool>& hasResult,
-               const Array<Float>& inArr, LogIO& os);
-void do2DFloat(const Vector<Float>& results, const Vector<bool>& hasResult,
-               const Array<Float>& inArr, LogIO& os);
-void test1DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
+void do1DFloat(const Vector<float>& results, const Vector<bool>& hasResult,
+               const Array<float>& inArr, LogIO& os);
+void do2DFloat(const Vector<float>& results, const Vector<bool>& hasResult,
+               const Array<float>& inArr, LogIO& os);
+void test1DFloat(LatticeStatistics<float>& stats, const Vector<float>& results,
                  const Vector<bool>& hasResult, const IPosition& shape);
-void test2DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
+void test2DFloat(LatticeStatistics<float>& stats, const Vector<float>& results,
                  const Vector<bool>& hasResult, const IPosition& shape);
 
 int main() {
@@ -60,29 +60,29 @@ int main() {
     LogIO os(lor);
     doitFloat(os);
 
-    Vector<Float> data(1000);
-    Vector<Float>::iterator iter = data.begin();
-    Vector<Float>::iterator end = data.end();
-    uInt count = 0;
+    Vector<float> data(1000);
+    Vector<float>::iterator iter = data.begin();
+    Vector<float>::iterator end = data.end();
+    unsigned int count = 0;
     while (iter != end) {
-      *iter = count % 2 == 0 ? (Float)count : -(Float)(count * count);
+      *iter = count % 2 == 0 ? (float)count : -(float)(count * count);
       ++iter;
       ++count;
     }
     {
-      ArrayLattice<Float> latt(data);
-      SubLattice<Float> subLatt(latt);
-      LatticeStatistics<Float> stats(subLatt);
-      Array<Double> median, iqr, medabsdevmed, npts, q1, q3;
+      ArrayLattice<float> latt(data);
+      SubLattice<float> subLatt(latt);
+      LatticeStatistics<float> stats(subLatt);
+      Array<double> median, iqr, medabsdevmed, npts, q1, q3;
       stats.getStatistic(median, LatticeStatsBase::MEDIAN, false);
       AlwaysAssert(*median.begin() == -0.5, AipsError);
       stats.getStatistic(q1, LatticeStatsBase::Q1, false);
       AlwaysAssert(*q1.begin() == -251001, AipsError);
       stats.getStatistic(q3, LatticeStatsBase::Q3, false);
       AlwaysAssert(*q3.begin() == 498, AipsError);
-      Vector<Float> range(2, 0.1);
+      Vector<float> range(2, 0.1);
       range[1] = 1001;
-      stats.setInExCludeRange(range, Vector<Float>(), false);
+      stats.setInExCludeRange(range, Vector<float>(), false);
       stats.getStatistic(median, LatticeStatsBase::MEDIAN, false);
       AlwaysAssert(*median.begin() == 500, AipsError);
       stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, false);
@@ -95,7 +95,7 @@ int main() {
       AlwaysAssert(*q3.begin() == 750, AipsError);
 
       // exclude range
-      stats.setInExCludeRange(Vector<Float>(), range, false);
+      stats.setInExCludeRange(Vector<float>(), range, false);
       stats.getStatistic(median, LatticeStatsBase::MEDIAN, false);
       AlwaysAssert(*median.begin() == -249001, AipsError);
       stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, false);
@@ -118,7 +118,7 @@ int main() {
         ++count;
       }
       subLatt.setPixelMask(ArrayLattice<bool>(mask), true);
-      stats = LatticeStatistics<Float>(subLatt);
+      stats = LatticeStatistics<float>(subLatt);
       stats.getStatistic(npts, LatticeStatsBase::NPTS, false);
       AlwaysAssert(*npts.begin() == 334, AipsError);
       stats.getStatistic(median, LatticeStatsBase::MEDIAN, false);
@@ -129,7 +129,7 @@ int main() {
       AlwaysAssert(*q3.begin() == 498, AipsError);
 
       // include range
-      stats.setInExCludeRange(range, Vector<Float>(), false);
+      stats.setInExCludeRange(range, Vector<float>(), false);
       stats.getStatistic(median, LatticeStatsBase::MEDIAN, false);
       AlwaysAssert(*median.begin() == 501, AipsError);
       stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, false);
@@ -142,7 +142,7 @@ int main() {
       AlwaysAssert(*q3.begin() == 750, AipsError);
 
       // exclude range
-      stats.setInExCludeRange(Vector<Float>(), range, false);
+      stats.setInExCludeRange(Vector<float>(), range, false);
       stats.getStatistic(npts, LatticeStatsBase::NPTS, false);
       AlwaysAssert(*npts.begin() == 168, AipsError);
       stats.getStatistic(median, LatticeStatsBase::MEDIAN, false);
@@ -159,23 +159,23 @@ int main() {
       // corner case when lattice is completely masked
       mask.set(false);
       subLatt.setPixelMask(ArrayLattice<bool>(mask), true);
-      stats = LatticeStatistics<Float>(subLatt);
+      stats = LatticeStatistics<float>(subLatt);
       stats.getStatistic(npts, LatticeStatsBase::NPTS, false);
       AlwaysAssert(npts.size() == 0, AipsError);
     }
     {
       // using configure*() methods
-      ArrayLattice<Float> latt(data);
-      SubLattice<Float> subLatt(latt);
-      LatticeStatistics<Float> stats(subLatt);
+      ArrayLattice<float> latt(data);
+      SubLattice<float> subLatt(latt);
+      LatticeStatistics<float> stats(subLatt);
       stats.configureClassical();
-      Array<Double> mean;
-      Float expec = casacore::mean(data);
+      Array<double> mean;
+      float expec = casacore::mean(data);
       stats.getStatistic(mean, LatticeStatsBase::MEAN, false);
       AlwaysAssert(near(*mean.begin(), expec), AipsError);
       stats.getStatistic(mean, LatticeStatsBase::MEAN, false);
       AlwaysAssert(near(*mean.begin(), expec), AipsError);
-      Array<Double> v;
+      Array<double> v;
       stats.getStatistic(v, LatticeStatsBase::MAX, false);
       AlwaysAssert(near(*v.begin(), 998.0), AipsError);
       // hinges-fences
@@ -186,15 +186,15 @@ int main() {
 
       stats.configureFitToHalf(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       stats.getStatistic(v, LatticeStatsBase::MEAN, false);
-      Double m = *v.begin();
+      double m = *v.begin();
       AlwaysAssert(near(m, casacore::mean(data)), AipsError);
       stats.getStatistic(v, LatticeStatsBase::MEDIAN, false);
       AlwaysAssert(near(*v.begin(), m), AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      Int npts = (Int)*v.begin();
+      int npts = (int)*v.begin();
       AlwaysAssert(npts == 592, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
-      Double sum = *v.begin();
+      double sum = *v.begin();
       AlwaysAssert(near(sum, m * npts), AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUMSQ, false);
       AlwaysAssert(near(*v.begin(), 127119111260752.0), AipsError);
@@ -218,7 +218,7 @@ int main() {
       stats.getStatistic(v, LatticeStatsBase::MEDIAN, false);
       AlwaysAssert(near(*v.begin(), m), AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      npts = (Int)*v.begin();
+      npts = (int)*v.begin();
       AlwaysAssert(npts == 1408, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
       sum = *v.begin();
@@ -239,7 +239,7 @@ int main() {
       m = *v.begin();
       AlwaysAssert(near(m, -0.5), AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      npts = (Int)*v.begin();
+      npts = (int)*v.begin();
       AlwaysAssert(npts == 1000, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
       sum = *v.begin();
@@ -260,7 +260,7 @@ int main() {
       m = *v.begin();
       AlwaysAssert(near(m, -0.5), AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      npts = (Int)*v.begin();
+      npts = (int)*v.begin();
       AlwaysAssert(npts == 1000, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
       sum = *v.begin();
@@ -281,7 +281,7 @@ int main() {
       m = *v.begin();
       AlwaysAssert(m == 65, AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      npts = (Int)*v.begin();
+      npts = (int)*v.begin();
       AlwaysAssert(npts == 1066, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
       sum = *v.begin();
@@ -302,7 +302,7 @@ int main() {
       m = *v.begin();
       AlwaysAssert(m == 65, AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      npts = (Int)*v.begin();
+      npts = (int)*v.begin();
       AlwaysAssert(npts == 934, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
       sum = *v.begin();
@@ -328,13 +328,13 @@ int main() {
         ++count;
       }
       subLatt.setPixelMask(ArrayLattice<bool>(mask), true);
-      stats = LatticeStatistics<Float>(subLatt);
+      stats = LatticeStatistics<float>(subLatt);
       stats.configureFitToHalf(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       stats.getStatistic(v, LatticeStatsBase::MEAN, false);
       m = *v.begin();
       AlwaysAssert(near(m, -167083.5), AipsError);
       stats.getStatistic(v, LatticeStatsBase::NPTS, false);
-      npts = (Int)*v.begin();
+      npts = (int)*v.begin();
       AlwaysAssert(npts == 198, AipsError);
       stats.getStatistic(v, LatticeStatsBase::SUM, false);
       sum = *v.begin();
@@ -387,11 +387,11 @@ int main() {
     }
     {
       cout << "test stats for complex value lattice using old and new methods" << endl;
-      uInt size = 500000;
+      unsigned int size = 500000;
       Vector<Complex> cdata(size);
       Vector<Complex>::iterator iter = cdata.begin();
       Vector<Complex>::iterator end = cdata.end();
-      Float i = 0;
+      float i = 0;
       DComplex expMean((size - 1) / 2.0, (size - 1) / 2.0);
       DComplex expNVar = 0;
       DComplex expSumSq(0, 0);
@@ -406,7 +406,7 @@ int main() {
       DComplex expNpts(size, 0);
       DComplex expVar = expNVar / DComplex(size - 1, 0);
       DComplex expSigma = sqrt(expVar);
-      DComplex expRMS = sqrt(expSumSq / (Double)size);
+      DComplex expRMS = sqrt(expSumSq / (double)size);
       Array<DComplex> sum, npts, mean, sumsq, var, sigma, rms, mymax, mymin;
       IPosition pos(1, 0);
       ArrayLattice<Complex> latt(cdata);
@@ -718,30 +718,30 @@ int main() {
     {
       // CAS-10938
       cout << "test CAS-10938" << endl;
-      Array<Float> largeArray(IPosition(3, 4000, 4000, OMP::nMaxThreads() + 1));
-      ArrayLattice<Float> myLatt(largeArray);
-      SubLattice<Float> mySubLatt(myLatt);
-      LatticeStatistics<Float> lattStats(mySubLatt);
-      Vector<Int> axes(2, 0);
+      Array<float> largeArray(IPosition(3, 4000, 4000, OMP::nMaxThreads() + 1));
+      ArrayLattice<float> myLatt(largeArray);
+      SubLattice<float> mySubLatt(myLatt);
+      LatticeStatistics<float> lattStats(mySubLatt);
+      Vector<int> axes(2, 0);
       axes[1] = 1;
       lattStats.setAxes(axes);
       // ensure the stats framework code branch will be used
       lattStats.configureClassical(1, 1, 0, 0);
-      Array<Double> npts;
+      Array<double> npts;
       // The fact that this call completes successfully is
       // sufficient to verify the bug fix
       AlwaysAssert(lattStats.getStatistic(npts, LatticeStatsBase::NPTS), AipsError);
     }
     {
-      Vector<Float> mydata(2);
+      Vector<float> mydata(2);
       mydata[0] = 0;
       mydata[1] = 1;
-      ArrayLattice<Float> latt(mydata);
-      SubLattice<Float> subLatt(latt);
-      LatticeStatistics<Float> stats(subLatt);
+      ArrayLattice<float> latt(mydata);
+      SubLattice<float> subLatt(latt);
+      LatticeStatistics<float> stats(subLatt);
       stats.configureFitToHalf(FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER);
       stats.setComputeQuantiles(true);
-      Array<Double> v;
+      Array<double> v;
       stats.getStatistic(v, LatticeStatsBase::MEAN, false);
       AlwaysAssert(*v.begin() == 0, AipsError);
       // fix for issue found in as part of CAS-10948 implementation
@@ -754,13 +754,13 @@ int main() {
     {
       // tests using the various lattice stats algorithms
       IPosition shape(3, 100, 100, 100);
-      Array<Float> adata(shape);
+      Array<float> adata(shape);
       indgen(adata);
-      ArrayLattice<Float> latt(adata);
-      SubLattice<Float> subLatt(latt);
+      ArrayLattice<float> latt(adata);
+      SubLattice<float> subLatt(latt);
       LogIO log;
-      for (uInt i = 0; i < 3; ++i) {
-        LatticeStatistics<Float> stats(subLatt, log);
+      for (unsigned int i = 0; i < 3; ++i) {
+        LatticeStatistics<float> stats(subLatt, log);
         stats.setComputeQuantiles(true);
         switch (i) {
           case 0:
@@ -773,11 +773,11 @@ int main() {
             stats.forceUseStatsFrameworkUsingDataProviders();
             break;
         }
-        Array<Double> stat;
+        Array<double> stat;
         stats.getStatistic(stat, LatticeStatsBase::SUM);
         AlwaysAssert(*stat.begin() == 499999500000, AipsError);
         stats.getStatistic(stat, LatticeStatsBase::SUMSQ);
-        AlwaysAssert(near(*stat.begin(), (Double)333332833333500000, 1e-9), AipsError);
+        AlwaysAssert(near(*stat.begin(), (double)333332833333500000, 1e-9), AipsError);
         stats.getStatistic(stat, LatticeStatsBase::MEAN);
         AlwaysAssert(*stat.begin() == 499999.5, AipsError);
         stats.getStatistic(stat, LatticeStatsBase::RMS);
@@ -804,12 +804,12 @@ int main() {
         stats.getMinMaxPos(minPos, maxPos);
         AlwaysAssert(minPos == IPosition(3, 0, 0, 0), AipsError);
         AlwaysAssert(maxPos == shape - 1, AipsError);
-        stats.setAxes(Vector<Int>(1, 1));
+        stats.setAxes(Vector<int>(1, 1));
         IPosition loc(2, 50, 50);
         stats.getStatistic(stat, LatticeStatsBase::SUM);
         AlwaysAssert(stat(loc) == 50500000, AipsError);
         stats.getStatistic(stat, LatticeStatsBase::SUMSQ);
-        AlwaysAssert(near(stat(loc), (Double)25503333250000, 1e-8), AipsError);
+        AlwaysAssert(near(stat(loc), (double)25503333250000, 1e-8), AipsError);
         stats.getStatistic(stat, LatticeStatsBase::MEAN);
         AlwaysAssert(stat(loc) == 505000.0, AipsError);
         stats.getStatistic(stat, LatticeStatsBase::RMS);
@@ -840,19 +840,19 @@ int main() {
     {
       // CAS-14660; all pixels being incorrectly masked in certain cursor axes selection cases.
       cout << "test CAS-14660" << endl;
-      Array<Float> arr(IPosition(4, 1, 4300, 4, 117));
-      ArrayLattice<Float> myLatt(arr);
+      Array<float> arr(IPosition(4, 1, 4300, 4, 117));
+      ArrayLattice<float> myLatt(arr);
       // SubLattice<Float> mySubLatt(myLatt);
       ExtendLattice ext(myLatt, IPosition(4, 4300, 4300, 4, 117), IPosition(), IPosition(1, 0));
       cout << "myLatt shape " << myLatt.shape() << endl;
       cout << "ext shape " << ext.shape() << endl;
       // SubLattice<Float> mySubLatt(Lattice(ex);
-      LatticeStatistics<Float> lattStats(ext);
-      Vector<Int> axes(3, 0);
+      LatticeStatistics<float> lattStats(ext);
+      Vector<int> axes(3, 0);
       axes[1] = 1;
       axes[2] = 3;
       lattStats.setAxes(axes);
-      Array<Double> npts;
+      Array<double> npts;
       lattStats.getStatistic(npts, LatticeStatsBase::NPTS);
       cout << "npts shape " << npts.shape() << endl;
       AlwaysAssert(npts.shape() == IPosition(1, 4), AipsError);
@@ -869,22 +869,22 @@ void doitFloat(LogIO& os) {
 
   IPosition shape(1);
   shape = 64;
-  Array<Float> inArr(shape);
+  Array<float> inArr(shape);
   indgen(inArr);
   //
   //
-  Vector<Float> results(LatticeStatsBase::NSTATS);
+  Vector<float> results(LatticeStatsBase::NSTATS);
   Vector<bool> hasResult(LatticeStatsBase::NSTATS);
   hasResult = true;
   //
-  results(LatticeStatsBase::NPTS) = Float(shape(0));
+  results(LatticeStatsBase::NPTS) = float(shape(0));
   results(LatticeStatsBase::SUM) = sum(inArr);
   results(LatticeStatsBase::SUMSQ) = sum(square(inArr));
-  Float med = median(inArr);
+  float med = median(inArr);
   results(LatticeStatsBase::MEDIAN) = med;
   results(LatticeStatsBase::MEDABSDEVMED) = median(abs(inArr - med));
-  Float t1 = fractile(inArr, 0.25);
-  Float t2 = fractile(inArr, 0.75);
+  float t1 = fractile(inArr, 0.25);
+  float t2 = fractile(inArr, 0.75);
   results(LatticeStatsBase::QUARTILE) = (t2 - t1);
   results(LatticeStatsBase::Q1) = t1;
   results(LatticeStatsBase::Q3) = t2;
@@ -906,26 +906,26 @@ void doitFloat(LogIO& os) {
   do2DFloat(results, hasResult, inArr, os);
 }
 
-void do1DFloat(const Vector<Float>& results, const Vector<bool>& hasResult,
-               const Array<Float>& inArr, LogIO& os) {
+void do1DFloat(const Vector<float>& results, const Vector<bool>& hasResult,
+               const Array<float>& inArr, LogIO& os) {
   const IPosition shape = inArr.shape();
-  ArrayLattice<Float> inLat(inArr);
-  SubLattice<Float> subLat(inLat);
-  LatticeStatistics<Float> stats(subLat, os, false, false);
+  ArrayLattice<float> inLat(inArr);
+  SubLattice<float> subLat(inLat);
+  LatticeStatistics<float> stats(subLat, os, false, false);
 
   test1DFloat(stats, results, hasResult, shape);
 
   // Test copy constructor - feeble test
 
   {
-    LatticeStatistics<Float> stats2(stats);
+    LatticeStatistics<float> stats2(stats);
     test1DFloat(stats2, results, hasResult, shape);
   }
 
   // Test assignment operator - feeble test
 
   {
-    LatticeStatistics<Float> stats2(stats);
+    LatticeStatistics<float> stats2(stats);
     stats = stats2;
     test1DFloat(stats, results, hasResult, shape);
   }
@@ -938,24 +938,24 @@ void do1DFloat(const Vector<Float>& results, const Vector<bool>& hasResult,
   }
 }
 
-void do2DFloat(const Vector<Float>& results, const Vector<bool>& hasResult, const Array<Float>& arr,
+void do2DFloat(const Vector<float>& results, const Vector<bool>& hasResult, const Array<float>& arr,
                LogIO& os) {
-  uInt nX = arr.shape()(0);
-  uInt nY = 20;
+  unsigned int nX = arr.shape()(0);
+  unsigned int nY = 20;
   IPosition shape(2, nX, nY);
 
   // Fill Lattice with replicated rows
 
-  ArrayLattice<Float> lat(shape);
+  ArrayLattice<float> lat(shape);
   Slicer slice(IPosition(2, 0, 0), shape, Slicer::endIsLength);
   LatticeUtilities::replicate(lat, slice, arr);
-  SubLattice<Float> subLat(lat);
+  SubLattice<float> subLat(lat);
 
   // Make LS object and set axes so that we work out stats
   // over first axis as a function of nY replicated rows
 
-  LatticeStatistics<Float> stats(subLat, os, false, false);
-  Vector<Int> axes(1);
+  LatticeStatistics<float> stats(subLat, os, false, false);
+  Vector<int> axes(1);
   axes = 0;
   AlwaysAssert(stats.setAxes(axes), AipsError);
 
@@ -966,14 +966,14 @@ void do2DFloat(const Vector<Float>& results, const Vector<bool>& hasResult, cons
   // Test copy constructor - feeble test
 
   {
-    LatticeStatistics<Float> stats2(stats);
+    LatticeStatistics<float> stats2(stats);
     test2DFloat(stats2, results, hasResult, shape);
   }
 
   // Test assignment operator - feeble test
 
   {
-    LatticeStatistics<Float> stats2(stats);
+    LatticeStatistics<float> stats2(stats);
     stats = stats2;
     test2DFloat(stats, results, hasResult, shape);
   }
@@ -986,12 +986,12 @@ void do2DFloat(const Vector<Float>& results, const Vector<bool>& hasResult, cons
   }
 }
 
-void test1DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
+void test1DFloat(LatticeStatistics<float>& stats, const Vector<float>& results,
                  const Vector<bool>& hasResult, const IPosition& shape) {
   AlwaysAssert(stats.displayAxes().nelements() == 0, AipsError);
   //
-  typedef NumericTraits<Float>::PrecisionType AccumType;
-  Double tol = 1.0e-6;
+  typedef NumericTraits<float>::PrecisionType AccumType;
+  double tol = 1.0e-6;
 
   {
     IPosition pos(1, 0);
@@ -1000,8 +1000,8 @@ void test1DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
   }
 
   {
-    const Int nStats = LatticeStatsBase::NSTATS;
-    for (Int i = 0; i < nStats; i++) {
+    const int nStats = LatticeStatsBase::NSTATS;
+    for (int i = 0; i < nStats; i++) {
       Array<AccumType> a;
       LatticeStatsBase::StatisticsTypes t = static_cast<LatticeStatsBase::StatisticsTypes>(i);
       IPosition pos(1, 0);
@@ -1015,7 +1015,7 @@ void test1DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
         AlwaysAssert(a.shape() == IPosition(1, 1), AipsError);
         AlwaysAssert(near(a(pos), results(i), tol), AipsError);
       }
-      Array<Float> b;
+      Array<float> b;
       if (t == LatticeStatsBase::FLUX) {
         AlwaysAssert(!stats.getConvertedStatistic(b, t, true), AipsError);
       } else {
@@ -1037,23 +1037,23 @@ void test1DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
   }
 
   {
-    Float dMin, dMax;
+    float dMin, dMax;
     AlwaysAssert(stats.getFullMinMax(dMin, dMax), AipsError);
     AlwaysAssert(near(results(LatticeStatsBase::MIN), dMin, tol), AipsError);
     AlwaysAssert(near(results(LatticeStatsBase::MAX), dMax, tol), AipsError);
   }
 }
 
-void test2DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
+void test2DFloat(LatticeStatistics<float>& stats, const Vector<float>& results,
                  const Vector<bool>& hasResult, const IPosition& shape) {
   AlwaysAssert(shape.nelements() == 2, AipsError);
-  const Vector<Int> dA = stats.displayAxes();
+  const Vector<int> dA = stats.displayAxes();
   AlwaysAssert(dA.nelements() == 1, AipsError);
   AlwaysAssert(dA(0) == 1, AipsError);
-  const uInt nY = shape(1);
+  const unsigned int nY = shape(1);
   //
-  typedef NumericTraits<Float>::PrecisionType AccumType;
-  Double tol = 1.0e-6;
+  typedef NumericTraits<float>::PrecisionType AccumType;
+  double tol = 1.0e-6;
   //
   {
     IPosition pos(2, 0, 0);
@@ -1065,8 +1065,8 @@ void test2DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
   // Check stats correct for each row
 
   {
-    const Int nStats = LatticeStatsBase::NSTATS;
-    for (Int i = 0; i < nStats; i++) {
+    const int nStats = LatticeStatsBase::NSTATS;
+    for (int i = 0; i < nStats; i++) {
       Array<AccumType> a;
       LatticeStatsBase::StatisticsTypes t = static_cast<LatticeStatsBase::StatisticsTypes>(i);
       IPosition pos(1, 0);
@@ -1078,13 +1078,13 @@ void test2DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
       }
       if (hasResult(i)) {
         AlwaysAssert(a.shape() == IPosition(1, nY), AipsError);
-        for (uInt j = 0; j < nY; j++) {
+        for (unsigned int j = 0; j < nY; j++) {
           pos(0) = j;
           AlwaysAssert(near(a(pos), results(i), tol), AipsError);
         }
       }
       //
-      Array<Float> b;
+      Array<float> b;
       if (t == LatticeStatsBase::FLUX) {
         AlwaysAssert(!stats.getConvertedStatistic(b, t, true), AipsError);
       } else {
@@ -1092,7 +1092,7 @@ void test2DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
       }
       if (hasResult(i)) {
         AlwaysAssert(b.shape() == IPosition(1, nY), AipsError);
-        for (uInt j = 0; j < nY; j++) {
+        for (unsigned int j = 0; j < nY; j++) {
           pos(0) = j;
           AlwaysAssert(near(b(pos), results(i), tol), AipsError);
         }
@@ -1101,7 +1101,7 @@ void test2DFloat(LatticeStatistics<Float>& stats, const Vector<Float>& results,
   }
   //
   {
-    Float dMin, dMax;
+    float dMin, dMax;
     AlwaysAssert(stats.getFullMinMax(dMin, dMax), AipsError);
     AlwaysAssert(near(results(LatticeStatsBase::MIN), dMin, tol), AipsError);
     AlwaysAssert(near(results(LatticeStatsBase::MAX), dMax, tol), AipsError);

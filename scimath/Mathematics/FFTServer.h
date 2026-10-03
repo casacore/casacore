@@ -340,7 +340,7 @@ class FFTServer {
   // If toFrequency is true, the first FFT will be from time to frequency.
   // relshift is the freq shift normalised to the bandwidth.
   // Only transform over selected dimension. Iterate over the others.
-  void fftshift(Array<S>& cValues, const uInt& whichAxis, const Double& relshift,
+  void fftshift(Array<S>& cValues, const unsigned int& whichAxis, const double& relshift,
                 const bool toFrequency = true);
 
   // N-D complex->complex FFT shift (FFT - phase-mult - inverse FFT)
@@ -349,7 +349,7 @@ class FFTServer {
   // relshift is the freq shift normalised to the bandwidth.
   // Only transform over selected dimension. Iterate over the others.
   void fftshift(Array<S>& outValues, Array<bool>& outFlags, const Array<S>& cValues,
-                const Array<bool>& inFlags, const uInt& whichAxis, const Double& relshift,
+                const Array<bool>& inFlags, const unsigned int& whichAxis, const double& relshift,
                 const bool goodIsTrue = false, const bool toFrequency = true);
 
   // N-D real->real FFT shift (FFT to complex - phase-mult - inverse FFT)
@@ -357,7 +357,7 @@ class FFTServer {
   // relshift is the freq shift normalised to the bandwidth.
   // Only transform over selected dimension. Iterate over the others.
   void fftshift(Array<T>& outValues, Array<bool>& outFlags, const Array<T>& rValues,
-                const Array<bool>& inFlags, const uInt& whichAxis, const Double& relshift,
+                const Array<bool>& inFlags, const unsigned int& whichAxis, const double& relshift,
                 const bool goodIsTrue = false);
 
  private:

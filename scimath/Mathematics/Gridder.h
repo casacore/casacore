@@ -55,32 +55,32 @@ class Gridder {
   virtual Range correct(const IPosition& loc);
 
   // Return a correction vector in x for loc y
-  virtual void correctX1D(Vector<Range>& factor, const Int locy);
+  virtual void correctX1D(Vector<Range>& factor, const int locy);
 
-  Vector<Int>& location(Vector<Int>& loc, const Vector<Domain>& pos);
+  Vector<int>& location(Vector<int>& loc, const Vector<Domain>& pos);
 
   Vector<Domain>& position(Vector<Domain>& gpos, const Vector<Domain>& pos);
 
-  virtual bool onGrid(const Vector<Int>& loc);
+  virtual bool onGrid(const Vector<int>& loc);
 
-  virtual bool onGrid(const Vector<Int>& loc, const Vector<Int>& delta);
+  virtual bool onGrid(const Vector<int>& loc, const Vector<int>& delta);
 
   virtual bool onGrid(const Vector<Domain>& pos);
 
-  void setOffset(const Vector<Int>& off);
+  void setOffset(const Vector<int>& off);
 
   void setOffset(const IPosition& off);
 
  protected:
-  Int nint(Double val) { return Int(std::floor(val + 0.5)); }
+  int nint(double val) { return int(std::floor(val + 0.5)); }
 
   virtual void fillCorrectionVectors();
 
   // Correction factor for 1 dimension. This is virtual and
   // must be assigned appropriately for derived classes
-  virtual Range correctionFactor1D(Int loc, Int len) = 0;
+  virtual Range correctionFactor1D(int loc, int len) = 0;
 
-  Int ndim;
+  int ndim;
   IPosition shape;  // Shape of array
 
   Vector<Domain> scale;   // Scaling from world to pixel
@@ -88,11 +88,11 @@ class Gridder {
 
   Vector<Domain> posVec;  // Scaled location
 
-  Vector<Int> locVec;        // Vector for location type quantities
-  Vector<Int> shapeVec;      // Vector for shape
-  Vector<Int> zeroShapeVec;  // Vector for zero shape
-  Vector<Int> offsetVec;     // Offset to be added to coordinates
-  Vector<Int> centerVec;     // IPosition for center
+  Vector<int> locVec;        // Vector for location type quantities
+  Vector<int> shapeVec;      // Vector for shape
+  Vector<int> zeroShapeVec;  // Vector for zero shape
+  Vector<int> offsetVec;     // Offset to be added to coordinates
+  Vector<int> centerVec;     // IPosition for center
 
   Vector<Vector<Range>> correctionVectors;
 };

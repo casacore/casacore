@@ -98,7 +98,7 @@ class TiledCollapser {
   // corresponds with the number of pixels produced per collapsed chunk.
   // <br><src>processAxis</src> is the axis of the line being passed
   // to the <src>process</src> function.
-  virtual void init(uInt nOutPixelsPerCollapse) = 0;
+  virtual void init(unsigned int nOutPixelsPerCollapse) = 0;
 
   // Can the process function in the derived class handle a null mask pointer?
   // If not, LatticeApply ensures that it'll always pass a mask block,
@@ -136,8 +136,8 @@ class TiledCollapser {
   // The position of other values can be calculated from index and shape
   // using function <src>toPositionInArray</src> in class
   // <linkto class=IPosition>IPosition</linkto>.
-  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const bool* inMask,
-                       uInt inDataIncr, uInt inMaskIncr, uInt nrval, const IPosition& startPos,
+  virtual void process(unsigned int accumIndex1, unsigned int accumIndex3, const T* inData, const bool* inMask,
+                       unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition& startPos,
                        const IPosition& shape) = 0;
 
   // End the accumulator. It should return the accumulator as an

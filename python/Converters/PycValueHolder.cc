@@ -64,19 +64,19 @@ boost::python::object casa_value_to_python::makeobject(ValueHolder const& vh) {
     case TpArrayBool:
       return casa_array_to_python<bool>::makeobject(vh.asArrayBool());
     case TpArrayUChar:
-      return casa_array_to_python<uChar>::makeobject(vh.asArrayuChar());
+      return casa_array_to_python<unsigned char>::makeobject(vh.asArrayuChar());
     case TpArrayShort:
-      return casa_array_to_python<Short>::makeobject(vh.asArrayShort());
+      return casa_array_to_python<short>::makeobject(vh.asArrayShort());
     case TpArrayInt:
-      return casa_array_to_python<Int>::makeobject(vh.asArrayInt());
+      return casa_array_to_python<int>::makeobject(vh.asArrayInt());
     case TpArrayUInt:
-      return casa_array_to_python<uInt>::makeobject(vh.asArrayuInt());
+      return casa_array_to_python<unsigned int>::makeobject(vh.asArrayuInt());
     case TpArrayInt64:
       return casa_array_to_python<Int64>::makeobject(vh.asArrayInt64());
     case TpArrayFloat:
-      return casa_array_to_python<Float>::makeobject(vh.asArrayFloat());
+      return casa_array_to_python<float>::makeobject(vh.asArrayFloat());
     case TpArrayDouble:
-      return casa_array_to_python<Double>::makeobject(vh.asArrayDouble());
+      return casa_array_to_python<double>::makeobject(vh.asArrayDouble());
     case TpArrayComplex:
       return casa_array_to_python<Complex>::makeobject(vh.asArrayComplex());
     case TpArrayDComplex:
@@ -137,8 +137,8 @@ ValueHolder casa_value_from_python::makeValueHolder(PyObject* obj_ptr) {
 #ifndef IS_PY3K
   } else if (PyInt_Check(obj_ptr)) {
     Int64 v = extract<Int64>(obj_ptr)();
-    if (Int(v) == v) {
-      return ValueHolder(Int(v));
+    if (int(v) == v) {
+      return ValueHolder(int(v));
     }
     return ValueHolder(v);
 #endif
@@ -176,11 +176,11 @@ ValueHolder casa_value_from_python::toVector(PyObject* obj_ptr) {
               obj_ptr));
     case TpInt:
       return ValueHolder(
-          from_python_sequence<Vector<Int>, casa_variable_capacity_policy>::make_container(
+          from_python_sequence<Vector<int>, casa_variable_capacity_policy>::make_container(
               obj_ptr));
     case TpUInt:
       return ValueHolder(
-          from_python_sequence<Vector<uInt>, casa_variable_capacity_policy>::make_container(
+          from_python_sequence<Vector<unsigned int>, casa_variable_capacity_policy>::make_container(
               obj_ptr));
     case TpInt64:
       return ValueHolder(
@@ -188,7 +188,7 @@ ValueHolder casa_value_from_python::toVector(PyObject* obj_ptr) {
               obj_ptr));
     case TpDouble:
       return ValueHolder(
-          from_python_sequence<Vector<Double>, casa_variable_capacity_policy>::make_container(
+          from_python_sequence<Vector<double>, casa_variable_capacity_policy>::make_container(
               obj_ptr));
     case TpDComplex:
       return ValueHolder(

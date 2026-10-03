@@ -122,7 +122,7 @@ TableExprNode TableParseQuery::handleSlice(const TableExprNode& array,
 TableExprNode TableParseQuery::handleFunc(const String& name, const TableExprNodeSet& arguments,
                                           const TaQLStyle& style) {
   // # No functions have to be ignored.
-  Vector<Int> ignoreFuncs;
+  Vector<int> ignoreFuncs;
   // Use a default table if no one available.
   if (tableList_p.empty()) {
     return TableParseFunc::makeFuncNode(this, name, arguments, ignoreFuncs, TableExprInfo(), style);
@@ -141,7 +141,7 @@ TableExprNode TableParseQuery::handleFunc(const String& name, const TableExprNod
 // # Only take the part beyond the period.
 // # Extend the block each time. Since there are only a few column names,
 // # this will not be too expensive.
-void TableParseQuery::handleColumn(Int stringType, const String& name, const TableExprNode& expr,
+void TableParseQuery::handleColumn(int stringType, const String& name, const TableExprNode& expr,
                                    const String& newName, const String& newNameMask,
                                    const String& newDtype) {
   tableProject_p.handleColumn(stringType, name, expr, newName, newNameMask, newDtype, *this);
@@ -257,7 +257,7 @@ void TableParseQuery::initDescriptions(const TableDesc& desc, const Record& dmin
 ValueHolder TableParseQuery::getRecFld(const String& name) {
   String keyName;
   const TableRecord& keyset = findKeyword(name, keyName, false);
-  Int fieldnr = keyset.fieldNumber(keyName);
+  int fieldnr = keyset.fieldNumber(keyName);
   if (fieldnr < 0) {
     throw(TableInvExpr("Keyword " + name + " does not exist"));
   }
@@ -453,7 +453,7 @@ Int64 TableParseQuery::evalIntScaExpr(const TableExprNode& expr) const {
   // Get the value as a double, because some expressions result in double.
   // Round it to an integer.
   TableExprId rowid(0);
-  Double val;
+  double val;
   expr.get(rowid, val);
   if (val >= 0) {
     return static_cast<Int64>(val + 0.5);
@@ -480,7 +480,7 @@ void TableParseQuery::handleInsert() {
         "Error in INSERT command; nr of columns (=" + std::to_string(colNames.size()) +
         ") mismatches "
         "number of VALUES expressions (=" +
-        std::to_string(Int(update_p.size())) + ")");
+        std::to_string(int(update_p.size())) + ")");
   }
   tableProject_p.setUpdateNames(update_p);
 }
@@ -506,10 +506,10 @@ void TableParseQuery::doUpdate(bool showTimings, const Table& origTable, Table& 
     throw TableInvExpr("Table " + updTable.tableName() + " is not writable");
   }
   // # First check if the update columns and values are correct.
-  uInt nrkey = update_p.size();
+  unsigned int nrkey = update_p.size();
   Block<TableColumn> cols(nrkey);
   Block<ArrayColumn<bool>> maskCols(nrkey);
-  for (uInt i = 0; i < nrkey; i++) {
+  for (unsigned int i = 0; i < nrkey; i++) {
     TableParseUpdate& key = *(update_p[i]);
     key.check(origTable, updTable);
     // Correct, so attach the TableColumn objects.
@@ -525,7 +525,7 @@ void TableParseQuery::doUpdate(bool showTimings, const Table& origTable, Table& 
   TableExprIdAggr rowid(groups);
   for (rownr_t row = 0; row < rownrs.size(); ++row) {
     rowid.setRownr(rownrs[row]);
-    for (uInt i = 0; i < nrkey; i++) {
+    for (unsigned int i = 0; i < nrkey; i++) {
       update_p[i]->updateColumn(cols[i], maskCols[i], row, rowid);
     }
   }
@@ -545,7 +545,7 @@ Table TableParseQuery::doInsert(bool showTimings, Table& table) {
   // Add rows if the inserts are given as expressions.
   // Select rows and use update to put the expressions into the rows.
   if (update_p.size() > 0) {
-    uInt nexpr = insertExprs_p.size();
+    unsigned int nexpr = insertExprs_p.size();
     Int64 nrowex = nexpr / update_p.size();
     AlwaysAssert(nrowex * update_p.size() == nexpr, AipsError);
     Int64 nrow = nrowex;
@@ -572,7 +572,7 @@ Table TableParseQuery::doInsert(bool showTimings, Table& table) {
       selRownrs[0] = table.nrow();
       table.addRow();
       Table sel = table(selRownrs);
-      for (uInt j = 0; j < update_p.size(); ++j) {
+      for (unsigned int j = 0; j < update_p.size(); ++j) {
         update_p[j]->setNode(insertExprs_p[inx * update_p.size() + j]);
       }
       doUpdate(false, Table(), sel, selRownrs);
@@ -610,7 +610,7 @@ Table TableParseQuery::doInsert(bool showTimings, Table& table) {
   // Check if the data types match.
   const TableDesc& tdesc1 = table.tableDesc();
   const TableDesc& tdesc2 = sel.tableDesc();
-  for (uInt i = 0; i < colNames.size(); i++) {
+  for (unsigned int i = 0; i < colNames.size(); i++) {
     if (tdesc1[colNames[i]].trueDataType() != tdesc2[sourceNames[i]].trueDataType()) {
       throw TableInvExpr("Error in INSERT command; data type of columns " + colNames[i] + " and " +
                          sourceNames[i] + " mismatch");
@@ -900,7 +900,7 @@ Table TableParseQuery::doDistinct(bool showTimings, const Table& table) {
 // # Keep the name of the resulting table.
 void TableParseQuery::handleGiving(const String& name, const Record& rec) {
   resultName_p = name;
-  for (uInt i = 0; i < rec.nfields(); ++i) {
+  for (unsigned int i = 0; i < rec.nfields(); ++i) {
     String fldName = rec.name(i);
     ToLowerCaseInPlace(fldName);
     bool done = false;
@@ -1098,7 +1098,7 @@ void TableParseQuery::execute(bool showTimings, bool setInGiving, bool mustSelec
     cerr << "GROUPBY to be done using " << groupby_p.size() << " aggregate nodes" << endl;
   }
   // Column nodes used in aggregate functions should not adhere applySelection.
-  uInt ndisabled = groupby_p.disableApplySelection();
+  unsigned int ndisabled = groupby_p.disableApplySelection();
   if (doTracing) {
     cerr << "  disableApplySelection done in " << ndisabled << " column nodes of aggregate nodes"
          << endl;
@@ -1257,7 +1257,7 @@ String TableParseQuery::getTableStructure(const Vector<String>& parts, const TaQ
   bool sortcol = false;
   bool tabkey = false;
   bool colkey = false;
-  for (uInt i = 2; i < parts.size(); ++i) {
+  for (unsigned int i = 2; i < parts.size(); ++i) {
     String opt(parts[i]);
     ToLowerCaseInPlace(opt);
     bool fop = true;

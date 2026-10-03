@@ -98,19 +98,19 @@ class FITSMask : public Lattice<bool> {
   // Constructor (for 8 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, uChar magic,
+  FITSMask(TiledFileAccess* tiledFileAccess, float scale, float offset, unsigned char magic,
            bool hasBlanks);
 
   // Constructor (for 16 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, Short magic,
+  FITSMask(TiledFileAccess* tiledFileAccess, float scale, float offset, short magic,
            bool hasBlanks);
 
   // Constructor (for 32 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask(TiledFileAccess* tiledFileAccess, Float scale, Float offset, Int magic, bool hasBlanks);
+  FITSMask(TiledFileAccess* tiledFileAccess, float scale, float offset, int magic, bool hasBlanks);
 
   // Copy constructor (reference semantics).  The TiledFileAccess pointer
   // is just copied.
@@ -147,18 +147,18 @@ class FITSMask : public Lattice<bool> {
 
  private:
   // Mask out ONLY NaN's
-  void filterNaN(bool* pMask, const float* pData, uInt nelems);
+  void filterNaN(bool* pMask, const float* pData, unsigned int nelems);
 
   // Mask out NaN's and values 0.0
-  void filterZeroNaN(bool* pMask, const Float* pData, uInt nelems);
+  void filterZeroNaN(bool* pMask, const float* pData, unsigned int nelems);
 
   //
   TiledFileAccess* itsTiledFilePtr;
-  Array<Float> itsBuffer;
-  Float itsScale, itsOffset;
-  Short itsUCharMagic;
-  Short itsShortMagic;
-  Int itsLongMagic;
+  Array<float> itsBuffer;
+  float itsScale, itsOffset;
+  short itsUCharMagic;
+  short itsShortMagic;
+  int itsLongMagic;
   bool itsHasIntBlanks;
   bool itsFilterZero;
 };

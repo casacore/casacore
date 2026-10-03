@@ -66,10 +66,10 @@ class UMaps {
 
 //* Constants
 // IAU definition of Gaussian grav. constant for calculating IAU units
-const Double IAU_k = 0.01720209895;
+const double IAU_k = 0.01720209895;
 // Number of FITS units recognised (change the FITSstring and FITSunit lists
 // in the UnitMap.cc when changing this number.
-const uInt N_FITS = 19;
+const unsigned int N_FITS = 19;
 
 // <summary>
 // contains all simple known physical units
@@ -338,9 +338,9 @@ class UnitMap {
   // in a recursive call.
   static map<String, UnitVal> &getMapCache();
   // Get the name of a FITS unit
-  static bool getNameFITS(const UnitName *&name, uInt which);
+  static bool getNameFITS(const UnitName *&name, unsigned int which);
   // Get the belonging unit to a FITS unit
-  static const String &getStringFITS(uInt which);
+  static const String &getStringFITS(unsigned int which);
 
   static void initUM();
   // Bits and pieces of initUM() to get compilation speed improved

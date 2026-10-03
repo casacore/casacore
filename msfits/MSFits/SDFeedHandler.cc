@@ -105,7 +105,7 @@ void SDFeedHandler::resetRow(const Record &row) {
   initRow(dummyCols, row);
 }
 
-void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vector<Int> &stokes) {
+void SDFeedHandler::fill(const Record &, int antennaId, int spwinId, const Vector<int> &stokes) {
   // don't bother unless there is something there
   if (msFeed_p) {
     Vector<String> polType;
@@ -115,7 +115,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
     bool found = false;
     feedId_p = -1;
     Vector<rownr_t> foundRows = index_p->getRowNumbers();
-    uInt whichOne = 0;
+    unsigned int whichOne = 0;
     // this is true if the row has probably come from a MS AND FEED1 == FEED2
     // When true, fill will try and reuse the same feed number if possible
     bool doMSCheck =
@@ -141,7 +141,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
     }
     while (!found && whichOne < foundRows.nelements()) {
       // these must all have the required number of receptors
-      uInt thisRow = foundRows(whichOne);
+      unsigned int thisRow = foundRows(whichOne);
       if (allEQ(polType, msFeedCols_p->polarizationType()(thisRow))) {
         // we can reuse this feed id, at least
         feedId_p = msFeedCols_p->feedId()(thisRow);
@@ -188,7 +188,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
     // if it was found, nothing else to do
     if (!found) {
       // we need to add one
-      Int newRow = msFeed_p->nrow();
+      int newRow = msFeed_p->nrow();
       if (doMSCheck) {
         // we're reusing what is in the row from a previous MS
         // the feed number
@@ -223,7 +223,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
       if (beamOffsetField_p.isAttached()) {
         msFeedCols_p->beamOffset().put(newRow, *beamOffsetField_p);
       } else {
-        msFeedCols_p->beamOffset().put(newRow, Matrix<Double>(2, *numRecpKey_p, 0.0));
+        msFeedCols_p->beamOffset().put(newRow, Matrix<double>(2, *numRecpKey_p, 0.0));
       }
       msFeedCols_p->polarizationType().put(newRow, polType);
       if (polResponseField_p.isAttached()) {
@@ -237,15 +237,15 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
       if (positionField_p.isAttached()) {
         msFeedCols_p->position().put(newRow, *positionField_p);
       } else {
-        msFeedCols_p->position().put(newRow, Vector<Double>(3, 0.0));
+        msFeedCols_p->position().put(newRow, Vector<double>(3, 0.0));
       }
       if (receptorAngleField_p.isAttached()) {
         msFeedCols_p->receptorAngle().put(newRow, *receptorAngleField_p);
       } else if (scaReceptorAngleField_p.isAttached()) {
         msFeedCols_p->receptorAngle().put(newRow,
-                                          Vector<Double>(*numRecpKey_p, *scaReceptorAngleField_p));
+                                          Vector<double>(*numRecpKey_p, *scaReceptorAngleField_p));
       } else {
-        msFeedCols_p->receptorAngle().put(newRow, Vector<Double>(*numRecpKey_p, 0.0));
+        msFeedCols_p->receptorAngle().put(newRow, Vector<double>(*numRecpKey_p, 0.0));
       }
       if (phasedFeedIdField_p.isAttached()) {
         if (msFeedCols_p->phasedFeedId().isNull() && *phasedFeedIdField_p >= 0) {
@@ -381,9 +381,9 @@ void SDFeedHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   }
 }
 
-void SDFeedHandler::stokesToPolType(const Vector<Int> &stokes, Vector<String> &polType) {
-  std::map<String, Int> polTypeMap;
-  for (uInt i = 0; i < stokes.nelements(); i++) {
+void SDFeedHandler::stokesToPolType(const Vector<int> &stokes, Vector<String> &polType) {
+  std::map<String, int> polTypeMap;
+  for (unsigned int i = 0; i < stokes.nelements(); i++) {
     String type1, type2;
     switch (Stokes::type(stokes(i))) {
       case Stokes::RR:

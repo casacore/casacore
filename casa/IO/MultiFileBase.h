@@ -134,7 +134,7 @@ class MultiFileBase {
   // support it (as determined at configure time), the flag will always be
   // set to false. If true, the data buffers will have a proper alignment
   // and size (as needed by O_DIRECT).
-  MultiFileBase(const String& name, Int blockSize, bool useODirect);
+  MultiFileBase(const String& name, int blockSize, bool useODirect);
 
   // The destructor flushes dirty blocks and closes the container file.
   virtual ~MultiFileBase();
@@ -151,7 +151,7 @@ class MultiFileBase {
   // Make the correct MultiFileBase object for a nested file.
   virtual std::shared_ptr<MultiFileBase> makeNested(const std::shared_ptr<MultiFileBase>& parent,
                                                     const String& name, ByteIO::OpenOption,
-                                                    Int blockSize) const = 0;
+                                                    int blockSize) const = 0;
 
   // Get the file name of the MultiFileBase container file.
   String fileName() const { return itsName; }
@@ -162,7 +162,7 @@ class MultiFileBase {
   // Open the given logical file and return its file id.
   // If the name is unknown, an exception is thrown.
   // It allocates the internal buffer of the logical file.
-  Int openFile(const String& name);
+  int openFile(const String& name);
 
   // Create a new logical file and return its file id.
   // Only the base name of the given file name is used. In this way the
@@ -170,31 +170,31 @@ class MultiFileBase {
   // If the logical file already exists, it is deleted if ByteIO::New is
   // given. Otherwise an exception is thrown.
   // It allocates the internal buffer of the logical file.
-  Int createFile(const String& name, ByteIO::OpenOption = ByteIO::New);
+  int createFile(const String& name, ByteIO::OpenOption = ByteIO::New);
 
   // Flush the possible dirty buffer of the given logical file.
-  void flushFile(Int fileId);
+  void flushFile(int fileId);
 
   // Close a logical file.
   // It flushes and deallocates its buffer.
-  void closeFile(Int fileId);
+  void closeFile(int fileId);
 
   // Delete a logical file. It adds its blocks to the free block list.
-  void deleteFile(Int fileId);
+  void deleteFile(int fileId);
 
   // Get the size of a logical file.
-  Int64 fileSize(Int fileId) const;
+  Int64 fileSize(int fileId) const;
 
   // Read a block at the given offset in the logical file.
   // It returns the actual size read.
-  Int64 read(Int fileId, void* buffer, Int64 size, Int64 offset);
+  Int64 read(int fileId, void* buffer, Int64 size, Int64 offset);
 
   // Write a block at the given offset in the logical file.
   // It returns the actual size written.
-  Int64 write(Int fileId, const void* buffer, Int64 size, Int64 offset);
+  Int64 write(int fileId, const void* buffer, Int64 size, Int64 offset);
 
   // Truncate the logical file to the given size.
-  void truncate(Int fileId, Int64 size);
+  void truncate(int fileId, Int64 size);
 
   // Reopen the underlying file for read/write access.
   // Nothing will be done if the file is writable already.
@@ -209,7 +209,7 @@ class MultiFileBase {
   Int64 blockSize() const { return itsBlockSize; }
 
   // Get the nr of logical files.
-  uInt nfile() const;
+  unsigned int nfile() const;
 
   // Get the total nr of data blocks used.
   Int64 nblock() const { return itsNrBlock; }
@@ -223,7 +223,7 @@ class MultiFileBase {
   // Return the file id of a file in the MultiFileBase object.
   // If the name is unknown, an exception is thrown if throwExcp is set.
   // Otherwise it returns -1.
-  Int fileId(const String& name, bool throwExcp = true) const;
+  int fileId(const String& name, bool throwExcp = true) const;
 
   // Is O_DIRECT used?
   bool useODirect() const { return itsUseODirect; }
@@ -246,7 +246,7 @@ class MultiFileBase {
   // Add a file to the MultiFileBase object. It returns the file id.
   // Only the base name of the given file name is used. In this way the
   // MultiFileBase container file can be moved.
-  Int addFile(const String& name);
+  int addFile(const String& name);
 
   // Do the class-specific actions on opening a logical file.
   virtual void doOpenFile(MultiFileInfo&) = 0;

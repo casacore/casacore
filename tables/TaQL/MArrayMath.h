@@ -133,22 +133,22 @@ class MMeanFunc : public MArrayFunctorBase<T> {
 template <typename T>
 class MVarianceFunc : public MArrayFunctorBase<T> {
  public:
-  explicit MVarianceFunc(uInt ddof = 0) : itsDdof(ddof) {}
+  explicit MVarianceFunc(unsigned int ddof = 0) : itsDdof(ddof) {}
   virtual ~MVarianceFunc() {}
   T operator()(const MArray<T>& arr) const { return variance(arr, itsDdof); }
 
  private:
-  uInt itsDdof;
+  unsigned int itsDdof;
 };
 template <typename T>
 class MStddevFunc : public MArrayFunctorBase<T> {
  public:
-  explicit MStddevFunc(uInt ddof = 0) : itsDdof(ddof) {}
+  explicit MStddevFunc(unsigned int ddof = 0) : itsDdof(ddof) {}
   ~MStddevFunc() {}
   T operator()(const MArray<T>& arr) const { return stddev(arr, itsDdof); }
 
  private:
-  uInt itsDdof;
+  unsigned int itsDdof;
 };
 template <typename T>
 class MAvdevFunc : public MArrayFunctorBase<T> {
@@ -180,7 +180,7 @@ class MMedianFunc : public MArrayFunctorBase<T> {
 template <typename T>
 class MFractileFunc : public MArrayFunctorBase<T> {
  public:
-  explicit MFractileFunc(Float fraction, bool sorted = false, bool inPlace = false)
+  explicit MFractileFunc(float fraction, bool sorted = false, bool inPlace = false)
       : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
   virtual ~MFractileFunc() {}
   T operator()(const MArray<T>& arr) const {
@@ -222,7 +222,7 @@ void partialArrayMath(MArray<RES>& res, const MArray<T>& a, const IPosition& col
   IPosition shape(a.array().shape().removeAxes(collapseAxes));
   /*
   Int64 nr = 1;
-  for (uInt i=0; i<collapseAxes.size(); ++i) {
+  for (unsigned int i=0; i<collapseAxes.size(); ++i) {
     nr *= a.array().shape()[collapseAxes[i]];
   }
   ///#pragma omp parallel
@@ -264,7 +264,7 @@ void boxedArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition& b
                     const MArrayFunctorBase<T, RES>& funcObj) {
   AlwaysAssert(array.hasMask(), AipsError);
   const IPosition& shape = array.shape();
-  uInt ndim = shape.size();
+  unsigned int ndim = shape.size();
   IPosition fullBoxShape, resShape;
   fillBoxedShape(shape, boxShape, fullBoxShape, resShape);
   res.resize(resShape, false);
@@ -283,7 +283,7 @@ void boxedArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition& b
       *data++ = funcObj(MArray<T>(array.array()(blc, trc), subMask));
       *mask++ = false;
     }
-    uInt ax;
+    unsigned int ax;
     for (ax = 0; ax < ndim; ++ax) {
       blc[ax] += fullBoxShape[ax];
       if (blc[ax] < shape[ax]) {
@@ -315,7 +315,7 @@ void slidingArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition&
                       const MArrayFunctorBase<T, RES>& funcObj, bool fillEdge = true) {
   AlwaysAssert(array.hasMask(), AipsError);
   const IPosition& shape = array.shape();
-  uInt ndim = shape.size();
+  unsigned int ndim = shape.size();
   IPosition boxEnd, resShape;
   bool empty = fillSlidingShape(shape, halfBoxShape, boxEnd, resShape);
   if (fillEdge) {
@@ -351,7 +351,7 @@ void slidingArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition&
       }
       ++iterarr;
       ++itermask;
-      uInt ax;
+      unsigned int ax;
       for (ax = 0; ax < ndim; ++ax) {
         if (++pos[ax] < resShape[ax]) {
           blc[ax]++;
@@ -738,36 +738,36 @@ MArray<T> conj(const MArray<T>& arr) {
   return MArray<T>(conj(arr.array()), arr);
 }
 
-inline MArray<Float> real(const MArray<Complex>& arr) {
-  return MArray<Float>(real(arr.array()), arr);
+inline MArray<float> real(const MArray<Complex>& arr) {
+  return MArray<float>(real(arr.array()), arr);
 }
 
-inline MArray<Float> imag(const MArray<Complex>& arr) {
-  return MArray<Float>(imag(arr.array()), arr);
+inline MArray<float> imag(const MArray<Complex>& arr) {
+  return MArray<float>(imag(arr.array()), arr);
 }
 
-inline MArray<Float> amplitude(const MArray<Complex>& arr) {
-  return MArray<Float>(amplitude(arr.array()), arr);
+inline MArray<float> amplitude(const MArray<Complex>& arr) {
+  return MArray<float>(amplitude(arr.array()), arr);
 }
 
-inline MArray<Float> phase(const MArray<Complex>& arr) {
-  return MArray<Float>(phase(arr.array()), arr);
+inline MArray<float> phase(const MArray<Complex>& arr) {
+  return MArray<float>(phase(arr.array()), arr);
 }
 
-inline MArray<Double> real(const MArray<DComplex>& arr) {
-  return MArray<Double>(real(arr.array()), arr);
+inline MArray<double> real(const MArray<DComplex>& arr) {
+  return MArray<double>(real(arr.array()), arr);
 }
 
-inline MArray<Double> imag(const MArray<DComplex>& arr) {
-  return MArray<Double>(imag(arr.array()), arr);
+inline MArray<double> imag(const MArray<DComplex>& arr) {
+  return MArray<double>(imag(arr.array()), arr);
 }
 
-inline MArray<Double> amplitude(const MArray<DComplex>& arr) {
-  return MArray<Double>(amplitude(arr.array()), arr);
+inline MArray<double> amplitude(const MArray<DComplex>& arr) {
+  return MArray<double>(amplitude(arr.array()), arr);
 }
 
-inline MArray<Double> phase(const MArray<DComplex>& arr) {
-  return MArray<Double>(phase(arr.array()), arr);
+inline MArray<double> phase(const MArray<DComplex>& arr) {
+  return MArray<double>(phase(arr.array()), arr);
 }
 // </group>
 
@@ -843,7 +843,7 @@ T mean(const MArray<T>& a) {
 }
 
 template <typename T>
-T variance(const MArray<T>& a, T mean, uInt ddof) {
+T variance(const MArray<T>& a, T mean, unsigned int ddof) {
   Int64 nv = a.nvalid();
   if (nv < ddof + 1) return T();
   if (!a.hasMask()) return pvariance(a.array(), mean, ddof);
@@ -856,17 +856,17 @@ T variance(const MArray<T>& a, T mean, uInt ddof) {
 }
 
 template <typename T>
-T variance(const MArray<T>& a, uInt ddof) {
+T variance(const MArray<T>& a, unsigned int ddof) {
   return variance(a, mean(a), ddof);
 }
 
 template <typename T>
-T stddev(const MArray<T>& a, uInt ddof) {
+T stddev(const MArray<T>& a, unsigned int ddof) {
   return sqrt(variance(a, ddof));
 }
 
 template <typename T>
-T stddev(const MArray<T>& a, T mean, uInt ddof) {
+T stddev(const MArray<T>& a, T mean, unsigned int ddof) {
   return sqrt(variance(a, mean, ddof));
 }
 
@@ -932,7 +932,7 @@ inline T medianInPlace(const MArray<T>& a, bool sorted = false) {
 // the two middle elements is taken if the array has an even nr of elements.
 // It uses kthLargest if the array is not sorted yet.
 template <typename T>
-T fractile(const MArray<T>& a, Float fraction, bool sorted = false, bool inPlace = false) {
+T fractile(const MArray<T>& a, float fraction, bool sorted = false, bool inPlace = false) {
   // The normal fractile function needs at least one element, so shortcut.
   if (a.empty()) return T();
   if (!a.hasMask()) return fractile(a.array(), fraction, sorted, inPlace);
@@ -1001,7 +1001,7 @@ MArray<T> partialMeans(const MArray<T>& a, const IPosition& collapseAxes) {
   return partialArrayMath(a, collapseAxes, MMeanFunc<T>());
 }
 template <typename T>
-MArray<T> partialVariances(const MArray<T>& a, const IPosition& collapseAxes, uInt ddof) {
+MArray<T> partialVariances(const MArray<T>& a, const IPosition& collapseAxes, unsigned int ddof) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1010,7 +1010,7 @@ MArray<T> partialVariances(const MArray<T>& a, const IPosition& collapseAxes, uI
   return partialArrayMath(a, collapseAxes, MVarianceFunc<T>(ddof));
 }
 template <typename T>
-MArray<T> partialStddevs(const MArray<T>& a, const IPosition& collapseAxes, uInt ddof) {
+MArray<T> partialStddevs(const MArray<T>& a, const IPosition& collapseAxes, unsigned int ddof) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1047,7 +1047,7 @@ MArray<T> partialMedians(const MArray<T>& a, const IPosition& collapseAxes,
   return partialArrayMath(a, collapseAxes, MMedianFunc<T>(false, takeEvenMean, inPlace));
 }
 template <typename T>
-MArray<T> partialFractiles(const MArray<T>& a, const IPosition& collapseAxes, Float fraction,
+MArray<T> partialFractiles(const MArray<T>& a, const IPosition& collapseAxes, float fraction,
                            bool inPlace = false) {
   if (a.isNull()) {
     return MArray<T>();
@@ -1115,7 +1115,7 @@ MArray<T> slidingMeans(const MArray<T>& a, const IPosition& halfBoxSize, bool fi
   return slidingArrayMath(a, halfBoxSize, MMeanFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingVariances(const MArray<T>& a, const IPosition& halfBoxSize, uInt ddof,
+MArray<T> slidingVariances(const MArray<T>& a, const IPosition& halfBoxSize, unsigned int ddof,
                            bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
@@ -1125,7 +1125,7 @@ MArray<T> slidingVariances(const MArray<T>& a, const IPosition& halfBoxSize, uIn
   return slidingArrayMath(a, halfBoxSize, MVarianceFunc<T>(ddof), fillEdge);
 }
 template <typename T>
-MArray<T> slidingStddevs(const MArray<T>& a, const IPosition& halfBoxSize, uInt ddof,
+MArray<T> slidingStddevs(const MArray<T>& a, const IPosition& halfBoxSize, unsigned int ddof,
                          bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
@@ -1164,7 +1164,7 @@ MArray<T> slidingMedians(const MArray<T>& a, const IPosition& halfBoxSize,
   return slidingArrayMath(a, halfBoxSize, MMedianFunc<T>(false, takeEvenMean, inPlace), fillEdge);
 }
 template <typename T>
-MArray<T> slidingFractiles(const MArray<T>& a, const IPosition& halfBoxSize, Float fraction,
+MArray<T> slidingFractiles(const MArray<T>& a, const IPosition& halfBoxSize, float fraction,
                            bool inPlace = false, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
@@ -1233,7 +1233,7 @@ MArray<T> boxedMeans(const MArray<T>& a, const IPosition& boxSize) {
   return boxedArrayMath(a, boxSize, MMeanFunc<T>());
 }
 template <typename T>
-MArray<T> boxedVariances(const MArray<T>& a, const IPosition& boxSize, uInt ddof) {
+MArray<T> boxedVariances(const MArray<T>& a, const IPosition& boxSize, unsigned int ddof) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1242,7 +1242,7 @@ MArray<T> boxedVariances(const MArray<T>& a, const IPosition& boxSize, uInt ddof
   return boxedArrayMath(a, boxSize, MVarianceFunc<T>(ddof));
 }
 template <typename T>
-MArray<T> boxedStddevs(const MArray<T>& a, const IPosition& boxSize, uInt ddof) {
+MArray<T> boxedStddevs(const MArray<T>& a, const IPosition& boxSize, unsigned int ddof) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1280,7 +1280,7 @@ MArray<T> boxedMedians(const MArray<T>& a, const IPosition& boxSize, bool takeEv
   return boxedArrayMath(a, boxSize, MMedianFunc<T>(false, takeEvenMean, inPlace));
 }
 template <typename T>
-MArray<T> boxedFractiles(const MArray<T>& a, const IPosition& boxSize, Float fraction,
+MArray<T> boxedFractiles(const MArray<T>& a, const IPosition& boxSize, float fraction,
                          bool inPlace = false) {
   if (a.isNull()) {
     return MArray<T>();

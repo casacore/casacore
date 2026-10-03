@@ -145,7 +145,7 @@ void SetupNewTableRep::bindCreate(const Record& spec) {
   if (isUsed()) {
     throw(TableInvOper("SetupNewTable::bindCreate, object already used by Table"));
   }
-  for (uInt i = 0; i < spec.nfields(); i++) {
+  for (unsigned int i = 0; i < spec.nfields(); i++) {
     const Record& rec = spec.subRecord(i);
     if (rec.isDefined("TYPE") && rec.isDefined("NAME") && rec.isDefined("COLUMNS")) {
       String dmType = rec.asString("TYPE");
@@ -157,7 +157,7 @@ void SetupNewTableRep::bindCreate(const Record& spec) {
       Vector<String> cols(rec.asArrayString("COLUMNS"));
       std::shared_ptr<DataManager> dataMan(DataManager::getCtor(dmType)(dmGroup, sp));
       // Bind the columns to this data manager.
-      for (uInt j = 0; j < cols.nelements(); j++) {
+      for (unsigned int j = 0; j < cols.nelements(); j++) {
         bindColumn(cols(j), *dataMan);
       }
     }
@@ -172,7 +172,7 @@ void SetupNewTableRep::bindAll(const DataManager& dataMan, bool rebind) {
   // # Add DataManager object if not used yet.
   DataManager* dataManPtr = getDataManager(dataMan);
   // # Loop through all columns and bind them.
-  for (uInt i = 0; i < tdescPtr_p->ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdescPtr_p->ncolumn(); i++) {
     PlainColumn* col = colSetPtr_p->getColumn(i);
     if (rebind || !col->isBound()) {
       // # Great, bind the data manager to the column.
@@ -189,7 +189,7 @@ void SetupNewTableRep::bindGroup(const String& groupName, const DataManager& dat
   // #  Add DataManager object if not used yet.
   DataManager* dataManPtr = getDataManager(dataMan);
   // # Loop through all columns and bind those matching the group name.
-  for (uInt i = 0; i < tdescPtr_p->ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdescPtr_p->ncolumn(); i++) {
     PlainColumn* col = colSetPtr_p->getColumn(i);
     const ColumnDesc& cd = col->columnDesc();
     if (cd.dataManagerGroup() == groupName) {
@@ -230,7 +230,7 @@ void SetupNewTableRep::bindColumn(const String& columnName, const String& otherC
 
 void SetupNewTableRep::handleUnbound() {
   // # Loop through all columns and find unbound columns.
-  for (uInt i = 0; i < tdescPtr_p->ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdescPtr_p->ncolumn(); i++) {
     PlainColumn* col = colSetPtr_p->getColumn(i);
     const ColumnDesc& coldes = col->columnDesc();
     if (!col->isBound()) {
@@ -247,7 +247,7 @@ void SetupNewTableRep::handleUnbound() {
       col->bind(dataManPtr);
       // # Bind this data manager to all other unbound columns with
       // # the same group and default data manager type name.
-      for (uInt j = i + 1; j < tdescPtr_p->ncolumn(); j++) {
+      for (unsigned int j = i + 1; j < tdescPtr_p->ncolumn(); j++) {
         PlainColumn* cp = colSetPtr_p->getColumn(j);
         const ColumnDesc& cd = cp->columnDesc();
         if (!cp->isBound() && cd.dataManagerGroup() == coldes.dataManagerGroup() &&

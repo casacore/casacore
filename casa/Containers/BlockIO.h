@@ -75,11 +75,11 @@ class AipsIO;
 //
 //  <group>
 template <class T>
-void putBlock(AipsIO&, const Block<T>&, Int nr);
+void putBlock(AipsIO&, const Block<T>&, int nr);
 
 template <class T>
 void putBlock(AipsIO& ios, const Block<T>& blk) {
-  putBlock(ios, blk, (Int)(blk.nelements()));
+  putBlock(ios, blk, (int)(blk.nelements()));
 }
 
 template <class T>
@@ -94,11 +94,11 @@ void getBlock(AipsIO&, Block<T>&);
 //
 // <group>
 template <class T>
-void showBlock(std::ostream&, const Block<T>&, Int nr);
+void showBlock(std::ostream&, const Block<T>&, int nr);
 
 template <class T>
 void showBlock(std::ostream& ios, const Block<T>& blk) {
-  showBlock(ios, blk, (Int)(blk.nelements()));
+  showBlock(ios, blk, (int)(blk.nelements()));
 }
 // </group>
 
@@ -114,7 +114,7 @@ void showBlock(std::ostream& ios, const Block<T>& blk) {
 // <group>
 template <class T>
 AipsIO& operator<<(AipsIO& ios, const Block<T>& blk) {
-  putBlock(ios, blk, (Int)(blk.nelements()));
+  putBlock(ios, blk, (int)(blk.nelements()));
   return ios;
 }
 
@@ -126,7 +126,7 @@ AipsIO& operator>>(AipsIO& ios, Block<T>& blk) {
 
 template <class T>
 std::ostream& operator<<(std::ostream& ios, const Block<T>& blk) {
-  showBlock(ios, blk, (Int)(blk.nelements()));
+  showBlock(ios, blk, (int)(blk.nelements()));
   return ios;
 }
 // </group>
@@ -135,9 +135,9 @@ std::ostream& operator<<(std::ostream& ios, const Block<T>& blk) {
 // # Implement the specialization for the void* data type.
 // # This will not do anything at all.
 // # This specialization is needed for StColMirAIO.cc.
-inline void putBlock(AipsIO&, const Block<void*>&, Int) {}
+inline void putBlock(AipsIO&, const Block<void*>&, int) {}
 inline void getBlock(AipsIO&, Block<void*>&) {}
-inline void showBlock(AipsIO&, const Block<void*>&, Int) {}
+inline void showBlock(AipsIO&, const Block<void*>&, int) {}
 
 }  // namespace casacore
 

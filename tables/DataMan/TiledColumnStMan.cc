@@ -132,8 +132,8 @@ void TiledColumnStMan::setupCheck(const TableDesc& tableDesc,
   // The data columns may only contain arrays with the correct
   // dimensionality, which should be one less than the hypercube
   // dimensionality.
-  Int ndim = nrdim_p - 1;
-  for (uInt i = 0; i < dataNames.nelements(); i++) {
+  int ndim = nrdim_p - 1;
+  for (unsigned int i = 0; i < dataNames.nelements(); i++) {
     const ColumnDesc& columnDesc = tableDesc.columnDesc(dataNames(i));
     if (columnDesc.isScalar()) {
       if (ndim != 0) {

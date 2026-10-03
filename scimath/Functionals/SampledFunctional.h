@@ -97,12 +97,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // </todo>
 
 template <class Range>
-class SampledFunctional : public Functional<uInt, Range> {
+class SampledFunctional : public Functional<unsigned int, Range> {
  public:
   // Access the specified element of the data
-  virtual Range operator()(const uInt &index) const = 0;
+  virtual Range operator()(const unsigned int &index) const = 0;
   // Return the total size of the data set.
-  virtual uInt nelements() const = 0;
+  virtual unsigned int nelements() const = 0;
   // The virtual destructor does nothing
   virtual ~SampledFunctional() {}
 };

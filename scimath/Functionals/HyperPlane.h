@@ -109,7 +109,7 @@ class HyperPlane : public HyperPlaneParam<T> {
   // # Constructors
   //  Construct an m-dimensional hyper plane which has m parameters.  By
   //  default, the coefficients are initialised to zero, and <src>m=0</src>
-  explicit HyperPlane(const uInt m = 0) : HyperPlaneParam<T>(m) { ; }
+  explicit HyperPlane(const unsigned int m = 0) : HyperPlaneParam<T>(m) { ; }
   // Copy constructor/assignment (deep copy)
   // <group>
   HyperPlane(const HyperPlane<T> &other) : HyperPlaneParam<T>(other) {}
@@ -165,7 +165,7 @@ class HyperPlane_PS<AutoDiff<T>> : public HyperPlaneParam<AutoDiff<T>> {
   // # Construct
   //  Constructors an m-dimensional hyper plane which has m parameters.  By
   //  default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit HyperPlane_PS(const uInt m = 0) : HyperPlaneParam<AutoDiff<T>>(m) {}
+  explicit HyperPlane_PS(const unsigned int m = 0) : HyperPlaneParam<AutoDiff<T>>(m) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   HyperPlane_PS(const HyperPlane_PS<AutoDiff<T>> &other) : HyperPlaneParam<AutoDiff<T>>(other) {}

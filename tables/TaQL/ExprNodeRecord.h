@@ -69,7 +69,7 @@ class RecordInterface;
 
 class TableExprNodeRecordField : public TableExprNodeBinary {
  public:
-  TableExprNodeRecordField(DataType dtype, const Block<Int>& fieldNumbers);
+  TableExprNodeRecordField(DataType dtype, const Block<int>& fieldNumbers);
   ~TableExprNodeRecordField();
 
   virtual const IPosition& getShape(const TableExprId& id);
@@ -77,13 +77,13 @@ class TableExprNodeRecordField : public TableExprNodeBinary {
 
   virtual bool getBool(const TableExprId& id);
   virtual Int64 getInt(const TableExprId& id);
-  virtual Double getDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
   virtual String getString(const TableExprId& id);
 
  protected:
-  Block<Int> fieldNrs_p;
-  uInt lastEntry_p;
+  Block<int> fieldNrs_p;
+  unsigned int lastEntry_p;
 
   // Get the record for the last field number, thus going through
   // all subrecords for the other field numbers.
@@ -112,7 +112,7 @@ class TableExprNodeRecordField : public TableExprNodeBinary {
 
 class TableExprNodeRecordFieldArray : public TableExprNodeArray {
  public:
-  TableExprNodeRecordFieldArray(DataType dtype, const Block<Int>& fieldNumbers);
+  TableExprNodeRecordFieldArray(DataType dtype, const Block<int>& fieldNumbers);
   ~TableExprNodeRecordFieldArray();
 
   virtual bool isDefined(const TableExprId& id);
@@ -120,13 +120,13 @@ class TableExprNodeRecordFieldArray : public TableExprNodeArray {
 
   virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
   virtual MArray<String> getArrayString(const TableExprId& id);
 
  protected:
-  Block<Int> fieldNrs_p;
-  uInt lastEntry_p;
+  Block<int> fieldNrs_p;
+  unsigned int lastEntry_p;
 
   // Get the record for the last field number, thus going through
   // all subrecords for the other field numbers.

@@ -185,14 +185,14 @@ class LatticeHistograms {
   // indicates you have asked for an invalid axis or that the internal
   // status of the class is bad.  The default state of the class is to set
   // the cursor axes to all axes in the lattice.
-  bool setAxes(const Vector<Int>& cursorAxes);
+  bool setAxes(const Vector<int>& cursorAxes);
 
   // Set the number of bins for the histogram.  Note that the bin width is
   // worked out for each histogram separately from the data minimum and maximum.
   // The default state of the class is to set 25 bins.  A return value of <src>false</src>
   // indicates you gave a non-positive bin width or  that the internal status of the
   // class is bad.
-  bool setNBins(const uInt& nBins);
+  bool setNBins(const unsigned int& nBins);
 
   // Specify a pixel intensity range for which all pixels in that range are
   // included.  A vector of length 1 for <src>include</src> means that the
@@ -230,7 +230,7 @@ class LatticeHistograms {
   // plotting arguments or that the internal status of the class is bad. If you
   // don't call this function, the default state of the class is to not set
   // a plotting device.
-  bool setPlotting(PGPlotter& plotter, const Vector<Int>& nxy);
+  bool setPlotting(PGPlotter& plotter, const Vector<int>& nxy);
 
   // Display the histograms by plotting them.  A return value of <src>false</src>
   // indicates an invalid plotting device, or that the internal status of the class is bad.
@@ -241,7 +241,7 @@ class LatticeHistograms {
   void closePlotting();
 
   // Return the display axes
-  Vector<Int> displayAxes() const { return displayAxes_p; }
+  Vector<int> displayAxes() const { return displayAxes_p; }
 
   // This function retrieves the histograms into <src>Array</src>.  The shape of the first
   // dimension of this array is the number of bins.  The rest of the shape of the
@@ -287,7 +287,7 @@ class LatticeHistograms {
  protected:
   LogIO os_p;
   bool goodParameterStatus_p;
-  Vector<Int> cursorAxes_p, displayAxes_p;
+  Vector<int> cursorAxes_p, displayAxes_p;
   String error_p;
 
   // Given a location in the histogram storage lattice, convert those locations on the
@@ -304,17 +304,17 @@ class LatticeHistograms {
   bool binAll_p, needStorageLattice_p;
   bool doCumu_p, doGauss_p, doList_p, doLog_p;
   bool haveLogger_p, showProgress_p, forceDisk_p;
-  uInt nBins_p;
+  unsigned int nBins_p;
   PGPlotter plotter_p;
-  Vector<Int> nxy_p;
+  Vector<int> nxy_p;
   Vector<T> range_p;
   IPosition blcParent_p;
 
   // Convert a <tt>T</tt> to a <tt>Float</tt> for plotting
-  static Float convertT(const T value) { return Float(std::real(value)); };
+  static float convertT(const T value) { return float(std::real(value)); };
 
   // Convert a <tt>Float</tt> (from plotting) to a <tt>T</tt>
-  static T convertF(const Float value) { return T(value); };
+  static T convertF(const float value) { return T(value); };
 
   // Display histograms as a function of display axis
   bool displayHistograms();
@@ -349,14 +349,14 @@ class LatticeHistograms {
   bool setInclude(Vector<T>& range, bool& noInclude, const Vector<T>& include, std::ostream& os);
 
   // Set stream attributes
-  void setStream(std::ostream& os, Int oPrec);
+  void setStream(std::ostream& os, int oPrec);
 
   // Make a string with pixel coordinates of display axes.  This function
   // is over-ridden by ImageHistograms which inherits from LatticeHistograms.
   virtual String writeCoordinates(const IPosition& histPos) const;
 
   // Write values of display axes on plots
-  bool writeDispAxesValues(const String& coords, PGPlotter& plotter, Float nchar) const;
+  bool writeDispAxesValues(const String& coords, PGPlotter& plotter, float nchar) const;
 };
 
 // <summary> Generate histograms, tile by tile, from a masked lattice </summary>
@@ -430,19 +430,19 @@ template <class T>
 class HistTiledCollapser : public TiledCollapser<T, T> {
  public:
   // Constructor
-  HistTiledCollapser(LatticeStatistics<T>* pStats, uInt nBins);
+  HistTiledCollapser(LatticeStatistics<T>* pStats, unsigned int nBins);
 
   virtual ~HistTiledCollapser();
 
   // Initialize process, making some checks
-  virtual void init(uInt nOutPixelsPerCollapse);
+  virtual void init(unsigned int nOutPixelsPerCollapse);
 
   // Initialize the accumulator
   virtual void initAccumulator(uInt64 n1, uInt64 n3);
 
   // Process the data in the current chunk.
-  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const bool* inMask,
-                       uInt inDataIncr, uInt inMaskIncr, uInt nrval, const IPosition& startPos,
+  virtual void process(unsigned int accumIndex1, unsigned int accumIndex3, const T* inData, const bool* inMask,
+                       unsigned int inDataIncr, unsigned int inMaskIncr, unsigned int nrval, const IPosition& startPos,
                        const IPosition& shape);
 
   // End the accumulation process and return the result arrays
@@ -454,7 +454,7 @@ class HistTiledCollapser : public TiledCollapser<T, T> {
  private:
   LatticeStatistics<T>* pStats_p;
   Block<T>* pHist_p;
-  uInt nBins_p;
+  unsigned int nBins_p;
   uInt64 n1_p;
   uInt64 n3_p;
 };

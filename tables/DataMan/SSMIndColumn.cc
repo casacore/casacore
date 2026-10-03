@@ -38,14 +38,14 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SSMIndColumn::SSMIndColumn(SSMBase* aParent, int aDataType, uInt aColNr)
+SSMIndColumn::SSMIndColumn(SSMBase* aParent, int aDataType, unsigned int aColNr)
     : SSMColumn(aParent, aDataType, aColNr), isShapeFixed(false), itsIosFile(0), itsIndArray(0) {
   init();
 }
 
 SSMIndColumn::~SSMIndColumn() {}
 
-void SSMIndColumn::setMaxLength(uInt) {}
+void SSMIndColumn::setMaxLength(unsigned int) {}
 
 void SSMIndColumn::doCreate(rownr_t aNrRows) {
   // Initialize and create new file.
@@ -143,7 +143,7 @@ bool SSMIndColumn::isShapeDefined(rownr_t aRowNr) {
   return (getArrayPtr(aRowNr) == 0 ? false : true);
 }
 
-uInt SSMIndColumn::ndim(rownr_t aRowNr) { return getShape(aRowNr)->shape().nelements(); }
+unsigned int SSMIndColumn::ndim(rownr_t aRowNr) { return getShape(aRowNr)->shape().nelements(); }
 
 IPosition SSMIndColumn::shape(rownr_t aRowNr) { return getShape(aRowNr)->shape(); }
 

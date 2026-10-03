@@ -77,29 +77,29 @@ class MSProcessorColumns {
   // Access to required columns
   // <group>
   ScalarColumn<bool>& flagRow() { return flagRow_p; }
-  ScalarColumn<Int>& modeId() { return modeId_p; }
+  ScalarColumn<int>& modeId() { return modeId_p; }
   ScalarColumn<String>& type() { return type_p; }
-  ScalarColumn<Int>& typeId() { return typeId_p; }
+  ScalarColumn<int>& typeId() { return typeId_p; }
   ScalarColumn<String>& subType() { return subType_p; }
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Int>& passId() { return passId_p; }
+  ScalarColumn<int>& passId() { return passId_p; }
   // </group>
 
   // Const access to required columns
   // <group>
   const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
-  const ScalarColumn<Int>& modeId() const { return modeId_p; }
+  const ScalarColumn<int>& modeId() const { return modeId_p; }
   const ScalarColumn<String>& type() const { return type_p; }
-  const ScalarColumn<Int>& typeId() const { return typeId_p; }
+  const ScalarColumn<int>& typeId() const { return typeId_p; }
   const ScalarColumn<String>& subType() const { return subType_p; }
   // </group>
 
   // Const access to optional columns
   // <group>
-  const ScalarColumn<Int>& passId() const { return passId_p; }
+  const ScalarColumn<int>& passId() const { return passId_p; }
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -124,12 +124,12 @@ class MSProcessorColumns {
 
   // # required columns
   ScalarColumn<bool> flagRow_p;
-  ScalarColumn<Int> modeId_p;
+  ScalarColumn<int> modeId_p;
   ScalarColumn<String> type_p;
-  ScalarColumn<Int> typeId_p;
+  ScalarColumn<int> typeId_p;
   ScalarColumn<String> subType_p;
   // # optional columns
-  ScalarColumn<Int> passId_p;
+  ScalarColumn<int> passId_p;
 };
 
 // # Define the RO version for backward compatibility.

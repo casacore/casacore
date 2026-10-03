@@ -59,7 +59,7 @@ struct StatsData {
   std::shared_ptr<AccumType> medAbsDevMed;
   std::shared_ptr<AccumType> min;
   LocationType minpos;
-  Double npts;
+  double npts;
   AccumType nvariance;
   AccumType rms;
   AccumType stddev;

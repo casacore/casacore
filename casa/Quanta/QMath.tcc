@@ -103,14 +103,14 @@ Quantum<Qtype> operator/(const Qtype &left, const Quantum<Qtype> &other) {
 // - only Int powers allowed
 // - limited values of exponentials foreseen
 template <class Qtype>
-Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
+Quantum<Qtype> pow(const Quantum<Qtype> &left, int p) {
   if (::abs(p) >= 100) throw(AipsError("Quantum::pow exponent too large"));
   // Make sure 1 in current data type available
   Quantum<Qtype> res;
   Qtype tmp;
   tmp = left.getValue() * 0. + 1.;
 
-  Int i;
+  int i;
   if (p >= 0) {
     for (i = 0; i < p; i++) tmp *= left.getValue();
   } else {
@@ -125,18 +125,18 @@ Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
       sloc += "-";
       p = -p;
     }
-    if (p / 10 != 0) sloc += Char(Int(p) / 10 + '0');
-    sloc += Char(Int(p) % 10 + '0');
+    if (p / 10 != 0) sloc += char(int(p) / 10 + '0');
+    sloc += char(int(p) % 10 + '0');
     res.setUnit(sloc);
   }
   return res;
 }
 
 template <class Qtype>
-Quantum<Qtype> root(const Quantum<Qtype> &left, Int p) {
+Quantum<Qtype> root(const Quantum<Qtype> &left, int p) {
   if (p == 0) throw(AipsError("Quantum::root exponent zero"));
   Quantum<Qtype> res;
-  res.setValue(casacore::pow(left.getValue(), 1.0 / Double(p)));
+  res.setValue(casacore::pow(left.getValue(), 1.0 / double(p)));
   UnitVal vres(left.getFullUnit().getValue().root(p));
   ostringstream oss;
   oss << vres.getDim();

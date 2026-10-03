@@ -69,64 +69,64 @@ void MSValidIds::attach(const MeasurementSet &ms) {
   hasSource_p = ms_p.keywordSet().isDefined("SOURCE");
 }
 
-Int MSValidIds::antenna1(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::antenna1(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->antenna1()(rownr), ms_p.antenna());
   }
   return result;
 }
 
-Int MSValidIds::antenna2(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::antenna2(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->antenna2()(rownr), ms_p.antenna());
   }
   return result;
 }
 
-Int MSValidIds::dataDescId(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::dataDescId(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->dataDescId()(rownr), ms_p.dataDescription());
   }
   return result;
 }
 
-Int MSValidIds::fieldId(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::fieldId(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->fieldId()(rownr), ms_p.field());
   }
   return result;
 }
 
-Int MSValidIds::observationId(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::observationId(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->observationId()(rownr), ms_p.observation());
   }
   return result;
 }
 
-Int MSValidIds::processorId(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::processorId(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->processorId()(rownr), ms_p.processor());
   }
   return result;
 }
 
-Int MSValidIds::stateId(rownr_t rownr) const {
-  Int result = -1;
+int MSValidIds::stateId(rownr_t rownr) const {
+  int result = -1;
   if (checkRow(rownr) && romsCols_p) {
     result = checkResult(romsCols_p->stateId()(rownr), ms_p.state());
   }
   return result;
 }
 
-Int MSValidIds::polarizationId(rownr_t rownr) const {
-  Int result = dataDescId(rownr);
+int MSValidIds::polarizationId(rownr_t rownr) const {
+  int result = dataDescId(rownr);
   if (result >= 0) {
     result =
         checkResult(romsCols_p->dataDescription().polarizationId()(result), ms_p.polarization());
@@ -134,8 +134,8 @@ Int MSValidIds::polarizationId(rownr_t rownr) const {
   return result;
 }
 
-Int MSValidIds::spectralWindowId(rownr_t rownr) const {
-  Int result = dataDescId(rownr);
+int MSValidIds::spectralWindowId(rownr_t rownr) const {
+  int result = dataDescId(rownr);
   if (result >= 0) {
     result = checkResult(romsCols_p->dataDescription().spectralWindowId()(result),
                          ms_p.spectralWindow());
@@ -143,8 +143,8 @@ Int MSValidIds::spectralWindowId(rownr_t rownr) const {
   return result;
 }
 
-Int MSValidIds::dopplerId(rownr_t rownr) const {
-  Int result = hasDoppler_p ? spectralWindowId(rownr) : -1;
+int MSValidIds::dopplerId(rownr_t rownr) const {
+  int result = hasDoppler_p ? spectralWindowId(rownr) : -1;
   if (result >= 0) {
     result = romsCols_p->spectralWindow().dopplerId().isNull()
                  ? -1
@@ -153,8 +153,8 @@ Int MSValidIds::dopplerId(rownr_t rownr) const {
   return result;
 }
 
-Int MSValidIds::sourceId(rownr_t rownr) const {
-  Int result = hasSource_p ? fieldId(rownr) : -1;
+int MSValidIds::sourceId(rownr_t rownr) const {
+  int result = hasSource_p ? fieldId(rownr) : -1;
   if (result >= 0) {
     result = romsCols_p->field().sourceId()(result);
   }

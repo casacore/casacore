@@ -37,9 +37,9 @@ void show(const LCEllipsoid& ellipse) {
   Array<bool> mask = ellipse.get();
   IPosition shape = mask.shape();
   IPosition index = shape - 1;
-  uInt j = 0;
+  unsigned int j = 0;
   while (true) {
-    for (Int i = 0; i < shape(0); i++) {
+    for (int i = 0; i < shape(0); i++) {
       index[0] = i;
       cout << mask(index) << " ";
     }
@@ -62,12 +62,12 @@ void show(const LCEllipsoid& ellipse) {
 int main() {
   try {
     {
-      Float theta = M_PI / 3;
-      Float xcenter = 30;
-      Float ycenter = 30;
+      float theta = M_PI / 3;
+      float xcenter = 30;
+      float ycenter = 30;
       IPosition latticeShape(2, 60);
-      Float major = 20;
-      Float minor = 10;
+      float major = 20;
+      float minor = 10;
       LCEllipsoid ellipse(xcenter, ycenter, major, minor, theta, latticeShape);
       show(ellipse);
       LCEllipsoid* copy =
@@ -76,26 +76,26 @@ int main() {
       near(ellipse.theta(), copy->theta());
       delete copy;
 
-      Float theta2 = theta + M_PI;
+      float theta2 = theta + M_PI;
       LCEllipsoid ellipse2(xcenter, ycenter, major, minor, theta2, latticeShape);
       AlwaysAssert(ellipse == ellipse2, AipsError);
       near(ellipse.theta(), ellipse2.theta());
 
-      Float theta3 = theta - M_PI;
+      float theta3 = theta - M_PI;
       LCEllipsoid ellipse3(xcenter, ycenter, major, minor, theta3, latticeShape);
       AlwaysAssert(ellipse == ellipse3, AipsError);
       near(ellipse.theta(), ellipse3.theta());
     }
     {
-      Float theta = 0;
-      Float xcenter = 30;
-      Float ycenter = 30;
-      Vector<Float> center(2, xcenter);
+      float theta = 0;
+      float xcenter = 30;
+      float ycenter = 30;
+      Vector<float> center(2, xcenter);
       center[1] = ycenter;
       IPosition latticeShape(2, 60);
-      Float major = 20;
-      Float minor = 10;
-      Vector<Float> radii(2, major);
+      float major = 20;
+      float minor = 10;
+      Vector<float> radii(2, major);
       radii[1] = minor;
       LCEllipsoid ellipse(xcenter, ycenter, major, minor, theta, latticeShape);
       LCEllipsoid ellipse2(center, radii, latticeShape);
@@ -108,7 +108,7 @@ int main() {
       near(ellipse.theta(), ellipse2.theta());
       delete copy;
 
-      Float theta2 = M_PI / 2;
+      float theta2 = M_PI / 2;
       LCEllipsoid ellipse3(xcenter, ycenter, major, minor, theta2, latticeShape);
       radii[0] = minor;
       radii[1] = major;
@@ -117,26 +117,26 @@ int main() {
       near(ellipse3.theta(), ellipse4.theta());
     }
     {
-      Float theta = M_PI / 4;
-      Float xcenter = 40;
-      Float ycenter = 40;
+      float theta = M_PI / 4;
+      float xcenter = 40;
+      float ycenter = 40;
       IPosition latticeShape(2, 60);
-      Float major = 10;
-      Float minor = 5;
+      float major = 10;
+      float minor = 5;
       // off center ellipse
       LCEllipsoid ellipse(xcenter, ycenter, major, minor, theta, latticeShape);
       show(ellipse);
     }
     {
       // all of ellipse outside lattice
-      Float xcenter = 80;
-      Float ycenter = 80;
-      Vector<Float> center(2, xcenter);
+      float xcenter = 80;
+      float ycenter = 80;
+      Vector<float> center(2, xcenter);
       center[1] = ycenter;
       IPosition latticeShape(2, 60);
-      Float major = 20;
-      Float minor = 10;
-      Vector<Float> radii(2, major);
+      float major = 20;
+      float minor = 10;
+      Vector<float> radii(2, major);
       radii[1] = minor;
       bool thrown = false;
       try {
@@ -152,7 +152,7 @@ int main() {
       major = 40;
       minor = 10;
       // 5 degrees
-      Float theta = M_PI / 36;
+      float theta = M_PI / 36;
       thrown = false;
       try {
         LCEllipsoid ellipse(xcenter, ycenter, major, minor, theta, latticeShape);
@@ -164,14 +164,14 @@ int main() {
     {
       // center outside lattice, but part of the ellipse in inside
       // lattice
-      Float xcenter = -10;
-      Float ycenter = -10;
-      Vector<Float> center(2, xcenter);
+      float xcenter = -10;
+      float ycenter = -10;
+      Vector<float> center(2, xcenter);
       center[1] = ycenter;
       IPosition latticeShape(2, 60);
-      Float major = 30;
-      Float minor = 20;
-      Vector<Float> radii(2, major);
+      float major = 30;
+      float minor = 20;
+      Vector<float> radii(2, major);
       radii[1] = minor;
       LCEllipsoid ellipse(center, radii, latticeShape);
       show(ellipse);
@@ -188,7 +188,7 @@ int main() {
       LCEllipsoid ellipse3(center, radii, latticeShape);
       show(ellipse3);
 
-      Float theta = M_PI / 4;
+      float theta = M_PI / 4;
       major = 36.01;
       minor = 16.01;
       xcenter = -1;

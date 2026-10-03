@@ -83,7 +83,7 @@ class GNoiseFunction : public GNoiseParam<T> {
   //  mean=0, var=1.0
   //  <group>
   GNoiseFunction() : GNoiseParam<T>() {}
-  GNoiseFunction(const Double &mean, const Double &var) : GNoiseParam<T>(mean, var) {}
+  GNoiseFunction(const double &mean, const double &var) : GNoiseParam<T>(mean, var) {}
   // </group>
 
   // Copy constructor (deep copy)

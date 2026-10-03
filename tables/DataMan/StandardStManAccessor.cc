@@ -53,11 +53,11 @@ ROStandardStManAccessor& ROStandardStManAccessor::operator=(const ROStandardStMa
   return *this;
 }
 
-void ROStandardStManAccessor::setCacheSize(uInt aSize, bool canExceedNrBuckets) {
+void ROStandardStManAccessor::setCacheSize(unsigned int aSize, bool canExceedNrBuckets) {
   itsSSMPtr->setCacheSize(aSize, canExceedNrBuckets);
 }
 
-uInt ROStandardStManAccessor::getCacheSize() const { return itsSSMPtr->getCacheSize(); }
+unsigned int ROStandardStManAccessor::getCacheSize() const { return itsSSMPtr->getCacheSize(); }
 
 void ROStandardStManAccessor::clearCache() { itsSSMPtr->clearCache(); }
 

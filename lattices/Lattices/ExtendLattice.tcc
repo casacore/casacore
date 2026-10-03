@@ -129,7 +129,7 @@ bool ExtendLattice<T>::isWritable() const {
 }
 
 template <class T>
-bool ExtendLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool ExtendLattice<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsLatticePtr->lock(type, nattempts);
 }
 template <class T>
@@ -214,9 +214,9 @@ bool ExtendLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   IPosition end(buffer.shape() - 1);
   // # Iterate along the extendAxes through the buffer.
   const IPosition extendAxes = itsExtendSpec.extendAxes();
-  uInt nre = extendAxes.nelements();
+  unsigned int nre = extendAxes.nelements();
   for (;;) {
-    uInt i;
+    unsigned int i;
     for (i = 0; i < nre; i++) {
       end(extendAxes(i)) = pos(extendAxes(i));
     }
@@ -244,12 +244,12 @@ void ExtendLattice<T>::doPutSlice(const Array<T>&, const IPosition&, const IPosi
 }
 
 template <class T>
-uInt ExtendLattice<T>::advisedMaxPixels() const {
+unsigned int ExtendLattice<T>::advisedMaxPixels() const {
   return itsLatticePtr->advisedMaxPixels();
 }
 
 template <class T>
-IPosition ExtendLattice<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition ExtendLattice<T>::doNiceCursorShape(unsigned int maxPixels) const {
   IPosition cursorShape(itsLatticePtr->niceCursorShape(maxPixels));
   return itsExtendSpec.convertNew(cursorShape);
 }
@@ -274,9 +274,9 @@ bool ExtendLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section
   IPosition end(buffer.shape() - 1);
   // # Iterate along the extendAxes through the buffer.
   const IPosition extendAxes = itsExtendSpec.extendAxes();
-  uInt nre = extendAxes.nelements();
+  unsigned int nre = extendAxes.nelements();
   for (;;) {
-    uInt i;
+    unsigned int i;
     for (i = 0; i < nre; i++) {
       end(extendAxes(i)) = pos(extendAxes(i));
     }

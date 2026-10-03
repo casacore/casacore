@@ -80,7 +80,7 @@ class ConversionIO : public TypeIO {
   // length <src>bufferLength</src>. For arrays not fitting in this buffer,
   // it uses a temporary buffer allocated on the heap.
   ConversionIO(const std::shared_ptr<DataConversion>& dataConversion,
-               const std::shared_ptr<ByteIO>& byteIO, uInt bufferLength = 4096);
+               const std::shared_ptr<ByteIO>& byteIO, unsigned int bufferLength = 4096);
 
   // The copy constructor uses reference semantics
   ConversionIO(const ConversionIO& conversionIO);
@@ -95,16 +95,16 @@ class ConversionIO : public TypeIO {
   // Bool, complex and String values are handled by the base class.
   // <group>
   virtual size_t write(size_t nvalues, const bool* value);
-  virtual size_t write(size_t nvalues, const Char* data);
-  virtual size_t write(size_t nvalues, const uChar* data);
-  virtual size_t write(size_t nvalues, const Short* data);
-  virtual size_t write(size_t nvalues, const uShort* data);
-  virtual size_t write(size_t nvalues, const Int* data);
-  virtual size_t write(size_t nvalues, const uInt* data);
+  virtual size_t write(size_t nvalues, const char* data);
+  virtual size_t write(size_t nvalues, const unsigned char* data);
+  virtual size_t write(size_t nvalues, const short* data);
+  virtual size_t write(size_t nvalues, const unsigned short* data);
+  virtual size_t write(size_t nvalues, const int* data);
+  virtual size_t write(size_t nvalues, const unsigned int* data);
   virtual size_t write(size_t nvalues, const Int64* data);
   virtual size_t write(size_t nvalues, const uInt64* data);
-  virtual size_t write(size_t nvalues, const Float* data);
-  virtual size_t write(size_t nvalues, const Double* data);
+  virtual size_t write(size_t nvalues, const float* data);
+  virtual size_t write(size_t nvalues, const double* data);
   virtual size_t write(size_t nvalues, const Complex* value);
   virtual size_t write(size_t nvalues, const DComplex* value);
   virtual size_t write(size_t nvalues, const String* value);
@@ -114,16 +114,16 @@ class ConversionIO : public TypeIO {
   // Bool, complex and String values are handled by the base class.
   // <group>
   virtual size_t read(size_t nvalues, bool* value);
-  virtual size_t read(size_t nvalues, Char* data);
-  virtual size_t read(size_t nvalues, uChar* data);
-  virtual size_t read(size_t nvalues, Short* data);
-  virtual size_t read(size_t nvalues, uShort* data);
-  virtual size_t read(size_t nvalues, Int* data);
-  virtual size_t read(size_t nvalues, uInt* data);
+  virtual size_t read(size_t nvalues, char* data);
+  virtual size_t read(size_t nvalues, unsigned char* data);
+  virtual size_t read(size_t nvalues, short* data);
+  virtual size_t read(size_t nvalues, unsigned short* data);
+  virtual size_t read(size_t nvalues, int* data);
+  virtual size_t read(size_t nvalues, unsigned int* data);
   virtual size_t read(size_t nvalues, Int64* data);
   virtual size_t read(size_t nvalues, uInt64* data);
-  virtual size_t read(size_t nvalues, Float* data);
-  virtual size_t read(size_t nvalues, Double* data);
+  virtual size_t read(size_t nvalues, float* data);
+  virtual size_t read(size_t nvalues, double* data);
   virtual size_t read(size_t nvalues, Complex* value);
   virtual size_t read(size_t nvalues, DComplex* value);
   virtual size_t read(size_t nvalues, String* value);
@@ -134,7 +134,7 @@ class ConversionIO : public TypeIO {
   void init();
 
   template <typename T>
-  void initType(uInt& size, bool& copy) const;
+  void initType(unsigned int& size, bool& copy) const;
 
   template <typename T>
   size_t writeGeneric(size_t nvalues, const T* value, size_t type_size, bool copy);
@@ -143,16 +143,16 @@ class ConversionIO : public TypeIO {
 
   // # The data.
   std::shared_ptr<DataConversion> itsConversion;
-  uInt itsSizeChar;
-  uInt itsSizeuChar;
-  uInt itsSizeShort;
-  uInt itsSizeuShort;
-  uInt itsSizeInt;
-  uInt itsSizeuInt;
-  uInt itsSizeInt64;
-  uInt itsSizeuInt64;
-  uInt itsSizeFloat;
-  uInt itsSizeDouble;
+  unsigned int itsSizeChar;
+  unsigned int itsSizeuChar;
+  unsigned int itsSizeShort;
+  unsigned int itsSizeuShort;
+  unsigned int itsSizeInt;
+  unsigned int itsSizeuInt;
+  unsigned int itsSizeInt64;
+  unsigned int itsSizeuInt64;
+  unsigned int itsSizeFloat;
+  unsigned int itsSizeDouble;
   bool itsCopyChar;
   bool itsCopyuChar;
   bool itsCopyShort;
@@ -165,7 +165,7 @@ class ConversionIO : public TypeIO {
   bool itsCopyDouble;
   // # The buffer
   char* itsBuffer;
-  uInt itsBufferLength;
+  unsigned int itsBufferLength;
 };
 
 }  // namespace casacore

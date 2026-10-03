@@ -94,9 +94,9 @@ class MSSummary {
   // <group>
   // <src>maxCacheMB</src> is the maximum cache size in MB to use for the created
   // MSMetaData object.
-  MSSummary(const MeasurementSet& ms, Float maxCacheMB = 50.0);
-  MSSummary(const MeasurementSet* ms, Float maxCacheMB = 50.0);
-  MSSummary(const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
+  MSSummary(const MeasurementSet& ms, float maxCacheMB = 50.0);
+  MSSummary(const MeasurementSet* ms, float maxCacheMB = 50.0);
+  MSSummary(const MeasurementSet* ms, const String msname, float maxCacheMB = 50.0);
 
   // construct the object using an MSMetaDataObject
   MSSummary(std::shared_ptr<MSMetaData> msmd);
@@ -113,7 +113,7 @@ class MSSummary {
   // Set a new MS. <src>maxCacheMB</src> is the maximum cache size of the
   // created MSMetaData tool. If negative, the cache size used when this object
   // was created is used.
-  bool setMS(const MeasurementSet& ms, Float maxCacheMB = -1);
+  bool setMS(const MeasurementSet& ms, float maxCacheMB = -1);
 
   // List all header information.
   void list(LogIO& os, bool verbose = false, bool oneBased = true) const;
@@ -164,7 +164,7 @@ class MSSummary {
   void setListUnflaggedRowCount(bool v) { _listUnflaggedRowCount = v; }
 
   // OBSOLETE. No longer does anything, kept for compilation backward compatibility.
-  void setMetaDataCacheSizeInMB(Float) {}
+  void setMetaDataCacheSizeInMB(float) {}
 
  private:
   // Pointer to MS
@@ -178,14 +178,14 @@ class MSSummary {
   void clearFlags(LogIO& os) const;
 
   // For keeping track of the number of vis per field
-  mutable Vector<Int> nVisPerField_;
+  mutable Vector<int> nVisPerField_;
 
   // Name of the MS used in the constructor
   String msname_p;
 
   bool _listUnflaggedRowCount;
 
-  Float _cacheSizeMB;
+  float _cacheSizeMB;
 };
 
 }  // namespace casacore

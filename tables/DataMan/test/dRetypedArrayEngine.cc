@@ -72,13 +72,13 @@ void RetypedArrayEx2::deleteCopyInfo(void* copyInfo) { delete (CopyInfo*)copyInf
 
 RetypedArrayEx2::CopyInfo::CopyInfo(const TableRecord& record, const IPosition& shape)
     : mask_p(new Vector<bool>), nrTrue_p(0) {
-  Int fieldnr = record.description().fieldNumber("mask");
+  int fieldnr = record.description().fieldNumber("mask");
   if (fieldnr >= 0) {
     RORecordFieldPtr<Array<bool>> field(record, fieldnr);
     *mask_p = *field;
     AlwaysAssert(mask_p->nelements() == 4, DataManError);
   }
-  for (uInt i = 0; i < mask_p->nelements(); i++) {
+  for (unsigned int i = 0; i < mask_p->nelements(); i++) {
     if ((*mask_p)(i)) {
       nrTrue_p++;
     }
@@ -87,7 +87,7 @@ RetypedArrayEx2::CopyInfo::CopyInfo(const TableRecord& record, const IPosition& 
   AlwaysAssert(shape.nelements() == 1, DataManError);
   // When a mask is given, it must match the shape.
   if (nrTrue_p > 0) {
-    AlwaysAssert(shape(0) == Int(nrTrue_p), DataManError);
+    AlwaysAssert(shape(0) == int(nrTrue_p), DataManError);
   }
 }
 
@@ -99,7 +99,7 @@ void RetypedArrayEx2::CopyInfo::set(void* vout, const Array<DComplex>& in, const
   if (shape(0) == 4) {
     retypedArrayEngineSet(out, in);
   } else {
-    AlwaysAssert(shape(0) == Int(nrTrue_p), DataManError);
+    AlwaysAssert(shape(0) == int(nrTrue_p), DataManError);
     retypedArrayEngineSet(out, in, shape, (void*)mask_p);
   }
 }
@@ -200,9 +200,9 @@ void a(bool doExcp) {
   // Fill the table via the virtual columns.
   ArrayColumn<RetypedArrayEx1> colA(tab, "colA");
   Vector<RetypedArrayEx1> vec(10);
-  uInt i;
+  unsigned int i;
   for (i = 0; i < tab.nrow(); i++) {
-    for (uInt j = 0; j < 10; j++) {
+    for (unsigned int j = 0; j < 10; j++) {
       vec(j) = RetypedArrayEx1(i * 100 + j, i * 100 + j + 10000);
     }
     colA.put(i, vec);
@@ -231,7 +231,7 @@ void b() {
   Vector<RetypedArrayEx1> resA(10);
   Slice slice(1, 5, 2);
   for (rownr_t i = 0; i < tab.nrow(); i++) {
-    for (uInt j = 0; j < 10; j++) {
+    for (unsigned int j = 0; j < 10; j++) {
       resD(0, j) = i * 100 + j;
       resD(1, j) = resD(0, j) + 10000;
       resA(j) = RetypedArrayEx1(resD(0, j), resD(1, j));
@@ -252,7 +252,7 @@ void b() {
   }
   Matrix<RetypedArrayEx1> matA = colA.getColumn();
   for (rownr_t i = 0; i < tab.nrow(); i++) {
-    for (uInt j = 0; j < 10; j++) {
+    for (unsigned int j = 0; j < 10; j++) {
       if (!(matA(j, i) == RetypedArrayEx1(i * 100 + j, i * 100 + j + 10000))) {
         cout << "error in matA(" << j << "," << i << "): " << matA(j, i).x() << " "
              << matA(j, i).y() << endl;
@@ -282,10 +282,10 @@ void c() {
     // Fill the table via the virtual columns.
     ArrayColumn<RetypedArrayEx2> stokesColumn(tab, "Stokes");
     Vector<RetypedArrayEx2> vec(10);
-    uInt i;
+    unsigned int i;
     for (i = 0; i < tab.nrow(); i++) {
-      for (uInt j = 0; j < 10; j++) {
-        uInt v = i * 100 + j;
+      for (unsigned int j = 0; j < 10; j++) {
+        unsigned int v = i * 100 + j;
         vec(j) = RetypedArrayEx2(v, v + 10000, v + 50000, v + 90000);
       }
       stokesColumn.put(i, vec);
@@ -301,8 +301,8 @@ void c() {
     Matrix<DComplex> resD(4, 10);
     Vector<RetypedArrayEx2> resA(10);
     for (rownr_t i = 0; i < tab.nrow(); i++) {
-      for (uInt j = 0; j < 10; j++) {
-        uInt v = i * 100 + j;
+      for (unsigned int j = 0; j < 10; j++) {
+        unsigned int v = i * 100 + j;
         resD(0, j) = DComplex(v);
         resD(1, j) = DComplex(v + 10000);
         resD(2, j) = DComplex(v + 50000);
@@ -341,10 +341,10 @@ void c() {
     // Fill the table via the virtual columns.
     ArrayColumn<RetypedArrayEx2> stokesColumn(tab, "Stokes");
     Vector<RetypedArrayEx2> vec(10);
-    uInt i;
+    unsigned int i;
     for (i = 0; i < tab.nrow(); i++) {
-      for (uInt j = 0; j < 10; j++) {
-        uInt v = i * 100 + j;
+      for (unsigned int j = 0; j < 10; j++) {
+        unsigned int v = i * 100 + j;
         vec(j) = RetypedArrayEx2(v, v + 10000, v + 50000, v + 90000);
       }
       stokesColumn.put(i, vec);
@@ -360,8 +360,8 @@ void c() {
     Matrix<DComplex> resD(2, 10);
     Vector<RetypedArrayEx2> resA(10);
     for (rownr_t i = 0; i < tab.nrow(); i++) {
-      for (uInt j = 0; j < 10; j++) {
-        uInt v = i * 100 + j;
+      for (unsigned int j = 0; j < 10; j++) {
+        unsigned int v = i * 100 + j;
         resD(0, j) = DComplex(v);
         resD(1, j) = DComplex(v + 10000);
         resA(j) = RetypedArrayEx2(resD(0, j), resD(1, j), DComplex(0), DComplex(0));

@@ -108,10 +108,10 @@ class MSTableIndex {
   virtual Record &accessKey() { return *key_p; }
 
   // access the TIME to use in the search (seconds)
-  virtual Double &time() { return time_p; }
+  virtual double &time() { return time_p; }
 
   // access the INTERVAL to use in the search (seconds), must be >= 0
-  virtual Double &interval() { return interval_p; }
+  virtual double &interval() { return interval_p; }
 
   // get all of the rows in the subTable which have data during the indicated time and
   // interval values.  For now, this code will miss the case where the subtable has
@@ -133,20 +133,20 @@ class MSTableIndex {
   // the subtable
   Table tab_p;
 
-  ScalarColumn<Double> timeColumn_p, intervalColumn_p;
-  Vector<Double> timeVec_p, intervalVec_p;
-  const Double *timeVals_p, *intervalVals_p;
+  ScalarColumn<double> timeColumn_p, intervalColumn_p;
+  Vector<double> timeVec_p, intervalVec_p;
+  const double *timeVals_p, *intervalVals_p;
   bool deleteItTime_p, deleteItInterval_p;
 
   // Internal keys - set by user
   Record *key_p;
-  Block<RecordFieldPtr<Int>> intKeys_p;
-  Double time_p, interval_p;
+  Block<RecordFieldPtr<int>> intKeys_p;
+  double time_p, interval_p;
 
   // last known integer key values
-  Vector<Int> lastKeys_p;
+  Vector<int> lastKeys_p;
   // last known time and interval
-  Double lastTime_p, lastInterval_p;
+  double lastTime_p, lastInterval_p;
 
   // last search result - matching integer keys
   RowNumbers lastSearch_p;
@@ -161,7 +161,7 @@ class MSTableIndex {
   bool hasChanged_p;
 
   ColumnsIndex *index_p;
-  Block<RecordFieldPtr<Int>> indexKeys_p;
+  Block<RecordFieldPtr<int>> indexKeys_p;
   bool hasTime_p, hasInterval_p;
 
   void clear();

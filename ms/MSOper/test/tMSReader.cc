@@ -56,10 +56,10 @@ int main(int argc, const char* argv[]) {
 
     timer.mark();
 
-    for (uInt i = 0; i < ms.nrow(); i++) {
+    for (unsigned int i = 0; i < ms.nrow(); i++) {
       reader.gotoRow(i);
       cout << i << " : ";
-      for (uInt j = 0; j < tables.nelements(); j++) {
+      for (unsigned int j = 0; j < tables.nelements(); j++) {
         if (j > 0) cout << " | ";
         cout << reader.rowNumber(tables(j));
       }

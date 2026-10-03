@@ -106,17 +106,17 @@ class SDSpWindowHandler {
   void resetRow(const Record &);
 
   // fill - a circular buffer of last 100 spectral windows is checked
-  void fill(const Record &row, const Vector<Double> &frequency, Double refFrequency,
-            Double originalFreqDelt, Int freqRefType);
+  void fill(const Record &row, const Vector<double> &frequency, double refFrequency,
+            double originalFreqDelt, int freqRefType);
 
   // get the current spWindow ID
-  Int spWindowId() { return rownr_p; }
+  int spWindowId() { return rownr_p; }
 
  private:
-  RecordFieldPtr<Int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p, freqGroupKey_p,
+  RecordFieldPtr<int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p, freqGroupKey_p,
       netSidebandKey_p;
-  Vector<Double> fNCache_p, f0Cache_p, bwCache_p;
-  Double *fNCachePtr_p, *f0CachePtr_p, *bwCachePtr_p;
+  Vector<double> fNCache_p, f0Cache_p, bwCache_p;
+  double *fNCachePtr_p, *f0CachePtr_p, *bwCachePtr_p;
   bool deleteItFN_p, deleteItF0_p, deleteItBw_p;
   RecordFieldPtr<bool> flagRowKey_p;
   // the cache table is the one that is indexed
@@ -131,20 +131,20 @@ class SDSpWindowHandler {
       netSidebandCol_p, flagRowCol_p;
 
   // the next row number to use in the cached
-  uInt nextCacheRow_p;
+  unsigned int nextCacheRow_p;
 
   // the maximum number of rows in the cache - currently this is 1000
-  uInt cacheSize_p;
+  unsigned int cacheSize_p;
 
   // the current row number in the SPECTRAL_WINDOW table, i.e. the id
-  Int rownr_p;
+  int rownr_p;
 
   // fields possibly mined from the SDFITS row
   // floating point fields that we can't be certain of their type
-  Int bandwidField_p, freqresField_p;
+  int bandwidField_p, freqresField_p;
 
   // fields from a previous life as a MS
-  RORecordFieldPtr<Int> spWinIdField_p, ifConvChainField_p, freqGroupField_p, netSidebandField_p;
+  RORecordFieldPtr<int> spWinIdField_p, ifConvChainField_p, freqGroupField_p, netSidebandField_p;
   RORecordFieldPtr<bool> flagRowField_p;
 
   // cleanup everything

@@ -34,20 +34,20 @@ RecordFieldWriter::~RecordFieldWriter() {
 
 void MultiRecordFieldWriter::addWriter(RecordFieldWriter *fromNew) {
   AlwaysAssert(fromNew, AipsError);
-  uInt which = writers_p.nelements();
+  unsigned int which = writers_p.nelements();
   writers_p.resize(which + 1);
   writers_p[which] = fromNew;
 }
 
 void MultiRecordFieldWriter::copy() {
-  uInt n = writers_p.nelements();
-  for (uInt i = 0; i < n; i++) {
+  unsigned int n = writers_p.nelements();
+  for (unsigned int i = 0; i < n; i++) {
     writers_p[i]->writeField();
   }
 }
 
 MultiRecordFieldWriter::~MultiRecordFieldWriter() {
-  for (uInt i = 0; i < writers_p.nelements(); i++) {
+  for (unsigned int i = 0; i < writers_p.nelements(); i++) {
     delete writers_p[i];
   }
   writers_p.resize(0);

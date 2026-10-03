@@ -36,23 +36,23 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // initial values for the static data members
 
-Interpolate1D<Double, Double> *VanVleck::itsInterp = NULL;
-uInt VanVleck::itsSize = 65;
-uInt VanVleck::itsNx = 0;
-uInt VanVleck::itsNy = 0;
+Interpolate1D<double, double> *VanVleck::itsInterp = NULL;
+unsigned int VanVleck::itsSize = 65;
+unsigned int VanVleck::itsNx = 0;
+unsigned int VanVleck::itsNy = 0;
 bool VanVleck::itsEquiSpaced = false;
-Vector<Double> VanVleck::itsQx0;
-Vector<Double> VanVleck::itsQx1;
-Vector<Double> VanVleck::itsQy0;
-Vector<Double> VanVleck::itsQy1;
-Vector<Double> VanVleck::itsQx0Qx0;
-Vector<Double> VanVleck::itsQy0Qy0;
-Matrix<Double> VanVleck::itsQx0Qy0;
-Matrix<Double> VanVleck::itsQx1Qy1diffs;
-Double VanVleck::itsXlev = 0.0;
-Double VanVleck::itsYlev = 0.0;
-Double VanVleck::itsXmean = 0.0;
-Double VanVleck::itsYmean = 0.0;
+Vector<double> VanVleck::itsQx0;
+Vector<double> VanVleck::itsQx1;
+Vector<double> VanVleck::itsQy0;
+Vector<double> VanVleck::itsQy1;
+Vector<double> VanVleck::itsQx0Qx0;
+Vector<double> VanVleck::itsQy0Qy0;
+Matrix<double> VanVleck::itsQx0Qy0;
+Matrix<double> VanVleck::itsQx1Qy1diffs;
+double VanVleck::itsXlev = 0.0;
+double VanVleck::itsYlev = 0.0;
+double VanVleck::itsXmean = 0.0;
+double VanVleck::itsYmean = 0.0;
 std::mutex VanVleck::theirMutex;
 
 #define NEED_UNDERSCORES
@@ -69,43 +69,43 @@ std::mutex VanVleck::theirMutex;
 #endif
 
 extern "C" {
-void dqags(Double (*)(Double *), Double *, Double *, Double *, Double *, Double *, Double *, Int *,
-           Int *, Int *, Int *, Int *, Int *, Double *);
+void dqags(double (*)(double *), double *, double *, double *, double *, double *, double *, int *,
+           int *, int *, int *, int *, int *, double *);
 }
 
 extern "C" {
-Double vvr3(Double *, Double *, Double *, Double *, Double *);
+double vvr3(double *, double *, double *, double *, double *);
 }
 
 extern "C" {
-Double vvr9(Double *, Double *, Double *, Double *, Double *);
+double vvr9(double *, double *, double *, double *, double *);
 }
 
 extern "C" {
-Double vvr3auto(Double *, Double *, Double *);
+double vvr3auto(double *, double *, double *);
 }
 
 extern "C" {
-Double vvr9auto(Double *, Double *, Double *);
+double vvr9auto(double *, double *, double *);
 }
 
 extern "C" {
-Double vvr3zmean(Double *, Double *, Double *);
+double vvr3zmean(double *, double *, double *);
 }
 
 extern "C" {
-Double vvr9zmean(Double *, Double *, Double *);
+double vvr9zmean(double *, double *, double *);
 }
 
 extern "C" {
-Double vvr3zauto(Double *, Double *);
+double vvr3zauto(double *, double *);
 }
 
 extern "C" {
-Double vvr9zauto(Double *, Double *);
+double vvr9zauto(double *, double *);
 }
 
-void VanVleck::size(uInt npts) {
+void VanVleck::size(unsigned int npts) {
   std::lock_guard<std::mutex> lock(theirMutex);
   if (itsSize != npts) {
     itsSize = npts;
@@ -113,14 +113,14 @@ void VanVleck::size(uInt npts) {
   }
 }
 
-uInt VanVleck::getsize() { return itsSize; }
+unsigned int VanVleck::getsize() { return itsSize; }
 
-void VanVleck::setQuantization(const Matrix<Double> &qx, const Matrix<Double> &qy) {
+void VanVleck::setQuantization(const Matrix<double> &qx, const Matrix<double> &qy) {
   std::lock_guard<std::mutex> lock(theirMutex);
   // should double check that first dimension is 2
 
-  uInt nx = qx.ncolumn();
-  uInt ny = qy.ncolumn();
+  unsigned int nx = qx.ncolumn();
+  unsigned int ny = qy.ncolumn();
   bool nxChanged = itsNx != nx;
   bool nyChanged = itsNy != ny;
 
@@ -144,21 +144,21 @@ void VanVleck::setQuantization(const Matrix<Double> &qx, const Matrix<Double> &q
   itsQx1 = qx.row(1);
   itsQy0 = qy.row(0);
   itsQy1 = qy.row(1);
-  for (uInt i = 0; i < itsNx; i++) {
+  for (unsigned int i = 0; i < itsNx; i++) {
     itsQx0Qx0[i] = -.5 * itsQx0[i] * itsQx0[i];
-    Double a = itsQx1[i + 1] - itsQx1[i];
-    for (uInt j = 0; j < itsNy; j++) {
+    double a = itsQx1[i + 1] - itsQx1[i];
+    for (unsigned int j = 0; j < itsNy; j++) {
       itsQx0Qy0(i, j) = itsQx0[i] * itsQy0[j];
       itsQx1Qy1diffs(i, j) = a * (itsQy1[j + 1] - itsQy1[j]);
     }
   }
-  for (uInt j = 0; j < itsNy; j++) {
+  for (unsigned int j = 0; j < itsNy; j++) {
     itsQy0Qy0[j] = -.5 * itsQy0[j] * itsQy0[j];
   }
   initInterpolator();
 }
 
-bool VanVleck::setEquiSpaced(Double xlev, Double ylev, Double xmean, Double ymean, Int n) {
+bool VanVleck::setEquiSpaced(double xlev, double ylev, double xmean, double ymean, int n) {
   bool result = n == 3 || n == 9;
   if (result) {
     std::lock_guard<std::mutex> lock(theirMutex);
@@ -177,38 +177,38 @@ void VanVleck::initInterpolator() {
   delete itsInterp;
   itsInterp = 0;
 
-  Vector<Double> rs(itsSize);
-  Vector<Double> rhos(itsSize);
+  Vector<double> rs(itsSize);
+  Vector<double> rhos(itsSize);
 
-  Double twoN = 2.0 * itsSize;
-  Double denom = cos(M_PI / twoN);
-  Int midi = (itsSize - 1) / 2;
+  double twoN = 2.0 * itsSize;
+  double denom = cos(M_PI / twoN);
+  int midi = (itsSize - 1) / 2;
   rhos[midi] = 0.0;
   rs[midi] = 0.0;
 
   if (!itsEquiSpaced) {
     if (itsQx0.nelements() == 0) return;
 
-    for (Int i = 1; i <= midi; i++) {
+    for (int i = 1; i <= midi; i++) {
       // for the rhos, choose the modified Chebyshev points
       // upper side
-      Int hi = midi + i;
-      rhos[hi] = -cos(Double(2 * hi + 1) * M_PI / twoN) / denom;
+      int hi = midi + i;
+      rhos[hi] = -cos(double(2 * hi + 1) * M_PI / twoN) / denom;
       rs[hi] = rs[hi - 1] + rinc(rhos[hi - 1], rhos[hi]);
       // lower side
-      Int lo = midi - i;
-      rhos[lo] = -cos(Double(2 * lo + 1) * M_PI / twoN) / denom;
+      int lo = midi - i;
+      rhos[lo] = -cos(double(2 * lo + 1) * M_PI / twoN) / denom;
       rs[lo] = rs[lo + 1] + rinc(rhos[lo + 1], rhos[lo]);
     }
   } else {
-    for (Int i = 1; i <= midi; i++) {
+    for (int i = 1; i <= midi; i++) {
       // for the rhos, choose the modified Chebyshev points
       // upper side
-      Int hi = midi + i;
-      rhos[hi] = -cos(Double(2 * hi + 1) * M_PI / twoN) / denom;
+      int hi = midi + i;
+      rhos[hi] = -cos(double(2 * hi + 1) * M_PI / twoN) / denom;
       // lower side
-      Int lo = midi - i;
-      rhos[lo] = -cos(Double(2 * lo + 1) * M_PI / twoN) / denom;
+      int lo = midi - i;
+      rhos[lo] = -cos(double(2 * lo + 1) * M_PI / twoN) / denom;
     }
     if (nearAbs(itsXlev, itsYlev)) {
       // auto-correlation
@@ -216,29 +216,29 @@ void VanVleck::initInterpolator() {
         // zero-mean
         // these are symetric about the mid-point
         if (itsNx == 3) {
-          for (Int i = 1; i <= midi; i++) {
-            Int hi = midi + i;
-            Int lo = midi - i;
+          for (int i = 1; i <= midi; i++) {
+            int hi = midi + i;
+            int lo = midi - i;
             rs[hi] = vvr3zauto(&itsXlev, &(rhos[hi]));
             rs[lo] = -rs[hi];
           }
         } else {
           // it must be 9
-          for (Int i = 1; i <= midi; i++) {
-            Int hi = midi + i;
-            Int lo = midi - i;
+          for (int i = 1; i <= midi; i++) {
+            int hi = midi + i;
+            int lo = midi - i;
             rs[hi] = vvr9zauto(&itsXlev, &(rhos[hi]));
             rs[lo] = -rs[hi];
           }
         }
       } else {
         if (itsNx == 3) {
-          for (uInt i = 0; i < rhos.nelements(); i++) {
+          for (unsigned int i = 0; i < rhos.nelements(); i++) {
             rs[i] = vvr3auto(&itsXmean, &itsXlev, &(rhos[i]));
           }
         } else {
           // it must be 9
-          for (uInt i = 0; i < rhos.nelements(); i++) {
+          for (unsigned int i = 0; i < rhos.nelements(); i++) {
             rs[i] = vvr9auto(&itsXmean, &itsXlev, &(rhos[i]));
           }
         }
@@ -248,23 +248,23 @@ void VanVleck::initInterpolator() {
       if (nearAbs(itsXmean, 0.0) && nearAbs(itsYmean, 0.0)) {
         // zero-mean
         if (itsNx == 3) {
-          for (uInt i = 0; i < rhos.nelements(); i++) {
+          for (unsigned int i = 0; i < rhos.nelements(); i++) {
             rs[i] = vvr3zmean(&itsXlev, &itsYlev, &(rhos[i]));
           }
         } else {
           // it must be 9
-          for (uInt i = 0; i < rhos.nelements(); i++) {
+          for (unsigned int i = 0; i < rhos.nelements(); i++) {
             rs[i] = vvr9zmean(&itsXlev, &itsYlev, &(rhos[i]));
           }
         }
       } else {
         if (itsNx == 3) {
-          for (uInt i = 0; i < rhos.nelements(); i++) {
+          for (unsigned int i = 0; i < rhos.nelements(); i++) {
             rs[i] = vvr3(&itsXmean, &itsYmean, &itsXlev, &itsYlev, &(rhos[i]));
           }
         } else {
           // it must be 9
-          for (uInt i = 0; i < rhos.nelements(); i++) {
+          for (unsigned int i = 0; i < rhos.nelements(); i++) {
             rs[i] = vvr9(&itsXmean, &itsYmean, &itsXlev, &itsYlev, &(rhos[i]));
           }
         }
@@ -276,16 +276,16 @@ void VanVleck::initInterpolator() {
   // this here and turn off the check there - so there shouldn't be
   // any additional cost here unless the data is bad and it has to be
   // decreased in size.
-  uInt nels = rs.nelements();
-  uInt i = 0;
+  unsigned int nels = rs.nelements();
+  unsigned int i = 0;
   while (i < (nels - 1)) {
     if (nearAbs(rs[i], rs[i + 1])) {
       // find the next value that isn't a duplicate
-      uInt ndrop = 1;
+      unsigned int ndrop = 1;
       while (ndrop < (nels - i - 1) && nearAbs(rs[i], rs[i + 1 + ndrop])) ndrop++;
       // slide everything to the lower value
       nels -= ndrop;
-      uInt j = i;
+      unsigned int j = i;
       while (j < (nels - 1)) {
         rs[j + 1] = rs[j + 1 + ndrop];
         rhos[j + 1] = rhos[j + 1 + ndrop];
@@ -298,14 +298,14 @@ void VanVleck::initInterpolator() {
     rs.resize(nels, true);
     rhos.resize(nels, true);
   }
-  ScalarSampledFunctional<Double> fx(rs);
-  ScalarSampledFunctional<Double> fy(rhos);
-  itsInterp = new Interpolate1D<Double, Double>(fx, fy, true, true);
+  ScalarSampledFunctional<double> fx(rs);
+  ScalarSampledFunctional<double> fy(rhos);
+  itsInterp = new Interpolate1D<double, double>(fx, fy, true, true);
   AlwaysAssert(itsInterp, AipsError);
-  itsInterp->setMethod(Interpolate1D<Double, Double>::spline);
+  itsInterp->setMethod(Interpolate1D<double, double>::spline);
 }
 
-void VanVleck::getTable(Vector<Double> &rs, Vector<Double> &rhos) {
+void VanVleck::getTable(Vector<double> &rs, Vector<double> &rhos) {
   std::lock_guard<std::mutex> lock(theirMutex);
   rs.resize(itsInterp->getX().nelements());
   rs = itsInterp->getX();
@@ -313,12 +313,12 @@ void VanVleck::getTable(Vector<Double> &rs, Vector<Double> &rhos) {
   rhos = itsInterp->getY();
 }
 
-Double VanVleck::r(const Double rho) {
+double VanVleck::r(const double rho) {
   std::lock_guard<std::mutex> lock(theirMutex);
   return (*itsInterp)(rho);
 }
 
-bool VanVleck::dcoff(Double &dcoffset, Double &threshold, Int n, Double zerolag, Double bias) {
+bool VanVleck::dcoff(double &dcoffset, double &threshold, int n, double zerolag, double bias) {
   bool result = true;
   if (n == 3) {
     result = dcoff3(dcoffset, threshold, zerolag, bias);
@@ -331,13 +331,13 @@ bool VanVleck::dcoff(Double &dcoffset, Double &threshold, Int n, Double zerolag,
 
 // Only private functions hereafter. They do not need to be locked.
 double VanVleck::drbydrho(double *rho) {
-  Double s = 0.0;
-  Double thisRho = *rho;
-  Double oneMinusRhoRho = 1.0 - thisRho * thisRho;
-  Double denom = (2.0 * M_PI) * sqrt(oneMinusRhoRho);
+  double s = 0.0;
+  double thisRho = *rho;
+  double oneMinusRhoRho = 1.0 - thisRho * thisRho;
+  double denom = (2.0 * M_PI) * sqrt(oneMinusRhoRho);
 
-  for (uInt i = 0; i < (itsNx - 1); i++) {
-    for (uInt j = 0; j < (itsNy - 1); j++) {
+  for (unsigned int i = 0; i < (itsNx - 1); i++) {
+    for (unsigned int j = 0; j < (itsNy - 1); j++) {
       s += itsQx1Qy1diffs(i, j) *
            exp((itsQx0Qx0[i] + thisRho * itsQx0Qy0(i, j) + itsQy0Qy0[j]) / oneMinusRhoRho) / denom;
     }
@@ -345,16 +345,16 @@ double VanVleck::drbydrho(double *rho) {
   return s;
 }
 
-Double VanVleck::rinc(Double &rhoi, Double &rhof) {
-  Double work[4096];
-  Int iwork[1024];
-  Double result, abserr;
-  Int neval, ier, last;
+double VanVleck::rinc(double &rhoi, double &rhof) {
+  double work[4096];
+  int iwork[1024];
+  double result, abserr;
+  int neval, ier, last;
 
-  Double epsabs = 1.0e-6;
-  Double epsrel = 1.0e-6;
-  Int limit = 1024;
-  Int lenw = 4 * limit;
+  double epsabs = 1.0e-6;
+  double epsrel = 1.0e-6;
+  int limit = 1024;
+  int lenw = 4 * limit;
   dqags(drbydrho, &rhoi, &rhof, &epsabs, &epsrel, &result, &abserr, &neval, &ier, &limit, &lenw,
         &last, iwork, work);
   if (ier != 0) {
@@ -363,35 +363,35 @@ Double VanVleck::rinc(Double &rhoi, Double &rhof) {
   return result;
 }
 
-Double VanVleck::threshNgt3(Int n, Double zerolag) {
-  Double x = 0.0;
+double VanVleck::threshNgt3(int n, double zerolag) {
+  double x = 0.0;
   bool odd = true;
   if (n % 2 == 0) {
     x = 1.0;
     odd = false;
   }
-  Double tol = 1.0e-8;
-  Double sqrt2 = sqrt(2.0);
-  Double sqrt2dpi = sqrt(2.0 / M_PI);
-  Double fp, f;
-  for (Int i = 0; i < 30; i++) {
+  double tol = 1.0e-8;
+  double sqrt2 = sqrt(2.0);
+  double sqrt2dpi = sqrt(2.0 / M_PI);
+  double fp, f;
+  for (int i = 0; i < 30; i++) {
     fp = 0.0;
     f = zerolag;
     if (odd) {
-      for (Int k = 1; k <= (n - 1) / 2; k++) {
+      for (int k = 1; k <= (n - 1) / 2; k++) {
         f -= (2 * k - 1) * ::erfc((2 * k - 1) * x / sqrt2);
-        Double twoKm1 = 2 * k - 1;
+        double twoKm1 = 2 * k - 1;
         fp += sqrt2dpi * twoKm1 * twoKm1 * exp(-0.5 * (twoKm1 * x) * (twoKm1 * x));
       }
     } else {
       f -= 1.0;
-      for (Int k = 1; k <= (n - 2) / 2; k++) {
+      for (int k = 1; k <= (n - 2) / 2; k++) {
         f -= 8 * k * ::erfc(k * x / sqrt2);
         fp += 8 * k * k * sqrt2dpi * exp(-0.5 * (k * x) * (k * x));
       }
     }
-    Double deltax = -f / fp;
-    Double signdx = (deltax >= 0) ? 1.0 : -1.0;
+    double deltax = -f / fp;
+    double signdx = (deltax >= 0) ? 1.0 : -1.0;
     deltax = signdx * min(0.5, abs(deltax));
     x += deltax;
     if (odd) x = max(0.0, x);
@@ -400,17 +400,17 @@ Double VanVleck::threshNgt3(Int n, Double zerolag) {
   return x;
 }
 
-Double VanVleck::invErf(Double x) {
+double VanVleck::invErf(double x) {
   // these are translations of Mathematic code supplied by Fred Schwab
   // based upon approximations published by Blair, Edwards, and Johnson.
 
-  Double absx = abs(x);
-  Double result;
+  double absx = abs(x);
+  double result;
   if (absx <= 0.75) {
     // from table 10 of Blair et. al.
     // maximum relative error of 4.47e-8
-    Double t = x * x - 0.75 * 0.75;
-    Double p1, p2, p3, q1, q2, q3, q4;
+    double t = x * x - 0.75 * 0.75;
+    double p1, p2, p3, q1, q2, q3, q4;
     p1 = -13.0959967422;
     p2 = 26.785225760;
     p3 = -9.289057635;
@@ -422,8 +422,8 @@ Double VanVleck::invErf(Double x) {
   } else if (absx <= 0.9375) {
     // from table 29 of Blair et. al.
     // maximum relative error of 4.17e-8
-    Double t = x * x - .9375 * .9375;
-    Double p1, p2, p3, p4, q1, q2, q3, q4;
+    double t = x * x - .9375 * .9375;
+    double p1, p2, p3, p4, q1, q2, q3, q4;
     p1 = -0.12402565221;
     p2 = 1.0688059574;
     p3 = -1.9594556078;
@@ -436,8 +436,8 @@ Double VanVleck::invErf(Double x) {
   } else if (absx < (1 - 1e-100)) {
     // from table 50 of Blair et. al.
     // maximum relative error of 2.45e-8
-    Double t = 1.0 / sqrt(-log(1.0 - absx));
-    Double p1, p2, p3, p4, p5, p6, q1, q2, q3;
+    double t = 1.0 / sqrt(-log(1.0 - absx));
+    double p1, p2, p3, p4, p5, p6, q1, q2, q3;
     p1 = 0.1550470003116;
     p2 = 1.382719649631;
     p3 = 0.690969348887;
@@ -447,7 +447,7 @@ Double VanVleck::invErf(Double x) {
     q1 = 0.155024849822;
     q2 = 1.385228141995;
     q3 = 1.0;
-    Double signx = (x >= 0) ? 1.0 : -1.0;
+    double signx = (x >= 0) ? 1.0 : -1.0;
     result =
         signx * (p1 / t + p2 + t * (p3 + t * (p4 + t * (p5 + t * p6)))) / (q1 + t * (q2 + t * q3));
   } else {
@@ -459,8 +459,8 @@ Double VanVleck::invErf(Double x) {
   return result;
 }
 
-Double VanVleck::invErfc(Double x) {
-  Double result;
+double VanVleck::invErfc(double x) {
+  double result;
   if (x >= 2.0) {
     result = -DBL_MAX;
   } else if (x >= 0.0625) {
@@ -468,9 +468,9 @@ Double VanVleck::invErfc(Double x) {
     result = invErf(1.0 - x);
   } else if (x >= 1e-100) {
     // From table 50 of Blair et al as well as table 70
-    Double t = 1.0 / sqrt(-log(x));
-    Double p1, p2, p3, p4, p5, p6;
-    Double q1, q2, q3;
+    double t = 1.0 / sqrt(-log(x));
+    double p1, p2, p3, p4, p5, p6;
+    double q1, q2, q3;
     p1 = 0.1550470003116;
     p2 = 1.382719649631;
     p3 = 0.690969348887;
@@ -484,9 +484,9 @@ Double VanVleck::invErfc(Double x) {
   } else if (x > 0) {
     // from table 70 of Blair et al
     // maximum relative error of 2.45e-8
-    Double t = 1.0 / sqrt(-log(x));
-    Double p1, p2, p3, p4;
-    Double q1, q2, q3;
+    double t = 1.0 / sqrt(-log(x));
+    double p1, p2, p3, p4;
+    double q1, q2, q3;
     p1 = 0.00980456202915;
     p2 = 0.363667889171;
     p3 = 0.97302949837;
@@ -501,39 +501,39 @@ Double VanVleck::invErfc(Double x) {
   return result;
 }
 
-Double VanVleck::predictNgt3(Int n, Double threshhold) {
-  Double result = 0.0;
+double VanVleck::predictNgt3(int n, double threshhold) {
+  double result = 0.0;
   if (n % 2 == 0) {
     // even n
-    for (Int k = 1; k <= (n - 2) / 2; k++) {
+    for (int k = 1; k <= (n - 2) / 2; k++) {
       result += ::erfc(k * threshhold / sqrt(2.0));
     }
     result = 1.0 + 8.0 * result;
   } else {
     // odd n
-    for (Int k = 1; k <= (n - 1) / 2; k++) {
+    for (int k = 1; k <= (n - 1) / 2; k++) {
       result += (2 * k - 1) * ::erfc((2 * k - 1) * threshhold / sqrt(2.0));
     }
   }
   return result;
 }
 
-bool VanVleck::dcoff3(Double &dcoffset, Double &threshold, Double zerolag, Double bias) {
+bool VanVleck::dcoff3(double &dcoffset, double &threshold, double zerolag, double bias) {
   // the input data, bias and zerolag, should satisfy the
   // inequality constraints 0 <= bias < 1 and
   // sqrt(bias) < zerolag < 2-sqrt(bias)
 
   bool result = true;
-  Double rtbias = sqrt(bias);
+  double rtbias = sqrt(bias);
   if (bias < 0.0 || bias >= 1.0 || rtbias >= zerolag || zerolag >= (2.0 - rtbias)) {
     // fall back and return false
     result = false;
     dcoffset = 0.0;
     threshold = threshN3(zerolag);
   } else {
-    Double rt2 = sqrt(2.0);
-    Double t1 = invErf(1.0 + rtbias - zerolag);
-    Double t2 = invErf(-1.0 + rtbias + zerolag);
+    double rt2 = sqrt(2.0);
+    double t1 = invErf(1.0 + rtbias - zerolag);
+    double t2 = invErf(-1.0 + rtbias + zerolag);
     dcoffset = (t1 + t2) / rt2;
     threshold = (t1 - t2) / rt2;
   }

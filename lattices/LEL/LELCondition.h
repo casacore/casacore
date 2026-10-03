@@ -111,7 +111,7 @@ class LELCondition : public LELInterface<T> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();

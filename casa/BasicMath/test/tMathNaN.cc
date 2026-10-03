@@ -37,11 +37,11 @@
 
 #include <casacore/casa/namespace.h>
 #define isnanfmacro(x) \
-  (((*(Int *)(x) & 0x7f800000) == 0x7f800000) && ((*(Int *)(x) & 0x007fffff) != 0x00000000))
+  (((*(int *)(x) & 0x7f800000) == 0x7f800000) && ((*(int *)(x) & 0x007fffff) != 0x00000000))
 
-inline bool isNaN_isnan(Float val) { return (std::isnan(Double(val))); }
+inline bool isNaN_isnan(float val) { return (std::isnan(double(val))); }
 
-inline bool isNaN_isnanf(const Float &val) {
+inline bool isNaN_isnanf(const float &val) {
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
   return (isnanf(val));
 #else
@@ -49,35 +49,35 @@ inline bool isNaN_isnanf(const Float &val) {
 #endif
 }
 
-inline bool isNaN_ref(const Float &x) {
-  return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) &&
-          ((*(Int *)&(x) & 0x007fffff) != 0x00000000));
+inline bool isNaN_ref(const float &x) {
+  return (((*(int *)&(x) & 0x7f800000) == 0x7f800000) &&
+          ((*(int *)&(x) & 0x007fffff) != 0x00000000));
 }
 
-inline bool isNaN_val(Float x) {
-  Float *xp = &x;
-  return (((*(Int *)xp & 0x7f800000) == 0x7f800000) && ((*(Int *)xp & 0x007fffff) != 0x00000000));
+inline bool isNaN_val(float x) {
+  float *xp = &x;
+  return (((*(int *)xp & 0x7f800000) == 0x7f800000) && ((*(int *)xp & 0x007fffff) != 0x00000000));
 }
 
-bool doIt(Int n, Float x, bool nan) {
+bool doIt(int n, float x, bool nan) {
   bool ok = true;
-  const Int narr = 100000;
+  const int narr = 100000;
   // Determine the expected nr of NaN's.
-  uInt nrnan = 0;
+  unsigned int nrnan = 0;
   if (nan) {
     nrnan = n * narr;
   }
   // Initialize the array.
-  Float arr[narr];
-  for (Int i = 0; i < narr; i++) {
+  float arr[narr];
+  for (int i = 0; i < narr; i++) {
     arr[i] = x;
   }
   //
   Timer t;
-  uInt nf = 0;
+  unsigned int nf = 0;
   t.mark();
-  for (Int i = 0; i < n; i++) {
-    for (Int j = 0; j < narr; j++) {
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < narr; j++) {
       if ((arr[j] != arr[j])) {
         nf++;
       }
@@ -93,8 +93,8 @@ bool doIt(Int n, Float x, bool nan) {
   //
   nf = 0;
   t.mark();
-  for (Int i = 0; i < n; i++) {
-    for (Int j = 0; j < narr; j++) {
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < narr; j++) {
       if (isNaN_isnan(arr[j])) {
         nf++;
       }
@@ -109,8 +109,8 @@ bool doIt(Int n, Float x, bool nan) {
   //
   nf = 0;
   t.mark();
-  for (Int i = 0; i < n; i++) {
-    for (Int j = 0; j < narr; j++) {
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < narr; j++) {
       if (isNaN_isnanf(arr[j])) {
         nf++;
       }
@@ -125,8 +125,8 @@ bool doIt(Int n, Float x, bool nan) {
   //
   nf = 0;
   t.mark();
-  for (Int i = 0; i < n; i++) {
-    for (Int j = 0; j < narr; j++) {
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < narr; j++) {
       if (isNaN_ref(arr[j])) {
         nf++;
       }
@@ -158,8 +158,8 @@ bool doIt(Int n, Float x, bool nan) {
   //
   nf = 0;
   t.mark();
-  for (Int i = 0; i < n; i++) {
-    for (Int j = 0; j < narr; j++) {
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < narr; j++) {
       if (isNaN(arr[j])) {
         nf++;
       }
@@ -174,8 +174,8 @@ bool doIt(Int n, Float x, bool nan) {
   //
   nf = 0;
   t.mark();
-  for (Int i = 0; i < n; i++) {
-    for (Int j = 0; j < narr; j++) {
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < narr; j++) {
       if (isnanfmacro(arr + j)) {
         nf++;
       }
@@ -198,11 +198,11 @@ int main(int argc, const char *argv[]) {
   inputs.create("n", "100", "Number of tries");
 
   inputs.readArguments(argc, argv);
-  const Int n = inputs.getInt("n");
+  const int n = inputs.getInt("n");
   cout << "n = " << n << endl;
   //
   bool ok = true;
-  Float x = 0;
+  float x = 0;
   if (!doIt(n, x, false)) {
     ok = false;
   }

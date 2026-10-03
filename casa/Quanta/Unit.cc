@@ -45,7 +45,7 @@ Unit::Unit(const std::string &other) : uName(other), uVal() { check(); }
 
 Unit::Unit(const char *other) : uName(other), uVal() { check(); }
 
-Unit::Unit(const char *other, Int len) : uName(other, len), uVal() { check(); }
+Unit::Unit(const char *other, int len) : uName(other, len), uVal() { check(); }
 
 Unit::Unit(char other) : uName(1, other), uVal() { check(); }
 

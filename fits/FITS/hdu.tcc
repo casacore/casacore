@@ -399,8 +399,8 @@ int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
 //=========================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, FITS::FitsArrayOption opt) {
-  uInt count;
-  Int offset, i, *sub;
+  unsigned int count;
+  int offset, i, *sub;
   if (set_next(nelements()) == -1) {  // allocate nelements array elements
     return -1;
   }
@@ -454,8 +454,8 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const {
 //============================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
-  uInt count;
-  Int offset, *sub, *C_factor;
+  unsigned int count;
+  int offset, *sub, *C_factor;
   double fscale = (double)bscale();
   double fzero = (double)bzero();
 
@@ -471,10 +471,10 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
     sub = &factor[dims()];
     C_factor = &sub[dims()];
     // compute the C_factors
-    Int i;
+    int i;
     for (i = 0; i < (dims() - 1); ++i) {
       C_factor[i] = 1;
-      for (Int j = i + 1; j < dims(); ++j) C_factor[i] *= dim(j);
+      for (int j = i + 1; j < dims(); ++j) C_factor[i] *= dim(j);
     }
     C_factor[i] = 1;
     // algorithm for converting F-order to C-order
@@ -493,11 +493,11 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
       }
     }
   } else {
-    uInt nmax = nelements();
+    unsigned int nmax = nelements();
     if (!blanked) {
-      for (uInt n = 0; n < nmax; ++n) target[n] = (double)(fscale * array[n] + fzero);
+      for (unsigned int n = 0; n < nmax; ++n) target[n] = (double)(fscale * array[n] + fzero);
     } else {
-      for (uInt n = 0; n < nmax; ++n) {
+      for (unsigned int n = 0; n < nmax; ++n) {
         target[n] = array[n] != blankval ? (double)(fscale * array[n] + fzero) : nan;
       }
     }
@@ -531,8 +531,8 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const {
 //====================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
-  uInt count;
-  Int offset, *sub, *C_factor;
+  unsigned int count;
+  int offset, *sub, *C_factor;
   float fscale = (float)bscale();
   float fzero = (float)bzero();
 
@@ -548,10 +548,10 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
     sub = &factor[dims()];
     C_factor = &sub[dims()];
     // compute the C_factors
-    Int i;
+    int i;
     for (i = 0; i < (dims() - 1); ++i) {
       C_factor[i] = 1;
-      for (Int j = i + 1; j < dims(); ++j) C_factor[i] *= dim(j);
+      for (int j = i + 1; j < dims(); ++j) C_factor[i] *= dim(j);
     }
     C_factor[i] = 1;
     // algorithm for converting F-order to C-order
@@ -570,11 +570,11 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
       }
     }
   } else {
-    uInt nmax = nelements();
+    unsigned int nmax = nelements();
     if (!blanked) {
-      for (uInt n = 0; n < nmax; ++n) target[n] = (float)(fscale * array[n] + fzero);
+      for (unsigned int n = 0; n < nmax; ++n) target[n] = (float)(fscale * array[n] + fzero);
     } else {
-      for (uInt n = 0; n < nmax; ++n) {
+      for (unsigned int n = 0; n < nmax; ++n) {
         target[n] = array[n] != blankval ? (float)(fscale * array[n] + fzero) : nan;
       }
     }
@@ -592,27 +592,27 @@ void PrimaryArray<TYPE>::move(TYPE *target, int npixels) const {
 
 template <class TYPE>
 void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
-  uInt count, offset;
-  Int *sub, *C_factor;
+  unsigned int count, offset;
+  int *sub, *C_factor;
 
   if (opt == FITS::FtoC) {
     sub = &factor[dims()];
     C_factor = &sub[dims()];
     // compute the C_factors
-    Int i;
-    for (i = 0; i < uInt(dims() - 1); ++i) {
+    int i;
+    for (i = 0; i < static_cast<unsigned int>(dims() - 1); ++i) {
       C_factor[i] = 1;
-      for (Int j = i + 1; j < uInt(dims()); ++j) C_factor[i] *= dim(j);
+      for (int j = i + 1; j < static_cast<unsigned int>(dims()); ++j) C_factor[i] *= dim(j);
     }
     C_factor[i] = 1;
     // algorithm for converting F-order to C-order
     count = 0;
-    for (i = 0; i < uInt(dims()); ++i) sub[i] = 0;
+    for (i = 0; i < static_cast<unsigned int>(dims()); ++i) sub[i] = 0;
     for (;;) {
-      for (i = 0, offset = 0; i < uInt(dims()); ++i) offset += sub[i] * C_factor[i];
+      for (i = 0, offset = 0; i < static_cast<unsigned int>(dims()); ++i) offset += sub[i] * C_factor[i];
       target[offset] = array[count++];
-      if (count == uInt(nelements())) break;
-      for (i = 0; i < uInt(dims()); ++i) {
+      if (count == static_cast<unsigned int>(nelements())) break;
+      for (i = 0; i < static_cast<unsigned int>(dims()); ++i) {
         ++sub[i];
         if (sub[i] == dim(i))
           sub[i] = 0;
@@ -1056,12 +1056,12 @@ void PrimaryGroup<TYPE>::storeparm(const TYPE *source) {
 //====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::copyparm(double *target) const {
-  for (Int i = 0; i < pcount(); ++i) target[i] = pscal(i) * group_parm[i] + pzero(i);
+  for (int i = 0; i < pcount(); ++i) target[i] = pscal(i) * group_parm[i] + pzero(i);
 }
 //====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::copyparm(float *target) const {
-  for (Int i = 0; i < pcount(); ++i) target[i] = (float)(pscal(i) * group_parm[i] + pzero(i));
+  for (int i = 0; i < pcount(); ++i) target[i] = (float)(pscal(i) * group_parm[i] + pzero(i));
 }
 //====================================================================================
 template <class TYPE>
@@ -1072,7 +1072,7 @@ void PrimaryGroup<TYPE>::moveparm(TYPE *target) const {
 template <class TYPE>
 int PrimaryGroup<TYPE>::read() {
   // read the data
-  Int nb = fitsitemsize() * (pcount() + nelements());
+  int nb = fitsitemsize() * (pcount() + nelements());
   if (read_data((char *)group_parm, nb) != nb) {
     // error message
     return -1;
@@ -1081,7 +1081,7 @@ int PrimaryGroup<TYPE>::read() {
   // do the FITS to local conversion, including worrying about
   // the fact that array and FITS size may not be the same
   // ...
-  uInt ne = nb / fitsitemsize();  // the actual number of elements read
+  unsigned int ne = nb / fitsitemsize();  // the actual number of elements read
   FITS::f2l((TYPE *)group_parm, group_parm, ne);
 
   ++current_group;

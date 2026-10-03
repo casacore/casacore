@@ -48,13 +48,13 @@ int main() {
   // interpolation
   {
     bool failed = false;
-    Vector<Float> x(5);
+    Vector<float> x(5);
     indgen(x);
-    Vector<Float> y(5);
+    Vector<float> y(5);
     indgen(y);
-    ScalarSampledFunctional<Float> fx(x), fy(y);
-    Interpolate1D<Float, Float> value(fx, fy);
-    Float xs;
+    ScalarSampledFunctional<float> fx(x), fy(y);
+    Interpolate1D<float, float> value(fx, fy);
+    float xs;
     for (xs = -1; xs < 5; xs += 0.1)
       if (near(value(xs), xs) == false) {
         cout << "value(" << xs << ") = " << value(xs) << " which is not near the expected value of "
@@ -62,13 +62,13 @@ int main() {
         failed = true;
       }
     // Check the assignment operator and copy constructor use copy symantics
-    Interpolate1D<Float, Float> v1(value), v2;
+    Interpolate1D<float, float> v1(value), v2;
     v2 = v1;
-    Vector<Float> y1(5);
+    Vector<float> y1(5);
     indgen(y1, 1.0f);
-    Vector<Float> y2(5);
+    Vector<float> y2(5);
     indgen(y2, 2.0f);
-    ScalarSampledFunctional<Float> fy1(y1), fy2(y2);
+    ScalarSampledFunctional<float> fy1(y1), fy2(y2);
     v1.setData(fx, fy1);
     v2.setData(fx, fy2);
     for (xs = -1; xs < 5; xs += 0.1) {
@@ -94,31 +94,31 @@ int main() {
   // interpolation
   {
     bool failed = false;
-    Vector<Int> x(5);
+    Vector<int> x(5);
     indgen(x);
-    Vector<Double> y(5);
+    Vector<double> y(5);
     indgen(y);
     y = y * y * y;
-    ScalarSampledFunctional<Int> fx(x);
-    ScalarSampledFunctional<Double> fy(y);
-    Interpolate1D<Int, Double> value(fx, fy);
-    value.setMethod(Interpolate1D<Int, Double>::cubic);
-    for (Int xs = -5; xs < 10; xs += 1)
-      if (near(value(xs), (Double)xs * xs * xs, 1E-6) == false) {
+    ScalarSampledFunctional<int> fx(x);
+    ScalarSampledFunctional<double> fy(y);
+    Interpolate1D<int, double> value(fx, fy);
+    value.setMethod(Interpolate1D<int, double>::cubic);
+    for (int xs = -5; xs < 10; xs += 1)
+      if (near(value(xs), (double)xs * xs * xs, 1E-6) == false) {
         cout << "value(" << xs << ") = " << value(xs) << " which is not near the expected value of "
              << xs * xs * xs << endl;
         failed = true;
       }
     if (!failed) {
-      Vector<Int> xd = value.getX();
+      Vector<int> xd = value.getX();
       if (xd.nelements() != 5) failed = true;
       if (!failed)
-        for (Int i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
           if (x(i) != xd(i)) failed = true;
-      Vector<Double> yd = value.getY();
+      Vector<double> yd = value.getY();
       if (yd.nelements() != 5) failed = true;
       if (!failed)
-        for (Int j = 0; j < 5; j++)
+        for (int j = 0; j < 5; j++)
           if (y(j) != yd(j)) failed = true;
     }
     if (failed) {
@@ -132,22 +132,22 @@ int main() {
   // neighbour interpolation
   {
     bool failed = false;
-    Vector<Double> x(5);
+    Vector<double> x(5);
     indgen(x);
     Vector<DComplex> y(5);
     indgen(y);
     const DComplex j(0., 1.);
     y = y + j * y * y;
-    Block<Double> bx = makeBlock(x);
+    Block<double> bx = makeBlock(x);
     Block<DComplex> by = makeBlock(y);
-    ScalarSampledFunctional<Double> fx(bx);
+    ScalarSampledFunctional<double> fx(bx);
     ScalarSampledFunctional<DComplex> fy(by);
-    Interpolate1D<Double, DComplex> value(fx, fy);
+    Interpolate1D<double, DComplex> value(fx, fy);
 
-    value.setMethod(Interpolate1D<Double, DComplex>::nearestNeighbour);
-    Double ev;
-    for (Float xs = -5.0000001; xs < 5; xs += .1) {
-      ev = max(min((Int)(xs + 0.5), 4), 0);
+    value.setMethod(Interpolate1D<double, DComplex>::nearestNeighbour);
+    double ev;
+    for (float xs = -5.0000001; xs < 5; xs += .1) {
+      ev = max(min((int)(xs + 0.5), 4), 0);
       if (near((value(xs)).real(), ev) == false || near((value(xs)).imag(), ev * ev) == false) {
         cout << "value(" << xs << ") = " << value(xs) << " is not near the expected value of ("
              << ev << ", " << ev * ev << ")" << endl;
@@ -167,12 +167,12 @@ int main() {
   // interpolation
   {
     bool failed = false;
-    Vector<Float> x(5);
+    Vector<float> x(5);
     indgen(x);
     IPosition shape(3, 3, 5, 1);
-    Array<Float> y(shape);
+    Array<float> y(shape);
     IPosition xshape(3, 1, 5, 1);
-    Array<Float> xa(xshape);
+    Array<float> xa(xshape);
     indgen(xa);
     IPosition trc(3, 0, 4, 0), blc(3, 0, 0, 0), step(3, 1, 0, 0);
 
@@ -184,10 +184,10 @@ int main() {
     blc += step;
     y(blc, trc) = xa * xa * xa;
 
-    ScalarSampledFunctional<Float> fx(x);
-    ArraySampledFunctional<Array<Float>> fy(y);
-    Interpolate1D<Float, Array<Float>> value(fx, fy);
-    value.setMethod(Interpolate1D<Float, Array<Float>>::spline);
+    ScalarSampledFunctional<float> fx(x);
+    ArraySampledFunctional<Array<float>> fy(y);
+    Interpolate1D<float, Array<float>> value(fx, fy);
+    value.setMethod(Interpolate1D<float, Array<float>>::spline);
     trc(0) = 2;
     trc(1) = 0;
     trc(2) = 0;
@@ -197,12 +197,12 @@ int main() {
     step(0) = 0;
     step(1) = 1;
 
-    Array<Float> iv;
-    for (Float xs = 0; xs < 5; xs += 1) {
+    Array<float> iv;
+    for (float xs = 0; xs < 5; xs += 1) {
       iv = value(xs);
-      if ((near(iv(IPosition(1, 0)), y(IPosition(3, 0, (uInt)xs, 0))) == false) ||
-          (near(iv(IPosition(1, 1)), y(IPosition(3, 1, (uInt)xs, 0))) == false) ||
-          (near(iv(IPosition(1, 2)), y(IPosition(3, 2, (uInt)xs, 0))) == false)) {
+      if ((near(iv(IPosition(1, 0)), y(IPosition(3, 0, (unsigned int)xs, 0))) == false) ||
+          (near(iv(IPosition(1, 1)), y(IPosition(3, 1, (unsigned int)xs, 0))) == false) ||
+          (near(iv(IPosition(1, 2)), y(IPosition(3, 2, (unsigned int)xs, 0))) == false)) {
         cout << "value(" << xs << ")" << endl
              << iv << " is not near the expected value of " << endl
              << y(blc, trc) << endl;
@@ -211,19 +211,19 @@ int main() {
       trc += step;
       blc += step;
     }
-    iv = value((Float)5);
-    if ((near(iv(IPosition(1, 0)), (Float)5) == false) ||
-        (near(iv(IPosition(1, 1)), (Float)23) == false) ||
-        (near(iv(IPosition(1, 2)), (Float)101) == false))
+    iv = value((float)5);
+    if ((near(iv(IPosition(1, 0)), (float)5) == false) ||
+        (near(iv(IPosition(1, 1)), (float)23) == false) ||
+        (near(iv(IPosition(1, 2)), (float)101) == false))
       failed = true;
     // Switch out of spline mode back to cubic interpolation
-    value.setMethod(Interpolate1D<Float, Array<Float>>::cubic);
-    if (value.getMethod() != Interpolate1D<Float, Array<Float>>::cubic) {
+    value.setMethod(Interpolate1D<float, Array<float>>::cubic);
+    if (value.getMethod() != Interpolate1D<float, Array<float>>::cubic) {
       failed = true;
       cout << "Could not change the interpolation method" << endl;
     }
-    iv = value(Float(-1));
-    if (near(iv(IPosition(1, 1)), Float(1)) == false) {
+    iv = value(float(-1));
+    if (near(iv(IPosition(1, 1)), float(1)) == false) {
       failed = true;
       cout << "Did not really change the interpolation method" << endl;
     }
@@ -239,10 +239,10 @@ int main() {
   // Now test the table system interface.
   // This requires the construction of a table (vrtually done)
   {
-    Vector<Float> time(6);
-    Vector<Double> amp(6);
+    Vector<float> time(6);
+    Vector<double> amp(6);
 
-    for (uInt i = 0; i < 6; i++) {
+    for (unsigned int i = 0; i < 6; i++) {
       time[i] = i;
       amp[i] = i * i;
     }
@@ -251,15 +251,15 @@ int main() {
     {
       bool failed = false;
 
-      Vector<Float> x(time);
-      Vector<Double> y(amp);
-      ScalarSampledFunctional<Float> fx(x);
-      ScalarSampledFunctional<Double> fy(y);
-      Interpolate1D<Float, Double> value(fx, fy);
-      value.setMethod(Interpolate1D<Float, Double>::cubic);
+      Vector<float> x(time);
+      Vector<double> y(amp);
+      ScalarSampledFunctional<float> fx(x);
+      ScalarSampledFunctional<double> fy(y);
+      Interpolate1D<float, double> value(fx, fy);
+      value.setMethod(Interpolate1D<float, double>::cubic);
 
-      for (Float xs = -5; xs < 10; xs += .5)
-        if (near(value(xs), (Double)xs * xs) == false) {
+      for (float xs = -5; xs < 10; xs += .5)
+        if (near(value(xs), (double)xs * xs) == false) {
           cout << "value(" << xs << ") = " << value(xs)
                << " which is not near the expected value of " << xs * xs << endl;
           failed = true;

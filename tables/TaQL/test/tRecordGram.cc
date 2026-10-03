@@ -45,14 +45,14 @@
 void doIt() {
   // Check if it handles a normal record field.
   TableRecord rec;
-  rec.define("fld1", Int(1));
+  rec.define("fld1", int(1));
   TableExprNode expr(RecordGram::parse(rec, "fld1 == 1."));
   bool result;
   expr.get(rec, result);
   AlwaysAssertExit(result);
   // Check if it can also handle a record where fld1 is e.g. a float.
   rec.removeField("fld1");
-  rec.define("fld1", Float(2));
+  rec.define("fld1", float(2));
   expr.get(rec, result);
   AlwaysAssertExit(!result);
 
@@ -72,7 +72,7 @@ void doIt() {
   TableExprNode expr3(RecordGram::parse(rec, "sub1.sub2.fld1 == 1 && fld1 > 1"));
   expr3.get(rec, result);
   AlwaysAssertExit(result);
-  rec.define("fld1", Float(1));
+  rec.define("fld1", float(1));
   expr3.get(rec, result);
   AlwaysAssertExit(!result);
 
@@ -120,7 +120,7 @@ void doIt() {
   AlwaysAssertExit(result);
 
   // Check if array fields are handled correctly.
-  Array<Int> arr(IPosition(3, 6, 8, 12));
+  Array<int> arr(IPosition(3, 6, 8, 12));
   indgen(arr);
   rec.define("arr1", arr);
   TableExprNode expr6a(RecordGram::parse(rec, "max (arr1) > 6*8*12"));

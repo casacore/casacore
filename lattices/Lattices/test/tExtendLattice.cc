@@ -42,19 +42,19 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void testVectorROIter(const Lattice<Int>& extendlat, const Lattice<Int>& lattice, Int nnew) {
-  Int nstep;
+void testVectorROIter(const Lattice<int>& extendlat, const Lattice<int>& lattice, int nnew) {
+  int nstep;
   const IPosition latticeShape(extendlat.shape());
   const IPosition cursorShape(1, latticeShape(0));
   LatticeStepper step(latticeShape, cursorShape);
-  RO_LatticeIterator<Int> iter(extendlat, step);
+  RO_LatticeIterator<int> iter(extendlat, step);
   LatticeStepper step2(lattice.shape(), cursorShape);
-  RO_LatticeIterator<Int> iter2(lattice, step2);
+  RO_LatticeIterator<int> iter2(lattice, step2);
   // static_cast's added for a workaround for an SGI compiler bug.
   for (iter2.reset(); !iter2.atEnd(); iter2++) {
-    for (Int i = 0; i < nnew; i++) {
-      AlwaysAssert(allEQ(static_cast<Vector<Int>>(iter.vectorCursor()),
-                         static_cast<Vector<Int>>(iter2.vectorCursor())),
+    for (int i = 0; i < nnew; i++) {
+      AlwaysAssert(allEQ(static_cast<Vector<int>>(iter.vectorCursor()),
+                         static_cast<Vector<int>>(iter2.vectorCursor())),
                    AipsError);
       iter++;
     }
@@ -69,7 +69,7 @@ void testVectorROIter(const Lattice<Int>& extendlat, const Lattice<Int>& lattice
 }
 
 void testRest() {
-  PagedArray<Int> pa(IPosition(1, 10), "tExtendLattice_tmp.pa");
+  PagedArray<int> pa(IPosition(1, 10), "tExtendLattice_tmp.pa");
   AlwaysAssertExit(pa.isPaged());
   AlwaysAssertExit(pa.isPersistent());
   AlwaysAssertExit(pa.isWritable());
@@ -77,7 +77,7 @@ void testRest() {
   LCPagedMask mask(IPosition(1, 10), "tExtendLattice_tmp.pa/mask");
   {
     // Make an ExtendLattice.
-    ExtendLattice<Int> sl(pa, IPosition(2, 10, 5), IPosition(1, 1), IPosition());
+    ExtendLattice<int> sl(pa, IPosition(2, 10, 5), IPosition(1, 1), IPosition());
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
@@ -90,8 +90,8 @@ void testRest() {
   }
   {
     // A RO ExtendLattice as a masked Lattice.
-    SubLattice<Int> sp(pa, mask);
-    ExtendLattice<Int> sl(sp, IPosition(2, 10, 5), IPosition(1, 1), IPosition());
+    SubLattice<int> sp(pa, mask);
+    ExtendLattice<int> sl(sp, IPosition(2, 10, 5), IPosition(1, 1), IPosition());
     AlwaysAssertExit(sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
@@ -106,29 +106,29 @@ void testRest() {
 
 void testMask() {
   IPosition latticeShape(3, 10, 11, 12);
-  PagedArray<Int> pa(latticeShape, "tExtendLattice_tmp.pa");
+  PagedArray<int> pa(latticeShape, "tExtendLattice_tmp.pa");
   LCPagedMask mask(latticeShape, "tExtendLattice_tmp.pa/mask");
-  Array<Int> arr(pa.shape());
+  Array<int> arr(pa.shape());
   indgen(arr);
   pa.put(arr);
   Array<bool> arrm(pa.shape());
   arrm = true;
   arrm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = false;
   mask.put(arrm);
-  SubLattice<Int> lattice(pa, mask);
-  ExtendLattice<Int> extendlat(lattice, IPosition(4, 10, 5, 11, 12), IPosition(1, 1), IPosition());
-  Array<Int> arr1 = extendlat.get();
+  SubLattice<int> lattice(pa, mask);
+  ExtendLattice<int> extendlat(lattice, IPosition(4, 10, 5, 11, 12), IPosition(1, 1), IPosition());
+  Array<int> arr1 = extendlat.get();
   Array<bool> arrm1 = extendlat.getMask();
   AlwaysAssertExit(arr1.shape() == extendlat.shape());
   AlwaysAssertExit(arrm1.shape() == extendlat.shape());
-  for (Int i = 0; i < 5; i++) {
-    Array<Int> parr = arr1(IPosition(4, 0, i, 0, 0), IPosition(4, 10 - 1, i, 11 - 1, 12 - 1));
+  for (int i = 0; i < 5; i++) {
+    Array<int> parr = arr1(IPosition(4, 0, i, 0, 0), IPosition(4, 10 - 1, i, 11 - 1, 12 - 1));
     AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
     Array<bool> parrm = arrm1(IPosition(4, 0, i, 0, 0), IPosition(4, 10 - 1, i, 11 - 1, 12 - 1));
     AlwaysAssertExit(allEQ(parrm.reform(latticeShape), arrm));
   }
-  for (Int i = 0; i < 5; i++) {
-    Array<Int> parr = extendlat.getSlice(IPosition(4, 0, i, 0, 0), IPosition(4, 10, 1, 11, 12));
+  for (int i = 0; i < 5; i++) {
+    Array<int> parr = extendlat.getSlice(IPosition(4, 0, i, 0, 0), IPosition(4, 10, 1, 11, 12));
     AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
     Array<bool> parrm =
         extendlat.getMaskSlice(IPosition(4, 0, i, 0, 0), IPosition(4, 10, 1, 11, 12));
@@ -140,17 +140,17 @@ int main() {
   try {
     {
       const IPosition latticeShape(4, 12, 1, 4, 32);
-      Array<Int> arr(latticeShape);
+      Array<int> arr(latticeShape);
       indgen(arr);
-      ArrayLattice<Int> lattice(arr);
+      ArrayLattice<int> lattice(arr);
       {
-        ExtendLattice<Int> extendlat(lattice, IPosition(5, 12, 3, 4, 4, 32), IPosition(1, 1),
+        ExtendLattice<int> extendlat(lattice, IPosition(5, 12, 3, 4, 4, 32), IPosition(1, 1),
                                      IPosition(1, 2));
-        Array<Int> arr1 = extendlat.get();
+        Array<int> arr1 = extendlat.get();
         AlwaysAssertExit(arr1.shape() == extendlat.shape());
-        for (Int i = 0; i < 3; i++) {
-          for (Int j = 0; j < 4; j++) {
-            Array<Int> parr =
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 4; j++) {
+            Array<int> parr =
                 arr1(IPosition(5, 0, i, j, 0, 0), IPosition(5, 12 - 1, i, j, 4 - 1, 32 - 1));
             AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
           }
@@ -158,13 +158,13 @@ int main() {
         testVectorROIter(extendlat, lattice, 3 * 4);
       }
       {
-        ExtendLattice<Int> extendlat(lattice, IPosition(5, 12, 3, 4, 4, 32), IPosition(1, 2),
+        ExtendLattice<int> extendlat(lattice, IPosition(5, 12, 3, 4, 4, 32), IPosition(1, 2),
                                      IPosition(1, 1));
-        Array<Int> arr1 = extendlat.get();
+        Array<int> arr1 = extendlat.get();
         AlwaysAssertExit(arr1.shape() == extendlat.shape());
-        for (Int i = 0; i < 3; i++) {
-          for (Int j = 0; j < 4; j++) {
-            Array<Int> parr =
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 4; j++) {
+            Array<int> parr =
                 arr1(IPosition(5, 0, i, j, 0, 0), IPosition(5, 12 - 1, i, j, 4 - 1, 32 - 1));
             AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
           }
@@ -172,13 +172,13 @@ int main() {
         testVectorROIter(extendlat, lattice, 3 * 4);
       }
       {
-        ExtendLattice<Int> extendlat(lattice, IPosition(5, 12, 1, 4, 4, 32), IPosition(1, 2),
+        ExtendLattice<int> extendlat(lattice, IPosition(5, 12, 1, 4, 4, 32), IPosition(1, 2),
                                      IPosition());
-        Array<Int> arr1 = extendlat.get();
+        Array<int> arr1 = extendlat.get();
         AlwaysAssertExit(arr1.shape() == extendlat.shape());
-        for (Int i = 0; i < 1; i++) {
-          for (Int j = 0; j < 4; j++) {
-            Array<Int> parr =
+        for (int i = 0; i < 1; i++) {
+          for (int j = 0; j < 4; j++) {
+            Array<int> parr =
                 arr1(IPosition(5, 0, i, j, 0, 0), IPosition(5, 12 - 1, i, j, 4 - 1, 32 - 1));
             AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
           }
@@ -186,25 +186,25 @@ int main() {
         testVectorROIter(extendlat, lattice, 1 * 4);
       }
       {
-        ExtendLattice<Int> extendlat(lattice, IPosition(4, 12, 6, 4, 32), IPosition(),
+        ExtendLattice<int> extendlat(lattice, IPosition(4, 12, 6, 4, 32), IPosition(),
                                      IPosition(1, 1));
-        Array<Int> arr1 = extendlat.get();
+        Array<int> arr1 = extendlat.get();
         AlwaysAssertExit(arr1.shape() == extendlat.shape());
-        for (Int i = 0; i < 6; i++) {
-          Array<Int> parr = arr1(IPosition(4, 0, i, 0, 0), IPosition(4, 12 - 1, i, 4 - 1, 32 - 1));
+        for (int i = 0; i < 6; i++) {
+          Array<int> parr = arr1(IPosition(4, 0, i, 0, 0), IPosition(4, 12 - 1, i, 4 - 1, 32 - 1));
           AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
         }
         testVectorROIter(extendlat, lattice, 6);
       }
       {
-        ExtendLattice<Int> extendlat(lattice, IPosition(6, 12, 3, 4, 6, 32, 5), IPosition(2, 3, 5),
+        ExtendLattice<int> extendlat(lattice, IPosition(6, 12, 3, 4, 6, 32, 5), IPosition(2, 3, 5),
                                      IPosition(1, 1));
-        Array<Int> arr1 = extendlat.get();
+        Array<int> arr1 = extendlat.get();
         AlwaysAssertExit(arr1.shape() == extendlat.shape());
-        for (Int i = 0; i < 3; i++) {
-          for (Int j = 0; j < 6; j++) {
-            for (Int k = 0; k < 5; k++) {
-              Array<Int> parr = arr1(IPosition(6, 0, i, 0, j, 0, k),
+        for (int i = 0; i < 3; i++) {
+          for (int j = 0; j < 6; j++) {
+            for (int k = 0; k < 5; k++) {
+              Array<int> parr = arr1(IPosition(6, 0, i, 0, j, 0, k),
                                      IPosition(6, 12 - 1, i, 4 - 1, j, 32 - 1, k));
               AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
             }

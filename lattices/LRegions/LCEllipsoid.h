@@ -82,29 +82,29 @@ class LCEllipsoid : public LCRegionFixed {
 
   // Construct an N-dimensional sphere with the given center and
   // radius (in pixels). The center is pixel-aligned.
-  LCEllipsoid(const IPosition& center, Float radius, const IPosition& latticeShape);
+  LCEllipsoid(const IPosition& center, float radius, const IPosition& latticeShape);
 
   // Construct an N-dimensional sphere with the given center and
   // radius (in pixels). The center does not need to be pixel-aligned.
   // <group>
-  LCEllipsoid(const Vector<Float>& center, Float radius, const IPosition& latticeShape);
-  LCEllipsoid(const Vector<Double>& center, Double radius, const IPosition& latticeShape);
+  LCEllipsoid(const Vector<float>& center, float radius, const IPosition& latticeShape);
+  LCEllipsoid(const Vector<double>& center, double radius, const IPosition& latticeShape);
   // </group>
 
   // Construct an N-dimensional ellipsoid with the given center and
   // radii (in pixels). The center does not need to be pixel-aligned.
   // (the radii are half the length of the axes of the ellipsoid).
   // <group>
-  LCEllipsoid(const Vector<Float>& center, const Vector<Float>& radii,
+  LCEllipsoid(const Vector<float>& center, const Vector<float>& radii,
               const IPosition& latticeShape);
-  LCEllipsoid(const Vector<Double>& center, const Vector<Double>& radii,
+  LCEllipsoid(const Vector<double>& center, const Vector<double>& radii,
               const IPosition& latticeShape);
   // </group>
 
   // Construct a two dimensional ellipse with theta being the angle from
   // the x-axis to the major axis of the ellipse in radians.
-  LCEllipsoid(const Float xcenter, const Float ycenter, const Float majorAxis,
-              const Float minorAxis, const Float theta, const IPosition& latticeShape);
+  LCEllipsoid(const float xcenter, const float ycenter, const float majorAxis,
+              const float minorAxis, const float theta, const IPosition& latticeShape);
 
   // Copy constructor (reference semantics).
   LCEllipsoid(const LCEllipsoid& other);
@@ -118,14 +118,14 @@ class LCEllipsoid : public LCRegionFixed {
   LCRegion* cloneRegion() const override;
 
   // Get the center.
-  const Vector<Float>& center() const;
+  const Vector<float>& center() const;
 
   // Get the radii.
-  const Vector<Float>& radii() const;
+  const Vector<float>& radii() const;
 
   // Get the angle of the major axis of the ellipse relative to the x-axis
   // 2-D only, throws exception if ellipse is not 2-D.
-  const Float& theta() const;
+  const float& theta() const;
 
   // Get the class name (to store in the record).
   static String className();
@@ -143,7 +143,7 @@ class LCEllipsoid : public LCRegionFixed {
   // Construct another LCBox (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:
@@ -154,7 +154,7 @@ class LCEllipsoid : public LCRegionFixed {
   void fillCenter(const IPosition& center);
 
   // Make the bounding box from center, radii, and shape.
-  Slicer makeBox(const Vector<Float>& radii, const IPosition& latticeShape);
+  Slicer makeBox(const Vector<float>& radii, const IPosition& latticeShape);
 
   // Define the mask to indicate which elements are inside the ellipsoid.
   void defineMask();
@@ -166,18 +166,18 @@ class LCEllipsoid : public LCRegionFixed {
   // set the mask in the case the center lies outside the lattice
   void _doOutside();
 
-  Vector<Float> itsCenter;
-  Vector<Float> itsRadii;
+  Vector<float> itsCenter;
+  Vector<float> itsRadii;
   // small offset to guard against roundoff error
-  Vector<Float> _epsilon;
+  Vector<float> _epsilon;
   // for 2-D case only
-  Float _theta;
+  float _theta;
   // is center inside the lattice?
   bool _centerIsInside;
 };
 
-inline const Vector<Float>& LCEllipsoid::center() const { return itsCenter; }
-inline const Vector<Float>& LCEllipsoid::radii() const { return itsRadii; }
+inline const Vector<float>& LCEllipsoid::center() const { return itsCenter; }
+inline const Vector<float>& LCEllipsoid::radii() const { return itsRadii; }
 
 }  // namespace casacore
 

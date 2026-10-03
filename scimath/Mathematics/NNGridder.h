@@ -47,9 +47,9 @@ class NNGridder : public Gridder<Domain, Range> {
   virtual bool degrid(const Array<Range>& gridded, const Vector<Domain>& position, Range& value);
 
  protected:
-  virtual Range correctionFactor1D(Int loc, Int len);
+  virtual Range correctionFactor1D(int loc, int len);
 
-  Vector<Int> loc;
+  Vector<int> loc;
 
  protected:
   // # Make members of parent classes known.

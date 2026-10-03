@@ -71,11 +71,11 @@ class TabPath {
   bool found(const String&, String&) const;
 
   // Get the directory name.
-  const String& dir(uInt dirnr) const;
+  const String& dir(unsigned int dirnr) const;
 
  private:
   Block<String> tabDir_p;  // file directories
-  uInt nrDir_p;            // # directories
+  unsigned int nrDir_p;            // # directories
 };
 
 }  // namespace casacore

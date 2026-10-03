@@ -72,12 +72,12 @@ class HeaderDataUnit {
  public:
   virtual ~HeaderDataUnit();
 
-  Int dims() const { return no_dims; }
-  Int dim(int n) const { return (0 < no_dims && n < no_dims ? dimn[n] : 0); }
+  int dims() const { return no_dims; }
+  int dim(int n) const { return (0 < no_dims && n < no_dims ? dimn[n] : 0); }
   OFF_T fitsdatasize() const { return fits_data_size; }
   FITS::ValueType datatype() const { return data_type; }
-  Int fitsitemsize() const { return fits_item_size; }
-  Int localitemsize() const { return local_item_size; }
+  int fitsitemsize() const { return fits_item_size; }
+  int localitemsize() const { return local_item_size; }
   FITS::HDUType hdutype() const { return hdu_type; }
 
   // error handling and error codes that can be returned
@@ -107,7 +107,7 @@ class HeaderDataUnit {
 
   // skipping one or more HDU's
   //<group>
-  int skip(uInt n);
+  int skip(unsigned int n);
   int skip();
   //</group>
 
@@ -126,7 +126,7 @@ class HeaderDataUnit {
   // assumes that hdu type has been appropriately set, but it may
   // be changed in the process.  Data type is also determined.
   // Returns false if a serious error was detected, otherwise true
-  static bool compute_size(FitsKeywordList &, OFF_T &, Int &, FITS::HDUType &, FITS::ValueType &,
+  static bool compute_size(FitsKeywordList &, OFF_T &, int &, FITS::HDUType &, FITS::ValueType &,
                            FITSErrorHandler, HDUErrs &);
 
   // Operations on the HDU's keyword list
@@ -150,18 +150,18 @@ class HeaderDataUnit {
   const FitsKeyword *nextkw(const char *n) { return kwlist_.next(n); }
   void mk(FITS::ReservedName k, bool v, const char *c = 0);
   void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
-  void mk(FITS::ReservedName k, Int v, const char *c = 0);
+  void mk(FITS::ReservedName k, int v, const char *c = 0);
   void mk(FITS::ReservedName k, double v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, Int v, const char *c = 0);
+  void mk(int n, FITS::ReservedName k, int v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
   void mk(const char *n, bool v, const char *c = 0);
   void mk(const char *n, const char *v = 0, const char *c = 0);
-  void mk(const char *n, Int v, const char *c = 0);
+  void mk(const char *n, int v, const char *c = 0);
   void mk(const char *n, float v, const char *c = 0);
   void mk(const char *n, double v, const char *c = 0);
-  void mk(const char *n, Int r, Int i, const char *c = 0);
+  void mk(const char *n, int r, int i, const char *c = 0);
   void mk(const char *n, float r, float i, const char *c = 0);
   void mk(const char *n, double r, double i, const char *c = 0);
   void spaces(const char *n = 0, const char *c = 0);
@@ -171,7 +171,7 @@ class HeaderDataUnit {
 
   bool notnull(double x) const { return double_null < x ? true : false; }
   bool notnull(char *s) const { return !s ? false : (s[0] != '\0' ? true : false); }
-  bool notnull(Int l) const { return Int_null < l ? true : false; }
+  bool notnull(int l) const { return Int_null < l ? true : false; }
 
  protected:
   //	For input -- ~ should delete the keyword list: kwflag = 1
@@ -200,13 +200,13 @@ class HeaderDataUnit {
   HDUErrs err_status;
   void errmsg(HDUErrs, const char *);
 
-  Int no_dims;  // number of dimensions
-  Int *dimn;    // size of dimension N
+  int no_dims;  // number of dimensions
+  int *dimn;    // size of dimension N
   // uInt fits_data_size;	// size in bytes of total amount of data
   OFF_T fits_data_size;       // size in bytes of total amount of data
   FITS::ValueType data_type;  // type of data - derived from BITPIX
-  Int fits_item_size;         // size in bytes of an item of FITS data
-  Int local_item_size;        // size in bytes of an item of local data
+  int fits_item_size;         // size in bytes of an item of FITS data
+  int local_item_size;        // size in bytes of an item of local data
   FITS::HDUType hdu_type;     // type of header/data unit
   char pad_char;              // char to pad FITS data block
 
@@ -218,12 +218,12 @@ class HeaderDataUnit {
   //</group>
   double double_null;
   char char_null;
-  Int Int_null;
+  int Int_null;
 
  public:
   int get_hdr(FITS::HDUType, FitsKeywordList &);
-  int read_data(char *, Int);
-  int write_data(FitsOutput &, char *, Int);
+  int read_data(char *, int);
+  int write_data(FitsOutput &, char *, int);
   OFF_T read_all_data(char *);
   int write_all_data(FitsOutput &, char *);
 };
@@ -237,7 +237,7 @@ inline void HeaderDataUnit::mk(FITS::ReservedName k, const char *v, const char *
   posEnd();
   kwlist_.mk(k, v, c);
 }
-inline void HeaderDataUnit::mk(FITS::ReservedName k, Int v, const char *c) {
+inline void HeaderDataUnit::mk(FITS::ReservedName k, int v, const char *c) {
   posEnd();
   kwlist_.mk(k, v, c);
 }
@@ -253,7 +253,7 @@ inline void HeaderDataUnit::mk(int n, FITS::ReservedName k, const char *v, const
   posEnd();
   kwlist_.mk(n, k, v, c);
 }
-inline void HeaderDataUnit::mk(int n, FITS::ReservedName k, Int v, const char *c) {
+inline void HeaderDataUnit::mk(int n, FITS::ReservedName k, int v, const char *c) {
   posEnd();
   kwlist_.mk(n, k, v, c);
 }
@@ -269,7 +269,7 @@ inline void HeaderDataUnit::mk(const char *n, const char *v, const char *c) {
   posEnd();
   kwlist_.mk(n, v, c);
 }
-inline void HeaderDataUnit::mk(const char *n, Int v, const char *c) {
+inline void HeaderDataUnit::mk(const char *n, int v, const char *c) {
   posEnd();
   kwlist_.mk(n, v, c);
 }
@@ -281,7 +281,7 @@ inline void HeaderDataUnit::mk(const char *n, double v, const char *c) {
   posEnd();
   kwlist_.mk(n, v, c);
 }
-inline void HeaderDataUnit::mk(const char *n, Int r, Int i, const char *c) {
+inline void HeaderDataUnit::mk(const char *n, int r, int i, const char *c) {
   posEnd();
   kwlist_.mk(n, r, i, c);
 }
@@ -402,7 +402,7 @@ class PrimaryArray : public HeaderDataUnit {
   double bzero() const { return bzero_x; }
   char *bunit() const { return bunit_x; }
   bool isablank() const { return isablank_x; }
-  Int blank() const { return blank_x; }
+  int blank() const { return blank_x; }
   char *ctype(int n) const { return ctype_x[n]; }
   double crpix(int n) const { return crpix_x[n]; }
   double crota(int n) const { return crota_x[n]; }
@@ -508,7 +508,7 @@ class PrimaryArray : public HeaderDataUnit {
   double bzero_x;
   char *bunit_x;
   bool isablank_x;
-  Int blank_x;
+  int blank_x;
   char **ctype_x;
   double *crpix_x;
   double *crota_x;
@@ -564,20 +564,20 @@ class ImageExtension : public PrimaryArray<TYPE> {
   ~ImageExtension();
   char *xtension() { return xtension_x; }
   char *extname() { return extname_x; }
-  Int extver() { return extver_x; }
-  Int extlevel() { return extlevel_x; }
-  Int pcount() { return pcount_x; }
-  Int gcount() { return gcount_x; }
+  int extver() { return extver_x; }
+  int extlevel() { return extlevel_x; }
+  int pcount() { return pcount_x; }
+  int gcount() { return gcount_x; }
   // write required keywords for ImageExtension
   int write_imgExt_hdr(FitsOutput &fout, int bitpix, int naxis, long *naxes);
 
  protected:
   char *xtension_x;
   char *extname_x;
-  Int extver_x;
-  Int extlevel_x;
-  Int pcount_x;
-  Int gcount_x;
+  int extver_x;
+  int extlevel_x;
+  int pcount_x;
+  int gcount_x;
 
  private:
   void ie_assign();
@@ -640,14 +640,14 @@ class PrimaryGroup : public PrimaryArray<TYPE> {
 
   // Return basic parameters of a random group
   //<group>
-  Int gcount() const { return gcount_x; }
-  Int pcount() const { return pcount_x; }
+  int gcount() const { return gcount_x; }
+  int pcount() const { return pcount_x; }
   char *ptype(int n) const { return ptype_x[n]; }
   double pscal(int n) const { return pscal_x[n]; }
   double pzero(int n) const { return pzero_x[n]; }
   //</group>
 
-  Int currgroup() const { return current_group; }
+  int currgroup() const { return current_group; }
 
   double parm(int);    // return physical parms
   TYPE &rawparm(int);  // access raw parms
@@ -676,13 +676,13 @@ class PrimaryGroup : public PrimaryArray<TYPE> {
   //</group>
 
  protected:
-  Int pcount_x;
-  Int gcount_x;
+  int pcount_x;
+  int gcount_x;
   char **ptype_x;
   double *pscal_x;
   double *pzero_x;
   TYPE *group_parm;
-  Int current_group;
+  int current_group;
 
  private:
   void pg_assign();
@@ -773,11 +773,11 @@ class PrimaryTable : public PrimaryArray<TYPE> {
   char *instrume_x;  // INSTRUME
   char *dateobs_x;   // DATE-OBS
   char *datemap_x;   // DATE-MAP
-  Float bscale_x;    // BSCALE
-  Float bzero_x;     // BZERO
+  float bscale_x;    // BSCALE
+  float bzero_x;     // BZERO
   char *bunit_x;     // BUNIT
-  Float equinox_x;   // EQUINOX
-  Float altrpix_x;   // ALTRPIX
+  float equinox_x;   // EQUINOX
+  float altrpix_x;   // ALTRPIX
 
  private:
   void pt_assign();
@@ -834,13 +834,13 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
   ~ExtensionHeaderDataUnit();
   char *xtension() { return xtension_x; }
   char *extname() { return extname_x; }
-  Int extver() { return extver_x; }
-  Int extlevel() { return extlevel_x; }
-  Int pcount() { return pcount_x; }
-  Int gcount() { return gcount_x; }
+  int extver() { return extver_x; }
+  int extlevel() { return extlevel_x; }
+  int pcount() { return pcount_x; }
+  int gcount() { return gcount_x; }
 
   // read next N bytes into addr
-  int read(char *addr, int nbytes) { return read_data(addr, Int(nbytes)); }
+  int read(char *addr, int nbytes) { return read_data(addr, int(nbytes)); }
   // write next N bytes from addr to the FITS output fout
   int write(FitsOutput &fout, char *addr, int nbytes) { return write_data(fout, addr, nbytes); }
 
@@ -854,10 +854,10 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 
   char *xtension_x;
   char *extname_x;
-  Int extver_x;
-  Int extlevel_x;
-  Int pcount_x;
-  Int gcount_x;
+  int extver_x;
+  int extlevel_x;
+  int pcount_x;
+  int gcount_x;
 
  private:
   void ex_assign();
@@ -1085,15 +1085,15 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 
   // return basic elements of a table
   //<group>
-  Int nrows() const { return dim(1); }
-  Int ncols() const { return tfields_x; }
-  uInt rowsize() const { return fitsrowsize; }
-  Int tfields() const { return tfields_x; }
+  int nrows() const { return dim(1); }
+  int ncols() const { return tfields_x; }
+  unsigned int rowsize() const { return fitsrowsize; }
+  int tfields() const { return tfields_x; }
   const char *tform(int n) const { return tform_x[n]; }
   double tscal(int n) const { return tscal_x[n]; }
   double tzero(int n) const { return tzero_x[n]; }
   bool isatnull(int n) const { return isatnull_x[n]; }
-  Int tnull(int n) const { return tnull_x[n]; }
+  int tnull(int n) const { return tnull_x[n]; }
   const char *ttype(int n) const { return ttype_x[n]; }
   const char *tunit(int n) const { return tunit_x[n]; }
   const char *tdisp(int n) const { return tdisp_x[n]; }
@@ -1103,7 +1103,7 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   double crota(int n) const { return crota_x[n]; }
   double crval(int n) const { return crval_x[n]; }
   double cdelt(int n) const { return cdelt_x[n]; }
-  Int theap() const { return theap_x; }
+  int theap() const { return theap_x; }
   const char *author() const { return author_x; }
   const char *referenc() const { return referenc_x; }
   //</group>
@@ -1133,7 +1133,7 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   // select a field
   FitsBase &field(int i) const { return *fld[i]; }
   // get current row
-  Int currrow() const { return curr_row; }
+  int currrow() const { return curr_row; }
   // sets field addresses in the current row
   // void set_fitsrow(Int);
 
@@ -1144,12 +1144,12 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
                        FITSErrorHandler errhandler = FITSError::defaultHandler);
   BinaryTableExtension(FITS::HDUType, FITSErrorHandler errhandler = FITSError::defaultHandler);
 
-  Int tfields_x;
+  int tfields_x;
   char **tform_x;
   double *tscal_x;
   double *tzero_x;
   bool *isatnull_x;
-  Int *tnull_x;
+  int *tnull_x;
   char **ttype_x;
   char **tunit_x;
   char **tdisp_x;
@@ -1159,8 +1159,8 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   double *crota_x;
   double *crval_x;
   double *cdelt_x;
-  Int nAxis;
-  Int theap_x;
+  int nAxis;
+  int theap_x;
   char *author_x;
   char *referenc_x;
 
@@ -1170,21 +1170,21 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
   virtual int writerow(FitsOutput &);
   //</group>
   unsigned char *fitsrow;  // the FITS data row buffer
-  uInt *fits_offset;       // Offsets to the fields within a FITS row
-  uInt fitsrowsize;        // size in bytes of a FITS data row
+  unsigned int *fits_offset;       // Offsets to the fields within a FITS row
+  unsigned int fitsrowsize;        // size in bytes of a FITS data row
   bool isoptimum;          // tells whether optimum case exists or not
 
   // sets field addresses in the current row
-  void set_fitsrow(Int);
+  void set_fitsrow(int);
 
   unsigned char *table;  // the table in local format
-  uInt tablerowsize;     // size in bytes of a table row
-  uInt alloc_row;        // number of currently allocated rows
-  Int beg_row;           // range of rows currently in memory
-  Int end_row;
-  Int curr_row;
+  unsigned int tablerowsize;     // size in bytes of a table row
+  unsigned int alloc_row;        // number of currently allocated rows
+  int beg_row;           // range of rows currently in memory
+  int end_row;
+  int curr_row;
   FitsBase **fld;      // The array of fields
-  uInt *table_offset;  // Offsets to the fields within a table row
+  unsigned int *table_offset;  // Offsets to the fields within a table row
   // data addresses of fields of current row
   void **data_addr;
 
@@ -1204,7 +1204,7 @@ class AsciiTableExtension : public BinaryTableExtension {
 
   // # special overriden functions for ascii TABLE only
   //  position in which column starts
-  Int tbcol(int n) { return tbcol_x[n]; }
+  int tbcol(int n) { return tbcol_x[n]; }
   // ascii string that represents the NULL value
   char *tnull(int n) { return tnulla_x[n]; }
   // write the required keywords for ASCIITableExtension
@@ -1212,9 +1212,9 @@ class AsciiTableExtension : public BinaryTableExtension {
                        const char **, const char *e);
 
  protected:
-  Int *tbcol_x;
+  int *tbcol_x;
   char **tnulla_x;
-  uInt *fits_width;  // widths of the fields within a FITS row
+  unsigned int *fits_width;  // widths of the fields within a FITS row
   char **format;     // converted formats of the fields
 
   // read and write the next FITS data row

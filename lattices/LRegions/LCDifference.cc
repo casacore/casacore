@@ -58,7 +58,7 @@ bool LCDifference::equals(const LCRegion& other) const { return LCRegionMulti::e
 
 LCRegion* LCDifference::cloneRegion() const { return new LCDifference(*this); }
 
-LCRegion* LCDifference::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCDifference::doTranslate(const Vector<float>& translateVector,
                                     const IPosition& newLatticeShape) const {
   Block<const LCRegion*> regions;
   multiTranslate(regions, translateVector, newLatticeShape);
@@ -96,7 +96,7 @@ void LCDifference::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   // Determine which part to get from region2.
   // Get and store negation in buffer when anything found.
   const IPosition& shape = buffer.shape();
-  uInt nrdim = shape.nelements();
+  unsigned int nrdim = shape.nelements();
   IPosition stbuf(nrdim);
   IPosition endbuf(nrdim);
   IPosition streg(nrdim);

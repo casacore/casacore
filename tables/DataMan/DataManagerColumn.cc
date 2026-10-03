@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 DataManagerColumn::~DataManagerColumn() {}
 
-void DataManagerColumn::setMaxLength(uInt) {}
+void DataManagerColumn::setMaxLength(unsigned int) {}
 
 void DataManagerColumn::setShapeColumn(const IPosition&) {
   throw DataManInvOper(
@@ -60,7 +60,7 @@ void DataManagerColumn::setShapeTiled(rownr_t rownr, const IPosition& shape, con
 bool DataManagerColumn::isShapeDefined(rownr_t) { return true; }
 
 // The default implementation of ndim is to use the shape.
-uInt DataManagerColumn::ndim(rownr_t rownr) { return shape(rownr).nelements(); }
+unsigned int DataManagerColumn::ndim(rownr_t rownr) { return shape(rownr).nelements(); }
 
 // The shape of the array in the given row.
 IPosition DataManagerColumn::shape(rownr_t) { return IPosition(0); }
@@ -82,11 +82,11 @@ void DataManagerColumn::throwPut() const {
 }
 
 void DataManagerColumn::getBool(rownr_t, bool*) { throwGet(); }
-void DataManagerColumn::getuChar(rownr_t, uChar*) { throwGet(); }
-void DataManagerColumn::getShort(rownr_t, Short*) { throwGet(); }
-void DataManagerColumn::getuShort(rownr_t, uShort*) { throwGet(); }
-void DataManagerColumn::getInt(rownr_t, Int*) { throwGet(); }
-void DataManagerColumn::getuInt(rownr_t, uInt*) { throwGet(); }
+void DataManagerColumn::getuChar(rownr_t, unsigned char*) { throwGet(); }
+void DataManagerColumn::getShort(rownr_t, short*) { throwGet(); }
+void DataManagerColumn::getuShort(rownr_t, unsigned short*) { throwGet(); }
+void DataManagerColumn::getInt(rownr_t, int*) { throwGet(); }
+void DataManagerColumn::getuInt(rownr_t, unsigned int*) { throwGet(); }
 void DataManagerColumn::getInt64(rownr_t, Int64*) { throwGet(); }
 void DataManagerColumn::getfloat(rownr_t, float*) { throwGet(); }
 void DataManagerColumn::getdouble(rownr_t, double*) { throwGet(); }
@@ -95,11 +95,11 @@ void DataManagerColumn::getDComplex(rownr_t, DComplex*) { throwGet(); }
 void DataManagerColumn::getString(rownr_t, String*) { throwGet(); }
 
 void DataManagerColumn::putBool(rownr_t, const bool*) { throwPut(); }
-void DataManagerColumn::putuChar(rownr_t, const uChar*) { throwPut(); }
-void DataManagerColumn::putShort(rownr_t, const Short*) { throwPut(); }
-void DataManagerColumn::putuShort(rownr_t, const uShort*) { throwPut(); }
-void DataManagerColumn::putInt(rownr_t, const Int*) { throwPut(); }
-void DataManagerColumn::putuInt(rownr_t, const uInt*) { throwPut(); }
+void DataManagerColumn::putuChar(rownr_t, const unsigned char*) { throwPut(); }
+void DataManagerColumn::putShort(rownr_t, const short*) { throwPut(); }
+void DataManagerColumn::putuShort(rownr_t, const unsigned short*) { throwPut(); }
+void DataManagerColumn::putInt(rownr_t, const int*) { throwPut(); }
+void DataManagerColumn::putuInt(rownr_t, const unsigned int*) { throwPut(); }
 void DataManagerColumn::putInt64(rownr_t, const Int64*) { throwPut(); }
 void DataManagerColumn::putfloat(rownr_t, const float*) { throwPut(); }
 void DataManagerColumn::putdouble(rownr_t, const double*) { throwPut(); }
@@ -278,19 +278,19 @@ void DataManagerColumn::getScalarColumnBase(ArrayBase& arr) {
       GetCol<bool>(arr);
       break;
     case TpUChar:
-      GetCol<uChar>(arr);
+      GetCol<unsigned char>(arr);
       break;
     case TpShort:
-      GetCol<Short>(arr);
+      GetCol<short>(arr);
       break;
     case TpUShort:
-      GetCol<uShort>(arr);
+      GetCol<unsigned short>(arr);
       break;
     case TpInt:
-      GetCol<Int>(arr);
+      GetCol<int>(arr);
       break;
     case TpUInt:
-      GetCol<uInt>(arr);
+      GetCol<unsigned int>(arr);
       break;
     case TpInt64:
       GetCol<Int64>(arr);
@@ -324,19 +324,19 @@ void DataManagerColumn::putScalarColumnBase(const ArrayBase& arr) {
       PutCol<bool>(arr);
       break;
     case TpUChar:
-      PutCol<uChar>(arr);
+      PutCol<unsigned char>(arr);
       break;
     case TpShort:
-      PutCol<Short>(arr);
+      PutCol<short>(arr);
       break;
     case TpUShort:
-      PutCol<uShort>(arr);
+      PutCol<unsigned short>(arr);
       break;
     case TpInt:
-      PutCol<Int>(arr);
+      PutCol<int>(arr);
       break;
     case TpUInt:
-      PutCol<uInt>(arr);
+      PutCol<unsigned int>(arr);
       break;
     case TpInt64:
       PutCol<Int64>(arr);
@@ -370,19 +370,19 @@ void DataManagerColumn::getScalarColumnCellsBase(const RefRows& rownrs, ArrayBas
       GetCells<bool>(rownrs, arr);
       break;
     case TpUChar:
-      GetCells<uChar>(rownrs, arr);
+      GetCells<unsigned char>(rownrs, arr);
       break;
     case TpShort:
-      GetCells<Short>(rownrs, arr);
+      GetCells<short>(rownrs, arr);
       break;
     case TpUShort:
-      GetCells<uShort>(rownrs, arr);
+      GetCells<unsigned short>(rownrs, arr);
       break;
     case TpInt:
-      GetCells<Int>(rownrs, arr);
+      GetCells<int>(rownrs, arr);
       break;
     case TpUInt:
-      GetCells<uInt>(rownrs, arr);
+      GetCells<unsigned int>(rownrs, arr);
       break;
     case TpInt64:
       GetCells<Int64>(rownrs, arr);
@@ -416,19 +416,19 @@ void DataManagerColumn::putScalarColumnCellsBase(const RefRows& rownrs, const Ar
       PutCells<bool>(rownrs, arr);
       break;
     case TpUChar:
-      PutCells<uChar>(rownrs, arr);
+      PutCells<unsigned char>(rownrs, arr);
       break;
     case TpShort:
-      PutCells<Short>(rownrs, arr);
+      PutCells<short>(rownrs, arr);
       break;
     case TpUShort:
-      PutCells<uShort>(rownrs, arr);
+      PutCells<unsigned short>(rownrs, arr);
       break;
     case TpInt:
-      PutCells<Int>(rownrs, arr);
+      PutCells<int>(rownrs, arr);
       break;
     case TpUInt:
-      PutCells<uInt>(rownrs, arr);
+      PutCells<unsigned int>(rownrs, arr);
       break;
     case TpInt64:
       PutCells<Int64>(rownrs, arr);

@@ -176,7 +176,7 @@ class ImageInfo : public RecordTransformable {
   // the value as an ImageType in ImageInfo.  Only values pertaining
   // to beam, optical depth and spectral index are handled here.  All others
   // give back Undefined.  See usage in Image FITS conversion classes.
-  static ImageInfo::ImageTypes imageTypeFromFITS(Int fitsValue);
+  static ImageInfo::ImageTypes imageTypeFromFITS(int fitsValue);
 
   // It might be useful to know what FITS keyword names are used in to/from
   // FITS so we can remove them so they won't be used more than once. The
@@ -194,15 +194,15 @@ class ImageInfo : public RecordTransformable {
   // necessary and used if and only if the ImageBeamSet
   // has multiple beams for such an axis. If just a single beam, that beam
   // is returned. If no (or a null) beam, a null beam is returned.
-  GaussianBeam restoringBeam(Int channel = -1, Int stokes = -1) const;
+  GaussianBeam restoringBeam(int channel = -1, int stokes = -1) const;
 
   // Set the single global restoring beam. An exception will be
   // thrown if this object already has multiple beams. In that case,
   // the caller must call removeRestoringBeam() first.
   void setRestoringBeam(const GaussianBeam& beam);
   // #/// Added to build casarest with nrao-nov12
-  void setRestoringBeam(const Quantum<Double>& major, const Quantum<Double>& minor,
-                        const Quantum<Double>& pa) {
+  void setRestoringBeam(const Quantum<double>& major, const Quantum<double>& minor,
+                        const Quantum<double>& pa) {
     setRestoringBeam(GaussianBeam(major, minor, pa));
   }
 
@@ -222,10 +222,10 @@ class ImageInfo : public RecordTransformable {
   // ImageInterface<T>::setImageInfo().
   // <br>This function cannot be used if no beams have been set via set(All)Beams.
   // <group>
-  void setBeam(Int channel, Int stokes, const Quantity& major, const Quantity& minor,
+  void setBeam(int channel, int stokes, const Quantity& major, const Quantity& minor,
                const Quantity& pa);
 
-  void setBeam(Int channel, Int stokes, const GaussianBeam& beam);
+  void setBeam(int channel, int stokes, const GaussianBeam& beam);
   // </group>
 
   // does this object contain multiple beams?
@@ -239,13 +239,13 @@ class ImageInfo : public RecordTransformable {
 
   // <group>
   // Number of channels and stokes in per hyper-plane beam array
-  uInt nChannels() const { return _beams.nchan(); }
-  uInt nStokes() const { return _beams.nstokes(); }
+  unsigned int nChannels() const { return _beams.nchan(); }
+  unsigned int nStokes() const { return _beams.nstokes(); }
   // </group>
 
   // <group>
   // Initialize all per-plane beams to the same value
-  void setAllBeams(const uInt nChannels, const uInt nStokes, const GaussianBeam& beam);
+  void setAllBeams(const unsigned int nChannels, const unsigned int nStokes, const GaussianBeam& beam);
 
   // Set the per plane beams array directly.
   void setBeams(const ImageBeamSet& beams);
@@ -259,14 +259,14 @@ class ImageInfo : public RecordTransformable {
   bool getRestoringBeam(LoggerHolder& logger);
 
   // Convert the given beam to a Record.
-  Record beamToRecord(Int channel, Int stokes) const;
+  Record beamToRecord(int channel, int stokes) const;
 
   // Check if the beam set matches the coordinate axes sizes.
   void checkBeamSet(const CoordinateSystem& coords, const IPosition& shape,
                     const String& imageName) const;
 
   // Append the other beamset to this one.
-  void appendBeams(ImageInfo& infoThat, Int axis, bool relax, LogIO& os,
+  void appendBeams(ImageInfo& infoThat, int axis, bool relax, LogIO& os,
                    const CoordinateSystem& csysThis, const CoordinateSystem& csysThat,
                    const IPosition& shapeThis, const IPosition& shapeThat);
 
@@ -278,20 +278,20 @@ class ImageInfo : public RecordTransformable {
   // If relax=False, an exception is thrown if mismatching.
   void combineBeams(const ImageInfo& infoThat, const IPosition& shapeThis,
                     const IPosition& shapeThat, const CoordinateSystem& csysThis,
-                    const CoordinateSystem& csysThat, Int axis, bool relax, LogIO& os);
+                    const CoordinateSystem& csysThat, int axis, bool relax, LogIO& os);
 
   // Reset the info and beamset of this image with the appropriate part of
   // the beam set of the concat image it is part of.
   // It returns the number of channels or polarizations handled.
-  uInt setInfoSplitBeamSet(uInt ndone, const ImageInfo& concatInfo, const IPosition& shape,
-                           const CoordinateSystem& csys, Int concatAxis);
+  unsigned int setInfoSplitBeamSet(unsigned int ndone, const ImageInfo& concatInfo, const IPosition& shape,
+                           const CoordinateSystem& csys, int concatAxis);
 
   // Concatenate the beam sets along the frequency axis.
-  void concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int nchanThis,
-                       Int nchanThat, bool relax, LogIO& os) const;
+  void concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, int nchanThis,
+                       int nchanThat, bool relax, LogIO& os) const;
 
   // Concatenate the beam sets along the stokes axis.
-  void concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int npolThis, Int npolThat,
+  void concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, int npolThis, int npolThat,
                       bool relax, LogIO& os) const;
 
   // Merge the beam sets and check if they match.
@@ -304,9 +304,9 @@ class ImageInfo : public RecordTransformable {
 
   // Get the beam area in terms of pixel size of the specified
   // DirectionCoordinate
-  Double getBeamAreaInPixels(Int channel, Int stokes, const DirectionCoordinate&) const;
+  double getBeamAreaInPixels(int channel, int stokes, const DirectionCoordinate&) const;
 
-  static Double getBeamAreaInPixels(const GaussianBeam& beam, const DirectionCoordinate& dc);
+  static double getBeamAreaInPixels(const GaussianBeam& beam, const DirectionCoordinate& dc);
 
  private:
   // Common copy ctor/assignment operator code.
@@ -317,7 +317,7 @@ class ImageInfo : public RecordTransformable {
 
   // Check if the beam shape matches the coordinates.
   // It sets nchan and npol to the values in the image shape.
-  void _checkBeamShape(uInt& nchan, uInt& npol, const IPosition& shape,
+  void _checkBeamShape(unsigned int& nchan, unsigned int& npol, const IPosition& shape,
                        const CoordinateSystem& csys) const;
 
   // # Data members

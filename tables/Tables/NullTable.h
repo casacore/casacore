@@ -85,11 +85,11 @@ class NullTable : public BaseTable {
   virtual const TableLock& lockOptions() const override;
   virtual void mergeLock(const TableLock& lockOptions) override;
   virtual bool hasLock(FileLocker::LockType) const override;
-  virtual bool lock(FileLocker::LockType, uInt nattempts) override;
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts) override;
   virtual void unlock() override;
   virtual void flush(bool fsync, bool recursive) override;
   virtual void resync() override;
-  virtual uInt getModifyCounter() const override;
+  virtual unsigned int getModifyCounter() const override;
   virtual bool isWritable() const override;
   virtual void deepCopy(const String& newName, const Record& dataManagerInfo, const StorageOption&,
                         int tableOption, bool valueCopy, int endianFormat,
@@ -98,7 +98,7 @@ class NullTable : public BaseTable {
   virtual Record dataManagerInfo() const override;
   virtual TableRecord& keywordSet() override;
   virtual TableRecord& rwKeywordSet() override;
-  virtual BaseColumn* getColumn(uInt columnIndex) const override;
+  virtual BaseColumn* getColumn(unsigned int columnIndex) const override;
   virtual BaseColumn* getColumn(const String& columnName) const override;
   virtual bool canAddRow() const override;
   virtual void addRow(rownr_t nrrow, bool initialize) override;
@@ -125,7 +125,7 @@ class NullTable : public BaseTable {
                             bool determineOrder) const override;
   virtual std::shared_ptr<BaseTable> doSort(Block<BaseColumn*>&,
                                             const Block<std::shared_ptr<BaseCompare>>&,
-                                            const Block<Int>&, int,
+                                            const Block<int>&, int,
                                             std::shared_ptr<Vector<rownr_t>>,
                                             std::shared_ptr<Vector<size_t>>) override;
   virtual void renameSubTables(const String& newName, const String& oldName) override;

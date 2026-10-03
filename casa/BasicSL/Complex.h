@@ -217,8 +217,8 @@ inline bool operator<(const DComplex &left, const DComplex &right) {
 //  <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 //  </reviewed>
 //  <group name=math>
-inline Double fabs(const DComplex &val) { return std::abs(val); }
-inline Float fabs(const Complex &val) { return std::abs(val); }
+inline double fabs(const DComplex &val) { return std::abs(val); }
+inline float fabs(const Complex &val) { return std::abs(val); }
 
 inline DComplex square(const DComplex &val) { return val * val; }
 inline Complex square(const Complex &val) { return val * val; }
@@ -240,18 +240,18 @@ inline DComplex operator-(const Complex &c, const DComplex &d) { return (DComple
 
 // QMath and scimath need these operators * and /
 // <group>
-inline Complex operator*(const Complex &val, Double f) { return val * Float(f); }
-inline Complex operator*(Double f, const Complex &val) { return val * Float(f); }
-inline Complex operator/(const Complex &val, Double f) { return val / Float(f); }
-inline Complex operator/(Double f, const Complex &val) { return Float(f) / val; }
+inline Complex operator*(const Complex &val, double f) { return val * float(f); }
+inline Complex operator*(double f, const Complex &val) { return val * float(f); }
+inline Complex operator/(const Complex &val, double f) { return val / float(f); }
+inline Complex operator/(double f, const Complex &val) { return float(f) / val; }
 // </group>
 // These operators are useful, otherwise both Float and Double are applicable
 // for Ints.
 // <group>
-inline Complex operator*(const Complex &val, Int f) { return val * Float(f); }
-inline Complex operator*(Int f, const Complex &val) { return val * Float(f); }
-inline Complex operator/(const Complex &val, Int f) { return val / Float(f); }
-inline Complex operator/(Int f, const Complex &val) { return Float(f) / val; }
+inline Complex operator*(const Complex &val, int f) { return val * float(f); }
+inline Complex operator*(int f, const Complex &val) { return val * float(f); }
+inline Complex operator/(const Complex &val, int f) { return val / float(f); }
+inline Complex operator/(int f, const Complex &val) { return float(f) / val; }
 // </group>
 // </group>
 
@@ -259,20 +259,20 @@ inline Complex operator/(Int f, const Complex &val) { return Float(f) / val; }
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name=near>
-bool near(const Complex &val1, const Complex &val2, Double tol = 1.0e-5);
-bool near(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13);
-bool nearAbs(const Complex &val1, const Complex &val2, Double tol = 1.0e-5);
-bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13);
-inline bool allNear(const Complex &val1, const Complex &val2, Double tol = 1.0e-5) {
+bool near(const Complex &val1, const Complex &val2, double tol = 1.0e-5);
+bool near(const DComplex &val1, const DComplex &val2, double tol = 1.0e-13);
+bool nearAbs(const Complex &val1, const Complex &val2, double tol = 1.0e-5);
+bool nearAbs(const DComplex &val1, const DComplex &val2, double tol = 1.0e-13);
+inline bool allNear(const Complex &val1, const Complex &val2, double tol = 1.0e-5) {
   return near(val1, val2, tol);
 }
-inline bool allNear(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13) {
+inline bool allNear(const DComplex &val1, const DComplex &val2, double tol = 1.0e-13) {
   return near(val1, val2, tol);
 }
-inline bool allNearAbs(const Complex &val1, const Complex &val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(const Complex &val1, const Complex &val2, double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline bool allNearAbs(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13) {
+inline bool allNearAbs(const DComplex &val1, const DComplex &val2, double tol = 1.0e-13) {
   return nearAbs(val1, val2, tol);
 }
 // </group>

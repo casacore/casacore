@@ -50,12 +50,12 @@ UnitVal UnitVal::MOLAR(1., UnitDim::Dmol);
 UnitVal UnitVal::ANGLE(1., UnitDim::Drad);
 UnitVal UnitVal::SOLIDANGLE(1., UnitDim::Dsr);
 
-void UnitVal::init(Double factor) {
+void UnitVal::init(double factor) {
   kindFactor = factor;
   kindDim.init();
 }
 
-void UnitVal::init(Double factor, Int pos) {
+void UnitVal::init(double factor, int pos) {
   kindFactor = factor;
   kindDim.init(pos);
 }
@@ -64,7 +64,7 @@ UnitVal::UnitVal() : kindFactor(1.0), kindDim() {}
 
 UnitVal::UnitVal(const UnitVal &other) : kindFactor(other.kindFactor), kindDim(other.kindDim) {}
 
-UnitVal::UnitVal(Double factor, const String &s, UMaps *maps) : kindFactor(1.), kindDim() {
+UnitVal::UnitVal(double factor, const String &s, UMaps *maps) : kindFactor(1.), kindDim() {
   if (UnitMap::getCache(s, *this)) {
     kindFactor *= factor;
   } else if (UnitVal::create(s, *this, maps)) {
@@ -118,24 +118,24 @@ ostream &operator<<(ostream &os, const UnitVal &ku) {
   return os;
 }
 
-UnitVal UnitVal::pow(Int p) {
+UnitVal UnitVal::pow(int p) {
   UnitVal loc;
-  loc.kindFactor = ::pow(kindFactor, Double(p));
+  loc.kindFactor = ::pow(kindFactor, double(p));
   loc.kindDim = kindDim.pow(p);
   return (loc);
 }
 
-UnitVal UnitVal::root(Int p) const {
+UnitVal UnitVal::root(int p) const {
   if (p == 0) throw(AipsError("UnitVal::UnitVal Illegal root zero taken"));
   UnitVal loc;
   loc.kindDim = kindDim;
-  for (Int i = 0; i < UnitDim::Dnumber; i++) {
+  for (int i = 0; i < UnitDim::Dnumber; i++) {
     if (kindDim.unitDim[i] % p == 0)
       loc.kindDim.unitDim[i] /= p;
     else
       throw(AipsError("UnitVal::UnitVal Illegal unit dimensions for root"));
   }
-  loc.kindFactor = ::pow(kindFactor, 1.0 / Double(p));
+  loc.kindFactor = ::pow(kindFactor, 1.0 / double(p));
   return (loc);
 }
 
@@ -143,7 +143,7 @@ UnitVal UnitVal::sqrt() const { return root(2); }
 
 const UnitDim &UnitVal::getDim() const { return kindDim; }
 
-Double UnitVal::getFac() const { return kindFactor; }
+double UnitVal::getFac() const { return kindFactor; }
 
 bool UnitVal::check(const String &s) {
   UnitVal loc;
@@ -173,9 +173,9 @@ bool UnitVal::create(const String &s, UnitVal &res, UMaps *maps) {
 
 bool UnitVal::create(MUString &str, UnitVal &res, UMaps *maps) {
   UnitVal kind;
-  Int ptr = str.getPtr();
+  int ptr = str.getPtr();
   if (str.eos()) return true;
-  Int ps = UnitVal::psign(str);  // power sign
+  int ps = UnitVal::psign(str);  // power sign
   if (str.eos()) return true;
   if (str.testChar('(')) {
     if (!str.matchPair(')')) return false;
@@ -189,9 +189,9 @@ bool UnitVal::create(MUString &str, UnitVal &res, UMaps *maps) {
   return UnitVal::create(str, res, maps);  // add next part
 }
 
-Int UnitVal::psign(MUString &str) {
+int UnitVal::psign(MUString &str) {
   static const Regex sep("[ \\*\\./]");
-  Int lc = 1;
+  int lc = 1;
   while (str.testChar(sep)) {
     if (str.testChar('/')) lc = -lc;
     str.skipChar();
@@ -199,11 +199,11 @@ Int UnitVal::psign(MUString &str) {
   return lc;
 }
 
-Int UnitVal::power(MUString &str) {
+int UnitVal::power(MUString &str) {
   if (str.testString("**")) str.skipString("**");
   if (str.testChar('^')) str.skipChar('^');
-  Int lc = (Int)str.getSign();
-  Int lp = str.getuInt();
+  int lc = (int)str.getSign();
+  int lp = str.getuInt();
   return (lp == 0 ? lc : lc * lp);
 }
 
@@ -211,10 +211,10 @@ bool UnitVal::field(MUString &str, UnitVal &res, UMaps *maps) {
   static const Regex un1("[a-zA-Z_\"'$:%]");
   static const Regex un2("[a-zA-Z_0\"'$:%]");
   UnitName loc;
-  uInt wh(str.getPtr());
+  unsigned int wh(str.getPtr());
   res = UnitVal();  // Initial 1 value
   if (str.testChar(un1)) {
-    Char prev = str.getChar();
+    char prev = str.getChar();
     while (str.testChar(un2) || (str.testNum() && prev == '_')) prev = str.getChar();
   }
   String key = str.get(wh, str.getPtr());

@@ -62,7 +62,7 @@ Time::Time(double jdn) {
   }
 }
 
-Time::Time(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
+Time::Time(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int min, double sec) {
   setDate(year, month, day, hour, min, sec);
 }
 
@@ -303,7 +303,7 @@ istream &operator>>(istream &in, Time &other) {
   // month/day/year,hour:min:sec
   // Is importan this format
 
-  uInt year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0;
+  unsigned int year = 0, month = 0, day = 0, hour = 0, min = 0, sec = 0;
   char ch = 0;
 
   in >> ch;
@@ -340,7 +340,7 @@ void Time::now() {
   mJulianDayfrac = d - (int)d;
 }
 
-void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
+void Time::setDate(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int min, double sec) {
   // Converting between Julian calendar date and Julian date number
   // Valid for all values of year>=-4712 ( for all dates with Julian
   // Day >= 0).
@@ -365,7 +365,7 @@ void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double 
   }
 
   double jd;  // the fraction of the day
-  uInt md;    // Modify Julian day number
+  unsigned int md;    // Modify Julian day number
   int y = year, m = month, d = day;
 
   md = (1461 * (y + 4800 + (m - 14) / 12)) / 4 + (367 * (m - 2 - 12 * ((m - 14) / 12))) / 12 -
@@ -395,10 +395,10 @@ double Time::age() {
   }
 }
 
-uInt Time::seconds() {
+unsigned int Time::seconds() {
   // return integral seconds after the minute [0,59]
   // accuracy of Time seconds is about 2e-5, so add a bit.
-  return (uInt)(dseconds() + 2e-5);
+  return (unsigned int)(dseconds() + 2e-5);
 }
 
 double Time::dseconds() {
@@ -408,24 +408,24 @@ double Time::dseconds() {
   return sec;
 }
 
-uInt Time::minutes() {
+unsigned int Time::minutes() {
   // return minutes after the hour [0,59]
   double hour = mJulianDayfrac * 24.0;
   double min = (hour - hours()) * 60.0;
   // accuracy of Time second is about 2e-5, so add a bit.
-  return uInt(min + 2e-5 / 60.);
+  return static_cast<unsigned int>(min + 2e-5 / 60.);
 }
 
-uInt Time::hours() {
+unsigned int Time::hours() {
   // return hours after the day [0,23]
   // accuracy of Time second is 2e-5, so add a bit.
-  return uInt(mJulianDayfrac * 24.0 + 2e-5 / 3600.);
+  return static_cast<unsigned int>(mJulianDayfrac * 24.0 + 2e-5 / 3600.);
 }
 
-uInt Time::dayOfMonth() {
+unsigned int Time::dayOfMonth() {
   // Return day of the month [1,31] with local time
 
-  uInt jd, j, l, n, i;
+  unsigned int jd, j, l, n, i;
 
   //  Julian day
   jd = mJulianDay + 2400001;
@@ -440,10 +440,10 @@ uInt Time::dayOfMonth() {
   return l - (2447 * j) / 80;
 }
 
-uInt Time::month() {
+unsigned int Time::month() {
   // Return month of the year [1,12] with local time
 
-  uInt jd, j, l, n, i;
+  unsigned int jd, j, l, n, i;
 
   //  Julian day
   jd = mJulianDay + 2400001;
@@ -459,10 +459,10 @@ uInt Time::month() {
   return j + 2 - 12 * l;
 }
 
-uInt Time::year() {
+unsigned int Time::year() {
   // Return year
 
-  uInt jd, j, l, n, i;
+  unsigned int jd, j, l, n, i;
 
   //  Julian day
   jd = mJulianDay + 2400001;
@@ -478,18 +478,18 @@ uInt Time::year() {
   return 100 * (n - 49) + i + l;
 }
 
-uInt Time::dayOfWeek() {
+unsigned int Time::dayOfWeek() {
   // Return day of the week for the Julian day number.
   // Where day runs from 1 though 7, with 1 being Sunday
 
-  uInt jd;
+  unsigned int jd;
   //  Julian day
   jd = mJulianDay + 2400001;
 
   return jd - 7 * ((jd + 1) / 7) + 2;
 }
 
-uInt Time::dayOfYear() {
+unsigned int Time::dayOfYear() {
   // Return day of the year for the Julian day number.
   // Where day runs from 1 though 366.
 
@@ -551,7 +551,7 @@ uInt Time::dayOfYear() {
   return day;
 }
 
-uInt Time::howManyDaysInMonth(uInt month, uInt year) {
+unsigned int Time::howManyDaysInMonth(unsigned int month, unsigned int year) {
   // Return how many days are in a month
   // Note: for february, always return 28
 
@@ -569,7 +569,7 @@ uInt Time::howManyDaysInMonth(uInt month, uInt year) {
   }
 }
 
-uInt Time::howManyDaysInMonth() {
+unsigned int Time::howManyDaysInMonth() {
   // Return how many days are in a months
   Time time;
   return howManyDaysInMonth(time.month(), time.year());
@@ -577,7 +577,7 @@ uInt Time::howManyDaysInMonth() {
 
 bool Time::isLeapYear() { return isLeapYear(Time().year()); }
 
-bool Time::isLeapYear(uInt lyear) {
+bool Time::isLeapYear(unsigned int lyear) {
   if (lyear % 100 == 0) {
     return lyear % 400 == 0;
   }
@@ -586,7 +586,7 @@ bool Time::isLeapYear(uInt lyear) {
 
 // Used internally here to determine if Daylight Savings Time (Summer
 // Time) is currently active.  1 is true, 0 false.
-static Int isDST() {
+static int isDST() {
   time_t tim = time(NULL);
   struct tm *tm_info = localtime(&tim);
   return tm_info->tm_isdst;
@@ -595,27 +595,27 @@ static Int isDST() {
 // Returns the difference, in seconds, between UTC and local time.
 // Negative values are west of GMT, positive are east.
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-Int Time::timeZoneSeconds() { return isDST() ? -altzone : -timezone; }
+int Time::timeZoneSeconds() { return isDST() ? -altzone : -timezone; }
 #elif defined(AIPS_OSF) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
-Int Time::timeZoneSeconds() {
+int Time::timeZoneSeconds() {
   time_t tim = time(NULL);
   struct tm *tm_info = localtime(&tim);
   return tm_info->tm_gmtoff;
 }
 #else
-Int Time::timeZoneSeconds() {
+int Time::timeZoneSeconds() {
   // This will not be accurate unless the DST correction is +1 hour.
   // HP/UX and AIX do not have an altzone variable--at least not that I
   // can find--and this is also generic enough that it should work for
   // most other "reasonable" UNIX-like OS's.  Note: Linux *had* an
   // altzone varialbe before the release of libc6 (glibc), but it's gone
   // now.
-  Int dst = isDST();
-  return Int(-timezone + (C::hour * dst));
+  int dst = isDST();
+  return int(-timezone + (C::hour * dst));
 }
 #endif
 
-Double Time::timeZoneDays() {
+double Time::timeZoneDays() {
   // Same as timeZoneSeconds(), but returns fractional days rather than
   // seconds.
   return (double)timeZoneSeconds() / C::day;  // Turn seconds into days.

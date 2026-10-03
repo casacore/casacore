@@ -152,7 +152,7 @@ class MultiFile : public MultiFileBase {
   // I/O behaviour.
   // <br>If useCRC=True, 32-bit CRC values are calculated and stored for
   // each data block. Note that useCRC is only used for new files.
-  explicit MultiFile(const String& name, ByteIO::OpenOption, Int blockSize = 0,
+  explicit MultiFile(const String& name, ByteIO::OpenOption, int blockSize = 0,
                      bool useODirect = false, bool useCRC = false);
 
   // Open or create a MultiFile with the given name which is nested in the
@@ -160,7 +160,7 @@ class MultiFile : public MultiFileBase {
   // Upon creation the block size can be given. If 0, it uses the block size
   // of the parent.
   explicit MultiFile(const String& name, const std::shared_ptr<MultiFileBase>& parent,
-                     ByteIO::OpenOption, Int blockSize = 0);
+                     ByteIO::OpenOption, int blockSize = 0);
 
   // The destructor flushes and closes the file.
   ~MultiFile() override;
@@ -172,7 +172,7 @@ class MultiFile : public MultiFileBase {
   // Make a nested MultiFile.
   std::shared_ptr<MultiFileBase> makeNested(const std::shared_ptr<MultiFileBase>& parent,
                                             const String& name, ByteIO::OpenOption,
-                                            Int blockSize) const override;
+                                            int blockSize) const override;
 
   // Reopen the underlying file for read/write access.
   // Nothing will be done if the file is writable already.
@@ -199,10 +199,10 @@ class MultiFile : public MultiFileBase {
   void getInfoVersion2(Int64 contBlockNr, CanonicalIO& aio);
   // Write a vector of Int64.
   void writeVector(CanonicalIO& cio, const std::vector<Int64>& index);
-  void writeVector(CanonicalIO& cio, const std::vector<uInt>& index);
+  void writeVector(CanonicalIO& cio, const std::vector<unsigned int>& index);
   // Read a vector of Int64.
   void readVector(CanonicalIO& cio, std::vector<Int64>& index);
-  void readVector(CanonicalIO& cio, std::vector<uInt>& index);
+  void readVector(CanonicalIO& cio, std::vector<unsigned int>& index);
   // Write the remainder of the header (in case exceeding 1 block).
   // <src>iobuf</src> should be large enough
   void writeRemainder(MemoryIO& mio, CanonicalIO&, MultiFileBuffer& mfbuf);
@@ -243,7 +243,7 @@ class MultiFile : public MultiFileBase {
   // Check the CRC of a data block read.
   void checkCRC(const void* buffer, Int64 blknr) const;
   // Calculate the CRC of a data block.
-  uInt calcCRC(const void* buffer, Int64 size) const;
+  unsigned int calcCRC(const void* buffer, Int64 size) const;
   // Extend the virtual file to fit lastblk.
   // Optionally the free blocks are not used.
   virtual void extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks);
@@ -259,10 +259,10 @@ class MultiFile : public MultiFileBase {
   // # Data members
   //  Define two continuation sets where the header overflow can be stored
   MultiFileInfo itsHdrCont[2];
-  uInt itsNrContUsed[2];  // nr of cont.blocks actually used
-  uInt itsHdrContInx;     // Continuation set last used (0 or 1)
+  unsigned int itsNrContUsed[2];  // nr of cont.blocks actually used
+  unsigned int itsHdrContInx;     // Continuation set last used (0 or 1)
   bool itsUseCRC;
-  std::vector<uInt> itsCRC;       // CRC value per block (empty if useCRC=False)
+  std::vector<unsigned int> itsCRC;       // CRC value per block (empty if useCRC=False)
   std::unique_ptr<ByteIO> itsIO;  // A regular file or nested MFFileIO
 };
 

@@ -154,14 +154,14 @@ void MSHistoryHandler::cliCommand(const String& cliComm) {
 
 void MSHistoryHandler::cliCommand(LogIO& cliComm) { cliCommand(cliComm.localSink()); }
 void MSHistoryHandler::cliCommand(LogSinkInterface& sink) {
-  uInt numCliComm = sink.nelements();
+  unsigned int numCliComm = sink.nelements();
   if (numCliComm == 0) return;
 
   String emptyMessage("");
   rownr_t row = histTable_p.nrow();
   histTable_p.addRow();
   Vector<String> cliComm(numCliComm);
-  for (uInt k = 0; k < numCliComm; ++k) {
+  for (unsigned int k = 0; k < numCliComm; ++k) {
     cliComm[k] = sink.getMessage(k);
   }
   msHistCol_p->time().put(row, sink.getTime(0));

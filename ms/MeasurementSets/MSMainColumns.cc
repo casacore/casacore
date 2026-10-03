@@ -151,7 +151,7 @@ void MSMainColumns::setFlagCategories(const Vector<String>& categories) {
   TableRecord& keywords = flagCategory().rwKeywordSet();
   const RecordFieldId key("CATEGORY");
   DebugAssert(
-      nrow() == 0 || categories.nelements() == static_cast<uInt>(flagCategory().shape(0)(2)),
+      nrow() == 0 || categories.nelements() == static_cast<unsigned int>(flagCategory().shape(0)(2)),
       AipsError);
   keywords.define(key, categories);
 }

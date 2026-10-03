@@ -68,7 +68,7 @@ Gaussian3D<AutoDiff<T>> &Gaussian3D<AutoDiff<T>>::operator=(const Gaussian3D<Aut
 
 template <class T>
 AutoDiff<T> Gaussian3D<AutoDiff<T>>::eval(typename Function<AutoDiff<T>>::FunctionArg x) const {
-  uInt k;
+  unsigned int k;
   AutoDiff<T> tmp;
   //
 

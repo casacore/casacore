@@ -96,7 +96,7 @@ class LineCollapser {
   // The init function for a derived class.
   // It can be used to check if <src>nOutPixelsPerCollapse</src>
   // corresponds with the number of pixels produced per collapsed line.
-  virtual void init(uInt nOutPixelsPerCollapse) = 0;
+  virtual void init(unsigned int nOutPixelsPerCollapse) = 0;
 
   // Can the process function in the derived class handle a null mask?
   // If not, LatticeApply ensures that it'll always pass a filled mask vector,

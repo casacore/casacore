@@ -72,14 +72,14 @@ class StringDistance {
   // Construct from the source string and maximum distance.
   // If the maximum distance is negative, it defaults to 1+strlength/3.
   // Note that maximum distance 0 means that the strings must match exactly.
-  explicit StringDistance(const String& source, Int maxDistance = -1, bool countSwaps = true,
+  explicit StringDistance(const String& source, int maxDistance = -1, bool countSwaps = true,
                           bool ignoreBlanks = true, bool caseInsensitive = false);
 
   // Get data members.
   // <group>
   const std::string& source() const { return itsSource; }
-  Int maxDistance() const { return itsMaxDistance; }
-  const Matrix<Int>& matrix() const { return itsMatrix; }
+  int maxDistance() const { return itsMaxDistance; }
+  const Matrix<int>& matrix() const { return itsMatrix; }
   // </group>
 
   // Test if the given target string is within the maximum distance.
@@ -88,25 +88,25 @@ class StringDistance {
   // Calculate the distance from the string to the string given in the constructor.
   // If the length of target exceeds source length + maxDistance,
   // the difference in lengths is returned.
-  Int distance(const String& target) const;
+  int distance(const String& target) const;
 
   // Calculate the distance between the two strings.
   // This is slower than the <src>distance</src> member function, because
   // it has to allocate the underlying Matrix for each invocation.
-  static Int distance(const String& source, const String& target, bool countSwaps = true);
+  static int distance(const String& source, const String& target, bool countSwaps = true);
 
   // Remove blanks from the given string.
   static String removeBlanks(const String& source);
 
  private:
   // Calculate the distance.
-  static Int doDistance(const String& source, const String& target, bool countSwaps,
-                        Matrix<Int>& matrix);
+  static int doDistance(const String& source, const String& target, bool countSwaps,
+                        Matrix<int>& matrix);
 
  private:
   String itsSource;
-  mutable Matrix<Int> itsMatrix;
-  Int itsMaxDistance;
+  mutable Matrix<int> itsMatrix;
+  int itsMaxDistance;
   bool itsCountSwaps;
   bool itsIgnoreBlanks;
   bool itsCaseInsensitive;

@@ -72,7 +72,7 @@ void FiledesIO::write(Int64 size, const void* buf) {
   if (!itsWritable) {
     throw AipsError("FiledesIO::write - " + itsFileName + " is not writable");
   }
-  if (::traceWRITE(itsFile, (Char*)buf, size) != size) {
+  if (::traceWRITE(itsFile, (char*)buf, size) != size) {
     int error = errno;
     throw AipsError("FiledesIO::write - write error in " + itsFileName + ": " + strerror(error));
   }
@@ -83,7 +83,7 @@ void FiledesIO::pwrite(Int64 size, Int64 offset, const void* buf) {
   if (!itsWritable) {
     throw AipsError("FiledesIO::pwrite - " + itsFileName + " is not writable");
   }
-  if (::tracePWRITE(itsFile, (Char*)buf, size, offset) != size) {
+  if (::tracePWRITE(itsFile, (char*)buf, size, offset) != size) {
     int error = errno;
     throw AipsError("FiledesIO::pwrite - write error in " + itsFileName + ": " + strerror(error));
   }
@@ -94,7 +94,7 @@ Int64 FiledesIO::read(Int64 size, void* buf, bool throwException) {
   if (!itsReadable) {
     throw AipsError("FiledesIO::read " + itsFileName + " - is not readable");
   }
-  Int64 bytesRead = ::traceREAD(itsFile, (Char*)buf, size);
+  Int64 bytesRead = ::traceREAD(itsFile, (char*)buf, size);
   int error = errno;
   if (bytesRead > size) {  // Should never be executed
     throw AipsError("FiledesIO::read " + itsFileName + " - read returned a bad value");
@@ -117,7 +117,7 @@ Int64 FiledesIO::pread(Int64 size, Int64 offset, void* buf, bool throwException)
   if (!itsReadable) {
     throw AipsError("FiledesIO::pread " + itsFileName + " - is not readable");
   }
-  Int64 bytesRead = ::tracePREAD(itsFile, (Char*)buf, size, offset);
+  Int64 bytesRead = ::tracePREAD(itsFile, (char*)buf, size, offset);
   int error = errno;
   if (bytesRead > size) {  // Should never be executed
     throw AipsError("FiledesIO::pread " + itsFileName + " - read returned a bad value");
@@ -175,8 +175,8 @@ void FiledesIO::truncate(Int64 size) {
   if (::ftruncate(itsFile, size) == -1) throw std::runtime_error("ftruncate reported an error");
 }
 
-int FiledesIO::create(const Char* name, int mode) {
-  int fd = ::trace3OPEN((Char*)name, O_RDWR | O_CREAT | O_TRUNC, mode);
+int FiledesIO::create(const char* name, int mode) {
+  int fd = ::trace3OPEN((char*)name, O_RDWR | O_CREAT | O_TRUNC, mode);
   int error = errno;
   if (fd == -1) {
     throw AipsError("FiledesIO: file " + String(name) +
@@ -185,12 +185,12 @@ int FiledesIO::create(const Char* name, int mode) {
   return fd;
 }
 
-int FiledesIO::open(const Char* name, bool writable, bool throwExcp) {
+int FiledesIO::open(const char* name, bool writable, bool throwExcp) {
   int fd;
   if (writable) {
-    fd = ::trace2OPEN((Char*)name, O_RDWR);
+    fd = ::trace2OPEN((char*)name, O_RDWR);
   } else {
-    fd = ::trace2OPEN((Char*)name, O_RDONLY);
+    fd = ::trace2OPEN((char*)name, O_RDONLY);
   }
   int error = errno;
   if (throwExcp && fd == -1) {

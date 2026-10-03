@@ -84,7 +84,7 @@ class ExternalLockSync {
   // <br>When a lock is successfully acquired, the number of rows
   // (see function nrrow() below) is reset as a result of
   // synchronizing the access to the table.
-  bool acquire(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+  bool acquire(FileLocker::LockType = FileLocker::Write, unsigned int nattempts = 0);
 
   // Get the current number of rows in this object.
   rownr_t nrow() const;

@@ -118,7 +118,7 @@ class ImageAttrGroup {
   virtual ~ImageAttrGroup();
 
   // Get the number of rows in the group.
-  virtual uInt nrows() const = 0;
+  virtual unsigned int nrows() const = 0;
 
   // Test if an attribute exists.
   virtual bool hasAttr(const String& attrName) const = 0;
@@ -131,10 +131,10 @@ class ImageAttrGroup {
   virtual DataType dataType(const String& attrName) const = 0;
 
   // Get the data of the given attribute in the given row
-  virtual ValueHolder getData(const String& attrName, uInt rownr) = 0;
+  virtual ValueHolder getData(const String& attrName, unsigned int rownr) = 0;
 
   // Get the data of all attributes in a rows.
-  virtual Record getDataRow(uInt rownr) = 0;
+  virtual Record getDataRow(unsigned int rownr) = 0;
 
   // Get the possible units of the values.
   // An empty vector is returned if the attribute has no units.
@@ -149,7 +149,7 @@ class ImageAttrGroup {
   // new row must be directly after the last row in the group.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData(const String& attrName, uInt rownr, const ValueHolder& data,
+  virtual void putData(const String& attrName, unsigned int rownr, const ValueHolder& data,
                        const Vector<String>& units = Vector<String>(),
                        const Vector<String>& measInfo = Vector<String>()) = 0;
 };

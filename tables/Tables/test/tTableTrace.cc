@@ -46,8 +46,8 @@ void testTable(rownr_t nrrow) {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class Table";
-    td.addColumn(ScalarColumnDesc<uInt>("ab"));
-    td.addColumn(ArrayColumnDesc<Int>("ad"));
+    td.addColumn(ScalarColumnDesc<unsigned int>("ab"));
+    td.addColumn(ArrayColumnDesc<int>("ad"));
     // Now create a new table from the description.
     SetupNewTable newtab("tTableTrace_tmp.tab", td, Table::New);
     IncrementalStMan stman2;
@@ -58,32 +58,32 @@ void testTable(rownr_t nrrow) {
     tab.tableInfo().readmeAddLine("first readme line");
     tab.tableInfo().readmeAddLine("second test readme line");
     // Write some data.
-    ScalarColumn<uInt> ab1(tab, "ab");
-    ArrayColumn<Int> ad(tab, "ad");
+    ScalarColumn<unsigned int> ab1(tab, "ab");
+    ArrayColumn<int> ad(tab, "ad");
     for (rownr_t i = 0; i < nrrow; i++) {
       ab1.put(i, i);
-      ad.put(i, Vector<Int>(8, i / 10));
+      ad.put(i, Vector<int>(8, i / 10));
     }
   }
   // Read data back.
   Table tab("tTableTrace_tmp.tab");
-  ScalarColumn<uInt> ab1(tab, "ab");
-  ArrayColumn<Int> ad(tab, "ad");
-  Vector<uInt> abv = ab1.getColumn();
-  Array<Int> adv = ad.getColumn();
+  ScalarColumn<unsigned int> ab1(tab, "ab");
+  ArrayColumn<int> ad(tab, "ad");
+  Vector<unsigned int> abv = ab1.getColumn();
+  Array<int> adv = ad.getColumn();
   {
     // Get entire column (minus last cell).
-    Vector<uInt> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
-    Array<Int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+    Vector<unsigned int> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+    Array<int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
   }
   {
     Vector<rownr_t> abv64(abv.size());
     convertArray(abv64, abv);
     Table rtab(tab(abv64));
-    ScalarColumn<uInt> ab1(rtab, "ab");
-    ArrayColumn<Int> ad(rtab, "ad");
-    Vector<uInt> abv = ab1.getColumn();
-    Array<Int> adv = ad.getColumn();
+    ScalarColumn<unsigned int> ab1(rtab, "ab");
+    ArrayColumn<int> ad(rtab, "ad");
+    Vector<unsigned int> abv = ab1.getColumn();
+    Array<int> adv = ad.getColumn();
   }
 }
 

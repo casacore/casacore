@@ -39,13 +39,13 @@
 // This class is meant to store indirect table arrays, but could
 // in principle also be used for other array purposes.
 
-void a(bool, uInt, Int64&, Int64&, Int64&, Int64&);
+void a(bool, unsigned int, Int64&, Int64&, Int64&, Int64&);
 void b(bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
 void c(bool, Int64, Int64, Int64, Int64);
 
 int main(int argc, const char* argv[]) {
-  uInt stVersion = 0;
-  uInt endVersion = 1;
+  unsigned int stVersion = 0;
+  unsigned int endVersion = 1;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> stVersion;
@@ -56,7 +56,7 @@ int main(int argc, const char* argv[]) {
     }
   }
   try {
-    for (uInt i = stVersion; i <= endVersion; i++) {
+    for (unsigned int i = stVersion; i <= endVersion; i++) {
       Int64 off1, off2, off3, off4, offc1, offc2, offc3, offc4;
       cout << "test of StArrayFile with version " << i << " in canonical format " << endl;
       a(true, i, off1, off2, off3, off4);
@@ -77,14 +77,14 @@ int main(int argc, const char* argv[]) {
 }
 
 // Write some arrays (in chunks).
-void a(bool canonical, uInt version, Int64& off1, Int64& off2, Int64& off3, Int64& off4) {
-  uInt l1, l2, l3, l4;
+void a(bool canonical, unsigned int version, Int64& off1, Int64& off2, Int64& off3, Int64& off4) {
+  unsigned int l1, l2, l3, l4;
   bool bbuf[10000];
-  Int ibuf[10000];
+  int ibuf[10000];
   Complex cbuf[10000];
   String sbuf[10000];
   char str[16];
-  for (uInt i = 0; i < 10000; i++) {
+  for (unsigned int i = 0; i < 10000; i++) {
     if (i % 3 == 0) {
       bbuf[i] = true;
     } else {
@@ -97,7 +97,7 @@ void a(bool canonical, uInt version, Int64& off1, Int64& off2, Int64& off3, Int6
   }
   StManArrayFile io("tStArrayFile_tmp.data", ByteIO::New, version, canonical);
   cout << "Length=" << io.length() << endl;
-  l1 = io.putShape(IPosition(2, 100, 100), off1, static_cast<Int*>(0));
+  l1 = io.putShape(IPosition(2, 100, 100), off1, static_cast<int*>(0));
   cout << l1 << " " << off1 << endl;
   cout << "Length=" << io.length() << endl;
   // # Note that because the data is not written here (but a bit later),
@@ -133,30 +133,30 @@ void b(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& of
   cout << "Length=" << io.length() << endl;
   IPosition shp, shp1, shp2, shp3, shp4;
   Int64 offs;
-  uInt nref;
+  unsigned int nref;
   bool bbuf[10000];
-  Int ibuf[10000];
+  int ibuf[10000];
   Complex cbuf[10000];
   String sbuf[10000], sbufo[10000];
   char str[16];
-  Int i;
+  int i;
   for (i = 0; i < 10000; i++) {
     snprintf(str, sizeof(str), "str %d", i);
     sbuf[i] = str;
   }
-  uInt l1 = io.getShape(off1, shp);
+  unsigned int l1 = io.getShape(off1, shp);
   nref = io.getRefCount(off1);
   cout << l1 << " " << shp << " " << nref << endl;
   shp1 = shp;
-  uInt l2 = io.getShape(off2, shp);
+  unsigned int l2 = io.getShape(off2, shp);
   nref = io.getRefCount(off2);
   cout << l2 << " " << shp << " " << nref << endl;
   shp2 = shp;
-  uInt l3 = io.getShape(off3, shp);
+  unsigned int l3 = io.getShape(off3, shp);
   nref = io.getRefCount(off3);
   cout << l3 << " " << shp << " " << nref << endl;
   shp3 = shp;
-  uInt l4 = io.getShape(off4, shp);
+  unsigned int l4 = io.getShape(off4, shp);
   nref = io.getRefCount(off4);
   cout << l4 << " " << shp << " " << nref << endl;
   shp4 = shp;
@@ -197,16 +197,16 @@ void b(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& of
   io.put(off4 + l4, 23, 1, bbuf);
   io.put(off4 + l4, 34, 4, bbuf);
   cout << "Length=" << io.length() << endl;
-  uInt lc1 = io.putShape(shp1, offc1, static_cast<Int*>(0));
+  unsigned int lc1 = io.putShape(shp1, offc1, static_cast<int*>(0));
   cout << "copy to " << lc1 << " " << offc1 << endl;
   io.copyArrayInt(offc1 + lc1, off1 + l1, shp1.product());
-  uInt lc2 = io.putShape(shp2, offc2, static_cast<Complex*>(0));
+  unsigned int lc2 = io.putShape(shp2, offc2, static_cast<Complex*>(0));
   cout << "copy to " << lc2 << " " << offc2 << endl;
   io.copyArrayComplex(offc2 + lc2, off2 + l2, shp2.product());
-  uInt lc3 = io.putShape(shp3, offc3, static_cast<String*>(0));
+  unsigned int lc3 = io.putShape(shp3, offc3, static_cast<String*>(0));
   cout << "copy to " << lc3 << " " << offc3 << endl;
   io.copyArrayString(offc3 + lc3, off3 + l3, shp3.product());
-  uInt lc4 = io.putShape(shp4, offc4, static_cast<bool*>(0));
+  unsigned int lc4 = io.putShape(shp4, offc4, static_cast<bool*>(0));
   cout << "copy to " << lc4 << " " << offc4 << endl;
   io.copyArrayBool(offc4 + lc4, off4 + l4, shp4.product());
 }
@@ -215,35 +215,35 @@ void b(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& of
 void c(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4) {
   StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Old, 0, canonical);
   cout << "Length=" << io.length() << endl;
-  uInt nref;
+  unsigned int nref;
   IPosition shp;
   bool bbuf[10000];
-  Int ibuf[10000];
+  int ibuf[10000];
   Complex cbuf[10000];
   String sbuf[10000], sbufo[10000];
   char str[16];
-  uInt i;
+  unsigned int i;
   for (i = 0; i < 10000; i++) {
     snprintf(str, sizeof(str), "str %d", i);
     sbuf[i] = str;
   }
-  uInt l1 = io.getShape(off1, shp);
+  unsigned int l1 = io.getShape(off1, shp);
   nref = io.getRefCount(off1);
   cout << l1 << " " << shp << " " << nref << endl;
-  uInt l2 = io.getShape(off2, shp);
+  unsigned int l2 = io.getShape(off2, shp);
   nref = io.getRefCount(off2);
   cout << l2 << " " << shp << " " << nref << endl;
-  uInt l3 = io.getShape(off3, shp);
+  unsigned int l3 = io.getShape(off3, shp);
   nref = io.getRefCount(off3);
   cout << l3 << " " << shp << " " << nref << endl;
-  uInt l4 = io.getShape(off4, shp);
+  unsigned int l4 = io.getShape(off4, shp);
   nref = io.getRefCount(off4);
   cout << l4 << " " << shp << " " << nref << endl;
   io.get(off4 + l4, 0, 10000, bbuf);
   io.get(off3 + l3, 0, 10000, sbufo);
   io.get(off1 + l1, 0, 10000, ibuf);
   io.get(off2 + l2, 0, 10000, cbuf);
-  Int j;
+  int j;
   for (i = 0; i < 10000; i++) {
     j = i;
     if (i > 0 && i < 21) j = i - 1;

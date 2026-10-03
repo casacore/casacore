@@ -72,7 +72,7 @@ bool LogFilterExpr::matches(const LogMessage& message) {
   return valb;
 }
 
-Double LogFilterExpr::getDouble(const Block<Int>& fieldNrs) const {
+double LogFilterExpr::getDouble(const Block<int>& fieldNrs) const {
   switch (fieldNrs[0]) {
     case 0:
       return itsMessage->messageTime().modifiedJulianDay() * 24.0 * 3600.0;
@@ -81,7 +81,7 @@ Double LogFilterExpr::getDouble(const Block<Int>& fieldNrs) const {
   }
 }
 
-String LogFilterExpr::getString(const Block<Int>& fieldNrs) const {
+String LogFilterExpr::getString(const Block<int>& fieldNrs) const {
   switch (fieldNrs[0]) {
     case 1:
       return itsMessage->LogMessage::toString(itsMessage->priority());
@@ -99,7 +99,7 @@ String LogFilterExpr::getString(const Block<Int>& fieldNrs) const {
   }
 }
 
-DataType LogFilterExpr::dataType(const Block<Int>& fieldNrs) const {
+DataType LogFilterExpr::dataType(const Block<int>& fieldNrs) const {
   switch (fieldNrs[0]) {
     case 0:
       return TpDouble;

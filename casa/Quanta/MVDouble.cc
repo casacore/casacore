@@ -35,16 +35,16 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // MVDouble class
 
 // # Constructors
-MVDouble::MVDouble(Double d) : val(d) {}
+MVDouble::MVDouble(double d) : val(d) {}
 
 MVDouble::MVDouble(const MVDouble &other) : MeasValue(), val(other.val) {}
 
 MVDouble::MVDouble(const Quantity &other) { val = other.get().getValue(); }
 
-MVDouble::MVDouble(const Quantum<Vector<Double>> &other) {
-  Vector<Double> tmp;
+MVDouble::MVDouble(const Quantum<Vector<double>> &other) {
+  Vector<double> tmp;
   tmp = other.get().getValue();
-  uInt i = tmp.nelements();
+  unsigned int i = tmp.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -54,8 +54,8 @@ MVDouble::MVDouble(const Quantum<Vector<Double>> &other) {
   }
 }
 
-MVDouble::MVDouble(const Vector<Double> &other) {
-  uInt i = other.nelements();
+MVDouble::MVDouble(const Vector<double> &other) {
+  unsigned int i = other.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -82,7 +82,7 @@ MVDouble &MVDouble::operator=(const MVDouble &other) {
 MVDouble::~MVDouble() {}
 
 // Operators
-MVDouble::operator Double() const { return val; }
+MVDouble::operator double() const { return val; }
 
 MVDouble &MVDouble::operator+=(const MVDouble &other) {
   val += other.val;
@@ -106,11 +106,11 @@ void MVDouble::assure(const MeasValue &in) {
   }
 }
 
-bool MVDouble::near(const MVDouble &other, Double tol) const {
+bool MVDouble::near(const MVDouble &other, double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-bool MVDouble::nearAbs(const MVDouble &other, Double tol) const {
+bool MVDouble::nearAbs(const MVDouble &other, double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -119,13 +119,13 @@ void MVDouble::print(ostream &os) const { os << val; }
 
 MeasValue *MVDouble::clone() const { return (new MVDouble(*this)); }
 
-Vector<Double> MVDouble::getVector() const {
-  Vector<Double> x(1);
+Vector<double> MVDouble::getVector() const {
+  Vector<double> x(1);
   x(0) = val;
   return x;
 }
 
-void MVDouble::putVector(const Vector<Double> &in) {
+void MVDouble::putVector(const Vector<double> &in) {
   if (in.nelements() < 1) {
     val = 0.0;
   } else {
@@ -133,14 +133,14 @@ void MVDouble::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double>> MVDouble::getRecordValue() const {
-  Vector<Quantum<Double>> tmp(1);
+Vector<Quantum<double>> MVDouble::getRecordValue() const {
+  Vector<Quantum<double>> tmp(1);
   tmp(0) = Quantity(val, "");
   return tmp;
 }
 
-bool MVDouble::putValue(const Vector<Quantum<Double>> &in) {
-  uInt i = in.nelements();
+bool MVDouble::putValue(const Vector<Quantum<double>> &in) {
+  unsigned int i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {

@@ -97,8 +97,8 @@ void TSMCubeBuff::extend(uInt64 nr, const Record& coordValues, const TSMColumn* 
   }
   // Make the cache here, otherwise nrTiles_p is too high.
   makeCache();
-  uInt lastDim = nrdim_p - 1;
-  uInt nrold = nrTiles_p;
+  unsigned int lastDim = nrdim_p - 1;
+  unsigned int nrold = nrTiles_p;
   cubeShape_p(lastDim) += nr;
   tilesPerDim_p(lastDim) = (cubeShape_p(lastDim) + tileShape_p(lastDim) - 1) / tileShape_p(lastDim);
   nrTiles_p = nrTilesSubCube_p * tilesPerDim_p(lastDim);
@@ -112,23 +112,23 @@ void TSMCubeBuff::extend(uInt64 nr, const Record& coordValues, const TSMColumn* 
   }
 }
 
-void TSMCubeBuff::setCacheSize(uInt, bool, bool) {}
+void TSMCubeBuff::setCacheSize(unsigned int, bool, bool) {}
 
 void TSMCubeBuff::setCacheSize(const IPosition&, const IPosition&, const IPosition&,
                                const IPosition&, bool, bool) {}
 
 void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, char* section,
-                                uInt colnr, uInt localPixelSize, uInt externalPixelSize,
+                                unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
                                 bool writeFlag) {
   // A tile can contain more than one data column.
   // Get the offset of the column's data array in the tile.
-  uInt tileOffset = externalOffset_p[colnr];
+  unsigned int tileOffset = externalOffset_p[colnr];
   // Get convert function and nr of elements per value to convert.
   const TSMDataColumn* dataColumn = stmanPtr_p->getDataColumn(colnr);
   Conversion::ValueFunction* convertFunc = dataColumn->getConvertFunction(writeFlag);
-  uInt nrConvElem = dataColumn->getNrConvert();
+  unsigned int nrConvElem = dataColumn->getNrConvert();
   // A Bool column is stored as bits and has to be treated differently.
-  uInt dataPixelSize = externalPixelSize;
+  unsigned int dataPixelSize = externalPixelSize;
   bool useBool = false;
   if (dataPixelSize == 0) {
     useBool = true;
@@ -145,7 +145,7 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
   // or if it is a line (these cases occur quite often and can be
   // handled in a faster way).
   bool oneEntireTile = true;
-  for (uInt i = 0; i < nrdim_p; i++) {
+  for (unsigned int i = 0; i < nrdim_p; i++) {
     startTile_p(i) = start(i) / tileShape_p(i);
     endTile_p(i) = end(i) / tileShape_p(i);
     nrTileSection_p(i) = 1 + endTile_p(i) - startTile_p(i);
@@ -175,7 +175,7 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
   // copy all values and do not have to do difficult iterations.
   if (oneEntireTile) {
     // Get the tile from the cache.
-    uInt tileNr = expandedTilesPerDim_p.offset(startTile_p);
+    unsigned int tileNr = expandedTilesPerDim_p.offset(startTile_p);
     // If writing, set cache slot to dirty.
     if (writeFlag) {
       convertFunc(cachePtr->getBuffer(), section, tileSize_p * nrConvElem);
@@ -201,9 +201,9 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
   IPosition dataLength(nrdim_p);
   IPosition dataPos(nrdim_p);
   IPosition sectionPos(nrdim_p);
-  uInt dataOffset;
+  unsigned int dataOffset;
   size_t sectionOffset;
-  uInt tileNr = expandedTilesPerDim_p.offset(tilePos);
+  unsigned int tileNr = expandedTilesPerDim_p.offset(tilePos);
 
   // Loop over all tiles.
   while (true) {
@@ -216,7 +216,7 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
     // Calculate the start and end pixel in the tile.
     // Initialize the pixel position in the data and section.
     // Note that for Bools it counts external in bits.
-    for (uInt i = 0; i < nrdim_p; i++) {
+    for (unsigned int i = 0; i < nrdim_p; i++) {
       dataLength(i) = 1 + endPixel(i) - startPixel(i);
       dataPos(i) = startPixel(i);
       sectionPos(i) = tilePos(i) * tileShape_p(i) + startPixel(i) - startSection(i);
@@ -228,8 +228,8 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
 
     // Calculate the largest number of pixels, nSec
     // that are consequtive in data and in section
-    uInt nSec = dataLength(0);
-    uInt secDim = 1;
+    unsigned int nSec = dataLength(0);
+    unsigned int secDim = 1;
     while (secDim < nrdim_p && dataLength(secDim - 1) == tileShape_p(secDim - 1) &&
            dataLength(secDim - 1) == sectionShape(secDim - 1)) {
       nSec *= dataLength(secDim);
@@ -240,17 +240,17 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
     // that are consequtive in data. This is used to
     // reduce the number of read/write calls as much as
     // possible
-    uInt nData = nSec;
-    uInt dataDim = secDim;
+    unsigned int nData = nSec;
+    unsigned int dataDim = secDim;
     while (dataDim < nrdim_p && dataLength(dataDim - 1) == tileShape_p(dataDim - 1)) {
       nData *= dataLength(dataDim);
       dataDim++;
     }
 
-    uInt nrvalData = nData * nrConvElem;
-    uInt nrvalSec = nSec * nrConvElem;
-    uInt dataSize = nData * dataPixelSize;
-    uInt localSize = nSec * localPixelSize;
+    unsigned int nrvalData = nData * nrConvElem;
+    unsigned int nrvalSec = nSec * nrConvElem;
+    unsigned int dataSize = nData * dataPixelSize;
+    unsigned int localSize = nSec * localPixelSize;
 
     // Loop through the data in the tile. Handle Bool specifically.
     // On read, it converts the data from the external to the local format.
@@ -264,9 +264,9 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
     if (useBool) {
       while (true) {
         // Determine start and length in the bucket.
-        uInt offset = tileOffset + dataOffset / 8;
-        uInt stBit = dataOffset % 8;  // bit to start
-        uInt nBytes = (stBit + nrvalData + 7) / 8;
+        unsigned int offset = tileOffset + dataOffset / 8;
+        unsigned int stBit = dataOffset % 8;  // bit to start
+        unsigned int nBytes = (stBit + nrvalData + 7) / 8;
         if (writeFlag) {
           // Read first and/or last byte if no full byte is used.
           if (stBit > 0 || nrvalData < 8) {
@@ -276,12 +276,12 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
             cachePtr->read(tileNr, offset + nBytes - 1, 1, nBytes - 1);
           }
 
-          for (uInt n = 0; n < nData; n += nSec) {
+          for (unsigned int n = 0; n < nData; n += nSec) {
             Conversion::boolToBit(cachePtr->getBuffer() + (stBit + n) / 8, section + sectionOffset,
                                   (stBit + n) % 8, nrvalSec);
             sectionOffset += localSize;
 
-            for (uInt j = secDim; j < dataDim; j++) {
+            for (unsigned int j = secDim; j < dataDim; j++) {
               sectionOffset += sectionIncr(j);
               if (++dataPos(j) <= endPixel(j)) {
                 break;
@@ -294,12 +294,12 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
 
         } else {
           cachePtr->read(tileNr, offset, nBytes);
-          for (uInt n = 0; n < nData; n += nSec) {
+          for (unsigned int n = 0; n < nData; n += nSec) {
             Conversion::bitToBool(section + sectionOffset, cachePtr->getBuffer() + (stBit + n) / 8,
                                   (stBit + n) % 8, nrvalSec);
             sectionOffset += localSize;
 
-            for (uInt j = secDim; j < dataDim; j++) {
+            for (unsigned int j = secDim; j < dataDim; j++) {
               sectionOffset += sectionIncr(j);
               if (++dataPos(j) <= endPixel(j)) {
                 break;
@@ -310,7 +310,7 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
         }
         dataOffset += dataSize;
 
-        uInt j;
+        unsigned int j;
         for (j = dataDim; j < nrdim_p; j++) {
           dataOffset += dataIncr(j);
           sectionOffset += sectionIncr(j);
@@ -328,12 +328,12 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
       dataOffset += tileOffset;
       while (true) {
         if (writeFlag) {
-          for (uInt n = 0; n < nData; n += nSec) {
+          for (unsigned int n = 0; n < nData; n += nSec) {
             convertFunc(cachePtr->getBuffer() + n * dataPixelSize, section + sectionOffset,
                         nrvalSec);
             sectionOffset += localSize;
 
-            for (uInt j = secDim; j < dataDim; j++) {
+            for (unsigned int j = secDim; j < dataDim; j++) {
               sectionOffset += sectionIncr(j);
               if (++dataPos(j) <= endPixel(j)) {
                 break;
@@ -345,12 +345,12 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
         } else {
           cachePtr->read(tileNr, dataOffset, dataSize);
 
-          for (uInt n = 0; n < nData; n += nSec) {
+          for (unsigned int n = 0; n < nData; n += nSec) {
             convertFunc(section + sectionOffset, cachePtr->getBuffer() + n * dataPixelSize,
                         nrvalSec);
             sectionOffset += localSize;
 
-            for (uInt j = secDim; j < dataDim; j++) {
+            for (unsigned int j = secDim; j < dataDim; j++) {
               sectionOffset += sectionIncr(j);
               if (++dataPos(j) <= endPixel(j)) {
                 break;
@@ -360,7 +360,7 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
           }
         }
         dataOffset += dataSize;
-        uInt j;
+        unsigned int j;
         for (j = dataDim; j < nrdim_p; j++) {
           dataOffset += dataIncr(j);
           sectionOffset += sectionIncr(j);
@@ -378,7 +378,7 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
     // Determine the next tile to access and the starting and
     // ending pixels in it.
     // We increase the tile position in a dimension.
-    uInt i;
+    unsigned int i;
     for (i = 0; i < nrdim_p; i++) {
       tileNr += tileIncr(i);
       startPixel(i) = 0;
@@ -402,8 +402,8 @@ void TSMCubeBuff::accessSection(const IPosition& start, const IPosition& end, ch
 }
 
 void TSMCubeBuff::accessStrided(const IPosition& start, const IPosition& end,
-                                const IPosition& stride, char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize, bool writeFlag) {
+                                const IPosition& stride, char* section, unsigned int colnr,
+                                unsigned int localPixelSize, unsigned int externalPixelSize, bool writeFlag) {
   // If no strides, use accessSection.
   if (stride.allOne()) {
     accessSection(start, end, section, colnr, localPixelSize, externalPixelSize, writeFlag);

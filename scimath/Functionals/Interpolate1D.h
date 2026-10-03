@@ -188,8 +188,8 @@ class Interpolate1D : public Function1D<Domain, Range> {
   // compiler limitations. See the example above (or the demo code) for the
   // recommended way to call these functions.
   // <group>
-  uInt getMethod() const { return curMethod; }
-  void setMethod(uInt method);
+  unsigned int getMethod() const { return curMethod; }
+  void setMethod(unsigned int method);
   // </group>
 
   // Access the data set that interpolation is done over. This will usually be
@@ -206,10 +206,10 @@ class Interpolate1D : public Function1D<Domain, Range> {
 
  private:
   // A private function for doing polynomial interpolation
-  Range polynomialInterpolation(const Domain x, uInt n, uInt offset) const;
+  Range polynomialInterpolation(const Domain x, unsigned int n, unsigned int offset) const;
 
-  uInt curMethod;         // interpolation method to use
-  uInt nElements;         // how many elements in the data set
+  unsigned int curMethod;         // interpolation method to use
+  unsigned int nElements;         // how many elements in the data set
   Block<Domain> xValues;  // the abscissa of the data set (sorted)
   Block<Range> yValues;   // The corresponding ordinate of the data set
   Block<Range> y2Values;  // The numerical second derivates (only for splines)

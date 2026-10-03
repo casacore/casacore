@@ -81,19 +81,19 @@ bool PlainColumn::isStored() const { return dataManPtr_p->isStorageManager(); }
 
 ColumnCache& PlainColumn::columnCache() { return dataColPtr_p->columnCache(); }
 
-void PlainColumn::setMaximumCacheSize(uInt nbytes) { dataManPtr_p->setMaximumCacheSize(nbytes); }
+void PlainColumn::setMaximumCacheSize(unsigned int nbytes) { dataManPtr_p->setMaximumCacheSize(nbytes); }
 
 // # Read/write the column.
 // # Its data will be read/written by the appropriate storage manager.
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void PlainColumn::putFile(AipsIO& ios, const TableAttr&) {
-  ios << (uInt)2;  // class version 2
+  ios << (unsigned int)2;  // class version 2
   ios << originalName_p;
   putFileDerived(ios);
 }
 void PlainColumn::getFile(AipsIO& ios, const ColumnSet& colset, const TableAttr& attr) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   // In the older Table files the keyword set was written separately
   // and was not part of the TableDesc.
@@ -108,13 +108,13 @@ void PlainColumn::getFile(AipsIO& ios, const ColumnSet& colset, const TableAttr&
 }
 
 void PlainColumn::checkValueLength(const String* value) const {
-  uInt maxlen = colDescPtr_p->maxLength();
+  unsigned int maxlen = colDescPtr_p->maxLength();
   if (maxlen > 0 && value->length() > maxlen) {
     throw(TableError("ScalarColumn::put: string value '" + *value + "' exceeds maximum length"));
   }
 }
 void PlainColumn::checkValueLength(const Array<String>* value) const {
-  uInt maxlen = colDescPtr_p->maxLength();
+  unsigned int maxlen = colDescPtr_p->maxLength();
   if (maxlen == 0) {
     return;
   }

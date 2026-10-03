@@ -46,17 +46,17 @@ int main() {
     bool anyFailures = false;
     /*    {
       Bool failed = False;
-      Gaussian2D<Float> g;
+      Gaussian2D<float> g;
       if (g.ndim() != 2) failed = True;
-      Vector<Float> z(2);
+      Vector<float> z(2);
       z = 0;
-      Float sum = 0;
-      Float inc = 0.1;
-      for (Float x = -3; x < 3.01; x+=inc) {
+      float sum = 0;
+      float inc = 0.1;
+      for (float x = -3; x < 3.01; x+=inc) {
         z(0) = x;
-        for (Float y = -3; y < 3.01; y+=inc) {
+        for (float y = -3; y < 3.01; y+=inc) {
           z(1) = y;
-          if (!near(Double(g(z)),
+          if (!near(double(g(z)),
                     exp(-log(16.0)*(z(0)*z(0)+z(1)*z(1))), 1E-4)) {
             failed = True;
             cout << "Expected value for g(" << z << ") is "
@@ -72,7 +72,7 @@ int main() {
       cout << " the default Gaussian test" << endl;
 
       if (!failed) {
-        if (!near(Double(sum*inc*inc), C::pi/log(16.0), 1E-6)) {
+        if (!near(double(sum*inc*inc), C::pi/log(16.0), 1E-6)) {
           failed = True;
           cout << "Failed (value was " << sum*inc*inc << " instead of "
                << C::pi/log(16.0) << ")" ;
@@ -80,7 +80,7 @@ int main() {
         cout << " the total flux test" << endl;
       }
       if (!failed) {
-        if (!near(C::pi/log(16.0), Double(g.flux()), 1E-7)) {
+        if (!near(C::pi/log(16.0), double(g.flux()), 1E-7)) {
           failed = True;
         } else {
           g.setFlux(2*g.flux());
@@ -94,7 +94,7 @@ int main() {
     }
     {
       Bool failed = False;
-      Gaussian2D<Double> g;
+      Gaussian2D<double> g;
       g.setHeight(2.0);
       if (near(g.height(), 2.0)) cout << "Passed";
       else {
@@ -119,7 +119,7 @@ int main() {
       }
       cout << " the set/get Y centre test" << endl;
 
-      Vector<Double> c(2);
+      Vector<double> c(2);
       c(0) = -2.0; c(1) = .5;
       g.setCenter(c);
       if (allNear(g.center(), c, 1E-10)) cout << "Passed";
@@ -145,7 +145,7 @@ int main() {
       }
       cout << " the set/get minor axis length test" << endl;
 
-      Vector<Double> w(2); w(0) = 2.0; w(1) = 1.0;
+      Vector<double> w(2); w(0) = 2.0; w(1) = 1.0;
       g.setWidth(w);
       if (allNear(g.width(), w, 1E-10)) cout << "Passed";
       else {
@@ -172,9 +172,9 @@ int main() {
       cout << " the set/get PA test" << endl;
       if (!failed) {
         ///	if (g.nAvailableParams() != 6) failed = true;
-        ///	Vector<Double> parms = g.getAvailableParams();
-        Vector<Double> parms = g.parameters().getParameters();
-        Vector<Double> expectedParms(6);
+        ///	Vector<double> parms = g.getAvailableParams();
+        Vector<double> parms = g.parameters().getParameters();
+        Vector<double> expectedParms(6);
         expectedParms(0) = 2.;
         expectedParms(1) = -2.;
         expectedParms(2) = 0.5;
@@ -193,7 +193,7 @@ int main() {
     */
     /*	g.setAvailableParamMask(4, false);
     g.setAvailableParamMask(5, False);
-    for (uInt i = 0; i < 4; i++) {
+    for (unsigned int i = 0; i < 4; i++) {
       if (g.getAvailableParamMask(i) == False) failed = True;
     }
     if (g.getAvailableParamMask(4) == True) failed = True;
@@ -211,17 +211,17 @@ int main() {
     }*/
     {
       bool failed = false;
-      Vector<Double> mean(2), fwhm(2);
+      Vector<double> mean(2), fwhm(2);
       mean(0) = .5;
       mean(1) = -1;
 
       fwhm(0) = 2;
       fwhm(1) = .5;
-      Double pa = M_PI / 6, height = 2;
-      Gaussian2D<Double> g(height, mean, fwhm, pa), g1;
-      Gaussian2D<Double> g2(height, mean(0), mean(1), fwhm(0), fwhm(1) / fwhm(0), pa);
+      double pa = M_PI / 6, height = 2;
+      Gaussian2D<double> g(height, mean, fwhm, pa), g1;
+      Gaussian2D<double> g2(height, mean(0), mean(1), fwhm(0), fwhm(1) / fwhm(0), pa);
 
-      Double x = mean(0), y = mean(1);
+      double x = mean(0), y = mean(1);
       if (!near(g(x, y), height)) failed = true;
       g1 = g;
       x -= sin(pa) * fwhm(0) / 2;
@@ -229,7 +229,7 @@ int main() {
       if (!near(g1(x, y), height / 2.0, 1E-6)) failed = true;
       if (!near(g2(x, y), height / 2.0, 1E-6)) failed = true;
 
-      Gaussian2D<Double> g3(g);
+      Gaussian2D<double> g3(g);
 
       x = mean(0) - cos(pa) * fwhm(1) / 2;
       y = mean(1) - sin(pa) * fwhm(1) / 2;
@@ -245,28 +245,28 @@ int main() {
       if (failed) anyFailures = true;
 
       // Test Auto differentiation - specialized
-      Double fww(fwhm[1] / fwhm[0]);
-      AutoDiff<Double> adheight(height, 6, 0);
-      AutoDiff<Double> admean0(mean[0], 6, 1);
-      AutoDiff<Double> admean1(mean[1], 6, 2);
-      AutoDiff<Double> adfwhm0(fwhm[0], 6, 3);
-      AutoDiff<Double> adfww(fww, 6, 4);
-      AutoDiff<Double> adpa(pa, 6, 5);
-      Gaussian2D<AutoDiff<Double>> g4(adheight, admean0, admean1, adfwhm0, adfww, adpa);
+      double fww(fwhm[1] / fwhm[0]);
+      AutoDiff<double> adheight(height, 6, 0);
+      AutoDiff<double> admean0(mean[0], 6, 1);
+      AutoDiff<double> admean1(mean[1], 6, 2);
+      AutoDiff<double> adfwhm0(fwhm[0], 6, 3);
+      AutoDiff<double> adfww(fww, 6, 4);
+      AutoDiff<double> adpa(pa, 6, 5);
+      Gaussian2D<AutoDiff<double>> g4(adheight, admean0, admean1, adfwhm0, adfww, adpa);
       cout << "Value: " << g2(x, y) << endl;
-      Double adx(x);
-      Double ady(y);
+      double adx(x);
+      double ady(y);
       cout << "Specialized:  " << g4(adx, ady) << endl;
       // Test Auto differentiation
-      AutoDiffA<Double> adaheight(height, 6, 0);
-      AutoDiffA<Double> adamean0(mean[0], 6, 1);
-      AutoDiffA<Double> adamean1(mean[1], 6, 2);
-      AutoDiffA<Double> adafwhm0(fwhm[0], 6, 3);
-      AutoDiffA<Double> adafww(fww, 6, 4);
-      AutoDiffA<Double> adapa(pa, 6, 5);
-      Gaussian2D<AutoDiffA<Double>> g5(adaheight, adamean0, adamean1, adafwhm0, adafww, adapa);
-      AutoDiffA<Double> adax(x);
-      AutoDiffA<Double> aday(y);
+      AutoDiffA<double> adaheight(height, 6, 0);
+      AutoDiffA<double> adamean0(mean[0], 6, 1);
+      AutoDiffA<double> adamean1(mean[1], 6, 2);
+      AutoDiffA<double> adafwhm0(fwhm[0], 6, 3);
+      AutoDiffA<double> adafww(fww, 6, 4);
+      AutoDiffA<double> adapa(pa, 6, 5);
+      Gaussian2D<AutoDiffA<double>> g5(adaheight, adamean0, adamean1, adafwhm0, adafww, adapa);
+      AutoDiffA<double> adax(x);
+      AutoDiffA<double> aday(y);
       cout << "Generic:      " << g5(adax, aday) << endl;
       AlwaysAssertExit(near(g4(adx, ady).value(), g5(adax, aday).value()) &&
                        allNearAbs(g4(adx, ady).derivatives(), g5(adax, aday).derivatives(), 1e-13));

@@ -475,17 +475,17 @@ bool near(const SparseDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool near(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol) {
+bool near(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol) {
   return near(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool near(const T &left, const SparseDiff<T> &right, const Double tol) {
+bool near(const T &left, const SparseDiff<T> &right, const double tol) {
   return near(left, right.value(), tol);
 }
 
 template <class T>
-bool near(const SparseDiff<T> &left, const T &right, const Double tol) {
+bool near(const SparseDiff<T> &left, const T &right, const double tol) {
   return near(left.value(), right, tol);
 }
 
@@ -505,17 +505,17 @@ bool allnear(const SparseDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool allnear(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol) {
+bool allnear(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol) {
   return near(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool allnear(const T &left, const SparseDiff<T> &right, const Double tol) {
+bool allnear(const T &left, const SparseDiff<T> &right, const double tol) {
   return near(left, right.value(), tol);
 }
 
 template <class T>
-bool allnear(const SparseDiff<T> &left, const T &right, const Double tol) {
+bool allnear(const SparseDiff<T> &left, const T &right, const double tol) {
   return near(left.value(), right, tol);
 }
 
@@ -535,17 +535,17 @@ bool nearAbs(const SparseDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool nearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol) {
+bool nearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol) {
   return nearAbs(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool nearAbs(const T &left, const SparseDiff<T> &right, const Double tol) {
+bool nearAbs(const T &left, const SparseDiff<T> &right, const double tol) {
   return nearAbs(left, right.value(), tol);
 }
 
 template <class T>
-bool nearAbs(const SparseDiff<T> &left, const T &right, const Double tol) {
+bool nearAbs(const SparseDiff<T> &left, const T &right, const double tol) {
   return nearAbs(left.value(), right, tol);
 }
 
@@ -565,17 +565,17 @@ bool allnearAbs(const SparseDiff<T> &left, const T &right) {
 }
 
 template <class T>
-bool allnearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const Double tol) {
+bool allnearAbs(const SparseDiff<T> &left, const SparseDiff<T> &right, const double tol) {
   return nearAbs(left.value(), right.value(), tol);
 }
 
 template <class T>
-bool allnearAbs(const T &left, const SparseDiff<T> &right, const Double tol) {
+bool allnearAbs(const T &left, const SparseDiff<T> &right, const double tol) {
   return nearAbs(left, right.value(), tol);
 }
 
 template <class T>
-bool allnearAbs(const SparseDiff<T> &left, const T &right, const Double tol) {
+bool allnearAbs(const SparseDiff<T> &left, const T &right, const double tol) {
   return nearAbs(left.value(), right, tol);
 }
 

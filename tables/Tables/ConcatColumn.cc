@@ -51,7 +51,7 @@ TableRecord& ConcatColumn::rwKeywordSet() { return keywordSet_p; }
 rownr_t ConcatColumn::nrow() const { return refTabPtr_p->nrow(); }
 
 void ConcatColumn::initialize(rownr_t startRow, rownr_t endRow) {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   for (rownr_t i = startRow; i < endRow; ++i) {
     refTabPtr_p->rows().mapRownr(tableNr, tabRownr, i);
@@ -60,46 +60,46 @@ void ConcatColumn::initialize(rownr_t startRow, rownr_t endRow) {
 }
 
 void ConcatColumn::setShape(rownr_t rownr, const IPosition& shape) {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->setShape(tabRownr, shape);
 }
 
 void ConcatColumn::setShape(rownr_t rownr, const IPosition& shape, const IPosition& tileShape) {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->setShape(tabRownr, shape, tileShape);
 }
 
-uInt ConcatColumn::ndimColumn() const { return refColPtr_p[0]->ndimColumn(); }
+unsigned int ConcatColumn::ndimColumn() const { return refColPtr_p[0]->ndimColumn(); }
 
 IPosition ConcatColumn::shapeColumn() const { return refColPtr_p[0]->shapeColumn(); }
 
-uInt ConcatColumn::ndim(rownr_t rownr) const {
-  uInt tableNr;
+unsigned int ConcatColumn::ndim(rownr_t rownr) const {
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   return refColPtr_p[tableNr]->ndim(tabRownr);
 }
 
 IPosition ConcatColumn::shape(rownr_t rownr) const {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   return refColPtr_p[tableNr]->shape(tabRownr);
 }
 
 IPosition ConcatColumn::tileShape(rownr_t rownr) const {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   return refColPtr_p[tableNr]->tileShape(tabRownr);
 }
 
 bool ConcatColumn::isDefined(rownr_t rownr) const {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   return refColPtr_p[tableNr]->isDefined(tabRownr);
@@ -108,7 +108,7 @@ bool ConcatColumn::isDefined(rownr_t rownr) const {
 bool ConcatColumn::canChangeShape() const { return refColPtr_p[0]->canChangeShape(); }
 
 void ConcatColumn::get(rownr_t rownr, void* dataPtr) const {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->get(tabRownr, dataPtr);
@@ -117,21 +117,21 @@ void ConcatColumn::get(rownr_t rownr, void* dataPtr) const {
 }
 
 void ConcatColumn::getArray(rownr_t rownr, ArrayBase& arr) const {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->getArray(tabRownr, arr);
 }
 
 void ConcatColumn::getSlice(rownr_t rownr, const Slicer& ns, ArrayBase& arr) const {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->getSlice(tabRownr, ns, arr);
 }
 
 void ConcatColumn::put(rownr_t rownr, const void* dataPtr) {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->put(tabRownr, dataPtr);
@@ -140,21 +140,21 @@ void ConcatColumn::put(rownr_t rownr, const void* dataPtr) {
 }
 
 void ConcatColumn::putArray(rownr_t rownr, const ArrayBase& arr) {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->putArray(tabRownr, arr);
 }
 
 void ConcatColumn::putSlice(rownr_t rownr, const Slicer& ns, const ArrayBase& arr) {
-  uInt tableNr;
+  unsigned int tableNr;
   rownr_t tabRownr;
   refTabPtr_p->rows().mapRownr(tableNr, tabRownr, rownr);
   refColPtr_p[tableNr]->putSlice(tabRownr, ns, arr);
 }
 
-void ConcatColumn::setMaximumCacheSize(uInt nbytes) {
-  for (uInt i = 0; i < refColPtr_p.nelements(); ++i) {
+void ConcatColumn::setMaximumCacheSize(unsigned int nbytes) {
+  for (unsigned int i = 0; i < refColPtr_p.nelements(); ++i) {
     refColPtr_p[i]->setMaximumCacheSize(nbytes);
   }
 }
@@ -204,8 +204,8 @@ void ConcatColumn::accessColumn(const Slicer* ns, ArrayBase& arr,
                                 AccessColumnFunc* accessFunc) const {
   IPosition st(arr.ndim(), 0);
   IPosition sz(arr.shape());
-  uInt nlast = arr.ndim() - 1;
-  for (uInt i = 0; i < refColPtr_p.nelements(); ++i) {
+  unsigned int nlast = arr.ndim() - 1;
+  for (unsigned int i = 0; i < refColPtr_p.nelements(); ++i) {
     rownr_t nr = refColPtr_p[i]->nrow();
     sz[nlast] = nr;
     std::unique_ptr<ArrayBase> part(arr.getSection(Slicer(st, sz)));
@@ -230,17 +230,17 @@ void ConcatColumn::accessRows(const RefRows& rownrs, const Slicer* ns, ArrayBase
   // slice. This is possible until a different underlying table needs to
   // be accessed.
   // First setup the various loop variables.
-  uInt rowAxis = arr.ndim() - 1;  // row axis in array
+  unsigned int rowAxis = arr.ndim() - 1;  // row axis in array
   IPosition st(arr.ndim(), 0);    // start of array part
   IPosition sz(arr.shape());      // size of array part
-  Int lastTabNr = -1;
-  uInt tableNr;
+  int lastTabNr = -1;
+  unsigned int tableNr;
   // Step through all concat rownrs.
   for (rownr_t i = 0; i < rows.nelements(); ++i) {
     // Map to the table and rownr in it.
     ccRows.mapRownr(tableNr, tabRowNrs[i], rows[i]);
     // An access has to be done if we have another table.
-    if (Int(tableNr) != lastTabNr) {
+    if (int(tableNr) != lastTabNr) {
       // Access the cells if not the first time.
       if (lastTabNr >= 0) {
         rownr_t nrrow = i - st[rowAxis];
@@ -293,7 +293,7 @@ void ConcatColumn::putRowsSlicePart(BaseColumn* col, const RefRows& rows, const 
 
 ColumnCache& ConcatColumn::columnCache() { return colCache_p; }
 
-void ConcatColumn::setColumnCache(uInt tableNr, const ColumnCache& colCache) const {
+void ConcatColumn::setColumnCache(unsigned int tableNr, const ColumnCache& colCache) const {
   // Please note that his is not fully safe, because if the cache in the
   // underlying table gets changed, it is not reflected in this cache.
   // There should be some kind of callback or this cache should point

@@ -274,17 +274,17 @@ class MVAngle {
   class Format {
    public:
     friend class MVAngle;
-    Format(MVAngle::formatTypes intyp = MVAngle::ANGLE, uInt inprec = 0)
+    Format(MVAngle::formatTypes intyp = MVAngle::ANGLE, unsigned int inprec = 0)
         : typ(intyp), prec(inprec) {
       ;
     };
-    Format(uInt inprec) : typ(MVAngle::ANGLE), prec(inprec) { ; };
+    Format(unsigned int inprec) : typ(MVAngle::ANGLE), prec(inprec) { ; };
     // Construct from type and precision (present due to overlaoding problems)
-    Format(uInt intyp, uInt inprec) : typ((MVAngle::formatTypes)intyp), prec(inprec) { ; };
+    Format(unsigned int intyp, unsigned int inprec) : typ((MVAngle::formatTypes)intyp), prec(inprec) { ; };
 
    private:
     MVAngle::formatTypes typ;
-    uInt prec;
+    unsigned int prec;
   };
 
   // # Friends
@@ -303,7 +303,7 @@ class MVAngle {
   // Copy assignment
   MVAngle &operator=(const MVAngle &other);
   // Constructor from Double
-  MVAngle(Double d);
+  MVAngle(double d);
   // Constructor from Quantum : value can be an angle or time
   // <thrown>
   //   <li> AipsError if not a time or angle
@@ -315,17 +315,17 @@ class MVAngle {
 
   // # Operators
   //  Conversion operator
-  operator Double() const;
+  operator double() const;
   // Normalisation between -180 and +180 degrees (-pi and +pi)
   const MVAngle &operator()();
   // Normalisation between 2pi*norm and 2pi*norm + 2pi
-  const MVAngle &operator()(Double norm);
+  const MVAngle &operator()(double norm);
   // Normalisation between norm-pi and norm+pi
   const MVAngle &operator()(const MVAngle &norm);
 
   // # General member functions
   //  Normalisation between pi*norm and pi*norm + pi
-  const MVAngle &binorm(Double norm);
+  const MVAngle &binorm(double norm);
   // Check if String unit
   static bool unitString(UnitVal &uv, String &us, MUString &in);
 
@@ -347,9 +347,9 @@ class MVAngle {
   MVAngle coAngle() const;
   // Get value in given unit
   // <group>
-  Double radian() const;
-  Double degree() const;
-  Double circle() const;
+  double radian() const;
+  double degree() const;
+  double circle() const;
   Quantity get() const;
   Quantity get(const Unit &inunit) const;
   // </group>
@@ -361,9 +361,9 @@ class MVAngle {
   // </note>
   // <group>
   String string() const;
-  String string(MVAngle::formatTypes intyp, uInt inprec = 0) const;
-  String string(uInt intyp, uInt inprec) const;
-  String string(uInt inprec) const;
+  String string(MVAngle::formatTypes intyp, unsigned int inprec = 0) const;
+  String string(unsigned int intyp, unsigned int inprec) const;
+  String string(unsigned int inprec) const;
   String string(const MVAngle::Format &form) const;
   void print(ostream &oss, const MVAngle::Format &form) const;
   void print(ostream &oss, const MVAngle::Format &form, bool loc) const;
@@ -375,9 +375,9 @@ class MVAngle {
   // to use the print function above.
   // </note>
   // <group>
-  static Format setFormat(MVAngle::formatTypes intyp, uInt inprec = 0);
-  static Format setFormat(uInt intyp, uInt inprec);
-  static Format setFormat(uInt inprec = 0);
+  static Format setFormat(MVAngle::formatTypes intyp, unsigned int inprec = 0);
+  static Format setFormat(unsigned int intyp, unsigned int inprec);
+  static Format setFormat(unsigned int inprec = 0);
   static Format setFormat(const Format &form);
   // </group>
   // Get default format
@@ -385,12 +385,12 @@ class MVAngle {
   // Get code belonging to string. 0 if not known
   static MVAngle::formatTypes giveMe(const String &in);
   // Get time zone offset (in days)
-  static Double timeZone();
+  static double timeZone();
 
  private:
   // # Data
   //  Value
-  Double val;
+  double val;
   // Default format
   static MVAngle::Format defaultFormat;
   // Temporary format

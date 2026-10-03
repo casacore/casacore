@@ -62,7 +62,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class TaQLStyle {
  public:
   // Default style is Glish and no timing/tracing.
-  explicit TaQLStyle(uInt origin = 1);
+  explicit TaQLStyle(unsigned int origin = 1);
 
   // Reset to the default Glish style and no timing/tracing.
   void reset();
@@ -88,7 +88,7 @@ class TaQLStyle {
 
   // Get the various style values.
   // <group>
-  uInt origin() const { return itsOrigin; }
+  unsigned int origin() const { return itsOrigin; }
   bool isEndExcl() const { return itsEndExcl; }
   bool isCOrder() const { return itsCOrder; }
   // </group>
@@ -106,7 +106,7 @@ class TaQLStyle {
   bool doTracing() const { return itsDoTracing; }
 
  private:
-  uInt itsOrigin;
+  unsigned int itsOrigin;
   bool itsEndExcl;
   bool itsCOrder;
   bool itsDoTiming;

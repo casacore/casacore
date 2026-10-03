@@ -37,26 +37,26 @@
 
 int main() {
   try {
-    std::vector<Double> v0(5);
+    std::vector<double> v0(5);
     v0[0] = 2;
     v0[1] = 1;
     v0[2] = 1.4;
     v0[3] = 3;
     v0[4] = 2.5;
-    std::vector<Double> v1(3);
+    std::vector<double> v1(3);
     v1[0] = 5;
     v1[1] = 8;
     v1[2] = 10;
-    Double k[] = {1.4, 1, 2, 3, 2.5};
-    const Double eps = 1e-11;
+    double k[] = {1.4, 1, 2, 3, 2.5};
+    const double eps = 1e-11;
     {
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bws(10);
       bws.setData(v0.begin(), v0.size());
       // test unsupported stats through an exception
       StatisticsData::STATS stat = StatisticsData::MEAN;
-      for (uInt i = 0; i < 5; ++i) {
+      for (unsigned int i = 0; i < 5; ++i) {
         bool thrown = false;
         switch (i) {
           case 0:
@@ -84,14 +84,14 @@ int main() {
         }
         AlwaysAssert(thrown, AipsError);
       }
-      StatsData<Double> sd = bws.getStatistics();
+      StatsData<double> sd = bws.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 3, AipsError);
       // isn't set be this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 1.98059737309;
+      double expMean = 1.98059737309;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -99,7 +99,7 @@ int main() {
       AlwaysAssert(sd.npts == 5, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.868802742897;
+      double expStdev = 0.868802742897;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -131,18 +131,18 @@ int main() {
       AlwaysAssert(bws.getNiter() == 1, AipsError);
     }
     {
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bws(-1);
       bws.setData(v0.begin(), v0.size());
-      StatsData<Double> sd = bws.getStatistics();
+      StatsData<double> sd = bws.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 3, AipsError);
       // isn't set be this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 1.98056452649;
+      double expMean = 1.98056452649;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -150,7 +150,7 @@ int main() {
       AlwaysAssert(sd.npts == 5, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.865625126924;
+      double expStdev = 0.865625126924;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -183,11 +183,11 @@ int main() {
     }
     {
       // just another way of specifying the data
-      BiweightStatistics<Double, Double*, bool*> bw1(10);
+      BiweightStatistics<double, double*, bool*> bw1(10);
       bw1.setData(k, 5);
-      StatsData<Double> sd = bw1.getStatistics();
+      StatsData<double> sd = bw1.getStatistics();
       StatisticsData::STATS stat = StatisticsData::MEAN;
-      for (uInt i = 0; i < 5; ++i) {
+      for (unsigned int i = 0; i < 5; ++i) {
         bool thrown = false;
         switch (i) {
           case 0:
@@ -221,7 +221,7 @@ int main() {
       // isn't set be this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 1.98059737309;
+      double expMean = 1.98059737309;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -229,7 +229,7 @@ int main() {
       AlwaysAssert(sd.npts == 5, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.868802742897;
+      double expStdev = 0.868802742897;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -262,19 +262,19 @@ int main() {
     }
     {
       // two datasets
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 10, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 3.97415612639;
+      double expMean = 3.97415612639;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -282,7 +282,7 @@ int main() {
       AlwaysAssert(sd.npts == 8, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 3.43760003872;
+      double expStdev = 3.43760003872;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -362,20 +362,20 @@ int main() {
     }
     {
       // Test accumulating as datasets are added.
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
       bw.setCalculateAsAdded(false);
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 10, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 3.97415612639;
+      double expMean = 3.97415612639;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -383,7 +383,7 @@ int main() {
       AlwaysAssert(sd.npts == 8, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 3.43760003872;
+      double expStdev = 3.43760003872;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -409,19 +409,19 @@ int main() {
     }
     {
       // two datasets, stride = 2,1
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
       bw.setData(v0.begin(), v0.size(), 2);
       bw.addData(v1.begin(), v1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 10, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 4.74754715912;
+      double expMean = 4.74754715912;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1.4, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -429,7 +429,7 @@ int main() {
       AlwaysAssert(sd.npts == 6, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 3.77813315235;
+      double expStdev = 3.77813315235;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -440,10 +440,10 @@ int main() {
     }
     {
       // data ranges
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
-      std::vector<std::pair<Double, Double>> r0(1);
+      std::vector<std::pair<double, double>> r0(1);
       r0[0].first = 5;
       r0[0].second = -5;
       bool thrown = false;
@@ -455,21 +455,21 @@ int main() {
       AlwaysAssert(thrown, AipsError);
       r0[0].first = 2.4;
       r0[0].second = 6;
-      std::vector<std::pair<Double, Double>> r1(2);
+      std::vector<std::pair<double, double>> r1(2);
       r1[0].first = 9;
       r1[0].second = 11;
       r1[1].first = 2;
       r1[1].second = 7;
       bw.setData(v0.begin(), v0.size(), r0);
       bw.addData(v1.begin(), v1.size(), r1, false);
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -477,7 +477,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -488,7 +488,7 @@ int main() {
     }
     {
       // mask
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<bool> m0(v0.size());
       m0[0] = false;
       m0[1] = false;
@@ -501,14 +501,14 @@ int main() {
       m1[2] = false;
       bw.setData(v0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), m1.begin(), v1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -516,7 +516,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -525,9 +525,9 @@ int main() {
       AlwaysAssert(near(bw.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
       AlwaysAssert(near(bw.getStatistic(StatisticsData::STDDEV), expStdev, eps), AipsError);
       // test cloning gives same results
-      std::shared_ptr<BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      std::shared_ptr<BiweightStatistics<double, std::vector<double>::const_iterator,
                                          std::vector<bool>::const_iterator>>
-          bw1(dynamic_cast<BiweightStatistics<Double, std::vector<Double>::const_iterator,
+          bw1(dynamic_cast<BiweightStatistics<double, std::vector<double>::const_iterator,
                                               std::vector<bool>::const_iterator>*>(bw.clone()));
       sd = bw1->getStatistics();
       AlwaysAssert(sd.masked, AipsError);
@@ -553,7 +553,7 @@ int main() {
     }
     {
       // mask and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<bool> m0(v0.size());
       m0[0] = false;
       m0[1] = true;
@@ -564,22 +564,22 @@ int main() {
       m1[0] = true;
       m1[1] = true;
       m1[2] = false;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
       bw.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -587,7 +587,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -599,27 +599,27 @@ int main() {
     {
       // weights, which don't have any effect for this algorithm,
       // except for weight = 0
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
       bw.setData(v0.begin(), w0.begin(), w0.size());
       bw.addData(v1.begin(), w1.begin(), w1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 10, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 4.31952746181;
+      double expMean = 4.31952746181;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -627,7 +627,7 @@ int main() {
       AlwaysAssert(sd.npts == 7, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 3.64182681772;
+      double expStdev = 3.64182681772;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -638,29 +638,29 @@ int main() {
     }
     {
       // integer weights
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
       bw.setData(v0.begin(), w0.begin(), w0.size());
       bw.addData(v1.begin(), w1.begin(), w1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 10, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 4.31952746181;
+      double expMean = 4.31952746181;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 1, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -668,7 +668,7 @@ int main() {
       AlwaysAssert(sd.npts == 7, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 3.64182681772;
+      double expStdev = 3.64182681772;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -679,33 +679,33 @@ int main() {
     }
     {
       // weights and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
       bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -713,7 +713,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -724,35 +724,35 @@ int main() {
     }
     {
       // integer weights; ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
       bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -760,7 +760,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -771,14 +771,14 @@ int main() {
     }
     {
       // weights, ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
@@ -792,22 +792,22 @@ int main() {
       m1[0] = true;
       m1[1] = true;
       m1[2] = false;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -815,7 +815,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -826,16 +826,16 @@ int main() {
     }
     {
       // integer weights; ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
@@ -849,22 +849,22 @@ int main() {
       m1[0] = true;
       m1[1] = true;
       m1[2] = false;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -872,7 +872,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -883,14 +883,14 @@ int main() {
     }
     {
       // weights, masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
@@ -906,14 +906,14 @@ int main() {
       m1[2] = false;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -921,7 +921,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -932,16 +932,16 @@ int main() {
     }
     {
       // integer weights; masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
@@ -957,14 +957,14 @@ int main() {
       m1[2] = false;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
-      StatsData<Double> sd = bw.getStatistics();
+      StatsData<double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
       AlwaysAssert(*sd.max == 8, AipsError);
       // isn't set by this algorithm
       AlwaysAssert(sd.maxpos.first == -1, AipsError);
       AlwaysAssert(sd.maxpos.second == -1, AipsError);
-      Double expMean = 2.7501751458;
+      double expMean = 2.7501751458;
       AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
       AlwaysAssert(*sd.min == 2.5, AipsError);
       AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -972,7 +972,7 @@ int main() {
       AlwaysAssert(sd.npts == 3, AipsError);
       // not computed
       AlwaysAssert(sd.rms == 0, AipsError);
-      Double expStdev = 0.437209840794;
+      double expStdev = 0.437209840794;
       AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -983,45 +983,45 @@ int main() {
     }
     {
       // getMinMax(), two datasets
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 1, AipsError);
       AlwaysAssert(mymax == 10, AipsError);
     }
     {
       // getMinMax(), two datasets, stride = 2,1
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       bw.setData(v0.begin(), 3, 2);
       bw.addData(v1.begin(), v1.size());
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 1.4, AipsError);
       AlwaysAssert(mymax == 10, AipsError);
     }
     {
       // getMinMax(), data ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<std::pair<Double, Double>> r0(1);
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 2.4;
       r0[0].second = 6;
-      vector<std::pair<Double, Double>> r1(2);
+      vector<std::pair<double, double>> r1(2);
       r1[0].first = 9;
       r1[0].second = 11;
       r1[1].first = 2;
       r1[1].second = 7;
       bw.setData(v0.begin(), v0.size(), r0);
       bw.addData(v1.begin(), v1.size(), r1, false);
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax(), mask
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<bool> m0(v0.size());
       m0[0] = false;
       m0[1] = false;
@@ -1034,14 +1034,14 @@ int main() {
       m1[2] = false;
       bw.setData(v0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), m1.begin(), v1.size());
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax(), mask and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<bool> m0(v0.size());
       m0[0] = false;
       m0[1] = true;
@@ -1052,125 +1052,125 @@ int main() {
       m1[0] = true;
       m1[1] = true;
       m1[2] = false;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
       bw.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax, weights
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 1;
       w0[1] = 0;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 0;
       bw.setData(v0.begin(), w0.begin(), w0.size());
       bw.addData(v1.begin(), w1.begin(), w1.size());
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 1.4, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax, integer weights
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 1;
       w0[1] = 0;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 0;
       bw.setData(v0.begin(), w0.begin(), w0.size());
       bw.addData(v1.begin(), w1.begin(), w1.size());
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 1.4, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax(), weights and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
       bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax(), integer weights, and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
       bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax(), weights, ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
-      vector<Double> w0(v0.size());
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Double> w1(v1.size());
+      vector<double> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
@@ -1184,31 +1184,31 @@ int main() {
       m1[0] = true;
       m1[1] = true;
       m1[2] = false;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // getMinMax(), integer weights, ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
-                         vector<Int>::const_iterator>
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator,
+                         vector<int>::const_iterator>
           bw;
-      vector<Int> w0(v0.size());
+      vector<int> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
       w0[2] = 3;
       w0[3] = 4;
       w0[4] = 5;
-      vector<Int> w1(v1.size());
+      vector<int> w1(v1.size());
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
@@ -1222,22 +1222,22 @@ int main() {
       m1[0] = true;
       m1[1] = true;
       m1[2] = false;
-      vector<std::pair<Double, Double>> r0(1);
+      vector<std::pair<double, double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
-      vector<std::pair<Double, Double>> r1(1);
+      vector<std::pair<double, double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
       AlwaysAssert(mymax == 8, AipsError);
     }
     {
       // general quantile exceptions
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      BiweightStatistics<double, vector<double>::const_iterator, vector<bool>::const_iterator> bw;
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
       bool thrown = false;
@@ -1256,8 +1256,8 @@ int main() {
       AlwaysAssert(thrown, AipsError);
       thrown = false;
       try {
-        std::map<Double, Double> qToV;
-        std::set<Double> qs;
+        std::map<double, double> qToV;
+        std::set<double> qs;
         qs.insert(0.1);
         bw.getMedianAndQuantiles(qToV, qs);
       } catch (const std::exception& x) {
@@ -1273,18 +1273,18 @@ int main() {
     }
     {
       // large array, getMinMax()
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
-      std::vector<Double> big(1e7);
-      uInt count = 0;
-      std::vector<Double>::iterator iter = big.begin();
-      std::vector<Double>::iterator end = big.end();
+      std::vector<double> big(1e7);
+      unsigned int count = 0;
+      std::vector<double>::iterator iter = big.begin();
+      std::vector<double>::iterator end = big.end();
       for (; iter != end; ++iter, ++count) {
         *iter = count;
       }
       bw.addData(big.begin(), big.size());
-      Double mymin, mymax;
+      double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 0, AipsError);
       AlwaysAssert(mymax == big.size() - 1, AipsError);
@@ -1292,7 +1292,7 @@ int main() {
       std::random_device rd;
       std::mt19937 g(rd());
       std::shuffle(big.begin(), big.end(), g);
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw1;
       bw1.addData(big.begin(), big.size());
@@ -1302,15 +1302,15 @@ int main() {
     }
     {
       // tests for getNPts()
-      uInt n = 6;
-      uInt size[] = {5000, 80000, 6500, 100000, 19256, 7482};
-      std::vector<std::vector<Double>> data(n);
-      BiweightStatistics<Double, std::vector<Double>::const_iterator,
+      unsigned int n = 6;
+      unsigned int size[] = {5000, 80000, 6500, 100000, 19256, 7482};
+      std::vector<std::vector<double>> data(n);
+      BiweightStatistics<double, std::vector<double>::const_iterator,
                          std::vector<bool>::const_iterator>
           bw;
       uInt64 expec = 0;
-      for (uInt i = 0; i < n; ++i) {
-        uInt s = size[i];
+      for (unsigned int i = 0; i < n; ++i) {
+        unsigned int s = size[i];
         expec += s;
         data[i].resize(s);
         std::fill(data[i].begin(), data[i].begin() + s, 0);
@@ -1323,8 +1323,8 @@ int main() {
       mask3[1000] = true;
       mask3[1500] = true;
       expec -= (size[3] - 2);
-      for (uInt i = 0; i < n; ++i) {
-        uInt s = size[i];
+      for (unsigned int i = 0; i < n; ++i) {
+        unsigned int s = size[i];
         if (i == 3) {
           bw.addData(data[i].begin(), mask3.begin(), s);
         } else {

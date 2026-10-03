@@ -207,7 +207,7 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   //  Constructors
   //  <group>
   Function() : param_p(), arg_p(0), parset_p(false), locked_p(false) {}
-  explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(false), locked_p(false) {}
+  explicit Function(const unsigned int n) : param_p(n), arg_p(0), parset_p(false), locked_p(false) {}
   explicit Function(const Vector<T> &in)
       : param_p(in), arg_p(0), parset_p(false), locked_p(false) {}
   Function(const FunctionParam<T> &other)
@@ -221,9 +221,9 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual ~Function() {}
 
   // Returns the number of dimensions of function
-  virtual uInt ndim() const = 0;
+  virtual unsigned int ndim() const = 0;
   // Returns the number of parameters
-  uInt nparameters() const { return param_p.nelements(); }
+  unsigned int nparameters() const { return param_p.nelements(); }
 
   // Evaluate the function object
   virtual U eval(FunctionArg x) const = 0;
@@ -231,11 +231,11 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // # Operators
   //  Manipulate the nth parameter (0-based) with no index check
   //  <group>
-  T &operator[](const uInt n) {
+  T &operator[](const unsigned int n) {
     parset_p |= !locked_p;
     return param_p[n];
   }
-  const T &operator[](const uInt n) const { return param_p[n]; }
+  const T &operator[](const unsigned int n) const { return param_p[n]; }
   // </group>
   // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
   // The length of <src>x</src> must be greater than or equal to
@@ -264,11 +264,11 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // nonadjustable).
   // Note: no index check.
   // <group>
-  bool &mask(const uInt n) {
+  bool &mask(const unsigned int n) {
     parset_p |= !locked_p;
     return param_p.mask(n);
   }
-  const bool &mask(const uInt n) const { return param_p.mask(n); }
+  const bool &mask(const unsigned int n) const { return param_p.mask(n); }
   // </group>
   // Return the parameter interface
   // <group>

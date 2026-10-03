@@ -86,16 +86,16 @@ class RawIO : public TypeIO {
   // Bool, complex and String values are handled by the base class.
   // <group>
   virtual size_t write(size_t nvalues, const bool* value);
-  virtual size_t write(size_t nvalues, const Char* data);
-  virtual size_t write(size_t nvalues, const uChar* data);
-  virtual size_t write(size_t nvalues, const Short* data);
-  virtual size_t write(size_t nvalues, const uShort* data);
-  virtual size_t write(size_t nvalues, const Int* data);
-  virtual size_t write(size_t nvalues, const uInt* data);
+  virtual size_t write(size_t nvalues, const char* data);
+  virtual size_t write(size_t nvalues, const unsigned char* data);
+  virtual size_t write(size_t nvalues, const short* data);
+  virtual size_t write(size_t nvalues, const unsigned short* data);
+  virtual size_t write(size_t nvalues, const int* data);
+  virtual size_t write(size_t nvalues, const unsigned int* data);
   virtual size_t write(size_t nvalues, const Int64* data);
   virtual size_t write(size_t nvalues, const uInt64* data);
-  virtual size_t write(size_t nvalues, const Float* data);
-  virtual size_t write(size_t nvalues, const Double* data);
+  virtual size_t write(size_t nvalues, const float* data);
+  virtual size_t write(size_t nvalues, const double* data);
   virtual size_t write(size_t nvalues, const Complex* value);
   virtual size_t write(size_t nvalues, const DComplex* value);
   virtual size_t write(size_t nvalues, const String* value);
@@ -105,16 +105,16 @@ class RawIO : public TypeIO {
   // Bool, complex and String values are handled by the base class.
   // <group>
   virtual size_t read(size_t nvalues, bool* value);
-  virtual size_t read(size_t nvalues, Char* data);
-  virtual size_t read(size_t nvalues, uChar* data);
-  virtual size_t read(size_t nvalues, Short* data);
-  virtual size_t read(size_t nvalues, uShort* data);
-  virtual size_t read(size_t nvalues, Int* data);
-  virtual size_t read(size_t nvalues, uInt* data);
+  virtual size_t read(size_t nvalues, char* data);
+  virtual size_t read(size_t nvalues, unsigned char* data);
+  virtual size_t read(size_t nvalues, short* data);
+  virtual size_t read(size_t nvalues, unsigned short* data);
+  virtual size_t read(size_t nvalues, int* data);
+  virtual size_t read(size_t nvalues, unsigned int* data);
   virtual size_t read(size_t nvalues, Int64* data);
   virtual size_t read(size_t nvalues, uInt64* data);
-  virtual size_t read(size_t nvalues, Float* data);
-  virtual size_t read(size_t nvalues, Double* data);
+  virtual size_t read(size_t nvalues, float* data);
+  virtual size_t read(size_t nvalues, double* data);
   virtual size_t read(size_t nvalues, Complex* value);
   virtual size_t read(size_t nvalues, DComplex* value);
   virtual size_t read(size_t nvalues, String* value);

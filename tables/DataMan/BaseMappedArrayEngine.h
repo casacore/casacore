@@ -364,7 +364,7 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
   // This implementation assumes the dimensionality of virtual and
   // stored arrays are the same. If not, it has to be overidden in a
   // derived class.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the (underlying) array in the given row.
   // This implementation assumes the shape of virtual and stored arrays

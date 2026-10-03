@@ -84,12 +84,12 @@ void TiledCellStMan::setShape(rownr_t, TSMCube* hypercube, const IPosition& shap
 void TiledCellStMan::setupCheck(const TableDesc& tableDesc, const Vector<String>& dataNames) const {
   // The data columns should only contain arrays matching the
   // dimensionality of the hypercolumn.
-  for (uInt i = 0; i < dataNames.nelements(); i++) {
+  for (unsigned int i = 0; i < dataNames.nelements(); i++) {
     const ColumnDesc& columnDesc = tableDesc.columnDesc(dataNames(i));
     if (!columnDesc.isArray()) {
       throw(TSMError("TiledCellStMan cannot handle scalar column " + dataNames(i)));
     }
-    if (Int(nrdim_p) != columnDesc.ndim()) {
+    if (int(nrdim_p) != columnDesc.ndim()) {
       throw(TSMError("Dimensionality of column " + dataNames(i) +
                      " should be equal to hypercolumn"
                      " definition when used in TiledCellStMan"));

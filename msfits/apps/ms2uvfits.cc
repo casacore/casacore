@@ -103,7 +103,7 @@ int main(int argc, const char* argv[]) {
     bool writestation(inputs.getBool("writestation"));
 
     // Get the sensitivity.
-    Double sensitivity(inputs.getDouble("sensitivity"));
+    double sensitivity(inputs.getDouble("sensitivity"));
 
     // Now write the fits file.
     MSFitsOutput::writeFitsFile(fitsfile, MeasurementSet(msin), column, -1, -1, -1, writeSyscal,

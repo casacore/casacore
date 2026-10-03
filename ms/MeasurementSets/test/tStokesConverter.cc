@@ -31,11 +31,11 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Int err = 0;
+  int err = 0;
   try {
     StokesConverter sc;
     {
-      Vector<Int> out(7), in(4);
+      Vector<int> out(7), in(4);
 
       in(0) = Stokes::RR;
       in(1) = Stokes::LL;
@@ -94,12 +94,12 @@ int main() {
       datain(2) = 0.3;  // U
       datain(3) = 0.1;  // V
       Matrix<Complex> data(4, 5);
-      Vector<Int> out(4), in(4);
-      for (Int i = 0; i < 5; i++) {
+      Vector<int> out(4), in(4);
+      for (int i = 0; i < 5; i++) {
         if (i > 0) datain = data.column(i);
-        for (Int j = 0; j < 4; j++) in(j) = 4 * i + j + 1;
-        for (Int k = 0; k < 5; k++) {
-          for (Int l = 0; l < 4; l++) out(l) = 4 * k + l + 1;
+        for (int j = 0; j < 4; j++) in(j) = 4 * i + j + 1;
+        for (int k = 0; k < 5; k++) {
+          for (int l = 0; l < 4; l++) out(l) = 4 * k + l + 1;
 
           sc.setConversion(out, in);
           sc.convert(dataout, datain);

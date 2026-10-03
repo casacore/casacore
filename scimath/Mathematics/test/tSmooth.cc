@@ -41,28 +41,28 @@ int main() {
     bool failed = false;
     // Test with Float Vectors, all flags 0
 
-    std::vector<Float> vyin;
+    std::vector<float> vyin;
     std::vector<bool> vyinFlags;
 
-    Vector<Float> myexp;
-    Vector<Float> outv;
+    Vector<float> myexp;
+    Vector<float> outv;
     Vector<bool> outFlags;
 
-    uInt vdim = 8;
+    unsigned int vdim = 8;
 
-    Float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
+    float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
     bool myflags1[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
-    Vector<Float> yin(vyin);
+    Vector<float> yin(vyin);
     Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
     myexp[0] = 2. / 3. * vyin[0] + 1. / 3. * vyin[1];
     myexp[vdim - 1] = 1. / 3. * vyin[vdim - 2] + 2. / 3. * vyin[vdim - 1];
-    for (uInt i = 1; i < vdim - 1; i++) {
+    for (unsigned int i = 1; i < vdim - 1; i++) {
       myexp[i] = 0.25 * vyin[i - 1] + 0.5 * vyin[i] + 0.25 * vyin[i + 1];
     }
 
@@ -73,14 +73,14 @@ int main() {
     outv.resize(vdim);
     outFlags.resize(vdim);
 
-    Smooth<Float>::hanning(outv,      // the output
+    Smooth<float>::hanning(outv,      // the output
                            outFlags,  // the output mask
                            yin,       // the input
                            yinFlags,  // the input mask
                            false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " in " << yin[i] << endl;
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
@@ -89,7 +89,7 @@ int main() {
     }
 
     if (!allEQ(myexpflags, outFlags)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " inFlags " << yinFlags[i] << endl;
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
@@ -112,22 +112,22 @@ int main() {
     bool failed = false;
     // Test with Float Vectors, all flags 1
 
-    std::vector<Float> vyin;
+    std::vector<float> vyin;
     std::vector<bool> vyinFlags;
 
-    Vector<Float> myexp;
-    Vector<Float> outv;
+    Vector<float> myexp;
+    Vector<float> outv;
     Vector<bool> outFlags;
 
-    uInt vdim = 8;
+    unsigned int vdim = 8;
 
-    Float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
+    float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
     bool myflags1[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
-    Vector<Float> yin(vyin);
+    Vector<float> yin(vyin);
     Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
@@ -138,14 +138,14 @@ int main() {
 
     Vector<bool> myexpflags(yinFlags);
 
-    Smooth<Float>::hanning(outv,      // the output
+    Smooth<float>::hanning(outv,      // the output
                            outFlags,  // the output mask
                            yin,       // the input
                            yinFlags,  // the input mask
                            false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " in " << yin[i] << endl;
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
@@ -154,7 +154,7 @@ int main() {
     }
 
     if (!allEQ(myexpflags, outFlags)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " inFlags " << yinFlags[i] << endl;
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
@@ -177,22 +177,22 @@ int main() {
     bool failed = false;
     // Test with Float Vectors, mixed flags
 
-    std::vector<Float> vyin;
+    std::vector<float> vyin;
     std::vector<bool> vyinFlags;
 
-    Vector<Float> myexp;
-    Vector<Float> outv;
+    Vector<float> myexp;
+    Vector<float> outv;
     Vector<bool> outFlags;
 
-    uInt vdim = 8;
+    unsigned int vdim = 8;
 
-    Float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
+    float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
     bool myflags1[] = {1, 0, 1, 1, 0, 0, 0, 1};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
-    Vector<Float> yin(vyin);
+    Vector<float> yin(vyin);
     Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
@@ -218,14 +218,14 @@ int main() {
     outv.resize(vdim);
     outFlags.resize(vdim);
 
-    Smooth<Float>::hanning(outv,      // the output
+    Smooth<float>::hanning(outv,      // the output
                            outFlags,  // the output mask
                            yin,       // the input
                            yinFlags,  // the input mask
                            false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " in " << yin[i] << endl;
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
@@ -234,7 +234,7 @@ int main() {
     }
 
     if (!allEQ(myexpflags, outFlags)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " inFlags " << yinFlags[i] << endl;
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
@@ -267,7 +267,7 @@ int main() {
     Vector<Complex> outv;
     Vector<bool> outFlags;
 
-    uInt vdim = 8;
+    unsigned int vdim = 8;
 
     Complex myyin[] = {Complex(1., 1.), Complex(3., 3.), Complex(1., 1.), Complex(4., 4.),
                        Complex(2., 2.), Complex(6., 6.), Complex(3., 3.), Complex(8., 8.)};
@@ -282,7 +282,7 @@ int main() {
     myexp.resize(vdim);
     myexp[0] = Complex(2. / 3., 0.) * vyin[0] + Complex(1. / 3., 0.) * vyin[1];
     myexp[vdim - 1] = Complex(2. / 3., 0.) * vyin[vdim - 1] + Complex(1. / 3., 0.) * vyin[vdim - 2];
-    for (uInt i = 1; i < vdim - 1; i++) {
+    for (unsigned int i = 1; i < vdim - 1; i++) {
       myexp[i] = Complex(0.25, 0.) * vyin[i - 1] + Complex(0.5, 0.) * vyin[i] +
                  Complex(0.25, 0) * vyin[i + 1];
     }
@@ -301,7 +301,7 @@ int main() {
                              false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " in " << yin[i] << endl;
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
@@ -310,7 +310,7 @@ int main() {
     }
 
     if (!allEQ(myexpflags, outFlags)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " inFlags " << yinFlags[i] << endl;
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
@@ -340,7 +340,7 @@ int main() {
     Vector<Complex> outv;
     Vector<bool> outFlags;
 
-    uInt vdim = 8;
+    unsigned int vdim = 8;
 
     Complex myyin[] = {Complex(1., 1.), Complex(3., 3.), Complex(1., 1.), Complex(4., 4.),
                        Complex(2., 2.), Complex(6., 6.), Complex(3., 3.), Complex(8., 8.)};
@@ -383,7 +383,7 @@ int main() {
                              false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " in " << yin[i] << endl;
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
@@ -392,7 +392,7 @@ int main() {
     }
 
     if (!allEQ(myexpflags, outFlags)) {
-      for (uInt i = 0; i < vdim; i++) {
+      for (unsigned int i = 0; i < vdim; i++) {
         cout << i << " inFlags " << yinFlags[i] << endl;
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
@@ -418,8 +418,8 @@ int main() {
     bool failed = false;
     // Test with Complex Arrays, all flags 0
 
-    uInt vdim = 8;
-    uInt sdim = 2;
+    unsigned int vdim = 8;
+    unsigned int sdim = 2;
     IPosition adim(2, sdim, vdim);
 
     Complex myyin[] = {Complex(1., 1.),  // (0,0)
@@ -450,7 +450,7 @@ int main() {
         Complex(2. / 3., 0.) * myyin[2 * 7] + Complex(1. / 3., 0.) * myyin[2 * 6];
     myexp(IPosition(2, 1, 7)) =
         Complex(2. / 3., 0.) * myyin[2 * 7 + 1] + Complex(1. / 3., 0.) * myyin[2 * 6 + 1];
-    for (uInt i = 1; i < vdim - 1; i++) {
+    for (unsigned int i = 1; i < vdim - 1; i++) {
       myexp(IPosition(2, 0, i)) = Complex(0.25, 0.) * myyin[2 * (i - 1)] +
                                   Complex(0.5, 0.) * myyin[2 * i] +
                                   Complex(0.25, 0.) * myyin[2 * (i + 1)];
@@ -475,8 +475,8 @@ int main() {
                              false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
-      for (uInt i = 0; i < sdim; i++) {
-        for (uInt j = 0; j < vdim; j++) {
+      for (unsigned int i = 0; i < sdim; i++) {
+        for (unsigned int j = 0; j < vdim; j++) {
           cout << i << " " << j << " in " << yin(IPosition(2, i, j)) << endl;
           cout << i << " " << j << " out " << outv(IPosition(2, i, j)) << endl;
           cout << i << " " << j << " exp " << myexp(IPosition(2, i, j)) << endl;
@@ -486,8 +486,8 @@ int main() {
     }
 
     if (!allEQ(myexpflags, outFlags)) {
-      for (uInt i = 0; i < sdim; i++) {
-        for (uInt j = 0; j < vdim; j++) {
+      for (unsigned int i = 0; i < sdim; i++) {
+        for (unsigned int j = 0; j < vdim; j++) {
           cout << i << " " << j << " inFlags " << yinFlags(IPosition(2, i, j)) << endl;
           cout << i << " " << j << " outFlags " << outFlags(IPosition(2, i, j)) << endl;
           cout << i << " " << j << " expFlags " << myexpflags(IPosition(2, i, j)) << endl;

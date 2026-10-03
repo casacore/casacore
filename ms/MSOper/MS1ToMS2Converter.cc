@@ -93,7 +93,7 @@ bool MS1ToMS2Converter::convert() {
   } else {
     t = Table(ms2_p, Table::Update);
   }
-  t.rwKeywordSet().define("MS_VERSION", Float(2.0));
+  t.rwKeywordSet().define("MS_VERSION", float(2.0));
 
   t.renameColumn("DATA_DESC_ID", "SPECTRAL_WINDOW_ID");
 
@@ -128,23 +128,23 @@ bool MS1ToMS2Converter::convert() {
     flagc.rwKeywordSet().define("CATEGORY", Vector<String>());
   }
 
-  ScalarColumn<Int> stateId(t, MS::columnName(MS::STATE_ID));
+  ScalarColumn<int> stateId(t, MS::columnName(MS::STATE_ID));
   stateId.fillColumn(0);
-  ScalarColumn<Double> time(t, MS::columnName(MS::TIME));
-  ScalarColumn<Double> timeCentroid(t, MS::columnName(MS::TIME_CENTROID));
+  ScalarColumn<double> time(t, MS::columnName(MS::TIME));
+  ScalarColumn<double> timeCentroid(t, MS::columnName(MS::TIME_CENTROID));
   timeCentroid.putColumn(time.getColumn());
 
-  ArrayColumn<Double> uvw(t, MS::columnName(MS::UVW));
+  ArrayColumn<double> uvw(t, MS::columnName(MS::UVW));
   TableDesc uvwtd;
   MeasurementSet::addColumnToDesc(uvwtd, MS::UVW);
   uvw.rwKeywordSet().assign(uvwtd[0].keywordSet());
 
-  ScalarColumn<Double> exp(t, MS::columnName(MS::EXPOSURE));
+  ScalarColumn<double> exp(t, MS::columnName(MS::EXPOSURE));
   TableDesc exptd;
   MeasurementSet::addColumnToDesc(exptd, MS::EXPOSURE);
   exp.rwKeywordSet().assign(exptd[0].keywordSet());
 
-  ScalarColumn<Double> inter(t, MS::columnName(MS::INTERVAL));
+  ScalarColumn<double> inter(t, MS::columnName(MS::INTERVAL));
   TableDesc intertd;
   MeasurementSet::addColumnToDesc(intertd, MS::INTERVAL);
   inter.rwKeywordSet().assign(intertd[0].keywordSet());
@@ -153,19 +153,19 @@ bool MS1ToMS2Converter::convert() {
   MeasurementSet::addColumnToDesc(timetd, MS::TIME);
   time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-  Int maxAnt;
+  int maxAnt;
 
   // ANTENNA
   {
     Table anTab(ms2_p + "/ANTENNA", Table::Update);
     // Find out if we need to renumber antennas
-    ScalarColumn<Int> antIdCol(anTab, "ANTENNA_ID");
-    Vector<Int> ant = antIdCol.getColumn();
-    Int nRow = ant.nelements();
+    ScalarColumn<int> antIdCol(anTab, "ANTENNA_ID");
+    Vector<int> ant = antIdCol.getColumn();
+    int nRow = ant.nelements();
     maxAnt = max(ant) + 1;
-    Vector<Int> antMap(maxAnt);
+    Vector<int> antMap(maxAnt);
     bool renumber = false;
-    for (Int i = 0; i < nRow; i++) {
+    for (int i = 0; i < nRow; i++) {
       if (i != ant(i)) renumber = true;
       antMap(ant(i)) = i;
     }
@@ -174,11 +174,11 @@ bool MS1ToMS2Converter::convert() {
       // cout <<"Renumbering antennas in main table and all subtables"<<std::endl;
       // Main
       {
-        Vector<Int> newAnt1(t.nrow());
-        Vector<Int> newAnt2(t.nrow());
-        ScalarColumn<Int> ant1Col(t, "ANTENNA1");
-        ScalarColumn<Int> ant2Col(t, "ANTENNA2");
-        for (uInt i = 0; i < t.nrow(); i++) {
+        Vector<int> newAnt1(t.nrow());
+        Vector<int> newAnt2(t.nrow());
+        ScalarColumn<int> ant1Col(t, "ANTENNA1");
+        ScalarColumn<int> ant2Col(t, "ANTENNA2");
+        for (unsigned int i = 0; i < t.nrow(); i++) {
           newAnt1(i) = antMap(ant1Col(i));
           newAnt2(i) = antMap(ant2Col(i));
         }
@@ -188,8 +188,8 @@ bool MS1ToMS2Converter::convert() {
       // Feed
       {
         Table feedTab(ms2_p + "/FEED", Table::Update);
-        ScalarColumn<Int> ant(feedTab, "ANTENNA_ID");
-        for (uInt i = 0; i < feedTab.nrow(); i++) {
+        ScalarColumn<int> ant(feedTab, "ANTENNA_ID");
+        for (unsigned int i = 0; i < feedTab.nrow(); i++) {
           ant.put(i, antMap(ant(i)));
         }
         removeColumn(feedTab, "ARRAY_ID");
@@ -197,8 +197,8 @@ bool MS1ToMS2Converter::convert() {
       // Syscal
       if (Table::isReadable(ms2_p + "/SYSCAL")) {
         Table syscalTab(ms2_p + "/SYSCAL", Table::Update);
-        ScalarColumn<Int> ant(syscalTab, "ANTENNA_ID");
-        for (uInt i = 0; i < syscalTab.nrow(); i++) {
+        ScalarColumn<int> ant(syscalTab, "ANTENNA_ID");
+        for (unsigned int i = 0; i < syscalTab.nrow(); i++) {
           ant.put(i, antMap(ant(i)));
         }
         removeColumn(syscalTab, "ARRAY_ID");
@@ -206,8 +206,8 @@ bool MS1ToMS2Converter::convert() {
       // Weather
       if (Table::isReadable(ms2_p + "/WEATHER")) {
         Table wTab(ms2_p + "/WEATHER", Table::Update);
-        ScalarColumn<Int> ant(wTab, "ANTENNA_ID");
-        for (uInt i = 0; i < wTab.nrow(); i++) {
+        ScalarColumn<int> ant(wTab, "ANTENNA_ID");
+        for (unsigned int i = 0; i < wTab.nrow(); i++) {
           ant.put(i, antMap(ant(i)));
         }
         removeColumn(wTab, "ARRAY_ID");
@@ -228,22 +228,22 @@ bool MS1ToMS2Converter::convert() {
     ScalarColumn<bool> flagRow(anTab, "FLAG_ROW");
     flagRow.fillColumn(false);
 
-    ArrayColumn<Double> pos(anTab, "POSITION");
+    ArrayColumn<double> pos(anTab, "POSITION");
     TableDesc postd;
     MSAntenna::addColumnToDesc(postd, MSAntenna::POSITION);
     pos.rwKeywordSet().assign(postd[0].keywordSet());
 
-    ArrayColumn<Double> offs(anTab, "OFFSET");
+    ArrayColumn<double> offs(anTab, "OFFSET");
     TableDesc offstd;
     MSAntenna::addColumnToDesc(offstd, MSAntenna::OFFSET);
     offs.rwKeywordSet().assign(offstd[0].keywordSet());
 
-    ScalarColumn<Double> dish(anTab, "DISH_DIAMETER");
+    ScalarColumn<double> dish(anTab, "DISH_DIAMETER");
     TableDesc dishtd;
     MSAntenna::addColumnToDesc(dishtd, MSAntenna::DISH_DIAMETER);
     dish.rwKeywordSet().assign(dishtd[0].keywordSet());
 
-    for (uInt j = MSAntenna::NUMBER_REQUIRED_COLUMNS + 1; j < MSAntenna::NUMBER_PREDEFINED_COLUMNS;
+    for (unsigned int j = MSAntenna::NUMBER_REQUIRED_COLUMNS + 1; j < MSAntenna::NUMBER_PREDEFINED_COLUMNS;
          j = j + 1) {
       MSAntenna::PredefinedColumns i = (MSAntenna::PredefinedColumns)j;
       if (anTab.tableDesc().isColumn(MSAntenna::columnName(i))) {
@@ -259,15 +259,15 @@ bool MS1ToMS2Converter::convert() {
   {
     // create and fill table and write it out
     {
-      Int nRow = t.keywordSet().asTable("SPECTRAL_WINDOW").nrow();
+      int nRow = t.keywordSet().asTable("SPECTRAL_WINDOW").nrow();
       SetupNewTable ddSetup(ms2_p + "/DATA_DESCRIPTION", MSDataDescription::requiredTableDesc(),
                             Table::New);
       Table ddt(ddSetup, nRow);
-      ScalarColumn<Int> spw(ddt, "SPECTRAL_WINDOW_ID");
-      ScalarColumn<Int> pol(ddt, "POLARIZATION_ID");
+      ScalarColumn<int> spw(ddt, "SPECTRAL_WINDOW_ID");
+      ScalarColumn<int> pol(ddt, "POLARIZATION_ID");
       ScalarColumn<bool> flagRow(ddt, "FLAG_ROW");
-      Vector<Int> seq(nRow);
-      for (Int i = 0; i < nRow; i++) seq(i) = i;
+      Vector<int> seq(nRow);
+      for (int i = 0; i < nRow; i++) seq(i) = i;
       spw.putColumn(seq);
       pol.putColumn(seq);
       flagRow.fillColumn(false);
@@ -279,27 +279,27 @@ bool MS1ToMS2Converter::convert() {
   // FEED
   {
     Table feedTab(ms2_p + "/FEED", Table::Update);
-    ScalarColumn<Double> time(feedTab, "TIME");
+    ScalarColumn<double> time(feedTab, "TIME");
     TableDesc timetd;
     MSFeed::addColumnToDesc(timetd, MSFeed::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    ArrayColumn<Double> pos(feedTab, "POSITION");
+    ArrayColumn<double> pos(feedTab, "POSITION");
     TableDesc postd;
     MSFeed::addColumnToDesc(postd, MSFeed::POSITION);
     pos.rwKeywordSet().assign(postd[0].keywordSet());
 
-    ArrayColumn<Double> beam(feedTab, "BEAM_OFFSET");
+    ArrayColumn<double> beam(feedTab, "BEAM_OFFSET");
     TableDesc beamtd;
     MSFeed::addColumnToDesc(beamtd, MSFeed::BEAM_OFFSET);
     beam.rwKeywordSet().assign(beamtd[0].keywordSet());
 
-    ArrayColumn<Double> recep(feedTab, "RECEPTOR_ANGLE");
+    ArrayColumn<double> recep(feedTab, "RECEPTOR_ANGLE");
     TableDesc receptd;
     MSFeed::addColumnToDesc(receptd, MSFeed::RECEPTOR_ANGLE);
     recep.rwKeywordSet().assign(receptd[0].keywordSet());
 
-    ScalarColumn<Double> inter(feedTab, "INTERVAL");
+    ScalarColumn<double> inter(feedTab, "INTERVAL");
     TableDesc intertd;
     MSFeed::addColumnToDesc(intertd, MSFeed::INTERVAL);
     inter.rwKeywordSet().assign(intertd[0].keywordSet());
@@ -310,17 +310,17 @@ bool MS1ToMS2Converter::convert() {
     Table fldTab(ms2_p + "/FIELD", Table::Update);
     removeColumn(fldTab, "FIELD_ID");
 
-    Matrix<Double> dd, ddr, pd, pdr, rd, rdr, pntd, pntdr;
-    uInt pdtp, rdtp, ddtp;
+    Matrix<double> dd, ddr, pd, pdr, rd, rdr, pntd, pntdr;
+    unsigned int pdtp, rdtp, ddtp;
     {
-      ArrayColumn<Double> delDir(fldTab, "DELAY_DIR");
-      ArrayColumn<Double> delDirRate(fldTab, "DELAY_DIR_RATE");
-      ArrayColumn<Double> phaseDir(fldTab, "PHASE_DIR");
-      ArrayColumn<Double> phaseDirRate(fldTab, "PHASE_DIR_RATE");
-      ArrayColumn<Double> pointingDir(fldTab, "POINTING_DIR");
-      ArrayColumn<Double> pointingDirRate(fldTab, "POINTING_DIR_RATE");
-      ArrayColumn<Double> refDir(fldTab, "REFERENCE_DIR");
-      ArrayColumn<Double> refDirRate(fldTab, "REFERENCE_DIR_RATE");
+      ArrayColumn<double> delDir(fldTab, "DELAY_DIR");
+      ArrayColumn<double> delDirRate(fldTab, "DELAY_DIR_RATE");
+      ArrayColumn<double> phaseDir(fldTab, "PHASE_DIR");
+      ArrayColumn<double> phaseDirRate(fldTab, "PHASE_DIR_RATE");
+      ArrayColumn<double> pointingDir(fldTab, "POINTING_DIR");
+      ArrayColumn<double> pointingDirRate(fldTab, "POINTING_DIR_RATE");
+      ArrayColumn<double> refDir(fldTab, "REFERENCE_DIR");
+      ArrayColumn<double> refDirRate(fldTab, "REFERENCE_DIR_RATE");
       dd = delDir.getColumn();
       ddr = delDirRate.getColumn();
       pd = phaseDir.getColumn();
@@ -339,7 +339,7 @@ bool MS1ToMS2Converter::convert() {
       ddtp = tp;
     }
     IPosition shape(2, 2, 2);
-    Int numPol = 1;
+    int numPol = 1;
     if (allEQ(pntdr, 0.0) && allEQ(ddr, 0.0) && allEQ(pdr, 0.0) && allEQ(rdr, 0.0)) {
       // all rates are zero, use only one term
       shape(1) = 1;
@@ -373,19 +373,19 @@ bool MS1ToMS2Converter::convert() {
     phaseAmc.setDescRefCode(pdtp, false);
     refAmc.setDescRefCode(rdtp, false);
 
-    ArrayColumn<Double> delDir(fldTab, "DELAY_DIR");
-    ArrayColumn<Double> phaseDir(fldTab, "PHASE_DIR");
-    ArrayColumn<Double> refDir(fldTab, "REFERENCE_DIR");
+    ArrayColumn<double> delDir(fldTab, "DELAY_DIR");
+    ArrayColumn<double> phaseDir(fldTab, "PHASE_DIR");
+    ArrayColumn<double> refDir(fldTab, "REFERENCE_DIR");
     ScalarColumn<bool> flagRow(fldTab, "FLAG_ROW");
     flagRow.fillColumn(false);
-    ScalarColumn<Int> numPoly(fldTab, "NUM_POLY");
+    ScalarColumn<int> numPoly(fldTab, "NUM_POLY");
     numPoly.fillColumn(numPol);
 
-    Int nRow = fldTab.nrow();
-    Matrix<Double> zero(shape);
+    int nRow = fldTab.nrow();
+    Matrix<double> zero(shape);
     zero = 0.0;
-    for (Int i = 0; i < nRow; i++) {
-      Matrix<Double> ddir(shape), pdir(shape), rdir(shape), pntdir(shape);
+    for (int i = 0; i < nRow; i++) {
+      Matrix<double> ddir(shape), pdir(shape), rdir(shape), pntdir(shape);
       ddir(0, 0) = dd(0, i);
       ddir(1, 0) = dd(1, i);
       pdir(0, 0) = pd(0, i);
@@ -412,7 +412,7 @@ bool MS1ToMS2Converter::convert() {
       refDir.put(i, rdir);
     }
 
-    ScalarColumn<Double> time(fldTab, "TIME");
+    ScalarColumn<double> time(fldTab, "TIME");
     TableDesc timetd;
     MSField::addColumnToDesc(timetd, MSField::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
@@ -420,7 +420,7 @@ bool MS1ToMS2Converter::convert() {
 
   // FLAG_CMD
   {
-    Int nRow = 0;
+    int nRow = 0;
     SetupNewTable flagCmdSetup(ms2_p + "/FLAG_CMD", MSFlagCmd::requiredTableDesc(), Table::New);
     Table flagCmdt(flagCmdSetup, nRow);
 
@@ -448,7 +448,7 @@ bool MS1ToMS2Converter::convert() {
       hisTab.addColumn(td[4]);
       hisTab.addColumn(td[5]);
 
-      ScalarColumn<Double> time(hisTab, "TIME");
+      ScalarColumn<double> time(hisTab, "TIME");
       TableDesc timetd;
       MSHistory::addColumnToDesc(timetd, MSHistory::TIME);
       time.rwKeywordSet().assign(timetd[0].keywordSet());
@@ -483,37 +483,37 @@ bool MS1ToMS2Converter::convert() {
     Table arrTab(ms2_p + "/ARRAY", Table::Old);
     ScalarColumn<String> arrName(arrTab, "NAME");
     ScalarColumn<String> telName(obsTab, "TELESCOPE_NAME");
-    ArrayColumn<Double> timeRange(obsTab, "TIME_RANGE");
+    ArrayColumn<double> timeRange(obsTab, "TIME_RANGE");
     ScalarColumn<bool> flagRow(obsTab, "FLAG_ROW");
     flagRow.fillColumn(false);
 
-    ScalarColumn<Double> time(t, "TIME");
-    ScalarColumn<Double> interval(t, "INTERVAL");
-    ScalarColumn<Int> observationid(t, "OBSERVATION_ID");
-    ScalarColumn<Int> arrayid(t, "ARRAY_ID");
-    Vector<Double> tim = time.getColumn();
-    Vector<Double> inter = interval.getColumn();
-    Vector<Int> obsid = observationid.getColumn();
-    Vector<Int> arrid = arrayid.getColumn();
+    ScalarColumn<double> time(t, "TIME");
+    ScalarColumn<double> interval(t, "INTERVAL");
+    ScalarColumn<int> observationid(t, "OBSERVATION_ID");
+    ScalarColumn<int> arrayid(t, "ARRAY_ID");
+    Vector<double> tim = time.getColumn();
+    Vector<double> inter = interval.getColumn();
+    Vector<int> obsid = observationid.getColumn();
+    Vector<int> arrid = arrayid.getColumn();
     Vector<String> arrnm = arrName.getColumn();
 
-    Int nObs = obsTab.nrow();
-    Int startInd;
-    Int endInd;
-    Int minPos, maxPos;
-    Vector<Double> vt(2);
+    int nObs = obsTab.nrow();
+    int startInd;
+    int endInd;
+    int minPos, maxPos;
+    Vector<double> vt(2);
 
-    for (Int obs = 0; obs < nObs; obs++) {
+    for (int obs = 0; obs < nObs; obs++) {
       // fill time range
       startInd = 0;
       endInd = t.nrow() - 1;
-      for (uInt i = 0; i < t.nrow(); i++) {
+      for (unsigned int i = 0; i < t.nrow(); i++) {
         if (obsid(i) == obs) {
           startInd = i;
           break;
         }
       }
-      for (uInt i = startInd; i < t.nrow(); i++) {
+      for (unsigned int i = startInd; i < t.nrow(); i++) {
         if (obsid(i) > obs) {
           endInd = i - 1;
           break;
@@ -530,7 +530,7 @@ bool MS1ToMS2Converter::convert() {
       vt(1) = tim(startInd);
       minPos = startInd;
       maxPos = startInd;
-      for (Int i = startInd; i <= endInd; i++) {
+      for (int i = startInd; i <= endInd; i++) {
         if (tim(i) < vt(0)) {
           vt(0) = tim(i);
           minPos = i;
@@ -552,47 +552,47 @@ bool MS1ToMS2Converter::convert() {
 
   // POINTING
   {
-    Int nRow = 0;
+    int nRow = 0;
     SetupNewTable pointingSetup(ms2_p + "/POINTING", MSPointing::requiredTableDesc(), Table::New);
     Table pointTab(pointingSetup, nRow);
     //  TableRecord tbrec = t.rwKeywordSet();
     t.rwKeywordSet().defineTable(MS::keywordName(MS::POINTING), pointTab);
-    ScalarColumn<Double> time(t, MS::columnName(MS::TIME));
-    ScalarColumn<Double> interval(t, MS::columnName(MS::INTERVAL));
-    ScalarColumn<Int> fieldId(t, MS::columnName(MS::FIELD_ID));
-    Vector<Double> tim = time.getColumn();
-    Vector<Double> inter = interval.getColumn();
-    Vector<Int> fi = fieldId.getColumn();
+    ScalarColumn<double> time(t, MS::columnName(MS::TIME));
+    ScalarColumn<double> interval(t, MS::columnName(MS::INTERVAL));
+    ScalarColumn<int> fieldId(t, MS::columnName(MS::FIELD_ID));
+    Vector<double> tim = time.getColumn();
+    Vector<double> inter = interval.getColumn();
+    Vector<int> fi = fieldId.getColumn();
 
     Table fldTab(ms2_p + "/FIELD", Table::Update);
-    Cube<Double> pd;
+    Cube<double> pd;
     {
-      ArrayColumn<Double> phaseDir(fldTab, "PHASE_DIR");
+      ArrayColumn<double> phaseDir(fldTab, "PHASE_DIR");
       pd = phaseDir.getColumn();
     }
 
     //  Table pointTab(ms2_p+"/POINTING", Table::Update);
-    ScalarColumn<Double> t2(pointTab, MSPointing::columnName(MSPointing::TIME));
-    ScalarColumn<Double> i2(pointTab, MSPointing::columnName(MSPointing::INTERVAL));
-    ArrayColumn<Double> phaseDir2(pointTab, MSPointing::columnName(MSPointing::DIRECTION));
-    ScalarColumn<Int> a2(pointTab, MSPointing::columnName(MSPointing::ANTENNA_ID));
-    ScalarColumn<Int> numPoly2(pointTab, MSPointing::columnName(MSPointing::NUM_POLY));
+    ScalarColumn<double> t2(pointTab, MSPointing::columnName(MSPointing::TIME));
+    ScalarColumn<double> i2(pointTab, MSPointing::columnName(MSPointing::INTERVAL));
+    ArrayColumn<double> phaseDir2(pointTab, MSPointing::columnName(MSPointing::DIRECTION));
+    ScalarColumn<int> a2(pointTab, MSPointing::columnName(MSPointing::ANTENNA_ID));
+    ScalarColumn<int> numPoly2(pointTab, MSPointing::columnName(MSPointing::NUM_POLY));
 
     nRow = t.nrow();
-    Int fld = -1;
-    Int pnt = 0;
+    int fld = -1;
+    int pnt = 0;
 
-    ScalarColumn<Int> numPoly(fldTab, "NUM_POLY");
+    ScalarColumn<int> numPoly(fldTab, "NUM_POLY");
     IPosition shape(2, 2, numPoly(0) + 1);
-    Matrix<Double> pdir(shape);
+    Matrix<double> pdir(shape);
 
-    for (Int i = 0; i < nRow; i++) {
+    for (int i = 0; i < nRow; i++) {
       if (fi(i) != fld) {
         fld = fi(i);
         pdir = pd.xyPlane(fld);
 
         pointTab.addRow(maxAnt);
-        for (Int j = 0; j < maxAnt; j++) {
+        for (int j = 0; j < maxAnt; j++) {
           t2.put(maxAnt * pnt + j, tim(i));
           i2.put(maxAnt * pnt + j, inter(i));
           a2.put(maxAnt * pnt + j, j + 1);
@@ -604,10 +604,10 @@ bool MS1ToMS2Converter::convert() {
 
     nRow = pointTab.nrow();
 
-    for (Int i = 0; i < nRow; i++) numPoly2.put(i, numPoly(0));
+    for (int i = 0; i < nRow; i++) numPoly2.put(i, numPoly(0));
 
-    uInt ctp;
-    ArrayColumn<Double> obspDir(fldTab, "_OBSOLETE_POINTING_DIR");
+    unsigned int ctp;
+    ArrayColumn<double> obspDir(fldTab, "_OBSOLETE_POINTING_DIR");
     MDirection::Types tp;
     MDirection::getType(tp, obspDir.keywordSet().asString("MEASURE_REFERENCE"));
     ctp = tp;
@@ -616,7 +616,7 @@ bool MS1ToMS2Converter::convert() {
     ArrayMeasColumn<MDirection> tgAmc(pointTab, "TARGET");
     tgAmc.setDescRefCode(ctp, false);
 
-    for (uInt j = MSPointing::NUMBER_REQUIRED_COLUMNS + 1;
+    for (unsigned int j = MSPointing::NUMBER_REQUIRED_COLUMNS + 1;
          j < MSPointing::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
       MSPointing::PredefinedColumns i = (MSPointing::PredefinedColumns)j;
       if (pointTab.tableDesc().isColumn(MSPointing::columnName(i))) {
@@ -632,7 +632,7 @@ bool MS1ToMS2Converter::convert() {
   // SPECTRAL_WINDOW
   {
     Table spwTab(ms2_p + "/SPECTRAL_WINDOW", Table::Update);
-    Int nRow = spwTab.nrow();
+    int nRow = spwTab.nrow();
     SetupNewTable polarizationSetup(ms2_p + "/POLARIZATION", MSPolarization::requiredTableDesc(),
                                     Table::New);
     Table polTab(polarizationSetup, nRow);
@@ -649,76 +649,76 @@ bool MS1ToMS2Converter::convert() {
     MSSpectralWindow::addColumnToDesc(td, MSSpectralWindow::EFFECTIVE_BW);
     MSSpectralWindow::addColumnToDesc(td, MSSpectralWindow::MEAS_FREQ_REF);
     MSSpectralWindow::addColumnToDesc(td, MSSpectralWindow::FLAG_ROW);
-    for (Int i = 0; i < 8; i++) spwTab.addColumn(td[i]);
+    for (int i = 0; i < 8; i++) spwTab.addColumn(td[i]);
 
-    ScalarColumn<Int> snumCorr(spwTab, "NUM_CORR");
-    ArrayColumn<Int> scorrType(spwTab, "CORR_TYPE");
-    ArrayColumn<Int> scorrProduct(spwTab, "CORR_PRODUCT");
+    ScalarColumn<int> snumCorr(spwTab, "NUM_CORR");
+    ArrayColumn<int> scorrType(spwTab, "CORR_TYPE");
+    ArrayColumn<int> scorrProduct(spwTab, "CORR_PRODUCT");
 
-    ScalarColumn<Int> pnumCorr(polTab, "NUM_CORR");
-    ArrayColumn<Int> pcorrType(polTab, "CORR_TYPE");
-    ArrayColumn<Int> pcorrProduct(polTab, "CORR_PRODUCT");
+    ScalarColumn<int> pnumCorr(polTab, "NUM_CORR");
+    ArrayColumn<int> pcorrType(polTab, "CORR_TYPE");
+    ArrayColumn<int> pcorrProduct(polTab, "CORR_PRODUCT");
 
     pnumCorr.putColumn(snumCorr.getColumn());
 
-    for (Int i = 0; i < nRow; i++) {
+    for (int i = 0; i < nRow; i++) {
       pcorrType.put(i, scorrType(i));
       pcorrProduct.put(i, scorrProduct(i));
     }
 
-    ScalarColumn<Int> freqGrp(spwTab, "FREQ_GROUP");
+    ScalarColumn<int> freqGrp(spwTab, "FREQ_GROUP");
     freqGrp.fillColumn(0);
-    ScalarColumn<Int> netSideb(spwTab, "NET_SIDEBAND");
+    ScalarColumn<int> netSideb(spwTab, "NET_SIDEBAND");
     netSideb.fillColumn(1);
 
-    ArrayColumn<Double> resol(spwTab, "RESOLUTION");
-    ArrayColumn<Double> chanWdth(spwTab, "CHAN_WIDTH");
-    ArrayColumn<Double> effBw(spwTab, "EFFECTIVE_BW");
-    for (Int i = 0; i < nRow; i++) {
+    ArrayColumn<double> resol(spwTab, "RESOLUTION");
+    ArrayColumn<double> chanWdth(spwTab, "CHAN_WIDTH");
+    ArrayColumn<double> effBw(spwTab, "EFFECTIVE_BW");
+    for (int i = 0; i < nRow; i++) {
       chanWdth.put(i, resol(i));
       effBw.put(i, resol(i));
     }
     ScalarColumn<bool> flagRow(spwTab, "FLAG_ROW");
     flagRow.fillColumn(false);
 
-    ScalarColumn<Double> reffreq(spwTab, "REF_FREQUENCY");
+    ScalarColumn<double> reffreq(spwTab, "REF_FREQUENCY");
     MFrequency::Types tp;
     MFrequency::getType(tp, reffreq.keywordSet().asString("MEASURE_REFERENCE"));
-    Int meas_freq_ref = tp;
+    int meas_freq_ref = tp;
 
-    ScalarColumn<Int> measCol(spwTab, "MEAS_FREQ_REF");
+    ScalarColumn<int> measCol(spwTab, "MEAS_FREQ_REF");
     measCol.fillColumn(meas_freq_ref);
 
     TableDesc reffreqtd;
     MSSpectralWindow::addColumnToDesc(reffreqtd, MSSpectralWindow::REF_FREQUENCY);
     reffreq.rwKeywordSet().assign(reffreqtd[0].keywordSet());
 
-    ArrayColumn<Double> chanfreq(spwTab, "CHAN_FREQ");
+    ArrayColumn<double> chanfreq(spwTab, "CHAN_FREQ");
     TableDesc chanfreqtd;
     MSSpectralWindow::addColumnToDesc(chanfreqtd, MSSpectralWindow::CHAN_FREQ);
     chanfreq.rwKeywordSet().assign(chanfreqtd[0].keywordSet());
 
-    ArrayColumn<Double> chanwidth(spwTab, "CHAN_WIDTH");
+    ArrayColumn<double> chanwidth(spwTab, "CHAN_WIDTH");
     TableDesc chanwidthtd;
     MSSpectralWindow::addColumnToDesc(chanwidthtd, MSSpectralWindow::CHAN_WIDTH);
     chanwidth.rwKeywordSet().assign(chanwidthtd[0].keywordSet());
 
-    ArrayColumn<Double> bw(spwTab, "EFFECTIVE_BW");
+    ArrayColumn<double> bw(spwTab, "EFFECTIVE_BW");
     TableDesc bwtd;
     MSSpectralWindow::addColumnToDesc(bwtd, MSSpectralWindow::EFFECTIVE_BW);
     bw.rwKeywordSet().assign(bwtd[0].keywordSet());
 
-    ArrayColumn<Double> res(spwTab, "RESOLUTION");
+    ArrayColumn<double> res(spwTab, "RESOLUTION");
     TableDesc restd;
     MSSpectralWindow::addColumnToDesc(restd, MSSpectralWindow::RESOLUTION);
     res.rwKeywordSet().assign(restd[0].keywordSet());
 
-    ScalarColumn<Double> tbw(spwTab, "TOTAL_BANDWIDTH");
+    ScalarColumn<double> tbw(spwTab, "TOTAL_BANDWIDTH");
     TableDesc tbwtd;
     MSSpectralWindow::addColumnToDesc(tbwtd, MSSpectralWindow::TOTAL_BANDWIDTH);
     tbw.rwKeywordSet().assign(tbwtd[0].keywordSet());
 
-    for (uInt j = MSSpectralWindow::NUMBER_REQUIRED_COLUMNS + 1;
+    for (unsigned int j = MSSpectralWindow::NUMBER_REQUIRED_COLUMNS + 1;
          j < MSSpectralWindow::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
       MSSpectralWindow::PredefinedColumns i = (MSSpectralWindow::PredefinedColumns)j;
       if (spwTab.tableDesc().isColumn(MSSpectralWindow::columnName(i))) {
@@ -732,7 +732,7 @@ bool MS1ToMS2Converter::convert() {
 
   // PROCESSOR
   {
-    Int nRow = 0;
+    int nRow = 0;
     SetupNewTable processorSetup(ms2_p + "/PROCESSOR", MSProcessor::requiredTableDesc(),
                                  Table::New);
     Table processorSetupt(processorSetup, nRow);
@@ -746,32 +746,32 @@ bool MS1ToMS2Converter::convert() {
     MSSource::addColumnToDesc(td, MSSource::NUM_LINES);
     sourceTab.addColumn(td[0]);
 
-    ArrayColumn<Double> pos(sourceTab, "POSITION");
+    ArrayColumn<double> pos(sourceTab, "POSITION");
     TableDesc postd;
     MSSource::addColumnToDesc(postd, MSSource::POSITION);
     pos.rwKeywordSet().assign(postd[0].keywordSet());
 
-    ArrayColumn<Double> direc(sourceTab, "DIRECTION");
+    ArrayColumn<double> direc(sourceTab, "DIRECTION");
     TableDesc directd;
     MSSource::addColumnToDesc(directd, MSSource::DIRECTION);
     direc.rwKeywordSet().assign(directd[0].keywordSet());
 
-    ArrayColumn<Double> prop(sourceTab, "PROPER_MOTION");
+    ArrayColumn<double> prop(sourceTab, "PROPER_MOTION");
     TableDesc proptd;
     MSSource::addColumnToDesc(proptd, MSSource::PROPER_MOTION);
     prop.rwKeywordSet().assign(proptd[0].keywordSet());
 
-    ScalarColumn<Double> inter(sourceTab, "INTERVAL");
+    ScalarColumn<double> inter(sourceTab, "INTERVAL");
     TableDesc intertd;
     MSSource::addColumnToDesc(intertd, MSSource::INTERVAL);
     inter.rwKeywordSet().assign(intertd[0].keywordSet());
 
-    ScalarColumn<Double> time(sourceTab, "TIME");
+    ScalarColumn<double> time(sourceTab, "TIME");
     TableDesc timetd;
     MSSource::addColumnToDesc(timetd, MSSource::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    for (uInt j = MSSource::NUMBER_REQUIRED_COLUMNS + 1; j < MSSource::NUMBER_PREDEFINED_COLUMNS;
+    for (unsigned int j = MSSource::NUMBER_REQUIRED_COLUMNS + 1; j < MSSource::NUMBER_PREDEFINED_COLUMNS;
          j = j + 1) {
       MSSource::PredefinedColumns i = (MSSource::PredefinedColumns)j;
       if (sourceTab.tableDesc().isColumn(MSSource::columnName(i))) {
@@ -786,20 +786,20 @@ bool MS1ToMS2Converter::convert() {
       cout << "Array column SYSVEL_OLD seems to exist" << std::endl;
     } else {
       sourceTab.renameColumn("SYSVEL_OLD", "SYSVEL");
-      sourceTab.addColumn(ArrayColumnDesc<Double>("SYSVEL", 1));
+      sourceTab.addColumn(ArrayColumnDesc<double>("SYSVEL", 1));
       // Construct a measure for this column in a temporary TableDesc.
       // Copy that keywordset to get the measure in the SYSVEL column.
       TableDesc td;
-      td.addColumn(ArrayColumnDesc<Double>("SYSVELX", 1));
+      td.addColumn(ArrayColumnDesc<double>("SYSVELX", 1));
       TableMeasValueDesc mvval(td, "SYSVELX");
       TableMeasDesc<MRadialVelocity> mval(mvval);
       mval.write(td);
-      ScalarColumn<Double> vold(sourceTab, "SYSVEL_OLD");
-      ArrayColumn<Double> sysvel(sourceTab, "SYSVEL");
+      ScalarColumn<double> vold(sourceTab, "SYSVEL_OLD");
+      ArrayColumn<double> sysvel(sourceTab, "SYSVEL");
       sysvel.rwKeywordSet() = td.columnDesc("SYSVELX").keywordSet();
       // Set data to the old SYSVEL.
-      Vector<Double> vec(1);
-      for (uInt i = 0; i < sourceTab.nrow(); i++) {
+      Vector<double> vec(1);
+      for (unsigned int i = 0; i < sourceTab.nrow(); i++) {
         vec(0) = vold(i);
         sysvel.put(i, vec);
       }
@@ -808,7 +808,7 @@ bool MS1ToMS2Converter::convert() {
 
   // STATE
   {
-    Int nRow = 0;
+    int nRow = 0;
 
     SetupNewTable stateSetup(ms2_p + "/STATE", MSState::requiredTableDesc(), Table::New);
     Table stateSetupt(stateSetup, nRow);
@@ -822,17 +822,17 @@ bool MS1ToMS2Converter::convert() {
     if (syscalTab.canRemoveColumn("ARRAY_ID")) removeColumn(syscalTab, "ARRAY_ID");
     removeColumn(syscalTab, "NUM_RECEPTORS");
 
-    ScalarColumn<Double> inter(syscalTab, "INTERVAL");
+    ScalarColumn<double> inter(syscalTab, "INTERVAL");
     TableDesc intertd;
     MSSysCal::addColumnToDesc(intertd, MSSysCal::INTERVAL);
     inter.rwKeywordSet().assign(intertd[0].keywordSet());
 
-    ScalarColumn<Double> time(syscalTab, "TIME");
+    ScalarColumn<double> time(syscalTab, "TIME");
     TableDesc timetd;
     MSSysCal::addColumnToDesc(timetd, MSSysCal::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    for (uInt j = MSSysCal::NUMBER_REQUIRED_COLUMNS + 1; j < MSSysCal::NUMBER_PREDEFINED_COLUMNS;
+    for (unsigned int j = MSSysCal::NUMBER_REQUIRED_COLUMNS + 1; j < MSSysCal::NUMBER_PREDEFINED_COLUMNS;
          j = j + 1) {
       MSSysCal::PredefinedColumns i = (MSSysCal::PredefinedColumns)j;
       if (syscalTab.tableDesc().isColumn(MSSysCal::columnName(i))) {
@@ -849,17 +849,17 @@ bool MS1ToMS2Converter::convert() {
     Table weatherTab(ms2_p + "/WEATHER", Table::Update);
     if (weatherTab.canRemoveColumn("ARRAY_ID")) removeColumn(weatherTab, "ARRAY_ID");
 
-    ScalarColumn<Double> inter(weatherTab, "INTERVAL");
+    ScalarColumn<double> inter(weatherTab, "INTERVAL");
     TableDesc intertd;
     MSWeather::addColumnToDesc(intertd, MSWeather::INTERVAL);
     inter.rwKeywordSet().assign(intertd[0].keywordSet());
 
-    ScalarColumn<Double> time(weatherTab, "TIME");
+    ScalarColumn<double> time(weatherTab, "TIME");
     TableDesc timetd;
     MSWeather::addColumnToDesc(timetd, MSWeather::TIME);
     time.rwKeywordSet().assign(timetd[0].keywordSet());
 
-    for (uInt j = MSWeather::NUMBER_REQUIRED_COLUMNS + 1; j < MSWeather::NUMBER_PREDEFINED_COLUMNS;
+    for (unsigned int j = MSWeather::NUMBER_REQUIRED_COLUMNS + 1; j < MSWeather::NUMBER_PREDEFINED_COLUMNS;
          j = j + 1) {
       MSWeather::PredefinedColumns i = (MSWeather::PredefinedColumns)j;
       if (weatherTab.tableDesc().isColumn(MSWeather::columnName(i))) {
@@ -876,13 +876,13 @@ bool MS1ToMS2Converter::convert() {
     cout << "Array column WEIGHT_OLD seems to exist" << std::endl;
   } else {
     t.renameColumn("WEIGHT_OLD", "WEIGHT");
-    t.addColumn(ArrayColumnDesc<Float>("WEIGHT", 1));
+    t.addColumn(ArrayColumnDesc<float>("WEIGHT", 1));
 
-    ArrayColumn<Float> sigma(t, "SIGMA");
-    ScalarColumn<Float> wold(t, "WEIGHT_OLD");
-    ArrayColumn<Float> weight(t, "WEIGHT");
-    for (uInt i = 0; i < t.nrow(); i++) {
-      Array<Float> arr(sigma.shape(i));
+    ArrayColumn<float> sigma(t, "SIGMA");
+    ScalarColumn<float> wold(t, "WEIGHT_OLD");
+    ArrayColumn<float> weight(t, "WEIGHT");
+    for (unsigned int i = 0; i < t.nrow(); i++) {
+      Array<float> arr(sigma.shape(i));
       arr = wold(i);
       weight.put(i, arr);
     }

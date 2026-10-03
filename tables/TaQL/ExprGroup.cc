@@ -64,14 +64,14 @@ bool TableExprGroupKey::operator<(const TableExprGroupKey& that) const {
 
 TableExprGroupKeySet::TableExprGroupKeySet(const vector<TableExprNode>& nodes) {
   itsKeys.reserve(nodes.size());
-  for (uInt i = 0; i < nodes.size(); ++i) {
+  for (unsigned int i = 0; i < nodes.size(); ++i) {
     addKey(nodes[i].getRep()->dataType());
   }
 }
 
 void TableExprGroupKeySet::fill(const vector<TableExprNode>& nodes, const TableExprId& id) {
   AlwaysAssert(nodes.size() == itsKeys.size(), AipsError);
-  for (uInt i = 0; i < itsKeys.size(); ++i) {
+  for (unsigned int i = 0; i < itsKeys.size(); ++i) {
     switch (itsKeys[i].dataType()) {
       case TableExprNodeRep::NTBool:
         itsKeys[i].set(nodes[i].getBool(id));
@@ -153,7 +153,7 @@ bool TableExprGroupFuncBase::getBool(const vector<TableExprId>&) {
 Int64 TableExprGroupFuncBase::getInt(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getInt not implemented");
 }
-Double TableExprGroupFuncBase::getDouble(const vector<TableExprId>&) {
+double TableExprGroupFuncBase::getDouble(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getDouble not implemented");
 }
 DComplex TableExprGroupFuncBase::getDComplex(const vector<TableExprId>&) {
@@ -171,7 +171,7 @@ MArray<bool> TableExprGroupFuncBase::getArrayBool(const vector<TableExprId>&) {
 MArray<Int64> TableExprGroupFuncBase::getArrayInt(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getArrayInt not implemented");
 }
-MArray<Double> TableExprGroupFuncBase::getArrayDouble(const vector<TableExprId>&) {
+MArray<double> TableExprGroupFuncBase::getArrayDouble(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getArrayDouble not implemented");
 }
 MArray<DComplex> TableExprGroupFuncBase::getArrayDComplex(const vector<TableExprId>&) {
@@ -203,7 +203,7 @@ void TableExprGroupFirst::apply(const TableExprId& id) {
 }
 bool TableExprGroupFirst::getBool(const vector<TableExprId>&) { return itsOperand->getBool(itsId); }
 Int64 TableExprGroupFirst::getInt(const vector<TableExprId>&) { return itsOperand->getInt(itsId); }
-Double TableExprGroupFirst::getDouble(const vector<TableExprId>&) {
+double TableExprGroupFirst::getDouble(const vector<TableExprId>&) {
   return itsOperand->getDouble(itsId);
 }
 DComplex TableExprGroupFirst::getDComplex(const vector<TableExprId>&) {
@@ -221,7 +221,7 @@ MArray<bool> TableExprGroupFirst::getArrayBool(const vector<TableExprId>&) {
 MArray<Int64> TableExprGroupFirst::getArrayInt(const vector<TableExprId>&) {
   return itsOperand->getArrayInt(itsId);
 }
-MArray<Double> TableExprGroupFirst::getArrayDouble(const vector<TableExprId>&) {
+MArray<double> TableExprGroupFirst::getArrayDouble(const vector<TableExprId>&) {
   return itsOperand->getArrayDouble(itsId);
 }
 MArray<DComplex> TableExprGroupFirst::getArrayDComplex(const vector<TableExprId>&) {
@@ -272,8 +272,8 @@ MArray<bool> TableExprGroupAggr::getArrayBool(const vector<TableExprId>& ids) {
 MArray<Int64> TableExprGroupAggr::getArrayInt(const vector<TableExprId>& ids) {
   return getArray<Int64>(ids);
 }
-MArray<Double> TableExprGroupAggr::getArrayDouble(const vector<TableExprId>& ids) {
-  return getArray<Double>(ids);
+MArray<double> TableExprGroupAggr::getArrayDouble(const vector<TableExprId>& ids) {
+  return getArray<double>(ids);
 }
 MArray<DComplex> TableExprGroupAggr::getArrayDComplex(const vector<TableExprId>& ids) {
   return getArray<DComplex>(ids);
@@ -290,10 +290,10 @@ bool TableExprGroupFuncBool::getBool(const vector<TableExprId>&) { return itsVal
 
 TableExprGroupFuncInt::~TableExprGroupFuncInt() {}
 Int64 TableExprGroupFuncInt::getInt(const vector<TableExprId>&) { return itsValue; }
-Double TableExprGroupFuncInt::getDouble(const vector<TableExprId>&) { return itsValue; }
+double TableExprGroupFuncInt::getDouble(const vector<TableExprId>&) { return itsValue; }
 
 TableExprGroupFuncDouble::~TableExprGroupFuncDouble() {}
-Double TableExprGroupFuncDouble::getDouble(const vector<TableExprId>&) { return itsValue; }
+double TableExprGroupFuncDouble::getDouble(const vector<TableExprId>&) { return itsValue; }
 
 TableExprGroupFuncDComplex::~TableExprGroupFuncDComplex() {}
 DComplex TableExprGroupFuncDComplex::getDComplex(const vector<TableExprId>&) { return itsValue; }
@@ -334,8 +334,8 @@ bool TableExprGroupFuncArrayInt::checkShape(const MArrayBase& arr, const String&
 }
 
 TableExprGroupFuncArrayDouble::~TableExprGroupFuncArrayDouble() {}
-MArray<Double> TableExprGroupFuncArrayDouble::getArrayDouble(const vector<TableExprId>&) {
-  return MArray<Double>(itsValue);
+MArray<double> TableExprGroupFuncArrayDouble::getArrayDouble(const vector<TableExprId>&) {
+  return MArray<double>(itsValue);
 }
 bool TableExprGroupFuncArrayDouble::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
@@ -400,7 +400,7 @@ bool TableExprGroupFuncArrayString::checkShape(const MArrayBase& arr, const Stri
 TableExprGroupFuncSet::TableExprGroupFuncSet(const vector<TableExprNodeRep*>& aggrNodes)
     : itsId(0) {
   itsFuncs.reserve(aggrNodes.size());
-  for (uInt i = 0; i < aggrNodes.size(); ++i) {
+  for (unsigned int i = 0; i < aggrNodes.size(); ++i) {
     itsFuncs.push_back(aggrNodes[i]->makeGroupAggrFunc());
     itsFuncs[i]->setSeqnr(i);
   }
@@ -414,7 +414,7 @@ void TableExprGroupFuncSet::add(const std::shared_ptr<TableExprGroupFuncBase>& f
 
 void TableExprGroupFuncSet::apply(const TableExprId& id) {
   itsId = id;
-  for (uInt i = 0; i < itsFuncs.size(); ++i) {
+  for (unsigned int i = 0; i < itsFuncs.size(); ++i) {
     itsFuncs[i]->apply(id);
   }
 }

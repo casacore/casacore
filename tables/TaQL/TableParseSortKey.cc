@@ -67,41 +67,41 @@ std::shared_ptr<ArrayBase> TableParseSortKey::addSortValues(Sort& sort, Sort::Or
       sort.sortKey(array->data(), TpBool, 0, order);
     } break;
     case TpUChar: {
-      auto array = std::make_shared<Array<uChar>>(node_p.getColumnuChar(rownrs));
+      auto array = std::make_shared<Array<unsigned char>>(node_p.getColumnuChar(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<uChar>>(array->copy());
+        array = std::make_shared<Array<unsigned char>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpUChar, 0, order);
     } break;
     case TpShort: {
-      auto array = std::make_shared<Array<Short>>(node_p.getColumnShort(rownrs));
+      auto array = std::make_shared<Array<short>>(node_p.getColumnShort(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<Short>>(array->copy());
+        array = std::make_shared<Array<short>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpShort, 0, order);
     } break;
     case TpUShort: {
-      auto array = std::make_shared<Array<uShort>>(node_p.getColumnuShort(rownrs));
+      auto array = std::make_shared<Array<unsigned short>>(node_p.getColumnuShort(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<uShort>>(array->copy());
+        array = std::make_shared<Array<unsigned short>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpUShort, 0, order);
     } break;
     case TpInt: {
-      auto array = std::make_shared<Array<Int>>(node_p.getColumnInt(rownrs));
+      auto array = std::make_shared<Array<int>>(node_p.getColumnInt(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<Int>>(array->copy());
+        array = std::make_shared<Array<int>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpInt, 0, order);
     } break;
     case TpUInt: {
-      auto array = std::make_shared<Array<uInt>>(node_p.getColumnuInt(rownrs));
+      auto array = std::make_shared<Array<unsigned int>>(node_p.getColumnuInt(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<uInt>>(array->copy());
+        array = std::make_shared<Array<unsigned int>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpUInt, 0, order);
@@ -115,17 +115,17 @@ std::shared_ptr<ArrayBase> TableParseSortKey::addSortValues(Sort& sort, Sort::Or
       sort.sortKey(array->data(), TpInt64, 0, order);
     } break;
     case TpFloat: {
-      auto array = std::make_shared<Array<Float>>(node_p.getColumnFloat(rownrs));
+      auto array = std::make_shared<Array<float>>(node_p.getColumnFloat(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<Float>>(array->copy());
+        array = std::make_shared<Array<float>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpFloat, 0, order);
     } break;
     case TpDouble: {
-      auto array = std::make_shared<Array<Double>>(node_p.getColumnDouble(rownrs));
+      auto array = std::make_shared<Array<double>>(node_p.getColumnDouble(rownrs));
       if (!array->contiguousStorage()) {
-        array = std::make_shared<Array<Double>>(array->copy());
+        array = std::make_shared<Array<double>>(array->copy());
       }
       arrPtr = array;
       sort.sortKey(array->data(), TpDouble, 0, order);

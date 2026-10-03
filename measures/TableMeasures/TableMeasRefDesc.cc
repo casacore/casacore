@@ -43,10 +43,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Set the default type getting function.
 TableMeasRefDesc::TypesFunc* TableMeasRefDesc::theirTypesFunc = TableMeasRefDesc::defaultTypesFunc;
 
-TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode)
+TableMeasRefDesc::TableMeasRefDesc(unsigned int referenceCode)
     : itsRefCode(referenceCode), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {}
 
-TableMeasRefDesc::TableMeasRefDesc(uInt referenceCode, const TableMeasOffsetDesc& offset)
+TableMeasRefDesc::TableMeasRefDesc(unsigned int referenceCode, const TableMeasOffsetDesc& offset)
     : itsRefCode(referenceCode),
       itsRefCodeColInt(false),
       itsHasRefTab(true),
@@ -93,7 +93,7 @@ TableMeasRefDesc::~TableMeasRefDesc() { delete itsOffset; }
 TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo, const Table& tab,
                                    const MeasureHolder& measHolder, const TableMeasDescBase& mDesc)
     : itsRefCode(0), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {
-  Int fnr;
+  int fnr;
   fnr = measInfo.fieldNumber("Ref");
   // Read back. The refcode is fixed or variable.
   if (fnr >= 0) {
@@ -121,10 +121,10 @@ TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo, const Table& tab
   itsOffset = TableMeasOffsetDesc::reconstruct(measInfo, "RefOff", tab);
 }
 
-void TableMeasRefDesc::defaultTypesFunc(Vector<String>& curTypes, Vector<uInt>& curCodes,
+void TableMeasRefDesc::defaultTypesFunc(Vector<String>& curTypes, Vector<unsigned int>& curCodes,
                                         const MeasureHolder& measHolder) {
-  Int nall, nexact;
-  const uInt* codes;
+  int nall, nexact;
+  const unsigned int* codes;
   const String* types = measHolder.asMeasure().allTypes(nall, nexact, codes);
   // Remove the duplicates which are at the end of the arrays.
   bool found;
@@ -136,7 +136,7 @@ void TableMeasRefDesc::defaultTypesFunc(Vector<String>& curTypes, Vector<uInt>& 
   }
   IPosition shp(1, nall);
   curTypes = Vector<String>(shp, types);
-  curCodes = Vector<uInt>(shp, codes);
+  curCodes = Vector<unsigned int>(shp, codes);
 }
 
 void TableMeasRefDesc::initTabRef(const MeasureHolder& measHolder) {
@@ -147,11 +147,11 @@ void TableMeasRefDesc::initTabRef(const MeasureHolder& measHolder) {
 }
 
 void TableMeasRefDesc::initTabRefMap() {
-  uInt maxcod = max(itsTabRefCodes);
+  unsigned int maxcod = max(itsTabRefCodes);
   itsTab2Cur.resize(maxcod + 1);
   itsTab2Cur = -1;
-  for (uInt i = 0; i < itsTabRefCodes.nelements(); ++i) {
-    uInt tp = itsTabRefCodes[i];
+  for (unsigned int i = 0; i < itsTabRefCodes.nelements(); ++i) {
+    unsigned int tp = itsTabRefCodes[i];
     itsTab2Cur[tp] = tp;
   }
   itsCur2Tab = itsTab2Cur;
@@ -159,14 +159,14 @@ void TableMeasRefDesc::initTabRefMap() {
 
 void TableMeasRefDesc::fillTabRefMap(const MeasureHolder& measHolder) {
   Vector<String> curtyp;
-  Vector<uInt> curcod;
+  Vector<unsigned int> curcod;
   theirTypesFunc(curtyp, curcod, measHolder);
   if (curtyp.nelements() == itsTabRefTypes.nelements() && allEQ(curtyp, itsTabRefTypes) &&
       allEQ(curcod, itsTabRefCodes)) {
     initTabRefMap();
   } else {
-    uInt maxtab = max(itsTabRefCodes);
-    uInt maxcur = max(curcod);
+    unsigned int maxtab = max(itsTabRefCodes);
+    unsigned int maxcur = max(curcod);
     itsCur2Tab.resize(maxcur + 1);
     // First map current codes to table codes; this may add table code entries.
     maxtab = fillMap(itsCur2Tab, curcod, curtyp, itsTabRefCodes, itsTabRefTypes, maxtab);
@@ -175,13 +175,13 @@ void TableMeasRefDesc::fillTabRefMap(const MeasureHolder& measHolder) {
   }
 }
 
-uInt TableMeasRefDesc::fillMap(Block<Int>& f2t, const Vector<uInt>& codesf,
-                               const Vector<String>& typesf, Vector<uInt>& codest,
-                               Vector<String>& typest, Int maxnr) {
+unsigned int TableMeasRefDesc::fillMap(Block<int>& f2t, const Vector<unsigned int>& codesf,
+                               const Vector<String>& typesf, Vector<unsigned int>& codest,
+                               Vector<String>& typest, int maxnr) {
   f2t = -1;
-  uInt nt = typest.nelements();
-  for (uInt i = 0; i < typesf.size(); i++) {
-    Int inx = linearSearch1(typest, typesf[i]);
+  unsigned int nt = typest.nelements();
+  for (unsigned int i = 0; i < typesf.size(); i++) {
+    int inx = linearSearch1(typest, typesf[i]);
     if (inx >= 0) {
       f2t[codesf[i]] = codest[inx];
     } else {
@@ -204,12 +204,12 @@ uInt TableMeasRefDesc::fillMap(Block<Int>& f2t, const Vector<uInt>& codesf,
   return maxnr;
 }
 
-uInt TableMeasRefDesc::tab2cur(uInt tabRefCode) const {
+unsigned int TableMeasRefDesc::tab2cur(unsigned int tabRefCode) const {
   AlwaysAssert(tabRefCode < itsTab2Cur.nelements() && itsTab2Cur[tabRefCode] >= 0, AipsError);
   return itsTab2Cur[tabRefCode];
 }
 
-uInt TableMeasRefDesc::cur2tab(uInt curRefCode) const {
+unsigned int TableMeasRefDesc::cur2tab(unsigned int curRefCode) const {
   AlwaysAssert(curRefCode < itsCur2Tab.nelements() && itsCur2Tab[curRefCode] >= 0, AipsError);
   return itsCur2Tab[curRefCode];
 }
@@ -257,7 +257,7 @@ void TableMeasRefDesc::checkColumn(const TableDesc& td) {
   }
 }
 
-void TableMeasRefDesc::resetRefCode(uInt refCode) {
+void TableMeasRefDesc::resetRefCode(unsigned int refCode) {
   if (isRefCodeVariable()) {
     throw(
         AipsError("tableMeasRefDesc::resetRefCode cannot be done;"

@@ -138,13 +138,13 @@ class MSSelector {
   // only the first is selected. The function returns false if
   // the selection was limited due to changing data shape.
   // Use the reset argument to return to the completely unselected ms.
-  bool initSelection(const Vector<Int>& dataDescIds, bool reset = false);
+  bool initSelection(const Vector<int>& dataDescIds, bool reset = false);
 
   // As above without the data desc id argument
   bool initSelection(bool reset = false);
 
   // Return the data desc IDs selected
-  Vector<Int> dataDescId() const;
+  Vector<int> dataDescId() const;
 
   // Set the mapping from input channels in the DATA column to
   // output channels. nChan is the number of output channels,
@@ -152,7 +152,7 @@ class MSSelector {
   // block of channels to average, increment specifies the start of
   // the next block relative to the start of the current block.
   // Note: averaging uncalibrated data should be avoided (no bandpass applied)
-  bool selectChannel(Int nChan, Int start, Int width, Int incr);
+  bool selectChannel(int nChan, int start, int width, int incr);
 
   // Specify the output polarization.
   // Missing input polarizations are assumed to be zero.
@@ -186,7 +186,7 @@ class MSSelector {
   // channels together as well). Note that different interferometers will be
   // averaged together if ifrAxis is false.
   // Correct for one-based indexing if oneBased is true.
-  Record getData(const Vector<String>& items, bool ifrAxis, Int ifrAxisGap = 0, Int inc = 1,
+  Record getData(const Vector<String>& items, bool ifrAxis, int ifrAxisGap = 0, int inc = 1,
                  bool average = false, bool oneBased = false);
 
   // Put the data for the items provided. Note that only fields corresponding
@@ -201,7 +201,7 @@ class MSSelector {
   // optional time interval and maximum number of rows to return at once
   // (the default of zero returns all rows). To keep MSIter from adding
   // the default sort columns, specify addDefaultSortColumns=False
-  bool iterInit(const Vector<String>& columns, Double interval, rownr_t maxRows = 0,
+  bool iterInit(const Vector<String>& columns, double interval, rownr_t maxRows = 0,
                 bool addDefaultSortColumns = true);
 
   // Step the iterator, sets the selection to the current table iteration.
@@ -231,15 +231,15 @@ class MSSelector {
                        const ArrayColumn<Complex>& col) const;
 
   // average and convert float data
-  void getAveragedData(Array<Float>& avData, const Array<bool>& flag,
-                       const ArrayColumn<Float>& col) const;
+  void getAveragedData(Array<float>& avData, const Array<bool>& flag,
+                       const ArrayColumn<float>& col) const;
 
   // average and convert data, with row Slicer
   void getAveragedData(Array<Complex>& avData, const Array<bool>& flag,
                        const ArrayColumn<Complex>& col, const Slicer& rowSlicer) const;
 
   // average and convert float data, with row Slicer
-  void getAveragedData(Array<Float>& avData, const Array<bool>& flag, const ArrayColumn<Float>& col,
+  void getAveragedData(Array<float>& avData, const Array<bool>& flag, const ArrayColumn<float>& col,
                        const Slicer& rowSlicer) const;
 
   // "average" flag, at present all output which has a flagged input is flagged
@@ -255,21 +255,21 @@ class MSSelector {
   void putAveragedFlag(const Array<bool>& avFlag, ArrayColumn<bool>& col);
 
   // get the weight, set sigma=True when retrieving sigma's
-  Array<Float> getWeight(const ArrayColumn<Float>& wtCol, bool sigma = false) const;
+  Array<float> getWeight(const ArrayColumn<float>& wtCol, bool sigma = false) const;
 
   // make the data slicer, pass in the first and the number of correlations
   // to select
-  void makeSlicer(Int start, Int nCorr) const;
+  void makeSlicer(int start, int nCorr) const;
 
   // reorder from 2d to 1d (removing ifr axis)
   void reorderFlagRow(Array<bool>& flagRow);
 
   // reorder from 2d to 1d (removing ifr axis)
-  void reorderWeight(Array<Float>& weight);
+  void reorderWeight(Array<float>& weight);
 
   // time average the input data, return new flags
   void timeAverage(Array<bool>& dataFlags, Array<Complex>& data, const Array<bool>& flags,
-                   const Array<Float>& weights);
+                   const Array<float>& weights);
 
   // check if the data description selection has been done & do default
   // selection if not. Return false if the selection fails.
@@ -287,20 +287,20 @@ class MSSelector {
   MeasurementSet savems_p;  // the saved preselection
   MSIter* msIter_p;
   bool initSel_p;
-  Vector<Int> dataDescId_p, lastDataDescId_p;
-  Vector<uInt> spwId_p, polId_p;
-  Vector<Int> chanSel_p;
+  Vector<int> dataDescId_p, lastDataDescId_p;
+  Vector<unsigned int> spwId_p, polId_p;
+  Vector<int> chanSel_p;
   bool useSlicer_p;
   mutable bool haveSlicer_p;
   mutable Slicer slicer_p;
   Slice chanSlice_p, polSlice_p;
-  Vector<Int> polIndex_p;
-  Int wantedOne_p;
+  Vector<int> polIndex_p;
+  int wantedOne_p;
   bool convert_p, subSet_p;
   StokesConverter stokesConverter_p;
   Vector<String> polSelection_p;
-  Vector<Int> ifrSelection_p, ifrAxis_p;
-  Matrix<Double> chanFreq_p, bandwidth_p;
+  Vector<int> ifrSelection_p, ifrAxis_p;
+  Matrix<double> chanFreq_p, bandwidth_p;
   MSDerivedValues msd_p;
   Matrix<Int64> rowIndex_p;      // mapping of rows to time and ifr slots
   RowNumbers selRows_p;          // range of rows from selms_p returned by getData
@@ -308,7 +308,7 @@ class MSSelector {
   bool useIfrDefault_p;
 };
 inline rownr_t MSSelector::nrow() const { return selms_p.nrow(); }
-inline Vector<Int> MSSelector::dataDescId() const { return dataDescId_p; }
+inline Vector<int> MSSelector::dataDescId() const { return dataDescId_p; }
 inline Table MSSelector::selectedTable() const { return selms_p; }
 inline bool MSSelector::selected() const { return initSel_p; }
 

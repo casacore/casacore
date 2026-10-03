@@ -91,7 +91,7 @@ class FitsInput;
 // # <todo asof="2001/09/10">
 // # </todo>
 
-class MIRIADImage : public ImageInterface<Float> {
+class MIRIADImage : public ImageInterface<float> {
  public:
   // Construct a MIRIADImage from the disk MIRIAD dataset name and apply mask.
   explicit MIRIADImage(const String& name);
@@ -117,7 +117,7 @@ class MIRIADImage : public ImageInterface<Float> {
   // # ImageInterface virtual functions
 
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Get the image type (returns MIRIADImage).
   virtual String imageType() const;
@@ -174,10 +174,10 @@ class MIRIADImage : public ImageInterface<Float> {
 
   // Do the actual get of the data.
   // Returns false as the data do not reference another Array
-  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<float>& buffer, const Slicer& theSlice);
 
   // The MIRIADImage is not writable, so this throws an exception.
-  virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<float>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
 
   // # LatticeBase virtual functions
@@ -199,12 +199,12 @@ class MIRIADImage : public ImageInterface<Float> {
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -219,10 +219,10 @@ class MIRIADImage : public ImageInterface<Float> {
   DataType dataType() const { return dataType_p; }
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -233,7 +233,7 @@ class MIRIADImage : public ImageInterface<Float> {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -244,7 +244,7 @@ class MIRIADImage : public ImageInterface<Float> {
 
  private:
   String name_p;  // filename, as given
-  Int tno_p;      // miriad file handle
+  int tno_p;      // miriad file handle
   MaskSpecifier maskSpec_p;
   Unit unit_p;
   Record rec_p;

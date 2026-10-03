@@ -31,7 +31,7 @@
 int main() {
   {
     CompositeNumber cn;
-    uInt n;
+    unsigned int n;
     n = cn.nextLarger(41);
     cout << "Next larger composite number of 41 is " << n << endl;
     n = cn.nextLargerEven(41);
@@ -81,7 +81,7 @@ int main() {
 
   {
     CompositeNumber cn(100);
-    uInt n;
+    unsigned int n;
     n = cn.nextLarger(41);
     cout << "Next larger composite number of 41 is " << n << endl;
     n = cn.nextSmaller(41);

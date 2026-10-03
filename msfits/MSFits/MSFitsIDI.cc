@@ -47,7 +47,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //----------------------------------------------------------------------------
 
 MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, const bool& overWrite,
-                     const Int& obsType)
+                     const int& obsType)
     : itsDataSource(""),
       itsDeviceType(FITS::Tape9),
       itsMSOut(""),
@@ -77,7 +77,7 @@ MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, const bool& ov
 //----------------------------------------------------------------------------
 
 MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut, const bool& overWrite,
-                     const Int& obsType)
+                     const int& obsType)
     : itsDataSource(""),
       itsDeviceType(FITS::Disk),
       itsMSOut(""),
@@ -120,7 +120,7 @@ MSFitsIDI::~MSFitsIDI() {
 
 //----------------------------------------------------------------------------
 
-void MSFitsIDI::selectFiles(const Vector<Int>& files) {
+void MSFitsIDI::selectFiles(const Vector<int>& files) {
   // Select input tape files by number (1-relative)
   // Input:
   //    files                const Vector<Int>  List of selected file numbers
@@ -154,9 +154,9 @@ bool MSFitsIDI::fillMS() {
   //
   bool atEnd = false;
   if (itsDeviceType == FITS::Tape9) {
-    uInt fileIndex = 0;
-    Int currentFile = 1;
-    Int fileno = currentFile;
+    unsigned int fileIndex = 0;
+    int currentFile = 1;
+    int fileno = currentFile;
 
     while (!atEnd) {
       // Skip to next file selected
@@ -169,7 +169,7 @@ bool MSFitsIDI::fillMS() {
 
       if (!atEnd) {
         // Advance tape if necessary
-        Int nskip = fileno - currentFile;
+        int nskip = fileno - currentFile;
         if (nskip > 0) {
           TapeIO tapeDev(itsDataSource);
           tapeDev.skip(nskip);
@@ -196,7 +196,7 @@ bool MSFitsIDI::fillMS() {
 //----------------------------------------------------------------------------
 
 void MSFitsIDI::init(const String& dataSource, const FITS::FitsDevice& deviceType,
-                     const String& msOut, const bool& overWrite, const Int& obsType) {
+                     const String& msOut, const bool& overWrite, const int& obsType) {
   // Initialization (called by all constructors)
   // Input:
   //    dataSource    const String&            Input file name or tape device
@@ -275,13 +275,13 @@ void MSFitsIDI::readFITSFile(bool& atEnd) {
 
   // Vector of sub-table names
   Vector<String> subTableName;
-  Int subTableNr = -1;
+  int subTableNr = -1;
   Table maintab;
 
   // Correlator
   String correlat;
-  Float corVer = 0.0;
-  Float vanVleck = 0.0;
+  float corVer = 0.0;
+  float vanVleck = 0.0;
 
   // Loop over all HDU in the FITS-IDI file
   bool initFirstMain = true;
@@ -350,7 +350,7 @@ void MSFitsIDI::readFITSFile(bool& atEnd) {
   // Open the main table to be updated.
   Table msmain(itsMSOut, Table::Update);
   // Loop over all subtables.
-  for (Int isub = 0; isub <= subTableNr; isub++) {
+  for (int isub = 0; isub <= subTableNr; isub++) {
     // cout << "renaming subtable " << subTableName(isub) << endl;
     //  Open the subtable to be updated.
     if (subTableName(isub) == "ARRAY_GEOMETRY") {

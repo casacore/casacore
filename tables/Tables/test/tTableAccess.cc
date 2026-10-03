@@ -118,8 +118,8 @@ String removeDir(const String& msg) {
 template <typename T>
 void readSca(const Table& tab) {
   ScalarColumn<T> col(tab, "scacol");
-  uInt nrow = tab.nrow();
-  for (uInt i = 0; i < nrow; ++i) {
+  unsigned int nrow = tab.nrow();
+  for (unsigned int i = 0; i < nrow; ++i) {
     cout << col.get(i) << " ";
   }
   cout << endl;
@@ -130,8 +130,8 @@ void readSca(const Table& tab) {
 template <typename T>
 void readArr(const Table& tab) {
   ArrayColumn<T> col(tab, "arrcol");
-  uInt nrow = tab.nrow();
-  for (uInt i = 0; i < nrow; ++i) {
+  unsigned int nrow = tab.nrow();
+  for (unsigned int i = 0; i < nrow; ++i) {
     cout << col.get(i) << endl;
   }
   RefRows rr(0, tab.nrow() - 1);
@@ -139,27 +139,27 @@ void readArr(const Table& tab) {
 }
 
 void readTable(const Table& tab) {
-  readSca<Int>(tab);
-  readArr<Int>(tab);
+  readSca<int>(tab);
+  readArr<int>(tab);
   Vector<rownr_t> rownrs(1, 1);
   Table tab2 = tab(rownrs);
-  readSca<Int>(tab2);
-  readArr<Int>(tab2);
+  readSca<int>(tab2);
+  readArr<int>(tab2);
   Block<Table> tables(1);
   tables[0] = tab;
   Table tabc1(tables);
-  readSca<Int>(tabc1);
-  readArr<Int>(tabc1);
+  readSca<int>(tabc1);
+  readArr<int>(tabc1);
   tables[0] = tab2;
   Table tabc2(tables);
-  readSca<Int>(tabc2);
-  readArr<Int>(tabc2);
+  readSca<int>(tabc2);
+  readArr<int>(tabc2);
 }
 
 void doIt() {
-  readTable(createSSM<Int>(1, 1));
-  readTable(createISM<Int>(1, 2));
-  readTable(createForward<Int>(Table("tTableAccess_tmp.tab")));
+  readTable(createSSM<int>(1, 1));
+  readTable(createISM<int>(1, 2));
+  readTable(createForward<int>(Table("tTableAccess_tmp.tab")));
 }
 
 int main() {

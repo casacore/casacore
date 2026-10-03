@@ -75,12 +75,12 @@ int main() {
   return 0;  // exit with success status
 }
 
-void init(Matrix<Float>& array, Matrix<bool>& arrayb, Matrix<Complex>& arrayc) {
+void init(Matrix<float>& array, Matrix<bool>& arrayb, Matrix<Complex>& arrayc) {
   // The SGI compiler bug is the cause of this static_cast workaround.
-  indgen(static_cast<Matrix<Float>&>(array));
-  uInt i = 0;
-  for (uInt k = 0; k < 20; k++) {
-    for (uInt j = 0; j < 12; j++) {
+  indgen(static_cast<Matrix<float>&>(array));
+  unsigned int i = 0;
+  for (unsigned int k = 0; k < 20; k++) {
+    for (unsigned int j = 0; j < 12; j++) {
       if (i % 7 == 2) {
         arrayb(j, k) = false;
       } else {
@@ -154,7 +154,7 @@ void a() {
   Matrix<Complex> arrayc(IPosition(2, 12, 20));
   Matrix<Complex> resultc(IPosition(2, 12, 20));
   init(array, arrayb, arrayc);
-  uInt i;
+  unsigned int i;
 
   for (i = 0; i < 30 * 42; i++) {
     data.put(i, array);
@@ -238,7 +238,7 @@ void b() {
   indgen(baselineValues, float(100));
   indgen(freqValues, float(200));
   indgen(polValues, float(300));
-  uInt i, j, i0, i1;
+  unsigned int i, j, i0, i1;
   i = 0;
   for (i0 = 0; i0 < 42; i0++) {
     for (i1 = 0; i1 < 30; i1++) {

@@ -26,17 +26,14 @@
 // # Includes
 #include <casacore/tables/DataMan/TSMCoordColumn.h>
 #include <casacore/tables/DataMan/TiledStMan.h>
-#include <casacore/tables/DataMan/TSMCube.h>
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Containers/RecordField.h>
-#include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/BasicSL/String.h>
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TSMCoordColumn::TSMCoordColumn(const TSMColumn& column, uInt axisNr)
+TSMCoordColumn::TSMCoordColumn(const TSMColumn& column, unsigned int axisNr)
     : TSMColumn(column), axisNr_p(axisNr) {}
 
 TSMCoordColumn::~TSMCoordColumn() {}
@@ -66,11 +63,11 @@ void TSMCoordColumn::setShape(rownr_t rownr, const IPosition& shape) {
   switch (dataType()) {
     case TpInt:
     case TpArrayInt:
-      record.define(columnName(), Array<Int>(shape));
+      record.define(columnName(), Array<int>(shape));
       break;
     case TpUInt:
     case TpArrayUInt:
-      record.define(columnName(), Array<uInt>(shape));
+      record.define(columnName(), Array<unsigned int>(shape));
       break;
     case TpFloat:
     case TpArrayFloat:
@@ -125,31 +122,6 @@ IPosition TSMCoordColumn::shape(rownr_t rownr) {
   return hypercube->valueRecord().shape(columnName());
 }
 
-void TSMCoordColumn::getfloat(rownr_t rownr, float* dataPtr) {
-  // Get the hypercube the row is in.
-  // It also gives the position of the row in the hypercube.
-  IPosition position;
-  TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);
-  // Get vector of coordinate values.
-  // Since a reference is used, it has to be treated as an Array.
-  // Get the correct value.
-  RORecordFieldPtr<Array<float>> field(hypercube->valueRecord(), columnName());
-  *dataPtr = (*field)(IPosition(1, position(axisNr_p)));
-}
-
-void TSMCoordColumn::putfloat(rownr_t rownr, const float* dataPtr) {
-  // Get the hypercube the row is in.
-  // It also gives the position of the row in the hypercube.
-  IPosition position;
-  TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);
-  // Get vector of coordinate values.
-  // Since a reference is used, it has to be treated as an Array.
-  // Update the correct value.
-  RecordFieldPtr<Array<float>> field(hypercube->rwValueRecord(), columnName());
-  (*field)(IPosition(1, position(axisNr_p))) = *dataPtr;
-  stmanPtr_p->setDataChanged();
-}
-
 void TSMCoordColumn::getArrayV(rownr_t rownr, ArrayBase& dataPtr) {
   // Get the hypercube the row is in.
   // It also gives the position of the row in the hypercube.
@@ -157,10 +129,10 @@ void TSMCoordColumn::getArrayV(rownr_t rownr, ArrayBase& dataPtr) {
   TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);
   switch (dtype()) {
     case TpInt:
-      hypercube->valueRecord().toArray(columnName(), static_cast<Array<Int>&>(dataPtr));
+      hypercube->valueRecord().toArray(columnName(), static_cast<Array<int>&>(dataPtr));
       break;
     case TpUInt:
-      hypercube->valueRecord().toArray(columnName(), static_cast<Array<uInt>&>(dataPtr));
+      hypercube->valueRecord().toArray(columnName(), static_cast<Array<unsigned int>&>(dataPtr));
       break;
     case TpFloat:
       hypercube->valueRecord().toArray(columnName(), static_cast<Array<float>&>(dataPtr));
@@ -186,10 +158,10 @@ void TSMCoordColumn::putArrayV(rownr_t rownr, const ArrayBase& dataPtr) {
   TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);
   switch (dtype()) {
     case TpInt:
-      hypercube->rwValueRecord().define(columnName(), static_cast<const Array<Int>&>(dataPtr));
+      hypercube->rwValueRecord().define(columnName(), static_cast<const Array<int>&>(dataPtr));
       break;
     case TpUInt:
-      hypercube->rwValueRecord().define(columnName(), static_cast<const Array<uInt>&>(dataPtr));
+      hypercube->rwValueRecord().define(columnName(), static_cast<const Array<unsigned int>&>(dataPtr));
       break;
     case TpFloat:
       hypercube->rwValueRecord().define(columnName(), static_cast<const Array<float>&>(dataPtr));
@@ -208,28 +180,5 @@ void TSMCoordColumn::putArrayV(rownr_t rownr, const ArrayBase& dataPtr) {
   }
   stmanPtr_p->setDataChanged();
 }
-
-#define TSMCOORDCOLUMN_GETPUT(T)                                              \
-  void TSMCoordColumn::aips_name2(get, T)(rownr_t rownr, T * dataPtr) {       \
-    IPosition position;                                                       \
-    TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);           \
-    RORecordFieldPtr<Array<T>> field(hypercube->valueRecord(), columnName()); \
-    *dataPtr = (*field)(IPosition(1, position(axisNr_p)));                    \
-  }                                                                           \
-  void TSMCoordColumn::aips_name2(put, T)(rownr_t rownr, const T* dataPtr) {  \
-    IPosition position;                                                       \
-    TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);           \
-    RecordFieldPtr<Array<T>> field(hypercube->rwValueRecord(), columnName()); \
-    (*field)(IPosition(1, position(axisNr_p))) = *dataPtr;                    \
-    stmanPtr_p->setDataChanged();                                             \
-  }
-
-TSMCOORDCOLUMN_GETPUT(Int)
-TSMCOORDCOLUMN_GETPUT(uInt)
-TSMCOORDCOLUMN_GETPUT(Int64)
-// #TSMCOORDCOLUMN_GETPUT(float)
-TSMCOORDCOLUMN_GETPUT(double)
-TSMCOORDCOLUMN_GETPUT(Complex)
-TSMCOORDCOLUMN_GETPUT(DComplex)
 
 }  // namespace casacore

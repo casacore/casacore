@@ -57,14 +57,14 @@ const String LSQFit::nar = String("nar");
 
 bool LSQFit::toRecord(String &error, RecordInterface &out) const {
   out.define(RecordFieldId(recid), ident());
-  out.define(RecordFieldId(state), static_cast<Int>(state_p));
-  out.define(RecordFieldId(nun), static_cast<Int>(nun_p));
-  out.define(RecordFieldId(ncon), static_cast<Int>(ncon_p));
+  out.define(RecordFieldId(state), static_cast<int>(state_p));
+  out.define(RecordFieldId(nun), static_cast<int>(nun_p));
+  out.define(RecordFieldId(ncon), static_cast<int>(ncon_p));
   out.define(RecordFieldId(prec), prec_p);
   out.define(RecordFieldId(startnon), startnon_p);
   out.define(RecordFieldId(nonlin), nonlin_p);
-  out.define(RecordFieldId(rank), static_cast<Int>(r_p));
-  out.define(RecordFieldId(nnc), static_cast<Int>(nnc_p));
+  out.define(RecordFieldId(rank), static_cast<int>(r_p));
+  out.define(RecordFieldId(nnc), static_cast<int>(nnc_p));
   if (!norm_p->toRecord(error, out)) return false;
   if (piv_p && !LSQMatrix::putCArray(error, out, piv, n_p, piv_p)) return false;
   if (constr_p && !LSQMatrix::putCArray(error, out, constr, n_p * ncon_p, constr_p)) return false;
@@ -103,15 +103,15 @@ bool LSQFit::fromRecord(String &error, const RecordInterface &in) {
       error += String("Unknown record identity ") + rrecid + " for fitting record";
       return false;
     }
-    Int rnun;
-    Int rncon;
+    int rnun;
+    int rncon;
     in.get(RecordFieldId(nun), rnun);
     in.get(RecordFieldId(ncon), rncon);
-    set(uInt(rnun), uInt(rncon));
+    set(static_cast<unsigned int>(rnun), static_cast<unsigned int>(rncon));
     in.get(RecordFieldId(prec), prec_p);
     in.get(RecordFieldId(startnon), startnon_p);
     in.get(RecordFieldId(nonlin), nonlin_p);
-    Int tmp;
+    int tmp;
     in.get(RecordFieldId(rank), tmp);
     r_p = tmp;
     in.get(RecordFieldId(state), tmp);

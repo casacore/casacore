@@ -141,11 +141,11 @@ MSTableMaps MSObservation::initMaps() {
   // Define the columns with known dimensionality
   addColumnToDesc(maps, LOG, 1);
   addColumnToDesc(maps, SCHEDULE, 1);
-  for (Int i = UNDEFINED_KEYWORD + 1; i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
+  for (int i = UNDEFINED_KEYWORD + 1; i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }
   // all required columns
-  for (Int i = UNDEFINED_COLUMN + 1; i <= NUMBER_REQUIRED_COLUMNS; i++) {
+  for (int i = UNDEFINED_COLUMN + 1; i <= NUMBER_REQUIRED_COLUMNS; i++) {
     addColumnToDesc(maps, PredefinedColumns(i));
   }
 

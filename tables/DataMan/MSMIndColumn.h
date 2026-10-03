@@ -97,7 +97,7 @@ class MSMIndColumn : public MSMColumn {
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  uInt ndim(rownr_t rownr);
+  unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
@@ -148,7 +148,7 @@ class MSMIndColumn : public MSMColumn {
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
   // The size at the start of the data (for the IPosition).
-  uInt startSize_p;
+  unsigned int startSize_p;
 
   // Delete the array in the given row.
   void deleteArray(rownr_t rownr);

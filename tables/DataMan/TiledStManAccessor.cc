@@ -59,12 +59,12 @@ ROTiledStManAccessor& ROTiledStManAccessor::operator=(const ROTiledStManAccessor
 
 DataManager* ROTiledStManAccessor::getDataManager() const { return dataManPtr_p; }
 
-void ROTiledStManAccessor::setMaximumCacheSize(uInt size) {
+void ROTiledStManAccessor::setMaximumCacheSize(unsigned int size) {
   dataManPtr_p->setMaximumCacheSize(size);
 }
-uInt ROTiledStManAccessor::maximumCacheSize() const { return dataManPtr_p->maximumCacheSize(); }
+unsigned int ROTiledStManAccessor::maximumCacheSize() const { return dataManPtr_p->maximumCacheSize(); }
 
-uInt ROTiledStManAccessor::cacheSize(rownr_t rownr) const { return dataManPtr_p->cacheSize(rownr); }
+unsigned int ROTiledStManAccessor::cacheSize(rownr_t rownr) const { return dataManPtr_p->cacheSize(rownr); }
 
 const IPosition& ROTiledStManAccessor::hypercubeShape(rownr_t rownr) const {
   return dataManPtr_p->hypercubeShape(rownr);
@@ -74,7 +74,7 @@ const IPosition& ROTiledStManAccessor::tileShape(rownr_t rownr) const {
   return dataManPtr_p->tileShape(rownr);
 }
 
-uInt ROTiledStManAccessor::bucketSize(rownr_t rownr) const {
+unsigned int ROTiledStManAccessor::bucketSize(rownr_t rownr) const {
   return dataManPtr_p->bucketSize(rownr);
 }
 
@@ -82,33 +82,33 @@ const Record& ROTiledStManAccessor::valueRecord(rownr_t rownr) const {
   return dataManPtr_p->getHypercube(rownr)->valueRecord();
 }
 
-uInt ROTiledStManAccessor::nhypercubes() const { return dataManPtr_p->nhypercubes(); }
+unsigned int ROTiledStManAccessor::nhypercubes() const { return dataManPtr_p->nhypercubes(); }
 
-uInt ROTiledStManAccessor::getCacheSize(uInt hypercube) const {
+unsigned int ROTiledStManAccessor::getCacheSize(unsigned int hypercube) const {
   return dataManPtr_p->getTSMCube(hypercube)->cacheSize();
 }
 
-const IPosition& ROTiledStManAccessor::getHypercubeShape(uInt hypercube) const {
+const IPosition& ROTiledStManAccessor::getHypercubeShape(unsigned int hypercube) const {
   return dataManPtr_p->getTSMCube(hypercube)->cubeShape();
 }
 
-const IPosition& ROTiledStManAccessor::getTileShape(uInt hypercube) const {
+const IPosition& ROTiledStManAccessor::getTileShape(unsigned int hypercube) const {
   return dataManPtr_p->getTSMCube(hypercube)->tileShape();
 }
 
-uInt ROTiledStManAccessor::getBucketSize(uInt hypercube) const {
+unsigned int ROTiledStManAccessor::getBucketSize(unsigned int hypercube) const {
   return dataManPtr_p->getTSMCube(hypercube)->bucketSize();
 }
 
-const Record& ROTiledStManAccessor::getValueRecord(uInt hypercube) const {
+const Record& ROTiledStManAccessor::getValueRecord(unsigned int hypercube) const {
   return dataManPtr_p->getTSMCube(hypercube)->valueRecord();
 }
 
-uInt ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+unsigned int ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
                                          const IPosition& axisPath) const {
   return dataManPtr_p->calcCacheSize(rownr, sliceShape, IPosition(), IPosition(), axisPath);
 }
-uInt ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+unsigned int ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
                                          const IPosition& windowStart,
                                          const IPosition& windowLength,
                                          const IPosition& axisPath) const {
@@ -125,11 +125,11 @@ void ROTiledStManAccessor::setCacheSize(rownr_t rownr, const IPosition& sliceSha
   dataManPtr_p->setCacheSize(rownr, sliceShape, windowStart, windowLength, axisPath, forceSmaller);
 }
 
-void ROTiledStManAccessor::setCacheSize(rownr_t rownr, uInt nbuckets, bool forceSmaller) {
+void ROTiledStManAccessor::setCacheSize(rownr_t rownr, unsigned int nbuckets, bool forceSmaller) {
   dataManPtr_p->setCacheSize(rownr, nbuckets, forceSmaller);
 }
 
-void ROTiledStManAccessor::setHypercubeCacheSize(uInt hypercube, uInt nbuckets, bool forceSmaller) {
+void ROTiledStManAccessor::setHypercubeCacheSize(unsigned int hypercube, unsigned int nbuckets, bool forceSmaller) {
   // Allow the cache to be sized only if the hypercube is not empty.
 
   if (getBucketSize(hypercube) > 0) {

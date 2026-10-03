@@ -68,7 +68,7 @@ int CompareIntervalInt<T>::comp(const void* obj1, const void* obj2) const {
 }
 
 template <typename T>
-CompareIntervalReal<T>::CompareIntervalReal(Double interval, Double start)
+CompareIntervalReal<T>::CompareIntervalReal(double interval, double start)
     : itsInterval(interval), itsStart(start) {}
 
 template <typename T>
@@ -81,8 +81,8 @@ int CompareIntervalReal<T>::comp(const void* obj1, const void* obj2) const {
   // Shortcut if values are equal.
   if (v1 == v2) return 0;
   // The times are binned in bins with a width of interval_p.
-  Double t1 = std::floor((v1 - itsStart) / itsInterval);
-  Double t2 = std::floor((v2 - itsStart) / itsInterval);
+  double t1 = std::floor((v1 - itsStart) / itsInterval);
+  double t2 = std::floor((v2 - itsStart) / itsInterval);
   return (t1 == t2 ? 0 : (t1 < t2 ? -1 : 1));
 }
 

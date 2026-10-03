@@ -99,15 +99,15 @@ bool LCPagedMask::equals(const LCRegion& other) const {
 
 LCRegion* LCPagedMask::cloneRegion() const { return new LCPagedMask(*this); }
 
-uInt LCPagedMask::advisedMaxPixels() const { return itsMask.advisedMaxPixels(); }
+unsigned int LCPagedMask::advisedMaxPixels() const { return itsMask.advisedMaxPixels(); }
 
-IPosition LCPagedMask::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCPagedMask::doNiceCursorShape(unsigned int maxPixels) const {
   return itsMask.niceCursorShape(maxPixels);
 }
 
-uInt LCPagedMask::maximumCacheSize() const { return itsMask.maximumCacheSize(); }
+unsigned int LCPagedMask::maximumCacheSize() const { return itsMask.maximumCacheSize(); }
 
-void LCPagedMask::setMaximumCacheSize(uInt howManyPixels) {
+void LCPagedMask::setMaximumCacheSize(unsigned int howManyPixels) {
   itsMask.setMaximumCacheSize(howManyPixels);
 }
 
@@ -116,7 +116,7 @@ void LCPagedMask::setCacheSizeFromPath(const IPosition& sliceShape, const IPosit
   itsMask.setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 }
 
-void LCPagedMask::setCacheSizeInTiles(uInt howManyTiles) {
+void LCPagedMask::setCacheSizeInTiles(unsigned int howManyTiles) {
   itsMask.setCacheSizeInTiles(howManyTiles);
 }
 
@@ -151,7 +151,7 @@ void LCPagedMask::handleRename(const String& newName, bool overwrite) {
   }
 }
 
-bool LCPagedMask::lock(FileLocker::LockType type, uInt nattempts) {
+bool LCPagedMask::lock(FileLocker::LockType type, unsigned int nattempts) {
   // Llock the PagedArray containing the mask.
   return itsMask.lock(type, nattempts);
 }
@@ -168,7 +168,7 @@ void LCPagedMask::tempClose() { itsMask.tempClose(); }
 
 void LCPagedMask::reopen() { itsMask.reopen(); }
 
-LCRegion* LCPagedMask::doTranslate(const Vector<Float>&, const IPosition&) const {
+LCRegion* LCPagedMask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCPagedMask cannot be translated.
   throw(AipsError("LCPagedMask::translate is not supported"));
   return 0;

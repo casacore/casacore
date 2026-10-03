@@ -117,7 +117,7 @@ class ByteIO {
   // The seek option defines from which file position the seek is done.
   // -1 is returned if not seekable.
   // <group>
-  Int64 seek(Int offset, ByteIO::SeekOption = ByteIO::Begin);
+  Int64 seek(int offset, ByteIO::SeekOption = ByteIO::Begin);
   Int64 seek(Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
   // </group>
 
@@ -173,7 +173,7 @@ inline ByteIO& ByteIO::operator=(const ByteIO&) { return *this; }
 inline Int64 ByteIO::seek(Int64 offset, ByteIO::SeekOption option) {
   return doSeek(offset, option);
 }
-inline Int64 ByteIO::seek(Int offset, ByteIO::SeekOption option) {
+inline Int64 ByteIO::seek(int offset, ByteIO::SeekOption option) {
   return doSeek(Int64(offset), option);
 }
 

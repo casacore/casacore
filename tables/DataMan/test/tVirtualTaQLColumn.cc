@@ -90,13 +90,13 @@ TableDesc makeDesc() {
   // Build the table description.
   TableDesc td("tTableDesc", "1", TableDesc::Scratch);
   td.comment() = "A test of class tVirtualTaQLColumn";
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<Int>("ac"));
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<int>("ac"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.addColumn(ScalarColumnDesc<float>("ae"));
   td.addColumn(ScalarColumnDesc<String>("af"));
   td.addColumn(ScalarColumnDesc<DComplex>("ag"));
-  td.addColumn(ScalarColumnDesc<Int>("acalcc"));
+  td.addColumn(ScalarColumnDesc<int>("acalcc"));
   td.addColumn(ScalarColumnDesc<float>("acalc"));
   td.addColumn(ScalarColumnDesc<Complex>("acalc2"));
   td.addColumn(ScalarColumnDesc<short>("acalc3"));
@@ -107,7 +107,7 @@ TableDesc makeDesc() {
   td.addColumn(ArrayColumnDesc<float>("arr2", 0));
   td.addColumn(ArrayColumnDesc<float>("arr3", 0, ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<float>("arrcalc", 0));
-  td.addColumn(ArrayColumnDesc<uInt>("arrcalcc", IPosition(1, 3)));
+  td.addColumn(ArrayColumnDesc<unsigned int>("arrcalcc", IPosition(1, 3)));
   return td;
 }
 
@@ -132,10 +132,10 @@ void a(const TableDesc& td) {
   newtab.bindColumn("arrcalcc", vtacc);
   Table tab(newtab, 10);
 
-  ScalarColumn<Int> ab1(tab, "ab");
-  ScalarColumn<Int> ab2(tab, "ab");
-  ScalarColumn<Int> ac(tab, "ac");
-  ScalarColumn<uInt> ad(tab, "ad");
+  ScalarColumn<int> ab1(tab, "ab");
+  ScalarColumn<int> ab2(tab, "ab");
+  ScalarColumn<int> ac(tab, "ac");
+  ScalarColumn<unsigned int> ad(tab, "ad");
   ScalarColumn<float> ae(tab, "ae");
   ScalarColumn<String> af(tab, "af");
   TableColumn ag1(tab, "ag");
@@ -144,7 +144,7 @@ void a(const TableDesc& td) {
   ArrayColumn<float> arr2(tab, "arr2");
   ArrayColumn<float> arr3(tab, "arr3");
   Cube<float> arrf(IPosition(3, 2, 3, 4));
-  uInt i;
+  unsigned int i;
   char str[8];
   indgen(arrf);
   for (i = 0; i < 10; i++) {
@@ -161,20 +161,20 @@ void a(const TableDesc& td) {
   }
   ag1.putColumn(ad);
   VirtualTaQLColumn vtcm("acalc+acalc3+mean(arrcalc)");
-  tab.addColumn(ScalarColumnDesc<Float>("acalc4"), vtcm);
+  tab.addColumn(ScalarColumnDesc<float>("acalc4"), vtcm);
 }
 
 void check(const Table& tab, bool showname) {
   if (!showname) cout << ">>>" << endl;
   cout << "Checking table " << tab.tableName() << endl;
   if (!showname) cout << "<<<" << endl;
-  ScalarColumn<Int> ab2(tab, "ab");
-  ScalarColumn<Int> ac(tab, "ac");
-  ScalarColumn<uInt> ad(tab, "ad");
+  ScalarColumn<int> ab2(tab, "ab");
+  ScalarColumn<int> ac(tab, "ac");
+  ScalarColumn<unsigned int> ad(tab, "ad");
   ScalarColumn<float> ae(tab, "ae");
   ScalarColumn<String> af(tab, "af");
   ScalarColumn<DComplex> ag(tab, "ag");
-  ScalarColumn<Int> acalcc(tab, "acalcc");
+  ScalarColumn<int> acalcc(tab, "acalcc");
   ScalarColumn<float> acalc(tab, "acalc");
   ScalarColumn<Complex> acalc2(tab, "acalc2");
   ScalarColumn<short> acalc3(tab, "acalc3");
@@ -184,13 +184,13 @@ void check(const Table& tab, bool showname) {
   ArrayColumn<float> arr2(tab, "arr2");
   ArrayColumn<float> arr3(tab, "arr3");
   ArrayColumn<float> arrcalc(tab, "arrcalc");
-  ArrayColumn<uInt> arrcalcc(tab, "arrcalcc");
-  Int i;
-  Short acalc3val;
-  Int abval, acval;
-  uInt adval;
+  ArrayColumn<unsigned int> arrcalcc(tab, "arrcalcc");
+  int i;
+  short acalc3val;
+  int abval, acval;
+  unsigned int adval;
   float aeval, acalcval, acalc4val;
-  Int acalccval;
+  int acalccval;
   String afval, acalcafval;
   DComplex agval;
   Complex acalc2val;
@@ -198,7 +198,7 @@ void check(const Table& tab, bool showname) {
   Cube<float> arrf(IPosition(3, 2, 3, 4));
   Cube<float> arrval(IPosition(3, 2, 3, 4));
   Cube<float> arrvalslice(arrval(Slice(0, 1), Slice(0, 1, 2), Slice(0, 2, 2)));
-  Vector<uInt> arrcexp(3);
+  Vector<unsigned int> arrcexp(3);
   indgen(arrcexp, 1u);
   Slice tmp;
   Slicer nslice(tmp, tmp, tmp, Slicer::endIsLength);
@@ -218,7 +218,7 @@ void check(const Table& tab, bool showname) {
     acalc4.get(i, acalc4val);
     acalcaf.get(i, acalcafval);
     snprintf(str, sizeof(str), "V%i_", i);
-    if (abval != i || acval != i + 1 || Int(adval) != i + 2 || aeval != i + 3 || afval != str ||
+    if (abval != i || acval != i + 1 || int(adval) != i + 2 || aeval != i + 3 || afval != str ||
         agval != DComplex(i + 2) || acalccval != 10 ||
         static_cast<std::string&>(acalcafval) != (afval + "1234").substr(0, 4) ||
         acalcval != abval + 10 || acalc3val != abval * acval) {
@@ -261,13 +261,13 @@ void check(const Table& tab, bool showname) {
     }
     arrf += (float)(arrf.nelements());
   }
-  Vector<Int> abvec = ab2.getColumn();
+  Vector<int> abvec = ab2.getColumn();
   for (i = 0; i < 10; i++) {
     if (abvec(i) != i) {
       cout << "error in ab getColumn " << i << ": " << abvec(i) << endl;
     }
   }
-  Vector<Short> acalc3vec = acalc3.getColumn();
+  Vector<short> acalc3vec = acalc3.getColumn();
   for (i = 0; i < 10; i++) {
     if (acalc3vec(i) != i * (i + 1)) {
       cout << "error in acalc3 getColumn " << i << ": " << acalc3vec(i) << endl;
@@ -278,7 +278,7 @@ void check(const Table& tab, bool showname) {
     cout << "arr1a not 4-dim" << endl;
   }
   i = 0;
-  uInt j0, j1, j2, j3;
+  unsigned int j0, j1, j2, j3;
   for (j3 = 0; j3 < 10; j3++)
     for (j2 = 0; j2 < 4; j2++)
       for (j1 = 0; j1 < 3; j1++)
@@ -304,13 +304,13 @@ void check(const Table& tab, bool showname) {
         }
 
   {
-    Int i = 0;
+    int i = 0;
     TableIterator iter(tab, "ad", TableIterator::Descending);
     while (!iter.pastEnd()) {
       if (iter.table().nrow() != 1) {
         cout << "More than 1 row in ad TableIterator " << i << endl;
       }
-      ScalarColumn<Int> ab(iter.table(), "ab");
+      ScalarColumn<int> ab(iter.table(), "ab");
       if (ab(0) != 9 - i) {
         cout << "Invalid value " << ab(0) << " in ad TableIterator " << i << endl;
       }
@@ -319,13 +319,13 @@ void check(const Table& tab, bool showname) {
     }
   }
   {
-    Int i = 0;
+    int i = 0;
     TableIterator iter(tab, "acalc", TableIterator::Descending);
     while (!iter.pastEnd()) {
       if (iter.table().nrow() != 1) {
         cout << "More than 1 row in acalc TableIterator " << i << endl;
       }
-      ScalarColumn<Int> ab(iter.table(), "ab");
+      ScalarColumn<int> ab(iter.table(), "ab");
       if (ab(0) != 9 - i) {
         cout << "Invalid value " << ab(0) << " in acalc TableIterator " << i << endl;
       }
@@ -350,9 +350,9 @@ void testSelect() {
 void testPerf() {
   {
     TableDesc td;
-    td.addColumn(ScalarColumnDesc<Int>("sca"));
-    td.addColumn(ScalarColumnDesc<uInt>("row"));
-    td.addColumn(ArrayColumnDesc<Float>("arr"));
+    td.addColumn(ScalarColumnDesc<int>("sca"));
+    td.addColumn(ScalarColumnDesc<unsigned int>("row"));
+    td.addColumn(ArrayColumnDesc<float>("arr"));
     SetupNewTable newtab("tVirtualTaQLColumn_tmp.dataperf", td, Table::New);
     VirtualTaQLColumn sca("0");
     VirtualTaQLColumn row("rownumber()", "python");  // python -> 0-based
@@ -364,22 +364,22 @@ void testPerf() {
   }
   {
     Table tab("tVirtualTaQLColumn_tmp.dataperf");
-    ScalarColumn<Int> scacol(tab, "sca");
-    ScalarColumn<uInt> rowcol(tab, "row");
-    ArrayColumn<Float> arrcol(tab, "arr");
+    ScalarColumn<int> scacol(tab, "sca");
+    ScalarColumn<unsigned int> rowcol(tab, "row");
+    ArrayColumn<float> arrcol(tab, "arr");
     PrecTimer timer;
     timer.start();
-    Vector<Int> vec(scacol.getColumn());
+    Vector<int> vec(scacol.getColumn());
     timer.stop();
     timer.show(cout, "scacol");
     timer.reset();
     timer.start();
-    Vector<uInt> vec2(rowcol.getColumn());
+    Vector<unsigned int> vec2(rowcol.getColumn());
     timer.stop();
     timer.show(cout, "rowcol");
     timer.reset();
     timer.start();
-    Array<Float> arr(arrcol.getColumn());
+    Array<float> arr(arrcol.getColumn());
     timer.stop();
     timer.show(cout, "arrcol");
     AlwaysAssertExit(vec.size() == tab.nrow());

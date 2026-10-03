@@ -100,7 +100,7 @@ DummyVirtualScalar::DummyVirtualScalar(DummyVirtualEngine* dve, double scale)
 // # when writable_p and the column_p variables are not filled yet.
 // # Check if that is indeed the case.
 DummyVirtualScalar::DummyVirtualScalar(const DummyVirtualScalar& that)
-    : VirtualScalarColumn<Double>(),
+    : VirtualScalarColumn<double>(),
       enginePtr_p(that.enginePtr_p),
       scale_p(that.scale_p),
       writable_p(0),
@@ -115,7 +115,7 @@ DummyVirtualScalar::~DummyVirtualScalar() { delete column_p; }
 void DummyVirtualScalar::prepare(const Table& table) {
   // # Determine if the column is writable.
   writable_p = (table.isColumnWritable("DATA1") ? 1 : -1);
-  column_p = new ScalarColumn<Int>(table, "DATA1");
+  column_p = new ScalarColumn<int>(table, "DATA1");
 }
 void DummyVirtualScalar::open(AipsIO& ios) {
   ios.getstart("DummyVirtualScalar");
@@ -145,15 +145,15 @@ bool DummyVirtualScalar::isWritable() const {
 }
 
 void DummyVirtualScalar::get(rownr_t rownr, double& data) { data = scale_p * (*column_p)(rownr); }
-void DummyVirtualScalar::getdoubleV(rownr_t rownr, double* dataPtr) {
+void DummyVirtualScalar::getDoubleV(rownr_t rownr, double* dataPtr) {
   *dataPtr = scale_p * (*column_p)(rownr);
 }
 
 void DummyVirtualScalar::put(rownr_t rownr, const double& data) {
-  column_p->put(rownr, Int(data / scale_p));
+  column_p->put(rownr, int(data / scale_p));
 }
-void DummyVirtualScalar::putdoubleV(rownr_t rownr, const double* dataPtr) {
-  column_p->put(rownr, Int(*dataPtr / scale_p));
+void DummyVirtualScalar::putDoubleV(rownr_t rownr, const double* dataPtr) {
+  column_p->put(rownr, int(*dataPtr / scale_p));
 }
 
 DummyVirtualArray::DummyVirtualArray(DummyVirtualEngine* dve, double scale)
@@ -163,7 +163,7 @@ DummyVirtualArray::DummyVirtualArray(DummyVirtualEngine* dve, double scale)
 // # when writable_p and the column_p variables are not filled yet.
 // # Check if that is indeed the case.
 DummyVirtualArray::DummyVirtualArray(const DummyVirtualArray& that)
-    : VirtualArrayColumn<Double>(),
+    : VirtualArrayColumn<double>(),
       enginePtr_p(that.enginePtr_p),
       scale_p(that.scale_p),
       writable_p(0),
@@ -178,7 +178,7 @@ DummyVirtualArray::~DummyVirtualArray() { delete column_p; }
 void DummyVirtualArray::prepare(const Table& table) {
   // # Determine if the column is writable.
   writable_p = (table.isColumnWritable("DATA2") ? 1 : -1);
-  column_p = new ArrayColumn<Int>(table, "DATA2");
+  column_p = new ArrayColumn<int>(table, "DATA2");
 }
 void DummyVirtualArray::open(AipsIO& ios) {
   ios.getstart("DummyVirtualArray");
@@ -202,18 +202,18 @@ void DummyVirtualArray::setShape(rownr_t rownr, const IPosition& shape) {
   column_p->setShape(rownr, shape);
 }
 bool DummyVirtualArray::isShapeDefined(rownr_t rownr) { return column_p->isDefined(rownr); }
-uInt DummyVirtualArray::ndim(rownr_t rownr) { return column_p->ndim(rownr); }
+unsigned int DummyVirtualArray::ndim(rownr_t rownr) { return column_p->ndim(rownr); }
 IPosition DummyVirtualArray::shape(rownr_t rownr) { return column_p->shape(rownr); }
 
 void DummyVirtualArray::getArray(rownr_t rownr, Array<double>& array) {
-  Array<Int> intern(array.shape());
+  Array<int> intern(array.shape());
   column_p->get(rownr, intern);
   bool deleteIn, deleteOut;
   double* out = array.getStorage(deleteOut);
   double* op = out;
-  const Int* in = intern.getStorage(deleteIn);
-  const Int* ip = in;
-  const Int* last = ip + array.nelements();
+  const int* in = intern.getStorage(deleteIn);
+  const int* ip = in;
+  const int* last = ip + array.nelements();
   while (ip < last) {
     *op++ = *ip++ * scale_p;
   }
@@ -221,15 +221,15 @@ void DummyVirtualArray::getArray(rownr_t rownr, Array<double>& array) {
   array.putStorage(out, deleteOut);
 }
 void DummyVirtualArray::putArray(rownr_t rownr, const Array<double>& array) {
-  Array<Int> intern(array.shape());
+  Array<int> intern(array.shape());
   bool deleteIn, deleteOut;
   const double* in = array.getStorage(deleteIn);
   const double* ip = in;
-  Int* out = intern.getStorage(deleteOut);
-  Int* op = out;
-  const Int* last = op + array.nelements();
+  int* out = intern.getStorage(deleteOut);
+  int* op = out;
+  const int* last = op + array.nelements();
   while (op < last) {
-    *op++ = Int(*ip++ / scale_p + 0.5);
+    *op++ = int(*ip++ / scale_p + 0.5);
   }
   array.freeStorage(in, deleteIn);
   intern.putStorage(out, deleteOut);

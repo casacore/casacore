@@ -44,16 +44,16 @@
 int main() {
   int i;
   // construct a linear combination of functions: a(0)+a(1)*x+a(2)*x^2
-  Polynomial<Double> constant(0);
-  Polynomial<Double> linear(1);
-  Polynomial<Double> square(2);
+  Polynomial<double> constant(0);
+  Polynomial<double> linear(1);
+  Polynomial<double> square(2);
   constant[0] = 1.0;  // 1
   linear[1] = 1.0;    // x
   square[2] = 1.0;    // x^2
 
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  CombiFunction<Double> combination;
+  CombiFunction<double> combination;
 
   // Add a function.  All functions must have the same <src>ndim()</src>
   // as the first one.  Returns the (zero relative) number of the function
@@ -66,7 +66,7 @@ int main() {
 
   // Make this object a copy of other.
   // CombiFunction(const CombiFunction<T, T> &other);
-  CombiFunction<Double> comb2(combination);
+  CombiFunction<double> comb2(combination);
 
   // Make this object a copy of other.
   // CombiFunction<T> &operator=(const CombiFunction<T> &other);
@@ -85,13 +85,13 @@ int main() {
   // uInt nFunctions() const;
   AlwaysAssertExit(combination.nFunctions() == 3 && combination.nFunctions() == comb2.nFunctions());
 
-  Vector<Double> v(3);
+  Vector<double> v(3);
 
   // Set the value of a coefficient.
   // f(x) = 10 + 11*x + 12*x^2
   for (i = 0; i < 3; i++) {
     combination[i] = i + 10;
-    AlwaysAssertExit(combination[i] == Double(i + 10));
+    AlwaysAssertExit(combination[i] == double(i + 10));
     v(i) = i + 10;
   }
 
@@ -101,9 +101,9 @@ int main() {
 
   // Return a reference to a specific Function in the combination.
   // f(x) = 10 + 11*x + 12*x^2
-  AlwaysAssertExit((combination.function(0))(10) == Double(1));
-  AlwaysAssertExit((combination.function(1))(10) == Double(10));
-  AlwaysAssertExit((combination.function(2))(10) == Double(100));
+  AlwaysAssertExit((combination.function(0))(10) == double(1));
+  AlwaysAssertExit((combination.function(1))(10) == double(10));
+  AlwaysAssertExit((combination.function(2))(10) == double(100));
 
   // Evaluate the linear combination at <src>x</src>.
   // virtual T operator()(const Vector<T> &x) const;
@@ -113,8 +113,8 @@ int main() {
   // f(x) = 10 + 11*x + 12*x^2
   v.resize(1);
   v(0) = 5;
-  AlwaysAssertExit((combination(v) - Double(36365)) < 1.e-6);
-  AlwaysAssertExit((combination(5) - Double(36365)) < 1.e-6);
+  AlwaysAssertExit((combination(v) - double(36365)) < 1.e-6);
+  AlwaysAssertExit((combination(5) - double(36365)) < 1.e-6);
 
   // Returns the dimension of functions in the linear combination
   // virtual uInt ndim() const;

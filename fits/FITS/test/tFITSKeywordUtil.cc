@@ -46,11 +46,11 @@ int main() {
     myKeywords.define("hello", 6.5);
     myKeywords.define("world", true);
     // long keywords are truncated to 8 characters
-    myKeywords.define("alongname", Short(-1));
+    myKeywords.define("alongname", short(-1));
     // other scalar types to round out the testing of the code
-    myKeywords.define("a", uInt(10));
-    myKeywords.define("b", Int(-10));
-    myKeywords.define("c", Float(10.0));
+    myKeywords.define("a", static_cast<unsigned int>(10));
+    myKeywords.define("b", int(-10));
+    myKeywords.define("c", float(10.0));
     myKeywords.define("d", "I like dogs");
     // Array types for testing
     Vector<bool> flags(2);
@@ -58,20 +58,20 @@ int main() {
     flags(1) = true;
     myKeywords.define("flags", flags);
     // NAXIS generates the NAXIS keyword as well as NAXIS1 .. NAXISn
-    Vector<Int> naxis(5);
+    Vector<int> naxis(5);
     naxis(0) = 128;
     naxis(1) = 64;
     naxis(2) = 32;
     naxis(3) = 16;
     naxis(4) = 8;
     myKeywords.define("naxis", naxis);
-    Vector<Float> tarray(3);
+    Vector<float> tarray(3);
     tarray(0) = 1;
     tarray(1) = 2;
     tarray(2) = 3;
     myKeywords.define("tarray", tarray);
     // make one a Matrix
-    Matrix<Double> mat(3, 3);
+    Matrix<double> mat(3, 3);
     mat(0, 0) = 1;
     mat(1, 0) = 2;
     mat(2, 0) = 3;
@@ -135,11 +135,11 @@ int main() {
     //   history* fields
     //   And alongname will have been truncated to alongnam
     // also check comments of each field
-    for (uInt i = 0; i < myKeywords.nfields(); i++) {
+    for (unsigned int i = 0; i < myKeywords.nfields(); i++) {
       String inName = myKeywords.name(i);
       String outName = inName;
       if (inName == "alongname") outName = "alongnam";
-      Int outField = myNewKeywords.fieldNumber(outName);
+      int outField = myNewKeywords.fieldNumber(outName);
       AlwaysAssertExit(outField >= 0 || inName == "world" ||
                        std::regex_search(inName, std::regex("^comment")) ||
                        std::regex_search(inName, std::regex("^history")));
@@ -164,13 +164,13 @@ int main() {
             AlwaysAssertExit(myKeywords.asBool(i) == myNewKeywords.asBool(outField));
             break;
           case TpUInt:
-            AlwaysAssertExit(Int(myKeywords.asuInt(i)) == myNewKeywords.asInt(outField));
+            AlwaysAssertExit(int(myKeywords.asuInt(i)) == myNewKeywords.asInt(outField));
             break;
           case TpInt:
             AlwaysAssertExit(myKeywords.asInt(i) == myNewKeywords.asInt(outField));
             break;
           case TpShort:
-            AlwaysAssertExit(Int(myKeywords.asShort(i)) == myNewKeywords.asInt(outField));
+            AlwaysAssertExit(int(myKeywords.asShort(i)) == myNewKeywords.asInt(outField));
             break;
           case TpFloat:
             AlwaysAssertExit(myKeywords.asFloat(i) == myNewKeywords.asFloat(outField));
@@ -188,7 +188,7 @@ int main() {
             AlwaysAssertExit(allEQ(myKeywords.asArrayInt(i), myNewKeywords.asArrayInt(outField)));
             break;
           case TpArrayFloat: {
-            Array<Double> inArr(myKeywords.shape(i));
+            Array<double> inArr(myKeywords.shape(i));
             convertArray(inArr, myKeywords.asArrayFloat(i));
             AlwaysAssertExit(allEQ(inArr, myNewKeywords.asArrayDouble(outField)));
           } break;
@@ -214,7 +214,7 @@ int main() {
     FITSKeywordUtil::removeKeywords(myNewKeywords, ignore);
     // verify that myNewKeywords doesn't contain any tarray keywords
     std::regex rx("tarray.*");
-    for (uInt i = 0; i < myNewKeywords.nfields(); i++) {
+    for (unsigned int i = 0; i < myNewKeywords.nfields(); i++) {
       AlwaysAssertExit(!std::regex_search(myNewKeywords.name(i), rx));
     }
 
@@ -252,7 +252,7 @@ int main() {
     AlwaysAssertExit(myNewKeywords.fieldNumber("cplxkey") < 0);
 
     // too many dimensions
-    Cube<Int> c(1, 2, 3);
+    Cube<int> c(1, 2, 3);
     c = 1;
     myKeywords = myNewKeywords = empty;
     nativeList = FITSKeywordUtil::makeKeywordList();
@@ -268,7 +268,7 @@ int main() {
     AlwaysAssertExit(!FITSKeywordUtil::addKeywords(nativeList, myKeywords));
     AlwaysAssertExit(FITSKeywordUtil::getKeywords(myNewKeywords, nativeListRO, ignore));
     // all fields should not contain "mat" but should contain "ma"
-    for (uInt i = 0; i < myNewKeywords.nfields(); i++) {
+    for (unsigned int i = 0; i < myNewKeywords.nfields(); i++) {
       String name = myNewKeywords.name(i);
       AlwaysAssertExit(!std::regex_search(name, std::regex("^mat")) &&
                        std::regex_search(name, std::regex("^ma")));

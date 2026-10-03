@@ -193,11 +193,11 @@ class GaussianNDParam : public Function<T> {
   //  covariance defaults to 0.0,
   //  <group>
   GaussianNDParam();
-  explicit GaussianNDParam(uInt ndim);
-  GaussianNDParam(uInt ndim, const T &height);
-  GaussianNDParam(uInt ndim, const T &height, const Vector<T> &mean);
-  GaussianNDParam(uInt ndim, const T &height, const Vector<T> &mean, const Vector<T> &variance);
-  GaussianNDParam(uInt ndim, const T &height, const Vector<T> &mean, const Matrix<T> &covar);
+  explicit GaussianNDParam(unsigned int ndim);
+  GaussianNDParam(unsigned int ndim, const T &height);
+  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean);
+  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean, const Vector<T> &variance);
+  GaussianNDParam(unsigned int ndim, const T &height, const Vector<T> &mean, const Matrix<T> &covar);
   // </group>
 
   // Copy constructor (deep copy)
@@ -224,7 +224,7 @@ class GaussianNDParam : public Function<T> {
   }
 
   // Variable dimensionality
-  virtual uInt ndim() const { return itsDim; }
+  virtual unsigned int ndim() const { return itsDim; }
 
   // Get or set the peak height of the Gaussian
   // <group>
@@ -261,7 +261,7 @@ class GaussianNDParam : public Function<T> {
  protected:
   // # Data
   //  dimensionality
-  uInt itsDim;
+  unsigned int itsDim;
   // factor to convert from flux to height
   T itsFlux2Hgt;
 

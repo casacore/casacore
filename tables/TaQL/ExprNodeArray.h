@@ -85,7 +85,7 @@ class TableExprNodeArray : public TableExprNodeBinary {
 
   // The default implementation of getArrayDouble does
   // getArrayInt and converts the result.
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
 
   // The default implementation of getArrayDComplex does
   // getArrayDouble and converts the result.
@@ -95,13 +95,13 @@ class TableExprNodeArray : public TableExprNodeBinary {
   // <group>
   bool contains(const TableExprId& id, bool value) override;
   bool contains(const TableExprId& id, Int64 value) override;
-  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, double value) override;
   bool contains(const TableExprId& id, DComplex value) override;
   bool contains(const TableExprId& id, String value) override;
   bool contains(const TableExprId& id, MVTime value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<bool>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<double>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
@@ -111,7 +111,7 @@ class TableExprNodeArray : public TableExprNodeBinary {
   // <group>
   virtual bool getElemBool(const TableExprId& id, const Slicer& index);
   virtual Int64 getElemInt(const TableExprId& id, const Slicer& index);
-  virtual Double getElemDouble(const TableExprId& id, const Slicer& index);
+  virtual double getElemDouble(const TableExprId& id, const Slicer& index);
   virtual DComplex getElemDComplex(const TableExprId& id, const Slicer& index);
   virtual String getElemString(const TableExprId& id, const Slicer& index);
   virtual MVTime getElemDate(const TableExprId& id, const Slicer& index);
@@ -121,7 +121,7 @@ class TableExprNodeArray : public TableExprNodeBinary {
   // <group>
   virtual MArray<bool> getSliceBool(const TableExprId& id, const Slicer&);
   virtual MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&);
-  virtual MArray<Double> getSliceDouble(const TableExprId& id, const Slicer&);
+  virtual MArray<double> getSliceDouble(const TableExprId& id, const Slicer&);
   virtual MArray<DComplex> getSliceDComplex(const TableExprId& id, const Slicer&);
   virtual MArray<String> getSliceString(const TableExprId& id, const Slicer&);
   virtual MArray<MVTime> getSliceDate(const TableExprId& id, const Slicer&);
@@ -130,14 +130,14 @@ class TableExprNodeArray : public TableExprNodeBinary {
   // Get a single element for the entire column (used by sort).
   // <group>
   virtual Array<bool> getElemColumnBool(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<uChar> getElemColumnuChar(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<Short> getElemColumnShort(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<uShort> getElemColumnuShort(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<Int> getElemColumnInt(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<uInt> getElemColumnuInt(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<unsigned char> getElemColumnuChar(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<short> getElemColumnShort(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<unsigned short> getElemColumnuShort(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<int> getElemColumnInt(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<unsigned int> getElemColumnuInt(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<Int64> getElemColumnInt64(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<Float> getElemColumnFloat(const Vector<rownr_t>& rownrs, const Slicer&);
-  virtual Array<Double> getElemColumnDouble(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<float> getElemColumnFloat(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<double> getElemColumnDouble(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<Complex> getElemColumnComplex(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<DComplex> getElemColumnDComplex(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<String> getElemColumnString(const Vector<rownr_t>& rownrs, const Slicer&);
@@ -145,7 +145,7 @@ class TableExprNodeArray : public TableExprNodeBinary {
 
   // Make an array with the given shape and fill it with the value.
   static MArray<Int64> makeArray(const IPosition& shape, Int64 value);
-  static MArray<Double> makeArray(const IPosition& shape, Double value);
+  static MArray<double> makeArray(const IPosition& shape, double value);
   static MArray<DComplex> makeArray(const IPosition& shape, const DComplex& value);
 
  protected:
@@ -270,10 +270,10 @@ class TableExprNodeArrayColumnuChar : public TableExprNodeArrayColumn {
   Int64 getElemInt(const TableExprId& id, const Slicer& index) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&) override;
-  Array<uChar> getElemColumnuChar(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  Array<unsigned char> getElemColumnuChar(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<uChar> col_p;
+  ArrayColumn<unsigned char> col_p;
 };
 
 // <summary>
@@ -305,10 +305,10 @@ class TableExprNodeArrayColumnShort : public TableExprNodeArrayColumn {
   Int64 getElemInt(const TableExprId& id, const Slicer& index) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&) override;
-  Array<Short> getElemColumnShort(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  Array<short> getElemColumnShort(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<Short> col_p;
+  ArrayColumn<short> col_p;
 };
 
 // <summary>
@@ -340,10 +340,10 @@ class TableExprNodeArrayColumnuShort : public TableExprNodeArrayColumn {
   Int64 getElemInt(const TableExprId& id, const Slicer& index) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&) override;
-  Array<uShort> getElemColumnuShort(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  Array<unsigned short> getElemColumnuShort(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<uShort> col_p;
+  ArrayColumn<unsigned short> col_p;
 };
 
 // <summary>
@@ -375,10 +375,10 @@ class TableExprNodeArrayColumnInt : public TableExprNodeArrayColumn {
   Int64 getElemInt(const TableExprId& id, const Slicer& index) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&) override;
-  Array<Int> getElemColumnInt(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  Array<int> getElemColumnInt(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<Int> col_p;
+  ArrayColumn<int> col_p;
 };
 
 // <summary>
@@ -410,10 +410,10 @@ class TableExprNodeArrayColumnuInt : public TableExprNodeArrayColumn {
   Int64 getElemInt(const TableExprId& id, const Slicer& index) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&) override;
-  Array<uInt> getElemColumnuInt(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  Array<unsigned int> getElemColumnuInt(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<uInt> col_p;
+  ArrayColumn<unsigned int> col_p;
 };
 
 // <summary>
@@ -477,13 +477,13 @@ class TableExprNodeArrayColumnFloat : public TableExprNodeArrayColumn {
   // Re-create the column object for a selection of rows.
   void applySelection(const Vector<rownr_t>& rownrs) override;
 
-  Double getElemDouble(const TableExprId& id, const Slicer& index) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
-  MArray<Double> getSliceDouble(const TableExprId& id, const Slicer&) override;
-  Array<Float> getElemColumnFloat(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  double getElemDouble(const TableExprId& id, const Slicer& index) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
+  MArray<double> getSliceDouble(const TableExprId& id, const Slicer&) override;
+  Array<float> getElemColumnFloat(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<Float> col_p;
+  ArrayColumn<float> col_p;
 };
 
 // <summary>
@@ -512,13 +512,13 @@ class TableExprNodeArrayColumnDouble : public TableExprNodeArrayColumn {
   // Re-create the column object for a selection of rows.
   void applySelection(const Vector<rownr_t>& rownrs) override;
 
-  Double getElemDouble(const TableExprId& id, const Slicer& index) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
-  MArray<Double> getSliceDouble(const TableExprId& id, const Slicer&) override;
-  Array<Double> getElemColumnDouble(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  double getElemDouble(const TableExprId& id, const Slicer& index) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
+  MArray<double> getSliceDouble(const TableExprId& id, const Slicer&) override;
+  Array<double> getElemColumnDouble(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<Double> col_p;
+  ArrayColumn<double> col_p;
 };
 
 // <summary>
@@ -686,8 +686,8 @@ class TableExprNodeIndex : public TableExprNodeMulti {
   bool isSingle() const;
 
  protected:
-  Int origin_p;            // # origin 0 for C++/Python; 1 for Glish
-  Int endMinus_p;          // # subtract from end (origin and endExcl)
+  int origin_p;            // # origin 0 for C++/Python; 1 for Glish
+  int endMinus_p;          // # subtract from end (origin and endExcl)
   bool isCOrder_p;         // # true for Python
   IPosition start_p;       // # precalculated start values
   IPosition end_p;         // # precalculated end values (<0 = till end)
@@ -734,18 +734,18 @@ class TableExprNodeArrayPart : public TableExprNodeArray {
   ~TableExprNodeArrayPart() override = default;
 
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
 
   bool getBool(const TableExprId& id) override;
   Int64 getInt(const TableExprId& id) override;
-  Double getDouble(const TableExprId& id) override;
+  double getDouble(const TableExprId& id) override;
   DComplex getDComplex(const TableExprId& id) override;
   String getString(const TableExprId& id) override;
   MVTime getDate(const TableExprId& id) override;
 
   MArray<bool> getArrayBool(const TableExprId& id) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
-  MArray<Double> getArrayDouble(const TableExprId& id) override;
+  MArray<double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
   MArray<String> getArrayString(const TableExprId& id) override;
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
@@ -756,14 +756,14 @@ class TableExprNodeArrayPart : public TableExprNodeArray {
   bool getColumnDataType(DataType&) const override;
 
   Array<bool> getColumnBool(const Vector<rownr_t>& rownrs) override;
-  Array<uChar> getColumnuChar(const Vector<rownr_t>& rownrs) override;
-  Array<Short> getColumnShort(const Vector<rownr_t>& rownrs) override;
-  Array<uShort> getColumnuShort(const Vector<rownr_t>& rownrs) override;
-  Array<Int> getColumnInt(const Vector<rownr_t>& rownrs) override;
-  Array<uInt> getColumnuInt(const Vector<rownr_t>& rownrs) override;
+  Array<unsigned char> getColumnuChar(const Vector<rownr_t>& rownrs) override;
+  Array<short> getColumnShort(const Vector<rownr_t>& rownrs) override;
+  Array<unsigned short> getColumnuShort(const Vector<rownr_t>& rownrs) override;
+  Array<int> getColumnInt(const Vector<rownr_t>& rownrs) override;
+  Array<unsigned int> getColumnuInt(const Vector<rownr_t>& rownrs) override;
   Array<Int64> getColumnInt64(const Vector<rownr_t>& rownrs) override;
-  Array<Float> getColumnFloat(const Vector<rownr_t>& rownrs) override;
-  Array<Double> getColumnDouble(const Vector<rownr_t>& rownrs) override;
+  Array<float> getColumnFloat(const Vector<rownr_t>& rownrs) override;
+  Array<double> getColumnDouble(const Vector<rownr_t>& rownrs) override;
   Array<Complex> getColumnComplex(const Vector<rownr_t>& rownrs) override;
   Array<DComplex> getColumnDComplex(const Vector<rownr_t>& rownrs) override;
   Array<String> getColumnString(const Vector<rownr_t>& rownrs) override;

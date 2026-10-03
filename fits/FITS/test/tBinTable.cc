@@ -73,7 +73,7 @@ int main(int argc, const char* argv[]) {
       return 1;
     }
 
-    Int tabCount = 0;
+    int tabCount = 0;
     // This allows for constructed names of the form baseName.table.xx
     int tabNameLen = baseName.length() + 10;
     char* tabName = new char[tabNameLen];
@@ -103,7 +103,7 @@ int main(int argc, const char* argv[]) {
           cout << "done." << endl;
         } break;
         default:
-          cout << "Unable to do anything but skip this hdutype : " << Int(infits.hdutype()) << endl;
+          cout << "Unable to do anything but skip this hdutype : " << int(infits.hdutype()) << endl;
           infits.skip_hdu();
           if (infits.err() != FitsIO::OK) {
             cout << "Problem in infits while skipping the hdu" << infits.err() << endl;

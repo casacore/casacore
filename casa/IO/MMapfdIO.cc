@@ -120,7 +120,7 @@ Int64 MMapfdIO::read(Int64 size, void* buf, bool throwException) {
   if (szrd > 0) {
     memcpy(buf, itsPtr + itsPosition, szrd);
     itsPosition += szrd;
-    if (throwException && szrd < Int(size)) {
+    if (throwException && szrd < int(size)) {
       throw AipsError("MMapfdIO::read - " + fileName() + " incorrect number of bytes read");
     }
   }

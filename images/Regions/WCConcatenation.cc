@@ -71,8 +71,8 @@ WCRegion* WCConcatenation::cloneRegion() const { return new WCConcatenation(*thi
 void WCConcatenation::fill() {
   // Check if all regions have the same axes which is true if they
   // have the same dimensionality as the compound.
-  uInt nr = regions().nelements();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = regions().nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     if (regions()[i]->ndim() != ndim()) {
       throw(
           AipsError("WCConcatenation::WCConcatenation - "
@@ -100,11 +100,11 @@ void WCConcatenation::fill() {
 LCRegion* WCConcatenation::doToLCRegion(const CoordinateSystem& cSys, const IPosition& shape,
                                         const IPosition& pixelAxesMap,
                                         const IPosition& outOrder) const {
-  uInt i;
+  unsigned int i;
   // Split the pixelAxesMap and outOrder into the parts for the
   // region and the box (which can be more than the box itself
   // because it might be extended).
-  uInt ndreg = ndim() - 1;
+  unsigned int ndreg = ndim() - 1;
   DebugAssert(outOrder.nelements() == ndim(), AipsError);
   IPosition regPixMap(ndreg);
   IPosition regOutOrd(ndreg);
@@ -120,9 +120,9 @@ LCRegion* WCConcatenation::doToLCRegion(const CoordinateSystem& cSys, const IPos
   // where n is the length.
   // We use the same trick as in WCRegion by sorting them and using
   // the resulting index vector.
-  Vector<uInt> reginx(ndreg);
-  std::vector<Int> tmp(regOutOrd.begin(), regOutOrd.end());
-  GenSortIndirect<Int, uInt>::sort(reginx, &(tmp[0]), ndreg);
+  Vector<unsigned int> reginx(ndreg);
+  std::vector<int> tmp(regOutOrd.begin(), regOutOrd.end());
+  GenSortIndirect<int, unsigned int>::sort(reginx, &(tmp[0]), ndreg);
   for (i = 0; i < ndreg; i++) {
     regOutOrd(reginx(i)) = i;
   }

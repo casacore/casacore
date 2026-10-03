@@ -426,7 +426,7 @@ class TiledDataStMan : public TiledStMan {
   virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // Update the map of row numbers to cube number plus offset.
-  void updateRowMap(uInt cubeNr, uInt64 incrInLastDim);
+  void updateRowMap(unsigned int cubeNr, uInt64 incrInLastDim);
 
   // Check if the table is large enough to hold this
   // hypercube extension.
@@ -435,8 +435,8 @@ class TiledDataStMan : public TiledStMan {
   // # Declare the data members.
   //  The map of row number to cube and position in cube.
   std::vector<rownr_t> rowMap_p;
-  std::vector<uInt> cubeMap_p;
-  std::vector<uInt> posMap_p;
+  std::vector<unsigned int> cubeMap_p;
+  std::vector<unsigned int> posMap_p;
   // The row number since the last hypercube extension.
   rownr_t nrrowLast_p;
 };

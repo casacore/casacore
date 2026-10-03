@@ -95,12 +95,12 @@ class FilebufIO : public ByteIO {
   // Construct from the given file descriptor.
   // Note that the destructor and the detach function implicitly close
   // the file descriptor.
-  explicit FilebufIO(int fd, uInt bufferSize = 16384);
+  explicit FilebufIO(int fd, unsigned int bufferSize = 16384);
 
   // Attach to the given file descriptor.
   // Note that the destructor and the detach function implicitly close
   // the file descriptor.
-  void attach(int fd, uInt bufferSize = 16384);
+  void attach(int fd, unsigned int bufferSize = 16384);
 
   // The destructor closes the file when it was owned and opened and not
   // closed yet.
@@ -141,7 +141,7 @@ class FilebufIO : public ByteIO {
   virtual String fileName() const;
 
   // Get the buffer size.
-  uInt bufferSize() const { return itsBufSize; }
+  unsigned int bufferSize() const { return itsBufSize; }
 
  protected:
   // Detach the FILE. Close it when needed.

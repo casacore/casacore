@@ -142,8 +142,8 @@ class LogOrigin {
   const ObjectID &objectID() const;
   LogOrigin &objectID(const ObjectID &id);
 
-  uInt line() const;
-  LogOrigin &line(uInt which);
+  unsigned int line() const;
+  LogOrigin &line(unsigned int which);
 
   const String &fileName() const;
   LogOrigin &fileName(const String &fileName);
@@ -172,7 +172,7 @@ class LogOrigin {
   String function_p;
   String class_p;
   ObjectID id_p = true;
-  uInt line_p = 0;
+  unsigned int line_p = 0;
   String file_p;
   String node_p;
 
@@ -200,8 +200,8 @@ ostream &operator<<(ostream &os, const LogOrigin &origin);
 // <group name=SourceLocation>
 struct SourceLocation {
   const char *fileName;
-  Int lineNumber;
-  static SourceLocation canonicalize(const char *file, Int line);
+  int lineNumber;
+  static SourceLocation canonicalize(const char *file, int line);
 };
 
 #define WHERE casacore::SourceLocation::canonicalize(__FILE__, __LINE__)

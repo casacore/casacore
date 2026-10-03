@@ -81,8 +81,8 @@ LatticeCache<T>& LatticeCache<T>::operator=(const LatticeCache<T>& other) {
 // Construct a cache for a given tile shape and a given size of the
 // cache.
 template <class T>
-LatticeCache<T>::LatticeCache(Lattice<T>& image, Int iCacheSize, IPosition iTileShape,
-                              Vector<Float>& iTileOverlap, bool iadditive)
+LatticeCache<T>::LatticeCache(Lattice<T>& image, int iCacheSize, IPosition iTileShape,
+                              Vector<float>& iTileOverlap, bool iadditive)
     : numberTiles(0),
       additive(iadditive),
       cacheAccesses(0),
@@ -97,14 +97,14 @@ LatticeCache<T>::LatticeCache(Lattice<T>& image, Int iCacheSize, IPosition iTile
   tileShape = iTileShape;
   tileShapeVec = tileShape.asVector();
   tileOverlap = iTileOverlap;
-  uInt i;
+  unsigned int i;
   for (i = 0; i < tileShapeVec.nelements(); i++) {
     AlwaysAssert(tileOverlap(i) >= 0.0, AipsError);
     AlwaysAssert(tileOverlap(i) < 1.0, AipsError);
   }
   tileOffsetVec.resize(tileShapeVec.nelements());
   for (i = 0; i < tileShapeVec.nelements(); i++) {
-    tileOffsetVec(i) = Int(tileOverlap(i) * Float(tileShapeVec(i)));
+    tileOffsetVec(i) = int(tileOverlap(i) * float(tileShapeVec(i)));
   }
   cacheSize = iCacheSize;
   numberTiles = cacheSize / tileShape.product();
@@ -119,7 +119,7 @@ LatticeCache<T>::LatticeCache(Lattice<T>& image, Int iCacheSize, IPosition iTile
   // Initialize. We use the sequence number to determine if
   // a tile has any contents, and for least-recently-used
   // caching.
-  for (Int tile = 0; tile < numberTiles; tile++) {
+  for (int tile = 0; tile < numberTiles; tile++) {
     tileSequence[tile] = -1;
   }
 }
@@ -131,7 +131,7 @@ LatticeCache<T>::~LatticeCache() {}
 // Flush: write all extant tiles out
 template <class T>
 void LatticeCache<T>::flush() {
-  for (Int tile = 0; tile < numberTiles; tile++) {
+  for (int tile = 0; tile < numberTiles; tile++) {
     if (tileSequence[tile] > -1) {
       writeTile(tile);
     }
@@ -147,8 +147,8 @@ template <class T>
 Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc, bool readonly) {
   cacheLoc = cacheLocation(cacheLoc, tileLoc);
   cacheAccesses++;
-  Int foundTile = -1;
-  for (Int tile = 0; tile < numberTiles; tile++) {
+  int foundTile = -1;
+  for (int tile = 0; tile < numberTiles; tile++) {
     // Much of the time is spent in this next isEqual.
     if ((tileSequence[tile] > -1) && (tileLocs[tile].isEqual(cacheLoc))) {
       foundTile = tile;
@@ -202,7 +202,7 @@ void LatticeCache<T>::showCacheStatistics(ostream& os) {
   os << "   Accesses        " << cacheAccesses << endl;
   os << "   Hits            " << cacheHits << endl;
   os << "   Misses          " << cacheMisses << endl;
-  os << "   Hit rate        " << 100.0 * Float(cacheHits) / Float(cacheAccesses) << "%" << endl;
+  os << "   Hit rate        " << 100.0 * float(cacheHits) / float(cacheAccesses) << "%" << endl;
   os << "   Reads           " << cacheReads << endl;
   os << "   Writes          " << cacheWrites << endl;
 }
@@ -220,10 +220,10 @@ void LatticeCache<T>::clearCacheStatistics() {
 // Find the cache location (i.e. only on a grid).
 template <class T>
 IPosition& LatticeCache<T>::cacheLocation(IPosition& cacheLoc, const IPosition& tileLoc) {
-  for (uInt i = 0; i < tileLoc.nelements(); i++) {
+  for (unsigned int i = 0; i < tileLoc.nelements(); i++) {
     if (tileOffsetVec(i) > 0) {
-      Int loco = tileLoc(i);
-      Int loc = loco;
+      int loco = tileLoc(i);
+      int loc = loco;
       loc -= loc % tileOffsetVec(i);
       if ((loco - loc) >= 3 * tileShapeVec(i) / 4) loc += tileOffsetVec(i);
       if ((loco - loc) < tileShapeVec(i) / 4) loc -= tileOffsetVec(i);
@@ -243,7 +243,7 @@ IPosition& LatticeCache<T>::cacheLocation(IPosition& cacheLoc, const IPosition& 
 
 // Write a specified tile
 template <class T>
-void LatticeCache<T>::writeTile(Int tile) {
+void LatticeCache<T>::writeTile(int tile) {
   tileSequence[tile] = cacheAccesses;
   if (additive) {
     Array<T> tileOnDisk(tileContents[tile].shape());
@@ -259,12 +259,12 @@ void LatticeCache<T>::writeTile(Int tile) {
 
 // Read a specified tile and validate it
 template <class T>
-void LatticeCache<T>::readTile(Int tile, bool readonly) {
+void LatticeCache<T>::readTile(int tile, bool readonly) {
   tileSequence[tile] = cacheAccesses;
   AlwaysAssert(tileLocs[tile].conform(tileShape), AipsError);
-  Vector<Int> endLocVec = (tileLocs[tile] + tileShape).asVector();
-  Vector<Int> imageShapeVec = image_p->shape().asVector();
-  for (uInt i = 0; i < imageShapeVec.nelements(); i++) {
+  Vector<int> endLocVec = (tileLocs[tile] + tileShape).asVector();
+  Vector<int> imageShapeVec = image_p->shape().asVector();
+  for (unsigned int i = 0; i < imageShapeVec.nelements(); i++) {
     endLocVec(i) = min(endLocVec(i), imageShapeVec(i));
   }
   IPosition actualShape = IPosition(endLocVec) - tileLocs[tile];
@@ -283,11 +283,11 @@ void LatticeCache<T>::readTile(Int tile, bool readonly) {
 // true then we discard the current contents iso possibly
 // writing them out. This is needed for a const version of tile.
 template <class T>
-Int LatticeCache<T>::getFreeTile(bool readonly) {
-  Int foundTile = -1;
+int LatticeCache<T>::getFreeTile(bool readonly) {
+  int foundTile = -1;
 
   // First search for unallocated tiles
-  for (Int tile = 0; tile < numberTiles; tile++) {
+  for (int tile = 0; tile < numberTiles; tile++) {
     if (tileSequence[tile] < 0) {
       foundTile = tile;
       break;
@@ -298,8 +298,8 @@ Int LatticeCache<T>::getFreeTile(bool readonly) {
     // We didn't find an unallocated tile so we look for the
     // least-recently-used tile and use it, if readonly is
     // false, we have to first write it to disk
-    Int oldest = cacheAccesses;
-    for (Int tile = 0; tile < numberTiles; tile++) {
+    int oldest = cacheAccesses;
+    for (int tile = 0; tile < numberTiles; tile++) {
       if ((tileSequence[tile] > 0) && (tileSequence[tile] < oldest)) {
         oldest = tileSequence[tile];
         foundTile = tile;

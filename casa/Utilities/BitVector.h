@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class BitVectorHelper;
 
 // The size of a unsigned Integer ( assumes 8-bit char )
-const uInt WORDSIZE = sizeof(uInt) * 8;
+const unsigned int WORDSIZE = sizeof(unsigned int) * 8;
 
 // <summary>
 // Bit vectors of any size
@@ -116,7 +116,7 @@ class BitVector {
 
   // Create a bit vector with <src>length</src> bits
   // and set all bits to to the specified state.
-  BitVector(uInt length, bool state);
+  BitVector(unsigned int length, bool state);
 
   // Copy constructor (copy semantics).
   BitVector(const BitVector& that);
@@ -131,34 +131,34 @@ class BitVector {
   BitVector& operator=(bool state);
 
   // Return the number of bits in the bitvector.
-  uInt nbits() const;
+  unsigned int nbits() const;
 
   // Set a bit at the given position (0-relative).
   // In debug-mode an exception is thrown when the position is invalid.
-  void setBit(uInt pos);
+  void setBit(unsigned int pos);
 
   // Clear a bit at the given position (0-relative).
   // In debug-mode an exception is thrown when the position is invalid.
-  void clearBit(uInt pos);
+  void clearBit(unsigned int pos);
 
   // Toggle a bit at the given position (0-relative).
   // It returns the original state.
   // In debug-mode an exception is thrown when the position is invalid.
-  bool toggleBit(uInt pos);
+  bool toggleBit(unsigned int pos);
 
   // Get a bit at the given position (0-relative).
   // In debug-mode an exception is thrown when the position is invalid.
-  bool getBit(uInt pos) const;
+  bool getBit(unsigned int pos) const;
 
   // Set a bit at the given position (0-relative) to the given state.
   // In debug-mode an exception is thrown when the position is invalid.
-  void putBit(uInt pos, bool state);
+  void putBit(unsigned int pos, bool state);
 
   // Index operator to access the specified bit.
   // In debug-mode an exception is thrown when the position is invalid.
   // <group>
-  bool operator[](uInt pos) const;
-  BitVectorHelper operator[](uInt pos);
+  bool operator[](unsigned int pos) const;
+  BitVectorHelper operator[](unsigned int pos);
   // </group>
 
   // Logical operations on whole bit vectors.
@@ -197,7 +197,7 @@ class BitVector {
   // By default the original bits are copied.
   // The remaining bits (or all bits in case of no copy) are
   // set the the given state.
-  void resize(uInt length, bool state = false, bool copy = true);
+  void resize(unsigned int length, bool state = false, bool copy = true);
 
   // Set all bits of the bit vector to the specified state.
   void set(bool state);
@@ -206,11 +206,11 @@ class BitVector {
   // (0-relative) to the given state.
   // An exception is thrown if start+length exceeds the length
   // of the vector.
-  void set(uInt start, uInt length, bool state);
+  void set(unsigned int start, unsigned int length, bool state);
 
   // Copy <src>length</src> bits starting at thatStart in the
   // other BitVector to this BitVector starting at thisStart.
-  void copy(uInt thisStart, uInt length, const BitVector& that, uInt thatStart);
+  void copy(unsigned int thisStart, unsigned int length, const BitVector& that, unsigned int thatStart);
 
   // Write a representation of the bit vector (a list of
   // <em>zeros</em> and <em>ones</em> enclosed in square
@@ -219,11 +219,11 @@ class BitVector {
 
  private:
   // Number of bits in the BitVector object.
-  uInt size_p;
+  unsigned int size_p;
 
   // Pointer to the actual bit vector, stored as a contiguous
   // sequence of one or more unsigned integers.
-  Block<uInt> bits_p;
+  Block<unsigned int> bits_p;
 };
 
 // <summary> Helper class for BitVector </summary>
@@ -261,35 +261,35 @@ class BitVectorHelper {
   operator bool() const;
 
  private:
-  uInt bitNumber_p;
+  unsigned int bitNumber_p;
 
   // Pointer back to the original vector.
   BitVector* vecPtr_p;
 
   // The constructor we actually use.
-  BitVectorHelper(uInt bitNumber, BitVector* vector);
+  BitVectorHelper(unsigned int bitNumber, BitVector* vector);
 };
 
-inline void BitVector::setBit(uInt pos) {
+inline void BitVector::setBit(unsigned int pos) {
   DebugAssert(pos < size_p, AipsError);
-  uInt index = pos / WORDSIZE;
+  unsigned int index = pos / WORDSIZE;
   bits_p[index] |= (1 << (pos - index * WORDSIZE));
 }
 
-inline void BitVector::clearBit(uInt pos) {
+inline void BitVector::clearBit(unsigned int pos) {
   DebugAssert(pos < size_p, AipsError);
-  uInt index = pos / WORDSIZE;
+  unsigned int index = pos / WORDSIZE;
   bits_p[index] &= (~(1 << (pos - index * WORDSIZE)));
 }
 
-inline bool BitVector::operator[](uInt pos) const { return getBit(pos); }
+inline bool BitVector::operator[](unsigned int pos) const { return getBit(pos); }
 
-inline uInt BitVector::nbits() const { return size_p; }
+inline unsigned int BitVector::nbits() const { return size_p; }
 
-inline BitVectorHelper::BitVectorHelper(uInt bitNumber, BitVector* vector)
+inline BitVectorHelper::BitVectorHelper(unsigned int bitNumber, BitVector* vector)
     : bitNumber_p(bitNumber), vecPtr_p(vector) {}
 
-inline BitVectorHelper BitVector::operator[](uInt pos) { return BitVectorHelper(pos, this); }
+inline BitVectorHelper BitVector::operator[](unsigned int pos) { return BitVectorHelper(pos, this); }
 
 inline BitVectorHelper::BitVectorHelper(const BitVectorHelper& that)
     : bitNumber_p(that.bitNumber_p), vecPtr_p(that.vecPtr_p) {}

@@ -44,18 +44,18 @@ int main() { cout << "untested" << endl; }
 /*
 //#predeclarations
 void getArguments(int argc, char **argv, Bool &verbose);
-Bool fudgedEquality(Float a, Float b);
+Bool fudgedEquality(float a, float b);
 void deleteFile(const String &filename);
 ImageCoordinate build3Dcoords();
 void createStandardImageOnDisk(const String &filename);
-void describeImage(const String &message, const PagedImage<Float> &image);
+void describeImage(const String &message, const PagedImage<float> &image);
 void testConstructors();
 void testSetMemberFunctions();
 void testArrayofImagesAndAssignmentOperator();
 
 //# define mega global variables
 Bool verbose_;
-const Float TEST_PIXEL_VALUE = 99.99;
+const float TEST_PIXEL_VALUE = 99.99;
 const String STANDARD = "image-standard";
 const String NAME0 = "image-test-file_0";
 const String NAME1 = "image-test-file_1";
@@ -88,18 +88,18 @@ int main(int argc, const char* argv[])
 void getArguments(int argc, char **argv, Bool &verbose)
 {
   verbose = False;
-  for(uInt i=0; i< argc; i++)
+  for(unsigned int i=0; i< argc; i++)
     if(!strcmp(argv [i], "-v"))
       verbose = True;
 }
 
 // equality function for floats
-Bool fudgedEquality(Float a, Float b)
+Bool fudgedEquality(float a, float b)
 {
-  Float absA = fabs(a);
-  Float absB = fabs(b);
-  Float delta = fabs(absA - absB);
-  Float margin;
+  float absA = fabs(a);
+  float absB = fabs(b);
+  float delta = fabs(absA - absB);
+  float margin;
   if(absA > absB)
      margin = absA / 1.0e5;
   else
@@ -121,7 +121,7 @@ void deleteFile(const String &filename)
 }
 
 // function to print Image data
-void describeImage(const String &message, const PagedImage<Float> &image)
+void describeImage(const String &message, const PagedImage<float> &image)
 {
   cout << message << " shape: "<< image.shape() << endl;
 // *
@@ -149,7 +149,7 @@ ImageCoordinate build3Dcoords()
   // we need to know the epoch of the coordinates
   SkyPosition::Epoch myEpoch(SkyPosition::J2000);
   // we need to know the vector itself.
-  Vector<Double> myCoords(2);
+  Vector<double> myCoords(2);
   myCoords(0) = 122.35;
   myCoords(1) = -33.7764;
   // we need to know the position of the observer.
@@ -157,11 +157,11 @@ ImageCoordinate build3Dcoords()
   // We need a type - GEOCENTRIC seems good.
   EarthPosition::Type theType(EarthPosition::GEOCENTRIC);
   // We need the time and date of the observation...
-  Double julianDate = 2449376.0;
+  double julianDate = 2449376.0;
   // and we can add on the UT.
   julianDate += 16.52/24.0;
   // we need the coordinates of our position.
-  Vector<Double> ourPosition(3);
+  Vector<double> ourPosition(3);
   // geocentric longitude (in degrees) goes in the first field of the vector.
   ourPosition(0) = 107.2334666;
   // geocentric latitude (in degrees) goes in the second field.
@@ -171,15 +171,15 @@ ImageCoordinate build3Dcoords()
   // then use these to build our EarthPosition.
   EarthPosition myObs(theType, julianDate, ourPosition);
   // we need to know a rotation - here it is zero.
-  Double myRot = 0;
+  double myRot = 0;
   // we need to know where the spherical position is to be on our 2-d
   // projection i.e. what pixel is associated with my object's position?
-  Vector<Double> thePixel(2);
+  Vector<double> thePixel(2);
   thePixel(0) = 55.0;
   thePixel(1) = 526.3;
   // finally, we need to know the number of spherical units per integer on
   // our 2-d projection (i.e. binning per pixel).
-  Vector<Double> theBinning(2);
+  Vector<double> theBinning(2);
   theBinning(0) = 3.04e-03;
   theBinning(1) = 3.6255e-03;
   // Now we can make fruit of our labor - the ProjectedPosition itself.
@@ -192,11 +192,11 @@ ImageCoordinate build3Dcoords()
   // here it is the velocity of the earth.
   ReferenceValue myRefValue(ReferenceValue::VELOCITY, 9.56e+03);
   // we need to know the value of the measurement
-  Double myValue(9.5688823e+03);
+  double myValue(9.5688823e+03);
   // we need to know the binning per "pixel"
-  Double myBin(5.63e-04);
+  double myBin(5.63e-04);
   // we need to know the position on the "number line" of our value
-  Double myValuePos(27.3);
+  double myValuePos(27.3);
   // Now we may construct the LinearAxis itself.
   LinearAxis myLinearAxis(myValueUnit,myValue,myRefValue,myBin,myValuePos);
 
@@ -214,7 +214,7 @@ void createStandardImageOnDisk(const String &filename)
   ImageCoordinate coords(build3Dcoords());
   IPosition imageShape(3, 50,47,31);
 
-  PagedImage<Float> standard(imageShape, coords, filename);
+  PagedImage<float> standard(imageShape, coords, filename);
   standard.set(TEST_PIXEL_VALUE);
 
   if(verbose_) describeImage("standard image", standard);
@@ -222,11 +222,11 @@ void createStandardImageOnDisk(const String &filename)
 
 // these are the constructors to test:
 //   PagedImage(const IPosition &shape, const MinimalCoords &coordinateInfo,
-//              const String &nameOfNewFile, uInt rowNumber);
+//              const String &nameOfNewFile, unsigned int rowNumber);
 //   PagedImage(const IPosition &shape, const Array<T> &array,
 //              const MinimalCoords &coordinateInfo,
-//              const String &nameOfNewFile, uInt rowNumber);
-//   PagedImage(const String &filename, uInt rowNumber);
+//              const String &nameOfNewFile, unsigned int rowNumber);
+//   PagedImage(const String &filename, unsigned int rowNumber);
 //   PagedImage(const PagedImage<T> &other);
 //
 void testConstructors()
@@ -236,23 +236,23 @@ void testConstructors()
     IPosition shape(3,10,10,4);
     ImageCoordinate coords(build3Dcoords());
 
-    PagedImage<Float> image1(shape, coords, NAME0);
+    PagedImage<float> image1(shape, coords, NAME0);
     if (verbose_)
       describeImage("shape, coords, filename ctor: ", image1);
 
-    PagedImage<Float> image2(shape, coords, NAME1, True);
+    PagedImage<float> image2(shape, coords, NAME1, True);
 
     if (verbose_)
       describeImage("array, array, coords, filename, masking? ctor: ", image2);
 
-    PagedImage<Float> image3(STANDARD);
+    PagedImage<float> image3(STANDARD);
     if (verbose_) describeImage("old file ctor: ", image3);
     if (image3(IPosition(3,5,4,3)) != TEST_PIXEL_VALUE)
       throw(AipsError("image3, file-constructed image, wrong pixel value"));
     if (!image3.ok())
       throw(AipsError("file-constructed image not ok"));
 
-    PagedImage<Float> *image4 = new PagedImage<Float>(image3);
+    PagedImage<float> *image4 = new PagedImage<float>(image3);
     if(verbose_)
       describeImage("Copy ctor: ", *image4);
     if((*image4)(IPosition(3,5,4,3)) != TEST_PIXEL_VALUE)
@@ -273,7 +273,7 @@ void testSetMemberFunctions()
   {
     ImageCoordinate coords;
     {
-      PagedImage<Float> image6(IPosition(3,10,10,4), coords, NAME2);
+      PagedImage<float> image6(IPosition(3,10,10,4), coords, NAME2);
 
       if(verbose_) describeImage("shape, coords, filename ctor: ", image6);
       if(image6.ok())
@@ -281,7 +281,7 @@ void testSetMemberFunctions()
     }
 
     coords = build3Dcoords();
-    PagedImage<Float> image6(IPosition(3,10,10,4), coords, NAME2);
+    PagedImage<float> image6(IPosition(3,10,10,4), coords, NAME2);
     if(!image6.ok())
       throw(AipsError("shape-constructed image6 - is not ok!"));
     image6.rename(NAME2);
@@ -303,7 +303,7 @@ void testArrayofImagesAndAssignmentOperator()
 {
   if(verbose_) cout<< "-- test array of images --"<< endl;
 // *
-  const uInt max = 10;
+  const unsigned int max = 10;
   String filenames [max];
   filenames [0] = NAME0;
   filenames [1] = NAME1;
@@ -316,11 +316,11 @@ void testArrayofImagesAndAssignmentOperator()
   filenames [8] = NAME8;
   filenames [9] = NAME9;
   {
-    Image<Float> images [max];
-    for(uInt i=0; i< max; i++) {
+    Image<float> images [max];
+    for(unsigned int i=0; i< max; i++) {
       if(verbose_) cout<< "-- image array "<< i<< " --"<< endl;
       if(i%2) {
-        images [i] = Image<Float>(IPosition(2,10,10));
+        images [i] = Image<float>(IPosition(2,10,10));
         images [i].setCoordinateInfo(MinimalCoords());
         images [i].setName(filenames [i]);
         if(verbose_)
@@ -329,7 +329,7 @@ void testArrayofImagesAndAssignmentOperator()
         } // if i is odd
       else {
         images [i] =
-          Image<Float>(IPosition(i+1,5), MinimalCoords(), filenames [i]);
+          Image<float>(IPosition(i+1,5), MinimalCoords(), filenames [i]);
         if(verbose_)
           describeImage("shape,coords,name constructed image in array,",
                          images [i]);
@@ -341,7 +341,7 @@ void testArrayofImagesAndAssignmentOperator()
 
   if(verbose_) cout<< "-- about to delete image files --"<< endl;
 
-  for(uInt i=0; i< max; i++)
+  for(unsigned int i=0; i< max; i++)
     deleteFile(filenames [i]);
 //  * /
 }

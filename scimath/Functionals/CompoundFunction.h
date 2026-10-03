@@ -233,7 +233,7 @@ class CompoundFunction_PS<AutoDiff<T>> : public CompoundParam<AutoDiff<T>> {
   // Add a function to the sum. All functions must have the same
   // <src>ndim()</src> as the first one. Returns the (zero relative) number
   // of the function just added.
-  uInt addFunction(const Function<AutoDiff<T>> &newFunction);
+  unsigned int addFunction(const Function<AutoDiff<T>> &newFunction);
   // Consolidate the parameter settings. This could be necessary if
   // parameters have been set, and a copy constructor called. This is
   // necessary before and after the setting of <em>local</em> parameters; i.e.

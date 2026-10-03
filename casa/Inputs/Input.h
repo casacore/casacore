@@ -203,7 +203,7 @@ class Input {
   // This puts the program in no-prompt mode unless environment variable HELP
   // is defined with value "prompt". The output debug level is set according
   // to the value of the environment variable DEBUG.
-  Input(Int createEnv = 0);
+  Input(int createEnv = 0);
 
   // Destructor.
   ~Input();
@@ -234,20 +234,20 @@ class Input {
 
   // Get the double value of the parameter (or 0.0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Double getDouble(const String& key);
+  double getDouble(const String& key);
 
   // Get the Block<double> value of the parameter (or default Block if unknown
   // key).
   // If the program is in prompt mode, ask the user for the value.
-  Block<Double> getDoubleArray(const String& key);
+  Block<double> getDoubleArray(const String& key);
 
   // Get the int value of the parameter (or 0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Int getInt(const String& key);
+  int getInt(const String& key);
 
   // Get the Block<int> value of parameter (or default Block if unknown key)
   // If the program is in prompt mode, ask the user for the value.
-  Block<Int> getIntArray(const String& key);
+  Block<int> getIntArray(const String& key);
 
   // Get the String value of the parameter (or "" if unknown key).
   // If the program is in prompt mode, ask the user for the value.
@@ -258,10 +258,10 @@ class Input {
   bool getBool(const String& key);
 
   // Get the total number of parameters of this program
-  Int count() const;
+  int count() const;
 
   // See if the current debug level is thresholded
-  bool debug(Int l) const { return (debug_level >= l) ? true : false; }
+  bool debug(int l) const { return (debug_level >= l) ? true : false; }
 
   // Set a new value for an existing named parameter
   // Returns FALSE if key is an unknown parameter name.
@@ -286,23 +286,23 @@ class Input {
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
   // of the Vector<Bool> results in an exception being thrown.
-  static Vector<bool> makeMaskFromRanges(const String& ranges, uInt length,
+  static Vector<bool> makeMaskFromRanges(const String& ranges, unsigned int length,
                                          bool oneRelative = false);
 
  private:
   // Get the index of the named parameter (-1 if unknown key).
   // Anywhere from 0.. if a key is found.
-  Int getParam(const String& key) const;
+  int getParam(const String& key) const;
 
   // Prompt the user for a value for the parameter.
   // If he gives a non-empty answer, set that value.
   void prompt(Param& parameter) const;
 
   // Bind an environment variable to a parameter
-  void envCreate(const Char* env, const String& key, const String& def);
+  void envCreate(const char* env, const String& key, const String& def);
 
   // The actual creation of a new (system/program) parameter
-  void createPar(Int, const String&, const String&, const String&, const String&, const String&,
+  void createPar(int, const String&, const String&, const String&, const String&, const String&,
                  const String&);
 
   // output to stdout a listing of all "key=value" pairs.
@@ -321,13 +321,13 @@ class Input {
   bool do_prompt;
 
   // threshold value for debug output
-  Int debug_level;
+  int debug_level;
 
   // "prompt" or "keys" indicates the various types of help.
   String help_mode;
 
   // count of program parameters
-  Int p_count;
+  int p_count;
 };
 
 }  // namespace casacore

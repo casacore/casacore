@@ -34,10 +34,10 @@ namespace casacore {  // #Begin casa namespace
 class AlignMemory {
  public:
   // Default alignment is none.
-  explicit AlignMemory(uInt alignment = 0) : itsAlign(alignment) {}
+  explicit AlignMemory(unsigned int alignment = 0) : itsAlign(alignment) {}
 
   // Get the alignment.
-  uInt alignment() const { return itsAlign; }
+  unsigned int alignment() const { return itsAlign; }
 
   // Allocate the given amount of memory with the correct alignment.
   // If alignment < sizeof(void*), malloc will be used, otherwise posix_memalign.
@@ -46,7 +46,7 @@ class AlignMemory {
   void* alloc(size_t size) const;
 
  private:
-  uInt itsAlign;
+  unsigned int itsAlign;
 };
 
 }  // namespace casacore

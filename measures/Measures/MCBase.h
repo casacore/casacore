@@ -135,7 +135,7 @@ class MCBase {
   virtual void getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) = 0;
 
   // Create help structures for Measure conversion routines
-  virtual void initConvert(uInt which, MConvertBase &mc) = 0;
+  virtual void initConvert(unsigned int which, MConvertBase &mc) = 0;
 
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert() = 0;
@@ -157,15 +157,15 @@ class MCBase {
   // </ul>
   // <group>
   // Routine to make the transition table if necessary
-  static void makeState(uInt *state, const uInt ntyp, const uInt nrout, const uInt list[][3]);
+  static void makeState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]);
   // Return a fromatted String with matrix information (based on < 100 types)
-  static String showState(uInt *state, const uInt ntyp, const uInt nrout, const uInt list[][3]);
+  static String showState(unsigned int *state, const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]);
 
  private:
   // Routine to find the shortest route between two points
-  static bool findState(uInt &len, uInt *state, uInt *mcnt, bool &okall, bool *visit,
-                        const uInt *tcnt, const uInt *tree, const uInt &in, const uInt &out,
-                        const uInt ntyp, const uInt nrout, const uInt list[][3]);
+  static bool findState(unsigned int &len, unsigned int *state, unsigned int *mcnt, bool &okall, bool *visit,
+                        const unsigned int *tcnt, const unsigned int *tree, const unsigned int &in, const unsigned int &out,
+                        const unsigned int ntyp, const unsigned int nrout, const unsigned int list[][3]);
   // </group>
 };
 

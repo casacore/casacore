@@ -50,24 +50,24 @@ int main() {
   }
   try {
     {
-      HDF5Lattice<Float> pa(IPosition(2, 12), "tHDF5Lattice_tmp.dat");
+      HDF5Lattice<float> pa(IPosition(2, 12), "tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa.arrayName() == "array", AipsError);
       pa.set(10.0);
-      Array<Float> arr;
+      Array<float> arr;
       pa.getSlice(arr, IPosition(2, 0), IPosition(2, 12), IPosition(2, 1));
       AlwaysAssert(allNear(arr, 10.0f, 1E-5), AipsError);
       indgen(arr);
-      Array<Float> arr1(arr(IPosition(2, 0), IPosition(2, 0, 11), IPosition(2, 1, 2)));
+      Array<float> arr1(arr(IPosition(2, 0), IPosition(2, 0, 11), IPosition(2, 1, 2)));
       pa.putSlice(arr1, IPosition(2, 0), IPosition(2, 1, 2));
-      Vector<Float> vec(10);
+      Vector<float> vec(10);
       indgen(vec);
       pa.putSlice(vec(IPosition(1, 0), IPosition(1, 9), IPosition(1, 2)), IPosition(2, 1, 1),
                   IPosition(2, 2, 1));
     }
     {
-      HDF5Lattice<Float> pa("tHDF5Lattice_tmp.dat");
+      HDF5Lattice<float> pa("tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa.shape().isEqual(IPosition(2, 12)), AipsError);
-      Array<Float> arr;
+      Array<float> arr;
       Slicer sl(IPosition(2, 0), IPosition(2, 12));
       pa.getSlice(arr, sl);
       AlwaysAssert(near(pa(IPosition(2, 0)), 0.0f), AipsError);
@@ -84,16 +84,16 @@ int main() {
       AlwaysAssert(pa.isWritable(), AipsError);
     }
     {
-      HDF5Lattice<Int> scratch(IPosition(3, 9));
-      LatticeIterator<Int> li(scratch, IPosition(3, 1, 1, 9));
-      Int i = 0;
+      HDF5Lattice<int> scratch(IPosition(3, 9));
+      LatticeIterator<int> li(scratch, IPosition(3, 1, 1, 9));
+      int i = 0;
       for (li.reset(); !li.atEnd(); li++, i++) {
         li.woCursor() = i;
       }
-      COWPtr<Array<Int>> ptrM;
+      COWPtr<Array<int>> ptrM;
       scratch.getSlice(ptrM, IPosition(3, 0), IPosition(3, 9, 9, 1), IPosition(3, 1), true);
       AlwaysAssert(ptrM->shape().isEqual(IPosition(2, 9)), AipsError);
-      Array<Int> expectedResult(IPosition(2, 9));
+      Array<int> expectedResult(IPosition(2, 9));
       indgen(expectedResult);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
       ptrM.rwRef() = 0;
@@ -105,9 +105,9 @@ int main() {
     }
     {
       const IPosition latticeShape(4, 128, 128, 4, 32);
-      HDF5Lattice<Float> pa(latticeShape, "tHDF5Lattice_tmp_1.dat");
+      HDF5Lattice<float> pa(latticeShape, "tHDF5Lattice_tmp_1.dat");
       AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape()), AipsError);
-      Array<Float> arr(IPosition(4, 1, 1, 4, 32));
+      Array<float> arr(IPosition(4, 1, 1, 4, 32));
       Slicer sl(IPosition(4, 0), IPosition(4, 1, 1, 4, 32));
       pa.clearCache();
       pa.setCacheSizeFromPath(arr.shape(), IPosition(4, 0), pa.tileShape() - 1,
@@ -115,7 +115,7 @@ int main() {
       pa.getSlice(arr, sl);
       pa.showCacheStatistics(cout);
 
-      HDF5Lattice<Float> pa1(TiledShape(latticeShape, IPosition(4, 16, 16, 4, 32)),
+      HDF5Lattice<float> pa1(TiledShape(latticeShape, IPosition(4, 16, 16, 4, 32)),
                              "tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa1.tileShape().isEqual(IPosition(4, 16, 16, 4, 32)), AipsError);
       pa1.clearCache();
@@ -132,31 +132,31 @@ int main() {
       AlwaysAssert(allNear(arr, 9.0f, 1E-5), AipsError);
 
       IPosition lat2Shape = IPosition(4, 16);
-      HDF5Lattice<Float> pa2(lat2Shape, pa1.file(), "array2");
+      HDF5Lattice<float> pa2(lat2Shape, pa1.file(), "array2");
       arr.resize(lat2Shape);
       indgen(arr);
       pa2.putSlice(arr, IPosition(4, 0));
 
       IPosition lat3Shape = IPosition(2, 16);
-      HDF5Lattice<Int> pa3(TiledShape(lat3Shape, lat3Shape), pa1.file(), "IntHDF5Lattice");
-      Array<Int> iarr(lat3Shape);
+      HDF5Lattice<int> pa3(TiledShape(lat3Shape, lat3Shape), pa1.file(), "IntHDF5Lattice");
+      Array<int> iarr(lat3Shape);
       indgen(iarr);
       pa3.putSlice(iarr, IPosition(2, 0));
     }
     {
-      HDF5Lattice<Float> pa1("tHDF5Lattice_tmp.dat");
+      HDF5Lattice<float> pa1("tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa1.shape().isEqual(IPosition(4, 128, 128, 4, 32)), AipsError);
-      HDF5Lattice<Float> pa2(pa1.file(), "array2");
+      HDF5Lattice<float> pa2(pa1.file(), "array2");
       AlwaysAssert(pa2.shape().isEqual(IPosition(4, 16)), AipsError);
-      HDF5Lattice<Int> pa3(pa1.file(), "IntHDF5Lattice");
+      HDF5Lattice<int> pa3(pa1.file(), "IntHDF5Lattice");
       AlwaysAssert(pa3.shape().isEqual(IPosition(2, 16)), AipsError);
-      Array<Int> iarr(pa3.shape()), expected(pa3.shape());
+      Array<int> iarr(pa3.shape()), expected(pa3.shape());
       pa3.setMaximumCacheSize(256 * 256);
       indgen(expected);
       pa3.getSlice(iarr, IPosition(2, 0), IPosition(2, 16), IPosition(2, 1));
       AlwaysAssert(allEQ(iarr, expected), AipsError);
       {
-        HDF5Lattice<Int> pa4(pa3);
+        HDF5Lattice<int> pa4(pa3);
         AlwaysAssert(pa4.shape().isEqual(IPosition(2, 16)), AipsError);
         iarr = 0;
         pa4.getSlice(iarr, IPosition(2, 0), IPosition(2, 16), IPosition(2, 1));
@@ -166,10 +166,10 @@ int main() {
     }
     {
       const IPosition latticeShape(4, 4, 16, 15, 8);
-      HDF5Lattice<Float> pa(TiledShape(latticeShape, IPosition(4, 2, 8, 8, 3)),
+      HDF5Lattice<float> pa(TiledShape(latticeShape, IPosition(4, 2, 8, 8, 3)),
                             "tHDF5Lattice_tmp_1.dat", "data", "group1");
       AlwaysAssertExit(pa.arrayName() == "data");
-      Array<Float> arr(latticeShape);
+      Array<float> arr(latticeShape);
       indgen(arr);
       pa.put(arr);
       AlwaysAssertExit(allEQ(pa.get(), arr));
@@ -177,9 +177,9 @@ int main() {
       AlwaysAssertExit(allEQ(pa.get(), float(2) * arr));
     }
     {
-      HDF5Lattice<Float> pa("tHDF5Lattice_tmp_1.dat", "data", "group1");
+      HDF5Lattice<float> pa("tHDF5Lattice_tmp_1.dat", "data", "group1");
       AlwaysAssertExit(pa.arrayName() == "data");
-      Array<Float> arr(pa.shape());
+      Array<float> arr(pa.shape());
       indgen(arr);
       AlwaysAssertExit(allEQ(pa.get(), float(2) * arr));
     }

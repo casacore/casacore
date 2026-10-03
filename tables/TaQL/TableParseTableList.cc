@@ -37,8 +37,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableParsePair::TableParsePair(const Table& table, Int tabnr, const String& name,
-                               const String& shorthand, Int joinIndex)
+TableParsePair::TableParsePair(const Table& table, int tabnr, const String& name,
+                               const String& shorthand, int joinIndex)
     : tabnr_p(tabnr),
       joinIndex_p(joinIndex),
       name_p(name),
@@ -50,10 +50,10 @@ TableExprInfo TableParsePair::getTableInfo() const {
 }
 
 // # Construct a TableParse object and add it to the container.
-Table TableParseTableList::addTable(Int tabnr, const String& name, const Table& ftab,
+Table TableParseTableList::addTable(int tabnr, const String& name, const Table& ftab,
                                     const String& shorthand, bool addToFromList,
                                     const std::vector<const Table*>& tempTables,
-                                    const std::vector<TableParseQuery*>& stack, Int joinIndex) {
+                                    const std::vector<TableParseQuery*>& stack, int joinIndex) {
   Table table = TableParseUtil::getTable(tabnr, name, ftab, tempTables, stack);
   // Check that a shorthand is used only once, except for an empty one.
   // Don't take the WITH tables into account, otherwise it will complain
@@ -80,7 +80,7 @@ void TableParseTableList::replaceTable(const Table& table) {
 TableParsePair TableParseTableList::findTable(const String& shorthand, bool doWith,
                                               const std::vector<TableParseQuery*>& stack) {
   TableParsePair tab;
-  for (Int i = stack.size() - 1; i >= 0; i--) {
+  for (int i = stack.size() - 1; i >= 0; i--) {
     tab = stack[i]->tableList().findTable(shorthand, doWith);
     if (!tab.table().isNull()) {
       break;
@@ -91,13 +91,13 @@ TableParsePair TableParseTableList::findTable(const String& shorthand, bool doWi
 
 TableParsePair TableParseTableList::findTable(const String& shorthand, bool doWith) const {
   // # If no shorthand given, first table is taken (if there).
-  for (uInt i = 0; i < itsFromTables.size(); i++) {
+  for (unsigned int i = 0; i < itsFromTables.size(); i++) {
     if (itsFromTables[i].test(shorthand)) {
       return itsFromTables[i];
     }
   }
   if (doWith) {
-    for (uInt i = 0; i < itsWithTables.size(); i++) {
+    for (unsigned int i = 0; i < itsWithTables.size(); i++) {
       if (itsWithTables[i].test(shorthand)) {
         return itsWithTables[i];
       }

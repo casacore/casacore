@@ -109,15 +109,15 @@ bool LCMask::equals(const LCRegion& other) const {
 
 LCRegion* LCMask::cloneRegion() const { return new LCMask(*this); }
 
-uInt LCMask::advisedMaxPixels() const { return itsMask->advisedMaxPixels(); }
+unsigned int LCMask::advisedMaxPixels() const { return itsMask->advisedMaxPixels(); }
 
-IPosition LCMask::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCMask::doNiceCursorShape(unsigned int maxPixels) const {
   return itsMask->niceCursorShape(maxPixels);
 }
 
-uInt LCMask::maximumCacheSize() const { return itsMask->maximumCacheSize(); }
+unsigned int LCMask::maximumCacheSize() const { return itsMask->maximumCacheSize(); }
 
-void LCMask::setMaximumCacheSize(uInt howManyPixels) {
+void LCMask::setMaximumCacheSize(unsigned int howManyPixels) {
   itsMask->setMaximumCacheSize(howManyPixels);
 }
 
@@ -126,7 +126,7 @@ void LCMask::setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& 
   itsMask->setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 }
 
-void LCMask::setCacheSizeInTiles(uInt howManyTiles) { itsMask->setCacheSizeInTiles(howManyTiles); }
+void LCMask::setCacheSizeInTiles(unsigned int howManyTiles) { itsMask->setCacheSizeInTiles(howManyTiles); }
 
 void LCMask::clearCache() { itsMask->clearCache(); }
 
@@ -136,7 +136,7 @@ LatticeIterInterface<bool>* LCMask::makeIter(const LatticeNavigator& navigator, 
   return itsMask->makeIter(navigator, useRef);
 }
 
-bool LCMask::lock(FileLocker::LockType type, uInt nattempts) {
+bool LCMask::lock(FileLocker::LockType type, unsigned int nattempts) {
   // Lock the PagedArray containing the mask.
   return itsMask->lock(type, nattempts);
 }
@@ -153,7 +153,7 @@ void LCMask::tempClose() { itsMask->tempClose(); }
 
 void LCMask::reopen() { itsMask->reopen(); }
 
-LCRegion* LCMask::doTranslate(const Vector<Float>&, const IPosition&) const {
+LCRegion* LCMask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCMask cannot be translated.
   throw(AipsError("LCMask::translate is not supported"));
   return 0;

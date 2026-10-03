@@ -64,7 +64,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSCorrGram = 0;
-static Int posMSCorrGram = 0;
+static int posMSCorrGram = 0;
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
@@ -82,7 +82,7 @@ const TableExprNode* msCorrGramParseNode() { return MSCorrParse::node(); }
 void msCorrGramParseDeleteNode() { return MSCorrParse::cleanup(); }
 
 // # Give the string position.
-Int& msCorrGramPosition() { return posMSCorrGram; }
+int& msCorrGramPosition() { return posMSCorrGram; }
 
 // # Get the next input characters for flex.
 int msCorrGramInput(char* buf, int max_size) {

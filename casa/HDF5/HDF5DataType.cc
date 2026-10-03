@@ -47,34 +47,34 @@ HDF5DataType::HDF5DataType(const bool*) : itsSize(sizeof(bool)) {
   H5Tset_precision(itsHidMem, 8);
 }
 
-HDF5DataType::HDF5DataType(const uChar*) : itsSize(sizeof(uChar)) {
+HDF5DataType::HDF5DataType(const unsigned char*) : itsSize(sizeof(unsigned char)) {
   itsHidFile = H5Tcopy(H5T_STD_U8LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_UCHAR);
   H5Tset_precision(itsHidMem, 8);
 }
 
-HDF5DataType::HDF5DataType(const Short*) : itsSize(sizeof(Short)) {
+HDF5DataType::HDF5DataType(const short*) : itsSize(sizeof(short)) {
   itsHidFile = H5Tcopy(H5T_STD_I16LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_SHORT);
-  H5Tset_precision(itsHidMem, 8 * sizeof(Short));
+  H5Tset_precision(itsHidMem, 8 * sizeof(short));
 }
 
-HDF5DataType::HDF5DataType(const uShort*) : itsSize(sizeof(uShort)) {
+HDF5DataType::HDF5DataType(const unsigned short*) : itsSize(sizeof(unsigned short)) {
   itsHidFile = H5Tcopy(H5T_STD_U16LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_USHORT);
-  H5Tset_precision(itsHidMem, 8 * sizeof(uShort));
+  H5Tset_precision(itsHidMem, 8 * sizeof(unsigned short));
 }
 
-HDF5DataType::HDF5DataType(const Int*) : itsSize(sizeof(Int)) {
+HDF5DataType::HDF5DataType(const int*) : itsSize(sizeof(int)) {
   itsHidFile = H5Tcopy(H5T_STD_I32LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_INT);
-  H5Tset_precision(itsHidMem, 8 * sizeof(Int));
+  H5Tset_precision(itsHidMem, 8 * sizeof(int));
 }
 
-HDF5DataType::HDF5DataType(const uInt*) : itsSize(sizeof(uInt)) {
+HDF5DataType::HDF5DataType(const unsigned int*) : itsSize(sizeof(unsigned int)) {
   itsHidFile = H5Tcopy(H5T_STD_U32LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_UINT);
-  H5Tset_precision(itsHidMem, 8 * sizeof(uInt));
+  H5Tset_precision(itsHidMem, 8 * sizeof(unsigned int));
 }
 
 HDF5DataType::HDF5DataType(const Int64*) : itsSize(sizeof(Int64)) {
@@ -83,12 +83,12 @@ HDF5DataType::HDF5DataType(const Int64*) : itsSize(sizeof(Int64)) {
   H5Tset_precision(itsHidMem, 8 * sizeof(Int64));
 }
 
-HDF5DataType::HDF5DataType(const Float*) : itsSize(sizeof(Float)) {
+HDF5DataType::HDF5DataType(const float*) : itsSize(sizeof(float)) {
   itsHidFile = H5Tcopy(H5T_IEEE_F32LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_FLOAT);
 }
 
-HDF5DataType::HDF5DataType(const Double*) : itsSize(sizeof(Double)) {
+HDF5DataType::HDF5DataType(const double*) : itsSize(sizeof(double)) {
   itsHidFile = H5Tcopy(H5T_IEEE_F64LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_DOUBLE);
 }
@@ -96,17 +96,17 @@ HDF5DataType::HDF5DataType(const Double*) : itsSize(sizeof(Double)) {
 HDF5DataType::HDF5DataType(const Complex*) : itsSize(sizeof(Complex)) {
   itsHidFile = H5Tcreate(H5T_COMPOUND, sizeof(Complex));
   itsHidMem = H5Tcreate(H5T_COMPOUND, sizeof(Complex));
-  HDF5DataType dtype((Float*)0);
+  HDF5DataType dtype((float*)0);
   addToCompound("re", 0, dtype);
-  addToCompound("im", sizeof(Float), dtype);
+  addToCompound("im", sizeof(float), dtype);
 }
 
 HDF5DataType::HDF5DataType(const DComplex*) : itsSize(sizeof(DComplex)) {
   itsHidFile = H5Tcreate(H5T_COMPOUND, sizeof(DComplex));
   itsHidMem = H5Tcreate(H5T_COMPOUND, sizeof(DComplex));
-  HDF5DataType dtype((Double*)0);
+  HDF5DataType dtype((double*)0);
   addToCompound("re", 0, dtype);
-  addToCompound("im", sizeof(Double), dtype);
+  addToCompound("im", sizeof(double), dtype);
 }
 
 HDF5DataType::HDF5DataType(const String& value) : itsSize(value.size()) {
@@ -121,30 +121,30 @@ HDF5DataType::HDF5DataType(const String*) : itsSize(0) {
   itsHidFile = H5Tcopy(itsHidMem);
 }
 
-HDF5DataType::HDF5DataType(Int, Int) {
+HDF5DataType::HDF5DataType(int, int) {
   // An empty array is represented by its dimensionality and type.
   // Add an extra dummy field to make the compound different from (D)Complex
   // without having to test on field names.
-  itsHidFile = H5Tcreate(H5T_COMPOUND, 3 * sizeof(Int));
-  itsHidMem = H5Tcreate(H5T_COMPOUND, 3 * sizeof(Int));
-  HDF5DataType dtype((Int*)0);
+  itsHidFile = H5Tcreate(H5T_COMPOUND, 3 * sizeof(int));
+  itsHidMem = H5Tcreate(H5T_COMPOUND, 3 * sizeof(int));
+  HDF5DataType dtype((int*)0);
   addToCompound("emptyarray", 0, dtype);
-  addToCompound("rank", sizeof(Int), dtype);
-  addToCompound("casatype", 2 * sizeof(Int), dtype);
+  addToCompound("rank", sizeof(int), dtype);
+  addToCompound("casatype", 2 * sizeof(int), dtype);
 }
 
 HDF5DataType::HDF5DataType(const std::vector<String>& names, const std::vector<HDF5DataType>& types)
     : itsSize(0) {
   AlwaysAssert(names.size() > 0, AipsError);
   AlwaysAssert(types.size() == names.size(), AipsError);
-  for (uInt i = 0; i < types.size(); ++i) {
+  for (unsigned int i = 0; i < types.size(); ++i) {
     AlwaysAssert(types[i].size() > 0, AipsError);
     itsSize += types[i].size();
   }
   itsHidFile = H5Tcreate(H5T_COMPOUND, itsSize);
   itsHidMem = H5Tcreate(H5T_COMPOUND, itsSize);
-  uInt offset = 0;
-  for (uInt i = 0; i < types.size(); ++i) {
+  unsigned int offset = 0;
+  for (unsigned int i = 0; i < types.size(); ++i) {
     addToCompound(names[i].c_str(), offset, types[i]);
     offset += types[i].size();
   }
@@ -174,7 +174,7 @@ HDF5DataType& HDF5DataType::operator=(const HDF5DataType& that) {
   return *this;
 }
 
-void HDF5DataType::addToCompound(const char* name, uInt offset, const HDF5DataType& dtype) {
+void HDF5DataType::addToCompound(const char* name, unsigned int offset, const HDF5DataType& dtype) {
   H5Tinsert(itsHidFile, name, offset, dtype.getHidFile());
   H5Tinsert(itsHidMem, name, offset, dtype.getHidMem());
 }
@@ -189,9 +189,9 @@ DataType HDF5DataType::getDataType(hid_t dtid) {
         // A bool is stored as a signed char.
         if (sz == 1) {
           dtype = TpBool;
-        } else if (sz == sizeof(Short)) {
+        } else if (sz == sizeof(short)) {
           dtype = TpShort;
-        } else if (sz == sizeof(Int)) {
+        } else if (sz == sizeof(int)) {
           dtype = TpInt;
         } else {
           AlwaysAssert(sz == sizeof(Int64), AipsError);
@@ -200,19 +200,19 @@ DataType HDF5DataType::getDataType(hid_t dtid) {
       } else {
         if (sz == 1) {
           dtype = TpUChar;
-        } else if (sz == sizeof(uShort)) {
+        } else if (sz == sizeof(unsigned short)) {
           dtype = TpUShort;
         } else {
-          AlwaysAssert(sz == sizeof(uInt), AipsError);
+          AlwaysAssert(sz == sizeof(unsigned int), AipsError);
           dtype = TpUInt;
         }
       }
     } break;
     case H5T_FLOAT: {
-      if (sz == sizeof(Float)) {
+      if (sz == sizeof(float)) {
         dtype = TpFloat;
       } else {
-        AlwaysAssert(sz == sizeof(Double), AipsError);
+        AlwaysAssert(sz == sizeof(double), AipsError);
         dtype = TpDouble;
       }
     } break;
@@ -307,7 +307,7 @@ bool HDF5DataType::isEmptyArray(hid_t dtid) {
 }
 
 IPosition HDF5DataType::getShape(hid_t dtid) {
-  Int ndim = H5Tget_array_ndims(dtid);
+  int ndim = H5Tget_array_ndims(dtid);
   AlwaysAssert(ndim >= 0, AipsError);
   Block<hsize_t> dims(ndim);
   AlwaysAssert(H5Tget_array_dims(dtid, dims.storage()) == ndim, AipsError);
@@ -318,21 +318,21 @@ IPosition HDF5DataType::getShape(hid_t dtid) {
 
 HDF5DataType::HDF5DataType(const bool*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const uChar*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const unsigned char*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const Short*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const short*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const uShort*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const unsigned short*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const Int*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const int*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const uInt*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const unsigned int*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const Float*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const float*) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const Int64*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(const Double*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const double*) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const Complex*) { HDF5Object::throwNoHDF5(); }
 
@@ -342,7 +342,7 @@ HDF5DataType::HDF5DataType(const String&) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const String*) { HDF5Object::throwNoHDF5(); }
 
-HDF5DataType::HDF5DataType(Int, Int) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(int, int) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const std::vector<String>&, const std::vector<HDF5DataType>&) {
   HDF5Object::throwNoHDF5();
@@ -356,7 +356,7 @@ HDF5DataType::~HDF5DataType() {}
 
 HDF5DataType& HDF5DataType::operator=(const HDF5DataType&) { return *this; }
 
-void HDF5DataType::addToCompound(const char*, uInt, const HDF5DataType&) {
+void HDF5DataType::addToCompound(const char*, unsigned int, const HDF5DataType&) {
   HDF5Object::throwNoHDF5();
 }
 

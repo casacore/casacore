@@ -44,7 +44,7 @@ String HostInfo::hostName() {
   // This is a kludge to get around a problem with
   // losing environment variable names on some IRIX machines
   // at NCSA in Urbana IL.
-  Char buf[65];
+  char buf[65];
   if (gethostname(buf, 64) >= 0) {
     retval = String(buf);
   }
@@ -57,9 +57,9 @@ String HostInfo::hostName() {
   return retval;
 }
 
-Int HostInfo::processID() { return getpid(); }
+int HostInfo::processID() { return getpid(); }
 
-Double HostInfo::secondsFrom1970() {
+double HostInfo::secondsFrom1970() {
   struct timespec tp;
   AlwaysAssert(clock_gettime(CLOCK_REALTIME, &tp) == 0, AipsError);
   double total = tp.tv_sec;
@@ -68,7 +68,7 @@ Double HostInfo::secondsFrom1970() {
 }
 
 #define HOSTINFO_IMPLEMENT_MEMBERS                                                      \
-  Int HostInfo::numCPUs(bool use_aipsrc) {                                              \
+  int HostInfo::numCPUs(bool use_aipsrc) {                                              \
     static const String keyword("system.resources.cores");                              \
     if (use_aipsrc) {                                                                   \
       String value;                                                                     \
@@ -76,7 +76,7 @@ Double HostInfo::secondsFrom1970() {
         return resources_numCPUs;                                                       \
       } else if (Aipsrc::find(value, keyword)) {                                        \
         int result;                                                                     \
-        if (sscanf(value.c_str(), "%d", &result) == 1) return (Int)result;              \
+        if (sscanf(value.c_str(), "%d", &result) == 1) return (int)result;              \
       }                                                                                 \
     }                                                                                   \
                                                                                         \
@@ -153,13 +153,13 @@ Double HostInfo::secondsFrom1970() {
     return old_memory;                                                                  \
   }                                                                                     \
                                                                                         \
-  Int HostInfo::setMemoryFraction(Int memfrac) {                                        \
-    Int old_memfrac = resources_memfrac;                                                \
+  int HostInfo::setMemoryFraction(int memfrac) {                                        \
+    int old_memfrac = resources_memfrac;                                                \
     resources_memfrac = memfrac;                                                        \
     return old_memfrac;                                                                 \
   }                                                                                     \
-  Int HostInfo::setNumCPUs(Int numCPUs) {                                               \
-    Int old_numCPUs = resources_numCPUs;                                                \
+  int HostInfo::setNumCPUs(int numCPUs) {                                               \
+    int old_numCPUs = resources_numCPUs;                                                \
     resources_numCPUs = numCPUs;                                                        \
     return old_numCPUs;                                                                 \
   }
@@ -217,7 +217,7 @@ HOSTINFO_IMPLEMENT_MEMBERS
 #else
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Int HostInfo::numCPUs(bool) { return 0; }
+int HostInfo::numCPUs(bool) { return 0; }
 ptrdiff_t HostInfo::memoryTotal(bool) { return -1; }
 ptrdiff_t HostInfo::memoryUsed() { return -1; }
 ptrdiff_t HostInfo::memoryFree() { return -1; }
@@ -233,7 +233,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 HostMachineInfo *HostInfo::info = 0;
 ptrdiff_t HostInfo::resources_memory = 0;
-Int HostInfo::resources_memfrac = 0;
-Int HostInfo::resources_numCPUs = 0;
+int HostInfo::resources_memfrac = 0;
+int HostInfo::resources_numCPUs = 0;
 
 }  // namespace casacore

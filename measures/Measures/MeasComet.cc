@@ -60,7 +60,7 @@ MeasComet::MeasComet()
       posrefsystype_p(MDirection::APP) {
   String path;
   if (Aipsrc::find(path, String("measures.comet.file"))) initMeas(path);
-  for (uInt i = 0; i < 2; i++) lnr_p[i] = -1;
+  for (unsigned int i = 0; i < 2; i++) lnr_p[i] = -1;
 }
 
 MeasComet::MeasComet(const String &path)
@@ -82,7 +82,7 @@ MeasComet::MeasComet(const String &path)
       hasPosrefsys_p(false),
       posrefsystype_p(MDirection::APP) {
   initMeas(path);
-  for (uInt i = 0; i < 2; i++) lnr_p[i] = -1;
+  for (unsigned int i = 0; i < 2; i++) lnr_p[i] = -1;
 }
 
 MeasComet::MeasComet(const Table &tabin, const String &path)
@@ -104,7 +104,7 @@ MeasComet::MeasComet(const Table &tabin, const String &path)
       hasPosrefsys_p(false),
       posrefsystype_p(MDirection::APP) {
   initMeas(path, &tabin);
-  for (uInt i = 0; i < 2; i++) lnr_p[i] = -1;
+  for (unsigned int i = 0; i < 2; i++) lnr_p[i] = -1;
 }
 
 MeasComet::MeasComet(const MeasComet &other)
@@ -126,13 +126,13 @@ MeasComet::MeasComet(const MeasComet &other)
       hasPosrefsys_p(other.hasPosrefsys_p),
       posrefsystype_p(other.posrefsystype_p) {
   initMeas(other.tp_p);
-  for (uInt i = 0; i < 2; i++) lnr_p[i] = -1;
+  for (unsigned int i = 0; i < 2; i++) lnr_p[i] = -1;
 }
 
 MeasComet &MeasComet::operator=(const MeasComet &other) {
   if (this != &other) {
     initMeas(other.tp_p);
-    for (uInt i = 0; i < 2; i++) lnr_p[i] = -1;
+    for (unsigned int i = 0; i < 2; i++) lnr_p[i] = -1;
   }
   return *this;
 }
@@ -146,22 +146,22 @@ const MVPosition &MeasComet::getTopo() const { return topo_p; }
 
 MDirection::Types MeasComet::getType() const { return mtype_p; }
 
-Double MeasComet::getStart() const { return mjd0_p + dmjd_p; }
+double MeasComet::getStart() const { return mjd0_p + dmjd_p; }
 
-Double MeasComet::getEnd() const { return mjdl_p; }
+double MeasComet::getEnd() const { return mjdl_p; }
 
-Int MeasComet::nelements() const { return nrow_p; }
+int MeasComet::nelements() const { return nrow_p; }
 
 bool MeasComet::hasPosrefsys() const { return hasPosrefsys_p; }
 MDirection::Types MeasComet::getPosrefsysType() const { return posrefsystype_p; }
 
-bool MeasComet::get(MVPosition &returnValue, Double date) const {
+bool MeasComet::get(MVPosition &returnValue, double date) const {
   if (!fillMeas(date)) {
     returnValue = MVPosition();
     return false;
   }
 
-  Double f = (date - ldat_p[0][0]) / dmjd_p;
+  double f = (date - ldat_p[0][0]) / dmjd_p;
 
   returnValue = getRelPosition(0);
   const MVPosition deltaX(getRelPosition(1) - returnValue);
@@ -170,39 +170,39 @@ bool MeasComet::get(MVPosition &returnValue, Double date) const {
   return true;
 }
 
-MVPosition MeasComet::getRelPosition(const uInt index) const {
+MVPosition MeasComet::getRelPosition(const unsigned int index) const {
   return MVPosition(Quantity(ldat_p[index][MeasComet::RHO], "AU"),
                     Quantity(ldat_p[index][MeasComet::RA], "deg"),
                     Quantity(ldat_p[index][MeasComet::DEC], "deg"));
 }
 
-bool MeasComet::getDisk(MVDirection &returnValue, Double date) const {
+bool MeasComet::getDisk(MVDirection &returnValue, double date) const {
   if (!haveDiskLongLat_p || !fillMeas(date)) {
     returnValue = MVDirection();
     return false;
   }
 
-  Double f = (date - ldat_p[0][0]) / dmjd_p;
+  double f = (date - ldat_p[0][0]) / dmjd_p;
   returnValue = getDiskLongLat(0);
   const MVDirection ll_on_second_date(getDiskLongLat(1));
-  Double sep = returnValue.separation(ll_on_second_date);
-  Double pa = returnValue.positionAngle(ll_on_second_date);
+  double sep = returnValue.separation(ll_on_second_date);
+  double pa = returnValue.positionAngle(ll_on_second_date);
 
   returnValue.shiftAngle(f * sep, pa);
   return true;
 }
 
-MVDirection MeasComet::getDiskLongLat(const uInt index) const {
+MVDirection MeasComet::getDiskLongLat(const unsigned int index) const {
   return MVDirection(Quantity(ldat_p[index][MeasComet::DISKLONG], "deg"),
                      Quantity(ldat_p[index][MeasComet::DISKLAT], "deg"));
 }
 
-bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) const {
+bool MeasComet::getRadVel(MVRadialVelocity &returnValue, double date) const {
   returnValue = 0.0;
   if (!fillMeas(date)) return false;
-  Double f = (date - ldat_p[0][0]) / dmjd_p;
-  Double radvel = ldat_p[0][MeasComet::RADVEL];
-  Double deltarv = ldat_p[1][MeasComet::RADVEL] - radvel;
+  double f = (date - ldat_p[0][0]) / dmjd_p;
+  double radvel = ldat_p[0][MeasComet::RADVEL];
+  double deltarv = ldat_p[1][MeasComet::RADVEL] - radvel;
 
   radvel += f * deltarv;
   returnValue = MVRadialVelocity(Quantity(radvel, "AU/d"));
@@ -230,7 +230,7 @@ bool MeasComet::initMeas(const String &which, const Table *tabin) {
     measFlag_p = false;
     tp_p = which;
     TableRecord kws;
-    Double dt;
+    double dt;
     String vs;
     bool ok = true;
     if (!MeasIERS::getTable(tab_p, kws, row_p, rfp_p, vs, dt, reqcols, optcols, tp_p, tplc,
@@ -315,7 +315,7 @@ bool MeasComet::initMeas(const String &which, const Table *tabin) {
   return (measured_p);
 }
 
-Double MeasComet::getTemperature(const bool squawk) {
+double MeasComet::getTemperature(const bool squawk) {
   if (!haveTriedExtras_p) getExtras();
 
   if (temperature_p < 0.0 && squawk) {
@@ -328,7 +328,7 @@ Double MeasComet::getTemperature(const bool squawk) {
   return temperature_p;
 }
 
-Double MeasComet::getMeanRad(const bool squawk) {
+double MeasComet::getMeanRad(const bool squawk) {
   if (!haveTriedExtras_p) getExtras();
 
   if (mean_rad_p < 0.0 && squawk) {
@@ -341,7 +341,7 @@ Double MeasComet::getMeanRad(const bool squawk) {
   return mean_rad_p;
 }
 
-Double MeasComet::get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
+double MeasComet::get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
                                        bool &success) {
   try {
     const Record rec(ks.asRecord(kw));
@@ -389,29 +389,29 @@ void MeasComet::closeMeas() {
     nrow_p = 0;
     tp_p = "";
     msgDone_p = false;
-    for (uInt i = 0; i < 2; ++i) lnr_p[i] = -1;
+    for (unsigned int i = 0; i < 2; ++i) lnr_p[i] = -1;
     row_p = ROTableRow();
     tab_p = Table();
   }
 }
 
-bool MeasComet::fillMeas(Double utf) const {
-  Int ut = ifloor((utf - mjd0_p) / dmjd_p) - 1;
+bool MeasComet::fillMeas(double utf) const {
+  int ut = ifloor((utf - mjd0_p) / dmjd_p) - 1;
   if (ut < 0 || ut >= nrow_p - 1) return false;
   if (ut != lnr_p[0]) {
     if (ut == lnr_p[1]) {
       // Shift one
-      for (uInt i = 0; i < ncols_p; ++i) ldat_p[0][i] = ldat_p[1][i];
+      for (unsigned int i = 0; i < ncols_p; ++i) ldat_p[0][i] = ldat_p[1][i];
       lnr_p[0] = lnr_p[1];
     } else {
       // Read first line
       row_p.get(ut);
-      for (uInt i = 0; i < ncols_p; ++i) ldat_p[0][i] = *(rfp_p[i]);
+      for (unsigned int i = 0; i < ncols_p; ++i) ldat_p[0][i] = *(rfp_p[i]);
       lnr_p[0] = ut;
     }
     // Read second line
     row_p.get(ut + 1);
-    for (uInt i = 0; i < ncols_p; ++i) ldat_p[1][i] = *(rfp_p[i]);
+    for (unsigned int i = 0; i < ncols_p; ++i) ldat_p[1][i] = *(rfp_p[i]);
     lnr_p[1] = ut + 1;
   }
   return true;

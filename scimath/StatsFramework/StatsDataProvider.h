@@ -68,7 +68,7 @@ class StatsDataProvider {
 
   // Get the stride for the current mask.
   // Only called if hasMask() returns true.
-  virtual uInt getMaskStride() = 0;
+  virtual unsigned int getMaskStride() = 0;
 
   // If OpenMP is enabled and statistics methods are being called in a
   // multi-threaded context, get maximum number of threads that should be
@@ -77,14 +77,14 @@ class StatsDataProvider {
   // decrease overhead used by statistics methods when the maximum number of
   // threads available to openmp are unnecessary. The base class
   // implmentation returns 0.
-  virtual uInt getNMaxThreads() const;
+  virtual unsigned int getNMaxThreads() const;
 
   // Get the associated range(s) of the current dataset. Only called if
   // hasRanges() returns true;
   virtual DataRanges getRanges() = 0;
 
   // Get the stride for the current data set.
-  virtual uInt getStride() = 0;
+  virtual unsigned int getStride() = 0;
 
   // Get an iterator to the first weights element of the current dataset.
   // Only called if hasWeights() returns true;

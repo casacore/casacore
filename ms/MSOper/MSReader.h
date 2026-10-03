@@ -98,7 +98,7 @@ class MSReader {
   MSValidIds itsIds;
 
   // this maps table name to an index used throughout this class
-  std::map<String, Int> itsTabId;
+  std::map<String, int> itsTabId;
 
   // the indexes for the NS subtables
   Block<MSTableIndex> itsIndexes;
@@ -117,7 +117,7 @@ class MSReader {
   MSWeatherIndex itsWeather2Index;
 
   // table IDs for the standard tables
-  Int itsMainId, itsAnt1Id, itsAnt2Id, itsDDId, itsDopplerId, itsFeed1Id, itsFeed2Id, itsFieldId,
+  int itsMainId, itsAnt1Id, itsAnt2Id, itsDDId, itsDopplerId, itsFeed1Id, itsFeed2Id, itsFieldId,
       itsFlagCmdId, itsFreqOffsetId, itsObsId, itsPointing1Id, itsPointing2Id, itsPolId, itsProcId,
       itsSourceId, itsSpwId, itsStateId, itsSyscal1Id, itsSyscal2Id, itsWeather1Id, itsWeather2Id;
   // the table rows

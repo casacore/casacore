@@ -41,7 +41,7 @@ const String LSQMatrix::tmatdat = String("tmatdat");
 
 bool LSQMatrix::fromRecord(String &error, const RecordInterface &in) {
   set(0);
-  Int vlen;
+  int vlen;
   if (in.isDefined(tmatsiz) && in.type(in.idToNumber(RecordFieldId(tmatsiz))) == TpInt) {
     in.get(RecordFieldId(tmatsiz), vlen);
   } else {
@@ -53,7 +53,7 @@ bool LSQMatrix::fromRecord(String &error, const RecordInterface &in) {
 }
 
 bool LSQMatrix::toRecord(String &error, RecordInterface &out) const {
-  out.define(RecordFieldId(tmatsiz), static_cast<Int>(n_p));
+  out.define(RecordFieldId(tmatsiz), static_cast<int>(n_p));
   if (n_p) return putCArray(error, out, tmatdat, len_p, trian_p);
   return true;
 }
@@ -63,11 +63,11 @@ const String &LSQMatrix::ident() const {
   return myid;
 }
 
-bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
-                          const Double *const in) {
+bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
+                          const double *const in) {
   if (len) {
     if (in) {
-      Vector<Double> vt(len);
+      Vector<double> vt(len);
       std::copy(in, in + len, vt.data());
       out.define(RecordFieldId(fname), vt);
     } else {
@@ -78,13 +78,13 @@ bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fna
   return true;
 }
 
-bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
-                          Double *&out) {
+bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
+                          double *&out) {
   if (in.isDefined(fname) && in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayDouble) {
-    Vector<Double> vt;
+    Vector<double> vt;
     in.get(RecordFieldId(fname), vt);
-    uInt vlen = vt.nelements();
-    if (!out) out = new Double[vlen];
+    unsigned int vlen = vt.nelements();
+    if (!out) out = new double[vlen];
     if (len && vlen != len) {
       error += String("Inconsistency between lengths in " + fname + "field in record");
       return false;
@@ -94,11 +94,11 @@ bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String
   return true;
 }
 
-bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
-                          const uInt *const in) {
+bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
+                          const unsigned int *const in) {
   if (len) {
     if (in) {
-      Vector<Int> vt(len);
+      Vector<int> vt(len);
       std::copy(in, in + len, vt.data());
       out.define(RecordFieldId(fname), vt);
     } else {
@@ -109,13 +109,13 @@ bool LSQMatrix::putCArray(String &error, RecordInterface &out, const String &fna
   return true;
 }
 
-bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
-                          uInt *&out) {
+bool LSQMatrix::getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
+                          unsigned int *&out) {
   if (in.isDefined(fname) && in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayInt) {
-    Vector<Int> vt;
+    Vector<int> vt;
     in.get(RecordFieldId(fname), vt);
-    uInt vlen = vt.nelements();
-    if (!out) out = new uInt[vlen];
+    unsigned int vlen = vt.nelements();
+    if (!out) out = new unsigned int[vlen];
     if (len && vlen != len) {
       error += String("Inconsistency between lengths in " + fname + "field in record");
       return false;
@@ -132,13 +132,13 @@ void LSQMatrix::toAipsIO(AipsIO &out) const {
 
 void LSQMatrix::fromAipsIO(AipsIO &in) {
   set(0);
-  uInt n;
+  unsigned int n;
   in >> n;
   set(n);
   if (n > 0) getCArray(in, len_p, trian_p);
 }
 
-void LSQMatrix::putCArray(AipsIO &out, uInt len, const Double *const in) {
+void LSQMatrix::putCArray(AipsIO &out, unsigned int len, const double *const in) {
   if (in) {
     out << true;
     out.put(len, in);
@@ -147,21 +147,21 @@ void LSQMatrix::putCArray(AipsIO &out, uInt len, const Double *const in) {
   }
 }
 
-void LSQMatrix::getCArray(AipsIO &in, uInt len, Double *&out) {
+void LSQMatrix::getCArray(AipsIO &in, unsigned int len, double *&out) {
   bool flag;
   in >> flag;
   if (flag) {
-    uInt vlen;
+    unsigned int vlen;
     in >> vlen;
     if (vlen > 0) {
-      if (!out) out = new Double[vlen];
+      if (!out) out = new double[vlen];
       AlwaysAssert(vlen == len, AipsError);
       in.get(len, out);
     }
   }
 }
 
-void LSQMatrix::putCArray(AipsIO &out, uInt len, const uInt *const in) {
+void LSQMatrix::putCArray(AipsIO &out, unsigned int len, const unsigned int *const in) {
   if (in) {
     out << true;
     out.put(len, in);
@@ -170,14 +170,14 @@ void LSQMatrix::putCArray(AipsIO &out, uInt len, const uInt *const in) {
   }
 }
 
-void LSQMatrix::getCArray(AipsIO &in, uInt len, uInt *&out) {
+void LSQMatrix::getCArray(AipsIO &in, unsigned int len, unsigned int *&out) {
   bool flag;
   in >> flag;
   if (flag) {
-    uInt vlen;
+    unsigned int vlen;
     in >> vlen;
     if (vlen > 0) {
-      if (!out) out = new uInt[vlen];
+      if (!out) out = new unsigned int[vlen];
       AlwaysAssert(vlen == len, AipsError);
       in.get(len, out);
     }

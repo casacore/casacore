@@ -63,25 +63,25 @@ void MemoryLogSink::copy_other(const MemoryLogSink& other) {
 
 MemoryLogSink::~MemoryLogSink() {}
 
-uInt MemoryLogSink::nelements() const { return nmsg_p; }
+unsigned int MemoryLogSink::nelements() const { return nmsg_p; }
 
-Double MemoryLogSink::getTime(uInt i) const {
+double MemoryLogSink::getTime(unsigned int i) const {
   AlwaysAssert(i < nmsg_p, AipsError);
   return time_p[i];
 }
-String MemoryLogSink::getPriority(uInt i) const {
+String MemoryLogSink::getPriority(unsigned int i) const {
   AlwaysAssert(i < nmsg_p, AipsError);
   return priority_p[i];
 }
-String MemoryLogSink::getMessage(uInt i) const {
+String MemoryLogSink::getMessage(unsigned int i) const {
   AlwaysAssert(i < nmsg_p, AipsError);
   return message_p[i];
 }
-String MemoryLogSink::getLocation(uInt i) const {
+String MemoryLogSink::getLocation(unsigned int i) const {
   AlwaysAssert(i < nmsg_p, AipsError);
   return location_p[i];
 }
-String MemoryLogSink::getObjectID(uInt i) const {
+String MemoryLogSink::getObjectID(unsigned int i) const {
   AlwaysAssert(i < nmsg_p, AipsError);
   return objectID_p[i];
 }
@@ -105,7 +105,7 @@ bool MemoryLogSink::postLocally(const LogMessage& message) {
   return posted;
 }
 
-void MemoryLogSink::writeLocally(Double time, const String& message, const String& priority,
+void MemoryLogSink::writeLocally(double time, const String& message, const String& priority,
                                  const String& location, const String& objectID) {
   if (nmsg_p >= time_p.nelements()) {
     resize(nmsg_p + 1);
@@ -128,7 +128,7 @@ void MemoryLogSink::clearLocally() {
   nmsg_p = 0;
 }
 
-void MemoryLogSink::resize(uInt nrnew) {
+void MemoryLogSink::resize(unsigned int nrnew) {
   // Increase with at least 64 elements.
   if (nrnew < time_p.nelements() + 64) {
     nrnew = time_p.nelements() + 64;

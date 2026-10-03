@@ -39,13 +39,13 @@
 #include <casacore/casa/namespace.h>
 int main() {
   //     SPolynomial();
-  SPolynomial<Float> null;
+  SPolynomial<float> null;
   //     SPolynomial(uInt order);
   //     void setCoefficient(uInt which, T value);
   //     virtual void setAdjustParameter(uInt which, const T &val);
-  SPolynomial<Float> linear(1);
+  SPolynomial<float> linear(1);
   linear.setCoefficient(1, 1);  // x
-  SPolynomial<Float> square(2);
+  SPolynomial<float> square(2);
   square.setCoefficient(2, 1);  // x^2
 
   //     virtual T operator()(const T &x) const;
@@ -61,7 +61,7 @@ int main() {
                    null[0 + 3] == 0.0f && linear[0 + 3] == 0.0f && linear[1 + 3] == 1.0f &&
                    square[0 + 3] == 0.0f && square[1 + 3] == 0.0f && square.coefficient(2) == 1.0f);
   AlwaysAssertExit(null.nparameters() == 1 + 3 && square.nparameters() == 3 + 3);
-  Vector<Float> sqrCoeff1, sqrCoeff2;
+  Vector<float> sqrCoeff1, sqrCoeff2;
   sqrCoeff1 = square.coefficients();
   AlwaysAssertExit(sqrCoeff1.nelements() == 3);
   AlwaysAssertExit(sqrCoeff1(0) == 0.0f);
@@ -70,16 +70,16 @@ int main() {
 
   //     SPolynomial(const SPolynomial &other);
   //     SPolynomial<T> &operator=(const SPolynomial<T> &other);
-  SPolynomial<Float> squareCopy1(square);
-  SPolynomial<Float> squareCopy2;
+  SPolynomial<float> squareCopy1(square);
+  SPolynomial<float> squareCopy2;
   squareCopy2 = square;
 
   AlwaysAssertExit(square == squareCopy1 && square == squareCopy2);
 
   //     void setCoefficients(const Vector<T> &coefficients);
   //     virtual void setAdjustParameters(const Vector<T> &val);
-  SPolynomial<Float> tmp1(3), tmp2(3);
-  Vector<Float> coefficients(4);
+  SPolynomial<float> tmp1(3), tmp2(3);
+  Vector<float> coefficients(4);
   indgen(coefficients);  // x + 2x^2 + 3x^3
 
   tmp1.setCoefficients(coefficients);
@@ -93,7 +93,7 @@ int main() {
 
   //	clone()
   //     ~SPolynomial();
-  Function<Float> *tmp3ptr = tmp2.clone();
+  Function<float> *tmp3ptr = tmp2.clone();
   /*    AlwaysAssertExit(tmp3ptr->nparameters() == 4+3 &&
                    (*tmp3ptr)[0+3] == 0.0f &&
                    (*tmp3ptr)[1+3] == 1.0f &&
@@ -103,21 +103,21 @@ int main() {
   delete tmp3ptr;
 
   // Test Auto differentiation // 1 + 2x + 3x^2
-  SPolynomial<AutoDiffA<Double>> sq2(2);
-  sq2[0] = AutoDiffA<Double>(1.0, 3, 0);
-  sq2[1] = AutoDiffA<Double>(2.0, 3, 1);
-  sq2[2] = AutoDiffA<Double>(3.0, 3, 2);
-  cout << "Generic(3):  " << sq2(AutoDiffA<Double>(3.0)) << endl;
+  SPolynomial<AutoDiffA<double>> sq2(2);
+  sq2[0] = AutoDiffA<double>(1.0, 3, 0);
+  sq2[1] = AutoDiffA<double>(2.0, 3, 1);
+  sq2[2] = AutoDiffA<double>(3.0, 3, 2);
+  cout << "Generic(3):  " << sq2(AutoDiffA<double>(3.0)) << endl;
 
   // Test manual differentiation // 1 + 2x + 3x^2
-  SPolynomial<AutoDiff<Double>> sq3(2);
-  sq3[0] = AutoDiff<Double>(1.0, 3, 0);
-  sq3[1] = AutoDiff<Double>(2.0, 3, 1);
-  sq3[2] = AutoDiff<Double>(3.0, 3, 2);
+  SPolynomial<AutoDiff<double>> sq3(2);
+  sq3[0] = AutoDiff<double>(1.0, 3, 0);
+  sq3[1] = AutoDiff<double>(2.0, 3, 1);
+  sq3[2] = AutoDiff<double>(3.0, 3, 2);
   cout << "Specific(3): " << sq3(3.0) << endl;
   AlwaysAssertExit(
-      near(sq2(AutoDiffA<Double>(3.0)).value(), sq3(3.0).value()) &&
-      allNear(sq2(AutoDiffA<Double>(3.0)).derivatives(), sq3(3.0).derivatives(), 1e-13));
+      near(sq2(AutoDiffA<double>(3.0)).value(), sq3(3.0).value()) &&
+      allNear(sq2(AutoDiffA<double>(3.0)).derivatives(), sq3(3.0).derivatives(), 1e-13));
   cout << "OK" << endl;
   return 0;
 }

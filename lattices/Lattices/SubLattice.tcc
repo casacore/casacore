@@ -261,7 +261,7 @@ bool SubLattice<T>::isWritable() const {
 }
 
 template <class T>
-bool SubLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool SubLattice<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsLatticePtr->lock(type, nattempts);
 }
 template <class T>
@@ -405,15 +405,15 @@ void SubLattice<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& wh
 }
 
 template <class T>
-uInt SubLattice<T>::advisedMaxPixels() const {
+unsigned int SubLattice<T>::advisedMaxPixels() const {
   return itsLatticePtr->advisedMaxPixels();
 }
 
 template <class T>
-IPosition SubLattice<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition SubLattice<T>::doNiceCursorShape(unsigned int maxPixels) const {
   IPosition cursorShape(itsLatticePtr->niceCursorShape(maxPixels));
   const IPosition& shape = itsRegion.slicer().length();
-  for (uInt i = 0; i < shape.nelements(); i++) {
+  for (unsigned int i = 0; i < shape.nelements(); i++) {
     if (cursorShape(i) > shape(i)) {
       cursorShape(i) = shape(i);
     }
@@ -495,8 +495,8 @@ void SubLattice<T>::andMask(Array<bool>& buffer, bool ref, const Array<bool>& tm
   bool deleteBuf, deleteTmp;
   const bool* tmpptr = tmpbuf.getStorage(deleteTmp);
   bool* bufptr = buffer.getStorage(deleteBuf);
-  uInt n = buffer.nelements();
-  for (uInt i = 0; i < n; i++) {
+  unsigned int n = buffer.nelements();
+  for (unsigned int i = 0; i < n; i++) {
     if (!tmpptr[i]) {
       bufptr[i] = tmpptr[i];
     }

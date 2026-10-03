@@ -109,7 +109,7 @@ class HyperPlaneParam : public Function<T> {
   //  default, the coefficients are initialized to zero. The default plane has
   //  <src>m=0</src>
   //  <group>
-  explicit HyperPlaneParam(uInt m = 0);
+  explicit HyperPlaneParam(unsigned int m = 0);
   // </group>
 
   // Copy constructor (deep copy)
@@ -146,7 +146,7 @@ class HyperPlaneParam : public Function<T> {
   }
 
   // What is the dimension of the parameter list
-  virtual uInt ndim() const { return this->param_p.nelements(); }
+  virtual unsigned int ndim() const { return this->param_p.nelements(); }
 
   // # Make members of parent classes known.
  protected:

@@ -156,7 +156,7 @@ template <typename T>
 class CompareIntervalReal : public BaseCompare {
  public:
   // Construct from the given interval values.
-  CompareIntervalReal(Double interval, Double start);
+  CompareIntervalReal(double interval, double start);
 
   virtual ~CompareIntervalReal();
 
@@ -164,8 +164,8 @@ class CompareIntervalReal : public BaseCompare {
   virtual int comp(const void* obj1, const void* obj2) const;
 
  private:
-  Double itsInterval;
-  Double itsStart;
+  double itsInterval;
+  double itsStart;
 };
 
 // <summary>Case-insensitive string comparison class </summary>

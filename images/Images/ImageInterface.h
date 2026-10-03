@@ -318,7 +318,7 @@ class ImageInterface : public MaskedLattice<T> {
   // Otherwise a number is appended to the root name to make it unique.
   // The number starts at the given number and is incremented until the name
   // is unique.
-  String makeUniqueRegionName(const String& rootName, uInt startNumber = 1) const;
+  String makeUniqueRegionName(const String& rootName, unsigned int startNumber = 1) const;
 
   // Check class invariants.
   virtual bool ok() const = 0;
@@ -368,7 +368,7 @@ class ImageInterface : public MaskedLattice<T> {
 };
 
 // # Declare extern templates for often used types.
-extern template class ImageInterface<Float>;
+extern template class ImageInterface<float>;
 extern template class ImageInterface<Complex>;
 
 }  // namespace casacore

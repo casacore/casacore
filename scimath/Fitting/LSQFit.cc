@@ -37,7 +37,7 @@ LSQFit::AsReal LSQFit::ASREAL = LSQFit::AsReal();
 LSQFit::Conjugate LSQFit::CONJUGATE = LSQFit::Conjugate();
 
 // # Constructors
-LSQFit::LSQFit(uInt nUnknowns, uInt nConstraints)
+LSQFit::LSQFit(unsigned int nUnknowns, unsigned int nConstraints)
     : state_p(0),
       nun_p(nUnknowns),
       ncon_p(nConstraints),
@@ -69,7 +69,7 @@ LSQFit::LSQFit(uInt nUnknowns, uInt nConstraints)
   clear();
 }
 
-LSQFit::LSQFit(uInt nUnknowns, const LSQReal &, uInt nConstraints)
+LSQFit::LSQFit(unsigned int nUnknowns, const LSQReal &, unsigned int nConstraints)
     : state_p(0),
       nun_p(nUnknowns),
       ncon_p(nConstraints),
@@ -101,7 +101,7 @@ LSQFit::LSQFit(uInt nUnknowns, const LSQReal &, uInt nConstraints)
   clear();
 }
 
-LSQFit::LSQFit(uInt nUnknowns, const LSQComplex &, uInt nConstraints)
+LSQFit::LSQFit(unsigned int nUnknowns, const LSQComplex &, unsigned int nConstraints)
     : state_p(0),
       nun_p(2 * nUnknowns),
       ncon_p(2 * nConstraints),
@@ -226,18 +226,18 @@ void LSQFit::init() {
   r_p = n_p;
   if (nun_p) {
     norm_p = new LSQMatrix(nun_p);
-    if (ncon_p) constr_p = new Double[nun_p * ncon_p];
+    if (ncon_p) constr_p = new double[nun_p * ncon_p];
   }
-  if (n_p) known_p = new Double[n_p];
-  error_p = new Double[N_ErrorField];
+  if (n_p) known_p = new double[n_p];
+  error_p = new double[N_ErrorField];
 }
 
 void LSQFit::clear() {
   if (piv_p)
-    for (uInt *i = piv_p; i != piv_p + n_p; ++i) *i = i - piv_p;
+    for (unsigned int *i = piv_p; i != piv_p + n_p; ++i) *i = i - piv_p;
   if (norm_p) norm_p->clear();
   if (known_p) std::fill_n(known_p, n_p, 0.0);
-  if (error_p) std::fill_n(error_p, uInt(N_ErrorField), 0.0);
+  if (error_p) std::fill_n(error_p, static_cast<unsigned int>(N_ErrorField), 0.0);
   if (ncon_p) std::fill_n(constr_p, ncon_p * nun_p, 0.0);
   state_p = 0;
 }
@@ -269,15 +269,15 @@ void LSQFit::deinit() {
 
 void LSQFit::copy(const LSQFit &other, bool all) {
   if (!nun_p) return;
-  if (other.known_p && !known_p) known_p = new Double[n_p];
-  if (other.error_p && !error_p) error_p = new Double[N_ErrorField];
-  if (other.constr_p && !constr_p) constr_p = new Double[ncon_p * nun_p];
+  if (other.known_p && !known_p) known_p = new double[n_p];
+  if (other.error_p && !error_p) error_p = new double[N_ErrorField];
+  if (other.constr_p && !constr_p) constr_p = new double[ncon_p * nun_p];
   if (other.nceq_p && !nceq_p) nceq_p = new LSQMatrix(nnc_p);
   if (other.norm_p && !norm_p) norm_p = new LSQMatrix(nun_p);
   if (all) {
-    if (other.piv_p && !piv_p) piv_p = new uInt[nnc_p];
-    if (other.sol_p && !sol_p) sol_p = new Double[nnc_p];
-    if (other.lar_p && !lar_p) lar_p = new Double[n_p * n_p];
+    if (other.piv_p && !piv_p) piv_p = new unsigned int[nnc_p];
+    if (other.sol_p && !sol_p) sol_p = new double[nnc_p];
+    if (other.lar_p && !lar_p) lar_p = new double[n_p * n_p];
   }
   if (other.norm_p) norm_p->copy(*(other.norm_p));
   if (other.known_p) std::copy(other.known_p, other.known_p + n_p, known_p);
@@ -293,12 +293,12 @@ void LSQFit::copy(const LSQFit &other, bool all) {
 
 // # Member functions
 
-bool LSQFit::invert(uInt &nRank, bool doSVD) {
+bool LSQFit::invert(unsigned int &nRank, bool doSVD) {
   // Already done
   if ((n_p != nun_p) && (state_p & INVERTED)) return true;
   // Copy the data for solution equations
   createNCEQ();
-  Double d0(0);  // collinearity test
+  double d0(0);  // collinearity test
   // Assume non-linear
   state_p &= ~NONLIN;
   // Make diagonal != 0
@@ -308,29 +308,29 @@ bool LSQFit::invert(uInt &nRank, bool doSVD) {
     if (!invertRect()) return false;
   } else {
     // decompose
-    for (uInt i = 0; i < nnc_p; i++) {
+    for (unsigned int i = 0; i < nnc_p; i++) {
       if (i < r_p) {                  // still rank left
-        Double *i3 = nceq_p->row(i);  // row pointer
+        double *i3 = nceq_p->row(i);  // row pointer
         while (true) {
           d0 = i3[i];  // get collinearity
-          for (uInt i2 = 0; i2 < i; i2++) {
-            Double *i4 = nceq_p->row(i2);  // row pointer
+          for (unsigned int i2 = 0; i2 < i; i2++) {
+            double *i4 = nceq_p->row(i2);  // row pointer
             d0 -= i4[i] * i4[i] / i4[i2];
           }
           if (d0 * d0 / i3[i] <= prec_p) {       // dependancy
             if (!doSVD) return false;            // should be ok
             if (i < r_p - 1) {                   // rank left
-              uInt j0 = r_p - 1;                 // rank pointer
-              for (uInt i2 = 0; i2 < i; i2++) {  // shift pivot
-                Double *i4 = nceq_p->row(i2);    // row pointer
+              unsigned int j0 = r_p - 1;                 // rank pointer
+              for (unsigned int i2 = 0; i2 < i; i2++) {  // shift pivot
+                double *i4 = nceq_p->row(i2);    // row pointer
                 std::swap(i4[i], i4[j0]);
               }
               std::swap(i3[i], nceq_p->row(j0)[j0]);
-              for (uInt i2 = i + 1; i2 < j0; i2++) {
+              for (unsigned int i2 = i + 1; i2 < j0; i2++) {
                 std::swap(i3[i2], nceq_p->row(i2)[j0]);
               }
-              Double *i4 = nceq_p->row(j0);               // row pointer
-              for (uInt i2 = j0 + 1; i2 < nnc_p; i2++) {  // shift pivot
+              double *i4 = nceq_p->row(j0);               // row pointer
+              for (unsigned int i2 = j0 + 1; i2 < nnc_p; i2++) {  // shift pivot
                 std::swap(i3[i2], i4[i2]);
               }
               r_p--;  // decrease rank
@@ -343,42 +343,42 @@ bool LSQFit::invert(uInt &nRank, bool doSVD) {
           break;
         }
         i3[i] = d0;                                // diagonal
-        for (uInt i1 = i + 1; i1 < nnc_p; i1++) {  // lu decomposition
-          for (uInt i2 = 0; i2 < i; i2++) {
-            Double *i4 = nceq_p->row(i2);  // row pointer
+        for (unsigned int i1 = i + 1; i1 < nnc_p; i1++) {  // lu decomposition
+          for (unsigned int i2 = 0; i2 < i; i2++) {
+            double *i4 = nceq_p->row(i2);  // row pointer
             i3[i1] -= i4[i] * i4[i1] / i4[i2];
           }
         }
       }
     }
     // constraints
-    for (uInt i1 = r_p; i1 < nnc_p; i1++) {
-      for (uInt i = r_p - 1; (Int)i >= 0; i--) {
-        Double *i3 = nceq_p->row(i);  // row pointer
-        for (uInt i2 = i + 1; i2 < r_p; i2++) {
+    for (unsigned int i1 = r_p; i1 < nnc_p; i1++) {
+      for (unsigned int i = r_p - 1; (int)i >= 0; i--) {
+        double *i3 = nceq_p->row(i);  // row pointer
+        for (unsigned int i2 = i + 1; i2 < r_p; i2++) {
           i3[i1] += i3[i2] * nceq_p->row(i2)[i1];
         }
         i3[i1] /= -i3[i];
       }
     }
     // rank basis (a=i+g1'*.g1')
-    for (uInt i = r_p; i < nnc_p; i++) {
-      Double *i3 = nceq_p->row(i);  // row pointer
-      for (uInt i1 = i; i1 < nnc_p; i1++) {
+    for (unsigned int i = r_p; i < nnc_p; i++) {
+      double *i3 = nceq_p->row(i);  // row pointer
+      for (unsigned int i1 = i; i1 < nnc_p; i1++) {
         i3[i1] = 0;
-        for (uInt i2 = 0; i2 < r_p; i2++) {
-          Double *i4 = nceq_p->row(i2);  // row pointer
+        for (unsigned int i2 = 0; i2 < r_p; i2++) {
+          double *i4 = nceq_p->row(i2);  // row pointer
           i3[i1] += i4[i] * i4[i1];
         }
       }
       i3[i] += 1.0;
     }
     // triangular a
-    for (uInt i = r_p; i < nnc_p; i++) {
-      Double *i3 = nceq_p->row(i);  // row pointer
-      for (uInt i1 = i; i1 < nnc_p; i1++) {
-        for (uInt i2 = r_p; i2 < i; i2++) {
-          Double *i4 = nceq_p->row(i2);  // row pointer
+    for (unsigned int i = r_p; i < nnc_p; i++) {
+      double *i3 = nceq_p->row(i);  // row pointer
+      for (unsigned int i1 = i; i1 < nnc_p; i1++) {
+        for (unsigned int i2 = r_p; i2 < i; i2++) {
+          double *i4 = nceq_p->row(i2);  // row pointer
           i3[i1] -= i4[i] * i4[i1] / i4[i2];
         }
       }
@@ -393,18 +393,18 @@ bool LSQFit::invert(uInt &nRank, bool doSVD) {
 void LSQFit::solveIt() {
   getWorkSOL();
   if (state_p & INVERTED) {              // constraints inverted
-    for (uInt i1 = 0; i1 < r_p; i1++) {  // all unknowns
-      Double *j0 = nceq_p->row(i1);
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {  // all unknowns
+      double *j0 = nceq_p->row(i1);
       sol_p[i1] = 0;
-      for (uInt i2 = 0; i2 < i1; i2++) {
+      for (unsigned int i2 = 0; i2 < i1; i2++) {
         sol_p[i1] += nceq_p->row(i2)[i1] * known_p[i2];
       }
-      for (uInt i2 = i1; i2 < r_p; i2++) {
+      for (unsigned int i2 = i1; i2 < r_p; i2++) {
         sol_p[i1] += j0[i2] * known_p[i2];
       }
     }
-    Double dmu = 0;
-    for (uInt i1 = 0; i1 < r_p; i1++) {
+    double dmu = 0;
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {
       dmu += sol_p[i1] * known_p[i1];  // make rms
     }
     dmu = error_p[SUMLL] - dmu;  // chi**2
@@ -414,22 +414,22 @@ void LSQFit::solveIt() {
     std::copy(sol_p, sol_p + nnc_p, wsol_p);  // return solution
     // solve
   } else {                               // normal
-    for (uInt i1 = 0; i1 < r_p; i1++) {  // all unknowns
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {  // all unknowns
       sol_p[i1] = known_p[piv_p[i1]];
-      for (uInt i2 = 0; i2 < i1; i2++) {
-        Double *i3 = nceq_p->row(i2);              // row pointer
+      for (unsigned int i2 = 0; i2 < i1; i2++) {
+        double *i3 = nceq_p->row(i2);              // row pointer
         sol_p[i1] -= i3[i1] * sol_p[i2] / i3[i2];  // step 1
       }
     }
-    for (uInt i1 = r_p - 1; (Int)i1 >= 0; i1--) {
-      Double *i3 = nceq_p->row(i1);  // row pointer
-      for (uInt i2 = i1 + 1; i2 < r_p; i2++) {
+    for (unsigned int i1 = r_p - 1; (int)i1 >= 0; i1--) {
+      double *i3 = nceq_p->row(i1);  // row pointer
+      for (unsigned int i2 = i1 + 1; i2 < r_p; i2++) {
         sol_p[i1] -= i3[i2] * sol_p[i2];  // solution
       }
       sol_p[i1] /= i3[i1];
     }
-    Double dmu = 0;
-    for (uInt i1 = 0; i1 < r_p; i1++) {
+    double dmu = 0;
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {
       dmu += sol_p[i1] * known_p[piv_p[i1]];  // make rms
     }
     dmu = error_p[SUMLL] - dmu;  // chi**2
@@ -438,11 +438,11 @@ void LSQFit::solveIt() {
     // Missing rank
     solveMR(nnc_p);
     // solution
-    for (uInt i1 = 0; i1 < nnc_p; ++i1) wsol_p[piv_p[i1]] = sol_p[i1];
+    for (unsigned int i1 = 0; i1 < nnc_p; ++i1) wsol_p[piv_p[i1]] = sol_p[i1];
   }
 }
 
-bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
+bool LSQFit::solveItLoop(double &fit, unsigned int &nRank, bool doSVD) {
   if (!(state_p & NONLIN)) {  // first time through loop
     nonlin_p = startnon_p;
     if (balanced_p) startnon_p *= norm_p->maxDiagonal(nun_p);  // start factor
@@ -457,7 +457,7 @@ bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
     save(false);        // save current information
     state_p |= NONLIN;  // non-first loop
   } else {
-    Double d0((error_p[SUMLL] + nar_p->error_p[SUMLL]) / 2.0);
+    double d0((error_p[SUMLL] + nar_p->error_p[SUMLL]) / 2.0);
     // Get fitting goodness (interim)
     if (d0 > 0)
       fit = (error_p[SUMLL] - nar_p->error_p[SUMLL]) / d0;
@@ -466,16 +466,16 @@ bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
     // Get expected improvement
     d0 = 0;
     if (balanced_p)
-      for (uInt i = 0; i < nun_p; ++i)
+      for (unsigned int i = 0; i < nun_p; ++i)
         d0 += nar_p->sol_p[i] * (nonlin_p * nar_p->sol_p[i] + known_p[i]);
     else
-      for (uInt i = 0; i < nun_p; ++i)
+      for (unsigned int i = 0; i < nun_p; ++i)
         d0 += nar_p->sol_p[i] * (nonlin_p * nar_p->sol_p[i] * (*norm_p->diag(i)) + known_p[i]);
     d0 *= 0.5;
-    Double f = 0.5 * (nar_p->error_p[SUMLL] - error_p[SUMLL]);
+    double f = 0.5 * (nar_p->error_p[SUMLL] - error_p[SUMLL]);
     if (d0 > 0 && f > 0) {
       if (balanced_p) {
-        Double t0(2.0 * f / d0 - 1.0), t1(1.0 / 3.0);
+        double t0(2.0 * f / d0 - 1.0), t1(1.0 / 3.0);
         t0 *= -t0 * t0;
         t0 += 1.0;
         nonlin_p *= (t0 > t1 ? t0 : t1);  // new factor
@@ -488,7 +488,7 @@ bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
       nonlin_p *= stepfactor_p;
       stepfactor_p *= 2;
       if (stepfactor_p > 1e10) ready_p = NOREDUCTION;  /// make it a constant
-      for (Double *i = wsol_p, *i1 = nar_p->sol_p; i != wsol_p + nun_p; ++i, ++i1)
+      for (double *i = wsol_p, *i1 = nar_p->sol_p; i != wsol_p + nun_p; ++i, ++i1)
         *i -= *i1;     // new solution
       restore(false);  // restore info
     }
@@ -508,7 +508,7 @@ bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
     if (normSolution(wsol_p) <= epsval_p * (normSolution(nar_p->sol_p) + epsval_p))
       ready_p = SOLINCREMENT;
     std::swap_ranges(wsol_p, wsol_p + nun_p, nar_p->sol_p);  // restore sol
-    for (Double *i = wsol_p, *i1 = nar_p->sol_p; i != wsol_p + nun_p; ++i, ++i1) *i += *i1;
+    for (double *i = wsol_p, *i1 = nar_p->sol_p; i != wsol_p + nun_p; ++i, ++i1) *i += *i1;
     nar_p->error_p[CHI2] = error_p[CHI2];
     ;
     ;
@@ -529,33 +529,33 @@ bool LSQFit::solveItLoop(Double &fit, uInt &nRank, bool doSVD) {
   return true;
 }
 
-void LSQFit::solveMR(uInt nin) {
+void LSQFit::solveMR(unsigned int nin) {
   // missing rank
-  for (uInt i1 = r_p; i1 < nin; i1++) {  // make b2=-g1'*.x1'
+  for (unsigned int i1 = r_p; i1 < nin; i1++) {  // make b2=-g1'*.x1'
     sol_p[i1] = 0;
-    for (uInt i2 = 0; i2 < r_p; i2++) {
+    for (unsigned int i2 = 0; i2 < r_p; i2++) {
       sol_p[i1] -= sol_p[i2] * nceq_p->row(i2)[i1];
     }
   }
   // sol_pe x2
-  for (uInt i1 = r_p; i1 < nin; i1++) {  // all unknowns
-    for (uInt i2 = r_p; i2 < i1; i2++) {
-      Double *i3 = nceq_p->row(i2);              // row pointer
+  for (unsigned int i1 = r_p; i1 < nin; i1++) {  // all unknowns
+    for (unsigned int i2 = r_p; i2 < i1; i2++) {
+      double *i3 = nceq_p->row(i2);              // row pointer
       sol_p[i1] -= i3[i1] * sol_p[i2] / i3[i2];  // step 1
     }
   }
-  for (uInt i1 = nin - 1; (Int)i1 >= (Int)r_p; i1--) {
-    Double *i3 = nceq_p->row(i1);  // row pointer
-    for (uInt i2 = i1 + 1; i2 < nin; i2++) {
+  for (unsigned int i1 = nin - 1; (int)i1 >= (int)r_p; i1--) {
+    double *i3 = nceq_p->row(i1);  // row pointer
+    for (unsigned int i2 = i1 + 1; i2 < nin; i2++) {
       sol_p[i1] -= i3[i2] * sol_p[i2];  // solution
     }
     sol_p[i1] /= i3[i1];
   }
   // final x1
   if (r_p < nnc_p) {
-    for (uInt i1 = 0; i1 < r_p; i1++) {
-      Double *i3 = nceq_p->row(i1);  // row pointer
-      for (uInt i2 = r_p; i2 < nin; i2++) {
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {
+      double *i3 = nceq_p->row(i1);  // row pointer
+      for (unsigned int i2 = r_p; i2 < nin; i2++) {
         sol_p[i1] += sol_p[i2] * i3[i2];
       }
     }
@@ -565,44 +565,44 @@ void LSQFit::solveMR(uInt nin) {
 bool LSQFit::invertRect() {
   // Already done?
   if (state_p & INVERTED) return true;
-  if (!lar_p) lar_p = new Double[nnc_p * nnc_p];  // get workspace
+  if (!lar_p) lar_p = new double[nnc_p * nnc_p];  // get workspace
   if (nnc_p != nun_p) {                           // lu necessary
     // lu decomposition
     // get matrix
-    for (uInt i = 0; i < nnc_p; i++) {           // fill matrix
-      Double *j0 = nceq_p->row(i);               // input row
-      Double *j1 = rowrt(i);                     // output row
+    for (unsigned int i = 0; i < nnc_p; i++) {           // fill matrix
+      double *j0 = nceq_p->row(i);               // input row
+      double *j1 = rowrt(i);                     // output row
       j1[i] = j0[i];                             // diagonal
-      for (uInt i1 = i + 1; i1 < nnc_p; i1++) {  // rest
+      for (unsigned int i1 = i + 1; i1 < nnc_p; i1++) {  // rest
         j1[i1] = j0[i1];
         rowrt(i1)[i] = j0[i1];
       }
     }
     // get scaling
-    for (uInt i = 0; i < nnc_p; i++) {  // column loop
-      Double d0 = 0;
-      for (uInt i1 = 0; i1 < nnc_p; i1++) {
-        Double *j1 = rowrt(i1);
+    for (unsigned int i = 0; i < nnc_p; i++) {  // column loop
+      double d0 = 0;
+      for (unsigned int i1 = 0; i1 < nnc_p; i1++) {
+        double *j1 = rowrt(i1);
         if (std::abs(j1[i]) > d0) d0 = std::abs(j1[i]);
       }
       if (d0 == 0) return false;  // cannot solve
       sol_p[i] = 1. / d0;         // save scaling
     }
     // do crout
-    for (uInt i1 = 0; i1 < nnc_p; i1++) {  // all columns
-      Double *j0 = rowrt(i1);
-      for (uInt i = 0; i < i1; i++) {
-        for (uInt i2 = 0; i2 < i; i2++) {
-          Double *j1 = rowrt(i2);
+    for (unsigned int i1 = 0; i1 < nnc_p; i1++) {  // all columns
+      double *j0 = rowrt(i1);
+      for (unsigned int i = 0; i < i1; i++) {
+        for (unsigned int i2 = 0; i2 < i; i2++) {
+          double *j1 = rowrt(i2);
           j0[i] -= j1[i] * j0[i2];
         }
       }
 
-      Double d0 = 0;
-      uInt i4 = 0;
-      for (uInt i = i1; i < nnc_p; i++) {  // check pivot
-        for (uInt i2 = 0; i2 < i1; i2++) {
-          Double *j1 = rowrt(i2);
+      double d0 = 0;
+      unsigned int i4 = 0;
+      for (unsigned int i = i1; i < nnc_p; i++) {  // check pivot
+        for (unsigned int i2 = 0; i2 < i1; i2++) {
+          double *j1 = rowrt(i2);
           j0[i] -= j1[i] * j0[i2];
         }
         if (sol_p[i] * std::abs(j0[i]) >= d0) {  // find best pivot
@@ -611,37 +611,37 @@ bool LSQFit::invertRect() {
         }
       }
       if (i1 != i4) {  // interchange rows
-        for (uInt i2 = 0; i2 < nnc_p; i2++) {
-          Double *j1 = rowrt(i2);
+        for (unsigned int i2 = 0; i2 < nnc_p; i2++) {
+          double *j1 = rowrt(i2);
           std::swap(j1[i4], j1[i1]);
         }
         sol_p[i4] = sol_p[i1];  // change scale factor
       }
       piv_p[i1] = i4;         // save pivot
       if (i1 != nnc_p - 1) {  // correct for pivot
-        for (uInt i = i1 + 1; i < nnc_p; i++) j0[i] /= j0[i1];
+        for (unsigned int i = i1 + 1; i < nnc_p; i++) j0[i] /= j0[i1];
       }
     }
     // do invert
-    for (uInt i3 = 0; i3 < nnc_p; i3++) {  // all columns
+    for (unsigned int i3 = 0; i3 < nnc_p; i3++) {  // all columns
       std::fill_n(sol_p, nnc_p, 0.0);      // inversion test
       sol_p[i3] = 1.0;
-      for (uInt i = 0; i < nnc_p; i++) {       // forward
+      for (unsigned int i = 0; i < nnc_p; i++) {       // forward
         std::swap(sol_p[piv_p[i]], sol_p[i]);  // pivots
-        for (uInt i1 = 0; i1 < i; i1++) {
-          Double *j0 = rowrt(i1);
+        for (unsigned int i1 = 0; i1 < i; i1++) {
+          double *j0 = rowrt(i1);
           sol_p[i] -= j0[i] * sol_p[i1];
         }
       }
-      for (uInt i = nnc_p - 1; (Int)i >= 0; i--) {  // backward
-        Double *j0 = rowrt(i);
-        for (uInt i1 = i + 1; i1 < nnc_p; i1++) {
+      for (unsigned int i = nnc_p - 1; (int)i >= 0; i--) {  // backward
+        double *j0 = rowrt(i);
+        for (unsigned int i1 = i + 1; i1 < nnc_p; i1++) {
           sol_p[i] -= rowrt(i1)[i] * sol_p[i1];
         }
         sol_p[i] /= j0[i];
       }
-      Double *j0 = nceq_p->row(i3);        // row result
-      for (uInt i = i3; i < nnc_p; i++) {  // save inverted
+      double *j0 = nceq_p->row(i3);        // row result
+      for (unsigned int i = i3; i < nnc_p; i++) {  // save inverted
         j0[i] = sol_p[i];
       }
     }
@@ -649,21 +649,21 @@ bool LSQFit::invertRect() {
     return true;
   }
   // invert cholesky
-  for (uInt i = 0; i < r_p; i++) {
-    for (uInt i1 = 0; i1 < r_p; i1++) {  // all unknowns
+  for (unsigned int i = 0; i < r_p; i++) {
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {  // all unknowns
       if (i == piv_p[i1]) {
         sol_p[i1] = 1;
       } else {
         sol_p[i1] = 0;
       }
-      for (uInt i2 = 0; i2 < i1; i2++) {
-        Double *i3 = nceq_p->row(i2);              // row pointer
+      for (unsigned int i2 = 0; i2 < i1; i2++) {
+        double *i3 = nceq_p->row(i2);              // row pointer
         sol_p[i1] -= i3[i1] * sol_p[i2] / i3[i2];  // step 1
       }
     }
-    for (uInt i1 = r_p - 1; (Int)i1 >= 0; i1--) {
-      Double *i3 = nceq_p->row(i1);  // row pointer
-      for (uInt i2 = i1 + 1; i2 < r_p; i2++) {
+    for (unsigned int i1 = r_p - 1; (int)i1 >= 0; i1--) {
+      double *i3 = nceq_p->row(i1);  // row pointer
+      for (unsigned int i2 = i1 + 1; i2 < r_p; i2++) {
         sol_p[i1] -= i3[i2] * sol_p[i2];  // solution
       }
       sol_p[i1] /= i3[i1];
@@ -671,27 +671,27 @@ bool LSQFit::invertRect() {
     // missing rank
     solveMR(nun_p);
     // solution
-    for (uInt i1 = 0; i1 < nun_p; i1++) {  // save solution
+    for (unsigned int i1 = 0; i1 < nun_p; i1++) {  // save solution
       rowrt(i)[piv_p[i1]] = sol_p[i1];
     }
   }
   // and again
-  for (uInt i = 0; i < nun_p; i++) {
-    for (uInt i1 = 0; i1 < r_p; i1++) {  // get cv
+  for (unsigned int i = 0; i < nun_p; i++) {
+    for (unsigned int i1 = 0; i1 < r_p; i1++) {  // get cv
       sol_p[i1] = rowrt(i1)[i];
     }
     // missing rank
     solveMR(nun_p);
     // solution
-    for (uInt i1 = 0; i1 < nun_p; i1++) {  // save solution
+    for (unsigned int i1 = 0; i1 < nun_p; i1++) {  // save solution
       rowrt(piv_p[i1])[i] = sol_p[i1];
     }
   }
   // Save solution
-  for (uInt i = 0; i < nun_p; i++) {
-    Double *j0 = nceq_p->row(i);  // output row
-    Double *j1 = rowru(i);        // input row
-    for (uInt i1 = i; i1 < nun_p; i1++) j0[i1] = j1[i1];
+  for (unsigned int i = 0; i < nun_p; i++) {
+    double *j0 = nceq_p->row(i);  // output row
+    double *j1 = rowru(i);        // input row
+    for (unsigned int i1 = i; i1 < nun_p; i1++) j0[i1] = j1[i1];
   }
 
   state_p |= INVERTED;
@@ -701,33 +701,33 @@ bool LSQFit::invertRect() {
 bool LSQFit::merge(const LSQFit &other) {
   if (other.nun_p != nun_p || (state_p & ~NONLIN) != (other.state_p & ~NONLIN)) return false;
   // Copy normal equations
-  Double *i2 = norm_p->row(0);
-  Double *i3 = other.norm_p->row(0);
-  for (uInt i = 0; i < nun_p; ++i)
-    for (uInt j = i; j < nun_p; ++j, ++i2, ++i3) *i2 += *i3;
+  double *i2 = norm_p->row(0);
+  double *i3 = other.norm_p->row(0);
+  for (unsigned int i = 0; i < nun_p; ++i)
+    for (unsigned int j = i; j < nun_p; ++j, ++i2, ++i3) *i2 += *i3;
   // Copy known terms
   i2 = known_p;
   i3 = other.known_p;
-  for (uInt i = 0; i < nun_p; ++i, ++i2, ++i3) *i2 += *i3;
+  for (unsigned int i = 0; i < nun_p; ++i, ++i2, ++i3) *i2 += *i3;
   // Copy statistics information
   error_p[NC] += other.error_p[NC];
   error_p[SUMWEIGHT] += other.error_p[SUMWEIGHT];
   error_p[SUMLL] += other.error_p[SUMLL];
   // Copy constraint equations
-  for (uInt i = 0; i < other.ncon_p; ++i) {
+  for (unsigned int i = 0; i < other.ncon_p; ++i) {
     addConstraint(other.constr_p + i * other.nun_p, other.known_p[nun_p + i]);
   }
   return true;
 }
 
-bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
+bool LSQFit::mergeIt(const LSQFit &other, unsigned int nIndex, const unsigned int *nEqIndex) {
   ///  if (other.nun_p != nIndex || state_p || other.state_p) return false;
   if (other.nun_p != nIndex) return false;
   // Copy normal equations
-  for (uInt i = 0; i < nIndex; ++i) {
+  for (unsigned int i = 0; i < nIndex; ++i) {
     if (nEqIndex[i] < nun_p) {
-      Double *i3 = other.norm_p->row(i);
-      for (uInt i1 = i; i1 < nIndex; ++i1) {
+      double *i3 = other.norm_p->row(i);
+      for (unsigned int i1 = i; i1 < nIndex; ++i1) {
         if (nEqIndex[i1] < nun_p) {
           if (nEqIndex[i] <= nEqIndex[i1]) {
             norm_p->row(nEqIndex[i])[nEqIndex[i1]] += i3[i1];
@@ -738,9 +738,9 @@ bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
     }
   }
   // Copy known terms
-  Double *i2 = known_p;
-  Double *i3 = other.known_p;
-  for (uInt i = 0; i < nIndex; ++i) {
+  double *i2 = known_p;
+  double *i3 = other.known_p;
+  for (unsigned int i = 0; i < nIndex; ++i) {
     if (nEqIndex[i] < nun_p) i2[nEqIndex[i]] += i3[i];
   }
   // Copy statistics information
@@ -748,8 +748,8 @@ bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
   error_p[SUMWEIGHT] += other.error_p[SUMWEIGHT];
   error_p[SUMLL] += other.error_p[SUMLL];
   // Copy constraint equations
-  for (uInt i = 0; i < other.ncon_p; ++i) {
-    addConstraint(nIndex, const_cast<uInt *>(nEqIndex), other.constr_p + i * other.nun_p,
+  for (unsigned int i = 0; i < other.ncon_p; ++i) {
+    addConstraint(nIndex, const_cast<unsigned int *>(nEqIndex), other.constr_p + i * other.nun_p,
                   other.known_p[nun_p + i]);
   }
   return true;
@@ -757,25 +757,25 @@ bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
 
 void LSQFit::reset() { clear(); }
 
-void LSQFit::extendConstraints(uInt n) {
+void LSQFit::extendConstraints(unsigned int n) {
   if ((constr_p && ncon_p == n) || nun_p == 0) return;  // Already right size
   if (n == 0) {
     delete[] constr_p;
     constr_p = 0;
   } else {
-    Double *newcon = new Double[n * nun_p];  // Newly sized area
-    Double *newknw = new Double[n + nun_p];
-    Double *cptr = newcon;  // Prepare copying
-    Double *vptr = newknw;
-    Double *inc = constr_p;
-    Double *inv = known_p;
-    for (uInt j = 0; j < nun_p; ++j) *vptr++ = *inv++;
-    for (uInt i = 0; i < ncon_p && i < n; ++i) {
-      for (uInt j = 0; j < nun_p; ++j) *cptr++ = *inc++;
+    double *newcon = new double[n * nun_p];  // Newly sized area
+    double *newknw = new double[n + nun_p];
+    double *cptr = newcon;  // Prepare copying
+    double *vptr = newknw;
+    double *inc = constr_p;
+    double *inv = known_p;
+    for (unsigned int j = 0; j < nun_p; ++j) *vptr++ = *inv++;
+    for (unsigned int i = 0; i < ncon_p && i < n; ++i) {
+      for (unsigned int j = 0; j < nun_p; ++j) *cptr++ = *inc++;
       *vptr++ = *inv++;
     }
-    for (uInt i = ncon_p; i < n; ++i) {
-      for (uInt j = 0; j < nun_p; ++j) *cptr++ = 0;
+    for (unsigned int i = ncon_p; i < n; ++i) {
+      for (unsigned int j = 0; j < nun_p; ++j) *cptr++ = 0;
       *vptr++ = 0;
     }
     delete[] constr_p;
@@ -795,26 +795,26 @@ void LSQFit::createNCEQ() {
     nnc_p = n_p;
     nceq_p = new LSQMatrix(nnc_p);
     delete[] piv_p;
-    piv_p = new uInt[nnc_p];
+    piv_p = new unsigned int[nnc_p];
     delete[] sol_p;
-    sol_p = new Double[nnc_p];
+    sol_p = new double[nnc_p];
   }
   // Copy the normal and constraint equations
-  Double *ne = norm_p->trian_p;
-  Double *se = nceq_p->trian_p;
-  for (uInt i = 0; i < nun_p; ++i) {
-    for (uInt j = i; j < nun_p; ++j) *se++ = *ne++;
-    for (uInt j = 0; j < ncon_p; ++j) *se++ = constr_p[j * nun_p + i];
+  double *ne = norm_p->trian_p;
+  double *se = nceq_p->trian_p;
+  for (unsigned int i = 0; i < nun_p; ++i) {
+    for (unsigned int j = i; j < nun_p; ++j) *se++ = *ne++;
+    for (unsigned int j = 0; j < ncon_p; ++j) *se++ = constr_p[j * nun_p + i];
   }
-  for (uInt i = nun_p; i < n_p; ++i) {
-    for (uInt j = i; j < n_p; ++j) *se++ = 0;
+  for (unsigned int i = nun_p; i < n_p; ++i) {
+    for (unsigned int j = i; j < n_p; ++j) *se++ = 0;
   }
   // Initialise pivot table ///
-  for (uInt i = 0; i < nnc_p; ++i) piv_p[i] = i;
+  for (unsigned int i = 0; i < nnc_p; ++i) piv_p[i] = i;
   state_p |= TRIANGLE;
 }
 
-void LSQFit::set(uInt nUnknowns, uInt nConstraints) {
+void LSQFit::set(unsigned int nUnknowns, unsigned int nConstraints) {
   deinit();
   nun_p = nUnknowns;
   ncon_p = nConstraints;
@@ -822,7 +822,7 @@ void LSQFit::set(uInt nUnknowns, uInt nConstraints) {
   clear();
 }
 
-void LSQFit::set(uInt nUnknowns, const LSQComplex &, uInt nConstraints) {
+void LSQFit::set(unsigned int nUnknowns, const LSQComplex &, unsigned int nConstraints) {
   deinit();
   nun_p = 2 * nUnknowns;
   ncon_p = 2 * nConstraints;
@@ -830,7 +830,7 @@ void LSQFit::set(uInt nUnknowns, const LSQComplex &, uInt nConstraints) {
   clear();
 }
 
-void LSQFit::set(Double factor, Double LMFactor) {
+void LSQFit::set(double factor, double LMFactor) {
   prec_p = factor * factor;
   startnon_p = LMFactor;
 }
@@ -857,43 +857,43 @@ void LSQFit::restore(bool all) {
   if (nar_p) copy(*nar_p, all);
 }
 
-Double LSQFit::getChi() const {
-  Double *erv(error_p);
+double LSQFit::getChi() const {
+  double *erv(error_p);
   if ((state_p & NONLIN) && nar_p) erv = nar_p->error_p;
-  Double x = erv[CHI2];
+  double x = erv[CHI2];
   return x * x * (erv[NC] - nun_p);
 }
 
-Double LSQFit::getSD() const {
-  Double *erv(error_p);
+double LSQFit::getSD() const {
+  double *erv(error_p);
   if ((state_p & NONLIN) && nar_p) erv = nar_p->error_p;
   return erv[CHI2];
 }
 
-Double LSQFit::getWeightedSD() const {
-  Double *erv(error_p);
+double LSQFit::getWeightedSD() const {
+  double *erv(error_p);
   if ((state_p & NONLIN) && nar_p) erv = nar_p->error_p;
-  Double x = erv[NC];
+  double x = erv[NC];
   if (erv[SUMWEIGHT] > 0.0) x /= erv[SUMWEIGHT];
   return erv[CHI2] * sqrt(std::max(0.0, x));
 }
 
-Double LSQFit::normSolution(const Double *sol) const {
-  Double ret(0);
-  for (const Double *i = sol; i != sol + nun_p; ++i) ret += *i * *i;
+double LSQFit::normSolution(const double *sol) const {
+  double ret(0);
+  for (const double *i = sol; i != sol + nun_p; ++i) ret += *i * *i;
   return sqrt(ret);
 }
 
-Double LSQFit::normInfKnown(const Double *known) const {
-  Double tmp(0), ret(0);
-  for (const Double *i = known; i != known + nun_p; ++i)
+double LSQFit::normInfKnown(const double *known) const {
+  double tmp(0), ret(0);
+  for (const double *i = known; i != known + nun_p; ++i)
     if (ret < (tmp = std::abs(*i))) ret = tmp;
   return ret;
 }
 
-void LSQFit::debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank, Double *&nEq,
-                     Double *&known, Double *&constr, Double *&er, uInt *&piv, Double *&sEq,
-                     Double *&sol, Double &prec, Double &nonlin) const {
+void LSQFit::debugIt(unsigned int &nun, unsigned int &np, unsigned int &ncon, unsigned int &ner, unsigned int &rank, double *&nEq,
+                     double *&known, double *&constr, double *&er, unsigned int *&piv, double *&sEq,
+                     double *&sol, double &prec, double &nonlin) const {
   nun = nun_p;
   np = n_p;
   ncon = ncon_p;
@@ -911,11 +911,11 @@ void LSQFit::debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank, Dou
 }
 
 void LSQFit::getWorkSOL() {
-  if (!wsol_p) wsol_p = new Double[n_p];
+  if (!wsol_p) wsol_p = new double[n_p];
 }
 
 void LSQFit::getWorkCOV() {
-  if (!wcov_p) wcov_p = new Double[n_p * n_p];
+  if (!wcov_p) wcov_p = new double[n_p * n_p];
 }
 
 }  // namespace casacore

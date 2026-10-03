@@ -39,7 +39,7 @@ QVector<T>::QVector(const Vector<T>& v, const Unit& u) : Quantum<Vector<T>>(v, u
 
 template <class T>
 QVector<T>::QVector(const Vector<Quantum<T>>& q) : Quantum<Vector<T>>(Vector<T>(q.size()), "") {
-  uInt n = q.size();
+  unsigned int n = q.size();
   if (n == 0) {
     return;
   }
@@ -58,7 +58,7 @@ QVector<T>::QVector(const Vector<Quantum<T>>& q) : Quantum<Vector<T>>(Vector<T>(
 }
 
 template <class T>
-Quantum<T> QVector<T>::operator[](uInt index) const {
+Quantum<T> QVector<T>::operator[](unsigned int index) const {
   return Quantum<T>(this->getValue()[index], this->getUnit());
 }
 

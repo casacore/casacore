@@ -136,7 +136,7 @@ ImageProxy::ImageProxy(const ValueHolder& values, const ValueHolder& mask,
 
 ImageProxy::ImageProxy(const IPosition& shape, const ValueHolder& value, const Record& coordinates,
                        const String& fileName, bool overwrite, bool asHDF5, const String& maskName,
-                       const IPosition& tileShape, Int)
+                       const IPosition& tileShape, int)
     : itsImageFloat(0),
       itsImageDouble(0),
       itsImageComplex(0),
@@ -156,11 +156,11 @@ ImageProxy::ImageProxy(const IPosition& shape, const ValueHolder& value, const R
     case TpInt:
     case TpUInt:
     case TpFloat:
-      makeImage(Array<Float>(), Array<bool>(), shape, coordinates, fileName, asHDF5, maskName,
+      makeImage(Array<float>(), Array<bool>(), shape, coordinates, fileName, asHDF5, maskName,
                 tileShape);
       break;
     case TpDouble:
-      makeImage(Array<Double>(), Array<bool>(), shape, coordinates, fileName, asHDF5, maskName,
+      makeImage(Array<double>(), Array<bool>(), shape, coordinates, fileName, asHDF5, maskName,
                 tileShape);
       break;
     case TpComplex:
@@ -176,7 +176,7 @@ ImageProxy::ImageProxy(const IPosition& shape, const ValueHolder& value, const R
   }
 }
 
-ImageProxy::ImageProxy(const Vector<String>& names, Int axis)
+ImageProxy::ImageProxy(const Vector<String>& names, int axis)
     : itsImageFloat(0),
       itsImageDouble(0),
       itsImageComplex(0),
@@ -185,13 +185,13 @@ ImageProxy::ImageProxy(const Vector<String>& names, Int axis)
       itsAttrHandler(0) {
   vector<ImageProxy> images;
   images.reserve(names.size());
-  for (uInt i = 0; i < names.size(); ++i) {
+  for (unsigned int i = 0; i < names.size(); ++i) {
     images.push_back(ImageProxy(names[i], "", vector<ImageProxy>()));
   }
   concatImages(images, axis);
 }
 
-ImageProxy::ImageProxy(const vector<ImageProxy>& images, Int axis, Int, Int)
+ImageProxy::ImageProxy(const vector<ImageProxy>& images, int axis, int, int)
     : itsImageFloat(0),
       itsImageDouble(0),
       itsImageComplex(0),
@@ -251,7 +251,7 @@ LatticeBase* ImageProxy::openImage(const String& name, const String& mask,
     }
   }
   Block<LatticeExprNode> tempNodes(images.size());
-  for (uInt i = 0; i < images.size(); ++i) {
+  for (unsigned int i = 0; i < images.size(); ++i) {
     tempNodes[i] = images[i].makeNode();
   }
   String msg;
@@ -359,7 +359,7 @@ void ImageProxy::makeImage(const Array<T>& array, const Array<bool>& mask, const
   }
 }
 
-void ImageProxy::concatImages(const vector<ImageProxy>& images, Int axis) {
+void ImageProxy::concatImages(const vector<ImageProxy>& images, int axis) {
   if (images.size() == 0) {
     throw AipsError("ImageProxy: no images given in vector");
   }
@@ -381,35 +381,35 @@ void ImageProxy::concatImages(const vector<ImageProxy>& images, Int axis) {
   }
 }
 
-void ImageProxy::concatImagesFloat(const vector<ImageProxy>& images, Int axis) {
-  ImageConcat<Float>* concat = new ImageConcat<Float>(axis);
-  for (uInt i = 0; i < images.size(); ++i) {
+void ImageProxy::concatImagesFloat(const vector<ImageProxy>& images, int axis) {
+  ImageConcat<float>* concat = new ImageConcat<float>(axis);
+  for (unsigned int i = 0; i < images.size(); ++i) {
     LatticeBase* lattice = images[i].getLattice();
     if (lattice->dataType() != TpFloat) {
       throw AipsError("Not all images to concatenate have type Float");
     }
     // Note this cast is fully safe.
-    concat->setImage(*(ImageInterface<Float>*)(lattice), true);
+    concat->setImage(*(ImageInterface<float>*)(lattice), true);
   }
   setup(concat);
 }
 
-void ImageProxy::concatImagesDouble(const vector<ImageProxy>& images, Int axis) {
-  ImageConcat<Double>* concat = new ImageConcat<Double>(axis);
-  for (uInt i = 0; i < images.size(); ++i) {
+void ImageProxy::concatImagesDouble(const vector<ImageProxy>& images, int axis) {
+  ImageConcat<double>* concat = new ImageConcat<double>(axis);
+  for (unsigned int i = 0; i < images.size(); ++i) {
     LatticeBase* lattice = images[i].getLattice();
     if (lattice->dataType() != TpDouble) {
       throw AipsError("Not all images to concatenate have type Double");
     }
     // Note this cast is fully safe.
-    concat->setImage(*(ImageInterface<Double>*)(lattice), true);
+    concat->setImage(*(ImageInterface<double>*)(lattice), true);
   }
   setup(concat);
 }
 
-void ImageProxy::concatImagesComplex(const vector<ImageProxy>& images, Int axis) {
+void ImageProxy::concatImagesComplex(const vector<ImageProxy>& images, int axis) {
   ImageConcat<Complex>* concat = new ImageConcat<Complex>(axis);
-  for (uInt i = 0; i < images.size(); ++i) {
+  for (unsigned int i = 0; i < images.size(); ++i) {
     LatticeBase* lattice = images[i].getLattice();
     if (lattice->dataType() != TpComplex) {
       throw AipsError("Not all images to concatenate have type Complex");
@@ -420,9 +420,9 @@ void ImageProxy::concatImagesComplex(const vector<ImageProxy>& images, Int axis)
   setup(concat);
 }
 
-void ImageProxy::concatImagesDComplex(const vector<ImageProxy>& images, Int axis) {
+void ImageProxy::concatImagesDComplex(const vector<ImageProxy>& images, int axis) {
   ImageConcat<DComplex>* concat = new ImageConcat<DComplex>(axis);
-  for (uInt i = 0; i < images.size(); ++i) {
+  for (unsigned int i = 0; i < images.size(); ++i) {
     LatticeBase* lattice = images[i].getLattice();
     if (lattice->dataType() != TpDComplex) {
       throw AipsError("Not all images to concatenate have type DComplex");
@@ -443,10 +443,10 @@ void ImageProxy::setup() {
   LatticeBase* lattice = itsLattice.get();
   switch (lattice->dataType()) {
     case TpFloat:
-      itsImageFloat = dynamic_cast<ImageInterface<Float>*>(lattice);
+      itsImageFloat = dynamic_cast<ImageInterface<float>*>(lattice);
       break;
     case TpDouble:
-      itsImageDouble = dynamic_cast<ImageInterface<Double>*>(lattice);
+      itsImageDouble = dynamic_cast<ImageInterface<double>*>(lattice);
       break;
     case TpComplex:
       itsImageComplex = dynamic_cast<ImageInterface<Complex>*>(lattice);
@@ -476,16 +476,16 @@ void ImageProxy::setup() {
 
 void ImageProxy::centreRefPix(CoordinateSystem& cSys, const IPosition& shape) const {
   // Center all axes except Stokes.
-  Int after = -1;
-  Int iS = cSys.findCoordinate(Coordinate::STOKES, after);
-  Int sP = -1;
+  int after = -1;
+  int iS = cSys.findCoordinate(Coordinate::STOKES, after);
+  int sP = -1;
   if (iS >= 0) {
     sP = cSys.pixelAxes(iS)[0];
   }
-  Vector<Double> refPix = cSys.referencePixel();
-  for (uInt i = 0; i < refPix.nelements(); ++i) {
-    if (Int(i) != sP) {
-      refPix[i] = Double(shape[i] / 2);
+  Vector<double> refPix = cSys.referencePixel();
+  for (unsigned int i = 0; i < refPix.nelements(); ++i) {
+    if (int(i) != sP) {
+      refPix[i] = double(shape[i] / 2);
     }
   }
   cSys.setReferencePixel(refPix);
@@ -506,12 +506,12 @@ IPosition ImageProxy::shape() const {
   return itsLattice->shape();
 }
 
-uInt ImageProxy::ndim() const {
+unsigned int ImageProxy::ndim() const {
   checkNull();
   return itsLattice->shape().size();
 }
 
-uInt ImageProxy::size() const {
+unsigned int ImageProxy::size() const {
   checkNull();
   return itsLattice->shape().product();
 }
@@ -558,17 +558,17 @@ Vector<String> ImageProxy::attrNames(const String& groupName) const {
   return itsAttrHandler->openGroup(groupName).attrNames();
 }
 
-uInt ImageProxy::attrNrows(const String& groupName) const {
+unsigned int ImageProxy::attrNrows(const String& groupName) const {
   checkNull();
   return itsAttrHandler->openGroup(groupName).nrows();
 }
 
-ValueHolder ImageProxy::getAttr(const String& groupName, const String& attrName, uInt rownr) const {
+ValueHolder ImageProxy::getAttr(const String& groupName, const String& attrName, unsigned int rownr) const {
   checkNull();
   return itsAttrHandler->openGroup(groupName).getData(attrName, rownr);
 }
 
-Record ImageProxy::getAttrRow(const String& groupName, uInt rownr) const {
+Record ImageProxy::getAttrRow(const String& groupName, unsigned int rownr) const {
   checkNull();
   return itsAttrHandler->openGroup(groupName).getDataRow(rownr);
 }
@@ -583,7 +583,7 @@ Vector<String> ImageProxy::getAttrMeas(const String& groupName, const String& at
   return itsAttrHandler->openGroup(groupName).getMeasInfo(attrName);
 }
 
-void ImageProxy::putAttr(const String& groupName, const String& attrName, uInt rownr,
+void ImageProxy::putAttr(const String& groupName, const String& attrName, unsigned int rownr,
                          const ValueHolder& value, const Vector<String>& units,
                          const Vector<String>& measInfo) {
   checkNull();
@@ -682,7 +682,7 @@ bool ImageProxy::hasLock(bool writeLock) {
   return itsLattice->hasLock(writeLock ? FileLocker::Write : FileLocker::Read);
 }
 
-void ImageProxy::lock(bool writeLock, Int nattempts) {
+void ImageProxy::lock(bool writeLock, int nattempts) {
   checkNull();
   itsLattice->lock(writeLock ? FileLocker::Write : FileLocker::Read, nattempts);
 }
@@ -703,10 +703,10 @@ ImageProxy ImageProxy::subImage2(const IPosition& blc, const IPosition& trc, con
   Slicer slicer(adjustBlc(blc, shp), adjustTrc(trc, shp), adjustInc(inc, shp), Slicer::endIsLast);
   if (itsImageFloat) {
     return ImageProxy(
-        new SubImage<Float>(*itsImageFloat, slicer, true, axesSpec, preserveAxesOrder));
+        new SubImage<float>(*itsImageFloat, slicer, true, axesSpec, preserveAxesOrder));
   } else if (itsImageDouble) {
     return ImageProxy(
-        new SubImage<Double>(*itsImageDouble, slicer, true, axesSpec, preserveAxesOrder));
+        new SubImage<double>(*itsImageDouble, slicer, true, axesSpec, preserveAxesOrder));
   } else if (itsImageComplex) {
     return ImageProxy(
         new SubImage<Complex>(*itsImageComplex, slicer, true, axesSpec, preserveAxesOrder));
@@ -723,7 +723,7 @@ IPosition ImageProxy::adjustBlc(const IPosition& blc, const IPosition& shp) {
   }
   // Initialize possibly missing elements to 0.
   IPosition res(shp.size(), 0);
-  for (uInt i = 0; i < blc.size(); ++i) {
+  for (unsigned int i = 0; i < blc.size(); ++i) {
     if (blc[i] >= shp[i]) {
       throw AipsError("blc value exceeds shape of image");
     } else if (blc[i] > 0) {
@@ -739,7 +739,7 @@ IPosition ImageProxy::adjustTrc(const IPosition& trc, const IPosition& shp) {
   }
   // Initialize possibly missing elements to shape.
   IPosition res(shp - 1);
-  for (uInt i = 0; i < trc.size(); ++i) {
+  for (unsigned int i = 0; i < trc.size(); ++i) {
     if (trc[i] > 0 || trc[i] < shp[i]) {
       res[i] = trc[i];
     }
@@ -753,7 +753,7 @@ IPosition ImageProxy::adjustInc(const IPosition& inc, const IPosition& shp) {
   }
   // Initialize possibly missing elements to 1.
   IPosition res(shp.size(), 1);
-  for (uInt i = 0; i < inc.size(); ++i) {
+  for (unsigned int i = 0; i < inc.size(); ++i) {
     if (inc[i] > 1) {
       res[i] = inc[i];
     }
@@ -783,11 +783,11 @@ Record ImageProxy::coordSys() const {
   // Give the info in C-order (thus reverse values).
   // Also add the axes lengths.
   IPosition shape = itsLattice->shape();
-  for (uInt i = 0; i < itsCoordSys->nCoordinates(); ++i) {
-    Vector<Int> paxes = itsCoordSys->pixelAxes(i);
-    Vector<Int> axes(paxes.size());
-    Vector<Int> axshp(paxes.size());
-    for (uInt j = 0; j < paxes.size(); ++j) {
+  for (unsigned int i = 0; i < itsCoordSys->nCoordinates(); ++i) {
+    Vector<int> paxes = itsCoordSys->pixelAxes(i);
+    Vector<int> axes(paxes.size());
+    Vector<int> axshp(paxes.size());
+    for (unsigned int j = 0; j < paxes.size(); ++j) {
       axes[j] = shape.size() - paxes[paxes.size() - j - 1] - 1;
       axshp[j] = shape[paxes[j]];
     }
@@ -803,47 +803,47 @@ const CoordinateSystem& ImageProxy::coordSysObject() const {
   return *itsCoordSys;
 }
 
-Vector<Double> ImageProxy::toWorld(const Vector<Double>& pixel, bool reverseAxes) {
+Vector<double> ImageProxy::toWorld(const Vector<double>& pixel, bool reverseAxes) {
   checkNull();
-  Vector<Double> coord(pixel.size());
+  Vector<double> coord(pixel.size());
   if (!reverseAxes) {
     coord = pixel;
   } else {
-    for (uInt i = 0; i < pixel.size(); ++i) {
+    for (unsigned int i = 0; i < pixel.size(); ++i) {
       coord[i] = pixel[pixel.size() - i - 1];
     }
   }
-  Vector<Double> world;
+  Vector<double> world;
   if (!itsCoordSys->toWorld(world, coord)) {
     throw AipsError(itsCoordSys->errorMessage());
   }
   if (!reverseAxes) {
     return world;
   }
-  for (uInt i = 0; i < world.size(); ++i) {
+  for (unsigned int i = 0; i < world.size(); ++i) {
     coord[i] = world[world.size() - i - 1];
   }
   return coord;
 }
 
-Vector<Double> ImageProxy::toPixel(const Vector<Double>& world, bool reverseAxes) {
+Vector<double> ImageProxy::toPixel(const Vector<double>& world, bool reverseAxes) {
   checkNull();
-  Vector<Double> coord(world.size());
+  Vector<double> coord(world.size());
   if (!reverseAxes) {
     coord = world;
   } else {
-    for (uInt i = 0; i < world.size(); ++i) {
+    for (unsigned int i = 0; i < world.size(); ++i) {
       coord[i] = world[world.size() - i - 1];
     }
   }
-  Vector<Double> pixel;
+  Vector<double> pixel;
   if (!itsCoordSys->toPixel(pixel, coord)) {
     throw AipsError(itsCoordSys->errorMessage());
   }
   if (!reverseAxes) {
     return pixel;
   }
-  for (uInt i = 0; i < pixel.size(); ++i) {
+  for (unsigned int i = 0; i < pixel.size(); ++i) {
     coord[i] = pixel[pixel.size() - i - 1];
   }
   return coord;
@@ -887,7 +887,7 @@ Record ImageProxy::miscInfo() const {
 }
 
 void ImageProxy::toFits(const String& fileName, bool overwrite, bool velocity, bool optical,
-                        Int bitpix, Double minpix, Double maxpix) const {
+                        int bitpix, double minpix, double maxpix) const {
   checkNull();
   bool ok = false;
   String error("Currently only float images can be converted to FITS");
@@ -993,11 +993,11 @@ void ImageProxy::saveImage(const String& fileName, bool hdf5, bool copyMask,
   delete newImage;
 }
 
-Record ImageProxy::statistics(const Vector<Int>& axes, const String& mask,
+Record ImageProxy::statistics(const Vector<int>& axes, const String& mask,
                               const ValueHolder& minMaxValues, bool exclude, bool robust) const {
   checkNull();
   // Default for cursor is all axes.
-  Vector<Int> axesc(axes);
+  Vector<int> axesc(axes);
   if (axesc.empty()) {
     axesc.resize(ndim());
     indgen(axesc);
@@ -1016,7 +1016,7 @@ Record ImageProxy::statistics(const Vector<Int>& axes, const String& mask,
 }
 
 template <typename T>
-Record ImageProxy::makeStatistics(const ImageInterface<T>& image, const Vector<Int>& axes,
+Record ImageProxy::makeStatistics(const ImageInterface<T>& image, const Vector<int>& axes,
                                   const String&, const ValueHolder& minMaxValues, bool exclude,
                                   bool robust) const {
   checkNull();
@@ -1036,8 +1036,8 @@ Record ImageProxy::makeStatistics(const ImageInterface<T>& image, const Vector<I
     }
   }
   // Get statistics.
-  Array<Double> npts, sum, sumsquared, min, max, mean, sigma;
-  Array<Double> rms, fluxDensity, med, medAbsDevMed, quartile;
+  Array<double> npts, sum, sumsquared, min, max, mean, sigma;
+  Array<double> rms, fluxDensity, med, medAbsDevMed, quartile;
   if (robust) {
     stats.getStatistic(med, LatticeStatsBase::MEDIAN);
     stats.getStatistic(medAbsDevMed, LatticeStatsBase::MEDABSDEVMED);
@@ -1077,9 +1077,9 @@ Record ImageProxy::makeStatistics(const ImageInterface<T>& image, const Vector<I
   return retval;
 }
 
-ImageProxy ImageProxy::regrid(const Vector<Int>& axes, const String& outFile, bool overwrite,
+ImageProxy ImageProxy::regrid(const Vector<int>& axes, const String& outFile, bool overwrite,
                               const IPosition& shape, const Record& coordSys, const String& method,
-                              Int decimate, bool replicate, bool doRefChange, bool forceRegrid) {
+                              int decimate, bool replicate, bool doRefChange, bool forceRegrid) {
   if (!overwrite) {
     File file(outFile);
     if (file.exists()) {
@@ -1101,9 +1101,9 @@ ImageProxy ImageProxy::regrid(const Vector<Int>& axes, const String& outFile, bo
 }
 
 template <typename T>
-ImageProxy ImageProxy::doRegrid(const ImageInterface<T>& image, const Vector<Int>& axes,
+ImageProxy ImageProxy::doRegrid(const ImageInterface<T>& image, const Vector<int>& axes,
                                 const String& outFile, const IPosition& shape,
-                                const Record& coordSys, const String& method, Int decimate,
+                                const Record& coordSys, const String& method, int decimate,
                                 bool replicate, bool doRefChange, bool forceRegrid) {
   String method2 = method;
   ToUpperCaseInPlace(method2);
@@ -1135,11 +1135,11 @@ ImageProxy ImageProxy::doRegrid(const ImageInterface<T>& image, const Vector<Int
         "Coordinate System must be the same");
   }
   // Create the image and mask
-  ImageInterface<Float>* pImOut;
+  ImageInterface<float>* pImOut;
   if (outFile.empty()) {
-    pImOut = new TempImage<Float>(outShape, cSys);
+    pImOut = new TempImage<float>(outShape, cSys);
   } else {
-    pImOut = new PagedImage<Float>(outShape, cSys, outFile);
+    pImOut = new PagedImage<float>(outShape, cSys, outFile);
     /// make hdf5 if image is hdf5
   }
   // Create proxy from it, so it gets deleted in case of an exception.

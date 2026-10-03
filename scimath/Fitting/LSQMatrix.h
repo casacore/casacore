@@ -89,38 +89,38 @@ class LSQMatrix : public RecordTransformable {
   // and zero or null returned if error.
   // <group>
   // Get row pointer in normal equation (points to element <src>[i][0]</src>)
-  Double *row_pub(uInt i) const { return (i < n_p) ? row(i) : 0; };
+  double *row_pub(unsigned int i) const { return (i < n_p) ? row(i) : 0; };
   // Get next row or previous row pointer in normal equation if the pointer
   // <src>row</src> is at row <src>i</src>.
   // <group>
-  void incRow_pub(Double *&row, uInt i) const {
+  void incRow_pub(double *&row, unsigned int i) const {
     if (i < n_p - 1) incRow(row, i);
   };
-  void decRow_pub(Double *&row, uInt i) const {
+  void decRow_pub(double *&row, unsigned int i) const {
     if (i > 0) decRow(row, i);
   };
   // </group>
   // Get diagonal element pointer <src>[i][i]</src>
-  Double *diag_pub(uInt i) const { return ((i < n_p) ? diag(i) : 0); };
+  double *diag_pub(unsigned int i) const { return ((i < n_p) ? diag(i) : 0); };
   // Get length of triangular array
-  uInt nelements_pub() const { return (len_p); };
+  unsigned int nelements_pub() const { return (len_p); };
   // Get number of rows
-  uInt nrows_pub() const { return n_p; };
+  unsigned int nrows_pub() const { return n_p; };
   // Make diagonal element 1 if zero (Note that this is always called when
   // <src>invert()</src> is called). Only n-length sub-matrix is done.
-  void doDiagonal_pub(uInt n) {
+  void doDiagonal_pub(unsigned int n) {
     if (n < n_p) doDiagonal(n);
   }
   // Multiply n-length of diagonal with <src>1+fac</src>
-  void mulDiagonal_pub(uInt n, Double fac) {
+  void mulDiagonal_pub(unsigned int n, double fac) {
     if (n < n_p) mulDiagonal(n, fac);
   };
   // Add <src>fac</src> to n-length of diagonal
-  void addDiagonal_pub(uInt n, Double fac) {
+  void addDiagonal_pub(unsigned int n, double fac) {
     if (n < n_p) addDiagonal(n, fac);
   };
   // Determine max of abs values of n-length of diagonal
-  Double maxDiagonal_pub(uInt n) { return ((n < n_p) ? maxDiagonal(n) : 0); };
+  double maxDiagonal_pub(unsigned int n) { return ((n < n_p) ? maxDiagonal(n) : 0); };
   // </group>
 
  private:
@@ -131,8 +131,8 @@ class LSQMatrix : public RecordTransformable {
   // If a <src>Bool</src> argument is present, the number
   // will be taken as double the number given (assumes complex).
   // <group>
-  explicit LSQMatrix(uInt n);
-  LSQMatrix(uInt n, bool);
+  explicit LSQMatrix(unsigned int n);
+  LSQMatrix(unsigned int n, bool);
   // </group>
   // Copy constructor (deep copy)
   LSQMatrix(const LSQMatrix &other);
@@ -145,8 +145,8 @@ class LSQMatrix : public RecordTransformable {
   // # Operators
   //  Index an element in the triangularised matrix
   //  <group>
-  Double &operator[](uInt index) { return (trian_p[index]); };
-  Double operator[](uInt index) const { return (trian_p[index]); };
+  double &operator[](unsigned int index) { return (trian_p[index]); };
+  double operator[](unsigned int index) const { return (trian_p[index]); };
   // </group>
 
   // # General Member Functions
@@ -154,23 +154,23 @@ class LSQMatrix : public RecordTransformable {
   void reset() { clear(); };
   // Set new sizes (default is for Real, a Bool argument will make it complex)
   // <group>
-  void set(uInt n);
-  void set(uInt n, bool);
+  void set(unsigned int n);
+  void set(unsigned int n, bool);
   // </group>
   // Get row pointer in normal equation (points to element <src>[i][0]</src>)
-  Double *row(uInt i) const { return &trian_p[((n2m1_p - i) * i) / 2]; };
+  double *row(unsigned int i) const { return &trian_p[((n2m1_p - i) * i) / 2]; };
   // Get next row or previous row pointer in normal equation if the pointer
   // <src>row</src> is at row <src>i</src>.
   // <group>
-  void incRow(Double *&row, uInt i) const { row += nm1_p - i; };
-  void decRow(Double *&row, uInt i) const { row -= n_p - i; };
+  void incRow(double *&row, unsigned int i) const { row += nm1_p - i; };
+  void decRow(double *&row, unsigned int i) const { row -= n_p - i; };
   // </group>
   // Get diagonal element pointer <src>[i][i]</src>
-  Double *diag(uInt i) const { return &trian_p[((n2p1_p - i) * i) / 2]; };
+  double *diag(unsigned int i) const { return &trian_p[((n2p1_p - i) * i) / 2]; };
   // Get length of triangular array
-  uInt nelements() const { return (len_p); };
+  unsigned int nelements() const { return (len_p); };
   // Get number of rows
-  uInt nrows() const { return n_p; };
+  unsigned int nrows() const { return n_p; };
   // Copy data.
   void copy(const LSQMatrix &other);
   // Initialise matrix
@@ -181,13 +181,13 @@ class LSQMatrix : public RecordTransformable {
   void deinit();
   // Make diagonal element 1 if zero (Note that this is always called when
   // <src>invert()</src> is called). Only n-length sub-matrix is done.
-  void doDiagonal(uInt n);
+  void doDiagonal(unsigned int n);
   // Multiply n-length of diagonal with <src>1+fac</src>
-  void mulDiagonal(uInt n, Double fac);
+  void mulDiagonal(unsigned int n, double fac);
   // Add <src>fac</src> to n-length of diagonal
-  void addDiagonal(uInt n, Double fac);
+  void addDiagonal(unsigned int n, double fac);
   // Determine max of abs values of n-length of diagonal
-  Double maxDiagonal(uInt n);
+  double maxDiagonal(unsigned int n);
   // Create a Matrix from a record. An error message is generated, and false
   // returned if an invalid record is given. A valid record will return true.
   // Error messages are postfixed to error.
@@ -205,40 +205,40 @@ class LSQMatrix : public RecordTransformable {
   // false returned if unexpectedly no data available for non-zero length
   // (put), or a field has zero length vector(get).
   // <group>
-  static bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
-                        const Double *const in);
-  static bool getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
-                        Double *&out);
-  static bool putCArray(String &error, RecordInterface &out, const String &fname, uInt len,
-                        const uInt *const in);
-  static bool getCArray(String &error, const RecordInterface &in, const String &fname, uInt len,
-                        uInt *&out);
+  static bool putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
+                        const double *const in);
+  static bool getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
+                        double *&out);
+  static bool putCArray(String &error, RecordInterface &out, const String &fname, unsigned int len,
+                        const unsigned int *const in);
+  static bool getCArray(String &error, const RecordInterface &in, const String &fname, unsigned int len,
+                        unsigned int *&out);
   // </group>
 
   // Save or restore using AipsIO.
   void fromAipsIO(AipsIO &in);
   void toAipsIO(AipsIO &out) const;
-  static void putCArray(AipsIO &out, uInt len, const Double *const in);
-  static void getCArray(AipsIO &in, uInt len, Double *&out);
-  static void putCArray(AipsIO &out, uInt len, const uInt *const in);
-  static void getCArray(AipsIO &in, uInt len, uInt *&out);
+  static void putCArray(AipsIO &out, unsigned int len, const double *const in);
+  static void getCArray(AipsIO &in, unsigned int len, double *&out);
+  static void putCArray(AipsIO &out, unsigned int len, const unsigned int *const in);
+  static void getCArray(AipsIO &in, unsigned int len, unsigned int *&out);
 
   // # Data
   //  Matrix size (linear size)
-  uInt n_p;
+  unsigned int n_p;
   // Derived sizes (all 0 if n_p equals 0)
   // <group>
   // Total size
-  uInt len_p;
+  unsigned int len_p;
   // <src>n-1</src>
-  uInt nm1_p;
+  unsigned int nm1_p;
   // <src>2n-1</src>
-  Int n2m1_p;
+  int n2m1_p;
   // <src>2n+1</src>
-  Int n2p1_p;
+  int n2p1_p;
   // </group>
   // Matrix (triangular n_p * n_p)
-  Double *trian_p;
+  double *trian_p;
   // Record field names
   static const String tmatsiz;
   static const String tmatdat;

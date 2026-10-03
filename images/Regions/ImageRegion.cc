@@ -45,7 +45,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ImageRegion::ImageRegion() : LattRegionHolder(uInt(0)), itsWC(0) {}
+ImageRegion::ImageRegion() : LattRegionHolder(static_cast<unsigned int>(0)), itsWC(0) {}
 
 ImageRegion::ImageRegion(const LCRegion& region) : LattRegionHolder(region), itsWC(0) {}
 
@@ -197,7 +197,7 @@ ImageRegion* ImageRegion::fromRecord(const TableRecord& record, const String& ta
   // Convert to correct region object.
   // Note that in the following the ImageRegion constructors take
   // over the pointer returned by fromRecord.
-  Int regionType = record.asInt("isRegion");
+  int regionType = record.asInt("isRegion");
   if (regionType == RegionType::LC) {
     return new ImageRegion(LCRegion::fromRecord(record, tableName));
   }

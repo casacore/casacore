@@ -130,7 +130,7 @@ class TableExprId {
   void setRecord(const RecordInterface&);
 
  private:
-  Int type_p;
+  int type_p;
   union {
     Int64 row_p;
     const RecordInterface* record_p;

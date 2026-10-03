@@ -123,7 +123,7 @@ template <class T>
 class ImageConcat : public ImageInterface<T> {
  public:
   // Constructor. Specify the pixel axis for concatenation
-  explicit ImageConcat(uInt axis, bool tempClose = true, bool combineMiscInfo = true);
+  explicit ImageConcat(unsigned int axis, bool tempClose = true, bool combineMiscInfo = true);
 
   // Construct the object from a Json file with the given name.
   // This constructor is usually called by ImageOpener::openImageConcat.
@@ -179,23 +179,23 @@ class ImageConcat : public ImageInterface<T> {
   void setLattice(MaskedLattice<T>& lattice);
 
   // Return the number of images/lattices set so far
-  uInt nimages() const { return latticeConcat_p.nlattices(); }
+  unsigned int nimages() const { return latticeConcat_p.nlattices(); }
 
   // Returns the current concatenation axis (0 relative)
-  uInt axis() const { return latticeConcat_p.axis(); }
+  unsigned int axis() const { return latticeConcat_p.axis(); }
 
   // Returns the number of dimensions of the *input* images/lattices
   // Returns 0 if none yet set.
-  uInt imageDim() const { return latticeConcat_p.latticeDim(); }
+  unsigned int imageDim() const { return latticeConcat_p.latticeDim(); }
 
   // Return a reference to the i-th image.
-  ImageInterface<T>& image(uInt i) const {
+  ImageInterface<T>& image(unsigned int i) const {
     return dynamic_cast<ImageInterface<T>&>(*(latticeConcat_p.lattice(i)));
   }
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -235,7 +235,7 @@ class ImageConcat : public ImageInterface<T> {
   // smallest constituent image along the non-direction axes (in order to minimize
   // bouncing from one image to another while iterating which may involve lots of
   // open and tempclose).
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Do the actual get of the data.
   // The return value is always false, thus the buffer does not reference
@@ -272,19 +272,19 @@ class ImageConcat : public ImageInterface<T> {
   bool isContig_p;
   mutable String fileName_p;  // Empty if not persistent
   Vector<bool> isImage_p;
-  Vector<Double> pixelValues_p;
-  Vector<Double> worldValues_p;
+  Vector<double> pixelValues_p;
+  Vector<double> worldValues_p;
   Coordinate::Type originalAxisType_p;
 
-  Double coordConvert(Int& worldAxis, LogIO& os, const CoordinateSystem& cSys, uInt axis,
-                      Double pixelCoord) const;
+  double coordConvert(int& worldAxis, LogIO& os, const CoordinateSystem& cSys, unsigned int axis,
+                      double pixelCoord) const;
 
   void _checkContiguous(const IPosition& shape1, const CoordinateSystem& cSys1,
-                        const CoordinateSystem& cSys2, LogIO& os, uInt axis, bool relax);
+                        const CoordinateSystem& cSys2, LogIO& os, unsigned int axis, bool relax);
 
   void checkNonConcatAxisCoordinates(LogIO& os, const ImageInterface<T>& image, bool relax);
 
-  Vector<Int> makeNewStokes(const Vector<Int>& stokes1, const Vector<Int>& stokes2);
+  Vector<int> makeNewStokes(const Vector<int>& stokes1, const Vector<int>& stokes2);
 
   // Updates the CoordinateSystem in the ImageConcat image. The first lattice must
   // be an image.  The first lattice is contiguous by definition.  The Coordinate
@@ -292,7 +292,7 @@ class ImageConcat : public ImageInterface<T> {
   // the first image, this function just sets up worldValues and pixelValues
   void setCoordinates();
 
-  void _updatePixelAndWorldValues(uInt iIm);
+  void _updatePixelAndWorldValues(unsigned int iIm);
 
   // # Make members of parent class known.
  public:

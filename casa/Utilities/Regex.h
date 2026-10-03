@@ -254,10 +254,10 @@ class Regex : public std::regex {
   // to test if a string matches a regular expression.
   // <src>Regex::match</src> is pretty low-level.
   // </note>
-  String::size_type match(const Char* s, String::size_type len, String::size_type pos = 0) const;
+  String::size_type match(const char* s, String::size_type len, String::size_type pos = 0) const;
 
   // Test if the regular expression matches the entire string.
-  bool fullMatch(const Char* s, String::size_type len) const;
+  bool fullMatch(const char* s, String::size_type len) const;
 
   // Test if the regular expression occurs anywhere in string <src>s</src>.
   // The return value gives the position of the first substring
@@ -272,13 +272,13 @@ class Regex : public std::regex {
   // <src>Regex::search</src> is pretty low-level.
   // </note>
   // <group>
-  String::size_type search(const Char* s, String::size_type len, Int& matchlen, Int pos = 0) const;
-  String::size_type find(const Char* s, String::size_type len, Int& matchlen,
+  String::size_type search(const char* s, String::size_type len, int& matchlen, int pos = 0) const;
+  String::size_type find(const char* s, String::size_type len, int& matchlen,
                          String::size_type pos = 0) const;
   // </group>
 
   // Search backwards.
-  String::size_type searchBack(const Char* s, String::size_type len, Int& matchlen, uInt pos) const;
+  String::size_type searchBack(const char* s, String::size_type len, int& matchlen, unsigned int pos) const;
 
   // Write the regex string.
   friend ostream& operator<<(ostream& ios, const Regex& exp);

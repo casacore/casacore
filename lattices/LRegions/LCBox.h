@@ -79,8 +79,8 @@ class LCBox : public LCRegionFixed {
   // Construct from the Vector's defining the bottom-left and
   // top-right corner of the box.
   // <group>
-  LCBox(const Vector<Float>& blc, const Vector<Float>& trc, const IPosition& latticeShape);
-  LCBox(const Vector<Double>& blc, const Vector<Double>& trc, const IPosition& latticeShape);
+  LCBox(const Vector<float>& blc, const Vector<float>& trc, const IPosition& latticeShape);
+  LCBox(const Vector<double>& blc, const Vector<double>& trc, const IPosition& latticeShape);
   // </group>
 
   // Copy constructor (reference semantics).
@@ -107,10 +107,10 @@ class LCBox : public LCRegionFixed {
   static LCBox* fromRecord(const TableRecord&, const String& tablename);
 
   // Get the box blc
-  Vector<Float> blc() const;
+  Vector<float> blc() const;
 
   // Get the box trc
-  Vector<Float> trc() const;
+  Vector<float> trc() const;
 
   // Verify a box specification.  Illegal (inlcuding blc > trc) or
   // unspecified values are  given 0 (blc) shape (trc) or
@@ -122,7 +122,7 @@ class LCBox : public LCRegionFixed {
   // Construct another LCBox (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:
@@ -138,12 +138,12 @@ class LCBox : public LCRegionFixed {
   void fillBlcTrc();
 
   // # Variables
-  Vector<Float> itsBlc;
-  Vector<Float> itsTrc;
+  Vector<float> itsBlc;
+  Vector<float> itsTrc;
 };
 
-inline Vector<Float> LCBox::blc() const { return itsBlc; }
-inline Vector<Float> LCBox::trc() const { return itsTrc; }
+inline Vector<float> LCBox::blc() const { return itsBlc; }
+inline Vector<float> LCBox::trc() const { return itsTrc; }
 
 }  // namespace casacore
 

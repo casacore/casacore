@@ -44,37 +44,37 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
 // Definition for POSIX systems
 #if defined(_POSIX_PATH_MAX)
-const uInt pathmax_posix = _POSIX_PATH_MAX;
+const unsigned int pathmax_posix = _POSIX_PATH_MAX;
 #else
-const uInt pathmax_posix = 255;
+const unsigned int pathmax_posix = 255;
 #endif
 
 // The maximum number of bytes in a pathname is PATH_MAX
 #if defined(PATH_MAX)
-static uInt pathMax = PATH_MAX;
+static unsigned int pathMax = PATH_MAX;
 #else
-static uInt pathMax = 0;
+static unsigned int pathMax = 0;
 #endif
 
-const uInt PATH_MAX_GUESS = 1024;  // if PATH_MAX is indeterminate
+const unsigned int PATH_MAX_GUESS = 1024;  // if PATH_MAX is indeterminate
                                    // we're not guaranteed this is adequate.
 
 // The maximum number of bytes in a filename is 14 (_POSIX_NAME_MAX)
 // Definition for POSIX systems
 #if defined(_POSIX_NAME_MAX)
-const uInt namemax_posix = _POSIX_NAME_MAX;
+const unsigned int namemax_posix = _POSIX_NAME_MAX;
 #else
-const uInt namemax_posix = 14;
+const unsigned int namemax_posix = 14;
 #endif
 
 // The maximum number of bytes in a filename is NAME_MAX
 #if defined(NAME_MAX)
-static uInt nameMax = NAME_MAX;
+static unsigned int nameMax = NAME_MAX;
 #else
-static uInt nameMax = 0;
+static unsigned int nameMax = 0;
 #endif
 
-const uInt NAME_MAX_GUESS = 255;  // if NAME_MAX is indeterminate
+const unsigned int NAME_MAX_GUESS = 255;  // if NAME_MAX is indeterminate
                                   // we're not guaranteed this is adequate. '
 
 Path::Path() : itsOriginalPathName(".") {}
@@ -142,7 +142,7 @@ bool Path::isValid() const {
     return false;
   }
   // Check if pathname contains non-printables
-  uInt i;
+  unsigned int i;
   for (i = 0; i < itsOriginalPathName.length(); i++) {
     if (isprint(itsOriginalPathName[i]) == 0) {
       return false;
@@ -157,8 +157,8 @@ bool Path::isValid() const {
   // Check if filenames are not too long
   String subPathname[30];
   String sep = "/";
-  uInt nw = split(itsOriginalPathName, subPathname, 15, sep);
-  uInt nameSize = getMaxNameSize();
+  unsigned int nw = split(itsOriginalPathName, subPathname, 15, sep);
+  unsigned int nameSize = getMaxNameSize();
   for (i = 0; i < nw; i++) {
     if (subPathname[i].length() > nameSize) {
       return false;
@@ -178,7 +178,7 @@ bool Path::isStrictlyPosix() const {
     return false;
   }
   // Check if pathname contains non-printables
-  uInt i;
+  unsigned int i;
   for (i = 0; i < itsOriginalPathName.length(); i++) {
     if (!isprint(itsOriginalPathName[i])) {
       return false;
@@ -188,27 +188,27 @@ bool Path::isStrictlyPosix() const {
   // Check if filenames are not too long, according POSIX standard
   String subPathname[30];
   String sep = "/";
-  uInt nw = split(itsOriginalPathName, subPathname, 15, sep);
+  unsigned int nw = split(itsOriginalPathName, subPathname, 15, sep);
   for (i = 0; i < nw; ++i) {
     if (subPathname[i].length() > namemax_posix) return false;
   }
   return true;
 }
 
-uInt Path::length() const { return itsOriginalPathName.length(); }
+unsigned int Path::length() const { return itsOriginalPathName.length(); }
 
-uInt Path::maxLength() const { return getMaxPathNameSize(); }
+unsigned int Path::maxLength() const { return getMaxPathNameSize(); }
 
 String Path::baseName() const {
   // Determine from expanded path name.
   String name = expandedName();
   // Search last slash.
   // Get rid of trailing slash.
-  Int len = name.length();
+  int len = name.length();
   if (len > 0 && name[len - 1] == '/') {
     len--;
   }
-  Int i = len;
+  int i = len;
   while (--i >= 0 && name[i] != '/') {
   }
   // The base name is the part from the slash till the end.
@@ -219,7 +219,7 @@ String Path::dirName() const {
   String name = expandedName();
   // Search last slash.
   // Get rid of trailing slash (except if name consists of a slash only).
-  Int i = name.length();
+  int i = name.length();
   if (i > 1 && name[i - 1] == '/') {
     i--;
   }
@@ -236,7 +236,7 @@ String Path::dirName() const {
   return name.substr(0, i + 1);
 }
 
-uInt Path::getMaxPathNameSize() {
+unsigned int Path::getMaxPathNameSize() {
   // pathMax is not defined(<0) then pathconf sets pathMax,
   // if this doesn't work pathMax will get the value of PATH_MAX_GUESS
   if (pathMax == 0) {
@@ -249,7 +249,7 @@ uInt Path::getMaxPathNameSize() {
   return pathMax;
 }
 
-uInt Path::getMaxNameSize() {
+unsigned int Path::getMaxNameSize() {
   // nameMax is not defined (<0) then pathconf sets nameMax,
   // if this doesn't work nameMax will get the value of PATH_MAX_GUESS
   if (nameMax == 0) {
@@ -264,10 +264,10 @@ uInt Path::getMaxNameSize() {
 
 String Path::expandName(const String& inString) const {
   String tempString(inString);
-  uInt cursor = 0;
-  uInt i = 0;
+  unsigned int cursor = 0;
+  unsigned int i = 0;
   bool flag = true;
-  uInt count = 0;
+  unsigned int count = 0;
   // Flag is set true if an environment variable is detected. When this
   // happens more then 25 times, there is probably a recursive variable set.
   // In that case an exception will be thrown.
@@ -319,7 +319,7 @@ String Path::expandName(const String& inString) const {
       String::size_type dpos = tempString.find('$', cursor);
       if (dpos != String::npos) {
         String::size_type last = i;
-        String dName(tempString.substr(Int(dpos + 1), Int((i - dpos) - 1)));
+        String dName(tempString.substr(int(dpos + 1), int((i - dpos) - 1)));
         if (dName[0] == '{') {
           String::size_type bracePos = dName.find('}');
           if (bracePos != std::string::npos) {
@@ -336,7 +336,7 @@ String Path::expandName(const String& inString) const {
             res.insert(0, tempString.substr(0, dpos));
             res += tempString.substr(last);
             // Update the index for the changed part.
-            i = last + Int(res.size()) - Int(tempString.size());
+            i = last + int(res.size()) - int(tempString.size());
             tempString = res;
             // flag is set true, so the name will be checked again
             // for environment variables
@@ -386,11 +386,11 @@ String Path::makeAbsoluteName(const String& inString) const {
 String Path::removeDots(const String& inString) const {
   // Split the name at the slashes.
   Vector<std::string> parts(strToVector(inString, '/'));
-  Vector<uInt> validParts(parts.nelements());
+  Vector<unsigned int> validParts(parts.nelements());
   std::string dot(".");
   std::string dotdot("..");
-  uInt nvalid = 0;
-  uInt i;
+  unsigned int nvalid = 0;
+  unsigned int i;
   // Count the number of valid parts and keep their index.
   // Ignore blanks and . parts.
   // A .. part removes an entry from the valid list (if possible).
@@ -419,7 +419,7 @@ String Path::removeDots(const String& inString) const {
   return outString;
 }
 
-void Path::getNextName(const String& inString, uInt& count) const {
+void Path::getNextName(const String& inString, unsigned int& count) const {
   // Sets count on the next slash or on the end of the string
   size_t inx = inString.find('/', count);
   if (inx == std::string::npos) {
@@ -435,13 +435,13 @@ String Path::stripDirectory(const String& name, const String& otherName) {
   if (dir.back() != '/') {
     dir += '/';
   }
-  Int leng = dir.length();
+  int leng = dir.length();
   // Convert name to an absolute path name.
   std::string aName(Path(name).absoluteName());
   // If directory is contained in this name, return name without it.
   // Prepend by ././ indicating full name is removed.
   if (leng > 0) {
-    Int aleng = aName.length();
+    int aleng = aName.length();
     if (aleng > leng && aName.substr(0, leng) == dir) {
       return "././" + aName.substr(leng);
     } else {
@@ -457,7 +457,7 @@ String Path::stripDirectory(const String& name, const String& otherName) {
       }
       leng = dir.length();
       if (leng > 0) {
-        if (aName.length() > uInt(leng) && aName.substr(0, leng) == dir) {
+        if (aName.length() > static_cast<unsigned int>(leng) && aName.substr(0, leng) == dir) {
           // The leading ./ indicates that directory is removed.
           return "./" + aName.substr(leng);
         }
@@ -502,11 +502,11 @@ String Path::addDirectory(const String& name, const String& otherName) {
   } else {
     // If name ends in /. and if it matches the end of otherName,
     // we have to return the remainder of otherName.
-    Int leng = tName.length();
+    int leng = tName.length();
     if (leng >= 3 && tName[leng - 2] == '/' && tName[leng - 1] == '.') {
       leng -= 2;
       String oName(otherName);
-      Int oleng = oName.length();
+      int oleng = oName.length();
       if (oleng >= leng + 2 && '/' + tName.substr(0, leng) == oName.substr(oleng - leng - 1)) {
         return oName.substr(oleng - leng - 1);
       }

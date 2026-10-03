@@ -88,9 +88,9 @@ class RefRows {
   // individual row numbers to the slice form (to save memory).
   RefRows(const Vector<rownr_t>& rowNumbers, bool isSliced = false, bool collapse = false);
 #ifdef IMPLICIT_CTDS_32BIT
-  RefRows(const Vector<uInt>& rowNumbers, bool isSliced = false, bool collapse = false);
+  RefRows(const Vector<unsigned int>& rowNumbers, bool isSliced = false, bool collapse = false);
 #else
-  explicit RefRows(const Vector<uInt>& rowNumbers, bool isSliced = false, bool collapse = false);
+  explicit RefRows(const Vector<unsigned int>& rowNumbers, bool isSliced = false, bool collapse = false);
 #endif
 
   // Create the object from a single start,end,incr slice.

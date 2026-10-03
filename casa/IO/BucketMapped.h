@@ -76,17 +76,17 @@ class BucketMapped : public BucketBase {
   // bucketSize*nrOfBuckets bytes.
   // If the file is smaller, the remainder is indicated as an extension
   // similarly to the behaviour of function extend.
-  BucketMapped(BucketFile* file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets);
+  BucketMapped(BucketFile* file, Int64 startOffset, unsigned int bucketSize, unsigned int nrOfBuckets);
 
   // Unmap the file
   ~BucketMapped();
 
   // Get a readonly pointer to the given bucket in memory.
-  const char* getBucket(uInt bucketNr);
+  const char* getBucket(unsigned int bucketNr);
 
   // Get a writable pointer to the given bucket in memory.
   // It sets the hasWritten flag.
-  char* getrwBucket(uInt bucketNr) {
+  char* getrwBucket(unsigned int bucketNr) {
     itsHasWritten = true;
     return const_cast<char*>(getBucket(bucketNr));
   }
@@ -105,11 +105,11 @@ class BucketMapped : public BucketBase {
   virtual void doResync();
 
   // Extend the file with the given number of buckets.
-  virtual void doExtend(uInt nrBucket);
+  virtual void doExtend(unsigned int nrBucket);
 
   // Initialize the bucket buffer.
   // The uninitialized buckets before this bucket are also initialized.
-  virtual void initializeBuckets(uInt bucketNr);
+  virtual void initializeBuckets(unsigned int bucketNr);
 };
 
 }  // namespace casacore

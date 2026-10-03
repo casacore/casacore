@@ -100,7 +100,7 @@ FuncExprData::FuncExprData() : una2_p(), una1_p(), bin2_p(), bin1_p(), spop_p(),
 
       // End of list
       {NOP, "NOP", SPEC, FINPRI, 0, 0, 0, 0, NONE, state}};
-  uInt i = 0;
+  unsigned int i = 0;
   for (i = 0; olist[i].code != NOP; ++i) {
     switch (olist[i].category) {
       case UNA2:

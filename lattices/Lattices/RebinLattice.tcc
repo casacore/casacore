@@ -46,7 +46,7 @@ template <class T>
 RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& bin)
     : itsLatticePtr(lattice.cloneML()) {
   LogIO os(LogOrigin("RebinLattice", "RebinLattice(...)", WHERE));
-  const uInt nDim = lattice.ndim();
+  const unsigned int nDim = lattice.ndim();
   if (bin.nelements() != nDim) {
     os << "Binning vector and lattice must have same dimension" << LogIO::EXCEPTION;
   }
@@ -54,7 +54,7 @@ RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& 
   itsBin.resize(bin.nelements());
   const IPosition shapeIn = lattice.shape();
   itsAllUnity = true;
-  for (uInt i = 0; i < bin.nelements(); i++) {
+  for (unsigned int i = 0; i < bin.nelements(); i++) {
     if (bin[i] == 0) {
       os << "Binning vector values must be positive integers" << LogIO::EXCEPTION;
     }
@@ -118,7 +118,7 @@ bool RebinLattice<T>::isWritable() const {
 }
 
 template <class T>
-bool RebinLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool RebinLattice<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsLatticePtr->lock(type, nattempts);
 }
 
@@ -190,7 +190,7 @@ void RebinLattice<T>::doPutSlice(const Array<T>&, const IPosition&, const IPosit
 }
 
 template <class T>
-uInt RebinLattice<T>::advisedMaxPixels() const {
+unsigned int RebinLattice<T>::advisedMaxPixels() const {
   return itsLatticePtr->advisedMaxPixels();
 }
 
@@ -253,7 +253,7 @@ template <class T>
 void RebinLattice<T>::bin(const Array<T>& dataIn) {
   // Make Lattice from Array to get decent iterators
 
-  const uInt nDim = dataIn.ndim();
+  const unsigned int nDim = dataIn.ndim();
   LatticeStepper stepper(dataIn.shape(), itsBin, LatticeStepper::RESIZE);
   ArrayLattice<T> latIn(dataIn);
   RO_LatticeIterator<T> inIter(latIn, stepper);
@@ -264,7 +264,7 @@ void RebinLattice<T>::bin(const Array<T>& dataIn) {
   //
   for (inIter.reset(); !inIter.atEnd(); inIter++) {
     const Array<T>& cursor(inIter.cursor());
-    const uInt nSum = cursor.nelements();
+    const unsigned int nSum = cursor.nelements();
     T sumData = sum(cursor);
     if (nSum > 0) sumData /= nSum;
 
@@ -280,7 +280,7 @@ template <class T>
 void RebinLattice<T>::bin(const Array<T>& dataIn, const Array<bool>& maskIn) {
   // Make Lattice from Array to get decent iterators
 
-  const uInt nDim = dataIn.ndim();
+  const unsigned int nDim = dataIn.ndim();
   ArrayLattice<T> latIn(dataIn);
   Array<bool> maskInRef(maskIn);
 
@@ -301,7 +301,7 @@ void RebinLattice<T>::bin(const Array<T>& dataIn, const Array<bool>& maskIn) {
     // Iterate through cursor with STL iterators
 
     T sumData = 0;
-    Int nSum = 0;
+    int nSum = 0;
     typename Array<T>::const_iterator dataIterEnd = cursor.end();
     typename Array<T>::const_iterator dataIter;
     typename Array<bool>::const_iterator maskIter;
@@ -327,11 +327,11 @@ template <class T>
 IPosition RebinLattice<T>::rebinShape(const IPosition& inShape, const IPosition& bin) {
   AlwaysAssert(inShape.nelements() == bin.nelements(), AipsError);
   //
-  const uInt nDim = inShape.nelements();
+  const unsigned int nDim = inShape.nelements();
   IPosition outShape(nDim);
-  for (uInt i = 0; i < nDim; i++) {
-    Int n = inShape[i] / bin[i];
-    Int rem = inShape[i] - n * bin[i];
+  for (unsigned int i = 0; i < nDim; i++) {
+    int n = inShape[i] / bin[i];
+    int rem = inShape[i] - n * bin[i];
     if (rem > 0) n += 1;  // Allow last bin to be non-integral
     outShape[i] = n;
   }
@@ -345,7 +345,7 @@ Slicer RebinLattice<T>::findOriginalSlicer(const Slicer& section) const
 // Lattice from which we must get data to then rebin
 //
 {
-  const uInt nDim = itsLatticePtr->ndim();
+  const unsigned int nDim = itsLatticePtr->ndim();
   const IPosition shapeOrig = itsLatticePtr->shape();
   //
   const IPosition& blc = section.start();
@@ -354,7 +354,7 @@ Slicer RebinLattice<T>::findOriginalSlicer(const Slicer& section) const
   //
   IPosition blcOrig(blc);
   IPosition trcOrig(trc);
-  for (uInt i = 0; i < nDim; i++) {
+  for (unsigned int i = 0; i < nDim; i++) {
     if (stride[i] != 1) {
       throw(AipsError("RebinLattice: Slices with non-unit stride are not yet supported"));
     }

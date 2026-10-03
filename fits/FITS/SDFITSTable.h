@@ -95,7 +95,7 @@ class SDFITSTable : public FITSTable {
   };
 
   // construct from a file
-  SDFITSTable(const String &fileName, uInt whichHDU = 1);
+  SDFITSTable(const String &fileName, unsigned int whichHDU = 1);
 
   // The destructor
   ~SDFITSTable();

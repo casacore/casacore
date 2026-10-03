@@ -47,7 +47,7 @@ void ImageAttrGroupHDF5::flush(HDF5Group& image, const String& attrName) {
   }
 }
 
-uInt ImageAttrGroupHDF5::nrows() const { return itsRecord.nfields(); }
+unsigned int ImageAttrGroupHDF5::nrows() const { return itsRecord.nfields(); }
 
 bool ImageAttrGroupHDF5::hasAttr(const String& attrName) const {
   if (itsRecord.empty()) {
@@ -62,8 +62,8 @@ Vector<String> ImageAttrGroupHDF5::attrNames() const {
   }
   const Record& subRecord = itsRecord.subRecord(0);
   Vector<String> names(subRecord.size());
-  uInt nr = 0;
-  for (uInt i = 0; i < names.size(); ++i) {
+  unsigned int nr = 0;
+  for (unsigned int i = 0; i < names.size(); ++i) {
     // Only names not ending in _UNIT or _MEASINFO
     String name = subRecord.name(i);
     if (!((name.size() >= 5 && name.substr(name.size() - 5) == "_UNIT") ||
@@ -86,7 +86,7 @@ DataType ImageAttrGroupHDF5::dataType(const String& attrName) const {
   return TpOther;
 }
 
-ValueHolder ImageAttrGroupHDF5::getData(const String& attrName, uInt rownr) {
+ValueHolder ImageAttrGroupHDF5::getData(const String& attrName, unsigned int rownr) {
   if (rownr >= itsRecord.nfields()) {
     throw AipsError("ImageAttrGroupHDF5: rownr " + ValueToString(rownr) + " does not exist");
   }
@@ -94,7 +94,7 @@ ValueHolder ImageAttrGroupHDF5::getData(const String& attrName, uInt rownr) {
   return subRecord.asValueHolder(attrName);
 }
 
-Record ImageAttrGroupHDF5::getDataRow(uInt rownr) {
+Record ImageAttrGroupHDF5::getDataRow(unsigned int rownr) {
   if (rownr >= itsRecord.nfields()) {
     throw AipsError("ImageAttrGroupHDF5: rownr " + ValueToString(rownr) + " does not exist");
   }
@@ -121,7 +121,7 @@ Vector<String> ImageAttrGroupHDF5::getMeasInfo(const String& attrName) {
   return Vector<String>();
 }
 
-void ImageAttrGroupHDF5::putData(const String& attrName, uInt rownr, const ValueHolder& data,
+void ImageAttrGroupHDF5::putData(const String& attrName, unsigned int rownr, const ValueHolder& data,
                                  const Vector<String>& units, const Vector<String>& measInfo) {
   if (!itsCanWrite) {
     throw AipsError("ImageAttrGroupHDF5: attribute data cannot be written");
@@ -139,14 +139,14 @@ void ImageAttrGroupHDF5::putData(const String& attrName, uInt rownr, const Value
   itsChanged = true;
 }
 
-String makeRowName(uInt rownr) {
+String makeRowName(unsigned int rownr) {
   std::ostringstream ostr;
   ostr << std::setfill('0') << std::setw(5) << rownr;
   return ostr.str();
 }
 
-void ImageAttrGroupHDF5::checkRows(const std::string& attrName, uInt rownr) {
-  uInt nrow = itsRecord.nfields();
+void ImageAttrGroupHDF5::checkRows(const std::string& attrName, unsigned int rownr) {
+  unsigned int nrow = itsRecord.nfields();
   // A new row can only be added right after the last row.
   if (rownr > nrow) {
     throw AipsError("ImageAttrGroupHDF5: row " + ValueToString(rownr) + " of attribute " +

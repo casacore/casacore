@@ -36,10 +36,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChannel,
-                                      Double &referenceFrequency, Double &deltaFrequency,
-                                      Vector<Double> &frequencies, MFrequency::Types &refFrame,
-                                      MDoppler::Types &velocityPreference, Double &restFrequency,
+bool FITSSpectralUtil::fromFITSHeader(int &spectralAxis, double &referenceChannel,
+                                      double &referenceFrequency, double &deltaFrequency,
+                                      Vector<double> &frequencies, MFrequency::Types &refFrame,
+                                      MDoppler::Types &velocityPreference, double &restFrequency,
                                       LogIO &logger, const RecordInterface &header, char prefix,
                                       bool oneRelative) {
   bool retval = true;
@@ -52,7 +52,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   deltaFrequency = 0.0;
   restFrequency = -1.0;
 
-  const Double offset(oneRelative == true ? 1.0 : 0.0);
+  const double offset(oneRelative == true ? 1.0 : 0.0);
   logger << LogOrigin("FITSUtil", "fromFITSHeader", WHERE);
 
   String n_ctype = String(1, prefix) + "type";
@@ -60,7 +60,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   String n_crpix = String(1, prefix) + "rpix";
   String n_cdelt = String(1, prefix) + "delt";
   String n_cunit = String(1, prefix) + "unit";
-  Int ndim;
+  int ndim;
 
   // Verify that the required headers exist and are the right type
   if (!(header.isDefined(n_ctype) && header.dataType(n_ctype) == TpArrayString &&
@@ -82,7 +82,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
       (header.dataType("altrpix") == TpDouble || header.dataType("altrpix") == TpFloat);
 
   Vector<String> ctype, cunit;
-  Vector<Double> crval, crpix, cdelt;
+  Vector<double> crval, crpix, cdelt;
   header.get(n_ctype, ctype);
   header.get(n_crval, crval);
   header.get(n_crpix, crpix);
@@ -93,7 +93,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   // naxis might not be consistent with the length of the CTYPEs
   // we need both. use naxis preferentially
 
-  Vector<Int> naxis;
+  Vector<int> naxis;
   if (header.isDefined("naxis")) {
     header.get("naxis", naxis);
     ndim = naxis.nelements();
@@ -103,7 +103,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
 
   // Find the spectral axis, if any.
 
-  for (Int i = 0; i < ndim; i++) {
+  for (int i = 0; i < ndim; i++) {
     if (StringContains(ctype(i), "FELO") || StringContains(ctype(i), "FREQ") ||
         StringContains(ctype(i), "VELO") || StringContains(ctype(i), "VOPT") ||
         StringContains(ctype(i), "VRAD") || StringContains(ctype(i), "WAVE") ||
@@ -116,7 +116,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
     return false;
   }
 
-  Int velref = 3;  // Default is optical + topocentric ("OBS")
+  int velref = 3;  // Default is optical + topocentric ("OBS")
   if (header.isDefined("velref")) {
     if (header.dataType("velref") != TpInt) {
       logger << LogIO::SEVERE
@@ -159,7 +159,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
       logger << LogIO::SEVERE << "Illegal type for RESTWAV"
              << ", assuming infinity - velocity conversions will be impossible" << LogIO::POST;
     } else {
-      Double restWavelength;
+      double restWavelength;
       header.get("restwav", restWavelength);
       if (restWavelength > 0.) {
         restFrequency = C::c / restWavelength;
@@ -209,26 +209,26 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   // For random group, NAXIS1=0 and then CTYPE1,CRVAL1,CDELT1,CROTA1 are
   // omitted. spectralAxis is determined from ctype string array, so in order
   // to get corresponding naxis, it needs to be shift by 1.
-  Int nChan = 1;
+  int nChan = 1;
   if (naxis.nelements() > 0) {
-    Int naxisoffset = 0;
+    int naxisoffset = 0;
     if (naxis(0) == 0) naxisoffset = 1;
     nChan = naxis(spectralAxis + naxisoffset);
     AlwaysAssert(nChan >= 1, AipsError);
   }
 
-  const Double delt = cdelt(spectralAxis);
-  const Double rval = crval(spectralAxis);
-  const Double rpix = crpix(spectralAxis) - offset;
+  const double delt = cdelt(spectralAxis);
+  const double rval = crval(spectralAxis);
+  const double rpix = crpix(spectralAxis) - offset;
   // determine the unit in the spectral axis, use "m" as default
   String unit("m");
-  if ((Int)cunit.size() > spectralAxis) unit = cunit(spectralAxis);
+  if ((int)cunit.size() > spectralAxis) unit = cunit(spectralAxis);
 
   if (ctype(spectralAxis).find("FREQ") != std::string::npos) {
     referenceFrequency = rval;
     // HAS ALTRVAL
     if (has_altrval && (restFrequency >= 0.0)) {
-      Double velo;
+      double velo;
       header.get("altrval", velo);
       MDoppler ledop(Quantity(velo, "m/s"), velocityPreference);
       referenceFrequency = MFrequency::fromDoppler(ledop, restFrequency).getValue().getValue();
@@ -244,8 +244,8 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
 
     deltaFrequency = delt;
     frequencies.resize(nChan);
-    for (Int i = 0; i < nChan; i++) {
-      frequencies(i) = referenceFrequency + (Double(i) - referenceChannel) * delt;
+    for (int i = 0; i < nChan; i++) {
+      frequencies(i) = referenceFrequency + (double(i) - referenceChannel) * delt;
     }
 
   } else if (StringContains(ctype(spectralAxis), "FELO") ||
@@ -273,8 +273,8 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
           break;
       }
       frequencies.resize(nChan);
-      for (Int i = 0; i < nChan; i++) {
-        frequencies(i) = referenceFrequency + (Double(i) - referenceChannel) * deltaFrequency;
+      for (int i = 0; i < nChan; i++) {
+        frequencies(i) = referenceFrequency + (double(i) - referenceChannel) * deltaFrequency;
       }
     }
   } else if (StringContains(ctype(spectralAxis), "VELO") ||
@@ -300,15 +300,15 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
           AlwaysAssert(0, AipsError);  // NOTREACHED
       }
       frequencies.resize(nChan);
-      for (Int i = 0; i < nChan; i++) {
-        frequencies(i) = referenceFrequency + (Double(i) - referenceChannel) * deltaFrequency;
+      for (int i = 0; i < nChan; i++) {
+        frequencies(i) = referenceFrequency + (double(i) - referenceChannel) * deltaFrequency;
       }
     }
   } else if (StringContains(ctype(spectralAxis), "WAVE")) {
     // get the conversion to "m"
     Quantity wavUnit(1.0, Unit(unit));
     wavUnit.convert(Unit("m"));
-    Double to_m = wavUnit.getValue();
+    double to_m = wavUnit.getValue();
 
     referenceChannel = rpix;
     if (rval > 0. && rval + delt != 0.) {
@@ -319,8 +319,8 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
       return false;
     }
     frequencies.resize(nChan);
-    for (Int i = 0; i < nChan; i++) {
-      Double wl = rval + (Double(i) - referenceChannel) * delt;
+    for (int i = 0; i < nChan; i++) {
+      double wl = rval + (double(i) - referenceChannel) * delt;
       if (wl > 0.) {
         frequencies(i) = C::c / (wl * to_m);
       } else {
@@ -331,7 +331,7 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   } else if (StringContains(ctype(spectralAxis), "AWAV")) {
     Quantity wavUnit(1.0, Unit(unit));
     wavUnit.convert(Unit("m"));
-    Double to_m = wavUnit.getValue();
+    double to_m = wavUnit.getValue();
     referenceChannel = rpix;
     if (rval > 0. && rval + delt != 0.) {
       referenceFrequency = C::c / (rval * to_m * refractiveIndex(rval * to_m * 1E6));
@@ -342,8 +342,8 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
       return false;
     }
     frequencies.resize(nChan);
-    for (Int i = 0; i < nChan; i++) {
-      Double wl = rval + (Double(i) - referenceChannel) * delt;
+    for (int i = 0; i < nChan; i++) {
+      double wl = rval + (double(i) - referenceChannel) * delt;
       if (wl > 0.) {
         frequencies(i) = C::c / (wl * to_m);
       } else {
@@ -358,10 +358,10 @@ bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   return retval;
 }
 
-bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt, Double &crpix,
-                                    String &cunit, bool &haveAlt, Double &altrval, Double &altrpix,
-                                    Int &velref, Double &restfreq, String &specsys, LogIO &logger,
-                                    Double refFrequency, Double refChannel, Double freqIncrement,
+bool FITSSpectralUtil::toFITSHeader(String &ctype, double &crval, double &cdelt, double &crpix,
+                                    String &cunit, bool &haveAlt, double &altrval, double &altrpix,
+                                    int &velref, double &restfreq, String &specsys, LogIO &logger,
+                                    double refFrequency, double refChannel, double freqIncrement,
                                     MFrequency::Types referenceFrame, bool preferVelocity,
                                     MDoppler::Types velocityPreference, bool preferWavelength,
                                     bool airWavelength, bool useDeprecatedCtypes) {
@@ -389,7 +389,7 @@ bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
     haveAlt = true;
     // the following call to tagFromFrame is deprecated, better use SPECSYS
     if (!FITSSpectralUtil::tagFromFrame(ctypetag, velref, referenceFrame)) {
-      logger << LogIO::NORMAL << "Cannot turn spectral type# " << Int(referenceFrame)
+      logger << LogIO::NORMAL << "Cannot turn spectral type# " << int(referenceFrame)
              << " into a AIPS-standard FITS spectral frame." << LogIO::POST;
     }
     switch (velocityPreference) {
@@ -407,7 +407,7 @@ bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
 
     if (!FITSSpectralUtil::specsysFromFrame(specsys, referenceFrame)) {
       if (!specsys.empty()) {  // i.e. if specsys is not undefined
-        logger << LogIO::WARN << "Cannot turn spectral type# " << Int(referenceFrame)
+        logger << LogIO::WARN << "Cannot turn spectral type# " << int(referenceFrame)
                << " into a FITS SPECSYS keyword. Will use \"" << specsys << "\" instead."
                << LogIO::POST;
       } else {  // make sure also velref is not written if specsys is undefined
@@ -417,7 +417,7 @@ bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
   }
 
   // Calculate velocity quantities
-  Double refVelocity(0.0), velocityIncrement(0.0);
+  double refVelocity(0.0), velocityIncrement(0.0);
   if (haveAlt) {
     if (velref < 256) {
       // OPTICAL
@@ -511,9 +511,9 @@ bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
   return true;
 }
 
-bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &tag, Int velref) {
+bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &tag, int velref) {
   String theTag;
-  for (uInt i = 0; i < tag.length(); i++) {
+  for (unsigned int i = 0; i < tag.length(); i++) {
     if (tag[i] != '-' && tag[i] != ' ') {
       theTag += tag[i];
     }
@@ -590,7 +590,7 @@ bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &t
   return result;
 }
 
-bool FITSSpectralUtil::tagFromFrame(String &tag, Int &velref, MFrequency::Types refFrame) {
+bool FITSSpectralUtil::tagFromFrame(String &tag, int &velref, MFrequency::Types refFrame) {
   bool result = true;
   switch (refFrame) {
     case MFrequency::LSRK:
@@ -693,10 +693,10 @@ bool FITSSpectralUtil::frameFromSpecsys(MFrequency::Types &refFrame, String &spe
   return result;
 }
 
-Double FITSSpectralUtil::refractiveIndex(const Double &lambda_um) {
-  Double lambda2 = lambda_um * lambda_um;
+double FITSSpectralUtil::refractiveIndex(const double &lambda_um) {
+  double lambda2 = lambda_um * lambda_um;
   // based on Greisen et al., 2006, A&A, 464, 746
-  Double nOfLambda = 1.;
+  double nOfLambda = 1.;
   if (lambda2 > 0.) {
     nOfLambda = 1. + 1E-6 * (287.6155 + 1.62887 / lambda2 + 0.01360 / lambda2 / lambda2);
   }

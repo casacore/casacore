@@ -49,22 +49,22 @@
 
 #include <casacore/casa/namespace.h>
 // Print separation line of given (default 75) length
-void SEPAR(const uInt l = 75) { cout << String(l, '-') << endl; }
+void SEPAR(const unsigned int l = 75) { cout << String(l, '-') << endl; }
 
 // Fill RotMat with Fortran Matrix
-RotMatrix fillRM(const Double rm[3][3]) {
+RotMatrix fillRM(const double rm[3][3]) {
   RotMatrix trm;
-  for (uInt i = 0; i < 3; ++i) {
-    for (uInt j = 0; j < 3; ++j) trm(i, j) = rm[i][j];
+  for (unsigned int i = 0; i < 3; ++i) {
+    for (unsigned int j = 0; j < 3; ++j) trm(i, j) = rm[i][j];
   };
   return trm;
 }
 
 // Check rotation angle around arbitrary axis between two matrices (mas)
-Double checkRot(const RotMatrix &rm1, RotMatrix rm2) {
+double checkRot(const RotMatrix &rm1, RotMatrix rm2) {
   rm2.transpose();
   RotMatrix r = rm1 * rm2;
-  Double x, y, z, s, c, phi;
+  double x, y, z, s, c, phi;
   x = r(1, 2) - r(2, 1);
   y = r(2, 0) - r(0, 2);
   z = r(0, 1) - r(1, 0);
@@ -85,18 +85,18 @@ int main() {
     SEPAR();
     // Default date
     Time t0(2003, 3, 1);
-    Double MJD0 = 2400000.5;
-    Double tJD = t0.julianDay();
-    Double tMJD = t0.modifiedJulianDay();
+    double MJD0 = 2400000.5;
+    double tJD = t0.julianDay();
+    double tMJD = t0.modifiedJulianDay();
     cout << "A default date of 2003/03/01 is used (JD " << tJD << ", MJD " << tMJD << ")" << endl;
     SEPAR();
 
     // Precession and nutation
     cout << "Precession" << endl;
     SEPAR();
-    Double padpsi, padeps, paepsa, pbdpsi, pbdeps, pbepsa;
-    Double parb[3][3], parp[3][3], parpb[3][3], parn[3][3], parpn[3][3];
-    Double pbrb[3][3], pbrp[3][3], pbrpb[3][3], pbrn[3][3], pbrpn[3][3];
+    double padpsi, padeps, paepsa, pbdpsi, pbdeps, pbepsa;
+    double parb[3][3], parp[3][3], parpb[3][3], parn[3][3], parpn[3][3];
+    double pbrb[3][3], pbrp[3][3], pbrpb[3][3], pbrn[3][3], pbrpn[3][3];
     Precession p00a(Precession::IAU2000A);
     Precession p00b(Precession::IAU2000B);
     IAUR(pn00a)(MJD0, tMJD, padpsi, padeps, paepsa, &parb[0][0], &parp[0][0], &parpb[0][0],
@@ -112,7 +112,7 @@ int main() {
     cout << "Casacore precession and bias:\n" << MeasTable::frameBias00() * carm << endl;
     cout << "SOFA precession     (no bias):\n" << parm << endl;
     cout << "Casacore precession (no bias):\n" << carm << endl;
-    Double depspr, dpsipr;
+    double depspr, dpsipr;
     IAUR(pr00)(MJD0, tMJD, dpsipr, depspr);
     cout << "SOFA precession corrections:     " << dpsipr << ", " << depspr << endl;
     cout << "Casacore precession corrections: "
@@ -126,7 +126,7 @@ int main() {
     cout << "Difference (arcsec) SOFA 2000A - Casacore nobias:  " << checkRot(parm, carm) << endl;
     cout << "Difference (arcsec) SOFA 2000A - Casacore   bias:  "
          << checkRot(nbparm, MeasTable::frameBias00() * carm) << endl;
-    Double fbrm[3][3], prrm[3][3], fbprrm[3][3];
+    double fbrm[3][3], prrm[3][3], fbprrm[3][3];
     IAUR(bp00)(MJD0, tMJD, &fbrm[0][0], &prrm[0][0], &fbprrm[0][0]);
     RotMatrix prm = fillRM(prrm);
     cout << "Difference (arcsec) SOFA 2000A - Casacore nobias:  " << checkRot(prm, carm) << endl;
@@ -156,30 +156,30 @@ int main() {
          << IAUR(ee00a)(MJD0, tMJD) - n00a.eqox(tMJD) << endl;
     SEPAR();
 
-    Double y, tta, ttb, uta, utb;
+    double y, tta, ttb, uta, utb;
     {
       cout << "SOFA method comparisons ..." << endl;
       SEPAR();
       cout.precision(9);
       cout.setf(ios::fixed);
-      Double dat = 32;
-      Double dut1 = -0.3;
-      Double dtt = 32.184 + dat - dut1;
-      Double rmceo[3][3], rmequ[3][3], rmold[3][3];
+      double dat = 32;
+      double dut1 = -0.3;
+      double dtt = 32.184 + dat - dut1;
+      double rmceo[3][3], rmequ[3][3], rmold[3][3];
       y = 1935.;
       IAUR(epj2jd)(y, tta, ttb);
       uta = tta;
       utb = ttb - dtt / 86400.;
-      Double xp = 0;
-      Double yp = 0;
+      double xp = 0;
+      double yp = 0;
       IAUR(c2t00a)(tta, ttb, uta, utb, xp, yp, &rmceo[0][0]);
-      Double sp = IAUR(sp00)(tta, ttb);
-      Double rpom[3][3], gst, rbpn[3][3];
+      double sp = IAUR(sp00)(tta, ttb);
+      double rpom[3][3], gst, rbpn[3][3];
       IAUR(pom00)(xp, yp, sp, &rpom[0][0]);
       gst = IAUR(gmst00)(uta, utb, tta, ttb) + IAUR(ee00a)(tta, ttb);
       IAUR(pnm00a)(tta, ttb, &rbpn[0][0]);
       IAUR(c2teqx)(&rbpn[0][0], gst, &rpom[0][0], &rmequ[0][0]);
-      Double rm[3][3];
+      double rm[3][3];
       IAUR(pnm80)(tta, ttb, &rm[0][0]);
       gst = IAUR(gmst82)(uta, utb) + IAUR(eqeq94)(tta, ttb);
       IAUR(rz)(gst, &rm[0][0]);
@@ -198,8 +198,8 @@ int main() {
     {
       cout << "IAU2000A/B comparisons ..." << endl;
       SEPAR();
-      uInt iau2000_reg = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
-      uInt iau2000a_reg =
+      unsigned int iau2000_reg = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
+      unsigned int iau2000a_reg =
           AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
       cout << "Registrations old: " << iau2000_reg << ", " << iau2000a_reg << endl;
       MDirection md(Quantity(30., "deg"), Quantity(50., "deg"), MDirection::J2000);
@@ -233,10 +233,10 @@ int main() {
     {
       cout << "Test of some details ..." << endl;
       SEPAR();
-      Double era = IAUR(era00)(uta, utb);
-      Double gmst = IAUR(gmst00)(uta, utb, tta, ttb);
-      Double sp = IAUR(sp00)(tta, ttb);
-      Double eect = IAUR(eect00)(tta, ttb);
+      double era = IAUR(era00)(uta, utb);
+      double gmst = IAUR(gmst00)(uta, utb, tta, ttb);
+      double sp = IAUR(sp00)(tta, ttb);
+      double eect = IAUR(eect00)(tta, ttb);
       Nutation nuta(Nutation::IAU2000A);
       cout << "UT: " << (uta - 2451545.0) + utb << ", " << utb - MeasData::MJD2000 << endl;
       cout << "TT: " << (tta - 2451545.0) + ttb << ", " << ttb - MeasData::MJD2000 << endl;
@@ -261,8 +261,8 @@ int main() {
     {
       cout << "Test Aipsrc value cross talk ..." << endl;
       SEPAR();
-      uInt iau2000_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
-      uInt iau2000a_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
+      unsigned int iau2000_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use"), false);
+      unsigned int iau2000a_r = AipsrcValue<bool>::registerRC(String("measures.iau2000.b_use2000a"), false);
       cout << "Registrations now: " << iau2000_r << ", " << iau2000a_r << endl;
       cout << "New J2000 " << AipsrcBool::get(iau2000_r) << ", " << "J2000A "
            << AipsrcBool::get(iau2000a_r) << endl;

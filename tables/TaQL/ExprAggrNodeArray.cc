@@ -37,7 +37,7 @@ TableExprAggrNodeArray::TableExprAggrNodeArray(TableExprFuncNode::FunctionType f
                                                NodeDataType dtype, ValueType vtype,
                                                const TableExprNodeSet& source,
                                                const vector<TENShPtr>& nodes,
-                                               const Block<Int>& dtypeOper, const TaQLStyle& style)
+                                               const Block<int>& dtypeOper, const TaQLStyle& style)
     : TableExprFuncNodeArray(ftype, dtype, vtype, source, nodes, dtypeOper, style) {
   // Always treat an aggregate as a variable expression.
   // Otherwise if might be treated as constant and evaluated immediately
@@ -64,8 +64,8 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::doMakeGroupAggrF
     return std::make_shared<TableExprGroupRowid>(this);
   } else if (funcType() == TableExprFuncNode::ghistFUNC) {
     Int64 nbin = operands()[1]->getInt(0);
-    Double start = operands()[2]->getDouble(0);
-    Double end = operands()[3]->getDouble(0);
+    double start = operands()[2]->getDouble(0);
+    double end = operands()[3]->getDouble(0);
     if (operands()[0]->valueType() == VTScalar) {
       return std::make_shared<TableExprGroupHistScalar>(this, nbin, start, end);
     }
@@ -184,7 +184,7 @@ MArray<Int64> TableExprAggrNodeArray::getArrayInt(const TableExprId& id) {
   TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
   return set.getFuncs()[itsFunc->seqnr()]->getArrayInt();
 }
-MArray<Double> TableExprAggrNodeArray::getArrayDouble(const TableExprId& id) {
+MArray<double> TableExprAggrNodeArray::getArrayDouble(const TableExprId& id) {
   if (dataType() != NTDouble) {
     return TableExprNodeArray::getArrayDouble(id);
   }

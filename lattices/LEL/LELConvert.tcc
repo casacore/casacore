@@ -96,7 +96,7 @@ String LELConvert<T, F>::className() const {
 }
 
 template <class T, class F>
-bool LELConvert<T, F>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELConvert<T, F>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 template <class T, class F>

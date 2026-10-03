@@ -55,14 +55,14 @@ MPosition::MPosition(const Quantity &dt, const Quantity &dt1, const Quantity &dt
                      MPosition::Types rf)
     : MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt, dt1, dt2), rf) {}
 
-MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double>> &dt)
+MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<double>> &dt)
     : MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0, dt), MPosition::DEFAULT) {}
 
-MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double>> &dt,
+MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<double>> &dt,
                      const MPosition::Ref &rf)
     : MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0, dt), rf) {}
 
-MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<Double>> &dt, MPosition::Types rf)
+MPosition::MPosition(const Quantity &dt0, const Quantum<Vector<double>> &dt, MPosition::Types rf)
     : MeasBase<MVPosition, MPosition::Ref>(MVPosition(dt0, dt), rf) {}
 
 MPosition::MPosition(const Measure *dt) : MeasBase<MVPosition, MPosition::Ref>(dt) {}
@@ -101,12 +101,12 @@ void MPosition::assure(const Measure &in) {
   }
 }
 
-const String *MPosition::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
-  static const Int N_name = 2;
-  static const Int N_extra = 0;
+const String *MPosition::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
+  static const int N_name = 2;
+  static const int N_extra = 0;
   static const String tname[N_name] = {"ITRF", "WGS84"};
 
-  static const uInt oname[N_name] = {MPosition::ITRF, MPosition::WGS84};
+  static const unsigned int oname[N_name] = {MPosition::ITRF, MPosition::WGS84};
 
   MPosition::checkMyTypes();
   nall = N_name;
@@ -115,7 +115,7 @@ const String *MPosition::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
   return tname;
 }
 
-const String *MPosition::allTypes(Int &nall, Int &nextra, const uInt *&typ) const {
+const String *MPosition::allTypes(int &nall, int &nextra, const unsigned int *&typ) const {
   return MPosition::allMyTypes(nall, nextra, typ);
 }
 
@@ -126,22 +126,22 @@ void MPosition::checkMyTypes() {
   static bool first(true);
   if (first) {
     first = false;
-    Int nall, nex;
-    const uInt *typ;
+    int nall, nex;
+    const unsigned int *typ;
     const String *const tps = MPosition::allMyTypes(nall, nex, typ);
     MPosition::Types tp;
-    for (Int i = 0; i < nall; i++) {
-      AlwaysAssert(MPosition::getType(tp, MPosition::showType(typ[i])) && tp == Int(typ[i]) &&
-                       MPosition::getType(tp, tps[i]) && tp == Int(typ[i]),
+    for (int i = 0; i < nall; i++) {
+      AlwaysAssert(MPosition::getType(tp, MPosition::showType(typ[i])) && tp == int(typ[i]) &&
+                       MPosition::getType(tp, tps[i]) && tp == int(typ[i]),
                    AipsError);
     }
-    for (Int i = 0; i < N_Types; i++) {
+    for (int i = 0; i < N_Types; i++) {
       AlwaysAssert(MPosition::getType(tp, MPosition::showType(i)) && tp == i, AipsError);
     }
   }
 }
 
-MPosition::Types MPosition::castType(uInt tp) {
+MPosition::Types MPosition::castType(unsigned int tp) {
   MPosition::checkMyTypes();
   AlwaysAssert(tp < MPosition::N_Types, AipsError);
   return static_cast<MPosition::Types>(tp);
@@ -154,14 +154,14 @@ const String &MPosition::showType(MPosition::Types tp) {
   return tname[tp];
 }
 
-const String &MPosition::showType(uInt tp) { return MPosition::showType(MPosition::castType(tp)); }
+const String &MPosition::showType(unsigned int tp) { return MPosition::showType(MPosition::castType(tp)); }
 
 bool MPosition::getType(MPosition::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+  const unsigned int *oname;
+  int nall, nex;
   const String *tname = MPosition::allMyTypes(nall, nex, oname);
 
-  Int i = Measure::giveMe(in, nall, tname);
+  int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
     return false;
@@ -209,13 +209,13 @@ const String &MPosition::getDefaultType() const { return MPosition::showType(MPo
 
 String MPosition::getRefString() const { return MPosition::showType(ref.getType()); }
 
-Quantum<Vector<Double>> MPosition::get(const Unit &inunit) const {
-  return Quantum<Vector<Double>>(data.getValue(), "m").get(inunit);
+Quantum<Vector<double>> MPosition::get(const Unit &inunit) const {
+  return Quantum<Vector<double>>(data.getValue(), "m").get(inunit);
 }
 
-Quantum<Vector<Double>> MPosition::getAngle() const { return (data.getAngle()); }
+Quantum<Vector<double>> MPosition::getAngle() const { return (data.getAngle()); }
 
-Quantum<Vector<Double>> MPosition::getAngle(const Unit &inunit) const {
+Quantum<Vector<double>> MPosition::getAngle(const Unit &inunit) const {
   return (data.getAngle(inunit));
 }
 

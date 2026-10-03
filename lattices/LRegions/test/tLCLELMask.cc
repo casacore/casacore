@@ -38,7 +38,7 @@
 
 #include <casacore/casa/namespace.h>
 void testVectorROIter(const Lattice<bool>& lattice, bool firstValue, bool alternates) {
-  Int nstep;
+  int nstep;
   const IPosition latticeShape(lattice.shape());
   const IPosition cursorShape(1, latticeShape(0));
   LatticeStepper step(latticeShape, cursorShape);
@@ -62,9 +62,9 @@ void testVectorROIter(const Lattice<bool>& lattice, bool firstValue, bool altern
 int main() {
   try {
     IPosition latticeShape(2, 4, 8);
-    Array<Float> arr(latticeShape);
+    Array<float> arr(latticeShape);
     indgen(arr);
-    ArrayLattice<Float> arrlat(arr);
+    ArrayLattice<float> arrlat(arr);
     {
       LCLELMask mask(fmod(floor(arrlat / 4), 2) == 0);
       AlwaysAssertExit(mask.hasMask());

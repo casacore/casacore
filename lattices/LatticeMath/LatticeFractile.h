@@ -104,10 +104,10 @@ class LatticeFractile {
   // <br>Normally a vector with 1 element is returned.
   // If the lattice has no masked-on elements, an empty vector is returned.
   // <group>
-  static Vector<T> unmaskedFractile(const Lattice<T>& lattice, Float fraction,
-                                    uInt smallSize = 4096 * 4096);
-  static Vector<T> maskedFractile(const MaskedLattice<T>& lattice, Float fraction,
-                                  uInt smallSize = 4096 * 4096);
+  static Vector<T> unmaskedFractile(const Lattice<T>& lattice, float fraction,
+                                    unsigned int smallSize = 4096 * 4096);
+  static Vector<T> maskedFractile(const MaskedLattice<T>& lattice, float fraction,
+                                  unsigned int smallSize = 4096 * 4096);
   // </group>
 
   // Determine the values of the 2 elements at the given fractiles.
@@ -122,26 +122,26 @@ class LatticeFractile {
   // <br>Normally a vector with 2 elements is returned.
   // If the lattice has no masked-on elements, an empty vector is returned.
   // <group>
-  static Vector<T> unmaskedFractiles(const Lattice<T>& lattice, Float left, Float right,
-                                     uInt smallSize = 4096 * 4096);
-  static Vector<T> maskedFractiles(const MaskedLattice<T>& lattice, Float left, Float right,
-                                   uInt smallSize = 4096 * 4096);
+  static Vector<T> unmaskedFractiles(const Lattice<T>& lattice, float left, float right,
+                                     unsigned int smallSize = 4096 * 4096);
+  static Vector<T> maskedFractiles(const MaskedLattice<T>& lattice, float left, float right,
+                                   unsigned int smallSize = 4096 * 4096);
   // </group>
 
  private:
   // Determine the fractile for a small masked lattice.
-  static Vector<T> smallMaskedFractile(const MaskedLattice<T>& lattice, Float fraction);
+  static Vector<T> smallMaskedFractile(const MaskedLattice<T>& lattice, float fraction);
 
   // Determine the fractiles for a small masked lattice.
-  static Vector<T> smallMaskedFractiles(const MaskedLattice<T>& lattice, Float left, Float right);
+  static Vector<T> smallMaskedFractiles(const MaskedLattice<T>& lattice, float left, float right);
 
   // Calculate the first histogram (with 10000 bins).
   // Also calculate the minimum and maximum. It returns the number
   // of masked-on values. Masked-off values are ignored.
   // <group>
-  static uInt maskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<uInt>& hist,
+  static unsigned int maskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<unsigned int>& hist,
                               Block<T>& boundaries, const MaskedLattice<T>& lattice);
-  static void unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<uInt>& hist,
+  static void unmaskedHistogram(T& stv, T& endv, T& minv, T& maxv, Block<unsigned int>& hist,
                                 Block<T>& boundaries, const Lattice<T>& lattice);
   // </group>
 
@@ -156,7 +156,7 @@ class LatticeFractile {
   // to minv and the last bin to maxv.
   // If the bins are getting too small (i.e. if stv is nearly endv), 0 is
   // returned. In that case endv contains the fractile.
-  static uInt findBin(uInt& fractileInx, T& stv, T& endv, T minv, T maxv, const Block<uInt>& hist,
+  static unsigned int findBin(unsigned int& fractileInx, T& stv, T& endv, T minv, T maxv, const Block<unsigned int>& hist,
                       const Block<T>& boundaries);
 };
 

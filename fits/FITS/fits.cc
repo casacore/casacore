@@ -63,7 +63,7 @@ int FITS::localsize(FITS::ValueType t) {
       sizeof(FitsLogical),  // 1
       sizeof(FitsBit),      // 2
       sizeof(char),         // 3
-      sizeof(uChar),        // 4
+      sizeof(unsigned char),        // 4
       sizeof(short),        // 5
       sizeof(FitsLong),     // 6
       sizeof(float),        // 7
@@ -88,12 +88,12 @@ void FITS::l2f(void *fits_addr, FitsLogical *local_addr, int number) {
 void FITS::f2l(FitsBit *local_addr, void *fits_addr, int number) {
   int n = number / 8;
   if (number % 8 != 0) ++n;
-  memcpy(local_addr, fits_addr, (n * sizeof(uChar)));
+  memcpy(local_addr, fits_addr, (n * sizeof(unsigned char)));
 }
 void FITS::l2f(void *fits_addr, FitsBit *local_addr, int number) {
   int n = number / 8;
   if (number % 8 != 0) ++n;
-  memcpy(fits_addr, local_addr, (n * sizeof(uChar)));
+  memcpy(fits_addr, local_addr, (n * sizeof(unsigned char)));
 }
 
 // Data conversion:  char
@@ -105,11 +105,11 @@ void FITS::l2f(void *fits_addr, char *local_addr, int number) {
 }
 
 // Data conversion:  uChar
-void FITS::f2l(uChar *local_addr, void *fits_addr, int number) {
-  memcpy(local_addr, fits_addr, (number * sizeof(uChar)));
+void FITS::f2l(unsigned char *local_addr, void *fits_addr, int number) {
+  memcpy(local_addr, fits_addr, (number * sizeof(unsigned char)));
 }
-void FITS::l2f(void *fits_addr, uChar *local_addr, int number) {
-  memcpy(fits_addr, local_addr, (number * sizeof(uChar)));
+void FITS::l2f(void *fits_addr, unsigned char *local_addr, int number) {
+  memcpy(fits_addr, local_addr, (number * sizeof(unsigned char)));
 }
 
 // Data conversion:  short
@@ -148,9 +148,9 @@ void FITS::l2f(void *fits_addr, long *local_addr, int number) {
 }
 
 // Data conversion:  Int
-void FITS::f2l(Int *local_addr, void *fits_addr, int number) {
+void FITS::f2l(int *local_addr, void *fits_addr, int number) {
 #if defined(AIPS_LITTLE_ENDIAN)
-  switch (sizeof(Int)) {
+  switch (sizeof(int)) {
     case 2:
       FITS::swap2(local_addr, fits_addr, number);
       break;
@@ -159,11 +159,11 @@ void FITS::f2l(Int *local_addr, void *fits_addr, int number) {
       break;
   }
 #else
-  memcpy(local_addr, fits_addr, (number * sizeof(Int)));
+  memcpy(local_addr, fits_addr, (number * sizeof(int)));
 #endif
 }
-void FITS::l2f(void *fits_addr, Int *local_addr, int number) {
-  FITS::f2l((Int *)fits_addr, local_addr, number);
+void FITS::l2f(void *fits_addr, int *local_addr, int number) {
+  FITS::f2l((int *)fits_addr, local_addr, number);
 }
 
 // Data conversion:  float
@@ -217,14 +217,14 @@ void FITS::l2f(void *fits_addr, Complex *local_addr, int number) {
 // Data conversion:  IComplex
 void FITS::f2l(IComplex *local_addr, void *fits_addr, int number) {
 #if defined(AIPS_LITTLE_ENDIAN)
-  FITS::f2l((Int *)local_addr, fits_addr, 2 * number);
+  FITS::f2l((int *)local_addr, fits_addr, 2 * number);
 #else
   memcpy(local_addr, fits_addr, (number * sizeof(IComplex)));
 #endif
 }
 void FITS::l2f(void *fits_addr, IComplex *local_addr, int number) {
 #if defined(AIPS_LITTLE_ENDIAN)
-  FITS::f2l((Int *)fits_addr, local_addr, 2 * number);
+  FITS::f2l((int *)fits_addr, local_addr, 2 * number);
 #else
   memcpy(fits_addr, local_addr, (number * sizeof(IComplex)));
 #endif
@@ -249,14 +249,14 @@ void FITS::l2f(void *fits_addr, DComplex *local_addr, int number) {
 // Data conversion:  FitsVADesc
 void FITS::f2l(FitsVADesc *local_addr, void *fits_addr, int number) {
 #if defined(AIPS_LITTLE_ENDIAN)
-  FITS::f2l((Int *)local_addr, fits_addr, 2 * number);
+  FITS::f2l((int *)local_addr, fits_addr, 2 * number);
 #else
   memcpy(local_addr, fits_addr, (number * sizeof(FitsVADesc)));
 #endif
 }
 void FITS::l2f(void *fits_addr, FitsVADesc *local_addr, int number) {
 #if defined(AIPS_LITTLE_ENDIAN)
-  FITS::f2l((Int *)fits_addr, local_addr, 2 * number);
+  FITS::f2l((int *)fits_addr, local_addr, 2 * number);
 #else
   memcpy(fits_addr, local_addr, (number * sizeof(FitsVADesc)));
 #endif
@@ -264,11 +264,11 @@ void FITS::l2f(void *fits_addr, FitsVADesc *local_addr, int number) {
 
 // Swap routines for 2, 4 and 8 byte items
 void FITS::swap2(void *dest, void *src, int number) {
-  uChar *t = (uChar *)dest;
-  uChar *s = (uChar *)src;
+  unsigned char *t = (unsigned char *)dest;
+  unsigned char *s = (unsigned char *)src;
   if (t == s)
     for (int i = 0; i < number; ++i, t += 2) {
-      uChar tmp;
+      unsigned char tmp;
       tmp = *t;
       *t = t[1];
       t[1] = tmp;
@@ -281,11 +281,11 @@ void FITS::swap2(void *dest, void *src, int number) {
 }
 
 void FITS::swap4(void *dest, void *src, int number) {
-  uChar *t = (uChar *)dest;
-  uChar *s = (uChar *)src;
+  unsigned char *t = (unsigned char *)dest;
+  unsigned char *s = (unsigned char *)src;
   if (t == s) {
     for (int i = 0; i < number; ++i, t += 4) {
-      uChar tmp;
+      unsigned char tmp;
       tmp = *t;
       *t = t[3];
       t[3] = tmp;
@@ -303,11 +303,11 @@ void FITS::swap4(void *dest, void *src, int number) {
 }
 
 void FITS::swap8(void *dest, void *src, int number) {
-  uChar *t = (uChar *)dest;
-  uChar *s = (uChar *)src;
+  unsigned char *t = (unsigned char *)dest;
+  unsigned char *s = (unsigned char *)src;
   if (t == s) {
     for (int i = 0; i < number; ++i, t += 8) {
-      uChar tmp;
+      unsigned char tmp;
       tmp = *t;
       *t = t[7];
       t[7] = tmp;
@@ -354,7 +354,7 @@ void FITS::valstr(ostream &o, const ValueType &ty, const void *val) {
       o << *((char *)val);
       break;
     case FITS::BYTE:
-      n = *((uChar *)val);
+      n = *((unsigned char *)val);
       o << n;
       break;
     case FITS::SHORT:
@@ -547,10 +547,10 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res, const c
   }
 
   // The name, isindexed, and type match an entry in the table.
-  const Int *l;
+  const int *l;
   switch (res.name()) {
     case FITS::BITPIX:
-      l = (const Int *)v;
+      l = (const int *)v;
       if (!(*l == 8 || *l == 16 || *l == 32 || *l == -32 || *l == -64)) {
         msg = "Illegal value for keyword BITPIX.";
         return -1;
@@ -558,7 +558,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res, const c
       break;
     case FITS::NAXIS:
       if (n == false) {
-        l = (const Int *)v;
+        l = (const int *)v;
         if (*l < 0 || *l > 999) {
           msg = "Illegal value for keyword NAXIS.";
           return -1;
@@ -566,7 +566,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res, const c
       }
       break;
     case FITS::TFIELDS:
-      l = (const Int *)v;
+      l = (const int *)v;
       if (*l < 0 || *l > 999) {
         msg = "Illegal value for keyword TFIELDS.";
         return -1;
@@ -618,7 +618,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res, const c
               return 1;
             }
             // digits required after decimal
-            for (Int curr = 20; curr <= (v_len - 1); curr++) {
+            for (int curr = 20; curr <= (v_len - 1); curr++) {
               if (!FITS::isa_digit(p[curr])) {
                 msg = "Illegal date format.";
                 return 1;
@@ -927,7 +927,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
   }
 }
 
-int FITS::ckaccum(double &d, Int numb, int pow) {
+int FITS::ckaccum(double &d, int numb, int pow) {
   // compute d += numb * 10**pow checking for over/underflow
   double tmp = (double)numb;
   if (pow > 0) {
@@ -949,7 +949,7 @@ int FITS::ckaccum(double &d, Int numb, int pow) {
   return 0;
 }
 
-int FITS::ckaccum(float &f, Int numb, int pow) {
+int FITS::ckaccum(float &f, int numb, int pow) {
   // compute f += numb * 10**pow checking for over/underflow
   float tmp = (float)numb;
   if (pow > 0) {
@@ -1012,8 +1012,8 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
   }
   // 5. Get integer part of number.  Get digits, store in Ints,
   //	and count significant digits
-  Int intpart1 = 0;  // part 1 of digits of integer part
-  Int intpart2 = 0;  // part 2 of digits of integer part
+  int intpart1 = 0;  // part 1 of digits of integer part
+  int intpart2 = 0;  // part 2 of digits of integer part
   int sigint = 0;    // number of significant digits
   if (isa_digit(*s)) {
     intpart1 = digit2bin(*s);
@@ -1080,8 +1080,8 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
   }
   // 6. If valid, the number is float or double.  Get the fraction
   //	part, if any.
-  Int fracpart1 = 0;    // part 1 of digits of fraction part
-  Int fracpart2 = 0;    // part 2 of digits of fraction part
+  int fracpart1 = 0;    // part 1 of digits of fraction part
+  int fracpart2 = 0;    // part 2 of digits of fraction part
   int sigfrac = 0;      // number of significant digits in fraction
   int fracpos = 0;      // position of first digit relative to point
   int exp = 0;          // exponent
@@ -1718,7 +1718,7 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
         bval = *((bool *)v);
         break;
       case FITS::LONG:
-        ival = *((Int *)v);
+        ival = *((int *)v);
         break;
       case FITS::FLOAT:
         fval = *((float *)v);

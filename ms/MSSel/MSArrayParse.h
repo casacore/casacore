@@ -91,39 +91,39 @@ class MSArrayParse : public MSParse {
 
   //  ~MSArrayParse() {if (node_p) delete node_p;node_p=0x0;}
 
-  const TableExprNode* selectRangeGTAndLT(const Int& n0, const Int& n1);
-  const TableExprNode* selectRangeGEAndLE(const Int& n0, const Int& n1);
-  const TableExprNode* selectArrayIds(const Vector<Int>& arrayids);
+  const TableExprNode* selectRangeGTAndLT(const int& n0, const int& n1);
+  const TableExprNode* selectRangeGEAndLE(const int& n0, const int& n1);
+  const TableExprNode* selectArrayIds(const Vector<int>& arrayids);
   inline const TableExprNode* selectArrayIds() {
-    return selectArrayIds(Vector<Int>(parsedIDList_p));
+    return selectArrayIds(Vector<int>(parsedIDList_p));
   }
-  const TableExprNode* selectArrayIdsGT(const Vector<Int>& arrayids);
-  const TableExprNode* selectArrayIdsLT(const Vector<Int>& arrayids);
-  const TableExprNode* selectArrayIdsGTEQ(const Vector<Int>& arrayids);
-  const TableExprNode* selectArrayIdsLTEQ(const Vector<Int>& arrayids);
-  std::vector<Int>& accumulateIDs(const Int id0, const Int id1 = -1);
+  const TableExprNode* selectArrayIdsGT(const Vector<int>& arrayids);
+  const TableExprNode* selectArrayIdsLT(const Vector<int>& arrayids);
+  const TableExprNode* selectArrayIdsGTEQ(const Vector<int>& arrayids);
+  const TableExprNode* selectArrayIdsLTEQ(const Vector<int>& arrayids);
+  std::vector<int>& accumulateIDs(const int id0, const int id1 = -1);
 
   // Get table expression node object.
   const TableExprNode node();
 
-  Vector<Int> selectedIDs() { return idList; }
+  Vector<int> selectedIDs() { return idList; }
   void reset() {
     idList.resize(0);
     parsedIDList_p.resize(0);
   }
   void cleanup() {}
 
-  void setMaxArray(const Int& n) { maxArrays_p = n; }
+  void setMaxArray(const int& n) { maxArrays_p = n; }
 
   static MSArrayParse* thisMSAParser;
 
  private:
   TableExprNode node_p;
-  Vector<Int> idList;
-  std::vector<Int> parsedIDList_p;
+  Vector<int> idList;
+  std::vector<int> parsedIDList_p;
   const String colName;
-  void appendToIDList(const Vector<Int>& v);
-  Int maxArrays_p;
+  void appendToIDList(const Vector<int>& v);
+  int maxArrays_p;
 };
 
 }  // namespace casacore

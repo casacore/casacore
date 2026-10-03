@@ -120,7 +120,7 @@ class MSDerivedValues {
   // Set antenna position from an antenna table
   // Returns the number of antennas. Also
   // sets the observatory position to the average of the antenna positions.
-  Int setAntennas(const MSAntennaColumns& ac);
+  int setAntennas(const MSAntennaColumns& ac);
 
   // Set antenna positions, index in vector is antenna number
   // for calls below.
@@ -142,11 +142,11 @@ class MSDerivedValues {
 
   // If you have used setMeasurementSet then this version of
   // setFieldCenter using field id makes sense
-  MSDerivedValues& setFieldCenter(uInt fieldid = 0);
+  MSDerivedValues& setFieldCenter(unsigned int fieldid = 0);
 
   // Set antenna index, sets the position reference for the conversions.
   // Use -1 to set the reference frame to the observatory position.
-  MSDerivedValues& setAntenna(Int antenna);
+  MSDerivedValues& setAntenna(int antenna);
 
   // Set the velocity frame type (e.g., MRadialVelocity::LSRK)
   MSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
@@ -159,10 +159,10 @@ class MSDerivedValues {
   MSDerivedValues& setFrequencyReference(MFrequency::Types frqType);
 
   // get hour angle
-  Double hourAngle();
+  double hourAngle();
 
   // get parallactic angle
-  Double parAngle();
+  double parAngle();
 
   // get azimuth & elevation
   const MDirection& azel();
@@ -180,7 +180,7 @@ class MSDerivedValues {
   // Set restFrequencies...make it look for it for the fieldid, spwid and line
   // number defined in the SOURCE table return false if it fails to find the
   // restFrquency
-  bool setRestFrequency(const Int fieldid, const Int spwid, const Int linenum = 0);
+  bool setRestFrequency(const int fieldid, const int spwid, const int linenum = 0);
 
   //
   MSDerivedValues& setRestFrequency(const Quantity& restFreq);
@@ -199,7 +199,7 @@ class MSDerivedValues {
   // initialize data
   void init();
 
-  Int antenna_p;
+  int antenna_p;
   MEpoch::Convert cUTCToLAST_p;
   Vector<MPosition> mAntPos_p;
   MDirection::Convert cRADecToAzEl_p;
@@ -215,7 +215,7 @@ class MSDerivedValues {
   MFrequency::Ref frqref_p;
   bool hasMS_p;
   Quantity restFreq_p;
-  Vector<Int> mount_p;
+  Vector<int> mount_p;
   MeasurementSet ms_p;
   MRadialVelocity::Types radialVelocityType_p;
 

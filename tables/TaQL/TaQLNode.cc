@@ -65,7 +65,7 @@ TaQLNode TaQLNode::parse(const String& command) {
 }
 
 void TaQLNode::clearNodesCreated() {
-  for (uInt i = 0; i < theirNodesCreated.size(); ++i) {
+  for (unsigned int i = 0; i < theirNodesCreated.size(); ++i) {
     delete theirNodesCreated[i];
   }
   theirNodesCreated.resize(0);
@@ -227,7 +227,7 @@ void TaQLMultiNode::setPPFix(const String& prefix, const String& postfix) {
 }
 
 void TaQLMultiNode::setSeparator(const String& sep) { itsNRep->setSeparator(sep); }
-void TaQLMultiNode::setSeparator(uInt incr, const String& sep) { itsNRep->setSeparator(incr, sep); }
+void TaQLMultiNode::setSeparator(unsigned int incr, const String& sep) { itsNRep->setSeparator(incr, sep); }
 
 TaQLQueryNode::TaQLQueryNode(TaQLQueryNodeRep* rep) : TaQLNode(rep), itsNRep(rep) {}
 

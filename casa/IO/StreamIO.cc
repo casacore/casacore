@@ -41,7 +41,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-StreamIO::StreamIO(const String& hostname, uShort portNumber) : ByteIO(), itsSockDesc(-1) {
+StreamIO::StreamIO(const String& hostname, unsigned short portNumber) : ByteIO(), itsSockDesc(-1) {
 #ifdef AIPS_CRAY_PGI
   throw AipsError("StreamIO is not supported on Cray XT3");
 #else
@@ -80,7 +80,7 @@ StreamIO::~StreamIO() {
 
 void StreamIO::write(Int64 size, const void* buf) {
   Int64 bytesToWrite = size;
-  const Char* bytePtr = static_cast<const Char*>(buf);
+  const char* bytePtr = static_cast<const char*>(buf);
   while (bytesToWrite > 0) {
     const Int64 bytesWritten = ::write(itsSockDesc, bytePtr, bytesToWrite);
     if (bytesWritten <= 0) {
@@ -98,7 +98,7 @@ void StreamIO::write(Int64 size, const void* buf) {
 
 Int64 StreamIO::read(Int64 size, void* buf, bool throwException) {
   Int64 bytesToRead = size;
-  Char* bytePtr = static_cast<Char*>(buf);
+  char* bytePtr = static_cast<char*>(buf);
   while (bytesToRead > 0) {
     const Int64 bytesRead = ::read(itsSockDesc, bytePtr, bytesToRead);
     if (bytesRead < 0) {

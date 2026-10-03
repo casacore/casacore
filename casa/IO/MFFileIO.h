@@ -137,7 +137,7 @@ class MFFileIO : public ByteIO {
   std::shared_ptr<MultiFileBase> itsFile;
   Int64 itsPosition;
   String itsName;
-  Int itsId;
+  int itsId;
   bool itsIsWritable;
 };
 

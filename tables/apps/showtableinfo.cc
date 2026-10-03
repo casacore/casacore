@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     bool showcol = inputs.getBool("col");
     bool showtabkey = inputs.getBool("tabkey");
     bool showcolkey = inputs.getBool("colkey");
-    Int maxval = inputs.getInt("maxval");
+    int maxval = inputs.getInt("maxval");
     bool showsub = inputs.getBool("sub");
     bool sortcol = inputs.getBool("sort");
     bool cOrder = inputs.getBool("corder");

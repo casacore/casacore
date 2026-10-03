@@ -129,13 +129,13 @@ class TSMCubeBuff : public TSMCube {
 
   // Read or write a section in the cube.
   // It is assumed that the section buffer is long enough.
-  void accessSection(const IPosition& start, const IPosition& end, char* section, uInt colnr,
-                     uInt localPixelSize, uInt externalPixelSize, bool writeFlag) override;
+  void accessSection(const IPosition& start, const IPosition& end, char* section, unsigned int colnr,
+                     unsigned int localPixelSize, unsigned int externalPixelSize, bool writeFlag) override;
 
   // Read or write a section in a strided way.
   // It is assumed that the section buffer is long enough.
   void accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
-                     char* section, uInt colnr, uInt localPixelSize, uInt externalPixelSize,
+                     char* section, unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
                      bool writeFlag) override;
 
   // Set the cache size for the given slice and access path.
@@ -150,7 +150,7 @@ class TSMCubeBuff : public TSMCube {
   // The cacheSize has to be given in buckets.
   // <br>The flag <src>userSet</src> inidicates if the cache size is set by
   // the user (by an Accessor object) or automatically (by TSMDataColumn).
-  void setCacheSize(uInt cacheSize, bool forceSmaller, bool userSet) override;
+  void setCacheSize(unsigned int cacheSize, bool forceSmaller, bool userSet) override;
 
  private:
   // Get the cache object.

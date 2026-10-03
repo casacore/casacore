@@ -71,11 +71,11 @@ String ScalarRecordColumnDesc::className() const { return "ScalarRecordColumnDes
 // It was felt that putstart takes too much space, so therefore
 // the version is put "manually".
 void ScalarRecordColumnDesc::putDesc(AipsIO& ios) const {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
 }
 
 void ScalarRecordColumnDesc::getDesc(AipsIO& ios) {
-  uInt version;
+  unsigned int version;
   ios >> version;
 }
 

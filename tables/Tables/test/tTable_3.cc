@@ -48,12 +48,12 @@
 // </summary>
 
 // First build a description.
-void a(uInt nrrow) {
+void a(unsigned int nrrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn(ScalarColumnDesc<uInt>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<Int>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<int>("ad", "comment for ad"));
 
   // Now create a new table from the description.
   // Use copy constructor to test if it works fine.
@@ -67,18 +67,18 @@ void a(uInt nrrow) {
   tab.tableInfo().readmeAddLine("first readme line");
   tab.tableInfo().readmeAddLine("second test readme line");
 
-  ScalarColumn<uInt> ab1(tab, "ab");
-  ScalarColumn<Int> ad(tab, "ad");
-  uInt i;
+  ScalarColumn<unsigned int> ab1(tab, "ab");
+  ScalarColumn<int> ad(tab, "ad");
+  unsigned int i;
   for (i = 0; i < nrrow; i++) {
     ab1.put(i, i);
     ad.put(i, i / 10);
   }
   Timer timer;
-  Vector<uInt> abv = ab1.getColumn();
+  Vector<unsigned int> abv = ab1.getColumn();
   timer.show();
   timer.mark();
-  Vector<Int> adv = ad.getColumn();
+  Vector<int> adv = ad.getColumn();
   timer.show();
   timer.mark();
   for (i = 0; i < nrrow; i++) {
@@ -93,57 +93,57 @@ void a(uInt nrrow) {
   {
     // Get entire column (minus last cell) to test range performance.
     timer.mark();
-    Vector<uInt> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+    Vector<unsigned int> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
     timer.show("range AIO");
     timer.mark();
-    Vector<Int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+    Vector<int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
     timer.show("range ISM");
     for (i = 0; i < nrrow - 1; i++) {
       AlwaysAssertExit(abv1(i) == i);
-      AlwaysAssertExit(adv1(i) == Int(i / 10));
+      AlwaysAssertExit(adv1(i) == int(i / 10));
     }
   }
   {
     Vector<rownr_t> abvcp(abv.size());
     convertArray(abvcp, abv);
     Table rtab(tab(abvcp));
-    ScalarColumn<uInt> ab1(rtab, "ab");
-    ScalarColumn<Int> ad(rtab, "ad");
+    ScalarColumn<unsigned int> ab1(rtab, "ab");
+    ScalarColumn<int> ad(rtab, "ad");
     Timer timer;
     {
-      Vector<uInt> abv = ab1.getColumn();
+      Vector<unsigned int> abv = ab1.getColumn();
       timer.show("cells AIO");
       timer.mark();
-      Vector<Int> adv = ad.getColumn();
+      Vector<int> adv = ad.getColumn();
       timer.show("cells ISM");
       bool del;
-      uInt st = 0;
-      const uInt* abvv = abv.getStorage(del);
+      unsigned int st = 0;
+      const unsigned int* abvv = abv.getStorage(del);
       timer.mark();
       for (i = 0; i < nrrow; i++) {
-        uInt row = adv(i);
+        unsigned int row = adv(i);
         if (row > st && row < nrrow) {
-          uInt off = row - st;
+          unsigned int off = row - st;
           adv(i) = abvv[off];
         }
       }
       timer.show("b");
       for (i = 0; i < nrrow; i++) {
         AlwaysAssertExit(abv(i) == i);
-        AlwaysAssertExit(adv(i) == Int(i / 10));
+        AlwaysAssertExit(adv(i) == int(i / 10));
       }
     }
     {
       // Get entire column (minus last cell) to test range performance.
       timer.mark();
-      Vector<uInt> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+      Vector<unsigned int> abv1 = ab1.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
       timer.show("cells/range AIO");
       timer.mark();
-      Vector<Int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
+      Vector<int> adv1 = ad.getColumnRange(Slicer(IPosition(1, 0), IPosition(1, nrrow - 1)));
       timer.show("cells/range ISM");
       for (i = 0; i < nrrow - 1; i++) {
         AlwaysAssertExit(abv1(i) == i);
-        AlwaysAssertExit(adv1(i) == Int(i / 10));
+        AlwaysAssertExit(adv1(i) == int(i / 10));
       }
     }
   }
@@ -151,7 +151,7 @@ void a(uInt nrrow) {
 
 int main(int argc, const char* argv[]) {
   try {
-    uInt nrrow = 100000;
+    unsigned int nrrow = 100000;
     if (argc > 1) {
       nrrow = atoi(argv[1]);
     }

@@ -73,9 +73,9 @@ void makeMS() {
 
 void doSel(const MeasurementSet& ms, const String& command, bool showBL = false) {
   cout << command << std::endl;
-  Vector<Int> selectedAnts1;
-  Vector<Int> selectedAnts2;
-  Matrix<Int> selectedBaselines;
+  Vector<int> selectedAnts1;
+  Vector<int> selectedAnts2;
+  Matrix<int> selectedBaselines;
   msAntennaGramParseCommand(&ms, command, selectedAnts1, selectedAnts2, selectedBaselines);
   cout << "  " << selectedAnts1 << ' ' << selectedAnts2 << std::endl;
   if (showBL) {

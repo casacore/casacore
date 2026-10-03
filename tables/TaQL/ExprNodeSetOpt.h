@@ -66,14 +66,14 @@ class TableExprNodeSetOptBase : public TableExprNodeRep {
   // They call the <src>find</src> function.
   // <group>
   bool contains(const TableExprId& id, Int64 value) override;
-  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, double value) override;
   bool contains(const TableExprId& id, String value) override;
   // </group>
   // Tell for each array value if the set contains that value.
   // It calls the scalar <src>contains</src> function for each value.
   // <group>
   MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<double>& value) override;
   MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
   // </group>
   // Tell which key matches a value. -1 = no match.
@@ -82,7 +82,7 @@ class TableExprNodeSetOptBase : public TableExprNodeRep {
   // # as used for the other types to make templates possible.
   // <group>
   virtual Int64 find(Int64 value) const;
-  virtual Int64 find(Double value) const;
+  virtual Int64 find(double value) const;
   virtual Int64 find(String value) const;
   // </group>
  private:
@@ -121,7 +121,7 @@ class TableExprNodeSetOptUSet : public TableExprNodeSetOptBase {
   TableExprNodeSetOptUSet(const TableExprNodeRep& orig, const Array<T>&);
 
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
 
   // Where does a value occur in the set? -1 is no match.
   Int64 find(T value) const override;
@@ -162,7 +162,7 @@ class TableExprNodeSetOptContSetBase : public TableExprNodeSetOptBase {
   // Get the size (nr of intervals).
   size_t size() const { return itsStarts.size(); }
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
   // Transform a set into an optimized one by ordering the intervals
   // and optionally combining adjacent intervals.
   // If not possible, an empty TENShPtr is returned.
@@ -211,7 +211,7 @@ class TableExprNodeSetOptContSetMixOC : public TableExprNodeSetOptContSetBase<T>
                                   const std::vector<T>& ends, const std::vector<bool>& leftC,
                                   const std::vector<bool>& rightC);
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
   // Tell which interval contains a value. -1 = no match.
   Int64 find(T value) const override;
 
@@ -253,7 +253,7 @@ class TableExprNodeSetOptContSet : public TableExprNodeSetOptContSetBase<T> {
                              const std::vector<T>& ends, LeftComp leftCmp, RightComp rightCmp,
                              const String& cmpType);
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
   // Tell which interval contains a value. -1 = no match.
   Int64 find(T value) const override;
 

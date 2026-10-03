@@ -41,8 +41,8 @@ StManColumnArrayAipsIO::StManColumnArrayAipsIO(StManAipsIO* smptr, int dataType)
     : StManColumnAipsIO(smptr, dataType, true), nrelem_p(0) {}
 
 StManColumnArrayAipsIO::~StManColumnArrayAipsIO() {
-  uInt nr = stmanPtr_p->nrow();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = stmanPtr_p->nrow();
+  for (unsigned int i = 0; i < nr; i++) {
     deleteArray(i);
   }
 }
@@ -65,12 +65,12 @@ void StManColumnArrayAipsIO::addRow(rownr_t nrnew, rownr_t nrold) {
 
 void StManColumnArrayAipsIO::doCreate(rownr_t nrrow) {
   addRow(nrrow, 0);
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     initData(getArrayPtr(i), nrelem_p);
   }
 }
 
-uInt StManColumnArrayAipsIO::ndim(rownr_t) { return shape_p.nelements(); }
+unsigned int StManColumnArrayAipsIO::ndim(rownr_t) { return shape_p.nelements(); }
 
 IPosition StManColumnArrayAipsIO::shape(rownr_t) { return shape_p; }
 
@@ -121,10 +121,10 @@ void StManColumnArrayAipsIO::putFile(rownr_t nrval, AipsIO& ios) {
 
 // # Read all data from AipsIO.
 void StManColumnArrayAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
-  uInt version = ios.getstart("StManColumnArrayAipsIO");
+  unsigned int version = ios.getstart("StManColumnArrayAipsIO");
   if (version == 1) {
     IPosition shape;
-    uInt n;
+    unsigned int n;
     ios >> n;  // data type
     ios >> shape;
     ios >> n;  // nelem
@@ -142,26 +142,26 @@ void StManColumnArrayAipsIO::getFile(rownr_t nrval, AipsIO& ios) {
     }                                     \
   }
 
-void StManColumnArrayAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {
+void StManColumnArrayAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) {
   ios << nrval * nrelem_p;
   switch (dtype()) {
     case TpBool:
       STMANCOLUMNARRAYAIPSIO_PUTDATA(bool)
       break;
     case TpUChar:
-      STMANCOLUMNARRAYAIPSIO_PUTDATA(uChar)
+      STMANCOLUMNARRAYAIPSIO_PUTDATA(unsigned char)
       break;
     case TpShort:
-      STMANCOLUMNARRAYAIPSIO_PUTDATA(Short)
+      STMANCOLUMNARRAYAIPSIO_PUTDATA(short)
       break;
     case TpUShort:
-      STMANCOLUMNARRAYAIPSIO_PUTDATA(uShort)
+      STMANCOLUMNARRAYAIPSIO_PUTDATA(unsigned short)
       break;
     case TpInt:
-      STMANCOLUMNARRAYAIPSIO_PUTDATA(Int)
+      STMANCOLUMNARRAYAIPSIO_PUTDATA(int)
       break;
     case TpUInt:
-      STMANCOLUMNARRAYAIPSIO_PUTDATA(uInt)
+      STMANCOLUMNARRAYAIPSIO_PUTDATA(unsigned int)
       break;
     case TpInt64:
       STMANCOLUMNARRAYAIPSIO_PUTDATA(Int64)
@@ -188,7 +188,7 @@ void StManColumnArrayAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {
 
 #define STMANCOLUMNARRAYAIPSIO_GETDATA(T)   \
   {                                         \
-    uInt nr;                                \
+    unsigned int nr;                                \
     T** dparr = (T**)dp + inx;              \
     T* dpd;                                 \
     while (nrval--) {                       \
@@ -201,8 +201,8 @@ void StManColumnArrayAipsIO::putData(void* dp, uInt nrval, AipsIO& ios) {
     }                                       \
   }
 
-void StManColumnArrayAipsIO::getData(void* dp, uInt inx, uInt nrval, AipsIO& ios, uInt version) {
-  uInt nr;
+void StManColumnArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int nrval, AipsIO& ios, unsigned int version) {
+  unsigned int nr;
   if (version > 1) {
     ios >> nr;
   }
@@ -211,19 +211,19 @@ void StManColumnArrayAipsIO::getData(void* dp, uInt inx, uInt nrval, AipsIO& ios
       STMANCOLUMNARRAYAIPSIO_GETDATA(bool)
       break;
     case TpUChar:
-      STMANCOLUMNARRAYAIPSIO_GETDATA(uChar)
+      STMANCOLUMNARRAYAIPSIO_GETDATA(unsigned char)
       break;
     case TpShort:
-      STMANCOLUMNARRAYAIPSIO_GETDATA(Short)
+      STMANCOLUMNARRAYAIPSIO_GETDATA(short)
       break;
     case TpUShort:
-      STMANCOLUMNARRAYAIPSIO_GETDATA(uShort)
+      STMANCOLUMNARRAYAIPSIO_GETDATA(unsigned short)
       break;
     case TpInt:
-      STMANCOLUMNARRAYAIPSIO_GETDATA(Int)
+      STMANCOLUMNARRAYAIPSIO_GETDATA(int)
       break;
     case TpUInt:
-      STMANCOLUMNARRAYAIPSIO_GETDATA(uInt)
+      STMANCOLUMNARRAYAIPSIO_GETDATA(unsigned int)
       break;
     case TpInt64:
       STMANCOLUMNARRAYAIPSIO_GETDATA(Int64)

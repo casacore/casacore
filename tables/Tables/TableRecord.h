@@ -299,14 +299,14 @@ class TableRecord : public RecordInterface {
 
   // How many fields does this structure have? A convenient synonym for
   // <src>description().nfields()</src>.
-  virtual uInt nfields() const;
+  virtual unsigned int nfields() const;
 
   // Get the field number from the field name.
   // -1 is returned if the field name is unknown.
-  virtual Int fieldNumber(const String& fieldName) const;
+  virtual int fieldNumber(const String& fieldName) const;
 
   // Get the data type of this field.
-  virtual DataType type(Int whichField) const;
+  virtual DataType type(int whichField) const;
 
   // Remove a field from the record.
   // <note role=caution>
@@ -414,12 +414,12 @@ class TableRecord : public RecordInterface {
   // Read the data of a record.
   // This is used to read a subrecord, whose description has
   // already been read.
-  void getData(AipsIO& os, uInt version, const TableAttr&);
+  void getData(AipsIO& os, unsigned int version, const TableAttr&);
 
   // Print the contents of the record.
   // Only the first <src>maxNrValues</src> of an array will be printed.
   // A value < 0 means the entire array.
-  virtual void print(std::ostream&, Int maxNrValues = 25, const String& indent = "") const;
+  virtual void print(std::ostream&, int maxNrValues = 25, const String& indent = "") const;
 
   // Reopen possible tables in keywords as read/write.
   // Tables are not reopened if they are not writable.
@@ -446,8 +446,8 @@ class TableRecord : public RecordInterface {
   // Used by the RecordField classes to attach in a type-safe way to the
   // correct field.
   // <group>
-  virtual void* get_pointer(Int whichField, DataType type) const;
-  virtual void* get_pointer(Int whichField, DataType type, const String& recordType) const;
+  virtual void* get_pointer(int whichField, DataType type) const;
+  virtual void* get_pointer(int whichField, DataType type, const String& recordType) const;
   // </group>
 
   // Return a const reference to the underlying TableRecordRep.
@@ -463,7 +463,7 @@ class TableRecord : public RecordInterface {
                             bool fixedShape, const void* value);
 
   // Define a value in the given field.
-  virtual void defineDataField(Int whichField, DataType type, const void* value);
+  virtual void defineDataField(int whichField, DataType type, const void* value);
 
  private:
   // Get the description of this record.
@@ -497,7 +497,7 @@ inline void TableRecord::putData(AipsIO& os, const TableAttr& parentAttr) const 
   ref().putData(os, parentAttr);
 }
 
-inline void TableRecord::getData(AipsIO& os, uInt version, const TableAttr& parentAttr) {
+inline void TableRecord::getData(AipsIO& os, unsigned int version, const TableAttr& parentAttr) {
   rwRef().getData(os, version, parentAttr);
 }
 

@@ -40,11 +40,11 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Constants
-const Double MVPosition::loLimit = 743.568;
-const Double MVPosition::hiLimit = 743.569;
+const double MVPosition::loLimit = 743.568;
+const double MVPosition::hiLimit = 743.569;
 
 // # Constructors
-MVPosition::MVPosition() : xyz(3) { xyz = Double(0.0); }
+MVPosition::MVPosition() : xyz(3) { xyz = double(0.0); }
 
 MVPosition::MVPosition(const MVPosition &other) : MeasValue(), xyz(3) { xyz = other.xyz; }
 
@@ -55,29 +55,29 @@ MVPosition &MVPosition::operator=(const MVPosition &other) {
   return *this;
 }
 
-MVPosition::MVPosition(Double in) : xyz(3) {
-  xyz = Double(0.0);
+MVPosition::MVPosition(double in) : xyz(3) {
+  xyz = double(0.0);
   xyz(2) = in;
 }
 
 MVPosition::MVPosition(const Quantity &l) : xyz(3) {
-  xyz = Double(0.0);
+  xyz = double(0.0);
   l.assure(UnitVal::LENGTH);
   xyz(2) = l.getBaseValue();
 }
 
-MVPosition::MVPosition(Double in0, Double in1, Double in2) : xyz(3) {
+MVPosition::MVPosition(double in0, double in1, double in2) : xyz(3) {
   xyz(0) = in0;
   xyz(1) = in1;
   xyz(2) = in2;
 }
 
-MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) : xyz(3) {
-  Double loc = std::cos(angle1);
+MVPosition::MVPosition(const Quantity &l, double angle0, double angle1) : xyz(3) {
+  double loc = std::cos(angle1);
   xyz(0) = std::cos(angle0) * loc;
   xyz(1) = std::sin(angle0) * loc;
   xyz(2) = std::sin(angle1);
-  Double t(l.getBaseValue());
+  double t(l.getBaseValue());
   if (t < 0 && t > -7.0e6)
     t = t / 1.0e7 + hiLimit;
   else if (t > loLimit && t < hiLimit)
@@ -86,12 +86,12 @@ MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) : xyz(3)
 }
 
 MVPosition::MVPosition(const Quantity &l, const Quantity &angle0, const Quantity &angle1) : xyz(3) {
-  Double loc = (cos(angle1)).getValue();
+  double loc = (cos(angle1)).getValue();
   xyz(0) = ((cos(angle0)).getValue()) * loc;
   xyz(1) = ((sin(angle0)).getValue()) * loc;
   xyz(2) = (sin(angle1)).getValue();
   l.assure(UnitVal::LENGTH);
-  Double t(l.getBaseValue());
+  double t(l.getBaseValue());
   if (t < 0 && t > -7.0e6)
     t = t / 1.0e7 + hiLimit;
   else if (t > loLimit && t < hiLimit)
@@ -99,8 +99,8 @@ MVPosition::MVPosition(const Quantity &l, const Quantity &angle0, const Quantity
   readjust(t);
 }
 
-MVPosition::MVPosition(const Quantum<Vector<Double>> &angle) : xyz(3) {
-  uInt i;
+MVPosition::MVPosition(const Quantum<Vector<double>> &angle) : xyz(3) {
+  unsigned int i;
   i = angle.getValue().nelements();
   if (i > 3) {
     throw(AipsError("Illegeal vector length in MVPosition constructor"));
@@ -108,9 +108,9 @@ MVPosition::MVPosition(const Quantum<Vector<Double>> &angle) : xyz(3) {
     angle.assure(UnitVal::LENGTH);
     xyz = angle.getBaseValue();
   } else {
-    Vector<Double> tsin = (sin(angle)).getValue();
-    Vector<Double> tcos = (cos(angle)).getValue();
-    xyz = Double(0.0);
+    Vector<double> tsin = (sin(angle)).getValue();
+    Vector<double> tcos = (cos(angle)).getValue();
+    xyz = double(0.0);
     if (i > 1) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -124,8 +124,8 @@ MVPosition::MVPosition(const Quantum<Vector<Double>> &angle) : xyz(3) {
   }
 }
 
-MVPosition::MVPosition(const Quantity &l, const Quantum<Vector<Double>> &angle) : xyz(3) {
-  uInt i;
+MVPosition::MVPosition(const Quantity &l, const Quantum<Vector<double>> &angle) : xyz(3) {
+  unsigned int i;
   i = angle.getValue().nelements();
   if (i > 3) {
     throw(AipsError("Illegal vector length in MVPosition constructor"));
@@ -133,9 +133,9 @@ MVPosition::MVPosition(const Quantity &l, const Quantum<Vector<Double>> &angle) 
     angle.assure(UnitVal::NODIM);
     xyz = angle.getValue();
   } else {
-    Vector<Double> tsin = (sin(angle)).getValue();
-    Vector<Double> tcos = (cos(angle)).getValue();
-    xyz = Double(0.0);
+    Vector<double> tsin = (sin(angle)).getValue();
+    Vector<double> tcos = (cos(angle)).getValue();
+    xyz = double(0.0);
     if (i > 1) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -151,17 +151,17 @@ MVPosition::MVPosition(const Quantity &l, const Quantum<Vector<Double>> &angle) 
   readjust(l.getBaseValue());
 }
 
-MVPosition::MVPosition(const Vector<Double> &other) : xyz(3) {
-  uInt i;
+MVPosition::MVPosition(const Vector<double> &other) : xyz(3) {
+  unsigned int i;
   i = other.nelements();
   if (i > 3) {
     throw(AipsError("Illegal vector length in MVPosition constructor"));
   } else if (i == 3) {
     xyz = other;
   } else {
-    Vector<Double> tsin = (sin(other));
-    Vector<Double> tcos = (cos(other));
-    xyz = Double(0.0);
+    Vector<double> tsin = (sin(other));
+    Vector<double> tcos = (cos(other));
+    xyz = double(0.0);
     if (i > 1) {
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -189,7 +189,7 @@ bool MVPosition::operator==(const MVPosition &other) const { return (allEQ(xyz, 
 
 bool MVPosition::operator!=(const MVPosition &other) const { return (!(*this == other)); }
 
-bool MVPosition::near(const MVPosition &other, Double tol) const {
+bool MVPosition::near(const MVPosition &other, double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
@@ -197,24 +197,24 @@ bool MVPosition::near(const MVPosition &other, Quantity tol) const {
   return (separation(other, "rad") <= tol);
 }
 
-bool MVPosition::nearAbs(const MVPosition &other, Double tol) const {
+bool MVPosition::nearAbs(const MVPosition &other, double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
-Double MVPosition::operator*(const MVPosition &other) const {
-  Double tmp = 0.0;
-  for (Int i = 0; i < 3; i++) {
+double MVPosition::operator*(const MVPosition &other) const {
+  double tmp = 0.0;
+  for (int i = 0; i < 3; i++) {
     tmp += xyz(i) * other.xyz(i);
   }
   return tmp;
 }
 
-Double &MVPosition::operator()(uInt which) {
+double &MVPosition::operator()(unsigned int which) {
   DebugAssert(which < 3, AipsError);
   return (xyz(which));
 }
 
-const Double &MVPosition::operator()(uInt which) const {
+const double &MVPosition::operator()(unsigned int which) const {
   DebugAssert(which < 3, AipsError);
   return (xyz(which));
 }
@@ -249,17 +249,17 @@ MVPosition MVPosition::operator-(const MVPosition &right) const {
 }
 
 MVPosition &MVPosition::operator*=(const RotMatrix &right) {
-  Double x = xyz(0);
-  Double y = xyz(1);
-  Double z = xyz(2);
+  double x = xyz(0);
+  double y = xyz(1);
+  double z = xyz(2);
   xyz(0) = x * right(0, 0) + y * right(1, 0) + z * right(2, 0);
   xyz(1) = x * right(0, 1) + y * right(1, 1) + z * right(2, 1);
   xyz(2) = x * right(0, 2) + y * right(1, 2) + z * right(2, 2);
   return *this;
 }
 
-MVPosition &MVPosition::operator*=(Double right) {
-  for (Int j = 0; j < 3; j++) {
+MVPosition &MVPosition::operator*=(double right) {
+  for (int j = 0; j < 3; j++) {
     xyz(j) *= right;
   }
   return *this;
@@ -275,14 +275,14 @@ void MVPosition::assure(const MeasValue &in) {
 
 void MVPosition::adjust() {}
 
-void MVPosition::adjust(Double &res) {
+void MVPosition::adjust(double &res) {
   res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   }
 }
 
-void MVPosition::readjust(Double res) {
+void MVPosition::readjust(double res) {
   if (res == 0.0) {
     xyz *= 1e-6;
   } else {
@@ -290,10 +290,10 @@ void MVPosition::readjust(Double res) {
   }
 }
 
-Double MVPosition::radius() { return (std::sqrt(operator*(*this))); }
+double MVPosition::radius() { return (std::sqrt(operator*(*this))); }
 
-Vector<Double> MVPosition::get() const {
-  Vector<Double> tmp(3);
+Vector<double> MVPosition::get() const {
+  Vector<double> tmp(3);
   tmp(0) = norm(xyz);
   tmp(1) = getLong();
   tmp(2) = getLat(tmp(0));
@@ -303,21 +303,21 @@ Vector<Double> MVPosition::get() const {
   return tmp;
 }
 
-const Vector<Double> &MVPosition::getValue() const { return xyz; }
+const Vector<double> &MVPosition::getValue() const { return xyz; }
 
-Quantum<Vector<Double>> MVPosition::getAngle() const {
-  Vector<Double> tp(3), tmp(2);
+Quantum<Vector<double>> MVPosition::getAngle() const {
+  Vector<double> tp(3), tmp(2);
   tp = get();
   tmp(0) = tp(1);
   tmp(1) = tp(2);
-  return Quantum<Vector<Double>>(tmp, "rad");
+  return Quantum<Vector<double>>(tmp, "rad");
 }
 
-Quantum<Vector<Double>> MVPosition::getAngle(const Unit &unit) const {
+Quantum<Vector<double>> MVPosition::getAngle(const Unit &unit) const {
   return getAngle().get(unit);
 }
 
-Double MVPosition::getLong() const {
+double MVPosition::getLong() const {
   return ((xyz(0) != 0 || xyz(1) != 0) ? std::atan2(xyz(1), xyz(0)) : 0.0);
 }
 
@@ -325,30 +325,30 @@ Quantity MVPosition::getLong(const Unit &unit) const {
   return (Quantity(getLong(), "rad").get(unit));
 }
 
-Double MVPosition::getLat() const { return getLat(norm(xyz)); }
+double MVPosition::getLat() const { return getLat(norm(xyz)); }
 
-Double MVPosition::getLat(Double ln) const { return std::asin(xyz(2) / ((ln == 0) ? 1.0 : ln)); }
+double MVPosition::getLat(double ln) const { return std::asin(xyz(2) / ((ln == 0) ? 1.0 : ln)); }
 
 Quantity MVPosition::getLat(const Unit &unit) const {
   return (Quantity(getLat(), "rad").get(unit));
 }
 
 Quantity MVPosition::getLength() const {
-  Double tmp = std::sqrt(operator*(*this));
+  double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp, "m");
 }
 
 Quantity MVPosition::getLength(const Unit &unit) const { return getLength().get(unit); }
 
-Double MVPosition::positionAngle(const MVPosition &other) const {
-  Double longDiff(getLong() - other.getLong());
-  Double ln(norm(xyz));
-  Double slat1(xyz(2) / ln);
+double MVPosition::positionAngle(const MVPosition &other) const {
+  double longDiff(getLong() - other.getLong());
+  double ln(norm(xyz));
+  double slat1(xyz(2) / ln);
   ln = norm(other.xyz);
-  Double slat2(other.xyz(2) / ln);
-  Double clat2(std::sqrt(std::fabs(1.0 - slat2 * slat2)));
-  Double s1(-clat2 * std::sin(longDiff));
-  Double c1(std::sqrt(std::fabs(1.0 - slat1 * slat1)) * slat2 - slat1 * clat2 * std::cos(longDiff));
+  double slat2(other.xyz(2) / ln);
+  double clat2(std::sqrt(std::fabs(1.0 - slat2 * slat2)));
+  double s1(-clat2 * std::sin(longDiff));
+  double c1(std::sqrt(std::fabs(1.0 - slat1 * slat1)) * slat2 - slat1 * clat2 * std::cos(longDiff));
   return ((s1 != 0 || c1 != 0) ? std::atan2(s1, c1) : 0.0);
 }
 
@@ -356,12 +356,12 @@ Quantity MVPosition::positionAngle(const MVPosition &other, const Unit &unit) co
   return Quantity(positionAngle(other), "rad").get(unit);
 }
 
-Double MVPosition::separation(const MVPosition &other) const {
-  Double l1(norm(xyz));
+double MVPosition::separation(const MVPosition &other) const {
+  double l1(norm(xyz));
   l1 = l1 > 0 ? l1 : 1.0;
-  Double l2(norm(other.xyz));
+  double l2(norm(other.xyz));
   l2 = l2 > 0 ? l2 : 1.0;
-  Double d1 =
+  double d1 =
       std::sqrt(square(xyz(0) / l1 - other.xyz(0) / l2) + square(xyz(1) / l1 - other.xyz(1) / l2) +
                 square(xyz(2) / l1 - other.xyz(2) / l2)) /
       2.0;
@@ -384,57 +384,57 @@ void MVPosition::print(ostream &os) const { os << getValue(); }
 
 MeasValue *MVPosition::clone() const { return (new MVPosition(*this)); }
 
-Vector<Double> MVPosition::getVector() const { return xyz; }
+Vector<double> MVPosition::getVector() const { return xyz; }
 
-void MVPosition::putVector(const Vector<Double> &in) {
+void MVPosition::putVector(const Vector<double> &in) {
   if (in.nelements() == 3) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (uInt i = 0; i < in.nelements(); i++) xyz(i) = in(i);
+    for (unsigned int i = 0; i < in.nelements(); i++) xyz(i) = in(i);
   }
 }
 
-Vector<Quantum<Double>> MVPosition::getRecordValue() const {
-  Vector<Double> t(3);
+Vector<Quantum<double>> MVPosition::getRecordValue() const {
+  Vector<double> t(3);
   t = get();
-  Vector<Quantum<Double>> tmp(3);
+  Vector<Quantum<double>> tmp(3);
   tmp(2) = Quantity(t(0), "m");
   tmp(0) = Quantity(t(1), "rad");
   tmp(1) = Quantity(t(2), "rad");
   return tmp;
 }
 
-Vector<Quantum<Double>> MVPosition::getXRecordValue() const {
-  Vector<Quantum<Double>> tmp(3);
+Vector<Quantum<double>> MVPosition::getXRecordValue() const {
+  Vector<Quantum<double>> tmp(3);
   tmp(0) = Quantity(xyz(0), "m");
   tmp(1) = Quantity(xyz(1), "m");
   tmp(2) = Quantity(xyz(2), "m");
   return tmp;
 }
 
-bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
-  uInt i;
+bool MVPosition::putValue(const Vector<Quantum<double>> &in) {
+  unsigned int i;
   i = in.nelements();
   if (i != 3) return false;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) && in(2).check(UnitVal::LENGTH)) {
-      uInt j;
+      unsigned int j;
       for (j = 0; j < i; j++) {
         xyz(j) = in(j).getBaseValue();
       }
     } else if (in(1).check(UnitVal::ANGLE) && in(2).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      uInt j;
+      Vector<double> tsin(2), tcos(2);
+      unsigned int j;
       for (j = 1; j < i; j++) {
         tsin(j - 1) = (sin(in(j))).getValue();
         tcos(j - 1) = (cos(in(j))).getValue();
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
-      Double t(in(0).getBaseValue());
+      double t(in(0).getBaseValue());
       if (t < 0 && t > -7.0e6)
         t = t / 1.0e7 + hiLimit;
       else if (t > loLimit && t < hiLimit)
@@ -445,17 +445,17 @@ bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
     }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) && in(1).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      Int j;
+      Vector<double> tsin(2), tcos(2);
+      int j;
       for (j = 0; j < 2; j++) {
         tsin(j) = (sin(in(j))).getValue();
         tcos(j) = (cos(in(j))).getValue();
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
-      Double t(in(2).getBaseValue());
+      double t(in(2).getBaseValue());
       if (t < 0 && t > -7.0e6)
         t = t / 1.0e7 + hiLimit;
       else if (t > loLimit && t < hiLimit)
@@ -472,9 +472,9 @@ bool MVPosition::putValue(const Vector<Quantum<Double>> &in) {
 
 MVPosition operator*(const RotMatrix &left, const MVPosition &right) {
   MVPosition result;
-  for (Int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++) {
     result(i) = 0;
-    for (Int j = 0; j < 3; j++) {
+    for (int j = 0; j < 3; j++) {
       result(i) += left(i, j) * right(j);
     }
   }
@@ -487,24 +487,24 @@ MVPosition operator*(const MVPosition &left, const RotMatrix &right) {
   return result;
 }
 
-MVPosition operator*(Double left, const MVPosition &right) {
+MVPosition operator*(double left, const MVPosition &right) {
   MVPosition result(right);
   result *= left;
   return result;
 }
 
-MVPosition operator*(const MVPosition &left, Double right) {
+MVPosition operator*(const MVPosition &left, double right) {
   MVPosition result(left);
   result *= right;
   return result;
 }
 
-Double operator*(const Vector<Double> &left, const MVPosition &right) {
+double operator*(const Vector<double> &left, const MVPosition &right) {
   MVPosition tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVPosition &left, const Vector<Double> &right) {
+double operator*(const MVPosition &left, const Vector<double> &right) {
   MVPosition tmp(right);
   return (tmp * left);
 }

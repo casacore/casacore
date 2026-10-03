@@ -37,13 +37,13 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/namespace.h>
 
-StokesCoordinate makeCoordinate(Vector<Int>& whichStokes, Vector<String>& stokesStrings);
+StokesCoordinate makeCoordinate(Vector<int>& whichStokes, Vector<String>& stokesStrings);
 
-void doit(StokesCoordinate& lc, const Vector<Int>& whichStokes);
+void doit(StokesCoordinate& lc, const Vector<int>& whichStokes);
 
-void doit2(StokesCoordinate& lc, const Vector<Int>& whichStokes);
+void doit2(StokesCoordinate& lc, const Vector<int>& whichStokes);
 
-void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
+void doit3(StokesCoordinate& lc, const Vector<int>& whichStokes,
            const Vector<String>& stokesStrings);
 
 void doit4(StokesCoordinate& lc);
@@ -52,7 +52,7 @@ void doit5();
 
 int main() {
   try {
-    Vector<Int> whichStokes;
+    Vector<int> whichStokes;
     Vector<String> stokesStrings;
 
     // Constructors
@@ -69,7 +69,7 @@ int main() {
       if (!lc.near(lc2)) {
         throw(AipsError("Failed near test 1"));
       }
-      Vector<Int> excludeAxes(1, 0);
+      Vector<int> excludeAxes(1, 0);
       if (!lc.near(lc2, excludeAxes)) {
         throw(AipsError("Failed near test 2"));
       }
@@ -94,11 +94,11 @@ int main() {
       doit5();
     }
     {
-      Vector<Int> stokesInts(4);
-      stokesInts[0] = (Int)Stokes::V;
-      stokesInts[1] = (Int)Stokes::LL;
-      stokesInts[2] = (Int)Stokes::XY;
-      stokesInts[3] = (Int)Stokes::Q;
+      Vector<int> stokesInts(4);
+      stokesInts[0] = (int)Stokes::V;
+      stokesInts[1] = (int)Stokes::LL;
+      stokesInts[2] = (int)Stokes::XY;
+      stokesInts[3] = (int)Stokes::Q;
       StokesCoordinate coord(stokesInts);
       Vector<String> stokesStrings = coord.stokesStrings();
       Vector<String> expec(4);
@@ -118,7 +118,7 @@ int main() {
   return (0);
 }
 
-StokesCoordinate makeCoordinate(Vector<Int>& whichStokes, Vector<String>& stokesStrings) {
+StokesCoordinate makeCoordinate(Vector<int>& whichStokes, Vector<String>& stokesStrings) {
   //
   // Choose random and silly collection of Stokeseses
 
@@ -139,7 +139,7 @@ StokesCoordinate makeCoordinate(Vector<Int>& whichStokes, Vector<String>& stokes
   return StokesCoordinate(whichStokes);
 }
 
-void doit(StokesCoordinate& lc, const Vector<Int>& whichStokes) {
+void doit(StokesCoordinate& lc, const Vector<int>& whichStokes) {
   // Test copy constructor
 
   {
@@ -152,7 +152,7 @@ void doit(StokesCoordinate& lc, const Vector<Int>& whichStokes) {
   // Test assignment
 
   {
-    Vector<Int> whichStokes2(1);
+    Vector<int> whichStokes2(1);
     whichStokes2(0) = Stokes::I;
     StokesCoordinate lc2 = StokesCoordinate(whichStokes2);
     lc2 = lc;
@@ -231,35 +231,35 @@ void doit(StokesCoordinate& lc, const Vector<Int>& whichStokes) {
   delete plc2;
 }
 
-void doit2(StokesCoordinate& lc, const Vector<Int>& whichStokes) {
-  Vector<Double> crval(1);
-  crval(0) = Double(whichStokes(0));
+void doit2(StokesCoordinate& lc, const Vector<int>& whichStokes) {
+  Vector<double> crval(1);
+  crval(0) = double(whichStokes(0));
   if (!allEQ(crval, lc.referenceValue())) {
     throw(AipsError("Failed reference value recovery test"));
   }
   //
-  Vector<Double> cdelt(1);
+  Vector<double> cdelt(1);
   cdelt(0) = 1.0;
   if (!allEQ(cdelt, lc.increment())) {
     throw(AipsError("Failed increment recovery test"));
   }
   //
-  Vector<Double> crpix(1);
+  Vector<double> crpix(1);
   crpix(0) = 0.0;
   if (!allEQ(crpix, lc.referencePixel())) {
     throw(AipsError("Failed reference pixel recovery test"));
   }
   //
-  Matrix<Double> xform(1, 1);
+  Matrix<double> xform(1, 1);
   xform(0, 0) = 1.0;
   if (!allEQ(xform, lc.linearTransform())) {
     throw(AipsError("Failed Stokes transform recovery test"));
   }
   //
-  Vector<Double> oldRefVal = lc.referenceValue();
-  Vector<Double> oldIncr = lc.increment();
-  Vector<Double> oldRefPix = lc.referencePixel();
-  Matrix<Double> oldLinTr = lc.linearTransform();
+  Vector<double> oldRefVal = lc.referenceValue();
+  Vector<double> oldIncr = lc.increment();
+  Vector<double> oldRefPix = lc.referencePixel();
+  Matrix<double> oldLinTr = lc.linearTransform();
 
   crval(0) = 111.1;
   if (!lc.setReferenceValue(crval)) {
@@ -294,18 +294,18 @@ void doit2(StokesCoordinate& lc, const Vector<Int>& whichStokes) {
   }
 }
 
-void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
+void doit3(StokesCoordinate& lc, const Vector<int>& whichStokes,
            const Vector<String>& stokesStrings) {
   //
   // Test conversion
   //
-  Vector<Double> pixel(1), world;
+  Vector<double> pixel(1), world;
   pixel(0) = lc.referencePixel()(0);
   if (!lc.toWorld(world, pixel)) {
     throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
   }
   //
-  Vector<Double> pixel2(1);
+  Vector<double> pixel2(1);
   if (!lc.toPixel(pixel2, world)) {
     throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
   }
@@ -320,8 +320,8 @@ void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
     //      cout << "Failed as expected with" << lc.errorMessage() << endl;
   }
   //
-  Int pixel3;
-  for (Int i = 0; i < Int(whichStokes.nelements()); i++) {
+  int pixel3;
+  for (int i = 0; i < int(whichStokes.nelements()); i++) {
     Stokes::StokesTypes sType = Stokes::type(lc.stokes()(i));
     Stokes::StokesTypes sType2;
     if (!lc.toPixel(pixel3, sType)) {
@@ -335,7 +335,7 @@ void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
                       lc.errorMessage()));
     }
     //
-    Double w = StokesCoordinate::toWorld(sType);
+    double w = StokesCoordinate::toWorld(sType);
     sType2 = StokesCoordinate::toWorld(w);
     if (sType != sType2) {
       throw(AipsError(String("coordinate conversion and reflection failed because ") +
@@ -346,7 +346,7 @@ void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
   // Formatting
   //
   String unit;
-  for (uInt i = 0; i < whichStokes.nelements(); i++) {
+  for (unsigned int i = 0; i < whichStokes.nelements(); i++) {
     pixel(0) = i;
     if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
@@ -361,7 +361,7 @@ void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
 
 void doit4(StokesCoordinate& lc) {
   Vector<bool> axes(lc.nWorldAxes(), true);
-  Vector<Int> shape(lc.nPixelAxes(), 10);
+  Vector<int> shape(lc.nPixelAxes(), 10);
   bool failed = false;
   Coordinate* pC = 0;
   try {
@@ -379,7 +379,7 @@ void doit5() {
   // Test setStokes
 
   {
-    Vector<Int> stokes(1);
+    Vector<int> stokes(1);
     stokes(0) = Stokes::I;
     Vector<String> stokesStrings(1);
     stokesStrings(0) = String("I");
@@ -393,7 +393,7 @@ void doit5() {
     stokesStrings(1) = String("XX");
     lc.setStokes(stokes);
     //
-    Vector<Int> stokes2 = lc.stokes();
+    Vector<int> stokes2 = lc.stokes();
     AlwaysAssert(stokes2.nelements() == 2, AipsError);
     AlwaysAssert(Stokes::type(stokes2(0)) == Stokes::Q, AipsError);
     AlwaysAssert(Stokes::type(stokes2(1)) == Stokes::XX, AipsError);

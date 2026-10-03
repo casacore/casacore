@@ -305,7 +305,7 @@ class TableDesc {
   void renameColumn(const String& newname, const String& oldname);
 
   // Get number of columns.
-  uInt ncolumn() const;
+  unsigned int ncolumn() const;
 
   // Test if a column with this name exists.
   bool isColumn(const String& name) const;
@@ -319,10 +319,10 @@ class TableDesc {
   // <group>
   const ColumnDesc& columnDesc(const String& name) const;
   const ColumnDesc& operator[](const String& name) const;
-  const ColumnDesc& columnDesc(uInt index) const;
-  const ColumnDesc& operator[](uInt index) const;
+  const ColumnDesc& columnDesc(unsigned int index) const;
+  const ColumnDesc& operator[](unsigned int index) const;
   ColumnDesc& rwColumnDesc(const String& name);
-  ColumnDesc& rwColumnDesc(uInt index);
+  ColumnDesc& rwColumnDesc(unsigned int index);
   // </group>
 
   // Get comment string.
@@ -425,12 +425,12 @@ class TableDesc {
   // stringToVector</linkto> is very convenient for creating a vector
   // of Strings.
   // <group name=defineHypercolumn>
-  void defineHypercolumn(const String& hypercolumnName, uInt ndim,
+  void defineHypercolumn(const String& hypercolumnName, unsigned int ndim,
                          const Vector<String>& dataColumnNames);
-  void defineHypercolumn(const String& hypercolumnName, uInt ndim,
+  void defineHypercolumn(const String& hypercolumnName, unsigned int ndim,
                          const Vector<String>& dataColumnNames,
                          const Vector<String>& coordColumnNames);
-  void defineHypercolumn(const String& hypercolumnName, uInt ndim,
+  void defineHypercolumn(const String& hypercolumnName, unsigned int ndim,
                          const Vector<String>& dataColumnNames,
                          const Vector<String>& coordColumnNames,
                          const Vector<String>& idColumnNames);
@@ -445,7 +445,7 @@ class TableDesc {
   // Get the columns involved in a hypercolumn.
   // It returns the dimensionality of the hypercolumn.
   // An exception is thrown if the hypercolumn does not exist.
-  uInt hypercolumnDesc(const String& hypercolumnName, Vector<String>& dataColumnNames,
+  unsigned int hypercolumnDesc(const String& hypercolumnName, Vector<String>& dataColumnNames,
                        Vector<String>& coordColumnNames, Vector<String>& idColumnNames) const;
 
   // Adjust the hypercolumn definitions (for a RefTable).
@@ -505,7 +505,7 @@ class TableDesc {
 };
 
 // # Get number of columns.
-inline uInt TableDesc::ncolumn() const { return col_p.ncolumn(); }
+inline unsigned int TableDesc::ncolumn() const { return col_p.ncolumn(); }
 
 // # Test if column exists.
 inline bool TableDesc::isColumn(const String& name) const { return col_p.isDefined(name); }
@@ -513,10 +513,10 @@ inline bool TableDesc::isColumn(const String& name) const { return col_p.isDefin
 // # Get a column description.
 inline const ColumnDesc& TableDesc::columnDesc(const String& name) const { return col_p[name]; }
 inline const ColumnDesc& TableDesc::operator[](const String& name) const { return col_p[name]; }
-inline const ColumnDesc& TableDesc::columnDesc(uInt index) const { return col_p[index]; }
-inline const ColumnDesc& TableDesc::operator[](uInt index) const { return col_p[index]; }
+inline const ColumnDesc& TableDesc::columnDesc(unsigned int index) const { return col_p[index]; }
+inline const ColumnDesc& TableDesc::operator[](unsigned int index) const { return col_p[index]; }
 inline ColumnDesc& TableDesc::rwColumnDesc(const String& name) { return col_p[name]; }
-inline ColumnDesc& TableDesc::rwColumnDesc(uInt index) { return col_p[index]; }
+inline ColumnDesc& TableDesc::rwColumnDesc(unsigned int index) { return col_p[index]; }
 
 // # Return the name (ie. type) of the table description.
 inline const String& TableDesc::getType() const { return name_p; }

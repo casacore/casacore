@@ -182,10 +182,10 @@ class MeasConvert : public MConvertBase {
   //  <group>
   //  Convert model Measure to output frame
   const M &operator()();
-  const M &operator()(Double val);
-  const M &operator()(const Vector<Double> &val);
-  const M &operator()(const Quantum<Double> &val);
-  const M &operator()(const Quantum<Vector<Double>> &val);
+  const M &operator()(double val);
+  const M &operator()(const Vector<double> &val);
+  const M &operator()(const Quantum<double> &val);
+  const M &operator()(const Quantum<Vector<double>> &val);
   const M &operator()(const typename M::MVType &val);
   const M &operator()(const MeasVal *val);
   const M &operator()(const M &val);
@@ -214,13 +214,13 @@ class MeasConvert : public MConvertBase {
   virtual void set(const Unit &inunit);
 
   // Add a method (Note: uInt should be an enum from the appropiate Measure)
-  virtual void addMethod(uInt method);
+  virtual void addMethod(unsigned int method);
   // Add the frame type (Note: tp should be an MeasFrame::FrameType)
-  virtual void addFrameType(uInt tp);
+  virtual void addFrameType(unsigned int tp);
   // Get number of methods
-  virtual Int nMethod() const;
+  virtual int nMethod() const;
   // Get method
-  virtual uInt getMethod(uInt which) const;
+  virtual unsigned int getMethod(unsigned int which) const;
   // Is the conversion engine empty?
   bool isNOP() { return crout.empty(); }
   // Print conversion engine
@@ -239,15 +239,15 @@ class MeasConvert : public MConvertBase {
   // The output offset
   std::unique_ptr<typename M::MVType> offout;
   // Vector of conversion routines (length variable)
-  std::vector<uInt> crout;
+  std::vector<unsigned int> crout;
   // Coded (with MeasFrame::FrameTypes) frames used in conversion
-  uInt crtype = 0;
+  unsigned int crtype = 0;
   // Local conversion data
   std::unique_ptr<MCBase> cvdat;
   // Cyclic buffer for return values
   // <group>
   // Current pointer
-  Int lres = 0;
+  int lres = 0;
   std::unique_ptr<M> result[4];
   // </group>
   // Local variables that can be used in conversion

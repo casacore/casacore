@@ -124,9 +124,9 @@ class Euler {
   // Copy assignment
   Euler &operator=(const Euler &other);
   // Constructs an Euler with specified angles and (1,2,3) axes
-  Euler(Double in0, Double in1 = 0, Double in2 = 0);
+  Euler(double in0, double in1 = 0, double in2 = 0);
   // Constructs an Euler with specified angles and axes
-  Euler(Double in0, uInt ax0, Double in1 = 0, uInt ax1 = 0, Double in2 = 0, uInt ax2 = 0);
+  Euler(double in0, unsigned int ax0, double in1 = 0, unsigned int ax1 = 0, double in2 = 0, unsigned int ax2 = 0);
   // <thrown>
   //    <li> AipsError if non-angle units used
   // </thrown>
@@ -135,14 +135,14 @@ class Euler {
   Euler(const Quantity &in0);
   Euler(const Quantity &in0, const Quantity &in1);
   Euler(const Quantity &in0, const Quantity &in1, const Quantity &in2);
-  Euler(const Quantity &in0, uInt ax0);
-  Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1 = 0);
-  Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1, const Quantity &in2,
-        uInt ax2 = 0);
+  Euler(const Quantity &in0, unsigned int ax0);
+  Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1 = 0);
+  Euler(const Quantity &in0, unsigned int ax0, const Quantity &in1, unsigned int ax1, const Quantity &in2,
+        unsigned int ax2 = 0);
   // Constructs an Euler (zero filled) from elements of Quantity vector
   // <group>
-  Euler(const Quantum<Vector<Double>> &in);
-  Euler(const Quantum<Vector<Double>> &in, const Vector<uInt> &ax);
+  Euler(const Quantum<Vector<double>> &in);
+  Euler(const Quantum<Vector<double>> &in, const Vector<unsigned int> &ax);
   // </group>
   // </group>
 
@@ -161,38 +161,38 @@ class Euler {
   // </group>
   // Return the which' angle
   // <group>
-  Double &operator()(uInt which);
-  const Double &operator()(uInt which) const;
+  double &operator()(unsigned int which);
+  const double &operator()(unsigned int which) const;
   // </group>
 
   // # General Member Functions
   //  with the optional conversion units.
   //  <group>
-  Quantum<Vector<Double>> getAngle() const;
-  Quantum<Vector<Double>> getAngle(const Unit &unit) const;
+  Quantum<Vector<double>> getAngle() const;
+  Quantum<Vector<double>> getAngle(const Unit &unit) const;
   // </group>
 
   // Set an axis
-  void set(uInt which, uInt ax);
+  void set(unsigned int which, unsigned int ax);
 
   // Set all axes
-  void set(uInt ax0, uInt ax1, uInt ax2);
+  void set(unsigned int ax0, unsigned int ax1, unsigned int ax2);
 
   // Get an axis
-  Int get(uInt which) const;
+  int get(unsigned int which) const;
 
  private:
   // # Data
   //  vector with 3 Euler angles (data.first)
-  Vector<Double> euler;
+  Vector<double> euler;
   // Axes (data.second)
-  Vector<Int> axes;
+  Vector<int> axes;
 
   // # Private Member Functions
   //  The makeRad functions check and convert the input Quantities to radians
   //  <group>
-  static Double makeRad(const Quantity &in);
-  static Vector<Double> makeRad(const Quantum<Vector<Double>> &in);
+  static double makeRad(const Quantity &in);
+  static Vector<double> makeRad(const Quantum<Vector<double>> &in);
   // </group>
 };
 

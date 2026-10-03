@@ -287,7 +287,7 @@ class RO_LatticeIterator {
   // since construction (or since last reset).  This is a running count of
   // all cursor movement, thus doing N increments followed by N decrements
   // results in 2N steps.
-  uInt nsteps() const;
+  unsigned int nsteps() const;
 
   // Function which returns the current position of the beginning of the
   // cursor within the Lattice. The returned IPosition will have the same

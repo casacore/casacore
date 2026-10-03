@@ -151,7 +151,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   virtual bool hasLock(FileLocker::LockType) const = 0;
 
   // Try to lock the table for read or write access.
-  virtual bool lock(FileLocker::LockType, uInt nattempts) = 0;
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts) = 0;
 
   // Unlock the table. This will also synchronize the table data,
   // thus force the data to be written to disk.
@@ -164,7 +164,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   virtual void resync() = 0;
 
   // Get the modify counter.
-  virtual uInt getModifyCounter() const = 0;
+  virtual unsigned int getModifyCounter() const = 0;
 
   // Set the table to being changed. By default it does nothing.
   virtual void setTableChanged();
@@ -179,13 +179,13 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Test if the given column is writable.
   // <group>
   bool isColumnWritable(const String& columnName) const;
-  bool isColumnWritable(uInt columnIndex) const;
+  bool isColumnWritable(unsigned int columnIndex) const;
   // </group>
 
   // Test if the given column is stored (otherwise it is virtual).
   // <group>
   bool isColumnStored(const String& columnName) const;
-  bool isColumnStored(uInt columnIndex) const;
+  bool isColumnStored(unsigned int columnIndex) const;
   // </group>
 
   // Get the table name.
@@ -292,7 +292,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   rownr_t nrow() const { return nrrow_p; }
 
   // Get a column object using its index.
-  virtual BaseColumn* getColumn(uInt columnIndex) const = 0;
+  virtual BaseColumn* getColumn(unsigned int columnIndex) const = 0;
 
   // Get a column object using its name.
   virtual BaseColumn* getColumn(const String& columnName) const = 0;
@@ -326,7 +326,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // <group>
   virtual void removeRow(rownr_t rownr);
   void removeRow(const Vector<rownr_t>& rownrs);
-  void removeRow(const Vector<uInt>& rownrs);
+  void removeRow(const Vector<unsigned int>& rownrs);
   // </group>
 
   // Find the data manager with the given name or for the given column.
@@ -368,14 +368,14 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Sort a table on one or more columns of scalars.
   std::shared_ptr<BaseTable> sort(const Block<String>& columnNames,
                                   const Block<std::shared_ptr<BaseCompare>>& compareObjects,
-                                  const Block<Int>& sortOrder, int sortOption,
+                                  const Block<int>& sortOrder, int sortOption,
                                   std::shared_ptr<Vector<rownr_t>> sortIterBoundaries = nullptr,
                                   std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange = nullptr);
 
   // Create an iterator.
   BaseTableIterator* makeIterator(const Block<String>& columnNames,
                                   const Block<std::shared_ptr<BaseCompare>>&,
-                                  const Block<Int>& orders, int option,
+                                  const Block<int>& orders, int option,
                                   bool cacheIterationBoundaries = false);
 
   // Add one or more columns to the table.
@@ -446,7 +446,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Only in RefTable a smarter implementation is provided.
   virtual std::shared_ptr<BaseTable> doSort(Block<BaseColumn*>&,
                                             const Block<std::shared_ptr<BaseCompare>>&,
-                                            const Block<Int>& sortOrder, int sortOption,
+                                            const Block<int>& sortOrder, int sortOption,
                                             std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
                                             std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange);
 
@@ -524,7 +524,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Show the info of the given columns.
   // Sort the columns if needed.
-  void showColumnInfo(ostream& os, const TableDesc&, uInt maxNameLength,
+  void showColumnInfo(ostream& os, const TableDesc&, unsigned int maxNameLength,
                       const Array<String>& columnNames, bool sort, bool cOrder) const;
 
   // Throw an exception for checkRowNumber.

@@ -45,11 +45,11 @@ void ConcatRows::findRownr(rownr_t rownr) const {
                      " past nr of rows (=" + std::to_string(itsRows[itsNTable]) + ')');
   }
   bool found;
-  Int inx = binarySearchBrackets(found, itsRows, rownr, itsNTable);
+  int inx = binarySearchBrackets(found, itsRows, rownr, itsNTable);
   if (!found) {
     inx--;
   }
-  DebugAssert(inx >= 0 && static_cast<uInt>(inx) < itsNTable, AipsError);
+  DebugAssert(inx >= 0 && static_cast<unsigned int>(inx) < itsNTable, AipsError);
   itsLastStRow = itsRows[inx];
   itsLastEndRow = itsRows[inx + 1];
   itsLastTableNr = inx;

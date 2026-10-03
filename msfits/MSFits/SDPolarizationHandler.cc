@@ -93,13 +93,13 @@ void SDPolarizationHandler::resetRow(const Record &row) {
   initRow(dummyCols, row);
 }
 
-void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
+void SDPolarizationHandler::fill(const Record &, const Vector<int> &stokes) {
   // don't bother unless there is something there
   if (msPol_p) {
     *numCorrKey_p = stokes.nelements();
     bool found = false;
     Vector<rownr_t> foundRows = index_p->getRowNumbers();
-    uInt whichOne = 0;
+    unsigned int whichOne = 0;
     while (!found && whichOne < foundRows.nelements()) {
       if (allEQ(stokes, msPolCols_p->corrType()(foundRows(whichOne))) &&
           (!flagRowField_p.isAttached() ||
@@ -118,7 +118,7 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
       msPol_p->addRow();
       msPolCols_p->numCorr().put(rownr_p, *numCorrKey_p);
       msPolCols_p->corrType().put(rownr_p, stokes);
-      Matrix<Int> corrProduct(2, *numCorrKey_p);
+      Matrix<int> corrProduct(2, *numCorrKey_p);
       // can we reuse whats alread in the row from when this was a MS
       if (numCorrField_p.isAttached() && *numCorrField_p == *numCorrKey_p &&
           corrTypeField_p.isAttached() && allEQ(*corrTypeField_p, stokes) &&
@@ -128,9 +128,9 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
       } else {
         // construct the corrProduct given the stokes values
         // first, we need to determine the decomposition of the stokes values
-        std::map<Int, Int> polTypeMap;
-        for (uInt i = 0; i < stokes.nelements(); i++) {
-          Int key1, key2;
+        std::map<int, int> polTypeMap;
+        for (unsigned int i = 0; i < stokes.nelements(); i++) {
+          int key1, key2;
           stokesKeys(stokes(i), key1, key2);
           if (polTypeMap.find(key1) == polTypeMap.end()) {
             polTypeMap[key1] = polTypeMap.size();
@@ -140,8 +140,8 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
           }
         }
         // now re-assemble these into the corr product
-        for (uInt i = 0; i < stokes.nelements(); i++) {
-          Int key1, key2;
+        for (unsigned int i = 0; i < stokes.nelements(); i++) {
+          int key1, key2;
           stokesKeys(stokes(i), key1, key2);
           corrProduct(0, i) = polTypeMap[key1];
           corrProduct(1, i) = polTypeMap[key2];
@@ -198,32 +198,32 @@ void SDPolarizationHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCol
 void SDPolarizationHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   rownr_p = -1;
   // try MS 2 version first, then MS 1
-  Int ncorrId = row.fieldNumber("POLARIZATION_NUM_CORR");
+  int ncorrId = row.fieldNumber("POLARIZATION_NUM_CORR");
   if (ncorrId < 0) ncorrId = row.fieldNumber("SPECTRAL_WINDOW_NUM_CORR");
   if (ncorrId >= 0) {
     numCorrField_p.attachToRecord(row, ncorrId);
     handledCols(ncorrId) = true;
   }
-  Int corrTypeId = row.fieldNumber("POLARIZATION_CORR_TYPE");
+  int corrTypeId = row.fieldNumber("POLARIZATION_CORR_TYPE");
   if (corrTypeId < 0) corrTypeId = row.fieldNumber("SPECTRAL_WINDOW_CORR_TYPE");
   if (corrTypeId >= 0) {
     corrTypeField_p.attachToRecord(row, corrTypeId);
     handledCols(corrTypeId) = true;
   }
-  Int corrProductId = row.fieldNumber("POLARIZATION_CORR_PRODUCT");
+  int corrProductId = row.fieldNumber("POLARIZATION_CORR_PRODUCT");
   if (corrProductId < 0) corrProductId = row.fieldNumber("SPECTRAL_WINDOW_CORR_PRODUCT");
   if (corrProductId >= 0) {
     corrProductField_p.attachToRecord(row, corrProductId);
     handledCols(corrProductId) = true;
   }
-  Int flagRowId = row.fieldNumber("POLARIZATION_FLAG_ROW");
+  int flagRowId = row.fieldNumber("POLARIZATION_FLAG_ROW");
   if (flagRowId >= 0) {
     flagRowField_p.attachToRecord(row, flagRowId);
     handledCols(flagRowId) = true;
   }
 }
 
-void SDPolarizationHandler::stokesKeys(Int stokesValue, Int &key1, Int &key2) {
+void SDPolarizationHandler::stokesKeys(int stokesValue, int &key1, int &key2) {
   switch (Stokes::type(stokesValue)) {
       // the cases which are tricky are the cross products
       // we need to set the keys to something which remembers

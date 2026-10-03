@@ -77,12 +77,12 @@ class CLIPNearest2D : public CLInterpolator2D<T> {
 
   // Get the data for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
-  virtual void getData(Array<T>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+  virtual void getData(Array<T>& buffer, const Vector<float>& x, const Vector<float>& y,
                        const Slicer& section);
 
   // Get the mask for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
-  virtual void getMask(Array<bool>& buffer, const Vector<Float>& x, const Vector<Float>& y,
+  virtual void getMask(Array<bool>& buffer, const Vector<float>& x, const Vector<float>& y,
                        const Slicer& section);
 
   // # Make members of parent class known.

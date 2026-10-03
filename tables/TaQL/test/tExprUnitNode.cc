@@ -50,7 +50,7 @@ void checkScaBool(const String& str, const TableExprId& exprid, const TableExprN
 }
 
 void checkScaInt(const String& str, const TableExprId& exprid, const TableExprNode& expr,
-                 const Int& value) {
+                 const int& value) {
   cout << "checkScaInt " << str << endl;
   AlwaysAssertExit(expr.dataType() == TpInt64);
   AlwaysAssertExit(expr.unit().getName().empty());
@@ -63,11 +63,11 @@ void checkScaInt(const String& str, const TableExprId& exprid, const TableExprNo
 }
 
 void checkScaDouble(const String& str, const TableExprId& exprid, const TableExprNode& expr,
-                    const Double& value, const String& unit) {
+                    const double& value, const String& unit) {
   cout << "checkScaDouble " << str << ' ' << expr.unit().getName() << endl;
   AlwaysAssertExit(expr.dataType() == TpDouble);
   AlwaysAssertExit(expr.unit().getName() == unit);
-  Double val;
+  double val;
   expr.get(exprid, val);
   if (!near(val, value, 1.e-10)) {
     foundError = true;

@@ -72,13 +72,13 @@ class TableExprNode;
 int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
                            const TableExprNode& otherTens);
 int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
-                           const TableExprNode& otherTens, Matrix<Double>& timeList);
+                           const TableExprNode& otherTens, Matrix<double>& timeList);
 int msTimeGramParseCommand(const MeasurementSet* ms, const String& command,
                            const TableExprNode& colAsTEN,
                            MSSelectableMainColumn& msMainColInterface,
-                           const TableExprNode& otherTens, Matrix<Double>& timeList);
+                           const TableExprNode& otherTens, Matrix<double>& timeList);
 int baseMSTimeGramParseCommand(MSTimeParse* parser, const String& command,
-                               Matrix<Double>& selectedTimeList);
+                               Matrix<double>& selectedTimeList);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -90,7 +90,7 @@ void msTimeGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msTimeGramPosition();
+int& msTimeGramPosition();
 
 // Declare the input routine for flex/bison.
 int msTimeGramInput(char* buf, int max_size);
@@ -102,8 +102,8 @@ String msTimeGramRemoveEscapes(const String& in);
 // String msTimeGramRemoveQuotes (const String& in);
 
 // A function to set the fields of the TimeFields structure
-void msTimeGramSetTimeFields(struct TimeFields& tf, Int year, Int month, Int day, Int hour,
-                             Int minute, Int sec, Int fsec);
+void msTimeGramSetTimeFields(struct TimeFields& tf, int year, int month, int day, int hour,
+                             int minute, int sec, int fsec);
 // </group>
 
 }  // namespace casacore

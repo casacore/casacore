@@ -58,7 +58,7 @@ TiledStMan::TiledStMan()
       nrCoordVector_p(0),
       dataChanged_p(false) {}
 
-TiledStMan::TiledStMan(const String& hypercolumnName, uInt maximumCacheSize)
+TiledStMan::TiledStMan(const String& hypercolumnName, unsigned int maximumCacheSize)
     : DataManager(),
       hypercolumnName_p(hypercolumnName),
       nrrow_p(0),
@@ -70,7 +70,7 @@ TiledStMan::TiledStMan(const String& hypercolumnName, uInt maximumCacheSize)
       dataChanged_p(false) {}
 
 TiledStMan::~TiledStMan() {
-  uInt i;
+  unsigned int i;
   for (i = 0; i < ncolumn(); i++) {
     delete colSet_p[i];
   }
@@ -82,30 +82,30 @@ TiledStMan::~TiledStMan() {
   }
 }
 
-IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, Double tolerance,
+IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, double tolerance,
                                     uInt64 nrPixelsPerTile) {
   Vector<double> weight(hypercubeShape.nelements());
   weight = double(1);
-  Vector<Double> tol(hypercubeShape.nelements());
+  Vector<double> tol(hypercubeShape.nelements());
   tol = tolerance;
   return makeTileShape(hypercubeShape, weight, tol, nrPixelsPerTile);
 }
-IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, const Vector<Double>& weight,
-                                    const Vector<Double>& tolerance, uInt64 nrPixelsPerTile) {
-  uInt nrdim = hypercubeShape.nelements();
+IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, const Vector<double>& weight,
+                                    const Vector<double>& tolerance, uInt64 nrPixelsPerTile) {
+  unsigned int nrdim = hypercubeShape.nelements();
   if (weight.nelements() != nrdim || tolerance.nelements() != nrdim) {
     throw(TSMError("makeTileShape: nelements mismatch"));
   }
   double nrLeft = nrPixelsPerTile;
   Vector<double> tmpShape(nrdim);
   IPosition tileShape(nrdim, 0);
-  uInt i;
+  unsigned int i;
   // Iterate until the tile shape is set nicely.
   // This is needed to prevent tile shape dimensions from underflow
   // or overflow.
   while (true) {
     double prod = 1;
-    uInt n = 0;
+    unsigned int n = 0;
     for (i = 0; i < nrdim; i++) {
       if (tileShape(i) == 0) {
         prod *= hypercubeShape(i) * weight(i);
@@ -119,7 +119,7 @@ IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, const Vecto
     double factor = pow(nrLeft / prod, double(1) / n);
     double maxDiff = 0;
     double diff;
-    Int maxIndex = -1;
+    int maxIndex = -1;
     // Calculate the tile shape for the remaining dimensions.
     // Determine the greatest difference in case of underflow/overflow.
     // (note that the reciproke is used, thus in fact the minimum matters).
@@ -157,7 +157,7 @@ IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, const Vecto
   }
   // Return the found tile shape when fitting exactly.
   bool isFit = true;
-  Double size = 1;
+  double size = 1;
   for (i = 0; i < nrdim; i++) {
     if (hypercubeShape(i) % tileShape(i) != 0) {
       isFit = false;
@@ -177,7 +177,7 @@ IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, const Vecto
   IPosition bestShape(tileShape);
   IPosition minShape(nrdim);
   IPosition maxShape(nrdim);
-  Double cubeSpace = 1;
+  double cubeSpace = 1;
   for (i = 0; i < nrdim; i++) {
     minShape(i) = Int64(tileShape(i) * tolerance(i));
     maxShape(i) = Int64(tileShape(i) / tolerance(i) + 0.5);
@@ -221,20 +221,20 @@ IPosition TiledStMan::makeTileShape(const IPosition& hypercubeShape, const Vecto
   for (i = 0; i < nrdim; i++) {
     tshape(i) = (*values[i])[0];
   }
-  Double minCost = 1000000;
+  double minCost = 1000000;
   while (true) {
     Int64 totalSize = 1;
-    Double totalSpace = 1;
-    Double costAxes = 0;
+    double totalSpace = 1;
+    double costAxes = 0;
     for (i = 0; i < nrdim; i++) {
       totalSize *= tshape(i);
       Int64 ntile = (hypercubeShape(i) + tshape(i) - 1) / tshape(i);
       totalSpace *= ntile * tshape(i);
       costAxes += abs(tileShape(i) - tshape(i)) / double(tileShape(i));
     }
-    Double waste = (totalSpace - cubeSpace) / cubeSpace;
-    Double diff = abs(double(totalSize) - nrPixelsPerTile) / nrPixelsPerTile;
-    Double cost = (costAxes + 10 * waste + diff);
+    double waste = (totalSpace - cubeSpace) / cubeSpace;
+    double diff = abs(double(totalSize) - nrPixelsPerTile) / nrPixelsPerTile;
+    double cost = (costAxes + 10 * waste + diff);
     if (cost < minCost) {
       bestShape = tshape;
       minCost = cost;
@@ -274,14 +274,14 @@ Record TiledStMan::dataManagerSpec() const {
   rec.define("DEFAULTTILESHAPE", defaultTileShape().asVector());
   rec.define("MAXIMUMCACHESIZE", Int64(persMaxCacheSize_p));
   Record subrec;
-  Int nrrec = 0;
+  int nrrec = 0;
   for (uInt64 i = 0; i < cubeSet_p.nelements(); i++) {
     if (cubeSet_p[i] != 0 && cubeSet_p[i]->cubeShape().nelements() > 0) {
       Record srec;
       srec.define("CubeShape", cubeSet_p[i]->cubeShape().asVector());
       srec.define("TileShape", cubeSet_p[i]->tileShape().asVector());
       srec.define("CellShape", cubeSet_p[i]->cellShape().asVector());
-      srec.define("BucketSize", Int(cubeSet_p[i]->bucketSize()));
+      srec.define("BucketSize", int(cubeSet_p[i]->bucketSize()));
       srec.defineRecord("ID", cubeSet_p[i]->valueRecord());
       subrec.defineRecord(nrrec++, srec);
     }
@@ -293,7 +293,7 @@ Record TiledStMan::dataManagerSpec() const {
 
 Record TiledStMan::getProperties() const {
   Record rec;
-  rec.define("MaxCacheSize", Int(maxCacheSize_p));
+  rec.define("MaxCacheSize", int(maxCacheSize_p));
   return rec;
 }
 
@@ -308,7 +308,7 @@ void TiledStMan::setShape(rownr_t, TSMCube*, const IPosition&, const IPosition&)
 }
 
 void TiledStMan::reopenRW() {
-  for (uInt i = 0; i < fileSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < fileSet_p.nelements(); i++) {
     if (fileSet_p[i] != 0) {
       fileSet_p[i]->bucketFile()->setRW();
     }
@@ -316,12 +316,12 @@ void TiledStMan::reopenRW() {
 }
 
 void TiledStMan::deleteManager() {
-  for (uInt i = 0; i < cubeSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < cubeSet_p.nelements(); i++) {
     if (cubeSet_p[i] != 0) {
       cubeSet_p[i]->clearCache(false);
     }
   }
-  for (uInt i = 0; i < fileSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < fileSet_p.nelements(); i++) {
     if (fileSet_p[i] != 0) {
       fileSet_p[i]->bucketFile()->remove();
     }
@@ -331,7 +331,7 @@ void TiledStMan::deleteManager() {
   DOos::remove(fileName(), false, false);
 }
 
-void TiledStMan::setMaximumCacheSize(uInt nMiB) { maxCacheSize_p = nMiB; }
+void TiledStMan::setMaximumCacheSize(unsigned int nMiB) { maxCacheSize_p = nMiB; }
 
 bool TiledStMan::canChangeShape() const { return false; }
 
@@ -362,7 +362,7 @@ TSMCube* TiledStMan::makeTSMCube(TSMFile* file, const IPosition& cubeShape,
   return hypercube;
 }
 
-TSMCube* TiledStMan::getTSMCube(uInt hypercube) {
+TSMCube* TiledStMan::getTSMCube(unsigned int hypercube) {
   if (hypercube >= nhypercubes() || cubeSet_p[hypercube] == 0) {
     throw(AipsError("TiledStMan::getTSMCube - hypercube nr " + String(std::to_string(hypercube)) +
                     " does not exist in " + hypercolumnName_p));
@@ -380,9 +380,9 @@ const IPosition& TiledStMan::tileShape(rownr_t rownr) const {
 
 uInt64 TiledStMan::bucketSize(rownr_t rownr) const { return getHypercube(rownr)->bucketSize(); }
 
-uInt TiledStMan::cacheSize(rownr_t rownr) const { return getHypercube(rownr)->cacheSize(); }
+unsigned int TiledStMan::cacheSize(rownr_t rownr) const { return getHypercube(rownr)->cacheSize(); }
 
-uInt TiledStMan::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
+unsigned int TiledStMan::calcCacheSize(rownr_t rownr, const IPosition& sliceShape,
                                const IPosition& windowStart, const IPosition& windowLength,
                                const IPosition& axisPath) const {
   // Calculate the cache size for the given hypercube.
@@ -397,13 +397,13 @@ void TiledStMan::setCacheSize(rownr_t rownr, const IPosition& sliceShape,
                                     true);
 }
 
-void TiledStMan::setCacheSize(rownr_t rownr, uInt nbuckets, bool forceSmaller) {
+void TiledStMan::setCacheSize(rownr_t rownr, unsigned int nbuckets, bool forceSmaller) {
   // Set the cache size (in buckets) for the given hypercube.
   TSMCube* hypercube = getHypercube(rownr);
   hypercube->setCacheSize(nbuckets, forceSmaller, true);
 }
 
-void TiledStMan::setHypercubeCacheSize(uInt hypercube, uInt nbuckets, bool forceSmaller) {
+void TiledStMan::setHypercubeCacheSize(unsigned int hypercube, unsigned int nbuckets, bool forceSmaller) {
   // Set the cache size (in buckets) for the given hypercube.
   TSMCube* tsmCube = getTSMCube(hypercube);
   tsmCube->setCacheSize(nbuckets, forceSmaller, true);
@@ -412,7 +412,7 @@ void TiledStMan::setHypercubeCacheSize(uInt hypercube, uInt nbuckets, bool force
 bool TiledStMan::userSetCache(rownr_t rownr) const { return getHypercube(rownr)->userSetCache(); }
 
 void TiledStMan::emptyCaches() {
-  for (uInt i = 0; i < cubeSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < cubeSet_p.nelements(); i++) {
     if (cubeSet_p[i] != 0) {
       cubeSet_p[i]->emptyCache();
     }
@@ -420,7 +420,7 @@ void TiledStMan::emptyCaches() {
 }
 
 void TiledStMan::showCacheStatistics(ostream& os) const {
-  for (uInt i = 0; i < cubeSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < cubeSet_p.nelements(); i++) {
     if (cubeSet_p[i] != 0) {
       cubeSet_p[i]->showCacheStatistics(os);
     }
@@ -436,14 +436,14 @@ TSMCube* TiledStMan::singleHypercube() {
   return cubeSet_p[0];
 }
 
-uInt64 TiledStMan::getLengthOffset(uInt64 nrPixels, Block<uInt>& dataOffset,
-                                   Block<uInt>& localOffset, uInt& localTileLength) const {
+uInt64 TiledStMan::getLengthOffset(uInt64 nrPixels, Block<unsigned int>& dataOffset,
+                                   Block<unsigned int>& localOffset, unsigned int& localTileLength) const {
   localTileLength = 0;
   uInt64 length = 0;
-  uInt nrcol = dataCols_p.nelements();
+  unsigned int nrcol = dataCols_p.nelements();
   dataOffset.resize(nrcol);
   localOffset.resize(nrcol);
-  for (uInt i = 0; i < nrcol; i++) {
+  for (unsigned int i = 0; i < nrcol; i++) {
     dataOffset[i] = length;
     localOffset[i] = localTileLength;
     length += dataCols_p[i]->dataLength(nrPixels);
@@ -452,18 +452,18 @@ uInt64 TiledStMan::getLengthOffset(uInt64 nrPixels, Block<uInt>& dataOffset,
   return length;
 }
 
-void TiledStMan::readTile(char* local, const Block<uInt>& localOffset, const char* external,
-                          const Block<uInt>& externalOffset, uInt nrPixels) {
-  uInt nr = dataCols_p.nelements();
-  for (uInt i = 0; i < nr; i++) {
+void TiledStMan::readTile(char* local, const Block<unsigned int>& localOffset, const char* external,
+                          const Block<unsigned int>& externalOffset, unsigned int nrPixels) {
+  unsigned int nr = dataCols_p.nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     dataCols_p[i]->readTile(local + localOffset[i], external + externalOffset[i], nrPixels);
   }
 }
 
-void TiledStMan::writeTile(char* external, const Block<uInt>& externalOffset, const char* local,
-                           const Block<uInt>& localOffset, uInt nrPixels) {
-  uInt nr = dataCols_p.nelements();
-  for (uInt i = 0; i < nr; i++) {
+void TiledStMan::writeTile(char* external, const Block<unsigned int>& externalOffset, const char* local,
+                           const Block<unsigned int>& localOffset, unsigned int nrPixels) {
+  unsigned int nr = dataCols_p.nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     dataCols_p[i]->writeTile(external + externalOffset[i], local + localOffset[i], nrPixels);
   }
 }
@@ -490,7 +490,7 @@ DataManagerColumn* TiledStMan::makeIndArrColumn(const String& columnName, int da
 }
 
 int TiledStMan::coordinateDataType(const String& columnName) const {
-  for (uInt i = 0; i < coordColSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < coordColSet_p.nelements(); i++) {
     if (coordColSet_p[i] != 0) {
       if (columnName == coordColSet_p[i]->columnName()) {
         return coordColSet_p[i]->dataType();
@@ -539,7 +539,7 @@ IPosition TiledStMan::defaultTileShape() const { return IPosition(); }
 bool TiledStMan::canReallocateColumns() const { return true; }
 
 DataManagerColumn* TiledStMan::reallocateColumn(DataManagerColumn* column) {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (column == colSet_p[i]) {
       TSMColumn* ptr = colSet_p[i];
       colSet_p[i] = ptr->unlink();
@@ -551,8 +551,8 @@ DataManagerColumn* TiledStMan::reallocateColumn(DataManagerColumn* column) {
   return column;
 }
 
-void TiledStMan::setup(Int extraNdim) {
-  uInt i;
+void TiledStMan::setup(int extraNdim) {
+  unsigned int i;
   // Get the description of the hypercolumn.
   Vector<String> dataNames;
   Vector<String> coordNames;
@@ -566,11 +566,11 @@ void TiledStMan::setup(Int extraNdim) {
     nrCoordVector_p = tableDesc.columnDesc(dataNames(0)).ndim();
   } else {
     // No hypercolumn definition; assume all columns are data columns.
-    Int ndim = 0;
+    int ndim = 0;
     dataNames.resize(ncolumn());
-    for (uInt i = 0; i < ncolumn(); i++) {
+    for (unsigned int i = 0; i < ncolumn(); i++) {
       dataNames(i) = colSet_p[i]->columnName();
-      Int nd = tableDesc.columnDesc(dataNames(i)).ndim();
+      int nd = tableDesc.columnDesc(dataNames(i)).ndim();
       if (nd > 0) {
         if (ndim == 0) {
           ndim = nd;
@@ -592,9 +592,9 @@ void TiledStMan::setup(Int extraNdim) {
   dataColSet_p.resize(dataNames.nelements());
   coordColSet_p.resize(nrdim_p);
   idColSet_p.resize(idNames.nelements());
-  uInt nrDataBound = getBindings(dataNames, dataColSet_p, true);
-  uInt nrCoordBound = getBindings(coordNames, coordColSet_p, false);
-  uInt nrIdBound = getBindings(idNames, idColSet_p, true);
+  unsigned int nrDataBound = getBindings(dataNames, dataColSet_p, true);
+  unsigned int nrCoordBound = getBindings(coordNames, coordColSet_p, false);
+  unsigned int nrIdBound = getBindings(idNames, idColSet_p, true);
   // Check if no non-TiledStMan columns are bound.
   if (nrDataBound + nrCoordBound + nrIdBound != ncolumn()) {
     throw(TSMError("non-TiledStMan columns bound in " + hypercolumnName_p));
@@ -619,7 +619,7 @@ void TiledStMan::setup(Int extraNdim) {
   for (i = 0; i < idColSet_p.nelements(); i++) {
     idColSet_p[i] = idColSet_p[i]->makeIdColumn();
   }
-  uInt nrd = dataColSet_p.nelements();
+  unsigned int nrd = dataColSet_p.nelements();
   Block<TSMDataColumn*> dataColSet(nrd);
   for (i = 0; i < nrd; i++) {
     dataColSet[i] = dataColSet_p[i]->makeDataColumn();
@@ -630,12 +630,12 @@ void TiledStMan::setup(Int extraNdim) {
   // the same order.
   // In that way we are sure that their data are aligned in a tile
   // (which may be needed for TSMCube::accessLine).
-  Block<uInt> lengths(nrd);
+  Block<unsigned int> lengths(nrd);
   for (i = 0; i < nrd; i++) {
     lengths[i] = dataColSet[i]->tilePixelSize();
   }
-  Vector<uInt> inx;
-  GenSortIndirect<uInt, uInt>::sort(inx, lengths, nrd, Sort::Descending);
+  Vector<unsigned int> inx;
+  GenSortIndirect<unsigned int, unsigned int>::sort(inx, lengths, nrd, Sort::Descending);
   // Rearrange the objects and set their column number.
   // In this way function setLengths will behave correctly.
   for (i = 0; i < nrd; i++) {
@@ -656,7 +656,7 @@ void TiledStMan::checkCubeShape(const TSMCube* hypercube, const IPosition& cubeS
   }
   // Check if all dimensions are > 0.
   // Only the last one in shape can be 0 (meaning extensible).
-  for (uInt i = 0; i < nrdim_p - 1; i++) {
+  for (unsigned int i = 0; i < nrdim_p - 1; i++) {
     if (cubeShape(i) == 0) {
       throw(TSMError("addHypercube dimensions are zero in " + hypercolumnName_p));
     }
@@ -674,11 +674,11 @@ void TiledStMan::checkShapeColumn(const IPosition& shape) const {
   if (shape.nelements() == 0) {
     return;
   }
-  uInt i;
+  unsigned int i;
   // First check if fixed data columns match.
   for (i = 0; i < dataColSet_p.nelements(); i++) {
     const IPosition& shapeColumn = dataColSet_p[i]->shapeColumn();
-    for (uInt j = 0; j < shapeColumn.nelements(); j++) {
+    for (unsigned int j = 0; j < shapeColumn.nelements(); j++) {
       if (shape(j) != shapeColumn(j)) {
         throw(TSMError("Mismatch in fixed shape of data column " + dataColSet_p[i]->columnName()));
       }
@@ -701,9 +701,9 @@ void TiledStMan::checkCoordinatesShapes(const TSMCube* hypercube,
                                         const IPosition& cubeShape) const {
   // # Check for all coordinates if their length (if defined)
   // # matches the hypercube shape.
-  for (uInt i = 0; i < nrCoordVector_p; i++) {
+  for (unsigned int i = 0; i < nrCoordVector_p; i++) {
     if (coordColSet_p[i] != 0) {
-      Int size = hypercube->coordinateSize(coordColSet_p[i]->columnName());
+      int size = hypercube->coordinateSize(coordColSet_p[i]->columnName());
       if (size != 0 && size != cubeShape(i)) {
         throw(TSMError("Mismatch in shape of coordinate column " + coordColSet_p[i]->columnName()));
       }
@@ -712,7 +712,7 @@ void TiledStMan::checkCoordinatesShapes(const TSMCube* hypercube,
 }
 
 void TiledStMan::initCoordinates(TSMCube* hypercube) {
-  for (uInt i = 0; i < coordColSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < coordColSet_p.nelements(); i++) {
     if (coordColSet_p[i] != 0) {
       hypercube->extendCoordinates(Record(), coordColSet_p[i]->columnName(),
                                    hypercube->cubeShape()(i));
@@ -721,13 +721,13 @@ void TiledStMan::initCoordinates(TSMCube* hypercube) {
   }
 }
 
-uInt TiledStMan::getBindings(const Vector<String>& columnNames, Block<TSMColumn*>& colSet,
+unsigned int TiledStMan::getBindings(const Vector<String>& columnNames, Block<TSMColumn*>& colSet,
                              bool mustExist) const {
   colSet = static_cast<TSMColumn*>(0);
-  uInt nrfound = 0;
-  uInt j;
+  unsigned int nrfound = 0;
+  unsigned int j;
   bool found = false;
-  for (uInt i = 0; i < columnNames.nelements(); i++) {
+  for (unsigned int i = 0; i < columnNames.nelements(); i++) {
     for (j = 0; j < ncolumn(); j++) {
       if (columnNames(i) == colSet_p[j]->columnName()) {
         colSet[i] = colSet_p[j];
@@ -760,7 +760,7 @@ TSMCube* TiledStMan::makeHypercube(const IPosition& cubeShape, const IPosition& 
   dataChanged_p = true;
   // Pick a TSMFile object for the hypercube.
   // Non-extensible cubes share the first file; others get their own file.
-  uInt filenr = 0;
+  unsigned int filenr = 0;
   if (cubeShape(nrdim_p - 1) == 0) {
     filenr = fileSet_p.nelements();
     fileSet_p.resize(filenr + 1);
@@ -775,12 +775,12 @@ TSMCube* TiledStMan::makeHypercube(const IPosition& cubeShape, const IPosition& 
   return makeTSMCube(fileSet_p[filenr], cubeShape, tileShape, values);
 }
 
-void TiledStMan::createFile(uInt index) {
+void TiledStMan::createFile(unsigned int index) {
   TSMFile* file = new TSMFile(this, index, tsmOption(), multiFile());
   fileSet_p[index] = file;
 }
 
-Int TiledStMan::getCubeIndex(const Record& idValues) const {
+int TiledStMan::getCubeIndex(const Record& idValues) const {
   // When there are no id columns, return the one and single hypercube
   // (or -1 if no one created yet).
   if (idColSet_p.nelements() == 0) {
@@ -790,7 +790,7 @@ Int TiledStMan::getCubeIndex(const Record& idValues) const {
     return 0;
   }
   // Look if a hypercube matches the id values.
-  for (uInt i = 0; i < cubeSet_p.nelements(); i++) {
+  for (unsigned int i = 0; i < cubeSet_p.nelements(); i++) {
     if (cubeSet_p[i] != 0) {
       if (cubeSet_p[i]->matches(idColSet_p, idValues)) {
         return i;
@@ -802,7 +802,7 @@ Int TiledStMan::getCubeIndex(const Record& idValues) const {
 
 void TiledStMan::checkValues(const Block<TSMColumn*>& colSet, const Record& values) const {
   // Check if all values are given and if their data types match.
-  for (uInt i = 0; i < colSet.nelements(); i++) {
+  for (unsigned int i = 0; i < colSet.nelements(); i++) {
     if (colSet[i] != 0) {
       const String& name = colSet[i]->columnName();
       if (!values.isDefined(name)) {
@@ -819,7 +819,7 @@ void TiledStMan::checkCoordinates(const Block<TSMColumn*>& coordColSet, const IP
                                   const Record& values) const {
   // Check if the coordinates data types and shapes are correct,
   // i.e. if the coordinates shapes match the hypercube shape.
-  for (uInt i = 0; i < coordColSet.nelements(); i++) {
+  for (unsigned int i = 0; i < coordColSet.nelements(); i++) {
     if (coordColSet[i] != 0) {
       const String& name = coordColSet[i]->columnName();
       if (values.isDefined(name)) {
@@ -839,9 +839,9 @@ void TiledStMan::checkCoordinates(const Block<TSMColumn*>& coordColSet, const IP
   }
 }
 
-rownr_t TiledStMan::addedNrrow(const IPosition& shape, uInt incrInLastDim) const {
+rownr_t TiledStMan::addedNrrow(const IPosition& shape, unsigned int incrInLastDim) const {
   rownr_t nrrowAdded = 1;
-  for (uInt i = nrCoordVector_p; i < nrdim_p - 1; i++) {
+  for (unsigned int i = nrCoordVector_p; i < nrdim_p - 1; i++) {
     nrrowAdded *= shape(i);
   }
   return nrrowAdded * incrInLastDim;
@@ -863,7 +863,7 @@ bool TiledStMan::flushCaches(bool fsync) {
     return false;
   }
   dataChanged_p = false;
-  uInt i;
+  unsigned int i;
   for (i = 0; i < cubeSet_p.nelements(); i++) {
     if (cubeSet_p[i] != 0) {
       cubeSet_p[i]->flushCache();
@@ -892,7 +892,7 @@ void TiledStMan::headerFilePut(AipsIO& headerFile, uInt64 nrCube) {
   // is used. In that way older software can read newer tables.
   // Similarly, use older version if number of rows less than maxUint.
   bool useNewVersion = false;
-  if (nrrow_p > MAXROWNR32 || persMaxCacheSize_p != uInt(persMaxCacheSize_p)) {
+  if (nrrow_p > MAXROWNR32 || persMaxCacheSize_p != static_cast<unsigned int>(persMaxCacheSize_p)) {
     headerFile.putstart("TiledStMan", 3);
     headerFile << asBigEndian();
     useNewVersion = true;
@@ -909,17 +909,17 @@ void TiledStMan::headerFilePut(AipsIO& headerFile, uInt64 nrCube) {
   if (useNewVersion) {
     headerFile << nrrow_p;
   } else {
-    headerFile << uInt(nrrow_p);
+    headerFile << static_cast<unsigned int>(nrrow_p);
   }
   headerFile << ncolumn();
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     headerFile << colSet_p[i]->dataType();
   }
   headerFile << hypercolumnName_p;
   if (useNewVersion) {
     headerFile << persMaxCacheSize_p;
   } else {
-    headerFile << uInt(persMaxCacheSize_p);
+    headerFile << static_cast<unsigned int>(persMaxCacheSize_p);
   }
   headerFile << nrdim_p;
   // nrfile and nrcube can never exceed nrrow,
@@ -927,7 +927,7 @@ void TiledStMan::headerFilePut(AipsIO& headerFile, uInt64 nrCube) {
   if (useNewVersion) {
     headerFile << uInt64(fileSet_p.nelements());
   } else {
-    headerFile << uInt(fileSet_p.nelements());
+    headerFile << static_cast<unsigned int>(fileSet_p.nelements());
   }
   for (uInt64 i = 0; i < fileSet_p.nelements(); i++) {
     if (fileSet_p[i] == 0) {
@@ -940,7 +940,7 @@ void TiledStMan::headerFilePut(AipsIO& headerFile, uInt64 nrCube) {
   if (useNewVersion) {
     headerFile << nrCube;
   } else {
-    headerFile << uInt(nrCube);
+    headerFile << static_cast<unsigned int>(nrCube);
   }
   for (uInt64 i = 0; i < nrCube; i++) {
     cubeSet_p[i]->putObject(headerFile);
@@ -948,10 +948,10 @@ void TiledStMan::headerFilePut(AipsIO& headerFile, uInt64 nrCube) {
   headerFile.putend();
 }
 
-uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstTime,
-                               Int extraNdim) {
+unsigned int TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstTime,
+                               int extraNdim) {
   nrrow_p = tabNrrow;
-  uInt version = headerFile.getstart("TiledStMan");
+  unsigned int version = headerFile.getstart("TiledStMan");
   bool bigEndian = true;
   if (version >= 2) {
     headerFile >> bigEndian;
@@ -961,13 +961,13 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
   }
   // # Get and check the number of rows and columns and the column types.
   rownr_t nrrow;
-  uInt nrcol, seqnr;
+  unsigned int nrcol, seqnr;
   int dtype;
   headerFile >> seqnr;
   if (version >= 3) {
     headerFile >> nrrow;
   } else {
-    uInt nrrowOld;
+    unsigned int nrrowOld;
     headerFile >> nrrowOld;
     nrrow = nrrowOld;
   }
@@ -988,7 +988,7 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
                                std::to_string(nrrow_p) + ", found " + std::to_string(nrrow)));
 #endif
   }
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     headerFile >> dtype;
     if (dtype != colSet_p[i]->dataType()) {
       throw(DataManInternalError("TiledStMan::headerFileGet: mismatch in data type"));
@@ -998,7 +998,7 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
   if (version >= 3) {
     headerFile >> persMaxCacheSize_p;
   } else {
-    uInt tmp;
+    unsigned int tmp;
     headerFile >> tmp;
     persMaxCacheSize_p = tmp;
   }
@@ -1007,7 +1007,7 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
     // Setup the various things (i.e. initialize other variables).
     setup(extraNdim);
   }
-  uInt nrdim;
+  unsigned int nrdim;
   headerFile >> nrdim;
   if (nrdim != nrdim_p) {
     throw(DataManInternalError("TiledStMan::headerFileGet: mismatch in nrdim"));
@@ -1017,7 +1017,7 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
   if (version >= 3) {
     headerFile >> nrFile;
   } else {
-    uInt nrFile32;
+    unsigned int nrFile32;
     headerFile >> nrFile32;
     nrFile = nrFile32;
   }
@@ -1043,7 +1043,7 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
   if (version >= 3) {
     headerFile >> nrCube;
   } else {
-    uInt nrCube32;
+    unsigned int nrCube32;
     headerFile >> nrCube32;
     nrCube = nrCube32;
   }
@@ -1078,7 +1078,7 @@ uInt TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstT
 
 void TiledStMan::headerFileClose(AipsIO* headerFile) { delete headerFile; }
 
-TSMFile* TiledStMan::getFile(uInt sequenceNumber) {
+TSMFile* TiledStMan::getFile(unsigned int sequenceNumber) {
   // # Do internal check to see if TSMFile really exists.
   if (sequenceNumber >= fileSet_p.nelements() || fileSet_p[sequenceNumber] == 0) {
     throw(DataManInternalError("TiledStMan::getFile in " + hypercolumnName_p));

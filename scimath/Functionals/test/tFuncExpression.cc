@@ -46,7 +46,7 @@ int main() {
     cout << base << endl;
 
     cout << "--- Check expression syntax ----" << endl;
-    const uInt n = 27;
+    const unsigned int n = 27;
     String exprlist[n] = {String("+-(25*30+2)--(75+2)"),
                           String("1+2-3"),
                           String("1+2/3"),
@@ -74,7 +74,7 @@ int main() {
                           String("1+((2==2)?5:(8+20))"),
                           String("erf(1)"),
                           String("erfc(1)")};
-    for (uInt i = 0; i < n; ++i) {
+    for (unsigned int i = 0; i < n; ++i) {
       FuncExpression expr;
       String myexpr = exprlist[i];
       cout << "Expression: '" << myexpr << "'" << endl;
@@ -82,7 +82,7 @@ int main() {
         cout << expr.errorMessage() << endl;
       }
       cout << expr;
-      Double res;
+      double res;
       cout << "Value: ";
       if (!expr.exec(res)) {
         cout << expr.errorMessage() << endl;
@@ -90,8 +90,8 @@ int main() {
         cout << res << endl;
       cout << "----------------------------------------------------" << endl;
     }
-    for (uInt i = 0; i < n; ++i) {
-      CompiledFunction<Double> expr;
+    for (unsigned int i = 0; i < n; ++i) {
+      CompiledFunction<double> expr;
       String myexpr = exprlist[i];
       cout << "Expression: '" << myexpr << "'" << endl;
       if (!expr.setFunction(myexpr)) {
@@ -103,18 +103,18 @@ int main() {
       cout << expr(3.5) << ", " << expr(0.0) << endl;
       cout << "----------------------------------------------------" << endl;
     }
-    for (uInt i = 0; i < n; ++i) {
-      CompiledFunction<AutoDiff<Double>> expr;
+    for (unsigned int i = 0; i < n; ++i) {
+      CompiledFunction<AutoDiff<double>> expr;
       String myexpr = exprlist[i];
       cout << "Expression: '" << myexpr << "'" << endl;
       if (!expr.setFunction(myexpr)) {
         cout << expr.errorMessage() << endl;
       }
       if (expr.nparameters() > 0) {
-        expr[0] = AutoDiff<Double>(1.5, expr.nparameters(), 0);
+        expr[0] = AutoDiff<double>(1.5, expr.nparameters(), 0);
       }
       if (expr.nparameters() > 1) {
-        expr[1] = AutoDiff<Double>(2.5, expr.nparameters(), 1);
+        expr[1] = AutoDiff<double>(2.5, expr.nparameters(), 1);
       }
       cout << "Value(3.5, 0): ";
       cout << expr(3.5) << ", " << expr(0.0) << endl;

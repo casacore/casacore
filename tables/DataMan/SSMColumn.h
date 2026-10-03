@@ -96,7 +96,7 @@ class SSMColumn : public StManColumnBase {
   // Create a SSMColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  SSMColumn(SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMColumn(SSMBase* aParent, int aDataType, unsigned int aColNr);
 
   virtual ~SSMColumn();
 
@@ -114,10 +114,10 @@ class SSMColumn : public StManColumnBase {
   // Set the maximum length of a 'fixed length' string.
   // It is only called (right after the constructor) if the string has
   // a fixed length.
-  virtual void setMaxLength(uInt maxLength);
+  virtual void setMaxLength(unsigned int maxLength);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim(rownr_t aRowNr);
+  virtual unsigned int ndim(rownr_t aRowNr);
 
   // Get the shape of the array in the given row.
   virtual IPosition shape(rownr_t aRowNr);
@@ -136,11 +136,11 @@ class SSMColumn : public StManColumnBase {
   // Get the scalar value in the given row.
   // <group>
   virtual void getBool(rownr_t aRowNr, bool* aDataPtr);
-  virtual void getuChar(rownr_t aRowNr, uChar* aDataPtr);
-  virtual void getShort(rownr_t aRowNr, Short* aDataPtr);
-  virtual void getuShort(rownr_t aRowNr, uShort* aDataPtr);
-  virtual void getInt(rownr_t aRowNr, Int* aDataPtr);
-  virtual void getuInt(rownr_t aRowNr, uInt* aDataPtr);
+  virtual void getuChar(rownr_t aRowNr, unsigned char* aDataPtr);
+  virtual void getShort(rownr_t aRowNr, short* aDataPtr);
+  virtual void getuShort(rownr_t aRowNr, unsigned short* aDataPtr);
+  virtual void getInt(rownr_t aRowNr, int* aDataPtr);
+  virtual void getuInt(rownr_t aRowNr, unsigned int* aDataPtr);
   virtual void getInt64(rownr_t aRowNr, Int64* aDataPtr);
   virtual void getfloat(rownr_t aRowNr, float* aDataPtr);
   virtual void getdouble(rownr_t aRowNr, double* aDataPtr);
@@ -153,11 +153,11 @@ class SSMColumn : public StManColumnBase {
   // It updates the cache if the row is contained in the cache.
   // <group>
   virtual void putBool(rownr_t aRowNr, const bool* aDataPtr);
-  virtual void putuChar(rownr_t aRowNr, const uChar* aDataPtr);
-  virtual void putShort(rownr_t aRowNr, const Short* aDataPtr);
-  virtual void putuShort(rownr_t aRowNr, const uShort* aDataPtr);
-  virtual void putInt(rownr_t aRowNr, const Int* aDataPtr);
-  virtual void putuInt(rownr_t aRowNr, const uInt* aDataPtr);
+  virtual void putuChar(rownr_t aRowNr, const unsigned char* aDataPtr);
+  virtual void putShort(rownr_t aRowNr, const short* aDataPtr);
+  virtual void putuShort(rownr_t aRowNr, const unsigned short* aDataPtr);
+  virtual void putInt(rownr_t aRowNr, const int* aDataPtr);
+  virtual void putuInt(rownr_t aRowNr, const unsigned int* aDataPtr);
   virtual void putInt64(rownr_t aRowNr, const Int64* aDataPtr);
   virtual void putfloat(rownr_t aRowNr, const float* aDataPtr);
   virtual void putdouble(rownr_t aRowNr, const double* aDataPtr);
@@ -182,16 +182,16 @@ class SSMColumn : public StManColumnBase {
   virtual void deleteRow(rownr_t aRowNr);
 
   // Get the size of the dataType in bytes!!
-  uInt getExternalSizeBytes() const;
+  unsigned int getExternalSizeBytes() const;
 
   // Get the size of the dataType in bits!!
-  uInt getExternalSizeBits() const;
+  unsigned int getExternalSizeBits() const;
 
   // get the sequence number of this column.
-  uInt getColNr();
+  unsigned int getColNr();
 
   // set the sequence number of this column.
-  void setColNr(uInt aColNr);
+  void setColNr(unsigned int aColNr);
 
   // If something special has to be done before removing the Column,
   // as is the case with Strings, it can be done here.
@@ -208,7 +208,7 @@ class SSMColumn : public StManColumnBase {
   // <src>data</src> must have 3 Ints to hold the values.
   // It returns a pointer to the data in the bucket, which can be used
   // for the case that the data bucket contains the (short) string.
-  Char* getRowValue(Int* data, rownr_t aRowNr);
+  char* getRowValue(int* data, rownr_t aRowNr);
 
   // Put the given value for the row into the correct data bucket.
   void putValue(rownr_t aRowNr, const void* aValue);
@@ -229,22 +229,22 @@ class SSMColumn : public StManColumnBase {
   // Pointer to the parent storage manager.
   SSMBase* itsSSMPtr;
   // Length of column cell value in storage format (0 = variable length).
-  uInt itsExternalSizeBytes;
-  uInt itsExternalSizeBits;
+  unsigned int itsExternalSizeBytes;
+  unsigned int itsExternalSizeBits;
   // Column sequence number of this column.
-  uInt itsColNr;
+  unsigned int itsColNr;
   // The shape of the column.
   IPosition itsShape;
   // The maximum length of a 'fixed length' string.
-  uInt itsMaxLen;
+  unsigned int itsMaxLen;
   // Number of elements in a value for this column.
-  uInt itsNrElem;
+  unsigned int itsNrElem;
   // Number of values to be copied.
   // Normally this is itsNrElem, but for complex types it is 2*itsNrElem.
   // When local format is used, it is the number of bytes.
-  uInt itsNrCopy;
+  unsigned int itsNrCopy;
   // The sizeof the datatype in local format
-  uInt itsLocalSize;
+  unsigned int itsLocalSize;
   // The data in local format.
   void* itsData;
   // Pointer to a convert function for writing.
@@ -262,9 +262,9 @@ class SSMColumn : public StManColumnBase {
   char* getDataPtr();
 };
 
-inline uInt SSMColumn::getExternalSizeBytes() const { return itsExternalSizeBytes; }
+inline unsigned int SSMColumn::getExternalSizeBytes() const { return itsExternalSizeBytes; }
 
-inline uInt SSMColumn::getExternalSizeBits() const { return itsExternalSizeBits; }
+inline unsigned int SSMColumn::getExternalSizeBits() const { return itsExternalSizeBits; }
 
 inline char* SSMColumn::getDataPtr() {
   if (itsData == 0) {
@@ -273,9 +273,9 @@ inline char* SSMColumn::getDataPtr() {
   return static_cast<char*>(itsData);
 }
 
-inline uInt SSMColumn::getColNr() { return itsColNr; }
+inline unsigned int SSMColumn::getColNr() { return itsColNr; }
 
-inline void SSMColumn::setColNr(uInt aColNr) { itsColNr = aColNr; }
+inline void SSMColumn::setColNr(unsigned int aColNr) { itsColNr = aColNr; }
 
 }  // namespace casacore
 

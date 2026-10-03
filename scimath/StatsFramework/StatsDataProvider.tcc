@@ -33,7 +33,7 @@ CASA_STATD StatsDataProvider<CASA_STATP>::StatsDataProvider() {}
 
 CASA_STATD StatsDataProvider<CASA_STATP>::~StatsDataProvider() {}
 
-CASA_STATD uInt StatsDataProvider<CASA_STATP>::getNMaxThreads() const { return 0; }
+CASA_STATD unsigned int StatsDataProvider<CASA_STATP>::getNMaxThreads() const { return 0; }
 
 }  // namespace casacore
 

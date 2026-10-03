@@ -54,19 +54,19 @@ int main(int argc, const char* argv[]) {
     inp.create("ny", "10", "Number of pixels along the y-axis", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx = inp.getInt("nx");
-    const uInt ny = inp.getInt("ny");
+    const unsigned int nx = inp.getInt("nx");
+    const unsigned int ny = inp.getInt("ny");
     IPosition shape(2, nx, ny);
     Slicer section(IPosition(2, 0), shape);
-    Array<Float> arr(shape);
+    Array<float> arr(shape);
     indgen(arr);
-    Array<Float> arrm1, arrm2;
+    Array<float> arrm1, arrm2;
     arrm1 = arr;
     arrm2 = arr;
     Array<bool> m1;
     Array<bool> m2;
     {
-      PagedImage<Float> image(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr2Gram_tmp.img");
+      PagedImage<float> image(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr2Gram_tmp.img");
       image.put(arr);
 
       // Define 2 masks for the image and make the first one the default.
@@ -88,7 +88,7 @@ int main(int argc, const char* argv[]) {
       mask2.put(mask);
       m2 = mask;
     }
-    PagedImage<Float> image("tImageExpr2Gram_tmp.img");
+    PagedImage<float> image("tImageExpr2Gram_tmp.img");
     Block<LatticeExprNode> temps(1);
     temps[0] = LatticeExprNode(image);
 
@@ -98,8 +98,8 @@ int main(int argc, const char* argv[]) {
     {
       cout << endl;
       cout << "Expr:  $1" << endl;
-      LatticeExpr<Float> expr(ImageExprParse::command("$1", temps, tempRegs));
-      Array<Float> result;
+      LatticeExpr<float> expr(ImageExprParse::command("$1", temps, tempRegs));
+      Array<float> result;
       expr.get(result);
       if (!allEQ(result, arr)) {
         cout << "Result should be " << arr << endl;
@@ -110,8 +110,8 @@ int main(int argc, const char* argv[]) {
     {
       cout << endl;
       cout << "Expr:  $1[$region || $region && $region]" << endl;
-      LatticeExpr<Float> expr(ImageExprParse::command("$1[$R1 || $r1 && $R1]", temps, tempRegs));
-      Array<Float> result;
+      LatticeExpr<float> expr(ImageExprParse::command("$1[$R1 || $r1 && $R1]", temps, tempRegs));
+      Array<float> result;
       expr.get(result);
       if (!allEQ(result, arr)) {
         cout << "Result should be " << arr << endl;
@@ -123,7 +123,7 @@ int main(int argc, const char* argv[]) {
       cout << endl;
       cout << "Expr:  nelements($1)" << endl;
       LatticeExprNode expr(ImageExprParse::command("nelements($1)", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 1) {
         cout << "Result should be " << shape.product() - 1 << endl;
         cout << "Result is " << result << endl;
@@ -135,7 +135,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  ndim('tImageExpr2Gram_tmp.img::mask1')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("ndim('tImageExpr2Gram_tmp.img::mask1')", temps, tempRegs));
-      Float result = expr.getFloat();
+      float result = expr.getFloat();
       if (result != shape.nelements()) {
         cout << "Result should be " << shape.nelements() << endl;
         cout << "Result is " << result << endl;
@@ -146,7 +146,7 @@ int main(int argc, const char* argv[]) {
       cout << endl;
       cout << "Expr:  ndim($R1)" << endl;
       LatticeExprNode expr(ImageExprParse::command("ndim($R1)", temps, tempRegs));
-      Float result = expr.getFloat();
+      float result = expr.getFloat();
       if (result != shape.nelements()) {
         cout << "Result should be " << shape.nelements() << endl;
         cout << "Result is " << result << endl;
@@ -182,7 +182,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  ntrue('tImageExpr2Gram_tmp.img::mask1')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("ntrue('tImageExpr2Gram_tmp.img::mask1')", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 1) {
         cout << "Result should be " << shape.product() - 1 << endl;
         cout << "Result is " << result << endl;
@@ -194,7 +194,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nfalse('tImageExpr2Gram_tmp.img::mask1')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nfalse('tImageExpr2Gram_tmp.img::mask1')", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != 1) {
         cout << "Result should be " << 1 << endl;
         cout << "Result is " << result << endl;
@@ -206,7 +206,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements('tImageExpr2Gram_tmp.img::mask1')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements('tImageExpr2Gram_tmp.img::mask1')", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()) {
         cout << "Result should be " << shape.product() << endl;
         cout << "Result is " << result << endl;
@@ -252,11 +252,11 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  iif ('tImageExpr2Gram_tmp.img::mask2', "
               "tImageExpr2Gram_tmp.img,-1)"
            << endl;
-      LatticeExpr<Float> expr(
+      LatticeExpr<float> expr(
           ImageExprParse::command("iif ('tImageExpr2Gram_tmp.img::mask2', "
                                   "tImageExpr2Gram_tmp.img,-1)",
                                   temps, tempRegs));
-      Array<Float> result;
+      Array<float> result;
       expr.get(result);
       if (!allEQ(result, arrm2)) {
         cout << "Result should be " << arr << endl;
@@ -269,7 +269,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements('tImageExpr2Gram_tmp.img')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements('tImageExpr2Gram_tmp.img')", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 1) {
         cout << "Result should be " << shape.product() - 1 << endl;
         cout << "Result is " << result << endl;
@@ -281,7 +281,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements('tImageExpr2Gram_tmp.img:nomask')" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements('tImageExpr2Gram_tmp.img:nomask')", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()) {
         cout << "Result should be " << shape.product() << endl;
         cout << "Result is " << result << endl;
@@ -293,7 +293,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements(tImageExpr2Gram_tmp.img:mask2)" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements(tImageExpr2Gram_tmp.img:mask2)", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 2) {
         cout << "Result should be " << shape.product() - 2 << endl;
         cout << "Result is " << result << endl;
@@ -305,7 +305,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements(tImageExpr2Gram_tmp.img:mask2)" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements(tImageExpr2Gram_tmp.img:mask2)", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 2) {
         cout << "Result should be " << shape.product() - 2 << endl;
         cout << "Result is " << result << endl;
@@ -317,7 +317,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements(tImageExpr2Gram_tmp.img[mask2])" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements(tImageExpr2Gram_tmp.img[mask2])", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 3) {
         cout << "Result should be " << shape.product() - 3 << endl;
         cout << "Result is " << result << endl;
@@ -329,7 +329,7 @@ int main(int argc, const char* argv[]) {
       cout << "Expr:  nelements(tImageExpr2Gram_tmp.img[::mask2])" << endl;
       LatticeExprNode expr(
           ImageExprParse::command("nelements(tImageExpr2Gram_tmp.img[::mask2])", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 3) {
         cout << "Result should be " << shape.product() - 3 << endl;
         cout << "Result is " << result << endl;
@@ -345,7 +345,7 @@ int main(int argc, const char* argv[]) {
           ImageExprParse::command("nelements(tImageExpr2Gram_tmp.img"
                                   "[tImageExpr2Gram_tmp.img::mask2])",
                                   temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product() - 3) {
         cout << "Result should be " << shape.product() - 3 << endl;
         cout << "Result is " << result << endl;
@@ -353,7 +353,7 @@ int main(int argc, const char* argv[]) {
       }
     }
 
-    for (uInt i = 0; i < tempRegs.nelements(); i++) {
+    for (unsigned int i = 0; i < tempRegs.nelements(); i++) {
       delete tempRegs[i];
     }
 

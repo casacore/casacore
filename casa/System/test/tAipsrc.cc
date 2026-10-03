@@ -70,8 +70,8 @@ int main() {
 
   // test the register
   {
-    uInt n = Aipsrc::registerRC("foobar", "invalid");
-    uInt n1 = Aipsrc::registerRC("printer.ps1.paper", "B4");
+    unsigned int n = Aipsrc::registerRC("foobar", "invalid");
+    unsigned int n1 = Aipsrc::registerRC("printer.ps1.paper", "B4");
     cout << "Registrations: " << n << ", " << n1 << endl;
     cout << "Values: " << Aipsrc::get(n) << ", " << Aipsrc::get(n1) << endl;
     n = Aipsrc::registerRC("foobar", "invalid");

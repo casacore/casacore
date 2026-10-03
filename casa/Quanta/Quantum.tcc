@@ -220,9 +220,9 @@ template <class Qtype>
 Qtype Quantum<Qtype>::getValue(const Unit &other, bool requireConform) const {
   UnitVal myType = qUnit.getValue();
   UnitVal otherType = other.getValue();
-  Double myFac = myType.getFac();
-  Double otherFac = otherType.getFac();
-  Double d1 = otherFac / myFac;
+  double myFac = myType.getFac();
+  double otherFac = otherType.getFac();
+  double d1 = otherFac / myFac;
   if (myType == otherType) {
     return (Qtype)(qVal / d1);
   }
@@ -345,12 +345,12 @@ QBase *Quantum<Qtype>::clone() const {
 }
 
 template <class Qtype>
-uInt Quantum<Qtype>::type() const {
+unsigned int Quantum<Qtype>::type() const {
   return quantumType(static_cast<Quantum<Qtype> *>(0));
 }
 
 template <class Qtype>
-uInt Quantum<Qtype>::myType() {
+unsigned int Quantum<Qtype>::myType() {
   return quantumType(static_cast<Quantum<Qtype> *>(0));
 }
 

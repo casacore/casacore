@@ -86,7 +86,7 @@ class TableParseProject {
 
   // Return the number of projected columns used in other clauses such as HAVING
   // which need to be precalculated.
-  uInt nColumnsPreCalc() const { return projectExprSubset_p.size(); }
+  unsigned int nColumnsPreCalc() const { return projectExprSubset_p.size(); }
 
   // Set the column names to the ones to be updated.
   void setColumnNames(const std::vector<std::shared_ptr<TableParseUpdate>>&);
@@ -99,12 +99,12 @@ class TableParseProject {
   void setStoredColumns();
 
   // Add a column to the list of column names.
-  void handleColumn(Int stringType, const String& name, const TableExprNode& expr,
+  void handleColumn(int stringType, const String& name, const TableExprNode& expr,
                     const String& newName, const String& newNameMask, const String& newDtype,
                     TableParseQuery&);
 
   // Handle the selection of a wildcarded column name.
-  void handleWildColumn(Int stringType, const String& name);
+  void handleWildColumn(int stringType, const String& name);
 
   // Finish the additions to the block of column names
   // by removing the deleted empty names and creating Expr objects as needed.
@@ -161,7 +161,7 @@ class TableParseProject {
 
   // Add the description of a column to the table description.
   // ndim < 0 means a scalar column.
-  void addColumnDesc(TableDesc& td, DataType dtype, const String& colName, Int options, Int ndim,
+  void addColumnDesc(TableDesc& td, DataType dtype, const String& colName, int options, int ndim,
                      const IPosition& shape, const String& dmType, const String& dmGroup,
                      const String& comment, const TableRecord& keywordSet,
                      const Vector<String>& unitName, const Record& attributes);
@@ -192,9 +192,9 @@ class TableParseProject {
   // # The keywords used in a column.
   Block<TableRecord> columnKeywords_p;
   // # Number of real expressions used in selected columns.
-  uInt nrSelExprUsed_p;
+  unsigned int nrSelExprUsed_p;
   // # The projected columns used in the HAVING and ORDERBY clauses.
-  Block<uInt> projectExprSubset_p;
+  Block<unsigned int> projectExprSubset_p;
   Block<bool> projectExprSelColumn_p;
   // # The first table used when creating a column object.
   // # All other tables used for them should have the same size.

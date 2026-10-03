@@ -38,7 +38,7 @@ TableExprNodeSetOptBase::TableExprNodeSetOptBase(const TableExprNodeRep& orig)
 bool TableExprNodeSetOptBase::contains(const TableExprId&, Int64 value) {
   return (find(value) >= 0);
 }
-bool TableExprNodeSetOptBase::contains(const TableExprId&, Double value) {
+bool TableExprNodeSetOptBase::contains(const TableExprId&, double value) {
   return (find(value) >= 0);
 }
 bool TableExprNodeSetOptBase::contains(const TableExprId&, String value) {
@@ -56,10 +56,10 @@ MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<
   result.putStorage(out, deleteOut);
   return MArray<bool>(result, value.mask());
 }
-MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<Double>& value) {
+MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<double>& value) {
   Array<bool> result(value.shape());
   bool deleteIn, deleteOut;
-  const Double* in = value.array().getStorage(deleteIn);
+  const double* in = value.array().getStorage(deleteIn);
   bool* out = result.getStorage(deleteOut);
   for (size_t i = 0; i < value.size(); ++i) {
     out[i] = (find(in[i]) >= 0);
@@ -81,7 +81,7 @@ MArray<bool> TableExprNodeSetOptBase::contains(const TableExprId&, const MArray<
   return MArray<bool>(result, value.mask());
 }
 Int64 TableExprNodeSetOptBase::find(Int64) const { return -1; }
-Int64 TableExprNodeSetOptBase::find(Double) const { return -1; }
+Int64 TableExprNodeSetOptBase::find(double) const { return -1; }
 Int64 TableExprNodeSetOptBase::find(String) const { return -1; }
 
 template <typename T>
@@ -97,7 +97,7 @@ TableExprNodeSetOptUSet<T>::TableExprNodeSetOptUSet(const TableExprNodeRep& orig
 }
 
 template <typename T>
-void TableExprNodeSetOptUSet<T>::show(ostream& os, uInt indent) const {
+void TableExprNodeSetOptUSet<T>::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
   os << "Int set as std::unordered_map<T>" << endl;
 }
@@ -120,7 +120,7 @@ TableExprNodeSetOptContSetBase<T>::TableExprNodeSetOptContSetBase(const TableExp
 }
 
 template <typename T>
-void TableExprNodeSetOptContSetBase<T>::show(ostream& os, uInt indent) const {
+void TableExprNodeSetOptContSetBase<T>::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
   os << "  TableExprNodeSetOptContSet with " << itsStarts.size() << " intervals" << endl
      << "    start = " << itsStarts << endl
@@ -263,7 +263,7 @@ TableExprNodeSetOptContSetMixOC<T>::TableExprNodeSetOptContSetMixOC(const TableE
 }
 
 template <typename T>
-void TableExprNodeSetOptContSetMixOC<T>::show(ostream& os, uInt indent) const {
+void TableExprNodeSetOptContSetMixOC<T>::show(ostream& os, unsigned int indent) const {
   TableExprNodeSetOptContSetBase<T>::show(os, indent);
   os << "    leftC = " << itsLeftC << endl << "   rightC = " << itsRightC << endl;
 }
@@ -290,7 +290,7 @@ TableExprNodeSetOptContSet<T, LeftComp, RightComp>::TableExprNodeSetOptContSet(
       itsCmpType(cmpType) {}
 
 template <typename T, typename LeftComp, typename RightComp>
-void TableExprNodeSetOptContSet<T, LeftComp, RightComp>::show(ostream& os, uInt indent) const {
+void TableExprNodeSetOptContSet<T, LeftComp, RightComp>::show(ostream& os, unsigned int indent) const {
   TableExprNodeSetOptContSetBase<T>::show(os, indent);
   os << "   as TableExprNodeSetOptContSet" << itsCmpType << endl;
 }
@@ -314,14 +314,14 @@ Int64 TableExprNodeSetOptContSet<T, LeftComp, RightComp>::find(T value) const {
 // std::less is for an open interval side, std::less_equal for a closed side.
 template class TableExprNodeSetOptUSet<Int64>;
 template class TableExprNodeSetOptUSet<String>;
-template class TableExprNodeSetOptContSetBase<Double>;
+template class TableExprNodeSetOptContSetBase<double>;
 template class TableExprNodeSetOptContSetBase<String>;
-template class TableExprNodeSetOptContSetMixOC<Double>;
+template class TableExprNodeSetOptContSetMixOC<double>;
 template class TableExprNodeSetOptContSetMixOC<String>;
-template class TableExprNodeSetOptContSet<Double, std::less_equal<Double>, std::less_equal<Double>>;
-template class TableExprNodeSetOptContSet<Double, std::less_equal<Double>, std::less<Double>>;
-template class TableExprNodeSetOptContSet<Double, std::less<Double>, std::less_equal<Double>>;
-template class TableExprNodeSetOptContSet<Double, std::less<Double>, std::less<Double>>;
+template class TableExprNodeSetOptContSet<double, std::less_equal<double>, std::less_equal<double>>;
+template class TableExprNodeSetOptContSet<double, std::less_equal<double>, std::less<double>>;
+template class TableExprNodeSetOptContSet<double, std::less<double>, std::less_equal<double>>;
+template class TableExprNodeSetOptContSet<double, std::less<double>, std::less<double>>;
 template class TableExprNodeSetOptContSet<String, std::less_equal<String>, std::less_equal<String>>;
 template class TableExprNodeSetOptContSet<String, std::less_equal<String>, std::less<String>>;
 template class TableExprNodeSetOptContSet<String, std::less<String>, std::less_equal<String>>;

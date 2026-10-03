@@ -343,7 +343,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
 
   // Constructor
   TableExprFuncNode(FunctionType, NodeDataType, ValueType, const TableExprNodeSet& source,
-                    const vector<TENShPtr>& nodes, const Block<Int>& dtypeOper,
+                    const vector<TENShPtr>& nodes, const Block<int>& dtypeOper,
                     const TableExprInfo& = TableExprInfo());
 
   // Destructor
@@ -353,7 +353,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // <group>
   bool getBool(const TableExprId& id);
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
   String getString(const TableExprId& id);
   TaqlRegex getRegex(const TableExprId& id);
@@ -364,7 +364,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // It sets the exptected data and value types of the operands.
   // Set the value type of the function result and returns
   // the data type of the function result.
-  static NodeDataType checkOperands(Block<Int>& dtypeOper, ValueType& resVT, Block<Int>& vtypeOper,
+  static NodeDataType checkOperands(Block<int>& dtypeOper, ValueType& resVT, Block<int>& vtypeOper,
                                     FunctionType, std::vector<TENShPtr>&);
 
   // Fill the result unit in the node.
@@ -374,10 +374,10 @@ class TableExprFuncNode : public TableExprNodeMulti {
 
   // Link the children to the node and convert the children
   // to constants if possible.
-  void fillChildNodes(const vector<TENShPtr>& nodes, const Block<Int>& dtypeOper);
+  void fillChildNodes(const vector<TENShPtr>& nodes, const Block<int>& dtypeOper);
 
   // Get possible unit scale factor (needed for sqrt).
-  Double getScale() const { return scale_p; }
+  double getScale() const { return scale_p; }
 
   // Some functions to be used by TableExprNodeFuncArray.
   // <group>
@@ -388,15 +388,15 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // </group>
 
   // Get the possible print format, width, and/or precision.
-  static void getPrintFormat(String& fmt, Int& width, Int& prec,
+  static void getPrintFormat(String& fmt, int& width, int& prec,
                              const std::vector<TENShPtr>& operands, const TableExprId& id);
 
   // Convert the date and/or time to a string.
   // <group>
-  static String stringDT(const MVTime& dt, Int prec, MVTime::formatTypes);
-  static String stringDateTime(const MVTime& dt, Int prec);
+  static String stringDT(const MVTime& dt, int prec, MVTime::formatTypes);
+  static String stringDateTime(const MVTime& dt, int prec);
   static String stringDate(const MVTime& dt);
-  static String stringTime(const MVTime& dt, Int prec);
+  static String stringTime(const MVTime& dt, int prec);
   // </group>
 
   // Convert a value to a string.
@@ -404,20 +404,20 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // Otherwise the printf-like format is used.
   // If possible, a double value is converted to radians if formatted as angle.
   // <group>
-  static String stringValue(bool val, const String& fmt, Int width);
-  static String stringValue(Int64 val, const String& fmt, Int width);
-  static String stringValue(Double val, const String& fmt, Int width, Int prec,
+  static String stringValue(bool val, const String& fmt, int width);
+  static String stringValue(Int64 val, const String& fmt, int width);
+  static String stringValue(double val, const String& fmt, int width, int prec,
                             const std::pair<int, int>& mvFormat, const Unit& unit);
-  static String stringValue(const DComplex& val, const String& fmt, Int width, Int prec);
-  static String stringValue(const String& val, const String& fmt, Int width);
-  static String stringValue(const MVTime& val, const String& fmt, Int width,
+  static String stringValue(const DComplex& val, const String& fmt, int width, int prec);
+  static String stringValue(const String& val, const String& fmt, int width);
+  static String stringValue(const MVTime& val, const String& fmt, int width,
                             const std::pair<int, int>& mvFormat);
 
   // Convert angle to a string (hms or dms).
   // <group>
-  static String stringAngle(double val, Int prec, MVAngle::formatTypes type);
-  static String stringHMS(double val, Int prec);
-  static String stringDMS(double val, Int prec);
+  static String stringAngle(double val, int prec, MVAngle::formatTypes type);
+  static String stringHMS(double val, int prec);
+  static String stringDMS(double val, int prec);
   // </group>
 
   // Get the MVTime/Angle format and optional precision.
@@ -431,7 +431,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
 
   // Read a string as an integer, double, complex or bool.
   static Int64 string2Int(const String&);
-  static Double string2Real(const String&);
+  static double string2Real(const String&);
   static DComplex string2Complex(const String&);
   static bool string2Bool(const String&);
 
@@ -442,12 +442,12 @@ class TableExprFuncNode : public TableExprNodeMulti {
 
   // Make the units of nodes from <src>starg</src> till <src>endarg</src>
   // equal. Return the unit found.
-  static const Unit& makeEqualUnits(std::vector<TENShPtr>& nodes, uInt starg, uInt endarg);
+  static const Unit& makeEqualUnits(std::vector<TENShPtr>& nodes, unsigned int starg, unsigned int endarg);
 
   // # Data members.
   FunctionType funcType_p;     // which function
   NodeDataType argDataType_p;  // common argument data type
-  Double scale_p;              // possible scaling for unit conversion
+  double scale_p;              // possible scaling for unit conversion
                                // (needed for sqrt)
   Table table_p;               // table (for iscolumn and iskeyword)
 };

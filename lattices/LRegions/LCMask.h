@@ -110,16 +110,16 @@ class LCMask : public LCRegionSingle {
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
-  uInt advisedMaxPixels() const override;
+  unsigned int advisedMaxPixels() const override;
 
   // Help the user pick a cursor for most efficient access.
-  IPosition doNiceCursorShape(uInt maxPixels) const override;
+  IPosition doNiceCursorShape(unsigned int maxPixels) const override;
 
   // Maximum size - not necessarily all used. In pixels.
-  uInt maximumCacheSize() const override;
+  unsigned int maximumCacheSize() const override;
 
   // Set the maximum (allowed) cache size as indicated.
-  void setMaximumCacheSize(uInt howManyPixels) override;
+  void setMaximumCacheSize(unsigned int howManyPixels) override;
 
   // Set the cache size as to "fit" the indicated path.
   void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -130,7 +130,7 @@ class LCMask : public LCRegionSingle {
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm.
-  void setCacheSizeInTiles(uInt howManyTiles) override;
+  void setCacheSizeInTiles(unsigned int howManyTiles) override;
 
   // Clears and frees up the caches, but the maximum allowed cache size is
   // unchanged from when setCacheSize was called
@@ -141,7 +141,7 @@ class LCMask : public LCRegionSingle {
 
   // Handle the (un)locking.
   // <group>
-  bool lock(FileLocker::LockType, uInt nattempts) override;
+  bool lock(FileLocker::LockType, unsigned int nattempts) override;
   void unlock() override;
   bool hasLock(FileLocker::LockType) const override;
   // </group>
@@ -183,7 +183,7 @@ class LCMask : public LCRegionSingle {
   // Construct another LCMask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:

@@ -43,8 +43,8 @@ MSScanParse::MSScanParse()
       //      maxScans_p(std::numeric_limits<Int>::max())
       maxScans_p(1000) {}
 
-std::vector<Int>& MSScanParse::accumulateIDs(const Int id0, const Int id1) {
-  Vector<Int> theIDs;
+std::vector<int>& MSScanParse::accumulateIDs(const int id0, const int id1) {
+  Vector<int> theIDs;
   if (id1 < 0) {
     parsedIDList_p.push_back(id0);
     theIDs.resize(1);
@@ -85,16 +85,16 @@ MSScanParse::MSScanParse(const MeasurementSet* ms, const TableExprNode& colAsTEN
   columnAsTEN_p = colAsTEN;
 }
 
-void MSScanParse::appendToIDList(const Vector<Int>& v) {
-  Int currentSize = idList.nelements();
-  Int n = v.nelements() + currentSize;
-  Int j = 0;
+void MSScanParse::appendToIDList(const Vector<int>& v) {
+  int currentSize = idList.nelements();
+  int n = v.nelements() + currentSize;
+  int j = 0;
 
   idList.resize(n, true);
-  for (Int i = currentSize; i < n; i++) idList[i] = v[j++];
+  for (int i = currentSize; i < n; i++) idList[i] = v[j++];
 }
 
-const TableExprNode* MSScanParse::selectRangeGTAndLT(const Int& n0, const Int& n1) {
+const TableExprNode* MSScanParse::selectRangeGTAndLT(const int& n0, const int& n1) {
   // TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
   // 					     (ms()->col(colName) < n1));
   TableExprNode condition = TableExprNode((columnAsTEN_p > n0) && (columnAsTEN_p < n1));
@@ -104,9 +104,9 @@ const TableExprNode* MSScanParse::selectRangeGTAndLT(const Int& n0, const Int& n
        << " (upper bound)";
     throw(MSSelectionScanParseError(os.str()));
   }
-  Vector<Int> tmp(n1 - n0 - 1);
-  Int j = n0 + 1;
-  for (uInt i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
+  Vector<int> tmp(n1 - n0 - 1);
+  int j = n0 + 1;
+  for (unsigned int i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
   appendToIDList(tmp);
 
   addCondition(node_p, condition);
@@ -114,7 +114,7 @@ const TableExprNode* MSScanParse::selectRangeGTAndLT(const Int& n0, const Int& n
   return &node_p;
 }
 
-const TableExprNode* MSScanParse::selectRangeGEAndLE(const Int& n0, const Int& n1) {
+const TableExprNode* MSScanParse::selectRangeGEAndLE(const int& n0, const int& n1) {
   TableExprNode condition = TableExprNode((columnAsTEN_p >= n0) && (columnAsTEN_p <= n1));
   if ((n0 < 0) || (n1 < 0) || (n1 <= n0)) {
     std::ostringstream os;
@@ -122,9 +122,9 @@ const TableExprNode* MSScanParse::selectRangeGEAndLE(const Int& n0, const Int& n
        << " (upper bound)";
     throw(MSSelectionScanParseError(os.str()));
   }
-  Vector<Int> tmp(n1 - n0 + 1);
-  Int j = n0;
-  for (uInt i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
+  Vector<int> tmp(n1 - n0 + 1);
+  int j = n0;
+  for (unsigned int i = 0; i < tmp.nelements(); i++) tmp[i] = j++;
   appendToIDList(tmp);
 
   addCondition(node_p, condition);
@@ -132,7 +132,7 @@ const TableExprNode* MSScanParse::selectRangeGEAndLE(const Int& n0, const Int& n
   return &node_p;
 }
 
-const TableExprNode* MSScanParse::selectScanIds(const Vector<Int>& scanids) {
+const TableExprNode* MSScanParse::selectScanIds(const Vector<int>& scanids) {
   if (scanids.size() > 0) {
     //	cerr << "Selecting disjoint list: " << scanids << std::endl;
     TableExprNode condition = TableExprNode(columnAsTEN_p.in(scanids));
@@ -142,50 +142,50 @@ const TableExprNode* MSScanParse::selectScanIds(const Vector<Int>& scanids) {
   return &node_p;
 }
 
-const TableExprNode* MSScanParse::selectScanIdsGT(const Vector<Int>& scanids) {
+const TableExprNode* MSScanParse::selectScanIdsGT(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p > scanids[0]);
 
-  Int n = maxScans_p - scanids[0] + 1, j;
-  Vector<Int> tmp(n);
+  int n = maxScans_p - scanids[0] + 1, j;
+  Vector<int> tmp(n);
   j = scanids[0] + 1;
-  for (Int i = 0; i < n; i++) tmp[i] = j++;
+  for (int i = 0; i < n; i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSScanParse::selectScanIdsLT(const Vector<Int>& scanids) {
+const TableExprNode* MSScanParse::selectScanIdsLT(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p < scanids[0]);
-  Vector<Int> tmp(scanids[0]);
-  for (Int i = 0; i < scanids[0]; i++) tmp[i] = i;
+  Vector<int> tmp(scanids[0]);
+  for (int i = 0; i < scanids[0]; i++) tmp[i] = i;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSScanParse::selectScanIdsGTEQ(const Vector<Int>& scanids) {
+const TableExprNode* MSScanParse::selectScanIdsGTEQ(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p >= scanids[0]);
 
-  Int n = maxScans_p - scanids[0] + 1, j;
-  Vector<Int> tmp(n);
+  int n = maxScans_p - scanids[0] + 1, j;
+  Vector<int> tmp(n);
   j = scanids[0];
-  for (Int i = 0; i < n; i++) tmp[i] = j++;
+  for (int i = 0; i < n; i++) tmp[i] = j++;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 
   return &node_p;
 }
 
-const TableExprNode* MSScanParse::selectScanIdsLTEQ(const Vector<Int>& scanids) {
+const TableExprNode* MSScanParse::selectScanIdsLTEQ(const Vector<int>& scanids) {
   // TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
   TableExprNode condition = TableExprNode(columnAsTEN_p <= scanids[0]);
-  Vector<Int> tmp(scanids[0] + 1);
-  for (Int i = 0; i <= scanids[0]; i++) tmp[i] = i;
+  Vector<int> tmp(scanids[0] + 1);
+  for (int i = 0; i <= scanids[0]; i++) tmp[i] = i;
   appendToIDList(tmp);
   addCondition(node_p, condition);
 

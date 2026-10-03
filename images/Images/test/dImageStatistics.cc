@@ -140,15 +140,15 @@ int main(int argc, const char* argv[]) {
     inputs.readArguments(argc, argv);
 
     const String in = inputs.getString("in");
-    const Block<Int> cursorAxesB(inputs.getIntArray("axes"));
-    const Block<Int> blcB(inputs.getIntArray("blc"));
-    const Block<Int> trcB(inputs.getIntArray("trc"));
-    const Block<Int> incB(inputs.getIntArray("inc"));
+    const Block<int> cursorAxesB(inputs.getIntArray("axes"));
+    const Block<int> blcB(inputs.getIntArray("blc"));
+    const Block<int> trcB(inputs.getIntArray("trc"));
+    const Block<int> incB(inputs.getIntArray("inc"));
     const String statsToPlot = inputs.getString("stats");
-    const Block<Double> includeB = inputs.getDoubleArray("include");
-    const Block<Double> excludeB = inputs.getDoubleArray("exclude");
+    const Block<double> includeB = inputs.getDoubleArray("include");
+    const Block<double> excludeB = inputs.getDoubleArray("exclude");
     const bool doList = inputs.getBool("list");
-    const Block<Int> nxyB(inputs.getIntArray("nxy"));
+    const Block<int> nxyB(inputs.getIntArray("nxy"));
     String device = inputs.getString("plotter");
     const bool forceDisk = inputs.getBool("disk");
 
@@ -168,11 +168,11 @@ int main(int argc, const char* argv[]) {
 
     // Convert cursor axes array to a vector (0 relative)
 
-    Vector<Int> cursorAxes(cursorAxesB.begin(), cursorAxesB.end());
+    Vector<int> cursorAxes(cursorAxesB.begin(), cursorAxesB.end());
     if (cursorAxes.nelements() == 1 && cursorAxes(0) == -10) {
       cursorAxes.resize(0);
     } else {
-      for (uInt i = 0; i < cursorAxes.nelements(); i++) cursorAxes(i)--;
+      for (unsigned int i = 0; i < cursorAxes.nelements(); i++) cursorAxes(i)--;
       validInputs(AXES) = true;
     }
 
@@ -185,28 +185,28 @@ int main(int argc, const char* argv[]) {
       blc.resize(0);
     } else {
       blc.resize(blcB.nelements());
-      for (uInt i = 0; i < blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      for (unsigned int i = 0; i < blcB.nelements(); i++) blc(i) = blcB[i] - 1;
       validInputs(REGION) = true;
     }
     if (trcB.nelements() == 1 && trcB[0] == -10) {
       trc.resize(0);
     } else {
       trc.resize(trcB.nelements());
-      for (uInt i = 0; i < trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      for (unsigned int i = 0; i < trcB.nelements(); i++) trc(i) = trcB[i] - 1;
       validInputs(REGION) = true;
     }
     if (incB.nelements() == 1 && incB[0] == -10) {
       inc.resize(0);
     } else {
       inc.resize(incB.nelements());
-      for (uInt i = 0; i < incB.nelements(); i++) inc(i) = incB[i];
+      for (unsigned int i = 0; i < incB.nelements(); i++) inc(i) = incB[i];
       validInputs(REGION) = true;
     }
 
     // Convert inclusion and exclusion ranges to vectors.
 
-    Vector<Float> include(includeB.nelements());
-    uInt i;
+    Vector<float> include(includeB.nelements());
+    unsigned int i;
     for (i = 0; i < include.nelements(); i++) {
       include(i) = includeB[i];
     }
@@ -215,7 +215,7 @@ int main(int argc, const char* argv[]) {
     } else {
       validInputs(RANGE) = true;
     }
-    Vector<Float> exclude(excludeB.nelements());
+    Vector<float> exclude(excludeB.nelements());
     for (i = 0; i < exclude.nelements(); i++) {
       exclude(i) = excludeB[i];
     }
@@ -228,8 +228,8 @@ int main(int argc, const char* argv[]) {
     // Plotting things
 
     std::regex re("[ \n\t\r\v\f,]+");
-    Vector<Int> statisticTypes = LatticeStatsBase::toStatisticTypes(statsToPlot, re);
-    Vector<Int> nxy(nxyB.begin(), nxyB.end());
+    Vector<int> statisticTypes = LatticeStatsBase::toStatisticTypes(statsToPlot, re);
+    Vector<int> nxy(nxyB.begin(), nxyB.end());
     if (nxy.nelements() == 1 && nxy(0) == -1) nxy.resize(0);
     if (device != "none" &&
         (statisticTypes.nelements() != 0 || !device.empty() || nxy.nelements() != 0))
@@ -242,39 +242,39 @@ int main(int argc, const char* argv[]) {
     if (imageType == TpFloat) {
       // Construct image
 
-      PagedImage<Float> inImage(in, true);
-      SubImage<Float>* pSubImage2 = 0;
+      PagedImage<float> inImage(in, true);
+      SubImage<float>* pSubImage2 = 0;
 
       if (validInputs(REGION)) {
         LCBox::verify(blc, trc, inc, inImage.shape());
         cout << "Selected region : " << blc + 1 << " to " << trc + 1 << endl;
         const LCSlicer region(blc, trc);
         //
-        SubImage<Float>* pSubImage = 0;
+        SubImage<float>* pSubImage = 0;
         if (inImage.isMasked()) {
           ImageRegion mask = inImage.getRegion(inImage.getDefaultMask(), RegionHandler::Masks);
-          pSubImage = new SubImage<Float>(inImage, mask);
+          pSubImage = new SubImage<float>(inImage, mask);
         } else {
-          pSubImage = new SubImage<Float>(inImage);
+          pSubImage = new SubImage<float>(inImage);
         }
-        pSubImage2 = new SubImage<Float>(*pSubImage, ImageRegion(region));
+        pSubImage2 = new SubImage<float>(*pSubImage, ImageRegion(region));
         delete pSubImage;
       } else {
         if (inImage.isMasked()) {
           ImageRegion mask = inImage.getRegion(inImage.getDefaultMask(), RegionHandler::Masks);
-          pSubImage2 = new SubImage<Float>(inImage, mask);
+          pSubImage2 = new SubImage<float>(inImage, mask);
         } else {
-          pSubImage2 = new SubImage<Float>(inImage);
+          pSubImage2 = new SubImage<float>(inImage);
         }
       }
 
       // Construct statistics object
 
-      ImageStatistics<Float> stats(*pSubImage2, os, true, forceDisk);
+      ImageStatistics<float> stats(*pSubImage2, os, true, forceDisk);
 
       // Clean up SUbImage pointers
 
-      Int nDim = pSubImage2->ndim();
+      int nDim = pSubImage2->ndim();
       if (pSubImage2 != 0) delete pSubImage2;
 
       // Set state
@@ -309,14 +309,14 @@ int main(int argc, const char* argv[]) {
       os.post();
 
       os << "Recovering display axes" << endl;
-      Vector<Int> displayAxes = stats.displayAxes();
+      Vector<int> displayAxes = stats.displayAxes();
       //
       os << endl << endl;
       os << "Recover array for each statistics type " << endl;
-      const Int nStats = LatticeStatsBase::NSTATS;
-      for (Int i = 0; i < nStats; i++) {
+      const int nStats = LatticeStatsBase::NSTATS;
+      for (int i = 0; i < nStats; i++) {
         os << "Statistic " << LatticeStatsBase::toStatisticName(i) << LogIO::POST;
-        Array<Double> a;
+        Array<double> a;
         LatticeStatsBase::StatisticsTypes t = static_cast<LatticeStatsBase::StatisticsTypes>(i);
         stats.getStatistic(a, t, true);
       }
@@ -324,7 +324,7 @@ int main(int argc, const char* argv[]) {
       os << "Recovering statistics slice from origin" << endl;
       IPosition pos(stats.displayAxes().nelements(), 0);
       IPosition pos2(nDim, 0);
-      Vector<Double> dataV;
+      Vector<double> dataV;
       if (!stats.getStats(dataV, pos, false)) {
         os << stats.errorMessage() << LogIO::POST;
       }
@@ -342,7 +342,7 @@ int main(int argc, const char* argv[]) {
       // Test copy constructor
 
       os << LogIO::NORMAL << "Applying copy constructor" << endl;
-      ImageStatistics<Float> stats2(stats);
+      ImageStatistics<float> stats2(stats);
 
       // Test assignment operator
 
@@ -422,7 +422,7 @@ int main(int argc, const char* argv[]) {
         return 1;
       }
     } else {
-      os << LogIO::NORMAL << "images of type " << Int(imageType) << " not yet supported"
+      os << LogIO::NORMAL << "images of type " << int(imageType) << " not yet supported"
          << LogIO::POST;
       return 1;
     }

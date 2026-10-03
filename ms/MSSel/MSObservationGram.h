@@ -71,11 +71,11 @@ class TableExprNode;
 TableExprNode msObservationGramParseCommand(const MeasurementSet* ms,
                                             const MSObservation& obsSubTable,
                                             const TableExprNode& colAsTEN, const String& command,
-                                            Vector<Int>& idList);
+                                            Vector<int>& idList);
 
 TableExprNode baseMSObservationGramParseCommand(MSObservationParse* parser,
                                                 const TableExprNode& colAsTEN,
-                                                const String& command, Vector<Int>& selectedIDs);
+                                                const String& command, Vector<int>& selectedIDs);
 // The yyerror function for the parser.
 // It throws an exception with the current token.
 void MSObservationGramerror(const char*);
@@ -86,7 +86,7 @@ void msObservationGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msObservationGramPosition();
+int& msObservationGramPosition();
 
 // Declare the input routine for flex/bison.
 int msObservationGramInput(char* buf, int max_size);

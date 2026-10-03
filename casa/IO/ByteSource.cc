@@ -52,32 +52,32 @@ ByteSource& ByteSource::operator>>(bool& value) {
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(Char& value) {
+ByteSource& ByteSource::operator>>(char& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(uChar& value) {
+ByteSource& ByteSource::operator>>(unsigned char& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(Short& value) {
+ByteSource& ByteSource::operator>>(short& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(uShort& value) {
+ByteSource& ByteSource::operator>>(unsigned short& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(Int& value) {
+ByteSource& ByteSource::operator>>(int& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(uInt& value) {
+ByteSource& ByteSource::operator>>(unsigned int& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
@@ -92,12 +92,12 @@ ByteSource& ByteSource::operator>>(uInt64& value) {
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(Float& value) {
+ByteSource& ByteSource::operator>>(float& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
 
-ByteSource& ByteSource::operator>>(Double& value) {
+ByteSource& ByteSource::operator>>(double& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
@@ -119,25 +119,25 @@ ByteSource& ByteSource::operator>>(String& value) {
 
 void ByteSource::read(size_t nvalues, bool* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, Char* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, char* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, uChar* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, unsigned char* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, Short* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, short* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, uShort* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, unsigned short* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, Int* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, int* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, uInt* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, unsigned int* value) { itsTypeIO->read(nvalues, value); }
 
 void ByteSource::read(size_t nvalues, Int64* value) { itsTypeIO->read(nvalues, value); }
 
 void ByteSource::read(size_t nvalues, uInt64* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, Float* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, float* value) { itsTypeIO->read(nvalues, value); }
 
-void ByteSource::read(size_t nvalues, Double* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, double* value) { itsTypeIO->read(nvalues, value); }
 
 void ByteSource::read(size_t nvalues, Complex* value) { itsTypeIO->read(nvalues, value); }
 

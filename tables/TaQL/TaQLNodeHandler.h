@@ -246,7 +246,7 @@ class TaQLNodeHRValue : public TaQLNodeResultRep {
 
   // Get the values.
   // <group>
-  Int getInt() const { return itsInt; }
+  int getInt() const { return itsInt; }
   const String& getString() const { return itsString; }
   const String& getAlias() const { return itsAlias; }
   const String& getNameMask() const { return itsNameMask; }
@@ -263,7 +263,7 @@ class TaQLNodeHRValue : public TaQLNodeResultRep {
   // Set the values.
   // If a pointer is given, it takes over the pointer.
   // <group>
-  void setInt(Int ival) { itsInt = ival; }
+  void setInt(int ival) { itsInt = ival; }
   void setString(const String& str) { itsString = str; }
   void setAlias(const String& alias) { itsAlias = alias; }
   void setNameMask(const String& nameMask) { itsNameMask = nameMask; }
@@ -278,7 +278,7 @@ class TaQLNodeHRValue : public TaQLNodeResultRep {
   // </group>
 
  private:
-  Int itsInt;
+  int itsInt;
   String itsString;
   String itsAlias;
   String itsNameMask;

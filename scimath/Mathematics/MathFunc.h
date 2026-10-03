@@ -49,7 +49,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class MathFuncError : public AipsError {
  public:
   MathFuncError() : AipsError("MathFuncError") {}
-  MathFuncError(const Char *m) : AipsError(m) {}
+  MathFuncError(const char *m) : AipsError(m) {}
   MathFuncError(const String &m) : AipsError(m) {}
 
   virtual ~MathFuncError() noexcept {}
@@ -67,11 +67,11 @@ class MathFuncError : public AipsError {
 
 // Fred Schwab function to calculate spheriodal functions, in C.
 extern "C" {
-Int sphfn(Int *, Int *, Int *, float *, float *, Int *);
+int sphfn(int *, int *, int *, float *, float *, int *);
 }
 
 // C++ wrapper to Fred Schwab function to calculate spheriodal functions.
-float sphfn(Int ialf, Int im, float eta);
+float sphfn(int ialf, int im, float eta);
 
 // </group>
 

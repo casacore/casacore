@@ -76,7 +76,7 @@ class LatticeHistProgress : public LatticeProgress {
   virtual void initDerived();
 
   // Tell the number of steps done so far.
-  virtual void nstepsDone(uInt nsteps);
+  virtual void nstepsDone(unsigned int nsteps);
 
   // The process has ended so clean things up.
   virtual void done();

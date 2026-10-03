@@ -168,7 +168,7 @@ int main() {
       AlwaysAssertExit(step3.cursorAxes() == IPosition(2, 1, 2));
     }
 
-    uInt count = 0;
+    unsigned int count = 0;
     // Try the simplest thing moving forward with a one-dimensional congruent
     // cursor
     LatticeStepper huh(latticeShape, IPosition(1, 10));

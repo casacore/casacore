@@ -222,7 +222,7 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::createRecursive(const std::vector<TableE
         (mainNode->dataType() == TableExprNodeRep::NTInt ||
          mainNode->dataType() == TableExprNodeRep::NTDouble ||
          mainNode->dataType() == TableExprNodeRep::NTDate)) {
-      joinTree = makeOptInterval<Double>(*set, mainNodes, joinNodes, rows, level);
+      joinTree = makeOptInterval<double>(*set, mainNodes, joinNodes, rows, level);
     } else if (elem->dataType() == TableExprNodeRep::NTString &&
                mainNode->dataType() == TableExprNodeRep::NTString) {
       joinTree = makeOptInterval<String>(*set, mainNodes, joinNodes, rows, level);
@@ -261,10 +261,10 @@ MArray<Int64> TaQLJoinColumn::getArrayInt(const TableExprId& id) {
   return itsColumn->getArrayInt(rownr);
 }
 
-MArray<Double> TaQLJoinColumn::getArrayDouble(const TableExprId& id) {
+MArray<double> TaQLJoinColumn::getArrayDouble(const TableExprId& id) {
   Int64 rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return MArray<Double>();
+    return MArray<double>();
   }
   return itsColumn->getArrayDouble(rownr);
 }
@@ -361,10 +361,10 @@ TaQLJoinColumnDouble::TaQLJoinColumnDouble(const TENShPtr& columnNode, const Tab
     itsData[row] = itsColumn->getDouble(row);
   }
 }
-Double TaQLJoinColumnDouble::getDouble(const TableExprId& id) {
+double TaQLJoinColumnDouble::getDouble(const TableExprId& id) {
   Int64 rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return std::numeric_limits<Double>::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
   }
   DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
   return itsData[rownr];
@@ -383,8 +383,8 @@ TaQLJoinColumnDComplex::TaQLJoinColumnDComplex(const TENShPtr& columnNode,
 DComplex TaQLJoinColumnDComplex::getDComplex(const TableExprId& id) {
   Int64 rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return DComplex(std::numeric_limits<Double>::quiet_NaN(),
-                    std::numeric_limits<Double>::quiet_NaN());
+    return DComplex(std::numeric_limits<double>::quiet_NaN(),
+                    std::numeric_limits<double>::quiet_NaN());
   }
   DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
   return itsData[rownr];

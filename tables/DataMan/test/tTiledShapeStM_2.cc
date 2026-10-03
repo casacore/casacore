@@ -39,7 +39,7 @@ TSMOption makeAccessType(int accessType, bool read = true) {
   return TSMOption(TSMOption::Cache, 0, 0);
 }
 
-bool readTable(int accessType, bool chk, const IPosition& shape, uInt nrrow,
+bool readTable(int accessType, bool chk, const IPosition& shape, unsigned int nrrow,
                bool extrainc = false) {
   bool ok = true;
   Table table("tTiledShapeStM_2_tmp.data", Table::Old, makeAccessType(accessType));
@@ -47,22 +47,22 @@ bool readTable(int accessType, bool chk, const IPosition& shape, uInt nrrow,
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
     return false;
   }
-  ArrayColumn<Float> data(table, "Data");
-  Array<Float> result;
-  Array<Float> array(shape);
+  ArrayColumn<float> data(table, "Data");
+  Array<float> result;
+  Array<float> array(shape);
   indgen(array);
   if (extrainc) {
-    array += (Float)1;
+    array += (float)1;
   }
   Timer timer;
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     data.get(i, result);
     if (chk) {
       if (!allEQ(array, result)) {
         cout << "mismatch in data row " << i << endl;
         ok = false;
       }
-      array += (Float)1;
+      array += (float)1;
     }
   }
   timer.show("Read cell ");
@@ -73,10 +73,10 @@ bool readTable(int accessType, bool chk, const IPosition& shape, uInt nrrow,
 }
 
 void writeVar(int accessType, bool chk, const IPosition& shape, const IPosition& tileShape,
-              uInt nrrow) {
+              unsigned int nrrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ArrayColumnDesc<Float>("Data", shape.nelements()));
+  td.addColumn(ArrayColumnDesc<float>("Data", shape.nelements()));
   td.defineHypercolumn("TSMExample", shape.nelements() + 1, stringToVector("Data"));
 
   // Now create a new table from the description.
@@ -85,9 +85,9 @@ void writeVar(int accessType, bool chk, const IPosition& shape, const IPosition&
   TiledShapeStMan sm1("TSMExample", tileShape);
   newtab.bindAll(sm1);
   Table table(newtab, 0, false, Table::AipsrcEndian, makeAccessType(accessType, false));
-  ArrayColumn<Float> data(table, "Data");
-  Array<Float> array(shape);
-  uInt i;
+  ArrayColumn<float> data(table, "Data");
+  Array<float> array(shape);
+  unsigned int i;
   indgen(array);
   Timer timer;
   try {
@@ -95,7 +95,7 @@ void writeVar(int accessType, bool chk, const IPosition& shape, const IPosition&
       table.addRow();
       data.put(i, array);
       if (chk) {
-        array += (Float)1;
+        array += (float)1;
       }
     }
     // Sync to measure true IO.
@@ -107,15 +107,15 @@ void writeVar(int accessType, bool chk, const IPosition& shape, const IPosition&
 }
 
 void updateVar(int accessType, bool chk, bool tiledAccess, const IPosition& shape,
-               const IPosition& tileShape, uInt nrrow, int rank, int numRank) {
+               const IPosition& tileShape, unsigned int nrrow, int rank, int numRank) {
   Table table("tTiledShapeStM_2_tmp.data", TableLock::NoLocking, Table::Old,
               makeAccessType(accessType));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
   }
-  ArrayColumn<Float> data(table, "Data");
-  Array<Float> result;
-  Array<Float> array(shape);
+  ArrayColumn<float> data(table, "Data");
+  Array<float> result;
+  Array<float> array(shape);
   Timer timer;
   uint startRow, numRows;
   if (tiledAccess) {
@@ -151,7 +151,7 @@ void updateVar(int accessType, bool chk, bool tiledAccess, const IPosition& shap
     for (uint i = startRow; i < startRow + numRows; i++) {
       data.get(i, array);
       if (chk) {
-        array += (Float)1;
+        array += (float)1;
       }
       data.put(i, array);
     }
@@ -194,21 +194,21 @@ int main(int argc, char* argv[]) {
       }
       return 0;
     }
-    uInt accessType, mode, nrow, nx, ny;
+    unsigned int accessType, mode, nrow, nx, ny;
     accessType = std::stoi(argv[1]);
     mode = std::stoi(argv[2]);
     nrow = std::stoi(argv[3]);
     nx = std::stoi(argv[4]);
     ny = std::stoi(argv[5]);
-    uInt tx = nx;
+    unsigned int tx = nx;
     if (argc >= 7) {
       tx = std::stoi(argv[6]);
     }
-    uInt ty = ny;
+    unsigned int ty = ny;
     if (argc >= 8) {
       ty = std::stoi(argv[7]);
     }
-    uInt tz = 1;
+    unsigned int tz = 1;
     if (argc >= 9) {
       tz = std::stoi(argv[8]);
     }

@@ -149,7 +149,7 @@ MSTableMaps MSPointing::initMaps() {
   // all required keywords
   // First define the columns with known dimensionality
   addColumnToDesc(maps, DIRECTION, 2);
-  uInt i;
+  unsigned int i;
   for (i = UNDEFINED_KEYWORD + 1; i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }

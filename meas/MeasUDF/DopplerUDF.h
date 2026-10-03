@@ -97,11 +97,11 @@ class DopplerUDF : public UDFBase {
   // Optionally frequency is also allowed, in which case a rest frequency
   // must also be given.
   // It returns a pointer to the engine representing the given value.
-  BaseEngine* handleValueArgs(vector<TENShPtr>& args, uInt& argnr, bool allowFreq);
+  BaseEngine* handleValueArgs(vector<TENShPtr>& args, unsigned int& argnr, bool allowFreq);
 
   // Get the value.
-  virtual Double getDouble(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
 
  private:
   // # Data members.

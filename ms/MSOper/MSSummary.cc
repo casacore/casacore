@@ -65,7 +65,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Constructor assigns pointer.  If MS goes out of scope you
 // will get rubbish.  Also sets string to separate subtable output.
 //
-MSSummary::MSSummary(const MeasurementSet& ms, Float maxCacheMB)
+MSSummary::MSSummary(const MeasurementSet& ms, float maxCacheMB)
     : pMS(&ms),
       _msmd(new MSMetaData(&ms, maxCacheMB)),
       dashlin1(replicate("-", 80)),
@@ -73,7 +73,7 @@ MSSummary::MSSummary(const MeasurementSet& ms, Float maxCacheMB)
       _listUnflaggedRowCount(false),
       _cacheSizeMB(maxCacheMB) {}
 
-MSSummary::MSSummary(const MeasurementSet* ms, Float maxCacheMB)
+MSSummary::MSSummary(const MeasurementSet* ms, float maxCacheMB)
     : pMS(ms),
       _msmd(new MSMetaData(ms, maxCacheMB)),
       dashlin1(replicate("-", 80)),
@@ -81,7 +81,7 @@ MSSummary::MSSummary(const MeasurementSet* ms, Float maxCacheMB)
       _listUnflaggedRowCount(false),
       _cacheSizeMB(maxCacheMB) {}
 
-MSSummary::MSSummary(const MeasurementSet* ms, const String msname, Float maxCacheMB)
+MSSummary::MSSummary(const MeasurementSet* ms, const String msname, float maxCacheMB)
     : pMS(ms),
       _msmd(new MSMetaData(ms, maxCacheMB)),
       dashlin1(replicate("-", 80)),
@@ -120,14 +120,14 @@ String MSSummary::name() const {
 //
 // Reassign pointer.
 //
-bool MSSummary::setMS(const MeasurementSet& ms, Float maxCacheMB) {
+bool MSSummary::setMS(const MeasurementSet& ms, float maxCacheMB) {
   const MeasurementSet* pTemp;
   pTemp = &ms;
   if (pTemp == 0) {
     return false;
   } else {
     pMS = pTemp;
-    Float cache = maxCacheMB < 0 ? _cacheSizeMB : maxCacheMB;
+    float cache = maxCacheMB < 0 ? _cacheSizeMB : maxCacheMB;
     _msmd = std::make_shared<MSMetaData>(&ms, cache);
     return true;
   }
@@ -168,7 +168,7 @@ void MSSummary::list(LogIO& os, Record& outRec, bool verbose, bool fillRecord,
 //
 void MSSummary::listTitle(LogIO& os) const {
   // Version number of the MS definition
-  Float vers = 1.0;
+  float vers = 1.0;
   if (pMS->keywordSet().isDefined("MS_VERSION")) {
     vers = pMS->keywordSet().asFloat("MS_VERSION");
   }
@@ -218,10 +218,10 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
     return;
   }
   _msmd->setForceSubScanPropsToCache(true);
-  std::pair<Double, Double> timerange = _msmd->getTimeRange(true);
-  Double startTime = timerange.first;
-  Double stopTime = timerange.second;
-  Double exposTime = stopTime - startTime;
+  std::pair<double, double> timerange = _msmd->getTimeRange(true);
+  double startTime = timerange.first;
+  double stopTime = timerange.second;
+  double exposTime = stopTime - startTime;
   //    Double exposTime = sum(msc.exposure().getColumn());
   MVTime startMVT(startTime / 86400.0), stopMVT(stopTime / 86400.0);
 
@@ -268,16 +268,16 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
 
   // Spw Ids
   MSDataDescColumns dd(pMS->dataDescription());
-  Vector<Int> specwindids(dd.spectralWindowId().getColumn());
+  Vector<int> specwindids(dd.spectralWindowId().getColumn());
   // Field widths for printing:
-  Int widthLead = 2;
-  Int widthScan = 4;
-  Int widthbtime = 22;
-  Int widthetime = 10;
-  Int widthFieldId = 5;
-  Int widthField = 20;
-  Int widthnrow = 10;
-  Int widthNUnflaggedRow = 13;
+  int widthLead = 2;
+  int widthScan = 4;
+  int widthbtime = 22;
+  int widthetime = 10;
+  int widthFieldId = 5;
+  int widthField = 20;
+  int widthnrow = 10;
+  int widthNUnflaggedRow = 13;
   // Int widthInttim = 7;
 
   // Set up iteration over OBSID and ARRID:
@@ -286,13 +286,13 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
   icols[1] = "ARRAY_ID";
   // TableIterator obsarriter(mstab,icols);
   // Limiting record length
-  Int recLength = 0;
-  const Int maxRecLength = 10000;  // limiting for speed and size sake
+  int recLength = 0;
+  const int maxRecLength = 10000;  // limiting for speed and size sake
   std::set<ArrayKey> allArrayKeys = uniqueArrayKeys(_msmd->getScanKeys());
 
   std::set<ArrayKey>::const_iterator iter = allArrayKeys.begin();
   std::set<ArrayKey>::const_iterator end = allArrayKeys.end();
-  std::shared_ptr<const std::map<ScanKey, std::pair<Double, Double>>> scanToTRMap =
+  std::shared_ptr<const std::map<ScanKey, std::pair<double, double>>> scanToTRMap =
       _msmd->getScanToTimeRangeMap();
   std::shared_ptr<const std::map<SubScanKey, MSMetaData::SubScanProperties>> ssprops =
       _msmd->getSubScanProperties(true);
@@ -300,8 +300,8 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
       _msmd->getSubScanToIntentsMap();
   std::shared_ptr<const map<SubScanKey, rownr_t>> nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
   for (; iter != end; ++iter) {
-    Int obsid = iter->obsID;
-    Int arrid = iter->arrayID;
+    int obsid = iter->obsID;
+    int arrid = iter->arrayID;
     if (verbose) {
       // Report OBSID and ARRID, and header for listing:
       os << std::endl << "   ObservationID = " << obsid;
@@ -320,26 +320,26 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
     }
     std::set<SubScanKey> subScans = _msmd->getSubScanKeys(*iter);
     os.output().precision(3);
-    Double lastday = 0;
+    double lastday = 0;
     std::set<SubScanKey>::const_iterator siter = subScans.begin();
     std::set<SubScanKey>::const_iterator send = subScans.end();
-    uInt subsetscan = 0;
-    Int lastscan = 0;
+    unsigned int subsetscan = 0;
+    int lastscan = 0;
     for (; siter != send; ++siter) {
       const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
       Int64 nrow = props.acRows + props.xcRows;
-      Int thisscan = siter->scan;
-      std::set<uInt> ddIDs = props.ddIDs;
-      std::set<Int> stateIDs = props.stateIDs;
+      int thisscan = siter->scan;
+      std::set<unsigned int> ddIDs = props.ddIDs;
+      std::set<int> stateIDs = props.stateIDs;
       ScanKey scan;
       scan.arrayID = siter->arrayID;
       scan.obsID = siter->obsID;
       scan.scan = siter->scan;
-      const std::pair<Double, Double>& timerange = scanToTRMap->find(scan)->second;
-      Double btime = timerange.first;
-      Double etime = timerange.second;
-      Double day = floor(MVTime(btime / C::day).day());
-      const std::set<uInt>& spw = props.spws;
+      const std::pair<double, double>& timerange = scanToTRMap->find(scan)->second;
+      double btime = timerange.first;
+      double etime = timerange.second;
+      double day = floor(MVTime(btime / C::day).day());
+      const std::set<unsigned int>& spw = props.spws;
       String name = fieldnames(siter->fieldID);
       if (verbose) {
         os.output().setf(ios::right, ios::adjustfield);
@@ -388,9 +388,9 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
         os << spw;
         os.output().width(widthLead);
         os << "  ";
-        const std::map<uInt, Quantity>& intToScanMap = ssprops->find(*siter)->second.meanInterval;
+        const std::map<unsigned int, Quantity>& intToScanMap = ssprops->find(*siter)->second.meanInterval;
         os << "[";
-        for (std::set<uInt>::const_iterator spwiter = spw.begin(); spwiter != spw.end();
+        for (std::set<unsigned int>::const_iterator spwiter = spw.begin(); spwiter != spw.end();
              ++spwiter) {
           if (spwiter != spw.begin()) {
             os << ", ";
@@ -425,7 +425,7 @@ void MSSummary::listMain(LogIO& os, Record& outRec, bool verbose, bool fillRecor
         subScanRecord.define("StateId", *stateIDs.begin());
         subScanRecord.define("nRow", nrow);
         subScanRecord.define("IntegrationTime", props.meanExposureTime.getValue("s"));
-        subScanRecord.define("SpwIds", Vector<Int>(spw.begin(), spw.size(), 0));
+        subScanRecord.define("SpwIds", Vector<int>(spw.begin(), spw.size(), 0));
         scanRecord.defineRecord(std::to_string(subsetscan), subScanRecord);
         if (!outRec.isDefined(scanrecid)) {
           outRec.defineRecord(scanrecid, scanRecord);
@@ -454,7 +454,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
 
   // Make objects
   MSColumns msc(*pMS);
-  Double startTime, stopTime;
+  double startTime, stopTime;
   minMax(startTime, stopTime, msc.time().getColumn());
 
   MVTime startMVT(startTime / 86400.0), stopMVT(stopTime / 86400.0);
@@ -487,7 +487,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
 
   // Spw Ids
   MSDataDescColumns dd(pMS->dataDescription());
-  Vector<Int> specwindids(dd.spectralWindowId().getColumn());
+  Vector<int> specwindids(dd.spectralWindowId().getColumn());
 
   // Set up iteration over OBSID and ARRID:
   Block<String> icols(2);
@@ -500,8 +500,8 @@ void MSSummary::getScanSummary(Record& outRec) const {
     Table obsarrtab(obsarriter.table());
 
     // Extract (zero-based) OBSID and ARRID for this iteration:
-    TableVector<Int> obsidcol(obsarrtab, "OBSERVATION_ID");
-    TableVector<Int> arridcol(obsarrtab, "ARRAY_ID");
+    TableVector<int> obsidcol(obsarrtab, "OBSERVATION_ID");
+    TableVector<int> arridcol(obsarrtab, "ARRAY_ID");
 
     // Report OBSID and ARRID, and header for listing:
     //     os << std::endl << "   ObservationID = " << obsid;
@@ -520,24 +520,24 @@ void MSSummary::getScanSummary(Record& outRec) const {
     TableIterator stiter(obsarrtab, jcols);
 
     // Vars for keeping track of time, fields, and ddis
-    Int lastscan(-1);
-    Vector<Int> lastfldids;
-    Vector<Int> lastddids;
-    Vector<Int> laststids;
-    Vector<Int> fldids(1, 0);
-    Vector<Int> ddids(1, 0);
-    Vector<Int> stids(1, 0);  // State IDs
-    Vector<Int> spwids;
-    Int nfld(1);
-    Int nddi(1);
-    Int nst(1);
-    Double btime(0.0), etime(0.0);
+    int lastscan(-1);
+    Vector<int> lastfldids;
+    Vector<int> lastddids;
+    Vector<int> laststids;
+    Vector<int> fldids(1, 0);
+    Vector<int> ddids(1, 0);
+    Vector<int> stids(1, 0);  // State IDs
+    Vector<int> spwids;
+    int nfld(1);
+    int nddi(1);
+    int nst(1);
+    double btime(0.0), etime(0.0);
     bool firsttime(true);
     Int64 thisnrow(0);
-    Double meanIntTim(0.0);
+    double meanIntTim(0.0);
 
     //    os.output().precision(3);
-    Int subsetscan = 0;
+    int subsetscan = 0;
     // Iterate over timestamps:
     while (!stiter.pastEnd()) {
       // ms table at this timestamp
@@ -545,18 +545,18 @@ void MSSummary::getScanSummary(Record& outRec) const {
       Int64 nrow = t.nrow();
 
       // relevant columns
-      TableVector<Double> timecol(t, "TIME");
-      TableVector<Double> inttim(t, "EXPOSURE");
-      TableVector<Int> scncol(t, "SCAN_NUMBER");
-      TableVector<Int> fldcol(t, "FIELD_ID");
-      TableVector<Int> ddicol(t, "DATA_DESC_ID");
-      TableVector<Int> stidcol(t, "STATE_ID");
+      TableVector<double> timecol(t, "TIME");
+      TableVector<double> inttim(t, "EXPOSURE");
+      TableVector<int> scncol(t, "SCAN_NUMBER");
+      TableVector<int> fldcol(t, "FIELD_ID");
+      TableVector<int> ddicol(t, "DATA_DESC_ID");
+      TableVector<int> stidcol(t, "STATE_ID");
 
       // this timestamp
-      Double thistime(timecol(0));
+      double thistime(timecol(0));
 
       // this scan_number
-      Int thisscan(scncol(0));
+      int thisscan(scncol(0));
 
       // First field and ddi at this timestamp:
       fldids.resize(1, false);
@@ -620,7 +620,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
 
           // Spws
           spwids.resize(lastddids.nelements());
-          for (uInt iddi = 0; iddi < spwids.nelements(); ++iddi)
+          for (unsigned int iddi = 0; iddi < spwids.nelements(); ++iddi)
             spwids(iddi) = specwindids(lastddids(iddi));
 
           Record scanRecord;
@@ -689,7 +689,7 @@ void MSSummary::getScanSummary(Record& outRec) const {
 
     // Spws
     spwids.resize(lastddids.nelements());
-    for (uInt iddi = 0; iddi < spwids.nelements(); ++iddi)
+    for (unsigned int iddi = 0; iddi < spwids.nelements(); ++iddi)
       spwids(iddi) = specwindids(lastddids(iddi));
 
     // Print out final scan's times, fields, ddis
@@ -726,9 +726,9 @@ void MSSummary::listAntenna(LogIO& os, bool verbose) const {
     return;
   }
   // Determine antennas  present in the main table
-  const std::set<Int>& antIds = _msmd->getUniqueAntennaIDs();
-  uInt nAnt = antIds.size();
-  std::map<String, std::set<uInt>> namesToIDsMap;
+  const std::set<int>& antIds = _msmd->getUniqueAntennaIDs();
+  unsigned int nAnt = antIds.size();
+  std::map<String, std::set<unsigned int>> namesToIDsMap;
   vector<String> names = _msmd->getAntennaNames(namesToIDsMap);
   vector<String> stations = _msmd->getAntennaStations();
   if (verbose) {
@@ -736,15 +736,15 @@ void MSSummary::listAntenna(LogIO& os, bool verbose) const {
     std::string title;
     title = "Antennas: " + std::to_string(nAnt) + ":";
     std::string indent("  ");
-    uInt indwidth = 5;
-    uInt namewidth = 6;
-    uInt statwidth = 10;
-    uInt diamwidth = 5;
-    Int diamprec = 1;
-    uInt latwidth = 13;
-    uInt longwidth = 14;
-    uInt offsetwidth = 14;
-    uInt positionwidth = 16;
+    unsigned int indwidth = 5;
+    unsigned int namewidth = 6;
+    unsigned int statwidth = 10;
+    unsigned int diamwidth = 5;
+    int diamprec = 1;
+    unsigned int latwidth = 13;
+    unsigned int longwidth = 14;
+    unsigned int offsetwidth = 14;
+    unsigned int positionwidth = 16;
 
     os.output().setf(ios::fixed, ios::floatfield);
     os.output().setf(ios::left, ios::adjustfield);
@@ -790,12 +790,12 @@ void MSSummary::listAntenna(LogIO& os, bool verbose) const {
     bool posIsITRF = antPos[0].getRef().getType() != MPosition::ITRF;
     vector<QVD> offsets = _msmd->getAntennaOffsets();
     QVD diameters = _msmd->getAntennaDiameters();
-    std::set<Int>::const_iterator iter = antIds.begin();
-    std::set<Int>::const_iterator end = antIds.end();
+    std::set<int>::const_iterator iter = antIds.begin();
+    std::set<int>::const_iterator end = antIds.end();
     const static Unit diamUnit = "m";
     for (; iter != end; ++iter) {
       os.output().setf(ios::left, ios::adjustfield);
-      Int ant = *iter;
+      int ant = *iter;
       // Get diameter
       const Quantity& diam = diameters[ant];
       // Get position
@@ -806,7 +806,7 @@ void MSSummary::listAntenna(LogIO& os, bool verbose) const {
         MeasConvert<MPosition> toItrf(antPos[ant], MPosition::ITRF);
         antPos[ant] = toItrf(antPos[ant]);
       }
-      Vector<Double> xyz = antPos[ant].get("m").getValue();
+      Vector<double> xyz = antPos[ant].get("m").getValue();
       // write the row
       os << indent;
       os.output().width(indwidth);
@@ -825,7 +825,7 @@ void MSSummary::listAntenna(LogIO& os, bool verbose) const {
       os.output().setf(ios::right, ios::adjustfield);
       os.output().precision(4);
       os.output().width(offsetwidth);
-      Vector<Double> antOff = offsets[ant].getValue("m");
+      Vector<double> antOff = offsets[ant].getValue("m");
       os << antOff[0];
       os.output().width(offsetwidth);
       os << antOff[1];
@@ -844,12 +844,12 @@ void MSSummary::listAntenna(LogIO& os, bool verbose) const {
     // Horizontal list of the stations names:
     os << "Antennas: " << nAnt << " 'name'='station' " << std::endl;
     String line, leader;
-    Int last = *antIds.begin() - 1;
-    std::set<Int>::const_iterator iter = antIds.begin();
-    std::set<Int>::const_iterator end = antIds.end();
-    Int maxAnt = *std::max_element(antIds.begin(), antIds.end());
+    int last = *antIds.begin() - 1;
+    std::set<int>::const_iterator iter = antIds.begin();
+    std::set<int>::const_iterator end = antIds.end();
+    int maxAnt = *std::max_element(antIds.begin(), antIds.end());
     for (; iter != end; ++iter) {
-      Int ant = *iter;
+      int ant = *iter;
       // Build the line
       line = line + "'" + names[ant] + "'" + "=";
       line = line + "'" + stations[ant] + "'";
@@ -885,11 +885,11 @@ void MSSummary::listFeed(LogIO& os, bool verbose, bool oneBased) const {
       os << "Feeds: " << msFC.antennaId().nrow();
       os << ": printing first row only";
       // Line is    FeedID SpWinID NumRecept PolTypes
-      Int widthLead = 2;
-      Int widthAnt = 10;
-      Int widthSpWinId = 20;
-      Int widthNumRec = 15;
-      Int widthPolType = 10;
+      int widthLead = 2;
+      int widthAnt = 10;
+      int widthSpWinId = 20;
+      int widthNumRec = 15;
+      int widthPolType = 10;
       os << std::endl;
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);
@@ -912,7 +912,7 @@ void MSSummary::listFeed(LogIO& os, bool verbose, bool oneBased) const {
         os << "  ";
         os.output().width(widthAnt);
         os << (msFC.antennaId()(row) + 1);
-        Int spwId = msFC.spectralWindowId()(row);
+        int spwId = msFC.spectralWindowId()(row);
         if (oneBased && spwId >= 0) spwId = spwId + 1;
         os.output().width(widthSpWinId);
         os << spwId;
@@ -934,27 +934,27 @@ void MSSummary::listField(LogIO& os, bool verbose) const {
 void MSSummary::listField(LogIO& os, Record& outrec, bool verbose, bool fillRecord) const {
   // Is source table present?
   bool srcok = !(pMS->source().isNull() || pMS->source().nrow() < 1);
-  uInt nfields = _msmd->nFields();
-  std::set<Int> uniqueFields = _msmd->getUniqueFieldIDs();
-  uInt nFieldsInMain = uniqueFields.size();
+  unsigned int nfields = _msmd->nFields();
+  std::set<int> uniqueFields = _msmd->getUniqueFieldIDs();
+  unsigned int nFieldsInMain = uniqueFields.size();
   if (nfields <= 0) {
     os << "The FIELD table is empty" << std::endl;
   } else if (uniqueFields.empty()) {
     os << "The MAIN table is empty" << std::endl;
   } else {
     os << "Fields: " << nFieldsInMain << std::endl;
-    Int widthLead = 2;
-    Int widthField = 5;
-    Int widthCode = 5;
-    Int widthName = 20;
-    Int widthRA = 16;
-    Int widthDec = 16;
-    Int widthType = 8;
-    Int widthSrc = 6;
-    Int widthnVis = 10;
-    Int widthNUnflaggedRows = 13;
+    int widthLead = 2;
+    int widthField = 5;
+    int widthCode = 5;
+    int widthName = 20;
+    int widthRA = 16;
+    int widthDec = 16;
+    int widthType = 8;
+    int widthSrc = 6;
+    int widthnVis = 10;
+    int widthNUnflaggedRows = 13;
 
-    outrec.define("nfields", Int(nFieldsInMain));
+    outrec.define("nfields", int(nFieldsInMain));
     if (verbose) {
     }  // null, always same output
 
@@ -991,14 +991,14 @@ void MSSummary::listField(LogIO& os, Record& outrec, bool verbose, bool fillReco
     // loop through fields
     vector<String> fieldNames = _msmd->getFieldNames();
     vector<String> codes = _msmd->getFieldCodes();
-    std::set<Int>::const_iterator fiter = uniqueFields.begin();
-    std::set<Int>::const_iterator fend = uniqueFields.end();
-    vector<Int> sourceIDs = _msmd->getFieldTableSourceIDs();
+    std::set<int>::const_iterator fiter = uniqueFields.begin();
+    std::set<int>::const_iterator fend = uniqueFields.end();
+    vector<int> sourceIDs = _msmd->getFieldTableSourceIDs();
     static const MEpoch ezero(Quantity(0, "s"));
     vector<MDirection> phaseDirs = _msmd->getPhaseDirs(ezero);
     for (; fiter != fend; ++fiter) {
-      Int fld = *fiter;
-      if (fld >= 0 && fld < (Int)nfields) {
+      int fld = *fiter;
+      if (fld >= 0 && fld < (int)nfields) {
         MDirection mRaDec = phaseDirs[fld];
         MVAngle mvRa = mRaDec.getAngle().getValue()(0);
         MVAngle mvDec = mRaDec.getAngle().getValue()(1);
@@ -1025,7 +1025,7 @@ void MSSummary::listField(LogIO& os, Record& outrec, bool verbose, bool fillReco
           os.output().width(widthSrc);
           os << sourceIDs[fld];
         }
-        if ((Int)nVisPerField_.nelements() > fld) {
+        if ((int)nVisPerField_.nelements() > fld) {
           os.output().setf(ios::right, ios::adjustfield);
           os.output().width(widthnVis);
           os << _msmd->nRows(MSMetaData::BOTH, fld);
@@ -1081,11 +1081,11 @@ void MSSummary::listObservation(LogIO& os, bool verbose) const {
     if (msOC.project().nrow() > 1) {
       // for version 2 of the MS
       // Line is    TelName ObsDate Observer Project
-      Int widthLead = 2;
-      Int widthTel = 10;
-      Int widthDate = 20;
-      Int widthObs = 15;
-      Int widthProj = 15;
+      int widthLead = 2;
+      int widthTel = 10;
+      int widthDate = 20;
+      int widthObs = 15;
+      int widthProj = 15;
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);
       os << "  ";
@@ -1118,7 +1118,7 @@ void MSSummary::listObservation(LogIO& os, bool verbose) const {
   os << LogIO::POST;
 }
 
-String formatTime(const Double time) {
+String formatTime(const double time) {
   MVTime mvtime(Quantity(time, "s"));
   Time t = mvtime.getTime();
   std::ostringstream os;
@@ -1133,13 +1133,13 @@ void MSSummary::listHistory(LogIO& os) const {
   if (msHis.nrow() <= 0) {
     os << "The HISTORY table is empty" << std::endl;
   } else {
-    uInt nmessages = msHis.time().nrow();
+    unsigned int nmessages = msHis.time().nrow();
     os << "History table entries: " << nmessages << std::endl << LogIO::POST;
-    const ScalarColumn<Double>& theTimes((msHis.time()));
+    const ScalarColumn<double>& theTimes((msHis.time()));
     const ScalarColumn<String>& messOrigin((msHis.origin()));
     const ScalarColumn<String>& messString((msHis.message()));
     const ScalarColumn<String>& messPriority((msHis.priority()));
-    for (uInt i = 0; i < nmessages; i++) {
+    for (unsigned int i = 0; i < nmessages; i++) {
       Quantity tmpq(theTimes(i), "s");
       MVTime mvtime(tmpq);
       Time messTime(mvtime.getTime());
@@ -1197,15 +1197,15 @@ void MSSummary::listSource(LogIO& os, bool verbose) const {
       os << "Sources: " << msSC.name().nrow() << std::endl;
 
       //  Line is    Time Name RA Dec SysVel
-      Int widthLead = 2;
-      Int widthSrc = 5;
+      int widthLead = 2;
+      int widthSrc = 5;
       //      Int widthTime = 15;
-      Int widthName = 20;
+      int widthName = 20;
       //      Int widthRA   = 14;
       //      Int widthDec  = 15;
-      Int widthSpw = 6;
-      Int widthRF = 15;
-      Int widthVel = 13;
+      int widthSpw = 6;
+      int widthRF = 15;
+      int widthVel = 13;
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);
       os << "  ";
@@ -1250,7 +1250,7 @@ void MSSummary::listSource(LogIO& os, bool verbose) const {
         //    os.output().width(widthRA);    os<< mvRa(0.0).string(MVAngle::TIME,10);
         //    os.output().width(widthDec);    os<< mvDec.string(MVAngle::DIG2,10);
         os.output().width(widthSpw);
-        Int spwid = msSC.spectralWindowId()(row);
+        int spwid = msSC.spectralWindowId()(row);
         if (spwid < 0)
           os << "any";
         else
@@ -1258,7 +1258,7 @@ void MSSummary::listSource(LogIO& os, bool verbose) const {
         if (restFreqOK) {
           os.output().width(widthRF);
           if (msSC.restFrequency().isDefined(row)) {
-            Vector<Double> restfreq = msSC.restFrequency()(row);
+            Vector<double> restfreq = msSC.restFrequency()(row);
             if (restfreq.nelements() > 0)
               os << restfreq(0) / 1.0e6;
             else
@@ -1270,7 +1270,7 @@ void MSSummary::listSource(LogIO& os, bool verbose) const {
         if (sysVelOK) {
           os.output().width(widthVel);
           if (msSC.sysvel().isDefined(row)) {
-            Vector<Double> sysvel = msSC.sysvel()(row);
+            Vector<double> sysvel = msSC.sysvel()(row);
             if (sysvel.nelements() > 0)
               os << sysvel(0) / 1.0e3;
             else
@@ -1307,10 +1307,10 @@ void MSSummary::listSpectralWindow(LogIO& os, bool verbose) const {
     // Line is (V1): RefFreq RestFreq Molecule Trans'n Resol BW Numch Correls
     // V2 subtable:        SOURCE         SOURCE              POLARIZ'N
 
-    Int widthLead = 2;
-    Int widthFreq = 12;
-    Int widthFrqNum = 7;
-    Int widthNumChan = 8;
+    int widthLead = 2;
+    int widthFreq = 12;
+    int widthFrqNum = 7;
+    int widthNumChan = 8;
 
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthLead);
@@ -1385,23 +1385,23 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const {
   // Determine the data_desc_ids present in the main table
   MSRange msr(*pMS);
 
-  Vector<Int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
+  Vector<int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
   Vector<rownr_t> uddId(ddId.nelements());
 
-  for (uInt i = 0; i < ddId.nelements(); i++) uddId(i) = ddId(i);
+  for (unsigned int i = 0; i < ddId.nelements(); i++) uddId(i) = ddId(i);
   // now get the corresponding spectral windows and pol setups
-  Vector<Int> spwIds = msDDC.spectralWindowId().getColumnCells(uddId);
-  Vector<Int> polIds = msDDC.polarizationId().getColumnCells(uddId);
+  Vector<int> spwIds = msDDC.spectralWindowId().getColumnCells(uddId);
+  Vector<int> polIds = msDDC.polarizationId().getColumnCells(uddId);
   // const Int option=Sort::HeapSort | Sort::NoDuplicates;
   // const Sort::Order order=Sort::Ascending;
   // Int nSpw=GenSort<Int>::sort (spwIds, order, option);
 
   if (ddId.nelements() > 0) {
     // For each row of the DataDesc subtable, write the info
-    for (uInt i = 0; i < ddId.nelements(); i++) {
-      Int dd = ddId(i);
-      Int pol = polIds(i);
-      Int spw = msDDC.spectralWindowId()(dd);
+    for (unsigned int i = 0; i < ddId.nelements(); i++) {
+      int dd = ddId(i);
+      int pol = polIds(i);
+      int spw = msDDC.spectralWindowId()(dd);
 
       Record ddRec;
       ddRec.define("SpectralWindowId", spw);
@@ -1430,9 +1430,9 @@ void MSSummary::listPolarization(LogIO& os, bool) const {
     os << "Polarization setups: " << nRow << std::endl;
 
     // Define the column widths
-    Int widthLead = 2;
-    Int widthCorrTypes = msPolC.corrType()(0).nelements() * 4;
-    Int widthCorrType = 4;
+    int widthLead = 2;
+    int widthCorrTypes = msPolC.corrType()(0).nelements() * 4;
+    int widthCorrType = 4;
 
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
@@ -1448,9 +1448,9 @@ void MSSummary::listPolarization(LogIO& os, bool) const {
       os.output().width(widthLead);
       os << "  ";
       // 8th column: the correlation type(s)
-      for (uInt i = 0; i < msPolC.corrType()(row).nelements(); i++) {
+      for (unsigned int i = 0; i < msPolC.corrType()(row).nelements(); i++) {
         os.output().width(widthCorrType);
-        Int index = msPolC.corrType()(row)(IPosition(1, i));
+        int index = msPolC.corrType()(row)(IPosition(1, i));
         os << Stokes::name(Stokes::type(index));
       }
       os << std::endl;
@@ -1470,42 +1470,42 @@ void MSSummary::listSpectralAndPolInfo(LogIO& os, bool, bool) const {
     os << "The POLARIZATION table is empty: see the FEED table" << std::endl;
   }
   // determine the data_desc_ids present in the main table
-  std::set<uInt> ddId = _msmd->getUniqueDataDescIDs();
+  std::set<unsigned int> ddId = _msmd->getUniqueDataDescIDs();
   // now get the corresponding spectral windows and pol setups
-  vector<uInt> polIds = _msmd->getDataDescIDToPolIDMap();
-  Vector<uInt> spwIds(_msmd->getDataDescIDToSpwMap());
-  std::set<uInt> uniquePolIDs;
-  std::set<uInt> uniqueSpws;
-  std::set<uInt>::const_iterator dIter = ddId.begin();
-  std::set<uInt>::const_iterator dEnd = ddId.end();
+  vector<unsigned int> polIds = _msmd->getDataDescIDToPolIDMap();
+  Vector<unsigned int> spwIds(_msmd->getDataDescIDToSpwMap());
+  std::set<unsigned int> uniquePolIDs;
+  std::set<unsigned int> uniqueSpws;
+  std::set<unsigned int>::const_iterator dIter = ddId.begin();
+  std::set<unsigned int>::const_iterator dEnd = ddId.end();
   for (; dIter != dEnd; ++dIter) {
     uniquePolIDs.insert(polIds[*dIter]);
     uniqueSpws.insert(spwIds[*dIter]);
   }
-  const Int option = Sort::HeapSort | Sort::NoDuplicates;
+  const int option = Sort::HeapSort | Sort::NoDuplicates;
   const Sort::Order order = Sort::Ascending;
-  GenSort<uInt>::sort(spwIds, order, option);
+  GenSort<unsigned int>::sort(spwIds, order, option);
   if (!ddId.empty()) {
     os << "Spectral Windows: ";
     os << " (" << uniqueSpws.size() << " unique spectral windows and ";
     os << uniquePolIDs.size() << " unique polarization setups)" << std::endl;
 
     vector<String> names = _msmd->getSpwNames();
-    Int widthName = 5;
+    int widthName = 5;
     for (vector<String>::const_iterator iter = names.begin(); iter != names.end(); ++iter) {
-      widthName = max(widthName, (Int)iter->size());
+      widthName = max(widthName, (int)iter->size());
     }
     // Define the column widths
-    Int widthLead = 2;
-    Int widthSpwId = 7;
-    Int widthFrame = 6;
-    Int widthFreq = 12;
-    Int widthFrqNum = 12;
-    Int widthNumChan = 6;
-    vector<vector<Int>> corrTypes = _msmd->getCorrTypes();
-    Int widthCorrTypes = 4 * corrTypes[0].size();
-    Int widthCorrType = 4;
-    uInt widthBBCNo = 8;
+    int widthLead = 2;
+    int widthSpwId = 7;
+    int widthFrame = 6;
+    int widthFreq = 12;
+    int widthFrqNum = 12;
+    int widthNumChan = 6;
+    vector<vector<int>> corrTypes = _msmd->getCorrTypes();
+    int widthCorrTypes = 4 * corrTypes[0].size();
+    int widthCorrType = 4;
+    unsigned int widthBBCNo = 8;
 
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
@@ -1538,27 +1538,27 @@ void MSSummary::listSpectralAndPolInfo(LogIO& os, bool, bool) const {
     os << " Corrs";
     os << std::endl;
 
-    vector<uInt> nChans = _msmd->nChans();
+    vector<unsigned int> nChans = _msmd->nChans();
     vector<QVD> chanFreqs = _msmd->getChanFreqs();
     vector<QVD> chanWidths = _msmd->getChanWidths();
     vector<Quantity> centerFreqs = _msmd->getCenterFreqs();
-    vector<Double> bandwidths = _msmd->getBandWidths();
-    vector<uInt> bbcNo = hasBBCNo ? _msmd->getBBCNos() : vector<uInt>();
+    vector<double> bandwidths = _msmd->getBandWidths();
+    vector<unsigned int> bbcNo = hasBBCNo ? _msmd->getBBCNos() : vector<unsigned int>();
 
     os.output().precision(9);
     // order by spwid, not ddid, CAS-7376
-    Vector<uInt>::const_iterator iter = spwIds.begin();
-    Vector<uInt>::const_iterator end = spwIds.end();
-    std::vector<std::set<uInt>> spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
+    Vector<unsigned int>::const_iterator iter = spwIds.begin();
+    Vector<unsigned int>::const_iterator end = spwIds.end();
+    std::vector<std::set<unsigned int>> spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
     vector<MFrequency> refFreqs = _msmd->getRefFreqs();
     for (; iter != end; ++iter) {
-      Int spw = *iter;
-      std::set<uInt> ddids = spwToDDID[spw];
-      std::set<uInt>::const_iterator diter = ddids.begin();
-      std::set<uInt>::const_iterator dend = ddids.end();
+      int spw = *iter;
+      std::set<unsigned int> ddids = spwToDDID[spw];
+      std::set<unsigned int>::const_iterator diter = ddids.begin();
+      std::set<unsigned int>::const_iterator dend = ddids.end();
       bool isSpwInMainTable = false;
       for (; diter != dend; ++diter) {
-        uInt dd = *diter;
+        unsigned int dd = *diter;
         if (ddId.find(dd) == ddId.end()) {
           // data description ID not in main table, so not reported here
           continue;
@@ -1605,9 +1605,9 @@ void MSSummary::listSpectralAndPolInfo(LogIO& os, bool, bool) const {
         //            os.output().width(widthFrqNum);
         //            os<< msSWC.refFrequency()(spw)/1.0e6;
         // 9th column: the correlation type(s)
-        Int pol = polIds[dd];
-        vector<Int>::const_iterator cIter = corrTypes[pol].begin();
-        vector<Int>::const_iterator cEnd = corrTypes[pol].end();
+        int pol = polIds[dd];
+        vector<int>::const_iterator cIter = corrTypes[pol].begin();
+        vector<int>::const_iterator cEnd = corrTypes[pol].end();
         for (; cIter != cEnd; ++cIter) {
           os.output().width(widthCorrType);
           os << Stokes::name(Stokes::type(*cIter));
@@ -1713,7 +1713,7 @@ void MSSummary::listTables(LogIO& os, bool verbose) const {
   tableStrings(17) = "WEATHER";
 
   // Just to make things read better
-  for (uInt i = 0; i < 18; i++) {
+  for (unsigned int i = 0; i < 18; i++) {
     if (tableRows(i) == 1) rowStrings(i) = " row";
     // if table exists, but empty:
     if (tableRows(i) == 0) {
@@ -1737,7 +1737,7 @@ void MSSummary::listTables(LogIO& os, bool verbose) const {
   os << ":";
   if (!verbose) os << "   (-1 = table absent)";
   os << std::endl;
-  for (uInt i = 0; i < 18; i++) {
+  for (unsigned int i = 0; i < 18; i++) {
     if (verbose) {
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(3);

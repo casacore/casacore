@@ -167,7 +167,7 @@ class StIndArray {
   void getShape(StManArrayFile& ios);
 
   // Get the reference count.
-  uInt refCount(StManArrayFile& ios);
+  unsigned int refCount(StManArrayFile& ios);
 
   // Increment the reference count.
   void incrementRefCount(StManArrayFile& ios);
@@ -203,7 +203,7 @@ class StIndArray {
 
  private:
   Int64 fileOffset_p;  // # offset of shape in StManArrayFile
-  uInt arrOffset_p;    // # extra offset to the array
+  unsigned int arrOffset_p;    // # extra offset to the array
   // #                              0 = arrOffset and shape not known yet
   IPosition shape_p;  // # shape of the array
 
@@ -226,23 +226,23 @@ class StIndArray {
   }
   static void getVecuCharV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<uChar>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<unsigned char>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecShortV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<Short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecuShortV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                             uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<uShort>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<unsigned short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecIntV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                          uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<Int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecuIntV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                           uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<uInt>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<unsigned int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecInt64V(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, void* value) {
@@ -250,11 +250,11 @@ class StIndArray {
   }
   static void getVecfloatV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<Float>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<float>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecdoubleV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                             uInt64 increment, uInt64 valueIndex, void* value) {
-    GetVectorGeneric<Double>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    GetVectorGeneric<double>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void getVecComplexV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart,
                              uInt64 length, uInt64 increment, uInt64 valueIndex, void* value) {
@@ -303,23 +303,23 @@ class StIndArray {
   }
   static void putVecuCharV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, const void* value) {
-    PutVectorGeneric<uChar>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    PutVectorGeneric<unsigned char>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void putVecShortV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, const void* value) {
-    PutVectorGeneric<Short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    PutVectorGeneric<short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void putVecuShortV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                             uInt64 increment, uInt64 valueIndex, const void* value) {
-    PutVectorGeneric<uShort>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    PutVectorGeneric<unsigned short>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void putVecIntV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                          uInt64 increment, uInt64 valueIndex, const void* value) {
-    PutVectorGeneric<Int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    PutVectorGeneric<int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void putVecuIntV(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                           uInt64 increment, uInt64 valueIndex, const void* value) {
-    PutVectorGeneric<uInt>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
+    PutVectorGeneric<unsigned int>(ios, fileOffset, arrayStart, length, increment, valueIndex, value);
   }
   static void putVecInt64V(StManArrayFile& ios, Int64 fileOffset, uInt64 arrayStart, uInt64 length,
                            uInt64 increment, uInt64 valueIndex, const void* value) {

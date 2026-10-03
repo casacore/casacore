@@ -40,7 +40,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constants
 
 // # Member functions
-bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
+bool MeasJPL::get(Vector<double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
                   const MVEpoch &date) {
   returnValue = 0.0;
   // Open the file if needed.
@@ -50,14 +50,14 @@ bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Typ
   // Get or read the correct data if needed.
   // Note that fillMeas uses locks to be thread-safe. The pointer returned
   // will never change, even if fillMeas has to extend the buffer.
-  Double intv;
-  const Double *dta = fillMeas(intv, file, date);
+  double intv;
+  const double *dta = fillMeas(intv, file, date);
   if (!dta) {
     return false;
   }
-  Double res[6];
-  Double res1[6];
-  for (uInt i = 0; i < 6; i++) res[i] = 0.0;
+  double res[6];
+  double res1[6];
+  for (unsigned int i = 0; i < 6; i++) res[i] = 0.0;
   // Interpolation fraction
   bool mulfr = true;
   if (type == MeasJPL::BARYSOLAR) {
@@ -71,9 +71,9 @@ bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Typ
     interMeas(res, file, intv, dmjd[file], idx[file][1][MeasJPL::EARTH - 1], 3,
               idx[file][2][MeasJPL::EARTH - 1], dta + idx[file][0][MeasJPL::EARTH - 1]);
     if (type == MeasJPL::EARTH) {
-      for (uInt i = 0; i < 6; i++) res[i] -= res1[i] / emrat[file];
+      for (unsigned int i = 0; i < 6; i++) res[i] -= res1[i] / emrat[file];
     } else {
-      for (uInt i = 0; i < 6; i++) res[i] += res1[i];
+      for (unsigned int i = 0; i < 6; i++) res[i] += res1[i];
     }
   } else if (type == MeasJPL::NUTATION) {
     if (idx[file][1][MeasJPL::BARYSOLAR - 1] == 0) return false;
@@ -90,15 +90,15 @@ bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Typ
               dta + idx[file][0][type - 1]);
   }
   if (mulfr) {
-    for (uInt i = 0; i < 6; i++) returnValue(i) = res[i] * aufac[file];
+    for (unsigned int i = 0; i < 6; i++) returnValue(i) = res[i] * aufac[file];
   } else {
-    for (uInt i = 0; i < 6; i++) returnValue(i) = res[i];
+    for (unsigned int i = 0; i < 6; i++) returnValue(i) = res[i];
   }
 
   return true;
 }
 
-bool MeasJPL::getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what) {
+bool MeasJPL::getConst(double &res, MeasJPL::Files which, MeasJPL::Codes what) {
   if (initMeasOnce(which)) {
     res = cn[which][what];
     return true;
@@ -106,7 +106,7 @@ bool MeasJPL::getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what) {
   return false;
 }
 
-bool MeasJPL::getConst(Double &res, MeasJPL::Files which, const String &nam) {
+bool MeasJPL::getConst(double &res, MeasJPL::Files which, const String &nam) {
   if (initMeasOnce(which)) {
     const TableRecord &tr = t[which].keywordSet();
     if (tr.isDefined(nam)) {
@@ -132,8 +132,8 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
 
   TableRecord kws;
   TableRow row;
-  RORecordFieldPtr<Double> rfp[MeasJPL::N_Types];
-  Double dt;
+  RORecordFieldPtr<double> rfp[MeasJPL::N_Types];
+  double dt;
   String vs;
   bool ok = true;
   if (!MeasIERS::getTable(MeasJPL::t[which], kws, row, rfp, vs, dt, 1, names, tp[which],
@@ -153,8 +153,8 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
     }
   }
   if (ok) {
-    mjd0[which] = Int(kws.asDouble("MJD0"));
-    dmjd[which] = Int(kws.asDouble("dMJD"));
+    mjd0[which] = int(kws.asDouble("MJD0"));
+    dmjd[which] = int(kws.asDouble("dMJD"));
     cn[which][MeasJPL::AU] = kws.asDouble("AU");
     aufac[which] = 1. / cn[which][MeasJPL::AU];
     emrat[which] = 1. + kws.asDouble("EMRAT");
@@ -166,7 +166,7 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
     }
     cn[which][MeasJPL::GMS] =
         kws.asDouble("GMS") / cn[which][MeasJPL::CAU] / cn[which][MeasJPL::CAU];
-    Int n = t[which].nrow();
+    int n = t[which].nrow();
     row.get(n - 1);
     if (*(rfp[0]) != mjd0[which] + n * dmjd[which]) {
       ok = false;
@@ -179,15 +179,15 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
     if (tr.asInt("Rows") != 3 || tr.asInt("Columns") != 13) {
       ok = false;
     } else {
-      Array<Int> xx = tr.asArrayInt("Description");
-      uInt k = 0;
-      for (uInt i = 0; i < 3; i++) {
-        for (uInt j = 0; j < 13; j++) {
+      Array<int> xx = tr.asArrayInt("Description");
+      unsigned int k = 0;
+      for (unsigned int i = 0; i < 3; i++) {
+        for (unsigned int j = 0; j < 13; j++) {
           idx[which][i][j] = xx(IPosition(1, k++));
           if (i == 0) idx[which][i][j] -= 3;
         }
       }
-      acc[Int(which)].attach(t[which], "x");
+      acc[int(which)].attach(t[which], "x");
     }
   }
   if (!ok) {
@@ -206,7 +206,7 @@ void MeasJPL::closeMeas() {
   // Cannot get this fast & thread-safe without rewriting initMeas/closeMeas.
   // But this is only used to check for memory leaks at the end and possibly
   // to compare tables in tests, don't bother. Apply pray and HACK below...
-  for (uInt i = 0; i < N_Files; ++i) {
+  for (unsigned int i = 0; i < N_Files; ++i) {
     if (!t[i].isNull()) {
       mjd0[i] = 0;
       mjdl[i] = 0;
@@ -222,9 +222,9 @@ void MeasJPL::closeMeas() {
   }
 }
 
-const Double *MeasJPL::fillMeas(Double &intv, MeasJPL::Files which, const MVEpoch &utf) {
+const double *MeasJPL::fillMeas(double &intv, MeasJPL::Files which, const MVEpoch &utf) {
   // Get UT day and check if within range.
-  Int ut = Int(utf.getDay());
+  int ut = int(utf.getDay());
   if (ut < mjd0[which] + dmjd[which] || ut >= mjdl[which] + dmjd[which]) {
     return 0;
   }
@@ -239,44 +239,44 @@ const Double *MeasJPL::fillMeas(Double &intv, MeasJPL::Files which, const MVEpoc
     }
   }
   // Read the data for this date and add to the buffers.
-  Array<Double> data(acc[Int(which)](ut - 1));
+  Array<double> data(acc[int(which)](ut - 1));
   dval[which].push_back(data);
   curDate[which].push_back(ut);
   return data.data();
 }
 
-void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv, Double ivf, Int ncf, Int ncm,
-                        Int na, const Double buf[]) {
-  Double tc = 2.0 * (fmod(Double(na) * intv, Double(1.0)) + Int(intv)) - 1.0;
-  Int l = Int(Double(na) * intv - Int(intv));
+void MeasJPL::interMeas(double res[], MeasJPL::Files, double intv, double ivf, int ncf, int ncm,
+                        int na, const double buf[]) {
+  double tc = 2.0 * (fmod(double(na) * intv, double(1.0)) + int(intv)) - 1.0;
+  int l = int(double(na) * intv - int(intv));
   // Chebyshev coefficients
-  Double chc[18];
+  double chc[18];
   chc[0] = 1;
   chc[1] = tc;
-  Double twot = 2 * tc;
-  for (Int i = 2; i < ncf; i++) {
+  double twot = 2 * tc;
+  for (int i = 2; i < ncf; i++) {
     chc[i] = twot * chc[i - 1] - chc[i - 2];
   }
-  Double vfac = (2.0 * na) / ivf;
-  Double chcv[18];
+  double vfac = (2.0 * na) / ivf;
+  double chcv[18];
   chcv[0] = 0;
   chcv[1] = 1;
   chcv[2] = 2.0 * twot;
-  for (Int i = 3; i < ncf; i++) {
+  for (int i = 3; i < ncf; i++) {
     chcv[i] = twot * chcv[i - 1] + 2.0 * chc[i - 1] - chcv[i - 2];
   }
   {  // Position
-    for (Int i = 0; i < ncm; i++) {
+    for (int i = 0; i < ncm; i++) {
       res[i] = 0;
-      for (Int j = ncf - 1; j >= 0; j--) {
+      for (int j = ncf - 1; j >= 0; j--) {
         res[i] += chc[j] * buf[(l * ncm + i) * ncf + j];
       }
     }
   }
   {  // Velocity
-    for (Int i = 0; i < ncm; i++) {
+    for (int i = 0; i < ncm; i++) {
       res[i + ncm] = 0;
-      for (Int j = ncf - 1; j > 0; j--) {
+      for (int j = ncf - 1; j > 0; j--) {
         res[i + ncm] += chcv[j] * buf[(l * ncm + i) * ncf + j];
       }
       res[i + ncm] *= vfac;
@@ -287,16 +287,16 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv, Double ivf, I
 std::once_flag MeasJPL::theirCallOnceFlags[MeasJPL::N_Files];
 std::mutex MeasJPL::theirMutex;
 Table MeasJPL::t[MeasJPL::N_Files];
-ArrayColumn<Double> MeasJPL::acc[MeasJPL::N_Files];
-Int MeasJPL::mjd0[MeasJPL::N_Files] = {0, 0};
-Int MeasJPL::mjdl[MeasJPL::N_Files] = {0, 0};
-Int MeasJPL::dmjd[MeasJPL::N_Files] = {0, 0};
+ArrayColumn<double> MeasJPL::acc[MeasJPL::N_Files];
+int MeasJPL::mjd0[MeasJPL::N_Files] = {0, 0};
+int MeasJPL::mjdl[MeasJPL::N_Files] = {0, 0};
+int MeasJPL::dmjd[MeasJPL::N_Files] = {0, 0};
 const String MeasJPL::tp[MeasJPL::N_Files] = {"DE200", "DE405"};
-Int MeasJPL::idx[MeasJPL::N_Files][3][13];
-vector<Int> MeasJPL::curDate[MeasJPL::N_Files];
-vector<Vector<Double>> MeasJPL::dval[MeasJPL::N_Files];
-Double MeasJPL::aufac[MeasJPL::N_Files];
-Double MeasJPL::emrat[MeasJPL::N_Files];
-Double MeasJPL::cn[MeasJPL::N_Files][MeasJPL::N_Codes];
+int MeasJPL::idx[MeasJPL::N_Files][3][13];
+vector<int> MeasJPL::curDate[MeasJPL::N_Files];
+vector<Vector<double>> MeasJPL::dval[MeasJPL::N_Files];
+double MeasJPL::aufac[MeasJPL::N_Files];
+double MeasJPL::emrat[MeasJPL::N_Files];
+double MeasJPL::cn[MeasJPL::N_Files][MeasJPL::N_Codes];
 
 }  // namespace casacore

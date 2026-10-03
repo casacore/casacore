@@ -39,7 +39,7 @@
 
 #include <casacore/casa/namespace.h>
 void testVectorROIter(const Lattice<bool>& lattice, bool firstValue, bool alternates) {
-  Int nstep;
+  int nstep;
   const IPosition latticeShape(lattice.shape());
   const IPosition cursorShape(1, latticeShape(0));
   LatticeStepper step(latticeShape, cursorShape);

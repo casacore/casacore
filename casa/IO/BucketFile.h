@@ -109,7 +109,7 @@ class BucketFile {
   // created for the file. If a MultiFileBase is used, memory-mapped IO
   // cannot be used and mappedFile is ignored.
   explicit BucketFile(
-      const String& fileName, uInt bufSizeFile = 0, bool mappedFile = false,
+      const String& fileName, unsigned int bufSizeFile = 0, bool mappedFile = false,
       const std::shared_ptr<MultiFileBase>& mfile = std::shared_ptr<MultiFileBase>());
 
   // Create a BucketFile object for an existing file.
@@ -118,7 +118,7 @@ class BucketFile {
   // It can be indicated if a MMapfdIO and/or FilebufIO object must be
   // created for the file. If a MultiFileBase is used, memory-mapped IO
   // cannot be used and mappedFile is ignored.
-  BucketFile(const String& fileName, bool writable, uInt bufSizeFile = 0, bool mappedFile = false,
+  BucketFile(const String& fileName, bool writable, unsigned int bufSizeFile = 0, bool mappedFile = false,
              const std::shared_ptr<MultiFileBase>& mfile = std::shared_ptr<MultiFileBase>());
 
   // The destructor closes the file (if open).
@@ -132,7 +132,7 @@ class BucketFile {
 
   // Make a (temporary) buffered IO object for this file.
   // That object should not close the file.
-  virtual std::shared_ptr<ByteIO> makeFilebufIO(uInt bufferSize);
+  virtual std::shared_ptr<ByteIO> makeFilebufIO(unsigned int bufferSize);
 
   // Get the mapped file object.
   MMapfdIO* mappedFile() { return mappedFile_p; }
@@ -163,15 +163,15 @@ class BucketFile {
   bool isWritable() const;
 
   // Read bytes from the file.
-  virtual uInt read(void* buffer, uInt length);
+  virtual unsigned int read(void* buffer, unsigned int length);
 
   // Write bytes into the file.
-  virtual uInt write(const void* buffer, uInt length);
+  virtual unsigned int write(const void* buffer, unsigned int length);
 
   // Seek in the file.
   // <group>
   virtual void seek(Int64 offset);
-  void seek(Int offset);
+  void seek(int offset);
   // </group>
 
   // Get the (physical) size of the file.
@@ -191,7 +191,7 @@ class BucketFile {
   // The (logical) writability of the file.
   bool isWritable_p;
   bool isMapped_p;
-  uInt bufSize_p;
+  unsigned int bufSize_p;
   int fd_p;  //  fd (if used) of unbuffered file
   // The unbuffered file.
   std::shared_ptr<ByteIO> file_p;
@@ -213,7 +213,7 @@ inline const String& BucketFile::name() const { return name_p; }
 
 inline bool BucketFile::isWritable() const { return isWritable_p; }
 
-inline void BucketFile::seek(Int offset) { seek(Int64(offset)); }
+inline void BucketFile::seek(int offset) { seek(Int64(offset)); }
 
 inline bool BucketFile::isCached() const { return !isMapped_p && bufSize_p == 0; }
 inline bool BucketFile::isMapped() const { return isMapped_p; }

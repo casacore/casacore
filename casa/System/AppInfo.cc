@@ -41,11 +41,11 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 bool AppInfo::need_init_p = true;
-uInt AppInfo::tz_r = 0;
+unsigned int AppInfo::tz_r = 0;
 
-Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
+Vector<String> AppInfo::workDirectories(unsigned int minimumFreeSpaceInMB) {
   static bool init = false;
-  static uInt workdir = 0;
+  static unsigned int workdir = 0;
   if (!init) {
     init = true;
     // Default is an empty vector
@@ -70,7 +70,7 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
   // OK, elmiinate candidates (if any).
   Vector<bool> good(workdirs.nelements());
   good = true;
-  for (uInt i = 0; i < workdirs.nelements(); i++) {
+  for (unsigned int i = 0; i < workdirs.nelements(); i++) {
     File dir(workdirs(i));
     if (!dir.exists() || !dir.isWritable() || !dir.isDirectory()) {
       // Whinge if it's for an odd reason
@@ -81,7 +81,7 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
       good(i) = false;
     } else {
       Directory asdir = dir;
-      if (asdir.freeSpace() / (1024 * 1024) < uLong(minimumFreeSpaceInMB)) {
+      if (asdir.freeSpace() / (1024 * 1024) < static_cast<unsigned long>(minimumFreeSpaceInMB)) {
         good(i) = false;
       }
     }
@@ -93,8 +93,8 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB) {
   return workdirs;
 }
 
-String AppInfo::workDirectory(uInt minimumFreeSpaceInMB) {
-  static uInt count = 0;
+String AppInfo::workDirectory(unsigned int minimumFreeSpaceInMB) {
+  static unsigned int count = 0;
   count++;
   Vector<String> candidates = workDirectories(minimumFreeSpaceInMB);
   if (candidates.nelements() == 0) {
@@ -106,7 +106,7 @@ String AppInfo::workDirectory(uInt minimumFreeSpaceInMB) {
   return candidates((count - 1) % candidates.nelements());
 }
 
-String AppInfo::workFileName(uInt minimumFreeSpaceInMB, const String &filenamePrefix) {
+String AppInfo::workFileName(unsigned int minimumFreeSpaceInMB, const String &filenamePrefix) {
   String dir = workDirectory(minimumFreeSpaceInMB);
   return File::newUniqueName(dir, filenamePrefix).originalName();
 }
@@ -115,9 +115,9 @@ void AppInfo::init() {
   need_init_p = false;
 
   // timezone
-  Double tz;
+  double tz;
   // Get System offset as default
-  tz_r = AipsrcValue<Double>::registerRC("system.time.tzoffset", "h", "d", Time::timeZoneDays());
+  tz_r = AipsrcValue<double>::registerRC("system.time.tzoffset", "h", "d", Time::timeZoneDays());
   tz = AppInfo::timeZone();
 
   // Do the asserts at the end so that all the variables are initialized as

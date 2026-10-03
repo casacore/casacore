@@ -38,9 +38,9 @@ template <class T, class U>
 U Function<T, U>::operator()(const Vector<ArgType> &x) const {
   DebugAssert(ndim() <= x.nelements(), AipsError);
   if (x.contiguousStorage() || ndim() < 2) return this->eval(&(x[0]));
-  uInt j = ndim();
+  unsigned int j = ndim();
   arg_p.resize(j);
-  for (uInt i = 0; i < j; ++i) arg_p[i] = x[i];
+  for (unsigned int i = 0; i < j; ++i) arg_p[i] = x[i];
   return this->eval(&(arg_p[0]));
 }
 

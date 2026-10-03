@@ -209,7 +209,7 @@ void TableExprNodeINDouble::doOptimize(TENShPtr& rnode) {
   if (rnode->isConstant() && rnode->valueType() == VTSet) {
     TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
     if (!set.isSingle() && !set.isDiscrete()) {
-      rnode = TableExprNodeSetOptContSetBase<Double>::transform(set);
+      rnode = TableExprNodeSetOptContSetBase<double>::transform(set);
     }
   }
 }
@@ -257,7 +257,7 @@ void TableExprNodeINDate::doOptimize(TENShPtr& rnode) {
   if (rnode->isConstant() && rnode->valueType() == VTSet) {
     TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
     if (!set.isSingle() && !set.isDiscrete()) {
-      rnode = TableExprNodeSetOptContSetBase<Double>::transform(set);
+      rnode = TableExprNodeSetOptContSetBase<double>::transform(set);
     }
   }
 }
@@ -282,7 +282,7 @@ TableExprNodeNOT::TableExprNodeNOT(const TableExprNodeRep& node)
 bool TableExprNodeNOT::getBool(const TableExprId& id) { return !lnode_p->getBool(id); }
 
 void TableExprNodeEQDouble::ranges(Block<TableExprRange>& blrange) {
-  Double dval = 0;
+  double dval = 0;
   TENShPtr tsncol = 0;
   // # We can store a range if there is a scalar column and constant
   // # (left or right).
@@ -306,8 +306,8 @@ void TableExprNodeEQDouble::ranges(Block<TableExprRange>& blrange) {
 }
 
 void TableExprNodeGEDouble::ranges(Block<TableExprRange>& blrange) {
-  Double st = 0;
-  Double end = 0;
+  double st = 0;
+  double end = 0;
   TENShPtr tsncol = 0;
   // # We can store a range if there is a scalar column and constant
   // # (left or right).
@@ -332,8 +332,8 @@ void TableExprNodeGEDouble::ranges(Block<TableExprRange>& blrange) {
 }
 
 void TableExprNodeGTDouble::ranges(Block<TableExprRange>& blrange) {
-  Double st = 0;
-  Double end = 0;
+  double st = 0;
+  double end = 0;
   TENShPtr tsncol = 0;
   // # We can store a range if there is a scalar column and constant
   // # (left or right).
@@ -399,7 +399,7 @@ void TableExprNodeAND::ranges(Block<TableExprRange>& blrange) {
   // # First handle one and intersect its ranges with matching
   // # column names in the other one.
   // # Keep a vector with flags for non-processed other ones.
-  Vector<Int> vec(other.nelements());
+  Vector<int> vec(other.nelements());
   vec = 0;
   for (size_t i = 0; i < blrange.nelements(); i++) {
     for (size_t j = 0; j < other.nelements(); j++) {

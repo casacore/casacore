@@ -50,7 +50,7 @@ void readFile(const String& name = "tMultiFile_tmp.dat") {
   MultiFile mfile(name, ByteIO::Old);
   AlwaysAssertExit(!mfile.isWritable());
   mfile.show(cout);
-  for (uInt i = 0; i < mfile.info().size(); ++i) {
+  for (unsigned int i = 0; i < mfile.info().size(); ++i) {
     String nm = "file" + std::to_string(i);
     cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
@@ -59,9 +59,9 @@ void readFile(const String& name = "tMultiFile_tmp.dat") {
 void addFiles() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
   AlwaysAssertExit(mfile.isWritable());
-  Int fid0 = mfile.createFile("file0");
-  Int fid1 = mfile.createFile("file1");
-  Int fid2 = mfile.createFile("file2");
+  int fid0 = mfile.createFile("file0");
+  int fid1 = mfile.createFile("file1");
+  int fid2 = mfile.createFile("file2");
   AlwaysAssertExit(mfile.nfile() == 3 && fid0 == 0 && fid1 == 1 && fid2 == 2);
   mfile.show(cout);
   mfile.closeFile(fid0);
@@ -71,9 +71,9 @@ void addFiles() {
 
 void writeFiles1() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
-  Int id0 = mfile.openFile("file0");
-  Int id1 = mfile.openFile("file1");
-  Int id2 = mfile.openFile("file2");
+  int id0 = mfile.openFile("file0");
+  int id1 = mfile.openFile("file1");
+  int id2 = mfile.openFile("file2");
   Vector<Int64> buf(128);
   indgen(buf);
   mfile.write(id0, buf.data(), 1024, 0);
@@ -95,8 +95,8 @@ void writeFiles1() {
 
 void checkFiles1(bool do1 = true) {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
-  Int id0 = mfile.openFile("file0");
-  Int id2 = mfile.openFile("file2");
+  int id0 = mfile.openFile("file0");
+  int id2 = mfile.openFile("file2");
   Vector<Int64> buf1(128), buf(128), buff(3 * 128);
   indgen(buf1);
   mfile.read(id0, buf.data(), 1024, 0);
@@ -116,7 +116,7 @@ void checkFiles1(bool do1 = true) {
   AlwaysAssertExit(allEQ(buf, buf1));
   buf1 += Int64(128);
   if (do1) {
-    Int id1 = mfile.openFile("file1");
+    int id1 = mfile.openFile("file1");
     mfile.read(id1, buf.data(), 1024, 1024);
     AlwaysAssertExit(allEQ(buf, buf1));
     mfile.closeFile(id1);
@@ -147,7 +147,7 @@ void deleteFile() {
   cout << "test deleteFile" << endl;
   {
     MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
-    Int id1 = mfile.openFile("file1");
+    int id1 = mfile.openFile("file1");
     mfile.deleteFile(id1);
   }
   readFile();
@@ -156,8 +156,8 @@ void deleteFile() {
 void writeFiles2() {
   // Overwrite a few values.
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
-  Int id0 = mfile.openFile("file0");
-  Int id2 = mfile.openFile("file2");
+  int id0 = mfile.openFile("file0");
+  int id2 = mfile.openFile("file2");
   Vector<Int64> buf(128), buf1(128);
   indgen(buf);
   mfile.write(id0, buf.data(), 1016, 8);
@@ -172,7 +172,7 @@ void writeFiles2() {
 void checkFiles2(const String& name = "tMultiFile_tmp.dat") {
   checkFiles1(false);
   MultiFile mfile(name, ByteIO::Old);
-  Int id2 = mfile.openFile("file2");
+  int id2 = mfile.openFile("file2");
   Vector<Int64> buf1(2), buf(2);
   indgen(buf1);
   mfile.read(id2, buf.data(), 16, 2048);
@@ -199,11 +199,11 @@ void doTest(Int64 blockSize, bool useODirect = false, bool useCRC = false) {
 
 void timeExact() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
-  Int id = mfile.createFile("file0");
+  int id = mfile.createFile("file0");
   Vector<Int64> buf(32768 / 8, 0);
-  for (Int j = 0; j < 2; ++j) {
+  for (int j = 0; j < 2; ++j) {
     Timer timer;
-    for (uInt i = 0; i < 1000; ++i) {
+    for (unsigned int i = 0; i < 1000; ++i) {
       mfile.write(id, buf.data(), 32768, i * 32768);
     }
     mfile.fsync();
@@ -214,11 +214,11 @@ void timeExact() {
 
 void timeDouble() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 16384);
-  Int id = mfile.createFile("file0");
+  int id = mfile.createFile("file0");
   Vector<Int64> buf(32768 / 8, 0);
-  for (Int j = 0; j < 2; ++j) {
+  for (int j = 0; j < 2; ++j) {
     Timer timer;
-    for (uInt i = 0; i < 1000; ++i) {
+    for (unsigned int i = 0; i < 1000; ++i) {
       mfile.write(id, buf.data(), 32768, i * 32768);
     }
     mfile.fsync();
@@ -229,11 +229,11 @@ void timeDouble() {
 
 void timePartly() {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
-  Int id = mfile.createFile("file0");
+  int id = mfile.createFile("file0");
   Vector<Int64> buf(16384 / 8, 0);
-  for (Int j = 0; j < 2; ++j) {
+  for (int j = 0; j < 2; ++j) {
     Timer timer;
-    for (uInt i = 0; i < 2000; ++i) {
+    for (unsigned int i = 0; i < 2000; ++i) {
       mfile.write(id, buf.data(), 16384, i * 16384);
     }
     mfile.fsync();
@@ -259,7 +259,7 @@ void timeMove1() {
   Vector<Int64> buf1(4, 3);
   Vector<Int64> buf2(4, 0);
   Timer timer;
-  for (uInt i = 0; i < 5000000; ++i) {
+  for (unsigned int i = 0; i < 5000000; ++i) {
     memcpy(buf2.data(), buf1.data(), 8 * 4);
   }
   timer.show("move1 ");
@@ -272,7 +272,7 @@ void timeMove2(moveFunc func) {
   Vector<Int64> buf1(4, 3);
   Vector<Int64> buf2(4, 0);
   Timer timer;
-  for (uInt i = 0; i < 5000000; ++i) {
+  for (unsigned int i = 0; i < 5000000; ++i) {
     func(buf2.data(), buf1.data(), 8 * 4);
   }
   timer.show("move2 ");
@@ -282,8 +282,8 @@ void timeMove3() {
   Vector<Int64> buf1(4, 3);
   Vector<Int64> buf2(4, 0);
   Timer timer;
-  for (uInt i = 0; i < 5000000; ++i) {
-    for (uInt j = 0; j < 4; ++j) {
+  for (unsigned int i = 0; i < 5000000; ++i) {
+    for (unsigned int j = 0; j < 4; ++j) {
       buf2.data()[j] = buf1.data()[j];
     }
   }
@@ -303,8 +303,8 @@ void testNested(Int64 blockSizeParent, Int64 blockSizeChild) {
     MultiFile* parentmf = new MultiFile("tMultiFile_tmp.nest", ByteIO::New, blockSizeParent);
     std::shared_ptr<MultiFileBase> parent(parentmf);
     MultiFile child("tnested", parent, ByteIO::New, blockSizeChild);
-    Int fidParent = parent->createFile("file0");
-    Int fidChild = child.createFile("file0");
+    int fidParent = parent->createFile("file0");
+    int fidChild = child.createFile("file0");
     AlwaysAssertExit(fidParent == 1 && fidChild == 0);
     parentmf->show(cout);
     child.show(cout);
@@ -315,8 +315,8 @@ void testNested(Int64 blockSizeParent, Int64 blockSizeChild) {
     MultiFile* parentmf = new MultiFile("tMultiFile_tmp.nest", ByteIO::Old);
     std::shared_ptr<MultiFileBase> parent(parentmf);
     MultiFile child("tnested", parent, ByteIO::Old);
-    Int fidParent = parent->openFile("file0");
-    Int fidChild = child.openFile("file0");
+    int fidParent = parent->openFile("file0");
+    int fidChild = child.openFile("file0");
     AlwaysAssertExit(fidParent == 1 && fidChild == 0);
     parentmf->show(cout);
     child.show(cout);
@@ -334,9 +334,9 @@ void testTruncate() {
   // Add a file.
   MFFileIO file1(mfile, "file1", ByteIO::New);
   // Write some blocks;
-  Vector<Int> vec(64);
+  Vector<int> vec(64);
   indgen(vec);
-  for (uInt i = 0; i < 10; ++i) {
+  for (unsigned int i = 0; i < 10; ++i) {
     file1.write(256, vec.data());
     vec += 64;
   }

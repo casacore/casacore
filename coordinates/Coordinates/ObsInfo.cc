@@ -175,7 +175,7 @@ bool ObsInfo::toRecord(String &error, RecordInterface &outRecord) const {
   //
   {
     Record rec;
-    Vector<Double> v = pointingCenter().get();  // radians
+    Vector<double> v = pointingCenter().get();  // radians
     rec.define("value", v);
     rec.define("initial", isPointingCenterInitial_p);
     outRecord.defineRecord("pointingcenter", rec);
@@ -198,7 +198,7 @@ bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
   ObsInfo tmp;
   (*this) = tmp;  // Make sure we are "empty" first;
                   //
-  Int field = inRecord.fieldNumber("telescope");
+  int field = inRecord.fieldNumber("telescope");
   if (field >= 0) {
     if (inRecord.type(field) != TpString) {
       error = "Type of telescope field is not String!";
@@ -262,17 +262,17 @@ bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
     }
     Record rec = inRecord.asRecord(field);
     //
-    Vector<Double> v;
-    Int field2 = rec.fieldNumber("value");
+    Vector<double> v;
+    int field2 = rec.fieldNumber("value");
     if (field2 >= 0) {
-      v = Vector<Double>(rec.toArrayDouble(field2));
+      v = Vector<double>(rec.toArrayDouble(field2));
     } else {
       error = "field pointingcenter does not contain subfield 'value'";
       return false;
     }
     //
     bool b = false;
-    Int field3 = rec.fieldNumber("initial");
+    int field3 = rec.fieldNumber("initial");
     if (field3 >= 0) {
       if (rec.type(field3) != TpBool) {
         error = "pointingcenter.initial field is not Bool";
@@ -303,7 +303,7 @@ bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
     outRecord.define(name, telescope());
   } else {
     // Remove it if it already exists
-    Int field = outRecord.fieldNumber(name);
+    int field = outRecord.fieldNumber(name);
     if (field >= 0 && !outRecord.isFixed()) {
       outRecord.removeField(field);
     }
@@ -314,7 +314,7 @@ bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
     outRecord.define(name, observer());
   } else {
     // Remove it if it already exists
-    Int field = outRecord.fieldNumber(name);
+    int field = outRecord.fieldNumber(name);
     if (field >= 0 && !outRecord.isFixed()) {
       outRecord.removeField(field);
     }
@@ -337,7 +337,7 @@ bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
     // Maybe we should also remove TIMESYS, but it is conceivably needed
     // for some other DATE field. FITS sure is yuck-o.
 
-    Int field = outRecord.fieldNumber(name);
+    int field = outRecord.fieldNumber(name);
     if (field >= 0 && !outRecord.isFixed()) {
       outRecord.removeField(field);
     }
@@ -351,11 +351,11 @@ bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
 
     MVAngle lon1(pointingCenter().get()(0));
     MVAngle lon2 = lon1();        // +/- pi
-    Double lon3 = lon2.degree();  // +/- 180
+    double lon3 = lon2.degree();  // +/- 180
     if (lon3 < 0) lon3 += 360.0;  // 0 -> 360
     outRecord.define(nameLong, lon3);
     //
-    Double lat = pointingCenter().getLat(Unit("deg")).getValue();
+    double lat = pointingCenter().getLat(Unit("deg")).getValue();
     outRecord.define(nameLat, lat);
   } else {
     // Remove it if it already exists
@@ -363,7 +363,7 @@ bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
     String nameLong = "obsra";
     String nameLat = "obsdec";
     //
-    Int field = outRecord.fieldNumber(nameLong);
+    int field = outRecord.fieldNumber(nameLong);
     if (field >= 0 && !outRecord.isFixed()) {
       outRecord.removeField(field);
     }
@@ -386,7 +386,7 @@ bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
   } else {
     // Remove it if it already exists
     for (int i = 0; i < 3; ++i) {
-      Int field = outRecord.fieldNumber(names[i]);
+      int field = outRecord.fieldNumber(names[i]);
       if (field >= 0 && !outRecord.isFixed()) {
         outRecord.removeField(field);
       }
@@ -483,8 +483,8 @@ bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
 
   // Item 3
 
-  Int fieldLong = rec.fieldNumber("obsra");
-  Int fieldLat = rec.fieldNumber("obsdec");
+  int fieldLong = rec.fieldNumber("obsra");
+  int fieldLat = rec.fieldNumber("obsdec");
   if (fieldLong >= 0 && fieldLat >= 0) {
     Record subRec1 = rec.asRecord(fieldLong);
     Record subRec2 = rec.asRecord(fieldLat);
@@ -500,9 +500,9 @@ bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
 
   // Item 4
 
-  Int fieldx = rec.fieldNumber("obsgeo-x");
-  Int fieldy = rec.fieldNumber("obsgeo-y");
-  Int fieldz = rec.fieldNumber("obsgeo-z");
+  int fieldx = rec.fieldNumber("obsgeo-x");
+  int fieldy = rec.fieldNumber("obsgeo-y");
+  int fieldz = rec.fieldNumber("obsgeo-z");
   if (fieldx >= 0 && fieldy >= 0 && fieldz >= 0) {
     Record subRec1 = rec.asRecord(fieldx);
     Record subRec2 = rec.asRecord(fieldy);

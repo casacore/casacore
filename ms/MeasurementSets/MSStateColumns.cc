@@ -46,10 +46,10 @@ void MSStateColumns::attach(const MSState& msState) {
   loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 
-Int64 MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
-                                 const Quantum<Double>& stateLoadQ, const String& stateObsMode,
+Int64 MSStateColumns::matchState(const Quantum<double>& stateCalQ,
+                                 const Quantum<double>& stateLoadQ, const String& stateObsMode,
                                  const bool& stateRef, const bool& stateSig,
-                                 const Int& stateSubScan, const Quantum<Double>& tolerance,
+                                 const int& stateSubScan, const Quantum<double>& tolerance,
                                  Int64 tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
@@ -58,9 +58,9 @@ Int64 MSStateColumns::matchState(const Quantum<Double>& stateCalQ,
   DebugAssert(tolerance.check(k.getValue()), AipsError);
   DebugAssert(stateCalQ.check(k.getValue()), AipsError);
   DebugAssert(stateLoadQ.check(k.getValue()), AipsError);
-  const Double tolInK = tolerance.getValue(k);
-  const Double calInK = stateCalQ.getValue(k);
-  const Double loadInK = stateLoadQ.getValue(k);
+  const double tolInK = tolerance.getValue(k);
+  const double calInK = stateCalQ.getValue(k);
+  const double loadInK = stateLoadQ.getValue(k);
   // Main matching loop
   if (tryRow >= 0) {
     const rownr_t tr = tryRow;

@@ -112,7 +112,7 @@ class ForwardColumnIndexedRow : public ForwardColumn {
   bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
-  uInt ndim(rownr_t rownr);
+  unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the item in the given row.
   IPosition shape(rownr_t rownr);
@@ -120,11 +120,11 @@ class ForwardColumnIndexedRow : public ForwardColumn {
   // Get the scalar value with a standard data type in the given row.
   // <group>
   virtual void getBool(rownr_t rownr, bool* dataPtr);
-  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
-  virtual void getShort(rownr_t rownr, Short* dataPtr);
-  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
-  virtual void getInt(rownr_t rownr, Int* dataPtr);
-  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
+  virtual void getuChar(rownr_t rownr, unsigned char* dataPtr);
+  virtual void getShort(rownr_t rownr, short* dataPtr);
+  virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
+  virtual void getInt(rownr_t rownr, int* dataPtr);
+  virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
   virtual void getInt64(rownr_t rownr, Int64* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
@@ -140,11 +140,11 @@ class ForwardColumnIndexedRow : public ForwardColumn {
   // This throws an exception, because putting is not supported.
   // <group>
   virtual void putBool(rownr_t rownr, const bool* dataPtr);
-  virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
-  virtual void putShort(rownr_t rownr, const Short* dataPtr);
-  virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
-  virtual void putInt(rownr_t rownr, const Int* dataPtr);
-  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
+  virtual void putuChar(rownr_t rownr, const unsigned char* dataPtr);
+  virtual void putShort(rownr_t rownr, const short* dataPtr);
+  virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr);
+  virtual void putInt(rownr_t rownr, const int* dataPtr);
+  virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr);
   virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
   virtual void putfloat(rownr_t rownr, const float* dataPtr);
   virtual void putdouble(rownr_t rownr, const double* dataPtr);
@@ -343,7 +343,7 @@ class ForwardColumnIndexedRowEngine : public ForwardColumnEngine {
 
   // Define the column with the row numbers (must have data type uInt).
   String rowColumnName_p;
-  ScalarColumn<uInt> rowColumn_p;
+  ScalarColumn<unsigned int> rowColumn_p;
   // Define the various engine column objects.
   Block<ForwardColumnIndexedRow*> refColumns_p;
   // Cache of last row used to get row number.

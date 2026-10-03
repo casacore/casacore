@@ -46,8 +46,8 @@
 #ifdef PABLO_IO
 #include "IOTrace.h"
 #include "PabloTrace.h"
-extern "C" Int setTraceFileName(char*);
-extern "C" Int endTracing(void);
+extern "C" int setTraceFileName(char*);
+extern "C" int endTracing(void);
 #endif  // PABLO_IO
 
 #include <casacore/casa/namespace.h>
@@ -67,7 +67,7 @@ void closePablo();
 void makeCube(const char* argv[]);
 void getCube(bool trav, bool ask);
 void traverse(const IPosition& cubeShape, const IPosition& tileShape);
-IPosition getVec(uInt nrdim, const String& prompt);
+IPosition getVec(unsigned int nrdim, const String& prompt);
 
 int main(int argc, const char* argv[]) {
   // Get the command line arguments as cube shape, tile shape.
@@ -160,12 +160,12 @@ void closePablo() {
 // First build a description.
 void makeCube(const char* argv[]) {
   // Convert the command line arguments to shapes.
-  uInt i, maxCacheSize;
+  unsigned int i, maxCacheSize;
   Vector<String> cubeV(stringToVector(argv[1]));
   Vector<String> tileV(stringToVector(argv[2]));
   istringstream istr1(argv[3]);
   istr1 >> maxCacheSize;
-  uInt nrdim = cubeV.nelements();
+  unsigned int nrdim = cubeV.nelements();
   IPosition cubeShape(nrdim);
   IPosition tileShape(nrdim);
   for (i = 0; i < nrdim; i++) {
@@ -200,7 +200,7 @@ void makeCube(const char* argv[]) {
 
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ArrayColumnDesc<Float>("Data", cubeShape, ColumnDesc::FixedShape));
+  td.addColumn(ArrayColumnDesc<float>("Data", cubeShape, ColumnDesc::FixedShape));
   td.defineHypercolumn("TSMExample", nrdim, stringToVector("Data"));
 
   // Now create a new table from the description.
@@ -209,8 +209,8 @@ void makeCube(const char* argv[]) {
   TiledCellStMan sm1("TSMExample", tileShape, maxCacheSize);
   newtab.bindAll(sm1);
   Table table(newtab, 1);
-  ArrayColumn<Float> data(table, "Data");
-  Array<Float> array(cubeShape);
+  ArrayColumn<float> data(table, "Data");
+  Array<float> array(cubeShape);
   Timer timer;
   indgen(array);
   timer.show("indgen   ");
@@ -232,21 +232,21 @@ void makeCube(const char* argv[]) {
 void getCube(bool trav, bool ask) {
   IPosition cubeShape;
   IPosition tileShape;
-  double sizeMb = sizeof(Float);
+  double sizeMb = sizeof(float);
   double realtime;
-  uInt i, nrdim;
+  unsigned int i, nrdim;
   Timer timer;
   {
     Table table("tTiledCellStM_1_tmp.data2");
     timer.show("reopen   ");
     ROTiledStManAccessor accessor(table, "TSMExample");
-    ArrayColumn<Float> data(table, "Data");
+    ArrayColumn<float> data(table, "Data");
     cubeShape = data.shape(0);
     sizeMb *= cubeShape.product();
     sizeMb /= 1024 * 1024;
     tileShape = accessor.tileShape(0);
     nrdim = cubeShape.nelements();
-    Array<Float> result;
+    Array<float> result;
     timer.mark();
     data.get(0, result);
     realtime = timer.real();
@@ -258,11 +258,11 @@ void getCube(bool trav, bool ask) {
   if (nrdim == 3) {
     Table table("tTiledCellStM_1_tmp.data2");
     ROTiledStManAccessor accessor(table, "TSMExample");
-    ArrayColumn<Float> data(table, "Data");
+    ArrayColumn<float> data(table, "Data");
     cubeShape = data.shape(0);
     tileShape = accessor.tileShape(0);
     nrdim = cubeShape.nelements();
-    Array<Float> result;
+    Array<float> result;
     timer.mark();
     IPosition blc(nrdim, 0);
     IPosition len = cubeShape;
@@ -280,9 +280,9 @@ void getCube(bool trav, bool ask) {
     Table table("tTiledCellStM_1_tmp.data");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, tileShape, IPosition());
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
     IPosition last(nrdim);
     IPosition nrt(nrdim);
@@ -299,7 +299,7 @@ void getCube(bool trav, bool ask) {
     IPosition stepnr(start);
     IPosition length(tileShape);
     while (true) {
-      Array<Float> arr = data.getSlice(0, Slicer(start, length));
+      Array<float> arr = data.getSlice(0, Slicer(start, length));
       nr++;
       for (i = 0; i < nrdim; i++) {
         start(i) += tileShape(i);
@@ -351,7 +351,7 @@ void getCube(bool trav, bool ask) {
   }
 }
 
-IPosition getVec(uInt nrdim, const String& prompt) {
+IPosition getVec(unsigned int nrdim, const String& prompt) {
   while (true) {
     cout << prompt;
     String str;
@@ -365,7 +365,7 @@ IPosition getVec(uInt nrdim, const String& prompt) {
     } else {
       bool error = false;
       IPosition pos(vec.nelements());
-      for (uInt i = 0; i < vec.nelements(); i++) {
+      for (unsigned int i = 0; i < vec.nelements(); i++) {
         istringstream istr(vec(i).c_str());
         istr >> pos(i);
         if (pos(i) < 0) {
@@ -383,7 +383,7 @@ IPosition getVec(uInt nrdim, const String& prompt) {
 }
 
 void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
-  double sizeMb = sizeof(Float) * cubeShape.product();
+  double sizeMb = sizeof(float) * cubeShape.product();
   sizeMb /= 1024 * 1024;
   double realtime;
   Timer timer;
@@ -392,13 +392,13 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data2");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(2, 2, 1));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int i = 0; i < cubeShape(0); i++) {
-      for (Int j = 0; j < cubeShape(1); j++) {
-        Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, i, j, 0), length));
+    for (int i = 0; i < cubeShape(0); i++) {
+      for (int j = 0; j < cubeShape(1); j++) {
+        Array<float> arr = data.getSlice(0, Slicer(IPosition(3, i, j, 0), length));
         nr++;
       }
     }
@@ -414,13 +414,13 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(1, 2));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int j = 0; j < cubeShape(1); j++) {
-      for (Int i = 0; i < cubeShape(0); i++) {
-        Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, i, j, 0), length));
+    for (int j = 0; j < cubeShape(1); j++) {
+      for (int i = 0; i < cubeShape(0); i++) {
+        Array<float> arr = data.getSlice(0, Slicer(IPosition(3, i, j, 0), length));
         nr++;
       }
     }
@@ -436,13 +436,13 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data2");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(3, 1, 2, 0));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int i = 0; i < cubeShape(0); i++) {
-      for (Int j = 0; j < cubeShape(2); j++) {
-        Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, i, 0, j), length));
+    for (int i = 0; i < cubeShape(0); i++) {
+      for (int j = 0; j < cubeShape(2); j++) {
+        Array<float> arr = data.getSlice(0, Slicer(IPosition(3, i, 0, j), length));
         nr++;
       }
     }
@@ -458,13 +458,13 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(1, 1));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int j = 0; j < cubeShape(2); j++) {
-      for (Int i = 0; i < cubeShape(0); i++) {
-        Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, i, 0, j), length));
+    for (int j = 0; j < cubeShape(2); j++) {
+      for (int i = 0; i < cubeShape(0); i++) {
+        Array<float> arr = data.getSlice(0, Slicer(IPosition(3, i, 0, j), length));
         nr++;
       }
     }
@@ -480,13 +480,13 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data2");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(2, 0, 2));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int i = 0; i < cubeShape(1); i++) {
-      for (Int j = 0; j < cubeShape(2); j++) {
-        Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, 0, i, j), length));
+    for (int i = 0; i < cubeShape(1); i++) {
+      for (int j = 0; j < cubeShape(2); j++) {
+        Array<float> arr = data.getSlice(0, Slicer(IPosition(3, 0, i, j), length));
         nr++;
       }
     }
@@ -502,13 +502,13 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition());
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int j = 0; j < cubeShape(2); j++) {
-      for (Int i = 0; i < cubeShape(1); i++) {
-        Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, 0, i, j), length));
+    for (int j = 0; j < cubeShape(2); j++) {
+      for (int i = 0; i < cubeShape(1); i++) {
+        Array<float> arr = data.getSlice(0, Slicer(IPosition(3, 0, i, j), length));
         nr++;
       }
     }
@@ -524,12 +524,12 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data2");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition());
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int j = 0; j < cubeShape(2); j++) {
-      Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, 0, 0, j), length));
+    for (int j = 0; j < cubeShape(2); j++) {
+      Array<float> arr = data.getSlice(0, Slicer(IPosition(3, 0, 0, j), length));
       nr++;
     }
     cout << "arrayPlane x,y along z" << " (" << nr << " passes)" << endl;
@@ -544,12 +544,12 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(3, 0, 2, 1));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int j = 0; j < cubeShape(1); j++) {
-      Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, 0, j, 0), length));
+    for (int j = 0; j < cubeShape(1); j++) {
+      Array<float> arr = data.getSlice(0, Slicer(IPosition(3, 0, j, 0), length));
       nr++;
     }
     cout << "arrayPlane x,z along y" << " (" << nr << " passes)" << endl;
@@ -564,12 +564,12 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     Table table("tTiledCellStM_1_tmp.data2");
     ROTiledStManAccessor accessor(table, "TSMExample");
     accessor.setCacheSize(0, length, IPosition(3, 1, 2, 0));
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    for (Int j = 0; j < cubeShape(0); j++) {
-      Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, j, 0, 0), length));
+    for (int j = 0; j < cubeShape(0); j++) {
+      Array<float> arr = data.getSlice(0, Slicer(IPosition(3, j, 0, 0), length));
       nr++;
     }
     cout << "arrayPlane y,z along x" << " (" << nr << " passes)" << endl;
@@ -584,18 +584,18 @@ void traverse(const IPosition& cubeShape, const IPosition& tileShape) {
     ROTiledStManAccessor accessor(table, "TSMExample");
     IPosition length(3, cubeShape(0), cubeShape(1), tileShape(2));
     accessor.setCacheSize(0, length, IPosition());
-    ArrayColumn<Float> data(table, "Data");
-    Array<Float> result;
-    uInt nr = 0;
+    ArrayColumn<float> data(table, "Data");
+    Array<float> result;
+    unsigned int nr = 0;
     timer.mark();
-    Int last = cubeShape(2) % tileShape(2);
+    int last = cubeShape(2) % tileShape(2);
     if (last == 0) last = tileShape(2);
-    Int nrk = (cubeShape(2) - 1) / tileShape(2);
-    for (Int k = 0; k <= nrk; k++) {
+    int nrk = (cubeShape(2) - 1) / tileShape(2);
+    for (int k = 0; k <= nrk; k++) {
       if (k == nrk) {
         length(2) = last;
       }
-      Array<Float> arr = data.getSlice(0, Slicer(IPosition(3, 0, 0, k * tileShape(2)), length));
+      Array<float> arr = data.getSlice(0, Slicer(IPosition(3, 0, 0, k * tileShape(2)), length));
       nr++;
     }
     cout << "array x,y,z along z-tiles" << " (" << nr << " passes)" << endl;

@@ -50,7 +50,7 @@
 // </summary>
 
 // Create and fill a new table.
-void newtab(uInt nrrow, const DataManager& stman) {
+void newtab(unsigned int nrrow, const DataManager& stman) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ScalarColumnDesc<String>("str1"));
@@ -71,10 +71,10 @@ void newtab(uInt nrrow, const DataManager& stman) {
   td.addColumn(ArrayColumnDesc<bool>("ba2", -1, ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<bool>("ba3"));
 
-  td.addColumn(ScalarColumnDesc<Float>("f1"));
-  td.addColumn(ArrayColumnDesc<Float>("fa1", IPosition(2, 2, 3), ColumnDesc::Direct));
-  td.addColumn(ArrayColumnDesc<Float>("fa2", -1, ColumnDesc::FixedShape));
-  td.addColumn(ArrayColumnDesc<Float>("fa3"));
+  td.addColumn(ScalarColumnDesc<float>("f1"));
+  td.addColumn(ArrayColumnDesc<float>("fa1", IPosition(2, 2, 3), ColumnDesc::Direct));
+  td.addColumn(ArrayColumnDesc<float>("fa2", -1, ColumnDesc::FixedShape));
+  td.addColumn(ArrayColumnDesc<float>("fa3"));
 
   td.addColumn(ScalarColumnDesc<DComplex>("dc1"));
   td.addColumn(ArrayColumnDesc<DComplex>("dca1", IPosition(2, 2, 3), ColumnDesc::Direct));
@@ -104,15 +104,15 @@ void newtab(uInt nrrow, const DataManager& stman) {
   ArrayColumn<bool> ba1(tab, "ba1");
   ArrayColumn<bool> ba2(tab, "ba2");
   ArrayColumn<bool> ba3(tab, "ba3");
-  ScalarColumn<Float> f1(tab, "f1");
-  ArrayColumn<Float> fa1(tab, "fa1");
-  ArrayColumn<Float> fa2(tab, "fa2");
-  ArrayColumn<Float> fa3(tab, "fa3");
+  ScalarColumn<float> f1(tab, "f1");
+  ArrayColumn<float> fa1(tab, "fa1");
+  ArrayColumn<float> fa2(tab, "fa2");
+  ArrayColumn<float> fa3(tab, "fa3");
   ScalarColumn<DComplex> dc1(tab, "dc1");
   ArrayColumn<DComplex> dca1(tab, "dca1");
   ArrayColumn<DComplex> dca2(tab, "dca2");
   ArrayColumn<DComplex> dca3(tab, "dca3");
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     AlwaysAssertExit(str1(i) == "");
     AlwaysAssertExit(str2(i) == "");
     AlwaysAssertExit(allEQ(stra1(i), emptyArray));
@@ -159,7 +159,7 @@ void newtab(uInt nrrow, const DataManager& stman) {
     ba2.put(i, boolArray);
     b1.put(i, false);
   }
-  fa3.put(nrrow - 1, Array<Float>());
+  fa3.put(nrrow - 1, Array<float>());
   dca3.put(nrrow - 1, Array<DComplex>(IPosition(2, 2, 0)));
   AlwaysAssertExit(fa3.isDefined(nrrow - 1));
   AlwaysAssertExit(dca3.isDefined(nrrow - 1));
@@ -182,16 +182,16 @@ void checktab1() {
   ArrayColumn<bool> ba1(tab, "ba1");
   ArrayColumn<bool> ba2(tab, "ba2");
   ArrayColumn<bool> ba3(tab, "ba3");
-  ScalarColumn<Float> f1(tab, "f1");
-  ArrayColumn<Float> fa1(tab, "fa1");
-  ArrayColumn<Float> fa2(tab, "fa2");
-  ArrayColumn<Float> fa3(tab, "fa3");
+  ScalarColumn<float> f1(tab, "f1");
+  ArrayColumn<float> fa1(tab, "fa1");
+  ArrayColumn<float> fa2(tab, "fa2");
+  ArrayColumn<float> fa3(tab, "fa3");
   ScalarColumn<DComplex> dc1(tab, "dc1");
   ArrayColumn<DComplex> dca1(tab, "dca1");
   ArrayColumn<DComplex> dca2(tab, "dca2");
   ArrayColumn<DComplex> dca3(tab, "dca3");
-  uInt nrrow = tab.nrow();
-  for (uInt i = 0; i < nrrow; i++) {
+  unsigned int nrrow = tab.nrow();
+  for (unsigned int i = 0; i < nrrow; i++) {
     AlwaysAssertExit(str1(i) == "");
     AlwaysAssertExit(str2(i) == "");
     AlwaysAssertExit(allEQ(stra1(i), emptyArray));
@@ -253,9 +253,9 @@ void checktab(const String& prefix) {
   filledArray(IPosition(2, 1, 1)) = "str_11_";
   filledArray(IPosition(2, 1, 2)) = "str_12_";
 
-  Array<Float> arrf(IPosition(2, 2, 3));
+  Array<float> arrf(IPosition(2, 2, 3));
   indgen(arrf);
-  Array<Double> arrd(IPosition(2, 4, 3));
+  Array<double> arrd(IPosition(2, 4, 3));
   indgen(arrd);
   Array<DComplex> arrdc = RealToComplex(arrd);
   Array<bool> arrb = (fmod(arrf, float(4)) == float(0));
@@ -270,21 +270,21 @@ void checktab(const String& prefix) {
   ArrayColumn<bool> ba1(tab, "ba1");
   ArrayColumn<bool> ba2(tab, "ba2");
   ArrayColumn<bool> ba3(tab, "ba3");
-  ScalarColumn<Float> f1(tab, "f1");
-  ArrayColumn<Float> fa1(tab, "fa1");
-  ArrayColumn<Float> fa2(tab, "fa2");
-  ArrayColumn<Float> fa3(tab, "fa3");
+  ScalarColumn<float> f1(tab, "f1");
+  ArrayColumn<float> fa1(tab, "fa1");
+  ArrayColumn<float> fa2(tab, "fa2");
+  ArrayColumn<float> fa3(tab, "fa3");
   ScalarColumn<DComplex> dc1(tab, "dc1");
   ArrayColumn<DComplex> dca1(tab, "dca1");
   ArrayColumn<DComplex> dca2(tab, "dca2");
   ArrayColumn<DComplex> dca3(tab, "dca3");
 
-  uInt nrrow = tab.nrow();
+  unsigned int nrrow = tab.nrow();
   char buf[8];
   {
     String s1(prefix + "str1_");
     String s2(prefix + "str2_");
-    for (uInt i = 0; i < nrrow; i++) {
+    for (unsigned int i = 0; i < nrrow; i++) {
       snprintf(buf, sizeof(buf), "%d", i);
       s1 += buf;
       s2 += buf;
@@ -370,15 +370,15 @@ void checktab(const String& prefix) {
     Array<bool> barr1 = ba1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<bool> barr2 = ba2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<bool> barr3 = ba3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    Vector<Float> fvec1 = f1.getColumn();
-    Array<Float> farr1 = fa1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    Array<Float> farr2 = fa2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    Array<Float> farr3 = fa3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
+    Vector<float> fvec1 = f1.getColumn();
+    Array<float> farr1 = fa1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
+    Array<float> farr2 = fa2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
+    Array<float> farr3 = fa3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Vector<DComplex> dcvec1 = dc1.getColumn();
     Array<DComplex> dcarr1 = dca1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<DComplex> dcarr2 = dca2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<DComplex> dcarr3 = dca3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    for (uInt i = 0; i < nrrow; i++) {
+    for (unsigned int i = 0; i < nrrow; i++) {
       snprintf(buf, sizeof(buf), "%d", i);
       s1 += buf;
       s2 += buf;
@@ -445,11 +445,11 @@ void checktab(const String& prefix) {
                             .reform(IPosition(2, 1, 2 * nrrow));
     Array<bool> barr3 = ba3.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                             .reform(IPosition(2, 1, 2 * nrrow));
-    Array<Float> farr1 = fa1.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
+    Array<float> farr1 = fa1.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                              .reform(IPosition(2, 1, 2 * nrrow));
-    Array<Float> farr2 = fa2.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
+    Array<float> farr2 = fa2.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                              .reform(IPosition(2, 1, 2 * nrrow));
-    Array<Float> farr3 = fa3.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
+    Array<float> farr3 = fa3.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                              .reform(IPosition(2, 1, 2 * nrrow));
     Array<DComplex> dcarr1 = dca1.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                                  .reform(IPosition(2, 1, 2 * nrrow));
@@ -457,7 +457,7 @@ void checktab(const String& prefix) {
                                  .reform(IPosition(2, 1, 2 * nrrow));
     Array<DComplex> dcarr3 = dca3.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                                  .reform(IPosition(2, 1, 2 * nrrow));
-    for (uInt i = 0; i < nrrow; i++) {
+    for (unsigned int i = 0; i < nrrow; i++) {
       snprintf(buf, sizeof(buf), "%d", i);
       s1 += buf;
       s2 += buf;
@@ -521,9 +521,9 @@ void extab(const String& prefix) {
   filledArray(IPosition(2, 1, 1)) = "str_11_";
   filledArray(IPosition(2, 1, 2)) = "str_12_";
 
-  Array<Float> arrf(IPosition(2, 2, 3));
+  Array<float> arrf(IPosition(2, 2, 3));
   indgen(arrf);
-  Array<Double> arrd(IPosition(2, 4, 3));
+  Array<double> arrd(IPosition(2, 4, 3));
   indgen(arrd);
   Array<DComplex> arrdc = RealToComplex(arrd);
   Array<bool> arrb = (fmod(arrf, float(4)) == float(0));
@@ -538,10 +538,10 @@ void extab(const String& prefix) {
   ArrayColumn<bool> ba1(tab, "ba1");
   ArrayColumn<bool> ba2(tab, "ba2");
   ArrayColumn<bool> ba3(tab, "ba3");
-  ScalarColumn<Float> f1(tab, "f1");
-  ArrayColumn<Float> fa1(tab, "fa1");
-  ArrayColumn<Float> fa2(tab, "fa2");
-  ArrayColumn<Float> fa3(tab, "fa3");
+  ScalarColumn<float> f1(tab, "f1");
+  ArrayColumn<float> fa1(tab, "fa1");
+  ArrayColumn<float> fa2(tab, "fa2");
+  ArrayColumn<float> fa3(tab, "fa3");
   ScalarColumn<DComplex> dc1(tab, "dc1");
   ArrayColumn<DComplex> dca1(tab, "dca1");
   ArrayColumn<DComplex> dca2(tab, "dca2");
@@ -550,8 +550,8 @@ void extab(const String& prefix) {
   char buf[8];
   String s1(prefix + "str1_");
   String s2(prefix + "str2_");
-  uInt nrrow = tab.nrow();
-  for (uInt i = 0; i < nrrow; i++) {
+  unsigned int nrrow = tab.nrow();
+  for (unsigned int i = 0; i < nrrow; i++) {
     snprintf(buf, sizeof(buf), "%d", i);
     s1 += buf;
     s2 += buf;
@@ -592,10 +592,10 @@ void extab(const String& prefix) {
   checktab(prefix);
 }
 
-void doTest(uInt nrrow, const DataManager& stman) {
+void doTest(unsigned int nrrow, const DataManager& stman) {
   newtab(nrrow, stman);
   checktab1();
-  for (uInt i = 0; i < 4; i++) {
+  for (unsigned int i = 0; i < 4; i++) {
     extab("");
     checktab("");
   }
@@ -604,8 +604,8 @@ void doTest(uInt nrrow, const DataManager& stman) {
 }
 
 int main(int argc, const char* argv[]) {
-  uInt nrrow = 10;
-  uInt bucketSize = 500;
+  unsigned int nrrow = 10;
+  unsigned int bucketSize = 500;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nrrow;

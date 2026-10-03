@@ -44,7 +44,7 @@ T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, bool doTryGenSort) cons
   }
   // # Try if we can use the faster GenSort when we have one key only.
   if (doTryGenSort && nrkey_p == 1) {
-    uInt n = keys_p[0]->tryGenSort(indexVector, nrrec, opt);
+    unsigned int n = keys_p[0]->tryGenSort(indexVector, nrrec, opt);
     if (n > 0) {
       return n;
     }
@@ -63,7 +63,7 @@ T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, bool doTryGenSort) cons
 #ifdef _OPENMP
   nthr = omp_get_max_threads();
   // Do not use more threads than there are values.
-  if (uInt(nthr) > nrrec) nthr = nrrec;
+  if (static_cast<unsigned int>(nthr) > nrrec) nthr = nrrec;
 #endif
   if (type == DefaultSort) {
     type = (nrrec < 1000 || nthr == 1 ? QuickSort : ParSort);
@@ -141,7 +141,7 @@ T Sort::doUnique(Vector<T>& uniqueVector, Vector<size_t>& changeKey,
   T nruniq = 1;
   size_t idxComp;
   for (T i = 1; i < nrrec; i++) {
-    Int cmp = compareChangeIdx(inx[i - 1], inx[i], idxComp);
+    int cmp = compareChangeIdx(inx[i - 1], inx[i], idxComp);
     if (cmp != 1 && cmp != -1) {
       change[nruniq - 1] = idxComp;
       uniq[nruniq++] = i;

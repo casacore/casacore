@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 BaseTableIterator::BaseTableIterator(const std::shared_ptr<BaseTable>& btp,
                                      const Block<String>& keys,
                                      const Block<std::shared_ptr<BaseCompare>>& cmp,
-                                     const Block<Int>& order, int option,
+                                     const Block<int>& order, int option,
                                      bool cacheIterationBoundaries)
     : lastRow_p(0),
       nrkeys_p(keys.nelements()),
@@ -68,8 +68,8 @@ BaseTableIterator::BaseTableIterator(const std::shared_ptr<BaseTable>& btp,
     } else if (option == TableIterator::InsSort) {
       sortopt = Sort::InsSort;
     }
-    Block<Int> ord(nrkeys_p, Sort::Ascending);
-    for (uInt i = 0; i < nrkeys_p; i++) {
+    Block<int> ord(nrkeys_p, Sort::Ascending);
+    for (unsigned int i = 0; i < nrkeys_p; i++) {
       if (order[i] == TableIterator::Descending) {
         ord[i] = Sort::Descending;
       }
@@ -83,7 +83,7 @@ BaseTableIterator::BaseTableIterator(const std::shared_ptr<BaseTable>& btp,
   }
   // Get the pointers to the BaseColumn object.
   // Get a buffer to hold the current and last value per column.
-  for (uInt i = 0; i < nrkeys_p; i++) {
+  for (unsigned int i = 0; i < nrkeys_p; i++) {
     colPtr_p[i] = sortTab_p->getColumn(keys[i]);
     colPtr_p[i]->allocIterBuf(lastVal_p[i], curVal_p[i], cmpObj_p[i]);
   }
@@ -113,7 +113,7 @@ BaseTableIterator::BaseTableIterator(const BaseTableIterator& that)
       aRefTable_p(nullptr) {
   // Get the pointers to the BaseColumn object.
   // Get a buffer to hold the current and last value per column.
-  for (uInt i = 0; i < nrkeys_p; i++) {
+  for (unsigned int i = 0; i < nrkeys_p; i++) {
     colPtr_p[i]->allocIterBuf(lastVal_p[i], curVal_p[i], cmpObj_p[i]);
   }
   sortTab_p = that.sortTab_p;
@@ -132,7 +132,7 @@ BaseTableIterator::BaseTableIterator(const BaseTableIterator& that)
 
 BaseTableIterator::~BaseTableIterator() {
   // Delete the value buffers.
-  for (uInt i = 0; i < nrkeys_p; i++) {
+  for (unsigned int i = 0; i < nrkeys_p; i++) {
     colPtr_p[i]->freeIterBuf(lastVal_p[i], curVal_p[i]);
   }
 }
@@ -204,14 +204,14 @@ std::shared_ptr<BaseTable> BaseTableIterator::noCachedIterBoundariesNext() {
   }
   // Add the last found rownr to this iteration group.
   itp->addRownr(lastRow_p);
-  for (uInt i = 0; i < nrkeys_p; i++) {
+  for (unsigned int i = 0; i < nrkeys_p; i++) {
     colPtr_p[i]->get(lastRow_p, lastVal_p[i]);
   }
   bool match;
   rownr_t nr = sortTab_p->nrow();
   while (++lastRow_p < nr) {
     match = true;
-    for (uInt i = 0; i < nrkeys_p; i++) {
+    for (unsigned int i = 0; i < nrkeys_p; i++) {
       colPtr_p[i]->get(lastRow_p, curVal_p[i]);
       if (cmpObj_p[i]->comp(curVal_p[i], lastVal_p[i]) != 0) {
         match = false;

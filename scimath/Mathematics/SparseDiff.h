@@ -293,11 +293,11 @@ class SparseDiff {
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // nth derivative is one, and all other derivatives are zero.
-  SparseDiff(const T &v, const uInt n);
+  SparseDiff(const T &v, const unsigned int n);
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // nth derivative is der, and all other derivatives are zero.
-  SparseDiff(const T &v, const uInt n, const T &der);
+  SparseDiff(const T &v, const unsigned int n, const T &der);
 
   // Construct from an AutoDiff
   SparseDiff(const AutoDiff<T> &other);
@@ -312,10 +312,10 @@ class SparseDiff {
   SparseDiff<T> &operator=(const T &v);
 
   // Assignment operator.  Add a gradient to variable.
-  SparseDiff<T> &operator=(const pair<uInt, T> &der);
+  SparseDiff<T> &operator=(const pair<unsigned int, T> &der);
 
   // Assignment operator.  Assign gradients to variable.
-  SparseDiff<T> &operator=(const vector<pair<uInt, T>> &der);
+  SparseDiff<T> &operator=(const vector<pair<unsigned int, T>> &der);
 
   // Assign from an Autodiff
   SparseDiff<T> &operator=(const AutoDiff<T> &other);
@@ -342,7 +342,7 @@ class SparseDiff {
   // </group>
 
   // Convert to an AutoDiff of length <em>n</em>
-  AutoDiff<T> toAutoDiff(uInt n) const;
+  AutoDiff<T> toAutoDiff(unsigned int n) const;
 
   // Returns the pointer to the structure of value and derivatives.
   // <group>
@@ -358,26 +358,26 @@ class SparseDiff {
 
   // Returns a vector of the derivatives of a SparseDiff
   // <group>
-  vector<pair<uInt, T>> &derivatives() const;
-  void derivatives(vector<pair<uInt, T>> &res) const;
-  const vector<pair<uInt, T>> &grad() const { return rep_p->grad_p; }
-  vector<pair<uInt, T>> &grad() { return rep_p->grad_p; }
+  vector<pair<unsigned int, T>> &derivatives() const;
+  void derivatives(vector<pair<unsigned int, T>> &res) const;
+  const vector<pair<unsigned int, T>> &grad() const { return rep_p->grad_p; }
+  vector<pair<unsigned int, T>> &grad() { return rep_p->grad_p; }
   // </group>
 
   // Returns a specific derivative. No check for a valid which.
   // <group>
-  pair<uInt, T> &derivative(uInt which) { return rep_p->grad_p[which]; }
-  const pair<uInt, T> &derivative(uInt which) const { return rep_p->grad_p[which]; }
+  pair<unsigned int, T> &derivative(unsigned int which) { return rep_p->grad_p[which]; }
+  const pair<unsigned int, T> &derivative(unsigned int which) const { return rep_p->grad_p[which]; }
   // </group>
 
   // Return total number of derivatives
-  uInt nDerivatives() const { return rep_p->grad_p.size(); }
+  unsigned int nDerivatives() const { return rep_p->grad_p.size(); }
 
   // Is it a constant, i.e., with zero derivatives?
   bool isConstant() const { return rep_p->grad_p.empty(); }
 
   // Sort criterium
-  static bool ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs);
+  static bool ltSort(pair<unsigned int, T> &lhs, pair<unsigned int, T> &rhs);
 
   // Sort derivative list; cater for doubles and zeroes
   void sort();

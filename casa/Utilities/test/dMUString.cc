@@ -87,9 +87,9 @@ int main() {
   try {
     String in = "12.5pm";
     String bb;
-    Int ptr = 0;
-    Int l = in.length();
-    Double res = 0.0;
+    int ptr = 0;
+    int l = in.length();
+    double res = 0.0;
     if (ptr < l) {
       String loc0 = in;  // non-const string
       size_t p = in.find_first_of(" 	", ptr);

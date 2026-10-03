@@ -190,8 +190,8 @@ class UVWMachine {
   // # Operators
   //  Return converted UVW coordinates
   //  <group>
-  Vector<Double> operator()(const Vector<Double> &uv) const;
-  Vector<Vector<Double>> operator()(const Vector<Vector<Double>> &uv) const;
+  Vector<double> operator()(const Vector<double> &uv) const;
+  Vector<Vector<double>> operator()(const Vector<Vector<double>> &uv) const;
   MVPosition operator()(const MVPosition &uv) const;
   Vector<MVPosition> operator()(const Vector<MVPosition> &uv) const;
   // </group>
@@ -209,24 +209,24 @@ class UVWMachine {
   const MVPosition &rotationPhase() const;
   // replace UVW with converted values
   // <group>
-  void convertUVW(Vector<Double> &uv) const;
-  void convertUVW(Vector<Vector<Double>> &uv) const;
+  void convertUVW(Vector<double> &uv) const;
+  void convertUVW(Vector<Vector<double>> &uv) const;
   void convertUVW(MVPosition &uv) const;
   void convertUVW(Vector<MVPosition> &uv) const;
   // </group>
   // Get phase shift (in implied units of UVW), and change input uvw as well
   // <group>
-  Double getPhase(Vector<Double> &uv) const;
-  Vector<Double> getPhase(Vector<Vector<Double>> &uv) const;
-  Double getPhase(MVPosition &uv) const;
-  Vector<Double> getPhase(Vector<MVPosition> &uv) const;
+  double getPhase(Vector<double> &uv) const;
+  Vector<double> getPhase(Vector<Vector<double>> &uv) const;
+  double getPhase(MVPosition &uv) const;
+  Vector<double> getPhase(Vector<MVPosition> &uv) const;
   // </group>
   // Replace UVW with converted, and return phase
   // <group>
-  void convertUVW(Double &phase, Vector<Double> &uv) const;
-  void convertUVW(Vector<Double> &phase, Vector<Vector<Double>> &uv) const;
-  void convertUVW(Double &phase, MVPosition &uv) const;
-  void convertUVW(Vector<Double> &phase, Vector<MVPosition> &uv) const;
+  void convertUVW(double &phase, Vector<double> &uv) const;
+  void convertUVW(Vector<double> &phase, Vector<Vector<double>> &uv) const;
+  void convertUVW(double &phase, MVPosition &uv) const;
+  void convertUVW(Vector<double> &phase, Vector<MVPosition> &uv) const;
   // </group>
 
   // Recalculate the parameters for the machine after e.g. a frame change

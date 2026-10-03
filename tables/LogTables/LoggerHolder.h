@@ -351,7 +351,7 @@ class LogHolderIterEntry {
  public:
   LogHolderIterEntry() : itsSink(0), itsIndex(0) {}
 
-  LogHolderIterEntry(const LogSink* sink, uInt index) : itsSink(sink), itsIndex(index) {}
+  LogHolderIterEntry(const LogSink* sink, unsigned int index) : itsSink(sink), itsIndex(index) {}
 
   LogHolderIterEntry(const LogHolderIterEntry& that)
       : itsSink(that.itsSink), itsIndex(that.itsIndex) {}
@@ -366,7 +366,7 @@ class LogHolderIterEntry {
 
   // Get the message parts.
   // <group>
-  Double time() const { return itsSink->getTime(itsIndex); }
+  double time() const { return itsSink->getTime(itsIndex); }
   String message() const { return itsSink->getMessage(itsIndex); }
   String priority() const { return itsSink->getPriority(itsIndex); }
   String location() const { return itsSink->getLocation(itsIndex); }
@@ -375,7 +375,7 @@ class LogHolderIterEntry {
 
  private:
   const LogSink* itsSink;
-  uInt itsIndex;
+  unsigned int itsIndex;
 };
 
 // <summary>
@@ -426,7 +426,7 @@ class LogHolderIter {
   const LoggerHolder* itsLogger;
   bool itsTempClosed;
   LogHolderIter* itsParentIter;
-  uInt itsCounter;
+  unsigned int itsCounter;
   LogHolderIterEntry itsEntry;
 };
 

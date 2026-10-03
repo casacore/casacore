@@ -43,12 +43,12 @@ class AipsrcVector;
 class Aipsrc;
 
 // # Typedefs
-typedef AipsrcValue<Double> AipsrcDouble;
-typedef AipsrcValue<Int> AipsrcInt;
+typedef AipsrcValue<double> AipsrcDouble;
+typedef AipsrcValue<int> AipsrcInt;
 typedef AipsrcValue<bool> AipsrcBool;
 typedef Aipsrc AipsrcString;
-typedef AipsrcVector<Double> AipsrcVDouble;
-typedef AipsrcVector<Int> AipsrcVInt;
+typedef AipsrcVector<double> AipsrcVDouble;
+typedef AipsrcVector<int> AipsrcVInt;
 typedef AipsrcVector<bool> AipsrcVBool;
 typedef AipsrcVector<String> AipsrcVString;
 
@@ -241,8 +241,8 @@ class Aipsrc {
   // found). Matching is minimax, case insensitive. Always better to use
   // the one with default. return is false if no keyword or no match.
   // <group>
-  static bool find(uInt &value, const String &keyword, Int Nname, const String tname[]);
-  static bool find(uInt &value, const String &keyword, const Vector<String> &tname);
+  static bool find(unsigned int &value, const String &keyword, int Nname, const String tname[]);
+  static bool find(unsigned int &value, const String &keyword, const Vector<String> &tname);
   // </group>
   // This find usually saves you some lines of code, since you can supply the
   // default you want to use when no such keyword is defined.
@@ -251,9 +251,9 @@ class Aipsrc {
   // <group>
   static bool find(String &value, const String &keyword, const String &default_value);
   static bool findNoHome(String &value, const String &keyword, const String &default_value);
-  static bool find(uInt &value, const String &keyword, Int Nname, const String tname[],
+  static bool find(unsigned int &value, const String &keyword, int Nname, const String tname[],
                    const String &default_value);
-  static bool find(uInt &value, const String &keyword, const Vector<String> &tname,
+  static bool find(unsigned int &value, const String &keyword, const Vector<String> &tname,
                    const String &default_value);
   // </group>
 
@@ -270,32 +270,32 @@ class Aipsrc {
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
   // <group>
-  static uInt registerRC(const String &keyword, const String &default_value);
-  static uInt registerRC(const String &keyword, Int Nname, const String tname[],
+  static unsigned int registerRC(const String &keyword, const String &default_value);
+  static unsigned int registerRC(const String &keyword, int Nname, const String tname[],
                          const String &default_value);
-  static uInt registerRC(const String &keyword, const Vector<String> &tname,
+  static unsigned int registerRC(const String &keyword, const Vector<String> &tname,
                          const String &default_value);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
   // <group>
-  static const String &get(uInt keyword);
+  static const String &get(unsigned int keyword);
   // get for code
-  static const uInt &get(uInt &code, uInt keyword);
+  static const unsigned int &get(unsigned int &code, unsigned int keyword);
   // </group>
 
   // Sets allow registered values to be set
   // <group>
-  static void set(uInt keyword, const String &default_value);
-  static void set(uInt keyword, Int Nname, const String tname[], const String &default_value);
-  static void set(uInt keyword, const Vector<String> &tname, const String &default_value);
+  static void set(unsigned int keyword, const String &default_value);
+  static void set(unsigned int keyword, int Nname, const String tname[], const String &default_value);
+  static void set(unsigned int keyword, const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Save a registered keyword value to <src>$HOME/.aipsrc</src>
   // <group>
-  static void save(uInt keyword);
-  static void save(uInt keyword, const String tname[]);
-  static void save(uInt keyword, const Vector<String> &tname);
+  static void save(unsigned int keyword);
+  static void save(unsigned int keyword, const String tname[]);
+  static void save(unsigned int keyword, const Vector<String> &tname);
   // </group>
 
   // Set an AIPSPATH that should be used in stead of a global AIPSPATH.
@@ -326,7 +326,7 @@ class Aipsrc {
   // <src>lastRead()</src> returns the time last reRead.
   // <group>
   static void reRead();
-  static Double lastRead();
+  static double lastRead();
   // </group>
 
   // The following functions return the full lists of available data. They could
@@ -345,7 +345,7 @@ class Aipsrc {
   // <group>
   // Read aipsrc type files (without wildcards), and return the unique names
   // and values in the Vector arguments. The return value is number of names.
-  static uInt genRestore(Vector<String> &namlst, Vector<String> &vallst, const String &fileList);
+  static unsigned int genRestore(Vector<String> &namlst, Vector<String> &vallst, const String &fileList);
   // Save the names/values in file
   static void genSave(Vector<String> &namlst, Vector<String> &vallst, const String &fnam);
   // Set (new or overwrite) keyword/value pair
@@ -360,11 +360,11 @@ class Aipsrc {
 
  protected:
   // Actual find function
-  static bool find(String &value, const String &keyword, uInt start);
+  static bool find(String &value, const String &keyword, unsigned int start);
   // Actual find function to use during parse() without recursing into parse()
-  static bool findNoParse(String &value, const String &keyword, uInt start);
+  static bool findNoParse(String &value, const String &keyword, unsigned int start);
   // The registration function
-  static uInt registerRC(const String &keyword, std::vector<String> &nlst);
+  static unsigned int registerRC(const String &keyword, std::vector<String> &nlst);
   // Actual saving
   static void save(const String keyword, const String val);
 
@@ -373,13 +373,13 @@ class Aipsrc {
   //  Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirCallOnceFlag;
   // Last time data was (re)read
-  static Double lastParse;
+  static double lastParse;
   // List of values belonging to keywords found
   static Block<String> keywordValue;
   // List of patterns deducted from names
   static Block<String> keywordPattern;
   // The start of the non-home values
-  static uInt fileEnd;
+  static unsigned int fileEnd;
   // The possibly set external AIPSPATH
   static String extAipsPath;
   // AIPSROOT
@@ -400,7 +400,7 @@ class Aipsrc {
   // <group>
   static std::vector<String> string_values_;
   static std::vector<String> string_names_;
-  static std::vector<uInt> coded_values_;
+  static std::vector<unsigned int> coded_values_;
   static std::vector<String> coded_names_;
   // </group>
 
@@ -417,11 +417,11 @@ class Aipsrc {
   // The following parse function can be used for any list of files. It will
   // return the list of Patterns and values found, and the last keyword number
   // of first file in list.
-  static uInt genParse(Block<String> &keywordPattern, Block<String> &keywordValue, uInt &fileEnd,
+  static unsigned int genParse(Block<String> &keywordPattern, Block<String> &keywordValue, unsigned int &fileEnd,
                        const String &fileList);
 
   // Locate the right keyword in the static maps
-  static bool matchKeyword(uInt &where, const String &keyword, uInt start);
+  static bool matchKeyword(unsigned int &where, const String &keyword, unsigned int start);
   // Fill in root, arch, site, host and home
   static void fillAips();
 };

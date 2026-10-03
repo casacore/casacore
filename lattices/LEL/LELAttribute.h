@@ -84,7 +84,7 @@ class LELAttribute {
                const LELCoordinates& coordinates, bool isReduced = false);
 
   // Constructor sets it as a region with given attributes.
-  explicit LELAttribute(uInt regionNdim);
+  explicit LELAttribute(unsigned int regionNdim);
 
   // Copy constructor (copy semantics)
   LELAttribute(const LELAttribute& attr);
@@ -124,7 +124,7 @@ class LELAttribute {
   const LELCoordinates& coordinates() const { return coords_p; }
 
   // Compare the coordinates and shapes to see if this is a subset of other.
-  Int compareCoord(const LELAttribute& other) const;
+  int compareCoord(const LELAttribute& other) const;
 
  private:
   bool isScalar_p;

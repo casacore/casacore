@@ -78,7 +78,7 @@ bool RegionHandlerMemory::defineRegion(const String& name, const ImageRegion& re
                                        RegionHandler::GroupType type, bool overwrite) {
   // First check if the region is already defined in "regions" or "masks".
   // If so, remove it if possible. Otherwise throw an exception.
-  Int groupField = findRegionGroup(name, RegionHandler::Any, false);
+  int groupField = findRegionGroup(name, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (!overwrite) {
       throw(
@@ -105,11 +105,11 @@ bool RegionHandlerMemory::hasRegion(const String& name, RegionHandler::GroupType
 bool RegionHandlerMemory::renameRegion(const String& newName, const String& oldName,
                                        RegionHandler::GroupType type, bool overwrite) {
   // Check that the region exists.
-  Int oldGroupField = findRegionGroup(oldName, type, true);
+  int oldGroupField = findRegionGroup(oldName, type, true);
   // First check if the region is already defined.
   // Check that the region is in the same group as the original.
   // Remove it if overwrite is true. Otherwise throw an exception.
-  Int groupField = findRegionGroup(newName, RegionHandler::Any, false);
+  int groupField = findRegionGroup(newName, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (groupField != oldGroupField) {
       throw(
@@ -148,7 +148,7 @@ bool RegionHandlerMemory::renameRegion(const String& newName, const String& oldN
 
 bool RegionHandlerMemory::removeRegion(const String& name, RegionHandler::GroupType type,
                                        bool throwIfUnknown) {
-  Int groupField = findRegionGroup(name, type, throwIfUnknown);
+  int groupField = findRegionGroup(name, type, throwIfUnknown);
   if (groupField >= 0) {
     ImageRegion* regPtr = findRegion(name, type, true);
     // Delete a possible mask table.
@@ -181,8 +181,8 @@ bool RegionHandlerMemory::removeRegion(const String& name, RegionHandler::GroupT
 }
 
 Vector<String> RegionHandlerMemory::regionNames(RegionHandler::GroupType type) const {
-  uInt nreg = 0;
-  uInt nmask = 0;
+  unsigned int nreg = 0;
+  unsigned int nmask = 0;
   if (type != RegionHandler::Masks) {
     nreg = itsMaps[0].size();
   }
@@ -190,7 +190,7 @@ Vector<String> RegionHandlerMemory::regionNames(RegionHandler::GroupType type) c
     nmask = itsMaps[1].size();
   }
   Vector<String> names(nreg + nmask);
-  uInt i = 0;
+  unsigned int i = 0;
   if (nreg > 0) {
     for (const auto& x : itsMaps[0]) {
       names[i++] = x.first;
@@ -215,14 +215,14 @@ ImageRegion* RegionHandlerMemory::getRegion(const String& name, RegionHandler::G
 
 ImageRegion* RegionHandlerMemory::findRegion(const String& name, RegionHandler::GroupType type,
                                              bool throwIfUnknown) const {
-  Int groupField = findRegionGroup(name, type, throwIfUnknown);
+  int groupField = findRegionGroup(name, type, throwIfUnknown);
   if (groupField >= 0) {
     return static_cast<ImageRegion*>(itsMaps[groupField].at(name));
   }
   return 0;
 }
 
-Int RegionHandlerMemory::findRegionGroup(const String& regionName, RegionHandler::GroupType type,
+int RegionHandlerMemory::findRegionGroup(const String& regionName, RegionHandler::GroupType type,
                                          bool throwIfUnknown) const {
   // Check if the region is defined in "regions" or "masks".
   // If so, return its number.

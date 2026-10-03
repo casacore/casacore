@@ -63,13 +63,13 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSAntennaGram = 0;
-static Int posMSAntennaGram = 0;
+static int posMSAntennaGram = 0;
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 TableExprNode baseMSAntennaGramParseCommand(MSAntennaParse* parser, const String& command,
-                                            Vector<Int>& selectedAnts1, Vector<Int>& selectedAnts2,
-                                            Matrix<Int>& selectedBaselines) {
+                                            Vector<int>& selectedAnts1, Vector<int>& selectedAnts2,
+                                            Matrix<int>& selectedBaselines) {
   try {
     MSAntennaGramrestart(MSAntennaGramin);
     yy_start = 1;
@@ -92,8 +92,8 @@ TableExprNode baseMSAntennaGramParseCommand(MSAntennaParse* parser, const String
 }
 
 TableExprNode msAntennaGramParseCommand(MSSelectableTable& msLike, const String& command,
-                                        Vector<Int>& selectedAnts1, Vector<Int>& selectedAnts2,
-                                        Matrix<Int>& selectedBaselines) {
+                                        Vector<int>& selectedAnts1, Vector<int>& selectedAnts2,
+                                        Matrix<int>& selectedBaselines) {
   TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
                 col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
 
@@ -114,8 +114,8 @@ TableExprNode msAntennaGramParseCommand(MSSelectableTable& msLike, const String&
 
 TableExprNode msAntennaGramParseCommand(Table& subTable, TableExprNode& col1TEN,
                                         TableExprNode& col2TEN, const String& command,
-                                        Vector<Int>& selectedAnts1, Vector<Int>& selectedAnts2,
-                                        Matrix<Int>& selectedBaselines) {
+                                        Vector<int>& selectedAnts1, Vector<int>& selectedAnts2,
+                                        Matrix<int>& selectedBaselines) {
   // TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
   //   col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
 
@@ -135,8 +135,8 @@ TableExprNode msAntennaGramParseCommand(Table& subTable, TableExprNode& col1TEN,
 }
 
 TableExprNode msAntennaGramParseCommand(MSAntennaParse* thisParser, const String& command,
-                                        Vector<Int>& selectedAnts1, Vector<Int>& selectedAnts2,
-                                        Matrix<Int>& selectedBaselines) {
+                                        Vector<int>& selectedAnts1, Vector<int>& selectedAnts2,
+                                        Matrix<int>& selectedBaselines) {
   TableExprNode antennaTEN;
   try {
     antennaTEN = baseMSAntennaGramParseCommand(thisParser, command, selectedAnts1, selectedAnts2,
@@ -150,8 +150,8 @@ TableExprNode msAntennaGramParseCommand(MSAntennaParse* thisParser, const String
 }
 
 TableExprNode msAntennaGramParseCommand(const MeasurementSet* ms, const String& command,
-                                        Vector<Int>& selectedAnts1, Vector<Int>& selectedAnts2,
-                                        Matrix<Int>& selectedBaselines) {
+                                        Vector<int>& selectedAnts1, Vector<int>& selectedAnts2,
+                                        Matrix<int>& selectedBaselines) {
   TableExprNode antennaTEN;
   TableExprNode col1AsTEN = ms->col(ms->columnName(MS::ANTENNA1)),
                 col2AsTEN = ms->col(ms->columnName(MS::ANTENNA2));
@@ -192,7 +192,7 @@ TableExprNode msAntennaGramParseCommand(const MeasurementSet* ms, const String& 
 }
 
 // # Give the string position.
-Int& msAntennaGramPosition() { return posMSAntennaGram; }
+int& msAntennaGramPosition() { return posMSAntennaGram; }
 
 // # Get the next input characters for flex.
 int msAntennaGramInput(char* buf, int max_size) {

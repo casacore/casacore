@@ -36,7 +36,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 RegularFileIO::RegularFileIO(const RegularFile& regularFile, ByteIO::OpenOption option,
-                             uInt bufferSize)
+                             unsigned int bufferSize)
     : itsOption(option), itsRegularFile(regularFile) {
   int file = openCreate(regularFile, option);
   attach(file, (bufferSize == 0 ? 16384 : bufferSize));
@@ -56,7 +56,7 @@ RegularFileIO::~RegularFileIO() {
 int RegularFileIO::openCreate(const RegularFile& file, ByteIO::OpenOption option, bool useODirect) {
   const String& name = file.path().expandedName();
   bool create = false;
-  Int stropt;
+  int stropt;
   switch (option) {
     case ByteIO::Old:
       stropt = O_RDONLY;
@@ -81,7 +81,7 @@ int RegularFileIO::openCreate(const RegularFile& file, ByteIO::OpenOption option
     default:
       throw(AipsError("RegularFileIO: unknown open option"));
   }
-  Int stropt_orig = stropt;
+  int stropt_orig = stropt;
 #ifdef HAVE_O_DIRECT
   if (useODirect) {
     stropt |= O_DIRECT;
@@ -123,7 +123,7 @@ void RegularFileIO::reopenRW() {
                   "not possible for file " +
                   name + ": " + strerror(errno)));
   }
-  uInt bufsize = bufferSize();
+  unsigned int bufsize = bufferSize();
   detach(true);
   attach(file, bufsize);
   // It can be reopened, so close and reopen.

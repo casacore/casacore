@@ -128,7 +128,7 @@ class MArrayBase {
   bool empty() const { return itsSize == 0; }
 
   // Get the dimensionality.
-  uInt ndim() const { return itsShape.size(); }
+  unsigned int ndim() const { return itsShape.size(); }
 
   // Get the shape.
   const IPosition& shape() const { return itsShape; }

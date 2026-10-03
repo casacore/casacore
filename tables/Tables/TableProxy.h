@@ -175,7 +175,7 @@ class TableProxy {
   String endianFormat() const;
 
   // Acquire a (read or write) lock on the table.
-  void lock(bool mode, Int nattempts);
+  void lock(bool mode, int nattempts);
 
   // Release a lock on the table.
   void unlock();
@@ -216,7 +216,7 @@ class TableProxy {
   // shaped, the shape of the first cell is used and a warning message is
   // returned.
   String toAscii(const String& asciiFile, const String& headerFile, const Vector<String>& columns,
-                 const String& sep, const Vector<Int>& precision, bool useBrackets);
+                 const String& sep, const Vector<int>& precision, bool useBrackets);
 
   // Rename the table
   void rename(const String& newTableName);
@@ -249,7 +249,7 @@ class TableProxy {
   bool isWritable() const;
 
   // Set the maximum cache size for the given column in the table.
-  void setMaximumCacheSize(const String& columnName, Int nbytes);
+  void setMaximumCacheSize(const String& columnName, int nbytes);
 
   // Add one or more columns to the table.
   void addColumns(const Record& tableDesc, const Record& dminfo, bool addToParent);
@@ -281,12 +281,12 @@ class TableProxy {
   // If the inc vector is empty, it defaults to all 1.
   // <group>
   ValueHolder getColumnSlice(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                             const Vector<Int>& blc, const Vector<Int>& trc,
-                             const Vector<Int>& inc);
+                             const Vector<int>& blc, const Vector<int>& trc,
+                             const Vector<int>& inc);
   ValueHolder getColumnSliceIP(const String& columnName, const IPosition& blc, const IPosition& trc,
                                const IPosition& inc, Int64 row, Int64 nrow, Int64 incr);
   void getColumnSliceVH(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                        const Vector<Int>& blc, const Vector<Int>& trc, const Vector<Int>& inc,
+                        const Vector<int>& blc, const Vector<int>& trc, const Vector<int>& inc,
                         const ValueHolder& vh);
   void getColumnSliceVHIP(const String& columnName, const IPosition& blc, const IPosition& trc,
                           const IPosition& inc, Int64 row, Int64 nrow, Int64 incr,
@@ -306,7 +306,7 @@ class TableProxy {
   // Put some or all value slices into a column in the table.
   // <group>
   void putColumnSlice(const String& columnName, Int64 row, Int64 nrow, Int64 incr,
-                      const Vector<Int>& blc, const Vector<Int>& trc, const Vector<Int>& inc,
+                      const Vector<int>& blc, const Vector<int>& trc, const Vector<int>& inc,
                       const ValueHolder&);
   void putColumnSliceIP(const String& columnName, const ValueHolder&, const IPosition& blc,
                         const IPosition& trc, const IPosition& inc, Int64 row, Int64 nrow,
@@ -324,12 +324,12 @@ class TableProxy {
   // Get a value slice from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   // <group>
-  ValueHolder getCellSlice(const String& columnName, Int64 row, const Vector<Int>& blc,
-                           const Vector<Int>& trc, const Vector<Int>& inc);
+  ValueHolder getCellSlice(const String& columnName, Int64 row, const Vector<int>& blc,
+                           const Vector<int>& trc, const Vector<int>& inc);
   ValueHolder getCellSliceIP(const String& columnName, Int64 row, const IPosition& blc,
                              const IPosition& trc, const IPosition& inc);
-  void getCellSliceVH(const String& columnName, Int64 row, const Vector<Int>& blc,
-                      const Vector<Int>& trc, const Vector<Int>& inc, const ValueHolder& vh);
+  void getCellSliceVH(const String& columnName, Int64 row, const Vector<int>& blc,
+                      const Vector<int>& trc, const Vector<int>& inc, const ValueHolder& vh);
   void getCellSliceVHIP(const String& columnName, Int64 row, const IPosition& blc,
                         const IPosition& trc, const IPosition& inc, const ValueHolder& vh);
   // </group>
@@ -340,8 +340,8 @@ class TableProxy {
   // Put a value slice into a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   // <group>
-  void putCellSlice(const String& columnName, Int64 row, const Vector<Int>& blc,
-                    const Vector<Int>& trc, const Vector<Int>& inc, const ValueHolder&);
+  void putCellSlice(const String& columnName, Int64 row, const Vector<int>& blc,
+                    const Vector<int>& trc, const Vector<int>& inc, const ValueHolder&);
   void putCellSliceIP(const String& columnName, Int64 row, const ValueHolder&, const IPosition& blc,
                       const IPosition& trc, const IPosition& inc);
   // </group>
@@ -355,7 +355,7 @@ class TableProxy {
   // Get a table or column keyword value in the table.
   // If the columnName is empty, a given keyword is a table keyword.
   // The keyword can be given as a name or a 0-based index.
-  ValueHolder getKeyword(const String& columnName, const String& keywordName, Int keywordIndex);
+  ValueHolder getKeyword(const String& columnName, const String& keywordName, int keywordIndex);
 
   // Get the table or column keyword values in the table.
   // If the columnName is empty, the table keyword values are returned.
@@ -366,7 +366,7 @@ class TableProxy {
   // The keyword can be given as a name or a 0-based number.
   // The value should be a record containing the value of the keyword.
   // The value can be any type (including a record).
-  void putKeyword(const String& columnName, const String& keywordName, Int keywordIndex,
+  void putKeyword(const String& columnName, const String& keywordName, int keywordIndex,
                   bool makeSubRecord, const ValueHolder&);
 
   // Define multiple table or column keywords in the table.
@@ -378,7 +378,7 @@ class TableProxy {
 
   // Remove a table or column keyword from the table.
   // If the column name is empty, a table keyword is removed.
-  void removeKeyword(const String& columnName, const String& keywordName, Int keywordIndex);
+  void removeKeyword(const String& columnName, const String& keywordName, int keywordIndex);
 
   // Get the names of all field in a record in the table.
   // If the column name is empty, the table keywords are used.
@@ -386,7 +386,7 @@ class TableProxy {
   // Otherwise the names of all fields in the keyword value are returned.
   // In that case the value has to be a record.
   Vector<String> getFieldNames(const String& columnName, const String& keywordName,
-                               Int keywordIndex);
+                               int keywordIndex);
 
   // Get table name.
   String tableName();
@@ -395,7 +395,7 @@ class TableProxy {
   Vector<String> getPartNames(bool recursive);
 
   // Get #columns of the table.
-  Int ncolumns();
+  int ncolumns();
 
   // Get #rows of the table.
   Int64 nrows();
@@ -505,7 +505,7 @@ class TableProxy {
   static bool addArrayColumnDesc(TableDesc& tableDesc, const String& valueType,
                                  const String& columnName, const String& comment,
                                  const String& dataManagerType, const String& dataManagerGroup,
-                                 int options, Int ndim, const Vector<Int64>& shape, bool cOrder,
+                                 int options, int ndim, const Vector<Int64>& shape, bool cOrder,
                                  String& message);
 
   // Make a record containing the column description.
@@ -526,7 +526,7 @@ class TableProxy {
 
   // Check if the new shape is still the same.
   // <br> same:   0=first time;   1=still the same;   2=different
-  static void stillSameShape(Int& same, IPosition& shape, const IPosition& newShape);
+  static void stillSameShape(int& same, IPosition& shape, const IPosition& newShape);
 
   // Copy the array contents of the record fields to a single array.
   // This can only be done if the shape is constant.
@@ -541,7 +541,7 @@ class TableProxy {
     shp.append(IPosition(1, rec.size()));
     Array<T> arr(shp);
     ArrayIterator<T> iter(arr, tmp.ndim());
-    for (uInt i = 0; i < rec.size(); ++i, iter.next()) {
+    for (unsigned int i = 0; i < rec.size(); ++i, iter.next()) {
       rec.get(i, iter.array());
     }
     return arr;
@@ -553,14 +553,14 @@ class TableProxy {
 
   // Print the data in a table cell for toAscii.
   // <group>
-  void printValueHolder(const ValueHolder& vh, ostream& os, const String& sep, Int prec,
+  void printValueHolder(const ValueHolder& vh, ostream& os, const String& sep, int prec,
                         bool useBrackets) const;
   template <typename T>
   void printArray(const Array<T>& arr, ostream& os, const String& sep) const;
   void printArrayValue(ostream& os, bool v, const String&) const { os << v; }
-  void printArrayValue(ostream& os, Int v, const String&) const { os << v; }
+  void printArrayValue(ostream& os, int v, const String&) const { os << v; }
   void printArrayValue(ostream& os, Int64 v, const String&) const { os << v; }
-  void printArrayValue(ostream& os, Double v, const String&) const { os << v; }
+  void printArrayValue(ostream& os, double v, const String&) const { os << v; }
   void printArrayValue(ostream& os, const DComplex& v, const String&) const { os << v; }
   void printArrayValue(ostream& os, const String& v, const String&) const { os << '"' << v << '"'; }
   // </group>

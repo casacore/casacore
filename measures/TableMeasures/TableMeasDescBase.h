@@ -122,7 +122,7 @@ class TableMeasDescBase {
   const String& columnName() const { return itsValue.columnName(); }
 
   // Return the reference code.
-  uInt getRefCode() const { return itsRef.getRefCode(); }
+  unsigned int getRefCode() const { return itsRef.getRefCode(); }
 
   // Returns true if the reference varies per row.
   bool isRefCodeVariable() const { return itsRef.isRefCodeVariable(); }
@@ -156,10 +156,10 @@ class TableMeasDescBase {
 
   // Returns the reference code for this object given a string.  Throws
   // an exception if the refString is invalid for this object.
-  uInt refCode(const String& refString) const { return itsMeasType.refCode(refString); }
+  unsigned int refCode(const String& refString) const { return itsMeasType.refCode(refString); }
 
   // Translates the refCode for the descriptors measure type.
-  const String& refType(uInt refCode) const { return itsMeasType.refType(refCode); }
+  const String& refType(unsigned int refCode) const { return itsMeasType.refType(refCode); }
 
   // Return the Units of the Measure values
   const Vector<Unit>& getUnits() const { return itsUnits; }
@@ -168,7 +168,7 @@ class TableMeasDescBase {
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
   // <group>
-  void resetRefCode(uInt refCode) { itsRef.resetRefCode(refCode); }
+  void resetRefCode(unsigned int refCode) { itsRef.resetRefCode(refCode); }
   void resetOffset(const Measure& offset) { itsRef.resetOffset(offset); }
   void resetUnits(const Vector<Unit>& units);
   // </group>
@@ -184,7 +184,7 @@ class TableMeasDescBase {
   void initTabRef(const MeasureHolder& measHolder);
 
   // Set the measure and possible units.
-  void setMeasUnits(const Measure& meas, const Vector<Quantum<Double>>& val,
+  void setMeasUnits(const Measure& meas, const Vector<Quantum<double>>& val,
                     const Vector<Unit>& units);
 
  private:

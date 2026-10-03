@@ -68,7 +68,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpRecordGram = 0;
-static Int posRecordGram = 0;
+static int posRecordGram = 0;
 
 // # Static pointer to the record when parsing the fields.
 // # Static pointer to the node holding the final expression tree.
@@ -132,7 +132,7 @@ int recordGramParseCommand(const String& command) {
 }
 
 // # Give the string position.
-Int& recordGramPosition() { return posRecordGram; }
+int& recordGramPosition() { return posRecordGram; }
 
 // # Get the next input characters for flex.
 int recordGramInput(char* buf, int max_size) {
@@ -397,24 +397,24 @@ TableExprNode RecordGram::handleField(const String& name) {
 TableExprNode RecordGram::handleFunc(const String& name, const TableExprNodeSet& arguments) {
   // The ROWNR function can only be used with tables.
   if (theirTabPtr == 0) {
-    Vector<Int> ignoreFuncs(1, TableExprFuncNode::rownrFUNC);
+    Vector<int> ignoreFuncs(1, TableExprFuncNode::rownrFUNC);
     return TableParseFunc::makeFuncNode(0, name, arguments, ignoreFuncs, TableExprInfo(),
                                         theirTaQLStyle);
   }
-  return TableParseFunc::makeFuncNode(0, name, arguments, Vector<Int>(),
+  return TableParseFunc::makeFuncNode(0, name, arguments, Vector<int>(),
                                       TableExprInfo(*theirTabPtr), theirTaQLStyle);
 }
 
 TableExprNode RecordGram::handleRegex(const TableExprNode& left, const String& regex) {
   bool caseInsensitive = false;
   bool negate = false;
-  Int sz = regex.size();
+  int sz = regex.size();
   if (sz > 0 && regex[sz - 1] == 'i') {
     caseInsensitive = true;
     --sz;
   }
   AlwaysAssert(sz >= 4 && regex[sz - 1] != ' ', AipsError);
-  Int inx = 0;
+  int inx = 0;
   if (regex[0] == '!') {
     negate = true;
     ++inx;

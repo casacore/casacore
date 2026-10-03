@@ -70,12 +70,12 @@ void SDHistoryHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, con
   initAll(ms, handledCols, row);
 }
 
-void SDHistoryHandler::fill(const Record &, Int observationId, const String &message,
+void SDHistoryHandler::fill(const Record &, int observationId, const String &message,
                             const String &priority) {
   // this always just fills as is
   // don't bother unless there is something there
   if (msHis_p) {
-    uInt rownr = msHis_p->nrow();
+    unsigned int rownr = msHis_p->nrow();
     msHis_p->addRow();
     // get the current time
     Quantity now;

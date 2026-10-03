@@ -101,8 +101,8 @@ void TSMCubeMMap::extend(uInt64 nr, const Record& coordValues, const TSMColumn* 
   }
   // Make the cache here, otherwise nrTiles_p is too high.
   makeCache();
-  uInt lastDim = nrdim_p - 1;
-  uInt nrold = nrTiles_p;
+  unsigned int lastDim = nrdim_p - 1;
+  unsigned int nrold = nrTiles_p;
   cubeShape_p(lastDim) += nr;
   tilesPerDim_p(lastDim) = (cubeShape_p(lastDim) + tileShape_p(lastDim) - 1) / tileShape_p(lastDim);
   nrTiles_p = nrTilesSubCube_p * tilesPerDim_p(lastDim);
@@ -116,21 +116,21 @@ void TSMCubeMMap::extend(uInt64 nr, const Record& coordValues, const TSMColumn* 
   }
 }
 
-void TSMCubeMMap::setCacheSize(uInt, bool, bool) {}
+void TSMCubeMMap::setCacheSize(unsigned int, bool, bool) {}
 
 void TSMCubeMMap::setCacheSize(const IPosition&, const IPosition&, const IPosition&,
                                const IPosition&, bool, bool) {}
 
 void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, char* section,
-                                uInt colnr, uInt localPixelSize, uInt externalPixelSize,
+                                unsigned int colnr, unsigned int localPixelSize, unsigned int externalPixelSize,
                                 bool writeFlag) {
   // A tile can contain more than one data column.
   // Get the offset of the column's data array in the tile.
-  uInt tileOffset = externalOffset_p[colnr];
+  unsigned int tileOffset = externalOffset_p[colnr];
   // Get convert function and nr of elements per value to convert.
   const TSMDataColumn* dataColumn = stmanPtr_p->getDataColumn(colnr);
   Conversion::ValueFunction* convertFunc = dataColumn->getConvertFunction(writeFlag);
-  uInt nrConvElem = dataColumn->getNrConvert();
+  unsigned int nrConvElem = dataColumn->getNrConvert();
   // Conversion (or memcpy) is necessary if different byte order or if
   // not aligned properly.
   // If not needed, it is possible to use assignment because for smaller arrays
@@ -145,7 +145,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
   ///    }
   ///  }
   // A Bool column is stored as bits and has to be treated differently.
-  uInt dataPixelSize = externalPixelSize;
+  unsigned int dataPixelSize = externalPixelSize;
   bool useBool = false;
   if (dataPixelSize == 0) {
     useBool = true;
@@ -162,7 +162,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
   // or if it is a line (these cases occur quite often and can be
   // handled in a faster way).
   bool oneEntireTile = true;
-  for (uInt i = 0; i < nrdim_p; i++) {
+  for (unsigned int i = 0; i < nrdim_p; i++) {
     startTile_p(i) = start(i) / tileShape_p(i);
     endTile_p(i) = end(i) / tileShape_p(i);
     nrTileSection_p(i) = 1 + endTile_p(i) - startTile_p(i);
@@ -192,7 +192,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
   // copy all values and do not have to do difficult iterations.
   if (oneEntireTile) {
     // Get the tile from the cache.
-    uInt tileNr = expandedTilesPerDim_p.offset(startTile_p);
+    unsigned int tileNr = expandedTilesPerDim_p.offset(startTile_p);
     // If writing, set cache slot to dirty.
     if (writeFlag) {
       char* dataArray = cachePtr->getrwBucket(tileNr);
@@ -218,9 +218,9 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
   IPosition dataLength(nrdim_p);
   IPosition dataPos(nrdim_p);
   IPosition sectionPos(nrdim_p);
-  uInt dataOffset;
+  unsigned int dataOffset;
   size_t sectionOffset;
-  uInt tileNr = expandedTilesPerDim_p.offset(tilePos);
+  unsigned int tileNr = expandedTilesPerDim_p.offset(tilePos);
 
   // Loop over all tiles.
   while (true) {
@@ -233,7 +233,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
     // Calculate the start and end pixel in the tile.
     // Initialize the pixel position in the data and section.
     // Note that for Bools it counts external in bits.
-    for (uInt i = 0; i < nrdim_p; i++) {
+    for (unsigned int i = 0; i < nrdim_p; i++) {
       dataLength(i) = 1 + endPixel(i) - startPixel(i);
       dataPos(i) = startPixel(i);
       sectionPos(i) = tilePos(i) * tileShape_p(i) + startPixel(i) - startSection(i);
@@ -245,17 +245,17 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
 
     // Calculate the largest number of pixels, nSec
     // that are consequtive in data and in section
-    uInt nSec = dataLength(0);
-    uInt secDim = 1;
+    unsigned int nSec = dataLength(0);
+    unsigned int secDim = 1;
     while (secDim < nrdim_p && dataLength(secDim - 1) == tileShape_p(secDim - 1) &&
            dataLength(secDim - 1) == sectionShape(secDim - 1)) {
       nSec *= dataLength(secDim);
       secDim++;
     }
 
-    uInt nrval = nSec * nrConvElem;
-    uInt localSize = nSec * localPixelSize;
-    uInt dataSize = nSec * dataPixelSize;
+    unsigned int nrval = nSec * nrConvElem;
+    unsigned int localSize = nSec * localPixelSize;
+    unsigned int dataSize = nSec * dataPixelSize;
 
     // Loop through the data in the tile.
     // Handle Bool specifically because they are stored as bits.
@@ -281,7 +281,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
         }
         dataOffset += dataSize;
         sectionOffset += localSize;
-        uInt j;
+        unsigned int j;
         for (j = secDim; j < nrdim_p; j++) {
           dataOffset += dataIncr(j);
           sectionOffset += sectionIncr(j);
@@ -313,7 +313,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
         }
         dataOffset += dataSize;
         sectionOffset += localSize;
-        uInt j;
+        unsigned int j;
         for (j = secDim; j < nrdim_p; j++) {
           dataOffset += dataIncr(j);
           sectionOffset += sectionIncr(j);
@@ -331,7 +331,7 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
     // Determine the next tile to access and the starting and
     // ending pixels in it.
     // We increase the tile position in a dimension.
-    uInt i;
+    unsigned int i;
     for (i = 0; i < nrdim_p; i++) {
       tileNr += tileIncr(i);
       startPixel(i) = 0;
@@ -355,8 +355,8 @@ void TSMCubeMMap::accessSection(const IPosition& start, const IPosition& end, ch
 }
 
 void TSMCubeMMap::accessStrided(const IPosition& start, const IPosition& end,
-                                const IPosition& stride, char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize, bool writeFlag) {
+                                const IPosition& stride, char* section, unsigned int colnr,
+                                unsigned int localPixelSize, unsigned int externalPixelSize, bool writeFlag) {
   // If no strides, use accessSection.
   if (stride.allOne()) {
     accessSection(start, end, section, colnr, localPixelSize, externalPixelSize, writeFlag);

@@ -36,16 +36,16 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constructors
 MVDoppler::MVDoppler() : val(0.0) {}
 
-MVDoppler::MVDoppler(Double d) : val(d) {}
+MVDoppler::MVDoppler(double d) : val(d) {}
 
 MVDoppler::MVDoppler(const MVDoppler &other) : MeasValue(), val(other.val) {}
 
 MVDoppler::MVDoppler(const Quantity &other) { val = makeD(other.getValue(), other.getFullUnit()); }
 
-MVDoppler::MVDoppler(const Quantum<Vector<Double>> &other) {
-  Vector<Double> tmp;
+MVDoppler::MVDoppler(const Quantum<Vector<double>> &other) {
+  Vector<double> tmp;
   tmp = other.getValue();
-  uInt i = tmp.nelements();
+  unsigned int i = tmp.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -55,8 +55,8 @@ MVDoppler::MVDoppler(const Quantum<Vector<Double>> &other) {
   }
 }
 
-MVDoppler::MVDoppler(const Vector<Double> &other) {
-  uInt i = other.nelements();
+MVDoppler::MVDoppler(const Vector<double> &other) {
+  unsigned int i = other.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -83,7 +83,7 @@ MVDoppler &MVDoppler::operator=(const MVDoppler &other) {
 MVDoppler::~MVDoppler() {}
 
 // Operators
-MVDoppler::operator Double() const { return val; }
+MVDoppler::operator double() const { return val; }
 
 MVDoppler &MVDoppler::operator+=(const MVDoppler &other) {
   val += other.val;
@@ -99,11 +99,11 @@ bool MVDoppler::operator==(const MVDoppler &other) const { return (val == other.
 
 bool MVDoppler::operator!=(const MVDoppler &other) const { return (val != other.val); }
 
-bool MVDoppler::near(const MVDoppler &other, Double tol) const {
+bool MVDoppler::near(const MVDoppler &other, double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
+bool MVDoppler::nearAbs(const MVDoppler &other, double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -119,19 +119,19 @@ void MVDoppler::print(ostream &os) const { os << val; }
 
 MeasValue *MVDoppler::clone() const { return (new MVDoppler(*this)); }
 
-Double MVDoppler::getValue() const { return val; }
+double MVDoppler::getValue() const { return val; }
 
 Quantity MVDoppler::get() const { return Quantity(val * C::c, "m/s"); }
 
 Quantity MVDoppler::get(const Unit &unit) const { return Quantity(makeD(val, unit, true), unit); }
 
-Vector<Double> MVDoppler::getVector() const {
-  Vector<Double> x(1);
+Vector<double> MVDoppler::getVector() const {
+  Vector<double> x(1);
   x(0) = val;
   return x;
 }
 
-void MVDoppler::putVector(const Vector<Double> &in) {
+void MVDoppler::putVector(const Vector<double> &in) {
   if (in.nelements() < 1) {
     val = 0.0;
   } else {
@@ -139,15 +139,15 @@ void MVDoppler::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double>> MVDoppler::getRecordValue() const {
-  Vector<Quantum<Double>> tmp(1);
+Vector<Quantum<double>> MVDoppler::getRecordValue() const {
+  Vector<Quantum<double>> tmp(1);
   tmp(0) = get();
   return tmp;
 }
 
-bool MVDoppler::putValue(const Vector<Quantum<Double>> &in) {
+bool MVDoppler::putValue(const Vector<Quantum<double>> &in) {
   static const UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
-  uInt i = in.nelements();
+  unsigned int i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -163,10 +163,10 @@ bool MVDoppler::putValue(const Vector<Quantum<Double>> &in) {
   return true;
 }
 
-Double MVDoppler::makeD(Double v, const Unit &dt, bool rev) const {
+double MVDoppler::makeD(double v, const Unit &dt, bool rev) const {
   static const UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
-  static const Double LVel = QC::c().getBaseValue();
-  Double x;
+  static const double LVel = QC::c().getBaseValue();
+  double x;
   if (dt.getValue() == UnitVal::NODIM) {
     x = dt.getValue().getFac();
   } else {

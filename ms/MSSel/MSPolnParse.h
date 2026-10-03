@@ -91,7 +91,7 @@ class MSPolnParse : public MSParse {
   // Associate the ms and the shorthand.
   MSPolnParse(const MeasurementSet* ms);
 
-  const TableExprNode selectFromIDList(const Vector<Int>& ddIDs);
+  const TableExprNode selectFromIDList(const Vector<int>& ddIDs);
 
   // Get table expression node object.
   const TableExprNode node();
@@ -101,33 +101,33 @@ class MSPolnParse : public MSParse {
     ddIDList_p.resize(0);
   }
   void cleanup() { /*if (node_p) delete node_p;node_p=0x0;*/ }
-  Int theParser(const String& command);
+  int theParser(const String& command);
   // Vector<Int>& selectedDDIDs,
   // Matrix<Int>& selectedSpwPolnMap);
-  std::map<Int, Vector<Int>> selectedPolnMap() { return polMap_p; }
-  std::map<Int, Vector<Vector<Int>>> selectedSetupMap() { return setupMap_p; }
-  Vector<Int> selectedDDIDs() { return ddIDList_p; }
+  std::map<int, Vector<int>> selectedPolnMap() { return polMap_p; }
+  std::map<int, Vector<Vector<int>>> selectedSetupMap() { return setupMap_p; }
+  Vector<int> selectedDDIDs() { return ddIDList_p; }
 
  private:
-  Vector<Int> getMapToDDIDs(MSDataDescIndex& msDDNdx, MSPolarizationIndex& msPolNdx,
-                            const Vector<Int>& spwIDs, Vector<Int>& polnIDs,
-                            Vector<Int>& polIndices);
-  Vector<Int> matchPolIDsToPolTableRow(const Vector<Int>& polIds,
-                                       std::map<Int, Vector<Int>>& polIndexMap,
-                                       Vector<Int>& polIndices, bool addToMap = false);
-  Vector<Int> getPolnIDs(const String& polSpec, Vector<Int>& polIndices);
-  Vector<Int> getPolnIndices(const Int& polnID, const Vector<Int>& polnIDList);
+  Vector<int> getMapToDDIDs(MSDataDescIndex& msDDNdx, MSPolarizationIndex& msPolNdx,
+                            const Vector<int>& spwIDs, Vector<int>& polnIDs,
+                            Vector<int>& polIndices);
+  Vector<int> matchPolIDsToPolTableRow(const Vector<int>& polIds,
+                                       std::map<int, Vector<int>>& polIndexMap,
+                                       Vector<int>& polIndices, bool addToMap = false);
+  Vector<int> getPolnIDs(const String& polSpec, Vector<int>& polIndices);
+  Vector<int> getPolnIndices(const int& polnID, const Vector<int>& polnIDList);
   //
   // These are the versions used in the code.
-  Vector<Int> getPolnIDsV2(const String& polSpec, Vector<Int>& polTypes);
-  Vector<Int> getMapToDDIDsV2(const String& polExpr, const Vector<Int>& spwIDs,
-                              Vector<Int>& polnIDs, Vector<Int>& polnIndices);
+  Vector<int> getPolnIDsV2(const String& polSpec, Vector<int>& polTypes);
+  Vector<int> getMapToDDIDsV2(const String& polExpr, const Vector<int>& spwIDs,
+                              Vector<int>& polnIDs, Vector<int>& polnIndices);
   TableExprNode node_p;
-  Vector<Int> ddIDList_p;
-  std::map<Int, Vector<Int>> polMap_p;
-  std::map<Int, Vector<Vector<Int>>> setupMap_p;
+  Vector<int> ddIDList_p;
+  std::map<int, Vector<int>> polMap_p;
+  std::map<int, Vector<Vector<int>>> setupMap_p;
 
-  void setIDLists(const Int key, const Int ndx, Vector<Int>& val);
+  void setIDLists(const int key, const int ndx, Vector<int>& val);
 };
 
 }  // namespace casacore

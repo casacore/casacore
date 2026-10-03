@@ -53,7 +53,7 @@ FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
       hasChanged_p(false),
       row_p(RecordInterface::Variable) {
   AlwaysAssert(nfiles_p > 0, AipsError);
-  for (uInt i = 0; i < nfiles_p; i++) {
+  for (unsigned int i = 0; i < nfiles_p; i++) {
     if (tabMaker)
       table_p = tabMaker(fileNames(i));
     else
@@ -91,7 +91,7 @@ bool FITSMultiTable::pastEnd() const { return (which_file_p >= nfiles_p); }
 void FITSMultiTable::next() {
   table_p->next();
   bool status = true;
-  uInt thisWhich = which_file_p;
+  unsigned int thisWhich = which_file_p;
   if (table_p->pastEnd()) {
     which_file_p++;
     RecordDesc oldDescription = table_p->description();
@@ -137,7 +137,7 @@ const Record &FITSMultiTable::currentRow() const { return row_p; }
 // elements of this class as I am unable to reproduce it except
 // in this class.
 
-void timeRangeStatusMsg(uInt count) {
+void timeRangeStatusMsg(unsigned int count) {
   cout << "Found " << count << " files in specified time range." << endl;
 }
 
@@ -145,7 +145,7 @@ Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName, con
                                                 const Time &endTime, bool verboseErrors,
                                                 bool verboseStatus) {
   Time t1(startTime), t2(endTime);  // Should not be necessary
-  Double timeRange = t2 - t1;
+  double timeRange = t2 - t1;
   // If the screwed up start and end, work anyway
   if (timeRange < 0) {
     return filesInTimeRange(directoryName, endTime, startTime, verboseStatus, verboseErrors);
@@ -158,10 +158,10 @@ Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName, con
 
   Directory dir(file);
   Path path(file.path());
-  uInt nfiles = dir.nEntries();
+  unsigned int nfiles = dir.nEntries();
   Vector<String> allfiles(nfiles);
-  Vector<Double> allStartTimes(nfiles);
-  uInt count = 0;
+  Vector<double> allStartTimes(nfiles);
+  unsigned int count = 0;
   // If this is still in use in the year 3xxx, it will fail!
   DirectoryIterator diriter(dir, Regex("^[12][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_"
                                        "[0-9][0-9]:[0-9][0-9]:[0-9][0-9].*\\.fits$"));
@@ -174,15 +174,15 @@ Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName, con
     diriter++;
   }
   Vector<String> files(allfiles(Slice(0, count)));
-  Vector<Double> startTimes(allStartTimes(Slice(0, count)));
+  Vector<double> startTimes(allStartTimes(Slice(0, count)));
   GenSort<String>::sort(files);       // Sorted in ascending order
-  GenSort<Double>::sort(startTimes);  // should sort exactly the same as files
+  GenSort<double>::sort(startTimes);  // should sort exactly the same as files
                                       // It would be nice if only a single sort were needed
 
   // Work out the end times, assume they may be as late as the start time
   // of the next file. Guard the end with a large number
-  Vector<Double> endTimes(files.nelements());
-  uInt i;
+  Vector<double> endTimes(files.nelements());
+  unsigned int i;
   for (i = 0; i + 1 < endTimes.nelements(); i++) {
     endTimes(i) = startTimes(i + 1);
   }
@@ -221,13 +221,13 @@ Time FITSMultiTable::timeFromFile(const String &fileName) {
   Path fpath(fileName);
   String fbase(fpath.baseName());
   const char zero = '0';
-  uInt year =
+  unsigned int year =
       fbase[3] - zero + 10 * (fbase[2] - zero) + 100 * (fbase[1] - zero) + 1000 * (fbase[0] - zero);
-  uInt month = fbase[6] - zero + 10 * (fbase[5] - zero);
-  uInt day = fbase[9] - zero + 10 * (fbase[8] - zero);
-  uInt hour = fbase[12] - zero + 10 * (fbase[11] - zero);
-  uInt minutes = fbase[15] - zero + 10 * (fbase[14] - zero);
-  uInt seconds = fbase[18] - zero + 10 * (fbase[17] - zero);
+  unsigned int month = fbase[6] - zero + 10 * (fbase[5] - zero);
+  unsigned int day = fbase[9] - zero + 10 * (fbase[8] - zero);
+  unsigned int hour = fbase[12] - zero + 10 * (fbase[11] - zero);
+  unsigned int minutes = fbase[15] - zero + 10 * (fbase[14] - zero);
+  unsigned int seconds = fbase[18] - zero + 10 * (fbase[17] - zero);
   return Time(year, month, day, hour, minutes, seconds * 1.0);
 }
 

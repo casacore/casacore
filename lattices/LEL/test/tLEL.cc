@@ -50,10 +50,10 @@ bool checkAttribute(const LELAttribute& attr, const bool isMasked, const bool is
                     const IPosition& shape, const IPosition& tileShape,
                     const LELCoordinates& lattCoord);
 
-bool checkFloat(LELInterface<Float>& expr, const Float Result, const String& name,
+bool checkFloat(LELInterface<float>& expr, const float Result, const String& name,
                 const IPosition& shape, const bool shouldBeScalar, const bool suppress);
 
-bool checkDouble(LELInterface<Double>& expr, const Double Result, const String& name,
+bool checkDouble(LELInterface<double>& expr, const double Result, const String& name,
                  const IPosition& shape, const bool shouldBeScalar, const bool suppress);
 
 bool checkComplex(LELInterface<Complex>& expr, const Complex& Result, const String& name,
@@ -77,8 +77,8 @@ int main(int argc, const char* argv[]) {
     inp.readArguments(argc, argv);
     cout << "<<<" << endl;
 
-    const uInt nx = inp.getInt("nx");
-    const uInt ny = inp.getInt("ny");
+    const unsigned int nx = inp.getInt("nx");
+    const unsigned int ny = inp.getInt("ny");
     const bool suppress = inp.getBool("sup");
 
     //
@@ -104,34 +104,34 @@ int main(int argc, const char* argv[]) {
 
     // FLoat Lattices
 
-    Array<Float> FArr(shape);
-    Float FResult;
-    ArrayLattice<Float> aF(shape);
-    ArrayLattice<Float> bF(shape);
-    ArrayLattice<Float> cF(shape);
-    ArrayLattice<Float> nanF(shape);
-    Float aFVal = 0.0;
+    Array<float> FArr(shape);
+    float FResult;
+    ArrayLattice<float> aF(shape);
+    ArrayLattice<float> bF(shape);
+    ArrayLattice<float> cF(shape);
+    ArrayLattice<float> nanF(shape);
+    float aFVal = 0.0;
     aF.set(aFVal);
-    Float bFVal = 2.0;
+    float bFVal = 2.0;
     bF.set(bFVal);
-    Float cFVal = 3.0;
+    float cFVal = 3.0;
     cF.set(cFVal);
-    Float nanFVal;
+    float nanFVal;
     setNaN(nanFVal);
     nanF.set(nanFVal);
 
     // Double Lattices
 
-    Array<Double> DArr(shape);
-    Double DResult;
-    ArrayLattice<Double> aD(shape);
-    ArrayLattice<Double> bD(shape);
-    ArrayLattice<Double> cD(shape);
-    Double aDVal = 0.0;
+    Array<double> DArr(shape);
+    double DResult;
+    ArrayLattice<double> aD(shape);
+    ArrayLattice<double> bD(shape);
+    ArrayLattice<double> cD(shape);
+    double aDVal = 0.0;
     aD.set(aDVal);
-    Double bDVal = 2.0;
+    double bDVal = 2.0;
     bD.set(bDVal);
-    Double cDVal = 3.0;
+    double cDVal = 3.0;
     cD.set(cDVal);
 
     // Complex Lattices
@@ -209,13 +209,13 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELLattice<Float> " << endl;
-      LELLattice<Float> expr(bF);
+      LELLattice<float> expr(bF);
       FResult = bFVal;
       if (!checkFloat(expr, FResult, String("LELLattice"), shape, false, suppress)) ok = false;
     }
     {
       cout << "LELLattice<Double> " << endl;
-      LELLattice<Double> expr(bD);
+      LELLattice<double> expr(bD);
       DResult = bDVal;
       if (!checkDouble(expr, DResult, String("LELLattice"), shape, false, suppress)) ok = false;
     }
@@ -244,12 +244,12 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELUnaryConst<Float>" << endl;
-      LELUnaryConst<Float> expr(aFVal);
+      LELUnaryConst<float> expr(aFVal);
       if (!checkFloat(expr, aFVal, String("LELUnaryConst"), shape, true, suppress)) ok = false;
     }
     {
       cout << "LELUnaryConst<Double>" << endl;
-      LELUnaryConst<Double> expr(aDVal);
+      LELUnaryConst<double> expr(aDVal);
       if (!checkDouble(expr, aDVal, String("LELUnaryConst"), shape, true, suppress)) ok = false;
     }
     {
@@ -276,13 +276,13 @@ int main(int argc, const char* argv[]) {
     //
     cout << endl << "LELUnary<Float>" << endl;
     {
-      auto pExpr = std::make_shared<LELLattice<Float>>(bF);
+      auto pExpr = std::make_shared<LELLattice<float>>(bF);
 
       // Note that operator+ is not actually implemented in LELUnary because it
       // wouldn't do anything !  It is implemented in LatticeExprNode though
 
       cout << "   Operator -" << endl;
-      LELUnary<Float> expr(LELUnaryEnums::MINUS, pExpr);
+      LELUnary<float> expr(LELUnaryEnums::MINUS, pExpr);
       if (!checkFloat(expr, -bFVal, String("LELUnary"), shape, false, suppress)) ok = false;
     }
 
@@ -292,8 +292,8 @@ int main(int argc, const char* argv[]) {
       // wouldn't do anything !  It is implemented in LatticeExprNode though
 
       cout << "   Operator -" << endl;
-      auto pExpr = std::make_shared<LELLattice<Double>>(bD);
-      LELUnary<Double> expr(LELUnaryEnums::MINUS, pExpr);
+      auto pExpr = std::make_shared<LELLattice<double>>(bD);
+      LELUnary<double> expr(LELUnaryEnums::MINUS, pExpr);
       if (!checkDouble(expr, -bDVal, String("LELUnary"), shape, false, suppress)) ok = false;
     }
 
@@ -340,33 +340,33 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELBinary<Float>" << endl;
-      auto pExprLeft = std::make_shared<LELLattice<Float>>(bF);
-      auto pExprRight = std::make_shared<LELLattice<Float>>(cF);
+      auto pExprLeft = std::make_shared<LELLattice<float>>(bF);
+      auto pExprRight = std::make_shared<LELLattice<float>>(cF);
 
       {
         cout << "   Operator +" << endl;
-        LELBinary<Float> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
+        LELBinary<float> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
         FResult = bFVal + cFVal;
         if (!checkFloat(expr, FResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator -" << endl;
-        LELBinary<Float> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
+        LELBinary<float> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
         FResult = bFVal - cFVal;
         if (!checkFloat(expr, FResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator *" << endl;
-        LELBinary<Float> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
+        LELBinary<float> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
         FResult = bFVal * cFVal;
         if (!checkFloat(expr, FResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator /" << endl;
-        LELBinary<Float> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
+        LELBinary<float> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
         FResult = bFVal / cFVal;
         if (!checkFloat(expr, FResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
@@ -379,33 +379,33 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELBinary<Double>" << endl;
-      auto pExprLeft = std::make_shared<LELLattice<Double>>(bD);
-      auto pExprRight = std::make_shared<LELLattice<Double>>(cD);
+      auto pExprLeft = std::make_shared<LELLattice<double>>(bD);
+      auto pExprRight = std::make_shared<LELLattice<double>>(cD);
 
       {
         cout << "   Operator +" << endl;
-        LELBinary<Double> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
+        LELBinary<double> expr(LELBinaryEnums::ADD, pExprLeft, pExprRight);
         DResult = bDVal + cDVal;
         if (!checkDouble(expr, DResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator -" << endl;
-        LELBinary<Double> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
+        LELBinary<double> expr(LELBinaryEnums::SUBTRACT, pExprLeft, pExprRight);
         DResult = bDVal - cDVal;
         if (!checkDouble(expr, DResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator *" << endl;
-        LELBinary<Double> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
+        LELBinary<double> expr(LELBinaryEnums::MULTIPLY, pExprLeft, pExprRight);
         DResult = bDVal * cDVal;
         if (!checkDouble(expr, DResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator /" << endl;
-        LELBinary<Double> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
+        LELBinary<double> expr(LELBinaryEnums::DIVIDE, pExprLeft, pExprRight);
         DResult = bDVal / cDVal;
         if (!checkDouble(expr, DResult, String("LELBinary"), shape, false, suppress)) ok = false;
       }
@@ -493,33 +493,33 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELBinaryCmp<Float>" << endl;
-      auto pExprLeft = std::make_shared<LELLattice<Float>>(bF);
-      auto pExprRight = std::make_shared<LELLattice<Float>>(cF);
+      auto pExprLeft = std::make_shared<LELLattice<float>>(bF);
+      auto pExprRight = std::make_shared<LELLattice<float>>(cF);
 
       {
         cout << "   Operator ==" << endl;
-        LELBinaryCmp<Float> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
+        LELBinaryCmp<float> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
         BResult = (bFVal == cFVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator !=" << endl;
-        LELBinaryCmp<Float> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
+        LELBinaryCmp<float> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
         BResult = (bFVal != cFVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator >" << endl;
-        LELBinaryCmp<Float> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
+        LELBinaryCmp<float> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
         BResult = (bFVal > cFVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator >=" << endl;
-        LELBinaryCmp<Float> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
+        LELBinaryCmp<float> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
         BResult = (bFVal >= cFVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
@@ -531,33 +531,33 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELBinaryCmp<Double>" << endl;
-      auto pExprLeft = std::make_shared<LELLattice<Double>>(bD);
-      auto pExprRight = std::make_shared<LELLattice<Double>>(cD);
+      auto pExprLeft = std::make_shared<LELLattice<double>>(bD);
+      auto pExprRight = std::make_shared<LELLattice<double>>(cD);
 
       {
         cout << "   Operator ==" << endl;
-        LELBinaryCmp<Double> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
+        LELBinaryCmp<double> expr(LELBinaryEnums::EQ, pExprLeft, pExprRight);
         BResult = (bDVal == cDVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator !=" << endl;
-        LELBinaryCmp<Double> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
+        LELBinaryCmp<double> expr(LELBinaryEnums::NE, pExprLeft, pExprRight);
         BResult = (bDVal != cDVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator >" << endl;
-        LELBinaryCmp<Double> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
+        LELBinaryCmp<double> expr(LELBinaryEnums::GT, pExprLeft, pExprRight);
         BResult = (bDVal > cDVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Operator >=" << endl;
-        LELBinaryCmp<Double> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
+        LELBinaryCmp<double> expr(LELBinaryEnums::GE, pExprLeft, pExprRight);
         BResult = (bDVal >= cDVal);
         if (!checkBool(expr, BResult, String("LELBinaryCmp"), shape, false, suppress)) ok = false;
       }
@@ -677,67 +677,67 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELFunction1D<Float>" << endl;
-      auto pExpr = std::make_shared<LELLattice<Float>>(bF);
+      auto pExpr = std::make_shared<LELLattice<float>>(bF);
 
       {
         cout << "   Function sin" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::SIN, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::SIN, pExpr);
         FResult = sin(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function sinh" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::SINH, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::SINH, pExpr);
         FResult = sinh(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function cos" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::COS, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::COS, pExpr);
         FResult = cos(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function cosh" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::COSH, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::COSH, pExpr);
         FResult = cosh(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function exp" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::EXP, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::EXP, pExpr);
         FResult = exp(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function log" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::LOG, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::LOG, pExpr);
         FResult = log(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function log10" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::LOG10, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::LOG10, pExpr);
         FResult = log10(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function sqrt" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::SQRT, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::SQRT, pExpr);
         FResult = sqrt(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "   Function min" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::MIN1D, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::MIN1D, pExpr);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = min(FArr);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -745,7 +745,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function max" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::MAX1D, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::MAX1D, pExpr);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = max(FArr);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -753,7 +753,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function median" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::MEDIAN1D, pExpr);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::MEDIAN1D, pExpr);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = median(FArr);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, true, suppress))
@@ -762,7 +762,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function mean" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::MEAN1D, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::MEAN1D, pExpr);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = mean(FArr);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -770,7 +770,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function sum" << endl;
-        LELFunction1D<Float> expr(LELFunctionEnums::SUM, pExpr);
+        LELFunction1D<float> expr(LELFunctionEnums::SUM, pExpr);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = sum(FArr);
         if (!checkFloat(expr, FResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -785,11 +785,11 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELFunction1D<Double>" << endl;
-      auto pExpr = std::make_shared<LELLattice<Double>>(bD);
+      auto pExpr = std::make_shared<LELLattice<double>>(bD);
 
       {
         cout << "   Function sin" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::SIN, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::SIN, pExpr);
         DResult = sin(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -797,7 +797,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function sinh" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::SINH, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::SINH, pExpr);
         DResult = sinh(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -805,7 +805,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function cos" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::COS, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::COS, pExpr);
         DResult = cos(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -813,7 +813,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function cosh" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::COSH, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::COSH, pExpr);
         DResult = cosh(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -821,7 +821,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function exp" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::EXP, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::EXP, pExpr);
         DResult = exp(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -829,7 +829,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function log" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::LOG, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::LOG, pExpr);
         DResult = log(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -837,7 +837,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function log10" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::LOG10, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::LOG10, pExpr);
         DResult = log10(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -845,7 +845,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function sqrt" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::SQRT, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::SQRT, pExpr);
         DResult = sqrt(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, false, suppress))
           ok = false;
@@ -853,7 +853,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function min" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::MIN1D, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::MIN1D, pExpr);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = min(DArr);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -861,7 +861,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function max" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::MAX1D, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::MAX1D, pExpr);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = max(DArr);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -869,7 +869,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function median" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::MEDIAN1D, pExpr);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::MEDIAN1D, pExpr);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = median(DArr);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, true, suppress))
@@ -878,7 +878,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function mean" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::MEAN1D, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::MEAN1D, pExpr);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = mean(DArr);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -886,7 +886,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function sum" << endl;
-        LELFunction1D<Double> expr(LELFunctionEnums::SUM, pExpr);
+        LELFunction1D<double> expr(LELFunctionEnums::SUM, pExpr);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = sum(DArr);
         if (!checkDouble(expr, DResult, String("LELFunction1D"), shape, true, suppress)) ok = false;
@@ -1096,12 +1096,12 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(true);
         arga[1] = LatticeExprNode(bFVal);
         arga[2] = LatticeExprNode(cFVal);
-        LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr1(LELFunctionEnums::IIF, arga);
         FResult = bFVal;
         if (!checkFloat(expr1, FResult, String("LELFunctionND"), shape, true, suppress)) ok = false;
 
         arga[0] = LatticeExprNode(false);
-        LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr2(LELFunctionEnums::IIF, arga);
         FResult = cFVal;
         if (!checkFloat(expr2, FResult, String("LELFunctionND"), shape, true, suppress)) ok = false;
       }
@@ -1113,7 +1113,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(true);
         arga[1] = LatticeExprNode(bFVal);
         arga[2] = LatticeExprNode(cF);
-        LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr1(LELFunctionEnums::IIF, arga);
         FResult = bFVal;
 
         // Although the conditional is scalar, the result is still an array
@@ -1123,7 +1123,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(false);
-        LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr2(LELFunctionEnums::IIF, arga);
         FResult = cFVal;
         if (!checkFloat(expr2, FResult, String("LELFunctionND"), shape, false, suppress))
           ok = false;
@@ -1135,13 +1135,13 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(true);
         arga[1] = LatticeExprNode(bF);
         arga[2] = LatticeExprNode(cFVal);
-        LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr1(LELFunctionEnums::IIF, arga);
         FResult = bFVal;
         if (!checkFloat(expr1, FResult, String("LELFunctionND"), shape, false, suppress))
           ok = false;
 
         arga[0] = LatticeExprNode(false);
-        LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr2(LELFunctionEnums::IIF, arga);
         FResult = cFVal;
         if (!checkFloat(expr2, FResult, String("LELFunctionND"), shape, false, suppress))
           ok = false;
@@ -1154,7 +1154,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(aB);
         arga[1] = LatticeExprNode(bFVal);
         arga[2] = LatticeExprNode(cFVal);
-        LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr1(LELFunctionEnums::IIF, arga);
         if (aBVal) {
           FResult = bFVal;
         } else {
@@ -1164,7 +1164,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(bB);
-        LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr2(LELFunctionEnums::IIF, arga);
         if (bBVal) {
           FResult = bFVal;
         } else {
@@ -1180,7 +1180,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(aB);
         arga[1] = LatticeExprNode(bF);
         arga[2] = LatticeExprNode(cFVal);
-        LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr1(LELFunctionEnums::IIF, arga);
         if (aBVal) {
           FResult = bFVal;
         } else {
@@ -1190,7 +1190,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(bB);
-        LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr2(LELFunctionEnums::IIF, arga);
         if (bBVal) {
           FResult = bFVal;
         } else {
@@ -1206,7 +1206,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(aB);
         arga[1] = LatticeExprNode(bFVal);
         arga[2] = LatticeExprNode(cF);
-        LELFunctionND<Float> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr1(LELFunctionEnums::IIF, arga);
         if (aBVal) {
           FResult = bFVal;
         } else {
@@ -1216,7 +1216,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(bB);
-        LELFunctionND<Float> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<float> expr2(LELFunctionEnums::IIF, arga);
         if (bBVal) {
           FResult = bFVal;
         } else {
@@ -1244,13 +1244,13 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(true);
         arga[1] = LatticeExprNode(bDVal);
         arga[2] = LatticeExprNode(cDVal);
-        LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr1(LELFunctionEnums::IIF, arga);
         DResult = bDVal;
         if (!checkDouble(expr1, DResult, String("LELFunctionND"), shape, true, suppress))
           ok = false;
 
         arga[0] = LatticeExprNode(false);
-        LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr2(LELFunctionEnums::IIF, arga);
         DResult = cDVal;
         if (!checkDouble(expr2, DResult, String("LELFunctionND"), shape, true, suppress))
           ok = false;
@@ -1263,7 +1263,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(true);
         arga[1] = LatticeExprNode(bDVal);
         arga[2] = LatticeExprNode(cD);
-        LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr1(LELFunctionEnums::IIF, arga);
         DResult = bDVal;
 
         // Although the conditional is scalar, the result is still an array
@@ -1273,7 +1273,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(false);
-        LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr2(LELFunctionEnums::IIF, arga);
         DResult = cDVal;
         if (!checkDouble(expr2, DResult, String("LELFunctionND"), shape, false, suppress))
           ok = false;
@@ -1285,13 +1285,13 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(true);
         arga[1] = LatticeExprNode(bD);
         arga[2] = LatticeExprNode(cDVal);
-        LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr1(LELFunctionEnums::IIF, arga);
         DResult = bDVal;
         if (!checkDouble(expr1, DResult, String("LELFunctionND"), shape, false, suppress))
           ok = false;
 
         arga[0] = LatticeExprNode(false);
-        LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr2(LELFunctionEnums::IIF, arga);
         DResult = cDVal;
         if (!checkDouble(expr2, DResult, String("LELFunctionND"), shape, false, suppress))
           ok = false;
@@ -1304,7 +1304,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(aB);
         arga[1] = LatticeExprNode(bDVal);
         arga[2] = LatticeExprNode(cDVal);
-        LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr1(LELFunctionEnums::IIF, arga);
         if (aBVal) {
           DResult = bDVal;
         } else {
@@ -1314,7 +1314,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(bB);
-        LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr2(LELFunctionEnums::IIF, arga);
         if (bBVal) {
           DResult = bDVal;
         } else {
@@ -1330,7 +1330,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(aB);
         arga[1] = LatticeExprNode(bD);
         arga[2] = LatticeExprNode(cDVal);
-        LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr1(LELFunctionEnums::IIF, arga);
         if (aBVal) {
           DResult = bDVal;
         } else {
@@ -1340,7 +1340,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(bB);
-        LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr2(LELFunctionEnums::IIF, arga);
         if (bBVal) {
           DResult = bDVal;
         } else {
@@ -1356,7 +1356,7 @@ int main(int argc, const char* argv[]) {
         arga[0] = LatticeExprNode(aB);
         arga[1] = LatticeExprNode(bDVal);
         arga[2] = LatticeExprNode(cD);
-        LELFunctionND<Double> expr1(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr1(LELFunctionEnums::IIF, arga);
         if (aBVal) {
           DResult = bDVal;
         } else {
@@ -1366,7 +1366,7 @@ int main(int argc, const char* argv[]) {
           ok = false;
 
         arga[0] = LatticeExprNode(bB);
-        LELFunctionND<Double> expr2(LELFunctionEnums::IIF, arga);
+        LELFunctionND<double> expr2(LELFunctionEnums::IIF, arga);
         if (bBVal) {
           DResult = bDVal;
         } else {
@@ -1684,12 +1684,12 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELFunctionReal1D<Float>" << endl;
-      auto pExpr = std::make_shared<LELLattice<Float>>(bF);
-      auto pExpra = std::make_shared<LELLattice<Float>>(aF);
+      auto pExpr = std::make_shared<LELLattice<float>>(bF);
+      auto pExpra = std::make_shared<LELLattice<float>>(aF);
 
       {
         cout << "   Function asin" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::ASIN, pExpra);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::ASIN, pExpra);
         FResult = asin(aFVal);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1697,7 +1697,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function acos" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::ACOS, pExpra);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::ACOS, pExpra);
         FResult = acos(aFVal);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1705,7 +1705,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function tan" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::TAN, pExpr);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::TAN, pExpr);
         FResult = tan(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1713,7 +1713,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function tanh" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::TANH, pExpr);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::TANH, pExpr);
         FResult = tanh(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1721,7 +1721,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function ceil" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::CEIL, pExpr);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::CEIL, pExpr);
         FResult = ceil(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1729,7 +1729,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function floor" << endl;
-        LELFunctionReal1D<Float> expr(LELFunctionEnums::FLOOR, pExpr);
+        LELFunctionReal1D<float> expr(LELFunctionEnums::FLOOR, pExpr);
         FResult = floor(bFVal);
         if (!checkFloat(expr, FResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1743,12 +1743,12 @@ int main(int argc, const char* argv[]) {
     //
     {
       cout << endl << "LELFunctionReal1D<Double>" << endl;
-      auto pExpr = std::make_shared<LELLattice<Double>>(bD);
-      auto pExpra = std::make_shared<LELLattice<Double>>(aD);
+      auto pExpr = std::make_shared<LELLattice<double>>(bD);
+      auto pExpra = std::make_shared<LELLattice<double>>(aD);
 
       {
         cout << "   Function asin" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::ASIN, pExpra);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::ASIN, pExpra);
         DResult = asin(aDVal);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1756,7 +1756,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function acos" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::ACOS, pExpra);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::ACOS, pExpra);
         DResult = acos(aDVal);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1764,7 +1764,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function tan" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::TAN, pExpr);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::TAN, pExpr);
         DResult = tan(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1772,7 +1772,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function tanh" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::TANH, pExpr);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::TANH, pExpr);
         DResult = tanh(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1780,7 +1780,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function ceil" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::CEIL, pExpr);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::CEIL, pExpr);
         DResult = ceil(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1788,7 +1788,7 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "   Function floor" << endl;
-        LELFunctionReal1D<Double> expr(LELFunctionEnums::FLOOR, pExpr);
+        LELFunctionReal1D<double> expr(LELFunctionEnums::FLOOR, pExpr);
         DResult = floor(bDVal);
         if (!checkDouble(expr, DResult, String("LELFunctionReal1D"), shape, false, suppress))
           ok = false;
@@ -1860,7 +1860,7 @@ int main(int argc, const char* argv[]) {
       {
         cout << "   Function arg" << endl;
         LELFunctionFloat expr(LELFunctionEnums::ARG, argb);
-        FResult = Float(arg(bCVal));
+        FResult = float(arg(bCVal));
         if (!checkFloat(expr, FResult, String("LELFunctionFloat"), shape, false, suppress))
           ok = false;
       }
@@ -1885,7 +1885,7 @@ int main(int argc, const char* argv[]) {
         cout << "   Function fractile" << endl;
         Block<LatticeExprNode> arg(2);
         arg[0] = LatticeExprNode(bF);
-        arg[1] = LatticeExprNode(Float(0.5));
+        arg[1] = LatticeExprNode(float(0.5));
         LELFunctionFloat expr(LELFunctionEnums::FRACTILE1D, arg);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = fractile(FArr, 0.5);
@@ -1897,7 +1897,7 @@ int main(int argc, const char* argv[]) {
         cout << "   Function fractilerange 2" << endl;
         Block<LatticeExprNode> arg(2);
         arg[0] = LatticeExprNode(bF);
-        arg[1] = LatticeExprNode(Float(0.2));
+        arg[1] = LatticeExprNode(float(0.2));
         LELFunctionFloat expr(LELFunctionEnums::FRACTILERANGE1D, arg);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = fractile(FArr, 0.8) - fractile(FArr, 0.2);
@@ -1909,8 +1909,8 @@ int main(int argc, const char* argv[]) {
         cout << "   Function fractilerange 3" << endl;
         Block<LatticeExprNode> arg(3);
         arg[0] = LatticeExprNode(bF);
-        arg[1] = LatticeExprNode(Float(0.2));
-        arg[2] = LatticeExprNode(Float(0.7));
+        arg[1] = LatticeExprNode(float(0.2));
+        arg[2] = LatticeExprNode(float(0.7));
         LELFunctionFloat expr(LELFunctionEnums::FRACTILERANGE1D, arg);
         bF.getSlice(FArr, IPosition(FArr.ndim(), 0), FArr.shape(), IPosition(FArr.ndim(), 1));
         FResult = fractile(FArr, 0.7) - fractile(FArr, 0.2);
@@ -1984,7 +1984,7 @@ int main(int argc, const char* argv[]) {
       {
         cout << "   Function arg" << endl;
         LELFunctionDouble expr(LELFunctionEnums::ARG, argb);
-        DResult = Double(arg(bDCVal));
+        DResult = double(arg(bDCVal));
         if (!checkDouble(expr, DResult, String("LELFunctionDouble"), shape, false, suppress))
           ok = false;
       }
@@ -2043,7 +2043,7 @@ int main(int argc, const char* argv[]) {
         cout << "   Function fractile" << endl;
         Block<LatticeExprNode> arg(2);
         arg[0] = LatticeExprNode(bD);
-        arg[1] = LatticeExprNode(Float(0.5));
+        arg[1] = LatticeExprNode(float(0.5));
         LELFunctionDouble expr(LELFunctionEnums::FRACTILE1D, arg);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = fractile(DArr, 0.5);
@@ -2055,7 +2055,7 @@ int main(int argc, const char* argv[]) {
         cout << "   Function fractilerange 2" << endl;
         Block<LatticeExprNode> arg(2);
         arg[0] = LatticeExprNode(bD);
-        arg[1] = LatticeExprNode(Float(0.2));
+        arg[1] = LatticeExprNode(float(0.2));
         LELFunctionDouble expr(LELFunctionEnums::FRACTILERANGE1D, arg);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = fractile(DArr, 0.8) - fractile(DArr, 0.2);
@@ -2067,8 +2067,8 @@ int main(int argc, const char* argv[]) {
         cout << "   Function fractilerange 3" << endl;
         Block<LatticeExprNode> arg(3);
         arg[0] = LatticeExprNode(bD);
-        arg[1] = LatticeExprNode(Float(0.2));
-        arg[2] = LatticeExprNode(Float(0.7));
+        arg[1] = LatticeExprNode(float(0.2));
+        arg[2] = LatticeExprNode(float(0.7));
         LELFunctionDouble expr(LELFunctionEnums::FRACTILERANGE1D, arg);
         bD.getSlice(DArr, IPosition(DArr.ndim(), 0), DArr.shape(), IPosition(DArr.ndim(), 1));
         DResult = fractile(DArr, 0.7) - fractile(DArr, 0.2);
@@ -2249,17 +2249,17 @@ int main(int argc, const char* argv[]) {
     {
       {
         cout << endl << "LELConvert<Float,Double> " << endl;
-        auto pExpr = std::make_shared<LELLattice<Double>>(bD);
-        LELConvert<Float, Double> expr(pExpr);
-        FResult = Float(bDVal);
+        auto pExpr = std::make_shared<LELLattice<double>>(bD);
+        LELConvert<float, double> expr(pExpr);
+        FResult = float(bDVal);
         if (!checkFloat(expr, FResult, String("LELConvert"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "LELConvert<Double,Float> " << endl;
-        auto pExpr = std::make_shared<LELLattice<Float>>(bF);
-        LELConvert<Double, Float> expr(pExpr);
-        DResult = Double(bFVal);
+        auto pExpr = std::make_shared<LELLattice<float>>(bF);
+        LELConvert<double, float> expr(pExpr);
+        DResult = double(bFVal);
         if (!checkDouble(expr, DResult, String("LELConvert"), shape, false, suppress)) ok = false;
       }
 
@@ -2282,24 +2282,24 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "LELConvert<Complex,Float> " << endl;
-        auto pExpr = std::make_shared<LELLattice<Float>>(bF);
-        LELConvert<Complex, Float> expr(pExpr);
+        auto pExpr = std::make_shared<LELLattice<float>>(bF);
+        LELConvert<Complex, float> expr(pExpr);
         CResult = Complex(bFVal, 0.0);
         if (!checkComplex(expr, CResult, String("LELConvert"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "LELConvert<Complex,Double> " << endl;
-        auto pExpr = std::make_shared<LELLattice<Double>>(bD);
-        LELConvert<Complex, Double> expr(pExpr);
+        auto pExpr = std::make_shared<LELLattice<double>>(bD);
+        LELConvert<Complex, double> expr(pExpr);
         CResult = Complex(bDVal, 0.0);
         if (!checkComplex(expr, CResult, String("LELConvert"), shape, false, suppress)) ok = false;
       }
 
       {
         cout << "LELConvert<DComplex,Float> " << endl;
-        auto pExpr = std::make_shared<LELLattice<Float>>(bF);
-        LELConvert<DComplex, Float> expr(pExpr);
+        auto pExpr = std::make_shared<LELLattice<float>>(bF);
+        LELConvert<DComplex, float> expr(pExpr);
         DCResult = DComplex(bFVal, 0.0);
         if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, false, suppress))
           ok = false;
@@ -2307,8 +2307,8 @@ int main(int argc, const char* argv[]) {
 
       {
         cout << "LELConvert<DComplex,Double> " << endl;
-        auto pExpr = std::make_shared<LELLattice<Double>>(bD);
-        LELConvert<DComplex, Double> expr(pExpr);
+        auto pExpr = std::make_shared<LELLattice<double>>(bD);
+        LELConvert<DComplex, double> expr(pExpr);
         DCResult = DComplex(bDVal, 0.0);
         if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, false, suppress))
           ok = false;
@@ -2330,9 +2330,9 @@ int main(int argc, const char* argv[]) {
   return 0;
 }
 
-bool checkFloat(LELInterface<Float>& expr, const Float Result, const String& name,
+bool checkFloat(LELInterface<float>& expr, const float Result, const String& name,
                 const IPosition& shape, const bool shouldBeScalar, const bool suppress) {
-  LELArray<Float> Arr(shape);
+  LELArray<float> Arr(shape);
   bool ok = true;
   IPosition origin(2, 0, 0);
   Slicer region(origin, shape);
@@ -2387,9 +2387,9 @@ bool checkFloat(LELInterface<Float>& expr, const Float Result, const String& nam
   return ok;
 }
 
-bool checkDouble(LELInterface<Double>& expr, const Double Result, const String& name,
+bool checkDouble(LELInterface<double>& expr, const double Result, const String& name,
                  const IPosition& shape, const bool shouldBeScalar, const bool suppress) {
-  LELArray<Double> Arr(shape);
+  LELArray<double> Arr(shape);
   bool ok = true;
   IPosition origin(2, 0, 0);
   Slicer region(origin, shape);

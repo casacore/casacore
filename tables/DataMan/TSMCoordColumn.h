@@ -28,7 +28,10 @@
 
 // # Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/RecordField.h>
 #include <casacore/tables/DataMan/TSMColumn.h>
+#include <casacore/tables/DataMan/TSMCube.h>
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
@@ -92,10 +95,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class TSMCoordColumn : public TSMColumn {
  public:
   // Create a coordinate column from the given column.
-  TSMCoordColumn(const TSMColumn& column, uInt axisNr);
+  TSMCoordColumn(const TSMColumn& column, unsigned int axisNr);
 
   // Frees up the storage.
-  virtual ~TSMCoordColumn();
+  ~TSMCoordColumn() override;
 
   // Forbid copy constructor.
   TSMCoordColumn(const TSMCoordColumn&) = delete;
@@ -104,53 +107,70 @@ class TSMCoordColumn : public TSMColumn {
   TSMCoordColumn& operator=(const TSMCoordColumn&) = delete;
 
   // Set the shape of the coordinate vector in the given row.
-  virtual void setShape(rownr_t rownr, const IPosition& shape);
+  void setShape(rownr_t rownr, const IPosition& shape) override;
 
   // Is the value shape defined in the given row?
-  virtual bool isShapeDefined(rownr_t rownr);
+  bool isShapeDefined(rownr_t rownr) override;
 
   // Get the shape of the item in the given row.
-  virtual IPosition shape(rownr_t rownr);
+  IPosition shape(rownr_t rownr) override;
 
   // Get a scalar value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn get function).
   // <group>
-  virtual void getInt(rownr_t rownr, Int* dataPtr);
-  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
-  virtual void getInt64(rownr_t rownr, Int64* dataPtr);
-  virtual void getfloat(rownr_t rownr, float* dataPtr);
-  virtual void getdouble(rownr_t rownr, double* dataPtr);
-  virtual void getComplex(rownr_t rownr, Complex* dataPtr);
-  virtual void getDComplex(rownr_t rownr, DComplex* dataPtr);
+  void getInt(rownr_t rownr, int* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getuInt(rownr_t rownr, unsigned int* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getInt64(rownr_t rownr, Int64* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getfloat(rownr_t rownr, float* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getdouble(rownr_t rownr, double* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getComplex(rownr_t rownr, Complex* dataPtr) override { GetGeneric(rownr, dataPtr); }
+  void getDComplex(rownr_t rownr, DComplex* dataPtr) override { GetGeneric(rownr, dataPtr); }
   // </group>
 
   // Put a scalar value into the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn put function).
   // <group>
-  virtual void putInt(rownr_t rownr, const Int* dataPtr);
-  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
-  virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
-  virtual void putfloat(rownr_t rownr, const float* dataPtr);
-  virtual void putdouble(rownr_t rownr, const double* dataPtr);
-  virtual void putComplex(rownr_t rownr, const Complex* dataPtr);
-  virtual void putDComplex(rownr_t rownr, const DComplex* dataPtr);
+  void putInt(rownr_t rownr, const int* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putuInt(rownr_t rownr, const unsigned int* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putInt64(rownr_t rownr, const Int64* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putfloat(rownr_t rownr, const float* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putdouble(rownr_t rownr, const double* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putComplex(rownr_t rownr, const Complex* dataPtr) override { PutGeneric(rownr, dataPtr); }
+  void putDComplex(rownr_t rownr, const DComplex* dataPtr) override { PutGeneric(rownr, dataPtr); }
   // </group>
 
   // Get the array value in the given row.
   // The array pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the ArrayColumn get function).
-  virtual void getArrayV(rownr_t rownr, ArrayBase& dataPtr);
+  void getArrayV(rownr_t rownr, ArrayBase& dataPtr) override;
 
   // Put the array value into the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the ArrayColumn put function).
-  virtual void putArrayV(rownr_t rownr, const ArrayBase& dataPtr);
+  void putArrayV(rownr_t rownr, const ArrayBase& dataPtr) override;
 
  private:
+  template<typename T>
+  void GetGeneric(rownr_t rownr, T* dataPtr) {
+    IPosition position;
+    TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);
+    RORecordFieldPtr<Array<T>> field(hypercube->valueRecord(), columnName());
+    *dataPtr = (*field)(IPosition(1, position(axisNr_p)));
+  }
+  
+  template<typename T>
+  void PutGeneric(rownr_t rownr, const T* dataPtr) {
+    IPosition position;
+    TSMCube* hypercube = stmanPtr_p->getHypercube(rownr, position);
+    RecordFieldPtr<Array<T>> field(hypercube->rwValueRecord(), columnName());
+    (*field)(IPosition(1, position(axisNr_p))) = *dataPtr;
+    stmanPtr_p->setDataChanged();
+  }
+  
   // The axis number of the coordinate.
-  uInt axisNr_p;
+  unsigned int axisNr_p;
 };
 
 }  // namespace casacore

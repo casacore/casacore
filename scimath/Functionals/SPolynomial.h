@@ -89,7 +89,7 @@ class SPolynomial : public SPolynomialParam<T> {
   SPolynomial() : SPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero, and height, center, width to 1,0,1.
-  explicit SPolynomial(uInt order) : SPolynomialParam<T>(order) {}
+  explicit SPolynomial(unsigned int order) : SPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   SPolynomial(const SPolynomial<T> &other) : SPolynomialParam<T>(other) {}

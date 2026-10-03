@@ -43,7 +43,7 @@ SparseDiffRep<T> &SparseDiffRep<T>::operator=(const T &v) {
 }
 
 template <class T>
-SparseDiffRep<T> &SparseDiffRep<T>::operator=(const vector<pair<uInt, T>> &grad) {
+SparseDiffRep<T> &SparseDiffRep<T>::operator=(const vector<pair<unsigned int, T>> &grad) {
   grad_p = grad;
   return *this;
 }
@@ -59,13 +59,13 @@ SparseDiffRep<T> &SparseDiffRep<T>::operator=(const SparseDiffRep<T> &other) {
 
 template <class T>
 void SparseDiffRep<T>::operator*=(const T other) {
-  for (typename vector<pair<uInt, T>>::iterator i = grad_p.begin(); i != grad_p.end(); ++i)
+  for (typename vector<pair<unsigned int, T>>::iterator i = grad_p.begin(); i != grad_p.end(); ++i)
     i->second *= other;
 }
 
 template <class T>
 void SparseDiffRep<T>::operator/=(const T other) {
-  for (typename vector<pair<uInt, T>>::iterator i = grad_p.begin(); i != grad_p.end(); ++i)
+  for (typename vector<pair<unsigned int, T>>::iterator i = grad_p.begin(); i != grad_p.end(); ++i)
     i->second /= other;
 }
 

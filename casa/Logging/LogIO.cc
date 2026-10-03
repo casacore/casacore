@@ -197,7 +197,7 @@ LogIO &operator<<(LogIO &os, const char *item) {
   return os;
 }
 
-LogIO &operator<<(LogIO &os, Double item) {
+LogIO &operator<<(LogIO &os, double item) {
   os.output() << item;
   return os;
 }
@@ -212,12 +212,12 @@ LogIO &operator<<(LogIO &os, DComplex item) {
   return os;
 }
 
-LogIO &operator<<(LogIO &os, Int item) {
+LogIO &operator<<(LogIO &os, int item) {
   os.output() << item;
   return os;
 }
 
-LogIO &operator<<(LogIO &os, uInt item) {
+LogIO &operator<<(LogIO &os, unsigned int item) {
   os.output() << item;
   return os;
 }
@@ -232,12 +232,12 @@ LogIO &operator<<(LogIO &os, uInt64 item) {
   return os;
 }
 
-LogIO &operator<<(LogIO &os, uLong item) {
+LogIO &operator<<(LogIO &os, unsigned long item) {
   os.output() << item;
   return os;
 }
 
-LogIO &operator<<(LogIO &os, Long item) {
+LogIO &operator<<(LogIO &os, long item) {
   os.output() << item;
   return os;
 }

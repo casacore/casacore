@@ -61,14 +61,14 @@
 // Define a macro to execute a function for all column types.
 #define ExecFunc(funcName, tab, prefix)                    \
   funcName<bool>(tab, prefix + "b", BoolArrays);           \
-  funcName<uChar>(tab, prefix + "uc", uCharArrays);        \
-  funcName<Short>(tab, prefix + "s", ShortArrays);         \
-  funcName<uShort>(tab, prefix + "us", uShortArrays);      \
-  funcName<Int>(tab, prefix + "i", IntArrays);             \
-  funcName<uInt>(tab, prefix + "ui", uIntArrays);          \
+  funcName<unsigned char>(tab, prefix + "uc", uCharArrays);        \
+  funcName<short>(tab, prefix + "s", ShortArrays);         \
+  funcName<unsigned short>(tab, prefix + "us", uShortArrays);      \
+  funcName<int>(tab, prefix + "i", IntArrays);             \
+  funcName<unsigned int>(tab, prefix + "ui", uIntArrays);          \
   funcName<Int64>(tab, prefix + "i64", Int64Arrays);       \
-  funcName<Float>(tab, prefix + "f", FloatArrays);         \
-  funcName<Double>(tab, prefix + "d", DoubleArrays);       \
+  funcName<float>(tab, prefix + "f", FloatArrays);         \
+  funcName<double>(tab, prefix + "d", DoubleArrays);       \
   funcName<Complex>(tab, prefix + "cx", ComplexArrays);    \
   funcName<DComplex>(tab, prefix + "dcx", DComplexArrays); \
   funcName<String>(tab, prefix + "sf", FStringArrays);     \
@@ -88,14 +88,14 @@
 // They get changed in the same way as the table data are changed.
 IPosition arrShapes[4];
 Array<bool> BoolArrays[4];
-Array<uChar> uCharArrays[4];
-Array<Short> ShortArrays[4];
-Array<uShort> uShortArrays[4];
-Array<Int> IntArrays[4];
-Array<uInt> uIntArrays[4];
+Array<unsigned char> uCharArrays[4];
+Array<short> ShortArrays[4];
+Array<unsigned short> uShortArrays[4];
+Array<int> IntArrays[4];
+Array<unsigned int> uIntArrays[4];
 Array<Int64> Int64Arrays[4];
-Array<Float> FloatArrays[4];
-Array<Double> DoubleArrays[4];
+Array<float> FloatArrays[4];
+Array<double> DoubleArrays[4];
 Array<Complex> ComplexArrays[4];
 Array<DComplex> DComplexArrays[4];
 Array<String> FStringArrays[4];
@@ -112,7 +112,7 @@ Array<T> makeArray(const IPosition& shape, T value, T incr) {
 template <>
 Array<bool> makeArray(const IPosition& shape, bool, bool) {
   Array<bool> arr(shape);
-  for (uInt i = 0; i < arr.size(); ++i) {
+  for (unsigned int i = 0; i < arr.size(); ++i) {
     arr.data()[i] = (i % 3 == 1);
   }
   return arr;
@@ -120,7 +120,7 @@ Array<bool> makeArray(const IPosition& shape, bool, bool) {
 template <>
 Array<String> makeArray(const IPosition& shape, String value, String) {
   Array<String> arr(shape);
-  for (uInt i = 0; i < arr.size(); ++i) {
+  for (unsigned int i = 0; i < arr.size(); ++i) {
     arr.data()[i] = value + String(std::to_string(i));
   }
   return arr;
@@ -136,7 +136,7 @@ void incrArray(Array<bool>& arr, int, bool incr) {
   if (arr.size() > 0) {
     bool deleteIt;
     bool* p = arr.getStorage(deleteIt);
-    for (uInt i = 0; i < arr.size() - 1; ++i) {
+    for (unsigned int i = 0; i < arr.size() - 1; ++i) {
       p[i] = p[i + 1];
     }
     p[arr.size() - 1] = incr;
@@ -149,18 +149,18 @@ void incrArray(Array<String>& arr, int incr, bool) {
 }
 
 // Create all global arrays using the globally defined array shapes.
-void createArrays(uInt nrow) {
+void createArrays(unsigned int nrow) {
   for (int i = 0; i < 4; ++i) {
     IPosition shape = arrShapes[i].concatenate(IPosition(1, nrow));
     BoolArrays[i].reference(makeArray<bool>(shape, true, true));
-    uCharArrays[i].reference(makeArray<uChar>(shape, 0, 1));
-    ShortArrays[i].reference(makeArray<Short>(shape, -32768, 10));
-    uShortArrays[i].reference(makeArray<uShort>(shape, 0, 10));
-    IntArrays[i].reference(makeArray<Int>(shape, -32768 * 65536, 100000));
-    uIntArrays[i].reference(makeArray<uInt>(shape, 0, 100000));
+    uCharArrays[i].reference(makeArray<unsigned char>(shape, 0, 1));
+    ShortArrays[i].reference(makeArray<short>(shape, -32768, 10));
+    uShortArrays[i].reference(makeArray<unsigned short>(shape, 0, 10));
+    IntArrays[i].reference(makeArray<int>(shape, -32768 * 65536, 100000));
+    uIntArrays[i].reference(makeArray<unsigned int>(shape, 0, 100000));
     Int64Arrays[i].reference(makeArray<Int64>(shape, -6553600000L, 100000001));
-    FloatArrays[i].reference(makeArray<Float>(shape, -10.5, 1));
-    DoubleArrays[i].reference(makeArray<Double>(shape, -100.3, 22));
+    FloatArrays[i].reference(makeArray<float>(shape, -10.5, 1));
+    DoubleArrays[i].reference(makeArray<double>(shape, -100.3, 22));
     ComplexArrays[i].reference(makeArray<Complex>(shape, Complex(-10.5, 20), Complex(1, 3.1)));
     DComplexArrays[i].reference(makeArray<DComplex>(shape, DComplex(-100.3, -5), DComplex(2, 1.7)));
     FStringArrays[i].reference(makeArray<String>(shape, String("maxstr"), String()));
@@ -171,7 +171,7 @@ void createArrays(uInt nrow) {
 // Add 4 columns for the given data type to the table description.
 // These are: Scalar, Direct Array, Indirect FixedShape Array, Indirect Array.
 template <typename T>
-void addColDesc(TableDesc& td, const String& name, bool addVirtual, uInt maxLength = 0) {
+void addColDesc(TableDesc& td, const String& name, bool addVirtual, unsigned int maxLength = 0) {
   // Give the scalars the group name 'scalar'.
   ScalarColumnDesc<T> s1(name + "s1", String(), String(), "scalar");
   if (maxLength > 0) s1.setMaxLength(maxLength);
@@ -203,7 +203,7 @@ void checkDefined(Table& tab, const String& name, bool tiled, const IPosition& s
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     AlwaysAssertExit(s1.isDefined(i));
     AlwaysAssertExit(a1.isDefined(i));
     AlwaysAssertExit(a2.isDefined(i));
@@ -224,11 +224,11 @@ bool testEQ(T v1, T v2) {
   return v1 == v2;
 }
 template <>
-bool testEQ(Float v1, Float v2) {
+bool testEQ(float v1, float v2) {
   return near(v1, v2);
 }
 template <>
-bool testEQ(Double v1, Double v2) {
+bool testEQ(double v1, double v2) {
   return near(v1, v2);
 }
 template <typename T>
@@ -240,11 +240,11 @@ bool testEQ(Array<T> v1, Array<T> v2) {
   return allEQ(v1, v2);
 }
 template <>
-bool testEQ(Array<Float> v1, Array<Float> v2) {
+bool testEQ(Array<float> v1, Array<float> v2) {
   return allNear(v1, v2, 1e-5);
 }
 template <>
-bool testEQ(Array<Double> v1, Array<Double> v2) {
+bool testEQ(Array<double> v1, Array<double> v2) {
   return allNear(v1, v2, 1e-5);
 }
 template <typename T>
@@ -259,7 +259,7 @@ void writeRows(Table& tab, const String& name, const Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     s1.put(i, values[0].data()[i]);
     a1.put(i, values[1][i]);
     a2.put(i, values[2][i]);
@@ -274,7 +274,7 @@ void checkRows(Table& tab, const String& name, const Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     AlwaysAssertExit(testEQ(s1.get(i), values[0].data()[i]));
     AlwaysAssertExit(testEQ(a1.get(i), values[1][i]));
     AlwaysAssertExit(testEQ(a2.get(i), values[2][i]));
@@ -320,9 +320,9 @@ void writeRange(Table& tab, const String& name, Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  uInt start = 1;
-  uInt end = tab.nrow() - 2;
-  uInt incr = 3;
+  unsigned int start = 1;
+  unsigned int end = tab.nrow() - 2;
+  unsigned int incr = 3;
   RefRows rows(start, end, incr);
   Slicer rowSlicer(IPosition(1, start), IPosition(1, end), IPosition(1, incr), Slicer::endIsLast);
   IPosition arrend1(values[1].shape() - 1);
@@ -355,9 +355,9 @@ void checkRange(Table& tab, const String& name, const Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  uInt start = 1;
-  uInt end = tab.nrow() - 2;
-  uInt incr = 3;
+  unsigned int start = 1;
+  unsigned int end = tab.nrow() - 2;
+  unsigned int incr = 3;
   RefRows rows(start, end, incr);
   Slicer rowSlicer(IPosition(1, start), IPosition(1, end), IPosition(1, incr), Slicer::endIsLast);
   IPosition arrend1(values[1].shape() - 1);
@@ -387,7 +387,7 @@ void writeRowSlice(Table& tab, const String& name, Array<T>* values) {
                  Slicer::endIsLast);
   Slicer slicer3(IPosition(2, 0), (values[3].shape() - 2).getFirst(2), IPosition(2, 1, 1),
                  Slicer::endIsLast);
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     Array<T> arr1(values[1][i](slicer1));
     Array<T> arr2(values[2][i](slicer2));
     Array<T> arr3(values[3][i](slicer3));
@@ -413,7 +413,7 @@ void checkRowSlice(Table& tab, const String& name, const Array<T>* values) {
                  Slicer::endIsLast);
   Slicer slicer3(IPosition(2, 0), (values[3].shape() - 2).getFirst(2), IPosition(2, 1, 1),
                  Slicer::endIsLast);
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     AlwaysAssertExit(testEQ(s1(i), values[0].data()[i]));
     AlwaysAssertExit(testEQ(a1.getSlice(i, slicer1), values[1][i](slicer1)));
     AlwaysAssertExit(testEQ(a2.getSlice(i, slicer2), values[2][i](slicer2)));
@@ -473,9 +473,9 @@ void writeRangeSlice(Table& tab, const String& name, const Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  uInt start = 1;
-  uInt end = tab.nrow() - 1;
-  uInt incr = 2;
+  unsigned int start = 1;
+  unsigned int end = tab.nrow() - 1;
+  unsigned int incr = 2;
   RefRows rows(start, end, incr);
   Slicer slicer1(IPosition(2, 1), (values[1].shape() - 1).getFirst(2), IPosition(2, 1, 2),
                  Slicer::endIsLast);
@@ -509,9 +509,9 @@ void checkRangeSlice(Table& tab, const String& name, const Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  uInt start = 1;
-  uInt end = tab.nrow() - 1;
-  uInt incr = 2;
+  unsigned int start = 1;
+  unsigned int end = tab.nrow() - 1;
+  unsigned int incr = 2;
   RefRows rows(start, end, incr);
   Slicer slicer1(IPosition(2, 1), (values[1].shape() - 1).getFirst(2), IPosition(2, 1, 2),
                  Slicer::endIsLast);
@@ -554,19 +554,19 @@ void bindVirtual(SetupNewTable& newtab, const String& name) {
 
 // Create a new table and fill a few cells with an empty array.
 // An empty table name defaults to tStMan_tmp.data.
-Table maketab(uInt nrrow, const DataManager& stman, bool tiled, const String& tabName = String(),
+Table maketab(unsigned int nrrow, const DataManager& stman, bool tiled, const String& tabName = String(),
               bool addVirtual = false) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   addColDesc<bool>(td, "b", addVirtual);
-  addColDesc<uChar>(td, "uc", addVirtual);
-  addColDesc<Short>(td, "s", addVirtual);
-  addColDesc<uShort>(td, "us", addVirtual);
-  addColDesc<Int>(td, "i", addVirtual);
-  addColDesc<uInt>(td, "ui", addVirtual);
+  addColDesc<unsigned char>(td, "uc", addVirtual);
+  addColDesc<short>(td, "s", addVirtual);
+  addColDesc<unsigned short>(td, "us", addVirtual);
+  addColDesc<int>(td, "i", addVirtual);
+  addColDesc<unsigned int>(td, "ui", addVirtual);
   addColDesc<Int64>(td, "i64", addVirtual);
-  addColDesc<Float>(td, "f", addVirtual);
-  addColDesc<Double>(td, "d", addVirtual);
+  addColDesc<float>(td, "f", addVirtual);
+  addColDesc<double>(td, "d", addVirtual);
   addColDesc<Complex>(td, "cx", addVirtual);
   addColDesc<DComplex>(td, "dcx", addVirtual);
   addColDesc<String>(td, "sv", addVirtual);      // variable length string
@@ -619,14 +619,14 @@ Table maketab(uInt nrrow, const DataManager& stman, bool tiled, const String& ta
   Table tab(newtab, nrrow);
   // Check the columns for defined and content.
   checkDefined<bool>(tab, "b", tiled);
-  checkDefined<uChar>(tab, "uc", tiled);
-  checkDefined<Short>(tab, "s", tiled);
-  checkDefined<uShort>(tab, "us", tiled);
-  checkDefined<Int>(tab, "i", tiled);
-  checkDefined<uInt>(tab, "ui", tiled);
+  checkDefined<unsigned char>(tab, "uc", tiled);
+  checkDefined<short>(tab, "s", tiled);
+  checkDefined<unsigned short>(tab, "us", tiled);
+  checkDefined<int>(tab, "i", tiled);
+  checkDefined<unsigned int>(tab, "ui", tiled);
   checkDefined<Int64>(tab, "i64", tiled);
-  checkDefined<Float>(tab, "f", tiled);
-  checkDefined<Double>(tab, "d", tiled);
+  checkDefined<float>(tab, "f", tiled);
+  checkDefined<double>(tab, "d", tiled);
   checkDefined<Complex>(tab, "cx", tiled);
   checkDefined<DComplex>(tab, "dcx", tiled);
   checkDefined<String>(tab, "sv", false, arrShapes[1], true);
@@ -637,7 +637,7 @@ Table maketab(uInt nrrow, const DataManager& stman, bool tiled, const String& ta
   ArrayColumn<bool> ba2(tab, "ba2");
   Array<bool> boolArray1(arrShapes[1], false);
   Array<bool> boolArray2(arrShapes[2], false);
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     bs1.put(i, false);
     ba1.put(i, boolArray1);
     ba2.put(i, boolArray2);
@@ -645,9 +645,9 @@ Table maketab(uInt nrrow, const DataManager& stman, bool tiled, const String& ta
   // Put empty arrays in some columns cells and check them.
   // Do not do it for TiledStMan and if the table is used by ForwardColumn.
   if (!tiled && tabName.empty()) {
-    ArrayColumn<Float> fa3(tab, "fa3");
+    ArrayColumn<float> fa3(tab, "fa3");
     ArrayColumn<DComplex> dca3(tab, "dcxa3");
-    fa3.put(nrrow - 1, Array<Float>());
+    fa3.put(nrrow - 1, Array<float>());
     dca3.put(nrrow - 1, Array<DComplex>(IPosition(2, 2, 0)));
     AlwaysAssertExit(fa3.isDefined(nrrow - 1));
     AlwaysAssertExit(dca3.isDefined(nrrow - 1));
@@ -659,7 +659,7 @@ Table maketab(uInt nrrow, const DataManager& stman, bool tiled, const String& ta
 
 // Reopen the table and check the contents again.
 // This has to be done right after creating the table in function maketab.
-void checknewtab(const Table& table, uInt nrrow, bool tiled) {
+void checknewtab(const Table& table, unsigned int nrrow, bool tiled) {
   Table tab(table);
   if (tab.isNull()) {
     tab = Table("tStMan_tmp.data");
@@ -672,20 +672,20 @@ void checknewtab(const Table& table, uInt nrrow, bool tiled) {
   Table subtab(tab(rows));
   // Check the columns for defined and content.
   checkDefined<bool>(tab, "b", tiled);
-  checkDefined<uChar>(tab, "uc", tiled);
-  checkDefined<Short>(tab, "s", tiled);
-  checkDefined<uShort>(tab, "us", tiled);
-  checkDefined<Int>(tab, "i", tiled);
-  checkDefined<uInt>(tab, "ui", tiled);
+  checkDefined<unsigned char>(tab, "uc", tiled);
+  checkDefined<short>(tab, "s", tiled);
+  checkDefined<unsigned short>(tab, "us", tiled);
+  checkDefined<int>(tab, "i", tiled);
+  checkDefined<unsigned int>(tab, "ui", tiled);
   checkDefined<Int64>(tab, "i64", tiled);
-  checkDefined<Float>(subtab, "f", tiled);
-  checkDefined<Double>(tab, "d", tiled);
+  checkDefined<float>(subtab, "f", tiled);
+  checkDefined<double>(tab, "d", tiled);
   checkDefined<Complex>(tab, "cx", tiled);
   checkDefined<DComplex>(subtab, "dcx", tiled);
   checkDefined<String>(tab, "sv", false, arrShapes[1], true);
   checkDefined<String>(tab, "sf", false, arrShapes[1], true);
   // Check the last row where an empty array has been put.
-  ArrayColumn<Float> fa3(tab, "fa3");
+  ArrayColumn<float> fa3(tab, "fa3");
   ArrayColumn<DComplex> dca3(tab, "dcxa3");
   AlwaysAssertExit(fa3.isDefined(nrrow - 1));
   AlwaysAssertExit(dca3.isDefined(nrrow - 1));
@@ -701,7 +701,7 @@ void checktab(const Table& table) {
   ExecFunc(checkAll, tab, String());
 }
 
-void doTest(uInt nrrow, const DataManager& stman, bool keepTable, bool tiled,
+void doTest(unsigned int nrrow, const DataManager& stman, bool keepTable, bool tiled,
             const Table& refTab = Table()) {
   // Create the table (if not given).
   Table table(refTab);
@@ -736,8 +736,8 @@ void doTest(uInt nrrow, const DataManager& stman, bool keepTable, bool tiled,
 void testTaQLColumns() {}
 
 int main(int argc, const char* argv[]) {
-  uInt nrrow = 10;
-  uInt bucketSize = 1000;
+  unsigned int nrrow = 10;
+  unsigned int bucketSize = 1000;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nrrow;

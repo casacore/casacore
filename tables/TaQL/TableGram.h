@@ -76,7 +76,7 @@ void TableGramerror(const char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& tableGramPosition();
+int& tableGramPosition();
 
 // Declare the input routine for flex/bison.
 int tableGramInput(char* buf, int max_size);
@@ -95,7 +95,7 @@ MVTime tableGramParseDateTime(const String& in);
 
 // A function to parse a time/position string.
 // The value is returned in radians.
-Double tableGramParseTime(const String& in);
+double tableGramParseTime(const String& in);
 
 // </group>
 

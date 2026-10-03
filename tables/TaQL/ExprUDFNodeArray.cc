@@ -67,7 +67,7 @@ MArray<bool> TableExprUDFNodeArray::getArrayBool(const TableExprId& id) {
 MArray<Int64> TableExprUDFNodeArray::getArrayInt(const TableExprId& id) {
   return itsUDF->getArrayInt(id);
 }
-MArray<Double> TableExprUDFNodeArray::getArrayDouble(const TableExprId& id) {
+MArray<double> TableExprUDFNodeArray::getArrayDouble(const TableExprId& id) {
   return itsUDF->getArrayDouble(id);
 }
 MArray<DComplex> TableExprUDFNodeArray::getArrayDComplex(const TableExprId& id) {

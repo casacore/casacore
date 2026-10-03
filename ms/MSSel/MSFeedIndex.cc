@@ -79,8 +79,8 @@ void MSFeedIndex::attachIds() {
   msFeedCols_p = new MSFeedColumns(static_cast<MSFeed&>(table()));
 }
 
-Int MSFeedIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
-                         const Block<Int>& dataTypes, rownr_t index) {
+int MSFeedIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+                         const Block<int>& dataTypes, rownr_t index) {
   // this implementation has been adapted from the default compare function in
   // ColumnsIndex.cc.  The support for data types other than Integer have been
   // removed, since, according to the constructor's documentation, the index
@@ -89,11 +89,11 @@ Int MSFeedIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& data
   // supports a -1 value for all IDs, rather than just for SPECTRAL_WINDOW_ID;
   // since MS2 only allows a -1 value for SPECTRAL_WINDOW_ID, this should not
   // cause problems for users with valid MS2 datasets.
-  uInt nfield = fieldPtrs.nelements();
-  for (uInt i = 0; i < nfield; i++) {
+  unsigned int nfield = fieldPtrs.nelements();
+  for (unsigned int i = 0; i < nfield; i++) {
     if (dataTypes[i] == TpInt) {
-      const Int left = *(*(RecordFieldPtr<Int>*)(fieldPtrs[i]));
-      const Int right = ((const Int*)(dataPtrs[i]))[index];
+      const int left = *(*(RecordFieldPtr<int>*)(fieldPtrs[i]));
+      const int right = ((const int*)(dataPtrs[i]))[index];
       if (right != -1) {  // consider -1 equal to any requested id
         if (left < right) {
           return -1;
@@ -108,19 +108,19 @@ Int MSFeedIndex::compare(const Block<void*>& fieldPtrs, const Block<void*>& data
   return 0;
 }
 
-Vector<Int> MSFeedIndex::matchFeedPolznAndAngle(const Int& antennaId,
+Vector<int> MSFeedIndex::matchFeedPolznAndAngle(const int& antennaId,
                                                 const Vector<String>& polznType,
-                                                const Vector<Float>& receptorAngle,
-                                                const Float& tol, Vector<Int>& rowNumbers) {
+                                                const Vector<float>& receptorAngle,
+                                                const float& tol, Vector<int>& rowNumbers) {
   // Return all matching row numbers for a given antenna id., and set
   // of feed receptor polarizations and receptor angles. The receptor
   // angles are matched to within the specified tolerance in deg.
   //
   // Do the receptor polarization match per row
-  uInt nReceptors = std::min(polznType.nelements(), receptorAngle.nelements());
-  uInt nrows = msFeedCols_p->nrow();
+  unsigned int nReceptors = std::min(polznType.nelements(), receptorAngle.nelements());
+  unsigned int nrows = msFeedCols_p->nrow();
   Vector<bool> receptorMatch(nrows, false);
-  for (uInt row = 0; row < nrows; row++) {
+  for (unsigned int row = 0; row < nrows; row++) {
     Vector<Quantity> rowAngle;
     msFeedCols_p->receptorAngleQuant().get(row, rowAngle);
     Vector<String> rowType;
@@ -128,7 +128,7 @@ Vector<Int> MSFeedIndex::matchFeedPolznAndAngle(const Int& antennaId,
     receptorMatch(row) = (rowAngle.nelements() == nReceptors && rowType.nelements() == nReceptors);
 
     if (receptorMatch(row)) {
-      for (uInt i = 0; i < nReceptors; i++) {
+      for (unsigned int i = 0; i < nReceptors; i++) {
         receptorMatch(row) =
             (receptorMatch(row) && nearAbs(Quantity(receptorAngle(i), "deg"), rowAngle(i), tol) &&
              rowType(i) == polznType(i));
@@ -137,31 +137,31 @@ Vector<Int> MSFeedIndex::matchFeedPolznAndAngle(const Int& antennaId,
   }
 
   LogicalArray maskArray = (msFeedCols_p->antennaId().getColumn() == antennaId && receptorMatch);
-  Vector<Int> rows(nrows);
+  Vector<int> rows(nrows);
   indgen(rows);
-  MaskedArray<Int> maskRowNumbers(rows, maskArray);
+  MaskedArray<int> maskRowNumbers(rows, maskArray);
   rowNumbers = maskRowNumbers.getCompressedArray();
-  MaskedArray<Int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
+  MaskedArray<int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
   return maskFeedIds.getCompressedArray();
 }
 
-Vector<Int> MSFeedIndex::matchAntennaId(const Int& antennaId, Vector<Int>& rowNumbers) {
+Vector<int> MSFeedIndex::matchAntennaId(const int& antennaId, Vector<int>& rowNumbers) {
   // Return all matching row numbers for a given antenna id.
   //
   LogicalArray maskArray = (msFeedCols_p->antennaId().getColumn() == antennaId);
-  uInt nrows = msFeedCols_p->nrow();
-  Vector<Int> rows(nrows);
+  unsigned int nrows = msFeedCols_p->nrow();
+  Vector<int> rows(nrows);
   indgen(rows);
-  MaskedArray<Int> maskRowNumbers(rows, maskArray);
+  MaskedArray<int> maskRowNumbers(rows, maskArray);
   return maskRowNumbers.getCompressedArray();
   rowNumbers = maskRowNumbers.getCompressedArray();
-  MaskedArray<Int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
+  MaskedArray<int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
   return maskFeedIds.getCompressedArray();
 }
 
-Vector<Int> MSFeedIndex::matchFeedId(const Vector<Int>& sourceId) {
-  Vector<Int> feedIds = msFeedCols_p->feedId().getColumn();
-  Vector<Int> IDs = set_intersection(sourceId, feedIds);
+Vector<int> MSFeedIndex::matchFeedId(const Vector<int>& sourceId) {
+  Vector<int> feedIds = msFeedCols_p->feedId().getColumn();
+  Vector<int> IDs = set_intersection(sourceId, feedIds);
   if (IDs.nelements() == 0) {
     std::ostringstream mesg;
     mesg << "No match found for requested feeds [ID(s): " << sourceId << "]";

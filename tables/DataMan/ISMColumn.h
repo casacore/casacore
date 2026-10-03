@@ -114,7 +114,7 @@ class ISMColumn : public StManColumnBase {
   // Create a ISMColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  ISMColumn(ISMBase* parent, int dataType, uInt colnr);
+  ISMColumn(ISMBase* parent, int dataType, unsigned int colnr);
 
   ~ISMColumn();
 
@@ -129,7 +129,7 @@ class ISMColumn : public StManColumnBase {
 
   // Get the dimensionality of the item in the given row.
   // This is the same for all rows.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // This is the same for all rows.
@@ -156,11 +156,11 @@ class ISMColumn : public StManColumnBase {
   // Get a scalar value in the given row.
   // <group>
   virtual void getBool(rownr_t rownr, bool* dataPtr);
-  virtual void getuChar(rownr_t rownr, uChar* dataPtr);
-  virtual void getShort(rownr_t rownr, Short* dataPtr);
-  virtual void getuShort(rownr_t rownr, uShort* dataPtr);
-  virtual void getInt(rownr_t rownr, Int* dataPtr);
-  virtual void getuInt(rownr_t rownr, uInt* dataPtr);
+  virtual void getuChar(rownr_t rownr, unsigned char* dataPtr);
+  virtual void getShort(rownr_t rownr, short* dataPtr);
+  virtual void getuShort(rownr_t rownr, unsigned short* dataPtr);
+  virtual void getInt(rownr_t rownr, int* dataPtr);
+  virtual void getuInt(rownr_t rownr, unsigned int* dataPtr);
   virtual void getInt64(rownr_t rownr, Int64* dataPtr);
   virtual void getfloat(rownr_t rownr, float* dataPtr);
   virtual void getdouble(rownr_t rownr, double* dataPtr);
@@ -172,11 +172,11 @@ class ISMColumn : public StManColumnBase {
   // Put a scalar value in the given row.
   // <group>
   virtual void putBool(rownr_t rownr, const bool* dataPtr);
-  virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
-  virtual void putShort(rownr_t rownr, const Short* dataPtr);
-  virtual void putuShort(rownr_t rownr, const uShort* dataPtr);
-  virtual void putInt(rownr_t rownr, const Int* dataPtr);
-  virtual void putuInt(rownr_t rownr, const uInt* dataPtr);
+  virtual void putuChar(rownr_t rownr, const unsigned char* dataPtr);
+  virtual void putShort(rownr_t rownr, const short* dataPtr);
+  virtual void putuShort(rownr_t rownr, const unsigned short* dataPtr);
+  virtual void putInt(rownr_t rownr, const int* dataPtr);
+  virtual void putuInt(rownr_t rownr, const unsigned int* dataPtr);
   virtual void putInt64(rownr_t rownr, const Int64* dataPtr);
   virtual void putfloat(rownr_t rownr, const float* dataPtr);
   virtual void putdouble(rownr_t rownr, const double* dataPtr);
@@ -233,10 +233,10 @@ class ISMColumn : public StManColumnBase {
 
   // Get the fixed length of the data value in a cell of this column
   // (0 = variable length).
-  uInt getFixedLength() const;
+  unsigned int getFixedLength() const;
 
   // Get the nr of elements in this data value.
-  uInt nelements() const;
+  unsigned int nelements() const;
 
  protected:
   // Test if the last value is invalid for this row.
@@ -254,17 +254,17 @@ class ISMColumn : public StManColumnBase {
   ISMBase* stmanPtr_p;
   // Length of column cell value in storage format (0 = variable length).
   // If 0, the value is always preceeded by a uInt giving the length.
-  uInt fixedLength_p;
+  unsigned int fixedLength_p;
   // Column sequence number of this column.
-  uInt colnr_p;
+  unsigned int colnr_p;
   // The shape of the column.
   IPosition shape_p;
   // Number of elements in a value for this column.
-  uInt nrelem_p;
+  unsigned int nrelem_p;
   // Number of values to be copied.
   // Normally this is nrelem_p, but for complex types it is 2*nrelem_p.
   // When local format is used, it is the number of bytes.
-  uInt nrcopy_p;
+  unsigned int nrcopy_p;
   // Cache for interval for which last value read is valid.
   // The last value is valid for startRow_p till endRow_p (inclusive).
   rownr_t startRow_p;
@@ -273,7 +273,7 @@ class ISMColumn : public StManColumnBase {
   // The last row for which a value has been put.
   rownr_t lastRowPut_p;
   // The size of the data type in local format.
-  uInt typeSize_p;
+  unsigned int typeSize_p;
   // Pointer to a convert function for writing.
   Conversion::ValueFunction* writeFunc_p;
   // Pointer to a convert function for reading.
@@ -290,24 +290,24 @@ class ISMColumn : public StManColumnBase {
   void clear();
 
   // Put the value in all buckets from the given row on.
-  void putFromRow(rownr_t rownr, const char* data, uInt lenData);
+  void putFromRow(rownr_t rownr, const char* data, unsigned int lenData);
 
   // Put a data value into the bucket.
   // When it is at the first row of the bucket, it replaces the value.
   // Otherwise it is added.
   void putData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow, rownr_t bucketRownr,
-               const char* data, uInt lenData, bool afterLastRow, bool canSplit);
+               const char* data, unsigned int lenData, bool afterLastRow, bool canSplit);
 
   // Replace a value at the given offset in the bucket.
   // If the bucket is too small, it will be split (if allowed).
   void replaceData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow,
-                   rownr_t bucketRownr, uInt& offset, const char* data, uInt lenData,
+                   rownr_t bucketRownr, unsigned int& offset, const char* data, unsigned int lenData,
                    bool canSplit = true);
 
   // Add a value at the given index in the bucket.
   // If the bucket is too small, it will be split (if allowed).
   bool addData(ISMBucket* bucket, rownr_t bucketStartRow, rownr_t bucketNrrow, rownr_t bucketRownr,
-               uInt inx, const char* data, uInt lenData, bool afterLastRow = false,
+               unsigned int inx, const char* data, unsigned int lenData, bool afterLastRow = false,
                bool canSplit = true);
 
   // Handle the duplicated values after a bucket split.
@@ -407,9 +407,9 @@ inline bool ISMColumn::isLastValueInvalid(rownr_t rownr) {
   return rownr < startRow_p || rownr > endRow_p;
 }
 
-inline uInt ISMColumn::getFixedLength() const { return fixedLength_p; }
+inline unsigned int ISMColumn::getFixedLength() const { return fixedLength_p; }
 
-inline uInt ISMColumn::nelements() const { return nrelem_p; }
+inline unsigned int ISMColumn::nelements() const { return nrelem_p; }
 
 }  // namespace casacore
 

@@ -68,7 +68,7 @@ class WrapperBase {
   //  Default constructor: zero dimension
   WrapperBase() : ndim_p(0), arg_p(0) {}
   // Standard constructor
-  explicit WrapperBase(const uInt dim) : ndim_p(dim), arg_p(dim) {}
+  explicit WrapperBase(const unsigned int dim) : ndim_p(dim), arg_p(dim) {}
 
   // Destructor
   virtual ~WrapperBase() {}
@@ -81,12 +81,12 @@ class WrapperBase {
 
   // # Member functions
   //  Get the dimensionality
-  virtual uInt ndim() const { return ndim_p; }
+  virtual unsigned int ndim() const { return ndim_p; }
 
  protected:
   // # Data
   //  Dimensionality
-  uInt ndim_p;
+  unsigned int ndim_p;
   // Vector argument interface
   mutable Vector<T> arg_p;
 

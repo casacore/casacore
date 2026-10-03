@@ -35,18 +35,18 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // If we do not allocate it here, it will be done by newbuf.
 // However, then we may get a huge buffer, which may be not so nice.
 // bufsz may be sufficient for many purposes.
-DynBuffer::DynBuffer(uInt bsz)
+DynBuffer::DynBuffer(unsigned int bsz)
     : bufsz_p(bsz), nrbuf_p(0), maxnrbuf_p(10), uselen_p(10), totlen_p(10), bufptr_p(10) {
   allocstart();
-  bufptr_p[0] = new Char[bufsz_p];
+  bufptr_p[0] = new char[bufsz_p];
   totlen_p[0] = bufsz_p;
   nrbuf_p = 1;
 }
 
 DynBuffer::~DynBuffer() { remove(0); }
 
-void DynBuffer::remove(uInt n) {
-  for (Int i = n; i < nrbuf_p; i++) {
+void DynBuffer::remove(unsigned int n) {
+  for (int i = n; i < nrbuf_p; i++) {
     delete[] bufptr_p[i];
   }
   nrbuf_p = n;
@@ -61,11 +61,11 @@ void DynBuffer::allocstart() {
 }
 
 // Get a new buffer
-uInt DynBuffer::newbuf(uInt nr, uInt valsz) {
+unsigned int DynBuffer::newbuf(unsigned int nr, unsigned int valsz) {
   // Get the nr of free values in the current buffer.
   // If nothing left, use next buffer.
   // Store the used length of the current buffer.
-  uInt n;
+  unsigned int n;
   while ((n = (curtotlen_p - curuselen_p) / valsz) == 0) {
     if (curbuf_p >= 0) {
       uselen_p[curbuf_p] = curuselen_p;
@@ -82,7 +82,7 @@ uInt DynBuffer::newbuf(uInt nr, uInt valsz) {
         uselen_p.resize(maxnrbuf_p);
       }
       totlen_p[nrbuf_p] = (nr * valsz > bufsz_p ? nr * valsz : bufsz_p);
-      bufptr_p[nrbuf_p] = new Char[totlen_p[nrbuf_p]];
+      bufptr_p[nrbuf_p] = new char[totlen_p[nrbuf_p]];
       nrbuf_p++;
     }
 
@@ -105,7 +105,7 @@ void DynBuffer::nextstart() {
   }
 }
 
-bool DynBuffer::next(uInt& len, Char*& ptr) {
+bool DynBuffer::next(unsigned int& len, char*& ptr) {
   if (nextbuf_p > curbuf_p) {
     len = 0;
     return false;  // no more buffers

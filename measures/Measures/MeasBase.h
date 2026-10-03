@@ -92,12 +92,12 @@ class MeasBase : public Measure {
   // Create from data and reference
   // <group>
   MeasBase(const Mv &dt, const Mr &rf);
-  MeasBase(const Mv &dt, uInt rf);
+  MeasBase(const Mv &dt, unsigned int rf);
   MeasBase(const Quantity &dt, const Mr &rf);
-  MeasBase(const Quantity &dt, uInt rf);
+  MeasBase(const Quantity &dt, unsigned int rf);
   MeasBase(const Measure *dt);
   MeasBase(const Mr &rf);
-  MeasBase(const uInt rf);
+  MeasBase(const unsigned int rf);
   // </group>
 
   // # Destructor
@@ -121,7 +121,7 @@ class MeasBase : public Measure {
   void set(const Mv &dt, const Mr &rf);
   void set(const Unit &inunit);
   virtual void set(const MeasValue &dt);
-  virtual bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<double>> &in);
   // </group>
 
   // Get reference

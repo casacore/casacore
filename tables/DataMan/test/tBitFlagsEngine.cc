@@ -56,18 +56,18 @@
 // Build a description.
 void createTable() {
   // First register the virtual column engine.
-  BitFlagsEngine<Short>::registerClass();
-  BitFlagsEngine<Int>::registerClass();
-  BitFlagsEngine<uChar>::registerClass();
+  BitFlagsEngine<short>::registerClass();
+  BitFlagsEngine<int>::registerClass();
+  BitFlagsEngine<unsigned char>::registerClass();
 
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ArrayColumnDesc<bool>("virtualcol1"));
-  td.addColumn(ArrayColumnDesc<Int>("storedcol1"));
+  td.addColumn(ArrayColumnDesc<int>("storedcol1"));
   td.addColumn(ArrayColumnDesc<bool>("virtualcol2"));
-  td.addColumn(ArrayColumnDesc<Short>("storedcol2"));
+  td.addColumn(ArrayColumnDesc<short>("storedcol2"));
   td.addColumn(ArrayColumnDesc<bool>("virtualcol3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-  td.addColumn(ArrayColumnDesc<uChar>("storedcol3", "", IPosition(2, 3, 4), ColumnDesc::Direct));
+  td.addColumn(ArrayColumnDesc<unsigned char>("storedcol3", "", IPosition(2, 3, 4), ColumnDesc::Direct));
   // Define keywords telling the bitmask.
   ColumnDesc& cdesc = td.rwColumnDesc("storedcol1");
   Record brec;
@@ -82,24 +82,24 @@ void createTable() {
   Vector<String> writeMask(2);
   writeMask[0] = "bit01";
   writeMask[1] = "bit12";
-  BitFlagsEngine<Int> engine1("virtualcol1", "storedcol1", Vector<String>(1, "bit23"), writeMask);
-  BitFlagsEngine<Short> engine2("virtualcol2", "storedcol2");
-  BitFlagsEngine<uChar> engine3("virtualcol3", "storedcol3");
+  BitFlagsEngine<int> engine1("virtualcol1", "storedcol1", Vector<String>(1, "bit23"), writeMask);
+  BitFlagsEngine<short> engine2("virtualcol2", "storedcol2");
+  BitFlagsEngine<unsigned char> engine3("virtualcol3", "storedcol3");
   newtab.bindColumn("virtualcol1", engine1);
   newtab.bindColumn("virtualcol2", engine2);
   newtab.bindColumn("virtualcol3", engine3);
   Table tab(newtab, 10);
   // Fill the table via the flag columns.
-  ArrayColumn<Int> storedcol1(tab, "storedcol1");
-  ArrayColumn<Short> storedcol2(tab, "storedcol2");
-  ArrayColumn<uChar> storedcol3(tab, "storedcol3");
-  Matrix<Int> arri(IPosition(2, 3, 4));
-  Matrix<Short> arrs(IPosition(2, 3, 4));
-  Matrix<uChar> arrc(IPosition(2, 3, 4));
-  for (Int j = 0; j < 10; j++) {
-    Int i = 0;
-    for (uInt i2 = 0; i2 < 4; i2++) {
-      for (uInt i1 = 0; i1 < 3; i1++) {
+  ArrayColumn<int> storedcol1(tab, "storedcol1");
+  ArrayColumn<short> storedcol2(tab, "storedcol2");
+  ArrayColumn<unsigned char> storedcol3(tab, "storedcol3");
+  Matrix<int> arri(IPosition(2, 3, 4));
+  Matrix<short> arrs(IPosition(2, 3, 4));
+  Matrix<unsigned char> arrc(IPosition(2, 3, 4));
+  for (int j = 0; j < 10; j++) {
+    int i = 0;
+    for (unsigned int i2 = 0; i2 < 4; i2++) {
+      for (unsigned int i1 = 0; i1 < 3; i1++) {
         arri(i1, i2) = (j + i) % 2;
         arrs(i1, i2) = (j + i) % 5;
         arrc(i1, i2) = (j + i) % 4;
@@ -110,17 +110,17 @@ void createTable() {
     storedcol2.put(j, arrs);
     storedcol3.put(j, arrc);
     arri += 840;
-    arrs += Short(210);
-    arrc += uChar(1);
+    arrs += short(210);
+    arrc += static_cast<unsigned char>(1);
   }
 }
 
 void readTable() {
   // Read back the table.
   Table tab("tBitFlagsEngine_tmp.data");
-  ArrayColumn<Int> storedcol1(tab, "storedcol1");
-  ArrayColumn<Short> storedcol2(tab, "storedcol2");
-  ArrayColumn<uChar> storedcol3(tab, "storedcol3");
+  ArrayColumn<int> storedcol1(tab, "storedcol1");
+  ArrayColumn<short> storedcol2(tab, "storedcol2");
+  ArrayColumn<unsigned char> storedcol3(tab, "storedcol3");
   ArrayColumn<bool> virtualcol1(tab, "virtualcol1");
   ArrayColumn<bool> virtualcol2(tab, "virtualcol2");
   ArrayColumn<bool> virtualcol3(tab, "virtualcol3");
@@ -128,18 +128,18 @@ void readTable() {
   Matrix<bool> arrd2(IPosition(2, 3, 4));
   Matrix<bool> arrd3(IPosition(2, 3, 4));
   Matrix<bool> arrd3slice(arrd3(Slice(0, 1, 2), Slice(0, 2, 2)));
-  Matrix<Int> arri(IPosition(2, 3, 4));
-  Matrix<Short> arrs(IPosition(2, 3, 4));
-  Matrix<uChar> arrc(IPosition(2, 3, 4));
+  Matrix<int> arri(IPosition(2, 3, 4));
+  Matrix<short> arrs(IPosition(2, 3, 4));
+  Matrix<unsigned char> arrc(IPosition(2, 3, 4));
   Slice tmp;
   Slicer nslice(tmp, tmp, Slicer::endIsLength);
   Slicer nslice2(Slice(0, 1, 2), Slice(0, 2, 2), Slicer::endIsLength);
 
-  for (uInt j = 0; j < 10; j++) {
+  for (unsigned int j = 0; j < 10; j++) {
     {
-      Int i = 0;
-      for (uInt i2 = 0; i2 < 4; i2++) {
-        for (uInt i1 = 0; i1 < 3; i1++) {
+      int i = 0;
+      for (unsigned int i2 = 0; i2 < 4; i2++) {
+        for (unsigned int i1 = 0; i1 < 3; i1++) {
           arri(i1, i2) = (j + i) % 2;
           arrs(i1, i2) = (j + i) % 5;
           arrc(i1, i2) = (j + i) % 4;
@@ -150,9 +150,9 @@ void readTable() {
         }
       }
     }
-    Array<Int> ai;
-    Array<Short> as;
-    Array<uChar> ac;
+    Array<int> ai;
+    Array<short> as;
+    Array<unsigned char> ac;
     Array<bool> arrbool;
     Array<bool> arrboolslice;
     cout << "get row " << j << endl;
@@ -210,11 +210,11 @@ void readTable() {
   {
     Cube<bool> arrd2(IPosition(3, 3, 4, 10));
     Slicer nslice2(Slice(0, 2, 1), Slice(1, 2, 2), Slicer::endIsLength);
-    for (uInt j = 0; j < 10; j++) {
-      Int i = 0;
-      for (uInt i2 = 0; i2 < 4; i2++) {
-        for (uInt i1 = 0; i1 < 3; i1++) {
-          Int val = (j + i) % 5;
+    for (unsigned int j = 0; j < 10; j++) {
+      int i = 0;
+      for (unsigned int i2 = 0; i2 < 4; i2++) {
+        for (unsigned int i1 = 0; i1 < 3; i1++) {
+          int val = (j + i) % 5;
           arrd2(i1, i2, j) = val;
           ++i;
         }

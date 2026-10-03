@@ -57,7 +57,7 @@ TableMeasDescBase::~TableMeasDescBase() {}
 TableMeasDescBase* TableMeasDescBase::clone() const { return new TableMeasDescBase(*this); }
 
 TableMeasDescBase* TableMeasDescBase::reconstruct(const Table& tab, const String& columnName) {
-  Int fnr;
+  int fnr;
   TableRecord mtype;
   TableRecord measInfo;
   const TableRecord& columnKeyset = tab.tableDesc()[columnName].keywordSet();
@@ -84,7 +84,7 @@ TableMeasDescBase* TableMeasDescBase::reconstruct(const Table& tab, const String
   TableQuantumDesc* tqdesc = TableQuantumDesc::reconstruct(tab.tableDesc(), columnName);
   Vector<String> names(tqdesc->getUnits());
   Vector<Unit> units(names.nelements());
-  for (uInt i = 0; i < names.nelements(); i++) {
+  for (unsigned int i = 0; i < names.nelements(); i++) {
     units(i) = names(i);
   }
   delete tqdesc;
@@ -151,7 +151,7 @@ void TableMeasDescBase::initTabRef(const MeasureHolder& measHolder) {
   itsRef.initTabRef(measHolder);
 }
 
-void TableMeasDescBase::setMeasUnits(const Measure& meas, const Vector<Quantum<Double>>& val,
+void TableMeasDescBase::setMeasUnits(const Measure& meas, const Vector<Quantum<double>>& val,
                                      const Vector<Unit>& units) {
   itsMeasType = TableMeasType(meas);
   // The input unit vector cannot be longer.
@@ -163,7 +163,7 @@ void TableMeasDescBase::setMeasUnits(const Measure& meas, const Vector<Quantum<D
   }
   // An empty or non-given unit gets the default Quantum one.
   itsUnits.resize(val.nelements());
-  for (uInt i = 0; i < val.nelements(); i++) {
+  for (unsigned int i = 0; i < val.nelements(); i++) {
     if (i >= units.nelements() || units(i).empty()) {
       itsUnits(i) = val(i).getUnit();
     } else {
@@ -184,7 +184,7 @@ void TableMeasDescBase::resetUnits(const Vector<Unit>& units) {
                   columnName() + " is too long"));
   }
   // An empty or non-given unit does not change.
-  for (uInt i = 0; i < units.nelements(); i++) {
+  for (unsigned int i = 0; i < units.nelements(); i++) {
     if (!units(i).empty()) {
       if (!(units(i) == itsUnits(i))) {
         throw(AipsError("TableMeasDescBase::resetUnits; invalid unit " + units(i).getName() +

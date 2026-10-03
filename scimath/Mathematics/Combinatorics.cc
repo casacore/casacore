@@ -30,11 +30,11 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Initialize factorial with first 2 values (0! and 1! are both 1).
-Vector<uInt> Combinatorics::_factorialCache(2, 1);
-volatile uInt Combinatorics::_factorialCacheSize = 2;
+Vector<unsigned int> Combinatorics::_factorialCache(2, 1);
+volatile unsigned int Combinatorics::_factorialCacheSize = 2;
 std::mutex Combinatorics::theirMutex;
 
-void Combinatorics::fillCache(const uInt n) {
+void Combinatorics::fillCache(const unsigned int n) {
   // Make updating the cache thread-safe.
   // After acquiring a lock, test again if an update needs to be done
   // because another thread might have done it in the mean time.
@@ -44,11 +44,11 @@ void Combinatorics::fillCache(const uInt n) {
     // Create a new cache vector.
     // Note: do not resize the existing one, because that makes
     // simultaneous read-access non thread-safe.
-    Vector<uInt> newCache(n + 1);
-    for (uInt i = 0; i < _factorialCacheSize; ++i) {
+    Vector<unsigned int> newCache(n + 1);
+    for (unsigned int i = 0; i < _factorialCacheSize; ++i) {
       newCache[i] = _factorialCache[i];
     }
-    for (uInt i = _factorialCacheSize; i <= n; ++i) {
+    for (unsigned int i = _factorialCacheSize; i <= n; ++i) {
       newCache[i] = i * newCache[i - 1];
     }
     _factorialCache.reference(newCache);
@@ -56,7 +56,7 @@ void Combinatorics::fillCache(const uInt n) {
   }
 }
 
-uInt Combinatorics::choose(const uInt n, const uInt k) {
+unsigned int Combinatorics::choose(const unsigned int n, const unsigned int k) {
   if (k > n) {
     throw AipsError("k cannot be greater than n");
   }

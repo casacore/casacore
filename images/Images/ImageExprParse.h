@@ -216,12 +216,12 @@ class ImageExprParse {
   // Construct a literal object for the given type.
   // <group>
   ImageExprParse(bool value);
-  ImageExprParse(Int value);
-  ImageExprParse(Float value);
-  ImageExprParse(Double value);
+  ImageExprParse(int value);
+  ImageExprParse(float value);
+  ImageExprParse(double value);
   ImageExprParse(const Complex& value);
   ImageExprParse(const DComplex& value);
-  ImageExprParse(const Char* value);
+  ImageExprParse(const char* value);
   ImageExprParse(const String& value);
   // </group>
 
@@ -305,13 +305,13 @@ class ImageExprParse {
   // # The names of the images used in the expression.
   // # and the level of nesting.
   static vector<String> theirNames;
-  static Int theirLevel;
+  static int theirLevel;
 
   DataType itsType;
   bool itsBval;       // # boolean literal
-  Int itsIval;        // # integer literal
-  Float itsFval;      // # Float literal
-  Double itsDval;     // # Double literal
+  int itsIval;        // # integer literal
+  float itsFval;      // # Float literal
+  double itsDval;     // # Double literal
   Complex itsCval;    // # Complex literal
   DComplex itsDCval;  // # DComplex literal
   String itsSval;     // # lattice name; function name

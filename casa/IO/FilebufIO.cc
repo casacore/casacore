@@ -48,7 +48,7 @@ FilebufIO::FilebufIO()
       itsSeekOffset(-1),
       itsDirty(false) {}
 
-FilebufIO::FilebufIO(int fd, uInt bufferSize)
+FilebufIO::FilebufIO(int fd, unsigned int bufferSize)
     : itsFile(-1),
       itsBufSize(0),
       itsBufLen(0),
@@ -62,7 +62,7 @@ FilebufIO::FilebufIO(int fd, uInt bufferSize)
 
 FilebufIO::~FilebufIO() { detach(); }
 
-void FilebufIO::attach(int fd, uInt bufSize) {
+void FilebufIO::attach(int fd, unsigned int bufSize) {
   AlwaysAssert(itsFile == -1, AipsError);
   itsFile = fd;
   itsOffset = 0;
@@ -85,7 +85,7 @@ void FilebufIO::setBuffer(Int64 bufSize) {
   if (bufSize > 0) {
     itsBuffer = new char[bufSize];
     itsBufSize = bufSize;
-    itsBufOffset = -Int(itsBufSize + 1);
+    itsBufOffset = -int(itsBufSize + 1);
   }
 }
 
@@ -133,7 +133,7 @@ void FilebufIO::truncate(Int64 size) {
 void FilebufIO::resync() {
   AlwaysAssert(!itsDirty, AipsError);
   itsBufLen = 0;
-  itsBufOffset = -Int(itsBufSize + 1);
+  itsBufOffset = -int(itsBufSize + 1);
   itsOffset = 0;
   itsSeekOffset = -1;
 }
@@ -161,14 +161,14 @@ Int64 FilebufIO::readBuffer(Int64 offset, char* buf, Int64 size, bool throwExcep
   }
   Int64 bytesRead = ::traceREAD(itsFile, buf, size);
   int error = errno;
-  if (bytesRead > Int(size)) {  // Should never be executed
+  if (bytesRead > int(size)) {  // Should never be executed
     itsSeekOffset = -1;
     throw AipsError(
         "FilebufIO::read - read returned a bad value"
         " for file " +
         fileName());
   }
-  if (bytesRead != Int(size) && throwException == true) {
+  if (bytesRead != int(size) && throwException == true) {
     // # In case of a table reparation the remainder has to be filled with 0.
 #if defined(TABLEREPAIR)
     memset((char*)buf + bytesRead, 0, size - bytesRead);
@@ -178,7 +178,7 @@ Int64 FilebufIO::readBuffer(Int64 offset, char* buf, Int64 size, bool throwExcep
       itsSeekOffset = -1;
       throw AipsError(String("FilebufIO::read error for file ") + fileName() + ": " +
                       strerror(error));
-    } else if (bytesRead < Int(size)) {
+    } else if (bytesRead < int(size)) {
       itsSeekOffset = -1;
       throw AipsError("FilebufIO::read - incorrect number of bytes (" + std::to_string(bytesRead) +
                       " out of " + std::to_string(size) + ") read for file " +
@@ -208,7 +208,7 @@ void FilebufIO::write(Int64 size, const void* buf) {
     // Discard the current buffer if within these full blocks.
     if (st * itsBufSize <= itsBufOffset && end * itsBufSize >= itsBufOffset + itsBufSize) {
       itsDirty = false;
-      itsBufOffset = -Int(itsBufSize + 1);
+      itsBufOffset = -int(itsBufSize + 1);
       itsBufLen = 0;
     }
   }

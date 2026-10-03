@@ -85,7 +85,7 @@ void RecordGramerror(const char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& recordGramPosition();
+int& recordGramPosition();
 
 // Declare the input routine for flex/bison.
 int recordGramInput(char* buf, int max_size);
@@ -115,11 +115,11 @@ inline String recordGramRemoveQuotes(const String& in) { return tableGramRemoveQ
 
 class RecordGramVal {
  public:
-  Int type;        // # i=Int, f=Double, c=DComplex, s=String r=Regex
+  int type;        // # i=Int, f=Double, c=DComplex, s=String r=Regex
   String str;      // # string literal; table name; field name; unit
   bool bval;       // # bool literal
   Int64 ival;      // # integer literal
-  Double dval[2];  // # Double/DComplex literal
+  double dval[2];  // # Double/DComplex literal
 };
 
 // <summary>

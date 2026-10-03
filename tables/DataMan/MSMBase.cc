@@ -51,7 +51,7 @@ MSMBase::MSMBase(const String& storageManagerName, const Record&)
       hasPut_p(false) {}
 
 MSMBase::~MSMBase() {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     delete colSet_p[i];
   }
 }
@@ -123,7 +123,7 @@ bool MSMBase::canReallocateColumns() const { return true; }
 
 DataManagerColumn* MSMBase::reallocateColumn(DataManagerColumn* column) {
   // Replace an indirect column by a direct one if its shape is fixed.
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (column == colSet_p[i]) {
       MSMColumn* ptr = colSet_p[i];
       if (ptr->isFixedShape()) {
@@ -154,7 +154,7 @@ void MSMBase::prepare() {
 // Note that the column has already been added by makeXXColumn.
 // This function is merely for initializing the added column.
 void MSMBase::addColumn(DataManagerColumn* colp) {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (colp == colSet_p[i]) {
       colSet_p[i]->doCreate(nrrow_p);
       setHasPut();
@@ -165,11 +165,11 @@ void MSMBase::addColumn(DataManagerColumn* colp) {
 }
 
 void MSMBase::removeColumn(DataManagerColumn* colp) {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (colSet_p[i] == colp) {
       delete colSet_p[i];
       decrementNcolumn();
-      for (uInt j = i; j < ncolumn(); j++) {
+      for (unsigned int j = i; j < ncolumn(); j++) {
         colSet_p[j] = colSet_p[j + 1];
       }
       setHasPut();
@@ -184,7 +184,7 @@ void MSMBase::removeColumn(DataManagerColumn* colp) {
 
 void MSMBase::addRow64(rownr_t nr) {
   // # Add the number of rows to each column.
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     colSet_p[i]->addRow(nrrow_p + nr, nrrow_p);
   }
   nrrow_p += nr;
@@ -192,7 +192,7 @@ void MSMBase::addRow64(rownr_t nr) {
 }
 
 void MSMBase::removeRow64(rownr_t rownr) {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     colSet_p[i]->remove(rownr);
   }
   nrrow_p--;
@@ -212,7 +212,7 @@ void MSMBase::create64(rownr_t nrrow) {
 rownr_t MSMBase::open64(rownr_t tabNrrow, AipsIO&) {
   nrrow_p = tabNrrow;
   // # Create the required nr of rows and initialize them.
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     colSet_p[i]->doCreate(tabNrrow);
   }
   return nrrow_p;

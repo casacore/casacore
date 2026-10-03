@@ -96,17 +96,17 @@ class HDF5DataSet : public HDF5Object {
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
               const bool*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const uChar*);
+              const unsigned char*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const Short*);
+              const short*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const Int*);
+              const int*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
               const Int64*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const Float*);
+              const float*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
-              const Double*);
+              const double*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
               const Complex*);
   HDF5DataSet(const HDF5Object&, const String&, const IPosition& shape, const IPosition& tileShape,
@@ -119,12 +119,12 @@ class HDF5DataSet : public HDF5Object {
   // It checks if the internal type matches the given type.
   // <group>
   HDF5DataSet(const HDF5Object&, const String&, const bool*);
-  HDF5DataSet(const HDF5Object&, const String&, const uChar*);
-  HDF5DataSet(const HDF5Object&, const String&, const Short*);
-  HDF5DataSet(const HDF5Object&, const String&, const Int*);
+  HDF5DataSet(const HDF5Object&, const String&, const unsigned char*);
+  HDF5DataSet(const HDF5Object&, const String&, const short*);
+  HDF5DataSet(const HDF5Object&, const String&, const int*);
   HDF5DataSet(const HDF5Object&, const String&, const Int64*);
-  HDF5DataSet(const HDF5Object&, const String&, const Float*);
-  HDF5DataSet(const HDF5Object&, const String&, const Double*);
+  HDF5DataSet(const HDF5Object&, const String&, const float*);
+  HDF5DataSet(const HDF5Object&, const String&, const double*);
   HDF5DataSet(const HDF5Object&, const String&, const Complex*);
   HDF5DataSet(const HDF5Object&, const String&, const DComplex*);
   HDF5DataSet(const HDF5Object&, const String&, const HDF5DataType&);
@@ -138,7 +138,7 @@ class HDF5DataSet : public HDF5Object {
 
   // Set the cache size (in chunks) for the data set.
   // It needs to close and reopen the DataSet to take effect.
-  void setCacheSize(uInt nchunks);
+  void setCacheSize(unsigned int nchunks);
 
   // Get the data type for the data set with the given name.
   static DataType getDataType(hid_t, const String& name);

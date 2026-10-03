@@ -100,15 +100,15 @@ class HostMachineInfo;
 class HostInfo {
  public:
   static String hostName();
-  static Int processID();
-  static Double secondsFrom1970();
+  static int processID();
+  static double secondsFrom1970();
 
   // Returns true for big endian machines (like SUN).
   // Returns false for little endian machines (like PC).
   static bool bigEndian();
 
   // Returns 0 if unable to determine the number of CPUs.
-  static Int numCPUs(bool use_aipsrc = false);
+  static int numCPUs(bool use_aipsrc = false);
 
   // Get memory info (in KBytes).
   // Returns -1 if unable to determine memory info.
@@ -133,8 +133,8 @@ class HostInfo {
   // Returns the value previously stored
   // <group>
   static ptrdiff_t setMemoryTotal(ptrdiff_t memory);
-  static Int setMemoryFraction(Int memfrac);
-  static Int setNumCPUs(Int numCPUs);
+  static int setMemoryFraction(int memfrac);
+  static int setNumCPUs(int numCPUs);
   // </group>
 
  private:
@@ -144,8 +144,8 @@ class HostInfo {
 
   static HostMachineInfo *info;
   static ptrdiff_t resources_memory;
-  static Int resources_memfrac;
-  static Int resources_numCPUs;
+  static int resources_memfrac;
+  static int resources_numCPUs;
 };
 
 inline bool HostInfo::bigEndian() {

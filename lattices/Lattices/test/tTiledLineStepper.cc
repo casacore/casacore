@@ -49,21 +49,21 @@ int main(int argc, const char* argv[]) {
   inp.create("incz", "1", "Inc along the z-axis", "int");
   inp.readArguments(argc, argv);
 
-  const uInt nx = inp.getInt("nx");
-  const uInt ny = inp.getInt("ny");
-  const uInt nz = inp.getInt("nz");
-  const uInt tx = inp.getInt("tx");
-  const uInt ty = inp.getInt("ty");
-  const uInt tz = inp.getInt("tz");
-  const uInt blcx = inp.getInt("blcx");
-  const uInt blcy = inp.getInt("blcy");
-  const uInt blcz = inp.getInt("blcz");
-  const uInt trcx = inp.getInt("trcx");
-  const uInt trcy = inp.getInt("trcy");
-  const uInt trcz = inp.getInt("trcz");
-  const uInt incx = inp.getInt("incx");
-  const uInt incy = inp.getInt("incy");
-  const uInt incz = inp.getInt("incz");
+  const unsigned int nx = inp.getInt("nx");
+  const unsigned int ny = inp.getInt("ny");
+  const unsigned int nz = inp.getInt("nz");
+  const unsigned int tx = inp.getInt("tx");
+  const unsigned int ty = inp.getInt("ty");
+  const unsigned int tz = inp.getInt("tz");
+  const unsigned int blcx = inp.getInt("blcx");
+  const unsigned int blcy = inp.getInt("blcy");
+  const unsigned int blcz = inp.getInt("blcz");
+  const unsigned int trcx = inp.getInt("trcx");
+  const unsigned int trcy = inp.getInt("trcy");
+  const unsigned int trcz = inp.getInt("trcz");
+  const unsigned int incx = inp.getInt("incx");
+  const unsigned int incy = inp.getInt("incy");
+  const unsigned int incz = inp.getInt("incz");
 
   // Check/adapt the values.
   IPosition shape(3, nx, ny, nz);
@@ -71,7 +71,7 @@ int main(int argc, const char* argv[]) {
   IPosition blc(3, blcx, blcy, blcz);
   IPosition trc(3, trcx, trcy, trcz);
   IPosition inc(3, incx, incy, incz);
-  for (uInt i = 0; i < 3; i++) {
+  for (unsigned int i = 0; i < 3; i++) {
     AlwaysAssertExit(shape(i) > 0);
     AlwaysAssertExit(tileShape(i) > 0);
     AlwaysAssertExit(blc(i) >= 0);

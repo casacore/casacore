@@ -67,7 +67,7 @@ bool LCUnion::equals(const LCRegion& other) const { return LCRegionMulti::equals
 
 LCRegion* LCUnion::cloneRegion() const { return new LCUnion(*this); }
 
-LCRegion* LCUnion::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCUnion::doTranslate(const Vector<float>& translateVector,
                                const IPosition& newLatticeShape) const {
   Block<const LCRegion*> regions;
   multiTranslate(regions, translateVector, newLatticeShape);
@@ -92,17 +92,17 @@ LCUnion* LCUnion::fromRecord(const TableRecord& rec, const String& tableName) {
 }
 
 void LCUnion::defineBox() {
-  uInt i;
+  unsigned int i;
   // Get the union of blc and trc.
   const IPosition& shape = latticeShape();
-  uInt nrdim = shape.nelements();
+  unsigned int nrdim = shape.nelements();
   IPosition blc(regions()[0]->boundingBox().start());
   IPosition trc(regions()[0]->boundingBox().end());
-  uInt nr = regions().nelements();
+  unsigned int nr = regions().nelements();
   for (i = 1; i < nr; i++) {
     const IPosition& regblc = regions()[i]->boundingBox().start();
     const IPosition& regtrc = regions()[i]->boundingBox().end();
-    for (uInt j = 0; j < nrdim; j++) {
+    for (unsigned int j = 0; j < nrdim; j++) {
       if (regblc(j) < blc(j)) {
         blc(j) = regblc(j);
       }
@@ -117,15 +117,15 @@ void LCUnion::defineBox() {
 
 void LCUnion::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
-  uInt nrdim = buffer.ndim();
+  unsigned int nrdim = buffer.ndim();
   buffer = false;
   IPosition stbuf(nrdim);
   IPosition endbuf(nrdim);
   IPosition streg(nrdim);
   IPosition endreg(nrdim);
   const IPosition& inc = section.stride();
-  uInt nr = regions().nelements();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = regions().nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     if (findAreas(stbuf, endbuf, streg, endreg, section, i)) {
       Array<bool> tmpbuf;
       LCRegion* reg = (LCRegion*)(regions()[i]);

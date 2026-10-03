@@ -94,36 +94,36 @@ Record HDF5Record::doReadRecord(hid_t groupHid) {
 
 void HDF5Record::readScalar(hid_t attrId, hid_t dtid, const String& name, RecordInterface& rec) {
   // Handle a scalar field.
-  Int sz = H5Tget_size(dtid);
+  int sz = H5Tget_size(dtid);
   switch (H5Tget_class(dtid)) {
     case H5T_INTEGER: {
       int sgn = H5Tget_sign(dtid);
       if (sgn == H5T_SGN_2) {
         if (sz == 1) {
           readSca<bool>(attrId, name, rec);
-        } else if (sz == sizeof(Short)) {
-          readSca<Short>(attrId, name, rec);
-        } else if (sz == sizeof(Int)) {
-          readSca<Int>(attrId, name, rec);
+        } else if (sz == sizeof(short)) {
+          readSca<short>(attrId, name, rec);
+        } else if (sz == sizeof(int)) {
+          readSca<int>(attrId, name, rec);
         } else {
           AlwaysAssert(sz == sizeof(Int64), AipsError);
           readSca<Int64>(attrId, name, rec);
         }
       } else {
         if (sz == 1) {
-          readSca<uChar>(attrId, name, rec);
+          readSca<unsigned char>(attrId, name, rec);
         } else {
-          AlwaysAssert(sz == sizeof(uInt), AipsError);
-          readSca<uInt>(attrId, name, rec);
+          AlwaysAssert(sz == sizeof(unsigned int), AipsError);
+          readSca<unsigned int>(attrId, name, rec);
         }
       }
     } break;
     case H5T_FLOAT: {
-      if (sz == sizeof(Float)) {
-        readSca<Float>(attrId, name, rec);
+      if (sz == sizeof(float)) {
+        readSca<float>(attrId, name, rec);
       } else {
-        AlwaysAssert(sz == sizeof(Double), AipsError);
-        readSca<Double>(attrId, name, rec);
+        AlwaysAssert(sz == sizeof(double), AipsError);
+        readSca<double>(attrId, name, rec);
       }
     } break;
     case H5T_COMPOUND: {
@@ -149,7 +149,7 @@ void HDF5Record::readScalar(hid_t attrId, hid_t dtid, const String& name, Record
 
 void HDF5Record::readArray(hid_t attrId, hid_t dtid, const IPosition& shape, const String& name,
                            RecordInterface& rec) {
-  Int sz = H5Tget_size(dtid);
+  int sz = H5Tget_size(dtid);
   // Handle an array field.
   switch (H5Tget_class(dtid)) {
     case H5T_INTEGER: {
@@ -157,29 +157,29 @@ void HDF5Record::readArray(hid_t attrId, hid_t dtid, const IPosition& shape, con
       if (sgn == H5T_SGN_2) {
         if (sz == 1) {
           readArr<bool>(attrId, shape, name, rec);
-        } else if (sz == sizeof(Short)) {
-          readArr<Short>(attrId, shape, name, rec);
-        } else if (sz == sizeof(Int)) {
-          readArr<Int>(attrId, shape, name, rec);
+        } else if (sz == sizeof(short)) {
+          readArr<short>(attrId, shape, name, rec);
+        } else if (sz == sizeof(int)) {
+          readArr<int>(attrId, shape, name, rec);
         } else {
           AlwaysAssert(sz == sizeof(Int64), AipsError);
           readArr<Int64>(attrId, shape, name, rec);
         }
       } else {
         if (sz == 1) {
-          readArr<uChar>(attrId, shape, name, rec);
+          readArr<unsigned char>(attrId, shape, name, rec);
         } else {
-          AlwaysAssert(sz == sizeof(uInt), AipsError);
-          readArr<uInt>(attrId, shape, name, rec);
+          AlwaysAssert(sz == sizeof(unsigned int), AipsError);
+          readArr<unsigned int>(attrId, shape, name, rec);
         }
       }
     } break;
     case H5T_FLOAT: {
-      if (sz == sizeof(Float)) {
-        readArr<Float>(attrId, shape, name, rec);
+      if (sz == sizeof(float)) {
+        readArr<float>(attrId, shape, name, rec);
       } else {
-        AlwaysAssert(sz == sizeof(Double), AipsError);
-        readArr<Double>(attrId, shape, name, rec);
+        AlwaysAssert(sz == sizeof(double), AipsError);
+        readArr<double>(attrId, shape, name, rec);
       }
     } break;
     case H5T_COMPOUND: {
@@ -200,35 +200,35 @@ void HDF5Record::readArray(hid_t attrId, hid_t dtid, const IPosition& shape, con
 }
 
 void HDF5Record::readEmptyArray(hid_t attrId, const String& name, RecordInterface& rec) {
-  Int values[3];
+  int values[3];
   HDF5DataType dtype(0, 0);
   read(attrId, values, dtype);
-  Int rank = values[1];
-  Int dt = values[2];
+  int rank = values[1];
+  int dt = values[2];
   switch (dt) {
     case TpBool:
       rec.define(name, Array<bool>(IPosition(rank, 0)));
       break;
     case TpUChar:
-      rec.define(name, Array<uChar>(IPosition(rank, 0)));
+      rec.define(name, Array<unsigned char>(IPosition(rank, 0)));
       break;
     case TpShort:
-      rec.define(name, Array<Short>(IPosition(rank, 0)));
+      rec.define(name, Array<short>(IPosition(rank, 0)));
       break;
     case TpInt:
-      rec.define(name, Array<Int>(IPosition(rank, 0)));
+      rec.define(name, Array<int>(IPosition(rank, 0)));
       break;
     case TpUInt:
-      rec.define(name, Array<uInt>(IPosition(rank, 0)));
+      rec.define(name, Array<unsigned int>(IPosition(rank, 0)));
       break;
     case TpInt64:
       rec.define(name, Array<Int64>(IPosition(rank, 0)));
       break;
     case TpFloat:
-      rec.define(name, Array<Float>(IPosition(rank, 0)));
+      rec.define(name, Array<float>(IPosition(rank, 0)));
       break;
     case TpDouble:
-      rec.define(name, Array<Double>(IPosition(rank, 0)));
+      rec.define(name, Array<double>(IPosition(rank, 0)));
       break;
     case TpComplex:
       rec.define(name, Array<Complex>(IPosition(rank, 0)));
@@ -248,7 +248,7 @@ void HDF5Record::read(hid_t attrId, void* value, const HDF5DataType& dtype) {
   AlwaysAssert(H5Aread(attrId, dtype.getHidMem(), value) >= 0, AipsError);
 }
 
-void HDF5Record::readScaString(hid_t attrId, Int sz, const String& name, RecordInterface& rec) {
+void HDF5Record::readScaString(hid_t attrId, int sz, const String& name, RecordInterface& rec) {
   String value;
   if (sz > 0) {
     value.resize(sz);
@@ -288,32 +288,32 @@ void HDF5Record::writeRecord(const HDF5Object& parentHid, const String& recordNa
 }
 
 void HDF5Record::doWriteRecord(const HDF5Object& groupHid, const RecordInterface& rec) {
-  for (uInt i = 0; i < rec.nfields(); ++i) {
+  for (unsigned int i = 0; i < rec.nfields(); ++i) {
     String name = rec.name(i);
     switch (rec.dataType(i)) {
       case TpBool:
         writeSca<bool>(groupHid, name, rec, i);
         break;
       case TpUChar:
-        writeSca<uChar>(groupHid, name, rec, i);
+        writeSca<unsigned char>(groupHid, name, rec, i);
         break;
       case TpShort:
-        writeSca<Short>(groupHid, name, rec, i);
+        writeSca<short>(groupHid, name, rec, i);
         break;
       case TpInt:
-        writeSca<Int>(groupHid, name, rec, i);
+        writeSca<int>(groupHid, name, rec, i);
         break;
       case TpUInt:
-        writeSca<uInt>(groupHid, name, rec, i);
+        writeSca<unsigned int>(groupHid, name, rec, i);
         break;
       case TpInt64:
         writeSca<Int64>(groupHid, name, rec, i);
         break;
       case TpFloat:
-        writeSca<Float>(groupHid, name, rec, i);
+        writeSca<float>(groupHid, name, rec, i);
         break;
       case TpDouble:
-        writeSca<Double>(groupHid, name, rec, i);
+        writeSca<double>(groupHid, name, rec, i);
         break;
       case TpComplex:
         writeSca<Complex>(groupHid, name, rec, i);
@@ -328,25 +328,25 @@ void HDF5Record::doWriteRecord(const HDF5Object& groupHid, const RecordInterface
         writeArr<bool>(groupHid, name, rec, i);
         break;
       case TpArrayUChar:
-        writeArr<uChar>(groupHid, name, rec, i);
+        writeArr<unsigned char>(groupHid, name, rec, i);
         break;
       case TpArrayShort:
-        writeArr<Short>(groupHid, name, rec, i);
+        writeArr<short>(groupHid, name, rec, i);
         break;
       case TpArrayInt:
-        writeArr<Int>(groupHid, name, rec, i);
+        writeArr<int>(groupHid, name, rec, i);
         break;
       case TpArrayUInt:
-        writeArr<uInt>(groupHid, name, rec, i);
+        writeArr<unsigned int>(groupHid, name, rec, i);
         break;
       case TpArrayInt64:
         writeArr<Int64>(groupHid, name, rec, i);
         break;
       case TpArrayFloat:
-        writeArr<Float>(groupHid, name, rec, i);
+        writeArr<float>(groupHid, name, rec, i);
         break;
       case TpArrayDouble:
-        writeArr<Double>(groupHid, name, rec, i);
+        writeArr<double>(groupHid, name, rec, i);
         break;
       case TpArrayComplex:
         writeArr<Complex>(groupHid, name, rec, i);
@@ -415,8 +415,8 @@ void HDF5Record::writeArray(hid_t groupHid, const String& name, const void* valu
   AlwaysAssert(H5Awrite(id, dtype.getHidMem(), value) >= 0, AipsError);
 }
 
-void HDF5Record::writeEmptyArray(hid_t groupHid, const String& name, Int rank, DataType dtype) {
-  Int values[3];
+void HDF5Record::writeEmptyArray(hid_t groupHid, const String& name, int rank, DataType dtype) {
+  int values[3];
   values[0] = 1;
   values[1] = rank;
   values[2] = dtype;
@@ -486,7 +486,7 @@ void HDF5Record::readEmptyArray(hid_t, const String&, RecordInterface&) {
 
 void HDF5Record::read(hid_t, void*, const HDF5DataType&) { HDF5Object::throwNoHDF5(); }
 
-void HDF5Record::readScaString(hid_t, Int, const String&, RecordInterface&) {
+void HDF5Record::readScaString(hid_t, int, const String&, RecordInterface&) {
   HDF5Object::throwNoHDF5();
 }
 
@@ -513,7 +513,7 @@ void HDF5Record::writeArray(hid_t, const String&, const void*, const IPosition&,
   HDF5Object::throwNoHDF5();
 }
 
-void HDF5Record::writeEmptyArray(hid_t, const String&, Int, DataType) { HDF5Object::throwNoHDF5(); }
+void HDF5Record::writeEmptyArray(hid_t, const String&, int, DataType) { HDF5Object::throwNoHDF5(); }
 
 void HDF5Record::writeArrString(hid_t, const String&, const Array<String>&) {
   HDF5Object::throwNoHDF5();

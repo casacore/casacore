@@ -53,26 +53,26 @@ int main(int argc, const char*[]) {
 void doit(bool) {
   {
     Complex cp[1000];
-    Int ip[1000];
+    int ip[1000];
     AipsIOCarrayEx1 ap[1000];
-    for (uInt i = 0; i < 1000; i++) {
+    for (unsigned int i = 0; i < 1000; i++) {
       cp[i] = Complex(float(i), float(i + 4));
       ip[i] = i * 2;
       ap[i] = AipsIOCarrayEx1(i + 10, i + 20);
     }
     AipsIO io("tAipsIOCarray_tmp.data", ByteIO::New);
     io.putstart("tAipsIOCarray", 1);
-    putAipsIO(io, uInt(1000), cp);
-    putAipsIO(io, uInt(1000), ap);
-    putAipsIO(io, uInt(1000), ip);
+    putAipsIO(io, static_cast<unsigned int>(1000), cp);
+    putAipsIO(io, static_cast<unsigned int>(1000), ap);
+    putAipsIO(io, static_cast<unsigned int>(1000), ip);
     io.putend();
   }
   {
-    Int i;
+    int i;
     Complex cpi[1000];
-    Int ipi[1000];
+    int ipi[1000];
     AipsIOCarrayEx1 api[1000];
-    uInt n;
+    unsigned int n;
     AipsIO io("tAipsIOCarray_tmp.data");
     io.getstart("tAipsIOCarray");
     io >> n;
@@ -99,11 +99,11 @@ void doit(bool) {
     io.getend();
   }
   {
-    Int i;
+    int i;
     Complex* cpi;
-    Int* ipi;
+    int* ipi;
     AipsIOCarrayEx1* api;
-    uInt n;
+    unsigned int n;
     AipsIO io("tAipsIOCarray_tmp.data");
     io.getstart("tAipsIOCarray");
     getnewAipsIO(io, n, &cpi);

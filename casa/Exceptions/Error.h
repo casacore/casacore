@@ -183,9 +183,9 @@ class AipsError : public std::exception {
   // Creates an AipsError and initializes the error message from
   // the parameter.
   // <group>
-  AipsError(const Char *str, Category c = GENERAL);
+  AipsError(const char *str, Category c = GENERAL);
   AipsError(const String &str, Category c = GENERAL);
-  AipsError(const String &msg, const String &filename, uInt lineNumber, Category c = GENERAL);
+  AipsError(const String &msg, const String &filename, unsigned int lineNumber, Category c = GENERAL);
   AipsError(Category c = GENERAL);
   // </group>
 
@@ -204,14 +204,14 @@ class AipsError : public std::exception {
 
   // Repackage an exception.
   static AipsError repackageAipsError(AipsError &error, const String &message, const char *file,
-                                      Int line, const char *func);
+                                      int line, const char *func);
 
   // Throw if the condition is true.
-  static void throwIf(bool condition, const String &message, const char *file, Int line,
+  static void throwIf(bool condition, const String &message, const char *file, int line,
                       const char *func = "");
 
   // Throw if the system error code is not 0.
-  static void throwIfError(Int errorCode, const String &prefix, const char *file, Int line,
+  static void throwIfError(int errorCode, const String &prefix, const char *file, int line,
                            const char *func = "");
 
  protected:
@@ -256,8 +256,8 @@ class AllocError : public AipsError {
   // allocation size.
   //
   // <group>
-  AllocError(const Char *str, uInt sze) : AipsError(str, SYSTEM), Size(sze) {}
-  AllocError(const String &str, uInt sze) : AipsError(str, SYSTEM), Size(sze) {}
+  AllocError(const char *str, unsigned int sze) : AipsError(str, SYSTEM), Size(sze) {}
+  AllocError(const String &str, unsigned int sze) : AipsError(str, SYSTEM), Size(sze) {}
   // </group>
 
   //
@@ -299,7 +299,7 @@ class IndexError : public AipsError {
   // Creates an GeneralIndexError and initializes the error message from
   // the parameter
   // <group>
-  IndexError(const Char *str, Category c = BOUNDARY) : AipsError(str, c) {}
+  IndexError(const char *str, Category c = BOUNDARY) : AipsError(str, c) {}
   IndexError(const String &str, Category c = BOUNDARY) : AipsError(str, c) {}
   IndexError(Category c = BOUNDARY) : AipsError(c) {}
   // </group>
@@ -341,7 +341,7 @@ class indexError : public IndexError {
   // which cause the error to occur.
   //
   // <group>
-  indexError(t oI, const Char *str, Category c = BOUNDARY);
+  indexError(t oI, const char *str, Category c = BOUNDARY);
   indexError(t oI, const String &str, Category c = BOUNDARY);
   indexError(t oI, Category c = BOUNDARY) : IndexError(c), oIndex(oI) {};
   // </group>
@@ -381,7 +381,7 @@ class DuplError : public AipsError {
   // the parameter
   // <group>
   DuplError(Category c = BOUNDARY) : AipsError(c) {}
-  DuplError(const Char *str, Category c = BOUNDARY) : AipsError(str, c) {}
+  DuplError(const char *str, Category c = BOUNDARY) : AipsError(str, c) {}
   DuplError(const String &str, Category c = BOUNDARY) : AipsError(str, c) {}
   // </group>
 
@@ -423,7 +423,7 @@ class duplError : public DuplError {
   // optional character string.
   //
   // <group>
-  duplError(t oI, const Char *str, Category c = BOUNDARY);
+  duplError(t oI, const char *str, Category c = BOUNDARY);
   duplError(t oI, const String &str, Category c = BOUNDARY);
   duplError(t oI, Category c = BOUNDARY) : DuplError(c), oKey(oI) {};
   // </group>
@@ -451,7 +451,7 @@ class SystemCallError : public AipsError {
   // and the errno.
   SystemCallError(const String &funcName, int error, Category c = GENERAL);
 
-  SystemCallError(int error, const std::string &msg, const std::string &filename, uInt lineNumber,
+  SystemCallError(int error, const std::string &msg, const std::string &filename, unsigned int lineNumber,
                   Category c = GENERAL);
 
   // Destructor which does nothing.
@@ -493,7 +493,7 @@ class AbortError : public AipsError {
   // This constructs a "AbortError" from the error message.
   //
   // <group>
-  AbortError(const Char *str, Category c = GENERAL);
+  AbortError(const char *str, Category c = GENERAL);
   AbortError(const String &str, Category c = GENERAL);
   // </group>
 

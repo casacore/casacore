@@ -39,7 +39,7 @@ TableLock::TableLock(LockOption option)
   init();
 }
 
-TableLock::TableLock(LockOption option, double inspectionInterval, uInt maxWait)
+TableLock::TableLock(LockOption option, double inspectionInterval, unsigned int maxWait)
     : itsOption(option),
       itsReadLocking(true),
       itsMaxWait(maxWait),

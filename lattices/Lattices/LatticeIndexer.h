@@ -129,32 +129,32 @@ class LatticeIndexer {
   // Lattice.
   // <group>
   const IPosition& fullShape() const;
-  uInt fullShape(uInt axis) const;
+  unsigned int fullShape(unsigned int axis) const;
   // </group>
 
   // Returns the length of each axis (or the requested one) in the sub-Lattice.
   // <group>
   const IPosition& shape() const;
-  uInt shape(uInt axis) const;
+  unsigned int shape(unsigned int axis) const;
   // </group>
 
   // Function to return the increments along each axis (or the requested
   // one) of the Lattice.
   // <group>
   const IPosition& increment() const;
-  uInt increment(uInt axis) const;
+  unsigned int increment(unsigned int axis) const;
   // </group>
 
   // Function to return the offset (on a specified axis) between the
   // sub-Lattice and the parent one.
   // <group>
   const IPosition& offset() const;
-  uInt offset(uInt axis) const;
+  unsigned int offset(unsigned int axis) const;
   // </group>
 
   // Function which returns the number of dimensions in the Lattice (or
   // sub-Lattice).
-  uInt ndim() const;
+  unsigned int ndim() const;
 
   // Revert from a sub-Lattice description back to the main Lattice. This is
   // the only way to "increase" the the size of the sub-Lattice used by the
@@ -222,7 +222,7 @@ class LatticeIndexer {
 
  private:
   IPosition itsFullShape;  // # Size of the main-Lattice.
-  uInt itsNdim;            // # Number of dimensions in the main/sub-Lattice
+  unsigned int itsNdim;            // # Number of dimensions in the main/sub-Lattice
   IPosition itsShape;      // # Shape of the sub-Lattice
   IPosition itsAxisInc;    // # Increment along each axis of main Lattice
   IPosition itsOffset;     // # Offset between a sub-Lattice and the main one.
@@ -232,7 +232,7 @@ inline const IPosition& LatticeIndexer::fullShape() const { return itsFullShape;
 inline const IPosition& LatticeIndexer::shape() const { return itsShape; }
 inline const IPosition& LatticeIndexer::increment() const { return itsAxisInc; }
 inline const IPosition& LatticeIndexer::offset() const { return itsOffset; }
-inline uInt LatticeIndexer::ndim() const { return itsNdim; }
+inline unsigned int LatticeIndexer::ndim() const { return itsNdim; }
 inline size_t LatticeIndexer::nelements() const { return itsShape.product(); }
 
 }  // namespace casacore

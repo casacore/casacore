@@ -101,14 +101,14 @@ class MultiHDF5 : public MultiFileBase {
   // Open or create a MultiHDF5 with the given name.
   // Upon creation the block size can be given. If 0, it uses the block size
   // of the file system the file is on.
-  explicit MultiHDF5(const String& name, ByteIO::OpenOption, Int blockSize = 0);
+  explicit MultiHDF5(const String& name, ByteIO::OpenOption, int blockSize = 0);
 
   // Open or create a MultiHDF5 which is nested in the given parent.
   // The data are read/written in a group with the given name in the parent.
   // Upon creation the block size can be given. If 0, it uses the block size
   // of the parent.
   explicit MultiHDF5(const String& name, const std::shared_ptr<MultiFileBase>& parent,
-                     ByteIO::OpenOption, Int blockSize = 0);
+                     ByteIO::OpenOption, int blockSize = 0);
 
   // The destructor flushes and closes the file.
   ~MultiHDF5() override;
@@ -121,7 +121,7 @@ class MultiHDF5 : public MultiFileBase {
   // It creates a new group under which the virtual files are created.
   std::shared_ptr<MultiFileBase> makeNested(const std::shared_ptr<MultiFileBase>& parent,
                                             const String& name, ByteIO::OpenOption,
-                                            Int blockSize) const override;
+                                            int blockSize) const override;
 
   // Open the given logical file and return its file id.
   // If the name is unknown, an exception is thrown.

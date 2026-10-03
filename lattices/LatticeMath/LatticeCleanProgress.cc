@@ -56,12 +56,12 @@ LatticeCleanProgress::~LatticeCleanProgress() {
 }
 
 // Call back function
-bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
-                                const Int numberIterations, const Vector<Float>& maxima,
-                                const Block<IPosition>& posMaximum, const Float strengthOptimum,
-                                const Int optimumScale, const IPosition&, const Float&,
-                                const Vector<Float>& totalFluxScale, const bool resetBase) {
-  uInt nScales = maxima.nelements();
+bool LatticeCleanProgress::info(const bool lastcall, const int iteration,
+                                const int numberIterations, const Vector<float>& maxima,
+                                const Block<IPosition>& posMaximum, const float strengthOptimum,
+                                const int optimumScale, const IPosition&, const float&,
+                                const Vector<float>& totalFluxScale, const bool resetBase) {
+  unsigned int nScales = maxima.nelements();
 
   // "And this little piggy built his house out of straw..."
   //  When you remove the myDebug and cout statements, this core dumps.
@@ -76,7 +76,7 @@ bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
 
   // check to see if we need to increment baseFluxes
   if (resetBase && currentIndex > 0) {
-    for (uInt i = 0; i < nScales; i++) {
+    for (unsigned int i = 0; i < nScales; i++) {
       baseFluxes(i) = totalFluxesPer(i, currentIndex - 1);
     }
     baseFluxes(nScales) = totalFluxes(currentIndex - 1);
@@ -90,12 +90,12 @@ bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
   // Fill in data storage
 
   if (myDebug) cout << "B" << endl;
-  Vector<Float> myTotalFluxScale(totalFluxScale.nelements());
-  Float myTotalFlux = 0;
-  Float myMinFlux = 0.0;
+  Vector<float> myTotalFluxScale(totalFluxScale.nelements());
+  float myTotalFlux = 0;
+  float myMinFlux = 0.0;
 
   iterationNumber(currentIndex) = iteration + 1;
-  for (uInt i = 0; i < nScales; i++) {
+  for (unsigned int i = 0; i < nScales; i++) {
     myTotalFluxScale(i) = totalFluxScale(i) + baseFluxes(i);
     myTotalFlux += myTotalFluxScale(i);
     maxResiduals(i, currentIndex) = maxima(i);
@@ -105,7 +105,7 @@ bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
   totalFluxes(currentIndex) = myTotalFlux;
   myMinFlux = min(myMinFlux, myTotalFlux);
 
-  for (uInt k = 0; k < nScales; k++) {
+  for (unsigned int k = 0; k < nScales; k++) {
     if (maxima(k) > 0.0) {
       posResiduals(k, currentIndex) = log10(maxima(k));
     } else if (maxima(k) < 0.0) {
@@ -126,7 +126,7 @@ bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
       rePlot = true;
       currentMinResidual /= residScaleJump;
     }
-    if (numberIterations > (Int)currentTotalIterations) {
+    if (numberIterations > (int)currentTotalIterations) {
       currentTotalIterations = numberIterations;
       rePlot = true;
     }
@@ -156,7 +156,7 @@ bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
       os << "Iteration " << iteration + 1 << " most significant residual = " << strengthOptimum
          << " Jy, flux = " << myTotalFlux << endl;
     } else {
-      for (uInt scale = 0; scale < maxima.nelements(); scale++) {
+      for (unsigned int scale = 0; scale < maxima.nelements(); scale++) {
         os << "scale " << scale + 1 << " maximum abs = " << maxima(scale) << " at "
            << posMaximum[scale] + 1 << ", flux = " << myTotalFluxScale(scale) << endl;
       }
@@ -164,7 +164,7 @@ bool LatticeCleanProgress::info(const bool lastcall, const Int iteration,
          << " Jy, optimum scale " << optimumScale + 1 << endl;
     }
   } else {
-    for (uInt scale = 0; scale < maxima.nelements(); scale++) {
+    for (unsigned int scale = 0; scale < maxima.nelements(); scale++) {
       os << "Total flux on scale " << scale + 1 << " = " << myTotalFluxScale(scale) << " Jy"
          << LogIO::POST;
     }
@@ -181,8 +181,8 @@ void LatticeCleanProgress::basicSetUp(bool doPlot) {
   deltaY = abs(logMaxRes - logMinRes);
   //  logMaxRes += 0.05*deltaY;
   //  logMinRes -= 0.05*deltaY;
-  xMax = Float(currentTotalIterations) * 1.15;
-  xMin = -0.05 * Float(currentTotalIterations);
+  xMax = float(currentTotalIterations) * 1.15;
+  xMin = -0.05 * float(currentTotalIterations);
 
   itsPgplotter->sch(0.6);
   itsPgplotter->sci(1);
@@ -192,8 +192,8 @@ void LatticeCleanProgress::basicSetUp(bool doPlot) {
   itsPgplotter->box("BCST", 0, 0, "BCNLST", 0, 0);
   itsPgplotter->lab(" ", "+ Peak Resid (Jy)", "Components subtracted");
 
-  uInt scale;
-  uInt nScales = posResiduals.nrow();
+  unsigned int scale;
+  unsigned int nScales = posResiduals.nrow();
   itsPgplotter->iden();
 
   for (scale = 0; scale < nScales; scale++) {
@@ -248,17 +248,17 @@ void LatticeCleanProgress::basicSetUp(bool doPlot) {
   }
 }
 
-void LatticeCleanProgress::plotOne(const Int iteration, const Vector<Float>& resid,
-                                   const Vector<Float>& flux) {
+void LatticeCleanProgress::plotOne(const int iteration, const Vector<float>& resid,
+                                   const Vector<float>& flux) {
   // assuming we've already called  basicSetUp, the scaling variables
   // are all setup already;  else, we'd better call them
 
-  Vector<Float> x(1);
-  Vector<Float> y(1);
+  Vector<float> x(1);
+  Vector<float> y(1);
   x(0) = iteration;
   itsPgplotter->sch(0.6);
 
-  for (uInt i = 0; i < resid.nelements(); i++) {
+  for (unsigned int i = 0; i < resid.nelements(); i++) {
     itsPgplotter->sci(i + 2);
     if (resid(i) > 0) {
       // top graph
@@ -279,8 +279,8 @@ void LatticeCleanProgress::plotOne(const Int iteration, const Vector<Float>& res
   itsPgplotter->sci(1);
   itsPgplotter->svp(0.06, 0.94, 0.09, 0.36);
   itsPgplotter->swin(xMin, xMax, currentMinFluxScale, currentFluxScale);
-  Float sumf = sum(flux);
-  for (uInt i = 0; i < flux.nelements(); i++) {
+  float sumf = sum(flux);
+  for (unsigned int i = 0; i < flux.nelements(); i++) {
     itsPgplotter->sci(i + 2);
     y(0) = flux(i);
     itsPgplotter->pt(x, y, 2);
@@ -291,16 +291,16 @@ void LatticeCleanProgress::plotOne(const Int iteration, const Vector<Float>& res
 }
 
 void LatticeCleanProgress::resizeDataStorage() {
-  uInt nn = totalFluxesPer.ncolumn();
-  uInt nScales = totalFluxesPer.nrow();
+  unsigned int nn = totalFluxesPer.ncolumn();
+  unsigned int nScales = totalFluxesPer.nrow();
 
-  Vector<Float> tfr(totalFluxes);
-  Vector<Float> inr(iterationNumber);
+  Vector<float> tfr(totalFluxes);
+  Vector<float> inr(iterationNumber);
 
-  Matrix<Float> tfpr(totalFluxesPer);
-  Matrix<Float> mrr(maxResiduals);
-  Matrix<Float> nrr(negResiduals);
-  Matrix<Float> prr(posResiduals);
+  Matrix<float> tfpr(totalFluxesPer);
+  Matrix<float> mrr(maxResiduals);
+  Matrix<float> nrr(negResiduals);
+  Matrix<float> prr(posResiduals);
 
   totalFluxes.resize(2 * nn + 1);
   iterationNumber.resize(2 * nn + 1);
@@ -317,7 +317,7 @@ void LatticeCleanProgress::resizeDataStorage() {
 
   // this is not precisely correct, as posRes and negRes have different
   // number of valid elements than totalFluxes; but should be safe
-  uInt i, j;
+  unsigned int i, j;
   for (i = 0; i < nn; i++) {
     totalFluxes(i) = tfr(i);
     iterationNumber(i) = inr(i);
@@ -330,8 +330,8 @@ void LatticeCleanProgress::resizeDataStorage() {
   }
 }
 
-void LatticeCleanProgress::initialize(const uInt nScales, const Float& absMaxResid,
-                                      const uInt numberIterations) {
+void LatticeCleanProgress::initialize(const unsigned int nScales, const float& absMaxResid,
+                                      const unsigned int numberIterations) {
   iterationNumber.resize(100);
   totalFluxes.resize(100);
   maxResiduals.resize(nScales, 100);

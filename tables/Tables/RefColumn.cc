@@ -61,11 +61,11 @@ void RefColumn::setShape(rownr_t rownr, const IPosition& shape, const IPosition&
   colPtr_p->setShape(refTabPtr_p->rootRownr(rownr), shape, tileShape);
 }
 
-uInt RefColumn::ndimColumn() const { return colPtr_p->ndimColumn(); }
+unsigned int RefColumn::ndimColumn() const { return colPtr_p->ndimColumn(); }
 
 IPosition RefColumn::shapeColumn() const { return colPtr_p->shapeColumn(); }
 
-uInt RefColumn::ndim(rownr_t rownr) const { return colPtr_p->ndim(refTabPtr_p->rootRownr(rownr)); }
+unsigned int RefColumn::ndim(rownr_t rownr) const { return colPtr_p->ndim(refTabPtr_p->rootRownr(rownr)); }
 
 IPosition RefColumn::shape(rownr_t rownr) const {
   return colPtr_p->shape(refTabPtr_p->rootRownr(rownr));
@@ -142,9 +142,9 @@ void RefColumn::putColumnSliceCells(const RefRows& rownrs, const Slicer& ns,
 
 ColumnCache& RefColumn::columnCache() { return colCache_p; }
 
-void RefColumn::setMaximumCacheSize(uInt nbytes) { colPtr_p->setMaximumCacheSize(nbytes); }
+void RefColumn::setMaximumCacheSize(unsigned int nbytes) { colPtr_p->setMaximumCacheSize(nbytes); }
 
-void RefColumn::makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+void RefColumn::makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj, int order,
                             std::shared_ptr<ArrayBase>& dataSave) {
   colPtr_p->makeRefSortKey(sortobj, cmpObj, order, refTabPtr_p->rowNumbers(), dataSave);
 }

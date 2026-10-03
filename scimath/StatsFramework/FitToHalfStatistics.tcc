@@ -97,7 +97,7 @@ StatisticsAlgorithm<CASA_STATP>* FitToHalfStatistics<CASA_STATP>::clone() const 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt64>,
                                                      std::shared_ptr<AccumType>,
-                                                     std::shared_ptr<AccumType>, uInt, bool, uInt) {
+                                                     std::shared_ptr<AccumType>, unsigned int, bool, unsigned int) {
   auto median = _getStatsData().median;
   if (!median) {
     median.reset(new AccumType(_centerValue));
@@ -109,10 +109,10 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt64>,
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
-    std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
+    std::map<double, AccumType>& quantileToValue, const std::set<double>& quantiles,
     std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
-    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, bool persistSortedArray,
-    uInt nBins) {
+    std::shared_ptr<AccumType> knownMax, unsigned int binningThreshholdSizeBytes, bool persistSortedArray,
+    unsigned int nBins) {
   // The median is trivial, we just need to compute the quantiles
   quantileToValue = getQuantiles(quantiles, knownNpts, knownMin, knownMax,
                                  binningThreshholdSizeBytes, persistSortedArray, nBins);
@@ -123,8 +123,8 @@ CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts,
                                                               std::shared_ptr<AccumType> knownMin,
                                                               std::shared_ptr<AccumType> knownMax,
-                                                              uInt binningThreshholdSizeBytes,
-                                                              bool persistSortedArray, uInt nBins) {
+                                                              unsigned int binningThreshholdSizeBytes,
+                                                              bool persistSortedArray, unsigned int nBins) {
   if (!_getStatsData().medAbsDevMed) {
     _setRange();
     ThrowIf(_isNullSet,
@@ -219,10 +219,10 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(AccumType& realMin, AccumTy
 }
 
 CASA_STATD
-std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>& fractions, std::shared_ptr<uInt64> knownNpts,
+std::map<double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
+    const std::set<double>& fractions, std::shared_ptr<uInt64> knownNpts,
     std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, bool persistSortedArray, uInt nBins) {
+    unsigned int binningThreshholdSizeBytes, bool persistSortedArray, unsigned int nBins) {
   ThrowIf(*fractions.begin() <= 0 || *fractions.rbegin() >= 1,
           "Value of all quantiles must be between 0 and 1 (noninclusive)");
   ThrowIf(knownNpts && ((*knownNpts % 2) != 0), "knownNpts must be even for this class");
@@ -230,16 +230,16 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
   ThrowIf(_isNullSet, "No data included using current configuration, cannot compute quantiles");
   // fractions that exist in the virtual part of the dataset are determined
   // from the real fractions reflected about the center point.
-  std::set<Double> realPortionFractions;
+  std::set<double> realPortionFractions;
   // auto fiter = fractions.cbegin();
   // auto fend = fractions.cend();
   //  map the actual (full dataset) fractions to the real portion fractions
-  std::map<Double, Double> actualToReal;
-  Double freal = 0;
-  std::map<Double, AccumType> actual;
+  std::map<double, double> actualToReal;
+  double freal = 0;
+  std::map<double, AccumType> actual;
   // for ( ; fiter != fend; ++fiter) {
   for_each(fractions.cbegin(), fractions.cend(),
-           [this, &actual, &knownNpts, &freal, &realPortionFractions, &actualToReal](Double q) {
+           [this, &actual, &knownNpts, &freal, &realPortionFractions, &actualToReal](double q) {
              if (near(q, 0.5)) {
                AccumType realMin, realMax;
                _getRealMinMax(realMin, realMax);
@@ -248,7 +248,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
                auto isVirtualQ = (_useLower && q > 0.5) || (!_useLower && q < 0.5);
                if (isVirtualQ) {
                  // quantile is in virtual part of data set
-                 std::set<Double> actualF;
+                 std::set<double> actualF;
                  actualF.insert(q);
                  uInt64 allNPts = knownNpts ? *knownNpts : getNPts();
                  auto actualFToI = StatisticsData::indicesFromFractions(allNPts, actualF);
@@ -268,7 +268,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
                    _getRealMinMax(realMin, realMax);
                    actual[q] = TWO * _centerValue - realMin;
                  } else {
-                   freal = Double(realIdx + 1) / Double(allNPts / 2);
+                   freal = double(realIdx + 1) / double(allNPts / 2);
                    if (freal == 1) {
                      AccumType mymin, mymax;
                      getMinMax(mymin, mymax);
@@ -304,9 +304,9 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
   // fiter = fractions.begin();
   // while (fiter != fend) {
   for_each(fractions.cbegin(), fractions.cend(),
-           [this, &actual, &actualToReal, &realPart](Double q) {
+           [this, &actual, &actualToReal, &realPart](double q) {
              if (actual.find(q) == actual.end()) {
-               Double realF = actualToReal[q];
+               double realF = actualToReal[q];
                auto actualValue = realPart[realF];
                if ((_useLower && q > 0.5) || (!_useLower && q < 0.5)) {
                  // quantile in virtual part of the data set, reflect
@@ -441,7 +441,7 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& stats, uInt64& ngood,
                                                        LocationType& location,
                                                        const DataIterator& dataBegin, uInt64 nr,
-                                                       uInt dataStride) {
+                                                       unsigned int dataStride) {
   auto datum = dataBegin;
   uInt64 count = 0;
   while (count < nr) {
@@ -454,7 +454,7 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& stats, uInt64& ngood,
                                                        LocationType& location,
                                                        const DataIterator& dataBegin, uInt64 nr,
-                                                       uInt dataStride, const DataRanges& ranges,
+                                                       unsigned int dataStride, const DataRanges& ranges,
                                                        bool isInclude) {
   auto datum = dataBegin;
   uInt64 count = 0;
@@ -473,9 +473,9 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& stats, uInt64& ngood,
                                                        LocationType& location,
                                                        const DataIterator& dataBegin, uInt64 nr,
-                                                       uInt dataStride,
+                                                       unsigned int dataStride,
                                                        const MaskIterator& maskBegin,
-                                                       uInt maskStride) {
+                                                       unsigned int maskStride) {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -491,8 +491,8 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& sta
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, bool isInclude) {
+    const DataIterator& dataBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+    unsigned int maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -553,7 +553,7 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& stats
                                                      LocationType& location,
                                                      const DataIterator& dataBegin,
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
-                                                     uInt dataStride) {
+                                                     unsigned int dataStride) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -571,7 +571,7 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& stats
                                                      LocationType& location,
                                                      const DataIterator& dataBegin,
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
-                                                     uInt dataStride, const DataRanges& ranges,
+                                                     unsigned int dataStride, const DataRanges& ranges,
                                                      bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
@@ -591,8 +591,8 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& stats
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, bool isInclude) {
+    const WeightsIterator& weightsBegin, uInt64 nr, unsigned int dataStride, const MaskIterator& maskBegin,
+    unsigned int maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
@@ -615,8 +615,8 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& stats
                                                      LocationType& location,
                                                      const DataIterator& dataBegin,
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
-                                                     uInt dataStride, const MaskIterator& maskBegin,
-                                                     uInt maskStride) {
+                                                     unsigned int dataStride, const MaskIterator& maskBegin,
+                                                     unsigned int maskStride) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;

@@ -93,7 +93,7 @@ class TableExprNodePlusInt : public TableExprNodePlus {
   TableExprNodePlusInt(const TableExprNodeRep&);
   ~TableExprNodePlusInt();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -123,7 +123,7 @@ class TableExprNodePlusDouble : public TableExprNodePlus {
  public:
   TableExprNodePlusDouble(const TableExprNodeRep&);
   ~TableExprNodePlusDouble();
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -212,7 +212,7 @@ class TableExprNodePlusDate : public TableExprNodePlus {
   TableExprNodePlusDate(const TableExprNodeRep&);
   ~TableExprNodePlusDate();
   virtual void handleUnits();
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   MVTime getDate(const TableExprId& id);
 };
 
@@ -268,7 +268,7 @@ class TableExprNodeMinusInt : public TableExprNodeMinus {
   ~TableExprNodeMinusInt();
   virtual void handleUnits();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -298,7 +298,7 @@ class TableExprNodeMinusDouble : public TableExprNodeMinus {
   TableExprNodeMinusDouble(const TableExprNodeRep&);
   ~TableExprNodeMinusDouble();
   virtual void handleUnits();
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -357,7 +357,7 @@ class TableExprNodeMinusDate : public TableExprNodeMinus {
   ~TableExprNodeMinusDate();
   virtual void handleUnits();
   MVTime getDate(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
 };
 
 // <summary>
@@ -412,7 +412,7 @@ class TableExprNodeTimesInt : public TableExprNodeTimes {
   TableExprNodeTimesInt(const TableExprNodeRep&);
   ~TableExprNodeTimesInt();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -441,7 +441,7 @@ class TableExprNodeTimesDouble : public TableExprNodeTimes {
  public:
   TableExprNodeTimesDouble(const TableExprNodeRep&);
   ~TableExprNodeTimesDouble();
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -524,7 +524,7 @@ class TableExprNodeDivideDouble : public TableExprNodeDivide {
  public:
   TableExprNodeDivideDouble(const TableExprNodeRep&);
   ~TableExprNodeDivideDouble();
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -607,7 +607,7 @@ class TableExprNodeModuloInt : public TableExprNodeModulo {
   TableExprNodeModuloInt(const TableExprNodeRep&);
   ~TableExprNodeModuloInt();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -635,7 +635,7 @@ class TableExprNodeModuloDouble : public TableExprNodeModulo {
  public:
   TableExprNodeModuloDouble(const TableExprNodeRep&);
   ~TableExprNodeModuloDouble();
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -664,7 +664,7 @@ class TableExprNodeBitAndInt : public TableExprNodeBinary {
   TableExprNodeBitAndInt(const TableExprNodeRep&);
   ~TableExprNodeBitAndInt();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -693,7 +693,7 @@ class TableExprNodeBitOrInt : public TableExprNodeBinary {
   TableExprNodeBitOrInt(const TableExprNodeRep&);
   ~TableExprNodeBitOrInt();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -722,7 +722,7 @@ class TableExprNodeBitXorInt : public TableExprNodeBinary {
   TableExprNodeBitXorInt(const TableExprNodeRep&);
   ~TableExprNodeBitXorInt();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -750,7 +750,7 @@ class TableExprNodeMIN : public TableExprNodeBinary {
   TableExprNodeMIN(const TableExprNodeRep&);
   ~TableExprNodeMIN();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 
@@ -778,7 +778,7 @@ class TableExprNodeBitNegate : public TableExprNodeBinary {
   TableExprNodeBitNegate(const TableExprNodeRep&);
   ~TableExprNodeBitNegate();
   Int64 getInt(const TableExprId& id);
-  Double getDouble(const TableExprId& id);
+  double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
 };
 

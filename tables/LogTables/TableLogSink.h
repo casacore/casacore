@@ -117,15 +117,15 @@ class TableLogSink : public LogSinkInterface {
   virtual bool postLocally(const LogMessage& message);
 
   // Get number of messages in sink.
-  virtual uInt nelements() const;
+  virtual unsigned int nelements() const;
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime(uInt i) const;
-  virtual String getPriority(uInt i) const;
-  virtual String getMessage(uInt i) const;
-  virtual String getLocation(uInt i) const;
-  virtual String getObjectID(uInt i) const;
+  virtual double getTime(unsigned int i) const;
+  virtual String getPriority(unsigned int i) const;
+  virtual String getMessage(unsigned int i) const;
+  virtual String getLocation(unsigned int i) const;
+  virtual String getObjectID(unsigned int i) const;
   // </group>
 
   // Access to the actual log table and its columns.
@@ -139,8 +139,8 @@ class TableLogSink : public LogSinkInterface {
   // <group>
   const Table& table() const;
   Table& table();
-  const ScalarColumn<Double>& roTime() const;
-  ScalarColumn<Double>& time();
+  const ScalarColumn<double>& roTime() const;
+  ScalarColumn<double>& time();
   const ScalarColumn<String>& roPriority() const;
   ScalarColumn<String>& priority();
   const ScalarColumn<String>& roMessage() const;
@@ -182,7 +182,7 @@ class TableLogSink : public LogSinkInterface {
   virtual void flush(bool global = true);
 
   // Write a message (usually from another logsink) into the local one.
-  virtual void writeLocally(Double time, const String& message, const String& priority,
+  virtual void writeLocally(double time, const String& message, const String& priority,
                             const String& location, const String& objectID);
 
   // Clear the local sink (i.e. remove all messages from it).
@@ -212,7 +212,7 @@ class TableLogSink : public LogSinkInterface {
   void init(const String& fileName);
 
   Table log_table_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<double> time_p;
   ScalarColumn<String> priority_p;
   ScalarColumn<String> message_p;
   // Origin
@@ -225,8 +225,8 @@ class TableLogSink : public LogSinkInterface {
 inline const Table& TableLogSink::table() const { return log_table_p; }
 inline Table& TableLogSink::table() { return log_table_p; }
 
-inline const ScalarColumn<Double>& TableLogSink::roTime() const { return time_p; }
-inline ScalarColumn<Double>& TableLogSink::time() { return time_p; }
+inline const ScalarColumn<double>& TableLogSink::roTime() const { return time_p; }
+inline ScalarColumn<double>& TableLogSink::time() { return time_p; }
 inline const ScalarColumn<String>& TableLogSink::roPriority() const { return priority_p; }
 inline ScalarColumn<String>& TableLogSink::priority() { return priority_p; }
 inline const ScalarColumn<String>& TableLogSink::roLocation() const { return location_p; }

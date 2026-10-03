@@ -198,7 +198,7 @@ bool TableDesc::isReadable(const String& tableDescName) {
 // Get a vector with all column names.
 Vector<String> TableDesc::columnNames() const {
   Vector<String> names(ncolumn());
-  for (uInt i = 0; i < names.nelements(); i++) {
+  for (unsigned int i = 0; i < names.nelements(); i++) {
     names(i) = columnDesc(i).name();
   }
   return names;
@@ -255,7 +255,7 @@ void TableDesc::putFile(AipsIO& ios, const TableAttr& parentAttr) const {
 }
 
 void TableDesc::getFile(AipsIO& ios, const TableAttr& parentAttr) {
-  uInt tvers = ios.getstart("TableDesc");
+  unsigned int tvers = ios.getstart("TableDesc");
   ios >> name_p;
   ios >> vers_p;
   ios >> comm_p;
@@ -275,7 +275,7 @@ void TableDesc::renameColumn(const String& newname, const String& oldname) {
   // Now adjust the hypercolumn descriptions.
   std::map<String, String> old2new;
   // First fill the map with all columns and replace it for the new name.
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     const String nm = columnDesc(i).name();
     old2new.insert(std::make_pair(nm, nm));
   }
@@ -283,19 +283,19 @@ void TableDesc::renameColumn(const String& newname, const String& oldname) {
   adjustHypercolumns(old2new);
 }
 
-void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
+void TableDesc::defineHypercolumn(const String& hypercolumnName, unsigned int ndim,
                                   const Vector<String>& dataColumnNames) {
   Vector<String> columnNames;
   defineHypercolumn(hypercolumnName, ndim, dataColumnNames, columnNames, columnNames);
 }
-void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
+void TableDesc::defineHypercolumn(const String& hypercolumnName, unsigned int ndim,
                                   const Vector<String>& dataColumnNames,
                                   const Vector<String>& coordColumnNames) {
   Vector<String> columnNames;
   defineHypercolumn(hypercolumnName, ndim, dataColumnNames, coordColumnNames, columnNames);
 }
 
-void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
+void TableDesc::defineHypercolumn(const String& hypercolumnName, unsigned int ndim,
                                   const Vector<String>& dataColumnNames,
                                   const Vector<String>& coordColumnNames,
                                   const Vector<String>& idColumnNames) {
@@ -306,17 +306,17 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
   if (ndim < 1) {
     throwHypercolumn(hypercolumnName, "ndim < 1");
   }
-  uInt ncoord = coordColumnNames.nelements();
+  unsigned int ncoord = coordColumnNames.nelements();
   if (ncoord != 0 && ncoord != ndim) {
     throwHypercolumn(hypercolumnName, "#coordColumnNames mismatches ndim");
   }
-  uInt i, j;
+  unsigned int i, j;
   // Check if the coordinate columns exist and are numeric
   // scalars or vectors. An empty coordinate name is allowed meaning
   // that the axis has no coordinate.
   // Get the number of vectors.
-  uInt firstCoordSca = 0;
-  uInt lastCoordVec = 0;
+  unsigned int firstCoordSca = 0;
+  unsigned int lastCoordVec = 0;
   for (i = 0; i < ncoord; i++) {
     if (!coordColumnNames(i).empty()) {
       if (!isColumn(coordColumnNames(i))) {
@@ -358,7 +358,7 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
   // coordinate vectors (if coordinates are defined).
   // Find out if all data columns have FixedShape.
   bool fixedShape = true;
-  uInt cellNdim = 0;
+  unsigned int cellNdim = 0;
   for (i = 0; i < dataColumnNames.nelements(); i++) {
     if (!isColumn(dataColumnNames(i))) {
       throwHypercolumn(hypercolumnName, "dataColumn " + dataColumnNames(i) + " does not exist");
@@ -376,7 +376,7 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
     if (cellNdim == 0) {
       cellNdim = desc.ndim();
     }
-    if (Int(cellNdim) != desc.ndim()) {
+    if (int(cellNdim) != desc.ndim()) {
       throwHypercolumn(hypercolumnName, "the dimensionality of data column " + dataColumnNames(i) +
                                             " mismatches that of previous data columns");
     }
@@ -413,7 +413,7 @@ void TableDesc::defineHypercolumn(const String& hypercolumnName, uInt ndim,
   }
   // Check if all names are used only once.
   // Copying them into one vector makes life easier.
-  uInt nr = dataColumnNames.nelements() + coordColumnNames.nelements() + idColumnNames.nelements();
+  unsigned int nr = dataColumnNames.nelements() + coordColumnNames.nelements() + idColumnNames.nelements();
   Vector<String> names(nr);
   names(Slice(0, dataColumnNames.nelements())) = dataColumnNames;
   nr = dataColumnNames.nelements();
@@ -461,9 +461,9 @@ bool TableDesc::isHypercolumn(const String& name) const {
 }
 
 Vector<String> TableDesc::hypercolumnNames() const {
-  uInt i;
-  uInt nhyp = 0;
-  uInt nkey = privKey_p->nfields();
+  unsigned int i;
+  unsigned int nhyp = 0;
+  unsigned int nkey = privKey_p->nfields();
   for (i = 0; i < nkey; i++) {
     if (privKey_p->type(i) == TpRecord) {
       const String& key = privKey_p->description().name(i);
@@ -488,7 +488,7 @@ Vector<String> TableDesc::hypercolumnNames() const {
   return result;
 }
 
-uInt TableDesc::hypercolumnDesc(const String& name, Vector<String>& dataColumnNames,
+unsigned int TableDesc::hypercolumnDesc(const String& name, Vector<String>& dataColumnNames,
                                 Vector<String>& coordColumnNames,
                                 Vector<String>& idColumnNames) const {
   const TableRecord& set = privKey_p->subRecord(theHyperPrefix + name);
@@ -506,13 +506,13 @@ void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, bool
                                    bool keepUnknownCoord, bool keepUnknownId) {
   Vector<String> hcNames = hypercolumnNames();
   Vector<String> dataNames, coordNames, idNames;
-  for (uInt i = 0; i < hcNames.nelements(); i++) {
+  for (unsigned int i = 0; i < hcNames.nelements(); i++) {
     // Get hypercolumn description and delete it.
-    uInt ndim = hypercolumnDesc(hcNames(i), dataNames, coordNames, idNames);
+    unsigned int ndim = hypercolumnDesc(hcNames(i), dataNames, coordNames, idNames);
     privKey_p->removeField(theHyperPrefix + hcNames(i));
     // Rename/remove columns in the hypercolumn description.
-    uInt nr = 0;
-    for (uInt j = 0; j < dataNames.nelements(); j++) {
+    unsigned int nr = 0;
+    for (unsigned int j = 0; j < dataNames.nelements(); j++) {
       std::map<String, String>::const_iterator iter = old2new.find(dataNames(j));
       if (iter != old2new.end()) {
         dataNames(nr++) = iter->second;
@@ -524,7 +524,7 @@ void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, bool
     if (nr > 0) {
       dataNames.resize(nr, true);
       nr = 0;
-      for (uInt j = 0; j < coordNames.nelements(); j++) {
+      for (unsigned int j = 0; j < coordNames.nelements(); j++) {
         std::map<String, String>::const_iterator iter = old2new.find(dataNames(j));
         if (iter != old2new.end()) {
           coordNames(nr++) = iter->second;
@@ -536,13 +536,13 @@ void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, bool
       // that they cannot be used anymore.
       // That also means their default storage manager has to be reset.
       if (nr != ndim) {
-        for (uInt j = 0; j < nr; j++) {
+        for (unsigned int j = 0; j < nr; j++) {
           rwColumnDesc(coordNames(j)).setDefaultDataManager();
         }
         coordNames.resize(0);
       }
       nr = 0;
-      for (uInt j = 0; j < idNames.nelements(); j++) {
+      for (unsigned int j = 0; j < idNames.nelements(); j++) {
         std::map<String, String>::const_iterator iter = old2new.find(dataNames(j));
         if (iter != old2new.end()) {
           idNames(nr++) = iter->second;
@@ -559,11 +559,11 @@ void TableDesc::adjustHypercolumns(const std::map<String, String>& old2new, bool
 
 void TableDesc::removeIDhypercolumns(const Vector<String>& hcNames) {
   Vector<String> dataNames, coordNames, idNames;
-  for (uInt i = 0; i < hcNames.nelements(); i++) {
+  for (unsigned int i = 0; i < hcNames.nelements(); i++) {
     // Get hypercolumn description and delete it.
-    uInt ndim = hypercolumnDesc(hcNames(i), dataNames, coordNames, idNames);
+    unsigned int ndim = hypercolumnDesc(hcNames(i), dataNames, coordNames, idNames);
     if (idNames.nelements() > 0) {
-      for (uInt j = 0; j < idNames.nelements(); j++) {
+      for (unsigned int j = 0; j < idNames.nelements(); j++) {
         ColumnDesc& cd = rwColumnDesc(idNames(j));
         cd.dataManagerType() = "IncrementalStMan";
         cd.dataManagerGroup() = "ISM_TSM";
@@ -591,7 +591,7 @@ void TableDesc::renameHypercolumn(const String& newHypercolumnName, const String
   }
   // Get hypercolumn description
   Vector<String> dataNames, coordNames, idNames;
-  uInt ndim = hypercolumnDesc(hypercolumnName, dataNames, coordNames, idNames);
+  unsigned int ndim = hypercolumnDesc(hypercolumnName, dataNames, coordNames, idNames);
   // delete the hypercolumn
   privKey_p->removeField(theHyperPrefix + hypercolumnName);
   // recreate it under new name (will also change the column descriptions)

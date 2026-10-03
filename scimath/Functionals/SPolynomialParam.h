@@ -103,7 +103,7 @@ class SPolynomialParam : public Function<T> {
 
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero.
-  explicit SPolynomialParam(uInt order);
+  explicit SPolynomialParam(unsigned int order);
 
   // Make this a copy of other (deep copy).
   // <group>
@@ -132,11 +132,11 @@ class SPolynomialParam : public Function<T> {
   }
 
   // What is the order of the polynomial, i.e. maximum exponent of "x".
-  uInt order() const { return param_p.nelements() - 4; }
+  unsigned int order() const { return param_p.nelements() - 4; }
 
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
-  T coefficient(uInt which) const {
+  T coefficient(unsigned int which) const {
     DebugAssert(which <= order(), AipsError);
     return param_p[which + 3];
   }
@@ -145,7 +145,7 @@ class SPolynomialParam : public Function<T> {
   Vector<T> coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>.
-  void setCoefficient(uInt which, const T value) {
+  void setCoefficient(unsigned int which, const T value) {
     DebugAssert(which <= order(), AipsError);
     param_p[which + 3] = value;
   }
@@ -154,7 +154,7 @@ class SPolynomialParam : public Function<T> {
   void setCoefficients(const Vector<T> &coefficients);
 
   // Returns the dimension of function
-  virtual uInt ndim() const { return 1; }
+  virtual unsigned int ndim() const { return 1; }
 
   // # Make members of parent classes known.
  protected:

@@ -90,17 +90,17 @@ class MeasTableMul {
   MeasTableMul();
   virtual ~MeasTableMul() {}
   void clear();
-  std::shared_ptr<Matrix<Double>> getArray(Double time, Double epsilon);
+  std::shared_ptr<Matrix<double>> getArray(double time, double epsilon);
   virtual void init() = 0;
-  virtual void calc(Matrix<Double>&, Double time) = 0;
+  virtual void calc(Matrix<double>&, double time) = 0;
 
  protected:
   std::mutex itsMutex;
   Int64 itsLastUsed;
   std::vector<Int64> itsUsed;
-  std::vector<Double> itsTimes;
-  std::vector<std::shared_ptr<Matrix<Double>>> itsArrays;
-  Matrix<Double> itsDefArray;
+  std::vector<double> itsTimes;
+  std::vector<std::shared_ptr<Matrix<double>>> itsArrays;
+  Matrix<double> itsDefArray;
 };
 
 // <summary>
@@ -111,10 +111,10 @@ class MeasTableMulSCBase : public MeasTableMul {
   MeasTableMulSCBase();
 
  protected:
-  void doInit(Matrix<Double>& result, Polynomial<Double> poly[], Int nrowTD,
-              const Long coeffTD[][5], Int nrowSC, const Short coeffSC[][2]);
-  void doCalc(Matrix<Double>& result, Double time, const Polynomial<Double> poly[], Int nrowTD,
-              const Long coeffTD[][5]);
+  void doInit(Matrix<double>& result, Polynomial<double> poly[], int nrowTD,
+              const long coeffTD[][5], int nrowSC, const short coeffSC[][2]);
+  void doCalc(Matrix<double>& result, double time, const Polynomial<double> poly[], int nrowTD,
+              const long coeffTD[][5]);
 };
 
 // <summary>
@@ -124,12 +124,12 @@ class MeasTableMulSC : public MeasTableMulSCBase {
  public:
   MeasTableMulSC();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  Polynomial<Double> itsPoly[2 * 15];
-  static const Long theirMULTD[15][5];
-  static const Short theirMULSC[106][2];
+  Polynomial<double> itsPoly[2 * 15];
+  static const long theirMULTD[15][5];
+  static const short theirMULSC[106][2];
 };
 
 // <summary>
@@ -139,12 +139,12 @@ class MeasTableMulSC1950 : public MeasTableMulSCBase {
  public:
   MeasTableMulSC1950();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  Polynomial<Double> itsPoly[2 * 13];
-  static const Long theirMULTD[13][5];
-  static const Short theirMULSC[69][2];
+  Polynomial<double> itsPoly[2 * 13];
+  static const long theirMULTD[13][5];
+  static const short theirMULSC[69][2];
 };
 
 // <summary>
@@ -155,9 +155,9 @@ class MeasTableMulSC2000Base : public MeasTableMul {
   MeasTableMulSC2000Base();
 
  protected:
-  void doInit(Matrix<Double>& result, Polynomial<Double> poly[], Int nrowSC,
-              const Long coeffSC[][6]);
-  void doCalc(Matrix<Double>& result, Double time, const Polynomial<Double> poly[], Int nrowSC);
+  void doInit(Matrix<double>& result, Polynomial<double> poly[], int nrowSC,
+              const long coeffSC[][6]);
+  void doCalc(Matrix<double>& result, double time, const Polynomial<double> poly[], int nrowSC);
 };
 
 // <summary>
@@ -167,11 +167,11 @@ class MeasTableMulSC2000A : public MeasTableMulSC2000Base {
  public:
   MeasTableMulSC2000A();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  Polynomial<Double> itsPoly[2 * 678];
-  static const Long theirMULSC[678][6];
+  Polynomial<double> itsPoly[2 * 678];
+  static const long theirMULSC[678][6];
 };
 
 // <summary>
@@ -181,11 +181,11 @@ class MeasTableMulSC2000B : public MeasTableMulSC2000Base {
  public:
   MeasTableMulSC2000B();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  Polynomial<Double> itsPoly[2 * 77];
-  static const Long theirMULSC[77][6];
+  Polynomial<double> itsPoly[2 * 77];
+  static const long theirMULSC[77][6];
 };
 
 // <summary>
@@ -195,12 +195,12 @@ class MeasTableMulAber : public MeasTableMul {
  public:
   MeasTableMulAber();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  Polynomial<Double> itsPoly[18];
-  static const Long theirMABERTD[3][18];
-  static const Short theirMABER[80][6];
+  Polynomial<double> itsPoly[18];
+  static const long theirMABERTD[3][18];
+  static const short theirMABER[80][6];
 };
 
 // <summary>
@@ -210,16 +210,16 @@ class MeasTableMulAber1950 : public MeasTableMul {
  public:
   MeasTableMulAber1950();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  Polynomial<Double> itsPoly[18];
+  Polynomial<double> itsPoly[18];
   double itsFactor;  // # AU/d
-  static const Short theirMABER[130][6];
-  static const Short theirABERT1T[10];
-  static const Short theirABERT2T[2];
-  static const Short theirABERT3T[1];
-  static const Double theirABERSPEC[2][6];
+  static const short theirMABER[130][6];
+  static const short theirABERT1T[10];
+  static const short theirABERT2T[2];
+  static const short theirABERT3T[1];
+  static const double theirABERSPEC[2][6];
 };
 
 // <summary>
@@ -229,10 +229,10 @@ class MeasTableMulPosSunXY : public MeasTableMul {
  public:
   MeasTableMulPosSunXY();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  static const Double theirMPOSXY[98][4];
+  static const double theirMPOSXY[98][4];
 };
 
 // <summary>
@@ -242,10 +242,10 @@ class MeasTableMulPosSunZ : public MeasTableMul {
  public:
   MeasTableMulPosSunZ();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  static const Double theirMPOSZ[29][2];
+  static const double theirMPOSZ[29][2];
 };
 
 // <summary>
@@ -255,10 +255,10 @@ class MeasTableMulPosEarthXY : public MeasTableMul {
  public:
   MeasTableMulPosEarthXY();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  static const Double theirMPOSXY[189][4];
+  static const double theirMPOSXY[189][4];
 };
 
 // <summary>
@@ -268,10 +268,10 @@ class MeasTableMulPosEarthZ : public MeasTableMul {
  public:
   MeasTableMulPosEarthZ();
   virtual void init();
-  virtual void calc(Matrix<Double>&, Double time);
+  virtual void calc(Matrix<double>&, double time);
 
  private:
-  static const Double theirMPOSZ[32][2];
+  static const double theirMPOSZ[32][2];
 };
 
 }  // namespace casacore

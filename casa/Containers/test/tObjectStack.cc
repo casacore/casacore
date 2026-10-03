@@ -43,13 +43,13 @@ int main() {
     cout << "---------------------------------------------------" << endl;
 
     // Some poolobjectsList of pool objects;
-    for (uInt i = 0; i < 10000; ++i) {
-      vector<vector<Double>*> list;
-      vector<vector<Int>*> listInt;
-      for (uInt j = 0; j < 10; ++j) {
+    for (unsigned int i = 0; i < 10000; ++i) {
+      vector<vector<double>*> list;
+      vector<vector<int>*> listInt;
+      for (unsigned int j = 0; j < 10; ++j) {
         // Get some objects
-        list.push_back(ObjectStack<vector<Double>>::stack().get());
-        listInt.push_back(ObjectStack<vector<Int>>::stack().get());
+        list.push_back(ObjectStack<vector<double>>::stack().get());
+        listInt.push_back(ObjectStack<vector<int>>::stack().get());
         // Test freshness
         if (!list[j]->empty()) {
           cout << "List not refreshed " << endl;
@@ -60,7 +60,7 @@ int main() {
           ok = false;
         }
         // Fill objects
-        for (uInt k = 0; k < 7; ++k) {
+        for (unsigned int k = 0; k < 7; ++k) {
           list[j]->push_back(13. * k);
           listInt[j]->push_back(k);
         }
@@ -75,9 +75,9 @@ int main() {
         }
       }
       // Remove in different order
-      for (uInt j = 0; j < 10; ++j) {
-        ObjectStack<vector<Int>>::stack().put(listInt[9 - j]);
-        ObjectStack<vector<Double>>::stack().put(list[9 - j]);
+      for (unsigned int j = 0; j < 10; ++j) {
+        ObjectStack<vector<int>>::stack().put(listInt[9 - j]);
+        ObjectStack<vector<double>>::stack().put(list[9 - j]);
       }
     }
   } catch (std::exception& x) {

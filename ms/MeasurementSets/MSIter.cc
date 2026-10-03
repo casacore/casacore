@@ -46,8 +46,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 int MSInterval::comp(const void* obj1, const void* obj2) const {
-  double v1 = *(const Double*)obj1;
-  double v2 = *(const Double*)obj2;
+  double v1 = *(const double*)obj1;
+  double v2 = *(const double*)obj2;
   // Initialize offset_p to first timestamp.
   // Subtract a bit to avoid rounding problems.
   // Note that a time is the middle of an interval; ideally half that width
@@ -149,7 +149,7 @@ void MSIter::construct(
 
   sortColumnNames.resize(sortColumns.size());
   sortCompareFunctions.resize(sortColumns.size());
-  Block<Int> sortOrders(sortColumns.size(), TableIterator::Ascending);
+  Block<int> sortOrders(sortColumns.size(), TableIterator::Ascending);
   size_t iCol = 0;
   for (auto element : sortColumns) {
     sortColumnNames[iCol] = element.first;
@@ -176,7 +176,7 @@ void MSIter::construct(
   setMSInfo();
 }
 
-MSIter::MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, Double timeInterval,
+MSIter::MSIter(const MeasurementSet& ms, const Block<int>& sortColumns, double timeInterval,
                bool addDefaultSortColumns, bool storeSorted)
     : curMS_p(0),
       lastMS_p(-1),
@@ -196,7 +196,7 @@ MSIter::MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, Double t
   construct(sortColumns, addDefaultSortColumns);
 }
 
-MSIter::MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns, Double timeInterval,
+MSIter::MSIter(const Block<MeasurementSet>& mss, const Block<int>& sortColumns, double timeInterval,
                bool addDefaultSortColumns, bool storeSorted)
     : bms_p(mss),
       curMS_p(0),
@@ -233,7 +233,7 @@ bool MSIter::isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2) {
   return ok;
 }
 
-void MSIter::construct(const Block<Int>& sortColumns, bool addDefaultSortColumns) {
+void MSIter::construct(const Block<int>& sortColumns, bool addDefaultSortColumns) {
   This = (MSIter*)this;
   nMS_p = bms_p.nelements();
   if (nMS_p == 0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
@@ -252,7 +252,7 @@ void MSIter::construct(const Block<Int>& sortColumns, bool addDefaultSortColumns
   // If these columns are not explicitly sorted on, they will be added
   // BEFORE any others, unless addDefaultSortColumns=False
 
-  Block<Int> cols;
+  Block<int> cols;
   // try to reuse the existing sorted table if we didn't specify
   // any sortColumns
   if (sortColumns.nelements() == 0 && bms_p[0].keywordSet().isDefined("SORT_COLUMNS")) {
@@ -339,7 +339,7 @@ void MSIter::construct(const Block<Int>& sortColumns, bool addDefaultSortColumns
       objComp[i] = timeComp_p;
     }
   }
-  Block<Int> orders(columns.nelements(), TableIterator::Ascending);
+  Block<int> orders(columns.nelements(), TableIterator::Ascending);
 
   // Store the sorted table for future access if possible,
   // reuse it if already there
@@ -495,7 +495,7 @@ const MS& MSIter::ms(const size_t id) const {
   }
 }
 
-void MSIter::setInterval(Double timeInterval) {
+void MSIter::setInterval(double timeInterval) {
   interval_p = timeInterval;
   if (timeComp_p) {
     timeComp_p->setInterval(timeInterval);
@@ -636,7 +636,7 @@ void MSIter::setState() {
   }
 }
 
-const Vector<Double>& MSIter::frequency() const {
+const Vector<double>& MSIter::frequency() const {
   if (!freqCacheOK_p) {
     if (curSpectralWindowIdFirst_p == -1) {
       cacheCurrentDDInfo();
@@ -644,7 +644,7 @@ const Vector<Double>& MSIter::frequency() const {
     }
     cacheCurrentDDInfo();
     freqCacheOK_p = true;
-    Int spw = curSpectralWindowIdFirst_p;
+    int spw = curSpectralWindowIdFirst_p;
     msc_p->spectralWindow().chanFreq().get(spw, frequency_p, true);
   }
   return frequency_p;
@@ -663,10 +663,10 @@ const MFrequency& MSIter::frequency0() const {
   return frequency0_p;
 }
 
-const MFrequency& MSIter::restFrequency(Int line) const {
+const MFrequency& MSIter::restFrequency(int line) const {
   MFrequency freq;
   if (curFieldIdFirst_p == -1) setFieldInfo();
-  Int sourceId = msc_p->field().sourceId()(curFieldIdFirst_p);
+  int sourceId = msc_p->field().sourceId()(curFieldIdFirst_p);
   if (!msc_p->source().restFrequency().isNull()) {
     if (line >= 0 && line < msc_p->source().restFrequency()(sourceId).shape()(0))
       freq = Vector<MFrequency>(msc_p->source().restFrequencyMeas()(sourceId))(line);
@@ -748,8 +748,8 @@ void MSIter::setFeedInfo() const {
   // Check for time dependence.
   bool first = false;
   if (checkFeed_p) {
-    Vector<Double> feedTimes = msc_p->feed().time().getColumn();
-    Vector<Double> interval = msc_p->feed().interval().getColumn();
+    Vector<double> feedTimes = msc_p->feed().time().getColumn();
+    Vector<double> interval = msc_p->feed().interval().getColumn();
     // Assume time dependence
     bool timeDepFeed = true;
     // if all interval values are <= zero or very large,
@@ -767,15 +767,15 @@ void MSIter::setFeedInfo() const {
            tabIter.next()) {
         MSFeedColumns msfc(MSFeed(tabIter.table()));
         // check if any antennas appear more than once
-        Vector<Int> antennas = msfc.antennaId().getColumn();
-        Int nRow = antennas.nelements();
-        Int nUniq =
-            GenSort<Int>::sort(antennas, Sort::Ascending, Sort::HeapSort | Sort::NoDuplicates);
+        Vector<int> antennas = msfc.antennaId().getColumn();
+        int nRow = antennas.nelements();
+        int nUniq =
+            GenSort<int>::sort(antennas, Sort::Ascending, Sort::HeapSort | Sort::NoDuplicates);
         if (nUniq != nRow) unique = false;
       }
       timeDepFeed = !unique;
     }
-    Vector<Int> spwId = msc_p->feed().spectralWindowId().getColumn();
+    Vector<int> spwId = msc_p->feed().spectralWindowId().getColumn();
     spwDepFeed_p = !(allEQ(spwId, -1));
     first = true;
     checkFeed_p = false;
@@ -793,27 +793,27 @@ void MSIter::setFeedInfo() const {
       cacheCurrentDDInfo();
       cacheExtraDDInfo();
     }
-    Vector<Int> antennaId = msc_p->feed().antennaId().getColumn();
-    Vector<Int> feedId = msc_p->feed().feedId().getColumn();
-    Int maxAntId = max(antennaId);
-    Int maxFeedId = max(feedId);
+    Vector<int> antennaId = msc_p->feed().antennaId().getColumn();
+    Vector<int> feedId = msc_p->feed().feedId().getColumn();
+    int maxAntId = max(antennaId);
+    int maxFeedId = max(feedId);
     AlwaysAssert((maxAntId >= 0 && maxFeedId >= 0), AipsError);
     CJones_p.resize(maxAntId + 1, maxFeedId + 1);
-    Vector<Int> numRecept = msc_p->feed().numReceptors().getColumn();
-    uInt maxNumReceptors = max(numRecept);
+    Vector<int> numRecept = msc_p->feed().numReceptors().getColumn();
+    unsigned int maxNumReceptors = max(numRecept);
     if (maxNumReceptors > 2) throw AipsError("Can't handle more than 2 receptors");
     receptorAngles_p.resize(maxNumReceptors, maxAntId + 1, maxFeedId + 1);
     receptorAnglesFeed0_p.resize(maxNumReceptors, maxAntId + 1);
     beamOffsets_p.resize(maxNumReceptors, maxAntId + 1, maxFeedId + 1);
     allBeamOffsetsZero_p = true;
-    Vector<Int> spwId = msc_p->feed().spectralWindowId().getColumn();
-    const ArrayColumn<Double>& beamOffsetColumn = msc_p->feed().beamOffset();
+    Vector<int> spwId = msc_p->feed().spectralWindowId().getColumn();
+    const ArrayColumn<double>& beamOffsetColumn = msc_p->feed().beamOffset();
     DebugAssert(beamOffsetColumn.nrow() == spwId.nelements(), AipsError);
 
     for (size_t i = 0; i < spwId.nelements(); i++) {
       if (((!spwDepFeed_p) || spwId(i) == curSpectralWindowIdFirst_p)) {
-        Int iAnt = antennaId(i);
-        Int iFeed = feedId(i);
+        int iAnt = antennaId(i);
+        int iFeed = feedId(i);
         if (maxNumReceptors == 1)
           CJones_p(iAnt, iFeed) =
               SquareMatrix<Complex, 2>((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0, 0));
@@ -824,14 +824,14 @@ void MSIter::setFeedInfo() const {
         IPosition blc(1, 0);
         IPosition trc(1, numRecept(i) - 1);
         receptorAngles_p.xyPlane(iFeed).column(iAnt)(blc, trc) =
-            Vector<Double>(msc_p->feed().receptorAngle()(i))(blc, trc);
+            Vector<double>(msc_p->feed().receptorAngle()(i))(blc, trc);
 
-        for (uInt rcpt = 0; rcpt < maxNumReceptors; ++rcpt)
-          for (uInt j = 0; j < 2; ++j) {
+        for (unsigned int rcpt = 0; rcpt < maxNumReceptors; ++rcpt)
+          for (unsigned int j = 0; j < 2; ++j) {
             // do an explicit iteration because these matrices are
             // small and an element by element iteration will be
             // required anyway to check for non-zero elements
-            Double beamOffsetBuf = beamOffsetColumn(i)(IPosition(2, j, rcpt));
+            double beamOffsetBuf = beamOffsetColumn(i)(IPosition(2, j, rcpt));
             if (fabs(beamOffsetBuf) > 1e-10) allBeamOffsetsZero_p = false;
             beamOffsets_p(rcpt, iAnt, iFeed)(j) = beamOffsetBuf;
           }
@@ -862,7 +862,7 @@ void MSIter::cacheExtraDDInfo() const {
 
   if (newPolarizationId_p) {
     polFrame_p = Circular;
-    Int polType = Vector<Int>(msc_p->polarization().corrType()(curPolarizationIdFirst_p))(0);
+    int polType = Vector<int>(msc_p->polarization().corrType()(curPolarizationIdFirst_p))(0);
     if (polType >= Stokes::XX && polType <= Stokes::YY) polFrame_p = Linear;
   }
 }
@@ -886,7 +886,7 @@ const String& MSIter::sourceName() const {
     // Retrieve source name, if specified.
     This->curSourceNameFirst_p = "";
     if (curSourceIdFirst_p >= 0 && !msc_p->source().sourceId().isNull()) {
-      Vector<Int> sourceId = msc_p->source().sourceId().getColumn();
+      Vector<int> sourceId = msc_p->source().sourceId().getColumn();
       size_t i = 0;
       bool found = false;
       while (i < sourceId.nelements() && !found) {
@@ -903,7 +903,7 @@ const String& MSIter::sourceName() const {
 }
 const MDirection& MSIter::phaseCenter() const {
   if (msc_p) {
-    Double firstTimeStamp = ScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
+    double firstTimeStamp = ScalarColumn<double>(curTable_p, MS::columnName(MS::TIME)).get(0);
     if (newFieldId_p || (firstTimeStamp != prevFirstTimeStamp_p)) {
       if (curFieldIdFirst_p == -1) setFieldInfo();
       prevFirstTimeStamp_p = firstTimeStamp;
@@ -912,13 +912,13 @@ const MDirection& MSIter::phaseCenter() const {
   }
   return phaseCenter_p;
 }
-const MDirection MSIter::phaseCenter(const Int fldid, const Double timeStamp) const {
+const MDirection MSIter::phaseCenter(const int fldid, const double timeStamp) const {
   if (msc_p) return msc_p->field().phaseDirMeas(fldid, timeStamp);
   return phaseCenter_p;
 }
-void MSIter::getSpwInFreqRange(Block<Vector<Int>>& spw, Block<Vector<Int>>& start,
-                               Block<Vector<Int>>& nchan, Double freqStart, Double freqEnd,
-                               Double freqStep) {
+void MSIter::getSpwInFreqRange(Block<Vector<int>>& spw, Block<Vector<int>>& start,
+                               Block<Vector<int>>& nchan, double freqStart, double freqEnd,
+                               double freqStep) {
   spw.resize(nMS_p, true, false);
   start.resize(nMS_p, true, false);
   nchan.resize(nMS_p, true, false);
@@ -929,15 +929,15 @@ void MSIter::getSpwInFreqRange(Block<Vector<Int>>& spw, Block<Vector<Int>>& star
     spwIn.matchFrequencyRange(freqStart - 0.5 * freqStep, freqEnd + 0.5 * freqStep, spw[k],
                               start[k], nchan[k]);
     /*
-    Vector<Float> freqlist(4);
+    Vector<float> freqlist(4);
     freqlist(0)=freqStart-freqStep;
     freqlist(1)=freqEnd+freqStep;
     freqlist(2)=freqStep;
     freqlist(3)=MSSpwIndex::MSSPW_UNITHZ;
-    Int numSpec;
+    int numSpec;
     spw[k].resize();
     spw[k]=spwIn.convertToSpwIndex(freqlist, numSpec);
-    Vector<Int> retchanlist=
+    Vector<int> retchanlist=
       spwIn.convertToChannelIndex(spw[k], freqlist, numSpec);
     cout << "retchanlist " << retchanlist << std::endl;
     if((retchanlist.nelements()%3) != 0){
@@ -946,7 +946,7 @@ void MSIter::getSpwInFreqRange(Block<Vector<Int>>& spw, Block<Vector<Int>>& star
     else{
       start[k].resize(spw[k].nelements());
       nchan[k].resize(spw[k].nelements());
-      for (uInt j=0; j < retchanlist.nelements()/3; ++j){
+      for (unsigned int j=0; j < retchanlist.nelements()/3; ++j){
         //convert to channe returns start, stop...change to start, nchan
         start[k][j]=retchanlist[j*3];
         nchan[k][j]=retchanlist[j*3+1]-retchanlist[j*3]+1;

@@ -298,11 +298,11 @@ void Adios2StManColumn::putColumnSliceCellsV(const RefRows &rownrs, const Slicer
   void Adios2StManColumn::get##T(rownr_t rownr, T *dataPtr) { getScalar(rownr, dataPtr); }
 
 DEFINE_GETPUT(bool)
-DEFINE_GETPUT(uChar)
-DEFINE_GETPUT(Short)
-DEFINE_GETPUT(uShort)
-DEFINE_GETPUT(Int)
-DEFINE_GETPUT(uInt)
+DEFINE_GETPUT(unsigned char)
+DEFINE_GETPUT(short)
+DEFINE_GETPUT(unsigned short)
+DEFINE_GETPUT(int)
+DEFINE_GETPUT(unsigned int)
 DEFINE_GETPUT(float)
 DEFINE_GETPUT(double)
 DEFINE_GETPUT(Complex)

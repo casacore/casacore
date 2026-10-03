@@ -180,7 +180,7 @@ void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, ArrayBase& arr, 
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
   // # If the entire column is accessed, use that function.
-  if (blc(0) == 0 && shp(0) == Int(nrrow) && inc(0) == 1) {
+  if (blc(0) == 0 && shp(0) == int(nrrow) && inc(0) == 1) {
     acbGetColumn(arr, resize);
   } else {
     acbGetColumnCells(RefRows(blc(0), trc(0), inc(0)), arr, resize);
@@ -207,7 +207,7 @@ void ArrayColumnBase::acbGetColumnRange(const Slicer& rowRange, const Slicer& ar
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
   // # If the entire column is accessed, use that function.
-  if (blc(0) == 0 && shp(0) == Int(nrrow) && inc(0) == 1) {
+  if (blc(0) == 0 && shp(0) == int(nrrow) && inc(0) == 1) {
     acbGetColumn(arraySection, arr, resize);
   } else {
     acbGetColumnCells(RefRows(blc(0), trc(0), inc(0)), arraySection, arr, resize);
@@ -311,8 +311,8 @@ void ArrayColumnBase::acbPutColumn(const ArrayBase& arr) {
   // # First check if number of rows matches.
   rownr_t nrrow = nrow();
   IPosition shp = arr.shape();
-  uInt last = shp.nelements() - 1;
-  if (shp[last] != Int(nrrow)) {
+  unsigned int last = shp.nelements() - 1;
+  if (shp[last] != int(nrrow)) {
     throw TableArrayConformanceError(
         "ArrayColumn::putColumn - column " + std::string(baseColPtr_p->columnDesc().name()) +
         " has " + std::to_string(nrrow) + ", array has " + std::to_string(shp[last]) + " rows");
@@ -337,8 +337,8 @@ void ArrayColumnBase::acbPutColumn(const Slicer& arraySection, const ArrayBase& 
   rownr_t nrrow = nrow();
   // # First check if number of rows matches.
   IPosition arrshp = arr.shape();
-  uInt last = arrshp.nelements() - 1;
-  if (arrshp(last) != Int(nrrow)) {
+  unsigned int last = arrshp.nelements() - 1;
+  if (arrshp(last) != int(nrrow)) {
     throw TableArrayConformanceError("ArrayColumn::putColumn(slicer) - column " +
                                      std::string(baseColPtr_p->columnDesc().name()) + " has " +
                                      std::to_string(nrrow) + ", but array has " +
@@ -385,7 +385,7 @@ void ArrayColumnBase::acbPutColumnRange(const Slicer& rowRange, const ArrayBase&
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
   // # If the entire column is accessed, use that function.
-  if (blc(0) == 0 && shp(0) == Int(nrrow) && inc(0) == 1) {
+  if (blc(0) == 0 && shp(0) == int(nrrow) && inc(0) == 1) {
     acbPutColumn(arr);
   } else {
     acbPutColumnCells(RefRows(blc(0), trc(0), inc(0)), arr);
@@ -397,8 +397,8 @@ void ArrayColumnBase::acbPutColumnCells(const RefRows& rownrs, const ArrayBase& 
   // # First check if number of rows matches.
   rownr_t nrrow = rownrs.nrow();
   IPosition arrshp = arr.shape();
-  uInt last = arrshp.nelements() - 1;
-  if (arrshp(last) != Int(nrrow)) {
+  unsigned int last = arrshp.nelements() - 1;
+  if (arrshp(last) != int(nrrow)) {
     throw(TableArrayConformanceError("ArrayColumn::putColumnCells for column " +
                                      baseColPtr_p->columnDesc().name()));
   }
@@ -434,7 +434,7 @@ void ArrayColumnBase::acbPutColumnRange(const Slicer& rowRange, const Slicer& ar
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
   // # If the entire column is accessed, use that function.
-  if (blc(0) == 0 && shp(0) == Int(nrrow) && inc(0) == 1) {
+  if (blc(0) == 0 && shp(0) == int(nrrow) && inc(0) == 1) {
     acbPutColumn(arraySection, arr);
   } else {
     acbPutColumnCells(RefRows(blc(0), trc(0), inc(0)), arraySection, arr);
@@ -447,8 +447,8 @@ void ArrayColumnBase::acbPutColumnCells(const RefRows& rownrs, const Slicer& arr
   // # First check if number of rows matches.
   rownr_t nrrow = rownrs.nrow();
   IPosition arrshp = arr.shape();
-  uInt last = arrshp.nelements() - 1;
-  if (arrshp(last) != Int(nrrow)) {
+  unsigned int last = arrshp.nelements() - 1;
+  if (arrshp(last) != int(nrrow)) {
     throw(TableArrayConformanceError("ArrayColumn::putColumnCells for column " +
                                      baseColPtr_p->columnDesc().name()));
   }
@@ -511,7 +511,7 @@ void ArrayColumnBase::acbGetColumnCells(const RefRows& rows, const ColumnSlicer&
          rownr += rowIter.sliceIncr()) {
       ArrayBase& destArray = arrIter->getArray();
       // Iterate through the slicers.
-      for (uInt j = 0; j < destSlicers.size(); ++j) {
+      for (unsigned int j = 0; j < destSlicers.size(); ++j) {
         std::unique_ptr<ArrayBase> destPart = destArray.getSection(*destSlicers[j]);
         baseGetSlice(rownr, *dataSlicers[j], *destPart);
       }
@@ -542,7 +542,7 @@ void ArrayColumnBase::acbPutColumnCells(const RefRows& rows, const ColumnSlicer&
          rownr += rowIter.sliceIncr()) {
       ArrayBase& destArray = arrIter->getArray();
       // Iterate through the slicers.
-      for (uInt j = 0; j < destSlicers.size(); ++j) {
+      for (unsigned int j = 0; j < destSlicers.size(); ++j) {
         std::unique_ptr<ArrayBase> destPart = destArray.getSection(*destSlicers[j]);
         basePutSlice(rownr, *dataSlicers[j], *destPart);
       }
@@ -589,15 +589,15 @@ void ArrayColumnBase::handleSlices(const Vector<Vector<Slice>>& slices, BaseSlic
   IPosition colStart(slicer.start());
   IPosition colLen(slicer.length());
   IPosition colIncr(slicer.stride());
-  uInt nrdim = slicer.ndim();
+  unsigned int nrdim = slicer.ndim();
   IPosition pos(nrdim, 0);
   while (true) {
     std::shared_ptr<ArrayBase> refArr(arr.getSection(Slicer(arrStart, arrEnd, Slicer::endIsLast)));
     functor.apply(Slicer(colStart, colLen, colIncr), *refArr);
-    uInt i;
+    unsigned int i;
     for (i = 0; i < nrdim; ++i) {
       pos[i]++;
-      if (uInt(pos[i]) < slices[i].size()) {
+      if (static_cast<unsigned int>(pos[i]) < slices[i].size()) {
         const Slice& slice = slices[i][pos[i]];
         colStart[i] = slice.start();
         colLen[i] = slice.length();
@@ -635,10 +635,10 @@ void ColumnSlicer::freeSlicers() {
   // The two Vectors contain pointers to objects so they need to be freed.
   // They should have the same length normally, but during validation it's
   // possible that they have different lengths.
-  for (uInt i = 0; i < dataSlicers_p.size(); i++) {
+  for (unsigned int i = 0; i < dataSlicers_p.size(); i++) {
     delete dataSlicers_p[i];
   }
-  for (uInt i = 0; i < destinationSlicers_p.size(); i++) {
+  for (unsigned int i = 0; i < destinationSlicers_p.size(); i++) {
     delete destinationSlicers_p[i];
   }
 }
@@ -656,7 +656,7 @@ String ColumnSlicer::validateParameters() const {
     return "At least one destination and one data slicer required.";
   }
 
-  for (uInt i = 0; i < dataSlicers_p.size(); i++) {
+  for (unsigned int i = 0; i < dataSlicers_p.size(); i++) {
     if (dataSlicers_p[i]->length() != destinationSlicers_p[i]->length()) {
       return FormatString(
           "Length of data slicer[%d] (%s) and "

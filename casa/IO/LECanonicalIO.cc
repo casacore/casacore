@@ -29,7 +29,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LECanonicalIO::LECanonicalIO(const std::shared_ptr<ByteIO>& byteIO, uInt bufferLength)
+LECanonicalIO::LECanonicalIO(const std::shared_ptr<ByteIO>& byteIO, unsigned int bufferLength)
     : TypeIO(byteIO), itsBuffer(new char[bufferLength]), itsBufferLength(bufferLength) {}
 
 LECanonicalIO::LECanonicalIO(const LECanonicalIO& that)
@@ -55,7 +55,7 @@ size_t LECanonicalIO::write(size_t nvalues, const bool* value) {
   return TypeIO::write(nvalues, value);
 }
 
-size_t LECanonicalIO::write(size_t nvalues, const Char* value) {
+size_t LECanonicalIO::write(size_t nvalues, const char* value) {
   if (CONVERT_LECAN_CHAR) {
     if (nvalues * SIZE_LECAN_CHAR <= itsBufferLength) {
       LECanonicalConversion::fromLocal(itsBuffer, value, nvalues);
@@ -67,12 +67,12 @@ size_t LECanonicalIO::write(size_t nvalues, const Char* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->write(nvalues * sizeof(Char), value);
+    itsByteIO->write(nvalues * sizeof(char), value);
   }
   return nvalues * SIZE_LECAN_CHAR;
 }
 
-size_t LECanonicalIO::write(size_t nvalues, const uChar* value) {
+size_t LECanonicalIO::write(size_t nvalues, const unsigned char* value) {
   if (CONVERT_LECAN_UCHAR) {
     if (nvalues * SIZE_LECAN_UCHAR <= itsBufferLength) {
       LECanonicalConversion::fromLocal(itsBuffer, value, nvalues);
@@ -84,12 +84,12 @@ size_t LECanonicalIO::write(size_t nvalues, const uChar* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->write(nvalues * sizeof(uChar), value);
+    itsByteIO->write(nvalues * sizeof(unsigned char), value);
   }
   return nvalues * SIZE_LECAN_UCHAR;
 }
 
-size_t LECanonicalIO::write(size_t nvalues, const Short* value) {
+size_t LECanonicalIO::write(size_t nvalues, const short* value) {
   if (CONVERT_LECAN_SHORT) {
     if (nvalues * SIZE_LECAN_SHORT <= itsBufferLength) {
       LECanonicalConversion::fromLocal(itsBuffer, value, nvalues);
@@ -101,12 +101,12 @@ size_t LECanonicalIO::write(size_t nvalues, const Short* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->write(nvalues * sizeof(Short), value);
+    itsByteIO->write(nvalues * sizeof(short), value);
   }
   return nvalues * SIZE_LECAN_SHORT;
 }
 
-size_t LECanonicalIO::write(size_t nvalues, const uShort* value) {
+size_t LECanonicalIO::write(size_t nvalues, const unsigned short* value) {
   if (CONVERT_LECAN_USHORT) {
     if (nvalues * SIZE_LECAN_USHORT <= itsBufferLength) {
       LECanonicalConversion::fromLocal(itsBuffer, value, nvalues);
@@ -118,12 +118,12 @@ size_t LECanonicalIO::write(size_t nvalues, const uShort* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->write(nvalues * sizeof(uShort), value);
+    itsByteIO->write(nvalues * sizeof(unsigned short), value);
   }
   return nvalues * SIZE_LECAN_USHORT;
 }
 
-size_t LECanonicalIO::write(size_t nvalues, const Int* value) {
+size_t LECanonicalIO::write(size_t nvalues, const int* value) {
   if (CONVERT_LECAN_INT) {
     if (nvalues * SIZE_LECAN_INT <= itsBufferLength) {
       LECanonicalConversion::fromLocal(itsBuffer, value, nvalues);
@@ -135,12 +135,12 @@ size_t LECanonicalIO::write(size_t nvalues, const Int* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->write(nvalues * sizeof(Int), value);
+    itsByteIO->write(nvalues * sizeof(int), value);
   }
   return nvalues * SIZE_LECAN_INT;
 }
 
-size_t LECanonicalIO::write(size_t nvalues, const uInt* value) {
+size_t LECanonicalIO::write(size_t nvalues, const unsigned int* value) {
   if (CONVERT_LECAN_UINT) {
     if (nvalues * SIZE_LECAN_UINT <= itsBufferLength) {
       LECanonicalConversion::fromLocal(itsBuffer, value, nvalues);
@@ -152,7 +152,7 @@ size_t LECanonicalIO::write(size_t nvalues, const uInt* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->write(nvalues * sizeof(uInt), value);
+    itsByteIO->write(nvalues * sizeof(unsigned int), value);
   }
   return nvalues * SIZE_LECAN_UINT;
 }
@@ -239,7 +239,7 @@ size_t LECanonicalIO::write(size_t nvalues, const String* value) {
 
 size_t LECanonicalIO::read(size_t nvalues, bool* value) { return TypeIO::read(nvalues, value); }
 
-size_t LECanonicalIO::read(size_t nvalues, Char* value) {
+size_t LECanonicalIO::read(size_t nvalues, char* value) {
   if (CONVERT_LECAN_CHAR) {
     if (nvalues * SIZE_LECAN_CHAR <= itsBufferLength) {
       itsByteIO->read(nvalues * SIZE_LECAN_CHAR, itsBuffer);
@@ -251,12 +251,12 @@ size_t LECanonicalIO::read(size_t nvalues, Char* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->read(nvalues * sizeof(Char), value);
+    itsByteIO->read(nvalues * sizeof(char), value);
   }
   return nvalues * SIZE_LECAN_CHAR;
 }
 
-size_t LECanonicalIO::read(size_t nvalues, uChar* value) {
+size_t LECanonicalIO::read(size_t nvalues, unsigned char* value) {
   if (CONVERT_LECAN_UCHAR) {
     if (nvalues * SIZE_LECAN_UCHAR <= itsBufferLength) {
       itsByteIO->read(nvalues * SIZE_LECAN_UCHAR, itsBuffer);
@@ -268,12 +268,12 @@ size_t LECanonicalIO::read(size_t nvalues, uChar* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->read(nvalues * sizeof(uChar), value);
+    itsByteIO->read(nvalues * sizeof(unsigned char), value);
   }
   return nvalues * SIZE_LECAN_UCHAR;
 }
 
-size_t LECanonicalIO::read(size_t nvalues, Short* value) {
+size_t LECanonicalIO::read(size_t nvalues, short* value) {
   if (CONVERT_LECAN_SHORT) {
     if (nvalues * SIZE_LECAN_SHORT <= itsBufferLength) {
       itsByteIO->read(nvalues * SIZE_LECAN_SHORT, itsBuffer);
@@ -285,12 +285,12 @@ size_t LECanonicalIO::read(size_t nvalues, Short* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->read(nvalues * sizeof(Short), value);
+    itsByteIO->read(nvalues * sizeof(short), value);
   }
   return nvalues * SIZE_LECAN_SHORT;
 }
 
-size_t LECanonicalIO::read(size_t nvalues, uShort* value) {
+size_t LECanonicalIO::read(size_t nvalues, unsigned short* value) {
   if (CONVERT_LECAN_USHORT) {
     if (nvalues * SIZE_LECAN_USHORT <= itsBufferLength) {
       itsByteIO->read(nvalues * SIZE_LECAN_USHORT, itsBuffer);
@@ -302,12 +302,12 @@ size_t LECanonicalIO::read(size_t nvalues, uShort* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->read(nvalues * sizeof(uShort), value);
+    itsByteIO->read(nvalues * sizeof(unsigned short), value);
   }
   return nvalues * SIZE_LECAN_USHORT;
 }
 
-size_t LECanonicalIO::read(size_t nvalues, Int* value) {
+size_t LECanonicalIO::read(size_t nvalues, int* value) {
   if (CONVERT_LECAN_INT) {
     if (nvalues * SIZE_LECAN_INT <= itsBufferLength) {
       itsByteIO->read(nvalues * SIZE_LECAN_INT, itsBuffer);
@@ -319,12 +319,12 @@ size_t LECanonicalIO::read(size_t nvalues, Int* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->read(nvalues * sizeof(Int), value);
+    itsByteIO->read(nvalues * sizeof(int), value);
   }
   return nvalues * SIZE_LECAN_INT;
 }
 
-size_t LECanonicalIO::read(size_t nvalues, uInt* value) {
+size_t LECanonicalIO::read(size_t nvalues, unsigned int* value) {
   if (CONVERT_LECAN_UINT) {
     if (nvalues * SIZE_LECAN_UINT <= itsBufferLength) {
       itsByteIO->read(nvalues * SIZE_LECAN_UINT, itsBuffer);
@@ -336,7 +336,7 @@ size_t LECanonicalIO::read(size_t nvalues, uInt* value) {
       delete[] tempBuffer;
     }
   } else {
-    itsByteIO->read(nvalues * sizeof(uInt), value);
+    itsByteIO->read(nvalues * sizeof(unsigned int), value);
   }
   return nvalues * SIZE_LECAN_UINT;
 }

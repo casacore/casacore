@@ -61,12 +61,12 @@ int main(int argc, const char* argv[]) {
     }
     bool outisfits = downcase(out).substr(out.size() - 5) == ".fits";
 
-    const Block<Int> outregion = inputs.getIntArray("outregion");
+    const Block<int> outregion = inputs.getIntArray("outregion");
 
     FITSImage::registerOpenFunction();
     MIRIADImage::registerOpenFunction();
     LatticeBase* pLatt = ImageOpener::openImage(in);
-    ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
+    ImageInterface<float>* pImage = dynamic_cast<ImageInterface<float>*>(pLatt);
     if (!pImage) {
       cout << "The input image must have data type Float" << endl;
       exit(1);
@@ -84,7 +84,7 @@ int main(int argc, const char* argv[]) {
     start = 0;
     IPosition end(imshape);
     end -= 1;
-    for (uInt i = 0; i < outregion.nelements(); ++i) {
+    for (unsigned int i = 0; i < outregion.nelements(); ++i) {
       if (outregion[i] > -1) {
         if (i % 2 == 0) {
           start(i / 2) = outregion[i];
@@ -94,18 +94,18 @@ int main(int argc, const char* argv[]) {
       }
     }
     Slicer slice(start, end, Slicer::endIsLast);
-    SubImage<Float> subim(*pImage, slice);
+    SubImage<float> subim(*pImage, slice);
 
     if (outisfits) {
       String errMsg;
       ImageFITSConverter::ImageToFITS(errMsg, subim, out, 128, false, false);
     } else {
-      ImageInterface<Float>* pim = 0;
-      if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {
-        pim = new HDF5Image<Float>(subim.shape(), subim.coordinates(), out);
+      ImageInterface<float>* pim = 0;
+      if (dynamic_cast<HDF5Image<float>*>(pImage) != 0) {
+        pim = new HDF5Image<float>(subim.shape(), subim.coordinates(), out);
       }
       if (pim == 0) {
-        pim = new PagedImage<Float>(subim.shape(), subim.coordinates(), out);
+        pim = new PagedImage<float>(subim.shape(), subim.coordinates(), out);
       }
       pim->copyData(subim);
       ImageUtilities::copyMiscellaneous(*pim, subim);

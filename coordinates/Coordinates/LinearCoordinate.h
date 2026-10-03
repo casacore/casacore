@@ -117,20 +117,20 @@ class LinearCoordinate : public Coordinate {
   // The default constructor makes a LinearCoordinate for which pixel
   // and world coordinates are equal.  <src>naxes</src> gives the number
   // of axes in the Coordinate.
-  LinearCoordinate(uInt naxes = 1);
+  LinearCoordinate(unsigned int naxes = 1);
 
   // Construct the LinearCoordinate
   LinearCoordinate(const Vector<String> &names, const Vector<String> &units,
-                   const Vector<Double> &refVal, const Vector<Double> &inc,
-                   const Matrix<Double> &pc, const Vector<Double> &refPix);
+                   const Vector<double> &refVal, const Vector<double> &inc,
+                   const Matrix<double> &pc, const Vector<double> &refPix);
 
   // Construct LinearCoordinate with Quantum-based interface.
   // The units of the increment (<src>inc</src>) will be converted to
   // those of the reference value (<src>refVal</src>) which will
   // then serve as the units of the Coordinate.
-  LinearCoordinate(const Vector<String> &names, const Vector<Quantum<Double>> &refVal,
-                   const Vector<Quantum<Double>> &inc, const Matrix<Double> &pc,
-                   const Vector<Double> &refPix);
+  LinearCoordinate(const Vector<String> &names, const Vector<Quantum<double>> &refVal,
+                   const Vector<Quantum<double>> &inc, const Matrix<double> &pc,
+                   const Vector<double> &refPix);
 
   // Constructor from WCS structure; must hold ONLY a linear wcs structure
   // Specify whether the absolute pixel coordinates in the wcs structure
@@ -156,8 +156,8 @@ class LinearCoordinate : public Coordinate {
   // Returns the number of pixel/world axes. The number of axes is arbitrary,
   // however the number of world and pixel axes must at present be the same.
   // <group>
-  virtual uInt nPixelAxes() const;
-  virtual uInt nWorldAxes() const;
+  virtual unsigned int nPixelAxes() const;
+  virtual unsigned int nWorldAxes() const;
   // </group>
 
   // Convert a pixel position to a worl position or vice versa. Returns true
@@ -167,17 +167,17 @@ class LinearCoordinate : public Coordinate {
   // to toWorld() has no effect as this type of coordinate does not support a
   // conversion layer frame.
   // <group>
-  virtual bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool = true) const;
-  virtual bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
+  virtual bool toWorld(Vector<double> &world, const Vector<double> &pixel, bool = true) const;
+  virtual bool toPixel(Vector<double> &pixel, const Vector<double> &world) const;
   // </group>
 
   // Return the requested attribute
   // <group>
   virtual Vector<String> worldAxisNames() const;
-  virtual Vector<Double> referenceValue() const;
-  virtual Vector<Double> increment() const;
-  virtual Matrix<Double> linearTransform() const;
-  virtual Vector<Double> referencePixel() const;
+  virtual Vector<double> referenceValue() const;
+  virtual Vector<double> increment() const;
+  virtual Matrix<double> linearTransform() const;
+  virtual Vector<double> referencePixel() const;
   virtual Vector<String> worldAxisUnits() const;
   // </group>
 
@@ -185,10 +185,10 @@ class LinearCoordinate : public Coordinate {
   // change the internal values, they do not cause any recomputation.
   // <group>
   virtual bool setWorldAxisNames(const Vector<String> &names);
-  virtual bool setReferencePixel(const Vector<Double> &refPix);
-  virtual bool setLinearTransform(const Matrix<Double> &pc);
-  virtual bool setIncrement(const Vector<Double> &inc);
-  virtual bool setReferenceValue(const Vector<Double> &refval);
+  virtual bool setReferencePixel(const Vector<double> &refPix);
+  virtual bool setLinearTransform(const Matrix<double> &pc);
+  virtual bool setIncrement(const Vector<double> &inc);
+  virtual bool setReferenceValue(const Vector<double> &refval);
   // </group>
 
   // Set the world axis units. Adjust the increment and
@@ -206,9 +206,9 @@ class LinearCoordinate : public Coordinate {
   // axes in the Coordinate.  If the comparison returns false, method
   // errorMessage contains a message about why.
   // <group>
-  virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
-  virtual bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
-                    Double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, const Vector<int> &excludeAxes,
+                    double tol = 1e-6) const;
   // </group>
 
   // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
@@ -218,7 +218,7 @@ class LinearCoordinate : public Coordinate {
   // output reference pixel is always shape/2.  If the pointer returned is 0,
   // it failed with a message in <src>errorMessage</src>
   virtual Coordinate *makeFourierCoordinate(const Vector<bool> &axes,
-                                            const Vector<Int> &shape) const;
+                                            const Vector<int> &shape) const;
 
   // Save the LinearCoordinate into the supplied record using the supplied field name.
   // The field must not already exist, otherwise <src>false</src> is returned.
@@ -241,8 +241,8 @@ class LinearCoordinate : public Coordinate {
   void copy(const LinearCoordinate &other);
 
   // Make wcs structure
-  void makeWCS(wcsprm &wcs, uInt naxis, const Vector<Double> &refPix, const Vector<Double> &refVal,
-               const Vector<Double> &incr, const Matrix<Double> &pc, const Vector<String> &units,
+  void makeWCS(wcsprm &wcs, unsigned int naxis, const Vector<double> &refPix, const Vector<double> &refVal,
+               const Vector<double> &incr, const Matrix<double> &pc, const Vector<String> &units,
                const Vector<String> &names);
 };
 

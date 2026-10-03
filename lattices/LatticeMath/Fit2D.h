@@ -135,9 +135,9 @@ class Fit2D {
   // is fixed (false) during the fit or not.  Returns the
   // the model number added (0, 1, 2 etc)
   //<group>
-  uInt addModel(Fit2D::Types type, const Vector<Double>& parameters,
+  unsigned int addModel(Fit2D::Types type, const Vector<double>& parameters,
                 const Vector<bool>& parameterMask);
-  uInt addModel(Fit2D::Types type, const Vector<Double>& parameters);
+  unsigned int addModel(Fit2D::Types type, const Vector<double>& parameters);
   //</group>
 
   // Convert mask from a string to a vector.  The string gives the parameters
@@ -149,16 +149,16 @@ class Fit2D {
   // pixels in the specified range are included/excluded.
   // Only the last call of either of these will be active.
   //<group>
-  void setIncludeRange(Double minVal, Double maxVal);
-  void setExcludeRange(Double minVal, Double maxVal);
+  void setIncludeRange(double minVal, double maxVal);
+  void setExcludeRange(double minVal, double maxVal);
   void resetRange();
   //</group>
 
   // Return number of parameters for this type of model
-  static uInt nParameters(Fit2D::Types type);
+  static unsigned int nParameters(Fit2D::Types type);
 
   // Recover number of models
-  uInt nModels() const;
+  unsigned int nModels() const;
 
   // Determine an initial estimate for the solution of the specified
   // model type to the given data - no compound models are allowable
@@ -168,13 +168,13 @@ class Fit2D {
   // Returns a zero length vector if it fails to make an estimate.
   //<group>
   template <class T>
-  Vector<Double> estimate(Fit2D::Types type, const MaskedLattice<T>& data);
+  Vector<double> estimate(Fit2D::Types type, const MaskedLattice<T>& data);
   template <class T>
-  Vector<Double> estimate(Fit2D::Types type, const Lattice<T>& data);
+  Vector<double> estimate(Fit2D::Types type, const Lattice<T>& data);
   template <class T>
-  Vector<Double> estimate(Fit2D::Types type, const Array<T>& data);
+  Vector<double> estimate(Fit2D::Types type, const Array<T>& data);
   template <class T>
-  Vector<Double> estimate(Fit2D::Types type, const Array<T>& data, const Array<bool>& mask);
+  Vector<double> estimate(Fit2D::Types type, const Array<T>& data, const Array<bool>& mask);
   //</group>
 
   // Do the fit.  Returns an enum value to tell you what happened if the fit failed
@@ -203,11 +203,11 @@ class Fit2D {
   //<group>
   template <class T>
   Fit2D::ErrorTypes residual(Array<T>& resid, Array<T>& model, const Array<T>& data,
-                             Int xOffset = 0, int yOffset = 0) const;
+                             int xOffset = 0, int yOffset = 0) const;
 
-  Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
-                             const MaskedLattice<Float>& data);
-  Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model, const Lattice<Float>& data);
+  Fit2D::ErrorTypes residual(Array<float>& resid, Array<float>& model,
+                             const MaskedLattice<float>& data);
+  Fit2D::ErrorTypes residual(Array<float>& resid, Array<float>& model, const Lattice<float>& data);
   //</group>
   // If function fit failed, you will find a message here
   // saying why it failed
@@ -218,26 +218,26 @@ class Fit2D {
   // if there is no valid solution.    All available parameters (fixed and
   // adjustable) are included in the solution vectors.
   //<group>
-  Vector<Double> availableSolution() const;
-  Vector<Double> availableSolution(uInt which) const;
+  Vector<double> availableSolution() const;
+  Vector<double> availableSolution(unsigned int which) const;
   //</group>
 
   // The errors. All available parameters (fixed and adjustable) are
   // included in the error vectors.  Unsolved for parameters will
   // have error 0.
   //<group>
-  Vector<Double> availableErrors() const;
-  Vector<Double> availableErrors(uInt which) const;
+  Vector<double> availableErrors() const;
+  Vector<double> availableErrors(unsigned int which) const;
   //</group>
 
   // The number of iterations that the fitter finished with
-  uInt numberIterations() const;
+  unsigned int numberIterations() const;
 
   // The chi squared of the fit.  Returns 0 if fit has been done.
-  Double chiSquared() const;
+  double chiSquared() const;
 
   // The number of points used for the last fit
-  uInt numberPoints() const;
+  unsigned int numberPoints() const;
 
   // Return type as a string
   static String type(Fit2D::Types type);
@@ -246,56 +246,56 @@ class Fit2D {
   static Fit2D::Types type(const String& type);
 
   // Find type of specific model
-  Fit2D::Types type(uInt which);
+  Fit2D::Types type(unsigned int which);
 
   // Convert p.a. (radians) from positive +x -> +y
   // (Fit2D) to positive +y -> -x (Gaussian2D)
-  static Double paToGauss2D(Double pa) { return pa - M_PI_2; };
+  static double paToGauss2D(double pa) { return pa - M_PI_2; };
 
   // Convert p.a. (radians) from positive +y -> -x
   // (Gaussian2D) to positive +x -> +y (Fit2D)
-  static Double paFromGauss2D(Double pa) { return pa + M_PI_2; };
+  static double paFromGauss2D(double pa) { return pa + M_PI_2; };
 
  private:
   mutable LogIO itsLogger;
   bool itsValid, itsValidSolution, itsHasSigma;
   bool itsInclude;
-  Vector<Double> itsPixelRange;
-  CompoundFunction<AutoDiff<Double>> itsFunction;
-  NonLinearFitLM<Double> itsFitter;
-  Vector<Double> itsSolution;
-  Vector<Double> itsErrors;
-  Double itsChiSquared;
+  Vector<double> itsPixelRange;
+  CompoundFunction<AutoDiff<double>> itsFunction;
+  NonLinearFitLM<double> itsFitter;
+  Vector<double> itsSolution;
+  Vector<double> itsErrors;
+  double itsChiSquared;
   String itsErrorMessage;
-  uInt itsNumberPoints;
+  unsigned int itsNumberPoints;
 
-  Vector<uInt> itsTypeList;
+  Vector<unsigned int> itsTypeList;
 
-  Fit2D::ErrorTypes fitData(const Vector<Double>& values, const Matrix<Double>& pos,
-                            const Vector<Double>& sigma);
+  Fit2D::ErrorTypes fitData(const Vector<double>& values, const Matrix<double>& pos,
+                            const Vector<double>& sigma);
 
   // Returns available (adjustable + fixed) solution for model of
   // interest and tells you where it began in the full solution vector
   // Does no axial ratio nor position angle conversions from direct
   // fit solution vector
   // <group>
-  Vector<Double> availableSolution(uInt& iStart, uInt which) const;
-  Vector<Double> availableErrors(uInt& iStart, uInt which) const;
+  Vector<double> availableSolution(unsigned int& iStart, unsigned int which) const;
+  Vector<double> availableErrors(unsigned int& iStart, unsigned int which) const;
   // </group>
 
-  Vector<Double> getParams(uInt which) const;
-  void setParams(const Vector<Double>& params, uInt which);
+  Vector<double> getParams(unsigned int which) const;
+  void setParams(const Vector<double>& params, unsigned int which);
 
-  bool includeIt(Double value, const Vector<Double>& range, Int includeIt) const;
+  bool includeIt(double value, const Vector<double>& range, int includeIt) const;
 
   template <class T>
-  bool selectData(Matrix<Double>& pos, Vector<Double>& values, Vector<Double>& weights,
+  bool selectData(Matrix<double>& pos, Vector<double>& values, Vector<double>& weights,
                   const Array<T>& pixels, const Array<bool>& mask, const Array<T>& sigma);
 
-  void piRange(Double& pa) const;
+  void piRange(double& pa) const;
 };
 
-inline bool Fit2D::includeIt(Double value, const Vector<Double>& range, Int includeIt) const {
+inline bool Fit2D::includeIt(double value, const Vector<double>& range, int includeIt) const {
   if (includeIt == 0) return true;
   //
   if (includeIt == 1) {

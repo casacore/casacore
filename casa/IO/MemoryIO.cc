@@ -42,13 +42,13 @@ MemoryIO::MemoryIO(uInt64 initialSize, uInt64 expandSize)
       itsWritable(true),
       itsCanDelete(true) {
   if (itsAlloc > 0) {
-    itsBuffer = new uChar[itsAlloc];
+    itsBuffer = new unsigned char[itsAlloc];
     AlwaysAssert(itsBuffer != 0, AipsError);
   }
 }
 
 MemoryIO::MemoryIO(const void* buffer, uInt64 size)
-    : itsBuffer((uChar*)buffer),
+    : itsBuffer((unsigned char*)buffer),
       itsAlloc(size),
       itsExpandSize(0),
       itsUsed(size),
@@ -59,7 +59,7 @@ MemoryIO::MemoryIO(const void* buffer, uInt64 size)
 
 MemoryIO::MemoryIO(void* buffer, uInt64 size, ByteIO::OpenOption option, uInt64 expandSize,
                    bool canDelete)
-    : itsBuffer((uChar*)buffer),
+    : itsBuffer((unsigned char*)buffer),
       itsAlloc(size),
       itsExpandSize(expandSize),
       itsUsed(size),
@@ -202,7 +202,7 @@ bool MemoryIO::expand(uInt64 minSize) {
     minsz = itsAlloc + itsExpandSize;
   }
   // Allocate new buffer, copy contents and delete old buffer (if possible).
-  uChar* newBuffer = new uChar[minsz];
+  unsigned char* newBuffer = new unsigned char[minsz];
   AlwaysAssert(newBuffer != 0, AipsError);
   // Copy the old contents (if any).
   if (itsBuffer != 0) {
@@ -233,7 +233,7 @@ void MemoryIO::setUsed(uInt64 bytesUsed) {
   itsUsed = bytesUsed;
 }
 
-uChar* MemoryIO::setBuffer(uInt64 length) {
+unsigned char* MemoryIO::setBuffer(uInt64 length) {
   if (!itsWritable) {
     throw(AipsError("MemoryIO::setBuffer - object is not writable"));
   }

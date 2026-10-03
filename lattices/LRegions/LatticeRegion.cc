@@ -75,18 +75,18 @@ Lattice<bool>* LatticeRegion::clone() const { return new LatticeRegion(*this); }
 
 bool LatticeRegion::isWritable() const { return itsRegion->isWritable(); }
 
-uInt LatticeRegion::advisedMaxPixels() const { return itsRegion->advisedMaxPixels(); }
+unsigned int LatticeRegion::advisedMaxPixels() const { return itsRegion->advisedMaxPixels(); }
 
-IPosition LatticeRegion::doNiceCursorShape(uInt maxPixels) const {
+IPosition LatticeRegion::doNiceCursorShape(unsigned int maxPixels) const {
   if (itsHasRegionMask) {
     return itsRegion->niceCursorShape(maxPixels);
   }
   return LatticeBase::doNiceCursorShape(maxPixels);
 }
 
-uInt LatticeRegion::maximumCacheSize() const { return itsRegion->maximumCacheSize(); }
+unsigned int LatticeRegion::maximumCacheSize() const { return itsRegion->maximumCacheSize(); }
 
-void LatticeRegion::setMaximumCacheSize(uInt howManyPixels) {
+void LatticeRegion::setMaximumCacheSize(unsigned int howManyPixels) {
   itsRegion->setMaximumCacheSize(howManyPixels);
 }
 
@@ -95,7 +95,7 @@ void LatticeRegion::setCacheSizeFromPath(const IPosition& sliceShape, const IPos
   itsRegion->setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 }
 
-void LatticeRegion::setCacheSizeInTiles(uInt howManyTiles) {
+void LatticeRegion::setCacheSizeInTiles(unsigned int howManyTiles) {
   itsRegion->setCacheSizeInTiles(howManyTiles);
 }
 
@@ -105,7 +105,7 @@ void LatticeRegion::showCacheStatistics(std::ostream& os) const {
   itsRegion->showCacheStatistics(os);
 }
 
-bool LatticeRegion::lock(FileLocker::LockType type, uInt nattempts) {
+bool LatticeRegion::lock(FileLocker::LockType type, unsigned int nattempts) {
   // Llock the PagedArray containing the mask.
   return itsRegion->lock(type, nattempts);
 }
@@ -124,7 +124,7 @@ void LatticeRegion::reopen() { itsRegion->reopen(); }
 
 IPosition LatticeRegion::shape() const { return itsSlicer.length(); }
 
-uInt LatticeRegion::ndim() const { return itsSlicer.ndim(); }
+unsigned int LatticeRegion::ndim() const { return itsSlicer.ndim(); }
 
 size_t LatticeRegion::nelements() const { return itsRegion->nelements(); }
 
@@ -183,20 +183,20 @@ Slicer LatticeRegion::convert(const Slicer& slicer) const {
   IPosition shape = slicer.inferShapeFromSource(itsSlicer.length(), blc, trc, inc);
   const IPosition& start = itsSlicer.start();
   const IPosition& incr = itsSlicer.stride();
-  uInt ndim = shape.nelements();
-  for (uInt i = 0; i < ndim; i++) {
+  unsigned int ndim = shape.nelements();
+  for (unsigned int i = 0; i < ndim; i++) {
     blc(i) = start(i) + blc(i) * incr(i);
     inc(i) *= incr(i);
   }
   return Slicer(blc, shape, inc);
 }
 IPosition LatticeRegion::convert(const IPosition& position) const {
-  uInt ndim = itsSlicer.ndim();
+  unsigned int ndim = itsSlicer.ndim();
   DebugAssert(position.nelements() == ndim, AipsError);
   IPosition result(ndim);
   const IPosition& start = itsSlicer.start();
   const IPosition& incr = itsSlicer.stride();
-  for (uInt i = 0; i < ndim; i++) {
+  for (unsigned int i = 0; i < ndim; i++) {
     DebugAssert(position(i) < itsSlicer.length()(i), AipsError);
     result(i) = start(i) + position(i) * incr(i);
   }

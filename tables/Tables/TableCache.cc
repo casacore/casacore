@@ -83,9 +83,9 @@ void TableCache::rename(const String& newName, const String& oldName) {
   }
 }
 
-uInt TableCache::nAutoLocks() {
+unsigned int TableCache::nAutoLocks() {
   std::lock_guard<std::mutex> sc(itsMutex);
-  uInt n = 0;
+  unsigned int n = 0;
   for (const auto& x : tableMap_p) {
     PlainTable& table = *static_cast<PlainTable*>(x.second);
     if (table.lockOptions().option() == TableLock::AutoLocking) {
@@ -117,7 +117,7 @@ void TableCache::relinquishAutoLocks(bool all) {
 
 Vector<String> TableCache::getTableNames() const {
   std::lock_guard<std::mutex> sc(itsMutex);
-  uInt ntab = tableMap_p.size();
+  unsigned int ntab = tableMap_p.size();
   Vector<String> names(ntab);
   ntab = 0;
   for (const auto& x : tableMap_p) {

@@ -134,8 +134,8 @@ class FFTPack {
   //         wsave must not be changed between calls of cfftf or cfftb.
   // </dl>
   // <group>
-  static void cffti(Int n, Float* wsave);
-  static void cffti(Int n, Double* wsave);
+  static void cffti(int n, float* wsave);
+  static void cffti(int n, double* wsave);
   // Here is the doc from FFTPack 5.1
   // You can convert the linguo from fortran to C/C++
   /*  Input Arguments
@@ -176,7 +176,7 @@ class FFTPack {
            = 20 input error returned by lower level routine
   */
 
-  static void cfft2i(const Int& n, const Int& m, Float*& wsave, const Int& lensav, Int& ier);
+  static void cfft2i(const int& n, const int& m, float*& wsave, const int& lensav, int& ier);
   // </group>
 
   // cfftf computes the forward complex discrete Fourier
@@ -221,8 +221,8 @@ class FFTPack {
   //         destroyed between calls of cfftf or cfftb
   // </dl>
   // <group>
-  static void cfftf(Int n, Complex* c, Float* wsave);
-  static void cfftf(Int n, DComplex* c, Double* wsave);
+  static void cfftf(int n, Complex* c, float* wsave);
+  static void cfftf(int n, DComplex* c, double* wsave);
 
   // Description from FFTPack 5.1
   /*
@@ -267,8 +267,8 @@ class FFTPack {
    LENWRK  Integer dimension of WORK array.  LENWRK must be at least
            2*L*M.
   */
-  static void cfft2f(const Int& ldim, const Int& L, const Int& M, Complex*& C, Float*& WSAVE,
-                     const Int& LENSAV, Float*& WORK, const Int& LENWRK, Int& IER);
+  static void cfft2f(const int& ldim, const int& L, const int& M, Complex*& C, float*& WSAVE,
+                     const int& LENSAV, float*& WORK, const int& LENWRK, int& IER);
   // </group>
 
   // cfftb computes the backward complex discrete Fourier
@@ -312,8 +312,8 @@ class FFTPack {
   //               destroyed between calls of cfftf or cfftb
   // </dl>
   // <group>
-  static void cfftb(Int n, Complex* c, Float* wsave);
-  static void cfftb(Int n, DComplex* c, Double* wsave);
+  static void cfftb(int n, Complex* c, float* wsave);
+  static void cfftb(int n, DComplex* c, double* wsave);
 
   // Documentation from FFTPack 5.1
   /*
@@ -401,8 +401,8 @@ class FFTPack {
             = 20 input error returned by lower level routine
   */
 
-  static void cfft2b(const Int& LDIM, const Int& L, const Int& M, Complex*& C, Float*& WSAVE,
-                     const Int& LENSAV, Float*& WORK, const Int& LENWRK, Int& IER);
+  static void cfft2b(const int& LDIM, const int& L, const int& M, Complex*& C, float*& WSAVE,
+                     const int& LENSAV, float*& WORK, const int& LENWRK, int& IER);
   // </group>
 
   // rffti initializes the array wsave which is used in both <src>rfftf</src> and
@@ -424,8 +424,8 @@ class FFTPack {
   //         wsave must not be changed between calls of rfftf or rfftb.
   // </dl>
   // <group>
-  static void rffti(Int n, Float* wsave);
-  static void rffti(Int n, Double* wsave);
+  static void rffti(int n, float* wsave);
+  static void rffti(int n, double* wsave);
   // </group>
 
   // rfftf computes the Fourier coefficients of a real perodic sequence (Fourier
@@ -473,8 +473,8 @@ class FFTPack {
   //         calls of rfftf or rfftb.
   // </dl>
   // <group>
-  static void rfftf(Int n, Float* r, Float* wsave);
-  static void rfftf(Int n, Double* r, Double* wsave);
+  static void rfftf(int n, float* r, float* wsave);
+  static void rfftf(int n, double* r, double* wsave);
   // </group>
 
   // rfftb computes the real perodic sequence from its Fourier coefficients
@@ -521,8 +521,8 @@ class FFTPack {
   //         calls of rfftb or rfftf.
   // </dl>
   // <group>
-  static void rfftb(Int n, Float* r, Float* wsave);
-  static void rfftb(Int n, Double* r, Double* wsave);
+  static void rfftb(int n, float* r, float* wsave);
+  static void rfftb(int n, double* r, double* wsave);
   // </group>
 
   // ezffti initializes the array wsave which is used in both <src>ezfftf</src>
@@ -542,7 +542,7 @@ class FFTPack {
   //         as long as n remains unchanged. Different wsave arrays
   //         are required for different values of n.
   // </dl>
-  static void ezffti(Int n, Float* wsave);
+  static void ezffti(int n, float* wsave);
 
   // ezfftf computes the Fourier coefficients of a real
   // perodic sequence (Fourier analysis). The transform is defined
@@ -585,7 +585,7 @@ class FFTPack {
   //            b(k) equals the sum from i=1 to i=n of<br>
   //                   2./n*r(i)*sin(k*(i-1)*2*pi/n)<br>
   // </dl>
-  static void ezfftf(Int n, Float* r, Float* azero, Float* a, Float* b, Float* wsave);
+  static void ezfftf(int n, float* r, float* azero, float* a, float* b, float* wsave);
 
   // ezfftb computes a real perodic sequence from its
   // Fourier coefficients (Fourier synthesis). The transform is
@@ -630,7 +630,7 @@ class FFTPack {
   //              c(0) = azero<br>
   //                   and i=sqrt(-1)<br>
   // </dl>
-  static void ezfftb(Int n, Float* r, Float* azero, Float* a, Float* b, Float* wsave);
+  static void ezfftb(int n, float* r, float* azero, float* a, float* b, float* wsave);
 
   // sinti initializes the array wsave which is used in
   // <src>sint</src>. The prime factorization of n together with a tabulation of
@@ -651,8 +651,8 @@ class FFTPack {
   //         calls of sint.
   // </dl>
   // <group>
-  static void sinti(Int n, Float* wsave);
-  static void sinti(Int n, Double* wsave);
+  static void sinti(int n, float* wsave);
+  static void sinti(int n, double* wsave);
   // </group>
 
   // sint computes the discrete Fourier sine transform
@@ -697,8 +697,8 @@ class FFTPack {
   //         destroyed between calls of sint.
   // </dl>
   // <group>
-  static void sint(Int n, Float* x, Float* wsave);
-  static void sint(Int n, Double* x, Double* wsave);
+  static void sint(int n, float* x, float* wsave);
+  static void sint(int n, double* x, double* wsave);
   // </group>
 
   // costi initializes the array wsave which is used in
@@ -720,8 +720,8 @@ class FFTPack {
   //         calls of cost.
   // </dl>
   // <group>
-  static void costi(Int n, Float* wsave);
-  static void costi(Int n, Double* wsave);
+  static void costi(int n, float* wsave);
+  static void costi(int n, double* wsave);
   // </group>
 
   // cost computes the discrete Fourier cosine transform
@@ -767,8 +767,8 @@ class FFTPack {
   //         destroyed between calls of cost.
   // </dl>
   // <group>
-  static void cost(Int n, Float* x, Float* wsave);
-  static void cost(Int n, Double* x, Double* wsave);
+  static void cost(int n, float* x, float* wsave);
+  static void cost(int n, double* x, double* wsave);
   // </group>
 
   // sinqi initializes the array wsave which is used in both <src>sinqf</src> and
@@ -791,8 +791,8 @@ class FFTPack {
   //         wsave must not be changed between calls of sinqf or sinqb.
   // </dl>
   // <group>
-  static void sinqi(Int n, Float* wsave);
-  static void sinqi(Int n, Double* wsave);
+  static void sinqi(int n, float* wsave);
+  static void sinqi(int n, double* wsave);
   // </group>
 
   // sinqf computes the fast Fourier transform of quarter wave data. That is,
@@ -838,8 +838,8 @@ class FFTPack {
   //         be destroyed between calls of sinqf or sinqb.
   // </dl>
   // <group>
-  static void sinqf(Int n, Float* x, Float* wsave);
-  static void sinqf(Int n, Double* x, Double* wsave);
+  static void sinqf(int n, float* x, float* wsave);
+  static void sinqf(int n, double* x, double* wsave);
   // </group>
 
   // sinqb computes the fast Fourier transform of quarter
@@ -886,21 +886,21 @@ class FFTPack {
   //         be destroyed between calls of sinqb or sinqf.
   // </dl>
   // <group>
-  static void sinqb(Int n, Float* x, Float* wsave);
-  static void sinqb(Int n, Double* x, Double* wsave);
+  static void sinqb(int n, float* x, float* wsave);
+  static void sinqb(int n, double* x, double* wsave);
   // </group>
 
   // <group>
-  static void cosqi(Int n, Float* wsave);
-  static void cosqi(Int n, Double* wsave);
+  static void cosqi(int n, float* wsave);
+  static void cosqi(int n, double* wsave);
   // </group>
   // <group>
-  static void cosqf(Int n, Float* x, Float* wsave);
-  static void cosqf(Int n, Double* x, Double* wsave);
+  static void cosqf(int n, float* x, float* wsave);
+  static void cosqf(int n, double* x, double* wsave);
   // </group>
   // <group>
-  static void cosqb(Int n, Float* x, Float* wsave);
-  static void cosqb(Int n, Double* x, Double* wsave);
+  static void cosqb(int n, float* x, float* wsave);
+  static void cosqb(int n, double* x, double* wsave);
   // </group>
 };
 

@@ -139,27 +139,27 @@ class LatticeFFT {
 // implement template specializations to throw exceptions in the relevant cases.
 
 template <>
-inline void LatticeFFT::cfft2d(Lattice<Float> &, const bool) {
+inline void LatticeFFT::cfft2d(Lattice<float> &, const bool) {
   ThrowCc(String(__func__) + ": This method does not support real-valued lattices");
 }
 
 template <>
-inline void LatticeFFT::cfft2d(Lattice<Double> &, const bool) {
+inline void LatticeFFT::cfft2d(Lattice<double> &, const bool) {
   ThrowCc(String(__func__) + ": This method does not support real-valued lattices");
 }
 
 template <>
-inline void LatticeFFT::cfft(Lattice<Float> &, const Vector<bool> &, const bool) {
+inline void LatticeFFT::cfft(Lattice<float> &, const Vector<bool> &, const bool) {
   ThrowCc(String(__func__) + ": This method does not support real-valued lattices");
 }
 
 template <>
-inline void LatticeFFT::cfft(Lattice<Double> &, const Vector<bool> &, const bool) {
+inline void LatticeFFT::cfft(Lattice<double> &, const Vector<bool> &, const bool) {
   ThrowCc(String(__func__) + ": This method does not support real-valued lattices");
 }
 
 template <>
-inline void LatticeFFT::rcfft(Lattice<Float> &, const Lattice<Complex> &, const Vector<bool> &,
+inline void LatticeFFT::rcfft(Lattice<float> &, const Lattice<Complex> &, const Vector<bool> &,
                               const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
@@ -167,7 +167,7 @@ inline void LatticeFFT::rcfft(Lattice<Float> &, const Lattice<Complex> &, const 
 }
 
 template <>
-inline void LatticeFFT::rcfft(Lattice<Double> &, const Lattice<DComplex> &, const Vector<bool> &,
+inline void LatticeFFT::rcfft(Lattice<double> &, const Lattice<DComplex> &, const Vector<bool> &,
                               const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
@@ -175,7 +175,7 @@ inline void LatticeFFT::rcfft(Lattice<Double> &, const Lattice<DComplex> &, cons
 }
 
 template <>
-inline void LatticeFFT::myrcfft(Lattice<Float> &, const Lattice<Complex> &, const Vector<bool> &,
+inline void LatticeFFT::myrcfft(Lattice<float> &, const Lattice<Complex> &, const Vector<bool> &,
                                 const bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
@@ -183,7 +183,7 @@ inline void LatticeFFT::myrcfft(Lattice<Float> &, const Lattice<Complex> &, cons
 }
 
 template <>
-inline void LatticeFFT::myrcfft(Lattice<Double> &, const Lattice<DComplex> &, const Vector<bool> &,
+inline void LatticeFFT::myrcfft(Lattice<double> &, const Lattice<DComplex> &, const Vector<bool> &,
                                 const bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
@@ -191,35 +191,35 @@ inline void LatticeFFT::myrcfft(Lattice<Double> &, const Lattice<DComplex> &, co
 }
 
 template <>
-inline void LatticeFFT::rcfft(Lattice<Float> &, const Lattice<Complex> &, const bool, bool) {
+inline void LatticeFFT::rcfft(Lattice<float> &, const Lattice<Complex> &, const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::rcfft(Lattice<Double> &, const Lattice<DComplex> &, const bool, bool) {
+inline void LatticeFFT::rcfft(Lattice<double> &, const Lattice<DComplex> &, const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::myrcfft(Lattice<Float> &, const Lattice<Complex> &, const bool) {
+inline void LatticeFFT::myrcfft(Lattice<float> &, const Lattice<Complex> &, const bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::myrcfft(Lattice<Double> &, const Lattice<DComplex> &, const bool) {
+inline void LatticeFFT::myrcfft(Lattice<double> &, const Lattice<DComplex> &, const bool) {
   ThrowCc(String(__func__) +
           ": This is the real -> complex version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::crfft(Lattice<Complex> &, Lattice<Float> &, const Vector<bool> &,
+inline void LatticeFFT::crfft(Lattice<Complex> &, Lattice<float> &, const Vector<bool> &,
                               const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the complex -> real version, you've "
@@ -227,7 +227,7 @@ inline void LatticeFFT::crfft(Lattice<Complex> &, Lattice<Float> &, const Vector
 }
 
 template <>
-inline void LatticeFFT::crfft(Lattice<DComplex> &, Lattice<Double> &, const Vector<bool> &,
+inline void LatticeFFT::crfft(Lattice<DComplex> &, Lattice<double> &, const Vector<bool> &,
                               const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the complex -> real version, you've "
@@ -235,28 +235,28 @@ inline void LatticeFFT::crfft(Lattice<DComplex> &, Lattice<Double> &, const Vect
 }
 
 template <>
-inline void LatticeFFT::crfft(Lattice<Complex> &, Lattice<Float> &, const bool, bool) {
+inline void LatticeFFT::crfft(Lattice<Complex> &, Lattice<float> &, const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the complex -> real version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::crfft(Lattice<DComplex> &, Lattice<Double> &, const bool, bool) {
+inline void LatticeFFT::crfft(Lattice<DComplex> &, Lattice<double> &, const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the complex -> real version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::crfft(Lattice<Complex> &, const Lattice<Float> &, const bool, bool) {
+inline void LatticeFFT::crfft(Lattice<Complex> &, const Lattice<float> &, const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the complex -> real version, you've "
           "called it with the wrong parameters");
 }
 
 template <>
-inline void LatticeFFT::crfft(Lattice<DComplex> &, const Lattice<Double> &, const bool, bool) {
+inline void LatticeFFT::crfft(Lattice<DComplex> &, const Lattice<double> &, const bool, bool) {
   ThrowCc(String(__func__) +
           ": This is the complex -> real version, you've "
           "called it with the wrong parameters");

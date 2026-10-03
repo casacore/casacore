@@ -42,7 +42,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &description, uInt nrows,
+FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &description, unsigned int nrows,
                                  const Record &extraKeywords, bool freeOutput)
     : delete_writer_p(freeOutput),
       writer_p(0),
@@ -53,10 +53,10 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &descr
   LogIO log(LogOrigin("FITSGroupWriter", "FITSGroupWriter", WHERE));
 
   // Verify the description before doing anything else
-  const uInt nfields = description.nfields();
+  const unsigned int nfields = description.nfields();
 
-  Int arrayField = -1;
-  uInt i;
+  int arrayField = -1;
+  unsigned int i;
   for (i = 0; i < nfields; i++) {
     if (description.type(i) == TpArrayFloat) {
       arrayField = i;
@@ -94,7 +94,7 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &descr
 
   // NAXIS
   IPosition shape = description.shape(arrayField);
-  kw.mk(FITS::NAXIS, Int(shape.nelements() + 1));
+  kw.mk(FITS::NAXIS, int(shape.nelements() + 1));
 
   // NAXIS1
   kw.mk(1, FITS::NAXIS, 0, "Random groups, NOT image");
@@ -114,10 +114,10 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &descr
   kw.mk(FITS::GROUPS, true, "Random Group UV data");
 
   // PCOUNT (-1 because the array takes one slot)
-  kw.mk(FITS::PCOUNT, Int(nfields - 1), "Number of random parameters");
+  kw.mk(FITS::PCOUNT, int(nfields - 1), "Number of random parameters");
 
   // GCOUNT
-  kw.mk(FITS::GCOUNT, Int(nrows), "Number of groups (rows) in the file");
+  kw.mk(FITS::GCOUNT, int(nrows), "Number of groups (rows) in the file");
 
   kw.spaces();
 
@@ -139,8 +139,8 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &descr
   kw.end();
 
   // Rquires a bit more development if this is ever false
-  AlwaysAssert(sizeof(Float) == 4, AipsError);
-  group_p = new PrimaryGroup<Float>(kw);
+  AlwaysAssert(sizeof(float) == 4, AipsError);
+  group_p = new PrimaryGroup<float>(kw);
 
   AlwaysAssert(group_p, AipsError);
   check_error("creating random groups from keywords");
@@ -157,7 +157,7 @@ FITSGroupWriter::~FITSGroupWriter() {
     log << LogIO::SEVERE << nrows_total_p << " rows must be written, only " << nrows_written_p
         << " have been." << endl
         << "Not enough rows were written, repeating the final row" << LogIO::POST;
-    for (uInt i = nrows_written_p; i < nrows_total_p; i++) {
+    for (unsigned int i = nrows_written_p; i < nrows_total_p; i++) {
       write();
     }
   }
@@ -171,7 +171,7 @@ FITSGroupWriter::~FITSGroupWriter() {
 }
 
 void FITSGroupWriter::write() {
-  static Array<Float> tmp;
+  static Array<float> tmp;
 
   if (nrows_written_p >= nrows_total_p) {
     LogIO log(LogOrigin("FITSGroupWriter", "write", WHERE));
@@ -179,15 +179,15 @@ void FITSGroupWriter::write() {
     return;
   }
 
-  uInt nfields = row_p.nfields();
+  unsigned int nfields = row_p.nfields();
   // This could be sped up by keeping external copies of the field pointers
-  Int param = 0;
-  for (uInt i = 0; i < nfields; i++) {
+  int param = 0;
+  for (unsigned int i = 0; i < nfields; i++) {
     if (row_p.type(i) == TpArrayFloat) {
       // The data array
       row_p.get(i, tmp);
       bool deleteIt;
-      Float *ptr = tmp.getStorage(deleteIt);
+      float *ptr = tmp.getStorage(deleteIt);
 
       // It looks to me like store is doing the wrong thing for primary groups
       group_p->store(ptr);
@@ -195,7 +195,7 @@ void FITSGroupWriter::write() {
       tmp.putStorage(ptr, deleteIt);
     } else {
       // A random "parameter"
-      Float tmp2;
+      float tmp2;
       row_p.get(i, tmp2);
       group_p->rawparm(param) = tmp2;
       check_error("setting group parameter");

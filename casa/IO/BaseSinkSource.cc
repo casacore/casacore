@@ -47,7 +47,7 @@ BaseSinkSource::~BaseSinkSource() {}
 Int64 BaseSinkSource::seek(Int64 offset, ByteIO::SeekOption option) {
   return itsTypeIO->seek(offset, option);
 }
-Int64 BaseSinkSource::seek(Int offset, ByteIO::SeekOption option) {
+Int64 BaseSinkSource::seek(int offset, ByteIO::SeekOption option) {
   return itsTypeIO->seek(offset, option);
 }
 

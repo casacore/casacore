@@ -85,15 +85,15 @@ class MSDataDescIndex {
   virtual ~MSDataDescIndex() {}
 
   // Look up DATA_DESC_ID's for a given spectral window id
-  Vector<Int> matchSpwId(const Int& spwId);
-  Vector<Int> matchSpwId(const Vector<Int>& spwIds);
+  Vector<int> matchSpwId(const int& spwId);
+  Vector<int> matchSpwId(const Vector<int>& spwIds);
 
   // Look up DATA_DESC_ID's for a given polarization id
-  Vector<Int> matchPolId(const Int& polId);
-  Vector<Int> matchPolId(const Vector<Int>& polIds);
+  Vector<int> matchPolId(const int& polId);
+  Vector<int> matchPolId(const Vector<int>& polIds);
 
   // Look up DATA_DESC_ID's for a given spectral window and polarization id.
-  Vector<Int> matchSpwIdAndPolznId(const Int& spwId, const Int& polznId);
+  Vector<int> matchSpwIdAndPolznId(const int& spwId, const int& polznId);
 
  private:
   // Disallow null constructor
@@ -103,8 +103,8 @@ class MSDataDescIndex {
   MSDataDescColumns msDataDescCols_p;
 
   // Vector cache of DataDesc id's
-  Vector<Int> dataDescIds_p;
-  Int nrows_p;
+  Vector<int> dataDescIds_p;
+  int nrows_p;
 };
 
 }  // namespace casacore

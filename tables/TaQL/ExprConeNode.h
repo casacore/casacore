@@ -65,7 +65,7 @@ class TableExprConeNode : public TableExprFuncNode {
  public:
   // Constructor
   TableExprConeNode(FunctionType, NodeDataType, const TableExprNodeSet& source,
-                    const vector<TENShPtr>& nodes, const Block<Int>& dtypeOper, uInt origin);
+                    const vector<TENShPtr>& nodes, const Block<int>& dtypeOper, unsigned int origin);
 
   // Destructor
   ~TableExprConeNode();
@@ -80,15 +80,15 @@ class TableExprConeNode : public TableExprFuncNode {
   // It sets the exptected data and value types of the operands.
   // Set the value type of the function result and returns
   // the data type of the function result.
-  static NodeDataType checkOperands(Block<Int>& dtypeOper, ValueType& resVT, Block<Int>& vtypeOper,
+  static NodeDataType checkOperands(Block<int>& dtypeOper, ValueType& resVT, Block<int>& vtypeOper,
                                     FunctionType, const std::vector<TENShPtr>&);
 
  private:
   // Find the number of elements in an argument.
   // It returns -1 if unknown.
-  static Int findNelem(const TENShPtr& node);
+  static int findNelem(const TENShPtr& node);
 
-  uInt origin_p;
+  unsigned int origin_p;
 };
 
 class TableExprConeNodeArray : public TableExprFuncNodeArray {
@@ -96,7 +96,7 @@ class TableExprConeNodeArray : public TableExprFuncNodeArray {
   // Constructor
   TableExprConeNodeArray(TableExprFuncNode::FunctionType, NodeDataType,
                          const TableExprNodeSet& source, const vector<TENShPtr>& nodes,
-                         const Block<Int>& dtypeOper, uInt origin);
+                         const Block<int>& dtypeOper, unsigned int origin);
 
   // Destructor
   ~TableExprConeNodeArray();
@@ -108,7 +108,7 @@ class TableExprConeNodeArray : public TableExprFuncNodeArray {
   // </group>
 
  private:
-  uInt origin_p;
+  unsigned int origin_p;
 };
 
 }  // namespace casacore

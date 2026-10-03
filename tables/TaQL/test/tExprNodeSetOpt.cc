@@ -63,8 +63,8 @@ void doDoubleContSet() {
     // Test closed-closed intervals
     std::vector<double> st({1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21});
     std::vector<double> end({2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22});
-    TableExprNodeSetOptContSet<Double, std::less_equal<Double>, std::less_equal<Double>> set(
-        TableExprNodeSet(), st, end, std::less_equal<Double>(), std::less_equal<Double>(), "CC");
+    TableExprNodeSetOptContSet<double, std::less_equal<double>, std::less_equal<double>> set(
+        TableExprNodeSet(), st, end, std::less_equal<double>(), std::less_equal<double>(), "CC");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
@@ -75,8 +75,8 @@ void doDoubleContSet() {
     // Test open-closed intervals
     std::vector<double> st({1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21});
     std::vector<double> end({2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22});
-    TableExprNodeSetOptContSet<Double, std::less<Double>, std::less_equal<Double>> set(
-        TableExprNodeSet(), st, end, std::less<Double>(), std::less_equal<Double>(), "OC");
+    TableExprNodeSetOptContSet<double, std::less<double>, std::less_equal<double>> set(
+        TableExprNodeSet(), st, end, std::less<double>(), std::less_equal<double>(), "OC");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
@@ -87,8 +87,8 @@ void doDoubleContSet() {
     // Test closed-open intervals
     std::vector<double> st({1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21});
     std::vector<double> end({2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22});
-    TableExprNodeSetOptContSet<Double, std::less_equal<Double>, std::less<Double>> set(
-        TableExprNodeSet(), st, end, std::less_equal<Double>(), std::less<Double>(), "CO");
+    TableExprNodeSetOptContSet<double, std::less_equal<double>, std::less<double>> set(
+        TableExprNodeSet(), st, end, std::less_equal<double>(), std::less<double>(), "CO");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
@@ -99,8 +99,8 @@ void doDoubleContSet() {
     // Test open-open intervals
     std::vector<double> st({1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21});
     std::vector<double> end({2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22});
-    TableExprNodeSetOptContSet<Double, std::less<Double>, std::less<Double>> set(
-        TableExprNodeSet(), st, end, std::less<Double>(), std::less<Double>(), "OO");
+    TableExprNodeSetOptContSet<double, std::less<double>, std::less<double>> set(
+        TableExprNodeSet(), st, end, std::less<double>(), std::less<double>(), "OO");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
@@ -113,7 +113,7 @@ void doDoubleContSet() {
     std::vector<double> end({2, 20, 5, 22});
     std::vector<bool> leftC({false, false, true, true});
     std::vector<bool> rightC({false, true, true, false});
-    TableExprNodeSetOptContSetMixOC<Double> set(TableExprNodeSet(), st, end, leftC, rightC);
+    TableExprNodeSetOptContSetMixOC<double> set(TableExprNodeSet(), st, end, leftC, rightC);
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec(
@@ -207,18 +207,18 @@ void doDoubleTransform() {
     Vector<Int64> exp({-1, -1, 0, 0, 0, -1, -1, 1, 1, 1, -1, 2, 2, -1});
     {
       // No combine, thus 6 intervals with different leftC/rightC.
-      TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set, false);
-      TableExprNodeSetOptContSetMixOC<Double>* p =
-          dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
+      TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform(set, false);
+      TableExprNodeSetOptContSetMixOC<double>* p =
+          dynamic_cast<TableExprNodeSetOptContSetMixOC<double>*>(trSet.get());
       AlwaysAssertExit(p);
       AlwaysAssertExit(p->size() == 6);
       trSet->show(cout, 0);
       doTestOrig(set, *p, vec);
     }
     // Should result in (1,21) [25,33) (33,34]
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set);
-    TableExprNodeSetOptContSetMixOC<Double>* p =
-        dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform(set);
+    TableExprNodeSetOptContSetMixOC<double>* p =
+        dynamic_cast<TableExprNodeSetOptContSetMixOC<double>*>(trSet.get());
     AlwaysAssertExit(p);
     AlwaysAssertExit(p->size() == 3);
     trSet->show(cout, 0);
@@ -233,9 +233,9 @@ void doDoubleTransform() {
     set.add(TableExprNodeSetElem(i / 2 == 0, st2, end2, i % 2 == 0));
     set.add(TableExprNodeSetElem(i / 2 == 0, st4, end4, i % 2 == 0));
     set.add(TableExprNodeSetElem(i / 2 == 0, st5, end5, i % 2 == 0));
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set);
-    TableExprNodeSetOptContSetBase<Double>* p =
-        dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform(set);
+    TableExprNodeSetOptContSetBase<double>* p =
+        dynamic_cast<TableExprNodeSetOptContSetBase<double>*>(trSet.get());
     // Results in 2 elements, but 4 when left and right side are open.
     trSet->show(cout, 0);
     AlwaysAssertExit(p->size() == (i == 3 ? 4 : 2));
@@ -261,9 +261,9 @@ void doDateTransform() {
   {
     TableExprNodeSet set;
     set.add(TableExprNodeSetElem(false, st, end, false));
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set);
-    TableExprNodeSetOptContSetBase<Double>* p =
-        dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform(set);
+    TableExprNodeSetOptContSetBase<double>* p =
+        dynamic_cast<TableExprNodeSetOptContSetBase<double>*>(trSet.get());
     AlwaysAssertExit(p);
     AlwaysAssertExit(p->size() == 1);
     trSet->show(cout, 0);
@@ -275,9 +275,9 @@ void doDateTransform() {
   {
     TableExprNodeSet set;
     set.add(TableExprNodeSetElem(st, width));
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform(set);
-    TableExprNodeSetOptContSetBase<Double>* p =
-        dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform(set);
+    TableExprNodeSetOptContSetBase<double>* p =
+        dynamic_cast<TableExprNodeSetOptContSetBase<double>*>(trSet.get());
     AlwaysAssertExit(p);
     AlwaysAssertExit(p->size() == 1);
     trSet->show(cout, 0);
