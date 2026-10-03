@@ -138,7 +138,7 @@ class Stokes {
   static String name(StokesTypes stokesType);
 
   // get all recognized stokes names in no guaranteed order.
-  static Vector<String> allNames(Bool includeUndefined = False);
+  static Vector<String> allNames(bool includeUndefined = false);
 
   //              map StokesTypes to receptor number (0 or 1) for the
   //              interferometric correlation products.

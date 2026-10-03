@@ -121,19 +121,19 @@ class TableRecordRep : public RecordRep {
   // Change the structure of this Record to contain the fields in
   // newDescription. After calling restructure, <src>description() ==
   // newDescription</src>.
-  void restructure(const RecordDesc& newDescription, Bool recursive);
+  void restructure(const RecordDesc& newDescription, bool recursive);
 
-  // Returns True if this and other have the same RecordDesc, other
+  // Returns true if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
   // order of the fields must be identical (recursively for fixed
   // structured sub-Records in this).
   // <note role=caution>
-  // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-  // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+  // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+  // <br><src>thatRecord.conform(thisRecord) == true</src>, because
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>
-  Bool conform(const TableRecordRep& other) const;
+  bool conform(const TableRecordRep& other) const;
 
   // Rename the given field.
   void renameField(const String& newName, Int whichField);
@@ -166,13 +166,13 @@ class TableRecordRep : public RecordRep {
   void closeTables() const;
 
   // Flush all open subtables.
-  void flushTables(Bool fsync) const;
+  void flushTables(bool fsync) const;
 
   // Rename the subtables with a path containing the old parent table name.
   void renameTables(const String& newParentName, const String& oldParentName);
 
   // Are subtables used in other processes.
-  Bool areTablesMultiUsed() const;
+  bool areTablesMultiUsed() const;
 
   // Put the description and data of the Record.
   // It also puts the fixedFlag attribute (of the mother object).
@@ -226,7 +226,7 @@ class TableRecordRep : public RecordRep {
 
   // Add a field to the description.
   virtual void addFieldToDesc(const String& name, DataType type, const IPosition& shape,
-                              Bool fixedShape);
+                              bool fixedShape);
 
   // Remove a data field.
   virtual void removeData(Int whichField, void* ptr, void* vecptr);

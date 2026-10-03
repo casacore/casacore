@@ -79,7 +79,7 @@ class String;
 //    String errMsg;
 //    Vector<Double> world, pixel(2);
 //    pixel = 10.0;
-//    Bool ok = lxf.reverse(world, pixel, errMsg);
+//    bool ok = lxf.reverse(world, pixel, errMsg);
 //    if (ok) {
 //       cerr << "pixel, world = " << pixel << world << endl;
 //    } else {
@@ -135,12 +135,12 @@ class LinearXform {
   uInt nWorldAxes() const;
 
   // Convert world coordinates to pixel coordinates (forward), or pixel
-  // coordinates to world (reverse). If the conversion works True is returned,
-  // otherwise False is returned and errorMsg is set.  The output vectors
+  // coordinates to world (reverse). If the conversion works true is returned,
+  // otherwise false is returned and errorMsg is set.  The output vectors
   // are resized appropriately.
   // <group>
-  Bool forward(Vector<Double> &pixel, const Vector<Double> &world, String &errorMsg) const;
-  Bool reverse(Vector<Double> &world, const Vector<Double> &pixel, String &errorMsg) const;
+  bool forward(Vector<Double> &pixel, const Vector<Double> &world, String &errorMsg) const;
+  bool reverse(Vector<Double> &world, const Vector<Double> &pixel, String &errorMsg) const;
   // </group>
 
   // Retrieve the value of crpix, cdelt, and pc.
@@ -163,22 +163,22 @@ class LinearXform {
   // Invert the LinearXform ready for use in a Fourier Transformed Coordinate.
   // It is the callers responsibility to delete the pointer. If it fails
   // the pointer is 0 and an error message is provided
-  LinearXform *fourierInvert(String &errMsg, const Vector<Bool> &axes, const Vector<Double> &crpix,
+  LinearXform *fourierInvert(String &errMsg, const Vector<bool> &axes, const Vector<Double> &crpix,
                              const Vector<Double> &scale) const;
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  You can specify axes to
   // exclude from the comparison if you wish.
   // <group>
-  Bool near(const LinearXform &other, Double tol = 1e-6) const;
-  Bool near(const LinearXform &other, const Vector<Int> &excludeAxes, Double tol = 1e-6) const;
+  bool near(const LinearXform &other, Double tol = 1e-6) const;
+  bool near(const LinearXform &other, const Vector<Int> &excludeAxes, Double tol = 1e-6) const;
   // </group>
 
  private:
   // A WCSLIB C-structure.
   mutable linprm linprm_p;
 
-  Bool isPCDiagonal_p;
+  bool isPCDiagonal_p;
   void set_linprm();
 };
 

@@ -48,7 +48,7 @@ SDPolarizationHandler::SDPolarizationHandler()
   ;
 }
 
-SDPolarizationHandler::SDPolarizationHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
+SDPolarizationHandler::SDPolarizationHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                              const Record &row)
     : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1) {
   initAll(ms, handledCols, row);
@@ -81,7 +81,7 @@ SDPolarizationHandler &SDPolarizationHandler::operator=(const SDPolarizationHand
   return *this;
 }
 
-void SDPolarizationHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols,
+void SDPolarizationHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols,
                                    const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
@@ -89,7 +89,7 @@ void SDPolarizationHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols
 
 void SDPolarizationHandler::resetRow(const Record &row) {
   clearRow();
-  Vector<Bool> dummyCols(row.nfields());
+  Vector<bool> dummyCols(row.nfields());
   initRow(dummyCols, row);
 }
 
@@ -97,7 +97,7 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
   // don't bother unless there is something there
   if (msPol_p) {
     *numCorrKey_p = stokes.nelements();
-    Bool found = False;
+    bool found = false;
     Vector<rownr_t> foundRows = index_p->getRowNumbers();
     uInt whichOne = 0;
     while (!found && whichOne < foundRows.nelements()) {
@@ -105,7 +105,7 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
           (!flagRowField_p.isAttached() ||
            *flagRowField_p == msPolCols_p->flagRow()(foundRows(whichOne)))) {
         // we have a winner
-        found = True;
+        found = true;
       } else {
         whichOne++;
       }
@@ -152,7 +152,7 @@ void SDPolarizationHandler::fill(const Record &, const Vector<Int> &stokes) {
       if (flagRowField_p.isAttached()) {
         msPolCols_p->flagRow().put(rownr_p, *flagRowField_p);
       } else {
-        msPolCols_p->flagRow().put(rownr_p, False);
+        msPolCols_p->flagRow().put(rownr_p, false);
       }
     }
   }
@@ -178,7 +178,7 @@ void SDPolarizationHandler::clearRow() {
   corrProductField_p.detach();
 }
 
-void SDPolarizationHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
+void SDPolarizationHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols,
                                     const Record &row) {
   msPol_p = new MSPolarization(ms.polarization());
   AlwaysAssert(msPol_p, AipsError);
@@ -195,31 +195,31 @@ void SDPolarizationHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCol
   initRow(handledCols, row);
 }
 
-void SDPolarizationHandler::initRow(Vector<Bool> &handledCols, const Record &row) {
+void SDPolarizationHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   rownr_p = -1;
   // try MS 2 version first, then MS 1
   Int ncorrId = row.fieldNumber("POLARIZATION_NUM_CORR");
   if (ncorrId < 0) ncorrId = row.fieldNumber("SPECTRAL_WINDOW_NUM_CORR");
   if (ncorrId >= 0) {
     numCorrField_p.attachToRecord(row, ncorrId);
-    handledCols(ncorrId) = True;
+    handledCols(ncorrId) = true;
   }
   Int corrTypeId = row.fieldNumber("POLARIZATION_CORR_TYPE");
   if (corrTypeId < 0) corrTypeId = row.fieldNumber("SPECTRAL_WINDOW_CORR_TYPE");
   if (corrTypeId >= 0) {
     corrTypeField_p.attachToRecord(row, corrTypeId);
-    handledCols(corrTypeId) = True;
+    handledCols(corrTypeId) = true;
   }
   Int corrProductId = row.fieldNumber("POLARIZATION_CORR_PRODUCT");
   if (corrProductId < 0) corrProductId = row.fieldNumber("SPECTRAL_WINDOW_CORR_PRODUCT");
   if (corrProductId >= 0) {
     corrProductField_p.attachToRecord(row, corrProductId);
-    handledCols(corrProductId) = True;
+    handledCols(corrProductId) = true;
   }
   Int flagRowId = row.fieldNumber("POLARIZATION_FLAG_ROW");
   if (flagRowId >= 0) {
     flagRowField_p.attachToRecord(row, flagRowId);
-    handledCols(flagRowId) = True;
+    handledCols(flagRowId) = true;
   }
 }
 

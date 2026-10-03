@@ -90,7 +90,7 @@ void b() {
   RecordFieldPtr<uInt> auint(colInx4.accessKey(), "auint");
   RecordFieldPtr<String> astring(colInx9.accessKey(), "astring");
   Record rec;
-  Bool found;
+  bool found;
   // Find the 15 values.
   for (uInt i = 0; i < 15; i++) {
     rec.define("auint", i);
@@ -108,10 +108,10 @@ void b() {
   }
   *astring = "a";
   cout << colInx9.getRowNumbers() << endl;
-  cout << colInx9.getRowNumbers(True) << endl;
+  cout << colInx9.getRowNumbers(true) << endl;
   *astring = "aa";
   cout << colInx9.getRowNumbers() << endl;
-  cout << colInx9.getRowNumbers(True) << endl;
+  cout << colInx9.getRowNumbers(true) << endl;
   // Test a not unique index in an erroneous way.
   try {
     colInx9.getRowNumber(found);
@@ -122,19 +122,19 @@ void b() {
   Record lower, upper;
   lower.define("auint", uInt(2));
   upper.define("auint", uInt(6));
-  cout << colInx4.getRowNumbers(lower, upper, False, False) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, True, False) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, False, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, True, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, False, False, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, True, False, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, False, True, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, True, True, True) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, false, false) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, true, false) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, false, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, true, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, false, false, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, true, false, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, false, true, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, true, true, true) << endl;
   upper.define("auint", uInt(3));
-  cout << colInx4.getRowNumbers(lower, upper, True, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, False, False) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, True, True, True) << endl;
-  cout << colInx4.getRowNumbers(lower, upper, False, False, True) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, true, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, false, false) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, true, true, true) << endl;
+  cout << colInx4.getRowNumbers(lower, upper, false, false, true) << endl;
 }
 
 void c() {

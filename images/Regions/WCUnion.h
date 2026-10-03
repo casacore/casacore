@@ -94,9 +94,9 @@ class WCUnion : public WCCompound {
   // </group>
 
   // Construct from multiple regions given as a Block.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
-  WCUnion(Bool takeOver, const Block<const WCRegion*>& regions);
+  WCUnion(bool takeOver, const Block<const WCRegion*>& regions);
 
   // Copy constructor (copy semantics).
   WCUnion(const WCUnion& other);
@@ -107,7 +107,7 @@ class WCUnion : public WCCompound {
   WCUnion& operator=(const WCUnion& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Make a copy of the derived object.
   virtual WCRegion* cloneRegion() const;

@@ -87,7 +87,7 @@ class MSState : public MSStateEnums, public MSTable<MSStateEnums> {
   // <group name=tableLikeConstructors>
   MSState(const String &tableName, TableOption = Table::Old);
   MSState(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSState(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSState(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSState(const Table &table);
   MSState(const MSState &other);
   // </group>
@@ -119,7 +119,7 @@ class MSState : public MSStateEnums, public MSTable<MSStateEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

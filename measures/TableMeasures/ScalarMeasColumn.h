@@ -197,12 +197,12 @@ class ScalarMeasColumn : public TableMeasColumn {
   // However, it is possible that part of the table is already
   // written and that the entire measure column is filled in later.
   // In that case the reference, offset, or units can be set by using
-  // a False <src>tableMustBeEmpty</src> argument.
+  // a false <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode(uInt refCode, Bool tableMustBeEmpty = True);
-  void setDescOffset(const Measure& offset, Bool tableMustBeEmpty = True);
-  void setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty = True);
+  void setDescRefCode(uInt refCode, bool tableMustBeEmpty = true);
+  void setDescOffset(const Measure& offset, bool tableMustBeEmpty = true);
+  void setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty = true);
   // </group>
 
   // Put a Measure into the given row.
@@ -215,9 +215,9 @@ class ScalarMeasColumn : public TableMeasColumn {
   MeasRef<M> makeMeasRef(rownr_t rownr) const;
 
  private:
-  // # Whether conversion is needed during a put.  True if either
+  // # Whether conversion is needed during a put.  true if either
   // # the reference code or offset is fixed for the column
-  Bool itsConvFlag;
+  bool itsConvFlag;
   // # Column which contains the Measure's actual data. An array column
   // # is needed if the data component of the underlying Measure is
   // # represented by more than 1 value
@@ -238,7 +238,7 @@ class ScalarMeasColumn : public TableMeasColumn {
   ScalarMeasColumn& operator=(const ScalarMeasColumn<M>& that);
 
   // Check if refs have the same value (as opposed to being the same object).
-  Bool equalRefs(const MRBase& r1, const MRBase& r2) const;
+  bool equalRefs(const MRBase& r1, const MRBase& r2) const;
 
   // # Deletes allocated memory etc. Called by ~tor and any member which
   // # needs to reallocate data.

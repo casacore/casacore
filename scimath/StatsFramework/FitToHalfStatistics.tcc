@@ -63,7 +63,7 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(const FitToHalfStatistics<C
       _rangeIsSet(other._rangeIsSet),
       _realMax(other._realMax ? new AccumType(*other._realMax) : nullptr),
       _realMin(other._realMin ? new AccumType(*other._realMin) : nullptr),
-      _isNullSet(False),
+      _isNullSet(false),
       _range(other._range) {}
 
 CASA_STATD
@@ -97,7 +97,7 @@ StatisticsAlgorithm<CASA_STATP>* FitToHalfStatistics<CASA_STATP>::clone() const 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt64>,
                                                      std::shared_ptr<AccumType>,
-                                                     std::shared_ptr<AccumType>, uInt, Bool, uInt) {
+                                                     std::shared_ptr<AccumType>, uInt, bool, uInt) {
   auto median = _getStatsData().median;
   if (!median) {
     median.reset(new AccumType(_centerValue));
@@ -111,7 +111,7 @@ CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
     std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
-    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, bool persistSortedArray,
     uInt nBins) {
   // The median is trivial, we just need to compute the quantiles
   quantileToValue = getQuantiles(quantiles, knownNpts, knownMin, knownMax,
@@ -124,7 +124,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(std::shared_ptr<uI
                                                               std::shared_ptr<AccumType> knownMin,
                                                               std::shared_ptr<AccumType> knownMax,
                                                               uInt binningThreshholdSizeBytes,
-                                                              Bool persistSortedArray, uInt nBins) {
+                                                              bool persistSortedArray, uInt nBins) {
   if (!_getStatsData().medAbsDevMed) {
     _setRange();
     ThrowIf(_isNullSet,
@@ -222,7 +222,7 @@ CASA_STATD
 std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>& fractions, std::shared_ptr<uInt64> knownNpts,
     std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins) {
+    uInt binningThreshholdSizeBytes, bool persistSortedArray, uInt nBins) {
   ThrowIf(*fractions.begin() <= 0 || *fractions.rbegin() >= 1,
           "Value of all quantiles must be between 0 and 1 (noninclusive)");
   ThrowIf(knownNpts && ((*knownNpts % 2) != 0), "knownNpts must be even for this class");
@@ -334,7 +334,7 @@ uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
 }
 
 CASA_STATD
-void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
   ThrowIf(c,
           "FitToHalfStatistics does not support calculating statistics "
           "incrementally as data sets are added");
@@ -342,9 +342,9 @@ void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::reset() {
-  _doMedAbsDevMed = False;
+  _doMedAbsDevMed = false;
   _statsData = initializeStatsData<AccumType>();
-  _rangeIsSet = False;
+  _rangeIsSet = false;
   _realMax.reset();
   _realMin.reset();
   ConstrainedRangeStatistics<CASA_STATP>::reset();
@@ -425,7 +425,7 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
   // to that call)
   ConstrainedRangeStatistics<CASA_STATP>::_setRange(_range);
   this->_getQuantileComputer()->setMedian(_getStatsData().median);
-  _rangeIsSet = True;
+  _rangeIsSet = true;
 }
 
 // use a define to ensure code is compiled inline
@@ -455,7 +455,7 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumType>& sta
                                                        LocationType& location,
                                                        const DataIterator& dataBegin, uInt64 nr,
                                                        uInt dataStride, const DataRanges& ranges,
-                                                       Bool isInclude) {
+                                                       bool isInclude) {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -492,7 +492,7 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -572,7 +572,7 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(StatsData<AccumType>& stats
                                                      const DataIterator& dataBegin,
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
                                                      uInt dataStride, const DataRanges& ranges,
-                                                     Bool isInclude) {
+                                                     bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -592,7 +592,7 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;

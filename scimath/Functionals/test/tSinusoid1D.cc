@@ -44,7 +44,7 @@ int main() {
   Sinusoid1D<Double> null;
   AlwaysAssertExit(null.amplitude() == 1.0 && null.period() == 1.0 && null.x0() == 0.0);
   // use nearAbs because one value is 0.0, which always
-  // causes near() to return False as per the documentation
+  // causes near() to return false as per the documentation
   AlwaysAssertExit(nearAbs(null(0.25), 0.0) && near(null(0.0), 1.0));
 
   //     Sinusoid1D(const T& h, const T& c, const T& w);
@@ -105,7 +105,7 @@ int main() {
   //   virtual void setAvailableParam(uInt which, const Type &value);
   //   virtual Type getAvailableParam(uInt which) const;
   //   virtual void setAvailableParamMask(uInt which, const Bool mask);
-  //   virtual Bool getAvailableParamMask(uInt which) const;
+  //   virtual bool getAvailableParamMask(uInt which) const;
   Sinusoid1D<Double> s2(s1);
   Sinusoid1D<Double> s3;
   s3 = s2;
@@ -114,11 +114,11 @@ int main() {
   AlwaysAssertExit(parms(0) == 2.0 && parms(1) == 3.0 && parms(2) == 4.0);
   AlwaysAssertExit(allEQ(parms, s2.parameters().getParameters()) &&
                    allEQ(parms, s3.parameters().getParameters()));
-  s1.mask(Sinusoid1D<Double>::PERIOD) = False;
+  s1.mask(Sinusoid1D<Double>::PERIOD) = false;
   AlwaysAssertExit(s1.parameters().nMaskedParameters() == 2);
   Vector<Double> parms2 = s1.parameters().getMaskedParameters();
   AlwaysAssertExit(parms2(0) == 2.0 && parms2(1) == 4.0);
-  s1.mask(Sinusoid1D<Double>::PERIOD) = True;
+  s1.mask(Sinusoid1D<Double>::PERIOD) = true;
   s1[0] = 1.0;
   s1[1] = 2.0;
   s1[2] = 3.0;

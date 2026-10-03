@@ -36,12 +36,12 @@ LCExtension::LCExtension() {}
 
 LCExtension::LCExtension(const LCRegion& region, const IPosition& extendAxes,
                          const LCBox& extendBox)
-    : LCRegionMulti(True, region.cloneRegion()) {
+    : LCRegionMulti(true, region.cloneRegion()) {
   // Fill the other members variables and determine the bounding box.
   fill(extendAxes, extendBox);
 }
 
-LCExtension::LCExtension(Bool takeOver, const LCRegion* region, const IPosition& extendAxes,
+LCExtension::LCExtension(bool takeOver, const LCRegion* region, const IPosition& extendAxes,
                          const LCBox& extendBox)
     : LCRegionMulti(takeOver, region) {
   // Fill the other members variables and determine the bounding box.
@@ -68,19 +68,19 @@ LCExtension& LCExtension::operator=(const LCExtension& other) {
   return *this;
 }
 
-Bool LCExtension::equals(const LCRegion& other) const {
+bool LCExtension::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionMulti::equals(other)) {
-    return False;
+    return false;
   }
   const LCExtension& that = (const LCExtension&)other;
   // Check the private data
   if (!itsExtendAxes.isEqual(that.itsExtendAxes) || !itsRegionAxes.isEqual(that.itsRegionAxes) ||
       !(itsExtendBox == that.itsExtendBox)) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 LCRegion* LCExtension::cloneRegion() const { return new LCExtension(*this); }
@@ -135,7 +135,7 @@ LCExtension* LCExtension::fromRecord(const TableRecord& rec, const String& table
   regPtr = LCRegion::fromRecord(rec.asRecord("region"), tableName);
   LCBox* boxPtr = 0;
   boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
-  LCExtension* extPtr = new LCExtension(True, regPtr, Vector<Int>(rec.toArrayInt("axes")), *boxPtr);
+  LCExtension* extPtr = new LCExtension(true, regPtr, Vector<Int>(rec.toArrayInt("axes")), *boxPtr);
   delete boxPtr;
   return extPtr;
 }
@@ -225,7 +225,7 @@ void LCExtension::fill(const IPosition& extendAxes, const LCBox& extendBox) {
   fillHasMask();
 }
 
-void LCExtension::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
+void LCExtension::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
   uInt i;
   uInt nre = itsExtendAxes.nelements();
@@ -243,11 +243,11 @@ void LCExtension::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
     inc(i) = section.stride()(axis);
     shape(axis) = len(i);
   }
-  Array<Bool> tmpbuf(len);
+  Array<bool> tmpbuf(len);
   LCRegion* reg = (LCRegion*)(regions()[0]);
   reg->doGetSlice(tmpbuf, Slicer(blc, len, inc));
   // Reform tmpbuf, so it has the same dimensionality as buffer.
-  Array<Bool> mask = tmpbuf.reform(shape);
+  Array<bool> mask = tmpbuf.reform(shape);
   // Now we have to extend tmpbuf along all extend axes.
   const IPosition& length = section.length();
   IPosition pos(buffer.ndim(), 0);
@@ -275,7 +275,7 @@ void LCExtension::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
 }
 
 IPosition LCExtension::doNiceCursorShape(uInt maxPixels) const {
-  return Lattice<Bool>::doNiceCursorShape(maxPixels);
+  return Lattice<bool>::doNiceCursorShape(maxPixels);
 }
 
 }  // namespace casacore

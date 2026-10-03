@@ -65,7 +65,7 @@ class String;
 // <srcblock>
 // void calculate(uInt n) {
 //   Int skip = n / 200;
-//   ProgressMeter meter(0, n, "Title", "Subtitle", "", "", True, skip);
+//   ProgressMeter meter(0, n, "Title", "Subtitle", "", "", true, skip);
 //   for (uInt i=0; i<n; i++) {
 //       ... calculate ...
 //       meter.update(i);
@@ -92,7 +92,7 @@ class ProgressMeter {
   ProgressMeter();
 
   // Create a progress meter with the given min and max values and labels.
-  // if <src>estimateTime</src> is <src>True</src>, an estimate of the
+  // if <src>estimateTime</src> is <src>true</src>, an estimate of the
   // time remaining will be made for the user. This estimate assumes that
   // the remaining portion will compute at the same rate as the portion
   // completed so far, so the time should not be estimated for processes
@@ -110,7 +110,7 @@ class ProgressMeter {
   // in the progress bar position at that level. If updateEvery is <=0, it
   // is set to 1 for you.
   ProgressMeter(Double min, Double max, const String &title, const String &subtitle,
-                const String &minlabel, const String &maxlabel, Bool estimateTime = True,
+                const String &minlabel, const String &maxlabel, bool estimateTime = true,
                 Int updateEvery = 1);
 
   ProgressMeter(Double min, Double max, const String &title);
@@ -120,8 +120,8 @@ class ProgressMeter {
   // as the calculation it is tracking.
   ~ProgressMeter();
 
-  void update(Double value, Bool force = False);
-  void _update(Double value, Bool force = False);
+  void update(Double value, bool force = false);
+  void _update(Double value, bool force = false);
   void busy();
   void done();
 
@@ -140,12 +140,12 @@ class ProgressMeter {
   Int update_every_p, update_count_p;
   // Time the progress meter began
   time_t startTime;
-  Bool showProgress;
+  bool showProgress;
 
   // These are set by ObjectController for executables that have the tasking
   // system in them, otherwise they are null and this class just does no-ops.
   static Int (*creation_function_p)(Double, Double, const String &, const String &, const String &,
-                                    const String &, Bool);
+                                    const String &, bool);
   static void (*update_function_p)(Int, Double);
   static void (*show_function_p)(Int, Double);
   static void (*busy_function_p)(Int);

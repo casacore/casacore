@@ -37,7 +37,7 @@ LELLattCoord::LELLattCoord() {}
 
 LELLattCoord::~LELLattCoord() {}
 
-Bool LELLattCoord::hasCoordinates() const { return False; }
+bool LELLattCoord::hasCoordinates() const { return false; }
 
 String LELLattCoord::classname() const { return "LELLattCoord"; }
 
@@ -50,7 +50,7 @@ LatticeExprNode LELLattCoord::makeSubLattice(const LatticeExprNode& expr,
   LatticeRegion latReg(region.toLatticeRegion(expr.shape()));
   switch (expr.dataType()) {
     case TpBool:
-      return SubLattice<Bool>(LatticeExpr<Bool>(expr), latReg);
+      return SubLattice<bool>(LatticeExpr<bool>(expr), latReg);
     case TpFloat:
       return SubLattice<Float>(LatticeExpr<Float>(expr), latReg);
     case TpDouble:

@@ -154,7 +154,7 @@ class ScalarColumn : public TableColumn {
   // According to the assignment rules of class Array, the destination
   // vector must be empty or its length must be the number of cells
   // in the column (i.e. the number of rows in the table).
-  void getColumn(Vector<T>& vec, Bool resize = False) const;
+  void getColumn(Vector<T>& vec, bool resize = false) const;
 
   // Get the vector of all values in the column.
   Vector<T> getColumn() const;
@@ -165,7 +165,7 @@ class ScalarColumn : public TableColumn {
   // According to the assignment rules of class Array, the destination
   // vector must be empty or its length must be the number of cells
   // in the column (i.e. the number of rows in the slicer).
-  void getColumnRange(const Slicer& rowRange, Vector<T>& vec, Bool resize = False) const;
+  void getColumnRange(const Slicer& rowRange, Vector<T>& vec, bool resize = false) const;
 
   // Get the vector of a range of values in the column.
   // The Slicer object can be used to specify start, end (or length),
@@ -178,7 +178,7 @@ class ScalarColumn : public TableColumn {
   // According to the assignment rules of class Array, the destination
   // vector must be empty or its length must be the number of cells
   // in the column (i.e. the number of rows in the RefRows object).
-  void getColumnCells(const RefRows& rownrs, Vector<T>& vec, Bool resize = False) const;
+  void getColumnCells(const RefRows& rownrs, Vector<T>& vec, bool resize = false) const;
 
   // Get the vector of some values in the column.
   Vector<T> getColumnCells(const RefRows& rownrs) const;
@@ -207,10 +207,10 @@ class ScalarColumn : public TableColumn {
   // Otherwise an exception is thrown.
   // <group>
   // Use the same row numbers for both cells.
-  void put(rownr_t rownr, const TableColumn& that, Bool = False) { put(rownr, that, rownr); }
+  void put(rownr_t rownr, const TableColumn& that, bool = false) { put(rownr, that, rownr); }
   // Use possibly different row numbers for that (i.e. input) and
   // and this (i.e. output) cell.
-  void put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr, Bool = False);
+  void put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr, bool = false);
   // </group>
 
   // Put the vector of all values in the column.
@@ -245,7 +245,7 @@ class ScalarColumn : public TableColumn {
 };
 
 // # Explicitly instantiate these templates in ScalarColumn_tmpl.cc
-extern template class ScalarColumn<Bool>;
+extern template class ScalarColumn<bool>;
 extern template class ScalarColumn<Char>;
 extern template class ScalarColumn<Short>;
 extern template class ScalarColumn<uShort>;

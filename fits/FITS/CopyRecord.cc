@@ -108,7 +108,7 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable, const RecordInterface &
       switch (inputBuffer.description().type(i)) {
         case TpBool:
           record_bool[which].attachToRecord(inputBuffer, i);
-          table_bool[which] = new ScalarColumn<Bool>(outputTable, colnames(inputMap(i)));
+          table_bool[which] = new ScalarColumn<bool>(outputTable, colnames(inputMap(i)));
           AlwaysAssert(table_bool[which] != 0, AipsError);
           break;
         case TpUChar:
@@ -153,7 +153,7 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable, const RecordInterface &
           break;
         case TpArrayBool:
           record_array_bool[which].attachToRecord(inputBuffer, i);
-          table_array_bool[which] = new ArrayColumn<Bool>(outputTable, colnames(inputMap(i)));
+          table_array_bool[which] = new ArrayColumn<bool>(outputTable, colnames(inputMap(i)));
           AlwaysAssert(table_array_bool[which] != 0, AipsError);
           break;
         case TpArrayUChar:
@@ -212,127 +212,127 @@ CopyRecordToTable::~CopyRecordToTable() { clearAll(); }
 CopyRecordToTable &CopyRecordToTable::operator=(const CopyRecordToTable &other) {
   if (this != &other) {
     clearAll();
-    table_bool.resize(other.table_bool.nelements(), True);
-    record_bool.resize(other.record_bool.nelements(), True);
+    table_bool.resize(other.table_bool.nelements(), true);
+    record_bool.resize(other.record_bool.nelements(), true);
     for (uInt i = 0; i < table_bool.nelements(); i++) {
-      table_bool[i] = new ScalarColumn<Bool>(*(other.table_bool[i]));
+      table_bool[i] = new ScalarColumn<bool>(*(other.table_bool[i]));
       record_bool[i] = other.record_bool[i];
       AlwaysAssert(table_bool[i], AipsError);
     }
-    table_char.resize(other.table_char.nelements(), True);
-    record_char.resize(other.record_char.nelements(), True);
+    table_char.resize(other.table_char.nelements(), true);
+    record_char.resize(other.record_char.nelements(), true);
     for (uInt i = 0; i < table_char.nelements(); i++) {
       table_char[i] = new ScalarColumn<uChar>(*(other.table_char[i]));
       record_char[i] = other.record_char[i];
       AlwaysAssert(table_char[i], AipsError);
     }
-    table_short.resize(other.table_short.nelements(), True);
-    record_short.resize(other.record_short.nelements(), True);
+    table_short.resize(other.table_short.nelements(), true);
+    record_short.resize(other.record_short.nelements(), true);
     for (uInt i = 0; i < table_short.nelements(); i++) {
       table_short[i] = new ScalarColumn<Short>(*(other.table_short[i]));
       record_short[i] = other.record_short[i];
       AlwaysAssert(table_short[i], AipsError);
     }
-    table_int.resize(other.table_int.nelements(), True);
-    record_int.resize(other.record_int.nelements(), True);
+    table_int.resize(other.table_int.nelements(), true);
+    record_int.resize(other.record_int.nelements(), true);
     for (uInt i = 0; i < table_int.nelements(); i++) {
       table_int[i] = new ScalarColumn<Int>(*(other.table_int[i]));
       record_int[i] = other.record_int[i];
       AlwaysAssert(table_int[i], AipsError);
     }
-    table_float.resize(other.table_float.nelements(), True);
-    record_float.resize(other.record_float.nelements(), True);
+    table_float.resize(other.table_float.nelements(), true);
+    record_float.resize(other.record_float.nelements(), true);
     for (uInt i = 0; i < table_float.nelements(); i++) {
       table_float[i] = new ScalarColumn<Float>(*(other.table_float[i]));
       record_float[i] = other.record_float[i];
       AlwaysAssert(table_float[i], AipsError);
     }
-    table_double.resize(other.table_double.nelements(), True);
-    record_double.resize(other.record_double.nelements(), True);
+    table_double.resize(other.table_double.nelements(), true);
+    record_double.resize(other.record_double.nelements(), true);
     for (uInt i = 0; i < table_double.nelements(); i++) {
       table_double[i] = new ScalarColumn<Double>(*(other.table_double[i]));
       record_double[i] = other.record_double[i];
       AlwaysAssert(table_double[i], AipsError);
     }
-    table_complex.resize(other.table_complex.nelements(), True);
-    record_complex.resize(other.record_complex.nelements(), True);
+    table_complex.resize(other.table_complex.nelements(), true);
+    record_complex.resize(other.record_complex.nelements(), true);
     for (uInt i = 0; i < table_complex.nelements(); i++) {
       table_complex[i] = new ScalarColumn<Complex>(*(other.table_complex[i]));
       record_complex[i] = other.record_complex[i];
       AlwaysAssert(table_complex[i], AipsError);
     }
-    table_dcomplex.resize(other.table_dcomplex.nelements(), True);
-    record_dcomplex.resize(other.record_dcomplex.nelements(), True);
+    table_dcomplex.resize(other.table_dcomplex.nelements(), true);
+    record_dcomplex.resize(other.record_dcomplex.nelements(), true);
     for (uInt i = 0; i < table_dcomplex.nelements(); i++) {
       table_dcomplex[i] = new ScalarColumn<DComplex>(*(other.table_dcomplex[i]));
       record_dcomplex[i] = other.record_dcomplex[i];
       AlwaysAssert(table_dcomplex[i], AipsError);
     }
-    table_string.resize(other.table_string.nelements(), True);
-    record_string.resize(other.record_string.nelements(), True);
+    table_string.resize(other.table_string.nelements(), true);
+    record_string.resize(other.record_string.nelements(), true);
     for (uInt i = 0; i < table_string.nelements(); i++) {
       table_string[i] = new ScalarColumn<String>(*(other.table_string[i]));
       record_string[i] = other.record_string[i];
       AlwaysAssert(table_string[i], AipsError);
     }
-    table_array_bool.resize(other.table_array_bool.nelements(), True);
-    record_array_bool.resize(other.record_array_bool.nelements(), True);
+    table_array_bool.resize(other.table_array_bool.nelements(), true);
+    record_array_bool.resize(other.record_array_bool.nelements(), true);
     for (uInt i = 0; i < table_array_bool.nelements(); i++) {
-      table_array_bool[i] = new ArrayColumn<Bool>(*(other.table_array_bool[i]));
+      table_array_bool[i] = new ArrayColumn<bool>(*(other.table_array_bool[i]));
       record_array_bool[i] = other.record_array_bool[i];
       AlwaysAssert(table_array_bool[i], AipsError);
     }
-    table_array_char.resize(other.table_array_char.nelements(), True);
-    record_array_char.resize(other.record_array_char.nelements(), True);
+    table_array_char.resize(other.table_array_char.nelements(), true);
+    record_array_char.resize(other.record_array_char.nelements(), true);
     for (uInt i = 0; i < table_array_char.nelements(); i++) {
       table_array_char[i] = new ArrayColumn<uChar>(*(other.table_array_char[i]));
       record_array_char[i] = other.record_array_char[i];
       AlwaysAssert(table_array_char[i], AipsError);
     }
-    table_array_short.resize(other.table_array_short.nelements(), True);
-    record_array_short.resize(other.record_array_short.nelements(), True);
+    table_array_short.resize(other.table_array_short.nelements(), true);
+    record_array_short.resize(other.record_array_short.nelements(), true);
     for (uInt i = 0; i < table_array_short.nelements(); i++) {
       table_array_short[i] = new ArrayColumn<Short>(*(other.table_array_short[i]));
       record_array_short[i] = other.record_array_short[i];
       AlwaysAssert(table_array_short[i], AipsError);
     }
-    table_array_int.resize(other.table_array_int.nelements(), True);
-    record_array_int.resize(other.record_array_int.nelements(), True);
+    table_array_int.resize(other.table_array_int.nelements(), true);
+    record_array_int.resize(other.record_array_int.nelements(), true);
     for (uInt i = 0; i < table_array_int.nelements(); i++) {
       table_array_int[i] = new ArrayColumn<Int>(*(other.table_array_int[i]));
       record_array_int[i] = other.record_array_int[i];
       AlwaysAssert(table_array_int[i], AipsError);
     }
-    table_array_float.resize(other.table_array_float.nelements(), True);
-    record_array_float.resize(other.record_array_float.nelements(), True);
+    table_array_float.resize(other.table_array_float.nelements(), true);
+    record_array_float.resize(other.record_array_float.nelements(), true);
     for (uInt i = 0; i < table_array_float.nelements(); i++) {
       table_array_float[i] = new ArrayColumn<Float>(*(other.table_array_float[i]));
       record_array_float[i] = other.record_array_float[i];
       AlwaysAssert(table_array_float[i], AipsError);
     }
-    table_array_double.resize(other.table_array_double.nelements(), True);
-    record_array_double.resize(other.record_array_double.nelements(), True);
+    table_array_double.resize(other.table_array_double.nelements(), true);
+    record_array_double.resize(other.record_array_double.nelements(), true);
     for (uInt i = 0; i < table_array_double.nelements(); i++) {
       table_array_double[i] = new ArrayColumn<Double>(*(other.table_array_double[i]));
       record_array_double[i] = other.record_array_double[i];
       AlwaysAssert(table_array_double[i], AipsError);
     }
-    table_array_complex.resize(other.table_array_complex.nelements(), True);
-    record_array_complex.resize(other.record_array_complex.nelements(), True);
+    table_array_complex.resize(other.table_array_complex.nelements(), true);
+    record_array_complex.resize(other.record_array_complex.nelements(), true);
     for (uInt i = 0; i < table_array_complex.nelements(); i++) {
       table_array_complex[i] = new ArrayColumn<Complex>(*(other.table_array_complex[i]));
       record_array_complex[i] = other.record_array_complex[i];
       AlwaysAssert(table_array_complex[i], AipsError);
     }
-    table_array_dcomplex.resize(other.table_array_dcomplex.nelements(), True);
-    record_array_dcomplex.resize(other.record_array_dcomplex.nelements(), True);
+    table_array_dcomplex.resize(other.table_array_dcomplex.nelements(), true);
+    record_array_dcomplex.resize(other.record_array_dcomplex.nelements(), true);
     for (uInt i = 0; i < table_array_dcomplex.nelements(); i++) {
       table_array_dcomplex[i] = new ArrayColumn<DComplex>(*(other.table_array_dcomplex[i]));
       record_array_dcomplex[i] = other.record_array_dcomplex[i];
       AlwaysAssert(table_array_dcomplex[i], AipsError);
     }
-    table_array_string.resize(other.table_array_string.nelements(), True);
-    record_array_string.resize(other.record_array_string.nelements(), True);
+    table_array_string.resize(other.table_array_string.nelements(), true);
+    record_array_string.resize(other.record_array_string.nelements(), true);
     for (uInt i = 0; i < table_array_string.nelements(); i++) {
       table_array_string[i] = new ArrayColumn<String>(*(other.table_array_string[i]));
       record_array_string[i] = other.record_array_string[i];
@@ -424,7 +424,7 @@ void CopyRecordToTable::clearAll() {
   for (i = 0; i < table_bool.nelements(); i++) {
     delete table_bool[i];
   }
-  table_bool.set(static_cast<ScalarColumn<Bool> *>(0));
+  table_bool.set(static_cast<ScalarColumn<bool> *>(0));
 
   for (i = 0; i < table_char.nelements(); i++) {
     delete table_char[i];
@@ -469,7 +469,7 @@ void CopyRecordToTable::clearAll() {
   for (i = 0; i < table_array_bool.nelements(); i++) {
     delete table_array_bool[i];
   }
-  table_array_bool.set(static_cast<ArrayColumn<Bool> *>(0));
+  table_array_bool.set(static_cast<ArrayColumn<bool> *>(0));
 
   for (i = 0; i < table_array_char.nelements(); i++) {
     delete table_array_char[i];
@@ -526,7 +526,7 @@ void addRecordDesc(TableDesc &tableDescription, const RecordDesc &recDesc, const
     if (recDesc.isScalar(i)) {
       switch (recDesc.type(i)) {
         case TpBool:
-          tableDescription.addColumn(ScalarColumnDesc<Bool>(colname));
+          tableDescription.addColumn(ScalarColumnDesc<bool>(colname));
           break;
         case TpUChar:
           tableDescription.addColumn(ScalarColumnDesc<uChar>(colname));
@@ -562,9 +562,9 @@ void addRecordDesc(TableDesc &tableDescription, const RecordDesc &recDesc, const
       switch (recDesc.type(i)) {
         case TpArrayBool:
           if (options != 0) {
-            tableDescription.addColumn(ArrayColumnDesc<Bool>(colname, recDesc.shape(i), options));
+            tableDescription.addColumn(ArrayColumnDesc<bool>(colname, recDesc.shape(i), options));
           } else {
-            tableDescription.addColumn(ArrayColumnDesc<Bool>(colname, options));
+            tableDescription.addColumn(ArrayColumnDesc<bool>(colname, options));
           }
           break;
         case TpArrayUChar:

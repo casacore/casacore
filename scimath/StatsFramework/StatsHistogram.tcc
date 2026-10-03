@@ -87,7 +87,7 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
   _minMaxIdxRange(minIdx, maxIdx, value, higher);
   // bin index limits established, so now do binary search to find the
   // correct bin
-  while (True) {
+  while (true) {
     ThrowIf(maxIdx < minIdx, "Logic Error: maxIdx (" + ValueToString(maxIdx) + ") < minIdx (" +
                                  ValueToString(minIdx) + ")");
     // integer division
@@ -135,9 +135,9 @@ uInt StatsHistogram<AccumType>::getNBins() const {
 
 template <class AccumType>
 void StatsHistogram<AccumType>::_minMaxIdxRange(Int& minIdx, Int& maxIdx, AccumType value,
-                                                Bool higher) const {
+                                                bool higher) const {
   Int mult = 2;
-  while (True) {
+  while (true) {
     auto mymin = minIdx == 0 ? _minHistLimit : _maxBinLimits[minIdx - 1];
     if (value >= mymin && value < _maxBinLimits[maxIdx]) {
       // limits established

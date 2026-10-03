@@ -46,7 +46,7 @@ T CompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 template <class T>
 void CompoundFunction<T>::fromParam_p() const {
   if (parset_p) {
-    parset_p = False;
+    parset_p = false;
     for (uInt i = 0; i < nparameters(); ++i) {
       (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = param_p[i];
       functionPtr_p[funpar_p[i]]->mask(locpar_p[i]) = param_p.mask(i);

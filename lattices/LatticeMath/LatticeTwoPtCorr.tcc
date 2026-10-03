@@ -53,7 +53,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class T>
 void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const MaskedLattice<T>& latIn,
                                           const IPosition& axes, Method method,
-                                          Bool showProgress) const {
+                                          bool showProgress) const {
   LogIO os(LogOrigin("LatticeTwoPtCorr", "autoCorrelation(...)", WHERE));
 
   // Set up function pointer
@@ -112,7 +112,7 @@ String LatticeTwoPtCorr<T>::toString(Method method) {
 template <class T>
 void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const MaskedLattice<T>& latIn,
                                           const IPosition& axes, FuncPtr funcPtr,
-                                          Bool showProgress) const {
+                                          bool showProgress) const {
   LogIO os(LogOrigin("LatticeTwoPtCorr", "autoCorrelation(...)", WHERE));
 
   // Check output lattice shape and axes
@@ -131,7 +131,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
   IPosition cursorShapeIn(2, nxIn, nyIn);
   LatticeStepper stepIn(shapeIn, cursorShapeIn, axes, axisPath);
   RO_MaskedLatticeIterator<T> itIn(latIn, stepIn);
-  Bool inIsMasked = latIn.hasPixelMask();
+  bool inIsMasked = latIn.hasPixelMask();
 
   // Make output iterators
 
@@ -140,18 +140,18 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
   IPosition cursorShapeOut(2, nxOut, nyOut);
   LatticeStepper stepOut(shapeOut, cursorShapeOut, axes, axisPath);
   LatticeIterator<T> itOut(latOut, stepOut);
-  Bool outIsMasked = latOut.hasPixelMask() && latOut.pixelMask().isWritable();
-  LatticeIterator<Bool>* itOutMaskPtr = 0;
+  bool outIsMasked = latOut.hasPixelMask() && latOut.pixelMask().isWritable();
+  LatticeIterator<bool>* itOutMaskPtr = 0;
   if (outIsMasked) {
-    Lattice<Bool>& outMask = latOut.pixelMask();
-    itOutMaskPtr = new LatticeIterator<Bool>(outMask, stepOut);
+    Lattice<bool>& outMask = latOut.pixelMask();
+    itOutMaskPtr = new LatticeIterator<bool>(outMask, stepOut);
   }
 
   // Matrices for plane by plane iteration results
 
   Matrix<T> sumOut(nxOut, nyOut);
   Matrix<Float> nPtsOut(nxOut, nyOut);
-  Matrix<Bool> maskOut(nxOut, nyOut);
+  Matrix<bool> maskOut(nxOut, nyOut);
 
   // Iterate through image, plane by plane.  The algorithm is too
   // complicated if I iterate tile by tile
@@ -169,14 +169,14 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
     // Get data and mask
 
     const Matrix<T>& dataIn(itIn.matrixCursor());
-    const Matrix<Bool>& maskIn(itIn.getMask(True));
+    const Matrix<bool>& maskIn(itIn.getMask(true));
 
     // Initialize output
 
     T zero(0.0);
     sumOut.set(zero);
     nPtsOut.set(0.0);
-    maskOut.set(False);
+    maskOut.set(false);
 
     // Create ArrayAccessors to optimize access to Matricies
 
@@ -194,13 +194,13 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
     if (inIsMasked) {
       // Create Mask accessors
 
-      ArrayAccessor<Bool, Axis<1>> jItM(maskIn);  // Outer loops
-      ArrayAccessor<Bool, Axis<0>> iItM;
-      ArrayAccessor<Bool, Axis<1>> jjItM(maskIn);  // Inner loops
-      ArrayAccessor<Bool, Axis<0>> iiItM;
+      ArrayAccessor<bool, Axis<1>> jItM(maskIn);  // Outer loops
+      ArrayAccessor<bool, Axis<0>> iItM;
+      ArrayAccessor<bool, Axis<1>> jjItM(maskIn);  // Inner loops
+      ArrayAccessor<bool, Axis<0>> iiItM;
       //
-      ArrayAccessor<Bool, Axis<1>> jjItMOut(maskOut);  // Inner loops
-      ArrayAccessor<Bool, Axis<0>> iiItMOut(maskOut);
+      ArrayAccessor<bool, Axis<1>> jjItMOut(maskOut);  // Inner loops
+      ArrayAccessor<bool, Axis<0>> iiItMOut(maskOut);
       //
       for (j = 0; j < nyIn; jIt++, jItM++, ++j) {
         iIt = jIt;
@@ -225,7 +225,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
                   lx = ii + id;
                   //
                   iiItN[lx] += 1.0;
-                  iiItMOut[lx] = True;
+                  iiItMOut[lx] = true;
                   iiItS[lx] += ((*this).*funcPtr)(*iIt, *iiIt);
                 }
               }
@@ -261,7 +261,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
 
       // There is no input mask so make all output mask points good
 
-      maskOut.set(True);
+      maskOut.set(true);
     }
 
     // Normalize; use STL iterators for fastest access

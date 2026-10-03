@@ -68,7 +68,7 @@ class TaQLResult {
   explicit TaQLResult(const TableExprNode&);
 
   // Is the result a Table?
-  Bool isTable() const { return itsNode.isNull(); }
+  bool isTable() const { return itsNode.isNull(); }
 
   // Return the result as a TableExprInfo.
   // It throws an exception if it is not a table.

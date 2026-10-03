@@ -30,9 +30,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LoggerHolder::LoggerHolder(Bool nullSink) : itsRep(new LoggerHolderRep(nullSink)) {}
+LoggerHolder::LoggerHolder(bool nullSink) : itsRep(new LoggerHolderRep(nullSink)) {}
 
-LoggerHolder::LoggerHolder(const String& logTableName, Bool isWritable)
+LoggerHolder::LoggerHolder(const String& logTableName, bool isWritable)
     : itsRep(new LoggerHolderRep(logTableName, isWritable)) {}
 
 LoggerHolder::LoggerHolder(const LoggerHolder& that) : itsRep(that.itsRep) {}
@@ -56,7 +56,7 @@ void LoggerHolder::reopenRW() { itsRep->reopenRW(); }
 
 void LoggerHolder::addParent(const LoggerHolder& logger) { itsRep->addParent(logger); }
 
-void LoggerHolder::tempClose(Bool closeParents) const { itsRep->tempClose(closeParents); }
+void LoggerHolder::tempClose(bool closeParents) const { itsRep->tempClose(closeParents); }
 
 void LoggerHolder::unlock() { itsRep->unlock(); }
 
@@ -68,13 +68,13 @@ void LoggerHolder::removeParents() { itsRep->removeParents(); }
 
 void LoggerHolder::clear() { itsRep->clear(); }
 
-LoggerHolderRep::LoggerHolderRep(Bool nullSink)
-    : itsSink(LogFilter(), nullSink), itsTablePtr(0), itsIsWritable(True), itsIsClosed(False) {
+LoggerHolderRep::LoggerHolderRep(bool nullSink)
+    : itsSink(LogFilter(), nullSink), itsTablePtr(0), itsIsWritable(true), itsIsClosed(false) {
   itsLogger = LogIO(itsSink);
 }
 
-LoggerHolderRep::LoggerHolderRep(const String& logTableName, Bool isWritable)
-    : itsTableName(logTableName), itsTablePtr(0), itsIsWritable(isWritable), itsIsClosed(True) {
+LoggerHolderRep::LoggerHolderRep(const String& logTableName, bool isWritable)
+    : itsTableName(logTableName), itsTablePtr(0), itsIsWritable(isWritable), itsIsClosed(true) {
   // Open the log table.
   doReopen();
 }
@@ -117,7 +117,7 @@ void LoggerHolderRep::reopenRW() {
   if (!itsTableName.empty()) {
     if (itsTablePtr == 0 || !itsIsWritable) {
       // Temporarily close table possibly opened for readonly.
-      tempClose(False);
+      tempClose(false);
       // Reopen temporarily closed table for rw (if possible).
       if (!itsIsWritable) {
         itsIsWritable = Table::isWritable(itsTableName);
@@ -139,7 +139,7 @@ void LoggerHolderRep::doReopen() {
     LogSinkInterface* ptr = itsTablePtr;
     itsSink.localSink(ptr);
     itsLogger = LogIO(itsSink);
-    itsIsClosed = False;
+    itsIsClosed = false;
   }
 }
 
@@ -149,13 +149,13 @@ void LoggerHolderRep::addParent(const LoggerHolder& logger) {
   itsParents[nr] = logger;
 }
 
-void LoggerHolderRep::tempClose(Bool closeParents) {
+void LoggerHolderRep::tempClose(bool closeParents) {
   if (itsTablePtr != 0) {
     itsTablePtr->table().unlock();
     itsSink = LogSink();
     itsLogger = LogIO();
     itsTablePtr = 0;
-    itsIsClosed = True;
+    itsIsClosed = true;
   }
   if (closeParents) {
     for (uInt i = 0; i < itsParents.nelements(); i++) {
@@ -194,7 +194,7 @@ LogSink& LoggerHolderRep::sink() {
   return itsSink;
 }
 
-void LoggerHolderRep::removeParents() { itsParents.resize(0, True, True); }
+void LoggerHolderRep::removeParents() { itsParents.resize(0, true, true); }
 
 void LoggerHolderRep::clear() {
   reopenRW();
@@ -218,7 +218,7 @@ LogHolderIter::~LogHolderIter() {
   }
 }
 
-Bool LogHolderIter::next() {
+bool LogHolderIter::next() {
   while (itsParentIter != 0 && !itsParentIter->next()) {
     delete itsParentIter;
     itsParentIter = 0;
@@ -238,10 +238,10 @@ Bool LogHolderIter::next() {
       itsEntry = LogHolderIterEntry(&sink, itsCounter);
       itsCounter++;
     } else {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 LoggerHolderIterator::LoggerHolderIterator(const LoggerHolder* logger) : itsIter(0) {

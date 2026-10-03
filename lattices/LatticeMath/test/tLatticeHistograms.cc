@@ -149,7 +149,7 @@ void do1DFloat(const Array<Float>& inArr, LogIO& os) {
   const IPosition shape = inArr.shape();
   ArrayLattice<Float> inLat(inArr);
   SubLattice<Float> subLat(inLat);
-  LatticeHistograms<Float> histo(subLat, os, False, False);
+  LatticeHistograms<Float> histo(subLat, os, false, false);
 
   // Make a flat histogram so we can test it easily
 
@@ -198,7 +198,7 @@ void do2DFloat(const Array<Float>& arr, LogIO& os) {
   // Make LS object and set axes so that we work out histo
   // over first axis as a function of nY replicated rows
 
-  LatticeHistograms<Float> histo(subLat, os, False, False);
+  LatticeHistograms<Float> histo(subLat, os, false, false);
   Vector<Int> axes(1);
   axes = 0;
   AlwaysAssert(histo.setAxes(axes), AipsError);
@@ -246,7 +246,7 @@ void test1DFloat(LatticeHistograms<Float>& histo, const IPosition& shape, uInt n
   {
     IPosition pos(1, 0);
     Vector<Float> values, counts;
-    AlwaysAssert(histo.getHistogram(values, counts, pos, True), AipsError);
+    AlwaysAssert(histo.getHistogram(values, counts, pos, true), AipsError);
   }
   //
   {
@@ -271,7 +271,7 @@ void test2DFloat(LatticeHistograms<Float>& histo, const IPosition& shape, uInt n
   {
     IPosition pos(2, 0, 0);
     Vector<Float> values, counts;
-    AlwaysAssert(histo.getHistogram(values, counts, pos, True), AipsError);
+    AlwaysAssert(histo.getHistogram(values, counts, pos, true), AipsError);
     AlwaysAssert(values.shape() == IPosition(1, nBin), AipsError);
   }
 

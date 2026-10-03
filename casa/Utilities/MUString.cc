@@ -33,22 +33,22 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Constructors
-MUString::MUString() : str(), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {}
+MUString::MUString() : str(), ptr(0), len(0), stack(0), stpt(0), stat(true), lget() {}
 
 MUString::MUString(const String &in)
-    : str(in), ptr(0), len(in.length()), stack(0), stpt(0), stat(True), lget() {}
+    : str(in), ptr(0), len(in.length()), stack(0), stpt(0), stat(true), lget() {}
 
 MUString::MUString(const Char *in)
-    : str(in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
+    : str(in), ptr(0), len(0), stack(0), stpt(0), stat(true), lget() {
   len = str.length();
 }
 
-MUString::MUString(Char in) : str(1, in), ptr(0), len(0), stack(0), stpt(0), stat(True), lget() {
+MUString::MUString(Char in) : str(1, in), ptr(0), len(0), stack(0), stpt(0), stat(true), lget() {
   len = str.length();
 }
 
 MUString::MUString(const MUString &other)
-    : str(other.str), ptr(other.ptr), len(other.len), stack(0), stpt(0), stat(True), lget() {}
+    : str(other.str), ptr(other.ptr), len(other.len), stack(0), stpt(0), stat(true), lget() {}
 
 MUString &MUString::operator=(const MUString &other) {
   if (this != &other) {
@@ -57,7 +57,7 @@ MUString &MUString::operator=(const MUString &other) {
     len = other.len;
     stack = Block<uInt>(0);
     stpt = 0;
-    stat = True;
+    stat = true;
     lget = String();
   }
   return *this;
@@ -85,17 +85,17 @@ void MUString::skipBlank() {
   while (ptr < len && testBlank()) ptr++;
 }
 
-Bool MUString::testBlank() const { return (ptr >= len || str[ptr] == ' ' || str[ptr] == '\t'); }
+bool MUString::testBlank() const { return (ptr >= len || str[ptr] == ' ' || str[ptr] == '\t'); }
 
-Bool MUString::tSkipBlank() { return ((ptr < len && testBlank()) ? (skipBlank(), True) : False); }
+bool MUString::tSkipBlank() { return ((ptr < len && testBlank()) ? (skipBlank(), true) : false); }
 
-Bool MUString::testSign() const { return (ptr < len && (str[ptr] == '-' || str[ptr] == '+')); }
+bool MUString::testSign() const { return (ptr < len && (str[ptr] == '-' || str[ptr] == '+')); }
 
 void MUString::skipSign() {
   while (testSign()) ptr++;
 }
 
-Bool MUString::tSkipSign() { return (testSign() ? (skipSign(), True) : False); }
+bool MUString::tSkipSign() { return (testSign() ? (skipSign(), true) : false); }
 
 Int MUString::getSign() {
   Int t = 1;
@@ -109,19 +109,19 @@ Int MUString::getSign() {
   return t;
 }
 
-Bool MUString::testInt() const {
+bool MUString::testInt() const {
   static Regex ex("[-+]*[0-9]");
   return testString(ex);
 }
 
-Bool MUString::tSkipInt() {
-  return (testInt() ? (skipInt(), True) : False);
+bool MUString::tSkipInt() {
+  return (testInt() ? (skipInt(), true) : false);
   ;
 }
 
-Bool MUString::testuInt() const { return testNum(); }
+bool MUString::testuInt() const { return testNum(); }
 
-Bool MUString::tSkipuInt() { return (testuInt() ? (skipuInt(), True) : False); }
+bool MUString::tSkipuInt() { return (testuInt() ? (skipuInt(), true) : false); }
 
 Int MUString::getInt() {
   Int s = 0;
@@ -151,14 +151,14 @@ uInt MUString::getuInt() {
 
 void MUString::skipuInt() { getuInt(); }
 
-Bool MUString::testDouble() const {
+bool MUString::testDouble() const {
   static Regex ex("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
   return testString(ex);
 }
 
 void MUString::skipDouble() { getDouble(); }
 
-Bool MUString::tSkipDouble() { return (testDouble() ? (skipDouble(), True) : False); }
+bool MUString::tSkipDouble() { return (testDouble() ? (skipDouble(), true) : false); }
 
 Double MUString::getDouble() {
   static Regex ex("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
@@ -177,41 +177,41 @@ void MUString::skipChar(Char ch) {
   while (testChar(ch)) ptr++;
 }
 
-Bool MUString::tSkipChar(Char ch) { return (testChar(ch) ? (skipChar(ch), True) : False); }
+bool MUString::tSkipChar(Char ch) { return (testChar(ch) ? (skipChar(ch), true) : false); }
 
 void MUString::skipCharNC(Char ch) {
   while (testCharNC(ch)) ptr++;
 }
 
-Bool MUString::tSkipCharNC(Char ch) { return (testCharNC(ch) ? (skipCharNC(ch), True) : False); }
+bool MUString::tSkipCharNC(Char ch) { return (testCharNC(ch) ? (skipCharNC(ch), true) : false); }
 
-Bool MUString::tSkipOneChar(Char ch) {
+bool MUString::tSkipOneChar(Char ch) {
   if (testChar(ch)) {
     ptr++;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool MUString::tSkipOneCharNC(Char ch) {
+bool MUString::tSkipOneCharNC(Char ch) {
   if (testCharNC(ch)) {
     ptr++;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 void MUString::skipChar(const Regex &ex) {
   while (testChar(ex)) ptr++;
 }
 
-Bool MUString::tSkipChar(const Regex &ex) { return (testChar(ex) ? (skipChar(ex), True) : False); }
+bool MUString::tSkipChar(const Regex &ex) { return (testChar(ex) ? (skipChar(ex), true) : false); }
 
 void MUString::skipAlpha() {
   while (testAlpha()) ptr++;
 }
 
-Bool MUString::tSkipAlpha() { return (testAlpha() ? (skipAlpha(), True) : False); }
+bool MUString::tSkipAlpha() { return (testAlpha() ? (skipAlpha(), true) : false); }
 
 void MUString::skipAlphaNum() {
   if (testAlpha()) {
@@ -220,35 +220,35 @@ void MUString::skipAlphaNum() {
   }
 }
 
-Bool MUString::tSkipAlphaNum() { return (testAlpha() ? (skipAlphaNum(), True) : False); }
+bool MUString::tSkipAlphaNum() { return (testAlpha() ? (skipAlphaNum(), true) : false); }
 
 void MUString::skipNum() {
   while (testNum()) ptr++;
 }
 
-Bool MUString::tSkipNum() { return (testNum() ? (skipNum(), True) : False); }
+bool MUString::tSkipNum() { return (testNum() ? (skipNum(), true) : false); }
 
-Bool MUString::testChar(Char ch) const { return (ptr < len && str[ptr] == ch); }
+bool MUString::testChar(Char ch) const { return (ptr < len && str[ptr] == ch); }
 
-Bool MUString::testCharNC(Char ch) const {
+bool MUString::testCharNC(Char ch) const {
   return (ptr < len && (str[ptr] == toupper(ch) || str[ptr] == tolower(ch)));
 }
 
-Bool MUString::testChar(const Regex &ex) const {
+bool MUString::testChar(const Regex &ex) const {
   return (ptr < len && RegexIndex(std::string(1, str[ptr]), ex) == 0);
 }
 
-Bool MUString::testAlpha() const {
+bool MUString::testAlpha() const {
   static Regex ex("[a-zA-Z_]");
   return testChar(ex);
 }
 
-Bool MUString::testNum() const {
+bool MUString::testNum() const {
   static Regex ex("[0-9]");
   return testChar(ex);
 }
 
-Bool MUString::testAlphaNum() const {
+bool MUString::testAlphaNum() const {
   static Regex ex("[a-zA-Z_0-9]");
   return testChar(ex);
 }
@@ -268,20 +268,20 @@ String MUString::getAlphaNum() {
   return lget;
 }
 
-Bool MUString::testString(const Regex &ex) const {
+bool MUString::testString(const Regex &ex) const {
   return (ptr < len && RegexIndex(str.substr(ptr), ex) == 0);
 }
 
-Bool MUString::testString(const String &ex) const {
+bool MUString::testString(const String &ex) const {
   if (ptr < len) {
     Int tl = (len - ptr < ex.length()) ? len - ptr : ex.length();
     String t = str.substr(ptr, tl);
     return t == ex;
   }
-  return False;
+  return false;
 }
 
-Bool MUString::testStringNC(const String &ex) const {
+bool MUString::testStringNC(const String &ex) const {
   if (ptr < len) {
     Int tl = (len - ptr < ex.length()) ? len - ptr : ex.length();
     String t = str.substr(ptr, tl);
@@ -290,19 +290,19 @@ Bool MUString::testStringNC(const String &ex) const {
     ToLowerCaseInPlace(u);
     return t == u;
   }
-  return False;
+  return false;
 }
 
-Bool MUString::tSkipString(const Regex &ex) {
-  return (testString(ex) ? (skipString(ex), True) : False);
+bool MUString::tSkipString(const Regex &ex) {
+  return (testString(ex) ? (skipString(ex), true) : false);
 }
 
-Bool MUString::tSkipString(const String &ex) {
-  return (testString(ex) ? (skipString(ex), True) : False);
+bool MUString::tSkipString(const String &ex) {
+  return (testString(ex) ? (skipString(ex), true) : false);
 }
 
-Bool MUString::tSkipStringNC(const String &ex) {
-  return (testStringNC(ex) ? (skipStringNC(ex), True) : False);
+bool MUString::tSkipStringNC(const String &ex) {
+  return (testStringNC(ex) ? (skipStringNC(ex), true) : false);
 }
 
 void MUString::skipString(const Regex &ex) {
@@ -335,7 +335,7 @@ String MUString::getStringNC(const String &ex) {
   return lget;
 }
 
-Bool MUString::matchPair(Char nd) {
+bool MUString::matchPair(Char nd) {
   Char st = getChar();
   Int cnt = 1;
   Int p = initLast();
@@ -351,10 +351,10 @@ Bool MUString::matchPair(Char nd) {
   if (cnt == 0) {
     setLast(p);
     skipChar();
-    return True;
+    return true;
   }
   adjustPtr(p - 1);
-  return False;
+  return false;
 }
 
 Int MUString::freqChar(Char ch) const {
@@ -383,9 +383,9 @@ Int MUString::getPtr() const { return ptr; }
 
 void MUString::setPtr(Int in) { adjustPtr(in); }
 
-Bool MUString::eos() const { return (ptr >= len); }
+bool MUString::eos() const { return (ptr >= len); }
 
-Bool MUString::status() const { return stat; }
+bool MUString::status() const { return stat; }
 
 const String &MUString::lastGet() const { return lget; }
 
@@ -393,14 +393,14 @@ void MUString::adjustPtr(Int in) { ptr = in < 0 ? 0 : (in > (Int)len ? len : in)
 
 Int MUString::initLast() {
   static String em;
-  stat = False;
+  stat = false;
   lget = em;
   return ptr;
 }
 
 void MUString::setLast(Int st) {
   if (st < (Int)ptr) {
-    stat = True;
+    stat = true;
     lget = str.substr(st, ptr - st);
   }
 }
@@ -438,7 +438,7 @@ uInt MUString::minimaxNC(const String &in, Int N_name, const String tname[]) {
 }
 
 uInt MUString::minimaxNC(const String &in, const Vector<String> &tname) {
-  Bool delIt;
+  bool delIt;
   const String *stor = tname.getStorage(delIt);
   uInt rt = minimaxNC(in, tname.nelements(), stor);
   tname.freeStorage(stor, delIt);

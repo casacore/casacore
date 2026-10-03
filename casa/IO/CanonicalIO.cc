@@ -51,7 +51,7 @@ CanonicalIO& CanonicalIO::operator=(const CanonicalIO& that) {
 
 CanonicalIO::~CanonicalIO() { delete[] itsBuffer; }
 
-size_t CanonicalIO::write(size_t nvalues, const Bool* value) {
+size_t CanonicalIO::write(size_t nvalues, const bool* value) {
   return TypeIO::write(nvalues, value);
 }
 
@@ -237,7 +237,7 @@ size_t CanonicalIO::write(size_t nvalues, const String* value) {
   return TypeIO::write(nvalues, value);
 }
 
-size_t CanonicalIO::read(size_t nvalues, Bool* value) { return TypeIO::read(nvalues, value); }
+size_t CanonicalIO::read(size_t nvalues, bool* value) { return TypeIO::read(nvalues, value); }
 
 size_t CanonicalIO::read(size_t nvalues, Char* value) {
   if (CONVERT_CAN_CHAR) {

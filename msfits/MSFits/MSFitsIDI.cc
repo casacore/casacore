@@ -46,29 +46,29 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 //----------------------------------------------------------------------------
 
-MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, const Bool& overWrite,
+MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, const bool& overWrite,
                      const Int& obsType)
     : itsDataSource(""),
       itsDeviceType(FITS::Tape9),
       itsMSOut(""),
-      itsMSExists(False),
+      itsMSExists(false),
       itsSelectedFiles(0) {
   // Construct from a tape device and output MS file name
   // Input:
   //    tapeDevice           const String&      Tape device name
   //    msOut                const String&      Output MS name
-  //    overWrite            const Bool&        True if existing MS is to
+  //    overWrite            const bool&        true if existing MS is to
   //                                            be overwritten
   // Output to private data:
   //    itsDataSource        String             Tape name or input file name
   //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
   //    itsMSOut             String             Output MS name
   // DP//    itsMS                MeasurementSet*    Pointer to output MS
-  //    itsMSExists          Bool               True if output MS already exists
-  // DP//    itsOverWrite         Bool               True if existing MS is to
+  //    itsMSExists          Bool               true if output MS already exists
+  // DP//    itsOverWrite         Bool               true if existing MS is to
   // DP//                                            be overwritten
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   init(tapeDevice.absoluteName(), FITS::Tape9, msOut, overWrite, obsType);
   //
@@ -76,31 +76,31 @@ MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, const Bool& ov
 
 //----------------------------------------------------------------------------
 
-MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut, const Bool& overWrite,
+MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut, const bool& overWrite,
                      const Int& obsType)
     : itsDataSource(""),
       itsDeviceType(FITS::Disk),
       itsMSOut(""),
       // DP  itsMS(0),
-      itsMSExists(False),
-      // DP itsOverWrite(False),
+      itsMSExists(false),
+      // DP itsOverWrite(false),
       itsSelectedFiles(0) {
   // Construct from an input FITS-IDI file name and an output MS file name
   // Input:
   //    inFile               const String&      Input FITS-IDI file name
   //    msOut                const String&      Output MS name
-  //    overWrite            const Bool&        True if existing MS is to
+  //    overWrite            const bool&        true if existing MS is to
   //                                            be overwritten
   // Output to private data:
   //    itsDataSource        String             Tape name or input file name
   //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
   //    itsMSOut             String             Output MS name
   // DP//    itsMS                MeasurementSet*    Pointer to output MS
-  //    itsMSExists          Bool               True if output MS already exists
-  // DP//    itsOverWrite         Bool               True if existing MS is to
+  //    itsMSExists          Bool               true if output MS already exists
+  // DP//    itsOverWrite         Bool               true if existing MS is to
   //                                            be overwritten
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   init(inFile, FITS::Disk, msOut, overWrite, obsType);
   //
@@ -126,18 +126,18 @@ void MSFitsIDI::selectFiles(const Vector<Int>& files) {
   //    files                const Vector<Int>  List of selected file numbers
   // Output to private data:
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   itsSelectedFiles.resize(files.nelements());
   itsSelectedFiles = files;
   if (itsSelectedFiles.nelements() > 0) {
-    itsAllFilesSelected = False;
+    itsAllFilesSelected = false;
   }
 }
 
 //----------------------------------------------------------------------------
 
-Bool MSFitsIDI::fillMS() {
+bool MSFitsIDI::fillMS() {
   // Convert the FITS-IDI data to MS format
   //
   LogIO os(LogOrigin("MSFitsIDI", "fillMS()", WHERE));
@@ -152,7 +152,7 @@ Bool MSFitsIDI::fillMS() {
   //
   // Tape input: loop over all selected input files
   //
-  Bool atEnd = False;
+  bool atEnd = false;
   if (itsDeviceType == FITS::Tape9) {
     uInt fileIndex = 0;
     Int currentFile = 1;
@@ -190,30 +190,30 @@ Bool MSFitsIDI::fillMS() {
   } else if (itsDeviceType == FITS::Disk) {
     readFITSFile(atEnd);
   }
-  return True;
+  return true;
 }
 
 //----------------------------------------------------------------------------
 
 void MSFitsIDI::init(const String& dataSource, const FITS::FitsDevice& deviceType,
-                     const String& msOut, const Bool& overWrite, const Int& obsType) {
+                     const String& msOut, const bool& overWrite, const Int& obsType) {
   // Initialization (called by all constructors)
   // Input:
   //    dataSource    const String&            Input file name or tape device
   //    deviceType    const FITS::FitsDevice   FITS device type (tape or disk)
   //    msOut         const String&            Output MS name
-  //    overWrite     const Bool&              True if existing MS is to
+  //    overWrite     const bool&              true if existing MS is to
   //                                           be overwritten
   // Output to private data:
   //    itsDataSource        String             Tape name or input file name
   //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
   //    itsMSOut             String             Output MS name
   //    itsMS                MeasurementSet*    Pointer to output MS
-  //    itsMSExists          Bool               True if output MS already exists
-  //    itsOverWrite         Bool               True if existing MS is to
+  //    itsMSExists          Bool               true if output MS already exists
+  //    itsOverWrite         Bool               true if existing MS is to
   //                                            be overwritten
   //    itsSelectedFiles     Vector<Int>        Input file numbers selected
-  //    itsAllFilesSelected  Bool               True if all files selected
+  //    itsAllFilesSelected  Bool               true if all files selected
   //
   LogIO os(LogOrigin("MSFitsIDI", "init()", WHERE));
 
@@ -244,18 +244,18 @@ void MSFitsIDI::init(const String& dataSource, const FITS::FitsDevice& deviceTyp
   itsObsType = obsType;
 
   // Set remaining default parameters
-  itsAllFilesSelected = True;
+  itsAllFilesSelected = true;
 }
 
 //----------------------------------------------------------------------------
 
-void MSFitsIDI::readFITSFile(Bool& atEnd) {
+void MSFitsIDI::readFITSFile(bool& atEnd) {
   // Read and process the current FITS-IDI input file (on tape or disk)
   // Output:
-  //    atEnd                Bool               True if at EOF
+  //    atEnd                Bool               true if at EOF
   //
   LogIO os(LogOrigin("MSFitsIDI", "readFITSFile()", WHERE));
-  atEnd = False;
+  atEnd = false;
 
   // Construct a FitsInput object
   FitsInput infits(itsDataSource.c_str(), itsDeviceType);
@@ -284,7 +284,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd) {
   Float vanVleck = 0.0;
 
   // Loop over all HDU in the FITS-IDI file
-  Bool initFirstMain = True;
+  bool initFirstMain = true;
   while (infits.err() == FitsIO::OK && !infits.eof()) {
     // Fetch correlator info from the primary HDU
     if (infits.hdutype() == FITS::PrimaryArrayHDU) {
@@ -316,7 +316,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd) {
     } else {
       // Process the FITS-IDI input from the position of this binary table
       FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain, vanVleck, corVer);
-      initFirstMain = False;
+      initFirstMain = false;
       String hduName = bintab.extname();
       RTrimInPlace(hduName, ' ');
       String tableName = itsMSOut;
@@ -326,14 +326,14 @@ void MSFitsIDI::readFITSFile(Bool& atEnd) {
         }
 
         // Process the FITS-IDI input
-        Bool success = bintab.readFitsFile(tableName);
+        bool success = bintab.readFitsFile(tableName);
         if (infits.err() != FitsIO::OK) {
           os << LogIO::SEVERE << "Error reading FITS input" << LogIO::EXCEPTION;
         }
         if (success) {
           if (hduName != "UV_DATA") {
             subTableNr++;
-            subTableName.resize(subTableNr + 1, True);
+            subTableName.resize(subTableNr + 1, true);
             subTableName(subTableNr) = hduName;
           }
         } else {  // ignore this subtable
@@ -424,7 +424,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd) {
     //   msmain.rwKeywordSet().defineTable("IDI_CORRELATOR_MODEL",mssub);
     // }
   }
-  tmpDir.removeRecursive(False);
+  tmpDir.removeRecursive(false);
 }
 
 }  // namespace casacore

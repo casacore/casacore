@@ -67,7 +67,7 @@ class ValueHolder {
 
   // Create the object for the given value.
   // <group>
-  explicit ValueHolder(Bool value);
+  explicit ValueHolder(bool value);
   explicit ValueHolder(uChar value);
   explicit ValueHolder(Short value);
   explicit ValueHolder(uShort value);
@@ -80,7 +80,7 @@ class ValueHolder {
   explicit ValueHolder(const DComplex& value);
   explicit ValueHolder(const Char* value);
   explicit ValueHolder(const String& value);
-  explicit ValueHolder(const Array<Bool>& value);
+  explicit ValueHolder(const Array<bool>& value);
   explicit ValueHolder(const Array<uChar>& value);
   explicit ValueHolder(const Array<Short>& value);
   explicit ValueHolder(const Array<uShort>& value);
@@ -96,7 +96,7 @@ class ValueHolder {
   // </group>
 
   // Create an empty N-dim array (gets type TpOther).
-  ValueHolder(uInt ndim, Bool dummy);
+  ValueHolder(uInt ndim, bool dummy);
 
   // Create a ValueHolder from a ValueHolderRep.
   // It takes over the pointer and deletes it in the destructor.
@@ -112,7 +112,7 @@ class ValueHolder {
   ValueHolder& operator=(const ValueHolder&);
 
   // Is this a null object?
-  Bool isNull() const { return !itsRep; }
+  bool isNull() const { return !itsRep; }
 
   // Get the data type (as defined in DataType.h).
   // Note that TpOther is returned for an empty untyped array.
@@ -121,7 +121,7 @@ class ValueHolder {
   // Get the value.
   // If possible, it converts the data as needed.
   // <group>
-  Bool asBool() const;
+  bool asBool() const;
   uChar asuChar() const;
   Short asShort() const;
   uShort asuShort() const;
@@ -133,7 +133,7 @@ class ValueHolder {
   Complex asComplex() const;
   DComplex asDComplex() const;
   const String& asString() const;
-  const Array<Bool> asArrayBool() const;
+  const Array<bool> asArrayBool() const;
   const Array<uChar> asArrayuChar() const;
   const Array<Short> asArrayShort() const;
   const Array<uShort> asArrayuShort() const;
@@ -151,7 +151,7 @@ class ValueHolder {
   // Get the data in a way useful for templates.
   // If possible, it converts the the data as needed.
   // <group>
-  void getValue(Bool& value) const { value = asBool(); }
+  void getValue(bool& value) const { value = asBool(); }
   void getValue(uChar& value) const { value = asuChar(); }
   void getValue(Short& value) const { value = asShort(); }
   void getValue(uShort& value) const { value = asuShort(); }
@@ -163,7 +163,7 @@ class ValueHolder {
   void getValue(Complex& value) const { value = asComplex(); }
   void getValue(DComplex& value) const { value = asDComplex(); }
   void getValue(String& value) const { value = asString(); }
-  void getValue(Array<Bool>& value) const { value.reference(asArrayBool()); }
+  void getValue(Array<bool>& value) const { value.reference(asArrayBool()); }
   void getValue(Array<uChar>& value) const { value.reference(asArrayuChar()); }
   void getValue(Array<Short>& value) const { value.reference(asArrayShort()); }
   void getValue(Array<uShort>& value) const { value.reference(asArrayuShort()); }
@@ -204,7 +204,7 @@ inline void ValueHolder::toRecord(Record& rec, const RecordFieldId& id) const {
 inline ValueHolder ValueHolder::fromRecord(const Record& rec, const RecordFieldId& id) {
   return ValueHolder(ValueHolderRep::fromRecord(rec, id));
 }
-inline Bool ValueHolder::asBool() const { return itsRep->asBool(); }
+inline bool ValueHolder::asBool() const { return itsRep->asBool(); }
 inline uChar ValueHolder::asuChar() const { return itsRep->asuChar(); }
 inline Short ValueHolder::asShort() const { return itsRep->asShort(); }
 inline uShort ValueHolder::asuShort() const { return itsRep->asuShort(); }
@@ -216,7 +216,7 @@ inline Double ValueHolder::asDouble() const { return itsRep->asDouble(); }
 inline Complex ValueHolder::asComplex() const { return itsRep->asComplex(); }
 inline DComplex ValueHolder::asDComplex() const { return itsRep->asDComplex(); }
 inline const String& ValueHolder::asString() const { return itsRep->asString(); }
-inline const Array<Bool> ValueHolder::asArrayBool() const { return itsRep->asArrayBool(); }
+inline const Array<bool> ValueHolder::asArrayBool() const { return itsRep->asArrayBool(); }
 inline const Array<uChar> ValueHolder::asArrayuChar() const { return itsRep->asArrayuChar(); }
 inline const Array<Short> ValueHolder::asArrayShort() const { return itsRep->asArrayShort(); }
 inline const Array<uShort> ValueHolder::asArrayuShort() const { return itsRep->asArrayuShort(); }

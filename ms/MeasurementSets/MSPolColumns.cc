@@ -81,12 +81,12 @@ Int64 MSPolarizationColumns::match(const Vector<Stokes::StokesTypes>& polType, I
   return -1;
 }
 
-Bool MSPolarizationColumns::matchCorrType(rownr_t row, const Vector<Int>& polType) const {
+bool MSPolarizationColumns::matchCorrType(rownr_t row, const Vector<Int>& polType) const {
   DebugAssert(row < nrow(), AipsError);
   return allEQ(corrType()(row), polType);
 }
 
-Bool MSPolarizationColumns::matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const {
+bool MSPolarizationColumns::matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const {
   DebugAssert(row < nrow(), AipsError);
   // The static cast is a work around for an SGI compiler Bug
   return allEQ(corrProduct()(row), static_cast<const Matrix<Int>&>(polProduct));

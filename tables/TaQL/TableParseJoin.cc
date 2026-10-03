@@ -60,7 +60,7 @@ void TableParseJoin::addTable(Int tabnr, const String& name, const Table& ftab,
   // First add the table to the FROM tables in the parent which gives
   // the Table object.
   // Link it to the index of this TableParseJoin object in the parent.
-  Table tab = itsParent->tableList().addTable(tabnr, name, ftab, shorthand, True, tempTables, stack,
+  Table tab = itsParent->tableList().addTable(tabnr, name, ftab, shorthand, true, tempTables, stack,
                                               itsParent->joins().size() - 1);
   itsJoinTables.push_back(tab);
 }
@@ -117,8 +117,8 @@ void TableParseJoin::handleConditionParts(std::vector<TENShPtr>& parts) {
       throw TableInvExpr("Join expressions cannot have constant comparison operands");
     }
     // Get the tables used in left and right expression.
-    std::vector<Table> leftTables = TableExprNodeUtil::getNodeTables(leftChild.get(), False);
-    std::vector<Table> rightTables = TableExprNodeUtil::getNodeTables(rightChild.get(), False);
+    std::vector<Table> leftTables = TableExprNodeUtil::getNodeTables(leftChild.get(), false);
+    std::vector<Table> rightTables = TableExprNodeUtil::getNodeTables(rightChild.get(), false);
     // One side must be main tables and the other join tables.
     // For IN main tables must be on the left.
     // For ==, swap left and right if no join tables on the right.
@@ -196,10 +196,10 @@ void TableParseJoin::handleConditionParts(std::vector<TENShPtr>& parts) {
 
 void TableParseJoin::addUniqueTables(std::vector<Table>& tables, const std::vector<Table>& other) {
   for (const Table& tab : other) {
-    Bool add = True;
+    bool add = true;
     for (const Table& t2 : tables) {
       if (tab.isSameTable(t2)) {
-        add = False;
+        add = false;
         break;
       }
     }

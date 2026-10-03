@@ -47,7 +47,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class ComplexType>
-void LatticeFFT::cfft2d(Lattice<ComplexType>& cLattice, const Bool toFrequency) {
+void LatticeFFT::cfft2d(Lattice<ComplexType>& cLattice, const bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 1, AipsError);
   const IPosition& latticeShape = cLattice.shape();
@@ -71,15 +71,15 @@ void LatticeFFT::cfft2d(Lattice<ComplexType>& cLattice, const Bool toFrequency) 
     }
   }  // For large transforms , we do line by line FFT's
   else {
-    Vector<Bool> whichAxes(ndim, False);
-    whichAxes(0) = whichAxes(1) = True;
+    Vector<bool> whichAxes(ndim, false);
+    whichAxes(0) = whichAxes(1) = true;
     LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
   }
 }
 
 template <class ComplexType>
-void LatticeFFT::cfft(Lattice<ComplexType>& cLattice, const Vector<Bool>& whichAxes,
-                      const Bool toFrequency) {
+void LatticeFFT::cfft(Lattice<ComplexType>& cLattice, const Vector<bool>& whichAxes,
+                      const bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
@@ -88,7 +88,7 @@ void LatticeFFT::cfft(Lattice<ComplexType>& cLattice, const Vector<Bool>& whichA
   const IPosition tileShape = cLattice.niceCursorShape();
 
   for (uInt dim = 0; dim < ndim; dim++) {
-    if (whichAxes(dim) == True) {
+    if (whichAxes(dim) == true) {
       TiledLineStepper ts(latticeShape, tileShape, dim);
       LatticeIterator<ComplexType> li(cLattice, ts);
       for (li.reset(); !li.atEnd(); li++) {
@@ -99,8 +99,8 @@ void LatticeFFT::cfft(Lattice<ComplexType>& cLattice, const Vector<Bool>& whichA
 }
 
 template <class ComplexType>
-void LatticeFFT::cfft0(Lattice<ComplexType>& cLattice, const Vector<Bool>& whichAxes,
-                       const Bool toFrequency) {
+void LatticeFFT::cfft0(Lattice<ComplexType>& cLattice, const Vector<bool>& whichAxes,
+                       const bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
@@ -109,7 +109,7 @@ void LatticeFFT::cfft0(Lattice<ComplexType>& cLattice, const Vector<Bool>& which
   const IPosition tileShape = cLattice.niceCursorShape();
 
   for (uInt dim = 0; dim < ndim; dim++) {
-    if (whichAxes(dim) == True) {
+    if (whichAxes(dim) == true) {
       TiledLineStepper ts(latticeShape, tileShape, dim);
       LatticeIterator<ComplexType> li(cLattice, ts);
       for (li.reset(); !li.atEnd(); li++) {
@@ -120,15 +120,15 @@ void LatticeFFT::cfft0(Lattice<ComplexType>& cLattice, const Vector<Bool>& which
 }
 
 template <class ComplexType>
-void LatticeFFT::cfft(Lattice<ComplexType>& cLattice, const Bool toFrequency) {
-  const Vector<Bool> whichAxes(cLattice.ndim(), True);
+void LatticeFFT::cfft(Lattice<ComplexType>& cLattice, const bool toFrequency) {
+  const Vector<bool> whichAxes(cLattice.ndim(), true);
   LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
 }
 
 template <class ComplexType>
 void LatticeFFT::rcfft(Lattice<ComplexType>& out,
                        const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
-                       const Vector<Bool>& whichAxes, const Bool doShift, Bool doFast) {
+                       const Vector<bool>& whichAxes, const bool doShift, bool doFast) {
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
@@ -138,7 +138,7 @@ void LatticeFFT::rcfft(Lattice<ComplexType>& out,
   IPosition outShape = in.shape();
   uInt i = 0, firstAxis = ndim;
   while (i < ndim && firstAxis == ndim) {
-    if (whichAxes(i) == True) firstAxis = i;
+    if (whichAxes(i) == true) firstAxis = i;
     i++;
   }
   DebugAssert(firstAxis < ndim, AipsError);  // At least one axis must be given
@@ -153,7 +153,7 @@ void LatticeFFT::rcfft(Lattice<ComplexType>& out,
 
   {
     for (uInt dim = 0; dim < ndim; dim++) {
-      if (whichAxes(dim) == True) {
+      if (whichAxes(dim) == true) {
         if (dim == firstAxis) {
           if (inShape(dim) != 1) {  // Do real->complex Transforms
             LatticeIterator<typename NumericTraits<ComplexType>::ConjugateType> inIter(
@@ -163,7 +163,7 @@ void LatticeFFT::rcfft(Lattice<ComplexType>& out,
                  inIter++, outIter++) {
               if (doShift) {
                 if (doFast) {
-                  // ffts.flip(inIter.rwVectorCursor(), True, False);
+                  // ffts.flip(inIter.rwVectorCursor(), true, false);
                   ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
                 } else {
                   ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
@@ -182,12 +182,12 @@ void LatticeFFT::rcfft(Lattice<ComplexType>& out,
             for (iter.reset(); !iter.atEnd(); iter++) {
               if (doShift) {
                 if (doFast) {
-                  ffts.fft0(iter.rwVectorCursor(), True);
+                  ffts.fft0(iter.rwVectorCursor(), true);
                 } else {
-                  ffts.fft(iter.rwVectorCursor(), True);
+                  ffts.fft(iter.rwVectorCursor(), true);
                 }
               } else {
-                ffts.fft0(iter.rwVectorCursor(), True);
+                ffts.fft0(iter.rwVectorCursor(), true);
               }
             }
           }
@@ -202,7 +202,7 @@ void LatticeFFT::rcfft(Lattice<ComplexType>& out,
 template <class ComplexType>
 void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
                          const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
-                         const Vector<Bool>& whichAxes, const Bool doShift) {
+                         const Vector<bool>& whichAxes, const bool doShift) {
   //  cerr << "####myrcfft" << endl;
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
@@ -213,7 +213,7 @@ void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
   IPosition outShape = in.shape();
   uInt i = 0, firstAxis = ndim;
   while (i < ndim && firstAxis == ndim) {
-    if (whichAxes(i) == True) firstAxis = i;
+    if (whichAxes(i) == true) firstAxis = i;
     i++;
   }
   DebugAssert(firstAxis < ndim, AipsError);  // At least one axis must be given
@@ -225,7 +225,7 @@ void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
 
   {
     for (uInt dim = 0; dim < ndim; dim++) {
-      if (whichAxes(dim) == True) {
+      if (whichAxes(dim) == true) {
         if (dim == firstAxis) {
           if (inShape(dim) != 1) {  // Do real->complex Transforms
             RO_LatticeIterator<typename NumericTraits<ComplexType>::ConjugateType> inIter(
@@ -237,7 +237,7 @@ void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
                 //		  ffts.myfft(outIter.woVectorCursor(), inIter.vectorCursor());
                 ffts.flip((Vector<typename NumericTraits<ComplexType>::ConjugateType>&)
                               inIter.vectorCursor(),
-                          True, False);
+                          true, false);
                 ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
               } else {
                 ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
@@ -251,11 +251,11 @@ void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
             LatticeIterator<ComplexType> iter(out, TiledLineStepper(outShape, tileShape, dim));
             for (iter.reset(); !iter.atEnd(); iter++) {
               if (doShift) {
-                //		  ffts.fft(iter.rwVectorCursor(), 1, True);
-                ffts.flip(iter.rwVectorCursor(), True, False);
-                ffts.fft0(iter.rwVectorCursor(), True);
+                //		  ffts.fft(iter.rwVectorCursor(), 1, true);
+                ffts.flip(iter.rwVectorCursor(), true, false);
+                ffts.fft0(iter.rwVectorCursor(), true);
               } else {
-                ffts.fft0(iter.rwVectorCursor(), True);
+                ffts.fft0(iter.rwVectorCursor(), true);
               }
             }
           }
@@ -270,22 +270,22 @@ void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
 template <class ComplexType>
 void LatticeFFT::rcfft(Lattice<ComplexType>& out,
                        const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
-                       const Bool doShift, Bool doFast) {
-  const Vector<Bool> whichAxes(in.ndim(), True);
+                       const bool doShift, bool doFast) {
+  const Vector<bool> whichAxes(in.ndim(), true);
   LatticeFFT::rcfft(out, in, whichAxes, doShift, doFast);
 }
 template <class ComplexType>
 void LatticeFFT::myrcfft(Lattice<ComplexType>& out,
                          const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
-                         const Bool doShift) {
-  const Vector<Bool> whichAxes(in.ndim(), True);
+                         const bool doShift) {
+  const Vector<bool> whichAxes(in.ndim(), true);
   LatticeFFT::myrcfft(out, in, whichAxes, doShift);
 }
 
 template <class ComplexType>
 void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateType>& out,
-                       Lattice<ComplexType>& in, const Vector<Bool>& whichAxes, const Bool doShift,
-                       Bool doFast) {
+                       Lattice<ComplexType>& in, const Vector<bool>& whichAxes, const bool doShift,
+                       bool doFast) {
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
@@ -294,7 +294,7 @@ void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateTyp
   IPosition outShape = in.shape();
   uInt i = 0, firstAxis = ndim;
   while (i < ndim && firstAxis == ndim) {
-    if (whichAxes(i) == True) firstAxis = i;
+    if (whichAxes(i) == true) firstAxis = i;
     i++;
   }
   DebugAssert(firstAxis < ndim, AipsError);  // At least one axis must be given
@@ -313,21 +313,21 @@ void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateTyp
   uInt dim = ndim;
   while (dim != 0) {
     dim--;
-    if (whichAxes(dim) == True) {
+    if (whichAxes(dim) == true) {
       if (dim != firstAxis) {     // Do complex->complex Transforms
         if (inShape(dim) != 1) {  // no need to do anything unless len > 1
           LatticeIterator<ComplexType> iter(in, TiledLineStepper(inShape, tileShape, dim));
           for (iter.reset(); !iter.atEnd(); iter++) {
             if (doShift) {
               if (doFast) {
-                ffts.fft0(iter.rwVectorCursor(), False);
-                ffts.flip(iter.rwVectorCursor(), False, False);
+                ffts.fft0(iter.rwVectorCursor(), false);
+                ffts.flip(iter.rwVectorCursor(), false, false);
               } else {
-                //	      ffts.fft(iter.rwVectorCursor(), 2, False);
-                ffts.fft(iter.rwVectorCursor(), False);
+                //	      ffts.fft(iter.rwVectorCursor(), 2, false);
+                ffts.fft(iter.rwVectorCursor(), false);
               }
             } else {
-              ffts.fft0(iter.rwVectorCursor(), False);
+              ffts.fft0(iter.rwVectorCursor(), false);
             }
           }
         }
@@ -341,7 +341,7 @@ void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateTyp
             if (doShift) {
               if (doFast) {
                 ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
-                ffts.flip(outIter.rwVectorCursor(), False, False);
+                ffts.flip(outIter.rwVectorCursor(), false, false);
               } else {
                 ffts.fft(outIter.woVectorCursor(), inIter.vectorCursor());
               }
@@ -359,14 +359,14 @@ void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateTyp
 
 template <class ComplexType>
 void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateType>& out,
-                       Lattice<ComplexType>& in, const Bool doShift, Bool doFast) {
-  const Vector<Bool> whichAxes(in.ndim(), True);
+                       Lattice<ComplexType>& in, const bool doShift, bool doFast) {
+  const Vector<bool> whichAxes(in.ndim(), true);
   LatticeFFT::crfft(out, in, whichAxes, doShift, doFast);
 }
 
 template <class ComplexType>
 void LatticeFFT::crfft(Lattice<typename NumericTraits<ComplexType>::ConjugateType>& out,
-                       const Lattice<ComplexType>& in, const Bool doShift, Bool doFast) {
+                       const Lattice<ComplexType>& in, const bool doShift, bool doFast) {
   TempLattice<ComplexType> inCopy(in.shape());
   inCopy.copyData(in);
   LatticeFFT::crfft(out, inCopy, doShift, doFast);

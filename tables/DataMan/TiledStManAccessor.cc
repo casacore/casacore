@@ -33,7 +33,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ROTiledStManAccessor::ROTiledStManAccessor(const Table& table, const String& name, Bool byColumn)
+ROTiledStManAccessor::ROTiledStManAccessor(const Table& table, const String& name, bool byColumn)
     : RODataManAccessor(table, name, byColumn), dataManPtr_p(0) {
   dataManPtr_p = dynamic_cast<TiledStMan*>(baseDataManager());
   if (dataManPtr_p == 0) {
@@ -116,20 +116,20 @@ uInt ROTiledStManAccessor::calcCacheSize(rownr_t rownr, const IPosition& sliceSh
 }
 
 void ROTiledStManAccessor::setCacheSize(rownr_t rownr, const IPosition& sliceShape,
-                                        const IPosition& axisPath, Bool forceSmaller) {
+                                        const IPosition& axisPath, bool forceSmaller) {
   dataManPtr_p->setCacheSize(rownr, sliceShape, IPosition(), IPosition(), axisPath, forceSmaller);
 }
 void ROTiledStManAccessor::setCacheSize(rownr_t rownr, const IPosition& sliceShape,
                                         const IPosition& windowStart, const IPosition& windowLength,
-                                        const IPosition& axisPath, Bool forceSmaller) {
+                                        const IPosition& axisPath, bool forceSmaller) {
   dataManPtr_p->setCacheSize(rownr, sliceShape, windowStart, windowLength, axisPath, forceSmaller);
 }
 
-void ROTiledStManAccessor::setCacheSize(rownr_t rownr, uInt nbuckets, Bool forceSmaller) {
+void ROTiledStManAccessor::setCacheSize(rownr_t rownr, uInt nbuckets, bool forceSmaller) {
   dataManPtr_p->setCacheSize(rownr, nbuckets, forceSmaller);
 }
 
-void ROTiledStManAccessor::setHypercubeCacheSize(uInt hypercube, uInt nbuckets, Bool forceSmaller) {
+void ROTiledStManAccessor::setHypercubeCacheSize(uInt hypercube, uInt nbuckets, bool forceSmaller) {
   // Allow the cache to be sized only if the hypercube is not empty.
 
   if (getBucketSize(hypercube) > 0) {

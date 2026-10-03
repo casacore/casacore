@@ -48,8 +48,8 @@
 // the exceptions.
 
 // # Forward declaration.
-void doit(Bool doExcp);
-void doIO(Bool doExcp, Bool out, AipsIO&);
+void doit(bool doExcp);
+void doIO(bool doExcp, bool out, AipsIO&);
 void doTry(AipsIO&);
 
 int main(int argc, const char*[]) {
@@ -63,14 +63,14 @@ int main(int argc, const char*[]) {
   return 0;  // successfully executed
 }
 
-void doit(Bool doExcp) {
+void doit(bool doExcp) {
   {
     cout << "Test using normal files ..." << endl;
     AipsIO io("tAipsIO_tmp.data", ByteIO::New);  // open output file
-    doIO(doExcp, True, io);
+    doIO(doExcp, true, io);
     io.close();
     io.open("tAipsIO_tmp.data");
-    doIO(doExcp, False, io);
+    doIO(doExcp, false, io);
     // Now do some open calls; some of them are erroneous which are caught.
     // Delete the file in case it exists.
     if (doExcp) {
@@ -81,10 +81,10 @@ void doit(Bool doExcp) {
     cout << endl << "Test using MultiFile files ..." << endl;
     auto mfile = std::make_shared<MultiFile>("tAipsIO_tmp.mf", ByteIO::New);
     AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, mfile);  // open output file
-    doIO(doExcp, True, io);
+    doIO(doExcp, true, io);
     io.close();
     io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, mfile);
-    doIO(doExcp, False, io);
+    doIO(doExcp, false, io);
     // Now do some open calls; some of them are erroneous which are caught.
     // Delete the file in case it exists.
     if (doExcp) {
@@ -97,7 +97,7 @@ void doit(Bool doExcp) {
   {
     auto rawio = std::make_shared<RawIO>(membuf);
     AipsIO io2(rawio);
-    doIO(doExcp, True, io2);
+    doIO(doExcp, true, io2);
   }
   const uChar* iobuf = membuf->getBuffer();
   uInt bufleng = membuf->length();
@@ -105,13 +105,13 @@ void doit(Bool doExcp) {
   {
     auto rawio = std::make_shared<RawIO>(membuf2);
     AipsIO io2(rawio);
-    doIO(doExcp, False, io2);
+    doIO(doExcp, false, io2);
   }
 }
 
-void doIO(Bool doExcp, Bool out, AipsIO& io) {
-  Bool tbi, tbo;
-  tbi = True;
+void doIO(bool doExcp, bool out, AipsIO& io) {
+  bool tbi, tbo;
+  tbi = true;
   Char tci, tco;
   tci = -1;
   uChar tuci, tuco;
@@ -171,14 +171,14 @@ void doIO(Bool doExcp, Bool out, AipsIO& io) {
   sa[5] = s5;
   sa[5] += "abc";
   cout << sa[5] << endl;
-  Bool barr[100];
+  bool barr[100];
   for (i = 0; i < 100; i++) {
-    barr[i] = False;
+    barr[i] = false;
     if (i % 5 == 1) {
-      barr[i] = True;
+      barr[i] = true;
     }
   }
-  Bool barri[100];
+  bool barri[100];
   Int arr[250001];
   for (i = 0; i < 250001; i++) {
     arr[i] = i;
@@ -333,7 +333,7 @@ void doIO(Bool doExcp, Bool out, AipsIO& io) {
     }
   }
   delete[] lp;
-  Bool* barrp;
+  bool* barrp;
   io.getnew(len, barrp);
   cout << len << endl;
   for (i = 0; i < 100; i++) {

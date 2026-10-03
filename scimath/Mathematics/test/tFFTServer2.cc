@@ -423,20 +423,20 @@ int main() {
       input = Complex(0, 0);
       input(0) = Complex(1.0f, 0.0f);
       Vector<Complex> result, expectedResult(8);
-      server.fft0(result, input, True);
+      server.fft0(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
       expectedResult = Complex(0, 0);
       expectedResult(0) = Complex(8, 0);
-      server.fft0(result, input, True);
+      server.fft0(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
       input = Complex(-1, 0);
       input(0) = Complex(1, 0);
@@ -448,7 +448,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(0, 0);
@@ -462,7 +462,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 1-D complex->complex FFT's on an odd length
@@ -470,20 +470,20 @@ int main() {
       input = Complex(0, 0);
       input(0) = Complex(1.0f, 0.0f);
       Vector<Complex> result, expectedResult(7);
-      server.fft0(result, input, True);
+      server.fft0(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
       expectedResult = Complex(0, 0);
       expectedResult(0) = Complex(7, 0);
-      server.fft0(result, input, True);
+      server.fft0(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, 5 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 5 * FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an even/even length
@@ -495,7 +495,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -504,7 +504,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(0, 0);
@@ -519,7 +519,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, 5 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an odd/odd length
@@ -531,7 +531,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -540,7 +540,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an even/odd length
@@ -552,7 +552,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -561,7 +561,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an odd/even length
@@ -573,7 +573,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -582,7 +582,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 3-D complex->complex FFT's on an even/even/even length
@@ -594,7 +594,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -603,7 +603,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 3-D complex->complex FFT's on an odd/odd/odd length
@@ -615,7 +615,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -624,7 +624,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, 100 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
     }
     {  // 4-D complex->complex FFT's on an odd/odd/odd/even length
@@ -636,7 +636,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -645,7 +645,7 @@ int main() {
       server.fft0(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, 500 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft0(input, result, False);
+      server.fft0(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
     }
     {  // 1-D complex->complex FFT's on an even length (origin at the centre)
@@ -653,20 +653,20 @@ int main() {
       input = Complex(0, 0);
       input(4) = Complex(1.0f, 0.0f);
       Vector<Complex> result, expectedResult(8);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
       expectedResult = Complex(0, 0);
       expectedResult(4) = Complex(8, 0);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(-1, 0);
@@ -679,7 +679,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(0, 0);
@@ -693,7 +693,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 1-D complex->complex FFT's on an odd length (origin at the centre)
@@ -701,20 +701,20 @@ int main() {
       input = Complex(0, 0);
       input(3) = Complex(1.0f, 0.0f);
       Vector<Complex> result, expectedResult(7);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
       expectedResult = Complex(0, 0);
       expectedResult(3) = Complex(7, 0);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, 5 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 5 * FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an even/even length (origin at centre)
@@ -726,7 +726,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -735,7 +735,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(0, 0);
@@ -750,7 +750,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, 5 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an odd/odd length (origin at centre)
@@ -762,7 +762,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -771,7 +771,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an even/odd length (origin at centre)
@@ -783,7 +783,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -792,7 +792,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 2-D complex->complex FFT's on an odd/even length (origin at centre)
@@ -804,7 +804,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -813,7 +813,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 3-D complex->complex FFT's on an even/even/even len (origin at centre)
@@ -825,7 +825,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -834,7 +834,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, FLT_EPSILON), AipsError);
     }
     {  // 3-D complex->complex FFT's on an odd/odd/odd length (origin at centre)
@@ -846,7 +846,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -855,7 +855,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, 100 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
     }
     {  // 4-D complex->complex FFT's on an odd/odd/odd/even len (orig at centre)
@@ -867,7 +867,7 @@ int main() {
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
 
       input = Complex(1, 0);
@@ -876,7 +876,7 @@ int main() {
       server.fft(result, input);
       AlwaysAssert(allNearAbs(result, expectedResult, 500 * FLT_EPSILON), AipsError);
       expectedResult = input;
-      server.fft(input, result, False);
+      server.fft(input, result, false);
       AlwaysAssert(allNearAbs(input, expectedResult, 2 * FLT_EPSILON), AipsError);
     }
     {  // 1-D real<->complex FFT's on an even length (orig at centre)
@@ -884,7 +884,7 @@ int main() {
       input = 0.0f;
       input(4) = 1.0f;
       Vector<Complex> result, expectedResult(5);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Vector<Float> reverseTransform;
@@ -896,7 +896,7 @@ int main() {
       input(6) = -1.0f;
       expectedResult = Complex(0, 0);
       expectedResult(2) = Complex(4, 0);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       server.fft(reverseTransform, result);
       AlwaysAssert(allNearAbs(input, reverseTransform, FLT_EPSILON), AipsError);
@@ -908,7 +908,7 @@ int main() {
       input(7) = -1.0f;
       expectedResult = Complex(0, 0);
       expectedResult(2) = Complex(0, -4);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       server.fft(reverseTransform, result);
       AlwaysAssert(allNearAbs(input, reverseTransform, FLT_EPSILON), AipsError);
@@ -931,7 +931,7 @@ int main() {
       input = 0.0f;
       input(4) = 1.0f;
       Vector<Complex> result, expectedResult(5);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Vector<Float> reverseTransform;
@@ -952,7 +952,7 @@ int main() {
       input(7) = 0.0f;
       expectedResult = Complex(0, 0);
       expectedResult(0) = Complex(5, 0);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       AlwaysAssert(near(result(0), Complex(5, 0), FLT_EPSILON), AipsError);
       AlwaysAssert(!near(result(4).imag(), 0.0f, FLT_EPSILON), AipsError);
       server.fft(reverseTransform, result);
@@ -963,7 +963,7 @@ int main() {
       input = 0.0f;
       input(2, 3) = 1.0f;
       Matrix<Complex> result, expectedResult(3, 6);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Matrix<Float> reverseTransform;
@@ -987,7 +987,7 @@ int main() {
       expectedResult(0, 0) = expectedResult(2, 3) = Complex(-3, 0);
       expectedResult(1, 0) = Complex(0, 3);
       expectedResult(1, 3) = Complex(0, -3);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       AlwaysAssert(allNearAbs(result, expectedResult, 2.0f * FLT_EPSILON), AipsError);
       server.fft(reverseTransform, result);
       AlwaysAssert(allNearAbs(input, reverseTransform, FLT_EPSILON), AipsError);
@@ -997,7 +997,7 @@ int main() {
       input = 0.0f;
       input(2, 2) = 1.0f;
       Matrix<Complex> result, expectedResult(3, 5);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Matrix<Float> reverseTransform;
@@ -1017,7 +1017,7 @@ int main() {
       input = 0.0f;
       input(1, 3) = 1.0f;
       Matrix<Complex> result, expectedResult(2, 6);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Matrix<Float> reverseTransform;
@@ -1037,7 +1037,7 @@ int main() {
       input = 0.0f;
       input(1, 2) = 1.0f;
       Matrix<Complex> result, expectedResult(2, 5);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Matrix<Float> reverseTransform;
@@ -1057,7 +1057,7 @@ int main() {
       input = 0.0f;
       input(2, 3, 4) = 1.0f;
       Cube<Complex> result, expectedResult(3, 6, 8);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Cube<Float> reverseTransform;
@@ -1077,7 +1077,7 @@ int main() {
       input = 0.0f;
       input(1, 2, 3) = 1.0f;
       Cube<Complex> result, expectedResult(2, 5, 7);
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Cube<Float> reverseTransform;
@@ -1097,7 +1097,7 @@ int main() {
       input = 0.0f;
       input(IPosition(4, 1, 2, 3, 2)) = 1.0f;
       Array<Complex> result, expectedResult(IPosition(4, 2, 5, 7, 4));
-      server.fft(result, input, True);
+      server.fft(result, input, true);
       expectedResult = Complex(1, 0);
       AlwaysAssert(allNearAbs(result, expectedResult, FLT_EPSILON), AipsError);
       Array<Float> reverseTransform;

@@ -169,18 +169,18 @@ class MSSelection {
   // Expression setters.  The following set*Expr() methods only set
   // the expressions.  Parsing is done with a call to
   // toTableExprNode().
-  Bool setAntennaExpr(const String& antennaExpr);
-  Bool setFieldExpr(const String& fieldExpr);
-  Bool setSpwExpr(const String& spwExpr);
-  Bool setScanExpr(const String& scanExpr);
-  Bool setArrayExpr(const String& ArrayExpr);
-  Bool setTimeExpr(const String& timeExpr);
-  Bool setUvDistExpr(const String& uvDistExpr);
-  Bool setTaQLExpr(const String& taqlExpr);
-  Bool setPolnExpr(const String& polnExpr);
-  Bool setStateExpr(const String& stateExpr);
-  Bool setObservationExpr(const String& observationExpr);
-  Bool setFeedExpr(const String& feedExpr);
+  bool setAntennaExpr(const String& antennaExpr);
+  bool setFieldExpr(const String& fieldExpr);
+  bool setSpwExpr(const String& spwExpr);
+  bool setScanExpr(const String& scanExpr);
+  bool setArrayExpr(const String& ArrayExpr);
+  bool setTimeExpr(const String& timeExpr);
+  bool setUvDistExpr(const String& uvDistExpr);
+  bool setTaQLExpr(const String& taqlExpr);
+  bool setPolnExpr(const String& polnExpr);
+  bool setStateExpr(const String& stateExpr);
+  bool setObservationExpr(const String& observationExpr);
+  bool setFeedExpr(const String& feedExpr);
 
   // Accessor for the various selection expressions as strings.
   const String getExpr(const MSExprType type = NO_EXPR);
@@ -297,7 +297,7 @@ class MSSelection {
   // Accessor for the list of user defined units for the
   // uv-range(s).  The uv-range(s) return by getUVList is always in
   // the units used in the MS.
-  inline Vector<Bool> getUVUnitsList(const MeasurementSet* ms = NULL) {
+  inline Vector<bool> getUVUnitsList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return selectedUVUnits_p;
   }
@@ -320,16 +320,16 @@ class MSSelection {
   // was supplied as part of the expression, the value of Step is
   // replaced with the value of the defaultStep parameter. Multiple
   // channel specifications for the same Spectral Window selection,
-  // results in multiple rows in the Matrix. If sorted is True, the
+  // results in multiple rows in the Matrix. If sorted is true, the
   // rows of the output Matrix will be sorted by the SPW IDs (the
   // entries in the first column).
   Matrix<Int> getChanList(const MeasurementSet* ms = NULL, const Int defaultStep = 1,
-                          const Bool sorted = False);
+                          const bool sorted = false);
 
   //
   // Same as getChanList, except that the channels and steps are in Hz.
   //
-  Matrix<Double> getChanFreqList(const MeasurementSet* ms = NULL, const Bool sorted = False);
+  Matrix<Double> getChanFreqList(const MeasurementSet* ms = NULL, const bool sorted = false);
 
   // Accessor for the list of the selected Data Description IDs
   // (DDID) from the polarization expression parsing.  The actual
@@ -466,7 +466,7 @@ class MSSelection {
   // Set all error handlers to a known state (NULL).
   void clearErrorHandlers();
 
-  Bool exprIsNull(const MSExprType type = NO_EXPR);
+  bool exprIsNull(const MSExprType type = NO_EXPR);
 
   // Convey to the various parsers to delete the TENs they hold
   void deleteNodes();
@@ -499,7 +499,7 @@ class MSSelection {
   // mssSetData() MSSelectionTools.h which also returns the in-row
   // (corr/chan) slices that can be supplied to the VisIter object
   // for on-the-fly in-row selection.
-  Bool getSelectedMS(MeasurementSet& selectedMS, const String& outMSName = "");
+  bool getSelectedMS(MeasurementSet& selectedMS, const String& outMSName = "");
 
   void resetMS(const MeasurementSet& ms) {
     resetTEN();
@@ -572,7 +572,7 @@ class MSSelection {
   // Set the error handler to be used for reporting errors while
   // parsing the type of expression give by the first argument.
   void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
-                       const Bool overRide = True);
+                       const bool overRide = true);
 
   // Initialize the error handler.  This is set the error-handler to
   // the user supplied error handler via setErrorHandler() or to the
@@ -590,14 +590,14 @@ class MSSelection {
 
  private:
   // Set into the order of the selection expression
-  Bool setOrder(MSSelection::MSExprType type);
+  bool setOrder(MSSelection::MSExprType type);
 
   // Initialize from a Record representing a selection
   // item from the user interface or CLI
   void fromSelectionItem(const Record& selectionItem);
 
   // Check if record field exists and is not unset
-  Bool definedAndSet(const Record& inpRec, const String& fieldName);
+  bool definedAndSet(const Record& inpRec, const String& fieldName);
 
   // Convert an MS select string to TaQL
   //   const String msToTaQL(const String& msSelect) {};
@@ -626,11 +626,11 @@ class MSSelection {
   Matrix<Int> feedPairIDs_p;
   Matrix<Double> selectedTimesList_p;
   Matrix<Double> selectedUVRange_p;
-  Vector<Bool> selectedUVUnits_p;
+  Vector<bool> selectedUVUnits_p;
   std::map<Int, Vector<Int>> selectedPolMap_p;
   std::map<Int, Vector<Vector<Int>>> selectedSetupMap_p;
   Int maxScans_p, maxObs_p, maxArray_p;
-  Bool isMS_p, toTENCalled_p;
+  bool isMS_p, toTENCalled_p;
 };
 
 }  // namespace casacore

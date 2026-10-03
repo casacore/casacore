@@ -58,7 +58,7 @@ void CLInterpolator2D<T>::set(MaskedLattice<T>* lattice, const AxesMapping& axes
     itsIsRef = lattice->canReferenceArray();
     preset();
   } else {
-    itsIsRef = False;
+    itsIsRef = false;
   }
 }
 

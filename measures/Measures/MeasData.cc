@@ -45,7 +45,7 @@ const Double MeasData::SECinDAY = (3600. * 24.);
 
 // Galactic coordinates
 const RotMatrix &MeasData::GALtoB1950() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
   static const Double data[3][3] = {{-0.0669887394, +0.4927284661, -0.8676008112},
                                     {-0.8727557659, -0.4503469580, -0.1883746017},
@@ -58,13 +58,13 @@ const RotMatrix &MeasData::GALtoB1950() {
         rot(i, j) = data[i][j];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 const RotMatrix &MeasData::B1950toGAL() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
   static const Double data[3][3] = {{-0.0669887394, +0.4927284661, -0.8676008112},
                                     {-0.8727557659, -0.4503469580, -0.1883746017},
@@ -77,13 +77,13 @@ const RotMatrix &MeasData::B1950toGAL() {
         rot(i, j) = data[j][i];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 const RotMatrix &MeasData::GALtoJ2000() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
   static const Double data[3][3] = {///    { -0.0548755397,	+0.4941094533,	-0.8676661359},
                                     ///    { -0.8734371080,	-0.4448295894,	-0.1980763861},
@@ -99,13 +99,13 @@ const RotMatrix &MeasData::GALtoJ2000() {
         rot(i, j) = data[i][j];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 const RotMatrix &MeasData::J2000toGAL() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
   static const Double data[3][3] = {///    { -0.0548755397,	+0.4941094533,	-0.8676661359},
                                     ///    { -0.8734371080,	-0.4448295894,	-0.1980763861},
@@ -121,14 +121,14 @@ const RotMatrix &MeasData::J2000toGAL() {
         rot(i, j) = data[j][i];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 // B1950-J2000 conversions
 const RotMatrix &MeasData::MToB1950(uInt which) {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot[5];
   static const Double data[5][3][3] = {{{+0.9999256795, +0.0111814828, +0.0048590039},
                                         {-0.0111814828, +0.9999374849, -0.0000271771},
@@ -155,14 +155,14 @@ const RotMatrix &MeasData::MToB1950(uInt which) {
         }
       }
     }
-    needInit = False;
+    needInit = false;
   }
   DebugAssert(which < 5, AipsError);
   return rot[which];
 }
 
 const RotMatrix &MeasData::MToJ2000(uInt which) {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot[4];
   static const Double data[4][3][3] = {{{+0.9999256782, -0.0111820611, -0.0048579477},
                                         {+0.0111820610, +0.9999374784, -0.0000271765},
@@ -186,7 +186,7 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
         }
       }
     }
-    needInit = False;
+    needInit = false;
   }
 
   DebugAssert(which < 4, AipsError);

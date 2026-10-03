@@ -73,9 +73,9 @@ class TableExprNodeRecordField : public TableExprNodeBinary {
   ~TableExprNodeRecordField();
 
   virtual const IPosition& getShape(const TableExprId& id);
-  virtual Bool isDefined(const TableExprId& id);
+  virtual bool isDefined(const TableExprId& id);
 
-  virtual Bool getBool(const TableExprId& id);
+  virtual bool getBool(const TableExprId& id);
   virtual Int64 getInt(const TableExprId& id);
   virtual Double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
@@ -115,10 +115,10 @@ class TableExprNodeRecordFieldArray : public TableExprNodeArray {
   TableExprNodeRecordFieldArray(DataType dtype, const Block<Int>& fieldNumbers);
   ~TableExprNodeRecordFieldArray();
 
-  virtual Bool isDefined(const TableExprId& id);
+  virtual bool isDefined(const TableExprId& id);
   virtual const IPosition& getShape(const TableExprId& id);
 
-  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);

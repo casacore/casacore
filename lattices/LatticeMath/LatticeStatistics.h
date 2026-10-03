@@ -156,7 +156,7 @@ class IPosition;
 //
 //// Set to list and plot mean, sigma and rms
 //
-//      if (!stats.setList(True)) return 1;
+//      if (!stats.setList(true)) return 1;
 //      String device = "/xs";
 //      Vector<Int> nxy(2);
 //      nxy(0) = 1;
@@ -203,23 +203,23 @@ class LatticeStatistics : public LatticeStatsBase {
   // You can specify whether you want to see progress meters or not.
   // You can force the storage lattice to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  // If <src>clone</src> is True, the input lattice will be cloned, so the caller
+  // If <src>clone</src> is true, the input lattice will be cloned, so the caller
   // can make changes to the input lattice, but the statistics will reflect the
-  // lattice as it was at construction. If False, a reference to the input lattice
+  // lattice as it was at construction. If false, a reference to the input lattice
   // is used, and so the caller shouldn't make changes to the input lattice between
   // construction and calling statistics computation methods, unless it calls setNewLattice()
   // to update the changed lattice. Obviously, cloning the lattice impacts performance
   // and memory usage.
-  LatticeStatistics(const MaskedLattice<T>& lattice, LogIO& os, Bool showProgress = True,
-                    Bool forceDisk = False, Bool clone = True);
+  LatticeStatistics(const MaskedLattice<T>& lattice, LogIO& os, bool showProgress = true,
+                    bool forceDisk = false, bool clone = true);
 
   // Constructor takes the lattice only. In the absence of a logger you get no messages.
   // This includes error messages and potential listing of the statistics.
   // You can specify whether you want to see progress meters or not.
   // You can force the storage lattice to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  LatticeStatistics(const MaskedLattice<T>& lattice, Bool showProgress = True,
-                    Bool forceDisk = False, Bool clone = True);
+  LatticeStatistics(const MaskedLattice<T>& lattice, bool showProgress = true,
+                    bool forceDisk = false, bool clone = true);
 
   // Copy constructor.  Copy semantics are followed.  Therefore any storage lattice
   // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -233,10 +233,10 @@ class LatticeStatistics : public LatticeStatsBase {
   // already been created for "other".
   LatticeStatistics<T>& operator=(const LatticeStatistics<T>& other);
 
-  // Set the cursor axes (0 relative).  A return value of <src>False</src>
+  // Set the cursor axes (0 relative).  A return value of <src>false</src>
   // indicates you have asked for an invalid axis.  The default state of the class
   // is to set the cursor axes to all axes in the lattice.
-  Bool setAxes(const Vector<Int>& cursorAxes);
+  bool setAxes(const Vector<Int>& cursorAxes);
 
   // You may specify a pixel intensity range as either one for which
   // all pixels in that range are included or one for which all pixels
@@ -246,38 +246,38 @@ class LatticeStatistics : public LatticeStatsBase {
   // range, then if you set <src>setMinMaxToInclude=True</src>, the
   // minimum and maximum values that this class returns will always be
   // the minimum and maximum of the <src>include</src> range, respectively.
-  // A return value of <src>False</src> indicates that
+  // A return value of <src>false</src> indicates that
   // you have given both an <src>include</src> and an <src>exclude</src>
   // range.  A vector of length 1 for <src>include</src> and/or <src>exclude</src>
   // means that the range will be set to (say for <src>include</src>)
   // <src>-abs(include(0))</src> to <src>abs(include(0))</src>.  A return value
-  // of <src>False</src> indicates that both an inclusion and exclusion
+  // of <src>false</src> indicates that both an inclusion and exclusion
   // range were given or that the internal state of the class is bad.   If you don't
   // call this function, the default state of the class  is to include all pixels.
-  Bool setInExCludeRange(const Vector<T>& include, const Vector<T>& exclude,
-                         Bool setMinMaxToInclude = False);
+  bool setInExCludeRange(const Vector<T>& include, const Vector<T>& exclude,
+                         bool setMinMaxToInclude = false);
 
   // This function allows you to control whether the statistics are written to
   // the output stream if you are also making a plot.  A return value of
-  // <src>False</src> indicates that the internal state of the class is bad.
+  // <src>false</src> indicates that the internal state of the class is bad.
   // If you have created the <src>LatticeStatistics</src> object without
   // a <src>LogIO</src> object, you won't see any listings, but no error
   // conditions will be generated.  The default state of the class is to
   // not list the output when making a plot.
-  Bool setList(const Bool& doList);
+  bool setList(const bool& doList);
 
   // Display the statistics by listing and/or plotting them.  If you don't call
-  // this function then you won't see anything !  A return value of <src>False</src>
+  // this function then you won't see anything !  A return value of <src>false</src>
   // indicates an invalid plotting device, or that the internal state of the class is bad.
 
-  Bool display();
+  bool display();
 
-  Bool getLayerStats(String& stats, Double area, Int zAxis = -1, Int zLayer = -1, Int hAxis = -1,
+  bool getLayerStats(String& stats, Double area, Int zAxis = -1, Int zLayer = -1, Int hAxis = -1,
                      Int hLayer = -1);
 
   typedef std::pair<String, String> stat_element;
   typedef std::list<stat_element> stat_list;
-  Bool getLayerStats(stat_list& stats, Double area, Int zAxis = -1, Int zLayer = -1, Int hAxis = -1,
+  bool getLayerStats(stat_list& stats, Double area, Int zAxis = -1, Int zLayer = -1, Int hAxis = -1,
                      Int hLayer = -1);
 
   // Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
@@ -291,21 +291,21 @@ class LatticeStatistics : public LatticeStatsBase {
   // array is the shape of the display axes (e.g. if the shape of the lattice is
   // [nx,ny,nz] and you ask for the mean of the y axis the shape of the returned
   // array would be [nx,nz].    A returned array of zero shape indicates that there
-  // were no good values.   A return   value of <src>False</src>
+  // were no good values.   A return   value of <src>false</src>
   // indicates that the internal state of  the class is bad.
   // <group>
-  Bool getStatistic(Array<AccumType>& stat, LatticeStatsBase::StatisticsTypes type,
-                    Bool dropDeg = True);
-  Bool getConvertedStatistic(Array<T>& stat, LatticeStatsBase::StatisticsTypes type,
-                             Bool dropDeg = True);
+  bool getStatistic(Array<AccumType>& stat, LatticeStatsBase::StatisticsTypes type,
+                    bool dropDeg = true);
+  bool getConvertedStatistic(Array<T>& stat, LatticeStatsBase::StatisticsTypes type,
+                             bool dropDeg = true);
   // </group>
 
   // Recover position of min and max. Only works if there are no
   // display axes (i.e. statistics found over entire image), otherwise,
   // the returned values are resized to 0 shape.  A return
-  // value of <src>False</src> indicates that the internal state of
+  // value of <src>false</src> indicates that the internal state of
   // the class is bad.
-  Bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
+  bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
 
   // This function gets a vector containing all the statistics
   // for a given location.  If <src>posInLattice=True</src> then
@@ -315,44 +315,44 @@ class LatticeStatistics : public LatticeStatsBase {
   // Use can use the enum in class LatticeStatsBase to find out
   // which locations in the vector contain which statistics.
   // A returned vector of zero shape indicates that there
-  // were no good values. A return  value of <src>False</src>
+  // were no good values. A return  value of <src>false</src>
   // indicates that the  internal state of the class is bad.
-  Bool getStats(Vector<AccumType>&, const IPosition& pos, const Bool posInLattice = False);
+  bool getStats(Vector<AccumType>&, const IPosition& pos, const bool posInLattice = false);
 
   // Reset argument error condition.  If you specify invalid arguments to
   // one of the above <src>set</src> functions, an internal flag will be set which will
   // prevent the work functions from doing anything (should you have chosen
   // to ignore the Boolean return values of the <src>set</src> functions).
   // This function allows you to reset that internal state to good.
-  void resetError() { goodParameterStatus_p = True; };
+  void resetError() { goodParameterStatus_p = true; };
 
-  // Get full lattice min and max only.  Returns False if no unmasked data, else returns True.
+  // Get full lattice min and max only.  Returns false if no unmasked data, else returns true.
   // Honours any include or exclude range if set.
-  Bool getFullMinMax(T& dataMin, T& dataMax);
+  bool getFullMinMax(T& dataMin, T& dataMax);
 
   // Recover last error message
   String errorMessage() const { return error_p; };
 
-  // Set a new MaskedLattice object.  A return value of <src>False</src> indicates the
+  // Set a new MaskedLattice object.  A return value of <src>false</src> indicates the
   // lattice had an invalid type or that the internal state of the class is bad.
-  // If <src>clone</src> is True, the input lattice will be cloned, so the caller
+  // If <src>clone</src> is true, the input lattice will be cloned, so the caller
   // can make changes to the input lattice, but the statistics will reflect the
-  // lattice as it was at construction. If False, a reference to the input lattice
+  // lattice as it was at construction. If false, a reference to the input lattice
   // is used, and so the caller shouldn't make changes to the input lattice between
   // construction and calling statistics computation methods, unless it calls setNewLattice()
   // to update the changed lattice. Obviously, cloning the lattice impacts performance
   // and memory usage.
-  Bool setNewLattice(const MaskedLattice<T>& lattice, Bool clone = True);
+  bool setNewLattice(const MaskedLattice<T>& lattice, bool clone = true);
 
   // Did we construct with a logger ?
-  Bool hasLogger() const { return haveLogger_p; };
+  bool hasLogger() const { return haveLogger_p; };
 
-  // The configure methods return True if reconfiguration is actually
+  // The configure methods return true if reconfiguration is actually
   // necessary (ie if the underlying storage lattice needs to be recomputed).
-  // If no reconfiguration is necessary, False is returned.
+  // If no reconfiguration is necessary, false is returned.
 
   // configure to use biweight algorithm.
-  Bool configureBiweight(Int maxIter, Double c);
+  bool configureBiweight(Int maxIter, Double c);
 
   // configure object to use Classical Statistics
   // The time, t_x, it takes to compute classical statistics using algorithm x, can
@@ -373,22 +373,22 @@ class LatticeStatistics : public LatticeStatsBase {
   // coeffecients that is important
   // The version that takes no parameters uses the default values of the coefficients;
   // <group>
-  Bool configureClassical();
+  bool configureClassical();
 
-  Bool configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
+  bool configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
   // </group>
 
   // configure to use fit to half algorithm.
-  Bool configureFitToHalf(
+  bool configureFitToHalf(
       FitToHalfStatisticsData::CENTER centerType = FitToHalfStatisticsData::CMEAN,
       FitToHalfStatisticsData::USE_DATA useData = FitToHalfStatisticsData::LE_CENTER,
       AccumType centerValue = 0);
 
   // configure to use hinges-fences algorithm
-  Bool configureHingesFences(Double f);
+  bool configureHingesFences(Double f);
 
   // configure to use Chauvenet's criterion
-  Bool configureChauvenet(Double zscore = -1, Int maxIterations = -1);
+  bool configureChauvenet(Double zscore = -1, Int maxIterations = -1);
 
   // <group>
   // The force* methods are really only for testing. They in general shouldn't
@@ -412,19 +412,19 @@ class LatticeStatistics : public LatticeStatsBase {
   // stats algorithm objects. Unnecessary recreation of these is a performance
   // bottleneck for iterative stats algorithms (eg Chauvenet), especially for
   // large images (CAS-10947/10948).
-  void setComputeQuantiles(Bool b);
+  void setComputeQuantiles(bool b);
 
  protected:
   LogIO os_p;
   Vector<Int> cursorAxes_p, displayAxes_p;
-  Bool goodParameterStatus_p;
-  Bool haveLogger_p, fixedMinMax_p;
+  bool goodParameterStatus_p;
+  bool haveLogger_p, fixedMinMax_p;
 
   // doRobust means that when the storage lattice is generated, the
   // robust statistics are generated as well
 
-  Bool doRobust_p;
-  Bool doList_p;
+  bool doRobust_p;
+  bool doList_p;
   IPosition minPos_p, maxPos_p, blcParent_p;
   String error_p;
   //
@@ -433,11 +433,11 @@ class LatticeStatistics : public LatticeStatsBase {
   // FIXME The indirect dependence of this class on ImageInterface related
   // issues (eg flux density) breaks encapsulation. All the ImageInterface related code should be
   // encapsulated in ImageStatistics. Unfortunately, that requires significantly
-  // more time than I have atm. A return value of False means that the object in
-  // question cannot compute flux density values. The default implementation returns False.
-  virtual Bool _canDoFlux() const { return False; }
+  // more time than I have atm. A return value of false means that the object in
+  // question cannot compute flux density values. The default implementation returns false.
+  virtual bool _canDoFlux() const { return false; }
 
-  virtual Quantum<AccumType> _flux(Bool&, AccumType, Double) const {
+  virtual Quantum<AccumType> _flux(bool&, AccumType, Double) const {
     ThrowCc("Logic Error: This object cannot compute flux density");
   }
 
@@ -453,16 +453,16 @@ class LatticeStatistics : public LatticeStatsBase {
   // lattice.  dPos is the location of the start of the cursor in the
   // storage image for this row.  stats(j,i) is the statistics matrix.
   // for the jth point and the ith statistic.
-  // The return value is False if something goes wrong !
+  // The return value is false if something goes wrong !
   // Have a look at the implementation to see what you really
   // have to do.
-  virtual Bool listStats(Bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
-  virtual Bool listLayerStats(const Matrix<AccumType>& ord, ostringstream& rslt, Int zLayer);
+  virtual bool listStats(bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
+  virtual bool listLayerStats(const Matrix<AccumType>& ord, ostringstream& rslt, Int zLayer);
 
   // Given a location in the storage lattice, convert those locations on the
   // non-statistics axis (the last one) and optionally account for the
   // lattice subsectioning
-  IPosition locInLattice(const IPosition& storagePosition, Bool relativeToParent = True) const;
+  IPosition locInLattice(const IPosition& storagePosition, bool relativeToParent = true) const;
 
   // Non-virtual functions
   //
@@ -472,18 +472,18 @@ class LatticeStatistics : public LatticeStatsBase {
   // get the storage lattice shape
   inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }
 
-  virtual Bool _computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
+  virtual bool _computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
                             const Array<AccumType>& sum);
 
-  virtual Bool _computeFlux(Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
-                            Bool posInLattice);
+  virtual bool _computeFlux(Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
+                            bool posInLattice);
 
   // convert a position in the input lattice to the corresponding
   // position in the stats storage lattice. The number of elements
   // in storagePos will not be changed and only the first N elements
   // will be modified where N = the number of elements in latticePos.
   // <src>storagePos</src> must therefore have at least as many elements
-  // as <src>latticePos</src>. Returns False if
+  // as <src>latticePos</src>. Returns false if
   //<src>latticePos</src> is inconsistent with the input lattice.
   void _latticePosToStoragePos(IPosition& storagePos, const IPosition& latticePos);
 
@@ -502,15 +502,15 @@ class LatticeStatistics : public LatticeStatsBase {
   std::shared_ptr<TempLattice<AccumType>> pStoreLattice_p;
   Vector<Int> nxy_p, statsToPlot_p;
   Vector<T> range_p;
-  Bool noInclude_p, noExclude_p;
+  bool noInclude_p, noExclude_p;
 
-  Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
-  Bool showProgress_p, forceDisk_p;
+  bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
+  bool showProgress_p, forceDisk_p;
 
   T minFull_p, maxFull_p;
-  Bool doneFullMinMax_p;
+  bool doneFullMinMax_p;
 
-  StatisticsAlgorithmFactory<AccumType, const T*, const Bool*> _saf;
+  StatisticsAlgorithmFactory<AccumType, const T*, const bool*> _saf;
   std::map<String, uInt> _chauvIters;
 
   Double _aOld, _bOld, _aNew, _bNew;
@@ -537,8 +537,8 @@ class LatticeStatistics : public LatticeStatsBase {
                             AccumType q1, AccumType q3);
 
   // Calculate statistic from storage lattice and return in an array
-  Bool calculateStatistic(Array<AccumType>& slice, LatticeStatsBase::StatisticsTypes type,
-                          Bool dropDeg);
+  bool calculateStatistic(Array<AccumType>& slice, LatticeStatsBase::StatisticsTypes type,
+                          bool dropDeg);
 
   template <class U, class V>
   void _computeQuantiles(AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
@@ -554,7 +554,7 @@ class LatticeStatistics : public LatticeStatsBase {
   void generateRobust();
 
   // Create a new storage lattice
-  Bool generateStorageLattice();
+  bool generateStorageLattice();
 
   // Given a location in the lattice and a statistic type, work
   // out where to put it in the storage lattice
@@ -562,24 +562,24 @@ class LatticeStatistics : public LatticeStatsBase {
                                 LatticeStatsBase::StatisticsTypes type) const;
 
   // Find min and max of good data in arrays specified by pointers
-  void minMax(Bool& none, AccumType& dMin, AccumType& dMax, const Vector<AccumType>& d,
+  void minMax(bool& none, AccumType& dMin, AccumType& dMax, const Vector<AccumType>& d,
               const Vector<AccumType>& n) const;
 
   // Retrieve a statistic from the storage lattice and return in an array
-  Bool retrieveStorageStatistic(Array<AccumType>& slice,
-                                const LatticeStatsBase::StatisticsTypes type, const Bool dropDeg);
+  bool retrieveStorageStatistic(Array<AccumType>& slice,
+                                const LatticeStatsBase::StatisticsTypes type, const bool dropDeg);
 
   // Retrieve a statistic from the storage lattice at the specified
   // location and return in an array
-  Bool retrieveStorageStatistic(Vector<AccumType>& slice, const IPosition& pos,
-                                const Bool posInLattice);
+  bool retrieveStorageStatistic(Vector<AccumType>& slice, const IPosition& pos,
+                                const bool posInLattice);
 
   // Find the shape of slice from the statistics lattice at one
   // spatial pixel
   IPosition statsSliceShape() const;
 
   // See if there were some valid points found in the storage lattice
-  Bool someGoodPoints();
+  bool someGoodPoints();
 
   // Stretch min and max by 5%
   void stretchMinMax(AccumType& dMin, AccumType& dMax) const;
@@ -601,13 +601,13 @@ class LatticeStatistics : public LatticeStatsBase {
 
   void _doComputationUsingArrays(
       std::vector<std::shared_ptr<StatisticsAlgorithm<AccumType, typename Array<T>::const_iterator,
-                                                      Array<Bool>::const_iterator>>>& sa,
+                                                      Array<bool>::const_iterator>>>& sa,
       T& overallMin, T& overallMax, IPosition& arrayShape, std::vector<Array<T>>& dataArray,
-      std::vector<Array<Bool>>& maskArray, std::vector<IPosition>& curPos, uInt nthreads,
-      Bool isChauv, Bool isMasked, Bool isReal, std::shared_ptr<const DataRanges> range);
+      std::vector<Array<bool>>& maskArray, std::vector<IPosition>& curPos, uInt nthreads,
+      bool isChauv, bool isMasked, bool isReal, std::shared_ptr<const DataRanges> range);
 
   void _fillStorageLattice(T currentMin, T currentMax, const IPosition& curPos,
-                           const StatsData<AccumType>& stats, Bool doQuantiles, AccumType q1 = 0,
+                           const StatsData<AccumType>& stats, bool doQuantiles, AccumType q1 = 0,
                            AccumType q3 = 0);
 
   inline static AccumType _mean(const AccumType& sum, const AccumType& npts) {
@@ -619,7 +619,7 @@ class LatticeStatistics : public LatticeStatsBase {
   }
 
   void _updateMinMaxPos(T& overallMin, T& overallMax, T currentMin, T currentMax,
-                        const IPosition& minPos, const IPosition& maxPos, Bool atStart);
+                        const IPosition& minPos, const IPosition& maxPos, bool atStart);
 };
 
 // # Declare extern templates for often used types.

@@ -124,8 +124,8 @@ class TableMeasDescBase {
   // Return the reference code.
   uInt getRefCode() const { return itsRef.getRefCode(); }
 
-  // Returns True if the reference varies per row.
-  Bool isRefCodeVariable() const { return itsRef.isRefCodeVariable(); }
+  // Returns true if the reference varies per row.
+  bool isRefCodeVariable() const { return itsRef.isRefCodeVariable(); }
 
   // Returns the name of the ref code column when the ref code is variable.
   // The null string is returned if the ref code is not variable.
@@ -138,15 +138,15 @@ class TableMeasDescBase {
   // offset.
   const String& offsetColumnName() const { return itsRef.offsetColumnName(); }
 
-  // Returns True if an offset has been defined.
-  Bool hasOffset() const { return itsRef.hasOffset(); }
+  // Returns true if an offset has been defined.
+  bool hasOffset() const { return itsRef.hasOffset(); }
 
-  // Returns True if the offset is variable.
-  Bool isOffsetVariable() const { return itsRef.isOffsetVariable(); }
+  // Returns true if the offset is variable.
+  bool isOffsetVariable() const { return itsRef.isOffsetVariable(); }
 
-  // Returns True if the offset is variable and is stored in an
+  // Returns true if the offset is variable and is stored in an
   // ArrayMeasColumn, i.e., offsets are stored per element.
-  Bool isOffsetArray() const { return itsRef.isOffsetArray(); }
+  bool isOffsetArray() const { return itsRef.isOffsetArray(); }
 
   // Returns a reference to the offset.
   const Measure& getOffset() const { return itsRef.getOffset(); }
@@ -177,7 +177,7 @@ class TableMeasDescBase {
   static TableMeasDescBase* reconstruct(const Table& tab, const String& columnName);
 
   // Does this column contain table measures?
-  static Bool hasMeasures(const TableColumn& column);
+  static bool hasMeasures(const TableColumn& column);
 
  protected:
   // Set the initial reference codes and types in the table.

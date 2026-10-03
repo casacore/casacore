@@ -62,30 +62,30 @@ class MSFitsOutput {
   void setChannelInfo(Int startChan, Int nchan, Int stepChan, Int avgChan);
 
   //  @param writeSysCal   whether to write the system calibration table
-  void setWriteSysCal(Bool writeSysCal);
+  void setWriteSysCal(bool writeSysCal);
 
   //  @param asMultiSource If true a multi-source UVFits file is written.
-  void setAsMultiSource(Bool asMultiSource);
+  void setAsMultiSource(bool asMultiSource);
 
   //  @param combineSpw    If true it attempts to write the spectral windows as
   //                       IFs.  This is necessary for many aips tasks, and
   //                       for difmap.
-  void setCombineSpw(Bool combineSpw);
+  void setCombineSpw(bool combineSpw);
 
   //  @param writeStation  If true uses pad instead of antenna names.
-  void setWriteStation(Bool writeStation);
+  void setWriteStation(bool writeStation);
 
   void setSensitivity(Double sensitivity);
 
   //  @param padWithFlags  If true and combineSpw==true, fill spws with flags
   //                       as needed to fit the IF structure.  Does not yet
   //                       support spws with different shapes.
-  void setPadWitFlags(Bool padWithFlags);
+  void setPadWitFlags(bool padWithFlags);
 
   void setFieldNumber(uInt fieldNumber);
 
   //  @param overwrite     overwrite existing file?
-  void setOverwrite(Bool overwrite);
+  void setOverwrite(bool overwrite);
 
   // write the uvfits file.
   void write() const;
@@ -111,18 +111,18 @@ class MSFitsOutput {
   //  @param avgchan       average every N channels
   //  @param fieldNumber   field number
   //  @param overwrite     overwrite existing file?
-  static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms, const String& column,
+  static bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms, const String& column,
                             Int startchan = 0, Int nchan = 1, Int stepchan = 1,
-                            Bool writeSysCal = False, Bool asMultiSource = False,
-                            Bool combineSpw = False, Bool writeStation = False,
-                            Double sensitivity = 1.0, const Bool padWithFlags = false,
-                            Int avgchan = 1, uInt fieldNumber = 0, Bool overwrite = False);
+                            bool writeSysCal = false, bool asMultiSource = false,
+                            bool combineSpw = false, bool writeStation = false,
+                            Double sensitivity = 1.0, const bool padWithFlags = false,
+                            Int avgchan = 1, uInt fieldNumber = 0, bool overwrite = false);
 
  private:
   const String _fitsfile, _column;
   const MeasurementSet _ms;
   Int _startChan, _nchan, _stepChan, _avgChan;
-  Bool _writeSysCal, _asMultiSource, _combineSpw, _writeStation, _padWithFlags, _overwrite;
+  bool _writeSysCal, _asMultiSource, _combineSpw, _writeStation, _padWithFlags, _overwrite;
   Double _sensitivity;
   uInt _fieldNumber;
 
@@ -140,40 +140,40 @@ class MSFitsOutput {
   std::shared_ptr<FitsOutput> _writeMain(Int& refPixelFreq, Double& refFreq, Double& chanbw,
                                          const String& outFITSFile, const Block<Int>& spwidMap,
                                          Int nrspw, const Block<Int>& fieldidMap,
-                                         Bool asMultiSource) const;
+                                         bool asMultiSource) const;
 
   // Write the FQ table.
-  // If combineSpw is True, all spectral-windows are written in one
+  // If combineSpw is true, all spectral-windows are written in one
   // row of the FITS table.
-  static Bool _writeFQ(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
+  static bool _writeFQ(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
                        const Block<Int>& spwidMap, Int nrspw, Double refFreq, Int refPixelFreq,
-                       Double chanbw, Bool combineSpw, Int chanstart = 0, Int nchan = -1,
+                       Double chanbw, bool combineSpw, Int chanstart = 0, Int nchan = -1,
                        Int chanstep = 1, Int avgchan = 1);
 
   // Write the AN table.
-  static Bool _writeAN(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms, Double refFreq,
-                       Bool writeStation);
+  static bool _writeAN(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms, Double refFreq,
+                       bool writeStation);
 
   // Write the SU table.
-  static Bool _writeSU(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
+  static bool _writeSU(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
                        const Block<Int>& fieldidMap, Int nrfield, const Block<Int>& spwidMap,
                        Int nrspw);
 
   // Write the TY table.
-  static Bool _writeTY(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
-                       const Table& syscal, const Block<Int>& spwidMap, uInt nrif, Bool combineSpw);
+  static bool _writeTY(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
+                       const Table& syscal, const Block<Int>& spwidMap, uInt nrif, bool combineSpw);
 
   // Write the GC table.
-  static Bool _writeGC(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
-                       const Table& syscal, const Block<Int>& spwidMap, uInt nrif, Bool combineSpw,
+  static bool _writeGC(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
+                       const Table& syscal, const Block<Int>& spwidMap, uInt nrif, bool combineSpw,
                        Double sensitivity, Int refPixelFreq, Double refFreq, Double chanbw);
 
   // Write the WX table.
-  static Bool _writeWX(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms);
+  static bool _writeWX(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms);
 
   // Write the SY table.
-  static Bool _writeSY(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
-                       Table& syspower, Int nspw, const Block<Int>& spwIDMap, Bool combineSpw);
+  static bool _writeSY(std::shared_ptr<FitsOutput> output, const MeasurementSet& ms,
+                       Table& syspower, Int nspw, const Block<Int>& spwIDMap, bool combineSpw);
 
   // Convert time to day and fraction.
   static void timeToDay(Int& day, Double& dayFraction, Double time);
@@ -187,7 +187,7 @@ class MSFitsOutput {
 
   // Handle the SYSCAL table.
   // It skips the entries not needed and sorts it in the correct order.
-  static Table handleSysCal(const MeasurementSet& ms, const Vector<Int>& spwids, Bool isSubset);
+  static Table handleSysCal(const MeasurementSet& ms, const Vector<Int>& spwids, bool isSubset);
 
   // Determine which ids are selected in the main table
   // (used for fields and spectral-window).
@@ -221,7 +221,7 @@ class MSFitsOutput {
   static uInt get_tbf_end(const uInt rownr, const uInt nrow, const uInt nif,
                           const ScalarColumn<Double>& timec, const ScalarColumn<Double>& ininterval,
                           const ScalarColumn<Int>& ant1, const ScalarColumn<Int>& ant2,
-                          const Bool asMultiSource, const ScalarColumn<Int>& fieldid);
+                          const bool asMultiSource, const ScalarColumn<Int>& fieldid);
 
   static void _checkReceptorAngles(const Vector<Quantity>& ra0, Vector<Quantity>& ra1, Int antnum);
 };

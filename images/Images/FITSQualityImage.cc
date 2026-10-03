@@ -73,9 +73,9 @@ FITSQualityImage::FITSQualityImage(const String& name)
       whichDataHDU_p(0),
       whichErrorHDU_p(0),
       whichMaskHDU_p(0),
-      isClosed_p(False),
-      isDataClosed_p(False),
-      isErrorClosed_p(False) {
+      isClosed_p(false),
+      isDataClosed_p(false),
+      isErrorClosed_p(false) {
   getExtInfo();
   setup();
 }
@@ -90,9 +90,9 @@ FITSQualityImage::FITSQualityImage(const String& name, uInt whichDataHDU, uInt w
       whichErrorHDU_p(whichErrorHDU),
       whichMaskHDU_p(0),
       errType_p(FITSErrorImage::DEFAULT),
-      isClosed_p(False),
-      isDataClosed_p(False),
-      isErrorClosed_p(False) {
+      isClosed_p(false),
+      isDataClosed_p(false),
+      isErrorClosed_p(false) {
   setup();
 }
 
@@ -162,7 +162,7 @@ FITSQualityImage::~FITSQualityImage() {
 
 ImageInterface<Float>* FITSQualityImage::cloneII() const { return new FITSQualityImage(*this); }
 
-Bool FITSQualityImage::qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
+bool FITSQualityImage::qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
                                     TableRecord& errorExtMiscInfo, const TableRecord& miscInfo) {
   String tmpString;
 
@@ -206,7 +206,7 @@ Bool FITSQualityImage::qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
       // make sure the chosen error type does exist
       if (FITSErrorImage::stringToErrorType(tmpString) == FITSErrorImage::UNKNOWN) {
         error = "The error type: " + tmpString + " does not exist!";
-        return False;
+        return false;
       }
       // set the given extension name
       errorExtMiscInfo.define("hduclas3", tmpString);
@@ -246,7 +246,7 @@ Bool FITSQualityImage::qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
   dataExtMiscInfo.merge(miscInfo, RecordInterface::SkipDuplicates);
   errorExtMiscInfo.merge(miscInfo, RecordInterface::SkipDuplicates);
 
-  return True;
+  return true;
 }
 
 String FITSQualityImage::imageType() const { return "FITSQualityImage"; }
@@ -255,18 +255,18 @@ void FITSQualityImage::resize(const TiledShape&) {
   throw(AipsError("FITSQualityImage::resize - a FITSQualityImage is not writable"));
 }
 
-Bool FITSQualityImage::isMasked() const { return fitsdata_p->isMasked(); }
+bool FITSQualityImage::isMasked() const { return fitsdata_p->isMasked(); }
 
-Bool FITSQualityImage::hasPixelMask() const { return fitsdata_p->isMasked(); }
+bool FITSQualityImage::hasPixelMask() const { return fitsdata_p->isMasked(); }
 
-const Lattice<Bool>& FITSQualityImage::pixelMask() const {
+const Lattice<bool>& FITSQualityImage::pixelMask() const {
   if (!fitsdata_p->isMasked()) {
     throw(AipsError("FITSQualityImage::pixelMask - no pixelmask used"));
   }
   return *pPixelMask_p;
 }
 
-Lattice<Bool>& FITSQualityImage::pixelMask() {
+Lattice<bool>& FITSQualityImage::pixelMask() {
   if (!fitsdata_p->isMasked()) {
     throw(AipsError("FITSQualityImage::pixelMask - no pixelmask used"));
   }
@@ -275,7 +275,7 @@ Lattice<Bool>& FITSQualityImage::pixelMask() {
 
 const LatticeRegion* FITSQualityImage::getRegionPtr() const { return 0; }
 
-Bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
+bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   // get the section dimension
   IPosition shp = section.length();
   uInt ndim = section.ndim();
@@ -403,14 +403,14 @@ Bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
     tmp = subError.addDegenerate(1);
   }
 
-  return False;
+  return false;
 }
 
-Bool FITSQualityImage::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
+bool FITSQualityImage::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   if (!fitsdata_p->isMasked()) {
     buffer.resize(section.length());
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
   }
   //
   reopenIfNeeded();
@@ -423,19 +423,19 @@ void FITSQualityImage::doPutSlice(const Array<Float>&, const IPosition&, const I
                 "is not possible as FITSQualityImage is not writable"));
 }
 
-Bool FITSQualityImage::isPersistent() const { return True; }
+bool FITSQualityImage::isPersistent() const { return true; }
 
-Bool FITSQualityImage::isPaged() const { return True; }
+bool FITSQualityImage::isPaged() const { return true; }
 
-Bool FITSQualityImage::isWritable() const {
+bool FITSQualityImage::isWritable() const {
   // Its too hard to implement putMaskSlice becuase
   // magic blanking is used. It means we lose
   // the data values if the mask is put somewhere
 
-  return False;
+  return false;
 }
 
-String FITSQualityImage::name(Bool stripPath) const { return fitsdata_p->name(stripPath); }
+String FITSQualityImage::name(bool stripPath) const { return fitsdata_p->name(stripPath); }
 
 IPosition FITSQualityImage::shape() const { return shape_p.shape(); }
 
@@ -443,7 +443,7 @@ uInt FITSQualityImage::advisedMaxPixels() const { return shape_p.tileShape().pro
 
 IPosition FITSQualityImage::doNiceCursorShape(uInt) const { return shape_p.tileShape(); }
 
-Bool FITSQualityImage::ok() const { return True; }
+bool FITSQualityImage::ok() const { return true; }
 
 void FITSQualityImage::tempClose() {
   // cout << "close!" << endl;
@@ -457,14 +457,14 @@ void FITSQualityImage::tempCloseData() {
     // cout << "Data closed!" << endl;
     fitsdata_p->tempClose();
   }
-  isDataClosed_p = True;
+  isDataClosed_p = true;
 }
 void FITSQualityImage::tempCloseError() {
   if (!isErrorClosed_p) {
     // cout << "Error closed!" << endl;
     fitserror_p->tempClose();
   }
-  isErrorClosed_p = True;
+  isErrorClosed_p = true;
 }
 
 void FITSQualityImage::reopen() {
@@ -632,7 +632,7 @@ void FITSQualityImage::setup() {
   shape_p = TiledShape(mm_shape, TiledFileAccess::makeTileShape(mm_shape));
 }
 
-Bool FITSQualityImage::checkInput() {
+bool FITSQualityImage::checkInput() {
   // make sure the data end error extensions
   // are NOT identical
   if (whichDataHDU_p == whichErrorHDU_p)
@@ -648,7 +648,7 @@ Bool FITSQualityImage::checkInput() {
   if (!dataCSys.near(errorCSys, 10e-6))
     throw(AipsError("Data and error image have different coordinate system!"));
 
-  return True;
+  return true;
 }
 
 void FITSQualityImage::reopenIfNeeded() const {
@@ -660,13 +660,13 @@ void FITSQualityImage::reopenIfNeeded() const {
 void FITSQualityImage::reopenErrorIfNeeded() {
   if (isErrorClosed_p) {
     fitserror_p->reopen();
-    isErrorClosed_p = False;
+    isErrorClosed_p = false;
   }
 }
 void FITSQualityImage::reopenDataIfNeeded() {
   if (isDataClosed_p) {
     fitsdata_p->reopen();
-    isDataClosed_p = False;
+    isDataClosed_p = false;
   }
 }
 }  // namespace casacore

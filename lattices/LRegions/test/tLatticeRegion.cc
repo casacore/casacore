@@ -47,7 +47,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
   LatticeRegion reg2(Slicer(start, end, IPosition(2, 2), Slicer::endIsLast), latticeShape);
   AlwaysAssertExit(!reg2.hasMask());
   AlwaysAssertExit(reg2.get().shape() == 1 + (end - start) / 2);
-  AlwaysAssertExit(allEQ(reg2.get(), True));
+  AlwaysAssertExit(allEQ(reg2.get(), true));
   cout << "slicer: " << reg2.get() << endl;
 
   // Take a slicer of the slicer.
@@ -55,7 +55,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
       (Slicer(IPosition(ndim, 0), reg2.shape() - 1, IPosition(2, 1, 2), Slicer::endIsLast)),
       reg2.shape());
   AlwaysAssertExit(!reg2a.hasMask());
-  AlwaysAssertExit(allEQ(reg2a.get(), True));
+  AlwaysAssertExit(allEQ(reg2a.get(), true));
   cout << "strided slicer: " << reg2a.get() << endl;
 }
 

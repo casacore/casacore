@@ -50,7 +50,7 @@
 #include <casacore/casa/namespace.h>
 // # This function simulates the same function in DOImage2.cc.
 String substituteOID(Block<LatticeExprNode>& nodes, String& exprName, const String& expr) {
-  nodes.resize(0, False, True);
+  nodes.resize(0, false, true);
   exprName = expr;
   return expr;
 }
@@ -58,7 +58,7 @@ void makeRegionBlock(Block<const ImageRegion*>& regions, const Record&, LogIO&) 
   for (uInt j = 0; j < regions.nelements(); j++) {
     delete regions[j];
   }
-  regions.resize(0, True, True);
+  regions.resize(0, true, true);
 }
 
 // # This function is a copy of the expr function in DOImage2.cc, which
@@ -95,7 +95,7 @@ void doExpr(const String& expr, const Record& regions) {
 }
 
 int main(int argc, const char* argv[]) {
-  Bool foundError = False;
+  bool foundError = false;
 
   try {
     cout << ">>>" << endl;
@@ -117,12 +117,12 @@ int main(int argc, const char* argv[]) {
     Double fVal = 5.0;
     Double gVal = 6.0;
     Double hVal = 7.0;
-    Bool aBoolVal = False;
-    Bool bBoolVal = False;
+    bool aBoolVal = false;
+    bool bBoolVal = false;
     IPosition shape(2, nx, ny);
     TiledShape tshp(shape, IPosition(2, (nx + 1) / 2, (ny + 1) / 2));
     PagedArray<Double> a(tshp, "paa");
-    PagedArray<Bool> aBool(tshp, "paab");
+    PagedArray<bool> aBool(tshp, "paab");
     a.set(aVal);
     aBool.set(aBoolVal);
     {
@@ -133,7 +133,7 @@ int main(int argc, const char* argv[]) {
       PagedArray<Double> f(tshp, "f");
       PagedArray<Double> g(tshp, "g");
       PagedArray<Double> h(tshp, "h");
-      PagedArray<Bool> bBool(tshp, "bBool");
+      PagedArray<bool> bBool(tshp, "bBool");
       PagedArray<Double> kpa(tshp, "kpa");
 
       b.set(bVal);
@@ -150,7 +150,7 @@ int main(int argc, const char* argv[]) {
     }
 
     Array<Double> aArr(shape);
-    Array<Bool> aBoolArr(shape);
+    Array<bool> aBoolArr(shape);
 
     {
       cout << endl;
@@ -191,7 +191,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -204,7 +204,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -217,7 +217,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, sin(cVal))) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
 
@@ -231,7 +231,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -253,16 +253,16 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
       cout << "Expr:  a = nelements(b[$region]" << endl;
       Block<LatticeExprNode> temps(0);
       Block<const ImageRegion*> regions(1);
-      Matrix<Bool> mask(shape - 1);
-      mask = False;
-      mask(0, 0) = True;
+      Matrix<bool> mask(shape - 1);
+      mask = false;
+      mask(0, 0) = true;
       regions[0] = new ImageRegion(LCPixelSet(mask, LCBox(IPosition(2, 0), shape - 2, shape)));
       LatticeExpr<Double> expr(ImageExprParse::command("nelements(b[$R1])", temps, regions));
       delete regions[0];
@@ -272,7 +272,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -281,12 +281,12 @@ int main(int argc, const char* argv[]) {
            << endl;
       Block<LatticeExprNode> temps(0);
       Block<const ImageRegion*> regions(2);
-      Matrix<Bool> mask1(shape - 1);
-      Matrix<Bool> mask2(shape - 1);
-      mask1 = False;
-      mask2 = False;
-      mask1(0, 0) = True;
-      mask2(shape - 2) = True;
+      Matrix<bool> mask1(shape - 1);
+      Matrix<bool> mask2(shape - 1);
+      mask1 = false;
+      mask2 = false;
+      mask1(0, 0) = true;
+      mask2(shape - 2) = true;
       regions[0] = new ImageRegion(LCPixelSet(mask1, LCBox(IPosition(2, 0), shape - 2, shape)));
       regions[1] = new ImageRegion(LCPixelSet(mask2, LCBox(IPosition(2, 0), shape - 2, shape)));
       LatticeExpr<Double> expr(
@@ -302,7 +302,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -317,7 +317,7 @@ int main(int argc, const char* argv[]) {
       if (!allNear(aArr, result, 1.0e-10)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -330,7 +330,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -343,7 +343,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -356,7 +356,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -369,7 +369,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -382,7 +382,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -395,7 +395,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -408,33 +408,33 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
       cout << "Expr:  aBool = T||F" << endl;
 
-      LatticeExpr<Bool> expr(ImageExprParse::command("T||F"));
+      LatticeExpr<bool> expr(ImageExprParse::command("T||F"));
       aBool.copyData(expr);
       aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(), 0), shape, IPosition(aBoolArr.ndim(), 1));
-      Bool result = (True || False);
+      bool result = (true || false);
       if (!allEQ(aBoolArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aBoolArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
       cout << "Expr:  aBool = !bBool" << endl;
 
-      LatticeExpr<Bool> expr(ImageExprParse::command("!bBool"));
+      LatticeExpr<bool> expr(ImageExprParse::command("!bBool"));
       aBool.copyData(expr);
       aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(), 0), shape, IPosition(aBoolArr.ndim(), 1));
-      Bool result = (!bBoolVal);
+      bool result = (!bBoolVal);
       if (!allEQ(aBoolArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aBoolArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -448,7 +448,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -461,7 +461,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -475,7 +475,7 @@ int main(int argc, const char* argv[]) {
       if (!allNear(aArr, result, 1e-10)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -488,7 +488,7 @@ int main(int argc, const char* argv[]) {
       if (!allNear(aArr, result, 1e-10)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -501,7 +501,7 @@ int main(int argc, const char* argv[]) {
       if (!allNear(aArr, result, 1e-10)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -514,7 +514,7 @@ int main(int argc, const char* argv[]) {
       if (!allNear(aArr, result, 1e-10)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -527,7 +527,7 @@ int main(int argc, const char* argv[]) {
       if (!allNear(aArr, result, 1e-10)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -544,7 +544,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -559,7 +559,7 @@ int main(int argc, const char* argv[]) {
         if (!allNear(aArr, result, 1e-10)) {
           cout << "Result should be " << result << endl;
           cout << "Result is " << aArr << endl;
-          foundError = True;
+          foundError = true;
         }
       }
     }
@@ -578,7 +578,7 @@ int main(int argc, const char* argv[]) {
         if (!allNear(aArr, result, 1e-10)) {
           cout << "Result should be " << result << endl;
           cout << "Result is " << aArr << endl;
-          foundError = True;
+          foundError = true;
         }
       }
     }
@@ -594,7 +594,7 @@ int main(int argc, const char* argv[]) {
         if (!allNear(aArr, result, 1e-10)) {
           cout << "Result should be " << result << endl;
           cout << "Result is " << aArr << endl;
-          foundError = True;
+          foundError = true;
         }
       }
     }
@@ -613,7 +613,7 @@ int main(int argc, const char* argv[]) {
         if (!allNear(aArr, result, 1e-10)) {
           cout << "Result should be " << result << endl;
           cout << "Result is " << aArr << endl;
-          foundError = True;
+          foundError = true;
         }
       }
     }
@@ -626,7 +626,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(aArr, result)) {
         cout << "Result should be " << result << endl;
         cout << "Result is " << aArr << endl;
-        foundError = True;
+        foundError = true;
       }
     }
 
@@ -634,7 +634,7 @@ int main(int argc, const char* argv[]) {
 
   } catch (std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
-    foundError = True;
+    foundError = true;
   }
 
   // Delete all created tables (if they exist).

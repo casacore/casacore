@@ -61,31 +61,31 @@ void TableExprGroupCount::apply(const TableExprId& id) {
 }
 
 TableExprGroupAny::TableExprGroupAny(TableExprNodeRep* node)
-    : TableExprGroupFuncBool(node, False) {}
+    : TableExprGroupFuncBool(node, false) {}
 TableExprGroupAny::~TableExprGroupAny() {}
 void TableExprGroupAny::apply(const TableExprId& id) {
-  Bool v = itsOperand->getBool(id);
-  if (v) itsValue = True;
+  bool v = itsOperand->getBool(id);
+  if (v) itsValue = true;
 }
 
-TableExprGroupAll::TableExprGroupAll(TableExprNodeRep* node) : TableExprGroupFuncBool(node, True) {}
+TableExprGroupAll::TableExprGroupAll(TableExprNodeRep* node) : TableExprGroupFuncBool(node, true) {}
 TableExprGroupAll::~TableExprGroupAll() {}
 void TableExprGroupAll::apply(const TableExprId& id) {
-  Bool v = itsOperand->getBool(id);
-  if (!v) itsValue = False;
+  bool v = itsOperand->getBool(id);
+  if (!v) itsValue = false;
 }
 
 TableExprGroupNTrue::TableExprGroupNTrue(TableExprNodeRep* node) : TableExprGroupFuncInt(node) {}
 TableExprGroupNTrue::~TableExprGroupNTrue() {}
 void TableExprGroupNTrue::apply(const TableExprId& id) {
-  Bool v = itsOperand->getBool(id);
+  bool v = itsOperand->getBool(id);
   if (v) itsValue++;
 }
 
 TableExprGroupNFalse::TableExprGroupNFalse(TableExprNodeRep* node) : TableExprGroupFuncInt(node) {}
 TableExprGroupNFalse::~TableExprGroupNFalse() {}
 void TableExprGroupNFalse::apply(const TableExprId& id) {
-  Bool v = itsOperand->getBool(id);
+  bool v = itsOperand->getBool(id);
   if (!v) itsValue++;
 }
 
@@ -219,7 +219,7 @@ void TableExprGroupRmsDouble::finish() {
 TableExprGroupFractileDouble::TableExprGroupFractileDouble(TableExprNodeRep* node, Double fraction)
     : TableExprGroupFuncDouble(node), itsFrac(fraction) {}
 TableExprGroupFractileDouble::~TableExprGroupFractileDouble() {}
-Bool TableExprGroupFractileDouble::isLazy() const { return True; }
+bool TableExprGroupFractileDouble::isLazy() const { return true; }
 void TableExprGroupFractileDouble::apply(const TableExprId&) {}
 Double TableExprGroupFractileDouble::getDouble(const vector<TableExprId>& ids) {
   vector<Double> values;

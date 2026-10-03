@@ -48,7 +48,7 @@ int main() {
     v1[2] = 10;
     {
       FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -81,7 +81,7 @@ int main() {
     {
       // CAS-10760, test that setStatsToCalculate() works correctly
       FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       std::set<StatisticsData::STATS> x;
@@ -98,7 +98,7 @@ int main() {
       AlwaysAssert(near(mean, 13.2 / 6), AipsError);
     }
     {
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::GE_CENTER);
       fh.setData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -129,7 +129,7 @@ int main() {
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
     {
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEDIAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -160,7 +160,7 @@ int main() {
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
     {
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEDIAN, FitToHalfStatisticsData::GE_CENTER);
       fh.setData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -191,7 +191,7 @@ int main() {
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
     {
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 3);
       fh.setData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -222,7 +222,7 @@ int main() {
       AlwaysAssert(fh.getStatistic(StatisticsData::RMS) == sqrt(sumsq / npts), AipsError);
     }
     {
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 2.5);
       fh.setData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -255,7 +255,7 @@ int main() {
     Double k[] = {1.5, 1, 2, 4, 2.5};
     {
       // just another way of specifying the data
-      FitToHalfStatistics<Double, Double*, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, Double*, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(k, 5);
       StatsData<Double> sd = fh.getStatistics();
@@ -289,7 +289,7 @@ int main() {
       // two datasets
       // 2, 1, 1.5, 4, 2.5
       // 5, 8, 10
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -351,13 +351,13 @@ int main() {
     {
       // Verify class does not support computing stats as
       // datasets are added
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
-      Bool exceptionRaised = False;
+      bool exceptionRaised = false;
       try {
-        fh.setCalculateAsAdded(True);
+        fh.setCalculateAsAdded(true);
       } catch (std::exception& x) {
-        exceptionRaised = True;
+        exceptionRaised = true;
       }
       AlwaysAssert(exceptionRaised, AipsError);
     }
@@ -366,7 +366,7 @@ int main() {
       // two datasets, stride = 2,1
       // 2, 1.5, 2.5
       // 5, 8, 10
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size(), 2);
       fh.addData(v1.begin(), v1.size());
@@ -402,16 +402,16 @@ int main() {
       // data ranges
       // 4, 2.5
       // 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 5;
       r0[0].second = -5;
-      Bool expectedFail = False;
+      bool expectedFail = false;
       try {
         fh.setData(v0.begin(), 3, r0);
       } catch (const std::exception& x) {
-        expectedFail = True;
+        expectedFail = true;
       }
       AlwaysAssert(expectedFail, AipsError);
       r0[0].first = 2.4;
@@ -422,7 +422,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       fh.setData(v0.begin(), v0.size(), r0);
-      fh.addData(v1.begin(), v1.size(), r1, False);
+      fh.addData(v1.begin(), v1.size(), r1, false);
       StatsData<Double> sd = fh.getStatistics();
       Double npts = 4;
       Double sumsq = 1903.0 / 18.0;
@@ -453,9 +453,9 @@ int main() {
 
       // test cloning gives same results
       std::shared_ptr<FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                                          std::vector<Bool>::const_iterator>>
+                                          std::vector<bool>::const_iterator>>
           fh1(dynamic_cast<FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                                               std::vector<Bool>::const_iterator>*>(fh.clone()));
+                                               std::vector<bool>::const_iterator>*>(fh.clone()));
       StatsData<Double> sd1 = fh1->getStatistics();
       AlwaysAssert(sd1.masked == sd.masked, AipsError);
       AlwaysAssert(sd1.weighted == sd.weighted, AipsError);
@@ -485,18 +485,18 @@ int main() {
       // mask
       // 4, 2.5
       // 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       fh.setData(v0.begin(), m0.begin(), v0.size());
       fh.addData(v1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -531,26 +531,26 @@ int main() {
       // mask and ranges
       // 4, 2.5
       // 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      fh.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = fh.getStatistics();
       Double npts = 4;
       Double sumsq = 1903.0 / 18.0;
@@ -583,7 +583,7 @@ int main() {
       // weights
       // 1, 1.5, 4, 2.5
       // 5, 8, 10
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -629,7 +629,7 @@ int main() {
     }
     {
       // integer weights
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Int> w0(v0.size());
@@ -678,7 +678,7 @@ int main() {
       // weights and ranges
       // 4, 2.5
       // 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -696,8 +696,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = fh.getStatistics();
       Double npts = 4;
       Double sumofweights = 18;
@@ -730,7 +730,7 @@ int main() {
     }
     {
       // integer weights and ranges
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Int> w0(v0.size());
@@ -749,8 +749,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = fh.getStatistics();
       Double npts = 4;
       Double sumofweights = 18;
@@ -785,7 +785,7 @@ int main() {
       // weights, ranges, and masks
       // 4, 2.5
       // 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -797,24 +797,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = fh.getStatistics();
       Double npts = 4;
       Double sumofweights = 18;
@@ -847,7 +847,7 @@ int main() {
     }
     {
       // integer weights; ranges, and masks
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Int> w0(v0.size());
@@ -860,24 +860,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = fh.getStatistics();
       Double npts = 4;
       Double sumofweights = 18;
@@ -910,7 +910,7 @@ int main() {
     }
     {
       // weights, masks
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -922,16 +922,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -966,7 +966,7 @@ int main() {
     }
     {
       // integer weights, masks
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Int> w0(v0.size());
@@ -979,16 +979,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = fh.getStatistics();
@@ -1023,7 +1023,7 @@ int main() {
     }
     {
       // getMinMax(), two datasets
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1032,7 +1032,7 @@ int main() {
       AlwaysAssert(mymin == 1, AipsError);
       AlwaysAssert(mymax == 7.5, AipsError);
       fh =
-          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>(
               FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::GE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1044,7 +1044,7 @@ int main() {
       // getMinMax(), two datasets, stride = 2,1
       // 2, 1.5, 2.5
       // 5, 8, 10
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size(), 2);
       fh.addData(v1.begin(), v1.size());
@@ -1057,7 +1057,7 @@ int main() {
       // getMaxMin(), data ranges
       // 2.5, 4
       // 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 2.4;
@@ -1068,7 +1068,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       fh.setData(v0.begin(), v0.size(), r0);
-      fh.addData(v1.begin(), v1.size(), r1, False);
+      fh.addData(v1.begin(), v1.size(), r1, false);
       Double mymin, mymax;
       fh.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1076,18 +1076,18 @@ int main() {
     }
     {
       // getMinMax(), mask
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       fh.setData(v0.begin(), m0.begin(), v0.size());
       fh.addData(v1.begin(), m1.begin(), v1.size());
       Double mymin, mymax;
@@ -1097,26 +1097,26 @@ int main() {
     }
     {
       // getMinMax(), mask and ranges
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      fh.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       fh.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1126,7 +1126,7 @@ int main() {
       // getMinMax, weights
       // 2, 1.5, 4, 2.5
       // 5, 8
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Double> w0(v0.size());
       w0[0] = 1;
@@ -1147,7 +1147,7 @@ int main() {
     }
     {
       // getMinMax, integer weights
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Int> w0(v0.size());
@@ -1171,7 +1171,7 @@ int main() {
       // 4, 2.5
       // 8
       // getMinMax(), weights and ranges
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Double> w0(v0.size());
       w0[0] = 0;
@@ -1189,8 +1189,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       fh.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1198,7 +1198,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights and ranges
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       vector<Int> w0(v0.size());
@@ -1217,8 +1217,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       fh.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1226,7 +1226,7 @@ int main() {
     }
     {
       // getMinMax(), weights, ranges, and masks
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
 
       vector<Double> w0(v0.size());
@@ -1239,24 +1239,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       fh.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1264,7 +1264,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights, ranges, and masks
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                           vector<Int>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
 
@@ -1278,24 +1278,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       fh.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1303,7 +1303,7 @@ int main() {
     }
     {
       // getNPts(), two datasets
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 1.5);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1319,7 +1319,7 @@ int main() {
       AlwaysAssert(npts == 4, AipsError);
 
       fh =
-          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>(
               FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 1.5);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1336,29 +1336,29 @@ int main() {
     }
     {
       // general quantile exceptions
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
-      Bool thrown = False;
+      bool thrown = false;
       try {
         fh.getQuantile(0);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         fh.getQuantile(1);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
     }
     {
       // getQuantile(), no weights, no mask, no ranges
       FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       // mean is 4.25
       // real + virtual dataset
@@ -1385,7 +1385,7 @@ int main() {
       AlwaysAssert(q == 7, AipsError);
 
       fh = FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                               std::vector<Bool>::const_iterator>(
+                               std::vector<bool>::const_iterator>(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::GE_CENTER);
       // mean is 4.25
       // real + virtual dataset
@@ -1416,7 +1416,7 @@ int main() {
     {
       // getQuantile(): two datasets, stride = 2,1
       // 1.5, 2, 2.5 5, 8, 10
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 2);
       // real + virtual -6, -4, -1, 1.5, 2, 2, 2.5, 5, 8, 10
       fh.setData(v0.begin(), v0.size(), 2);
@@ -1441,7 +1441,7 @@ int main() {
       AlwaysAssert(q == 8, AipsError);
 
       fh =
-          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>(
               FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 2);
       // real + virtual 1.5, 2, 2, 2.5
       fh.setData(v0.begin(), v0.size(), 2);
@@ -1467,19 +1467,19 @@ int main() {
     }
     {
       // leave in for compile check
-      FitToHalfStatistics<Complex, vector<Complex>::const_iterator, vector<Bool>::const_iterator>
+      FitToHalfStatistics<Complex, vector<Complex>::const_iterator, vector<bool>::const_iterator>
           fh;
     }
     {
       // getMedian()
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 4.25);
       fh.addData(v0.begin(), v0.size());
       Double median = fh.getMedian();
       AlwaysAssert(median == 4.25, AipsError);
       fh.reset();
-      vector<Bool> m0(v0.size(), True);
-      m0[0] = False;
+      vector<bool> m0(v0.size(), true);
+      m0[0] = false;
       fh.addData(v0.begin(), m0.begin(), v0.size());
       median = fh.getMedian();
       AlwaysAssert(median == 4.25, AipsError);
@@ -1496,7 +1496,7 @@ int main() {
       quantiles.insert(0.7);
       quantiles.insert(0.8);
       quantiles.insert(0.9);
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1514,7 +1514,7 @@ int main() {
       AlwaysAssert(quantileToValue[0.9] == 7, AipsError);
 
       fh =
-          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>(
               FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::GE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1533,7 +1533,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed()
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.setData(v0.begin(), v0.size());
       fh.addData(v1.begin(), v1.size());
@@ -1554,10 +1554,10 @@ int main() {
         ++count;
       }
     }
-    vector<Bool> bigMask(npts, True);
-    bigMask[0] = False;
+    vector<bool> bigMask(npts, true);
+    bigMask[0] = false;
     {
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 400);
       fh.setData(bigData.begin(), bigData.size());
       // getMedian() with binning, no ranges, weights, or mask
@@ -1566,7 +1566,7 @@ int main() {
       AlwaysAssert(median == 400, AipsError);
 
       fh =
-          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>(
               FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 250);
       fh.setData(bigData.begin(), bigData.size());
       median = fh.getMedian(NULL, NULL, NULL, 100);
@@ -1574,7 +1574,7 @@ int main() {
     }
     {
       // getMedianAbsDevMed() with binning, no ranges, weights, or mask
-      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER, 400);
       fh.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -1582,7 +1582,7 @@ int main() {
       AlwaysAssert(medabsdevmed == 249799040801ULL, AipsError);
 
       fh =
-          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+          FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator>(
               FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 250);
       fh.setData(bigData.begin(), bigData.size());
       // enforce a small internal array size so binning algorithm is used
@@ -1593,7 +1593,7 @@ int main() {
       // large array with all the same values, getMedianAndQuantile()
       std::vector<Double> big(100000, 30);
       FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           fh(FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.addData(big.begin(), big.size());
       std::set<Double> quantiles;
@@ -1618,7 +1618,7 @@ int main() {
         ++biter;
         ++count;
       }
-      FitToHalfStatistics<Double, Array<Double>::const_iterator, Array<Bool>::const_iterator> fh(
+      FitToHalfStatistics<Double, Array<Double>::const_iterator, Array<bool>::const_iterator> fh(
           FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER);
       fh.addData(big.begin(), big.size());
       std::set<Double> quantiles;
@@ -1632,7 +1632,7 @@ int main() {
       AlwaysAssert(near(quantileToValue[0.25], -50001.5), AipsError);
       AlwaysAssert(near(quantileToValue[0.75], 49998.0), AipsError);
 
-      fh = FitToHalfStatistics<Double, Array<Double>::const_iterator, Array<Bool>::const_iterator>(
+      fh = FitToHalfStatistics<Double, Array<Double>::const_iterator, Array<bool>::const_iterator>(
           FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 4);
       fh.addData(big.begin(), big.size());
       quantileToValue.clear();
@@ -1647,7 +1647,7 @@ int main() {
     {
       // CAS-10760 fix for null set equivalent
       FitToHalfStatistics<Double, std::vector<Double>::const_iterator,
-                          std::vector<Bool>::const_iterator>
+                          std::vector<bool>::const_iterator>
           fh(FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER);
       fh.addData(v0.begin(), v0.size());
       StatsData<Double> sd = fh.getStatistics();

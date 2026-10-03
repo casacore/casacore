@@ -52,8 +52,8 @@ int main() {
   {
     Vector<Float> x(nx);
     indgen((Array<Float>&)x);  // 0, 1, 2, ...
-    Vector<Bool> mask(nx);
-    mask = True;
+    Vector<bool> mask(nx);
+    mask = true;
     for (uInt k = 0; k < nz; k++) {
       for (uInt j = 0; j < ny; j++) {
         cube.xyPlane(k).column(j) = Float(j * k) * ((Array<Float>&)x) * ((Array<Float>&)x);
@@ -62,11 +62,11 @@ int main() {
     ArrayLattice<Float> inLattice(cube);
     Cube<Float> outCube(nx, ny, nz);
     ArrayLattice<Float> outLattice(outCube);
-    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 0, mask, True);
+    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 0, mask, true);
     AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 7.e-3));
 
     AlwaysAssertExit(near(fittedParameters(2), Float((ny - 1) * (nz - 1)), 1.0e-3));
-    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 0, mask, False);
+    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 0, mask, false);
     AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 7.e-3));
     AlwaysAssertExit(near(fittedParameters(2), Float((ny - 1) * (nz - 1)), 1.0e-3));
     // crashes
@@ -85,8 +85,8 @@ int main() {
   {
     Vector<Float> x(ny);
     indgen((Array<Float>&)x);  // 0, 1, 2, ...
-    Vector<Bool> mask(ny);
-    mask = True;
+    Vector<bool> mask(ny);
+    mask = true;
     for (uInt k = 0; k < nz; k++) {
       for (uInt i = 0; i < nx; i++) {
         cube.xyPlane(k).row(i) = Float(i * k) * ((Array<Float>&)x) * ((Array<Float>&)x);
@@ -95,10 +95,10 @@ int main() {
     ArrayLattice<Float> inLattice(cube);
     Cube<Float> outCube(nx, ny, nz);
     ArrayLattice<Float> outLattice(outCube);
-    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 1, mask, True);
+    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 1, mask, true);
     AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 3.e-2));
     AlwaysAssertExit(near(fittedParameters(2), Float((nx - 1) * (nz - 1)), 1.0e-3));
-    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 1, mask, False);
+    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 1, mask, false);
     AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 3.e-2));
     AlwaysAssertExit(near(fittedParameters(2), Float((nx - 1) * (nz - 1)), 1.0e-3));
   }
@@ -107,8 +107,8 @@ int main() {
   {
     Vector<Float> x(nz);
     indgen((Array<Float>&)x);  // 0, 1, 2, ...
-    Vector<Bool> mask(nz);
-    mask = True;
+    Vector<bool> mask(nz);
+    mask = true;
     for (uInt k = 0; k < nz; k++) {
       for (uInt j = 0; j < ny; j++) {
         for (uInt i = 0; i < nx; i++) {
@@ -119,10 +119,10 @@ int main() {
     ArrayLattice<Float> inLattice(cube);
     Cube<Float> outCube(nx, ny, nz);
     ArrayLattice<Float> outLattice(outCube);
-    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 2, mask, True);
+    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 2, mask, true);
     AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, 0.0f, 2.0e-2));
     AlwaysAssertExit(near(fittedParameters(2), Float((nx - 1) * (ny - 1)), 1.0e-3));
-    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 2, mask, False);
+    LatticeFit::fitProfiles(outLattice, fittedParameters, fitter, inLattice, 2, mask, false);
     AlwaysAssertExit(allNearAbs((Array<Float>&)outCube, (Array<Float>&)cube, 2.0e-2));
     AlwaysAssertExit(near(fittedParameters(2), Float((nx - 1) * (ny - 1)), 1.0e-3));
   }

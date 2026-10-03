@@ -37,7 +37,7 @@
 
 #include <casacore/casa/namespace.h>
 int main(int argc, const char* argv[]) {
-  Bool foundError = False;
+  bool foundError = false;
 
   try {
     Input inp(1);
@@ -87,7 +87,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr3 - arr2a)) {
         cout << "Result should be " << arr3 - arr2a << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -100,7 +100,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr2a - arr3)) {
         cout << "Result should be " << arr2a - arr3 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -113,7 +113,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr3 - arr2a)) {
         cout << "Result should be " << arr3 - arr2a << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -126,7 +126,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr2a - arr3)) {
         cout << "Result should be " << arr2a - arr3 << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -139,7 +139,7 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr2b - arr2b)) {
         cout << "Result should be " << arr2b - arr2b << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
     {
@@ -152,13 +152,13 @@ int main(int argc, const char* argv[]) {
       if (!allEQ(result, arr2b - arr2b)) {
         cout << "Result should be " << arr2b - arr2b << endl;
         cout << "Result is " << result << endl;
-        foundError = True;
+        foundError = true;
       }
     }
 
   } catch (std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
-    foundError = True;
+    foundError = true;
   }
 
   if (foundError) {

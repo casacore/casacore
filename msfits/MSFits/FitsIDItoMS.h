@@ -125,7 +125,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   //
 
   FITSIDItoMS1(FitsInput& in, const String& correlat, const Int& obsType = 0,
-               const Bool& initFirstMain = True, const Float& vanVleck = 0.0,
+               const bool& initFirstMain = true, const Float& vanVleck = 0.0,
                const Float& corVer = 0.0);
 
   ~FITSIDItoMS1();
@@ -156,28 +156,28 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   void fillSpectralWindowTable();
 
   // fill the optional Correlator Model table with the content of INTERFEROMETER_MODEL
-  Bool fillCorrelatorModelTable();
+  bool fillCorrelatorModelTable();
 
   // fill the optional SysCal table with the content of SYSTEM_TEMPERATURE
-  Bool fillSysCalTable();
+  bool fillSysCalTable();
 
   // fill the optional FlagCmd table with the content of FLAG
-  Bool fillFlagCmdTable();
+  bool fillFlagCmdTable();
 
   // fill the optional Weather table with the content of WEATHER
-  Bool fillWeatherTable();
+  bool fillWeatherTable();
 
   // store the information from the GAIN_CURVE table in a calibration table
-  Bool handleGainCurve();
+  bool handleGainCurve();
 
   // store the information from the PHASE-CAL table in a calibration table
-  Bool handlePhaseCal();
+  bool handlePhaseCal();
 
   // store the information from the CALC table in a calibration table
-  Bool handleCalc();
+  bool handleCalc();
 
   // store the information from the MODEL_COMPS table
-  Bool handleModelComps();
+  bool handleModelComps();
 
   // fix up the EPOCH MEASURE_REFERENCE keywords
   void fixEpochReferences();
@@ -218,23 +218,23 @@ class FITSIDItoMS1 : public BinaryTableExtension {
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
-  // Returns False if it encounters an unsupported extension.
-  Bool readFitsFile(const String& msFile);
+  // Returns false if it encounters an unsupported extension.
+  bool readFitsFile(const String& msFile);
 
   // is this the first UV_DATA extension
-  Bool isfirstMain() { return firstMain; }
+  bool isfirstMain() { return firstMain; }
 
  protected:
   // Read the axis info, throws an exception if required axes are missing.
   void getAxisInfo();
 
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
-  // If useTSM is True, the Tiled Storage Manager will be used to store
+  // If useTSM is true, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM
-  void setupMeasurementSet(const String& MSFileName, Bool useTSM = True, Bool mainTbl = False,
-                           Bool addCorrMod = False, Bool addSyscal = False, Bool addWeather = False,
-                           Bool addGainCurve = False, Bool addPhaseCal = False,
-                           Bool addEOP = False);
+  void setupMeasurementSet(const String& MSFileName, bool useTSM = true, bool mainTbl = false,
+                           bool addCorrMod = false, bool addSyscal = false, bool addWeather = false,
+                           bool addGainCurve = false, bool addPhaseCal = false,
+                           bool addEOP = false);
 
   // Fill the main table from the Primary group data
   void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
@@ -252,7 +252,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   Vector<Int> itsNelem;
 
   // For each column: is it an array?
-  Vector<Bool> itsIsArray;
+  Vector<bool> itsIsArray;
 
   // Table keyword set
   TableRecord itsKwSet;
@@ -273,7 +273,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   Vector<String> itsMSKC;
   Vector<String> itsMSKN;
   Vector<String> itsMSKV;
-  Vector<Bool> itsgotMSK;
+  Vector<bool> itsgotMSK;
 
   // # FitsInput &infile_p;
   String msFile_p;
@@ -300,16 +300,16 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   Float itsVanVleck;
   MeasurementSet ms_p;
   MSColumns* msc_p;
-  static Bool firstMain;
-  static Bool firstSyscal;
-  static Bool firstWeather;
-  static Bool firstGainCurve;
-  static Bool firstPhaseCal;
-  static Bool firstEOP;
-  Bool weather_hasWater_p;
-  Bool weather_hasElectron_p;
-  Bool uv_data_hasWeights_p;
-  Bool weightypKwPresent_p;
+  static bool firstMain;
+  static bool firstSyscal;
+  static bool firstWeather;
+  static bool firstGainCurve;
+  static bool firstPhaseCal;
+  static bool firstEOP;
+  bool weather_hasWater_p;
+  bool weather_hasElectron_p;
+  bool uv_data_hasWeights_p;
+  bool weightypKwPresent_p;
   String weightyp_p;
   Int nStokes_p;
   Int nBand_p;

@@ -37,7 +37,7 @@ template <typename M>
 MeasEngine<M>::~MeasEngine() {}
 
 template <typename M>
-Bool MeasEngine<M>::handleMeasType(const TENShPtr& operand, Bool doThrow) {
+bool MeasEngine<M>::handleMeasType(const TENShPtr& operand, bool doThrow) {
   if (operand->dataType() != TableExprNodeRep::NTString ||
       operand->valueType() != TableExprNodeRep::VTScalar || !operand->isConstant()) {
     if (doThrow) {
@@ -45,14 +45,14 @@ Bool MeasEngine<M>::handleMeasType(const TENShPtr& operand, Bool doThrow) {
                       " type given in a MEAS function "
                       "must be a constant scalar string");
     }
-    return False;
+    return false;
   }
   String str = operand->getString(0);
   ToUpperCaseInPlace(str);
   // Let a derived class strip part of the mesaure type (as needed).
   str = stripMeasType(str);
   typename M::Types refType;
-  Bool fnd = M::getType(refType, str);
+  bool fnd = M::getType(refType, str);
   if (fnd) {
     itsRefType = refType;
   } else if (doThrow) {
@@ -98,7 +98,7 @@ void MeasEngine<M>::handleMeasArray(const TENShPtr& operand) {
   // Try if the argument is a column.
   // If found, try to handle it as a TableMeasures column.
   const TableColumn* tabCol = 0;
-  Bool directCol = True;
+  bool directCol = true;
   const TableExprNodeColumn* scaNode = dynamic_cast<TableExprNodeColumn*>(operand.get());
   if (scaNode) {
     tabCol = &(scaNode->getColumn());
@@ -109,7 +109,7 @@ void MeasEngine<M>::handleMeasArray(const TENShPtr& operand) {
       tabCol = &(colNode->getColumn());
     } else {
       // The node is an expression, not a column.
-      directCol = False;
+      directCol = false;
       // Try if the node is an array part of a column.
       TableExprNodeArrayPart* partNode = dynamic_cast<TableExprNodeArrayPart*>(operand.get());
       if (partNode) {

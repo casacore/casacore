@@ -48,13 +48,13 @@ SDSysCalHandler::SDSysCalHandler()
       tcalId_p(-1),
       tsysId_p(-1),
       trxId_p(-1),
-      hasTsysCol_p(False),
-      hasTcalCol_p(False),
-      hasTrxCol_p(False) {
+      hasTsysCol_p(false),
+      hasTcalCol_p(false),
+      hasTrxCol_p(false) {
   ;
 }
 
-SDSysCalHandler::SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+SDSysCalHandler::SDSysCalHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
     : msSysCal_p(0),
       msSysCalCols_p(0),
       rownr_p(-1),
@@ -62,9 +62,9 @@ SDSysCalHandler::SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, 
       tcalId_p(-1),
       tsysId_p(-1),
       trxId_p(-1),
-      hasTsysCol_p(False),
-      hasTcalCol_p(False),
-      hasTrxCol_p(False) {
+      hasTsysCol_p(false),
+      hasTcalCol_p(false),
+      hasTrxCol_p(false) {
   initAll(ms, handledCols, row);
 }
 
@@ -76,9 +76,9 @@ SDSysCalHandler::SDSysCalHandler(const SDSysCalHandler &other)
       tcalId_p(-1),
       tsysId_p(-1),
       trxId_p(-1),
-      hasTsysCol_p(False),
-      hasTcalCol_p(False),
-      hasTrxCol_p(False) {
+      hasTsysCol_p(false),
+      hasTcalCol_p(false),
+      hasTrxCol_p(false) {
   *this = other;
 }
 
@@ -110,14 +110,14 @@ SDSysCalHandler &SDSysCalHandler::operator=(const SDSysCalHandler &other) {
   return *this;
 }
 
-void SDSysCalHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDSysCalHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
 }
 
 void SDSysCalHandler::resetRow(const Record &row) {
   clearRow();
-  Vector<Bool> dummyHandledCols;
+  Vector<bool> dummyHandledCols;
   initRow(dummyHandledCols, row);
 }
 
@@ -126,8 +126,8 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
   // don't bother unless there is something there
   if (msSysCal_p) {
     Vector<Float> tsys(numReceptors), tcal(numReceptors), trx(numReceptors);
-    Bool tsysFlag, tcalFlag, trxFlag;
-    tsysFlag = tcalFlag = trxFlag = False;
+    bool tsysFlag, tcalFlag, trxFlag;
+    tsysFlag = tcalFlag = trxFlag = false;
     tsys = tcal = trx = 0.0;
     // prefer the MS TSYS, TCAL, TRX since they have the correct dimensionality
     // but also fall back to SDFITS single values if Nr inferred from the MS is inconsistent
@@ -149,7 +149,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
       trx = row.asFloat(trxId_p);
     }
     if (trxFlagField_p.isAttached()) trxFlag = *trxFlagField_p;
-    Bool newRow = rownr_p < 0;
+    bool newRow = rownr_p < 0;
     newRow = newRow || numReceptors != nrecpt_p;
     if (!newRow && hasTsysCol_p) {
       newRow = tsysFlag != msSysCalCols_p->tsysFlag()(rownr_p);
@@ -171,7 +171,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
         !isNaN(*phaseDiffField_p) && !isInf(*phaseDiffField_p)) {
       // we seem to have a valid phase diff value
       // is it flagged
-      // newRow != True here -> PHASE_DIFF col must exist -> PHASE_DIFF_FLAG must also exist
+      // newRow != true here -> PHASE_DIFF col must exist -> PHASE_DIFF_FLAG must also exist
       newRow = !newRow && msSysCalCols_p->phaseDiff()(rownr_p) != *phaseDiffField_p;
       newRow = !newRow && phaseDiffFlagField_p.isAttached() &&
                *phaseDiffFlagField_p != msSysCalCols_p->phaseDiffFlag()(rownr_p);
@@ -238,7 +238,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
             if (phaseDiffFlagField_p.isAttached()) {
               msSysCalCols_p->phaseDiffFlag().put(rownr_p, *phaseDiffFlagField_p);
             } else {
-              msSysCalCols_p->phaseDiffFlag().put(rownr_p, False);
+              msSysCalCols_p->phaseDiffFlag().put(rownr_p, false);
             }
           }
         } else {
@@ -246,7 +246,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
           if (phaseDiffFlagField_p.isAttached()) {
             msSysCalCols_p->phaseDiffFlag().put(rownr_p, *phaseDiffFlagField_p);
           } else {
-            msSysCalCols_p->phaseDiffFlag().put(rownr_p, False);
+            msSysCalCols_p->phaseDiffFlag().put(rownr_p, false);
           }
         }
       }
@@ -288,7 +288,7 @@ void SDSysCalHandler::clearRow() {
   tsysField_p.detach();
 }
 
-void SDSysCalHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDSysCalHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   msSysCal_p = new MSSysCal(ms.sysCal());
   AlwaysAssert(msSysCal_p, AipsError);
 
@@ -297,17 +297,17 @@ void SDSysCalHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, con
   // do we need to add any optional columns
   TableDesc td;
   if (tsysId_p >= 0 || tsysField_p.isAttached()) {
-    hasTsysCol_p = True;
+    hasTsysCol_p = true;
     MSSysCal::addColumnToDesc(td, MSSysCal::TSYS);
     MSSysCal::addColumnToDesc(td, MSSysCal::TSYS_FLAG);
   }
   if (tcalId_p >= 0 || tcalField_p.isAttached()) {
-    hasTcalCol_p = True;
+    hasTcalCol_p = true;
     MSSysCal::addColumnToDesc(td, MSSysCal::TCAL);
     MSSysCal::addColumnToDesc(td, MSSysCal::TCAL_FLAG);
   }
   if (trxId_p >= 0 || trxField_p.isAttached()) {
-    hasTrxCol_p = True;
+    hasTrxCol_p = true;
     MSSysCal::addColumnToDesc(td, MSSysCal::TRX);
     MSSysCal::addColumnToDesc(td, MSSysCal::TRX_FLAG);
   }
@@ -322,68 +322,68 @@ void SDSysCalHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, con
   rownr_p = -1;
 }
 
-void SDSysCalHandler::initRow(Vector<Bool> &handledCols, const Record &row) {
+void SDSysCalHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   tcalId_p = row.fieldNumber("TCAL");
-  if (tcalId_p >= 0) handledCols(tcalId_p) = True;
+  if (tcalId_p >= 0) handledCols(tcalId_p) = true;
   tsysId_p = row.fieldNumber("TSYS");
-  if (tsysId_p >= 0) handledCols(tsysId_p) = True;
+  if (tsysId_p >= 0) handledCols(tsysId_p) = true;
   trxId_p = row.fieldNumber("TRX");
-  if (trxId_p >= 0) handledCols(trxId_p) = True;
+  if (trxId_p >= 0) handledCols(trxId_p) = true;
 
   Int tmp;
   tmp = row.fieldNumber("SYSCAL_INTERVAL");
   if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
     intervalField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TIME");
   if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
     timeField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_PHASE_DIFF");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     phaseDiffField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_PHASE_DIFF_FLAG");
   if (tmp >= 0 && row.dataType(tmp) == TpBool) {
     phaseDiffFlagField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TCAL");
   if (tmp >= 0 && row.dataType(tmp) == TpArrayFloat) {
     tcalField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TCAL_FLAG");
   if (tmp >= 0 && row.dataType(tmp) == TpBool) {
     tcalFlagField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TRX");
   if (tmp >= 0 && row.dataType(tmp) == TpArrayFloat) {
     trxField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TRX_FLAG");
   if (tmp >= 0 && row.dataType(tmp) == TpBool) {
     trxFlagField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TSYS");
   if (tmp >= 0 && row.dataType(tmp) == TpArrayFloat) {
     tsysField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("SYSCAL_TSYS_FLAG");
   if (tmp >= 0 && row.dataType(tmp) == TpBool) {
     tsysFlagField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   // ignore this field as it add no useful additional information
   if (row.fieldNumber("SYSCAL_NUM_RECEPTORS") >= 0)
-    handledCols(row.fieldNumber("SYSCAL_NUM_RECEPTORS")) = True;
+    handledCols(row.fieldNumber("SYSCAL_NUM_RECEPTORS")) = true;
 }
 
 }  // namespace casacore

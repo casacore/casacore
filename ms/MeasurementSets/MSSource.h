@@ -86,7 +86,7 @@ class MSSource : public MSSourceEnums, public MSTable<MSSourceEnums> {
   // <group name=tableLikeConstructors>
   MSSource(const String &tableName, TableOption = Table::Old);
   MSSource(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSSource(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSSource(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSSource(const Table &table);
   MSSource(const MSSource &other);
   // </group>
@@ -118,7 +118,7 @@ class MSSource : public MSSourceEnums, public MSTable<MSSourceEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

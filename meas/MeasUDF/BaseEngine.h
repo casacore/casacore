@@ -88,7 +88,7 @@ namespace casacore {
 
 class BaseEngine {
  public:
-  BaseEngine() : itsIsConst(False), itsNDim(-1) {}
+  BaseEngine() : itsIsConst(false), itsNDim(-1) {}
 
   virtual ~BaseEngine();
 
@@ -103,7 +103,7 @@ class BaseEngine {
 
   // Extend the shape (if not empty) with the engine's shape.
   // If the engine is not const, itsIsConst is cleared.
-  void extendBase(const BaseEngine&, Bool removeFirstAxis = False);
+  void extendBase(const BaseEngine&, bool removeFirstAxis = false);
 
   // Get the output shape.
   const IPosition& shape() const { return itsShape; }
@@ -118,7 +118,7 @@ class BaseEngine {
   const Unit& inUnit() const { return itsInUnit; }
 
   // Tell if the expression is constant.
-  Bool isConstant() const { return itsIsConst; }
+  bool isConstant() const { return itsIsConst; }
 
  protected:
   // Let a derived class derive its attributes.
@@ -134,7 +134,7 @@ class BaseEngine {
   virtual String stripMeasType(const String& type);
 
   // # Data members.
-  Bool itsIsConst;
+  bool itsIsConst;
   IPosition itsShape;
   Int itsNDim;  // <0 unknown shape, 0 scalar, >0 known shape
   Unit itsInUnit;

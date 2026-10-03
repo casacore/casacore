@@ -39,10 +39,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSAntenna::MSAntenna() : hasBeenDestroyed_p(True) {}
+MSAntenna::MSAntenna() : hasBeenDestroyed_p(true) {}
 
 MSAntenna::MSAntenna(const String &tableName, TableOption option)
-    : MSTable<MSAntennaEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSAntennaEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -51,7 +51,7 @@ MSAntenna::MSAntenna(const String &tableName, TableOption option)
 }
 
 MSAntenna::MSAntenna(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSAntennaEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSAntennaEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -59,8 +59,8 @@ MSAntenna::MSAntenna(const String &tableName, const String &tableDescName, Table
                   "table is not a valid MSAntenna"));
 }
 
-MSAntenna::MSAntenna(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSAntennaEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSAntenna::MSAntenna(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSAntennaEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -69,7 +69,7 @@ MSAntenna::MSAntenna(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSAntenna::MSAntenna(const Table &table)
-    : MSTable<MSAntennaEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSAntennaEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -78,7 +78,7 @@ MSAntenna::MSAntenna(const Table &table)
 }
 
 MSAntenna::MSAntenna(const MSAntenna &other)
-    : MSTable<MSAntennaEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSAntennaEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -95,7 +95,7 @@ MSAntenna::~MSAntenna() {
     LogIO os;
     os << LogIO::WARN << "~MSAntenna() - Table written is not a valid MSAntenna" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSAntenna &MSAntenna::operator=(const MSAntenna &other) {

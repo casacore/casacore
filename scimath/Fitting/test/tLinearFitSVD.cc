@@ -156,7 +156,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     for (uInt i = 0; i < 4; i++) combination[i] = 1.0;
 
     // Hold the coefficient for square fixed
-    combination.mask(2) = False;
+    combination.mask(2) = false;
     // set the parameter value
     combination[2] = 10;
 

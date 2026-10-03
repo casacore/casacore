@@ -32,9 +32,9 @@ int main() {
   char buf[32768];
   while (cin.getline(buf, sizeof(buf))) {
     if (buf[0] == 'd') {
-      std::cout << ReadAsciiTable::stringToPos(String(buf + 1), True) << std::endl;
+      std::cout << ReadAsciiTable::stringToPos(String(buf + 1), true) << std::endl;
     } else {
-      std::cout << ReadAsciiTable::stringToPos(String(buf), False) << std::endl;
+      std::cout << ReadAsciiTable::stringToPos(String(buf), false) << std::endl;
     }
   }
   return 0;

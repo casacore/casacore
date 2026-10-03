@@ -138,7 +138,7 @@ void MCFrame::resetRadialVelocity() { impl_->radLSRp.reset(); }
 
 void MCFrame::resetComet() {}
 
-Bool MCFrame::getTDB(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getTDB(Double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epTDBp) {
       impl_->epTDBp =
@@ -147,13 +147,13 @@ Bool MCFrame::getTDB(Double &tdb, const MeasFrame &frame) {
               .get();
     }
     tdb = *impl_->epTDBp;
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getUT1(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getUT1(Double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epUT1p) {
       impl_->epUT1p =
@@ -162,13 +162,13 @@ Bool MCFrame::getUT1(Double &tdb, const MeasFrame &frame) {
               .get();
     }
     tdb = *impl_->epUT1p;
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getTT(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getTT(Double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epTTp) {
       impl_->epTTp =
@@ -177,13 +177,13 @@ Bool MCFrame::getTT(Double &tdb, const MeasFrame &frame) {
               .get();
     }
     tdb = *impl_->epTTp;
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getLong(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLong(Double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -192,13 +192,13 @@ Bool MCFrame::getLong(Double &tdb, const MeasFrame &frame) {
       impl_->posLongp = impl_->posITRFp.value().get();
     }
     tdb = MVAngle(impl_->posLongp.value()(1))(-0.5);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getLat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLat(Double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -207,13 +207,13 @@ Bool MCFrame::getLat(Double &tdb, const MeasFrame &frame) {
       impl_->posLongp = impl_->posITRFp.value().get();
     }
     tdb = impl_->posLongp.value()(2);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getLatGeo(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLatGeo(Double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongGeop.has_value())) {
       impl_->posGeop = impl_->posConvLongGeo
@@ -222,13 +222,13 @@ Bool MCFrame::getLatGeo(Double &tdb, const MeasFrame &frame) {
       impl_->posLongGeop = impl_->posGeop.value().get();
     }
     tdb = impl_->posLongGeop.value()(2);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getITRF(MVPosition &tdb, const MeasFrame &frame) {
+bool MCFrame::getITRF(MVPosition &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -237,13 +237,13 @@ Bool MCFrame::getITRF(MVPosition &tdb, const MeasFrame &frame) {
       impl_->posLongp = impl_->posITRFp.value().get();
     }
     tdb = impl_->posITRFp.value();
-    return True;
+    return true;
   }
   tdb = MVPosition(0.0);
-  return False;
+  return false;
 }
 
-Bool MCFrame::getRadius(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getRadius(Double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -252,13 +252,13 @@ Bool MCFrame::getRadius(Double &tdb, const MeasFrame &frame) {
       impl_->posLongp = impl_->posITRFp.value().get();
     }
     tdb = impl_->posLongp.value()(0);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getLAST(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLAST(Double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epLASTp) {
       impl_->epLASTp =
@@ -267,19 +267,19 @@ Bool MCFrame::getLAST(Double &tdb, const MeasFrame &frame) {
               .get();
     }
     tdb = fmod(*impl_->epLASTp, 1.0);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getLASTr(Double &tdb, const MeasFrame &frame) {
-  Bool tmp = MCFrame::getLAST(tdb, frame);
+bool MCFrame::getLASTr(Double &tdb, const MeasFrame &frame) {
+  bool tmp = MCFrame::getLAST(tdb, frame);
   tdb *= C::circle;
   return tmp;
 }
 
-Bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->j2000Longp.has_value())) {
       impl_->dirJ2000p =
@@ -289,13 +289,13 @@ Bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame &frame) {
       impl_->j2000Longp = impl_->dirJ2000p.value().get();
     }
     tdb = impl_->j2000Longp.value()(0);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getJ2000Lat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getJ2000Lat(Double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->j2000Longp.has_value())) {
       impl_->dirJ2000p =
@@ -305,13 +305,13 @@ Bool MCFrame::getJ2000Lat(Double &tdb, const MeasFrame &frame) {
       impl_->j2000Longp = impl_->dirJ2000p.value().get();
     }
     tdb = impl_->j2000Longp.value()(1);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getJ2000(MVDirection &tdb, const MeasFrame &frame) {
+bool MCFrame::getJ2000(MVDirection &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->j2000Longp.has_value())) {
       impl_->dirJ2000p =
@@ -321,13 +321,13 @@ Bool MCFrame::getJ2000(MVDirection &tdb, const MeasFrame &frame) {
       impl_->j2000Longp = impl_->dirJ2000p.value().get();
     }
     tdb = impl_->dirJ2000p.value();
-    return True;
+    return true;
   }
   tdb = MVDirection(0.0);
-  return False;
+  return false;
 }
 
-Bool MCFrame::getB1950Long(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getB1950Long(Double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->b1950Longp.has_value())) {
       impl_->dirB1950p =
@@ -337,13 +337,13 @@ Bool MCFrame::getB1950Long(Double &tdb, const MeasFrame &frame) {
       impl_->b1950Longp = impl_->dirB1950p.value().get();
     }
     tdb = impl_->b1950Longp.value()(0);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getB1950Lat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getB1950Lat(Double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->b1950Longp.has_value())) {
       impl_->dirB1950p =
@@ -353,13 +353,13 @@ Bool MCFrame::getB1950Lat(Double &tdb, const MeasFrame &frame) {
       impl_->b1950Longp = impl_->dirB1950p.value().get();
     }
     tdb = impl_->b1950Longp.value()(1);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getB1950(MVDirection &tdb, const MeasFrame &frame) {
+bool MCFrame::getB1950(MVDirection &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->b1950Longp.has_value())) {
       impl_->dirB1950p =
@@ -369,13 +369,13 @@ Bool MCFrame::getB1950(MVDirection &tdb, const MeasFrame &frame) {
       impl_->b1950Longp = impl_->dirB1950p.value().get();
     }
     tdb = impl_->dirB1950p.value();
-    return True;
+    return true;
   }
   tdb = MVDirection(0.0);
-  return False;
+  return false;
 }
 
-Bool MCFrame::getAppLong(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getAppLong(Double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->appLongp.has_value())) {
       impl_->dirAppp =
@@ -385,13 +385,13 @@ Bool MCFrame::getAppLong(Double &tdb, const MeasFrame &frame) {
       impl_->appLongp = impl_->dirAppp.value().get();
     }
     tdb = impl_->appLongp.value()(0);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getAppLat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getAppLat(Double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->appLongp.has_value())) {
       impl_->dirAppp =
@@ -401,13 +401,13 @@ Bool MCFrame::getAppLat(Double &tdb, const MeasFrame &frame) {
       impl_->appLongp = impl_->dirAppp.value().get();
     }
     tdb = impl_->appLongp.value()(1);
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getApp(MVDirection &tdb, const MeasFrame &frame) {
+bool MCFrame::getApp(MVDirection &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->appLongp.has_value())) {
       impl_->dirAppp =
@@ -417,13 +417,13 @@ Bool MCFrame::getApp(MVDirection &tdb, const MeasFrame &frame) {
       impl_->appLongp = impl_->dirAppp.value().get();
     }
     tdb = impl_->dirAppp.value();
-    return True;
+    return true;
   }
   tdb = MVDirection(0.0);
-  return False;
+  return false;
 }
 
-Bool MCFrame::getLSR(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLSR(Double &tdb, const MeasFrame &frame) {
   if (frame.radialVelocity()) {
     if (!impl_->radLSRp) {
       impl_->radLSRp =
@@ -432,28 +432,28 @@ Bool MCFrame::getLSR(Double &tdb, const MeasFrame &frame) {
               .getValue();
     }
     tdb = *impl_->radLSRp;
-    return True;
+    return true;
   }
   tdb = 0.0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getCometType(uInt &tdb, const MeasFrame &frame) {
+bool MCFrame::getCometType(uInt &tdb, const MeasFrame &frame) {
   if (frame.comet()) {
     tdb = static_cast<uInt>(frame.comet()->getType());
-    return True;
+    return true;
   }
   tdb = 0;
-  return False;
+  return false;
 }
 
-Bool MCFrame::getComet(MVPosition &tdb, const MeasFrame &frame) {
+bool MCFrame::getComet(MVPosition &tdb, const MeasFrame &frame) {
   if (frame.comet()) {
     Double x(0);
-    if (getTDB(x, frame) && frame.comet()->get(tdb, x)) return True;
+    if (getTDB(x, frame) && frame.comet()->get(tdb, x)) return true;
   }
   tdb = MVPosition(0.0);
-  return False;
+  return false;
 }
 
 void MCFrame::makeEpoch(MeasFrame &frame) {

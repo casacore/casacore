@@ -39,10 +39,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSDataDescription::MSDataDescription() : hasBeenDestroyed_p(True) {}
+MSDataDescription::MSDataDescription() : hasBeenDestroyed_p(true) {}
 
 MSDataDescription::MSDataDescription(const String &tableName, TableOption option)
-    : MSTable<MSDataDescriptionEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSDataDescriptionEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -52,7 +52,7 @@ MSDataDescription::MSDataDescription(const String &tableName, TableOption option
 
 MSDataDescription::MSDataDescription(const String &tableName, const String &tableDescName,
                                      TableOption option)
-    : MSTable<MSDataDescriptionEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSDataDescriptionEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -60,8 +60,8 @@ MSDataDescription::MSDataDescription(const String &tableName, const String &tabl
                   "table is not a valid MSDataDescription"));
 }
 
-MSDataDescription::MSDataDescription(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSDataDescriptionEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSDataDescription::MSDataDescription(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSDataDescriptionEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -70,7 +70,7 @@ MSDataDescription::MSDataDescription(SetupNewTable &newTab, rownr_t nrrow, Bool 
 }
 
 MSDataDescription::MSDataDescription(const Table &table)
-    : MSTable<MSDataDescriptionEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSDataDescriptionEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -79,7 +79,7 @@ MSDataDescription::MSDataDescription(const Table &table)
 }
 
 MSDataDescription::MSDataDescription(const MSDataDescription &other)
-    : MSTable<MSDataDescriptionEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSDataDescriptionEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -97,7 +97,7 @@ MSDataDescription::~MSDataDescription() {
     os << LogIO::WARN << "~MSDataDescription() - Table written is not a valid MSDataDescription"
        << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSDataDescription &MSDataDescription::operator=(const MSDataDescription &other) {

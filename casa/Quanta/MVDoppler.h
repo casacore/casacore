@@ -125,10 +125,10 @@ class MVDoppler : public MeasValue {
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVDoppler &other) const;
-  Bool operator!=(const MVDoppler &other) const;
-  Bool near(const MVDoppler &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVDoppler &other, Double tol = 1e-13) const;
+  bool operator==(const MVDoppler &other) const;
+  bool operator!=(const MVDoppler &other) const;
+  bool near(const MVDoppler &other, Double tol = 1e-13) const;
+  bool nearAbs(const MVDoppler &other, Double tol = 1e-13) const;
   // </group>
 
   // # General member functions
@@ -160,7 +160,7 @@ class MVDoppler : public MeasValue {
   virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 
  private:
   // # Data
@@ -169,7 +169,7 @@ class MVDoppler : public MeasValue {
 
   // # Member functions
   //  Get correct data type conversion factor from input Quantum
-  Double makeD(Double v, const Unit &dt, Bool rev = False) const;
+  Double makeD(Double v, const Unit &dt, bool rev = false) const;
 };
 
 }  // namespace casacore

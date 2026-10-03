@@ -42,9 +42,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Implement the constants for each data type.
 
-TableExprNodeConstBool::TableExprNodeConstBool(const Bool& val)
+TableExprNodeConstBool::TableExprNodeConstBool(const bool& val)
     : TableExprNodeBinary(NTBool, VTScalar, OtLiteral, Constant), value_p(val) {}
-Bool TableExprNodeConstBool::getBool(const TableExprId&) { return value_p; }
+bool TableExprNodeConstBool::getBool(const TableExprId&) { return value_p; }
 
 TableExprNodeConstInt::TableExprNodeConstInt(const Int64& val)
     : TableExprNodeBinary(NTInt, VTScalar, OtLiteral, Constant), value_p(val) {}
@@ -84,7 +84,7 @@ TableExprNodeColumn::TableExprNodeColumn(const TableExprInfo& tableInfo, const S
     : TableExprNodeBinary(NTNumeric, VTScalar, OtColumn, Variable),
       tableInfo_p(tableInfo),
       tabCol_p(tableInfo.table(), name),
-      applySelection_p(True) {
+      applySelection_p(true) {
   // # Check if the column is a scalar.
   if (!tabCol_p.columnDesc().isScalar()) {
     throw(TableInvExpr(name, " is no scalar column"));
@@ -128,7 +128,7 @@ Unit TableExprNodeColumn::getColumnUnit(const TableColumn& tabcol) {
   return unit;
 }
 
-void TableExprNodeColumn::disableApplySelection() { applySelection_p = False; }
+void TableExprNodeColumn::disableApplySelection() { applySelection_p = false; }
 
 void TableExprNodeColumn::applySelection(const Vector<rownr_t>& rownrs) {
   if (applySelection_p) {
@@ -139,15 +139,15 @@ void TableExprNodeColumn::applySelection(const Vector<rownr_t>& rownrs) {
     tabCol_p = TableColumn(tableInfo_p.table(), name);
     // Reset switch, because the column object can be used multiple times.
     // when a select expression is used as e.g. sort key.
-    applySelection_p = False;
+    applySelection_p = false;
   }
 }
 
 // # Return the TableColumn.
 const TableColumn& TableExprNodeColumn::getColumn() const { return tabCol_p; }
 
-Bool TableExprNodeColumn::getBool(const TableExprId& id) {
-  Bool val;
+bool TableExprNodeColumn::getBool(const TableExprId& id) {
+  bool val;
   tabCol_p.getScalar(id.rownr(), val);
   return val;
 }
@@ -172,13 +172,13 @@ String TableExprNodeColumn::getString(const TableExprId& id) {
   return val;
 }
 
-Bool TableExprNodeColumn::getColumnDataType(DataType& dt) const {
+bool TableExprNodeColumn::getColumnDataType(DataType& dt) const {
   dt = tabCol_p.columnDesc().dataType();
-  return True;
+  return true;
 }
 
-Array<Bool> TableExprNodeColumn::getColumnBool(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Bool> col(tabCol_p);
+Array<bool> TableExprNodeColumn::getColumnBool(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<bool> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
 Array<uChar> TableExprNodeColumn::getColumnuChar(const Vector<rownr_t>& rownrs) {
@@ -247,7 +247,7 @@ void TableExprNodeRowid::applySelection(const Vector<rownr_t>& rownrs) {
   // Append rows for an insert.
   if (rownrs.size() == 1 && rownrs[0] >= rownrs_p.size()) {
     rownr_t sz = rownrs_p.size();
-    rownrs_p.resize(rownrs[0], True);
+    rownrs_p.resize(rownrs[0], true);
     for (rownr_t i = sz; i < rownrs_p.size(); ++i) {
       rownrs_p[i] = i;
     }

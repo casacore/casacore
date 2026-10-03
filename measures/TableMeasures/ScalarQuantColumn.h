@@ -175,14 +175,14 @@ class ScalarQuantColumn {
   void put(rownr_t rownr, const Quantum<T>& q);
 
   // Test whether the Quantum column has variable units
-  Bool isUnitVariable() const { return (itsUnitsCol != 0); }
+  bool isUnitVariable() const { return (itsUnitsCol != 0); }
 
   // Returns the column's value for Units as a string.
   // An empty string is returned if the column has variable units.
   const String& getUnits() const { return itsUnit.getName(); }
 
   // Test if the object is null.
-  Bool isNull() const { return (itsDataCol == 0); }
+  bool isNull() const { return (itsDataCol == 0); }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;
@@ -210,14 +210,14 @@ class ScalarQuantColumn {
   // # Unit to retrieve the data in.
   Unit itsUnitOut;
   // # Convert unit when getting data?
-  Bool itsConvOut;
+  bool itsConvOut;
 
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.
   ScalarQuantColumn& operator=(const ScalarQuantColumn<T>& that);
 
   // Comparison is not defined, since its semantics are unclear.
-  Bool operator==(const ScalarQuantColumn<T>& that);
+  bool operator==(const ScalarQuantColumn<T>& that);
 
   // Initialize the ScalarQuantColumn from the specified table and column.
   void init(const Table& tab, const String& columnName);

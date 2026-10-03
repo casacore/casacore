@@ -176,9 +176,9 @@ class LockFile {
   // <br>When addToRequestList=False, function <src>acquire</src> does not
   // add the request to the lock file when a lock cannot be acquired.
   // This may result in better performance, but should be used with care.
-  // <br> If <src>create==True</src>, a new lock file will always be created.
+  // <br> If <src>create==true</src>, a new lock file will always be created.
   // Otherwise it will be created if it does not exist yet.
-  // <br> If <src>mustExist==False</src>, it is allowed that the LockFile
+  // <br> If <src>mustExist==false</src>, it is allowed that the LockFile
   // does not exist and cannot be created either.
   // <br> The seqnr is used to set the offset where LockFile will use 2 bytes
   // to set the locks on. Only in special cases it should be other than 0.
@@ -188,9 +188,9 @@ class LockFile {
   // way showLock() can find out if if table is permanently locked.
   // <br> The <src>noLocking</src> argument is used to indicate that
   // no locking is needed. It means that acquiring a lock always succeeds.
-  explicit LockFile(const String& fileName, double inspectInterval = 0, Bool create = False,
-                    Bool addToRequestList = True, Bool mustExist = True, uInt seqnr = 0,
-                    Bool permLocking = False, Bool noLocking = False);
+  explicit LockFile(const String& fileName, double inspectInterval = 0, bool create = false,
+                    bool addToRequestList = true, bool mustExist = true, uInt seqnr = 0,
+                    bool permLocking = false, bool noLocking = false);
 
   // The destructor does not delete the file, because it is not known
   // when the last process using the lock file will stop.
@@ -201,7 +201,7 @@ class LockFile {
 
   // Is the file associated with the LockFile object in use in
   // another process?
-  Bool isMultiUsed();
+  bool isMultiUsed();
 
   // Acquire a read or write lock.
   // It reads the information (if the <src>info</src> argument is given)
@@ -214,35 +214,35 @@ class LockFile {
   // it does not succeed.
   // 0 means forever, while 1 means do not retry.
   // <group>
-  Bool acquire(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
-  Bool acquire(MemoryIO& info, FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
-  Bool acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts);
+  bool acquire(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+  bool acquire(MemoryIO& info, FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+  bool acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts);
   // </group>
 
   // Release a lock and write the information (if given) into the lock file.
   // The user is responsible for making the information machine-independent
   // (e.g. converting from local to canonical format).
   // <group>
-  Bool release();
-  Bool release(const MemoryIO& info);
-  Bool release(const MemoryIO* info);
+  bool release();
+  bool release(const MemoryIO& info);
+  bool release(const MemoryIO* info);
   // </group>
 
   // Inspect if another process wants to access the file (i.e. if the
   // request list is not empty).
   // It only inspects if the time passed since the last inspection
   // exceeds the inspection interval as given in the constructor.
-  // If the time passed is too short, False is returned (indicating
+  // If the time passed is too short, false is returned (indicating
   // that no access is needed).
-  // If <src>always==True</src>, no test on inspection interval is done,
+  // If <src>always==true</src>, no test on inspection interval is done,
   // so the inspect is always done.
-  Bool inspect(Bool always = False);
+  bool inspect(bool always = false);
 
   // Test if the file can be locked for read or write.
-  Bool canLock(FileLocker::LockType = FileLocker::Write);
+  bool canLock(FileLocker::LockType = FileLocker::Write);
 
   // Test if the process has a lock for read or write on the file.
-  Bool hasLock(FileLocker::LockType = FileLocker::Write) const;
+  bool hasLock(FileLocker::LockType = FileLocker::Write) const;
 
   // Get the last error.
   int lastError() const;
@@ -272,7 +272,7 @@ class LockFile {
   // <br>If locked, it also tells if it is permanently locked.
   // <br>An exception is thrown if the file does not exist or cannot
   // be opened.
-  static uInt showLock(uInt& pid, Bool& permLocked, const String& fileName);
+  static uInt showLock(uInt& pid, bool& permLocked, const String& fileName);
 
  private:
   // The copy constructor cannot be used (its semantics are too difficult).
@@ -310,8 +310,8 @@ class LockFile {
   FileLocker itsLocker;
   FileLocker itsUseLocker;
   std::shared_ptr<FiledesIO> itsFileIO;
-  Bool itsWritable;    // # lock file is writable?
-  Bool itsAddToList;   // # Should acquire add to request list?
+  bool itsWritable;    // # lock file is writable?
+  bool itsAddToList;   // # Should acquire add to request list?
   double itsInterval;  // # interval between inspections
   Time itsLastTime;    // # time of last inspection
   String itsName;      // # Name of lock file
@@ -325,19 +325,19 @@ class LockFile {
                         // # time check.
 };
 
-inline Bool LockFile::acquire(FileLocker::LockType type, uInt nattempts) {
+inline bool LockFile::acquire(FileLocker::LockType type, uInt nattempts) {
   return acquire(0, type, nattempts);
 }
-inline Bool LockFile::acquire(MemoryIO& info, FileLocker::LockType type, uInt nattempts) {
+inline bool LockFile::acquire(MemoryIO& info, FileLocker::LockType type, uInt nattempts) {
   return acquire(&info, type, nattempts);
 }
-inline Bool LockFile::release() { return release(0); }
-inline Bool LockFile::release(const MemoryIO& info) { return release(&info); }
-inline Bool LockFile::canLock(FileLocker::LockType type) {
-  return (itsFileIO == 0 ? True : itsLocker.canLock(type));
+inline bool LockFile::release() { return release(0); }
+inline bool LockFile::release(const MemoryIO& info) { return release(&info); }
+inline bool LockFile::canLock(FileLocker::LockType type) {
+  return (itsFileIO == 0 ? true : itsLocker.canLock(type));
 }
-inline Bool LockFile::hasLock(FileLocker::LockType type) const {
-  return (itsFileIO == 0 ? True : itsLocker.hasLock(type));
+inline bool LockFile::hasLock(FileLocker::LockType type) const {
+  return (itsFileIO == 0 ? true : itsLocker.hasLock(type));
 }
 inline int LockFile::lastError() const { return itsLocker.lastError(); }
 inline String LockFile::lastMessage() const { return itsLocker.lastMessage(); }

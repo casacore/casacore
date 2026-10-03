@@ -165,7 +165,7 @@ void c(const TableDesc& tdin) {
   for (i = 0; i < 20; i++) {
     rowCol.put(i, i % 10);
   }
-  forwTab.addColumn(ScalarColumnDesc<Int>("ac"), "ForwardEngineRow1", True);
+  forwTab.addColumn(ScalarColumnDesc<Int>("ac"), "ForwardEngineRow1", true);
 
   // Now use the description to make a table, which will use the
   // forwarding engine again.

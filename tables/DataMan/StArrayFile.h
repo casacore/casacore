@@ -98,12 +98,12 @@ class IPosition;
 //     // It fills in the file offset where the shape is stored
 //     // and returns the length of the shape in the file.
 //     Int64 offset;
-//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<Bool*>(0));
+//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<bool*>(0));
 //     // Now put the actual array.
 //     // This has to be put at the returned file offset plus the length
 //     // of the shape in the file.
-//     Bool deleteIt;
-//     const Bool* dataPtr = array.getStorage (deleteIt);
+//     bool deleteIt;
+//     const bool* dataPtr = array.getStorage (deleteIt);
 //     arrayFile.put (offset+shapeLength, 0, array.nelements(), dataPtr);
 //     array.freeStorage (dataPtr, deleteIt);
 // }
@@ -131,7 +131,7 @@ class StManArrayFile {
   // The buffersize is used to allocate a buffer of a proper size
   // for the underlying filebuf object (see iostream package).
   // A bufferSize 0 means using the default size (currently 65536).
-  StManArrayFile(const String& name, ByteIO::OpenOption, uInt version = 0, Bool bigEndian = True,
+  StManArrayFile(const String& name, ByteIO::OpenOption, uInt version = 0, bool bigEndian = true,
                  uInt bufferSize = 0,
                  const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
@@ -139,8 +139,8 @@ class StManArrayFile {
   ~StManArrayFile();
 
   // Flush and optionally fsync the data.
-  // It returns True when any data was written since the last flush.
-  Bool flush(Bool fsync);
+  // It returns true when any data was written since the last flush.
+  bool flush(bool fsync);
 
   // Reopen the file for read/write access.
   void reopenRW();
@@ -158,7 +158,7 @@ class StManArrayFile {
   // actual array data (which can be used by get and put).
   // Space is reserved to store the reference count.
   // <group>
-  uInt putShape(const IPosition& shape, Int64& fileOffset, const Bool* dummy);
+  uInt putShape(const IPosition& shape, Int64& fileOffset, const bool* dummy);
   uInt putShape(const IPosition& shape, Int64& fileOffset, const Char* dummy);
   uInt putShape(const IPosition& shape, Int64& fileOffset, const uChar* dummy);
   uInt putShape(const IPosition& shape, Int64& fileOffset, const Short* dummy);
@@ -187,7 +187,7 @@ class StManArrayFile {
   // The array offset is counted in number of elements. It can be
   // used to put only a (contiguous) section of the array.
   // <group>
-  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Bool*);
+  void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const bool*);
   void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Char*);
   void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uChar*);
   void put(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Short*);
@@ -215,7 +215,7 @@ class StManArrayFile {
   // The array offset is counted in number of elements. It can be
   // used to get only a (contiguous) section of the array.
   // <group>
-  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Bool*);
+  void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, bool*);
   void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Char*);
   void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uChar*);
   void get(Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Short*);
@@ -257,8 +257,8 @@ class StManArrayFile {
   std::shared_ptr<TypeIO> iofil_p;  // # IO object
   Int64 leng_p;                     // # File length
   uInt version_p;                   // # Version of StArrayFile file
-  Bool swput_p;                     // # True = put is possible
-  Bool hasPut_p;                    // # True = put since last flush
+  bool swput_p;                     // # true = put is possible
+  bool hasPut_p;                    // # true = put since last flush
   uInt sizeChar_p;
   uInt sizeuChar_p;
   uInt sizeShort_p;
@@ -299,11 +299,11 @@ class StManArrayFile {
 
 inline void StManArrayFile::reopenRW() { file_p->reopenRW(); }
 inline uInt StManArrayFile::put(const Int& value) {
-  hasPut_p = True;
+  hasPut_p = true;
   return iofil_p->write(1, &value);
 }
 inline uInt StManArrayFile::put(const uInt& value) {
-  hasPut_p = True;
+  hasPut_p = true;
   return iofil_p->write(1, &value);
 }
 inline uInt StManArrayFile::get(Int& value) { return iofil_p->read(1, &value); }

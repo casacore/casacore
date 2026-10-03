@@ -87,7 +87,7 @@ class LCLELMask : public LCRegionSingle {
   // Construct from vectors of world coordinates
   // defining the box corners.  It is assumed that the
   // order of the values is in the order of the pixel axes.
-  explicit LCLELMask(const LatticeExpr<Bool>& expr);
+  explicit LCLELMask(const LatticeExpr<bool>& expr);
 
   // Copy constructor (copy semantics).
   LCLELMask(const LCLELMask& other);
@@ -103,9 +103,9 @@ class LCLELMask : public LCRegionSingle {
 
   // Handle the (un)locking.
   // <group>
-  Bool lock(FileLocker::LockType, uInt nattempts) override;
+  bool lock(FileLocker::LockType, uInt nattempts) override;
   void unlock() override;
-  Bool hasLock(FileLocker::LockType) const override;
+  bool hasLock(FileLocker::LockType) const override;
   // </group>
 
   // Resynchronize the PagedArray object with the lattice file.
@@ -136,7 +136,7 @@ class LCLELMask : public LCRegionSingle {
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Translating an LCLELMask is not possible, so it throws an exception.
   LCRegion* doTranslate(const Vector<Float>& translateVector,
@@ -144,7 +144,7 @@ class LCLELMask : public LCRegionSingle {
 
  private:
   LCBox itsBox;
-  LatticeExpr<Bool> itsExpr;
+  LatticeExpr<bool> itsExpr;
 };
 
 }  // namespace casacore

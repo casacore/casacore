@@ -53,7 +53,7 @@ MSFieldIndex::MSFieldIndex(const MSField& field) : msFieldCols_p(field) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern, const bool regex) {
   Vector<Int> IDs;
   IDs = matchFieldNameRegexOrPattern(pattern, regex);
   if (IDs.nelements() == 0) IDs = matchFieldCodeRegexOrPattern(pattern, regex);
@@ -61,7 +61,7 @@ Vector<Int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern, const 
 }
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern, const bool regex) {
   // Match a field name to a set of field id's
   // Input:
   //    name             const String&            Field name to match
@@ -85,9 +85,9 @@ Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern, co
   }
   //    cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << std::endl;
   Vector<String> names = msFieldCols_p.name().getColumn();
-  Vector<Bool> flagRow = msFieldCols_p.flagRow().getColumn();
+  Vector<bool> flagRow = msFieldCols_p.flagRow().getColumn();
   IPosition sh(names.shape());
-  LogicalArray maskArray(sh, False);
+  LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     String sname = stripWhite(names(i));  // Strip leading and trailing blanks
@@ -105,7 +105,7 @@ Vector<Int> MSFieldIndex::maskFieldIDs(const Vector<Int>& ids) {
 }
 //-------------------------------------------------------------------------
 
-Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern, const bool regex) {
   // Match a field name to a set of field id's
   // Input:
   //    name             const String&            Field name to match
@@ -120,10 +120,10 @@ Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern, co
     reg = reg.fromPattern(pattern);
 
   //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
-  Vector<Bool> flagRow = msFieldCols_p.flagRow().getColumn();
+  Vector<bool> flagRow = msFieldCols_p.flagRow().getColumn();
   Vector<String> codes = msFieldCols_p.code().getColumn();
   IPosition sh(codes.shape());
-  LogicalArray maskArray(sh, False);
+  LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     Int ret = RegexMatches(codes(i), reg, pos);
@@ -197,9 +197,9 @@ Vector<Int> MSFieldIndex::matchSubFieldName(const String& name) {
 
   Vector<String> fieldnames = msFieldCols_p.name().getColumn();
   uInt len = fieldnames.nelements();
-  Vector<Bool> matchfieldnames(len, False);
+  Vector<bool> matchfieldnames(len, false);
   for (uInt j = 0; j < len; j++) {
-    if (stripWhite(fieldnames[j]).find(name) != std::string::npos) matchfieldnames(j) = True;
+    if (stripWhite(fieldnames[j]).find(name) != std::string::npos) matchfieldnames(j) = true;
   }
   LogicalArray maskArray(matchfieldnames && !msFieldCols_p.flagRow().getColumn());
   MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
@@ -222,7 +222,7 @@ Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names) {
     Vector<Int> currentMatch = matchFieldName(names(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedFieldIds);
-      matchedFieldIds.resize(matchedFieldIds.nelements() + currentMatch.nelements(), True);
+      matchedFieldIds.resize(matchedFieldIds.nelements() + currentMatch.nelements(), true);
       matchedFieldIds = concatenateArray(temp, currentMatch);
     }
   }
@@ -260,7 +260,7 @@ Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds) {
     Vector<Int> currentMatch = matchSourceId(sourceIds(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedFieldIds);
-      matchedFieldIds.resize(matchedFieldIds.nelements() + currentMatch.nelements(), True);
+      matchedFieldIds.resize(matchedFieldIds.nelements() + currentMatch.nelements(), true);
       matchedFieldIds = concatenateArray(temp, currentMatch);
     }
   }

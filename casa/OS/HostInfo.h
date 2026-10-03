@@ -103,9 +103,9 @@ class HostInfo {
   static Int processID();
   static Double secondsFrom1970();
 
-  // Returns True for big endian machines (like SUN).
-  // Returns False for little endian machines (like PC).
-  static Bool bigEndian();
+  // Returns true for big endian machines (like SUN).
+  // Returns false for little endian machines (like PC).
+  static bool bigEndian();
 
   // Returns 0 if unable to determine the number of CPUs.
   static Int numCPUs(bool use_aipsrc = false);
@@ -148,11 +148,11 @@ class HostInfo {
   static Int resources_numCPUs;
 };
 
-inline Bool HostInfo::bigEndian() {
+inline bool HostInfo::bigEndian() {
 #if defined(AIPS_LITTLE_ENDIAN)
-  return False;
+  return false;
 #else
-  return True;
+  return true;
 #endif
 }
 

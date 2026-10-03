@@ -36,7 +36,7 @@ String removeDir(const String& msg) {
   return s;
 }
 
-void testCloneColumn(const DataManager& tsm, Bool fixed) {
+void testCloneColumn(const DataManager& tsm, bool fixed) {
   cout << "testCloneColumn ..." << endl;
   // First create a table.
   TableDesc td;
@@ -68,7 +68,7 @@ void testCloneColumn(const DataManager& tsm, Bool fixed) {
   TableCopy::cloneColumn(tab, "DATA", tab, "DATA2", "Data2StMan");
   TableCopy::cloneColumnTyped<DComplex>(tab, "DATA", tab, "DATA3");
   TableCopy::cloneColumnTyped<Int>(tab, "SCALAR", tab, "SCALAR3");
-  TableCopy::copyColumnData(tab, "DATA", tab, "DATA1", False);
+  TableCopy::copyColumnData(tab, "DATA", tab, "DATA1", false);
   TableCopy::copyColumnData(tab, "DATA", tab, "DATA3");
   cout << tab.dataManagerInfo() << endl;
   // Check if the data are the same.
@@ -111,11 +111,11 @@ void testCloneColumn(const DataManager& tsm, Bool fixed) {
 
 void testCloneColumns() {
   TiledShapeStMan tsm1("DATA_stm", IPosition(2, 8, 2));
-  testCloneColumn(tsm1, False);
+  testCloneColumn(tsm1, false);
   TiledCellStMan tsm2("DATA_stm", IPosition(2, 8, 2));
-  testCloneColumn(tsm2, False);
+  testCloneColumn(tsm2, false);
   TiledColumnStMan tsm3("DATA_stm", IPosition(2, 8, 2));
-  testCloneColumn(tsm3, True);
+  testCloneColumn(tsm3, true);
 }
 
 int main(int argc, const char* argv[]) {
@@ -125,9 +125,9 @@ int main(int argc, const char* argv[]) {
       ttyp = Table::Memory;
     }
   }
-  Bool noRows = False;
+  bool noRows = false;
   if (argc > 2 && String(argv[2]) == String("n")) {
-    noRows = True;
+    noRows = true;
   }
   try {
     TableDesc td("", "1", TableDesc::Scratch);

@@ -59,9 +59,9 @@ const LELLattCoordBase& LELCoordinates::coordinates() const {
 }
 
 // Does it have coordinates ?
-Bool LELCoordinates::hasCoordinates() const {
+bool LELCoordinates::hasCoordinates() const {
   if (isNull()) {
-    return False;
+    return false;
   }
   return coords_p->hasCoordinates();
 }

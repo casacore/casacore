@@ -61,11 +61,11 @@ void doIt() {
     AlwaysAssertExit(rownr == i - 10);
   }
   // Check if it fails if rownr out of bounds.
-  Bool ok = True;
+  bool ok = true;
   try {
     rows.mapRownr(tabnr, rownr, rows.nrow());
   } catch (std::exception& x) {
-    ok = False;
+    ok = false;
   }
   AlwaysAssertExit(!ok);
 

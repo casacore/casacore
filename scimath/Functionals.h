@@ -110,7 +110,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // class, but leaves that to the final users. This means that a lot of
 // copying between intermediate and final users is not necessary
 // (like between a Gaussian fitter with fixed parameters
-// and the Fitting routines: the Gaussian fitter just sets a flag to False, and
+// and the Fitting routines: the Gaussian fitter just sets a flag to false, and
 // let the Fitting worry about what to do internally).
 // </note>
 //

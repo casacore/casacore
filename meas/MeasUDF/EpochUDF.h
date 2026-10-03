@@ -101,7 +101,7 @@ class EpochUDF : public UDFBase {
   PositionEngine itsPositionEngine;
   FuncType itsType;
   MEpoch::Types itsRefType;
-  Bool itsSidFrac;  // T = use fraction for sidereal times
+  bool itsSidFrac;  // T = use fraction for sidereal times
 };
 
 }  // namespace casacore

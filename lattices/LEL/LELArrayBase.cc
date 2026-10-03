@@ -36,7 +36,7 @@ LELArrayBase& LELArrayBase::operator=(const LELArrayBase& other) {
     delete itsMaskPtr;
     itsMaskPtr = 0;
     if (other.itsMaskPtr != 0) {
-      itsMaskPtr = new Array<Bool>(*other.itsMaskPtr);
+      itsMaskPtr = new Array<bool>(*other.itsMaskPtr);
     }
   }
   return *this;
@@ -47,34 +47,34 @@ void LELArrayBase::removeMask() {
   itsMaskPtr = 0;
 }
 
-void LELArrayBase::setMask(const Array<Bool>& mask) {
+void LELArrayBase::setMask(const Array<bool>& mask) {
   delete itsMaskPtr;
-  itsMaskPtr = new Array<Bool>(mask);
+  itsMaskPtr = new Array<bool>(mask);
 }
 
-void LELArrayBase::setMask(Array<Bool>& mask) {
+void LELArrayBase::setMask(Array<bool>& mask) {
   delete itsMaskPtr;
-  itsMaskPtr = new Array<Bool>(mask);
+  itsMaskPtr = new Array<bool>(mask);
 }
 
 void LELArrayBase::setMask(const LELArrayBase& other) {
   removeMask();
   if (other.isMasked()) {
-    itsMaskPtr = new Array<Bool>(other.mask());
+    itsMaskPtr = new Array<bool>(other.mask());
   }
 }
 
-void LELArrayBase::combineMask(const Array<Bool>& mask) {
+void LELArrayBase::combineMask(const Array<bool>& mask) {
   if (!isMasked()) {
-    itsMaskPtr = new Array<Bool>(mask);
+    itsMaskPtr = new Array<bool>(mask);
   } else {
-    Bool del1, del2;
-    Bool* m1 = itsMaskPtr->getStorage(del1);
-    const Bool* m2 = mask.getStorage(del2);
+    bool del1, del2;
+    bool* m1 = itsMaskPtr->getStorage(del1);
+    const bool* m2 = mask.getStorage(del2);
     uInt nr = itsMaskPtr->nelements();
     for (uInt i = 0; i < nr; i++) {
       if (!m2[i]) {
-        m1[i] = False;
+        m1[i] = false;
       }
     }
     itsMaskPtr->putStorage(m1, del1);
@@ -82,23 +82,23 @@ void LELArrayBase::combineMask(const Array<Bool>& mask) {
   }
 }
 
-void LELArrayBase::combineOrAnd(Bool desiredValue, const Array<Bool>& value) {
+void LELArrayBase::combineOrAnd(bool desiredValue, const Array<bool>& value) {
   // Combine the mask for an array and a scalar with a false mask.
-  Bool deleteValue, deleteMask;
-  const Bool* val = value.getStorage(deleteValue);
+  bool deleteValue, deleteMask;
+  const bool* val = value.getStorage(deleteValue);
   uInt nr = value.nelements();
   if (itsMaskPtr == 0) {
     // Entire mask is true, so create one.
-    itsMaskPtr = new Array<Bool>(value.shape());
-    *itsMaskPtr = True;
+    itsMaskPtr = new Array<bool>(value.shape());
+    *itsMaskPtr = true;
   }
   // If value is unequal desiredValue, mask should also be false
-  // (because  False || Unknown == Unknown  and  True && Unknown == Unknown).
-  Bool* m = itsMaskPtr->getStorage(deleteMask);
+  // (because  false || Unknown == Unknown  and  true && Unknown == Unknown).
+  bool* m = itsMaskPtr->getStorage(deleteMask);
   uInt ntrue = 0;
   for (uInt i = 0; i < nr; i++) {
     if (val[i] != desiredValue) {
-      m[i] = False;
+      m[i] = false;
     } else if (m[i]) {
       ntrue++;
     }
@@ -110,10 +110,10 @@ void LELArrayBase::combineOrAnd(Bool desiredValue, const Array<Bool>& value) {
   value.freeStorage(val, deleteValue);
 }
 
-void LELArrayBase::combineOrAnd(Bool desiredValue, Array<Bool>& value, const Array<Bool>& temp) {
-  Bool deleteValue, deleteTemp, deleteMask;
-  Bool* val = value.getStorage(deleteValue);
-  const Bool* tmp = temp.getStorage(deleteTemp);
+void LELArrayBase::combineOrAnd(bool desiredValue, Array<bool>& value, const Array<bool>& temp) {
+  bool deleteValue, deleteTemp, deleteMask;
+  bool* val = value.getStorage(deleteValue);
+  const bool* tmp = temp.getStorage(deleteTemp);
   uInt nr = value.nelements();
   if (itsMaskPtr == 0) {
     for (uInt i = 0; i < nr; i++) {
@@ -122,12 +122,12 @@ void LELArrayBase::combineOrAnd(Bool desiredValue, Array<Bool>& value, const Arr
       }
     }
   } else {
-    Bool* m = itsMaskPtr->getStorage(deleteMask);
+    bool* m = itsMaskPtr->getStorage(deleteMask);
     uInt ntrue = 0;
     for (uInt i = 0; i < nr; i++) {
       if (tmp[i] == desiredValue) {
         val[i] = desiredValue;
-        m[i] = True;
+        m[i] = true;
         ntrue++;
       } else if (m[i]) {
         ntrue++;
@@ -142,25 +142,25 @@ void LELArrayBase::combineOrAnd(Bool desiredValue, Array<Bool>& value, const Arr
   temp.freeStorage(tmp, deleteTemp);
 }
 
-void LELArrayBase::combineOrAnd(Bool desiredValue, Array<Bool>& value, const Array<Bool>& temp,
-                                const Array<Bool>& tempMask) {
-  Bool deleteValue, deleteTemp, deleteMask, deleteTempMask;
-  Bool* val = value.getStorage(deleteValue);
-  const Bool* tmp = temp.getStorage(deleteTemp);
-  const Bool* tm = tempMask.getStorage(deleteTempMask);
+void LELArrayBase::combineOrAnd(bool desiredValue, Array<bool>& value, const Array<bool>& temp,
+                                const Array<bool>& tempMask) {
+  bool deleteValue, deleteTemp, deleteMask, deleteTempMask;
+  bool* val = value.getStorage(deleteValue);
+  const bool* tmp = temp.getStorage(deleteTemp);
+  const bool* tm = tempMask.getStorage(deleteTempMask);
   uInt nr = value.nelements();
   if (itsMaskPtr == 0) {
-    itsMaskPtr = new Array<Bool>(value.shape());
-    *itsMaskPtr = True;
+    itsMaskPtr = new Array<bool>(value.shape());
+    *itsMaskPtr = true;
   }
-  Bool* m = itsMaskPtr->getStorage(deleteMask);
+  bool* m = itsMaskPtr->getStorage(deleteMask);
   uInt ntrue = 0;
   for (uInt i = 0; i < nr; i++) {
     if (m[i] && val[i] == desiredValue) {
       ntrue++;
     } else if (tm[i] && tmp[i] == desiredValue) {
       val[i] = desiredValue;
-      m[i] = True;
+      m[i] = true;
       ntrue++;
     } else {
       if (val[i] != desiredValue) {
@@ -170,7 +170,7 @@ void LELArrayBase::combineOrAnd(Bool desiredValue, Array<Bool>& value, const Arr
         if (tm[i]) {
           ntrue++;
         } else {
-          m[i] = False;
+          m[i] = false;
         }
       }
     }

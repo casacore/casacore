@@ -41,7 +41,7 @@ namespace python {
 
 struct TConvert {
   TConvert() {}
-  Bool testbool(Bool in) {
+  bool testbool(bool in) {
     cout << "bool " << in << endl;
     return in;
   }
@@ -93,7 +93,7 @@ struct TConvert {
     cout << "VH " << in.dataType() << endl;
     return in;
   }
-  Vector<Bool> testvecbool(const Vector<Bool>& in) {
+  Vector<bool> testvecbool(const Vector<bool>& in) {
     cout << "VecBool " << in << endl;
     return in;
   }

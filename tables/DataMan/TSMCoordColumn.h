@@ -107,7 +107,7 @@ class TSMCoordColumn : public TSMColumn {
   virtual void setShape(rownr_t rownr, const IPosition& shape);
 
   // Is the value shape defined in the given row?
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the shape of the item in the given row.
   virtual IPosition shape(rownr_t rownr);

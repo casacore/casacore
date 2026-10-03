@@ -117,9 +117,9 @@ class PGPlotterNull : public PGPlotterInterface {
   // whereas they must be passed into standard PGPLOT).
   // <group>
   virtual void arro(Float x1, Float y1, Float x2, Float y2);
-  virtual void ask(Bool flag);
+  virtual void ask(bool flag);
   virtual void bbuf();
-  virtual void bin(const Vector<Float> &x, const Vector<Float> &data, Bool center);
+  virtual void bin(const Vector<Float> &x, const Vector<Float> &data, bool center);
   virtual void box(const String &xopt, Float xtick, Int nxsub, const String &yopt, Float ytick,
                    Int nysub);
   virtual void circ(Float xcent, Float ycent, Float radius);
@@ -128,7 +128,7 @@ class PGPlotterNull : public PGPlotterInterface {
   virtual void conl(const Matrix<Float> &a, Float c, const Vector<Float> &tr, const String &label,
                     Int intval, Int minint);
   virtual void cons(const Matrix<Float> &a, const Vector<Float> &c, const Vector<Float> &tr);
-  virtual void cont(const Matrix<Float> &a, const Vector<Float> &c, Bool nc,
+  virtual void cont(const Matrix<Float> &a, const Vector<Float> &c, bool nc,
                     const Vector<Float> &tr);
   virtual void ctab(const Vector<Float> &l, const Vector<Float> &r, const Vector<Float> &g,
                     const Vector<Float> &b, Float contra, Float bright);
@@ -144,7 +144,7 @@ class PGPlotterNull : public PGPlotterInterface {
                     Float t);
   virtual void gray(const Matrix<Float> &a, Float fg, Float bg, const Vector<Float> &tr);
   virtual void hi2d(const Matrix<Float> &data, const Vector<Float> &x, Int ioff, Float bias,
-                    Bool center, const Vector<Float> &ylims);
+                    bool center, const Vector<Float> &ylims);
   virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, Int nbin, Int pcflag);
   virtual void iden();
   virtual void imag(const Matrix<Float> &a, Float a1, Float a2, const Vector<Float> &tr);
@@ -226,7 +226,7 @@ class PGPlotterNull : public PGPlotterInterface {
 
   // PGPLOT id
   int id_p;
-  Bool beenWarned;
+  bool beenWarned;
   void noplotter();
 };
 

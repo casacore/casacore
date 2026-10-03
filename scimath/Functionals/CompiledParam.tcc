@@ -63,7 +63,7 @@ CompiledParam<T> &CompiledParam<T>::operator=(const CompiledParam<T> &other) {
 }
 
 template <class T>
-Bool CompiledParam<T>::setFunction(const String &newFunction) {
+bool CompiledParam<T>::setFunction(const String &newFunction) {
   // Add the function
   if (functionPtr_p) delete functionPtr_p;
   functionPtr_p = 0;
@@ -76,12 +76,12 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
     msg_p = functionPtr_p->errorMessage();
     delete functionPtr_p;
     functionPtr_p = 0;
-    return False;
+    return false;
   }
   ndim_p = functionPtr_p->getNdim();
   this->param_p = FunctionParam<T>(functionPtr_p->getNpar());
   text_p = newFunction;
-  return True;
+  return true;
 }
 
 }  // namespace casacore

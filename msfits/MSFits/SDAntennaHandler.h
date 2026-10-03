@@ -90,7 +90,7 @@ class SDAntennaHandler {
 
   // attach this to a MS, mark the appropriate columns as handled given
   // the indicated row
-  SDAntennaHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDAntennaHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDAntennaHandler(const SDAntennaHandler &other);
@@ -101,7 +101,7 @@ class SDAntennaHandler {
   SDAntennaHandler &operator=(const SDAntennaHandler &other);
 
   // attach to a MS, mark the appropriate columns as handled given the
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS
   void resetRow(const Record &row);
@@ -123,7 +123,7 @@ class SDAntennaHandler {
   RecordFieldPtr<String> nameKey_p, stationKey_p, mountKey_p;
   RecordFieldPtr<Double> dishDiameterKey_p;
   RecordFieldPtr<Int> orbitIdKey_p, phasedIdKey_p;
-  RecordFieldPtr<Bool> flagRowKey_p;
+  RecordFieldPtr<bool> flagRowKey_p;
   MSAntenna *msAnt_p;
   MSAntennaColumns *msAntCols_p;
 
@@ -144,7 +144,7 @@ class SDAntennaHandler {
   RORecordFieldPtr<Int> orbitIdField_p, phasedArrayIdField_p;
   RORecordFieldPtr<Double> dishDiameterField_p;
   RORecordFieldPtr<Array<Double>> offsetField_p, positionField_p;
-  RORecordFieldPtr<Bool> flagRowField_p;
+  RORecordFieldPtr<bool> flagRowField_p;
 
   // I expect these will never be used, nevertheless, put them here just in case I'm wrong
   void addPhasedArrayIdColumn();
@@ -157,10 +157,10 @@ class SDAntennaHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // initialize the things which depend on the row
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

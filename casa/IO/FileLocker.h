@@ -109,21 +109,21 @@ class FileLocker {
   // A zero value indicates an infinite number of times (i.e. wait until
   // the lock is acquired).
   // A positive value means it waits 1 second between each attempt.
-  Bool acquire(LockType = Write, uInt nattempts = 0);
+  bool acquire(LockType = Write, uInt nattempts = 0);
 
   // Release a lock.
   // The return status indicates if an error occurred.
-  Bool release();
+  bool release();
 
   // Test if the file can be locked for read or write.
   // Optionally the PID of the process holding the lock is returned.
   // <group>
-  Bool canLock(LockType = Write);
-  Bool canLock(uInt& pid, LockType = Write);
+  bool canLock(LockType = Write);
+  bool canLock(uInt& pid, LockType = Write);
   // </group>
 
   // Test if the process has a lock for read or write on the file.
-  Bool hasLock(LockType = Write) const;
+  bool hasLock(LockType = Write) const;
 
   // Get the fd in use.
   int fd() const;
@@ -139,12 +139,12 @@ class FileLocker {
   int itsError;
   int itsStart;
   int itsLength;
-  Bool itsMsgShown;  /// temporary for SUSE 6.1
-  Bool itsReadLocked;
-  Bool itsWriteLocked;
+  bool itsMsgShown;  /// temporary for SUSE 6.1
+  bool itsReadLocked;
+  bool itsWriteLocked;
 };
 
-inline Bool FileLocker::hasLock(LockType type) const {
+inline bool FileLocker::hasLock(LockType type) const {
   return (type == Write ? itsWriteLocked : itsReadLocked);
 }
 inline int FileLocker::fd() const { return itsFD; }

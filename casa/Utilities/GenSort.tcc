@@ -43,7 +43,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
 template <class T>
-void GenSort<T>::quickSortAsc(T* data, Int nr, Bool multiThread, Int rec_lim) {
+void GenSort<T>::quickSortAsc(T* data, Int nr, bool multiThread, Int rec_lim) {
   // QuickSorting small sets makes no sense.
   // It will be finished with an insertion sort.
   // The number 32 is determined experimentally. It is not very critical.
@@ -87,12 +87,12 @@ void GenSort<T>::quickSortAsc(T* data, Int nr, Bool multiThread, Int rec_lim) {
 #pragma omp parallel for num_threads(nthreads) if (nr > 500000)
 #endif
     for (int thr = 0; thr < 2; ++thr) {
-      if (thr == 0) quickSortAsc(data, i, False, rec_lim - 1);             // sort left part
-      if (thr == 1) quickSortAsc(sf + 1, nr - i - 1, False, rec_lim - 1);  // sort right part
+      if (thr == 0) quickSortAsc(data, i, false, rec_lim - 1);             // sort left part
+      if (thr == 1) quickSortAsc(sf + 1, nr - i - 1, false, rec_lim - 1);  // sort right part
     }
   } else {
-    quickSortAsc(data, i, False, rec_lim - 1);             // sort left part
-    quickSortAsc(sf + 1, nr - i - 1, False, rec_lim - 1);  // sort right part
+    quickSortAsc(data, i, false, rec_lim - 1);             // sort left part
+    quickSortAsc(sf + 1, nr - i - 1, false, rec_lim - 1);  // sort right part
   }
 }
 
@@ -398,7 +398,7 @@ uInt GenSort<T>::quickSort(T* data, uInt nr, Sort::Order ord, int opt) {
     rec_limit++;
   }
   rec_limit *= 2;
-  quickSortAsc(data, nr, True, rec_limit);
+  quickSortAsc(data, nr, true, rec_limit);
   // Finish with an insertion sort (which also skips duplicates if needed).
   // Note: if quicksort keeps track of its boundaries, the insSort of all
   // parts could be done in parallel.
@@ -443,7 +443,7 @@ uInt GenSort<T>::sort(T* data, uInt nr, Sort::Order ord, int opt) {
 
 template <class T>
 uInt GenSort<T>::sort(Array<T>& data, Sort::Order ord, int opt) {
-  Bool del;
+  bool del;
   T* dptr = data.getStorage(del);
   uInt nr = sort(dptr, data.nelements(), ord, opt);
   data.putStorage(dptr, del);
@@ -458,7 +458,7 @@ uInt GenSort<T>::sort(Block<T>& data, uInt nr, Sort::Order ord, int opt) {
 template <class T, class INX>
 INX GenSortIndirect<T, INX>::sort(Vector<INX>& indexVector, const Array<T>& data, Sort::Order ord,
                                   int opt) {
-  Bool del;
+  bool del;
   const T* dptr = data.getStorage(del);
   INX nr = sort(indexVector, dptr, data.nelements(), ord, opt);
   data.freeStorage(dptr, del);
@@ -481,7 +481,7 @@ INX GenSortIndirect<T, INX>::sort(Vector<INX>& indexVector, const T* data, INX n
   indgen(indexVector);
   // Pass the sort function a C-array of indices, because indexing
   // in there is (much) faster than in a vector.
-  Bool del;
+  bool del;
   INX* inx = indexVector.getStorage(del);
   // Choose the sort required.
   INX n;
@@ -533,7 +533,7 @@ INX GenSortIndirect<T, INX>::quickSort(INX* inx, const T* data, INX nr, Sort::Or
     rec_limit++;
   }
   rec_limit *= 2;
-  quickSortAsc(inx, data, nr, True, rec_limit);
+  quickSortAsc(inx, data, nr, true, rec_limit);
   // Finish with an insertion sort (which also skips duplicates if needed).
   // Note: if quicksort keeps track of its boundaries, the insSort of all
   // parts could be done in parallel.
@@ -692,7 +692,7 @@ INX* GenSortIndirect<T, INX>::merge(const T* data, INX* inx, INX* tmp, INX nr, I
 }
 
 template <class T, class INX>
-void GenSortIndirect<T, INX>::quickSortAsc(INX* inx, const T* data, INX nr, Bool multiThread,
+void GenSortIndirect<T, INX>::quickSortAsc(INX* inx, const T* data, INX nr, bool multiThread,
                                            Int rec_lim) {
   if (nr <= 32) {
     return;  // finish it off with insertion sort
@@ -737,12 +737,12 @@ void GenSortIndirect<T, INX>::quickSortAsc(INX* inx, const T* data, INX nr, Bool
 #pragma omp parallel for num_threads(nthreads) if (nr > 500000)
 #endif
     for (int thr = 0; thr < 2; ++thr) {
-      if (thr == 0) quickSortAsc(inx, data, n, False, rec_lim - 1);
-      if (thr == 1) quickSortAsc(sf + 1, data, nr - n - 1, False, rec_lim - 1);
+      if (thr == 0) quickSortAsc(inx, data, n, false, rec_lim - 1);
+      if (thr == 1) quickSortAsc(sf + 1, data, nr - n - 1, false, rec_lim - 1);
     }
   } else {
-    quickSortAsc(inx, data, n, False, rec_lim - 1);
-    quickSortAsc(sf + 1, data, nr - n - 1, False, rec_lim - 1);
+    quickSortAsc(inx, data, n, false, rec_lim - 1);
+    quickSortAsc(sf + 1, data, nr - n - 1, false, rec_lim - 1);
   }
 }
 

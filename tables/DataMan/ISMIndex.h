@@ -112,14 +112,14 @@ class ISMIndex {
   // Get the number of the next bucket from the index and return
   // it in <src>bucketNr</src>. The starting row of that bucket and
   // the number of rows in the bucket are also returned.
-  // Return status False indicates that no more buckets are available.
+  // Return status false indicates that no more buckets are available.
   // <br>The start of the iteration is indicated by cursor=0.
   // The first bucket returned is the bucket containing the rownr
   // given in <src>bucketStartRow</src> (thus set bucketStartRow
   // to 0 if you want to start at the first bucket).
   // <br>The next iterations return the next bucket number and fill
   // the starting row and number of rows.
-  Bool nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
+  bool nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
                     uInt& bucketNr) const;
 
   // Show the index.

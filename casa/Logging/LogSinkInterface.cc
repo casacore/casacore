@@ -89,11 +89,11 @@ LogSinkInterface &LogSinkInterface::filter(const LogFilterInterface &filter) {
   return *this;
 }
 
-void LogSinkInterface::flush(Bool) {
+void LogSinkInterface::flush(bool) {
   // Defult implementation is to do nothing.
 }
 
-void LogSinkInterface::cerrToo(Bool) {
+void LogSinkInterface::cerrToo(bool) {
   // Defult implementation is to do nothing.
 }
 

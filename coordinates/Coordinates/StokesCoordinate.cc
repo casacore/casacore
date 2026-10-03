@@ -91,46 +91,46 @@ uInt StokesCoordinate::nPixelAxes() const { return 1; }
 
 uInt StokesCoordinate::nWorldAxes() const { return 1; }
 
-Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const {
+bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const {
   Double world;
   if (toWorld(world, static_cast<Double>(pixel))) {
     stokes = Stokes::type(values_p[pixel]);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const {
+bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const {
   Double tmp;
   if (toPixel(tmp, static_cast<Double>(stokes))) {
     pixel = Int(tmp + 0.5);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool StokesCoordinate::toWorld(Vector<Double> &world, const Vector<Double> &pixel, Bool) const {
+bool StokesCoordinate::toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool) const {
   DebugAssert(pixel.nelements() == 1, AipsError);
   world.resize(1);
   //
   Double tmp;
   if (toWorld(tmp, pixel(0))) {
     world(0) = tmp;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool StokesCoordinate::toPixel(Vector<Double> &pixel, const Vector<Double> &world) const {
+bool StokesCoordinate::toPixel(Vector<Double> &pixel, const Vector<Double> &world) const {
   DebugAssert(world.nelements() == 1, AipsError);
   pixel.resize(1);
   //
   Double tmp;
   if (toPixel(tmp, world(0))) {
     pixel(0) = tmp;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 Double StokesCoordinate::toWorld(Stokes::StokesTypes stokes) { return static_cast<Double>(stokes); }
@@ -162,8 +162,8 @@ void StokesCoordinate::setStokes(const Vector<Int> &whichStokes) {
 
   // Make sure the stokes occur at most once
 
-  Block<Bool> alreadyUsed(Stokes::NumberOfTypes);
-  alreadyUsed = False;
+  Block<bool> alreadyUsed(Stokes::NumberOfTypes);
+  alreadyUsed = false;
   for (uInt i = 0; i < whichStokes.nelements(); i++) {
     /*
             if (Stokes::type(whichStokes(i))== Stokes::Undefined) {
@@ -173,7 +173,7 @@ void StokesCoordinate::setStokes(const Vector<Int> &whichStokes) {
     if (alreadyUsed[whichStokes(i)]) {
       throw(AipsError("You have specified the same Stokes more than once"));
     }
-    alreadyUsed[whichStokes(i)] = True;
+    alreadyUsed[whichStokes(i)] = true;
   }
   //
   values_p.resize(whichStokes.nelements());
@@ -222,8 +222,8 @@ Vector<Double> StokesCoordinate::referenceValue() const {
   return crval;
 }
 
-Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names) {
-  Bool ok = names.nelements() == 1;
+bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names) {
+  bool ok = names.nelements() == 1;
   if (!ok) {
     set_error("names vector must be of length 1");
   } else {
@@ -232,25 +232,25 @@ Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names) {
   return ok;
 }
 
-Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &) { return True; }
+bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &) { return true; }
 
-Bool StokesCoordinate::setReferencePixel(const Vector<Double> &) { return True; }
+bool StokesCoordinate::setReferencePixel(const Vector<Double> &) { return true; }
 
-Bool StokesCoordinate::setLinearTransform(const Matrix<Double> &) { return True; }
+bool StokesCoordinate::setLinearTransform(const Matrix<Double> &) { return true; }
 
-Bool StokesCoordinate::setIncrement(const Vector<Double> &) { return True; }
+bool StokesCoordinate::setIncrement(const Vector<Double> &) { return true; }
 
-Bool StokesCoordinate::setReferenceValue(const Vector<Double> &) { return True; }
+bool StokesCoordinate::setReferenceValue(const Vector<Double> &) { return true; }
 
-Bool StokesCoordinate::near(const Coordinate &other, Double tol) const {
+bool StokesCoordinate::near(const Coordinate &other, Double tol) const {
   Vector<Int> excludeAxes;
   return near(other, excludeAxes, tol);
 }
 
-Bool StokesCoordinate::near(const Coordinate &other, const Vector<Int> &excludeAxes, Double) const {
+bool StokesCoordinate::near(const Coordinate &other, const Vector<Int> &excludeAxes, Double) const {
   if (other.type() != this->type()) {
     set_error("Comparison is not with another StokesCoordinate");
-    return False;
+    return false;
   }
 
   // Check name
@@ -258,15 +258,15 @@ Bool StokesCoordinate::near(const Coordinate &other, const Vector<Int> &excludeA
   const StokesCoordinate &sCoord = dynamic_cast<const StokesCoordinate &>(other);
   if (name_p != sCoord.name_p) {
     set_error("The StokesCoordinates have differing world axis names");
-    return False;
+    return false;
   }
 
   // Number of pixel and world axes is the same for a StokesCoordinate
   // and it always 1.   SO if excludeAxes contains "0" we are done.
   // Add an assertion check should this change
 
-  Bool found;
-  if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0) return True;
+  bool found;
+  if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0) return true;
 
   // The only other thing that really matters in the STokesCoordinate
   // is the values along the axis.    Nothing else (e.g. crval_p etc)
@@ -274,7 +274,7 @@ Bool StokesCoordinate::near(const Coordinate &other, const Vector<Int> &excludeA
 
   if (nValues_p != sCoord.nValues_p) {
     set_error("The StokesCoordinates have different numbers of Stokes values");
-    return False;
+    return false;
   }
 
   // Conformance testing usually verifies aspects of the Coordinate
@@ -294,14 +294,14 @@ Bool StokesCoordinate::near(const Coordinate &other, const Vector<Int> &excludeA
      }
   */
   //
-  return True;
+  return true;
 }
 
-Bool StokesCoordinate::doNearPixel(const Coordinate &other, const Vector<Bool> &,
-                                   const Vector<Bool> &, Double) const {
+bool StokesCoordinate::doNearPixel(const Coordinate &other, const Vector<bool> &,
+                                   const Vector<bool> &, Double) const {
   if (other.type() != Coordinate::STOKES) {
     set_error("Other Coordinate type is not Stokes");
-    return False;
+    return false;
   }
 
   //
@@ -316,16 +316,16 @@ Bool StokesCoordinate::doNearPixel(const Coordinate &other, const Vector<Bool> &
   const StokesCoordinate &sCoord = dynamic_cast<const StokesCoordinate &>(other);
   if (nValues_p != sCoord.nValues_p) {
     set_error("The StokesCoordinates have different numbers of Stokes values");
-    return False;
+    return false;
   }
   //
-  return True;
+  return true;
 }
 
-Bool StokesCoordinate::save(RecordInterface &container, const String &fieldName) const
+bool StokesCoordinate::save(RecordInterface &container, const String &fieldName) const
 
 {
-  Bool ok = !container.isDefined(fieldName);
+  bool ok = !container.isDefined(fieldName);
   if (ok) {
     Record subrec;
     subrec.define("axes", worldAxisNames());
@@ -421,7 +421,7 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
 Coordinate *StokesCoordinate::clone() const { return new StokesCoordinate(*this); }
 
 String StokesCoordinate::format(String &units, Coordinate::formatType, Double worldValue,
-                                uInt worldAxis, Bool, Bool, Int, Bool) const
+                                uInt worldAxis, bool, bool, Int, bool) const
 //
 // world  abs=rel for Stokes
 //
@@ -479,21 +479,21 @@ void StokesCoordinate::makeWorldAbsolute(Vector<Double> &) const
 
 // Private functions
 
-Bool StokesCoordinate::toWorld(Double &world, const Double pixel) const {
+bool StokesCoordinate::toWorld(Double &world, const Double pixel) const {
   Int index = Int(pixel + 0.5);
   if (index >= 0 && index < nValues_p) {
     world = values_p[index];
-    return True;
+    return true;
   } else {
     ostringstream os;
     os << "Pixel " << index << " is out of range [0.." << nValues_p - 1 << "]";
     set_error(os.str());
-    return False;
+    return false;
   }
 }
 
-Bool StokesCoordinate::toPixel(Double &pixel, const Double world) const {
-  Bool found = False;
+bool StokesCoordinate::toPixel(Double &pixel, const Double world) const {
+  bool found = false;
   Int index;
   for (index = 0; index < nValues_p; index++) {
     found = casacore::near(world, Double(values_p[index]));
@@ -505,16 +505,16 @@ Bool StokesCoordinate::toPixel(Double &pixel, const Double world) const {
     String t = Stokes::name(t0);
     os << "Stokes value " << t << " is not contained in this StokesCoordinate";
     set_error(os.str());
-    return False;
+    return false;
   }
   //
   pixel = Double(index);
-  return True;
+  return true;
 }
 
-Bool StokesCoordinate::setWorldMixRanges(const IPosition &) {
+bool StokesCoordinate::setWorldMixRanges(const IPosition &) {
   setDefaultWorldMixRanges();
-  return True;
+  return true;
 }
 
 void StokesCoordinate::setDefaultWorldMixRanges() {

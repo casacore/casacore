@@ -94,7 +94,7 @@ class ConversionIO : public TypeIO {
   // Convert the values and write them to the ByteIO object.
   // Bool, complex and String values are handled by the base class.
   // <group>
-  virtual size_t write(size_t nvalues, const Bool* value);
+  virtual size_t write(size_t nvalues, const bool* value);
   virtual size_t write(size_t nvalues, const Char* data);
   virtual size_t write(size_t nvalues, const uChar* data);
   virtual size_t write(size_t nvalues, const Short* data);
@@ -113,7 +113,7 @@ class ConversionIO : public TypeIO {
   // Read the values from the ByteIO object and convert them.
   // Bool, complex and String values are handled by the base class.
   // <group>
-  virtual size_t read(size_t nvalues, Bool* value);
+  virtual size_t read(size_t nvalues, bool* value);
   virtual size_t read(size_t nvalues, Char* data);
   virtual size_t read(size_t nvalues, uChar* data);
   virtual size_t read(size_t nvalues, Short* data);
@@ -134,7 +134,7 @@ class ConversionIO : public TypeIO {
   void init();
 
   template <typename T>
-  void initType(uInt& size, Bool& copy) const;
+  void initType(uInt& size, bool& copy) const;
 
   template <typename T>
   size_t writeGeneric(size_t nvalues, const T* value, size_t type_size, bool copy);
@@ -153,16 +153,16 @@ class ConversionIO : public TypeIO {
   uInt itsSizeuInt64;
   uInt itsSizeFloat;
   uInt itsSizeDouble;
-  Bool itsCopyChar;
-  Bool itsCopyuChar;
-  Bool itsCopyShort;
-  Bool itsCopyuShort;
-  Bool itsCopyInt;
-  Bool itsCopyuInt;
-  Bool itsCopyInt64;
-  Bool itsCopyuInt64;
-  Bool itsCopyFloat;
-  Bool itsCopyDouble;
+  bool itsCopyChar;
+  bool itsCopyuChar;
+  bool itsCopyShort;
+  bool itsCopyuShort;
+  bool itsCopyInt;
+  bool itsCopyuInt;
+  bool itsCopyInt64;
+  bool itsCopyuInt64;
+  bool itsCopyFloat;
+  bool itsCopyDouble;
   // # The buffer
   char* itsBuffer;
   uInt itsBufferLength;

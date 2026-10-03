@@ -76,7 +76,7 @@ class LCMask : public LCRegionSingle {
 
   // Construct an LCMask object for a full lattice with the shape of the mask.
   // It clones the mask object.
-  explicit LCMask(Lattice<Bool>& mask);
+  explicit LCMask(Lattice<bool>& mask);
 
   // Construct an LCMask object for the part of a lattice given by the box.
   // The box defines the position of the mask in the lattice.
@@ -88,7 +88,7 @@ class LCMask : public LCRegionSingle {
   // The box defines the position of the mask in the lattice.
   // The box shape and given mask shape should be equal.
   // It clones the mask object.
-  LCMask(Lattice<Bool>& mask, const LCBox& box);
+  LCMask(Lattice<bool>& mask, const LCBox& box);
 
   // Copy constructor (copy semantics).
   LCMask(const LCMask& other);
@@ -105,8 +105,8 @@ class LCMask : public LCRegionSingle {
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use.
-  LatticeIterInterface<Bool>* makeIter(const LatticeNavigator& navigator,
-                                       Bool useRef) const override;
+  LatticeIterInterface<bool>* makeIter(const LatticeNavigator& navigator,
+                                       bool useRef) const override;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
@@ -141,9 +141,9 @@ class LCMask : public LCRegionSingle {
 
   // Handle the (un)locking.
   // <group>
-  Bool lock(FileLocker::LockType, uInt nattempts) override;
+  bool lock(FileLocker::LockType, uInt nattempts) override;
   void unlock() override;
-  Bool hasLock(FileLocker::LockType) const override;
+  bool hasLock(FileLocker::LockType) const override;
   // </group>
 
   // Resynchronize the object with the contenta tof the possible file.
@@ -174,11 +174,11 @@ class LCMask : public LCRegionSingle {
   TableRecord toRecord(const String& tableName) const override;
 
   // An LCMask is writable if the underlying Lattice is.
-  Bool isWritable() const override;
+  bool isWritable() const override;
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCMask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
@@ -188,7 +188,7 @@ class LCMask : public LCRegionSingle {
 
  private:
   LCBox itsBox;
-  Lattice<Bool>* itsMask;
+  Lattice<bool>* itsMask;
 };
 
 }  // namespace casacore

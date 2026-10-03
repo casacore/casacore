@@ -95,8 +95,8 @@ static const std::array<uInt, 256>& CRCTable() {
   problem because data blocks will be removed very seldomly.
  */
 
-MultiFile::MultiFile(const String& name, ByteIO::OpenOption option, Int blockSize, Bool useODirect,
-                     Bool useCRC)
+MultiFile::MultiFile(const String& name, ByteIO::OpenOption option, Int blockSize, bool useODirect,
+                     bool useCRC)
     : MultiFileBase(name, blockSize, useODirect),
       itsNrContUsed{0, 0},
       itsHdrContInx(0),  // Start using the first continuation block
@@ -109,10 +109,10 @@ MultiFile::MultiFile(const String& name, const std::shared_ptr<MultiFileBase>& p
                      ByteIO::OpenOption option, Int blockSize)
     // Use parent's block size if not specified.
     // A child MultiFile does not use CRC.
-    : MultiFileBase(name, blockSize > 0 ? blockSize : parent->blockSize(), False),
+    : MultiFileBase(name, blockSize > 0 ? blockSize : parent->blockSize(), false),
       itsNrContUsed{0, 0},
       itsHdrContInx(0),  // Start using the first continuation block
-      itsUseCRC(False) {
+      itsUseCRC(false) {
   itsIO.reset(new MFFileIO(parent, name, option));
   init(option);
 }
@@ -152,7 +152,7 @@ void MultiFile::reopenRW() {
     return;
   }
   itsIO->reopenRW();
-  itsWritable = True;
+  itsWritable = true;
 }
 
 void MultiFile::fsync() { itsIO->fsync(); }
@@ -206,7 +206,7 @@ void MultiFile::writeHeader() {
       (2 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
   // Allocate a temp buffer if header too large or if O_DIRECT.
   // This buffer is used by writeRemainder and
-  Bool hasRemainder = (totalSize > itsBlockSize);
+  bool hasRemainder = (totalSize > itsBlockSize);
   MultiFileBuffer mfbuf(itsUseODirect || hasRemainder ? itsBlockSize : 0, itsUseODirect);
   // First write the remainder and adjust the header as needed.
   if (hasRemainder) {
@@ -257,7 +257,7 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   Int64 ncontOld = itsHdrCont[newContInx].blockNrs.size();
   Int64 ncont = (todo + contBlkSize - 1) / contBlkSize;
   Int64 ncontNew = std::max(ncont, ncontOld);
-  while (True) {
+  while (true) {
     Int64 szCont = (todo + 2 * sizeof(uInt) + (ncontOther + ncontNew + 2) * sizeof(Int64));
     ncont = (szCont + contBlkSize - 1) / contBlkSize;
     if (ncont <= ncontNew) {
@@ -267,7 +267,7 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   }
   // Extend the virtual file.
   if (ncontNew > ncontOld) {
-    extendVF(itsHdrCont[newContInx], ncontNew, False);
+    extendVF(itsHdrCont[newContInx], ncontNew, false);
   }
   // Write the continuation blocknrs.
   writeVector(cio, itsHdrCont[0].blockNrs);
@@ -336,7 +336,7 @@ void MultiFile::readVector(CanonicalIO& cio, std::vector<uInt>& index) {
   }
 }
 
-void MultiFile::readHeader(Bool always) {
+void MultiFile::readHeader(bool always) {
   /*  header layout is described in Casacore note 260, but repeated here.
       version 1
         Int64  header size
@@ -404,7 +404,7 @@ void MultiFile::readHeader(Bool always) {
     // Initialize remaining info fields.
     for (MultiFileInfo& info : itsInfo) {
       info.curBlock = -1;
-      info.dirty = False;
+      info.dirty = false;
     }
   }
 }
@@ -588,9 +588,9 @@ void MultiFile::truncateIfNeeded() {
   }
 }
 
-void MultiFile::extend(MultiFileInfo& info, Int64 lastblk) { extendVF(info, lastblk, True); }
+void MultiFile::extend(MultiFileInfo& info, Int64 lastblk) { extendVF(info, lastblk, true); }
 
-void MultiFile::extendVF(MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks) {
+void MultiFile::extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks) {
   Int64 curnrb = info.blockNrs.size();
   info.blockNrs.resize(lastblk);
   Int64 nfree = itsFreeBlocks.size();

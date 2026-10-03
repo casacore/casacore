@@ -119,9 +119,9 @@ class MSMainColumns {
   ScalarColumn<Int>& feed1() { return feed1_p; }
   ScalarColumn<Int>& feed2() { return feed2_p; }
   ScalarColumn<Int>& fieldId() { return fieldId_p; }
-  ArrayColumn<Bool>& flag() { return flag_p; }
-  ArrayColumn<Bool>& flagCategory() { return flagCategory_p; }
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ArrayColumn<bool>& flag() { return flag_p; }
+  ArrayColumn<bool>& flagCategory() { return flagCategory_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<Double>& interval() { return interval_p; }
   ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p; }
   ScalarColumn<Int>& observationId() { return observationId_p; }
@@ -144,7 +144,7 @@ class MSMainColumns {
   // Access to optional columns
   // <group>
   ScalarColumn<Int>& antenna3() { return antenna3_p; }
-  ScalarColumn<Bool>& baselineRef() { return baselineRef_p; }
+  ScalarColumn<bool>& baselineRef() { return baselineRef_p; }
   ArrayColumn<Complex>& correctedData() { return correctedData_p; }
   ArrayColumn<Complex>& data() { return data_p; }
   ScalarColumn<Int>& feed3() { return feed3_p; }
@@ -177,9 +177,9 @@ class MSMainColumns {
   const ScalarColumn<Int>& feed1() const { return feed1_p; }
   const ScalarColumn<Int>& feed2() const { return feed2_p; }
   const ScalarColumn<Int>& fieldId() const { return fieldId_p; }
-  const ArrayColumn<Bool>& flag() const { return flag_p; }
-  const ArrayColumn<Bool>& flagCategory() const { return flagCategory_p; }
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ArrayColumn<bool>& flag() const { return flag_p; }
+  const ArrayColumn<bool>& flagCategory() const { return flagCategory_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<Double>& interval() const { return interval_p; }
   const ScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p; }
   const ScalarColumn<Int>& observationId() const { return observationId_p; }
@@ -202,7 +202,7 @@ class MSMainColumns {
   // Access to optional columns
   // <group>
   const ScalarColumn<Int>& antenna3() const { return antenna3_p; }
-  const ScalarColumn<Bool>& baselineRef() const { return baselineRef_p; }
+  const ScalarColumn<bool>& baselineRef() const { return baselineRef_p; }
   const ArrayColumn<Complex>& correctedData() const { return correctedData_p; }
   const ArrayColumn<Complex>& data() const { return data_p; }
   const ScalarColumn<Int>& feed3() const { return feed3_p; }
@@ -236,10 +236,10 @@ class MSMainColumns {
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
   // set the UVW reference type for the UVW and UVW2 (if defined) columns. This
   // can only be done when the table has no rows. Trying to do so at other
@@ -278,9 +278,9 @@ class MSMainColumns {
   ScalarColumn<Int> feed1_p;
   ScalarColumn<Int> feed2_p;
   ScalarColumn<Int> fieldId_p;
-  ArrayColumn<Bool> flag_p;
-  ArrayColumn<Bool> flagCategory_p;
-  ScalarColumn<Bool> flagRow_p;
+  ArrayColumn<bool> flag_p;
+  ArrayColumn<bool> flagCategory_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<Double> interval_p;
   ScalarColumn<Int> observationId_p;
   ScalarColumn<Int> processorId_p;
@@ -293,7 +293,7 @@ class MSMainColumns {
   ArrayColumn<Float> weight_p;
   // # optional columns
   ScalarColumn<Int> antenna3_p;
-  ScalarColumn<Bool> baselineRef_p;
+  ScalarColumn<bool> baselineRef_p;
   ArrayColumn<Complex> data_p;
   ScalarColumn<Int> feed3_p;
   ArrayColumn<Float> floatData_p;

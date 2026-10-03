@@ -115,7 +115,7 @@ class ImageRegion : public LattRegionHolder {
   virtual ImageRegion* clone() const;
 
   // Comparison
-  virtual Bool operator==(const LattRegionHolder& other) const;
+  virtual bool operator==(const LattRegionHolder& other) const;
 
   // Create an ImageRegion from a lattice expression. Returned pointer
   // is created via new(); it is the caller's responsibility to delete it.
@@ -130,7 +130,7 @@ class ImageRegion : public LattRegionHolder {
                                  const IPosition& imShape, const Record& regionRecord);
 
   // Test if the underlying region is an WCRegion.
-  virtual Bool isWCRegion() const;
+  virtual bool isWCRegion() const;
 
   // Get the region as a pointer to WCRegion.
   // An exception is thrown if the region is not the correct type.

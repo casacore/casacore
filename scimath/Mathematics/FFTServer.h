@@ -163,7 +163,7 @@ class FFTEnums {
 // guaranteed. Modification of the input Array can be avoided, at the expense
 // of copying the data to temporary storage, by either:
 // <ul> <li> Ensuring the input Array is a const Array.
-//      <li> Setting the constInput Flag to True.
+//      <li> Setting the constInput Flag to true.
 // </ul>
 // The latter option is provided to avoid users having to cast non-const
 // Arrays to const ones in order to prevent there input Array from being
@@ -267,7 +267,7 @@ class FFTServer {
   // ie. <src>shape = [(nx+2)/2, ny, nz,...]</src>.  Otherwise an AipsError is
   // thrown. See the synopsis for a description of the constInput flag.
   // <group>
-  void fft(Array<S>& cResult, Array<T>& rData, const Bool constInput = False);
+  void fft(Array<S>& cResult, Array<T>& rData, const bool constInput = false);
   void fft(Array<S>& cResult, const Array<T>& rData);
   // </group>
 
@@ -281,26 +281,26 @@ class FFTServer {
   // the algorithm used to choose between the two possible output shapes and a
   // description of the constInput Flag.
   // <group>
-  void fft(Array<T>& rResult, Array<S>& cData, const Bool constInput = False);
+  void fft(Array<T>& rResult, Array<S>& cData, const bool constInput = false);
   void fft(Array<T>& rResult, const Array<S>& cData);
   // </group>
 
   // Complex to complex in-place fft. The origin of the transform is in the
   // centre of the Array. The direction of the transform is controlled by the
-  // toFrequency variable. If True then a forward, or time to frequency,
-  // transform is performed. If False a backward or frequency to time transform
+  // toFrequency variable. If true then a forward, or time to frequency,
+  // transform is performed. If false a backward or frequency to time transform
   // is done. Scaling is always done on the backward transform.
-  void fft(Array<S>& cValues, const Bool toFrequency = True);
+  void fft(Array<S>& cValues, const bool toFrequency = true);
 
   // Complex to complex fft. The origin of the transform is in the centre of
   // the Array. The direction of the transform is controlled by the toFrequency
-  // variable. If True then a forward, or time to frequency, transform is
-  // performed. If False a backward or frequency to time transform is
+  // variable. If true then a forward, or time to frequency, transform is
+  // performed. If false a backward or frequency to time transform is
   // done. Scaling is always done on the backward transform. The output Array
   // must either either contain no elements or be the same as the input Array,
   // ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an AipsError is
   // thrown.
-  void fft(Array<S>& cResult, const Array<S>& cData, const Bool toFrequency = True);
+  void fft(Array<S>& cResult, const Array<S>& cData, const bool toFrequency = true);
 
   // The <src>fft0</src> functions are equivalent to the <src>fft</src>
   // functions described above except that the origin of the transform is the
@@ -310,13 +310,13 @@ class FFTServer {
   // routines are in general faster than the equivalent ones with the origin
   // at the centre of the Array.
   // <group>
-  void fft0(Array<S>& cResult, Array<T>& rData, const Bool constInput = False);
+  void fft0(Array<S>& cResult, Array<T>& rData, const bool constInput = false);
   void fft0(Array<S>& cResult, const Array<T>& rData);
-  void fft0(Array<T>& rResult, Array<S>& cData, const Bool constInput = False);
+  void fft0(Array<T>& rResult, Array<S>& cData, const bool constInput = false);
   void fft0(Array<T>& rResult, const Array<S>& cData);
-  void fft0(Array<S>& cValues, const Bool toFrequency = True);
-  void fft0(Array<S>& cResult, const Array<S>& cData, const Bool toFrequency = True);
-  // # void fft0(Array<T> & rValues, const Bool toFrequency=True);
+  void fft0(Array<S>& cValues, const bool toFrequency = true);
+  void fft0(Array<S>& cResult, const Array<S>& cData, const bool toFrequency = true);
+  // # void fft0(Array<T> & rValues, const bool toFrequency=true);
 
   // </group>
   // # Flips the quadrants in a complex Array so that the point at
@@ -330,10 +330,10 @@ class FFTServer {
   // # passed a Hermitian Array where half the complex plane is implicit (eg as
   // # produced by a real->complex Transform) it is not necessary to flip the
   // # first dimension of the Array. In this case the isHermitian flag should
-  // # be set to True.  For complex<->complex transforms this should be False.
+  // # be set to true.  For complex<->complex transforms this should be false.
   // <group>
-  void flip(Array<T>& rData, const Bool toZero, const Bool isHermitian);
-  void flip(Array<S>& cData, const Bool toZero, const Bool isHermitian);
+  void flip(Array<T>& rData, const bool toZero, const bool isHermitian);
+  void flip(Array<S>& cData, const bool toZero, const bool isHermitian);
   // </group>
 
   // N-D in-place complex->complex FFT shift (FFT - phase-mult - inverse FFT)
@@ -341,24 +341,24 @@ class FFTServer {
   // relshift is the freq shift normalised to the bandwidth.
   // Only transform over selected dimension. Iterate over the others.
   void fftshift(Array<S>& cValues, const uInt& whichAxis, const Double& relshift,
-                const Bool toFrequency = True);
+                const bool toFrequency = true);
 
   // N-D complex->complex FFT shift (FFT - phase-mult - inverse FFT)
   // with flagging.
   // If toFrequency is true, the first FFT will be from time to frequency.
   // relshift is the freq shift normalised to the bandwidth.
   // Only transform over selected dimension. Iterate over the others.
-  void fftshift(Array<S>& outValues, Array<Bool>& outFlags, const Array<S>& cValues,
-                const Array<Bool>& inFlags, const uInt& whichAxis, const Double& relshift,
-                const Bool goodIsTrue = False, const Bool toFrequency = True);
+  void fftshift(Array<S>& outValues, Array<bool>& outFlags, const Array<S>& cValues,
+                const Array<bool>& inFlags, const uInt& whichAxis, const Double& relshift,
+                const bool goodIsTrue = false, const bool toFrequency = true);
 
   // N-D real->real FFT shift (FFT to complex - phase-mult - inverse FFT)
   // with flagging.
   // relshift is the freq shift normalised to the bandwidth.
   // Only transform over selected dimension. Iterate over the others.
-  void fftshift(Array<T>& outValues, Array<Bool>& outFlags, const Array<T>& rValues,
-                const Array<Bool>& inFlags, const uInt& whichAxis, const Double& relshift,
-                const Bool goodIsTrue = False);
+  void fftshift(Array<T>& outValues, Array<bool>& outFlags, const Array<T>& rValues,
+                const Array<bool>& inFlags, const uInt& whichAxis, const Double& relshift,
+                const bool goodIsTrue = false);
 
  private:
   // # finds the shape of the output array when doing complex->real transforms

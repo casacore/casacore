@@ -31,12 +31,12 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableExprNodeArrayConstBool::TableExprNodeArrayConstBool(const Array<Bool>& val)
+TableExprNodeArrayConstBool::TableExprNodeArrayConstBool(const Array<bool>& val)
     : TableExprNodeArray(NTBool, OtLiteral, val.shape()), value_p(val) {}
-TableExprNodeArrayConstBool::TableExprNodeArrayConstBool(const MArray<Bool>& val)
+TableExprNodeArrayConstBool::TableExprNodeArrayConstBool(const MArray<bool>& val)
     : TableExprNodeArray(NTBool, OtLiteral, val.shape()), value_p(val) {}
 TableExprNodeArrayConstBool::~TableExprNodeArrayConstBool() {}
-MArray<Bool> TableExprNodeArrayConstBool::getArrayBool(const TableExprId&) { return value_p; }
+MArray<bool> TableExprNodeArrayConstBool::getArrayBool(const TableExprId&) { return value_p; }
 
 TableExprNodeArrayConstInt::TableExprNodeArrayConstInt(const Array<uInt64>& val)
     : TableExprNodeArray(NTInt, OtLiteral, val.shape()) {

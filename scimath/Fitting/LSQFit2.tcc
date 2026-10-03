@@ -119,54 +119,54 @@ void LSQFit::solve(U &sol) {
 }
 
 template <class U>
-Bool LSQFit::solveLoop(uInt &nRank, U *sol, Bool doSVD) {
+bool LSQFit::solveLoop(uInt &nRank, U *sol, bool doSVD) {
   Double fit;
   return solveLoop(fit, nRank, sol, doSVD);
 }
 
 template <class U>
-Bool LSQFit::solveLoop(uInt &nRank, std::complex<U> *sol, Bool doSVD) {
+bool LSQFit::solveLoop(uInt &nRank, std::complex<U> *sol, bool doSVD) {
   Double fit;
   return solveLoop(fit, nRank, sol, doSVD);
 }
 
 template <class U>
-Bool LSQFit::solveLoop(uInt &nRank, U &sol, Bool doSVD) {
+bool LSQFit::solveLoop(uInt &nRank, U &sol, bool doSVD) {
   Double fit;
   return solveLoop(fit, nRank, sol, doSVD);
 }
 
 template <class U>
-Bool LSQFit::solveLoop(Double &fit, uInt &nRank, U *sol, Bool doSVD) {
+bool LSQFit::solveLoop(Double &fit, uInt &nRank, U *sol, bool doSVD) {
   getWorkSOL();
   uncopy(wsol_p, wsol_p + nun_p, sol, LSQReal());
   if (solveItLoop(fit, nRank, doSVD)) {
     copy(wsol_p, wsol_p + nun_p, sol, LSQReal());
-    return True;
-  }
-  return False;
-}
-
-template <class U>
-Bool LSQFit::solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, Bool doSVD) {
-  getWorkSOL();
-  uncopy(wsol_p, wsol_p + nun_p, sol, LSQComplex());
-  if (solveItLoop(fit, nRank, doSVD)) {
-    copy(wsol_p, wsol_p + nun_p, sol, LSQComplex());
-    return True;
+    return true;
   }
   return false;
 }
 
 template <class U>
-Bool LSQFit::solveLoop(Double &fit, uInt &nRank, U &sol, Bool doSVD) {
+bool LSQFit::solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, bool doSVD) {
+  getWorkSOL();
+  uncopy(wsol_p, wsol_p + nun_p, sol, LSQComplex());
+  if (solveItLoop(fit, nRank, doSVD)) {
+    copy(wsol_p, wsol_p + nun_p, sol, LSQComplex());
+    return true;
+  }
+  return false;
+}
+
+template <class U>
+bool LSQFit::solveLoop(Double &fit, uInt &nRank, U &sol, bool doSVD) {
   getWorkSOL();
   uncopy(wsol_p, wsol_p + nun_p, sol,
          typename LSQTraits<typename std::iterator_traits<U>::value_type>::num_type());
   if (solveItLoop(fit, nRank, doSVD)) {
     copy(wsol_p, wsol_p + nun_p, sol,
          typename LSQTraits<typename std::iterator_traits<U>::value_type>::num_type());
-    return True;
+    return true;
   }
   return false;
 }
@@ -175,7 +175,7 @@ Bool LSQFit::solveLoop(Double &fit, uInt &nRank, U &sol, Bool doSVD) {
 // (Linux is ok). Solaris does not zero the low-order part of a Double from
 // a Float, giving non-repeatable results.
 template <class U, class V>
-void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs, Bool doNorm, Bool doKnown) {
+void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
     Double *i2 = norm_p->row(0);
     for (V cEqp = cEq; cEqp != cEq + nun_p; ++cEqp) {
@@ -199,14 +199,14 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs, Bool doNorm, 
 }
 
 template <class U, class V>
-void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs, LSQFit::Real, Bool doNorm,
-                      Bool doKnown) {
+void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs, LSQFit::Real, bool doNorm,
+                      bool doKnown) {
   makeNorm(cEq, weight, obs, doNorm, doKnown);
 }
 
 template <class U, class V>
-void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, Bool doNorm,
-                      Bool doKnown) {
+void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, bool doNorm,
+                      bool doKnown) {
   uInt ln(nun_p / 2);
   if (doNorm) {
     std::complex<U> dci;
@@ -239,13 +239,13 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs,
 
 template <class U, class V>
 void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Complex,
-                      Bool doNorm, Bool doKnown) {
+                      bool doNorm, bool doKnown) {
   makeNorm(cEq, weight, obs, doNorm, doKnown);
 }
 
 template <class U, class V>
 void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Separable,
-                      Bool doNorm, Bool doKnown) {
+                      bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nun_p; i += 2) {
       Double *i2 = norm_p->row(i);  // row pointer
@@ -279,7 +279,7 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs,
 
 template <class U, class V>
 void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::AsReal,
-                      Bool doNorm, Bool doKnown) {
+                      bool doNorm, bool doKnown) {
   uInt ln(nun_p / 2);
   if (doNorm) {
     for (uInt i = 0; i < ln; i++) {
@@ -306,7 +306,7 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs,
 
 template <class U, class V>
 void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs, LSQFit::Conjugate,
-                      Bool doNorm, Bool doKnown) {
+                      bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nun_p; i += 2) {
       Double *i2 = norm_p->row(i);  // row pointer
@@ -343,7 +343,7 @@ void LSQFit::makeNorm(const V &cEq, const U &weight, const std::complex<U> &obs,
 // a Float, giving non-repeatable results.
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                      Bool doNorm, Bool doKnown) {
+                      bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nIndex; ++i) {
       uInt cEqIndex_i = cEqIndex[i];
@@ -372,7 +372,7 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &wei
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq2, const U &weight,
-                      const U &obs, const U &obs2, Bool doNorm, Bool doKnown) {
+                      const U &obs, const U &obs2, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nIndex; ++i) {
       uInt cEqIndex_i = cEqIndex[i];
@@ -404,13 +404,13 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight, const U &obs,
-                      LSQFit::Real, Bool doNorm, Bool doKnown) {
+                      LSQFit::Real, bool doNorm, bool doKnown) {
   makeNorm(nIndex, cEqIndex, cEq, weight, obs, doNorm, doKnown);
 }
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                      const std::complex<U> &obs, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
     std::complex<U> dci;
     for (uInt i = 0; i < nIndex; ++i) {
@@ -448,13 +448,13 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &wei
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::Complex, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::Complex, bool doNorm, bool doKnown) {
   makeNorm(nIndex, cEqIndex, cEq, weight, obs, doNorm, doKnown);
 }
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::Separable, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::Separable, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nIndex; ++i) {
       Double *i2 = norm_p->row(cEqIndex[i]);  // row pointer
@@ -503,7 +503,7 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &wei
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::AsReal, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::AsReal, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nIndex; ++i) {
       Double *i2 = norm_p->row(2 * cEqIndex[i]);       // row pointer real
@@ -531,7 +531,7 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &wei
 
 template <class U, class V, class W>
 void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::Conjugate, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::Conjugate, bool doNorm, bool doKnown) {
   if (doNorm) {
     std::complex<U> tmp(0);
     for (uInt i = 0; i < nIndex; ++i) {
@@ -640,7 +640,7 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex, const V &cEq, const U &wei
 //
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight, const U &obs,
-                      Bool doNorm, Bool doKnown) {
+                      bool doNorm, bool doKnown) {
   if (doNorm) {
     for (typename std::vector<std::pair<uInt, V>>::const_iterator i = cEq.begin(); i != cEq.end();
          ++i) {
@@ -667,13 +667,13 @@ void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weigh
 
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight, const U &obs,
-                      LSQFit::Real, Bool doNorm, Bool doKnown) {
+                      LSQFit::Real, bool doNorm, bool doKnown) {
   makeNorm(cEq, weight, obs, doNorm, doKnown);
 }
 
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                      const std::complex<U> &obs, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
     std::complex<U> dci;
     for (typename std::vector<std::pair<uInt, V>>::const_iterator i = cEq.begin(); i != cEq.end();
@@ -714,13 +714,13 @@ void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weigh
 
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::Complex, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::Complex, bool doNorm, bool doKnown) {
   makeNorm(cEq, weight, obs, doNorm, doKnown);
 }
 
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::Separable, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::Separable, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (typename std::vector<std::pair<uInt, V>>::const_iterator i = cEq.begin(); i != cEq.end();
          ++i) {
@@ -773,7 +773,7 @@ void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weigh
 
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::AsReal, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::AsReal, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (typename std::vector<std::pair<uInt, V>>::const_iterator i = cEq.begin(); i != cEq.end();
          ++i) {
@@ -804,7 +804,7 @@ void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weigh
 
 template <class U, class V>
 void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weight,
-                      const std::complex<U> &obs, LSQFit::Conjugate, Bool doNorm, Bool doKnown) {
+                      const std::complex<U> &obs, LSQFit::Conjugate, bool doNorm, bool doKnown) {
   if (doNorm) {
     std::complex<U> tmp(0);
     for (typename std::vector<std::pair<uInt, V>>::const_iterator i = cEq.begin(); i != cEq.end();
@@ -916,7 +916,7 @@ void LSQFit::makeNorm(const std::vector<std::pair<uInt, V>> &cEq, const U &weigh
 //
 template <class U, class V, class W>
 void LSQFit::makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const U &weight,
-                            const U &obs, Bool doNorm, Bool doKnown) {
+                            const U &obs, bool doNorm, bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nIndex; ++i) {
       Double *i2 = norm_p->row(cEqIndex[i]);  // row pointer
@@ -941,8 +941,8 @@ void LSQFit::makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const 
 //
 template <class U, class V, class W>
 void LSQFit::makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const V &cEq2,
-                            const U &weight, const U &obs, const U &obs2, Bool doNorm,
-                            Bool doKnown) {
+                            const U &weight, const U &obs, const U &obs2, bool doNorm,
+                            bool doKnown) {
   if (doNorm) {
     for (uInt i = 0; i < nIndex; ++i) {
       Double *i2 = norm_p->row(cEqIndex[i]);  // row pointer
@@ -971,7 +971,7 @@ void LSQFit::makeNormSorted(uInt nIndex, const W &cEqIndex, const V &cEq, const 
 }
 //
 template <class U>
-Bool LSQFit::getConstraint(uInt n, U *cEq) const {
+bool LSQFit::getConstraint(uInt n, U *cEq) const {
   n += r_p;
   if (n < nun_p) {
     Double r0 = 1;  // normalisation
@@ -985,13 +985,13 @@ Bool LSQFit::getConstraint(uInt n, U *cEq) const {
     }
     cEq[piv_p[n]] = 1;                                         // unit extend
     for (uInt i1 = 0; i1 <= n; ++i1) cEq[piv_p[i1]] /= U(r0);  // normalise
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 template <class U>
-Bool LSQFit::getConstraint(uInt n, std::complex<U> *cEq) const {
+bool LSQFit::getConstraint(uInt n, std::complex<U> *cEq) const {
   if (2 * n + 1 < nun_p) {
     U *eqp = new U[2 * nun_p];
     if (getConstraint(2 * n, eqp) && getConstraint(2 * n + 1, eqp + nun_p)) {
@@ -999,15 +999,15 @@ Bool LSQFit::getConstraint(uInt n, std::complex<U> *cEq) const {
         cEq[j] = std::complex<U>(eqp[2 * j], -eqp[2 * j + 1]);
       }
       delete[] eqp;
-      return True;
+      return true;
     }
     delete[] eqp;
   }
-  return False;
+  return false;
 }
 
 template <class U>
-Bool LSQFit::getConstraint(uInt n, U &cEq) const {
+bool LSQFit::getConstraint(uInt n, U &cEq) const {
   if (n < nun_p) {
     typename std::iterator_traits<U>::pointer eqp =
         new typename std::iterator_traits<U>::value_type[nun_p];
@@ -1016,25 +1016,25 @@ Bool LSQFit::getConstraint(uInt n, U &cEq) const {
           nun_p / LSQTraits<typename std::iterator_traits<U>::value_type>::size;
       std::copy(eqp, eqp + l, cEq);
       delete[] eqp;
-      return True;
+      return true;
     }
     delete[] eqp;
   }
-  return False;
+  return false;
 }
 
 template <class U, class V>
-Bool LSQFit::setConstraint(uInt n, const V &cEq, const U &obs) {
-  if (n >= ncon_p || nun_p == 0) return False;
+bool LSQFit::setConstraint(uInt n, const V &cEq, const U &obs) {
+  if (n >= ncon_p || nun_p == 0) return false;
   std::copy(cEq, cEq + nun_p, constr_p + n * nun_p);
   known_p[nun_p + n] = obs;
   state_p &= ~TRIANGLE;
-  return True;
+  return true;
 }
 
 template <class U, class V>
-Bool LSQFit::setConstraint(uInt n, const V &cEq, const std::complex<U> &obs) {
-  if (2 * n + 1 >= ncon_p || nun_p == 0) return False;
+bool LSQFit::setConstraint(uInt n, const V &cEq, const std::complex<U> &obs) {
+  if (2 * n + 1 >= ncon_p || nun_p == 0) return false;
   for (uInt i = 0; i < nun_p; i += 2) {
     constr_p[2 * n * nun_p + i] = cEq[i / 2].real();
     constr_p[2 * n * nun_p + i + 1] = -cEq[i / 2].imag();
@@ -1044,22 +1044,22 @@ Bool LSQFit::setConstraint(uInt n, const V &cEq, const std::complex<U> &obs) {
   known_p[nun_p + 2 * n] = obs.real();
   known_p[nun_p + 2 * n + 1] = obs.imag();
   state_p &= ~TRIANGLE;
-  return True;
+  return true;
 }
 
 template <class U, class V, class W>
-Bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs) {
-  if (n >= ncon_p || nun_p == 0) return False;
+bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs) {
+  if (n >= ncon_p || nun_p == 0) return false;
   for (uInt i = 0; i < nIndex; ++i) constr_p[n * nun_p + cEqIndex[i]] = cEq[i];
   known_p[nun_p + n] = obs;
   state_p &= ~TRIANGLE;
-  return True;
+  return true;
 }
 
 template <class U, class V, class W>
-Bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq,
+bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq,
                            const std::complex<U> &obs) {
-  if (2 * n + 1 >= ncon_p || nun_p == 0) return False;
+  if (2 * n + 1 >= ncon_p || nun_p == 0) return false;
   for (uInt i = 0; i < nIndex; ++i) {
     constr_p[2 * n * nun_p + cEqIndex[2 * i]] = cEq[i].real();
     constr_p[2 * n * nun_p + cEqIndex[2 * i + 1]] = -cEq[i].imag();
@@ -1069,37 +1069,37 @@ Bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex, const V &cEq,
   known_p[nun_p + 2 * n] = obs.real();
   known_p[nun_p + 2 * n + 1] = obs.imag();
   state_p &= ~TRIANGLE;
-  return True;
+  return true;
 }
 
 template <class U, class V>
-Bool LSQFit::addConstraint(const V &cEq, const U &obs) {
+bool LSQFit::addConstraint(const V &cEq, const U &obs) {
   extendConstraints(ncon_p + 1);
   return setConstraint(ncon_p - 1, cEq, obs);
 }
 
 template <class U, class V>
-Bool LSQFit::addConstraint(const V &cEq, const std::complex<U> &obs) {
+bool LSQFit::addConstraint(const V &cEq, const std::complex<U> &obs) {
   extendConstraints(ncon_p + 2);
   return setConstraint((ncon_p - 2) / 2, cEq, obs);
 }
 
 template <class U, class V, class W>
-Bool LSQFit::addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs) {
+bool LSQFit::addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq, const U &obs) {
   extendConstraints(ncon_p + 1);
   return setConstraint(ncon_p - 1, nIndex, cEqIndex, cEq, obs);
 }
 
 template <class U, class V, class W>
-Bool LSQFit::addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq,
+bool LSQFit::addConstraint(uInt nIndex, const W &cEqIndex, const V &cEq,
                            const std::complex<U> &obs) {
   extendConstraints(ncon_p + 2);
   return setConstraint((ncon_p - 2) / 2, nIndex, cEqIndex, cEq, obs);
 }
 
 template <class U>
-Bool LSQFit::getCovariance(U *covar) {
-  if (!invertRect()) return False;
+bool LSQFit::getCovariance(U *covar) {
+  if (!invertRect()) return false;
   for (uInt i = 0; i < nun_p; i++) {  // all columns
     Double *j0 = nceq_p->row(i);
     U *j2 = covar + i * nun_p;
@@ -1110,47 +1110,47 @@ Bool LSQFit::getCovariance(U *covar) {
       j2[i1] = static_cast<U>(j0[i1]);
     }
   }
-  return True;
+  return true;
 }
 
 template <class U>
-Bool LSQFit::getCovariance(std::complex<U> *covar) {
+bool LSQFit::getCovariance(std::complex<U> *covar) {
   getWorkCOV();
-  if (!LSQFit::getCovariance(wcov_p)) return False;
+  if (!LSQFit::getCovariance(wcov_p)) return false;
   for (uInt i = 0; i < n_p; i += 2) {
     for (uInt j = 0; j < n_p; j += 2) {
       covar[i * n_p / 4 + j / 2] = std::complex<U>(wcov_p[i * n_p + j], wcov_p[i * n_p + j + 1]);
     }
   }
-  return True;
+  return true;
 }
 
 template <class U>
-Bool LSQFit::getErrors(U *errors) {
-  if (!invertRect()) return False;
+bool LSQFit::getErrors(U *errors) {
+  if (!invertRect()) return false;
   for (uInt i = 0; i < nun_p; ++i) {  // all columns
     *errors++ = std::sqrt(std::abs(nceq_p->row(i)[i])) * error_p[CHI2];
   }
-  return True;
+  return true;
 }
 
 template <class U>
-Bool LSQFit::getErrors(std::complex<U> *errors) {
-  if (!invertRect()) return False;
+bool LSQFit::getErrors(std::complex<U> *errors) {
+  if (!invertRect()) return false;
   for (uInt i = 0; i + 1 < nun_p; i += 2) {  // all columns
     *errors++ = std::complex<U>(std::sqrt(std::abs(nceq_p->row(i)[i])),
                                 std::sqrt(std::abs(nceq_p->row(i + 1)[i + 1]))) *
                 static_cast<U>(error_p[CHI2]);
   }
-  return True;
+  return true;
 }
 
 template <class U>
-Bool LSQFit::getErrors(U &errors) {
-  if (!invertRect()) return False;
+bool LSQFit::getErrors(U &errors) {
+  if (!invertRect()) return false;
   copyDiagonal(errors,
                typename LSQTraits<typename std::iterator_traits<U>::value_type>::num_type());
-  return True;
+  return true;
 }
 
 template <class U>

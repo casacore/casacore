@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSObservation::MSObservation() : hasBeenDestroyed_p(True) {}
+MSObservation::MSObservation() : hasBeenDestroyed_p(true) {}
 
 MSObservation::MSObservation(const String &tableName, TableOption option)
-    : MSTable<MSObservationEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSObservationEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -51,7 +51,7 @@ MSObservation::MSObservation(const String &tableName, TableOption option)
 
 MSObservation::MSObservation(const String &tableName, const String &tableDescName,
                              TableOption option)
-    : MSTable<MSObservationEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSObservationEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -59,8 +59,8 @@ MSObservation::MSObservation(const String &tableName, const String &tableDescNam
                   "table is not a valid MSObservation"));
 }
 
-MSObservation::MSObservation(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSObservationEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSObservation::MSObservation(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSObservationEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -69,7 +69,7 @@ MSObservation::MSObservation(SetupNewTable &newTab, rownr_t nrrow, Bool initiali
 }
 
 MSObservation::MSObservation(const Table &table)
-    : MSTable<MSObservationEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSObservationEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -78,7 +78,7 @@ MSObservation::MSObservation(const Table &table)
 }
 
 MSObservation::MSObservation(const MSObservation &other)
-    : MSTable<MSObservationEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSObservationEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -96,7 +96,7 @@ MSObservation::~MSObservation() {
     os << LogIO::WARN << "~MSObservation() - Table written is not a valid MSObservation"
        << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSObservation &MSObservation::operator=(const MSObservation &other) {

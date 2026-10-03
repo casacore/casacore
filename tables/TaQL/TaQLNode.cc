@@ -204,13 +204,13 @@ TaQLRegexNode::TaQLRegexNode(TaQLRegexNodeRep* rep) : TaQLNode(rep), itsNRep(rep
 
 const String& TaQLRegexNode::getString() const { return itsNRep->itsValue; }
 
-Bool TaQLRegexNode::caseInsensitive() const { return itsNRep->itsCaseInsensitive; }
+bool TaQLRegexNode::caseInsensitive() const { return itsNRep->itsCaseInsensitive; }
 
-Bool TaQLRegexNode::negate() const { return itsNRep->itsNegate; }
+bool TaQLRegexNode::negate() const { return itsNRep->itsNegate; }
 
 TaQLMultiNode::TaQLMultiNode() : TaQLNode(0), itsNRep(0) {}
 
-TaQLMultiNode::TaQLMultiNode(Bool isSetOrArray) : TaQLNode(new TaQLMultiNodeRep(isSetOrArray)) {
+TaQLMultiNode::TaQLMultiNode(bool isSetOrArray) : TaQLNode(new TaQLMultiNodeRep(isSetOrArray)) {
   itsNRep = (TaQLMultiNodeRep*)(TaQLNode::itsRep.get());
 }
 

@@ -64,7 +64,7 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
   if (npts > _nptsToMaxZScore.rbegin()->first) {
     auto zscoreMax = _nptsToMaxZScore.rbegin()->second;
     auto z = zscoreMax + 0.5;
-    while (True) {
+    while (true) {
       auto nptsmin = zscoreToNpts(z);
       if (nptsmin >= npts) {
         _nptsToMaxZScore[nptsmin] = z;
@@ -82,7 +82,7 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
   } else {
     // distance must be an Int
     Int distance(_nptsToMaxZScore.size() / 2);
-    while (True) {
+    while (true) {
       advance(lowiter, distance);
       advance(upiter, distance);
       if (lowiter->first < npts && upiter->first > npts) {
@@ -98,7 +98,7 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
   auto lz = lowiter->second;
   auto uz = upiter->second;
   auto z = (lz + uz) / 2;
-  while (True) {
+  while (true) {
     auto nptsmin = zscoreToNpts(z);
     if (_nptsToMaxZScore.size() < 1000000) {
       _nptsToMaxZScore[nptsmin] = z;

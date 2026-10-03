@@ -119,8 +119,8 @@ void printInfo(MSSelection& msSelection, Int& nRows) {
 
   cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << std::endl;
   cout << "\tSE: SPW          = " << msSelection.getSpwList() << std::endl;
-  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL, 1, True) << std::endl;
-  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL, True) << std::endl;
+  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL, 1, true) << std::endl;
+  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL, true) << std::endl;
 
   cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << std::endl;
   cout << "\tScE: tScan         = " << msSelection.getScanList() << std::endl;
@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
   //  MSSelection msSelection;
   string MSNBuf, OutMSBuf, fieldStr, timeStr, spwStr, baselineStr, uvdistStr, taqlStr, scanStr,
       arrayStr, polnStr, stateObsModeStr, observationStr;
-  Bool deepCopy = 0, installEH = 1;
+  bool deepCopy = 0, installEH = 1;
 
   MSNBuf = OutMSBuf = fieldStr = timeStr = spwStr = baselineStr = uvdistStr = taqlStr = scanStr =
       arrayStr = polnStr = stateObsModeStr = observationStr = "";
@@ -199,10 +199,10 @@ int main(int argc, char** argv) {
         // the MSSelection object.
         //
         MSSelectionLogError mssLEA, mssLES, mssLESpw, mssLEF;
-        msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA, True);
-        msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES, True);
-        msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw, True);
-        msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF, True);
+        msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA, true);
+        msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES, true);
+        msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw, true);
+        msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF, true);
       }
 
       // msSelection.reset(ms,MSSelection::PARSE_NOW,

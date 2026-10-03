@@ -85,7 +85,7 @@ class Quality {
 
   // Get all recognized quality names in no guaranteed order.
   // The undefined type can be included.
-  static Vector<String> allNames(Bool includeUndefined = False);
+  static Vector<String> allNames(bool includeUndefined = false);
 
  private:
 };

@@ -86,7 +86,7 @@ void VerifyScalarColumn(Table &table, std::string column, uInt rows) {
 
 void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ScalarColumnDesc<Bool>("scalar_Bool"));
+  td.addColumn(ScalarColumnDesc<bool>("scalar_Bool"));
   td.addColumn(ScalarColumnDesc<uChar>("scalar_uChar"));
   td.addColumn(ScalarColumnDesc<Short>("scalar_Short"));
   td.addColumn(ScalarColumnDesc<uShort>("scalar_uShort"));
@@ -98,7 +98,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
   td.addColumn(ScalarColumnDesc<DComplex>("scalar_DComplex"));
   td.addColumn(ScalarColumnDesc<String>("scalar_String"));
 
-  td.addColumn(ArrayColumnDesc<Bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
+  td.addColumn(ArrayColumnDesc<bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<uChar>("array_uChar", array_pos, ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<Short>("array_Short", array_pos, ColumnDesc::FixedShape));
   td.addColumn(ArrayColumnDesc<uShort>("array_uShort", array_pos, ColumnDesc::FixedShape));
@@ -121,7 +121,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
   Table tab(newtab, rows);
 #endif  // HAVE_MPI
 
-  ScalarColumn<Bool> scalar_Bool(tab, "scalar_Bool");
+  ScalarColumn<bool> scalar_Bool(tab, "scalar_Bool");
   ScalarColumn<uChar> scalar_uChar(tab, "scalar_uChar");
   ScalarColumn<Short> scalar_Short(tab, "scalar_Short");
   ScalarColumn<uShort> scalar_uShort(tab, "scalar_uShort");
@@ -133,7 +133,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
   ScalarColumn<DComplex> scalar_DComplex(tab, "scalar_DComplex");
   ScalarColumn<String> scalar_String(tab, "scalar_String");
 
-  ArrayColumn<Bool> array_Bool(tab, "array_Bool");
+  ArrayColumn<bool> array_Bool(tab, "array_Bool");
   ArrayColumn<uChar> array_uChar(tab, "array_uChar");
   ArrayColumn<Short> array_Short(tab, "array_Short");
   ArrayColumn<uShort> array_uShort(tab, "array_uShort");
@@ -145,7 +145,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
   ArrayColumn<DComplex> array_DComplex(tab, "array_DComplex");
   ArrayColumn<String> array_String(tab, "array_String");
 
-  Array<Bool> arr_Bool(array_pos);
+  Array<bool> arr_Bool(array_pos);
   Array<Char> arr_Char(array_pos);
   Array<uChar> arr_uChar(array_pos);
   Array<Short> arr_Short(array_pos);
@@ -158,7 +158,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
   Array<DComplex> arr_DComplex(array_pos);
   Array<String> arr_String(array_pos);
 
-  Bool sca_Bool;
+  bool sca_Bool;
   uChar sca_uChar;
   Short sca_Short;
   uShort sca_uShort;
@@ -223,7 +223,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos) {
 
 void doReadScalar(std::string filename, uInt rows) {
   Table casa_table(filename);
-  VerifyScalarColumn<Bool>(casa_table, "scalar_Bool", rows);
+  VerifyScalarColumn<bool>(casa_table, "scalar_Bool", rows);
   VerifyScalarColumn<uChar>(casa_table, "scalar_uChar", rows);
   VerifyScalarColumn<Short>(casa_table, "scalar_Short", rows);
   VerifyScalarColumn<uShort>(casa_table, "scalar_uShort", rows);
@@ -238,7 +238,7 @@ void doReadScalar(std::string filename, uInt rows) {
 
 void doReadArray(std::string filename, uInt rows, IPosition array_pos) {
   Table casa_table(filename);
-  VerifyArrayColumn<Bool>(casa_table, "array_Bool", rows, array_pos);
+  VerifyArrayColumn<bool>(casa_table, "array_Bool", rows, array_pos);
   VerifyArrayColumn<uChar>(casa_table, "array_uChar", rows, array_pos);
   VerifyArrayColumn<Short>(casa_table, "array_Short", rows, array_pos);
   VerifyArrayColumn<uShort>(casa_table, "array_uShort", rows, array_pos);

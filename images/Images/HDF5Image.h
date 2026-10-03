@@ -83,8 +83,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //   // Create a mask for the image.
 //   // The mask will be stored in a subtable of the image.
 //   LCPagedMask mask (RegionHandler::makeMask (myimage, "mask.name"));
-//   // Fill the mask with whatever values (e.g. all True).
-//   mask.set (True);
+//   // Fill the mask with whatever values (e.g. all true).
+//   mask.set (true);
 //   // Make the mask known to the image (with name mask1).
 //   myimage.defineRegion ("mask1", mask, RegionHandler::Masks);
 //   // Make the mask the default mask for this image.
@@ -146,20 +146,20 @@ class HDF5Image : public ImageInterface<T> {
 
   // Return the current HDF5 file name. By default this includes the full path.
   // The path preceding the file name can be stripped off on request.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Function which changes the shape of the ImageExpr.
   // Throws an exception as an HDF5Image cannot be resized.
   virtual void resize(const TiledShape& newShape);
 
   // Check for symmetry in data members.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Return the shape of the image.
   virtual IPosition shape() const;
 
   // Function which extracts an array from the map.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
 
   // Function to replace the values in the map with soureBuffer.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -170,22 +170,22 @@ class HDF5Image : public ImageInterface<T> {
   virtual const LatticeRegion* getRegionPtr() const;
 
   // An HDF5Image is always persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // An HDF5Image is always paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Is the HDF5Image writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Does the image object use a pixelmask?
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask used.
   // An exception is thrown if the image does not use a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Set the default pixelmask to the mask with the given name
@@ -221,12 +221,12 @@ class HDF5Image : public ImageInterface<T> {
 
   // Function which sets the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
-  // False if it cannot set the unit for some reason (e.g. the underlying
+  // false if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
-  virtual Bool setUnits(const Unit& newUnits);
+  virtual bool setUnits(const Unit& newUnits);
 
   // Flushes the new coordinate system to disk if the file is writable.
-  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
+  virtual bool setCoordinateInfo(const CoordinateSystem& coords);
 
   // These are the true implementations of the paran operator.
   // <note> Not for public use </note>
@@ -237,31 +237,31 @@ class HDF5Image : public ImageInterface<T> {
 
   // Replace the miscinfo in the HDF5Image.
   // It can fail if, e.g., the underlying file is not writable.
-  virtual Bool setMiscInfo(const RecordInterface& newInfo);
+  virtual bool setMiscInfo(const RecordInterface& newInfo);
 
   // The ImageInfo object contains some miscellaneous information about the
   // image, which unlike that stored in MiscInfo, has a standard list of
   // things, such as the restoring beam.
   // Note that setImageInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying file is not writable.
-  virtual Bool setImageInfo(const ImageInfo& info);
+  virtual bool setImageInfo(const ImageInfo& info);
 
   // Get access to the attribute handler.
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler(Bool createHandler = False);
+  virtual ImageAttrHandler& attrHandler(bool createHandler = false);
 
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
   // If a mask removed is the default mask, the image gets unmasked.
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any,
-                            Bool throwIfUnknown = True);
+                            bool throwIfUnknown = true);
 
   // This is the implementation of the letter for the envelope Iterator
   // class. <note> Not for public use </note>.
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
@@ -314,7 +314,7 @@ class HDF5Image : public ImageInterface<T> {
 };
 
 // Tell if HDF5 images can be used.
-inline Bool canUseHDF5Image() { return HDF5Object::hasHDF5Support(); }
+inline bool canUseHDF5Image() { return HDF5Object::hasHDF5Support(); }
 
 // Determine the pixel type in the HDF5Image contained in
 // <src>fileName</src>.  If the file doesn't appear to be HDF5 or cannot
@@ -322,7 +322,7 @@ inline Bool canUseHDF5Image() { return HDF5Object::hasHDF5Support(); }
 // <group name="pixeltype")
 DataType hdf5imagePixelType(const String& fileName);
 // Check if this HDF5 file is an HDF5 image.
-Bool isHDF5Image(const String& fileName);
+bool isHDF5Image(const String& fileName);
 // </group>
 
 }  // namespace casacore

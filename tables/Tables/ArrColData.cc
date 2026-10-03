@@ -39,7 +39,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ArrayColumnData::ArrayColumnData(const ArrayColumnDescBase* cd, ColumnSet* csp)
-    : PlainColumn(cd, csp), shapeColDef_p(False), shapeCol_p() {
+    : PlainColumn(cd, csp), shapeColDef_p(false), shapeCol_p() {
   if (cd->shape().nelements() > 0) {
     ArrayColumnData::setShapeColumn(cd->shape());
   }
@@ -102,34 +102,34 @@ void ArrayColumnData::setShapeColumn(const IPosition& shp) {
     }
   }
   shapeCol_p = shp;
-  shapeColDef_p = True;
+  shapeColDef_p = true;
 }
 
-Bool ArrayColumnData::isDefined(rownr_t rownr) const { return dataColPtr_p->isShapeDefined(rownr); }
+bool ArrayColumnData::isDefined(rownr_t rownr) const { return dataColPtr_p->isShapeDefined(rownr); }
 uInt ArrayColumnData::ndim(rownr_t rownr) const { return dataColPtr_p->ndim(rownr); }
 IPosition ArrayColumnData::shape(rownr_t rownr) const { return dataColPtr_p->shape(rownr); }
 IPosition ArrayColumnData::tileShape(rownr_t rownr) const { return dataColPtr_p->tileShape(rownr); }
 
 void ArrayColumnData::setShape(rownr_t rownr, const IPosition& shp) {
   checkShape(shp);
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->setShape(rownr, shp);
   autoReleaseLock();
 }
 void ArrayColumnData::setShape(rownr_t rownr, const IPosition& shp, const IPosition& tileShp) {
   checkShape(shp);
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->setShapeTiled(rownr, shp, tileShp);
   autoReleaseLock();
 }
 
-Bool ArrayColumnData::canChangeShape() const { return dataColPtr_p->canChangeShape(); }
+bool ArrayColumnData::canChangeShape() const { return dataColPtr_p->canChangeShape(); }
 
 void ArrayColumnData::getArray(rownr_t rownr, ArrayBase& array) const {
   if (rtraceColumn_p) {
     TableTrace::trace(traceId(), columnDesc().name(), 'r', rownr, array.shape());
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getArrayV(rownr, array);
   autoReleaseLock();
 }
@@ -139,7 +139,7 @@ void ArrayColumnData::getSlice(rownr_t rownr, const Slicer& ns, ArrayBase& array
     TableTrace::trace(traceId(), columnDesc().name(), 'r', rownr, array.shape(), ns.start(),
                       ns.end(), ns.stride());
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getSliceV(rownr, ns, array);
   autoReleaseLock();
 }
@@ -151,7 +151,7 @@ void ArrayColumnData::putArray(rownr_t rownr, const ArrayBase& array) {
   if (checkValueLength_p) {
     checkValueLength(static_cast<const Array<String>*>(&array));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putArrayV(rownr, array);
   autoReleaseLock();
 }
@@ -164,7 +164,7 @@ void ArrayColumnData::putSlice(rownr_t rownr, const Slicer& ns, const ArrayBase&
   if (checkValueLength_p) {
     checkValueLength(static_cast<const Array<String>*>(&array));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putSliceV(rownr, ns, array);
   autoReleaseLock();
 }
@@ -176,7 +176,7 @@ void ArrayColumnData::getArrayColumn(ArrayBase& array) const {
   if (rtraceColumn_p) {
     TableTrace::trace(traceId(), columnDesc().name(), 'r', array.shape());
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getArrayColumnV(array);
   autoReleaseLock();
 }
@@ -185,7 +185,7 @@ void ArrayColumnData::getArrayColumnCells(const RefRows& rownrs, ArrayBase& arra
   if (rtraceColumn_p) {
     TableTrace::trace(traceId(), columnDesc().name(), 'r', rownrs, array.shape());
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getArrayColumnCellsV(rownrs, array);
   autoReleaseLock();
 }
@@ -195,7 +195,7 @@ void ArrayColumnData::getColumnSlice(const Slicer& ns, ArrayBase& array) const {
     TableTrace::trace(traceId(), columnDesc().name(), 'r', array.shape(), ns.start(), ns.end(),
                       ns.stride());
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getColumnSliceV(ns, array);
   autoReleaseLock();
 }
@@ -206,7 +206,7 @@ void ArrayColumnData::getColumnSliceCells(const RefRows& rownrs, const Slicer& n
     TableTrace::trace(traceId(), columnDesc().name(), 'r', rownrs, array.shape(), ns.start(),
                       ns.end(), ns.stride());
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getColumnSliceCellsV(rownrs, ns, array);
   autoReleaseLock();
 }
@@ -218,7 +218,7 @@ void ArrayColumnData::putArrayColumn(const ArrayBase& array) {
   if (checkValueLength_p) {
     checkValueLength(static_cast<const Array<String>*>(&array));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putArrayColumnV(array);
   autoReleaseLock();
 }
@@ -230,7 +230,7 @@ void ArrayColumnData::putArrayColumnCells(const RefRows& rownrs, const ArrayBase
   if (checkValueLength_p) {
     checkValueLength(static_cast<const Array<String>*>(&array));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putArrayColumnCellsV(rownrs, array);
   autoReleaseLock();
 }
@@ -243,7 +243,7 @@ void ArrayColumnData::putColumnSlice(const Slicer& ns, const ArrayBase& array) {
   if (checkValueLength_p) {
     checkValueLength(static_cast<const Array<String>*>(&array));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putColumnSliceV(ns, array);
   autoReleaseLock();
 }
@@ -257,7 +257,7 @@ void ArrayColumnData::putColumnSliceCells(const RefRows& rownrs, const Slicer& n
   if (checkValueLength_p) {
     checkValueLength(static_cast<const Array<String>*>(&array));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putColumnSliceCellsV(rownrs, ns, array);
   autoReleaseLock();
 }

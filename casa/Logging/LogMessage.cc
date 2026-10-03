@@ -67,7 +67,7 @@ LogMessage::~LogMessage() {
 
 const String &LogMessage::message() const { return message_p; }
 
-LogMessage &LogMessage::message(const String &message, Bool keepLastTime) {
+LogMessage &LogMessage::message(const String &message, bool keepLastTime) {
   message_p = message;
   if (!keepLastTime) {
     time_p.now();

@@ -148,7 +148,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // When the cursor is not congruent with the Lattice moving the cursor through
 // the Lattice will sometimes result in part of the cursor hanging over the
 // edge of the Lattice. When this occurs the hangOver member function will
-// return True. What to do in these situtations is specified by the
+// return true. What to do in these situtations is specified by the
 // hangOverPolicy enumerator.
 // <ol>
 // <li>
@@ -162,7 +162,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // that it is just big enough. For example with a Lattice shape of 10x10 and a
 // cursor of 8x8 the cursor shape will initally be 8x8, then resize to 2x8 on
 // the first step, then resize to 8x2 on the second step and finally resize to
-// 2x2. The hangover function will return True for the last three steps, even
+// 2x2. The hangover function will return true for the last three steps, even
 // though the cursor has resized.
 // </ol>
 // The portion of the Lattice that the cursor will traverse can be
@@ -319,12 +319,12 @@ class LatticeStepper : public LatticeNavigator {
   LatticeStepper& operator=(const LatticeStepper& other);
 
   // Increment operator (postfix version) - move the cursor
-  // forward one step. Returns True if the cursor was moved.
-  virtual Bool operator++(int);
+  // forward one step. Returns true if the cursor was moved.
+  virtual bool operator++(int);
 
   // Decrement operator (postfix version) - move the cursor
-  // backwards one step. Returns True if the cursor was moved.
-  virtual Bool operator--(int);
+  // backwards one step. Returns true if the cursor was moved.
+  virtual bool operator--(int);
 
   // Function to move the cursor to the beginning of the (sub)-Lattice. Also
   // resets the number of steps (<src>nsteps</src> function) to zero.
@@ -332,11 +332,11 @@ class LatticeStepper : public LatticeNavigator {
 
   // Function which returns "True" if the cursor is at the beginning of the
   // (sub)-Lattice, otherwise, returns "False"
-  virtual Bool atStart() const;
+  virtual bool atStart() const;
 
   // Function which returns "True" if an attempt has been made to increment
   // the cursor beyond the end of the (sub)-Lattice.
-  virtual Bool atEnd() const;
+  virtual bool atEnd() const;
 
   // Function to return the number of steps (increments & decrements) taken
   // since construction (or since last reset).  This is a running count of
@@ -396,7 +396,7 @@ class LatticeStepper : public LatticeNavigator {
   // Function which returns "True" if the increment/decrement operators have
   // moved the cursor position such that part of the cursor beginning or end
   // is hanging over the edge of the (sub)-Lattice.
-  virtual Bool hangOver() const;
+  virtual bool hangOver() const;
 
   // Functions to specify a "section" of the Lattice to step over. A section
   // is defined in terms of the Bottom Left Corner (blc), Top Right Corner
@@ -428,8 +428,8 @@ class LatticeStepper : public LatticeNavigator {
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values.
-  // Returns True if everything is fine otherwise returns False
-  virtual Bool ok() const;
+  // Returns true if everything is fine otherwise returns false
+  virtual bool ok() const;
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
@@ -442,7 +442,7 @@ class LatticeStepper : public LatticeNavigator {
   // Pad the cursor to the right number of dimensions.
   void padCursor();
   // Check if the cursor shape is a factor of the Lattice shape.
-  Bool niceFit() const;
+  bool niceFit() const;
 
   LatticeIndexer itsIndexer;  // # Knows about the (sub)-Lattice shape and how
                               // # to traverse it.
@@ -452,14 +452,14 @@ class LatticeStepper : public LatticeNavigator {
   IPosition itsAxisPath;      // # the heading to follow for the cursor
   uInt itsNsteps;             // # the number of iterator steps taken thus far;
                               // # set to 0 on reset ()
-  Bool itsEnd;                // # is the cursor beyond the end?
-  Bool itsStart;              // # is the cursor at the beginning?
-  Bool itsNiceFit;            // # if the cursor shape is a sub-multiple of the
-                              // # Lattice shape then set this to True. Used to
+  bool itsEnd;                // # is the cursor beyond the end?
+  bool itsStart;              // # is the cursor at the beginning?
+  bool itsNiceFit;            // # if the cursor shape is a sub-multiple of the
+                              // # Lattice shape then set this to true. Used to
                               // # avoid needing to test for a cursor hanging
                               // # over the edge of the lattice.
-  Bool itsHangover;           // # this data member is set by the increment and
-                              // # decrement operators if itsNiceFit == False. It
+  bool itsHangover;           // # this data member is set by the increment and
+                              // # decrement operators if itsNiceFit == false. It
                               // # is used to tell if the cursor "Hangs over"
                               // # the edge of the lattice shape.
   uInt itsPolicy;             // # what to do if the cursor does hang over

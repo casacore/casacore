@@ -51,7 +51,7 @@ void SSMDirColumn::deleteRow(rownr_t aRowNr) {
       uInt64 anOffr = (aRowNr - aSRow + 1) * itsNrCopy;
       uInt64 anOfto = (aRowNr - aSRow) * itsNrCopy;
       uInt64 nr = (anERow - aRowNr) * itsNrCopy;
-      Block<Bool> tmp(nr);
+      Block<bool> tmp(nr);
       Conversion::bitToBool(tmp.storage(), aValue + anOffr / 8, anOffr % 8, nr);
       Conversion::boolToBit(aValue + anOfto / 8, tmp.storage(), anOfto % 8, nr);
     } else {
@@ -63,14 +63,14 @@ void SSMDirColumn::deleteRow(rownr_t aRowNr) {
 }
 
 void SSMDirColumn::getArrayV(rownr_t aRowNr, ArrayBase& aDataPtr) {
-  Bool deleteIt;
+  bool deleteIt;
   if (dtype() == TpBool) {
     // Bools need to be converted from bits.
     rownr_t aStartRow;
     rownr_t anEndRow;
     char* aValue;
-    Array<Bool>& arr = static_cast<Array<Bool>&>(aDataPtr);
-    Bool* data = arr.getStorage(deleteIt);
+    Array<bool>& arr = static_cast<Array<bool>&>(aDataPtr);
+    bool* data = arr.getStorage(deleteIt);
     aValue = itsSSMPtr->find(aRowNr, itsColNr, aStartRow, anEndRow, columnName());
     uInt64 anOff = (aRowNr - aStartRow) * itsNrCopy;
     Conversion::bitToBool(data, aValue + anOff / 8, anOff % 8, itsNrCopy);
@@ -80,7 +80,7 @@ void SSMDirColumn::getArrayV(rownr_t aRowNr, ArrayBase& aDataPtr) {
     Int buf[3];
     getRowValue(buf, aRowNr);
     Array<String>& arr = static_cast<Array<String>&>(aDataPtr);
-    itsSSMPtr->getStringHandler()->get(arr, buf[0], buf[1], buf[2], False);
+    itsSSMPtr->getStringHandler()->get(arr, buf[0], buf[1], buf[2], false);
   } else {
     // Other types can be handled directly.
     void* data = aDataPtr.getVStorage(deleteIt);
@@ -98,7 +98,7 @@ void SSMDirColumn::getValue(rownr_t aRowNr, void* data) {
 }
 
 void SSMDirColumn::putArrayV(rownr_t aRowNr, const ArrayBase& aDataPtr) {
-  Bool deleteIt;
+  bool deleteIt;
   if (dtype() == TpBool) {
     // Bools need to be converted from bits.
     rownr_t aStartRow;
@@ -106,8 +106,8 @@ void SSMDirColumn::putArrayV(rownr_t aRowNr, const ArrayBase& aDataPtr) {
     char* aValue;
     aValue = itsSSMPtr->find(aRowNr, itsColNr, aStartRow, anEndRow, columnName());
     uInt64 anOff = (aRowNr - aStartRow) * itsNrCopy;
-    const Array<Bool>& arr = static_cast<const Array<Bool>&>(aDataPtr);
-    const Bool* data = arr.getStorage(deleteIt);
+    const Array<bool>& arr = static_cast<const Array<bool>&>(aDataPtr);
+    const bool* data = arr.getStorage(deleteIt);
     Conversion::boolToBit(aValue + anOff / 8, data, anOff % 8, itsNrCopy);
     arr.freeStorage(data, deleteIt);
   } else if (dtype() == TpString) {
@@ -115,7 +115,7 @@ void SSMDirColumn::putArrayV(rownr_t aRowNr, const ArrayBase& aDataPtr) {
     Int buf[3];
     getRowValue(buf, aRowNr);
     const Array<String>& arr = static_cast<const Array<String>&>(aDataPtr);
-    itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], arr, False);
+    itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], arr, false);
     putValue(aRowNr, buf);
   } else {
     // Other types can be handled directly.

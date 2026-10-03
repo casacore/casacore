@@ -62,7 +62,7 @@ int main() {
     Vector<Double> world(2), pixel(2);  // 11
     pixel = 138.0;                      // 12
 
-    Bool ok = radec.toWorld(world, pixel);                // 13
+    bool ok = radec.toWorld(world, pixel);                // 13
     if (!ok) {                                            // 14
       cout << "Error: " << radec.errorMessage() << endl;  // 15
       return 1;                                           // 16

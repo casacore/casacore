@@ -260,7 +260,7 @@ void SparseDiff<T>::derivatives(vector<pair<uInt, T>> &res) const {
 }
 
 template <class T>
-Bool SparseDiff<T>::ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs) {
+bool SparseDiff<T>::ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs) {
   return (lhs.first < rhs.first);
 }
 

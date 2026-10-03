@@ -175,7 +175,7 @@ class MeasIERS {
   // # General Member Functions
   //  Get the value from an IERS table, interpolated for date(in MJD).
   //  The file can be PREDICTED or MEASURED, the type as given in enum.
-  static Bool get(Double &returnValue, MeasIERS::Files file, MeasIERS::Types type, Double date);
+  static bool get(Double &returnValue, MeasIERS::Files file, MeasIERS::Types type, Double date);
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
@@ -186,7 +186,7 @@ class MeasIERS {
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, columns, or they type is not IERS.
   // </thrown>
-  static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
+  static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
                        RORecordFieldPtr<Double> rfp[], String &vs, Double &dt, Int N,
                        const String rfn[], const String &name, const String &rc, const String &dir,
                        const Table *tabin = 0);
@@ -203,7 +203,7 @@ class MeasIERS {
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, required columns, or the type is not IERS.
   // </thrown>
-  static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
+  static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
                        Vector<RORecordFieldPtr<Double>> &rfp, String &vs, Double &dt,
                        const Vector<String> &reqcols, Vector<String> &optcols, const String &name,
                        const String &rc, const String &dir, const Table *tabin = 0);
@@ -213,7 +213,7 @@ class MeasIERS {
   // mold.
   // Finds a Table for tab, by looking in tabin, rc, dir, and name.
   // Returns whether or not it was successful.
-  static Bool findTab(Table &tab, const Table *tabin, const String &rc, const String &dir,
+  static bool findTab(Table &tab, const Table *tabin, const String &rc, const String &dir,
                       const String &name);
 
   // Notify that a table has successfully been opened with getTable()
@@ -248,7 +248,7 @@ class MeasIERS {
   //  ks has VS_DATE, VS_VERSION, VS_CREATE, and VS_TYPE,
   //  and that tab's type is IERS in its info.
   // Returns whether or not it was successful.
-  static Bool handle_keywords(Double &dt, String &vs, const TableRecord &ks, const Table &tab);
+  static bool handle_keywords(Double &dt, String &vs, const TableRecord &ks, const Table &tab);
 
   // # Data members
   //  Object to ensure safe multi-threaded lazy single initialization

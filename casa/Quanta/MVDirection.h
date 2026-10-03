@@ -200,21 +200,21 @@ class MVDirection : public MVPosition {
   virtual Vector<Quantum<Double>> getTMRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
   // Set the internal value, using the longitude and latitude (in rad) given
   void setAngle(Double angle0, Double angle1);
   // Shift the direction in longitude (radians if Double) and/or latitude.
-  // If the trueAngle switch is True, the longitude shift will be in
+  // If the trueAngle switch is true, the longitude shift will be in
   // angular units perpendicular to the direction to the pole at the shifted
   // latitude, along a great circle.
   // <group>
-  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, Bool trueAngle = False);
-  void shift(Double lng, Double lat, Bool trueAngle = False);
-  void shiftLongitude(const Quantity &lng, Bool trueAngle = False);
-  void shiftLongitude(Double lng, Bool trueAngle = False);
-  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle = False);
-  void shiftLatitude(Double lat, Bool trueAngle = False);
-  void shift(const MVDirection &shft, Bool trueAngle = False);
+  void shift(const Quantum<Double> &lng, const Quantum<Double> &lat, bool trueAngle = false);
+  void shift(Double lng, Double lat, bool trueAngle = false);
+  void shiftLongitude(const Quantity &lng, bool trueAngle = false);
+  void shiftLongitude(Double lng, bool trueAngle = false);
+  void shiftLatitude(const Quantum<Double> &lat, bool trueAngle = false);
+  void shiftLatitude(Double lat, bool trueAngle = false);
+  void shift(const MVDirection &shft, bool trueAngle = false);
   // </group>
   // Shift over an angle off in the direction pa. pa is measured from North,
   // in the direction of increasing longitude.

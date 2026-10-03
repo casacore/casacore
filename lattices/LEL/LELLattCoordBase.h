@@ -78,7 +78,7 @@ class LELLattCoordBase {
   virtual ~LELLattCoordBase();
 
   // Does the class have true coordinates?
-  virtual Bool hasCoordinates() const = 0;
+  virtual bool hasCoordinates() const = 0;
 
   // The name of the class.
   virtual String classname() const = 0;

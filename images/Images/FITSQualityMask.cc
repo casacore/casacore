@@ -35,7 +35,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 FITSQualityMask::FITSQualityMask(FITSImage* fitsData, FITSErrorImage* fitsError)
     : itsFitsData(fitsData),
       itsFitsError(fitsError),
-      itsFilterZero(False)
+      itsFilterZero(false)
 
 {
   // check the shapes are equal!
@@ -43,7 +43,7 @@ FITSQualityMask::FITSQualityMask(FITSImage* fitsData, FITSErrorImage* fitsError)
 }
 
 FITSQualityMask::FITSQualityMask(const FITSQualityMask& other)
-    : Lattice<Bool>(other),
+    : Lattice<bool>(other),
       itsFitsData(other.itsFitsData),
       itsFitsError(other.itsFitsError),
       itsFilterZero(other.itsFilterZero) {}
@@ -61,9 +61,9 @@ FITSQualityMask& FITSQualityMask::operator=(const FITSQualityMask& other) {
   return *this;
 }
 
-Lattice<Bool>* FITSQualityMask::clone() const { return new FITSQualityMask(*this); }
+Lattice<bool>* FITSQualityMask::clone() const { return new FITSQualityMask(*this); }
 
-Bool FITSQualityMask::isWritable() const { return False; }
+bool FITSQualityMask::isWritable() const { return false; }
 
 IPosition FITSQualityMask::shape() const {
   IPosition data_shape = itsFitsData->shape();
@@ -76,7 +76,7 @@ IPosition FITSQualityMask::shape() const {
   return mm_shape;
 }
 
-Bool FITSQualityMask::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
+bool FITSQualityMask::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   // get the section dimension
   IPosition shp = section.length();
   uInt ndim = section.ndim();
@@ -101,9 +101,9 @@ Bool FITSQualityMask::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
   // analyze the request
   if (section.start()(ndim - 1) != section.end()(ndim - 1)) {
     // data and error is requested
-    Array<Bool> subData;
-    Array<Bool> subError;
-    Array<Bool> tmp;
+    Array<bool> subData;
+    Array<bool> subError;
+    Array<bool> tmp;
 
     // prepare the call
     // for data mask
@@ -150,8 +150,8 @@ Bool FITSQualityMask::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
 
   else if (section.start()(ndim - 1) == 0) {
     // only data is requested
-    Array<Bool> subData;
-    Array<Bool> tmp;
+    Array<bool> subData;
+    Array<bool> tmp;
 
     // prepare the call
     // for data mask values
@@ -181,8 +181,8 @@ Bool FITSQualityMask::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
 
   else if (section.start()(ndim - 1) == 1) {
     // only error is requested
-    Array<Bool> subError;
-    Array<Bool> tmp;
+    Array<bool> subError;
+    Array<bool> tmp;
 
     // prepare the call
     // for error mask values
@@ -220,36 +220,36 @@ Bool FITSQualityMask::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
   mask.putStorage(pMask, deletePtrM);
   */
 
-  return False;  // Not a reference
+  return false;  // Not a reference
 }
 
-void FITSQualityMask::doPutSlice(const Array<Bool>&, const IPosition&, const IPosition&) {
+void FITSQualityMask::doPutSlice(const Array<bool>&, const IPosition&, const IPosition&) {
   throw(AipsError("FITSQualityMask object is not writable"));
 }
 
-void FITSQualityMask::setFilterZero(Bool filterZero) { itsFilterZero = filterZero; }
+void FITSQualityMask::setFilterZero(bool filterZero) { itsFilterZero = filterZero; }
 
-Bool FITSQualityMask::filterNaN(Bool* pMask, const Float* pData, const uInt nelems) {
+bool FITSQualityMask::filterNaN(bool* pMask, const Float* pData, const uInt nelems) {
   // loop over all elements
   for (uInt i = 0; i < nelems; i++) {
     // set defaults;
     // blanked values are NaNs.
-    pMask[i] = True;
-    if (isNaN(pData[i])) pMask[i] = False;
+    pMask[i] = true;
+    if (isNaN(pData[i])) pMask[i] = false;
   }
 
-  return True;
+  return true;
 }
 
-Bool FITSQualityMask::filterZeroNaN(Bool* pMask, const Float* pData, const uInt nelems) {
+bool FITSQualityMask::filterZeroNaN(bool* pMask, const Float* pData, const uInt nelems) {
   // loop over all elements
   for (uInt i = 0; i < nelems; i++) {
     // set defaults;
     // blanked values are NaNs and "0.0"
-    pMask[i] = True;
-    if (isNaN(pData[i]) || pData[i] == (Float)0.0) pMask[i] = False;
+    pMask[i] = true;
+    if (isNaN(pData[i]) || pData[i] == (Float)0.0) pMask[i] = false;
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

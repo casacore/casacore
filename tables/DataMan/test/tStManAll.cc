@@ -60,7 +60,7 @@
 
 // Define a macro to execute a function for all column types.
 #define ExecFunc(funcName, tab, prefix)                    \
-  funcName<Bool>(tab, prefix + "b", BoolArrays);           \
+  funcName<bool>(tab, prefix + "b", BoolArrays);           \
   funcName<uChar>(tab, prefix + "uc", uCharArrays);        \
   funcName<Short>(tab, prefix + "s", ShortArrays);         \
   funcName<uShort>(tab, prefix + "us", uShortArrays);      \
@@ -87,7 +87,7 @@
 // Define globally all data arrays (one array per column; outer axis is row).
 // They get changed in the same way as the table data are changed.
 IPosition arrShapes[4];
-Array<Bool> BoolArrays[4];
+Array<bool> BoolArrays[4];
 Array<uChar> uCharArrays[4];
 Array<Short> ShortArrays[4];
 Array<uShort> uShortArrays[4];
@@ -110,8 +110,8 @@ Array<T> makeArray(const IPosition& shape, T value, T incr) {
   return arr;
 }
 template <>
-Array<Bool> makeArray(const IPosition& shape, Bool, Bool) {
-  Array<Bool> arr(shape);
+Array<bool> makeArray(const IPosition& shape, bool, bool) {
+  Array<bool> arr(shape);
   for (uInt i = 0; i < arr.size(); ++i) {
     arr.data()[i] = (i % 3 == 1);
   }
@@ -127,15 +127,15 @@ Array<String> makeArray(const IPosition& shape, String value, String) {
 }
 
 template <typename T>
-void incrArray(Array<T>& arr, int incr, Bool) {
+void incrArray(Array<T>& arr, int incr, bool) {
   arr += T(incr);
 }
 template <>
-void incrArray(Array<Bool>& arr, int, Bool incr) {
+void incrArray(Array<bool>& arr, int, bool incr) {
   // Shift one to the left and put new value at the end.
   if (arr.size() > 0) {
-    Bool deleteIt;
-    Bool* p = arr.getStorage(deleteIt);
+    bool deleteIt;
+    bool* p = arr.getStorage(deleteIt);
     for (uInt i = 0; i < arr.size() - 1; ++i) {
       p[i] = p[i + 1];
     }
@@ -144,7 +144,7 @@ void incrArray(Array<Bool>& arr, int, Bool incr) {
   }
 }
 template <>
-void incrArray(Array<String>& arr, int incr, Bool) {
+void incrArray(Array<String>& arr, int incr, bool) {
   arr += String(std::to_string(abs(incr) % 10));
 }
 
@@ -152,7 +152,7 @@ void incrArray(Array<String>& arr, int incr, Bool) {
 void createArrays(uInt nrow) {
   for (int i = 0; i < 4; ++i) {
     IPosition shape = arrShapes[i].concatenate(IPosition(1, nrow));
-    BoolArrays[i].reference(makeArray<Bool>(shape, True, True));
+    BoolArrays[i].reference(makeArray<bool>(shape, true, true));
     uCharArrays[i].reference(makeArray<uChar>(shape, 0, 1));
     ShortArrays[i].reference(makeArray<Short>(shape, -32768, 10));
     uShortArrays[i].reference(makeArray<uShort>(shape, 0, 10));
@@ -171,7 +171,7 @@ void createArrays(uInt nrow) {
 // Add 4 columns for the given data type to the table description.
 // These are: Scalar, Direct Array, Indirect FixedShape Array, Indirect Array.
 template <typename T>
-void addColDesc(TableDesc& td, const String& name, Bool addVirtual, uInt maxLength = 0) {
+void addColDesc(TableDesc& td, const String& name, bool addVirtual, uInt maxLength = 0) {
   // Give the scalars the group name 'scalar'.
   ScalarColumnDesc<T> s1(name + "s1", String(), String(), "scalar");
   if (maxLength > 0) s1.setMaxLength(maxLength);
@@ -197,8 +197,8 @@ void addColDesc(TableDesc& td, const String& name, Bool addVirtual, uInt maxLeng
 // For TiledStMan arrays are always defined.
 // Optionally check the value (used for strings).
 template <typename T>
-void checkDefined(Table& tab, const String& name, Bool tiled, const IPosition& shape = IPosition(),
-                  Bool checkValue = False) {
+void checkDefined(Table& tab, const String& name, bool tiled, const IPosition& shape = IPosition(),
+                  bool checkValue = false) {
   ScalarColumn<T> s1(tab, name + "s1");
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
@@ -220,35 +220,35 @@ void checkDefined(Table& tab, const String& name, Bool tiled, const IPosition& s
 }
 
 template <typename T>
-Bool testEQ(T v1, T v2) {
+bool testEQ(T v1, T v2) {
   return v1 == v2;
 }
 template <>
-Bool testEQ(Float v1, Float v2) {
+bool testEQ(Float v1, Float v2) {
   return near(v1, v2);
 }
 template <>
-Bool testEQ(Double v1, Double v2) {
+bool testEQ(Double v1, Double v2) {
   return near(v1, v2);
 }
 template <typename T>
-Bool testEQ(std::complex<T> v1, std::complex<T> v2) {
+bool testEQ(std::complex<T> v1, std::complex<T> v2) {
   return near(v1, v2);
 }
 template <typename T>
-Bool testEQ(Array<T> v1, Array<T> v2) {
+bool testEQ(Array<T> v1, Array<T> v2) {
   return allEQ(v1, v2);
 }
 template <>
-Bool testEQ(Array<Float> v1, Array<Float> v2) {
+bool testEQ(Array<Float> v1, Array<Float> v2) {
   return allNear(v1, v2, 1e-5);
 }
 template <>
-Bool testEQ(Array<Double> v1, Array<Double> v2) {
+bool testEQ(Array<Double> v1, Array<Double> v2) {
   return allNear(v1, v2, 1e-5);
 }
 template <typename T>
-Bool testEQ(Array<std::complex<T>> v1, Array<std::complex<T>> v2) {
+bool testEQ(Array<std::complex<T>> v1, Array<std::complex<T>> v2) {
   return allNear(v1, v2, 1e-5);
 }
 
@@ -289,10 +289,10 @@ void writeColumns(Table& tab, const String& name, Array<T>* values) {
   ArrayColumn<T> a1(tab, name + "a1");
   ArrayColumn<T> a2(tab, name + "a2");
   ArrayColumn<T> a3(tab, name + "a3");
-  incrArray(values[0], -1, True);
-  incrArray(values[1], 3, False);
-  incrArray(values[2], -1, True);
-  incrArray(values[3], 10, False);
+  incrArray(values[0], -1, true);
+  incrArray(values[1], 3, false);
+  incrArray(values[2], -1, true);
+  incrArray(values[3], 10, false);
   s1.putColumn(values[0]);
   a1.putColumn(values[1]);
   a2.putColumn(values[2]);
@@ -338,10 +338,10 @@ void writeRange(Table& tab, const String& name, Array<T>* values) {
   Array<T> arr1(values[1](slicer1));
   Array<T> arr2(values[2](slicer2));
   Array<T> arr3(values[3](slicer3));
-  incrArray(arr0, 2, False);
-  incrArray(arr1, 2, True);
-  incrArray(arr2, 3, False);
-  incrArray(arr3, 1, True);
+  incrArray(arr0, 2, false);
+  incrArray(arr1, 2, true);
+  incrArray(arr2, 3, false);
+  incrArray(arr3, 1, true);
   s1.putColumnRange(rowSlicer, arr0);
   a1.putColumnCells(rows, arr1);
   a2.putColumnCells(rows, arr2);
@@ -391,9 +391,9 @@ void writeRowSlice(Table& tab, const String& name, Array<T>* values) {
     Array<T> arr1(values[1][i](slicer1));
     Array<T> arr2(values[2][i](slicer2));
     Array<T> arr3(values[3][i](slicer3));
-    incrArray(arr1, 1, True);
-    incrArray(arr2, 11, False);
-    incrArray(arr3, 1, True);
+    incrArray(arr1, 1, true);
+    incrArray(arr2, 11, false);
+    incrArray(arr3, 1, true);
     a1.putSlice(i, slicer1, arr1);
     a2.putSlice(i, slicer2, arr2);
     a3.putSlice(i, slicer3, arr3);
@@ -439,9 +439,9 @@ void writeColumnSlice(Table& tab, const String& name, Array<T>* values) {
   Array<T> arr1(values[1](aslicer1));
   Array<T> arr2(values[2](aslicer2));
   Array<T> arr3(values[3](aslicer3));
-  incrArray(arr1, -2, True);
-  incrArray(arr2, 5, False);
-  incrArray(arr3, 3, True);
+  incrArray(arr1, -2, true);
+  incrArray(arr2, 5, false);
+  incrArray(arr3, 3, true);
   a1.putColumn(slicer1, arr1);
   a2.putColumn(slicer2, arr2);
   a3.putColumn(slicer3, arr3);
@@ -495,9 +495,9 @@ void writeRangeSlice(Table& tab, const String& name, const Array<T>* values) {
   Array<T> arr1(values[1](aslicer1));
   Array<T> arr2(values[2](aslicer2));
   Array<T> arr3(values[3](aslicer3));
-  incrArray(arr1, 3, True);
-  incrArray(arr2, -11, False);
-  incrArray(arr3, -4, True);
+  incrArray(arr1, 3, true);
+  incrArray(arr2, -11, false);
+  incrArray(arr3, -4, true);
   a1.getColumnCells(rows, slicer1, arr1);
   a2.getColumnCells(rows, slicer2, arr2);
   a3.getColumnCells(rows, slicer3, arr3);
@@ -554,11 +554,11 @@ void bindVirtual(SetupNewTable& newtab, const String& name) {
 
 // Create a new table and fill a few cells with an empty array.
 // An empty table name defaults to tStMan_tmp.data.
-Table maketab(uInt nrrow, const DataManager& stman, Bool tiled, const String& tabName = String(),
-              Bool addVirtual = False) {
+Table maketab(uInt nrrow, const DataManager& stman, bool tiled, const String& tabName = String(),
+              bool addVirtual = false) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  addColDesc<Bool>(td, "b", addVirtual);
+  addColDesc<bool>(td, "b", addVirtual);
   addColDesc<uChar>(td, "uc", addVirtual);
   addColDesc<Short>(td, "s", addVirtual);
   addColDesc<uShort>(td, "us", addVirtual);
@@ -580,7 +580,7 @@ Table maketab(uInt nrrow, const DataManager& stman, Bool tiled, const String& ta
   // so use StandardStMan for them.
   if (tiled) {
     StandardStMan ssm(1000);
-    newtab.bindGroup("scalar", ssm, True);
+    newtab.bindGroup("scalar", ssm, true);
     newtab.bindColumn("sva1", ssm);
     newtab.bindColumn("sva2", ssm);
     newtab.bindColumn("sva3", ssm);
@@ -618,7 +618,7 @@ Table maketab(uInt nrrow, const DataManager& stman, Bool tiled, const String& ta
   newtab.setShapeColumn("sfa2", arrShapes[2]);
   Table tab(newtab, nrrow);
   // Check the columns for defined and content.
-  checkDefined<Bool>(tab, "b", tiled);
+  checkDefined<bool>(tab, "b", tiled);
   checkDefined<uChar>(tab, "uc", tiled);
   checkDefined<Short>(tab, "s", tiled);
   checkDefined<uShort>(tab, "us", tiled);
@@ -629,16 +629,16 @@ Table maketab(uInt nrrow, const DataManager& stman, Bool tiled, const String& ta
   checkDefined<Double>(tab, "d", tiled);
   checkDefined<Complex>(tab, "cx", tiled);
   checkDefined<DComplex>(tab, "dcx", tiled);
-  checkDefined<String>(tab, "sv", False, arrShapes[1], True);
-  checkDefined<String>(tab, "sf", False, arrShapes[1], True);
+  checkDefined<String>(tab, "sv", false, arrShapes[1], true);
+  checkDefined<String>(tab, "sf", false, arrShapes[1], true);
   // Write Bool arrays to avoid valgrind errors in Conversion::boolToBit.
-  ScalarColumn<Bool> bs1(tab, "bs1");
-  ArrayColumn<Bool> ba1(tab, "ba1");
-  ArrayColumn<Bool> ba2(tab, "ba2");
-  Array<Bool> boolArray1(arrShapes[1], False);
-  Array<Bool> boolArray2(arrShapes[2], False);
+  ScalarColumn<bool> bs1(tab, "bs1");
+  ArrayColumn<bool> ba1(tab, "ba1");
+  ArrayColumn<bool> ba2(tab, "ba2");
+  Array<bool> boolArray1(arrShapes[1], false);
+  Array<bool> boolArray2(arrShapes[2], false);
   for (uInt i = 0; i < nrrow; i++) {
-    bs1.put(i, False);
+    bs1.put(i, false);
     ba1.put(i, boolArray1);
     ba2.put(i, boolArray2);
   }
@@ -659,7 +659,7 @@ Table maketab(uInt nrrow, const DataManager& stman, Bool tiled, const String& ta
 
 // Reopen the table and check the contents again.
 // This has to be done right after creating the table in function maketab.
-void checknewtab(const Table& table, uInt nrrow, Bool tiled) {
+void checknewtab(const Table& table, uInt nrrow, bool tiled) {
   Table tab(table);
   if (tab.isNull()) {
     tab = Table("tStMan_tmp.data");
@@ -671,7 +671,7 @@ void checknewtab(const Table& table, uInt nrrow, Bool tiled) {
   indgen(rows);
   Table subtab(tab(rows));
   // Check the columns for defined and content.
-  checkDefined<Bool>(tab, "b", tiled);
+  checkDefined<bool>(tab, "b", tiled);
   checkDefined<uChar>(tab, "uc", tiled);
   checkDefined<Short>(tab, "s", tiled);
   checkDefined<uShort>(tab, "us", tiled);
@@ -682,8 +682,8 @@ void checknewtab(const Table& table, uInt nrrow, Bool tiled) {
   checkDefined<Double>(tab, "d", tiled);
   checkDefined<Complex>(tab, "cx", tiled);
   checkDefined<DComplex>(subtab, "dcx", tiled);
-  checkDefined<String>(tab, "sv", False, arrShapes[1], True);
-  checkDefined<String>(tab, "sf", False, arrShapes[1], True);
+  checkDefined<String>(tab, "sv", false, arrShapes[1], true);
+  checkDefined<String>(tab, "sf", false, arrShapes[1], true);
   // Check the last row where an empty array has been put.
   ArrayColumn<Float> fa3(tab, "fa3");
   ArrayColumn<DComplex> dca3(tab, "dcxa3");
@@ -701,7 +701,7 @@ void checktab(const Table& table) {
   ExecFunc(checkAll, tab, String());
 }
 
-void doTest(uInt nrrow, const DataManager& stman, Bool keepTable, Bool tiled,
+void doTest(uInt nrrow, const DataManager& stman, bool keepTable, bool tiled,
             const Table& refTab = Table()) {
   // Create the table (if not given).
   Table table(refTab);
@@ -755,16 +755,16 @@ int main(int argc, const char* argv[]) {
     createArrays(nrrow);
     cout << "Testing StManAipsIO ..." << endl;
     StManAipsIO st1;
-    doTest(nrrow, st1, False, False);
+    doTest(nrrow, st1, false, false);
     cout << "Testing StandardStMan ..." << endl;
     StandardStMan st2(max(bucketSize, 1000u));
-    doTest(nrrow, st2, False, False);
+    doTest(nrrow, st2, false, false);
     cout << "Testing IncrementalStMan ..." << endl;
-    IncrementalStMan st3(max(bucketSize, 5000u), False);
-    doTest(nrrow, st3, False, False);
+    IncrementalStMan st3(max(bucketSize, 5000u), false);
+    doTest(nrrow, st3, false, false);
     cout << "Testing MemoryStMan ..." << endl;
     MemoryStMan st4;
-    doTest(nrrow, st4, True, False);
+    doTest(nrrow, st4, true, false);
     cout << "Testing TiledShapeStMan ..." << endl;
     // Need to be the same shape (because FixedShape columns are part of it).
     arrShapes[1] = IPosition(2, 11, 23);
@@ -772,41 +772,41 @@ int main(int argc, const char* argv[]) {
     arrShapes[3] = IPosition(2, 11, 23);
     createArrays(nrrow);
     TiledShapeStMan st5("tiled", IPosition(3, 20, 20, 20));
-    doTest(nrrow, st5, False, True);
+    doTest(nrrow, st5, false, true);
     {
       cout << "Testing ForwardColumnEngine ..." << endl;
       // Test ForwardColumn.
       StandardStMan stman(2000);
-      Table tab = maketab(nrrow, stman, False, "tStMan_tmp.datafc");
+      Table tab = maketab(nrrow, stman, false, "tStMan_tmp.datafc");
       ForwardColumnEngine dataman(tab, "forwardcolumn");
-      doTest(nrrow, dataman, True, False);
+      doTest(nrrow, dataman, true, false);
     }
     {
       cout << "Testing RefTable ..." << endl;
       StandardStMan stman(2000);
-      Table tab = maketab(nrrow, stman, False);
+      Table tab = maketab(nrrow, stman, false);
       Vector<rownr_t> rows(tab.nrow());
       indgen(rows);
       // Note that the second argument does not matter.
-      doTest(tab.nrow(), stman, True, False, tab(rows));
+      doTest(tab.nrow(), stman, true, false, tab(rows));
       // Test if underlying table is correct.
       ExecFunc(checkRows, tab, String());
     }
     {
       cout << "Testing ConcatTable ..." << endl;
       StandardStMan stman(2000);
-      Table tab = maketab(nrrow, stman, False);
+      Table tab = maketab(nrrow, stman, false);
       Table ctab(Block<Table>(1, tab));
       // Note that the second argument does not matter.
-      doTest(tab.nrow(), stman, True, False, ctab);
+      doTest(tab.nrow(), stman, true, false, ctab);
       // Test if underlying table is correct.
       ExecFunc(checkRows, tab, String());
     }
     {
       cout << "Testing VirtualTaQLColumn ..." << endl;
       StandardStMan stman(2000);
-      Bool keepTable = False;
-      Table table = maketab(nrrow, stman, keepTable, String(), True);
+      bool keepTable = false;
+      Table table = maketab(nrrow, stman, keepTable, String(), true);
       updateTable(writeRows);
       ExecFunc(checkAll, table, String("vt_"));
     }

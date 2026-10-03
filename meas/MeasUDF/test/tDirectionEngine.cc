@@ -42,7 +42,7 @@
 using namespace casacore;
 using namespace std;
 
-void testScalar(Bool asDirCos) {
+void testScalar(bool asDirCos) {
   cout << "test scalars as " << (asDirCos ? "dircos" : "angles") << " ..." << endl;
   // Convert a direction from B1950.
   MDirection coord(Quantity(185.425833, "deg"), Quantity(31.799167, "deg"), MDirection::B1950);
@@ -136,7 +136,7 @@ void testScalar(Bool asDirCos) {
   }
 }
 
-void testArray(Bool asDirCos) {
+void testArray(bool asDirCos) {
   cout << "test arrays as " << (asDirCos ? "dircos" : "angles") << " ..." << endl;
   // Convert a few directions from J2000.
   String funcStr = (asDirCos ? "dircos('APP'," : "app(");
@@ -212,7 +212,7 @@ void testArray(Bool asDirCos) {
   }
 }
 
-void testColumn(Bool asDirCos) {
+void testColumn(bool asDirCos) {
   cout << "test columns as " << (asDirCos ? "dircos" : "angles") << " ..." << endl;
   // Check with Measures.
   Vector<MDirection> coord(3);
@@ -332,7 +332,7 @@ void testRiset() {
 }
 
 int checkErr(const String& command) {
-  Bool fail = False;
+  bool fail = false;
   try {
     TableExprNode node(tableCommand(command).node());
     if (node.isScalar()) {
@@ -342,7 +342,7 @@ int checkErr(const String& command) {
     }
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    fail = True;
+    fail = true;
   }
   if (!fail) {
     cout << "Command '" + command + "' should have failed" << endl;
@@ -376,12 +376,12 @@ int main() {
     register_meas();
     // Execute some tests.
     testErr();
-    testScalar(False);
-    testScalar(True);
-    testArray(False);
-    testArray(True);
-    testColumn(False);
-    testColumn(True);
+    testScalar(false);
+    testScalar(true);
+    testArray(false);
+    testArray(true);
+    testColumn(false);
+    testColumn(true);
     testName();
     testRiset();
   } catch (const std::exception& x) {

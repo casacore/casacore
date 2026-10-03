@@ -190,25 +190,25 @@ size_t ModcompDataConversion::fromLocal(void* to, const Double* from, size_t nr)
   return ModcompConversion::fromLocal(to, from, nr);
 }
 
-Bool ModcompDataConversion::canCopy(const Char*) const { return (CONVERT_MODCOMP_CHAR == 0); }
+bool ModcompDataConversion::canCopy(const Char*) const { return (CONVERT_MODCOMP_CHAR == 0); }
 
-Bool ModcompDataConversion::canCopy(const uChar*) const { return (CONVERT_MODCOMP_UCHAR == 0); }
+bool ModcompDataConversion::canCopy(const uChar*) const { return (CONVERT_MODCOMP_UCHAR == 0); }
 
-Bool ModcompDataConversion::canCopy(const Short*) const { return (CONVERT_MODCOMP_SHORT == 0); }
+bool ModcompDataConversion::canCopy(const Short*) const { return (CONVERT_MODCOMP_SHORT == 0); }
 
-Bool ModcompDataConversion::canCopy(const uShort*) const { return (CONVERT_MODCOMP_USHORT == 0); }
+bool ModcompDataConversion::canCopy(const uShort*) const { return (CONVERT_MODCOMP_USHORT == 0); }
 
-Bool ModcompDataConversion::canCopy(const Int*) const { return (CONVERT_MODCOMP_INT == 0); }
+bool ModcompDataConversion::canCopy(const Int*) const { return (CONVERT_MODCOMP_INT == 0); }
 
-Bool ModcompDataConversion::canCopy(const uInt*) const { return (CONVERT_MODCOMP_UINT == 0); }
+bool ModcompDataConversion::canCopy(const uInt*) const { return (CONVERT_MODCOMP_UINT == 0); }
 
-Bool ModcompDataConversion::canCopy(const Int64*) const { return (CONVERT_MODCOMP_INT64 == 0); }
+bool ModcompDataConversion::canCopy(const Int64*) const { return (CONVERT_MODCOMP_INT64 == 0); }
 
-Bool ModcompDataConversion::canCopy(const uInt64*) const { return (CONVERT_MODCOMP_UINT64 == 0); }
+bool ModcompDataConversion::canCopy(const uInt64*) const { return (CONVERT_MODCOMP_UINT64 == 0); }
 
-Bool ModcompDataConversion::canCopy(const Float*) const { return (CONVERT_MODCOMP_FLOAT == 0); }
+bool ModcompDataConversion::canCopy(const Float*) const { return (CONVERT_MODCOMP_FLOAT == 0); }
 
-Bool ModcompDataConversion::canCopy(const Double*) const { return (CONVERT_MODCOMP_DOUBLE == 0); }
+bool ModcompDataConversion::canCopy(const Double*) const { return (CONVERT_MODCOMP_DOUBLE == 0); }
 
 uInt ModcompDataConversion::externalSize(const Char*) const { return SIZE_MODCOMP_CHAR; }
 

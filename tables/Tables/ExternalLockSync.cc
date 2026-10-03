@@ -33,22 +33,22 @@ ExternalLockSync::ExternalLockSync(const TableLock& lockOptions)
 
 ExternalLockSync::~ExternalLockSync() {}
 
-void ExternalLockSync::makeLock(const String& tableName, Bool create, FileLocker::LockType type) {
+void ExternalLockSync::makeLock(const String& tableName, bool create, FileLocker::LockType type) {
   itsLock.makeLock(tableName, create, type);
 }
 
-Bool ExternalLockSync::acquire(FileLocker::LockType type, uInt nattempts) {
+bool ExternalLockSync::acquire(FileLocker::LockType type, uInt nattempts) {
   if (!itsLock.acquire(&(itsSync.memoryIO()), type, nattempts)) {
-    return False;
+    return false;
   }
   uInt nrcol;
-  Bool tableChanged;
-  Block<Bool> dataManChanged;
+  bool tableChanged;
+  Block<bool> dataManChanged;
   itsSync.read(itsNrrow, nrcol, tableChanged, dataManChanged);
-  return True;
+  return true;
 }
 
-MemoryIO* ExternalLockSync::releaseCallBack(void* lockSyncObject, Bool always) {
+MemoryIO* ExternalLockSync::releaseCallBack(void* lockSyncObject, bool always) {
   return (*(ExternalLockSync*)lockSyncObject).doReleaseCallBack(always);
 }
 

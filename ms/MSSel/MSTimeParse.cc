@@ -43,7 +43,7 @@ MEpoch* MSTimeParse::daytime = 0x0;
 //  MSTimeParse      *thisMSTParser           = 0x0;
 MeasurementSet* MSTimeParse::ms_p = 0x0;
 TableExprNode* MSTimeParse::otherTens_p = 0x0;
-Bool MSTimeParse::defaultTimeComputed = False;
+bool MSTimeParse::defaultTimeComputed = false;
 Matrix<Double> MSTimeParse::timeList(3, 0);
 TableExprNode MSTimeParse::columnAsTEN_p;
 MSSelectableMainColumn* MSTimeParse::mainColumn_p = 0x0;
@@ -59,24 +59,24 @@ MSTimeParse::MSTimeParse() : MSParse(), colName(MS::columnName(MS::TIME)) {
   node_p = new TableExprNode();
   ms_p = 0x0;
   otherTens_p = 0x0;
-  defaultTimeComputed = False;
+  defaultTimeComputed = false;
 }
 //-------------------------------------------------------------------
 // Constructor with given ms name.
 //
 MSTimeParse::MSTimeParse(const MeasurementSet* ms, const TableExprNode& otherTens,
-                         const Bool honourRowFlags)
+                         const bool honourRowFlags)
     : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME)), honourRowFlags_p(honourRowFlags) {
   if (node_p) delete node_p;
   ms_p = (MeasurementSet*)ms;
   node_p = new TableExprNode();
   otherTens_p = (TableExprNode*)&otherTens;
-  defaultTimeComputed = False;
+  defaultTimeComputed = false;
 }
 
 MSTimeParse::MSTimeParse(const MeasurementSet* ms, const TableExprNode& colAsTEN,
                          MSSelectableMainColumn& msMainColInterface, const TableExprNode& otherTens,
-                         const Bool honourRowFlags)
+                         const bool honourRowFlags)
     : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME)), honourRowFlags_p(honourRowFlags) {
   // throw(MSSelectionTimeError("THIS INTERFACE IS NOT YET USABLE.  THE MS_P POINTER IS NOT SET!!"
   // 			       " THAT IS REQUIRED in MSTimeParse::getDefaults()"));
@@ -86,7 +86,7 @@ MSTimeParse::MSTimeParse(const MeasurementSet* ms, const TableExprNode& colAsTEN
   otherTens_p = (TableExprNode*)&otherTens;
   columnAsTEN_p = colAsTEN;
   mainColumn_p = &msMainColInterface;
-  defaultTimeComputed = False;
+  defaultTimeComputed = false;
 }
 
 //
@@ -110,7 +110,7 @@ void MSTimeParse::getDefaults() {
   if (!defaultTimeComputed) {
     uInt i = 0, nrow = (mainColumn_p->flag()).nrow();
     if (!otherTens_p->isNull()) {
-      Bool selected = False;
+      bool selected = false;
       for (i = 0; i < nrow; i++) {
         // Use the otherTens_p to get to the first logical row
         if (honourRowFlags_p) {
@@ -174,7 +174,7 @@ void MSTimeParse::getDefaults() {
   Time t1(defaultYear, defaultMonth, defaultDay, defaultHour, defaultMinute, defaultSeconds);
   defaultFractionalSec = (Int)((t0 - t1) * 1E3);
 
-  defaultTimeComputed = True;
+  defaultTimeComputed = true;
 }
 //
 //-------------------------------------------------------------------
@@ -245,7 +245,7 @@ const TableExprNode* MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
   // edgeWidth < 0, edgeInclusive=T ==> [T0~T1] syntax
   // edgeWidth = N, edgeInclusive=T ==> N[T0~T1] syntax
   Float edgeWidth_l =
-      (edgeWidth < 0.0) ? (edgeInclusive == True ? defaultExposure / 2.0 : 0.0) : edgeWidth;
+      (edgeWidth < 0.0) ? (edgeInclusive == true ? defaultExposure / 2.0 : 0.0) : edgeWidth;
   if (!edgeInclusive) {
     condition = (columnAsTEN_p >= lowerBound && (columnAsTEN_p <= upperBound));
   } else {
@@ -330,7 +330,7 @@ const TableExprNode* MSTimeParse::node() { return node_p; }
 //
 //-------------------------------------------------------------------
 //
-void MSTimeParse::setDefaults(TimeFields& tf, Bool dataOrigin) {
+void MSTimeParse::setDefaults(TimeFields& tf, bool dataOrigin) {
   if (dataOrigin) {
     MSTimeParse::thisMSTParser->getDefaults();
     if (tf.year == -1) tf.year = MSTimeParse::thisMSTParser->year0();  // MSTimeParse().year0();
@@ -399,7 +399,7 @@ void MSTimeParse::accumulateTimeList(const Double t0, const Double t1, const Dou
   Int n0 = timeList.shape()(1);
   IPosition newShape(timeList.shape());
   newShape(1)++;
-  timeList.resize(newShape, True);
+  timeList.resize(newShape, true);
   timeList(0, n0) = t0;  //-4.68193e+09;
   timeList(1, n0) = t1;  //-4.68193e+09;
   if (dT >= 0)

@@ -93,10 +93,10 @@ class RefColumn : public BaseColumn {
   ~RefColumn();
 
   // Test if the column is writable in the parent table.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Test if the column is stored (otherwise it is virtual).
-  virtual Bool isStored() const;
+  virtual bool isStored() const;
 
   // Get access to the column keyword set.
   // This is the keyword set in the referenced column.
@@ -109,7 +109,7 @@ class RefColumn : public BaseColumn {
   virtual rownr_t nrow() const;
 
   // Test if a value in a particular cell has been defined.
-  virtual Bool isDefined(rownr_t rownr) const;
+  virtual bool isDefined(rownr_t rownr) const;
 
   // Set the shape of the array in the given row.
   virtual void setShape(rownr_t rownr, const IPosition& shape);
@@ -130,7 +130,7 @@ class RefColumn : public BaseColumn {
   virtual IPosition shape(rownr_t rownr) const;
 
   // It can change shape if the underlying column can.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Initialize the rows from startRownr till endRownr (inclusive)
   // with the default value defined in the column description (if defined).

@@ -71,10 +71,10 @@ void* RetypedArrayEx2::newCopyInfo(const TableRecord& record, const IPosition& s
 void RetypedArrayEx2::deleteCopyInfo(void* copyInfo) { delete (CopyInfo*)copyInfo; }
 
 RetypedArrayEx2::CopyInfo::CopyInfo(const TableRecord& record, const IPosition& shape)
-    : mask_p(new Vector<Bool>), nrTrue_p(0) {
+    : mask_p(new Vector<bool>), nrTrue_p(0) {
   Int fieldnr = record.description().fieldNumber("mask");
   if (fieldnr >= 0) {
-    RORecordFieldPtr<Array<Bool>> field(record, fieldnr);
+    RORecordFieldPtr<Array<bool>> field(record, fieldnr);
     *mask_p = *field;
     AlwaysAssert(mask_p->nelements() == 4, DataManError);
   }
@@ -114,7 +114,7 @@ void RetypedArrayEx2::CopyInfo::get(Array<DComplex>& out, const void* vin, const
 }
 
 void RetypedArrayEx2::setElem(const DComplex* data, const IPosition&, const void* maskPtr) {
-  const Vector<Bool>& mask = *(const Vector<Bool>*)maskPtr;
+  const Vector<bool>& mask = *(const Vector<bool>*)maskPtr;
   if (mask(0)) {
     I_p = *data++;
   } else {
@@ -137,7 +137,7 @@ void RetypedArrayEx2::setElem(const DComplex* data, const IPosition&, const void
   }
 }
 void RetypedArrayEx2::getElem(DComplex* data, const IPosition&, const void* maskPtr) const {
-  const Vector<Bool>& mask = *(const Vector<Bool>*)maskPtr;
+  const Vector<bool>& mask = *(const Vector<bool>*)maskPtr;
   if (mask(0)) {
     *data++ = I_p;
   }
@@ -159,7 +159,7 @@ void RetypedArrayEx2::getElem(DComplex* data, const IPosition&, const void* mask
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void a(Bool doExcp);
+void a(bool doExcp);
 void b();
 void c();
 
@@ -176,7 +176,7 @@ int main(int argc, const char*[]) {
 }
 
 // First build a description.
-void a(Bool doExcp) {
+void a(bool doExcp) {
   // First register the virtual column engine.
   RetypedArrayEngine<RetypedArrayEx1, float>::registerClass();
   // Add ArrayColumnDesc<RetypedArrayEx1> to column type map.
@@ -327,12 +327,12 @@ void c() {
     RecordDesc rdesc;
     rdesc.addField("mask", TpArrayBool);
     TableRecord record(rdesc);
-    RecordFieldPtr<Array<Bool>> field(record, 0);
+    RecordFieldPtr<Array<bool>> field(record, 0);
     // Only the I and Q value are used, so the shape is [2].
-    Vector<Bool> mask(4);
-    mask = False;
-    mask(0) = True;
-    mask(1) = True;
+    Vector<bool> mask(4);
+    mask = false;
+    mask(0) = true;
+    mask(1) = true;
     *field = mask;
     RetypedArrayEngine<RetypedArrayEx2, DComplex> engine("Stokes", "Data", IPosition(1, 2), record);
     newtab.bindColumn("Stokes", engine);

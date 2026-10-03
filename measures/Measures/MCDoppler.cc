@@ -63,7 +63,7 @@ void MCDoppler::clearConvert() {}
 
 // # Conversion routines
 void MCDoppler::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
     default:
@@ -76,7 +76,7 @@ void MCDoppler::doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MC
 }
 
 void MCDoppler::doConvert(MVDoppler &in, MRBase &inref, MRBase &outref, const MConvertBase &mc) {
-  if (False) {
+  if (false) {
     inref.getType();
     outref.getType();
   }  // to stop warning

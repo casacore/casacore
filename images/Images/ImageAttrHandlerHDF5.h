@@ -93,7 +93,7 @@ class ImageAttrHandlerHDF5 : public ImageAttrHandler {
   // If the keyword does not exist, it will be added if <src>createHandler</src>
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
-  ImageAttrHandlerHDF5& attachTable(const Table& image, Bool createHandler = False);
+  ImageAttrHandlerHDF5& attachTable(const Table& image, bool createHandler = false);
 
   virtual ~ImageAttrHandlerHDF5();
 
@@ -103,13 +103,13 @@ class ImageAttrHandlerHDF5 : public ImageAttrHandler {
   // If the group does not exist, it will be added if <src>createHandler</src>
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
-  ImageAttrHandlerHDF5& attachHid(const HDF5Object& hid, Bool createHandler, Bool isWritable);
+  ImageAttrHandlerHDF5& attachHid(const HDF5Object& hid, bool createHandler, bool isWritable);
 
   // Flush the attibrutes if needed.
   virtual void flush();
 
   // Test if the given attribute group is present.
-  virtual Bool hasGroup(const String& name);
+  virtual bool hasGroup(const String& name);
 
   // Get all attribute group names.
   virtual Vector<String> groupNames() const;
@@ -125,7 +125,7 @@ class ImageAttrHandlerHDF5 : public ImageAttrHandler {
   virtual void closeGroup(const String& groupName);
 
  private:
-  Bool itsCanWrite;                                  // # writable?
+  bool itsCanWrite;                                  // # writable?
   std::shared_ptr<HDF5Group> itsGroup;               // # HDF5 group to add to
   std::map<String, ImageAttrGroupHDF5> itsGroupMap;  // # attribute groups
 };

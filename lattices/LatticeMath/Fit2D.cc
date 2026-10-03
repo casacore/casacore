@@ -49,7 +49,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 Fit2D::Fit2D(LogIO& logger)
-    : itsLogger(logger), itsValid(False), itsValidSolution(False), itsChiSquared(0.0) {}
+    : itsLogger(logger), itsValid(false), itsValidSolution(false), itsChiSquared(0.0) {}
 
 Fit2D::Fit2D(const Fit2D& other)
     : itsLogger(other.itsLogger),  // Reference semantics
@@ -106,9 +106,9 @@ Fit2D& Fit2D::operator=(const Fit2D& other)
 }
 
 uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters,
-                     const Vector<Bool>& parameterMask) {
+                     const Vector<bool>& parameterMask) {
   const uInt nModels = itsTypeList.nelements() + 1;
-  itsTypeList.resize(nModels, True);
+  itsTypeList.resize(nModels, true);
   //
   if (type == Fit2D::LEVEL) {
     ConstantND<AutoDiff<Double>> myconst(2);
@@ -174,47 +174,47 @@ uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters,
     itsFunction.addFunction(gauss2d);
     itsTypeList(nModels - 1) = Fit2D::GAUSSIAN;
   }
-  itsValid = True;
+  itsValid = true;
   return nModels - 1;
 }
 
 uInt Fit2D::addModel(Fit2D::Types type, const Vector<Double>& parameters) {
-  Vector<Bool> parameterMask(parameters.nelements(), True);
+  Vector<bool> parameterMask(parameters.nelements(), true);
   return addModel(type, parameters, parameterMask);
 }
 
 uInt Fit2D::nModels() const { return itsFunction.nFunctions(); }
 
-Vector<Bool> Fit2D::convertMask(const String mask, Fit2D::Types type) {
-  Vector<Bool> parameterMask;
+Vector<bool> Fit2D::convertMask(const String mask, Fit2D::Types type) {
+  Vector<bool> parameterMask;
   String cmask = mask;
   ToLowerCaseInPlace(cmask);
   if (type == Fit2D::LEVEL) {
     parameterMask.resize(1);
-    parameterMask = True;
+    parameterMask = true;
     if (cmask.find('l') != std::string::npos) {
-      parameterMask(0) = False;
+      parameterMask(0) = false;
     }
   } else if (type == Fit2D::DISK || type == Fit2D::GAUSSIAN) {
     parameterMask.resize(6);
-    parameterMask = True;
+    parameterMask = true;
     if (cmask.find('f') != std::string::npos) {
-      parameterMask(0) = False;
+      parameterMask(0) = false;
     }
     if (cmask.find('x') != std::string::npos) {
-      parameterMask(1) = False;
+      parameterMask(1) = false;
     }
     if (cmask.find('y') != std::string::npos) {
-      parameterMask(2) = False;
+      parameterMask(2) = false;
     }
     if (cmask.find('a') != std::string::npos) {
-      parameterMask(3) = False;
+      parameterMask(3) = false;
     }
     if (cmask.find('b') != std::string::npos) {
-      parameterMask(4) = False;
+      parameterMask(4) = false;
     }
     if (cmask.find('p') != std::string::npos) {
-      parameterMask(5) = False;
+      parameterMask(5) = false;
     }
   }
   return parameterMask;
@@ -234,13 +234,13 @@ uInt Fit2D::nParameters(Fit2D::Types type) {
 
 Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
                                   const MaskedLattice<Float>& data) {
-  Array<Float> pixels = data.get(True);
+  Array<Float> pixels = data.get(true);
   return residual(resid, model, pixels);
 }
 
 Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
                                   const Lattice<Float>& data) {
-  Array<Float> pixels = data.get(True);
+  Array<Float> pixels = data.get(true);
   return residual(resid, model, pixels);
 }
 
@@ -248,14 +248,14 @@ void Fit2D::setIncludeRange(Double minVal, Double maxVal) {
   itsPixelRange.resize(2);
   itsPixelRange(0) = min(minVal, maxVal);
   itsPixelRange(1) = max(minVal, maxVal);
-  itsInclude = True;
+  itsInclude = true;
 }
 
 void Fit2D::setExcludeRange(Double minVal, Double maxVal) {
   itsPixelRange.resize(2);
   itsPixelRange(0) = min(minVal, maxVal);
   itsPixelRange(1) = max(minVal, maxVal);
-  itsInclude = False;
+  itsInclude = false;
 }
 
 void Fit2D::resetRange() { itsPixelRange.resize(0); }
@@ -571,7 +571,7 @@ Fit2D::ErrorTypes Fit2D::fitData(const Vector<Double>& values, const Matrix<Doub
     //
     // A valid solution includes non-convergence
     //
-    itsValidSolution = True;
+    itsValidSolution = true;
   } catch (std::exception& x) {
     itsErrorMessage = String("Fitting failed because ") + x.what();
     status = Fit2D::FAILED;

@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
       cout << "Run as:   tDerivedMSCal msname/caltablename [checkuvw]" << endl;
       return 3;
     }
-    Bool checkUVW = (argc > 2);
+    bool checkUVW = (argc > 2);
     // Copy the input table.
     // Also determine the name of the MS containing ANTENNA, etc.
     String msName("tDerivedMSCal_tmp.tab");
@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
     // Take care that the same array center is used.
     // Find observatory position.
     // If not found, set it to the position of the middle antenna.
-    Bool fndObs = False;
+    bool fndObs = false;
     MPosition arrayPos;
     Table obstab(ms.keywordSet().asTable("OBSERVATION"));
     if (obstab.nrow() > 0) {

@@ -160,13 +160,13 @@ class TempLattice : public Lattice<T> {
   virtual Lattice<T>* clone() const;
 
   // Is the TempLattice paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the TempLattice writable? It should be.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Flush the data.
   virtual void flush();
@@ -241,16 +241,16 @@ class TempLattice : public Lattice<T> {
   virtual void putAt(const T& value, const IPosition& where);
   // </group>
 
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use.
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,

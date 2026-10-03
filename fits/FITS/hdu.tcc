@@ -100,7 +100,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
   bscale_x = 1.0;  // first, initialize everything
   bzero_x = 0.0;
   bunit_x = 0;
-  isablank_x = False;
+  isablank_x = false;
   blank_x = FITS::minInt;
   ctype_x = 0;
   crpix_x = 0;
@@ -129,7 +129,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
     blank_x = Int_null;
   else {
     blank_x = kwlist_.curr()->asInt();
-    isablank_x = True;
+    isablank_x = true;
   }
 
   datamax_x = asgdbl(FITS::DATAMAX, double_null);
@@ -459,7 +459,7 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
   double fscale = (double)bscale();
   double fzero = (double)bzero();
 
-  Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True : False;
+  bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? true : false;
   TYPE blankval = TYPE(0);
   if (blanked) {
     blankval = blank();
@@ -536,7 +536,7 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
   float fscale = (float)bscale();
   float fzero = (float)bzero();
 
-  Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True : False;
+  bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? true : false;
   TYPE blankval = TYPE(0);
   if (blanked) {
     blankval = blank();
@@ -695,7 +695,7 @@ int PrimaryArray<TYPE>::write_priArr_hdr(FitsOutput &fout,  // I - FITS output o
   // ffgbyt() sometimes does not move bytepos to the new position. So we do it.
   (fout.getfptr()->Fptr)->bytepos = l_datastart;
   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, True);
+  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, true);
   // init the info for the data unit
   init_data_unit(FITS::PrimaryArrayHDU);
   // assign the binary table. This is done in constructor for the case when user
@@ -838,7 +838,7 @@ int ImageExtension<TYPE>::write_imgExt_hdr(FitsOutput &fout,  // I - FITS output
   fout.getfout().setfptr(l_newfptr);
 
   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, True);
+  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, true);
   // init the info for the data unit
   init_data_unit(FITS::ImageExtensionHDU);
   // Call the parent pa_assign() method to assign the binary table. This is done in the
@@ -961,7 +961,7 @@ int PrimaryGroup<TYPE>::write_priGrp_hdr(
   (fout.getfptr()->Fptr)->bytepos = l_datastart;
 
   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, True);
+  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, true);
   // init the info for the data unit
   init_data_unit(FITS::PrimaryGroupHDU);
 
@@ -1244,7 +1244,7 @@ int PrimaryTable<TYPE>::write_priTable_hdr(FitsOutput &fout,  // I - FITS output
   fout.getfout().setfptr(l_newfptr);
 
   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, True);
+  fout.getkc().parse(l_headerbytes, kwlist_, 0, errfn, true);
   // init the info for the data unit
   init_data_unit(FITS::PrimaryTableHDU);
   // Call the parent pa_assign() method to assign the binary table. This is done in the

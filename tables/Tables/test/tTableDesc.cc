@@ -47,7 +47,7 @@
 // compares the results with the reference output file.
 
 // First build a description.
-void a(Bool doExcp) {
+void a(bool doExcp) {
   // Add Scalar/ArrayColumnDesc<ExampleDesc> to column type map.
   ScalarColumnDesc<ExampleDesc>("x").registerClass();
   ArrayColumnDesc<ExampleDesc>("x").registerClass();
@@ -158,7 +158,7 @@ void a(Bool doExcp) {
   const ColumnDescSet& set1 = td["sub1"].tableDesc()->columnDescSet();
   const ColumnDescSet& set2 = td["sub2"].tableDesc()->columnDescSet();
   const ColumnDescSet& set3 = td["sub3"].tableDesc()->columnDescSet();
-  Bool equalDataTypes;
+  bool equalDataTypes;
   AlwaysAssertExit(set2.isDisjoint(tdx.columnDescSet()));
   tdx.addColumn(ScalarColumnDesc<float>("ra"));
   AlwaysAssertExit(!set2.isDisjoint(tdx.columnDescSet()));
@@ -195,7 +195,7 @@ void a(Bool doExcp) {
   AlwaysAssertExit(cdesc.ndim() == -1);
   AlwaysAssertExit(cdesc.shape() == IPosition());
   AlwaysAssertExit(cdesc.options() == ColumnDesc::FixedShape);
-  cdesc.setShape(IPosition(2, 4, 5), True);
+  cdesc.setShape(IPosition(2, 4, 5), true);
   AlwaysAssertExit(cdesc.ndim() == 2);
   AlwaysAssertExit(cdesc.shape() == IPosition(2, 4, 5));
   AlwaysAssertExit(cdesc.options() == (ColumnDesc::FixedShape | ColumnDesc::Direct));
@@ -211,7 +211,7 @@ void a(Bool doExcp) {
   AlwaysAssertExit(cdesc.ndim() == -1);
   AlwaysAssertExit(cdesc.shape() == IPosition());
   AlwaysAssertExit(cdesc.options() == (ColumnDesc::FixedShape | ColumnDesc::Direct));
-  cdesc.setShape(IPosition(2, 4, 5), False);
+  cdesc.setShape(IPosition(2, 4, 5), false);
   AlwaysAssertExit(cdesc.ndim() == 2);
   AlwaysAssertExit(cdesc.shape() == IPosition(2, 4, 5));
   AlwaysAssertExit(cdesc.options() == ColumnDesc::FixedShape);
@@ -228,7 +228,7 @@ void a(Bool doExcp) {
 
 // Remove some keywords/columns.
 // Do some tests of the options for the constructor.
-void b(Bool doExcp) {
+void b(bool doExcp) {
   TableDesc td("tTableDesc_tmp", TableDesc::Update);
   cout << td.columnNames() << endl;
   cout << (td.columnDesc("ab") == td.columnDesc("ac"));
@@ -277,7 +277,7 @@ void b(Bool doExcp) {
   cout << endl;
   TableDesc tda(td, "OtherName", "O2", TableDesc::Scratch);  // copy the descr.
   tda.show();
-  tda.add(tdscr, False);
+  tda.add(tdscr, false);
   tda.rwKeywordSet().removeField("ra");
   tda.removeColumn("sub2");
   ColumnDesc& cd = tda.rwColumnDesc("ac");
@@ -296,7 +296,7 @@ void b(Bool doExcp) {
 }
 
 // Do some more erroneous constructions.
-void c(Bool doExcp) {
+void c(bool doExcp) {
   // The next 2 statements are outcommented, because they result
   // in a bus error with the g++ compiler for reasons not understood.
   // The error occurs at the very end of the program.
@@ -338,7 +338,7 @@ void c(Bool doExcp) {
   cout << endl;
 }
 
-void d(Bool doExcp) {
+void d(bool doExcp) {
   // Create a new description.
   TableDesc td("tTableDesc_tmp1", TableDesc::New);
 
@@ -401,7 +401,7 @@ void d(Bool doExcp) {
   tda.show();
 }
 
-void e(Bool) {
+void e(bool) {
   TableDesc td("tTableDesc_tmp1");
   td.show();
 }

@@ -74,15 +74,15 @@ int main() {
   // remove the fits file if already exists
   remove(file);  // unlink() at the end does this.
   if (WriteFITS(file, m, message, unitout.c_str(), &namesout, &refout, &locout, &deltaout, &mapout,
-                objectout.c_str()) == False) {
+                objectout.c_str()) == false) {
     cout << "Write failed: " << message << endl;
     return 1;
   }
-  Bool ok = True;
+  bool ok = true;
 
   cout << "Reading.... (will leave test.fits if program fails)" << endl;
   m2 = ReadFITS(file, ok, message, &unitin, &namesin, &refin, &locin, &deltain, &mapin, &objectin);
-  if (ok == False) {
+  if (ok == false) {
     cout << "Read failed: " << message << endl;
     return 1;
   }

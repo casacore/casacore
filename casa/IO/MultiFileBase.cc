@@ -68,16 +68,16 @@ void getInfoVersion1(AipsIO& ios, std::vector<MultiFileInfo>& info) {
   ios.getend();
 }
 
-MultiFileBase::MultiFileBase(const String& name, Int blockSize, Bool useODirect)
+MultiFileBase::MultiFileBase(const String& name, Int blockSize, bool useODirect)
     : itsBlockSize(blockSize),
       itsNrBlock(0),
       itsHdrCounter(0),
       itsUseODirect(useODirect),
-      itsWritable(False),  // usually reset by derived class
-      itsChanged(False) {
+      itsWritable(false),  // usually reset by derived class
+      itsChanged(false) {
   // Unset itsUseODirect if the OS does not support it.
 #ifndef HAVE_O_DIRECT
-  itsUseODirect = False;
+  itsUseODirect = false;
 #endif
   itsName = Path(name).expandedName();
 }
@@ -91,7 +91,7 @@ std::shared_ptr<MultiFileBase> MultiFileBase::openMF(const String& fileName) {
 
 void MultiFileBase::setNewFile() {
   // The container file is new.
-  itsChanged = True;
+  itsChanged = true;
   // Use file system block size, but not less than given size.
   if (itsBlockSize <= 0) {
     struct fileSTAT sfs;
@@ -110,7 +110,7 @@ MultiFileBase::~MultiFileBase() {
 }
 
 Int MultiFileBase::openFile(const String& name) {
-  Int id = fileId(name, True);
+  Int id = fileId(name, true);
   if (itsInfo[id].buffer) {
     throw AipsError("MFFileIO: logical file " + name + " already opened in " + itsName);
   }
@@ -120,7 +120,7 @@ Int MultiFileBase::openFile(const String& name) {
 }
 
 Int MultiFileBase::createFile(const String& name, ByteIO::OpenOption opt) {
-  Int id = fileId(name, False);
+  Int id = fileId(name, false);
   if (id >= 0) {
     if (opt == ByteIO::NewNoReplace) {
       throw AipsError("MFFileIO: logical file " + name + " already exists in " + itsName);
@@ -153,7 +153,7 @@ void MultiFileBase::flush() {
   // If it does not need to be written, no further flush is needed.
   if (itsChanged) {
     writeHeader();
-    itsChanged = False;
+    itsChanged = false;
   }
   doFlushFile();
 }
@@ -237,7 +237,7 @@ Int64 MultiFileBase::write(Int fileId, const void* buf, Int64 size, Int64 offset
   Int64 curnrb = (info.fsize + itsBlockSize - 1) / itsBlockSize;
   if (lastblk >= curnrb) {
     extend(info, lastblk);
-    itsChanged = True;
+    itsChanged = true;
   }
   // Write until all done.
   while (done < size) {
@@ -245,7 +245,7 @@ Int64 MultiFileBase::write(Int fileId, const void* buf, Int64 size, Int64 offset
     // Favor sequential writing, thus write current buffer first.
     if (blknr == info.curBlock) {
       memcpy(infoBuffer + start, buffer, todo);
-      info.dirty = True;
+      info.dirty = true;
       if (done + todo > size) {
         writeDirty(info);
       }
@@ -267,7 +267,7 @@ Int64 MultiFileBase::write(Int fileId, const void* buf, Int64 size, Int64 offset
       }
       info.curBlock = blknr;
       memcpy(infoBuffer + start, buffer, todo);
-      info.dirty = True;
+      info.dirty = true;
     }
     done += todo;
     buffer += todo;
@@ -294,7 +294,7 @@ void MultiFileBase::truncate(Int fileId, Int64 size) {
     for (size_t i = nrblk; i < info.blockNrs.size(); ++i) {
       if (info.curBlock == info.blockNrs[i]) {
         info.curBlock = -1;
-        info.dirty = False;
+        info.dirty = false;
         break;
       }
     }
@@ -341,11 +341,11 @@ Int MultiFileBase::addFile(const String& fname) {
   }
   itsInfo[inx].name = bname;
   doAddFile(itsInfo[inx]);
-  itsChanged = True;
+  itsChanged = true;
   return inx;
 }
 
-Int MultiFileBase::fileId(const String& fname, Bool throwExcp) const {
+Int MultiFileBase::fileId(const String& fname, bool throwExcp) const {
   // Only use the basename part (to avoid directory rename problems).
   String bname = Path(fname).baseName();
   for (size_t i = 0; i < itsInfo.size(); ++i) {
@@ -365,12 +365,12 @@ void MultiFileBase::deleteFile(Int fileId) {
     throw AipsError("MultiFileBase::deleteFile - invalid fileId given");
   }
   MultiFileInfo& info = itsInfo[fileId];
-  info.dirty = False;  // no need to write when deleting
+  info.dirty = false;  // no need to write when deleting
   closeFile(fileId);
   doDeleteFile(info);
   // Clear this slot.
   info = MultiFileInfo();
-  itsChanged = True;
+  itsChanged = true;
 }
 
 Int64 MultiFileBase::fileSize(Int fileId) const {
@@ -380,9 +380,9 @@ Int64 MultiFileBase::fileSize(Int fileId) const {
   return itsInfo[fileId].fsize;
 }
 
-MultiFileInfo::MultiFileInfo() : curBlock(-1), fsize(0), nested(False), dirty(False) {}
+MultiFileInfo::MultiFileInfo() : curBlock(-1), fsize(0), nested(false), dirty(false) {}
 
-MultiFileBuffer::MultiFileBuffer(size_t bufSize, Bool useODirect) : itsData(0) {
+MultiFileBuffer::MultiFileBuffer(size_t bufSize, bool useODirect) : itsData(0) {
   const size_t align = 4096;
   if (bufSize > 0) {
     if (useODirect && bufSize % align != 0) {

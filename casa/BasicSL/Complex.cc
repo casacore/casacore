@@ -37,10 +37,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Note: max() cannot be used from Math.h until it is derived from <math>
 // Note: abs() not defined in SGI
 //
-Bool near(const Complex &val1, const Complex &val2, Double tol) {
+bool near(const Complex &val1, const Complex &val2, Double tol) {
   if (tol <= 0) return val1 == val2;
-  if (val1 == val2) return True;
-  if (near(val1.real(), val2.real(), tol) && near(val1.imag(), val2.imag(), tol)) return True;
+  if (val1 == val2) return true;
+  if (near(val1.real(), val2.real(), tol) && near(val1.imag(), val2.imag(), tol)) return true;
   Float aval1(std::abs(val1)), aval2(std::abs(val2));
   if (aval1 == 0)
     return aval2 <= (1 + tol) * FLT_MIN;
@@ -51,9 +51,9 @@ Bool near(const Complex &val1, const Complex &val2, Double tol) {
   return std::abs(dval) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
-Bool near(const DComplex &val1, const DComplex &val2, Double tol) {
+bool near(const DComplex &val1, const DComplex &val2, Double tol) {
   if (tol <= 0) return val1 == val2;
-  if (val1 == val2) return True;
+  if (val1 == val2) return true;
   if (std::abs(val1) == 0)
     return std::abs(val2) <= (1 + tol) * DBL_MIN;
   else if (std::abs(val2) == 0)
@@ -62,17 +62,17 @@ Bool near(const DComplex &val1, const DComplex &val2, Double tol) {
   return std::abs(val1 - val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
-Bool nearAbs(const Complex &val1, const Complex &val2, Double tol) {
+bool nearAbs(const Complex &val1, const Complex &val2, Double tol) {
   return std::abs(val2 - val1) <= tol;
 }
-Bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol) {
+bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol) {
   return std::abs(val2 - val1) <= tol;
 }
 
 // NaN functions
 
-Bool isNaN(const Complex &val) { return isNaN(val.real()) || isNaN(val.imag()); }
-Bool isNaN(const DComplex &val) { return isNaN(val.real()) || isNaN(val.imag()); }
+bool isNaN(const Complex &val) { return isNaN(val.real()) || isNaN(val.imag()); }
+bool isNaN(const DComplex &val) { return isNaN(val.real()) || isNaN(val.imag()); }
 void setNaN(Complex &val) {
   Float x;
   setNaN(x);
@@ -90,8 +90,8 @@ void setNaN(DComplex &val) {
 
 // Inf functions
 
-Bool isInf(const Complex &val) { return isInf(val.real()) || isInf(val.imag()); }
-Bool isInf(const DComplex &val) { return isInf(val.real()) || isInf(val.imag()); }
+bool isInf(const Complex &val) { return isInf(val.real()) || isInf(val.imag()); }
+bool isInf(const DComplex &val) { return isInf(val.real()) || isInf(val.imag()); }
 void setInf(Complex &val) {
   Float x;
   setInf(x);
@@ -109,8 +109,8 @@ void setInf(DComplex &val) {
 
 // Finite functions
 
-Bool isFinite(const Complex &val) { return isFinite(val.real()) || isFinite(val.imag()); }
-Bool isFinite(const DComplex &val) { return isFinite(val.real()) || isFinite(val.imag()); }
+bool isFinite(const Complex &val) { return isFinite(val.real()) || isFinite(val.imag()); }
+bool isFinite(const DComplex &val) { return isFinite(val.real()) || isFinite(val.imag()); }
 
 // fmod functions
 

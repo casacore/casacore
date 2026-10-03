@@ -80,8 +80,8 @@ class LELAttribute {
 
   // Constructor sets it as lattice with given attributes.
   // An empty shape indicates that the shape is not known.
-  LELAttribute(Bool isMasked, const IPosition& shape, const IPosition& tileShape,
-               const LELCoordinates& coordinates, Bool isReduced = False);
+  LELAttribute(bool isMasked, const IPosition& shape, const IPosition& tileShape,
+               const LELCoordinates& coordinates, bool isReduced = false);
 
   // Constructor sets it as a region with given attributes.
   explicit LELAttribute(uInt regionNdim);
@@ -91,10 +91,10 @@ class LELAttribute {
 
   // Constructor that combines the two attributes given.
   // An array can be combined with a scalar.
-  // If matchAxes is True and if two arrays are given, the shapes and
+  // If matchAxes is true and if two arrays are given, the shapes and
   // coordinates have to match exactly, otherwise one can be a subset of
   // the other (and LEL will auto-extend).
-  LELAttribute(const LELAttribute& attrLeft, const LELAttribute& attrRight, Bool matchAxes = True);
+  LELAttribute(const LELAttribute& attrLeft, const LELAttribute& attrRight, bool matchAxes = true);
 
   // Destructor
   ~LELAttribute();
@@ -103,16 +103,16 @@ class LELAttribute {
   LELAttribute& operator=(const LELAttribute& other);
 
   // Is expression a scalar?
-  Bool isScalar() const { return isScalar_p; }
+  bool isScalar() const { return isScalar_p; }
 
   // Is expression a reduced array? A scalar is always reduced.
-  Bool isReduced() const { return isReduced_p; }
+  bool isReduced() const { return isReduced_p; }
 
   // Is expression a region?
-  Bool isRegion() const { return isRegion_p; }
+  bool isRegion() const { return isRegion_p; }
 
   // Is the expression result masked?
-  Bool isMasked() const { return isMasked_p; }
+  bool isMasked() const { return isMasked_p; }
 
   // What is the shape of the expression?
   const IPosition& shape() const { return shape_p; }
@@ -127,10 +127,10 @@ class LELAttribute {
   Int compareCoord(const LELAttribute& other) const;
 
  private:
-  Bool isScalar_p;
-  Bool isReduced_p;
-  Bool isRegion_p;
-  Bool isMasked_p;
+  bool isScalar_p;
+  bool isReduced_p;
+  bool isRegion_p;
+  bool isMasked_p;
   IPosition shape_p;
   IPosition tileShape_p;
   LELCoordinates coords_p;

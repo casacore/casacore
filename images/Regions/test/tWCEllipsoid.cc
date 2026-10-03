@@ -90,14 +90,14 @@ int main() {
       IPosition pixelAxes(3, 0, 1, 2);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       radius[2] = Quantity(50, "MHz");
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
@@ -105,28 +105,28 @@ int main() {
       pixelAxes[2] = 3;
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       pixelAxes = IPosition(3, 0, 0, 1);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       pixelAxes = IPosition(3, 0, 1, 2);
-      center.resize(2, True);
+      center.resize(2, true);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
 
       // generic ellipsoid tests
-      center.resize(3, True);
+      center.resize(3, true);
       center[2] = Quantity(1.41501, "GHz");
       radius[1] = Quantity(1200, "arcsec");
       radius[2] = Quantity(50, "kHz");
@@ -223,12 +223,12 @@ int main() {
       try {
         // unit mismatch between center and radius
         WCEllipsoid sphere(center, r, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
-      pixelAxes.resize(2, True);
-      center.resize(2, True);
+      pixelAxes.resize(2, true);
+      center.resize(2, true);
       WCEllipsoid sphere(center, r, pixelAxes, csys);
       AlwaysAssert(sphere == sphere, AipsError);
       WCEllipsoid sphere2 = sphere;
@@ -253,7 +253,7 @@ int main() {
         Quantity theta(4, "Hz");
         WCEllipsoid ellipse(center[0], center[1], radius[0], radius[1], theta, pixelAxes[0],
                             pixelAxes[1], csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
@@ -262,7 +262,7 @@ int main() {
         Quantity theta(40, "deg");
         WCEllipsoid ellipse(center[0], center[1], radius[0], radius[1], theta, pixelAxes[0],
                             pixelAxes[2], csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }
@@ -287,7 +287,7 @@ int main() {
         // major axis smaller than minor axis
         ellipse = WCEllipsoid(center[1], center[0], radius[1], radius[0], theta, pixelAxes[1],
                               pixelAxes[0], csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (std::exception &x) {
         cout << "Caught as expected " << x.what() << endl;
       }

@@ -158,12 +158,12 @@ class Interpolate1D : public Function1D<Domain, Range> {
 
   // Construct an object with the specified data
   Interpolate1D(const SampledFunctional<Domain> &x, const SampledFunctional<Range> &y,
-                const Bool sorted = False, const Bool uniq = False);
+                const bool sorted = false, const bool uniq = false);
 
   // Define a new data set for the class to operate on. Equivalent in many
   // aspects to creating a new object.
   void setData(const SampledFunctional<Domain> &x, const SampledFunctional<Range> &y,
-               const Bool sorted = False, const Bool uniq = False);
+               const bool sorted = false, const bool uniq = false);
 
   // The standard copy constructor, assignment operator and
   // destructor. Internal data is copied in both cases (copy semantics)

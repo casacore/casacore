@@ -50,9 +50,9 @@ void doIt(const String& name, double interval) {
   cin >> op;
   // # Create 2 lock objects with given inspection interval.
   // # Let them start at a different offset in the file.
-  LockFile lock1(name, interval, False, True, True, 0, op == 1, op == 0);
+  LockFile lock1(name, interval, false, true, true, 0, op == 1, op == 0);
   LockFile* lockp;
-  while (True) {
+  while (true) {
     cout << "locknr (1,2 0=end): ";
     cin >> lnr;
     if (lnr <= 0) break;
@@ -61,9 +61,9 @@ void doIt(const String& name, double interval) {
     } else {
       cout << "Locking type (0=no, 1=permanent, other=normal):";
       cin >> op;
-      lockp = new LockFile(name, interval, False, True, True, 1, op == 1, op == 0);
+      lockp = new LockFile(name, interval, false, true, true, 1, op == 1, op == 0);
     }
-    while (True) {
+    while (true) {
       cout << "1=rlock, 2=wlock, 3=rlockw, 4=wlockw, 5=unlock, "
               "6=status, 7=speed, 8=open/close 9=show, else=end: ";
       cin >> op;
@@ -112,7 +112,7 @@ void doIt(const String& name, double interval) {
         RegularFileIO tmp(name);
       } else if (op == 9) {
         uInt pid;
-        Bool perm;
+        bool perm;
         uInt res = LockFile::showLock(pid, perm, name);
         cout << "result=" << res << ", pid=" << pid << ", permlocked=" << perm << endl;
       } else {
@@ -126,7 +126,7 @@ void doIt(const String& name, double interval) {
 }
 
 void doTest() {
-  LockFile lock("tLockFile_tmp.data", 0, True);
+  LockFile lock("tLockFile_tmp.data", 0, true);
   AlwaysAssertExit(!lock.hasLock(FileLocker::Read));
   AlwaysAssertExit(!lock.hasLock(FileLocker::Write));
   MemoryIO memio;

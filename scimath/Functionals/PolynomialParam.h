@@ -119,8 +119,8 @@ class PolynomialParam : public Function1D<T> {
   //  Comparisons.
   //  Polynomials are equal if they are the same order
   //  <group>
-  Bool operator==(const PolynomialParam<T> &other) const { return (param_p == other.param_p); }
-  Bool operator!=(const PolynomialParam<T> &other) const { return (param_p != other.param_p); }
+  bool operator==(const PolynomialParam<T> &other) const { return (param_p == other.param_p); }
+  bool operator!=(const PolynomialParam<T> &other) const { return (param_p != other.param_p); }
   // </group>
 
   // # Member functions

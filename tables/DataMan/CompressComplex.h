@@ -156,7 +156,7 @@ class CompressComplex : public BaseMappedArrayEngine<Complex, Int> {
   // The virtual column using this engine must have data type Complex.
   CompressComplex(const String& virtualColumnName, const String& storedColumnName,
                   const String& scaleColumnName, const String& offsetColumnName,
-                  Bool autoScale = True);
+                  bool autoScale = true);
 
   // Construct from a record specification as created by getmanagerSpec().
   CompressComplex(const Record& spec);
@@ -293,8 +293,8 @@ class CompressComplex : public BaseMappedArrayEngine<Complex, Int> {
   String offsetName_p;                  // # name of offset column
   Float scale_p;                        // # fixed scale factor
   Float offset_p;                       // # fixed offset value
-  Bool fixed_p;                         // # scale/offset is fixed
-  Bool autoScale_p;                     // # determine scale/offset automatically
+  bool fixed_p;                         // # scale/offset is fixed
+  bool autoScale_p;                     // # determine scale/offset automatically
   ScalarColumn<Float>* scaleColumn_p;   // # column with scale value
   ScalarColumn<Float>* offsetColumn_p;  // # column with offset value
   Array<Int> buffer_p;                  // # buffer to avoid Array constructions
@@ -424,7 +424,7 @@ class CompressComplexSD : public CompressComplex {
   // The virtual column using this engine must have data type Complex.
   CompressComplexSD(const String& virtualColumnName, const String& storedColumnName,
                     const String& scaleColumnName, const String& offsetColumnName,
-                    Bool autoScale = True);
+                    bool autoScale = true);
 
   // Construct from a record specification as created by getmanagerSpec().
   CompressComplexSD(const Record& spec);

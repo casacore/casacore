@@ -42,7 +42,7 @@ WCUnion::WCUnion(const ImageRegion* region1, const ImageRegion* region2, const I
 
 WCUnion::WCUnion(const Block<const ImageRegion*>& regions) : WCCompound(regions) {}
 
-WCUnion::WCUnion(Bool takeOver, const Block<const WCRegion*>& regions)
+WCUnion::WCUnion(bool takeOver, const Block<const WCRegion*>& regions)
     : WCCompound(takeOver, regions) {}
 
 WCUnion::WCUnion(const WCUnion& other) : WCCompound(other) {}
@@ -56,7 +56,7 @@ WCUnion& WCUnion::operator=(const WCUnion& other) {
   return *this;
 }
 
-Bool WCUnion::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
+bool WCUnion::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
 
 WCRegion* WCUnion::cloneRegion() const { return new WCUnion(*this); }
 
@@ -64,7 +64,7 @@ LCRegion* WCUnion::doToLCRegion(const CoordinateSystem& cSys, const IPosition& s
                                 const IPosition& pixelAxesMap, const IPosition& outOrder) const {
   Block<const LCRegion*> regions;
   multiToLCRegion(regions, cSys, shape, pixelAxesMap, outOrder);
-  return new LCUnion(True, regions);
+  return new LCUnion(true, regions);
 }
 
 String WCUnion::className() { return "WCUnion"; }
@@ -81,7 +81,7 @@ TableRecord WCUnion::toRecord(const String& tableName) const {
 WCUnion* WCUnion::fromRecord(const TableRecord& rec, const String& tableName) {
   Block<const WCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
-  return new WCUnion(True, regions);
+  return new WCUnion(true, regions);
 }
 
 }  // namespace casacore

@@ -37,11 +37,11 @@ namespace casacore {
 namespace python {
 namespace numpy {
 
-Bool importArray() {
+bool importArray() {
   // numpy has diferent versions of import_array (from version 1.0.1 on).
   // Therefore import_array1 is used.
-  import_array1(True);
-  return True;
+  import_array1(true);
+  return true;
 }
 
 Array<String> ArrayCopyStr_toArray(const IPosition& shape, void* data, size_t slen) {
@@ -93,17 +93,17 @@ Array<String> ArrayCopyUnicode_toArray(const IPosition& shape, void* data, size_
 // # by taking an element from a numpy array).
 
 // Check if the object is an array scalar and return its type.
-Bool PycArrayScalarCheck(PyObject* obj_ptr, int& type) {
+bool PycArrayScalarCheck(PyObject* obj_ptr, int& type) {
   if (!PyArray_API) {
-    if (!isImported()) return False;
+    if (!isImported()) return false;
     loadAPI();
   }
   // No scalar if array scalar nor 0-dim array.
   if (!PyArray_CheckScalar(obj_ptr)) {
-    return False;
+    return false;
   }
   // See if the object is a 0-dim array.
-  Bool is0dim = PyArray_Check(obj_ptr);
+  bool is0dim = PyArray_Check(obj_ptr);
   const int ntypes = 13;
   // Define them in order of expected usage.
   int types[ntypes] = {NPY_INT32,      NPY_INT64,  NPY_FLOAT32, NPY_FLOAT64, NPY_COMPLEX64,
@@ -113,16 +113,16 @@ Bool PycArrayScalarCheck(PyObject* obj_ptr, int& type) {
     if (is0dim) {
       if (types[i] == PyArray_TYPE((const PyArrayObject*)obj_ptr)) {
         type = types[i];
-        return True;
+        return true;
       }
     } else {
       if (obj_ptr->ob_type == (PyTypeObject*)PyArray_TypeObjectFromType(types[i])) {
         type = types[i];
-        return True;
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 DataType PycArrayScalarType(PyObject* obj_ptr) {
@@ -253,7 +253,7 @@ ValueHolder makeScalar(PyObject* obj_ptr, int type) {
 void register_convert_arrayscalars() {
   // Register as casa types.
   // A type like ssize_t maps to Int or Long (depending on machine).
-  array_scalar_from_python<Bool>();
+  array_scalar_from_python<bool>();
   array_scalar_from_python<Char>();
   array_scalar_from_python<uChar>();
   array_scalar_from_python<Short>();
@@ -298,7 +298,7 @@ boost::python::object makePyArrayObject(casacore::Array<T> const& arr) {
       (PyArrayObject*)(PyArray_SimpleNew(nd, &(newshp[0]), TypeConvTraits<T>::pyType()));
   // Copy the data to numarray.
   if (arr.size() > 0) {
-    casacore::Bool deleteIt;
+    bool deleteIt;
     const T* src = arr.getStorage(deleteIt);
     ArrayCopy<T>::toPy(PyArray_DATA(po), src, arr.size());
     arr.freeStorage(src, deleteIt);

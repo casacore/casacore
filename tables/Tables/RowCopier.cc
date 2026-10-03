@@ -45,7 +45,7 @@ class ColumnHolder {
   ColumnHolder(const ColumnHolder &other) = delete;
   ColumnHolder &operator=(const ColumnHolder &other) = delete;
   void attach(const String &outCol, const String &inCol);
-  Bool copy(rownr_t toRow, rownr_t fromRow);
+  bool copy(rownr_t toRow, rownr_t fromRow);
 
  private:
   // The tables involved in the copying
@@ -93,16 +93,16 @@ void ColumnHolder::attach(const String &outCol, const String &inCol) {
   }
 }
 
-Bool ColumnHolder::copy(rownr_t toRow, rownr_t fromRow) {
+bool ColumnHolder::copy(rownr_t toRow, rownr_t fromRow) {
   if (fromRow >= in.nrow() || toRow >= out.nrow()) {
-    return False;
+    return false;
   }
 
   // loop over all columns
   for (uInt i = 0; i < inTabCol.nelements(); i++) {
     outTabCol[i]->put(toRow, (*inTabCol[i]), (fromRow));
   }
-  return True;
+  return true;
 }
 
 RowCopier::RowCopier(Table &out, const Table &in) {
@@ -137,7 +137,7 @@ RowCopier::RowCopier(Table &out, const Table &in, const Vector<String> &outNames
   }
 }
 
-Bool RowCopier::copy(rownr_t toRow, rownr_t fromRow) { return columns_p->copy(toRow, fromRow); }
+bool RowCopier::copy(rownr_t toRow, rownr_t fromRow) { return columns_p->copy(toRow, fromRow); }
 
 RowCopier::~RowCopier() {}
 

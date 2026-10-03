@@ -32,7 +32,7 @@ namespace casacore {
 // Utility functions used for incrementing pointers in a data set used by the
 // stats framework.
 
-template <class DataIterator, class MaskIterator = const Bool*,
+template <class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class StatisticsIncrementer {
  public:

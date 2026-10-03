@@ -141,16 +141,16 @@ class LogSink : public LogSinkInterface {
   //  a memory local sink that holds the messages in memory.
   //  If a filter isn't defined, default to <src>NORMAL</src>.
   //  <group>
-  explicit LogSink(LogMessage::Priority filter = LogMessage::NORMAL, Bool nullSink = True);
-  explicit LogSink(const LogFilterInterface &filter, Bool nullSink = True);
+  explicit LogSink(LogMessage::Priority filter = LogMessage::NORMAL, bool nullSink = true);
+  explicit LogSink(const LogFilterInterface &filter, bool nullSink = true);
   // </group>
 
   // Log to an ostream. It is the responsiblity of the caller to ensure that
   // <src>os</src> will last as long as the <src>LogSink</src>s that use it.
   // Normally you would use <src>&cerr</src> as the argument.
   // <group>
-  LogSink(LogMessage::Priority filter, ostream *os, Bool useGlobalSink = True);
-  LogSink(const LogFilterInterface &filter, ostream *os, Bool useGlobalSink = True);
+  LogSink(LogMessage::Priority filter, ostream *os, bool useGlobalSink = true);
+  LogSink(const LogFilterInterface &filter, ostream *os, bool useGlobalSink = true);
   // </group>
 
   // Log to the given sink.
@@ -179,15 +179,15 @@ class LogSink : public LogSinkInterface {
   ~LogSink();
 
   // Send <src>message</src> to both the local and global sink. Return
-  // <src>True</src> if it passes either of them.
-  Bool post(const LogMessage &message);
+  // <src>true</src> if it passes either of them.
+  bool post(const LogMessage &message);
 
-  // Send <src>message</src> to the global sink only. Returns <src>True</src>
+  // Send <src>message</src> to the global sink only. Returns <src>true</src>
   // if it passes the filter.
-  static Bool postGlobally(const LogMessage &message);
-  // Send <src>message</src> to the local sink only. Returns <src>True</src>
+  static bool postGlobally(const LogMessage &message);
+  // Send <src>message</src> to the local sink only. Returns <src>true</src>
   // if it passes the filter.
-  virtual Bool postLocally(const LogMessage &message);
+  virtual bool postLocally(const LogMessage &message);
 
   // Post <src>message</src> and then throw an <src>AipsError</src> exception
   // containing <src>message.toString()</src>. It is always posted as a
@@ -243,11 +243,11 @@ class LogSink : public LogSinkInterface {
   // <group>
   static LogSinkInterface &globalSink();
   static void globalSink(LogSinkInterface *&fromNew);
-  static Bool nullGlobalSink();
+  static bool nullGlobalSink();
   // </group>
 
   // Write any pending output (by default also the global sink).
-  virtual void flush(Bool global = True);
+  virtual void flush(bool global = true);
 
   // Returns the id for this class...
   static String localId();
@@ -270,7 +270,7 @@ class LogSink : public LogSinkInterface {
 
     LogSinkInterface &operator*() { return *logSinkInterface_p; }
     LogSinkInterface *operator->() { return logSinkInterface_p; }
-    Bool operator!() const { return !logSinkInterface_p; }
+    bool operator!() const { return !logSinkInterface_p; }
 
     void replace(LogSinkInterface *newLsi) {
       delete logSinkInterface_p;
@@ -302,7 +302,7 @@ class LogSink : public LogSinkInterface {
   // reference to it is destroyed. This can happen if you have a static
   // LogSink (or LogIO).
   std::shared_ptr<LsiIntermediate> local_ref_to_global_p;
-  Bool useGlobalSink_p;
+  bool useGlobalSink_p;
 };
 
 }  // namespace casacore

@@ -345,7 +345,7 @@ void FITS::valstr(ostream &o, const ValueType &ty, const void *val) {
     case FITS::NOVALUE:
       break;
     case FITS::LOGICAL:
-      o << ((*((Bool *)val) == True) ? "True" : "False");
+      o << ((*((bool *)val) == true) ? "True" : "False");
       break;
     case FITS::BIT:
       o << "*****";
@@ -446,7 +446,7 @@ ostream &operator<<(ostream &o, const FITS::ValueType &ty) {
 }
 
 const ReservedFitsKeyword &ReservedFitsKeywordCollection::match(int i, const char *s, int s_len,
-                                                                Bool n, FITS::ValueType t,
+                                                                bool n, FITS::ValueType t,
                                                                 const void *v, int v_len,
                                                                 const char *&msg) const {
   if (t == FITS::FLOAT || t == FITS::DOUBLE) t = FITS::REAL;  // change t to REAL to match on types
@@ -481,7 +481,7 @@ const ReservedFitsKeyword &ReservedFitsKeywordCollection::match(int i, const cha
   return rules(resword[i], s, s_len, n, t, v, v_len, msg) == -1 ? error_item : resword[i];
 }
 
-const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(FITS::ReservedName nm, Bool n,
+const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(FITS::ReservedName nm, bool n,
                                                               FITS::ValueType t, const void *v,
                                                               int v_len, const char *&msg) const {
   int i;
@@ -491,7 +491,7 @@ const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(FITS::ReservedName
   return match(i, 0, 0, n, t, v, v_len, msg);
 }
 
-const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(const char *s, int s_len, Bool n,
+const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(const char *s, int s_len, bool n,
                                                               FITS::ValueType t, const void *v,
                                                               int v_len, const char *&msg) const {
   msg = 0;
@@ -519,17 +519,17 @@ int ReservedFitsKeywordCollection::isreserved(const char *s, int s_len) const {
   return i;
 }
 
-Bool ReservedFitsKeywordCollection::requires_value(int n) const {
-  if (resword[n].type() == FITS::NOVALUE) return False;
+bool ReservedFitsKeywordCollection::requires_value(int n) const {
+  if (resword[n].type() == FITS::NOVALUE) return false;
   while (resword[n].name() == resword[n + 1].name()) {
     ++n;
-    if (resword[n].type() == FITS::NOVALUE) return False;
+    if (resword[n].type() == FITS::NOVALUE) return false;
   }
-  return True;
+  return true;
 }
 
 int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res, const char *s, int s_len,
-                                         Bool n, FITS::ValueType, const void *v, int v_len,
+                                         bool n, FITS::ValueType, const void *v, int v_len,
                                          const char *&msg) const {
   // Return: 0 = no errors, 1 = minor errors, -1 = major errors
   static int month[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -557,7 +557,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res, const c
       }
       break;
     case FITS::NAXIS:
-      if (n == False) {
+      if (n == false) {
         l = (const Int *)v;
         if (*l < 0 || *l > 999) {
           msg = "Illegal value for keyword NAXIS.";
@@ -688,7 +688,7 @@ int ReservedFitsKeywordCollection::essential_name(const char *s, int s_len) cons
   return 0;
 }
 
-const ReservedFitsKeyword &ReservedFitsKeywordCollection::get_essential(int i, Bool n,
+const ReservedFitsKeyword &ReservedFitsKeywordCollection::get_essential(int i, bool n,
                                                                         FITS::ValueType t,
                                                                         const void *v, int v_len,
                                                                         const char *&msg) const {
@@ -742,20 +742,20 @@ void FITS::get_name(const char *s, int len, FitsNameResult &result) {
   result.err = FitsNameResult::OK;
   for (i = 0; *s == ' ' && (i < len); ++i, ++s);  // skip spaces
   if (i == len || (!FITS::isa_text(*s)) || *s == '=') {
-    result.isaname = False;  // If there is no name, only
+    result.isaname = false;  // If there is no name, only
     result.begpos = i;       // begpos has meaning.
     return;
   }
-  result.isaname = True;
+  result.isaname = true;
   result.begpos = i;
   for (; *s != ' ' && *s != '=' && (i < len) && FITS::isa_text(*s); ++i, ++s);
   result.endpos = i - 1;
   result.len = i - result.begpos;
   --s;
-  result.isaindex = False;
+  result.isaindex = false;
   result.index = 0;
   if (FITS::isa_digit(*s)) {  // get any index
-    result.isaindex = True;
+    result.isaindex = true;
     result.index = FITS::digit2bin(*s--);
     --result.len;
     if (FITS::isa_digit(*s)) {
@@ -821,7 +821,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
   result.s[1] = 0;
   result.begpos = 0;
   result.endpos = 0;
-  result.isa_point = False;
+  result.isa_point = false;
   result.pointpos = 0;
   result.no_sig = 0;
   result.errmsg = 0;
@@ -830,13 +830,13 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
     return;
   switch (*s) {  // the first non-blank
     case 'T':    // logical
-      result.b = True;
+      result.b = true;
       result.type = FITS::LOGICAL;
       result.begpos = i;
       result.endpos = i;
       return;
     case 'F':  // logical
-      result.b = False;
+      result.b = false;
       result.type = FITS::LOGICAL;
       result.begpos = i;
       result.endpos = i;
@@ -893,7 +893,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
     default:
       if (*s == '.' && (i < (len - 1))) {
         if (s[i + 1] == 'T') {  // F77 list-directed logical
-          result.b = True;
+          result.b = true;
           result.type = FITS::LOGICAL;
           result.begpos = i;
           i += 2;
@@ -903,7 +903,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
           result.endpos = i;
           return;
         } else if (s[i + 1] == 'F') {  // F77 logical
-          result.b = False;
+          result.b = false;
           result.type = FITS::LOGICAL;
           result.begpos = i;
           i += 2;
@@ -981,7 +981,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
   result.l = 0;  // It may not be nessary to init the rest of these.
   result.begpos = 0;
   result.endpos = 0;
-  result.isa_point = False;
+  result.isa_point = false;
   result.pointpos = 0;
   result.no_sig = 0;
 
@@ -1005,7 +1005,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
     result.type = LONG;
     result.l = 0;
     result.endpos = n - 1;
-    result.isa_point = False;
+    result.isa_point = false;
     result.pointpos = 0;
     result.no_sig = 1;
     return;
@@ -1043,7 +1043,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
   }
   if (n == len || (!(*s == '.' || *s == 'E' || *s == 'D'))) {
     result.endpos = n - 1;
-    result.isa_point = False;
+    result.isa_point = false;
     result.pointpos = 0;
     if (sigint < 10) {
       result.type = LONG;
@@ -1088,7 +1088,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
   int sigexp = 0;       // number of significant digits in exponent
   char exp_type = ' ';  // the exponent letter
   if (*s == '.') {
-    result.isa_point = True;
+    result.isa_point = true;
     result.pointpos = n;
     // 7. Get the fraction part
     ++s;
@@ -1715,7 +1715,7 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
     vallen = 0;
     switch (type_) {
       case FITS::LOGICAL:
-        bval = *((Bool *)v);
+        bval = *((bool *)v);
         break;
       case FITS::LONG:
         ival = *((Int *)v);
@@ -1886,7 +1886,7 @@ FitsKeyword &FitsKeywordList::make(const char *nm, FITS::ValueType ty, const voi
   }
   int valsize = (vallen < 8) ? 8 : vallen;
   const char *errmsg = 0;
-  const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, nmlen, False, ty, val, valsize, errmsg);
+  const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, nmlen, false, ty, val, valsize, errmsg);
   if (errmsg) FitsKeyword::err(nm, ty, val, errmsg);
   if (rw->name() == FITS::USER_DEF)
     kw = new FitsKeyword(nm, nmlen, ty, val, vallen, cm, cmlen);
@@ -1915,7 +1915,7 @@ FitsKeyword &FitsKeywordList::make(FITS::ReservedName nm, FITS::ValueType ty, co
   }
   int valsize = (vallen < 8) ? 8 : vallen;
   const char *errmsg = 0;
-  const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, False, ty, val, valsize, errmsg);
+  const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, false, ty, val, valsize, errmsg);
   if (errmsg) FitsKeyword::err(FITS::ResWord.aname(nm), ty, val, errmsg);
   if (rw->name() == FITS::USER_DEF) {
     return makeErrKeyword(FITS::ResWord.aname(nm), ty, val,
@@ -1946,7 +1946,7 @@ FitsKeyword &FitsKeywordList::make(int ind, FITS::ReservedName nm, FITS::ValueTy
   }
   int valsize = (vallen < 8) ? 8 : vallen;
   const char *errmsg = 0;
-  const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, True, ty, val, valsize, errmsg);
+  const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, true, ty, val, valsize, errmsg);
   if (errmsg) FitsKeyword::err(FITS::ResWord.aname(nm), ty, val, errmsg);
   if (rw->name() == FITS::USER_DEF) {
     return makeErrKeyword(FITS::ResWord.aname(nm), ty, val,
@@ -2227,15 +2227,15 @@ int FitsKeywordList::rules(FITSErrorHandler errhandler) {
   return rtn;
 }
 
-Bool FitsKeywordList::basic_rules() {
+bool FitsKeywordList::basic_rules() {
   int rtn = 0;
   const char *msg = 0;
   for (FitsKeyword *x = beg_; x != 0; x = x->next_) {
     rtn = FITS::ResWord.rules(x->kw(), x->name(), x->namelen(), x->isindexed(), x->type(),
                               x->value(), x->valStrlen(), msg);
-    if (rtn != 0 || msg != 0) return False;
+    if (rtn != 0 || msg != 0) return false;
   }
-  return True;
+  return true;
 }
 
 FitsKeyCardTranslator::FitsKeyCardTranslator(int max) : cardno(0), max_errs(max), no_errs_(0) {
@@ -2247,7 +2247,7 @@ FitsKeyCardTranslator::FitsKeyCardTranslator(int max) : cardno(0), max_errs(max)
 }
 
 FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff, FitsKeywordList &kwlist, int count,
-                                              FITSErrorHandler errhandler, Bool show_err) {
+                                              FITSErrorHandler errhandler, bool show_err) {
   char msgstring[180];  // storage for composing error messages
   int i, j;
   cardno = 0;
@@ -2336,7 +2336,7 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
     card[8] = '=';
     switch (k.type()) {
       case FITS::LOGICAL:
-        card[29] = (k.asBool() == True ? 'T' : 'F');
+        card[29] = (k.asBool() == true ? 'T' : 'F');
         break;
       case FITS::LONG:
         snprintf(&card[18], FitsCardSize - 18, "%12d", k.asInt());
@@ -2404,9 +2404,9 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 // For some amazing reason the following wouldn't inline
 FITS::ReservedName ReservedFitsKeyword::name() const { return name_; }
 
-Bool FitsFPUtil::isFP(const float *) { return True; }
-Bool FitsFPUtil::isFP(const double *) { return True; }
-Bool FitsFPUtil::isFP(const void *) { return False; }
+bool FitsFPUtil::isFP(const float *) { return true; }
+bool FitsFPUtil::isFP(const double *) { return true; }
+bool FitsFPUtil::isFP(const void *) { return false; }
 
 void FitsFPUtil::setNaN(double &val) {
   unsigned char *cptr = (unsigned char *)(&val);

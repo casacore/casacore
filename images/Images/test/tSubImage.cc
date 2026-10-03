@@ -74,7 +74,7 @@ void testRest() {
   AlwaysAssertExit(pa.isPaged());
   AlwaysAssertExit(pa.isPersistent());
   AlwaysAssertExit(pa.isWritable());
-  AlwaysAssertExit(pa.name(True) == "tSubImage_tmp.pa");
+  AlwaysAssertExit(pa.name(true) == "tSubImage_tmp.pa");
   LCPagedMask lcmask(IPosition(2, 10, 10), "tSubImage_tmp.pa/mask");
   ImageRegion mask(lcmask);
   Slicer slicer(IPosition(2, 1, 1), IPosition(2, 3, 3));
@@ -88,37 +88,37 @@ void testRest() {
     AlwaysAssertExit(sl.isPersistent());
     AlwaysAssertExit(!sl.isWritable());
     // A copy of the SubImage.
-    SubImage<Float> sl1(sl, True);
+    SubImage<Float> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(sl1.isPersistent());
     AlwaysAssertExit(!sl1.isWritable());
-    AlwaysAssertExit(sl1.name(True) == "tSubImage_tmp.pa");
+    AlwaysAssertExit(sl1.name(true) == "tSubImage_tmp.pa");
   }
   {
     // A SubImage as a Lattice copy (RW).
-    SubImage<Float> sl(pa, True);
+    SubImage<Float> sl(pa, true);
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubImage.
-    SubImage<Float> sl1(sl, True);
+    SubImage<Float> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubImage.
-    SubImage<Float> sl2(sl, False);
+    SubImage<Float> sl2(sl, false);
     AlwaysAssertExit(!sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
     AlwaysAssertExit(sl2.isPersistent());
     AlwaysAssertExit(!sl2.isWritable());
-    AlwaysAssertExit(sl2.name(True) == "tSubImage_tmp.pa");
+    AlwaysAssertExit(sl2.name(true) == "tSubImage_tmp.pa");
   }
   {
     // A RO SubImage as a masked Lattice.
@@ -129,31 +129,31 @@ void testRest() {
     AlwaysAssertExit(!sl.isPersistent());
     AlwaysAssertExit(!sl.isWritable());
     // A copy of the SubImage.
-    SubImage<Float> sl1(sl, True);
+    SubImage<Float> sl1(sl, true);
     AlwaysAssertExit(sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(!sl1.isWritable());
-    AlwaysAssertExit(sl1.name(True) == "tSubImage_tmp.pa");
+    AlwaysAssertExit(sl1.name(true) == "tSubImage_tmp.pa");
   }
   {
     // A RW SubImage as a masked Lattice.
-    SubImage<Float> sl(pa, mask, True);
+    SubImage<Float> sl(pa, mask, true);
     AlwaysAssertExit(sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(!sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubImage.
-    SubImage<Float> sl1(sl, True);
+    SubImage<Float> sl1(sl, true);
     AlwaysAssertExit(sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubImage.
-    SubImage<Float> sl2(sl, False);
+    SubImage<Float> sl2(sl, false);
     AlwaysAssertExit(sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
@@ -162,21 +162,21 @@ void testRest() {
   }
   {
     // A small region of a lattice.
-    SubImage<Float> sl(pa, slicer, True);
+    SubImage<Float> sl(pa, slicer, true);
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(!sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubImage.
-    SubImage<Float> sl1(sl, True);
+    SubImage<Float> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubImage.
-    SubImage<Float> sl2(sl, False);
+    SubImage<Float> sl2(sl, false);
     AlwaysAssertExit(!sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
@@ -185,21 +185,21 @@ void testRest() {
   }
   {
     // A full region of a lattice.
-    SubImage<Float> sl(pa, slfull, True);
+    SubImage<Float> sl(pa, slfull, true);
     AlwaysAssertExit(!sl.isMasked());
     AlwaysAssertExit(!sl.hasPixelMask());
     AlwaysAssertExit(sl.isPaged());
     AlwaysAssertExit(sl.isPersistent());
     AlwaysAssertExit(sl.isWritable());
     // A RW copy of the SubImage.
-    SubImage<Float> sl1(sl, True);
+    SubImage<Float> sl1(sl, true);
     AlwaysAssertExit(!sl1.isMasked());
     AlwaysAssertExit(!sl1.hasPixelMask());
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(sl1.isPersistent());
     AlwaysAssertExit(sl1.isWritable());
     // A RO copy of the SubImage.
-    SubImage<Float> sl2(sl, False);
+    SubImage<Float> sl2(sl, false);
     AlwaysAssertExit(!sl2.isMasked());
     AlwaysAssertExit(!sl2.hasPixelMask());
     AlwaysAssertExit(sl2.isPaged());
@@ -215,21 +215,21 @@ void testAxes() {
   Array<Float> arr(pa.shape());
   indgen(arr);
   pa.put(arr);
-  Array<Bool> m(pa.shape());
-  m = True;
-  m(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = False;
+  Array<bool> m(pa.shape());
+  m = true;
+  m(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = false;
   mask.put(m);
   Array<Float> arrs1 = arr(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9));
   Array<Float> arrsub = arrs1.reform(IPosition(2, 6, 8));
-  Array<Bool> ms1 = m(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9));
-  Array<Bool> msub = ms1.reform(IPosition(2, 6, 8));
+  Array<bool> ms1 = m(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9));
+  Array<bool> msub = ms1.reform(IPosition(2, 6, 8));
   // Make subimage with a removed axis 1.
-  SubImage<Float> ml(pa, mask, True);
-  Array<Bool> pixmask(IPosition(3, 6, 1, 8));
-  pixmask = True;
+  SubImage<Float> ml(pa, mask, true);
+  Array<bool> pixmask(IPosition(3, 6, 1, 8));
+  pixmask = true;
   pixmask(IPosition(3, 0, 0, 0)) = !msub(IPosition(2, 0, 0));
   LCPixelSet pixset(pixmask, LCBox(IPosition(3, 3, 1, 2), IPosition(3, 8, 1, 9), m.shape()));
-  SubImage<Float> sl(ml, pixset, True, AxesSpecifier(False));
+  SubImage<Float> sl(ml, pixset, true, AxesSpecifier(false));
 
   // Test its coordinate system.
   const CoordinateSystem& subcsys = sl.coordinates();
@@ -267,7 +267,7 @@ void testAxes() {
   AlwaysAssertExit(allEQ(ml.getMask(), m));
   msub(IPosition(2, 0, 0)) = !msub(IPosition(2, 0, 0));
   AlwaysAssertExit(allEQ(sl.getMask(), msub));
-  Array<Bool> msubsub = msub(IPosition(2, 1, 2), IPosition(2, 5, 7), IPosition(2, 3, 2));
+  Array<bool> msubsub = msub(IPosition(2, 1, 2), IPosition(2, 5, 7), IPosition(2, 3, 2));
   AlwaysAssertExit(allEQ(sl.getMaskSlice(Slicer(IPosition(2, 1, 2), IPosition(2, 5, 7),
                                                 IPosition(2, 3, 2), Slicer::endIsLast)),
                          msubsub));
@@ -296,7 +296,7 @@ void testBeams() {
   std::unique_ptr<LogIO> log(new LogIO());
   std::unique_ptr<ImageRegion> outRegionMgr(
       ImageRegion::fromRecord(log.get(), x.coordinates(), x.shape(), myboxRec));
-  SubImage<Float> subim = SubImage<Float>(x, *outRegionMgr, False, AxesSpecifier(False));
+  SubImage<Float> subim = SubImage<Float>(x, *outRegionMgr, false, AxesSpecifier(false));
   for (uInt i = 0; i < subim.shape()[2]; i++) {
     for (uInt j = 0; j < subim.shape()[3]; j++) {
       AlwaysAssert(subim.imageInfo().restoringBeam(j, i) == info.restoringBeam(j + 2, i + 2),
@@ -316,7 +316,7 @@ int main() {
       lattice.put(arr);
       Slicer slicer(IPosition(4, 4, 2, 1, 3), IPosition(4, 14, 10, 3, 23), IPosition(4, 2, 3, 1, 4),
                     Slicer::endIsLast);
-      SubImage<Float> subimg(lattice, slicer, True);
+      SubImage<Float> subimg(lattice, slicer, true);
       AlwaysAssertExit(subimg.isPaged());
       AlwaysAssertExit(!subimg.isPersistent());
       AlwaysAssertExit(!subimg.isMasked());

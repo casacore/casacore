@@ -32,18 +32,18 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc(const String& name)
-    : BaseColumnDesc(name, "", "", "", TpRecord, "TableRecord", 0, 0, IPosition(), True, False,
-                     False) {}
+    : BaseColumnDesc(name, "", "", "", TpRecord, "TableRecord", 0, 0, IPosition(), true, false,
+                     false) {}
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc(const String& name, const String& comment)
-    : BaseColumnDesc(name, comment, "", "", TpRecord, "TableRecord", 0, 0, IPosition(), True, False,
-                     False) {}
+    : BaseColumnDesc(name, comment, "", "", TpRecord, "TableRecord", 0, 0, IPosition(), true, false,
+                     false) {}
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc(const String& name, const String& comment,
                                                const String& dataManName,
                                                const String& dataManGroup)
     : BaseColumnDesc(name, comment, dataManName, dataManGroup, TpRecord, "TableRecord", 0, 0,
-                     IPosition(), True, False, False) {}
+                     IPosition(), true, false, false) {}
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc(const ScalarRecordColumnDesc& that)
     : BaseColumnDesc(that) {}

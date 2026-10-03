@@ -128,7 +128,7 @@ class Param {
   // Equality comparitor.
   // <note role=warning> This function ALWAYS returns
   // false.  I have no idea why it was designed to do this. </note>
-  Bool operator==(const Param&) const;
+  bool operator==(const Param&) const;
 
   // I/O operators
   //<group>
@@ -139,25 +139,25 @@ class Param {
   //</group>
 
   // get a double parameter value; prompt if switch is TRUE
-  Double getDouble(Bool do_prompt = False) const;
+  Double getDouble(bool do_prompt = false) const;
 
   // get a Block<double> parameter value; prompt if switch is TRUE
-  Block<Double> getDoubleArray(Bool do_prompt = False) const;
+  Block<Double> getDoubleArray(bool do_prompt = false) const;
 
   // get an Int parameter value; prompt if switch is TRUE
-  Int getInt(Bool do_prompt = False) const;
+  Int getInt(bool do_prompt = false) const;
 
   // get an Block<Int> parameter value; prompt if switch is TRUE
-  Block<Int> getIntArray(Bool do_prompt = False) const;
+  Block<Int> getIntArray(bool do_prompt = false) const;
 
   // get a String parameter value; prompt if switch is TRUE
-  const String& getString(Bool do_prompt = False) const;
+  const String& getString(bool do_prompt = false) const;
 
   // get a Block<String> parameter value; prompt if switch is TRUE
-  Block<String> getStringArray(Bool do_prompt = False) const;
+  Block<String> getStringArray(bool do_prompt = false) const;
 
   // get a Boolean parameter value; prompt if switch is TRUE
-  Bool getBool(Bool do_prompt = False) const;
+  bool getBool(bool do_prompt = false) const;
 
   // get parameter value as a string
   const String& get() const { return value; }
@@ -181,13 +181,13 @@ class Param {
   const String& getUnit() const { return unit; }
 
   // set new parameter value; return FALSE if invalid value
-  Bool put(const String& a_value);
+  bool put(const String& a_value);
 
   // set a parameter as a system parameter
-  void setSystem(Bool val) { system = val; }
+  void setSystem(bool val) { system = val; }
 
   // check if a parameter is a system parameter
-  Bool isSystem() const { return system; }
+  bool isSystem() const { return system; }
 
   // set an index for a program parameter
   void setIndex(Int inx) { index = inx; }
@@ -215,10 +215,10 @@ class Param {
   String unit;
 
   // boolean data member which indicates the Param's key has a value.
-  Bool hasvalue;
+  bool hasvalue;
 
   // boolean data member which indicates the Param is system wide.
-  Bool system;
+  bool system;
 
   // index for program keywords (>=1)
   Int index;

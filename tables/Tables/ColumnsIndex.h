@@ -121,7 +121,7 @@ class RecordFieldPtr;
 // RecordFieldPtr<Int> antFld(colInx.accessKey(), "ANTENNA");
 // // Now loop in some way and find the row for the antenna
 // // involved in that loop.
-// Bool found;
+// bool found;
 // while (...) {
 //     // Fill the key field and get the row number.
 //     // ANTENNA is a unique key, so only one row number matches.
@@ -157,7 +157,7 @@ class RecordFieldPtr;
 //     *timeUpp = ...;
 //     *antUpp = ...;
 //     // Find the row numbers for keys between low and upp (inclusive).
-//     RowNumbers rows = colInx.getRowNumbers (True, True);
+//     RowNumbers rows = colInx.getRowNumbers (true, true);
 // }
 // </srcblock>
 //
@@ -206,7 +206,7 @@ class RecordFieldPtr;
 // // Note that although the WIDTH is part of the index, it is
 // // not an actual key. So it does not need to be filled in.
 // RecordFieldPtr<Double> time(colInx.accessLowerKey(), "TIME");
-// Bool found;
+// bool found;
 // while (...) {
 //     // Fill the key field.
 //     *time = ...;
@@ -237,22 +237,22 @@ class ColumnsIndex {
 
   // Create an index on the given table for the given column.
   // The column has to be a scalar column.
-  // If <src>noSort==True</src>, the table is already in order of that
+  // If <src>noSort==true</src>, the table is already in order of that
   // column and the sort step will not be done.
   // The default compare function is provided by this class. It simply
   // compares each field in the key.
   ColumnsIndex(const Table&, const String& columnName, Compare* compareFunction = 0,
-               Bool noSort = False);
+               bool noSort = false);
 
   // Create an index on the given table for the given columns, thus
   // the key is formed by multiple columns.
   // The columns have to be scalar columns.
-  // If <src>noSort==True</src>, the table is already in order of those
+  // If <src>noSort==true</src>, the table is already in order of those
   // columns and the sort step will not be done.
   // The default compare function is provided by this class. It simply
   // compares each field in the key.
   ColumnsIndex(const Table&, const Vector<String>& columnNames, Compare* compareFunction = 0,
-               Bool noSort = False);
+               bool noSort = false);
 
   // Copy constructor (copy semantics).
   ColumnsIndex(const ColumnsIndex& that);
@@ -263,7 +263,7 @@ class ColumnsIndex {
   ColumnsIndex& operator=(const ColumnsIndex& that);
 
   // Are all keys in the index unique?
-  Bool isUnique() const;
+  bool isUnique() const;
 
   // Return the names of the columns forming the index.
   Vector<String> columnNames() const;
@@ -295,14 +295,14 @@ class ColumnsIndex {
 
   // Find the row number matching the key. All keys have to be unique,
   // otherwise an exception is thrown.
-  // If no match is found, <src>found</src> is set to False.
+  // If no match is found, <src>found</src> is set to false.
   // The 2nd version makes it possible to pass in your own Record
   // instead of using the internal record via the <src>accessKey</src>
   // functions. Note that the given Record will be copied to the internal
   // record, thus overwrites it.
   // <group>
-  rownr_t getRowNumber(Bool& found);
-  rownr_t getRowNumber(Bool& found, const Record& key);
+  rownr_t getRowNumber(bool& found);
+  rownr_t getRowNumber(bool& found, const Record& key);
   // </group>
 
   // Find the row numbers matching the key. It should be used instead
@@ -324,9 +324,9 @@ class ColumnsIndex {
   // Note that the given Records will be copied to the internal
   // records, thus overwrite them.
   // <group>
-  RowNumbers getRowNumbers(Bool lowerInclusive, Bool upperInclusive);
-  RowNumbers getRowNumbers(const Record& lower, const Record& upper, Bool lowerInclusive,
-                           Bool upperInclusive);
+  RowNumbers getRowNumbers(bool lowerInclusive, bool upperInclusive);
+  RowNumbers getRowNumbers(const Record& lower, const Record& upper, bool lowerInclusive,
+                           bool upperInclusive);
   // </group>
 
   // Fill the internal key field from the corresponding external key.
@@ -345,7 +345,7 @@ class ColumnsIndex {
 
   // Create the various members in the object.
   void create(const Table& table, const Vector<String>& columnNames, Compare* compareFunction,
-              Bool noSort);
+              bool noSort);
 
   // Make the various internal <src>RecordFieldPtr</src> objects.
   void makeObjects(const RecordDesc& description);
@@ -356,11 +356,11 @@ class ColumnsIndex {
 
   // Do a binary search on <src>itsUniqueIndex</src> for the key in
   // <src>fieldPtrs</src>.
-  // If the key is found, <src>found</src> is set to True and the index
+  // If the key is found, <src>found</src> is set to true and the index
   // in <src>itsUniqueIndex</src> is returned.
-  // If not found, <src>found</src> is set to False and the index
+  // If not found, <src>found</src> is set to false and the index
   // of the next higher key is returned.
-  rownr_t bsearch(Bool& found, const Block<void*>& fieldPtrs) const;
+  rownr_t bsearch(bool& found, const Block<void*>& fieldPtrs) const;
 
   // Compare the key in <src>fieldPtrs</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
@@ -393,9 +393,9 @@ class ColumnsIndex {
   // # They are used for fast access to the records.
   Block<void*> itsLowerFields;
   Block<void*> itsUpperFields;
-  Block<Bool> itsColumnChanged;
-  Bool itsChanged;
-  Bool itsNoSort;                // # True = sort is not needed
+  Block<bool> itsColumnChanged;
+  bool itsChanged;
+  bool itsNoSort;                // # true = sort is not needed
   Compare* itsCompare;           // # Compare function
   Vector<rownr_t> itsDataIndex;  // # Row numbers of all keys
   // # Indices in itsDataIndex for each unique key
@@ -404,7 +404,7 @@ class ColumnsIndex {
   rownr_t* itsUniqueInx;  // # pointer to data in itsUniqueIndex
 };
 
-inline Bool ColumnsIndex::isUnique() const {
+inline bool ColumnsIndex::isUnique() const {
   return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
 }
 inline const Table& ColumnsIndex::table() const { return itsTable; }

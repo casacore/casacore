@@ -60,12 +60,12 @@ String removeDir(const String& msg) {
 }
 
 // First build a description.
-TableDesc makeDesc(Bool ask) {
+TableDesc makeDesc(bool ask) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   String stman, stmanname;
   Int op;
-  while (True) {
+  while (true) {
     try {
       if (ask) {
         cout << "0=end 1=scalar 2=dirarr 3=fixindarr 4=varindarr: ";
@@ -179,15 +179,15 @@ void checkData(const Table& tab, const TableDesc& td, uInt startrow, uInt nrow) 
   }
 }
 
-void addCols(Bool ask, Table& tab) {
+void addCols(bool ask, Table& tab) {
   TableDesc tdn = makeDesc(ask);
   AlwaysAssert(tdn.ncolumn() > 0, AipsError);
   const ColumnDesc& cdesc = tdn.columnDesc(0);
   if (tdn.ncolumn() == 1) {
     if (cdesc.dataManagerType() == cdesc.dataManagerGroup()) {
-      tab.addColumn(cdesc, cdesc.dataManagerType(), False);
+      tab.addColumn(cdesc, cdesc.dataManagerType(), false);
     } else {
-      tab.addColumn(cdesc, cdesc.dataManagerGroup(), True);
+      tab.addColumn(cdesc, cdesc.dataManagerGroup(), true);
     }
   } else {
     if (cdesc.dataManagerType() == "StManAipsIO") {
@@ -211,7 +211,7 @@ void addCols(Bool ask, Table& tab) {
   cout << " Added and initialized " << tdn.ncolumn() << " columns" << endl;
 }
 
-void doTable(Bool ask, const TableDesc& td) {
+void doTable(bool ask, const TableDesc& td) {
   // Now create a new table from the description.
   // Use copy constructor to test if it works fine.
   // (newtab and newtabcp have the same underlying object).
@@ -219,7 +219,7 @@ void doTable(Bool ask, const TableDesc& td) {
   Table tab(newtab);
 
   Int op;
-  while (True) {
+  while (true) {
     try {
       if (ask) {
         cout << "0=end 1=reopen 2=addcols 3=removecols 4=addrow 5=show " << endl
@@ -280,7 +280,7 @@ void doTable(Bool ask, const TableDesc& td) {
         checkData(tab, tab.tableDesc(), 0, tab.nrow());
         cout << " Checked all data" << endl;
       } else if (op == 9) {
-        tab.deepCopy("tTable_4_tmp.datn", Table::New, True);
+        tab.deepCopy("tTable_4_tmp.datn", Table::New, true);
         tab = Table("tTable_4_tmp.datn");
         tab.rename("tTable_4_tmp.data", Table::New);
         // The next 2 statements are needed to ensure that all objects
@@ -300,7 +300,7 @@ int main(int argc, const char*[]) {
   try {
     cout << "tTable_4 is for interactive playing with tables" << endl;
     cout << "-----------------------------------------------" << endl;
-    Bool ask = argc < 2;
+    bool ask = argc < 2;
     doTable(ask, makeDesc(ask));
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

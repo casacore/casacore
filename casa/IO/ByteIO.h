@@ -98,12 +98,12 @@ class ByteIO {
   // Read <src>size</src> bytes from the byte stream. Returns the number of
   // bytes actually read, or a negative number if an error occurred. Will also
   // throw an Exception (AipsError) if the requested number of bytes could
-  // not be read unless throwException is set to False.
-  virtual Int64 read(Int64 size, void* buf, Bool throwException = True) = 0;
+  // not be read unless throwException is set to false.
+  virtual Int64 read(Int64 size, void* buf, bool throwException = true) = 0;
 
   // Like read but reads from offset of start of the file
   // The file offset is not changed
-  virtual Int64 pread(Int64 size, Int64 offset, void* buf, Bool throwException = True);
+  virtual Int64 pread(Int64 size, Int64 offset, void* buf, bool throwException = true);
 
   // Reopen the underlying IO stream for read/write access.
   // Nothing will be done if the stream is writable already.
@@ -145,13 +145,13 @@ class ByteIO {
   virtual Int64 length() = 0;
 
   // Is the byte stream readable?
-  virtual Bool isReadable() const = 0;
+  virtual bool isReadable() const = 0;
 
   // Is the byte stream writable?
-  virtual Bool isWritable() const = 0;
+  virtual bool isWritable() const = 0;
 
   // Is the byte stream seekable?
-  virtual Bool isSeekable() const = 0;
+  virtual bool isSeekable() const = 0;
 
  protected:
   // Make copy constructor and assignment protected, so a user cannot

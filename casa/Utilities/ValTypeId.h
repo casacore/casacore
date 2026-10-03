@@ -57,7 +57,7 @@ template <class T>
 inline String valDataTypeId(const T*) {
   return T::dataTypeId();
 }
-inline String valDataTypeId(const Bool* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const bool* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const Char* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const uChar* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const Short* obj) { return ValType::getTypeStr(obj); }

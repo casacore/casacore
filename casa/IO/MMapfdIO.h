@@ -101,9 +101,9 @@ class MMapfdIO : public FiledesIO {
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
-  // False. Will always throw an exception if the file is not readable or
+  // false. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
-  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
+  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 
   // Get a read or write pointer to the given position in the mapped file.
   // An exception is thrown if beyond end-of-file or it not writable.
@@ -132,7 +132,7 @@ class MMapfdIO : public FiledesIO {
   Int64 itsFileSize;  // # File size
   Int64 itsPosition;  // # Current seek position
   char* itsPtr;       // # Pointer to memory map
-  Bool itsIsWritable;
+  bool itsIsWritable;
 };
 
 }  // namespace casacore

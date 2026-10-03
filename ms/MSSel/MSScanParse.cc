@@ -90,7 +90,7 @@ void MSScanParse::appendToIDList(const Vector<Int>& v) {
   Int n = v.nelements() + currentSize;
   Int j = 0;
 
-  idList.resize(n, True);
+  idList.resize(n, true);
   for (Int i = currentSize; i < n; i++) idList[i] = v[j++];
 }
 

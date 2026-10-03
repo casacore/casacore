@@ -110,7 +110,7 @@ void Record::setComment(const RecordFieldId& id, const String& comment) {
 
 RecordDesc Record::getDescription() const { return ref().description(); }
 
-void Record::restructure(const RecordDesc& newDescription, Bool recursive) {
+void Record::restructure(const RecordDesc& newDescription, bool recursive) {
   // Restructure is not possible for fixed records.
   throwIfFixed();
   // Restructuring means that all RecordFieldPtr's get invalid.
@@ -134,7 +134,7 @@ void Record::renameField(const String& newName, const RecordFieldId& id) {
 }
 
 void Record::addDataField(const String& name, DataType type, const IPosition& shape,
-                          Bool fixedShape, const void* value) {
+                          bool fixedShape, const void* value) {
   rwRef().addDataField(name, type, shape, fixedShape, value);
 }
 

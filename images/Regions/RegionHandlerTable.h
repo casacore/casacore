@@ -84,7 +84,7 @@ class RegionHandlerTable : public RegionHandler {
  public:
   // Define the signature of the function being called to get
   // the table object needed for the region operations.
-  typedef Table& GetCallback(void* objectPtr, Bool writable);
+  typedef Table& GetCallback(void* objectPtr, bool writable);
 
   RegionHandlerTable(GetCallback* callback, void* objectPtr);
 
@@ -103,7 +103,7 @@ class RegionHandlerTable : public RegionHandler {
   virtual void setObjectPtr(void* objectPtr);
 
   // This class can define and handle regions.
-  virtual Bool canDefineRegion() const;
+  virtual bool canDefineRegion() const;
 
   // Set the default mask to the mask with the given name.
   // It constructs a ImageRegion object for the new default mask.
@@ -121,33 +121,33 @@ class RegionHandlerTable : public RegionHandler {
   // If overwrite=False, an exception will be thrown if the region
   // already exists in the "regions" or "masks" keyword.
   // Otherwise the region will be removed first.
-  // <br>A False status is returned if the table is not writable
-  virtual Bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
-                            Bool overwrite = False);
+  // <br>A false status is returned if the table is not writable
+  virtual bool defineRegion(const String& name, const ImageRegion& region, RegionHandler::GroupType,
+                            bool overwrite = false);
 
   // Does the table have a region with the given name?
-  virtual Bool hasRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any) const;
+  virtual bool hasRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any) const;
 
   // Get a region belonging to the table.
   // A zero pointer is returned if the region does not exist.
   // The caller has to delete the <src>ImageRegion</src> object created.
   // <br>No exception is thrown if the region does not exist.
   virtual ImageRegion* getRegion(const String& name, RegionHandler::GroupType = Any,
-                                 Bool throwIfUnknown = True) const;
+                                 bool throwIfUnknown = true) const;
 
   // Rename a region.
   // If a region with the new name already exists, it is deleted or
   // an exception is thrown (depending on <src>overwrite</src>).
   // The region name is looked up in the given group(s).
   // <br>An exception is thrown if the old region name does not exist.
-  virtual Bool renameRegion(const String& newName, const String& oldName,
-                            RegionHandler::GroupType = Any, Bool overwrite = False);
+  virtual bool renameRegion(const String& newName, const String& oldName,
+                            RegionHandler::GroupType = Any, bool overwrite = false);
 
   // Remove a region belonging to the table.
   // <br>Optionally an exception is thrown if the region does not exist.
-  // <br>A False status is returned if the table is not writable
-  virtual Bool removeRegion(const String& name, RegionHandler::GroupType = Any,
-                            Bool throwIfUnknown = True);
+  // <br>A false status is returned if the table is not writable
+  virtual bool removeRegion(const String& name, RegionHandler::GroupType = Any,
+                            bool throwIfUnknown = true);
 
   // Get the names of all regions/masks.
   virtual Vector<String> regionNames(RegionHandler::GroupType = Any) const;
@@ -159,9 +159,9 @@ class RegionHandlerTable : public RegionHandler {
  private:
   // Get the table object.
   // <group>
-  Table& rwTable() { return itsCallback(itsObjectPtr, True); }
+  Table& rwTable() { return itsCallback(itsObjectPtr, true); }
   const Table& table() const {
-    return itsCallback(const_cast<RegionHandlerTable*>(this)->itsObjectPtr, False);
+    return itsCallback(const_cast<RegionHandlerTable*>(this)->itsObjectPtr, false);
   }
   // </group>
 
@@ -170,7 +170,7 @@ class RegionHandlerTable : public RegionHandler {
   // <0 is returned if the region does not exist.
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual Int findRegionGroup(const String& regionName, RegionHandler::GroupType = Any,
-                              Bool throwIfUnknown = True) const;
+                              bool throwIfUnknown = true) const;
 
   GetCallback* itsCallback;
   void* itsObjectPtr;

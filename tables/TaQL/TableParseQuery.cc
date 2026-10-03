@@ -66,17 +66,17 @@ TableParseQuery::TableParseQuery(CommandType commandType)
     : commandType_p(commandType),
       tableProject_p(tableList_p),
       resultType_p(0),
-      resultCreated_p(False),
+      resultCreated_p(false),
       endianFormat_p(Table::AipsrcEndian),
-      overwrite_p(True),
+      overwrite_p(true),
       resultSet_p(0),
-      distinct_p(False),
+      distinct_p(false),
       limit_p(0),
       endrow_p(0),
       offset_p(0),
       stride_p(1),
       insSel_p(0),
-      noDupl_p(False),
+      noDupl_p(false),
       order_p(Sort::Ascending) {}
 
 TableParseQuery::~TableParseQuery() {
@@ -99,7 +99,7 @@ void TableParseQuery::replaceTable(const Table& table) {
 // # Lookup a field name in the table for which the shorthand is given.
 // # If no shorthand is given, use the first table.
 // # The shorthand and name are separated by a period.
-TableExprNode TableParseQuery::handleKeyCol(const String& name, Bool tryProj) {
+TableExprNode TableParseQuery::handleKeyCol(const String& name, bool tryProj) {
   return tableProject_p.handleKeyCol(name, tryProj, *this);
 }
 
@@ -149,7 +149,7 @@ void TableParseQuery::handleColumn(Int stringType, const String& name, const Tab
 
 // # Finish the additions to the block of column names
 // # by removing the deleted empty names and creating Expr objects as needed.
-void TableParseQuery::handleColumnFinish(Bool distinct) {
+void TableParseQuery::handleColumnFinish(bool distinct) {
   distinct_p = distinct;
   projectExprTable_p = tableProject_p.handleColumnFinish(distinct, resultSet_p, *this);
 }
@@ -178,8 +178,8 @@ Table TableParseQuery::createTable(const TableDesc& td, Int64 nrow, const Record
   }
   SetupNewTable newtab(resultName_p, td, topt, storageOption_p);
   newtab.bindCreate(dmInfo);
-  Table tab(newtab, ttype, nrow, False, endianFormat_p);
-  resultCreated_p = True;
+  Table tab(newtab, ttype, nrow, false, endianFormat_p);
+  resultCreated_p = true;
   return tab;
 }
 
@@ -190,16 +190,16 @@ Table TableParseQuery::createSubTable(const String& subtableName, const TableDes
   Table parent(TableParseUtil::openParentTable(resultName_p, subtableName, tempTables, stack));
   return TableUtil::createSubTable(parent, subtableName, td,
                                    overwrite_p ? Table::New : Table::NewNoReplace, storageOption_p,
-                                   dmInfo, TableLock(), nrow, False, endianFormat_p, TSMOption());
+                                   dmInfo, TableLock(), nrow, false, endianFormat_p, TSMOption());
 }
 
 // # Add a column specification.
 void TableParseQuery::handleColSpec(const String& colName, const String& likeColName,
-                                    const String& dtstr, const Record& spec, Bool isCOrder) {
+                                    const String& dtstr, const Record& spec, bool isCOrder) {
   tableProject_p.handleColSpec(colName, likeColName, dtstr, spec, isCOrder);
 }
 
-void TableParseQuery::handleGroupby(const std::vector<TableExprNode>& nodes, Bool rollup) {
+void TableParseQuery::handleGroupby(const std::vector<TableExprNode>& nodes, bool rollup) {
   groupby_p.handleGroupby(nodes, rollup);
 }
 
@@ -256,7 +256,7 @@ void TableParseQuery::initDescriptions(const TableDesc& desc, const Record& dmin
 
 ValueHolder TableParseQuery::getRecFld(const String& name) {
   String keyName;
-  const TableRecord& keyset = findKeyword(name, keyName, False);
+  const TableRecord& keyset = findKeyword(name, keyName, false);
   Int fieldnr = keyset.fieldNumber(keyName);
   if (fieldnr < 0) {
     throw(TableInvExpr("Keyword " + name + " does not exist"));
@@ -264,12 +264,12 @@ ValueHolder TableParseQuery::getRecFld(const String& name) {
   return keyset.asValueHolder(fieldnr);
 }
 
-TableRecord& TableParseQuery::findKeyword(const String& name, String& keyName, Bool update) {
+TableRecord& TableParseQuery::findKeyword(const String& name, String& keyName, bool update) {
   // # Split the name into optional shorthand, column, and keyword.
   String shand, columnName;
   Vector<String> fieldNames;
-  TableParseUtil::splitName(shand, columnName, fieldNames, name, True, True, False);
-  Table tab = tableList_p.findTable(shand, False).table();
+  TableParseUtil::splitName(shand, columnName, fieldNames, name, true, true, false);
+  Table tab = tableList_p.findTable(shand, false).table();
   if (tab.isNull()) {
     throw(TableInvExpr("Shorthand " + shand + " not defined in FROM clause"));
   }
@@ -305,11 +305,11 @@ void TableParseQuery::handleSetKey(const String& name, const String& dtype,
   }
 }
 
-void TableParseQuery::handleCopyCol(Bool showTimings) {
+void TableParseQuery::handleCopyCol(bool showTimings) {
   // Note that table_p, tableDesc_p and dminfo_p have already been set.
   Timer timer;
   handleAddCol(Record());
-  doUpdate(False, Table(), table_p, table_p.rowNumbers());
+  doUpdate(false, Table(), table_p, table_p.rowNumbers());
   if (showTimings) {
     timer.show("  Copy Column ");
   }
@@ -332,7 +332,7 @@ void TableParseQuery::handleWhere(const TableExprNode& node) {
   node_p = node;
 }
 
-void TableParseQuery::handleSort(const std::vector<TableParseSortKey>& sort, Bool noDuplicates,
+void TableParseQuery::handleSort(const std::vector<TableParseSortKey>& sort, bool noDuplicates,
                                  Sort::Order order) {
   noDupl_p = noDuplicates;
   order_p = order;
@@ -345,10 +345,10 @@ void TableParseQuery::handleCalcComm(const TableExprNode& node) {
 }
 
 // # Execute a query in the FROM clause and return the resulting table.
-Table TableParseQuery::doFromQuery(Bool showTimings) {
+Table TableParseQuery::doFromQuery(bool showTimings) {
   Timer timer;
   // Execute the nested command.
-  execute(False, False, True, 0);
+  execute(false, false, true, 0);
   if (showTimings) {
     timer.show("  From query  ");
   }
@@ -356,11 +356,11 @@ Table TableParseQuery::doFromQuery(Bool showTimings) {
 }
 
 // # Execute a subquery for an EXISTS operator.
-TableExprNode TableParseQuery::doExists(Bool notexists, Bool showTimings) {
+TableExprNode TableParseQuery::doExists(bool notexists, bool showTimings) {
   Timer timer;
   // Execute the nested command.
   // Default limit_p is 1.
-  execute(False, True, True, 1);
+  execute(false, true, true, 1);
   if (showTimings) {
     timer.show("  Exists query");
   }
@@ -369,10 +369,10 @@ TableExprNode TableParseQuery::doExists(Bool notexists, Bool showTimings) {
 }
 
 // # Execute a subquery and create the correct node object for it.
-TableExprNode TableParseQuery::doSubQuery(Bool showTimings) {
+TableExprNode TableParseQuery::doSubQuery(bool showTimings) {
   Timer timer;
   // Execute the nested command.
-  execute(False, True, True, 0);
+  execute(false, true, true, 0);
   TableExprNode result;
   if (resultSet_p != 0) {
     // A set specification was given, so make the set.
@@ -437,7 +437,7 @@ void TableParseQuery::handleTableNoFrom() {
   // Add a temp table with no columns and some rows to the FROM list.
   Table tab(Table::Memory);
   tab.addRow(nrow);
-  tableList_p.addTable(-1, String(), tab, String(), True, std::vector<const Table*>(),
+  tableList_p.addTable(-1, String(), tab, String(), true, std::vector<const Table*>(),
                        std::vector<TableParseQuery*>());
 }
 
@@ -447,7 +447,7 @@ void TableParseQuery::handleAddRow(const TableExprNode& expr) {
 
 Int64 TableParseQuery::evalIntScaExpr(const TableExprNode& expr) const {
   TableParseGroupby::checkAggrFuncs(expr);
-  if (!TableExprNodeUtil::getNodeTables(expr.getRep().get(), False).empty()) {
+  if (!TableExprNodeUtil::getNodeTables(expr.getRep().get(), false).empty()) {
     throw TableInvExpr("LIMIT or OFFSET expression cannot contain columns");
   }
   // Get the value as a double, because some expressions result in double.
@@ -490,7 +490,7 @@ void TableParseQuery::handleInsert(TableParseQuery* sel) { insSel_p = sel; }
 void TableParseQuery::handleCount() { tableProject_p.checkCountColumns(); }
 
 // # Execute the updates.
-void TableParseQuery::doUpdate(Bool showTimings, const Table& origTable, Table& updTable,
+void TableParseQuery::doUpdate(bool showTimings, const Table& origTable, Table& updTable,
                                const Vector<rownr_t>& rownrs,
                                const std::shared_ptr<TableExprGroupResult>& groups) {
   Timer timer;
@@ -508,7 +508,7 @@ void TableParseQuery::doUpdate(Bool showTimings, const Table& origTable, Table& 
   // # First check if the update columns and values are correct.
   uInt nrkey = update_p.size();
   Block<TableColumn> cols(nrkey);
-  Block<ArrayColumn<Bool>> maskCols(nrkey);
+  Block<ArrayColumn<bool>> maskCols(nrkey);
   for (uInt i = 0; i < nrkey; i++) {
     TableParseUpdate& key = *(update_p[i]);
     key.check(origTable, updTable);
@@ -535,7 +535,7 @@ void TableParseQuery::doUpdate(Bool showTimings, const Table& origTable, Table& 
 }
 
 // # Execute the inserts.
-Table TableParseQuery::doInsert(Bool showTimings, Table& table) {
+Table TableParseQuery::doInsert(bool showTimings, Table& table) {
   Timer timer;
   // Reopen the table for write.
   table.reopenRW();
@@ -575,7 +575,7 @@ Table TableParseQuery::doInsert(Bool showTimings, Table& table) {
       for (uInt j = 0; j < update_p.size(); ++j) {
         update_p[j]->setNode(insertExprs_p[inx * update_p.size() + j]);
       }
-      doUpdate(False, Table(), sel, selRownrs);
+      doUpdate(false, Table(), sel, selRownrs);
       inx++;
       if (inx == nrowex) inx = 0;
     }
@@ -583,7 +583,7 @@ Table TableParseQuery::doInsert(Bool showTimings, Table& table) {
   }
   // Handle the inserts from another selection.
   // Do the selection.
-  insSel_p->execute(False, False, False, 0);
+  insSel_p->execute(false, false, false, 0);
   Table sel = insSel_p->getTable();
   if (sel.nrow() == 0) {
     return Table();
@@ -625,7 +625,7 @@ Table TableParseQuery::doInsert(Bool showTimings, Table& table) {
   TableRow rowto(tab, Vector<String>(colNames.begin(), colNames.end()));
   ROTableRow rowfrom(sel, Vector<String>(sourceNames.begin(), sourceNames.end()));
   for (rownr_t i = 0; i < sel.nrow(); i++) {
-    rowto.put(i, rowfrom.get(i), False);
+    rowto.put(i, rowfrom.get(i), false);
   }
   if (showTimings) {
     timer.show("  Insert      ");
@@ -634,7 +634,7 @@ Table TableParseQuery::doInsert(Bool showTimings, Table& table) {
 }
 
 // # Execute the deletes.
-void TableParseQuery::doDelete(Bool showTimings, Table& table) {
+void TableParseQuery::doDelete(bool showTimings, Table& table) {
   // # If the selection is empty, return immediately.
   if (rownrs_p.empty()) {
     return;
@@ -653,12 +653,12 @@ void TableParseQuery::doDelete(Bool showTimings, Table& table) {
 }
 
 // # Execute the counts.
-Table TableParseQuery::doCount(Bool showTimings, const Table& table) {
+Table TableParseQuery::doCount(bool showTimings, const Table& table) {
   Timer timer;
   // First do the column projection.
-  Table intab = doProject(False, table);
+  Table intab = doProject(false, table);
   // Create an empty memory table with the same description as the input table.
-  Table tab = TableCopy::makeEmptyMemoryTable("", intab, True);
+  Table tab = TableCopy::makeEmptyMemoryTable("", intab, true);
   // Add the Int64 _COUNT_ column.
   ScalarColumnDesc<Int64> countDesc("_COUNT_");
   tab.addColumn(countDesc);
@@ -686,7 +686,7 @@ Table TableParseQuery::doCount(Bool showTimings, const Table& table) {
 }
 
 // # Execute the groupby.
-std::shared_ptr<TableExprGroupResult> TableParseQuery::doGroupby(Bool showTimings) {
+std::shared_ptr<TableExprGroupResult> TableParseQuery::doGroupby(bool showTimings) {
   Timer timer;
   std::shared_ptr<TableExprGroupResult> result = groupby_p.execGroupAggr(rownrs_p);
   if (showTimings) {
@@ -707,11 +707,11 @@ Table TableParseQuery::adjustApplySelNodes(const Table& table) {
   return tab;
 }
 
-Bool TableParseQuery::doHaving(Bool showTimings,
+bool TableParseQuery::doHaving(bool showTimings,
                                const std::shared_ptr<TableExprGroupResult>& groups) {
   Timer timer;
   // Find the rows matching the HAVING expression.
-  Bool done = groupby_p.execHaving(rownrs_p, groups);
+  bool done = groupby_p.execHaving(rownrs_p, groups);
   if (showTimings) {
     timer.show("  Having      ");
   }
@@ -719,7 +719,7 @@ Bool TableParseQuery::doHaving(Bool showTimings,
 }
 
 // # Execute the sort.
-void TableParseQuery::doSort(Bool showTimings) {
+void TableParseQuery::doSort(bool showTimings) {
   // # If no rows, return immediately.
   // # (the code below will fail if empty)
   if (rownrs_p.empty()) {
@@ -750,7 +750,7 @@ void TableParseQuery::doSort(Bool showTimings) {
   rownrs_p.reference(newRownrs);
 }
 
-void TableParseQuery::doLimOff(Bool showTimings) {
+void TableParseQuery::doLimOff(bool showTimings) {
   Timer timer;
   Vector<rownr_t> newRownrs;
   // Negative values mean from the end (a la Python indexing).
@@ -780,18 +780,18 @@ void TableParseQuery::doLimOff(Bool showTimings) {
   }
 }
 
-Table TableParseQuery::doLimOff(Bool showTimings, const Table& table) {
+Table TableParseQuery::doLimOff(bool showTimings, const Table& table) {
   Timer timer;
   rownrs_p.resize(table.nrow());
   indgen(rownrs_p);
-  doLimOff(False);
+  doLimOff(false);
   return table(rownrs_p);
   if (showTimings) {
     timer.show("  Limit/Offset");
   }
 }
 
-Table TableParseQuery::doProject(Bool showTimings, const Table& table,
+Table TableParseQuery::doProject(bool showTimings, const Table& table,
                                  const std::shared_ptr<TableExprGroupResult>& groups) {
   Timer timer;
   Table tabp;
@@ -800,7 +800,7 @@ Table TableParseQuery::doProject(Bool showTimings, const Table& table,
   update_p.clear();
   if (tableProject_p.hasExpressions()) {
     // Expressions used, so make a real table.
-    tabp = doProjectExpr(False, groups);
+    tabp = doProjectExpr(false, groups);
   } else {
     // Only column names used, so make a reference table.
     tabp = table(rownrs_p);
@@ -815,7 +815,7 @@ Table TableParseQuery::doProject(Bool showTimings, const Table& table,
   return tabp;
 }
 
-Table TableParseQuery::doProjectExpr(Bool useSel,
+Table TableParseQuery::doProjectExpr(bool useSel,
                                      const std::shared_ptr<TableExprGroupResult>& groups) {
   if (!rownrs_p.empty()) {
     // Add the rows if not done yet.
@@ -825,13 +825,13 @@ Table TableParseQuery::doProjectExpr(Bool useSel,
     // Turn the expressions of the selected columns into update objects.
     tableProject_p.makeUpdate(useSel, *this);
     // Fill the columns in the table.
-    doUpdate(False, Table(), projectExprTable_p, rownrs_p, groups);
+    doUpdate(false, Table(), projectExprTable_p, rownrs_p, groups);
     projectExprTable_p.flush();
   }
   return projectExprTable_p;
 }
 
-Table TableParseQuery::doFinish(Bool showTimings, Table& table,
+Table TableParseQuery::doFinish(bool showTimings, Table& table,
                                 const std::vector<const Table*>& tempTables,
                                 const std::vector<TableParseQuery*>& stack) {
   Timer timer;
@@ -853,7 +853,7 @@ Table TableParseQuery::doFinish(Bool showTimings, Table& table,
   } else if (!resultCreated_p) {
     if (resultType_p > 0) {
       table.deepCopy(fullName, tableProject_p.dminfo(), storageOption_p,
-                     overwrite_p ? Table::New : Table::NewNoReplace, True, endianFormat_p);
+                     overwrite_p ? Table::New : Table::NewNoReplace, true, endianFormat_p);
       result = Table(fullName);
     } else {
       // Normal reference table.
@@ -872,7 +872,7 @@ Table TableParseQuery::doFinish(Bool showTimings, Table& table,
   return result;
 }
 
-Table TableParseQuery::doDistinct(Bool showTimings, const Table& table) {
+Table TableParseQuery::doDistinct(bool showTimings, const Table& table) {
   Timer timer;
   Table result;
   // Sort the table uniquely on all columns.
@@ -903,9 +903,9 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
   for (uInt i = 0; i < rec.nfields(); ++i) {
     String fldName = rec.name(i);
     ToLowerCaseInPlace(fldName);
-    Bool done = False;
+    bool done = false;
     if (rec.dataType(i) == TpBool) {
-      done = True;
+      done = true;
       if (fldName == "memory") {
         resultType_p = 1;
       } else if (fldName == "scratch") {
@@ -924,7 +924,7 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
       } else if (fldName == "overwrite") {
         overwrite_p = rec.asBool(i);
       } else {
-        done = False;
+        done = false;
       }
     }
     if (done) {
@@ -932,9 +932,9 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
         throw TableParseError("Field name " + rec.name(i) + " should not have a False value");
       }
     } else if (fldName == "type") {
-      Bool ok = False;
+      bool ok = false;
       if (rec.dataType(i) == TpString) {
-        ok = True;
+        ok = true;
         String str = rec.asString(i);
         ToLowerCaseInPlace(str);
         if (str == "plain") {
@@ -944,7 +944,7 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
         } else if (str == "memory") {
           resultType_p = 1;
         } else {
-          ok = False;
+          ok = false;
         }
       }
       if (!ok) {
@@ -953,9 +953,9 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
             "plain, scratch or memory");
       }
     } else if (fldName == "endian") {
-      Bool ok = False;
+      bool ok = false;
       if (rec.dataType(i) == TpString) {
-        ok = True;
+        ok = true;
         String str = rec.asString(i);
         ToLowerCaseInPlace(str);
         if (str == "big") {
@@ -967,7 +967,7 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
         } else if (str == "aipsrc") {
           endianFormat_p = Table::AipsrcEndian;
         } else {
-          ok = False;
+          ok = false;
         }
       }
       if (!ok) {
@@ -976,9 +976,9 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
             "big, little, local or aipsrc");
       }
     } else if (fldName == "storage") {
-      Bool ok = False;
+      bool ok = false;
       if (rec.dataType(i) == TpString) {
-        ok = True;
+        ok = true;
         String str = rec.asString(i);
         ToLowerCaseInPlace(str);
         if (str == "multifile") {
@@ -992,7 +992,7 @@ void TableParseQuery::handleGiving(const String& name, const Record& rec) {
         } else if (str == "aipsrc") {
           storageOption_p.setOption(StorageOption::Aipsrc);
         } else {
-          ok = False;
+          ok = false;
         }
       }
       if (!ok) {
@@ -1031,8 +1031,8 @@ void TableParseQuery::handleGiving(const TableExprNodeSet& set) {
 }
 
 // # Execute all parts of a TaQL command doing some selection.
-void TableParseQuery::execute(Bool showTimings, Bool setInGiving, Bool mustSelect, rownr_t maxRow,
-                              Bool doTracing, const std::vector<const Table*>& tempTables,
+void TableParseQuery::execute(bool showTimings, bool setInGiving, bool mustSelect, rownr_t maxRow,
+                              bool doTracing, const std::vector<const Table*>& tempTables,
                               const std::vector<TableParseQuery*>& stack) {
   // # A selection query consists of:
   // #  - SELECT to do projection
@@ -1105,7 +1105,7 @@ void TableParseQuery::execute(Bool showTimings, Bool setInGiving, Bool mustSelec
   }
   // Select distinct makes no sense if aggregate and no groupby is given.
   if (groupby_p.isOnlyAggr()) {
-    distinct_p = False;
+    distinct_p = false;
   }
   // # The first table in the list is the source table.
   Table table = tableList_p.firstTable();
@@ -1160,7 +1160,7 @@ void TableParseQuery::execute(Bool showTimings, Bool setInGiving, Bool mustSelec
   // Do the projection of SELECT columns used in HAVING or ORDERBY.
   // Thereafter the column nodes need to use rownrs 0..n.
   if (tableProject_p.nColumnsPreCalc() > 0) {
-    doProjectExpr(True, groupResult);
+    doProjectExpr(true, groupResult);
     resultTable = adjustApplySelNodes(table);
     table = resultTable;
     if (doTracing) {
@@ -1198,12 +1198,12 @@ void TableParseQuery::execute(Bool showTimings, Bool setInGiving, Bool mustSelec
       if (resultType_p == 3) {
         projectExprTable_p.rename(resultName_p + "_tmpproject", Table::New);
         projectExprTable_p.deepCopy(resultName_p, tableProject_p.dminfo(), storageOption_p,
-                                    overwrite_p ? Table::New : Table::NewNoReplace, True,
+                                    overwrite_p ? Table::New : Table::NewNoReplace, true,
                                     endianFormat_p);
         projectExprTable_p = Table(resultName_p);
         TableUtil::deleteTable(resultName_p + "_tmpproject");
         // Indicate it does not have to be created anymore.
-        resultCreated_p = True;
+        resultCreated_p = true;
       }
       resultTable = projectExprTable_p;
     }
@@ -1251,18 +1251,18 @@ void TableParseQuery::execute(Bool showTimings, Bool setInGiving, Bool mustSelec
 }
 
 String TableParseQuery::getTableStructure(const Vector<String>& parts, const TaQLStyle& style) {
-  Bool showdm = False;
-  Bool showcol = True;
-  Bool showsub = False;
-  Bool sortcol = False;
-  Bool tabkey = False;
-  Bool colkey = False;
+  bool showdm = false;
+  bool showcol = true;
+  bool showsub = false;
+  bool sortcol = false;
+  bool tabkey = false;
+  bool colkey = false;
   for (uInt i = 2; i < parts.size(); ++i) {
     String opt(parts[i]);
     ToLowerCaseInPlace(opt);
-    Bool fop = True;
+    bool fop = true;
     if (opt.size() > 2 && opt.substr(0, 2) == "no") {
-      fop = False;
+      fop = false;
       opt = opt.substr(2);
     }
     if (opt == "dm") {

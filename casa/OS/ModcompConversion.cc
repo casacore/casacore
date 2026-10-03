@@ -85,7 +85,7 @@ size_t ModcompConversion::toLocal(Float* to, const void* from, size_t nr) {
       data++;
     }
     // If the number is negative then its positive value is the twos complement
-    const Bool isNegative = ((asByte[0] & 0x80) > 0) ? True : False;
+    const bool isNegative = ((asByte[0] & 0x80) > 0) ? true : false;
     if (isNegative) {  // This code takes the twos complement
       uShort i = 0;
       while (i < SIZE_MODCOMP_FLOAT) {
@@ -100,7 +100,7 @@ size_t ModcompConversion::toLocal(Float* to, const void* from, size_t nr) {
       }
     }
 
-    Bool isZero = (asByte[1] & 0x3f) == 0x00;
+    bool isZero = (asByte[1] & 0x3f) == 0x00;
     for (uShort i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
       isZero = (asByte[i] == 0x00) && isZero;
     }
@@ -121,12 +121,12 @@ size_t ModcompConversion::toLocal(Float* to, const void* from, size_t nr) {
         {                                // If so try to normalise it.
           // This code does a byte by byte left shift by one bit (painful).
           uShort i = SIZE_MODCOMP_FLOAT - 1;
-          Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+          bool msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
           asByte[i] <<= 1;
           i--;
           while (i > 1) {
-            Bool prevMsbIsSet = msbIsSet;
-            msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+            bool prevMsbIsSet = msbIsSet;
+            msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
             asByte[i] <<= 1;
             if (prevMsbIsSet) asByte[i] |= 0x01;
             i--;
@@ -208,12 +208,12 @@ size_t ModcompConversion::toLocal(Float* to, const void* from, size_t nr) {
         } else if (exponent == 130) {  // need to shift mantissa to the left
           // This code does a (painful) byte by byte left shift by one bit.
           uShort i = SIZE_MODCOMP_FLOAT - 1;
-          Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+          bool msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
           asByte[i] <<= 1;
           i--;
           while (i > 1) {
-            Bool prevMsbIsSet = msbIsSet;
-            msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+            bool prevMsbIsSet = msbIsSet;
+            msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
             asByte[i] <<= 1;
             if (prevMsbIsSet) asByte[i] |= 0x01;
             i--;
@@ -250,7 +250,7 @@ size_t ModcompConversion::toLocal(Double* to, const void* from, size_t nr) {
       data++;
     }
     // If the number is negative then its positive value is the twos complement
-    const Bool isNegative = ((asByte[0] & 0x80) > 0) ? True : False;
+    const bool isNegative = ((asByte[0] & 0x80) > 0) ? true : false;
     if (isNegative) {  // This code takes the twos complement
       uShort i = 0;
       while (i < SIZE_MODCOMP_DOUBLE) {
@@ -265,7 +265,7 @@ size_t ModcompConversion::toLocal(Double* to, const void* from, size_t nr) {
       }
     }
 
-    Bool isZero = (asByte[1] & 0x3f) == 0x00;
+    bool isZero = (asByte[1] & 0x3f) == 0x00;
     for (uShort i = 2; i < SIZE_MODCOMP_DOUBLE; i++) {
       isZero = (asByte[i] == 0x00) && isZero;
     }
@@ -286,12 +286,12 @@ size_t ModcompConversion::toLocal(Double* to, const void* from, size_t nr) {
         {                                // If so try to normalise it.
           // This code does a byte by byte left shift by one bit (painful).
           uShort i = SIZE_MODCOMP_DOUBLE - 1;
-          Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+          bool msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
           asByte[i] <<= 1;
           i--;
           while (i > 1) {
-            Bool prevMsbIsSet = msbIsSet;
-            msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+            bool prevMsbIsSet = msbIsSet;
+            msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
             asByte[i] <<= 1;
             if (prevMsbIsSet) asByte[i] |= 0x01;
             i--;

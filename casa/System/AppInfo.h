@@ -129,7 +129,7 @@ class AppInfo {
 
  private:
   // # Data
-  static Bool need_init_p;
+  static bool need_init_p;
   static uInt tz_r;
   // # Methods
   //  Force an initialization of the AppInfo values.

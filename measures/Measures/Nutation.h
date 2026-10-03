@@ -105,7 +105,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //		measures.jpl.ephemeris (at the moment of writing DE200
 //		 (default), or DE405)
 //  <li> measures.nutation.b_useiers: use the IERS Database nutation
-//		 corrections for IAU1980 (default False)
+//		 corrections for IAU1980 (default false)
 // </ul>
 // </synopsis>
 //
@@ -239,8 +239,8 @@ class Nutation {
 
   static void load_static_values();
 
-  // Calculate Nutation angles for time t; also derivatives if True given
-  void calcNut(Double t, Bool calcDer = False);
+  // Calculate Nutation angles for time t; also derivatives if true given
+  void calcNut(Double t, bool calcDer = false);
 };
 
 }  // namespace casacore

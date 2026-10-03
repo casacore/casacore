@@ -48,7 +48,7 @@ istream &operator>>(istream &is, Quantity &ku) {
   return is;
 }
 
-Bool readQuantity(Quantity &res, MUString &in) {
+bool readQuantity(Quantity &res, MUString &in) {
   Double val0 = 0.0;
   String unit = "";
   res = Quantity();
@@ -64,7 +64,7 @@ Bool readQuantity(Quantity &res, MUString &in) {
       // Check if valid unit specified
       if (!UnitVal::check(unit, uv)) {
         in.pop();
-        return False;
+        return false;
       }
     }
   }
@@ -74,10 +74,10 @@ Bool readQuantity(Quantity &res, MUString &in) {
   res.setValue(val0);
   res.setUnit(unit);
   in.unpush();
-  return True;
+  return true;
 }
 
-Bool readQuantity(Quantity &res, const String &in) {
+bool readQuantity(Quantity &res, const String &in) {
   static const std::regex ex("^[[:space:][:punct:]]*[[:digit:]]");
   static const std::regex ex2("[tT][oO][dD][aA][yY]");
   static const std::regex ex3("[nN][oO][wW]");

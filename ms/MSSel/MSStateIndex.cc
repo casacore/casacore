@@ -43,7 +43,7 @@ MSStateIndex::MSStateIndex(const MSState& state) : msStateCols_p(state) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSStateIndex::matchStateRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSStateIndex::matchStateRegexOrPattern(const String& pattern, const bool regex) {
   Vector<Int> IDs;
   IDs = matchStateObsModeRegexOrPattern(pattern, regex);
   // if (IDs.nelements()==0)
@@ -58,7 +58,7 @@ Int MSStateIndex::matchAnyRegex(const Vector<String>& strList, const Regex& rege
   return ret;
 }
 //-------------------------------------------------------------------------
-Vector<Int> MSStateIndex::matchStateObsModeRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSStateIndex::matchStateObsModeRegexOrPattern(const String& pattern, const bool regex) {
   // Match a state name to a set of state id's
   // Input:
   //    name             const String&            State name to match
@@ -82,7 +82,7 @@ Vector<Int> MSStateIndex::matchStateObsModeRegexOrPattern(const String& pattern,
   }
   // cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << std::endl;
   IPosition sh(msStateCols_p.obsMode().getColumn().shape());
-  LogicalArray maskArray(sh, False);
+  LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     String name = msStateCols_p.obsMode().getColumn()(i);
@@ -112,7 +112,7 @@ Vector<Int> MSStateIndex::matchStateObsMode(const String& name) {
   //    matchStateName   Vector<Int>              Matching state id's
   //
   IPosition irow(1, nrows_p);
-  LogicalArray tmaskArray(irow, False);
+  LogicalArray tmaskArray(irow, false);
 
   for (irow(0) = 0; irow(0) < nrows_p; irow(0)++)
     if (!msStateCols_p.flagRow().getColumn()[irow(0)]) {
@@ -120,7 +120,7 @@ Vector<Int> MSStateIndex::matchStateObsMode(const String& name) {
       split(msStateCols_p.obsMode().getColumn()[irow(0)], ',', substr);
       for (uInt istr = 0; istr < substr.nelements(); istr++)
         if (substr[istr] == name) {
-          tmaskArray(irow) = True;
+          tmaskArray(irow) = true;
           break;
         }
     }
@@ -147,7 +147,7 @@ Vector<Int> MSStateIndex::matchStateObsMode(const Vector<String>& names) {
     Vector<Int> currentMatch = matchStateObsMode(names(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedStateIds);
-      matchedStateIds.resize(matchedStateIds.nelements() + currentMatch.nelements(), True);
+      matchedStateIds.resize(matchedStateIds.nelements() + currentMatch.nelements(), true);
       matchedStateIds = concatenateArray(temp, currentMatch);
     }
   }
@@ -184,7 +184,7 @@ Vector<Int> MSStateIndex::matchStateId(const Vector<Int>& stateIds) {
     Vector<Int> currentMatch = matchStateId(stateIds(fld));
     if (currentMatch.nelements() > 0) {
       Vector<Int> temp(matchedStateIds);
-      matchedStateIds.resize(matchedStateIds.nelements() + currentMatch.nelements(), True);
+      matchedStateIds.resize(matchedStateIds.nelements() + currentMatch.nelements(), true);
       matchedStateIds = concatenateArray(temp, currentMatch);
     }
   }

@@ -63,7 +63,7 @@ void doOpens() {
     PagedImage<Float> img(IPosition(2, 10, 10), CoordinateUtil::defaultCoords2D(), name1);
     String error;
     String name2("tImageUtilities_tmp/fits.img");
-    ImageFITSConverter::ImageToFITS(error, img, name2, 64, True, True, -32, 1, -1, True);
+    ImageFITSConverter::ImageToFITS(error, img, name2, 64, true, true, -32, 1, -1, true);
 
     {
       std::unique_ptr<ImageInterface<Float>> im;
@@ -194,9 +194,9 @@ void doBin() {
   IPosition shape(1, n);
   SpectralCoordinate cIn, cOut;
   Array<Float> data(shape);
-  Array<Bool> mask(shape);
+  Array<bool> mask(shape);
   indgen(data);
-  mask = True;
+  mask = true;
   MaskedArray<Float> maIn(data, mask);
   MaskedArray<Float> maOut;
   uInt bin = 2;
@@ -209,7 +209,7 @@ void doBin() {
   pOut *= Float(bin);
   pOut += Float(0.5);
   AlwaysAssert(allNear(pOut, maOut.getArray(), 1e-6), AipsError);
-  AlwaysAssert(allEQ(maOut.getMask(), True), AipsError);
+  AlwaysAssert(allEQ(maOut.getMask(), true), AipsError);
 }
 
 int main() {

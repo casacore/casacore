@@ -41,7 +41,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 auto& H5free_memory = free;
 #endif
 
-HDF5DataType::HDF5DataType(const Bool*) : itsSize(sizeof(Bool)) {
+HDF5DataType::HDF5DataType(const bool*) : itsSize(sizeof(bool)) {
   itsHidFile = H5Tcopy(H5T_STD_I8LE);
   itsHidMem = H5Tcopy(H5T_NATIVE_SCHAR);
   H5Tset_precision(itsHidMem, 8);
@@ -280,8 +280,8 @@ DataType HDF5DataType::getDataType(hid_t dtid) {
   return dtype;
 }
 
-Bool HDF5DataType::isComplex(hid_t dtid) {
-  Bool res = False;
+bool HDF5DataType::isComplex(hid_t dtid) {
+  bool res = false;
   if (H5Tget_class(dtid) == H5T_COMPOUND && H5Tget_nmembers(dtid) == 2) {
     char* f0 = H5Tget_member_name(dtid, 0);
     char* f1 = H5Tget_member_name(dtid, 1);
@@ -292,8 +292,8 @@ Bool HDF5DataType::isComplex(hid_t dtid) {
   return res;
 }
 
-Bool HDF5DataType::isEmptyArray(hid_t dtid) {
-  Bool res = False;
+bool HDF5DataType::isEmptyArray(hid_t dtid) {
+  bool res = false;
   if (H5Tget_class(dtid) == H5T_COMPOUND && H5Tget_nmembers(dtid) == 3) {
     char* f0 = H5Tget_member_name(dtid, 0);
     char* f1 = H5Tget_member_name(dtid, 1);
@@ -316,7 +316,7 @@ IPosition HDF5DataType::getShape(hid_t dtid) {
 
 #else
 
-HDF5DataType::HDF5DataType(const Bool*) { HDF5Object::throwNoHDF5(); }
+HDF5DataType::HDF5DataType(const bool*) { HDF5Object::throwNoHDF5(); }
 
 HDF5DataType::HDF5DataType(const uChar*) { HDF5Object::throwNoHDF5(); }
 
@@ -362,9 +362,9 @@ void HDF5DataType::addToCompound(const char*, uInt, const HDF5DataType&) {
 
 DataType HDF5DataType::getDataType(hid_t) { return TpOther; }
 
-Bool HDF5DataType::isComplex(hid_t) { return False; }
+bool HDF5DataType::isComplex(hid_t) { return false; }
 
-Bool HDF5DataType::isEmptyArray(hid_t) { return False; }
+bool HDF5DataType::isEmptyArray(hid_t) { return false; }
 
 IPosition HDF5DataType::getShape(hid_t) { return IPosition(); }
 

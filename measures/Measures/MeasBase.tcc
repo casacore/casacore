@@ -91,7 +91,7 @@ void MeasBase<Mv, Mr>::clear() {
 }
 
 template <class Mv, class Mr>
-Bool MeasBase<Mv, Mr>::areYou(const String &tp) const {
+bool MeasBase<Mv, Mr>::areYou(const String &tp) const {
   return (capitalize(tp) == tellMe());
 }
 
@@ -134,7 +134,7 @@ void MeasBase<Mv, Mr>::set(const MeasValue &dt) {
 }
 
 template <class Mv, class Mr>
-Bool MeasBase<Mv, Mr>::putValue(const Vector<Quantum<Double>> &in) {
+bool MeasBase<Mv, Mr>::putValue(const Vector<Quantum<Double>> &in) {
   return data.putValue(in);
 }
 

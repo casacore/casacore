@@ -28,7 +28,7 @@
 
 // # Instantiate extern templates for often used types.
 namespace casacore {
-template class ArrayColumnDesc<Bool>;
+template class ArrayColumnDesc<bool>;
 template class ArrayColumnDesc<Char>;
 template class ArrayColumnDesc<Short>;
 template class ArrayColumnDesc<uShort>;

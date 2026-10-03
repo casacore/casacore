@@ -83,22 +83,22 @@ class LatticeHistSpecialize {
   static Complex mul(Complex v1, Complex v2);
 
   // Plot histograms
-  static void plot(PGPlotter& plot, Bool doGauss, Bool doCumu, Bool doLog, Float linearSum,
+  static void plot(PGPlotter& plot, bool doGauss, bool doCumu, bool doLog, Float linearSum,
                    Float yMax, Float binWidth, const Vector<Float>& values,
                    const Vector<Float>& counts, const Vector<Float>& stats, uInt whereLabel,
-                   uInt ci, Bool page);
-  static void plot(PGPlotter& plot, Bool doGauss, Bool doCumu, Bool doLog, Complex linearSum,
+                   uInt ci, bool page);
+  static void plot(PGPlotter& plot, bool doGauss, bool doCumu, bool doLog, Complex linearSum,
                    Complex yMax, Complex binWidth, const Vector<Complex>& values,
                    const Vector<Complex>& counts, const Vector<Complex>& stats, uInt whereLabel,
-                   uInt ci, Bool page);
+                   uInt ci, bool page);
 
   // Process data chunk creating histogram.
   template <class T>
-  static void process(const T* pInData, const Bool* pInMask, Block<T>* pHist, const Vector<T>& clip,
+  static void process(const T* pInData, const bool* pInMask, Block<T>* pHist, const Vector<T>& clip,
                       T binWidth, uInt offset, uInt nrval, uInt nBins, uInt dataIncr,
                       uInt maskIncr);
   //
-  static void process(const Complex* pInData, const Bool* pInMask, Block<Complex>* pHist,
+  static void process(const Complex* pInData, const bool* pInMask, Block<Complex>* pHist,
                       const Vector<Complex>& clip, Complex binWidth, uInt offset, uInt nrval,
                       uInt nBins, uInt dataIncr, uInt maskIncr);
 
@@ -112,7 +112,7 @@ class LatticeHistSpecialize {
   //
   static void makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& gX, Vector<Float>& gY, Float dMean,
                         Float dSigma, Float dSum, Float xMin, Float xMax, Float binWidth,
-                        Bool doCumu, Bool doLog);
+                        bool doCumu, bool doLog);
   //
   static void plotHist(const Vector<Float>& x, const Vector<Float>& y, PGPlotter& plotter);
 };

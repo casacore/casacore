@@ -58,7 +58,7 @@ void createTableISM() {
   // Now create a new table from the description.
   SetupNewTable newtab("tVeryBigTable_tmp.ism", td, Table::New);
   // Create a storage manager for it.
-  IncrementalStMan sm1("ISM", 256, False);
+  IncrementalStMan sm1("ISM", 256, false);
   newtab.bindAll(sm1);
   Table tab(newtab, 0);
   ScalarColumn<Int> ad(tab, "ad");

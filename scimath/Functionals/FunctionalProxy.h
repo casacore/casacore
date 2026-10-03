@@ -52,13 +52,13 @@ class FunctionalProxy {
   uInt ndim() const;
   void setparameters(const Vector<Double>& val);
   void setparametersc(const Vector<DComplex>& val);
-  void setmasks(const Vector<Bool>& val);
+  void setmasks(const Vector<bool>& val);
 
-  void setmask(Int i, Bool val);
+  void setmask(Int i, bool val);
   void setpar(Int i, Double val);
   void setparc(Int i, DComplex val);
 
-  Vector<Bool> masks() const;
+  Vector<bool> masks() const;
   Vector<Double> parameters() const;
   Vector<DComplex> parametersc() const;
 

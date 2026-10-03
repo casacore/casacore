@@ -137,19 +137,19 @@ class ImageSummary {
   IPosition tileShape() const;
 
   // Retrieve axis names in pixel or world axis order.
-  Vector<String> axisNames(Bool pixelOrder = True) const;
+  Vector<String> axisNames(bool pixelOrder = true) const;
 
   // Retrieve reference pixels (0 or 1 rel)
-  Vector<Double> referencePixels(Bool oneRel = True) const;
+  Vector<Double> referencePixels(bool oneRel = true) const;
 
   // Retrieve reference values in pixel or world axis order.
-  Vector<Double> referenceValues(Bool pixelOrder = True) const;
+  Vector<Double> referenceValues(bool pixelOrder = true) const;
 
   // Retrieve axis increments in pixel or world axis order.
-  Vector<Double> axisIncrements(Bool pixelOrder = True) const;
+  Vector<Double> axisIncrements(bool pixelOrder = true) const;
 
   // Retrieve axis units in pixel or world axis order.
-  Vector<String> axisUnits(Bool pixelOrder = True) const;
+  Vector<String> axisUnits(bool pixelOrder = true) const;
 
   // Retrieve image units
   Unit units() const;
@@ -166,17 +166,17 @@ class ImageSummary {
   // Return telescope
   String telescope() const;
 
-  // Return rest frequency.  Returns False if none.
-  Bool restFrequency(String& restFreqString, Quantum<Double>& restFreq) const;
+  // Return rest frequency.  Returns false if none.
+  bool restFrequency(String& restFreqString, Quantum<Double>& restFreq) const;
 
-  // Return frequency system.  Returns False if none.
-  Bool frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const;
+  // Return frequency system.  Returns false if none.
+  bool frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const;
 
-  // Return direction system.  Returns False if none.
-  Bool directionSystem(String& dirTypeString, MDirection::Types& dirType) const;
+  // Return direction system.  Returns false if none.
+  bool directionSystem(String& dirTypeString, MDirection::Types& dirType) const;
 
   // Retrieve whether image has mask or not
-  Bool hasAMask() const;
+  bool hasAMask() const;
 
   // Retrieve mask names
   Vector<String> maskNames() const;
@@ -195,12 +195,12 @@ class ImageSummary {
   // formatting (e.g. RA is  shown as HH:MM:SS.S).
   // For spectral axes, both frequency and velocity information is listed. You
   // can specify what velocity definition you want with <src>velocityType</src>
-  // If postLocally is True, the formatted strings are returned in the return value
+  // If postLocally is true, the formatted strings are returned in the return value
   Vector<String> list(LogIO& os, const MDoppler::Types velocityType = MDoppler::RADIO,
-                      Bool postLocally = False, const Bool verbose = False);
+                      bool postLocally = false, const bool verbose = false);
 
   // Set a new image
-  Bool setNewImage(const ImageInterface<T>& image);
+  bool setNewImage(const ImageInterface<T>& image);
 
  private:
   CoordinateSystem cSys_p;

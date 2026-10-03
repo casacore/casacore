@@ -81,16 +81,16 @@ class Slicer;
 class RefRows {
  public:
   // Create the object from a Vector containing the row numbers.
-  // When <src>isSliced==False</src>, the vector is treated as
+  // When <src>isSliced==false</src>, the vector is treated as
   // containing individual row numbers, otherwise as containing
   // (possibly multiple) slices in the form start,end,incr.
-  // When <src>collapse==True</src>, it will try to collapse the
+  // When <src>collapse==true</src>, it will try to collapse the
   // individual row numbers to the slice form (to save memory).
-  RefRows(const Vector<rownr_t>& rowNumbers, Bool isSliced = False, Bool collapse = False);
+  RefRows(const Vector<rownr_t>& rowNumbers, bool isSliced = false, bool collapse = false);
 #ifdef IMPLICIT_CTDS_32BIT
-  RefRows(const Vector<uInt>& rowNumbers, Bool isSliced = False, Bool collapse = False);
+  RefRows(const Vector<uInt>& rowNumbers, bool isSliced = false, bool collapse = false);
 #else
-  explicit RefRows(const Vector<uInt>& rowNumbers, Bool isSliced = False, Bool collapse = False);
+  explicit RefRows(const Vector<uInt>& rowNumbers, bool isSliced = false, bool collapse = false);
 #endif
 
   // Create the object from a single start,end,incr slice.
@@ -105,7 +105,7 @@ class RefRows {
   ~RefRows();
 
   // Do this and the other object reference the same rows?
-  Bool operator==(const RefRows& other) const;
+  bool operator==(const RefRows& other) const;
 
   // Convert this object to a RowNumbers object by applying the given row numbers.
   // It is used to convert the RefRows object with row numbers in a
@@ -127,7 +127,7 @@ class RefRows {
   rownr_t firstRow() const { return itsRows(0); }
 
   // Represents the vector a slice?
-  Bool isSliced() const { return itsSliced; }
+  bool isSliced() const { return itsSliced; }
 
   // Get the row vector as is (thus sliced if the object contains slices).
   // It is mainly useful to get all row numbers when the object does not
@@ -136,14 +136,14 @@ class RefRows {
 
  private:
   // Initialize the object.
-  void init(const Vector<rownr_t>& rowNumbers, Bool isSliced, Bool collapse);
+  void init(const Vector<rownr_t>& rowNumbers, bool isSliced, bool collapse);
 
   // Fill the itsNrows variable.
   rownr_t fillNrows() const;
 
   Vector<rownr_t> itsRows;
   rownr_t itsNrows;  // # 0 = still unknown
-  Bool itsSliced;    // # True = vector contains slices
+  bool itsSliced;    // # true = vector contains slices
 };
 
 // <summary>
@@ -207,7 +207,7 @@ class RefRowsSliceIter {
   void reset();
 
   // Is the iterator past the end?
-  Bool pastEnd() const { return itsPastEnd; }
+  bool pastEnd() const { return itsPastEnd; }
 
   // Go the next slice.
   // <group>
@@ -225,12 +225,12 @@ class RefRowsSliceIter {
 
  private:
   Vector<rownr_t> itsRows;
-  Bool itsSliced;
+  bool itsSliced;
   rownr_t itsStart;
   rownr_t itsEnd;
   rownr_t itsIncr;
   rownr_t itsPos;
-  Bool itsPastEnd;
+  bool itsPastEnd;
 };
 
 }  // namespace casacore

@@ -17,7 +17,7 @@ class UvwStManColumn final : public StManColumn {
  public:
   explicit UvwStManColumn(UvwFile &file) : StManColumn(DataType::TpDouble), file_(file) {}
 
-  Bool isWritable() const final { return true; }
+  bool isWritable() const final { return true; }
 
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {

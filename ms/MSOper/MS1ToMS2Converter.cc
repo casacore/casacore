@@ -56,7 +56,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MS1ToMS2Converter::MS1ToMS2Converter(const String& ms2, const String& ms1, Bool inPlace)
+MS1ToMS2Converter::MS1ToMS2Converter(const String& ms2, const String& ms1, bool inPlace)
     : ms1_p(ms1), ms2_p(ms2), inPlace_p(inPlace) {
   LogOrigin OR("MS1ToMS2Converter", "MS1ToMS2Converter()", WHERE);
   os_p = LogIO(OR);
@@ -76,7 +76,7 @@ void MS1ToMS2Converter::removeColumn(Table& t, const String& col) {
   }
 }
 
-Bool MS1ToMS2Converter::convert() {
+bool MS1ToMS2Converter::convert() {
   // Check that table needs to be converted, if so (deep)copy it if needed.
   {
     Table t(ms1_p);
@@ -164,9 +164,9 @@ Bool MS1ToMS2Converter::convert() {
     Int nRow = ant.nelements();
     maxAnt = max(ant) + 1;
     Vector<Int> antMap(maxAnt);
-    Bool renumber = False;
+    bool renumber = false;
     for (Int i = 0; i < nRow; i++) {
-      if (i != ant(i)) renumber = True;
+      if (i != ant(i)) renumber = true;
       antMap(ant(i)) = i;
     }
 
@@ -225,8 +225,8 @@ Bool MS1ToMS2Converter::convert() {
     anTab.addColumn(td[1]);
     ScalarColumn<String> type(anTab, "TYPE");
     type.fillColumn("GROUND-BASED");
-    ScalarColumn<Bool> flagRow(anTab, "FLAG_ROW");
-    flagRow.fillColumn(False);
+    ScalarColumn<bool> flagRow(anTab, "FLAG_ROW");
+    flagRow.fillColumn(false);
 
     ArrayColumn<Double> pos(anTab, "POSITION");
     TableDesc postd;
@@ -265,12 +265,12 @@ Bool MS1ToMS2Converter::convert() {
       Table ddt(ddSetup, nRow);
       ScalarColumn<Int> spw(ddt, "SPECTRAL_WINDOW_ID");
       ScalarColumn<Int> pol(ddt, "POLARIZATION_ID");
-      ScalarColumn<Bool> flagRow(ddt, "FLAG_ROW");
+      ScalarColumn<bool> flagRow(ddt, "FLAG_ROW");
       Vector<Int> seq(nRow);
       for (Int i = 0; i < nRow; i++) seq(i) = i;
       spw.putColumn(seq);
       pol.putColumn(seq);
-      flagRow.fillColumn(False);
+      flagRow.fillColumn(false);
     }
     Table ddt(ms2_p + "/DATA_DESCRIPTION");
     t.rwKeywordSet().defineTable(MS::keywordName(MS::DATA_DESCRIPTION), ddt);
@@ -369,15 +369,15 @@ Bool MS1ToMS2Converter::convert() {
     ArrayMeasColumn<MDirection> delAmc(fldTab, "DELAY_DIR");
     ArrayMeasColumn<MDirection> phaseAmc(fldTab, "PHASE_DIR");
     ArrayMeasColumn<MDirection> refAmc(fldTab, "REFERENCE_DIR");
-    delAmc.setDescRefCode(ddtp, False);
-    phaseAmc.setDescRefCode(pdtp, False);
-    refAmc.setDescRefCode(rdtp, False);
+    delAmc.setDescRefCode(ddtp, false);
+    phaseAmc.setDescRefCode(pdtp, false);
+    refAmc.setDescRefCode(rdtp, false);
 
     ArrayColumn<Double> delDir(fldTab, "DELAY_DIR");
     ArrayColumn<Double> phaseDir(fldTab, "PHASE_DIR");
     ArrayColumn<Double> refDir(fldTab, "REFERENCE_DIR");
-    ScalarColumn<Bool> flagRow(fldTab, "FLAG_ROW");
-    flagRow.fillColumn(False);
+    ScalarColumn<bool> flagRow(fldTab, "FLAG_ROW");
+    flagRow.fillColumn(false);
     ScalarColumn<Int> numPoly(fldTab, "NUM_POLY");
     numPoly.fillColumn(numPol);
 
@@ -484,8 +484,8 @@ Bool MS1ToMS2Converter::convert() {
     ScalarColumn<String> arrName(arrTab, "NAME");
     ScalarColumn<String> telName(obsTab, "TELESCOPE_NAME");
     ArrayColumn<Double> timeRange(obsTab, "TIME_RANGE");
-    ScalarColumn<Bool> flagRow(obsTab, "FLAG_ROW");
-    flagRow.fillColumn(False);
+    ScalarColumn<bool> flagRow(obsTab, "FLAG_ROW");
+    flagRow.fillColumn(false);
 
     ScalarColumn<Double> time(t, "TIME");
     ScalarColumn<Double> interval(t, "INTERVAL");
@@ -612,9 +612,9 @@ Bool MS1ToMS2Converter::convert() {
     MDirection::getType(tp, obspDir.keywordSet().asString("MEASURE_REFERENCE"));
     ctp = tp;
     ArrayMeasColumn<MDirection> dirAmc(pointTab, "DIRECTION");
-    dirAmc.setDescRefCode(ctp, False);
+    dirAmc.setDescRefCode(ctp, false);
     ArrayMeasColumn<MDirection> tgAmc(pointTab, "TARGET");
-    tgAmc.setDescRefCode(ctp, False);
+    tgAmc.setDescRefCode(ctp, false);
 
     for (uInt j = MSPointing::NUMBER_REQUIRED_COLUMNS + 1;
          j < MSPointing::NUMBER_PREDEFINED_COLUMNS; j = j + 1) {
@@ -678,8 +678,8 @@ Bool MS1ToMS2Converter::convert() {
       chanWdth.put(i, resol(i));
       effBw.put(i, resol(i));
     }
-    ScalarColumn<Bool> flagRow(spwTab, "FLAG_ROW");
-    flagRow.fillColumn(False);
+    ScalarColumn<bool> flagRow(spwTab, "FLAG_ROW");
+    flagRow.fillColumn(false);
 
     ScalarColumn<Double> reffreq(spwTab, "REF_FREQUENCY");
     MFrequency::Types tp;
@@ -889,7 +889,7 @@ Bool MS1ToMS2Converter::convert() {
   }
 
   os_p << LogIO::NORMAL << "Conversion done" << LogIO::POST;
-  return True;
+  return true;
 }
 
 }  // namespace casacore

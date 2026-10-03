@@ -161,7 +161,7 @@ class ROTiledStManAccessor : public RODataManAccessor {
   // of the data manager or the column.
   // An exception is thrown if the data manager type is not any tiled
   // storage manager.
-  ROTiledStManAccessor(const Table& table, const String& name, Bool byColumn = False);
+  ROTiledStManAccessor(const Table& table, const String& name, bool byColumn = false);
 
   virtual ~ROTiledStManAccessor();
 
@@ -244,26 +244,26 @@ class ROTiledStManAccessor : public RODataManAccessor {
 
   // Set the cache size using the corresponding <src>calcCacheSize</src>
   // function mentioned above.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
   // <group>
   void setCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& axisPath,
-                    Bool forceSmaller = True);
+                    bool forceSmaller = true);
   void setCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& windowStart,
                     const IPosition& windowLength, const IPosition& axisPath,
-                    Bool forceSmaller = True);
+                    bool forceSmaller = true);
   // </group>
 
   // Set the cache size for accessing the hypercube containing the given row.
   // When the give cache size exceeds the maximum cache size with more
   // than 10%, the maximum cache size is used instead.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
-  void setCacheSize(rownr_t rownr, uInt nbuckets, Bool forceSmaller = True);
+  void setCacheSize(rownr_t rownr, uInt nbuckets, bool forceSmaller = true);
 
   // This version allows setting the tile cache for a particular hypercube.  This
   // is useful when iterating over the hypercubes in an StMan.
-  void setHypercubeCacheSize(uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
+  void setHypercubeCacheSize(uInt hypercube, uInt nbuckets, bool forceSmaller = true);
 
   // Clear the caches used by the hypercubes in this storage manager.
   // It will flush the caches as needed and remove all buckets from them

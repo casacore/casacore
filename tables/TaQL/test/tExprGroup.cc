@@ -42,22 +42,22 @@
 // </summary>
 
 // Keeps track if errors occurred.
-Bool foundError = False;
+bool foundError = false;
 
 #define checkFailure(STR, EXPR)                                     \
   {                                                                 \
-    bool failed = False;                                            \
+    bool failed = false;                                            \
     try {                                                           \
       TableExprNode n(EXPR);                                        \
     } catch (std::exception&) {                                     \
-      failed = True;                                                \
+      failed = true;                                                \
     }                                                               \
     if (!failed) {                                                  \
       cout << STR << ": was expected to fail, but did not" << endl; \
     }                                                               \
   }
 
-void check(const TableExprNode& expr, const vector<Record>& recs, Bool expVal, const String& str) {
+void check(const TableExprNode& expr, const vector<Record>& recs, bool expVal, const String& str) {
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr =
@@ -68,9 +68,9 @@ void check(const TableExprNode& expr, const vector<Record>& recs, Bool expVal, c
     func->apply(id);
   }
   func->finish();
-  Bool val = func->getBool();
+  bool val = func->getBool();
   if (val != expVal) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
   }
 }
@@ -88,7 +88,7 @@ void check(const TableExprNode& expr, const vector<Record>& recs, Int expVal, co
   func->finish();
   Int val = func->getInt();
   if (val != expVal) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
   }
 }
@@ -107,7 +107,7 @@ void check(const TableExprNode& expr, const vector<Record>& recs, Double expVal,
   func->finish();
   Double val = func->getDouble();
   if (!near(val, expVal, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
   }
 }
@@ -126,7 +126,7 @@ void check(const TableExprNode& expr, const vector<Record>& recs, const DComplex
   func->finish();
   DComplex val = func->getDComplex();
   if (!near(val, expVal, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
   }
 }
@@ -146,7 +146,7 @@ void checkLazy(const TableExprNode& expr, const vector<Record>& recs, Double exp
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   Double val = func->getDouble(*funcid.getIds());
   if (val != expVal) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << expVal << endl;
   }
 }
@@ -154,10 +154,10 @@ void checkLazy(const TableExprNode& expr, const vector<Record>& recs, Double exp
 void doBool() {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Bool> vecb(9);
-  vecb = False;
-  vecb[3] = True;
-  vecb[4] = True;
+  Vector<bool> vecb(9);
+  vecb = false;
+  vecb[3] = true;
+  vecb[4] = true;
   // Define records containing the vector elements.
   vector<Record> recs(vecb.size());
   for (uInt i = 0; i < vecb.size(); ++i) {
@@ -289,10 +289,10 @@ void doDComplex() {
 
 void doBoolArr() {
   // Define a Vector with values.
-  Vector<Bool> vecb(9);
-  vecb = False;
-  vecb[3] = True;
-  vecb[4] = True;
+  Vector<bool> vecb(9);
+  vecb = false;
+  vecb[3] = true;
+  vecb[4] = true;
   // Define two records containing part of the vector.
   // The aggregate functions will evaluate all reocrds, thus full vector.
   for (int i = 0; i < 2; ++i) {

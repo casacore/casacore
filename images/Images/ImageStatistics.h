@@ -100,23 +100,23 @@ class ImageStatistics : public LatticeStatistics<T> {
   // You can specify whether you want to see progress meters or not.
   // You can force the storage image to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  // If <src>clone</src> is True, the input image will be cloned, so the caller
+  // If <src>clone</src> is true, the input image will be cloned, so the caller
   // can make changes to the input image, but the statistics will reflect the
-  // image as it was at construction. If False, a reference to the input image
+  // image as it was at construction. If false, a reference to the input image
   // is used, and so the caller shouldn't make changes to the input image between
   // construction and calling statistics computation methods, unless it calls setNewImage()
   // to update the changed image. Obviously, cloning the image impacts performance
   // and memory usage.
-  ImageStatistics(const ImageInterface<T>& image, LogIO& os, Bool showProgress = True,
-                  Bool forceDisk = False, Bool clone = True);
+  ImageStatistics(const ImageInterface<T>& image, LogIO& os, bool showProgress = true,
+                  bool forceDisk = false, bool clone = true);
 
   // Constructor takes the image only. In the absence of a logger you get no messages.
   // This includes error messages and potential listing of the statistics.
   // You can specify whether you want to see progress meters or not.
   // You can force the storage image to be disk based, otherwise
   // the decision for core or disk is taken for you.
-  ImageStatistics(const ImageInterface<T>& image, Bool showProgress = True, Bool forceDisk = False,
-                  Bool clone = True);
+  ImageStatistics(const ImageInterface<T>& image, bool showProgress = true, bool forceDisk = false,
+                  bool clone = true);
 
   // Copy constructor.  Copy semantics are followed.  Therefore any storage image
   // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -130,16 +130,16 @@ class ImageStatistics : public LatticeStatistics<T> {
   // already been created for "other".
   ImageStatistics<T>& operator=(const ImageStatistics<T>& other);
 
-  // Set a new ImageInterface object.  A return value of <src>False</src> indicates the
+  // Set a new ImageInterface object.  A return value of <src>false</src> indicates the
   // image had an invalid type or that the internal state of the class is bad.
-  // If <src>clone</src> is True, the input image will be cloned, so the caller
+  // If <src>clone</src> is true, the input image will be cloned, so the caller
   // can make changes to the input image, but the statistics will reflect the
-  // image as it was at construction. If False, a reference to the input image
+  // image as it was at construction. If false, a reference to the input image
   // is used, and so the caller shouldn't make changes to the input image between
   // construction and calling statistics computation methods, unless it calls setNewImage()
   // to update the changed image. Obviously, cloning the image impacts performance
   // and memory usage.
-  Bool setNewImage(const ImageInterface<T>& image, Bool clone = True);
+  bool setNewImage(const ImageInterface<T>& image, bool clone = true);
 
   void setPrecision(Int precision);
 
@@ -150,20 +150,20 @@ class ImageStatistics : public LatticeStatistics<T> {
   Int getPrecision() const;
 
   // list robust statistics? Should be called before display()
-  void showRobust(const Bool show);
+  void showRobust(const bool show);
 
-  inline void recordMessages(const Bool rm) { _recordMessages = rm; }
+  inline void recordMessages(const bool rm) { _recordMessages = rm; }
 
   inline vector<String> getMessages() { return _messages; }
 
   inline void clearMessages() { _messages.resize(0); }
 
-  void setListStats(Bool b) { _listStats = b; }
+  void setListStats(bool b) { _listStats = b; }
 
  protected:
   typedef typename NumericTraits<T>::PrecisionType AccumType;
 
-  virtual Bool _canDoFlux() const;
+  virtual bool _canDoFlux() const;
 
  private:
   // Data
@@ -173,7 +173,7 @@ class ImageStatistics : public LatticeStatistics<T> {
   std::shared_ptr<const ImageInterface<T>> _inImPtrMgr;
   IPosition blc_;
   Int precision_;
-  Bool _showRobust, _recordMessages, _listStats;
+  bool _showRobust, _recordMessages, _listStats;
   mutable vector<String> _messages;
 
   // Virtual functions.  See LatticeStatistics for more information
@@ -182,31 +182,31 @@ class ImageStatistics : public LatticeStatistics<T> {
   // Get label for higher order axes
   virtual void getLabels(String& higherOrder, String& xAxis, const IPosition& dPos) const;
 
-  // Get beam area in pixels if possible. Return False if the beam area could not be
+  // Get beam area in pixels if possible. Return false if the beam area could not be
   // calculated.
-  virtual Bool _getBeamArea(Array<Double>& beamArea, String& msg) const;
+  virtual bool _getBeamArea(Array<Double>& beamArea, String& msg) const;
 
   // List min and max with world coordinates
   virtual void listMinMax(std::ostringstream& osMin, std::ostringstream& osMax, Int oWidth,
                           DataType type);
 
   // List the statistics
-  virtual Bool listStats(Bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
+  virtual bool listStats(bool hasBeam, const IPosition& dPos, const Matrix<AccumType>& ord);
 
   virtual void displayStats(AccumType nPts, AccumType sum, AccumType median, AccumType medAbsDevMed,
                             AccumType quartile, AccumType sumSq, AccumType mean, AccumType var,
                             AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
                             AccumType q1, AccumType q3);
 
-  // If <src>isFluxDensity</src> is False, then the computed value is
+  // If <src>isFluxDensity</src> is false, then the computed value is
   // a flux (ie flux density integrated over a spectral extent)
-  Quantum<AccumType> _flux(Bool& isFluxDensity, AccumType sum, Double beamAreaInPixels) const;
+  Quantum<AccumType> _flux(bool& isFluxDensity, AccumType sum, Double beamAreaInPixels) const;
 
-  Bool _computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
+  bool _computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
                     const Array<AccumType>& sum);
 
-  Bool _computeFlux(Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
-                    Bool posInLattice);
+  bool _computeFlux(Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
+                    bool posInLattice);
   // # Make members of parent class known.
  protected:
   using LatticeStatistics<T>::locInLattice;

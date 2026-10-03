@@ -85,7 +85,7 @@ class TaqlRegex {
   explicit TaqlRegex(const StringDistance& dist) : itsDist(dist) {}
 
   // Does the regex or maximum string distance match?
-  Bool match(const String& str) const {
+  bool match(const String& str) const {
     return itsRegex.regexp().empty() ? itsDist.match(str) : RegexMatches(str, itsRegex);
   }
 
@@ -116,7 +116,7 @@ class TableExprInfo {
  public:
   // Construct from a table and its alias.
   explicit TableExprInfo(const Table& table = Table(), const String& alias = String(),
-                         Bool isJoinTable = False);
+                         bool isJoinTable = false);
 
   // Get the Table object.
   const Table& table() const { return itsTable; }
@@ -125,7 +125,7 @@ class TableExprInfo {
   const String& alias() const { return itsAlias; }
 
   // Is the table a join table?
-  Bool isJoinTable() const { return itsIsJoinTable; }
+  bool isJoinTable() const { return itsIsJoinTable; }
 
   // Apply a selection of row numbers to the Table.
   void apply(const Vector<rownr_t>& rownrs);
@@ -133,7 +133,7 @@ class TableExprInfo {
  private:
   Table itsTable;
   String itsAlias;
-  Bool itsIsJoinTable;
+  bool itsIsJoinTable;
 };
 
 // <summary>
@@ -264,8 +264,8 @@ class TableExprNodeRep {
   virtual ~TableExprNodeRep() = default;
 
   // Is the node an aggegation node.
-  // The default implementation returns False.
-  virtual Bool isAggregate() const;
+  // The default implementation returns false.
+  virtual bool isAggregate() const;
 
   // Get the table info.
   // The default implementation returns an info object with a null table.
@@ -295,16 +295,16 @@ class TableExprNodeRep {
   virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
   // Is the aggregate function a lazy or an immediate one?
-  // The default implementation returns True
+  // The default implementation returns true
   // (because all UDF aggregate functions have to be lazy).
-  virtual Bool isLazyAggregate() const;
+  virtual bool isLazyAggregate() const;
 
   // Get a scalar value for this node in the given row.
   // The appropriate functions are implemented in the derived classes and
   // will usually invoke the get in their children and apply the
   // operator on the resulting values.
   // <group>
-  virtual Bool getBool(const TableExprId& id);
+  virtual bool getBool(const TableExprId& id);
   virtual Int64 getInt(const TableExprId& id);
   virtual Double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
@@ -318,7 +318,7 @@ class TableExprNodeRep {
   // will usually invoke the get in their children and apply the
   // operator on the resulting values.
   // <group>
-  virtual MArray<Bool> getArrayBool(const TableExprId& id);
+  virtual MArray<bool> getArrayBool(const TableExprId& id);
   virtual MArray<Int64> getArrayInt(const TableExprId& id);
   virtual MArray<Double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
@@ -328,13 +328,13 @@ class TableExprNodeRep {
 
   // General get functions for template purposes.
   // <group>
-  void get(const TableExprId& id, Bool& value) { value = getBool(id); }
+  void get(const TableExprId& id, bool& value) { value = getBool(id); }
   void get(const TableExprId& id, Int64& value) { value = getInt(id); }
   void get(const TableExprId& id, Double& value) { value = getDouble(id); }
   void get(const TableExprId& id, DComplex& value) { value = getDComplex(id); }
   void get(const TableExprId& id, MVTime& value) { value = getDate(id); }
   void get(const TableExprId& id, String& value) { value = getString(id); }
-  void get(const TableExprId& id, MArray<Bool>& value) { value = getArrayBool(id); }
+  void get(const TableExprId& id, MArray<bool>& value) { value = getArrayBool(id); }
   void get(const TableExprId& id, MArray<Int64>& value) { value = getArrayInt(id); }
   void get(const TableExprId& id, MArray<Double>& value) { value = getArrayDouble(id); }
   void get(const TableExprId& id, MArray<DComplex>& value) { value = getArrayDComplex(id); }
@@ -345,7 +345,7 @@ class TableExprNodeRep {
   // Get a value as an array, even it it is a scalar.
   // This is useful if one could give an argument as scalar or array.
   // <group>
-  MArray<Bool> getBoolAS(const TableExprId& id);
+  MArray<bool> getBoolAS(const TableExprId& id);
   MArray<Int64> getIntAS(const TableExprId& id);
   MArray<Double> getDoubleAS(const TableExprId& id);
   MArray<DComplex> getDComplexAS(const TableExprId& id);
@@ -357,18 +357,18 @@ class TableExprNodeRep {
   // The default implementation assumes the set is a single scalar,
   // thus tests if it is equal to the given value.
   // <group>
-  virtual Bool contains(const TableExprId& id, Bool value);
-  virtual Bool contains(const TableExprId& id, Int64 value);
-  virtual Bool contains(const TableExprId& id, Double value);
-  virtual Bool contains(const TableExprId& id, DComplex value);
-  virtual Bool contains(const TableExprId& id, String value);
-  virtual Bool contains(const TableExprId& id, MVTime value);
-  virtual MArray<Bool> contains(const TableExprId& id, const MArray<Bool>& value);
-  virtual MArray<Bool> contains(const TableExprId& id, const MArray<Int64>& value);
-  virtual MArray<Bool> contains(const TableExprId& id, const MArray<Double>& value);
-  virtual MArray<Bool> contains(const TableExprId& id, const MArray<DComplex>& value);
-  virtual MArray<Bool> contains(const TableExprId& id, const MArray<String>& value);
-  virtual MArray<Bool> contains(const TableExprId& id, const MArray<MVTime>& value);
+  virtual bool contains(const TableExprId& id, bool value);
+  virtual bool contains(const TableExprId& id, Int64 value);
+  virtual bool contains(const TableExprId& id, Double value);
+  virtual bool contains(const TableExprId& id, DComplex value);
+  virtual bool contains(const TableExprId& id, String value);
+  virtual bool contains(const TableExprId& id, MVTime value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<bool>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<Double>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<String>& value);
+  virtual MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value);
   // </group>
 
   // Get the number of rows in the table associated with this expression.
@@ -377,16 +377,16 @@ class TableExprNodeRep {
   rownr_t nrow();
 
   // Get the data type of the column.
-  // It returns True when it could set the data type (which it can
+  // It returns true when it could set the data type (which it can
   // if the expression is a scalar column or a constant array column pixel).
-  // Otherwise it returns False.
-  virtual Bool getColumnDataType(DataType&) const;
+  // Otherwise it returns false.
+  virtual bool getColumnDataType(DataType&) const;
 
   // Get the value of the expression evaluated for the entire column.
   // The data of function called should match the data type as
   // returned by function <src>getColumnDataType</src>.
   // <group>
-  virtual Array<Bool> getColumnBool(const Vector<rownr_t>& rownrs);
+  virtual Array<bool> getColumnBool(const Vector<rownr_t>& rownrs);
   virtual Array<uChar> getColumnuChar(const Vector<rownr_t>& rownrs);
   virtual Array<Short> getColumnShort(const Vector<rownr_t>& rownrs);
   virtual Array<uShort> getColumnuShort(const Vector<rownr_t>& rownrs);
@@ -420,7 +420,7 @@ class TableExprNodeRep {
   NodeDataType dataType() const;
 
   // Is the data type real (i.e., integer or double)?
-  Bool isReal() const;
+  bool isReal() const;
 
   // Get the value type.
   ValueType valueType() const;
@@ -435,7 +435,7 @@ class TableExprNodeRep {
   ExprType exprType() const;
 
   // Is the expression a constant?
-  Bool isConstant() const;
+  bool isConstant() const;
 
   // Get the unit.
   const Unit& unit() const;
@@ -461,8 +461,8 @@ class TableExprNodeRep {
   const IPosition& shape(const TableExprId& id);
 
   // Is the value in the given row defined?
-  // The default implementation returns True.
-  virtual Bool isDefined(const TableExprId& id);
+  // The default implementation returns true.
+  virtual bool isDefined(const TableExprId& id);
 
   // Show the expression tree.
   virtual void show(ostream&, uInt indent) const;
@@ -508,7 +508,7 @@ class TableExprNodeRep {
   // the appropriate TableExprNodeConst object.
   // If not constant, it calls the virtual ConvertConstChild function
   // which can convert a constant child if appropriate.
-  static TENShPtr convertNode(const TENShPtr& thisNode, Bool convertConstType);
+  static TENShPtr convertNode(const TENShPtr& thisNode, bool convertConstType);
 };
 
 // <summary>
@@ -571,7 +571,7 @@ class TableExprNodeBinary : public TableExprNodeRep {
 
   // Set the children.
   // If needed, their properties like data type and unit are adapted.
-  void setChildren(const TENShPtr& left, const TENShPtr& right, Bool adapt = True);
+  void setChildren(const TENShPtr& left, const TENShPtr& right, bool adapt = true);
 
   // Handle the units of the children and possibly set the parent's unit.
   // The default implementation make the units of the children equal and
@@ -660,7 +660,7 @@ class TableExprNodeMulti : public TableExprNodeRep {
   // It also sets the expected data type of the operands (from dtIn).
   // Conversion of Int,Double.String to Date is by default possible.
   static NodeDataType checkDT(Block<Int>& dtypeOper, NodeDataType dtIn, NodeDataType dtOut,
-                              const std::vector<TENShPtr>& nodes, Bool dateConv = True);
+                              const std::vector<TENShPtr>& nodes, bool dateConv = true);
 
  protected:
   std::vector<TENShPtr> operands_p;
@@ -669,7 +669,7 @@ class TableExprNodeMulti : public TableExprNodeRep {
 // # Get the data type of the node.
 inline TableExprNodeRep::NodeDataType TableExprNodeRep::dataType() const { return dtype_p; }
 
-inline Bool TableExprNodeRep::isReal() const { return dtype_p == NTInt || dtype_p == NTDouble; }
+inline bool TableExprNodeRep::isReal() const { return dtype_p == NTInt || dtype_p == NTDouble; }
 
 // # Get the value type of the node.
 inline TableExprNodeRep::ValueType TableExprNodeRep::valueType() const { return vtype_p; }
@@ -684,7 +684,7 @@ inline TableExprNodeRep::OperType TableExprNodeRep::operType() const { return op
 inline TableExprNodeRep::ExprType TableExprNodeRep::exprType() const { return exprtype_p; }
 
 // # Is the expression a constant?
-inline Bool TableExprNodeRep::isConstant() const { return (exprtype_p == Constant); }
+inline bool TableExprNodeRep::isConstant() const { return (exprtype_p == Constant); }
 
 // # Get the unit of the node.
 inline const Unit& TableExprNodeRep::unit() const { return unit_p; }

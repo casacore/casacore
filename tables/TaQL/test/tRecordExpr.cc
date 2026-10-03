@@ -44,7 +44,7 @@ void doIt() {
   TableRecord rec;
   rec.define("fld1", Int(1));
   TableExprNode expr(makeRecordExpr(rec, "fld1") == 1.);
-  Bool result;
+  bool result;
   expr.get(rec, result);
   AlwaysAssertExit(result);
   // Check if it can also handle a record where fld1 is e.g. a float.
@@ -87,12 +87,12 @@ void doIt() {
   expr4a.get(rect, result);
   AlwaysAssertExit(!result);
   // Still undefined.
-  rect.define("fld2", True);
+  rect.define("fld2", true);
   rect.defineRecord("sub1", subrect1);
   expr4a.get(rect, result);
   AlwaysAssertExit(!result);
   // Still undefined because field has incorrect type.
-  subrect2.define("fld1", True);
+  subrect2.define("fld1", true);
   subrect1.defineRecord("sub2", subrect2);
   rect.defineRecord("sub1", subrect1);
   expr4a.get(rect, result);

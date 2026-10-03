@@ -157,15 +157,15 @@ class LatticeStatsBase {
 
   // Check and fill in defaults for a <src>Vector<Int></src> containing the
   // number of subplots in x and y to be put on a plot.  The <src>Vector<Int></src>
-  // is resized to 2 before assignment.  A return value of <src>False</src> indicates
+  // is resized to 2 before assignment.  A return value of <src>false</src> indicates
   // invalid arguments.
-  static Bool setNxy(Vector<Int>& nxy, std::ostream& os);
+  static bool setNxy(Vector<Int>& nxy, std::ostream& os);
 
   // A storage image is used to accumulate information as a function of the display
   // axes as an image is iterated through.  This function sets the storage image shape
   // to that appropriate to the shape of the display axes and the desired size of the first
   // or last dimension.
-  static void setStorageImageShape(IPosition& storeImageShape, const Bool& last,
+  static void setStorageImageShape(IPosition& storeImageShape, const bool& last,
                                    const Int& axisSize, const Vector<Int>& displayAxes,
                                    const IPosition& shape);
 

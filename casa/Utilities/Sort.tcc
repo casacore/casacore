@@ -38,7 +38,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <typename T>
-T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, Bool doTryGenSort) const {
+T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, bool doTryGenSort) const {
   if (nrrec == 0) {
     return nrrec;
   }
@@ -53,7 +53,7 @@ T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, Bool doTryGenSort) cons
   indgen(indexVector);
   // Pass the sort function a C-array of indices, because indexing
   // in there is (much) faster than in a vector.
-  Bool del;
+  bool del;
   T* inx = indexVector.getStorage(del);
   // Choose the sort required.
   int nodup = opt & NoDuplicates;
@@ -104,7 +104,7 @@ T Sort::doSort(Vector<T>& indexVector, T nrrec, int opt, Bool doTryGenSort) cons
   // If n < nrrec, some duplicates have been deleted.
   // This means we have to resize the Vector.
   if (n < nrrec) {
-    indexVector.resize(n, True);
+    indexVector.resize(n, true);
   }
   return n;
 }
@@ -133,7 +133,7 @@ T Sort::doUnique(Vector<T>& uniqueVector, Vector<size_t>& changeKey,
   }
   // Pass the sort function a C-array of indices, because indexing
   // in there is (much) faster than in a vector.
-  Bool delInx, delUniq, delChange;
+  bool delInx, delUniq, delChange;
   const T* inx = indexVector.getStorage(delInx);
   T* uniq = uniqueVector.getStorage(delUniq);
   size_t* change = changeKey.getStorage(delChange);
@@ -151,8 +151,8 @@ T Sort::doUnique(Vector<T>& uniqueVector, Vector<size_t>& changeKey,
   uniqueVector.putStorage(uniq, delUniq);
   changeKey.putStorage(change, delChange);
   if (nruniq < nrrec) {
-    uniqueVector.resize(nruniq, True);
-    changeKey.resize(nruniq, True);
+    uniqueVector.resize(nruniq, true);
+    changeKey.resize(nruniq, true);
   }
   return nruniq;
 }

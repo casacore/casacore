@@ -39,9 +39,9 @@
 // This class is meant to store indirect table arrays, but could
 // in principle also be used for other array purposes.
 
-void a(Bool, uInt, Int64&, Int64&, Int64&, Int64&);
-void b(Bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
-void c(Bool, Int64, Int64, Int64, Int64);
+void a(bool, uInt, Int64&, Int64&, Int64&, Int64&);
+void b(bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
+void c(bool, Int64, Int64, Int64, Int64);
 
 int main(int argc, const char* argv[]) {
   uInt stVersion = 0;
@@ -59,15 +59,15 @@ int main(int argc, const char* argv[]) {
     for (uInt i = stVersion; i <= endVersion; i++) {
       Int64 off1, off2, off3, off4, offc1, offc2, offc3, offc4;
       cout << "test of StArrayFile with version " << i << " in canonical format " << endl;
-      a(True, i, off1, off2, off3, off4);
-      b(True, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
-      c(True, off1, off2, off3, off4);
-      c(True, offc1, offc2, offc3, offc4);
+      a(true, i, off1, off2, off3, off4);
+      b(true, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
+      c(true, off1, off2, off3, off4);
+      c(true, offc1, offc2, offc3, offc4);
       cout << "test of StArrayFile with version " << i << " in local format " << endl;
-      a(False, i, off1, off2, off3, off4);
-      b(False, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
-      c(False, off1, off2, off3, off4);
-      c(False, offc1, offc2, offc3, offc4);
+      a(false, i, off1, off2, off3, off4);
+      b(false, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
+      c(false, off1, off2, off3, off4);
+      c(false, offc1, offc2, offc3, offc4);
     }
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
@@ -77,18 +77,18 @@ int main(int argc, const char* argv[]) {
 }
 
 // Write some arrays (in chunks).
-void a(Bool canonical, uInt version, Int64& off1, Int64& off2, Int64& off3, Int64& off4) {
+void a(bool canonical, uInt version, Int64& off1, Int64& off2, Int64& off3, Int64& off4) {
   uInt l1, l2, l3, l4;
-  Bool bbuf[10000];
+  bool bbuf[10000];
   Int ibuf[10000];
   Complex cbuf[10000];
   String sbuf[10000];
   char str[16];
   for (uInt i = 0; i < 10000; i++) {
     if (i % 3 == 0) {
-      bbuf[i] = True;
+      bbuf[i] = true;
     } else {
-      bbuf[i] = False;
+      bbuf[i] = false;
     }
     ibuf[i] = i;
     cbuf[i] = Complex(i + 1, i + 2);
@@ -120,21 +120,21 @@ void a(Bool canonical, uInt version, Int64& off1, Int64& off2, Int64& off3, Int6
   cout << "Length=" << io.length() << endl;
   io.put(off3 + l3, 4024, 5976, sbuf + 4024);
   cout << "Length=" << io.length() << endl;
-  l4 = io.putShape(IPosition(2, 1000, 10), off4, static_cast<Bool*>(0));
+  l4 = io.putShape(IPosition(2, 1000, 10), off4, static_cast<bool*>(0));
   cout << l4 << " " << off4 << endl;
   cout << "Length=" << io.length() << endl;
   io.put(off4 + l4, 0, 10000, bbuf);
 }
 
 // Read back and update and copy some arrays.
-void b(Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& offc1, Int64& offc2,
+void b(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& offc1, Int64& offc2,
        Int64& offc3, Int64& offc4) {
   StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Update, 0, canonical);
   cout << "Length=" << io.length() << endl;
   IPosition shp, shp1, shp2, shp3, shp4;
   Int64 offs;
   uInt nref;
-  Bool bbuf[10000];
+  bool bbuf[10000];
   Int ibuf[10000];
   Complex cbuf[10000];
   String sbuf[10000], sbufo[10000];
@@ -182,7 +182,7 @@ void b(Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& of
   io.get(off4 + l4, 1102, 1898, bbuf + 1102);
   io.get(off4 + l4, 3000, 7000, bbuf + 3000);
   for (i = 0; i < 10000; i++) {
-    Bool b = (i % 3 == 0 ? True : False);
+    bool b = (i % 3 == 0 ? true : false);
     if (ibuf[i] != i || cbuf[i] != Complex(i + 1, i + 2) || bbuf[i] != b) {
       cout << "mismatch " << i << ":" << ibuf[i] << " " << cbuf[i] << " " << bbuf[i] << endl;
     }
@@ -206,18 +206,18 @@ void b(Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4, Int64& of
   uInt lc3 = io.putShape(shp3, offc3, static_cast<String*>(0));
   cout << "copy to " << lc3 << " " << offc3 << endl;
   io.copyArrayString(offc3 + lc3, off3 + l3, shp3.product());
-  uInt lc4 = io.putShape(shp4, offc4, static_cast<Bool*>(0));
+  uInt lc4 = io.putShape(shp4, offc4, static_cast<bool*>(0));
   cout << "copy to " << lc4 << " " << offc4 << endl;
   io.copyArrayBool(offc4 + lc4, off4 + l4, shp4.product());
 }
 
 // Read back.
-void c(Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4) {
+void c(bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4) {
   StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Old, 0, canonical);
   cout << "Length=" << io.length() << endl;
   uInt nref;
   IPosition shp;
-  Bool bbuf[10000];
+  bool bbuf[10000];
   Int ibuf[10000];
   Complex cbuf[10000];
   String sbuf[10000], sbufo[10000];
@@ -252,17 +252,17 @@ void c(Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4) {
     }
   }
   for (i = 0; i < 10000; i++) {
-    Bool b = (i % 3 == 0 ? True : False);
+    bool b = (i % 3 == 0 ? true : false);
     j = i;
     if (i >= 1 && i < 21) {
       j = i - 1;
-      b = (j % 3 == 0 ? True : False);
+      b = (j % 3 == 0 ? true : false);
     }
     if (i == 23) {
-      b = True;
+      b = true;
     }
     if (i >= 34 && i < 38) {
-      b = ((i - 34) % 3 == 0 ? True : False);
+      b = ((i - 34) % 3 == 0 ? true : false);
     }
     if (ibuf[i] != j || cbuf[i] != Complex(j + 1, j + 2) || bbuf[i] != b)
       cout << "mismatch in row " << i << ":" << ibuf[i] << " " << cbuf[i] << " " << bbuf[i] << endl;

@@ -130,11 +130,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <dt> Complex max(Complex x,Complex y);
 // <dd> Returns the maximum of x,y (using operator>=, i.e. the norm).
 //
-// <dt>Bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
+// <dt>bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is relatively near val2 (see Math.h).
 //	(Note the Double tolerance) </dd>
 //
-// <dt>Bool nearAbs(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
+// <dt>bool nearAbs(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is absolutely near val2 (see Math.h).
 //	(Note the Double tolerance) </dd>
 //
@@ -156,11 +156,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name="Complex NaN and Infinity">
-Bool isNaN(const Complex &val);
+bool isNaN(const Complex &val);
 void setNaN(Complex &val);
-Bool isInf(const Complex &val);
+bool isInf(const Complex &val);
 void setInf(Complex &val);
-Bool isFinite(const Complex &val);
+bool isFinite(const Complex &val);
 // </group>
 
 // <summary>Complex comparisons </summary>
@@ -169,17 +169,17 @@ Bool isFinite(const Complex &val);
 // <group name="Complex comparisons">
 // # On Linux comparing the norm does not work well in debug mode
 // # for equal values. Therefore they are compared for equality first.
-inline Bool operator>=(const Complex &left, const Complex &right) {
-  return left == right ? True : norm(left) >= norm(right);
+inline bool operator>=(const Complex &left, const Complex &right) {
+  return left == right ? true : norm(left) >= norm(right);
 }
-inline Bool operator>(const Complex &left, const Complex &right) {
-  return left == right ? False : norm(left) > norm(right);
+inline bool operator>(const Complex &left, const Complex &right) {
+  return left == right ? false : norm(left) > norm(right);
 }
-inline Bool operator<=(const Complex &left, const Complex &right) {
-  return left == right ? True : norm(left) <= norm(right);
+inline bool operator<=(const Complex &left, const Complex &right) {
+  return left == right ? true : norm(left) <= norm(right);
 }
-inline Bool operator<(const Complex &left, const Complex &right) {
-  return left == right ? False : norm(left) < norm(right);
+inline bool operator<(const Complex &left, const Complex &right) {
+  return left == right ? false : norm(left) < norm(right);
 }
 // </group>
 
@@ -187,27 +187,27 @@ inline Bool operator<(const Complex &left, const Complex &right) {
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name="DComplex NaN and Infinity">
-Bool isNaN(const DComplex &val);
+bool isNaN(const DComplex &val);
 void setNaN(DComplex &val);
-Bool isInf(const DComplex &val);
+bool isInf(const DComplex &val);
 void setInf(DComplex &val);
-Bool isFinite(const DComplex &val);
+bool isFinite(const DComplex &val);
 // </group>
 
 // <summary> DComplex comparisons </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name="DComplex comparisons">
-inline Bool operator>=(const DComplex &left, const DComplex &right) {
+inline bool operator>=(const DComplex &left, const DComplex &right) {
   return norm(left) >= norm(right);
 }
-inline Bool operator>(const DComplex &left, const DComplex &right) {
+inline bool operator>(const DComplex &left, const DComplex &right) {
   return norm(left) > norm(right);
 }
-inline Bool operator<=(const DComplex &left, const DComplex &right) {
+inline bool operator<=(const DComplex &left, const DComplex &right) {
   return norm(left) <= norm(right);
 }
-inline Bool operator<(const DComplex &left, const DComplex &right) {
+inline bool operator<(const DComplex &left, const DComplex &right) {
   return norm(left) < norm(right);
 }
 // </group>
@@ -259,20 +259,20 @@ inline Complex operator/(Int f, const Complex &val) { return Float(f) / val; }
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name=near>
-Bool near(const Complex &val1, const Complex &val2, Double tol = 1.0e-5);
-Bool near(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13);
-Bool nearAbs(const Complex &val1, const Complex &val2, Double tol = 1.0e-5);
-Bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13);
-inline Bool allNear(const Complex &val1, const Complex &val2, Double tol = 1.0e-5) {
+bool near(const Complex &val1, const Complex &val2, Double tol = 1.0e-5);
+bool near(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13);
+bool nearAbs(const Complex &val1, const Complex &val2, Double tol = 1.0e-5);
+bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13);
+inline bool allNear(const Complex &val1, const Complex &val2, Double tol = 1.0e-5) {
   return near(val1, val2, tol);
 }
-inline Bool allNear(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13) {
+inline bool allNear(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13) {
   return near(val1, val2, tol);
 }
-inline Bool allNearAbs(const Complex &val1, const Complex &val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(const Complex &val1, const Complex &val2, Double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline Bool allNearAbs(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13) {
+inline bool allNearAbs(const DComplex &val1, const DComplex &val2, Double tol = 1.0e-13) {
   return nearAbs(val1, val2, tol);
 }
 // </group>

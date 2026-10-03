@@ -47,7 +47,7 @@ void RadialVelocityEngine::handleRadialVelocity(vector<TENShPtr>& args, uInt& ar
   uInt nargnr = argnr + 1;
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-    if (handleMeasType(args[nargnr], False)) {
+    if (handleMeasType(args[nargnr], false)) {
       nargnr++;
     }
   }
@@ -84,7 +84,7 @@ void RadialVelocityEngine::handleValues(TableExprNode& operand, const TableExprI
   }
   radVels.resize(values.shape());
   Quantity q(0, unit);
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MRadialVelocity* rvVec = radVels.data();
   for (uInt i = 0; i < radVels.size(); ++i) {
@@ -110,7 +110,7 @@ void RadialVelocityEngine::setDopplerEngine(DopplerEngine& engine) {
 void RadialVelocityEngine::setDirectionEngine(DirectionEngine& engine) {
   AlwaysAssert(itsDirectionEngine == 0, AipsError);
   itsDirectionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MDirection());
 }
@@ -118,7 +118,7 @@ void RadialVelocityEngine::setDirectionEngine(DirectionEngine& engine) {
 void RadialVelocityEngine::setEpochEngine(EpochEngine& engine) {
   AlwaysAssert(itsEpochEngine == 0, AipsError);
   itsEpochEngine = &engine;
-  extendBase(engine, False);
+  extendBase(engine, false);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MEpoch());
 }
@@ -126,7 +126,7 @@ void RadialVelocityEngine::setEpochEngine(EpochEngine& engine) {
 void RadialVelocityEngine::setPositionEngine(PositionEngine& engine) {
   AlwaysAssert(itsPositionEngine == 0, AipsError);
   itsPositionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MPosition());
 }

@@ -115,17 +115,17 @@ void doit() {
     bi.resize(100UL);
     AlwaysAssertExit(p == bi.storage());
     AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
-    bi.resize(95UL, True);
+    bi.resize(95UL, true);
     AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
     bi[44] = 9876;
-    bi.resize(91UL, True, True);
+    bi.resize(91UL, true, true);
     AlwaysAssertExit(9876 == bi[44]);
     AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
-    bi.resize(89UL, True, False, ArrayInitPolicies::INIT);
+    bi.resize(89UL, true, false, ArrayInitPolicies::INIT);
     AlwaysAssertExit(0 == bi[0] && 0 == bi[30]);
     AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
     p = bi.storage();
-    bi.resize(87UL, False, True, ArrayInitPolicies::NO_INIT);
+    bi.resize(87UL, false, true, ArrayInitPolicies::NO_INIT);
     AlwaysAssertExit(p == bi.storage());
     AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
     bi.resize(105UL);
@@ -144,7 +144,7 @@ void doit() {
     LifecycleChecker::ctor_error_trigger = 10;
     try {
       Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
-      AlwaysAssertExit(False);
+      AlwaysAssertExit(false);
     } catch (...) {
       AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
@@ -154,8 +154,8 @@ void doit() {
     LifecycleChecker::ctor_error_trigger = 20 + 5;
     try {
       Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
-      b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
-      AlwaysAssertExit(False);
+      b.resize(15, true, true, ArrayInitPolicies::NO_INIT);
+      AlwaysAssertExit(false);
     } catch (...) {
       AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
@@ -165,8 +165,8 @@ void doit() {
     LifecycleChecker::ctor_error_trigger = 20 + 5;
     try {
       Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
-      b.resize(15, True, True, ArrayInitPolicies::INIT);
-      AlwaysAssertExit(False);
+      b.resize(15, true, true, ArrayInitPolicies::INIT);
+      AlwaysAssertExit(false);
     } catch (...) {
       AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
@@ -176,8 +176,8 @@ void doit() {
     LifecycleChecker::ctor_error_trigger = 10 + 5;
     try {
       Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
-      b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
-      AlwaysAssertExit(False);
+      b.resize(15, true, true, ArrayInitPolicies::NO_INIT);
+      AlwaysAssertExit(false);
     } catch (...) {
       AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
@@ -187,9 +187,9 @@ void doit() {
     LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
     try {
       Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
-      b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
+      b.resize(15, true, true, ArrayInitPolicies::NO_INIT);
     } catch (...) {
-      AlwaysAssertExit(False);
+      AlwaysAssertExit(false);
     }
     AlwaysAssertExit(LifecycleChecker::ctor_count + 5 == LifecycleChecker::dtor_count);
   }
@@ -198,8 +198,8 @@ void doit() {
     LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
     try {
       Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
-      b.resize(15, True, True, ArrayInitPolicies::INIT);
-      AlwaysAssertExit(False);
+      b.resize(15, true, true, ArrayInitPolicies::INIT);
+      AlwaysAssertExit(false);
     } catch (...) {
       AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
@@ -249,17 +249,17 @@ void doit() {
 
     Int *p = new Int[20];
     try {
-      ba.replaceStorage(20, p, True);
+      ba.replaceStorage(20, p, true);
     } catch (std::exception const &) {
-      AlwaysAssertExit(False);
+      AlwaysAssertExit(false);
     }
     AlwaysAssertExit(0 == p);
 
     p = DefaultAllocator<Int>::type().allocate(20);
     try {
-      ba.replaceStorage(20, p, True, AllocSpec<DefaultAllocator<Int>>::value);
+      ba.replaceStorage(20, p, true, AllocSpec<DefaultAllocator<Int>>::value);
     } catch (std::exception const &) {
-      AlwaysAssertExit(False);
+      AlwaysAssertExit(false);
     }
     AlwaysAssertExit(0 == p);
   }
@@ -301,17 +301,17 @@ void doit() {
   for (i = 0; i < 150; i++) {
     AlwaysAssertExit(bi1[i] == 10);
   }
-  bi1.resize(100, False);  // Block::resize(uInt, Bool)
+  bi1.resize(100, false);  // Block::resize(uInt, Bool)
   AlwaysAssertExit(bi1.nelements() == 150);
   for (i = 0; i < 150; i++) {
     AlwaysAssertExit(bi1[i] == 10);
   }
-  bi1.resize(100, True);
+  bi1.resize(100, true);
   AlwaysAssertExit(bi1.nelements() == 100);
   for (i = 0; i < 100; i++) {
     AlwaysAssertExit(bi1[i] == 10);
   }
-  bi1.resize(150, True, True);  // Block::resize(uInt, Bool, Bool)
+  bi1.resize(150, true, true);  // Block::resize(uInt, Bool, Bool)
   AlwaysAssertExit(bi1.nelements() == 150);
   for (i = 0; i < 100; i++) {
     AlwaysAssertExit(bi1[i] == 10);
@@ -354,12 +354,12 @@ void doit() {
 
   {
     Int *stored = new Int[10];
-    Block<Int> aliased(10, stored, False);
+    Block<Int> aliased(10, stored, false);
     AlwaysAssertExit(stored != 0);
     stored[3] = 454;
     AlwaysAssertExit(aliased[3] == 454);
     Int *stored2 = new Int[10];
-    aliased.replaceStorage(10, stored2, False);
+    aliased.replaceStorage(10, stored2, false);
     stored2[3] = 999;
     AlwaysAssertExit(aliased[3] == 999);
     delete[] stored;

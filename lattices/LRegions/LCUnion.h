@@ -76,14 +76,14 @@ class LCUnion : public LCRegionMulti {
   LCUnion(const LCRegion& region1, const LCRegion& region2);
 
   // Construct from multiple regions.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   // <group>
-  LCUnion(Bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
+  LCUnion(bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
           const LCRegion* region3 = 0, const LCRegion* region4 = 0, const LCRegion* region5 = 0,
           const LCRegion* region6 = 0, const LCRegion* region7 = 0, const LCRegion* region8 = 0,
           const LCRegion* region9 = 0, const LCRegion* region10 = 0);
-  LCUnion(Bool takeOver, const Block<const LCRegion*>& regions);
+  LCUnion(bool takeOver, const Block<const LCRegion*>& regions);
   // </group>
 
   // Copy constructor (copy semantics).
@@ -110,7 +110,7 @@ class LCUnion : public LCRegionMulti {
   static LCUnion* fromRecord(const TableRecord&, const String& tableName);
 
  protected:
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
@@ -119,7 +119,7 @@ class LCUnion : public LCRegionMulti {
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
+  void multiGetSlice(Array<bool>& buffer, const Slicer& section) override;
 
  private:
   // Make the bounding box and determine the offsets.

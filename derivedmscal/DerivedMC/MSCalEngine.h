@@ -152,7 +152,7 @@ class MSCalEngine {
   void getItrf(Int antnr, rownr_t rownr, Array<Double>&);
 
   // Get the UVW in J2000 or APP for the given row.
-  void getNewUVW(Bool asApp, rownr_t rownr, Array<Double>&);
+  void getNewUVW(bool asApp, rownr_t rownr, Array<Double>&);
 
   // Get the delay for the given row.
   double getDelay(Int antnr, rownr_t rownr);
@@ -167,7 +167,7 @@ class MSCalEngine {
   // Set the data in the measure converter machines.
   // The antenna positions are only filled in antnr>=0 or if fillAnt is set.
   // It returns the mount of the antenna.
-  Int setData(Int antnr, rownr_t rownr, Bool fillAnt = False);
+  Int setData(Int antnr, rownr_t rownr, bool fillAnt = false);
 
   // Initialize the column objects, etc.
   void init();
@@ -184,7 +184,7 @@ class MSCalEngine {
   void fillFieldDir(Int calDescId, Int calInx);
 
   // Get a calibration MS subtable for the given id.
-  Table getSubTable(Int calDescId, const String& subTabName, Bool mustExist = True);
+  Table getSubTable(Int calDescId, const String& subTabName, bool mustExist = true);
 
   // # Declare member variables.
   Table itsTable;      // # MS or CalTable to use
@@ -205,7 +205,7 @@ class MSCalEngine {
   vector<vector<MPosition>> itsAntPos;       // # ITRF antenna positions
   vector<vector<Int>> itsMount;              // # 1=alt-az  0=else
   vector<vector<MDirection>> itsFieldDir;    // # J2000 field directions
-  Bool itsReadFieldDir;                      // # False: explicit directions
+  bool itsReadFieldDir;                      // # false: explicit directions
   String itsDirColName;                      // # FIELD DIR column to read
   vector<vector<MBaseline>> itsAntMB;        // # J2000 MBaseline per antenna
   vector<vector<Vector<double>>> itsAntUvw;  // # J2000 UVW per antenna

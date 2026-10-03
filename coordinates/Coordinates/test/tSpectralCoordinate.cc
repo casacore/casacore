@@ -121,7 +121,7 @@ int main() {
         throw(AipsError(String("The native type of the coordinate should be WAVE")));
 
       // create the cSys as air wavelength and check the spectral type
-      lc2 = SpectralCoordinate(MFrequency::TOPO, wavelengths, String("m"), 0.0, True);
+      lc2 = SpectralCoordinate(MFrequency::TOPO, wavelengths, String("m"), 0.0, true);
       if (lc2.nativeType() != SpectralCoordinate::AWAV)
         throw(AipsError(String("The native type of the coordinate should be AWAV")));
     }
@@ -130,7 +130,7 @@ int main() {
     {
       String sType;
       SpectralCoordinate::SpecType spcType;
-      Bool rval;
+      bool rval;
 
       // sType = SpectralCoordinate::specTypetoString(SpectralCoordinate::FREQ);
       rval = SpectralCoordinate::specTypetoString(sType, SpectralCoordinate::FREQ);
@@ -350,7 +350,7 @@ int main() {
       }
       //
       restFreq = 1.3;
-      if (!lc.setRestFrequency(restFreq, False)) {
+      if (!lc.setRestFrequency(restFreq, false)) {
         throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
       }
       if (!near(restFreq, lc.restFrequency())) {
@@ -360,7 +360,7 @@ int main() {
       Vector<Double> rf(2);
       rf(0) = lc.restFrequency();
       rf(1) = restFreq;
-      if (!lc.setRestFrequency(restFreq, True)) {
+      if (!lc.setRestFrequency(restFreq, true)) {
         throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
       }
       if (!near(restFreq, lc.restFrequency())) {
@@ -368,9 +368,9 @@ int main() {
       }
       //
       restFreq = 1.4;
-      rf.resize(3, True);
+      rf.resize(3, true);
       rf(2) = restFreq;
-      if (!lc.setRestFrequency(restFreq, True)) {
+      if (!lc.setRestFrequency(restFreq, true)) {
         throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
       }
       if (!near(restFreq, lc.restFrequency())) {
@@ -400,7 +400,7 @@ int main() {
       rf.resize(2);
       rf(0) = 1e9;
       rf(1) = 2e9;
-      lc.setRestFrequencies(rf, 0, False);
+      lc.setRestFrequencies(rf, 0, false);
       const Vector<Double>& restFreqs2 = lc.restFrequencies();
       if (restFreqs2.nelements() != rf.nelements()) {
         throw(AipsError("Failed setRestFrequencies test 1"));
@@ -418,12 +418,12 @@ int main() {
       //
       Int prec;
       Coordinate::formatType fType = Coordinate::SCIENTIFIC;
-      lc.getPrecision(prec, fType, True, 6, 4, 2);
+      lc.getPrecision(prec, fType, true, 6, 4, 2);
       if (prec != 6) {
         throw(AipsError("Failed getPrecision test 1"));
       }
       fType = Coordinate::FIXED;
-      lc.getPrecision(prec, fType, True, 6, 4, 2);
+      lc.getPrecision(prec, fType, true, 6, 4, 2);
       if (prec != 4) {
         throw(AipsError("Failed getPrecision test 2"));
       }
@@ -436,7 +436,7 @@ int main() {
         String unit("km/s");
         Double val = lc.restFrequency();
         lc.setVelocity(String("m/s"), MDoppler::Z);
-        String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+        String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
         if (str != String("0.0000")) {
           throw(AipsError("Failed format test 3"));
         }
@@ -447,7 +447,7 @@ int main() {
         //
         String unit;
         Double val = 0.0;
-        String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+        String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
         if (str != String("0.0000")) {
           cerr << str << endl;
           throw(AipsError("Failed format test 4"));
@@ -460,9 +460,9 @@ int main() {
       {
         String unit;
         Double val = 1.4e9;
-        lc.setRestFrequency(val, False);
+        lc.setRestFrequency(val, false);
         lc.setVelocity(String("m/s"), MDoppler::Z);
-        String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+        String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
         if (str != String("1400000000.0000")) {
           cerr << str << endl;
           throw(AipsError("Failed format test 5"));
@@ -478,7 +478,7 @@ int main() {
         units(0) = "GHz";
         lc.setWorldAxisUnits(units);
         Double val = 100;
-        String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+        String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
         if (str != String("0.0030")) {
           cerr << str << endl;
           throw(AipsError("Failed format test 6"));
@@ -517,7 +517,7 @@ int main() {
       SpectralCoordinate lc2 = makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
       //
       AlwaysAssert(lc.nPixelAxes() == 1, AipsError);
-      Vector<Bool> axes(1, True);
+      Vector<bool> axes(1, true);
       Vector<Int> shape(1);
       shape(0) = 128;
 
@@ -549,7 +549,7 @@ int main() {
       // No axes
 
       {
-        axes.set(False);
+        axes.set(false);
         Coordinate* pC = lc.makeFourierCoordinate(axes, shape);
         if (pC) {
           delete pC;
@@ -560,7 +560,7 @@ int main() {
       // Non linear
 
       {
-        axes.set(True);
+        axes.set(true);
         Coordinate* pC = lc2.makeFourierCoordinate(axes, shape);
         if (pC) {
           delete pC;
@@ -1003,7 +1003,7 @@ int main() {
       Vector<Double> rf(2);
       rf(0) = 1.0e9;
       rf(1) = 2.0e9;
-      lc.setRestFrequencies(rf, 0, False);
+      lc.setRestFrequencies(rf, 0, false);
       Record rec;
       if (!lc.save(rec, "linear")) {
         throw(AipsError("Linear SpectralCoordinate saving to Record failed"));
@@ -1022,7 +1022,7 @@ int main() {
       Vector<Double> rf(2);
       rf(0) = 1.0e9;
       rf(1) = 2.0e9;
-      lc.setRestFrequencies(rf, 0, False);
+      lc.setRestFrequencies(rf, 0, false);
       Record rec;
       if (!lc.save(rec, "nonlinear")) {
         throw(AipsError("Non-linear SpectralCoordinate saving to Record failed"));
@@ -1061,9 +1061,9 @@ int main() {
       Vector<Double> world(1);
       sc.toWorld(world, pixel);
       AlwaysAssert(near(world[0], 1.50121e+09, 1e-5), AipsError);
-      sc.toWorld(world, pixel, True);
+      sc.toWorld(world, pixel, true);
       AlwaysAssert(near(world[0], 1.50121e+09, 1e-5), AipsError);
-      sc.toWorld(world, pixel, False);
+      sc.toWorld(world, pixel, false);
       AlwaysAssert(world[0] == 1.50001e+09, AipsError);
     }
 

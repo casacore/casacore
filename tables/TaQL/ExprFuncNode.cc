@@ -337,7 +337,7 @@ void TableExprFuncNode::tryToConst() {
   }
 }
 
-Bool TableExprFuncNode::getBool(const TableExprId& id) {
+bool TableExprFuncNode::getBool(const TableExprId& id) {
   switch (funcType_p) {
     case boolFUNC:
       if (operands_p[0]->dataType() == NTBool) {
@@ -400,16 +400,16 @@ Bool TableExprFuncNode::getBool(const TableExprId& id) {
                 "unknown datatype in isNull function");
         }
       }
-      return False;
+      return false;
     case iscolFUNC:
       return table_p.tableDesc().isColumn(operands_p[0]->getString(id));
     case iskeyFUNC: {
       String name = operands_p[0]->getString(id);
       String shand, columnName;
       Vector<String> fieldNames;
-      TableParseUtil::splitName(shand, columnName, fieldNames, name, True, True, False);
+      TableParseUtil::splitName(shand, columnName, fieldNames, name, true, true, false);
       if (!shand.empty()) {
-        return False;
+        return false;
       }
       const TableRecord* rec;
       String fullName;
@@ -422,7 +422,7 @@ Bool TableExprFuncNode::getBool(const TableExprId& id) {
           rec = TableExprNode::findLastKeyRec(colkeys, fieldNames, fullName);
         }
       } catch (const std::exception&) {
-        return False;
+        return false;
       }
       String keyName = fieldNames[fieldNames.size() - 1];
       return rec->isDefined(keyName);
@@ -459,7 +459,7 @@ Bool TableExprFuncNode::getBool(const TableExprId& id) {
                        "unknown function " +
                        std::to_string(funcType_p)));
   }
-  return True;
+  return true;
 }
 
 Int64 TableExprFuncNode::getInt(const TableExprId& id) {
@@ -1019,11 +1019,11 @@ String TableExprFuncNode::getString(const TableExprId& id) {
 TaqlRegex TableExprFuncNode::getRegex(const TableExprId& id) {
   switch (funcType_p) {
     case regexFUNC:
-      return TaqlRegex(Regex(operands_p[0]->getString(id), True));
+      return TaqlRegex(Regex(operands_p[0]->getString(id), true));
     case patternFUNC:
-      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString(id)), True));
+      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString(id)), true));
     case sqlpatternFUNC:
-      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString(id)), True));
+      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString(id)), true));
     case iifFUNC:
       return operands_p[0]->getBool(id) ? operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
     default:
@@ -1091,7 +1091,7 @@ std::pair<int, int> TableExprFuncNode::getMVFormat(const String& fmt) {
       separator = '|';
     }
     Vector<String> fmts = stringToVector(fmt, separator);
-    Bool ok = True;
+    bool ok = true;
     for (uInt i = 0; i < fmts.size(); ++i) {
       TrimInPlace(fmts[i]);
       ToUpperCaseInPlace(fmts[i]);
@@ -1104,11 +1104,11 @@ std::pair<int, int> TableExprFuncNode::getMVFormat(const String& fmt) {
         } else {
           // Unknown format. See if it is an integer (giving the precision).
           Int p;
-          if (StringToValue(fmts[i], p, False)) {
+          if (StringToValue(fmts[i], p, false)) {
             prec = p;
           } else {
             // No integer, so it must be a printf format.
-            ok = False;
+            ok = false;
           }
         }
       }
@@ -1140,7 +1140,7 @@ String TableExprFuncNode::stringDate(const MVTime& dt) {
 String TableExprFuncNode::stringTime(const MVTime& dt, Int prec) {
   return stringDT(dt, prec, MVTime::TIME);
 }
-String TableExprFuncNode::stringValue(Bool val, const String& fmt, Int width) {
+String TableExprFuncNode::stringValue(bool val, const String& fmt, Int width) {
   if (fmt.empty()) {
     return stringValue(String(val ? "True " : "False"), fmt, width);
   }
@@ -1798,7 +1798,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands(Block<Int>& dtyp
       dtypeOper.resize(3);
       dtypeOper[0] = dtypeTmp[0];
       // Do not allow automatic conversion to date/time.
-      NodeDataType dt = checkDT(dtypeTmp, NTAny, NTAny, nodeArg, False);
+      NodeDataType dt = checkDT(dtypeTmp, NTAny, NTAny, nodeArg, false);
       dtypeOper[1] = dtypeTmp[0];
       dtypeOper[2] = dtypeTmp[1];
       return dt;
@@ -1869,14 +1869,14 @@ DComplex TableExprFuncNode::string2Complex(const String& str) {
   return DComplex(r, i);
 }
 
-Bool TableExprFuncNode::string2Bool(const String& str) {
+bool TableExprFuncNode::string2Bool(const String& str) {
   String s(str);
   TrimInPlace(s);
   ToLowerCaseInPlace(s);
   if (s.empty() || s == "f" || s == "false" || s == "0" || s == "-" || s == "n" || s == "no") {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

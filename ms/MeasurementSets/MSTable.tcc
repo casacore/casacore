@@ -55,22 +55,22 @@ MSTable<MSEnum>::MSTable(const String& tableName, const String& tableDescName,
     : Table(tableName, tableDescName, lockOptions, option) {}
 
 template <class MSEnum>
-MSTable<MSEnum>::MSTable(SetupNewTable& newTab, rownr_t nrrow, Bool initialize)
+MSTable<MSEnum>::MSTable(SetupNewTable& newTab, rownr_t nrrow, bool initialize)
     : Table(MSTableImpl::setupCompression(newTab), nrrow, initialize) {}
 
 template <class MSEnum>
 MSTable<MSEnum>::MSTable(SetupNewTable& newTab, const TableLock& lockOptions, rownr_t nrrow,
-                         Bool initialize)
+                         bool initialize)
     : Table(MSTableImpl::setupCompression(newTab), lockOptions, nrrow, initialize) {}
 
 #ifdef HAVE_MPI
 template <class MSEnum>
-MSTable<MSEnum>::MSTable(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow, Bool initialize)
+MSTable<MSEnum>::MSTable(MPI_Comm comm, SetupNewTable& newTab, rownr_t nrrow, bool initialize)
     : Table(comm, MSTableImpl::setupCompression(newTab), nrrow, initialize) {}
 
 template <class MSEnum>
 MSTable<MSEnum>::MSTable(MPI_Comm comm, SetupNewTable& newTab, const TableLock& lockOptions,
-                         rownr_t nrrow, Bool initialize)
+                         rownr_t nrrow, bool initialize)
     : Table(comm, MSTableImpl::setupCompression(newTab), lockOptions, nrrow, initialize) {}
 #endif  // HAVE_MPI
 
@@ -148,27 +148,27 @@ const String& MSTable<MSEnum>::keywordStandardComment(MSTable<MSEnum>::KeyEnum w
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::isColumn(MSTable<MSEnum>::ColEnum which) const {
+bool MSTable<MSEnum>::isColumn(MSTable<MSEnum>::ColEnum which) const {
   return tableDesc().isColumn(columnName(which));
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::isColumnWritable(MSTable<MSEnum>::ColEnum which) const {
+bool MSTable<MSEnum>::isColumnWritable(MSTable<MSEnum>::ColEnum which) const {
   return Table::isColumnWritable(columnName(which));
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::isKeyword(MSTable<MSEnum>::KeyEnum which) const {
+bool MSTable<MSEnum>::isKeyword(MSTable<MSEnum>::KeyEnum which) const {
   return keywordSet().isDefined(keywordName(which));
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::isScalar(MSTable<MSEnum>::ColEnum which) const {
+bool MSTable<MSEnum>::isScalar(MSTable<MSEnum>::ColEnum which) const {
   return tableDesc().columnDesc(columnName(which)).isScalar();
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::isArray(MSTable<MSEnum>::ColEnum which) const {
+bool MSTable<MSEnum>::isArray(MSTable<MSEnum>::ColEnum which) const {
   return tableDesc().columnDesc(columnName(which)).isArray();
 }
 
@@ -227,7 +227,7 @@ void MSTable<MSEnum>::addKeyToDesc(MSTableMaps& maps, MSTable<MSEnum>::KeyEnum k
 
 template <class MSEnum>
 void MSTable<MSEnum>::addColumnCompression(TableDesc& td, MSTable<MSEnum>::ColEnum which,
-                                           Bool autoScale, const String& type) {
+                                           bool autoScale, const String& type) {
   MSTableImpl::addColumnCompression(td, columnName(which), autoScale, type);
 }
 
@@ -248,12 +248,12 @@ void MSTable<MSEnum>::keyMapDef(MSTableMaps& maps, MSTable<MSEnum>::KeyEnum key,
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::validate(const TableDesc& tabDesc) {
+bool MSTable<MSEnum>::validate(const TableDesc& tabDesc) {
   return MSTableImpl::validate(tabDesc, getMaps().requiredTD_p);
 }
 
 template <class MSEnum>
-Bool MSTable<MSEnum>::validate(const TableRecord& tabKeySet) {
+bool MSTable<MSEnum>::validate(const TableRecord& tabKeySet) {
   return MSTableImpl::validate(tabKeySet, getMaps().requiredTD_p);
 }
 

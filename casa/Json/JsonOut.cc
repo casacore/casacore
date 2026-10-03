@@ -55,7 +55,7 @@ void JsonOut::start(const String& commentStart, const String& commentEnd, const 
   itsCommentEnd = commentEnd;
   itsLevel = 1;
   itsFirstName.resize(1);
-  itsFirstName[0] = True;
+  itsFirstName[0] = true;
 }
 
 void JsonOut::end() {
@@ -73,7 +73,7 @@ void JsonOut::startNested(const String& name, const String& comment) {
   itsIndent += itsIndentStep;
   itsLevel++;
   itsFirstName.resize(itsLevel);
-  itsFirstName[itsLevel - 1] = True;
+  itsFirstName[itsLevel - 1] = true;
 }
 
 void JsonOut::endNested() {
@@ -170,7 +170,7 @@ void JsonOut::putName(const String& name) {
   itsStream << itsIndent;
   if (itsFirstName[itsLevel - 1]) {
     itsStream << ' ';
-    itsFirstName[itsLevel - 1] = False;
+    itsFirstName[itsLevel - 1] = false;
   } else {
     itsStream << ',';
   }
@@ -179,7 +179,7 @@ void JsonOut::putName(const String& name) {
 
 void JsonOut::putNull() { itsStream << "null"; }
 
-void JsonOut::put(Bool value) { itsStream << (value ? "true" : "false"); }
+void JsonOut::put(bool value) { itsStream << (value ? "true" : "false"); }
 void JsonOut::put(Float value) {
   if (!isFinite(value)) {
     putNull();
@@ -243,7 +243,7 @@ void JsonOut::put(const Record& rec) {
   itsIndent += itsIndentStep;
   itsLevel++;
   itsFirstName.resize(itsLevel);
-  itsFirstName[itsLevel - 1] = True;
+  itsFirstName[itsLevel - 1] = true;
   for (uInt i = 0; i < rec.nfields(); ++i) {
     write(rec.name(i), rec.asValueHolder(i));
   }

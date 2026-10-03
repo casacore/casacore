@@ -68,7 +68,7 @@ class TabPath {
   ~TabPath();
 
   // Find a file in one of the directories.
-  Bool found(const String&, String&) const;
+  bool found(const String&, String&) const;
 
   // Get the directory name.
   const String& dir(uInt dirnr) const;

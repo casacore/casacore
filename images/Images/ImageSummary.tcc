@@ -118,7 +118,7 @@ IPosition ImageSummary<T>::tileShape() const
 }
 
 template <class T>
-Vector<String> ImageSummary<T>::axisNames(Bool pixelOrder) const {
+Vector<String> ImageSummary<T>::axisNames(bool pixelOrder) const {
   Vector<String> tmp(cSys_p.worldAxisNames());
   if (!pixelOrder) return tmp.copy();
   //
@@ -133,7 +133,7 @@ Vector<String> ImageSummary<T>::axisNames(Bool pixelOrder) const {
 }
 
 template <class T>
-Vector<Double> ImageSummary<T>::referencePixels(Bool oneRel) const
+Vector<Double> ImageSummary<T>::referencePixels(bool oneRel) const
 //
 // Get reference pixels for the pixel axes
 //
@@ -144,7 +144,7 @@ Vector<Double> ImageSummary<T>::referencePixels(Bool oneRel) const
 }
 
 template <class T>
-Vector<Double> ImageSummary<T>::referenceValues(Bool pixelOrder) const {
+Vector<Double> ImageSummary<T>::referenceValues(bool pixelOrder) const {
   Vector<Double> tmp(cSys_p.referenceValue());
   if (!pixelOrder) return tmp.copy();
   //
@@ -159,7 +159,7 @@ Vector<Double> ImageSummary<T>::referenceValues(Bool pixelOrder) const {
 }
 
 template <class T>
-Vector<Double> ImageSummary<T>::axisIncrements(Bool pixelOrder) const {
+Vector<Double> ImageSummary<T>::axisIncrements(bool pixelOrder) const {
   Vector<Double> tmp(cSys_p.increment());
   if (!pixelOrder) return tmp.copy();
   //
@@ -174,7 +174,7 @@ Vector<Double> ImageSummary<T>::axisIncrements(Bool pixelOrder) const {
 }
 
 template <class T>
-Vector<String> ImageSummary<T>::axisUnits(Bool pixelOrder) const {
+Vector<String> ImageSummary<T>::axisUnits(bool pixelOrder) const {
   Vector<String> tmp(cSys_p.worldAxisUnits());
   if (!pixelOrder) return tmp.copy();
   //
@@ -195,7 +195,7 @@ Unit ImageSummary<T>::units() const {
 
 template <class T>
 String ImageSummary<T>::name() const {
-  const Bool stripPath = True;
+  const bool stripPath = true;
   String name = pImage_p->name(stripPath);
   if (name.length() == 0) {
     name = String("Temporary_image");
@@ -221,8 +221,8 @@ String ImageSummary<T>::telescope() const {
 }
 
 template <class T>
-Bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<Double>& restFreq) const {
-  Bool ok = False;
+bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<Double>& restFreq) const {
+  bool ok = false;
   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
   if (spectralAxis >= 0) {
     Int coordinate, axisInCoordinate;
@@ -232,7 +232,7 @@ Bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<Double>& res
     if (rf > 0.0) {
       restFreq.setValue(rf);
       restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
-      ok = True;
+      ok = true;
     }
   }
   if (ok) {
@@ -245,14 +245,14 @@ Bool ImageSummary<T>::restFrequency(String& restFreqString, Quantum<Double>& res
     restFreq.setValue(0.0);
     restFreq.setUnit("Hz");
     restFreqString = "";
-    ok = False;
+    ok = false;
   }
   return ok;
 }
 
 template <class T>
-Bool ImageSummary<T>::frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const {
-  Bool ok;
+bool ImageSummary<T>::frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const {
+  bool ok;
   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
   if (spectralAxis >= 0) {
     Int coordinate, axisInCoordinate;
@@ -260,33 +260,33 @@ Bool ImageSummary<T>::frequencySystem(String& freqTypeString, MFrequency::Types&
     //
     freqType = cSys_p.spectralCoordinate(uInt(coordinate)).frequencySystem();
     freqTypeString = MFrequency::showType(freqType);
-    ok = True;
+    ok = true;
   } else {
     freqTypeString = "";
-    ok = False;
+    ok = false;
   }
   return ok;
 }
 
 template <class T>
-Bool ImageSummary<T>::directionSystem(String& dirTypeString, MDirection::Types& dirType) const {
-  Bool ok;
+bool ImageSummary<T>::directionSystem(String& dirTypeString, MDirection::Types& dirType) const {
+  bool ok;
   Vector<Int> pixelAxes, worldAxes;
   Int coordinate;
   CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys_p);
   if (coordinate >= 0) {
-    ok = True;
+    ok = true;
     dirType = cSys_p.directionCoordinate(uInt(coordinate)).directionType();
     dirTypeString = MDirection::showType(dirType);
   } else {
-    ok = False;
+    ok = false;
     dirTypeString = "";
   }
   return ok;
 }
 
 template <class T>
-Bool ImageSummary<T>::hasAMask() const
+bool ImageSummary<T>::hasAMask() const
 //
 // See if image has a mask
 //
@@ -316,7 +316,7 @@ String ImageSummary<T>::imageType() const {
 
 template <class T>
 Vector<String> ImageSummary<T>::list(LogIO& os, const MDoppler::Types velocityType,
-                                     Bool postLocally, const Bool verbose) {
+                                     bool postLocally, const bool verbose) {
   os << LogIO::NORMAL << endl;
   MEpoch epoch;
   obsDate(epoch);
@@ -351,7 +351,7 @@ Vector<String> ImageSummary<T>::list(LogIO& os, const MDoppler::Types velocityTy
         majAx.convert(Unit("arcsec"));
         minAx.convert(Unit("arcsec"));
       }
-      Quantity pa = rb.getPA(True);
+      Quantity pa = rb.getPA(true);
       pa.convert(Unit("deg"));
       os.output() << "Restoring Beam   : " << majAx << ", " << minAx << ", " << pa << endl;
     } else {
@@ -373,10 +373,10 @@ Vector<String> ImageSummary<T>::list(LogIO& os, const MDoppler::Types velocityTy
 }
 
 template <class T>
-Bool ImageSummary<T>::setNewImage(const ImageInterface<T>& image) {
+bool ImageSummary<T>::setNewImage(const ImageInterface<T>& image) {
   // FIXME this should be done using shared pointers
   pImage_p = &image;
-  return True;
+  return true;
 }
 
 template <class T>

@@ -61,20 +61,20 @@ void check(const TableRecord&, Int intValue, uInt nrField);
 // This function checks if a field name is correct.
 // A name has to be > 0 characters and start with an uppercase.
 // The extra argument should not be 10.
-Bool nameCallBack(const String& name, DataType, const void* extraArgument, String& message) {
+bool nameCallBack(const String& name, DataType, const void* extraArgument, String& message) {
   if (name.length() < 1) {
     message = "length<1";
-    return False;
+    return false;
   }
   if (name[0] < 'A' || name[0] > 'Z') {
     message = "no uppercase";
-    return False;
+    return false;
   }
   if (extraArgument != 0 && *(const Int*)extraArgument == 10) {
     message = "extra==10";
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 // This function is doing define's and assign's in several ways.
@@ -150,13 +150,13 @@ void doDefineAssign(const TableRecord& inrecord) {
   AlwaysAssertExit(allEQ(vec, stringToVector("j,k,l")));
 
   try {
-    record.define("TpBool", Vector<Bool>(2, False));
+    record.define("TpBool", Vector<bool>(2, false));
   } catch (std::exception& x) {
     cout << x.what() << endl;
   }
 }
 
-void doSubRecord(Bool doExcp, const RecordDesc& desc) {
+void doSubRecord(bool doExcp, const RecordDesc& desc) {
   Int subField = desc.fieldNumber("SubRecord");
   Int subField1 = desc.fieldNumber("SubRecord1");
   desc.subRecord(subField);
@@ -215,7 +215,7 @@ void doSubRecord(Bool doExcp, const RecordDesc& desc) {
   cout << trec;
 }
 
-void doIt(Bool doExcp) {
+void doIt(bool doExcp) {
   // Create a record description with all types.
   Int extraArgument = 0;
   RecordDesc rd;
@@ -292,7 +292,7 @@ void doIt(Bool doExcp) {
 
   //    void define (const String& name, value);
   //    void define (const String& name, value, Bool fixedShape);
-  record.define("TpBool2", False);
+  record.define("TpBool2", false);
   rd.addField("TpBool2a", TpBool);
   record.define("TpUChar2", uChar(1));
   rd.addField("TpUChar2a", TpUChar);
@@ -310,7 +310,7 @@ void doIt(Bool doExcp) {
   rd.addField("TpComplex2a", TpComplex);
   record.define("TpDComplex2", DComplex(9, 10));
   rd.addField("TpDComplex2a", TpDComplex);
-  record.define("TpArrayString2", stringToVector("abcd,ghi,jklmn"), True);
+  record.define("TpArrayString2", stringToVector("abcd,ghi,jklmn"), true);
   rd.addField("TpArrayString2a", TpArrayString, IPosition(1, 3));
   record.define("TpArrayString3", stringToVector("abc,dghij,klmn"));
   rd.addField("TpArrayString3a", TpArrayString);
@@ -371,7 +371,7 @@ void doIt(Bool doExcp) {
   }
 
   //    TableRecord(const TableRecord &other);
-  //    Bool conform(const TableRecord &other);
+  //    bool conform(const TableRecord &other);
   TableRecord record3(record2);
   TableRecord record4(record2.description());
   record4 = record3;
@@ -383,7 +383,7 @@ void doIt(Bool doExcp) {
   AlwaysAssertExit(!record.conform(record5));
 
   // Scalar fields
-  RecordFieldPtr<Bool> boolField(record, 0);
+  RecordFieldPtr<bool> boolField(record, 0);
   RecordFieldPtr<uChar> ucharField(record, 1);
   RecordFieldPtr<Short> shortField(record, 2);
   RecordFieldPtr<Int> intField(record, 3);
@@ -397,7 +397,7 @@ void doIt(Bool doExcp) {
   //    T &operator*()
   //    const T &operator*() const
   //    define (const T& value)
-  *boolField = True;
+  *boolField = true;
   *ucharField = 255;
   AlwaysAssertExit(*((const RecordFieldPtr<uChar>&)ucharField) == 255);
   *shortField = 32767;
@@ -410,7 +410,7 @@ void doIt(Bool doExcp) {
   *stringField = "Hello";
 
   // Array fields
-  RecordFieldPtr<Array<Bool>> arrayboolField(record, 10);
+  RecordFieldPtr<Array<bool>> arrayboolField(record, 10);
   RecordFieldPtr<Array<uChar>> arrayucharField(record, 11);
   RecordFieldPtr<Array<Short>> arrayshortField(record, 12);
   RecordFieldPtr<Array<Int>> arrayintField(record, 13);
@@ -421,7 +421,7 @@ void doIt(Bool doExcp) {
   RecordFieldPtr<Array<DComplex>> arraydcomplexField(record, 18);
   RecordFieldPtr<Array<String>> arraystringField(record, 19);
   arrayboolField.setComment("comment for TpArrayBool");
-  *arrayboolField = True;
+  *arrayboolField = true;
   *arrayucharField = 255;
   *arrayshortField = 32767;
   *arrayintField = -1234567;
@@ -511,7 +511,7 @@ void doIt(Bool doExcp) {
   // RecordFieldPtr members.
   //    RecordFieldPtr();
   //    void attachToRecord(TableRecord &record, uInt whichField);
-  //    virtual Bool isAttached()
+  //    virtual bool isAttached()
   RecordFieldPtr<uChar> ucharField2;
   AlwaysAssertExit(!ucharField2.isAttached());
   ucharField2.attachToRecord(record, 1);
@@ -563,7 +563,7 @@ void doIt(Bool doExcp) {
 // so they are given as arguments.
 void check(const TableRecord& record, Int intValue, uInt nrField) {
   AlwaysAssertExit(record.nfields() == nrField);
-  RORecordFieldPtr<Bool> boolField(record, 0);
+  RORecordFieldPtr<bool> boolField(record, 0);
   RORecordFieldPtr<uChar> ucharField(record, 1);
   RORecordFieldPtr<Short> shortField(record, 2);
   RORecordFieldPtr<Int> intField(record, 3);
@@ -576,7 +576,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
   //    RORecordFieldPtr(TableRecord &record, uInt whichField);
   //    const T &operator*() const {return *field_ptr_p;}
   AlwaysAssertExit(boolField.comment() == "comment for TpBool");
-  AlwaysAssertExit(*boolField == True);
+  AlwaysAssertExit(*boolField == true);
   AlwaysAssertExit(*ucharField == 255);
   AlwaysAssertExit(*shortField == 32767);
   AlwaysAssertExit(intField.get() == intValue);
@@ -587,7 +587,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
   AlwaysAssertExit(*dcomplexField == DComplex(5.0, 1.0));
   AlwaysAssertExit(*stringField == "Hello");
 
-  Bool bv;
+  bool bv;
   uChar ucv;
   Short sv;
   Int iv;
@@ -608,7 +608,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
   record.get(29, cv);
   record.get(30, dcv);
   record.get(33, strv);
-  AlwaysAssertExit(bv == False);
+  AlwaysAssertExit(bv == false);
   AlwaysAssertExit(ucv == 1);
   AlwaysAssertExit(sv == 2);
   AlwaysAssertExit(iv == 3);
@@ -630,7 +630,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
   AlwaysAssertExit(allEQ(record.asArrayString(33), strv));
 
   // Scalars as Arrays.
-  RORecordFieldPtr<Array<Bool>> boolFieldA(record, 0);
+  RORecordFieldPtr<Array<bool>> boolFieldA(record, 0);
   RORecordFieldPtr<Array<uChar>> ucharFieldA(record, 1);
   RORecordFieldPtr<Array<Short>> shortFieldA(record, 2);
   RORecordFieldPtr<Array<Int>> intFieldA(record, 3);
@@ -640,7 +640,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
   RORecordFieldPtr<Array<Complex>> complexFieldA(record, 7);
   RORecordFieldPtr<Array<DComplex>> dcomplexFieldA(record, 8);
   RORecordFieldPtr<Array<String>> stringFieldA(record, 9);
-  AlwaysAssertExit(allEQ(*boolFieldA, Vector<Bool>(1, *boolField)));
+  AlwaysAssertExit(allEQ(*boolFieldA, Vector<bool>(1, *boolField)));
   AlwaysAssertExit(allEQ(*ucharFieldA, Vector<uChar>(1, *ucharField)));
   AlwaysAssertExit(allEQ(*shortFieldA, Vector<Short>(1, *shortField)));
   AlwaysAssertExit(allEQ(*intFieldA, Vector<Int>(1, *intField)));
@@ -652,7 +652,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
   AlwaysAssertExit(allEQ(*stringFieldA, Vector<String>(1, *stringField)));
 
   // Array fields
-  RORecordFieldPtr<Array<Bool>> arrayboolField(record, 10);
+  RORecordFieldPtr<Array<bool>> arrayboolField(record, 10);
   RORecordFieldPtr<Array<uChar>> arrayucharField(record, 11);
   RORecordFieldPtr<Array<Short>> arrayshortField(record, 12);
   RORecordFieldPtr<Array<Int>> arrayintField(record, 13);
@@ -707,7 +707,7 @@ void check(const TableRecord& record, Int intValue, uInt nrField) {
 }
 
 // Test Table specific things.
-void testTable(Bool doExcp) {
+void testTable(bool doExcp) {
   // Create a table description and table.
   TableDesc td1("td1", TableDesc::Scratch);
   td1.addColumn(ScalarColumnDesc<Int>("col1"));
@@ -842,7 +842,7 @@ void testTable(Bool doExcp) {
   AlwaysAssertExit(keyvalue1 == 10);
 }
 
-void testTable2(Bool) {
+void testTable2(bool) {
   TableRecord rec1;
   AipsIO aos("tTableRecord_tmp.data");
   aos >> rec1;

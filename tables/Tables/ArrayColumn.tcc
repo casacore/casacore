@@ -108,7 +108,7 @@ Array<T> ArrayColumn<T>::get(rownr_t rownr) const {
 }
 
 template <class T>
-void ArrayColumn<T>::get(rownr_t rownr, Array<T>& arr, Bool resize) const {
+void ArrayColumn<T>::get(rownr_t rownr, Array<T>& arr, bool resize) const {
   acbGet(rownr, arr, resize);
 }
 
@@ -121,7 +121,7 @@ Array<T> ArrayColumn<T>::getSlice(rownr_t rownr, const Slicer& arraySection) con
 
 template <class T>
 void ArrayColumn<T>::getSlice(rownr_t rownr, const Slicer& arraySection, Array<T>& arr,
-                              Bool resize) const {
+                              bool resize) const {
   acbGetSlice(rownr, arraySection, arr, resize);
 }
 
@@ -134,13 +134,13 @@ Array<T> ArrayColumn<T>::getSlice(rownr_t rownr, const Vector<Vector<Slice>>& ar
 
 template <class T>
 void ArrayColumn<T>::getSlice(rownr_t rownr, const Vector<Vector<Slice>>& arraySlices,
-                              Array<T>& arr, Bool resize) const {
+                              Array<T>& arr, bool resize) const {
   acbGetSlice(rownr, arraySlices, arr, resize);
 }
 
 template <class T>
 void ArrayColumn<T>::getColumnCells(const RefRows& rows, const ColumnSlicer& columnSlicer,
-                                    Array<T>& destination, Bool resize) const {
+                                    Array<T>& destination, bool resize) const {
   acbGetColumnCells(rows, columnSlicer, destination, resize);
 }
 
@@ -187,7 +187,7 @@ Array<T> ArrayColumn<T>::getColumn() const {
 }
 
 template <class T>
-void ArrayColumn<T>::getColumn(Array<T>& arr, Bool resize) const {
+void ArrayColumn<T>::getColumn(Array<T>& arr, bool resize) const {
   acbGetColumn(arr, resize);
 }
 
@@ -199,7 +199,7 @@ Array<T> ArrayColumn<T>::getColumn(const Slicer& arraySection) const {
 }
 
 template <class T>
-void ArrayColumn<T>::getColumn(const Slicer& arraySection, Array<T>& arr, Bool resize) const {
+void ArrayColumn<T>::getColumn(const Slicer& arraySection, Array<T>& arr, bool resize) const {
   acbGetColumn(arraySection, arr, resize);
 }
 
@@ -212,7 +212,7 @@ Array<T> ArrayColumn<T>::getColumn(const Vector<Vector<Slice>>& arraySlices) con
 
 template <class T>
 void ArrayColumn<T>::getColumn(const Vector<Vector<Slice>>& arraySlices, Array<T>& arr,
-                               Bool resize) const {
+                               bool resize) const {
   acbGetColumn(arraySlices, arr, resize);
 }
 
@@ -224,7 +224,7 @@ Array<T> ArrayColumn<T>::getColumnRange(const Slicer& rowRange) const {
 }
 
 template <class T>
-void ArrayColumn<T>::getColumnRange(const Slicer& rowRange, Array<T>& arr, Bool resize) const {
+void ArrayColumn<T>::getColumnRange(const Slicer& rowRange, Array<T>& arr, bool resize) const {
   acbGetColumnRange(rowRange, arr, resize);
 }
 
@@ -236,7 +236,7 @@ Array<T> ArrayColumn<T>::getColumnCells(const RefRows& rownrs) const {
 }
 
 template <class T>
-void ArrayColumn<T>::getColumnCells(const RefRows& rownrs, Array<T>& arr, Bool resize) const {
+void ArrayColumn<T>::getColumnCells(const RefRows& rownrs, Array<T>& arr, bool resize) const {
   acbGetColumnCells(rownrs, arr, resize);
 }
 
@@ -249,7 +249,7 @@ Array<T> ArrayColumn<T>::getColumnRange(const Slicer& rowRange, const Slicer& ar
 
 template <class T>
 void ArrayColumn<T>::getColumnRange(const Slicer& rowRange, const Slicer& arraySection,
-                                    Array<T>& arr, Bool resize) const {
+                                    Array<T>& arr, bool resize) const {
   acbGetColumnRange(rowRange, arraySection, arr, resize);
 }
 
@@ -262,7 +262,7 @@ Array<T> ArrayColumn<T>::getColumnCells(const RefRows& rownrs, const Slicer& arr
 
 template <class T>
 void ArrayColumn<T>::getColumnCells(const RefRows& rownrs, const Slicer& arraySection,
-                                    Array<T>& arr, Bool resize) const {
+                                    Array<T>& arr, bool resize) const {
   acbGetColumnCells(rownrs, arraySection, arr, resize);
 }
 
@@ -306,7 +306,7 @@ void ArrayColumn<T>::putColumnCells(const RefRows& rows, const ColumnSlicer& col
 
 template <class T>
 void ArrayColumn<T>::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
-                         Bool preserveTileShape) {
+                         bool preserveTileShape) {
   TableColumn::put(thisRownr, that, thatRownr, preserveTileShape);
 }
 

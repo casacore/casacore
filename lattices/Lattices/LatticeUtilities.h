@@ -65,12 +65,12 @@ class Slicer;
 class LatticeUtilities {
  public:
   // Copy data and mask from input to output.  If the input has no mask,
-  // that means all True (good), and these values will be transferred
+  // that means all true (good), and these values will be transferred
   // to the output.   Mask transfer only  occurs if the output has
   // a writeable mask.
   template <class T>
   static void copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const MaskedLattice<T>& in,
-                              Bool zeroMasked = False);
+                              bool zeroMasked = false);
 
   // Replicate array through lattice in the specified region.
   // The shape of <src>pixels</src> has to fit exactly into the shape of

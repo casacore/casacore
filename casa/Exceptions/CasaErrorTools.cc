@@ -111,12 +111,12 @@ String CasaErrorTools::replaceStackAddresses(const String &stackTrace) {
       // Find the shared object name.
 
       if (line[0] != '/') {
-        throw True;
+        throw true;
       }
 
       size_t openParenthesis = line.find("(");
       if (openParenthesis == String::npos) {
-        throw True;
+        throw true;
       }
 
       String objectName = line.substr(0, openParenthesis);
@@ -129,7 +129,7 @@ String CasaErrorTools::replaceStackAddresses(const String &stackTrace) {
       size_t rightSquare = line.find("]");
 
       if (leftSquare == String::npos || rightSquare == String::npos || rightSquare <= leftSquare) {
-        throw True;
+        throw true;
       }
 
       // Extract the address and subtract the base of the shared object's
@@ -151,7 +151,7 @@ String CasaErrorTools::replaceStackAddresses(const String &stackTrace) {
       snprintf(offsetInHex, 127, "0x%llx", offset);
 
       cleanedLine = line.substr(0, leftSquare) + "[+" + offsetInHex + "]";
-    } catch (Bool) {
+    } catch (bool) {
       // The line was not parseable so just copy it to the result.
 
       cleanedLine = line;

@@ -90,7 +90,7 @@ class FitsInput;
 //    FITSImage im("in.fits");
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(im, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    bool ok = stats.display();                              // Display statistics
 // </srcblock>
 // </example>
 
@@ -150,21 +150,21 @@ class FITSImage : public ImageInterface<Float> {
 
   // Has the object really a mask?  The FITSImage always
   // has a pixel mask and never has a region mask so this
-  // always returns True
-  virtual Bool isMasked() const;
+  // always returns true
+  virtual bool isMasked() const;
 
-  // FITSimage always has a pixel mask so returns True
-  virtual Bool hasPixelMask() const;
+  // FITSimage always has a pixel mask so returns true
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  FITSImage always has a pixel mask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Do the actual get of the mask data.   The return value is always
-  // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  // false, thus the buffer does not reference another array.
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Get the region used.  There is no region.
   // Always returns 0.
@@ -173,8 +173,8 @@ class FITSImage : public ImageInterface<Float> {
   // # Lattice virtual functions
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
+  // Returns false as the data do not reference another Array
+  virtual bool doGetSlice(Array<Float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.
   virtual void doPutSlice(const Array<Float>& sourceBuffer, const IPosition& where,
@@ -183,16 +183,16 @@ class FITSImage : public ImageInterface<Float> {
   // # LatticeBase virtual functions
 
   // The lattice is paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // The FITSImage is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // return the shape of the FITSImage
   virtual IPosition shape() const;
@@ -213,7 +213,7 @@ class FITSImage : public ImageInterface<Float> {
   virtual void reopen();
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Return the data type (TpFloat).
   virtual DataType dataType() const;
@@ -250,28 +250,28 @@ class FITSImage : public ImageInterface<Float> {
 
  protected:
   // Set the masking of values 0.0
-  void setMaskZero(Bool filterZero);
+  void setMaskZero(bool filterZero);
 
  private:
   String name_p;
   String fullname_p;
   MaskSpecifier maskSpec_p;
   std::shared_ptr<TiledFileAccess> pTiledFile_p;
-  std::unique_ptr<Lattice<Bool>> pPixelMask_p;
+  std::unique_ptr<Lattice<bool>> pPixelMask_p;
   TiledShape shape_p;
   Float scale_p;
   Float offset_p;
   Short shortMagic_p;
   uChar uCharMagic_p;
   Int longMagic_p;
-  Bool hasBlanks_p;
+  bool hasBlanks_p;
   DataType dataType_p;
   Int64 fileOffset_p;
-  Bool isClosed_p;
-  Bool filterZeroMask_p;
+  bool isClosed_p;
+  bool filterZeroMask_p;
   uInt whichRep_p;
   uInt whichHDU_p;
-  Bool _hasBeamsTable;
+  bool _hasBeamsTable;
 
   // Reopen the image if needed.
   void reopenIfNeeded() const {
@@ -288,21 +288,21 @@ class FITSImage : public ImageInterface<Float> {
   void getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& info,
                           Unit& brightnessUnit, RecordInterface& miscInfo, Int& recsize, Int& recno,
                           FITS::ValueType& dataType, Float& scale, Float& offset, uChar& uCharMagic,
-                          Short& shortMagic, Int& longMagic, Bool& hasBlanks, const String& name,
+                          Short& shortMagic, Int& longMagic, bool& hasBlanks, const String& name,
                           uInt whichRep, uInt whichHDU);
 
   // Crack a primary header
   template <typename T>
   void crackHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                    Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale, Float& offset,
-                   uChar& magicUChar, Short& magicShort, Int& magicLong, Bool& hasBlanks, LogIO& os,
+                   uChar& magicUChar, Short& magicShort, Int& magicLong, bool& hasBlanks, LogIO& os,
                    FitsInput& infile, uInt whichRep);
 
   // Crack an image extension header
   template <typename T>
   void crackExtHeader(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                       Unit& brightnessUnit, RecordInterface& miscInfo, Float& scale, Float& offset,
-                      uChar& uCharMagic, Short& magicShort, Int& magicLong, Bool& hasBlanks,
+                      uChar& uCharMagic, Short& magicShort, Int& magicLong, bool& hasBlanks,
                       LogIO& os, FitsInput& infile, uInt whichRep);
 };
 

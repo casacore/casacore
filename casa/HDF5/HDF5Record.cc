@@ -100,7 +100,7 @@ void HDF5Record::readScalar(hid_t attrId, hid_t dtid, const String& name, Record
       int sgn = H5Tget_sign(dtid);
       if (sgn == H5T_SGN_2) {
         if (sz == 1) {
-          readSca<Bool>(attrId, name, rec);
+          readSca<bool>(attrId, name, rec);
         } else if (sz == sizeof(Short)) {
           readSca<Short>(attrId, name, rec);
         } else if (sz == sizeof(Int)) {
@@ -156,7 +156,7 @@ void HDF5Record::readArray(hid_t attrId, hid_t dtid, const IPosition& shape, con
       int sgn = H5Tget_sign(dtid);
       if (sgn == H5T_SGN_2) {
         if (sz == 1) {
-          readArr<Bool>(attrId, shape, name, rec);
+          readArr<bool>(attrId, shape, name, rec);
         } else if (sz == sizeof(Short)) {
           readArr<Short>(attrId, shape, name, rec);
         } else if (sz == sizeof(Int)) {
@@ -207,7 +207,7 @@ void HDF5Record::readEmptyArray(hid_t attrId, const String& name, RecordInterfac
   Int dt = values[2];
   switch (dt) {
     case TpBool:
-      rec.define(name, Array<Bool>(IPosition(rank, 0)));
+      rec.define(name, Array<bool>(IPosition(rank, 0)));
       break;
     case TpUChar:
       rec.define(name, Array<uChar>(IPosition(rank, 0)));
@@ -292,7 +292,7 @@ void HDF5Record::doWriteRecord(const HDF5Object& groupHid, const RecordInterface
     String name = rec.name(i);
     switch (rec.dataType(i)) {
       case TpBool:
-        writeSca<Bool>(groupHid, name, rec, i);
+        writeSca<bool>(groupHid, name, rec, i);
         break;
       case TpUChar:
         writeSca<uChar>(groupHid, name, rec, i);
@@ -325,7 +325,7 @@ void HDF5Record::doWriteRecord(const HDF5Object& groupHid, const RecordInterface
         writeScaString(groupHid, name, rec.asString(i));
         break;
       case TpArrayBool:
-        writeArr<Bool>(groupHid, name, rec, i);
+        writeArr<bool>(groupHid, name, rec, i);
         break;
       case TpArrayUChar:
         writeArr<uChar>(groupHid, name, rec, i);

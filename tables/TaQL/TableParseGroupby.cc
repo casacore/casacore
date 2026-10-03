@@ -35,7 +35,7 @@ using namespace std;
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-void TableParseGroupby::handleGroupby(const std::vector<TableExprNode>& nodes, Bool rollup) {
+void TableParseGroupby::handleGroupby(const std::vector<TableExprNode>& nodes, bool rollup) {
   itsGroupbyNodes = nodes;
   itsGroupbyRollup = rollup;
   if (rollup) {
@@ -56,7 +56,7 @@ void TableParseGroupby::handleHaving(const TableExprNode& node) {
   }
 }
 
-void TableParseGroupby::findGroupAggr(const Block<TableExprNode>& columnNodes, Bool isSelect) {
+void TableParseGroupby::findGroupAggr(const Block<TableExprNode>& columnNodes, bool isSelect) {
   itsGroupAggrUsed = 0;
   // Make sure main (where) node does not have aggregate functions.
   // This has been checked before, but use defensive programming.
@@ -133,10 +133,10 @@ std::shared_ptr<TableExprGroupResult> TableParseGroupby::execGroupAggr(
   return aggregate(rownrs);
 }
 
-Bool TableParseGroupby::execHaving(Vector<rownr_t>& rownrs,
+bool TableParseGroupby::execHaving(Vector<rownr_t>& rownrs,
                                    const std::shared_ptr<TableExprGroupResult>& groups) {
   if (itsHavingNode.isNull()) {
-    return False;
+    return false;
   }
   // Find the rows matching the HAVING expression.
   Vector<rownr_t> resRownrs(rownrs.size());
@@ -149,9 +149,9 @@ Bool TableParseGroupby::execHaving(Vector<rownr_t>& rownrs,
     }
   }
   // Use the found rows from now on.
-  resRownrs.resize(nr, True);
+  resRownrs.resize(nr, true);
   rownrs.reference(resRownrs);
-  return True;
+  return true;
 }
 
 std::shared_ptr<TableExprGroupResult> TableParseGroupby::aggregate(Vector<rownr_t>& rownrs) const {

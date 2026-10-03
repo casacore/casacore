@@ -40,10 +40,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSDoppler::MSDoppler() : hasBeenDestroyed_p(True) {}
+MSDoppler::MSDoppler() : hasBeenDestroyed_p(true) {}
 
 MSDoppler::MSDoppler(const String &tableName, TableOption option)
-    : MSTable<MSDopplerEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSDopplerEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   addVelDef();
   if (!validate(this->tableDesc()))
@@ -74,7 +74,7 @@ void MSDoppler::addVelDef() {
 }
 
 MSDoppler::MSDoppler(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSDopplerEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSDopplerEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   addVelDef();
   if (!validate(this->tableDesc()))
@@ -83,8 +83,8 @@ MSDoppler::MSDoppler(const String &tableName, const String &tableDescName, Table
                   "table is not a valid MSDoppler"));
 }
 
-MSDoppler::MSDoppler(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSDopplerEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSDoppler::MSDoppler(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSDopplerEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   addVelDef();
   if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSDoppler::MSDoppler(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSDoppler::MSDoppler(const Table &table)
-    : MSTable<MSDopplerEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSDopplerEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   addVelDef();
   if (!validate(this->tableDesc()))
@@ -104,7 +104,7 @@ MSDoppler::MSDoppler(const Table &table)
 }
 
 MSDoppler::MSDoppler(const MSDoppler &other)
-    : MSTable<MSDopplerEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSDopplerEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this) addVelDef();
   if (!validate(this->tableDesc()))
@@ -121,7 +121,7 @@ MSDoppler::~MSDoppler() {
     LogIO os;
     os << LogIO::WARN << "~MSDoppler() - Table written is not a valid MSDoppler" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSDoppler &MSDoppler::operator=(const MSDoppler &other) {

@@ -46,9 +46,9 @@ class ConvolveGridder : public Gridder<Domain, Range> {
 
   virtual ~ConvolveGridder() {}
 
-  virtual Bool grid(Array<Range>& gridded, const Vector<Domain>& position, const Range& value);
+  virtual bool grid(Array<Range>& gridded, const Vector<Domain>& position, const Range& value);
 
-  virtual Bool degrid(const Array<Range>& gridded, const Vector<Domain>& position, Range& value);
+  virtual bool degrid(const Array<Range>& gridded, const Vector<Domain>& position, Range& value);
 
   Vector<Double>& cFunction();
 

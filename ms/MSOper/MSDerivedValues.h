@@ -178,9 +178,9 @@ class MSDerivedValues {
   MSDerivedValues& setMeasurementSet(const MeasurementSet& ms);
 
   // Set restFrequencies...make it look for it for the fieldid, spwid and line
-  // number defined in the SOURCE table return False if it fails to find the
+  // number defined in the SOURCE table return false if it fails to find the
   // restFrquency
-  Bool setRestFrequency(const Int fieldid, const Int spwid, const Int linenum = 0);
+  bool setRestFrequency(const Int fieldid, const Int spwid, const Int linenum = 0);
 
   //
   MSDerivedValues& setRestFrequency(const Quantity& restFreq);
@@ -213,7 +213,7 @@ class MSDerivedValues {
   MRadialVelocity::Convert cTOPOToLSR_p;
   MDoppler::Ref velref_p;
   MFrequency::Ref frqref_p;
-  Bool hasMS_p;
+  bool hasMS_p;
   Quantity restFreq_p;
   Vector<Int> mount_p;
   MeasurementSet ms_p;

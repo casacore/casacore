@@ -56,11 +56,11 @@ typedef Double Type;
 #define ARRINIT indgen(array)
 #define ARRINCR array += (Type)1
 
-// typedef Bool Type;
-// #define ARRINIT array = False
+// typedef bool Type;
+// #define ARRINIT array = false
 // #define ARRINCR array = !array
 
-TSMOption makeAcc(int acc, Bool read = True) {
+TSMOption makeAcc(int acc, bool read = true) {
   if (!read) {
     acc = acc >> 2;
   }
@@ -75,12 +75,12 @@ TSMOption makeAcc(int acc, Bool read = True) {
   return TSMOption(TSMOption::Cache, 0, 0);
 }
 
-Bool readTable(int acc, Bool chk, const IPosition& shape, uInt nrrow) {
-  Bool ok = True;
+bool readTable(int acc, bool chk, const IPosition& shape, uInt nrrow) {
+  bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
-    return False;
+    return false;
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
@@ -92,7 +92,7 @@ Bool readTable(int acc, Bool chk, const IPosition& shape, uInt nrrow) {
     if (chk) {
       if (!allEQ(array, result)) {
         cout << "mismatch in data row " << i << endl;
-        ok = False;
+        ok = false;
       }
       ARRINCR;
     }
@@ -104,13 +104,13 @@ Bool readTable(int acc, Bool chk, const IPosition& shape, uInt nrrow) {
   return ok;
 }
 
-Bool readSlices(int acc, Bool chk, const IPosition& shape, const IPosition& blc,
+bool readSlices(int acc, bool chk, const IPosition& shape, const IPosition& blc,
                 const IPosition& trc, const IPosition& inc, uInt nrrow) {
-  Bool ok = True;
+  bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
-    return False;
+    return false;
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
@@ -124,7 +124,7 @@ Bool readSlices(int acc, Bool chk, const IPosition& shape, const IPosition& blc,
     if (chk) {
       if (!allEQ(arraySlice, result)) {
         cout << "mismatch in data row " << i << endl;
-        ok = False;
+        ok = false;
       }
       ARRINCR;
     }
@@ -136,13 +136,13 @@ Bool readSlices(int acc, Bool chk, const IPosition& shape, const IPosition& blc,
   return ok;
 }
 
-Bool readColX(int acc, Bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
+bool readColX(int acc, bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
               const IPosition& inc, uInt nrrow) {
-  Bool ok = True;
+  bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
-    return False;
+    return false;
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
@@ -175,7 +175,7 @@ Bool readColX(int acc, Bool chk, const IPosition& shape, const IPosition& blc, c
         Array<Type> arraySlice(array(blca, trca, inca));
         if (!allEQ(arraySlice, arr)) {
           cout << "mismatch in data row " << j << ", x " << i << endl;
-          ok = False;
+          ok = false;
         }
         ARRINCR;
       }
@@ -189,13 +189,13 @@ Bool readColX(int acc, Bool chk, const IPosition& shape, const IPosition& blc, c
   return ok;
 }
 
-Bool readColY(int acc, Bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
+bool readColY(int acc, bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
               const IPosition& inc, uInt nrrow) {
-  Bool ok = True;
+  bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
-    return False;
+    return false;
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
@@ -228,7 +228,7 @@ Bool readColY(int acc, Bool chk, const IPosition& shape, const IPosition& blc, c
         Array<Type> arraySlice(array(blca, trca, inca));
         if (!allEQ(arraySlice, arr)) {
           cout << "mismatch in data row " << j << ", x " << i << endl;
-          ok = False;
+          ok = false;
         }
         ARRINCR;
       }
@@ -242,13 +242,13 @@ Bool readColY(int acc, Bool chk, const IPosition& shape, const IPosition& blc, c
   return ok;
 }
 
-Bool readCol(int acc, Bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
+bool readCol(int acc, bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
              const IPosition& inc, uInt nrrow) {
-  Bool ok = True;
+  bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected " << nrrow << endl;
-    return False;
+    return false;
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
@@ -273,7 +273,7 @@ Bool readCol(int acc, Bool chk, const IPosition& shape, const IPosition& blc, co
       Array<Type> arr(result(st, end));
       if (!allEQ(arraySlice, arr)) {
         cout << "mismatch in data row " << i << endl;
-        ok = False;
+        ok = false;
       }
       ARRINCR;
     }
@@ -285,7 +285,7 @@ Bool readCol(int acc, Bool chk, const IPosition& shape, const IPosition& blc, co
   return ok;
 }
 
-void writeVar(int acc, Bool chk, const IPosition& shape, const IPosition& tileShape, uInt nrrow) {
+void writeVar(int acc, bool chk, const IPosition& shape, const IPosition& tileShape, uInt nrrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ArrayColumnDesc<Type>("Data", shape.nelements()));
@@ -296,7 +296,7 @@ void writeVar(int acc, Bool chk, const IPosition& shape, const IPosition& tileSh
   // Create a storage manager for it.
   TiledShapeStMan sm1("TSMExample", tileShape);
   newtab.bindAll(sm1);
-  Table table(newtab, 0, False, Table::AipsrcEndian, makeAcc(acc, False));
+  Table table(newtab, 0, false, Table::AipsrcEndian, makeAcc(acc, false));
   ArrayColumn<Type> data(table, "Data");
   Array<Type> array(shape);
   uInt i;
@@ -311,7 +311,7 @@ void writeVar(int acc, Bool chk, const IPosition& shape, const IPosition& tileSh
       }
     }
     // Sync to measure true IO.
-    table.flush(True);
+    table.flush(true);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
   }
@@ -319,7 +319,7 @@ void writeVar(int acc, Bool chk, const IPosition& shape, const IPosition& tileSh
 }
 
 int main(int argc, const char* argv[]) {
-  Bool ok = True;
+  bool ok = true;
   try {
     if (argc < 6) {
       cout << "Run as  tTiledShapeStM_1 acc mode nrow nx ny [tx ty tz] [sx sy ex ey ix iy]" << endl;
@@ -417,26 +417,26 @@ int main(int argc, const char* argv[]) {
 
     writeVar(acc, mode % 2 == 1, shape, tileShape, nrow);
     if (!readTable(acc, mode % 2 == 1, shape, nrow)) {
-      ok = False;
+      ok = false;
     }
     if ((mode & 2) == 2) {
       if (!readSlices(acc, mode % 2 == 1, shape, blc, trc, inc, nrow)) {
-        ok = False;
+        ok = false;
       }
     }
     if ((mode & 4) == 4) {
       if (!readColX(acc, mode % 2 == 1, shape, blc, trc, inc, nrow)) {
-        ok = False;
+        ok = false;
       }
     }
     if ((mode & 8) == 8) {
       if (!readColY(acc, mode % 2 == 1, shape, blc, trc, inc, nrow)) {
-        ok = False;
+        ok = false;
       }
     }
     if ((mode & 16) == 16) {
       if (!readCol(acc, mode % 2 == 1, shape, blc, trc, inc, nrow)) {
-        ok = False;
+        ok = false;
       }
     }
   } catch (std::exception& x) {

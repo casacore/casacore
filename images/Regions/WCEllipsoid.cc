@@ -125,25 +125,25 @@ WCEllipsoid& WCEllipsoid::operator=(const WCEllipsoid& that)
   return *this;
 }
 
-Bool WCEllipsoid::operator==(const WCRegion& other) const {
+bool WCEllipsoid::operator==(const WCRegion& other) const {
   if (type() != other.type()) {
-    return False;
+    return false;
   }
 
   const WCEllipsoid& that = (const WCEllipsoid&)other;
 
   if (_absRel != that._absRel) {
-    return False;
+    return false;
   }
   if (!near(_theta.getValue(), that._theta.getValue())) {
-    return False;
+    return false;
   }
   if (_theta.getUnit() != that._theta.getUnit()) {
-    return False;
+    return false;
   }
 
   if (_pixelAxes.size() != that._pixelAxes.size()) {
-    return False;
+    return false;
   }
 
   for (uInt i = 0; i < _pixelAxes.size(); i++) {
@@ -151,18 +151,18 @@ Bool WCEllipsoid::operator==(const WCRegion& other) const {
         _center[i].getUnit() != that._center[i].getUnit() ||
         !near(_radii[i].getValue(), that._radii[i].getValue()) ||
         _radii[i].getUnit() != that._radii[i].getUnit() || _pixelAxes[i] != that._pixelAxes[i]) {
-      return False;
+      return false;
     }
   }
   if (!_csys.near(that._csys)) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 WCRegion* WCEllipsoid::cloneRegion() const { return new WCEllipsoid(*this); }
 
-Bool WCEllipsoid::canExtend() const { return False; }
+bool WCEllipsoid::canExtend() const { return false; }
 
 String WCEllipsoid::type() const { return className(); }
 
@@ -173,7 +173,7 @@ TableRecord WCEllipsoid::toRecord(const String&) const {
   TableRecord rec;
   defineRecordFields(rec, className());
 
-  rec.define("oneRel", True);
+  rec.define("oneRel", true);
   rec.define("type", Int(_specType));
   rec.define("absrel", Int(_absRel));
 
@@ -254,7 +254,7 @@ WCEllipsoid* WCEllipsoid::fromRecord(const TableRecord& rec, const String&) {
 
   unitInit();
   CoordinateSystem* csys = CoordinateSystem::restore(rec, "coordinates");
-  Bool oneRel = rec.asBool("oneRel");
+  bool oneRel = rec.asBool("oneRel");
   RegionType::AbsRelType absRel = RegionType::AbsRelType(rec.asInt("absrel"));
   SpecialType specType = SpecialType(rec.asInt("type"));
 

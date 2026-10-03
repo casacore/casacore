@@ -95,9 +95,9 @@ class MSFieldIndex {
   Vector<Int> matchSubFieldName(const String& name);
 
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchFieldRegexOrPattern(const String& pattern, const Bool regex = False);
-  Vector<Int> matchFieldNameRegexOrPattern(const String& pattern, const Bool regex = False);
-  Vector<Int> matchFieldCodeRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchFieldRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<Int> matchFieldNameRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<Int> matchFieldCodeRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchSourceId(const Int& sourceId);
   Vector<Int> matchSourceId(const Vector<Int>& sourceIds);

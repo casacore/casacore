@@ -36,10 +36,10 @@
 
 using namespace casacore;
 
-Array<Bool> arrb() {
-  Array<Bool> arrb(IPosition(4, 1, 1, 4, 1));
-  arrb = False;
-  arrb(IPosition(4, 0, 0, 2, 0)) = True;
+Array<bool> arrb() {
+  Array<bool> arrb(IPosition(4, 1, 1, 4, 1));
+  arrb = false;
+  arrb(IPosition(4, 0, 0, 2, 0)) = true;
   return arrb;
 }
 Array<uChar> arruc() {
@@ -100,7 +100,7 @@ Array<String> arrstremp() {
   return arrstr;
 }
 
-Array<Bool> emparrb() { return Array<Bool>(IPosition(4, 0)); }
+Array<bool> emparrb() { return Array<bool>(IPosition(4, 0)); }
 Array<uChar> emparruc() { return Array<uChar>(IPosition(0, 0)); }
 Array<Short> emparrs() { return Array<Short>(IPosition(0, 0)); }
 Array<Int> emparri() { return Array<Int>(IPosition(0, 0)); }
@@ -114,7 +114,7 @@ Array<String> emparrstr() { return Array<String>(IPosition(0, 0)); }
 
 void checkRecord(const RecordInterface& rec) {
   AlwaysAssertExit(rec.nfields() == 12);
-  AlwaysAssertExit(rec.asBool("bool") == True);
+  AlwaysAssertExit(rec.asBool("bool") == true);
   AlwaysAssertExit(rec.asuChar("uchar") == 1);
   AlwaysAssertExit(rec.asShort("short") == -2);
   AlwaysAssertExit(rec.asInt("int") == 2);
@@ -173,7 +173,7 @@ int main() {
     HDF5File file("tHDF5Record_tmp", ByteIO::New);
     // Create a record and nested record.
     Record rec1;
-    rec1.define("bool", True);
+    rec1.define("bool", true);
     rec1.define("uchar", (uChar)1);
     rec1.define("short", (Short)-2);
     rec1.define("int", (Int)2);

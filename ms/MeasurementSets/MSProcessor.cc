@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSProcessor::MSProcessor() : hasBeenDestroyed_p(True) {}
+MSProcessor::MSProcessor() : hasBeenDestroyed_p(true) {}
 
 MSProcessor::MSProcessor(const String &tableName, TableOption option)
-    : MSTable<MSProcessorEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSProcessorEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSProcessor::MSProcessor(const String &tableName, TableOption option)
 }
 
 MSProcessor::MSProcessor(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSProcessorEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSProcessorEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSProcessor::MSProcessor(const String &tableName, const String &tableDescName, T
                   "table is not a valid MSProcessor"));
 }
 
-MSProcessor::MSProcessor(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSProcessorEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSProcessor::MSProcessor(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSProcessorEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSProcessor::MSProcessor(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSProcessor::MSProcessor(const Table &table)
-    : MSTable<MSProcessorEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSProcessorEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSProcessor::MSProcessor(const Table &table)
 }
 
 MSProcessor::MSProcessor(const MSProcessor &other)
-    : MSTable<MSProcessorEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSProcessorEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSProcessor::~MSProcessor() {
     LogIO os;
     os << LogIO::WARN << "~MSProcessor() - Table written is not a valid MSProcessor" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSProcessor &MSProcessor::operator=(const MSProcessor &other) {

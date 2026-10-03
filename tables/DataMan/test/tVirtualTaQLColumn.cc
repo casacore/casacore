@@ -57,7 +57,7 @@
 
 TableDesc makeDesc();
 void a(const TableDesc&);
-void check(const Table& table, Bool showname);
+void check(const Table& table, bool showname);
 void testSelect();
 void testPerf();
 
@@ -67,11 +67,11 @@ int main() {
       TableDesc td = makeDesc();
       a(td);
       Table table("tVirtualTaQLColumn_tmp.data0");
-      check(table, True);
-      table.deepCopy("tVirtualTaQLColumn_tmp.data1", Table::New, True);
-      check(Table("tVirtualTaQLColumn_tmp.data1"), True);
+      check(table, true);
+      table.deepCopy("tVirtualTaQLColumn_tmp.data1", Table::New, true);
+      check(Table("tVirtualTaQLColumn_tmp.data1"), true);
       Table tab2 = table.copyToMemoryTable("tVirtualTaQLColumn_tmp.data2");
-      check(tab2, True);
+      check(tab2, true);
     }
     testSelect();
     testPerf();
@@ -164,7 +164,7 @@ void a(const TableDesc& td) {
   tab.addColumn(ScalarColumnDesc<Float>("acalc4"), vtcm);
 }
 
-void check(const Table& tab, Bool showname) {
+void check(const Table& tab, bool showname) {
   if (!showname) cout << ">>>" << endl;
   cout << "Checking table " << tab.tableName() << endl;
   if (!showname) cout << "<<<" << endl;
@@ -343,7 +343,7 @@ void testSelect() {
                      "select from tVirtualTaQLColumn_tmp.data0 "
                      "where acalc > -1000")
                      .table();
-  check(subset, False);
+  check(subset, false);
 }
 
 // Test how getting a column performs.

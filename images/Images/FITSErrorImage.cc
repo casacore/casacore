@@ -68,7 +68,7 @@ ImageInterface<Float>* FITSErrorImage::cloneII() const { return new FITSErrorIma
 
 String FITSErrorImage::imageType() const { return "FITSErrorImage"; }
 
-Bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
+bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   // set up the arrays
   IPosition shp = section.length();
   if (!buffer.shape().isEqual(shp)) buffer.resize(shp);
@@ -78,9 +78,9 @@ Bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   FITSImage::doGetSlice(buffer_p, section);
 
   //
-  Bool deletePtrD;
+  bool deletePtrD;
   const Float* pData = buffer_p.getStorage(deletePtrD);
-  Bool deletePtrM;
+  bool deletePtrM;
   Float* pBuffer = buffer.getStorage(deletePtrM);
 
   // depending on the error type,
@@ -118,7 +118,7 @@ Bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   buffer_p.freeStorage(pData, deletePtrD);
   buffer.putStorage(pBuffer, deletePtrM);
 
-  return False;  // Not a reference
+  return false;  // Not a reference
 }
 
 void FITSErrorImage::doPutSlice(const Array<Float>&, const IPosition&, const IPosition&) {
@@ -164,7 +164,7 @@ void FITSErrorImage::setupMask() {
   // for the inverse error types, switch on
   // the masking of values 0.0 (in the FITS file)
   if (errtype_p == INVMSE || errtype_p == INVRMSE) {
-    setMaskZero(True);
+    setMaskZero(true);
   }
   // throw an error for type "UNKNOWN", since
   // it is now known what to do.

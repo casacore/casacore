@@ -37,7 +37,7 @@ LSQMatrix::LSQMatrix(uInt n) : n_p(n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0),
   clear();
 }
 
-LSQMatrix::LSQMatrix(uInt n, Bool)
+LSQMatrix::LSQMatrix(uInt n, bool)
     : n_p(2 * n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {
   init();
   clear();
@@ -92,7 +92,7 @@ void LSQMatrix::set(uInt n) {
   clear();
 }
 
-void LSQMatrix::set(uInt n, Bool) {
+void LSQMatrix::set(uInt n, bool) {
   deinit();
   n_p = 2 * n;
   init();

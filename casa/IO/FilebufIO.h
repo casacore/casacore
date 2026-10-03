@@ -74,7 +74,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&fio);
 //    // Read the data.
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -112,9 +112,9 @@ class FilebufIO : public ByteIO {
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
-  // False. Will always throw an exception if the file is not readable or
+  // false. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
-  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
+  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 
   // Flush the current buffer.
   virtual void flush();
@@ -129,13 +129,13 @@ class FilebufIO : public ByteIO {
   virtual Int64 length();
 
   // Is the IO stream readable?
-  virtual Bool isReadable() const;
+  virtual bool isReadable() const;
 
   // Is the IO stream writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Is the IO stream seekable?
-  virtual Bool isSeekable() const;
+  virtual bool isSeekable() const;
 
   // Get the file name of the file attached.
   virtual String fileName() const;
@@ -145,7 +145,7 @@ class FilebufIO : public ByteIO {
 
  protected:
   // Detach the FILE. Close it when needed.
-  void detach(Bool closeFile = False);
+  void detach(bool closeFile = false);
 
   // Determine if the file descriptor is readable and/or writable.
   void fillRWFlags(int fd);
@@ -165,7 +165,7 @@ class FilebufIO : public ByteIO {
   void writeBuffer(Int64 offset, const char* buf, Int64 size);
 
   // Read a buffer of given length from the file at given offset.
-  Int64 readBuffer(Int64 offset, char* buf, Int64 size, Bool throwException);
+  Int64 readBuffer(Int64 offset, char* buf, Int64 size, bool throwException);
 
   // Write a block into the stream at the current offset.
   // It is guaranteed that the block fits in a single buffer.
@@ -173,12 +173,12 @@ class FilebufIO : public ByteIO {
 
   // Read a block from the stream at the current offset.
   // It is guaranteed that the block fits in a single buffer.
-  Int64 readBlock(Int64 size, char* buf, Bool throwException);
+  Int64 readBlock(Int64 size, char* buf, bool throwException);
 
  private:
-  Bool itsSeekable;
-  Bool itsReadable;
-  Bool itsWritable;
+  bool itsSeekable;
+  bool itsReadable;
+  bool itsWritable;
   int itsFile;
   Int64 itsBufSize;  // the buffer size
   Int64 itsBufLen;   // the current buffer length used
@@ -186,7 +186,7 @@ class FilebufIO : public ByteIO {
   Int64 itsBufOffset;   // file offset of current buffer
   Int64 itsOffset;      // current file offset
   Int64 itsSeekOffset;  // offset last seeked
-  Bool itsDirty;        // data written into current buffer?
+  bool itsDirty;        // data written into current buffer?
 
   // Copy constructor, should not be used.
   FilebufIO(const FilebufIO& that);

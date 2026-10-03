@@ -351,7 +351,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
 
   // 'get' Functions to get the desired result of a function
   // <group>
-  Bool getBool(const TableExprId& id);
+  bool getBool(const TableExprId& id);
   Int64 getInt(const TableExprId& id);
   Double getDouble(const TableExprId& id);
   DComplex getDComplex(const TableExprId& id);
@@ -404,7 +404,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   // Otherwise the printf-like format is used.
   // If possible, a double value is converted to radians if formatted as angle.
   // <group>
-  static String stringValue(Bool val, const String& fmt, Int width);
+  static String stringValue(bool val, const String& fmt, Int width);
   static String stringValue(Int64 val, const String& fmt, Int width);
   static String stringValue(Double val, const String& fmt, Int width, Int prec,
                             const std::pair<int, int>& mvFormat, const Unit& unit);
@@ -433,7 +433,7 @@ class TableExprFuncNode : public TableExprNodeMulti {
   static Int64 string2Int(const String&);
   static Double string2Real(const String&);
   static DComplex string2Complex(const String&);
-  static Bool string2Bool(const String&);
+  static bool string2Bool(const String&);
 
  private:
   // Try if the function gives a constant result.

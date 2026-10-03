@@ -136,19 +136,19 @@ class MeasureHolder : public RecordTransformable {
 
   // # Member Functions
   //  Check the the MeasureHolder holds the specified Measure type. Return
-  //  True if if does and False otherwise.
+  //  true if if does and false otherwise.
   //  <group>
-  Bool isEmpty() const;
-  Bool isMeasure() const;
-  Bool isMDirection() const;
-  Bool isMDoppler() const;
-  Bool isMEpoch() const;
-  Bool isMFrequency() const;
-  Bool isMPosition() const;
-  Bool isMRadialVelocity() const;
-  Bool isMBaseline() const;
-  Bool isMuvw() const;
-  Bool isMEarthMagnetic() const;
+  bool isEmpty() const;
+  bool isMeasure() const;
+  bool isMDirection() const;
+  bool isMDoppler() const;
+  bool isMEpoch() const;
+  bool isMFrequency() const;
+  bool isMPosition() const;
+  bool isMRadialVelocity() const;
+  bool isMBaseline() const;
+  bool isMuvw() const;
+  bool isMEarthMagnetic() const;
   // </group>
 
   // Get a specific Measure from the holder (with lifetime as long
@@ -169,8 +169,8 @@ class MeasureHolder : public RecordTransformable {
   const Muvw &asMuvw() const;
   const MEarthMagnetic &asMEarthMagnetic() const;
   // </group>
-  // Create a Measure from a record. An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
+  // Create a Measure from a record. An error message is generated, and false
+  // returned if an invalid record is given. A valid record will return true.
   // A valid record contains the following fields (any additional fields are
   // ignored):
   // <ul>
@@ -194,13 +194,13 @@ class MeasureHolder : public RecordTransformable {
   // to the fromType() method.
   // Error messages are postfixed to error.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
+  virtual bool fromRecord(String &error, const RecordInterface &in);
+  virtual bool fromString(String &error, const String &in);
   // </group>
-  // Create a record from a Measure. The return will be False and an error
+  // Create a record from a Measure. The return will be false and an error
   // message generated only if the MeasureHolder does not contain a Measure.
   // Error messages are postfixed to error.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  virtual bool toRecord(String &error, RecordInterface &out) const;
 
   // This version  throws an exception if the conversion cannot
   // occur. It is meant for more allow more compact calling code for callers
@@ -211,19 +211,19 @@ class MeasureHolder : public RecordTransformable {
 
   // Create a default Measure or a record with only a type from a Measure
   // <group>
-  Bool toType(String &error, RecordInterface &out) const;
-  Bool fromType(String &error, const RecordInterface &in);
+  bool toType(String &error, RecordInterface &out) const;
+  bool fromType(String &error, const RecordInterface &in);
   // </group>
   // Get identification of record
   virtual const String &ident() const;
   // Do we write MeasValues to record?
-  Bool writeMV() const { return convertmv_p; }
+  bool writeMV() const { return convertmv_p; }
   // Make a block of n MeasValues
   void makeMV(uInt n) { createMV(n); }
   // Get number of MeasValue pointers in block
   uInt nelements() const { return mvhold_p.nelements(); }
-  // Set a measvalue at position pos (False if illegal pos)
-  Bool setMV(uInt pos, const MeasValue &in);
+  // Set a measvalue at position pos (false if illegal pos)
+  bool setMV(uInt pos, const MeasValue &in);
   // Get a pointer to a MeasValue (or 0)
   MeasValue *getMV(uInt pos) const;
 
@@ -234,13 +234,13 @@ class MeasureHolder : public RecordTransformable {
   // Block of pointers to measure values to make a faster interface
   Block<MeasValue *> mvhold_p;
   // Should the mvhold_p be converted into record?
-  Bool convertmv_p;
+  bool convertmv_p;
   // # Member functions
   //  Aid for to/from Record, String and Type
   //  <group>
-  Bool putType(String &error, RecordInterface &out) const;
-  Bool getType(String &error, const RecordInterface &in);
-  Bool getType(String &error, const String &in);
+  bool putType(String &error, RecordInterface &out) const;
+  bool getType(String &error, const RecordInterface &in);
+  bool getType(String &error, const String &in);
   // </group>
   // Make a MeasValue block of pointers of length n
   void createMV(uInt n);

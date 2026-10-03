@@ -66,11 +66,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //
 //    // Set up a mask indicating what channels we want to fit over. We want
 //    // to fit over all channels.
-//    Vector<Bool> fitMask(nchan); fitMask = True;
+//    Vector<Bool> fitMask(nchan); fitMask = true;
 //
-//    // Do the fit. True means subtract the fit from the model. In this case,
+//    // Do the fit. true means subtract the fit from the model. In this case,
 //    // We overwrite the input with the output.
-//    fitProfiles (myImage, fittedParameters,fitter, myImage, 2, fitMask, True);
+//    fitProfiles (myImage, fittedParameters,fitter, myImage, 2, fitMask, true);
 // </srcBlock>
 // </example>
 //
@@ -93,19 +93,19 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class LatticeFit {
  public:
   // Fit baseline to lattice.   Presently the fit parameters, other than the last
-  // one(s) in fitter, are lost.  If <src>returnResiduals</src> is True,
+  // one(s) in fitter, are lost.  If <src>returnResiduals</src> is true,
   // return data-fit, otherwise return the fit.  For baseline and continuum
-  // subtraction, returnResiduals would normally be True.
+  // subtraction, returnResiduals would normally be true.
   static uInt fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedParameters,
                           LinearFit<Float>& fitter, const Lattice<Float>& inImage, uInt whichAxis,
-                          const Vector<Bool>& fitMask, Bool returnResiduals);
+                          const Vector<bool>& fitMask, bool returnResiduals);
 
   // Fit baseline to MaskedLattice.  Fit and residuals can be optionally
   // written (leave pointers at zero to not write out these lattices)
   // You can optionally specify a weights lattice (1.0 if not given).
   static uInt fitProfiles(MaskedLattice<Float>* pOutFit, MaskedLattice<Float>* pOutResid,
                           MaskedLattice<Float>& in, Lattice<Float>* pSigma,
-                          LinearFit<Float>& fitter, uInt axis, Bool showProgress = False);
+                          LinearFit<Float>& fitter, uInt axis, bool showProgress = false);
 };
 
 }  // namespace casacore

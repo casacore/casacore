@@ -33,7 +33,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 VirtualScalarColumnBase::~VirtualScalarColumnBase() {}
 
-Bool VirtualScalarColumnBase::isWritable() const { return False; }
+bool VirtualScalarColumnBase::isWritable() const { return false; }
 
 void VirtualScalarColumnBase::getArrayV(rownr_t, ArrayBase&) {
   throw DataManInvOper(

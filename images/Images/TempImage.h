@@ -123,13 +123,13 @@ class TempImage : public ImageInterface<T> {
   virtual String imageType() const;
 
   // Is the TempImage paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the TempImage writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Set the default pixelmask to the mask with the given name
   // (which has to exist in the "masks" group).
@@ -152,30 +152,30 @@ class TempImage : public ImageInterface<T> {
   // If a mask removed is the default mask, the image gets unmasked.
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion(const String& name, RegionHandler::GroupType = RegionHandler::Any,
-                            Bool throwIfUnknown = True);
+                            bool throwIfUnknown = true);
 
   // Attach a mask to the TempImage.
   // It replaces a probably already attached mask.
   // It has to have the same shape as the image.
-  virtual void attachMask(const Lattice<Bool>& mask);
+  virtual void attachMask(const Lattice<bool>& mask);
 
   // It a mask attached to the image?
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the image object use a pixelmask?
   // This is similar to <src>isMasked()</src>.
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask used.
   // An exception is thrown if the image does not use a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get a section of the mask.
   // It throws an exception if there is no mask.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Flush the data.
   virtual void flush();
@@ -195,7 +195,7 @@ class TempImage : public ImageInterface<T> {
 
   // Return the name of the current TempImage object.
   // It is always "Temporary_Image"
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Return the shape of the image
   virtual IPosition shape() const;
@@ -228,7 +228,7 @@ class TempImage : public ImageInterface<T> {
 
   // This is the implementations of the letters for the envelope Iterator
   // class <note> Not for public use </note>
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
@@ -262,14 +262,14 @@ class TempImage : public ImageInterface<T> {
   virtual void showCacheStatistics(ostream& os) const;
 
   // Check for symmetry in data members.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
  protected:
   // Get the region used (it always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
   // Function which extracts an array from the map.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
 
   // Function to replace the values in the map with soureBuffer.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -280,7 +280,7 @@ class TempImage : public ImageInterface<T> {
   void applyMask(const String& maskName);
 
   TempLattice<T>* mapPtr_p;
-  Lattice<Bool>* maskPtr_p;
+  Lattice<bool>* maskPtr_p;
 
   // # Make members of parent class known.
  public:

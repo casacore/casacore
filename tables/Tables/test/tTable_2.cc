@@ -218,9 +218,9 @@ void doIt(const String& tableName) {
   cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
   // Get a subset via a mask.
-  Block<Bool> mask(4, True);
-  mask[0] = False;
-  mask[3] = False;
+  Block<bool> mask(4, true);
+  mask[0] = false;
+  mask[3] = false;
   Table seltab3 = seltab2(mask);
   if (seltab3.nrow() != 2) {
     cout << "seltab3 does not contain 2 rows" << endl;

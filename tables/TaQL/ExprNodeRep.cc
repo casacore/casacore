@@ -38,7 +38,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableExprInfo::TableExprInfo(const Table& table, const String& alias, Bool isJoinTable)
+TableExprInfo::TableExprInfo(const Table& table, const String& alias, bool isJoinTable)
     : itsTable(table), itsAlias(alias), itsIsJoinTable(isJoinTable) {}
 
 void TableExprInfo::apply(const Vector<rownr_t>& rownrs) { itsTable = itsTable(rownrs); }
@@ -66,7 +66,7 @@ TableExprNodeRep::TableExprNodeRep(NodeDataType dtype, ValueType vtype, OperType
 
 TableExprInfo TableExprNodeRep::getTableInfo() const { return TableExprInfo(); }
 
-Bool TableExprNodeRep::isAggregate() const { return False; }
+bool TableExprNodeRep::isAggregate() const { return false; }
 
 void TableExprNodeRep::optimize() {}
 
@@ -100,7 +100,7 @@ rownr_t TableExprNodeRep::nrow() {
   if (exprtype_p == Constant) {
     return 1;
   }
-  vector<Table> tables = TableExprNodeUtil::getNodeTables(this, True);
+  vector<Table> tables = TableExprNodeUtil::getNodeTables(this, true);
   if (tables.empty()) {
     return 1;  // for calc expressions
   }
@@ -114,22 +114,22 @@ void TableExprNodeRep::fillExprType(const TableExprNodeRep* node) {
 }
 
 // The getColumn data type is unknown.
-Bool TableExprNodeRep::getColumnDataType(DataType&) const { return False; }
+bool TableExprNodeRep::getColumnDataType(DataType&) const { return false; }
 
 // Convert the tree to a number of range vectors which at least
 // select the same things.
 // By default a not possible is returned (an empty block).
-void TableExprNodeRep::ranges(Block<TableExprRange>& blrange) { blrange.resize(0, True); }
+void TableExprNodeRep::ranges(Block<TableExprRange>& blrange) { blrange.resize(0, true); }
 
 // Create a range.
-void TableExprNodeRep::createRange(Block<TableExprRange>& blrange) { blrange.resize(0, True); }
+void TableExprNodeRep::createRange(Block<TableExprRange>& blrange) { blrange.resize(0, true); }
 
 void TableExprNodeRep::createRange(Block<TableExprRange>& blrange, TableExprNodeColumn* tsn,
                                    Double st, Double end) {
   if (tsn == 0) {
-    blrange.resize(0, True);
+    blrange.resize(0, true);
   } else {
-    blrange.resize(1, True);
+    blrange.resize(1, true);
     blrange[0] = TableExprRange(tsn->getColumn(), st, end);
   }
 }
@@ -145,12 +145,12 @@ const IPosition& TableExprNodeRep::getShape(const TableExprId&) {
   return shape_p;
 }
 
-Bool TableExprNodeRep::isDefined(const TableExprId&) { return True; }
+bool TableExprNodeRep::isDefined(const TableExprId&) { return true; }
 
 // # Supply the default functions for the get functions.
-Bool TableExprNodeRep::getBool(const TableExprId&) {
+bool TableExprNodeRep::getBool(const TableExprId&) {
   TableExprNode::throwInvDT("(getBool not implemented)");
-  return False;
+  return false;
 }
 Int64 TableExprNodeRep::getInt(const TableExprId&) {
   TableExprNode::throwInvDT("(getInt not implemented)");
@@ -170,9 +170,9 @@ MVTime TableExprNodeRep::getDate(const TableExprId&) {
   TableExprNode::throwInvDT("(getDate not implemented)");
   return MVTime(0.);
 }
-MArray<Bool> TableExprNodeRep::getArrayBool(const TableExprId&) {
+MArray<bool> TableExprNodeRep::getArrayBool(const TableExprId&) {
   TableExprNode::throwInvDT("(getArrayBool not implemented)");
-  return MArray<Bool>();
+  return MArray<bool>();
 }
 MArray<Int64> TableExprNodeRep::getArrayInt(const TableExprId&) {
   TableExprNode::throwInvDT("(getArrayInt not implemented)");
@@ -197,13 +197,13 @@ MArray<MVTime> TableExprNodeRep::getArrayDate(const TableExprId&) {
   return MArray<MVTime>();
 }
 
-MArray<Bool> TableExprNodeRep::getBoolAS(const TableExprId& id) {
+MArray<bool> TableExprNodeRep::getBoolAS(const TableExprId& id) {
   if (valueType() == VTArray) {
     return getArrayBool(id);
   }
-  Vector<Bool> res(1);
+  Vector<bool> res(1);
   res[0] = getBool(id);
-  return MArray<Bool>(res);
+  return MArray<bool>(res);
 }
 MArray<Int64> TableExprNodeRep::getIntAS(const TableExprId& id) {
   if (valueType() == VTArray) {
@@ -246,48 +246,48 @@ MArray<MVTime> TableExprNodeRep::getDateAS(const TableExprId& id) {
   return MArray<MVTime>(res);
 }
 
-Bool TableExprNodeRep::contains(const TableExprId& id, Bool value) {
+bool TableExprNodeRep::contains(const TableExprId& id, bool value) {
   return (value == getBool(id));
 }
-Bool TableExprNodeRep::contains(const TableExprId& id, Int64 value) {
+bool TableExprNodeRep::contains(const TableExprId& id, Int64 value) {
   return (value == getInt(id));
 }
-Bool TableExprNodeRep::contains(const TableExprId& id, Double value) {
+bool TableExprNodeRep::contains(const TableExprId& id, Double value) {
   return (value == getDouble(id));
 }
-Bool TableExprNodeRep::contains(const TableExprId& id, DComplex value) {
+bool TableExprNodeRep::contains(const TableExprId& id, DComplex value) {
   return (value == getDComplex(id));
 }
-Bool TableExprNodeRep::contains(const TableExprId& id, String value) {
+bool TableExprNodeRep::contains(const TableExprId& id, String value) {
   return (value == getString(id));
 }
-Bool TableExprNodeRep::contains(const TableExprId& id, MVTime value) {
+bool TableExprNodeRep::contains(const TableExprId& id, MVTime value) {
   return (value == getDate(id));
 }
-MArray<Bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Bool>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<bool>& value) {
   return (getBool(id) == value);
 }
-MArray<Bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Int64>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Int64>& value) {
   return (getInt(id) == value);
 }
-MArray<Bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Double>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<Double>& value) {
   return (getDouble(id) == value);
 }
-MArray<Bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<DComplex>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<DComplex>& value) {
   return (getDComplex(id) == value);
 }
-MArray<Bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<String>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<String>& value) {
   return (getString(id) == value);
 }
-MArray<Bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<MVTime>& value) {
+MArray<bool> TableExprNodeRep::contains(const TableExprId& id, const MArray<MVTime>& value) {
   return (getDate(id) == value);
 }
 
-Array<Bool> TableExprNodeRep::getColumnBool(const Vector<rownr_t>& rownrs) {
+Array<bool> TableExprNodeRep::getColumnBool(const Vector<rownr_t>& rownrs) {
   TableExprId id;
   rownr_t nrrow = rownrs.size();
-  Array<Bool> arr(IPosition(1, nrrow));
-  Bool* vec = arr.data();
+  Array<bool> arr(IPosition(1, nrrow));
+  bool* vec = arr.data();
   for (rownr_t i = 0; i < nrrow; i++) {
     id.setRownr(rownrs[i]);
     vec[i] = getBool(id);
@@ -398,7 +398,7 @@ TENShPtr TableExprNodeBinary::shortcutOrAnd() {
   if ((**constNode).valueType() != VTScalar) {
     return this;
   }
-  Bool value = (**constNode)->getBool(0);
+  bool value = (**constNode)->getBool(0);
   // For an AND a true constant means the other node determines the result.
   // So we can replace the AND by that node.
   // A false results in a constant false when the other operand is a scalar.
@@ -667,7 +667,7 @@ TableExprNodeRep TableExprNodeBinary::getCommonTypes(const TENShPtr& left, const
   return TableExprNodeRep(dtype, vtype, opt, atype, extype, ndim, shape);
 }
 
-void TableExprNodeBinary::setChildren(const TENShPtr& left, const TENShPtr& right, Bool adapt) {
+void TableExprNodeBinary::setChildren(const TENShPtr& left, const TENShPtr& right, bool adapt) {
   lnode_p = left;
   rnode_p = right;
   if (right) {
@@ -827,7 +827,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc() {
   throw AipsError("TableExprNodeRep::makeGroupAggrFunc should not be called");
 }
 
-Bool TableExprNodeRep::isLazyAggregate() const { return True; }
+bool TableExprNodeRep::isLazyAggregate() const { return true; }
 
 uInt TableExprNodeMulti::checkNumOfArg(uInt low, uInt high, const vector<TENShPtr>& nodes) {
   if (nodes.size() < low) {
@@ -841,7 +841,7 @@ uInt TableExprNodeMulti::checkNumOfArg(uInt low, uInt high, const vector<TENShPt
 TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT(Block<Int>& dtypeOper, NodeDataType dtIn,
                                                            NodeDataType dtOut,
                                                            const vector<TENShPtr>& nodes,
-                                                           Bool dateConv) {
+                                                           bool dateConv) {
   uInt nelem = nodes.size();
   dtypeOper.resize(nelem);
   dtypeOper.set(dtIn);

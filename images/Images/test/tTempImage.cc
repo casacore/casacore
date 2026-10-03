@@ -58,7 +58,7 @@ void doIt(TempImage<Int>& scratch) {
   shape = scratch.shape();
   shape(2) = 1;
   COWPtr<Array<Int>> ptrM;
-  scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), False);
+  scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), false);
   AlwaysAssertExit(ptrM->shape().isEqual(shape));
   Array<Int> expectedResult(shape);
   indgen(expectedResult);
@@ -66,7 +66,7 @@ void doIt(TempImage<Int>& scratch) {
   ptrM.rwRef() = 0;
   AlwaysAssertExit(allEQ(*ptrM, 0));
   Slicer sl(IPosition(3, 0, 0, 5), shape, IPosition(3, 1));
-  scratch.getSlice(ptrM, sl, False);
+  scratch.getSlice(ptrM, sl, false);
   AlwaysAssertExit(allEQ(*ptrM, expectedResult));
   scratch.set(0);
   scratch.putAt(7, IPosition(3, 7));
@@ -75,38 +75,38 @@ void doIt(TempImage<Int>& scratch) {
 
   // Check if masking works fine.
   // To start with there should be no mask.
-  TempLattice<Bool> mask(scratch.shape());
-  mask.set(True);
-  mask.putAt(False, IPosition(3, 7));
+  TempLattice<bool> mask(scratch.shape());
+  mask.set(true);
+  mask.putAt(false, IPosition(3, 7));
   AlwaysAssertExit(!scratch.isMasked());
   AlwaysAssertExit(!scratch.hasPixelMask());
-  Array<Bool> tm;
+  Array<bool> tm;
   scratch.getMaskSlice(tm, IPosition(3, 1), IPosition(3, 6));
-  AlwaysAssertExit(allEQ(tm, True));
+  AlwaysAssertExit(allEQ(tm, true));
 
   // Now attach a mask and see if it is fine.
   scratch.attachMask(mask);
   AlwaysAssertExit(scratch.isMasked());
   AlwaysAssertExit(scratch.hasPixelMask());
   AlwaysAssertExit(scratch.pixelMask().isWritable());
-  Array<Bool> tm1;
+  Array<bool> tm1;
   scratch.getMaskSlice(tm1, IPosition(3, 1), IPosition(3, 6));
-  AlwaysAssertExit(allEQ(tm1, True));
+  AlwaysAssertExit(allEQ(tm1, true));
 
   // Change the mask and see if it is reflected in the image's mask.
-  mask.putAt(False, IPosition(3, 7));
-  tm1(IPosition(3, 6)) = False;
-  Array<Bool> tm2;
+  mask.putAt(false, IPosition(3, 7));
+  tm1(IPosition(3, 6)) = false;
+  Array<bool> tm2;
   scratch.getMaskSlice(tm2, IPosition(3, 1), IPosition(3, 6));
   AlwaysAssertExit(allEQ(tm2, tm1));
 
   // Change the image mask directly and see if it is fine.
   scratch.pixelMask().putSlice(tm2, IPosition(3, 0));
-  Array<Bool> tm3(IPosition(3, 7));
-  tm3 = True;
-  tm1(IPosition(3, 6)) = False;
-  tm1(IPosition(3, 7)) = False;
-  Array<Bool> tm3a;
+  Array<bool> tm3(IPosition(3, 7));
+  tm3 = true;
+  tm1(IPosition(3, 6)) = false;
+  tm1(IPosition(3, 7)) = false;
+  Array<bool> tm3a;
   scratch.getMaskSlice(tm3a, IPosition(3, 0), IPosition(3, 7));
   AlwaysAssertExit(allEQ(tm3a, tm3));
 
@@ -166,12 +166,12 @@ void streamImage(ImageInterface<Int>& img) {
     os >> arr;
     scratch.put(arr);
   }
-  Bool isMasked;
+  bool isMasked;
   os >> isMasked;
   if (isMasked) {
-    Array<Bool> mask;
+    Array<bool> mask;
     os >> mask;
-    scratch.attachMask(ArrayLattice<Bool>(mask));
+    scratch.attachMask(ArrayLattice<bool>(mask));
   }
   // Check the result.
   AlwaysAssertExit(scratch.getAt(IPosition(3, 7)) == 7);
@@ -216,7 +216,7 @@ void testTempCloseDelete() {
     blc(3) = k;
     trc(3) = k;
     Slicer sl(blc, trc, Slicer::endIsLast);
-    SubImage<Float> imSub(tIm, sl, True);
+    SubImage<Float> imSub(tIm, sl, true);
     goodplane += Float(k);
     imSub.put(goodplane);
   }

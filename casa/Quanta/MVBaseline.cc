@@ -74,19 +74,19 @@ MVBaseline::MVBaseline(const MVPosition &pos, const MVPosition &base) : MVPositi
 MVBaseline::MVBaseline(const MVPosition &other) : MVPosition(other) {}
 
 // # Operators
-Bool MVBaseline::operator==(const MVBaseline &other) const { return (allEQ(xyz, other.xyz)); }
+bool MVBaseline::operator==(const MVBaseline &other) const { return (allEQ(xyz, other.xyz)); }
 
-Bool MVBaseline::operator!=(const MVBaseline &other) const { return (!(*this == other)); }
+bool MVBaseline::operator!=(const MVBaseline &other) const { return (!(*this == other)); }
 
-Bool MVBaseline::near(const MVBaseline &other, Double tol) const {
+bool MVBaseline::near(const MVBaseline &other, Double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
-Bool MVBaseline::near(const MVBaseline &other, Quantity tol) const {
+bool MVBaseline::near(const MVBaseline &other, Quantity tol) const {
   return (separation(other, "rad") <= tol);
 }
 
-Bool MVBaseline::nearAbs(const MVBaseline &other, Double tol) const {
+bool MVBaseline::nearAbs(const MVBaseline &other, Double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
@@ -265,9 +265,9 @@ Vector<Quantum<Double>> MVBaseline::getXRecordValue() const {
   return tmp;
 }
 
-Bool MVBaseline::putValue(const Vector<Quantum<Double>> &in) {
+bool MVBaseline::putValue(const Vector<Quantum<Double>> &in) {
   uInt i = in.nelements();
-  if (i != 3) return False;
+  if (i != 3) return false;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) && in(2).check(UnitVal::LENGTH)) {
       for (uInt j = 0; j < i; j++) {
@@ -285,7 +285,7 @@ Bool MVBaseline::putValue(const Vector<Quantum<Double>> &in) {
       xyz(2) = tsin(1);
       readjust(in(0).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) && in(1).check(UnitVal::ANGLE)) {
@@ -301,10 +301,10 @@ Bool MVBaseline::putValue(const Vector<Quantum<Double>> &in) {
       xyz(2) = tsin(1);
       readjust(in(2).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 MVBaseline operator*(const RotMatrix &left, const MVBaseline &right) {

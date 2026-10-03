@@ -77,7 +77,7 @@ void ISMIndex::addBucketNr(rownr_t rownr, uInt bucketNr) {
     rows_p.resize(nused_p + 64 + 1);
     bucketNr_p.resize(nused_p + 64);
   }
-  Bool found;
+  bool found;
   uInt index = binarySearchBrackets(found, rows_p, rownr, nused_p);
   AlwaysAssert(!found, AipsError);
   objmove(&rows_p[index + 1], &rows_p[index], nused_p + 1 - index);
@@ -117,7 +117,7 @@ Int ISMIndex::removeRow(rownr_t rownr) {
 
 uInt ISMIndex::getIndex(rownr_t rownr) const {
   // If no exact match, the interval starts at the previous index.
-  Bool found;
+  bool found;
   uInt index = binarySearchBrackets(found, rows_p, rownr, (uInt)nused_p + 1);
   if (!found) {
     index--;
@@ -133,26 +133,26 @@ uInt ISMIndex::getBucketNr(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& buck
   return bucketNr_p[index];
 }
 
-Bool ISMIndex::nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
+bool ISMIndex::nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
                             uInt& bucketNr) const {
   // When first time, get the index of the bucket containing the row.
   // End the iteration when the first row is past the end.
   if (cursor == 0) {
     if (bucketStartRow >= rows_p[nused_p]) {
-      return False;
+      return false;
     }
     cursor = getIndex(bucketStartRow);
   } else {
     // Not the first time.
     // End the iteration when no more buckets.
     if (cursor >= nused_p) {
-      return False;
+      return false;
     }
   }
   bucketStartRow = rows_p[cursor];
   bucketNrrow = rows_p[cursor + 1] - bucketStartRow;
   bucketNr = bucketNr_p[cursor++];
-  return True;
+  return true;
 }
 
 void ISMIndex::show(ostream& os) const {

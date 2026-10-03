@@ -112,18 +112,18 @@ Vector<Int> MSPolnParse::getMapToDDIDs(MSDataDescIndex& msDDNdx, MSPolarizationI
       Int n;
       Vector<Int> tmp = msDDNdx.matchSpwIdAndPolznId(spwIDs[s], polnIDs[p]);
       if (tmp.nelements() > 0) {
-        ddIDs.resize((n = ddIDs.nelements()) + 1, True);
+        ddIDs.resize((n = ddIDs.nelements()) + 1, true);
         ddIDs[n] = tmp[0];
-        thisDDList.resize((n = thisDDList.nelements()) + 1, True);
+        thisDDList.resize((n = thisDDList.nelements()) + 1, true);
         thisDDList[n] = tmp[0];
       }
     }
     if (thisDDList.nelements() > 0) {
       uInt n;
       setIDLists(polnIDs[p], 1, thisDDList);
-      validPolIDs.resize((n = validPolIDs.nelements()) + 1, True);
+      validPolIDs.resize((n = validPolIDs.nelements()) + 1, true);
       validPolIDs[n] = polnIDs[p];
-      validPolIndices.resize((n = validPolIndices.nelements()) + 1, True);
+      validPolIndices.resize((n = validPolIndices.nelements()) + 1, true);
       validPolIndices[n] = polnIndices[p];
       //	    cout << "Found DDID for PolID " << polnIDs[p] << std::endl;
     }
@@ -166,9 +166,9 @@ Vector<Int> MSPolnParse::getMapToDDIDsV2(const String& polnExpr, const Vector<In
       Int n;
       Vector<Int> tmp = msDDNdx.matchSpwIdAndPolznId(spwIDs[s], polnIDs[p]);
       if (tmp.nelements() > 0) {
-        ddIDs.resize((n = ddIDs.nelements()) + 1, True);
+        ddIDs.resize((n = ddIDs.nelements()) + 1, true);
         ddIDs[n] = tmp[0];
-        thisDDList.resize((n = thisDDList.nelements()) + 1, True);
+        thisDDList.resize((n = thisDDList.nelements()) + 1, true);
         thisDDList[n] = tmp[0];
         setIDLists((Int)polnIDs[p], 0, polnIndices);
         polMap_p[polnIDs[p]].resize(0);
@@ -179,9 +179,9 @@ Vector<Int> MSPolnParse::getMapToDDIDsV2(const String& polnExpr, const Vector<In
     if (thisDDList.nelements() > 0) {
       uInt n;
       setIDLists(polnIDs[p], 1, thisDDList);
-      validPolIDs.resize((n = validPolIDs.nelements()) + 1, True);
+      validPolIDs.resize((n = validPolIDs.nelements()) + 1, true);
       validPolIDs[n] = polnIDs[p];
-      // validPolIndices.resize((n=validPolIndices.nelements())+1,True);
+      // validPolIndices.resize((n=validPolIndices.nelements())+1,true);
       // validPolIndices[n]=polnIndices[p];
     }
     // else
@@ -207,7 +207,7 @@ Vector<Int> MSPolnParse::getMapToDDIDsV2(const String& polnExpr, const Vector<In
 //
 Vector<Int> MSPolnParse::matchPolIDsToPolTableRow(const Vector<Int>& polIds,
                                                   std::map<Int, Vector<Int>>& /*polIndexMap*/,
-                                                  Vector<Int>& polIndices, Bool addToMap) {
+                                                  Vector<Int>& polIndices, bool addToMap) {
   Vector<Int> rowList;
   MSPolarization mspol(ms()->polarizationTableName());
   MSPolarizationColumns mspolC(mspol);
@@ -227,14 +227,14 @@ Vector<Int> MSPolnParse::matchPolIDsToPolTableRow(const Vector<Int>& polIds,
     // following corrType lists: "RR LL", "RR LL LR RL", "RR",
     // "LL".
     //
-    Bool allFound = False;
+    bool allFound = false;
     uInt foundCounter = 0;
     //	Vector<Int> polIndices(0,-1);
     for (uInt i = 0; i < polIds.nelements(); i++) {
       for (uInt j = 0; j < corrType.nelements(); j++)
         if (polIds[i] == corrType[j]) {
           Int m = 0;
-          polIndices.resize((m = polIndices.nelements()) + 1, True);
+          polIndices.resize((m = polIndices.nelements()) + 1, true);
           polIndices[m] = j;
           foundCounter++;
           break;
@@ -246,7 +246,7 @@ Vector<Int> MSPolnParse::matchPolIDsToPolTableRow(const Vector<Int>& polIds,
     }
     if (allFound) {
       uInt n;
-      rowList.resize((n = rowList.nelements()) + 1, True);
+      rowList.resize((n = rowList.nelements()) + 1, true);
       rowList[n] = row;
     }
   }
@@ -269,7 +269,7 @@ Vector<Int> MSPolnParse::getPolnIndices(const Int& polId, const Vector<Int>& pol
       for (uInt j = 0; j < corrType.nelements(); j++)
         if (polnTypes[i] == corrType[j]) {
           Int m = 0;
-          polIndices.resize((m = polIndices.nelements()) + 1, True);
+          polIndices.resize((m = polIndices.nelements()) + 1, true);
           polIndices[m] = j;
           break;
         }
@@ -287,7 +287,7 @@ Vector<Int> MSPolnParse::getPolnIDs(const String& polSpec, Vector<Int>& polIndic
   // Split the given string into ";" separated tokens.  Upcase the
   // string before splitting.
   //
-  tokenize(polSpec, sep, tokens, True);
+  tokenize(polSpec, sep, tokens, true);
   idList.resize(tokens.nelements());
   for (uInt i = 0; i < idList.nelements(); i++) idList[i] = Stokes::type(tokens[i]);
 
@@ -311,7 +311,7 @@ Vector<Int> MSPolnParse::getPolnIDsV2(const String& polSpec, Vector<Int>& polTyp
   // Split the given string into ";" separated tokens.  Upcase the
   // string before splitting.
   //
-  tokenize(polSpec, sep, tokens, True);
+  tokenize(polSpec, sep, tokens, true);
   polTypes.resize(tokens.nelements());
   for (uInt i = 0; i < polTypes.nelements(); i++) polTypes[i] = Stokes::type(tokens[i]);
   polIDList = matchPolIDsToPolTableRow(polTypes, polMap_p, polIndices);
@@ -427,7 +427,7 @@ Int MSPolnParse::theParser(const String& command) {
 void MSPolnParse::setIDLists(const Int key, const Int ndx, Vector<Int>& val) {
   if (ndx > 1) throw(MSSelectionError("Internal error in MSPolnParse::setIDLists(): Index > 1"));
 
-  if (setupMap_p[key].nelements() != 2) setupMap_p[key].resize(2, True);
+  if (setupMap_p[key].nelements() != 2) setupMap_p[key].resize(2, true);
   if (val.nelements() > 0) {
     Vector<Int> v0 = val;
     auto elem = setupMap_p.find(key);

@@ -88,7 +88,7 @@ class SDPointingHandler {
   SDPointingHandler();
 
   // attach this to a MS, mark fields row which are handled here
-  SDPointingHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDPointingHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDPointingHandler(const SDPointingHandler &other);
@@ -99,7 +99,7 @@ class SDPointingHandler {
   SDPointingHandler &operator=(const SDPointingHandler &other);
 
   // attach to a MS, mark fields in row which are handled here
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS
   void resetRow(const Record &);
@@ -145,7 +145,7 @@ class SDPointingHandler {
   RORecordFieldPtr<Array<Double>> pointingDirRateField_p;
   RORecordFieldPtr<Double> intervalField_p, timeField_p;
   RORecordFieldPtr<String> nameField_p;
-  RORecordFieldPtr<Bool> trackingField_p;
+  RORecordFieldPtr<bool> trackingField_p;
 
   // cleanup everything
   void clearAll();
@@ -154,10 +154,10 @@ class SDPointingHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // initialize everythign which depends on row
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

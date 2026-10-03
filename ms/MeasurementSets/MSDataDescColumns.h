@@ -79,14 +79,14 @@ class MSDataDescColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ScalarColumn<Int>& polarizationId() { return polarizationId_p; }
   ScalarColumn<Int>& spectralWindowId() { return spectralWindowId_p; }
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ScalarColumn<Int>& polarizationId() const { return polarizationId_p; }
   const ScalarColumn<Int>& spectralWindowId() const { return spectralWindowId_p; }
   // </group>
@@ -130,7 +130,7 @@ class MSDataDescColumns {
   void attachOptionalCols(const MSDataDescription& msDataDesc);
 
   // # required columns
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<Int> polarizationId_p;
   ScalarColumn<Int> spectralWindowId_p;
   // # optional columns

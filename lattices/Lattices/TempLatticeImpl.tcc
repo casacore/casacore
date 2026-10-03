@@ -40,17 +40,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 TempLatticeImpl<T>::TempLatticeImpl()
-    : itsLatticePtr(std::make_shared<ArrayLattice<T>>()), itsIsClosed(False) {}
+    : itsLatticePtr(std::make_shared<ArrayLattice<T>>()), itsIsClosed(false) {}
 
 template <class T>
 TempLatticeImpl<T>::TempLatticeImpl(const TiledShape& shape, Int maxMemoryInMB)
-    : itsIsClosed(False) {
+    : itsIsClosed(false) {
   init(shape, Double(maxMemoryInMB));
 }
 
 template <class T>
 TempLatticeImpl<T>::TempLatticeImpl(const TiledShape& shape, Double maxMemoryInMB)
-    : itsIsClosed(False) {
+    : itsIsClosed(false) {
   init(shape, maxMemoryInMB);
 }
 
@@ -89,7 +89,7 @@ void TempLatticeImpl<T>::tempClose() {
     itsTable.unmarkForDelete();
     itsLatticePtr.reset();
     itsTable = Table();
-    itsIsClosed = True;
+    itsIsClosed = true;
   }
 }
 
@@ -98,7 +98,7 @@ void TempLatticeImpl<T>::tempReopen() const {
   if (itsIsClosed && isPaged()) {
     itsTable = Table(itsTableName, TableLock(TableLock::PermanentLockingWait), Table::Update);
     itsLatticePtr = std::make_shared<PagedArray<T>>(itsTable);
-    itsIsClosed = False;
+    itsIsClosed = false;
   }
   if (!itsTable.isNull()) {
     itsTable.markForDelete();

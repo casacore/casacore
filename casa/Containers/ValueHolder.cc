@@ -32,7 +32,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ValueHolder::ValueHolder(Bool value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(bool value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(uChar value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(Short value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(uShort value) : itsRep(new ValueHolderRep(value)) {}
@@ -45,7 +45,7 @@ ValueHolder::ValueHolder(const Complex& value) : itsRep(new ValueHolderRep(value
 ValueHolder::ValueHolder(const DComplex& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Char* value) : itsRep(new ValueHolderRep(String(value))) {}
 ValueHolder::ValueHolder(const String& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(const Array<Bool>& value) : itsRep(new ValueHolderRep(value)) {}
+ValueHolder::ValueHolder(const Array<bool>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<uChar>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<Short>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<uShort>& value) : itsRep(new ValueHolderRep(value)) {}
@@ -58,7 +58,7 @@ ValueHolder::ValueHolder(const Array<Complex>& value) : itsRep(new ValueHolderRe
 ValueHolder::ValueHolder(const Array<DComplex>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Array<String>& value) : itsRep(new ValueHolderRep(value)) {}
 ValueHolder::ValueHolder(const Record& value) : itsRep(new ValueHolderRep(value)) {}
-ValueHolder::ValueHolder(uInt ndim, Bool dummy) : itsRep(new ValueHolderRep(ndim, dummy)) {}
+ValueHolder::ValueHolder(uInt ndim, bool dummy) : itsRep(new ValueHolderRep(ndim, dummy)) {}
 
 ValueHolder::ValueHolder(const ValueHolder& that) : itsRep(that.itsRep) {}
 

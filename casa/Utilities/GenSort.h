@@ -160,7 +160,7 @@ class GenSort {
   static T* merge(T* data, T* tmp, uInt nrrec, uInt* index, uInt nparts);
 
   // Quicksort in ascending order.
-  static void quickSortAsc(T*, Int, Bool multiThread = False, Int rec_lim = 128);
+  static void quickSortAsc(T*, Int, bool multiThread = false, Int rec_lim = 128);
 
   // Heapsort in ascending order.
   static void heapSortAsc(T*, Int);
@@ -248,7 +248,7 @@ class GenSortIndirect {
   static inline int isAscending(const T* data, INX index1, INX index2);
 
   // Quicksort in ascending order.
-  static void quickSortAsc(INX* inx, const T*, INX nr, Bool multiThread = False, Int rec_lim = 128);
+  static void quickSortAsc(INX* inx, const T*, INX nr, bool multiThread = false, Int rec_lim = 128);
 
   // Heapsort in ascending order.
   static void heapSortAsc(INX* inx, const T*, INX nr);

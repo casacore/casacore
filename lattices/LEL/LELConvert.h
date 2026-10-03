@@ -104,16 +104,16 @@ class LELConvert : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 

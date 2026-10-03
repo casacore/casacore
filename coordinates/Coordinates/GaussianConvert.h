@@ -92,29 +92,29 @@ class GaussianConvert {
   void setWorldAxes(const Vector<uInt>& worldAxes);
 
   // Convert Gaussian parameters from pixels to world.  Returns
-  // False if it fails with an error message recoverable with
+  // false if it fails with an error message recoverable with
   // function errorMessage.  If you set the units of the output
   // axis quanta they will be honoured, otherwise they will come out
   // in the axis units of the coordinate system.  For the output position angle,
   // if the output units are not set, the units of the input position angle
   // will be used.
-  Bool toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& minorAxisOut,
+  bool toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& minorAxisOut,
                Quantum<Double>& positionAngleOut, Double majorAxisIn, Double minorAxisIn,
                const Quantum<Double>& positionAngleIn);
 
   // Convert Gaussian parameters from world to pixel.  Returns
-  // False if it fails with an error message recoverable with
+  // false if it fails with an error message recoverable with
   // function errorMessage. For the output position angle,
   // if the output units are not set, the units of the input position angle
   // will be used.
-  Bool toPixel(Double& majorAxisOut, Double& minorAxisOut, Quantum<Double>& positionAngleOut,
+  bool toPixel(Double& majorAxisOut, Double& minorAxisOut, Quantum<Double>& positionAngleOut,
                const Quantum<Double>& majorAxisIn, const Quantum<Double>& minorAxisIn,
                const Quantum<Double>& positionAngleIn);
 
   // Convert location
   // <group>
-  Bool toPixel(Vector<Double>& pixel, const Vector<Quantum<Double>>& world);
-  Bool toWorld(Vector<Quantum<Double>>& world, const Vector<Double>& pixel);
+  bool toPixel(Vector<Double>& pixel, const Vector<Quantum<Double>>& world);
+  bool toWorld(Vector<Quantum<Double>>& world, const Vector<Double>& pixel);
   // </group>
 
   // Recover error messages from the conversion functions
@@ -124,7 +124,7 @@ class GaussianConvert {
   CoordinateSystem itsCSys;
   Vector<uInt> itsWorldAxes;
   String itsErrorMessage;
-  Bool itsValid;
+  bool itsValid;
 
   void convertAxes(Double& minorAxisOut, Double& majorAxisOut, Quantum<Double>& positionAngleOut,
                    Double minorAxisIn, Double majorAxisIn, const Quantum<Double>& positionAngleIn,

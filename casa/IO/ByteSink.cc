@@ -47,7 +47,7 @@ ByteSink& ByteSink::operator=(const ByteSink& sink) {
 
 ByteSink::~ByteSink() {}
 
-ByteSink& ByteSink::operator<<(Bool value) {
+ByteSink& ByteSink::operator<<(bool value) {
   itsTypeIO->write(1, &value);
   return *this;
 }
@@ -123,7 +123,7 @@ ByteSink& ByteSink::operator<<(const Char* value) {
   return *this;
 }
 
-void ByteSink::write(size_t nvalues, const Bool* value) { itsTypeIO->write(nvalues, value); }
+void ByteSink::write(size_t nvalues, const bool* value) { itsTypeIO->write(nvalues, value); }
 
 void ByteSink::write(size_t nvalues, const Char* value) { itsTypeIO->write(nvalues, value); }
 

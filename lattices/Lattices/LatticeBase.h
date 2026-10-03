@@ -92,22 +92,22 @@ class LatticeBase {
   // Is the lattice persistent and can it be loaded by other processes as well?
   // That is the case for a PagedArray or PagedImage and for an ImageExpr
   // which does not use transient lattices or regions.
-  // <br>The default implementation returns False.
-  virtual Bool isPersistent() const;
+  // <br>The default implementation returns false.
+  virtual bool isPersistent() const;
 
   // Is the lattice paged to disk?
-  // <br>The default implementation returns False.
-  virtual Bool isPaged() const;
+  // <br>The default implementation returns false.
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
   // That is the case for an ArrayLattice or a Temp/SubLattice using it.
   // It is used by LatticeIterInterface.
-  // <br>The default implementation returns False.
-  virtual Bool canReferenceArray() const;
+  // <br>The default implementation returns false.
+  virtual bool canReferenceArray() const;
 
   // Is the lattice writable?
-  // <br>The default implementation returns True.
-  virtual Bool isWritable() const;
+  // <br>The default implementation returns true.
+  virtual bool isWritable() const;
 
   // Save the image in an AipsIO file with the given name.
   // Its purpose is to make ImageConcat and ImageExpr objects
@@ -120,12 +120,12 @@ class LatticeBase {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <br>By default the functions do not do anything at all.
-  // lock() and hasLock return True, which is suitable for all
+  // lock() and hasLock return true, which is suitable for all
   // non-paged lattices.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -153,7 +153,7 @@ class LatticeBase {
   // be a file name for lattices that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
   // <br>The default implementation returns an empty string.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Return the shape of the Lattice including all degenerate axes
   // (ie. axes with a length of one)
@@ -173,7 +173,7 @@ class LatticeBase {
 
   // Return a value of "True" if this instance of Lattice and 'other' have
   // the same shape, otherwise returns a value of "False".
-  Bool conform(const LatticeBase& other) const { return shape().isEqual(other.shape()); }
+  bool conform(const LatticeBase& other) const { return shape().isEqual(other.shape()); }
 
   // Return the coordinates of the lattice.
   // <br>The default implementation returns an 'empty' LELLattCoord object.
@@ -201,8 +201,8 @@ class LatticeBase {
   IPosition niceCursorShape() const { return doNiceCursorShape(advisedMaxPixels()); }
   // </group>
 
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // The function (in the derived classes) doing the actual work.
   // This function is public, so it can be used internally in the

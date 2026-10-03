@@ -48,7 +48,7 @@ RetypedArrayEngine<S, T>::RetypedArrayEngine(const String& virtualColumnName,
                                              const String& storedColumnName)
     : BaseMappedArrayEngine<S, T>(virtualColumnName, storedColumnName),
       shape_p(S::shape()),
-      isVirtualFixedShape_p(False),
+      isVirtualFixedShape_p(false),
       copyInfo_p(0) {}
 
 template <class S, class T>
@@ -58,13 +58,13 @@ RetypedArrayEngine<S, T>::RetypedArrayEngine(const String& virtualColumnName,
                                              const TableRecord& extraInformation)
     : BaseMappedArrayEngine<S, T>(virtualColumnName, storedColumnName),
       shape_p(virtualShape),
-      isVirtualFixedShape_p(False),
+      isVirtualFixedShape_p(false),
       record_p(extraInformation),
       copyInfo_p(0) {}
 
 template <class S, class T>
 RetypedArrayEngine<S, T>::RetypedArrayEngine(const Record& spec)
-    : BaseMappedArrayEngine<S, T>(), isVirtualFixedShape_p(False), copyInfo_p(0) {
+    : BaseMappedArrayEngine<S, T>(), isVirtualFixedShape_p(false), copyInfo_p(0) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
     setNames(spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
     if (spec.isDefined("SHAPE")) {
@@ -82,7 +82,7 @@ template <class S, class T>
 RetypedArrayEngine<S, T>::RetypedArrayEngine(const RetypedArrayEngine<S, T>& that)
     : BaseMappedArrayEngine<S, T>(that),
       shape_p(that.shape_p),
-      isVirtualFixedShape_p(False),
+      isVirtualFixedShape_p(false),
       record_p(that.record_p),
       copyInfo_p(0) {}
 
@@ -171,7 +171,7 @@ void RetypedArrayEngine<S, T>::create64(rownr_t initialNrrow) {
 template <class S, class T>
 void RetypedArrayEngine<S, T>::setShapeColumn(const IPosition& shape) {
   virtualFixedShape_p = shape;
-  isVirtualFixedShape_p = True;
+  isVirtualFixedShape_p = true;
 }
 
 template <class S, class T>

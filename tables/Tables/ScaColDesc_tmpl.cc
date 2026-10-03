@@ -28,7 +28,7 @@
 
 // # Instantiate extern templates for often used types.
 namespace casacore {
-template class ScalarColumnDesc<Bool>;
+template class ScalarColumnDesc<bool>;
 template class ScalarColumnDesc<Char>;
 template class ScalarColumnDesc<Short>;
 template class ScalarColumnDesc<uShort>;

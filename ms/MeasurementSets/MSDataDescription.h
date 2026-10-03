@@ -87,7 +87,7 @@ class MSDataDescription : public MSDataDescriptionEnums, public MSTable<MSDataDe
   // <group name=tableLikeConstructors>
   MSDataDescription(const String &tableName, TableOption = Table::Old);
   MSDataDescription(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSDataDescription(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSDataDescription(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSDataDescription(const Table &table);
   MSDataDescription(const MSDataDescription &other);
   // </group>
@@ -120,7 +120,7 @@ class MSDataDescription : public MSDataDescriptionEnums, public MSTable<MSDataDe
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

@@ -39,7 +39,7 @@ LCHDF5Mask::LCHDF5Mask(const TiledShape& latticeShape, const std::shared_ptr<HDF
       itsBox(IPosition(latticeShape.shape().nelements(), 0), latticeShape.shape() - 1,
              latticeShape.shape()) {
   setBoundingBox(itsBox.boundingBox());
-  itsMask = HDF5Lattice<Bool>(latticeShape, file, maskName, "masks");
+  itsMask = HDF5Lattice<bool>(latticeShape, file, maskName, "masks");
   setMaskPtr(itsMask);
 }
 
@@ -53,11 +53,11 @@ LCHDF5Mask::LCHDF5Mask(const TiledShape& maskShape, const LCBox& box,
                   "shape of mask and box differ"));
   }
   setBoundingBox(itsBox.boundingBox());
-  itsMask = HDF5Lattice<Bool>(box.latticeShape(), file, maskName, "masks");
+  itsMask = HDF5Lattice<bool>(box.latticeShape(), file, maskName, "masks");
   setMaskPtr(itsMask);
 }
 
-LCHDF5Mask::LCHDF5Mask(HDF5Lattice<Bool>& mask, const LCBox& box)
+LCHDF5Mask::LCHDF5Mask(HDF5Lattice<bool>& mask, const LCBox& box)
     : LCRegionSingle(box.latticeShape()), itsBox(box) {
   // Check if box shape and mask shape are equal.
   if (itsBox.shape() != mask.shape()) {
@@ -87,11 +87,11 @@ LCHDF5Mask& LCHDF5Mask::operator=(const LCHDF5Mask& that) {
   return *this;
 }
 
-Bool LCHDF5Mask::equals(const LCRegion& other) const {
+bool LCHDF5Mask::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionSingle::equals(other)) {
-    return False;
+    return false;
   }
   const LCHDF5Mask& that = (const LCHDF5Mask&)other;
   // Check the box and mask.
@@ -106,8 +106,8 @@ IPosition LCHDF5Mask::doNiceCursorShape(uInt maxPixels) const {
   return itsMask.niceCursorShape(maxPixels);
 }
 
-LatticeIterInterface<Bool>* LCHDF5Mask::makeIter(const LatticeNavigator& navigator,
-                                                 Bool useRef) const {
+LatticeIterInterface<bool>* LCHDF5Mask::makeIter(const LatticeNavigator& navigator,
+                                                 bool useRef) const {
   return itsMask.makeIter(navigator, useRef);
 }
 
@@ -133,13 +133,13 @@ TableRecord LCHDF5Mask::toRecord(const String& tableName) const {
 }
 
 LCHDF5Mask* LCHDF5Mask::fromRecord(const TableRecord& rec, const String& tableName) {
-  HDF5Lattice<Bool> mask(rec.asString("filename"), rec.asString("maskname"), "masks");
+  HDF5Lattice<bool> mask(rec.asString("filename"), rec.asString("maskname"), "masks");
   LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
   LCHDF5Mask* regPtr = new LCHDF5Mask(mask, *boxPtr);
   delete boxPtr;
   return regPtr;
 }
 
-Bool LCHDF5Mask::isWritable() const { return itsMask.isWritable(); }
+bool LCHDF5Mask::isWritable() const { return itsMask.isWritable(); }
 
 }  // namespace casacore

@@ -88,11 +88,11 @@ class WCEllipsoid : public WCRegion {
 
   WCEllipsoid& operator=(const WCEllipsoid& that);
 
-  Bool operator==(const WCRegion& other) const;
+  bool operator==(const WCRegion& other) const;
 
   WCRegion* cloneRegion() const;
 
-  Bool canExtend() const;
+  bool canExtend() const;
 
   String type() const;
 

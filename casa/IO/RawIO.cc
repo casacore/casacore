@@ -41,7 +41,7 @@ RawIO& RawIO::operator=(const RawIO& that) {
 
 RawIO::~RawIO() {}
 
-size_t RawIO::write(size_t nvalues, const Bool* value) { return TypeIO::write(nvalues, value); }
+size_t RawIO::write(size_t nvalues, const bool* value) { return TypeIO::write(nvalues, value); }
 
 size_t RawIO::write(size_t nvalues, const Char* value) {
   itsByteIO->write(nvalues * sizeof(Char), (void*)value);
@@ -99,7 +99,7 @@ size_t RawIO::write(size_t nvalues, const DComplex* value) { return TypeIO::writ
 
 size_t RawIO::write(size_t nvalues, const String* value) { return TypeIO::write(nvalues, value); }
 
-size_t RawIO::read(size_t nvalues, Bool* value) { return TypeIO::read(nvalues, value); }
+size_t RawIO::read(size_t nvalues, bool* value) { return TypeIO::read(nvalues, value); }
 
 size_t RawIO::read(size_t nvalues, Char* value) {
   itsByteIO->read(nvalues * sizeof(Char), value);

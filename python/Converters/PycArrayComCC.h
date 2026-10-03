@@ -30,15 +30,15 @@
 #define IS_PY3K
 #endif
 
-Bool PycArrayCheck(PyObject* obj_ptr) {
+bool PycArrayCheck(PyObject* obj_ptr) {
   if (!PyArray_API) {
-    if (!isImported()) return False;
+    if (!isImported()) return false;
     loadAPI();
   }
   return PyArray_Check(obj_ptr);
 }
 
-Bool isImported() {
+bool isImported() {
   using namespace boost::python;
   // PySys_GetObject uses char* instead of const char*, so use a cast.
   const char* modStr = "modules";
@@ -62,8 +62,8 @@ struct TypeConvTraits {
   static NPY_TYPES pyType() { throw AipsError("PycArray: unknown casa type"); }
 };
 template <>
-struct TypeConvTraits<casacore::Bool> {
-  typedef casacore::Bool casa_type;
+struct TypeConvTraits<bool> {
+  typedef bool casa_type;
   typedef npy_bool python_type;
   static NPY_TYPES pyType() { return NPY_BOOL; }
 };
@@ -261,7 +261,7 @@ Array<String> ArrayCopy<String>::toArray(const IPosition& shape, void* data, boo
   return arr;
 }
 
-ValueHolder makeArray(PyObject* obj_ptr, Bool copyData) {
+ValueHolder makeArray(PyObject* obj_ptr, bool copyData) {
   if (!PycArrayCheck(obj_ptr)) {
     throw AipsError("PycArray: python object is not an array");
   }
@@ -298,7 +298,7 @@ ValueHolder makeArray(PyObject* obj_ptr, Bool copyData) {
   // Create the correct array.
   switch (PyArray_TYPE(po)) {
     case NPY_BOOL:
-      return ValueHolder(ArrayCopy<Bool>::toArray(shp, PyArray_DATA(po), docopy));
+      return ValueHolder(ArrayCopy<bool>::toArray(shp, PyArray_DATA(po), docopy));
     case NPY_INT16:
       return ValueHolder(ArrayCopy<Short>::toArray(shp, PyArray_DATA(po), docopy));
     case NPY_UINT16:
@@ -326,18 +326,18 @@ ValueHolder makeArray(PyObject* obj_ptr, Bool copyData) {
       // Similarly for STRING which exists for numpy and is set to
       // INT for numarray.
       if (PyArray_TYPE(po) == NPY_UINT64) {
-        Array<uInt64> arr = ArrayCopy<uInt64>::toArray(shp, PyArray_DATA(po), False);
+        Array<uInt64> arr = ArrayCopy<uInt64>::toArray(shp, PyArray_DATA(po), false);
         Array<Int64> res(arr.shape());
         convertArray(res, arr);
         return ValueHolder(res);
       } else if (PyArray_TYPE(po) == NPY_INT8) {
-        Array<signed char> arr = ArrayCopy<signed char>::toArray(shp, PyArray_DATA(po), False);
+        Array<signed char> arr = ArrayCopy<signed char>::toArray(shp, PyArray_DATA(po), false);
         Array<Short> res(arr.shape());
         convertArray(res, arr);
         return ValueHolder(res);
       } else if (PyArray_TYPE(po) == NPY_UINT8) {
         // Copy using signed char, because uChar is mapped to Short in the Traits.
-        Array<signed char> arr = ArrayCopy<signed char>::toArray(shp, PyArray_DATA(po), False);
+        Array<signed char> arr = ArrayCopy<signed char>::toArray(shp, PyArray_DATA(po), false);
         Array<Short> res(arr.shape());
         void* varr = &arr;
         Array<uChar>* uarr = static_cast<Array<uChar>*>(varr);
@@ -362,7 +362,7 @@ ValueHolder makeArray(PyObject* obj_ptr, Bool copyData) {
 }
 
 // Instantiate the various templates.
-template struct ArrayCopy<Bool>;
+template struct ArrayCopy<bool>;
 template struct ArrayCopy<signed char>;
 template struct ArrayCopy<uChar>;
 template struct ArrayCopy<Short>;
@@ -374,7 +374,7 @@ template struct ArrayCopy<uInt64>;
 template struct ArrayCopy<Float>;
 template struct ArrayCopy<Double>;
 
-template boost::python::object makePyArrayObject(casacore::Array<Bool> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<bool> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<uChar> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<Short> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<uShort> const& arr);

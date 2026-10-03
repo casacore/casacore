@@ -53,7 +53,7 @@ namespace casacore {
 // These functions perform element by element mathematical operations on
 // optionally masked arrays and/or scalars.
 // If two arrays are used, the arrays must conform, except for allEQ which
-// returns False if the arrays do not conform.
+// returns false if the arrays do not conform.
 //
 // The functions in this file can be divided in 3 groups:
 // <ul>
@@ -66,7 +66,7 @@ namespace casacore {
 //       mask is the OR of both masks.
 //  <li> Full reduction functions like ntrue, all, allEQ, etc.
 //       They operate on the unmasked elements only. If there are no unmasked
-//       elements, the results is 0 or True.
+//       elements, the results is 0 or true.
 //  <li> Reduction functions working on unmasked elements in parts of the
 //       input array. The result is an MArray that has a mask if the input
 //       array has a mask. An output element is masked off if its input
@@ -76,7 +76,7 @@ namespace casacore {
 //       There are 3 flavours:
 //   <ul>
 //    <li> partialXXX reduces one or more axes. E.g. one can count the
-//         number of True elements for particular array axes.
+//         number of true elements for particular array axes.
 //         The result is an array with a lower dimensionality.
 //         They can be seen as a special versions of the boxedXXX functions.
 //    <li> slidingXXX operates in a sliding window over the array. So the
@@ -165,7 +165,7 @@ class MRmsFunc : public MArrayFunctorBase<T> {
 template <typename T>
 class MMedianFunc : public MArrayFunctorBase<T> {
  public:
-  explicit MMedianFunc(Bool sorted = False, Bool takeEvenMean = True, Bool inPlace = False)
+  explicit MMedianFunc(bool sorted = false, bool takeEvenMean = true, bool inPlace = false)
       : itsSorted(sorted), itsTakeEvenMean(takeEvenMean), itsInPlace(inPlace) {}
   virtual ~MMedianFunc() {}
   T operator()(const MArray<T>& arr) const {
@@ -173,14 +173,14 @@ class MMedianFunc : public MArrayFunctorBase<T> {
   }
 
  private:
-  Bool itsSorted;
-  Bool itsTakeEvenMean;
-  Bool itsInPlace;
+  bool itsSorted;
+  bool itsTakeEvenMean;
+  bool itsInPlace;
 };
 template <typename T>
 class MFractileFunc : public MArrayFunctorBase<T> {
  public:
-  explicit MFractileFunc(Float fraction, Bool sorted = False, Bool inPlace = False)
+  explicit MFractileFunc(Float fraction, bool sorted = false, bool inPlace = false)
       : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
   virtual ~MFractileFunc() {}
   T operator()(const MArray<T>& arr) const {
@@ -189,8 +189,8 @@ class MFractileFunc : public MArrayFunctorBase<T> {
 
  private:
   float itsFraction;
-  Bool itsSorted;
-  Bool itsInPlace;
+  bool itsSorted;
+  bool itsInPlace;
 };
 
 // Do partial reduction of an MArray object. I.e., perform the operation
@@ -218,7 +218,7 @@ void partialArrayMath(MArray<RES>& res, const MArray<T>& a, const IPosition& col
   // Hmm, tricky for median and fractile.
   // Better to make Array copy ctor thread-safe (thus use boost shared_ptr).
   ReadOnlyArrayIterator<T> aiter(a.array(), collapseAxes);
-  ReadOnlyArrayIterator<Bool> miter(a.mask(), collapseAxes);
+  ReadOnlyArrayIterator<bool> miter(a.mask(), collapseAxes);
   IPosition shape(a.array().shape().removeAxes(collapseAxes));
   /*
   Int64 nr = 1;
@@ -233,16 +233,16 @@ void partialArrayMath(MArray<RES>& res, const MArray<T>& a, const IPosition& col
   }
   */
   /// IPosition shape(a.array().shape().removeAxes (collapseAxes));
-  res.resize(shape, False);
-  Array<Bool> resMask(shape);
+  res.resize(shape, false);
+  Array<bool> resMask(shape);
   RES* data = res.array().data();
-  Bool* mask = resMask.data();
+  bool* mask = resMask.data();
   while (!aiter.pastEnd()) {
     if (allTrue(miter.array())) {
-      *mask++ = True;
+      *mask++ = true;
       *data++ = RES();
     } else {
-      *mask++ = False;
+      *mask++ = false;
       *data++ = funcObj(MArray<T>(aiter.array(), miter.array()));
     }
     aiter.next();
@@ -267,21 +267,21 @@ void boxedArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition& b
   uInt ndim = shape.size();
   IPosition fullBoxShape, resShape;
   fillBoxedShape(shape, boxShape, fullBoxShape, resShape);
-  res.resize(resShape, False);
-  Array<Bool> resMask(resShape);
+  res.resize(resShape, false);
+  Array<bool> resMask(resShape);
   RES* data = res.array().data();
-  Bool* mask = resMask.data();
+  bool* mask = resMask.data();
   // Loop through all data and assemble as needed.
   IPosition blc(ndim, 0);
   IPosition trc(fullBoxShape - 1);
-  while (True) {
-    Array<Bool> subMask(array.mask()(blc, trc));
+  while (true) {
+    Array<bool> subMask(array.mask()(blc, trc));
     if (allTrue(subMask)) {
       *data++ = RES();
-      *mask++ = True;
+      *mask++ = true;
     } else {
       *data++ = funcObj(MArray<T>(array.array()(blc, trc), subMask));
-      *mask++ = False;
+      *mask++ = false;
     }
     uInt ax;
     for (ax = 0; ax < ndim; ++ax) {
@@ -305,49 +305,49 @@ void boxedArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition& b
 
 template <typename T>
 inline MArray<T> slidingArrayMath(const MArray<T>& array, const IPosition& halfBoxShape,
-                                  const MArrayFunctorBase<T>& funcObj, Bool fillEdge = True) {
+                                  const MArrayFunctorBase<T>& funcObj, bool fillEdge = true) {
   MArray<T> res;
   slidingArrayMath(res, array, halfBoxShape, funcObj, fillEdge);
   return res;
 }
 template <typename T, typename RES>
 void slidingArrayMath(MArray<RES>& res, const MArray<T>& array, const IPosition& halfBoxShape,
-                      const MArrayFunctorBase<T, RES>& funcObj, Bool fillEdge = True) {
+                      const MArrayFunctorBase<T, RES>& funcObj, bool fillEdge = true) {
   AlwaysAssert(array.hasMask(), AipsError);
   const IPosition& shape = array.shape();
   uInt ndim = shape.size();
   IPosition boxEnd, resShape;
-  Bool empty = fillSlidingShape(shape, halfBoxShape, boxEnd, resShape);
+  bool empty = fillSlidingShape(shape, halfBoxShape, boxEnd, resShape);
   if (fillEdge) {
-    res.resize(shape, False);
+    res.resize(shape, false);
     res.array() = RES();
-    Array<Bool> mask(shape, True);
+    Array<bool> mask(shape, true);
     res.setMask(mask);
   } else {
-    res.resize(resShape, True);
+    res.resize(resShape, true);
   }
   if (!empty) {
     Array<RES> resa(res.array());
-    Array<Bool> resm(res.mask());
+    Array<bool> resm(res.mask());
     if (fillEdge) {
       IPosition boxEnd2(boxEnd / 2);
       resa.reference(resa(boxEnd2, resShape + boxEnd2 - 1));
       resm.reference(resm(boxEnd2, resShape + boxEnd2 - 1));
     }
     typename Array<RES>::iterator iterarr(resa.begin());
-    typename Array<Bool>::iterator itermask(resm.begin());
+    typename Array<bool>::iterator itermask(resm.begin());
     // Loop through all data and assemble as needed.
     IPosition blc(ndim, 0);
     IPosition trc(boxEnd);
     IPosition pos(ndim, 0);
-    while (True) {
-      Array<Bool> subMask(array.mask()(blc, trc));
+    while (true) {
+      Array<bool> subMask(array.mask()(blc, trc));
       if (allTrue(subMask)) {
         *iterarr = RES();
-        *itermask = True;
+        *itermask = true;
       } else {
         *iterarr = funcObj(MArray<T>(array.array()(blc, trc), subMask));
-        *itermask = False;
+        *itermask = false;
       }
       ++iterarr;
       ++itermask;
@@ -902,7 +902,7 @@ T rms(const MArray<T>& a) {
 }
 
 template <typename T>
-T median(const MArray<T>& a, Bool sorted, Bool takeEvenMean, Bool inPlace = False) {
+T median(const MArray<T>& a, bool sorted, bool takeEvenMean, bool inPlace = false) {
   // The normal median function needs at least one element, so shortcut.
   if (a.empty()) return T();
   if (!a.hasMask()) return median(a.array(), sorted, takeEvenMean, inPlace);
@@ -911,19 +911,19 @@ T median(const MArray<T>& a, Bool sorted, Bool takeEvenMean, Bool inPlace = Fals
   if (nv == 0) return T();
   Array<T> arr(IPosition(1, nv), buf.storage(), SHARE);
   // Median can be taken in place.
-  return median(arr, sorted, takeEvenMean, True);
+  return median(arr, sorted, takeEvenMean, true);
 }
 template <typename T>
 inline T median(const MArray<T>& a) {
-  return median(a, False, (a.size() <= 100), False);
+  return median(a, false, (a.size() <= 100), false);
 }
 template <typename T>
-inline T median(const MArray<T>& a, Bool sorted) {
-  return median(a, sorted, (a.nelements() <= 100), False);
+inline T median(const MArray<T>& a, bool sorted) {
+  return median(a, sorted, (a.nelements() <= 100), false);
 }
 template <typename T>
-inline T medianInPlace(const MArray<T>& a, Bool sorted = False) {
-  return median(a, sorted, (a.nelements() <= 100), True);
+inline T medianInPlace(const MArray<T>& a, bool sorted = false) {
+  return median(a, sorted, (a.nelements() <= 100), true);
 }
 
 // Return the fractile of an array.
@@ -932,7 +932,7 @@ inline T medianInPlace(const MArray<T>& a, Bool sorted = False) {
 // the two middle elements is taken if the array has an even nr of elements.
 // It uses kthLargest if the array is not sorted yet.
 template <typename T>
-T fractile(const MArray<T>& a, Float fraction, Bool sorted = False, Bool inPlace = False) {
+T fractile(const MArray<T>& a, Float fraction, bool sorted = false, bool inPlace = false) {
   // The normal fractile function needs at least one element, so shortcut.
   if (a.empty()) return T();
   if (!a.hasMask()) return fractile(a.array(), fraction, sorted, inPlace);
@@ -940,7 +940,7 @@ T fractile(const MArray<T>& a, Float fraction, Bool sorted = False, Bool inPlace
   Int64 nv = a.flatten(buf.storage(), a.size());
   if (nv == 0) return T();
   Array<T> arr(IPosition(1, nv), buf.storage(), SHARE);
-  return fractile(arr, fraction, sorted, True);
+  return fractile(arr, fraction, sorted, true);
 }
 // </group>
 
@@ -1038,30 +1038,30 @@ MArray<T> partialRmss(const MArray<T>& a, const IPosition& collapseAxes) {
 }
 template <typename T>
 MArray<T> partialMedians(const MArray<T>& a, const IPosition& collapseAxes,
-                         Bool takeEvenMean = False, Bool inPlace = False) {
+                         bool takeEvenMean = false, bool inPlace = false) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
     return MArray<T>(partialMedians(a.array(), collapseAxes, takeEvenMean, inPlace));
   }
-  return partialArrayMath(a, collapseAxes, MMedianFunc<T>(False, takeEvenMean, inPlace));
+  return partialArrayMath(a, collapseAxes, MMedianFunc<T>(false, takeEvenMean, inPlace));
 }
 template <typename T>
 MArray<T> partialFractiles(const MArray<T>& a, const IPosition& collapseAxes, Float fraction,
-                           Bool inPlace = False) {
+                           bool inPlace = false) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
     return MArray<T>(partialFractiles(a.array(), collapseAxes, fraction, inPlace));
   }
-  return partialArrayMath(a, collapseAxes, MFractileFunc<T>(fraction, False, inPlace));
+  return partialArrayMath(a, collapseAxes, MFractileFunc<T>(fraction, false, inPlace));
 }
 // </group>
 
 // Get sliding sums.
 // <group>
 template <typename T>
-MArray<T> slidingSums(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingSums(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1070,7 +1070,7 @@ MArray<T> slidingSums(const MArray<T>& a, const IPosition& halfBoxSize, Bool fil
   return slidingArrayMath(a, halfBoxSize, MSumFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingSumSqrs(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingSumSqrs(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1079,7 +1079,7 @@ MArray<T> slidingSumSqrs(const MArray<T>& a, const IPosition& halfBoxSize, Bool 
   return slidingArrayMath(a, halfBoxSize, MSumSqrFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingProducts(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingProducts(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1088,7 +1088,7 @@ MArray<T> slidingProducts(const MArray<T>& a, const IPosition& halfBoxSize, Bool
   return slidingArrayMath(a, halfBoxSize, MProductFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingMins(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingMins(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1097,7 +1097,7 @@ MArray<T> slidingMins(const MArray<T>& a, const IPosition& halfBoxSize, Bool fil
   return slidingArrayMath(a, halfBoxSize, MMinFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingMaxs(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingMaxs(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1106,7 +1106,7 @@ MArray<T> slidingMaxs(const MArray<T>& a, const IPosition& halfBoxSize, Bool fil
   return slidingArrayMath(a, halfBoxSize, MMaxFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingMeans(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingMeans(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1116,7 +1116,7 @@ MArray<T> slidingMeans(const MArray<T>& a, const IPosition& halfBoxSize, Bool fi
 }
 template <typename T>
 MArray<T> slidingVariances(const MArray<T>& a, const IPosition& halfBoxSize, uInt ddof,
-                           Bool fillEdge = True) {
+                           bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1126,7 +1126,7 @@ MArray<T> slidingVariances(const MArray<T>& a, const IPosition& halfBoxSize, uIn
 }
 template <typename T>
 MArray<T> slidingStddevs(const MArray<T>& a, const IPosition& halfBoxSize, uInt ddof,
-                         Bool fillEdge = True) {
+                         bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1135,7 +1135,7 @@ MArray<T> slidingStddevs(const MArray<T>& a, const IPosition& halfBoxSize, uInt 
   return slidingArrayMath(a, halfBoxSize, MStddevFunc<T>(ddof), fillEdge);
 }
 template <typename T>
-MArray<T> slidingAvdevs(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingAvdevs(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1144,7 +1144,7 @@ MArray<T> slidingAvdevs(const MArray<T>& a, const IPosition& halfBoxSize, Bool f
   return slidingArrayMath(a, halfBoxSize, MAvdevFunc<T>(), fillEdge);
 }
 template <typename T>
-MArray<T> slidingRmss(const MArray<T>& a, const IPosition& halfBoxSize, Bool fillEdge = True) {
+MArray<T> slidingRmss(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
@@ -1154,25 +1154,25 @@ MArray<T> slidingRmss(const MArray<T>& a, const IPosition& halfBoxSize, Bool fil
 }
 template <typename T>
 MArray<T> slidingMedians(const MArray<T>& a, const IPosition& halfBoxSize,
-                         Bool takeEvenMean = False, Bool inPlace = False, Bool fillEdge = True) {
+                         bool takeEvenMean = false, bool inPlace = false, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
     return MArray<T>(slidingArrayMath(a.array(), halfBoxSize,
-                                      MedianFunc<T>(False, takeEvenMean, inPlace), fillEdge));
+                                      MedianFunc<T>(false, takeEvenMean, inPlace), fillEdge));
   }
-  return slidingArrayMath(a, halfBoxSize, MMedianFunc<T>(False, takeEvenMean, inPlace), fillEdge);
+  return slidingArrayMath(a, halfBoxSize, MMedianFunc<T>(false, takeEvenMean, inPlace), fillEdge);
 }
 template <typename T>
 MArray<T> slidingFractiles(const MArray<T>& a, const IPosition& halfBoxSize, Float fraction,
-                           Bool inPlace = False, Bool fillEdge = True) {
+                           bool inPlace = false, bool fillEdge = true) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
     return MArray<T>(slidingArrayMath(a.array(), halfBoxSize,
-                                      FractileFunc<T>(fraction, False, inPlace), fillEdge));
+                                      FractileFunc<T>(fraction, false, inPlace), fillEdge));
   }
-  return slidingArrayMath(a, halfBoxSize, MFractileFunc<T>(fraction, False, inPlace), fillEdge);
+  return slidingArrayMath(a, halfBoxSize, MFractileFunc<T>(fraction, false, inPlace), fillEdge);
 }
 // </group>
 
@@ -1269,25 +1269,25 @@ MArray<T> boxedRmss(const MArray<T>& a, const IPosition& boxSize) {
   return boxedArrayMath(a, boxSize, MRmsFunc<T>());
 }
 template <typename T>
-MArray<T> boxedMedians(const MArray<T>& a, const IPosition& boxSize, Bool takeEvenMean = False,
-                       Bool inPlace = False) {
+MArray<T> boxedMedians(const MArray<T>& a, const IPosition& boxSize, bool takeEvenMean = false,
+                       bool inPlace = false) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
     return MArray<T>(
-        boxedArrayMath(a.array(), boxSize, MedianFunc<T>(False, takeEvenMean, inPlace)));
+        boxedArrayMath(a.array(), boxSize, MedianFunc<T>(false, takeEvenMean, inPlace)));
   }
-  return boxedArrayMath(a, boxSize, MMedianFunc<T>(False, takeEvenMean, inPlace));
+  return boxedArrayMath(a, boxSize, MMedianFunc<T>(false, takeEvenMean, inPlace));
 }
 template <typename T>
 MArray<T> boxedFractiles(const MArray<T>& a, const IPosition& boxSize, Float fraction,
-                         Bool inPlace = False) {
+                         bool inPlace = false) {
   if (a.isNull()) {
     return MArray<T>();
   } else if (!a.hasMask()) {
-    return MArray<T>(boxedArrayMath(a.array(), boxSize, FractileFunc<T>(fraction, False, inPlace)));
+    return MArray<T>(boxedArrayMath(a.array(), boxSize, FractileFunc<T>(fraction, false, inPlace)));
   }
-  return boxedArrayMath(a, boxSize, MFractileFunc<T>(fraction, False, inPlace));
+  return boxedArrayMath(a, boxSize, MFractileFunc<T>(fraction, false, inPlace));
 }
 // </group>
 

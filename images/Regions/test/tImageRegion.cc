@@ -65,7 +65,7 @@ int main() {
   }
   Directory d(myname);
   if (d.exists()) {
-    d.removeRecursive(False);
+    d.removeRecursive(false);
   }
   return ret;
 }

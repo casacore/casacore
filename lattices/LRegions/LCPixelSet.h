@@ -66,7 +66,7 @@ class LCPixelSet : public LCRegionFixed {
 
   // Construct from the box defining the position of the mask.
   // The shape of the region and mask must be the same.
-  LCPixelSet(const Array<Bool>& mask, const LCBox& region);
+  LCPixelSet(const Array<bool>& mask, const LCBox& region);
 
   // Copy constructor (copy semantics).
   LCPixelSet(const LCPixelSet& other);
@@ -93,7 +93,7 @@ class LCPixelSet : public LCRegionFixed {
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCPixelSet (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.

@@ -87,10 +87,10 @@ void RegularFile::checkPath() {
   }
 }
 
-void RegularFile::create(Bool overwrite) {
-  // If overwrite is False the file will not be overwritten.
+void RegularFile::create(bool overwrite) {
+  // If overwrite is false the file will not be overwritten.
   if (exists()) {
-    if (!itsFile.isRegular(False)) {
+    if (!itsFile.isRegular(false)) {
       throw(AipsError("RegularFile::create: " + itsFile.path().expandedName() +
                       " already exists as a non-regular file"));
     }
@@ -113,7 +113,7 @@ void RegularFile::remove() {
   unlink(itsFile.path().expandedName().c_str());
 }
 
-void RegularFile::copy(const Path& target, Bool overwrite, Bool setUserWritePermission) const {
+void RegularFile::copy(const Path& target, bool overwrite, bool setUserWritePermission) const {
   Path targetName(target);
   checkTarget(targetName, overwrite);
 #if defined(AIPS_CRAY_PGI)
@@ -138,20 +138,20 @@ void RegularFile::manualCopy(const String& source, const String& target) {
   FiledesIO in(infd, source);
   FiledesIO out(outfd, target);
   char buf[32768];
-  int nrc = in.read(sizeof(buf), buf, False);
+  int nrc = in.read(sizeof(buf), buf, false);
   while (true) {
     AlwaysAssert(nrc >= 0, AipsError);
     out.write(nrc, buf);
     if (nrc != sizeof(buf)) {
       break;
     }
-    nrc = in.read(sizeof(buf), buf, False);
+    nrc = in.read(sizeof(buf), buf, false);
   }
   FiledesIO::close(infd);
   FiledesIO::close(outfd);
 }
 
-void RegularFile::move(const Path& target, Bool overwrite) {
+void RegularFile::move(const Path& target, bool overwrite) {
   Path targetPath(target);
   checkTarget(targetPath, overwrite);
   // Start trying to rename.
@@ -162,13 +162,13 @@ void RegularFile::move(const Path& target, Bool overwrite) {
   }
   // The rename failed for one reason or another.
   // Remove the target if it already exists.
-  Bool alrExist = False;
+  bool alrExist = false;
   if (errno == EEXIST) {
-    alrExist = True;
+    alrExist = true;
   }
 #if defined(EBUSY)
   if (errno == EBUSY) {
-    alrExist = True;
+    alrExist = true;
   }
 #endif
   if (alrExist) {
@@ -184,7 +184,7 @@ void RegularFile::move(const Path& target, Bool overwrite) {
                     targetPath.expandedName() + ": " + strerror(errno)));
   }
   // Copy the file and remove it thereafter.
-  copy(targetPath, overwrite, False);
+  copy(targetPath, overwrite, false);
   remove();
 }
 

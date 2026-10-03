@@ -31,7 +31,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MFFileIO::MFFileIO(const std::shared_ptr<MultiFileBase>& file, const String& name,
                    ByteIO::OpenOption opt)
-    : itsFile(file), itsPosition(0), itsName(name), itsIsWritable(True) {
+    : itsFile(file), itsPosition(0), itsName(name), itsIsWritable(true) {
   if (opt == ByteIO::New || opt == ByteIO::NewNoReplace) {
     itsId = itsFile->createFile(name, opt);
   } else {
@@ -47,7 +47,7 @@ void MFFileIO::remove() {
   itsId = -1;
 }
 
-Int64 MFFileIO::read(Int64 size, void* buffer, Bool throwException) {
+Int64 MFFileIO::read(Int64 size, void* buffer, bool throwException) {
   Int64 n = itsFile->read(itsId, buffer, size, itsPosition);
   itsPosition += n;
   if (throwException && n < size) {
@@ -73,7 +73,7 @@ void MFFileIO::write(Int64 size, const void* buffer) {
 
 void MFFileIO::reopenRW() {
   itsFile->reopenRW();
-  itsIsWritable = True;
+  itsIsWritable = true;
 }
 
 void MFFileIO::flush() { itsFile->flushFile(itsId); }
@@ -86,11 +86,11 @@ String MFFileIO::fileName() const { return itsName; }
 
 Int64 MFFileIO::length() { return itsFile->fileSize(itsId); }
 
-Bool MFFileIO::isReadable() const { return True; }
+bool MFFileIO::isReadable() const { return true; }
 
-Bool MFFileIO::isWritable() const { return itsIsWritable && itsFile->isWritable(); }
+bool MFFileIO::isWritable() const { return itsIsWritable && itsFile->isWritable(); }
 
-Bool MFFileIO::isSeekable() const { return True; }
+bool MFFileIO::isSeekable() const { return true; }
 
 Int64 MFFileIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
   // Determine the new position.

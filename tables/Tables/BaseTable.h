@@ -121,7 +121,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Is the table a null table?
   // By default it is not.
-  virtual Bool isNull() const;
+  virtual bool isNull() const;
 
   // Reopen the table for read/write.
   virtual void reopenRW() = 0;
@@ -130,7 +130,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   virtual void changeTiledDataOnly();
 
   // Is the table stored in big or little endian format?
-  virtual Bool asBigEndian() const = 0;
+  virtual bool asBigEndian() const = 0;
 
   // Get the storage option used for the table.
   virtual const StorageOption& storageOption() const = 0;
@@ -138,7 +138,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Is the table in use (i.e. open) in another process?
   // If <src>checkSubTables</src> is set, it is also checked if
   // a subtable is used in another process.
-  virtual Bool isMultiUsed(Bool checkSubTables) const = 0;
+  virtual bool isMultiUsed(bool checkSubTables) const = 0;
 
   // Get the locking info.
   virtual const TableLock& lockOptions() const = 0;
@@ -148,17 +148,17 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  virtual Bool hasLock(FileLocker::LockType) const = 0;
+  virtual bool hasLock(FileLocker::LockType) const = 0;
 
   // Try to lock the table for read or write access.
-  virtual Bool lock(FileLocker::LockType, uInt nattempts) = 0;
+  virtual bool lock(FileLocker::LockType, uInt nattempts) = 0;
 
   // Unlock the table. This will also synchronize the table data,
   // thus force the data to be written to disk.
   virtual void unlock() = 0;
 
   // Flush the table, i.e. write it to disk.
-  virtual void flush(Bool fsync, Bool recursive) = 0;
+  virtual void flush(bool fsync, bool recursive) = 0;
 
   // Resync the Table object with the table file.
   virtual void resync() = 0;
@@ -170,22 +170,22 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   virtual void setTableChanged();
 
   // Do not write the table (used in in case of exceptions).
-  void doNotWrite() { noWrite_p = True; }
+  void doNotWrite() { noWrite_p = true; }
 
   // Test if this table is writable.
   // This tells if values can be put into a column.
-  virtual Bool isWritable() const = 0;
+  virtual bool isWritable() const = 0;
 
   // Test if the given column is writable.
   // <group>
-  Bool isColumnWritable(const String& columnName) const;
-  Bool isColumnWritable(uInt columnIndex) const;
+  bool isColumnWritable(const String& columnName) const;
+  bool isColumnWritable(uInt columnIndex) const;
   // </group>
 
   // Test if the given column is stored (otherwise it is virtual).
   // <group>
-  Bool isColumnStored(const String& columnName) const;
-  Bool isColumnStored(uInt columnIndex) const;
+  bool isColumnStored(const String& columnName) const;
+  bool isColumnStored(uInt columnIndex) const;
   // </group>
 
   // Get the table name.
@@ -193,7 +193,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Get the names of the tables this table consists of.
   // The default implementation adds the name of this table to the block.
-  virtual void getPartNames(Block<String>& names, Bool recursive) const;
+  virtual void getPartNames(Block<String>& names, bool recursive) const;
 
   // Rename the table.
   // The following options can be given:
@@ -233,7 +233,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // <group>
   virtual void copy(const String& newName, int tableOption) const;
   virtual void deepCopy(const String& newName, const Record& dataManagerInfo, const StorageOption&,
-                        int tableOption, Bool valueCopy, int endianFormat, Bool noRows) const;
+                        int tableOption, bool valueCopy, int endianFormat, bool noRows) const;
   // </group>
 
   // Get the table type.
@@ -247,15 +247,15 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // This means that the underlying table gets deleted when it is
   // actually destructed.
   // The scratchCallback function is called when needed.
-  void markForDelete(Bool callback, const String& oldName);
+  void markForDelete(bool callback, const String& oldName);
 
   // Unmark the table for delete.
   // This means the underlying table does not get deleted when destructed.
   // The scratchCallback function is called when needed.
-  void unmarkForDelete(Bool callback, const String& oldName);
+  void unmarkForDelete(bool callback, const String& oldName);
 
   // Test if the table is marked for delete.
-  Bool isMarkedForDelete() const { return delete_p; }
+  bool isMarkedForDelete() const { return delete_p; }
 
   // Get the table description.
   const TableDesc& tableDesc() const { return (!tdescPtr_p ? makeEmptyTableDesc() : *tdescPtr_p); }
@@ -267,8 +267,8 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   virtual Record dataManagerInfo() const = 0;
 
   // Show the table structure (implementation of Table::showStructure).
-  void showStructure(std::ostream&, Bool showDataMan, Bool showColumns, Bool showSubTables,
-                     Bool sortColumns, Bool cOrder);
+  void showStructure(std::ostream&, bool showDataMan, bool showColumns, bool showSubTables,
+                     bool sortColumns, bool cOrder);
 
   // Get readonly access to the table keyword set.
   virtual TableRecord& keywordSet() = 0;
@@ -298,14 +298,14 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   virtual BaseColumn* getColumn(const String& columnName) const = 0;
 
   // Test if it is possible to add a row to this table.
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Add one or more rows and possibly initialize them.
   // This will fail for tables not supporting addition of rows.
-  virtual void addRow(rownr_t nrrow = 1, Bool initialize = True);
+  virtual void addRow(rownr_t nrrow = 1, bool initialize = true);
 
   // Test if it is possible to remove a row from this table.
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Remove rows.
   // This will fail for tables not supporting removal of rows.
@@ -330,7 +330,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // </group>
 
   // Find the data manager with the given name or for the given column.
-  virtual DataManager* findDataManager(const String& name, Bool byColumn) const = 0;
+  virtual DataManager* findDataManager(const String& name, bool byColumn) const = 0;
 
   // Select rows using the given expression (which can be null).
   // Skip first <src>offset</src> matching rows.
@@ -345,8 +345,8 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
 
   // Select rows using a mask block.
   // The length of the block must match the number of rows in the table.
-  // If True, the corresponding row will be selected.
-  std::shared_ptr<BaseTable> select(const Block<Bool>& mask);
+  // If true, the corresponding row will be selected.
+  std::shared_ptr<BaseTable> select(const Block<bool>& mask);
 
   // Project the given columns (i.e. select the columns).
   std::shared_ptr<BaseTable> project(const Block<String>& columnNames);
@@ -381,21 +381,21 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Add one or more columns to the table.
   // The default implementation throws an "invalid operation" exception.
   // <group>
-  virtual void addColumn(const ColumnDesc& columnDesc, Bool addToParent);
-  virtual void addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                         Bool addToParent);
+  virtual void addColumn(const ColumnDesc& columnDesc, bool addToParent);
+  virtual void addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                         bool addToParent);
   virtual void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
-                         Bool addToParent);
+                         bool addToParent);
   virtual void addColumn(const TableDesc& tableDesc, const DataManager& dataManager,
-                         Bool addToParent);
+                         bool addToParent);
   // </group>
 
   // Add one or more columns to the table.
   // The data manager to use is described in the record.
-  void addColumns(const TableDesc& tableDesc, const Record& dmInfo, Bool addToParent);
+  void addColumns(const TableDesc& tableDesc, const Record& dmInfo, bool addToParent);
 
   // Test if columns can be removed.
-  virtual Bool canRemoveColumn(const Vector<String>& columnNames) const = 0;
+  virtual bool canRemoveColumn(const Vector<String>& columnNames) const = 0;
 
   // Remove columns.
   virtual void removeColumn(const Vector<String>& columnNames) = 0;
@@ -404,10 +404,10 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // It checks if columns have not been specified twice and it
   // checks if they exist.
   // If the flag is set an exception is thrown if errors are found.
-  Bool checkRemoveColumn(const Vector<String>& columnNames, Bool throwException) const;
+  bool checkRemoveColumn(const Vector<String>& columnNames, bool throwException) const;
 
   // Test if a column can be renamed.
-  virtual Bool canRenameColumn(const String& columnName) const = 0;
+  virtual bool canRenameColumn(const String& columnName) const = 0;
 
   // Rename a column.
   virtual void renameColumn(const String& newName, const String& oldName) = 0;
@@ -430,7 +430,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // By default it is, since normally a table is always in row order.
   // It is meant for RefTable-s, where the rows can be in
   // another (sorted) order.
-  virtual Bool rowOrder() const;
+  virtual bool rowOrder() const;
 
   // By the default the table cannot return the storage of rownrs.
   // That can only be done by a RefTable, where it is implemented.
@@ -439,7 +439,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Adjust the row numbers to be the actual row numbers in the
   // root table. This is, for instance, used when a RefTable is sorted.
   // Optionally it also determines if the resulting rows are in order.
-  virtual Bool adjustRownrs(rownr_t nrrow, Vector<rownr_t>& rownrs, Bool determineOrder) const;
+  virtual bool adjustRownrs(rownr_t nrrow, Vector<rownr_t>& rownrs, bool determineOrder) const;
 
   // Do the actual sort.
   // The default implementation is suitable for almost all cases.
@@ -451,7 +451,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
                                             std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange);
 
   // Create a RefTable object.
-  std::shared_ptr<RefTable> makeRefTable(Bool rowOrder, rownr_t initialNrrow);
+  std::shared_ptr<RefTable> makeRefTable(bool rowOrder, rownr_t initialNrrow);
 
   // Check if the row number is valid.
   // It throws an exception if out of range.
@@ -469,24 +469,24 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   std::shared_ptr<TableDesc> tdescPtr_p;  // # Pointer to table description
   String name_p;                          // # table name
   int option_p;                           // # Table constructor option
-  Bool noWrite_p;                         // # False = do not write the table
-  Bool delete_p;                          // # True = delete when destructed
+  bool noWrite_p;                         // # false = do not write the table
+  bool delete_p;                          // # true = delete when destructed
   TableInfo info_p;                       // # Table information (type, etc.)
-  Bool madeDir_p;                         // # True = table dir has been created
+  bool madeDir_p;                         // # true = table dir has been created
   int itsTraceId;                         // # table-id for TableTrace tracing
 
   // Do the callback for scratch tables (if callback is set).
-  void scratchCallback(Bool isScratch, const String& oldName) const;
+  void scratchCallback(bool isScratch, const String& oldName) const;
 
   // Create the table directory when needed (and possible).
   // When the file already exists, check if it is a directory.
-  // It returns True when it actually created the directory.
-  Bool makeTableDir();
+  // It returns true when it actually created the directory.
+  bool makeTableDir();
 
   // Make a true deep copy of the table.
   // The table is flushed before making the copy.
   void trueDeepCopy(const String& newName, const Record& dataManagerInfo, const StorageOption&,
-                    int tableOption, int endianFormat, Bool noRows) const;
+                    int tableOption, int endianFormat, bool noRows) const;
 
   // Prepare for copying or renaming a table.
   // It checks if the target table already exists and removes it
@@ -501,18 +501,18 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   void throwIfTableExists();
 
   // Test if the table is opened for write.
-  Bool openedForWrite() const;
+  bool openedForWrite() const;
 
   // Start writing a table. It does a putstart and writes <src>nrrow_p</src>.
   // It should be ended by calling <src>writeEnd</src>.
-  void writeStart(AipsIO&, Bool bigEndian);
+  void writeStart(AipsIO&, bool bigEndian);
 
   // End writing a table.
   void writeEnd(AipsIO&);
 
   // Should the table be written.
-  // This flag is False if an exception was thrown.
-  Bool shouldNotWrite() const { return noWrite_p; }
+  // This flag is false if an exception was thrown.
+  bool shouldNotWrite() const { return noWrite_p; }
 
   // Read the TableInfo object.
   void getTableInfo();
@@ -525,7 +525,7 @@ class BaseTable : public std::enable_shared_from_this<BaseTable> {
   // Show the info of the given columns.
   // Sort the columns if needed.
   void showColumnInfo(ostream& os, const TableDesc&, uInt maxNameLength,
-                      const Array<String>& columnNames, Bool sort, Bool cOrder) const;
+                      const Array<String>& columnNames, bool sort, bool cOrder) const;
 
   // Throw an exception for checkRowNumber.
   void checkRowNumberThrow(rownr_t rownr) const;

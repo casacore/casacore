@@ -1476,7 +1476,7 @@ extern size_t getpagesize();
 /* The bit mask value corresponding to MALLOC_ALIGNMENT */
 #define CHUNK_ALIGN_MASK (MALLOC_ALIGNMENT - SIZE_T_ONE)
 
-/* True if address a has acceptable alignment */
+/* true if address a has acceptable alignment */
 #define is_aligned(A) (((size_t)((A)) & (CHUNK_ALIGN_MASK)) == 0)
 
 /* the number of bytes to offset an address to align it */
@@ -2537,7 +2537,7 @@ static struct malloc_state _gm_;
 #define is_page_aligned(S) (((size_t)(S) & (mparams.page_size - SIZE_T_ONE)) == 0)
 #define is_granularity_aligned(S) (((size_t)(S) & (mparams.granularity - SIZE_T_ONE)) == 0)
 
-/*  True if segment S holds address A */
+/*  true if segment S holds address A */
 #define segment_holds(S, A) ((char*)(A) >= S->base && (char*)(A) < S->base + S->size)
 
 /* Return segment holding given address */

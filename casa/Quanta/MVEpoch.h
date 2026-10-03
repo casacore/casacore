@@ -126,10 +126,10 @@ class MVEpoch : public MeasValue {
 
   // Comparisons
   // <group>
-  Bool operator==(const MVEpoch &other) const;
-  Bool operator!=(const MVEpoch &other) const;
-  Bool near(const MVEpoch &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVEpoch &other, Double tol = 1e-13) const;
+  bool operator==(const MVEpoch &other) const;
+  bool operator!=(const MVEpoch &other) const;
+  bool near(const MVEpoch &other, Double tol = 1e-13) const;
+  bool nearAbs(const MVEpoch &other, Double tol = 1e-13) const;
   // </group>
 
   // # General Member Functions
@@ -180,7 +180,7 @@ class MVEpoch : public MeasValue {
   virtual Vector<Quantum<Double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 
  private:
   // # Data members

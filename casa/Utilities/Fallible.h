@@ -122,10 +122,10 @@ template <class T>
 class [[deprecated("Use std::optional")]] Fallible {
  public:
   // The default constructor creates an invalid object.
-  Fallible() : value_p(T()), isValid_p(False) {}
+  Fallible() : value_p(T()), isValid_p(false) {}
 
   // Create a valid object
-  Fallible(const T &value) : value_p(value), isValid_p(True) {}
+  Fallible(const T &value) : value_p(value), isValid_p(true) {}
 
   // # Actually, the default copy ctor and assignment operator would work
   Fallible(const Fallible<T> &other) : value_p(other.value_p), isValid_p(other.isValid_p) {}
@@ -151,11 +151,11 @@ class [[deprecated("Use std::optional")]] Fallible {
     return value_p;
   }
 
-  Bool isValid() const { return isValid_p; }
+  bool isValid() const { return isValid_p; }
 
  private:
   T value_p;
-  Bool isValid_p;
+  bool isValid_p;
 };
 
 }  // namespace casacore

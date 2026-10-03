@@ -82,7 +82,7 @@ class LCStretch : public LCRegionMulti {
   // The second version takes over the pointer when the switch is true.
   // <group>
   LCStretch(const LCRegion& region, const IPosition& stretchAxes, const LCBox& stretchBox);
-  LCStretch(Bool takeOver, const LCRegion* region, const IPosition& stretchAxes,
+  LCStretch(bool takeOver, const LCRegion* region, const IPosition& stretchAxes,
             const LCBox& stretchBox);
   // </group>
 
@@ -120,7 +120,7 @@ class LCStretch : public LCRegionMulti {
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
@@ -129,7 +129,7 @@ class LCStretch : public LCRegionMulti {
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
+  void multiGetSlice(Array<bool>& buffer, const Slicer& section) override;
 
   // This function is needed here because the niceCursorShape of the
   // contributing region does not make any sense (other dimensionality).

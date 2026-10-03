@@ -115,7 +115,7 @@ void MSTableImpl::addColumnToDesc(TableDesc& td, const String& colName, Int colD
   if ((colDType >= TpBool && colDType <= TpString) || colDType == TpRecord) {
     switch (colDType) {
       case TpBool:
-        td.addColumn(ScalarColumnDesc<Bool>(colName, colComment));
+        td.addColumn(ScalarColumnDesc<bool>(colName, colComment));
         break;
       case TpInt:
         td.addColumn(ScalarColumnDesc<Int>(colName, colComment));
@@ -168,7 +168,7 @@ void MSTableImpl::addColumnToDesc(TableDesc& td, const String& colName, Int colD
     if (option == 0) {
       switch (colDType) {
         case TpArrayBool:
-          td.addColumn(ArrayColumnDesc<Bool>(colName, colComment, ndim));
+          td.addColumn(ArrayColumnDesc<bool>(colName, colComment, ndim));
           break;
         case TpArrayInt:
           td.addColumn(ArrayColumnDesc<Int>(colName, colComment, ndim));
@@ -215,7 +215,7 @@ void MSTableImpl::addColumnToDesc(TableDesc& td, const String& colName, Int colD
     } else {
       switch (colDType) {
         case TpArrayBool:
-          td.addColumn(ArrayColumnDesc<Bool>(colName, colComment, shape, option));
+          td.addColumn(ArrayColumnDesc<bool>(colName, colComment, shape, option));
           break;
         case TpArrayInt:
           td.addColumn(ArrayColumnDesc<Int>(colName, colComment, shape, option));
@@ -315,7 +315,7 @@ void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName, Int keyDTyp
   }
 }
 
-void MSTableImpl::addColumnCompression(TableDesc& td, const String& colName, Bool autoScale,
+void MSTableImpl::addColumnCompression(TableDesc& td, const String& colName, bool autoScale,
                                        const String& type) {
   // Check if the column name exists in the description.
   // Check it is a Float or Complex array.
@@ -380,7 +380,7 @@ SetupNewTable& MSTableImpl::setupCompression(SetupNewTable& newtab) {
     if (!cname.empty()) {
       std::map<String, String> old2new;
       old2new.insert(std::make_pair(cdesc.name(), cname));
-      newtab.adjustHypercolumns(old2new, True);
+      newtab.adjustHypercolumns(old2new, true);
     }
   }
   return newtab;
@@ -406,9 +406,9 @@ void MSTableImpl::keyMapDef(std::map<Int, String>& keywordMap, std::map<Int, Int
   keyCommentMap[key] = keyComment;
 }
 
-Bool MSTableImpl::validate(const TableDesc& tabDesc, const TableDesc& requiredTD) {
-  Bool eqDTypes;
-  Bool temp = tabDesc.columnDescSet().isSuperset(requiredTD.columnDescSet(), eqDTypes);
+bool MSTableImpl::validate(const TableDesc& tabDesc, const TableDesc& requiredTD) {
+  bool eqDTypes;
+  bool temp = tabDesc.columnDescSet().isSuperset(requiredTD.columnDescSet(), eqDTypes);
 #if defined(AIPS_DEBUG)
   if (!temp) {
     cerr << "MSTableImpl::validate - tabDesc not superset of requiredTD" << std::endl;
@@ -416,7 +416,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc, const TableDesc& requiredTD
 #endif
   // check all of the UNIT and MEASINFO-Type values against
   // the standard values
-  Bool detail = True;
+  bool detail = true;
   uInt colnr = 0;
   Vector<String> colNames(requiredTD.columnNames());
   uInt ncol = colNames.nelements();
@@ -472,9 +472,9 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc, const TableDesc& requiredTD
   return temp && eqDTypes && detail;
 }
 
-Bool MSTableImpl::validate(const TableRecord& tabRec, const TableDesc& requiredTD) {
-  Bool eqDTypes;
-  Bool temp = tabRec.description().isSuperset(requiredTD.keywordSet().description(), eqDTypes);
+bool MSTableImpl::validate(const TableRecord& tabRec, const TableDesc& requiredTD) {
+  bool eqDTypes;
+  bool temp = tabRec.description().isSuperset(requiredTD.keywordSet().description(), eqDTypes);
   return temp && eqDTypes;
 }
 

@@ -117,16 +117,16 @@ class LELFunction1D : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -214,16 +214,16 @@ class LELFunctionReal1D : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -312,16 +312,16 @@ class LELFunctionND : public LELInterface<T> {
   virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -410,16 +410,16 @@ class LELFunctionFloat : public LELInterface<Float> {
   virtual LELScalar<Float> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -479,7 +479,7 @@ class LELFunctionFloat : public LELInterface<Float> {
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> v(shape); v.set(True);
+// ArrayLattice<Bool> v(shape); v.set(true);
 // ArrayLattice<DComplex> w(shape); w.set(DComplex(2.0,3.0));
 // ArrayLattice<Double> x(shape); x.set(0.05);
 // ArrayLattice<Double> y(shape); y.set(2.0);
@@ -515,16 +515,16 @@ class LELFunctionDouble : public LELInterface<Double> {
   virtual LELScalar<Double> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -532,7 +532,7 @@ class LELFunctionDouble : public LELInterface<Double> {
   // Count number of masked elements in a LatticeExprNode.
   // <group>
   uInt nMaskedElements(const LatticeExprNode&) const;
-  uInt nMaskedOn(const Array<Bool>& mask) const;
+  uInt nMaskedOn(const Array<bool>& mask) const;
   // </group>
 
   LELFunctionEnums::Function function_p;
@@ -610,16 +610,16 @@ class LELFunctionComplex : public LELInterface<Complex> {
   virtual LELScalar<Complex> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -700,16 +700,16 @@ class LELFunctionDComplex : public LELInterface<DComplex> {
   virtual LELScalar<DComplex> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -760,11 +760,11 @@ class LELFunctionDComplex : public LELInterface<DComplex> {
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(True);
+// ArrayLattice<Bool> x(shape); x.set(true);
 // ArrayLattice<Bool> y(shape);
 // y.copyData(any(x));                // y = any(x)
 // </srcblock>
-// The result of the any function (were any of the values True) is
+// The result of the any function (were any of the values true) is
 // a Bool scalar. So the output Lattice is filled with that one value.
 // </example>
 //
@@ -775,7 +775,7 @@ class LELFunctionDComplex : public LELInterface<DComplex> {
 // <todo asof="1998/01/21">
 // </todo>
 
-class LELFunctionBool : public LELInterface<Bool> {
+class LELFunctionBool : public LELInterface<bool> {
  public:
   // Constructor takes operation and left and right expressions
   // to be operated upon
@@ -785,22 +785,22 @@ class LELFunctionBool : public LELInterface<Bool> {
   ~LELFunctionBool();
 
   // Recursively evaluate the expression
-  virtual void eval(LELArray<Bool>& result, const Slicer& section) const;
+  virtual void eval(LELArray<bool>& result, const Slicer& section) const;
 
   // Recursively evaluate the scalar expression
-  virtual LELScalar<Bool> getScalar() const;
+  virtual LELScalar<bool> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  virtual Bool prepareScalarExpr();
+  virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   // </group>
 

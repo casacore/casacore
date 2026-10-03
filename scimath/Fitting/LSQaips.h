@@ -140,64 +140,64 @@ class LSQaips : public LSQFit {
   // is used both and input and output. No check on the size is done.
   // <group>
   template <class U>
-  Bool solveLoop(uInt &nRank, U *sol, Bool doSVD = False) {
+  bool solveLoop(uInt &nRank, U *sol, bool doSVD = false) {
     return LSQFit::solveLoop(nRank, sol, doSVD);
   }
   template <class U>
-  Bool solveLoop(uInt &nRank, std::complex<U> *sol, Bool doSVD = False) {
+  bool solveLoop(uInt &nRank, std::complex<U> *sol, bool doSVD = false) {
     return LSQFit::solveLoop(nRank, sol, doSVD);
   }
   template <class U>
-  Bool solveLoop(uInt &nRank, U &sol, Bool doSVD = False) {
+  bool solveLoop(uInt &nRank, U &sol, bool doSVD = false) {
     return LSQFit::solveLoop(nRank, sol, doSVD);
   }
   template <class U>
-  Bool solveLoop(uInt &nRank, Vector<U> &sol, Bool doSVD = False);
+  bool solveLoop(uInt &nRank, Vector<U> &sol, bool doSVD = false);
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, U *sol, Bool doSVD = False) {
+  bool solveLoop(Double &fit, uInt &nRank, U *sol, bool doSVD = false) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD);
   }
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, Bool doSVD = False) {
+  bool solveLoop(Double &fit, uInt &nRank, std::complex<U> *sol, bool doSVD = false) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD);
   }
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, U &sol, Bool doSVD = False) {
+  bool solveLoop(Double &fit, uInt &nRank, U &sol, bool doSVD = false) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD);
   }
   template <class U>
-  Bool solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, Bool doSVD = False);
+  bool solveLoop(Double &fit, uInt &nRank, Vector<U> &sol, bool doSVD = false);
   // </group>
-  // Get the covariance matrix. False if an error occurred
+  // Get the covariance matrix. false if an error occurred
   // (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>
-  Bool getCovariance(U *covar) {
+  bool getCovariance(U *covar) {
     return LSQFit::getCovariance(covar);
   }
   template <class U>
-  Bool getCovariance(std::complex<U> *covar) {
+  bool getCovariance(std::complex<U> *covar) {
     return LSQFit::getCovariance(covar);
   }
   template <class U>
-  Bool getCovariance(Array<U> &covar);
+  bool getCovariance(Array<U> &covar);
   // </group>
   // Get main diagonal of covariance function (of size <src>nUnknowns</src>)
   // <group>
   template <class U>
-  Bool getErrors(U *errors) {
+  bool getErrors(U *errors) {
     return LSQFit::getErrors(errors);
   }
   template <class U>
-  Bool getErrors(std::complex<U> *errors) {
+  bool getErrors(std::complex<U> *errors) {
     return LSQFit::getErrors(errors);
   }
   template <class U>
-  Bool getErrors(U &errors) {
+  bool getErrors(U &errors) {
     return LSQFit::getErrors(errors);
   }
   template <class U>
-  Bool getErrors(Vector<U> &errors) {
+  bool getErrors(Vector<U> &errors) {
     errors.resize(nUnknowns() / LSQTraits<U>::size);
     return LSQFit::getErrors(errors.data());
   }

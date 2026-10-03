@@ -167,18 +167,18 @@ LELScalar<T> LELBinary<T>::getScalar() const {
 }
 
 template <class T>
-Bool LELBinary<T>::prepareScalarExpr() {
+bool LELBinary<T>::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELBinary::prepare" << endl;
 #endif
 
   if (LELInterface<T>::replaceScalarExpr(pLeftExpr_p)) {
-    return True;
+    return true;
   }
   if (LELInterface<T>::replaceScalarExpr(pRightExpr_p)) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 template <class T>
@@ -187,9 +187,9 @@ String LELBinary<T>::className() const {
 }
 
 template <class T>
-Bool LELBinary<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELBinary<T>::lock(FileLocker::LockType type, uInt nattempts) {
   if (!pLeftExpr_p->lock(type, nattempts)) {
-    return False;
+    return false;
   }
   return pRightExpr_p->lock(type, nattempts);
 }
@@ -199,7 +199,7 @@ void LELBinary<T>::unlock() {
   pRightExpr_p->unlock();
 }
 template <class T>
-Bool LELBinary<T>::hasLock(FileLocker::LockType type) const {
+bool LELBinary<T>::hasLock(FileLocker::LockType type) const {
   return pLeftExpr_p->hasLock(type) && pRightExpr_p->hasLock(type);
 }
 template <class T>
@@ -235,7 +235,7 @@ LELBinaryCmp<T>::~LELBinaryCmp() {
 }
 
 template <class T>
-void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const {
+void LELBinaryCmp<T>::eval(LELArray<bool>& result, const Slicer& section) const {
 #if defined(AIPS_TRACE)
   cout << "LELBinaryCmp: eval " << endl;
 #endif
@@ -245,13 +245,13 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
       if (pLeftExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pRightExpr_p->evalRef(temp, section);
-        Array<Bool> res(pLeftExpr_p->getScalar().value() == temp.value());
+        Array<bool> res(pLeftExpr_p->getScalar().value() == temp.value());
         result.value().reference(res);
         result.setMask(temp);
       } else if (pRightExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pLeftExpr_p->evalRef(temp, section);
-        Array<Bool> res(temp.value() == pRightExpr_p->getScalar().value());
+        Array<bool> res(temp.value() == pRightExpr_p->getScalar().value());
         result.value().reference(res);
         result.setMask(temp);
       } else {
@@ -259,7 +259,7 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
         LELArrayRef<T> tempr(result.shape());
         pLeftExpr_p->evalRef(templ, section);
         pRightExpr_p->evalRef(tempr, section);
-        Array<Bool> res(templ.value() == tempr.value());
+        Array<bool> res(templ.value() == tempr.value());
         result.value().reference(res);
         result.setMask(templ, tempr);
       }
@@ -268,13 +268,13 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
       if (pLeftExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pRightExpr_p->evalRef(temp, section);
-        Array<Bool> res(pLeftExpr_p->getScalar().value() > temp.value());
+        Array<bool> res(pLeftExpr_p->getScalar().value() > temp.value());
         result.value().reference(res);
         result.setMask(temp);
       } else if (pRightExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pLeftExpr_p->evalRef(temp, section);
-        Array<Bool> res(temp.value() > pRightExpr_p->getScalar().value());
+        Array<bool> res(temp.value() > pRightExpr_p->getScalar().value());
         result.value().reference(res);
         result.setMask(temp);
       } else {
@@ -282,7 +282,7 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
         LELArrayRef<T> tempr(result.shape());
         pLeftExpr_p->evalRef(templ, section);
         pRightExpr_p->evalRef(tempr, section);
-        Array<Bool> res(templ.value() > tempr.value());
+        Array<bool> res(templ.value() > tempr.value());
         result.value().reference(res);
         result.setMask(templ, tempr);
       }
@@ -291,13 +291,13 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
       if (pLeftExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pRightExpr_p->evalRef(temp, section);
-        Array<Bool> res(pLeftExpr_p->getScalar().value() >= temp.value());
+        Array<bool> res(pLeftExpr_p->getScalar().value() >= temp.value());
         result.value().reference(res);
         result.setMask(temp);
       } else if (pRightExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pLeftExpr_p->evalRef(temp, section);
-        Array<Bool> res(temp.value() >= pRightExpr_p->getScalar().value());
+        Array<bool> res(temp.value() >= pRightExpr_p->getScalar().value());
         result.value().reference(res);
         result.setMask(temp);
       } else {
@@ -305,7 +305,7 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
         LELArrayRef<T> tempr(result.shape());
         pLeftExpr_p->evalRef(templ, section);
         pRightExpr_p->evalRef(tempr, section);
-        Array<Bool> res(templ.value() >= tempr.value());
+        Array<bool> res(templ.value() >= tempr.value());
         result.value().reference(res);
         result.setMask(templ, tempr);
       }
@@ -314,13 +314,13 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
       if (pLeftExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pRightExpr_p->evalRef(temp, section);
-        Array<Bool> res(pLeftExpr_p->getScalar().value() != temp.value());
+        Array<bool> res(pLeftExpr_p->getScalar().value() != temp.value());
         result.value().reference(res);
         result.setMask(temp);
       } else if (pRightExpr_p->isScalar()) {
         LELArrayRef<T> temp(result.shape());
         pLeftExpr_p->evalRef(temp, section);
-        Array<Bool> res(temp.value() != pRightExpr_p->getScalar().value());
+        Array<bool> res(temp.value() != pRightExpr_p->getScalar().value());
         result.value().reference(res);
         result.setMask(temp);
       } else {
@@ -328,7 +328,7 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
         LELArrayRef<T> tempr(result.shape());
         pLeftExpr_p->evalRef(templ, section);
         pRightExpr_p->evalRef(tempr, section);
-        Array<Bool> res(templ.value() != tempr.value());
+        Array<bool> res(templ.value() != tempr.value());
         result.value().reference(res);
         result.setMask(templ, tempr);
       }
@@ -339,7 +339,7 @@ void LELBinaryCmp<T>::eval(LELArray<Bool>& result, const Slicer& section) const 
 }
 
 template <class T>
-LELScalar<Bool> LELBinaryCmp<T>::getScalar() const {
+LELScalar<bool> LELBinaryCmp<T>::getScalar() const {
 #if defined(AIPS_TRACE)
   cout << "LELBinaryCmp: getScalar " << endl;
 #endif
@@ -356,22 +356,22 @@ LELScalar<Bool> LELBinaryCmp<T>::getScalar() const {
     default:
       throw(AipsError("LELBinaryCmp::eval - unknown operation"));
   }
-  return False;
+  return false;
 }
 
 template <class T>
-Bool LELBinaryCmp<T>::prepareScalarExpr() {
+bool LELBinaryCmp<T>::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELBinaryCmp::prepare" << endl;
 #endif
 
   if (LELInterface<T>::replaceScalarExpr(pLeftExpr_p)) {
-    return True;
+    return true;
   }
   if (LELInterface<T>::replaceScalarExpr(pRightExpr_p)) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 template <class T>
@@ -380,9 +380,9 @@ String LELBinaryCmp<T>::className() const {
 }
 
 template <class T>
-Bool LELBinaryCmp<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELBinaryCmp<T>::lock(FileLocker::LockType type, uInt nattempts) {
   if (!pLeftExpr_p->lock(type, nattempts)) {
-    return False;
+    return false;
   }
   return pRightExpr_p->lock(type, nattempts);
 }
@@ -392,7 +392,7 @@ void LELBinaryCmp<T>::unlock() {
   pRightExpr_p->unlock();
 }
 template <class T>
-Bool LELBinaryCmp<T>::hasLock(FileLocker::LockType type) const {
+bool LELBinaryCmp<T>::hasLock(FileLocker::LockType type) const {
   return pLeftExpr_p->hasLock(type) && pRightExpr_p->hasLock(type);
 }
 template <class T>

@@ -53,7 +53,7 @@ Vector<Int> LatticeStatsBase::toStatisticTypes(const Vector<String>& statsU) {
       n2++;
     }
   }
-  statsToPlot.resize(n2, True);
+  statsToPlot.resize(n2, true);
   return statsToPlot;
 }
 
@@ -128,12 +128,12 @@ String LatticeStatsBase::toStatisticName(StatisticsTypes type) {
   return name;
 }
 
-Bool LatticeStatsBase::setNxy(Vector<Int>& nxy, std::ostream& os) {
+bool LatticeStatsBase::setNxy(Vector<Int>& nxy, std::ostream& os) {
   Int n = nxy.nelements();
-  nxy.resize(2, True);
+  nxy.resize(2, true);
   if (n > 2) {
     os << "Too many elements for argument nxy" << endl;
-    return False;
+    return false;
   } else if (n == 2) {
     nxy(0) = max(1, nxy(0));
     nxy(1) = max(1, nxy(1));
@@ -144,10 +144,10 @@ Bool LatticeStatsBase::setNxy(Vector<Int>& nxy, std::ostream& os) {
     nxy(0) = 1;
     nxy(1) = 1;
   }
-  return True;
+  return true;
 }
 
-void LatticeStatsBase::setStorageImageShape(IPosition& storeImageShape, const Bool& last,
+void LatticeStatsBase::setStorageImageShape(IPosition& storeImageShape, const bool& last,
                                             const Int& axisSize, const Vector<Int>& displayAxes,
                                             const IPosition& imageShape) {
   Int nStoreImageDim = displayAxes.nelements() + 1;

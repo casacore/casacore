@@ -82,10 +82,10 @@ class FittingProxy {
 
   Int getid();
   Record getstate(Int id);
-  Bool init(Int id, Int n, Int tp, Double colfac, Double lmfac);
-  Bool done(Int id);
-  Bool reset(Int id);
-  Bool set(Int id, Int nin, Int tpin, Double colfac, Double lmfac);
+  bool init(Int id, Int n, Int tp, Double colfac, Double lmfac);
+  bool done(Int id);
+  bool reset(Int id);
+  bool set(Int id, Int nin, Int tpin, Double colfac, Double lmfac);
   Record functional(Int id, const Record& fnc, const Vector<Double>& xval,
                     const Vector<Double>& yval, const Vector<Double>& wt, Int mxit,
                     const Record& constraint);
@@ -133,9 +133,9 @@ class FittingProxy {
     // Get the Levenberg-Marquardt factor
     Double getLMfac() const { return lmfac_p; };
     // Set solution done or not
-    void setSolved(Bool solved);
+    void setSolved(bool solved);
     // Solution done?
-    Bool getSolved() const { return soldone_p; };
+    bool getSolved() const { return soldone_p; };
 
    private:
     // Copy constructor: not implemented
@@ -161,7 +161,7 @@ class FittingProxy {
     // Levenberg-Marquardt factor
     Double lmfac_p;
     // Solution done?
-    Bool soldone_p;
+    bool soldone_p;
     // System's rank deficiency
     uInt nr_p;
   };

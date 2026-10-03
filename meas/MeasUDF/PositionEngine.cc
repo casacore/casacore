@@ -41,7 +41,7 @@ void PositionEngine::handlePosition(Int toValueType, const std::vector<TENShPtr>
   itsInUnit = "";
   itsValueType = 0;
   uInt nargnr = argnr + 1;
-  Bool asScalar = False;
+  bool asScalar = false;
   if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
     // Position is given by observatory name.
     handleObservatory(args[argnr]);
@@ -55,7 +55,7 @@ void PositionEngine::handlePosition(Int toValueType, const std::vector<TENShPtr>
     TENShPtr node3;
     if (args.size() > argnr && args[argnr]->isReal() &&
         args[argnr]->valueType() == TableExprNodeRep::VTScalar) {
-      asScalar = True;
+      asScalar = true;
       if (args.size() > nargnr && args[nargnr]->isReal() &&
           args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
         node2 = args[nargnr];
@@ -70,7 +70,7 @@ void PositionEngine::handlePosition(Int toValueType, const std::vector<TENShPtr>
     uInt nval = nargnr - argnr;
     // See if there is a reference type.
     if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      handleMeasType(args[nargnr], True);
+      handleMeasType(args[nargnr], true);
       nargnr++;
     }
     // Process as scalars or as array.
@@ -283,79 +283,6 @@ void PositionEngine::handleObservatory(const TENShPtr& operand) {
   }
 }
 
-/*
-void PositionEngine::handlePosArray (const TENShPtr& operand)
-{
-  if (!operand->isReal()  ||
-      operand->valueType() != TableExprNodeRep::VTArray) {
-    throw AipsError ("A single double argument given as position in a "
-                     "MEAS function must be a double array of values "
-                     "defining x,y,z or lon,lat or height");
-  }
-  // Use defaults for reference and value type if not given.
-  deriveAttr (operand->unit(), 0);
-  // Handle possibly given constants.
-  if (operand->isConstant()) {
-    handleConstant (operand);
-    return;
-  }
-  // Try if the argument is a column.
-  // If found, try to handle it as a TableMeasures column.
-  const TableExprNodeArrayColumn* colNode =
-    dynamic_cast<TableExprNodeArrayColumn*>(operand.get());
-  Bool directCol = True;
-  if (!colNode) {
-    // The node is an expression, not a column.
-    directCol = False;
-    // Try if the node is an array part of a column.
-    TableExprNodeArrayPart* partNode =
-      dynamic_cast<TableExprNodeArrayPart*>(operand.get());
-    if (partNode) {
-      colNode = partNode->getColumnNode();
-    }
-  }
-  if (colNode) {
-    // Try if the column contains measures.
-    const TableColumn& tabCol = colNode->getColumn();
-    itsShape = tabCol.shapeColumn();
-    itsNDim  = tabCol.ndimColumn();
-    if (TableMeasDescBase::hasMeasures (tabCol)) {
-      ArrayMeasColumn<MPosition> measTmp(tabCol.table(),
-                                         tabCol.columnDesc().name());
-      // Get and check the node's refType if it is fixed.
-      MPosition::Types nodeRefType = MPosition::N_Types;
-      if (! (measTmp.measDesc().isRefCodeVariable()  ||
-             measTmp.measDesc().hasOffset())) {
-        uInt refCode = measTmp.measDesc().getRefCode();
-        itsRefType = static_cast<MPosition::Types>(refCode);
-      }
-      // A direct column can directly be accessed using TableMeasures.
-      if (directCol) {
-        itsMeasCol.reference (measTmp);
-        return;
-      }
-      // It is a part, so we cannot use TableMeasures.
-      // If the reference type is variable, the user should index after
-      // the meas.pos function.
-      if (nodeRefType == MPosition::N_Types) {
-          throw AipsError ("Column " + tabCol.columnDesc().name() +
-                           ", which has a variable reference frame, "
-                           "is used in a MEAS function with slicing. "
-                           "The slicing should be done after the function "
-                           "like 'meas.pos('ITRF',POSITION)[0:3]'");
-      }
-    }
-  }
-  if (itsMeasCol.isNull()) {
-    if (itsRefType == MPosition::N_Types) {
-      throw AipsError("No reference type given for a non-constant MEAS "
-                      "function position argument");
-    }
-    itsExprNode = operand;
-  }
-}
-*/
-
 void PositionEngine::handlePosArray(const TENShPtr& anglesNode, const TENShPtr& heightNode) {
   if (!anglesNode->isReal() || anglesNode->valueType() != TableExprNodeRep::VTArray ||
       !anglesNode->isConstant() || !heightNode->isReal() ||
@@ -423,7 +350,7 @@ void PositionEngine::handleValues(TableExprNode& operand, const TableExprId& id,
   if (itsValueType != 1 && itsValueType != 3) {
     q3 = Quantity(0, "m");
   }
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MPosition* posVec = positions.data();
   for (uInt i = 0; i < positions.size(); ++i) {

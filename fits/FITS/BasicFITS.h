@@ -49,7 +49,7 @@ class String;  // Forward declarations
 // FITS.h and fits.h.
 //</motivation>
 //<synopsis>
-// Read FITS from a file into a Casacore Array. Sets "ok" to False if there
+// Read FITS from a file into a Casacore Array. Sets "ok" to false if there
 // is any problem. We only deal with data in the primary data array.
 // If ReadFITS fails, the state of array is undefined. Trailing
 // degenerate (length==1) axes are NOT removed. If desired, you may do
@@ -82,7 +82,7 @@ class String;  // Forward declarations
 
 //<group name=ReadFITS>
 // blabla
-Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, String *unitName = 0,
+Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName = 0,
                       Vector<String> *axisNames = 0, Vector<Float> *refPixel = 0,
                       Vector<Float> *refLocation = 0, Vector<Float> *delta = 0,
                       std::map<String, Double> *keywords = 0, String *objectName = 0);
@@ -95,7 +95,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, Stri
 // <here>WriteFITS</here> Casacore interface routines.
 //</linkfrom>
 //<synopsis>
-// Write a FITS file from a Casacore Array. Returns False if there is any
+// Write a FITS file from a Casacore Array. Returns false if there is any
 // proglem. The data is written into the primary data array, and the data
 // is written in floating point (BITPIX=-32). If the operation fails,
 // ErrorMessage will contain an informative error. At the moment this
@@ -123,7 +123,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, Stri
 
 //<group name=WriteFITS>
 // blabla
-Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
+bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
                const char *unitName = 0, const Vector<String> *axisNames = 0,
                const Vector<Float> *refPixel = 0, const Vector<Float> *refLocation = 0,
                const Vector<Float> *delta = 0, const std::map<String, Double> *keywords = 0,

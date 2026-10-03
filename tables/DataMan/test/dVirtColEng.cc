@@ -65,10 +65,10 @@ DataManagerColumn* DummyVirtualEngine::makeIndArrColumn(const String&, int, cons
   return &data2_p;
 }
 
-Bool DummyVirtualEngine::flush(AipsIO& ios, Bool) {
+bool DummyVirtualEngine::flush(AipsIO& ios, bool) {
   data1_p.flush(ios);
   data2_p.flush(ios);
-  return True;
+  return true;
 }
 void DummyVirtualEngine::create64(rownr_t) {}
 rownr_t DummyVirtualEngine::open64(rownr_t nrrow, AipsIO& ios) {
@@ -137,11 +137,11 @@ void DummyVirtualScalar::flush(AipsIO& ios) {
 // initialized yet.
 // This all means that isWritable must take care of the case
 // where the writable_p flag is not set yet.
-Bool DummyVirtualScalar::isWritable() const {
+bool DummyVirtualScalar::isWritable() const {
   if (writable_p == 0) {
     return enginePtr_p->table().isColumnWritable("DATA1");
   }
-  return (writable_p > 0 ? True : False);
+  return (writable_p > 0 ? true : false);
 }
 
 void DummyVirtualScalar::get(rownr_t rownr, double& data) { data = scale_p * (*column_p)(rownr); }
@@ -191,24 +191,24 @@ void DummyVirtualArray::flush(AipsIO& ios) {
   ios.putend();
 }
 
-Bool DummyVirtualArray::isWritable() const {
+bool DummyVirtualArray::isWritable() const {
   if (writable_p == 0) {
     return enginePtr_p->table().isColumnWritable("DATA2");
   }
-  return (writable_p > 0 ? True : False);
+  return (writable_p > 0 ? true : false);
 }
 
 void DummyVirtualArray::setShape(rownr_t rownr, const IPosition& shape) {
   column_p->setShape(rownr, shape);
 }
-Bool DummyVirtualArray::isShapeDefined(rownr_t rownr) { return column_p->isDefined(rownr); }
+bool DummyVirtualArray::isShapeDefined(rownr_t rownr) { return column_p->isDefined(rownr); }
 uInt DummyVirtualArray::ndim(rownr_t rownr) { return column_p->ndim(rownr); }
 IPosition DummyVirtualArray::shape(rownr_t rownr) { return column_p->shape(rownr); }
 
 void DummyVirtualArray::getArray(rownr_t rownr, Array<double>& array) {
   Array<Int> intern(array.shape());
   column_p->get(rownr, intern);
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   double* out = array.getStorage(deleteOut);
   double* op = out;
   const Int* in = intern.getStorage(deleteIn);
@@ -222,7 +222,7 @@ void DummyVirtualArray::getArray(rownr_t rownr, Array<double>& array) {
 }
 void DummyVirtualArray::putArray(rownr_t rownr, const Array<double>& array) {
   Array<Int> intern(array.shape());
-  Bool deleteIn, deleteOut;
+  bool deleteIn, deleteOut;
   const double* in = array.getStorage(deleteIn);
   const double* ip = in;
   Int* out = intern.getStorage(deleteOut);

@@ -101,16 +101,16 @@ class MSSpwIndex {
   Vector<Int> matchName(const Vector<String>& names);
   void matchNameAsIntID(Vector<int>& list);
 
-  Vector<Int> matchFrequencyRange(const Float f0, const Float f1, Bool approx, const Float f3 = 0);
+  Vector<Int> matchFrequencyRange(const Float f0, const Float f1, bool approx, const Float f3 = 0);
 
   // A version of match freq range that does not throw an exception but returns
   // false if no match...else spw, start, nchan returns the matches
   // f0 and f1 are in Hz and the match is done in the frame defined in the
   // SpectralWindow table.
-  Bool matchFrequencyRange(const Double f0, const Double f1, Vector<Int>& spw, Vector<Int>& start,
+  bool matchFrequencyRange(const Double f0, const Double f1, Vector<Int>& spw, Vector<Int>& start,
                            Vector<Int>& nchan);
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchId(const Vector<Int>& spwIds);
 
@@ -127,7 +127,7 @@ class MSSpwIndex {
 
  private:
   Int findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
-                      const Bool& greaterThan, const Bool& ascendingOrder);
+                      const bool& greaterThan, const bool& ascendingOrder);
   // Construct from an MS FIELD subtable
   MSSpwIndex();
   // FIELD subtable column accessor

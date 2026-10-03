@@ -87,7 +87,7 @@ class SDMainHandler {
   SDMainHandler();
 
   // attach this to a MS - mark fields in row as handled
-  SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDMainHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDMainHandler(const SDMainHandler &other);
@@ -98,7 +98,7 @@ class SDMainHandler {
   SDMainHandler &operator=(const SDMainHandler &other);
 
   // attach to a MS, mark fields in row as handled
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS
   void resetRow(const Record &row);
@@ -124,10 +124,10 @@ class SDMainHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // intialize the row related stuff
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

@@ -80,9 +80,9 @@ inline uInt threadNum() {
 // Set if nested parallel sections are possible or not.
 // Nothing is done if OpenMP is not used.
 #ifdef _OPENMP
-inline void setNested(Bool nest) { omp_set_nested(nest); }
+inline void setNested(bool nest) { omp_set_nested(nest); }
 #else
-inline void setNested(Bool) {}
+inline void setNested(bool) {}
 #endif
 
 // Test if nested parallel sections are possible.

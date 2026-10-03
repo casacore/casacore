@@ -166,17 +166,17 @@ class UVWMachine {
   //  Construct a UVW conversion machine from the in coordinate and its
   //  system to the out coordinate system (output absolute direction
   //  remains the same)
-  UVWMachine(const MDirection::Ref &out, const MDirection &in, Bool EW = False,
-             Bool project = False);
+  UVWMachine(const MDirection::Ref &out, const MDirection &in, bool EW = false,
+             bool project = false);
   // Construct a UVW conversion machine from the in coordinate and its
   // system to the out coordinate and its system
-  UVWMachine(const MDirection &out, const MDirection &in, Bool EW = False, Bool project = False);
+  UVWMachine(const MDirection &out, const MDirection &in, bool EW = false, bool project = false);
   // Construct UVW conversion machine with an explicitly given frame
   // <group>
   UVWMachine(const MDirection::Ref &out, const MDirection &in, const MeasFrame &frame,
-             Bool EW = False, Bool project = False);
-  UVWMachine(const MDirection &out, const MDirection &in, const MeasFrame &frame, Bool EW = False,
-             Bool project = False);
+             bool EW = false, bool project = false);
+  UVWMachine(const MDirection &out, const MDirection &in, const MeasFrame &frame, bool EW = false,
+             bool project = false);
   // </group>
   // </group>
   // Copy constructor
@@ -200,7 +200,7 @@ class UVWMachine {
   //  Return the new phase center coordinates
   const MDirection &phaseCenter() const;
   // Return if the engine is an effective NOP
-  Bool isNOP() { return nop_p; }
+  bool isNOP() { return nop_p; }
   // Return a rotation matrix that can be used to convert UVW coordinates:
   // UVW(new) = UVW(old) * rotationUVW()
   const RotMatrix &rotationUVW() const;
@@ -235,13 +235,13 @@ class UVWMachine {
  private:
   // # Data
   //  EW flag
-  Bool ew_p;
+  bool ew_p;
   // Projection flag
-  Bool proj_p;
+  bool proj_p;
   // Zero phase flag (for speed)
-  Bool zp_p;
+  bool zp_p;
   // No conversion necessary flag
-  Bool nop_p;
+  bool nop_p;
   // Old phase center
   MDirection in_p;
   // New coordinate reference

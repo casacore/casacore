@@ -42,12 +42,12 @@ int main() {
   // assign the elements of the first array
   indgen(arr);
 
-  Bool deleteIt = False;
-  Bool readOnly = True;
+  bool deleteIt = false;
+  bool readOnly = true;
 
   COWPtr<Array<Int>> arrptr(&arr1, deleteIt, readOnly);
 
-  // COWPtr< Array<Int> > arrptr(&arr1, False, True);
+  // COWPtr< Array<Int> > arrptr(&arr1, false, true);
   //  The COWptr does not have exclusive control of arr1 as I will also
   //  access it through normal array functions. It is Readonly so that when
   //  I modify it, it is forced to make a copy. Otherwise it will only make

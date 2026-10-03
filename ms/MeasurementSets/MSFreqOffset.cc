@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSFreqOffset::MSFreqOffset() : hasBeenDestroyed_p(True) {}
+MSFreqOffset::MSFreqOffset() : hasBeenDestroyed_p(true) {}
 
 MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option)
-    : MSTable<MSFreqOffsetEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFreqOffsetEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option)
 }
 
 MSFreqOffset::MSFreqOffset(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSFreqOffsetEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFreqOffsetEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSFreqOffset::MSFreqOffset(const String &tableName, const String &tableDescName,
                   "table is not a valid MSFreqOffset"));
 }
 
-MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSFreqOffsetEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSFreqOffsetEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, rownr_t nrrow, Bool initialize
 }
 
 MSFreqOffset::MSFreqOffset(const Table &table)
-    : MSTable<MSFreqOffsetEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSFreqOffsetEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSFreqOffset::MSFreqOffset(const Table &table)
 }
 
 MSFreqOffset::MSFreqOffset(const MSFreqOffset &other)
-    : MSTable<MSFreqOffsetEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSFreqOffsetEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -95,7 +95,7 @@ MSFreqOffset::~MSFreqOffset() {
     os << LogIO::WARN << "~MSFreqOffset() - Table written is not a valid MSFreqOffset"
        << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSFreqOffset &MSFreqOffset::operator=(const MSFreqOffset &other) {

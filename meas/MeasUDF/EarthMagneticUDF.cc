@@ -46,9 +46,9 @@ void EarthMagneticUDF::setup(const Table&, const TaQLStyle&) {
   // Get the 'to' value type.
   // Determine the argnr of the earthmagnetic/direction values.
   uInt argnr = 0;
-  Bool asLOS = False;
-  Bool asLong = False;
-  Bool useModel = False;
+  bool asLOS = false;
+  bool asLong = false;
+  bool useModel = false;
   if (itsType == EMXYZ) {
     itsValueType = 3;
   } else if (itsType == EMANG) {
@@ -57,25 +57,25 @@ void EarthMagneticUDF::setup(const Table&, const TaQLStyle&) {
     itsValueType = 1;
   } else if (itsType == IGRFXYZ) {
     itsValueType = 3;
-    useModel = True;
+    useModel = true;
   } else if (itsType == IGRFANG) {
     itsValueType = 2;
-    useModel = True;
+    useModel = true;
   } else if (itsType == IGRFLEN) {
     itsValueType = 1;
-    useModel = True;
+    useModel = true;
   } else if (itsType == IGRFLOS) {
     itsValueType = 1;
-    asLOS = True;
-    useModel = True;
+    asLOS = true;
+    useModel = true;
   } else if (itsType == IGRFLONG) {
     itsValueType = 1;
-    asLong = True;
-    useModel = True;
+    asLong = true;
+    useModel = true;
   }
   // Get the to reference type.
   // IGRF means calculating the model and returning in ITRF coordinates.
-  if (itsEngine.handleMeasType(operands()[0], False)) {
+  if (itsEngine.handleMeasType(operands()[0], false)) {
     itsRefType = itsEngine.refType();
     if (itsRefType == MEarthMagnetic::IGRF) {
       throw AipsError(
@@ -105,7 +105,7 @@ void EarthMagneticUDF::setup(const Table&, const TaQLStyle&) {
     }
     itsEngine.handleHeight(operands()[argnr]);
     argnr++;
-    itsDirectionEngine.handleDirection(operands(), argnr, False, False);
+    itsDirectionEngine.handleDirection(operands(), argnr, false, false);
     itsEngine.setDirectionEngine(itsDirectionEngine);
   } else {
     // No model, thus conversions of earthmagnetic values.

@@ -102,14 +102,14 @@ class ForwardColumnIndexedRow : public ForwardColumn {
 
  private:
   // This data manager cannot handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Set the shape of an (indirect) array in the given row.
   // This throws an exception, because putting is not supported.
   void setShape(rownr_t rownr, const IPosition& shape);
 
   // Is the value shape defined in the given row?
-  Bool isShapeDefined(rownr_t rownr);
+  bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   uInt ndim(rownr_t rownr);
@@ -119,7 +119,7 @@ class ForwardColumnIndexedRow : public ForwardColumn {
 
   // Get the scalar value with a standard data type in the given row.
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -139,7 +139,7 @@ class ForwardColumnIndexedRow : public ForwardColumn {
   // Put the scalar value with a standard data type into the given row.
   // This throws an exception, because putting is not supported.
   // <group>
-  virtual void putBool(rownr_t rownr, const Bool* dataPtr);
+  virtual void putBool(rownr_t rownr, const bool* dataPtr);
   virtual void putuChar(rownr_t rownr, const uChar* dataPtr);
   virtual void putShort(rownr_t rownr, const Short* dataPtr);
   virtual void putuShort(rownr_t rownr, const uShort* dataPtr);

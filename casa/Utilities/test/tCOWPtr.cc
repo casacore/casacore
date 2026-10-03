@@ -36,7 +36,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt, Bool constant) {
+static bool testFunc(Array<Float> *ptr, const Array<Float> &array, bool deleteIt, bool constant) {
   COWPtr<Array<float>> COW(ptr, deleteIt, constant);
 
   // only const T functions may be used through the pointer.
@@ -50,7 +50,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
 
   // fill this instance. The pointer must be dynamically allocated. Default
   // behavior is to delete the pointer when this instance's destructer is
-  // called.  "deleteIt = False" implies the pointer is being maintained by
+  // called.  "deleteIt = false" implies the pointer is being maintained by
   // another object,(i.e. this is a copy - do not delete.) The
   // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
@@ -64,8 +64,8 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
   COW.rwRef().set(22.0);
   AlwaysAssert(allEQ(COW.rwRef(), 22.0f), AipsError);
 
-  // returns False if this contains a non-null ptr. Otherwise, True.
-  AlwaysAssert(COW.isNull() == False, AipsError);
+  // returns false if this contains a non-null ptr. Otherwise, true.
+  AlwaysAssert(COW.isNull() == false, AipsError);
 
   // make this a copy if more than one exist.
   if (COW.isReadOnly()) {
@@ -84,8 +84,8 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
   // default ctor
   COWPtr<Array<float>> deflt;
 
-  // returns False if this contains a non-null ptr. Otherwise, True.
-  AlwaysAssert(deflt.isNull() == True, AipsError);
+  // returns false if this contains a non-null ptr. Otherwise, true.
+  AlwaysAssert(deflt.isNull() == true, AipsError);
 
   // assignment operator with reference semantics
   Array<Float> *fooAgain = new Array<Float>(array);
@@ -102,7 +102,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
 
   // fill this instance. The pointer must be dynamically allocated. Default
   // behavior is to delete the pointer when this instance's destructer is
-  // called.  "deleteIt = False" implies the pointer is being maintained by
+  // called.  "deleteIt = false" implies the pointer is being maintained by
   // another object,(i.e. this is a copy - do not delete.) The
   // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
@@ -138,7 +138,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
 
   // fill this instance. The pointer must be dynamically allocated. Default
   // behavior is to delete the pointer when this instance's destructer is
-  // called.  "deleteIt = False" implies the pointer is being maintained by
+  // called.  "deleteIt = false" implies the pointer is being maintained by
   // another object,(i.e. this is a copy - do not delete.) The
   // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
@@ -151,8 +151,8 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
   copy.rwRef().set(22.0);
   AlwaysAssert(allEQ(copy.rwRef(), 22.0f), AipsError);
 
-  // returns False if this contains a non-null ptr. Otherwise, True.
-  AlwaysAssert(copy.isNull() == False, AipsError);
+  // returns false if this contains a non-null ptr. Otherwise, true.
+  AlwaysAssert(copy.isNull() == false, AipsError);
 
   // make this a copy if more than one exist.
   if (copy.isReadOnly()) {
@@ -173,7 +173,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, Bool deleteIt
     delete fooAgain;
   }
 
-  return True;
+  return true;
 }
 
 int main() {
@@ -188,24 +188,24 @@ int main() {
     // Case 0: a const which controls the ptr.
     Array<Float> *ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, True, True), AipsError);
+    AlwaysAssert(testFunc(ptr, array, true, true), AipsError);
 
     // Case 1: a non-const which controls the ptr.
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, True, False), AipsError);
+    AlwaysAssert(testFunc(ptr, array, true, false), AipsError);
 
     // Case 2: a const which doesn't control the pointer
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, False, True), AipsError);
+    AlwaysAssert(testFunc(ptr, array, false, true), AipsError);
     AlwaysAssert(ptr, AipsError);
     delete ptr;
 
     // Case 3: a non-const which doesn't control the pointer
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError);
-    AlwaysAssert(testFunc(ptr, array, False, False), AipsError);
+    AlwaysAssert(testFunc(ptr, array, false, false), AipsError);
     AlwaysAssert(ptr, AipsError);
     delete ptr;
 

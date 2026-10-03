@@ -59,7 +59,7 @@ int main(int argc, const char* argv[]) {
     if (out.empty()) {
       out = "sliced_" + in;
     }
-    Bool outisfits = downcase(out).substr(out.size() - 5) == ".fits";
+    bool outisfits = downcase(out).substr(out.size() - 5) == ".fits";
 
     const Block<Int> outregion = inputs.getIntArray("outregion");
 
@@ -98,7 +98,7 @@ int main(int argc, const char* argv[]) {
 
     if (outisfits) {
       String errMsg;
-      ImageFITSConverter::ImageToFITS(errMsg, subim, out, 128, False, False);
+      ImageFITSConverter::ImageToFITS(errMsg, subim, out, 128, false, false);
     } else {
       ImageInterface<Float>* pim = 0;
       if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {

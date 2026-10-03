@@ -306,24 +306,24 @@ inline Double floormod(Double x, Double y) {
 // If tol <= 0, returns val1 == val2. If either val is 0.0, take care of area
 // around the minimum number that can be represented.
 // <group>
-Bool near(uInt val1, uInt val2, Double tol = 1.0e-5);
-Bool near(Int val1, Int val2, Double tol = 1.0e-5);
-Bool near(Float val1, Float val2, Double tol = 1.0e-5);
-Bool near(Float val1, Double val2, Double tol = 1.0e-5);
-Bool near(Double val1, Float val2, Double tol = 1.0e-5);
-Bool near(Double val1, Double val2, Double tol = 1.0e-13);
+bool near(uInt val1, uInt val2, Double tol = 1.0e-5);
+bool near(Int val1, Int val2, Double tol = 1.0e-5);
+bool near(Float val1, Float val2, Double tol = 1.0e-5);
+bool near(Float val1, Double val2, Double tol = 1.0e-5);
+bool near(Double val1, Float val2, Double tol = 1.0e-5);
+bool near(Double val1, Double val2, Double tol = 1.0e-13);
 // </group>
 
 // The "allNear" versions are aliases for the normal "near" versions. They
 // exist to make template functions that work for both arrays and scalars
 // easier to write. These functions should be moved to ArrayMath.h
 // <group>
-inline Bool allNear(uInt val1, uInt val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline Bool allNear(Int val1, Int val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline Bool allNear(Float val1, Double val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline Bool allNear(Double val1, Float val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline Bool allNear(Float val1, Float val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline Bool allNear(Double val1, Double val2, Double tol = 1.0e-13) {
+inline bool allNear(uInt val1, uInt val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(Int val1, Int val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(Float val1, Double val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(Double val1, Float val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(Float val1, Float val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(Double val1, Double val2, Double tol = 1.0e-13) {
   return near(val1, val2, tol);
 }
 // </group>
@@ -331,30 +331,30 @@ inline Bool allNear(Double val1, Double val2, Double tol = 1.0e-13) {
 // Functions to return whether a value is "absolutely" near another. Returns
 // <src> tol > abs(val2 - val1)</src>
 // <group>
-Bool nearAbs(uInt val1, uInt val2, Double tol = 1.0e-5);
-Bool nearAbs(Int val1, Int val2, Double tol = 1.0e-5);
-Bool nearAbs(Float val1, Float val2, Double tol = 1.0e-5);
-Bool nearAbs(Float val1, Double val2, Double tol = 1.0e-5);
-Bool nearAbs(Double val1, Float val2, Double tol = 1.0e-5);
-Bool nearAbs(Double val1, Double val2, Double tol = 1.0e-13);
+bool nearAbs(uInt val1, uInt val2, Double tol = 1.0e-5);
+bool nearAbs(Int val1, Int val2, Double tol = 1.0e-5);
+bool nearAbs(Float val1, Float val2, Double tol = 1.0e-5);
+bool nearAbs(Float val1, Double val2, Double tol = 1.0e-5);
+bool nearAbs(Double val1, Float val2, Double tol = 1.0e-5);
+bool nearAbs(Double val1, Double val2, Double tol = 1.0e-13);
 // </group>
 
 // The "allNearAbs" versions are aliases for the normal "nearAbs"
 // versions. They exist to make template functions that work for both arrays
 // and scalars easier to write. These functions should be in ArrayMath.h
 // <group>
-inline Bool allNearAbs(uInt val1, uInt val2, uInt tol = 1) { return nearAbs(val1, val2, tol); }
-inline Bool allNearAbs(Int val1, Int val2, Int tol = 1) { return nearAbs(val1, val2, tol); }
-inline Bool allNearAbs(Float val1, Float val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(uInt val1, uInt val2, uInt tol = 1) { return nearAbs(val1, val2, tol); }
+inline bool allNearAbs(Int val1, Int val2, Int tol = 1) { return nearAbs(val1, val2, tol); }
+inline bool allNearAbs(Float val1, Float val2, Double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline Bool allNearAbs(Float val1, Double val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(Float val1, Double val2, Double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline Bool allNearAbs(Double val1, Float val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(Double val1, Float val2, Double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13) {
+inline bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13) {
   return nearAbs(val1, val2, tol);
 }
 // </group>
@@ -362,14 +362,14 @@ inline Bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13) {
 // Functions to test if a floating point number is finite.
 // It is if it is NaN nor infinity.
 // <group>
-inline Bool isFinite(const Float& val) {
+inline bool isFinite(const Float& val) {
 #if defined(AIPS_DARWIN)
   return std::isfinite(val);
 #else
   return finite(val);
 #endif
 }
-inline Bool isFinite(const Double& val) {
+inline bool isFinite(const Double& val) {
 #if defined(AIPS_DARWIN)
   return std::isfinite(val);
 #else
@@ -382,11 +382,11 @@ inline Bool isFinite(const Double& val) {
 // Macro examining the bit pattern (for portability and efficiency). The
 // Double version invokes the IEEE function isnan found in ieeefp.h or math.h
 // <group>
-inline Bool isNaN(const Float& val) {
+inline bool isNaN(const Float& val) {
   return (((*(Int*)&(val) & 0x7f800000) == 0x7f800000) &&
           ((*(Int*)&(val) & 0x007fffff) != 0x00000000));
 }
-inline Bool isNaN(Double val) { return (std::isnan(val)); }
+inline bool isNaN(Double val) { return (std::isnan(val)); }
 // </group>
 
 // Round a number to <src>ndigit</src> significant digits, usually used
@@ -412,8 +412,8 @@ void setNaN(Double& val);
 // Functions to test for IEEE Infinity's. Should work for positive or negative
 // infinity.
 // <group>
-Bool isInf(Float val);
-Bool isInf(Double val);
+bool isInf(Float val);
+bool isInf(Double val);
 // </group>
 
 // Functions that return an IEEE Infinity,  (positive infinity).

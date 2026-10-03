@@ -126,11 +126,11 @@ class LogSinkInterface {
 
   // This function must be over-ridden in derived classes. If the filter
   // passes the message, do what is necessary with the message and return
-  // <src>True</src>.
-  virtual Bool postLocally(const LogMessage &message) = 0;
+  // <src>true</src>.
+  virtual bool postLocally(const LogMessage &message) = 0;
 
   // Write any pending output.
-  virtual void flush(Bool global = True);
+  virtual void flush(bool global = true);
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.

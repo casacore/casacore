@@ -170,13 +170,13 @@ class Path {
   // Check if pathname is valid. This function checks for: double slashes,
   // non-printable characters, pathname length and filename lengths, this
   // function is more OS-specific.
-  Bool isValid() const;
+  bool isValid() const;
 
   // Check if pathname is valid according the POSIX standard.
   // This function checks for
   // double slashes, non-printable characters,pathname length and filename
   // lenghts, all according to the POSIX-standard.
-  Bool isStrictlyPosix() const;
+  bool isStrictlyPosix() const;
 
   // Return length of path name
   uInt length() const;

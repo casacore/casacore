@@ -61,7 +61,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // </srcblock>
 //
 
-template <class T, class U, class V, Bool hasX, Bool hasParam>
+template <class T, class U, class V, bool hasX, bool hasParam>
 class WrapperData : public WrapperBase<T> {
  public:
   // # Constructors
@@ -95,8 +95,8 @@ class WrapperData : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_TT<T, T, T, True, True> : public WrapperBase<T> {
-  typedef WrapperData_TT<T, T, T, True, True> myData;
+class WrapperData_TT<T, T, T, true, true> : public WrapperBase<T> {
+  typedef WrapperData_TT<T, T, T, true, true> myData;
 
  public:
   // # Constructors
@@ -148,8 +148,8 @@ class WrapperData_TT<T, T, T, True, True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_VT<T, Vector<T>, T, True, True> : public WrapperBase<T> {
-  typedef WrapperData_VT<T, Vector<T>, T, True, True> myData;
+class WrapperData_VT<T, Vector<T>, T, true, true> : public WrapperBase<T> {
+  typedef WrapperData_VT<T, Vector<T>, T, true, true> myData;
 
  public:
   explicit WrapperData_VT(T (*f)(const Vector<T> &, const T &), uInt dim = 1)
@@ -188,8 +188,8 @@ class WrapperData_VT<T, Vector<T>, T, True, True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_TV<T, T, Vector<T>, True, True> : public WrapperBase<T> {
-  typedef WrapperData_TV<T, T, Vector<T>, True, True> myData;
+class WrapperData_TV<T, T, Vector<T>, true, true> : public WrapperBase<T> {
+  typedef WrapperData_TV<T, T, Vector<T>, true, true> myData;
 
  public:
   explicit WrapperData_TV(T (*f)(const T &, const Vector<T> &), uInt dim = 1)
@@ -227,8 +227,8 @@ class WrapperData_TV<T, T, Vector<T>, True, True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_VV<T, Vector<T>, Vector<T>, True, True> : public WrapperBase<T> {
-  typedef WrapperData_VV<T, Vector<T>, Vector<T>, True, True> myData;
+class WrapperData_VV<T, Vector<T>, Vector<T>, true, true> : public WrapperBase<T> {
+  typedef WrapperData_VV<T, Vector<T>, Vector<T>, true, true> myData;
 
  public:
   explicit WrapperData_VV(T (*f)(const Vector<T> &, const Vector<T> &), uInt dim = 1)
@@ -267,8 +267,8 @@ class WrapperData_VV<T, Vector<T>, Vector<T>, True, True> : public WrapperBase<T
 // </synopsis>
 
 template <class T>
-class WrapperData_FT<T, T, T, False, True> : public WrapperBase<T> {
-  typedef WrapperData_FT<T, T, T, False, True> myData;
+class WrapperData_FT<T, T, T, false, true> : public WrapperBase<T> {
+  typedef WrapperData_FT<T, T, T, false, true> myData;
 
  public:
   explicit WrapperData_FT(T (*f)(const T &)) : WrapperBase<T>(0), pf_p(f) {}
@@ -303,8 +303,8 @@ class WrapperData_FT<T, T, T, False, True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_FV<T, T, Vector<T>, False, True> : public WrapperBase<T> {
-  typedef WrapperData_FV<T, T, Vector<T>, False, True> myData;
+class WrapperData_FV<T, T, Vector<T>, false, true> : public WrapperBase<T> {
+  typedef WrapperData_FV<T, T, Vector<T>, false, true> myData;
 
  public:
   explicit WrapperData_FV(T (*f)(const Vector<T> &)) : WrapperBase<T>(0), pf_p(f) {}
@@ -339,8 +339,8 @@ class WrapperData_FV<T, T, Vector<T>, False, True> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_TF<T, T, T, True, False> : public WrapperBase<T> {
-  typedef WrapperData_TF<T, T, T, True, False> myData;
+class WrapperData_TF<T, T, T, true, false> : public WrapperBase<T> {
+  typedef WrapperData_TF<T, T, T, true, false> myData;
 
  public:
   explicit WrapperData_TF(T (*f)(const T &), uInt dim = 1) : WrapperBase<T>(dim), pf_p(f) {}
@@ -377,8 +377,8 @@ class WrapperData_TF<T, T, T, True, False> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_VF<T, Vector<T>, T, True, False> : public WrapperBase<T> {
-  typedef WrapperData_VF<T, Vector<T>, T, True, False> myData;
+class WrapperData_VF<T, Vector<T>, T, true, false> : public WrapperBase<T> {
+  typedef WrapperData_VF<T, Vector<T>, T, true, false> myData;
 
  public:
   explicit WrapperData_VF(T (*f)(const Vector<T> &), uInt dim = 1) : WrapperBase<T>(dim), pf_p(f) {}
@@ -416,8 +416,8 @@ class WrapperData_VF<T, Vector<T>, T, True, False> : public WrapperBase<T> {
 // </synopsis>
 
 template <class T>
-class WrapperData_FF<T, T, T, False, False> : public WrapperBase<T> {
-  typedef WrapperData_FF<T, T, T, True, False> myData;
+class WrapperData_FF<T, T, T, false, false> : public WrapperBase<T> {
+  typedef WrapperData_FF<T, T, T, true, false> myData;
 
  public:
   explicit WrapperData_FF(T (*f)()) : WrapperBase<T>(0), pf_p(f) {}

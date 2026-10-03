@@ -39,7 +39,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SSMIndColumn::SSMIndColumn(SSMBase* aParent, int aDataType, uInt aColNr)
-    : SSMColumn(aParent, aDataType, aColNr), isShapeFixed(False), itsIosFile(0), itsIndArray(0) {
+    : SSMColumn(aParent, aDataType, aColNr), isShapeFixed(false), itsIosFile(0), itsIndArray(0) {
   init();
 }
 
@@ -50,7 +50,7 @@ void SSMIndColumn::setMaxLength(uInt) {}
 void SSMIndColumn::doCreate(rownr_t aNrRows) {
   // Initialize and create new file.
   itsIosFile = itsSSMPtr->openArrayFile(ByteIO::New);
-  addRow(aNrRows, 0, False);
+  addRow(aNrRows, 0, false);
 }
 
 void SSMIndColumn::getFile(rownr_t) {
@@ -58,7 +58,7 @@ void SSMIndColumn::getFile(rownr_t) {
   itsIosFile = itsSSMPtr->openArrayFile(itsSSMPtr->fileOption());
 }
 
-void SSMIndColumn::addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit) {
+void SSMIndColumn::addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit) {
   // init the buckets to zero of needed
   if (doInit) {
     rownr_t aRowNr = 0;
@@ -89,7 +89,7 @@ void SSMIndColumn::addRow(rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit) 
 
 void SSMIndColumn::setShapeColumn(const IPosition& aShape) {
   itsFixedShape = aShape;
-  isShapeFixed = True;
+  isShapeFixed = true;
 }
 
 void SSMIndColumn::setShape(rownr_t aRowNr, const IPosition& aShape) {
@@ -139,15 +139,15 @@ StIndArray* SSMIndColumn::getShape(rownr_t aRowNr) {
   return aPtr;
 }
 
-Bool SSMIndColumn::isShapeDefined(rownr_t aRowNr) {
-  return (getArrayPtr(aRowNr) == 0 ? False : True);
+bool SSMIndColumn::isShapeDefined(rownr_t aRowNr) {
+  return (getArrayPtr(aRowNr) == 0 ? false : true);
 }
 
 uInt SSMIndColumn::ndim(rownr_t aRowNr) { return getShape(aRowNr)->shape().nelements(); }
 
 IPosition SSMIndColumn::shape(rownr_t aRowNr) { return getShape(aRowNr)->shape(); }
 
-Bool SSMIndColumn::canChangeShape() const { return (isShapeFixed ? False : True); }
+bool SSMIndColumn::canChangeShape() const { return (isShapeFixed ? false : true); }
 
 void SSMIndColumn::deleteRow(rownr_t aRowNr) {
   char* aValue;

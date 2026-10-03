@@ -31,7 +31,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TSMOption::TSMOption(TSMOption::Option option, Int bufferSize, Int maxCacheSizeMB)
     : itsOption(option), itsBufferSize(bufferSize), itsMaxCacheSize(maxCacheSizeMB) {}
 
-void TSMOption::fillOption(Bool newTable) {
+void TSMOption::fillOption(bool newTable) {
   // Get variables from aipsrc if needed.
   if (itsOption == TSMOption::Aipsrc) {
     String opt;

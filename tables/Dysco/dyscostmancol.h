@@ -39,7 +39,7 @@ class DyscoStManColumn : public casacore::StManColumnBase {
    * Whether this column is writable
    * @returns @c true
    */
-  virtual casacore::Bool isWritable() const override { return true; }
+  virtual bool isWritable() const override { return true; }
 
   virtual void Prepare(DyscoDistribution distribution, Normalization normalization,
                        double studentsTNu, double distributionTruncation) = 0;

@@ -114,7 +114,7 @@ class TableLogSink : public LogSinkInterface {
   void reopenRW(const LogFilterInterface& filter);
 
   // If the message passes the filter, write it to the log table.
-  virtual Bool postLocally(const LogMessage& message);
+  virtual bool postLocally(const LogMessage& message);
 
   // Get number of messages in sink.
   virtual uInt nelements() const;
@@ -179,7 +179,7 @@ class TableLogSink : public LogSinkInterface {
   static TableDesc logTableDescription();
 
   // Write out any pending output to the table.
-  virtual void flush(Bool global = True);
+  virtual void flush(bool global = true);
 
   // Write a message (usually from another logsink) into the local one.
   virtual void writeLocally(Double time, const String& message, const String& priority,

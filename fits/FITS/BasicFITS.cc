@@ -37,21 +37,21 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, String *unitName,
+Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName,
                       Vector<String> *axisNames, Vector<Float> *refPixel,
                       Vector<Float> *refLocation, Vector<Float> *delta,
                       std::map<String, Double> *keywords, String *objectName) {
   Array<Float> data;
 
-  ok = True;
+  ok = true;
   FitsInput infile(FileName, FITS::Disk);
   if (infile.err()) {
-    ok = False;
+    ok = false;
     ErrorMessage = String("Cannot open file ") + String(FileName);
     return data;
   }
   if (infile.rectype() != FITS::HDURecord || infile.hdutype() != FITS::PrimaryArrayHDU) {
-    ok = False;
+    ok = false;
     ErrorMessage =
         "FITS file is not an image, or is malformed "
         "(or something)";
@@ -85,14 +85,14 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage, Stri
                  delta, keywords, objectName);
     } break;
     default:
-      ok = False;
+      ok = false;
       ErrorMessage = "Unknown datatype  - no data returned";
   }
 
   return data;
 }
 
-Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
+bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
                const char *unitName, const Vector<String> *axisNames, const Vector<Float> *refPixel,
                const Vector<Float> *refLocation, const Vector<Float> *delta,
                const std::map<String, double> *keywords, const char *objectName, Int BITPIX,
@@ -100,11 +100,11 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
   FitsOutput outfile(FileName, FITS::Disk);
   if (outfile.err()) {
     ErrorMessage = String("Cannot open file for writing: ") + String(FileName);
-    return False;
+    return false;
   }
 
   FitsKeywordList kw;
-  kw.mk(FITS::SIMPLE, True);
+  kw.mk(FITS::SIMPLE, true);
 
   Double bscale, bzero;
   const Short maxshort = 32767;
@@ -122,7 +122,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
     bzero = Double(minPix) + bscale * (-Double(minshort));
   } else {
     ErrorMessage = "BITPIX must be -32 (floating point) or 16 (short integer)";
-    return False;
+    return false;
   }
 
   kw.mk(FITS::NAXIS, int(array.ndim()));
@@ -138,7 +138,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
   if (axisNames) {
     if (axisNames->nelements() != array.ndim()) {
       ErrorMessage = String("axisNames wrong length");
-      return False;
+      return false;
     }
     for (Int i = 0; i < Int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CTYPE, (*axisNames)(i).c_str());
@@ -147,7 +147,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
   if (refPixel) {
     if (refPixel->nelements() != array.ndim()) {
       ErrorMessage = String("refPixel wrong length");
-      return False;
+      return false;
     }
     for (Int i = 0; i < Int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CRPIX, (*refPixel)(i) + 1.0f);
@@ -156,7 +156,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
   if (refLocation) {
     if (refLocation->nelements() != array.ndim()) {
       ErrorMessage = String("refLocation wrong length");
-      return False;
+      return false;
     }
     for (Int i = 0; i < Int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CRVAL, (*refLocation)(i));
@@ -165,7 +165,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
   if (delta) {
     if (delta->nelements() != array.ndim()) {
       ErrorMessage = String("delta wrong length");
-      return False;
+      return false;
     }
     for (Int i = 0; i < Int(array.ndim()); i++) {
       kw.mk(i + 1, FITS::CDELT, (*delta)(i));
@@ -197,10 +197,10 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       PrimaryArray<Float> pa(kw);
       if (pa.err()) {
         ErrorMessage = "Error constructing primary array from keywords";
-        return False;
+        return false;
       }
 
-      Bool deleteIt;
+      bool deleteIt;
       const Float *storage = array.getStorage(deleteIt);
       //*** Cast needed because of misdeclaration (I believe) in hdu.h
       pa.store((Float *)storage);
@@ -209,12 +209,12 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       if (pa.write_hdr(outfile)) {
         array.freeStorage(storage, deleteIt);
         ErrorMessage = "Write error writing keywords";
-        return False;
+        return false;
       }
       if (pa.write(outfile) != Int(array.nelements())) {
         array.freeStorage(storage, deleteIt);
         ErrorMessage = "Write error writing data";
-        return False;
+        return false;
       }
       array.freeStorage(storage, deleteIt);
     } break;
@@ -222,10 +222,10 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       PrimaryArray<Short> pa(kw);
       if (pa.err()) {
         ErrorMessage = "Error constructing primary array from keywords";
-        return False;
+        return false;
       }
 
-      Bool deleteIt;
+      bool deleteIt;
       const Float *storage = array.getStorage(deleteIt);
 
       Block<Short> storage16(array.nelements());
@@ -247,21 +247,21 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMes
       if (pa.write_hdr(outfile)) {
         array.freeStorage(storage, deleteIt);
         ErrorMessage = "Write error writing keywords";
-        return False;
+        return false;
       }
       if (pa.write(outfile) != Int(array.nelements())) {
         array.freeStorage(storage, deleteIt);
         ErrorMessage = "Write error writing data";
-        return False;
+        return false;
       }
       array.freeStorage(storage, deleteIt);
     } break;
     default:
       ErrorMessage = "Impossible error in WriteFITS!";
-      return False;
+      return false;
   }
 
-  return True;
+  return true;
 }
 
 }  // namespace casacore

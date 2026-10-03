@@ -81,12 +81,12 @@ int main() {
     AlwaysAssertExit(StringContains(file, dir1) || StringContains(file, dir2));
     AlwaysAssertExit(std::regex_search(file, std::regex("/foo_")));
 
-    /// Bool caught = False;
+    /// bool caught = false;
     try {
       cerr << "=====Expect a single SEVERE level message\n";
       file = AppInfo::workFileName(1000000);
     } catch (std::exception& x) {
-      /// caught = True;
+      /// caught = true;
     }
     // Do not check if it failed or succeeded, because that is
     // system dependent (same reason as workDirectories test).

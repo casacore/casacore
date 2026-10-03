@@ -121,7 +121,7 @@ class ImageAttrGroup {
   virtual uInt nrows() const = 0;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr(const String& attrName) const = 0;
+  virtual bool hasAttr(const String& attrName) const = 0;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const = 0;

@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MultiHDF5::MultiHDF5(const String& name, ByteIO::OpenOption option, Int blockSize)
-    : MultiFileBase(name, blockSize, False),  // # no O_DIRECT in HDF5
+    : MultiFileBase(name, blockSize, false),  // # no O_DIRECT in HDF5
       itsFile(new HDF5File(itsName, option)),
       itsHDF5(itsFile.get()) {
   init(option);
@@ -43,7 +43,7 @@ MultiHDF5::MultiHDF5(const String& name, ByteIO::OpenOption option, Int blockSiz
 MultiHDF5::MultiHDF5(const String& name, const std::shared_ptr<MultiFileBase>& parent,
                      ByteIO::OpenOption option, Int blockSize)
     // Use parent's block size if not specified.
-    : MultiFileBase(name, blockSize > 0 ? blockSize : parent->blockSize(), False) {
+    : MultiFileBase(name, blockSize > 0 ? blockSize : parent->blockSize(), false) {
   // Get the overall HDF5 file object.
   MultiHDF5* parentHDF5 = dynamic_cast<MultiHDF5*>(parent.get());
   if (!parentHDF5) {
@@ -101,8 +101,8 @@ void MultiHDF5::reopenRW() {
   // Close all datasets and groups.
   itsInfo.clear();
   itsFile->reopenRW();
-  readHeader(True);
-  itsWritable = True;
+  readHeader(true);
+  itsWritable = true;
 }
 
 void MultiHDF5::fsync() {}
@@ -123,7 +123,7 @@ void MultiHDF5::writeHeader() {
   HDF5Record::writeRecord(*itsHDF5, "__MultiHDF5_Header__", rec);
 }
 
-void MultiHDF5::readHeader(Bool always) {
+void MultiHDF5::readHeader(bool always) {
   Record rec = HDF5Record::readRecord(*itsHDF5, "__MultiHDF5_Header__");
   itsBlockSize = rec.asInt64("blockSize");
   Int64 hdrCounter = rec.asInt64("hdrCounter");

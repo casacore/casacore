@@ -82,7 +82,7 @@ class NNLSMatrixSolver : public MatrixSolver {
   ~NNLSMatrixSolver();
 
   // Solve for the X vector.
-  Bool solve();
+  bool solve();
 
  protected:
  private:

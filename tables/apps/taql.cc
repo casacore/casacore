@@ -91,22 +91,22 @@ typedef map<String, pair<Table, String>> TableMap;
 // cout and cerr should not be deleted.
 class Deleter {
  public:
-  Deleter(Bool deleteIt) : itsDelete(deleteIt) {}
+  Deleter(bool deleteIt) : itsDelete(deleteIt) {}
   void operator()(ostream* ptr) {
     if (itsDelete) delete ptr;
   }
 
  private:
-  Bool itsDelete;
+  bool itsDelete;
 };
 
 struct Options {
-  Bool printSelect;
-  Bool printAuto;
-  Bool printMeasure;
-  Bool printHeader;
-  Bool printCommand;
-  Bool printNRows;
+  bool printSelect;
+  bool printAuto;
+  bool printMeasure;
+  bool printHeader;
+  bool printCommand;
+  bool printNRows;
   rownr_t maxNRows;
   String separator;
   String fname;
@@ -115,17 +115,17 @@ struct Options {
   std::shared_ptr<ostream> stream;
 
   Options()
-      : printSelect(False),   // print explicitly select result?
-        printAuto(True),      // print automatically if printSelect=False?
-        printMeasure(True),   // print as measures when printing result?
-        printHeader(True),    // print column header when printing result?
-        printCommand(False),  // print command?
-        printNRows(True),     // print nr of rows handled?
+      : printSelect(false),   // print explicitly select result?
+        printAuto(true),      // print automatically if printSelect=False?
+        printMeasure(true),   // print as measures when printing result?
+        printHeader(true),    // print column header when printing result?
+        printCommand(false),  // print command?
+        printNRows(true),     // print nr of rows handled?
         maxNRows(50),         // max #rows to print for auto print
         separator(1, '\t'),   // default separator between printed columns
         style("python"),
         outName("stdout"),
-        stream(&cout, Deleter(False))  // default stdout
+        stream(&cout, Deleter(false))  // default stdout
   {}
 };
 
@@ -134,8 +134,8 @@ struct Options {
 //  If so, an interactive session is started if no TaQL command is given. It also tells if
 //  possible quotes are removed from option values.
 //  The TableMap holds a map of name to temporary table.
-//  It returns False if exit (or quit) is given.
-Bool executeArgs(const vector<String> args, Bool topLevel, TableMap& tableMap, Options& options);
+//  It returns false if exit (or quit) is given.
+bool executeArgs(const vector<String> args, bool topLevel, TableMap& tableMap, Options& options);
 
 void removeCR(String& line) {
   // Remove possible carriage-return (in DOS files).
@@ -245,16 +245,16 @@ vector<String> splitWS(const String& str) {
 // Read a line, if possible using the readline library to make command
 // editing and history possible.
 #ifdef HAVE_READLINE
-Bool readLine(String& line, const String& prompt) {
+bool readLine(String& line, const String& prompt) {
   char* str = readline(prompt.c_str());
-  if (!str) return False;
+  if (!str) return false;
   line = String(str);
   removeCR(line);
   free(str);
-  return True;
+  return true;
 }
 #else
-Bool readLine(String& line, const String& prompt) {
+bool readLine(String& line, const String& prompt) {
   if (!prompt.empty()) cerr << prompt;
   getline(cin, line);
   removeCR(line);
@@ -263,8 +263,8 @@ Bool readLine(String& line, const String& prompt) {
 #endif
 
 // Read a line until a non-empty line or ^D or quit is read.
-Bool readLineSkip(String& line, const String& prompt) {
-  Bool fnd = False;
+bool readLineSkip(String& line, const String& prompt) {
+  bool fnd = false;
   while (!fnd && readLine(line, prompt)) {
     fnd = !line.empty();
   }
@@ -290,14 +290,14 @@ void showTime(double time, const String& unit, ostream& os) {
 
 void showTime(const Array<double>& times, const String& unit, ostream& os) {
   Quantity q(0., unit);
-  Bool firstTime = True;
+  bool firstTime = true;
   cout << '[';
   Array<double>::const_iterator endIter = times.end();
   for (Array<double>::const_iterator iter = times.begin(); iter != endIter; ++iter) {
     if (!firstTime) {
       os << ", ";
     } else {
-      firstTime = False;
+      firstTime = false;
     }
     q.setValue(*iter);
     showTime(q, os);
@@ -312,7 +312,7 @@ void showPos(const Array<double>& pos, const Vector<String>& units, ostream& os)
   for (uInt i = 0; i < units.size(); ++i) {
     q[i] = Quantity(0., units[i]);
   }
-  Bool firstTime = True;
+  bool firstTime = true;
   if (pos.size() != units.size()) {
     os << '[';
   }
@@ -321,7 +321,7 @@ void showPos(const Array<double>& pos, const Vector<String>& units, ostream& os)
     if (!firstTime) {
       os << ", ";
     } else {
-      firstTime = False;
+      firstTime = false;
     }
     for (uInt i = 0; i < units.size(); ++i) {
       q[i].setValue(*iter);
@@ -342,7 +342,7 @@ void showDir(const Array<double>& dir, const Vector<String>& units, ostream& os)
   for (uInt i = 0; i < units.size(); ++i) {
     q[i] = Quantity(0., units[i]);
   }
-  Bool firstTime = True;
+  bool firstTime = true;
   if (dir.size() != units.size()) {
     os << '[';
   }
@@ -351,7 +351,7 @@ void showDir(const Array<double>& dir, const Vector<String>& units, ostream& os)
     if (!firstTime) {
       os << ", ";
     } else {
-      firstTime = False;
+      firstTime = false;
     }
     os << '[';
     for (uInt i = 0; i < units.size(); ++i) {
@@ -401,14 +401,14 @@ void showArray(const Array<MVTime>& arr, ostream& os) {
   if (arr.size() == 1) {
     showTime(arr.data()[0], os);
   } else {
-    Bool firstTime = True;
+    bool firstTime = true;
     os << '[';
     Array<MVTime>::const_iterator endIter = arr.end();
     for (Array<MVTime>::const_iterator iter = arr.begin(); iter != endIter; ++iter) {
       if (!firstTime) {
         os << ", ";
       } else {
-        firstTime = False;
+        firstTime = false;
       }
       showTime(*iter, os);
     }
@@ -418,7 +418,7 @@ void showArray(const Array<MVTime>& arr, ostream& os) {
 
 // Show the required columns of the table.
 // First test if they exist and contain scalars or arrays.
-void showTable(const Table& tab, const Vector<String>& colnam, Bool printMeasure,
+void showTable(const Table& tab, const Vector<String>& colnam, bool printMeasure,
                const String& separator, ostream& os) {
   uInt nrcol = 0;
   Block<TableColumn*> tableColumns(colnam.nelements());
@@ -426,7 +426,7 @@ void showTable(const Table& tab, const Vector<String>& colnam, Bool printMeasure
   Block<Vector<String>> posUnit(colnam.nelements());
   Block<Vector<String>> dirUnit(colnam.nelements());
   Block<String> colUnits(colnam.nelements());
-  Bool hasUnits = False;
+  bool hasUnits = false;
   for (uInt i = 0; i < colnam.nelements(); i++) {
     if (!tab.tableDesc().isColumn(colnam(i))) {
       os << "Column " << colnam(i) << " does not exist" << endl;
@@ -445,7 +445,7 @@ void showTable(const Table& tab, const Vector<String>& colnam, Bool printMeasure
           units = keys.asArrayString("QuantumUnits");
           if (!units.empty()) {
             colUnits[nrcol] = units[0];
-            hasUnits = True;
+            hasUnits = true;
           }
         }
         // If needed, see if it is a Measure type we know of.
@@ -662,14 +662,14 @@ Table taqlCommand(const Options& options, const String& varName, const String& c
                   const vector<const Table*>& tempTables) {
   // If no command is given, assume it is SELECT.
   // Only show results for SELECT, COUNT and CALC.
-  Bool addComm = False;
-  Bool showHelp = False;
-  Bool printSelect = options.printSelect;
-  Bool printAuto = options.printAuto;
-  Bool printMeasure = options.printMeasure;
-  Bool printCommand = options.printCommand;
-  Bool printNRows = options.printNRows;
-  Bool printHeader = options.printHeader;
+  bool addComm = false;
+  bool showHelp = false;
+  bool printSelect = options.printSelect;
+  bool printAuto = options.printAuto;
+  bool printMeasure = options.printMeasure;
+  bool printCommand = options.printCommand;
+  bool printNRows = options.printNRows;
+  bool printHeader = options.printHeader;
   rownr_t maxNRows = options.maxNRows;
   ostream& os = *(options.stream);
   String::size_type spos = command.find_first_not_of(' ');
@@ -689,10 +689,10 @@ Table taqlCommand(const Options& options, const String& varName, const String& c
   String strc(command);
   if (addComm) {
     strc = "SELECT " + command;
-    printSelect = True;
-    printHeader = False;
-    printCommand = False;
-    printNRows = False;
+    printSelect = true;
+    printHeader = false;
+    printCommand = false;
+    printNRows = false;
   }
   String style(options.style);
   if (style.empty()) {
@@ -705,7 +705,7 @@ Table taqlCommand(const Options& options, const String& varName, const String& c
   ToLowerCaseInPlace(cmd);
   // Show result of COUNT as well.
   if (cmd == "count") {
-    colNames.resize(colNames.size() + 1, True);
+    colNames.resize(colNames.size() + 1, true);
     colNames[colNames.size() - 1] = "_COUNT_";
   }
   if (printCommand && !showHelp) {
@@ -736,9 +736,9 @@ Table taqlCommand(const Options& options, const String& varName, const String& c
         // Show the contents of the columns.
         // When printing automatically, only maxNRows are shown.
         Table tabc(tabp);
-        Bool showSubset = False;
+        bool showSubset = false;
         if (!printSelect && printAuto && tabp.nrow() > maxNRows) {
-          showSubset = True;
+          showSubset = true;
           Vector<rownr_t> rownrs(maxNRows);
           indgen(rownrs);
           tabc = tabp(rownrs);
@@ -912,10 +912,10 @@ String substituteName(const String& name, const TableMap& tableMap, vector<const
 vector<const Table*> replaceVars(String& str, const TableMap& tableMap) {
   vector<const Table*> tabs;
   // Initialize some variables.
-  Bool backslash = False;
-  Bool dollar = False;
-  Bool squote = False;
-  Bool dquote = False;
+  bool backslash = false;
+  bool dollar = false;
+  bool squote = false;
+  bool dquote = false;
   String name;
   String out;
   out.reserve(str.size());
@@ -934,7 +934,7 @@ vector<const Table*> replaceVars(String& str, const TableMap& tableMap) {
         continue;
       } else {
         // End of name found. Try to substitute.
-        dollar = False;
+        dollar = false;
         out += substituteName(name, tableMap, tabs);
       }
     }
@@ -947,7 +947,7 @@ vector<const Table*> replaceVars(String& str, const TableMap& tableMap) {
       // Set a switch if we have a dollar (outside quoted)
       // that is not preceeded by a backslash.
       if (tmp == '$' && !backslash) {
-        dollar = True;
+        dollar = true;
         name = String();
       }
     }
@@ -966,7 +966,7 @@ vector<const Table*> replaceVars(String& str, const TableMap& tableMap) {
   return tabs;
 }
 
-Bool execCommand(const String& command, TableMap& tableMap, const Options& options) {
+bool execCommand(const String& command, TableMap& tableMap, const Options& options) {
   const Regex variable_assignment_regex("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
   const Regex assignment_regex("[ \t]*=");
   try {
@@ -981,7 +981,7 @@ Bool execCommand(const String& command, TableMap& tableMap, const Options& optio
     } else if (strc == "?") {
       showTableMap(tableMap, os);
     } else if (strc == "exit" || strc == "quit" || strc == "q") {
-      return False;
+      return false;
     } else {
       String varName;
       String::size_type assLen = variable_assignment_regex.match(strc.c_str(), strc.size());
@@ -1034,7 +1034,7 @@ Bool execCommand(const String& command, TableMap& tableMap, const Options& optio
   } catch (const std::exception& x) {
     cerr << x.what() << endl;
   }
-  return True;
+  return true;
 }
 
 void execFileCommands(TableMap& tableMap, const Options& options) {
@@ -1042,7 +1042,7 @@ void execFileCommands(TableMap& tableMap, const Options& options) {
   // A command can be continued on the next line.
   // An error in a command file is severe, so it exits on error.
   vector<String> commands;
-  Bool appendLast = False;
+  bool appendLast = false;
   std::ifstream ifs(options.fname.c_str());
   if (!ifs.good()) {
     throw AipsError("Cannot open file " + options.fname);
@@ -1056,7 +1056,7 @@ void execFileCommands(TableMap& tableMap, const Options& options) {
       if (!parts[i].empty()) {
         if (appendLast) {
           commands[commands.size() - 1].append(' ' + parts[i]);
-          appendLast = False;
+          appendLast = false;
         } else {
           commands.push_back(parts[i]);
         }
@@ -1069,7 +1069,7 @@ void execFileCommands(TableMap& tableMap, const Options& options) {
   // Use a new scope for the options.
   Options localOptions(options);
   for (auto command : commands) {
-    if (!executeArgs(splitWS(command), False, tableMap, localOptions)) {
+    if (!executeArgs(splitWS(command), false, tableMap, localOptions)) {
       break;  // exit given
     }
   }
@@ -1086,12 +1086,12 @@ void askCommands(TableMap& tableMap, Options& options) {
     read_history(histFile.c_str());
   }
 #endif
-  while (True) {
+  while (true) {
     // Catch errors, so the user can retry.
     try {
       String str;
       // Read and execute until ^D or quit is given.
-      if (!(readLineSkip(str, "TaQL> ") && executeArgs(splitWS(str), False, tableMap, options))) {
+      if (!(readLineSkip(str, "TaQL> ") && executeArgs(splitWS(str), false, tableMap, options))) {
         cerr << endl;
         break;
       }
@@ -1109,7 +1109,7 @@ void askCommands(TableMap& tableMap, Options& options) {
 // Remove quotes if necessary.
 // Note that it should not be done for options given in a shell command,
 // but has to be done for options given at the TaQL prompt.
-String removeQuotes(const String& s, Bool removeQuote) {
+String removeQuotes(const String& s, bool removeQuote) {
   if (removeQuote && s.size() >= 2) {
     if ((s[0] == '"' || s[0] == '\'') && s[0] == s[s.size() - 1]) {
       return s.substr(1, s.size() - 2);
@@ -1120,7 +1120,7 @@ String removeQuotes(const String& s, Bool removeQuote) {
 
 // Parse the given options and set flags accordingly.
 // Stop at first non-option (indicated by st).
-Bool parseArgs(const vector<String>& args, uInt& st, Options& options, Bool removeQuote) {
+bool parseArgs(const vector<String>& args, uInt& st, Options& options, bool removeQuote) {
   options.fname = String();
   for (st = 0; st < args.size(); ++st) {
     String arg(args[st]);
@@ -1165,15 +1165,15 @@ Bool parseArgs(const vector<String>& args, uInt& st, Options& options, Bool remo
         String outname(fname);
         ToLowerCaseInPlace(outname);
         if (outname == "stdout") {
-          options.stream = std::shared_ptr<ostream>(&cout, Deleter(False));
+          options.stream = std::shared_ptr<ostream>(&cout, Deleter(false));
           options.outName = "stdout";
         } else if (outname == "stderr") {
-          options.stream = std::shared_ptr<ostream>(&cerr, Deleter(False));
+          options.stream = std::shared_ptr<ostream>(&cerr, Deleter(false));
           options.outName = "stderr";
         } else {
           try {
             outname = Path(fname).absoluteName();
-            options.stream = std::shared_ptr<ostream>(new ofstream(outname), Deleter(True));
+            options.stream = std::shared_ptr<ostream>(new ofstream(outname), Deleter(true));
             options.outName = outname;
           } catch (std::exception& x) {
             cerr << "Could not create output file " << fname << endl;
@@ -1185,69 +1185,69 @@ Bool parseArgs(const vector<String>& args, uInt& st, Options& options, Bool remo
       }
 
     } else if (arg == "-p" || arg == "--printall") {
-      options.printCommand = True;
-      options.printSelect = True;
-      options.printMeasure = True;
-      options.printNRows = True;
-      options.printHeader = True;
+      options.printCommand = true;
+      options.printSelect = true;
+      options.printMeasure = true;
+      options.printNRows = true;
+      options.printHeader = true;
     } else if (arg == "-nop" || arg == "--noprintall") {
-      options.printCommand = False;
-      options.printSelect = False;
-      options.printMeasure = False;
-      options.printNRows = False;
-      options.printHeader = False;
+      options.printCommand = false;
+      options.printSelect = false;
+      options.printMeasure = false;
+      options.printNRows = false;
+      options.printHeader = false;
     } else if (arg == "-pc" || arg == "--printcommand") {
-      options.printCommand = True;
+      options.printCommand = true;
     } else if (arg == "-ps" || arg == "--printselect") {
-      options.printSelect = True;
+      options.printSelect = true;
     } else if (arg == "-pa" || arg == "--printauto") {
-      options.printAuto = True;
-      options.printSelect = False;
+      options.printAuto = true;
+      options.printSelect = false;
     } else if (arg == "-pm" || arg == "--printmeasure") {
-      options.printMeasure = True;
+      options.printMeasure = true;
     } else if (arg == "-pr" || arg == "--printnrows") {
-      options.printNRows = True;
+      options.printNRows = true;
     } else if (arg == "-ph" || arg == "--printheader") {
-      options.printHeader = True;
+      options.printHeader = true;
     } else if (arg == "-nopc" || arg == "--noprintcommand") {
-      options.printCommand = False;
+      options.printCommand = false;
     } else if (arg == "-nops" || arg == "--noprintselect") {
-      options.printSelect = False;
+      options.printSelect = false;
     } else if (arg == "-nopa" || arg == "--noprintauto") {
-      options.printAuto = False;
+      options.printAuto = false;
     } else if (arg == "-nopm" || arg == "--noprintmeasure") {
-      options.printMeasure = False;
+      options.printMeasure = false;
     } else if (arg == "-nopr" || arg == "--noprintnrows") {
-      options.printNRows = False;
+      options.printNRows = false;
     } else if (arg == "-noph" || arg == "--noprintheader") {
-      options.printHeader = False;
+      options.printHeader = false;
     } else if (arg == "-v" || arg == "--version") {
       showVersion();
-      return False;
+      return false;
     } else if (arg == "-h" || arg == "--help") {
       showHelp();
-      return False;
+      return false;
     } else if (arg == "--") {
       break;  // -- signifies end of options
     } else if (arg[0] == '-') {
       cerr << arg << " is an invalid option; it will be tried as a command" << endl;
       cerr << "  Note that -- indicates the end of options (e.g., use -- " << arg << ')' << endl;
-      return True;
+      return true;
     } else {
       break;
     }
   }
-  return True;
+  return true;
 }
 
 // Execute a given command.
 // Ask for commands if interactive and empty command.
-Bool executeArgs(const vector<String> args, Bool topLevel, TableMap& tableMap, Options& options) {
+bool executeArgs(const vector<String> args, bool topLevel, TableMap& tableMap, Options& options) {
   // Parse the options as given.
   Options localOptions(options);
   uInt st = 0;
   if (!parseArgs(args, st, localOptions, !topLevel)) {
-    return True;
+    return true;
   }
   // Execute the command file if given.
   if (!localOptions.fname.empty()) {
@@ -1269,7 +1269,7 @@ Bool executeArgs(const vector<String> args, Bool topLevel, TableMap& tableMap, O
     // Make the options persistent.
     options = localOptions;
   }
-  return True;
+  return true;
 }
 
 int main(int argc, const char* argv[]) {
@@ -1281,7 +1281,7 @@ int main(int argc, const char* argv[]) {
     for (int i = 1; i < argc; ++i) {
       args.push_back(argv[i]);
     }
-    executeArgs(args, True, tableMap, options);
+    executeArgs(args, true, tableMap, options);
   } catch (const std::exception& x) {
     cerr << "\nCaught an exception: " << x.what() << endl;
     return 1;

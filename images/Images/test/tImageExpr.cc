@@ -117,22 +117,22 @@ void testExpr() {
   }
   // Try to open it as an expression without escaping the colon (also as unquoted).
   // It should give an exception 'unknown image'.
-  Bool exc = False;
+  bool exc = false;
   try {
     cout << "try as expr2" << endl;
     ImageOpener::openExpr("float('tImageExpr_tmp:imgexpr2' + 1)", nodes);
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    exc = True;
+    exc = true;
   }
   AlwaysAssertExit(exc);
-  exc = False;
+  exc = false;
   try {
     cout << "try as expr3" << endl;
     ImageOpener::openExpr("float(tImageExpr_tmp:imgexpr2)", nodes);
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    exc = True;
+    exc = true;
   }
   AlwaysAssertExit(exc);
 }

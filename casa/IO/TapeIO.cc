@@ -61,15 +61,15 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TapeIO::TapeIO()
     : ByteIO(),
       itsDevice(-1),
-      itsOwner(False),
-      itsReadable(False),
-      itsWritable(False),
-      itsSeekable(False),
+      itsOwner(false),
+      itsReadable(false),
+      itsWritable(false),
+      itsSeekable(false),
       itsDeviceName("") {}
 
 TapeIO::TapeIO(int fd) : ByteIO(), itsDevice(-1) { attach(fd); }
 
-TapeIO::TapeIO(const Path& device, Bool writable) : ByteIO(), itsDevice(-1) {
+TapeIO::TapeIO(const Path& device, bool writable) : ByteIO(), itsDevice(-1) {
   attach(device, writable);
 }
 
@@ -78,17 +78,17 @@ TapeIO::~TapeIO() { detach(); }
 void TapeIO::attach(int fd) {
   if (itsDevice >= 0) detach();
   DebugAssert(itsDevice == -1, AipsError);
-  itsOwner = False;
+  itsOwner = false;
   itsDevice = fd;
   fillRWFlags();
   fillSeekable();
   itsDeviceName = String("");
 }
 
-void TapeIO::attach(const Path& device, Bool writable) {
+void TapeIO::attach(const Path& device, bool writable) {
   if (itsDevice >= 0) detach();
   DebugAssert(itsDevice == -1, AipsError);
-  itsOwner = True;
+  itsOwner = true;
   itsDevice = TapeIO::open(device, writable);
   fillRWFlags();
   fillSeekable();
@@ -105,7 +105,7 @@ void TapeIO::write(Int64 size, const void* buf) {
   }
 }
 
-Int64 TapeIO::read(Int64 size, void* buf, Bool throwException) {
+Int64 TapeIO::read(Int64 size, void* buf, bool throwException) {
   if (!itsReadable) {
     throw(AipsError("TapeIO::read - tape is not readable"));
   }
@@ -178,7 +178,7 @@ void TapeIO::mark(uInt howMany) {
 void TapeIO::mark(uInt) {}
 #endif
 
-Bool TapeIO::fixedBlocks() const { return (getBlockSize() != 0) ? True : False; }
+bool TapeIO::fixedBlocks() const { return (getBlockSize() != 0) ? true : false; }
 
 uInt TapeIO::fixedBlockSize() const { return getBlockSize(); }
 
@@ -253,15 +253,15 @@ Int64 TapeIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
 
 Int64 TapeIO::length() { return -1; }
 
-Bool TapeIO::isReadable() const { return itsReadable; }
+bool TapeIO::isReadable() const { return itsReadable; }
 
-Bool TapeIO::isWritable() const { return itsWritable; }
+bool TapeIO::isWritable() const { return itsWritable; }
 
-Bool TapeIO::isSeekable() const { return itsSeekable; }
+bool TapeIO::isSeekable() const { return itsSeekable; }
 
 String TapeIO::fileName() const { return itsDeviceName; }
 
-int TapeIO::open(const Path& device, Bool writable) {
+int TapeIO::open(const Path& device, bool writable) {
   int fd;
   const String& deviceString = device.absoluteName();
   char* devicePtr = (char*)deviceString.c_str();
@@ -288,38 +288,38 @@ void TapeIO::detach() {
   if (itsOwner) {
     if (isWritable()) mark(1);
     TapeIO::close(itsDevice);
-    itsOwner = False;
+    itsOwner = false;
     itsDeviceName = String("");
   }
   itsDevice = -1;
-  itsSeekable = itsReadable = itsWritable = False;
+  itsSeekable = itsReadable = itsWritable = false;
 }
 
 void TapeIO::fillRWFlags() {
   if (itsDevice < 0) {
-    itsReadable = False;
-    itsWritable = False;
+    itsReadable = false;
+    itsWritable = false;
     return;
   }
   int flags = fcntl(itsDevice, F_GETFL);
   if ((flags & O_RDWR) == O_RDWR) {
-    itsReadable = True;
-    itsWritable = True;
+    itsReadable = true;
+    itsWritable = true;
   } else if ((flags & O_RDONLY) == O_RDONLY) {
-    itsReadable = True;
-    itsWritable = False;
+    itsReadable = true;
+    itsWritable = false;
   } else if ((flags & O_WRONLY) == O_WRONLY) {
-    itsReadable = False;
-    itsWritable = True;
+    itsReadable = false;
+    itsWritable = true;
   } else {
-    itsReadable = False;
-    itsWritable = False;
+    itsReadable = false;
+    itsWritable = false;
   }
 }
 
 void TapeIO::fillSeekable() {
   if (itsDevice < 0) {
-    itsSeekable = False;
+    itsSeekable = false;
     return;
   }
   itsSeekable = (seek(0, ByteIO::Current) >= 0);

@@ -155,16 +155,16 @@ int main(int argc, const char* argv[]) {
     if (arrayShape(0) >= 100 && arrayShape(1) >= 100) {
       SetupNewTable maskSetup(filename, TableDesc(), Table::New);
       Table maskTable(maskSetup);
-      PagedArray<Bool> maskArray(arrayShape, maskTable);
+      PagedArray<bool> maskArray(arrayShape, maskTable);
       Timer timer;
-      maskArray.set(False);
+      maskArray.set(false);
       timer.show("setmask");
-      COWPtr<Array<Bool>> maskPtr;
+      COWPtr<Array<bool>> maskPtr;
       timer.mark();
       maskArray.getSlice(maskPtr, IPosition(4, 64, 64, 0, 0), IPosition(4, 32, 32, 1, 1),
                          IPosition(4, 1));
       timer.show("getmask      ");
-      maskPtr.rwRef() = True;
+      maskPtr.rwRef() = true;
       timer.mark();
       maskArray.putSlice(*maskPtr, IPosition(4, 60, 60, 0, 0));
       timer.show("putmask");

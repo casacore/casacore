@@ -33,7 +33,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 MSUvDistParse* MSUvDistParse::thisMSUParser = 0x0;  // Global pointer to the parser object
 TableExprNode* MSUvDistParse::node_p = 0x0;
 Matrix<Double> MSUvDistParse::selectedUV_p(2, 0);
-Vector<Bool> MSUvDistParse::meterUnits_p(0, False);
+Vector<bool> MSUvDistParse::meterUnits_p(0, false);
 
 // # Constructor
 MSUvDistParse::MSUvDistParse() : MSParse() {}
@@ -45,8 +45,8 @@ MSUvDistParse::MSUvDistParse(const MeasurementSet* ms) : MSParse(ms, "UvDist") {
 }
 
 const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const Double& endUV,
-                                                  const String& unit, Bool doSlow) {
-  Bool wavelengthUnit = False, distanceUnit = False;
+                                                  const String& unit, bool doSlow) {
+  bool wavelengthUnit = false, distanceUnit = false;
   Double startPoint;
   Double endPoint;
   // Column accessors
@@ -60,27 +60,27 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
   {
     startPoint = startUV * 1000;
     endPoint = endUV * 1000;
-    distanceUnit = True;
+    distanceUnit = true;
   } else if ((units == "m"))  // Meter
   {
     startPoint = startUV;
     endPoint = endUV;
-    distanceUnit = True;
+    distanceUnit = true;
   } else if (units == "mlambda")  // Mega Lambda
   {
     startPoint = startUV * 1000000;
     endPoint = endUV * 1000000;
-    wavelengthUnit = True;
+    wavelengthUnit = true;
   } else if (units == "klambda")  // Kilo lambda
   {
     startPoint = startUV * 1000;
     endPoint = endUV * 1000;
-    wavelengthUnit = True;
+    wavelengthUnit = true;
   } else if (units == "lambda")  // Lambda
   {
     startPoint = startUV;
     endPoint = endUV;
-    wavelengthUnit = True;
+    wavelengthUnit = true;
   } else {
     String Mesg = "Unrecognized units " + units +
                   " found.  Possible (case insensitive) units are [KM]LAMBDA for wavelengths or "
@@ -177,11 +177,11 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
         Double uvDist = sqrt(uvw(0) * uvw(0) + uvw(1) * uvw(1) + uvw(2) * uvw(2)) * refFreq / C::c;
         if ((startPoint <= uvDist) && (uvDist <= endPoint)) {
           nRowSel++;
-          rowsel.resize(nRowSel, True);
+          rowsel.resize(nRowSel, true);
           rowsel(nRowSel - 1) = row;
         }
       }
-      if (nRowSel == 0) rowsel.resize(nRowSel, True);
+      if (nRowSel == 0) rowsel.resize(nRowSel, true);
     }
 
     if (distanceUnit) {
@@ -190,11 +190,11 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
         Double uvDist = sqrt(uvw(0) * uvw(0) + uvw(1) * uvw(1) + uvw(2) * uvw(2));
         if ((startPoint <= uvDist) && (uvDist <= endPoint)) {
           nRowSel++;
-          rowsel.resize(nRowSel, True);
+          rowsel.resize(nRowSel, true);
           rowsel(nRowSel - 1) = row;
         }
       }
-      if (nRowSel == 0) rowsel.resize(nRowSel, True);
+      if (nRowSel == 0) rowsel.resize(nRowSel, true);
     }
     condition = (ms()->nodeRownr().in(rowsel));
   }
@@ -209,16 +209,16 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
 
 const TableExprNode* MSUvDistParse::node() { return node_p; }
 
-void MSUvDistParse::accumulateUVList(const Double r0, const Double r1, const Bool wavelengthUnit,
-                                     const Bool) {
+void MSUvDistParse::accumulateUVList(const Double r0, const Double r1, const bool wavelengthUnit,
+                                     const bool) {
   Int n0 = selectedUV_p.shape()(1);
   IPosition newShape(selectedUV_p.shape());
   newShape(1)++;
-  selectedUV_p.resize(newShape, True);
-  meterUnits_p.resize(newShape(1), True);
+  selectedUV_p.resize(newShape, true);
+  meterUnits_p.resize(newShape(1), true);
   selectedUV_p(0, n0) = r0;
   selectedUV_p(1, n0) = r1;
-  meterUnits_p(n0) = True;
-  if (wavelengthUnit) meterUnits_p(n0) = False;
+  meterUnits_p(n0) = true;
+  if (wavelengthUnit) meterUnits_p(n0) = false;
 }
 }  // namespace casacore

@@ -39,11 +39,11 @@ void checkAll() {
   for (uInt i = 0; i < 256; ++i) {
     bits[i] = i;
   }
-  Bool flagArr[8 * 260];
+  bool flagArr[8 * 260];
   // Make sure to use an aligned array.
-  Bool* flags = flagArr;
+  bool* flags = flagArr;
   cout << "unaligned flag pointer " << flags << endl;
-  flags = (Bool*)(8 * (((unsigned long long)flags - 1) / 8 + 1));
+  flags = (bool*)(8 * (((unsigned long long)flags - 1) / 8 + 1));
   cout << "  aligned flag pointer " << flags << endl;
   Conversion::bitToBool(flags, bits, 8 * 256);
   for (uInt i = 0; i < 256; ++i) {
@@ -67,22 +67,22 @@ void checkAll() {
 int main() {
   uInt nbool = 100;
   uInt nbyte = (100 + 7) / 8;
-  Bool* data = new Bool[nbool];
+  bool* data = new bool[nbool];
   uChar* bits = new uChar[nbyte];
   uInt i;
 
-  // # Initialize all bits and check if resulting Bools are all False.
+  // # Initialize all bits and check if resulting Bools are all false.
   for (i = 0; i < nbyte; i++) {
     bits[i] = 0;
   }
   AlwaysAssertExit(Conversion::bitToBool(data, bits, nbool) == nbyte);
   for (i = 0; i < nbool; i++) {
-    AlwaysAssertExit(data[i] == False);
+    AlwaysAssertExit(data[i] == false);
   }
 
   // # Set some bools and check the flags.
-  data[0] = True;
-  data[10] = True;
+  data[0] = true;
+  data[10] = true;
   bits[0] = 2;
   bits[5] = 1;
   Conversion::boolToBit(bits, data, nbool);
@@ -93,7 +93,7 @@ int main() {
   }
 
   // # Check the partial conversion functions.
-  data[2] = True;
+  data[2] = true;
   Conversion::boolToBit(bits, data + 2, 2, 2);
   AlwaysAssertExit(bits[0] == 1 + 4);
   AlwaysAssertExit(bits[1] == 4);
@@ -102,9 +102,9 @@ int main() {
   }
 
   // # Check the partial conversion functions.
-  data[2] = False;
-  data[9] = True;
-  data[20] = True;
+  data[2] = false;
+  data[9] = true;
+  data[20] = true;
   Conversion::boolToBit(bits, data + 2, 2, 19);
   AlwaysAssertExit(bits[0] == 1);
   AlwaysAssertExit(bits[1] == 2 + 4);
@@ -115,15 +115,15 @@ int main() {
   Conversion::bitToBool(data, bits, 1, 20);
   for (i = 0; i < 100; i++) {
     if (i == 8 || i == 9 || i == 19 || i == 20) {
-      AlwaysAssertExit(data[i] == True);
+      AlwaysAssertExit(data[i] == true);
     } else {
-      AlwaysAssertExit(data[i] == False);
+      AlwaysAssertExit(data[i] == false);
     }
   }
 
-  data[0] = True;
-  data[7] = True;
-  data[8] = True;
+  data[0] = true;
+  data[7] = true;
+  data[8] = true;
   Conversion::boolToBit(bits, data, 0, 8);
   AlwaysAssertExit(bits[0] == 1 + 128);
   AlwaysAssertExit(bits[1] == 2 + 4);
@@ -131,15 +131,15 @@ int main() {
   for (i = 3; i < nbyte; i++) {
     AlwaysAssertExit(bits[i] == 0);
   }
-  data[0] = False;
-  data[7] = False;
-  data[8] = False;
+  data[0] = false;
+  data[7] = false;
+  data[8] = false;
   Conversion::bitToBool(data, bits, 0, 64);
   for (i = 0; i < 100; i++) {
     if (i == 0 || i == 7 || i == 9 || i == 10 || i == 20) {
-      AlwaysAssertExit(data[i] == True);
+      AlwaysAssertExit(data[i] == true);
     } else {
-      AlwaysAssertExit(data[i] == False);
+      AlwaysAssertExit(data[i] == false);
     }
   }
 

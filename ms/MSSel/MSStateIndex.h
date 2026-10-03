@@ -93,8 +93,8 @@ class MSStateIndex {
   Vector<Int> matchStateObsMode(const Vector<String>& names);
 
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchStateRegexOrPattern(const String& pattern, const Bool regex = False);
-  Vector<Int> matchStateObsModeRegexOrPattern(const String& pattern, const Bool regex = False);
+  Vector<Int> matchStateRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<Int> matchStateObsModeRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchStateId(const Int& sourceId);
   Vector<Int> matchStateId(const Vector<Int>& sourceIds);

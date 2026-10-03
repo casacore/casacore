@@ -69,7 +69,7 @@ class TypeIO;
 // <srcblock>
 // main
 // {
-//     Bool valb = True;
+//     bool valb = true;
 //     RegularFileIO regularFileIO ("test.dat", ByteIO::New);
 //     CanonicalIO canonicalIO(&regularFileIO);
 //     ByteSinkSource  sinkSource(&canonicalIO);

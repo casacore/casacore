@@ -136,7 +136,7 @@ int main() {
   //   virtual void setAvailableParam(uInt which, const Type &value);
   //   virtual Type getAvailableParam(uInt which) const;
   //   virtual void setAvailableParamMask(uInt which, const Bool mask);
-  //   virtual Bool getAvailableParamMask(uInt which) const;
+  //   virtual bool getAvailableParamMask(uInt which) const;
   Gaussian1D<Double> gauss2(gauss1);
   Gaussian1D<Double> gauss3;
   gauss3 = gauss2;
@@ -145,11 +145,11 @@ int main() {
   AlwaysAssertExit(parms(0) == 2.0 && parms(1) == 3.0 && parms(2) == 4.0);
   AlwaysAssertExit(allEQ(parms, gauss2.parameters().getParameters()) &&
                    allEQ(parms, gauss3.parameters().getParameters()));
-  gauss1.mask(Gaussian1D<Double>::CENTER) = False;
+  gauss1.mask(Gaussian1D<Double>::CENTER) = false;
   AlwaysAssertExit(gauss1.parameters().nMaskedParameters() == 2);
   Vector<Double> parms2 = gauss1.parameters().getMaskedParameters();
   AlwaysAssertExit(parms2(0) == 2.0 && parms2(1) == 4.0);
-  gauss1.mask(Gaussian1D<Double>::CENTER) = True;
+  gauss1.mask(Gaussian1D<Double>::CENTER) = true;
   gauss1[0] = 1.0;
   gauss1[1] = 2.0;
   gauss1[2] = 3.0;

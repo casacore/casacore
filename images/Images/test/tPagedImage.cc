@@ -236,16 +236,16 @@ int main() {
       //
       AlwaysAssert(imagePixelType(String("tPagedImage_tmp.img5")) == TpFloat,  // Global function
                    AipsError);
-      AlwaysAssert(pIm.name(True) == String("tPagedImage_tmp.img5"), AipsError);
-      cout << "Absolute name = " << pIm.name(False) << endl;
+      AlwaysAssert(pIm.name(true) == String("tPagedImage_tmp.img5"), AipsError);
+      cout << "Absolute name = " << pIm.name(false) << endl;
       AlwaysAssert(pIm.isPaged(), AipsError);
       AlwaysAssert(pIm.isWritable(), AipsError);
       AlwaysAssert(pIm.ok(), AipsError);
       //
       pIm.rename(String("tPagedImage_tmp.img6"));
-      AlwaysAssert(pIm.name(True) == String("tPagedImage_tmp.img6"), AipsError);
+      AlwaysAssert(pIm.name(true) == String("tPagedImage_tmp.img6"), AipsError);
       pIm.rename(String("tPagedImage_tmp.img5"));
-      AlwaysAssert(pIm.name(True) == String("tPagedImage_tmp.img5"), AipsError);
+      AlwaysAssert(pIm.name(true) == String("tPagedImage_tmp.img5"), AipsError);
       //
       AlwaysAssert(pIm.rowNumber() == 0, AipsError);
       AlwaysAssert(pIm.shape() == shape, AipsError);
@@ -259,12 +259,12 @@ int main() {
       IPosition shape2(2, 10, 20);
       pIm.resize(shape2);
       IPosition shape0(3, 5, 10, 20);
-      Bool ok = False;
+      bool ok = false;
       try {
         pIm.resize(shape0);
       } catch (std::exception& x) {
         //          cout << "Caught error " << x.what() << endl;
-        ok = True;
+        ok = true;
       }
       if (!ok) {
         throw(AipsError("Resize did not fail. This was unexpected"));
@@ -494,10 +494,10 @@ int main() {
       Quantity min(3, "arcsec");
       Quantity pa(30, "deg");
       info.setAllBeams(16, 4, GaussianBeam());
-      Bool ok = True;
+      bool ok = true;
       try {
         temp.setImageInfo(info);
-        ok = False;
+        ok = false;
       } catch (std::exception& x) {
         cout << "Exception thrown as expected: " << x.what() << endl;
       }
@@ -505,7 +505,7 @@ int main() {
       info.setBeam(0, 0, maj, min, pa);
       try {
         temp.setImageInfo(info);
-        ok = False;
+        ok = false;
       } catch (std::exception& x) {
       }
       AlwaysAssert(ok, AipsError);
@@ -516,10 +516,10 @@ int main() {
       }
       AlwaysAssert(temp.setImageInfo(info), AipsError);
       GaussianBeam beam2 = temp.imageInfo().restoringBeam(2, 2);
-      ok = True;
+      ok = true;
       try {
         GaussianBeam beam = temp.imageInfo().restoringBeam();
-        ok = False;
+        ok = false;
       } catch (std::exception& x) {
         cout << "Exception thrown as expected: " << x.what() << endl;
       }

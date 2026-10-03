@@ -90,36 +90,36 @@ Vector<Domain>& Gridder<Domain, Range>::position(Vector<Domain>& gpos, const Vec
 
 // Is the location on the grid?
 template <class Domain, class Range>
-Bool Gridder<Domain, Range>::onGrid(const Vector<Int>& loc) {
+bool Gridder<Domain, Range>::onGrid(const Vector<Int>& loc) {
   for (Int i = 0; i < ndim; i++) {
-    if (loc(i) >= shapeVec(i)) return False;
-    if (loc(i) < 0) return False;
+    if (loc(i) >= shapeVec(i)) return false;
+    if (loc(i) < 0) return false;
   }
-  return True;
+  return true;
 }
 
 // Is the location (plus of minus deltas) on the grid?
 template <class Domain, class Range>
-Bool Gridder<Domain, Range>::onGrid(const Vector<Int>& loc, const Vector<Int>& delta) {
+bool Gridder<Domain, Range>::onGrid(const Vector<Int>& loc, const Vector<Int>& delta) {
   for (Int i = 0; i < ndim; i++) {
-    if ((loc(i) + delta(i)) >= shapeVec(i)) return False;
-    if ((loc(i) + delta(i)) < 0) return False;
-    if ((loc(i) - delta(i)) >= shapeVec(i)) return False;
-    if ((loc(i) - delta(i)) < 0) return False;
+    if ((loc(i) + delta(i)) >= shapeVec(i)) return false;
+    if ((loc(i) + delta(i)) < 0) return false;
+    if ((loc(i) - delta(i)) >= shapeVec(i)) return false;
+    if ((loc(i) - delta(i)) < 0) return false;
   }
-  return True;
+  return true;
 }
 
 // Is the position on the grid?
 template <class Domain, class Range>
-Bool Gridder<Domain, Range>::onGrid(const Vector<Domain>& pos) {
+bool Gridder<Domain, Range>::onGrid(const Vector<Domain>& pos) {
   Int loc;
   for (Int i = 0; i < ndim; i++) {
     loc = nint(scale(i) * pos(i) + offset(i));
-    if (loc >= shapeVec(i)) return False;
-    if (loc < 0) return False;
+    if (loc >= shapeVec(i)) return false;
+    if (loc < 0) return false;
   }
-  return True;
+  return true;
 }
 
 // Set the offset IP

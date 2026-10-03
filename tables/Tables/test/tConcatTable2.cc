@@ -49,7 +49,7 @@ void fill(const String& name, const String& name2, Int stval) {
   {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
-    td.addColumn(ScalarColumnDesc<Bool>("abool"));
+    td.addColumn(ScalarColumnDesc<bool>("abool"));
     td.addColumn(ScalarColumnDesc<uChar>("auchar"));
     td.addColumn(ScalarColumnDesc<Short>("ashort"));
     td.addColumn(ScalarColumnDesc<Int>("aint"));
@@ -78,7 +78,7 @@ void fill(const String& name, const String& name2, Int stval) {
   Table tab(tabs);
   AlwaysAssertExit(tab.nrow() == 10);
   AlwaysAssertExit(tab.keywordSet().nfields() == 2);
-  ScalarColumn<Bool> abool(tab, "abool");
+  ScalarColumn<bool> abool(tab, "abool");
   ScalarColumn<uChar> auchar(tab, "auchar");
   ScalarColumn<Short> ashort(tab, "ashort");
   ScalarColumn<Int> aint(tab, "aint");
@@ -120,7 +120,7 @@ void fill(const String& name, const String& name2, Int stval) {
   }
 }
 
-void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, Bool reorder = True,
+void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, bool reorder = true,
                 uInt nrow = 10) {
   AlwaysAssertExit(tab.nrow() == nrow);
   AlwaysAssertExit(tab.keywordSet().nfields() == nkey);
@@ -129,7 +129,7 @@ void checkTable(const Table& tab, uInt nkey, uInt nsubrow, Int stval, Bool reord
   if (nkey == 3) {
     AlwaysAssertExit(tab.keywordSet().asTable("keysub").nrow() == nsubrow);
   }
-  ScalarColumn<Bool> abool(tab, "abool");
+  ScalarColumn<bool> abool(tab, "abool");
   ScalarColumn<uChar> auchar(tab, "auchar");
   ScalarColumn<Short> ashort(tab, "ashort");
   ScalarColumn<Int> aint(tab, "aint");
@@ -174,7 +174,7 @@ void checkComb(const String& name1, const String& name2, uInt nkey, Int stval) {
   tabs[0] = Table(name1);
   tabs[1] = Table(name2);
   Table tab(tabs);
-  checkTable(tab, nkey, 10, stval, True, 20);
+  checkTable(tab, nkey, 10, stval, true, 20);
 }
 
 void checkSplit(const String& name, uInt nkey, Int stval) {
@@ -185,7 +185,7 @@ void checkSplit(const String& name, uInt nkey, Int stval) {
   tabs[0] = tab(tab.nodeRownr() < 3);
   tabs[1] = tab(tab.nodeRownr() >= 8);
   tabs[2] = tab(tab.nodeRownr() >= 3 && tab.nodeRownr() < 8);
-  checkTable(Table(tabs), nkey, 10, stval, False);
+  checkTable(Table(tabs), nkey, 10, stval, false);
 }
 
 void checkFull(const String& name, Int stval) {

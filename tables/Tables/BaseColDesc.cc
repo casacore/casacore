@@ -39,8 +39,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 BaseColumnDesc::BaseColumnDesc(const String& name, const String& comment, const String& dataManType,
                                const String& dataManGroup, DataType dt, const String& dtId, Int opt,
-                               uInt ndim, const IPosition& shape, Bool isScalar, Bool isArray,
-                               Bool isTable)
+                               uInt ndim, const IPosition& shape, bool isScalar, bool isArray,
+                               bool isTable)
     : colName_p(name),
       comment_p(comment),
       dataManType_p(dataManType),
@@ -69,7 +69,7 @@ BaseColumnDesc::BaseColumnDesc(const String& name, const String& comment, const 
     }
   }
   // Set the default data manager type and group (if empty).
-  setDefaultDataManager(False);
+  setDefaultDataManager(false);
   // Create the keyword set.
   keySetPtr_p = new TableRecord();
 }
@@ -122,7 +122,7 @@ void BaseColumnDesc::handleRename(ColumnDescSet&, const String&) {}
 void BaseColumnDesc::handleRemove(ColumnDescSet&) {}
 void BaseColumnDesc::renameAction(const String&, const String&) {}
 
-void BaseColumnDesc::setDefaultDataManager(Bool always) {
+void BaseColumnDesc::setDefaultDataManager(bool always) {
   // The default data manager for standard types is StandardStMan.
   // For other types it is the virtual column engine handling
   // that type.
@@ -182,7 +182,7 @@ void BaseColumnDesc::setShape(const IPosition& shape) {
   option_p |= ColumnDesc::FixedShape;
 }
 
-void BaseColumnDesc::setShape(const IPosition& shape, Bool directOption) {
+void BaseColumnDesc::setShape(const IPosition& shape, bool directOption) {
   setShape(shape);
   if (directOption) {
     option_p |= ColumnDesc::Direct;

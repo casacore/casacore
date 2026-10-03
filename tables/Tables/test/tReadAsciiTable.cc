@@ -169,7 +169,7 @@ void ab(const String& dir) {
 void a1(const String& dir, const String& commentMarker, Int firstLine, Int lastLine) {
   cout << ">>>" << endl;
   String formStr =
-      readAsciiTable(dir + "tReadAsciiTable.in_tah", "", "tReadAsciiTable_tmp.data_tah", True, ' ',
+      readAsciiTable(dir + "tReadAsciiTable.in_tah", "", "tReadAsciiTable_tmp.data_tah", true, ' ',
                      commentMarker, firstLine, lastLine);
   cout << "<<<" << endl;
   cout << "Input format: [" << formStr << ']' << endl;
@@ -291,7 +291,7 @@ void b(const String& dir, const String& suffix, Char separator, const String& co
   ScalarColumn<DComplex> coldx(tab, "COLDX");
   ScalarColumn<DComplex> coldz(tab, "COLDZ");
   ScalarColumn<String> cola(tab, "COLA");
-  ScalarColumn<Bool> colb(tab, "COLB");
+  ScalarColumn<bool> colb(tab, "COLB");
   for (uInt i = 0; i < tab.nrow(); i++) {
     cout << cols(i) << " " << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " "
          << coldx(i) << " " << colz(i) << " " << coldz(i) << " " << cola(i) << " " << colb(i)
@@ -302,7 +302,7 @@ void b(const String& dir, const String& suffix, Char separator, const String& co
 void b1(const String& dir) {
   cout << ">>>" << endl;
   String formStr = readAsciiTable(dir + "tReadAsciiTable.in_tkh", "", "tReadAsciiTable_tmp.data_tk",
-                                  False, ' ', " #");
+                                  false, ' ', " #");
   cout << "<<<" << endl;
   cout << "Input format: [" << formStr << ']' << endl;
   cout << endl;
@@ -353,7 +353,7 @@ void b1(const String& dir) {
   ScalarColumn<DComplex> coldx(tab, "COLDX");
   ScalarColumn<DComplex> coldz(tab, "COLDZ");
   ScalarColumn<String> cola(tab, "COLA");
-  ScalarColumn<Bool> colb(tab, "COLB");
+  ScalarColumn<bool> colb(tab, "COLB");
   for (uInt i = 0; i < tab.nrow(); i++) {
     cout << cols(i) << " " << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " "
          << colz(i) << " " << coldx(i) << " " << coldz(i) << " " << cola(i) << " " << colb(i)
@@ -364,7 +364,7 @@ void b1(const String& dir) {
 void b2(const String& dir) {
   cout << ">>>" << endl;
   String formStr = readAsciiTable(dir + "tReadAsciiTable.in_tkh", "", "tReadAsciiTable_tmp.data_tk",
-                                  True, ' ', " #");
+                                  true, ' ', " #");
   cout << "<<<" << endl;
   cout << "Input format: [" << formStr << ']' << endl;
   cout << endl;
@@ -413,7 +413,7 @@ void b2(const String& dir) {
 void b3(const String& dir, const IPosition& autoShape) {
   cout << ">>>" << endl;
   String formStr = readAsciiTable(dir + "tReadAsciiTable.in_tkh", "", "tReadAsciiTable_tmp.data_tk",
-                                  True, ' ', " #", 1, -1, autoShape);
+                                  true, ' ', " #", 1, -1, autoShape);
   cout << "<<<" << endl;
   cout << "Input format: [" << formStr << ']' << endl;
   cout << "shape=" << autoShape << endl;
@@ -427,14 +427,14 @@ void b3(const String& dir, const IPosition& autoShape) {
 }
 
 void tryerror() {
-  Bool ok = True;
+  bool ok = true;
   try {
     readAsciiTable("tReadAsciiTable_tmp.header", "", "tReadAsciiTable_tmp.data_try");
   } catch (std::exception& x) {
     cout << x.what() << endl;
-    ok = False;
+    ok = false;
   }
-  AlwaysAssertExit(ok == False);
+  AlwaysAssertExit(ok == false);
 }
 
 void erroneous() {

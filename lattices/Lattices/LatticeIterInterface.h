@@ -116,7 +116,7 @@ class LatticeIterInterface {
 
  public:
   // Construct with the given navigator.
-  LatticeIterInterface(const Lattice<T>& lattice, const LatticeNavigator& navigator, Bool useRef);
+  LatticeIterInterface(const Lattice<T>& lattice, const LatticeNavigator& navigator, bool useRef);
 
   // A virtual destructor. A virtual is needed to ensure that derived
   // classes declared as pointers to a LatticeIterInterface will scope their
@@ -142,15 +142,15 @@ class LatticeIterInterface {
   // Increment operator - increment the cursor to the next position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
-  Bool operator++();
-  Bool operator++(int);
+  bool operator++();
+  bool operator++(int);
   // </group>
 
   // Decrement operator - decrement the cursor to the previous position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
-  Bool operator--();
-  Bool operator--(int);
+  bool operator--();
+  bool operator--(int);
   // </group>
 
   // Function which resets the cursor to the beginning of the Lattice and
@@ -159,11 +159,11 @@ class LatticeIterInterface {
 
   // Function which returns a value of "True" if the cursor is at the
   // beginning of the Lattice, otherwise, returns "False"
-  Bool atStart() const;
+  bool atStart() const;
 
   // Function which returns "True" if the cursor has been incremented to
   // the end of the lattice, otherwise, returns "False"
-  Bool atEnd() const;
+  bool atEnd() const;
 
   // Function to return the number of steps (increments or decrements) taken
   // since construction (or since last reset).  This is a running count of
@@ -203,20 +203,20 @@ class LatticeIterInterface {
   // <br>The <src>autoRewrite</src> flag indicates if the data has to be
   // rewritten when the iterator state changes (e.g. moved, destructed).
   // <group>
-  virtual Vector<T>& vectorCursor(Bool doRead, Bool autoRewrite);
-  virtual Matrix<T>& matrixCursor(Bool doRead, Bool autoRewrite);
-  virtual Cube<T>& cubeCursor(Bool doRead, Bool autoRewrite);
-  virtual Array<T>& cursor(Bool doRead, Bool autoRewrite);
+  virtual Vector<T>& vectorCursor(bool doRead, bool autoRewrite);
+  virtual Matrix<T>& matrixCursor(bool doRead, bool autoRewrite);
+  virtual Cube<T>& cubeCursor(bool doRead, bool autoRewrite);
+  virtual Array<T>& cursor(bool doRead, bool autoRewrite);
   //</group>
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False. The default
-  // implementation of this function always returns True.
-  Bool ok() const;
+  // Returns true if everything is fine otherwise returns false. The default
+  // implementation of this function always returns true.
+  bool ok() const;
 
  protected:
   // Do the actual read of the data.
-  virtual void readData(Bool doRead);
+  virtual void readData(bool doRead);
 
   // Rewrite the cursor data and clear the rewrite flag.
   virtual void rewriteData();
@@ -251,34 +251,34 @@ class LatticeIterInterface {
   // having to add the degenerate axes for each iteration.
   Array<T> itsCursor;
   // Keep a reference to the data (if possible).
-  Bool itsUseRef;
+  bool itsUseRef;
   // Is the cursor a reference to the lattice?
-  Bool itsIsRef;
-  // Have the data been read after a cursor update? (False=not read)
-  Bool itsHaveRead;
+  bool itsIsRef;
+  // Have the data been read after a cursor update? (false=not read)
+  bool itsHaveRead;
   // Rewrite the cursor data before moving or destructing?
-  Bool itsRewrite;
+  bool itsRewrite;
   // The axes forming the cursor.
   IPosition itsCursorAxes;
 };
 
 template <class T>
-inline Bool LatticeIterInterface<T>::operator++() {
+inline bool LatticeIterInterface<T>::operator++() {
   return operator++(0);
 }
 
 template <class T>
-inline Bool LatticeIterInterface<T>::operator--() {
+inline bool LatticeIterInterface<T>::operator--() {
   return operator--(0);
 }
 
 template <class T>
-inline Bool LatticeIterInterface<T>::atStart() const {
+inline bool LatticeIterInterface<T>::atStart() const {
   return itsNavPtr->atStart();
 }
 
 template <class T>
-inline Bool LatticeIterInterface<T>::atEnd() const {
+inline bool LatticeIterInterface<T>::atEnd() const {
   return itsNavPtr->atEnd();
 }
 

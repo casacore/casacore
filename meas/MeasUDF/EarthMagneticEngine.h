@@ -171,8 +171,8 @@ class EarthMagneticEngine : public MeasEngine<MEarthMagnetic> {
   void setDirectionEngine(DirectionEngine& engine);
 
   // Set the types of the result.
-  void set(MEarthMagnetic::Types toRefType, Int toValueType, Bool asLOS, Bool asLong,
-           Bool useModel);
+  void set(MEarthMagnetic::Types toRefType, Int toValueType, bool asLOS, bool asLong,
+           bool useModel);
 
  private:
   // Strip a possible suffix from the reference type.
@@ -197,10 +197,10 @@ class EarthMagneticEngine : public MeasEngine<MEarthMagnetic> {
   Int itsValueType;
   // # 3=xyz flux, -3=angle,flux
   Int itsToValueType;
-  Bool itsAsLOS;         // # get as line-of-sight?
-  Bool itsAsLong;        // # get as longitude?
-  Bool itsUseModel;      // # use model calculation?
-  Bool itsConvertModel;  // # model to non-ITRF?
+  bool itsAsLOS;         // # get as line-of-sight?
+  bool itsAsLong;        // # get as longitude?
+  bool itsUseModel;      // # use model calculation?
+  bool itsConvertModel;  // # model to non-ITRF?
   EpochEngine* itsEpochEngine;
   PositionEngine* itsPositionEngine;
   DirectionEngine* itsDirectionEngine;

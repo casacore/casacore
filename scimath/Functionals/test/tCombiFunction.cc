@@ -59,7 +59,7 @@ int main() {
   // as the first one.  Returns the (zero relative) number of the function
   // just added.  In the meantime, the coefficient a(i) which is also the
   // ith available parameter, and the mask for the "available parameter" are
-  // initialized with "one" and "True," respectively.
+  // initialized with "one" and "true," respectively.
   combination.addFunction(constant);
   combination.addFunction(linear);
   combination.addFunction(square);

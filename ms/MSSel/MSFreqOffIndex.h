@@ -84,16 +84,16 @@ class MSFreqOffIndex : public MSTableIndex {
 
   void attach(const MSFreqOffset &freqOffset);
 
-  // access to the antenna1 ID key, throws an exception if isNull() is False
+  // access to the antenna1 ID key, throws an exception if isNull() is false
   Int &antenna1Id() { return *antenna1Id_p; }
 
-  // access to the antenna2 ID key, throws an exception if isNull() is False
+  // access to the antenna2 ID key, throws an exception if isNull() is false
   Int &antenna2Id() { return *antenna2Id_p; }
 
-  // access to the feed ID key, throws an exception if isNull() is False
+  // access to the feed ID key, throws an exception if isNull() is false
   Int &feedId() { return *feedId_p; }
 
-  // access to the spectral window ID key, throws an exception if isNull() is False
+  // access to the spectral window ID key, throws an exception if isNull() is false
   Int &spectralWindowId() { return *spwId_p; }
 
  private:

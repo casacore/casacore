@@ -142,7 +142,7 @@ void ColumnsIndexArray::makeObjects(const RecordDesc& description) {
   itsData = 0;
   itsLowerField = 0;
   itsUpperField = 0;
-  itsChanged = True;
+  itsChanged = true;
   // Create the correct column object for each field.
   // Also create a RecordFieldPtr object for each Key.
   // This makes a fast data copy possible.
@@ -194,14 +194,14 @@ void ColumnsIndexArray::readData() {
   TableLocker locker(itsTable, FileLocker::Read);
   rownr_t nrrow = itsTable.nrow();
   if (nrrow != itsNrrow) {
-    itsChanged = True;
+    itsChanged = true;
     itsNrrow = nrrow;
   }
   if (!itsChanged) {
     return;
   }
   Sort sort;
-  Bool deleteIt;
+  bool deleteIt;
   const RecordDesc& desc = itsLowerKeyPtr->description();
   const String& name = desc.name(0);
   switch (itsDataType) {
@@ -258,11 +258,11 @@ void ColumnsIndexArray::readData() {
   sort.unique(itsUniqueIndex, itsDataIndex);
   itsDataInx = itsDataIndex.getStorage(deleteIt);
   itsUniqueInx = itsUniqueIndex.getStorage(deleteIt);
-  itsChanged = False;
+  itsChanged = false;
 }
 
-rownr_t ColumnsIndexArray::bsearch(Bool& found, void* fieldPtr) const {
-  found = False;
+rownr_t ColumnsIndexArray::bsearch(bool& found, void* fieldPtr) const {
+  found = false;
   Int64 lower = 0;
   Int64 upper = itsUniqueIndex.nelements() - 1;
   Int64 middle = 0;
@@ -275,7 +275,7 @@ rownr_t ColumnsIndexArray::bsearch(Bool& found, void* fieldPtr) const {
       middle++;
       lower = middle;  // go to right
     } else {
-      found = True;
+      found = true;
       break;
     }
   }
@@ -350,12 +350,12 @@ Int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, Int dataType, rown
   return 0;
 }
 
-rownr_t ColumnsIndexArray::getRowNumber(Bool& found, const Record& key) {
+rownr_t ColumnsIndexArray::getRowNumber(bool& found, const Record& key) {
   ColumnsIndex::copyKeyField(itsLowerField, itsDataType, key);
   return getRowNumber(found);
 }
 
-rownr_t ColumnsIndexArray::getRowNumber(Bool& found) {
+rownr_t ColumnsIndexArray::getRowNumber(bool& found) {
   if (!isUnique()) {
     throw(
         TableError("ColumnsIndexArray::getRowNumber only possible "
@@ -370,15 +370,15 @@ rownr_t ColumnsIndexArray::getRowNumber(Bool& found) {
   return inx;
 }
 
-RowNumbers ColumnsIndexArray::getRowNumbers(const Record& key, Bool unique) {
+RowNumbers ColumnsIndexArray::getRowNumbers(const Record& key, bool unique) {
   ColumnsIndex::copyKeyField(itsLowerField, itsDataType, key);
   return getRowNumbers(unique);
 }
 
-RowNumbers ColumnsIndexArray::getRowNumbers(Bool unique) {
+RowNumbers ColumnsIndexArray::getRowNumbers(bool unique) {
   // Read the data (if needed).
   readData();
-  Bool found;
+  bool found;
   rownr_t inx = bsearch(found, itsLowerField);
   RowNumbers rows;
   if (found) {
@@ -388,16 +388,16 @@ RowNumbers ColumnsIndexArray::getRowNumbers(Bool unique) {
 }
 
 RowNumbers ColumnsIndexArray::getRowNumbers(const Record& lowerKey, const Record& upperKey,
-                                            Bool lowerInclusive, Bool upperInclusive, Bool unique) {
+                                            bool lowerInclusive, bool upperInclusive, bool unique) {
   ColumnsIndex::copyKeyField(itsLowerField, itsDataType, lowerKey);
   ColumnsIndex::copyKeyField(itsUpperField, itsDataType, upperKey);
   return getRowNumbers(lowerInclusive, upperInclusive, unique);
 }
 
-RowNumbers ColumnsIndexArray::getRowNumbers(Bool lowerInclusive, Bool upperInclusive, Bool unique) {
+RowNumbers ColumnsIndexArray::getRowNumbers(bool lowerInclusive, bool upperInclusive, bool unique) {
   // Read the data (if needed).
   readData();
-  Bool found;
+  bool found;
   // Try to find the lower key. If not found, bsearch is giving the
   // index of the next higher key.
   // So increment the start index if found and is not to be included.
@@ -420,7 +420,7 @@ RowNumbers ColumnsIndexArray::getRowNumbers(Bool lowerInclusive, Bool upperInclu
 }
 
 void ColumnsIndexArray::fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, rownr_t end,
-                                       Bool unique) const {
+                                       bool unique) const {
   start = itsUniqueInx[start];
   if (end < itsUniqueIndex.nelements()) {
     end = itsUniqueInx[end];
@@ -429,7 +429,7 @@ void ColumnsIndexArray::fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, row
   }
   rownr_t nr = end - start;
   rows.resize(nr);
-  Bool deleteIt;
+  bool deleteIt;
   rownr_t* rowStorage = rows.getStorage(deleteIt);
   for (rownr_t i = 0; i < nr; i++) {
     rowStorage[i] = itsRownrs[itsDataInx[start + i]];
@@ -437,16 +437,16 @@ void ColumnsIndexArray::fillRowNumbers(Vector<rownr_t>& rows, rownr_t start, row
   rows.putStorage(rowStorage, deleteIt);
   if (unique) {
     rownr_t nrrow = GenSort<rownr_t>::sort(rows, Sort::Ascending, Sort::NoDuplicates);
-    rows.resize(nrrow, True);
+    rows.resize(nrrow, true);
   }
 }
 
-void ColumnsIndexArray::setChanged() { itsChanged = True; }
+void ColumnsIndexArray::setChanged() { itsChanged = true; }
 
 void ColumnsIndexArray::setChanged(const String& columnName) {
   const RecordDesc& desc = itsLowerKeyPtr->description();
   if (desc.name(0) == columnName) {
-    itsChanged = True;
+    itsChanged = true;
   }
 }
 
@@ -466,13 +466,13 @@ void ColumnsIndexArray::getArray(Vector<uChar>& result, const String& name) {
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
-          result.resize(npts + n, True);
+          result.resize(npts + n, true);
         }
         objmove(result.data() + npts, arr.data(), n);
         npts += n;
       }
     }
-    result.resize(npts, True);
+    result.resize(npts, true);
     fillRownrs(npts, nrel);
   }
 }
@@ -493,13 +493,13 @@ void ColumnsIndexArray::getArray(Vector<Short>& result, const String& name) {
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
-          result.resize(npts + n, True);
+          result.resize(npts + n, true);
         }
         objmove(result.data() + npts, arr.data(), n);
         npts += n;
       }
     }
-    result.resize(npts, True);
+    result.resize(npts, true);
     fillRownrs(npts, nrel);
   }
 }
@@ -520,13 +520,13 @@ void ColumnsIndexArray::getArray(Vector<Int>& result, const String& name) {
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
-          result.resize(npts + n, True);
+          result.resize(npts + n, true);
         }
         objmove(result.data() + npts, arr.data(), n);
         npts += n;
       }
     }
-    result.resize(npts, True);
+    result.resize(npts, true);
     fillRownrs(npts, nrel);
   }
 }
@@ -547,13 +547,13 @@ void ColumnsIndexArray::getArray(Vector<uInt>& result, const String& name) {
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
-          result.resize(npts + n, True);
+          result.resize(npts + n, true);
         }
         objmove(result.data() + npts, arr.data(), n);
         npts += n;
       }
     }
-    result.resize(npts, True);
+    result.resize(npts, true);
     fillRownrs(npts, nrel);
   }
 }
@@ -574,13 +574,13 @@ void ColumnsIndexArray::getArray(Vector<Int64>& result, const String& name) {
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
-          result.resize(npts + n, True);
+          result.resize(npts + n, true);
         }
         objmove(result.data() + npts, arr.data(), n);
         npts += n;
       }
     }
-    result.resize(npts, True);
+    result.resize(npts, true);
     fillRownrs(npts, nrel);
   }
 }
@@ -601,13 +601,13 @@ void ColumnsIndexArray::getArray(Vector<String>& result, const String& name) {
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
-          result.resize(npts + n, True);
+          result.resize(npts + n, true);
         }
         objmove(result.data() + npts, arr.data(), n);
         npts += n;
       }
     }
-    result.resize(npts, True);
+    result.resize(npts, true);
     fillRownrs(npts, nrel);
   }
 }

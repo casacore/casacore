@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSFlagCmd::MSFlagCmd() : hasBeenDestroyed_p(True) {}
+MSFlagCmd::MSFlagCmd() : hasBeenDestroyed_p(true) {}
 
 MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option)
-    : MSTable<MSFlagCmdEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFlagCmdEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option)
 }
 
 MSFlagCmd::MSFlagCmd(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSFlagCmdEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFlagCmdEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSFlagCmd::MSFlagCmd(const String &tableName, const String &tableDescName, Table
                   "table is not a valid MSFlagCmd"));
 }
 
-MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSFlagCmdEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSFlagCmdEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSFlagCmd::MSFlagCmd(const Table &table)
-    : MSTable<MSFlagCmdEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSFlagCmdEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSFlagCmd::MSFlagCmd(const Table &table)
 }
 
 MSFlagCmd::MSFlagCmd(const MSFlagCmd &other)
-    : MSTable<MSFlagCmdEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSFlagCmdEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSFlagCmd::~MSFlagCmd() {
     LogIO os;
     os << LogIO::WARN << "~MSFlagCmd() - Table written is not a valid MSFlagCmd" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSFlagCmd &MSFlagCmd::operator=(const MSFlagCmd &other) {

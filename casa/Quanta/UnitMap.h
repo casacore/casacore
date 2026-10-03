@@ -58,7 +58,7 @@ class UMaps {
   // User defined unit list
   map<String, UnitName> mapUser;
   // FITS unit list inclusion
-  Bool doneFITS;
+  bool doneFITS;
 
  private:
   void init();
@@ -117,7 +117,7 @@ const uInt N_FITS = 19;
 // </note>
 //
 // Information about the contents of the unit maps can be obtained by
-// the Bool functions (False if not present):
+// the bool functions (false if not present):
 // <ul>
 //   <li> UnitMap::getPref("string", UnitName &)	prefix
 //   <li> UnitMap::getUnit("string", UnitName &)	search user,
@@ -216,16 +216,16 @@ class UnitMap {
   ~UnitMap();
 
   // # General member functions
-  //  Check if a unit name is known, and return its value if True
+  //  Check if a unit name is known, and return its value if true
   //  <group name="find">
   //  Get a prefix definition from key
-  static Bool getPref(const String &s, UnitName &name, UMaps *maps = 0);
+  static bool getPref(const String &s, UnitName &name, UMaps *maps = 0);
 
   // Get a standard unit definition (search order: User, Customary, SI)
-  static Bool getUnit(const String &s, UnitName &name, UMaps *maps = 0);
+  static bool getUnit(const String &s, UnitName &name, UMaps *maps = 0);
 
   // Get a cached definition
-  static Bool getCache(const String &s, UnitVal &val);
+  static bool getCache(const String &s, UnitVal &val);
 
   // </group>
   // Save a definition of a full unit name in the cache (the cache will be
@@ -338,7 +338,7 @@ class UnitMap {
   // in a recursive call.
   static map<String, UnitVal> &getMapCache();
   // Get the name of a FITS unit
-  static Bool getNameFITS(const UnitName *&name, uInt which);
+  static bool getNameFITS(const UnitName *&name, uInt which);
   // Get the belonging unit to a FITS unit
   static const String &getStringFITS(uInt which);
 

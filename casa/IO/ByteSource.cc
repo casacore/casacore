@@ -47,7 +47,7 @@ ByteSource& ByteSource::operator=(const ByteSource& source) {
 
 ByteSource::~ByteSource() {}
 
-ByteSource& ByteSource::operator>>(Bool& value) {
+ByteSource& ByteSource::operator>>(bool& value) {
   itsTypeIO->read(1, &value);
   return *this;
 }
@@ -117,7 +117,7 @@ ByteSource& ByteSource::operator>>(String& value) {
   return *this;
 }
 
-void ByteSource::read(size_t nvalues, Bool* value) { itsTypeIO->read(nvalues, value); }
+void ByteSource::read(size_t nvalues, bool* value) { itsTypeIO->read(nvalues, value); }
 
 void ByteSource::read(size_t nvalues, Char* value) { itsTypeIO->read(nvalues, value); }
 

@@ -163,7 +163,7 @@ class ArrayColumn : public ArrayColumnBase {
   // array must be empty or its shape must conform the table array shape.
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
-  void get(rownr_t rownr, Array<T>& array, Bool resize = False) const;
+  void get(rownr_t rownr, Array<T>& array, bool resize = false) const;
   Array<T> get(rownr_t rownr) const;
   Array<T> operator()(rownr_t rownr) const;
   // </group>
@@ -181,7 +181,7 @@ class ArrayColumn : public ArrayColumnBase {
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
   void getSlice(rownr_t rownr, const Slicer& arraySection, Array<T>& array,
-                Bool resize = False) const;
+                bool resize = false) const;
   Array<T> getSlice(rownr_t rownr, const Slicer& arraySection) const;
   // </group>
 
@@ -211,7 +211,7 @@ class ArrayColumn : public ArrayColumnBase {
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
   void getSlice(rownr_t rownr, const Vector<Vector<Slice>>& arraySlices, Array<T>& arr,
-                Bool resize = False) const;
+                bool resize = false) const;
   Array<T> getSlice(rownr_t rownr, const Vector<Vector<Slice>>& arraySlices) const;
   // </group>
 
@@ -225,7 +225,7 @@ class ArrayColumn : public ArrayColumnBase {
   // array.
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
-  void getColumn(Array<T>& array, Bool resize = False) const;
+  void getColumn(Array<T>& array, bool resize = false) const;
   Array<T> getColumn() const;
   // </group>
 
@@ -240,7 +240,7 @@ class ArrayColumn : public ArrayColumnBase {
   // array.
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
-  void getColumn(const Slicer& arraySection, Array<T>& array, Bool resize = False) const;
+  void getColumn(const Slicer& arraySection, Array<T>& array, bool resize = false) const;
   Array<T> getColumn(const Slicer& arraySection) const;
   // </group>
 
@@ -269,7 +269,7 @@ class ArrayColumn : public ArrayColumnBase {
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
   void getColumn(const Vector<Vector<Slice>>& arraySection, Array<T>& array,
-                 Bool resize = False) const;
+                 bool resize = false) const;
   Array<T> getColumn(const Vector<Vector<Slice>>& arraySection) const;
   // </group>
 
@@ -285,9 +285,9 @@ class ArrayColumn : public ArrayColumnBase {
   // However, if the resize flag is set the destination array will be
   // resized if not conforming.
   // <group>
-  void getColumnRange(const Slicer& rowRange, Array<T>& arr, Bool resize = False) const;
+  void getColumnRange(const Slicer& rowRange, Array<T>& arr, bool resize = false) const;
   Array<T> getColumnRange(const Slicer& rowRange) const;
-  void getColumnCells(const RefRows& rownrs, Array<T>& arr, Bool resize = False) const;
+  void getColumnCells(const RefRows& rownrs, Array<T>& arr, bool resize = false) const;
   Array<T> getColumnCells(const RefRows& rownrs) const;
   // </group>
 
@@ -305,17 +305,17 @@ class ArrayColumn : public ArrayColumnBase {
   // resized if not conforming.
   // <group>
   void getColumnRange(const Slicer& rowRange, const Slicer& arraySection, Array<T>& arr,
-                      Bool resize = False) const;
+                      bool resize = false) const;
   Array<T> getColumnRange(const Slicer& rowRange, const Slicer& arraySection) const;
   void getColumnCells(const RefRows& rownrs, const Slicer& arraySection, Array<T>& arr,
-                      Bool resize = False) const;
+                      bool resize = false) const;
   Array<T> getColumnCells(const RefRows& rownrs, const Slicer& arraySection) const;
   // </group>
 
   // Similar to getColumn (arraySlices, arr, resize) except it
   // gets the slices for the given rows instead of all rows.
   void getColumnCells(const RefRows& rows, const ColumnSlicer& slicerSet, Array<T>& destination,
-                      Bool resize = False) const;
+                      bool resize = false) const;
 
   // Set the shape of the array in the given row.
   // Setting the shape is needed if the array is put in slices,
@@ -339,16 +339,16 @@ class ArrayColumn : public ArrayColumnBase {
   // exception is thrown.
   // <group>
   // Use the same row numbers for both cells.
-  void put(rownr_t rownr, const TableColumn& that, Bool preserveTileShape = False) {
+  void put(rownr_t rownr, const TableColumn& that, bool preserveTileShape = false) {
     put(rownr, that, rownr, preserveTileShape);
   }
   // Use possibly different row numbers for that (i.e. input) and
   // and this (i.e. output) cell.
   void put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
-           Bool preserveTileShape = False);
+           bool preserveTileShape = false);
   // For backward compatibility (otherwise ambigious with put taking Bool).
   void put(uInt thisRownr, const TableColumn& that, uInt thatRownr,
-           Bool preserveTileShape = False) {
+           bool preserveTileShape = false) {
     put(rownr_t(thisRownr), that, rownr_t(thatRownr), preserveTileShape);
   }
   // </group>
@@ -429,7 +429,7 @@ class ArrayColumn : public ArrayColumnBase {
 };
 
 // # Explicitly instantiate these templates in ArrayColumn_tmpl.cc
-extern template class ArrayColumn<Bool>;
+extern template class ArrayColumn<bool>;
 extern template class ArrayColumn<Char>;
 extern template class ArrayColumn<Short>;
 extern template class ArrayColumn<uShort>;

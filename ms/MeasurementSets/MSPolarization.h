@@ -87,7 +87,7 @@ class MSPolarization : public MSPolarizationEnums, public MSTable<MSPolarization
   // <group name=tableLikeConstructors>
   MSPolarization(const String &tableName, TableOption = Table::Old);
   MSPolarization(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSPolarization(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSPolarization(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSPolarization(const Table &table);
   MSPolarization(const MSPolarization &other);
   // </group>
@@ -120,7 +120,7 @@ class MSPolarization : public MSPolarizationEnums, public MSTable<MSPolarization
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

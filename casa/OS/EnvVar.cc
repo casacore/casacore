@@ -31,7 +31,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool EnvironmentVariable::isDefined(const String& name) { return getenv(name.c_str()); }
+bool EnvironmentVariable::isDefined(const String& name) { return getenv(name.c_str()); }
 
 String EnvironmentVariable::get(const String& name) {
   Char* env = getenv(name.c_str());

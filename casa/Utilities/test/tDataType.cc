@@ -192,7 +192,7 @@ void simpleTests() {
   // Now check the whatType() functions
   class Goofy;
   AlwaysAssertExit(whatType<Goofy>() == TpOther);
-  AlwaysAssertExit(whatType<Bool>() == TpBool);
+  AlwaysAssertExit(whatType<bool>() == TpBool);
   AlwaysAssertExit(whatType<Char>() == TpChar);
   AlwaysAssertExit(whatType<uChar>() == TpUChar);
   AlwaysAssertExit(whatType<Short>() == TpShort);
@@ -206,7 +206,7 @@ void simpleTests() {
   AlwaysAssertExit(whatType<DComplex>() == TpDComplex);
   AlwaysAssertExit(whatType<String>() == TpString);
   AlwaysAssertExit(whatType<Table>() == TpTable);
-  AlwaysAssertExit(whatType<Array<Bool>>() == TpArrayBool);
+  AlwaysAssertExit(whatType<Array<bool>>() == TpArrayBool);
   AlwaysAssertExit(whatType<Array<Char>>() == TpArrayChar);
   AlwaysAssertExit(whatType<Array<uChar>>() == TpArrayUChar);
   AlwaysAssertExit(whatType<Array<Short>>() == TpArrayShort);
@@ -277,21 +277,21 @@ void simpleTests() {
 
 // to be called using types for which an exception from asScalar is expected
 void excpAsScalar(DataType type) {
-  Bool hadExcp = False;
+  bool hadExcp = false;
   try {
     asScalar(type);
   } catch (std::exception& x) {
-    hadExcp = True;
+    hadExcp = true;
   }
   AlwaysAssert(hadExcp, AipsError);
 }
 
 void excpAsArray(DataType type) {
-  Bool hadExcp = False;
+  bool hadExcp = false;
   try {
     asArray(type);
   } catch (std::exception& x) {
-    hadExcp = True;
+    hadExcp = true;
   }
   AlwaysAssert(hadExcp, AipsError);
 }

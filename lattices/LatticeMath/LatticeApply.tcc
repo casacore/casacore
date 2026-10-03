@@ -85,7 +85,7 @@ void LatticeApply<T, U>::lineApply(MaskedLattice<U>& latticeOut, const MaskedLat
   // Does the input has a mask?
   // If not, can the collapser handle a null mask.
 
-  Bool useMask = latticeIn.isMasked();
+  bool useMask = latticeIn.isMasked();
   if (!useMask) {
     useMask = (!collapser.canHandleNullMask());
   }
@@ -113,7 +113,7 @@ void LatticeApply<T, U>::lineApply(MaskedLattice<U>& latticeOut, const MaskedLat
   // See if the output lattice has a writable pixelmask.
   // If so, it will later be used to write the resulting mask to.
 
-  Lattice<Bool>* maskOut = 0;
+  Lattice<bool>* maskOut = 0;
   if (latticeOut.hasPixelMask()) {
     maskOut = &(latticeOut.pixelMask());
     if (!maskOut->isWritable()) {
@@ -161,20 +161,20 @@ void LatticeApply<T, U>::lineApply(MaskedLattice<U>& latticeOut, const MaskedLat
     // Put the collapsed lines into an output buffer
 
     Array<U> array(outShape);
-    Array<Bool> arrayMask(outShape);
-    Bool deleteIt, deleteMask;
+    Array<bool> arrayMask(outShape);
+    bool deleteIt, deleteMask;
     U* result = array.getStorage(deleteIt);
-    Bool* resultMask = arrayMask.getStorage(deleteMask);
+    bool* resultMask = arrayMask.getStorage(deleteMask);
     uInt n = array.nelements() / nResult;
     for (uInt i = 0; i < n; ++i) {
       DebugAssert(!inIter.atEnd(), AipsError);
       const IPosition pos(inIter.position());
-      Vector<Bool> mask;
+      Vector<bool> mask;
       if (useMask) {
         // Casting const away is innocent.
         // Remove degenerate axes to get a 1D array.
-        Array<Bool> tmp;
-        ((MaskedLattice<T>&)latticeIn).getMaskSlice(tmp, Slicer(pos, inIter.cursorShape()), True);
+        Array<bool> tmp;
+        ((MaskedLattice<T>&)latticeIn).getMaskSlice(tmp, Slicer(pos, inIter.cursorShape()), true);
         mask.reference(tmp);
       }
       collapser.process(result[i], resultMask[i], inIter.vectorCursor(), mask, pos);
@@ -209,13 +209,13 @@ void LatticeApply<T, U>::lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
   IPosition outShape(outDim, 1);
   // Does the input has a mask?
   // If not, can the collapser handle a null mask.
-  Bool useMask = latticeIn.isMasked() ? True : (!collapser.canHandleNullMask());
+  bool useMask = latticeIn.isMasked() ? true : (!collapser.canHandleNullMask());
   const uInt inNDim = inShape.size();
   const IPosition displayAxes =
       IPosition::makeAxisPath(inNDim).otherAxes(inNDim, IPosition(1, collapseAxis));
   const uInt nDisplayAxes = displayAxes.size();
   Vector<U> result(nOut);
-  Vector<Bool> resultMask(nOut);
+  Vector<bool> resultMask(nOut);
   // read in larger chunks than before, because that was very
   // Inefficient and brought NRAO cluster to a snail's pace,
   // and then do the accounting for the input lines in memory
@@ -227,7 +227,7 @@ void LatticeApply<T, U>::lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
   LatticeStepper myStepper(inShape, chunkShapeInit, LatticeStepper::RESIZE);
   RO_MaskedLatticeIterator<T> latIter(latticeIn, myStepper);
   IPosition curPos;
-  static const Vector<Bool> noMask;
+  static const Vector<bool> noMask;
   if (tellProgress) {
     uInt nExpectedIters = inShape.product() / chunkShapeInit.product();
     tellProgress->init(nExpectedIters);
@@ -237,38 +237,38 @@ void LatticeApply<T, U>::lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
     const IPosition cp = latIter.position();
     const Array<T>& chunk = latIter.cursor();
     IPosition chunkShape = chunk.shape();
-    const Array<Bool> maskChunk = useMask ? latIter.getMask() : Array<Bool>();
+    const Array<bool> maskChunk = useMask ? latIter.getMask() : Array<bool>();
     chunkSliceStart = 0;
     chunkSliceEnd = chunkSliceEndAtChunkIterBegin;
     IPosition resultArrayShape = chunkShape;
     resultArrayShape[collapseAxis] = 1;
     std::vector<Array<U>> resultArray(nOut);
-    std::vector<Array<Bool>> resultArrayMask(nOut);
+    std::vector<Array<bool>> resultArrayMask(nOut);
     // need to initialize this way rather than doing it in the constructor,
     // because using a single Array in the constructor means that all Arrays
     // in the vector reference the same Array.
     for (uInt k = 0; k < nOut; k++) {
       resultArray[k] = Array<U>(resultArrayShape);
-      resultArrayMask[k] = Array<Bool>(resultArrayShape);
+      resultArrayMask[k] = Array<bool>(resultArrayShape);
     }
-    Bool done = False;
+    bool done = false;
     while (!done) {
       Vector<T> data(chunk(chunkSliceStart, chunkSliceEnd));
-      Vector<Bool> mask =
-          useMask ? Vector<Bool>(maskChunk(chunkSliceStart, chunkSliceEnd)) : noMask;
+      Vector<bool> mask =
+          useMask ? Vector<bool>(maskChunk(chunkSliceStart, chunkSliceEnd)) : noMask;
       curPos = cp + chunkSliceStart;
       collapser.multiProcess(result, resultMask, data, mask, curPos);
       for (uInt k = 0; k < nOut; ++k) {
         resultArray[k](chunkSliceStart) = result[k];
         resultArrayMask[k](chunkSliceStart) = resultMask[k];
       }
-      done = True;
+      done = true;
       for (uInt k = 0; k < nDisplayAxes; ++k) {
         uInt dax = displayAxes[k];
         if (chunkSliceStart[dax] < chunkShape[dax] - 1) {
           ++chunkSliceStart[dax];
           ++chunkSliceEnd[dax];
-          done = False;
+          done = false;
           break;
         } else {
           chunkSliceStart[dax] = 0;
@@ -279,13 +279,13 @@ void LatticeApply<T, U>::lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
     // put the result arrays in the output lattices
     for (uInt k = 0; k < nOut; ++k) {
       IPosition outpos = inNDim == outDim ? cp : cp.removeAxes(IPosition(1, collapseAxis));
-      Bool keepAxis = resultArray[k].ndim() == latticeOut[k]->ndim();
+      bool keepAxis = resultArray[k].ndim() == latticeOut[k]->ndim();
       if (!keepAxis) {
         resultArray[k].removeDegenerate(displayAxes);
       }
       latticeOut[k]->putSlice(resultArray[k], outpos);
       if (latticeOut[k]->hasPixelMask()) {
-        Lattice<Bool>& maskOut = latticeOut[k]->pixelMask();
+        Lattice<bool>& maskOut = latticeOut[k]->pixelMask();
         if (maskOut.isWritable()) {
           if (!keepAxis) {
             resultArrayMask[k].removeDegenerate(displayAxes);
@@ -314,7 +314,7 @@ IPosition LatticeApply<T, U>::_chunkShape(uInt axis, const MaskedLattice<T>& lat
   // arbitrary, but reasonable, max memory limit in bytes for storing arrays in bytes
   static const uInt limit = 2e7;
   static const uInt sizeT = sizeof(T);
-  static const uInt sizeBool = sizeof(Bool);
+  static const uInt sizeBool = sizeof(bool);
   uInt chunkMult = latticeIn.isMasked() ? sizeT + sizeBool : sizeT;
   uInt subChunkSize = chunkMult * nPixColAxis;
   // integer division
@@ -350,7 +350,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
   // Does the input has a mask?
   // If not, can the collapser handle a null mask.
 
-  Bool useMask = latticeIn.isMasked();
+  bool useMask = latticeIn.isMasked();
   if (!useMask) {
     useMask = (!collapser.canHandleNullMask());
   }
@@ -393,7 +393,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
   // See if the output lattice has a writable pixelmask.
   // If so, it will later be used to write the resulting mask to.
 
-  Lattice<Bool>* maskOut = 0;
+  Lattice<bool>* maskOut = 0;
   if (latticeOut.hasPixelMask()) {
     maskOut = &(latticeOut.pixelMask());
     if (!maskOut->isWritable()) {
@@ -430,7 +430,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
   // fastest. When all collapse axes are handled, thus when the iter axes
   // position changes, we have to write that part.
 
-  Bool firstTime = True;
+  bool firstTime = true;
   IPosition outPos(outDim, 0);
   IPosition iterPos(outDim, 0);
   while (!inIter.atEnd()) {
@@ -447,7 +447,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
     const IPosition& cursorShape = cursor.shape();
     IPosition pos = inIter.position();
     IPosition latPos = pos;
-    Array<Bool> mask;
+    Array<bool> mask;
     if (useMask) {
       // Casting const away is innocent.
       ((MaskedLattice<T>&)latticeIn).getMaskSlice(mask, Slicer(pos, cursorShape));
@@ -465,14 +465,14 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
     if (firstTime || outPos != iterPos) {
       if (!firstTime) {
         Array<U> result;
-        Array<Bool> resultMask;
+        Array<bool> resultMask;
         collapser.endAccumulator(result, resultMask, outShape);
         latticeOut.putSlice(result, outPos);
         if (maskOut != 0) {
           maskOut->putSlice(resultMask, outPos);
         }
       }
-      firstTime = False;
+      firstTime = false;
       outPos = iterPos;
       uInt64 n1 = 1;
       uInt64 n3 = 1;
@@ -570,7 +570,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
 
   // Write out the last output array.
   Array<U> result;
-  Array<Bool> resultMask;
+  Array<bool> resultMask;
   collapser.endAccumulator(result, resultMask, outShape);
   latticeOut.putSlice(result, outPos);
   if (maskOut != 0) {

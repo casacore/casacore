@@ -51,13 +51,13 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-PagedArray<T>::PagedArray() : itsIsClosed(True), itsMarkDelete(False), itsWritable(False) {
+PagedArray<T>::PagedArray() : itsIsClosed(true), itsMarkDelete(false), itsWritable(false) {
   // Initializes all private data using their default consructor
 }
 
 template <class T>
 PagedArray<T>::PagedArray(const TiledShape& shape, const String& filename)
-    : itsColumnName(defaultColumn()), itsRowNumber(defaultRow()), itsIsClosed(True) {
+    : itsColumnName(defaultColumn()), itsRowNumber(defaultRow()), itsIsClosed(true) {
   makeTable(filename, Table::New);
   makeArray(shape);
   setTableType();
@@ -66,7 +66,7 @@ PagedArray<T>::PagedArray(const TiledShape& shape, const String& filename)
 
 template <class T>
 PagedArray<T>::PagedArray(const TiledShape& shape)
-    : itsColumnName(defaultColumn()), itsRowNumber(defaultRow()), itsIsClosed(True) {
+    : itsColumnName(defaultColumn()), itsRowNumber(defaultRow()), itsIsClosed(true) {
   Path filename = File::newUniqueName(String("./"), String("pagedArray"));
   makeTable(filename.absoluteName(), Table::Scratch);
   makeArray(shape);
@@ -79,8 +79,8 @@ PagedArray<T>::PagedArray(const TiledShape& shape, Table& file)
     : itsTable(file),
       itsColumnName(defaultColumn()),
       itsRowNumber(defaultRow()),
-      itsIsClosed(False),
-      itsMarkDelete(False),
+      itsIsClosed(false),
+      itsMarkDelete(false),
       itsWritable(file.isWritable()) {
   makeArray(shape);
   setTableType();
@@ -93,8 +93,8 @@ PagedArray<T>::PagedArray(const TiledShape& shape, Table& file, const String& co
     : itsTable(file),
       itsColumnName(columnName),
       itsRowNumber(rowNumber),
-      itsIsClosed(False),
-      itsMarkDelete(False),
+      itsIsClosed(false),
+      itsMarkDelete(false),
       itsWritable(file.isWritable()) {
   makeArray(shape);
   setTableType();
@@ -106,9 +106,9 @@ PagedArray<T>::PagedArray(const String& filename)
     : itsTable(filename),
       itsColumnName(defaultColumn()),
       itsRowNumber(defaultRow()),
-      itsIsClosed(False),
-      itsMarkDelete(False),
-      itsWritable(False),
+      itsIsClosed(false),
+      itsMarkDelete(false),
+      itsWritable(false),
       itsArray(itsTable, itsColumnName),
       itsAccessor(itsTable, itsColumnName) {
   DebugAssert(ok(), AipsError);
@@ -119,9 +119,9 @@ PagedArray<T>::PagedArray(Table& file)
     : itsTable(file),
       itsColumnName(defaultColumn()),
       itsRowNumber(defaultRow()),
-      itsIsClosed(False),
-      itsMarkDelete(False),
-      itsWritable(False),
+      itsIsClosed(false),
+      itsMarkDelete(false),
+      itsWritable(false),
       itsArray(itsTable, itsColumnName),
       itsAccessor(itsTable, itsColumnName) {
   DebugAssert(ok(), AipsError);
@@ -132,9 +132,9 @@ PagedArray<T>::PagedArray(Table& file, const String& columnName, uInt rowNumber)
     : itsTable(file),
       itsColumnName(columnName),
       itsRowNumber(rowNumber),
-      itsIsClosed(False),
-      itsMarkDelete(False),
-      itsWritable(False),
+      itsIsClosed(false),
+      itsMarkDelete(false),
+      itsWritable(false),
       itsArray(itsTable, itsColumnName),
       itsAccessor(itsTable, itsColumnName) {
   DebugAssert(ok(), AipsError);
@@ -188,17 +188,17 @@ Lattice<T>* PagedArray<T>::clone() const {
 }
 
 template <class T>
-Bool PagedArray<T>::isPersistent() const {
-  return True;
+bool PagedArray<T>::isPersistent() const {
+  return true;
 }
 
 template <class T>
-Bool PagedArray<T>::isPaged() const {
-  return True;
+bool PagedArray<T>::isPaged() const {
+  return true;
 }
 
 template <class T>
-Bool PagedArray<T>::isWritable() const {
+bool PagedArray<T>::isWritable() const {
   // PagedArray is writable if underlying table is already open for write
   // or if the underlying table is in principle writable.
   if (itsIsClosed) {
@@ -215,7 +215,7 @@ const String& PagedArray<T>::tableName() const {
 }
 
 template <class T>
-String PagedArray<T>::name(Bool stripPath) const {
+String PagedArray<T>::name(bool stripPath) const {
   Path path(tableName());
   if (!stripPath) {
     return path.absoluteName();
@@ -237,10 +237,10 @@ void PagedArray<T>::resize(const TiledShape& newShape) {
 }
 
 template <class T>
-Bool PagedArray<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool PagedArray<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   doReopen();
-  itsArray.getSlice(itsRowNumber, section, buffer, True);
-  return False;
+  itsArray.getSlice(itsRowNumber, section, buffer, true);
+  return false;
 }
 
 template <class T>
@@ -304,7 +304,7 @@ template <class T>
 void PagedArray<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
                                          const IPosition& windowLength, const IPosition& axisPath) {
   doReopen();
-  itsAccessor.setCacheSize(itsRowNumber, sliceShape, windowStart, windowLength, axisPath, True);
+  itsAccessor.setCacheSize(itsRowNumber, sliceShape, windowStart, windowLength, axisPath, true);
 }
 
 template <class T>
@@ -339,45 +339,45 @@ void PagedArray<T>::putAt(const T& value, const IPosition& where) {
 }
 
 template <class T>
-Bool PagedArray<T>::ok() const {
+bool PagedArray<T>::ok() const {
   if (itsIsClosed) {
-    if (itsTable.isNull() == False) {
+    if (itsTable.isNull() == false) {
       throw AipsError(
           "PagedArray::ok - "
           "Table associated with closed PagedArray");
-      return False;
+      return false;
     }
   } else {
-    if (itsTable.isNull() == True) {
+    if (itsTable.isNull() == true) {
       throw AipsError(
           "PagedArray::ok - "
           "No Table associated with the PagedArray");
-      return False;
+      return false;
     }
-    if (itsArray.isNull() == True) {
+    if (itsArray.isNull() == true) {
       throw AipsError(
           "PagedArray::ok - "
           "No Array associated with the PagedArray");
-      return False;
+      return false;
     }
     if (itsRowNumber > itsTable.nrow()) {
       throw AipsError(
           "PagedArray::ok - "
           "Row number is too big for the current Table");
-      return False;
+      return false;
     }
   }
   if (itsColumnName.length() == 0) {
     throw AipsError(
         "PagedArray::ok - "
         "Column name cannot by empty");
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 template <class T>
-LatticeIterInterface<T>* PagedArray<T>::makeIter(const LatticeNavigator& nav, Bool useRef) const {
+LatticeIterInterface<T>* PagedArray<T>::makeIter(const LatticeNavigator& nav, bool useRef) const {
   return new PagedArrIter<T>(*this, nav, useRef);
 }
 
@@ -391,9 +391,9 @@ void PagedArray<T>::makeArray(const TiledShape& shape) {
   IPosition tileShape = shape.tileShape();
   // Create a new column if it does not already exist.
   const uInt ndim = latShape.nelements();
-  Bool newColumn = False;
+  bool newColumn = false;
   if (!itsTable.tableDesc().isColumn(itsColumnName)) {
-    newColumn = True;
+    newColumn = true;
     // To build the column a table description must be created
     TableDesc description;
     description.addColumn(ArrayColumnDesc<T>(itsColumnName, defaultComment(), ndim));
@@ -450,9 +450,9 @@ template <class T>
 void PagedArray<T>::makeTable(const String& filename, Table::TableOption option) {
   SetupNewTable setupTable(filename, TableDesc(), option);
   itsTable = Table(setupTable);
-  itsIsClosed = False;
-  itsMarkDelete = False;
-  itsWritable = True;
+  itsIsClosed = false;
+  itsMarkDelete = false;
+  itsWritable = true;
 }
 
 template <class T>
@@ -461,7 +461,7 @@ String PagedArray<T>::defaultComment() {
 }
 
 template <class T>
-Bool PagedArray<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool PagedArray<T>::lock(FileLocker::LockType type, uInt nattempts) {
   doReopen();
   return itsTable.lock(type, nattempts);
 }
@@ -472,8 +472,8 @@ void PagedArray<T>::unlock() {
   }
 }
 template <class T>
-Bool PagedArray<T>::hasLock(FileLocker::LockType type) const {
-  return (itsIsClosed ? False : itsTable.hasLock(type));
+bool PagedArray<T>::hasLock(FileLocker::LockType type) const {
+  return (itsIsClosed ? false : itsTable.hasLock(type));
 }
 template <class T>
 void PagedArray<T>::resync() {
@@ -496,12 +496,12 @@ void PagedArray<T>::tempClose() {
     itsLockOpt = itsTable.lockOptions();
     // Take care that table does not get deleted on temporary close.
     if (itsTable.isMarkedForDelete()) {
-      itsMarkDelete = True;
+      itsMarkDelete = true;
       itsTable.unmarkForDelete();
     }
     itsTable = Table();
     itsArray.reference(ArrayColumn<T>());
-    itsIsClosed = True;
+    itsIsClosed = true;
   }
 }
 
@@ -520,11 +520,11 @@ void PagedArray<T>::tempReopen() const {
     }
     itsArray.attach(itsTable, itsColumnName);
     itsAccessor = ROTiledStManAccessor(itsTable, itsColumnName);
-    itsIsClosed = False;
+    itsIsClosed = false;
     // Mark the table for delete if needed.
     if (itsMarkDelete) {
       itsTable.markForDelete();
-      itsMarkDelete = False;
+      itsMarkDelete = false;
     }
   }
 }

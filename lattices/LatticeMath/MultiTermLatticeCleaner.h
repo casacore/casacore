@@ -53,49 +53,49 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
 
   // Input : number of Taylor terms
   //         Reshapes Blocks to hold the correct number of PSFs and Residual images
-  Bool setntaylorterms(const int& nterms);
+  bool setntaylorterms(const int& nterms);
 
   // Input : scales
-  Bool setscales(const Vector<Float>& scales);
+  bool setscales(const Vector<Float>& scales);
 
   // Initialize all the memory being used.
-  Bool initialise(Int nx, Int ny);
+  bool initialise(Int nx, Int ny);
 
   // Set control parameters.
-  Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
-                  const Quantity& aThreshold, const Bool choose);
+  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+                  const Quantity& aThreshold, const bool choose);
   // # This function is defined in the base class LatticeCleaner, but was not
   // # defined in the new MultiTermLatticeCleaner.
   // # I (GvD) have added it for the time being.
-  Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
+  bool setcontrol(CleanEnums::CleanType cleanType, const Int niter, const Float gain,
                   const Quantity& aThreshold, const Quantity& /*fThreshold*/,
-                  const Bool choose = True) {
+                  const bool choose = true) {
     return setcontrol(cleanType, niter, gain, aThreshold, choose);
   }
 
   // Input : psfs and dirty images
-  Bool setpsf(int order, Lattice<T>& psf);
+  bool setpsf(int order, Lattice<T>& psf);
 
   // Input : psfs and dirty images
-  Bool setresidual(int order, Lattice<T>& dirty);
+  bool setresidual(int order, Lattice<T>& dirty);
 
   // Input : model images
-  Bool setmodel(int order, Lattice<T>& model);
+  bool setmodel(int order, Lattice<T>& model);
 
   // Input : mask
-  Bool setmask(Lattice<T>& mask);
+  bool setmask(Lattice<T>& mask);
 
   // Run the minor cycle
   Int mtclean(LatticeCleanProgress* progress = 0);
 
   // Output : Model images
-  Bool getmodel(int order, Lattice<T>& model);
+  bool getmodel(int order, Lattice<T>& model);
 
   // Ouput : psfs and dirty images
-  Bool getresidual(int order, Lattice<T>& residual);
+  bool getresidual(int order, Lattice<T>& residual);
 
   // Output : Hessian matrix
-  Bool getinvhessian(Matrix<Double>& invhessian);
+  bool getinvhessian(Matrix<Double>& invhessian);
 
  private:
   LogIO os;
@@ -136,7 +136,7 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
 
   IPosition gip, imshape;
   Int nx, ny, npol_p, nchan;
-  Bool donePSF_p, donePSP_p, doneCONV_p;
+  bool donePSF_p, donePSP_p, doneCONV_p;
 
   // h(s) [nx,ny,nscales]
   Block<TempLattice<Float>*> vecScales_p;
@@ -183,10 +183,10 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
   Float lambda_p;
 
   Int numberOfTempLattices(Int nscales, Int ntaylor);
-  Int manageMemory(Bool allocate);
+  Int manageMemory(bool allocate);
 
-  Bool findMaxAbsLattice(const TempLattice<Float>& masklat, const Lattice<Float>& lattice,
-                         Float& maxAbs, IPosition& posMaxAbs, Bool flip = False);
+  bool findMaxAbsLattice(const TempLattice<Float>& masklat, const Lattice<Float>& lattice,
+                         Float& maxAbs, IPosition& posMaxAbs, bool flip = false);
   Int addTo(Lattice<Float>& to, const Lattice<Float>& add, Float multiplier);
 
   Int setupFFTMask();
@@ -196,14 +196,14 @@ class MultiTermLatticeCleaner : public LatticeCleaner<T> {
   Int computeMatrixA();
   Int computeRHS();
   Int solveMatrixEqn(Int scale);
-  Int computePenaltyFunction(Int scale, Float& loopgain, Bool choosespec);
+  Int computePenaltyFunction(Int scale, Float& loopgain, bool choosespec);
   Int updateSolution(IPosition globalmaxpos, Int maxscaleindex, Float loopgain);
-  Int checkConvergence(Bool choosespec, Float thresh, Float fluxlimit);
+  Int checkConvergence(bool choosespec, Float thresh, Float fluxlimit);
 
   Int IND2(Int taylor, Int scale);
   Int IND4(Int taylor1, Int taylor2, Int scale1, Int scale2);
 
-  Bool adbg;
+  bool adbg;
 };
 
 }  // namespace casacore

@@ -261,13 +261,13 @@ class DataManager {
 
   // Is the data manager a storage manager?
   // The default is yes.
-  virtual Bool isStorageManager() const;
+  virtual bool isStorageManager() const;
 
   // Tell if the data manager wants to reallocate the data manager
   // column objects.
   // This is used by the tiling storage manager.
-  // By default it returns False.
-  virtual Bool canReallocateColumns() const;
+  // By default it returns false.
+  virtual bool canReallocateColumns() const;
 
   // Reallocate the column object if it is part of this data manager.
   // It returns a pointer to the new column object.
@@ -282,7 +282,7 @@ class DataManager {
   uInt ncolumn() const { return nrcol_p; }
 
   // Have the data to be stored in big or little endian canonical format?
-  Bool asBigEndian() const { return asBigEndian_p; }
+  bool asBigEndian() const { return asBigEndian_p; }
 
   // Get the TSM option.
   const TSMOption& tsmOption() const { return tsmOption_p; }
@@ -304,8 +304,8 @@ class DataManager {
 
   // Is this a regular storage manager?
   // It is regular if it allows addition of rows and writing data in them.
-  // <br>The default implementation returns True.
-  virtual Bool isRegular() const;
+  // <br>The default implementation returns true.
+  virtual bool isRegular() const;
 
   // Get the table this object is associated with.
   Table& table() const { return *table_p; }
@@ -316,19 +316,19 @@ class DataManager {
   virtual void reopenRW();
 
   // Does the data manager allow to add rows? (default no)
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Does the data manager allow to delete rows? (default no)
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Does the data manager allow to add columns? (default no)
-  virtual Bool canAddColumn() const;
+  virtual bool canAddColumn() const;
 
   // Does the data manager allow to delete columns? (default no)
-  virtual Bool canRemoveColumn() const;
+  virtual bool canRemoveColumn() const;
 
   // Does the data manager allow to rename columns? (default yes)
-  virtual Bool canRenameColumn() const;
+  virtual bool canRenameColumn() const;
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
   // The default implementation does nothing.
@@ -367,7 +367,7 @@ class DataManager {
   void decrementNcolumn() { nrcol_p--; }
 
   // Tell the data manager if big or little endian format is needed.
-  void setEndian(Bool bigEndian) { asBigEndian_p = bigEndian; }
+  void setEndian(bool bigEndian) { asBigEndian_p = bigEndian; }
 
   // Tell the data manager which TSM option to use.
   void setTsmOption(const TSMOption& tsmOption);
@@ -378,9 +378,9 @@ class DataManager {
   void setMultiFile(const std::shared_ptr<MultiFileBase>& mfile);
 
   // Does the data manager support use of MultiFile?
-  // A derived class has to return True if it can use the MultiFile.
-  // The default implementation returns False.
-  virtual Bool hasMultiFileSupport() const;
+  // A derived class has to return true if it can use the MultiFile.
+  // The default implementation returns false.
+  virtual bool hasMultiFileSupport() const;
 
   // Throw an exception in case data type is TpOther, because the
   // storage managers (and maybe other data managers) do not support
@@ -390,7 +390,7 @@ class DataManager {
  private:
   uInt nrcol_p;        // # #columns in this st.man.
   uInt seqnr_p;        // # Unique nr of this st.man. in a Table
-  Bool asBigEndian_p;  // # store data in big or little endian
+  bool asBigEndian_p;  // # store data in big or little endian
   TSMOption tsmOption_p;
   std::shared_ptr<MultiFileBase> multiFile_p;  // # Possible MultiFile to use
   Table* table_p;                              // # Table this data manager belongs to
@@ -440,8 +440,8 @@ class DataManager {
   // Flush and optionally fsync the data.
   // The AipsIO stream represents the main table file and can be
   // used by virtual column engines to store SMALL amounts of data.
-  // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO& ios, Bool fsync) = 0;
+  // It returns a true status if it had to flush (i.e. if data have changed).
+  virtual bool flush(AipsIO& ios, bool fsync) = 0;
 
   // Let the data manager initialize itself for a new table.
   // <br>The default implementation calls the uInt version.
@@ -508,7 +508,7 @@ class DataManager {
   static DataManagerCtor getCtor(const String& dataManagerType);
 
   // Test if a data manager is registered (thread-safe).
-  static Bool isRegistered(const String& dataManagerType);
+  static bool isRegistered(const String& dataManagerType);
 
   // Serve as default function for theirRegisterMap, which catches all
   // unknown data manager types.

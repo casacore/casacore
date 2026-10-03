@@ -68,7 +68,7 @@ std::vector<TableExprNodeRep*> getColumnNodes(TableExprNodeRep* node);
 // Get the (unique) tables used in the node and its children.
 // If <src>properMain</src> only proper main tables (i.e., tables
 // specified in the FROM clause) are returned.
-std::vector<Table> getNodeTables(TableExprNodeRep* node, Bool properMain);
+std::vector<Table> getNodeTables(TableExprNodeRep* node, bool properMain);
 
 // Get the nr of rows in the tables used.
 // An exception is thrown if the tables differ in the nr of rows.

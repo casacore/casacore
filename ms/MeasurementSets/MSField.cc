@@ -40,10 +40,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSField::MSField() : hasBeenDestroyed_p(True) {}
+MSField::MSField() : hasBeenDestroyed_p(true) {}
 
 MSField::MSField(const String& tableName, TableOption option)
-    : MSTable<MSFieldEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFieldEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -52,7 +52,7 @@ MSField::MSField(const String& tableName, TableOption option)
 }
 
 MSField::MSField(const String& tableName, const String& tableDescName, TableOption option)
-    : MSTable<MSFieldEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFieldEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -60,8 +60,8 @@ MSField::MSField(const String& tableName, const String& tableDescName, TableOpti
                   "table is not a valid MSField"));
 }
 
-MSField::MSField(SetupNewTable& newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSFieldEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSField::MSField(SetupNewTable& newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSFieldEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -69,7 +69,7 @@ MSField::MSField(SetupNewTable& newTab, rownr_t nrrow, Bool initialize)
                   "table is not a valid MSField"));
 }
 
-MSField::MSField(const Table& table) : MSTable<MSFieldEnums>(table), hasBeenDestroyed_p(False) {
+MSField::MSField(const Table& table) : MSTable<MSFieldEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSField::MSField(const Table& table) : MSTable<MSFieldEnums>(table), hasBeenDest
                   "table is not a valid MSField"));
 }
 
-MSField::MSField(const MSField& other) : MSTable<MSFieldEnums>(other), hasBeenDestroyed_p(False) {
+MSField::MSField(const MSField& other) : MSTable<MSFieldEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSField::~MSField() {
     LogIO os;
     os << LogIO::WARN << "~MSField() - Table written is not a valid MSField" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSField& MSField::operator=(const MSField& other) {
@@ -166,9 +166,9 @@ MSField MSField::referenceCopy(const String& newTableName,
   return MSField(MSTable<MSFieldEnums>::referenceCopy(newTableName, writableColumns));
 }
 
-Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
+bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
                            const String& comment) {
-  Bool rval = False;
+  bool rval = false;
   if ((inputEphemTableName.empty() && comment.empty()) || Table::isReadable(inputEphemTableName)) {
     // add the eph id column if it doesn't exist alreay
     const String& ephemerisId = MSField::columnName(MSField::EPHEMERIS_ID);
@@ -177,18 +177,18 @@ Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
         try {
           this->addColumn(
               ScalarColumnDesc<Int>(ephemerisId, "Ephemeris id, pointer to EPHEMERIS table"),
-              False);
+              false);
         } catch (...) {
-          return False;
+          return false;
         }
         // initialize to -1
         ScalarColumn<Int> fld(*this, ephemerisId);
         for (rownr_t i = 0; i < this->nrow(); i++) {
           fld.put(i, -1);
         }
-        rval = True;
+        rval = true;
       } else {
-        return False;
+        return false;
       }
     }
     if (Table::isReadable(inputEphemTableName)) {
@@ -198,27 +198,27 @@ Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
       String destTableName = Path(this->tableName()).absoluteName() + String(ss.str());
       removeEphemeris(id);  // remove preexisting ephemerides with the same id
       inputDir.copy(destTableName);
-      rval = True;
+      rval = true;
     }
   }
   return rval;
 }
 
-Bool MSField::removeEphemeris(const uInt id) {
-  Bool rval = True;
+bool MSField::removeEphemeris(const uInt id) {
+  bool rval = true;
   Directory fieldDir(Path(this->tableName()).absoluteName());
   std::stringstream ss;
   ss << "EPHEM" << id << "_*.tab";
   Regex ephemTableRegex(Regex::fromPattern(ss.str()));
   Vector<String> candidates =
-      fieldDir.find(ephemTableRegex, True, False);  // followSymLinks=True, recursive=False
+      fieldDir.find(ephemTableRegex, true, false);  // followSymLinks=True, recursive=False
   for (uInt i = 0; i < candidates.size(); i++) {
     Table tTab(fieldDir.path().absoluteName() + "/" + candidates(i));
     tTab.markForDelete();
   }
   for (uInt i = 0; i < candidates.size(); i++) {
     if (Table::isReadable(candidates(i))) {
-      rval = False;
+      rval = false;
     }
   }
   return rval;

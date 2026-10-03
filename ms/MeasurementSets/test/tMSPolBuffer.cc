@@ -96,9 +96,9 @@ int main() {
   //    	polBuffer.corrProduct().put(4, pr);
   //       }
   //       { // test the flagRow functions.
-  //  	AlwaysAssert(polBuffer.flagRow()(0) == False, AipsError);
-  //  	AlwaysAssert(polBuffer.flagRow()(4) == False, AipsError);
-  //  	polBuffer.flagRow().put(3, True);
+  //  	AlwaysAssert(polBuffer.flagRow()(0) == false, AipsError);
+  //  	AlwaysAssert(polBuffer.flagRow()(4) == false, AipsError);
+  //  	polBuffer.flagRow().put(3, true);
   //       }
   //       { // Check the assignment operator & copy constructor
   //  	MSPolarizationBuffer otherBuffer(polBuffer);
@@ -111,9 +111,9 @@ int main() {
   //   	polBuffer.corrType()
   // 	  .put(1, Vector<Int>(4, static_cast<Int>(Stokes::I)));
   //    	polBuffer.corrProduct().put(1, Matrix<Int>(2, 4, 1));
-  //   	polBuffer.flagRow().put(1, True);
+  //   	polBuffer.flagRow().put(1, true);
   //  	// Save the buffer to disk
-  //  	polBuffer.save(filename, True);
+  //  	polBuffer.save(filename, true);
   //       }
   //     }
   //     { // check the data has not been lost.
@@ -140,21 +140,21 @@ int main() {
   //       Matrix<Int> pr(2, 4, 0);
   //       pr(1,1) = pr(2,0) = pr(2,1) = pr(3,0) = 1;
   //       AlwaysAssert(allEQ(newBuffer.corrProduct()(4), pr), AipsError);
-  //       AlwaysAssert(newBuffer.flagRow()(0) == False, AipsError);
-  //       AlwaysAssert(newBuffer.flagRow()(3) == True, AipsError);
-  //       AlwaysAssert(newBuffer.flagRow()(4) == False, AipsError);
+  //       AlwaysAssert(newBuffer.flagRow()(0) == false, AipsError);
+  //       AlwaysAssert(newBuffer.flagRow()(3) == true, AipsError);
+  //       AlwaysAssert(newBuffer.flagRow()(4) == false, AipsError);
   //       // check the reference semantics
   //       AlwaysAssert(allEQ(newBuffer.corrType()(1),
   // 			 static_cast<Int>(Stokes::I)), AipsError);
   //       AlwaysAssert(allEQ(newBuffer.corrProduct()(1), 1), AipsError);
-  //       AlwaysAssert(newBuffer.flagRow()(1) == True, AipsError);
+  //       AlwaysAssert(newBuffer.flagRow()(1) == true, AipsError);
   //     }
   //     { // Check the isValid functions
-  //       AlwaysAssert(newBuffer.isValid(True) == False, AipsError);
-  //       AlwaysAssert(newBuffer.isValid(4u) == True, AipsError);
-  //       AlwaysAssert(newBuffer.isValid(3u) == False, AipsError);
-  //       AlwaysAssert(newBuffer.isValid(2u) == False, AipsError);
-  //       AlwaysAssert(newBuffer.isValid() == False, AipsError);
+  //       AlwaysAssert(newBuffer.isValid(true) == false, AipsError);
+  //       AlwaysAssert(newBuffer.isValid(4u) == true, AipsError);
+  //       AlwaysAssert(newBuffer.isValid(3u) == false, AipsError);
+  //       AlwaysAssert(newBuffer.isValid(2u) == false, AipsError);
+  //       AlwaysAssert(newBuffer.isValid() == false, AipsError);
   //     }
   //     { // Check the match functions
   //     }

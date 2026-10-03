@@ -87,7 +87,7 @@ class MSObservation : public MSObservationEnums, public MSTable<MSObservationEnu
   // <group name=tableLikeConstructors>
   MSObservation(const String &tableName, TableOption = Table::Old);
   MSObservation(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSObservation(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSObservation(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSObservation(const Table &table);
   MSObservation(const MSObservation &other);
   // </group>
@@ -120,7 +120,7 @@ class MSObservation : public MSObservationEnums, public MSTable<MSObservationEnu
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

@@ -76,9 +76,9 @@ void BaseTable::BaseTableCommon(const String& name, int option, rownr_t nrrow) {
   nrrowToAdd_p = 0;
   name_p = name;
   option_p = option;
-  noWrite_p = False;
-  delete_p = False;
-  madeDir_p = True;
+  noWrite_p = false;
+  delete_p = false;
+  madeDir_p = true;
   itsTraceId = -1;
 
   if (name_p.empty()) {
@@ -92,8 +92,8 @@ void BaseTable::BaseTableCommon(const String& name, int option, rownr_t nrrow) {
   // Mark initially a new table for delete.
   // When the construction ends successfully, it can be unmarked.
   if (option_p == Table::New || option_p == Table::NewNoReplace) {
-    markForDelete(False, "");
-    madeDir_p = False;
+    markForDelete(false, "");
+    madeDir_p = false;
   }
 }
 
@@ -109,18 +109,18 @@ BaseTable::~BaseTable() {
         directory.removeRecursive();
       }
       // # Do callback indicating that table has been deleted.
-      scratchCallback(False, name_p);
+      scratchCallback(false, name_p);
     }
   }
 }
 
-Bool BaseTable::isNull() const { return False; }
+bool BaseTable::isNull() const { return false; }
 
 void BaseTable::changeTiledDataOnly() {
   throw(TableInvOper("changeTiledDataOnly() can only be called for plain tables"));
 }
 
-void BaseTable::scratchCallback(Bool isScratch, const String& oldName) const {
+void BaseTable::scratchCallback(bool isScratch, const String& oldName) const {
   if (Table::scratchCallback_p != 0) {
     if (isScratch) {
       if (oldName == name_p) {
@@ -191,7 +191,7 @@ static bool is_rank_0(MPI_Comm comm) {
 }
 #endif  // HAVE_MPI
 
-Bool BaseTable::makeTableDir() {
+bool BaseTable::makeTableDir() {
 #ifdef HAVE_MPI
   if (!is_rank_0(itsMpiComm)) {
     return false;
@@ -199,7 +199,7 @@ Bool BaseTable::makeTableDir() {
 #endif
   // # Exit if the table directory has already been created.
   if (madeDir_p) {
-    return False;
+    return false;
   }
   // # Check option.
   if (!openedForWrite()) {
@@ -230,7 +230,7 @@ Bool BaseTable::makeTableDir() {
       // # Keep the directory, so existing properties (like placement on
       // # Lustre file system is kept.
       Directory dir(name_p);
-      dir.removeRecursive(True);
+      dir.removeRecursive(true);
     }
   } else {
     // # Create the table directory.
@@ -241,26 +241,26 @@ Bool BaseTable::makeTableDir() {
   // # First do a scratch callback that a table is getting created.
   // # If the file creation fails, the user sees it as a scratch
   // # table, so it can be deleted.
-  scratchCallback(True, "");
+  scratchCallback(true, "");
   RegularFile dfile(Table::fileName(name_p));
   dfile.create();
-  madeDir_p = True;
-  return True;
+  madeDir_p = true;
+  return true;
 }
 
-Bool BaseTable::openedForWrite() const {
+bool BaseTable::openedForWrite() const {
 #ifdef HAVE_MPI
   if (!is_rank_0(itsMpiComm)) {
     return false;
   }
 #endif
   AlwaysAssert(!isNull(), AipsError);
-  return (option_p == Table::Old || option_p == Table::Delete ? False : True);
+  return (option_p == Table::Old || option_p == Table::Delete ? false : true);
 }
 
 int BaseTable::tableType() const { return Table::Plain; }
 
-void BaseTable::getPartNames(Block<String>& names, Bool) const {
+void BaseTable::getPartNames(Block<String>& names, bool) const {
   uInt inx = names.size();
   names.resize(inx + 1);
   names[inx] = name_p;
@@ -276,20 +276,20 @@ void BaseTable::getTableInfo() {
 void BaseTable::flushTableInfo() {
   AlwaysAssert(!isNull(), AipsError);
   // Create table directory if needed.
-  Bool made = makeTableDir();
+  bool made = makeTableDir();
   info_p.flush(name_p + "/table.info");
   if (made && !isMarkedForDelete()) {
-    scratchCallback(False, name_p);
+    scratchCallback(false, name_p);
   }
 }
 
-void BaseTable::writeStart(AipsIO& ios, Bool bigEndian) {
+void BaseTable::writeStart(AipsIO& ios, bool bigEndian) {
   // Check option.
   if (!openedForWrite()) {
     throw(TableInvOpt("BaseTable::writeStart", "must be Table::New, NewNoReplace or Update"));
   }
   // Create table directory when needed.
-  Bool made = makeTableDir();
+  bool made = makeTableDir();
   // Create the file. It is a temporary file that will be later renamed
   // to the final name. This is so because, in case other process
   // tries to create a Table object with this table, there is a small
@@ -315,7 +315,7 @@ void BaseTable::writeStart(AipsIO& ios, Bool bigEndian) {
   }
   ios << endian;  // 0=bigendian; 1=littleendian
   if (made && !isMarkedForDelete()) {
-    scratchCallback(False, name_p);
+    scratchCallback(false, name_p);
   }
 }
 
@@ -332,27 +332,27 @@ void BaseTable::writeEnd(AipsIO& ios) {
 
 void BaseTable::setTableChanged() {}
 
-void BaseTable::markForDelete(Bool callback, const String& oldName) {
+void BaseTable::markForDelete(bool callback, const String& oldName) {
   // # Do not use virtual isNull as it can be called from the constructor.
   AlwaysAssert(!BaseTable::isNull(), AipsError);
-  Bool prev = delete_p;
-  delete_p = True;
+  bool prev = delete_p;
+  delete_p = true;
   // # Do callback if changed from non-scratch to scratch or if name changed.
   if (callback) {
     if (!prev) {
-      scratchCallback(True, "");
+      scratchCallback(true, "");
     } else if (!oldName.empty() && oldName != name_p) {
-      scratchCallback(True, oldName);
+      scratchCallback(true, oldName);
     }
   }
 }
-void BaseTable::unmarkForDelete(Bool callback, const String& oldName) {
+void BaseTable::unmarkForDelete(bool callback, const String& oldName) {
   AlwaysAssert(!BaseTable::isNull(), AipsError);
-  Bool prev = delete_p;
-  delete_p = False;
+  bool prev = delete_p;
+  delete_p = false;
   // # Do callback if changed from scratch to non-scratch.
   if (callback && prev) {
-    scratchCallback(False, oldName);
+    scratchCallback(false, oldName);
   }
 }
 
@@ -428,17 +428,17 @@ void BaseTable::rename(const String& newName, int tableOption) {
   }
   // # (Un)mark for delete when necessary.
   if (tableOption == Table::Scratch) {
-    markForDelete(True, oldName);
+    markForDelete(true, oldName);
   } else {
-    unmarkForDelete(True, oldName);
+    unmarkForDelete(true, oldName);
   }
 }
 
 void BaseTable::renameSubTables(const String&, const String&) {}
 
 void BaseTable::deepCopy(const String& newName, const Record& dataManagerInfo,
-                         const StorageOption& stopt, int tableOption, Bool valueCopy,
-                         int endianFormat, Bool noRows) const {
+                         const StorageOption& stopt, int tableOption, bool valueCopy,
+                         int endianFormat, bool noRows) const {
   if (valueCopy || dataManagerInfo.nfields() > 0 || noRows) {
     trueDeepCopy(newName, dataManagerInfo, stopt, tableOption, endianFormat, noRows);
   } else {
@@ -448,7 +448,7 @@ void BaseTable::deepCopy(const String& newName, const Record& dataManagerInfo,
 
 void BaseTable::trueDeepCopy(const String& newName, const Record& dataManagerInfo,
                              const StorageOption& stopt, int tableOption, int endianFormat,
-                             Bool noRows) const {
+                             bool noRows) const {
   AlwaysAssert(!isNull(), AipsError);
   // Make the name absolute.
   String absNewName = makeAbsoluteName(newName);
@@ -461,13 +461,13 @@ void BaseTable::trueDeepCopy(const String& newName, const Record& dataManagerInf
   // # while flush is const. Changing this requires changing of functions
   // # copy and deepCopy as well, which could be done in the future.
   BaseTable* ncThis = const_cast<BaseTable*>(this);
-  ncThis->flush(True, True);
+  ncThis->flush(true, true);
   // # Prepare the copy (do some extra checks).
   prepareCopyRename(absNewName, tableOption);
   // Create the new table and copy everything.
   Table oldtab(ncThis);
   Table newtab = TableCopy::makeEmptyTable(absNewName, dataManagerInfo, oldtab, Table::New,
-                                           Table::EndianFormat(endianFormat), True, noRows, stopt);
+                                           Table::EndianFormat(endianFormat), true, noRows, stopt);
   if (!noRows) {
     TableCopy::copyRows(newtab, oldtab);
   }
@@ -487,7 +487,7 @@ void BaseTable::copy(const String& newName, int tableOption) const {
     }
     // # Flush the data and subtables.
     // # (cast is necessary to bypass non-constness).
-    ((BaseTable*)this)->flush(True, True);
+    ((BaseTable*)this)->flush(true, true);
     // # Copy the files (thus recursively the entire directory).
     // # Set user write permission after the copy.
     prepareCopyRename(absNewName, tableOption);
@@ -499,35 +499,35 @@ void BaseTable::copy(const String& newName, int tableOption) const {
 }
 
 // # A column is writable if the table and column are writable.
-Bool BaseTable::isColumnWritable(const String& columnName) const {
+bool BaseTable::isColumnWritable(const String& columnName) const {
   AlwaysAssert(!isNull(), AipsError);
   if (!isWritable()) {
-    return False;  // table is not writable
+    return false;  // table is not writable
   }
   return getColumn(columnName)->isWritable();
 }
-Bool BaseTable::isColumnWritable(uInt columnIndex) const {
+bool BaseTable::isColumnWritable(uInt columnIndex) const {
   AlwaysAssert(!isNull(), AipsError);
   if (!isWritable()) {
-    return False;  // table is not writable
+    return false;  // table is not writable
   }
   return getColumn(columnIndex)->isWritable();
 }
 
-Bool BaseTable::isColumnStored(const String& columnName) const {
+bool BaseTable::isColumnStored(const String& columnName) const {
   AlwaysAssert(!isNull(), AipsError);
   return getColumn(columnName)->isStored();
 }
-Bool BaseTable::isColumnStored(uInt columnIndex) const {
+bool BaseTable::isColumnStored(uInt columnIndex) const {
   AlwaysAssert(!isNull(), AipsError);
   return getColumn(columnIndex)->isStored();
 }
 
 // # By default adding, etc. of rows and columns is not possible.
-Bool BaseTable::canAddRow() const { return False; }
-Bool BaseTable::canRemoveRow() const { return False; }
+bool BaseTable::canAddRow() const { return false; }
+bool BaseTable::canRemoveRow() const { return false; }
 
-void BaseTable::addRow(rownr_t, Bool) {
+void BaseTable::addRow(rownr_t, bool) {
   throw(TableInvOper("Table: cannot add a row to table " + name_p));
 }
 
@@ -547,20 +547,20 @@ void BaseTable::removeRow(const Vector<rownr_t>& rownrs) {
   }
 }
 
-void BaseTable::addColumn(const ColumnDesc&, Bool) {
+void BaseTable::addColumn(const ColumnDesc&, bool) {
   throw(TableInvOper("Table: cannot add a column to table " + name_p));
 }
-void BaseTable::addColumn(const ColumnDesc&, const String&, Bool, Bool) {
+void BaseTable::addColumn(const ColumnDesc&, const String&, bool, bool) {
   throw(TableInvOper("Table: cannot add a column to table " + name_p));
 }
-void BaseTable::addColumn(const ColumnDesc&, const DataManager&, Bool) {
+void BaseTable::addColumn(const ColumnDesc&, const DataManager&, bool) {
   throw(TableInvOper("Table: cannot add a column to table " + name_p));
 }
-void BaseTable::addColumn(const TableDesc&, const DataManager&, Bool) {
+void BaseTable::addColumn(const TableDesc&, const DataManager&, bool) {
   throw(TableInvOper("Table: cannot add a column to table " + name_p));
 }
 
-void BaseTable::addColumns(const TableDesc& desc, const Record& dmInfo, Bool addToParent) {
+void BaseTable::addColumns(const TableDesc& desc, const Record& dmInfo, bool addToParent) {
   // Create the correct data manager using the record.
   // The record can be the dminfo description itself or contain a
   // single subrecord with the dminfo.
@@ -598,7 +598,7 @@ Vector<rownr_t> BaseTable::rowNumbers() const {
 BaseTable* BaseTable::root() { return this; }
 
 // # By default table is in row order.
-Bool BaseTable::rowOrder() const { return True; }
+bool BaseTable::rowOrder() const { return true; }
 
 // # By the default the table cannot return the storage of rownrs.
 Vector<rownr_t>& BaseTable::rowStorage() {
@@ -653,7 +653,7 @@ std::shared_ptr<BaseTable> BaseTable::doSort(Block<BaseColumn*>& sortCol,
   // # Create a reference table.
   // # This table will NOT be in row order.
   rownr_t nrrow = nrow();
-  std::shared_ptr<RefTable> resultTable = makeRefTable(False, nrrow);
+  std::shared_ptr<RefTable> resultTable = makeRefTable(false, nrrow);
   DebugAssert(static_cast<bool>(resultTable), AipsError);
   // # Now sort the table storing the row-numbers in the RefTable.
   // # Adjust rownrs in case source table is already a RefTable.
@@ -664,17 +664,17 @@ std::shared_ptr<BaseTable> BaseTable::doSort(Block<BaseColumn*>& sortCol,
   if (sortIterBoundaries && sortIterKeyIdxChange) {
     sortobj.unique(*sortIterBoundaries, *sortIterKeyIdxChange, rows);
   }
-  adjustRownrs(nrrow, rows, False);
+  adjustRownrs(nrrow, rows, false);
   resultTable->setNrrow(nrrow);
   return resultTable;
 }
 
-std::shared_ptr<RefTable> BaseTable::makeRefTable(Bool rowOrder, rownr_t initialNrrow) {
+std::shared_ptr<RefTable> BaseTable::makeRefTable(bool rowOrder, rownr_t initialNrrow) {
   return std::make_shared<RefTable>(this, rowOrder, initialNrrow);
 }
 
 // # No rownrs have to be adjusted and they are by default in ascending order.
-Bool BaseTable::adjustRownrs(rownr_t, Vector<rownr_t>&, Bool) const { return True; }
+bool BaseTable::adjustRownrs(rownr_t, Vector<rownr_t>&, bool) const { return true; }
 
 std::shared_ptr<BaseTable> BaseTable::select(rownr_t maxRow, rownr_t offset) {
   if (offset > nrow()) {
@@ -716,7 +716,7 @@ std::shared_ptr<BaseTable> BaseTable::select(const TableExprNode& node, rownr_t 
   // Now check if this table has been used for all columns.
   // Accept that the expression has no table, which can be the case for
   // UDFs in derivedmscal (since they have no function arguments).
-  std::vector<Table> tables(TableExprNodeUtil::getNodeTables(node.getRep().get(), True));
+  std::vector<Table> tables(TableExprNodeUtil::getNodeTables(node.getRep().get(), true));
   if (!tables.empty()) {
     if (TableExprNodeUtil::getCheckNRow(tables) != this->nrow()) {
       throw(TableInvExpr("select expression for table " + tables[0].tableName() +
@@ -727,9 +727,9 @@ std::shared_ptr<BaseTable> BaseTable::select(const TableExprNode& node, rownr_t 
   // # Loop through all rows and add to reference table if true.
   // # Add the rownr of the root table (one may search a reference table).
   // # Adjust the row numbers to reflect row numbers in the root table.
-  std::shared_ptr<RefTable> resultTable = makeRefTable(True, 0);
+  std::shared_ptr<RefTable> resultTable = makeRefTable(true, 0);
   DebugAssert(static_cast<bool>(resultTable), AipsError);
-  Bool val;
+  bool val;
   rownr_t nrrow = nrow();
   TableExprId id;
   for (rownr_t i = 0; i < nrrow; i++) {
@@ -748,7 +748,7 @@ std::shared_ptr<BaseTable> BaseTable::select(const TableExprNode& node, rownr_t 
       }
     }
   }
-  adjustRownrs(resultTable->nrow(), resultTable->rowStorage(), False);
+  adjustRownrs(resultTable->nrow(), resultTable->rowStorage(), false);
   return resultTable;
 }
 
@@ -757,9 +757,9 @@ std::shared_ptr<BaseTable> BaseTable::select(const Vector<rownr_t>& rownrs) {
   return std::make_shared<RefTable>(this, rownrs);
 }
 
-std::shared_ptr<BaseTable> BaseTable::select(const Block<Bool>& mask) {
+std::shared_ptr<BaseTable> BaseTable::select(const Block<bool>& mask) {
   AlwaysAssert(!isNull(), AipsError);
-  return std::make_shared<RefTable>(this, Vector<Bool>(mask.begin(), mask.end()));
+  return std::make_shared<RefTable>(this, Vector<bool>(mask.begin(), mask.end()));
 }
 
 std::shared_ptr<BaseTable> BaseTable::project(const Block<String>& names) {
@@ -784,7 +784,7 @@ std::shared_ptr<BaseTable> BaseTable::tabAnd(BaseTable* that) {
   Vector<rownr_t> r1 = this->logicRows();
   Vector<rownr_t> r2 = that->logicRows();
   // Create RefTable which will be in row order.
-  std::shared_ptr<RefTable> rtp = makeRefTable(True, 0);
+  std::shared_ptr<RefTable> rtp = makeRefTable(true, 0);
   DebugAssert(static_cast<bool>(rtp), AipsError);
   // Store rownrs in new RefTable.
   rtp->refAnd(r1.size(), r1.data(), r2.size(), r2.data());
@@ -805,7 +805,7 @@ std::shared_ptr<BaseTable> BaseTable::tabOr(BaseTable* that) {
   Vector<rownr_t> r1 = this->logicRows();
   Vector<rownr_t> r2 = that->logicRows();
   // Create RefTable which will be in row order.
-  std::shared_ptr<RefTable> rtp = makeRefTable(True, 0);
+  std::shared_ptr<RefTable> rtp = makeRefTable(true, 0);
   DebugAssert(static_cast<bool>(rtp), AipsError);
   // Store rownrs in new RefTable.
   rtp->refOr(r1.size(), r1.data(), r2.size(), r2.data());
@@ -819,7 +819,7 @@ std::shared_ptr<BaseTable> BaseTable::tabSub(BaseTable* that) {
   logicCheck(that);
   // # Subtracting the root table from a table results in an empty table.
   if (that->nrow() == that->root()->nrow()) {
-    return makeRefTable(True, 0);
+    return makeRefTable(true, 0);
   }
   // # Subtracting a table from the root is negating the table.
   if (this->nrow() == this->root()->nrow()) {
@@ -830,7 +830,7 @@ std::shared_ptr<BaseTable> BaseTable::tabSub(BaseTable* that) {
   Vector<rownr_t> r1 = this->logicRows();
   Vector<rownr_t> r2 = that->logicRows();
   // Create RefTable which will be in row order.
-  std::shared_ptr<RefTable> rtp = makeRefTable(True, 0);
+  std::shared_ptr<RefTable> rtp = makeRefTable(true, 0);
   DebugAssert(static_cast<bool>(rtp), AipsError);
   // Store rownrs in new RefTable.
   rtp->refSub(r1.size(), r1.data(), r2.size(), r2.data());
@@ -854,7 +854,7 @@ std::shared_ptr<BaseTable> BaseTable::tabXor(BaseTable* that) {
   Vector<rownr_t> r1 = this->logicRows();
   Vector<rownr_t> r2 = that->logicRows();
   // Create RefTable which will be in row order.
-  std::shared_ptr<RefTable> rtp = makeRefTable(True, 0);
+  std::shared_ptr<RefTable> rtp = makeRefTable(true, 0);
   DebugAssert(static_cast<bool>(rtp), AipsError);
   // Store rownrs in new RefTable.
   rtp->refXor(r1.size(), r1.data(), r2.size(), r2.data());
@@ -866,13 +866,13 @@ std::shared_ptr<BaseTable> BaseTable::tabNot() {
   AlwaysAssert(!isNull(), AipsError);
   // # Negating the (possibly sorted) root results in an empty table,
   if (nrow() == root()->nrow()) {
-    return makeRefTable(True, 0);
+    return makeRefTable(true, 0);
   }
   // # There is no root table involved, so we have to deal with RefTables.
   // # Get rownr array which is sorted if not in row order.
   Vector<rownr_t> r1 = this->logicRows();
   // Create RefTable which will be in row order.
-  std::shared_ptr<RefTable> rtp = makeRefTable(True, 0);
+  std::shared_ptr<RefTable> rtp = makeRefTable(true, 0);
   DebugAssert(static_cast<bool>(rtp), AipsError);
   // Store rownrs in new RefTable.
   rtp->refNot(r1.size(), r1.data(), root()->nrow());
@@ -922,7 +922,7 @@ const TableDesc& BaseTable::makeEmptyTableDesc() const {
   return *tdescPtr_p;
 }
 
-Bool BaseTable::checkRemoveColumn(const Vector<String>& columnNames, Bool throwException) const {
+bool BaseTable::checkRemoveColumn(const Vector<String>& columnNames, bool throwException) const {
   for (uInt i = 0; i < columnNames.nelements(); i++) {
     // Check if the column exists.
     if (!tdescPtr_p->isColumn(columnNames(i))) {
@@ -932,7 +932,7 @@ Bool BaseTable::checkRemoveColumn(const Vector<String>& columnNames, Bool throwE
                            " in table " +
                            name_p);
       }
-      return False;
+      return false;
     }
     // Check if the column is specified only once.
     for (uInt j = i + 1; j < columnNames.nelements(); j++) {
@@ -941,11 +941,11 @@ Bool BaseTable::checkRemoveColumn(const Vector<String>& columnNames, Bool throwE
           throw TableInvOper("Table::removeColumn - column " + columnNames(i) +
                              " is multiply specified");
         }
-        return False;
+        return false;
       }
     }
   }
-  return True;
+  return true;
 }
 
 void BaseTable::checkRowNumberThrow(rownr_t rownr) const {
@@ -954,8 +954,8 @@ void BaseTable::checkRowNumberThrow(rownr_t rownr) const {
                    std::string(tableName())));
 }
 
-void BaseTable::showStructure(ostream& os, Bool showDataMans, Bool showColumns, Bool showSubTables,
-                              Bool sortColumns, Bool cOrder) {
+void BaseTable::showStructure(ostream& os, bool showDataMans, bool showColumns, bool showSubTables,
+                              bool sortColumns, bool cOrder) {
   TableDesc tdesc = actualTableDesc();
   Record dminfo = dataManagerInfo();
   os << endl << "Structure of table " << tableName() << endl << "------------------ ";
@@ -1015,13 +1015,13 @@ void BaseTable::showStructure(ostream& os, Bool showDataMans, Bool showColumns, 
           os << endl;
         }
       }
-      Bool extra = False;
+      bool extra = false;
       for (uInt j = 0; j < spec.nfields(); j++) {
         const String& name = spec.name(j);
         if (name != "SEQNR" && name != "BUCKETSIZE" && name != "HYPERCUBES") {
           if (!extra) {
             os << "   ";
-            extra = True;
+            extra = true;
           }
           os << ' ' << name << '=' << spec.asValueHolder(j);
         }
@@ -1035,12 +1035,12 @@ void BaseTable::showStructure(ostream& os, Bool showDataMans, Bool showColumns, 
     }
   }
   TableRecord keywords = keywordSet();
-  Bool hasSub = False;
+  bool hasSub = false;
   for (uInt i = 0; i < keywords.nfields(); ++i) {
     if (keywords.dataType(i) == TpTable) {
       if (!hasSub) {
         os << endl << " SubTables:" << endl;
-        hasSub = True;
+        hasSub = true;
       }
       os << "    " << keywords.asTable(i).tableName() << endl;
     }
@@ -1065,7 +1065,7 @@ void BaseTable::showStructure(ostream& os, Bool showDataMans, Bool showColumns, 
 void BaseTable::showStructureExtra(ostream&) const {}
 
 void BaseTable::showColumnInfo(ostream& os, const TableDesc& tdesc, uInt maxl,
-                               const Array<String>& columnNames, Bool sort, Bool cOrder) const {
+                               const Array<String>& columnNames, bool sort, bool cOrder) const {
   Vector<String> columns(columnNames);
   if (sort) {
     GenSort<String>::sort(columns);
@@ -1124,10 +1124,10 @@ void BaseTable::showColumnInfo(ostream& os, const TableDesc& tdesc, uInt maxl,
 
 String BaseTable::makeAbsoluteName(const String& name) const {
   // Make sure the name contains a character not equal to . or /.
-  Bool ok = False;
+  bool ok = false;
   for (uInt i = 0; i < name.size(); ++i) {
     if (name[i] != '.' && name[i] != '/') {
-      ok = True;
+      ok = true;
       break;
     }
   }

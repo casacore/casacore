@@ -51,7 +51,7 @@ TableExprInfo TableParsePair::getTableInfo() const {
 
 // # Construct a TableParse object and add it to the container.
 Table TableParseTableList::addTable(Int tabnr, const String& name, const Table& ftab,
-                                    const String& shorthand, Bool addToFromList,
+                                    const String& shorthand, bool addToFromList,
                                     const std::vector<const Table*>& tempTables,
                                     const std::vector<TableParseQuery*>& stack, Int joinIndex) {
   Table table = TableParseUtil::getTable(tabnr, name, ftab, tempTables, stack);
@@ -59,7 +59,7 @@ Table TableParseTableList::addTable(Int tabnr, const String& name, const Table& 
   // Don't take the WITH tables into account, otherwise it will complain
   // about a WITH shorthand used in a FROM.
   if (!shorthand.empty()) {
-    TableParsePair tablePair = findTable(shorthand, False);
+    TableParsePair tablePair = findTable(shorthand, false);
     if (!tablePair.table().isNull()) {
       throw TableInvExpr("Shorthand '" + shorthand + "' has already been used");
     }
@@ -77,7 +77,7 @@ void TableParseTableList::replaceTable(const Table& table) {
   itsFromTables[0].replaceTable(table);
 }
 
-TableParsePair TableParseTableList::findTable(const String& shorthand, Bool doWith,
+TableParsePair TableParseTableList::findTable(const String& shorthand, bool doWith,
                                               const std::vector<TableParseQuery*>& stack) {
   TableParsePair tab;
   for (Int i = stack.size() - 1; i >= 0; i--) {
@@ -89,7 +89,7 @@ TableParsePair TableParseTableList::findTable(const String& shorthand, Bool doWi
   return tab;
 }
 
-TableParsePair TableParseTableList::findTable(const String& shorthand, Bool doWith) const {
+TableParsePair TableParseTableList::findTable(const String& shorthand, bool doWith) const {
   // # If no shorthand given, first table is taken (if there).
   for (uInt i = 0; i < itsFromTables.size(); i++) {
     if (itsFromTables[i].test(shorthand)) {

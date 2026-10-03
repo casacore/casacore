@@ -92,11 +92,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&rawio);
 //    // Write values.
 //    stream << (Int)10;
-//    stream << True;
+//    stream << true;
 //    // Seek to beginning of buffer and read data in.
 //    stream.setpos (0);
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 //
 //    // One can obtain the buffer and its length and use it later.
@@ -146,10 +146,10 @@ class MemoryIO : public ByteIO {
   // This means that <src>buffer</src> does not point to the data
   // anymore. However, when <src>expandSize==0</src>, the buffer
   // cannot be expanded and the pointer is always valid.
-  // <br>When canDelete is True, buffer expansion means that the
+  // <br>When canDelete is true, buffer expansion means that the
   // old buffer gets deleted.
   MemoryIO(void* buffer, uInt64 size, ByteIO::OpenOption, uInt64 expandSize = 0,
-           Bool canDelete = False);
+           bool canDelete = false);
 
   // Delete the Memory object.
   // The data buffer is not deleted when constructed with the
@@ -165,9 +165,9 @@ class MemoryIO : public ByteIO {
   // Read <src>size</src> bytes from the memory buffer. Returns the number of
   // bytes actually read. Will throw an Exception (AipsError) if the
   // requested number of bytes could not be read unless throwException is set
-  // to False. Will always throw an exception if the buffer is not readable
+  // to false. Will always throw an exception if the buffer is not readable
   // or the buffer pointer is at an invalid position.
-  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
+  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 
   // Clear the buffer; i.e. set the data length and seek pointer to zero.
   void clear();
@@ -187,13 +187,13 @@ class MemoryIO : public ByteIO {
   uInt64 expandSize() const;
 
   // Is the IO stream readable?
-  virtual Bool isReadable() const;
+  virtual bool isReadable() const;
 
   // Is the IO stream writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Is the IO stream seekable?
-  virtual Bool isSeekable() const;
+  virtual bool isSeekable() const;
 
   // resize the internal buffer (if necessary) so that it is big enough
   // to hold the specified number of bytes. Returns a non-const pointer
@@ -234,16 +234,16 @@ class MemoryIO : public ByteIO {
   // # will be used if it results in a larger buffer size. In this way the
   // # buffer does not get reallocated too often.  It returns a false status
   // # when the buffer cannot be expanded.
-  Bool expand(uInt64 minSize);
+  bool expand(uInt64 minSize);
 
   uChar* itsBuffer;
   Int64 itsAlloc;
   Int64 itsExpandSize;
   Int64 itsUsed;
   Int64 itsPosition;
-  Bool itsReadable;
-  Bool itsWritable;
-  Bool itsCanDelete;
+  bool itsReadable;
+  bool itsWritable;
+  bool itsCanDelete;
 };
 
 inline void MemoryIO::clear() { itsUsed = itsPosition = 0; }

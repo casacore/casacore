@@ -97,7 +97,7 @@ class MemoryLogSink : public LogSinkInterface {
   // </group>
 
   // If the message passes the filter, write it to memory
-  virtual Bool postLocally(const LogMessage& message);
+  virtual bool postLocally(const LogMessage& message);
 
   // Write a message (usually from another logsink) into the local one.
   virtual void writeLocally(Double time, const String& message, const String& priority,

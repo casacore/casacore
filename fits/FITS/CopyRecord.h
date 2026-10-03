@@ -97,7 +97,7 @@ class CopyRecordToTable {
  private:
   // We could just have a TableColumn for scalars, but we'd need all of
   // the array types anyway.
-  Block<ScalarColumn<Bool> *> table_bool;
+  Block<ScalarColumn<bool> *> table_bool;
   Block<ScalarColumn<uChar> *> table_char;
   Block<ScalarColumn<Short> *> table_short;
   Block<ScalarColumn<Int> *> table_int;
@@ -106,7 +106,7 @@ class CopyRecordToTable {
   Block<ScalarColumn<Complex> *> table_complex;
   Block<ScalarColumn<DComplex> *> table_dcomplex;
   Block<ScalarColumn<String> *> table_string;
-  Block<ArrayColumn<Bool> *> table_array_bool;
+  Block<ArrayColumn<bool> *> table_array_bool;
   Block<ArrayColumn<uChar> *> table_array_char;
   Block<ArrayColumn<Short> *> table_array_short;
   Block<ArrayColumn<Int> *> table_array_int;
@@ -116,7 +116,7 @@ class CopyRecordToTable {
   Block<ArrayColumn<DComplex> *> table_array_dcomplex;
   Block<ArrayColumn<String> *> table_array_string;
 
-  Block<RORecordFieldPtr<Bool>> record_bool;
+  Block<RORecordFieldPtr<bool>> record_bool;
   Block<RORecordFieldPtr<uChar>> record_char;
   Block<RORecordFieldPtr<Short>> record_short;
   Block<RORecordFieldPtr<Int>> record_int;
@@ -125,7 +125,7 @@ class CopyRecordToTable {
   Block<RORecordFieldPtr<Complex>> record_complex;
   Block<RORecordFieldPtr<DComplex>> record_dcomplex;
   Block<RORecordFieldPtr<String>> record_string;
-  Block<RORecordFieldPtr<Array<Bool>>> record_array_bool;
+  Block<RORecordFieldPtr<Array<bool>>> record_array_bool;
   Block<RORecordFieldPtr<Array<uChar>>> record_array_char;
   Block<RORecordFieldPtr<Array<Short>>> record_array_short;
   Block<RORecordFieldPtr<Array<Int>>> record_array_int;
@@ -195,7 +195,7 @@ class CopyRecordToRecord {
   CopyRecordToRecord(const CopyRecordToRecord &);
   CopyRecordToRecord &operator=(const CopyRecordToRecord &);
 
-  Block<RORecordFieldPtr<Bool>> in_record_bool;
+  Block<RORecordFieldPtr<bool>> in_record_bool;
   Block<RORecordFieldPtr<uChar>> in_record_char;
   Block<RORecordFieldPtr<Short>> in_record_short;
   Block<RORecordFieldPtr<Int>> in_record_int;
@@ -204,7 +204,7 @@ class CopyRecordToRecord {
   Block<RORecordFieldPtr<Complex>> in_record_complex;
   Block<RORecordFieldPtr<DComplex>> in_record_dcomplex;
   Block<RORecordFieldPtr<String>> in_record_string;
-  Block<RORecordFieldPtr<Array<Bool>>> in_record_array_bool;
+  Block<RORecordFieldPtr<Array<bool>>> in_record_array_bool;
   Block<RORecordFieldPtr<Array<uChar>>> in_record_array_char;
   Block<RORecordFieldPtr<Array<Short>>> in_record_array_short;
   Block<RORecordFieldPtr<Array<Int>>> in_record_array_int;
@@ -214,7 +214,7 @@ class CopyRecordToRecord {
   Block<RORecordFieldPtr<Array<DComplex>>> in_record_array_dcomplex;
   Block<RORecordFieldPtr<Array<String>>> in_record_array_string;
 
-  Block<RecordFieldPtr<Bool>> out_record_bool;
+  Block<RecordFieldPtr<bool>> out_record_bool;
   Block<RecordFieldPtr<uChar>> out_record_char;
   Block<RecordFieldPtr<Short>> out_record_short;
   Block<RecordFieldPtr<Int>> out_record_int;
@@ -223,7 +223,7 @@ class CopyRecordToRecord {
   Block<RecordFieldPtr<Complex>> out_record_complex;
   Block<RecordFieldPtr<DComplex>> out_record_dcomplex;
   Block<RecordFieldPtr<String>> out_record_string;
-  Block<RecordFieldPtr<Array<Bool>>> out_record_array_bool;
+  Block<RecordFieldPtr<Array<bool>>> out_record_array_bool;
   Block<RecordFieldPtr<Array<uChar>>> out_record_array_char;
   Block<RecordFieldPtr<Array<Short>>> out_record_array_short;
   Block<RecordFieldPtr<Array<Int>>> out_record_array_int;

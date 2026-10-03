@@ -173,7 +173,7 @@ class Block;
 //   // The matching entry numbers are stored in a vector.
 //   Vector<uInt> result(fld1.nelements());
 //   uInt nr=0;
-//   Bool valb;
+//   bool valb;
 //   for (uInt i=0; i<fld1.nelements(); i++) {
 //     expr.get (eid, valb);
 //     if (valb) {
@@ -181,7 +181,7 @@ class Block;
 //     }
 //     subj.next();         // Next time the next entry must be used
 //   }
-//   result.resize (nr, True);
+//   result.resize (nr, true);
 //   return result;
 // }
 // </srcBlock>
@@ -219,7 +219,7 @@ class TableExprData {
   // The default <src>getDouble</src> invokes <src>getInt</src>.
   // The default <src>getDComplex</src> invokes <src>getDouble</src>.
   // <group>
-  virtual Bool getBool(const Block<Int>& fieldNrs) const;
+  virtual bool getBool(const Block<Int>& fieldNrs) const;
   virtual Int64 getInt(const Block<Int>& fieldNrs) const;
   virtual Double getDouble(const Block<Int>& fieldNrs) const;
   virtual DComplex getDComplex(const Block<Int>& fieldNrs) const;
@@ -232,7 +232,7 @@ class TableExprData {
   // The default <src>getArrayDComplex</src> invokes
   // <src>getArrayDouble</src>.
   // <group>
-  virtual Array<Bool> getArrayBool(const Block<Int>& fieldNrs) const;
+  virtual Array<bool> getArrayBool(const Block<Int>& fieldNrs) const;
   virtual Array<Int64> getArrayInt(const Block<Int>& fieldNrs) const;
   virtual Array<Double> getArrayDouble(const Block<Int>& fieldNrs) const;
   virtual Array<DComplex> getArrayDComplex(const Block<Int>& fieldNrs) const;

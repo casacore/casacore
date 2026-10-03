@@ -118,11 +118,11 @@ class CombiFunction : public CombiParam<T> {
   // Make this object a (deep) copy of other.
   // <group>
   CombiFunction(const CombiFunction<T> &other) : CombiParam<T>(other) {}
-  CombiFunction(const CombiFunction<T> &other, Bool) : CombiParam<T>(other, True) {}
+  CombiFunction(const CombiFunction<T> &other, bool) : CombiParam<T>(other, true) {}
   template <class W>
   CombiFunction(const CombiFunction<W> &other) : CombiParam<T>(other) {}
   template <class W>
-  CombiFunction(const CombiFunction<W> &other, Bool) : CombiParam<T>(other, True) {}
+  CombiFunction(const CombiFunction<W> &other, bool) : CombiParam<T>(other, true) {}
   // </group>
   // Make this object a (deep) copy of other.
   CombiFunction<T> &operator=(const CombiFunction<T> &other) {
@@ -146,7 +146,7 @@ class CombiFunction : public CombiParam<T> {
     return new CombiFunction<typename FunctionTraits<T>::DiffType>(*this);
   }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new CombiFunction<typename FunctionTraits<T>::BaseType>(*this, True);
+    return new CombiFunction<typename FunctionTraits<T>::BaseType>(*this, true);
   }
   // </group>
 
@@ -201,7 +201,7 @@ class CombiFunction_PS<AutoDiff<T>> : public CombiParam<AutoDiff<T>> {
     return new CombiFunction<typename FunctionTraits<AutoDiff<T>>::DiffType>(*this);
   }
   virtual Function<typename FunctionTraits<AutoDiff<T>>::BaseType> *cloneNonAD() const {
-    return new CombiFunction<typename FunctionTraits<AutoDiff<T>>::BaseType>(*this, True);
+    return new CombiFunction<typename FunctionTraits<AutoDiff<T>>::BaseType>(*this, true);
   }
   // </group>
 

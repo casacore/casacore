@@ -61,6 +61,6 @@ NullLogSink::~NullLogSink() {
   // Nothing
 }
 
-Bool NullLogSink::postLocally(const LogMessage &message) { return filter().pass(message); }
+bool NullLogSink::postLocally(const LogMessage &message) { return filter().pass(message); }
 
 }  // namespace casacore

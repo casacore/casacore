@@ -51,21 +51,21 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 #ifdef NDEBUG
 #define AssertCc(c) ((void)0)
 #else
-#define AssertCc(c)                                                                             \
-  {                                                                                             \
-    if (AIPS_UNLIKELY(!(c))) {                                                                  \
-      casacore::AipsError::throwIf(casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, \
-                                   __PRETTY_FUNCTION__);                                        \
-    }                                                                                           \
+#define AssertCc(c)                                                                   \
+  {                                                                                   \
+    if (AIPS_UNLIKELY(!(c))) {                                                        \
+      casacore::AipsError::throwIf(true, "Assertion failed: " #c, __FILE__, __LINE__, \
+                                   __PRETTY_FUNCTION__);                              \
+    }                                                                                 \
   }
 #endif
 
-#define AssertAlways(c)                                                                         \
-  {                                                                                             \
-    if (AIPS_UNLIKELY(!(c))) {                                                                  \
-      casacore::AipsError::throwIf(casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, \
-                                   __PRETTY_FUNCTION__);                                        \
-    }                                                                                           \
+#define AssertAlways(c)                                                               \
+  {                                                                                   \
+    if (AIPS_UNLIKELY(!(c))) {                                                        \
+      casacore::AipsError::throwIf(true, "Assertion failed: " #c, __FILE__, __LINE__, \
+                                   __PRETTY_FUNCTION__);                              \
+    }                                                                                 \
   }
 
 #define WarnCc(m)                                       \
@@ -97,21 +97,20 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 #endif
 
 // Throw an AipsError exception if the condition is true.
-#define ThrowIf(c, m)                                                                             \
-  {                                                                                               \
-    if (AIPS_UNLIKELY(c)) {                                                                       \
-      casacore::AipsError::throwIf(casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__); \
-    }                                                                                             \
+#define ThrowIf(c, m)                                                                   \
+  {                                                                                     \
+    if (AIPS_UNLIKELY(c)) {                                                             \
+      casacore::AipsError::throwIf(true, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__); \
+    }                                                                                   \
   }
 
 // Throw an AipsError exception if the system error code is not 0.
 // It adds the message for that error code to the exception text.
-#define ThrowIfError(c, m)                                                       \
-  {                                                                              \
-    if (AIPS_UNLIKELY(c)) {                                                      \
-      casacore::AipsError::throwIfError(casacore::True, (m), __FILE__, __LINE__, \
-                                        __PRETTY_FUNCTION__);                    \
-    }                                                                            \
+#define ThrowIfError(c, m)                                                                   \
+  {                                                                                          \
+    if (AIPS_UNLIKELY(c)) {                                                                  \
+      casacore::AipsError::throwIfError(true, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__); \
+    }                                                                                        \
   }
 
 // Repackage and rethrow an AipsError exception.
@@ -208,7 +207,7 @@ class AipsError : public std::exception {
                                       Int line, const char *func);
 
   // Throw if the condition is true.
-  static void throwIf(Bool condition, const String &message, const char *file, Int line,
+  static void throwIf(bool condition, const String &message, const char *file, Int line,
                       const char *func = "");
 
   // Throw if the system error code is not 0.

@@ -94,10 +94,10 @@ class ConcatColumn : public BaseColumn {
   ~ConcatColumn();
 
   // Test if the column is writable in the parent table.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Test if the column is stored (otherwise it is virtual).
-  virtual Bool isStored() const;
+  virtual bool isStored() const;
 
   // Get access to the column keyword set.
   // The initial keyword set is a copy of the keyword set of the first table.
@@ -110,7 +110,7 @@ class ConcatColumn : public BaseColumn {
   virtual rownr_t nrow() const;
 
   // Test if a value in a particular cell has been defined.
-  virtual Bool isDefined(rownr_t rownr) const;
+  virtual bool isDefined(rownr_t rownr) const;
 
   // Set the shape of the array in the given row.
   virtual void setShape(rownr_t rownr, const IPosition& shape);
@@ -134,7 +134,7 @@ class ConcatColumn : public BaseColumn {
   virtual IPosition tileShape(rownr_t rownr) const;
 
   // It can change shape if the underlying column can.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Initialize the rows from startRownr till endRownr (inclusive)
   // with the default value defined in the column description (if defined).

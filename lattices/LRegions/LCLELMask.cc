@@ -31,7 +31,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LCLELMask::LCLELMask() {}
 
-LCLELMask::LCLELMask(const LatticeExpr<Bool>& expr) : LCRegionSingle(expr.shape()), itsExpr(expr) {
+LCLELMask::LCLELMask(const LatticeExpr<bool>& expr) : LCRegionSingle(expr.shape()), itsExpr(expr) {
   IPosition shp = expr.shape();
   itsBox = LCBox(IPosition(shp.nelements(), 0), shp - 1, shp);
   setBoundingBox(itsBox.boundingBox());
@@ -55,11 +55,11 @@ LCLELMask& LCLELMask::operator=(const LCLELMask& that) {
   return *this;
 }
 
-Bool LCLELMask::equals(const LCRegion& that) const {
+bool LCLELMask::equals(const LCRegion& that) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionSingle::equals(that)) {
-    return False;
+    return false;
   }
   const LCLELMask& That = dynamic_cast<const LCLELMask&>(that);
   // Check the box and mask.
@@ -68,11 +68,11 @@ Bool LCLELMask::equals(const LCRegion& that) const {
 
 LCRegion* LCLELMask::cloneRegion() const { return new LCLELMask(*this); }
 
-Bool LCLELMask::lock(FileLocker::LockType type, uInt nattempts) {
+bool LCLELMask::lock(FileLocker::LockType type, uInt nattempts) {
   return itsExpr.lock(type, nattempts);
 }
 void LCLELMask::unlock() { itsExpr.unlock(); }
-Bool LCLELMask::hasLock(FileLocker::LockType type) const { return itsExpr.hasLock(type); }
+bool LCLELMask::hasLock(FileLocker::LockType type) const { return itsExpr.hasLock(type); }
 void LCLELMask::resync() { itsExpr.resync(); }
 void LCLELMask::tempClose() { itsExpr.tempClose(); }
 void LCLELMask::reopen() { itsExpr.reopen(); }

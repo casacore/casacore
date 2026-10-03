@@ -76,8 +76,8 @@ template <class T, class U>
 void Function<T, U>::getMode(RecordInterface &) const {}
 
 template <class T, class U>
-Bool Function<T, U>::hasMode() const {
-  return False;
+bool Function<T, U>::hasMode() const {
+  return false;
 }
 
 template <class T, class U>

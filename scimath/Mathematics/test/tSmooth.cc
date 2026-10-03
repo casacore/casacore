@@ -36,28 +36,28 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   {
-    Bool failed = False;
+    bool failed = false;
     // Test with Float Vectors, all flags 0
 
     std::vector<Float> vyin;
-    std::vector<Bool> vyinFlags;
+    std::vector<bool> vyinFlags;
 
     Vector<Float> myexp;
     Vector<Float> outv;
-    Vector<Bool> outFlags;
+    Vector<bool> outFlags;
 
     uInt vdim = 8;
 
     Float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
-    Bool myflags1[] = {0, 0, 0, 0, 0, 0, 0, 0};
+    bool myflags1[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
     Vector<Float> yin(vyin);
-    Vector<Bool> yinFlags(vyinFlags);
+    Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
     myexp[0] = 2. / 3. * vyin[0] + 1. / 3. * vyin[1];
@@ -66,9 +66,9 @@ int main() {
       myexp[i] = 0.25 * vyin[i - 1] + 0.5 * vyin[i] + 0.25 * vyin[i + 1];
     }
 
-    Vector<Bool> myexpflags(vdim, False);
-    myexpflags[0] = True;
-    myexpflags[7] = True;
+    Vector<bool> myexpflags(vdim, false);
+    myexpflags[0] = true;
+    myexpflags[7] = true;
 
     outv.resize(vdim);
     outFlags.resize(vdim);
@@ -77,7 +77,7 @@ int main() {
                            outFlags,  // the output mask
                            yin,       // the input
                            yinFlags,  // the input mask
-                           False);    // for flagging: good is not true
+                           false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
       for (uInt i = 0; i < vdim; i++) {
@@ -85,7 +85,7 @@ int main() {
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (!allEQ(myexpflags, outFlags)) {
@@ -94,7 +94,7 @@ int main() {
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (failed) {
@@ -105,30 +105,30 @@ int main() {
 
     cout << " the Float Vector Hanning Smooth Test, all unflagged" << endl;
     if (failed) {
-      anyFailures = True;
+      anyFailures = true;
     }
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test with Float Vectors, all flags 1
 
     std::vector<Float> vyin;
-    std::vector<Bool> vyinFlags;
+    std::vector<bool> vyinFlags;
 
     Vector<Float> myexp;
     Vector<Float> outv;
-    Vector<Bool> outFlags;
+    Vector<bool> outFlags;
 
     uInt vdim = 8;
 
     Float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
-    Bool myflags1[] = {1, 1, 1, 1, 1, 1, 1, 1};
+    bool myflags1[] = {1, 1, 1, 1, 1, 1, 1, 1};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
     Vector<Float> yin(vyin);
-    Vector<Bool> yinFlags(vyinFlags);
+    Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
     myexp.assign(yin);
@@ -136,13 +136,13 @@ int main() {
     outv.resize(vdim);
     outFlags.resize(vdim);
 
-    Vector<Bool> myexpflags(yinFlags);
+    Vector<bool> myexpflags(yinFlags);
 
     Smooth<Float>::hanning(outv,      // the output
                            outFlags,  // the output mask
                            yin,       // the input
                            yinFlags,  // the input mask
-                           False);    // for flagging: good is not true
+                           false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
       for (uInt i = 0; i < vdim; i++) {
@@ -150,7 +150,7 @@ int main() {
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (!allEQ(myexpflags, outFlags)) {
@@ -159,7 +159,7 @@ int main() {
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (failed) {
@@ -170,30 +170,30 @@ int main() {
 
     cout << " the Float Vector Hanning Smooth Test, all flagged" << endl;
     if (failed) {
-      anyFailures = True;
+      anyFailures = true;
     }
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test with Float Vectors, mixed flags
 
     std::vector<Float> vyin;
-    std::vector<Bool> vyinFlags;
+    std::vector<bool> vyinFlags;
 
     Vector<Float> myexp;
     Vector<Float> outv;
-    Vector<Bool> outFlags;
+    Vector<bool> outFlags;
 
     uInt vdim = 8;
 
     Float myyin[] = {1, 3, 1, 4, 2, 6, 3, 8};
-    Bool myflags1[] = {1, 0, 1, 1, 0, 0, 0, 1};
+    bool myflags1[] = {1, 0, 1, 1, 0, 0, 0, 1};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
     Vector<Float> yin(vyin);
-    Vector<Bool> yinFlags(vyinFlags);
+    Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
     myexp[0] = vyin[0];
@@ -205,7 +205,7 @@ int main() {
     myexp[6] = 1. / 3. * vyin[5] + 2. / 3. * vyin[6];
     myexp[7] = vyin[7];
 
-    Vector<Bool> myexpflags(vdim);
+    Vector<bool> myexpflags(vdim);
     myexpflags[0] = yinFlags[0] || yinFlags[1];
     myexpflags[1] = yinFlags[0] || yinFlags[1] || yinFlags[2];
     myexpflags[2] = yinFlags[1] || yinFlags[2] || yinFlags[3];
@@ -222,7 +222,7 @@ int main() {
                            outFlags,  // the output mask
                            yin,       // the input
                            yinFlags,  // the input mask
-                           False);    // for flagging: good is not true
+                           false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
       for (uInt i = 0; i < vdim; i++) {
@@ -230,7 +230,7 @@ int main() {
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (!allEQ(myexpflags, outFlags)) {
@@ -239,7 +239,7 @@ int main() {
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (failed) {
@@ -250,34 +250,34 @@ int main() {
 
     cout << " the Float Vector Hanning Smooth Test, mixed flags" << endl;
     if (failed) {
-      anyFailures = True;
+      anyFailures = true;
     }
   }
 
   /////////////////////////////////////
 
   {
-    Bool failed = False;
+    bool failed = false;
     // Test with Complex Vectors, all flags 0
 
     std::vector<Complex> vyin;
-    std::vector<Bool> vyinFlags;
+    std::vector<bool> vyinFlags;
 
     Vector<Complex> myexp;
     Vector<Complex> outv;
-    Vector<Bool> outFlags;
+    Vector<bool> outFlags;
 
     uInt vdim = 8;
 
     Complex myyin[] = {Complex(1., 1.), Complex(3., 3.), Complex(1., 1.), Complex(4., 4.),
                        Complex(2., 2.), Complex(6., 6.), Complex(3., 3.), Complex(8., 8.)};
-    Bool myflags1[] = {0, 0, 0, 0, 0, 0, 0, 0};
+    bool myflags1[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
     Vector<Complex> yin(vyin);
-    Vector<Bool> yinFlags(vyinFlags);
+    Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
     myexp[0] = Complex(2. / 3., 0.) * vyin[0] + Complex(1. / 3., 0.) * vyin[1];
@@ -287,9 +287,9 @@ int main() {
                  Complex(0.25, 0) * vyin[i + 1];
     }
 
-    Vector<Bool> myexpflags(vdim, False);
-    myexpflags[0] = True;
-    myexpflags[7] = True;
+    Vector<bool> myexpflags(vdim, false);
+    myexpflags[0] = true;
+    myexpflags[7] = true;
 
     outv.resize(vdim);
     outFlags.resize(vdim);
@@ -298,7 +298,7 @@ int main() {
                              outFlags,  // the output mask
                              yin,       // the input
                              yinFlags,  // the input mask
-                             False);    // for flagging: good is not true
+                             false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
       for (uInt i = 0; i < vdim; i++) {
@@ -306,7 +306,7 @@ int main() {
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (!allEQ(myexpflags, outFlags)) {
@@ -315,7 +315,7 @@ int main() {
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (failed) {
@@ -326,31 +326,31 @@ int main() {
 
     cout << " the Complex Vector Hanning Smooth Test, all unflagged" << endl;
     if (failed) {
-      anyFailures = True;
+      anyFailures = true;
     }
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test with Complex Vectors, mixed flags
 
     std::vector<Complex> vyin;
-    std::vector<Bool> vyinFlags;
+    std::vector<bool> vyinFlags;
 
     Vector<Complex> myexp;
     Vector<Complex> outv;
-    Vector<Bool> outFlags;
+    Vector<bool> outFlags;
 
     uInt vdim = 8;
 
     Complex myyin[] = {Complex(1., 1.), Complex(3., 3.), Complex(1., 1.), Complex(4., 4.),
                        Complex(2., 2.), Complex(6., 6.), Complex(3., 3.), Complex(8., 8.)};
-    Bool myflags1[] = {1, 0, 1, 1, 0, 0, 0, 1};
+    bool myflags1[] = {1, 0, 1, 1, 0, 0, 0, 1};
 
     vyin.assign(myyin, myyin + vdim);
     vyinFlags.assign(myflags1, myflags1 + vdim);
 
     Vector<Complex> yin(vyin);
-    Vector<Bool> yinFlags(vyinFlags);
+    Vector<bool> yinFlags(vyinFlags);
 
     myexp.resize(vdim);
     myexp[0] = vyin[0];
@@ -363,7 +363,7 @@ int main() {
     myexp[6] = Complex(2. / 3., 0.) * vyin[6] + Complex(1. / 3., 0.) * vyin[5];
     myexp[7] = vyin[7];
 
-    Vector<Bool> myexpflags(vdim);
+    Vector<bool> myexpflags(vdim);
     myexpflags[0] = yinFlags[0] || yinFlags[1];
     myexpflags[1] = yinFlags[0] || yinFlags[1] || yinFlags[2];
     myexpflags[2] = yinFlags[1] || yinFlags[2] || yinFlags[3];
@@ -380,7 +380,7 @@ int main() {
                              outFlags,  // the output mask
                              yin,       // the input
                              yinFlags,  // the input mask
-                             False);    // for flagging: good is not true
+                             false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
       for (uInt i = 0; i < vdim; i++) {
@@ -388,7 +388,7 @@ int main() {
         cout << i << " out " << outv[i] << endl;
         cout << i << " exp " << myexp[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (!allEQ(myexpflags, outFlags)) {
@@ -397,7 +397,7 @@ int main() {
         cout << i << " outFlags " << outFlags[i] << endl;
         cout << i << " expFlags " << myexpflags[i] << endl;
       }
-      failed = True;
+      failed = true;
     }
 
     if (failed) {
@@ -408,14 +408,14 @@ int main() {
 
     cout << " the Complex Vector Hanning Smooth Test, mixed flags" << endl;
     if (failed) {
-      anyFailures = True;
+      anyFailures = true;
     }
   }
 
   //////////////////////////////////////
 
   {
-    Bool failed = False;
+    bool failed = false;
     // Test with Complex Arrays, all flags 0
 
     uInt vdim = 8;
@@ -432,14 +432,14 @@ int main() {
                        Complex(2., 2.), Complex(6., 6.), Complex(6., 6.),
                        Complex(3., 3.), Complex(3., 3.), Complex(8., 8.),  // (0,7)
                        Complex(8., 8.)};                                   // (1,7)
-    Bool myflags[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    bool myflags[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     Array<Complex> myexp;
     Array<Complex> outv;
-    Array<Bool> outFlags;
+    Array<bool> outFlags;
 
     Array<Complex> yin(adim, myyin);
-    Array<Bool> yinFlags(adim, myflags);
+    Array<bool> yinFlags(adim, myflags);
 
     myexp.resize(adim);
     myexp(IPosition(2, 0, 0)) =
@@ -459,11 +459,11 @@ int main() {
                                   Complex(0.25, 0.) * myyin[2 * (i + 1) + 1];
     }
 
-    Array<Bool> myexpflags(adim, False);
-    myexpflags(IPosition(2, 0, 0)) = True;
-    myexpflags(IPosition(2, 1, 0)) = True;
-    myexpflags(IPosition(2, 0, 7)) = True;
-    myexpflags(IPosition(2, 1, 7)) = True;
+    Array<bool> myexpflags(adim, false);
+    myexpflags(IPosition(2, 0, 0)) = true;
+    myexpflags(IPosition(2, 1, 0)) = true;
+    myexpflags(IPosition(2, 0, 7)) = true;
+    myexpflags(IPosition(2, 1, 7)) = true;
 
     outv.resize(adim);
     outFlags.resize(adim);
@@ -472,7 +472,7 @@ int main() {
                              outFlags,  // the output mask
                              yin,       // the input
                              yinFlags,  // the input mask
-                             False);    // for flagging: good is not true
+                             false);    // for flagging: good is not true
 
     if (!allNearAbs(myexp, outv, 1.E-6)) {
       for (uInt i = 0; i < sdim; i++) {
@@ -482,7 +482,7 @@ int main() {
           cout << i << " " << j << " exp " << myexp(IPosition(2, i, j)) << endl;
         }
       }
-      failed = True;
+      failed = true;
     }
 
     if (!allEQ(myexpflags, outFlags)) {
@@ -493,7 +493,7 @@ int main() {
           cout << i << " " << j << " expFlags " << myexpflags(IPosition(2, i, j)) << endl;
         }
       }
-      failed = True;
+      failed = true;
     }
 
     if (failed) {
@@ -504,7 +504,7 @@ int main() {
 
     cout << " the Complex Array Hanning Smooth Test, all unflagged" << endl;
     if (failed) {
-      anyFailures = True;
+      anyFailures = true;
     }
   }
 

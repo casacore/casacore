@@ -183,10 +183,10 @@ void ArrayMeasColumn<M>::attach(const Table& tab, const String& columnName) {
 }
 
 template <class M>
-void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, Bool resize) const {
+void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, bool resize) const {
   // This will fail if array in rownr is undefined.
   Array<Double> tmpData((*itsDataCol)(rownr));
-  Bool deleteData;
+  bool deleteData;
   const Double* d_ptr = tmpData.getStorage(deleteData);
   const Double* d_p = d_ptr;
 
@@ -210,7 +210,7 @@ void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, Bool resize) const {
       throw(TableArrayConformanceError("ArrayMeasColumn::get"));
     }
   }
-  Bool deleteMeas;
+  bool deleteMeas;
   M* meas_p = meas.getStorage(deleteMeas);
 
   // Set up get() for reference component of measure.  Three possibilities:
@@ -221,19 +221,19 @@ void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, Bool resize) const {
   // or int.
 
   MeasRef<M> locMRef = itsMeasRef;
-  Bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
-  Bool strRefs = (itsArrRefStrCol != 0);
+  bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
+  bool strRefs = (itsArrRefStrCol != 0);
   Array<Int> intRefArr;
   Array<String> strRefArr;
   const Int* r_p = 0;
   const String* sr_p = 0;
-  Bool deleteRef;
+  bool deleteRef;
   if (refPerElem) {
     if (strRefs) {
-      itsArrRefStrCol->get(rownr, strRefArr, True);
+      itsArrRefStrCol->get(rownr, strRefArr, true);
       sr_p = strRefArr.getStorage(deleteRef);
     } else {
-      itsArrRefIntCol->get(rownr, intRefArr, True);
+      itsArrRefIntCol->get(rownr, intRefArr, true);
       r_p = intRefArr.getStorage(deleteRef);
     }
   } else {
@@ -247,12 +247,12 @@ void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, Bool resize) const {
   }
 
   // Setup for offset component of MeasRef.
-  Bool offsetPerElem = (itsArrOffsetCol != 0);
+  bool offsetPerElem = (itsArrOffsetCol != 0);
   Array<M> offsetArr;
   const M* os_p = 0;
-  Bool deleteOffset;
+  bool deleteOffset;
   if (offsetPerElem) {
-    itsArrOffsetCol->get(rownr, offsetArr, True);
+    itsArrOffsetCol->get(rownr, offsetArr, true);
     os_p = offsetArr.getStorage(deleteOffset);
   } else {
     if (itsOffsetCol != 0) {
@@ -344,7 +344,7 @@ Array<M> ArrayMeasColumn<M>::doConvert(rownr_t rownr, typename M::Convert& conv)
   Array<M> tmp;
   get(rownr, tmp);
   uInt n = tmp.nelements();
-  Bool deleteIt;
+  bool deleteIt;
   M* data = tmp.getStorage(deleteIt);
   for (uInt i = 0; i < n; i++) {
     data[i] = conv(data[i]);
@@ -354,7 +354,7 @@ Array<M> ArrayMeasColumn<M>::doConvert(rownr_t rownr, typename M::Convert& conv)
 }
 
 template <class M>
-void ArrayMeasColumn<M>::setDescRefCode(uInt refCode, Bool tableMustBeEmpty) {
+void ArrayMeasColumn<M>::setDescRefCode(uInt refCode, bool tableMustBeEmpty) {
   Table tab = table();
   if (tableMustBeEmpty && tab.nrow() != 0) {
     throw(
@@ -367,7 +367,7 @@ void ArrayMeasColumn<M>::setDescRefCode(uInt refCode, Bool tableMustBeEmpty) {
 }
 
 template <class M>
-void ArrayMeasColumn<M>::setDescOffset(const Measure& offset, Bool tableMustBeEmpty) {
+void ArrayMeasColumn<M>::setDescOffset(const Measure& offset, bool tableMustBeEmpty) {
   Table tab = table();
   if (tableMustBeEmpty && tab.nrow() != 0) {
     throw(
@@ -380,7 +380,7 @@ void ArrayMeasColumn<M>::setDescOffset(const Measure& offset, Bool tableMustBeEm
 }
 
 template <class M>
-void ArrayMeasColumn<M>::setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty) {
+void ArrayMeasColumn<M>::setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty) {
   Table tab = table();
   if (tableMustBeEmpty && tab.nrow() != 0) {
     throw(
@@ -400,11 +400,11 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
   if (n > 0 && itsNvals > 1) {
     shp.prepend(IPosition(1, itsNvals));
   }
-  Bool deleteData;
+  bool deleteData;
   Array<Double> dataArr(shp);
   Double* d_ptr = dataArr.getStorage(deleteData);
   Double* d_p = d_ptr;
-  Bool deleteMeas;
+  bool deleteMeas;
   const M* meas_p = meas.getStorage(deleteMeas);
 
   // Set up put for reference component of measure.  Three possibilities:
@@ -415,13 +415,13 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
   //   3. Ref varies per element of array. An array of references is written.
   // With 2 and 3 references are stored as either Strings or Ints.
   MeasRef<M> locMRef = itsMeasRef;
-  Bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
-  Bool strRefs = (itsArrRefStrCol != 0);
+  bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
+  bool strRefs = (itsArrRefStrCol != 0);
   Array<Int> intRefArr;
   Array<String> strRefArr;
   Int* r_p;
   String* sr_p;
-  Bool deleteRef;
+  bool deleteRef;
   if (refPerElem) {
     // References are variable per array element.
     if (strRefs) {
@@ -449,10 +449,10 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
   }
 
   // Setup for offset.
-  Bool offsetPerElem = (itsArrOffsetCol != 0);
+  bool offsetPerElem = (itsArrOffsetCol != 0);
   Array<M> offsetArr;
   M* os_p;
-  Bool deleteOffset;
+  bool deleteOffset;
   if (offsetPerElem) {
     // Offsets are variable array element.
     offsetArr.resize(meas.shape());

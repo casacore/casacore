@@ -79,8 +79,8 @@ class CompositeNumber {
   // return the closest even composite number
   uInt nearestEven(const uInt value);
 
-  // returns True is value is composite
-  Bool isComposite(const uInt value);
+  // returns true is value is composite
+  bool isComposite(const uInt value);
 
  private:
   Block<uInt> itsNumbers;

@@ -259,21 +259,21 @@ int main() {
                AipsError);
   {
     // getValue()
-    Bool thrown = False;
+    bool thrown = false;
     try {
       // doesn't throw by default
       Quantum<Double> q(1, "Hz");
       q.getValue("K");
     } catch (const std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     AlwaysAssert(!thrown, AipsError);
 
     try {
       Quantum<Double> q(1, "Hz");
-      q.getValue("K", True);
+      q.getValue("K", true);
     } catch (const std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     AlwaysAssert(thrown, AipsError);
 

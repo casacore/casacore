@@ -39,7 +39,7 @@ void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casaco
 Int ipow(Int base, uInt power);
 
 int main() {
-  Bool fail = 0;
+  bool fail = 0;
   casacore::Matrix<casacore::Double> pos;
   casacore::Vector<casacore::Double> f;
 

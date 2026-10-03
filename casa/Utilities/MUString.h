@@ -67,8 +67,8 @@ class Regex;
 //		starting at the beginning of the string
 //   <li> testX(arg)  -- all test methods test if the next available
 //		character(s) fulfill the specified argument test. E.g.
-//		<src>Bool testSign()</src> test if current character is + or -.
-//		If at end of string; False is returned, except for
+//		<src>bool testSign()</src> test if current character is + or -.
+//		If at end of string; false is returned, except for
 //		<src>testBlank()</src>. No pointer update. Any method with
 //		<em>NC</em> at the end (for no-case) will test irrespective
 //		of the case.
@@ -82,8 +82,8 @@ class Regex;
 //		Pointer updated. A get will always return a valid result.
 //		However, if the value did not exist (e.g.
 //		<src>Double getDouble()</src> form a string like <src>"abc"</src>
-//		will return 0.0) a False status will be saved. It can be
-//		interrogated by the <src>Bool status()</src> function.
+//		will return 0.0) a false status will be saved. It can be
+//		interrogated by the <src>bool status()</src> function.
 //		The string part used in producing the value is also
 //		saved, and can be obtained with
 //		<src>const String &lastGet()</src>.
@@ -152,21 +152,21 @@ class Regex;
 //  switch (tp) {
 // case 0: {
 //    UnitVal u; String us;
-//    if (!MVAngle::unitString(u,us,tmp)) return False;
+//    if (!MVAngle::unitString(u,us,tmp)) return false;
 //    r *= s;
 //    if (u == UnitVal::NODIM) {	// check correct dimension
 //      res = Quantity(r,"rad");
-//      return True;
+//      return true;
 //    };
 //    if (u == UnitVal::ANGLE) {
 //      res = Quantity(r,us);
-//      return True;
+//      return true;
 //    };
 //    if (u == UnitVal::TIME) {
 //      res = Quantity(Quantity(r/240.,us).getBaseValue(), "deg");
-//      return True;
+//      return true;
 //    };
-//    return False;
+//    return false;
 //  };
 //  break;
 //
@@ -209,7 +209,7 @@ class Regex;
 //    break;
 //
 //  };
-//  return True;
+//  return true;
 // </srcblock>
 // </example>
 //
@@ -262,35 +262,35 @@ class MUString {
   // Act on whitespace; adjusting pointer if skip
   // <group>
   void skipBlank();
-  Bool testBlank() const;
-  Bool tSkipBlank();
+  bool testBlank() const;
+  bool tSkipBlank();
   // </group>
 
   // Act on sign; return +1 or -1 depending on signs found (-- == +)
   // <group>
   void skipSign();
-  Bool testSign() const;
-  Bool tSkipSign();
+  bool testSign() const;
+  bool tSkipSign();
   Int getSign();
   // </group>
 
-  // Act on integer field. If no integer found in 0 returned; and False
+  // Act on integer field. If no integer found in 0 returned; and false
   // <group>
   void skipInt();
-  Bool testInt() const;
-  Bool tSkipInt();
+  bool testInt() const;
+  bool tSkipInt();
   Int getInt();
   void skipuInt();
-  Bool tSkipuInt();
-  Bool testuInt() const;
+  bool tSkipuInt();
+  bool testuInt() const;
   uInt getuInt();
   // </group>
 
-  // Act on Double field. If no value 0 returned and False.
+  // Act on Double field. If no value 0 returned and false.
   // <group>
   void skipDouble();
-  Bool testDouble() const;
-  Bool tSkipDouble();
+  bool testDouble() const;
+  bool tSkipDouble();
   Double getDouble();
   // </group>
 
@@ -298,25 +298,25 @@ class MUString {
   // <group>
   void skipChar(Int n = 1);
   void skipChar(Char ch);
-  Bool tSkipChar(Char nc);
+  bool tSkipChar(Char nc);
   void skipCharNC(Char ch);
-  Bool tSkipCharNC(Char ch);
-  Bool tSkipOneChar(Char ch);
-  Bool tSkipOneCharNC(Char ch);
+  bool tSkipCharNC(Char ch);
+  bool tSkipOneChar(Char ch);
+  bool tSkipOneCharNC(Char ch);
   void skipChar(const Regex &ex);
-  Bool tSkipChar(const Regex &ex);
+  bool tSkipChar(const Regex &ex);
   void skipAlpha();
-  Bool tSkipAlpha();
+  bool tSkipAlpha();
   void skipNum();
-  Bool tSkipNum();
+  bool tSkipNum();
   void skipAlphaNum();
-  Bool tSkipAlphaNum();
-  Bool testChar(Char ch) const;
-  Bool testCharNC(Char ch) const;
-  Bool testChar(const Regex &ex) const;
-  Bool testAlpha() const;
-  Bool testNum() const;
-  Bool testAlphaNum() const;
+  bool tSkipAlphaNum();
+  bool testChar(Char ch) const;
+  bool testCharNC(Char ch) const;
+  bool testChar(const Regex &ex) const;
+  bool testAlpha() const;
+  bool testNum() const;
+  bool testAlphaNum() const;
   Char getChar();
   String getAlpha();
   String getAlphaNum();
@@ -324,12 +324,12 @@ class MUString {
 
   // Act on series of characters
   // <group>
-  Bool testString(const Regex &ex) const;
-  Bool testString(const String &ex) const;
-  Bool testStringNC(const String &ex) const;
-  Bool tSkipString(const Regex &ex);
-  Bool tSkipString(const String &ex);
-  Bool tSkipStringNC(const String &ex);
+  bool testString(const Regex &ex) const;
+  bool testString(const String &ex) const;
+  bool testStringNC(const String &ex) const;
+  bool tSkipString(const Regex &ex);
+  bool tSkipString(const String &ex);
+  bool tSkipStringNC(const String &ex);
   void skipString(const Regex &ex);
   void skipString(const String &ex);
   void skipStringNC(const String &ex);
@@ -339,11 +339,11 @@ class MUString {
   // </group>
 
   // Match a pair of opening(at pointer)/closing characters (e.g. ( and )).
-  // Return False if wrong semantics. The string between the pair
+  // Return false if wrong semantics. The string between the pair
   // (excluding them)
-  // will be put in Last. If false, the ptr will be as originally; if True
+  // will be put in Last. If false, the ptr will be as originally; if true
   // it will point beyond the matched closing character
-  Bool matchPair(Char nd);
+  bool matchPair(Char nd);
 
   // Get frequency of occurrence
   Int freqChar(Char ch) const;
@@ -362,10 +362,10 @@ class MUString {
   void setPtr(Int in = 0);
 
   // test for end of string
-  Bool eos() const;
+  bool eos() const;
 
   // Get status last get
-  Bool status() const;
+  bool status() const;
 
   // Get String found at last get
   const String &lastGet() const;
@@ -389,7 +389,7 @@ class MUString {
   // Pointer into stack
   uInt stpt;
   // Status of last get
-  Bool stat;
+  bool stat;
   // String found at last get
   String lget;
 

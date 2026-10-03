@@ -81,7 +81,7 @@ class MSSysCalColumns {
   ~MSSysCalColumns();
 
   // Is this object defined? (MSSysCal table is optional)
-  Bool isNull() const { return isNull_p; }
+  bool isNull() const { return isNull_p; }
 
   // Access to required columns
   // <group>
@@ -99,33 +99,33 @@ class MSSysCalColumns {
   // <group>
   ScalarColumn<Float>& phaseDiff() { return phaseDiff_p; }
   ScalarQuantColumn<Float>& phaseDiffQuant() { return phaseDiffQuant_p; }
-  ScalarColumn<Bool>& phaseDiffFlag() { return phaseDiffFlag_p; }
+  ScalarColumn<bool>& phaseDiffFlag() { return phaseDiffFlag_p; }
   ArrayColumn<Float>& tant() { return tant_p; }
   ArrayQuantColumn<Float>& tantQuant() { return tantQuant_p; }
-  ScalarColumn<Bool>& tantFlag() { return tantFlag_p; }
+  ScalarColumn<bool>& tantFlag() { return tantFlag_p; }
   ArrayColumn<Float>& tantSpectrum() { return tantSpectrum_p; }
   ArrayQuantColumn<Float>& tantSpectrumQuant() { return tantSpectrumQuant_p; }
   ArrayColumn<Float>& tantTsys() { return tantTsys_p; }
-  ScalarColumn<Bool>& tantTsysFlag() { return tantTsysFlag_p; }
+  ScalarColumn<bool>& tantTsysFlag() { return tantTsysFlag_p; }
   ArrayColumn<Float>& tantTsysSpectrum() { return tantTsysSpectrum_p; }
   ArrayColumn<Float>& tcal() { return tcal_p; }
   ArrayQuantColumn<Float>& tcalQuant() { return tcalQuant_p; }
-  ScalarColumn<Bool>& tcalFlag() { return tcalFlag_p; }
+  ScalarColumn<bool>& tcalFlag() { return tcalFlag_p; }
   ArrayColumn<Float>& tcalSpectrum() { return tcalSpectrum_p; }
   ArrayQuantColumn<Float>& tcalSpectrumQuant() { return tcalSpectrumQuant_p; }
   ArrayColumn<Float>& trx() { return trx_p; }
   ArrayQuantColumn<Float>& trxQuant() { return trxQuant_p; }
-  ScalarColumn<Bool>& trxFlag() { return trxFlag_p; }
+  ScalarColumn<bool>& trxFlag() { return trxFlag_p; }
   ArrayColumn<Float>& trxSpectrum() { return trxSpectrum_p; }
   ArrayQuantColumn<Float>& trxSpectrumQuant() { return trxSpectrumQuant_p; }
   ArrayColumn<Float>& tsky() { return tsky_p; }
   ArrayQuantColumn<Float>& tskyQuant() { return tskyQuant_p; }
-  ScalarColumn<Bool>& tskyFlag() { return tskyFlag_p; }
+  ScalarColumn<bool>& tskyFlag() { return tskyFlag_p; }
   ArrayColumn<Float>& tskySpectrum() { return tskySpectrum_p; }
   ArrayQuantColumn<Float>& tskySpectrumQuant() { return tskySpectrumQuant_p; }
   ArrayColumn<Float>& tsys() { return tsys_p; }
   ArrayQuantColumn<Float>& tsysQuant() { return tsysQuant_p; }
-  ScalarColumn<Bool>& tsysFlag() { return tsysFlag_p; }
+  ScalarColumn<bool>& tsysFlag() { return tsysFlag_p; }
   ArrayColumn<Float>& tsysSpectrum() { return tsysSpectrum_p; }
   ArrayQuantColumn<Float>& tsysSpectrumQuant() { return tsysSpectrumQuant_p; }
   // </group>
@@ -146,33 +146,33 @@ class MSSysCalColumns {
   // <group>
   const ScalarColumn<Float>& phaseDiff() const { return phaseDiff_p; }
   const ScalarQuantColumn<Float>& phaseDiffQuant() const { return phaseDiffQuant_p; }
-  const ScalarColumn<Bool>& phaseDiffFlag() const { return phaseDiffFlag_p; }
+  const ScalarColumn<bool>& phaseDiffFlag() const { return phaseDiffFlag_p; }
   const ArrayColumn<Float>& tant() const { return tant_p; }
   const ArrayQuantColumn<Float>& tantQuant() const { return tantQuant_p; }
-  const ScalarColumn<Bool>& tantFlag() const { return tantFlag_p; }
+  const ScalarColumn<bool>& tantFlag() const { return tantFlag_p; }
   const ArrayColumn<Float>& tantSpectrum() const { return tantSpectrum_p; }
   const ArrayQuantColumn<Float>& tantSpectrumQuant() const { return tantSpectrumQuant_p; }
   const ArrayColumn<Float>& tantTsys() const { return tantTsys_p; }
-  const ScalarColumn<Bool>& tantTsysFlag() const { return tantTsysFlag_p; }
+  const ScalarColumn<bool>& tantTsysFlag() const { return tantTsysFlag_p; }
   const ArrayColumn<Float>& tantTsysSpectrum() const { return tantTsysSpectrum_p; }
   const ArrayColumn<Float>& tcal() const { return tcal_p; }
   const ArrayQuantColumn<Float>& tcalQuant() const { return tcalQuant_p; }
-  const ScalarColumn<Bool>& tcalFlag() const { return tcalFlag_p; }
+  const ScalarColumn<bool>& tcalFlag() const { return tcalFlag_p; }
   const ArrayColumn<Float>& tcalSpectrum() const { return tcalSpectrum_p; }
   const ArrayQuantColumn<Float>& tcalSpectrumQuant() const { return tcalSpectrumQuant_p; }
   const ArrayColumn<Float>& trx() const { return trx_p; }
   const ArrayQuantColumn<Float>& trxQuant() const { return trxQuant_p; }
-  const ScalarColumn<Bool>& trxFlag() const { return trxFlag_p; }
+  const ScalarColumn<bool>& trxFlag() const { return trxFlag_p; }
   const ArrayColumn<Float>& trxSpectrum() const { return trxSpectrum_p; }
   const ArrayQuantColumn<Float>& trxSpectrumQuant() const { return trxSpectrumQuant_p; }
   const ArrayColumn<Float>& tsky() const { return tsky_p; }
   const ArrayQuantColumn<Float>& tskyQuant() const { return tskyQuant_p; }
-  const ScalarColumn<Bool>& tskyFlag() const { return tskyFlag_p; }
+  const ScalarColumn<bool>& tskyFlag() const { return tskyFlag_p; }
   const ArrayColumn<Float>& tskySpectrum() const { return tskySpectrum_p; }
   const ArrayQuantColumn<Float>& tskySpectrumQuant() const { return tskySpectrumQuant_p; }
   const ArrayColumn<Float>& tsys() const { return tsys_p; }
   const ArrayQuantColumn<Float>& tsysQuant() const { return tsysQuant_p; }
-  const ScalarColumn<Bool>& tsysFlag() const { return tsysFlag_p; }
+  const ScalarColumn<bool>& tsysFlag() const { return tsysFlag_p; }
   const ArrayColumn<Float>& tsysSpectrum() const { return tsysSpectrum_p; }
   const ArrayQuantColumn<Float>& tsysSpectrumQuant() const { return tsysSpectrumQuant_p; }
   // </group>
@@ -187,10 +187,10 @@ class MSSysCalColumns {
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -210,7 +210,7 @@ class MSSysCalColumns {
   void attachOptionalCols(const MSSysCal& msSysCal);
 
   // # Is the object not attached to a Table.
-  Bool isNull_p;
+  bool isNull_p;
 
   // # required columns
   ScalarColumn<Int> antennaId_p;
@@ -220,24 +220,24 @@ class MSSysCalColumns {
   ScalarColumn<Double> time_p;
   // # optional columns
   ScalarColumn<Float> phaseDiff_p;
-  ScalarColumn<Bool> phaseDiffFlag_p;
+  ScalarColumn<bool> phaseDiffFlag_p;
   ArrayColumn<Float> tant_p;
-  ScalarColumn<Bool> tantFlag_p;
+  ScalarColumn<bool> tantFlag_p;
   ArrayColumn<Float> tantSpectrum_p;
   ArrayColumn<Float> tantTsys_p;
-  ScalarColumn<Bool> tantTsysFlag_p;
+  ScalarColumn<bool> tantTsysFlag_p;
   ArrayColumn<Float> tantTsysSpectrum_p;
   ArrayColumn<Float> tcal_p;
-  ScalarColumn<Bool> tcalFlag_p;
+  ScalarColumn<bool> tcalFlag_p;
   ArrayColumn<Float> tcalSpectrum_p;
   ArrayColumn<Float> trx_p;
-  ScalarColumn<Bool> trxFlag_p;
+  ScalarColumn<bool> trxFlag_p;
   ArrayColumn<Float> trxSpectrum_p;
   ArrayColumn<Float> tsky_p;
-  ScalarColumn<Bool> tskyFlag_p;
+  ScalarColumn<bool> tskyFlag_p;
   ArrayColumn<Float> tskySpectrum_p;
   ArrayColumn<Float> tsys_p;
-  ScalarColumn<Bool> tsysFlag_p;
+  ScalarColumn<bool> tsysFlag_p;
   ArrayColumn<Float> tsysSpectrum_p;
 
   // # Access to Measure columns

@@ -51,13 +51,13 @@ int main() {
     const Double eps = 1e-11;
     {
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bws(10);
       bws.setData(v0.begin(), v0.size());
       // test unsupported stats through an exception
       StatisticsData::STATS stat = StatisticsData::MEAN;
       for (uInt i = 0; i < 5; ++i) {
-        Bool thrown = False;
+        bool thrown = false;
         switch (i) {
           case 0:
             stat = StatisticsData::MEDIAN;
@@ -80,7 +80,7 @@ int main() {
         try {
           bws.getStatistic(stat);
         } catch (const std::exception& x) {
-          thrown = True;
+          thrown = true;
         }
         AlwaysAssert(thrown, AipsError);
       }
@@ -104,26 +104,26 @@ int main() {
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
       AlwaysAssert(sd.variance == 0, AipsError);
-      Bool thrown = False;
+      bool thrown = false;
       try {
         bws.getStatisticIndex(StatisticsData::MAX);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bws.getStatisticIndex(StatisticsData::MIN);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(bws.getStatistic(StatisticsData::NPTS) == 5, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bws.getStatistic(StatisticsData::RMS);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(near(bws.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
@@ -132,7 +132,7 @@ int main() {
     }
     {
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bws(-1);
       bws.setData(v0.begin(), v0.size());
       StatsData<Double> sd = bws.getStatistics();
@@ -155,26 +155,26 @@ int main() {
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
       AlwaysAssert(sd.variance == 0, AipsError);
-      Bool thrown = False;
+      bool thrown = false;
       try {
         bws.getStatisticIndex(StatisticsData::MAX);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bws.getStatisticIndex(StatisticsData::MIN);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(bws.getStatistic(StatisticsData::NPTS) == 5, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bws.getStatistic(StatisticsData::RMS);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(near(bws.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
@@ -183,12 +183,12 @@ int main() {
     }
     {
       // just another way of specifying the data
-      BiweightStatistics<Double, Double*, Bool*> bw1(10);
+      BiweightStatistics<Double, Double*, bool*> bw1(10);
       bw1.setData(k, 5);
       StatsData<Double> sd = bw1.getStatistics();
       StatisticsData::STATS stat = StatisticsData::MEAN;
       for (uInt i = 0; i < 5; ++i) {
-        Bool thrown = False;
+        bool thrown = false;
         switch (i) {
           case 0:
             stat = StatisticsData::MEDIAN;
@@ -211,7 +211,7 @@ int main() {
         try {
           bw1.getStatistic(stat);
         } catch (const std::exception& x) {
-          thrown = True;
+          thrown = true;
         }
         AlwaysAssert(thrown, AipsError);
       }
@@ -234,26 +234,26 @@ int main() {
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
       AlwaysAssert(sd.variance == 0, AipsError);
-      Bool thrown = False;
+      bool thrown = false;
       try {
         bw1.getStatisticIndex(StatisticsData::MAX);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw1.getStatisticIndex(StatisticsData::MIN);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(bw1.getStatistic(StatisticsData::NPTS) == 5, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw1.getStatistic(StatisticsData::RMS);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(near(bw1.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
@@ -263,7 +263,7 @@ int main() {
     {
       // two datasets
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw;
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
@@ -287,26 +287,26 @@ int main() {
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
       AlwaysAssert(sd.variance == 0, AipsError);
-      Bool thrown = False;
+      bool thrown = false;
       try {
         bw.getStatisticIndex(StatisticsData::MAX);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw.getStatisticIndex(StatisticsData::MIN);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(bw.getStatistic(StatisticsData::NPTS) == 8, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw.getStatistic(StatisticsData::RMS);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(near(bw.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
@@ -334,26 +334,26 @@ int main() {
       AlwaysAssert(sd.sum == 0, AipsError);
       AlwaysAssert(sd.sumsq == 0, AipsError);
       AlwaysAssert(sd.variance == 0, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw.getStatisticIndex(StatisticsData::MAX);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw.getStatisticIndex(StatisticsData::MIN);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(bw.getStatistic(StatisticsData::NPTS) == 8, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw.getStatistic(StatisticsData::RMS);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       AlwaysAssert(near(bw.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
@@ -363,9 +363,9 @@ int main() {
     {
       // Test accumulating as datasets are added.
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw;
-      bw.setCalculateAsAdded(False);
+      bw.setCalculateAsAdded(false);
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
       StatsData<Double> sd = bw.getStatistics();
@@ -392,25 +392,25 @@ int main() {
       AlwaysAssert(near(bw.getStatistic(StatisticsData::MEAN), expMean, eps), AipsError);
       AlwaysAssert(near(bw.getStatistic(StatisticsData::STDDEV), expStdev, eps), AipsError);
       AlwaysAssert(bw.getNiter() == 2, AipsError);
-      Bool thrown = False;
+      bool thrown = false;
       try {
-        bw.setCalculateAsAdded(True);
+        bw.setCalculateAsAdded(true);
       } catch (std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       bw.reset();
-      thrown = False;
+      thrown = false;
       try {
-        bw.setCalculateAsAdded(True);
+        bw.setCalculateAsAdded(true);
       } catch (std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
     }
     {
       // two datasets, stride = 2,1
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw;
       bw.setData(v0.begin(), v0.size(), 2);
       bw.addData(v1.begin(), v1.size());
@@ -441,16 +441,16 @@ int main() {
     {
       // data ranges
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw;
       std::vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 5;
       r0[0].second = -5;
-      Bool thrown = False;
+      bool thrown = false;
       try {
         bw.setData(v0.begin(), 3, r0);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       r0[0].first = 2.4;
@@ -461,7 +461,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       bw.setData(v0.begin(), v0.size(), r0);
-      bw.addData(v1.begin(), v1.size(), r1, False);
+      bw.addData(v1.begin(), v1.size(), r1, false);
       StatsData<Double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
@@ -488,17 +488,17 @@ int main() {
     }
     {
       // mask
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       bw.setData(v0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = bw.getStatistics();
@@ -526,9 +526,9 @@ int main() {
       AlwaysAssert(near(bw.getStatistic(StatisticsData::STDDEV), expStdev, eps), AipsError);
       // test cloning gives same results
       std::shared_ptr<BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                                         std::vector<Bool>::const_iterator>>
+                                         std::vector<bool>::const_iterator>>
           bw1(dynamic_cast<BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                                              std::vector<Bool>::const_iterator>*>(bw.clone()));
+                                              std::vector<bool>::const_iterator>*>(bw.clone()));
       sd = bw1->getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
@@ -553,25 +553,25 @@ int main() {
     }
     {
       // mask and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      bw.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(!sd.weighted, AipsError);
@@ -599,7 +599,7 @@ int main() {
     {
       // weights, which don't have any effect for this algorithm,
       // except for weight = 0
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -638,7 +638,7 @@ int main() {
     }
     {
       // integer weights
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -679,7 +679,7 @@ int main() {
     }
     {
       // weights and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -696,8 +696,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
@@ -724,7 +724,7 @@ int main() {
     }
     {
       // integer weights; ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -743,8 +743,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = bw.getStatistics();
       AlwaysAssert(!sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
@@ -771,7 +771,7 @@ int main() {
     }
     {
       // weights, ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -782,24 +782,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
@@ -826,7 +826,7 @@ int main() {
     }
     {
       // integer weights; ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -839,24 +839,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       StatsData<Double> sd = bw.getStatistics();
       AlwaysAssert(sd.masked, AipsError);
       AlwaysAssert(sd.weighted, AipsError);
@@ -883,7 +883,7 @@ int main() {
     }
     {
       // weights, masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -894,16 +894,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = bw.getStatistics();
@@ -932,7 +932,7 @@ int main() {
     }
     {
       // integer weights; masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -945,16 +945,16 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
       StatsData<Double> sd = bw.getStatistics();
@@ -983,7 +983,7 @@ int main() {
     }
     {
       // getMinMax(), two datasets
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
       Double mymin, mymax;
@@ -993,7 +993,7 @@ int main() {
     }
     {
       // getMinMax(), two datasets, stride = 2,1
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       bw.setData(v0.begin(), 3, 2);
       bw.addData(v1.begin(), v1.size());
       Double mymin, mymax;
@@ -1003,7 +1003,7 @@ int main() {
     }
     {
       // getMinMax(), data ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 2.4;
       r0[0].second = 6;
@@ -1013,7 +1013,7 @@ int main() {
       r1[1].first = 2;
       r1[1].second = 7;
       bw.setData(v0.begin(), v0.size(), r0);
-      bw.addData(v1.begin(), v1.size(), r1, False);
+      bw.addData(v1.begin(), v1.size(), r1, false);
       Double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1021,17 +1021,17 @@ int main() {
     }
     {
       // getMinMax(), mask
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = False;
-      m0[2] = False;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = False;
-      m1[1] = True;
-      m1[2] = False;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = false;
+      m0[2] = false;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = false;
+      m1[1] = true;
+      m1[2] = false;
       bw.setData(v0.begin(), m0.begin(), v0.size());
       bw.addData(v1.begin(), m1.begin(), v1.size());
       Double mymin, mymax;
@@ -1041,25 +1041,25 @@ int main() {
     }
     {
       // getMinMax(), mask and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
-      vector<Bool> m0(v0.size());
-      m0[0] = False;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
+      vector<bool> m0(v0.size());
+      m0[0] = false;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      bw.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), m0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1067,7 +1067,7 @@ int main() {
     }
     {
       // getMinMax, weights
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 1;
       w0[1] = 0;
@@ -1087,7 +1087,7 @@ int main() {
     }
     {
       // getMinMax, integer weights
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -1109,7 +1109,7 @@ int main() {
     }
     {
       // getMinMax(), weights and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -1126,8 +1126,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1135,7 +1135,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights, and ranges
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -1154,8 +1154,8 @@ int main() {
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 9;
-      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1163,7 +1163,7 @@ int main() {
     }
     {
       // getMinMax(), weights, ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       vector<Double> w0(v0.size());
       w0[0] = 0;
       w0[1] = 2;
@@ -1174,24 +1174,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1199,7 +1199,7 @@ int main() {
     }
     {
       // getMinMax(), integer weights, ranges, and masks
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator,
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator,
                          vector<Int>::const_iterator>
           bw;
       vector<Int> w0(v0.size());
@@ -1212,24 +1212,24 @@ int main() {
       w1[0] = 1;
       w1[1] = 2;
       w1[2] = 3;
-      vector<Bool> m0(v0.size());
-      m0[0] = True;
-      m0[1] = True;
-      m0[2] = True;
-      m0[3] = True;
-      m0[4] = True;
-      vector<Bool> m1(v1.size());
-      m1[0] = True;
-      m1[1] = True;
-      m1[2] = False;
+      vector<bool> m0(v0.size());
+      m0[0] = true;
+      m0[1] = true;
+      m0[2] = true;
+      m0[3] = true;
+      m0[4] = true;
+      vector<bool> m1(v1.size());
+      m1[0] = true;
+      m1[1] = true;
+      m1[2] = false;
       vector<std::pair<Double, Double>> r0(1);
       r0[0].first = 0.9;
       r0[0].second = 1.6;
       vector<std::pair<Double, Double>> r1(1);
       r1[0].first = 6;
       r1[0].second = 12;
-      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
-      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+      bw.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, false);
+      bw.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, true);
       Double mymin, mymax;
       bw.getMinMax(mymin, mymax);
       AlwaysAssert(mymin == 2.5, AipsError);
@@ -1237,44 +1237,44 @@ int main() {
     }
     {
       // general quantile exceptions
-      BiweightStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> bw;
+      BiweightStatistics<Double, vector<Double>::const_iterator, vector<bool>::const_iterator> bw;
       bw.setData(v0.begin(), v0.size());
       bw.addData(v1.begin(), v1.size());
-      Bool thrown = False;
+      bool thrown = false;
       try {
         bw.getQuantile(0.1);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         bw.getMedian();
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
-      thrown = False;
+      thrown = false;
       try {
         std::map<Double, Double> qToV;
         std::set<Double> qs;
         qs.insert(0.1);
         bw.getMedianAndQuantiles(qToV, qs);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       try {
         bw.getMedianAbsDevMed();
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
     }
     {
       // large array, getMinMax()
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw;
       std::vector<Double> big(1e7);
       uInt count = 0;
@@ -1293,7 +1293,7 @@ int main() {
       std::mt19937 g(rd());
       std::shuffle(big.begin(), big.end(), g);
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw1;
       bw1.addData(big.begin(), big.size());
       bw1.getMinMax(mymin, mymax);
@@ -1306,7 +1306,7 @@ int main() {
       uInt size[] = {5000, 80000, 6500, 100000, 19256, 7482};
       std::vector<std::vector<Double>> data(n);
       BiweightStatistics<Double, std::vector<Double>::const_iterator,
-                         std::vector<Bool>::const_iterator>
+                         std::vector<bool>::const_iterator>
           bw;
       uInt64 expec = 0;
       for (uInt i = 0; i < n; ++i) {
@@ -1318,10 +1318,10 @@ int main() {
       }
       AlwaysAssert(bw.getNPts() == expec, AipsError);
       bw.reset();
-      std::vector<Bool> mask3(size[3]);
-      std::fill(mask3.begin(), mask3.begin() + size[3], False);
-      mask3[1000] = True;
-      mask3[1500] = True;
+      std::vector<bool> mask3(size[3]);
+      std::fill(mask3.begin(), mask3.begin() + size[3], false);
+      mask3[1000] = true;
+      mask3[1500] = true;
       expec -= (size[3] - 2);
       for (uInt i = 0; i < n; ++i) {
         uInt s = size[i];

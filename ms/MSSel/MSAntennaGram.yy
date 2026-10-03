@@ -95,7 +95,7 @@
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 
   int MSAntennaGramlex (YYSTYPE*);
-  Bool MSAntennaGramNegate=False;
+  bool MSAntennaGramNegate=false;
   void reportError(char *token,String source=String(""))
   {
     LogIO logIO;
@@ -126,11 +126,11 @@
   void kungrachulations(const std::bitset<MSAntennaParse::HIGHESTLEVEL>& complexity)
   {
     LogIO logIO(LogOrigin("MSAntannaParse",""));
-    Bool level1=(complexity.test(MSAntennaParse::ANTREGEX) &&
+    bool level1=(complexity.test(MSAntennaParse::ANTREGEX) &&
 		 complexity.test(MSAntennaParse::ANTLIST)  &&
 		 complexity.test(MSAntennaParse::BASELINELIST));
-    Bool level2=(level1 && complexity.test(MSAntennaParse::STATIONLIST));
-    Bool level3=(level2 && complexity.test(MSAntennaParse::STATIONREGEX)
+    bool level2=(level1 && complexity.test(MSAntennaParse::STATIONLIST));
+    bool level3=(level2 && complexity.test(MSAntennaParse::STATIONREGEX)
 		 && complexity.test(MSAntennaParse::ANTATSTATIONLIST));
     if (level3)
       logIO << "Oh the brave one!\n  "
@@ -162,8 +162,8 @@ indexcombexpr: gbaseline                         {$$=$1;}
 		  MSAntennaParse::thisMSAParser->setComplexity(MSAntennaParse::BASELINELIST);
                 }
 
-gbaseline: NOT {MSAntennaGramNegate=True;}  baseline {$$=$3;}
-         |     {MSAntennaGramNegate=False;} baseline {$$=$2;}
+gbaseline: NOT {MSAntennaGramNegate=true;}  baseline {$$=$3;}
+         |     {MSAntennaGramNegate=false;} baseline {$$=$2;}
 
 baseline: antlist AMPERSAND antlist  // Two non-identical lists for the '&' operator
            {
@@ -282,7 +282,7 @@ stationid: identstr // IDENTIFIER
 	      //
 	      //	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	      $$ = new Vector<Int>(myMSAI.matchStationRegexOrPattern($1,True));
+	      $$ = new Vector<Int>(myMSAI.matchStationRegexOrPattern($1,true));
 	      if ((*($$)).nelements() == 0) reportError($1,"Station Expression");
 	      free($1);
 	      MSAntennaParse::thisMSAParser->setComplexity(MSAntennaParse::STATIONREGEX);
@@ -327,7 +327,7 @@ antid: identstr
 	  //
 	  //	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
 	  MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	  $$ = new Vector<Int>(myMSAI.matchAntennaRegexOrPattern($1,True));
+	  $$ = new Vector<Int>(myMSAI.matchAntennaRegexOrPattern($1,true));
 	  if ((*($$)).nelements() == 0) reportError($1);
 	  free($1);
 	  MSAntennaParse::thisMSAParser->setComplexity(MSAntennaParse::ANTREGEX);
@@ -388,7 +388,7 @@ stationlist: stationid
               {
                 $$ = $1;
 		Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
-		(*($$)).resize(N0+N1,True);  // Resize the existing list
+		(*($$)).resize(N0+N1,true);  // Resize the existing list
 		for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
 		delete $3;
 		MSAntennaParse::thisMSAParser->setComplexity(MSAntennaParse::STATIONLIST);
@@ -407,7 +407,7 @@ antlist: antids
           {
             $$ = $1;
 	    Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
-	    (*($$)).resize(N0+N1,True);  // Resize the existing list
+	    (*($$)).resize(N0+N1,true);  // Resize the existing list
 	    for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
 	    delete $3;
 	    MSAntennaParse::thisMSAParser->setComplexity(MSAntennaParse::ANTLIST);

@@ -46,7 +46,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
   cout << inters.hasMask() << ' ' << endl;
   cout << inters.boundingBox().start() << inters.boundingBox().end()
        << inters.boundingBox().length() << inters.latticeShape() << endl;
-  Array<Bool> mask;
+  Array<bool> mask;
   inters.getSlice(mask, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
   cout << mask << endl;
   {
@@ -56,7 +56,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     cout << inters.hasMask() << ' ' << endl;
     cout << inters.boundingBox().start() << inters.boundingBox().end()
          << inters.boundingBox().length() << inters.latticeShape() << endl;
-    Array<Bool> mask;
+    Array<bool> mask;
     inters.getSlice(mask, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
     cout << mask << endl;
   }
@@ -68,7 +68,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     AlwaysAssertExit(inters.boundingBox().end() == interscop->boundingBox().end());
     AlwaysAssertExit(inters.boundingBox().stride() == interscop->boundingBox().stride());
     AlwaysAssertExit(inters.boundingBox().length() == interscop->boundingBox().length());
-    Array<Bool> arr;
+    Array<bool> arr;
     interscop->getSlice(arr, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
     AlwaysAssertExit(allEQ(arr, mask));
     delete interscop;
@@ -81,7 +81,7 @@ void doIt(const IPosition& latticeShape, const IPosition& start, const IPosition
     AlwaysAssertExit(inters.boundingBox().end() == interscop->boundingBox().end());
     AlwaysAssertExit(inters.boundingBox().stride() == interscop->boundingBox().stride());
     AlwaysAssertExit(inters.boundingBox().length() == interscop->boundingBox().length());
-    Array<Bool> arr;
+    Array<bool> arr;
     interscop->getSlice(arr, IPosition(ndim, 0), inters.boundingBox().length(), IPosition(ndim, 1));
     AlwaysAssertExit(allEQ(arr, mask));
     delete interscop;

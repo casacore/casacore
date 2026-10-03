@@ -94,13 +94,13 @@ class RebinLattice : public MaskedLattice<T> {
 
   // Is the lattice masked?
   // It is if its parent lattice is masked.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Is the lattice paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Handle locking of the lattice which is delegated to its parent.
   // <br>It is strongly recommended to use class
@@ -108,9 +108,9 @@ class RebinLattice : public MaskedLattice<T> {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -139,18 +139,18 @@ class RebinLattice : public MaskedLattice<T> {
   virtual IPosition shape() const;
 
   // Return the name of the parent lattice.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
   virtual uInt advisedMaxPixels() const;
 
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // Do the actual getting of an array of values.
   // Slicers with non-unit stride are not yet supported
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual putting of an array of values.
   // The lattice is not writable.
@@ -159,7 +159,7 @@ class RebinLattice : public MaskedLattice<T> {
 
   // Get a section of the mask.
   // Slicers with non-unit stride are not yet supported
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Static function needed by LEL.  Applies binning factors
   // to shape to give the shape of the output lattice.  Will
@@ -170,14 +170,14 @@ class RebinLattice : public MaskedLattice<T> {
   Slicer findOriginalSlicer(const Slicer& section) const;
   void getDataAndMask(const Slicer& section);
   void bin(const Array<T>& dataIn);
-  void bin(const Array<T>& dataIn, const Array<Bool>& maskIn);
+  void bin(const Array<T>& dataIn, const Array<bool>& maskIn);
   //
   MaskedLattice<T>* itsLatticePtr;
   IPosition itsBin;
-  Bool itsAllUnity;
+  bool itsAllUnity;
   // Cache
   Array<T> itsData;
-  Array<Bool> itsMask;
+  Array<bool> itsMask;
   Slicer itsSlicer;
 };
 

@@ -109,7 +109,7 @@ class MSTableImpl {
                             const String& refCol);
 
   // Add the compress option for the given column to the TableDesc.
-  static void addColumnCompression(TableDesc&, const String& colName, Bool autoScale,
+  static void addColumnCompression(TableDesc&, const String& colName, bool autoScale,
                                    const String& type);
 
   // Setup the compression data managers if needed.
@@ -131,10 +131,10 @@ class MSTableImpl {
   // <group>
 
   // check that a TableDesc is valid
-  static Bool validate(const TableDesc& tabDesc, const TableDesc& requiredTD);
+  static bool validate(const TableDesc& tabDesc, const TableDesc& requiredTD);
 
   // check that the keyword set is valid
-  static Bool validate(const TableRecord& tabRec, const TableDesc& requiredTD);
+  static bool validate(const TableRecord& tabRec, const TableDesc& requiredTD);
 
   // </group>
 

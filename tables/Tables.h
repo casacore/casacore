@@ -1534,7 +1534,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Table tab ("some.name",
 //            TableLock(TableLock::UserLocking),
 //            Table::Update);
-// while (True) {
+// while (true) {
 //     get input data
 //     tab.lock();     // Acquire a write lock and wait for it.
 //     tab.addRow();
@@ -1582,7 +1582,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // RecordFieldPtr<Int> antFld(colInx.accessKey(), "ANTENNA");
 // // Now loop in some way and find the row for the antenna
 // // involved in that loop.
-// Bool found;
+// bool found;
 // while (...) {
 //     // Fill the key field and get the row number.
 //     // ANTENNA is a unique key, so only one row number matches.

@@ -64,7 +64,7 @@ String Quality::name(QualityTypes qualityType) {
   return qualityName;
 }
 
-Vector<String> Quality::allNames(Bool includeUndefined) {
+Vector<String> Quality::allNames(bool includeUndefined) {
   uInt size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
   Vector<String> names(size);
   uInt idx = 0;

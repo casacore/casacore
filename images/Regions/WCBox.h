@@ -319,13 +319,13 @@ class WCBox : public WCRegion {
   WCBox& operator=(const WCBox& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Clone a WCBox object.
   virtual WCRegion* cloneRegion() const;
 
   // WCBox can extend a region.
-  virtual Bool canExtend() const;
+  virtual bool canExtend() const;
 
   // Make a new box from the given axesin this box.
   WCBox splitBox(const IPosition& axes) const;
@@ -356,7 +356,7 @@ class WCBox : public WCRegion {
   IPosition itsPixelAxes;
   CoordinateSystem itsCSys;
   Vector<Int> itsAbsRel;
-  Bool itsNull;
+  bool itsNull;
 
   // Check units of quanta are consistent with CoordinateSystem
   void checkUnits(const IPosition& pixelAxes, const Vector<Quantum<Double>>& values,
@@ -364,7 +364,7 @@ class WCBox : public WCRegion {
 
   // Convert relative pixels to absolute or fill in defaults
   void convertPixel(Double& pixel, const Quantum<Double>& value, const Int absRel,
-                    const Double refPix, const Int shape, const Bool isBlc) const;
+                    const Double refPix, const Int shape, const bool isBlc) const;
 };
 
 }  // namespace casacore

@@ -114,9 +114,9 @@ class LCBox : public LCRegionFixed {
 
   // Verify a box specification.  Illegal (inlcuding blc > trc) or
   // unspecified values are  given 0 (blc) shape (trc) or
-  // unity (inc).  Returns <src>True</src> if any of the blc/trc/inc
-  // are changed from their input values, else returns <src>False</src>
-  static Bool verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPosition& shape);
+  // unity (inc).  Returns <src>true</src> if any of the blc/trc/inc
+  // are changed from their input values, else returns <src>false</src>
+  static bool verify(IPosition& blc, IPosition& trc, IPosition& inc, const IPosition& shape);
 
  protected:
   // Construct another LCBox (for e.g. another lattice) by moving
@@ -128,7 +128,7 @@ class LCBox : public LCRegionFixed {
  private:
   // Comparison.  Mask not checked. Use function
   // LRegionSingle::maskEqual  to do this
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Make a box from the blc,trc such that it does not exceed the
   // lattice boundaries.

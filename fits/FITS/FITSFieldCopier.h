@@ -254,7 +254,7 @@ class ArrayFITSFieldCopier : public FITSFieldCopier {
     uInt nfits = fits_p->nelements();
     uInt narray = (**rec_p).nelements();
     uInt nmin = narray < nfits ? narray : nfits;
-    Bool deleteIt;
+    bool deleteIt;
     const recordType *rptr = (**rec_p).getStorage(deleteIt);
     for (uInt i = 0; i < nmin; i++) {
       (*fits_p)(i) = rptr[i];
@@ -291,7 +291,7 @@ class VariableArrayFITSFieldCopier : public FITSFieldCopier {
     uInt nfits = fits_p->nelements();
     uInt narray = (**rec_p).nelements();
     uInt nmin = narray < nfits ? narray : nfits;
-    Bool deleteIt;
+    bool deleteIt;
     const recordType *rptr = (**rec_p).getStorage(deleteIt);
     for (uInt i = 0; i < nmin; i++) {
       (*fits_p)(i) = rptr[i];

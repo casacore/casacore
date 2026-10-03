@@ -72,125 +72,125 @@ Interpolate2D &Interpolate2D::operator=(const Interpolate2D &other) {
 
 // Float Versions
 
-Bool Interpolate2D::interp(Float &result, const Vector<Double> &where,
+bool Interpolate2D::interp(Float &result, const Vector<Double> &where,
                            const Matrix<Float> &data) const {
-  const Matrix<Bool> *maskPtr(0);
+  const Matrix<bool> *maskPtr(0);
   return ((*this).*itsFuncPtrFloat)(result, where, data, maskPtr);
 }
 
-Bool Interpolate2D::interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data,
-                           const Matrix<Bool> &mask) const {
-  const Matrix<Bool> *maskPtr = &mask;
+bool Interpolate2D::interp(Float &result, const Vector<Double> &where, const Matrix<Float> &data,
+                           const Matrix<bool> &mask) const {
+  const Matrix<bool> *maskPtr = &mask;
   return ((*this).*itsFuncPtrFloat)(result, where, data, maskPtr);
 }
 
 // Double versions
 
-Bool Interpolate2D::interp(Double &result, const Vector<Double> &where,
+bool Interpolate2D::interp(Double &result, const Vector<Double> &where,
                            const Matrix<Double> &data) const {
-  const Matrix<Bool> *maskPtr(0);
+  const Matrix<bool> *maskPtr(0);
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
 }
 
-Bool Interpolate2D::interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data,
-                           const Matrix<Bool> &mask) const {
-  const Matrix<Bool> *maskPtr = &mask;
+bool Interpolate2D::interp(Double &result, const Vector<Double> &where, const Matrix<Double> &data,
+                           const Matrix<bool> &mask) const {
+  const Matrix<bool> *maskPtr = &mask;
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
 }
 
 // Complex versions
-Bool Interpolate2D::interp(Complex &result, const Vector<Double> &where,
+bool Interpolate2D::interp(Complex &result, const Vector<Double> &where,
                            const Matrix<Complex> &data) const {
   Float realRes, imagRes;
   Matrix<Float> realData = (Matrix<Float>)real(data);
   Matrix<Float> imagData = (Matrix<Float>)imag(data);
-  const Matrix<Bool> *maskPtr(0);
-  Bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
+  const Matrix<bool> *maskPtr(0);
+  bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
   if (!realFunc) {
-    return False;
+    return false;
   }
-  Bool imagFunc = ((*this).*itsFuncPtrFloat)(imagRes, where, imagData, maskPtr);
+  bool imagFunc = ((*this).*itsFuncPtrFloat)(imagRes, where, imagData, maskPtr);
   if (!imagFunc) {
-    return False;
+    return false;
   }
   result = Complex(realRes, imagRes);
-  return True;
+  return true;
 }
 
-Bool Interpolate2D::interp(Complex &result, const Vector<Double> &where,
-                           const Matrix<Complex> &data, const Matrix<Bool> &mask) const {
+bool Interpolate2D::interp(Complex &result, const Vector<Double> &where,
+                           const Matrix<Complex> &data, const Matrix<bool> &mask) const {
   Float realRes, imagRes;
   Matrix<Float> realData = (Matrix<Float>)real(data);
   Matrix<Float> imagData = (Matrix<Float>)imag(data);
-  const Matrix<Bool> *maskPtr = &mask;
-  Bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
+  const Matrix<bool> *maskPtr = &mask;
+  bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
   if (!realFunc) {
-    return False;
+    return false;
   }
-  Bool imagFunc = ((*this).*itsFuncPtrFloat)(imagRes, where, imagData, maskPtr);
+  bool imagFunc = ((*this).*itsFuncPtrFloat)(imagRes, where, imagData, maskPtr);
   if (!imagFunc) {
-    return False;
+    return false;
   }
   result = Complex(realRes, imagRes);
-  return True;
+  return true;
 }
 
 // DComplex versions
-Bool Interpolate2D::interp(DComplex &result, const Vector<Double> &where,
+bool Interpolate2D::interp(DComplex &result, const Vector<Double> &where,
                            const Matrix<DComplex> &data) const {
   Double realRes, imagRes;
   Matrix<Double> realData = (Matrix<Double>)real(data);
   Matrix<Double> imagData = (Matrix<Double>)imag(data);
-  const Matrix<Bool> *maskPtr(0);
-  Bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
+  const Matrix<bool> *maskPtr(0);
+  bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
   if (!realFunc) {
-    return False;
+    return false;
   }
-  Bool imagFunc = ((*this).*itsFuncPtrDouble)(imagRes, where, imagData, maskPtr);
+  bool imagFunc = ((*this).*itsFuncPtrDouble)(imagRes, where, imagData, maskPtr);
   if (!imagFunc) {
-    return False;
+    return false;
   }
   result = DComplex(realRes, imagRes);
-  return True;
+  return true;
 }
 
-Bool Interpolate2D::interp(DComplex &result, const Vector<Double> &where,
-                           const Matrix<DComplex> &data, const Matrix<Bool> &mask) const {
+bool Interpolate2D::interp(DComplex &result, const Vector<Double> &where,
+                           const Matrix<DComplex> &data, const Matrix<bool> &mask) const {
   Double realRes, imagRes;
   Matrix<Double> realData = (Matrix<Double>)real(data);
   Matrix<Double> imagData = (Matrix<Double>)imag(data);
-  const Matrix<Bool> *maskPtr = &mask;
-  Bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
+  const Matrix<bool> *maskPtr = &mask;
+  bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
   if (!realFunc) {
-    return False;
+    return false;
   }
-  Bool imagFunc = ((*this).*itsFuncPtrDouble)(imagRes, where, imagData, maskPtr);
+  bool imagFunc = ((*this).*itsFuncPtrDouble)(imagRes, where, imagData, maskPtr);
   if (!imagFunc) {
-    return False;
+    return false;
   }
   result = DComplex(realRes, imagRes);
-  return True;
+  return true;
 }
 
 // Double version with two identicals and mask
 
-Bool Interpolate2D::interp(Double &resultI, Double &resultJ, const Vector<Double> &where,
+bool Interpolate2D::interp(Double &resultI, Double &resultJ, const Vector<Double> &where,
                            const Matrix<Double> &dataI, const Matrix<Double> &dataJ,
-                           const Matrix<Bool> &mask) const {
+                           const Matrix<bool> &mask) const {
   return interpLinear2<Double>(resultI, resultJ, where, dataI, dataJ, mask);
 }
 
 // Bool versions
 
-Bool Interpolate2D::interp(Bool &result, const Vector<Double> &where,
-                           const Matrix<Bool> &data) const {
+bool Interpolate2D::interp(bool &result, const Vector<Double> &where,
+                           const Matrix<bool> &data) const {
   return ((*this).*itsFuncPtrBool)(result, where, data);
 }
 
 // Private functions
 
-Bool Interpolate2D::interpNearestBool(Bool &result, const Vector<Double> &where,
-                                      const Matrix<Bool> &data) const {
+bool Interpolate2D::interpNearestBool(bool &result, const Vector<Double> &where,
+                                      const Matrix<bool> &data) const {
   AlwaysAssert(where.nelements() == 2, AipsError);
   const IPosition &shape = data.shape();
 
@@ -198,17 +198,17 @@ Bool Interpolate2D::interpNearestBool(Bool &result, const Vector<Double> &where,
 
   Int i = Int(where[0] + 0.5);
   Int j = Int(where[1] + 0.5);
-  Bool ok = False;
+  bool ok = false;
   if (i >= 0 && i <= shape(0) - 1 && j >= 0 && j <= shape(1) - 1) {
     result = data(i, j);
-    ok = True;
+    ok = true;
   }
   //
   return ok;
 }
 
-Bool Interpolate2D::interpLinearBool(Bool &result, const Vector<Double> &where,
-                                     const Matrix<Bool> &data) const {
+bool Interpolate2D::interpLinearBool(bool &result, const Vector<Double> &where,
+                                     const Matrix<bool> &data) const {
   AlwaysAssert(where.nelements() == 2, AipsError);
   const IPosition &shape = data.shape();
 
@@ -224,17 +224,17 @@ Bool Interpolate2D::interpLinearBool(Bool &result, const Vector<Double> &where,
 
   // 2x2 starting from [i,j]
 
-  Bool ok = False;
+  bool ok = false;
   if (i >= 0 && i + 1 <= shape(0) - 1 && j >= 0 && j + 1 <= shape(1) - 1) {
     result = !(!data(i, j) || !data(i + 1, j) || !data(i, j + 1) || !data(i + 1, j + 1));
-    ok = True;
+    ok = true;
   }
   //
   return ok;
 }
 
-Bool Interpolate2D::interpCubicBool(Bool &result, const Vector<Double> &where,
-                                    const Matrix<Bool> &data) const {
+bool Interpolate2D::interpCubicBool(bool &result, const Vector<Double> &where,
+                                    const Matrix<bool> &data) const {
   //
   // bi-cubic interpolation
   //
@@ -253,13 +253,13 @@ Bool Interpolate2D::interpCubicBool(Bool &result, const Vector<Double> &where,
     return interpLinearBool(result, where, data);
   }
   //
-  const Matrix<Bool> *p = &data;
+  const Matrix<bool> *p = &data;
   result = !(anyBadMaskPixels(p, i - 1, i + 2, j - 1, j + 2));
-  return True;
+  return true;
 }
 
-Bool Interpolate2D::interpLanczosBool(Bool & /*result*/, const Vector<Double> & /*where*/,
-                                      const Matrix<Bool> & /*data*/) const {
+bool Interpolate2D::interpLanczosBool(bool & /*result*/, const Vector<Double> & /*where*/,
+                                      const Matrix<bool> & /*data*/) const {
   throw(AipsError("Interpolate2D::interpLanczosBool() is not implemented"));
 }
 
@@ -331,14 +331,14 @@ Interpolate2D::Method Interpolate2D::stringToMethod(const String &method) {
   return method2;
 }
 
-Bool Interpolate2D::anyBadMaskPixels(const Matrix<Bool> *&maskPtr, Int i1, Int i2, Int j1,
+bool Interpolate2D::anyBadMaskPixels(const Matrix<bool> *&maskPtr, Int i1, Int i2, Int j1,
                                      Int j2) const {
   if (maskPtr) {
     for (Int j = j1; j <= j2; ++j)
       for (Int i = i1; i <= i2; ++i)
-        if (!(*maskPtr)(i, j)) return True;
+        if (!(*maskPtr)(i, j)) return true;
   }
-  return False;
+  return false;
 }
 
 }  // namespace casacore

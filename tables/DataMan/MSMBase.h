@@ -89,22 +89,22 @@ class MSMBase : public DataManager {
 
   // Set the hasPut_p flag. In this way the StManAipsIOColumn objects
   // can indicate that data have been put.
-  void setHasPut() { hasPut_p = True; }
+  void setHasPut() { hasPut_p = true; }
 
   // Get the nr of rows in this storage manager.
   rownr_t nrow() const { return nrrow_p; }
 
   // Does the storage manager allow to add rows? (yes)
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Does the storage manager allow to delete rows? (yes)
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Does the storage manager allow to add columns? (yes)
-  virtual Bool canAddColumn() const;
+  virtual bool canAddColumn() const;
 
   // Does the storage manager allow to delete columns? (yes)
-  virtual Bool canRemoveColumn() const;
+  virtual bool canRemoveColumn() const;
 
   // Make the object from the string.
   // This function gets registered in the DataManager "constructor" map.
@@ -112,8 +112,8 @@ class MSMBase : public DataManager {
 
  private:
   // Flush and optionally fsync the data.
-  // It does not done anything and always returns a False status.
-  virtual Bool flush(AipsIO&, Bool fsync);
+  // It does not done anything and always returns a false status.
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create the nr of rows needed.
   virtual void create64(rownr_t nrrow);
@@ -158,7 +158,7 @@ class MSMBase : public DataManager {
   // </group>
 
   // The MemoryStMan wants to do reallocateColumn.
-  virtual Bool canReallocateColumns() const;
+  virtual bool canReallocateColumns() const;
 
   // Reallocate the column object if it is part of this data manager.
   // It returns a pointer to the new column object.
@@ -182,7 +182,7 @@ class MSMBase : public DataManager {
   // The assembly of all columns.
   Block<MSMColumn*> colSet_p;
   // Has anything been put since the last flush?
-  Bool hasPut_p;
+  bool hasPut_p;
 };
 
 }  // namespace casacore

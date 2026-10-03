@@ -125,9 +125,9 @@ void Muvw::checkTypes() const { Muvw::checkMyTypes(); }
 
 void Muvw::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
+    first = false;
     Int nall, nex;
     const uInt *typ;
     const String *const tps = Muvw::allMyTypes(nall, nex, typ);
@@ -159,7 +159,7 @@ MDirection::Types Muvw::toDirType(const Muvw::Types in) {
   return static_cast<MDirection::Types>(static_cast<uInt>(in));
 }
 
-Bool Muvw::getType(Muvw::Types &tp, const String &in) {
+bool Muvw::getType(Muvw::Types &tp, const String &in) {
   const uInt *oname;
   Int nall, nex;
   const String *tname = Muvw::allMyTypes(nall, nex, oname);
@@ -167,37 +167,37 @@ Bool Muvw::getType(Muvw::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
-    return False;
+    return false;
   else
     tp = static_cast<Muvw::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
+bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
   Muvw::Types tp;
   if (Muvw::getType(tp, in))
     mr = Muvw::Ref(tp);
   else {
     mr = Muvw::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool Muvw::setOffset(const Measure &in) {
-  if (!dynamic_cast<const Muvw *>(&in)) return False;
+bool Muvw::setOffset(const Measure &in) {
+  if (!dynamic_cast<const Muvw *>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool Muvw::setRefString(const String &in) {
+bool Muvw::setRefString(const String &in) {
   Muvw::Types tp;
   if (Muvw::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(Muvw::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &Muvw::getDefaultType() const { return Muvw::showType(Muvw::DEFAULT); }

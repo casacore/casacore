@@ -39,13 +39,13 @@ LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& c
       itsCursorPos(latticeShape.nelements(), 0),
       itsAxisPath(IPosition::makeAxisPath(latticeShape.nelements())),
       itsNsteps(0),
-      itsEnd(False),
-      itsStart(True),
-      itsNiceFit(False),
-      itsHangover(False),
+      itsEnd(false),
+      itsStart(true),
+      itsNiceFit(false),
+      itsHangover(false),
       itsPolicy(hangOverPolicy) {
   setCursorShape(cursorShape);
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
@@ -55,13 +55,13 @@ LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& c
       itsCursorPos(latticeShape.nelements(), 0),
       itsAxisPath(IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
       itsNsteps(0),
-      itsEnd(False),
-      itsStart(True),
-      itsNiceFit(False),
-      itsHangover(False),
+      itsEnd(false),
+      itsStart(true),
+      itsNiceFit(false),
+      itsHangover(false),
       itsPolicy(hangOverPolicy) {
   setCursorShape(cursorShape);
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
@@ -72,13 +72,13 @@ LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& c
       itsCursorPos(latticeShape.nelements(), 0),
       itsAxisPath(IPosition::makeAxisPath(latticeShape.nelements(), axisPath)),
       itsNsteps(0),
-      itsEnd(False),
-      itsStart(True),
-      itsNiceFit(False),
-      itsHangover(False),
+      itsEnd(false),
+      itsStart(true),
+      itsNiceFit(false),
+      itsHangover(false),
       itsPolicy(hangOverPolicy) {
   setCursorShape(cursorShape, cursorAxes);
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 LatticeStepper::LatticeStepper(const LatticeStepper& other)
@@ -94,7 +94,7 @@ LatticeStepper::LatticeStepper(const LatticeStepper& other)
       itsNiceFit(other.itsNiceFit),
       itsHangover(other.itsHangover),
       itsPolicy(other.itsPolicy) {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 LatticeStepper::~LatticeStepper() {
@@ -115,23 +115,23 @@ LatticeStepper& LatticeStepper::operator=(const LatticeStepper& other) {
     itsHangover = other.itsHangover;
     itsPolicy = other.itsPolicy;
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return *this;
 }
 
-Bool LatticeStepper::operator++(int) {
-  DebugAssert(ok() == True, AipsError);
+bool LatticeStepper::operator++(int) {
+  DebugAssert(ok() == true, AipsError);
   if (itsEnd) {
-    return False;
+    return false;
   }
   // Increment the counter.
   itsNsteps++;
   // itsStart = false by definition when incrementing
-  itsStart = False;
-  Bool successful = itsIndexer.tiledCursorMove(True, itsCursorPos, itsCursorShape, itsAxisPath);
+  itsStart = false;
+  bool successful = itsIndexer.tiledCursorMove(true, itsCursorPos, itsCursorShape, itsAxisPath);
   if (successful) {
     // test for hang over since cursor has moved.
-    if (itsNiceFit == False) {
+    if (itsNiceFit == false) {
       const IPosition curPos(itsCursorPos);
       const IPosition curEndPos(itsCursorPos + itsCursorShape - 1);
       const IPosition latShape(itsIndexer.shape());
@@ -143,27 +143,27 @@ Bool LatticeStepper::operator++(int) {
       itsHangover = (i != ndim);
     }
   } else {
-    itsEnd = True;
+    itsEnd = true;
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return successful;
 }
 
-Bool LatticeStepper::operator--(int) {
-  DebugAssert(ok() == True, AipsError);
+bool LatticeStepper::operator--(int) {
+  DebugAssert(ok() == true, AipsError);
   if (itsStart) {
-    return False;
+    return false;
   }
   // Increment the counter.
   itsNsteps++;
   // itsEnd = false by definition when decrementing
-  itsEnd = False;
-  Bool successful = itsIndexer.tiledCursorMove(False, itsCursorPos, itsCursorShape, itsAxisPath);
+  itsEnd = false;
+  bool successful = itsIndexer.tiledCursorMove(false, itsCursorPos, itsCursorShape, itsAxisPath);
   if (successful) {
     // test for hang over since cursor has moved
     const IPosition curPos(itsCursorPos);
     const uInt ndim = itsIndexer.ndim();
-    if (itsNiceFit == False) {
+    if (itsNiceFit == false) {
       const IPosition curEndPos(itsCursorPos + itsCursorShape);
       const IPosition latShape(itsIndexer.shape());
       uInt i = 0;
@@ -173,66 +173,66 @@ Bool LatticeStepper::operator--(int) {
       itsHangover = (i != ndim);
     }
   } else {
-    itsStart = True;
+    itsStart = true;
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return successful;
 }
 
 void LatticeStepper::reset() {
   itsCursorPos = 0;
   itsNsteps = 0;
-  itsEnd = False;
-  itsStart = True;
-  itsHangover = False;
+  itsEnd = false;
+  itsStart = true;
+  itsHangover = false;
   if (!itsNiceFit) {
     const uInt ndim = itsIndexer.ndim();
     const IPosition latShape(itsIndexer.shape());
     for (uInt i = 0; i < ndim; i++) {
       if (itsCursorShape(i) > latShape(i)) {
-        itsHangover = True;
+        itsHangover = true;
       }
     }
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
-Bool LatticeStepper::atStart() const {
-  DebugAssert(ok() == True, AipsError);
+bool LatticeStepper::atStart() const {
+  DebugAssert(ok() == true, AipsError);
   return itsStart;
 }
 
-Bool LatticeStepper::atEnd() const {
-  DebugAssert(ok() == True, AipsError);
+bool LatticeStepper::atEnd() const {
+  DebugAssert(ok() == true, AipsError);
   return itsEnd;
 }
 
 uInt LatticeStepper::nsteps() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsNsteps;
 }
 
 IPosition LatticeStepper::position() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.absolutePosition(itsCursorPos);
 }
 
 IPosition LatticeStepper::relativePosition() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsCursorPos;
 }
 
 // Function which returns the current position of the end of the cursor
 // relative to the main Lattice.
 IPosition LatticeStepper::endPosition() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.absolutePosition(relativeEndPosition());
 }
 
 // Function which returns the current position of the end of the cursor
 // relative to the sub Lattice.
 IPosition LatticeStepper::relativeEndPosition() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   IPosition trc(itsCursorPos + itsCursorShape - 1);
   if (itsHangover) {
     const IPosition latticeShape(subLatticeShape());
@@ -247,12 +247,12 @@ IPosition LatticeStepper::relativeEndPosition() const {
 }
 
 IPosition LatticeStepper::latticeShape() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.fullShape();
 }
 
 IPosition LatticeStepper::subLatticeShape() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.shape();
 }
 
@@ -356,24 +356,24 @@ void LatticeStepper::setCursorShape(const IPosition& cursorShape, const IPositio
   }
   itsNiceFit = niceFit();
   reset();
-  AlwaysAssert(ok() == True, AipsError);
+  AlwaysAssert(ok() == true, AipsError);
 }
 
 IPosition LatticeStepper::cursorAxes() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsCursorAxes;
 }
 
 IPosition LatticeStepper::cursorShape() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (hangOver() && itsPolicy == RESIZE) {
     return relativeEndPosition() - relativePosition() + 1;
   }
   return itsCursorShape;
 }
 
-Bool LatticeStepper::hangOver() const {
-  DebugAssert(ok() == True, AipsError);
+bool LatticeStepper::hangOver() const {
+  DebugAssert(ok() == true, AipsError);
   return itsHangover;
 }
 
@@ -382,7 +382,7 @@ void LatticeStepper::subSection(const IPosition& blc, const IPosition& trc, cons
   itsIndexer.subSection(blc, trc, inc);
   itsNiceFit = niceFit();
   reset();
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 void LatticeStepper::subSection(const IPosition& blc, const IPosition& trc) {
@@ -390,27 +390,27 @@ void LatticeStepper::subSection(const IPosition& blc, const IPosition& trc) {
 }
 
 IPosition LatticeStepper::blc() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.offset();
 }
 
 IPosition LatticeStepper::trc() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.absolutePosition(itsIndexer.shape() - 1);
 }
 
 IPosition LatticeStepper::increment() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsIndexer.increment();
 }
 
 const IPosition& LatticeStepper::axisPath() const {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsAxisPath;
 }
 
 // check if the cursor shape is an sub-multiple of the Lattice shape
-Bool LatticeStepper::niceFit() const {
+bool LatticeStepper::niceFit() const {
   const uInt cursorDim = itsCursorShape.nelements();
   // Determine if the Lattice shape is a multiple of the cursor shape.
   uInt i = 0;
@@ -426,11 +426,11 @@ uInt LatticeStepper::calcCacheSize(const IPosition& cubeShape, const IPosition& 
                                    uInt maxCacheSize, uInt bucketSize) const {
   return (bucketSize == 0
               ? 0
-              : TSMCube::calcCacheSize(cubeShape, tileShape, False, itsCursorShape, blc(),
+              : TSMCube::calcCacheSize(cubeShape, tileShape, false, itsCursorShape, blc(),
                                        trc() - blc() + 1, itsAxisPath, maxCacheSize, bucketSize));
 }
 
-Bool LatticeStepper::ok() const {
+bool LatticeStepper::ok() const {
   ostringstream str;
   str << "LatticeStepper::ok - ";
   const uInt latticeDim = itsIndexer.ndim();
@@ -439,7 +439,7 @@ Bool LatticeStepper::ok() const {
     str << "cursor shape " << itsCursorShape << " has wrong number of dimensions (ie. not "
         << latticeDim << ')';
     throw AipsError(String(str.str()));
-    return False;
+    return false;
   }
   for (uInt i = 0; i < latticeDim; i++) {
     // the cursor shape must be <= the corresponding lattice axes AND
@@ -448,7 +448,7 @@ Bool LatticeStepper::ok() const {
       str << "cursor shape " << itsCursorShape << " is too big or small for full lattice shape "
           << itsIndexer.fullShape();
       throw AipsError(String(str.str()));
-      return False;
+      return false;
     }
   }
   // Check the cursor position is OK
@@ -456,7 +456,7 @@ Bool LatticeStepper::ok() const {
     str << "cursor position " << itsCursorPos << " has wrong number of dimensions (ie. not "
         << latticeDim << ')';
     throw AipsError(String(str.str()));
-    return False;
+    return false;
   }
 
   // cursor position or its "far corner" must be inside the (sub)-Lattice
@@ -465,7 +465,7 @@ Bool LatticeStepper::ok() const {
     str << "cursor beginning " << itsCursorPos << " or end " << itsCursorPos + itsCursorShape - 1
         << " is entirely outside the lattice shape " << itsIndexer.shape();
     throw AipsError(String(str.str()));
-    return False;
+    return false;
   }
 
   // check the Axis Path is OK
@@ -473,14 +473,14 @@ Bool LatticeStepper::ok() const {
     str << "axis path " << itsAxisPath << " has wrong number of dimensions (ie. not " << latticeDim
         << ')';
     throw AipsError(String(str.str()));
-    return False;
+    return false;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
   for (uInt n = 0; n < latticeDim; n++) {
     if (itsAxisPath(n) >= Int(latticeDim)) {
       str << "axis path " << itsAxisPath << " has elements >= the lattice dim " << latticeDim - 1;
       throw AipsError(String(str.str()));
-      return False;
+      return false;
     }
   }
   // each itsAxisPath value must be unique
@@ -489,24 +489,24 @@ Bool LatticeStepper::ok() const {
       if (itsAxisPath(k) == itsAxisPath(j)) {
         str << "axis path " << itsAxisPath << " does not have unique elements";
         throw AipsError(String(str.str()));
-        return False;
+        return false;
       }
     }
   }
   // Check the LatticeIndexer is OK
-  if (itsIndexer.ok() == False) {
+  if (itsIndexer.ok() == false) {
     str << "LatticeIndexer thinks things are bad";
     throw AipsError(String(str.str()));
-    return False;
+    return false;
   }
   // Check if itsNiceFit is correct.
   if (itsNiceFit != niceFit()) {
     str << "itsNiceFit " << itsNiceFit << " is inconsistent with niceFit()";
     throw AipsError(String(str.str()));
-    return False;
+    return false;
   }
   // Otherwise it has passed all the tests
-  return True;
+  return true;
 }
 
 }  // namespace casacore

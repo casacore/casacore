@@ -49,7 +49,7 @@ class TestUDF : public UDFBase {
     setDataType(TableExprNodeRep::NTBool);
     setNDim(0);  // scalar
   }
-  Bool getBool(const TableExprId& id) { return operands()[0]->getInt(id) == 1; }
+  bool getBool(const TableExprId& id) { return operands()[0]->getInt(id) == 1; }
 };
 
 class TestUDFAggr : public UDFBase {
@@ -62,7 +62,7 @@ class TestUDFAggr : public UDFBase {
     AlwaysAssert(operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
     setDataType(TableExprNodeRep::NTInt);
     setNDim(0);          // scalar
-    setAggregate(True);  // aggregate function
+    setAggregate(true);  // aggregate function
   }
   Int64 getInt(const TableExprId& id) {
     const TableExprIdAggr& aid = TableExprIdAggr::cast(id);

@@ -39,30 +39,30 @@ void LASTColumn::get(rownr_t rowNr, Double& data) { data = itsEngine->getLAST(it
 
 HaDecColumn::~HaDecColumn() {}
 IPosition HaDecColumn::shape(rownr_t) { return IPosition(1, 2); }
-Bool HaDecColumn::isShapeDefined(rownr_t) { return True; }
+bool HaDecColumn::isShapeDefined(rownr_t) { return true; }
 void HaDecColumn::getArray(rownr_t rowNr, Array<Double>& data) {
   itsEngine->getHaDec(itsAntNr, rowNr, data);
 }
 
 AzElColumn::~AzElColumn() {}
 IPosition AzElColumn::shape(rownr_t) { return IPosition(1, 2); }
-Bool AzElColumn::isShapeDefined(rownr_t) { return True; }
+bool AzElColumn::isShapeDefined(rownr_t) { return true; }
 void AzElColumn::getArray(rownr_t rowNr, Array<Double>& data) {
   itsEngine->getAzEl(itsAntNr, rowNr, data);
 }
 
 ItrfColumn::~ItrfColumn() {}
 IPosition ItrfColumn::shape(rownr_t) { return IPosition(1, 2); }
-Bool ItrfColumn::isShapeDefined(rownr_t) { return True; }
+bool ItrfColumn::isShapeDefined(rownr_t) { return true; }
 void ItrfColumn::getArray(rownr_t rowNr, Array<Double>& data) {
   itsEngine->getItrf(itsAntNr, rowNr, data);
 }
 
 UVWJ2000Column::~UVWJ2000Column() {}
 IPosition UVWJ2000Column::shape(rownr_t) { return IPosition(1, 3); }
-Bool UVWJ2000Column::isShapeDefined(rownr_t) { return True; }
+bool UVWJ2000Column::isShapeDefined(rownr_t) { return true; }
 void UVWJ2000Column::getArray(rownr_t rowNr, Array<Double>& data) {
-  itsEngine->getNewUVW(False, rowNr, data);
+  itsEngine->getNewUVW(false, rowNr, data);
 }
 
 }  // namespace casacore

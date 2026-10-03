@@ -85,7 +85,7 @@ class MSObservationColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Bool>& flagRow() { return flagRow_p; }
+  ScalarColumn<bool>& flagRow() { return flagRow_p; }
   ArrayColumn<String>& log() { return log_p; }
   ScalarColumn<String>& observer() { return observer_p; }
   ScalarColumn<String>& project() { return project_p; }
@@ -102,7 +102,7 @@ class MSObservationColumns {
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Bool>& flagRow() const { return flagRow_p; }
+  const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
   const ArrayColumn<String>& log() const { return log_p; }
   const ScalarColumn<String>& observer() const { return observer_p; }
   const ScalarColumn<String>& project() const { return project_p; }
@@ -126,10 +126,10 @@ class MSObservationColumns {
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -146,7 +146,7 @@ class MSObservationColumns {
   MSObservationColumns& operator=(const MSObservationColumns&);
 
   // # required columns
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<bool> flagRow_p;
   ArrayColumn<String> log_p;
   ScalarColumn<String> observer_p;
   ScalarColumn<String> project_p;

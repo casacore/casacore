@@ -79,13 +79,13 @@ void ForwardColumnEngine::setRefTable(const Table& refTable) {
   }
 }
 
-Bool ForwardColumnEngine::canAddRow() const { return True; }
-Bool ForwardColumnEngine::canRemoveRow() const { return True; }
+bool ForwardColumnEngine::canAddRow() const { return true; }
+bool ForwardColumnEngine::canRemoveRow() const { return true; }
 void ForwardColumnEngine::addRow64(rownr_t) {}
 void ForwardColumnEngine::removeRow64(rownr_t) {}
 
-Bool ForwardColumnEngine::canAddColumn() const { return True; }
-Bool ForwardColumnEngine::canRemoveColumn() const { return True; }
+bool ForwardColumnEngine::canAddColumn() const { return true; }
+bool ForwardColumnEngine::canRemoveColumn() const { return true; }
 
 // Note that the column has already been added by makeXXColumn.
 // This function is merely for initializing the added column.
@@ -202,7 +202,7 @@ void ForwardColumn::fillTableName(const Table& thisTable, const Table& refTable)
   // Set the column (temporarily) to writable, so a TableColumn
   // object can be created for adding the keyword.
   // Prepare will set the writable switch correctly.
-  writable_p = True;
+  writable_p = true;
   // When the table (in which this virtual column is used) is new,
   // the name of the outermost non-forwarding table will be stored
   // as a column keyword.
@@ -226,9 +226,9 @@ void ForwardColumn::fillTableName(const Table& thisTable, const Table& refTable)
   thisCol.rwKeywordSet().define("_ForwardColumn_TableName" + enginePtr_p->suffix(), name);
 }
 
-void ForwardColumn::prepare(const Table& thisTable) { basePrepare(thisTable, True); }
+void ForwardColumn::prepare(const Table& thisTable) { basePrepare(thisTable, true); }
 
-void ForwardColumn::basePrepare(const Table& thisTable, Bool writable) {
+void ForwardColumn::basePrepare(const Table& thisTable, bool writable) {
   TableColumn thisCol(thisTable, colName_p);
   // Open the original table as stored in the special keyword.
   // Open it for read/write if this table is writable and if the
@@ -238,7 +238,7 @@ void ForwardColumn::basePrepare(const Table& thisTable, Bool writable) {
   writable_p = writable;
   if (writable_p) {
     if (!(thisTable.isWritable() && Table::isWritable(name))) {
-      writable_p = False;
+      writable_p = false;
     }
   }
   if (writable_p) {
@@ -261,7 +261,7 @@ void ForwardColumn::basePrepare(const Table& thisTable, Bool writable) {
   enginePtr_p->setRefTable(origTable_p);
 }
 
-Bool ForwardColumn::isWritable() const { return writable_p; }
+bool ForwardColumn::isWritable() const { return writable_p; }
 
 void ForwardColumn::setRW() {
   // Set the column to writable if the underlying table is writable
@@ -274,7 +274,7 @@ void ForwardColumn::setRW() {
     }
   }
   if (origTable_p.isColumnWritable(colName_p)) {
-    writable_p = True;
+    writable_p = true;
   }
 }
 
@@ -294,10 +294,10 @@ uInt ForwardColumn::ndim(rownr_t rownr) { return colPtr_p->ndim(rownr); }
 
 IPosition ForwardColumn::shape(rownr_t rownr) { return colPtr_p->shape(rownr); }
 
-Bool ForwardColumn::isShapeDefined(rownr_t rownr) { return colPtr_p->isDefined(rownr); }
+bool ForwardColumn::isShapeDefined(rownr_t rownr) { return colPtr_p->isDefined(rownr); }
 
-Bool ForwardColumn::canChangeShape() const {
-  return (colPtr_p == 0 ? False : colPtr_p->canChangeShape());
+bool ForwardColumn::canChangeShape() const {
+  return (colPtr_p == 0 ? false : colPtr_p->canChangeShape());
 }
 
 void ForwardColumn::getArrayV(rownr_t rownr, ArrayBase& dataPtr) {
@@ -360,8 +360,8 @@ void ForwardColumn::putColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns
   colPtr_p->putColumnSliceCells(rownrs, ns, dataPtr);
 }
 
-void ForwardColumn::getBool(rownr_t rownr, Bool* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putBool(rownr_t rownr, const Bool* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::getBool(rownr_t rownr, bool* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::putBool(rownr_t rownr, const bool* dataPtr) { colPtr_p->put(rownr, dataPtr); }
 
 void ForwardColumn::getuChar(rownr_t rownr, uChar* dataPtr) { colPtr_p->get(rownr, dataPtr); }
 void ForwardColumn::putuChar(rownr_t rownr, const uChar* dataPtr) { colPtr_p->put(rownr, dataPtr); }

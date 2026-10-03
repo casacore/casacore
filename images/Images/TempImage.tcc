@@ -103,17 +103,17 @@ String TempImage<T>::imageType() const {
 }
 
 template <class T>
-Bool TempImage<T>::isPaged() const {
+bool TempImage<T>::isPaged() const {
   return mapPtr_p->isPaged();
 }
 
 template <class T>
-Bool TempImage<T>::canReferenceArray() const {
+bool TempImage<T>::canReferenceArray() const {
   return mapPtr_p->canReferenceArray();
 }
 
 template <class T>
-Bool TempImage<T>::isWritable() const {
+bool TempImage<T>::isWritable() const {
   return mapPtr_p->isWritable();
 }
 
@@ -184,7 +184,7 @@ void TempImage<T>::applyMask(const String& maskName) {
 }
 
 template <class T>
-void TempImage<T>::attachMask(const Lattice<Bool>& mask) {
+void TempImage<T>::attachMask(const Lattice<bool>& mask) {
   if (!shape().isEqual(mask.shape())) {
     throw(
         AipsError("TempImage::attachMask - "
@@ -199,7 +199,7 @@ void TempImage<T>::attachMask(const Lattice<Bool>& mask) {
 
 template <class T>
 void TempImage<T>::removeRegion(const String& name, RegionHandler::GroupType type,
-                                Bool throwIfUnknown) {
+                                bool throwIfUnknown) {
   // Remove the default mask if it is the region to be removed.
   if (name == getDefaultMask()) {
     setDefaultMask("");
@@ -208,17 +208,17 @@ void TempImage<T>::removeRegion(const String& name, RegionHandler::GroupType typ
 }
 
 template <class T>
-Bool TempImage<T>::isMasked() const {
+bool TempImage<T>::isMasked() const {
   return (maskPtr_p != 0);
 }
 
 template <class T>
-Bool TempImage<T>::hasPixelMask() const {
+bool TempImage<T>::hasPixelMask() const {
   return (maskPtr_p != 0);
 }
 
 template <class T>
-const Lattice<Bool>& TempImage<T>::pixelMask() const {
+const Lattice<bool>& TempImage<T>::pixelMask() const {
   if (maskPtr_p == 0) {
     throw(AipsError("TempImage::pixelMask - no mask attached"));
   }
@@ -226,7 +226,7 @@ const Lattice<Bool>& TempImage<T>::pixelMask() const {
 }
 
 template <class T>
-Lattice<Bool>& TempImage<T>::pixelMask() {
+Lattice<bool>& TempImage<T>::pixelMask() {
   if (maskPtr_p == 0) {
     throw(AipsError("TempImage::pixelMask - no mask attached"));
   }
@@ -234,8 +234,8 @@ Lattice<Bool>& TempImage<T>::pixelMask() {
 }
 
 template <class T>
-Bool TempImage<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
-  // If no mask, base implementation returns a True mask.
+bool TempImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
+  // If no mask, base implementation returns a true mask.
   if (maskPtr_p == 0) {
     return MaskedLattice<T>::doGetMaskSlice(buffer, section);
   }
@@ -259,7 +259,7 @@ void TempImage<T>::resize(const TiledShape& newShape) {
 }
 
 template <class T>
-Bool TempImage<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool TempImage<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   return mapPtr_p->doGetSlice(buffer, section);
 }
 
@@ -270,7 +270,7 @@ void TempImage<T>::doPutSlice(const Array<T>& buffer, const IPosition& where,
 }
 
 template <class T>
-String TempImage<T>::name(Bool) const {
+String TempImage<T>::name(bool) const {
   return String("Temporary_Image");
 }
 
@@ -346,13 +346,13 @@ void TempImage<T>::putAt(const T& value, const IPosition& where) {
 }
 
 template <class T>
-Bool TempImage<T>::ok() const {
+bool TempImage<T>::ok() const {
   return mapPtr_p->ok();
 }
 
 template <class T>
 LatticeIterInterface<T>* TempImage<T>::makeIter(const LatticeNavigator& navigator,
-                                                Bool useRef) const {
+                                                bool useRef) const {
   return mapPtr_p->makeIter(navigator, useRef);
 }
 

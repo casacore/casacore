@@ -35,7 +35,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-FiledesIO::FiledesIO() : itsSeekable(False), itsReadable(False), itsWritable(False), itsFile(-1) {}
+FiledesIO::FiledesIO() : itsSeekable(false), itsReadable(false), itsWritable(false), itsFile(-1) {}
 
 FiledesIO::FiledesIO(int fd, const String& fileName) : itsFile(-1) { attach(fd, fileName); }
 
@@ -52,16 +52,16 @@ void FiledesIO::attach(int fd, const String& fileName) {
 void FiledesIO::detach() { itsFile = -1; }
 
 void FiledesIO::fillRWFlags(int fd) {
-  itsReadable = False;
-  itsWritable = False;
+  itsReadable = false;
+  itsWritable = false;
   int flags = fcntl(fd, F_GETFL);
   if ((flags & O_RDWR) == O_RDWR) {
-    itsReadable = True;
-    itsWritable = True;
+    itsReadable = true;
+    itsWritable = true;
   } else if ((flags & O_WRONLY) == O_WRONLY) {
-    itsWritable = True;
+    itsWritable = true;
   } else {
-    itsReadable = True;
+    itsReadable = true;
   }
 }
 
@@ -89,7 +89,7 @@ void FiledesIO::pwrite(Int64 size, Int64 offset, const void* buf) {
   }
 }
 
-Int64 FiledesIO::read(Int64 size, void* buf, Bool throwException) {
+Int64 FiledesIO::read(Int64 size, void* buf, bool throwException) {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError("FiledesIO::read " + itsFileName + " - is not readable");
@@ -99,7 +99,7 @@ Int64 FiledesIO::read(Int64 size, void* buf, Bool throwException) {
   if (bytesRead > size) {  // Should never be executed
     throw AipsError("FiledesIO::read " + itsFileName + " - read returned a bad value");
   }
-  if (bytesRead != size && throwException == True) {
+  if (bytesRead != size && throwException == true) {
     if (bytesRead < 0) {
       throw AipsError("FiledesIO::read " + itsFileName +
                       " - error returned by system call: " + strerror(error));
@@ -112,7 +112,7 @@ Int64 FiledesIO::read(Int64 size, void* buf, Bool throwException) {
   return bytesRead;
 }
 
-Int64 FiledesIO::pread(Int64 size, Int64 offset, void* buf, Bool throwException) {
+Int64 FiledesIO::pread(Int64 size, Int64 offset, void* buf, bool throwException) {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError("FiledesIO::pread " + itsFileName + " - is not readable");
@@ -122,7 +122,7 @@ Int64 FiledesIO::pread(Int64 size, Int64 offset, void* buf, Bool throwException)
   if (bytesRead > size) {  // Should never be executed
     throw AipsError("FiledesIO::pread " + itsFileName + " - read returned a bad value");
   }
-  if (bytesRead != size && throwException == True) {
+  if (bytesRead != size && throwException == true) {
     if (bytesRead < 0) {
       throw AipsError("FiledesIO::pread " + itsFileName +
                       " - error returned by system call: " + strerror(error));
@@ -161,11 +161,11 @@ Int64 FiledesIO::length() {
   return len;
 }
 
-Bool FiledesIO::isReadable() const { return itsReadable; }
+bool FiledesIO::isReadable() const { return itsReadable; }
 
-Bool FiledesIO::isWritable() const { return itsWritable; }
+bool FiledesIO::isWritable() const { return itsWritable; }
 
-Bool FiledesIO::isSeekable() const { return itsSeekable; }
+bool FiledesIO::isSeekable() const { return itsSeekable; }
 
 String FiledesIO::fileName() const { return itsFileName; }
 
@@ -185,7 +185,7 @@ int FiledesIO::create(const Char* name, int mode) {
   return fd;
 }
 
-int FiledesIO::open(const Char* name, Bool writable, Bool throwExcp) {
+int FiledesIO::open(const Char* name, bool writable, bool throwExcp) {
   int fd;
   if (writable) {
     fd = ::trace2OPEN((Char*)name, O_RDWR);

@@ -51,9 +51,9 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::makeGroupAggrFun
   return itsFunc;
 }
 
-Bool TableExprAggrNodeArray::isAggregate() const { return True; }
+bool TableExprAggrNodeArray::isAggregate() const { return true; }
 
-Bool TableExprAggrNodeArray::isLazyAggregate() const { return itsFunc->isLazy(); }
+bool TableExprAggrNodeArray::isLazyAggregate() const { return itsFunc->isLazy(); }
 
 std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::doMakeGroupAggrFunc() {
   if (funcType() == TableExprFuncNode::gexpridFUNC) {
@@ -168,7 +168,7 @@ std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::doMakeGroupAggrF
   throw TableInvExpr("Array aggregate function " + std::to_string(funcType()) + " is unknown");
 }
 
-MArray<Bool> TableExprAggrNodeArray::getArrayBool(const TableExprId& id) {
+MArray<bool> TableExprAggrNodeArray::getArrayBool(const TableExprId& id) {
   const TableExprIdAggr& aid = TableExprIdAggr::cast(id);
   if (itsFunc->isLazy()) {
     return itsFunc->getArrayBool(aid.result().ids(id.rownr()));

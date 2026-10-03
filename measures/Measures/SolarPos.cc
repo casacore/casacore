@@ -79,7 +79,7 @@ const MVPosition &SolarPos::operator()(Double epoch) {
     result[lres](i) = (-eval[i] - dt * deval[i]);
   }
   // Convert to rectangular
-  if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+  if (!AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
     result[lres] = MeasTable::posToRect() * result[lres];
   }
   return result[lres];
@@ -101,7 +101,7 @@ const MVPosition &SolarPos::baryEarth(Double epoch) {
     result[lres](i) -= (sval[i] + dt * dsval[i]);
   }
   // Convert to rectangular
-  if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+  if (!AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
     result[lres] = MeasTable::posToRect() * result[lres];
   }
   return result[lres];
@@ -116,7 +116,7 @@ const MVPosition &SolarPos::barySun(Double epoch) {
     result[lres](i) = (-sval[i] - dt * dsval[i]);
   }
   // Convert to rectangular
-  if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+  if (!AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
     result[lres] = MeasTable::posToRect() * result[lres];
   }
   return result[lres];
@@ -130,7 +130,7 @@ const MVPosition &SolarPos::derivative(Double epoch) {
     result[lres](i) = (-deval[i]);
   }
   // Convert to rectangular
-  if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+  if (!AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
     result[lres] = MeasTable::posToRect() * result[lres];
   }
   return result[lres];
@@ -145,7 +145,7 @@ const MVPosition &SolarPos::baryEarthDerivative(Double epoch) {
     result[lres](i) = (deval[i] - dsval[i]);
   }
   // Convert to rectangular
-  if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+  if (!AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
     result[lres] = MeasTable::posToRect() * result[lres];
   }
   return result[lres];
@@ -159,7 +159,7 @@ const MVPosition &SolarPos::barySunDerivative(Double epoch) {
     result[lres](i) = (-dsval[i]);
   }
   // Convert to rectangular
-  if (!AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+  if (!AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
     result[lres] = MeasTable::posToRect() * result[lres];
   }
   return result[lres];
@@ -169,7 +169,7 @@ void SolarPos::initialize_statics() {
   // Get the interpolation interval
   interval_reg = AipsrcValue<Double>::registerRC(String("measures.solarpos.d_interval"), Unit("d"),
                                                  Unit("d"), SolarPos::INTV);
-  usejpl_reg = AipsrcValue<Bool>::registerRC(String("measures.solarpos.b_usejpl"), False);
+  usejpl_reg = AipsrcValue<bool>::registerRC(String("measures.solarpos.b_usejpl"), false);
 }
 
 void SolarPos::refresh() {
@@ -193,7 +193,7 @@ void SolarPos::calcEarth(Double t) {
     Double dtmp, ddtmp;
     switch (method) {
       default:
-        if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+        if (AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
           Vector<Double> mypl = MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
           for (i = 0; i < 3; i++) {
             eval[i] = mypl(i);
@@ -268,7 +268,7 @@ void SolarPos::calcSun(Double t) {
     Double dtmp, ddtmp;
     switch (method) {
       default:
-        if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
+        if (AipsrcValue<bool>::get(SolarPos::usejpl_reg)) {
           Vector<Double> mypl = MeasTable::Planetary(MeasTable::SUN, checkEpoch);
           for (i = 0; i < 3; i++) {
             sval[i] = -mypl(i);

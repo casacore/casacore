@@ -50,7 +50,7 @@ MSSpwIndex::MSSpwIndex(const MSSpectralWindow& msSpw) : msSpwSubTable_p(msSpw) {
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const Bool regex) {
+Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const bool regex) {
   Int pos = 0;
   Regex reg;
   if (regex)
@@ -60,7 +60,7 @@ Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const Bool re
 
   //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << std::endl;
   IPosition sh(msSpwSubTable_p.name().getColumn().shape());
-  LogicalArray maskArray(sh, False);
+  LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
     Int ret = RegexMatches(msSpwSubTable_p.name().getColumn()(i), reg, pos);
@@ -126,18 +126,18 @@ Vector<Int> MSSpwIndex::matchId(const Vector<Int>& sourceId) {
 //
 //------------------------------------------------------------------
 //
-Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<Int>& spw,
+bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<Int>& spw,
                                      Vector<Int>& start, Vector<Int>& nchan) {
   Int nspw = msSpwSubTable_p.nrow();
-  Bool found = False;
+  bool found = false;
 
   spw.resize();
   start.resize();
   nchan.resize();
   Int nmatch = 0;
   for (Int k = 0; k < nspw; ++k) {
-    Bool locfound = False;
-    Bool dum;
+    bool locfound = false;
+    bool dum;
 
     Vector<Double> chanfreq = msSpwSubTable_p.chanFreq()(k);
 
@@ -148,10 +148,10 @@ Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<In
     sort.sort(sortIndx, nch);
     Vector<Double> chanwidth = msSpwSubTable_p.chanWidth()(k);
     if (f0 > chanfreq(sortIndx[0]) && f0 < chanfreq(sortIndx[nch - 1])) {
-      locfound = True;
+      locfound = true;
     }
     if (f1 > chanfreq(sortIndx[0]) && f1 < chanfreq(sortIndx[nch - 1])) {
-      locfound = True;
+      locfound = true;
     }
     if (locfound) {
       Vector<Int> chanIn(chanfreq.nelements());
@@ -167,12 +167,12 @@ Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<In
       }
       if (numMatched > 0) {
         ++nmatch;
-        spw.resize(nmatch, True);
+        spw.resize(nmatch, true);
         spw(nmatch - 1) = k;
-        start.resize(nmatch, True);
-        nchan.resize(nmatch, True);
-        found = True;
-        chanIn.resize(numMatched, True);
+        start.resize(nmatch, true);
+        nchan.resize(nmatch, true);
+        found = true;
+        chanIn.resize(numMatched, true);
         start(nmatch - 1) = min(chanIn);
         nchan(nmatch - 1) = max(chanIn) - start(nmatch - 1) + 1;
       }
@@ -180,13 +180,13 @@ Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<In
     // spw is fully inside region between f0 and f1
     else if ((f0 < chanfreq(sortIndx[0])) && (f1 > chanfreq(sortIndx[nch - 1]))) {
       ++nmatch;
-      spw.resize(nmatch, True);
+      spw.resize(nmatch, true);
       spw(nmatch - 1) = k;
-      start.resize(nmatch, True);
+      start.resize(nmatch, true);
       start(nmatch - 1) = 0;
-      nchan.resize(nmatch, True);
+      nchan.resize(nmatch, true);
       nchan(nmatch - 1) = nch;
-      found = True;
+      found = true;
     }
   }
   return found;
@@ -194,10 +194,10 @@ Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<In
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, Bool approx,
+Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, bool approx,
                                             const Float f3) {
   Int nSpwRows = msSpwSubTable_p.nrow();
-  Bool Found;
+  bool Found;
   Int mode;
   Vector<Int> IDs;
   Float localStep;
@@ -213,7 +213,7 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, Bool
     Double maxChanWidth;
     {
       Vector<Double> shouldNotBeRequired;
-      chanWidth.get(n, shouldNotBeRequired, True);
+      chanWidth.get(n, shouldNotBeRequired, true);
       maxChanWidth = max(shouldNotBeRequired);
       if (f3 < 0)
         localStep = min(shouldNotBeRequired);
@@ -221,14 +221,14 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, Bool
         localStep = f3;
     }
 
-    Found = False;
+    Found = false;
     if (approx)
       totalBandWidth = msSpwSubTable_p.totalBandwidth()(n);
     else
       totalBandWidth = 0;
     //	refFreq = msSpwSubTable_p.refFrequency()(n);
     Vector<Double> chanFreqList;
-    chanFreq.get(n, chanFreqList, True);
+    chanFreq.get(n, chanFreqList, true);
     Int nChan = chanFreqList.nelements();
     refFreq = (chanFreqList(nChan - 1) + chanFreqList(0)) / 2.0;
     ;
@@ -238,14 +238,14 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, Bool
 
     switch (mode) {
       case EXACT: {
-        if (fabs(refFreq - f0) < maxChanWidth) Found = True;
+        if (fabs(refFreq - f0) < maxChanWidth) Found = true;
         break;
       }
       case APPROX: {
         if ((fabs(refFreq - f0) <= totalBandWidth)
             //		  && (!msSpwSubTable_p.flagRow()(n))
         )
-          Found = True;
+          Found = true;
         break;
       }
       case RANGE: {
@@ -253,12 +253,12 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, Bool
           if ((refFreq >= f0) && (refFreq <= f1)
               //		  && (!msSpwSubTable_p.flagRow()(n))
           )
-            Found = True;
+            Found = true;
           break;
         } else {
           for (Float freq = f0; freq <= f1; freq += localStep) {
             if (fabs(freq - refFreq) < maxChanWidth) {
-              Found = True;
+              Found = true;
               break;
             }
           }
@@ -275,7 +275,7 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, Bool
       // Darn!  We don't use standard stuff (STL!)
       //
       // IDs.push_back(SpwIds(n));
-      IDs.resize(IDs.nelements() + 1, True);
+      IDs.resize(IDs.nelements() + 1, true);
       IDs(IDs.nelements() - 1) = n;
       if (mode == EXACT) break;
     }
@@ -384,7 +384,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
   ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
   ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
 
-  Bool someMatchFailed = False;
+  bool someMatchFailed = false;
   std::ostringstream Mesg;
 
   if (nFList > 0) {
@@ -407,7 +407,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
               //			  throw(MSSelectionSpwError(Mesg.str()));
               log_l << Mesg.str() << LogIO::WARN << LogIO::POST;
               stop = start = numChans(spw(i)) - 1;
-              someMatchFailed = True;
+              someMatchFailed = true;
             }
           } else {
             if (stop >= numChans(spw(i))) {
@@ -417,7 +417,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
                    << " Limiting it to be within the available range.";
               //			  throw(MSSelectionSpwError(Mesg.str()));
               log_l << Mesg.str() << LogIO::WARN << LogIO::POST;
-              someMatchFailed = True;
+              someMatchFailed = true;
             }
             start = max(0, min(start, numChans(spw(i)) - 1));
             stop = min(numChans(spw(i)) - 1, max(stop, 0));
@@ -434,8 +434,8 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
         {
           Float start = freqList(j), stop = freqList(j + 1), step = freqList(j + 2);
           Vector<Double> cf, cw;
-          chanFreq.get(spw(i), cf, True);
-          chanWidth.get(spw(i), cw, True);
+          chanFreq.get(spw(i), cf, true);
+          chanWidth.get(spw(i), cw, true);
           if (abs(cw(0)) == 0)
             throw(MSSelectionSpwError(
                 "Error in the MS SPECTRAL_WINDOW sub-table (channel width==0)."));
@@ -448,10 +448,10 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
           //
 
           // Obfuscated code alert (but it was fun :))!
-          someMatchFailed |= ((start = findChanIndex_p(start, cf, True, (cwDir > 0))) == -1);
-          someMatchFailed |= ((stop = findChanIndex_p(stop, cf, False, (cwDir > 0))) == -1);
+          someMatchFailed |= ((start = findChanIndex_p(start, cf, true, (cwDir > 0))) == -1);
+          someMatchFailed |= ((stop = findChanIndex_p(stop, cf, false, (cwDir > 0))) == -1);
 
-          // Bool found=False;
+          // bool found=false;
           // Int n=cf.nelements();
           // {
           //   if (start <= cf(0)) start=0;
@@ -553,7 +553,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
 //------------------------------------------------------------------
 //
 Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
-                                const Bool& greaterThan, const Bool& ascendingOrder) {
+                                const bool& greaterThan, const bool& ascendingOrder) {
   Int chanIndex = -1, n = chanFreqList.nelements();
   if (ascendingOrder) {
     if (greaterThan) {
@@ -619,7 +619,7 @@ Vector<Int> MSSpwIndex::convertToSpwIndex(const Vector<Float>& freqList, Int& nF
 
         Int n = 0;
         for (Int ii = start; ii <= stop; ii += step) n++;
-        localFreqList.resize(n + localFreqList.nelements(), True);
+        localFreqList.resize(n + localFreqList.nelements(), true);
 
         for (Int ii = start; ii <= stop; ii += step) localFreqList(pos++) = ii;
         //		  localFreqList(pos++)=stop;
@@ -627,7 +627,7 @@ Vector<Int> MSSpwIndex::convertToSpwIndex(const Vector<Float>& freqList, Int& nF
       } else if (freqList(j + 3) == static_cast<int>(MSSpwIndex::MSSPW_UNITHZ)) {
         Float start = freqList(j), stop = freqList(j + 1), step = freqList(j + 2);
 
-        localFreqList = matchFrequencyRange(start, stop, False, step);
+        localFreqList = matchFrequencyRange(start, stop, false, step);
         //		  cout << "Freq SPW List  = " << start << " " << stop << " " << step << " "
         //		       << localFreqList;
       }

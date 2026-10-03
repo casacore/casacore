@@ -68,7 +68,7 @@ class MaskedLattice;
 // you may specify which parameters are to be held fixed
 // during the fitting process.  This is done with the
 // parameterMask Vector which is in the same order as the
-// parameter Vector.  A value of True indicates the parameter
+// parameter Vector.  A value of true indicates the parameter
 // will be fitted for.  Presently, when you say fix the minor axis,
 // you really end up fixing the axial ratio (internals).  I don't
 // have a solution for this presently.
@@ -132,18 +132,18 @@ class Fit2D {
   // Add a model to the list to be simultaneously fit and
   // return its index.  Specify the initial guesses for
   // the model and a mask indicating whether the parameter
-  // is fixed (False) during the fit or not.  Returns the
+  // is fixed (false) during the fit or not.  Returns the
   // the model number added (0, 1, 2 etc)
   //<group>
   uInt addModel(Fit2D::Types type, const Vector<Double>& parameters,
-                const Vector<Bool>& parameterMask);
+                const Vector<bool>& parameterMask);
   uInt addModel(Fit2D::Types type, const Vector<Double>& parameters);
   //</group>
 
   // Convert mask from a string to a vector.  The string gives the parameters
   // to keep fixed in the fit (f (flux), x (x position), y (y position),
   // a (FWHM major axis), b (FWHM minor axis), p (position angle)
-  static Vector<Bool> convertMask(const String fixedmask, Fit2D::Types type);
+  static Vector<bool> convertMask(const String fixedmask, Fit2D::Types type);
 
   // Set a pixel selection range.  When the fit is done, only
   // pixels in the specified range are included/excluded.
@@ -174,7 +174,7 @@ class Fit2D {
   template <class T>
   Vector<Double> estimate(Fit2D::Types type, const Array<T>& data);
   template <class T>
-  Vector<Double> estimate(Fit2D::Types type, const Array<T>& data, const Array<Bool>& mask);
+  Vector<Double> estimate(Fit2D::Types type, const Array<T>& data, const Array<bool>& mask);
   //</group>
 
   // Do the fit.  Returns an enum value to tell you what happened if the fit failed
@@ -188,7 +188,7 @@ class Fit2D {
   template <class T>
   Fit2D::ErrorTypes fit(const Array<T>& data, const Array<T>& sigma);
   template <class T>
-  Fit2D::ErrorTypes fit(const Array<T>& data, const Array<Bool>& mask, const Array<T>& sigma);
+  Fit2D::ErrorTypes fit(const Array<T>& data, const Array<bool>& mask, const Array<T>& sigma);
   //</group>
 
   // Find the residuals to the fit. xOffset and yOffset allow one to provide a data
@@ -258,8 +258,8 @@ class Fit2D {
 
  private:
   mutable LogIO itsLogger;
-  Bool itsValid, itsValidSolution, itsHasSigma;
-  Bool itsInclude;
+  bool itsValid, itsValidSolution, itsHasSigma;
+  bool itsInclude;
   Vector<Double> itsPixelRange;
   CompoundFunction<AutoDiff<Double>> itsFunction;
   NonLinearFitLM<Double> itsFitter;
@@ -286,25 +286,25 @@ class Fit2D {
   Vector<Double> getParams(uInt which) const;
   void setParams(const Vector<Double>& params, uInt which);
 
-  Bool includeIt(Double value, const Vector<Double>& range, Int includeIt) const;
+  bool includeIt(Double value, const Vector<Double>& range, Int includeIt) const;
 
   template <class T>
-  Bool selectData(Matrix<Double>& pos, Vector<Double>& values, Vector<Double>& weights,
-                  const Array<T>& pixels, const Array<Bool>& mask, const Array<T>& sigma);
+  bool selectData(Matrix<Double>& pos, Vector<Double>& values, Vector<Double>& weights,
+                  const Array<T>& pixels, const Array<bool>& mask, const Array<T>& sigma);
 
   void piRange(Double& pa) const;
 };
 
-inline Bool Fit2D::includeIt(Double value, const Vector<Double>& range, Int includeIt) const {
-  if (includeIt == 0) return True;
+inline bool Fit2D::includeIt(Double value, const Vector<Double>& range, Int includeIt) const {
+  if (includeIt == 0) return true;
   //
   if (includeIt == 1) {
-    if (value >= range(0) && value <= range(1)) return True;
+    if (value >= range(0) && value <= range(1)) return true;
   } else if (value < range(0) || value > range(1)) {
-    return True;
+    return true;
   }
   //
-  return False;
+  return false;
 }
 
 }  // namespace casacore

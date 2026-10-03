@@ -47,7 +47,7 @@ void LatticeHistProgress::initDerived()
   // calls this initDerived function
   //
   itsMeter = new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
-                               String("Accumulation Iterations"), String(""), String(""), True,
+                               String("Accumulation Iterations"), String(""), String(""), true,
                                max(1, Int(expectedNsteps() / 20)));
 }
 

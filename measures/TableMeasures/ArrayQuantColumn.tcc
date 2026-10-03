@@ -43,11 +43,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn()
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0), itsConvOut(False) {}
+    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0), itsConvOut(false) {}
 
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName)
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0), itsConvOut(False) {
+    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0), itsConvOut(false) {
   init(tab, columnName);
   itsUnitOut = itsUnit;
 }
@@ -68,10 +68,10 @@ ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName
   init(tab, columnName);
   itsUnitOut.resize(u.nelements());
   itsUnitOut = u;
-  itsConvOut = False;
+  itsConvOut = false;
   for (uInt i = 0; i < itsUnitOut.nelements(); i++) {
     if (!itsUnitOut(i).getName().empty()) {
-      itsConvOut = True;
+      itsConvOut = true;
       break;
     }
   }
@@ -165,14 +165,14 @@ Vector<String> ArrayQuantColumn<T>::getUnits() const {
 }
 
 template <class T>
-void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, Bool resize) const {
+void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, bool resize) const {
   // Quantums are created and put into q by taking T data from
   // itsDataCol and Quantum units from one of itsArrUnitsCol (if units
   // are in a ArrayColumn) or itsScaUnitsCol (if units are in a
   // ScalarColumn) or from itsUnit (if units are static).
   // getStorage() is used on each array to return pointers which are
   // used to iterate through the respective arrays.
-  Bool deleteData;
+  bool deleteData;
   Array<T> tmpDataCol = (*itsDataCol)(rownr);
   const T* d_p = tmpDataCol.getStorage(deleteData);
   // Ensure q is the correct size. Resize if needed.
@@ -184,11 +184,11 @@ void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, Bool resi
       throw(TableArrayConformanceError("ArrayQuantColumn::get"));
     }
   }
-  Bool deleteQuant;
+  bool deleteQuant;
   Quantum<T>* q_p = q.getStorage(deleteQuant);
 
   const String* u_p = 0;
-  Bool deleteUnits;
+  bool deleteUnits;
   Array<String> tmpUnitsCol;
   Vector<Unit> localUnit(itsUnit);
   if (itsArrUnitsCol != 0) {
@@ -219,7 +219,7 @@ void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, Bool resi
 }
 
 template <class T>
-void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, Bool resize) const {
+void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, bool resize) const {
   if (itsConvOut) {
     get(rownr, q, itsUnitOut, resize);
   } else {
@@ -229,10 +229,10 @@ void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, Bool resize) 
 
 template <class T>
 void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Unit& u,
-                              Bool resize) const {
+                              bool resize) const {
   getData(rownr, q, resize);
   if (!u.getName().empty()) {
-    Bool deleteIt;
+    bool deleteIt;
     Quantum<T>* q_p = q.getStorage(deleteIt);
     uInt n = q.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -244,19 +244,19 @@ void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Unit& u
 
 template <class T>
 void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Vector<Unit>& u,
-                              Bool resize) const {
+                              bool resize) const {
   getData(rownr, q, resize);
-  Bool hasUnits = False;
+  bool hasUnits = false;
   uInt nrun = u.nelements();
-  Vector<Bool> hasUnit(nrun, False);
+  Vector<bool> hasUnit(nrun, false);
   for (uInt i = 0; i < nrun; i++) {
     if (!u(i).getName().empty()) {
-      hasUnits = True;
-      hasUnit(i) = True;
+      hasUnits = true;
+      hasUnit(i) = true;
     }
   }
   if (hasUnits) {
-    Bool deleteIt;
+    bool deleteIt;
     Quantum<T>* q_p = q.getStorage(deleteIt);
     uInt n = q.nelements();
     for (uInt i = 0; i < n; i++) {
@@ -271,7 +271,7 @@ void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Vector<
 
 template <class T>
 void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Quantum<T>& other,
-                              Bool resize) const {
+                              bool resize) const {
   get(rownr, q, other.getFullUnit(), resize);
 }
 
@@ -333,10 +333,10 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   }
 
   Array<T> dataArr(q.shape());
-  Bool deleteData;
+  bool deleteData;
   T* d_p = dataArr.getStorage(deleteData);
 
-  Bool deleteQuant;
+  bool deleteQuant;
   const Quantum<T>* q_p = q.getStorage(deleteQuant);
 
   // If units are variable they could vary per element of the quantum
@@ -344,7 +344,7 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   // by row (i.e., the units column is a Scalar Column where each row
   // contains a single unit entry).  When variable by row, the unit of the
   // first quantum in q is used.
-  Bool deleteUnits;
+  bool deleteUnits;
   String* u_p;
   Array<String> unitsArr;
   Vector<Unit> localUnit(itsUnit);

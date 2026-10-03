@@ -116,7 +116,7 @@ class SetupNewTableRep {
   const StorageOption& storageOption() const { return storageOpt_p; }
 
   // Test if the table is marked for delete.
-  Bool isMarkedForDelete() const { return delete_p; }
+  bool isMarkedForDelete() const { return delete_p; }
 
   // Get the table description.
   const TableDesc& tableDesc() const { return *tdescPtr_p; }
@@ -139,14 +139,14 @@ class SetupNewTableRep {
   // will be overwritten.
   // It cannot be used anymore once the SetupNewTableRep object is used to
   // construct a Table object.
-  void bindGroup(const String& columnGroup, const DataManager&, Bool rebind = False);
+  void bindGroup(const String& columnGroup, const DataManager&, bool rebind = false);
 
   // Bind all columns to the given data manager.
   // The flag rebind tells if the binding of an already bound column
   // will be overwritten.
   // It cannot be used anymore once the SetupNewTableRep object is used to
   // construct a Table object.
-  void bindAll(const DataManager&, Bool rebind = False);
+  void bindAll(const DataManager&, bool rebind = false);
 
   // Create data managers and bind the columns using the specifications
   // in the given record (which is obtained using Table::dataManagerInfo()).
@@ -165,7 +165,7 @@ class SetupNewTableRep {
   void setShapeColumn(const String& columnName, const IPosition& shape);
 
   // Test if object is already in use.
-  Bool isUsed() const { return !colSetPtr_p; }
+  bool isUsed() const { return !colSetPtr_p; }
 
   // Get pointer to column set.
   // This function is used by PlainTable.
@@ -189,7 +189,7 @@ class SetupNewTableRep {
   int option_p;
   StorageOption storageOpt_p;
   // Marked for delete?
-  Bool delete_p;
+  bool delete_p;
   std::shared_ptr<TableDesc> tdescPtr_p;
   std::shared_ptr<ColumnSet> colSetPtr_p;  // # null = object is already used by a Table
   std::map<void*, void*> dataManMap_p;
@@ -346,14 +346,14 @@ class SetupNewTable {
   const StorageOption& storageOption() const { return newTable_p->storageOption(); }
 
   // Test if the table is marked for delete.
-  Bool isMarkedForDelete() const { return newTable_p->isMarkedForDelete(); }
+  bool isMarkedForDelete() const { return newTable_p->isMarkedForDelete(); }
 
   // Get the table description.
   const TableDesc& tableDesc() const { return newTable_p->tableDesc(); }
 
   // Adjust the hypercolumn definitions.
   // It renames and/or removes columns as necessary.
-  void adjustHypercolumns(const std::map<String, String>& old2new, Bool keepUnknown) {
+  void adjustHypercolumns(const std::map<String, String>& old2new, bool keepUnknown) {
     newTable_p->tableDescPtr()->adjustHypercolumns(old2new, keepUnknown);
   }
 
@@ -379,7 +379,7 @@ class SetupNewTable {
   // will be overwritten.
   // It cannot be used anymore once the SetupNewTable object is used to
   // construct a Table object.
-  void bindGroup(const String& columnGroup, const DataManager& dm, Bool rebind = False) {
+  void bindGroup(const String& columnGroup, const DataManager& dm, bool rebind = false) {
     newTable_p->bindGroup(columnGroup, dm, rebind);
   }
 
@@ -388,7 +388,7 @@ class SetupNewTable {
   // will be overwritten.
   // It cannot be used anymore once the SetupNewTable object is used to
   // construct a Table object.
-  void bindAll(const DataManager& dm, Bool rebind = False) { newTable_p->bindAll(dm, rebind); }
+  void bindAll(const DataManager& dm, bool rebind = false) { newTable_p->bindAll(dm, rebind); }
 
   // Create data managers and bind the columns using the specifications
   // in the given record (which is obtained using Table::dataManagerInfo()).
@@ -409,7 +409,7 @@ class SetupNewTable {
   }
 
   // Test if object is already in use.
-  Bool isUsed() const { return newTable_p->isUsed(); }
+  bool isUsed() const { return newTable_p->isUsed(); }
 
  private:
   // Actual object.

@@ -31,9 +31,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSWeatherColumns::MSWeatherColumns() : isNull_p(True) {}
+MSWeatherColumns::MSWeatherColumns() : isNull_p(true) {}
 
-MSWeatherColumns::MSWeatherColumns(const MSWeather& msWeather) : isNull_p(True) {
+MSWeatherColumns::MSWeatherColumns(const MSWeather& msWeather) : isNull_p(true) {
   attach(msWeather);
 }
 
@@ -121,7 +121,7 @@ void MSWeatherColumns::attach(const MSWeather& msWeather) {
   }
 }
 
-void MSWeatherColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSWeatherColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 

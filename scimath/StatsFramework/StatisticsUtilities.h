@@ -107,13 +107,13 @@ class StatisticsUtilities {
   // </group>
 
   // <group>
-  // return True if the max or min was updated, False otherwise.
+  // return true if the max or min was updated, false otherwise.
   template <class LocationType>
-  inline static Bool doMax(AccumType& datamax, LocationType& maxpos, Bool isFirst,
+  inline static bool doMax(AccumType& datamax, LocationType& maxpos, bool isFirst,
                            const AccumType& datum, const LocationType& location);
 
   template <class LocationType>
-  inline static Bool doMin(AccumType& datamin, LocationType& minpos, Bool isFirst,
+  inline static bool doMin(AccumType& datamin, LocationType& minpos, bool isFirst,
                            const AccumType& datum, const LocationType& location);
   // </group>
 
@@ -150,9 +150,9 @@ class StatisticsUtilities {
   inline static void convertToAbsDevMedArray(DataArray& myArray, AccumType median);
   // </group>
 
-  inline static Bool includeDatum(const AccumType& datum,
+  inline static bool includeDatum(const AccumType& datum,
                                   typename DataRanges::const_iterator beginRange,
-                                  typename DataRanges::const_iterator endRange, Bool isInclude);
+                                  typename DataRanges::const_iterator endRange, bool isInclude);
 
   // The array can be changed by partially sorting it up to the largest index.
   // Return a map of index to value in the sorted array.
@@ -161,9 +161,9 @@ class StatisticsUtilities {
 
   static void mergeResults(
       std::vector<BinCountArray>& bins, std::vector<std::shared_ptr<AccumType>>& sameVal,
-      std::vector<Bool>& allSame, const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
+      std::vector<bool>& allSame, const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
       const std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]>& tSameVal,
-      const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax);
+      const std::unique_ptr<std::vector<bool>[]>& tAllSame, uInt nThreadsMax);
 
   // use two statistics sets to get the statistics set that would
   // result in combining the two data sets used to produce the

@@ -30,8 +30,8 @@
 namespace casacore {
 
 template <class T, class U>
-StatsTiledCollapser<T, U>::StatsTiledCollapser(const Vector<T>& pixelRange, Bool noInclude,
-                                               Bool noExclude, Bool fixedMinMax)
+StatsTiledCollapser<T, U>::StatsTiledCollapser(const Vector<T>& pixelRange, bool noInclude,
+                                               bool noExclude, bool fixedMinMax)
     : _range(pixelRange),
       _include(!noInclude),
       _exclude(!noExclude),
@@ -57,7 +57,7 @@ void StatsTiledCollapser<T, U>::initAccumulator(uInt64 n1, uInt64 n3) {
 
   _min = std::make_shared<Block<T>>(n1 * n3);
   _max = std::make_shared<Block<T>>(n1 * n3);
-  _initMinMax = std::make_shared<Block<Bool>>(n1 * n3);
+  _initMinMax = std::make_shared<Block<bool>>(n1 * n3);
   _sum->set(0);
   _sumSq->set(0);
   _npts->set(0);
@@ -68,14 +68,14 @@ void StatsTiledCollapser<T, U>::initAccumulator(uInt64 n1, uInt64 n3) {
 
   _min->set(0);
   _max->set(0);
-  _initMinMax->set(True);
+  _initMinMax->set(true);
   _n1 = n1;
   _n3 = n3;
 }
 
 template <class T, class U>
 void StatsTiledCollapser<T, U>::process(uInt index1, uInt index3, const T* pInData,
-                                        const Bool* pInMask, uInt dataIncr, uInt maskIncr,
+                                        const bool* pInMask, uInt dataIncr, uInt maskIncr,
                                         uInt nrval, const IPosition& startPos,
                                         const IPosition& shape) {
   // Process the data in the current chunk.   Everything in this
@@ -98,8 +98,8 @@ void StatsTiledCollapser<T, U>::process(uInt index1, uInt index3, const T* pInDa
   Int64 maxLoc = -1;
 
   std::vector<std::pair<U, U>> ranges;
-  Bool isInclude = False;
-  Bool hasRange = _include || _exclude;
+  bool isInclude = false;
+  bool hasRange = _include || _exclude;
   if (hasRange) {
     ranges.resize(1);
     ranges[0] = std::make_pair(_range[0], _range[1]);
@@ -176,7 +176,7 @@ void StatsTiledCollapser<T, U>::process(uInt index1, uInt index3, const T* pInDa
 }
 
 template <class T, class U>
-void StatsTiledCollapser<T, U>::endAccumulator(Array<U>& result, Array<Bool>& resultMask,
+void StatsTiledCollapser<T, U>::endAccumulator(Array<U>& result, Array<bool>& resultMask,
                                                const IPosition& shape) {
   // Reshape arrays.  The mask is always true.  Any locations
   // in the storage lattice for which there were no valid points
@@ -185,9 +185,9 @@ void StatsTiledCollapser<T, U>::endAccumulator(Array<U>& result, Array<Bool>& re
   result.resize(shape);
   result.set(U(0));
   resultMask.resize(shape);
-  resultMask.set(True);
+  resultMask.set(true);
 
-  Bool deleteRes;
+  bool deleteRes;
   U* res = result.getStorage(deleteRes);
   U* resptr = res;
   U* sumPtr = _sum->storage();

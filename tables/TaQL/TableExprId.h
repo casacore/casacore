@@ -106,13 +106,13 @@ class TableExprId {
   ~TableExprId() {}
 
   // Is the id given by row number?
-  Bool byRow() const;
+  bool byRow() const;
 
   // Is the id given as a RecordInterface?
-  Bool byRecord() const;
+  bool byRecord() const;
 
   // Is the id given as a TableExprData?
-  Bool byData() const;
+  bool byData() const;
 
   // Get the row number.
   Int64 rownr() const;
@@ -156,11 +156,11 @@ inline void TableExprId::setRownr(rownr_t rownr) { row_p = rownr; }
 
 inline void TableExprId::setRecord(const RecordInterface& record) { record_p = &record; }
 
-inline Bool TableExprId::byRow() const { return type_p >= 0; }
+inline bool TableExprId::byRow() const { return type_p >= 0; }
 
-inline Bool TableExprId::byRecord() const { return type_p == -1; }
+inline bool TableExprId::byRecord() const { return type_p == -1; }
 
-inline Bool TableExprId::byData() const { return type_p == -2; }
+inline bool TableExprId::byData() const { return type_p == -2; }
 
 }  // namespace casacore
 

@@ -79,7 +79,7 @@ class HDF5Object {
   HDF5Object& operator=(const HDF5Object&) = delete;
 
   // Check if there is HDF5 support compiled in.
-  static Bool hasHDF5Support();
+  static bool hasHDF5Support();
 
   // Close the hid if valid.
   virtual void close() = 0;

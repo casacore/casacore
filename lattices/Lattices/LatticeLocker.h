@@ -124,7 +124,7 @@ class LatticeLocker {
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  Bool hasLock(FileLocker::LockType) const;
+  bool hasLock(FileLocker::LockType) const;
 
  private:
   // The copy constructor and assignment are not possible.
@@ -141,11 +141,11 @@ class LatticeLocker {
 
   // # Variables.
   LatticeBase* itsLatticePtr;
-  Bool itsOwnLock;
-  Bool itsHadReadLock;
+  bool itsOwnLock;
+  bool itsHadReadLock;
 };
 
-inline Bool LatticeLocker::hasLock(FileLocker::LockType type) const {
+inline bool LatticeLocker::hasLock(FileLocker::LockType type) const {
   return itsLatticePtr->hasLock(type);
 }
 

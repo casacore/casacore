@@ -352,7 +352,7 @@ void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
       throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
     }
     //
-    String str = lc.format(unit, Coordinate::FIXED, world(0), 0, True, True, 4);
+    String str = lc.format(unit, Coordinate::FIXED, world(0), 0, true, true, 4);
     if (str != stokesStrings(i)) {
       throw(AipsError(String("formatting failed")));
     }
@@ -360,14 +360,14 @@ void doit3(StokesCoordinate& lc, const Vector<Int>& whichStokes,
 }
 
 void doit4(StokesCoordinate& lc) {
-  Vector<Bool> axes(lc.nWorldAxes(), True);
+  Vector<bool> axes(lc.nWorldAxes(), true);
   Vector<Int> shape(lc.nPixelAxes(), 10);
-  Bool failed = False;
+  bool failed = false;
   Coordinate* pC = 0;
   try {
     pC = lc.makeFourierCoordinate(axes, shape);
   } catch (std::exception& x) {
-    failed = True;
+    failed = true;
   }
   if (!failed) {
     throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));

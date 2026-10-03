@@ -240,12 +240,12 @@ int main() {
     {
       Record rec4;
       ObsInfo oi5;
-      Bool rval = True;
+      bool rval = true;
       rec4.defineRecord("telescop", recnum);
       try {
         rval = oi5.fromFITS(error2, rec4);
       } catch (std::exception& x) {
-        cerr << (rval == True) << endl;
+        cerr << (rval == true) << endl;
         AlwaysAssertExit(!rval);
       }
     }

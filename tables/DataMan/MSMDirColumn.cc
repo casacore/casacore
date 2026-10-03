@@ -37,7 +37,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSMDirColumn::MSMDirColumn(MSMBase* smptr, int dataType)
-    : MSMColumn(smptr, dataType, True), nrelem_p(0) {}
+    : MSMColumn(smptr, dataType, true), nrelem_p(0) {}
 
 MSMDirColumn::~MSMDirColumn() {
   rownr_t nr = stmanPtr_p->nrow();
@@ -57,7 +57,7 @@ void MSMDirColumn::addRow(rownr_t nrnew, rownr_t nrold) {
   // # Allocate the fixed shape data arrays.
   void* ptr;
   for (; nrold < nrnew; nrold++) {
-    ptr = allocData(nrelem_p, False);
+    ptr = allocData(nrelem_p, false);
     putArrayPtr(nrold, ptr);
   }
 }
@@ -75,7 +75,7 @@ IPosition MSMDirColumn::shape(rownr_t) { return shape_p; }
 
 void MSMDirColumn::getArrayV(rownr_t rownr, ArrayBase& arr) {
   DebugAssert(shape_p.isEqual(arr.shape()), AipsError);
-  Bool deleteIt;
+  bool deleteIt;
   void* data = arr.getVStorage(deleteIt);
   if (dtype() == TpString) {
     objcopy(static_cast<String*>(data), static_cast<const String*>(getArrayPtr(rownr)), nrelem_p);
@@ -87,7 +87,7 @@ void MSMDirColumn::getArrayV(rownr_t rownr, ArrayBase& arr) {
 }
 void MSMDirColumn::putArrayV(rownr_t rownr, const ArrayBase& arr) {
   DebugAssert(shape_p.isEqual(arr.shape()), AipsError);
-  Bool deleteIt;
+  bool deleteIt;
   const void* data = arr.getVStorage(deleteIt);
   if (dtype() == TpString) {
     objcopy(static_cast<String*>(getArrayPtr(rownr)), static_cast<const String*>(data), nrelem_p);
@@ -102,7 +102,7 @@ void MSMDirColumn::putArrayV(rownr_t rownr, const ArrayBase& arr) {
 void MSMDirColumn::getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& arr) {
   switch (dtype()) {
     case TpBool:
-      doGetSlice(rownr, slicer, static_cast<Array<Bool>&>(arr));
+      doGetSlice(rownr, slicer, static_cast<Array<bool>&>(arr));
       break;
     case TpUChar:
       doGetSlice(rownr, slicer, static_cast<Array<uChar>&>(arr));
@@ -145,7 +145,7 @@ void MSMDirColumn::getSliceV(rownr_t rownr, const Slicer& slicer, ArrayBase& arr
 void MSMDirColumn::putSliceV(rownr_t rownr, const Slicer& slicer, const ArrayBase& arr) {
   switch (dtype()) {
     case TpBool:
-      doPutSlice(rownr, slicer, static_cast<const Array<Bool>&>(arr));
+      doPutSlice(rownr, slicer, static_cast<const Array<bool>&>(arr));
       break;
     case TpUChar:
       doPutSlice(rownr, slicer, static_cast<const Array<uChar>&>(arr));
@@ -193,7 +193,7 @@ void MSMDirColumn::remove(rownr_t rownr) {
 
 void MSMDirColumn::deleteArray(rownr_t rownr) {
   void* datap = getArrayPtr(rownr);
-  deleteData(datap, False);
+  deleteData(datap, false);
 }
 
 }  // namespace casacore

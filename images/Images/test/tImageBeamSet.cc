@@ -97,7 +97,7 @@ int main() {
       GaussianBeam beam1(Quantity(5, "arcsec"), Quantity(4, "arcsec"), Quantity(20, "deg"));
       x.setBeam(1, 2, beam1);
       IPosition axisPath = IPosition::makeAxisPath(x.shape().size());
-      ArrayPositionIterator iter(x.shape(), axisPath, False);
+      ArrayPositionIterator iter(x.shape(), axisPath, false);
       while (!iter.pastEnd()) {
         const IPosition pos = iter.pos();
         GaussianBeam beam = x.getBeam(pos[0], pos[1]);
@@ -223,7 +223,7 @@ int main() {
       GaussianBeam beam1(Quantity(5, "arcsec"), Quantity(4, "arcsec"), Quantity(20, "deg"));
       x.setBeam(1, 2, beam1);
       IPosition axisPath = IPosition::makeAxisPath(x.shape().size());
-      ArrayPositionIterator iter(x.shape(), axisPath, False);
+      ArrayPositionIterator iter(x.shape(), axisPath, false);
       while (!iter.pastEnd()) {
         const IPosition pos = iter.pos();
         GaussianBeam beam = x(pos[0], pos[1]);
@@ -251,7 +251,7 @@ int main() {
         x.setBeam(-1, 2, beam1);
         AlwaysAssert(x.getBeams().size() == 12, AipsError);
         IPosition axisPath = IPosition::makeAxisPath(x.shape().size());
-        ArrayPositionIterator iter(x.shape(), axisPath, False);
+        ArrayPositionIterator iter(x.shape(), axisPath, false);
         while (!iter.pastEnd()) {
           const IPosition pos = iter.pos();
           GaussianBeam beam = x(pos[0], pos[1]);
@@ -271,7 +271,7 @@ int main() {
         x.setBeam(2, -1, beam1);
         AlwaysAssert(x.getBeams().size() == 12, AipsError);
         IPosition axisPath = IPosition::makeAxisPath(x.shape().size());
-        ArrayPositionIterator iter(x.shape(), axisPath, False);
+        ArrayPositionIterator iter(x.shape(), axisPath, false);
         while (!iter.pastEnd()) {
           const IPosition pos = iter.pos();
           GaussianBeam beam = x(pos[0], pos[1]);
@@ -538,17 +538,17 @@ int main() {
       GaussianBeam beam(Quantity(4, "arcsec"), Quantity(3, "arcsec"), Quantity(40, "deg"));
       ImageBeamSet beamSet(beam);
       beamSet.rotate(Quantity(30, "deg"));
-      AlwaysAssert(beamSet.getBeam().getPA(True) == Quantity(70, "deg"), AipsError);
-      AlwaysAssert(beamSet.getMinAreaBeam().getPA(True) == Quantity(70, "deg"), AipsError);
-      AlwaysAssert(beamSet.getMaxAreaBeam().getPA(True) == Quantity(70, "deg"), AipsError);
+      AlwaysAssert(beamSet.getBeam().getPA(true) == Quantity(70, "deg"), AipsError);
+      AlwaysAssert(beamSet.getMinAreaBeam().getPA(true) == Quantity(70, "deg"), AipsError);
+      AlwaysAssert(beamSet.getMaxAreaBeam().getPA(true) == Quantity(70, "deg"), AipsError);
       Matrix<GaussianBeam> beams(2, 2, beam);
       beams(1, 1).setPA(Quantity(90, "deg"));
       beamSet = ImageBeamSet(beams);
       beamSet.rotate(Quantity(50, "deg"));
-      AlwaysAssert(beamSet(0, 0).getPA(True) == Quantity(90, "deg"), AipsError);
-      AlwaysAssert(beamSet(0, 1).getPA(True) == Quantity(90, "deg"), AipsError);
-      AlwaysAssert(beamSet(1, 0).getPA(True) == Quantity(90, "deg"), AipsError);
-      AlwaysAssert(beamSet(1, 1).getPA(True) == Quantity(-40, "deg"), AipsError);
+      AlwaysAssert(beamSet(0, 0).getPA(true) == Quantity(90, "deg"), AipsError);
+      AlwaysAssert(beamSet(0, 1).getPA(true) == Quantity(90, "deg"), AipsError);
+      AlwaysAssert(beamSet(1, 0).getPA(true) == Quantity(90, "deg"), AipsError);
+      AlwaysAssert(beamSet(1, 1).getPA(true) == Quantity(-40, "deg"), AipsError);
     }
     const Quantity five(5, "arcsec");
     const Quantity four(4, "arcsec");

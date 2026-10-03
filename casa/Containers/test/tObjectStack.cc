@@ -37,7 +37,7 @@ using std::pair;
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Bool ok(True);
+  bool ok(true);
   try {
     cout << "Test ObjectStack" << endl;
     cout << "---------------------------------------------------" << endl;
@@ -53,11 +53,11 @@ int main() {
         // Test freshness
         if (!list[j]->empty()) {
           cout << "List not refreshed " << endl;
-          ok = False;
+          ok = false;
         }
         if (!listInt[j]->empty()) {
           cout << "ListInt not refreshed " << endl;
-          ok = False;
+          ok = false;
         }
         // Fill objects
         for (uInt k = 0; k < 7; ++k) {
@@ -67,11 +67,11 @@ int main() {
         // Test objects
         if (list[j]->size() != 7) {
           cout << "Incorrect length list " << list[j]->size() << endl;
-          ok = False;
+          ok = false;
         }
         if (listInt[j]->size() != 7) {
           cout << "Incorrect length listInt " << listInt[j]->size() << endl;
-          ok = False;
+          ok = false;
         }
       }
       // Remove in different order
@@ -82,7 +82,7 @@ int main() {
     }
   } catch (std::exception& x) {
     cout << x.what() << endl;
-    ok = False;
+    ok = false;
   }
 
   if (!ok) return 1;

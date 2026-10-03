@@ -42,18 +42,18 @@ GenericL2Fit<T>::GenericL2Fit()
     : LSQaips(),
       COLLINEARITY(1e-8),
       aCount_ai(0),
-      svd_p(False),
+      svd_p(false),
       ptr_derive_p(0),
       constrFun_p(),
       constrArg_p(),
       constrVal_p(),
       pCount_p(0),
       ndim_p(0),
-      needInit_p(True),
-      solved_p(False),
-      errors_p(False),
-      ferrors_p(False),
-      asweight_p(False),
+      needInit_p(true),
+      solved_p(false),
+      errors_p(false),
+      ferrors_p(false),
+      asweight_p(false),
       nr_p(0),
       condEq_p(0),
       fullEq_p(0),
@@ -167,7 +167,7 @@ void GenericL2Fit<T>::setFunctionEx() {
 }
 
 template <class T>
-Bool GenericL2Fit<T>::setConstraintEx(const uInt n,
+bool GenericL2Fit<T>::setConstraintEx(const uInt n,
                                       const Vector<typename FunctionTraits<T>::BaseType> &x,
                                       const typename FunctionTraits<T>::BaseType y) {
   delete constrArg_p[n];
@@ -180,28 +180,28 @@ Bool GenericL2Fit<T>::setConstraintEx(const uInt n,
     (*constrFun_p[n])[i] =
         typename FunctionTraits<T>::DiffType((*constrFun_p[n])[i].value(), pCount_p, i);
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool GenericL2Fit<T>::setConstraint(const uInt n,
+bool GenericL2Fit<T>::setConstraint(const uInt n,
                                     const Vector<typename FunctionTraits<T>::BaseType> &x,
                                     const typename FunctionTraits<T>::BaseType y) {
-  if (!ptr_derive_p) return False;
+  if (!ptr_derive_p) return false;
   HyperPlane<typename FunctionTraits<T>::DiffType> function(ptr_derive_p->nparameters());
   return setConstraint(n, function, x, y);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y) {
-  if (!ptr_derive_p) return False;
+bool GenericL2Fit<T>::setConstraint(const uInt n, const typename FunctionTraits<T>::BaseType y) {
+  if (!ptr_derive_p) return false;
   HyperPlane<typename FunctionTraits<T>::DiffType> function(ptr_derive_p->nparameters());
   Vector<typename FunctionTraits<T>::BaseType> x(function.ndim());
   return setConstraint(n, function, x, y);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::addConstraint(const Function<typename FunctionTraits<T>::DiffType> &function,
+bool GenericL2Fit<T>::addConstraint(const Function<typename FunctionTraits<T>::DiffType> &function,
                                     const Vector<typename FunctionTraits<T>::BaseType> &x,
                                     const typename FunctionTraits<T>::BaseType y) {
   uInt n = constrFun_p.nelements();
@@ -215,23 +215,23 @@ Bool GenericL2Fit<T>::addConstraint(const Function<typename FunctionTraits<T>::D
 }
 
 template <class T>
-Bool GenericL2Fit<T>::addConstraint(const Vector<typename FunctionTraits<T>::BaseType> &x,
+bool GenericL2Fit<T>::addConstraint(const Vector<typename FunctionTraits<T>::BaseType> &x,
                                     const typename FunctionTraits<T>::BaseType y) {
-  if (!ptr_derive_p) return False;
+  if (!ptr_derive_p) return false;
   HyperPlane<typename FunctionTraits<T>::DiffType> function(ptr_derive_p->nparameters());
   return addConstraint(function, x, y);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::addConstraint(const typename FunctionTraits<T>::BaseType y) {
-  if (!ptr_derive_p) return False;
+bool GenericL2Fit<T>::addConstraint(const typename FunctionTraits<T>::BaseType y) {
+  if (!ptr_derive_p) return false;
   HyperPlane<typename FunctionTraits<T>::DiffType> function(ptr_derive_p->nparameters());
   Vector<typename FunctionTraits<T>::BaseType> x(function.ndim());
   return addConstraint(function, x, y);
 }
 
 template <class T>
-void GenericL2Fit<T>::asSVD(const Bool svd) {
+void GenericL2Fit<T>::asSVD(const bool svd) {
   svd_p = svd;
   if (!svd_p)
     set(0.0);
@@ -272,7 +272,7 @@ template <class T>
 Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(
     const Vector<typename FunctionTraits<T>::BaseType> &x,
     const Vector<typename FunctionTraits<T>::BaseType> &y,
-    const Vector<typename FunctionTraits<T>::BaseType> &sigma, const Vector<Bool> *const mask) {
+    const Vector<typename FunctionTraits<T>::BaseType> &sigma, const Vector<bool> *const mask) {
   fitIt(fsol_p, x, y, &sigma, mask);
   return fsol_p;
 }
@@ -281,7 +281,7 @@ template <class T>
 Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(
     const Matrix<typename FunctionTraits<T>::BaseType> &x,
     const Vector<typename FunctionTraits<T>::BaseType> &y,
-    const Vector<typename FunctionTraits<T>::BaseType> &sigma, const Vector<Bool> *const mask) {
+    const Vector<typename FunctionTraits<T>::BaseType> &sigma, const Vector<bool> *const mask) {
   fitIt(fsol_p, x, y, &sigma, mask);
   return fsol_p;
 }
@@ -289,7 +289,7 @@ Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(
 template <class T>
 Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(
     const Vector<typename FunctionTraits<T>::BaseType> &x,
-    const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<Bool> *const mask) {
+    const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<bool> *const mask) {
   fitIt(fsol_p, x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0),
         mask);
   return fsol_p;
@@ -298,68 +298,68 @@ Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(
 template <class T>
 Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(
     const Matrix<typename FunctionTraits<T>::BaseType> &x,
-    const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<Bool> *const mask) {
+    const Vector<typename FunctionTraits<T>::BaseType> &y, const Vector<bool> *const mask) {
   fitIt(fsol_p, x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0),
         mask);
   return fsol_p;
 }
 
 template <class T>
-Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(const Vector<Bool> *const mask) {
+Vector<typename FunctionTraits<T>::BaseType> GenericL2Fit<T>::fit(const Vector<bool> *const mask) {
   fit(fsol_p, mask);
   return fsol_p;
 }
 
 template <class T>
-Bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
                           const Vector<typename FunctionTraits<T>::BaseType> &x,
                           const Vector<typename FunctionTraits<T>::BaseType> &y,
                           const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-                          const Vector<Bool> *const mask) {
+                          const Vector<bool> *const mask) {
   return fitIt(sol, x, y, &sigma, mask);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
                           const Matrix<typename FunctionTraits<T>::BaseType> &x,
                           const Vector<typename FunctionTraits<T>::BaseType> &y,
                           const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-                          const Vector<Bool> *const mask) {
+                          const Vector<bool> *const mask) {
   return fitIt(sol, x, y, &sigma, mask);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
                           const Vector<typename FunctionTraits<T>::BaseType> &x,
                           const Vector<typename FunctionTraits<T>::BaseType> &y,
                           const typename FunctionTraits<T>::BaseType &,
-                          const Vector<Bool> *const mask) {
+                          const Vector<bool> *const mask) {
   return fitIt(sol, x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0),
                mask);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
+bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
                           const Matrix<typename FunctionTraits<T>::BaseType> &x,
                           const Vector<typename FunctionTraits<T>::BaseType> &y,
                           const typename FunctionTraits<T>::BaseType &,
-                          const Vector<Bool> *const mask) {
+                          const Vector<bool> *const mask) {
   return fitIt(sol, x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0),
                mask);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &,
-                          const Vector<Bool> *const) {
+bool GenericL2Fit<T>::fit(Vector<typename FunctionTraits<T>::BaseType> &,
+                          const Vector<bool> *const) {
   throw(AipsError("GenericL2: A001: not implemented yet; ask Wim Brouw"));
-  return False;
+  return false;
 }
 
 template <class T>
 const Vector<typename FunctionTraits<T>::BaseType> &GenericL2Fit<T>::errors() const {
   if (!errors_p) throw(AipsError("GenericL2Fit: no solution to get errors"));
   if (!ferrors_p) {
-    ferrors_p = True;
+    ferrors_p = true;
     ferr_p.resize(pCount_p);
     ferr_p = 0;
     for (uInt i = 0, k = 0; i < pCount_p; ++i) {
@@ -370,10 +370,10 @@ const Vector<typename FunctionTraits<T>::BaseType> &GenericL2Fit<T>::errors() co
 }
 
 template <class T>
-Bool GenericL2Fit<T>::errors(Vector<typename FunctionTraits<T>::BaseType> &err) const {
+bool GenericL2Fit<T>::errors(Vector<typename FunctionTraits<T>::BaseType> &err) const {
   if (errors_p) {
     if (!ferrors_p) {
-      ferrors_p = True;
+      ferrors_p = true;
       ferr_p.resize(pCount_p);
       ferr_p = 0;
       for (uInt i = 0, k = 0; i < pCount_p; ++i) {
@@ -421,7 +421,7 @@ template <class T>
 void GenericL2Fit<T>::buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
                                         const Vector<typename FunctionTraits<T>::BaseType> &y,
                                         const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-                                        const Vector<Bool> *const mask) {
+                                        const Vector<bool> *const mask) {
   buildMatrix(x, y, &sigma, mask);
 }
 
@@ -429,14 +429,14 @@ template <class T>
 void GenericL2Fit<T>::buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
                                         const Vector<typename FunctionTraits<T>::BaseType> &y,
                                         const Vector<typename FunctionTraits<T>::BaseType> &sigma,
-                                        const Vector<Bool> *const mask) {
+                                        const Vector<bool> *const mask) {
   buildMatrix(x, y, &sigma, mask);
 }
 
 template <class T>
 void GenericL2Fit<T>::buildNormalMatrix(const Vector<typename FunctionTraits<T>::BaseType> &x,
                                         const Vector<typename FunctionTraits<T>::BaseType> &y,
-                                        const Vector<Bool> *const mask) {
+                                        const Vector<bool> *const mask) {
   buildMatrix(x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0),
               mask);
 }
@@ -444,23 +444,23 @@ void GenericL2Fit<T>::buildNormalMatrix(const Vector<typename FunctionTraits<T>:
 template <class T>
 void GenericL2Fit<T>::buildNormalMatrix(const Matrix<typename FunctionTraits<T>::BaseType> &x,
                                         const Vector<typename FunctionTraits<T>::BaseType> &y,
-                                        const Vector<Bool> *const mask) {
+                                        const Vector<bool> *const mask) {
   buildMatrix(x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0),
               mask);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::residual(Vector<typename FunctionTraits<T>::BaseType> &y,
+bool GenericL2Fit<T>::residual(Vector<typename FunctionTraits<T>::BaseType> &y,
                                const Array<typename FunctionTraits<T>::BaseType> &x,
                                const Vector<typename FunctionTraits<T>::BaseType> &sol,
-                               const Bool model) {
+                               const bool model) {
   return buildResidual(y, x, &sol, model);
 }
 
 template <class T>
-Bool GenericL2Fit<T>::residual(Vector<typename FunctionTraits<T>::BaseType> &y,
+bool GenericL2Fit<T>::residual(Vector<typename FunctionTraits<T>::BaseType> &y,
                                const Array<typename FunctionTraits<T>::BaseType> &x,
-                               const Bool model) {
+                               const bool model) {
   return buildResidual(
       y, x, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0), model);
 }
@@ -468,10 +468,10 @@ Bool GenericL2Fit<T>::residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 template <class T>
 void GenericL2Fit<T>::initfit_p(uInt parcnt) {
   if (needInit_p) {
-    needInit_p = False;
-    solved_p = False;
-    errors_p = False;
-    ferrors_p = False;
+    needInit_p = false;
+    solved_p = false;
+    errors_p = false;
+    ferrors_p = false;
     set(parcnt, typename LSQTraits<typename FunctionTraits<T>::BaseType>::num_type());
     condEq_p.resize(aCount_ai);
     fullEq_p.resize(pCount_p);
@@ -513,10 +513,10 @@ void GenericL2Fit<T>::resetFunction() {
   pCount_p = 0;
   ndim_p = 0;
   aCount_ai = 0;
-  needInit_p = True;
-  solved_p = False;
-  errors_p = False;
-  ferrors_p = False;
+  needInit_p = true;
+  solved_p = false;
+  errors_p = false;
+  ferrors_p = false;
   for (uInt i = 0; i < constrFun_p.nelements(); i++) {
     delete constrFun_p[i];
     constrFun_p[i] = 0;
@@ -553,7 +553,7 @@ template <class T>
 void GenericL2Fit<T>::buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
                                   const Vector<typename FunctionTraits<T>::BaseType> &y,
                                   const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-                                  const Vector<Bool> *const mask) {
+                                  const Vector<bool> *const mask) {
   if (!needInit_p) needInit_p = solved_p;
   uInt nrows = testInput_p(x, y, sigma);
   typename FunctionTraits<T>::BaseType b(0.0);
@@ -620,13 +620,13 @@ void GenericL2Fit<T>::fillSVDConstraints() {
 }
 
 template <class T>
-Bool GenericL2Fit<T>::buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
+bool GenericL2Fit<T>::buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
                                     const Array<typename FunctionTraits<T>::BaseType> &x,
                                     const Vector<typename FunctionTraits<T>::BaseType> *const sol,
-                                    const Bool model) {
+                                    const bool model) {
   uInt nrows =
       testInput_p(x, y, static_cast<const Vector<typename FunctionTraits<T>::BaseType> *const>(0));
-  if (sol && sol->nelements() != pCount_p) return False;
+  if (sol && sol->nelements() != pCount_p) return false;
   for (uInt i = 0; i < nrows; i++) {
     if (ptr_derive_p) {
       if (model) y[i] = typename FunctionTraits<T>::BaseType(0);
@@ -639,7 +639,7 @@ Bool GenericL2Fit<T>::buildResidual(Vector<typename FunctionTraits<T>::BaseType>
     }
     if (model) y[i] = -y[i];
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

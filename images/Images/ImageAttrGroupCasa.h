@@ -64,7 +64,7 @@ class ImageAttrGroupCasa : public ImageAttrGroup {
   virtual ~ImageAttrGroupCasa();
 
   // Test if it is a null object.
-  Bool isNull() const { return itsTable.table().isNull(); }
+  bool isNull() const { return itsTable.table().isNull(); }
 
   // Flush the attibrutes if needed.
   void flush();
@@ -73,7 +73,7 @@ class ImageAttrGroupCasa : public ImageAttrGroup {
   virtual uInt nrows() const;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr(const String& attrName) const;
+  virtual bool hasAttr(const String& attrName) const;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const;
@@ -111,7 +111,7 @@ class ImageAttrGroupCasa : public ImageAttrGroup {
   void checkRows(const std::string& attrName, uInt size);
 
   // Add a new column for the given attribute for the data type in the value.
-  Bool addNewColumn(const String& attrName, const ValueHolder&);
+  bool addNewColumn(const String& attrName, const ValueHolder&);
 
   // # Data members.
   TableProxy itsTable;

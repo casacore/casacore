@@ -156,7 +156,7 @@ class ArrayLattice : public Lattice<T> {
 
   // Construct an ArrayLattice that references the given Array.
   // By default it results in a writable lattice.
-  ArrayLattice(Array<T>& array, Bool isWritable = True);
+  ArrayLattice(Array<T>& array, bool isWritable = true);
 
   // Construct an ArrayLattice that references the given Array.
   // It results in a non-writable lattice.
@@ -174,10 +174,10 @@ class ArrayLattice : public Lattice<T> {
   virtual Lattice<T>* clone() const;
 
   // The lattice data can be referenced as an array section.
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the lattice writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // returns the shape of the ArrayLattice.
   virtual IPosition shape() const;
@@ -199,9 +199,9 @@ class ArrayLattice : public Lattice<T> {
   // Put the value of a single element.
   virtual void putAt(const T& value, const IPosition& where);
 
-  // Check for internal consistency. Returns False if
+  // Check for internal consistency. Returns false if
   // something nasty has happened to the ArrayLattice.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // For this class this is equal to the number of pixels in the lattice.
@@ -214,7 +214,7 @@ class ArrayLattice : public Lattice<T> {
 
  protected:
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual putting of an array of values.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -222,7 +222,7 @@ class ArrayLattice : public Lattice<T> {
 
  private:
   Array<T> itsData;
-  Bool itsWritable;
+  bool itsWritable;
 };
 
 }  // namespace casacore

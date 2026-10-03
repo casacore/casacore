@@ -135,7 +135,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // will print at run time the version of the program being run.
 // <li> run time checking of ranges
 // <src> inp.makeMaskFromRanges(const String &ranges, uInt length,
-//					 Bool oneRelative=False); </src>
+//					 bool oneRelative=false); </src>
 // </ol>
 // </synopsis>
 //
@@ -255,22 +255,22 @@ class Input {
 
   // Get the boolean value of the parameter (or FALSE if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Bool getBool(const String& key);
+  bool getBool(const String& key);
 
   // Get the total number of parameters of this program
   Int count() const;
 
   // See if the current debug level is thresholded
-  Bool debug(Int l) const { return (debug_level >= l) ? True : False; }
+  bool debug(Int l) const { return (debug_level >= l) ? true : false; }
 
   // Set a new value for an existing named parameter
   // Returns FALSE if key is an unknown parameter name.
   // <group>
-  Bool put(const String& key, const String& value);
+  bool put(const String& key, const String& value);
 
   // The single argument is of the form `key=value', where key is a valid
   // parameter name.
-  Bool put(const String& keyval);
+  bool put(const String& keyval);
   // </group>
 
   // Set version string for announcements
@@ -280,14 +280,14 @@ class Input {
   void announce();
 
   // Turn a string in the form "5,7,9-11,13,2-4" into a Vector<Bool>, where
-  // each specified position or range, is set to True and every other position
-  // is set to False. While the returned vector always has a zero origin, if
-  // oneRelative is True, all the numbers in the supplied string are
+  // each specified position or range, is set to true and every other position
+  // is set to false. While the returned vector always has a zero origin, if
+  // oneRelative is true, all the numbers in the supplied string are
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
   // of the Vector<Bool> results in an exception being thrown.
-  static Vector<Bool> makeMaskFromRanges(const String& ranges, uInt length,
-                                         Bool oneRelative = False);
+  static Vector<bool> makeMaskFromRanges(const String& ranges, uInt length,
+                                         bool oneRelative = false);
 
  private:
   // Get the index of the named parameter (-1 if unknown key).
@@ -315,10 +315,10 @@ class Input {
   String version_id;
 
   // parameter creation allowed?
-  Bool is_closed;
+  bool is_closed;
 
   // ask user for parameter value?
-  Bool do_prompt;
+  bool do_prompt;
 
   // threshold value for debug output
   Int debug_level;

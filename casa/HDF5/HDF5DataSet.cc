@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const IPosition& shape,
-                         const IPosition& tileShape, const Bool* type)
+                         const IPosition& tileShape, const bool* type)
     : itsDataType(type) {
   create(parentHid, name, shape, tileShape);
 }
@@ -93,7 +93,7 @@ HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const 
   create(parentHid, name, shape, tileShape);
 }
 
-HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const Bool* type)
+HDF5DataSet::HDF5DataSet(const HDF5Object& parentHid, const String& name, const bool* type)
     : itsDataType(type) {
   open(parentHid, name);
 }
@@ -290,7 +290,7 @@ DataType HDF5DataSet::getDataType(hid_t parentHid, const String& name) {
   return HDF5DataType::getDataType(dtid);
 }
 
-void HDF5DataSet::get(const Slicer& section, ArrayBase& arr, Bool resize) {
+void HDF5DataSet::get(const Slicer& section, ArrayBase& arr, bool resize) {
   const IPosition& shp = section.length();
   if (!shp.isEqual(arr.shape())) {
     if (resize || arr.nelements() == 0) {
@@ -300,7 +300,7 @@ void HDF5DataSet::get(const Slicer& section, ArrayBase& arr, Bool resize) {
                       " mismatch in get of dataset " + std::string(getName()));
     }
   }
-  Bool deleteIt;
+  bool deleteIt;
   void* buf = arr.getVStorage(deleteIt);
   get(section, buf);
   arr.putVStorage(buf, deleteIt);
@@ -335,7 +335,7 @@ void HDF5DataSet::put(const Slicer& section, const ArrayBase& arr) {
     throw HDF5Error("Shape of slicer " + shp.toString() + " and array " + arr.shape().toString() +
                     " mismatch in put of dataset " + std::string(getName()));
   }
-  Bool deleteIt;
+  bool deleteIt;
   const void* buf = arr.getVStorage(deleteIt);
   put(section, buf);
   arr.freeVStorage(buf, deleteIt);
@@ -368,11 +368,11 @@ void HDF5DataSet::extend(const IPosition& shape) {
   AlwaysAssert(shape.size() == itsShape.size(), AipsError);
   // Extend the data set if one of the axes is larger than the current shape.
   IPosition newShape(itsShape);
-  Bool ext = False;
+  bool ext = false;
   for (uInt i = 0; i < shape.size(); ++i) {
     if (shape[i] > newShape[i]) {
       newShape[i] = shape[i];
-      ext = True;
+      ext = true;
     }
   }
   if (ext) {
@@ -401,7 +401,7 @@ void HDF5DataSet::setCacheSize(uInt) {}
 
 DataType HDF5DataSet::getDataType(hid_t, const String&) { return TpOther; }
 
-void HDF5DataSet::get(const Slicer&, ArrayBase&, Bool) {}
+void HDF5DataSet::get(const Slicer&, ArrayBase&, bool) {}
 
 void HDF5DataSet::get(const Slicer&, void*) {}
 

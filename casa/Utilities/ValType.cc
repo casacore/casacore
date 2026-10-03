@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ValType::ValType() {}
 
-const Bool ValType::undefbool = False;
+const bool ValType::undefbool = false;
 const Char ValType::undefchar = (Char)-128;
 const uChar ValType::undefuchar = 0;
 const Short ValType::undefshort = -32768;
@@ -96,7 +96,7 @@ int ValType::getTypeSize(DataType dt) {
   switch (dt) {
     case TpBool:
     case TpArrayBool:
-      return sizeof(Bool);
+      return sizeof(bool);
     case TpChar:
     case TpArrayChar:
       return sizeof(Char);
@@ -140,7 +140,7 @@ int ValType::getTypeSize(DataType dt) {
 }
 
 // # Get the canonical size of the data type.
-int ValType::getCanonicalSize(DataType dt, Bool BECanonical) {
+int ValType::getCanonicalSize(DataType dt, bool BECanonical) {
   if (BECanonical) {
     switch (dt) {
       case TpChar:
@@ -223,7 +223,7 @@ int ValType::getCanonicalSize(DataType dt, Bool BECanonical) {
 
 void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc,
                                Conversion::ValueFunction*& writeFunc, uInt& nrElementsPerValue,
-                               Bool BECanonical) {
+                               bool BECanonical) {
   nrElementsPerValue = 1;
   if (BECanonical) {
     switch (dt) {
@@ -358,50 +358,50 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
 
 // # Test if a data type can be promoted to another.
 // # Note that the cases fall through.
-Bool ValType::isPromotable(DataType from, DataType to) {
-  if (from == TpOther) return False;
-  if (from == to) return True;
+bool ValType::isPromotable(DataType from, DataType to) {
+  if (from == TpOther) return false;
+  if (from == to) return true;
   switch (from) {
     case TpChar:
-      if (to == TpShort) return True;
+      if (to == TpShort) return true;
       CASACORE_FALLTHROUGH;
     case TpShort:
-      if (to == TpInt) return True;
+      if (to == TpInt) return true;
       CASACORE_FALLTHROUGH;
     case TpInt:
-      if (to == TpInt64) return True;
+      if (to == TpInt64) return true;
       CASACORE_FALLTHROUGH;
     case TpInt64:
     case TpFloat:
     case TpDouble:
-      if (to == TpFloat || to == TpDouble) return True;
+      if (to == TpFloat || to == TpDouble) return true;
       CASACORE_FALLTHROUGH;
     case TpComplex:
     case TpDComplex:
-      if (to == TpComplex || to == TpDComplex) return True;
-      return False;
+      if (to == TpComplex || to == TpDComplex) return true;
+      return false;
     case TpUChar:
-      if (to == TpUShort) return True;
+      if (to == TpUShort) return true;
       CASACORE_FALLTHROUGH;
     case TpUShort:
-      if (to == TpUInt) return True;
+      if (to == TpUInt) return true;
       CASACORE_FALLTHROUGH;
     case TpUInt:
-      if (to == TpInt64) return True;
-      if (to == TpFloat || to == TpDouble) return True;
-      if (to == TpComplex || to == TpDComplex) return True;
-      return False;
+      if (to == TpInt64) return true;
+      if (to == TpFloat || to == TpDouble) return true;
+      if (to == TpComplex || to == TpDComplex) return true;
+      return false;
     default:
       break;
   }
-  return False;
+  return false;
 }
 
 // # Get the comparison routine.
 ObjCompareFunc* ValType::getCmpFunc(DataType dt) {
   switch (dt) {
     case TpBool:
-      return &ObjCompare<Bool>::compare;
+      return &ObjCompare<bool>::compare;
     case TpChar:
       return &ObjCompare<Char>::compare;
     case TpUChar:
@@ -436,7 +436,7 @@ ObjCompareFunc* ValType::getCmpFunc(DataType dt) {
 std::shared_ptr<BaseCompare> ValType::getCmpObj(DataType dt) {
   switch (dt) {
     case TpBool:
-      return std::make_shared<ObjCompare<Bool>>();
+      return std::make_shared<ObjCompare<bool>>();
     case TpChar:
       return std::make_shared<ObjCompare<Char>>();
     case TpUChar:

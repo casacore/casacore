@@ -82,21 +82,21 @@ void LatticeAddNoise::set(Random::Types type, const Vector<Double>& parameters) 
 // Private
 
 void LatticeAddNoise::addNoiseToArray(Array<Float>& data) {
-  Bool deleteIt;
+  bool deleteIt;
   auto* p = data.getStorage(deleteIt);
   std::for_each(p, p + data.nelements(), [&](Float& datum) { datum += (*itsNoise)(); });
   data.putStorage(p, deleteIt);
 }
 
 void LatticeAddNoise::addNoiseToArray(Array<Double>& data) {
-  Bool deleteIt;
+  bool deleteIt;
   auto* p = data.getStorage(deleteIt);
   std::for_each(p, p + data.nelements(), [&](Double& datum) { datum += (*itsNoise)(); });
   data.putStorage(p, deleteIt);
 }
 
 void LatticeAddNoise::addNoiseToArray(Array<Complex>& data) {
-  Bool deleteIt;
+  bool deleteIt;
   auto* p = data.getStorage(deleteIt);
   Float rr, ii;
   std::for_each(p, p + data.nelements(), [&](Complex& datum) {
@@ -109,7 +109,7 @@ void LatticeAddNoise::addNoiseToArray(Array<Complex>& data) {
 }
 
 void LatticeAddNoise::addNoiseToArray(Array<DComplex>& data) {
-  Bool deleteIt;
+  bool deleteIt;
   auto* p = data.getStorage(deleteIt);
   Double rr, ii;
   std::for_each(p, p + data.nelements(), [&](DComplex& datum) {

@@ -33,7 +33,7 @@ TableLocker::TableLocker(Table& table, FileLocker::LockType type, uInt nattempts
   if (!itsHadLock) {
     if (type == FileLocker::Read && !table.lockOptions().readLocking()) {
       // Read lock not needed if NoReadLocking.
-      itsHadLock = True;
+      itsHadLock = true;
     } else {
       // Acquire the lock.
       if (!itsTable.lock(type, nattempts)) {

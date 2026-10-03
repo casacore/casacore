@@ -97,10 +97,10 @@ class StreamLogSink : public LogSinkInterface {
 
   // Write <src>message</src> to the stream if it passes the filter. Works
   // by calling <src>operator<<(ostream &,const LogMesssage&)</src>.
-  virtual Bool postLocally(const LogMessage &message);
+  virtual bool postLocally(const LogMessage &message);
 
   // write any pending output.
-  virtual void flush(Bool global = True);
+  virtual void flush(bool global = true);
 
   // Returns the id for this class...
   static String localId();

@@ -66,14 +66,14 @@ FITSImage::FITSImage(const String& name, uInt whichRep, uInt whichHDU)
       shortMagic_p(0),
       uCharMagic_p(0),
       longMagic_p(0),
-      hasBlanks_p(False),
+      hasBlanks_p(false),
       dataType_p(TpOther),
       fileOffset_p(0),
-      isClosed_p(True),
-      filterZeroMask_p(False),
+      isClosed_p(true),
+      filterZeroMask_p(false),
       whichRep_p(whichRep),
       whichHDU_p(whichHDU),
-      _hasBeamsTable(False) {
+      _hasBeamsTable(false) {
   setup();
 }
 
@@ -88,14 +88,14 @@ FITSImage::FITSImage(const String& name, const MaskSpecifier& maskSpec, uInt whi
       shortMagic_p(0),
       uCharMagic_p(0),
       longMagic_p(0),
-      hasBlanks_p(False),
+      hasBlanks_p(false),
       dataType_p(TpOther),
       fileOffset_p(0),
-      isClosed_p(True),
-      filterZeroMask_p(False),
+      isClosed_p(true),
+      filterZeroMask_p(false),
       whichRep_p(whichRep),
       whichHDU_p(whichHDU),
-      _hasBeamsTable(False) {
+      _hasBeamsTable(false) {
   setup();
 }
 
@@ -284,7 +284,7 @@ uInt FITSImage::get_hdunum(const String& fullname) {
   FITSImgParser fip = FITSImgParser(fitsname);
 
   if (extname.length() > 0 || extindex > -1) {
-    FITSExtInfo fei = FITSExtInfo(fip.fitsname(True), extindex, extname, extver, True);
+    FITSExtInfo fei = FITSExtInfo(fip.fitsname(true), extindex, extname, extver, true);
     fitsindex = fip.get_index(fei);
     if (fitsindex > -1)
       hduindex = (uInt)fitsindex;
@@ -309,7 +309,7 @@ String FITSImage::className() {
   return x;
 }
 
-Bool FITSImage::isMasked() const { return hasBlanks_p; }
+bool FITSImage::isMasked() const { return hasBlanks_p; }
 
 const LatticeRegion* FITSImage::getRegionPtr() const { return 0; }
 
@@ -323,7 +323,7 @@ void FITSImage::resize(const TiledShape&) {
   throw(AipsError("FITSImage::resize - a FITSImage is not writable"));
 }
 
-Bool FITSImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
+bool FITSImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   reopenIfNeeded();
   if (pTiledFile_p->dataType() == TpFloat) {
     pTiledFile_p->get(buffer, section);
@@ -339,7 +339,7 @@ Bool FITSImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   } else if (pTiledFile_p->dataType() == TpUChar) {
     pTiledFile_p->get(buffer, section, scale_p, offset_p, uCharMagic_p, hasBlanks_p);
   }
-  return False;  // Not a reference
+  return false;  // Not a reference
 }
 
 void FITSImage::doPutSlice(const Array<Float>&, const IPosition&, const IPosition&) {
@@ -348,7 +348,7 @@ void FITSImage::doPutSlice(const Array<Float>&, const IPosition&, const IPositio
                 "is not possible as FITSImage is not writable"));
 }
 
-String FITSImage::name(Bool stripPath) const {
+String FITSImage::name(bool stripPath) const {
   Path path(name_p);
   if (stripPath) {
     return path.baseName();
@@ -357,43 +357,43 @@ String FITSImage::name(Bool stripPath) const {
   }
 }
 
-Bool FITSImage::isPersistent() const { return True; }
+bool FITSImage::isPersistent() const { return true; }
 
-Bool FITSImage::isPaged() const { return True; }
+bool FITSImage::isPaged() const { return true; }
 
-Bool FITSImage::isWritable() const {
+bool FITSImage::isWritable() const {
   // Its too hard to implement putMaskSlice becuase
   // magic blanking is used. It measn we lose
   // the data values if the mask is put somewhere
 
-  return False;
+  return false;
 }
 
-Bool FITSImage::ok() const { return True; }
+bool FITSImage::ok() const { return true; }
 
 DataType FITSImage::dataType() const { return TpFloat; }
 
-Bool FITSImage::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
+bool FITSImage::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   if (!hasBlanks_p) {
     buffer.resize(section.length());
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
   }
   //
   reopenIfNeeded();
   return pPixelMask_p->getSlice(buffer, section);
 }
 
-Bool FITSImage::hasPixelMask() const { return hasBlanks_p; }
+bool FITSImage::hasPixelMask() const { return hasBlanks_p; }
 
-const Lattice<Bool>& FITSImage::pixelMask() const {
+const Lattice<bool>& FITSImage::pixelMask() const {
   if (!hasBlanks_p) {
     throw(AipsError("FITSImage::pixelMask - no pixelmask used"));
   }
   return *pPixelMask_p;
 }
 
-Lattice<Bool>& FITSImage::pixelMask() {
+Lattice<bool>& FITSImage::pixelMask() {
   if (!hasBlanks_p) {
     throw(AipsError("FITSImage::pixelMask - no pixelmask used"));
   }
@@ -404,7 +404,7 @@ void FITSImage::tempClose() {
   if (!isClosed_p) {
     pPixelMask_p.reset();
     pTiledFile_p.reset();
-    isClosed_p = True;
+    isClosed_p = true;
   }
 }
 
@@ -542,11 +542,11 @@ void FITSImage::setup() {
     // the magic value has been set (suggests there are masked pixels) and
     // hasBlanks_p was set to T or F by getImageAttributes
 
-    if (dataType_p == TpFloat || dataType_p == TpDouble) hasBlanks_p = True;
+    if (dataType_p == TpFloat || dataType_p == TpDouble) hasBlanks_p = true;
   } else {
     // We don't want to use the mask
 
-    hasBlanks_p = False;
+    hasBlanks_p = false;
   }
 
   // Open the image.
@@ -560,8 +560,8 @@ void FITSImage::setup() {
 }
 
 void FITSImage::open() {
-  Bool writable = False;
-  Bool canonical = True;
+  bool writable = false;
+  bool canonical = true;
 
   // The tile shape must not be a subchunk in all dimensions
 
@@ -592,14 +592,14 @@ void FITSImage::open() {
 
   // Ok, it is open now.
 
-  isClosed_p = False;
+  isClosed_p = false;
 }
 
 void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                                    Unit& brightnessUnit, RecordInterface& miscInfo, Int& recordsize,
                                    Int& recordnumber, FITS::ValueType& dataType, Float& scale,
                                    Float& offset, uChar& uCharMagic, Short& shortMagic,
-                                   Int& longMagic, Bool& hasBlanks, const String& name,
+                                   Int& longMagic, bool& hasBlanks, const String& name,
                                    uInt whichRep, uInt whichHDU) {
   LogIO os(LogOrigin("FITSImage", "getImageAttributes", WHERE));
   File fitsfile(name);
@@ -702,11 +702,11 @@ void FITSImage::getImageAttributes(CoordinateSystem& cSys, IPosition& shape, Ima
   recordnumber = infile.recno();
 }
 
-void FITSImage::setMaskZero(Bool filterZero) {
+void FITSImage::setMaskZero(bool filterZero) {
   // set the zero masking on the
   // current mask
   if (pPixelMask_p) {
-    dynamic_cast<FITSMask*>(pPixelMask_p.get())->setFilterZero(True);
+    dynamic_cast<FITSMask*>(pPixelMask_p.get())->setFilterZero(true);
   }
   // set the flag, such that an later
   // mask created in 'open()' will be OK

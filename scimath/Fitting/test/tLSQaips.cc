@@ -556,7 +556,7 @@ int main() {
       }
       showdt(lsqc1);
       uInt nr;
-      lsqc1.invert(nr, True);
+      lsqc1.invert(nr, true);
       showdt(lsqc1);
       lsqc1.solve(sol);
       mu = lsqc1.getSD();
@@ -644,7 +644,7 @@ int main() {
       }
       showdt(lsqc1);
       uInt nr;
-      lsqc1.invert(nr, True);
+      lsqc1.invert(nr, true);
       showdt(lsqc1);
       lsqc1.solve(sol);
       mu = lsqc1.getSD();
@@ -681,7 +681,7 @@ int main() {
       }
       showdt(lsqc1);
       uInt nr;
-      lsqc1.invert(nr, True);
+      lsqc1.invert(nr, true);
       showdt(lsqc1);
       lsqc1.solve(sol);
       mu = lsqc1.getSD();
@@ -718,7 +718,7 @@ int main() {
       }
       showdt(lsqc1);
       uInt nr;
-      lsqc1.invert(nr, True);
+      lsqc1.invert(nr, true);
       showdt(lsqc1);
       lsqc1.solve(sol);
       mu = lsqc1.getSD();
@@ -862,7 +862,7 @@ int main() {
       Vector<DComplex> sol(3);
       Double sd, mu;
       uInt rank;
-      Bool ok;
+      bool ok;
       // LSQFit area
       LSQaips fit(2, LSQComplex());
       // Make normal equation
@@ -981,7 +981,7 @@ int main() {
         for (uInt j = 0; j < 3; ++j) ce[j] = vce[i][j];
         fit.makeNorm(ceit, 1.0, m[i], LSQFit::CONJUGATE);
       }
-      ok = fit.invert(rank, True);
+      ok = fit.invert(rank, true);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
         fit.solve(sol);
@@ -999,7 +999,7 @@ int main() {
         for (uInt j = 0; j < 3; ++j) cer[j] = vcer[i][j];
         fit.makeNorm(2, cindexit, cerit, 1.0, m[i], LSQFit::CONJUGATE);
       }
-      ok = fit.invert(rank, True);
+      ok = fit.invert(rank, true);
       cout << "ok? " << ok << "; rank: " << rank << endl;
       if (ok) {
         fit.solve(sol);

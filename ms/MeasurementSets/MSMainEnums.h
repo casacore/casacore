@@ -98,7 +98,7 @@ class MSMainEnums {
     FIELD_ID,
     //
     // The data flags, array of bools with same shape as data.
-    // Data is flagged bad if FLAG is True.<BR>
+    // Data is flagged bad if FLAG is true.<BR>
     // Bool(Nc, Nf)
     FLAG,
     //
@@ -109,7 +109,7 @@ class MSMainEnums {
     // Bool (Nc, Nf, Ncat)
     FLAG_CATEGORY,
     //
-    // Flag all data in this row if True.<BR>
+    // Flag all data in this row if true.<BR>
     // Bool
     FLAG_ROW,
     //
@@ -165,7 +165,7 @@ class MSMainEnums {
     // Int
     ANTENNA3,
     //
-    // Reference antenna for this baseline, True for ANTENNA1 <BR>
+    // Reference antenna for this baseline, true for ANTENNA1 <BR>
     // Bool
     BASELINE_REF,
     //

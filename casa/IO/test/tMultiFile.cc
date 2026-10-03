@@ -40,7 +40,7 @@
 using namespace casacore;
 using namespace std;
 
-void makeFile(Int64 blockSize, Bool useODirect, Bool useCRC) {
+void makeFile(Int64 blockSize, bool useODirect, bool useCRC) {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, blockSize, useODirect, useCRC);
   AlwaysAssertExit(mfile.isWritable());
   mfile.show(cout);
@@ -52,7 +52,7 @@ void readFile(const String& name = "tMultiFile_tmp.dat") {
   mfile.show(cout);
   for (uInt i = 0; i < mfile.info().size(); ++i) {
     String nm = "file" + std::to_string(i);
-    cout << nm << ' ' << mfile.fileId(nm, False) << endl;
+    cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
 }
 
@@ -93,7 +93,7 @@ void writeFiles1() {
   mfile.closeFile(id2);
 }
 
-void checkFiles1(Bool do1 = True) {
+void checkFiles1(bool do1 = true) {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
   Int id0 = mfile.openFile("file0");
   Int id2 = mfile.openFile("file2");
@@ -170,7 +170,7 @@ void writeFiles2() {
 }
 
 void checkFiles2(const String& name = "tMultiFile_tmp.dat") {
-  checkFiles1(False);
+  checkFiles1(false);
   MultiFile mfile(name, ByteIO::Old);
   Int id2 = mfile.openFile("file2");
   Vector<Int64> buf1(2), buf(2);
@@ -180,7 +180,7 @@ void checkFiles2(const String& name = "tMultiFile_tmp.dat") {
   mfile.closeFile(id2);
 }
 
-void doTest(Int64 blockSize, Bool useODirect = False, Bool useCRC = False) {
+void doTest(Int64 blockSize, bool useODirect = false, bool useCRC = false) {
   cout << "MultiFile test with blockSize=" << blockSize << ", useCRC=" << useCRC
        << ", useODirect=" << useODirect << endl;
   makeFile(blockSize, useODirect, useCRC);
@@ -374,7 +374,7 @@ int main() {
     // Do some MultiFile tests.
     doTest(1024);              // no extra header file
     doTest(128);               // requires extra header file
-    doTest(4096, True, True);  // with O_DIRECT (if possible) and CRC
+    doTest(4096, true, true);  // with O_DIRECT (if possible) and CRC
     // Test if a version 1 file can still be read.
     testV1();
     // Test if nested MultiFiles work fine.

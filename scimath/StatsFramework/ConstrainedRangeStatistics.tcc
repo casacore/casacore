@@ -63,7 +63,7 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt
                                                             std::shared_ptr<AccumType> knownMin,
                                                             std::shared_ptr<AccumType> knownMax,
                                                             uInt binningThreshholdSizeBytes,
-                                                            Bool persistSortedArray, uInt nBins) {
+                                                            bool persistSortedArray, uInt nBins) {
   if (!this->_getStatsData().median) {
     _setRange();
     std::shared_ptr<AccumType> median(new AccumType(ClassicalStatistics<CASA_STATP>::getMedian(
@@ -77,7 +77,7 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(std::shared_ptr<uInt
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
     std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
-    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, bool persistSortedArray,
     uInt nBins) {
   _setRange();
   return ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
@@ -88,7 +88,7 @@ CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
     std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
-    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes, bool persistSortedArray,
     uInt nBins) {
   _setRange();
   return ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
@@ -112,7 +112,7 @@ CASA_STATD
 std::map<Double, AccumType> ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>& quantiles, std::shared_ptr<uInt64> knownNpts,
     std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins) {
+    uInt binningThreshholdSizeBytes, bool persistSortedArray, uInt nBins) {
   _setRange();
   return ClassicalStatistics<CASA_STATP>::getQuantiles(quantiles, knownNpts, knownMin, knownMax,
                                                        binningThreshholdSizeBytes,
@@ -148,7 +148,7 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const DataIterator& dataBegin,
                                                         uInt64 nr, uInt dataStride,
                                                         const DataRanges& ranges,
-                                                        Bool isInclude) const {
+                                                        bool isInclude) const {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -183,7 +183,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const Data
                                                         uInt64 nr, uInt dataStride,
                                                         const MaskIterator& maskBegin,
                                                         uInt maskStride, const DataRanges& ranges,
-                                                        Bool isInclude) const {
+                                                        bool isInclude) const {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -218,7 +218,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const Data
                                                         const WeightsIterator& weightsBegin,
                                                         uInt64 nr, uInt dataStride,
                                                         const DataRanges& ranges,
-                                                        Bool isInclude) const {
+                                                        bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -239,7 +239,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(uInt64& npts, const Data
                                                         uInt64 nr, uInt dataStride,
                                                         const MaskIterator& maskBegin,
                                                         uInt maskStride, const DataRanges& ranges,
-                                                        Bool isInclude) const {
+                                                        bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
@@ -319,7 +319,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>&
                                                      std::shared_ptr<AccumType>& mymax,
                                                      const DataIterator& dataBegin, uInt64 nr,
                                                      uInt dataStride, const DataRanges& ranges,
-                                                     Bool isInclude) const {
+                                                     bool isInclude) const {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -355,7 +355,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>&
                                                      const DataIterator& dataBegin, uInt64 nr,
                                                      uInt dataStride, const MaskIterator& maskBegin,
                                                      uInt maskStride, const DataRanges& ranges,
-                                                     Bool isInclude) const {
+                                                     bool isInclude) const {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -393,7 +393,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>&
                                                      const DataIterator& dataBegin,
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
                                                      uInt dataStride, const DataRanges& ranges,
-                                                     Bool isInclude) const {
+                                                     bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -415,7 +415,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(std::shared_ptr<AccumType>&
                                                      const WeightsIterator& weightsBegin, uInt64 nr,
                                                      uInt dataStride, const MaskIterator& maskBegin,
                                                      uInt maskStride, const DataRanges& ranges,
-                                                     Bool isInclude) const {
+                                                     bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
@@ -476,7 +476,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(uInt64& npts,
                                                          std::shared_ptr<AccumType>& mymax,
                                                          const DataIterator& dataBegin, uInt64 nr,
                                                          uInt dataStride, const DataRanges& ranges,
-                                                         Bool isInclude) const {
+                                                         bool isInclude) const {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -509,7 +509,7 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
     uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) const {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -546,7 +546,7 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
     uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude) const {
+    const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -566,7 +566,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
     uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude) const {
+    bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;
@@ -626,7 +626,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(StatsData<AccumTyp
                                                               const DataIterator& dataBegin,
                                                               uInt64 nr, uInt dataStride,
                                                               const DataRanges& ranges,
-                                                              Bool isInclude) {
+                                                              bool isInclude) {
   auto datum = dataBegin;
   uInt64 count = 0;
   auto beginRange = ranges.cbegin();
@@ -663,7 +663,7 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto mask = maskBegin;
   uInt64 count = 0;
@@ -708,7 +708,7 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const DataRanges& ranges,
-    Bool isInclude) {
+    bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -728,7 +728,7 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude) {
+    uInt maskStride, const DataRanges& ranges, bool isInclude) {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   auto mask = maskBegin;

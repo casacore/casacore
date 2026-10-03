@@ -89,7 +89,7 @@ class SDSpWindowHandler {
   SDSpWindowHandler();
 
   // attach this to a MS, marking fields in row which are explicitly handled here
-  SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDSpWindowHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDSpWindowHandler(const SDSpWindowHandler &other);
@@ -100,7 +100,7 @@ class SDSpWindowHandler {
   SDSpWindowHandler &operator=(const SDSpWindowHandler &other);
 
   // attach to a MS, the handledCols and row arguments are ignored here
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS; just resets the id pointer
   void resetRow(const Record &);
@@ -117,8 +117,8 @@ class SDSpWindowHandler {
       netSidebandKey_p;
   Vector<Double> fNCache_p, f0Cache_p, bwCache_p;
   Double *fNCachePtr_p, *f0CachePtr_p, *bwCachePtr_p;
-  Bool deleteItFN_p, deleteItF0_p, deleteItBw_p;
-  RecordFieldPtr<Bool> flagRowKey_p;
+  bool deleteItFN_p, deleteItF0_p, deleteItBw_p;
+  RecordFieldPtr<bool> flagRowKey_p;
   // the cache table is the one that is indexed
   ColumnsIndex *index_p;
   // temporary table to hold the fields we are indexing on, can't index on array column
@@ -145,7 +145,7 @@ class SDSpWindowHandler {
 
   // fields from a previous life as a MS
   RORecordFieldPtr<Int> spWinIdField_p, ifConvChainField_p, freqGroupField_p, netSidebandField_p;
-  RORecordFieldPtr<Bool> flagRowField_p;
+  RORecordFieldPtr<bool> flagRowField_p;
 
   // cleanup everything
   void clearAll();
@@ -154,10 +154,10 @@ class SDSpWindowHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // initialize the stuff dependent on the row
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

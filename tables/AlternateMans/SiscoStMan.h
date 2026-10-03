@@ -88,9 +88,7 @@ class SiscoStMan final : public casacore::DataManager {
  private:
   friend class SiscoStManColumn;
 
-  casacore::Bool flush(casacore::AipsIO &, [[maybe_unused]] casacore::Bool doFsync) final {
-    return false;
-  }
+  bool flush(casacore::AipsIO &, [[maybe_unused]] bool doFsync) final { return false; }
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.

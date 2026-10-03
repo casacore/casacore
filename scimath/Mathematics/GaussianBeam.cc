@@ -63,7 +63,7 @@ GaussianBeam& GaussianBeam::operator=(const GaussianBeam& other) {
   return *this;
 }
 
-Bool GaussianBeam::operator==(const GaussianBeam& other) const {
+bool GaussianBeam::operator==(const GaussianBeam& other) const {
   return _major == other._major && _minor == other._minor && _pa == other._pa;
   /*
   return _major.getValue("rad") == other._major.getValue("rad")
@@ -72,7 +72,7 @@ Bool GaussianBeam::operator==(const GaussianBeam& other) const {
       */
 }
 
-Bool GaussianBeam::operator!=(const GaussianBeam& other) const { return !operator==(other); }
+bool GaussianBeam::operator!=(const GaussianBeam& other) const { return !operator==(other); }
 
 const Quantity& GaussianBeam::getMajor() const { return _major; }
 
@@ -82,14 +82,14 @@ const Quantity& GaussianBeam::getMinor() const { return _minor; }
 
 Double GaussianBeam::getMinor(const Unit& u) const { return _minor.getValue(u); }
 
-Quantity GaussianBeam::getPA(const Bool unwrap) const {
+Quantity GaussianBeam::getPA(const bool unwrap) const {
   if (unwrap) {
     return _unwrap(_pa);
   }
   return _pa;
 }
 
-Double GaussianBeam::getPA(const Unit& u, const Bool unwrap) const {
+Double GaussianBeam::getPA(const Unit& u, const bool unwrap) const {
   return getPA(unwrap).getValue(u);
 }
 
@@ -125,7 +125,7 @@ void GaussianBeam::setMajorMinor(const Quantity& majAx, const Quantity& minAx) {
   _minor = minAx;
 }
 
-void GaussianBeam::setPA(const Quantity& pa, Bool unwrap) {
+void GaussianBeam::setPA(const Quantity& pa, bool unwrap) {
   auto paVal = pa.getValue();
   ThrowIf(isInf(paVal) || isNaN(paVal),
           "The position angle value is not permitted to be infinity or NaN");
@@ -134,7 +134,7 @@ void GaussianBeam::setPA(const Quantity& pa, Bool unwrap) {
   _pa = unwrap ? _unwrap(pa) : pa;
 }
 
-Bool GaussianBeam::isNull() const { return _major.getValue() == 0 || _minor.getValue() == 0; }
+bool GaussianBeam::isNull() const { return _major.getValue() == 0 || _minor.getValue() == 0; }
 
 Double GaussianBeam::getArea(const Unit& unit) const {
   // NOTE we never want to return a Qauntity because of the
@@ -210,7 +210,7 @@ GaussianBeam GaussianBeam::fromRecord(const Record& rec) {
 
 ostream& operator<<(ostream& os, const GaussianBeam& beam) {
   os << "major: " << beam.getMajor() << ", minor: " << beam.getMinor()
-     << ", pa: " << beam.getPA(True);
+     << ", pa: " << beam.getPA(true);
   return os;
 }
 
@@ -221,11 +221,11 @@ LogIO& operator<<(LogIO& os, const GaussianBeam& beam) {
   return os;
 }
 
-Vector<Quantity> GaussianBeam::toVector(const Bool unwrap) const {
+Vector<Quantity> GaussianBeam::toVector(const bool unwrap) const {
   Vector<Quantity> beam(3);
   beam[0] = _major;
   beam[1] = _minor;
-  beam[2] = unwrap ? getPA(True) : _pa;
+  beam[2] = unwrap ? getPA(true) : _pa;
   return beam;
 }
 
@@ -235,14 +235,14 @@ void GaussianBeam::convert(const String& majUnit, const String& minUnit, const S
   _pa.convert(paUnit);
 }
 
-Bool near(const GaussianBeam& left, const GaussianBeam& other, const Double relWidthTol,
+bool near(const GaussianBeam& left, const GaussianBeam& other, const Double relWidthTol,
           const Quantity& absPATol) {
   if (!absPATol.isConform("rad")) {
     throw AipsError("GaussianBeam::near(): absPATol does not have angular units");
   }
   return casacore::near(left.getMajor(), other.getMajor(), relWidthTol) &&
          casacore::near(left.getMinor(), other.getMinor(), relWidthTol) &&
-         casacore::nearAbs(left.getPA(True), other.getPA(True), absPATol);
+         casacore::nearAbs(left.getPA(true), other.getPA(true), absPATol);
 }
 
 }  // namespace casacore

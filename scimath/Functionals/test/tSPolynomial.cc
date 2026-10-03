@@ -86,7 +86,7 @@ int main() {
 
   AlwaysAssertExit(allEQ(coefficients, tmp1.coefficients()));
 
-  //     Bool operator==(const SPolynomial<T> &other) const;
+  //     bool operator==(const SPolynomial<T> &other) const;
   //     Bool operator!=(const SPolynomial<T> &other) const;
   AlwaysAssertExit(null != linear && null != square && square != linear && null == null &&
                    linear == linear && square == square);

@@ -72,7 +72,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //    AipsIO stream (&fio);
 //    // Read the data.
 //    Int vali;
-//    Bool valb;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -113,29 +113,29 @@ class FiledesIO : public ByteIO {
   // Read <src>size</src> bytes from the descriptor. Returns the number of
   // bytes actually read or a negative number if an error occurred. Will throw
   // an Exception (AipsError) if the requested number of bytes could not be
-  // read, or an error occured, unless throwException is set to False. Will
+  // read, or an error occured, unless throwException is set to false. Will
   // always throw an exception if the descriptor is not readable or the
   // system call returned an undocumented value.
-  virtual Int64 read(Int64 size, void* buf, Bool throwException = True);
+  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
 
   // Like read except reads from offset of the start of the file.
   // The file offset is not changed
-  virtual Int64 pread(Int64 size, Int64 offset, void* buf, Bool throwException = True);
+  virtual Int64 pread(Int64 size, Int64 offset, void* buf, bool throwException = true);
 
   // Get the length of the byte stream.
   virtual Int64 length();
 
   // Is the IO stream readable?
-  virtual Bool isReadable() const;
+  virtual bool isReadable() const;
 
   // Is the IO stream writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Is the IO stream seekable?
-  virtual Bool isSeekable() const;
+  virtual bool isSeekable() const;
 
   // Set that the IO stream is writable.
-  void setWritable() { itsWritable = True; }
+  void setWritable() { itsWritable = true; }
 
   // Get the file name of the file attached.
   virtual String fileName() const;
@@ -150,7 +150,7 @@ class FiledesIO : public ByteIO {
   // Close is only done if the fd is non-negative.
   // <group>
   static int create(const Char* name, int mode = 0666);
-  static int open(const Char* name, Bool writable = False, Bool throwExcp = True);
+  static int open(const Char* name, bool writable = false, bool throwExcp = true);
   static void close(int fd);
   // </group>
 
@@ -169,9 +169,9 @@ class FiledesIO : public ByteIO {
   virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
 
  private:
-  Bool itsSeekable;
-  Bool itsReadable;
-  Bool itsWritable;
+  bool itsSeekable;
+  bool itsReadable;
+  bool itsWritable;
   int itsFile;
   String itsFileName;
 

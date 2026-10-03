@@ -35,7 +35,7 @@ int main() {
   // StatisticsTypes.
   try {
     struct StatsData<Double> stats;
-    stats.masked = True;
+    stats.masked = true;
     stats.max.reset(new Double(27.3));
     stats.maxpos = std::make_pair(2, 55);
     stats.mean = 22.1;
@@ -51,7 +51,7 @@ int main() {
     stats.sumsq = 54463.26;
     stats.sumweights = 105.8;
     stats.variance = 2.25;
-    stats.weighted = True;
+    stats.weighted = true;
 
     // The following four tests should be done in the given order, as the
     // sequence of tests incrementally removes some values from the "stats"
@@ -93,8 +93,8 @@ int main() {
     }
     {
       // "sumweights" should be absent from output record when "weighted"
-      // flag is False.
-      stats.weighted = False;
+      // flag is false.
+      stats.weighted = false;
       Record rec = toRecord(stats);
       AlwaysAssert(rec.isDefined(StatisticsData::toString(StatisticsData::SUMWEIGHTS)), AipsError);
     }

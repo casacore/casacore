@@ -64,10 +64,10 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   uInt estimatedSteps() const;
 
   // Are there any data sets left to provide?
-  Bool atEnd() const;
+  bool atEnd() const;
 
   // Take any actions necessary to finalize the provider. This will be called when
-  // atEnd() returns True.
+  // atEnd() returns true.
   void finalize();
 
   // get the count of elements in the current data set. When implementing this method, be
@@ -78,14 +78,14 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // get the current data set
   const T* getData();
 
-  // Get the associated mask of the current dataset. Only called if hasMask() returns True;
-  const Bool* getMask();
+  // Get the associated mask of the current dataset. Only called if hasMask() returns true;
+  const bool* getMask();
 
   // returns something reasonable based on the lattice size.
   uInt getNMaxThreads() const;
 
   // Does the current data set have an associated mask?
-  Bool hasMask() const;
+  bool hasMask() const;
 
   // reset the provider to point to the first data set it manages.
   void reset();
@@ -114,10 +114,10 @@ class MaskedLatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
  private:
   std::shared_ptr<RO_MaskedLatticeIterator<T>> _iter;
   Array<T> _currentSlice;
-  Array<Bool> _currentMaskSlice;
+  Array<bool> _currentMaskSlice;
   const T* _currentPtr;
-  const Bool* _currentMaskPtr;
-  Bool _delData, _delMask, _atEnd;
+  const bool* _currentMaskPtr;
+  bool _delData, _delMask, _atEnd;
   uInt _nMaxThreads;
 
   void _freeStorage();

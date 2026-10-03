@@ -71,7 +71,7 @@ int main() {
   PrimaryGroup<FitsLong> pg;
   if (pg.err()) exit(0);
 
-  pg.write_priGrp_hdr(fout, True, 32, naxis, naxes, no_parms, no_groups);
+  pg.write_priGrp_hdr(fout, true, 32, naxis, naxes, no_parms, no_groups);
   cout << "PrimaryGroup constructed\n";
   cout << "Data type   " << pg.datatype() << "\n"
        << "Data size   " << pg.fitsdatasize() << "\n"

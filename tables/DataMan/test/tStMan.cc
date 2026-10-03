@@ -66,10 +66,10 @@ void newtab(uInt nrrow, const DataManager& stman) {
   dstra4.setMaxLength(20);
   td.addColumn(dstra4);
 
-  td.addColumn(ScalarColumnDesc<Bool>("b1"));
-  td.addColumn(ArrayColumnDesc<Bool>("ba1", IPosition(2, 2, 3), ColumnDesc::Direct));
-  td.addColumn(ArrayColumnDesc<Bool>("ba2", -1, ColumnDesc::FixedShape));
-  td.addColumn(ArrayColumnDesc<Bool>("ba3"));
+  td.addColumn(ScalarColumnDesc<bool>("b1"));
+  td.addColumn(ArrayColumnDesc<bool>("ba1", IPosition(2, 2, 3), ColumnDesc::Direct));
+  td.addColumn(ArrayColumnDesc<bool>("ba2", -1, ColumnDesc::FixedShape));
+  td.addColumn(ArrayColumnDesc<bool>("ba3"));
 
   td.addColumn(ScalarColumnDesc<Float>("f1"));
   td.addColumn(ArrayColumnDesc<Float>("fa1", IPosition(2, 2, 3), ColumnDesc::Direct));
@@ -92,7 +92,7 @@ void newtab(uInt nrrow, const DataManager& stman) {
   Table tab(newtab, nrrow);
 
   Array<String> emptyArray(IPosition(2, 2, 3));
-  Array<Bool> boolArray(IPosition(2, 2, 3), False);
+  Array<bool> boolArray(IPosition(2, 2, 3), false);
 
   ScalarColumn<String> str1(tab, "str1");
   ScalarColumn<String> str2(tab, "str2");
@@ -100,10 +100,10 @@ void newtab(uInt nrrow, const DataManager& stman) {
   ArrayColumn<String> stra2(tab, "stra2");
   ArrayColumn<String> stra3(tab, "stra3");
   ArrayColumn<String> stra4(tab, "stra4");
-  ScalarColumn<Bool> b1(tab, "b1");
-  ArrayColumn<Bool> ba1(tab, "ba1");
-  ArrayColumn<Bool> ba2(tab, "ba2");
-  ArrayColumn<Bool> ba3(tab, "ba3");
+  ScalarColumn<bool> b1(tab, "b1");
+  ArrayColumn<bool> ba1(tab, "ba1");
+  ArrayColumn<bool> ba2(tab, "ba2");
+  ArrayColumn<bool> ba3(tab, "ba3");
   ScalarColumn<Float> f1(tab, "f1");
   ArrayColumn<Float> fa1(tab, "fa1");
   ArrayColumn<Float> fa2(tab, "fa2");
@@ -157,7 +157,7 @@ void newtab(uInt nrrow, const DataManager& stman) {
     // Write Bool arrays to avoid valgrind errors in Conversion::boolToBit
     ba1.put(i, boolArray);
     ba2.put(i, boolArray);
-    b1.put(i, False);
+    b1.put(i, false);
   }
   fa3.put(nrrow - 1, Array<Float>());
   dca3.put(nrrow - 1, Array<DComplex>(IPosition(2, 2, 0)));
@@ -178,10 +178,10 @@ void checktab1() {
   ArrayColumn<String> stra2(tab, "stra2");
   ArrayColumn<String> stra3(tab, "stra3");
   ArrayColumn<String> stra4(tab, "stra4");
-  ScalarColumn<Bool> b1(tab, "b1");
-  ArrayColumn<Bool> ba1(tab, "ba1");
-  ArrayColumn<Bool> ba2(tab, "ba2");
-  ArrayColumn<Bool> ba3(tab, "ba3");
+  ScalarColumn<bool> b1(tab, "b1");
+  ArrayColumn<bool> ba1(tab, "ba1");
+  ArrayColumn<bool> ba2(tab, "ba2");
+  ArrayColumn<bool> ba3(tab, "ba3");
   ScalarColumn<Float> f1(tab, "f1");
   ArrayColumn<Float> fa1(tab, "fa1");
   ArrayColumn<Float> fa2(tab, "fa2");
@@ -258,7 +258,7 @@ void checktab(const String& prefix) {
   Array<Double> arrd(IPosition(2, 4, 3));
   indgen(arrd);
   Array<DComplex> arrdc = RealToComplex(arrd);
-  Array<Bool> arrb = (fmod(arrf, float(4)) == float(0));
+  Array<bool> arrb = (fmod(arrf, float(4)) == float(0));
 
   ScalarColumn<String> str1(tab, "str1");
   ScalarColumn<String> str2(tab, "str2");
@@ -266,10 +266,10 @@ void checktab(const String& prefix) {
   ArrayColumn<String> stra2(tab, "stra2");
   ArrayColumn<String> stra3(tab, "stra3");
   ArrayColumn<String> stra4(tab, "stra4");
-  ScalarColumn<Bool> b1(tab, "b1");
-  ArrayColumn<Bool> ba1(tab, "ba1");
-  ArrayColumn<Bool> ba2(tab, "ba2");
-  ArrayColumn<Bool> ba3(tab, "ba3");
+  ScalarColumn<bool> b1(tab, "b1");
+  ArrayColumn<bool> ba1(tab, "ba1");
+  ArrayColumn<bool> ba2(tab, "ba2");
+  ArrayColumn<bool> ba3(tab, "ba3");
   ScalarColumn<Float> f1(tab, "f1");
   ArrayColumn<Float> fa1(tab, "fa1");
   ArrayColumn<Float> fa2(tab, "fa2");
@@ -366,10 +366,10 @@ void checktab(const String& prefix) {
     Array<String> arr2 = stra2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<String> arr3 = stra3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<String> arr4 = stra4.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    Vector<Bool> bvec1 = b1.getColumn();
-    Array<Bool> barr1 = ba1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    Array<Bool> barr2 = ba2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
-    Array<Bool> barr3 = ba3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
+    Vector<bool> bvec1 = b1.getColumn();
+    Array<bool> barr1 = ba1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
+    Array<bool> barr2 = ba2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
+    Array<bool> barr3 = ba3.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Vector<Float> fvec1 = f1.getColumn();
     Array<Float> farr1 = fa1.getColumn().reform(IPosition(2, 2, 3 * nrrow));
     Array<Float> farr2 = fa2.getColumn().reform(IPosition(2, 2, 3 * nrrow));
@@ -439,11 +439,11 @@ void checktab(const String& prefix) {
                              .reform(IPosition(2, 1, 2 * nrrow));
     Array<String> arr4 = stra4.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                              .reform(IPosition(2, 1, 2 * nrrow));
-    Array<Bool> barr1 = ba1.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
+    Array<bool> barr1 = ba1.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                             .reform(IPosition(2, 1, 2 * nrrow));
-    Array<Bool> barr2 = ba2.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
+    Array<bool> barr2 = ba2.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                             .reform(IPosition(2, 1, 2 * nrrow));
-    Array<Bool> barr3 = ba3.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
+    Array<bool> barr3 = ba3.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                             .reform(IPosition(2, 1, 2 * nrrow));
     Array<Float> farr1 = fa1.getColumn(Slicer(IPosition(2, 1, 0), IPosition(2, 1, 2)))
                              .reform(IPosition(2, 1, 2 * nrrow));
@@ -526,7 +526,7 @@ void extab(const String& prefix) {
   Array<Double> arrd(IPosition(2, 4, 3));
   indgen(arrd);
   Array<DComplex> arrdc = RealToComplex(arrd);
-  Array<Bool> arrb = (fmod(arrf, float(4)) == float(0));
+  Array<bool> arrb = (fmod(arrf, float(4)) == float(0));
 
   ScalarColumn<String> str1(tab, "str1");
   ScalarColumn<String> str2(tab, "str2");
@@ -534,10 +534,10 @@ void extab(const String& prefix) {
   ArrayColumn<String> stra2(tab, "stra2");
   ArrayColumn<String> stra3(tab, "stra3");
   ArrayColumn<String> stra4(tab, "stra4");
-  ScalarColumn<Bool> b1(tab, "b1");
-  ArrayColumn<Bool> ba1(tab, "ba1");
-  ArrayColumn<Bool> ba2(tab, "ba2");
-  ArrayColumn<Bool> ba3(tab, "ba3");
+  ScalarColumn<bool> b1(tab, "b1");
+  ArrayColumn<bool> ba1(tab, "ba1");
+  ArrayColumn<bool> ba2(tab, "ba2");
+  ArrayColumn<bool> ba3(tab, "ba3");
   ScalarColumn<Float> f1(tab, "f1");
   ArrayColumn<Float> fa1(tab, "fa1");
   ArrayColumn<Float> fa2(tab, "fa2");
@@ -620,7 +620,7 @@ int main(int argc, const char* argv[]) {
     doTest(nrrow, st1);
     StandardStMan st2(max(bucketSize, 500u));
     doTest(nrrow, st2);
-    IncrementalStMan st3(max(bucketSize, 1000u), False);
+    IncrementalStMan st3(max(bucketSize, 1000u), false);
     doTest(nrrow, st3);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

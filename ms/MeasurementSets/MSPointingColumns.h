@@ -104,7 +104,7 @@ class MSPointingColumns {
   ArrayMeasColumn<MDirection>& directionMeasCol() { return directionMeas_p; }
   ArrayColumn<Double>& target() { return target_p; }
   ArrayMeasColumn<MDirection>& targetMeasCol() { return targetMeas_p; }
-  ScalarColumn<Bool>& tracking() { return tracking_p; }
+  ScalarColumn<bool>& tracking() { return tracking_p; }
   // </group>
 
   // Access to optional columns
@@ -121,8 +121,8 @@ class MSPointingColumns {
   ArrayColumn<Double>& encoder() { return encoder_p; }
   ScalarMeasColumn<MDirection>& encoderMeas() { return encoderMeas_p; }
   ScalarColumn<Int>& pointingModelId() { return pointingModelId_p; }
-  ScalarColumn<Bool>& onSource() { return onSource_p; }
-  ScalarColumn<Bool>& overTheTop() { return overTheTop_p; }
+  ScalarColumn<bool>& onSource() { return onSource_p; }
+  ScalarColumn<bool>& overTheTop() { return overTheTop_p; }
   // </group>
 
   // Const access to required columns
@@ -142,7 +142,7 @@ class MSPointingColumns {
   const ArrayMeasColumn<MDirection>& directionMeasCol() const { return directionMeas_p; }
   const ArrayColumn<Double>& target() const { return target_p; }
   const ArrayMeasColumn<MDirection>& targetMeasCol() const { return targetMeas_p; }
-  const ScalarColumn<Bool>& tracking() const { return tracking_p; }
+  const ScalarColumn<bool>& tracking() const { return tracking_p; }
   // </group>
 
   // Access to optional columns
@@ -154,8 +154,8 @@ class MSPointingColumns {
   const ArrayColumn<Double>& encoder() const { return encoder_p; }
   const ScalarMeasColumn<MDirection>& encoderMeas() const { return encoderMeas_p; }
   const ScalarColumn<Int>& pointingModelId() const { return pointingModelId_p; }
-  const ScalarColumn<Bool>& onSource() const { return onSource_p; }
-  const ScalarColumn<Bool>& overTheTop() const { return overTheTop_p; }
+  const ScalarColumn<bool>& onSource() const { return onSource_p; }
+  const ScalarColumn<bool>& overTheTop() const { return overTheTop_p; }
   // </group>
 
   // Access to interpolated directions, the default time of zero will
@@ -182,10 +182,10 @@ class MSPointingColumns {
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty = True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty = true);
 
   // set the direction reference type for the DIRECTION, TARGET & and, if
   // defined, the SOURCE_OFFSET & POINTING_OFFSET columns. This can only be
@@ -226,14 +226,14 @@ class MSPointingColumns {
   ArrayColumn<Double> target_p;
   ScalarColumn<Double> time_p;
   ScalarColumn<Double> timeOrigin_p;
-  ScalarColumn<Bool> tracking_p;
+  ScalarColumn<bool> tracking_p;
   // # optional columns
   ArrayColumn<Double> encoder_p;
-  ScalarColumn<Bool> onSource_p;
+  ScalarColumn<bool> onSource_p;
   ScalarColumn<Int> pointingModelId_p;
   ArrayColumn<Double> pointingOffset_p;
   ArrayColumn<Double> sourceOffset_p;
-  ScalarColumn<Bool> overTheTop_p;
+  ScalarColumn<bool> overTheTop_p;
 
   // # Access to Measure columns
   ArrayMeasColumn<MDirection> directionMeas_p;

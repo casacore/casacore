@@ -51,7 +51,7 @@ void doIt(TempLattice<Int>& scratch) {
   shape(2) = 1;
   COWPtr<Array<Int>> ptrM;
   scratch.tempClose();
-  scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), False);
+  scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), false);
   scratch.reopen();
   AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
   Array<Int> expectedResult(shape);
@@ -60,7 +60,7 @@ void doIt(TempLattice<Int>& scratch) {
   ptrM.rwRef() = 0;
   AlwaysAssert(allEQ(*ptrM, 0), AipsError);
   Slicer sl(IPosition(3, 0, 0, 5), shape, IPosition(3, 1));
-  scratch.getSlice(ptrM, sl, False);
+  scratch.getSlice(ptrM, sl, false);
   AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
   scratch.set(0);
   scratch.putAt(7, IPosition(3, 7));

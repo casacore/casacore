@@ -154,7 +154,7 @@ class TableVector {
 
   // Test if the table vector is null, i.e. has no actual vector.
   // This is the case if the default constructor has been used.
-  Bool isNull() const;
+  bool isNull() const;
 
   // Throw an exception if the table vector is null, i.e.
   // if function isNull() is true.
@@ -191,13 +191,13 @@ class TableVector {
   rownr_t nelements() const;
 
   // Test if the shape of the given table vector conforms.
-  Bool conform(const TableVector<T>&) const;
+  bool conform(const TableVector<T>&) const;
 
   // Test if the shape of the given vector conforms.
-  Bool conform(const Vector<T>&) const;
+  bool conform(const Vector<T>&) const;
 
   // Test if internal state is correct.
-  Bool ok() const;
+  bool ok() const;
 
  protected:
   TabVecRep<T>* tabVecPtr_p;
@@ -216,8 +216,8 @@ class TableVector {
 };
 
 template <class T>
-inline Bool TableVector<T>::isNull() const {
-  return (tabVecPtr_p == 0 ? True : False);
+inline bool TableVector<T>::isNull() const {
+  return (tabVecPtr_p == 0 ? true : false);
 }
 
 template <class T>
@@ -232,11 +232,11 @@ inline rownr_t TableVector<T>::nelements() const {
 
 // # Check if 2 table vectors are conformant.
 template <class T>
-inline Bool TableVector<T>::conform(const TableVector<T>& vec) const {
+inline bool TableVector<T>::conform(const TableVector<T>& vec) const {
   return tabVecPtr_p->conform(*vec.tabVecPtr_p);
 }
 template <class T>
-inline Bool TableVector<T>::conform(const Vector<T>& vec) const {
+inline bool TableVector<T>::conform(const Vector<T>& vec) const {
   return tabVecPtr_p->conform(vec);
 }
 

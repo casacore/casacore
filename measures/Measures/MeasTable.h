@@ -147,10 +147,10 @@ class MeasTable {
   //  <group>
   //  Are the IAU2000 precession/nutation to be used or not (IAU1984)
   //  Note that an Aipsrc::reRead() is not reflected in the return value here.
-  static Bool useIAU2000();
+  static bool useIAU2000();
   // If IAU2000 model, do we use the high precision 2000A model?
   // Note that an Aipsrc::reRead() is not reflected in the return value here.
-  static Bool useIAU2000A();
+  static bool useIAU2000A();
   // </group>
 
   // Precession related data
@@ -240,17 +240,17 @@ class MeasTable {
   static void initObservatories();
   // Get list of all observatories
   static const Vector<String> &Observatories();
-  // Get position of observatory nam (False if not present)
-  static Bool Observatory(MPosition &obs, const String &nam);
+  // Get position of observatory nam (false if not present)
+  static bool Observatory(MPosition &obs, const String &nam);
 
   // Get _absolute_ path to AntennaResponses table of observatory
-  // <src>nam</src>. It returns False if no _valid_ path can be found or the
+  // <src>nam</src>. It returns false if no _valid_ path can be found or the
   // observatory is unknown. If the observatory is known, antRespPath will
   // be set to the entry in the AntennaResponses column of the
   // Observatories table even if it doesn't describe a valid path; if the
   // entry is not an absolute path, the data directory name will be
   // prepended and validity verified.
-  static Bool AntennaResponsesPath(String &antRespPath, const String &nam);
+  static bool AntennaResponsesPath(String &antRespPath, const String &nam);
   // </group>
 
   // Source list positions
@@ -260,8 +260,8 @@ class MeasTable {
   static void initSources();
   // Get list of all sources
   static const Vector<String> &Sources();
-  // Get position of source <src>nam</src> (False if not present)
-  static Bool Source(MDirection &obs, const String &nam);
+  // Get position of source <src>nam</src> (false if not present)
+  static bool Source(MDirection &obs, const String &nam);
   // </group>
 
   // Rest frequencies
@@ -271,8 +271,8 @@ class MeasTable {
   static void initLines();
   // Get list of all frequencies
   static const Vector<String> &Lines();
-  // Get frequency of line name (False if not present)
-  static Bool Line(MFrequency &obs, const String &nam);
+  // Get frequency of line name (false if not present)
+  static bool Line(MFrequency &obs, const String &nam);
   // </group>
 
   // Initialise list of IGRF data

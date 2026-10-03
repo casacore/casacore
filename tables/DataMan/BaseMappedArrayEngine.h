@@ -199,10 +199,10 @@ class TableColumn;
 //    String dataManagerName() const;
 // </src>
 // <dt><src>
-//    Bool canAddRow() const;
+//    bool canAddRow() const;
 // </src>
 // <dt><src>
-//    Bool canRemoveRow() const;
+//    bool canRemoveRow() const;
 // </src>
 // <dt><src>
 //    void addRow64 (rownr_t nrrow);
@@ -221,10 +221,10 @@ class TableColumn;
 //						 const String& dataTypeId);
 // </src>
 // <dt><src>
-//    Bool isWritable() const;
+//    bool isWritable() const;
 // </src>
 // <dt><src>
-//    Bool isShapeDefined (rownr_t rownr);
+//    bool isShapeDefined (rownr_t rownr);
 // </src>
 // </dl>
 // </ul>
@@ -269,7 +269,7 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
   const String& storedName() const;
 
   // The column is writable if the underlying stored column is writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
  protected:
   // Construct an engine to convert the virtual column to the stored column.
@@ -294,7 +294,7 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
   BaseMappedArrayEngine& operator=(const BaseMappedArrayEngine&) = delete;
 
   // Set if the column is writable or not.
-  void setWritable(Bool isWritable);
+  void setWritable(bool isWritable);
 
   // Set the virtual and stored column name.
   void setNames(const String& virtualName, const String& storedName);
@@ -358,7 +358,7 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
   virtual void setShape(rownr_t rownr, const IPosition& shape);
 
   // Test if the (underlying) array is defined in the given row.
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the (underlying) array in the given row.
   // This implementation assumes the dimensionality of virtual and
@@ -373,7 +373,7 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
 
   // The data manager can handle changing the shape of an existing array
   // when the underlying stored column can do it.
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Make a table column object for the given column.
   // This has to be used in the create function, otherwise it could not
@@ -452,12 +452,12 @@ class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayCol
   // # Now define the data members.
   String virtualName_p;  // # virtual column name
   String storedName_p;   // # stored column name
-  Bool isWritable_p;     // # is virtual column writable?
-  Bool tempWritable_p;   // # True =  create phase, so column
+  bool isWritable_p;     // # is virtual column writable?
+  bool tempWritable_p;   // # true =  create phase, so column
   // #                                              is temporarily writable
-  // #                                      False = asks stored column
+  // #                                      false = asks stored column
   rownr_t initialNrrow_p;             // # initial #rows in case of create
-  Bool arrayIsFixed_p;                // # True = virtual is FixedShape array
+  bool arrayIsFixed_p;                // # true = virtual is FixedShape array
   IPosition shapeFixed_p;             // # shape in case FixedShape array
   ArrayColumn<StoredType>* column_p;  // # the stored column
 };
@@ -480,7 +480,7 @@ inline void BaseMappedArrayEngine<VirtualType, StoredType>::setNames(const Strin
 }
 
 template <class VirtualType, class StoredType>
-inline void BaseMappedArrayEngine<VirtualType, StoredType>::setWritable(Bool isWritable) {
+inline void BaseMappedArrayEngine<VirtualType, StoredType>::setWritable(bool isWritable) {
   isWritable_p = isWritable;
 }
 

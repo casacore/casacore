@@ -167,11 +167,11 @@ class LatticeIterInterface;
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
 //
 //   IPosition start(4,0);
-//   Bool isARef;
+//   bool isARef;
 //   for (uInt c = 0; c < nchan; c++){
 //     for (uInt p = 0; p < npol; p++){
 //       isARef = input.getSlice(inputArrPtr,
-//                               Slicer(start,inputSliceShape), True);
+//                               Slicer(start,inputSliceShape), true);
 //       FFT2D.fft(resultArray, *inputArrPtr);
 //       result.putSlice(resultArray, start);
 //       start(2) += 1;
@@ -278,7 +278,7 @@ class Lattice : public LatticeBase {
   //      "empty" axis created in buffer. (e.g. extracting an n-dimensional
   //      from an (n+1)-dimensional will fill 'buffer' with an array that
   //      has a degenerate axis (i.e. one axis will have a length = 1.)
-  //      Setting removeDegenerateAxes = True will return a buffer with
+  //      Setting removeDegenerateAxes = true will return a buffer with
   //      a shape that doesn't reflect these superfluous axes.)
   // </ul>
   //
@@ -286,25 +286,25 @@ class Lattice : public LatticeBase {
   // 'True' if "buffer" is a reference to Lattice data and 'False' if it
   // is a copy.
   // <group>
-  Bool get(COWPtr<Array<T>>& buffer, Bool removeDegenerateAxes = False) const;
-  Bool getSlice(COWPtr<Array<T>>& buffer, const Slicer& section,
-                Bool removeDegenerateAxes = False) const;
-  Bool getSlice(COWPtr<Array<T>>& buffer, const IPosition& start, const IPosition& shape,
-                Bool removeDegenerateAxes = False) const;
-  Bool getSlice(COWPtr<Array<T>>& buffer, const IPosition& start, const IPosition& shape,
-                const IPosition& stride, Bool removeDegenerateAxes = False) const;
-  Bool get(Array<T>& buffer, Bool removeDegenerateAxes = False);
-  Bool getSlice(Array<T>& buffer, const Slicer& section, Bool removeDegenerateAxes = False);
-  Bool getSlice(Array<T>& buffer, const IPosition& start, const IPosition& shape,
-                Bool removeDegenerateAxes = False);
-  Bool getSlice(Array<T>& buffer, const IPosition& start, const IPosition& shape,
-                const IPosition& stride, Bool removeDegenerateAxes = False);
-  Array<T> get(Bool removeDegenerateAxes = False) const;
-  Array<T> getSlice(const Slicer& section, Bool removeDegenerateAxes = False) const;
+  bool get(COWPtr<Array<T>>& buffer, bool removeDegenerateAxes = false) const;
+  bool getSlice(COWPtr<Array<T>>& buffer, const Slicer& section,
+                bool removeDegenerateAxes = false) const;
+  bool getSlice(COWPtr<Array<T>>& buffer, const IPosition& start, const IPosition& shape,
+                bool removeDegenerateAxes = false) const;
+  bool getSlice(COWPtr<Array<T>>& buffer, const IPosition& start, const IPosition& shape,
+                const IPosition& stride, bool removeDegenerateAxes = false) const;
+  bool get(Array<T>& buffer, bool removeDegenerateAxes = false);
+  bool getSlice(Array<T>& buffer, const Slicer& section, bool removeDegenerateAxes = false);
+  bool getSlice(Array<T>& buffer, const IPosition& start, const IPosition& shape,
+                bool removeDegenerateAxes = false);
+  bool getSlice(Array<T>& buffer, const IPosition& start, const IPosition& shape,
+                const IPosition& stride, bool removeDegenerateAxes = false);
+  Array<T> get(bool removeDegenerateAxes = false) const;
+  Array<T> getSlice(const Slicer& section, bool removeDegenerateAxes = false) const;
   Array<T> getSlice(const IPosition& start, const IPosition& shape,
-                    Bool removeDegenerateAxes = False) const;
+                    bool removeDegenerateAxes = false) const;
   Array<T> getSlice(const IPosition& start, const IPosition& shape, const IPosition& stride,
-                    Bool removeDegenerateAxes = False) const;
+                    bool removeDegenerateAxes = false) const;
   // </group>
 
   // A function which places an Array of values within this instance of the
@@ -370,7 +370,7 @@ class Lattice : public LatticeBase {
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use.
   // <br>The default implementation creates a LatticeIterInterface object.
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // The functions (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the
@@ -380,7 +380,7 @@ class Lattice : public LatticeBase {
   // should normally use one of the get(Slice) functions. doGetSlice
   // should be used with care and only when performance is an issue.
   // <group>
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section) = 0;
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section) = 0;
   virtual void doPutSlice(const Array<T>& buffer, const IPosition& where,
                           const IPosition& stride) = 0;
   // </group>
@@ -405,7 +405,7 @@ class Lattice : public LatticeBase {
 };
 
 template <>
-inline void Lattice<Bool>::handleMathTo(Lattice<Bool>&, int) const {
+inline void Lattice<bool>::handleMathTo(Lattice<bool>&, int) const {
   throwBoolMath();
 }
 

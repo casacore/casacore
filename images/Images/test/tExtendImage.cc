@@ -78,7 +78,7 @@ void testRest() {
   AlwaysAssertExit(pa.isPaged());
   AlwaysAssertExit(pa.isPersistent());
   AlwaysAssertExit(pa.isWritable());
-  AlwaysAssertExit(pa.name(True) == "tExtendImage_tmp.pa");
+  AlwaysAssertExit(pa.name(true) == "tExtendImage_tmp.pa");
   LCPagedMask lcmask(IPosition(2, 10, 10), "tExtendImage_tmp.pa/mask");
   ImageRegion mask(lcmask);
   {
@@ -95,7 +95,7 @@ void testRest() {
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(!sl1.isWritable());
-    AlwaysAssertExit(sl1.name(True) == "tExtendImage_tmp.pa");
+    AlwaysAssertExit(sl1.name(true) == "tExtendImage_tmp.pa");
   }
   {
     // An ExtendImage as a masked Lattice.
@@ -113,7 +113,7 @@ void testRest() {
     AlwaysAssertExit(sl1.isPaged());
     AlwaysAssertExit(!sl1.isPersistent());
     AlwaysAssertExit(!sl1.isWritable());
-    AlwaysAssertExit(sl1.name(True) == "tExtendImage_tmp.pa");
+    AlwaysAssertExit(sl1.name(true) == "tExtendImage_tmp.pa");
   }
   {
     // An ExtendImage with an image mask.
@@ -144,27 +144,27 @@ void testMask() {
   Array<Float> arr(pa.shape());
   indgen(arr);
   pa.put(arr);
-  Array<Bool> arrm(pa.shape());
-  arrm = True;
-  arrm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = False;
+  Array<bool> arrm(pa.shape());
+  arrm = true;
+  arrm(IPosition(3, 0, 0, 0), IPosition(3, 9, 10, 11), IPosition(3, 2, 1, 1)) = false;
   mask.put(arrm);
   pa.defineRegion("mask1", mask, RegionHandler::Masks);
   pa.setDefaultMask("mask1");
   ExtendImage<Float> extendlat(pa, IPosition(4, 10, 11, 5, 12), cSys3);
   Array<Float> arr1 = extendlat.get();
-  Array<Bool> arrm1 = extendlat.getMask();
+  Array<bool> arrm1 = extendlat.getMask();
   AlwaysAssertExit(arr1.shape() == extendlat.shape());
   AlwaysAssertExit(arrm1.shape() == extendlat.shape());
   for (Int i = 0; i < 5; i++) {
     Array<Float> parr = arr1(IPosition(4, 0, 0, i, 0), IPosition(4, 10 - 1, 11 - 1, i, 12 - 1));
     AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
-    Array<Bool> parrm = arrm1(IPosition(4, 0, 0, i, 0), IPosition(4, 10 - 1, 11 - 1, i, 12 - 1));
+    Array<bool> parrm = arrm1(IPosition(4, 0, 0, i, 0), IPosition(4, 10 - 1, 11 - 1, i, 12 - 1));
     AlwaysAssertExit(allEQ(parrm.reform(latticeShape), arrm));
   }
   for (Int i = 0; i < 5; i++) {
     Array<Float> parr = extendlat.getSlice(IPosition(4, 0, 0, i, 0), IPosition(4, 10, 11, 1, 12));
     AlwaysAssertExit(allEQ(parr.reform(latticeShape), arr));
-    Array<Bool> parrm =
+    Array<bool> parrm =
         extendlat.getMaskSlice(IPosition(4, 0, 0, i, 0), IPosition(4, 10, 11, 1, 12));
     AlwaysAssertExit(allEQ(parrm.reform(latticeShape), arrm));
   }

@@ -39,14 +39,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class T>
 ScalarColumnDesc<T>::ScalarColumnDesc(const String& name, int opt)
     : BaseColumnDesc(name, "", "", "", ValType::getType(&defaultVal_p),
-                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), True, False, False) {
+                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), true, false, false) {
   defaultVal_p = T();
 }
 
 template <class T>
 ScalarColumnDesc<T>::ScalarColumnDesc(const String& name, const String& comment, int opt)
     : BaseColumnDesc(name, comment, "", "", ValType::getType(&defaultVal_p),
-                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), True, False, False) {
+                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), true, false, false) {
   defaultVal_p = T();
 }
 
@@ -55,7 +55,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc(const String& name, const String& comment,
                                       const String& dataManName, const String& dataManGroup,
                                       int opt)
     : BaseColumnDesc(name, comment, dataManName, dataManGroup, ValType::getType(&defaultVal_p),
-                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), True, False, False) {
+                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), true, false, false) {
   defaultVal_p = T();
 }
 
@@ -64,7 +64,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc(const String& name, const String& comment,
                                       const String& dataManName, const String& dataManGroup,
                                       const T& defaultVal, int opt)
     : BaseColumnDesc(name, comment, dataManName, dataManGroup, ValType::getType(&defaultVal_p),
-                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), True, False, False),
+                     valDataTypeId(&defaultVal_p), opt, 0, IPosition(), true, false, false),
       defaultVal_p(defaultVal) {}
 
 template <class T>

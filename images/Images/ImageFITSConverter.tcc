@@ -65,7 +65,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
                                                   const String& newImageName, const uInt whichRep,
                                                   HDUType& fitsImage, const String& fitsFilename,
                                                   const DataType dataType, const uInt memoryInMB,
-                                                  const Bool zeroBlanks) {
+                                                  const bool zeroBlanks) {
   LogIO os(LogOrigin("ImageFITSConverterImpl", __FUNCTION__, WHERE));
   // Crack the header and get what we need out of it.  DOn't get tricked
   // by the fact that HDUType is referring to the template type, not
@@ -84,12 +84,12 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 
   // Get header as Vector of strings
 
-  Vector<String> header = fitsImage.kwlist_str(True);
+  Vector<String> header = fitsImage.kwlist_str(true);
 
   // Get Coordinate System.  Return un-used FITS cards in a Record for further use.
 
   Record headerRec;
-  Bool dropStokes = True;
+  bool dropStokes = true;
   Int stokesFITSValue = 1;
   CoordinateSystem coords = ImageFITSConverter::getCoordinateSystem(
       stokesFITSValue, headerRec, header, os, whichRep, shape, dropStokes);
@@ -135,7 +135,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
   // Other packages may write it out, so a bit of code below
   // to handle it.
 
-  Bool isBlanked = fitsImage.isablank();
+  bool isBlanked = fitsImage.isablank();
   Int blankVal = fitsImage.blank();
   if (bitpix < 0 && isBlanked) {
     if (blankVal != -1) {
@@ -189,7 +189,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
   Int nIter = max(1, pNewImage->shape().product() / cursorShape.product());
   Int iUpdate = max(1, nIter / 20);
   ProgressMeter meter(0.0, Double(pNewImage->shape().product()), "FITS to Image", "Pixels copied",
-                      "", "", True, iUpdate);
+                      "", "", true, iUpdate);
   Double nPixPerIter = cursorShape.product();
   Double meterValue;
 
@@ -198,19 +198,19 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
   // delete it if its not needed.
 
   ImageRegion maskReg;
-  std::unique_ptr<LatticeIterator<Bool>> pMaskIter;
-  Bool madeMask = False;
+  std::unique_ptr<LatticeIterator<bool>> pMaskIter;
+  bool madeMask = false;
   if (bitpix < 0 || isBlanked) {
-    maskReg = pNewImage->makeMask("mask0", False, False);
+    maskReg = pNewImage->makeMask("mask0", false, false);
     LCRegion& mask = maskReg.asMask();
     LatticeStepper pMaskStepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
-    pMaskIter.reset(new LatticeIterator<Bool>(mask, pMaskStepper));
+    pMaskIter.reset(new LatticeIterator<bool>(mask, pMaskStepper));
     pMaskIter->reset();  // reset iterator
-    madeMask = True;
+    madeMask = true;
   }
 
   // Do the work. Iterate through in chunks.
-  Bool hasBlanks = False;
+  bool hasBlanks = false;
   try {
     Int bufferSize = cursorShape.product();
     for (imIter.reset(), meterValue = 0.0; !imIter.atEnd(); imIter++) {
@@ -226,32 +226,32 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
         return;
       }
 
-      Bool deletePtr;
+      bool deletePtr;
       Float* ptr = cursor.getStorage(deletePtr);  // Get Image ptr
       fitsImage.copy(ptr, bufferSize);            // Copy from fits
 
       // Deal with mask if necessary
       if (madeMask) {
-        Array<Bool>& maskCursor = pMaskIter->woCursor();
-        Bool deleteMaskPtr;
-        Bool* mPtr = maskCursor.getStorage(deleteMaskPtr);
+        Array<bool>& maskCursor = pMaskIter->woCursor();
+        bool deleteMaskPtr;
+        bool* mPtr = maskCursor.getStorage(deleteMaskPtr);
         if (zeroBlanks) {
           for (size_t i = 0; i < maskCursor.nelements(); i++) {
             if (isNaN(ptr[i])) {
-              mPtr[i] = False;
-              hasBlanks = True;
+              mPtr[i] = false;
+              hasBlanks = true;
               ptr[i] = 0.0;
             } else {
-              mPtr[i] = True;
+              mPtr[i] = true;
             }
           }
         } else {
           for (size_t i = 0; i < maskCursor.nelements(); i++) {
             if (isNaN(ptr[i])) {
-              mPtr[i] = False;
-              hasBlanks = True;
+              mPtr[i] = false;
+              hasBlanks = true;
             } else {
-              mPtr[i] = True;
+              mPtr[i] = true;
             }
           }
         }
@@ -261,7 +261,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
         if (zeroBlanks) {
           for (size_t i = 0; i < cursor.nelements(); i++) {
             if (isNaN(ptr[i])) {
-              hasBlanks = True;
+              hasBlanks = true;
               ptr[i] = 0.0;
             }
           }

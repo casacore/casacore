@@ -171,10 +171,10 @@ Vector<Quantum<Double>> MVDirection::getXRecordValue() const {
 
 Vector<Quantum<Double>> MVDirection::getTMRecordValue() const { return getRecordValue(); }
 
-Bool MVDirection::putValue(const Vector<Quantum<Double>> &in) {
+bool MVDirection::putValue(const Vector<Quantum<Double>> &in) {
   uInt i;
   i = in.nelements();
-  if (i > 3) return False;
+  if (i > 3) return false;
   if (i == 3 && in(0).check(UnitVal::NODIM) && in(1).check(UnitVal::NODIM) &&
       in(2).check(UnitVal::NODIM)) {
     for (uInt j = 0; j < i; j++) {
@@ -184,7 +184,7 @@ Bool MVDirection::putValue(const Vector<Quantum<Double>> &in) {
   } else {
     uInt j;
     for (j = 0; j < i; j++) {
-      if (!in(j).check(UnitVal::ANGLE)) return False;
+      if (!in(j).check(UnitVal::ANGLE)) return false;
     }
     Vector<Double> tsin(i), tcos(i);
     for (j = 0; j < i; j++) {
@@ -204,7 +204,7 @@ Bool MVDirection::putValue(const Vector<Quantum<Double>> &in) {
     }
     adjust();
   }
-  return True;
+  return true;
 }
 
 void MVDirection::setAngle(Double angle0, Double angle1) {
@@ -277,11 +277,11 @@ MVDirection MVDirection::crossProduct(const MVDirection &other) const {
   return res;
 }
 
-void MVDirection::shift(const Quantum<Double> &lng, const Quantum<Double> &lat, Bool trueAngle) {
+void MVDirection::shift(const Quantum<Double> &lng, const Quantum<Double> &lat, bool trueAngle) {
   shift(lng.getBaseValue(), lat.getBaseValue(), trueAngle);
 }
 
-void MVDirection::shift(Double lng, Double lat, Bool trueAngle) {
+void MVDirection::shift(Double lng, Double lat, bool trueAngle) {
   Vector<Double> x(2);
   x = get();
   if (trueAngle) {
@@ -296,19 +296,19 @@ void MVDirection::shift(Double lng, Double lat, Bool trueAngle) {
   }
 }
 
-void MVDirection::shiftLongitude(const Quantum<Double> &lng, Bool trueAngle) {
+void MVDirection::shiftLongitude(const Quantum<Double> &lng, bool trueAngle) {
   shift(lng.getBaseValue(), 0, trueAngle);
 }
 
-void MVDirection::shiftLongitude(Double lng, Bool trueAngle) { shift(lng, 0, trueAngle); }
+void MVDirection::shiftLongitude(Double lng, bool trueAngle) { shift(lng, 0, trueAngle); }
 
-void MVDirection::shiftLatitude(const Quantum<Double> &lat, Bool trueAngle) {
+void MVDirection::shiftLatitude(const Quantum<Double> &lat, bool trueAngle) {
   shift(0, lat.getBaseValue(), trueAngle);
 }
 
-void MVDirection::shiftLatitude(Double lat, Bool trueAngle) { shift(0, lat, trueAngle); }
+void MVDirection::shiftLatitude(Double lat, bool trueAngle) { shift(0, lat, trueAngle); }
 
-void MVDirection::shift(const MVDirection &shft, Bool trueAngle) {
+void MVDirection::shift(const MVDirection &shft, bool trueAngle) {
   Vector<Double> x(2);
   x = shft.get();
   shift(x(0), x(1), trueAngle);

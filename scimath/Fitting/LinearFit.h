@@ -225,11 +225,11 @@ class LinearFit : public GenericL2Fit<T> {
 
   // # Member functions
   //  Generalised fitter
-  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+  virtual bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
                      const Array<typename FunctionTraits<T>::BaseType> &x,
                      const Vector<typename FunctionTraits<T>::BaseType> &y,
                      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-                     const Vector<Bool> *const mask = 0);
+                     const Vector<bool> *const mask = 0);
 
  private:
   // # Data

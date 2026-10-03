@@ -49,13 +49,13 @@ MSTableIndex::MSTableIndex()
       lastTime_p(0.0),
       lastInterval_p(0.0),
       lastNearest_p(0),
-      nearestFound_p(False),
-      nearestReady_p(False),
+      nearestFound_p(false),
+      nearestReady_p(false),
       nrows_p(0),
-      hasChanged_p(True),
+      hasChanged_p(true),
       index_p(0),
-      hasTime_p(False),
-      hasInterval_p(False) {
+      hasTime_p(false),
+      hasInterval_p(false) {
   ;
 }
 
@@ -69,13 +69,13 @@ MSTableIndex::MSTableIndex(const Table &subTable, const Vector<String> &indexCol
       lastTime_p(0.0),
       lastInterval_p(0.0),
       lastNearest_p(0),
-      nearestFound_p(False),
-      nearestReady_p(False),
+      nearestFound_p(false),
+      nearestReady_p(false),
       nrows_p(0),
-      hasChanged_p(True),
+      hasChanged_p(true),
       index_p(0),
-      hasTime_p(False),
-      hasInterval_p(False) {
+      hasTime_p(false),
+      hasInterval_p(false) {
   attach(subTable, indexCols, compareFunction);
 }
 
@@ -88,13 +88,13 @@ MSTableIndex::MSTableIndex(const MSTableIndex &other)
       lastTime_p(0.0),
       lastInterval_p(0.0),
       lastNearest_p(0),
-      nearestFound_p(False),
-      nearestReady_p(False),
+      nearestFound_p(false),
+      nearestReady_p(false),
       nrows_p(0),
-      hasChanged_p(True),
+      hasChanged_p(true),
       index_p(0),
-      hasTime_p(False),
-      hasInterval_p(False) {
+      hasTime_p(false),
+      hasInterval_p(false) {
   *this = other;
 }
 
@@ -187,7 +187,7 @@ void MSTableIndex::attach(const Table &subTable, const Vector<String> &indexCols
 }
 
 void MSTableIndex::setChanged() {
-  hasChanged_p = True;
+  hasChanged_p = true;
   if (index_p) index_p->setChanged();
 }
 
@@ -196,18 +196,18 @@ RowNumbers MSTableIndex::getRowNumbers() {
   return lastSearch_p;
 }
 
-Int64 MSTableIndex::getNearestRow(Bool &found) {
+Int64 MSTableIndex::getNearestRow(bool &found) {
   // getInternals ensures that lastSearch_p is the match to the integer keys
   getInternals();
   if (!nearestReady_p) {
     // search for nearest one
-    nearestFound_p = False;
+    nearestFound_p = false;
     lastNearest_p = 0;
     if (lastSearch_p.nelements() > 0) {
       if (!hasTime_p) {
         // just integer keys, there should be just one value, just return
         // the first one if there is one
-        nearestFound_p = True;
+        nearestFound_p = true;
         lastNearest_p = lastSearch_p(0);
       } else {
         if (hasInterval_p) {
@@ -216,7 +216,7 @@ Int64 MSTableIndex::getNearestRow(Bool &found) {
             // we don't check for that here, return the first one
             // found
             lastNearest_p = lastSearch_p(0);
-            nearestFound_p = True;
+            nearestFound_p = true;
           } else {
             // strict time search
             nearestTime();
@@ -227,7 +227,7 @@ Int64 MSTableIndex::getNearestRow(Bool &found) {
         }
       }
     }
-    nearestReady_p = True;
+    nearestReady_p = true;
   }
   found = nearestFound_p;
   return lastNearest_p;
@@ -239,7 +239,7 @@ void MSTableIndex::nearestTime() {
   // this should probably be done with a call to binSearch
   Int thisElem = 0;
   Int nElem = lastSearch_p.nelements();
-  Bool deleteIt;
+  bool deleteIt;
   const rownr_t *rowPtr = lastSearch_p.getStorage(deleteIt);
   while (!nearestFound_p && thisElem < nElem) {
     rownr_t thisRow = rowPtr[thisElem];
@@ -261,7 +261,7 @@ void MSTableIndex::nearestTime() {
   } else if (nElem > 0) {
     // just return the last one
     thisElem = nElem - 1;
-    nearestFound_p = True;
+    nearestFound_p = true;
   }
   lastNearest_p = rowPtr[thisElem];
   // okay, we now know where the nearest time is, but is it really the one that
@@ -272,7 +272,7 @@ void MSTableIndex::nearestTime() {
       // we actually want the previous one - assumes that they are all indeterminate
       if (thisElem == 0) {
         // there is no match possible here
-        nearestFound_p = False;
+        nearestFound_p = false;
       } else {
         lastNearest_p = rowPtr[thisElem - 1];
       }
@@ -292,14 +292,14 @@ void MSTableIndex::nearestTime() {
     searchHighTime = searchLowTime + interval_p;
     if (thisHighTime < searchLowTime || thisLowTime > searchHighTime) {
       // out of range, no match possible
-      nearestFound_p = False;
+      nearestFound_p = false;
     }
     // If this were in a separate function, some code duplication could
     // be avoided.
     if (!nearestFound_p) {
       // it might belong to a neighboring interval
       if (hasInterval_p) {
-        nearestFound_p = True;
+        nearestFound_p = true;
         if (time_p < timeVals_p[lastNearest_p])
           lastNearest_p--;
         else
@@ -313,7 +313,7 @@ void MSTableIndex::nearestTime() {
           searchHighTime = searchLowTime + interval_p;
           if (thisHighTime < searchLowTime || thisLowTime > searchHighTime) {
             // out of range, no match possible
-            nearestFound_p = False;
+            nearestFound_p = false;
           }
         } else {
           // nope, it really isn't there
@@ -321,7 +321,7 @@ void MSTableIndex::nearestTime() {
             lastNearest_p = 0;
           else
             lastNearest_p = nElem - 1;
-          nearestFound_p = False;
+          nearestFound_p = false;
         }
       }
     }
@@ -346,7 +346,7 @@ void MSTableIndex::makeKeys() {
 }
 
 void MSTableIndex::clear() {
-  hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = False;
+  hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = false;
   delete index_p;
   index_p = 0;
   indexKeys_p.resize(0);
@@ -356,7 +356,7 @@ void MSTableIndex::clear() {
   intKeys_p.resize(0);
 
   nrows_p = 0;
-  hasChanged_p = True;
+  hasChanged_p = true;
 
   lastSearch_p.resize(0);
 
@@ -388,21 +388,21 @@ void MSTableIndex::getInternals() {
     }  // nothing can match, lastSearch_p should already have zero elements
     lastTime_p = time_p;
     lastInterval_p = interval_p;
-    nearestReady_p = False;
-    hasChanged_p = False;
+    nearestReady_p = false;
+    hasChanged_p = false;
   }
 }
 
-Bool MSTableIndex::keysChanged() {
-  Bool result = False;
+bool MSTableIndex::keysChanged() {
+  bool result = false;
   for (uInt i = 0; i < intKeys_p.nelements(); i++) {
     if (*(intKeys_p[i]) != lastKeys_p(i)) {
-      result = True;
+      result = true;
       break;
     }
   }
-  if (!result && hasTime_p && time_p != lastTime_p) result = True;
-  if (!result && hasInterval_p && interval_p != lastInterval_p) result = True;
+  if (!result && hasTime_p && time_p != lastTime_p) result = true;
+  if (!result && hasInterval_p && interval_p != lastInterval_p) result = true;
   return result;
 }
 

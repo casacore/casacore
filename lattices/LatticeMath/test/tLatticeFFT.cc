@@ -66,7 +66,7 @@ int main() {
           centre(2) = i;
           cArr.putAt(Complex(nx * ny, 0), centre);
         }
-        LatticeFFT::cfft2d(cArr, False);
+        LatticeFFT::cfft2d(cArr, false);
         for (iter.reset(); !iter.atEnd(); iter++) {
           AlwaysAssert(allNearAbs(iter.cursor(), Complex(1, 0), 1E-5), AipsError);
         }
@@ -84,10 +84,10 @@ int main() {
             AlwaysAssert(allNearAbs(iter.cursor(), Complex(0, 0), 1E-5), AipsError);
           }
         }
-        Vector<Bool> whichAxes(3, True);
-        whichAxes(2) = False;
+        Vector<bool> whichAxes(3, true);
+        whichAxes(2) = false;
         cArr.putAt(Complex(nx * ny, 0), centre);
-        LatticeFFT::cfft(cArr, whichAxes, False);
+        LatticeFFT::cfft(cArr, whichAxes, false);
         IPosition planeShape = tileShape;
         planeShape(2) = 1;
         {
@@ -117,9 +117,9 @@ int main() {
           }
         }
 
-        Vector<Bool> whichAxes(3, True);
-        whichAxes(2) = False;
-        LatticeFFT::rcfft(cArr, rArr, whichAxes, False);
+        Vector<bool> whichAxes(3, true);
+        whichAxes(2) = false;
+        LatticeFFT::rcfft(cArr, rArr, whichAxes, false);
         centre = 0;
         for (uInt i = 0; i < nz; i++) {
           centre(2) = i;
@@ -147,9 +147,9 @@ int main() {
         }
 
         cArr.set(Complex(1, 0));
-        Vector<Bool> whichAxes(3, True);
-        whichAxes(2) = False;
-        LatticeFFT::crfft(rArr, cArr, whichAxes, False);
+        Vector<bool> whichAxes(3, true);
+        whichAxes(2) = false;
+        LatticeFFT::crfft(rArr, cArr, whichAxes, false);
         centre = 0;
         for (uInt i = 0; i < nz; i++) {
           centre(2) = i;

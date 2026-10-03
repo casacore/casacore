@@ -31,17 +31,17 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LELAttribute::LELAttribute()
-    : isScalar_p(True),
-      isReduced_p(True),
-      isRegion_p(False),
-      isMasked_p(False),
+    : isScalar_p(true),
+      isReduced_p(true),
+      isRegion_p(false),
+      isMasked_p(false),
       coords_p(new LELLattCoord()) {}
 
-LELAttribute::LELAttribute(Bool isMasked, const IPosition& shape, const IPosition& tileShape,
-                           const LELCoordinates& coordinates, Bool isReduced)
-    : isScalar_p(False),
+LELAttribute::LELAttribute(bool isMasked, const IPosition& shape, const IPosition& tileShape,
+                           const LELCoordinates& coordinates, bool isReduced)
+    : isScalar_p(false),
       isReduced_p(isReduced),
-      isRegion_p(False),
+      isRegion_p(false),
       isMasked_p(isMasked),
       shape_p(shape),
       tileShape_p(tileShape),
@@ -52,10 +52,10 @@ LELAttribute::LELAttribute(Bool isMasked, const IPosition& shape, const IPositio
 }
 
 LELAttribute::LELAttribute(uInt regionNdim)
-    : isScalar_p(False),
-      isReduced_p(False),
-      isRegion_p(True),
-      isMasked_p(False),
+    : isScalar_p(false),
+      isReduced_p(false),
+      isRegion_p(true),
+      isMasked_p(false),
       shape_p(IPosition(regionNdim, 0)),
       coords_p(new LELLattCoord()) {}
 
@@ -69,18 +69,18 @@ LELAttribute::LELAttribute(const LELAttribute& other)
       coords_p(other.coords_p) {}
 
 LELAttribute::LELAttribute(const LELAttribute& leftAttr, const LELAttribute& rightAttr,
-                           Bool matchAxes) {
-  isScalar_p = False;
-  isRegion_p = False;
+                           bool matchAxes) {
+  isScalar_p = false;
+  isRegion_p = false;
   isMasked_p = (leftAttr.isMasked() || rightAttr.isMasked());
   if (leftAttr.isRegion() || rightAttr.isRegion()) {
     throw(AipsError("LELAttribute: regions cannot be combined here"));
   }
   if (leftAttr.isScalar()) {
     if (rightAttr.isScalar()) {
-      isScalar_p = True;
-      isReduced_p = True;
-      isMasked_p = False;
+      isScalar_p = true;
+      isReduced_p = true;
+      isMasked_p = false;
     } else {
       isReduced_p = rightAttr.isReduced();
       shape_p = rightAttr.shape();
@@ -96,16 +96,16 @@ LELAttribute::LELAttribute(const LELAttribute& leftAttr, const LELAttribute& rig
       // Two arrays are combined.
       // The result is reduced if one of them is reduced.
       if (rightAttr.isReduced()) {
-        isReduced_p = True;
+        isReduced_p = true;
       }
       // Check shapes if both are defined.
       const IPosition& rShape = rightAttr.shape();
-      Bool ok = False;
+      bool ok = false;
       if (shape_p.nelements() == 0) {
         shape_p = rShape;
-        ok = True;
+        ok = true;
       } else if (rShape.nelements() == 0) {
-        ok = True;
+        ok = true;
       }
       if (!ok && matchAxes) {
         ok = shape_p.isEqual(rShape);

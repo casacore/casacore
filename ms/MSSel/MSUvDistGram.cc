@@ -72,7 +72,7 @@ static Int posMSUvDistGram = 0;
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msUvDistGramParseCommand(const MeasurementSet* ms, const String& command,
-                             Matrix<Double>& selectedUVRange, Vector<Bool>& units) {
+                             Matrix<Double>& selectedUVRange, Vector<bool>& units) {
   try {
     Int ret;
     MSUvDistGramrestart(MSUvDistGramin);

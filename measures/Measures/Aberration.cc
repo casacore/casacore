@@ -76,7 +76,7 @@ const MVPosition& Aberration::operator()(Double epoch) {
   calcAber(epoch);
   Double dt = epoch - checkEpoch;
   Double fac = 1;
-  if (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950) {
+  if (AipsrcValue<bool>::get(Aberration::usejpl_reg) && method != B1950) {
     fac /= MeasTable::Planetary(MeasTable::CAU);
   }
   lres++;
@@ -94,7 +94,7 @@ const MVPosition& Aberration::derivative(Double epoch) {
   lres++;
   lres %= 4;
   Double fac = 1;
-  if (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950) {
+  if (AipsrcValue<bool>::get(Aberration::usejpl_reg) && method != B1950) {
     fac /= MeasTable::Planetary(MeasTable::CAU);
   }
   for (Int i = 0; i < 3; i++) {
@@ -107,14 +107,14 @@ void Aberration::initialize() {
   // Get the interpolation interval
   interval_reg = AipsrcValue<Double>::registerRC(String("measures.aberration.d_interval"),
                                                  Unit("d"), Unit("d"), Aberration::INTV);
-  usejpl_reg = AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"), False);
+  usejpl_reg = AipsrcValue<bool>::registerRC(String("measures.aberration.b_usejpl"), false);
 }
 
 void Aberration::refresh() { checkEpoch = 1e30; }
 
 void Aberration::calcAber(Double t) {
   if (!nearAbs(t, checkEpoch, AipsrcValue<Double>::get(Aberration::interval_reg)) ||
-      (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950)) {
+      (AipsrcValue<bool>::get(Aberration::usejpl_reg) && method != B1950)) {
     checkEpoch = t;
     switch (method) {
       case B1950:
@@ -172,7 +172,7 @@ void Aberration::calcAber(Double t) {
       } break;
 
       default:
-        if (AipsrcValue<Bool>::get(Aberration::usejpl_reg)) {
+        if (AipsrcValue<bool>::get(Aberration::usejpl_reg)) {
           Vector<Double> mypl = MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
           for (i = 0; i < 3; i++) {
             aval[i] = mypl[i + 3];

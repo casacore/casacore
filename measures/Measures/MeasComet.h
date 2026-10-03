@@ -138,7 +138,7 @@ class MeasComet {
 
   // # General Member Functions
   //  Is it a valid comet class (i.e. can it be used)
-  Bool ok() const { return measured_p; };
+  bool ok() const { return measured_p; };
   // Get the name of the comet
   const String &getName() const;
   // Get the topo position
@@ -152,20 +152,20 @@ class MeasComet {
   // Get number of entries
   Int nelements() const;
   // Get a comet position
-  Bool get(MVPosition &returnValue, Double date) const;
-  // Get the local on-disk direction.  Returns False if the time or sub-observer
-  // longitude and latitude are unavailable, True on success.
-  Bool getDisk(MVDirection &returnValue, Double date) const;
+  bool get(MVPosition &returnValue, Double date) const;
+  // Get the local on-disk direction.  Returns false if the time or sub-observer
+  // longitude and latitude are unavailable, true on success.
+  bool getDisk(MVDirection &returnValue, Double date) const;
   // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
-  Bool getRadVel(MVRadialVelocity &returnValue, Double date) const;
+  bool getRadVel(MVRadialVelocity &returnValue, Double date) const;
 
   // Return the temperature in K, or -1 if the table does not have it.
   // If squawk is true an error message will also be posted.
-  Double getTemperature(const Bool squawk);
+  Double getTemperature(const bool squawk);
 
   // Return the mean radius in AU, or -1 if the table does not have it.
   // If squawk is true an error message will also be posted.
-  Double getMeanRad(const Bool squawk);
+  Double getMeanRad(const bool squawk);
 
   // Create a clone
   MeasComet *clone() const;
@@ -176,22 +176,22 @@ class MeasComet {
   // Convenience function that returns ks[kw] in units of unit, setting
   // success.
   static Double get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
-                                     Bool &success);
+                                     bool &success);
 
   // Convenience function that returns the absolute path to the ephemeris table
   // connected to the MeasComet object
   String getTablePath();
   ////Comet table has posrefsys defined
-  Bool hasPosrefsys() const;
+  bool hasPosrefsys() const;
   /// Get the posrefsys dir type
   MDirection::Types getPosrefsysType() const;
 
  private:
   // # General member functions
   //  Initialise table from the name given
-  Bool initMeas(const String &which, const Table *tabin = 0);
+  bool initMeas(const String &which, const Table *tabin = 0);
   // Fill Table lines
-  Bool fillMeas(Double utf) const;
+  bool fillMeas(Double utf) const;
 
   // Helper functions for accessing ldat_p.  index should be either 0 or 1, but
   // that isn't checked!
@@ -203,7 +203,7 @@ class MeasComet {
   // positive.)
   // It sets haveTriedExtras_p to true and will return right away if it is
   // already true.
-  Bool getExtras();
+  bool getExtras();
 
   // # Data members
 
@@ -212,9 +212,9 @@ class MeasComet {
   // Actual table
   Table tab_p;
   // Measured data readable
-  Bool measFlag_p;
+  bool measFlag_p;
   // Measured data present
-  Bool measured_p;
+  bool measured_p;
   // Row descriptions
   ROTableRow row_p;
   // First MJD in list - 1.0 * dmjd_p
@@ -232,12 +232,12 @@ class MeasComet {
   // Type of coordinates
   MDirection::Types mtype_p;
   // Message given
-  Bool msgDone_p;
+  bool msgDone_p;
   // File names
   String tp_p;
 
   // Whether or not the sub-observer longitude and latitude are available.
-  Bool haveDiskLongLat_p;
+  bool haveDiskLongLat_p;
 
   uInt ncols_p;  // # of columns.
 
@@ -251,10 +251,10 @@ class MeasComet {
   // Last read data (measlow - meashigh)
   mutable Vector<Double> ldat_p[2];  // They allow declaring a const
                                      // which isn't.
-  Bool haveTriedExtras_p;
+  bool haveTriedExtras_p;
   Double temperature_p;
   Double mean_rad_p;
-  Bool hasPosrefsys_p;
+  bool hasPosrefsys_p;
   MDirection::Types posrefsystype_p;
 };
 

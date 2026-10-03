@@ -57,7 +57,7 @@ MSColumns::MSColumns(const MeasurementSet& ms)
 
 MSColumns::~MSColumns() {}
 
-void MSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   // Adjust the relevant columns in the main table
   MSMainColumns::setEpochRef(ref, tableMustBeEmpty);
   // Now the same for the subtables.

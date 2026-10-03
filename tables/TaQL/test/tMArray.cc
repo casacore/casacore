@@ -37,28 +37,28 @@ using namespace std;
 void testExcp() {
   cout << "Testing MArray exceptions ..." << endl;
   Array<Int> arr(Array<Int>(IPosition(1, 1)));
-  Bool err = False;
+  bool err = false;
   try {
-    MArray<Int> a1(arr, Array<Bool>(IPosition(1, 2)));
+    MArray<Int> a1(arr, Array<bool>(IPosition(1, 2)));
   } catch (const std::exception& x) {
-    err = True;
+    err = true;
     cout << x.what() << endl;
   }
   AlwaysAssertExit(err);
-  err = False;
+  err = false;
   try {
-    MArray<Int> a1(arr, Array<Bool>(IPosition(1, 1)), True);
+    MArray<Int> a1(arr, Array<bool>(IPosition(1, 1)), true);
   } catch (const std::exception& x) {
-    err = True;
+    err = true;
     cout << x.what() << endl;
   }
   AlwaysAssertExit(err);
-  err = False;
+  err = false;
   try {
     MArray<Int> a1(arr);
-    a1.setMask(Array<Bool>(IPosition(1, 2)));
+    a1.setMask(Array<bool>(IPosition(1, 2)));
   } catch (const std::exception& x) {
-    err = True;
+    err = true;
     cout << x.what() << endl;
   }
 }
@@ -74,7 +74,7 @@ void testNull() {
   AlwaysAssertExit(a1.ndim() == 0);
   AlwaysAssertExit(a1.size() == 0);
   // Resize it.
-  a1.resize(IPosition(2, 3, 4), False);
+  a1.resize(IPosition(2, 3, 4), false);
   AlwaysAssertExit(!a1.isNull());
   AlwaysAssertExit(!a1.hasMask());
   AlwaysAssertExit(!a1.shape().empty());
@@ -90,7 +90,7 @@ void testNull() {
   AlwaysAssertExit(a2.size() == 12);
   AlwaysAssertExit(a2.array().data() == a1.array().data());
   // Assignment.
-  MArray<Int> a3(Array<Int>(IPosition(2, 3, 4), 1), Array<Bool>(IPosition(2, 3, 4), True));
+  MArray<Int> a3(Array<Int>(IPosition(2, 3, 4), 1), Array<bool>(IPosition(2, 3, 4), true));
   a1 = a3;
   AlwaysAssertExit(!a1.isNull());
   AlwaysAssertExit(a1.hasMask());
@@ -110,7 +110,7 @@ void testNull() {
   AlwaysAssertExit(a1.size() == 0);
   AlwaysAssertExit(allEQ(a2.array(), 1));
   // Empty array.
-  MArray<Int> a4(Array<Int>(), Array<Bool>(), False);
+  MArray<Int> a4(Array<Int>(), Array<bool>(), false);
   AlwaysAssertExit(!a4.isNull());
   AlwaysAssertExit(a4.empty());
   AlwaysAssertExit(!a4.hasMask());
@@ -124,8 +124,8 @@ void testMask() {
   IPosition shp(3, 5, 4, 3);
   Array<Int> arr(shp);
   indgen(arr);
-  Array<Bool> maskArr(arr % 3 == 0);
-  Array<Bool> maskArr2(arr % 5 == 0);
+  Array<bool> maskArr(arr % 3 == 0);
+  Array<bool> maskArr2(arr % 5 == 0);
   // Create with a mask.
   MArray<Int> a1(arr, maskArr);
   AlwaysAssertExit(!a1.isNull());
@@ -192,7 +192,7 @@ void testMask() {
   AlwaysAssertExit(flat.size() == 40);
   AlwaysAssertExit(sum(flat) == (1 + 58 + 2 + 59) * 20 / 2);
   // Test combineMask
-  Array<Bool> cmask(a1.combineMask(a2));
+  Array<bool> cmask(a1.combineMask(a2));
   AlwaysAssertExit(allEQ(cmask, arr % 3 == 0 || arr % 5 == 0));
   // Test removeMask.
   a3.removeMask();
@@ -212,7 +212,7 @@ void testFill() {
   IPosition shp2(2, 6, 2);
   Array<Int> arr2(shp2);
   indgen(arr2, 100);
-  Array<Bool> maskArr(arr1 % 3 == 0);
+  Array<bool> maskArr(arr1 % 3 == 0);
   // Create.
   MArray<Int> a1(arr1, maskArr);
   MArray<Int> a2(arr2);
@@ -247,7 +247,7 @@ void testSlice() {
   IPosition shp(3, 5, 4, 3);
   Array<Int> arr(shp);
   indgen(arr);
-  Array<Bool> maskArr(arr % 3 == 0);
+  Array<bool> maskArr(arr % 3 == 0);
   MArray<Int> a1(arr, maskArr);
   // Create slice.
   IPosition st(3, 1, 1, 1);

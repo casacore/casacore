@@ -629,13 +629,13 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 {TRUE}    {
             tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (True));
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (true));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
           }
 {FALSE}   {
             tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (False));
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (false));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
           }

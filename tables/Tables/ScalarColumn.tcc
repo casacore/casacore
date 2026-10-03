@@ -100,7 +100,7 @@ Vector<T> ScalarColumn<T>::getColumn() const {
 }
 
 template <class T>
-void ScalarColumn<T>::getColumn(Vector<T>& vec, Bool resize) const {
+void ScalarColumn<T>::getColumn(Vector<T>& vec, bool resize) const {
   rownr_t nrrow = nrow();
   // # Resize the vector if empty; otherwise check its length.
   if (vec.nelements() != nrrow) {
@@ -122,7 +122,7 @@ Vector<T> ScalarColumn<T>::getColumnRange(const Slicer& rowRange) const {
 }
 
 template <class T>
-void ScalarColumn<T>::getColumnRange(const Slicer& rowRange, Vector<T>& vec, Bool resize) const {
+void ScalarColumn<T>::getColumnRange(const Slicer& rowRange, Vector<T>& vec, bool resize) const {
   rownr_t nrrow = nrow();
   IPosition shp, blc, trc, inc;
   shp = rowRange.inferShapeFromSource(IPosition(1, nrrow), blc, trc, inc);
@@ -142,7 +142,7 @@ Vector<T> ScalarColumn<T>::getColumnCells(const RefRows& rownrs) const {
 }
 
 template <class T>
-void ScalarColumn<T>::getColumnCells(const RefRows& rownrs, Vector<T>& vec, Bool resize) const {
+void ScalarColumn<T>::getColumnCells(const RefRows& rownrs, Vector<T>& vec, bool resize) const {
   // # Resize the vector if needed; otherwise check its length.
   rownr_t nrrow = rownrs.nrow();
   if (vec.nelements() != nrrow) {
@@ -161,7 +161,7 @@ void ScalarColumn<T>::put(rownr_t thisRownr, const ScalarColumn<T>& that, rownr_
 }
 
 template <class T>
-void ScalarColumn<T>::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr, Bool) {
+void ScalarColumn<T>::put(rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr, bool) {
   T value;
   that.getScalarValue(thatRownr, &value, columnDesc().dataTypeId());
   put(thisRownr, value);

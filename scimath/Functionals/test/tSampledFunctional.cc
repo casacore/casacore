@@ -36,15 +36,15 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   {
-    Bool Failed = False;
+    bool Failed = false;
     uInt i;
     Vector<Float> v(10);
     indgen(v);
     ScalarSampledFunctional<Float> fv(v);
     for (i = 0; i < fv.nelements(); i++)
-      if (!near(fv(i), Float(i))) Failed = True;
+      if (!near(fv(i), Float(i))) Failed = true;
 
     // Check the assignment operator and copy constructor
     // for const ScalarSampledFunctionals use copy semantics
@@ -52,27 +52,27 @@ int main() {
     ScalarSampledFunctional<Float> cfv1(cfv), cfv2;
     cfv2 = cfv;
     v(0) = 100.0f;
-    if (!near(cfv(0), 100.0f)) Failed = True;
+    if (!near(cfv(0), 100.0f)) Failed = true;
     for (i = 1; i < cfv.nelements(); i++)
-      if (!near(cfv(i), Float(i))) Failed = True;
+      if (!near(cfv(i), Float(i))) Failed = true;
     for (i = 0; i < cfv1.nelements(); i++)
-      if (!near(cfv1(i), Float(i))) Failed = True;
+      if (!near(cfv1(i), Float(i))) Failed = true;
     for (i = 0; i < cfv2.nelements(); i++)
-      if (!near(cfv2(i), Float(i))) Failed = True;
+      if (!near(cfv2(i), Float(i))) Failed = true;
 
     // Check the copy constructor uses reference sematics
     ScalarSampledFunctional<Float> fv1(fv);
     for (i = 1; i < fv.nelements(); i++)
-      if (!near(fv1(i), Float(i))) Failed = True;
-    if (!near(fv(0), 100.0f)) Failed = True;
-    if (!near(fv1(0), 100.0f)) Failed = True;
+      if (!near(fv1(i), Float(i))) Failed = true;
+    if (!near(fv(0), 100.0f)) Failed = true;
+    if (!near(fv1(0), 100.0f)) Failed = true;
 
     // Check the assignment operator uses reference sematics
     ScalarSampledFunctional<Float> fv2;
     fv2 = fv1;
     for (i = 1; i < fv.nelements(); i++)
-      if (!near(fv1(i), Float(i))) Failed = True;
-    if (!near(fv1(0), 100.0f)) Failed = True;
+      if (!near(fv1(i), Float(i))) Failed = true;
+    if (!near(fv1(0), 100.0f)) Failed = true;
 
     // The block constructor uses copy semantics
     Block<Float> b(10);
@@ -80,17 +80,17 @@ int main() {
     ScalarSampledFunctional<Float> fb(b);
     b = 0.0f;
     for (i = 0; i < fb.nelements(); i++)
-      if (!near(fb(i), Float(i))) Failed = True;
+      if (!near(fb(i), Float(i))) Failed = true;
 
     if (Failed) {
       cout << "Failed";
-      anyFailures = True;
+      anyFailures = true;
     } else
       cout << "Passed";
     cout << " the ScalarSampledFunctional test" << endl;
   }
   {
-    Bool Failed = False;
+    bool Failed = false;
     uInt i;
     Array<Double> a(IPosition(4, 2, 3, 10, 1));
     indgen(a);
@@ -98,12 +98,12 @@ int main() {
     Matrix<Double> m;
     for (i = 0; i < f.nelements(); i++) {
       m = f(i);
-      if (!near(m(0, 0), Double(6 * i + 0))) Failed = True;
-      if (!near(m(1, 0), Double(6 * i + 1))) Failed = True;
-      if (!near(m(0, 1), Double(6 * i + 2))) Failed = True;
-      if (!near(m(1, 1), Double(6 * i + 3))) Failed = True;
-      if (!near(m(0, 2), Double(6 * i + 4))) Failed = True;
-      if (!near(m(1, 2), Double(6 * i + 5))) Failed = True;
+      if (!near(m(0, 0), Double(6 * i + 0))) Failed = true;
+      if (!near(m(1, 0), Double(6 * i + 1))) Failed = true;
+      if (!near(m(0, 1), Double(6 * i + 2))) Failed = true;
+      if (!near(m(1, 1), Double(6 * i + 3))) Failed = true;
+      if (!near(m(0, 2), Double(6 * i + 4))) Failed = true;
+      if (!near(m(1, 2), Double(6 * i + 5))) Failed = true;
       //      cout << "     f(" << i << ") = " << m << endl;;
     }
     ArraySampledFunctional<Array<Double>> f1(f);
@@ -113,19 +113,19 @@ int main() {
     f2 = f1;
     for (i = 1; i < f2.nelements(); i++) {
       m = f2(i);
-      if (!near(m(0, 0), Double(6 * i + 0))) Failed = True;
-      if (!near(m(1, 0), Double(6 * i + 1))) Failed = True;
-      if (!near(m(0, 1), Double(6 * i + 2))) Failed = True;
-      if (!near(m(1, 1), Double(6 * i + 3))) Failed = True;
-      if (!near(m(0, 2), Double(6 * i + 4))) Failed = True;
-      if (!near(m(1, 2), Double(6 * i + 5))) Failed = True;
+      if (!near(m(0, 0), Double(6 * i + 0))) Failed = true;
+      if (!near(m(1, 0), Double(6 * i + 1))) Failed = true;
+      if (!near(m(0, 1), Double(6 * i + 2))) Failed = true;
+      if (!near(m(1, 1), Double(6 * i + 3))) Failed = true;
+      if (!near(m(0, 2), Double(6 * i + 4))) Failed = true;
+      if (!near(m(1, 2), Double(6 * i + 5))) Failed = true;
     }
     m = f2(0);
-    if (!near(m(0, 0), 100.0)) Failed = True;
+    if (!near(m(0, 0), 100.0)) Failed = true;
 
     if (Failed) {
       cout << "Failed";
-      anyFailures = True;
+      anyFailures = true;
     } else
       cout << "Passed";
     cout << " the ArraySampledFunctional test" << endl;

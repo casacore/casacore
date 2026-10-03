@@ -30,7 +30,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableIndexProxy::TableIndexProxy(const TableProxy& tablep, const Vector<String>& columnNames,
-                                 Bool noSort)
+                                 bool noSort)
     : scaIndex_p(0), arrIndex_p(0) {
   if (columnNames.nelements() == 1) {
     const String& colName = columnNames(0);
@@ -57,7 +57,7 @@ TableIndexProxy::~TableIndexProxy() {
   delete arrIndex_p;
 }
 
-Bool TableIndexProxy::isUnique() const {
+bool TableIndexProxy::isUnique() const {
   if (scaIndex_p != 0) {
     return scaIndex_p->isUnique();
   }
@@ -92,7 +92,7 @@ void TableIndexProxy::setChanged(const Vector<String>& columnNames) {
 }
 
 Int64 TableIndexProxy::getRowNumber(const Record& key) {
-  Bool found;
+  bool found;
   Int64 rownr;
   if (scaIndex_p != 0) {
     rownr = scaIndex_p->getRowNumber(found, key);
@@ -118,7 +118,7 @@ Vector<Int64> TableIndexProxy::getRowNumbers(const Record& key) {
 }
 
 Vector<Int64> TableIndexProxy::getRowNumbersRange(const Record& lower, const Record& upper,
-                                                  Bool lowerInclusive, Bool upperInclusive) {
+                                                  bool lowerInclusive, bool upperInclusive) {
   RowNumbers rows;
   if (scaIndex_p != 0) {
     rows = scaIndex_p->getRowNumbers(lower, upper, lowerInclusive, upperInclusive);

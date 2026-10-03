@@ -64,7 +64,7 @@
 //        get_put              0=get 1=put
 //        nrrow                #rows to put
 
-void tlock(Table& tab, Bool write, Bool show) {
+void tlock(Table& tab, bool write, bool show) {
   if (show) {
     Time time;
     double sec = time.modifiedJulianDay() * 86400;
@@ -79,7 +79,7 @@ void tlock(Table& tab, Bool write, Bool show) {
     cout << "Lock acquired" << endl;
   }
 }
-void tunlock(Table& tab, Bool show) {
+void tunlock(Table& tab, bool show) {
   if (show) {
     Time time;
     double sec = time.modifiedJulianDay() * 86400;
@@ -134,9 +134,9 @@ void a() {
   Table tab(newtab);
 }
 
-void b(const TableLock& lockMode, uInt wait, uInt nrrow, Bool show) {
+void b(const TableLock& lockMode, uInt wait, uInt nrrow, bool show) {
   // Check if user locking.
-  Bool userLocking = (lockMode.option() == TableLock::UserLocking);
+  bool userLocking = (lockMode.option() == TableLock::UserLocking);
   // Open the table for update.
   Table tab("tTableLockSync_2_tmp.tab", lockMode, Table::Update);
   ScalarColumn<uInt> seq(tab, "seq");
@@ -146,7 +146,7 @@ void b(const TableLock& lockMode, uInt wait, uInt nrrow, Bool show) {
   ArrayColumn<float> pol(tab, "Pol");
   ArrayColumn<float> data(tab, "Data");
   // Get and update the sequencenumber.
-  if (userLocking) tlock(tab, True, show);
+  if (userLocking) tlock(tab, true, show);
   TableRecord& keyset = tab.rwKeywordSet();
   uInt seqnr = keyset.asuInt("seqnr");
   seqnr++;
@@ -158,7 +158,7 @@ void b(const TableLock& lockMode, uInt wait, uInt nrrow, Bool show) {
   Matrix<float> dataValues(IPosition(2, 16, 25));
   Int rownr, val;
   for (uInt i = 0; i < nrrow; i++) {
-    if (userLocking) tlock(tab, True, show);
+    if (userLocking) tlock(tab, true, show);
     if (show) {
       Time time;
       double sec = time.modifiedJulianDay() * 86400;
@@ -187,9 +187,9 @@ void b(const TableLock& lockMode, uInt wait, uInt nrrow, Bool show) {
   }
 }
 
-void c(const TableLock& lockMode, uInt wait, uInt lastWait, Bool show) {
+void c(const TableLock& lockMode, uInt wait, uInt lastWait, bool show) {
   // Check if user locking.
-  Bool userLocking = (lockMode.option() == TableLock::UserLocking);
+  bool userLocking = (lockMode.option() == TableLock::UserLocking);
   // Open the table for read.
   Table tab("tTableLockSync_2_tmp.tab", lockMode);
   ScalarColumn<uInt> seq(tab, "seq");
@@ -207,8 +207,8 @@ void c(const TableLock& lockMode, uInt wait, uInt lastWait, Bool show) {
   Int val;
   uInt oldNrrow = 0;
   uInt nrrow = 0;
-  while (True) {
-    if (userLocking) tlock(tab, False, show);
+  while (true) {
+    if (userLocking) tlock(tab, false, show);
     nrrow = tab.nrow();
     for (uInt rownr = oldNrrow; rownr < nrrow; rownr++) {
       if (show) {
@@ -301,7 +301,7 @@ int main(int argc, const char* argv[]) {
          << endl;
     return 0;
   }
-  Bool show = (argc > 6);
+  bool show = (argc > 6);
 
   uInt var[5];
   for (uInt i = 0; i < 5; i++) {
@@ -318,7 +318,7 @@ int main(int argc, const char* argv[]) {
   } else if (var[0] == 3) {
     lockMode = TableLock(TableLock::AutoLocking, var[1]);
   }
-  Bool getsw = (var[3] == 0);
+  bool getsw = (var[3] == 0);
   try {
     if (!getsw) {
       a();

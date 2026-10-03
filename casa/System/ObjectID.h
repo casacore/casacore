@@ -76,9 +76,9 @@ class Block;
 
 class ObjectID {
  public:
-  // If <src>makeNull</src> is True, make the null ObjectID, otherwise create
+  // If <src>makeNull</src> is true, make the null ObjectID, otherwise create
   // a unique ObjectID.
-  ObjectID(Bool makeNull = False);
+  ObjectID(bool makeNull = false);
   // Create explicitly from the provided constituents.
   ObjectID(Int sequence, Int pid, Int time, const String &hostname);
 
@@ -92,12 +92,12 @@ class ObjectID {
   // </group>
 
   // Is this ObjectID set?
-  Bool isNull() const;
+  bool isNull() const;
 
   // Compare two ObjectID's for (in)equality.
   // <group>
-  Bool operator==(const ObjectID &other) const;
-  Bool operator!=(const ObjectID &other) const;
+  bool operator==(const ObjectID &other) const;
+  bool operator!=(const ObjectID &other) const;
   // </group>
 
   // It is useful to interconvert between strings and ObjecID's, e.g. when
@@ -111,7 +111,7 @@ class ObjectID {
   // <group>
   // If this fails, an error message is set and the ObjectID is the null
   // ObjectID.
-  Bool fromString(String &error, const String &in);
+  bool fromString(String &error, const String &in);
   // Note that <src>out</src> is zero'd before it is set.
   void toString(String &out) const;
   // </group>

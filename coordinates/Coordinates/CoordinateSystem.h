@@ -235,10 +235,10 @@ class CoordinateSystem : public Coordinate {
   void transpose(const Vector<Int>& newWorldOrder, const Vector<Int>& newPixelOrder);
 
   // Find the world and pixel axis mappings to the supplied CoordinateSystem
-  // from the current coordinate system. <src>False</src> is
+  // from the current coordinate system. <src>false</src> is
   // returned if either the supplied or current coordinate system,
   // has no world axes (and a message recoverable with function
-  // errorMessage indicating why).  Otherwise <src>True</src> is returned.
+  // errorMessage indicating why).  Otherwise <src>true</src> is returned.
   // worldAxisMap(i) is the location of world axis <src>i</src> (from the
   // supplied CoordinateSystem, cSys, in the current CoordinateSystem.
   // worldAxisTranspose(i) is the location of world axis
@@ -250,13 +250,13 @@ class CoordinateSystem : public Coordinate {
   // if the types are the same, is there a reference type change
   // (e.g. TOPO versus LSR for the SpectralCoordinate,
   // or J2000 versus GALACTIC for DirectionCoordinate). Thus
-  // if refChange(i) is True, it means world axis i in the
+  // if refChange(i) is true, it means world axis i in the
   // current CoordinateSystem was matched, but has a different
   // reference type to that of the supplied CoordinateSystem.
   // <group>
-  Bool worldMap(Vector<Int>& worldAxisMap, Vector<Int>& worldAxisTranspose, Vector<Bool>& refChange,
+  bool worldMap(Vector<Int>& worldAxisMap, Vector<Int>& worldAxisTranspose, Vector<bool>& refChange,
                 const CoordinateSystem& cSys) const;
-  Bool pixelMap(Vector<Int>& pixelAxisMap, Vector<Int>& pixelAxisTranspose,
+  bool pixelMap(Vector<Int>& pixelAxisMap, Vector<Int>& pixelAxisTranspose,
                 const CoordinateSystem& cSys) const;
   // </group>
 
@@ -274,11 +274,11 @@ class CoordinateSystem : public Coordinate {
   // See also the functions in  <linkto class=CoordinateUtil>CoordinateUtil</linkto>
   // for removing lists of pixel/world axes (tricky because they shift down)
   //
-  // False is returned (an error in <src>errorMessage()</src> will be set)
-  // if the axis is illegal, else returns True.
+  // false is returned (an error in <src>errorMessage()</src> will be set)
+  // if the axis is illegal, else returns true.
   // <group>
-  Bool removeWorldAxis(uInt axis, Double replacement);
-  Bool removePixelAxis(uInt axis, Double replacement);
+  bool removeWorldAxis(uInt axis, Double replacement);
+  bool removePixelAxis(uInt axis, Double replacement);
   // </group>
 
   // Return a CoordinateSystem appropriate for a shift of origin
@@ -360,8 +360,8 @@ class CoordinateSystem : public Coordinate {
   // units and applies it to the replacement values.  If it can't find
   // a scale factor (non-conformant units) then the reference value is
   // used for any world replacement values.  If the latter occurs,
-  // it returns False, else True is returned.
-  Bool replaceCoordinate(const Coordinate& newCoordinate, uInt whichCoordinate);
+  // it returns false, else true is returned.
+  bool replaceCoordinate(const Coordinate& newCoordinate, uInt whichCoordinate);
 
   // Find the Coordinate number that corresponds to the given type.
   // Since there might be more than one Coordinate of a given type you
@@ -404,8 +404,8 @@ class CoordinateSystem : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel position to a world position or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns <src>False</src> and
+  // Convert a pixel position to a world position or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns <src>false</src> and
   // <src>errorMessage()</src> contains an error message.
   // The input vector must be of length <src>nPixelAxes</src> or
   // <src>nWorldAxes</src>.  The output vector  is resized appropriately.
@@ -413,13 +413,13 @@ class CoordinateSystem : public Coordinate {
   // (such as can be present in spectral and direction coordinates), it
   // is used. Else, the native frame is used for the conversion.
   // <group>
-  virtual Bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
-                       Bool useConversionFrame = True) const;
-  // This one throws an exception rather than returning False. After all, that's
+  virtual bool toWorld(Vector<Double>& world, const Vector<Double>& pixel,
+                       bool useConversionFrame = true) const;
+  // This one throws an exception rather than returning false. After all, that's
   // what exceptions are for.
   virtual Vector<Double> toWorld(const Vector<Double>& pixel) const;
-  virtual Bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const;
-  // This one throws an exception rather than returning False.
+  virtual bool toPixel(Vector<Double>& pixel, const Vector<Double>& world) const;
+  // This one throws an exception rather than returning false.
   virtual Vector<Double> toPixel(const Vector<Double>& world) const;
   // </group>
 
@@ -428,28 +428,28 @@ class CoordinateSystem : public Coordinate {
 
   // This is provided as a convenience since it is a very commonly desired
   // operation through CoordinateSystem.  The output vector is resized.
-  Bool toWorld(Vector<Double>& world, const IPosition& pixel) const;
+  bool toWorld(Vector<Double>& world, const IPosition& pixel) const;
   Vector<Double> toWorld(const IPosition& pixel) const;
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
-  // of the matrices contain the coordinates. Returns False if any conversion
+  // of the matrices contain the coordinates. Returns false if any conversion
   // failed  and  <src>errorMessage()</src> will hold a message.
-  // The <src>failures</src> array (True for fail, False for success)
+  // The <src>failures</src> array (true for fail, false for success)
   // is the length of the number of conversions and
   // holds an error status for each conversion.
   // <group>
-  virtual Bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
-                           Vector<Bool>& failures) const;
-  virtual Bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
-                           Vector<Bool>& failures) const;
+  virtual bool toWorldMany(Matrix<Double>& world, const Matrix<Double>& pixel,
+                           Vector<bool>& failures) const;
+  virtual bool toPixelMany(Matrix<Double>& pixel, const Matrix<Double>& world,
+                           Vector<bool>& failures) const;
   // </group>
 
   // Mixed pixel/world coordinate conversion.
   // <src>worldIn</src> and <src>worldAxes</src> are of length n<src>worldAxes</src>.
   // <src>pixelIn</src> and <src>pixelAxes</src> are of length nPixelAxes.
-  // <src>worldAxes(i)=True</src> specifies you have given a world
+  // <src>worldAxes(i)=true</src> specifies you have given a world
   // value in <src>worldIn(i)</src> to convert to pixel.
-  // <src>pixelAxes(i)=True</src> specifies you have given a pixel
+  // <src>pixelAxes(i)=true</src> specifies you have given a pixel
   // value in <src>pixelIn(i)</src> to convert to world.
   // You cannot specify the same axis via <src>worldAxes</src>
   // and pixelAxes.
@@ -473,19 +473,19 @@ class CoordinateSystem : public Coordinate {
   // axis with remaining corresponding world axis will
   // correctly be converted to world using the replacement
   // value).
-  // Returns True if the conversion succeeds, otherwise it returns <src>False</src> and
+  // Returns true if the conversion succeeds, otherwise it returns <src>false</src> and
   // <src>errorMessage()</src> contains an error message. The output vectors
   // are resized.
-  virtual Bool toMix(Vector<Double>& worldOut, Vector<Double>& pixelOut,
+  virtual bool toMix(Vector<Double>& worldOut, Vector<Double>& pixelOut,
                      const Vector<Double>& worldIn, const Vector<Double>& pixelIn,
-                     const Vector<Bool>& worldAxes, const Vector<Bool>& pixelAxes,
+                     const Vector<bool>& worldAxes, const Vector<bool>& pixelAxes,
                      const Vector<Double>& worldMin, const Vector<Double>& worldMax) const;
 
   // Compute and recover the world min and max ranges, for use in function <src>toMix</src>,
   // for  a lattice of the given shape (must be of length <src>nPixelAxes()</src>).
   // Removed pixel axes (with remaining world axes are handled).  With
   // the retrieval functions, the output vectors are resized.  They return
-  // False if they fail (and then <src>setDefaultWorldMixRanges</src> generates the ranges)
+  // false if they fail (and then <src>setDefaultWorldMixRanges</src> generates the ranges)
   // with a reason in <src>errorMessage()</src>.
   // The <src>setDefaultWorldMixRanges</src> function
   // gives you  a useful default range if you don't know the shape.
@@ -494,7 +494,7 @@ class CoordinateSystem : public Coordinate {
   // the rest the functionality is provided but never used
   // by toMix.
   //<group>
-  virtual Bool setWorldMixRanges(const IPosition& shape);
+  virtual bool setWorldMixRanges(const IPosition& shape);
   virtual void setDefaultWorldMixRanges();
   virtual Vector<Double> worldMixMin() const;
   virtual Vector<Double> worldMixMax() const;
@@ -550,12 +550,12 @@ class CoordinateSystem : public Coordinate {
   // so make sure you call <src>setWorldMixRanges</src>
   // first to set up the world ranges.
   // <group>
-  Bool convert(Vector<Double>& coordOut, const Vector<Double>& coordin, const Vector<Bool>& absIn,
-               const Vector<String>& unitsIn, MDoppler::Types dopplerIn, const Vector<Bool>& absOut,
+  bool convert(Vector<Double>& coordOut, const Vector<Double>& coordin, const Vector<bool>& absIn,
+               const Vector<String>& unitsIn, MDoppler::Types dopplerIn, const Vector<bool>& absOut,
                const Vector<String>& unitsOut, MDoppler::Types dopplerOut, Double pixInOffset = 0.0,
                Double pixOutOffset = 0.0);
-  Bool convert(Matrix<Double>& coordOut, const Matrix<Double>& coordIn, const Vector<Bool>& absIn,
-               const Vector<String>& unitsIn, MDoppler::Types dopplerIn, const Vector<Bool>& absOut,
+  bool convert(Matrix<Double>& coordOut, const Matrix<Double>& coordIn, const Vector<bool>& absIn,
+               const Vector<String>& unitsIn, MDoppler::Types dopplerIn, const Vector<bool>& absOut,
                const Vector<String>& unitsOut, MDoppler::Types dopplerOut, Double pixInOffset = 0.0,
                Double pixOutOffset = 0.0);
   // </group>
@@ -572,11 +572,11 @@ class CoordinateSystem : public Coordinate {
   // Set the requested attribute.  Note that these just
   // change the internal values, they do not cause any recomputation.
   // <group>
-  virtual Bool setWorldAxisNames(const Vector<String>& names);
-  virtual Bool setReferencePixel(const Vector<Double>& refPix);
-  virtual Bool setLinearTransform(const Matrix<Double>& xform);
-  virtual Bool setIncrement(const Vector<Double>& inc);
-  virtual Bool setReferenceValue(const Vector<Double>& refval);
+  virtual bool setWorldAxisNames(const Vector<String>& names);
+  virtual bool setReferencePixel(const Vector<Double>& refPix);
+  virtual bool setLinearTransform(const Matrix<Double>& xform);
+  virtual bool setIncrement(const Vector<Double>& inc);
+  virtual bool setReferenceValue(const Vector<Double>& refval);
   // </group>
 
   // Set/get the units. Adjust the increment and
@@ -584,20 +584,20 @@ class CoordinateSystem : public Coordinate {
   // the units must be known <linkto class=Unit>Unit</linkto> strings, and
   // that they must be compatible, e.g. they can't change from time to
   // length. If <src>throwException=True</src>, throw an exception rather than
-  // returning False on failure.
+  // returning false on failure.
   // <group>
-  virtual Bool setWorldAxisUnits(const Vector<String>& units);
-  Bool setWorldAxisUnits(const Vector<String>& units, Bool throwException);
+  virtual bool setWorldAxisUnits(const Vector<String>& units);
+  bool setWorldAxisUnits(const Vector<String>& units, bool throwException);
   virtual Vector<String> worldAxisUnits() const;
   // </group>
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
   // pixel axes in the CoordinateSystem.  If the comparison returns
-  // <src>False</src>, errorMessage() contains a message about why.
+  // <src>false</src>, errorMessage() contains a message about why.
   // <group>
-  virtual Bool near(const Coordinate& other, Double tol = 1e-6) const;
-  virtual Bool near(const Coordinate& other, const Vector<Int>& excludePixelAxes,
+  virtual bool near(const Coordinate& other, Double tol = 1e-6) const;
+  virtual bool near(const Coordinate& other, const Vector<Int>& excludePixelAxes,
                     Double tol = 1e-6) const;
   // </group>
 
@@ -605,7 +605,7 @@ class CoordinateSystem : public Coordinate {
   // but ONLY for the non-removed pixel axes.   It is less strict
   // than near, which, for example, insists the number of coordinates
   // is the same in each CS
-  Bool nearPixel(const CoordinateSystem& other, Double tol = 1e-6) const;
+  bool nearPixel(const CoordinateSystem& other, Double tol = 1e-6) const;
 
   // Format a world value nicely through the
   // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
@@ -621,8 +621,8 @@ class CoordinateSystem : public Coordinate {
   // refer to the other derived Coordinate classes for specifics on the
   // formatting.
   virtual String format(String& units, Coordinate::formatType format, Double worldValue,
-                        uInt worldAxis, Bool isAbsolute = True, Bool showAsAbsolute = True,
-                        Int precision = -1, Bool usePrecForMixed = False) const;
+                        uInt worldAxis, bool isAbsolute = true, bool showAsAbsolute = true,
+                        Int precision = -1, bool usePrecForMixed = false) const;
 
   // Miscellaneous information related to an observation, for example the
   // observation date.
@@ -637,14 +637,14 @@ class CoordinateSystem : public Coordinate {
   // System you wish to transform.   Shape specifies the shape of the image
   // associated with all the axes of the CoordinateSystem.  Currently you have
   // no control over the reference pixel, it is always shape/2.
-  virtual Coordinate* makeFourierCoordinate(const Vector<Bool>& axes,
+  virtual Coordinate* makeFourierCoordinate(const Vector<bool>& axes,
                                             const Vector<Int>& shape) const;
 
   // Save the CoordinateSystem into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
-  // If the CoordinateSystem is empty  <src>False</src> is also returned.
-  // If <src>False</src> is returned, errorMessage() contains a message about why.
-  virtual Bool save(RecordInterface& container, const String& fieldName) const;
+  // The field must not exist, otherwise <src>false</src> is returned.
+  // If the CoordinateSystem is empty  <src>false</src> is also returned.
+  // If <src>false</src> is returned, errorMessage() contains a message about why.
+  virtual bool save(RecordInterface& container, const String& fieldName) const;
 
   // Restore the CoordinateSystem from a record.  The <src>fieldName</src>
   // can be empty, in which case the CoordinateSystem is restored
@@ -659,10 +659,10 @@ class CoordinateSystem : public Coordinate {
 
   // Convert a CoordinateSystem to FITS, i.e. fill in ctype etc. In the record
   // the keywords are vectors, it is expected that the actual FITS code will
-  // split them into scalars and upcase the names. Returns False if one of the
+  // split them into scalars and upcase the names. Returns false if one of the
   // keywords is already taken.
   //
-  // If writeWCS is True, attempt to write the WCS convention (Greisen and
+  // If writeWCS is true, attempt to write the WCS convention (Greisen and
   // Calabretta "Representation of celestial coordinates in FITS").
   // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
   // one-relative FITS coordinates.
@@ -672,11 +672,11 @@ class CoordinateSystem : public Coordinate {
   // if prefix="d" then drval, ddelt etc.
   // # Much of the work in to/from fits should be moved to the individual
   // # classes.
-  Bool toFITSHeader(RecordInterface& header, IPosition& shape, Bool oneRelative, Char prefix = 'c',
-                    Bool writeWCS = True, Bool preferVelocity = True, Bool opticalVelocity = True,
-                    Bool preferWavelength = False, Bool airWavelength = False) const;
+  bool toFITSHeader(RecordInterface& header, IPosition& shape, bool oneRelative, Char prefix = 'c',
+                    bool writeWCS = true, bool preferVelocity = true, bool opticalVelocity = true,
+                    bool preferWavelength = false, bool airWavelength = false) const;
 
-  // Probably even if we return False we should set up the best linear
+  // Probably even if we return false we should set up the best linear
   // coordinate that we can.
   // Use oneRelative=True to convert one-relative FITS pixel coordinates to
   // zero-relative Casacore coordinates.
@@ -691,7 +691,7 @@ class CoordinateSystem : public Coordinate {
   // is issued if any unofficial values are encountered.
   // Otherwise no warning is issued.
   // # cf comment in toFITS.
-  static Bool fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& coordsys,
+  static bool fromFITSHeader(Int& stokesFITSValue, CoordinateSystem& coordsys,
                              RecordInterface& recHeader, const Vector<String>& header,
                              const IPosition& shape, uInt which = 0);
 
@@ -708,24 +708,24 @@ class CoordinateSystem : public Coordinate {
   // are written locally only to the sink, and then returned by the return value
   // vector.
   Vector<String> list(LogIO& os, MDoppler::Types doppler, const IPosition& latticeShape,
-                      const IPosition& tileShape, Bool postLocally = False) const;
+                      const IPosition& tileShape, bool postLocally = false) const;
 
   // Does this coordinate system have a spectral axis?
-  Bool hasSpectralAxis() const;
+  bool hasSpectralAxis() const;
 
   // What number is the spectral axis?
   // If doWorld=True, the world axis number is returned.
   // Otherwise, the pixel axis number is returned.
   // Returns -1 if the spectral axis (world c.q. pixel) does not exist.
-  Int spectralAxisNumber(Bool doWorld = False) const;
+  Int spectralAxisNumber(bool doWorld = false) const;
 
   // what number is the spectral coordinate?
   // Returns -1 if no spectral coordinate exists.
   Int spectralCoordinateNumber() const;
 
   // does this coordinate system have a polarizaion/stokes coordinate?
-  Bool hasPolarizationCoordinate() const;
-  Bool hasPolarizationAxis() const { return hasPolarizationCoordinate(); }
+  bool hasPolarizationCoordinate() const;
+  bool hasPolarizationAxis() const { return hasPolarizationCoordinate(); }
 
   // Given a stokes or polarization parameter, find the pixel location.
   // Note the client is responsible for any boundedness checks
@@ -740,10 +740,10 @@ class CoordinateSystem : public Coordinate {
   // If doWorld=True, the world axis number is returned.
   // Otherwise, the pixel axis number is returned.
   // Returns -1 if the stokes axis (world c.q. pixel) does not exist.
-  Int polarizationAxisNumber(Bool doWorld = False) const;
+  Int polarizationAxisNumber(bool doWorld = false) const;
 
   // Does this coordinate system have a quality axis?
-  Bool hasQualityAxis() const;
+  bool hasQualityAxis() const;
 
   // what number is the quality axis? Returns -1 if no quality axis exists.
   Int qualityAxisNumber() const;
@@ -761,7 +761,7 @@ class CoordinateSystem : public Coordinate {
 
   Int directionCoordinateNumber() const;
 
-  Bool hasDirectionCoordinate() const;
+  bool hasDirectionCoordinate() const;
 
   // Get the pixel axis numbers of the direction coordinate in this object.
   // The order of the returned axis numbers is always longitude axis first,
@@ -772,40 +772,40 @@ class CoordinateSystem : public Coordinate {
 
   Int linearCoordinateNumber() const;
 
-  Bool hasLinearCoordinate() const;
+  bool hasLinearCoordinate() const;
 
   Vector<Int> linearAxesNumbers() const;
 
   // Get the 0 based order of the minimal match strings specified in <src>order</src>.
-  // If <src>requireAll</src> is True, checks are done to ensure that all axes in
+  // If <src>requireAll</src> is true, checks are done to ensure that all axes in
   // the coordinate system are uniquely specified in <src>order</src>.
-  // If <src>allowFriendlyNames</src> is True, the following (fully specified) strings
+  // If <src>allowFriendlyNames</src> is true, the following (fully specified) strings
   // will match the specified axes:
   // "spectral" matches both "frequency" and "velocity".
   // "ra" matches "right ascension".
-  Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
-                                Bool allowFriendlyNames = False) const;
+  Vector<Int> getWorldAxesOrder(Vector<String>& myNames, bool requireAll,
+                                bool allowFriendlyNames = false) const;
 
   // Is the abscissa in the DirectionCoordinate the longitude axis?
   // Throws exception if there is no DirectionCoordinate or if either of
   // the direction pixel axes have been removed.
-  // For a normal direction coordinate, this will return True.
-  Bool isDirectionAbscissaLongitude() const;
+  // For a normal direction coordinate, this will return true.
+  bool isDirectionAbscissaLongitude() const;
 
   // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
   // so that pixel<->world go to the specified frequency system (a valid
-  // MFrequency::Types string).  Returns False if frequency system invalid
+  // MFrequency::Types string).  Returns false if frequency system invalid
   // or if no DirectionCoordinate or if cant get Date/Epoch.
   // <group>
-  Bool setSpectralConversion(String& errorMsg, const String frequencySystem);
-  // This version throws an exception rather than returning False.
+  bool setSpectralConversion(String& errorMsg, const String frequencySystem);
+  // This version throws an exception rather than returning false.
   void setSpectralConversion(const String frequencySystem);
   //</group>
 
   // Set rest frequency of SpectralCoordinate in CoordinateSystem.
   // Unit must be consistent with Hz or m.
-  // Returns False if invalid inputs (and CS not changed) and an error message.
-  Bool setRestFrequency(String& errorMsg, const Quantity& freq);
+  // Returns false if invalid inputs (and CS not changed) and an error message.
+  bool setRestFrequency(String& errorMsg, const Quantity& freq);
 
  private:
   // Where we store copies of the coordinates we are created with.
@@ -827,8 +827,8 @@ class CoordinateSystem : public Coordinate {
   Block<Vector<Double>*> pixel_replacement_values_p;
 
   // These temporaries all needed for the toMix function
-  Block<Vector<Bool>*> worldAxes_tmps_p;
-  Block<Vector<Bool>*> pixelAxes_tmps_p;
+  Block<Vector<bool>*> worldAxes_tmps_p;
+  Block<Vector<bool>*> pixelAxes_tmps_p;
   Block<Vector<Double>*> worldOut_tmps_p;
   Block<Vector<Double>*> pixelOut_tmps_p;
   Block<Vector<Double>*> worldMin_tmps_p;
@@ -845,13 +845,13 @@ class CoordinateSystem : public Coordinate {
   static void _initFriendlyAxisMap();
 
   // Helper functions to group common code.
-  Bool mapOne(Vector<Int>& worldAxisMap, Vector<Int>& worldAxisTranspose, Vector<Bool>& refChange,
+  bool mapOne(Vector<Int>& worldAxisMap, Vector<Int>& worldAxisTranspose, Vector<bool>& refChange,
               const CoordinateSystem& cSys, const CoordinateSystem& cSys2, const uInt coord,
               const uInt coord2) const;
 
   void copy(const CoordinateSystem& other);
   void clear();
-  Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
+  bool checkAxesInThisCoordinate(const Vector<bool>& axes, uInt which) const;
 
   // Delete some pointer blocks
   void cleanUpSpecCoord(Block<SpectralCoordinate*>& in, Block<SpectralCoordinate*>& out);
@@ -861,8 +861,8 @@ class CoordinateSystem : public Coordinate {
 
   // Many abs/rel conversions
   // <group>
-  void makeWorldAbsRelMany(Matrix<Double>& value, Bool toAbs) const;
-  void makePixelAbsRelMany(Matrix<Double>& value, Bool toAbs) const;
+  void makeWorldAbsRelMany(Matrix<Double>& value, bool toAbs) const;
+  void makePixelAbsRelMany(Matrix<Double>& value, bool toAbs) const;
   // </group>
 
   // Do subImage for Stokes
@@ -895,18 +895,18 @@ class CoordinateSystem : public Coordinate {
   void listHeader(LogIO& os, Coordinate* pc, uInt& widthAxis, uInt& widthCoordType,
                   uInt& widthCoordNumber, uInt& widthName, uInt& widthProj, uInt& widthShape,
                   uInt& widthTile, uInt& widthRefValue, uInt& widthRefPixel, uInt& widthInc,
-                  uInt& widthUnits, Bool findWidths, Int coordinate, Int axisInCoordinate,
+                  uInt& widthUnits, bool findWidths, Int coordinate, Int axisInCoordinate,
                   Int pixelAxis, Int precRefValSci, Int precRefValFloat, Int precRefValRADEC,
                   Int precRefPixFloat, Int precIncSci, const IPosition& latticeShape,
                   const IPosition& tileShape) const;
   void listVelocity(LogIO& os, Coordinate* pc, uInt widthAxis, uInt widthCoordType,
                     uInt widthCoordNumber, uInt& widthName, uInt widthProj, uInt widthShape,
                     uInt widthTile, uInt& widthRefValue, uInt widthRefPixel, uInt& widthInc,
-                    uInt& widthUnits, Bool findWidths, Int axisInCoordinate, Int pixelAxis,
+                    uInt& widthUnits, bool findWidths, Int axisInCoordinate, Int pixelAxis,
                     MDoppler::Types velocityType, Int precRefValSci, Int precRefValFloat,
                     Int precRefValRADEC, Int precRefPixFloat, Int precIncSci) const;
   void clearFlags(LogIO& os) const;
-  Bool velocityIncrement(Double& velocityInc, SpectralCoordinate& sc, MDoppler::Types velocityType,
+  bool velocityIncrement(Double& velocityInc, SpectralCoordinate& sc, MDoppler::Types velocityType,
                          const String& velUnits) const;
   // </group>
 

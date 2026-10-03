@@ -93,23 +93,23 @@ class TableExprNodeArray : public TableExprNodeBinary {
 
   // Does a value occur in the set?
   // <group>
-  Bool contains(const TableExprId& id, Bool value) override;
-  Bool contains(const TableExprId& id, Int64 value) override;
-  Bool contains(const TableExprId& id, Double value) override;
-  Bool contains(const TableExprId& id, DComplex value) override;
-  Bool contains(const TableExprId& id, String value) override;
-  Bool contains(const TableExprId& id, MVTime value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Bool>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<Double>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<String>& value) override;
-  MArray<Bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
+  bool contains(const TableExprId& id, bool value) override;
+  bool contains(const TableExprId& id, Int64 value) override;
+  bool contains(const TableExprId& id, Double value) override;
+  bool contains(const TableExprId& id, DComplex value) override;
+  bool contains(const TableExprId& id, String value) override;
+  bool contains(const TableExprId& id, MVTime value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<bool>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<Int64>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<Double>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<DComplex>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<String>& value) override;
+  MArray<bool> contains(const TableExprId& id, const MArray<MVTime>& value) override;
   // </group>
 
   // Get a single element from the array in the given row.
   // <group>
-  virtual Bool getElemBool(const TableExprId& id, const Slicer& index);
+  virtual bool getElemBool(const TableExprId& id, const Slicer& index);
   virtual Int64 getElemInt(const TableExprId& id, const Slicer& index);
   virtual Double getElemDouble(const TableExprId& id, const Slicer& index);
   virtual DComplex getElemDComplex(const TableExprId& id, const Slicer& index);
@@ -119,7 +119,7 @@ class TableExprNodeArray : public TableExprNodeBinary {
 
   // Get a slice of the array in the given row.
   // <group>
-  virtual MArray<Bool> getSliceBool(const TableExprId& id, const Slicer&);
+  virtual MArray<bool> getSliceBool(const TableExprId& id, const Slicer&);
   virtual MArray<Int64> getSliceInt(const TableExprId& id, const Slicer&);
   virtual MArray<Double> getSliceDouble(const TableExprId& id, const Slicer&);
   virtual MArray<DComplex> getSliceDComplex(const TableExprId& id, const Slicer&);
@@ -129,7 +129,7 @@ class TableExprNodeArray : public TableExprNodeBinary {
 
   // Get a single element for the entire column (used by sort).
   // <group>
-  virtual Array<Bool> getElemColumnBool(const Vector<rownr_t>& rownrs, const Slicer&);
+  virtual Array<bool> getElemColumnBool(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<uChar> getElemColumnuChar(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<Short> getElemColumnShort(const Vector<rownr_t>& rownrs, const Slicer&);
   virtual Array<uShort> getElemColumnuShort(const Vector<rownr_t>& rownrs, const Slicer&);
@@ -194,16 +194,16 @@ class TableExprNodeArrayColumn : public TableExprNodeArray {
   const IPosition& getShape(const TableExprId& id) override;
 
   // Is the value in the given row defined?
-  Bool isDefined(const TableExprId& id) override;
+  bool isDefined(const TableExprId& id) override;
 
   // Get the data type of this column.
-  // It returns with a True status.
-  Bool getColumnDataType(DataType&) const override;
+  // It returns with a true status.
+  bool getColumnDataType(DataType&) const override;
 
  protected:
   TableExprInfo tableInfo_p;
   TableColumn tabCol_p;
-  Bool applySelection_p;
+  bool applySelection_p;
 };
 
 // <summary>
@@ -232,13 +232,13 @@ class TableExprNodeArrayColumnBool : public TableExprNodeArrayColumn {
   // Re-create the column object for a selection of rows.
   void applySelection(const Vector<rownr_t>& rownrs) override;
 
-  Bool getElemBool(const TableExprId& id, const Slicer& index) override;
-  MArray<Bool> getArrayBool(const TableExprId& id) override;
-  MArray<Bool> getSliceBool(const TableExprId& id, const Slicer&) override;
-  Array<Bool> getElemColumnBool(const Vector<rownr_t>& rownrs, const Slicer&) override;
+  bool getElemBool(const TableExprId& id, const Slicer& index) override;
+  MArray<bool> getArrayBool(const TableExprId& id) override;
+  MArray<bool> getSliceBool(const TableExprId& id, const Slicer&) override;
+  Array<bool> getElemColumnBool(const Vector<rownr_t>& rownrs, const Slicer&) override;
 
  protected:
-  ArrayColumn<Bool> col_p;
+  ArrayColumn<bool> col_p;
 };
 
 // <summary>
@@ -683,18 +683,18 @@ class TableExprNodeIndex : public TableExprNodeMulti {
   const Slicer& getSlicer(const TableExprId& id);
 
   // Does it index a single element?
-  Bool isSingle() const;
+  bool isSingle() const;
 
  protected:
   Int origin_p;            // # origin 0 for C++/Python; 1 for Glish
   Int endMinus_p;          // # subtract from end (origin and endExcl)
-  Bool isCOrder_p;         // # True for Python
+  bool isCOrder_p;         // # true for Python
   IPosition start_p;       // # precalculated start values
   IPosition end_p;         // # precalculated end values (<0 = till end)
   IPosition incr_p;        // # precalculated increment values
   Slicer slicer_p;         // # combined start, end, and incr
-  Block<Bool> varIndex_p;  // # is the start for the axes variable?
-  Bool isSingle_p;         // # Index a single value?
+  Block<bool> varIndex_p;  // # is the start for the axes variable?
+  bool isSingle_p;         // # Index a single value?
 
   // Precalculate the constant indices and store them.
   void convertConstIndex();
@@ -736,14 +736,14 @@ class TableExprNodeArrayPart : public TableExprNodeArray {
   // Show the node.
   void show(ostream& os, uInt indent) const override;
 
-  Bool getBool(const TableExprId& id) override;
+  bool getBool(const TableExprId& id) override;
   Int64 getInt(const TableExprId& id) override;
   Double getDouble(const TableExprId& id) override;
   DComplex getDComplex(const TableExprId& id) override;
   String getString(const TableExprId& id) override;
   MVTime getDate(const TableExprId& id) override;
 
-  MArray<Bool> getArrayBool(const TableExprId& id) override;
+  MArray<bool> getArrayBool(const TableExprId& id) override;
   MArray<Int64> getArrayInt(const TableExprId& id) override;
   MArray<Double> getArrayDouble(const TableExprId& id) override;
   MArray<DComplex> getArrayDComplex(const TableExprId& id) override;
@@ -751,11 +751,11 @@ class TableExprNodeArrayPart : public TableExprNodeArray {
   MArray<MVTime> getArrayDate(const TableExprId& id) override;
 
   // Get the data type of this column (if possible).
-  // It returns with a False status when the index is not constant
+  // It returns with a false status when the index is not constant
   // (that means that the index can vary with row number).
-  Bool getColumnDataType(DataType&) const override;
+  bool getColumnDataType(DataType&) const override;
 
-  Array<Bool> getColumnBool(const Vector<rownr_t>& rownrs) override;
+  Array<bool> getColumnBool(const Vector<rownr_t>& rownrs) override;
   Array<uChar> getColumnuChar(const Vector<rownr_t>& rownrs) override;
   Array<Short> getColumnShort(const Vector<rownr_t>& rownrs) override;
   Array<uShort> getColumnuShort(const Vector<rownr_t>& rownrs) override;
@@ -781,7 +781,7 @@ class TableExprNodeArrayPart : public TableExprNodeArray {
   TableExprNodeArrayColumn* colNode_p;  // # 0 if arrNode is no arraycolumn
 };
 
-inline Bool TableExprNodeIndex::isSingle() const { return isSingle_p; }
+inline bool TableExprNodeIndex::isSingle() const { return isSingle_p; }
 inline const Slicer& TableExprNodeIndex::getConstantSlicer() const { return slicer_p; }
 inline const Slicer& TableExprNodeIndex::getSlicer(const TableExprId& id) {
   if (!isConstant()) {

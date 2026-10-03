@@ -35,8 +35,8 @@
 // Test program for the BucketMapped class
 // </summary>
 
-void a(Bool);
-void b(Bool);
+void a(bool);
+void b(bool);
 
 int main(int argc, const char*[]) {
   try {
@@ -50,9 +50,9 @@ int main(int argc, const char*[]) {
 }
 
 // Build a file.
-void a(Bool) {
+void a(bool) {
   // Create the file.
-  BucketFile file("tBucketMapped_tmp.data", 0, True);
+  BucketFile file("tBucketMapped_tmp.data", 0, true);
   file.open();
   BucketMapped cache(&file, 512, 32768, 5);
   Int i;
@@ -80,9 +80,9 @@ void a(Bool) {
   cout << "wrote " << cache.nBucket() << " buckets of 32768 bytes" << endl;
 }
 
-void b(Bool) {
+void b(bool) {
   // Open the file.
-  BucketFile file("tBucketMapped_tmp.data", False, 0, True);
+  BucketFile file("tBucketMapped_tmp.data", false, 0, true);
   file.open();
   Int i;
   BucketMapped cache(&file, 512, 32768, 105);

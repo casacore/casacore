@@ -71,7 +71,7 @@ void PositionUDF::setup(const Table&, const TaQLStyle&) {
     itsRefType = MPosition::WGS84;
     itsValueType = 1;
   } else {
-    itsEngine.handleMeasType(operands()[0], True);
+    itsEngine.handleMeasType(operands()[0], true);
     itsRefType = itsEngine.refType();
     itsValueType = itsEngine.valueType();
     argnr = 1;

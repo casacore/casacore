@@ -100,8 +100,8 @@ class LogFilterTaql : public LogFilterInterface {
   // Clone the object.
   virtual LogFilterTaql* clone() const;
 
-  // Return True if <src>message</src> passes this filter.
-  virtual Bool pass(const LogMessage& message) const;
+  // Return true if <src>message</src> passes this filter.
+  virtual bool pass(const LogMessage& message) const;
 
  private:
   LogFilterExpr* expr_p;

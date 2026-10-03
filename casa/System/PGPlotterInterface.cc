@@ -40,6 +40,6 @@ void PGPlotterInterface::message(const String &text) {
   }
 }
 
-Bool PGPlotterInterface::isAttached() const { return True; }
+bool PGPlotterInterface::isAttached() const { return true; }
 
 }  // namespace casacore

@@ -415,15 +415,15 @@ class TiledDataStMan : public TiledStMan {
   virtual TSMCube* getHypercube(rownr_t rownr, IPosition& position);
 
   // Flush and optionally fsync the data.
-  // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool fsync);
+  // It returns a true status if it had to flush (i.e. if data have changed).
+  virtual bool flush(AipsIO&, bool fsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
   virtual void create64(rownr_t nrrow);
 
   // Read the header info.
-  virtual void readHeader(rownr_t nrrow, Bool firstTime);
+  virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // Update the map of row numbers to cube number plus offset.
   void updateRowMap(uInt cubeNr, uInt64 incrInLastDim);

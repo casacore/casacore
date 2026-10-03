@@ -32,8 +32,8 @@ namespace casacore {
 
 DopplerEngine::~DopplerEngine() {}
 
-void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, Bool allowRadVel,
-                                  Bool allowFreq) {
+void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, bool allowRadVel,
+                                  bool allowFreq) {
   // Default type is RADIO.
   itsRefType = MDoppler::RADIO;
   // See if the values are given as radial velocity, frequency or doppler.
@@ -41,7 +41,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, Bool allo
   // thus 2 arguments with the 2nd as a string.
   // TODO: use TaQL attributes. so a single argument is possible!!
   BaseEngine* enginePtr = 0;
-  Bool restConst = True;
+  bool restConst = true;
   if (args.size() >= argnr && !args[argnr]->unit().empty()) {
     if (allowRadVel) {
       try {
@@ -98,7 +98,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, Bool allo
     uInt nargnr = argnr + 1;
     // See if there is a reference type.
     if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      if (handleMeasType(args[nargnr], True)) {
+      if (handleMeasType(args[nargnr], true)) {
         nargnr++;
       }
     }

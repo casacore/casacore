@@ -251,7 +251,7 @@ class MSFitsInput {
 
   // Create from output and input file names. This function opens the input
   // file, and checks the output file is writable.
-  MSFitsInput(const String& msFile, const String& fitsFile, const Bool NewNameStyle = False);
+  MSFitsInput(const String& msFile, const String& fitsFile, const bool NewNameStyle = false);
 
   MSFitsInput(const MSFitsInput& other) = delete;
 
@@ -291,32 +291,32 @@ class MSFitsInput {
   Vector<Double> _receptorAngle;
   MFrequency::Types _freqsys;
   Double _restfreq;  // used for images
-  Bool _addSourceTable;
+  bool _addSourceTable;
   LogIO _log;
   Record _header;
   Double _refFreq;
-  Bool _useAltrval;
+  bool _useAltrval;
   Vector<Double> _chanFreq;
-  Bool _newNameStyle;
+  bool _newNameStyle;
   Vector<Double> _obsTime;
 
   Matrix<Double> _restFreq;  // used for UVFITS
   Matrix<Double> _sysVel;
-  Bool _msCreated;
+  bool _msCreated;
 
   // Check that the input is a UV fits file with required contents.
-  // Returns False if not ok.
-  Bool _checkInput(FitsInput& infile);
+  // Returns false if not ok.
+  bool _checkInput(FitsInput& infile);
 
   // Read the axis info of the primary group, throws an exception if required
   // axes are missing.
   void getPrimaryGroupAxisInfo();
 
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
-  // If useTSM is True, the Tiled Storage Manager will be used to store
+  // If useTSM is true, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM. Use obsType to choose the tiling
   // scheme.
-  void setupMeasurementSet(const String& MSFileName, Bool useTSM = True,
+  void setupMeasurementSet(const String& MSFileName, bool useTSM = true,
                            Int obsType = MSTileLayout::Standard);
 
   ///////////////fillers for primary table form uvfits//////////////////////

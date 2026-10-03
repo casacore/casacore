@@ -45,13 +45,13 @@ namespace casacore {
 // it makes it possible to test such an index.
 class MultiFileLarge : public MultiFile {
  public:
-  MultiFileLarge(const String& name, ByteIO::OpenOption option, Int blockSize, Bool useODirect,
-                 Bool useCRC, Int testMode)
+  MultiFileLarge(const String& name, ByteIO::OpenOption option, Int blockSize, bool useODirect,
+                 bool useCRC, Int testMode)
       : MultiFile(name, option, blockSize, useODirect, useCRC), itsTestMode(testMode) {}
   ~MultiFileLarge() override { flush(); }
   void readBlock(MultiFileInfo&, Int64, void*) override;
   void writeBlock(MultiFileInfo&, Int64, const void*) override;
-  void extendVF(MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks) override;
+  void extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks) override;
   void writeHeaderShow(Int64 ncont, Int64 todo) const override;
   void writeHeaderTest() override;
 
@@ -73,7 +73,7 @@ void MultiFileLarge::writeBlock(MultiFileInfo& info, Int64 blknr, const void* bu
   }
 }
 
-void MultiFileLarge::extendVF(MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks) {
+void MultiFileLarge::extendVF(MultiFileInfo& info, Int64 lastblk, bool useFreeBlocks) {
   Int64 nrb1 = 0;
   Int64 nrb2 = 0;
   if (!useFreeBlocks && itsTestMode != 0) {
@@ -113,11 +113,11 @@ void readFile(const String& name) {
   mfile.show(cout);
   for (uInt i = 0; i < mfile.info().size(); ++i) {
     String nm = "file" + std::to_string(i);
-    cout << nm << ' ' << mfile.fileId(nm, False) << endl;
+    cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
 }
 
-void testLarge(Bool oDirect, Bool useCRC, int testMode) {
+void testLarge(bool oDirect, bool useCRC, int testMode) {
   cout << "Test with ODirect=" << oDirect << ", useCRC=" << useCRC << endl;
   {
     // Use 4 KB blocks, but optionally use test mode (do not write actual data).
@@ -166,15 +166,15 @@ int main(int argc, char* argv[]) {
     }
     if (testMode == 0) {
       // Test a large MultiFile without actually writing data.
-      testLarge(False, False, -1);
-      testLarge(False, True, -1);
-      testLarge(True, False, -1);
-      testLarge(True, True, -1);
+      testLarge(false, false, -1);
+      testLarge(false, true, -1);
+      testLarge(true, false, -1);
+      testLarge(true, true, -1);
     } else if (testMode < 0) {
       readFile("tMultiFileLarge_tmp.dat");
     } else {
       // Test a large MultiFile forcing an exception when itsNrBlock > 100000
-      testLarge(False, False, 100000);
+      testLarge(false, false, 100000);
     }
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;

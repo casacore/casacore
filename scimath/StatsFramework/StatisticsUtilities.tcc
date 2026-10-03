@@ -147,26 +147,26 @@ void StatisticsUtilities<AccumType>::waccumulate(Double& npts, AccumType& sumwei
 
 template <class AccumType>
 template <class LocationType>
-Bool StatisticsUtilities<AccumType>::doMax(AccumType& datamax, LocationType& maxpos, Bool isFirst,
+bool StatisticsUtilities<AccumType>::doMax(AccumType& datamax, LocationType& maxpos, bool isFirst,
                                            const AccumType& datum, const LocationType& location) {
   if (isFirst || datum > datamax) {
     datamax = datum;
     maxpos = location;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 template <class AccumType>
 template <class LocationType>
-Bool StatisticsUtilities<AccumType>::doMin(AccumType& datamin, LocationType& minpos, Bool isFirst,
+bool StatisticsUtilities<AccumType>::doMin(AccumType& datamin, LocationType& minpos, bool isFirst,
                                            const AccumType& datum, const LocationType& location) {
   if (isFirst || datum < datamin) {
     datamin = datum;
     minpos = location;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 #define _NQUADSYM                             \
@@ -239,10 +239,10 @@ void StatisticsUtilities<AccumType>::waccumulateSym(Double& npts, AccumType& sum
 }
 
 template <class AccumType>
-Bool StatisticsUtilities<AccumType>::includeDatum(const AccumType& datum,
+bool StatisticsUtilities<AccumType>::includeDatum(const AccumType& datum,
                                                   typename DataRanges::const_iterator beginRange,
                                                   typename DataRanges::const_iterator endRange,
-                                                  Bool isInclude) {
+                                                  bool isInclude) {
   // can't use a lambda because the loop can end early via return
   for (auto iter = beginRange; iter != endRange; ++iter) {
     if (datum >= iter->first && datum <= iter->second) {
@@ -281,9 +281,9 @@ std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
 template <class AccumType>
 void StatisticsUtilities<AccumType>::mergeResults(
     std::vector<BinCountArray>& bins, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
+    std::vector<bool>& allSame, const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
     const std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]>& tSameVal,
-    const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax) {
+    const std::unique_ptr<std::vector<bool>[]>& tAllSame, uInt nThreadsMax) {
   // merge results from individual threads (tBins, tSameVal, tAllSame)
   // into single data structures (bins, sameVal, allSame)
   for (uInt tid = 0; tid < nThreadsMax; ++tid) {
@@ -296,7 +296,7 @@ void StatisticsUtilities<AccumType>::mergeResults(
     });
     // typename std::vector<std::shared_ptr<AccumType>>::iterator siter;
     // auto send = sameVal.end();
-    std::vector<Bool>::iterator aiter = allSame.begin();
+    std::vector<bool>::iterator aiter = allSame.begin();
     auto viter = tSameVal[idx8].cbegin();
     auto witer = tAllSame[idx8].cbegin();
     for_each(sameVal.begin(), sameVal.end(),
@@ -313,12 +313,12 @@ void StatisticsUtilities<AccumType>::mergeResults(
                  } else {
                    // both are not null, and they do not have the same values
                    svalue.reset();
-                   *aiter = False;
+                   *aiter = false;
                  }
                } else {
-                 // *aiter = True, *witer = False, all values are not the same
+                 // *aiter = true, *witer = false, all values are not the same
                  svalue.reset();
-                 *aiter = False;
+                 *aiter = false;
                }
                ++aiter;
                ++viter;

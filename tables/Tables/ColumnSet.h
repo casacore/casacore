@@ -107,7 +107,7 @@ class ColumnSet {
   std::shared_ptr<MultiFileBase> getMultiFile() const { return multiFile_p; }
 
   // Are subtables used in other processes.
-  Bool areTablesMultiUsed() const;
+  bool areTablesMultiUsed() const;
 
   // Get a column by name.
   PlainColumn* getColumn(const String& columnName) const;
@@ -124,7 +124,7 @@ class ColumnSet {
   // It creates the data manager column objects for each column
   // and it allows the data managers to link themselves to the
   // Table object and to initialize themselves.
-  void initDataManagers(rownr_t nrrow, Bool bigEndian, const TSMOption& tsmOption, Table& tab);
+  void initDataManagers(rownr_t nrrow, bool bigEndian, const TSMOption& tsmOption, Table& tab);
 
   // Link the ColumnSet object to the BaseTable object.
   void linkToTable(BaseTable* baseTableObject);
@@ -137,8 +137,8 @@ class ColumnSet {
   // table is properly locked.
   // If autolocking is in effect, it locks the table when needed.
   // <group>
-  void checkReadLock(Bool wait);
-  void checkWriteLock(Bool wait);
+  void checkReadLock(bool wait);
+  void checkWriteLock(bool wait);
   // </group>
 
   // Inspect the auto lock when the inspection interval has expired and
@@ -146,23 +146,23 @@ class ColumnSet {
   void autoReleaseLock();
 
   // If needed, get a temporary user lock.
-  // It returns False if the lock was already there.
-  Bool userLock(FileLocker::LockType, Bool wait);
+  // It returns false if the lock was already there.
+  bool userLock(FileLocker::LockType, bool wait);
 
-  // Release a temporary user lock if the given release flag is True.
-  void userUnlock(Bool releaseFlag);
+  // Release a temporary user lock if the given release flag is true.
+  void userUnlock(bool releaseFlag);
 
   // Do all data managers and engines allow to add rows?
-  Bool canAddRow() const;
+  bool canAddRow() const;
 
   // Do all data managers and engines allow to remove rows?
-  Bool canRemoveRow() const;
+  bool canRemoveRow() const;
 
   // Can the given columns be removed from the data manager?
-  Bool canRemoveColumn(const Vector<String>& columnNames) const;
+  bool canRemoveColumn(const Vector<String>& columnNames) const;
 
   // Can a column be renamed in the data manager?
-  Bool canRenameColumn(const String& columnName) const;
+  bool canRenameColumn(const String& columnName) const;
 
   // Add rows to all data managers.
   void addRow(rownr_t nrrow);
@@ -180,13 +180,13 @@ class ColumnSet {
   // Add a column to the table.
   // The default implementation throws an "invalid operation" exception.
   // <group>
-  void addColumn(const ColumnDesc& columnDesc, Bool bigEndian, const TSMOption& tsmOption,
+  void addColumn(const ColumnDesc& columnDesc, bool bigEndian, const TSMOption& tsmOption,
                  Table& tab);
-  void addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                 Bool bigEndian, const TSMOption& tsmOption, Table& tab);
-  void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager, Bool bigEndian,
+  void addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                 bool bigEndian, const TSMOption& tsmOption, Table& tab);
+  void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager, bool bigEndian,
                  const TSMOption& tsmOption, Table& tab);
-  void addColumn(const TableDesc& tableDesc, const DataManager& dataManager, Bool bigEndian,
+  void addColumn(const TableDesc& tableDesc, const DataManager& dataManager, bool bigEndian,
                  const TSMOption& tsmOption, Table& tab);
   // </group>
 
@@ -198,7 +198,7 @@ class ColumnSet {
 
   // Get the data manager info.
   // Optionally only the virtual engines are retrieved.
-  Record dataManagerInfo(Bool virtualOnly = False) const;
+  Record dataManagerInfo(bool virtualOnly = false) const;
 
   // Get the trace-id of the table.
   int traceId() const { return baseTablePtr_p->traceId(); }
@@ -208,21 +208,21 @@ class ColumnSet {
 
   // Write all the data and let the data managers flush their data.
   // This function is called when a table gets written (i.e. flushed).
-  // It returns True if any data manager wrote something.
-  Bool putFile(Bool writeTable, AipsIO&, const TableAttr&, Bool fsync);
+  // It returns true if any data manager wrote something.
+  bool putFile(bool writeTable, AipsIO&, const TableAttr&, bool fsync);
 
   // Read the data, reconstruct the data managers, and link those to
   // the table object.
   // This function gets called when an existing table is read back.
   // It returns the number of rows in case a data manager thinks there are
   // more. That is in particular used by LofarStMan.
-  rownr_t getFile(AipsIO&, Table& tab, rownr_t nrrow, Bool bigEndian, const TSMOption& tsmOption);
+  rownr_t getFile(AipsIO&, Table& tab, rownr_t nrrow, bool bigEndian, const TSMOption& tsmOption);
 
   // Set the table to being changed.
   void setTableChanged();
 
   // Get the data manager change flags (used by PlainTable).
-  Block<Bool>& dataManChanged();
+  Block<bool>& dataManChanged();
 
   // Synchronize the data managers when data in them have changed.
   // It returns the number of rows it think it has, which is needed for
@@ -230,7 +230,7 @@ class ColumnSet {
   // <src>forceSync=True</src> means that the data managers are forced
   // to do a sync. Otherwise the contents of the lock file tell if a data
   // manager has to sync.
-  rownr_t resync(rownr_t nrrow, Bool forceSync);
+  rownr_t resync(rownr_t nrrow, bool forceSync);
 
   // Invalidate the column caches for all columns.
   void invalidateColumnCaches();
@@ -246,7 +246,7 @@ class ColumnSet {
   // Find the data manager with the given name or for the given column.
   // If the data manager or column is unknown, an exception is thrown.
   // A blank name means the data manager is unknown.
-  DataManager* findDataManager(const String& name, Bool byColumn = False) const;
+  DataManager* findDataManager(const String& name, bool byColumn = false) const;
 
   // Make a unique data manager name by appending a suffix _n if needed
   // where n is a number that makes the name unique.
@@ -276,10 +276,10 @@ class ColumnSet {
 
   // Check if a data manager name has not already been used.
   // Start checking at the given index in the array.
-  // It returns False if the name has already been used.
+  // It returns false if the name has already been used.
   // By default an exception is thrown if the name has already been used.
-  Bool checkDataManagerName(const String& name, uInt from, const String& tableName,
-                            Bool doTthrow = True) const;
+  bool checkDataManagerName(const String& name, uInt from, const String& tableName,
+                            bool doTthrow = true) const;
 
   // Do the actual addition of a column.
   void doAddColumn(const ColumnDesc& columnDesc, DataManager* dataManPtr);
@@ -288,14 +288,14 @@ class ColumnSet {
   // It returns a map of DataManager* telling how many columns for
   // a data manager have to be removed. A count of -1 means that all
   // columns have to be removed. For such columns the flag in the
-  // returned Block is False, otherwise True.
+  // returned Block is false, otherwise true.
   std::map<void*, Int> checkRemoveColumn(const Vector<String>& columnNames);
 
   // Check if the table is locked for read or write.
   // If manual or permanent locking is in effect, it checks if the
   // table is properly locked.
   // If autolocking is in effect, it locks the table when needed.
-  void doLock(FileLocker::LockType, Bool wait);
+  void doLock(FileLocker::LockType, bool wait);
 
   // # Declare the variables.
   TableDesc* tdescPtr_p;
@@ -308,30 +308,30 @@ class ColumnSet {
   uInt seqCount_p;                   // # sequence number count
   // #                                           (used for unique seqnr)
   Block<void*> blockDataMan_p;   // # list of data managers
-  Block<Bool> dataManChanged_p;  // # data has changed
+  Block<bool> dataManChanged_p;  // # data has changed
 };
 
 inline rownr_t ColumnSet::nrow() const { return nrrow_p; }
 inline void ColumnSet::linkToTable(BaseTable* baseTableObject) { baseTablePtr_p = baseTableObject; }
 inline void ColumnSet::setTableChanged() { baseTablePtr_p->setTableChanged(); }
 inline void ColumnSet::linkToLockObject(TableLockData* lockObject) { lockPtr_p = lockObject; }
-inline void ColumnSet::checkReadLock(Bool wait) {
+inline void ColumnSet::checkReadLock(bool wait) {
   if (lockPtr_p->readLocking() && !lockPtr_p->hasLock(FileLocker::Read)) {
     doLock(FileLocker::Read, wait);
   }
 }
-inline void ColumnSet::checkWriteLock(Bool wait) {
+inline void ColumnSet::checkWriteLock(bool wait) {
   if (!lockPtr_p->hasLock(FileLocker::Write)) {
     doLock(FileLocker::Write, wait);
   }
 }
-inline void ColumnSet::userUnlock(Bool releaseFlag) {
+inline void ColumnSet::userUnlock(bool releaseFlag) {
   if (releaseFlag) {
     lockPtr_p->release();
   }
 }
 inline void ColumnSet::autoReleaseLock() { lockPtr_p->autoRelease(); }
-inline Block<Bool>& ColumnSet::dataManChanged() { return dataManChanged_p; }
+inline Block<bool>& ColumnSet::dataManChanged() { return dataManChanged_p; }
 
 }  // namespace casacore
 

@@ -119,14 +119,14 @@ int main() {
       try {
         bogus.makeVelocity(20);
         // exception should be thrown before we get here
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (const std::exception& x) {
       }
       MVFrequency restfrq3(-1);
       VelocityMachine bogus2(frqref, Unit("GHz"), restfrq3, velref, Unit("km/s"));
       try {
         bogus2.makeVelocity(20);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (const std::exception& x) {
       }
     }

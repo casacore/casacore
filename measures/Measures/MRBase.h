@@ -111,7 +111,7 @@ class MRBase {
 
   // # General Member Functions
   //  Check if empty reference
-  virtual Bool empty() const = 0;
+  virtual bool empty() const = 0;
   // Check the type of Measure the reference can be used for:<br>
   //   <src> static const String &showMe() = 0; </src>.<br>
   // Return the type of the reference

@@ -104,30 +104,30 @@ class RebinImage : public ImageInterface<T> {
 
   // Is the RebinImage masked?
   // It is if its parent image is masked.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the image object have a pixelmask?
   // It does if its parent has a pixelmask.
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask in use (thus to the pixelmask of the parent).
   // An exception is thrown if the parent does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get the region used (always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
   // A RebinImage is not persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // Is the RebinImage paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // An RebinImage is not writable
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the shape of the RebinImage
   virtual IPosition shape() const;
@@ -141,20 +141,20 @@ class RebinImage : public ImageInterface<T> {
   virtual void resize(const TiledShape& newShape);
 
   // Return the name of the parent ImageInterface object.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Get access to the attribute handler (of the parent image).
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler(Bool createHandler = False);
+  virtual ImageAttrHandler& attrHandler(bool createHandler = false);
 
   // Do the actual getting of an array of values.
   // Non-unit strides are not yet supported.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Putting data is not possible as the lattice is not writable.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -162,21 +162,21 @@ class RebinImage : public ImageInterface<T> {
 
   // Get a section of the mask.
   // Non-unit strides are not yet supported.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use.
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape(uInt maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   virtual void flush();
   virtual void tempClose();

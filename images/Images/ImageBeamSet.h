@@ -113,14 +113,14 @@ class ImageBeamSet {
   ImageBeamSet& operator=(const ImageBeamSet& other);
 
   // Beam sets are equal if the shapes and all corresponding beams are equal.
-  Bool operator==(const ImageBeamSet& other) const;
-  Bool operator!=(const ImageBeamSet& other) const;
+  bool operator==(const ImageBeamSet& other) const;
+  bool operator!=(const ImageBeamSet& other) const;
 
   // Beam sets are equivalent if both have no beams or if the
   // expanded sets are equal. Expanded means that an axis can have
   // length 0 or 1 and is (virtually) expanded to the length of the matching
   // axis in the other beam set.
-  Bool equivalent(const ImageBeamSet& that) const;
+  bool equivalent(const ImageBeamSet& that) const;
 
   // Get the number of elements in the beam array.
   // <group>
@@ -128,13 +128,13 @@ class ImageBeamSet {
   uInt size() const { return _beams.size(); }
   // </group>
 
-  Bool hasSingleBeam() const { return _beams.size() == 1; }
+  bool hasSingleBeam() const { return _beams.size() == 1; }
 
   // Does this beam set contain multiple beams?
-  Bool hasMultiBeam() const { return _beams.size() > 1; }
+  bool hasMultiBeam() const { return _beams.size() > 1; }
 
   // Is the beam set empty?
-  Bool empty() const { return _beams.empty(); }
+  bool empty() const { return _beams.empty(); }
 
   // Get the shape of the beam array. The minimum value for
   // a component of the returned IPosition is always 1.
@@ -240,12 +240,12 @@ class ImageBeamSet {
   //</group>
 
   // If verbose, log all beams, if not just summarize beam stats.
-  void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
+  void summarize(LogIO& log, bool verbose, const CoordinateSystem& csys) const;
 
   // Modify the beam set by rotating all beams counterclockwise through the
   // specified angle. If unwrap=True, unwrap the new position angle(s) so that
   // it falls in the range -90 to 90 degrees before setting it.
-  void rotate(const Quantity& angle, Bool unwrap = False);
+  void rotate(const Quantity& angle, bool unwrap = false);
 
   // get all the beam areas in a single quantum matrix.
   const Quantum<Matrix<double>> getAreas() const;
@@ -268,7 +268,7 @@ class ImageBeamSet {
 
   // common code for replacing a beam in a multi-beam set
   void _replaceBeam(const GaussianBeam& beam, const IPosition& location1,
-                    const IPosition& location2, Bool overwriteMaxMin);
+                    const IPosition& location2, bool overwriteMaxMin);
 
   // Show the spectral info.
   static void _chanInfoToStream(ostream& os, const SpectralCoordinate* spCoord, const uInt chan,

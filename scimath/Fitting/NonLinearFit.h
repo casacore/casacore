@@ -162,7 +162,7 @@ class NonLinearFit : public GenericL2Fit<T> {
   //  data will be deduced from the Functional provided with
   //  <src>setFunction()</src>.
   //  Create optionally a fitter with SVD behaviour specified.
-  explicit NonLinearFit(Bool svd = False);
+  explicit NonLinearFit(bool svd = false);
   // Copy constructor (deep copy)
   NonLinearFit(const NonLinearFit &other);
   // Assignment (deep copy)
@@ -190,7 +190,7 @@ class NonLinearFit : public GenericL2Fit<T> {
   Double getCriteria() const { return criterium_p; };
 
   // Check to see if the fit has converged
-  Bool converged() const { return converge_p; };
+  bool converged() const { return converge_p; };
 
  protected:
   // #Data
@@ -201,15 +201,15 @@ class NonLinearFit : public GenericL2Fit<T> {
   // Convergence criteria
   Double criterium_p;
   // Has fit converged
-  Bool converge_p;
+  bool converge_p;
 
   // # Member functions
   //  Generalised fitter
-  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+  virtual bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
                      const Array<typename FunctionTraits<T>::BaseType> &x,
                      const Vector<typename FunctionTraits<T>::BaseType> &y,
                      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-                     const Vector<Bool> *const mask = 0) = 0;
+                     const Vector<bool> *const mask = 0) = 0;
 
  private:
   // # Data

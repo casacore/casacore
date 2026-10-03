@@ -86,12 +86,12 @@ int main() {
     {
       Vector<Quantity> vq(2, Quantity(5, "s"));
       vq[1].setUnit("m");
-      Bool thrown = False;
+      bool thrown = false;
       try {
         // quantities don't have conformant units
         QVector<Double> qv(vq);
       } catch (const std::exception& x) {
-        thrown = True;
+        thrown = true;
       }
       AlwaysAssert(thrown, AipsError);
       vq[1].setUnit("s");

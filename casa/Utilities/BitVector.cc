@@ -30,7 +30,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 BitVector::BitVector() : size_p(0), bits_p(0) {}
 
-BitVector::BitVector(uInt length, Bool state)
+BitVector::BitVector(uInt length, bool state)
     : size_p(length), bits_p((length + WORDSIZE - 1) / WORDSIZE, uInt(0)) {
   if (state) {
     set(state);
@@ -47,12 +47,12 @@ BitVector& BitVector::operator=(const BitVector& that) {
   return *this;
 }
 
-BitVector& BitVector::operator=(Bool state) {
+BitVector& BitVector::operator=(bool state) {
   set(state);
   return *this;
 }
 
-void BitVector::putBit(uInt pos, Bool state) {
+void BitVector::putBit(uInt pos, bool state) {
   if (state) {
     setBit(pos);
   } else {
@@ -60,26 +60,26 @@ void BitVector::putBit(uInt pos, Bool state) {
   }
 }
 
-Bool BitVector::toggleBit(uInt pos) {
-  Bool result = getBit(pos);
+bool BitVector::toggleBit(uInt pos) {
+  bool result = getBit(pos);
   putBit(pos, (!result));
   return result;
 }
 
-Bool BitVector::getBit(uInt pos) const {
+bool BitVector::getBit(uInt pos) const {
   DebugAssert(pos < size_p, AipsError);
   uInt index = pos / WORDSIZE;
-  Bool result = True;
+  bool result = true;
   if ((bits_p[index] & (1 << (pos - index * WORDSIZE))) == 0) {
-    result = False;
+    result = false;
   }
   return result;
 }
 
-void BitVector::resize(uInt length, Bool state, Bool copy) {
+void BitVector::resize(uInt length, bool state, bool copy) {
   // # Do a true resize.
   uInt oldSize = size_p;
-  bits_p.resize((length + WORDSIZE - 1) / WORDSIZE, True, copy);
+  bits_p.resize((length + WORDSIZE - 1) / WORDSIZE, true, copy);
   size_p = length;
   if (!copy) {
     set(state);
@@ -90,7 +90,7 @@ void BitVector::resize(uInt length, Bool state, Bool copy) {
   }
 }
 
-void BitVector::set(Bool state) {
+void BitVector::set(bool state) {
   uInt value = 0;
   if (state) {
     value = ~value;
@@ -99,7 +99,7 @@ void BitVector::set(Bool state) {
     bits_p[i] = value;
   }
 }
-void BitVector::set(uInt start, uInt length, Bool state) {
+void BitVector::set(uInt start, uInt length, bool state) {
   // # Determine the end bit.
   uInt end = start + length;
   if (end > size_p) {
@@ -201,27 +201,27 @@ void BitVector::reverse() {
   }
 }
 
-Bool BitVector::operator==(const BitVector& that) const {
+bool BitVector::operator==(const BitVector& that) const {
   uInt endWord = size_p / WORDSIZE;
   uInt i;
   for (i = 0; i < endWord; i++) {
     if (bits_p[i] != that.bits_p[i]) {
-      return False;
+      return false;
     }
   }
   for (i = endWord * WORDSIZE; i < size_p; i++) {
     if (getBit(i) != that.getBit(i)) {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-Bool BitVector::operator!=(const BitVector& that) const {
+bool BitVector::operator!=(const BitVector& that) const {
   if (*this == that) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 ostream& operator<<(ostream& os, const BitVector& vector) {

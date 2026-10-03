@@ -41,11 +41,11 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-ScalarQuantColumn<T>::ScalarQuantColumn() : itsDataCol(0), itsUnitsCol(0), itsConvOut(False) {}
+ScalarQuantColumn<T>::ScalarQuantColumn() : itsDataCol(0), itsUnitsCol(0), itsConvOut(false) {}
 
 template <class T>
 ScalarQuantColumn<T>::ScalarQuantColumn(const Table& tab, const String& columnName)
-    : itsDataCol(0), itsUnitsCol(0), itsConvOut(False) {
+    : itsDataCol(0), itsUnitsCol(0), itsConvOut(false) {
   init(tab, columnName);
   itsUnitOut = itsUnit;
 }

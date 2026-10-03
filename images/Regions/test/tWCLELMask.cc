@@ -44,13 +44,13 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void testVectorROIter(const Lattice<Bool>& lattice, Bool firstValue, Bool alternates) {
+void testVectorROIter(const Lattice<bool>& lattice, bool firstValue, bool alternates) {
   Int nstep;
   const IPosition latticeShape(lattice.shape());
   const IPosition cursorShape(1, latticeShape(0));
   LatticeStepper step(latticeShape, cursorShape);
-  RO_LatticeIterator<Bool> iter(lattice, step);
-  Bool value = firstValue;
+  RO_LatticeIterator<bool> iter(lattice, step);
+  bool value = firstValue;
   for (iter.reset(); !iter.atEnd(); iter++) {
     AlwaysAssert(allEQ(iter.vectorCursor(), value), AipsError);
     if (alternates) {
@@ -83,7 +83,7 @@ int main() {
       AlwaysAssertExit(!lc->isWritable());
       AlwaysAssertExit(lc->shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter(*lc, True, True);
+      testVectorROIter(*lc, true, true);
       delete lc;
     }
     {
@@ -94,7 +94,7 @@ int main() {
       AlwaysAssertExit(!lc->isWritable());
       AlwaysAssertExit(lc->shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter(*lc, True, True);
+      testVectorROIter(*lc, true, true);
       delete lc;
     }
     {
@@ -113,7 +113,7 @@ int main() {
       AlwaysAssertExit(!lc->isWritable());
       AlwaysAssertExit(lc->shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter(*lc, True, True);
+      testVectorROIter(*lc, true, true);
       delete lc;
       // Should get exception for incorrect shape.
       try {
@@ -132,7 +132,7 @@ int main() {
       AlwaysAssertExit(!lc->isWritable());
       AlwaysAssertExit(lc->shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter(*lc, True, True);
+      testVectorROIter(*lc, true, true);
       delete lc;
       // Should get exception for incorrect shape.
       try {
@@ -151,7 +151,7 @@ int main() {
       AlwaysAssertExit(!lc->isWritable());
       AlwaysAssertExit(lc->shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter(*lc, True, False);
+      testVectorROIter(*lc, true, false);
       delete lc;
     }
     {
@@ -163,7 +163,7 @@ int main() {
       AlwaysAssertExit(!lc->isWritable());
       AlwaysAssertExit(lc->shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter(*lc, True, True);
+      testVectorROIter(*lc, true, true);
       delete lc;
     }
   } catch (std::exception& x) {

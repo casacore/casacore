@@ -32,7 +32,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 WCComplement::WCComplement(const ImageRegion& region) : WCCompound(&region) {}
 
-WCComplement::WCComplement(Bool takeOver, const Block<const WCRegion*>& regions)
+WCComplement::WCComplement(bool takeOver, const Block<const WCRegion*>& regions)
     : WCCompound(takeOver, regions) {}
 
 WCComplement::WCComplement(const WCComplement& other) : WCCompound(other) {}
@@ -46,7 +46,7 @@ WCComplement& WCComplement::operator=(const WCComplement& other) {
   return *this;
 }
 
-Bool WCComplement::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
+bool WCComplement::operator==(const WCRegion& other) const { return WCCompound::operator==(other); }
 
 // Clone needs to be a WCRegion cause the SGI compiler is
 // not smart enough to do the right thing.
@@ -57,7 +57,7 @@ LCRegion* WCComplement::doToLCRegion(const CoordinateSystem& cSys, const IPositi
                                      const IPosition& outOrder) const {
   Block<const LCRegion*> regions;
   multiToLCRegion(regions, cSys, shape, pixelAxesMap, outOrder);
-  return new LCComplement(True, regions);
+  return new LCComplement(true, regions);
 }
 
 String WCComplement::className() { return "WCComplement"; }
@@ -74,7 +74,7 @@ TableRecord WCComplement::toRecord(const String& tableName) const {
 WCComplement* WCComplement::fromRecord(const TableRecord& rec, const String& tableName) {
   Block<const WCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
-  return new WCComplement(True, regions);
+  return new WCComplement(true, regions);
 }
 
 }  // namespace casacore

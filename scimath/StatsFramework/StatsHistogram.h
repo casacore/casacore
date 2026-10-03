@@ -87,7 +87,7 @@ class StatsHistogram {
   // versions should never actually be called
   inline static uInt _getUInt(const AccumType& v) { return (uInt)v; }
 
-  void _minMaxIdxRange(Int& minIdx, Int& maxIdx, AccumType value, Bool higher) const;
+  void _minMaxIdxRange(Int& minIdx, Int& maxIdx, AccumType value, bool higher) const;
 };
 
 // <group>

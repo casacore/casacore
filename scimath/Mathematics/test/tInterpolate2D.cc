@@ -69,18 +69,18 @@ int main() {
     results[1] = 9.552;           // Cubic
     results[2] = 9.473654921656;  // Lanczos
     results[3] = 9.;              // Nearest
-    Bool ok;
+    bool ok;
     for (uInt method = 0; method < methods.size(); ++method) {
       Float result_f;
       Interpolate2D myInterp(Interpolate2D::stringToMethod(methods[method]));
 
       ok = myInterp.interp(result_f, where, matt_f);
-      AlwaysAssert(ok == True, AipsError);
+      AlwaysAssert(ok == true, AipsError);
       AlwaysAssert(near(result_f, results[method]), AipsError);
 
       Double result_d;
       ok = myInterp.interp(result_d, where, matt_d);
-      AlwaysAssert(ok == True, AipsError);
+      AlwaysAssert(ok == true, AipsError);
       AlwaysAssert(near(result_d, results[method], 1.e-9), AipsError);
     }
 

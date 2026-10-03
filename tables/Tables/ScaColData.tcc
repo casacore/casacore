@@ -42,9 +42,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ScalarColumnData<T>::ScalarColumnData(const ScalarColumnDesc<T>* cd, ColumnSet* csp)
-    : PlainColumn(cd, csp), scaDescPtr_p(cd), undefFlag_p(False), undefVal_p(cd->defaultValue()) {
+    : PlainColumn(cd, csp), scaDescPtr_p(cd), undefFlag_p(false), undefVal_p(cd->defaultValue()) {
   if ((cd->options() & ColumnDesc::Undefined) == ColumnDesc::Undefined) {
-    undefFlag_p = True;
+    undefFlag_p = true;
   }
 }
 
@@ -69,9 +69,9 @@ void ScalarColumnData<T>::initialize(rownr_t startRow, rownr_t endRow) {
 }
 
 template <class T>
-Bool ScalarColumnData<T>::isDefined(rownr_t rownr) const {
+bool ScalarColumnData<T>::isDefined(rownr_t rownr) const {
   if (!undefFlag_p) {
-    return True;
+    return true;
   }
   T val;
   dataColPtr_p->get(rownr, &val);
@@ -83,7 +83,7 @@ void ScalarColumnData<T>::get(rownr_t rownr, void* val) const {
   if (rtraceColumn_p) {
     TableTrace::trace(traceId(), columnDesc().name(), 'r', rownr);
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->get(rownr, static_cast<T*>(val));
   autoReleaseLock();
 }
@@ -96,7 +96,7 @@ void ScalarColumnData<T>::getScalarColumn(ArrayBase& val) const {
   if (val.ndim() != 1 || val.nelements() != nrow()) {
     throw(TableArrayConformanceError("ScalarColumnData::getScalarColumn"));
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getScalarColumnV(val);
   autoReleaseLock();
 }
@@ -109,7 +109,7 @@ void ScalarColumnData<T>::getScalarColumnCells(const RefRows& rownrs, ArrayBase&
   if (val.ndim() != 1 || val.nelements() != rownrs.nrow()) {
     throw(TableArrayConformanceError("ScalarColumnData::getScalarColumnCells"));
   }
-  checkReadLock(True);
+  checkReadLock(true);
   dataColPtr_p->getScalarColumnCellsV(rownrs, val);
   autoReleaseLock();
 }
@@ -120,7 +120,7 @@ void ScalarColumnData<T>::put(rownr_t rownr, const void* val) {
     TableTrace::trace(traceId(), columnDesc().name(), 'w', rownr);
   }
   checkValueLength(static_cast<const T*>(val));
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->put(rownr, static_cast<const T*>(val));
   autoReleaseLock();
 }
@@ -134,7 +134,7 @@ void ScalarColumnData<T>::putScalarColumn(const ArrayBase& val) {
     throw(TableArrayConformanceError("ScalarColumnData::putColumn"));
   }
   checkValueLength(static_cast<const Array<T>*>(&val));
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putScalarColumnV(val);
   autoReleaseLock();
 }
@@ -148,7 +148,7 @@ void ScalarColumnData<T>::putScalarColumnCells(const RefRows& rownrs, const Arra
     throw(TableArrayConformanceError("ScalarColumnData::putColumn"));
   }
   checkValueLength(static_cast<const Array<T>*>(&val));
-  checkWriteLock(True);
+  checkWriteLock(true);
   dataColPtr_p->putScalarColumnCellsV(rownrs, val);
   autoReleaseLock();
 }

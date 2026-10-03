@@ -41,7 +41,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, uInt shape,
-                                  Bool useShapeExactly, Bool peakIsUnity) {
+                                  bool useShapeExactly, bool peakIsUnity) {
   LogIO os(LogOrigin("VectorKernel", "make(Double)"));
   if (shape <= 1) {
     os << "Shape must be > 1" << LogIO::EXCEPTION;
@@ -134,7 +134,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, uInt sha
 }
 
 Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width, uInt shape,
-                                 Bool useShapeExactly, Bool peakIsUnity) {
+                                 bool useShapeExactly, bool peakIsUnity) {
   Double tw = width;
   Vector<Double> tmp = make(kernelType, tw, shape, useShapeExactly, peakIsUnity);
   Vector<Float> kernel(tmp.nelements());
@@ -167,7 +167,7 @@ VectorKernel::KernelTypes VectorKernel::toKernelType(const String& kernel) {
   } else if (kernel3 == String("H")) {
     return VectorKernel::HANNING;
   } else {
-    ThrowIf(True, "Illegal kernel type " + kernel);
+    ThrowIf(true, "Illegal kernel type " + kernel);
   }
   return VectorKernel::BOXCAR;  // # to satisfy compiler
 }

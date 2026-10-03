@@ -141,7 +141,7 @@ class MVuvw : public MVPosition {
   // </group>
   // uvw from a baseline and a reference direction (in same frame)
   // <group>
-  MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew = False);
+  MVuvw(const MVBaseline &pos, const MVDirection &dr, bool ew = false);
   // </group>
 
   // # Operators
@@ -152,11 +152,11 @@ class MVuvw : public MVPosition {
 
   // Equality comparisons
   // <group>
-  Bool operator==(const MVuvw &other) const;
-  Bool operator!=(const MVuvw &other) const;
-  Bool near(const MVuvw &other, Double tol = 1e-13) const;
-  Bool near(const MVuvw &other, Quantity tol) const;
-  Bool nearAbs(const MVuvw &other, Double tol = 1e-13) const;
+  bool operator==(const MVuvw &other) const;
+  bool operator!=(const MVuvw &other) const;
+  bool near(const MVuvw &other, Double tol = 1e-13) const;
+  bool near(const MVuvw &other, Quantity tol) const;
+  bool nearAbs(const MVuvw &other, Double tol = 1e-13) const;
   // </group>
 
   // Addition and subtraction
@@ -227,7 +227,7 @@ class MVuvw : public MVPosition {
   virtual Vector<Quantum<Double>> getTMRecordValue() const { return getXRecordValue(); };
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<Double>> &in);
 };
 
 // # Global functions

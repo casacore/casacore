@@ -57,7 +57,7 @@ FittingProxy::FitType::FitType()
       typ_p(0),
       colfac_p(1e-8),
       lmfac_p(1e-3),
-      soldone_p(False),
+      soldone_p(false),
       nr_p(0) {}
 
 FittingProxy::FitType::~FitType() {
@@ -97,7 +97,7 @@ void FittingProxy::FitType::setStatus(Int n, Int typ, Double colfac, Double lmfa
   lmfac_p = lmfac;
 }
 
-void FittingProxy::FitType::setSolved(Bool solved) { soldone_p = solved; }
+void FittingProxy::FitType::setSolved(bool solved) { soldone_p = solved; }
 
 // FittingProxy
 // Constructors
@@ -152,7 +152,7 @@ Record FittingProxy::getstate(Int id) {
   return res;
 }
 
-Bool FittingProxy::init(Int id, Int n, Int tp, Double colfac, Double lmfac) {
+bool FittingProxy::init(Int id, Int n, Int tp, Double colfac, Double lmfac) {
   // init: init a fitter
   if (tp == 0) {
     if (!list_p[id]->getFitter()) {
@@ -168,19 +168,19 @@ Bool FittingProxy::init(Int id, Int n, Int tp, Double colfac, Double lmfac) {
     list_p[id]->getFitterCX()->set(abs(colfac), abs(lmfac));
   }
   list_p[id]->setStatus(n, tp, abs(colfac), abs(lmfac));
-  list_p[id]->setSolved(False);
-  return True;
+  list_p[id]->setSolved(false);
+  return true;
 }
 
-Bool FittingProxy::done(Int id) {
+bool FittingProxy::done(Int id) {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to undo a non-existing fitter"));
   }
   list_p[id]->setFitter(0);
-  return True;
+  return true;
 }
 
-Bool FittingProxy::reset(Int id) {
+bool FittingProxy::reset(Int id) {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to reset a non-existing fitter"));
   }
@@ -188,11 +188,11 @@ Bool FittingProxy::reset(Int id) {
     list_p[id]->getFitter()->reset();
   else
     list_p[id]->getFitterCX()->reset();
-  list_p[id]->setSolved(False);
-  return True;
+  list_p[id]->setSolved(false);
+  return true;
 }
 
-Bool FittingProxy::set(Int id, Int nin, Int tpin, Double colfac, Double lmfac) {
+bool FittingProxy::set(Int id, Int nin, Int tpin, Double colfac, Double lmfac) {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to set properties of non-existing fitter"));
   }
@@ -212,8 +212,8 @@ Bool FittingProxy::set(Int id, Int nin, Int tpin, Double colfac, Double lmfac) {
     list_p[id]->getFitter()->set(cf, lmf);
   }
   list_p[id]->setStatus(n, tp, cf, lmf);
-  list_p[id]->setSolved(False);
-  return True;
+  list_p[id]->setSolved(false);
+  return true;
 }
 
 Record FittingProxy::functional(Int id, const Record& fnc, const Vector<Double>& xval,
@@ -226,7 +226,7 @@ Record FittingProxy::functional(Int id, const Record& fnc, const Vector<Double>&
   String errmsg;
   NonLinearFitLM<Double> fitter;
   fitter.setMaxIter(mxit);
-  fitter.asWeight(True);
+  fitter.asWeight(true);
   FunctionHolder<Double> fnh;
   Function<AutoDiff<Double>>* fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
@@ -283,7 +283,7 @@ Record FittingProxy::functional(Int id, const Record& fnc, const Vector<Double>&
   covar = fitter.compuCovariance();
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);
@@ -306,7 +306,7 @@ Record FittingProxy::linear(Int id, const Record& fnc, const Vector<Double>& xva
   Array<Double> covar;
   String errmsg;
   LinearFitSVD<Double> fitter;
-  fitter.asWeight(True);
+  fitter.asWeight(true);
   FunctionHolder<Double> fnh;
   Function<AutoDiff<Double>>* fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
@@ -362,7 +362,7 @@ Record FittingProxy::linear(Int id, const Record& fnc, const Vector<Double>& xva
   covar = fitter.compuCovariance();
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);
@@ -387,7 +387,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc, const Vector<DCompl
   String errmsg;
   NonLinearFitLM<DComplex> fitter;
   fitter.setMaxIter(mxit);
-  fitter.asWeight(True);
+  fitter.asWeight(true);
   FunctionHolder<DComplex> fnh;
   Function<AutoDiff<DComplex>>* fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
@@ -444,7 +444,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc, const Vector<DCompl
   fitter.getCovariance(covar);
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);
@@ -468,7 +468,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc, const Vector<DComplex>&
   Array<DComplex> covar;
   String errmsg;
   LinearFitSVD<DComplex> fitter;
-  fitter.asWeight(True);
+  fitter.asWeight(true);
   FunctionHolder<DComplex> fnh;
   Function<AutoDiff<DComplex>>* fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
@@ -526,7 +526,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc, const Vector<DComplex>&
   fitter.getCovariance(covar);
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);

@@ -74,7 +74,7 @@ CASA_STATD
 AccumType ClassicalQuantileComputer<CASA_STATP>::getMedian(uInt64 mynpts, AccumType mymin,
                                                            AccumType mymax,
                                                            uInt binningThreshholdSizeBytes,
-                                                           Bool persistSortedArray, uInt nBins) {
+                                                           bool persistSortedArray, uInt nBins) {
   auto median = this->_getMedian();
   if (!median) {
     auto indices = _medianIndices(mynpts);
@@ -94,7 +94,7 @@ CASA_STATD
 AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAbsDevMed(uInt64 mynpts, AccumType mymin,
                                                                     AccumType mymax,
                                                                     uInt binningThreshholdSizeBytes,
-                                                                    Bool persistSortedArray,
+                                                                    bool persistSortedArray,
                                                                     uInt nBins) {
   auto medAbsDevMed = this->_getMedianAbsDevMedian();
   if (!medAbsDevMed) {
@@ -103,12 +103,12 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAbsDevMed(uInt64 mynpt
     getMedian(mynpts, mymin, mymax, binningThreshholdSizeBytes, persistSortedArray, nBins);
     auto indices = _medianIndices(mynpts);
     // throw the proper switch
-    _doMedAbsDevMed = True;
+    _doMedAbsDevMed = true;
     _myMedian = *this->_getMedian();
     auto indexToValue =
         _indicesToValues(mynpts, mymin, mymax, binningThreshholdSizeBytes / sizeof(AccumType),
                          indices, persistSortedArray, nBins);
-    _doMedAbsDevMed = False;
+    _doMedAbsDevMed = false;
     medAbsDevMed.reset(indexToValue.size() == 1 ? new AccumType(indexToValue[*indices.begin()])
                                                 : new AccumType((indexToValue[*indices.begin()] +
                                                                  indexToValue[*indices.rbegin()]) /
@@ -121,7 +121,7 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAbsDevMed(uInt64 mynpt
 CASA_STATD
 AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions, uInt64 mynpts,
-    AccumType mymin, AccumType mymax, uInt binningThreshholdSizeBytes, Bool persistSortedArray,
+    AccumType mymin, AccumType mymax, uInt binningThreshholdSizeBytes, bool persistSortedArray,
     uInt nBins) {
   std::set<uInt64> medianIndices;
   quantiles.clear();
@@ -153,7 +153,7 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAndQuantiles(
 CASA_STATD
 std::map<Double, AccumType> ClassicalQuantileComputer<CASA_STATP>::getQuantiles(
     const std::set<Double>& fractions, uInt64 mynpts, AccumType mymin, AccumType mymax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins) {
+    uInt binningThreshholdSizeBytes, bool persistSortedArray, uInt nBins) {
   if (fractions.empty()) {
     return std::map<Double, AccumType>();
   }
@@ -183,7 +183,7 @@ std::map<Double, AccumType> ClassicalQuantileComputer<CASA_STATP>::getQuantiles(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::reset() {
   StatisticsAlgorithmQuantileComputer<CASA_STATP>::reset();
-  _doMedAbsDevMed = False;
+  _doMedAbsDevMed = false;
 }
 
 CASA_STATD std::vector<std::vector<uInt64>> ClassicalQuantileComputer<CASA_STATP>::_binCounts(
@@ -205,7 +205,7 @@ CASA_STATD std::vector<std::vector<uInt64>> ClassicalQuantileComputer<CASA_STATP
       ++iDesc;
     }
   }
-  std::vector<Bool> allSame(hist.size(), True);
+  std::vector<bool> allSame(hist.size(), true);
   // the elements in the outer vector are histograms. The elements in the
   // inner vector are the bins in the corresponding histograms. The Int64
   // values are the number of data points in those bins
@@ -237,15 +237,15 @@ CASA_STATD std::vector<std::vector<uInt64>> ClassicalQuantileComputer<CASA_STATP
   std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]> tSameVal(
       new std::vector<std::shared_ptr<AccumType>>[ClassicalStatisticsData::CACHE_PADDING *
                                                   nThreadsMax]);
-  std::unique_ptr<std::vector<Bool>[]> tAllSame(
-      new std::vector<Bool>[ClassicalStatisticsData::CACHE_PADDING * nThreadsMax]);
+  std::unique_ptr<std::vector<bool>[]> tAllSame(
+      new std::vector<bool>[ClassicalStatisticsData::CACHE_PADDING * nThreadsMax]);
   for (uInt tid = 0; tid < nThreadsMax; ++tid) {
     uInt idx8 = ClassicalStatisticsData::CACHE_PADDING * tid;
     tBins[idx8] = bins;
     tSameVal[idx8] = sameVal;
     tAllSame[idx8] = allSame;
   }
-  while (True) {
+  while (true) {
     const auto& chunk = ds->initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -268,7 +268,7 @@ CASA_STATD std::vector<std::vector<uInt64>> ClassicalQuantileComputer<CASA_STATP
       ds->incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                                nthreads);
     }
-    if (ds->increment(False)) {
+    if (ds->increment(false)) {
       break;
     }
   }
@@ -280,7 +280,7 @@ CASA_STATD std::vector<std::vector<uInt64>> ClassicalQuantileComputer<CASA_STATP
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
     std::vector<BinCountArray>& bins, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
+    std::vector<bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
     WeightsIterator weightsIter, uInt64 count, const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk) {
@@ -329,7 +329,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArray(DataArray& ary) {
   const auto nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(ds->getDataProvider());
   std::unique_ptr<std::vector<AccumType>[]> tAry(
       new std::vector<AccumType>[ClassicalStatisticsData::CACHE_PADDING * nThreadsMax]);
-  while (True) {
+  while (true) {
     const auto& chunk = ds->initLoopVars();
     uInt nBlocks, nthreads;
     uInt64 extra;
@@ -352,7 +352,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArray(DataArray& ary) {
       ds->incrementThreadIters(dataIter[idx8], maskIter[idx8], weightsIter[idx8], offset[idx8],
                                nthreads);
     }
-    if (ds->increment(False)) {
+    if (ds->increment(false)) {
       break;
     }
   }
@@ -457,7 +457,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(std::vector<DataAr
                                                               const IncludeLimits& includeLimits,
                                                               uInt64 maxCount) {
   std::pair<AccumType, AccumType> prevLimits;
-  auto first = True;
+  auto first = true;
   for_each(
       includeLimits.cbegin(), includeLimits.cend(),
       [&first, &prevLimits](const std::pair<AccumType, AccumType>& limitPair) {
@@ -467,7 +467,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(std::vector<DataAr
           ThrowCc(os.str());
         }
         if (first) {
-          first = False;
+          first = false;
         } else if (limitPair.first <= prevLimits.first || limitPair.second <= prevLimits.second) {
           ostringstream os;
           os << "Logic Error: bin limits are not in order: " << prevLimits << " , " << limitPair;
@@ -525,7 +525,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(std::vector<DataAr
       uInt idx8 = ClassicalStatisticsData::CACHE_PADDING * tid;
       currentCount += (tCurrentCount[idx8] - prevCount);
     }
-    if (ds->increment(False)) {
+    if (ds->increment(false)) {
       break;
     }
   }
@@ -720,7 +720,7 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(const BinCountArray& 
 CASA_STATD
 std::map<uInt64, AccumType> ClassicalQuantileComputer<CASA_STATP>::_indicesToValues(
     uInt64 mynpts, AccumType mymin, AccumType mymax, uInt64 maxArraySize, const IndexSet& indices,
-    Bool persistSortedArray, uInt nBins) {
+    bool persistSortedArray, uInt nBins) {
   IndexValueMap indexToValue;
   if (_valuesFromSortedArray(indexToValue, mynpts, indices, maxArraySize, persistSortedArray)) {
     return indexToValue;
@@ -799,7 +799,7 @@ std::set<uInt64> ClassicalQuantileComputer<CASA_STATP>::_medianIndices(uInt64 my
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -823,8 +823,8 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude, const std::vector<StatsHistogram<AccumType>>& hist,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    const DataRanges& ranges, bool isInclude, const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
@@ -852,7 +852,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
@@ -881,8 +881,8 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, Bool isInclude,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -913,7 +913,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -941,8 +941,8 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    uInt64 nr, uInt dataStride, const DataRanges& ranges, bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
   auto bCounts = binCounts.begin();
@@ -973,9 +973,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude, const std::vector<StatsHistogram<AccumType>>& hist,
+    const DataRanges& ranges, bool isInclude, const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
   auto bCounts = binCounts.begin();
   auto iCounts = bCounts;
@@ -1007,7 +1007,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit) const {
@@ -1057,7 +1057,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
                                                            const DataIterator& dataBegin, uInt64 nr,
                                                            uInt dataStride,
                                                            const DataRanges& ranges,
-                                                           Bool isInclude) const {
+                                                           bool isInclude) const {
   uInt64 count = 0;
   auto datum = dataBegin;
   auto beginRange = ranges.cbegin();
@@ -1091,7 +1091,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude) const {
+    bool isInclude) const {
   uInt64 count = 0;
   auto datum = dataBegin;
   auto mask = maskBegin;
@@ -1125,7 +1125,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude) const {
+    uInt dataStride, const DataRanges& ranges, bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -1161,7 +1161,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude) const {
+    bool isInclude) const {
   auto datum = dataBegin;
   auto weight = weightBegin;
   auto mask = maskBegin;
@@ -1223,7 +1223,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude, const IncludeLimits& includeLimits,
+    uInt dataStride, const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
     uInt64 maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
@@ -1267,7 +1267,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
@@ -1312,7 +1312,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const DataRanges& ranges,
-    Bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
   auto bIncludeLimits = includeLimits.cbegin();
@@ -1359,7 +1359,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude, const IncludeLimits& includeLimits,
+    uInt maskStride, const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
     uInt64 maxCount) const {
   auto bArys = arys.begin();
   auto iArys = bArys;
@@ -1383,12 +1383,12 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
                                                                const DataIterator& dataBegin,
                                                                uInt64 nr, uInt dataStride,
                                                                uInt maxElements) const {
   if (ary.size() + nr > maxElements) {
-    return True;
+    return true;
   }
   uInt64 count = 0;
   auto datum = dataBegin;
@@ -1396,7 +1396,7 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
     ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - _myMedian) : *datum);
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
   }
-  return False;
+  return false;
 }
 
 // define rather than make a method to ensure this is called inline to maximize
@@ -1405,13 +1405,13 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
   ary.push_back(_doMedAbsDevMed ? abs((AccumType) * datum - _myMedian) : *datum); \
   ++npts;                                                                         \
   if (npts > maxElements) {                                                       \
-    return True;                                                                  \
+    return true;                                                                  \
   }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude, uInt maxElements) const {
+    const DataRanges& ranges, bool isInclude, uInt maxElements) const {
   uInt64 count = 0;
   auto npts = ary.size();
   auto datum = dataBegin;
@@ -1423,11 +1423,11 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     }
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, uInt maxElements) const {
   uInt64 count = 0;
@@ -1440,13 +1440,13 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     }
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, mask, dataStride, maskStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, Bool isInclude,
+    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, bool isInclude,
     uInt maxElements) const {
   uInt64 count = 0;
   auto datum = dataBegin;
@@ -1461,11 +1461,11 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     }
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, mask, dataStride, maskStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
                                                                const DataIterator& dataBegin,
                                                                const WeightsIterator& weightsBegin,
                                                                uInt64 nr, uInt dataStride,
@@ -1480,13 +1480,13 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
     }
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, weight, dataStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude, uInt maxElements) const {
+    uInt64 nr, uInt dataStride, const DataRanges& ranges, bool isInclude, uInt maxElements) const {
   auto datum = dataBegin;
   auto weight = weightsBegin;
   uInt64 count = 0;
@@ -1500,11 +1500,11 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     }
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, weight, dataStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, uInt maxElements) const {
   auto datum = dataBegin;
@@ -1519,14 +1519,14 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, weight, mask, dataStride,
                                                  maskStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
+bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude, uInt maxElements) const {
+    bool isInclude, uInt maxElements) const {
   auto datum = dataBegin;
   auto weight = weightBegin;
   auto mask = maskBegin;
@@ -1542,15 +1542,15 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     StatisticsIncrementer<CASA_STATQ>::increment(datum, count, weight, mask, dataStride,
                                                  maskStride);
   }
-  return False;
+  return false;
 }
 
 CASA_STATD
-Bool ClassicalQuantileComputer<CASA_STATP>::_valuesFromSortedArray(IndexValueMap& values,
+bool ClassicalQuantileComputer<CASA_STATP>::_valuesFromSortedArray(IndexValueMap& values,
                                                                    uInt64 mynpts,
                                                                    const std::set<uInt64>& indices,
                                                                    uInt64 maxArraySize,
-                                                                   Bool persistSortedArray) {
+                                                                   bool persistSortedArray) {
   values.clear();
   // I need a little wiggle room, the caller can't make the maximum array size
   // ridiculously small
@@ -1575,14 +1575,14 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_valuesFromSortedArray(IndexValueMap
       _createDataArray(myArray);
     } else {
       // data is too large to be sorted in memory
-      return False;
+      return false;
     }
   }
   values = StatisticsUtilities<AccumType>::indicesToValues(myArray, indices);
   if (!_doMedAbsDevMed) {
     this->_setSortedArray(persistSortedArray ? myArray : DataArray());
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

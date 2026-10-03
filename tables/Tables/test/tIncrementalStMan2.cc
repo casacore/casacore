@@ -54,56 +54,56 @@ uInt makeTab(uInt bucketSize) {
   DataManager::registerCtor("IncrementalStMan", IncrementalStMan::makeObject);
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ScalarColumnDesc<Bool>("c1"));
-  td.addColumn(ScalarColumnDesc<Bool>("c2"));
+  td.addColumn(ScalarColumnDesc<bool>("c1"));
+  td.addColumn(ScalarColumnDesc<bool>("c2"));
   // Now create a new table from the description.
   SetupNewTable newtab("tIncrementalStMan2_tmp.data", td, Table::New);
   // Create a storage manager for it.
-  IncrementalStMan sm1("ISM", bucketSize, False);
+  IncrementalStMan sm1("ISM", bucketSize, false);
   StandardStMan sm2("SSM");
   newtab.bindColumn("c1", sm1);
   newtab.bindColumn("c2", sm2);
   tab = Table(newtab, 100000);
-  ScalarColumn<Bool> c1(tab, "c1");
-  ScalarColumn<Bool> c2(tab, "c2");
+  ScalarColumn<bool> c1(tab, "c1");
+  ScalarColumn<bool> c2(tab, "c2");
   for (uInt i = 0; i < tab.nrow(); ++i) {
-    c1.put(i, True);
-    c2.put(i, True);
+    c1.put(i, true);
+    c2.put(i, true);
   }
-  AlwaysAssertExit(allEQ(c1.getColumn(), True));
+  AlwaysAssertExit(allEQ(c1.getColumn(), true));
   return tab.nrow();
 }
 
 // Check if all rows are equal.
 void checkTab() {
   Table tab("tIncrementalStMan2_tmp.data");
-  ScalarColumn<Bool> c1(tab, "c1");
-  ScalarColumn<Bool> c2(tab, "c2");
-  Vector<Bool> a1 = c1.getColumn();
-  Vector<Bool> a2 = c2.getColumn();
+  ScalarColumn<bool> c1(tab, "c1");
+  ScalarColumn<bool> c2(tab, "c2");
+  Vector<bool> a1 = c1.getColumn();
+  Vector<bool> a2 = c2.getColumn();
   for (uInt i = 0; i < a1.size(); ++i) {
     if (a1[i] != a2[i]) {
       cout << "mismatch at row " << i << ' ' << a1[i] << ' ' << a2[i] << endl;
-      AlwaysAssertExit(False);
+      AlwaysAssertExit(false);
     }
   }
 }
 
-// Update some rows by setting them to False.
+// Update some rows by setting them to false.
 void updateTab(uInt step) {
   if (step > 0) {
     Table tab("tIncrementalStMan2_tmp.data", Table::Update);
     ROIncrementalStManAccessor acc(tab, "ISM");
-    ScalarColumn<Bool> c1(tab, "c1");
-    ScalarColumn<Bool> c2(tab, "c2");
+    ScalarColumn<bool> c1(tab, "c1");
+    ScalarColumn<bool> c2(tab, "c2");
     cout << "updateTab step=" << step << endl;
     for (uInt i = step; i < tab.nrow(); i += step) {
       if (i == 61699 || i == 61699 - 781) {
-        c1.put(i, False);
+        c1.put(i, false);
       } else {
-        c1.put(i, False);
+        c1.put(i, false);
       }
-      c2.put(i, False);
+      c2.put(i, false);
     }
     acc.showIndexStatistics(cout);
     acc.showBucketLayout(cout);

@@ -82,7 +82,7 @@ LatticeCache<T>& LatticeCache<T>::operator=(const LatticeCache<T>& other) {
 // cache.
 template <class T>
 LatticeCache<T>::LatticeCache(Lattice<T>& image, Int iCacheSize, IPosition iTileShape,
-                              Vector<Float>& iTileOverlap, Bool iadditive)
+                              Vector<Float>& iTileOverlap, bool iadditive)
     : numberTiles(0),
       additive(iadditive),
       cacheAccesses(0),
@@ -144,7 +144,7 @@ void LatticeCache<T>::flush() {
 // contents, otherwise we write them out, possibly adding to current
 // tile.
 template <class T>
-Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool readonly) {
+Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc, bool readonly) {
   cacheLoc = cacheLocation(cacheLoc, tileLoc);
   cacheAccesses++;
   Int foundTile = -1;
@@ -178,7 +178,7 @@ Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc, B
 // contents, otherwise we write them out, possibly adding to current
 // tile.
 template <class T>
-Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc, Bool readonly) {
+Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc, bool readonly) {
   IPosition cacheLoc;
   return tile(cacheLoc, tileLoc, readonly);
 }
@@ -186,7 +186,7 @@ Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc, Bool readonly) {
 // Const version
 template <class T>
 const Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc) {
-  return tile(tileLoc, True);
+  return tile(tileLoc, true);
 }
 
 // Print the Cache Statistics
@@ -259,7 +259,7 @@ void LatticeCache<T>::writeTile(Int tile) {
 
 // Read a specified tile and validate it
 template <class T>
-void LatticeCache<T>::readTile(Int tile, Bool readonly) {
+void LatticeCache<T>::readTile(Int tile, bool readonly) {
   tileSequence[tile] = cacheAccesses;
   AlwaysAssert(tileLocs[tile].conform(tileShape), AipsError);
   Vector<Int> endLocVec = (tileLocs[tile] + tileShape).asVector();
@@ -280,10 +280,10 @@ void LatticeCache<T>::readTile(Int tile, Bool readonly) {
 
 // Get a free tile. The contents are undefined since
 // we will overwrite them immediately anyway. If readonly is
-// True then we discard the current contents iso possibly
+// true then we discard the current contents iso possibly
 // writing them out. This is needed for a const version of tile.
 template <class T>
-Int LatticeCache<T>::getFreeTile(Bool readonly) {
+Int LatticeCache<T>::getFreeTile(bool readonly) {
   Int foundTile = -1;
 
   // First search for unallocated tiles
@@ -297,7 +297,7 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
   if (foundTile < 0) {
     // We didn't find an unallocated tile so we look for the
     // least-recently-used tile and use it, if readonly is
-    // False, we have to first write it to disk
+    // false, we have to first write it to disk
     Int oldest = cacheAccesses;
     for (Int tile = 0; tile < numberTiles; tile++) {
       if ((tileSequence[tile] > 0) && (tileSequence[tile] < oldest)) {

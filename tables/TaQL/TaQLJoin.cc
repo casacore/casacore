@@ -176,8 +176,8 @@ std::shared_ptr<TaQLJoinBase> TaQLJoin::makeOptInterval(const TableExprNodeSet& 
   // The intervals are kept in the optimized ContSet object for
   // speedy interval lookup.
   TENShPtr optSet(TableExprNodeSetOptContSetBase<T>::createOptSet(
-      set, starts, ends, std::vector<Bool>({elem.isLeftClosed()}),
-      std::vector<Bool>({elem.isRightClosed()})));
+      set, starts, ends, std::vector<bool>({elem.isLeftClosed()}),
+      std::vector<bool>({elem.isRightClosed()})));
   return std::shared_ptr<TaQLJoinBase>(new TaQLJoin(mainNodes[level].getRep(), optSet, children));
 }
 
@@ -245,10 +245,10 @@ TableExprInfo TaQLJoinColumn::getTableInfo() const { return itsColumn->getTableI
 
 void TaQLJoinColumn::clear() {}
 
-MArray<Bool> TaQLJoinColumn::getArrayBool(const TableExprId& id) {
+MArray<bool> TaQLJoinColumn::getArrayBool(const TableExprId& id) {
   Int64 rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return MArray<Bool>();
+    return MArray<bool>();
   }
   return itsColumn->getArrayBool(rownr);
 }
@@ -325,10 +325,10 @@ TaQLJoinColumnBool::TaQLJoinColumnBool(const TENShPtr& columnNode, const TablePa
     itsData[row] = itsColumn->getBool(row);
   }
 }
-Bool TaQLJoinColumnBool::getBool(const TableExprId& id) {
+bool TaQLJoinColumnBool::getBool(const TableExprId& id) {
   Int64 rownr = itsJoin.findRow(id);
   if (rownr < 0) {
-    return False;
+    return false;
   }
   DebugAssert(rownr < static_cast<Int64>(itsData.size()), AipsError);
   return itsData[rownr];

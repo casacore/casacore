@@ -78,7 +78,7 @@ void TableParseProject::handleColumn(Int stringType, const String& name, const T
         oldName = str.substr(inx + 1);
       }
       // Make an expression of the column or keyword name.
-      columnExpr_p[nrcol] = handleKeyCol(str, True, tpq);
+      columnExpr_p[nrcol] = handleKeyCol(str, true, tpq);
       if (columnExpr_p[nrcol].getTableInfo().table().isNull()) {
         // A keyword was given which is returned as a constant.
         nrSelExprUsed_p++;
@@ -121,8 +121,8 @@ void TableParseProject::handleColumn(Int stringType, const String& name, const T
 void TableParseProject::handleWildColumn(Int stringType, const String& name) {
   Int nrcol = columnNames_p.size();
   String str = name.substr(2, name.size() - 3);  // remove delimiters
-  Bool caseInsensitive = ((stringType & 1) != 0);
-  Bool negate = ((stringType & 2) != 0);
+  bool caseInsensitive = ((stringType & 1) != 0);
+  bool negate = ((stringType & 2) != 0);
   Regex regex;
   size_t shInx = std::string::npos;
   // See if the wildcarded name has a table shorthand in it.
@@ -159,7 +159,7 @@ void TableParseProject::handleWildColumn(Int stringType, const String& name) {
   }
   if (!negate) {
     // Find all matching columns.
-    Table tab = tableList_p.findTable(shorthand, False).table();
+    Table tab = tableList_p.findTable(shorthand, false).table();
     if (tab.isNull()) {
       throw TableInvExpr("Shorthand " + shorthand + " in wildcarded column " + name +
                          " not defined in FROM clause");
@@ -222,7 +222,7 @@ void TableParseProject::handleWildColumn(Int stringType, const String& name) {
 
 // # Finish the additions to the block of column names
 // # by removing the deleted empty names and creating Expr objects as needed.
-Table TableParseProject::handleColumnFinish(Bool distinct, Bool hasResultSet,
+Table TableParseProject::handleColumnFinish(bool distinct, bool hasResultSet,
                                             TableParseQuery& tpq) {
   // Remove the deleted column names.
   // Create Expr objects for the wildcarded names.
@@ -258,7 +258,7 @@ Table TableParseProject::handleColumnFinish(Bool distinct, Bool hasResultSet,
             name = name.substr(j + 1);
           }
           // Make an expression of the column name.
-          exprs[nr] = handleKeyCol(name, False, tpq);
+          exprs[nr] = handleKeyCol(name, false, tpq);
           names[nr] = name;
           oldNames[nr] = name;
           // Get the keywords for this column (to copy unit, etc.)
@@ -268,11 +268,11 @@ Table TableParseProject::handleColumnFinish(Bool distinct, Bool hasResultSet,
         ++nr;
       }
     }
-    names.resize(nr, True);
-    oldNames.resize(nr, True);
-    exprs.resize(nr, True);
-    dtypes.resize(nr, True);
-    keywords.resize(nr, True);
+    names.resize(nr, true);
+    oldNames.resize(nr, true);
+    exprs.resize(nr, true);
+    dtypes.resize(nr, true);
+    keywords.resize(nr, true);
     columnNames_p = names;
     columnNameMasks_p = nameMasks;
     columnOldNames_p = oldNames;
@@ -295,7 +295,7 @@ Table TableParseProject::handleColumnFinish(Bool distinct, Bool hasResultSet,
 
 // # Add a column specification.
 void TableParseProject::handleColSpec(const String& colName, const String& likeColName,
-                                      const String& dtstr, const Record& spec, Bool isCOrder) {
+                                      const String& dtstr, const Record& spec, bool isCOrder) {
   // Check if specific column info is given.
   DataType dtype = TpOther;
   Int options = 0;
@@ -407,12 +407,12 @@ Table TableParseProject::makeProjectExprTable(TableParseQuery& tpq) {
       const std::string nm = "Col_" + std::to_string(i + 1);
       Int seqnr = 0;
       newName = nm;
-      Bool unique = False;
+      bool unique = false;
       while (!unique) {
-        unique = True;
+        unique = true;
         for (uInt i = 0; i < columnNames_p.size(); i++) {
           if (newName == columnNames_p[i]) {
-            unique = False;
+            unique = false;
             seqnr++;
             newName = nm + "_" + std::to_string(seqnr);
             break;
@@ -442,19 +442,19 @@ void TableParseProject::makeProjectExprSel() {
   // Create/initialize the block of indices of projected columns used
   // elsewhere.
   projectExprSelColumn_p.resize(columnNames_p.size());
-  std::fill(projectExprSelColumn_p.begin(), projectExprSelColumn_p.end(), False);
-  // Set to True for the used columns.
+  std::fill(projectExprSelColumn_p.begin(), projectExprSelColumn_p.end(), false);
+  // Set to true for the used columns.
   uInt ncol = 0;
   for (uInt i = 0; i < projectExprSubset_p.size(); ++i) {
     AlwaysAssert(projectExprSubset_p[i] < projectExprSelColumn_p.size(), AipsError);
     if (!projectExprSelColumn_p[projectExprSubset_p[i]]) {
-      projectExprSelColumn_p[projectExprSubset_p[i]] = True;
+      projectExprSelColumn_p[projectExprSubset_p[i]] = true;
       ncol++;
     }
   }
   // Resize the subset vector. It is not really used anymore, but the
   // tracing shows its size as the nr of pre-projected columns.
-  projectExprSubset_p.resize(ncol, True);
+  projectExprSubset_p.resize(ncol, true);
 }
 
 void TableParseProject::initDescriptions(const TableDesc& desc, const Record& dminfo) {
@@ -527,7 +527,7 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
   if (ndim < 0) {
     switch (dtype) {
       case TpBool:
-        td.addColumn(ScalarColumnDesc<Bool>(colName, comment, dmType, dmGroup, options));
+        td.addColumn(ScalarColumnDesc<bool>(colName, comment, dmType, dmGroup, options));
         break;
       case TpUChar:
         td.addColumn(ScalarColumnDesc<uChar>(colName, comment, dmType, dmGroup, 0, options));
@@ -564,7 +564,7 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
         td.addColumn(ScalarColumnDesc<String>(colName, comment, dmType, dmGroup, options));
         break;
       default:
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
     }
   } else {
     // Giving a shape means fixed shape arrays.
@@ -574,7 +574,7 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
     switch (dtype) {
       case TpBool:
         td.addColumn(
-            ArrayColumnDesc<Bool>(colName, comment, dmType, dmGroup, shape, options, ndim));
+            ArrayColumnDesc<bool>(colName, comment, dmType, dmGroup, shape, options, ndim));
         break;
       case TpUChar:
         td.addColumn(
@@ -621,7 +621,7 @@ void TableParseProject::addColumnDesc(TableDesc& td, DataType dtype, const Strin
             ArrayColumnDesc<String>(colName, comment, dmType, dmGroup, shape, options, ndim));
         break;
       default:
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
     }
   }
   // Write the keywords.
@@ -657,10 +657,10 @@ std::pair<ColumnDesc, Record> TableParseProject::findColumnInfo(const String& co
                                                                 const String& newColName) const {
   String columnName, shorthand;
   Vector<String> fieldNames;
-  if (TableParseUtil::splitName(shorthand, columnName, fieldNames, colName, True, False, True)) {
+  if (TableParseUtil::splitName(shorthand, columnName, fieldNames, colName, true, false, true)) {
     throw TableInvExpr("Column name " + colName + " is a keyword, no column");
   }
-  Table tab = tableList_p.findTable(shorthand, True).table();
+  Table tab = tableList_p.findTable(shorthand, true).table();
   if (tab.isNull()) {
     throw TableInvExpr("Shorthand " + shorthand + " has not been defined");
   }
@@ -690,7 +690,7 @@ void TableParseProject::checkTableProjSizes() const {
   for (uInt i = 0; i < columnExpr_p.size(); i++) {
     if (!columnExpr_p[i].getRep()->isConstant()) {
       std::vector<Table> tabs =
-          TableExprNodeUtil::getNodeTables(columnExpr_p[i].getRep().get(), True);
+          TableExprNodeUtil::getNodeTables(columnExpr_p[i].getRep().get(), true);
       for (const Table& tab : tabs) {
         if (tab.nrow() != nrow) {
           throw TableInvExpr(
@@ -705,15 +705,15 @@ void TableParseProject::checkTableProjSizes() const {
 // # Lookup a field name in the table for which the shorthand is given.
 // # If no shorthand is given, use the first table.
 // # The shorthand and name are separated by a period.
-TableExprNode TableParseProject::handleKeyCol(const String& name, Bool tryProj,
+TableExprNode TableParseProject::handleKeyCol(const String& name, bool tryProj,
                                               TableParseQuery& tpq) {
   // # Split the name into optional shorthand, column, and optional keyword.
   String shand, columnName;
   Vector<String> fieldNames;
-  Bool hasKey = TableParseUtil::splitName(shand, columnName, fieldNames, name, True, False, False);
+  bool hasKey = TableParseUtil::splitName(shand, columnName, fieldNames, name, true, false, false);
   // # Use first table if there is no shorthand given.
   // # Otherwise find the table at the current level (no WITH tables).
-  TableParsePair tabPair = tableList_p.findTable(shand, False);
+  TableParsePair tabPair = tableList_p.findTable(shand, false);
   Table tab = tabPair.table();
   if (tab.isNull()) {
     throw(TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
@@ -725,7 +725,7 @@ TableExprNode TableParseProject::handleKeyCol(const String& name, Bool tryProj,
       // Only the column name is given; so first try if the column is
       // a new name of a projected column. It can also be a column created
       // from the mask of a masked array.
-      Bool found;
+      bool found;
       Int inx = linearSearchBrackets(found, columnNames_p, columnName, columnNames_p.size());
       if (!found) {
         inx = linearSearchBrackets(found, columnNameMasks_p, columnName, columnNameMasks_p.size());
@@ -764,12 +764,12 @@ TableExprNode TableParseProject::handleKeyCol(const String& name, Bool tryProj,
     // Create column or keyword node.
     try {
       TableExprNode node(TableExprNode::keyCol(tabPair.getTableInfo(), columnName, fieldNames));
-      Bool isJoin = False;
+      bool isJoin = false;
       if (tabPair.joinIndex() >= 0) {
         // See if it is a column expr; it could have been a keyword.
         if (node.getRep()->exprType() == TableExprNodeRep::Variable) {
           node = TaQLJoinColumn::makeColumnNode(node.getRep(), tpq.joins()[tabPair.joinIndex()]);
-          isJoin = True;
+          isJoin = true;
         }
       }
       if (!isJoin) {
@@ -801,12 +801,12 @@ Table TableParseProject::project(const Table& tab) {
   return tabp;
 }
 
-void TableParseProject::makeUpdate(Bool useSel, TableParseQuery& tpq) {
+void TableParseProject::makeUpdate(bool useSel, TableParseQuery& tpq) {
   for (uInt i = 0; i < columnExpr_p.size(); i++) {
     if (!columnExpr_p[i].isNull()) {
       if (projectExprSelColumn_p[i] == useSel) {
         tpq.addUpdate(std::make_shared<TableParseUpdate>(columnNames_p[i], columnNameMasks_p[i],
-                                                         columnExpr_p[i], False));
+                                                         columnExpr_p[i], false));
       }
     }
   }

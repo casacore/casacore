@@ -43,7 +43,7 @@ StokesConverter::StokesConverter() {}
 
 StokesConverter::~StokesConverter() {}
 
-StokesConverter::StokesConverter(const Vector<Int>& out, const Vector<Int>& in, Bool rescale) {
+StokesConverter::StokesConverter(const Vector<Int>& out, const Vector<Int>& in, bool rescale) {
   setConversion(out, in, rescale);
 }
 
@@ -56,9 +56,9 @@ StokesConverter& StokesConverter::operator=(const StokesConverter& other) {
   return *this;
 }
 
-void StokesConverter::setConversion(const Vector<Int>& out, const Vector<Int>& in, Bool rescale) {
+void StokesConverter::setConversion(const Vector<Int>& out, const Vector<Int>& in, bool rescale) {
   rescale_p = rescale;
-  doIQUV_p = False;
+  doIQUV_p = false;
   initConvMatrix();
   Int nIn = in.nelements();
   Int nOut = out.nelements();
@@ -77,28 +77,28 @@ void StokesConverter::setConversion(const Vector<Int>& out, const Vector<Int>& i
     for (uInt i = Stokes::RX; i <= Stokes::YL; i++) factor(i) = sqrt(2.0) / 4.0;
   }
   // analyze the input - all inputs have to be in the same frame
-  Bool linear = False, circular = False, iquv = False, circlin = False, lincirc = False;
+  bool linear = false, circular = false, iquv = false, circlin = false, lincirc = false;
   Int count = 0;
   for (Int i = 0; i < nIn; i++) {
     if (in(i) >= Stokes::I && in(i) <= Stokes::V) {
       if (!iquv) count++;
-      iquv = True;
+      iquv = true;
     }
     if (in(i) >= Stokes::XX && in(i) <= Stokes::YY) {
       if (!linear) count++;
-      linear = True;
+      linear = true;
     }
     if (in(i) >= Stokes::RR && in(i) <= Stokes::LL) {
       if (!circular) count++;
-      circular = True;
+      circular = true;
     }
     if (in(i) >= Stokes::RX && in(i) <= Stokes::LY) {
       if (!circlin) count++;
-      circlin = True;
+      circlin = true;
     }
     if (in(i) >= Stokes::XR && in(i) <= Stokes::YL) {
       if (!lincirc) count++;
-      lincirc = True;
+      lincirc = true;
     }
   }
   if (count == 0) {
@@ -124,7 +124,7 @@ void StokesConverter::setConversion(const Vector<Int>& out, const Vector<Int>& i
       // also setup the matrix for conversion to Stokes.
       if (out(i) >= Stokes::Ptotal && out(i) <= Stokes::Pangle) {
         if (!doIQUV_p) {
-          doIQUV_p = True;
+          doIQUV_p = true;
           iquvConv_p.resize(4, nIn);
           for (Int j = 0; j < nIn; j++) {
             for (Int k = 0; k < 4; k++) {
@@ -148,7 +148,7 @@ void StokesConverter::setConversion(const Vector<Int>& out, const Vector<Int>& i
               wtConv_p(i, j) = (abs(iquvConv_p(1, j)) + abs(iquvConv_p(2, j))) / 2;
               break;
             case Stokes::PFtotal:
-              flagConv_p(i, j) = True;
+              flagConv_p(i, j) = true;
               // not certain how to compute the weight for this one
               wtConv_p(i, j) =
                   (abs(iquvConv_p(1, j)) + abs(iquvConv_p(2, j)) + abs(iquvConv_p(3, j))) / 3;
@@ -349,21 +349,21 @@ void StokesConverter::convert(Array<Complex>& out, const Array<Complex>& in) con
   }
 }
 
-void StokesConverter::convert(Array<Bool>& out, const Array<Bool>& in) const {
+void StokesConverter::convert(Array<bool>& out, const Array<bool>& in) const {
   IPosition outShape(in.shape());
   outShape(0) = out_p.nelements();
   out.resize(outShape);
   Int nCorrIn = in.shape()(0);
   DebugAssert(nCorrIn == Int(in_p.nelements()), AipsError);
-  Matrix<Bool> inMat = in.reform(IPosition(2, nCorrIn, in.nelements() / nCorrIn));
+  Matrix<bool> inMat = in.reform(IPosition(2, nCorrIn, in.nelements() / nCorrIn));
 
-  Matrix<Bool> outMat = out.reform(IPosition(2, outShape(0), out.nelements() / outShape(0)));
+  Matrix<bool> outMat = out.reform(IPosition(2, outShape(0), out.nelements() / outShape(0)));
   for (uInt i = 0; i < out_p.nelements(); i++) {
     for (uInt j = 0; j < inMat.ncolumn(); j++) {
-      outMat(i, j) = False;
+      outMat(i, j) = false;
       for (Int k = 0; k < nCorrIn; k++) {
         if (flagConv_p(i, k) && inMat(k, j)) {
-          outMat(i, j) = True;
+          outMat(i, j) = true;
           break;
         }
       }
@@ -371,7 +371,7 @@ void StokesConverter::convert(Array<Bool>& out, const Array<Bool>& in) const {
   }
 }
 
-void StokesConverter::convert(Array<Float>& out, const Array<Float>& in, Bool sigma) const {
+void StokesConverter::convert(Array<Float>& out, const Array<Float>& in, bool sigma) const {
   IPosition outShape(in.shape());
   outShape(0) = out_p.nelements();
   out.resize(outShape);
@@ -400,21 +400,21 @@ void StokesConverter::convert(Array<Float>& out, const Array<Float>& in, Bool si
   }
 }
 
-void StokesConverter::invert(Array<Bool>& out, const Array<Bool>& in) const {
+void StokesConverter::invert(Array<bool>& out, const Array<bool>& in) const {
   IPosition outShape(in.shape());
   outShape(0) = in_p.nelements();
   // use input if provided, else use unflagged array
   if (out.nelements() == 0) {
     out.resize(outShape);
-    out.set(False);
+    out.set(false);
   }
   Int nCorrIn = in.shape()(0);
   DebugAssert(out.shape() == outShape, AipsError);
   DebugAssert(nCorrIn == Int(out_p.nelements()), AipsError);
-  Matrix<Bool> inMat = in.reform(IPosition(2, nCorrIn, in.nelements() / nCorrIn));
+  Matrix<bool> inMat = in.reform(IPosition(2, nCorrIn, in.nelements() / nCorrIn));
 
-  Matrix<Bool> outMat = out.reform(IPosition(2, outShape(0), out.nelements() / outShape(0)));
-  Matrix<Bool> first(outMat.shape(), True);
+  Matrix<bool> outMat = out.reform(IPosition(2, outShape(0), out.nelements() / outShape(0)));
+  Matrix<bool> first(outMat.shape(), true);
   // flag or unflag all data depending on the input.
   // output is flagged if any input is flagged, unflagged if all input unflagged
   // output is unchanged if independent of inputs.
@@ -423,7 +423,7 @@ void StokesConverter::invert(Array<Bool>& out, const Array<Bool>& in) const {
       for (Int k = 0; k < outShape(0); k++) {
         if (flagConv_p(i, k)) {
           if (first(k, j)) {
-            first(k, j) = False;
+            first(k, j) = false;
             outMat(k, j) = inMat(i, j);
           } else {
             outMat(k, j) |= inMat(i, j);

@@ -152,7 +152,7 @@ casacore::Record DyscoStMan::dataManagerSpec() const {
 
 void DyscoStMan::registerClass() { DataManager::registerCtor("DyscoStMan", makeObject); }
 
-casacore::Bool DyscoStMan::flush(casacore::AipsIO &, casacore::Bool /*doFsync*/) { return false; }
+bool DyscoStMan::flush(casacore::AipsIO &, bool /*doFsync*/) { return false; }
 
 void DyscoStMan::create64(casacore::rownr_t nRow) {
   _nRow = nRow;

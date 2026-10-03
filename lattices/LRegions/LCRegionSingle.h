@@ -87,25 +87,25 @@ class LCRegionSingle : public LCRegion {
   virtual ~LCRegionSingle();
 
   // Does the region have a mask?
-  virtual Bool hasMask() const;
+  virtual bool hasMask() const;
 
   // Get the mask (as an array).
-  const Array<Bool> maskArray() const;
+  const Array<bool> maskArray() const;
 
   // Is the mask of this region the same as the mask of the other
-  Bool masksEqual(const LCRegion& other) const;
+  bool masksEqual(const LCRegion& other) const;
 
   // The following "put" functions are described in detail in class
   // <linkto class=Lattice>Lattice</linkto>.
   // They'll throw an exception is no mask is available or if
   // the mask is not writable.
   // <group>
-  virtual void set(const Bool& value);
-  virtual void apply(Bool (*function)(Bool));
-  virtual void apply(Bool (*function)(const Bool&));
-  virtual void apply(const Functional<Bool, Bool>& function);
-  virtual void putAt(const Bool& value, const IPosition& where);
-  virtual void copyData(const Lattice<Bool>& from);
+  virtual void set(const bool& value);
+  virtual void apply(bool (*function)(bool));
+  virtual void apply(bool (*function)(const bool&));
+  virtual void apply(const Functional<bool, bool>& function);
+  virtual void putAt(const bool& value, const IPosition& where);
+  virtual void copyData(const Lattice<bool>& from);
   // </group>
 
  protected:
@@ -113,13 +113,13 @@ class LCRegionSingle : public LCRegion {
   LCRegionSingle& operator=(const LCRegionSingle& other);
 
   // Set the pointer to the mask in the derived class.
-  void setMaskPtr(Lattice<Bool>& mask);
+  void setMaskPtr(Lattice<bool>& mask);
 
   // Do the actual getting of the mask.
-  virtual Bool doGetSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<bool>& buffer, const Slicer& section);
 
   // Do the actual putting of the mask. Only possible if region is writable.
-  virtual void doPutSlice(const Array<Bool>& sourceBuffer, const IPosition& where,
+  virtual void doPutSlice(const Array<bool>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
 
   // Get the best cursor shape.
@@ -128,12 +128,12 @@ class LCRegionSingle : public LCRegion {
   // Make an iterator.
   // When the underlying region has a mask, an iterator for that region
   // is returned. Otherwise the standard iterator is returned.
-  virtual LatticeIterInterface<Bool>* makeIter(const LatticeNavigator& navigator,
-                                               Bool useRef) const;
+  virtual LatticeIterInterface<bool>* makeIter(const LatticeNavigator& navigator,
+                                               bool useRef) const;
 
  private:
-  Bool itsHasMask;
-  Lattice<Bool>* itsMaskPtr;
+  bool itsHasMask;
+  Lattice<bool>* itsMaskPtr;
 };
 
 }  // namespace casacore

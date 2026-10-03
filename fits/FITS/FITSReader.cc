@@ -84,7 +84,7 @@ void showHDU(HeaderDataUnit *h) {
           case FITS::LOGICAL:
             oss.width(22);
             oss << right;
-            oss << ((*((Bool *)x->value()) == True) ? "T" : "F");
+            oss << ((*((bool *)x->value()) == true) ? "T" : "F");
             break;
           case FITS::BIT:
             oss.width(22);

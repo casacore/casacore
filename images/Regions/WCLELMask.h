@@ -99,10 +99,10 @@ class WCLELMask : public WCRegion {
   // </group>
 
   // Construct from the given image expression.
-  explicit WCLELMask(const ImageExpr<Bool>& expr);
+  explicit WCLELMask(const ImageExpr<bool>& expr);
 
   // Construct from the given lattice expression.
-  explicit WCLELMask(const LatticeExpr<Bool>& expr);
+  explicit WCLELMask(const LatticeExpr<bool>& expr);
 
   // Construct from the given lattice expression.
   // This constructor makes it possible to have an expression with an
@@ -121,7 +121,7 @@ class WCLELMask : public WCRegion {
   WCLELMask& operator=(const WCLELMask& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Clone a WCLELMask object.
   virtual WCRegion* cloneRegion() const;
@@ -130,7 +130,7 @@ class WCLELMask : public WCRegion {
   virtual uInt ndim() const;
 
   // WCLELMask cannot extend a region.
-  virtual Bool canExtend() const;
+  virtual bool canExtend() const;
 
   // Convert to an LCRegion using the given new coordinate system and shape.
   // If the region has coordinates, the WCRegion implementation will
@@ -159,7 +159,7 @@ class WCLELMask : public WCRegion {
   // Return region type.  Returns the class name
   virtual String type() const;
 
-  const ImageExpr<Bool>* getImageExpr() const { return itsImageExpr; }
+  const ImageExpr<bool>* getImageExpr() const { return itsImageExpr; }
 
  private:
   // Process the command.
@@ -171,8 +171,8 @@ class WCLELMask : public WCRegion {
   void init(const LatticeExprNode& expr);
 
   String itsCommand;
-  ImageExpr<Bool>* itsImageExpr;
-  LatticeExpr<Bool>* itsLattExpr;
+  ImageExpr<bool>* itsImageExpr;
+  LatticeExpr<bool>* itsLattExpr;
   LatticeExprNode* itsLattNode;
 };
 

@@ -111,7 +111,7 @@ class ROTiledStManAccessor;
 //
 // It is possible that for some positions of the cursor, part of it will
 // "hang over" the edge of the Lattice. When this occurs the
-// <src>hangOver</src> member function will return True. This will occur
+// <src>hangOver</src> member function will return true. This will occur
 // with a LatticeStepper if the Lattice shape is not a multiple of the
 // cursor shape. Hangover cannot occur with the TiledLineStepper as the length
 // of the Vector cursor is defined by the Lattice Shape.
@@ -193,15 +193,15 @@ class LatticeNavigator {
   // Increment operator - increment the cursor to the next position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
-  virtual Bool operator++(int) = 0;
-  Bool operator++();
+  virtual bool operator++(int) = 0;
+  bool operator++();
   // </group>
 
   // Decrement operator - decrement the cursor to the previous position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
-  virtual Bool operator--(int) = 0;
-  Bool operator--();
+  virtual bool operator--(int) = 0;
+  bool operator--();
   // </group>
 
   // Function to reset the cursor to the beginning of the Lattice and
@@ -210,11 +210,11 @@ class LatticeNavigator {
 
   // Function which returns "True" if the cursor is at the beginning of the
   // Lattice, otherwise, returns "False"
-  virtual Bool atStart() const = 0;
+  virtual bool atStart() const = 0;
 
   // Function which returns "True" if an attempt has been made to increment
   // the cursor beyond the end of the Lattice.
-  virtual Bool atEnd() const = 0;
+  virtual bool atEnd() const = 0;
 
   // Function to return the number of steps (increments or decrements) taken
   // since construction (or since last reset).  This is a running count of
@@ -281,7 +281,7 @@ class LatticeNavigator {
   // the edge of the Lattice. This function may always return a value of
   // "False" for some iteration methods that do not move the cursor past the
   // Lattice boundaries.
-  virtual Bool hangOver() const = 0;
+  virtual bool hangOver() const = 0;
 
   // Functions which return the "bottom left corner" and the "top right corner"
   // of the cursor that does not hangover. Use these functions to extract the
@@ -334,13 +334,13 @@ class LatticeNavigator {
   virtual LatticeNavigator* clone() const = 0;
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False. The default
-  // implementation always returns True.
-  virtual Bool ok() const;
+  // Returns true if everything is fine otherwise returns false. The default
+  // implementation always returns true.
+  virtual bool ok() const;
 };
 
-inline Bool LatticeNavigator::operator++() { return operator++(0); }
-inline Bool LatticeNavigator::operator--() { return operator--(0); }
+inline bool LatticeNavigator::operator++() { return operator++(0); }
+inline bool LatticeNavigator::operator--() { return operator--(0); }
 
 }  // namespace casacore
 

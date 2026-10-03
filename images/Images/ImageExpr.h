@@ -88,7 +88,7 @@ class String;
 //    LogOrigin or("imageImpl", "main()", WHERE);   // Create statistics object
 //    LogIO logger(or);
 //    ImageStatistics<Float> stats(iExpr, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    bool ok = stats.display();                              // Display statistics
 //
 // </srcblock>
 // The ImageExpr object is evaluated during the call to
@@ -146,13 +146,13 @@ class ImageExpr : public ImageInterface<T> {
 
   // Replace the miscinfo in the ImageExpr, which writes the image.expr file.
   // It can fail if, e.g., the directory to write to is not writable.
-  virtual Bool setMiscInfo(const RecordInterface& newInfo);
+  virtual bool setMiscInfo(const RecordInterface& newInfo);
 
   // Get the image type (returns name of derived class).
   virtual String imageType() const;
 
   // Has the object really a mask?
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Get the region used.
   virtual const LatticeRegion* getRegionPtr() const;
@@ -165,12 +165,12 @@ class ImageExpr : public ImageInterface<T> {
   virtual void resize(const TiledShape& newShape);
 
   // Do the actual get of the mask data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.
-  virtual Bool doGetMaskSlice(Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Do the actual get of the data.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
 
   // putSlice is not possible on an expression, so it throws an exception.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
@@ -178,20 +178,20 @@ class ImageExpr : public ImageInterface<T> {
 
   // If the object is persistent, the file name is given.
   // Otherwise it returns the expression string given in the constructor.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // These are the implementations of the LatticeIterator letters.
   // <note> not for public use </note>
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
-  // Returns False, as the ImageExpr is not writable.
-  virtual Bool isWritable() const;
+  // Returns false, as the ImageExpr is not writable.
+  virtual bool isWritable() const;
 
   // Is the lattice persistent and can it be loaded by other processes as well?
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
@@ -200,9 +200,9 @@ class ImageExpr : public ImageInterface<T> {
 
   // Handle the (un)locking and syncing.
   // <group>
-  virtual Bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual Bool hasLock(FileLocker::LockType) const;
+  virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
   virtual void tempClose();
   virtual void reopen();

@@ -51,10 +51,10 @@ namespace python {
 // </synopsis>
 
 // Check if the PyObject is an array object.
-Bool PycArrayCheck(PyObject* obj_ptr);
+bool PycArrayCheck(PyObject* obj_ptr);
 
 // Check if the PyObject is an array scalar object.
-Bool PycArrayScalarCheck(PyObject* obj_ptr);
+bool PycArrayScalarCheck(PyObject* obj_ptr);
 
 // Get the data type of the array scalar object.
 // It returns TpBool, TpInt, TpFloat, or TpComplex.
@@ -68,7 +68,7 @@ struct casa_array_from_python {
   // Python array.
   // That should only be used if the ValueHolder and its Array will be
   // destructed before the Python array.
-  static ValueHolder makeArray(PyObject* obj_ptr, Bool copyData = False);
+  static ValueHolder makeArray(PyObject* obj_ptr, bool copyData = false);
 
   // Construct an Array<String> from a special Python dict object.
   static ValueHolder makeArrayFromDict(PyObject* obj_ptr);

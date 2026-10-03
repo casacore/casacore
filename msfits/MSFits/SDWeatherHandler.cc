@@ -52,7 +52,7 @@ SDWeatherHandler::SDWeatherHandler()
   ;
 }
 
-SDWeatherHandler::SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+SDWeatherHandler::SDWeatherHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
     : msWeather_p(0),
       msWeatherCols_p(0),
       rownr_p(-1),
@@ -105,14 +105,14 @@ SDWeatherHandler &SDWeatherHandler::operator=(const SDWeatherHandler &other) {
   return *this;
 }
 
-void SDWeatherHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDWeatherHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
 }
 
 void SDWeatherHandler::resetRow(const Record &row) {
   clearRow();
-  Vector<Bool> dummyHandledCols;
+  Vector<bool> dummyHandledCols;
   initRow(dummyHandledCols, row);
 }
 
@@ -154,7 +154,7 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
     else if (windDirField_p.isAttached())
       thisWinddire = *windDirField_p;
 
-    Bool newRow = rownr_p < 0;
+    bool newRow = rownr_p < 0;
     if (!newRow && !msWeatherCols_p->relHumidity().isNull()) {
       newRow = thisHumidity != msWeatherCols_p->relHumidity()(rownr_p);
     }
@@ -218,27 +218,27 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
       msWeatherCols_p->interval().put(rownr_p, interval);
       if (!msWeatherCols_p->relHumidity().isNull()) {
         msWeatherCols_p->relHumidity().put(rownr_p, thisHumidity);
-        msWeatherCols_p->relHumidityFlag().put(rownr_p, False);
+        msWeatherCols_p->relHumidityFlag().put(rownr_p, false);
       }
       if (!msWeatherCols_p->temperature().isNull()) {
         msWeatherCols_p->temperature().put(rownr_p, thisTambient);
-        msWeatherCols_p->temperatureFlag().put(rownr_p, False);
+        msWeatherCols_p->temperatureFlag().put(rownr_p, false);
       }
       if (!msWeatherCols_p->pressure().isNull()) {
         msWeatherCols_p->pressure().put(rownr_p, thisPressure);
-        msWeatherCols_p->pressureFlag().put(rownr_p, False);
+        msWeatherCols_p->pressureFlag().put(rownr_p, false);
       }
       if (!msWeatherCols_p->dewPoint().isNull()) {
         msWeatherCols_p->dewPoint().put(rownr_p, thisDewpoint);
-        msWeatherCols_p->dewPointFlag().put(rownr_p, False);
+        msWeatherCols_p->dewPointFlag().put(rownr_p, false);
       }
       if (!msWeatherCols_p->windSpeed().isNull()) {
         msWeatherCols_p->windSpeed().put(rownr_p, thisWindspee);
-        msWeatherCols_p->windSpeedFlag().put(rownr_p, False);
+        msWeatherCols_p->windSpeedFlag().put(rownr_p, false);
       }
       if (!msWeatherCols_p->windDirection().isNull()) {
         msWeatherCols_p->windDirection().put(rownr_p, thisWinddire);
-        msWeatherCols_p->windDirectionFlag().put(rownr_p, False);
+        msWeatherCols_p->windDirectionFlag().put(rownr_p, false);
       }
       if (H2OField_p.isAttached()) {
         if (msWeatherCols_p->H2O().isNull()) {
@@ -254,11 +254,11 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
             msWeatherCols_p = new MSWeatherColumns(*msWeather_p);
             AlwaysAssert(msWeatherCols_p, AipsError);
             msWeatherCols_p->H2O().put(rownr_p, *H2OField_p);
-            msWeatherCols_p->H2OFlag().put(rownr_p, False);
+            msWeatherCols_p->H2OFlag().put(rownr_p, false);
           }
         } else {
           msWeatherCols_p->H2O().put(rownr_p, *H2OField_p);
-          msWeatherCols_p->H2OFlag().put(rownr_p, False);
+          msWeatherCols_p->H2OFlag().put(rownr_p, false);
         }
       }
       if (ionosElectronField_p.isAttached()) {
@@ -275,11 +275,11 @@ void SDWeatherHandler::fill(const Record &row, Int antennaId, Double time,
             msWeatherCols_p = new MSWeatherColumns(*msWeather_p);
             AlwaysAssert(msWeatherCols_p, AipsError);
             msWeatherCols_p->ionosElectron().put(rownr_p, *ionosElectronField_p);
-            msWeatherCols_p->ionosElectronFlag().put(rownr_p, False);
+            msWeatherCols_p->ionosElectronFlag().put(rownr_p, false);
           }
         } else {
           msWeatherCols_p->ionosElectron().put(rownr_p, *ionosElectronField_p);
-          msWeatherCols_p->ionosElectronFlag().put(rownr_p, False);
+          msWeatherCols_p->ionosElectronFlag().put(rownr_p, false);
         }
       }
     } else {
@@ -320,7 +320,7 @@ void SDWeatherHandler::clearRow() {
   windSpeedField_p.detach();
 }
 
-void SDWeatherHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDWeatherHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   msWeather_p = new MSWeather(ms.weather());
   AlwaysAssert(msWeather_p, AipsError);
 
@@ -360,65 +360,65 @@ void SDWeatherHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, co
   AlwaysAssert(msWeatherCols_p, AipsError);
 }
 
-void SDWeatherHandler::initRow(Vector<Bool> &handledCols, const Record &row) {
+void SDWeatherHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   humidityId_p = row.fieldNumber("HUMIDITY");
-  if (humidityId_p >= 0) handledCols(humidityId_p) = True;
+  if (humidityId_p >= 0) handledCols(humidityId_p) = true;
   tambientId_p = row.fieldNumber("TAMBIENT");
-  if (tambientId_p >= 0) handledCols(tambientId_p) = True;
+  if (tambientId_p >= 0) handledCols(tambientId_p) = true;
   pressureId_p = row.fieldNumber("PRESSURE");
-  if (pressureId_p >= 0) handledCols(pressureId_p) = True;
+  if (pressureId_p >= 0) handledCols(pressureId_p) = true;
   dewpointId_p = row.fieldNumber("DEWPOINT");
-  if (dewpointId_p >= 0) handledCols(dewpointId_p) = True;
+  if (dewpointId_p >= 0) handledCols(dewpointId_p) = true;
   windspeeId_p = row.fieldNumber("WINDSPEE");
-  if (windspeeId_p >= 0) handledCols(windspeeId_p) = True;
+  if (windspeeId_p >= 0) handledCols(windspeeId_p) = true;
   winddireId_p = row.fieldNumber("WINDDIRE");
-  if (winddireId_p >= 0) handledCols(winddireId_p) = True;
+  if (winddireId_p >= 0) handledCols(winddireId_p) = true;
 
   Int tmp;
   tmp = row.fieldNumber("WEATHER_H2O");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     H2OField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_IONOS_ELECTRON");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     ionosElectronField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_TIME");
   if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
     timeField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_INTERVAL");
   if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
     intervalField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_PRESSURE");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     pressureField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_REL_HUMIDITY");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     humidityField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_TEMPERATURE");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     temperatureField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_WIND_DIRECTION");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     windDirField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
   tmp = row.fieldNumber("WEATHER_WIND_SPEED");
   if (tmp >= 0 && row.dataType(tmp) == TpFloat) {
     windSpeedField_p.attachToRecord(row, tmp);
-    handledCols(tmp) = True;
+    handledCols(tmp) = true;
   }
 
   rownr_p = -1;

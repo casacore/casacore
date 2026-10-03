@@ -306,7 +306,7 @@ class ArrayColumnDesc : public ArrayColumnDescBase {
 };
 
 // # Explicitly instantiate these templates in ArrColDesc_tmpl.cc
-extern template class ArrayColumnDesc<Bool>;
+extern template class ArrayColumnDesc<bool>;
 extern template class ArrayColumnDesc<Char>;
 extern template class ArrayColumnDesc<Short>;
 extern template class ArrayColumnDesc<uShort>;

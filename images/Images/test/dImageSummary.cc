@@ -64,7 +64,7 @@ int main(int argc, const char* argv[]) {
     // Parse velocity type
 
     MDoppler::Types doppler;
-    Bool ok = MDoppler::getType(doppler, velocityType);
+    bool ok = MDoppler::getType(doppler, velocityType);
     if (!ok) {
       os << "Invalid velocity type, using RADIO" << endl;
       doppler = MDoppler::RADIO;

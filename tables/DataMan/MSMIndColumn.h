@@ -93,7 +93,7 @@ class MSMIndColumn : public MSMColumn {
   void setShape(rownr_t rownr, const IPosition& shape);
 
   // Is the shape defined (i.e. is there an array) in this row?
-  Bool isShapeDefined(rownr_t rownr);
+  bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
@@ -104,7 +104,7 @@ class MSMIndColumn : public MSMColumn {
   IPosition shape(rownr_t rownr);
 
   // This storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Get an array value in the given row.
   // The buffer given by <src>arr</src> has to have the correct length

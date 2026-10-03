@@ -40,7 +40,7 @@ void checkLength(ByteIO& fio, uInt& curLength, uInt addLength) {
   AlwaysAssertExit(fio.length() == curLength);
 }
 
-static Bool valb = True;
+static bool valb = true;
 static Short vals = -3;
 static uShort valus = 2;
 static Int vali = 1000;
@@ -53,8 +53,8 @@ static double vald = -3.14;
 void checkValues(ByteIO& fio, uShort incr) {
   fio.seek(0);
   uInt curLength = fio.length();
-  Bool resb;
-  AlwaysAssertExit(fio.read(sizeof(Bool), &resb) == sizeof(Bool));
+  bool resb;
+  AlwaysAssertExit(fio.read(sizeof(bool), &resb) == sizeof(bool));
   AlwaysAssertExit(resb == valb);
   Short ress;
   AlwaysAssertExit(fio.read(sizeof(Short), &ress) == sizeof(Short));
@@ -86,8 +86,8 @@ void checkValues(ByteIO& fio, uShort incr) {
 void doIt(ByteIO& fio) {
   uInt length = 0;
   AlwaysAssertExit(fio.length() == 0);
-  fio.write(sizeof(Bool), &valb);
-  checkLength(fio, length, sizeof(Bool));
+  fio.write(sizeof(bool), &valb);
+  checkLength(fio, length, sizeof(bool));
   fio.write(sizeof(Short), &vals);
   checkLength(fio, length, sizeof(Short));
   fio.write(sizeof(uShort), &valus);
@@ -107,13 +107,13 @@ void doIt(ByteIO& fio) {
 
   checkValues(fio, 0);
 
-  fio.seek(Int(sizeof(Bool)));
+  fio.seek(Int(sizeof(bool)));
   AlwaysAssertExit(fio.length() == length);
   uShort incr = 100;
   Short vals1 = vals - incr;
   Short ress;
   fio.write(sizeof(Short), &vals1);
-  fio.seek(Int(sizeof(Bool)));
+  fio.seek(Int(sizeof(bool)));
   AlwaysAssertExit(fio.read(sizeof(Short), &ress) == sizeof(Short));
   AlwaysAssertExit(ress == vals1);
   uShort valus1 = valus + incr;
@@ -130,7 +130,7 @@ void doIt(ByteIO& fio) {
   checkValues(fio, incr);
 
   AlwaysAssertExit(fio.length() == length);
-  Int64 offset = sizeof(Bool);
+  Int64 offset = sizeof(bool);
   incr = 100;
   vals1 = vals - incr;
   fio.pwrite(sizeof(Short), offset, &vals1);
@@ -156,11 +156,11 @@ void checkReopen() {
     RegularFileIO fio(rfile);
     checkValues(fio, 100);
     fio.reopenRW();
-    fio.seek(Int64(sizeof(Bool)));
+    fio.seek(Int64(sizeof(bool)));
     Short vals;
     fio.read(sizeof(Short), &vals);
     vals -= 50;
-    fio.seek(Int64(sizeof(Bool)));
+    fio.seek(Int64(sizeof(bool)));
     fio.write(sizeof(Short), &vals);
     uShort valus;
     fio.read(sizeof(uShort), &valus);
@@ -173,11 +173,11 @@ void checkReopen() {
   rfile.setPermissions(0444);
   RegularFileIO fio2(rfile);
   checkValues(fio2, 150);
-  Bool flag = False;
+  bool flag = false;
   try {
     fio2.reopenRW();
   } catch (std::exception& x) {
-    flag = True;
+    flag = true;
   }
   // When the user is root, the file permission test doesn't work: root may still open the
   // file rw. This causes this code inside a Docker container not to throw. So skip the
@@ -236,7 +236,7 @@ void testMemoryIO() {
   }
   {
     char* buf = new char[10];
-    MemoryIO membuf(buf, 10, ByteIO::Scratch, 0, True);
+    MemoryIO membuf(buf, 10, ByteIO::Scratch, 0, true);
     try {
       doIt(membuf);
     } catch (std::exception& x) {  // not expandable

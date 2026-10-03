@@ -78,7 +78,7 @@ int MSInterval::comp(const void* obj1, const void* obj2) const {
 }
 
 MSIter::MSIter()
-    : nMS_p(0), storeSorted_p(False), prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(True) {}
+    : nMS_p(0), storeSorted_p(false), prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(true) {}
 
 MSIter::MSIter(const MeasurementSet& ms,
                const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns)
@@ -98,7 +98,7 @@ MSIter::MSIter(const MeasurementSet& ms,
       storeSorted_p(false),
       interval_p(0),
       prevFirstTimeStamp_p(-1.0),
-      allBeamOffsetsZero_p(True),
+      allBeamOffsetsZero_p(true),
       timeComp_p(0) {
   This = (MSIter*)this;
   bms_p.resize(1);
@@ -125,7 +125,7 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
       storeSorted_p(false),
       interval_p(0),
       prevFirstTimeStamp_p(-1.0),
-      allBeamOffsetsZero_p(True),
+      allBeamOffsetsZero_p(true),
       timeComp_p(0) {
   This = (MSIter*)this;
   construct(sortColumns);
@@ -171,13 +171,13 @@ void MSIter::construct(
     // create the iterator for each MS
     tabIter_p[i] = new TableIterator(bms_p[i], sortColumnNames, sortCompareFunctions, sortOrders,
                                      TableIterator::ParSort, true);
-    tabIterAtStart_p[i] = True;
+    tabIterAtStart_p[i] = true;
   }
   setMSInfo();
 }
 
 MSIter::MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, Double timeInterval,
-               Bool addDefaultSortColumns, Bool storeSorted)
+               bool addDefaultSortColumns, bool storeSorted)
     : curMS_p(0),
       lastMS_p(-1),
       more_p(true),
@@ -190,14 +190,14 @@ MSIter::MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, Double t
       storeSorted_p(storeSorted),
       interval_p(timeInterval),
       prevFirstTimeStamp_p(-1.0),
-      allBeamOffsetsZero_p(True) {
+      allBeamOffsetsZero_p(true) {
   bms_p.resize(1);
   bms_p[0] = ms;
   construct(sortColumns, addDefaultSortColumns);
 }
 
 MSIter::MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns, Double timeInterval,
-               Bool addDefaultSortColumns, Bool storeSorted)
+               bool addDefaultSortColumns, bool storeSorted)
     : bms_p(mss),
       curMS_p(0),
       lastMS_p(-1),
@@ -214,12 +214,12 @@ MSIter::MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns, 
   construct(sortColumns, addDefaultSortColumns);
 }
 
-Bool MSIter::isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2) {
+bool MSIter::isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2) {
   size_t n1 = r1.nelements();
   size_t n2 = r2.nelements();
-  if (n1 == 0) return True;
-  if (n2 < n1) return False;
-  Bool freeR1, freeR2;
+  if (n1 == 0) return true;
+  if (n2 < n1) return false;
+  bool freeR1, freeR2;
   const rownr_t* p1 = r1.getStorage(freeR1);
   const rownr_t* p2 = r2.getStorage(freeR2);
   size_t i, j;
@@ -227,13 +227,13 @@ Bool MSIter::isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2) {
     while (p1[i] != p2[j++] && j < n2) {
     }
   }
-  Bool ok = (j < n2 || (i == n1 && p1[n1 - 1] == p2[n2 - 1]));
+  bool ok = (j < n2 || (i == n1 && p1[n1 - 1] == p2[n2 - 1]));
   r1.freeStorage(p1, freeR1);
   r2.freeStorage(p2, freeR2);
   return ok;
 }
 
-void MSIter::construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns) {
+void MSIter::construct(const Block<Int>& sortColumns, bool addDefaultSortColumns) {
   This = (MSIter*)this;
   nMS_p = bms_p.nelements();
   if (nMS_p == 0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
@@ -265,24 +265,24 @@ void MSIter::construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns
     cols = sortColumns;
   }
 
-  timeInSort_p = False, arrayInSort_p = False, ddInSort_p = False, fieldInSort_p = False;
+  timeInSort_p = false, arrayInSort_p = false, ddInSort_p = false, fieldInSort_p = false;
   size_t nCol = 0;
   for (size_t i = 0; i < cols.nelements(); i++) {
     if (cols[i] > 0 && cols[i] < MS::NUMBER_PREDEFINED_COLUMNS) {
       if (cols[i] == MS::ARRAY_ID && !arrayInSort_p) {
-        arrayInSort_p = True;
+        arrayInSort_p = true;
         nCol++;
       }
       if (cols[i] == MS::FIELD_ID && !fieldInSort_p) {
-        fieldInSort_p = True;
+        fieldInSort_p = true;
         nCol++;
       }
       if (cols[i] == MS::DATA_DESC_ID && !ddInSort_p) {
-        ddInSort_p = True;
+        ddInSort_p = true;
         nCol++;
       }
       if (cols[i] == MS::TIME && !timeInSort_p) {
-        timeInSort_p = True;
+        timeInSort_p = true;
         nCol++;
       }
     } else {
@@ -312,7 +312,7 @@ void MSIter::construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns
     if (!timeInSort_p) {
       // add time if it's not there
       columns[iCol++] = MS::columnName(MS::TIME);
-      timeInSort_p = True;
+      timeInSort_p = true;
     }
   } else {
     columns.resize(cols.nelements());
@@ -344,7 +344,7 @@ void MSIter::construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns
   // Store the sorted table for future access if possible,
   // reuse it if already there
   for (size_t i = 0; i < nMS_p; i++) {
-    Bool useIn = False, store = False, useSorted = False;
+    bool useIn = false, store = false, useSorted = false;
     Table sorted;
     // check if we already have a sorted table consistent with the requested
     // sort order
@@ -364,14 +364,14 @@ void MSIter::construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns
         // if input is a sorted subset of the stored sorted table
         // we can use the input in the iterator
         if (isSubSet(bms_p[i].rowNumbers(), sorted.rowNumbers())) {
-          useIn = True;
+          useIn = true;
         } else {
           // check if #rows in input table is the same as the base table
           // i.e., this is the entire table, if so, use sorted version instead
           String anttab = bms_p[i].antenna().tableName();  // see comments below
           Table base(anttab.erase(anttab.length() - 8));
           if (base.nrow() == bms_p[i].nrow()) {
-            useSorted = True;
+            useSorted = true;
           } else {
             store = bms_p[i].isWritable();
           }
@@ -410,12 +410,12 @@ void MSIter::construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns
     } else {
       tabIter_p[i] = new TableIterator(sorted, columns, objComp, orders, TableIterator::NoSort);
     }
-    tabIterAtStart_p[i] = True;
+    tabIterAtStart_p[i] = true;
   }
   setMSInfo();
 }
 
-MSIter::MSIter(const MSIter& other) : nMS_p(0), storeSorted_p(False), allBeamOffsetsZero_p(True) {
+MSIter::MSIter(const MSIter& other) : nMS_p(0), storeSorted_p(false), allBeamOffsetsZero_p(true) {
   operator=(other);
 }
 
@@ -504,11 +504,11 @@ void MSIter::setInterval(Double timeInterval) {
 
 void MSIter::origin() {
   curMS_p = 0;
-  checkFeed_p = True;
+  checkFeed_p = true;
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
   newMS_p = newArrayId_p = newSpectralWindowId_p = newFieldId_p = newPolarizationId_p =
-      newDataDescId_p = more_p = True;
+      newDataDescId_p = more_p = true;
 }
 
 MSIter& MSIter::operator++(int) {
@@ -525,14 +525,14 @@ MSIter& MSIter::operator++() {
 
 void MSIter::advance() {
   newMS_p = newArrayId_p = newSpectralWindowId_p = newPolarizationId_p = newDataDescId_p =
-      newFieldId_p = False;
+      newFieldId_p = false;
   tabIter_p[curMS_p]->next();
-  tabIterAtStart_p[curMS_p] = False;
+  tabIterAtStart_p[curMS_p] = false;
 
   if (tabIter_p[curMS_p]->pastEnd()) {
     if (++curMS_p >= nMS_p) {
       curMS_p--;
-      more_p = False;
+      more_p = false;
     }
   }
   if (more_p) setState();
@@ -540,11 +540,11 @@ void MSIter::advance() {
 
 void MSIter::setState() {
   setMSInfo();
-  if (newMS_p) checkFeed_p = True;
+  if (newMS_p) checkFeed_p = true;
   curTable_p = tabIter_p[curMS_p]->table();
   colArray_p.attach(curTable_p, MS::columnName(MS::ARRAY_ID));
   // msc_p is already defined here (it is set in setMSInfo)
-  if (newMS_p) msc_p->antenna().mount().getColumn(antennaMounts_p, True);
+  if (newMS_p) msc_p->antenna().mount().getColumn(antennaMounts_p, true);
 
   if (!ddInSort_p) {
     // If Data Description is not in the sorting columns, then the DD, SPW, pol
@@ -746,7 +746,7 @@ void MSIter::setFeedInfo() const {
   //     better performance
 
   // Check for time dependence.
-  Bool first = False;
+  bool first = false;
   if (checkFeed_p) {
     Vector<Double> feedTimes = msc_p->feed().time().getColumn();
     Vector<Double> interval = msc_p->feed().interval().getColumn();
@@ -762,7 +762,7 @@ void MSIter::setFeedInfo() const {
       Block<String> cols(2);
       cols[0] = MSFeed::columnName(MSFeed::SPECTRAL_WINDOW_ID);
       cols[1] = MSFeed::columnName(MSFeed::FEED_ID);
-      Bool unique = True;
+      bool unique = true;
       for (TableIterator tabIter(msc_p->feed().time().table(), cols); !tabIter.pastEnd();
            tabIter.next()) {
         MSFeedColumns msfc(MSFeed(tabIter.table()));
@@ -771,14 +771,14 @@ void MSIter::setFeedInfo() const {
         Int nRow = antennas.nelements();
         Int nUniq =
             GenSort<Int>::sort(antennas, Sort::Ascending, Sort::HeapSort | Sort::NoDuplicates);
-        if (nUniq != nRow) unique = False;
+        if (nUniq != nRow) unique = false;
       }
       timeDepFeed = !unique;
     }
     Vector<Int> spwId = msc_p->feed().spectralWindowId().getColumn();
     spwDepFeed_p = !(allEQ(spwId, -1));
-    first = True;
-    checkFeed_p = False;
+    first = true;
+    checkFeed_p = false;
     if (timeDepFeed) {
       LogIO os;
       os << LogIO::WARN << LogOrigin("MSIter", "setFeedInfo")
@@ -805,7 +805,7 @@ void MSIter::setFeedInfo() const {
     receptorAngles_p.resize(maxNumReceptors, maxAntId + 1, maxFeedId + 1);
     receptorAnglesFeed0_p.resize(maxNumReceptors, maxAntId + 1);
     beamOffsets_p.resize(maxNumReceptors, maxAntId + 1, maxFeedId + 1);
-    allBeamOffsetsZero_p = True;
+    allBeamOffsetsZero_p = true;
     Vector<Int> spwId = msc_p->feed().spectralWindowId().getColumn();
     const ArrayColumn<Double>& beamOffsetColumn = msc_p->feed().beamOffset();
     DebugAssert(beamOffsetColumn.nrow() == spwId.nelements(), AipsError);
@@ -832,7 +832,7 @@ void MSIter::setFeedInfo() const {
             // small and an element by element iteration will be
             // required anyway to check for non-zero elements
             Double beamOffsetBuf = beamOffsetColumn(i)(IPosition(2, j, rcpt));
-            if (fabs(beamOffsetBuf) > 1e-10) allBeamOffsetsZero_p = False;
+            if (fabs(beamOffsetBuf) > 1e-10) allBeamOffsetsZero_p = false;
             beamOffsets_p(rcpt, iAnt, iFeed)(j) = beamOffsetBuf;
           }
       }
@@ -858,7 +858,7 @@ void MSIter::cacheCurrentDDInfo() const {
 }
 
 void MSIter::cacheExtraDDInfo() const {
-  if (newSpectralWindowId_p) freqCacheOK_p = False;
+  if (newSpectralWindowId_p) freqCacheOK_p = false;
 
   if (newPolarizationId_p) {
     polFrame_p = Circular;
@@ -888,10 +888,10 @@ const String& MSIter::sourceName() const {
     if (curSourceIdFirst_p >= 0 && !msc_p->source().sourceId().isNull()) {
       Vector<Int> sourceId = msc_p->source().sourceId().getColumn();
       size_t i = 0;
-      Bool found = False;
+      bool found = false;
       while (i < sourceId.nelements() && !found) {
         if (sourceId(i) == curSourceIdFirst_p) {
-          found = True;
+          found = true;
           This->curSourceNameFirst_p = msc_p->source().name()(i);
         }
         i++;
@@ -919,9 +919,9 @@ const MDirection MSIter::phaseCenter(const Int fldid, const Double timeStamp) co
 void MSIter::getSpwInFreqRange(Block<Vector<Int>>& spw, Block<Vector<Int>>& start,
                                Block<Vector<Int>>& nchan, Double freqStart, Double freqEnd,
                                Double freqStep) {
-  spw.resize(nMS_p, True, False);
-  start.resize(nMS_p, True, False);
-  nchan.resize(nMS_p, True, False);
+  spw.resize(nMS_p, true, false);
+  start.resize(nMS_p, true, false);
+  nchan.resize(nMS_p, true, false);
 
   for (size_t k = 0; k < nMS_p; ++k) {
     MSSpwIndex spwIn(bms_p[k].spectralWindow());

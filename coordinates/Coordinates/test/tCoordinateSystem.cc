@@ -49,10 +49,10 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/namespace.h>
 
-DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees = True,
+DirectionCoordinate makeDirectionCoordinate(bool unitsAreDegrees = true,
                                             MDirection::Types type = MDirection::J2000);
 SpectralCoordinate makeSpectralCoordinate();
-StokesCoordinate makeStokesCoordinate(Bool silly = True);
+StokesCoordinate makeStokesCoordinate(bool silly = true);
 QualityCoordinate makeQualityCoordinate();
 LinearCoordinate makeLinearCoordinate(uInt nAxes = 2);
 TabularCoordinate makeTabularCoordinate();
@@ -266,14 +266,14 @@ int main() {
       cout << "*** Test getWorldAxisOrder" << endl;
       CoordinateSystem csys = CoordinateUtil::defaultCoords(4);
       Vector<String> myNames(1, "spectral");
-      Bool ok = True;
+      bool ok = true;
       try {
-        Vector<Int> axes = csys.getWorldAxesOrder(myNames, False, False);
-        ok = False;
+        Vector<Int> axes = csys.getWorldAxesOrder(myNames, false, false);
+        ok = false;
       } catch (const AipsError& e) {
       }
       AlwaysAssert(ok, AipsError);
-      Vector<Int> axes = csys.getWorldAxesOrder(myNames, False, True);
+      Vector<Int> axes = csys.getWorldAxesOrder(myNames, false, true);
       AlwaysAssert(axes[0] == 3, AipsError);
     }
     {
@@ -295,7 +295,7 @@ int main() {
       try {
         csys.removePixelAxis(0, 0.0);
         // expected exception not thrown if we get here
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (const std::exception& x) {
       }
       csys = CoordinateSystem();
@@ -303,7 +303,7 @@ int main() {
       try {
         csys.removePixelAxis(0, 0.0);
         // expected exception not thrown if we get here
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       } catch (const std::exception& x) {
       }
       csys = CoordinateUtil::defaultCoords(4);
@@ -337,7 +337,7 @@ int main() {
     }
     {
       cout << "*** test setRestFrequency()" << endl;
-      Bool ok = False;
+      bool ok = false;
       String errorMsg;
 
       CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
@@ -425,11 +425,11 @@ int main() {
       AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
       AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
       AlwaysAssert(near(world[3], 1.50121e+09, 1e-5), AipsError);
-      csys.toWorld(world, pixel, True);
+      csys.toWorld(world, pixel, true);
       AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
       AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
       AlwaysAssert(near(world[3], 1.50121e+09, 1e-5), AipsError);
-      csys.toWorld(world, pixel, False);
+      csys.toWorld(world, pixel, false);
       AlwaysAssert(near(world[0], 6.28289, 1e-5), AipsError);
       AlwaysAssert(near(world[1], 2.90888e-4, 1e-5), AipsError);
       AlwaysAssert(world[3] == 1.50001e+09, AipsError);
@@ -582,14 +582,14 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         throw(AipsError("Failed findWorldAxis test 2"));
       }
       if (worldAxes.nelements() == cSys.coordinate(coordinate).nWorldAxes()) {
-        Bool ok = False;
+        bool ok = false;
 
         // Try and find the original world axis (i) in this list
         // of world axes
         //
         for (uInt j = 0; j < worldAxes.nelements(); j++) {
           if (Int(i) == worldAxes(j)) {
-            ok = True;
+            ok = true;
             break;
           }
         }
@@ -612,14 +612,14 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         throw(AipsError("Failed findPixelAxis test 2"));
       }
       if (pixelAxes.nelements() == cSys.coordinate(coordinate).nPixelAxes()) {
-        Bool ok = False;
+        bool ok = false;
 
         // Try and find the original pixel axis (i) in this list
         // of pixel axes
         //
         for (uInt j = 0; j < pixelAxes.nelements(); j++) {
           if (Int(i) == pixelAxes(j)) {
-            ok = True;
+            ok = true;
             break;
           }
         }
@@ -644,10 +644,10 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         //
         // Try and find this world axis in the list
         //
-        Bool ok = False;
+        bool ok = false;
         for (uInt k = 0; k < worldAxes.nelements(); k++) {
           if (worldAxis == worldAxes(k)) {
-            ok = True;
+            ok = true;
             break;
           }
         }
@@ -661,10 +661,10 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         //
         // Try and find this pixel axis in the list
         //
-        Bool ok = False;
+        bool ok = false;
         for (uInt k = 0; k < pixelAxes.nelements(); k++) {
           if (pixelAxis == pixelAxes(k)) {
-            ok = True;
+            ok = true;
             break;
           }
         }
@@ -772,9 +772,9 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
   bogus.resize(worldAxisUnits.size() - 1);
   AlwaysAssert(!cSys.setWorldAxisUnits(bogus), AipsError);
   try {
-    cSys.setWorldAxisUnits(bogus, True);
+    cSys.setWorldAxisUnits(bogus, true);
     // this should have thrown an exception, if not, its a failure
-    AlwaysAssert(False, AipsError);
+    AlwaysAssert(false, AipsError);
   } catch (const std::exception& x) {
   }
 
@@ -868,8 +868,8 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
   }
   {
     CoordinateSystem cSys2;
-    cSys2.addCoordinate(makeDirectionCoordinate(False));
-    StokesCoordinate stokesCoord = makeStokesCoordinate(False);
+    cSys2.addCoordinate(makeDirectionCoordinate(false));
+    StokesCoordinate stokesCoord = makeStokesCoordinate(false);
     uInt shapeStokes = stokesCoord.stokes().nelements();
     uInt stokesAxis = 2;
     QualityCoordinate qualCoord = makeQualityCoordinate();
@@ -884,7 +884,7 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
     IPosition shape(cSys2.nPixelAxes(), 64);
     shape(stokesAxis) = shapeStokes;
     shape(qualAxis) = shapeQual;
-    if (!cSys2.toFITSHeader(rec, shape, True, 'c', False, True, True)) {
+    if (!cSys2.toFITSHeader(rec, shape, true, 'c', false, true, true)) {
       throw(AipsError(String("Failed to convert to FITS header (1)")));
     }
 
@@ -926,7 +926,7 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
     Record rec;
     IPosition shape(cSys2.nPixelAxes(), 64);
     shape(stokesAxis) = shapeStokes;
-    if (!cSys2.toFITSHeader(rec, shape, True, 'c', False, True, True)) {
+    if (!cSys2.toFITSHeader(rec, shape, true, 'c', false, true, true)) {
       throw(AipsError(String("Failed to convert to FITS header (2)")));
     }
 
@@ -960,7 +960,7 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
     Record rec;
     IPosition shape(cSys2.nPixelAxes(), 64);
     shape(stokesAxis) = shapeStokes;
-    if (!cSys2.toFITSHeader(rec, shape, True, 'c', False, True, True)) {
+    if (!cSys2.toFITSHeader(rec, shape, true, 'c', false, true, true)) {
       throw(AipsError(String("Failed to convert to FITS header (3)")));
     }
 
@@ -994,7 +994,7 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
     Record rec;
     IPosition shape(cSys2.nPixelAxes(), 64);
     shape(stokesAxis) = shapeStokes;
-    if (!cSys2.toFITSHeader(rec, shape, True, 'c', False, True, True)) {
+    if (!cSys2.toFITSHeader(rec, shape, true, 'c', false, true, true)) {
       throw(AipsError(String("Failed to convert to FITS header (4)")));
     }
 
@@ -1050,7 +1050,7 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
   {
     CoordinateSystem cSys2, cSys3;
     cSys2.addCoordinate(makeDirectionCoordinate());
-    cSys2.addCoordinate(makeStokesCoordinate(False));
+    cSys2.addCoordinate(makeStokesCoordinate(false));
     cSys2.addCoordinate(makeQualityCoordinate());
     cSys2.addCoordinate(makeLinearCoordinate());
     cSys3 = cSys2;
@@ -1090,9 +1090,9 @@ void doit(CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
   //
   {
     CoordinateSystem cSys2;
-    cSys2.addCoordinate(makeDirectionCoordinate(True, MDirection::J2000));
-    cSys2.addCoordinate(makeStokesCoordinate(False));
-    cSys2.replaceCoordinate(makeDirectionCoordinate(True, MDirection::B1950), 0);
+    cSys2.addCoordinate(makeDirectionCoordinate(true, MDirection::J2000));
+    cSys2.addCoordinate(makeStokesCoordinate(false));
+    cSys2.replaceCoordinate(makeDirectionCoordinate(true, MDirection::B1950), 0);
     if (cSys2.type(0) != Coordinate::DIRECTION || cSys2.type(1) != Coordinate::STOKES ||
         cSys2.nCoordinates() != 2) {
       throw(AipsError("Coordinate replacement test failed"));
@@ -1258,7 +1258,7 @@ void doit2(CoordinateSystem& cSys)
     throw(AipsError("toWorld consistency test failed"));
   }
   //
-  Vector<Bool> failures;
+  Vector<bool> failures;
   const uInt nBatch = 3;
   Matrix<Double> pixel3(cSys.nPixelAxes(), nBatch);
   Matrix<Double> world3(cSys.nWorldAxes(), nBatch);
@@ -1365,24 +1365,24 @@ void doit2(CoordinateSystem& cSys)
     Double val = 0.12343;
     Quantum<Double> valq(0.12343, Unit("rad"));
     valq.convert(Unit("deg"));
-    String str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(0), True, True, 4);
-    String str2 = cSys.formatQuantity(unit, Coordinate::FIXED, valq, worldAxes(0), True, True, 4);
+    String str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(0), true, true, 4);
+    String str2 = cSys.formatQuantity(unit, Coordinate::FIXED, valq, worldAxes(0), true, true, 4);
     if (str != "0.1234" || str2 != "0.1234") {
       throw(AipsError("Failed format test 1"));
     }
-    str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(1), True, True, 4);
-    str2 = cSys.formatQuantity(unit, Coordinate::FIXED, valq, worldAxes(1), True, True, 4);
+    str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(1), true, true, 4);
+    str2 = cSys.formatQuantity(unit, Coordinate::FIXED, valq, worldAxes(1), true, true, 4);
     if (str != "0.1234" || str2 != "0.1234") {
       throw(AipsError("Failed format test 2"));
     }
     //
-    str = cSys.format(unit, Coordinate::SCIENTIFIC, val, worldAxes(0), True, True, 4);
-    str2 = cSys.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, worldAxes(0), True, True, 4);
+    str = cSys.format(unit, Coordinate::SCIENTIFIC, val, worldAxes(0), true, true, 4);
+    str2 = cSys.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, worldAxes(0), true, true, 4);
     if (str != "1.2343e-01" || str2 != "1.2343e-01") {
       throw(AipsError("Failed format test 3"));
     }
-    str = cSys.format(unit, Coordinate::SCIENTIFIC, val, worldAxes(1), True, True, 4);
-    str2 = cSys.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, worldAxes(1), True, True, 4);
+    str = cSys.format(unit, Coordinate::SCIENTIFIC, val, worldAxes(1), true, true, 4);
+    str2 = cSys.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, worldAxes(1), true, true, 4);
     if (str != "1.2343e-01" || str2 != "1.2343e-01") {
       throw(AipsError("Failed format test 4"));
     }
@@ -1395,8 +1395,8 @@ void doit2(CoordinateSystem& cSys)
     Double val = 0.12343;
     Quantum<Double> valq(0.12343, Unit("rad"));
     valq.convert(Unit("deg"));
-    String str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(0), True, True, 4);
-    String str2 = cSys.formatQuantity(unit, Coordinate::FIXED, valq, worldAxes(0), True, True, 4);
+    String str = cSys.format(unit, Coordinate::FIXED, val, worldAxes(0), true, true, 4);
+    String str2 = cSys.formatQuantity(unit, Coordinate::FIXED, valq, worldAxes(0), true, true, 4);
     if (str != "0.1234" || str2 != "0.1234") {
       throw(AipsError("Failed format test 5"));
     }
@@ -1437,16 +1437,16 @@ void doit3(CoordinateSystem& cSys) {
   //
   {
     CoordinateSystem cSys2;
-    cSys2.addCoordinate(makeStokesCoordinate(False));
+    cSys2.addCoordinate(makeStokesCoordinate(false));
     cSys2.addCoordinate(makeQualityCoordinate());
-    cSys2.addCoordinate(makeDirectionCoordinate(False, MDirection::B1950));
+    cSys2.addCoordinate(makeDirectionCoordinate(false, MDirection::B1950));
     cSys2.addCoordinate(makeLinearCoordinate());
     CoordinateSystem cSys3 = cSys2;
-    cSys3.replaceCoordinate(makeDirectionCoordinate(False, MDirection::J2000), 2);
+    cSys3.replaceCoordinate(makeDirectionCoordinate(false, MDirection::J2000), 2);
     //
     Vector<Int> worldAxisMap, worldAxisTranspose;
     Vector<Int> pixelAxisMap, pixelAxisTranspose;
-    Vector<Bool> refChange;
+    Vector<bool> refChange;
     if (!cSys2.worldMap(worldAxisMap, worldAxisTranspose, refChange, cSys3)) {
       throw(AipsError("Failed to make world map 1"));
     }
@@ -1458,8 +1458,8 @@ void doit3(CoordinateSystem& cSys) {
     if (!allEQ(wMap, worldAxisMap) || !allEQ(wTranspose, worldAxisTranspose)) {
       throw(AipsError("Failed worldMap test 1a"));
     }
-    if (refChange(0) != False || refChange(2) != True || refChange(3) != True ||
-        refChange(4) != False) {
+    if (refChange(0) != false || refChange(2) != true || refChange(3) != true ||
+        refChange(4) != false) {
       throw(AipsError("Failed worldMap test 1b"));
     }
     //
@@ -1506,8 +1506,8 @@ void doit3(CoordinateSystem& cSys) {
     if (!allEQ(newMap, worldAxisMap) || !allEQ(newTranspose, worldAxisTranspose)) {
       throw(AipsError("Failed worldMap test 2a"));
     }
-    if (refChange(0) != False || refChange(2) != True || refChange(3) != True ||
-        refChange(4) != False) {
+    if (refChange(0) != false || refChange(2) != true || refChange(3) != true ||
+        refChange(4) != false) {
       throw(AipsError("Failed worldMap test 2b"));
     }
     if (!allEQ(newMap, pixelAxisMap) || !allEQ(newTranspose, pixelAxisTranspose)) {
@@ -1526,7 +1526,7 @@ void doit4()
   cSys.addCoordinate(lC);
   SpectralCoordinate spC = makeSpectralCoordinate();  // 1
   cSys.addCoordinate(spC);
-  DirectionCoordinate dC = makeDirectionCoordinate(True);  // 2 & 3
+  DirectionCoordinate dC = makeDirectionCoordinate(true);  // 2 & 3
   cSys.addCoordinate(dC);
   //
   //   cout << "Reference pixel = " << cSys.referencePixel() << endl;
@@ -1534,8 +1534,8 @@ void doit4()
   //
   Vector<Double> pixelIn(cSys.nPixelAxes());
   Vector<Double> worldIn(cSys.nWorldAxes());
-  Vector<Bool> pixelAxes(cSys.nPixelAxes());
-  Vector<Bool> worldAxes(cSys.nWorldAxes());
+  Vector<bool> pixelAxes(cSys.nPixelAxes());
+  Vector<bool> worldAxes(cSys.nWorldAxes());
   Vector<Double> worldOut, pixelOut;
   IPosition shape(cSys.nPixelAxes(), 512);
   if (!cSys.setWorldMixRanges(shape)) {
@@ -1547,14 +1547,14 @@ void doit4()
   //
   // Force a failure.   ALl axes must be pixel or world
   //
-  pixelAxes.set(False);
-  worldAxes.set(False);
+  pixelAxes.set(false);
+  worldAxes.set(false);
   Vector<Double> worldMin = cSys.worldMixMin();
   Vector<Double> worldMax = cSys.worldMixMax();
   if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix forced failure 1 did not occur")));
   }
-  pixelAxes(0) = True;
+  pixelAxes(0) = true;
   if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix forced failure 2 did not occur")));
   }
@@ -1567,8 +1567,8 @@ void doit4()
     throw(AipsError(String("toWorld conversion failed because ") + cSys.errorMessage()));
   }
   //
-  pixelAxes.set(True);
-  worldAxes.set(False);
+  pixelAxes.set(true);
+  worldAxes.set(false);
   Vector<Double> worldOut2;
   if (!cSys.toMix(worldOut2, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin,
                   worldMax)) {
@@ -1588,8 +1588,8 @@ void doit4()
     throw(AipsError(String("toPixel conversion failed because ") + cSys.errorMessage()));
   }
   //
-  pixelAxes.set(False);
-  worldAxes.set(True);
+  pixelAxes.set(false);
+  worldAxes.set(true);
   Vector<Double> pixelOut2;
   if (!cSys.toMix(worldOut, pixelOut2, worldIn, pixelIn, worldAxes, pixelAxes, worldMin,
                   worldMax)) {
@@ -1607,15 +1607,15 @@ void doit4()
   //
   pixelIn(0) = cSys.referencePixel()(0);  // Linear pixel
   pixelIn(2) = cSys.referencePixel()(2);  // Direction long pixel
-  pixelAxes.set(False);
-  pixelAxes(0) = True;
-  pixelAxes(2) = True;
+  pixelAxes.set(false);
+  pixelAxes(0) = true;
+  pixelAxes(2) = true;
   //
   worldIn(1) = cSys.referenceValue()(1);  // Spectral world
   worldIn(3) = cSys.referenceValue()(3);  // Direction lat world
-  worldAxes.set(False);
-  worldAxes(1) = True;
-  worldAxes(3) = True;
+  worldAxes.set(false);
+  worldAxes(1) = true;
+  worldAxes(3) = true;
   //
   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix 3 conversion failed because ") + cSys.errorMessage()));
@@ -1632,15 +1632,15 @@ void doit4()
   //
   pixelIn(1) = cSys.referencePixel()(1);  // Spectral pixel
   pixelIn(3) = cSys.referencePixel()(3);  // Direction lat pixel
-  pixelAxes.set(False);
-  pixelAxes(1) = True;
-  pixelAxes(3) = True;
+  pixelAxes.set(false);
+  pixelAxes(1) = true;
+  pixelAxes(3) = true;
   //
   worldIn(0) = cSys.referenceValue()(0);  // Linear world
   worldIn(2) = cSys.referenceValue()(2);  // Direction long world
-  worldAxes.set(False);
-  worldAxes(0) = True;
-  worldAxes(2) = True;
+  worldAxes.set(false);
+  worldAxes(0) = true;
+  worldAxes(2) = true;
   //
   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix 4 conversion failed because ") + cSys.errorMessage()));
@@ -1656,15 +1656,15 @@ void doit4()
   //
   pixelIn(1) = 20.12;          // Spectral pixel
   pixelIn(3) = shape(3) - 20;  // Direction lat pixel
-  pixelAxes.set(False);
-  pixelAxes(1) = True;
-  pixelAxes(3) = True;
+  pixelAxes.set(false);
+  pixelAxes(1) = true;
+  pixelAxes(3) = true;
   //
   worldIn(0) = cSys.referenceValue()(0) + 5 * cSys.increment()(0);   // Linear world
   worldIn(2) = cSys.referenceValue()(2) - 10 * cSys.increment()(2);  // Direction long world
-  worldAxes.set(False);
-  worldAxes(0) = True;
-  worldAxes(2) = True;
+  worldAxes.set(false);
+  worldAxes(0) = true;
+  worldAxes(2) = true;
   //
   Vector<Double> saveWorldIn(worldIn.copy());
   Vector<Double> savePixelIn(pixelIn.copy());
@@ -1675,15 +1675,15 @@ void doit4()
   //
   pixelIn(0) = pixelOut(0);
   pixelIn(2) = pixelOut(2);
-  pixelAxes.set(False);
-  pixelAxes(0) = True;
-  pixelAxes(2) = True;
+  pixelAxes.set(false);
+  pixelAxes(0) = true;
+  pixelAxes(2) = true;
   //
   worldIn(1) = worldOut(1);
   worldIn(3) = worldOut(3);
-  worldAxes.set(False);
-  worldAxes(1) = True;
-  worldAxes(3) = True;
+  worldAxes.set(false);
+  worldAxes(1) = true;
+  worldAxes(3) = true;
   //
   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix 6 conversion failed because ") + cSys.errorMessage()));
@@ -1715,15 +1715,15 @@ void doit4()
   //
   pixelIn(1) = cSys.referencePixel()(1);  // Spectral pixel
   pixelIn(3) = cSys.referencePixel()(3);  // Direction lat pixel
-  pixelAxes.set(False);
-  pixelAxes(1) = True;
-  pixelAxes(3) = True;
+  pixelAxes.set(false);
+  pixelAxes(1) = true;
+  pixelAxes(3) = true;
   //
   worldIn(1) = cSys.referenceValue()(1);  // Direction long world
   worldIn(3) = cSys.referenceValue()(3);  // Linear world
-  worldAxes.set(False);
-  worldAxes(1) = True;
-  worldAxes(3) = True;
+  worldAxes.set(false);
+  worldAxes(1) = true;
+  worldAxes(3) = true;
   //
   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix 7 conversion failed because ") + cSys.errorMessage()));
@@ -1746,15 +1746,15 @@ void doit4()
   //
   pixelIn(2) = cSys.referencePixel()(2);  // Spectral pixel
   pixelIn(0) = cSys.referencePixel()(0);  // Direction lat pixel
-  pixelAxes.set(False);
-  pixelAxes(2) = True;
-  pixelAxes(0) = True;
+  pixelAxes.set(false);
+  pixelAxes(2) = true;
+  pixelAxes(0) = true;
   //
   worldIn(2) = cSys.referenceValue()(2);  // Direction long world
   worldIn(0) = cSys.referenceValue()(0);  // Linear world
-  worldAxes.set(False);
-  worldAxes(2) = True;
-  worldAxes(0) = True;
+  worldAxes.set(false);
+  worldAxes(2) = true;
+  worldAxes(0) = true;
   //
   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, worldMin, worldMax)) {
     throw(AipsError(String("toMix 8 conversion failed because ") + cSys.errorMessage()));
@@ -1780,15 +1780,15 @@ void doit5()
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     //
     Vector<Double> worldMin(cSys.nWorldAxes());
     Vector<Double> worldMax(cSys.nWorldAxes());
     //
-    pixelAxes.set(False);
-    worldAxes.set(False);
+    pixelAxes.set(false);
+    worldAxes.set(false);
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -1811,15 +1811,15 @@ void doit5()
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     //
     Vector<Double> worldMin(cSys.nWorldAxes());
     Vector<Double> worldMax(cSys.nWorldAxes());
     //
-    pixelAxes.set(False);
-    worldAxes.set(False);
+    pixelAxes.set(false);
+    worldAxes.set(false);
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -1838,15 +1838,15 @@ void doit5()
     // pr,pr->w,w
 
     CoordinateSystem cSys;
-    DirectionCoordinate dC = makeDirectionCoordinate(True);
+    DirectionCoordinate dC = makeDirectionCoordinate(true);
     cSys.addCoordinate(dC);
     cSys.removePixelAxis(0, cSys.referencePixel()(0));
     cSys.removePixelAxis(0, cSys.referencePixel()(0));
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     Vector<Double> dRefVal = dC.referenceValue();
     //
@@ -1862,8 +1862,8 @@ void doit5()
       worldMax(tmp(1)) = dRefVal(1) + 10.0;
     }
     //
-    pixelAxes.set(False);
-    worldAxes.set(False);
+    pixelAxes.set(false);
+    worldAxes.set(false);
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -1882,14 +1882,14 @@ void doit5()
     // pr,p->w,w
 
     CoordinateSystem cSys;
-    DirectionCoordinate dC = makeDirectionCoordinate(True);
+    DirectionCoordinate dC = makeDirectionCoordinate(true);
     cSys.addCoordinate(dC);
     cSys.removePixelAxis(0, cSys.referencePixel()(0));
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     Vector<Double> dRefVal = dC.referenceValue();
     //
@@ -1905,9 +1905,9 @@ void doit5()
       worldMax(tmp(1)) = dRefVal(1) + 10.0;
     }
     //
-    pixelAxes.set(False);
-    pixelAxes(0) = True;
-    worldAxes.set(False);
+    pixelAxes.set(false);
+    pixelAxes(0) = true;
+    worldAxes.set(false);
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -1929,14 +1929,14 @@ void doit5()
     // pr,w->w,p
 
     CoordinateSystem cSys;
-    DirectionCoordinate dC = makeDirectionCoordinate(True);
+    DirectionCoordinate dC = makeDirectionCoordinate(true);
     cSys.addCoordinate(dC);
     cSys.removePixelAxis(0, cSys.referencePixel()(0));
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     Vector<Double> dRefVal = dC.referenceValue();
     //
@@ -1952,9 +1952,9 @@ void doit5()
       worldMax(tmp(1)) = dRefVal(1) + 10.0;
     }
     //
-    pixelAxes.set(False);
-    worldAxes.set(False);
-    worldAxes(1) = True;
+    pixelAxes.set(false);
+    worldAxes.set(false);
+    worldAxes(1) = true;
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -1976,14 +1976,14 @@ void doit5()
     // w,pr->p,w
 
     CoordinateSystem cSys;
-    DirectionCoordinate dC = makeDirectionCoordinate(True);
+    DirectionCoordinate dC = makeDirectionCoordinate(true);
     cSys.addCoordinate(dC);
     cSys.removePixelAxis(1, cSys.referencePixel()(1));
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     Vector<Double> dRefVal = dC.referenceValue();
     //
@@ -1999,10 +1999,10 @@ void doit5()
       worldMax(tmp(1)) = dRefVal(1) + 10.0;
     }
     //
-    pixelAxes.set(False);
+    pixelAxes.set(false);
 
-    worldAxes.set(False);
-    worldAxes(0) = True;
+    worldAxes.set(false);
+    worldAxes(0) = true;
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -2024,14 +2024,14 @@ void doit5()
     // p,pr->w,w
 
     CoordinateSystem cSys;
-    DirectionCoordinate dC = makeDirectionCoordinate(True);
+    DirectionCoordinate dC = makeDirectionCoordinate(true);
     cSys.addCoordinate(dC);
     cSys.removePixelAxis(1, cSys.referencePixel()(1));
     //
     Vector<Double> pixelIn(cSys.nPixelAxes());
     Vector<Double> worldIn(cSys.nWorldAxes());
-    Vector<Bool> pixelAxes(cSys.nPixelAxes());
-    Vector<Bool> worldAxes(cSys.nWorldAxes());
+    Vector<bool> pixelAxes(cSys.nPixelAxes());
+    Vector<bool> worldAxes(cSys.nWorldAxes());
     Vector<Double> worldOut, pixelOut;
     Vector<Double> dRefVal = dC.referenceValue();
     //
@@ -2047,9 +2047,9 @@ void doit5()
       worldMax(tmp(1)) = 90.0;
     }
     //
-    pixelAxes.set(False);
-    pixelAxes(0) = True;
-    worldAxes.set(False);
+    pixelAxes.set(false);
+    pixelAxes(0) = true;
+    worldAxes.set(false);
     worldIn = cSys.referenceValue().copy();
     pixelIn = cSys.referencePixel().copy();
     //
@@ -2069,7 +2069,7 @@ void doit5()
   }
 }
 
-DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees, MDirection::Types type) {
+DirectionCoordinate makeDirectionCoordinate(bool unitsAreDegrees, MDirection::Types type) {
   Projection proj = Projection::SIN;
   Vector<Double> crval(2);
   Vector<Double> crpix(2);
@@ -2107,7 +2107,7 @@ SpectralCoordinate makeSpectralCoordinate() {
   return SpectralCoordinate(type, f0, finc, refchan, restFreq);
 }
 
-StokesCoordinate makeStokesCoordinate(Bool silly)
+StokesCoordinate makeStokesCoordinate(bool silly)
 
 {
   if (silly) {
@@ -2260,7 +2260,7 @@ void doit6() {
   cSys.addCoordinate(dC);
   Coordinate* pC = 0;
   //
-  Vector<Bool> axes(cSys.nPixelAxes(), False);
+  Vector<bool> axes(cSys.nPixelAxes(), false);
   Vector<Int> shape(cSys.nPixelAxes(), 0);
   shape(0) = 64;
   shape(1) = 128;
@@ -2271,11 +2271,11 @@ void doit6() {
   {
     // No axes
 
-    Bool failed = False;
+    bool failed = false;
     try {
       pC = cSys.makeFourierCoordinate(axes, shape);
     } catch (std::exception& x) {
-      failed = True;
+      failed = true;
     }
     if (!failed) {
       throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
@@ -2286,12 +2286,12 @@ void doit6() {
   {
     // Illegal axes
 
-    Bool failed = False;
-    Vector<Bool> axes2(20, True);
+    bool failed = false;
+    Vector<bool> axes2(20, true);
     try {
       pC = cSys.makeFourierCoordinate(axes2, shape);
     } catch (std::exception& x) {
-      failed = True;
+      failed = true;
     }
     if (!failed) {
       throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
@@ -2302,12 +2302,12 @@ void doit6() {
   {
     // Illegal shape
 
-    Bool failed = False;
+    bool failed = false;
     Vector<Int> shape2(20, 100);
     try {
       pC = cSys.makeFourierCoordinate(axes, shape2);
     } catch (std::exception& x) {
-      failed = True;
+      failed = true;
     }
     if (!failed) {
       throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
@@ -2319,8 +2319,8 @@ void doit6() {
   // tested, so just make sure the right coordinate has been replaced
 
   {
-    axes.set(False);
-    axes(0) = True;
+    axes.set(false);
+    axes(0) = true;
     pC = cSys.makeFourierCoordinate(axes, shape);
     //
     Vector<String> units2 = pC->worldAxisUnits();
@@ -2346,7 +2346,7 @@ void doit6() {
   }
 
   {
-    axes.set(True);
+    axes.set(true);
     pC = cSys.makeFourierCoordinate(axes, shape);
     //
     Vector<String> units2 = pC->worldAxisUnits();
@@ -2382,8 +2382,8 @@ void verifyCAS3264() {
 void spectralAxisNumber() {
   cout << "*** test spectralAxisNumber()" << endl;
   CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
-  AlwaysAssert(csys.spectralAxisNumber(False) == 3, AipsError);
-  AlwaysAssert(csys.spectralAxisNumber(True) == 3, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(false) == 3, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(true) == 3, AipsError);
   Vector<Int> worldOrder(4);
   worldOrder[0] = 3;
   worldOrder[1] = 2;
@@ -2395,24 +2395,24 @@ void spectralAxisNumber() {
   pixelOrder[2] = 3;
   pixelOrder[3] = 0;
   csys.transpose(worldOrder, pixelOrder);
-  AlwaysAssert(csys.spectralAxisNumber(False) == 2, AipsError);
-  AlwaysAssert(csys.spectralAxisNumber(True) == 0, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(false) == 2, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(true) == 0, AipsError);
 
   csys.removePixelAxis(2, 0);
-  AlwaysAssert(csys.spectralAxisNumber(False) == -1, AipsError);
-  AlwaysAssert(csys.spectralAxisNumber(True) == 0, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(false) == -1, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(true) == 0, AipsError);
 
   csys.replaceCoordinate(LinearCoordinate(), 2);
-  AlwaysAssert(csys.spectralAxisNumber(False) == -1, AipsError);
-  AlwaysAssert(csys.spectralAxisNumber(True) == -1, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(false) == -1, AipsError);
+  AlwaysAssert(csys.spectralAxisNumber(true) == -1, AipsError);
 }
 
 void polarizationAxisNumber() {
   cout << "*** test polarizationAxisNumber()" << endl;
 
   CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
-  AlwaysAssert(csys.polarizationAxisNumber(False) == 2, AipsError);
-  AlwaysAssert(csys.polarizationAxisNumber(True) == 2, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(false) == 2, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(true) == 2, AipsError);
   Vector<Int> worldOrder(4);
   worldOrder[0] = 3;
   worldOrder[1] = 2;
@@ -2424,14 +2424,14 @@ void polarizationAxisNumber() {
   pixelOrder[2] = 3;
   pixelOrder[3] = 2;
   csys.transpose(worldOrder, pixelOrder);
-  AlwaysAssert(csys.polarizationAxisNumber(False) == 3, AipsError);
-  AlwaysAssert(csys.polarizationAxisNumber(True) == 1, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(false) == 3, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(true) == 1, AipsError);
 
   csys.removePixelAxis(3, 0);
-  AlwaysAssert(csys.polarizationAxisNumber(False) == -1, AipsError);
-  AlwaysAssert(csys.polarizationAxisNumber(True) == 1, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(false) == -1, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(true) == 1, AipsError);
 
   csys.replaceCoordinate(LinearCoordinate(), 1);
-  AlwaysAssert(csys.polarizationAxisNumber(False) == -1, AipsError);
-  AlwaysAssert(csys.polarizationAxisNumber(True) == -1, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(false) == -1, AipsError);
+  AlwaysAssert(csys.polarizationAxisNumber(true) == -1, AipsError);
 }

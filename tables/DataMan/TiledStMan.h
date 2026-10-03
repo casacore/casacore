@@ -186,16 +186,16 @@ class TiledStMan : public DataManager {
 
   // Can the tiled storage manager handle changing array shapes?
   // The default is no (but TiledCellStMan can).
-  virtual Bool canChangeShape() const;
+  virtual bool canChangeShape() const;
 
   // Can the tiled storage manager access an entire column.
   // TiledColumnStMan can always do that.
   // The others might be able to do it (for this time).
-  // The default implementation returns True if there is only 1 hypercube.
-  virtual Bool canAccessColumn() const;
+  // The default implementation returns true if there is only 1 hypercube.
+  virtual bool canAccessColumn() const;
 
   // The data manager supports use of MultiFile.
-  virtual Bool hasMultiFileSupport() const;
+  virtual bool hasMultiFileSupport() const;
 
   // Calculate the cache size (in buckets) for accessing the hypercube
   // containing the given row. It takes the maximum cache size into
@@ -215,7 +215,7 @@ class TiledStMan : public DataManager {
   // thereafter x and y. An axis can occur only once in the axisPath.
   // The non-specified <src>axisPath</src> parts get the natural order.
   // E.g. in the previous example axisPath=[2] defines the same path.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
   // <br>A flag is set indicating that the TSMDataColumn
   // access functions do not need to size the cache.
@@ -225,23 +225,23 @@ class TiledStMan : public DataManager {
   // Set the cache size using the <src>calcCacheSize</src>
   // function mentioned above.
   void setCacheSize(rownr_t rownr, const IPosition& sliceShape, const IPosition& windowStart,
-                    const IPosition& windowLength, const IPosition& axisPath, Bool forceSmaller);
+                    const IPosition& windowLength, const IPosition& axisPath, bool forceSmaller);
 
   // Set the cache size for accessing the hypercube containing the given row.
   // When the give cache size exceeds the maximum cache size with more
   // than 10%, the maximum cache size is used instead.
-  // <br>When forceSmaller is False, the cache is not resized when the
+  // <br>When forceSmaller is false, the cache is not resized when the
   // new size is smaller.
   // <br>A flag is set indicating that the TSMDataColumn
   // access functions do not need to size the cache.
-  void setCacheSize(rownr_t rownr, uInt nbuckets, Bool forceSmaller);
+  void setCacheSize(rownr_t rownr, uInt nbuckets, bool forceSmaller);
 
   // Sets the cache size using the hypercube instead of the row number.
   // Useful for iterating over all hypercubes.
-  void setHypercubeCacheSize(uInt hypercube, uInt nbuckets, Bool forceSmaller);
+  void setHypercubeCacheSize(uInt hypercube, uInt nbuckets, bool forceSmaller);
 
   // Determine if the user set the cache size (using setCacheSize).
-  Bool userSetCache(rownr_t rownr) const;
+  bool userSetCache(rownr_t rownr) const;
 
   // Empty the caches used by the hypercubes in this storage manager.
   // It will flush the caches as needed and remove all buckets from them
@@ -264,7 +264,7 @@ class TiledStMan : public DataManager {
   rownr_t nrow() const;
 
   // Does the storage manager allow to add rows? (yes)
-  Bool canAddRow() const;
+  bool canAddRow() const;
 
   // Get the default tile shape.
   // By default it returns a zero-length IPosition.
@@ -333,7 +333,7 @@ class TiledStMan : public DataManager {
   // </group>
 
   // The TiledStMan wants to do reallocateColumn.
-  Bool canReallocateColumns() const;
+  bool canReallocateColumns() const;
 
   // Reallocate the column object if it is part of this data manager.
   // It returns a pointer to the new column object.
@@ -367,11 +367,11 @@ class TiledStMan : public DataManager {
 
   // Get the bindings of the columns with the given names.
   // If bound, the pointer to the TSMColumn object is stored in the block.
-  // If mustExist is True, an exception is thrown if the column
+  // If mustExist is true, an exception is thrown if the column
   // is not bound.
   // It returns the number of bound columns.
   uInt getBindings(const Vector<String>& columnNames, Block<TSMColumn*>& colSet,
-                   Bool mustExist) const;
+                   bool mustExist) const;
 
   // Function setup calls this function to allow the derived class
   // to check specific information. In case of errors, an exception
@@ -418,11 +418,11 @@ class TiledStMan : public DataManager {
 
   // Flush the caches of all hypercubes.
   // If data have put and fsync is set, fsync all files.
-  Bool flushCaches(Bool fsync);
+  bool flushCaches(bool fsync);
 
   // Let a derived class read the header info.
   // This is used by the open and resync function.
-  virtual void readHeader(rownr_t nrrow, Bool firstTime) = 0;
+  virtual void readHeader(rownr_t nrrow, bool firstTime) = 0;
 
   // Create the TSM header file.
   // It creates an AipsIO object for it.
@@ -440,7 +440,7 @@ class TiledStMan : public DataManager {
   // When done for the first time, setup() is called to initialize
   // the various variables (using the extraNdim variable).
   // It returns the version of the AipsIO object in the header.
-  uInt headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, Bool firstTime, Int extraNdim);
+  uInt headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, bool firstTime, Int extraNdim);
 
   // Close the header file.
   // It deletes the AipsIO object.
@@ -493,7 +493,7 @@ class TiledStMan : public DataManager {
   // The fixed cell shape.
   IPosition fixedCellShape_p;
   // Has any data changed since the last flush?
-  Bool dataChanged_p;
+  bool dataChanged_p;
 };
 
 inline uInt TiledStMan::maximumCacheSize() const { return maxCacheSize_p; }
@@ -504,7 +504,7 @@ inline rownr_t TiledStMan::nrow() const { return nrrow_p; }
 
 inline uInt TiledStMan::nhypercubes() const { return cubeSet_p.nelements(); }
 
-inline void TiledStMan::setDataChanged() { dataChanged_p = True; }
+inline void TiledStMan::setDataChanged() { dataChanged_p = true; }
 
 inline const TSMCube* TiledStMan::getTSMCube(uInt hypercube) const {
   return const_cast<TiledStMan*>(this)->getTSMCube(hypercube);

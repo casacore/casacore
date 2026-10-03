@@ -39,6 +39,6 @@ template class Lattice<Float>;
 template class Lattice<Complex>;
 template class PagedArray<Float>;
 template class PagedArray<Complex>;
-template class SubLattice<Bool>;
+template class SubLattice<bool>;
 template class SubLattice<Float>;
 }  // namespace casacore

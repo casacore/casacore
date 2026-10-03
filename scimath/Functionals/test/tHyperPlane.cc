@@ -82,7 +82,7 @@ int main() {
 
     // Set coefficients
     for (uInt i = 0; i < hyper.nparameters() - 2; i++) {
-      hyper.mask(i) = False;
+      hyper.mask(i) = false;
       AlwaysAssertExit(!hyper.mask(i));
     }
 

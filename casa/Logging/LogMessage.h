@@ -148,11 +148,11 @@ class LogMessage {
   // Get the message text.
   const String &message() const;
 
-  // Set the message text. If <src>keepLastTime</src> is <src>True</src>, the
+  // Set the message text. If <src>keepLastTime</src> is <src>true</src>, the
   // previous time will be used, otherwise the current time is used. This is
   // intended for messages that come out at essentially identical times to
   // aid in, e.g., Table selections.
-  LogMessage &message(const String &message, Bool keepLastTime = False);
+  LogMessage &message(const String &message, bool keepLastTime = false);
 
   // Get and set the line number in the
   // <linkto class="LogOrigin">LogOrigin</linkto>. While in principle you can

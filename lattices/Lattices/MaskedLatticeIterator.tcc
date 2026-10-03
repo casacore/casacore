@@ -40,21 +40,21 @@ template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator() : itsMaskLattPtr(0) {}
 
 template <class T>
-RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator(const MaskedLattice<T>& mlattice, Bool useRef)
+RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator(const MaskedLattice<T>& mlattice, bool useRef)
     : RO_LatticeIterator<T>(mlattice, useRef) {
   fillPtr(mlattice);
 }
 
 template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator(const MaskedLattice<T>& mlattice,
-                                                      const LatticeNavigator& method, Bool useRef)
+                                                      const LatticeNavigator& method, bool useRef)
     : RO_LatticeIterator<T>(mlattice, method, useRef) {
   fillPtr(mlattice);
 }
 
 template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator(const MaskedLattice<T>& mlattice,
-                                                      const IPosition& cursorShape, Bool useRef)
+                                                      const IPosition& cursorShape, bool useRef)
     : RO_LatticeIterator<T>(mlattice, cursorShape, useRef) {
   fillPtr(mlattice);
 }
@@ -110,19 +110,19 @@ void RO_MaskedLatticeIterator<T>::fillPtr(const MaskedLattice<T>& mlattice) {
 }
 
 template <class T>
-Array<Bool> RO_MaskedLatticeIterator<T>::getMask(Bool removeDegenerateAxes) const {
+Array<bool> RO_MaskedLatticeIterator<T>::getMask(bool removeDegenerateAxes) const {
   return itsMaskLattPtr->getMaskSlice(Slicer(position(), endPosition(), Slicer::endIsLast),
                                       removeDegenerateAxes);
 }
 
 template <class T>
-Bool RO_MaskedLatticeIterator<T>::getMask(COWPtr<Array<Bool>>& arr,
-                                          Bool removeDegenerateAxes) const {
+bool RO_MaskedLatticeIterator<T>::getMask(COWPtr<Array<bool>>& arr,
+                                          bool removeDegenerateAxes) const {
   return itsMaskLattPtr->getMaskSlice(arr, position(), cursorShape(), removeDegenerateAxes);
 }
 
 template <class T>
-Bool RO_MaskedLatticeIterator<T>::getMask(Array<Bool>& arr, Bool removeDegenerateAxes) const {
+bool RO_MaskedLatticeIterator<T>::getMask(Array<bool>& arr, bool removeDegenerateAxes) const {
   return itsMaskLattPtr->getMaskSlice(arr, position(), cursorShape(), removeDegenerateAxes);
 }
 

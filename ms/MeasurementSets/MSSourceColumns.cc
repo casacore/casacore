@@ -33,9 +33,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSSourceColumns::MSSourceColumns() : isNull_p(True) {}
+MSSourceColumns::MSSourceColumns() : isNull_p(true) {}
 
-MSSourceColumns::MSSourceColumns(const MSSource& msSource) : isNull_p(True) { attach(msSource); }
+MSSourceColumns::MSSourceColumns(const MSSource& msSource) : isNull_p(true) { attach(msSource); }
 
 MSSourceColumns::~MSSourceColumns() {}
 
@@ -90,7 +90,7 @@ void MSSourceColumns::attachOptionalCols(const MSSource& msSource) {
   if (cds.isDefined(transition)) transition_p.attach(msSource, transition);
 }
 
-void MSSourceColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSSourceColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 

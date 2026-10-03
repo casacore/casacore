@@ -134,7 +134,7 @@ class ImageRegrid {
 
   // Regrid inImage onto the grid specified by outImage.
   // If outImage has a writable mask, it will be updated in that
-  // output pixels at which the regridding failed will be masked bad (False)
+  // output pixels at which the regridding failed will be masked bad (false)
   // and the pixel value set to zero. Otherwise the output mask is not changed.
   // Specify which pixel axes of outImage are to be
   // regridded.  The coordinate and axis order of outImage
@@ -147,8 +147,8 @@ class ImageRegrid {
   // (slowest and most accurate)
   void regrid(ImageInterface<T>& outImage, typename Interpolate2D::Method method,
               const IPosition& whichOutPixelAxes, const ImageInterface<T>& inImage,
-              Bool replicate = False, uInt decimate = 0, Bool showProgress = False,
-              Bool forceRegrid = False, Bool verbose = False);
+              bool replicate = false, uInt decimate = 0, bool showProgress = false,
+              bool forceRegrid = false, bool verbose = false);
 
   // Get and set the 2-D coordinate grid.  After a call to function <src>regrid</src>
   // in which coupled 2D coordinate (presently only DirectionCoordinate) is
@@ -160,11 +160,11 @@ class ImageRegrid {
   // regridded many planes of a cube in one call to regrid, the coordinate grid
   // is cached for you.   To trigger successive calls to regrid to go back to
   // internal computation, set zero length Cube and Matrix.  <src>gridMask</src>
-  // is True for successfull coordinate conversions, and False otherwise.
+  // is true for successfull coordinate conversions, and false otherwise.
   // <group>
-  void get2DCoordinateGrid(Cube<Double>& grid, Matrix<Bool>& gridMask) const;
-  void set2DCoordinateGrid(const Cube<Double>& grid, const Matrix<Bool>& gridMask,
-                           Bool notify = False);
+  void get2DCoordinateGrid(Cube<Double>& grid, Matrix<bool>& gridMask) const;
+  void set2DCoordinateGrid(const Cube<Double>& grid, const Matrix<bool>& gridMask,
+                           bool notify = false);
   // </group>
   //
   // Inserts inImage into outImage.  The alignment is done by
@@ -173,9 +173,9 @@ class ImageRegrid {
   // the outPixelLocation vector is of zero length, then the images
   // are aligned by their reference pixels.  Only integral shifts are done
   // in the aligment process. If outImage has a mask,  it will be updated.
-  // Returns False if no overlap of images, in which case the
+  // Returns false if no overlap of images, in which case the
   // output is not updated.
-  Bool insert(ImageInterface<T>& outImage, const Vector<Double>& outPixelLocation,
+  bool insert(ImageInterface<T>& outImage, const Vector<Double>& outPixelLocation,
               const ImageInterface<T>& inImage);
 
   // Print out useful debugging information (level 0 is none,
@@ -183,7 +183,7 @@ class ImageRegrid {
   void showDebugInfo(Int level = 0) { itsShowLevel = level; };
 
   // Enable/disable Measures Reference conversions
-  void disableReferenceConversions(Bool disable = True) { itsDisableConversions = disable; };
+  void disableReferenceConversions(bool disable = true) { itsDisableConversions = disable; };
 
   // Helper function.  We are regridding from cSysFrom to cSysTo for the
   // specified pixel axes of cSyFrom. This function returns a CoordinateSystem which,
@@ -203,23 +203,23 @@ class ImageRegrid {
   static CoordinateSystem makeCoordinateSystem(
       LogIO& os, std::set<Coordinate::Type>& coordsToBeRegridded, const CoordinateSystem& cSysTo,
       const CoordinateSystem& cSysFrom, const IPosition& axes,
-      const IPosition& inShape = IPosition(), Bool giveStokesWarning = True);
+      const IPosition& inShape = IPosition(), bool giveStokesWarning = true);
 
  private:
   Int itsShowLevel;
-  Bool itsDisableConversions;
+  bool itsDisableConversions;
   //
   Cube<Double> its2DCoordinateGrid;
-  Matrix<Bool> its2DCoordinateGridMask;
+  Matrix<bool> its2DCoordinateGridMask;
   //
   Cube<Double> itsUser2DCoordinateGrid;
-  Matrix<Bool> itsUser2DCoordinateGridMask;
-  Bool itsNotify;
+  Matrix<bool> itsUser2DCoordinateGridMask;
+  bool itsNotify;
   //
   // Check shape and axes.  Exception if no good.  If pixelAxes
   // of length 0, set to all axes according to shape
   void _checkAxes(IPosition& outPixelAxes, const IPosition& inShape, const IPosition& outShape,
-                  const Vector<Int>& pixelAxisMap, const CoordinateSystem& outCoords, Bool verbose);
+                  const Vector<Int>& pixelAxisMap, const CoordinateSystem& outCoords, bool verbose);
 
   // Find maps between coordinate systems
   void findMaps(uInt nDim, Vector<Int>& pixelAxisMap1, Vector<Int>& pixelAxisMap2,
@@ -231,13 +231,13 @@ class ImageRegrid {
                          LogIO& os) const;
 
   // Regrid one Coordinate
-  void _regridOneCoordinate(LogIO& os, IPosition& outShape2, Vector<Bool>& doneOutPixelAxes,
+  void _regridOneCoordinate(LogIO& os, IPosition& outShape2, Vector<bool>& doneOutPixelAxes,
                             MaskedLattice<T>*& finalOutPtr, MaskedLattice<T>*& inPtr,
                             MaskedLattice<T>*& outPtr, CoordinateSystem& outCoords,
                             const CoordinateSystem& inCoords, Int outPixelAxis,
                             const ImageInterface<T>& inImage, const IPosition& outShape,
-                            Bool replicate, uInt decimate, Bool outIsMasked, Bool showProgress,
-                            Bool forceRegrid, typename Interpolate2D::Method method, Bool verbose);
+                            bool replicate, uInt decimate, bool outIsMasked, bool showProgress,
+                            bool forceRegrid, typename Interpolate2D::Method method, bool verbose);
 
   // Regrid  DirectionCoordinate or 2-axis LinearCoordinate
   void regridTwoAxisCoordinate(LogIO& os, MaskedLattice<T>& outLattice,
@@ -246,13 +246,13 @@ class ImageRegrid {
                                Int inCoordinate, Int outCoordinate, const Vector<Int> inPixelAxes,
                                const Vector<Int> outPixelAxes, const Vector<Int> pixelAxisMap1,
                                const Vector<Int> pixelAxisMap2,
-                               typename Interpolate2D::Method method, Bool replicate, uInt decimate,
-                               Bool showProgress);
+                               typename Interpolate2D::Method method, bool replicate, uInt decimate,
+                               bool showProgress);
 
   // Make regridding coordinate grid for this cursor.
-  void make2DCoordinateGrid(LogIO& os, Bool& allFail, Bool& missedIt, Double& minInX,
+  void make2DCoordinateGrid(LogIO& os, bool& allFail, bool& missedIt, Double& minInX,
                             Double& minInY, Double& maxInX, Double& maxInY, Cube<Double>& in2DPos,
-                            Matrix<Bool>& succeed, const CoordinateSystem& inCoords,
+                            Matrix<bool>& succeed, const CoordinateSystem& inCoords,
                             const CoordinateSystem& outCoords, Int inCoordinate, Int outCoordinate,
                             uInt xInAxis, uInt yInAxis, uInt xOutAxis, uInt yOutAxis,
                             const IPosition& inPixelAxes, const IPosition& outPixelAxes,
@@ -267,10 +267,10 @@ class ImageRegrid {
                             const IPosition& outPos, const IPosition& cursorShape);
 
   // Make regridding coordinate grid for this axis
-  void make1DCoordinateGrid(Block<typename NumericTraits<T>::BaseType>& xOut, Vector<Bool>& failed,
-                            Bool& allFailed, Bool& allGood, const Coordinate& inCoord,
+  void make1DCoordinateGrid(Block<typename NumericTraits<T>::BaseType>& xOut, Vector<bool>& failed,
+                            bool& allFailed, bool& allGood, const Coordinate& inCoord,
                             const Coordinate& outCoord, Int inAxisInCoordinate,
-                            Int outAxisInCoordinate, MFrequency::Convert& machine, Bool useMachine);
+                            Int outAxisInCoordinate, MFrequency::Convert& machine, bool useMachine);
 
   // Make replication coordinate grid for this axis
   void make1DCoordinateGrid(Block<typename NumericTraits<T>::BaseType>& xOut,
@@ -281,27 +281,27 @@ class ImageRegrid {
                 const Coordinate& inCoord, const Coordinate& outCoord,
                 const Vector<Int>& inPixelAxes, const Vector<Int>& outPixelAxes,
                 Int inAxisInCoordinate, Int outAxisInCoordinate, const Vector<Int> pixelAxisMap,
-                typename Interpolate2D::Method method, MFrequency::Convert& machine, Bool replicate,
-                Bool useMachine, Bool showProgress);
+                typename Interpolate2D::Method method, MFrequency::Convert& machine, bool replicate,
+                bool useMachine, bool showProgress);
 
   //
-  void regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<Bool>*& outMaskIterPtr,
+  void regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<bool>*& outMaskIterPtr,
                       const Interpolate2D& interp, ProgressMeter*& pProgress, Double& iPix,
                       uInt nDim, uInt xInAxis, uInt yInAxis, uInt xOutAxis, uInt yOutAxis,
-                      Double scale, Bool inIsMasked, Bool outIsMasked, const IPosition& outPos,
+                      Double scale, bool inIsMasked, bool outIsMasked, const IPosition& outPos,
                       const IPosition& outCursorShape, const IPosition& inChunkShape,
                       const IPosition& inChunkBlc, const IPosition& pixelAxisMap2,
-                      Array<T>& inDataChunk, Array<Bool>*& inMaskChunkPtr,
-                      const Cube<Double>& pix2DPos, const Matrix<Bool>& succeed);
+                      Array<T>& inDataChunk, Array<bool>*& inMaskChunkPtr,
+                      const Cube<Double>& pix2DPos, const Matrix<bool>& succeed);
 
-  void findXYExtent(Bool& missedIt, Bool& allFailed, Double& minInX, Double& minInY, Double& maxInX,
-                    Double& maxInY, Cube<Double>& in2DPos, const Matrix<Bool>& succeed,
+  void findXYExtent(bool& missedIt, bool& allFailed, Double& minInX, Double& minInY, Double& maxInX,
+                    Double& maxInY, Cube<Double>& in2DPos, const Matrix<bool>& succeed,
                     uInt xInAxis, uInt yInAxis, uInt xOutAxis, uInt yOutAxis,
                     const IPosition& outPos, const IPosition& outCursorShape,
                     const IPosition& inShape);
   //
-  Bool minmax(Double& minX, Double& maxX, Double& minY, Double& maxY, const Array<Double>& xData,
-              const Array<Double>& yData, const Array<Bool>& mask);
+  bool minmax(Double& minX, Double& maxX, Double& minY, Double& maxY, const Array<Double>& xData,
+              const Array<Double>& yData, const Array<bool>& mask);
 };
 
 // # Declare extern templates for often used types.

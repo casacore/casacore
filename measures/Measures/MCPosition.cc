@@ -69,7 +69,7 @@ void MCPosition::clearConvert() {
 
 // # Conversion routines
 void MCPosition::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
 
   if (!DVEC1) DVEC1 = new Vector<Double>(3);
 
@@ -84,7 +84,7 @@ void MCPosition::doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const M
 }
 
 void MCPosition::doConvert(MVPosition &in, MRBase &inref, MRBase &outref, const MConvertBase &mc) {
-  if (False) {
+  if (false) {
     inref.getType();
     outref.getType();
   }  // to stop warnings

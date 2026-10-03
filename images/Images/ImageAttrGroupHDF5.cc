@@ -33,8 +33,8 @@
 namespace casacore {
 
 ImageAttrGroupHDF5::ImageAttrGroupHDF5(const HDF5Group& image, const String& attrName,
-                                       Bool isWritable)
-    : itsChanged(False), itsCanWrite(isWritable) {
+                                       bool isWritable)
+    : itsChanged(false), itsCanWrite(isWritable) {
   itsRecord = HDF5Record::readRecord(image, attrName);
 }
 
@@ -43,15 +43,15 @@ ImageAttrGroupHDF5::~ImageAttrGroupHDF5() {}
 void ImageAttrGroupHDF5::flush(HDF5Group& image, const String& attrName) {
   if (itsChanged) {
     HDF5Record::writeRecord(image, attrName, itsRecord);
-    itsChanged = False;
+    itsChanged = false;
   }
 }
 
 uInt ImageAttrGroupHDF5::nrows() const { return itsRecord.nfields(); }
 
-Bool ImageAttrGroupHDF5::hasAttr(const String& attrName) const {
+bool ImageAttrGroupHDF5::hasAttr(const String& attrName) const {
   if (itsRecord.empty()) {
-    return False;
+    return false;
   }
   return itsRecord.subRecord(0).isDefined(attrName);
 }
@@ -71,7 +71,7 @@ Vector<String> ImageAttrGroupHDF5::attrNames() const {
       names[nr++] = subRecord.name(i);
     }
   }
-  names.resize(nr, True);
+  names.resize(nr, true);
   return names;
 }
 
@@ -136,7 +136,7 @@ void ImageAttrGroupHDF5::putData(const String& attrName, uInt rownr, const Value
     AlwaysAssert(measInfo.size() == 2, AipsError);
     subRecord.define(attrName + "_MEASINFO", measInfo);
   }
-  itsChanged = True;
+  itsChanged = true;
 }
 
 String makeRowName(uInt rownr) {

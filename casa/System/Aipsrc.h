@@ -45,11 +45,11 @@ class Aipsrc;
 // # Typedefs
 typedef AipsrcValue<Double> AipsrcDouble;
 typedef AipsrcValue<Int> AipsrcInt;
-typedef AipsrcValue<Bool> AipsrcBool;
+typedef AipsrcValue<bool> AipsrcBool;
 typedef Aipsrc AipsrcString;
 typedef AipsrcVector<Double> AipsrcVDouble;
 typedef AipsrcVector<Int> AipsrcVInt;
-typedef AipsrcVector<Bool> AipsrcVBool;
+typedef AipsrcVector<bool> AipsrcVBool;
 typedef AipsrcVector<String> AipsrcVString;
 
 // <summary> Class to read the casa general resource files </summary>
@@ -123,10 +123,10 @@ typedef AipsrcVector<String> AipsrcVString;
 // If AIPSPATH is not set in either way, it is set to the home directory.
 // <p>
 // The basic interaction with the class is with the static keyword match function
-// <srcblock>Bool Aipsrc::find(String &result, const String &keyword)
+// <srcblock>bool Aipsrc::find(String &result, const String &keyword)
 // </srcblock>
 // A set of
-// <srcblock>Bool AipsrcValue::find(Type &result, const String &keyword, ...)
+// <srcblock>bool AipsrcValue::find(Type &result, const String &keyword, ...)
 // </srcblock>
 // are available to interpret the string value found.
 // (see <linkto class="AipsrcValue">AipsrcValue</linkto>).<br>
@@ -229,31 +229,31 @@ class Aipsrc {
   //  </thrown>
   //  The <src>find()</src> functions will, given a keyword, return the value
   //  with a matched keyword found in the files. If no match found the
-  //  function will be False. The <src>findNoHome()</src> emulates the <src>-i</src>
+  //  function will be false. The <src>findNoHome()</src> emulates the <src>-i</src>
   //  switch of getrc by bypassing the <src>~/.aipsrc</src> file.
   //  <group>
-  static Bool find(String &value, const String &keyword);
-  static Bool findNoHome(String &value, const String &keyword);
+  static bool find(String &value, const String &keyword);
+  static bool findNoHome(String &value, const String &keyword);
   // </group>
 
   // These finds check a (possible) value of the keyword against a list
   // of coded values provided, and return an index into the list (N if not
   // found). Matching is minimax, case insensitive. Always better to use
-  // the one with default. return is False if no keyword or no match.
+  // the one with default. return is false if no keyword or no match.
   // <group>
-  static Bool find(uInt &value, const String &keyword, Int Nname, const String tname[]);
-  static Bool find(uInt &value, const String &keyword, const Vector<String> &tname);
+  static bool find(uInt &value, const String &keyword, Int Nname, const String tname[]);
+  static bool find(uInt &value, const String &keyword, const Vector<String> &tname);
   // </group>
   // This find usually saves you some lines of code, since you can supply the
   // default you want to use when no such keyword is defined.
-  // If the return value is False, the keyword was not found and the default
+  // If the return value is false, the keyword was not found and the default
   // was used.
   // <group>
-  static Bool find(String &value, const String &keyword, const String &default_value);
-  static Bool findNoHome(String &value, const String &keyword, const String &default_value);
-  static Bool find(uInt &value, const String &keyword, Int Nname, const String tname[],
+  static bool find(String &value, const String &keyword, const String &default_value);
+  static bool findNoHome(String &value, const String &keyword, const String &default_value);
+  static bool find(uInt &value, const String &keyword, Int Nname, const String tname[],
                    const String &default_value);
-  static Bool find(uInt &value, const String &keyword, const Vector<String> &tname,
+  static bool find(uInt &value, const String &keyword, const Vector<String> &tname,
                    const String &default_value);
   // </group>
 
@@ -263,9 +263,9 @@ class Aipsrc {
   //   contents of prepends
   //   + useStd ? (., aipsHome(), aipsRoot()) : ()
   //   + contents of appends
-  static Bool findDir(String &foundDir, const String &lastPart = "",
+  static bool findDir(String &foundDir, const String &lastPart = "",
                       const Vector<String> &prepends = Vector<String>(),
-                      const Vector<String> &appends = Vector<String>(), Bool useStds = True);
+                      const Vector<String> &appends = Vector<String>(), bool useStds = true);
 
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
@@ -351,18 +351,18 @@ class Aipsrc {
   // Set (new or overwrite) keyword/value pair
   static void genSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam,
                      const String &val);
-  // Remove a keyword from list (False if not in list)
-  static Bool genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam);
+  // Remove a keyword from list (false if not in list)
+  static bool genUnSet(Vector<String> &namlst, Vector<String> &vallst, const String &nam);
   // Get the value of a keyword
-  static Bool genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
+  static bool genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
                      const String &nam);
   // </group>
 
  protected:
   // Actual find function
-  static Bool find(String &value, const String &keyword, uInt start);
+  static bool find(String &value, const String &keyword, uInt start);
   // Actual find function to use during parse() without recursing into parse()
-  static Bool findNoParse(String &value, const String &keyword, uInt start);
+  static bool findNoParse(String &value, const String &keyword, uInt start);
   // The registration function
   static uInt registerRC(const String &keyword, std::vector<String> &nlst);
   // Actual saving
@@ -395,7 +395,7 @@ class Aipsrc {
   // HOME
   static String uhome;
   // Indicate above filled
-  static Bool filled;
+  static bool filled;
   // String register list
   // <group>
   static std::vector<String> string_values_;
@@ -421,7 +421,7 @@ class Aipsrc {
                        const String &fileList);
 
   // Locate the right keyword in the static maps
-  static Bool matchKeyword(uInt &where, const String &keyword, uInt start);
+  static bool matchKeyword(uInt &where, const String &keyword, uInt start);
   // Fill in root, arch, site, host and home
   static void fillAips();
 };

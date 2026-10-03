@@ -63,7 +63,7 @@ void createTable(const String& name, Int stval, Int nrrow) {
 
 void checkTable(Int stval, uInt nrow)
 /// void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
-///		 Bool reorder=True, uInt nrow=10)
+///		 bool reorder=true, uInt nrow=10)
 {
   Table tab("tConcatTable3_tmp.conctab");
   AlwaysAssertExit(tab.nrow() == nrow);

@@ -44,7 +44,7 @@ int main() {
     // Create a Record that will contain the value to be put into FITS keywords
     Record myKeywords;
     myKeywords.define("hello", 6.5);
-    myKeywords.define("world", True);
+    myKeywords.define("world", true);
     // long keywords are truncated to 8 characters
     myKeywords.define("alongname", Short(-1));
     // other scalar types to round out the testing of the code
@@ -53,9 +53,9 @@ int main() {
     myKeywords.define("c", Float(10.0));
     myKeywords.define("d", "I like dogs");
     // Array types for testing
-    Vector<Bool> flags(2);
-    flags(0) = False;
-    flags(1) = True;
+    Vector<bool> flags(2);
+    flags(0) = false;
+    flags(1) = true;
     myKeywords.define("flags", flags);
     // NAXIS generates the NAXIS keyword as well as NAXIS1 .. NAXISn
     Vector<Int> naxis(5);

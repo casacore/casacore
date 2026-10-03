@@ -69,7 +69,7 @@ MVuvw::MVuvw(const Vector<Quantity> &other) : MVPosition() {
   }
 }
 
-MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) : MVPosition() {
+MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, bool ew) : MVPosition() {
   // Next for sgi_ntv to get it working properly
   MVDirection dr1(dr);
   dr1.adjust();
@@ -82,17 +82,17 @@ MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) : MVPosition
 MVuvw::MVuvw(const MVPosition &other) : MVPosition(other) {}
 
 // # Operators
-Bool MVuvw::operator==(const MVuvw &other) const { return (allEQ(xyz, other.xyz)); }
+bool MVuvw::operator==(const MVuvw &other) const { return (allEQ(xyz, other.xyz)); }
 
-Bool MVuvw::operator!=(const MVuvw &other) const { return (!(*this == other)); }
+bool MVuvw::operator!=(const MVuvw &other) const { return (!(*this == other)); }
 
-Bool MVuvw::near(const MVuvw &other, Double tol) const { return (allNear(xyz, other.xyz, tol)); }
+bool MVuvw::near(const MVuvw &other, Double tol) const { return (allNear(xyz, other.xyz, tol)); }
 
-Bool MVuvw::near(const MVuvw &other, Quantity tol) const {
+bool MVuvw::near(const MVuvw &other, Quantity tol) const {
   return (separation(other, "rad") <= tol);
 }
 
-Bool MVuvw::nearAbs(const MVuvw &other, Double tol) const {
+bool MVuvw::nearAbs(const MVuvw &other, Double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
@@ -269,9 +269,9 @@ Vector<Quantum<Double>> MVuvw::getXRecordValue() const {
   return tmp;
 }
 
-Bool MVuvw::putValue(const Vector<Quantum<Double>> &in) {
+bool MVuvw::putValue(const Vector<Quantum<Double>> &in) {
   uInt i = in.nelements();
-  if (i != 3) return False;
+  if (i != 3) return false;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) && in(2).check(UnitVal::LENGTH)) {
       for (uInt j = 0; j < i; j++) {
@@ -289,7 +289,7 @@ Bool MVuvw::putValue(const Vector<Quantum<Double>> &in) {
       xyz(2) = tsin(1);
       readjust(in(0).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) && in(1).check(UnitVal::ANGLE)) {
@@ -305,10 +305,10 @@ Bool MVuvw::putValue(const Vector<Quantum<Double>> &in) {
       xyz(2) = tsin(1);
       readjust(in(2).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 MVuvw operator*(const RotMatrix &left, const MVuvw &right) {

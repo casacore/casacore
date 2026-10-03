@@ -105,16 +105,16 @@ const CoordinateSystem& RegionManager::getcoordsys() const {
   return *itsCSys;
 }
 
-Bool RegionManager::isPixelRegion(const ImageRegion& reg) { return reg.isLCRegion(); }
+bool RegionManager::isPixelRegion(const ImageRegion& reg) { return reg.isLCRegion(); }
 
-Bool RegionManager::isWorldRegion(const ImageRegion& reg) { return reg.isWCRegion(); }
+bool RegionManager::isWorldRegion(const ImageRegion& reg) { return reg.isWCRegion(); }
 
 /*************************************************************
  **  Make BOX region routines                               **
  *************************************************************/
 
 Record* RegionManager::box(const Vector<Double>& blc, const Vector<Double>& trc,
-                           const Vector<Double>& inc, const String& absrel, const Bool frac,
+                           const Vector<Double>& inc, const String& absrel, const bool frac,
                            const String& comment) {
   *itsLog << LogOrigin("RegionManager", "box");
   /*   if(blc.nelements() != trc.nelements())
@@ -419,7 +419,7 @@ ImageRegion* RegionManager::doUnion(const WCRegion& reg1, const WCRegion& reg2) 
 
 ImageRegion* RegionManager::doUnion(const Block<const WCRegion*>& regions) {
   *itsLog << LogOrigin("RegionManager", String(__FUNCTION__) + "_2");
-  WCUnion leUnion(False, regions);
+  WCUnion leUnion(false, regions);
   ImageRegion* leReturn = new ImageRegion(leUnion);
   return leReturn;
 }
@@ -446,7 +446,7 @@ ImageRegion* RegionManager::doIntersection(const WCRegion& reg1, const WCRegion&
 }
 
 ImageRegion* RegionManager::doIntersection(const Block<const WCRegion*>& regions) {
-  WCIntersection leIntersect(False, regions);
+  WCIntersection leIntersect(false, regions);
   ImageRegion* leReturn = new ImageRegion(leIntersect);
   return leReturn;
 }
@@ -474,7 +474,7 @@ ImageRegion* RegionManager::doComplement(const WCRegion& reg) {
 
 ImageRegion* RegionManager::doComplement(const Block<const WCRegion*>& regions) {
   *itsLog << LogOrigin("RegionManager", "doComplement");
-  WCComplement leComplement(False, regions);
+  WCComplement leComplement(false, regions);
   ImageRegion* leReturn = new ImageRegion(leComplement);
   return leReturn;
 }
@@ -504,7 +504,7 @@ ImageRegion* RegionManager::doDifference(const WCRegion& reg1, const WCRegion& r
 }
 
 ImageRegion* RegionManager::doDifference(const Block<const WCRegion*>& regions) {
-  WCDifference leDiff(False, regions);
+  WCDifference leDiff(false, regions);
   ImageRegion* leReturn = new ImageRegion(leDiff);
   return leReturn;
 }
@@ -532,7 +532,7 @@ ImageRegion* RegionManager::doConcatenation(const WCRegion& region, const WCBox&
 }
 
 ImageRegion* doConcatenation(const Block<const WCRegion*>& regions, const WCBox& box) {
-  WCConcatenation leConcat(False, regions, box);
+  WCConcatenation leConcat(false, regions, box);
   ImageRegion* leReturn = new ImageRegion(leConcat);
   return leReturn;
 }
@@ -623,7 +623,7 @@ Record* RegionManager::readImageFile(String filepath, String regionname) {
   return leRecord;
 }
 
-Bool RegionManager::writeImageFile(const String& file, const String& regionname,
+bool RegionManager::writeImageFile(const String& file, const String& regionname,
                                    const Record& regionRecord) {
   TableRecord regionTblRecord(regionRecord);
   ImageRegion* imageReg = ImageRegion::fromRecord(regionTblRecord, "");
@@ -637,25 +637,25 @@ Bool RegionManager::writeImageFile(const String& file, const String& regionname,
   }
 
   delete imageReg;
-  return True;
+  return true;
 }
 
 String RegionManager::imageRegionToTable(const String& tabName, const ImageRegion& imreg,
-                                         const String& regName, Bool asmask) {
+                                         const String& regName, bool asmask) {
   tab_p = Table(tabName, Table::Update);
   RegionHandlerTable regtab(getTable, this);
   String newName = regName;
-  Bool retval = False;
+  bool retval = false;
   if (regtab.hasRegion(newName) || newName == "") newName = regtab.makeUniqueRegionName(regName, 0);
   if (asmask) {
     try {
       PagedImage<Float> myimage(tabName);
-      SubImage<Float> subim(myimage, imreg, True);
-      ImageRegion outreg = myimage.makeMask(newName, False, False);
+      SubImage<Float> subim(myimage, imreg, true);
+      ImageRegion outreg = myimage.makeMask(newName, false, false);
       LCRegion& mask = outreg.asMask();
       LatticeRegion latReg = imreg.toLatticeRegion(myimage.coordinates(), myimage.shape());
-      SubLattice<Bool> subMask(mask, latReg, True);
-      subMask.set(True);
+      SubLattice<bool> subMask(mask, latReg, true);
+      subMask.set(true);
       myimage.defineRegion(newName, mask, RegionHandler::Masks);
       retval = myimage.hasRegion(newName);
     } catch (std::exception& x) {
@@ -676,7 +676,7 @@ String RegionManager::imageRegionToTable(const String& tabName, const ImageRegio
     return String("");
 }
 String RegionManager::recordToTable(const String& tabName, const RecordInterface& rec,
-                                    const String& regName, Bool asmask) {
+                                    const String& regName, bool asmask) {
   if (!Table::isWritable(tabName)) {
     *itsLog << LogIO::WARN << tabName << " is not valid or writeable table" << LogIO::POST;
     return String("");
@@ -701,7 +701,7 @@ Record* RegionManager::tableToRecord(const String& tabName, const String& regnam
     tab_p = Table();
     return 0;
   }
-  ImageRegion* imreg = regtab.getRegion(regname, RegionHandler::Any, False);
+  ImageRegion* imreg = regtab.getRegion(regname, RegionHandler::Any, false);
   Record* leRecord = new Record();
   leRecord->assign(imreg->toRecord(String("")));
   delete imreg;
@@ -724,15 +724,15 @@ Vector<String> RegionManager::namesInTable(const String& tabName) {
   return retval;
 }
 
-Bool RegionManager::removeRegionInTable(const String& tabName, const String& regName) {
-  Bool retval;
+bool RegionManager::removeRegionInTable(const String& tabName, const String& regName) {
+  bool retval;
   if (!Table::isWritable(tabName)) {
     *itsLog << LogIO::WARN << tabName << " is not a valid or writable table" << LogIO::POST;
-    return False;
+    return false;
   }
   if (regName == "") {
     *itsLog << LogIO::WARN << "No region name given to remove...nothing done" << LogIO::POST;
-    return False;
+    return false;
   }
   tab_p = Table(tabName, Table::Update);
   RegionHandlerTable regtab(getTable, this);
@@ -740,15 +740,15 @@ Bool RegionManager::removeRegionInTable(const String& tabName, const String& reg
     *itsLog << LogIO::WARN << tabName << " does not have region " << regName << LogIO::POST;
     tab_p.relinquishAutoLocks();
     tab_p = Table();
-    return False;
+    return false;
   }
-  retval = regtab.removeRegion(regName, RegionHandler::Any, False);
+  retval = regtab.removeRegion(regName, RegionHandler::Any, false);
   tab_p.relinquishAutoLocks();
   tab_p = Table();
   return retval;
 }
 
-Table& RegionManager::getTable(void* ptr, Bool) {
+Table& RegionManager::getTable(void* ptr, bool) {
   RegionManager* rg = static_cast<RegionManager*>(ptr);
   return rg->tab_p;
 }

@@ -38,9 +38,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword) {
+bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     RegexReplaceAll(res, ws, " ");
@@ -58,15 +58,15 @@ Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword) {
 }
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Vector<T> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Vector<T> &deflt) {
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &defun,
+bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &defun,
                            const Unit &resun) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     RegexReplaceAll(res, ws, " ");
@@ -87,9 +87,9 @@ Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &
 }
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &, const Unit &,
+bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, const Unit &, const Unit &,
                            const Vector<T> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 template <class T>

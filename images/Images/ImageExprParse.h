@@ -215,7 +215,7 @@ class ImageExprParse {
 
   // Construct a literal object for the given type.
   // <group>
-  ImageExprParse(Bool value);
+  ImageExprParse(bool value);
   ImageExprParse(Int value);
   ImageExprParse(Float value);
   ImageExprParse(Double value);
@@ -285,8 +285,8 @@ class ImageExprParse {
   static String addDir(const String& fileName);
 
   // Try if the name represent a lattice or image.
-  // Return False if not.
-  Bool tryLatticeNode(LatticeExprNode& node, const String& name) const;
+  // Return false if not.
+  bool tryLatticeNode(LatticeExprNode& node, const String& name) const;
 
   // Make the node from the image name and a mask name.
   // The mask name can be NOMASK (case insensitive) meaning that no mask
@@ -294,7 +294,7 @@ class ImageExprParse {
   LatticeExprNode makeImageNode(const String& name, const String& mask) const;
 
   // Callback function for RegionHandlerTable to get the table to be used.
-  static Table& getRegionTable(void*, Bool);
+  static Table& getRegionTable(void*, bool);
 
   // Callback function for RegionHandlerHDF5 to get the file to be used.
   static const std::shared_ptr<HDF5File>& getRegionHDF5(void*);
@@ -308,7 +308,7 @@ class ImageExprParse {
   static Int theirLevel;
 
   DataType itsType;
-  Bool itsBval;       // # boolean literal
+  bool itsBval;       // # boolean literal
   Int itsIval;        // # integer literal
   Float itsFval;      // # Float literal
   Double itsDval;     // # Double literal

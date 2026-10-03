@@ -94,17 +94,17 @@ std::vector<Vector<Double>> MeasTable::dIGRF;
 /// #endif
 
 // # Member functions
-Bool MeasTable::useIAU2000() {
+bool MeasTable::useIAU2000() {
   // Aipsrc registration (for speed) of use of iau2000 and if so the 2000a version.
-  static const uInt iau2000_reg = AipsrcValue<Bool>::registerRC("measures.iau2000.b_use", False);
-  return AipsrcValue<Bool>::get(iau2000_reg);
+  static const uInt iau2000_reg = AipsrcValue<bool>::registerRC("measures.iau2000.b_use", false);
+  return AipsrcValue<bool>::get(iau2000_reg);
 }
 
-Bool MeasTable::useIAU2000A() {
+bool MeasTable::useIAU2000A() {
   // comment as above in useIAU2000()
   static const uInt iau2000a_reg =
-      AipsrcValue<Bool>::registerRC("measures.iau2000.b_use2000a", False);
-  return AipsrcValue<Bool>::get(iau2000a_reg);
+      AipsrcValue<bool>::registerRC("measures.iau2000.b_use2000a", false);
+  return AipsrcValue<bool>::get(iau2000a_reg);
 }
 
 Double MeasTable::precRate00(const uInt which) {
@@ -2607,9 +2607,9 @@ std::shared_ptr<Matrix<Double>> MeasTable::mulSC1950(Double time, Double epsilon
 
 Double MeasTable::dPsiEps(uInt which, Double T) {
 #if defined(USE_THREADS)
-  static std::atomic<Bool> msgDone;
+  static std::atomic<bool> msgDone;
 #else
-  static Bool msgDone;
+  static bool msgDone;
 #endif
   DebugAssert(which < 2, AipsError);
   Double r = 0;
@@ -2619,7 +2619,7 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
     if (!msgDone) {
       LogIO os(LogOrigin("MeasTable", "dPsiEps(uInt, Double)", WHERE));
       os << LogIO::NORMAL3 << "High precision nutation information not available." << LogIO::POST;
-      msgDone = True;
+      msgDone = true;
     }
   }
   ///  cout << "psieps " << r << endl;
@@ -2694,9 +2694,9 @@ void MeasTable::doInitObservatories() {
   obsNams.resize(N);
   obsPos.resize(N);
   antResponsesPath.resize(N);
-  Bool hasAntResp = False;
+  bool hasAntResp = false;
   if (row.record().isDefined("AntennaResponses")) {
-    hasAntResp = True;
+    hasAntResp = true;
   }
 
   MPosition::Ref mr;
@@ -2722,32 +2722,32 @@ const Vector<String> &MeasTable::Observatories() {
   return MeasTable::obsNams;
 }
 
-Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
+bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   std::call_once(theirObsInitOnceFlag, doInitObservatories);
   uInt i = MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos[i];
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
+bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
   std::call_once(theirObsInitOnceFlag, doInitObservatories);
   uInt i = MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     antRespPath = MeasTable::antResponsesPath(i);
     if (antRespPath.empty()) {  // i.e. there is no table for this observatory
-      return False;
+      return false;
     } else if (antRespPath[0] == '/') {  // path is absolute
       Path lPath(antRespPath);
       if (!Table::isReadable(lPath.absoluteName())) {
-        return False;
+        return false;
       }
     } else {  // path is relative
       // find and prepend the path to the data repository
       String absPathName;
-      Bool isValid = False;
+      bool isValid = false;
       {
         String mdir;
         Aipsrc::find(mdir, "measures.directory");
@@ -2765,13 +2765,13 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
         isValid = Table::isReadable(absPathName);
       }
       if (!isValid) {
-        return False;  // table not found
+        return false;  // table not found
       }
       antRespPath = absPathName;
     }
-    return True;
+    return true;
   }
-  return False;  // observatory not found
+  return false;  // observatory not found
 }
 
 // Line data
@@ -2812,14 +2812,14 @@ const Vector<String> &MeasTable::Lines() {
   return MeasTable::lineNams;
 }
 
-Bool MeasTable::Line(MFrequency &obs, const String &nam) {
+bool MeasTable::Line(MFrequency &obs, const String &nam) {
   std::call_once(theirLinesInitOnceFlag, doInitLines);
   uInt i = MUString::minimaxNC(nam, MeasTable::lineNams);
   if (i < MeasTable::lineNams.nelements()) {
     obs = MeasTable::linePos(i);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 // Source data
@@ -2863,14 +2863,14 @@ const Vector<String> &MeasTable::Sources() {
   return MeasTable::srcNams;
 }
 
-Bool MeasTable::Source(MDirection &obs, const String &nam) {
+bool MeasTable::Source(MDirection &obs, const String &nam) {
   std::call_once(theirSrcInitOnceFlag, doInitSources);
   uInt i = MUString::minimaxNC(nam, MeasTable::srcNams);
   if (i < MeasTable::srcNams.nelements()) {
     obs = MeasTable::srcPos(i);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 // Magnetic field (IGRF) function
@@ -3715,9 +3715,9 @@ Double MeasTable::WGS84(uInt which) {
 // Polar motion related routines
 Euler MeasTable::polarMotion(Double ut) {
 #if defined(USE_THREADS)
-  static std::atomic<Bool> msgDone;
+  static std::atomic<bool> msgDone;
 #else
-  static Bool msgDone;
+  static bool msgDone;
 #endif
   Euler res(0.0, 2, 0.0, 1, 0.0, 3);
   if (!MeasIERS::get(res(0), MeasIERS::MEASURED, MeasIERS::X, ut) ||
@@ -3727,7 +3727,7 @@ Euler MeasTable::polarMotion(Double ut) {
       LogIO os(LogOrigin("MeasTable", "PolarMotion(Double)", WHERE));
       os << LogIO::NORMAL3 << "High precision polar motion information not available."
          << LogIO::POST;
-      msgDone = True;
+      msgDone = true;
     }
   }
   ///    cout << "polarmotion " << res(0) << ' ' << res(1) << endl;
@@ -3884,9 +3884,9 @@ Polynomial<Double> MeasTable::calcUTtoST() {
 
 Double MeasTable::dUT1(Double utc) {
 #if defined(USE_THREADS)
-  static std::atomic<Bool> msgDone;
+  static std::atomic<bool> msgDone;
 #else
-  static Bool msgDone;
+  static bool msgDone;
 #endif
 
   /// #if defined(USE_THREADS) && !defined(__APPLE__)
@@ -3903,7 +3903,7 @@ Double MeasTable::dUT1(Double utc) {
       if (!msgDone) {
         LogIO os(LogOrigin("MeasTable", "dUT1(Double)", WHERE));
         os << LogIO::NORMAL3 << "High precision dUT1 information not available." << LogIO::POST;
-        msgDone = True;
+        msgDone = true;
       }
     }
   }

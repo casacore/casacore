@@ -54,7 +54,7 @@ uInt sizeofStringField(const RecordDesc &description, const Record &sizes, uInt 
 
 FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description,
                                  const Record &maxLengths, uInt nrows, const Record &extraKeywords,
-                                 const Record &units, Bool freeOutput, const Record &variableShapes)
+                                 const Record &units, bool freeOutput, const Record &variableShapes)
     : delete_writer_p(freeOutput),
       writer_p(file),
       nrows_written_p(0),
@@ -74,7 +74,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
     if (description.comment(i) != "") {
       comment = description.comment(i).c_str();
     }
-    Bool hasVariableShape = (variableShapes.fieldNumber(description.name(i)) >= 0) &&
+    bool hasVariableShape = (variableShapes.fieldNumber(description.name(i)) >= 0) &&
                             (maxLengths.fieldNumber(description.name(i)) >= 0);
     Int size = 1;
     String repeat = "1";  // Always write, even for scalars
@@ -304,7 +304,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
     }
     switch (extraKeywords.type(i)) {
       case TpBool: {
-        Bool val;
+        bool val;
         extraKeywords.get(i, val);
         kw.mk(name.c_str(), val, comment);
       } break;
@@ -368,10 +368,10 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
     Int whichTdim = tdimMap[i];
     switch (description.type(i)) {
       case TpBool: {
-        RORecordFieldPtr<Bool> *rptr = new RORecordFieldPtr<Bool>(row_p, i);
+        RORecordFieldPtr<bool> *rptr = new RORecordFieldPtr<bool>(row_p, i);
         FitsField<FitsLogical> *fptr = new FitsField<FitsLogical>;
         bintable_p->bind(whichField, *fptr);
-        copiers_p[i] = new ScalarFITSFieldCopier<Bool, FitsLogical>(rptr, fptr);
+        copiers_p[i] = new ScalarFITSFieldCopier<bool, FitsLogical>(rptr, fptr);
       } break;
       case TpUChar: {
         RORecordFieldPtr<uChar> *rptr = new RORecordFieldPtr<uChar>(row_p, i);
@@ -422,16 +422,16 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
         copiers_p[i] = new StringFITSFieldCopier(rptr, fptr);
       } break;
       case TpArrayBool: {
-        RORecordFieldPtr<Array<Bool>> *rptr = new RORecordFieldPtr<Array<Bool>>(row_p, i);
+        RORecordFieldPtr<Array<bool>> *rptr = new RORecordFieldPtr<Array<bool>>(row_p, i);
         FitsField<FitsLogical> *fptr = new FitsField<FitsLogical>(fieldSizes[i]);
         bintable_p->bind(whichField, *fptr);
         if (whichTdim >= 0) {
           FitsField<char> *tdirptr =
               new FitsField<char>(variableShapes.asString(description.name(i)).length());
           bintable_p->bind(whichTdim, *tdirptr);
-          copiers_p[i] = new VariableArrayFITSFieldCopier<Bool, FitsLogical>(rptr, fptr, tdirptr);
+          copiers_p[i] = new VariableArrayFITSFieldCopier<bool, FitsLogical>(rptr, fptr, tdirptr);
         } else {
-          copiers_p[i] = new ArrayFITSFieldCopier<Bool, FitsLogical>(rptr, fptr);
+          copiers_p[i] = new ArrayFITSFieldCopier<bool, FitsLogical>(rptr, fptr);
         }
       } break;
       case TpArrayUChar: {
@@ -558,10 +558,10 @@ FitsOutput *FITSTableWriter::makeWriter(const String &fileName) {
   FitsOutput *file = new FitsOutput(name, FITS::Disk);
   FitsKeywordList st;
 
-  st.mk(FITS::SIMPLE, True, "Standard FITS format");
+  st.mk(FITS::SIMPLE, true, "Standard FITS format");
   st.mk(FITS::BITPIX, 8, "Character Information");
   st.mk(FITS::NAXIS, 0, "No image data array present");
-  st.mk(FITS::EXTEND, True, "Extension exists");
+  st.mk(FITS::EXTEND, true, "Extension exists");
   st.spaces();
   st.comment("The first data is in the HDU following this one");
   st.spaces();

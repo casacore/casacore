@@ -45,8 +45,8 @@ Param::Param(const String& a_key, const String& a_value, const String& a_help, c
       type(a_type),
       range(a_range),
       unit(a_unit),
-      hasvalue((value.length() > 0) ? True : False),
-      system(False),
+      hasvalue((value.length() > 0) ? true : false),
+      system(false),
       index(0) {
 #if defined(DEBUG)
   cout << "Creating parameter " << key << "\n"
@@ -102,12 +102,12 @@ Param& Param::operator=(const Param& other)  // assignment
   return *this;
 }
 
-Bool  // comparison, don't allow
+bool  // comparison, don't allow
 Param::operator==(const Param&) const {
-  return False;
+  return false;
 }
 
-Double Param::getDouble(Bool prompt) const  // Double value
+Double Param::getDouble(bool prompt) const  // Double value
 {
 #if defined(EVAL)
   Double d;
@@ -125,7 +125,7 @@ Double Param::getDouble(Bool prompt) const  // Double value
 #endif
 }
 
-Block<Double> Param::getDoubleArray(Bool prompt) const  // Double value
+Block<Double> Param::getDoubleArray(bool prompt) const  // Double value
 {
   Int i;
   Int idx = 0;
@@ -150,7 +150,7 @@ Block<Double> Param::getDoubleArray(Bool prompt) const  // Double value
   return x;
 }
 
-Int Param::getInt(Bool prompt) const  // Int value
+Int Param::getInt(bool prompt) const  // Int value
 {
   if (prompt) {
     cerr << "No prompting implemented yet" << endl;
@@ -158,7 +158,7 @@ Int Param::getInt(Bool prompt) const  // Int value
   return atoi(value.c_str());
 }
 
-Block<Int> Param::getIntArray(Bool prompt) const {
+Block<Int> Param::getIntArray(bool prompt) const {
   Int i;
   Int idx = 0;
   Int n = std::count(value.begin(), value.end(), ',') + 1;
@@ -182,7 +182,7 @@ Block<Int> Param::getIntArray(Bool prompt) const {
   return x;
 }
 
-const String& Param::getString(Bool prompt) const  // string value
+const String& Param::getString(bool prompt) const  // string value
 {
   if (prompt) {
     cerr << "No prompting implemented yet" << endl;
@@ -190,7 +190,7 @@ const String& Param::getString(Bool prompt) const  // string value
   return value;
 }
 
-Block<String> Param::getStringArray(Bool prompt) const {
+Block<String> Param::getStringArray(bool prompt) const {
   Int i;
   Int idx = 0;
   Int n = std::count(value.begin(), value.end(), ',') + 1;
@@ -214,7 +214,7 @@ Block<String> Param::getStringArray(Bool prompt) const {
   return x;
 }
 
-Bool Param::getBool(Bool prompt) const  // Bool value
+bool Param::getBool(bool prompt) const  // Bool value
 {
   if (prompt) {
     cerr << "No prompting implemented yet" << endl;
@@ -224,14 +224,14 @@ Bool Param::getBool(Bool prompt) const  // Bool value
 }
 
 #if 0
-Block<Bool>
-Param::getBoolArray(Bool prompt) const
+Block<bool>
+Param::getBoolArray(bool prompt) const
 {
     Int i;
     Int idx;
     Int n = value.freq(",")+1;
     String z;
-    Block<Bool> x(n);
+    Block<bool> x(n);
 
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -252,13 +252,13 @@ Param::getBoolArray(Bool prompt) const
 
 // modify and other misc function
 
-Bool Param::put(const String& other)  // set new value
+bool Param::put(const String& other)  // set new value
 {
   // value checking will be done here too?
   //        cout << "Param::Put> " << key << "=" << value << "\n";
   value = other;
   //        cout << "Param::Put> " << key << "=" << value << "\n";
-  return True;
+  return true;
 }
 
 ostream& operator<<(ostream& os, const Param& p) {

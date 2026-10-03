@@ -40,14 +40,14 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LinearXform::LinearXform(uInt naxis) : isPCDiagonal_p(True) {
+LinearXform::LinearXform(uInt naxis) : isPCDiagonal_p(true) {
   linprm_p.flag = -1;
   linini(1, naxis, &linprm_p);
   set_linprm();
 }
 
 LinearXform::LinearXform(const Vector<Double>& crpixIn, const Vector<Double>& cdeltIn)
-    : isPCDiagonal_p(True) {
+    : isPCDiagonal_p(true) {
   const uInt naxis = crpixIn.nelements();
   AlwaysAssert(cdeltIn.nelements() == naxis, AipsError);
   //
@@ -74,7 +74,7 @@ LinearXform::LinearXform(const Vector<Double>& crpixIn, const Vector<Double>& cd
   //
   Double zero = 0.0;
   Double tol = 1e-12;
-  isPCDiagonal_p = True;
+  isPCDiagonal_p = true;
   //
   uInt ij = 0;
   for (uInt i = 0; i < naxis; i++) {
@@ -86,7 +86,7 @@ LinearXform::LinearXform(const Vector<Double>& crpixIn, const Vector<Double>& cd
       // inversion stuff.  Urk.
 
       if (i != j && !casacore::near(pcIn(j, i), zero, tol)) {
-        isPCDiagonal_p = False;
+        isPCDiagonal_p = false;
       }
       linprm_p.pc[ij++] = pcIn(j, i);
     }
@@ -114,12 +114,12 @@ LinearXform::~LinearXform() { linfree(&linprm_p); }
 
 uInt LinearXform::nWorldAxes() const { return linprm_p.naxis; }
 
-Bool LinearXform::forward(Vector<Double>& pixel, const Vector<Double>& world,
+bool LinearXform::forward(Vector<Double>& pixel, const Vector<Double>& world,
                           String& errorMsg) const {
   uInt naxis = world.nelements();
   pixel.resize(naxis);
   //
-  Bool delPixel, delWorld;
+  bool delPixel, delWorld;
   double* pixelStor = pixel.getStorage(delPixel);
   const double* worldStor = world.getStorage(delWorld);
   //
@@ -127,21 +127,21 @@ Bool LinearXform::forward(Vector<Double>& pixel, const Vector<Double>& world,
   if (int err = linx2p(&linprm_p, 1, n, worldStor, pixelStor)) {
     errorMsg = "wcs linx2p error: ";
     errorMsg += linx2p_errmsg[err];
-    return False;
+    return false;
   }
   //
   pixel.putStorage(pixelStor, delPixel);
   world.freeStorage(worldStor, delWorld);
   //
-  return True;
+  return true;
 }
 
-Bool LinearXform::reverse(Vector<Double>& world, const Vector<Double>& pixel,
+bool LinearXform::reverse(Vector<Double>& world, const Vector<Double>& pixel,
                           String& errorMsg) const {
   uInt naxis = pixel.nelements();
   world.resize(naxis);
   //
-  Bool delPixel, delWorld;
+  bool delPixel, delWorld;
   const double* pixelStor = pixel.getStorage(delPixel);
   double* worldStor = world.getStorage(delWorld);
   //
@@ -149,13 +149,13 @@ Bool LinearXform::reverse(Vector<Double>& world, const Vector<Double>& pixel,
   if (int err = linp2x(&linprm_p, 1, n, pixelStor, worldStor)) {
     errorMsg = "wcs linp2x error: ";
     errorMsg += linp2x_errmsg[err];
-    return False;
+    return false;
   }
   //
   pixel.freeStorage(pixelStor, delPixel);
   world.putStorage(worldStor, delWorld);
   //
-  return True;
+  return true;
 }
 
 Vector<Double> LinearXform::crpix() const {
@@ -221,17 +221,17 @@ void LinearXform::pc(const Matrix<Double>& newvals) {
   *this = LinearXform(crp, cdlt, newvals);
 }
 
-Bool LinearXform::near(const LinearXform& other, Double tol) const {
+bool LinearXform::near(const LinearXform& other, Double tol) const {
   Vector<Int> excludeAxes;
   return near(other, excludeAxes, tol);
 }
 
-Bool LinearXform::near(const LinearXform& other, const Vector<Int>& excludeAxes, Double tol) const {
+bool LinearXform::near(const LinearXform& other, const Vector<Int>& excludeAxes, Double tol) const {
   // Number of pixel and world axes is the same for a LinearXform.
 
   uInt naxes = excludeAxes.nelements();
-  Vector<Bool> exclude(linprm_p.naxis);
-  Bool found;
+  Vector<bool> exclude(linprm_p.naxis);
+  bool found;
   for (uInt i = 0; i < nWorldAxes(); i++) {
     exclude[i] = (linearSearch(found, excludeAxes, Int(i), naxes) >= 0);
   }
@@ -241,10 +241,10 @@ Bool LinearXform::near(const LinearXform& other, const Vector<Int>& excludeAxes,
   {
     const Vector<Double>& d1 = this->crpix();
     const Vector<Double>& d2 = other.crpix();
-    if (d1.nelements() != d2.nelements()) return False;
+    if (d1.nelements() != d2.nelements()) return false;
     for (uInt i = 0; i < d1.nelements(); i++) {
       if (!exclude[i]) {
-        if (!casacore::near(d1(i), d2(i), tol)) return False;
+        if (!casacore::near(d1(i), d2(i), tol)) return false;
       }
     }
   }
@@ -252,10 +252,10 @@ Bool LinearXform::near(const LinearXform& other, const Vector<Int>& excludeAxes,
   {
     const Vector<Double>& d1 = this->cdelt();
     const Vector<Double>& d2 = other.cdelt();
-    if (d1.nelements() != d2.nelements()) return False;
+    if (d1.nelements() != d2.nelements()) return false;
     for (uInt i = 0; i < d1.nelements(); i++) {
       if (!exclude(i)) {
-        if (!casacore::near(d1[i], d2[i], tol)) return False;
+        if (!casacore::near(d1[i], d2[i], tol)) return false;
       }
     }
   }
@@ -264,8 +264,8 @@ Bool LinearXform::near(const LinearXform& other, const Vector<Int>& excludeAxes,
 
   Matrix<Double> pc1 = this->pc();
   Matrix<Double> pc2 = other.pc();
-  if (pc1.nrow() != pc2.nrow()) return False;
-  if (pc1.ncolumn() != pc2.ncolumn()) return False;
+  if (pc1.nrow() != pc2.nrow()) return false;
+  if (pc1.ncolumn() != pc2.ncolumn()) return false;
 
   // Compare row by row.  An axis will turn up in the PC matrix in any row
   // or column with that number.  E.g., values pertaining to axis "i" will
@@ -277,13 +277,13 @@ Bool LinearXform::near(const LinearXform& other, const Vector<Int>& excludeAxes,
     if (!exclude(j)) {
       for (uInt i = 0; i < row1.nelements(); i++) {
         if (!exclude(i)) {
-          if (!casacore::near(row1(i), row2(i), tol)) return False;
+          if (!casacore::near(row1(i), row2(i), tol)) return false;
         }
       }
     }
   }
 
-  return True;
+  return true;
 }
 
 void LinearXform::set_linprm(void) {

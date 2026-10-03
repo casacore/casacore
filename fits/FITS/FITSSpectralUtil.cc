@@ -36,13 +36,13 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChannel,
+bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChannel,
                                       Double &referenceFrequency, Double &deltaFrequency,
                                       Vector<Double> &frequencies, MFrequency::Types &refFrame,
                                       MDoppler::Types &velocityPreference, Double &restFrequency,
                                       LogIO &logger, const RecordInterface &header, char prefix,
-                                      Bool oneRelative) {
-  Bool retval = True;
+                                      bool oneRelative) {
+  bool retval = true;
 
   // Start out invalid
   spectralAxis = -1;
@@ -52,7 +52,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   deltaFrequency = 0.0;
   restFrequency = -1.0;
 
-  const Double offset(oneRelative == True ? 1.0 : 0.0);
+  const Double offset(oneRelative == true ? 1.0 : 0.0);
   logger << LogOrigin("FITSUtil", "fromFITSHeader", WHERE);
 
   String n_ctype = String(1, prefix) + "type";
@@ -72,12 +72,12 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
         header.shape(n_cdelt)(0))) {
     logger << LogIO::SEVERE << "One of " << n_ctype << "," << n_crval << "," << n_crpix << "or "
            << n_cdelt << " does not exist or is the wrong type." << LogIO::POST;
-    return False;
+    return false;
   }
-  Bool has_altrval =
+  bool has_altrval =
       header.isDefined(String("altrval")) &&
       (header.dataType("altrval") == TpDouble || header.dataType("altrval") == TpFloat);
-  Bool has_altrpix =
+  bool has_altrpix =
       header.isDefined(String("altrpix")) &&
       (header.dataType("altrpix") == TpDouble || header.dataType("altrpix") == TpFloat);
 
@@ -113,7 +113,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
     }
   }
   if (spectralAxis < 0) {
-    return False;
+    return false;
   }
 
   Int velref = 3;  // Default is optical + topocentric ("OBS")
@@ -255,7 +255,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
              << "VOPT axis does not have rest frequency "
                 "information (RESTFREQ)"
              << LogIO::POST;
-      return False;
+      return false;
     } else {
       // Have RESTFREQ
       referenceChannel = rpix;
@@ -266,7 +266,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
           break;
         case MDoppler::RADIO:
           logger << LogIO::SEVERE << "FELO/RADIO is illegal" << LogIO::POST;
-          return False;
+          return false;
           break;
         default:
           AlwaysAssert(0, AipsError);  // NOTREACHED
@@ -284,7 +284,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
              << "VRAD axis does not have rest frequency "
                 "information (RESTFREQ)"
              << LogIO::POST;
-      return False;
+      return false;
     } else {  // Have RESTFREQ
       referenceChannel = rpix;
       switch (velocityPreference) {
@@ -294,7 +294,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
           break;
         case MDoppler::OPTICAL:
           logger << LogIO::SEVERE << "VELO/OPTICAL is not implemented" << LogIO::POST;
-          return False;
+          return false;
           break;
         default:
           AlwaysAssert(0, AipsError);  // NOTREACHED
@@ -316,7 +316,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
       deltaFrequency = C::c / ((rval + delt) * to_m) - referenceFrequency;
     } else {
       logger << LogIO::SEVERE << "Zero or negative wavelength as CRVAL." << LogIO::POST;
-      return False;
+      return false;
     }
     frequencies.resize(nChan);
     for (Int i = 0; i < nChan; i++) {
@@ -325,7 +325,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
         frequencies(i) = C::c / (wl * to_m);
       } else {
         logger << LogIO::SEVERE << "Zero or negative wavelength at pixel " << i << LogIO::POST;
-        return False;
+        return false;
       }
     }
   } else if (StringContains(ctype(spectralAxis), "AWAV")) {
@@ -339,7 +339,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
                        referenceFrequency;
     } else {
       logger << LogIO::SEVERE << "Zero or negative wavelength as CRVAL." << LogIO::POST;
-      return False;
+      return false;
     }
     frequencies.resize(nChan);
     for (Int i = 0; i < nChan; i++) {
@@ -348,7 +348,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
         frequencies(i) = C::c / (wl * to_m);
       } else {
         logger << LogIO::SEVERE << "Zero or negative wavelength at pixel " << i << LogIO::POST;
-        return False;
+        return false;
       }
     }
   } else {
@@ -358,17 +358,17 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis, Double &referenceChanne
   return retval;
 }
 
-Bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt, Double &crpix,
-                                    String &cunit, Bool &haveAlt, Double &altrval, Double &altrpix,
+bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt, Double &crpix,
+                                    String &cunit, bool &haveAlt, Double &altrval, Double &altrpix,
                                     Int &velref, Double &restfreq, String &specsys, LogIO &logger,
                                     Double refFrequency, Double refChannel, Double freqIncrement,
-                                    MFrequency::Types referenceFrame, Bool preferVelocity,
-                                    MDoppler::Types velocityPreference, Bool preferWavelength,
-                                    Bool airWavelength, Bool useDeprecatedCtypes) {
+                                    MFrequency::Types referenceFrame, bool preferVelocity,
+                                    MDoppler::Types velocityPreference, bool preferWavelength,
+                                    bool airWavelength, bool useDeprecatedCtypes) {
   // Dummy defaults
   ctype = "";
   crval = cdelt = crpix = 0.0;
-  haveAlt = False;
+  haveAlt = false;
   altrval = altrpix = 0.0;
   velref = 0;
   specsys = "";
@@ -379,14 +379,14 @@ Bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
     logger << LogIO::SEVERE
            << "Cannot produce FITS header for velocity AND wavelength. You have to choose one."
            << LogIO::POST;
-    return False;
+    return false;
   }
 
   // Calculate the velocity related things first
 
   String ctypetag = "";
   if (restfreq > 0.0) {
-    haveAlt = True;
+    haveAlt = true;
     // the following call to tagFromFrame is deprecated, better use SPECSYS
     if (!FITSSpectralUtil::tagFromFrame(ctypetag, velref, referenceFrame)) {
       logger << LogIO::NORMAL << "Cannot turn spectral type# " << Int(referenceFrame)
@@ -411,7 +411,7 @@ Bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
                << " into a FITS SPECSYS keyword. Will use \"" << specsys << "\" instead."
                << LogIO::POST;
       } else {  // make sure also velref is not written if specsys is undefined
-        haveAlt = False;
+        haveAlt = false;
       }
     }
   }
@@ -434,7 +434,7 @@ Bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
     // axis is supposed to be linear in wavelength
     if (refFrequency <= 0. || refFrequency + freqIncrement == 0.) {
       logger << LogIO::SEVERE << "Zero or negative reference frequency." << LogIO::POST;
-      return False;
+      return false;
     }
     if (airWavelength) {
       // use air wavelength
@@ -508,10 +508,10 @@ Bool FITSSpectralUtil::toFITSHeader(String &ctype, Double &crval, Double &cdelt,
     altrpix = crpix;
   }
 
-  return True;
+  return true;
 }
 
-Bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &tag, Int velref) {
+bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &tag, Int velref) {
   String theTag;
   for (uInt i = 0; i < tag.length(); i++) {
     if (tag[i] != '-' && tag[i] != ' ') {
@@ -519,7 +519,7 @@ Bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &t
     }
   }
   // Try to work out LSR/OBS/HEL/...
-  Bool result = True;
+  bool result = true;
   refFrame = MFrequency::TOPO;  // The default
   if (theTag == "LSR" || theTag == "LSRK") {
     // the tag "LSRK" was generate by tagFromFrame until June of 2000
@@ -577,21 +577,21 @@ Bool FITSSpectralUtil::frameFromTag(MFrequency::Types &refFrame, const String &t
           refFrame = MFrequency::GALACTO;
           break;
         default:
-          result = False;
+          result = false;
           // empty tag, illegal velref
       }
     } else {
-      result = False;
+      result = false;
       // empty tag, no velref
     }
   } else {
-    result = False;
+    result = false;
   }
   return result;
 }
 
-Bool FITSSpectralUtil::tagFromFrame(String &tag, Int &velref, MFrequency::Types refFrame) {
-  Bool result = True;
+bool FITSSpectralUtil::tagFromFrame(String &tag, Int &velref, MFrequency::Types refFrame) {
+  bool result = true;
   switch (refFrame) {
     case MFrequency::LSRK:
       tag = "-LSR";
@@ -624,13 +624,13 @@ Bool FITSSpectralUtil::tagFromFrame(String &tag, Int &velref, MFrequency::Types 
     default:
       tag = "-OBS";
       velref = 3;
-      result = False;
+      result = false;
   }
   return result;
 }
 
-Bool FITSSpectralUtil::specsysFromFrame(String &specsys, MFrequency::Types refFrame) {
-  Bool result = True;
+bool FITSSpectralUtil::specsysFromFrame(String &specsys, MFrequency::Types refFrame) {
+  bool result = true;
   switch (refFrame) {
     case MFrequency::LSRK:
       specsys = "LSRK";
@@ -662,12 +662,12 @@ Bool FITSSpectralUtil::specsysFromFrame(String &specsys, MFrequency::Types refFr
     case MFrequency::Undefined:
     default:
       specsys = "";
-      result = False;
+      result = false;
   }
   return result;
 }
-Bool FITSSpectralUtil::frameFromSpecsys(MFrequency::Types &refFrame, String &specsys) {
-  Bool result = True;
+bool FITSSpectralUtil::frameFromSpecsys(MFrequency::Types &refFrame, String &specsys) {
+  bool result = true;
   if (specsys == "LSRK") {
     refFrame = MFrequency::LSRK;
   } else if (specsys == "BARYCENT") {
@@ -688,7 +688,7 @@ Bool FITSSpectralUtil::frameFromSpecsys(MFrequency::Types &refFrame, String &spe
     refFrame = MFrequency::TOPO;
   } else {
     refFrame = MFrequency::Undefined;
-    result = False;
+    result = false;
   }
   return result;
 }

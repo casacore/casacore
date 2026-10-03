@@ -34,7 +34,7 @@ TableExprData::~TableExprData() {}
 
 IPosition TableExprData::shape(const Block<Int>&) const { return IPosition(); }
 
-Bool TableExprData::getBool(const Block<Int>&) const {
+bool TableExprData::getBool(const Block<Int>&) const {
   throw(AipsError("TableExprData::getBool not implemented"));
 }
 
@@ -52,7 +52,7 @@ String TableExprData::getString(const Block<Int>&) const {
   throw(AipsError("TableExprData::getString not implemented"));
 }
 
-Array<Bool> TableExprData::getArrayBool(const Block<Int>&) const {
+Array<bool> TableExprData::getArrayBool(const Block<Int>&) const {
   throw(AipsError("TableExprData::getArrayBool not implemented"));
 }
 

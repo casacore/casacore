@@ -40,7 +40,7 @@ RegionHandler* RegionHandler::clone() const { return new RegionHandler(*this); }
 
 void RegionHandler::setObjectPtr(void*) {}
 
-Bool RegionHandler::canDefineRegion() const { return False; }
+bool RegionHandler::canDefineRegion() const { return false; }
 
 void RegionHandler::setDefaultMask(const String&) {
   throw AipsError(
@@ -50,29 +50,29 @@ void RegionHandler::setDefaultMask(const String&) {
 
 String RegionHandler::getDefaultMask() const { return ""; }
 
-Bool RegionHandler::defineRegion(const String&, const ImageRegion&, RegionHandler::GroupType,
-                                 Bool) {
+bool RegionHandler::defineRegion(const String&, const ImageRegion&, RegionHandler::GroupType,
+                                 bool) {
   throw AipsError(
       "RegionHandler::defineRegion"
       " cannot be used for this image type");
 }
 
-Bool RegionHandler::hasRegion(const String&, RegionHandler::GroupType) const { return False; }
+bool RegionHandler::hasRegion(const String&, RegionHandler::GroupType) const { return false; }
 
-Bool RegionHandler::renameRegion(const String&, const String&, RegionHandler::GroupType, Bool) {
+bool RegionHandler::renameRegion(const String&, const String&, RegionHandler::GroupType, bool) {
   throw AipsError(
       "RegionHandler::renameRegion"
       " cannot be used for this image type");
-  return False;
+  return false;
 }
 
-Bool RegionHandler::removeRegion(const String&, RegionHandler::GroupType, Bool throwIfUnknown) {
+bool RegionHandler::removeRegion(const String&, RegionHandler::GroupType, bool throwIfUnknown) {
   if (throwIfUnknown) {
     throw AipsError(
         "RegionHandler::removeRegion"
         " cannot be used for this image type");
   }
-  return False;
+  return false;
 }
 
 Vector<String> RegionHandler::regionNames(RegionHandler::GroupType) const {
@@ -80,7 +80,7 @@ Vector<String> RegionHandler::regionNames(RegionHandler::GroupType) const {
 }
 
 ImageRegion* RegionHandler::getRegion(const String&, RegionHandler::GroupType,
-                                      Bool throwIfUnknown) const {
+                                      bool throwIfUnknown) const {
   if (throwIfUnknown) {
     throw AipsError(
         "RegionHandler::findRegionGroup"
@@ -97,7 +97,7 @@ ImageRegion RegionHandler::makeMask(const LatticeBase&, const String&) {
 }
 
 String RegionHandler::makeUniqueRegionName(const std::string& rootName, uInt startNumber) const {
-  while (True) {
+  while (true) {
     std::ostringstream oss;
     oss << startNumber;
     String name = rootName + oss.str();

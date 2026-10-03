@@ -114,21 +114,21 @@ class SerialHelper {
 
   // load the function type name as given in the record's "functype"
   // field into the given String <em>ftype</em>.  <em>gr</em> is the
-  //  record to extract from.  False is returned if the record
+  //  record to extract from.  false is returned if the record
   // does not contain this field.
   // <thrown>
   //   <li> InvalidSerializationError if "functype" exists but is
   //          empty or the incorrect type
   // </thrown>
-  Bool getFuncType(String& ftype) const;
+  bool getFuncType(String& ftype) const;
 
   // ensure that the Function type stored in the given record, <em>gr</em>,
   // matches <em>ftype</em>.  If it does not, an
   // InvalidSerializationError is thrown.
   void checkFuncType(const String& ftype) const;
 
-  // return True if a field with the given <em>name</em> exists
-  Bool exists(const String& name) const { return gr.isDefined(name); }
+  // return true if a field with the given <em>name</em> exists
+  bool exists(const String& name) const { return gr.isDefined(name); }
 
   // Get the <em>index</em>th element of the <em>name</em> field
   // This should be
@@ -143,7 +143,7 @@ class SerialHelper {
   //  <li> if the index is out of range.
   // </ul>
   // <group>
-  void get(Bool& val, const String& name, uInt index = 0) const;
+  void get(bool& val, const String& name, uInt index = 0) const;
   //      void get(uChar &val, const String& name, uInt index = 0) const;
   void get(Short& val, const String& name, uInt index = 0) const;
   void get(Int& val, const String& name, uInt index = 0) const;
@@ -168,7 +168,7 @@ class SerialHelper {
   //  <li> if the index is out of range.
   // </ul>
   // <group>
-  void get(Array<Bool>& val, const String& name) const;
+  void get(Array<bool>& val, const String& name) const;
   //      void get(Array<uChar &val, const String& name) const;
   void get(Array<Short>& val, const String& name) const;
   void get(Array<Int>& val, const String& name) const;

@@ -90,10 +90,10 @@ class FunctionWrapper : public WrapperParam<T> {
   FunctionWrapper(T (*f)());
   // A function with parameter and no arguments
   // (Note value of isPar irrelevant)
-  FunctionWrapper(T (*f)(const T &), const Bool isPar);
+  FunctionWrapper(T (*f)(const T &), const bool isPar);
   // A function with parameters and no arguments.
   // (Note value of isPar irrelevant)
-  FunctionWrapper(T (*f)(const Vector<T> &), const Bool isPar);
+  FunctionWrapper(T (*f)(const Vector<T> &), const bool isPar);
   // Construct a  1-dimensional function with no parameters.
   FunctionWrapper(T (*f)(const T &));
   // Construct a  1-dimensional function with parameter.

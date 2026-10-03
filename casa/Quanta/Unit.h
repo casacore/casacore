@@ -152,7 +152,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // In addition the UnitVal class contains a check facility to determine the
 // legality of a unit string:
 // <srcblock>
-// Bool UnitVal::check("string");
+// bool UnitVal::check("string");
 // </srcblock>
 //
 // </synopsis>
@@ -209,10 +209,10 @@ class Unit {
   // Comparisons. Comparisons are done on the basis of the inherent units. I.e.
   // <src>m/s</src> are identical to <src>AU/cy</src>.
   // <group>
-  Bool operator==(const Unit &other) const;
-  Bool operator!=(const Unit &other) const;
+  bool operator==(const Unit &other) const;
+  bool operator!=(const Unit &other) const;
   // Fast check for "" units
-  Bool empty() const;
+  bool empty() const;
   // </group>
   // # Member functions
   // Get the unit value

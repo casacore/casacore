@@ -112,17 +112,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <src> 1in != 1s </src>, <src> 36in == 1yd </src>./
 // <group name="equality">
 template <class Qtype>
-Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator==(const Quantum<Qtype> &left, const Qtype &other);
+bool operator==(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool operator==(const Qtype &left, const Quantum<Qtype> &other);
+bool operator==(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator!=(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool operator!=(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator!=(const Quantum<Qtype> &left, const Qtype &other);
+bool operator!=(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool operator!=(const Qtype &left, const Quantum<Qtype> &other);
+bool operator!=(const Qtype &left, const Quantum<Qtype> &other);
 // </group>
 
 // Near-ness tests: unequal if non-conforming units. In other cases the
@@ -131,31 +131,31 @@ Bool operator!=(const Qtype &left, const Quantum<Qtype> &other);
 // Note (SUN?) compiler does not accept default arguments in template functions
 // <group name="near">
 template <class Qtype>
-Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
+bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
 template <class Qtype>
-Bool near(const Quantum<Qtype> &left, const Qtype &other);
+bool near(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool near(const Quantum<Qtype> &left, const Qtype &other, Double tol);
+bool near(const Quantum<Qtype> &left, const Qtype &other, Double tol);
 template <class Qtype>
-Bool near(const Qtype &left, const Quantum<Qtype> &other);
+bool near(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool near(const Qtype &left, const Quantum<Qtype> &other, Double tol);
+bool near(const Qtype &left, const Quantum<Qtype> &other, Double tol);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
+bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, const Quantum<Qtype> &tol);
+bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, const Quantum<Qtype> &tol);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other);
+bool nearAbs(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, Double tol);
+bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, Double tol);
 template <class Qtype>
-Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other);
+bool nearAbs(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol);
+bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol);
 // </group>
 //
 // Comparisons. The comparisons are done on values at equal units with
@@ -165,35 +165,35 @@ Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol);
 // </thrown>
 // <group name="compare">
 template <class Qtype>
-Bool operator<(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool operator<(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator<(const Quantum<Qtype> &left, const Qtype &other);
+bool operator<(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool operator<(const Qtype &left, const Quantum<Qtype> &other);
+bool operator<(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator>(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool operator>(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator>(const Quantum<Qtype> &left, const Qtype &other);
+bool operator>(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool operator>(const Qtype &left, const Quantum<Qtype> &other);
+bool operator>(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator<=(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool operator<=(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator<=(const Quantum<Qtype> &left, const Qtype &other);
+bool operator<=(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool operator<=(const Qtype &left, const Quantum<Qtype> &other);
+bool operator<=(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator>=(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+bool operator>=(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-Bool operator>=(const Quantum<Qtype> &left, const Qtype &other);
+bool operator>=(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-Bool operator>=(const Qtype &left, const Quantum<Qtype> &other);
+bool operator>=(const Qtype &left, const Quantum<Qtype> &other);
 // </group>
 //
 // Special make Bool routines to cater for array comparisons
 // <group name="foreign">
-Bool QMakeBool(Int val);
-Bool QMakeBool(const LogicalArray &val);
+bool QMakeBool(Int val);
+bool QMakeBool(const LogicalArray &val);
 // </group>
 
 // # Inline Implementations

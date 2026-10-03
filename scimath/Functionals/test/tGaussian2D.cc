@@ -43,7 +43,7 @@
 #include <casacore/casa/namespace.h>
 int main() {
   try {
-    Bool anyFailures = False;
+    bool anyFailures = false;
     /*    {
       Bool failed = False;
       Gaussian2D<Float> g;
@@ -171,7 +171,7 @@ int main() {
 
       cout << " the set/get PA test" << endl;
       if (!failed) {
-        ///	if (g.nAvailableParams() != 6) failed = True;
+        ///	if (g.nAvailableParams() != 6) failed = true;
         ///	Vector<Double> parms = g.getAvailableParams();
         Vector<Double> parms = g.parameters().getParameters();
         Vector<Double> expectedParms(6);
@@ -191,7 +191,7 @@ int main() {
 
         // Mask parameters 5 and 6
     */
-    /*	g.setAvailableParamMask(4, False);
+    /*	g.setAvailableParamMask(4, false);
     g.setAvailableParamMask(5, False);
     for (uInt i = 0; i < 4; i++) {
       if (g.getAvailableParamMask(i) == False) failed = True;
@@ -210,7 +210,7 @@ int main() {
       if (failed) anyFailures = True;
     }*/
     {
-      Bool failed = False;
+      bool failed = false;
       Vector<Double> mean(2), fwhm(2);
       mean(0) = .5;
       mean(1) = -1;
@@ -222,27 +222,27 @@ int main() {
       Gaussian2D<Double> g2(height, mean(0), mean(1), fwhm(0), fwhm(1) / fwhm(0), pa);
 
       Double x = mean(0), y = mean(1);
-      if (!near(g(x, y), height)) failed = True;
+      if (!near(g(x, y), height)) failed = true;
       g1 = g;
       x -= sin(pa) * fwhm(0) / 2;
       y += cos(pa) * fwhm(0) / 2;
-      if (!near(g1(x, y), height / 2.0, 1E-6)) failed = True;
-      if (!near(g2(x, y), height / 2.0, 1E-6)) failed = True;
+      if (!near(g1(x, y), height / 2.0, 1E-6)) failed = true;
+      if (!near(g2(x, y), height / 2.0, 1E-6)) failed = true;
 
       Gaussian2D<Double> g3(g);
 
       x = mean(0) - cos(pa) * fwhm(1) / 2;
       y = mean(1) - sin(pa) * fwhm(1) / 2;
-      if (!near(g3(x, y), height / 2.0, 1E-6)) failed = True;
+      if (!near(g3(x, y), height / 2.0, 1E-6)) failed = true;
       if (!failed)
         cout << "Passed";
       else {
         cout << "Failed";
-        failed = True;
+        failed = true;
       }
       cout << " the arbitrary Gaussian test" << endl;
 
-      if (failed) anyFailures = True;
+      if (failed) anyFailures = true;
 
       // Test Auto differentiation - specialized
       Double fww(fwhm[1] / fwhm[0]);

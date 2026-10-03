@@ -63,7 +63,7 @@ class TableRecord;
 // <src>String</src>, <src>Complex</src> and <src>DComplex</src>.
 // As a rule, the smallest possible value of a data type is used as its
 // "undefined value"; for <src>String</src> we use the null string, and
-// for <src>Bool</src> the value <em>False</em>.
+// for <src>Bool</src> the value <em>false</em>.
 //
 // The class does not contain data. It merely defines constants and
 // has overloaded functions that return in some form the "undefined
@@ -76,7 +76,7 @@ class ValType {
   // Get the "undefined value" for this data type as the function's
   // return value.
   //<group>
-  static Bool undefBool();
+  static bool undefBool();
   static Char undefChar();
   static uChar undefUChar();
   static Short undefShort();
@@ -95,7 +95,7 @@ class ValType {
   // The <src>void*</src> function is not doing anything and is for
   // TpOther types.
   //<group>
-  static void getUndef(Bool*);
+  static void getUndef(bool*);
   static void getUndef(Char*);
   static void getUndef(uChar*);
   static void getUndef(Short*);
@@ -114,7 +114,7 @@ class ValType {
   // Get the data type code for this type as the function's
   // return value.
   //<group>
-  static DataType getType(const Bool*);
+  static DataType getType(const bool*);
   static DataType getType(const Char*);
   static DataType getType(const uChar*);
   static DataType getType(const Short*);
@@ -135,7 +135,7 @@ class ValType {
   // the string "Other   ".
   //<group>
   static const String& getTypeStr(DataType);
-  static const String& getTypeStr(const Bool*);
+  static const String& getTypeStr(const bool*);
   static const String& getTypeStr(const Char*);
   static const String& getTypeStr(const uChar*);
   static const String& getTypeStr(const Short*);
@@ -158,7 +158,7 @@ class ValType {
   // Get the size of data type in canonical format.
   // <br>The argument <src>BECanonical</src> determines if the big-endian
   // or little-endian canonical format is used.
-  static int getCanonicalSize(DataType, Bool BECanonical = True);
+  static int getCanonicalSize(DataType, bool BECanonical = true);
 
   // Get the functions to convert to/from canonical format.
   // These functions take the number of pixels as the length argument.
@@ -168,10 +168,10 @@ class ValType {
   // or little-endian canonical format is used.
   static void getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc,
                                Conversion::ValueFunction*& writeFunc, uInt& nrElementsPerValue,
-                               Bool BECanonical = True);
+                               bool BECanonical = true);
 
   // Test if a data type can be promoted to another.
-  static Bool isPromotable(DataType from, DataType to);
+  static bool isPromotable(DataType from, DataType to);
 
   // Get the pointer to the routine which compares two values.
   static ObjCompareFunc* getCmpFunc(DataType);
@@ -183,7 +183,7 @@ class ValType {
   // The <src>void*</src> function is not doing anything and is for
   // TpOther types.
   //<group>
-  static void put(AipsIO&, const Bool*);
+  static void put(AipsIO&, const bool*);
   static void put(AipsIO&, const Char*);
   static void put(AipsIO&, const uChar*);
   static void put(AipsIO&, const Short*);
@@ -203,7 +203,7 @@ class ValType {
   // The <src>void*</src> function is not doing anything and is for
   // TpOther types.
   //<group>
-  static void get(AipsIO&, Bool*);
+  static void get(AipsIO&, bool*);
   static void get(AipsIO&, Char*);
   static void get(AipsIO&, uChar*);
   static void get(AipsIO&, Short*);
@@ -223,7 +223,7 @@ class ValType {
   // The <src>void*</src> function is not doing anything and is for
   // TpOther types.
   //<group>
-  static void put(ostream&, const Bool*);
+  static void put(ostream&, const bool*);
   static void put(ostream&, const Char*);
   static void put(ostream&, const uChar*);
   static void put(ostream&, const Short*);
@@ -244,7 +244,7 @@ class ValType {
   // data types) always returns the value <src>1</src>, since such
   // values cannot be undefined.
   //<group>
-  static int isDefined(const Bool* value, const Bool* undef);
+  static int isDefined(const bool* value, const bool* undef);
   static int isDefined(const Char* value, const Char* undef);
   static int isDefined(const uChar* value, const uChar* undef);
   static int isDefined(const Short* value, const Short* undef);
@@ -261,7 +261,7 @@ class ValType {
   //</group>
 
  private:
-  static const Bool undefbool;
+  static const bool undefbool;
   static const Char undefchar;
   static const uChar undefuchar;
   static const Short undefshort;
@@ -349,7 +349,7 @@ class ValType {
   ValType();
 };
 
-inline Bool ValType::undefBool() { return undefbool; }
+inline bool ValType::undefBool() { return undefbool; }
 inline Char ValType::undefChar() { return undefchar; }
 inline uChar ValType::undefUChar() { return undefuchar; }
 inline Short ValType::undefShort() { return undefshort; }
@@ -363,7 +363,7 @@ inline Complex ValType::undefComplex() { return undefcomplex; }
 inline DComplex ValType::undefDComplex() { return undefdcomplex; }
 inline String ValType::undefString() { return undefstring; }
 
-inline void ValType::getUndef(Bool* val) { *val = undefbool; }
+inline void ValType::getUndef(bool* val) { *val = undefbool; }
 inline void ValType::getUndef(Char* val) { *val = undefchar; }
 inline void ValType::getUndef(uChar* val) { *val = undefuchar; }
 inline void ValType::getUndef(Short* val) { *val = undefshort; }
@@ -378,7 +378,7 @@ inline void ValType::getUndef(DComplex* val) { *val = undefdcomplex; }
 inline void ValType::getUndef(String* val) { *val = undefstring; }
 inline void ValType::getUndef(void*) {}
 
-inline DataType ValType::getType(const Bool*) { return TpBool; }
+inline DataType ValType::getType(const bool*) { return TpBool; }
 inline DataType ValType::getType(const Char*) { return TpChar; }
 inline DataType ValType::getType(const uChar*) { return TpUChar; }
 inline DataType ValType::getType(const Short*) { return TpShort; }
@@ -394,7 +394,7 @@ inline DataType ValType::getType(const String*) { return TpString; }
 inline DataType ValType::getType(const TableRecord*) { return TpRecord; }
 inline DataType ValType::getType(const void*) { return TpOther; }
 
-inline const String& ValType::getTypeStr(const Bool*) { return strbool(); }
+inline const String& ValType::getTypeStr(const bool*) { return strbool(); }
 inline const String& ValType::getTypeStr(const Char*) { return strchar(); }
 inline const String& ValType::getTypeStr(const uChar*) { return struchar(); }
 inline const String& ValType::getTypeStr(const Short*) { return strshort(); }
@@ -410,7 +410,7 @@ inline const String& ValType::getTypeStr(const String*) { return strstring(); }
 inline const String& ValType::getTypeStr(const TableRecord*) { return strrecord(); }
 inline const String& ValType::getTypeStr(const void*) { return strother(); }
 
-inline void ValType::put(AipsIO& ios, const Bool* value) { ios << *value; }
+inline void ValType::put(AipsIO& ios, const bool* value) { ios << *value; }
 inline void ValType::put(AipsIO& ios, const Char* value) { ios << *value; }
 inline void ValType::put(AipsIO& ios, const uChar* value) { ios << *value; }
 inline void ValType::put(AipsIO& ios, const Short* value) { ios << *value; }
@@ -425,7 +425,7 @@ inline void ValType::put(AipsIO& ios, const DComplex* value) { ios << *value; }
 inline void ValType::put(AipsIO& ios, const String* value) { ios << *value; }
 inline void ValType::put(AipsIO&, const void*) {}
 
-inline void ValType::get(AipsIO& ios, Bool* value) { ios >> *value; }
+inline void ValType::get(AipsIO& ios, bool* value) { ios >> *value; }
 inline void ValType::get(AipsIO& ios, Char* value) { ios >> *value; }
 inline void ValType::get(AipsIO& ios, uChar* value) { ios >> *value; }
 inline void ValType::get(AipsIO& ios, Short* value) { ios >> *value; }
@@ -440,7 +440,7 @@ inline void ValType::get(AipsIO& ios, DComplex* value) { ios >> *value; }
 inline void ValType::get(AipsIO& ios, String* value) { ios >> *value; }
 inline void ValType::get(AipsIO&, void*) {}
 
-inline void ValType::put(ostream& ios, const Bool* value) { ios << *value; }
+inline void ValType::put(ostream& ios, const bool* value) { ios << *value; }
 inline void ValType::put(ostream& ios, const Char* value) { ios << *value; }
 inline void ValType::put(ostream& ios, const uChar* value) { ios << *value; }
 inline void ValType::put(ostream& ios, const Short* value) { ios << *value; }
@@ -455,7 +455,7 @@ inline void ValType::put(ostream& ios, const DComplex* value) { ios << *value; }
 inline void ValType::put(ostream& ios, const String* value) { ios << *value; }
 inline void ValType::put(ostream&, const void*) {}
 
-inline int ValType::isDefined(const Bool* value, const Bool* undef) { return *value != *undef; }
+inline int ValType::isDefined(const bool* value, const bool* undef) { return *value != *undef; }
 inline int ValType::isDefined(const Char* value, const Char* undef) { return *value != *undef; }
 inline int ValType::isDefined(const uChar* value, const uChar* undef) { return *value != *undef; }
 inline int ValType::isDefined(const Short* value, const Short* undef) { return *value != *undef; }

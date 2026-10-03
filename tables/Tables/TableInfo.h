@@ -216,7 +216,7 @@ class TableInfo {
   String type_p;
   String subType_p;
   String readme_p;
-  Bool writeIt_p;  // True = object has changed, so has to be written
+  bool writeIt_p;  // true = object has changed, so has to be written
 };
 
 inline const String& TableInfo::type() const { return type_p; }

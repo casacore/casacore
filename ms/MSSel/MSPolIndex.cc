@@ -71,7 +71,7 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>& corr
   // by row and correlation index
   uInt numCorr = std::min(corrType.nelements(), corrProduct.ncolumn());
   uInt nrows = msPolarizationCols_p.nrow();
-  Vector<Bool> corrMatch(nrows, False);
+  Vector<bool> corrMatch(nrows, false);
   for (uInt row = 0; row < nrows; row++) {
     Vector<Int> rowCorrType;
     msPolarizationCols_p.corrType().get(row, rowCorrType);
@@ -94,7 +94,7 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>& corr
 }
 
 // Add for MS selection
-Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, Bool exactMatch) {
+Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, bool exactMatch) {
   // Match a set of polarization correlation types
   // Input:
   //    corrType       const Vector<Int>&       Set of polarization correlation
@@ -107,9 +107,9 @@ Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, Bool
   uInt numCorr = corrType.nelements();
   uInt nrows = msPolarizationCols_p.nrow();
 
-  Vector<Bool> allMatch(numCorr);
-  Vector<Bool> corrMatch(nrows, False);
-  allMatch = False;
+  Vector<bool> allMatch(numCorr);
+  Vector<bool> corrMatch(nrows, false);
+  allMatch = false;
   for (uInt row = 0; row < nrows; row++) {
     Vector<Int> rowCorrType;
     msPolarizationCols_p.corrType().get(row, rowCorrType);
@@ -119,7 +119,7 @@ Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, Bool
       for (uInt i = 0; i < numCorr; i++)
         for (uInt j = 0; j < rowCorrType.nelements(); j++)
           if (rowCorrType(j) == corrType(i)) {
-            allMatch(i) = True;
+            allMatch(i) = true;
             break;
           }
       corrMatch(row) = allTrue(allMatch);

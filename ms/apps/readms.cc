@@ -193,18 +193,18 @@ void showParmsHDF5(const IPosition& tileShape, uInt tileSize, uInt nspw, const R
 void showParms() {
   String name = makeMSName(0, myMsName);
   if (!Table::isReadable(name)) {
-    myIsHDF5 = True;
+    myIsHDF5 = true;
     return;
   }
   Table tab(name);
   if (!tab.tableDesc().isColumn("DATA")) {
-    myReadData = False;
+    myReadData = false;
   }
   if (!tab.tableDesc().isColumn("FLOAT_DATA")) {
-    myReadFloatData = False;
+    myReadFloatData = false;
   }
   if (!tab.tableDesc().isColumn("WEIGHT_SPECTRUM")) {
-    myReadWeightSpectrum = False;
+    myReadWeightSpectrum = false;
   }
   Block<String> parts = tab.getPartNames();
   cout << " nms       = " << myNPart << "    " << myMsName;
@@ -253,7 +253,7 @@ void showParms() {
   cout << " readflag            = " << myReadFlag << std::endl;
   cout << " readweightspectrum  = " << myReadWeightSpectrum << std::endl;
   try {
-    ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", True);
+    ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", true);
     cout << " data tileshape      = " << acc.tileShape(0) << "   (tilesize = " << acc.bucketSize(0)
          << " bytes)" << std::endl;
   } catch (const AipsError&) {
@@ -278,7 +278,7 @@ void showParms() {
 }
 
 void readRows(ArrayColumn<Complex>& dataCol, ArrayColumn<float>& floatDataCol,
-              ArrayColumn<Bool>& flagCol, ArrayColumn<float>& weightCol) {
+              ArrayColumn<bool>& flagCol, ArrayColumn<float>& weightCol) {
   if (myReadRowWise) {
     for (rownr_t row = 0; row < flagCol.nrow(); ++row) {
       if (myReadData) {
@@ -311,7 +311,7 @@ void readRows(ArrayColumn<Complex>& dataCol, ArrayColumn<float>& floatDataCol,
 }
 
 void readRows(ArrayColumn<Complex>& dataCol, ArrayColumn<float>& floatDataCol,
-              ArrayColumn<Bool>& flagCol, ArrayColumn<float>& weightCol, const Slicer& slicer) {
+              ArrayColumn<bool>& flagCol, ArrayColumn<float>& weightCol, const Slicer& slicer) {
   if (myReadRowWise) {
     for (rownr_t row = 0; row < flagCol.nrow(); ++row) {
       if (myReadData) {
@@ -346,13 +346,13 @@ void readRows(ArrayColumn<Complex>& dataCol, ArrayColumn<float>& floatDataCol,
 Int64 readNoIter(MeasurementSet& tab, Int64& niter) {
   Array<Complex> data;
   Array<Float> floatData;
-  Array<Bool> flags;
+  Array<bool> flags;
   Array<Float> weights;
   ArrayColumn<Complex> dataCol;
   if (myReadData) dataCol.attach(tab, "DATA");
   ArrayColumn<Float> floatDataCol;
   if (myReadFloatData) floatDataCol.attach(tab, "FLOAT_DATA");
-  ArrayColumn<Bool> flagCol(tab, "FLAG");
+  ArrayColumn<bool> flagCol(tab, "FLAG");
   ArrayColumn<Float> weightSpectrumCol;
   if (myReadWeightSpectrum) weightSpectrumCol.attach(tab, "WEIGHT_SPECTRUM");
   const RecordInterface& attr = tab.keywordSet().asRecord("ATTR");
@@ -385,16 +385,16 @@ Int64 readNoIter(MeasurementSet& tab, Int64& niter) {
         }
         Slicer slicer(IPosition(2, 0, fchan), IPosition(2, npol, nchan), stride);
         // Read the data per time step.
-        if (myReadData) dataCol.getColumnRange(rowRange, slicer, data, True);
-        if (myReadFloatData) floatDataCol.getColumnRange(rowRange, slicer, floatData, True);
-        if (myReadFlag) flagCol.getColumnRange(rowRange, slicer, flags, True);
-        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange(rowRange, slicer, weights, True);
+        if (myReadData) dataCol.getColumnRange(rowRange, slicer, data, true);
+        if (myReadFloatData) floatDataCol.getColumnRange(rowRange, slicer, floatData, true);
+        if (myReadFlag) flagCol.getColumnRange(rowRange, slicer, flags, true);
+        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange(rowRange, slicer, weights, true);
         niter++;
       } else {
-        if (myReadData) dataCol.getColumnRange(rowRange, data, True);
-        if (myReadFloatData) floatDataCol.getColumnRange(rowRange, floatData, True);
-        if (myReadFlag) flagCol.getColumnRange(rowRange, flags, True);
-        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange(rowRange, weights, True);
+        if (myReadData) dataCol.getColumnRange(rowRange, data, true);
+        if (myReadFloatData) floatDataCol.getColumnRange(rowRange, floatData, true);
+        if (myReadFlag) flagCol.getColumnRange(rowRange, flags, true);
+        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange(rowRange, weights, true);
         niter++;
       }
     }
@@ -420,7 +420,7 @@ Int64 readSteps(MeasurementSet& ms, Int64& niter) {
   TableIterator iter1(ms, itercols1, TableIterator::Ascending, TableIterator::NoSort);
   while (!iter1.pastEnd()) {
     Table tab1(iter1.table());
-    IPosition shape = ArrayColumn<Bool>(tab1, "FLAG").shape(0);
+    IPosition shape = ArrayColumn<bool>(tab1, "FLAG").shape(0);
     int lastchan = myStartChan + myNChan;
     if (myNChan == 0) {
       lastchan = shape[1];
@@ -433,7 +433,7 @@ Int64 readSteps(MeasurementSet& ms, Int64& niter) {
       TableIterator iter2(tab1, itercols2, TableIterator::Ascending, TableIterator::NoSort);
       while (!iter2.pastEnd()) {
         Table tab2(iter2.table());
-        ArrayColumn<Bool> flagCol(tab2, "FLAG");
+        ArrayColumn<bool> flagCol(tab2, "FLAG");
         ArrayColumn<Complex> dataCol;
         if (myReadData) {
           dataCol.attach(tab2, "DATA");
@@ -478,28 +478,28 @@ void showCacheStatistics(const MeasurementSet& ms) {
   try {
     if (myReadData) {
       cout << "DATA: ";
-      RODataManAccessor(ms, "DATA", True).showCacheStatistics(cout);
+      RODataManAccessor(ms, "DATA", true).showCacheStatistics(cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadFloatData) {
       cout << "FLOAT_DATA: ";
-      RODataManAccessor(ms, "FLOAT_DATA", True).showCacheStatistics(cout);
+      RODataManAccessor(ms, "FLOAT_DATA", true).showCacheStatistics(cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadFlag) {
       cout << "FLAG: ";
-      RODataManAccessor(ms, "FLAG", True).showCacheStatistics(cout);
+      RODataManAccessor(ms, "FLAG", true).showCacheStatistics(cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadWeightSpectrum) {
       cout << "WEIGHT_SPECTRUM: ";
-      RODataManAccessor(ms, "WEIGHT_SPECTRUM", True).showCacheStatistics(cout);
+      RODataManAccessor(ms, "WEIGHT_SPECTRUM", true).showCacheStatistics(cout);
     }
   } catch (std::exception&) {
   }
@@ -507,7 +507,7 @@ void showCacheStatistics(const MeasurementSet& ms) {
 
 void setTSMCacheSize(const Table& tab, const String& columnName, int cacheSize) {
   if (cacheSize > 0) {
-    ROTiledStManAccessor acc(tab, columnName, True);
+    ROTiledStManAccessor acc(tab, columnName, true);
     for (uInt i = 0; i < acc.nhypercubes(); ++i) {
       acc.setHypercubeCacheSize(i, cacheSize);
     }
@@ -523,7 +523,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
     shp[2] = 1;
     Array<Complex> data(shp);
     Array<Float> fdata(shp);
-    Array<Bool> flags(shp);
+    Array<bool> flags(shp);
     Array<Float> weights(shp);
     IPosition s(3, 0);
     IPosition e(shp - 1);
@@ -559,7 +559,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
       hfloatdata->get(slicer, fdata);
     }
     if (myReadFlag) {
-      Array<Bool> flags(shp);
+      Array<bool> flags(shp);
       hflag->get(slicer, flags);
     }
     if (myReadWeightSpectrum) {
@@ -582,7 +582,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
     shp[2] = 1;
     Array<Complex> data(shp);
     Array<Float> fdata(shp);
-    Array<Bool> flags(shp);
+    Array<bool> flags(shp);
     Array<Float> weights(shp);
     // Make a slicer with length 1.
     s[2] = 1;
@@ -615,7 +615,7 @@ void readRowsHDF5(const std::shared_ptr<HDF5DataSet>& hflag,
       hfloatdata->get(slicer, fdata);
     }
     if (myReadFlag) {
-      Array<Bool> flags(shp);
+      Array<bool> flags(shp);
       hflag->get(slicer, flags);
     }
     if (myReadWeightSpectrum) {
@@ -678,7 +678,7 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
     std::shared_ptr<HDF5DataSet> hdata;
     std::shared_ptr<HDF5DataSet> hfloatdata;
     std::shared_ptr<HDF5DataSet> hweightspectrum;
-    std::shared_ptr<HDF5DataSet> hflag = std::make_shared<HDF5DataSet>(hspw, "FLAG", (Bool*)0);
+    std::shared_ptr<HDF5DataSet> hflag = std::make_shared<HDF5DataSet>(hspw, "FLAG", (bool*)0);
     IPosition shape = hflag->shape();
     IPosition tileShape = hflag->tileShape();
     uInt tileSize = 0;
@@ -692,10 +692,10 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
       if (myReadData) {
         hdata->setCacheSize(myCacheSizeData == 0 ? cacheSize : myCacheSizeData);
         tileSize = tileShape.product() * sizeof(Complex);
-        myReadFloatData = False;
+        myReadFloatData = false;
       }
     } catch (const std::exception&) {
-      myReadData = False;
+      myReadData = false;
     }
     if (!myReadData) {
       try {
@@ -706,7 +706,7 @@ std::vector<Int64> doHDF5(int seqnr, const String& name) {
           tileSize = tileShape.product() * sizeof(Float);
         }
       } catch (const std::exception&) {
-        myReadFloatData = False;
+        myReadFloatData = false;
       }
     }
     if (myReadWeightSpectrum) {

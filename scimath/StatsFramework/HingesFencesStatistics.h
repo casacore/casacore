@@ -46,7 +46,7 @@ namespace casacore {
 // like statistics. See class documentation for StatisticsAlgorithm for details
 // regarding QuantileComputer classes.
 
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
  public:
@@ -75,8 +75,8 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void reset();
 
   // This class does not allow statistics to be calculated as datasets are
-  // added, so an exception will be thrown if <src>c</src> is True.
-  void setCalculateAsAdded(Bool c);
+  // added, so an exception will be thrown if <src>c</src> is true.
+  void setCalculateAsAdded(bool c);
 
  protected:
   // <group>
@@ -88,26 +88,26 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
                           uInt dataStride) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataStart, uInt64 nr, uInt dataStride,
-                          const DataRanges& ranges, Bool isInclude) const;
+                          const DataRanges& ranges, bool isInclude) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
                           const MaskIterator& maskBegin, uInt maskStride) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
                           const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                          Bool isInclude) const;
+                          bool isInclude) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
                           const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
                           const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                          const DataRanges& ranges, Bool isInclude) const;
+                          const DataRanges& ranges, bool isInclude) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
                           const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
                           const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                          Bool isInclude) const;
+                          bool isInclude) const;
 
   virtual void _accumNpts(uInt64& npts, const DataIterator& dataBegin,
                           const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
@@ -120,7 +120,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                       const DataRanges& ranges, Bool isInclude) const;
+                       const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
@@ -129,7 +129,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
                        const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                       Bool isInclude) const;
+                       bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -137,12 +137,12 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                       uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude) const;
+                       uInt64 nr, uInt dataStride, const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
                        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-                       const DataRanges& ranges, Bool isInclude) const;
+                       const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMax(std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
                        const DataIterator& dataBegin, const WeightsIterator& weightBegin, uInt64 nr,
@@ -157,7 +157,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
                            uInt64 nr, uInt dataStride, const DataRanges& ranges,
-                           Bool isInclude) const;
+                           bool isInclude) const;
 
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
@@ -167,7 +167,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
                            uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                           uInt maskStride, const DataRanges& ranges, Bool isInclude) const;
+                           uInt maskStride, const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
@@ -176,13 +176,13 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
                            const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                           const DataRanges& ranges, Bool isInclude) const;
+                           const DataRanges& ranges, bool isInclude) const;
 
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
                            const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
                            const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                           Bool isInclude) const;
+                           bool isInclude) const;
 
   virtual void _minMaxNpts(uInt64& npts, std::shared_ptr<AccumType>& mymin,
                            std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
@@ -198,7 +198,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   // no weights, no mask
   virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
                                 const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                                const DataRanges& ranges, Bool isInclude);
+                                const DataRanges& ranges, bool isInclude);
 
   virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
                                 const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
@@ -207,7 +207,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void _unweightedStats(StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
                                 const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
                                 const MaskIterator& maskBegin, uInt maskStride,
-                                const DataRanges& ranges, Bool isInclude);
+                                const DataRanges& ranges, bool isInclude);
   // </group>
 
   // <group>
@@ -218,7 +218,7 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
 
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-                              uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude);
+                              uInt64 nr, uInt dataStride, const DataRanges& ranges, bool isInclude);
 
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightBegin,
@@ -228,14 +228,14 @@ class HingesFencesStatistics : public ConstrainedRangeStatistics<CASA_STATP> {
   virtual void _weightedStats(StatsData<AccumType>& stats, LocationType& location,
                               const DataIterator& dataBegin, const WeightsIterator& weightBegin,
                               uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                              uInt maskStride, const DataRanges& ranges, Bool isInclude);
+                              uInt maskStride, const DataRanges& ranges, bool isInclude);
   // </group>
 
  private:
   // _f defined in inclusion range between Q1 - _f*D and Q3 + _f*D, where
   // D = Q3 - Q1 and Q1 and Q3 are the first and third quartiles, respectively
   Double _f;
-  Bool _rangeIsSet{False}, _hasRange{False};
+  bool _rangeIsSet{false}, _hasRange{false};
 
   void _setRange();
 };

@@ -73,10 +73,10 @@ class MSStateEnums {
     // Observing mode, e.g. OFF_SPECTRUM <BR>
     // String
     OBS_MODE,
-    // True for a reference phase <BR>
+    // true for a reference phase <BR>
     // Bool.
     REF,
-    // True if the source signal is being observed <BR>
+    // true if the source signal is being observed <BR>
     // Bool.
     SIG,
     // Sub scan number (>=0) relative to scan number in MAIN <BR>

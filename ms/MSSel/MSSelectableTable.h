@@ -102,7 +102,7 @@ class MSSelectableTable {
   const Table* table() { return table_p; }
   TableExprNode col(const String& colName) { return table()->col(colName); }
 
-  virtual Bool isMS() = 0;
+  virtual bool isMS() = 0;
   virtual MSSDataType dataType() = 0;
   virtual const MSAntenna& antenna() = 0;
   virtual const MSField& field() = 0;
@@ -204,7 +204,7 @@ class MSInterface : public MSSelectableTable {
   virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) {
     return MS::columnName(nameEnum);
   }
-  virtual Bool isMS() { return True; }
+  virtual bool isMS() { return true; }
   virtual MSSDataType dataType() { return MSSelectableTable::BASELINE_BASED; }
 
   virtual const MeasurementSet* asMS() { return static_cast<const MeasurementSet*>(table()); }

@@ -109,15 +109,15 @@ class LattRegionHolder {
 
   // Comparison
   // <group>
-  virtual Bool operator==(const LattRegionHolder& other) const;
-  Bool operator!=(const LattRegionHolder& other) const;
+  virtual bool operator==(const LattRegionHolder& other) const;
+  bool operator!=(const LattRegionHolder& other) const;
   // </group>
 
   // Test if the underlying region is an LCRegion, etc.
   // <group>
-  Bool isLCRegion() const;
-  Bool isLCSlicer() const;
-  virtual Bool isWCRegion() const;
+  bool isLCRegion() const;
+  bool isLCSlicer() const;
+  virtual bool isWCRegion() const;
   // </group>
 
   // Get the region as a pointer to a LCRegion, LCSlicer, or WCRegion.
@@ -158,9 +158,9 @@ class LattRegionHolder {
   uInt itsNdim;
 };
 
-inline Bool LattRegionHolder::isLCRegion() const { return (itsLC != 0); }
-inline Bool LattRegionHolder::isLCSlicer() const { return (itsSlicer != 0); }
-inline Bool LattRegionHolder::operator!=(const LattRegionHolder& other) const {
+inline bool LattRegionHolder::isLCRegion() const { return (itsLC != 0); }
+inline bool LattRegionHolder::isLCSlicer() const { return (itsSlicer != 0); }
+inline bool LattRegionHolder::operator!=(const LattRegionHolder& other) const {
   return (!operator==(other));
 }
 inline uInt LattRegionHolder::ndim() const { return itsNdim; }

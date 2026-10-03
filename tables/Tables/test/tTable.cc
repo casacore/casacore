@@ -61,7 +61,7 @@
 // compares the results with the reference output file.
 
 // Define the callback for handling (scratch) tables.
-void cbFunc(const String& name, Bool isScratch, const String& oldname) {
+void cbFunc(const String& name, bool isScratch, const String& oldname) {
   String nm1 = name.empty() ? name : Path(name).baseName();
   String nm2 = oldname.empty() ? oldname : Path(oldname).baseName();
   cout << "ScratchCallBack:  name=" << nm1 << "  isScratch=" << isScratch << "  oldName=" << nm2
@@ -83,7 +83,7 @@ Table::EndianFormat theEndianFormat = Table::BigEndian;
 #endif
 
 // First build a description.
-void a(const StorageOption& stopt, Bool doExcp) {
+void a(const StorageOption& stopt, bool doExcp) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
@@ -113,7 +113,7 @@ void a(const StorageOption& stopt, Bool doExcp) {
     }
   }
   newtab.setShapeColumn("arr3", IPosition(3, 2, 3, 4));
-  Table tab(newtabcp, 10, False, Table::LocalEndian);
+  Table tab(newtabcp, 10, false, Table::LocalEndian);
   AlwaysAssertExit(tab.endianFormat() == theEndianFormat);
   tab.tableInfo().setType("testtype");
   tab.tableInfo().setSubType("testsubtype");
@@ -212,7 +212,7 @@ void a(const StorageOption& stopt, Bool doExcp) {
   }
 }
 
-void b(Bool doExcp) {
+void b(bool doExcp) {
   // Get the description and #rows of the Table.
   cout << "get layout in static way" << endl;
   TableDesc layout;
@@ -400,9 +400,9 @@ void b(Bool doExcp) {
   // Test using a const Bool expression.
   Table csortab = sortab(TableExprNode(2) + 3 == 5);
   AlwaysAssertExit(csortab.nrow() == sortab.nrow());
-  csortab = sortab(TableExprNode(False));
+  csortab = sortab(TableExprNode(false));
   AlwaysAssertExit(csortab.nrow() == 0);
-  csortab = sortab(TableExprNode(True), 5);
+  csortab = sortab(TableExprNode(true), 5);
   AlwaysAssertExit(csortab.nrow() == 5);
 
   // Select using an empty set.
@@ -476,9 +476,9 @@ void b(Bool doExcp) {
   cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
   // Get a subset via a mask.
-  Block<Bool> mask(4, True);
-  mask[0] = False;
-  mask[3] = False;
+  Block<bool> mask(4, true);
+  mask[0] = false;
+  mask[3] = false;
   Table seltab3 = seltab2(mask);
   if (seltab3.nrow() != 2) {
     cout << "seltab3 does not contain 2 rows" << endl;
@@ -561,7 +561,7 @@ void b(Bool doExcp) {
 }
 
 // # Test deletion of rows, array of Strings, and some more.
-void c(const StorageOption& stopt, Bool doExcp) {
+void c(const StorageOption& stopt, bool doExcp) {
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
   td.addColumn(ScalarColumnDesc<Int>("ac"));
@@ -896,7 +896,7 @@ int main(int argc, const char*[]) {
     d(stopt);
     // Also test with MultiFile (with O_DIRECT if supported).
     cout << endl << endl << "Test with MultiFile:" << endl << endl;
-    stopt = StorageOption(StorageOption::MultiFile, 4096, True);
+    stopt = StorageOption(StorageOption::MultiFile, 4096, true);
     a(stopt, (argc < 2));
     b((argc < 2));
     c(stopt, (argc < 2));

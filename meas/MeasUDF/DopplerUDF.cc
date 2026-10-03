@@ -36,13 +36,13 @@ void DopplerUDF::setup(const Table&, const TaQLStyle&) {
     throw AipsError("No arguments given in a MEAS.DOPPLER function");
   }
   // Get the 'to' reference type.
-  itsEngine.handleMeasType(operands()[0], True);
+  itsEngine.handleMeasType(operands()[0], true);
   itsRefType = itsEngine.refType();
   uInt argnr = 1;
   if (operands().size() <= argnr) {
     throw AipsError("No values given in a MEAS.DOPPLER function");
   }
-  itsEngine.handleDoppler(operands(), argnr, True, True);
+  itsEngine.handleDoppler(operands(), argnr, true, true);
   if (operands().size() > argnr) {
     throw AipsError("Too many arguments given in a MEAS.DOPPLER function");
   }

@@ -97,12 +97,12 @@ Table openTable(const String& tableName, const TableLock& lockOptions,
 Table createTable(const String& tableName, const TableDesc&, Table::TableOption,
                   Table::TableType = Table::Plain, const StorageOption& = StorageOption(),
                   const Record& dmInfo = Record(), const TableLock& lockOptions = TableLock(),
-                  rownr_t nrrow = 0, Bool initialize = False,
+                  rownr_t nrrow = 0, bool initialize = false,
                   Table::EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
 Table createSubTable(Table& parent, const String& subtableName, const TableDesc& desc,
                      Table::TableOption, const StorageOption& = StorageOption(),
                      const Record& dmInfo = Record(), const TableLock& lockOptions = TableLock(),
-                     rownr_t nrrow = 0, Bool initialize = False,
+                     rownr_t nrrow = 0, bool initialize = false,
                      Table::EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
 
 // Can the table be deleted?
@@ -117,11 +117,11 @@ Table createSubTable(Table& parent, const String& subtableName, const TableDesc&
 // <br> <src>canDeleteSubTable</src> can be used to check a subtable of the
 // given parent.
 // <group>
-Bool canDeleteTable(const String& tableName, Bool checkSubTables = False);
-Bool canDeleteTable(String& message, const String& tableName, Bool checkSubTables = False,
-                    Bool splitColons = True);
-Bool canDeleteSubTable(String& message, const Table& parent, const String& subtableName,
-                       Bool checkSubTables = False);
+bool canDeleteTable(const String& tableName, bool checkSubTables = false);
+bool canDeleteTable(String& message, const String& tableName, bool checkSubTables = false,
+                    bool splitColons = true);
+bool canDeleteSubTable(String& message, const Table& parent, const String& subtableName,
+                       bool checkSubTables = false);
 // </group>
 
 // Delete the table.
@@ -132,8 +132,8 @@ Bool canDeleteSubTable(String& message, const Table& parent, const String& subta
 // a subtable is used in another process.
 // <br> <src>deleteSubTable</src> can be used to delete a subtable of the
 // given parent.
-void deleteTable(const String& tableName, Bool checkSubTables = False);
-void deleteSubTable(Table& parent, const String& subtableName, Bool checkSubTables = False);
+void deleteTable(const String& tableName, bool checkSubTables = false);
+void deleteSubTable(Table& parent, const String& subtableName, bool checkSubTables = false);
 
 // Return the layout of a table (i.e. description and #rows).
 // This function has the advantage that only the minimal amount of

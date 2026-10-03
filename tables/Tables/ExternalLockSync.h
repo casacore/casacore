@@ -72,7 +72,7 @@ class ExternalLockSync {
   // Create the <src>LockFile</src> object and acquire a read or write
   // lock when permanent locking is in effect.
   // It throws an exception when acquiring the lock failed.
-  void makeLock(const String& tableName, Bool create, FileLocker::LockType);
+  void makeLock(const String& tableName, bool create, FileLocker::LockType);
 
   // Acquire a read or write lock (when needed).
   // Nattempts==0 indicates that it has to wait until the lock is acquired.
@@ -84,7 +84,7 @@ class ExternalLockSync {
   // <br>When a lock is successfully acquired, the number of rows
   // (see function nrrow() below) is reset as a result of
   // synchronizing the access to the table.
-  Bool acquire(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+  bool acquire(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
 
   // Get the current number of rows in this object.
   rownr_t nrow() const;
@@ -99,14 +99,14 @@ class ExternalLockSync {
 
   // Check if the table has a read or write lock, thus if the table can
   // be read or written safely.
-  Bool hasLock(FileLocker::LockType) const;
+  bool hasLock(FileLocker::LockType) const;
 
  private:
   // The callback function when releasing a lock.
-  static MemoryIO* releaseCallBack(void* lockSyncObject, Bool always);
+  static MemoryIO* releaseCallBack(void* lockSyncObject, bool always);
 
   // The member function executing the callback functionality.
-  MemoryIO* doReleaseCallBack(Bool always);
+  MemoryIO* doReleaseCallBack(bool always);
 
   // # Define the lock and sync data objects.
   TableLockData itsLock;
@@ -114,14 +114,14 @@ class ExternalLockSync {
   rownr_t itsNrrow;
 };
 
-inline Bool ExternalLockSync::hasLock(FileLocker::LockType type) const {
+inline bool ExternalLockSync::hasLock(FileLocker::LockType type) const {
   return itsLock.hasLock(type);
 }
 inline void ExternalLockSync::release(rownr_t nrrow) {
   itsNrrow = nrrow;
   itsLock.release();
 }
-inline MemoryIO* ExternalLockSync::doReleaseCallBack(Bool) {
+inline MemoryIO* ExternalLockSync::doReleaseCallBack(bool) {
   itsSync.write(itsNrrow);
   return &(itsSync.memoryIO());
 }

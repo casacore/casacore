@@ -119,7 +119,7 @@ class AipsIO;
 // The above creates the description (structure) for some record objects.
 // <srcBlock>
 // Record employeeA(employeeDesc);
-// Record employeeB(employeeDesc, False);
+// Record employeeB(employeeDesc, false);
 // </srcBlock>
 // And these two lines create Record objects which share this common structure.
 // The first Record has a fixed structure, the 2nd variable.
@@ -249,7 +249,7 @@ class Record : public RecordInterface {
   // Change the structure of this Record to contain the fields in
   // newDescription. After calling restructure, <src>description() ==
   // newDescription</src>. Any existing RecordFieldPtr objects are
-  // invalidated (their <src>isAttached()</src> members return False) after
+  // invalidated (their <src>isAttached()</src> members return false) after
   // this call.
   // <br>When the new description contains subrecords, those subrecords
   // will be restructured if <src>recursive=True</src> is given.
@@ -261,19 +261,19 @@ class Record : public RecordInterface {
   // be given to this top record.
   // <br>Restructuring is not possible and an exception is thrown
   // if the Record has a fixed structure.
-  void restructure(const RecordDesc& newDescription, Bool recursive = True) override;
+  void restructure(const RecordDesc& newDescription, bool recursive = true) override;
 
-  // Returns True if this and other have the same RecordDesc, other
+  // Returns true if this and other have the same RecordDesc, other
   // than different names for the fields. That is, the number, type and the
   // order of the fields must be identical (recursively for fixed
   // structured sub-Records in this).
   // <note role=caution>
-  // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-  // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+  // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+  // <br><src>thatRecord.conform(thisRecord) == true</src>, because
   // a variable record in one conforms a fixed record in that, but
   // not vice-versa.
   // </note>
-  Bool conform(const Record& other) const;
+  bool conform(const Record& other) const;
 
   // How many fields does this structure have? A convenient synonym for
   // <src>description().nfields()</src>.
@@ -393,7 +393,7 @@ class Record : public RecordInterface {
   RecordRep& rwRef();
 
   // Add a field to the record.
-  void addDataField(const String& name, DataType type, const IPosition& shape, Bool fixedShape,
+  void addDataField(const String& name, DataType type, const IPosition& shape, bool fixedShape,
                     const void* value) override;
 
   // Define a value in the given field.
@@ -420,7 +420,7 @@ class Record : public RecordInterface {
 inline const RecordRep& Record::ref() const { return rep_p.ref(); }
 inline const RecordDesc& Record::description() const { return ref().description(); }
 
-inline Bool Record::conform(const Record& other) const { return ref().conform(other.ref()); }
+inline bool Record::conform(const Record& other) const { return ref().conform(other.ref()); }
 
 inline AipsIO& operator<<(AipsIO& os, const Record& rec) {
   rec.putRecord(os);

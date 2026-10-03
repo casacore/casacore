@@ -60,8 +60,8 @@ class Unit;
 // The basic interaction with the class is with the static keyword match
 // functions:
 // <srcblock>
-// Bool AipsrcValue<Type>::find(Type &result, const String &keyword)
-// Bool AipsrcValue<Type>::find(Type &result, const String &keyword,
+// bool AipsrcValue<Type>::find(Type &result, const String &keyword)
+// bool AipsrcValue<Type>::find(Type &result, const String &keyword,
 //				const Type &deflt)
 // </srcblock>
 // comparable to the standard (String) <linkto class=Aipsrc>Aipsrc</linkto>
@@ -76,9 +76,9 @@ class Unit;
 // </srcblock>
 // In addition to the above finds, special finds:
 // <srcblock>
-// Bool AipsrcValue<Type>::find(Type &result, const String &keyword,
+// bool AipsrcValue<Type>::find(Type &result, const String &keyword,
 //				const Unit &defun, const Unit &resun)
-// Bool AipsrcValue<Type>::find(Type &result, const String &keyword,
+// bool AipsrcValue<Type>::find(Type &result, const String &keyword,
 //				const Unit &defun, const Unit &resun,
 //				const Type &deflt)
 // </srcblock>
@@ -103,8 +103,8 @@ class Unit;
 // types (and possible sets) act on different values, but with the same
 // result if no set has been done.
 //
-// Specialisation exists for <src>Bool</src>, where <src>True</src> is
-// any value string starting with one of 'yYtT123456789', and False in
+// Specialisation exists for <src>Bool</src>, where <src>true</src> is
+// any value string starting with one of 'yYtT123456789', and false in
 // all other cases, and no finds with Units are provided. Strings are
 // supposed to be handled by standard <linkto class=Aipsrc>Aipsrc</linkto>
 // class for single values, and a specialisation exists for the
@@ -160,10 +160,10 @@ class AipsrcValue : public Aipsrc {
   // # Member functions
   //  The <src>find()</src> functions will, given a keyword, return the value
   //  of a matched keyword found in the files. If no match found the
-  //  function will be False, and the default returned if specified.
+  //  function will be false, and the default returned if specified.
   //  <group>
-  static Bool find(T &value, const String &keyword);
-  static Bool find(T &value, const String &keyword, const T &deflt);
+  static bool find(T &value, const String &keyword);
+  static bool find(T &value, const String &keyword, const T &deflt);
   // </group>
   // These <src>find()</src> functions will, given a keyword, read the value
   // of a matched keyword as a Quantity. If no unit has been given in the
@@ -171,9 +171,9 @@ class AipsrcValue : public Aipsrc {
   // will be converted to the result_unit Unit. If no match found, the default
   // value is returned (see example above).
   // <group>
-  static Bool find(T &value, const String &keyword, const Unit &default_unit,
+  static bool find(T &value, const String &keyword, const Unit &default_unit,
                    const Unit &result_unit);
-  static Bool find(T &value, const String &keyword, const Unit &default_unit,
+  static bool find(T &value, const String &keyword, const Unit &default_unit,
                    const Unit &result_unit, const T &deflt);
   // </group>
   // Functions to register keywords for later use in get() and set(). The
@@ -212,7 +212,7 @@ class AipsrcValue : public Aipsrc {
 };
 
 template <>
-Bool AipsrcValue<String>::find(String &value, const String &keyword, const Unit &defun,
+bool AipsrcValue<String>::find(String &value, const String &keyword, const Unit &defun,
                                const Unit &resun);
 
 // <summary> Specialization of AipsrcValue for Bool </summary>
@@ -221,13 +221,13 @@ Bool AipsrcValue<String>::find(String &value, const String &keyword, const Unit 
 // </synopsis>
 
 template <>
-class AipsrcValue<Bool> : public Aipsrc {
+class AipsrcValue<bool> : public Aipsrc {
  public:
-  static Bool find(Bool &value, const String &keyword);
-  static Bool find(Bool &value, const String &keyword, const Bool &deflt);
-  static uInt registerRC(const String &keyword, const Bool &deflt);
-  static Bool get(uInt keyword);
-  static void set(uInt keyword, const Bool &deflt);
+  static bool find(bool &value, const String &keyword);
+  static bool find(bool &value, const String &keyword, const bool &deflt);
+  static uInt registerRC(const String &keyword, const bool &deflt);
+  static bool get(uInt keyword);
+  static void set(uInt keyword, const bool &deflt);
   static void save(uInt keyword);
 
  private:
@@ -238,7 +238,7 @@ class AipsrcValue<Bool> : public Aipsrc {
 };
 
 // # Declare extern templates for often used types.
-extern template class AipsrcValue<Bool>;
+extern template class AipsrcValue<bool>;
 extern template class AipsrcValue<Int>;
 extern template class AipsrcValue<Double>;
 extern template class AipsrcValue<String>;

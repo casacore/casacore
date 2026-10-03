@@ -91,7 +91,7 @@ int main() {
   AlwaysAssertExit(allEQ(coefficients, tmp1.coefficients()) &&
                    allEQ(coefficients, tmp1.parameters().getParameters()));
 
-  //     Bool operator==(const Polynomial<T> &other) const;
+  //     bool operator==(const Polynomial<T> &other) const;
   //     Bool operator!=(const Polynomial<T> &other) const;
   AlwaysAssertExit(null != linear && null != square && square != linear && null == null &&
                    linear == linear && square == square);

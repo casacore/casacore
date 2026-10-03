@@ -41,7 +41,7 @@ TSMFile::TSMFile(const TiledStMan* stman, uInt fileSequenceNr, const TSMOption& 
   char strc[8];
   snprintf(strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
   String fileName = stman->fileName() + strc;
-  Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
+  bool mapOpt = tsmOpt.option() == TSMOption::MMap;
   uInt bufSize = 0;
   if (tsmOpt.option() == TSMOption::Buffer) {
     bufSize = tsmOpt.bufferSize();
@@ -49,11 +49,11 @@ TSMFile::TSMFile(const TiledStMan* stman, uInt fileSequenceNr, const TSMOption& 
   file_p = new BucketFile(fileName, bufSize, mapOpt, mfile);
 }
 
-TSMFile::TSMFile(const String& fileName, Bool writable, const TSMOption& tsmOpt,
+TSMFile::TSMFile(const String& fileName, bool writable, const TSMOption& tsmOpt,
                  const std::shared_ptr<MultiFileBase>& mfile)
     : fileSeqnr_p(0), file_p(0), length_p(0) {
   // Create the file.
-  Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
+  bool mapOpt = tsmOpt.option() == TSMOption::MMap;
   uInt bufSize = 0;
   if (tsmOpt.option() == TSMOption::Buffer) {
     bufSize = tsmOpt.bufferSize();
@@ -71,7 +71,7 @@ TSMFile::TSMFile(const TiledStMan* stman, AipsIO& ios, uInt seqnr, const TSMOpti
   char strc[8];
   snprintf(strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
   String fileName = stman->fileName() + strc;
-  Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
+  bool mapOpt = tsmOpt.option() == TSMOption::MMap;
   uInt bufSize = 0;
   if (tsmOpt.option() == TSMOption::Buffer) {
     bufSize = tsmOpt.bufferSize();

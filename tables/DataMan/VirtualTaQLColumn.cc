@@ -39,9 +39,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 VirtualTaQLColumn::VirtualTaQLColumn(const String& expr, const String& style)
     : itsDataType(TpOther),
-      itsIsArray(False),
-      itsIsConst(False),
-      itsTempWritable(False),
+      itsIsArray(false),
+      itsIsConst(false),
+      itsTempWritable(false),
       itsExpr(expr),
       itsStyle(style),
       itsNode(0),
@@ -50,9 +50,9 @@ VirtualTaQLColumn::VirtualTaQLColumn(const String& expr, const String& style)
 
 VirtualTaQLColumn::VirtualTaQLColumn(const Record& spec)
     : itsDataType(TpOther),
-      itsIsArray(False),
-      itsIsConst(False),
-      itsTempWritable(False),
+      itsIsArray(false),
+      itsIsConst(false),
+      itsTempWritable(false),
       itsNode(0),
       itsCurArray(0),
       itsCurRow(-1) {
@@ -74,7 +74,7 @@ void VirtualTaQLColumn::makeCurArray() {
   itsCurArray = 0;
   switch (itsDataType) {
     case TpBool:
-      itsCurArray = new Array<Bool>();
+      itsCurArray = new Array<bool>();
       break;
     case TpUChar:
       itsCurArray = new Array<uChar>();
@@ -123,7 +123,7 @@ DataManagerColumn* VirtualTaQLColumn::makeScalarColumn(const String& name, int d
                                                        const String&) {
   AlwaysAssert(dataType != TpOther, AipsError);
   itsDataType = dataType;
-  itsIsArray = False;
+  itsIsArray = false;
   itsColumnName = name;
   return this;
 }
@@ -132,7 +132,7 @@ DataManagerColumn* VirtualTaQLColumn::makeIndArrColumn(const String& name, int d
                                                        const String&) {
   AlwaysAssert(dataType != TpOther, AipsError);
   itsDataType = dataType;
-  itsIsArray = True;
+  itsIsArray = true;
   itsColumnName = name;
   return this;
 }
@@ -140,9 +140,9 @@ DataManagerColumn* VirtualTaQLColumn::makeIndArrColumn(const String& name, int d
 void VirtualTaQLColumn::create64(rownr_t) {
   // Define a keyword in the column telling the expression.
   // The table has to be writable for this operation only; otherwise it is not writable.
-  itsTempWritable = True;
+  itsTempWritable = true;
   TableColumn tabcol(table(), itsColumnName);
-  itsTempWritable = False;
+  itsTempWritable = false;
   tabcol.rwKeywordSet().define("_VirtualTaQLEngine_CalcExpr", itsExpr);
   tabcol.rwKeywordSet().define("_VirtualTaQLEngine_Style", itsStyle);
 }
@@ -228,8 +228,8 @@ void VirtualTaQLColumn::setMaxLength(uInt maxLength) { itsMaxLen = maxLength; }
 
 int VirtualTaQLColumn::dataType() const { return itsDataType; }
 
-Bool VirtualTaQLColumn::isWritable() const {
-  // This is always False except temporarily in function create64 to define a keyword.
+bool VirtualTaQLColumn::isWritable() const {
+  // This is always false except temporarily in function create64 to define a keyword.
   return itsTempWritable;
 }
 
@@ -252,9 +252,9 @@ IPosition VirtualTaQLColumn::shape(rownr_t rownr) {
   return itsCurArray->shape();
 }
 
-Bool VirtualTaQLColumn::isShapeDefined(rownr_t) { return True; }
+bool VirtualTaQLColumn::isShapeDefined(rownr_t) { return true; }
 
-void VirtualTaQLColumn::getBool(rownr_t rownr, Bool* dataPtr) {
+void VirtualTaQLColumn::getBool(rownr_t rownr, bool* dataPtr) {
   *dataPtr = itsNode->getBool(rownr);
 }
 void VirtualTaQLColumn::getuChar(rownr_t rownr, uChar* dataPtr) {
@@ -309,8 +309,8 @@ void VirtualTaQLColumn::getArrayV(rownr_t rownr, ArrayBase& arr) {
 void VirtualTaQLColumn::getResult(rownr_t rownr) {
   switch (itsDataType) {
     case TpBool: {
-      Array<Bool> arr = itsNode->getArrayBool(rownr);
-      Array<Bool>& out = *static_cast<Array<Bool>*>(itsCurArray);
+      Array<bool> arr = itsNode->getArrayBool(rownr);
+      Array<bool>& out = *static_cast<Array<bool>*>(itsCurArray);
       out.reference(arr);
       break;
     }
@@ -471,11 +471,11 @@ void VirtualTaQLColumn::fillColumnCache() {
 }
 
 void VirtualTaQLColumn::fillArray(ArrayBase& arr) {
-  Bool deleteIt;
+  bool deleteIt;
   void* ptr = arr.getVStorage(deleteIt);
   switch (itsDataType) {
     case TpBool:
-      objset(static_cast<Bool*>(ptr), itsBool, arr.size());
+      objset(static_cast<bool*>(ptr), itsBool, arr.size());
       break;
     case TpUChar:
       objset(static_cast<uChar*>(ptr), itsuChar, arr.size());

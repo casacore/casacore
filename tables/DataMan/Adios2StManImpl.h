@@ -56,7 +56,7 @@ class Adios2StMan::impl {
   void create64(rownr_t aNrRows);
   rownr_t open64(rownr_t aRowNr, AipsIO &ios);
   rownr_t resync64(rownr_t aRowNr);
-  Bool flush(AipsIO &ios, Bool doFsync);
+  bool flush(AipsIO &ios, bool doFsync);
   DataManagerColumn *makeColumnCommon(const String &aName, int aDataType,
                                       const String &aDataTypeID);
   DataManagerColumn *makeScalarColumn(const String &aName, int aDataType,

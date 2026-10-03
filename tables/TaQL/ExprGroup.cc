@@ -142,12 +142,12 @@ TableExprGroupFuncBase::TableExprGroupFuncBase(TableExprNodeRep* node)
   }
 }
 TableExprGroupFuncBase::~TableExprGroupFuncBase() {}
-Bool TableExprGroupFuncBase::isLazy() const { return False; }
+bool TableExprGroupFuncBase::isLazy() const { return false; }
 void TableExprGroupFuncBase::finish() {}
 std::shared_ptr<vector<TableExprId>> TableExprGroupFuncBase::getIds() const {
   throw TableInvExpr("TableExprGroupFuncBase::getIds not implemented");
 }
-Bool TableExprGroupFuncBase::getBool(const vector<TableExprId>&) {
+bool TableExprGroupFuncBase::getBool(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getBool not implemented");
 }
 Int64 TableExprGroupFuncBase::getInt(const vector<TableExprId>&) {
@@ -165,7 +165,7 @@ MVTime TableExprGroupFuncBase::getDate(const vector<TableExprId>&) {
 String TableExprGroupFuncBase::getString(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getString not implemented");
 }
-MArray<Bool> TableExprGroupFuncBase::getArrayBool(const vector<TableExprId>&) {
+MArray<bool> TableExprGroupFuncBase::getArrayBool(const vector<TableExprId>&) {
   throw TableInvExpr("TableExprGroupFuncBase::getArrayBool not implemented");
 }
 MArray<Int64> TableExprGroupFuncBase::getArrayInt(const vector<TableExprId>&) {
@@ -186,7 +186,7 @@ MArray<String> TableExprGroupFuncBase::getArrayString(const vector<TableExprId>&
 
 TableExprGroupNull::TableExprGroupNull(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
 TableExprGroupNull::~TableExprGroupNull() {}
-Bool TableExprGroupNull::isLazy() const { return True; }
+bool TableExprGroupNull::isLazy() const { return true; }
 void TableExprGroupNull::apply(const TableExprId&) {
   throw TableInvExpr(
       "TableExprGroupFunc::apply should not be called for "
@@ -201,7 +201,7 @@ void TableExprGroupFirst::apply(const TableExprId& id) {
     itsId = id;
   }
 }
-Bool TableExprGroupFirst::getBool(const vector<TableExprId>&) { return itsOperand->getBool(itsId); }
+bool TableExprGroupFirst::getBool(const vector<TableExprId>&) { return itsOperand->getBool(itsId); }
 Int64 TableExprGroupFirst::getInt(const vector<TableExprId>&) { return itsOperand->getInt(itsId); }
 Double TableExprGroupFirst::getDouble(const vector<TableExprId>&) {
   return itsOperand->getDouble(itsId);
@@ -215,7 +215,7 @@ MVTime TableExprGroupFirst::getDate(const vector<TableExprId>&) {
 String TableExprGroupFirst::getString(const vector<TableExprId>&) {
   return itsOperand->getString(itsId);
 }
-MArray<Bool> TableExprGroupFirst::getArrayBool(const vector<TableExprId>&) {
+MArray<bool> TableExprGroupFirst::getArrayBool(const vector<TableExprId>&) {
   return itsOperand->getArrayBool(itsId);
 }
 MArray<Int64> TableExprGroupFirst::getArrayInt(const vector<TableExprId>&) {
@@ -242,13 +242,13 @@ TableExprGroupExprId::TableExprGroupExprId(TableExprNodeRep* node) : TableExprGr
   itsIds = std::make_shared<std::vector<TableExprId>>();
 }
 TableExprGroupExprId::~TableExprGroupExprId() {}
-Bool TableExprGroupExprId::isLazy() const { return True; }
+bool TableExprGroupExprId::isLazy() const { return true; }
 void TableExprGroupExprId::apply(const TableExprId& id) { itsIds->push_back(id); }
 std::shared_ptr<vector<TableExprId>> TableExprGroupExprId::getIds() const { return itsIds; }
 
 TableExprGroupRowid::TableExprGroupRowid(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
 TableExprGroupRowid::~TableExprGroupRowid() {}
-Bool TableExprGroupRowid::isLazy() const { return True; }
+bool TableExprGroupRowid::isLazy() const { return true; }
 void TableExprGroupRowid::apply(const TableExprId&) {
   throw TableInvExpr("TableExprGroupRowid::apply should not be called");
 }
@@ -262,12 +262,12 @@ MArray<Int64> TableExprGroupRowid::getArrayInt(const vector<TableExprId>& ids) {
 
 TableExprGroupAggr::TableExprGroupAggr(TableExprNodeRep* node) : TableExprGroupFuncBase(node) {}
 TableExprGroupAggr::~TableExprGroupAggr() {}
-Bool TableExprGroupAggr::isLazy() const { return True; }
+bool TableExprGroupAggr::isLazy() const { return true; }
 void TableExprGroupAggr::apply(const TableExprId&) {
   throw TableInvExpr("TableExprGroupAggr::apply should not be called");
 }
-MArray<Bool> TableExprGroupAggr::getArrayBool(const vector<TableExprId>& ids) {
-  return getArray<Bool>(ids);
+MArray<bool> TableExprGroupAggr::getArrayBool(const vector<TableExprId>& ids) {
+  return getArray<bool>(ids);
 }
 MArray<Int64> TableExprGroupAggr::getArrayInt(const vector<TableExprId>& ids) {
   return getArray<Int64>(ids);
@@ -286,7 +286,7 @@ MArray<String> TableExprGroupAggr::getArrayString(const vector<TableExprId>& ids
 }
 
 TableExprGroupFuncBool::~TableExprGroupFuncBool() {}
-Bool TableExprGroupFuncBool::getBool(const vector<TableExprId>&) { return itsValue; }
+bool TableExprGroupFuncBool::getBool(const vector<TableExprId>&) { return itsValue; }
 
 TableExprGroupFuncInt::~TableExprGroupFuncInt() {}
 Int64 TableExprGroupFuncInt::getInt(const vector<TableExprId>&) { return itsValue; }
@@ -302,99 +302,99 @@ TableExprGroupFuncString::~TableExprGroupFuncString() {}
 String TableExprGroupFuncString::getString(const vector<TableExprId>&) { return itsValue; }
 
 TableExprGroupFuncArrayBool::~TableExprGroupFuncArrayBool() {}
-MArray<Bool> TableExprGroupFuncArrayBool::getArrayBool(const vector<TableExprId>&) {
-  return MArray<Bool>(itsValue);
+MArray<bool> TableExprGroupFuncArrayBool::getArrayBool(const vector<TableExprId>&) {
+  return MArray<bool>(itsValue);
 }
-Bool TableExprGroupFuncArrayBool::checkShape(const MArrayBase& arr, const String& func) {
+bool TableExprGroupFuncArrayBool::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
     itsValue.resize(arr.shape(), arr.hasMask());
-    return True;  // first time itsValue is used
+    return true;  // first time itsValue is used
   }
   if (!itsValue.shape().isEqual(arr.shape())) {
     throw TableInvExpr("Mismatching array shapes in aggregate function " + func);
   }
   AlwaysAssert(arr.hasMask() == itsValue.hasMask(), AipsError);
-  return False;
+  return false;
 }
 
 TableExprGroupFuncArrayInt::~TableExprGroupFuncArrayInt() {}
 MArray<Int64> TableExprGroupFuncArrayInt::getArrayInt(const vector<TableExprId>&) {
   return MArray<Int64>(itsValue);
 }
-Bool TableExprGroupFuncArrayInt::checkShape(const MArrayBase& arr, const String& func) {
+bool TableExprGroupFuncArrayInt::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
     itsValue.resize(arr.shape(), arr.hasMask());
-    return True;  // first time itsValue is used
+    return true;  // first time itsValue is used
   }
   if (!itsValue.shape().isEqual(arr.shape())) {
     throw TableInvExpr("Mismatching array shapes in aggregate function " + func);
   }
   AlwaysAssert(arr.hasMask() == itsValue.hasMask(), AipsError);
-  return False;
+  return false;
 }
 
 TableExprGroupFuncArrayDouble::~TableExprGroupFuncArrayDouble() {}
 MArray<Double> TableExprGroupFuncArrayDouble::getArrayDouble(const vector<TableExprId>&) {
   return MArray<Double>(itsValue);
 }
-Bool TableExprGroupFuncArrayDouble::checkShape(const MArrayBase& arr, const String& func) {
+bool TableExprGroupFuncArrayDouble::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
     itsValue.resize(arr.shape(), arr.hasMask());
-    return True;  // first time itsValue is used
+    return true;  // first time itsValue is used
   }
   if (!itsValue.shape().isEqual(arr.shape())) {
     throw TableInvExpr("Mismatching array shapes in aggregate function " + func);
   }
   AlwaysAssert(arr.hasMask() == itsValue.hasMask(), AipsError);
-  return False;
+  return false;
 }
 
 TableExprGroupFuncArrayDComplex::~TableExprGroupFuncArrayDComplex() {}
 MArray<DComplex> TableExprGroupFuncArrayDComplex::getArrayDComplex(const vector<TableExprId>&) {
   return MArray<DComplex>(itsValue);
 }
-Bool TableExprGroupFuncArrayDComplex::checkShape(const MArrayBase& arr, const String& func) {
+bool TableExprGroupFuncArrayDComplex::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
     itsValue.resize(arr.shape(), arr.hasMask());
-    return True;  // first time itsValue is used
+    return true;  // first time itsValue is used
   }
   if (!itsValue.shape().isEqual(arr.shape())) {
     throw TableInvExpr("Mismatching array shapes in aggregate function " + func);
   }
   AlwaysAssert(arr.hasMask() == itsValue.hasMask(), AipsError);
-  return False;
+  return false;
 }
 
 TableExprGroupFuncArrayDate::~TableExprGroupFuncArrayDate() {}
 MArray<MVTime> TableExprGroupFuncArrayDate::getArrayDate(const vector<TableExprId>&) {
   return MArray<MVTime>(itsValue);
 }
-Bool TableExprGroupFuncArrayDate::checkShape(const MArrayBase& arr, const String& func) {
+bool TableExprGroupFuncArrayDate::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
     itsValue.resize(arr.shape(), arr.hasMask());
-    return True;  // first time itsValue is used
+    return true;  // first time itsValue is used
   }
   if (!itsValue.shape().isEqual(arr.shape())) {
     throw TableInvExpr("Mismatching array shapes in aggregate function " + func);
   }
   AlwaysAssert(arr.hasMask() == itsValue.hasMask(), AipsError);
-  return False;
+  return false;
 }
 
 TableExprGroupFuncArrayString::~TableExprGroupFuncArrayString() {}
 MArray<String> TableExprGroupFuncArrayString::getArrayString(const vector<TableExprId>&) {
   return MArray<String>(itsValue);
 }
-Bool TableExprGroupFuncArrayString::checkShape(const MArrayBase& arr, const String& func) {
+bool TableExprGroupFuncArrayString::checkShape(const MArrayBase& arr, const String& func) {
   if (itsValue.empty()) {
     itsValue.resize(arr.shape(), arr.hasMask());
-    return True;  // first time itsValue is used
+    return true;  // first time itsValue is used
   }
   if (!itsValue.shape().isEqual(arr.shape())) {
     throw TableInvExpr("Mismatching array shapes in aggregate function " + func);
   }
   AlwaysAssert(arr.hasMask() == itsValue.hasMask(), AipsError);
-  return False;
+  return false;
 }
 
 TableExprGroupFuncSet::TableExprGroupFuncSet(const vector<TableExprNodeRep*>& aggrNodes)

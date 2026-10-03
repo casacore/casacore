@@ -374,10 +374,10 @@ class SparseDiff {
   uInt nDerivatives() const { return rep_p->grad_p.size(); }
 
   // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const { return rep_p->grad_p.empty(); }
+  bool isConstant() const { return rep_p->grad_p.empty(); }
 
   // Sort criterium
-  static Bool ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs);
+  static bool ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs);
 
   // Sort derivative list; cater for doubles and zeroes
   void sort();

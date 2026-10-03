@@ -33,17 +33,17 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TiledFileHelper::TiledFileHelper(const String& fileName, const IPosition& shape, DataType dtype,
-                                 const TSMOption& tsmOption, Bool writable, Bool bigEndian)
+                                 const TSMOption& tsmOption, bool writable, bool bigEndian)
     : TiledStMan("TiledFileHelper", std::max(0, tsmOption.maxCacheSizeMB()) * 1024 * 1024) {
   // TSM is used on an existing file. So set optional default accordingly.
   TSMOption tsmOpt(tsmOption);
-  tsmOpt.fillOption(False);
+  tsmOpt.fillOption(false);
   // Set info in parent TiledStMan object.
   setEndian(bigEndian);
   setTsmOption(tsmOpt);
   switch (dtype) {
     case TpBool:
-      itsDesc.addColumn(ArrayColumnDesc<Bool>("DATA", shape, ColumnDesc::FixedShape));
+      itsDesc.addColumn(ArrayColumnDesc<bool>("DATA", shape, ColumnDesc::FixedShape));
       break;
     case TpUChar:
       itsDesc.addColumn(ArrayColumnDesc<uChar>("DATA", shape, ColumnDesc::FixedShape));
@@ -83,9 +83,9 @@ String TiledFileHelper::dataManagerType() const { return "TiledFileHelper"; }
 DataManager* TiledFileHelper::clone() const {
   throw AipsError("TileFileHelper::clone - not implemented");
 }
-Bool TiledFileHelper::flush(AipsIO&, Bool) {
+bool TiledFileHelper::flush(AipsIO&, bool) {
   throw AipsError("TileFileHelper::flush - not implemented");
-  return False;
+  return false;
 }
 void TiledFileHelper::create64(rownr_t) {
   throw AipsError("TileFileHelper::create64 - not implemented");
@@ -98,7 +98,7 @@ TSMCube* TiledFileHelper::getHypercube(rownr_t, IPosition&) {
   throw AipsError("TileFileHelper:getHypercube: - not implemented");
   return 0;
 }
-void TiledFileHelper::readHeader(rownr_t, Bool) {
+void TiledFileHelper::readHeader(rownr_t, bool) {
   throw AipsError("TileFileHelper::readHeader - not implemented");
 }
 

@@ -48,7 +48,7 @@ RebinImage<T>::RebinImage(const ImageInterface<T>& image, const IPosition& facto
   itsRebinPtr = new RebinLattice<T>(image, factors);
   //
   CoordinateSystem cSys =
-      CoordinateUtil::makeBinnedCoordinateSystem(factors, image.coordinates(), True);
+      CoordinateUtil::makeBinnedCoordinateSystem(factors, image.coordinates(), true);
   setCoordsMember(cSys);
   //
   this->setImageInfoMember(itsImagePtr->imageInfo());
@@ -94,42 +94,42 @@ String RebinImage<T>::imageType() const {
 }
 
 template <class T>
-Bool RebinImage<T>::ok() const {
+bool RebinImage<T>::ok() const {
   return itsRebinPtr->ok();
 }
 
 template <class T>
-Bool RebinImage<T>::isMasked() const {
+bool RebinImage<T>::isMasked() const {
   return itsRebinPtr->isMasked();
 }
 
 template <class T>
-Bool RebinImage<T>::isPersistent() const {
+bool RebinImage<T>::isPersistent() const {
   return itsRebinPtr->isPersistent();
 }
 
 template <class T>
-Bool RebinImage<T>::isPaged() const {
+bool RebinImage<T>::isPaged() const {
   return itsRebinPtr->isPaged();
 }
 
 template <class T>
-Bool RebinImage<T>::isWritable() const {
+bool RebinImage<T>::isWritable() const {
   return itsRebinPtr->isWritable();
 }
 
 template <class T>
-Bool RebinImage<T>::hasPixelMask() const {
+bool RebinImage<T>::hasPixelMask() const {
   return itsRebinPtr->hasPixelMask();
 }
 
 template <class T>
-const Lattice<Bool>& RebinImage<T>::pixelMask() const {
+const Lattice<bool>& RebinImage<T>::pixelMask() const {
   return itsRebinPtr->pixelMask();
 }
 
 template <class T>
-Lattice<Bool>& RebinImage<T>::pixelMask() {
+Lattice<bool>& RebinImage<T>::pixelMask() {
   return itsRebinPtr->pixelMask();
 }
 
@@ -149,17 +149,17 @@ void RebinImage<T>::resize(const TiledShape&) {
 }
 
 template <class T>
-String RebinImage<T>::name(Bool stripPath) const {
+String RebinImage<T>::name(bool stripPath) const {
   return itsImagePtr->name(stripPath);
 }
 
 template <class T>
-ImageAttrHandler& RebinImage<T>::attrHandler(Bool createHandler) {
+ImageAttrHandler& RebinImage<T>::attrHandler(bool createHandler) {
   return itsImagePtr->attrHandler(createHandler);
 }
 
 template <class T>
-Bool RebinImage<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool RebinImage<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   return itsRebinPtr->doGetSlice(buffer, section);
 }
 
@@ -170,7 +170,7 @@ void RebinImage<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& wh
 }
 
 template <class T>
-Bool RebinImage<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
+bool RebinImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   return itsRebinPtr->doGetMaskSlice(buffer, section);
 }
 
@@ -186,12 +186,12 @@ IPosition RebinImage<T>::doNiceCursorShape(uInt maxPixels) const {
 
 template <class T>
 LatticeIterInterface<T>* RebinImage<T>::makeIter(const LatticeNavigator& navigator,
-                                                 Bool useRef) const {
+                                                 bool useRef) const {
   return itsRebinPtr->makeIter(navigator, useRef);
 }
 
 template <class T>
-Bool RebinImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool RebinImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return itsRebinPtr->lock(type, nattempts);
 }
 template <class T>
@@ -200,7 +200,7 @@ void RebinImage<T>::unlock() {
   itsImagePtr->unlock();
 }
 template <class T>
-Bool RebinImage<T>::hasLock(FileLocker::LockType type) const {
+bool RebinImage<T>::hasLock(FileLocker::LockType type) const {
   return itsRebinPtr->hasLock(type);
 }
 template <class T>

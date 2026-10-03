@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSHistory::MSHistory() : hasBeenDestroyed_p(True) {}
+MSHistory::MSHistory() : hasBeenDestroyed_p(true) {}
 
 MSHistory::MSHistory(const String &tableName, TableOption option)
-    : MSTable<MSHistoryEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSHistoryEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSHistory::MSHistory(const String &tableName, TableOption option)
 }
 
 MSHistory::MSHistory(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSHistoryEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSHistoryEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSHistory::MSHistory(const String &tableName, const String &tableDescName, Table
                   "table is not a valid MSHistory"));
 }
 
-MSHistory::MSHistory(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSHistoryEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSHistory::MSHistory(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSHistoryEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSHistory::MSHistory(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSHistory::MSHistory(const Table &table)
-    : MSTable<MSHistoryEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSHistoryEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSHistory::MSHistory(const Table &table)
 }
 
 MSHistory::MSHistory(const MSHistory &other)
-    : MSTable<MSHistoryEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSHistoryEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSHistory::~MSHistory() {
     LogIO os;
     os << LogIO::WARN << "~MSHistory() - Table written is not a valid MSHistory" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSHistory &MSHistory::operator=(const MSHistory &other) {

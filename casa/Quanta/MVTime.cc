@@ -42,7 +42,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Static members
 MVTime::Format MVTime::defaultFormat = MVTime::Format();
 MVTime::Format MVTime::interimFormat = MVTime::Format();
-Bool MVTime::interimSet = False;
+bool MVTime::interimSet = false;
 
 // # Constructors
 MVTime::MVTime() : val(0) {}
@@ -208,7 +208,7 @@ MVTime::Format MVTime::setFormat(MVTime::formatTypes intyp, uInt inprec) {
   Format tmp = MVTime::defaultFormat;
   MVTime::defaultFormat.typ = intyp;
   MVTime::defaultFormat.prec = inprec;
-  MVTime::interimSet = False;
+  MVTime::interimSet = false;
   return tmp;
 }
 
@@ -221,7 +221,7 @@ MVTime::Format MVTime::setFormat(uInt inprec) { return setFormat(MVTime::TIME, i
 MVTime::Format MVTime::setFormat(const MVTime::Format &form) {
   Format tmp = MVTime::defaultFormat;
   MVTime::defaultFormat = form;
-  MVTime::interimSet = False;
+  MVTime::interimSet = false;
   return tmp;
 }
 
@@ -299,7 +299,7 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
 
 String MVTime::string() const {
   if (MVTime::interimSet) {
-    MVTime::interimSet = False;
+    MVTime::interimSet = false;
     return string(MVTime::interimFormat);
   }
   return string(MVTime::defaultFormat);
@@ -387,8 +387,8 @@ void MVTime::print(ostream &oss, const MVTime::Format &form) const {
   }
 }
 
-Bool MVTime::read(Quantity &res, MUString &in, Bool chk) { return read(res, in, chk, False); }
-Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
+bool MVTime::read(Quantity &res, MUString &in, bool chk) { return read(res, in, chk, false); }
+bool MVTime::read(Quantity &res, MUString &in, bool chk, bool throwExcp) {
   static const String mon[12] = {"January",   "February", "March",    "April",
                                  "May",       "June",     "July",     "August",
                                  "September", "October",  "November", "December"};
@@ -475,7 +475,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
         return MVAngle::handleReadError(in, throwExcp);
       }
     } else if (in.tSkipChar('T')) {  // new FITS/ISO
-      if (MVAngle::read(res, in, False)) {
+      if (MVAngle::read(res, in, false)) {
         res = Quantity(res.get("deg").getValue() / 360., "d");
         // Allow possible time zone as in ISO-8601
         if (in.testChar('+') || in.testChar('-')) {
@@ -506,11 +506,11 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
     }
   }
   in.unpush();
-  return True;
+  return true;
 }
 
-Bool MVTime::read(Quantity &res, const String &in, Bool chk) { return read(res, in, chk, False); }
-Bool MVTime::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
+bool MVTime::read(Quantity &res, const String &in, bool chk) { return read(res, in, chk, false); }
+bool MVTime::read(Quantity &res, const String &in, bool chk, bool throwExcp) {
   MUString tmp(in);  // Pointed non-const String
   if (!MVTime::read(res, tmp, chk, throwExcp)) {
     Double r = tmp.getDouble();
@@ -529,12 +529,12 @@ Bool MVTime::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
       return MVAngle::handleReadError(tmp, throwExcp);
     }
   }
-  return True;
+  return true;
 }
 
 ostream &operator<<(ostream &os, const MVTime &meas) {
   if (MVTime::interimSet) {
-    MVTime::interimSet = False;
+    MVTime::interimSet = false;
     meas.print(os, MVTime::interimFormat);
   } else {
     meas.print(os, MVTime::defaultFormat);
@@ -557,7 +557,7 @@ istream &operator>>(istream &is, MVTime &meas) {
 
 ostream &operator<<(ostream &os, const MVTime::Format &form) {
   MVTime::interimFormat = form;
-  MVTime::interimSet = True;
+  MVTime::interimSet = true;
   return os;
 }
 

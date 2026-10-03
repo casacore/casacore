@@ -66,10 +66,10 @@ class BucketBase {
 
   // Flush the cached buckets.
   // Possibly remaining uninitialized buckets will be initialized first.
-  // A True status is returned if buckets had to be written.
+  // A true status is returned if buckets had to be written.
   // The actual flushing is done using <src>doFlush</src> in the derived
   // class.
-  Bool flush();
+  bool flush();
 
   // Resynchronize the object (after another process updated the file).
   // It remaps the file if the nr of buckets has changed.
@@ -85,7 +85,7 @@ class BucketBase {
   void extend(uInt nrBucket);
 
   // Set that data has been written.
-  void setWritten() { itsHasWritten = True; }
+  void setWritten() { itsHasWritten = true; }
 
  protected:
   // Copy constructor is not possible.
@@ -119,7 +119,7 @@ class BucketBase {
   // The new nr of buckets in the file (after extension).
   uInt itsNewNrOfBuckets;
   // Have data been written?
-  Bool itsHasWritten;
+  bool itsHasWritten;
 };
 
 }  // namespace casacore

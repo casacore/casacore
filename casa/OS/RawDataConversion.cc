@@ -46,7 +46,7 @@ RawDataConversion::~RawDataConversion() {}
     memcpy(to, from, nr * sizeof(T));                                             \
     return nr * sizeof(T);                                                        \
   }                                                                               \
-  Bool RawDataConversion::canCopy(const T*) const { return True; }                \
+  bool RawDataConversion::canCopy(const T*) const { return true; }                \
   unsigned int RawDataConversion::externalSize(const T*) const { return sizeof(T); }
 
 RAWDATACONVERSION_DOIT(char)

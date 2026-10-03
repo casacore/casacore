@@ -100,8 +100,8 @@ class WCRegion {
 
   // Comparison
   // <group>
-  virtual Bool operator==(const WCRegion& other) const;
-  Bool operator!=(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
+  bool operator!=(const WCRegion& other) const;
   // </group>
 
   // Clone a WCRegion object.
@@ -131,11 +131,11 @@ class WCRegion {
   Int axisNr(const Record& desc, const Record& axesDesc) const;
 
   // Are both axis descriptions equal?
-  Bool isAxisDescEqual(const Record& desc1, const Record& desc2) const;
+  bool isAxisDescEqual(const Record& desc1, const Record& desc2) const;
 
   // Can the region extend itself?
   // By default it cannot.
-  virtual Bool canExtend() const;
+  virtual bool canExtend() const;
 
   // Get or set the comment.
   // <group>
@@ -223,7 +223,7 @@ class WCRegion {
   Record itsAxesDesc;
 };
 
-inline Bool WCRegion::operator!=(const WCRegion& other) const { return (!operator==(other)); }
+inline bool WCRegion::operator!=(const WCRegion& other) const { return (!operator==(other)); }
 inline const String& WCRegion::comment() const { return itsComment; }
 inline void WCRegion::setComment(const String& comment) { itsComment = comment; }
 inline const Record& WCRegion::getAxesDesc() const { return itsAxesDesc; }

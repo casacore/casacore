@@ -110,7 +110,7 @@ void ThreadedDyscoColumn<DataType>::getValues(casacore::rownr_t rowNr,
       *dataArr = DataType();
     } else {
       // Make sure array storage is contiguous.
-      casacore::Bool deleteIt;
+      bool deleteIt;
       DataType *dataPtr = dataArr->getStorage(deleteIt);
       std::unique_lock<std::mutex> lock(_mutex);
       // Wait until the block to be read is not in the write cache
@@ -161,7 +161,7 @@ template <typename DataType>
 void ThreadedDyscoColumn<DataType>::putValues(casacore::rownr_t rowNr,
                                               const casacore::Array<DataType> *dataArr) {
   // Make sure array storage is contiguous.
-  casacore::Bool deleteIt;
+  bool deleteIt;
   const DataType *dataPtr = dataArr->getStorage(deleteIt);
   if (!areOffsetsInitialized()) {
     // If the manager did not initialize its offsets yet, then it is determined

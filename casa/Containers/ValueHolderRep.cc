@@ -34,7 +34,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ValueHolderRep::ValueHolderRep(Bool value) : itsNdim(0), itsType(TpBool), itsBool(value) {}
+ValueHolderRep::ValueHolderRep(bool value) : itsNdim(0), itsType(TpBool), itsBool(value) {}
 
 ValueHolderRep::ValueHolderRep(uChar value) : itsNdim(0), itsType(TpUChar), itsInt64(value) {}
 
@@ -61,8 +61,8 @@ ValueHolderRep::ValueHolderRep(const DComplex& value)
 ValueHolderRep::ValueHolderRep(const String& value)
     : itsNdim(0), itsType(TpString), itsPtr(new String(value)) {}
 
-ValueHolderRep::ValueHolderRep(const Array<Bool>& value)
-    : itsNdim(value.ndim()), itsType(TpArrayBool), itsPtr(new Array<Bool>(value)) {}
+ValueHolderRep::ValueHolderRep(const Array<bool>& value)
+    : itsNdim(value.ndim()), itsType(TpArrayBool), itsPtr(new Array<bool>(value)) {}
 
 ValueHolderRep::ValueHolderRep(const Array<uChar>& value)
     : itsNdim(value.ndim()), itsType(TpArrayUChar), itsPtr(new Array<Int>(value.shape())) {
@@ -106,7 +106,7 @@ ValueHolderRep::ValueHolderRep(const Array<String>& value)
 ValueHolderRep::ValueHolderRep(const Record& value)
     : itsNdim(0), itsType(TpRecord), itsPtr(new Record(value)) {}
 
-ValueHolderRep::ValueHolderRep(uInt ndim, Bool) : itsNdim(ndim), itsType(TpOther), itsPtr(0) {}
+ValueHolderRep::ValueHolderRep(uInt ndim, bool) : itsNdim(ndim), itsType(TpOther), itsPtr(0) {}
 
 ValueHolderRep::~ValueHolderRep() {
   switch (itsType) {
@@ -120,7 +120,7 @@ ValueHolderRep::~ValueHolderRep() {
       delete static_cast<String*>(itsPtr);
       break;
     case TpArrayBool:
-      delete static_cast<Array<Bool>*>(itsPtr);
+      delete static_cast<Array<bool>*>(itsPtr);
       break;
     case TpArrayUChar:
     case TpArrayShort:
@@ -157,7 +157,7 @@ ValueHolderRep::~ValueHolderRep() {
   }
 }
 
-Bool ValueHolderRep::asBool() const {
+bool ValueHolderRep::asBool() const {
   switch (itsType) {
     case TpBool:
       return itsBool;
@@ -387,14 +387,14 @@ const String& ValueHolderRep::asString() const {
   throw AipsError("ValueHolderRep::asString - invalid data type " + std::to_string(itsType));
 }
 
-const Array<Bool> ValueHolderRep::asArrayBool() const {
+const Array<bool> ValueHolderRep::asArrayBool() const {
   // Empty array from numpy (which is untyped).
   if (itsType == TpOther) {
-    return Array<Bool>(IPosition(itsNdim, 0));
+    return Array<bool>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
     case TpArrayBool:
-      return *static_cast<Array<Bool>*>(itsPtr);
+      return *static_cast<Array<bool>*>(itsPtr);
     case TpArrayUChar:
     case TpArrayShort:
     case TpArrayUShort:
@@ -402,19 +402,19 @@ const Array<Bool> ValueHolderRep::asArrayBool() const {
     case TpArrayUInt:
     case TpArrayInt64: {
       const Array<Int64> from = asArrayInt64();
-      Array<Bool> to(from.shape());
+      Array<bool> to(from.shape());
       convertArray(to, from);
       return to;
     }
     case TpArrayFloat:
     case TpArrayDouble: {
       const Array<Double> from = asArrayDouble();
-      Array<Bool> to(from.shape());
+      Array<bool> to(from.shape());
       convertArray(to, from);
       return to;
     }
     default:
-      return Vector<Bool>(1, asBool());
+      return Vector<bool>(1, asBool());
   }
 }
 
@@ -852,7 +852,7 @@ void ValueHolderRep::toRecord(Record& rec, const RecordFieldId& id) const {
       rec.define(id, *static_cast<String*>(itsPtr));
       break;
     case TpArrayBool:
-      rec.define(id, *static_cast<Array<Bool>*>(itsPtr));
+      rec.define(id, *static_cast<Array<bool>*>(itsPtr));
       break;
     case TpArrayUChar: {
       const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);

@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ExtendLattice<T>::ExtendLattice()
-    : itsLatticePtr(0), itsMaskLatPtr(0), itsHasPixelMask(False), itsPixelMask(0) {}
+    : itsLatticePtr(0), itsMaskLatPtr(0), itsHasPixelMask(false), itsPixelMask(0) {}
 
 template <class T>
 ExtendLattice<T>::ExtendLattice(const Lattice<T>& lattice, const IPosition& newShape,
@@ -92,7 +92,7 @@ MaskedLattice<T>* ExtendLattice<T>::cloneML() const {
 
 template <class T>
 void ExtendLattice<T>::setPtr(Lattice<T>* latticePtr, MaskedLattice<T>* maskLatPtr) {
-  itsHasPixelMask = False;
+  itsHasPixelMask = false;
   itsPixelMask = 0;
   if (maskLatPtr == 0) {
     itsLatticePtr = latticePtr;
@@ -109,27 +109,27 @@ void ExtendLattice<T>::setPtr(Lattice<T>* latticePtr, MaskedLattice<T>* maskLatP
 }
 
 template <class T>
-Bool ExtendLattice<T>::isMasked() const {
+bool ExtendLattice<T>::isMasked() const {
   return (itsMaskLatPtr != 0);
 }
 
 template <class T>
-Bool ExtendLattice<T>::isPersistent() const {
-  return False;
+bool ExtendLattice<T>::isPersistent() const {
+  return false;
 }
 
 template <class T>
-Bool ExtendLattice<T>::isPaged() const {
+bool ExtendLattice<T>::isPaged() const {
   return itsLatticePtr->isPaged();
 }
 
 template <class T>
-Bool ExtendLattice<T>::isWritable() const {
-  return False;
+bool ExtendLattice<T>::isWritable() const {
+  return false;
 }
 
 template <class T>
-Bool ExtendLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool ExtendLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return itsLatticePtr->lock(type, nattempts);
 }
 template <class T>
@@ -137,7 +137,7 @@ void ExtendLattice<T>::unlock() {
   itsLatticePtr->unlock();
 }
 template <class T>
-Bool ExtendLattice<T>::hasLock(FileLocker::LockType type) const {
+bool ExtendLattice<T>::hasLock(FileLocker::LockType type) const {
   return itsLatticePtr->hasLock(type);
 }
 template <class T>
@@ -161,24 +161,24 @@ void ExtendLattice<T>::reopen() {
 }
 
 template <class T>
-Bool ExtendLattice<T>::hasPixelMask() const {
+bool ExtendLattice<T>::hasPixelMask() const {
   return itsHasPixelMask;
 }
 
 template <class T>
-const Lattice<Bool>& ExtendLattice<T>::pixelMask() const {
+const Lattice<bool>& ExtendLattice<T>::pixelMask() const {
   return ((const ExtendLattice<T>*)this)->pixelMask();
 }
 template <class T>
-Lattice<Bool>& ExtendLattice<T>::pixelMask() {
+Lattice<bool>& ExtendLattice<T>::pixelMask() {
   if (!itsHasPixelMask) {
     throw(AipsError("ExtendLattice::pixelMask - no pixelmask available"));
   }
   // Construct the pixelmask (as an extension of the parent pixelmask)
   // if that is not done yet.
   if (itsPixelMask == 0) {
-    Lattice<Bool>& fullMask = itsMaskLatPtr->pixelMask();
-    itsPixelMask = new ExtendLattice<Bool>(fullMask, itsExtendSpec.newShape(),
+    Lattice<bool>& fullMask = itsMaskLatPtr->pixelMask();
+    itsPixelMask = new ExtendLattice<bool>(fullMask, itsExtendSpec.newShape(),
                                            itsExtendSpec.newAxes(), itsExtendSpec.stretchAxes());
   }
   return *itsPixelMask;
@@ -195,12 +195,12 @@ IPosition ExtendLattice<T>::shape() const {
 }
 
 template <class T>
-String ExtendLattice<T>::name(Bool stripPath) const {
+String ExtendLattice<T>::name(bool stripPath) const {
   return itsLatticePtr->name(stripPath);
 }
 
 template <class T>
-Bool ExtendLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool ExtendLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   IPosition shape;
   Slicer newSect = itsExtendSpec.convert(shape, section);
   Array<T> tmpbuf(newSect.length());
@@ -235,7 +235,7 @@ Bool ExtendLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
       break;
     }
   }
-  return False;
+  return false;
 }
 
 template <class T>
@@ -255,18 +255,18 @@ IPosition ExtendLattice<T>::doNiceCursorShape(uInt maxPixels) const {
 }
 
 template <class T>
-Bool ExtendLattice<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
-  // When lattice has no mask, set mask to True.
+bool ExtendLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
+  // When lattice has no mask, set mask to true.
   if (itsMaskLatPtr == 0) {
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
   }
   IPosition shape;
   Slicer newSect = itsExtendSpec.convert(shape, section);
-  Array<Bool> tmpbuf(newSect.length());
+  Array<bool> tmpbuf(newSect.length());
   itsMaskLatPtr->doGetMaskSlice(tmpbuf, newSect);
   // Reform tmpbuf, so it has the same dimensionality as buffer.
-  Array<Bool> data = tmpbuf.reform(shape);
+  Array<bool> data = tmpbuf.reform(shape);
   // Now we have to extend tmpbuf along all extend axes.
   const IPosition& length = section.length();
   buffer.resize(length);
@@ -295,11 +295,11 @@ Bool ExtendLattice<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section
       break;
     }
   }
-  return False;
+  return false;
 }
 
 template <class T>
-Bool ExtendLattice<T>::ok() const {
+bool ExtendLattice<T>::ok() const {
   return itsLatticePtr->ok();
 }
 

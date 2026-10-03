@@ -217,7 +217,7 @@ Qtype &Quantum<Qtype>::getValue() {
 }
 
 template <class Qtype>
-Qtype Quantum<Qtype>::getValue(const Unit &other, Bool requireConform) const {
+Qtype Quantum<Qtype>::getValue(const Unit &other, bool requireConform) const {
   UnitVal myType = qUnit.getValue();
   UnitVal otherType = other.getValue();
   Double myFac = myType.getFac();
@@ -262,18 +262,18 @@ void Quantum<Qtype>::setValue(const Qtype &val) {
 }
 
 template <class Qtype>
-Bool Quantum<Qtype>::read(Quantity &res, MUString &in) {
+bool Quantum<Qtype>::read(Quantity &res, MUString &in) {
   return readQuantity(res, in);
 }
 
 template <class Qtype>
-Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
+bool Quantum<Qtype>::read(Quantity &res, const String &in) {
   return readQuantity(res, in);
 }
 
 template <class Qtype>
-Bool Quantum<Qtype>::check(const UnitVal &uv) const {
-  return ((qUnit.getValue() == uv) ? True : False);
+bool Quantum<Qtype>::check(const UnitVal &uv) const {
+  return ((qUnit.getValue() == uv) ? true : false);
 }
 
 template <class Qtype>

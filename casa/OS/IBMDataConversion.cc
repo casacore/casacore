@@ -194,72 +194,72 @@ size_t IBMDataConversion::fromLocal(void* to, const double* from, size_t nr) con
   return nr * SIZE_IBM_DOUBLE;
 }
 
-Bool IBMDataConversion::canCopy(const char*) const { return False; }
+bool IBMDataConversion::canCopy(const char*) const { return false; }
 
-Bool IBMDataConversion::canCopy(const unsigned char*) const {
+bool IBMDataConversion::canCopy(const unsigned char*) const {
   if (sizeof(unsigned char) == SIZE_IBM_UCHAR) {
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const short*) const {
+bool IBMDataConversion::canCopy(const short*) const {
 #if !defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(short) == SIZE_IBM_SHORT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const unsigned short*) const {
+bool IBMDataConversion::canCopy(const unsigned short*) const {
 #if !defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(unsigned short) == SIZE_IBM_USHORT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const int*) const {
+bool IBMDataConversion::canCopy(const int*) const {
 #if !defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(int) == SIZE_IBM_INT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const unsigned int*) const {
+bool IBMDataConversion::canCopy(const unsigned int*) const {
 #if !defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(unsigned int) == SIZE_IBM_UINT) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const Int64*) const {
+bool IBMDataConversion::canCopy(const Int64*) const {
 #if !defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(Int64) == SIZE_IBM_INT64) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const uInt64*) const {
+bool IBMDataConversion::canCopy(const uInt64*) const {
 #if !defined(AIPS_LITTLE_ENDIAN)
   if (sizeof(uInt64) == SIZE_IBM_UINT64) {
-    return True;
+    return true;
   }
 #endif
-  return False;
+  return false;
 }
 
-Bool IBMDataConversion::canCopy(const float*) const { return False; }
+bool IBMDataConversion::canCopy(const float*) const { return false; }
 
-Bool IBMDataConversion::canCopy(const double*) const { return False; }
+bool IBMDataConversion::canCopy(const double*) const { return false; }
 
 unsigned int IBMDataConversion::externalSize(const char*) const { return SIZE_IBM_CHAR; }
 unsigned int IBMDataConversion::externalSize(const unsigned char*) const { return SIZE_IBM_UCHAR; }

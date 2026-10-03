@@ -47,7 +47,7 @@ WCPolygon::WCPolygon()
     //
     // Default constructor
     //
-    : itsNull(True) {
+    : itsNull(true) {
   unitInit();
 }
 
@@ -59,7 +59,7 @@ WCPolygon::WCPolygon(const Quantum<Vector<Double>>& x, const Quantum<Vector<Doub
       itsPixelAxes(pixelAxes),
       itsCSys(cSys),
       itsAbsRel(absRel),
-      itsNull(False)
+      itsNull(false)
 //
 {
   AlwaysAssert(itsCSys.nPixelAxes() >= 2, AipsError);
@@ -112,7 +112,7 @@ WCPolygon::WCPolygon(const LCPolygon& polyLC, const IPosition& pixelAxes,
     //
     // Constructor from an LCPolygon
     //
-    : itsPixelAxes(pixelAxes), itsCSys(cSys), itsAbsRel(RegionType::Abs), itsNull(False) {
+    : itsPixelAxes(pixelAxes), itsCSys(cSys), itsAbsRel(RegionType::Abs), itsNull(false) {
   AlwaysAssert(itsCSys.nPixelAxes() >= 2, AipsError);
   AlwaysAssert(itsCSys.nWorldAxes() >= 2, AipsError);
   String msg;
@@ -224,10 +224,10 @@ WCPolygon& WCPolygon::operator=(const WCPolygon& that)
   return *this;
 }
 
-Bool WCPolygon::operator==(const WCRegion& other) const {
+bool WCPolygon::operator==(const WCRegion& other) const {
   // Type check
 
-  if (type() != other.type()) return False;
+  if (type() != other.type()) return false;
 
   // Caste
 
@@ -235,39 +235,39 @@ Bool WCPolygon::operator==(const WCRegion& other) const {
 
   // Check private data
 
-  if (itsAbsRel != that.itsAbsRel) return False;
-  if (itsNull != that.itsNull) return False;
+  if (itsAbsRel != that.itsAbsRel) return false;
+  if (itsNull != that.itsNull) return false;
 
   // Exact match for units and values is required.  That is,
   // the check is not done in intrinsic values.
 
-  if (itsX.getUnit() != that.itsX.getUnit()) return False;
-  if (itsY.getUnit() != that.itsY.getUnit()) return False;
+  if (itsX.getUnit() != that.itsX.getUnit()) return false;
+  if (itsY.getUnit() != that.itsY.getUnit()) return false;
   //
   Vector<Double> x1 = itsX.getValue();
   Vector<Double> y1 = itsY.getValue();
   Vector<Double> x2 = that.itsX.getValue();
   Vector<Double> y2 = that.itsY.getValue();
-  if (x1.nelements() != x2.nelements()) return False;
-  if (y1.nelements() != y2.nelements()) return False;
+  if (x1.nelements() != x2.nelements()) return false;
+  if (y1.nelements() != y2.nelements()) return false;
   //
   uInt i;
   for (i = 0; i < x1.nelements(); i++) {
-    if (x1(i) != x2(i)) return False;
-    if (y1(i) != y2(i)) return False;
+    if (x1(i) != x2(i)) return false;
+    if (y1(i) != y2(i)) return false;
   }
-  if (itsPixelAxes.nelements() != that.itsPixelAxes.nelements()) return False;
+  if (itsPixelAxes.nelements() != that.itsPixelAxes.nelements()) return false;
   for (i = 0; i < itsPixelAxes.nelements(); i++) {
-    if (itsPixelAxes(i) != that.itsPixelAxes(i)) return False;
+    if (itsPixelAxes(i) != that.itsPixelAxes(i)) return false;
   }
-  if (!itsCSys.near(that.itsCSys)) return False;
+  if (!itsCSys.near(that.itsCSys)) return false;
 
-  return True;
+  return true;
 }
 
 WCRegion* WCPolygon::cloneRegion() const { return new WCPolygon(*this); }
 
-Bool WCPolygon::canExtend() const { return False; }
+bool WCPolygon::canExtend() const { return false; }
 
 TableRecord WCPolygon::toRecord(const String&) const {
   // Create record
@@ -278,7 +278,7 @@ TableRecord WCPolygon::toRecord(const String&) const {
 
   // Convert to 1-rel.
 
-  rec.define("oneRel", True);
+  rec.define("oneRel", true);
   //
   const uInt nAxes = itsPixelAxes.nelements();
   Vector<Int> pixelAxes(nAxes);
@@ -335,7 +335,7 @@ WCPolygon* WCPolygon::fromRecord(const TableRecord& rec, const String&) {
 
   unitInit();
   CoordinateSystem* pCSys = CoordinateSystem::restore(rec, "coordinates");
-  Bool oneRel = rec.asBool("oneRel");
+  bool oneRel = rec.asBool("oneRel");
   RegionType::AbsRelType absRel = RegionType::AbsRelType(rec.asInt("absrel"));
 
   // Get pixel axes and convert to zero rel.
@@ -416,20 +416,20 @@ LCRegion* WCPolygon::doToLCRegion(const CoordinateSystem& cSys, const IPosition&
   String yUnits = itsY.getUnit();
   Vector<String> units = cSys.worldAxisUnits();
   //
-  Bool xIsWorld = True;
-  Bool yIsWorld = True;
+  bool xIsWorld = true;
+  bool yIsWorld = true;
   Vector<Double> xValue;
   if (xUnits != "pix" && xUnits != "frac") {
     xValue = itsX.getValue(units(xWorldAxis));
   } else {
-    xIsWorld = False;
+    xIsWorld = false;
     xValue = itsX.getValue();
   }
   Vector<Double> yValue;
   if (yUnits != "pix" && yUnits != "frac") {
     yValue = itsY.getValue(units(yWorldAxis));
   } else {
-    yIsWorld = False;
+    yIsWorld = false;
     yValue = itsY.getValue();
   }
 

@@ -58,7 +58,7 @@ void testUnit(const String& comm, double expResult, const String& expUnit) {
     cout << " found    " << node.getDouble(0) << ' ' << node.unit().getName() << endl;
   }
 }
-void testUnit(const String& comm, Bool expResult) {
+void testUnit(const String& comm, bool expResult) {
   TaQLResult result = tableCommand(comm);
   AlwaysAssert(!result.isTable(), AipsError);
   TableExprNode node = result.node();
@@ -92,18 +92,18 @@ void checkUnits() {
   testUnit("calc 20Aug06 - 13Aug06", 7., "d");
   testUnit("calc 20Aug06 +86400s + 12*60min - 13Aug06", 8.5, "d");
   testUnit("calc sum([2mm,0.1cm] + [3cm,2mm])", 35, "mm");
-  testUnit("calc 1mm in [2mm,0.1cm]", True);
-  testUnit("calc 0.02dm in [2mm,0.1cm]", True);
-  testUnit("calc 0.025dm in [2mm<:<0.3cm]", True);
-  testUnit("calc 0.02dm in [2mm<:<0.3cm]", False);
-  testUnit("calc !near(2cm,20mm)", False);
-  testUnit("calc 0.002km == 2m", True);
-  testUnit("calc [180deg/pi(),180deg/pi()] incone [2rad,2rad,1rad]", True);
-  testUnit("calc [90deg/pi(),90deg/pi()] incone [2rad,2rad,1rad]", False);
-  testUnit("calc [1rad,1.rad] incone [1rad,1rad,1arcsec]", True);
-  testUnit("calc [1rad,1.0001rad] incone [1rad,1rad,1arcsec]", False);
-  testUnit("calc [1h0m,15d0m] incone [15deg,15deg,1arcsec]", True);
-  testUnit("calc near(4.67312e+09s-3200, mjd('2006/12/18'))", True);
+  testUnit("calc 1mm in [2mm,0.1cm]", true);
+  testUnit("calc 0.02dm in [2mm,0.1cm]", true);
+  testUnit("calc 0.025dm in [2mm<:<0.3cm]", true);
+  testUnit("calc 0.02dm in [2mm<:<0.3cm]", false);
+  testUnit("calc !near(2cm,20mm)", false);
+  testUnit("calc 0.002km == 2m", true);
+  testUnit("calc [180deg/pi(),180deg/pi()] incone [2rad,2rad,1rad]", true);
+  testUnit("calc [90deg/pi(),90deg/pi()] incone [2rad,2rad,1rad]", false);
+  testUnit("calc [1rad,1.rad] incone [1rad,1rad,1arcsec]", true);
+  testUnit("calc [1rad,1.0001rad] incone [1rad,1rad,1arcsec]", false);
+  testUnit("calc [1h0m,15d0m] incone [15deg,15deg,1arcsec]", true);
+  testUnit("calc near(4.67312e+09s-3200, mjd('2006/12/18'))", true);
   testUnit("calc 172800s / 86400", 2., "d");
   testUnit("calc 172800m / 86400", 2., "m");
 }
@@ -135,7 +135,7 @@ int main(int argc, const char* argv[]) {
 // Ask and execute command till empty string is given.
 void docomm() {
   char comm[1025];
-  while (True) {
+  while (true) {
     cout << "Table command (q=quit): ";
     cin.getline(comm, 1024);
     String str(comm);
@@ -269,7 +269,7 @@ void showExpr(const TableExprNode& expr) {
       cout << "  row " << i << ":  ";
       switch (expr.dataType()) {
         case TpBool: {
-          MArray<Bool> arr;
+          MArray<bool> arr;
           expr.get(i, arr);
           cout << arr.array();
           break;
@@ -310,12 +310,12 @@ void showExpr(const TableExprNode& expr) {
 void seltab(const String& str) {
   // If no command is given, assume it is CALC.
   String::size_type spos = str.find_first_not_of(' ');
-  Bool addCalc = False;
+  bool addCalc = false;
   String s;
   if (spos != String::npos) {
     String::size_type epos = str.find(' ', spos);
     if (epos == String::npos) {
-      addCalc = True;
+      addCalc = true;
     } else {
       s = str.substr(spos, epos - spos);
       ToLowerCaseInPlace(s);
@@ -352,7 +352,7 @@ void seltab(const String& str) {
     // Add _COUNT_ column if counting is done.
     if (s == "count") {
       uInt nrcol = vecstr.size();
-      vecstr.resize(nrcol + 1, True);
+      vecstr.resize(nrcol + 1, true);
       vecstr[nrcol] = "_COUNT_";
     }
     cout << vecstr.nelements() << " selected columns: ";

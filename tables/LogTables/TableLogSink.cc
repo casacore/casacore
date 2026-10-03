@@ -155,18 +155,18 @@ void TableLogSink::reopenRW(const LogFilterInterface& aFilter) {
   filter(aFilter);
 }
 
-Bool TableLogSink::postLocally(const LogMessage& message) {
+bool TableLogSink::postLocally(const LogMessage& message) {
   if (log_table_p.isWritable()) {
     log_table_p.reopenRW();
     attachCols();
   }
-  Bool posted = False;
+  bool posted = false;
   if (filter().pass(message)) {
     String tmp;
     message.origin().objectID().toString(tmp);
     writeLocally(message.messageTime().modifiedJulianDay() * C::day, message.message(),
                  LogMessage::toString(message.priority()), message.origin().location(), tmp);
-    posted = True;
+    posted = true;
   }
   return posted;
 }
@@ -226,7 +226,7 @@ TableDesc TableLogSink::logTableDescription() {
   return desc;
 }
 
-void TableLogSink::flush(Bool) { log_table_p.flush(); }
+void TableLogSink::flush(bool) { log_table_p.flush(); }
 
 void TableLogSink::writeLocally(Double mtime, const String& mmessage, const String& mpriority,
                                 const String& mlocation, const String& mobjectID) {

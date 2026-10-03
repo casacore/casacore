@@ -61,7 +61,7 @@ class MSSelectionError : public AipsError {
   void reset() { message = ""; }
   MSSelectionError(const String& message, Category c = GENERAL);
   ~MSSelectionError() noexcept;
-  Bool hasMessage;
+  bool hasMessage;
 };
 //
 //-------------------------------------------------------------------

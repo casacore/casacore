@@ -82,23 +82,23 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   virtual void flattenTree(std::vector<TableExprNodeRep*>&) override;
 
   // Is it a discrete set element.
-  // Default implementation returns False.
-  virtual Bool isDiscrete() const;
+  // Default implementation returns false.
+  virtual bool isDiscrete() const;
 
   // Is a single value given?
-  // Default implementation returns False.
-  virtual Bool isSingle() const;
+  // Default implementation returns false.
+  virtual bool isSingle() const;
 
   // Is the interval left or right closed?
-  // Default implementation returns False.
+  // Default implementation returns false.
   // <group>
-  virtual Bool isLeftClosed() const;
-  virtual Bool isRightClosed() const;
+  virtual bool isLeftClosed() const;
+  virtual bool isRightClosed() const;
   // </group>
 
   // Is the interval given as mid-width?
-  // Default implementation returns False.
-  virtual Bool isMidWidth() const;
+  // Default implementation returns false.
+  virtual bool isMidWidth() const;
 
   // Get the start, end or increment expression.
   // Note that the shared pointer returned can be null indicating that a
@@ -114,7 +114,7 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  virtual void fillVector(Vector<Bool>& vec, Int64& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<bool>& vec, Int64& cnt, const TableExprId& id) const;
   virtual void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const;
   virtual void fillVector(Vector<Double>& vec, Int64& cnt, const TableExprId& id) const;
   virtual void fillVector(Vector<DComplex>& vec, Int64& cnt, const TableExprId& id) const;
@@ -125,18 +125,18 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  virtual void matchBool(Bool* match, const Bool* value, size_t nval, const TableExprId& id) const;
-  virtual void matchInt(Bool* match, const Int64* value, size_t nval, const TableExprId& id) const;
-  virtual void matchDouble(Bool* match, const Double* value, size_t nval,
+  virtual void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const;
+  virtual void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const;
+  virtual void matchDouble(bool* match, const Double* value, size_t nval,
                            const TableExprId& id) const;
-  virtual void matchDComplex(Bool* match, const DComplex* value, size_t nval,
+  virtual void matchDComplex(bool* match, const DComplex* value, size_t nval,
                              const TableExprId& id) const;
-  virtual void matchString(Bool* match, const String* value, size_t nval,
+  virtual void matchString(bool* match, const String* value, size_t nval,
                            const TableExprId& id) const;
-  virtual void matchDate(Bool* match, const MVTime* value, size_t nval,
+  virtual void matchDate(bool* match, const MVTime* value, size_t nval,
                          const TableExprId& id) const;
   // </group>
 
@@ -208,17 +208,17 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   ~TableExprNodeSetElemSingle() override = default;
 
   // It is a discrete set element.
-  Bool isDiscrete() const override;
+  bool isDiscrete() const override;
 
   // A single value is given (which can be an array).
-  Bool isSingle() const override;
+  bool isSingle() const override;
 
   // Fill a vector with the value(s) from this element by appending them
   // at the end of the vector; the end is given by argument <src>cnt</src>
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  void fillVector(Vector<Bool>& vec, Int64& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<bool>& vec, Int64& cnt, const TableExprId& id) const override;
   void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const override;
   void fillVector(Vector<Double>& vec, Int64& cnt, const TableExprId& id) const override;
   void fillVector(Vector<DComplex>& vec, Int64& cnt, const TableExprId& id) const override;
@@ -229,18 +229,18 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchBool(Bool* match, const Bool* value, size_t nval, const TableExprId& id) const override;
-  void matchInt(Bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
-  void matchDouble(Bool* match, const Double* value, size_t nval,
+  void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const override;
+  void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
+  void matchDouble(bool* match, const Double* value, size_t nval,
                    const TableExprId& id) const override;
-  void matchDComplex(Bool* match, const DComplex* value, size_t nval,
+  void matchDComplex(bool* match, const DComplex* value, size_t nval,
                      const TableExprId& id) const override;
-  void matchString(Bool* match, const String* value, size_t nval,
+  void matchString(bool* match, const String* value, size_t nval,
                    const TableExprId& id) const override;
-  void matchDate(Bool* match, const MVTime* value, size_t nval,
+  void matchDate(bool* match, const MVTime* value, size_t nval,
                  const TableExprId& id) const override;
   // </group>
 
@@ -297,12 +297,12 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // Optionally the end is inclusive (C++ and Glish style) or exclusive
   // (Python style).
   TableExprNodeSetElemDiscrete(const TableExprNode& start, const TableExprNode& end,
-                               const TableExprNode& incr, Bool isEndExcl = False);
+                               const TableExprNode& incr, bool isEndExcl = false);
 
   ~TableExprNodeSetElemDiscrete() override = default;
 
   // It is a discrete set element.
-  Bool isDiscrete() const override;
+  bool isDiscrete() const override;
 
   // Fill a vector with the value(s) from this element by appending them
   // at the end of the vector; the end is given by argument <src>cnt</src>
@@ -317,13 +317,13 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchInt(Bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
-  void matchDouble(Bool* match, const Double* value, size_t nval,
+  void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
+  void matchDouble(bool* match, const Double* value, size_t nval,
                    const TableExprId& id) const override;
-  void matchDate(Bool* match, const MVTime* value, size_t nval,
+  void matchDate(bool* match, const MVTime* value, size_t nval,
                  const TableExprId& id) const override;
   // </group>
 
@@ -339,7 +339,7 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
                                const TENShPtr& end, const TENShPtr& incr);
 
   // # Data members
-  Bool itsEndExcl;
+  bool itsEndExcl;
   // Explicitly hide base function to prevent warning
   using TableExprNodeSetElemBase::fillVector;
 };
@@ -373,14 +373,14 @@ class TableExprNodeSetElemCont : public TableExprNodeSetElemBase {
  public:
   // Create the object for a continuous bounded interval. It can be
   // open or closed on either side.
-  TableExprNodeSetElemCont(Bool isLeftClosed, const TableExprNode& start, const TableExprNode& end,
-                           Bool isRightClosed);
+  TableExprNodeSetElemCont(bool isLeftClosed, const TableExprNode& start, const TableExprNode& end,
+                           bool isRightClosed);
 
   // Create the object for a continuous left-bounded interval.
-  TableExprNodeSetElemCont(Bool isLeftClosed, const TableExprNode& start);
+  TableExprNodeSetElemCont(bool isLeftClosed, const TableExprNode& start);
 
   // Create the object for a continuous right-bounded interval.
-  TableExprNodeSetElemCont(const TableExprNode& end, Bool isRightClosed);
+  TableExprNodeSetElemCont(const TableExprNode& end, bool isRightClosed);
 
   // Construct an element from the given parts and take over their pointers.
   // It is used by evaluate to construct an element in a rather cheap way.
@@ -391,21 +391,21 @@ class TableExprNodeSetElemCont : public TableExprNodeSetElemBase {
 
   // Is the interval left or right closed?
   // <group>
-  Bool isLeftClosed() const override;
-  Bool isRightClosed() const override;
+  bool isLeftClosed() const override;
+  bool isRightClosed() const override;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchDouble(Bool* match, const Double* value, size_t nval,
+  void matchDouble(bool* match, const Double* value, size_t nval,
                    const TableExprId& id) const override;
-  void matchString(Bool* match, const String* value, size_t nval,
+  void matchString(bool* match, const String* value, size_t nval,
                    const TableExprId& id) const override;
-  void matchDate(Bool* match, const MVTime* value, size_t nval,
+  void matchDate(bool* match, const MVTime* value, size_t nval,
                  const TableExprId& id) const override;
   // </group>
 
@@ -420,12 +420,12 @@ class TableExprNodeSetElemCont : public TableExprNodeSetElemBase {
 
  private:
   // Setup the object for a continuous interval.
-  void setup(Bool isLeftClosed, const TableExprNode* start, const TableExprNode* end,
-             Bool isRightClosed);
+  void setup(bool isLeftClosed, const TableExprNode* start, const TableExprNode* end,
+             bool isRightClosed);
 
   // # Data members
-  Bool itsLeftClosed;
-  Bool itsRightClosed;
+  bool itsLeftClosed;
+  bool itsRightClosed;
 };
 
 // <summary>
@@ -462,17 +462,17 @@ class TableExprNodeSetElemMidWidth : public TableExprNodeSetElemCont {
   ~TableExprNodeSetElemMidWidth() override = default;
 
   // The interval is given as mid-width.
-  Bool isMidWidth() const override;
+  bool isMidWidth() const override;
 
   // Set a flag in the match output array if the corresponding element
   // in the value array is included in this set element.
   // This is used by the system to implement the IN operator.
-  // <br>Note that it does NOT set match values to False; it is assumed they
+  // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchDouble(Bool* match, const Double* value, size_t nval,
+  void matchDouble(bool* match, const Double* value, size_t nval,
                    const TableExprId& id) const override;
-  void matchDate(Bool* match, const MVTime* value, size_t nval,
+  void matchDate(bool* match, const MVTime* value, size_t nval,
                  const TableExprId& id) const override;
   // </group>
 
@@ -532,18 +532,18 @@ class TableExprNodeSetElem : public TableExprNodeRep {
   // Optionally the end is inclusive (C++ and Glish style) or exclusive
   // (Python style).
   TableExprNodeSetElem(const TableExprNode* start, const TableExprNode* end,
-                       const TableExprNode* incr, Bool isEndExcl = False);
+                       const TableExprNode* incr, bool isEndExcl = false);
 
   // Create the object for a continuous bounded interval. It can be
   // open or closed on either side.
-  TableExprNodeSetElem(Bool isLeftClosed, const TableExprNode& start, const TableExprNode& end,
-                       Bool isRightClosed);
+  TableExprNodeSetElem(bool isLeftClosed, const TableExprNode& start, const TableExprNode& end,
+                       bool isRightClosed);
 
   // Create the object for a continuous left-bounded interval.
-  TableExprNodeSetElem(Bool isLeftClosed, const TableExprNode& start);
+  TableExprNodeSetElem(bool isLeftClosed, const TableExprNode& start);
 
   // Create the object for a continuous right-bounded interval.
-  TableExprNodeSetElem(const TableExprNode& end, Bool isRightClosed);
+  TableExprNodeSetElem(const TableExprNode& end, bool isRightClosed);
 
   // Create the object for a mid-width interval (closed on both sides).
   TableExprNodeSetElem(const TableExprNode& mid, const TableExprNode& width);
@@ -555,19 +555,19 @@ class TableExprNodeSetElem : public TableExprNodeRep {
   void show(ostream& os, uInt indent) const override { itsElem->show(os, indent); }
 
   // Is it a discrete set element.
-  Bool isDiscrete() const { return itsElem->isDiscrete(); }
+  bool isDiscrete() const { return itsElem->isDiscrete(); }
 
   // Is a single value given?
-  Bool isSingle() const { return itsElem->isSingle(); }
+  bool isSingle() const { return itsElem->isSingle(); }
 
   // Is the interval left or right closed?
   // <group>
-  Bool isLeftClosed() const { return itsElem->isLeftClosed(); }
-  Bool isRightClosed() const { return itsElem->isRightClosed(); }
+  bool isLeftClosed() const { return itsElem->isLeftClosed(); }
+  bool isRightClosed() const { return itsElem->isRightClosed(); }
   // </group>
 
   // Is the interval given as mid-width?
-  Bool isMidWidth() const { return itsElem->isMidWidth(); }
+  bool isMidWidth() const { return itsElem->isMidWidth(); }
 
   // Get the start, end or increment expression.
   // Note that the shared pointer returned can be null indicating that a

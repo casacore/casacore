@@ -140,7 +140,7 @@ class TableProxy {
   // of the columns (in the form COL1=R, COL2=D, ...).
   // The string can be obtained using getAsciiFormat.
   TableProxy(const String& fileName, const String& headerName, const String& tableName,
-             Bool autoHeader, const IPosition& autoShape, const String& separator,
+             bool autoHeader, const IPosition& autoShape, const String& separator,
              const String& commentMarker, Int64 firstLine, Int64 lastLine,
              const Vector<String>& columnNames = Vector<String>(),
              const Vector<String>& dataTypes = Vector<String>());
@@ -165,7 +165,7 @@ class TableProxy {
   void resync();
 
   // Flush the table and optionally all its subtables.
-  void flush(Bool recursive);
+  void flush(bool recursive);
 
   // Flush and close the table and all its subtables.
   void close();
@@ -175,16 +175,16 @@ class TableProxy {
   String endianFormat() const;
 
   // Acquire a (read or write) lock on the table.
-  void lock(Bool mode, Int nattempts);
+  void lock(bool mode, Int nattempts);
 
   // Release a lock on the table.
   void unlock();
 
   // Determine if data in the table has changed.
-  Bool hasDataChanged();
+  bool hasDataChanged();
 
   // Determine if the process has a read or write lock on the table.
-  Bool hasLock(Bool mode);
+  bool hasLock(bool mode);
 
   // Get the lock options of the table.
   // It fills the record with the fields option, interval and maxwait.
@@ -192,7 +192,7 @@ class TableProxy {
 
   // Determine if the table (and optionally its subtables) are in use
   // in another process.
-  Bool isMultiUsed(Bool checkSubTables);
+  bool isMultiUsed(bool checkSubTables);
 
   // Write the table to an ASCII file
   // (approximately the inverse of the from-ASCII-contructor).
@@ -216,22 +216,22 @@ class TableProxy {
   // shaped, the shape of the first cell is used and a warning message is
   // returned.
   String toAscii(const String& asciiFile, const String& headerFile, const Vector<String>& columns,
-                 const String& sep, const Vector<Int>& precision, Bool useBrackets);
+                 const String& sep, const Vector<Int>& precision, bool useBrackets);
 
   // Rename the table
   void rename(const String& newTableName);
 
   // Copy the table (possibly a deep copy).
   // If noRows=True, an empty table is created.
-  TableProxy copy(const String& newTableName, Bool toMemoryTable, Bool deepCopy, Bool valueCopy,
-                  const String& endianFormat, const Record& dminfo, Bool noRows);
+  TableProxy copy(const String& newTableName, bool toMemoryTable, bool deepCopy, bool valueCopy,
+                  const String& endianFormat, const Record& dminfo, bool noRows);
 
   // Copy rows from one table to another.
   // If startOut<0, it is set to the end of the output table.
   void copyRows(TableProxy& out, Int64 startIn, Int64 startOut, Int64 nrow);
 
   // Close and delete the table.
-  void deleteTable(Bool checkSubTables);
+  void deleteTable(bool checkSubTables);
 
   // Get the table info of the table.
   Record tableInfo();
@@ -243,16 +243,16 @@ class TableProxy {
   void addReadmeLine(const String& line);
 
   // Test if a table is readable.
-  Bool isReadable() const;
+  bool isReadable() const;
 
   // Test if a table is writable.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Set the maximum cache size for the given column in the table.
   void setMaximumCacheSize(const String& columnName, Int nbytes);
 
   // Add one or more columns to the table.
-  void addColumns(const Record& tableDesc, const Record& dminfo, Bool addToParent);
+  void addColumns(const Record& tableDesc, const Record& dminfo, bool addToParent);
 
   // Rename a column in the table.
   void renameColumn(const String& nameOld, const String& nameNew);
@@ -315,7 +315,7 @@ class TableProxy {
 
   // Tests if the contents of a cell are defined.
   // Only a column with variable shaped arrays can have an empty cell.
-  Bool cellContentsDefined(const String& columnName, Int64 rownr);
+  bool cellContentsDefined(const String& columnName, Int64 rownr);
 
   // Get a value from a column in the table.
   ValueHolder getCell(const String& columnName, Int64 row);
@@ -350,7 +350,7 @@ class TableProxy {
   // containing the shapes as [a,b,c].
   // If the shape is fixed, a single String is returned.
   Vector<String> getColumnShapeString(const String& columnName, Int64 rownr, Int64 nrow, Int64 incr,
-                                      Bool cOrder = False);
+                                      bool cOrder = false);
 
   // Get a table or column keyword value in the table.
   // If the columnName is empty, a given keyword is a table keyword.
@@ -367,7 +367,7 @@ class TableProxy {
   // The value should be a record containing the value of the keyword.
   // The value can be any type (including a record).
   void putKeyword(const String& columnName, const String& keywordName, Int keywordIndex,
-                  Bool makeSubRecord, const ValueHolder&);
+                  bool makeSubRecord, const ValueHolder&);
 
   // Define multiple table or column keywords in the table.
   // If the column name is empty, a table keywords are defined.
@@ -392,7 +392,7 @@ class TableProxy {
   String tableName();
 
   // Get the names of the parts the table consists of (e.g. for a ConcatTable).
-  Vector<String> getPartNames(Bool recursive);
+  Vector<String> getPartNames(bool recursive);
 
   // Get #columns of the table.
   Int ncolumns();
@@ -410,7 +410,7 @@ class TableProxy {
   Vector<String> columnNames();
 
   // Return in result if the column contains scalars.
-  Bool isScalarColumn(const String& columnName);
+  bool isScalarColumn(const String& columnName);
 
   // Return the data type of the column as:
   //  Bool, UChar, Short, UShort, Int, UInt, Int64,
@@ -432,24 +432,24 @@ class TableProxy {
   Record getDataManagerInfo();
 
   // Get the properties of a data manager given by column or data manager name.
-  Record getProperties(const String& name, Bool byColumn);
+  Record getProperties(const String& name, bool byColumn);
 
   // Set the properties of a data manager given by column or data manager name.
-  void setProperties(const String& name, const Record& properties, Bool byColumn);
+  void setProperties(const String& name, const Record& properties, bool byColumn);
 
   // Get the table description of the table.
   // It returns a record containing the description.
-  Record getTableDescription(Bool actual,  // # use actual description?
-                             Bool cOrder = False);
+  Record getTableDescription(bool actual,  // # use actual description?
+                             bool cOrder = false);
 
   // Create a Record table description from a TableDesc object
-  static Record getTableDesc(const TableDesc& tabdesc, Bool cOrder = False);
+  static Record getTableDesc(const TableDesc& tabdesc, bool cOrder = false);
 
   // Get the column description of a column in the table.
   // It returns a record containing the description.
   Record getColumnDescription(const String& columnName,
-                              Bool actual,  // # use actual description?
-                              Bool cOrder = False);
+                              bool actual,  // # use actual description?
+                              bool cOrder = false);
 
   // Get ascii format string.
   String getAsciiFormat() const;
@@ -458,8 +458,8 @@ class TableProxy {
   Record getCalcResult() const;
 
   // Show the structure of a table.
-  String showStructure(Bool showDataMan = True, Bool showColumns = True, Bool showSubTables = False,
-                       Bool sortColumns = False) const;
+  String showStructure(bool showDataMan = true, bool showColumns = true, bool showSubTables = false,
+                       bool sortColumns = false) const;
 
   // Return the table object.
   // <group>
@@ -485,7 +485,7 @@ class TableProxy {
   static Table::EndianFormat makeEndianFormat(const String& endianFormat);
 
   // Make hypercolumn definitions for the given hypercolumns.
-  static Bool makeHC(const Record& gdesc, TableDesc& tabdesc, String& message);
+  static bool makeHC(const Record& gdesc, TableDesc& tabdesc, String& message);
 
   // Get the value of a keyword.
   static ValueHolder getKeyValue(const TableRecord& keySet, const RecordFieldId& fieldId);
@@ -498,18 +498,18 @@ class TableProxy {
   // An exception is thrown if the record table description is invalid.
   // A record table description is a Record object as returned by
   // getDesc.
-  static Bool makeTableDesc(const Record& gdesc, TableDesc& tabdesc, String& message);
+  static bool makeTableDesc(const Record& gdesc, TableDesc& tabdesc, String& message);
 
   // Add an array column description to the table description.
   // It is used by the function makeDesc.
-  static Bool addArrayColumnDesc(TableDesc& tableDesc, const String& valueType,
+  static bool addArrayColumnDesc(TableDesc& tableDesc, const String& valueType,
                                  const String& columnName, const String& comment,
                                  const String& dataManagerType, const String& dataManagerGroup,
-                                 int options, Int ndim, const Vector<Int64>& shape, Bool cOrder,
+                                 int options, Int ndim, const Vector<Int64>& shape, bool cOrder,
                                  String& message);
 
   // Make a record containing the column description.
-  static Record recordColumnDesc(const ColumnDesc&, Bool cOrder);
+  static Record recordColumnDesc(const ColumnDesc&, bool cOrder);
 
   // Make a record containing the description of all hypercolumns.
   static Record recordHCDesc(const TableDesc& tableDesc);
@@ -522,7 +522,7 @@ class TableProxy {
   static String getTypeStr(DataType);
 
   // Optionally reverse the axes.
-  static IPosition fillAxes(const IPosition&, Bool cOrder);
+  static IPosition fillAxes(const IPosition&, bool cOrder);
 
   // Check if the new shape is still the same.
   // <br> same:   0=first time;   1=still the same;   2=different
@@ -549,15 +549,15 @@ class TableProxy {
 
  protected:
   // Get the column info for toAscii.
-  Bool getColInfo(const String& colName, Bool useBrackets, String& type, String& message);
+  bool getColInfo(const String& colName, bool useBrackets, String& type, String& message);
 
   // Print the data in a table cell for toAscii.
   // <group>
   void printValueHolder(const ValueHolder& vh, ostream& os, const String& sep, Int prec,
-                        Bool useBrackets) const;
+                        bool useBrackets) const;
   template <typename T>
   void printArray(const Array<T>& arr, ostream& os, const String& sep) const;
-  void printArrayValue(ostream& os, Bool v, const String&) const { os << v; }
+  void printArrayValue(ostream& os, bool v, const String&) const { os << v; }
   void printArrayValue(ostream& os, Int v, const String&) const { os << v; }
   void printArrayValue(ostream& os, Int64 v, const String&) const { os << v; }
   void printArrayValue(ostream& os, Double v, const String&) const { os << v; }
@@ -588,26 +588,26 @@ class TableProxy {
   // Get values from the column.
   // Nrow<0 means till the end of the column.
   ValueHolder getValueFromTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr,
-                                Bool isCell);
-  void getValueFromTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr, Bool isCell,
+                                bool isCell);
+  void getValueFromTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr, bool isCell,
                          const ValueHolder& vh);
 
   // Get value slices from the column.
   // Nrow<0 means till the end of the column.
   ValueHolder getValueSliceFromTable(const String& colName, const Slicer& slicer, Int64 rownr,
-                                     Int64 nrow, Int64 incr, Bool isCell);
+                                     Int64 nrow, Int64 incr, bool isCell);
   void getValueSliceFromTable(const String& colName, const Slicer& slicer, Int64 rownr, Int64 nrow,
-                              Int64 incr, Bool isCell, const ValueHolder& vh);
+                              Int64 incr, bool isCell, const ValueHolder& vh);
 
   // Put values into the column.
   // Nrow<0 means till the end of the column.
-  void putValueInTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr, Bool isCell,
+  void putValueInTable(const String& colName, Int64 rownr, Int64 nrow, Int64 incr, bool isCell,
                        const ValueHolder&);
 
   // Put value slices into the column.
   // Nrow<0 means till the end of the column.
   void putValueSliceInTable(const String& colName, const Slicer& slicer, Int64 rownr, Int64 nrow,
-                            Int64 incr, Bool isCell, const ValueHolder&);
+                            Int64 incr, bool isCell, const ValueHolder&);
 
   // Split the keyname into its separate parts (separator is .).
   // Check if each part exists and is a subrecord (except last part).
@@ -619,7 +619,7 @@ class TableProxy {
   void findKeyId(RecordFieldId& fieldid, const TableRecord*& keySet, const String& keyname,
                  const String& column);
   void findKeyId(RecordFieldId& fieldid, TableRecord*& keySet, const String& keyname,
-                 const String& column, Bool mustExist, Bool change, Bool makeSubRecord);
+                 const String& column, bool mustExist, bool change, bool makeSubRecord);
   // </group>
 
   // Replace the user-given default value (<0) by the default value

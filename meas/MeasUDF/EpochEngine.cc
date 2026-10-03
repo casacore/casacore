@@ -57,7 +57,7 @@ void EpochEngine::handleEpoch(vector<TENShPtr>& args, uInt& argnr) {
   uInt nargnr = argnr + 1;
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-    if (handleMeasType(args[nargnr], False)) {
+    if (handleMeasType(args[nargnr], false)) {
       nargnr++;
     }
   }
@@ -73,12 +73,12 @@ void EpochEngine::handleEpoch(vector<TENShPtr>& args, uInt& argnr) {
 
 String EpochEngine::stripMeasType(const String& type) {
   String str(type);
-  itsSidFrac = False;
+  itsSidFrac = false;
   // F_ (or F-) indicates a full time, thus no sidereal fraction.
   if (str.size() >= 2 && str[0] == 'F' && (str[1] == '-' || str[1] == '_')) {
     str = str.substr(2);
   } else if (str.size() >= 4 && str[2] == 'S' && str[3] == 'T') {
-    itsSidFrac = True;
+    itsSidFrac = true;
   }
   return str;
 }
@@ -86,12 +86,12 @@ String EpochEngine::stripMeasType(const String& type) {
 void EpochEngine::setPositionEngine(PositionEngine& engine) {
   AlwaysAssert(itsPositionEngine == 0, AipsError);
   itsPositionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MPosition());
 }
 
-void EpochEngine::setConverter(MEpoch::Types toType, Bool sidFrac) {
+void EpochEngine::setConverter(MEpoch::Types toType, bool sidFrac) {
   MEpoch::Ref ref(toType, itsFrame);
   itsConverter = MEpoch::Convert(toType, ref);
   itsSidFrac = sidFrac;
@@ -121,7 +121,7 @@ void EpochEngine::handleValues(TableExprNode& operand, const TableExprId& id,
     itsRefType = MEpoch::UTC;
   }
   epochs.resize(values.shape());
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MEpoch* epVec = epochs.data();
   for (uInt i = 0; i < epochs.size(); ++i) {

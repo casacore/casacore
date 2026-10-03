@@ -39,9 +39,9 @@ void writeResult(bool failed) {
   }
 }
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   {
-    Bool failed = False;
+    bool failed = false;
     // Test HANNING with shape = 3, peakUnity = true;
     const int SHAPE = 3;
     cout << "Test: method=HANNING, shape=3, peakUnity=true" << endl;
@@ -71,7 +71,7 @@ int main() {
   }
 
   {
-    Bool failed = False;
+    bool failed = false;
     // Test HANNING with shape = 3, peakUnity = false;
     const int SHAPE = 3;
     cout << "Test: method=HANNING, shape=3, peakUnity=false" << endl;
@@ -101,7 +101,7 @@ int main() {
   }
 
   {
-    Bool failed = False;
+    bool failed = false;
     // Test HANNING with shape = 5, peakUnity = true;
     const int SHAPE = 5;
     cout << "Test: method=HANNING, shape=5, peakUnity=true" << endl;
@@ -133,7 +133,7 @@ int main() {
   }
 
   {
-    Bool failed = False;
+    bool failed = false;
     // Test HANNING with shape = 5, peakUnity = false;
     const int SHAPE = 5;
     cout << "Test: method=HANNING, shape=5, peakUnity=false" << endl;

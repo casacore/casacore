@@ -94,7 +94,7 @@ int main() {
 
     Vector<Double> tvec(3);
     tvec = 0.0;
-    Bool isok = True;
+    bool isok = true;
     for (uInt i = Muvw::J2000; i < Muvw::N_Types; i++) {
       for (uInt j = Muvw::J2000; j < Muvw::N_Types; j++) {
         Muvw::Ref rin(i, mf);
@@ -106,7 +106,7 @@ int main() {
                         1e-4)) {
           cout << Muvw::showType(i) << " to " << Muvw::showType(j) << ": "
                << mb0.getValue().getValue() - backw(forw(mb0)).getValue().getValue() << endl;
-          isok = False;
+          isok = false;
         };
       };
     };

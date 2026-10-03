@@ -64,9 +64,9 @@ class FitsInput;
 // to ImageToFITSOut.
 // </synopsis>
 struct ImageFITSHeaderInfo {
-  Bool applyMask;
-  Bool needNonOptimalCursor;
-  Bool hasBlanks;
+  bool applyMask;
+  bool needNonOptimalCursor;
+  bool hasBlanks;
   Double bzero;
   Double bscale;
   Short minshort;
@@ -76,7 +76,7 @@ struct ImageFITSHeaderInfo {
   IPosition newShape;
   IPosition cursorOrder;
   FitsKeywordList kw;
-  std::shared_ptr<Array<Bool>> pMask;
+  std::shared_ptr<Array<bool>> pMask;
 };
 
 // <summary>
@@ -110,7 +110,7 @@ struct ImageFITSHeaderInfo {
 // images are always written to the primary HDU.
 //
 // Pixels in the FITS file which are blanked are masked out (the mask
-// is set to False) in the output image.   On conversion to FITS,
+// is set to false) in the output image.   On conversion to FITS,
 // masked values are blanked.    The mask which is read is the current
 // default mask.
 // </synopsis>
@@ -122,12 +122,12 @@ struct ImageFITSHeaderInfo {
 //    String fitsName = "exists.fits";
 //    String imageName = "new.image";
 //    String error;
-//    Bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
+//    bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
 //    if (!image) ... error ...
 // </srcBlock>
 // A couple of things to note:
 // <ul>
-//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+//    <li> If <src>ok</src> is false, the conversion failed and <src>error</src>
 //         will be set.
 //    <li> The pointer "image" is set if the conversion succeeds. If it is
 //         zero the conversion failed and <src>error</src> will contain an
@@ -141,11 +141,11 @@ struct ImageFITSHeaderInfo {
 //    PagedImage<Float> image = ...; // An existing image from somewhere
 //    String fitsName = "new.fits";
 //    String error;
-//    Bool ok = ImageFITSConverter::ImageToFITS(error, image, fitsName);
+//    bool ok = ImageFITSConverter::ImageToFITS(error, image, fitsName);
 // </srcBlock>
 // A couple of similar remarks can be made about this example:
 // <ul>
-//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+//    <li> If <src>ok</src> is false, the conversion failed and <src>error</src>
 //         will be set.
 // </ul>
 // </example>
@@ -186,19 +186,19 @@ class ImageFITSConverter {
   //   <li> <src>memoryInMB</src>. Setting this to zero will result in
   //        row-by-row copying, otherwise it will attempt to with as large
   //        a chunk-size as possible, while fitting in the desired memory.
-  //   <li> <src>allowOverwrite</src> If True, allow imageName to be
+  //   <li> <src>allowOverwrite</src> If true, allow imageName to be
   //        overwritten if it already exists.
-  //   <li> <src>zeroBlanks</src> If True, allow any blanked pixels are set
+  //   <li> <src>zeroBlanks</src> If true, allow any blanked pixels are set
   //         to zero rather than NaN
   // </ul>
-  static Bool FITSToImage(ImageInterface<Float> *&newImage, String &error, const String &imageName,
+  static bool FITSToImage(ImageInterface<Float> *&newImage, String &error, const String &imageName,
                           const String &fitsName, uInt whichRep = 0, Int whichHDU = 0,
-                          uInt memoryInMB = 64, Bool allowOverwrite = False,
-                          Bool zeroBlanks = False);
+                          uInt memoryInMB = 64, bool allowOverwrite = false,
+                          bool zeroBlanks = false);
 
   // Convert a Casacore image to a FITS file.
   // <ul>
-  //   <li> <src>return</src> True if the conversion succeeds, False
+  //   <li> <src>return</src> true if the conversion succeeds, false
   //        otherwise.
   //   <li> <src>error</src> will be set if the conversion fails.
   //   <li> <src>image</src> The image to convert.
@@ -219,32 +219,32 @@ class ImageFITSConverter {
   //        values will be used and pixels outside that range will be
   //        truncated to the minimum and maximum pixel values (note that
   //        this truncation does not occur for BITPIX=-32).
-  //   <li> <src>allowOverwrite</src> If True, allow fitsName to be
+  //   <li> <src>allowOverwrite</src> If true, allow fitsName to be
   //        overwritten if it already exists.
-  //   <li> <src>degenerateLast</src> If True, axes of length 1 will be written
+  //   <li> <src>degenerateLast</src> If true, axes of length 1 will be written
   //        last to the header.
-  //   <li> <src>preferWavelength</src> If True, write a wavelength primary axis.
-  //   <li> <src>airWavelength</src> If True and <src>preferWavelength</src> is True write
+  //   <li> <src>preferWavelength</src> If true, write a wavelength primary axis.
+  //   <li> <src>airWavelength</src> If true and <src>preferWavelength</src> is true write
   //        an air wavelength primary axis.
   //   <li> <src>origin</src> gives the origin, i.e., the name of the package.
   //        If empty, it defaults to "casacore-"getVersion().
   //   </ul>
   // <group>
-  static Bool ImageToFITS(String &error, ImageInterface<Float> &image, const String &fitsName,
-                          uInt memoryInMB = 64, Bool preferVelocity = True,
-                          Bool opticalVelocity = True, Int BITPIX = -32, Float minPix = 1.0,
-                          Float maxPix = -1.0, Bool allowOverwrite = False,
-                          Bool degenerateLast = False, Bool verbose = True, Bool stokesLast = False,
-                          Bool preferWavelength = False, Bool airWavelength = False,
-                          const String &origin = String(), Bool history = True);
-  static Bool ImageHeaderToFITS(String &error, ImageFITSHeaderInfo &fhi,
-                                const ImageInterface<Float> &image, Bool preferVelocity = True,
-                                Bool opticalVelocity = True, Int BITPIX = -32, Float minPix = 1.0,
-                                Float maxPix = -1.0, Bool degenerateLast = False,
-                                Bool verbose = True, Bool stokesLast = False,
-                                Bool preferWavelength = False, Bool airWavelength = False,
-                                Bool primHead = True, Bool allowAppend = True,
-                                const String &origin = String(), Bool history = True);
+  static bool ImageToFITS(String &error, ImageInterface<Float> &image, const String &fitsName,
+                          uInt memoryInMB = 64, bool preferVelocity = true,
+                          bool opticalVelocity = true, Int BITPIX = -32, Float minPix = 1.0,
+                          Float maxPix = -1.0, bool allowOverwrite = false,
+                          bool degenerateLast = false, bool verbose = true, bool stokesLast = false,
+                          bool preferWavelength = false, bool airWavelength = false,
+                          const String &origin = String(), bool history = true);
+  static bool ImageHeaderToFITS(String &error, ImageFITSHeaderInfo &fhi,
+                                const ImageInterface<Float> &image, bool preferVelocity = true,
+                                bool opticalVelocity = true, Int BITPIX = -32, Float minPix = 1.0,
+                                Float maxPix = -1.0, bool degenerateLast = false,
+                                bool verbose = true, bool stokesLast = false,
+                                bool preferWavelength = false, bool airWavelength = false,
+                                bool primHead = true, bool allowAppend = true,
+                                const String &origin = String(), bool history = true);
   // </group>
 
   // Helper function - used to calculate a cursor appropriate for the
@@ -259,7 +259,7 @@ class ImageFITSConverter {
   // Degenerate axes may be added to shape if needed.
   static CoordinateSystem getCoordinateSystem(Int &imageType, RecordInterface &headerRec,
                                               const Vector<String> &header, LogIO &os,
-                                              uInt whichRep, IPosition &shape, Bool dropStokes);
+                                              uInt whichRep, IPosition &shape, bool dropStokes);
 
   // Recover ImageInfo from header. Used keywords are removed from header
   static ImageInfo getImageInfo(RecordInterface &header);
@@ -272,7 +272,7 @@ class ImageFITSConverter {
   static void restoreHistory(LoggerHolder &logger, ConstFitsKeywordList &kw);
 
   // Parse header record and set MiscInfo
-  static Bool extractMiscInfo(RecordInterface &miscInfo, const RecordInterface &header);
+  static bool extractMiscInfo(RecordInterface &miscInfo, const RecordInterface &header);
 
   // Read the BEAMS table if present and add the restoring beams to
   // <src>info</src>.
@@ -286,14 +286,14 @@ class ImageFITSConverter {
   //   <li> <src>primHead</src> Write to a primary HDU.
   //   <li> <src>allowAppend</src> Allow to append extension HDU's.
   // </ul>
-  static Bool ImageToFITSOut(String &error, LogIO &os, const ImageInterface<Float> &image,
-                             FitsOutput *output, uInt memoryInMB = 64, Bool preferVelocity = True,
-                             Bool opticalVelocity = True, Int BITPIX = -32, Float minPix = 1.0,
-                             Float maxPix = -1.0, Bool degenerateLast = False, Bool verbose = True,
-                             Bool stokesLast = False, Bool preferWavelength = False,
-                             Bool airWavelength = False, Bool primHead = True,
-                             Bool allowAppend = False, const String &origin = String(),
-                             Bool history = True);
+  static bool ImageToFITSOut(String &error, LogIO &os, const ImageInterface<Float> &image,
+                             FitsOutput *output, uInt memoryInMB = 64, bool preferVelocity = true,
+                             bool opticalVelocity = true, Int BITPIX = -32, Float minPix = 1.0,
+                             Float maxPix = -1.0, bool degenerateLast = false, bool verbose = true,
+                             bool stokesLast = false, bool preferWavelength = false,
+                             bool airWavelength = false, bool primHead = true,
+                             bool allowAppend = false, const String &origin = String(),
+                             bool history = true);
 
   // Put a CASA image with quality coordinate
   // to an opened FITS file
@@ -301,23 +301,23 @@ class ImageFITSConverter {
   // <ul>
   //   <li> <src>output</src> The FITS output to write to.
   // </ul>
-  static Bool QualImgToFITSOut(String &error, LogIO &os, ImageInterface<Float> &image,
-                               FitsOutput *outfile, uInt memoryInMB, Bool preferVelocity,
-                               Bool opticalVelocity, Int BITPIX, Float minPix, Float maxPix,
-                               Bool degenerateLast, Bool verbose, Bool stokesLast,
-                               Bool preferWavelength, Bool airWavelength, const String &origin,
-                               Bool history);
+  static bool QualImgToFITSOut(String &error, LogIO &os, ImageInterface<Float> &image,
+                               FitsOutput *outfile, uInt memoryInMB, bool preferVelocity,
+                               bool opticalVelocity, Int BITPIX, Float minPix, Float maxPix,
+                               bool degenerateLast, bool verbose, bool stokesLast,
+                               bool preferWavelength, bool airWavelength, const String &origin,
+                               bool history);
 
   // If existing, remove the file, symlink, or directory given by
   // <src>outFile</src>. It is only removed if allowOverwrite=True.
   // An exception (using argument outName) is thrown if the file could
   // not be removed.
-  static Bool removeFile(String &error, const File &outFile, const String &outName,
-                         Bool allowOverwrite);
+  static bool removeFile(String &error, const File &outFile, const String &outName,
+                         bool allowOverwrite);
 
   // Create an open FITS file with the name given
-  static Bool openFitsOutput(String &error, FitsOutput *(&openFitsOutput), const String &fitsName,
-                             const Bool &allowOverwrite);
+  static bool openFitsOutput(String &error, FitsOutput *(&openFitsOutput), const String &fitsName,
+                             const bool &allowOverwrite);
 
   static void _writeBeamsTable(FitsOutput *const &outfile, const ImageInfo &info);
 };
@@ -339,7 +339,7 @@ class ImageFITSConverterImpl {
   static void FITSToImage(ImageInterface<Float> *&newImage, String &error,
                           const String &newImageName, const uInt whichRep, HDUType &fitsImage,
                           const String &fitsFilename, const DataType dataType,
-                          const uInt memoryInMB = 64, const Bool zeroBlanks = False);
+                          const uInt memoryInMB = 64, const bool zeroBlanks = false);
 };
 
 }  // namespace casacore

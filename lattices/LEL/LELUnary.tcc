@@ -72,7 +72,7 @@ LELScalar<T> LELUnaryConst<T>::getScalar() const {
 }
 
 template <class T>
-Bool LELUnaryConst<T>::prepareScalarExpr() {
+bool LELUnaryConst<T>::prepareScalarExpr() {
   return (!val_p.mask());
 }
 
@@ -136,7 +136,7 @@ LELScalar<T> LELUnary<T>::getScalar() const {
 }
 
 template <class T>
-Bool LELUnary<T>::prepareScalarExpr() {
+bool LELUnary<T>::prepareScalarExpr() {
 #if defined(AIPS_TRACE)
   cout << "LELUnary::prepare" << endl;
 #endif
@@ -150,7 +150,7 @@ String LELUnary<T>::className() const {
 }
 
 template <class T>
-Bool LELUnary<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELUnary<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 template <class T>
@@ -158,7 +158,7 @@ void LELUnary<T>::unlock() {
   pExpr_p->unlock();
 }
 template <class T>
-Bool LELUnary<T>::hasLock(FileLocker::LockType type) const {
+bool LELUnary<T>::hasLock(FileLocker::LockType type) const {
   return pExpr_p->hasLock(type);
 }
 template <class T>

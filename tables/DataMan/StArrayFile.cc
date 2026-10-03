@@ -42,9 +42,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 StManArrayFile::StManArrayFile(const String& fname, ByteIO::OpenOption fop, uInt version,
-                               Bool bigEndian, uInt bufferSize,
+                               bool bigEndian, uInt bufferSize,
                                const std::shared_ptr<MultiFileBase>& mfile)
-    : leng_p(16), version_p(version), hasPut_p(False) {
+    : leng_p(16), version_p(version), hasPut_p(false) {
   // The maximum version is 1.
   if (version_p > 1) {
     version_p = 1;
@@ -83,20 +83,20 @@ StManArrayFile::StManArrayFile(const String& fname, ByteIO::OpenOption fop, uInt
 // # Delete it if required.
 StManArrayFile::~StManArrayFile() {
   // # Write the version and file length at the beginning.
-  flush(False);
+  flush(false);
 }
 
-Bool StManArrayFile::flush(Bool) {
+bool StManArrayFile::flush(bool) {
   if (hasPut_p) {
     setpos(0);
     put(version_p);
     iofil_p->write(1, &leng_p);
-    hasPut_p = False;
+    hasPut_p = false;
     file_p->flush();
     setpos(leng_p);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 // Resync the file (i.e. clear possible cache information).
@@ -112,7 +112,7 @@ void StManArrayFile::resync() {
     iofil_p->write(1, &leng_p);
     // # Put a 0 to fill up the buffer and make valgrind happy.
     put(Int(0));
-    hasPut_p = True;
+    hasPut_p = true;
   }
 }
 
@@ -126,7 +126,7 @@ void StManArrayFile::setpos(Int64 pos) {
 void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const Float* data) {
   setpos(fileOff + arrayOff * sizeFloat_p);
   iofil_p->write(nr, data);
-  hasPut_p = True;
+  hasPut_p = true;
 }
 
 uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Float*) {
@@ -147,7 +147,7 @@ void StManArrayFile::copyArrayFloat(Int64 to, Int64 from, uInt64 nr) {
   void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const T* data) { \
     setpos(fileOff + arrayOff * SIZEDTYPE);                                           \
     iofil_p->write(nr, data);                                                         \
-    hasPut_p = True;                                                                  \
+    hasPut_p = true;                                                                  \
   }                                                                                   \
   uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const T*) {    \
     return putRes(shape, offset, SIZEDTYPE);                                          \
@@ -173,7 +173,7 @@ STMANARRAYFILE_PUTGET(Double, sizeDouble_p)
 // #//STMANARRAYFILE_PUTGET(long double, sizeLDouble_p)
 
 // # Handle it for Bool.
-void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const Bool* data) {
+void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const bool* data) {
   // # Bools are stored as bits, thus a bit more complex.
   uInt64 start = arrayOff / 8;
   uInt stbit = arrayOff - 8 * start;
@@ -197,13 +197,13 @@ void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const Bool* d
   Conversion::boolToBit(buf, data, stbit, nr);
   setpos(fileOff + start);
   iofil_p->write(end - start, buf);
-  hasPut_p = True;
+  hasPut_p = true;
   delete[] buf;
 }
-uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Bool*) {
+uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const bool*) {
   return putRes(shape, offset, 0.125);
 }
-void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, Bool* data) {
+void StManArrayFile::get(Int64 fileOff, Int64 arrayOff, uInt64 nr, bool* data) {
   // # Bools are stored as bits, thus a bit more complex.
   uInt64 start = arrayOff / 8;
   uInt stbit = arrayOff - 8 * start;
@@ -245,12 +245,12 @@ uInt StManArrayFile::putShape(const IPosition& shape, Int64& offset, const Strin
 void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const Complex* data) {
   setpos(fileOff + arrayOff * 2 * sizeFloat_p);
   iofil_p->write(2 * nr, (const Float*)data);
-  hasPut_p = True;
+  hasPut_p = true;
 }
 void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const DComplex* data) {
   setpos(fileOff + arrayOff * 2 * sizeDouble_p);
   iofil_p->write(2 * nr, (const Double*)data);
-  hasPut_p = True;
+  hasPut_p = true;
 }
 
 // # Put a string at the given file offset.
@@ -275,7 +275,7 @@ void StManArrayFile::put(Int64 fileOff, Int64 arrayOff, uInt64 nr, const String*
     // # Write the offsets.
     setpos(offs);
     offs += iofil_p->write(n, buf);
-    hasPut_p = True;
+    hasPut_p = true;
     nr -= n;
   }
 }
@@ -347,7 +347,7 @@ void StManArrayFile::copyData(Int64 to, Int64 from, uInt64 length) {
     from += iofil_p->read(n, buffer);
     setpos(to);
     to += iofil_p->write(n, buffer);
-    hasPut_p = True;
+    hasPut_p = true;
   }
 }
 
@@ -375,7 +375,7 @@ uInt StManArrayFile::putRes(const IPosition& shape, Int64& offset, float lenElem
   setpos(leng_p - 1);
   Char c = 0;
   iofil_p->write(1, &c);
-  hasPut_p = True;
+  hasPut_p = true;
   return n;
 }
 

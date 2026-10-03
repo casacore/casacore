@@ -54,7 +54,7 @@ void FrequencyEngine::handleFrequency(vector<TENShPtr>& args, uInt& argnr) {
   uInt nargnr = argnr + 1;
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-    if (handleMeasType(args[nargnr], False)) {
+    if (handleMeasType(args[nargnr], false)) {
       nargnr++;
     }
   }
@@ -76,7 +76,7 @@ void FrequencyEngine::handleValues(TableExprNode& operand, const TableExprId& id
     unit = "Hz";
   }
   Quantity q(0, unit);
-  Bool delIt;
+  bool delIt;
   const Double* valVec = values.getStorage(delIt);
   MFrequency* freqVec = frequencies.data();
   for (uInt i = 0; i < frequencies.size(); ++i) {
@@ -89,13 +89,13 @@ void FrequencyEngine::handleValues(TableExprNode& operand, const TableExprId& id
 void FrequencyEngine::setDopplerEngine(DopplerEngine& engine) {
   AlwaysAssert(itsDopplerEngine == 0, AipsError);
   itsDopplerEngine = &engine;
-  extendBase(engine, False);
+  extendBase(engine, false);
 }
 
 void FrequencyEngine::setRadVelEngine(RadialVelocityEngine& engine) {
   AlwaysAssert(itsRadVelEngine == 0, AipsError);
   itsRadVelEngine = &engine;
-  extendBase(engine, False);
+  extendBase(engine, false);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MRadialVelocity());
 }
@@ -103,7 +103,7 @@ void FrequencyEngine::setRadVelEngine(RadialVelocityEngine& engine) {
 void FrequencyEngine::setDirectionEngine(DirectionEngine& engine) {
   AlwaysAssert(itsDirectionEngine == 0, AipsError);
   itsDirectionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MDirection());
   itsRVFrame.set(MDirection());
@@ -112,7 +112,7 @@ void FrequencyEngine::setDirectionEngine(DirectionEngine& engine) {
 void FrequencyEngine::setEpochEngine(EpochEngine& engine) {
   AlwaysAssert(itsEpochEngine == 0, AipsError);
   itsEpochEngine = &engine;
-  extendBase(engine, False);
+  extendBase(engine, false);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MEpoch());
   itsRVFrame.set(MEpoch());
@@ -121,7 +121,7 @@ void FrequencyEngine::setEpochEngine(EpochEngine& engine) {
 void FrequencyEngine::setPositionEngine(PositionEngine& engine) {
   AlwaysAssert(itsPositionEngine == 0, AipsError);
   itsPositionEngine = &engine;
-  extendBase(engine, True);
+  extendBase(engine, true);
   // Define the frame part, so it can be reset later.
   itsFrame.set(MPosition());
   itsRVFrame.set(MPosition());

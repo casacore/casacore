@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSFeed::MSFeed() : hasBeenDestroyed_p(True) {}
+MSFeed::MSFeed() : hasBeenDestroyed_p(true) {}
 
 MSFeed::MSFeed(const String &tableName, TableOption option)
-    : MSTable<MSFeedEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFeedEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSFeed::MSFeed(const String &tableName, TableOption option)
 }
 
 MSFeed::MSFeed(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSFeedEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSFeedEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSFeed::MSFeed(const String &tableName, const String &tableDescName, TableOption
                   "table is not a valid MSFeed"));
 }
 
-MSFeed::MSFeed(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSFeedEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSFeed::MSFeed(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSFeedEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -67,7 +67,7 @@ MSFeed::MSFeed(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
                   "table is not a valid MSFeed"));
 }
 
-MSFeed::MSFeed(const Table &table) : MSTable<MSFeedEnums>(table), hasBeenDestroyed_p(False) {
+MSFeed::MSFeed(const Table &table) : MSTable<MSFeedEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -75,7 +75,7 @@ MSFeed::MSFeed(const Table &table) : MSTable<MSFeedEnums>(table), hasBeenDestroy
                   "table is not a valid MSFeed"));
 }
 
-MSFeed::MSFeed(const MSFeed &other) : MSTable<MSFeedEnums>(other), hasBeenDestroyed_p(False) {
+MSFeed::MSFeed(const MSFeed &other) : MSTable<MSFeedEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -92,7 +92,7 @@ MSFeed::~MSFeed() {
     LogIO os;
     os << LogIO::WARN << "~MSFeed() - Table written is not a valid MSFeed" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSFeed &MSFeed::operator=(const MSFeed &other) {

@@ -53,17 +53,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <group name=vectorComparison>
 template <class T>
-inline Bool allLE(const TableVector<T>& left, const TableVector<T>& right);
+inline bool allLE(const TableVector<T>& left, const TableVector<T>& right);
 template <class T>
-inline Bool allLT(const TableVector<T>& left, const TableVector<T>& right);
+inline bool allLT(const TableVector<T>& left, const TableVector<T>& right);
 template <class T>
-inline Bool allGE(const TableVector<T>& left, const TableVector<T>& right);
+inline bool allGE(const TableVector<T>& left, const TableVector<T>& right);
 template <class T>
-inline Bool allGT(const TableVector<T>& left, const TableVector<T>& right);
+inline bool allGT(const TableVector<T>& left, const TableVector<T>& right);
 template <class T>
-inline Bool allEQ(const TableVector<T>& left, const TableVector<T>& right);
+inline bool allEQ(const TableVector<T>& left, const TableVector<T>& right);
 template <class T>
-inline Bool allNE(const TableVector<T>& left, const TableVector<T>& right);
+inline bool allNE(const TableVector<T>& left, const TableVector<T>& right);
 // </group>
 
 // <summary>
@@ -85,29 +85,29 @@ inline Bool allNE(const TableVector<T>& left, const TableVector<T>& right);
 
 // <group name=scalarComparison>
 template <class T>
-inline Bool allLE(const TableVector<T>& left, const T& right);
+inline bool allLE(const TableVector<T>& left, const T& right);
 template <class T>
-inline Bool allLE(const T& left, const TableVector<T>& right);
+inline bool allLE(const T& left, const TableVector<T>& right);
 template <class T>
-inline Bool allLT(const TableVector<T>& left, const T& right);
+inline bool allLT(const TableVector<T>& left, const T& right);
 template <class T>
-inline Bool allLT(const T& left, const TableVector<T>& right);
+inline bool allLT(const T& left, const TableVector<T>& right);
 template <class T>
-inline Bool allGE(const TableVector<T>& left, const T& right);
+inline bool allGE(const TableVector<T>& left, const T& right);
 template <class T>
-inline Bool allGE(const T& left, const TableVector<T>& right);
+inline bool allGE(const T& left, const TableVector<T>& right);
 template <class T>
-inline Bool allGT(const TableVector<T>& left, const T& right);
+inline bool allGT(const TableVector<T>& left, const T& right);
 template <class T>
-inline Bool allGT(const T& left, const TableVector<T>& right);
+inline bool allGT(const T& left, const TableVector<T>& right);
 template <class T>
-inline Bool allEQ(const TableVector<T>& left, const T& right);
+inline bool allEQ(const TableVector<T>& left, const T& right);
 template <class T>
-inline Bool allEQ(const T& left, const TableVector<T>& right);
+inline bool allEQ(const T& left, const TableVector<T>& right);
 template <class T>
-inline Bool allNE(const TableVector<T>& left, const T& right);
+inline bool allNE(const TableVector<T>& left, const T& right);
 template <class T>
-inline Bool allNE(const T& left, const TableVector<T>& right);
+inline bool allNE(const T& left, const TableVector<T>& right);
 // </group>
 
 // # Implement all functions inline.
@@ -115,15 +115,15 @@ inline Bool allNE(const T& left, const TableVector<T>& right);
 // #
 #define TABVECLOGICOPER(NAME)                                                           \
   template <class T>                                                                    \
-  inline Bool aips_name2(all, NAME)(const TableVector<T>& l, const TableVector<T>& r) { \
+  inline bool aips_name2(all, NAME)(const TableVector<T>& l, const TableVector<T>& r) { \
     return aips_name2(tabVecReptv, NAME)(l.tabVec(), r.tabVec());                       \
   }                                                                                     \
   template <class T>                                                                    \
-  inline Bool aips_name2(all, NAME)(const T& val, const TableVector<T>& tv) {           \
+  inline bool aips_name2(all, NAME)(const T& val, const TableVector<T>& tv) {           \
     return aips_name2(tabVecRepvall, NAME)(val, tv.tabVec());                           \
   }                                                                                     \
   template <class T>                                                                    \
-  inline Bool aips_name2(all, NAME)(const TableVector<T>& tv, const T& val) {           \
+  inline bool aips_name2(all, NAME)(const TableVector<T>& tv, const T& val) {           \
     return aips_name2(tabVecRepvalr, NAME)(tv.tabVec(), val);                           \
   }
 
@@ -140,28 +140,28 @@ TABVECLOGICOPER(NE)
 // At some point operators will be available that return masks where the
 // comparison is true. The vectors must conform or an exception is thrown.
 template <class T>
-inline Bool anyLE(const TableVector<T>& l, const TableVector<T>& r) {
-  return (allGT(l, r) ? False : True);
+inline bool anyLE(const TableVector<T>& l, const TableVector<T>& r) {
+  return (allGT(l, r) ? false : true);
 }
 template <class T>
-inline Bool anyLT(const TableVector<T>& l, const TableVector<T>& r) {
-  return (allGE(l, r) ? False : True);
+inline bool anyLT(const TableVector<T>& l, const TableVector<T>& r) {
+  return (allGE(l, r) ? false : true);
 }
 template <class T>
-inline Bool anyGE(const TableVector<T>& l, const TableVector<T>& r) {
-  return (allLT(l, r) ? False : True);
+inline bool anyGE(const TableVector<T>& l, const TableVector<T>& r) {
+  return (allLT(l, r) ? false : true);
 }
 template <class T>
-inline Bool anyGT(const TableVector<T>& l, const TableVector<T>& r) {
-  return (allLE(l, r) ? False : True);
+inline bool anyGT(const TableVector<T>& l, const TableVector<T>& r) {
+  return (allLE(l, r) ? false : true);
 }
 template <class T>
-inline Bool anyEQ(const TableVector<T>& l, const TableVector<T>& r) {
-  return (allNE(l, r) ? False : True);
+inline bool anyEQ(const TableVector<T>& l, const TableVector<T>& r) {
+  return (allNE(l, r) ? false : true);
 }
 template <class T>
-inline Bool anyNE(const TableVector<T>& l, const TableVector<T>& r) {
-  return (allEQ(l, r) ? False : True);
+inline bool anyNE(const TableVector<T>& l, const TableVector<T>& r) {
+  return (allEQ(l, r) ? false : true);
 }
 
 //
@@ -171,52 +171,52 @@ inline Bool anyNE(const TableVector<T>& l, const TableVector<T>& r) {
 // At some point operators will be available that return masks where the
 // comparison is true.
 template <class T>
-inline Bool anyLE(const TableVector<T>& tv, const T& val) {
-  return (allGT(tv, val) ? False : True);
+inline bool anyLE(const TableVector<T>& tv, const T& val) {
+  return (allGT(tv, val) ? false : true);
 }
 template <class T>
-inline Bool anyLE(const T& val, const TableVector<T>& tv) {
-  return (allGT(val, tv) ? False : True);
+inline bool anyLE(const T& val, const TableVector<T>& tv) {
+  return (allGT(val, tv) ? false : true);
 }
 template <class T>
-inline Bool anyLT(const TableVector<T>& tv, const T& val) {
-  return (allGE(tv, val) ? False : True);
+inline bool anyLT(const TableVector<T>& tv, const T& val) {
+  return (allGE(tv, val) ? false : true);
 }
 template <class T>
-inline Bool anyLT(const T& val, const TableVector<T>& tv) {
-  return (allGE(val, tv) ? False : True);
+inline bool anyLT(const T& val, const TableVector<T>& tv) {
+  return (allGE(val, tv) ? false : true);
 }
 template <class T>
-inline Bool anyGE(const TableVector<T>& tv, const T& val) {
-  return (allLT(tv, val) ? False : True);
+inline bool anyGE(const TableVector<T>& tv, const T& val) {
+  return (allLT(tv, val) ? false : true);
 }
 template <class T>
-inline Bool anyGE(const T& val, const TableVector<T>& tv) {
-  return (allLT(val, tv) ? False : True);
+inline bool anyGE(const T& val, const TableVector<T>& tv) {
+  return (allLT(val, tv) ? false : true);
 }
 template <class T>
-inline Bool anyGT(const TableVector<T>& tv, const T& val) {
-  return (allLE(tv, val) ? False : True);
+inline bool anyGT(const TableVector<T>& tv, const T& val) {
+  return (allLE(tv, val) ? false : true);
 }
 template <class T>
-inline Bool anyGT(const T& val, const TableVector<T>& tv) {
-  return (allLE(val, tv) ? False : True);
+inline bool anyGT(const T& val, const TableVector<T>& tv) {
+  return (allLE(val, tv) ? false : true);
 }
 template <class T>
-inline Bool anyEQ(const TableVector<T>& tv, const T& val) {
-  return (allNE(tv, val) ? False : True);
+inline bool anyEQ(const TableVector<T>& tv, const T& val) {
+  return (allNE(tv, val) ? false : true);
 }
 template <class T>
-inline Bool anyEQ(const T& val, const TableVector<T>& tv) {
-  return (allNE(val, tv) ? False : True);
+inline bool anyEQ(const T& val, const TableVector<T>& tv) {
+  return (allNE(val, tv) ? false : true);
 }
 template <class T>
-inline Bool anyNE(const TableVector<T>& tv, const T& val) {
-  return (allEQ(tv, val) ? False : True);
+inline bool anyNE(const TableVector<T>& tv, const T& val) {
+  return (allEQ(tv, val) ? false : true);
 }
 template <class T>
-inline Bool anyNE(const T& val, const TableVector<T>& tv) {
-  return (allEQ(val, tv) ? False : True);
+inline bool anyNE(const T& val, const TableVector<T>& tv) {
+  return (allEQ(val, tv) ? false : true);
 }
 
 }  // namespace casacore

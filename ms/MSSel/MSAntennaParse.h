@@ -114,32 +114,32 @@ class MSAntennaParse : public MSParse {
   // Add the given antennae selection.
   const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds,
                                         BaselineListType baselineType = CrossOnly,
-                                        Bool negate = False);
+                                        bool negate = false);
 
   // Add the given baseline selection.
   const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds1,
                                         const Vector<Int>& antennaIds2,
                                         BaselineListType baselineType = CrossOnly,
-                                        Bool negate = False);
+                                        bool negate = false);
 
   // Select by name or station number.
   const TableExprNode* selectNameOrStation(const Vector<String>& antenna,
                                            BaselineListType baselineType = CrossOnly,
-                                           Bool negate = False);
+                                           bool negate = false);
   const TableExprNode* selectNameOrStation(const Vector<String>& antenna1,
                                            const Vector<String>& antenna2,
                                            BaselineListType baselineType = CrossOnly,
-                                           Bool negate = False);
+                                           bool negate = false);
 
   const TableExprNode* selectNameOrStation(const String& antenna1, const String& antenna2,
                                            BaselineListType baselineType = CrossOnly,
-                                           Bool negate = False);
+                                           bool negate = false);
 
   // Selection on baseline regex
-  const TableExprNode* selectBLRegex(const std::vector<String>& lengths, Bool negate = False);
+  const TableExprNode* selectBLRegex(const std::vector<String>& lengths, bool negate = false);
 
   // Selection on baseline length
-  const TableExprNode* selectLength(const std::vector<double>& lengths, Bool negate = False);
+  const TableExprNode* selectLength(const std::vector<double>& lengths, bool negate = false);
 
   // Get a pointer to the table expression node object.
   TableExprNode node() const { return node_p; }
@@ -154,20 +154,20 @@ class MSAntennaParse : public MSParse {
     if (level == RESET)
       complexity.reset();
     else
-      complexity.set(level, True);
+      complexity.set(level, true);
   }
   std::bitset<HIGHESTLEVEL> getComplexity() { return complexity; }
   MSAntenna& subTable() { return msSubTable_p; }
 
  private:
-  const TableExprNode* makeBLNode(const Matrix<Bool>& match, Bool negate);
+  const TableExprNode* makeBLNode(const Matrix<bool>& match, bool negate);
   const TableExprNode* setTEN(TableExprNode& condition, BaselineListType baselineType = CrossOnly,
-                              Bool negate = False);
+                              bool negate = false);
   Matrix<double> getBaselineLengths();
   void makeBaselineList(const Vector<Int>& a1, const Vector<Int>& a2, Matrix<Int>& b,
-                        BaselineListType baselineType = CrossOnly, Bool negate = False);
-  void makeAntennaList(Vector<Int>& antList, const Vector<Int>& thisList, Bool negate = False);
-  Bool addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2,
+                        BaselineListType baselineType = CrossOnly, bool negate = false);
+  void makeAntennaList(Vector<Int>& antList, const Vector<Int>& thisList, bool negate = false);
+  bool addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2,
                    BaselineListType baselineType = CrossOnly);
 
   // # Data members.

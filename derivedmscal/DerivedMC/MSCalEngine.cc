@@ -42,7 +42,7 @@
 
 namespace casacore {
 
-MSCalEngine::MSCalEngine() : itsLastCalInx(-1), itsReadFieldDir(True), itsDirColName("PHASE_DIR") {}
+MSCalEngine::MSCalEngine() : itsLastCalInx(-1), itsReadFieldDir(true), itsDirColName("PHASE_DIR") {}
 
 MSCalEngine::~MSCalEngine() {}
 
@@ -94,8 +94,8 @@ void MSCalEngine::getItrf(Int antnr, rownr_t rownr, Array<double>& data) {
   data = itsRADecToItrf().getValue().get();
 }
 
-void MSCalEngine::getNewUVW(Bool asApp, rownr_t rownr, Array<double>& data) {
-  setData(-1, rownr, True);
+void MSCalEngine::getNewUVW(bool asApp, rownr_t rownr, Array<double>& data) {
+  setData(-1, rownr, true);
   Int ant1 = itsAntCol[0](rownr);
   Int ant2 = itsAntCol[1](rownr);
   if (ant1 == ant2) {
@@ -103,7 +103,7 @@ void MSCalEngine::getNewUVW(Bool asApp, rownr_t rownr, Array<double>& data) {
   } else {
     vector<MBaseline>& antMB = itsAntMB[itsLastCalInx];
     vector<Vector<Double>>& antUvw = itsAntUvw[itsLastCalInx];
-    Block<Bool>& uvwFilled = itsUvwFilled[itsLastCalInx];
+    Block<bool>& uvwFilled = itsUvwFilled[itsLastCalInx];
     // Calculate UVW per antenna and subtract to get baseline.
     // Only calculate for an antenna if not done yet.
     Int ant = ant1;
@@ -129,7 +129,7 @@ void MSCalEngine::getNewUVW(Bool asApp, rownr_t rownr, Array<double>& data) {
 }
 
 double MSCalEngine::getDelay(Int antnr, rownr_t rownr) {
-  setData(-1, rownr, True);
+  setData(-1, rownr, true);
   // Get the direction in ITRF xyz.
   Vector<double> itrf = itsRADecToItrf().getValue().getValue();
   Int ant1 = itsAntCol[0](rownr);
@@ -157,15 +157,15 @@ void MSCalEngine::setDirection(const MDirection& dir) {
   itsFieldDir.resize(1);
   itsFieldDir[0].resize(1);
   itsFieldDir[0][0] = dir;
-  itsReadFieldDir = False;
+  itsReadFieldDir = false;
 }
 
 void MSCalEngine::setDirColName(const String& colName) {
   itsDirColName = colName;
-  itsReadFieldDir = True;
+  itsReadFieldDir = true;
 }
 
-Int MSCalEngine::setData(Int antnr, rownr_t rownr, Bool fillAnt) {
+Int MSCalEngine::setData(Int antnr, rownr_t rownr, bool fillAnt) {
   // Initialize if not done yet.
   if (itsLastCalInx < 0) {
     init();
@@ -258,7 +258,7 @@ Int MSCalEngine::setData(Int antnr, rownr_t rownr, Bool fillAnt) {
     }
     itsUTCToLAST.setModel(epoch);
     itsLastTime = time;
-    itsUvwFilled[calInx] = False;
+    itsUvwFilled[calInx] = false;
   }
   return mount;
 }
@@ -290,7 +290,7 @@ void MSCalEngine::init() {
     itsCalCol.attach(itsTable, "CAL_DESC_ID");
     // Fill CAl_DESC info from calibration table.
     fillCalDesc();
-    obsTab = getSubTable(0, "OBSERVATION", False);
+    obsTab = getSubTable(0, "OBSERVATION", false);
   } else {
     // Nothing special, so simply initialize.
     itsAntPos.resize(1);
@@ -311,7 +311,7 @@ void MSCalEngine::init() {
   // Find observatory position.
   // Get it from the OBSERVATION subtable; otherwise try keyword TELESCOPE_NAME.
   // If not found, set it to the position of the middle antenna.
-  Bool fndObs = False;
+  bool fndObs = false;
   if (!obsTab.isNull()) {
     if (obsTab.nrow() > 0) {
       String telescope = ScalarColumn<String>(obsTab, "TELESCOPE_NAME")(0);
@@ -326,7 +326,7 @@ void MSCalEngine::init() {
     uInt nant = itsAntPos[0].size();
     if (nant > 0) {
       itsArrayPos = itsAntPos[0][nant / 2];
-      fndObs = True;
+      fndObs = true;
     }
   }
   AlwaysAssert(fndObs, AipsError);
@@ -368,7 +368,7 @@ void MSCalEngine::fillAntPos(Int calDescId, Int calInx) {
   vector<Int>& mounts = itsMount[calInx];
   vector<MBaseline>& antMB = itsAntMB[calInx];
   vector<Vector<Double>>& antUvw = itsAntUvw[calInx];
-  Block<Bool>& uvwFilled = itsUvwFilled[calInx];
+  Block<bool>& uvwFilled = itsUvwFilled[calInx];
   antPos.reserve(tab.nrow());
   mounts.reserve(tab.nrow());
   antMB.reserve(tab.nrow());
@@ -389,7 +389,7 @@ void MSCalEngine::fillAntPos(Int calDescId, Int calInx) {
   }
   antUvw.resize(antPos.size());
   uvwFilled.resize(antPos.size());
-  uvwFilled = False;
+  uvwFilled = false;
 }
 
 void MSCalEngine::fillFieldDir(Int calDescId, Int calInx) {
@@ -447,7 +447,7 @@ void MSCalEngine::fillCalDesc() {
   itsFieldDir.resize(itsCalMap.size());
 }
 
-Table MSCalEngine::getSubTable(Int calDescId, const String& subTabName, Bool mustExist) {
+Table MSCalEngine::getSubTable(Int calDescId, const String& subTabName, bool mustExist) {
   // If defined, open a subtable in the MS referred to by the name in the
   // MS_NAME column of the CAL_DESC subtable.
   Table calDescTab(itsTable.keywordSet().asTable("CAL_DESC"));

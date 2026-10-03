@@ -85,7 +85,7 @@ class WCComplement : public WCCompound {
   WCComplement& operator=(const WCComplement& other);
 
   // Comparison
-  virtual Bool operator==(const WCRegion& other) const;
+  virtual bool operator==(const WCRegion& other) const;
 
   // Make a copy of the derived object.
   // cloneRegion needs to return a WCRegion * because the
@@ -105,9 +105,9 @@ class WCComplement : public WCCompound {
   static WCComplement* fromRecord(const TableRecord&, const String& tableName);
 
   // Construct from multiple regions.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
-  WCComplement(Bool takeOver, const Block<const WCRegion*>& regions);
+  WCComplement(bool takeOver, const Block<const WCRegion*>& regions);
 
  protected:
   // Convert to an LCRegion using the given coordinate system and shape.

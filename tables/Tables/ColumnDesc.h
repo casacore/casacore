@@ -95,7 +95,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //     Undefined is only useful for scalars. If not given, all possible
 //     values of the scalar have a meaning. If given, a value equal to
 //     the default value in the column description is an undefined value.
-//     The function TableColumn::isDefined will return False for such
+//     The function TableColumn::isDefined will return false for such
 //     values.
 // </dl>
 // </synopsis>
@@ -153,7 +153,7 @@ class ColumnDesc {
   ColumnDesc(const ColumnDesc& that);
 
   // Default constructor (needed for ColumnDescSet).
-  ColumnDesc() : colPtr_p(0), allocated_p(False) {}
+  ColumnDesc() : colPtr_p(0), allocated_p(false) {}
 
   ~ColumnDesc();
 
@@ -164,8 +164,8 @@ class ColumnDesc {
   // Two descriptions are equal when their data types, value types
   // (scalar, array or table) and possible dimensionalities are equal.
   // <group>
-  Bool operator==(const ColumnDesc&) const;
-  Bool operator!=(const ColumnDesc&) const;
+  bool operator==(const ColumnDesc&) const;
+  bool operator!=(const ColumnDesc&) const;
   // </group>
 
   // Get access to the set of keywords.
@@ -206,8 +206,8 @@ class ColumnDesc {
   // (allowing it to be changed).
   String& dataManagerGroup() { return colPtr_p->dataManagerGroup(); }
 
-  // If <src>always==True</src> they are always set, otherwise only if empty.
-  void setDefaultDataManager(Bool always = True) { colPtr_p->setDefaultDataManager(always); }
+  // If <src>always==true</src> they are always set, otherwise only if empty.
+  void setDefaultDataManager(bool always = true) { colPtr_p->setDefaultDataManager(always); }
 
   // Get comment string.
   const String& comment() const { return colPtr_p->comment(); }
@@ -228,14 +228,14 @@ class ColumnDesc {
   // Check if the column is defined with a fixed shape.
   // This is always true for scalars. For arrays it is true when
   // the FixedShape flag was set when the column was defined.
-  Bool isFixedShape() const;
+  bool isFixedShape() const;
 
   // Test if column is a scalar.
-  Bool isScalar() const { return colPtr_p->isScalar(); }
+  bool isScalar() const { return colPtr_p->isScalar(); }
   // Test if column is an array.
-  Bool isArray() const { return colPtr_p->isArray(); }
+  bool isArray() const { return colPtr_p->isArray(); }
   // Test if column is a table.
-  Bool isTable() const { return colPtr_p->isTable(); }
+  bool isTable() const { return colPtr_p->isTable(); }
 
   // Get the number of dimensions.
   Int ndim() const { return colPtr_p->ndim(); }
@@ -261,7 +261,7 @@ class ColumnDesc {
   // The second version sets the <src>Direct</src> option as given.
   // <group>
   void setShape(const IPosition& shape) { colPtr_p->setShape(shape); }
-  void setShape(const IPosition& shape, Bool directOption) {
+  void setShape(const IPosition& shape, bool directOption) {
     colPtr_p->setShape(shape, directOption);
   }
   // </group>
@@ -387,7 +387,7 @@ class ColumnDesc {
 
  protected:
   BaseColumnDesc* colPtr_p;
-  Bool allocated_p;  // # False = not allocated -> do not delete
+  bool allocated_p;  // # false = not allocated -> do not delete
 };
 
 }  // namespace casacore

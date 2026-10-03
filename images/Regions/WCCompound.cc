@@ -38,7 +38,7 @@ WCCompound::WCCompound(const ImageRegion& region1, const ImageRegion& region2) {
   regions[0] = &region1;
   regions[1] = &region2;
   makeWCRegion(regions);
-  init(False);
+  init(false);
 }
 
 WCCompound::WCCompound(const ImageRegion* region1, const ImageRegion* region2,
@@ -58,17 +58,17 @@ WCCompound::WCCompound(const ImageRegion* region1, const ImageRegion* region2,
   if (region8 != 0) regions[n++] = region8;
   if (region9 != 0) regions[n++] = region9;
   if (region10 != 0) regions[n++] = region10;
-  regions.resize(n, True, True);
+  regions.resize(n, true, true);
   makeWCRegion(regions);
-  init(False);
+  init(false);
 }
 
 WCCompound::WCCompound(const Block<const ImageRegion*>& regions) {
   makeWCRegion(regions);
-  init(False);
+  init(false);
 }
 
-WCCompound::WCCompound(Bool takeOver, const Block<const WCRegion*>& regions) : itsRegions(regions) {
+WCCompound::WCCompound(bool takeOver, const Block<const WCRegion*>& regions) : itsRegions(regions) {
   init(takeOver);
 }
 
@@ -95,7 +95,7 @@ WCCompound& WCCompound::operator=(const WCCompound& other) {
       delete itsRegions[i];
     }
     WCRegion::operator=(other);
-    itsRegions.resize(other.itsRegions.nelements(), True);
+    itsRegions.resize(other.itsRegions.nelements(), true);
     nr = itsRegions.nelements();
     for (i = 0; i < nr; i++) {
       itsRegions[i] = other.itsRegions[i]->cloneRegion();
@@ -109,7 +109,7 @@ void WCCompound::multiToLCRegion(Block<const LCRegion*>& regions, const Coordina
                                  const IPosition& shape, const IPosition& pixelAxesMap,
                                  const IPosition& outOrder) const {
   uInt nr = itsRegions.nelements();
-  regions.resize(nr, True);
+  regions.resize(nr, true);
   uInt nd = pixelAxesMap.nelements();
   IPosition pixAxesMap(pixelAxesMap);
   IPosition outOrd(outOrder);
@@ -136,37 +136,37 @@ void WCCompound::multiToLCRegion(Block<const LCRegion*>& regions, const Coordina
   }
 }
 
-Bool WCCompound::operator==(const WCRegion& other) const {
+bool WCCompound::operator==(const WCRegion& other) const {
   // Type check.
   if (!WCRegion::operator==(other)) {
-    return False;
+    return false;
   }
   // Cast is safe since types match.
   const WCCompound& that = (const WCCompound&)other;
   // Check the regions.
   if (itsRegions.nelements() != that.itsRegions.nelements()) {
-    return False;
+    return false;
   }
   // The regions do not have to be in the same order.
   // It makes it a bit slower.
   uInt nr = itsRegions.nelements();
-  Vector<Bool> used(nr, False);
+  Vector<bool> used(nr, false);
   for (uInt i = 0; i < nr; i++) {
-    Bool found = False;
+    bool found = false;
     for (uInt j = 0; j < nr; j++) {
       if (!used(j)) {
         if (*itsRegions[i] == *(that.itsRegions[j])) {
-          used(j) = True;
-          found = True;
+          used(j) = true;
+          found = true;
           break;
         }
       }
     }
     if (!found) {
-      return False;  // no matching region
+      return false;  // no matching region
     }
   }
-  return True;
+  return true;
 }
 
 void WCCompound::makeWCRegion(const Block<const ImageRegion*>& regions) {
@@ -183,7 +183,7 @@ void WCCompound::makeWCRegion(const Block<const ImageRegion*>& regions) {
   }
 }
 
-void WCCompound::init(Bool takeOver) {
+void WCCompound::init(bool takeOver) {
   // Copy the region object if takeOver=False.
   // Compose the axes description of the entire compound.
   // Find out which compound axes are used in each region.
@@ -226,7 +226,7 @@ TableRecord WCCompound::makeRecord(const String& tableName) const {
 void WCCompound::unmakeRecord(Block<const WCRegion*>& regions, const TableRecord& rec,
                               const String& tableName) {
   Int nr = rec.asInt("nr");
-  regions.resize(nr, True);
+  regions.resize(nr, true);
   for (Int i = 0; i < nr; i++) {
     regions[i] = WCRegion::fromRecord(rec.asRecord(i), tableName);
   }

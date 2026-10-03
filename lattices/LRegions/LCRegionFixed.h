@@ -89,22 +89,22 @@ class LCRegionFixed : public LCRegionSingle {
   virtual ~LCRegionFixed();
 
   // Return the mask
-  const ArrayLattice<Bool>& getMask() const;
+  const ArrayLattice<bool>& getMask() const;
 
  protected:
   // Comparison. Mask is not checked. Use the
   // LCRegionSingle::masksEqual function as well if
   // you want to check the masks
-  Bool equals(const LCRegion& other) const override { return LCRegion::equals(other); }
+  bool equals(const LCRegion& other) const override { return LCRegion::equals(other); }
 
   // Assignment (copy semantics) is only useful for derived classes.
   LCRegionFixed& operator=(const LCRegionFixed& other);
 
   // Set the mask.
-  void setMask(const Array<Bool>& mask);
+  void setMask(const Array<bool>& mask);
 
  private:
-  ArrayLattice<Bool> itsMask;
+  ArrayLattice<bool> itsMask;
 };
 
 }  // namespace casacore

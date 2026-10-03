@@ -126,22 +126,22 @@ class StokesCoordinate : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel to a world coordinate or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel to a world coordinate or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // <src>errorMessage</src> returns an error message.
   // The output vectors are appropriately resized before use.
   // The Bool parameter in toWorld() is ignored as this coordinate does not
   // support a conversion layer frame.
   // <group>
-  virtual Bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, Bool = True) const;
-  virtual Bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
+  virtual bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool = true) const;
+  virtual bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
   // </group>
 
   // Interconvert between pixel and world as a Stokes type.
-  // It returns False if no conversion could be done.
+  // It returns false if no conversion could be done.
   // <group>
-  Bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
-  Bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
+  bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
+  bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
   // </group>
 
   // Interconvert between world stored as a Double and world stored as
@@ -184,19 +184,19 @@ class StokesCoordinate : public Coordinate {
   // </group>
 
   // Set the value of the requested attribute.  For the StokesCoordinate,
-  // these have no effect (always return True) except for setWorldAxisNames.
+  // these have no effect (always return true) except for setWorldAxisNames.
   // <group>
-  virtual Bool setWorldAxisNames(const Vector<String> &names);
-  virtual Bool setReferencePixel(const Vector<Double> &refPix);
-  virtual Bool setLinearTransform(const Matrix<Double> &xform);
-  virtual Bool setIncrement(const Vector<Double> &inc);
-  virtual Bool setReferenceValue(const Vector<Double> &refval);
+  virtual bool setWorldAxisNames(const Vector<String> &names);
+  virtual bool setReferencePixel(const Vector<Double> &refPix);
+  virtual bool setLinearTransform(const Matrix<Double> &xform);
+  virtual bool setIncrement(const Vector<Double> &inc);
+  virtual bool setReferenceValue(const Vector<Double> &refval);
   // </group>
 
   // The set function has no effect as the units must be empty for a StokesCoordinate
-  // Always returns True
+  // Always returns true
   // <group>
-  virtual Bool setWorldAxisUnits(const Vector<String> &units);
+  virtual bool setWorldAxisUnits(const Vector<String> &units);
   virtual Vector<String> worldAxisUnits() const;
   // </group>
 
@@ -204,13 +204,13 @@ class StokesCoordinate : public Coordinate {
   // for  a lattice of the given shape (for this coordinate).
   // The implementation here gives world coordinates at the start
   // and end of the Stokes axis.
-  // The output vectors are resized.  Returns False if fails (and
+  // The output vectors are resized.  Returns false if fails (and
   // then <src>setDefaultWorldMixRanges</src> generates the ranges)
   // with a reason in <src>errorMessage()</src>.
   // The <src>setDefaultWorldMixRanges</src> function
   // gives you [-1e99->1e99].
   // <group>
-  virtual Bool setWorldMixRanges(const IPosition &shape);
+  virtual bool setWorldMixRanges(const IPosition &shape);
   virtual void setDefaultWorldMixRanges();
   //</group>
 
@@ -225,22 +225,22 @@ class StokesCoordinate : public Coordinate {
   //
   // Thus, all other arguments to do with formatting and precision are ignored.
   virtual String format(String &units, Coordinate::formatType format, Double worldValue,
-                        uInt worldAxis, Bool isAbsolute = True, Bool showAsAbsolute = True,
-                        Int precision = -1, Bool usePrecForMixed = False) const;
+                        uInt worldAxis, bool isAbsolute = true, bool showAsAbsolute = true,
+                        Int precision = -1, bool usePrecForMixed = false) const;
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False,  method
+  // axes in the Coordinate.  If the comparison returns false,  method
   // errorMessage returns a message about why.
   // <group>
-  virtual Bool near(const Coordinate &other, Double tol = 1e-6) const;
-  virtual Bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
+  virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
                     Double tol = 1e-6) const;
   // </group>
 
   // Save the StokesCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
-  virtual Bool save(RecordInterface &container, const String &fieldName) const;
+  // The field must not exist, otherwise <src>false</src> is returned.
+  virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Recover the StokesCoordinate from a record.
   // A null pointer means that the restoration did not succeed - probably
@@ -252,12 +252,12 @@ class StokesCoordinate : public Coordinate {
   virtual Coordinate *clone() const;
 
   // Comparison only made for specified axes in this and other Coordinate
-  virtual Bool doNearPixel(const Coordinate &other, const Vector<Bool> &thisAxes,
-                           const Vector<Bool> &otherAxes, Double tol = 1.0e-6) const;
+  virtual bool doNearPixel(const Coordinate &other, const Vector<bool> &thisAxes,
+                           const Vector<bool> &otherAxes, Double tol = 1.0e-6) const;
 
  private:
-  Bool toWorld(Double &world, const Double pixel) const;
-  Bool toPixel(Double &pixel, const Double world) const;
+  bool toWorld(Double &world, const Double pixel) const;
+  bool toPixel(Double &pixel, const Double world) const;
   //
   Block<Int> values_p;
 

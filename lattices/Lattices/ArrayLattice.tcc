@@ -38,17 +38,17 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-ArrayLattice<T>::ArrayLattice() : itsWritable(False) {}
+ArrayLattice<T>::ArrayLattice() : itsWritable(false) {}
 
 template <class T>
-ArrayLattice<T>::ArrayLattice(const IPosition& shape) : itsData(shape), itsWritable(True) {}
+ArrayLattice<T>::ArrayLattice(const IPosition& shape) : itsData(shape), itsWritable(true) {}
 
 template <class T>
-ArrayLattice<T>::ArrayLattice(Array<T>& array, Bool isWritable)
+ArrayLattice<T>::ArrayLattice(Array<T>& array, bool isWritable)
     : itsData(array), itsWritable(isWritable) {}
 
 template <class T>
-ArrayLattice<T>::ArrayLattice(const Array<T>& array) : itsData(array), itsWritable(False) {}
+ArrayLattice<T>::ArrayLattice(const Array<T>& array) : itsData(array), itsWritable(false) {}
 
 template <class T>
 ArrayLattice<T>::ArrayLattice(const ArrayLattice<T>& other)
@@ -72,12 +72,12 @@ Lattice<T>* ArrayLattice<T>::clone() const {
 }
 
 template <class T>
-Bool ArrayLattice<T>::canReferenceArray() const {
-  return True;
+bool ArrayLattice<T>::canReferenceArray() const {
+  return true;
 }
 
 template <class T>
-Bool ArrayLattice<T>::isWritable() const {
+bool ArrayLattice<T>::isWritable() const {
   return itsWritable;
 }
 
@@ -87,10 +87,10 @@ IPosition ArrayLattice<T>::shape() const {
 }
 
 template <class T>
-Bool ArrayLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool ArrayLattice<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   Array<T> tmp = itsData(section.start(), section.end(), section.stride());
   buffer.reference(tmp);
-  return True;
+  return true;
 }
 
 template <class T>
@@ -160,7 +160,7 @@ const Array<T>& ArrayLattice<T>::asArray() const {
 
 // Check class invariants.
 template <class T>
-Bool ArrayLattice<T>::ok() const {
+bool ArrayLattice<T>::ok() const {
   return itsData.ok();
 }
 

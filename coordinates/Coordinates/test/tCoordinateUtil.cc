@@ -468,8 +468,8 @@ void test3()
   {
     CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();
     CoordinateSystem cSysOut;
-    Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
-    AlwaysAssert(dropped == False, AipsError);
+    bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+    AlwaysAssert(dropped == false, AipsError);
     AlwaysAssert(cSysIn.near(cSysOut), AipsError);
   }
 
@@ -482,8 +482,8 @@ void test3()
     cSysIn.removeWorldAxis(worldAxis, 0.0);
     //
     CoordinateSystem cSysOut;
-    Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
-    AlwaysAssert(dropped == True, AipsError);
+    bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+    AlwaysAssert(dropped == true, AipsError);
     AlwaysAssert(cSysOut.nCoordinates() == (cSysIn.nCoordinates() - 1), AipsError);
     AlwaysAssert(cSysOut.nPixelAxes() == cSysIn.nPixelAxes(), AipsError);
     AlwaysAssert(cSysOut.nWorldAxes() == cSysIn.nWorldAxes(), AipsError);
@@ -502,8 +502,8 @@ void test3()
     cSysIn.removePixelAxis(pixelAxis, 0.0);
     //
     CoordinateSystem cSysOut;
-    Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
-    AlwaysAssert(dropped == False, AipsError);
+    bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+    AlwaysAssert(dropped == false, AipsError);
     AlwaysAssert(cSysOut.nCoordinates() == cSysIn.nCoordinates(), AipsError);
     AlwaysAssert(cSysOut.nPixelAxes() == cSysIn.nPixelAxes(), AipsError);
     AlwaysAssert(cSysOut.nWorldAxes() == cSysIn.nWorldAxes(), AipsError);
@@ -523,8 +523,8 @@ void test3()
     cSysIn.removeWorldAxis(worldAxes(0), 0.0);
     //
     CoordinateSystem cSysOut;
-    Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
-    AlwaysAssert(dropped == False, AipsError);
+    bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+    AlwaysAssert(dropped == false, AipsError);
     AlwaysAssert(cSysOut.nCoordinates() == cSysIn.nCoordinates(), AipsError);
     AlwaysAssert(cSysOut.nPixelAxes() == cSysIn.nPixelAxes(), AipsError);
     AlwaysAssert(cSysOut.nWorldAxes() == cSysIn.nWorldAxes(), AipsError);
@@ -547,8 +547,8 @@ void test3()
     cSysIn.removeWorldAxis(worldAxes(0), 0.0);
     //
     CoordinateSystem cSysOut;
-    Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
-    AlwaysAssert(dropped == True, AipsError);
+    bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn);
+    AlwaysAssert(dropped == true, AipsError);
     AlwaysAssert(cSysOut.nCoordinates() == cSysIn.nCoordinates() - 1, AipsError);
     AlwaysAssert(cSysOut.nPixelAxes() == cSysIn.nPixelAxes(), AipsError);
     AlwaysAssert(cSysOut.nWorldAxes() == cSysIn.nWorldAxes(), AipsError);
@@ -569,8 +569,8 @@ void test3()
     cSysIn.transpose(order, order);
     cSysIn.removePixelAxis(0, 0.0);
     CoordinateSystem cSysOut;
-    Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, False);
-    AlwaysAssert(dropped == False, AipsError);
+    bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, false);
+    AlwaysAssert(dropped == false, AipsError);
     AlwaysAssert(cSysOut.spectralAxisNumber() != cSysIn.spectralAxisNumber(), AipsError);
     AlwaysAssert(cSysOut.polarizationAxisNumber() != cSysIn.polarizationAxisNumber(), AipsError);
     AlwaysAssert(cSysOut.worldAxes(cSysOut.spectralCoordinateNumber())[0] !=
@@ -580,7 +580,7 @@ void test3()
                      cSysIn.worldAxes(cSysIn.polarizationCoordinateNumber())[0],
                  AipsError);
     cSysOut = CoordinateSystem();
-    dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, True);
+    dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, true);
 
     AlwaysAssert(cSysOut.spectralAxisNumber() == cSysIn.spectralAxisNumber(), AipsError);
     AlwaysAssert(cSysOut.polarizationAxisNumber() == cSysIn.polarizationAxisNumber(), AipsError);
@@ -601,9 +601,9 @@ void test4()
   CoordinateSystem cSys = CoordinateUtil::defaultCoords4D();
   //
   uInt axis = 0;
-  Bool doWorld = True;
-  Bool doAbs = True;
-  Bool doVel = False;
+  bool doWorld = true;
+  bool doAbs = true;
+  bool doVel = false;
   String label;
   //
   for (uInt i = 0; i < cSys.nCoordinates(); i++) {
@@ -612,11 +612,11 @@ void test4()
       axis = j;
       //
       if (cType == Coordinate::SPECTRAL) {
-        doVel = False;
+        doVel = false;
         label = CoordinateUtil::axisLabel(cSys.coordinate(i), axis, doWorld, doAbs, doVel);
         cerr << "Label = " << label << endl;
         //
-        doVel = True;
+        doVel = true;
         label = CoordinateUtil::axisLabel(cSys.coordinate(i), axis, doWorld, doAbs, doVel);
         cerr << "Label = " << label << endl;
       } else {
@@ -634,12 +634,12 @@ void test5() {
   String form = CoordinateUtil::formatCoordinate(pos, csys);
   String expec = "00:00:00.000, +00.00.00.000, I, 1.415e+09Hz";
   AlwaysAssert(form == expec, AipsError);
-  Bool thrown = False;
+  bool thrown = false;
   try {
     pos = IPosition(1, 0);
     form = CoordinateUtil::formatCoordinate(pos, csys);
   } catch (const std::exception& x) {
-    thrown = True;
+    thrown = true;
   }
   AlwaysAssert(thrown, AipsError);
 }

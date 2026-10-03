@@ -34,7 +34,7 @@ void BaseEngine::adaptForConstant(const IPosition& shapeConstants, uInt nvalues)
   uInt size = shapeConstants.product();
   // Set to shape if not empty.
   if (size > 0) {
-    itsIsConst = True;
+    itsIsConst = true;
     itsShape.resize(0);
     itsShape = shapeConstants;
     // Prepend with extra axis if needed.
@@ -59,7 +59,7 @@ void BaseEngine::adaptForConstant(const IPosition& shapeConstants, uInt nvalues)
   }
 }
 
-void BaseEngine::extendBase(const BaseEngine& engine, Bool skipFirstAxis) {
+void BaseEngine::extendBase(const BaseEngine& engine, bool skipFirstAxis) {
   // An empty shape means it is a scalar or it is unknown.
   // ndim<0 means the dimensionality and shape are unknown.
   // ndim=0 means a scalar.
@@ -90,7 +90,7 @@ void BaseEngine::extendBase(const BaseEngine& engine, Bool skipFirstAxis) {
     itsShape.append(shape);
   }
   if (!engine.isConstant()) {
-    itsIsConst = False;
+    itsIsConst = false;
   }
 }
 

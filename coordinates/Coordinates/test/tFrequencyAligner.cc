@@ -82,12 +82,12 @@ int main() {
     FrequencyAligner<Float> fa(lc, nPix, refEpoch, dir, pos, sysOut);
     InterpolateArray1D<Double, Float>::InterpolationMethod method =
         InterpolateArray1D<Double, Float>::linear;
-    Bool extrapolate = False;
-    Bool useCachedX = False;
+    bool extrapolate = false;
+    bool useCachedX = false;
 
     // Generate some data
 
-    Vector<Bool> maskIn(nPix, True), maskOut(nPix);
+    Vector<bool> maskIn(nPix, true), maskOut(nPix);
     Vector<Float> yOut(nPix), yIn(nPix), yOut2(nPix);
     Float val = 0.0;
     for (uInt i = 0; i < nPix; i++) {
@@ -152,7 +152,7 @@ int main() {
 
       // Align with new abcissa taken from cached vector
 
-      useCachedX = True;
+      useCachedX = true;
       AlwaysAssert(fa.align(yOut2, maskOut, yIn, maskIn, epoch, useCachedX, method, extrapolate),
                    AipsError);
       AlwaysAssert(allNear(yOut2, yOut, 1e-6), AipsError);
@@ -178,9 +178,9 @@ int main() {
       const uInt ny = 5;
       IPosition shp(2, nx, ny);
       Array<Float> yInMany(shp);
-      Array<Bool> maskInMany(shp);
+      Array<bool> maskInMany(shp);
       Array<Float> yOutMany;
-      Array<Bool> maskOutMany;
+      Array<bool> maskOutMany;
       //
       IPosition pp(2, 0);
       for (uInt j = 0; j < ny; j++) {
@@ -198,12 +198,12 @@ int main() {
       //
       uInt axis = 0;
       //
-      Bool ok = fa.alignMany(yOutMany, maskOutMany, yInMany, maskInMany, axis, epoch, method,
+      bool ok = fa.alignMany(yOutMany, maskOutMany, yInMany, maskInMany, axis, epoch, method,
                              extrapolate);
       AlwaysAssert(ok, AipsError);
       ReadOnlyVectorIterator<Float> it(yOutMany, axis);
       Vector<Float> data1;
-      Vector<Bool> mask1;
+      Vector<bool> mask1;
       uInt cnt = 0;
       while (!it.pastEnd()) {
         if (cnt == 0) {
@@ -225,12 +225,12 @@ int main() {
       MVEpoch t3(tt);
       MEpoch epoch(t3);
       Vector<Float> yOut3;
-      useCachedX = True;
+      useCachedX = true;
       AlwaysAssert(fa.align(yOut3, maskOut, yIn, maskIn, epoch, useCachedX, method, extrapolate),
                    AipsError);  // Use cached
       AlwaysAssert(allNear(yOut3, yOut, 1e-6), AipsError);
       //
-      useCachedX = False;
+      useCachedX = false;
       AlwaysAssert(fa.align(yOut2, maskOut, yIn, maskIn, epoch, useCachedX, method, extrapolate),
                    AipsError);  // Recompute
       AlwaysAssert(allNear(yOut3, yOut, 1e-6), AipsError);
@@ -246,12 +246,12 @@ int main() {
       MVEpoch t3(tt);
       MEpoch epoch(t3);
       Vector<Float> yOut3;
-      useCachedX = True;
+      useCachedX = true;
       AlwaysAssert(fa.align(yOut3, maskOut, yIn, maskIn, epoch, useCachedX, method, extrapolate),
                    AipsError);  // Use cached
       AlwaysAssert(allNear(yOut3, yOut, 1e-6), AipsError);
       //
-      useCachedX = False;
+      useCachedX = false;
       AlwaysAssert(fa.align(yOut2, maskOut, yIn, maskIn, epoch, useCachedX, method, extrapolate),
                    AipsError);  // Recompute
       AlwaysAssert(allNear(yOut3, yOut, 1e-6), AipsError);

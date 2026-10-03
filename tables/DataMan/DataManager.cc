@@ -69,7 +69,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 DataManager::DataManager()
     : nrcol_p(0),
       seqnr_p(0),
-      asBigEndian_p(False),
+      asBigEndian_p(false),
       tsmOption_p(TSMOption::Buffer, 0, 0),
       clone_p(0) {
   table_p = new Table;
@@ -90,7 +90,7 @@ Record DataManager::getProperties() const { return Record(); }
 
 void DataManager::setProperties(const Record&) {}
 
-Bool DataManager::isStorageManager() const { return True; }
+bool DataManager::isStorageManager() const { return true; }
 
 void DataManager::create64(rownr_t nrrow) {
   AlwaysAssert(nrrow <= std::numeric_limits<uInt>::max(), AipsError);
@@ -167,7 +167,7 @@ DataManagerColumn* DataManager::createScalarColumn(const String& columnName, int
   DataManagerColumn* colPtr = makeScalarColumn(columnName, dataType, dataTypeId);
   colPtr->setColumnName(columnName);
   checkDataType(colPtr, columnName, dataType, dataTypeId);
-  colPtr->setIsFixedShape(True);
+  colPtr->setIsFixedShape(true);
   nrcol_p++;
   return colPtr;
 }
@@ -215,9 +215,9 @@ void DataManager::throwDataTypeOther(const String& columnName, int dataType) con
   }
 }
 
-Bool DataManager::hasMultiFileSupport() const { return False; }
+bool DataManager::hasMultiFileSupport() const { return false; }
 
-Bool DataManager::canReallocateColumns() const { return False; }
+bool DataManager::canReallocateColumns() const { return false; }
 DataManagerColumn* DataManager::reallocateColumn(DataManagerColumn* column) { return column; }
 
 // # Compose the keyword name from the given name appended with the
@@ -240,22 +240,22 @@ ByteIO::OpenOption DataManager::fileOption() const {
   return PlainTable::toAipsIOFoption(table_p->tableOption());
 }
 
-Bool DataManager::isRegular() const { return True; }
+bool DataManager::isRegular() const { return true; }
 
 void DataManager::linkToTable(Table& tab) { *table_p = tab; }
 
 // # Default prepare does nothing.
 void DataManager::prepare() {}
 
-Bool DataManager::canAddRow() const { return False; }
+bool DataManager::canAddRow() const { return false; }
 
-Bool DataManager::canRemoveRow() const { return False; }
+bool DataManager::canRemoveRow() const { return false; }
 
-Bool DataManager::canAddColumn() const { return False; }
+bool DataManager::canAddColumn() const { return false; }
 
-Bool DataManager::canRemoveColumn() const { return False; }
+bool DataManager::canRemoveColumn() const { return false; }
 
-Bool DataManager::canRenameColumn() const { return True; }
+bool DataManager::canRenameColumn() const { return true; }
 
 void DataManager::addRow64(rownr_t nrrow) {
   AlwaysAssert(nrrow < std::numeric_limits<uInt>::max(), AipsError);
@@ -312,7 +312,7 @@ void DataManager::registerCtor(const String& type, DataManagerCtor func) {
 }
 
 // # Test if the data manager is registered.
-Bool DataManager::isRegistered(const String& type) {
+bool DataManager::isRegistered(const String& type) {
   std::lock_guard<std::recursive_mutex> lock(theirMutex);
   return theirRegisterMap.find(type) != theirRegisterMap.end();
 }
@@ -339,7 +339,7 @@ DataManagerCtor DataManager::getCtor(const String& type) {
   }
   // Try to load and initialize the dynamic library.
   DynLib dl(libname, std::string("libcasa_"), CASACORE_STRINGIFY(SOVERSION), "register_" + libname,
-            False);
+            false);
   if (dl.getHandle()) {
     // See if registered now.
     iter = theirRegisterMap.find(type);

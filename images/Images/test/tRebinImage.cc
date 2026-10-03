@@ -53,7 +53,7 @@ int main(int argc, const char* argv[]) {
     inputs.create("shape", "-10", "Shape");
     inputs.readArguments(argc, argv);
     const String in = inputs.getString("in");
-    const Bool save = inputs.getBool("save");
+    const bool save = inputs.getBool("save");
     const Block<Int> factorsU(inputs.getIntArray("factors"));
     const Block<Int> shapeU(inputs.getIntArray("shape"));
     //
@@ -72,13 +72,13 @@ int main(int argc, const char* argv[]) {
       }
       //
       TiledShape shape2(shapeIn);
-      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, False);
+      CoordinateSystem cSys = CoordinateUtil::makeCoordinateSystem(shapeIn, false);
       //
       pIm = new TempImage<Float>(shape2, cSys, maxMBInMemory);
       pIm->set(1.0);
       //
-      TempLattice<Bool> inMask(shape2, maxMBInMemory);
-      inMask.set(True);
+      TempLattice<bool> inMask(shape2, maxMBInMemory);
+      inMask.set(true);
       TempImage<Float>* pTemp = dynamic_cast<TempImage<Float>*>(pIm);
       pTemp->attachMask(inMask);
     } else {
@@ -111,12 +111,12 @@ int main(int argc, const char* argv[]) {
       }
       cerr << "Nice shapes = " << rebinner.niceCursorShape() << pImOut->niceCursorShape() << endl;
       String maskName = pImOut->makeUniqueRegionName(String("mask"), 0);
-      pImOut->makeMask(maskName, True, True, True, True);
+      pImOut->makeMask(maskName, true, true, true, true);
 
       // Do it
 
       LogIO os(LogOrigin("tRebinImage", __FUNCTION__, WHERE));
-      LatticeUtilities::copyDataAndMask(os, *pImOut, rebinner, False);
+      LatticeUtilities::copyDataAndMask(os, *pImOut, rebinner, false);
       delete pImOut;
     }
     {
@@ -134,12 +134,12 @@ int main(int argc, const char* argv[]) {
       IPosition axes(3, 2, 2, 1);
       RebinImage<Float> rb(image, axes);
       axes[2] = 2;
-      Bool exception = False;
+      bool exception = false;
       try {
         RebinImage<Float> rb1(image, axes);
       } catch (std::exception& x) {
         cout << "Exception thrown as expected: " << x.what() << endl;
-        exception = True;
+        exception = true;
       }
       AlwaysAssert(exception, AipsError);
     }

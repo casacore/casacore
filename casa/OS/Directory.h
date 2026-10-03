@@ -111,7 +111,7 @@ class Directory : public File {
 
   // Check if directory is empty.
   // If the directory does not exist, an exception will be thrown.
-  Bool isEmpty() const;
+  bool isEmpty() const;
 
   // Return the number of entries in the directory (not counting . and ..).
   // If the directory does not exist, an exception will be thrown.
@@ -128,7 +128,7 @@ class Directory : public File {
   // Create the directory.
   // <br>If the directory exists and overwrite=True, it will be removed
   // (recursively). Otherwise an exception is thrown.
-  void create(Bool overwrite = True);
+  void create(bool overwrite = true);
 
   // Remove a directory.
   // An exception is thrown if the directory is not empty.
@@ -142,9 +142,9 @@ class Directory : public File {
 
   // Remove the directory and its contents (recursively in all
   // subdirectories).
-  // If <src>keepDir==True</src>, the directory itself is kept
+  // If <src>keepDir==true</src>, the directory itself is kept
   //(to keep properties like placement on Lustre).
-  void removeRecursive(Bool keepDir = False);
+  void removeRecursive(bool keepDir = false);
 
   // Copy the directory and its contents (recursively) to the target
   // path using the system command cp -r.
@@ -154,7 +154,7 @@ class Directory : public File {
   // directory is copied to the new directory.
   // <br>An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target already exists and overwrite!=True
+  // <br>- or the target already exists and overwrite!=true
   // <note role=caution>
   // 1. The behavior of this copy function is different from cp when the
   // target directory already exists. Cp copies the source to a
@@ -162,12 +162,12 @@ class Directory : public File {
   // <br>2. When a readonly file is copied, <src>cp</src> the resulting
   // file is also readonly. Therefore <src>chmod</src> is used to
   // set user write permission after the copy.
-  // The flag <src>setUserWritePermission</src> can be set to False
+  // The flag <src>setUserWritePermission</src> can be set to false
   // when that should not be done.
   // </note>
   // <group>
-  void copy(const Path& target, Bool overwrite = True, Bool setUserWritePermission = True) const;
-  void copy(const String& target, Bool overwrite = True, Bool setUserWritePermission = True) const;
+  void copy(const Path& target, bool overwrite = true, bool setUserWritePermission = true) const;
+  void copy(const String& target, bool overwrite = true, bool setUserWritePermission = true) const;
   // </group>
 
   // Copy a directory recursively in a manual way.
@@ -181,15 +181,15 @@ class Directory : public File {
   // The source directory is moved (thus renamed) to the target.
   // <br>An exception is thrown if:
   // <br>- the target directory is not writable
-  // <br>- or the target already exists and overwrite!=True
+  // <br>- or the target already exists and overwrite!=true
   // <note role=caution>
   // The behavior of this move function is different from mv when the
   // target directory already exists. Mv moves the source to a
   // subdirectory of the target, while move recreates the target.
   // </note>
   // <group>
-  void move(const Path& target, Bool overwrite = True);
-  void move(const String& target, Bool overwrite = True);
+  void move(const Path& target, bool overwrite = true);
+  void move(const String& target, bool overwrite = true);
   // </group>
 
   // Find all files which whose names match <src>regex</src>.  You
@@ -202,8 +202,8 @@ class Directory : public File {
   // <br>To match the semantics of the unix <src>find</src> command,
   // symbolic links are not followed by default, but this behavior
   // can be over-ridden.
-  Vector<String> find(const Regex& regexp, Bool followSymLinks = False,
-                      Bool recursive = True) const;
+  Vector<String> find(const Regex& regexp, bool followSymLinks = false,
+                      bool recursive = true) const;
 
   // For each element of <src>files</src>, find all file names matching
   // it using shell file-expansion rules.  Return the list of all matched files
@@ -211,13 +211,13 @@ class Directory : public File {
   // the file names.   Note tha if <src>files(i)</src> contains a path as well as a file
   // name, no matching is done on the path, just the trailing file name.
   // Throws an AipsError if the shell pattern is illegal.
-  static Vector<String> shellExpand(const Vector<String>& files, Bool stripPath = False);
+  static Vector<String> shellExpand(const Vector<String>& files, bool stripPath = false);
   // Return the total size  of everything in the Directory. If the Directory
   // does not exist, an exception will be thrown.
   virtual Int64 size() const;
 
   // Check if a directory is mounted via NFS or not.
-  Bool isNFSMounted() const;
+  bool isNFSMounted() const;
 
  private:
   // Check if the path defines a directory.
@@ -229,11 +229,11 @@ class Directory : public File {
   File itsFile;
 };
 
-inline void Directory::copy(const String& target, Bool overwrite,
-                            Bool setUserWritePermission) const {
+inline void Directory::copy(const String& target, bool overwrite,
+                            bool setUserWritePermission) const {
   copy(Path(target), overwrite, setUserWritePermission);
 }
-inline void Directory::move(const String& target, Bool overwrite) { move(Path(target), overwrite); }
+inline void Directory::move(const String& target, bool overwrite) { move(Path(target), overwrite); }
 inline uInt Directory::freeSpaceInMB() const { return uInt(0.5 + freeSpace() / (1024 * 1024)); }
 
 }  // namespace casacore

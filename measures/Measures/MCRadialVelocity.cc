@@ -89,7 +89,7 @@ void MCRadialVelocity::clearConvert() {
 
 // # Conversion routines
 void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
 
   if (!MVPOS1) MVPOS1 = new MVPosition();
   if (!MVDIR1) MVDIR1 = new MVDirection();

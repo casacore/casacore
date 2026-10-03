@@ -35,7 +35,7 @@ class StokesIStManColumn final : public casacore::StManColumn {
    * Whether this column is writable
    * @returns @c true
    */
-  casacore::Bool isWritable() const final { return true; }
+  bool isWritable() const final { return true; }
 
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const casacore::IPosition &shape) final {
@@ -68,7 +68,7 @@ class StokesIStManColumn final : public casacore::StManColumn {
     getArrayGeneric(rowNr, dataPtr);
   }
 
-  void getArrayBoolV(casacore::uInt rowNr, casacore::Array<casacore::Bool> *dataPtr) final {
+  void getArrayBoolV(casacore::uInt rowNr, casacore::Array<bool> *dataPtr) final {
     getArrayGeneric(rowNr, dataPtr);
   }
 
@@ -91,7 +91,7 @@ class StokesIStManColumn final : public casacore::StManColumn {
   void putArrayfloatV(casacore::uInt rowNr, const casacore::Array<float> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
-  void putArrayBoolV(casacore::uInt rowNr, const casacore::Array<casacore::Bool> *dataPtr) final {
+  void putArrayBoolV(casacore::uInt rowNr, const casacore::Array<bool> *dataPtr) final {
     putArrayGeneric(rowNr, dataPtr);
   }
 

@@ -91,11 +91,11 @@ class LatticeCleanProgress {
 
   // Print and plot the information.
   // Currently, not all information is utilized.
-  Bool info(const Bool lastcall, const Int iteration, const Int numberIterations,
+  bool info(const bool lastcall, const Int iteration, const Int numberIterations,
             const Vector<Float>& maxima, const Block<IPosition>& posMaximum,
             const Float strengthOptimum, const Int optimumScale, const IPosition& positionOptimum,
             const Float& totalFlux, const Vector<Float>& totalFluxScale,
-            const Bool resetBase = False);
+            const bool resetBase = false);
 
  protected:
  private:
@@ -107,10 +107,10 @@ class LatticeCleanProgress {
   void resizeDataStorage();
 
   // this will redraw the plot with a new scale;
-  // if plotMatrices = False, just draw the boxes,
+  // if plotMatrices = false, just draw the boxes,
   // else, replot all past data.
   //
-  void basicSetUp(Bool plotMatrices = False);
+  void basicSetUp(bool plotMatrices = false);
 
   // Note: you MUST call  basicSetUp before calling this.
   void plotOne(const Int iteration, const Vector<Float>& resid, const Vector<Float>& flux);

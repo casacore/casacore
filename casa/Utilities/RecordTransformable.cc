@@ -32,9 +32,9 @@ RecordTransformable::~RecordTransformable() {
   // Nothing
 }
 
-Bool RecordTransformable::fromString(String &error, const String &) {
+bool RecordTransformable::fromString(String &error, const String &) {
   error += "Cannot initialise this object from a string\n";
-  return False;
+  return false;
 }
 
 const String &RecordTransformable::ident() const {

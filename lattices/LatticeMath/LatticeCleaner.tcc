@@ -69,7 +69,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-Bool LatticeCleaner<T>::validatePsf(const Lattice<T>& psf) {
+bool LatticeCleaner<T>::validatePsf(const Lattice<T>& psf) {
   LogIO os(LogOrigin("LatticeCleaner", "validatePsf()", WHERE));
 
   // Find the peak of the raw Psf
@@ -78,7 +78,7 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T>& psf) {
   itsPositionPeakPsf = IPosition(psf.shape().nelements(), 0);
   findMaxAbsLattice(psf, maxPsf, itsPositionPeakPsf);
   os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf + 1 << LogIO::POST;
-  return True;
+  return true;
 }
 
 template <class T>
@@ -89,14 +89,14 @@ LatticeCleaner<T>::LatticeCleaner()
       itsScaleSizes(0),
       itsMaximumResidual(0.0),
       itsStrengthOptimum(0.0),
-      itsChoose(True),
-      itsDoSpeedup(False),
-      itsIgnoreCenterBox(False),
+      itsChoose(true),
+      itsDoSpeedup(false),
+      itsIgnoreCenterBox(false),
       itsSmallScaleBias(0.6),
-      itsStopAtLargeScaleNegative(False),
+      itsStopAtLargeScaleNegative(false),
       itsStopPointMode(-1),
-      itsDidStopPointMode(False),
-      itsJustStarting(True),
+      itsDidStopPointMode(false),
+      itsJustStarting(true),
       itsMaskThreshold(T(0.9)) {
   itsMemoryMB = Double(HostInfo::memoryTotal() / 1024) / 16.0;
   itsScales.resize(0);
@@ -104,7 +104,7 @@ LatticeCleaner<T>::LatticeCleaner()
   itsDirtyConvScales.resize(0);
   itsPsfConvScales.resize(0);
   itsScaleMasks.resize(0);
-  itsScalesValid = False;
+  itsScalesValid = false;
   itsStartingIter = 0;
 }
 
@@ -114,14 +114,14 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T>& psf, const Lattice<T>& dirty
       itsScaleSizes(0),
       itsMaximumResidual(0.0),
       itsStrengthOptimum(0.),
-      itsChoose(True),
-      itsDoSpeedup(False),
-      itsIgnoreCenterBox(False),
+      itsChoose(true),
+      itsDoSpeedup(false),
+      itsIgnoreCenterBox(false),
       itsSmallScaleBias(0.6),
-      itsStopAtLargeScaleNegative(False),
+      itsStopAtLargeScaleNegative(false),
       itsStopPointMode(-1),
-      itsDidStopPointMode(False),
-      itsJustStarting(True) {
+      itsDidStopPointMode(false),
+      itsJustStarting(true) {
   AlwaysAssert(validatePsf(psf), AipsError);
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
@@ -141,14 +141,14 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T>& psf, const Lattice<T>& dirty
   itsDirty->copyData(dirty);
   itsXfr = new TempLattice<Complex>(psf.shape(), itsMemoryMB);
   itsXfr->copyData(LatticeExpr<Complex>(toComplex(psf)));
-  LatticeFFT::cfft2d(*itsXfr, True);
+  LatticeFFT::cfft2d(*itsXfr, true);
 
   itsScales.resize(0);
   itsScaleXfrs.resize(0);
   itsDirtyConvScales.resize(0);
   itsPsfConvScales.resize(0);
   itsScaleMasks.resize(0);
-  itsScalesValid = False;
+  itsScalesValid = false;
   itsStartingIter = 0;
 }
 
@@ -217,7 +217,7 @@ void LatticeCleaner<T>::update(const Lattice<T>& dirty) {
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
   dirtyFT.copyData(LatticeExpr<Complex>(toComplex(*itsDirty)));
-  LatticeFFT::cfft2d(dirtyFT, True);
+  LatticeFFT::cfft2d(dirtyFT, true);
 
   // Now we can redo the relevant convolutions
   TempLattice<Complex> cWork(itsDirty->shape(), itsMemoryMB);
@@ -228,7 +228,7 @@ void LatticeCleaner<T>::update(const Lattice<T>& dirty) {
 
     LatticeExpr<Complex> dpsExpr((dirtyFT) * (*itsScaleXfrs[scale]));
     cWork.copyData(dpsExpr);
-    LatticeFFT::cfft2d(cWork, False);
+    LatticeFFT::cfft2d(cWork, false);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
     LatticeExpr<T> realWork2(real(cWork));
     itsDirtyConvScales[scale]->copyData(realWork2);
@@ -254,29 +254,29 @@ void LatticeCleaner<T>::setMask(const Lattice<T>& mask, const T& maskThreshold) 
 }
 
 template <class T>
-Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int niter,
-                                   const Float gain, const Quantity& threshold, const Bool choose) {
+bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int niter,
+                                   const Float gain, const Quantity& threshold, const bool choose) {
   return setcontrol(cleanType, niter, gain, threshold, Quantity(0.0, "%"), choose);
 }
 
 // Set up the control parameters
 template <class T>
-Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int niter,
+bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int niter,
                                    const Float gain, const Quantity& aThreshold,
-                                   const Quantity& fThreshold, const Bool choose) {
+                                   const Quantity& fThreshold, const bool choose) {
   itsCleanType = cleanType;
   itsMaxNiter = niter;
   itsGain = gain;
   itsThreshold = aThreshold;
   itsFracThreshold = fThreshold;
   itsChoose = choose;
-  return True;
+  return true;
 }
 
 // Set up speedup parameters
 template <class T>
 void LatticeCleaner<T>::speedup(const Float nDouble) {
-  itsDoSpeedup = True;
+  itsDoSpeedup = true;
   itsNDouble = nDouble;
 };
 
@@ -502,7 +502,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
         os << "Cleaned " << stopPointModeCounter
            << " consecutive components from the smallest scale, stopping prematurely"
            << LogIO::POST;
-        itsDidStopPointMode = True;
+        itsDidStopPointMode = true;
         converged = -1;
         break;
       }
@@ -525,9 +525,9 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
     }
 
     if (progress) {
-      progress->info(False, itsIteration, itsMaxNiter, maxima, posMaximum, itsStrengthOptimum,
+      progress->info(false, itsIteration, itsMaxNiter, maxima, posMaximum, itsStrengthOptimum,
                      optimumScale, positionOptimum, totalFlux, totalFluxScale, itsJustStarting);
-      itsJustStarting = False;
+      itsJustStarting = false;
     } else {
       if (itsIteration == itsStartingIter + 1) {
         os << "iteration    MaximumResidual   CleanedFlux" << LogIO::POST;
@@ -564,8 +564,8 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
     LCBox subRegion(blc, trc, model.shape());
     LCBox subRegionPsf(blcPsf, trcPsf, model.shape());
 
-    SubLattice<T> modelSub(model, subRegion, True);
-    SubLattice<T> scaleSub(*itsScales[optimumScale], subRegionPsf, True);
+    SubLattice<T> modelSub(model, subRegion, true);
+    SubLattice<T> scaleSub(*itsScales[optimumScale], subRegionPsf, true);
 
     // Now do the addition of this scale to the model image....
     LatticeExpr<T> add(scaleFactor * scaleSub);
@@ -574,9 +574,9 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
     // and then subtract the effects of this scale from all the precomputed
     // dirty convolutions.
     for (scale = 0; scale < nScalesToClean; scale++) {
-      SubLattice<T> dirtySub(*itsDirtyConvScales[scale], subRegion, True);
+      SubLattice<T> dirtySub(*itsDirtyConvScales[scale], subRegion, true);
       AlwaysAssert(itsPsfConvScales[index(scale, optimumScale)], AipsError);
-      SubLattice<T> psfSub(*itsPsfConvScales[index(scale, optimumScale)], subRegionPsf, True);
+      SubLattice<T> psfSub(*itsPsfConvScales[index(scale, optimumScale)], subRegionPsf, true);
       LatticeExpr<T> sub((-scaleFactor) * psfSub);
       addTo(dirtySub, sub);
     }
@@ -596,7 +596,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
 
   // Finish off the plot, etc.
   if (progress) {
-    progress->info(True, itsIteration, itsMaxNiter, maxima, posMaximum, itsStrengthOptimum,
+    progress->info(true, itsIteration, itsMaxNiter, maxima, posMaximum, itsStrengthOptimum,
                    optimumScale, positionOptimum, totalFlux, totalFluxScale);
   }
 
@@ -608,7 +608,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
 }
 
 template <class T>
-Bool LatticeCleaner<T>::findMaxAbsLattice(const Lattice<T>& lattice, T& maxAbs,
+bool LatticeCleaner<T>::findMaxAbsLattice(const Lattice<T>& lattice, T& maxAbs,
                                           IPosition& posMaxAbs) {
   posMaxAbs = IPosition(lattice.shape().nelements(), 0);
   maxAbs = 0.0;
@@ -635,11 +635,11 @@ Bool LatticeCleaner<T>::findMaxAbsLattice(const Lattice<T>& lattice, T& maxAbs,
     }
   }
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
+bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
                                               T& maxAbs, IPosition& posMaxAbs) {
   posMaxAbs = IPosition(lattice.shape().nelements(), 0);
   maxAbs = 0.0;
@@ -678,11 +678,11 @@ Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice, const L
     }
   }
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc) {
+bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc) {
   LogIO os(LogOrigin("deconvolver", "setscales()", WHERE));
 
   itsNscales = nscales;
@@ -708,7 +708,7 @@ Bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc) {
 // We calculate all the scales and the corresponding convolutions
 // and cross convolutions.
 template <class T>
-Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
+bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
   LogIO os(LogOrigin("deconvolver", "setscales()", WHERE));
 
   Int scale;
@@ -753,7 +753,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
   dirtyFT.copyData(LatticeExpr<Complex>(toComplex(*itsDirty)));
-  LatticeFFT::cfft2d(dirtyFT, True);
+  LatticeFFT::cfft2d(dirtyFT, true);
 
   for (scale = 0; scale < itsNscales; scale++) {
     os << "Calculating scale image and Fourier transform for scale " << scale + 1 << LogIO::POST;
@@ -766,7 +766,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
     itsScaleXfrs[scale]->copyData(LatticeExpr<Complex>(toComplex(*itsScales[scale])));
 
     // Now FFT
-    LatticeFFT::cfft2d(*itsScaleXfrs[scale], True);
+    LatticeFFT::cfft2d(*itsScaleXfrs[scale], true);
   }
 
   // Now we can do all the convolutions
@@ -777,7 +777,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
     // PSF * scale
     LatticeExpr<Complex> ppsExpr((*itsXfr) * (*itsScaleXfrs[scale]));
     cWork.copyData(ppsExpr);
-    LatticeFFT::cfft2d(cWork, False);
+    LatticeFFT::cfft2d(cWork, false);
     itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
     LatticeExpr<T> realWork(real(cWork));
@@ -786,7 +786,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
     // Dirty * scale
     LatticeExpr<Complex> dpsExpr((dirtyFT) * (*itsScaleXfrs[scale]));
     cWork.copyData(dpsExpr);
-    LatticeFFT::cfft2d(cWork, False);
+    LatticeFFT::cfft2d(cWork, false);
     itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
 
@@ -800,7 +800,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
       LatticeExpr<Complex> ppsoExpr((*itsXfr) * conj(*itsScaleXfrs[scale]) *
                                     (*itsScaleXfrs[otherscale]));
       cWork.copyData(ppsoExpr);
-      LatticeFFT::cfft2d(cWork, False);
+      LatticeFFT::cfft2d(cWork, false);
       itsPsfConvScales[index(scale, otherscale)] =
           new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
       AlwaysAssert(itsPsfConvScales[index(scale, otherscale)], AipsError);
@@ -809,13 +809,13 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
     }
   }
 
-  itsScalesValid = True;
+  itsScalesValid = true;
 
   if (itsMask) {
     makeScaleMasks();
   }
 
-  return True;
+  return true;
 }
 
 // Make a single scale size image
@@ -934,8 +934,8 @@ Int LatticeCleaner<T>::index(const Int scale, const Int otherscale) {
 }
 
 template <class T>
-Bool LatticeCleaner<T>::destroyScales() {
-  if (!itsScalesValid) return True;
+bool LatticeCleaner<T>::destroyScales() {
+  if (!itsScalesValid) return true;
   for (uInt scale = 0; scale < itsScales.nelements(); scale++) {
     if (itsScales[scale]) delete itsScales[scale];
     itsScales[scale] = 0;
@@ -956,30 +956,30 @@ Bool LatticeCleaner<T>::destroyScales() {
   itsScales.resize(0);
   itsDirtyConvScales.resize(0);
   itsPsfConvScales.resize(0);
-  itsScalesValid = False;
-  return True;
+  itsScalesValid = false;
+  return true;
 }
 
 template <class T>
-Bool LatticeCleaner<T>::destroyMasks() {
+bool LatticeCleaner<T>::destroyMasks() {
   for (uInt scale = 0; scale < itsScaleMasks.nelements(); scale++) {
     if (itsScaleMasks[scale]) delete itsScaleMasks[scale];
     itsScaleMasks[scale] = 0;
   }
   itsScaleMasks.resize(0);
-  return True;
+  return true;
 };
 
 // # Removed on 8-Apr-2004 by GvD because it is not used and add Tasking
 // # dependencies to Lattices
 //  template<class T>
-//  Bool LatticeCleaner<T>::stopnow() {
+//  bool LatticeCleaner<T>::stopnow() {
 //    if(itsChoose) {
 //      LogIO os(LogOrigin("LatticeCleaner", "stopnow()", WHERE));
-//      Bool stop = ApplicationEnvironment::stop();
+//      bool stop = ApplicationEnvironment::stop();
 //      if(stop) {
 //        os << "Lattice clean stopped at user request" << LogIO::POST;
-//        return True;
+//        return true;
 //      }
 //      Vector<String> choices(2);
 //      choices(0)="Continue";
@@ -989,20 +989,20 @@ Bool LatticeCleaner<T>::destroyMasks() {
 //        ApplicationEnvironment::choice("Do you want to continue or stop?",
 //  				     choices);
 //      if (choice==choices(0)) {
-//        return False;
+//        return false;
 //      }
 //      else if (choice==choices(2)) {
 //        itsChoose=False;
 //        os << "Continuing: won't ask again" << LogIO::POST;
-//        return False;
+//        return false;
 //      }
 //      else {
 //        os << "Lattice clean stopped at user request" << LogIO::POST;
-//        return True;
+//        return true;
 //      }
 //    }
 //    else {
-//      return False;
+//      return false;
 //    }
 //  }
 
@@ -1011,7 +1011,7 @@ Bool LatticeCleaner<T>::destroyMasks() {
 // with only 1.0 or 0.0 values, and assuming the Scale images have
 // a finite extent equal to +/- itsScaleSizes(scale)
 template <class T>
-Bool LatticeCleaner<T>::makeScaleMasks() {
+bool LatticeCleaner<T>::makeScaleMasks() {
   LogIO os(LogOrigin("deconvolver", "makeScaleMasks()", WHERE));
   Int scale;
 
@@ -1025,7 +1025,7 @@ Bool LatticeCleaner<T>::makeScaleMasks() {
 
   TempLattice<Complex> maskFT(itsMask->shape(), itsMemoryMB);
   maskFT.copyData(LatticeExpr<Complex>(toComplex(*itsMask)));
-  LatticeFFT::cfft2d(maskFT, True);
+  LatticeFFT::cfft2d(maskFT, true);
 
   // Now we can do all the convolutions
   TempLattice<Complex> cWork(itsScaleXfrs[0]->shape(), itsMemoryMB);
@@ -1036,7 +1036,7 @@ Bool LatticeCleaner<T>::makeScaleMasks() {
     // Mask * scale
     LatticeExpr<Complex> maskExpr((maskFT) * (*itsScaleXfrs[scale]));
     cWork.copyData(maskExpr);
-    LatticeFFT::cfft2d(cWork, False);
+    LatticeFFT::cfft2d(cWork, false);
     // Allow only 10% overlap by default, hence 0.9 is a default mask threshold
     // if thresholding is not used, just extract the real part of the complex mask
     LatticeExpr<T> maskWork(itsMaskThreshold < 0 ? real(cWork)
@@ -1054,7 +1054,7 @@ Bool LatticeCleaner<T>::makeScaleMasks() {
     }
   }
 
-  return True;
+  return true;
 }
 
 template <class T>

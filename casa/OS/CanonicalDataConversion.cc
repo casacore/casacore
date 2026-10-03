@@ -154,20 +154,20 @@ size_t CanonicalDataConversion::fromLocal(void* to, const double* from, size_t n
   return CanonicalConversion::fromLocal(to, from, nr);
 }
 
-Bool CanonicalDataConversion::canCopy(const char*) const { return (CONVERT_CAN_CHAR == 0); }
-Bool CanonicalDataConversion::canCopy(const unsigned char*) const {
+bool CanonicalDataConversion::canCopy(const char*) const { return (CONVERT_CAN_CHAR == 0); }
+bool CanonicalDataConversion::canCopy(const unsigned char*) const {
   return (CONVERT_CAN_UCHAR == 0);
 }
-Bool CanonicalDataConversion::canCopy(const short*) const { return (CONVERT_CAN_SHORT == 0); }
-Bool CanonicalDataConversion::canCopy(const unsigned short*) const {
+bool CanonicalDataConversion::canCopy(const short*) const { return (CONVERT_CAN_SHORT == 0); }
+bool CanonicalDataConversion::canCopy(const unsigned short*) const {
   return (CONVERT_CAN_USHORT == 0);
 }
-Bool CanonicalDataConversion::canCopy(const int*) const { return (CONVERT_CAN_INT == 0); }
-Bool CanonicalDataConversion::canCopy(const unsigned int*) const { return (CONVERT_CAN_UINT == 0); }
-Bool CanonicalDataConversion::canCopy(const Int64*) const { return (CONVERT_CAN_INT64 == 0); }
-Bool CanonicalDataConversion::canCopy(const uInt64*) const { return (CONVERT_CAN_UINT64 == 0); }
-Bool CanonicalDataConversion::canCopy(const float*) const { return (CONVERT_CAN_FLOAT == 0); }
-Bool CanonicalDataConversion::canCopy(const double*) const { return (CONVERT_CAN_DOUBLE == 0); }
+bool CanonicalDataConversion::canCopy(const int*) const { return (CONVERT_CAN_INT == 0); }
+bool CanonicalDataConversion::canCopy(const unsigned int*) const { return (CONVERT_CAN_UINT == 0); }
+bool CanonicalDataConversion::canCopy(const Int64*) const { return (CONVERT_CAN_INT64 == 0); }
+bool CanonicalDataConversion::canCopy(const uInt64*) const { return (CONVERT_CAN_UINT64 == 0); }
+bool CanonicalDataConversion::canCopy(const float*) const { return (CONVERT_CAN_FLOAT == 0); }
+bool CanonicalDataConversion::canCopy(const double*) const { return (CONVERT_CAN_DOUBLE == 0); }
 
 unsigned int CanonicalDataConversion::externalSize(const char*) const { return SIZE_CAN_CHAR; }
 unsigned int CanonicalDataConversion::externalSize(const unsigned char*) const {

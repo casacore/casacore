@@ -37,10 +37,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-GaussianConvert::GaussianConvert() : itsValid(False) {}
+GaussianConvert::GaussianConvert() : itsValid(false) {}
 
 GaussianConvert::GaussianConvert(const CoordinateSystem& cSys, const Vector<uInt>& worldAxes)
-    : itsCSys(cSys), itsWorldAxes(worldAxes.copy()), itsErrorMessage(""), itsValid(True) {
+    : itsCSys(cSys), itsWorldAxes(worldAxes.copy()), itsErrorMessage(""), itsValid(true) {
   checkWorldAxes();
   checkCoordinateSystem();
 }
@@ -68,7 +68,7 @@ void GaussianConvert::setCoordinateSystem(const CoordinateSystem& cSys) {
   itsCSys = cSys;
   checkCoordinateSystem();
   //
-  if (itsWorldAxes.nelements() == 2) itsValid = True;
+  if (itsWorldAxes.nelements() == 2) itsValid = true;
 }
 
 void GaussianConvert::setWorldAxes(const Vector<uInt>& worldAxes) {
@@ -76,16 +76,16 @@ void GaussianConvert::setWorldAxes(const Vector<uInt>& worldAxes) {
   itsWorldAxes = worldAxes;
   checkWorldAxes();
   //
-  if (itsCSys.nCoordinates() != 0) itsValid = True;
+  if (itsCSys.nCoordinates() != 0) itsValid = true;
 }
 
-Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& minorAxisOut,
+bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& minorAxisOut,
                               Quantum<Double>& positionAngleOut, Double majorAxisIn,
                               Double minorAxisIn, const Quantum<Double>& positionAngleIn) {
   if (!itsValid) {
     itsErrorMessage = String("the converter state is invalid; ") +
                       String("use setCoordinateSystem and/or setWorldAxes");
-    return False;
+    return false;
   }
 
   // Check output quantum units. If none, use that of CoordinateSystem
@@ -99,7 +99,7 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
   } else {
     if (unitMajor != unitMinor) {
       itsErrorMessage = "major and minor axes units differ";
-      return False;
+      return false;
     }
     unitAxes = unitMajor;
   }
@@ -113,7 +113,7 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
   units(itsWorldAxes(1)) = unitAxes;
   if (!itsCSys.setWorldAxisUnits(units)) {
     itsErrorMessage = "failed to set axis units because" + itsCSys.errorMessage();
-    return False;
+    return false;
   }
 
   // Convert
@@ -127,16 +127,16 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
   majorAxisOut.setValue(majOut);
   majorAxisOut.setUnit(Unit(unitAxes));
   //
-  return True;
+  return true;
 }
 
-Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
+bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
                               Quantum<Double>& positionAngleOut, const Quantum<Double>& majorAxisIn,
                               const Quantum<Double>& minorAxisIn,
                               const Quantum<Double>& positionAngleIn) {
   if (!itsValid) {
     itsErrorMessage = "the converter state is invalid; use setCoordinateSystem and/or setWorldAxes";
-    return False;
+    return false;
   }
 
   // Convert axes to same unit
@@ -156,7 +156,7 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
   units(itsWorldAxes(1)) = unitAxes;
   if (!itsCSys.setWorldAxisUnits(units)) {
     itsErrorMessage = "failed to set axis units because" + itsCSys.errorMessage();
-    return False;
+    return false;
   }
 
   // Convert
@@ -164,30 +164,30 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
   convertAxes(minorAxisOut, majorAxisOut, positionAngleOut, minIn.getValue(), majIn.getValue(),
               positionAngleIn, itsCSys, String("toPixel"));
   //
-  return True;
+  return true;
 }
 
-Bool GaussianConvert::toWorld(Vector<Quantum<Double>>& world, const Vector<Double>& pixel) {
+bool GaussianConvert::toWorld(Vector<Quantum<Double>>& world, const Vector<Double>& pixel) {
   if (!itsValid) {
     itsErrorMessage = "the converter state is invalid; use setCoordinateSystem and/or setWorldAxes";
-    return False;
+    return false;
   }
   //
   if (pixel.nelements() != 2) {
     itsErrorMessage = "the pixel vector must have 2 elements";
-    return False;
+    return false;
   }
   //
   Vector<Double> pixel2(itsCSys.referencePixel().copy());
   Int pixelAxis0 = itsCSys.worldAxisToPixelAxis(itsWorldAxes(0));
   if (pixelAxis0 == -1) {
     itsErrorMessage = "the first world axis has no corresponding pixel axis";
-    return False;
+    return false;
   }
   Int pixelAxis1 = itsCSys.worldAxisToPixelAxis(itsWorldAxes(1));
   if (pixelAxis1 == -1) {
     itsErrorMessage = "the second world axis has no corresponding pixel axis";
-    return False;
+    return false;
   }
   pixel2(pixelAxis0) = pixel(0);
   pixel2(pixelAxis1) = pixel(1);
@@ -195,7 +195,7 @@ Bool GaussianConvert::toWorld(Vector<Quantum<Double>>& world, const Vector<Doubl
   Vector<Double> world2;
   if (!itsCSys.toWorld(world2, pixel2)) {
     itsErrorMessage = "failed to convert to world because" + itsCSys.errorMessage();
-    return False;
+    return false;
   }
   //
   // Assign
@@ -219,18 +219,18 @@ Bool GaussianConvert::toWorld(Vector<Quantum<Double>>& world, const Vector<Doubl
   world(0) = world3(0);
   world(1) = world3(1);
   //
-  return True;
+  return true;
 }
 
-Bool GaussianConvert::toPixel(Vector<Double>& pixel, const Vector<Quantum<Double>>& world) {
+bool GaussianConvert::toPixel(Vector<Double>& pixel, const Vector<Quantum<Double>>& world) {
   if (!itsValid) {
     itsErrorMessage = "the converter state is invalid; use setCoordinateSystem and/or setWorldAxes";
-    return False;
+    return false;
   }
   //
   if (world.nelements() != 2) {
     itsErrorMessage = "the world vector must have 2 elements";
-    return False;
+    return false;
   }
   //
   Vector<Double> world2(itsCSys.referenceValue().copy());
@@ -249,10 +249,10 @@ Bool GaussianConvert::toPixel(Vector<Double>& pixel, const Vector<Quantum<Double
   //
   if (!itsCSys.toPixel(pixel, world2)) {
     itsErrorMessage = "failed to convert to pixel because" + itsCSys.errorMessage();
-    return False;
+    return false;
   }
   //
-  return True;
+  return true;
 }
 
 // Private functions
@@ -274,11 +274,11 @@ void GaussianConvert::convertAxes(Double& minorAxisOut, Double& majorAxisOut,
   Int coordinate0, coordinate1, axisInCoordinate0, axisInCoordinate1;
   cSys.findWorldAxis(coordinate0, axisInCoordinate0, itsWorldAxes(0));
   cSys.findWorldAxis(coordinate1, axisInCoordinate1, itsWorldAxes(1));
-  Bool flipX = False;
-  Bool flipY = False;
+  bool flipX = false;
+  bool flipY = false;
   if (coordinate0 == coordinate1 && cSys.type(coordinate0) == Coordinate::DIRECTION) {
-    if (axisInCoordinate0 == 0) flipX = True;  // Long is worldAxes(0)
-    if (axisInCoordinate1 == 0) flipY = True;  // Long is worldAxes(1)
+    if (axisInCoordinate0 == 0) flipX = true;  // Long is worldAxes(0)
+    if (axisInCoordinate1 == 0) flipY = true;  // Long is worldAxes(1)
   }
   //
   Double dx = cSys.increment()(itsWorldAxes(0));

@@ -198,7 +198,7 @@ class SSMBase : public DataManager {
   // be made large enough for a future file extension.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize(uInt aCacheSize, Bool canExceedNrBuckets = True);
+  void setCacheSize(uInt aCacheSize, bool canExceedNrBuckets = true);
 
   // Get the current cache size (in buckets).
   uInt getCacheSize() const;
@@ -223,16 +223,16 @@ class SSMBase : public DataManager {
   rownr_t getNRow() const;
 
   // The storage manager can add rows.
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // The storage manager can delete rows.
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // The storage manager can add columns.
-  virtual Bool canAddColumn() const;
+  virtual bool canAddColumn() const;
 
   // The storage manager can delete columns.
-  virtual Bool canRemoveColumn() const;
+  virtual bool canRemoveColumn() const;
 
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
@@ -295,11 +295,11 @@ class SSMBase : public DataManager {
   void recreate();
 
   // The data manager supports use of MultiFile.
-  virtual Bool hasMultiFileSupport() const;
+  virtual bool hasMultiFileSupport() const;
 
   // Flush and optionally fsync the data.
-  // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush(AipsIO&, Bool doFsync);
+  // It returns a true status if it had to flush (i.e. if data have changed).
+  virtual bool flush(AipsIO&, bool doFsync);
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
@@ -443,7 +443,7 @@ class SSMBase : public DataManager {
   Block<SSMColumn*> itsPtrColumn;
 
   // Has the data changed since the last flush?
-  Bool isDataChanged;
+  bool isDataChanged;
 };
 
 inline uInt SSMBase::getNrIndices() const { return itsPtrIndex.nelements(); }

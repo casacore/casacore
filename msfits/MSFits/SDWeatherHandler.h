@@ -86,7 +86,7 @@ class SDWeatherHandler {
   SDWeatherHandler();
 
   // attach this to a MS - mark fields in row as handled
-  SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDWeatherHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDWeatherHandler(const SDWeatherHandler &other);
@@ -97,7 +97,7 @@ class SDWeatherHandler {
   SDWeatherHandler &operator=(const SDWeatherHandler &other);
 
   // attach to a MS, mark fields in row as handled
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS
   void resetRow(const Record &row);
@@ -126,10 +126,10 @@ class SDWeatherHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // intialize the row related stuff
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

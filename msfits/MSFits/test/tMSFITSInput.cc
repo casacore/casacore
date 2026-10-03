@@ -54,11 +54,11 @@ int main() {
     String msfile = "myoutms.ms";
     removeIfNecessary(msfile);
     MSFitsInput msfitsin(msfile, fitsfile);
-    Bool thrown = False;
+    bool thrown = false;
     try {
       msfitsin.readFitsFile();
     } catch (const std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     AlwaysAssert(thrown, AipsError);
   } catch (const std::exception& x) {

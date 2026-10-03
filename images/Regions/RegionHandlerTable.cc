@@ -54,7 +54,7 @@ RegionHandlerTable* RegionHandlerTable::clone() const { return new RegionHandler
 
 void RegionHandlerTable::setObjectPtr(void* objectPtr) { itsObjectPtr = objectPtr; }
 
-Bool RegionHandlerTable::canDefineRegion() const { return True; }
+bool RegionHandlerTable::canDefineRegion() const { return true; }
 
 void RegionHandlerTable::setDefaultMask(const String& regionName) {
   Table& tab = rwTable();
@@ -82,16 +82,16 @@ String RegionHandlerTable::getDefaultMask() const {
   return keys.asString(field);
 }
 
-Bool RegionHandlerTable::defineRegion(const String& name, const ImageRegion& region,
-                                      RegionHandler::GroupType type, Bool overwrite) {
+bool RegionHandlerTable::defineRegion(const String& name, const ImageRegion& region,
+                                      RegionHandler::GroupType type, bool overwrite) {
   Table& tab = rwTable();
   if (!tab.isWritable()) {
-    return False;
+    return false;
   }
   // First check if the region is already defined in "regions" or "masks".
   // If so, remove it if possible. Otherwise throw an exception.
   TableRecord& keys = tab.rwKeywordSet();
-  Int groupField = findRegionGroup(name, RegionHandler::Any, False);
+  Int groupField = findRegionGroup(name, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (!overwrite) {
       throw(AipsError("RegionHandlerTable::defineRegion - table " + tab.tableName() +
@@ -113,26 +113,26 @@ Bool RegionHandlerTable::defineRegion(const String& name, const ImageRegion& reg
   }
   // Now define the region in the group.
   keys.rwSubRecord(groupName).defineRecord(name, region.toRecord(tab.tableName()));
-  return True;
+  return true;
 }
 
-Bool RegionHandlerTable::hasRegion(const String& name, RegionHandler::GroupType type) const {
-  return (findRegionGroup(name, type, False) >= 0);
+bool RegionHandlerTable::hasRegion(const String& name, RegionHandler::GroupType type) const {
+  return (findRegionGroup(name, type, false) >= 0);
 }
 
-Bool RegionHandlerTable::renameRegion(const String& newName, const String& oldName,
-                                      RegionHandler::GroupType type, Bool overwrite) {
+bool RegionHandlerTable::renameRegion(const String& newName, const String& oldName,
+                                      RegionHandler::GroupType type, bool overwrite) {
   Table& tab = rwTable();
   if (!tab.isWritable()) {
-    return False;
+    return false;
   }
   // Check that the region exists.
-  Int oldGroupField = findRegionGroup(oldName, type, True);
+  Int oldGroupField = findRegionGroup(oldName, type, true);
   // First check if the region is already defined.
   // Check that the region is in the same group as the original.
   // Remove it if overwrite is true. Otherwise throw an exception.
   TableRecord& keys = tab.rwKeywordSet();
-  Int groupField = findRegionGroup(newName, RegionHandler::Any, False);
+  Int groupField = findRegionGroup(newName, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (groupField != oldGroupField) {
       throw(AipsError("RegionHandlerTable::renameRegion - table " + tab.tableName() +
@@ -146,7 +146,7 @@ Bool RegionHandlerTable::renameRegion(const String& newName, const String& oldNa
     regs.removeField(newName);
   }
   TableRecord& regs = keys.rwSubRecord(oldGroupField);
-  ImageRegion* regPtr = getRegion(oldName, type, True);
+  ImageRegion* regPtr = getRegion(oldName, type, true);
   // First rename a possible mask table, which could in principle fail.
   // We only need to do that when it is an LCRegion.
   // We need to clone it to make it non-const.
@@ -166,29 +166,29 @@ Bool RegionHandlerTable::renameRegion(const String& newName, const String& oldNa
   if (getDefaultMask() == oldName) {
     keys.define("Image_defaultmask", newName);
   }
-  return True;
+  return true;
 }
 
-Bool RegionHandlerTable::removeRegion(const String& name, RegionHandler::GroupType type,
-                                      Bool throwIfUnknown) {
+bool RegionHandlerTable::removeRegion(const String& name, RegionHandler::GroupType type,
+                                      bool throwIfUnknown) {
   Table& tab = rwTable();
   if (!tab.isWritable()) {
-    return False;
+    return false;
   }
   Int groupField = findRegionGroup(name, type, throwIfUnknown);
   if (groupField >= 0) {
-    ImageRegion* regPtr = getRegion(name, type, True);
+    ImageRegion* regPtr = getRegion(name, type, true);
     // Delete a possible mask table.
     // We only need to do that when it is an LCRegion.
     // We need to clone it to make it non-const.
     if (regPtr->isLCRegion()) {
       LCRegion* lcPtr = regPtr->asLCRegion().cloneRegion();
       String msg;
-      Bool error = False;
+      bool error = false;
       try {
         lcPtr->handleDelete();
       } catch (std::exception& x) {
-        error = True;
+        error = true;
         msg = x.what();
       }
       delete lcPtr;
@@ -205,7 +205,7 @@ Bool RegionHandlerTable::removeRegion(const String& name, RegionHandler::GroupTy
   if (getDefaultMask() == name) {
     setDefaultMask("");
   }
-  return True;
+  return true;
 }
 
 Vector<String> RegionHandlerTable::regionNames(RegionHandler::GroupType type) const {
@@ -241,7 +241,7 @@ Vector<String> RegionHandlerTable::regionNames(RegionHandler::GroupType type) co
 }
 
 ImageRegion* RegionHandlerTable::getRegion(const String& name, RegionHandler::GroupType type,
-                                           Bool throwIfUnknown) const {
+                                           bool throwIfUnknown) const {
   const Table& tab = table();
   Int groupField = findRegionGroup(name, type, throwIfUnknown);
   if (groupField >= 0) {
@@ -255,7 +255,7 @@ ImageRegion* RegionHandlerTable::getRegion(const String& name, RegionHandler::Gr
 }
 
 Int RegionHandlerTable::findRegionGroup(const String& regionName, RegionHandler::GroupType type,
-                                        Bool throwIfUnknown) const {
+                                        bool throwIfUnknown) const {
   const Table& tab = table();
   // Check if the region is defined in "regions" or "masks".
   // If so, return its groupName.

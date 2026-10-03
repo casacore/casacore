@@ -165,7 +165,7 @@ class JsonOut {
   // <group>
   template <typename T>
   void put(T value);
-  void put(Bool value);
+  void put(bool value);
   void put(Float value);
   void put(Double value);
   void put(const Complex& value);
@@ -180,10 +180,10 @@ class JsonOut {
   // but for string values a line per value is used.
   // <br>These functions are meant for internal use by the 'write' function.
   template <typename T>
-  void putArray(const Array<T>& value, const String& indent, Bool firstLine);
-  void putArray(const Array<String>& value, const String& indent, Bool firstLine);
+  void putArray(const Array<T>& value, const String& indent, bool firstLine);
+  void putArray(const Array<String>& value, const String& indent, bool firstLine);
   template <typename T>
-  void putArray(const Array<T>& value, const String& indent, Bool firstLine, Bool valueEndl);
+  void putArray(const Array<T>& value, const String& indent, bool firstLine, bool valueEndl);
 
   // Escape special characters (including control characters) in a string.
   static String escapeString(const String& in);
@@ -227,7 +227,7 @@ class JsonOut {
   int itsLevel;
   String itsCommentStart;
   String itsCommentEnd;
-  vector<Bool> itsFirstName;
+  vector<bool> itsFirstName;
 };
 
 }  // namespace casacore

@@ -87,7 +87,7 @@ class MSWeather : public MSWeatherEnums, public MSTable<MSWeatherEnums> {
   // <group name=tableLikeConstructors>
   MSWeather(const String &tableName, TableOption = Table::Old);
   MSWeather(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSWeather(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSWeather(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSWeather(const Table &table);
   MSWeather(const MSWeather &other);
   // </group>
@@ -119,7 +119,7 @@ class MSWeather : public MSWeatherEnums, public MSTable<MSWeatherEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

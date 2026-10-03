@@ -71,24 +71,24 @@ MSConcat::MSConcat(MeasurementSet& ms)
   itsDirTol = Quantum<Double>(1.0, "mas");
   itsFreqTol = Quantum<Double>(1.0, "Hz");
   itsWeightScale = 1.;
-  itsRespectForFieldName = False;
-  doSource_p = False;
-  doObsA_p = doObsB_p = False;
-  doProcA_p = doProcB_p = False;
+  itsRespectForFieldName = false;
+  doSource_p = false;
+  doObsA_p = doObsB_p = false;
+  doProcA_p = doProcB_p = false;
 }
 
 IPosition MSConcat::isFixedShape(const TableDesc& td) {
   IPosition fixedShape(0);
-  Bool isFixed = False;
+  bool isFixed = false;
   const Vector<String> hypercolumnNames = td.hypercolumnNames();
   const uInt nHyperCols = hypercolumnNames.nelements();
   Vector<String> dataColNames, coordColNames, idColNames;
   uInt hc = 0;
-  while (isFixed == False && hc < nHyperCols) {
+  while (isFixed == false && hc < nHyperCols) {
     td.hypercolumnDesc(hypercolumnNames(hc), dataColNames, coordColNames, idColNames);
     const uInt nDataCol = dataColNames.nelements();
     uInt dc = 0;
-    while (isFixed == False && dc < nDataCol) {
+    while (isFixed == false && dc < nDataCol) {
       const String& dataColName = dataColNames(dc);
       // The order of these if conditions is important as I am trying to get
       // the biggest possible fixed shape.
@@ -117,36 +117,36 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   return fixedShape;
 }
 
-Bool MSConcat::checkEphIdInField(const MSFieldColumns& otherFldCol) const {
+bool MSConcat::checkEphIdInField(const MSFieldColumns& otherFldCol) const {
   // test if this MS FIELD table has an ephID column
   if (!itsMS.field().actualTableDesc().isColumn(MSField::columnName(MSField::EPHEMERIS_ID))) {
     // if not, test if the other MS uses ephem objects
-    Bool usesEphems = False;
+    bool usesEphems = false;
     for (rownr_t i = 0; i < otherFldCol.nrow(); ++i) {
       if (!otherFldCol.ephemPath(i).empty()) {
-        usesEphems = True;
+        usesEphems = true;
         break;
       }
     }
     if (usesEphems) {  // if yes, the ephID column needs to be added to this MS FIELD table
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
-void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCateg,
+void MSConcat::virtualconcat(MeasurementSet& otherMS, const bool checkShapeAndCateg,
                              const String& obsidAndScanTableName) {
   LogIO log(LogOrigin("MSConcat", "virtualconcat", WHERE));
 
-  Bool reindexObsidAndScan = !obsidAndScanTableName.empty();
+  bool reindexObsidAndScan = !obsidAndScanTableName.empty();
 
   // check if certain columns are present and set flags accordingly
-  Bool doCorrectedData = False, doModelData = False;
-  Bool doFloatData = False;
+  bool doCorrectedData = false, doModelData = false;
+  bool doFloatData = false;
 
   if (itsMS.tableDesc().isColumn("FLOAT_DATA") && otherMS.tableDesc().isColumn("FLOAT_DATA"))
-    doFloatData = True;
+    doFloatData = true;
   else if (itsMS.tableDesc().isColumn("FLOAT_DATA") &&
            !otherMS.tableDesc().isColumn("FLOAT_DATA")) {
     log << itsMS.tableName() << " has FLOAT_DATA column but not " << otherMS.tableName()
@@ -156,7 +156,7 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
         << LogIO::EXCEPTION;
   }
   if (itsMS.tableDesc().isColumn("MODEL_DATA") && otherMS.tableDesc().isColumn("MODEL_DATA"))
-    doModelData = True;
+    doModelData = true;
   else if (itsMS.tableDesc().isColumn("MODEL_DATA") &&
            !otherMS.tableDesc().isColumn("MODEL_DATA")) {
     log << itsMS.tableName() << " has MODEL_DATA column but not " << otherMS.tableName()
@@ -166,7 +166,7 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
   }
   if (itsMS.tableDesc().isColumn("CORRECTED_DATA") &&
       otherMS.tableDesc().isColumn("CORRECTED_DATA"))
-    doCorrectedData = True;
+    doCorrectedData = true;
   else if (itsMS.tableDesc().isColumn("CORRECTED_DATA") &&
            !otherMS.tableDesc().isColumn("CORRECTED_DATA"))
     log << itsMS.tableName() << " has CORRECTED_DATA column but not " << otherMS.tableName()
@@ -200,11 +200,11 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
 
   // merge STATE
   Block<uInt> newStateIndices;  // INTO TABLE
-  Bool doState = False;
+  bool doState = false;
   // STATE is a required subtable but can be empty in which case the state id in the main table is
   // -1
-  Bool itsStateNull = (itsMS.state().isNull() || (itsMS.state().nrow() == 0));
-  Bool otherStateNull = (otherMS.state().isNull() || (otherMS.state().nrow() == 0));
+  bool itsStateNull = (itsMS.state().isNull() || (itsMS.state().nrow() == 0));
+  bool otherStateNull = (otherMS.state().isNull() || (otherMS.state().nrow() == 0));
 
   if (itsStateNull && otherStateNull) {
     log << LogIO::NORMAL << "No valid state tables present. Result won't have one either."
@@ -212,11 +212,11 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
   } else if (itsStateNull && !otherStateNull) {
     log << LogIO::WARN << itsMS.tableName() << " does not have a valid state table," << std::endl
         << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    doState = True;  // i.e. the appended MS Main table state id will have to be set to -1
+    doState = true;  // i.e. the appended MS Main table state id will have to be set to -1
   } else if (!itsStateNull && otherStateNull) {
     log << LogIO::WARN << itsMS.tableName() << " does have a valid state table," << std::endl
         << "  the MS to be appended, however, doesn't. Result won't have one." << LogIO::POST;
-    doState = True;  // i.e. itsMS Main table state id will have to be set to -1
+    doState = true;  // i.e. itsMS Main table state id will have to be set to -1
 
     RowNumbers delrows(itsMS.state().nrow());
     indgen(delrows);
@@ -228,7 +228,7 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
     const rownr_t matchedRows = otherMS.state().nrow() - addedRows;
     log << "Added " << addedRows << " rows and matched " << matchedRows
         << " from the state subtable" << LogIO::POST;
-    doState = True;  // state id entries in the main table will have to be modified for otherMS
+    doState = true;  // state id entries in the main table will have to be modified for otherMS
   }
 
   // See if there is a SOURCE table and concatenate and reindex it
@@ -273,11 +273,11 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
   oldRows = itsMS.antenna().nrow();
   rownr_t oldFeedRows = itsMS.feed().nrow();
   const Block<uInt> newAntIndices = copyAntennaAndFeed(otherMS.antenna(), otherMS.feed());
-  Bool antIndexTrivial = True;
+  bool antIndexTrivial = true;
   for (uInt ii = 0; ii < newAntIndices.size(); ii++) {
     // cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << std::endl;
     if (newAntIndices[ii] != ii) {
-      antIndexTrivial = False;
+      antIndexTrivial = false;
       break;
     }
   }
@@ -306,10 +306,10 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
   }
 
   // OBSERVATION
-  copyObservation(otherMS.observation(), True);
+  copyObservation(otherMS.observation(), true);
 
   // PROCESSOR
-  copyProcessor(otherMS.processor(), True);
+  copyProcessor(otherMS.processor(), true);
 
   // POINTING
   if (!antIndexTrivial) {
@@ -368,8 +368,8 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
   ArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& otherSigma = otherMainCols.sigma();
   ArrayColumn<Float>& otherSigmaSp = otherMainCols.sigmaSpectrum();
-  ArrayColumn<Bool>& otherFlag = otherMainCols.flag();
-  ArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
+  ArrayColumn<bool>& otherFlag = otherMainCols.flag();
+  ArrayColumn<bool>& otherFlagCat = otherMainCols.flagCategory();
 
   ScalarColumn<Int>& otherAnt1Col = otherMainCols.antenna1();
   ScalarColumn<Int>& otherAnt2Col = otherMainCols.antenna2();
@@ -485,11 +485,11 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
       for (rownr_t r = 0; r < theseRows; r++) {
         Int oid = theseObsIds[r];
         Int scanid = theseScans[r];
-        Bool found = False;
+        bool found = false;
         uInt i;
         for (i = 0; i < distinctObsIdSet.size(); i++) {
           if (distinctObsIdSet[i] == oid) {
-            found = True;
+            found = true;
             break;
           }
         }
@@ -558,13 +558,13 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
 
   log << LogIO::NORMAL << "Working on appended Main table ..." << LogIO::POST;
 
-  Bool copyWtSp = (!otherWeightSp.isNull()) && otherWeightSp.isDefined(0);
-  Bool copySgSp = (!otherSigmaSp.isNull()) && otherSigmaSp.isDefined(0);
-  Bool copyFlagCat = (!otherFlagCat.isNull()) && otherFlagCat.isDefined(0);
+  bool copyWtSp = (!otherWeightSp.isNull()) && otherWeightSp.isDefined(0);
+  bool copySgSp = (!otherSigmaSp.isNull()) && otherSigmaSp.isDefined(0);
+  bool copyFlagCat = (!otherFlagCat.isNull()) && otherFlagCat.isDefined(0);
 
   // MAIN
 
-  Bool doWeightScale = (itsWeightScale != 1.) && (itsWeightScale != 0.);
+  bool doWeightScale = (itsWeightScale != 1.) && (itsWeightScale != 0.);
   Float sScale = 1.;  // scale for SIGMA
   if (doWeightScale) {
     sScale = 1 / sqrt(itsWeightScale);
@@ -612,11 +612,11 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
     for (rownr_t r = 0; r < otherRows; r++) {
       Int oid = otherObsIds[r];
       Int scanid = otherScan[r];
-      Bool found = False;
+      bool found = false;
       uInt i;
       for (i = 0; i < distinctObsIdSet.size(); i++) {
         if (distinctObsIdSet[i] == oid) {
-          found = True;
+          found = true;
           break;
         }
       }
@@ -695,7 +695,7 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
       polId = p;
     }
 
-    Bool doConjugateVis = False;
+    bool doConjugateVis = false;
 
     if (!antIndexTrivial) {
       Int newA1 = newAntIndices[otherAnt1[r]];
@@ -711,7 +711,7 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
         newUvw *= -1.;
         // cout << ", new UVW " << newUvw << std::endl;
         otherUvw.put(r, newUvw);
-        doConjugateVis = True;
+        doConjugateVis = true;
       } else {
         otherAnt1[r] = newA1;
         otherAnt2[r] = newA2;
@@ -894,16 +894,16 @@ void MSConcat::virtualconcat(MeasurementSet& otherMS, const Bool checkShapeAndCa
 
     if (doConjugateVis) {
       Vector<Int> datShape = otherFlag.shape(r).asVector();
-      Matrix<Bool> swappedFlag(datShape[0], datShape[1]);
+      Matrix<bool> swappedFlag(datShape[0], datShape[1]);
       for (Int p = 0; p < datShape[0]; p++) {
-        swappedFlag.row(p) = (Matrix<Bool>(otherFlag(r))).row(polSwap[p]);
+        swappedFlag.row(p) = (Matrix<bool>(otherFlag(r))).row(polSwap[p]);
       }
       otherFlag.put(r, swappedFlag);
       if (copyFlagCat) {
         datShape.assign(otherFlagCat.shape(r).asVector());
-        Cube<Bool> swappedFlagCat(datShape[0], datShape[1], datShape[2]);
+        Cube<bool> swappedFlagCat(datShape[0], datShape[1], datShape[2]);
         for (Int p = 0; p < datShape[0]; p++) {
-          swappedFlagCat.yzPlane(p) = (Cube<Bool>(otherFlagCat(r))).yzPlane(polSwap[p]);
+          swappedFlagCat.yzPlane(p) = (Cube<bool>(otherFlagCat(r))).yzPlane(polSwap[p]);
         }
         otherFlagCat.put(r, swappedFlagCat);
       }
@@ -970,12 +970,12 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
   }
 
   // check if certain columns are present and set flags accordingly
-  Bool doCorrectedData = False, doModelData = False;
-  Bool doFloatData = False;
+  bool doCorrectedData = false, doModelData = false;
+  bool doFloatData = false;
 
   if (handling == 0 || handling == 2) {
     if (itsMS.tableDesc().isColumn("FLOAT_DATA") && otherMS.tableDesc().isColumn("FLOAT_DATA"))
-      doFloatData = True;
+      doFloatData = true;
     else if (itsMS.tableDesc().isColumn("FLOAT_DATA") &&
              !otherMS.tableDesc().isColumn("FLOAT_DATA")) {
       log << itsMS.tableName() << " has FLOAT_DATA column but not " << otherMS.tableName()
@@ -985,7 +985,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
           << LogIO::EXCEPTION;
     }
     if (itsMS.tableDesc().isColumn("MODEL_DATA") && otherMS.tableDesc().isColumn("MODEL_DATA"))
-      doModelData = True;
+      doModelData = true;
     else if (itsMS.tableDesc().isColumn("MODEL_DATA") &&
              !otherMS.tableDesc().isColumn("MODEL_DATA")) {
       log << itsMS.tableName() << " has MODEL_DATA column but not " << otherMS.tableName()
@@ -995,7 +995,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
     }
     if (itsMS.tableDesc().isColumn("CORRECTED_DATA") &&
         otherMS.tableDesc().isColumn("CORRECTED_DATA"))
-      doCorrectedData = True;
+      doCorrectedData = true;
     else if (itsMS.tableDesc().isColumn("CORRECTED_DATA") &&
              !otherMS.tableDesc().isColumn("CORRECTED_DATA"))
       log << itsMS.tableName() << " has CORRECTED_DATA column but not " << otherMS.tableName()
@@ -1030,11 +1030,11 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
 
   // merge STATE
   Block<uInt> newStateIndices;
-  Bool doState = False;
+  bool doState = false;
   // STATE is a required subtable but can be empty in which case the state id in the main table is
   // -1
-  Bool itsStateNull = (itsMS.state().isNull() || (itsMS.state().nrow() == 0));
-  Bool otherStateNull = (otherMS.state().isNull() || (otherMS.state().nrow() == 0));
+  bool itsStateNull = (itsMS.state().isNull() || (itsMS.state().nrow() == 0));
+  bool otherStateNull = (otherMS.state().isNull() || (otherMS.state().nrow() == 0));
 
   if (itsStateNull && otherStateNull) {
     log << LogIO::NORMAL << "No valid state tables present. Result won't have one either."
@@ -1042,11 +1042,11 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
   } else if (itsStateNull && !otherStateNull) {
     log << LogIO::WARN << itsMS.tableName() << " does not have a valid state table," << std::endl
         << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    doState = True;  // i.e. the appended MS Main table state id will have to be set to -1
+    doState = true;  // i.e. the appended MS Main table state id will have to be set to -1
   } else if (!itsStateNull && otherStateNull) {
     log << LogIO::WARN << itsMS.tableName() << " does have a valid state table," << std::endl
         << "  the MS to be appended, however, doesn't. Result won't have one." << LogIO::POST;
-    doState = True;  // i.e. itsMS Main table state id will have to be set to -1
+    doState = true;  // i.e. itsMS Main table state id will have to be set to -1
 
     RowNumbers delrows(itsMS.state().nrow());
     indgen(delrows);
@@ -1058,7 +1058,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
     const rownr_t matchedRows = otherMS.state().nrow() - addedRows;
     log << "Added " << addedRows << " rows and matched " << matchedRows
         << " from the state subtable" << LogIO::POST;
-    doState = True;  // state id entries in the main table will have to be modified for otherMS
+    doState = true;  // state id entries in the main table will have to be modified for otherMS
   }
 
   // See if there is a SOURCE table and concatenate and reindex it
@@ -1133,10 +1133,10 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
   }
 
   // OBSERVATION
-  copyObservation(otherMS.observation(), True);
+  copyObservation(otherMS.observation(), true);
 
   // PROCESSOR
-  copyProcessor(otherMS.processor(), True);
+  copyProcessor(otherMS.processor(), true);
 
   // POINTING
   if (handling < 2) {
@@ -1186,11 +1186,11 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
     String absNewName = Path(destMSName).absoluteName();
     {
       Table newtab = TableCopy::makeEmptyTable(absNewName, Record(), otherMS, Table::New,
-                                               Table::AipsrcEndian, True,
-                                               True);  // noRows
+                                               Table::AipsrcEndian, true,
+                                               true);  // noRows
       TableCopy::copyInfo(newtab, otherMS);
       TableCopy::copySubTables(newtab, itsMS,
-                               False);  // noRows==False, i.e. subtables are copied
+                               false);  // noRows==false, i.e. subtables are copied
     }
     tempMS =
         MeasurementSet(destMSName, Table::Update);  // open as the output MS for the new Main rows
@@ -1234,14 +1234,14 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
   ScalarColumn<Double>& thisTimeCen = destMainCols.timeCentroid();
   const ScalarColumn<Int>& otherArrayId = otherMainCols.arrayId();
   ScalarColumn<Int>& thisArrayId = destMainCols.arrayId();
-  const ArrayColumn<Bool>& otherFlag = otherMainCols.flag();
-  ArrayColumn<Bool>& thisFlag = destMainCols.flag();
-  const ArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
-  ArrayColumn<Bool>& thisFlagCat = destMainCols.flagCategory();
-  Bool copyFlagCat = !(thisFlagCat.isNull() || otherFlagCat.isNull());
+  const ArrayColumn<bool>& otherFlag = otherMainCols.flag();
+  ArrayColumn<bool>& thisFlag = destMainCols.flag();
+  const ArrayColumn<bool>& otherFlagCat = otherMainCols.flagCategory();
+  ArrayColumn<bool>& thisFlagCat = destMainCols.flagCategory();
+  bool copyFlagCat = !(thisFlagCat.isNull() || otherFlagCat.isNull());
   copyFlagCat = copyFlagCat && thisFlagCat.isDefined(0) && otherFlagCat.isDefined(0);
-  const ScalarColumn<Bool>& otherFlagRow = otherMainCols.flagRow();
-  ScalarColumn<Bool>& thisFlagRow = destMainCols.flagRow();
+  const ScalarColumn<bool>& otherFlagRow = otherMainCols.flagRow();
+  ScalarColumn<bool>& thisFlagRow = destMainCols.flagRow();
   const ScalarColumn<Int>& otherFeed1 = otherMainCols.feed1();
   ScalarColumn<Int>& thisFeed1 = destMainCols.feed1();
   const ScalarColumn<Int>& otherFeed2 = otherMainCols.feed2();
@@ -1347,11 +1347,11 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
   for (rownr_t r = 0; r < curRow; r++) {
     Int oid = thisObsId(r);
     Int scanid = thisScan(r);
-    Bool found = False;
+    bool found = false;
     uInt i;
     for (i = 0; i < distinctObsIdSet.size(); i++) {
       if (distinctObsIdSet[i] == oid) {
-        found = True;
+        found = true;
         break;
       }
     }
@@ -1417,15 +1417,15 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
   thisObsId.reference(destMainCols.observationId());
   thisProcId.reference(destMainCols.processorId());
 
-  Bool copyWtSp = !(thisWeightSp.isNull() || otherWeightSp.isNull());
+  bool copyWtSp = !(thisWeightSp.isNull() || otherWeightSp.isNull());
   copyWtSp = copyWtSp && thisWeightSp.isDefined(0) && otherWeightSp.isDefined(0);
-  Bool copySgSp = !(thisSigmaSp.isNull() || otherSigmaSp.isNull());
+  bool copySgSp = !(thisSigmaSp.isNull() || otherSigmaSp.isNull());
   copySgSp = copySgSp && thisSigmaSp.isDefined(0) && otherSigmaSp.isDefined(0);
 
   // MAIN
 
-  Bool notYetFeedWarned = True;
-  Bool doWeightScale = (itsWeightScale != 1. && itsWeightScale > 0.);
+  bool notYetFeedWarned = true;
+  bool doWeightScale = (itsWeightScale != 1. && itsWeightScale > 0.);
   Float sScale = 1.;  // scale for SIGMA
   if (doWeightScale) {
     sScale = 1 / sqrt(itsWeightScale);
@@ -1459,7 +1459,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
 
     Int newA1 = newAntIndices[otherAnt1(r)];
     Int newA2 = newAntIndices[otherAnt2(r)];
-    Bool doConjugateVis = False;
+    bool doConjugateVis = false;
     if (newA1 > newA2) {  // swap indices and multiply UVW by -1
       // cout << "   corrected order r: " << r << " " << newA2 << " " << newA1 << std::endl;
       thisAnt1.put(curRow, newA2);
@@ -1470,7 +1470,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
       newUvw *= -1.;
       // cout << ", new UVW " << newUvw << std::endl;
       thisUvw.put(curRow, newUvw);
-      doConjugateVis = True;
+      doConjugateVis = true;
     } else {
       thisAnt1.put(curRow, newA1);
       thisAnt2.put(curRow, newA2);
@@ -1712,7 +1712,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
           << "MS to be appended contains antennas with multiple feeds. Feed ID reindexing is not "
              "implemented.\n"
           << LogIO::POST;
-      notYetFeedWarned = False;
+      notYetFeedWarned = false;
     }
 
     if (doConjugateVis) {
@@ -1730,16 +1730,16 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const uInt handling,
     thisArrayId.put(curRow, otherArrayId, r);
     if (doConjugateVis) {
       Vector<Int> datShape = otherFlag.shape(r).asVector();
-      Matrix<Bool> swappedFlag(datShape[0], datShape[1]);
+      Matrix<bool> swappedFlag(datShape[0], datShape[1]);
       for (Int p = 0; p < datShape[0]; p++) {
-        swappedFlag.row(p) = (Matrix<Bool>(otherFlag(r))).row(polSwap[p]);
+        swappedFlag.row(p) = (Matrix<bool>(otherFlag(r))).row(polSwap[p]);
       }
       thisFlag.put(curRow, swappedFlag);
       if (copyFlagCat) {
         datShape.assign(otherFlagCat.shape(r).asVector());
-        Cube<Bool> swappedFlagCat(datShape[0], datShape[1], datShape[2]);
+        Cube<bool> swappedFlagCat(datShape[0], datShape[1], datShape[2]);
         for (Int p = 0; p < datShape[0]; p++) {
-          swappedFlagCat.yzPlane(p) = (Cube<Bool>(otherFlagCat(r))).yzPlane(polSwap[p]);
+          swappedFlagCat.yzPlane(p) = (Cube<bool>(otherFlagCat(r))).yzPlane(polSwap[p]);
         }
         thisFlagCat.put(curRow, swappedFlagCat);
       }
@@ -1770,7 +1770,7 @@ void MSConcat::setWeightScale(const Float weightScale) {
   itsWeightScale = weightScale;
 }
 
-void MSConcat::setRespectForFieldName(const Bool respectFieldName) {
+void MSConcat::setRespectForFieldName(const bool respectFieldName) {
   itsRespectForFieldName = respectFieldName;
 }
 
@@ -1826,21 +1826,21 @@ void MSConcat::checkCategories(const MSMainColumns& otherCols) const {
   }
 }
 
-Bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices) {
+bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices) {
   LogIO os(LogOrigin("MSConcat", "copyPointing"));
 
-  Bool itsPointingNull = (itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0));
-  Bool otherPointingNull = (otherPoint.isNull() || (otherPoint.nrow() == 0));
+  bool itsPointingNull = (itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0));
+  bool otherPointingNull = (otherPoint.isNull() || (otherPoint.nrow() == 0));
 
   if (itsPointingNull &&
       otherPointingNull) {  // neither of the two MSs do have valid pointing tables
     os << LogIO::NORMAL << "No valid pointing tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsPointingNull && !otherPointingNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid pointing table," << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    return False;
+    return false;
   } else if (!itsPointingNull && otherPointingNull) {
     os << LogIO::WARN << "MS to be appended does not have a valid pointing table, "
        << itsMS.tableName() << ", however, has one. Result won't have one." << LogIO::POST;
@@ -1849,7 +1849,7 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<uInt>& new
     indgen(delrows);
     itsMS.pointing().removeRow(RowNumbers(delrows));
 
-    return False;
+    return false;
   }
 
   MSPointing& point = itsMS.pointing();
@@ -1861,7 +1861,7 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<uInt>& new
   for (Int k = 0; k < rowToBeAdded; ++k) {
     ++actualRow;
     point.addRow();
-    pointRow.put(actualRow, otherPointRow.get(k, True));
+    pointRow.put(actualRow, otherPointRow.get(k, true));
   }
 
   // Now reassigning antennas to the new indices of the ANTENNA table
@@ -1870,11 +1870,11 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<uInt>& new
     MSPointingColumns pointCol(point);
     // check antenna IDs
     Vector<Int> antennaIDs = pointCol.antennaId().getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (antennaIDs[k] < 0 || antennaIDs[k] > maxID) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -1886,30 +1886,30 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint, const Block<uInt>& new
       RowNumbers rowtodel(point.nrow());
       indgen(rowtodel);
       point.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       pointCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
     }
   }
-  return True;
+  return true;
 }
 
-Bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices) {
+bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices) {
   // prepare otherPoint such that it can be virtually concatenated later
   // (don't write the itsMS)
 
   LogIO os(LogOrigin("MSConcat", "copyPointing"));
 
-  Bool itsPointingNull = (itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0));
-  Bool otherPointingNull = (otherPoint.isNull() || (otherPoint.nrow() == 0));
+  bool itsPointingNull = (itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0));
+  bool otherPointingNull = (otherPoint.isNull() || (otherPoint.nrow() == 0));
 
   if (itsPointingNull &&
       otherPointingNull) {  // neither of the two MSs do have valid pointing tables
     os << LogIO::NORMAL << "No valid pointing tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsPointingNull && !otherPointingNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid pointing table," << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
@@ -1918,7 +1918,7 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIn
     indgen(delrows);
     otherPoint.removeRow(RowNumbers(delrows));
 
-    return False;
+    return false;
   }
   //   else if(!itsPointingNull && otherPointingNull){
   //     os << LogIO::NORMAL << "MS to be appended does not have a valid pointing table, "
@@ -1928,7 +1928,7 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIn
   //     indgen(delrows);
   //     itsMS.pointing().removeRow(delrows);
 
-  //     return False;
+  //     return false;
 
   //   }
 
@@ -1939,11 +1939,11 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIn
     MSPointingColumns pointCol(otherPoint);
     // check antenna IDs
     Vector<Int> antennaIDs = pointCol.antennaId().getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k = 0; k < rowToBeAdded; k++) {
       if (antennaIDs[k] < 0 || antennaIDs[k] > maxID) {
-        idsOK = False;
+        idsOK = false;
         break;
       } else {
         antennaIDs[k] = newAntIndices[antennaIDs[k]];
@@ -1963,30 +1963,30 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIn
       indgen(rowtodel);
       otherPoint.removeRow(RowNumbers(rowtodel));
 
-      return False;
+      return false;
     }
 
     pointCol.antennaId().putColumn(antennaIDs);
   }
-  return True;
+  return true;
 }
 
-Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAntIndices) {
+bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAntIndices) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copySysCal"));
 
-  Bool itsSysCalNull = (itsMS.sysCal().isNull() || (itsMS.sysCal().nrow() == 0));
-  Bool otherSysCalNull = (otherSysCal.isNull() || (otherSysCal.nrow() == 0));
+  bool itsSysCalNull = (itsMS.sysCal().isNull() || (itsMS.sysCal().nrow() == 0));
+  bool otherSysCalNull = (otherSysCal.isNull() || (otherSysCal.nrow() == 0));
 
   if (itsSysCalNull && otherSysCalNull) {  // neither of the two MSs do have valid syscal tables
     os << LogIO::NORMAL << "No valid syscal tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsSysCalNull && !otherSysCalNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid syscal table," << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    return False;
+    return false;
   }
 
   MSSysCal& sysCal = itsMS.sysCal();
@@ -1998,7 +1998,7 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAnt
   for (Int k = 0; k < rowToBeAdded; ++k) {
     ++actualRow;
     sysCal.addRow();
-    sysCalRow.put(actualRow, otherSysCalRow.get(k, True));
+    sysCalRow.put(actualRow, otherSysCalRow.get(k, true));
   }
 
   // Now reassigning antennas to the new indices of the ANTENNA table
@@ -2007,11 +2007,11 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAnt
     MSSysCalColumns sysCalCol(sysCal);
     // check antenna IDs
     Vector<Int> antennaIDs = sysCalCol.antennaId().getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (antennaIDs[k] < 0 || antennaIDs[k] > maxID) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -2023,7 +2023,7 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAnt
       RowNumbers rowtodel(sysCal.nrow());
       indgen(rowtodel);
       sysCal.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2037,10 +2037,10 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAnt
     ScalarColumn<Int> spwCol(sysCal, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs = spwCol.getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (newSPWIndex_p.find(spwIDs[k]) == newSPWIndex_p.end()) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -2052,7 +2052,7 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAnt
       RowNumbers rowtodel(sysCal.nrow());
       indgen(rowtodel);
       sysCal.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2060,23 +2060,23 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAnt
     }
   }
 
-  return True;
+  return true;
 }
 
-Bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAntIndices) {
+bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAntIndices) {
   LogIO os(LogOrigin("MSConcat", "copyWeather"));
 
-  Bool itsWeatherNull = (itsMS.weather().isNull() || (itsMS.weather().nrow() == 0));
-  Bool otherWeatherNull = (otherWeather.isNull() || (otherWeather.nrow() == 0));
+  bool itsWeatherNull = (itsMS.weather().isNull() || (itsMS.weather().nrow() == 0));
+  bool otherWeatherNull = (otherWeather.isNull() || (otherWeather.nrow() == 0));
 
   if (itsWeatherNull && otherWeatherNull) {  // neither of the two MSs do have valid weather tables
     os << LogIO::NORMAL << "No valid weather tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsWeatherNull && !otherWeatherNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid weather table," << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    return False;
+    return false;
   }
 
   MSWeather& weather = itsMS.weather();
@@ -2088,7 +2088,7 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& new
   for (Int k = 0; k < rowToBeAdded; ++k) {
     ++actualRow;
     weather.addRow();
-    weatherRow.put(actualRow, otherWeatherRow.get(k, True));
+    weatherRow.put(actualRow, otherWeatherRow.get(k, true));
   }
 
   // Reassign antennas to the new indices of the ANTENNA table
@@ -2097,14 +2097,14 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& new
     MSWeatherColumns weatherCol(weather);
     // check antenna IDs
     Vector<Int> antennaIDs = weatherCol.antennaId().getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (antennaIDs[k] < -1 || antennaIDs[k] > maxID) {
         os << LogIO::WARN << "Found invalid antenna id " << antennaIDs[k]
            << " in the WEATHER table; the WEATHER table will be emptied as it is inconsistent"
            << LogIO::POST;
-        idsOK = False;
+        idsOK = false;
         break;
       }
       //// the following could be commented in if a warning about undefined antenna ids was deemed
@@ -2121,7 +2121,7 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& new
       RowNumbers rowstodel(weather.nrow());
       indgen(rowstodel);
       weather.removeRow(RowNumbers(rowstodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2131,32 +2131,32 @@ Bool MSConcat::copyWeather(const MSWeather& otherWeather, const Block<uInt>& new
     }
   }
 
-  return True;
+  return true;
 }
 
-Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& newAntIndices) {
+bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& newAntIndices) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copyGainCurve"));
 
-  Bool itsGainCurveNull = (!itsMS.rwKeywordSet().isDefined("GAIN_CURVE") ||
+  bool itsGainCurveNull = (!itsMS.rwKeywordSet().isDefined("GAIN_CURVE") ||
                            (itsMS.rwKeywordSet().asTable("GAIN_CURVE").nrow() == 0));
-  Bool otherGainCurveNull = (!otherMS.keywordSet().isDefined("GAIN_CURVE") ||
+  bool otherGainCurveNull = (!otherMS.keywordSet().isDefined("GAIN_CURVE") ||
                              (otherMS.keywordSet().asTable("GAIN_CURVE").nrow() == 0));
 
   if (itsGainCurveNull &&
       otherGainCurveNull) {  // neither of the two MSs do have valid gain curve tables
     os << LogIO::NORMAL << "No valid gain curve tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsGainCurveNull && !otherGainCurveNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid gain curve table,"
        << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    return False;
+    return false;
   }
 
-  if (otherGainCurveNull) return True;
+  if (otherGainCurveNull) return true;
 
   Table gainCurve = itsMS.rwKeywordSet().asTable("GAIN_CURVE");
   Table otherGainCurve = otherMS.keywordSet().asTable("GAIN_CURVE");
@@ -2168,7 +2168,7 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& n
   for (Int k = 0; k < rowToBeAdded; ++k) {
     ++actualRow;
     gainCurve.addRow();
-    gainCurveRow.put(actualRow, otherGainCurveRow.get(k, True));
+    gainCurveRow.put(actualRow, otherGainCurveRow.get(k, true));
   }
 
   // Now reassigning antennas to the new indices of the ANTENNA table
@@ -2177,11 +2177,11 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& n
     ScalarColumn<Int> antCol(gainCurve, "ANTENNA_ID");
     // check antenna IDs
     Vector<Int> antennaIDs = antCol.getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (antennaIDs[k] < 0 || antennaIDs[k] > maxID) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -2193,7 +2193,7 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& n
       RowNumbers rowtodel(gainCurve.nrow());
       indgen(rowtodel);
       gainCurve.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2207,10 +2207,10 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& n
     ScalarColumn<Int> spwCol(gainCurve, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs = spwCol.getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (newSPWIndex_p.find(spwIDs[k]) == newSPWIndex_p.end()) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -2222,7 +2222,7 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& n
       RowNumbers rowtodel(gainCurve.nrow());
       indgen(rowtodel);
       gainCurve.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2230,32 +2230,32 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& n
     }
   }
 
-  return True;
+  return true;
 }
 
-Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& newAntIndices) {
+bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& newAntIndices) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copyPhaseCal"));
 
-  Bool itsPhaseCalNull = (!itsMS.rwKeywordSet().isDefined("PHASE_CAL") ||
+  bool itsPhaseCalNull = (!itsMS.rwKeywordSet().isDefined("PHASE_CAL") ||
                           (itsMS.rwKeywordSet().asTable("PHASE_CAL").nrow() == 0));
-  Bool otherPhaseCalNull = (!otherMS.keywordSet().isDefined("PHASE_CAL") ||
+  bool otherPhaseCalNull = (!otherMS.keywordSet().isDefined("PHASE_CAL") ||
                             (otherMS.keywordSet().asTable("PHASE_CAL").nrow() == 0));
 
   if (itsPhaseCalNull &&
       otherPhaseCalNull) {  // neither of the two MSs do have valid gain curve tables
     os << LogIO::NORMAL << "No valid gain curve tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsPhaseCalNull && !otherPhaseCalNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid gain curve table,"
        << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    return False;
+    return false;
   }
 
-  if (otherPhaseCalNull) return True;
+  if (otherPhaseCalNull) return true;
 
   Table phaseCal = itsMS.rwKeywordSet().asTable("PHASE_CAL");
   Table otherPhaseCal = otherMS.keywordSet().asTable("PHASE_CAL");
@@ -2267,7 +2267,7 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& ne
   for (Int k = 0; k < rowToBeAdded; ++k) {
     ++actualRow;
     phaseCal.addRow();
-    phaseCalRow.put(actualRow, otherPhaseCalRow.get(k, True));
+    phaseCalRow.put(actualRow, otherPhaseCalRow.get(k, true));
   }
 
   // Now reassigning antennas to the new indices of the ANTENNA table
@@ -2276,11 +2276,11 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& ne
     ScalarColumn<Int> antCol(phaseCal, "ANTENNA_ID");
     // check antenna IDs
     Vector<Int> antennaIDs = antCol.getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (antennaIDs[k] < 0 || antennaIDs[k] > maxID) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -2292,7 +2292,7 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& ne
       RowNumbers rowtodel(phaseCal.nrow());
       indgen(rowtodel);
       phaseCal.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2306,10 +2306,10 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& ne
     ScalarColumn<Int> spwCol(phaseCal, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs = spwCol.getColumn();
-    Bool idsOK = True;
+    bool idsOK = true;
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
       if (newSPWIndex_p.find(spwIDs[k]) == newSPWIndex_p.end()) {
-        idsOK = False;
+        idsOK = false;
         break;
       }
     }
@@ -2321,7 +2321,7 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& ne
       RowNumbers rowtodel(phaseCal.nrow());
       indgen(rowtodel);
       phaseCal.removeRow(RowNumbers(rowtodel));
-      return False;
+      return false;
     }
 
     for (Int k = origNRow; k < (origNRow + rowToBeAdded); ++k) {
@@ -2329,30 +2329,30 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& ne
     }
   }
 
-  return True;
+  return true;
 }
 
-Bool MSConcat::copyEOP(const MeasurementSet& otherMS) {
+bool MSConcat::copyEOP(const MeasurementSet& otherMS) {
   // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copyEOP"));
 
-  Bool itsEOPNull = (!itsMS.rwKeywordSet().isDefined("EARTH_ORIENTATION") ||
+  bool itsEOPNull = (!itsMS.rwKeywordSet().isDefined("EARTH_ORIENTATION") ||
                      (itsMS.rwKeywordSet().asTable("EARTH_ORIENTATION").nrow() == 0));
-  Bool otherEOPNull = (!otherMS.keywordSet().isDefined("EARTH_ORIENTATION") ||
+  bool otherEOPNull = (!otherMS.keywordSet().isDefined("EARTH_ORIENTATION") ||
                        (otherMS.keywordSet().asTable("EARTH_ORIENTATION").nrow() == 0));
 
   if (itsEOPNull && otherEOPNull) {  // neither of the two MSs do have valid EOP tables
     os << LogIO::DEBUG1 << "No valid EOP tables present. Result won't have one either."
        << LogIO::POST;
-    return True;
+    return true;
   } else if (itsEOPNull && !otherEOPNull) {
     os << LogIO::WARN << itsMS.tableName() << " does not have a valid EOP table," << std::endl
        << "  the MS to be appended, however, has one. Result won't have one." << LogIO::POST;
-    return False;
+    return false;
   }
 
-  if (otherEOPNull) return True;
+  if (otherEOPNull) return true;
 
   Table eop = itsMS.rwKeywordSet().asTable("EARTH_ORIENTATION");
   Table otherEOP = otherMS.keywordSet().asTable("EARTH_ORIENTATION");
@@ -2364,7 +2364,7 @@ Bool MSConcat::copyEOP(const MeasurementSet& otherMS) {
   for (Int k = 0; k < rowToBeAdded; ++k) {
     ++actualRow;
     eop.addRow();
-    eopRow.put(actualRow, otherEOPRow.get(k, True));
+    eopRow.put(actualRow, otherEOPRow.get(k, true));
   }
 
   ScalarColumn<Int> obsIdCol(eop, "OBSERVATION_ID");
@@ -2388,10 +2388,10 @@ Bool MSConcat::copyEOP(const MeasurementSet& otherMS) {
     obsIdCol.putColumn(obsIds);
   }
 
-  return True;
+  return true;
 }
 
-Int MSConcat::copyObservation(const MSObservation& otherObs, const Bool remRedunObsId) {
+Int MSConcat::copyObservation(const MSObservation& otherObs, const bool remRedunObsId) {
   LogIO os(LogOrigin("MSConcat", "copyObservation"));
 
   MSObservation& obs = itsMS.observation();
@@ -2402,8 +2402,8 @@ Int MSConcat::copyObservation(const MSObservation& otherObs, const Bool remRedun
   std::map<Int, Int> tempObsIndex;
   std::map<Int, Int> tempObsIndexReverse;
   std::map<Int, Int> tempObsIndex2;
-  doObsA_p = False;
-  doObsB_p = True;
+  doObsA_p = false;
+  doObsB_p = true;
 
   Int originalNrow = obs.nrow();  // remember the original number of rows
 
@@ -2412,13 +2412,13 @@ Int MSConcat::copyObservation(const MSObservation& otherObs, const Bool remRedun
   for (rownr_t k = 0; k < otherObs.nrow(); ++k) {
     obs.addRow();
     ++actualRow;
-    obsRow.put(actualRow, otherObsRow.get(k, True));
+    obsRow.put(actualRow, otherObsRow.get(k, true));
     tempObsIndex[k] = actualRow;
     tempObsIndexReverse[actualRow] = k;
   }
   if (remRedunObsId) {  // remove redundant rows
     MSObservationColumns& obsCol = observation();
-    Vector<Bool> rowToBeRemoved(obs.nrow(), False);
+    Vector<bool> rowToBeRemoved(obs.nrow(), false);
     vector<rownr_t> rowsToBeRemoved;
     for (rownr_t j = 0; j < obs.nrow(); j++) {        // loop over OBS table rows
       for (rownr_t k = j + 1; k < obs.nrow(); k++) {  // loop over remaining OBS table rows
@@ -2430,7 +2430,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs, const Bool remRedun
                   .end()) {  // remember that the observation was already in the obs table
             otherObsIdsWithCounterpart_p[j] = k;
           }
-          rowToBeRemoved(k) = True;
+          rowToBeRemoved(k) = true;
           rowsToBeRemoved.push_back(k);
         }
       }
@@ -2441,7 +2441,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs, const Bool remRedun
     for (Int i = 0; i < originalNrow; i++) {               // loop over rows of old first table
       if (tempObsIndex2.find(i) != tempObsIndex2.end()) {  // ID changed because of removal
         newObsIndexA_p[i] = tempObsIndex2.at(i);
-        doObsA_p = True;
+        doObsA_p = true;
       }
     }
     // map for second table
@@ -2476,7 +2476,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs, const Bool remRedun
   return obs.nrow();
 }
 
-Int MSConcat::copyProcessor(const MSProcessor& otherProc, const Bool remRedunProcId) {
+Int MSConcat::copyProcessor(const MSProcessor& otherProc, const bool remRedunProcId) {
   LogIO os(LogOrigin("MSConcat", "copyProcessor"));
 
   MSProcessor& proc = itsMS.processor();
@@ -2486,8 +2486,8 @@ Int MSConcat::copyProcessor(const MSProcessor& otherProc, const Bool remRedunPro
   newProcIndexB_p.clear();
   std::map<Int, Int> tempProcIndex;
   std::map<Int, Int> tempProcIndex2;
-  doProcA_p = False;
-  doProcB_p = True;
+  doProcA_p = false;
+  doProcB_p = true;
 
   Int originalNrow = proc.nrow();  // remember the original number of rows
 
@@ -2496,19 +2496,19 @@ Int MSConcat::copyProcessor(const MSProcessor& otherProc, const Bool remRedunPro
   for (uInt k = 0; k < otherProc.nrow(); ++k) {
     proc.addRow();
     ++actualRow;
-    procRow.put(actualRow, otherProcRow.get(k, True));
+    procRow.put(actualRow, otherProcRow.get(k, true));
     tempProcIndex[k] = actualRow;
   }
   if (remRedunProcId) {  // remove redundant rows
     MSProcessorColumns& procCol = processor();
-    Vector<Bool> rowToBeRemoved(proc.nrow(), False);
+    Vector<bool> rowToBeRemoved(proc.nrow(), false);
     vector<rownr_t> rowsToBeRemoved;
     for (uInt j = 0; j < proc.nrow(); j++) {        // loop over PROC table rows
       for (uInt k = j + 1; k < proc.nrow(); k++) {  // loop over remaining PROC table rows
         if (procRowsEquivalent(procCol, j, k)) {    // rows equivalent?
           // make entry in map for (k,j) and mark k for deletion
           tempProcIndex2[k] = j;
-          rowToBeRemoved(k) = True;
+          rowToBeRemoved(k) = true;
           rowsToBeRemoved.push_back(k);
         }
       }
@@ -2534,7 +2534,7 @@ Int MSConcat::copyProcessor(const MSProcessor& otherProc, const Bool remRedunPro
     for (Int i = 0; i < originalNrow; i++) {                 // loop over rows of old first table
       if (tempProcIndex2.find(i) != tempProcIndex2.end()) {  // ID changed because of removal
         newProcIndexA_p[i] = tempProcIndex2.at(i);
-        doProcA_p = True;
+        doProcA_p = true;
       }
     }
     // map for second table
@@ -2622,7 +2622,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed
     const Int newAntId = antCols.matchAntennaAndStation(
         otherAntCols.name()(a), otherAntCols.station()(a), otherAntCols.positionMeas()(a), tol);
 
-    Bool addNewEntry = True;
+    bool addNewEntry = true;
 
     if (newAntId >= 0) {
       // Check that the FEED table contains all the entries for
@@ -2680,14 +2680,14 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed
               feedCols.intervalQuant().put(matchingFeedRow, newIntervalQ);
             }
             matchingFeeds++;
-            ignoreRows.resize(matchingFeeds, True);
+            ignoreRows.resize(matchingFeeds, true);
             ignoreRows(matchingFeeds - 1) = matchingFeedRow;
           }
         }
       }
 
       antMap[a] = newAntId;
-      addNewEntry = False;
+      addNewEntry = false;
 
       if (matchingFeeds != nFeedsToCompare) {
         //  	cout << "Antenna " << a << " did not find all needed feeds "
@@ -2696,10 +2696,10 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt, const MSFeed
         const uInt nFeedsToCopy = feedsToCopy.nelements();
         rownr_t destRow = feed.nrow();
         for (uInt f = 0; f < nFeedsToCopy; f++) {
-          Bool present = False;
+          bool present = false;
           for (uInt g = 0; g < matchingFeeds; g++) {
             if (feedsToCopy(f) == ignoreRows(g)) {
-              present = True;
+              present = true;
               break;
             }
           }
@@ -2899,12 +2899,12 @@ Block<uInt> MSConcat::copyField(const MeasurementSet& otherms) {
                                  otherOrigTime);  // compare at the start time of the other field
     // cout << "other field, newFld " << f << ", " << newFld << std::endl;
 
-    Bool canUseThisEntry = (newFld >= 0);
+    bool canUseThisEntry = (newFld >= 0);
     if (canUseThisEntry) {
       String thisEphPath = fieldCols.ephemPath(newFld);
       if (!thisEphPath.empty()) {  // this field uses an ephemeris
         if (ephPath.empty()) {     // the other field does not
-          canUseThisEntry = False;
+          canUseThisEntry = false;
         } else {  // both use an ephemeris
           // is the time coverage of this ephem sufficient to be also used for the other field?
           std::stringstream ss;
@@ -2912,7 +2912,7 @@ Block<uInt> MSConcat::copyField(const MeasurementSet& otherms) {
             try {
               MDirection tMDir = fieldCols.phaseDirMeas(newFld, validityRange(i));
             } catch (std::exception& x) {
-              canUseThisEntry = False;
+              canUseThisEntry = false;
               ss << validityRange(i) << ", ";
             }
           }
@@ -2928,7 +2928,7 @@ Block<uInt> MSConcat::copyField(const MeasurementSet& otherms) {
         }
       } else {                   // this field does not use an ephemeris
         if (!ephPath.empty()) {  // the other field does
-          canUseThisEntry = False;
+          canUseThisEntry = false;
         }
       }
     }
@@ -2989,18 +2989,18 @@ Block<uInt> MSConcat::copyField(const MeasurementSet& otherms) {
   return fldMap;
 }
 
-Bool MSConcat::copySource(const MeasurementSet& otherms) {
-  doSource_p = False;
+bool MSConcat::copySource(const MeasurementSet& otherms) {
+  doSource_p = false;
   if (Table::isReadable(itsMS.sourceTableName())) {
     MSSource& newSource = itsMS.source();
     MSSourceColumns& sourceCol = source();
     Int maxSrcId = 0;
     if (!Table::isReadable(otherms.sourceTableName())) {
-      return False;
+      return false;
     }
     const MSSource& otherSource = otherms.source();
     if (otherSource.nrow() == 0) {
-      return False;
+      return false;
     }
     if (newSource.nrow() == 0) {
       maxSrcId = -1;
@@ -3040,7 +3040,7 @@ Bool MSConcat::copySource(const MeasurementSet& otherms) {
       ++destRow;
     }
 
-    doSource_p = True;
+    doSource_p = true;
 
     solSystObjects_p.clear();
 
@@ -3073,10 +3073,10 @@ Bool MSConcat::copySource(const MeasurementSet& otherms) {
   return doSource_p;
 }
 
-Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAndPol
+bool MSConcat::updateSource() {  // to be called after copySource and copySpwAndPol
                                  //   but before copyField!
 
-  doSource2_p = False;
+  doSource2_p = false;
 
   if (Table::isReadable(itsMS.sourceTableName())) {
     MSSource& newSource = itsMS.source();
@@ -3128,7 +3128,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
 
       // Check if there are redundant rows and remove them creating map for copyField
       // loop over the columns of the merged source table
-      Vector<Bool> rowToBeRemoved(numrows_this, False);
+      Vector<bool> rowToBeRemoved(numrows_this, false);
       vector<rownr_t> rowsToBeRemoved;
       Vector<Int> thisSPWIdB = sourceCol.spectralWindowId().getColumn();
 
@@ -3142,7 +3142,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
           if (!rowToBeRemoved(k)) {
             if (thisSPWIdB(j) == thisSPWIdB(k)) {  // the SPW id is the same
               Int reftypek = getMapValue(solSystObjects_p, thisId(k));
-              Bool sameSolSystObjects =
+              bool sameSolSystObjects =
                   ((reftypek == reftypej) && (reftypek > -1))  // object with solar syst ref frame
                   || ((reftypek == reftypej) && (reftypek == -2));  // ephemeris object
               if (sourceRowsEquivalent(
@@ -3170,7 +3170,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
 
                 // make entry in map for (k, j) and delete k
                 tempSourceIndex[thisId(k)] = thisId(j);
-                rowToBeRemoved(k) = True;
+                rowToBeRemoved(k) = true;
                 rowsToBeRemoved.push_back(k);
               }
             }
@@ -3187,7 +3187,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
         //	cout << "Removed " << rowsToBeRemoved.size() << " redundant rows from SOURCE table."
         //<< std::endl;
         newNumrows_this = newSource.nrow();               // update number of rows
-        sourceCol.sourceId().getColumn(newThisId, True);  // update vector if IDs
+        sourceCol.sourceId().getColumn(newThisId, true);  // update vector if IDs
       }
 
       // renumber consecutively
@@ -3204,7 +3204,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
       }
 
       // give equivalent rows the same source id
-      Bool rowsRenamed(False);
+      bool rowsRenamed(false);
       Int nDistinctSources = newNumrows_this;
       Vector<Int> thisSourceId = sourceCol.sourceId().getColumn();
       for (Int j = 0; j < newNumrows_this; ++j) {
@@ -3213,7 +3213,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
         for (Int k = j + 1; k < newNumrows_this; ++k) {
           if (thisSourceId(j) != thisSourceId(k)) {
             Int reftypek = getMapValue(solSystObjects_p, thisId(k));
-            Bool sameSolSystObjects =
+            bool sameSolSystObjects =
                 ((reftypek == reftypej) && (reftypek > -1))  // object with solar syst ref frame
                 || ((reftypek == reftypej) && (reftypek == -2));  // ephemeris object;
             if (sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects)) {
@@ -3229,7 +3229,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
               // sourceRecord.define(sourceIdId, newThisId(j) );
               // sourceRow.putMatchingFields(k, sourceRecord);
               thisSourceId(k) = newThisId(j);
-              rowsRenamed = True;
+              rowsRenamed = true;
               nDistinctSources--;
             }
           }
@@ -3242,7 +3242,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
       //      cout << "Ndistinct = " << nDistinctSources << std::endl;
 
       if (rowsRenamed) {                                  // reduce ID values to minimal range
-        sourceCol.sourceId().getColumn(newThisId, True);  // update vector if IDs
+        sourceCol.sourceId().getColumn(newThisId, true);  // update vector if IDs
         Int counter = 0;
         for (Int j = 0; j < newNumrows_this; ++j) {
           if (newThisId(j) >= nDistinctSources) {
@@ -3294,7 +3294,7 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
             newSourceIndex2_p[j] = tempSourceIndex3.at(j);  // c
           }
         }
-        doSource2_p = True;
+        doSource2_p = true;
       }
 
     }  // end if(numrows_this > 0)
@@ -3302,12 +3302,12 @@ Bool MSConcat::updateSource() {  // to be called after copySource and copySpwAnd
   return doSource2_p;
 }
 
-Bool MSConcat::updateSource2() {  // to be called after copyField
+bool MSConcat::updateSource2() {  // to be called after copyField
 
   // Go over the SOURCE table in the light of FIELD table merging
   // and correct SOURCE IDs if necessary.
 
-  Bool rval = False;  // were changes made?
+  bool rval = false;  // were changes made?
 
   if (Table::isReadable(itsMS.sourceTableName())) {
     MSSource& newSource = itsMS.source();
@@ -3334,8 +3334,8 @@ Bool MSConcat::updateSource2() {  // to be called after copyField
           Int foundRow = -1;
           for (Int k = 0; k < numrows_this; ++k) {
             if (thisSPWId[k] != thisSPWId[j] && thisId[k] != thisId[j] &&
-                sourceRowsEquivalent(sourceCol, k, j, False,
-                                     True)) {  // do check direction but not transition and rest
+                sourceRowsEquivalent(sourceCol, k, j, false,
+                                     true)) {  // do check direction but not transition and rest
                                                // (they are potentially different for each SPW)
               foundRow = k;
               break;
@@ -3348,7 +3348,7 @@ Bool MSConcat::updateSource2() {  // to be called after copyField
             // cout << "Selecting row " << j << " for removal from SOURCE table." << std::endl;
             rowsToBeRemoved.push_back(j);
           }
-          rval = True;
+          rval = true;
         }
       }
 
@@ -3363,12 +3363,12 @@ Bool MSConcat::updateSource2() {  // to be called after copyField
   return rval;
 }
 
-Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rownr_t& rowi,
-                                    const rownr_t& rowj, const Bool dontTestDirection,
-                                    const Bool dontTestTransAndRest) {
+bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rownr_t& rowi,
+                                    const rownr_t& rowj, const bool dontTestDirection,
+                                    const bool dontTestTransAndRest) {
   // check if the two SOURCE table rows are identical IGNORING SOURCE_ID, SPW_ID, time, and interval
 
-  Bool areEquivalent(False);
+  bool areEquivalent(false);
 
   // test the non-optional columns first
   if (areEQ(sourceCol.calibrationGroup(), rowi, rowj) && areEQ(sourceCol.code(), rowi, rowj) &&
@@ -3380,13 +3380,13 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rown
     //    cout << "All non-optionals equal" << std::endl;
 
     // test the optional columns next
-    areEquivalent = True;
+    areEquivalent = true;
     if (!(sourceCol.position().isNull()) && !dontTestDirection) {
       try {
         areEquivalent = areEQ(sourceCol.position(), rowi, rowj);
       } catch (std::exception& x) {
         // row has invalid data
-        areEquivalent = True;
+        areEquivalent = true;
       }
       //      if(!areEquivalent) cout << "not equal position" << std::endl;
     }
@@ -3395,7 +3395,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rown
         areEquivalent = areEQ(sourceCol.pulsarId(), rowi, rowj);
       } catch (std::exception& x) {
         // row has invalid data
-        areEquivalent = True;
+        areEquivalent = true;
       }
       //      if(!areEquivalent) cout << "not equal pulsarId" << std::endl;
     }
@@ -3404,7 +3404,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rown
         areEquivalent = areEQ(sourceCol.restFrequency(), rowi, rowj);
       } catch (std::exception& x) {
         // row has invalid data
-        areEquivalent = True;
+        areEquivalent = true;
       }
       //      if(!areEquivalent) cout << "not equal restFrequency" << std::endl;
     }
@@ -3413,7 +3413,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rown
         areEquivalent = areEQ(sourceCol.sysvel(), rowi, rowj);
       } catch (std::exception& x) {
         // row has invalid data
-        areEquivalent = True;
+        areEquivalent = true;
       }
       //      if(!areEquivalent) cout << "not equal sysvel" << std::endl;
     }
@@ -3422,7 +3422,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rown
         areEquivalent = areEQ(sourceCol.transition(), rowi, rowj);
       } catch (std::exception& x) {
         // row has invalid data
-        areEquivalent = True;
+        areEquivalent = true;
       }
       //      if(!areEquivalent) cout << "not equal transition" << std::endl;
     }
@@ -3430,34 +3430,34 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const rown
   return areEquivalent;
 }
 
-Bool MSConcat::obsRowsEquivalent(const MSObservationColumns& obsCol, const rownr_t& rowi,
+bool MSConcat::obsRowsEquivalent(const MSObservationColumns& obsCol, const rownr_t& rowi,
                                  const rownr_t& rowj) {
   // check if the two OBSERVATION table rows are identical ignoring LOG and SCHEDULE
 
-  Bool areEquivalent(False);
+  bool areEquivalent(false);
 
   if (areEQ(obsCol.flagRow(), rowi, rowj) && areEQ(obsCol.observer(), rowi, rowj) &&
       areEQ(obsCol.project(), rowi, rowj) && areEQ(obsCol.releaseDate(), rowi, rowj) &&
       areEQ(obsCol.telescopeName(), rowi, rowj) && areEQ(obsCol.timeRange(), rowi, rowj)) {
-    areEquivalent = True;
+    areEquivalent = true;
   }
   return areEquivalent;
 }
 
-Bool MSConcat::procRowsEquivalent(const MSProcessorColumns& procCol, const uInt& rowi,
+bool MSConcat::procRowsEquivalent(const MSProcessorColumns& procCol, const uInt& rowi,
                                   const uInt& rowj) {
   // check if the two PROCESSOR table rows are identical
 
-  Bool areEquivalent(False);
+  bool areEquivalent(false);
 
   if (areEQ(procCol.flagRow(), rowi, rowj) && areEQ(procCol.modeId(), rowi, rowj) &&
       areEQ(procCol.type(), rowi, rowj) && areEQ(procCol.typeId(), rowi, rowj) &&
       areEQ(procCol.subType(), rowi, rowj)) {
-    areEquivalent = True;
+    areEquivalent = true;
 
     // passId is optional
     if (!procCol.passId().isNull() && !areEQ(procCol.passId(), rowi, rowj)) {
-      areEquivalent = False;
+      areEquivalent = false;
     }
   }
   return areEquivalent;
@@ -3497,23 +3497,23 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
   Vector<Int> corrInt;
   Vector<Stokes::StokesTypes> corrPol;
   itsChanReversed.resize(nDDs);
-  itsChanReversed.set(False);
+  itsChanReversed.set(false);
   newSPWIndex_p.clear();
-  doSPW_p = False;
+  doSPW_p = false;
 
-  Vector<Bool> foundInDD(otherSpw.nrow(), False);
+  Vector<bool> foundInDD(otherSpw.nrow(), false);
 
   // loop over the rows of the other data description table
   for (uInt d = 0; d < nDDs; d++) {
     // cout << "other DD " << d << std::endl;
-    Bool matchedSPW = False;
+    bool matchedSPW = false;
     DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
                     otherDDCols.spectralWindowId()(d) < static_cast<Int>(otherSpw.nrow()),
                 AipsError);
     const Int otherSpwId = otherDDCols.spectralWindowId()(d);
     DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);
 
-    foundInDD(otherSpwId) = True;
+    foundInDD(otherSpwId) = true;
 
     Vector<Double> otherFreqs = otherSpwCols.chanFreq()(otherSpwId);
 
@@ -3537,11 +3537,11 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
       // fill map to be used by updateSource()
       newSPWIndex_p[otherSpwId] = *newSpwPtr;
       // There cannot be an entry in the DATA_DESCRIPTION Table
-      doSPW_p = True;
+      doSPW_p = true;
     } else {
       // cout << "counterpart found for other spw " << otherSpwId
       //     << " found in this spw " << *newSpwPtr << std::endl;
-      matchedSPW = True;
+      matchedSPW = true;
       if (*newSpwPtr != otherSpwId) {
         newSPWIndex_p[otherSpwId] = *newSpwPtr;
       }
@@ -3552,13 +3552,13 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
                 AipsError);
     const uInt otherPolId = static_cast<uInt>(otherDDCols.polarizationId()(d));
 
-    otherPolCols.corrType().get(otherPolId, corrInt, True);
+    otherPolCols.corrType().get(otherPolId, corrInt, true);
     const uInt nCorr = corrInt.nelements();
     corrPol.resize(nCorr);
     for (uInt p = 0; p < nCorr; p++) {
       corrPol(p) = Stokes::type(corrInt(p));
     }
-    Bool matchedDD = False;
+    bool matchedDD = false;
     uInt numActPol = 0;
     while (numActPol < polCols.nrow()) {
       *newPolPtr = polCols.match(corrPol, numActPol);
@@ -3573,7 +3573,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
           // We need to check if there exists an entry in the DATA_DESCRIPTION
           // table with the required spectral window and polarization index.
           ddMap[d] = ddIndex.getRowNumber(
-              matchedDD);  // sets matchedDD to True if a matching DD table entry is found
+              matchedDD);  // sets matchedDD to true if a matching DD table entry is found
         }
         // cout << "Found matching pol. Fould matching DD? " << matchedDD << " d ddMap[d] " << d <<
         // " " << ddMap[d] << std::endl;
@@ -3602,7 +3602,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
         os << LogIO::WARN << "Negative or zero total bandwidth in SPW " << otherSpwId
            << " of MS to be appended." << LogIO::POST;
       }
-      Bool chanReversed = False;
+      bool chanReversed = false;
 
       Int newSpwId = spwCols.matchSpw(otherSpwCols.refFrequencyMeas()(otherSpwId),
                                       static_cast<uInt>(otherSpwCols.numChan()(otherSpwId)),
@@ -3618,7 +3618,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
         spwRow.putMatchingFields(newSpwId, otherSpwRow.get(otherSpwId));
         // fill map to be used by updateSource()
         newSPWIndex_p[otherSpwId] = newSpwId;
-        doSPW_p = True;
+        doSPW_p = true;
       }
       // else{
       // cout << "Second iteration: counterpart found for other spw " << otherSpwId

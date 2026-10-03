@@ -33,15 +33,15 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Instantiate extern templates for often used types.
-template class AipsrcValue<Bool>;
+template class AipsrcValue<bool>;
 template class AipsrcValue<Int>;
 template class AipsrcValue<Double>;
 template class AipsrcValue<String>;
 
 template <>
-Bool AipsrcValue<String>::find(String &value, const String &keyword, const Unit &, const Unit &) {
+bool AipsrcValue<String>::find(String &value, const String &keyword, const Unit &, const Unit &) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   value = res;
   return x;
 }

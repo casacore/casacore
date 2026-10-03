@@ -122,7 +122,7 @@ class TableLocker {
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  Bool hasLock(FileLocker::LockType = FileLocker::Write) const;
+  bool hasLock(FileLocker::LockType = FileLocker::Write) const;
 
  private:
   // # Variables.
@@ -130,7 +130,7 @@ class TableLocker {
   bool itsHadLock;
 };
 
-inline Bool TableLocker::hasLock(FileLocker::LockType type) const { return itsTable.hasLock(type); }
+inline bool TableLocker::hasLock(FileLocker::LockType type) const { return itsTable.hasLock(type); }
 
 }  // namespace casacore
 

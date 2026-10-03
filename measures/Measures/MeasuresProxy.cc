@@ -49,7 +49,7 @@ MeasuresProxy::MeasuresProxy() : pcomet_p(0) { ; }
 MeasuresProxy::~MeasuresProxy() { delete pcomet_p; }
 
 String MeasuresProxy::getMeasureType(const Record &in) {
-  // Bool b;
+  // bool b;
   String out;
   if (in.isDefined("type")) {
     out = "???";  // b = GlishArray(in.get("type")).get(out);
@@ -59,15 +59,15 @@ String MeasuresProxy::getMeasureType(const Record &in) {
   return out;
 }
 
-Bool MeasuresProxy::doFrame(const MeasureHolder &in) {
+bool MeasuresProxy::doFrame(const MeasureHolder &in) {
   if (in.isMPosition() || in.isMDirection() || in.isMEpoch() || in.isMRadialVelocity()) {
     frame_p.set(in.asMeasure());
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool MeasuresProxy::doFrame(const String &in) {
+bool MeasuresProxy::doFrame(const String &in) {
   try {
     delete pcomet_p;
     pcomet_p = 0;
@@ -79,13 +79,13 @@ Bool MeasuresProxy::doFrame(const String &in) {
     if (!pcomet_p->ok()) {
       delete pcomet_p;
       pcomet_p = 0;
-      return False;
+      return false;
     }
     frame_p.set(*pcomet_p);
   } catch (std::exception &x) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 String MeasuresProxy::dirshow(const Record &rec) {
@@ -102,13 +102,13 @@ String MeasuresProxy::dirshow(const Record &rec) {
 }
 
 // Convert measures
-Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const MeasureHolder &in,
+bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const MeasureHolder &in,
                                 const String &outref, const Record &off) {
   MeasureHolder mo;
   if (off.nfields() > 0) {
     if (!mo.fromRecord(error, off)) {
       error += String("Non-measure type offset in measure conversion\n");
-      return False;
+      return false;
     }
     mo.asMeasure().getRefPtr()->set(frame_p);
   }
@@ -118,9 +118,9 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       MEpoch::Ref outRef;
       MEpoch::Types tp;
       String x = outref;
-      Bool raze = False;
+      bool raze = false;
       if (x.starts_with("r_") || x.starts_with("R_")) {
-        raze = True;
+        raze = true;
         x = x.substr(2);
       }
       if (MEpoch::getType(tp, x)) {
@@ -136,7 +136,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MEpoch::Convert mcvt(MEpoch::Convert(in.asMeasure(), outRef));
@@ -145,7 +145,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVEpoch &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMPosition()) {
@@ -161,7 +161,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MPosition::Convert mcvt(MPosition::Convert(in.asMeasure(), outRef));
@@ -170,7 +170,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVPosition &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMDirection()) {
@@ -186,7 +186,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MDirection::Convert mcvt(MDirection::Convert(in.asMeasure(), outRef));
@@ -195,7 +195,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVDirection &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMFrequency()) {
@@ -211,7 +211,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MFrequency::Convert mcvt(MFrequency::Convert(in.asMeasure(), outRef));
@@ -220,7 +220,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVFrequency &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMDoppler()) {
@@ -236,7 +236,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MDoppler::Convert mcvt(MDoppler::Convert(in.asMeasure(), outRef));
@@ -245,7 +245,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVDoppler &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMRadialVelocity()) {
@@ -261,7 +261,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MRadialVelocity::Convert mcvt(MRadialVelocity::Convert(in.asMeasure(), outRef));
@@ -270,7 +270,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVRadialVelocity &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMBaseline()) {
@@ -286,7 +286,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MBaseline::Convert mcvt(MBaseline::Convert(in.asMeasure(), outRef));
@@ -295,7 +295,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVBaseline &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMuvw()) {
@@ -311,7 +311,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       Muvw::Convert mcvt(Muvw::Convert(in.asMeasure(), outRef));
@@ -320,7 +320,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVuvw &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     } else if (in.isMEarthMagnetic()) {
@@ -336,7 +336,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
           outRef.set(mo.asMeasure());
         else {
           error += "Non-conforming offset measure type\n";
-          return False;
+          return false;
         }
       }
       MEarthMagnetic::Convert mcvt(MEarthMagnetic::Convert(in.asMeasure(), outRef));
@@ -345,27 +345,27 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out, const Measure
       for (uInt i = 0; i < in.nelements(); i++) {
         if (!out.setMV(i, mcvt(dynamic_cast<const MVEarthMagnetic &>(*in.getMV(i))).getValue())) {
           error += "Cannot get extra measure value in DOmeasures::measures\n";
-          return False;
+          return false;
         }
       }
     }
     if (out.isEmpty()) {
       error += "No measure created; probably unknow measure type\n";
-      return False;
+      return false;
     }
   } catch (std::exception &x) {
     error += "Cannot convert due to missing frame information\n";
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 // Make uvw from baselines
-Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out, Vector<Double> &xyz,
+bool MeasuresProxy::toUvw(String &error, MeasureHolder &out, Vector<Double> &xyz,
                           Vector<Double> &dot, const MeasureHolder &in) {
   if (!in.isMBaseline()) {
     error += "Trying to convert non-baseline to uvw\n";
-    return False;
+    return false;
   }
   try {
     in.asMeasure().getRefPtr()->set(frame_p);  // attach frame
@@ -375,7 +375,7 @@ Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out, Vector<Double> &xyz
     Double dec2000;
     if (!frame_p.getJ2000(dir2000) || !frame_p.getJ2000Lat(dec2000)) {
       error += "No direction in frame for uvw calculation\n";
-      return False;
+      return false;
     }
     MVuvw uvw2000 = MVuvw(bas2000, dir2000);
     out = MeasureHolder(Muvw(uvw2000, Muvw::J2000));
@@ -396,7 +396,7 @@ Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out, Vector<Double> &xyz
           MVuvw(mcvt(dynamic_cast<const MVBaseline &>(*in.getMV(i / 3))).getValue(), dir2000);
       if (!out.setMV(i / 3, mv)) {
         error += "Cannot get extra baseline value in DOmeasures::toUvw\n";
-        return False;
+        return false;
       }
       for (uInt j = 0; j < 3; ++j) xyz[i + j] = mv.getValue()[j];
       dot[i + 0] = -sd * xyz[i + 1] + cd * xyz[i + 2];
@@ -411,17 +411,17 @@ Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out, Vector<Double> &xyz
     error +=
         "Cannot convert baseline to uvw: frame "
         "information missing";
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 // Expand positions to baselines
-Bool MeasuresProxy::expandIt(String &error, MeasureHolder &out, Vector<Double> &xyz,
+bool MeasuresProxy::expandIt(String &error, MeasureHolder &out, Vector<Double> &xyz,
                              const MeasureHolder &in) {
   if (!in.isMuvw()) {
     error += "Trying to expand non-baseline type\n";
-    return False;
+    return false;
   }
   const MVuvw &uvw2000 = in.asMuvw().getValue();
   if (in.nelements() < 2) {
@@ -442,14 +442,14 @@ Bool MeasuresProxy::expandIt(String &error, MeasureHolder &out, Vector<Double> &
         }
         if (!out.setMV(k, mv)) {
           error += "Cannot expand baseline value in DOmeasures::expand\n";
-          return False;
+          return false;
         }
         for (uInt j = 0; j < 3; ++j) xyz[3 * k + j] = mv.getValue()[j];
         ++k;
       }
     }
   }
-  return True;
+  return true;
 }
 
 MeasureHolder MeasuresProxy::rec2mh(const Record &rec) {
@@ -480,7 +480,7 @@ Record MeasuresProxy::measure(const Record &rec, const String &str, const Record
   return mh2rec(mhout);
 }
 
-Bool MeasuresProxy::doframe(const Record &rec) {
+bool MeasuresProxy::doframe(const Record &rec) {
   /// @todo string method
   MeasureHolder mh = rec2mh(rec);
   return doFrame(mh);
@@ -581,7 +581,7 @@ String MeasuresProxy::vec2str(const Vector<String> &lst) {
   if (lst.nelements() > 0) {
     // Note in next one the const throw away, since join does not accept
     // const String src[]
-    Bool deleteIt;
+    bool deleteIt;
     String *storage = const_cast<String *>(lst.getStorage(deleteIt));
     const String *cstorage = storage;
     out = join(storage, lst.nelements(), String(" "));

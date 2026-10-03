@@ -142,8 +142,8 @@ class ImageInfo : public RecordTransformable {
   // backwards compatibility - null values should be supplied instead.
   // The record field names are: "restoringbeam, imagetype, objectname".
   // <group>
-  virtual Bool toRecord(String& error, RecordInterface& outRecord) const;
-  virtual Bool fromRecord(String& error, const RecordInterface& inRecord);
+  virtual bool toRecord(String& error, RecordInterface& outRecord) const;
+  virtual bool fromRecord(String& error, const RecordInterface& inRecord);
   // </group>
 
   // In some circumstances it might be useful to know what the defaults for
@@ -160,14 +160,14 @@ class ImageInfo : public RecordTransformable {
   // should probably not be regarded as fatal as the default ImageInfo
   // values are viable.  For each item contained
   // in the ImageInfo, an attempt to decode it from FITS is made.
-  // If any of them fail, False is returned, but it attempts to decode
+  // If any of them fail, false is returned, but it attempts to decode
   // them all.  For those that fail an error message is held in <src>error</src>
   // in the order restoring beam, and image type.
   // <src>error</src> will be returned of length 0 if the return
-  // value is True, else it will be length 2.
+  // value is true, else it will be length 2.
   // <group>
-  Bool toFITS(String& error, RecordInterface& outRecord) const;
-  Bool fromFITS(Vector<String>& error, const RecordInterface& inRecord);
+  bool toFITS(String& error, RecordInterface& outRecord) const;
+  bool fromFITS(Vector<String>& error, const RecordInterface& inRecord);
   // </group>
 
   // This function takes an unofficial fitsValue found on the Stokes axis
@@ -229,13 +229,13 @@ class ImageInfo : public RecordTransformable {
   // </group>
 
   // does this object contain multiple beams?
-  Bool hasMultipleBeams() const { return _beams.hasMultiBeam(); }
+  bool hasMultipleBeams() const { return _beams.hasMultiBeam(); }
 
   // does this object contain a single beam
-  Bool hasSingleBeam() const { return _beams.hasSingleBeam(); }
+  bool hasSingleBeam() const { return _beams.hasSingleBeam(); }
 
   // Does this object contain one or more beams?
-  Bool hasBeam() const { return !_beams.empty(); }
+  bool hasBeam() const { return !_beams.empty(); }
 
   // <group>
   // Number of channels and stokes in per hyper-plane beam array
@@ -254,9 +254,9 @@ class ImageInfo : public RecordTransformable {
   // This method is not meant for common use. New code should not use it.
   // Get the restoring beam from a LoggerHolder (where the history is stored)
   // as AIPS writes the beam in the FITS history rather than the header
-  // keywords. If there is no beam,  False is returned, and the internal
+  // keywords. If there is no beam,  false is returned, and the internal
   // state of the object is unchanged.
-  Bool getRestoringBeam(LoggerHolder& logger);
+  bool getRestoringBeam(LoggerHolder& logger);
 
   // Convert the given beam to a Record.
   Record beamToRecord(Int channel, Int stokes) const;
@@ -266,7 +266,7 @@ class ImageInfo : public RecordTransformable {
                     const String& imageName) const;
 
   // Append the other beamset to this one.
-  void appendBeams(ImageInfo& infoThat, Int axis, Bool relax, LogIO& os,
+  void appendBeams(ImageInfo& infoThat, Int axis, bool relax, LogIO& os,
                    const CoordinateSystem& csysThis, const CoordinateSystem& csysThat,
                    const IPosition& shapeThis, const IPosition& shapeThat);
 
@@ -278,7 +278,7 @@ class ImageInfo : public RecordTransformable {
   // If relax=False, an exception is thrown if mismatching.
   void combineBeams(const ImageInfo& infoThat, const IPosition& shapeThis,
                     const IPosition& shapeThat, const CoordinateSystem& csysThis,
-                    const CoordinateSystem& csysThat, Int axis, Bool relax, LogIO& os);
+                    const CoordinateSystem& csysThat, Int axis, bool relax, LogIO& os);
 
   // Reset the info and beamset of this image with the appropriate part of
   // the beam set of the concat image it is part of.
@@ -288,18 +288,18 @@ class ImageInfo : public RecordTransformable {
 
   // Concatenate the beam sets along the frequency axis.
   void concatFreqBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int nchanThis,
-                       Int nchanThat, Bool relax, LogIO& os) const;
+                       Int nchanThat, bool relax, LogIO& os) const;
 
   // Concatenate the beam sets along the stokes axis.
   void concatPolBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Int npolThis, Int npolThat,
-                      Bool relax, LogIO& os) const;
+                      bool relax, LogIO& os) const;
 
   // Merge the beam sets and check if they match.
-  void mergeBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, Bool relax, LogIO& os) const;
+  void mergeBeams(ImageBeamSet& beamsOut, const ImageInfo& infoThat, bool relax, LogIO& os) const;
 
-  // If relax=True, give a warning message if warn=True and set to False.
+  // If relax=True, give a warning message if warn=True and set to false.
   // Otherwise give an error showing msg1 only.
-  static void logMessage(Bool& warn, LogIO& os, Bool relax, const String& msg1,
+  static void logMessage(bool& warn, LogIO& os, bool relax, const String& msg1,
                          const String msg2 = String());
 
   // Get the beam area in terms of pixel size of the specified
@@ -322,7 +322,7 @@ class ImageInfo : public RecordTransformable {
 
   // # Data members
   ImageBeamSet _beams;
-  mutable Bool _warnBeam;  // # tell if warning is already given
+  mutable bool _warnBeam;  // # tell if warning is already given
   ImageTypes itsImageType;
   String itsObjectName;
 };

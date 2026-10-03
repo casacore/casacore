@@ -58,9 +58,9 @@ ObsInfo::ObsInfo()
     : telescope_p(defaultTelescope()),
       observer_p(defaultObserver()),
       obsdate_p(defaultObsDate()),
-      isTelPositionSet_p(False),
+      isTelPositionSet_p(false),
       pointingCenter_p(defaultPointingCenter()),
-      isPointingCenterInitial_p(True) {
+      isPointingCenterInitial_p(true) {
   // Nothing
 }
 
@@ -114,7 +114,7 @@ ObsInfo &ObsInfo::setTelescope(const String &telescope) {
 
 ObsInfo &ObsInfo::setTelescopePosition(const MPosition &pos) {
   telPosition_p = MPosition::Convert(pos, MPosition::ITRF)();
-  isTelPositionSet_p = True;
+  isTelPositionSet_p = true;
   return *this;
 }
 
@@ -152,18 +152,18 @@ ObsInfo &ObsInfo::setPointingCenter(const MVDirection &direction)
 //
 {
   pointingCenter_p = direction;
-  isPointingCenterInitial_p = False;
+  isPointingCenterInitial_p = false;
   return *this;
 }
 
-Bool ObsInfo::toRecord(String &error, RecordInterface &outRecord) const {
+bool ObsInfo::toRecord(String &error, RecordInterface &outRecord) const {
   error = "";
   //
   outRecord.define("telescope", telescope());
   //
   outRecord.define("observer", observer());
   //
-  Bool ok = True;
+  bool ok = true;
   {
     MeasureHolder mh(obsDate());
     Record rec;
@@ -192,7 +192,7 @@ Bool ObsInfo::toRecord(String &error, RecordInterface &outRecord) const {
   return ok;
 }
 
-Bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
+bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
   error = "";
   //
   ObsInfo tmp;
@@ -202,7 +202,7 @@ Bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
   if (field >= 0) {
     if (inRecord.type(field) != TpString) {
       error = "Type of telescope field is not String!";
-      return False;
+      return false;
     }
     setTelescope(inRecord.asString(field));
   }
@@ -211,7 +211,7 @@ Bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
   if (field >= 0) {
     if (inRecord.type(field) != TpString) {
       error = "Type of observer field is not String!";
-      return False;
+      return false;
     }
     setObserver(inRecord.asString(field));
   }
@@ -220,16 +220,16 @@ Bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
   if (field >= 0) {
     if (inRecord.type(field) != TpRecord) {
       error = "Type of obsdate field is not Record!";
-      return False;
+      return false;
     }
     MeasureHolder mh;
-    Bool ok = mh.fromRecord(error, inRecord.asRecord(field));
+    bool ok = mh.fromRecord(error, inRecord.asRecord(field));
     if (!ok) {
-      return False;
+      return false;
     }
     if (!mh.isMEpoch()) {
       error = "obsdate field is not an MEpoch!";
-      return False;
+      return false;
     }
     setObsDate(mh.asMEpoch());
   }
@@ -238,27 +238,27 @@ Bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
   if (field >= 0) {
     if (inRecord.type(field) != TpRecord) {
       error = "Type of telescopeposition field is not Record!";
-      return False;
+      return false;
     }
     MeasureHolder mh;
-    Bool ok = mh.fromRecord(error, inRecord.asRecord(field));
+    bool ok = mh.fromRecord(error, inRecord.asRecord(field));
     if (!ok) {
-      return False;
+      return false;
     }
     if (!mh.isMPosition()) {
       error = "obsdate field is not an MPosition!";
-      return False;
+      return false;
     }
     setTelescopePosition(mh.asMPosition());
   } else {
-    isTelPositionSet_p = False;
+    isTelPositionSet_p = false;
   }
   //
   field = inRecord.fieldNumber("pointingcenter");
   if (field >= 0) {
     if (inRecord.type(field) != TpRecord) {
       error = "Type of pointingcenter field is not Record !";
-      return False;
+      return false;
     }
     Record rec = inRecord.asRecord(field);
     //
@@ -268,34 +268,34 @@ Bool ObsInfo::fromRecord(String &error, const RecordInterface &inRecord) {
       v = Vector<Double>(rec.toArrayDouble(field2));
     } else {
       error = "field pointingcenter does not contain subfield 'value'";
-      return False;
+      return false;
     }
     //
-    Bool b = False;
+    bool b = false;
     Int field3 = rec.fieldNumber("initial");
     if (field3 >= 0) {
       if (rec.type(field3) != TpBool) {
         error = "pointingcenter.initial field is not Bool";
-        return False;
+        return false;
       } else {
         b = rec.asBool(field3);
       }
     } else {
       error = "field pointingcenter does not contain subfield 'initial'";
-      return False;
+      return false;
     }
 
     // Don't use function "setPointingCenter" as it will set
-    // isPointingCenterInitial_p to False
+    // isPointingCenterInitial_p to false
 
     isPointingCenterInitial_p = b;
     pointingCenter_p = MVDirection(v);
   }
   //
-  return True;
+  return true;
 }
 
-Bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
+bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
   error = "";
   //
   String name = "telescop";
@@ -393,32 +393,32 @@ Bool ObsInfo::toFITS(String &error, RecordInterface &outRecord) const {
     }
   }
   //
-  return True;
+  return true;
 }
 
-Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
+bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
   error.resize(4);
   //
-  Bool ok = True;
+  bool ok = true;
   ObsInfo tmp;
   (*this) = tmp;  // Make sure we are "empty" first;
 
   // Item 0 (might be in 'TELESCOP' or 'INSTRUME' and they might
   // both be there and they might also hold only spaces)
 
-  Bool done = False;
+  bool done = false;
   String field("telescop");
   if (rec.isDefined(field)) {
     Record subRec = rec.asRecord(field);
     if (subRec.dataType(String("value")) != TpString) {
       error(0) = "Type of TELESCOP field is not String!";
-      ok = False;
+      ok = false;
     } else {
       std::string ss = subRec.asString(String("value"));
       ss = GetStringUpToExcluding(ss, " ");
       if (ss.length() > 0) {
         setTelescope(ss);
-        done = True;
+        done = true;
       }
     }
   }
@@ -429,7 +429,7 @@ Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
       Record subRec = rec.asRecord(field);
       if (subRec.dataType(String("value")) != TpString) {
         error(0) = "Type of INSTRUME field is not String!";
-        ok = False;
+        ok = false;
       } else {
         setTelescope(subRec.asString(String("value")));
       }
@@ -443,7 +443,7 @@ Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
     Record subRec = rec.asRecord(field);
     if (subRec.dataType("value") != TpString) {
       error(1) = "Type of OBSERVER field is not String!";
-      ok = False;
+      ok = false;
     } else {
       setObserver(subRec.asString("value"));
     }
@@ -459,7 +459,7 @@ Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
     Record subRec1 = rec.asRecord(field1);
     if (subRec1.dataType("value") != TpString) {
       error(2) = "Type of DATE-OBS field is not a String!";
-      ok = False;
+      ok = false;
     } else {
       if (rec.isDefined(field2)) {
         Record subRec2 = rec.asRecord(field2);
@@ -471,12 +471,12 @@ Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
       MVTime time;
       MEpoch::Types timeSys;
       String dateString = subRec1.asString("value");
-      Bool ok2 = FITSDateUtil::fromFITS(time, timeSys, dateString, timeSysStr);
+      bool ok2 = FITSDateUtil::fromFITS(time, timeSys, dateString, timeSysStr);
       if (ok2) {
         setObsDate(MEpoch(time.get(), timeSys));
       } else {
         error(2) = "Could not decode FITS date format from keywords";
-        ok = False;
+        ok = false;
       }
     }
   }
@@ -490,7 +490,7 @@ Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
     Record subRec2 = rec.asRecord(fieldLat);
     if (subRec1.dataType("value") != TpDouble || subRec2.dataType("value") != TpDouble) {
       error(3) = "Type of OBSRA or OBSDEC field is not Double!";
-      ok = False;
+      ok = false;
     } else {
       MVDirection mvd((subRec1.asDouble("value")) * M_PI / 180.0,
                       (subRec2.asDouble("value")) * M_PI / 180.0);
@@ -510,7 +510,7 @@ Bool ObsInfo::fromFITS(Vector<String> &error, const RecordInterface &rec) {
     if (subRec1.dataType("value") != TpDouble || subRec2.dataType("value") != TpDouble ||
         subRec3.dataType("value") != TpDouble) {
       error(3) = "Type of OBSGEO fields is not Double!";
-      ok = False;
+      ok = false;
     } else {
       MVPosition mvp(subRec1.asDouble("value"), subRec2.asDouble("value"),
                      subRec3.asDouble("value"));

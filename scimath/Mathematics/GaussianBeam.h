@@ -87,9 +87,9 @@ class GaussianBeam {
 
   GaussianBeam& operator=(const GaussianBeam& other);
 
-  Bool operator==(const GaussianBeam& other) const;
+  bool operator==(const GaussianBeam& other) const;
 
-  Bool operator!=(const GaussianBeam& other) const;
+  bool operator!=(const GaussianBeam& other) const;
 
   // returns the major axis in the same units as it had at construction
   const Quantity& getMajor() const;
@@ -104,20 +104,20 @@ class GaussianBeam {
   Double getMinor(const Unit& u) const;
 
   // returns the position angle's value as it was at construction,
-  // unless <src>unwrap</src> is True, in which case the value of the angle
+  // unless <src>unwrap</src> is true, in which case the value of the angle
   // returned will be between -90 and 90 degrees (but with unit the same
   // as it had when this object was constructed).
-  Quantity getPA(const Bool unwrap = True) const;
+  Quantity getPA(const bool unwrap = true) const;
 
   // returns the value portion of the position angle in the specified units
-  Double getPA(const Unit& u, const Bool unwrap = True) const;
+  Double getPA(const Unit& u, const bool unwrap = true) const;
 
   // returns the beam area in the specified <src>unit</src>, which much conform to
   // solid angle units.
   Double getArea(const Unit& unit) const;
 
   // is this object a null beam (ie is either its major and/or minor axis zero)?
-  Bool isNull() const;
+  bool isNull() const;
 
   // returns GassianBeam.
   static const String& className();
@@ -128,14 +128,14 @@ class GaussianBeam {
 
   // if unwrap=True, unwrap pa so its value lies in the range
   // -90 to 90 degrees before setting it.
-  void setPA(const Quantity& pa, Bool unwrap = False);
+  void setPA(const Quantity& pa, bool unwrap = false);
 
   static GaussianBeam fromRecord(const Record& rec);
 
   // convert this object to a three-Vector of (major FWHM, minor FWHM, and pa).
-  // If <src>unwrap</src> is True, the returned pa will fall between -90 and +90
+  // If <src>unwrap</src> is true, the returned pa will fall between -90 and +90
   // degrees.
-  Vector<Quantity> toVector(const Bool unwrap = True) const;
+  Vector<Quantity> toVector(const bool unwrap = true) const;
 
   // convert stored Quantities to the specified units
   void convert(const String& majUnit, const String& minUnit, const String& paUnit);
@@ -151,7 +151,7 @@ ostream& operator<<(ostream& os, const GaussianBeam& beam);
 
 LogIO& operator<<(LogIO& os, const GaussianBeam& beam);
 
-Bool near(const GaussianBeam& left, const GaussianBeam& other, const Double relWidthTol,
+bool near(const GaussianBeam& left, const GaussianBeam& other, const Double relWidthTol,
           const Quantity& absPaTol);
 
 }  // namespace casacore

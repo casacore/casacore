@@ -101,30 +101,30 @@ class RecordFieldId {
   const String& fieldName() const;
 
   // Is the id given by name?
-  Bool byName() const;
+  bool byName() const;
 
  private:
-  Bool byName_p;
+  bool byName_p;
   Int number_p;
   String name_p;
 };
 
-inline RecordFieldId::RecordFieldId(Int fieldNumber) : byName_p(False), number_p(fieldNumber) {}
+inline RecordFieldId::RecordFieldId(Int fieldNumber) : byName_p(false), number_p(fieldNumber) {}
 
 inline RecordFieldId::RecordFieldId(const String& fieldName)
-    : byName_p(True), number_p(-1), name_p(fieldName) {}
+    : byName_p(true), number_p(-1), name_p(fieldName) {}
 
 inline RecordFieldId::RecordFieldId(const std::string& fieldName)
-    : byName_p(True), number_p(-1), name_p(fieldName) {}
+    : byName_p(true), number_p(-1), name_p(fieldName) {}
 
 inline RecordFieldId::RecordFieldId(const Char* fieldName)
-    : byName_p(True), number_p(-1), name_p(fieldName) {}
+    : byName_p(true), number_p(-1), name_p(fieldName) {}
 
 inline Int RecordFieldId::fieldNumber() const { return number_p; }
 
 inline const String& RecordFieldId::fieldName() const { return name_p; }
 
-inline Bool RecordFieldId::byName() const { return byName_p; }
+inline bool RecordFieldId::byName() const { return byName_p; }
 
 }  // namespace casacore
 

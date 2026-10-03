@@ -54,7 +54,7 @@ const JsonValue& JsonKVMap::get(const String& name) const {
   return value->second;
 }
 
-Bool JsonKVMap::getBool(const String& name, Bool defVal) const {
+bool JsonKVMap::getBool(const String& name, bool defVal) const {
   const_iterator value = find(name);
   if (value == end()) {
     return defVal;

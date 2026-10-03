@@ -58,7 +58,7 @@ template <class T>
 HistAcc<T>::HistAcc(const T low, const T high, const T width) {
   init();  // bring into a known state
   defineBins(low, high, width);
-  itsAutoDefineMode = False;
+  itsAutoDefineMode = false;
 }
 
 // Constructor: copy an existing histogram (that):
@@ -130,10 +130,10 @@ HistAcc<T>& HistAcc<T>::operator=(const HistAcc<T>& that) {
 template <class T>
 void HistAcc<T>::initBuffer(const uInt bufferLength) {
   if (bufferLength > 0) {
-    itsAutoDefineMode = True;
+    itsAutoDefineMode = true;
     itsBuffer.resize(bufferLength);
   } else {
-    itsAutoDefineMode = False;
+    itsAutoDefineMode = false;
     itsBuffer.resize(0);
   }
   itsBufferContents = 0;
@@ -159,7 +159,7 @@ void HistAcc<T>::putBuffer(const T v) {
 
 template <class T>
 void HistAcc<T>::clearBuffer() {
-  itsAutoDefineMode = False;  // BEFORE put1!
+  itsAutoDefineMode = false;  // BEFORE put1!
 
   // Transfer values from buffer to histogram
   itsStatAcc.reset();
@@ -262,7 +262,7 @@ void HistAcc<T>::defineBins(const T low, const T high, const T width) {
 template <class T>
 void HistAcc<T>::put(const Array<T>& v) {
   uInt ntotal = v.nelements();
-  Bool vDelete;
+  bool vDelete;
   const T* vStorage = v.getStorage(vDelete);
   const T* vs = vStorage;
   while (ntotal--) {

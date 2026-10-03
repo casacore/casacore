@@ -214,17 +214,17 @@ String PagedImage<T>::imageType() const {
 }
 
 template <class T>
-Bool PagedImage<T>::isPersistent() const {
-  return True;
+bool PagedImage<T>::isPersistent() const {
+  return true;
 }
 
 template <class T>
-Bool PagedImage<T>::isPaged() const {
-  return True;
+bool PagedImage<T>::isPaged() const {
+  return true;
 }
 
 template <class T>
-Bool PagedImage<T>::isWritable() const {
+bool PagedImage<T>::isWritable() const {
   return map_p.isWritable();
 }
 
@@ -239,19 +239,19 @@ void PagedImage<T>::reopenRW() {
 }
 
 template <class T>
-Bool PagedImage<T>::hasPixelMask() const {
+bool PagedImage<T>::hasPixelMask() const {
   return (regionPtr_p != 0 && regionPtr_p->hasMask());
 }
 
 template <class T>
-const Lattice<Bool>& PagedImage<T>::pixelMask() const {
+const Lattice<bool>& PagedImage<T>::pixelMask() const {
   if (regionPtr_p == 0) {
     throw(AipsError("PagedImage::pixelMask - no pixelmask used"));
   }
   return *regionPtr_p;
 }
 template <class T>
-Lattice<Bool>& PagedImage<T>::pixelMask() {
+Lattice<bool>& PagedImage<T>::pixelMask() {
   if (regionPtr_p == 0) {
     throw(AipsError("PagedImage::pixelMask - no pixelmask used"));
   }
@@ -322,7 +322,7 @@ void PagedImage<T>::rename(const String& newName) {
 }
 
 template <class T>
-String PagedImage<T>::name(Bool stripPath) const {
+String PagedImage<T>::name(bool stripPath) const {
   return map_p.name(stripPath);
 }
 
@@ -347,8 +347,8 @@ void PagedImage<T>::resize(const TiledShape& newShape) {
 }
 
 template <class T>
-Bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem& coords) {
-  Bool ok = ImageInterface<T>::setCoordinateInfo(coords);
+bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem& coords) {
+  bool ok = ImageInterface<T>::setCoordinateInfo(coords);
   if (ok) {
     reopenRW();
     Table& tab = table();
@@ -360,7 +360,7 @@ Bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem& coords) {
       if (!(coordinates().save(tab.rwKeywordSet(), "coords"))) {
         LogIO os;
         os << LogIO::SEVERE << "Error saving coordinates in image " << name() << LogIO::POST;
-        ok = False;
+        ok = false;
       }
     } else {
       LogIO os;
@@ -372,7 +372,7 @@ Bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem& coords) {
 }
 
 template <class T>
-Bool PagedImage<T>::doGetSlice(Array<T>& buffer, const Slicer& theSlice) {
+bool PagedImage<T>::doGetSlice(Array<T>& buffer, const Slicer& theSlice) {
   return map_p.doGetSlice(buffer, theSlice);
 }
 
@@ -385,13 +385,13 @@ void PagedImage<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& wh
   //    Array<T> map;
   // Array<Bool> mask;
   // IPosition shape(sourceBuffer.shape());
-  // mask_p->getSlice(mask, where, shape, stride, True);
-  // map_p.getSlice(map, where, shape, stride, True);
+  // mask_p->getSlice(mask, where, shape, stride, true);
+  // map_p.getSlice(map, where, shape, stride, true);
   // use maskedarrays to do all the work.
-  // map(mask==False) = sourceBuffer;
+  // map(mask==false) = sourceBuffer;
   // map_p.putSlice(map,where,stride);
   //  } else {
-  //    throw(AipsError("PagedImage<T>::putSlice - throughmask==False but no "
+  //    throw(AipsError("PagedImage<T>::putSlice - throughmask==false but no "
   //		    "mask exists."));
   //  }
 }
@@ -431,30 +431,30 @@ void PagedImage<T>::restoreMiscInfo(const TableRecord& rec) {
 }
 
 template <class T>
-Bool PagedImage<T>::setMiscInfo(const RecordInterface& newInfo) {
+bool PagedImage<T>::setMiscInfo(const RecordInterface& newInfo) {
   setMiscInfoMember(newInfo);
   reopenRW();
   Table& tab = table();
   if (!tab.isWritable()) {
-    return False;
+    return false;
   }
   if (tab.keywordSet().isDefined("miscinfo")) {
     tab.rwKeywordSet().removeField("miscinfo");
   }
   tab.rwKeywordSet().defineRecord("miscinfo", newInfo);
-  return True;
+  return true;
 }
 
 template <class T>
 LatticeIterInterface<T>* PagedImage<T>::makeIter(const LatticeNavigator& navigator,
-                                                 Bool useRef) const {
+                                                 bool useRef) const {
   return map_p.makeIter(navigator, useRef);
 }
 
 template <class T>
-Bool PagedImage<T>::ok() const {
+bool PagedImage<T>::ok() const {
   Int okay = (map_p.ndim() == coordinates().nPixelAxes());
-  return okay ? True : False;
+  return okay ? true : false;
 }
 
 template <class T>
@@ -483,18 +483,18 @@ void PagedImage<T>::open_logtable() {
 }
 
 template <class T>
-Bool PagedImage<T>::setUnits(const Unit& newUnits) {
+bool PagedImage<T>::setUnits(const Unit& newUnits) {
   setUnitMember(newUnits);
   reopenRW();
   Table& tab = table();
   if (!tab.isWritable()) {
-    return False;
+    return false;
   }
   if (tab.keywordSet().isDefined("units")) {
     tab.rwKeywordSet().removeField("units");
   }
   tab.rwKeywordSet().define("units", newUnits.getName());
-  return True;
+  return true;
 }
 
 template <class T>
@@ -540,7 +540,7 @@ void PagedImage<T>::restoreUnits(const TableRecord& rec) {
 
 template <class T>
 void PagedImage<T>::removeRegion(const String& name, RegionHandler::GroupType type,
-                                 Bool throwIfUnknown) {
+                                 bool throwIfUnknown) {
   reopenRW();
   // Remove the default mask if it is the region to be removed.
   if (name == getDefaultMask()) {
@@ -628,7 +628,7 @@ void PagedImage<T>::setTableType() {
 }
 
 template <class T>
-Table& PagedImage<T>::getTable(void* imagePtr, Bool writable) {
+Table& PagedImage<T>::getTable(void* imagePtr, bool writable) {
   PagedImage<T>* im = static_cast<PagedImage<T>*>(imagePtr);
   if (writable) {
     im->reopenRW();
@@ -637,7 +637,7 @@ Table& PagedImage<T>::getTable(void* imagePtr, Bool writable) {
 }
 
 template <class T>
-Bool PagedImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool PagedImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return map_p.lock(type, nattempts);
 }
 template <class T>
@@ -649,7 +649,7 @@ void PagedImage<T>::unlock() {
   }
 }
 template <class T>
-Bool PagedImage<T>::hasLock(FileLocker::LockType type) const {
+bool PagedImage<T>::hasLock(FileLocker::LockType type) const {
   return map_p.hasLock(type);
 }
 
@@ -690,9 +690,9 @@ void PagedImage<T>::reopen() {
 }
 
 template <class T>
-Bool PagedImage<T>::setImageInfo(const ImageInfo& info) {
+bool PagedImage<T>::setImageInfo(const ImageInfo& info) {
   // Set imageinfo in base class.
-  Bool ok = ImageInterface<T>::setImageInfo(info);
+  bool ok = ImageInterface<T>::setImageInfo(info);
   if (ok) {
     // Make persistent in table keywords.
     reopenRW();
@@ -712,7 +712,7 @@ Bool PagedImage<T>::setImageInfo(const ImageInfo& info) {
         LogIO os;
         os << LogIO::SEVERE << "Error saving ImageInfo in image " << name() << "; " << error
            << LogIO::POST;
-        ok = False;
+        ok = false;
       }
     } else {
       // Table not writable.
@@ -729,7 +729,7 @@ void PagedImage<T>::restoreImageInfo(const TableRecord& rec) {
   if (rec.isDefined("imageinfo")) {
     String error;
     ImageInfo info;
-    Bool ok = info.fromRecord(error, rec.asRecord("imageinfo"));
+    bool ok = info.fromRecord(error, rec.asRecord("imageinfo"));
     if (ok) {
       setImageInfoMember(info);
     } else {
@@ -741,7 +741,7 @@ void PagedImage<T>::restoreImageInfo(const TableRecord& rec) {
 }
 
 template <class T>
-ImageAttrHandler& PagedImage<T>::attrHandler(Bool createHandler) {
+ImageAttrHandler& PagedImage<T>::attrHandler(bool createHandler) {
   return itsAttrHandler.attachTable(table(), createHandler);
 }
 

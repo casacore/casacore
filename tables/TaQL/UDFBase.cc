@@ -39,9 +39,9 @@ std::recursive_mutex UDFBase::theirMutex;
 UDFBase::UDFBase()
     : itsDataType(TableExprNodeRep::NTAny),
       itsNDim(-2),
-      itsIsConstant(False),
-      itsIsAggregate(False),
-      itsApplySelection(True) {}
+      itsIsConstant(false),
+      itsIsAggregate(false),
+      itsApplySelection(true) {}
 
 UDFBase::~UDFBase() {}
 
@@ -89,11 +89,11 @@ void UDFBase::setUnit(const String& unit) { itsUnit = unit; }
 
 void UDFBase::setAttributes(const Record& attributes) { itsAttributes = attributes; }
 
-void UDFBase::setConstant(Bool isConstant) { itsIsConstant = isConstant; }
+void UDFBase::setConstant(bool isConstant) { itsIsConstant = isConstant; }
 
-void UDFBase::setAggregate(Bool isAggregate) { itsIsAggregate = isAggregate; }
+void UDFBase::setAggregate(bool isAggregate) { itsIsAggregate = isAggregate; }
 
-Bool UDFBase::getBool(const TableExprId&) {
+bool UDFBase::getBool(const TableExprId&) {
   throw TableInvExpr("UDFBase::getBool not implemented");
 }
 Int64 UDFBase::getInt(const TableExprId&) { throw TableInvExpr("UDFBase::getInt not implemented"); }
@@ -112,7 +112,7 @@ TaqlRegex UDFBase::getRegex(const TableExprId&) {
 MVTime UDFBase::getDate(const TableExprId&) {
   throw TableInvExpr("UDFBase::getDate not implemented");
 }
-MArray<Bool> UDFBase::getArrayBool(const TableExprId&) {
+MArray<bool> UDFBase::getArrayBool(const TableExprId&) {
   throw TableInvExpr("UDFBase::getArrayBool not implemented");
 }
 MArray<Int64> UDFBase::getArrayInt(const TableExprId&) {
@@ -137,7 +137,7 @@ void UDFBase::applySelection(const Vector<rownr_t>& rownrs) {
   if (itsApplySelection) {
     recreateColumnObjects(rownrs);
     // Clear switch in case called for a second time.
-    itsApplySelection = False;
+    itsApplySelection = false;
   }
 }
 
@@ -205,7 +205,7 @@ UDFBase* UDFBase::createUDF(const String& name, const TaQLStyle& style) {
     if (iter == theirRegistry.end()) {
       // Try to load the dynamic library.
       DynLib dl(libname, std::string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
-                std::string("register_") + libname, False);
+                std::string("register_") + libname, false);
       if (dl.getHandle()) {
         // Add to map to indicate library has been loaded.
         theirRegistry[libname] = 0;

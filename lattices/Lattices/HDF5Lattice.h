@@ -164,13 +164,13 @@ class HDF5Lattice : public Lattice<T> {
   virtual Lattice<T>* clone() const;
 
   // A HDF5Lattice is always persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // A HDF5Lattice is always paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Is the HDF5Lattice writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the shape of the HDF5Lattice.
   virtual IPosition shape() const;
@@ -178,7 +178,7 @@ class HDF5Lattice : public Lattice<T> {
   // Return the current HDF5 file name.
   // By default this includes the full path.
   // The path preceeding the file name can be stripped off on request.
-  virtual String name(Bool stripPath = False) const;
+  virtual String name(bool stripPath = false) const;
 
   // Return the current HDF5File object.
   const std::shared_ptr<HDF5File>& file() const { return itsFile; }
@@ -213,18 +213,18 @@ class HDF5Lattice : public Lattice<T> {
   // Put the value of a single element.
   virtual void putAt(const T& value, const IPosition& where);
 
-  // A function which checks for internal consistency. Returns False if
+  // A function which checks for internal consistency. Returns false if
   // something nasty has happened to the HDF5Lattice. In that case
   // it also throws an exception.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use.
-  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, Bool useRef) const;
+  virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice(Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,

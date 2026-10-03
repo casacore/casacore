@@ -43,11 +43,11 @@ void MCBase::makeState(uInt *state, const uInt ntyp, const uInt nrout, const uIn
   // Make trees
   uInt *tcnt = new uInt[ntyp];
   uInt *tree = new uInt[ntyp * ntyp];
-  Bool *visit = new Bool[ntyp];
+  bool *visit = new bool[ntyp];
   uInt *mcnt = new uInt[ntyp * ntyp];
   for (uInt j = 0; j < ntyp; j++) {
     tcnt[j] = 0;
-    visit[j] = False;
+    visit[j] = false;
     for (uInt i = 0; i < ntyp; i++) {
       mcnt[i * ntyp + j] = 100 * nrout;
       state[i * ntyp + j] = nrout;
@@ -65,7 +65,7 @@ void MCBase::makeState(uInt *state, const uInt ntyp, const uInt nrout, const uIn
     for (uInt j = 0; j < ntyp; j++) {
       if (i != j) {
         uInt len = 0;
-        Bool okall = True;
+        bool okall = true;
         findState(len, state, mcnt, okall, visit, tcnt, tree, i, j, ntyp, nrout, list);
       }
     }
@@ -77,11 +77,11 @@ void MCBase::makeState(uInt *state, const uInt ntyp, const uInt nrout, const uIn
   delete[] mcnt;
 }
 
-Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall, Bool *visit,
+bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, bool &okall, bool *visit,
                        const uInt *tcnt, const uInt *tree, const uInt &in, const uInt &out,
                        const uInt ntyp, const uInt nrout, const uInt list[][3]) {
   // Check loop
-  if (visit[in]) return False;
+  if (visit[in]) return false;
   uInt minlen = 100 * nrout;
   uInt res = nrout;
   // Check if path already known
@@ -91,7 +91,7 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall, Bool *vi
   } else {
     for (uInt i = 0; i < tcnt[in]; i++) {
       uInt loclen = 1 + list[tree[in * ntyp + i]][2];
-      visit[in] = True;
+      visit[in] = true;
       uInt nin = list[tree[in * ntyp + i]][1];
       if (findState(loclen, state, mcnt, okall, visit, tcnt, tree, nin, out, ntyp, nrout, list)) {
         if (loclen < minlen) {
@@ -99,17 +99,17 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall, Bool *vi
           res = tree[in * ntyp + i];
         }
       } else
-        okall = False;
+        okall = false;
     }
-    visit[in] = False;
+    visit[in] = false;
   }
-  if (minlen == 100 * nrout) return False;
+  if (minlen == 100 * nrout) return false;
   if (len == 0 || okall) {
     mcnt[in * ntyp + out] = minlen;
     state[in * ntyp + out] = res;
   }
   len += minlen;
-  return True;
+  return true;
 }
 
 String MCBase::showState(uInt *state, const uInt ntyp, const uInt, const uInt list[][3]) {

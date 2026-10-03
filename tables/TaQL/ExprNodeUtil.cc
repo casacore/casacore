@@ -63,7 +63,7 @@ std::vector<TableExprNodeRep*> getColumnNodes(TableExprNodeRep* node) {
   return colNodes;
 }
 
-std::vector<Table> getNodeTables(TableExprNodeRep* node, Bool properMain) {
+std::vector<Table> getNodeTables(TableExprNodeRep* node, bool properMain) {
   std::vector<TableExprNodeRep*> allNodes;
   node->flattenTree(allNodes);
   std::vector<Table> tables;
@@ -92,11 +92,11 @@ std::vector<Table> getNodeTables(TableExprNodeRep* node, Bool properMain) {
 
 rownr_t getCheckNRow(const std::vector<Table>& tables) {
   rownr_t nrow = 0;
-  Bool first = True;
+  bool first = true;
   for (const Table& tab : tables) {
     if (first) {
       nrow = tab.nrow();
-      first = False;
+      first = false;
     } else {
       if (tab.nrow() != nrow) {
         throw TableInvExpr("Table " + std::string(tab.tableName()) + " has " +

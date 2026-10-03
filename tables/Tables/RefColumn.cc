@@ -36,9 +36,9 @@ RefColumn::RefColumn(const BaseColumnDesc* bcdp, RefTable* reftab, BaseColumn* b
 
 RefColumn::~RefColumn() {}
 
-Bool RefColumn::isWritable() const { return colPtr_p->isWritable(); }
+bool RefColumn::isWritable() const { return colPtr_p->isWritable(); }
 
-Bool RefColumn::isStored() const { return colPtr_p->isStored(); }
+bool RefColumn::isStored() const { return colPtr_p->isStored(); }
 
 TableRecord& RefColumn::rwKeywordSet() { return colPtr_p->rwKeywordSet(); }
 TableRecord& RefColumn::keywordSet() { return colPtr_p->keywordSet(); }
@@ -71,11 +71,11 @@ IPosition RefColumn::shape(rownr_t rownr) const {
   return colPtr_p->shape(refTabPtr_p->rootRownr(rownr));
 }
 
-Bool RefColumn::isDefined(rownr_t rownr) const {
+bool RefColumn::isDefined(rownr_t rownr) const {
   return colPtr_p->isDefined(refTabPtr_p->rootRownr(rownr));
 }
 
-Bool RefColumn::canChangeShape() const { return colPtr_p->canChangeShape(); }
+bool RefColumn::canChangeShape() const { return colPtr_p->canChangeShape(); }
 
 void RefColumn::get(rownr_t rownr, void* dataPtr) const {
   colPtr_p->get(refTabPtr_p->rootRownr(rownr), dataPtr);

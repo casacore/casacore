@@ -159,7 +159,7 @@ class RecordDesc {
   // An exception will be thrown if the field is no array.
   void setShape(Int whichField, const IPosition& shape);
 
-  // Merge a single field from other.  If allowDuplicates is True, silently
+  // Merge a single field from other.  If allowDuplicates is true, silently
   // throw away fields if one with the same name and type already exists,
   // otherwise an exception is thrown.  Conflicting types always cause an
   // exception. Returns the number of fields in the description.
@@ -202,17 +202,17 @@ class RecordDesc {
   // j is the minimal number needed to make it unique.
   String uniqueName(const String& name) const;
 
-  // Returns True if whichField is an array.
-  Bool isArray(Int whichField) const;
+  // Returns true if whichField is an array.
+  bool isArray(Int whichField) const;
 
-  // Returns True if whichField is a scalar.
-  Bool isScalar(Int whichField) const;
+  // Returns true if whichField is a scalar.
+  bool isScalar(Int whichField) const;
 
-  // Returns True if whichField is a sub-record.
-  Bool isSubRecord(Int whichField) const;
+  // Returns true if whichField is a sub-record.
+  bool isSubRecord(Int whichField) const;
 
-  // Returns True if whichField is a table.
-  Bool isTable(Int whichField) const;
+  // Returns true if whichField is a table.
+  bool isTable(Int whichField) const;
 
   // What is the shape of the given field. Returns [1] if the field is a
   // scalar, table or, sub-record, [-1] if it is a variable length array,
@@ -237,8 +237,8 @@ class RecordDesc {
   // The field names are not used.
   // <br>Use function isEqual if names are important, but order is not.
   // <group>
-  Bool operator==(const RecordDesc& other) const;
-  Bool operator!=(const RecordDesc& other) const;
+  bool operator==(const RecordDesc& other) const;
+  bool operator!=(const RecordDesc& other) const;
   // </group>
 
   // Test if this description conforms the other.
@@ -246,36 +246,36 @@ class RecordDesc {
   // sub-records are conforming.
   // <br>This is used by Record, to see if another record can be assigned
   // to this record.
-  Bool conform(const RecordDesc& other) const;
+  bool conform(const RecordDesc& other) const;
 
   // Test if this description equals another one.
   // It is equal if the number of fields is equal and all field names in
   // this description occur in the other too. The order of the fields
   // is not important.
-  // <br>The flag equalDataTypes is set to True if the data types
+  // <br>The flag equalDataTypes is set to true if the data types
   // of all fields match.
   // <br>Use function operator== if order and types are important,
   // but names are not.
-  Bool isEqual(const RecordDesc& other, Bool& equalDataTypes) const;
+  bool isEqual(const RecordDesc& other, bool& equalDataTypes) const;
 
   // Test if this description is a subset of another one.
   // It is similar to isEqual above.
-  Bool isSubset(const RecordDesc& other, Bool& equalDataTypes) const;
+  bool isSubset(const RecordDesc& other, bool& equalDataTypes) const;
 
   // Test if this description is a strict subset of another one, thus
   // if it is a subset and not equal.
-  Bool isStrictSubset(const RecordDesc& other, Bool& equalDataTypes) const;
+  bool isStrictSubset(const RecordDesc& other, bool& equalDataTypes) const;
 
   // Test if this description is a superset of another one.
-  Bool isSuperset(const RecordDesc& other, Bool& equalDataTypes) const;
+  bool isSuperset(const RecordDesc& other, bool& equalDataTypes) const;
 
   // Test if this description is a strict superset of another one, thus
   // if it is a superset and not equal.
-  Bool isStrictSuperset(const RecordDesc& other, Bool& equalDataTypes) const;
+  bool isStrictSuperset(const RecordDesc& other, bool& equalDataTypes) const;
 
   // Test if the set of field names in this and other record description
   // is disjoint (i.e. if they do not share names).
-  Bool isDisjoint(const RecordDesc& other) const;
+  bool isDisjoint(const RecordDesc& other) const;
 
  private:
   // Writes/reads the RecordDesc to/from an output stream.
@@ -369,15 +369,15 @@ inline const String& RecordDesc::name(Int whichField) const {
   return desc_p.ref().name(whichField);
 }
 
-inline Bool RecordDesc::isArray(Int whichField) const { return desc_p.ref().isArray(whichField); }
+inline bool RecordDesc::isArray(Int whichField) const { return desc_p.ref().isArray(whichField); }
 
-inline Bool RecordDesc::isScalar(Int whichField) const { return desc_p.ref().isScalar(whichField); }
+inline bool RecordDesc::isScalar(Int whichField) const { return desc_p.ref().isScalar(whichField); }
 
-inline Bool RecordDesc::isSubRecord(Int whichField) const {
+inline bool RecordDesc::isSubRecord(Int whichField) const {
   return desc_p.ref().isSubRecord(whichField);
 }
 
-inline Bool RecordDesc::isTable(Int whichField) const { return desc_p.ref().isTable(whichField); }
+inline bool RecordDesc::isTable(Int whichField) const { return desc_p.ref().isTable(whichField); }
 
 inline const IPosition& RecordDesc::shape(Int whichField) const {
   return desc_p.ref().shape(whichField);
@@ -395,33 +395,33 @@ inline RecordDesc& RecordDesc::rwSubRecord(Int whichField) {
   return desc_p.rwRef().subRecord(whichField);
 }
 
-inline Bool RecordDesc::operator==(const RecordDesc& other) const {
+inline bool RecordDesc::operator==(const RecordDesc& other) const {
   return desc_p.ref() == other.desc_p.ref();
 }
 
-inline Bool RecordDesc::operator!=(const RecordDesc& other) const {
+inline bool RecordDesc::operator!=(const RecordDesc& other) const {
   return desc_p.ref() != other.desc_p.ref();
 }
-inline Bool RecordDesc::conform(const RecordDesc& other) const {
+inline bool RecordDesc::conform(const RecordDesc& other) const {
   return desc_p.ref().conform(other.desc_p.ref());
 }
 
-inline Bool RecordDesc::isEqual(const RecordDesc& other, Bool& equalDataTypes) const {
+inline bool RecordDesc::isEqual(const RecordDesc& other, bool& equalDataTypes) const {
   return desc_p.ref().isEqual(other.desc_p.ref(), equalDataTypes);
 }
-inline Bool RecordDesc::isSubset(const RecordDesc& other, Bool& equalDataTypes) const {
+inline bool RecordDesc::isSubset(const RecordDesc& other, bool& equalDataTypes) const {
   return desc_p.ref().isSubset(other.desc_p.ref(), equalDataTypes);
 }
-inline Bool RecordDesc::isStrictSubset(const RecordDesc& other, Bool& equalDataTypes) const {
+inline bool RecordDesc::isStrictSubset(const RecordDesc& other, bool& equalDataTypes) const {
   return desc_p.ref().isStrictSubset(other.desc_p.ref(), equalDataTypes);
 }
-inline Bool RecordDesc::isSuperset(const RecordDesc& other, Bool& equalDataTypes) const {
+inline bool RecordDesc::isSuperset(const RecordDesc& other, bool& equalDataTypes) const {
   return other.desc_p.ref().isSubset(desc_p.ref(), equalDataTypes);
 }
-inline Bool RecordDesc::isStrictSuperset(const RecordDesc& other, Bool& equalDataTypes) const {
+inline bool RecordDesc::isStrictSuperset(const RecordDesc& other, bool& equalDataTypes) const {
   return other.desc_p.ref().isStrictSubset(desc_p.ref(), equalDataTypes);
 }
-inline Bool RecordDesc::isDisjoint(const RecordDesc& other) const {
+inline bool RecordDesc::isDisjoint(const RecordDesc& other) const {
   return desc_p.ref().isDisjoint(other.desc_p.ref());
 }
 

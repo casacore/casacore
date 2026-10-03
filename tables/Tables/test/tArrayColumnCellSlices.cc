@@ -45,7 +45,7 @@ uInt nCorrelations = 3;
 Array<Int> referenceArray(IPosition(3, nCorrelations, nChannels, nRows));
 
 // Create the table.
-void createTable(DataManager &dataMan, const Array<Int> array, Bool useDirect) {
+void createTable(DataManager &dataMan, const Array<Int> array, bool useDirect) {
   IPosition shape = array.shape();
   int nCorrelations = shape(0);
   int nChannels = shape(1);
@@ -61,7 +61,7 @@ void createTable(DataManager &dataMan, const Array<Int> array, Bool useDirect) {
 
   SetupNewTable newtab("tArrayColumnCellSlices_tmp.data", td, Table::New);
   newtab.bindAll(dataMan);
-  Table tab(newtab, nRows, False, Table::LocalEndian);
+  Table tab(newtab, nRows, false, Table::LocalEndian);
   ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
 
   // indgen (arrf);
@@ -125,7 +125,7 @@ void readCellSlices() {
 
     try {
       ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
-      AlwaysAssertExit(False);  // shouldn't get here
+      AlwaysAssertExit(false);  // shouldn't get here
     } catch (std::exception &e) {
     }
   }
@@ -141,7 +141,7 @@ void readCellSlices() {
 
     try {
       ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
-      AlwaysAssertExit(False);  // shouldn't get here
+      AlwaysAssertExit(false);  // shouldn't get here
     } catch (std::exception &e) {
     }
   }
@@ -160,7 +160,7 @@ void readCellSlices() {
 
     try {
       ColumnSlicer columnSlicer(shape, dataSlicer, destinationSlicer);
-      AlwaysAssertExit(False);  // shouldn't get here
+      AlwaysAssertExit(false);  // shouldn't get here
     } catch (std::exception &e) {
     }
   }
@@ -472,25 +472,25 @@ int main() {
     createReferenceArray(nCorrelations, nChannels, nRows);
     {
       StandardStMan dataMan;
-      createTable(dataMan, referenceArray, True);
+      createTable(dataMan, referenceArray, true);
       readCellSlices();
       writeCellSlices();
     }
     {
       StandardStMan dataMan;
-      createTable(dataMan, referenceArray, False);
+      createTable(dataMan, referenceArray, false);
       readCellSlices();
       writeCellSlices();
     }
     {
       IncrementalStMan dataMan;
-      createTable(dataMan, referenceArray, True);
+      createTable(dataMan, referenceArray, true);
       readCellSlices();
       writeCellSlices();
     }
     {
       IncrementalStMan dataMan;
-      createTable(dataMan, referenceArray, False);
+      createTable(dataMan, referenceArray, false);
       readCellSlices();
       writeCellSlices();
     }

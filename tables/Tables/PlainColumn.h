@@ -85,10 +85,10 @@ class PlainColumn : public BaseColumn {
   // Test if the column is in principle writable.
   // This does not test if the table itself is writable.
   // That has to be done by the caller.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Test if the column is stored (otherwise it is virtual).
-  virtual Bool isStored() const;
+  virtual bool isStored() const;
 
   // Get access to the column keyword set.
   // <group>
@@ -104,7 +104,7 @@ class PlainColumn : public BaseColumn {
 
   // Test if the column is bound to a storage manager or
   // virtual column engine.
-  virtual Bool isBound() const;
+  virtual bool isBound() const;
 
   // Bind the column to a data manager.
   virtual void bind(DataManager*);
@@ -135,8 +135,8 @@ class PlainColumn : public BaseColumn {
   DataManagerColumn* dataColPtr_p;  // # Pointer to column in data manager.
   ColumnSet* colSetPtr_p;
   String originalName_p;  // # Column name before any rename
-  Bool rtraceColumn_p;    // # trace reads of the column?
-  Bool wtraceColumn_p;    // # trace writes of the column?
+  bool rtraceColumn_p;    // # trace reads of the column?
+  bool wtraceColumn_p;    // # trace writes of the column?
 
   // Get the trace-id of the table.
   int traceId() const { return colSetPtr_p->traceId(); }
@@ -164,8 +164,8 @@ class PlainColumn : public BaseColumn {
   // If manual or permanent locking is in effect, it checks if
   // the table is locked.
   // <group>
-  void checkReadLock(Bool wait) const;
-  void checkWriteLock(Bool wait) const;
+  void checkReadLock(bool wait) const;
+  void checkWriteLock(bool wait) const;
   // </group>
 
   // Inspect the auto lock when the inspection interval has expired and
@@ -178,8 +178,8 @@ inline DataManagerColumn*& PlainColumn::dataManagerColumn() { return dataColPtr_
 
 inline void PlainColumn::checkValueLength(const void*) const {}
 
-inline void PlainColumn::checkReadLock(Bool wait) const { colSetPtr_p->checkReadLock(wait); }
-inline void PlainColumn::checkWriteLock(Bool wait) const { colSetPtr_p->checkWriteLock(wait); }
+inline void PlainColumn::checkReadLock(bool wait) const { colSetPtr_p->checkReadLock(wait); }
+inline void PlainColumn::checkWriteLock(bool wait) const { colSetPtr_p->checkWriteLock(wait); }
 inline void PlainColumn::autoReleaseLock() const { colSetPtr_p->autoReleaseLock(); }
 
 }  // namespace casacore

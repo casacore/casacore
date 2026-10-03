@@ -65,7 +65,7 @@ class TableParseUpdate {
   // Construct from a column name and expression.
   // By default it checks if no aggregate functions are used.
   TableParseUpdate(const String& columnName, const String& columnNameMask, const TableExprNode&,
-                   Bool checkAggr = True);
+                   bool checkAggr = true);
 
   // Construct from a column name, subscripts or mask, and expression.
   // It checks if no aggregate functions are used.
@@ -110,7 +110,7 @@ class TableParseUpdate {
   // The column can contain scalars of arrays. Possible only array slices
   // are updated.
   // The mask column values are also updated if a mask is used.
-  void updateColumn(TableColumn& col, ArrayColumn<Bool>& maskCol, rownr_t row,
+  void updateColumn(TableColumn& col, ArrayColumn<bool>& maskCol, rownr_t row,
                     const TableExprId& rowid);
 
  private:
@@ -118,9 +118,9 @@ class TableParseUpdate {
   // It converts the data type of the expression to that opf the column.
   // <group>
   template <typename TCOL, typename TNODE>
-  void updateValue(rownr_t row, const TableExprId& rowid, Bool isScalarCol,
-                   const TableExprNode& node, const Array<Bool>& mask, TableColumn& col,
-                   const Slicer* slicerPtr, ArrayColumn<Bool>& maskCol);
+  void updateValue(rownr_t row, const TableExprId& rowid, bool isScalarCol,
+                   const TableExprNode& node, const Array<bool>& mask, TableColumn& col,
+                   const Slicer* slicerPtr, ArrayColumn<bool>& maskCol);
   template <typename TCOL, typename TNODE>
   void updateScalar(rownr_t row, const TableExprId& rowid, const TableExprNode& node,
                     TableColumn& col);
@@ -132,16 +132,16 @@ class TableParseUpdate {
                    const Array<TNODE>& res, const Slicer& slice, ArrayColumn<TCOL>& col);
   template <typename TCOL, typename TNODE>
   void copyMaskedValue(rownr_t row, ArrayColumn<TCOL>& acol, const Slicer* slicerPtr,
-                       const TNODE* val, size_t incr, const Array<Bool>& mask);
-  Array<Bool> makeMaskSlice(const Array<Bool>& mask, const IPosition& shapeCol,
+                       const TNODE* val, size_t incr, const Array<bool>& mask);
+  Array<bool> makeMaskSlice(const Array<bool>& mask, const IPosition& shapeCol,
                             const Slicer* slicerPtr);
-  void checkMaskColumn(Bool hasMask, const ArrayColumn<Bool>& maskCol, const TableColumn& col);
+  void checkMaskColumn(bool hasMask, const ArrayColumn<bool>& maskCol, const TableColumn& col);
   // </group>
 
   // # Data members
   String columnName_p;
   String columnNameMask_p;
-  Bool maskFirst_p;                // # True = mask is given before slice
+  bool maskFirst_p;                // # true = mask is given before slice
   TableExprNodeIndex* indexPtr_p;  // # copy of pointer in indexNode_p; no need to delete
   TableExprNode indexNode_p;
   TableExprNode mask_p;

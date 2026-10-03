@@ -332,7 +332,7 @@ class AutoDiff {
   uInt nDerivatives() const { return nd_p; }
 
   // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const { return nd_p == 0; }
+  bool isConstant() const { return nd_p == 0; }
 
  private:
   // # Data

@@ -35,12 +35,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 LCStretch::LCStretch() {}
 
 LCStretch::LCStretch(const LCRegion& region, const IPosition& stretchAxes, const LCBox& stretchBox)
-    : LCRegionMulti(True, region.cloneRegion()) {
+    : LCRegionMulti(true, region.cloneRegion()) {
   // Fill the other members variables and determine the bounding box.
   fill(stretchAxes, stretchBox);
 }
 
-LCStretch::LCStretch(Bool takeOver, const LCRegion* region, const IPosition& stretchAxes,
+LCStretch::LCStretch(bool takeOver, const LCRegion* region, const IPosition& stretchAxes,
                      const LCBox& stretchBox)
     : LCRegionMulti(takeOver, region) {
   // Fill the other members variables and determine the bounding box.
@@ -64,18 +64,18 @@ LCStretch& LCStretch::operator=(const LCStretch& other) {
   return *this;
 }
 
-Bool LCStretch::equals(const LCRegion& other) const {
+bool LCStretch::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionMulti::equals(other)) {
-    return False;
+    return false;
   }
   const LCStretch& that = (const LCStretch&)other;
   // Check the private data
   if (!itsStretchAxes.isEqual(that.itsStretchAxes) || !(itsStretchBox == that.itsStretchBox)) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 LCRegion* LCStretch::cloneRegion() const { return new LCStretch(*this); }
@@ -122,7 +122,7 @@ LCStretch* LCStretch::fromRecord(const TableRecord& rec, const String& tableName
   regPtr = LCRegion::fromRecord(rec.asRecord("region"), tableName);
   LCBox* boxPtr = 0;
   boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
-  LCStretch* extPtr = new LCStretch(True, regPtr, Vector<Int>(rec.toArrayInt("axes")), *boxPtr);
+  LCStretch* extPtr = new LCStretch(true, regPtr, Vector<Int>(rec.toArrayInt("axes")), *boxPtr);
   delete boxPtr;
   return extPtr;
 }
@@ -190,7 +190,7 @@ void LCStretch::fill(const IPosition& stretchAxes, const LCBox& stretchBox) {
   fillHasMask();
 }
 
-void LCStretch::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
+void LCStretch::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
   // Read the required region section.
   // This means we have to create a Slicer with length 1 for stretched axes.
@@ -204,7 +204,7 @@ void LCStretch::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
     len(axis) = 1;
     inc(axis) = 1;
   }
-  Array<Bool> tmpbuf(len);
+  Array<bool> tmpbuf(len);
   LCRegion* reg = (LCRegion*)(regions()[0]);
   reg->doGetSlice(tmpbuf, Slicer(blc, len, inc));
   // Now we have to stretch tmpbuf along all stretch axes.
@@ -235,7 +235,7 @@ void LCStretch::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
 }
 
 IPosition LCStretch::doNiceCursorShape(uInt maxPixels) const {
-  return Lattice<Bool>::doNiceCursorShape(maxPixels);
+  return Lattice<bool>::doNiceCursorShape(maxPixels);
 }
 
 }  // namespace casacore

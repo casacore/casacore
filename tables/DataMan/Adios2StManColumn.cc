@@ -62,7 +62,7 @@ IPosition Adios2StManColumn::shape(rownr_t aRowNr) {
   }
 }
 
-Bool Adios2StManColumn::canChangeShape() const { return !isShapeFixed; }
+bool Adios2StManColumn::canChangeShape() const { return !isShapeFixed; }
 
 void Adios2StManColumn::setShape(rownr_t aRowNr, const IPosition &aShape) {
   itsCasaShapes[aRowNr] = aShape;
@@ -231,7 +231,7 @@ std::size_t Adios2StManColumn::ArrayColumnCellsVIter::next_offset() {
 }
 
 void Adios2StManColumn::putArrayColumnCellsV(const RefRows &rownrs, const ArrayBase &data) {
-  Bool deleteIt;
+  bool deleteIt;
   const void *dataPtr = data.getVStorage(deleteIt);
   ArrayColumnCellsVIter iter(*this, rownrs);
   while (!iter.finished()) {
@@ -241,7 +241,7 @@ void Adios2StManColumn::putArrayColumnCellsV(const RefRows &rownrs, const ArrayB
 }
 
 void Adios2StManColumn::getArrayColumnCellsV(const RefRows &rownrs, ArrayBase &data) {
-  Bool deleteIt;
+  bool deleteIt;
   void *dataPtr = data.getVStorage(deleteIt);
   ArrayColumnCellsVIter iter(*this, rownrs);
   while (!iter.finished()) {
@@ -297,7 +297,7 @@ void Adios2StManColumn::putColumnSliceCellsV(const RefRows &rownrs, const Slicer
                                                                                                  \
   void Adios2StManColumn::get##T(rownr_t rownr, T *dataPtr) { getScalar(rownr, dataPtr); }
 
-DEFINE_GETPUT(Bool)
+DEFINE_GETPUT(bool)
 DEFINE_GETPUT(uChar)
 DEFINE_GETPUT(Short)
 DEFINE_GETPUT(uShort)
@@ -337,7 +337,7 @@ void Adios2StManColumn::getString(rownr_t rownr, String *dataPtr) {
 
 void Adios2StManColumnString::putArrayV(rownr_t rownr, const ArrayBase &data) {
   String combined;
-  Bool deleteIt;
+  bool deleteIt;
   auto *arrayPtr = reinterpret_cast<const Array<String> *>(&data);
   const String *dataPtr = arrayPtr->getStorage(deleteIt);
   for (auto &i : *arrayPtr) {
@@ -350,7 +350,7 @@ void Adios2StManColumnString::putArrayV(rownr_t rownr, const ArrayBase &data) {
 void Adios2StManColumnString::getArrayV(rownr_t rownr, ArrayBase &data) {
   String combined;
   getString(rownr, &combined);
-  Bool deleteIt;
+  bool deleteIt;
   auto *arrayPtr = reinterpret_cast<Array<String> *>(&data);
   String *dataPtr = arrayPtr->getStorage(deleteIt);
   size_t pos = 0;

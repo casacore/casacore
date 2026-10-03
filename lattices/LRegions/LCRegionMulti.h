@@ -78,16 +78,16 @@ class LCRegionMulti : public LCRegion {
   LCRegionMulti(const LCRegion& region1, const LCRegion& region2);
 
   // Construct from multiple regions.
-  LCRegionMulti(Bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
+  LCRegionMulti(bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
                 const LCRegion* region3 = 0, const LCRegion* region4 = 0,
                 const LCRegion* region5 = 0, const LCRegion* region6 = 0,
                 const LCRegion* region7 = 0, const LCRegion* region8 = 0,
                 const LCRegion* region9 = 0, const LCRegion* region10 = 0);
 
   // Construct from multiple regions given as a Block.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
-  LCRegionMulti(Bool takeOver, const Block<const LCRegion*>& regions);
+  LCRegionMulti(bool takeOver, const Block<const LCRegion*>& regions);
 
   // Copy constructor (copy semantics).
   LCRegionMulti(const LCRegionMulti& other);
@@ -98,11 +98,11 @@ class LCRegionMulti : public LCRegion {
   LCRegionMulti& operator=(const LCRegionMulti& other);
 
   // Does the region have a mask?
-  Bool hasMask() const override;
+  bool hasMask() const override;
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Store the contributing regions in a record.
   TableRecord makeRecord(const String& tableName) const;
@@ -118,8 +118,8 @@ class LCRegionMulti : public LCRegion {
   void fillHasMask();
 
   // Find which area of the section and region are needed.
-  // False is returned if no part of the region is included in the section.
-  Bool findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart, IPosition& regEnd,
+  // false is returned if no part of the region is included in the section.
+  bool findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart, IPosition& regEnd,
                  const Slicer& section, uInt regNr) const;
 
   // Get the contributing regions.
@@ -132,12 +132,12 @@ class LCRegionMulti : public LCRegion {
   LCRegionMulti(const LCRegion* region, const IPosition& latticeShape);
 
   // Do the actual getting of an array of values.
-  Bool doGetSlice(Array<Bool>& buffer, const Slicer& section) override;
+  bool doGetSlice(Array<bool>& buffer, const Slicer& section) override;
 
   // Get the values from the class derived from Multi.
   // It is called when there is a mask. Note that it is not sure
   // whether the buffer has the correct size.
-  virtual void multiGetSlice(Array<Bool>& buffer, const Slicer& section) = 0;
+  virtual void multiGetSlice(Array<bool>& buffer, const Slicer& section) = 0;
 
   // Get the best cursor shape.
   IPosition doNiceCursorShape(uInt maxPixels) const override;
@@ -145,7 +145,7 @@ class LCRegionMulti : public LCRegion {
  private:
   // Check if the regions are correct.
   // If needed, make a copy of the region objects.
-  void init(Bool takeOver);
+  void init(bool takeOver);
 
   // # >=0 means this region has a mask.
   // # Its value gives the region with the biggest mask.

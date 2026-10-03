@@ -45,7 +45,7 @@
 // When an argument is given, no exceptions will be thrown.
 // This can be used to check if no memory leaks occur in normal operation.
 
-void doIt(Bool doExcp) {
+void doIt(bool doExcp) {
   // Create some File objects to test later.
   File isFile("tRegularFile_tmp/isFile");    // regular file
   File isLink("tRegularFile_tmp/isLink");    // symlink to isFile
@@ -84,7 +84,7 @@ void doIt(Bool doExcp) {
   // Do an erroneous create.
   if (doExcp) {
     try {
-      risFile.create(False);  // already exists
+      risFile.create(false);  // already exists
     } catch (std::exception& x) {
       cout << x.what() << endl;
     }
@@ -115,7 +115,7 @@ void doIt(Bool doExcp) {
       cout << x.what() << endl;  // non-writable directory
     }
     try {
-      risFile1.copy(Path("tRegularFile_tmp/isFile"), False);
+      risFile1.copy(Path("tRegularFile_tmp/isFile"), false);
     } catch (std::exception& x) {
       cout << x.what() << endl;  // already exists
     }
@@ -141,7 +141,7 @@ void doIt(Bool doExcp) {
   AlwaysAssertExit(file2.exists());
   if (doExcp) {
     try {
-      file2.move("tRegularFile_tmp/moveto/isFile1", False);
+      file2.move("tRegularFile_tmp/moveto/isFile1", false);
     } catch (std::exception& x) {
       cout << x.what() << endl;  // already exists
     }

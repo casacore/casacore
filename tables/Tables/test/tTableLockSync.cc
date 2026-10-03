@@ -88,7 +88,7 @@ void a() {
   Table tab(newtab, 1);
 }
 
-void b(Bool noReadLocking, Bool permLocking) {
+void b(bool noReadLocking, bool permLocking) {
   // Open the table for update with UserLocking.
   TableLock lt(TableLock::UserLocking);
   if (permLocking) {
@@ -116,7 +116,7 @@ void b(Bool noReadLocking, Bool permLocking) {
   Matrix<float> dataValues(IPosition(2, 16, 25));
   Matrix<float> data2Values(IPosition(2, 16, 25));
   Int opt, rownr, val;
-  while (True) {
+  while (true) {
     cout << "0=quit, 1=quit/delete, 2=rdlock, 3=rdlockw, 4=wrlock, 5=wrlockw, 6=unlock" << endl;
     cout << "7=status, 8=get, 9=put, 10=rdkey, 11=wrkey, 12=flush, 13=resync" << endl;
     cout << "14=hasChanged: ";
@@ -124,19 +124,19 @@ void b(Bool noReadLocking, Bool permLocking) {
     if (opt <= 1) {
       break;
     } else if (opt == 2) {
-      if (!tab.lock(False, 1)) {
+      if (!tab.lock(false, 1)) {
         cout << "Could not acquire a read lock" << endl;
       }
     } else if (opt == 3) {
-      if (!tab.lock(False, 0)) {
+      if (!tab.lock(false, 0)) {
         cout << "Could not acquire a read lock" << endl;
       }
     } else if (opt == 4) {
-      if (!tab.lock(True, 1)) {
+      if (!tab.lock(true, 1)) {
         cout << "Could not acquire a write lock" << endl;
       }
     } else if (opt == 5) {
-      if (!tab.lock(True, 0)) {
+      if (!tab.lock(true, 0)) {
         cout << "Could not acquire a write lock" << endl;
       }
     } else if (opt == 6) {
@@ -155,7 +155,7 @@ void b(Bool noReadLocking, Bool permLocking) {
     } else {
       if (opt == 8 || opt == 9) {
         // First test if get or put is possible (using row 0).
-        Bool err = False;
+        bool err = false;
         try {
           col1.get(0, val);
           if (opt == 9) {
@@ -163,7 +163,7 @@ void b(Bool noReadLocking, Bool permLocking) {
           }
         } catch (std::exception& x) {
           cout << x.what() << endl;
-          err = True;
+          err = true;
         }
         if (!err) {
           cout << "rownr: ";
@@ -205,7 +205,7 @@ void b(Bool noReadLocking, Bool permLocking) {
         }
       } else {
         // First test if get or put is possible (using key k0).
-        Bool err = False;
+        bool err = false;
         try {
           val = tab.keywordSet().asInt("k0");
           if (opt == 11) {
@@ -213,7 +213,7 @@ void b(Bool noReadLocking, Bool permLocking) {
           }
         } catch (std::exception& x) {
           cout << x.what() << endl;
-          err = True;
+          err = true;
         }
         if (!err) {
           cout << "keyword name: ";
@@ -246,13 +246,13 @@ int main(int argc, const char* argv[]) {
     cout << "where x=1 means NoReadLocking and x=2 means PermanentLocking" << endl;
   } else {
     try {
-      Bool noReadLocking = False;
-      Bool permLocking = False;
+      bool noReadLocking = false;
+      bool permLocking = false;
       if (argc >= 3) {
         if (*(argv[2]) == '1') {
-          noReadLocking = True;
+          noReadLocking = true;
         } else if (*(argv[2]) == '2') {
-          permLocking = True;
+          permLocking = true;
         }
       }
       if (*(argv[1]) == '1') {

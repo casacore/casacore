@@ -213,9 +213,9 @@ int main() {
     MDirection indir((MVDirection(Quantity(26, "deg"), Quantity(34, "deg"))),
                      MDirection::Ref(MDirection::J2000));
     // A UVW machine without projection
-    UVWMachine um(odir, indir, False, False);
+    UVWMachine um(odir, indir, false, false);
     // A UVW machine with projection
-    UVWMachine ump(odir, indir, False, True);
+    UVWMachine ump(odir, indir, false, true);
     cout << "Input coordinates:    " << indir << endl;
     cout << "                 :    " << indir.getAngle("deg") << endl;
     cout << "Output coordinates:   " << odir << endl;

@@ -37,16 +37,16 @@ using namespace boost::python;
 namespace casacore {
 namespace python {
 
-Bool PycArrayCheck(PyObject* obj_ptr) { return numpy::PycArrayCheck(obj_ptr); }
+bool PycArrayCheck(PyObject* obj_ptr) { return numpy::PycArrayCheck(obj_ptr); }
 
-Bool PycArrayScalarCheck(PyObject* obj_ptr) {
+bool PycArrayScalarCheck(PyObject* obj_ptr) {
   int type;
   return numpy::PycArrayScalarCheck(obj_ptr, type);
 }
 
 DataType PycArrayScalarType(PyObject* obj_ptr) { return numpy::PycArrayScalarType(obj_ptr); }
 
-ValueHolder casa_array_from_python::makeArray(PyObject* obj_ptr, Bool copyData) {
+ValueHolder casa_array_from_python::makeArray(PyObject* obj_ptr, bool copyData) {
   if (!numpy::PycArrayCheck(obj_ptr)) {
     throw AipsError("PycArray: python object is not a numpy array");
   }
@@ -87,7 +87,7 @@ object makePyArrayObject(casacore::Array<String> const& arr) {
 }
 
 // Instantiate the templates.
-template boost::python::object makePyArrayObject(casacore::Array<Bool> const& arr);
+template boost::python::object makePyArrayObject(casacore::Array<bool> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<uChar> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<Short> const& arr);
 template boost::python::object makePyArrayObject(casacore::Array<uShort> const& arr);

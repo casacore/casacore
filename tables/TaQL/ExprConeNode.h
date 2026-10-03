@@ -72,7 +72,7 @@ class TableExprConeNode : public TableExprFuncNode {
 
   // 'get' Functions to get the desired result of a function.
   // <group>
-  Bool getBool(const TableExprId& id);
+  bool getBool(const TableExprId& id);
   Int64 getInt(const TableExprId& id);
   // </group>
 
@@ -103,7 +103,7 @@ class TableExprConeNodeArray : public TableExprFuncNodeArray {
 
   // 'get' Functions to get the desired result of a function.
   // <group>
-  MArray<Bool> getArrayBool(const TableExprId& id);
+  MArray<bool> getArrayBool(const TableExprId& id);
   MArray<Int64> getArrayInt(const TableExprId& id);
   // </group>
 

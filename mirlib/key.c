@@ -56,8 +56,8 @@ typedef struct ckeys {
     char *key;   /* Pointer to a malloc'd string holding the key name. */
     char *Pvalue;   /* Pointer to a malloc'd string holding the value. */
     char *value;                 /* Pointer to current spot in Pvalue. */
-    int isexpanded;      /* False if not yet expanded; true otherwise. */
-    int islocal;        /* True if defined locally; false if globally. */
+    int isexpanded;      /* false if not yet expanded; true otherwise. */
+    int islocal;        /* true if defined locally; false if globally. */
     struct ckeys *fwd;              /* Pointer to next ckey structure. */
 } KEYS;
 
@@ -242,7 +242,7 @@ static char *getKeyValue(Const char *key, int doexpand)
 void keyinit_c(Const char *task)
 {
     buglabel_c(task);      /* Let the bug routines know the task name. */
-    iniCalled = KEYTRUE;  /* Is True only when keyini[_c]() is called. */
+    iniCalled = KEYTRUE;  /* Is true only when keyini[_c]() is called. */
 }
 
 /* hack to be able to use the ATNF fortran subroutine keyputc */

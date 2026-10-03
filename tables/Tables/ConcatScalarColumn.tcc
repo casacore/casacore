@@ -141,7 +141,7 @@ void ConcatScalarColumn<T>::fillSortKey(const Vector<T>* vecPtr, Sort& sortobj,
   // # Use the compare object if given, otherwise pass data type.
   // # Throw an exception if no compare function is given for
   // # an unknown data type.
-  Bool deleteIt;
+  bool deleteIt;
   const T* datap = vecPtr->getStorage(deleteIt);
   if (!cmpObj) {
     cmpObj = std::make_shared<ObjCompare<T>>();

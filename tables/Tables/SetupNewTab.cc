@@ -61,7 +61,7 @@ SetupNewTableRep::SetupNewTableRep(const String& tableName, const String& tableD
     : tabName_p(tableName),
       option_p(opt),
       storageOpt_p(storageOpt),
-      delete_p(False),
+      delete_p(false),
       tdescPtr_p(0),
       colSetPtr_p(0) {
   // # Copy the table description.
@@ -75,7 +75,7 @@ SetupNewTableRep::SetupNewTableRep(const String& tableName, const TableDesc& tab
     : tabName_p(tableName),
       option_p(opt),
       storageOpt_p(storageOpt),
-      delete_p(False),
+      delete_p(false),
       tdescPtr_p(0),
       colSetPtr_p(0) {
   // # Read the table description.
@@ -94,7 +94,7 @@ void SetupNewTableRep::setup() {
   // # A scratch table is new, but marked for delete.
   if (option_p == Table::Scratch) {
     option_p = Table::New;
-    delete_p = True;
+    delete_p = true;
   }
   // # Check the table option.
   // # Check if the table exists and can be overwritten if new.
@@ -164,7 +164,7 @@ void SetupNewTableRep::bindCreate(const Record& spec) {
   }
 }
 
-void SetupNewTableRep::bindAll(const DataManager& dataMan, Bool rebind) {
+void SetupNewTableRep::bindAll(const DataManager& dataMan, bool rebind) {
   // # Test if object is already in use for a table.
   if (isUsed()) {
     throw(TableInvOper("SetupNewTable::bindAll, object already used by Table"));
@@ -181,7 +181,7 @@ void SetupNewTableRep::bindAll(const DataManager& dataMan, Bool rebind) {
   }
 }
 
-void SetupNewTableRep::bindGroup(const String& groupName, const DataManager& dataMan, Bool rebind) {
+void SetupNewTableRep::bindGroup(const String& groupName, const DataManager& dataMan, bool rebind) {
   // # Test if object is already in use for a table.
   if (isUsed()) {
     throw(TableInvOper("SetupNewTable::bindGroup, object already used by Table"));

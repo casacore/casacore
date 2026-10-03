@@ -82,7 +82,7 @@ void CoordinateUtil::addDirAxes(CoordinateSystem& coords) {
   inc(0) = -1.0;
   inc(1) = 1.0;
   dirAxes.setWorldAxisUnits(units);
-  AlwaysAssert(dirAxes.setIncrement(inc) == True, AipsError);
+  AlwaysAssert(dirAxes.setIncrement(inc) == true, AipsError);
   // Add the direction coordinates to the system.
   coords.addCoordinate(dirAxes);
 }
@@ -104,8 +104,8 @@ void CoordinateUtil::addIAxis(CoordinateSystem& coords) {
   coords.addCoordinate(polAxis);
 }
 
-Bool CoordinateUtil::addStokesAxis(CoordinateSystem& coords, uInt shape) {
-  if (shape < 1 || shape > 4) return False;
+bool CoordinateUtil::addStokesAxis(CoordinateSystem& coords, uInt shape) {
+  if (shape < 1 || shape > 4) return false;
   //
   Vector<Int> which;
   if (shape == 1) {
@@ -129,7 +129,7 @@ Bool CoordinateUtil::addStokesAxis(CoordinateSystem& coords, uInt shape) {
   }
   StokesCoordinate sc(which);
   coords.addCoordinate(sc);
-  return True;
+  return true;
 }
 
 void CoordinateUtil::addFreqAxis(CoordinateSystem& coords) {
@@ -206,8 +206,8 @@ CoordinateSystem CoordinateUtil::defaultCoords(uInt dims) {
   }
 }
 
-uInt CoordinateUtil::addAxes(CoordinateSystem& csys, Bool direction, Bool spectral,
-                             const String& stokes, Bool linear, Bool tabular, Bool silent) {
+uInt CoordinateUtil::addAxes(CoordinateSystem& csys, bool direction, bool spectral,
+                             const String& stokes, bool linear, bool tabular, bool silent) {
   uInt nExtra = 0;
   if (direction) {
     if (!csys.hasDirectionCoordinate()) {
@@ -373,8 +373,8 @@ void CoordinateUtil::findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordin
   return;
 }
 
-Bool CoordinateUtil::removeAxes(CoordinateSystem& csys, Vector<Double>& worldReplacement,
-                                const Vector<Int>& worldAxes, const Bool removeThem)
+bool CoordinateUtil::removeAxes(CoordinateSystem& csys, Vector<Double>& worldReplacement,
+                                const Vector<Int>& worldAxes, const bool removeThem)
 //
 // Remove all the world axes and associated pixel axes
 // derived from the given list (a list to keep or remove)
@@ -388,13 +388,13 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& csys, Vector<Double>& worldRep
 {
   // Bug out if nothing to do
 
-  if (worldAxes.nelements() == 0) return True;
+  if (worldAxes.nelements() == 0) return true;
 
   // Make sure the world axes are valid
 
   uInt i, j;
   for (i = 0; i < worldAxes.nelements(); i++) {
-    if (worldAxes(i) >= Int(csys.nWorldAxes())) return False;
+    if (worldAxes(i) >= Int(csys.nWorldAxes())) return false;
   }
 
   // Make a list of the axes to remove in ascending order
@@ -409,10 +409,10 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& csys, Vector<Double>& worldRep
     for (i = 0, j = 0; i < csys.nWorldAxes(); i++) {
       if (!anyEQ(worldAxes, Int(i))) remove(j++) = i;
     }
-    remove.resize(j, True);
+    remove.resize(j, true);
   }
   const uInt nRemove = remove.nelements();
-  if (nRemove == 0) return True;
+  if (nRemove == 0) return true;
 
   // Set the replacement values for the removal world axes
   // if the user didn't give any or got it wrong
@@ -428,22 +428,22 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& csys, Vector<Double>& worldRep
   // pixel axis
 
   for (Int k = (nRemove - 1); k >= 0; k--) {
-    if (!csys.removeWorldAxis(remove(k), worldReplacement(k))) return False;
+    if (!csys.removeWorldAxis(remove(k), worldReplacement(k))) return false;
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::removePixelAxes(CoordinateSystem& csys, Vector<Double>& pixelReplacement,
-                                     const Vector<Int>& pixelAxes, const Bool removeThem) {
+bool CoordinateUtil::removePixelAxes(CoordinateSystem& csys, Vector<Double>& pixelReplacement,
+                                     const Vector<Int>& pixelAxes, const bool removeThem) {
   // Bug out if nothing to do
 
-  if (pixelAxes.nelements() == 0) return True;
+  if (pixelAxes.nelements() == 0) return true;
 
   // Make sure the pixel axes are valid
 
   uInt i, j;
   for (i = 0; i < pixelAxes.nelements(); i++) {
-    if (pixelAxes(i) >= Int(csys.nPixelAxes())) return False;
+    if (pixelAxes(i) >= Int(csys.nPixelAxes())) return false;
   }
 
   // Make a list of the axes to remove in ascending order
@@ -458,10 +458,10 @@ Bool CoordinateUtil::removePixelAxes(CoordinateSystem& csys, Vector<Double>& pix
     for (i = 0, j = 0; i < csys.nPixelAxes(); i++) {
       if (!anyEQ(pixelAxes, Int(i))) remove(j++) = i;
     }
-    remove.resize(j, True);
+    remove.resize(j, true);
   }
   const uInt nRemove = remove.nelements();
-  if (nRemove == 0) return True;
+  if (nRemove == 0) return true;
 
   // Set the replacement values for the removed pixel axes
   // if the user didn't give any or got it wrong
@@ -476,12 +476,12 @@ Bool CoordinateUtil::removePixelAxes(CoordinateSystem& csys, Vector<Double>& pix
   // Now for each pixel axis in the list, get rid of it
 
   for (Int k = (nRemove - 1); k >= 0; k--) {
-    if (!csys.removePixelAxis(remove(k), pixelReplacement(k))) return False;
+    if (!csys.removePixelAxis(remove(k), pixelReplacement(k))) return false;
   }
-  return True;
+  return true;
 }
 
-CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape, Bool doLinear) {
+CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape, bool doLinear) {
   const uInt n = shape.nelements();
   CoordinateSystem csys;
 
@@ -514,8 +514,8 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape, Bo
     return csys;
   }
   //
-  Bool doneStokes = False;
-  Bool doneFreq = False;
+  bool doneStokes = false;
+  bool doneFreq = false;
   //
   if (n == 1) {
     CoordinateUtil::addFreqAxis(csys);
@@ -528,10 +528,10 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape, Bo
   //
   if (n >= 3) {
     if (CoordinateUtil::addStokesAxis(csys, uInt(shape(2)))) {
-      doneStokes = True;
+      doneStokes = true;
     } else {
       CoordinateUtil::addFreqAxis(csys);
-      doneFreq = True;
+      doneFreq = true;
     }
   }
   //
@@ -540,14 +540,14 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape, Bo
     nDone = 4;
     if (doneStokes) {
       CoordinateUtil::addFreqAxis(csys);
-      doneFreq = True;
+      doneFreq = true;
     } else {
       if (CoordinateUtil::addStokesAxis(csys, uInt(shape(3)))) {
-        doneStokes = True;
+        doneStokes = true;
       } else {
         if (!doneFreq) {
           CoordinateUtil::addFreqAxis(csys);
-          doneFreq = True;
+          doneFreq = true;
         } else {
           nDone = 3;
         }
@@ -575,28 +575,28 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape, Bo
   return csys;
 }
 
-Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
+bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
                                           const DirectionCoordinate& dirCoordTo,
                                           const DirectionCoordinate& dirCoordFrom,
                                           const ObsInfo& obsTo, const ObsInfo& obsFrom) {
   const MDirection::Types& typeFrom = dirCoordFrom.directionType();
   const MDirection::Types& typeTo = dirCoordTo.directionType();
-  Bool typesEqual = (typeTo == typeFrom);
+  bool typesEqual = (typeTo == typeFrom);
   //
   MEpoch epochFrom = obsFrom.obsDate();
   MEpoch epochTo = obsTo.obsDate();
   Double t1 = epochFrom.getValue().get();
   Double t2 = epochTo.getValue().get();
-  Bool epochEqual = near(t1, t2);
+  bool epochEqual = near(t1, t2);
   //
   String telFrom = obsFrom.telescope();
   String telTo = obsTo.telescope();
-  Bool posEqual = (telFrom == telTo);
+  bool posEqual = (telFrom == telTo);
 
   // Everything is the same for input and output so we don't
   // need a machine to convert anything
 
-  if (typesEqual && epochEqual && posEqual) return False;
+  if (typesEqual && epochEqual && posEqual) return false;
 
   // Start with simplest machine, just MDirection::Types.  If it does
   // the conversion, that's all we need.  If not, we need more.
@@ -607,17 +607,17 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
   //
   MDirection fromMD;
   dirCoordFrom.toWorld(fromMD, dirCoordFrom.referencePixel());
-  Bool ok = True;
+  bool ok = true;
   try {
     MDirection toMD = machine(fromMD);
   } catch (std::exception& x) {
-    ok = False;
+    ok = false;
   }
   if (ok) {
     if (typeFrom == typeTo) {
-      return False;
+      return false;
     } else {
-      return True;
+      return true;
     }
   }
 
@@ -640,13 +640,13 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
     MDirection::Ref refTo(typeTo, frameTo);
     machine = MDirection::Convert(refFrom, refTo);
     //
-    ok = True;
+    ok = true;
     try {
       MDirection toMD = machine(fromMD);
     } catch (std::exception& x) {
-      ok = False;
+      ok = false;
     }
-    if (ok) return True;
+    if (ok) return true;
   }
 
   // Now add the position to the machine and see if that works
@@ -674,13 +674,13 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
     MDirection::Ref refTo(typeTo, frameTo);
     machine = MDirection::Convert(refFrom, refTo);
     //
-    ok = True;
+    ok = true;
     try {
       MDirection toMD = machine(fromMD);
     } catch (std::exception& x) {
-      ok = False;
+      ok = false;
     }
-    if (ok) return True;
+    if (ok) return true;
   }
 
   // Well looks like we need both
@@ -693,11 +693,11 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
     MDirection::Ref refTo(typeTo, frameTo);
     //
     machine = MDirection::Convert(refFrom, refTo);
-    ok = True;
+    ok = true;
     try {
       MDirection toMD = machine(fromMD);
     } catch (std::exception& x) {
-      ok = False;
+      ok = false;
     }
     if (!ok) {
       os << "Unable to convert between the inputand output  "
@@ -705,10 +705,10 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
     }
   }
   //
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, Int, Int,
+bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, Int, Int,
                                           const CoordinateSystem& coordsTo,
                                           const CoordinateSystem& coordsFrom, const Unit& unit) {
   MDirection dirTo, dirFrom;
@@ -777,7 +777,7 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 }
 
 void CoordinateUtil::findObservatoryOrRaiseException(LogIO& os, MPosition& pos, const String& tel) {
-  Bool found = MeasTable::Observatory(pos, tel);
+  bool found = MeasTable::Observatory(pos, tel);
 
   if (!found) {
     os << "Cannot find the observatory name " << tel << " in the CASA" << endl;
@@ -785,7 +785,7 @@ void CoordinateUtil::findObservatoryOrRaiseException(LogIO& os, MPosition& pos, 
   }
 }
 
-Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
                                           MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                           const MDirection& dirTo, const MDirection& dirFrom,
                                           const MEpoch& epochTo, const MEpoch& epochFrom,
@@ -824,14 +824,14 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 
   // Test a conversion
 
-  Bool ok = True;
+  bool ok = true;
   MFrequency freqTo;
   Quantum<Double> freq(1.0e9, Unit(String("Hz")));
   MFrequency freqFrom(freq, typeFrom);
   try {
     freqTo = machine(freqFrom);
   } catch (std::exception& x) {
-    ok = False;
+    ok = false;
   }
   if (!ok) {
     os << LogIO::WARN;
@@ -843,27 +843,27 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
   return ok;
 }
 
-Bool CoordinateUtil::holdsSky(Bool& holdsOneSkyAxis, const CoordinateSystem& csys,
+bool CoordinateUtil::holdsSky(bool& holdsOneSkyAxis, const CoordinateSystem& csys,
                               Vector<Int> pixelAxes) {
   AlwaysAssert(pixelAxes.nelements() == 2, AipsError);
   //
-  holdsOneSkyAxis = False;
+  holdsOneSkyAxis = false;
   Int dirCoordinate = csys.findCoordinate(Coordinate::DIRECTION);
   if (dirCoordinate != -1) {
     Vector<Int> dirPixelAxes = csys.pixelAxes(dirCoordinate);
     if ((dirPixelAxes(0) == pixelAxes(0) && dirPixelAxes(1) == pixelAxes(1)) ||
         (dirPixelAxes(0) == pixelAxes(1) && dirPixelAxes(1) == pixelAxes(0))) {
-      return True;
+      return true;
     }
     //
     if ((pixelAxes(0) == dirPixelAxes(0) && pixelAxes(1) != dirPixelAxes(1)) ||
         (pixelAxes(0) != dirPixelAxes(0) && pixelAxes(1) == dirPixelAxes(1)) ||
         (pixelAxes(0) == dirPixelAxes(1) && pixelAxes(1) != dirPixelAxes(0)) ||
         (pixelAxes(0) != dirPixelAxes(1) && pixelAxes(1) == dirPixelAxes(0))) {
-      holdsOneSkyAxis = True;
+      holdsOneSkyAxis = true;
     }
   }
-  return False;
+  return false;
 }
 
 void CoordinateUtil::setNiceAxisLabelUnits(CoordinateSystem& csys) {
@@ -882,7 +882,7 @@ void CoordinateUtil::setNiceAxisLabelUnits(CoordinateSystem& csys) {
   }
 }
 
-Bool CoordinateUtil::findSky(String& errorMessage, Int& dC, Vector<Int>& pixelAxes,
+bool CoordinateUtil::findSky(String& errorMessage, Int& dC, Vector<Int>& pixelAxes,
                              Vector<Int>& worldAxes, const CoordinateSystem& csys)
 //
 // Assumes only one DirectionCoordinate .   {pixel,world}Axes says where
@@ -892,17 +892,17 @@ Bool CoordinateUtil::findSky(String& errorMessage, Int& dC, Vector<Int>& pixelAx
   CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, dC, csys);
   if (dC < 0 || pixelAxes.nelements() != 2 || worldAxes.nelements() != 2) {
     errorMessage = "Image does not have 2 sky coordinate axes";
-    return False;
+    return false;
   }
   //
   for (uInt i = 0; i < 2; i++) {
     if (pixelAxes(i) == -1 || worldAxes(i) == -1) {
       errorMessage = "Image does not have 2 sky coordinate axes";
-      return False;
+      return false;
     }
   }
   //
-  return True;
+  return true;
 }
 
 Stokes::StokesTypes CoordinateUtil::findSingleStokes(LogIO& os, const CoordinateSystem& csys,
@@ -949,7 +949,7 @@ String CoordinateUtil::formatCoordinate(const Vector<Double>& pixel, const Coord
   String s2;
   for (uInt i = 0; i < world.nelements(); i++) {
     String u;
-    String tmp = csys.format(u, Coordinate::DEFAULT, world(i), i, True, True, precision);
+    String tmp = csys.format(u, Coordinate::DEFAULT, world(i), i, true, true, precision);
     String s = (u.empty()) ? tmp : tmp + u;
 
     s2 += (i == 0) ? s : ", " + s;
@@ -965,7 +965,7 @@ Int CoordinateUtil::compareCoordinates(const CoordinateSystem& thiscsys,
   // See how the coordinate systems compare.
   Vector<Int> thisWorldAxes;
   Vector<Int> thatWorldAxes;
-  Vector<Bool> refChange;
+  Vector<bool> refChange;
   if (!thiscsys.worldMap(thatWorldAxes, thisWorldAxes, refChange, thatcsys)) {
     return 9;
   }
@@ -986,8 +986,8 @@ Int CoordinateUtil::compareCoordinates(const CoordinateSystem& thiscsys,
     return 9;
   }
   // Only one of the coordinate systems can be a subset.
-  Bool thisIsSubSet = anyLT(thatPixelAxes, 0);
-  Bool thatIsSubSet = anyLT(thisPixelAxes, 0);
+  bool thisIsSubSet = anyLT(thatPixelAxes, 0);
+  bool thatIsSubSet = anyLT(thisPixelAxes, 0);
   if (thisIsSubSet) {
     if (thatIsSubSet) {
       return 9;
@@ -1015,30 +1015,30 @@ Vector<Int> CoordinateUtil::toPixelAxes(const CoordinateSystem& thiscsys,
   return pixelAxes;
 }
 
-Bool CoordinateUtil::checkOrder(const Vector<Int>& pixelAxes) {
+bool CoordinateUtil::checkOrder(const Vector<Int>& pixelAxes) {
   // Check if the mapped axes are in ascending order. I.e. we do not allow
   // that the order of axes in 2 images is different.
   Int last = -1;
   for (uInt i = 0; i < pixelAxes.nelements(); i++) {
     if (pixelAxes(i) >= 0) {
       if (pixelAxes(i) <= last) {
-        return False;
+        return false;
       }
       last = pixelAxes(i);
     }
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::findExtendAxes(IPosition& newAxes, IPosition& stretchAxes,
+bool CoordinateUtil::findExtendAxes(IPosition& newAxes, IPosition& stretchAxes,
                                     const IPosition& newShape, const IPosition& oldShape,
                                     const CoordinateSystem& newcsys,
                                     const CoordinateSystem& oldcsys) {
   Vector<Int> oldWorldAxes;
   Vector<Int> newWorldAxes;
-  Vector<Bool> refChange;
+  Vector<bool> refChange;
   if (!oldcsys.worldMap(newWorldAxes, oldWorldAxes, refChange, newcsys)) {
-    return False;
+    return false;
   }
   // Old must be a subset of new.
   // We are interested in pixel axes only, so transform the world axes
@@ -1049,19 +1049,19 @@ Bool CoordinateUtil::findExtendAxes(IPosition& newAxes, IPosition& stretchAxes,
   // newPixelAxes tells which pixel axes of new are not part of old.
   // Check if the axes are in the correct order.
   if (!checkOrder(oldPixelAxes)) {
-    return False;
+    return false;
   }
   if (!checkOrder(newPixelAxes)) {
-    return False;
+    return false;
   }
   // Old must be a subset of new.
   if (anyLT(oldPixelAxes, 0)) {
-    return False;
+    return false;
   }
   // Find the new and stretch axes.
   uInt nrdim = newPixelAxes.nelements();
   if (nrdim != newShape.nelements()) {
-    return False;
+    return false;
   }
   newAxes.resize(nrdim);
   stretchAxes.resize(nrdim);
@@ -1072,7 +1072,7 @@ Bool CoordinateUtil::findExtendAxes(IPosition& newAxes, IPosition& stretchAxes,
       newAxes(nrn++) = i;
     } else {
       if (i - nrn > oldShape.nelements()) {
-        return False;
+        return false;
       }
       if (oldShape(i - nrn) == 1 && newShape(i) > 1) {
         stretchAxes(nrs++) = i;
@@ -1081,19 +1081,19 @@ Bool CoordinateUtil::findExtendAxes(IPosition& newAxes, IPosition& stretchAxes,
   }
   newAxes.resize(nrn);
   stretchAxes.resize(nrs);
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::cylindricalFix(CoordinateSystem& csys, String& errorMessage,
+bool CoordinateUtil::cylindricalFix(CoordinateSystem& csys, String& errorMessage,
                                     const IPosition& shape) {
   Vector<Int> pixelAxes, worldAxes;
   Int coord;
   findDirectionAxes(pixelAxes, worldAxes, coord, csys);
-  if (coord < 0) return True;
+  if (coord < 0) return true;
   //
   if (pixelAxes.nelements() < 2 || worldAxes.nelements() < 2) {
     errorMessage = String("not enough pixel or world axes in DirectionCoordinate");
-    return False;
+    return false;
   }
 
   // check shape here
@@ -1102,14 +1102,14 @@ Bool CoordinateUtil::cylindricalFix(CoordinateSystem& csys, String& errorMessage
   if (pixelAxes[0] < 0 || pixelAxes[1] < 0 ||
       !dirCoord.cylindricalFix(shape(pixelAxes[0]), shape(pixelAxes[1]))) {
     errorMessage = dirCoord.errorMessage();
-    return False;
+    return false;
   }
   //
   csys.replaceCoordinate(dirCoord, coord);
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setVelocityState(String& errorMsg, CoordinateSystem& csys, const String& unit,
+bool CoordinateUtil::setVelocityState(String& errorMsg, CoordinateSystem& csys, const String& unit,
                                       const String& spcquant) {
   static Unit kms(String("km/s"));
   //
@@ -1136,7 +1136,7 @@ Bool CoordinateUtil::setVelocityState(String& errorMsg, CoordinateSystem& csys, 
       if (!MDoppler::getType(newDoppler, spcquant) &&
           !SpectralCoordinate::stringtoSpecType(newspcType, spcquant)) {
         errorMsg = String("Illegal velocity Doppler/spectral type");
-        return False;
+        return false;
       }
     }
 
@@ -1150,24 +1150,24 @@ Bool CoordinateUtil::setVelocityState(String& errorMsg, CoordinateSystem& csys, 
 
     if (!sCoord.setVelocity(newVelUnit, newDoppler)) {
       errorMsg = sCoord.errorMessage();
-      return False;
+      return false;
     }
 
     // Set new spectral type.
 
     if (!sCoord.setNativeType(newspcType)) {
       errorMsg = sCoord.errorMessage();
-      return False;
+      return false;
     }
 
     // Replace in CS
 
     csys.replaceCoordinate(sCoord, iS);
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setSpectralState(String& errorMsg, CoordinateSystem& csys, const String& unit,
+bool CoordinateUtil::setSpectralState(String& errorMsg, CoordinateSystem& csys, const String& unit,
                                       const String& spcquant) {
   static Unit KMS(String("km/s"));
   static Unit HZ(String("GHz"));
@@ -1195,7 +1195,7 @@ Bool CoordinateUtil::setSpectralState(String& errorMsg, CoordinateSystem& csys, 
       if (!MDoppler::getType(newDoppler, spcquant) &&
           !SpectralCoordinate::stringtoSpecType(newspcType, spcquant)) {
         errorMsg = String("Illegal velocity Doppler/spectral type");
-        return False;
+        return false;
       }
     }
 
@@ -1217,7 +1217,7 @@ Bool CoordinateUtil::setSpectralState(String& errorMsg, CoordinateSystem& csys, 
         // newWorldAxisUnits[0] = "Hz";
       } else {
         errorMsg = String("Illegal spectral unit");
-        return False;
+        return false;
       }
     }
 
@@ -1225,34 +1225,34 @@ Bool CoordinateUtil::setSpectralState(String& errorMsg, CoordinateSystem& csys, 
 
     if (!sCoord.setVelocity(newVelUnit, newDoppler)) {
       errorMsg = sCoord.errorMessage();
-      return False;
+      return false;
     }
     //
     if (!sCoord.setWorldAxisUnits(newWorldAxisUnits)) {
       errorMsg = sCoord.errorMessage();
-      return False;
+      return false;
     }
 
     //
     if (!sCoord.setWavelengthUnit(newWaveUnit)) {
       errorMsg = sCoord.errorMessage();
-      return False;
+      return false;
     }
 
     // Set spectral type.
     if (!sCoord.setNativeType(newspcType)) {
       errorMsg = sCoord.errorMessage();
-      return False;
+      return false;
     }
 
     // Replace in CS
 
     csys.replaceCoordinate(sCoord, iS);
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setSpectralFormatting(String& errorMsg, CoordinateSystem& csys,
+bool CoordinateUtil::setSpectralFormatting(String& errorMsg, CoordinateSystem& csys,
                                            const String& unit, const String& spcquant)
 //
 // This function sets the default formatting unit of the SpectralCoordinate in a
@@ -1292,14 +1292,14 @@ Bool CoordinateUtil::setSpectralFormatting(String& errorMsg, CoordinateSystem& c
         errorMsg = String("Illegal velocity Doppler/spectral state - no change");
         newDoppler = oldDoppler;
         newspcType = oldspcType;
-        return False;
+        return false;
       }
     }
     //
     if (oldDoppler != newDoppler) {
       if (!sCoord.setVelocity(newVelUnit, newDoppler)) {
         errorMsg = sCoord.errorMessage();
-        return False;
+        return false;
       }
     }
 
@@ -1307,7 +1307,7 @@ Bool CoordinateUtil::setSpectralFormatting(String& errorMsg, CoordinateSystem& c
     if (newspcType != oldspcType) {
       if (!sCoord.setNativeType(newspcType)) {
         errorMsg = sCoord.errorMessage();
-        return False;
+        return false;
       }
     }
 
@@ -1316,17 +1316,17 @@ Bool CoordinateUtil::setSpectralFormatting(String& errorMsg, CoordinateSystem& c
     csys.replaceCoordinate(sCoord, iS);
   }
   //
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::isSky(LogIO& os, const CoordinateSystem& cSys) {
+bool CoordinateUtil::isSky(LogIO& os, const CoordinateSystem& cSys) {
   const uInt nPixelAxes = cSys.nPixelAxes();
 
   if (nPixelAxes != 2) {
     os << "The CoordinateSystem is not two dimensional. It has " << nPixelAxes << " dimensions"
        << LogIO::EXCEPTION;
   }
-  Bool xIsLong = True;
+  bool xIsLong = true;
   Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
   if (dirCoordinate == -1) {
     os << "There is no DirectionCoordinate (sky) in this CoordinateSystem" << LogIO::EXCEPTION;
@@ -1339,14 +1339,14 @@ Bool CoordinateUtil::isSky(LogIO& os, const CoordinateSystem& cSys) {
   // Which axis is longitude and which is latitude
 
   if (dirPixelAxes(0) == 0 && dirPixelAxes(1) == 1) {
-    xIsLong = True;
+    xIsLong = true;
   } else {
-    xIsLong = False;
+    xIsLong = false;
   }
   return xIsLong;
 }
 
-Bool CoordinateUtil::setRestFrequency(String& errorMsg, CoordinateSystem& cSys, const String& unit,
+bool CoordinateUtil::setRestFrequency(String& errorMsg, CoordinateSystem& cSys, const String& unit,
                                       const Double& value) {
   static Unit HZ(String("GHz"));
   static Unit M(String("m"));
@@ -1361,13 +1361,13 @@ Bool CoordinateUtil::setRestFrequency(String& errorMsg, CoordinateSystem& cSys, 
 
     if (value < 0.0) {
       errorMsg = String("The rest frequency/wavelength is below zero!");
-      return False;
+      return false;
     } else if (isNaN(value)) {
       errorMsg = String("The rest frequency/wavelength is NaN!");
-      return False;
+      return false;
     } else if (isInf(value)) {
       errorMsg = String("The rest frequency/wavelength is InF!");
-      return False;
+      return false;
     }
 
     // Get the old rest frequency and unit
@@ -1382,7 +1382,7 @@ Bool CoordinateUtil::setRestFrequency(String& errorMsg, CoordinateSystem& cSys, 
       Unit t(unit);
       if (t != HZ && t != M) {
         errorMsg = String("Illegal spectral unit");
-        return False;
+        return false;
       }
 
       // Compute the rest frequency in the given units from the input
@@ -1395,17 +1395,17 @@ Bool CoordinateUtil::setRestFrequency(String& errorMsg, CoordinateSystem& cSys, 
 
       if (isNaN(newValue)) {
         errorMsg = String("The new rest frequency/wavelength is NaN!");
-        return False;
+        return false;
       } else if (isInf(newValue)) {
         errorMsg = String("The new rest frequency/wavelength is InF!");
-        return False;
+        return false;
       }
 
       // Set the new rest frequency
 
       if (!sCoord.setRestFrequency(newValue)) {
         errorMsg = sCoord.errorMessage();
-        return False;
+        return false;
       }
     }
 
@@ -1413,10 +1413,10 @@ Bool CoordinateUtil::setRestFrequency(String& errorMsg, CoordinateSystem& cSys, 
 
     cSys.replaceCoordinate(sCoord, iS);
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setSpectralConversion(String& errorMsg, CoordinateSystem& cSys,
+bool CoordinateUtil::setSpectralConversion(String& errorMsg, CoordinateSystem& cSys,
                                            const String frequencySystem) {
   // Set conversion type.  This lets the SC convert to other frequency systems
   // We need some extra info from the ObsInfo for the Spectral conversion layer
@@ -1436,7 +1436,7 @@ Bool CoordinateUtil::setSpectralConversion(String& errorMsg, CoordinateSystem& c
     MFrequency::Types ctype;
     if (!MFrequency::getType(ctype, frequencySystem)) {
       errorMsg = String("invalid frequency system");
-      return False;
+      return false;
     }
     //
     if (ctype != oldctype) {
@@ -1446,13 +1446,13 @@ Bool CoordinateUtil::setSpectralConversion(String& errorMsg, CoordinateSystem& c
       Int cD = cSys.findCoordinate(Coordinate::DIRECTION, after);
       if (cD < 0) {
         errorMsg = String("No DirectionCoordinate; cannot set Spectral conversion layer");
-        return False;
+        return false;
       } else {
         const DirectionCoordinate& dCoord = cSys.directionCoordinate(cD);
         const Vector<Double>& rp = dCoord.referencePixel();
         if (!dCoord.toWorld(direction, rp)) {
           errorMsg = dCoord.errorMessage();
-          return False;
+          return false;
         }
 
         // Now find the epoch and position
@@ -1461,13 +1461,13 @@ Bool CoordinateUtil::setSpectralConversion(String& errorMsg, CoordinateSystem& c
         String telescope = oi.telescope();
         if (!MeasTable::Observatory(position, telescope)) {
           errorMsg = String("Cannot find observatory; cannot set Spectral conversion layer");
-          return False;
+          return false;
         } else {
           epoch = oi.obsDate();
           Double t = epoch.getValue().get();
           if (t <= 0.0) {
             errorMsg = String("Epoch not valid; cannot set Spectral conversion layer");
-            return False;
+            return false;
           } else {
             coord.setReferenceConversion(ctype, epoch, position, direction);
           }
@@ -1477,10 +1477,10 @@ Bool CoordinateUtil::setSpectralConversion(String& errorMsg, CoordinateSystem& c
     //
     cSys.replaceCoordinate(coord, iS);
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setDirectionUnit(CoordinateSystem& csys, const String& unit, Int which) {
+bool CoordinateUtil::setDirectionUnit(CoordinateSystem& csys, const String& unit, Int which) {
   // FInd DC
 
   Vector<Int> pixelAxes, worldAxes;
@@ -1505,10 +1505,10 @@ Bool CoordinateUtil::setDirectionUnit(CoordinateSystem& csys, const String& unit
 
     return CoordinateUtil::setCoordinateUnits(csys, units, iC);
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setDirectionConversion(String& errorMsg, CoordinateSystem& csys,
+bool CoordinateUtil::setDirectionConversion(String& errorMsg, CoordinateSystem& csys,
                                             const String directionSystem) {
   Int after = -1;
   Int iS = csys.findCoordinate(Coordinate::DIRECTION, after);
@@ -1520,7 +1520,7 @@ Bool CoordinateUtil::setDirectionConversion(String& errorMsg, CoordinateSystem& 
     MDirection::Types type;
     if (!MDirection::getType(type, code)) {
       errorMsg = String("Invalid direction reference system");
-      return False;
+      return false;
     }
 
     // Update and replace
@@ -1529,10 +1529,10 @@ Bool CoordinateUtil::setDirectionConversion(String& errorMsg, CoordinateSystem& 
     coord.setReferenceConversion(type);
     csys.replaceCoordinate(coord, iS);
   }
-  return True;
+  return true;
 }
 
-Bool CoordinateUtil::setCoordinateUnits(CoordinateSystem& csys, const Vector<String>& units,
+bool CoordinateUtil::setCoordinateUnits(CoordinateSystem& csys, const Vector<String>& units,
                                         uInt which) {
   AlwaysAssert(which < csys.nCoordinates(), AipsError);
 
@@ -1586,9 +1586,9 @@ Coordinate::Type CoordinateUtil::findWorldAxis(const CoordinateSystem& csys, Int
   return csys.type(coord);
 }
 
-Bool CoordinateUtil::dropRemovedAxes(CoordinateSystem& csysOut, const CoordinateSystem& csysIn,
-                                     Bool preserveAxesOrder) {
-  Bool dropped = False;
+bool CoordinateUtil::dropRemovedAxes(CoordinateSystem& csysOut, const CoordinateSystem& csysIn,
+                                     bool preserveAxesOrder) {
+  bool dropped = false;
   CoordinateSystem tmp;
   csysOut = tmp;
 
@@ -1606,9 +1606,9 @@ Bool CoordinateUtil::dropRemovedAxes(CoordinateSystem& csysOut, const Coordinate
     const Vector<Int>& worldAxesIn = csysIn.worldAxes(i);
     AlwaysAssert(pixelAxesIn.nelements() == worldAxesIn.nelements(), AipsError);
 
-    Bool allRemoved = allEQ(pixelAxesIn, -1) && allEQ(worldAxesIn, -1);
+    bool allRemoved = allEQ(pixelAxesIn, -1) && allEQ(worldAxesIn, -1);
     if (allRemoved) {
-      dropped = True;
+      dropped = true;
     } else {
       csysOut.addCoordinate(csysIn.coordinate(i));
       if (preserveAxesOrder) {
@@ -1649,7 +1649,7 @@ Bool CoordinateUtil::dropRemovedAxes(CoordinateSystem& csysOut, const Coordinate
   Double replacement;
 
   if (k > 0) {
-    removeWorld.resize(k, True);
+    removeWorld.resize(k, true);
     GenSort<Int>::sort(removeWorld, Sort::Descending, Sort::NoDuplicates);
 
     for (uInt i = 0; i < removeWorld.nelements(); i++) {
@@ -1658,7 +1658,7 @@ Bool CoordinateUtil::dropRemovedAxes(CoordinateSystem& csysOut, const Coordinate
     }
   }
   if (l > 0) {
-    removePixel.resize(l, True);
+    removePixel.resize(l, true);
     GenSort<Int>::sort(removePixel, Sort::Descending, Sort::NoDuplicates);
     //
     for (uInt i = 0; i < removePixel.nelements(); i++) {
@@ -1674,7 +1674,7 @@ Bool CoordinateUtil::dropRemovedAxes(CoordinateSystem& csysOut, const Coordinate
 
 CoordinateSystem CoordinateUtil::makeBinnedCoordinateSystem(const IPosition& factors,
                                                             const CoordinateSystem& csysIn,
-                                                            Bool failOnStokes) {
+                                                            bool failOnStokes) {
   const uInt nDim = factors.nelements();
   AlwaysAssert(csysIn.nPixelAxes() == nDim, AipsError);
 
@@ -1717,8 +1717,8 @@ CoordinateSystem CoordinateUtil::makeBinnedCoordinateSystem(const IPosition& fac
   return csysOut;
 }
 
-String CoordinateUtil::axisLabel(const Coordinate& coord, uInt axis, Bool doWorld, Bool doAbs,
-                                 Bool doVel) {
+String CoordinateUtil::axisLabel(const Coordinate& coord, uInt axis, bool doWorld, bool doAbs,
+                                 bool doVel) {
   String axisName = coord.worldAxisNames()(axis);
   //
   String nativeUnit = coord.worldAxisUnits()(axis);
@@ -1733,7 +1733,7 @@ String CoordinateUtil::axisLabel(const Coordinate& coord, uInt axis, Bool doWorl
     MDirection::Types ctype;
     dcoord.getReferenceConversion(ctype);
     //
-    Bool isLong = (axis == 0);
+    bool isLong = (axis == 0);
 
     // Depending on the requested labelling type, we convert
     // the axis unit name to something sensible. This is

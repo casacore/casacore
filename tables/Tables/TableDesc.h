@@ -217,7 +217,7 @@ class TableDesc {
   // The default table description path is used for the description file.
   // The only options allowed are New, NewNoReplace and Scratch.
   TableDesc(const TableDesc&, const String& type, const String& version, TDOption,
-            Bool copyColumns = True);
+            bool copyColumns = true);
 
   // Create a table description object with the given name (i.e. table type)
   // and version by copying the input table description.
@@ -226,7 +226,7 @@ class TableDesc {
   // The given table description path is used for the description file.
   // The only options allowed are New, NewNoReplace and Scratch.
   TableDesc(const TableDesc&, const String& type, const String& version, const TabPath&, TDOption,
-            Bool copyColumns = True);
+            bool copyColumns = true);
 
   // This copy constructor makes a copy of the table description
   // maintaining its name and version. By default a Scratch copy is made.
@@ -243,7 +243,7 @@ class TableDesc {
   TableDesc& operator=(const TableDesc&) = delete;
 
   // Test if a description file exists (i.e. isReadable).
-  static Bool isReadable(const String& tableDescName);
+  static bool isReadable(const String& tableDescName);
 
   // Get access to the set of column descriptions.
   // In this way const <linkto class=ColumnDescSet>ColumnDescSet</linkto>
@@ -253,11 +253,11 @@ class TableDesc {
   // Add another table description to this table description.
   // It merges the column descriptions, the special keywordSet
   // (containing hypercolumn definitions) and the user keywordSet
-  // (this last one is not added if the flag is False).
+  // (this last one is not added if the flag is false).
   // The two table descriptions have to be disjoint, i.e. no column
   // nor keyword should already exist. Otherwise an TableInvOper
   // exception is thrown and nothing gets added.
-  void add(const TableDesc& other, Bool addKeywordSet = True);
+  void add(const TableDesc& other, bool addKeywordSet = true);
 
   // Get access to the keyword set.
   // <group>
@@ -308,7 +308,7 @@ class TableDesc {
   uInt ncolumn() const;
 
   // Test if a column with this name exists.
-  Bool isColumn(const String& name) const;
+  bool isColumn(const String& name) const;
 
   // Get a vector containing all column names.
   Vector<String> columnNames() const;
@@ -437,7 +437,7 @@ class TableDesc {
   // </group>
 
   // Test if the given hypercolumn exists.
-  Bool isHypercolumn(const String& hypercolumnName) const;
+  bool isHypercolumn(const String& hypercolumnName) const;
 
   // Get the names of all hypercolumns.
   Vector<String> hypercolumnNames() const;
@@ -451,11 +451,11 @@ class TableDesc {
   // Adjust the hypercolumn definitions (for a RefTable).
   // It removes and/or renames columns as necessary.
   // Column names which are not part of the map are removed if
-  // <src>keepUnknown==False</src>.
+  // <src>keepUnknown==false</src>.
   // If all data columns of a hypercolumn are removed, the entire
   // hypercolumn is removed.
-  void adjustHypercolumns(const std::map<String, String>& old2new, Bool keepUnknownData = False,
-                          Bool keepUnknownCoord = False, Bool keppUnknownId = False);
+  void adjustHypercolumns(const std::map<String, String>& old2new, bool keepUnknownData = false,
+                          bool keepUnknownCoord = false, bool keppUnknownId = false);
 
   // Remove ID-columns from the given hypercolumn definitions
   // and set their default data manager type to IncrementalStMan
@@ -481,7 +481,7 @@ class TableDesc {
   TableRecord* key_p;      // # user set of keywords
   TableRecord* privKey_p;  // # Private set of keywords
   ColumnDescSet col_p;     // # set of column names + indices
-  Bool swwrite_p;          // # True = description can be written
+  bool swwrite_p;          // # true = description can be written
   TDOption option_p;       // # Table desc. open option
   AipsIO iofil_p;          // # File
 
@@ -489,7 +489,7 @@ class TableDesc {
   void init(const TabPath&);
 
   // Initialize and copy a table description.
-  void copy(const TableDesc&, const TabPath&, Bool copyColumns);
+  void copy(const TableDesc&, const TabPath&, bool copyColumns);
 
   // Throw an invalid hypercolumn exception.
   void throwHypercolumn(const String& hyperColumnName, const String& message);
@@ -508,7 +508,7 @@ class TableDesc {
 inline uInt TableDesc::ncolumn() const { return col_p.ncolumn(); }
 
 // # Test if column exists.
-inline Bool TableDesc::isColumn(const String& name) const { return col_p.isDefined(name); }
+inline bool TableDesc::isColumn(const String& name) const { return col_p.isDefined(name); }
 
 // # Get a column description.
 inline const ColumnDesc& TableDesc::columnDesc(const String& name) const { return col_p[name]; }

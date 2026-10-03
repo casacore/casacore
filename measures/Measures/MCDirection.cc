@@ -107,8 +107,8 @@ void MCDirection::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase
   uInt iin = inref.getType();
   uInt iout = outref.getType();
   if (iin != iout) {
-    Bool iplan = (iin & MDirection::EXTRA);
-    Bool oplan = (iout & MDirection::EXTRA);
+    bool iplan = (iin & MDirection::EXTRA);
+    bool oplan = (iout & MDirection::EXTRA);
     if (iplan) {
       if (iin != MDirection::COMET) {
         mc.addMethod(MCDirection::R_PLANET0);
@@ -167,7 +167,7 @@ void MCDirection::clearConvert() {
 
 // # Conversion routines
 void MCDirection::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);  // Stop warning
+  if (false) initConvert(which, mc);  // Stop warning
   if (!MVPOS1) MVPOS1 = new MVPosition();
   if (!MVPOS2) MVPOS2 = new MVPosition();
   if (!MVPOS3) MVPOS3 = new MVPosition();

@@ -88,7 +88,7 @@ class SDFieldHandler {
   SDFieldHandler();
 
   // attach this to a MS - no columns are explicitly handled here
-  SDFieldHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDFieldHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDFieldHandler(const SDFieldHandler &other);
@@ -99,7 +99,7 @@ class SDFieldHandler {
   SDFieldHandler &operator=(const SDFieldHandler &other);
 
   // attach to a MS, the handledCols and row arguments are ignored here
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS; just resets the id pointer
   void resetRow(const Record &row);
@@ -125,7 +125,7 @@ class SDFieldHandler {
   RORecordFieldPtr<Double> timeField_p;
   RORecordFieldPtr<Array<Double>> delayDirField_p, delayDirRateField_p, phaseDirField_p,
       phaseDirRateField_p, referenceDirField_p, referenceDirRateField_p;
-  RORecordFieldPtr<Bool> flagRowField_p;
+  RORecordFieldPtr<bool> flagRowField_p;
 
   ColumnsIndex *index_p;
   RecordFieldPtr<String> nameKey_p;
@@ -138,10 +138,10 @@ class SDFieldHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // initialize things which depend on the row
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

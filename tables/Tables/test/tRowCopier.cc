@@ -248,7 +248,7 @@ int main() {
   cout << "Note: since RowCopier is NOT derived from Cleanup, this" << endl;
   cout << "      section causes memory leaks." << endl;
 
-  Bool caught = False;
+  bool caught = false;
 
   // construct a copier using a non-existant column
   try {
@@ -257,11 +257,11 @@ int main() {
     colname(0) = "Garbage";
     RowCopier rc(partialtab, maintab, colname, colname);
   } catch (TableError& x) {
-    caught = True;
+    caught = true;
   }
   if (caught) {
     cout << "OK" << endl;
-    caught = False;
+    caught = false;
   } else {
     cout << "FAILS!" << endl;
     return 1;
@@ -276,11 +276,11 @@ int main() {
     outname(0) = "DCol";
     RowCopier rc(maintab, maintab, inname, outname);
   } catch (TableError& x) {
-    caught = True;
+    caught = true;
   }
   if (caught) {
     cout << "OK" << endl;
-    caught = False;
+    caught = false;
   } else {
     cout << "FAILS!" << endl;
     return 1;
@@ -294,11 +294,11 @@ int main() {
     outname(0) = "IACol";
     RowCopier rc(maintab, maintab, inname, outname);
   } catch (TableError& x) {
-    caught = True;
+    caught = true;
   }
   if (caught) {
     cout << "OK" << endl;
-    caught = False;
+    caught = false;
   } else {
     cout << "FAILS!" << endl;
     return 1;
@@ -313,17 +313,17 @@ int main() {
     outname(1) = "DCol";
     RowCopier rc(maintab, maintab, inname, outname);
   } catch (TableError& x) {
-    caught = True;
+    caught = true;
   }
   if (caught) {
     cout << "OK" << endl;
-    caught = False;
+    caught = false;
   } else {
     cout << "FAILS!" << endl;
     return 1;
   }
 
-  // and finally, some checks that False is returned when appropriate.
+  // and finally, some checks that false is returned when appropriate.
   cout << "\nChecking that copy() returns False when appropriate" << endl;
   {
     RowCopier rc(maintab, maintab);

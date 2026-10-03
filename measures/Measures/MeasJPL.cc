@@ -40,12 +40,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constants
 
 // # Member functions
-Bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
+bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Types type,
                   const MVEpoch &date) {
   returnValue = 0.0;
   // Open the file if needed.
   if (!initMeasOnce(file)) {
-    return False;
+    return false;
   }
   // Get or read the correct data if needed.
   // Note that fillMeas uses locks to be thread-safe. The pointer returned
@@ -53,13 +53,13 @@ Bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Typ
   Double intv;
   const Double *dta = fillMeas(intv, file, date);
   if (!dta) {
-    return False;
+    return false;
   }
   Double res[6];
   Double res1[6];
   for (uInt i = 0; i < 6; i++) res[i] = 0.0;
   // Interpolation fraction
-  Bool mulfr = True;
+  bool mulfr = true;
   if (type == MeasJPL::BARYSOLAR) {
     res[0] = 0.0;
   } else if (type == MeasJPL::BARYEARTH) {
@@ -76,15 +76,15 @@ Bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Typ
       for (uInt i = 0; i < 6; i++) res[i] += res1[i];
     }
   } else if (type == MeasJPL::NUTATION) {
-    if (idx[file][1][MeasJPL::BARYSOLAR - 1] == 0) return False;
+    if (idx[file][1][MeasJPL::BARYSOLAR - 1] == 0) return false;
     interMeas(res, file, intv, dmjd[file], idx[file][1][MeasJPL::BARYSOLAR - 1], 2,
               idx[file][2][MeasJPL::BARYSOLAR - 1], dta + idx[file][0][MeasJPL::BARYSOLAR - 1]);
-    mulfr = False;
+    mulfr = false;
   } else if (type == MeasJPL::LIBRATION) {
-    if (idx[file][1][MeasJPL::BARYEARTH - 1] == 0) return False;
+    if (idx[file][1][MeasJPL::BARYEARTH - 1] == 0) return false;
     interMeas(res, file, intv, dmjd[file], idx[file][1][MeasJPL::BARYEARTH - 1], 3,
               idx[file][2][MeasJPL::BARYEARTH - 1], dta + idx[file][0][MeasJPL::BARYEARTH - 1]);
-    mulfr = False;
+    mulfr = false;
   } else {
     interMeas(res, file, intv, dmjd[file], idx[file][1][type - 1], 3, idx[file][2][type - 1],
               dta + idx[file][0][type - 1]);
@@ -95,35 +95,35 @@ Bool MeasJPL::get(Vector<Double> &returnValue, MeasJPL::Files file, MeasJPL::Typ
     for (uInt i = 0; i < 6; i++) returnValue(i) = res[i];
   }
 
-  return True;
+  return true;
 }
 
-Bool MeasJPL::getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what) {
+bool MeasJPL::getConst(Double &res, MeasJPL::Files which, MeasJPL::Codes what) {
   if (initMeasOnce(which)) {
     res = cn[which][what];
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool MeasJPL::getConst(Double &res, MeasJPL::Files which, const String &nam) {
+bool MeasJPL::getConst(Double &res, MeasJPL::Files which, const String &nam) {
   if (initMeasOnce(which)) {
     const TableRecord &tr = t[which].keywordSet();
     if (tr.isDefined(nam)) {
       res = tr.asDouble(nam);
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
-Bool MeasJPL::initMeasOnce(MeasJPL::Files which) {
+bool MeasJPL::initMeasOnce(MeasJPL::Files which) {
   try {
     std::call_once(theirCallOnceFlags[which], doInitMeas, which);
   } catch (InitError &) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 void MeasJPL::doInitMeas(MeasJPL::Files which) {
@@ -135,10 +135,10 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
   RORecordFieldPtr<Double> rfp[MeasJPL::N_Types];
   Double dt;
   String vs;
-  Bool ok = True;
+  bool ok = true;
   if (!MeasIERS::getTable(MeasJPL::t[which], kws, row, rfp, vs, dt, 1, names, tp[which],
                           tplc[which], "ephemerides")) {
-    ok = False;
+    ok = false;
   }
   if (ok) {
     MeasIERS::openNote(&MeasJPL::closeMeas);
@@ -149,7 +149,7 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
         !((kws.isDefined("RADS") && kws.asDouble("RADS") > 6e5) ||
           (kws.isDefined("ASUN") && kws.asDouble("ASUN") > 6e5)) ||
         !kws.isDefined("EMRAT") || kws.asDouble("EMRAT") < 10) {
-      ok = False;
+      ok = false;
     }
   }
   if (ok) {
@@ -169,7 +169,7 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
     Int n = t[which].nrow();
     row.get(n - 1);
     if (*(rfp[0]) != mjd0[which] + n * dmjd[which]) {
-      ok = False;
+      ok = false;
     } else {
       mjdl[which] = mjd0[which] + n * dmjd[which];
     }
@@ -177,7 +177,7 @@ void MeasJPL::doInitMeas(MeasJPL::Files which) {
   if (ok) {
     const TableRecord &tr = t[which].tableDesc().columnDesc("x").keywordSet();
     if (tr.asInt("Rows") != 3 || tr.asInt("Columns") != 13) {
-      ok = False;
+      ok = false;
     } else {
       Array<Int> xx = tr.asArrayInt("Description");
       uInt k = 0;

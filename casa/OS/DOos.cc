@@ -37,11 +37,11 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Vector<Bool> DOos::isValidPathName(const Vector<String>& pathName) {
-  Vector<Bool> result(pathName.nelements());
+Vector<bool> DOos::isValidPathName(const Vector<String>& pathName) {
+  Vector<bool> result(pathName.nelements());
   for (uInt i = 0; i < pathName.nelements(); i++) {
     if (pathName(i).empty()) {
-      result(i) = False;
+      result(i) = false;
     } else {
       File file(pathName(i));
       result(i) = (file.exists() || file.canCreate());
@@ -50,11 +50,11 @@ Vector<Bool> DOos::isValidPathName(const Vector<String>& pathName) {
   return result;
 }
 
-Vector<Bool> DOos::fileExists(const Vector<String>& pathName, Bool follow) {
-  Vector<Bool> result(pathName.nelements());
+Vector<bool> DOos::fileExists(const Vector<String>& pathName, bool follow) {
+  Vector<bool> result(pathName.nelements());
   for (uInt i = 0; i < pathName.nelements(); i++) {
     if (pathName(i).empty()) {
-      result(i) = False;
+      result(i) = false;
     } else {
       File file(pathName(i));
       if (follow && file.isSymLink()) {
@@ -66,7 +66,7 @@ Vector<Bool> DOos::fileExists(const Vector<String>& pathName, Bool follow) {
   return result;
 }
 
-Vector<String> DOos::fileType(const Vector<String>& pathName, Bool follow) {
+Vector<String> DOos::fileType(const Vector<String>& pathName, bool follow) {
   Vector<String> result(pathName.nelements());
   for (uInt i = 0; i < pathName.nelements(); i++) {
     File file(pathName(i));
@@ -91,17 +91,17 @@ Vector<String> DOos::fileType(const Vector<String>& pathName, Bool follow) {
 }
 
 Vector<String> DOos::fileNames(const String& directoryName, const String& fileNamePattern,
-                               const String& fileTypes, Bool all, Bool follow) {
+                               const String& fileTypes, bool all, bool follow) {
   // Determine if and how to select on file type.
-  Bool takeRegular = (fileTypes.find('r') != std::string::npos);
-  Bool takeDirectory = (fileTypes.find('d') != std::string::npos);
-  Bool takeSymLink = (fileTypes.find('s') != std::string::npos);
-  Bool takeReadable = (fileTypes.find('R') != std::string::npos);
-  Bool takeWritable = (fileTypes.find('W') != std::string::npos);
-  Bool takeExecutable = (fileTypes.find('X') != std::string::npos);
-  Bool checkType = (takeRegular || takeDirectory || takeSymLink);
-  Bool checkAcc = (takeReadable || takeWritable || takeExecutable);
-  Bool check = (checkType || checkAcc);
+  bool takeRegular = (fileTypes.find('r') != std::string::npos);
+  bool takeDirectory = (fileTypes.find('d') != std::string::npos);
+  bool takeSymLink = (fileTypes.find('s') != std::string::npos);
+  bool takeReadable = (fileTypes.find('R') != std::string::npos);
+  bool takeWritable = (fileTypes.find('W') != std::string::npos);
+  bool takeExecutable = (fileTypes.find('X') != std::string::npos);
+  bool checkType = (takeRegular || takeDirectory || takeSymLink);
+  bool checkAcc = (takeReadable || takeWritable || takeExecutable);
+  bool check = (checkType || checkAcc);
   // Set up the iterator. Default pattern is all.
   Vector<String> result;
   Directory dir(directoryName);
@@ -111,7 +111,7 @@ Vector<String> DOos::fileNames(const String& directoryName, const String& fileNa
     iter = DirectoryIterator(dir, Regex(Regex::fromPattern(fileNamePattern)));
   }
   // Iterate through the directory and add matching name to result.
-  // Skip names starting with . if all is False.
+  // Skip names starting with . if all is false.
   for (; !iter.pastEnd(); iter++) {
     String name = iter.name();
     if (name[0] != '.' || all) {
@@ -131,16 +131,16 @@ Vector<String> DOos::fileNames(const String& directoryName, const String& fileNa
         }
       }
       if (n >= result.nelements()) {
-        result.resize(result.nelements() + 100, True);
+        result.resize(result.nelements() + 100, true);
       }
       result(n++) = name;
     }
   }
-  result.resize(n, True);
+  result.resize(n, true);
   return result;
 }
 
-void DOos::makeDirectory(const Vector<String>& directoryName, Bool makeParent) {
+void DOos::makeDirectory(const Vector<String>& directoryName, bool makeParent) {
   for (uInt i = 0; i < directoryName.nelements(); i++) {
     File file(directoryName(i));
     if (file.exists()) {
@@ -156,7 +156,7 @@ void DOos::makeDirectory(const Vector<String>& directoryName, Bool makeParent) {
       }
     }
     Directory dir(file);
-    dir.create(False);
+    dir.create(false);
   }
 }
 
@@ -184,7 +184,7 @@ Vector<String> DOos::baseName(const Vector<String>& fileName) {
   return result;
 }
 
-Vector<Double> DOos::fileTime(const Vector<String>& fileName, Int whichTime, Bool follow) {
+Vector<Double> DOos::fileTime(const Vector<String>& fileName, Int whichTime, bool follow) {
   Vector<Double> result(fileName.nelements());
   for (uInt i = 0; i < fileName.nelements(); i++) {
     File file(fileName(i));
@@ -209,7 +209,7 @@ Vector<Double> DOos::fileTime(const Vector<String>& fileName, Int whichTime, Boo
   return result;
 }
 
-Vector<Double> DOos::totalSize(const Vector<String>& fileName, Bool follow) {
+Vector<Double> DOos::totalSize(const Vector<String>& fileName, bool follow) {
   Vector<Double> result(fileName.nelements());
   for (uInt i = 0; i < fileName.nelements(); i++) {
     File file(fileName(i));
@@ -233,7 +233,7 @@ Vector<Double> DOos::totalSize(const Vector<String>& fileName, Bool follow) {
   return result;
 }
 
-Double DOos::totalSize(const String& fileName, Bool follow) {
+Double DOos::totalSize(const String& fileName, bool follow) {
   File file(fileName);
   Double size = 0;
   if (file.exists()) {
@@ -252,7 +252,7 @@ Double DOos::totalSize(const String& fileName, Bool follow) {
   return size;
 }
 
-Vector<Double> DOos::freeSpace(const Vector<String>& fileName, Bool follow) {
+Vector<Double> DOos::freeSpace(const Vector<String>& fileName, bool follow) {
   Vector<Double> result(fileName.nelements());
   for (uInt i = 0; i < fileName.nelements(); i++) {
     File file(fileName(i));
@@ -268,7 +268,7 @@ Vector<Double> DOos::freeSpace(const Vector<String>& fileName, Bool follow) {
   return result;
 }
 
-void DOos::copy(const String& to, const String& from, Bool overwrite, Bool follow) {
+void DOos::copy(const String& to, const String& from, bool overwrite, bool follow) {
   File file(from);
   if (!file.exists()) {
     throw(AipsError("DOos::copy - file " + from + " does not exist"));
@@ -286,7 +286,7 @@ void DOos::copy(const String& to, const String& from, Bool overwrite, Bool follo
   }
 }
 
-void DOos::move(const String& to, const String& from, Bool overwrite, Bool follow) {
+void DOos::move(const String& to, const String& from, bool overwrite, bool follow) {
   File file(from);
   if (!file.exists()) {
     throw(AipsError("DOos::move - file " + from + " does not exist"));
@@ -304,11 +304,11 @@ void DOos::move(const String& to, const String& from, Bool overwrite, Bool follo
   }
 }
 
-void DOos::remove(const String& fileName, Bool recursive, Bool mustExist, Bool follow) {
+void DOos::remove(const String& fileName, bool recursive, bool mustExist, bool follow) {
   remove(Vector<String>(1, fileName), recursive, mustExist, follow);
 }
 
-void DOos::remove(const Vector<String>& fileNames, Bool recursive, Bool mustExist, Bool follow) {
+void DOos::remove(const Vector<String>& fileNames, bool recursive, bool mustExist, bool follow) {
   uInt i;
   if (mustExist) {
     for (i = 0; i < fileNames.nelements(); i++) {
@@ -345,7 +345,7 @@ void DOos::remove(const Vector<String>& fileNames, Bool recursive, Bool mustExis
 Vector<Int> DOos::lockInfo(const String& tableName) {
   Vector<Int> result(3);
   uInt pid;
-  Bool permLocked;
+  bool permLocked;
   result(0) = LockFile::showLock(pid, permLocked, tableName + "/table.lock");
   result(1) = pid;
   result(2) = (permLocked ? 1 : 0);

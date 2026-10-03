@@ -62,11 +62,11 @@ void createTable() {
 
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn(ArrayColumnDesc<Bool>("virtualcol1"));
+  td.addColumn(ArrayColumnDesc<bool>("virtualcol1"));
   td.addColumn(ArrayColumnDesc<Int>("storedcol1"));
-  td.addColumn(ArrayColumnDesc<Bool>("virtualcol2"));
+  td.addColumn(ArrayColumnDesc<bool>("virtualcol2"));
   td.addColumn(ArrayColumnDesc<Short>("storedcol2"));
-  td.addColumn(ArrayColumnDesc<Bool>("virtualcol3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+  td.addColumn(ArrayColumnDesc<bool>("virtualcol3", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
   td.addColumn(ArrayColumnDesc<uChar>("storedcol3", "", IPosition(2, 3, 4), ColumnDesc::Direct));
   // Define keywords telling the bitmask.
   ColumnDesc& cdesc = td.rwColumnDesc("storedcol1");
@@ -121,13 +121,13 @@ void readTable() {
   ArrayColumn<Int> storedcol1(tab, "storedcol1");
   ArrayColumn<Short> storedcol2(tab, "storedcol2");
   ArrayColumn<uChar> storedcol3(tab, "storedcol3");
-  ArrayColumn<Bool> virtualcol1(tab, "virtualcol1");
-  ArrayColumn<Bool> virtualcol2(tab, "virtualcol2");
-  ArrayColumn<Bool> virtualcol3(tab, "virtualcol3");
-  Matrix<Bool> arrd1(IPosition(2, 3, 4));
-  Matrix<Bool> arrd2(IPosition(2, 3, 4));
-  Matrix<Bool> arrd3(IPosition(2, 3, 4));
-  Matrix<Bool> arrd3slice(arrd3(Slice(0, 1, 2), Slice(0, 2, 2)));
+  ArrayColumn<bool> virtualcol1(tab, "virtualcol1");
+  ArrayColumn<bool> virtualcol2(tab, "virtualcol2");
+  ArrayColumn<bool> virtualcol3(tab, "virtualcol3");
+  Matrix<bool> arrd1(IPosition(2, 3, 4));
+  Matrix<bool> arrd2(IPosition(2, 3, 4));
+  Matrix<bool> arrd3(IPosition(2, 3, 4));
+  Matrix<bool> arrd3slice(arrd3(Slice(0, 1, 2), Slice(0, 2, 2)));
   Matrix<Int> arri(IPosition(2, 3, 4));
   Matrix<Short> arrs(IPosition(2, 3, 4));
   Matrix<uChar> arrc(IPosition(2, 3, 4));
@@ -153,8 +153,8 @@ void readTable() {
     Array<Int> ai;
     Array<Short> as;
     Array<uChar> ac;
-    Array<Bool> arrbool;
-    Array<Bool> arrboolslice;
+    Array<bool> arrbool;
+    Array<bool> arrboolslice;
     cout << "get row " << j << endl;
     storedcol1.get(j, ai);
     if (!allEQ(ai, arri)) {
@@ -208,7 +208,7 @@ void readTable() {
 
   // Now test getting the columns.
   {
-    Cube<Bool> arrd2(IPosition(3, 3, 4, 10));
+    Cube<bool> arrd2(IPosition(3, 3, 4, 10));
     Slicer nslice2(Slice(0, 2, 1), Slice(1, 2, 2), Slicer::endIsLength);
     for (uInt j = 0; j < 10; j++) {
       Int i = 0;
@@ -221,7 +221,7 @@ void readTable() {
       }
     }
     {
-      Cube<Bool> arrvald = virtualcol2.getColumn();
+      Cube<bool> arrvald = virtualcol2.getColumn();
       if (!allEQ(arrvald, arrd2)) {
         cout << "error in virtualcol2 getcolumn " << endl;
         cout << arrvald << endl;
@@ -229,7 +229,7 @@ void readTable() {
       }
     }
     {
-      Cube<Bool> arrvald = virtualcol2.getColumnRange(Slice(1, 4, 2));
+      Cube<bool> arrvald = virtualcol2.getColumnRange(Slice(1, 4, 2));
       if (!allEQ(arrvald, arrd2(Slice(0, 3, 1), Slice(0, 4, 1), Slice(1, 4, 2)))) {
         cout << "error in virtualcol2 getcolumnrange " << endl;
         cout << arrvald << endl;
@@ -237,7 +237,7 @@ void readTable() {
       }
     }
     {
-      Cube<Bool> arrvald = virtualcol2.getColumn(nslice2);
+      Cube<bool> arrvald = virtualcol2.getColumn(nslice2);
       if (!allEQ(arrvald, arrd2(Slice(0, 2, 1), Slice(1, 2, 2), Slice(0, 10, 1)))) {
         cout << "error in virtualcol2 getcolumnslice " << endl;
         cout << arrvald << endl;
@@ -245,7 +245,7 @@ void readTable() {
       }
     }
     {
-      Cube<Bool> arrvald = virtualcol2.getColumnRange(Slice(1, 4, 2), nslice2);
+      Cube<bool> arrvald = virtualcol2.getColumnRange(Slice(1, 4, 2), nslice2);
       if (!allEQ(arrvald, arrd2(Slice(0, 2, 1), Slice(1, 2, 2), Slice(1, 4, 2)))) {
         cout << "error in virtualcol2 getcolumnrangeslice " << endl;
         cout << arrvald << endl;

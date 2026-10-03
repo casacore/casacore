@@ -96,8 +96,8 @@ typedef Convolver<Double> DoubleConvolver;
 // then their linear and circular convolutions are:
 // <srcblock>
 // circular convolution =         [1 .1  0  0  0 .5]
-//   linear convolution =         [1 .1  0  0  0  0]    (fullSize == False)
-//   linear convolution =   [0 .5  1 .1  0  0  0  0  0] (fullSize == True)
+//   linear convolution =         [1 .1  0  0  0  0]    (fullSize == false)
+//   linear convolution =   [0 .5  1 .1  0  0  0  0  0] (fullSize == true)
 // </srcblock>
 // The circular convolution "wraps around" whereas the linear one does not.
 // Usage of the fullSize option is explained below. As can be seen from the
@@ -123,7 +123,7 @@ typedef Convolver<Double> DoubleConvolver;
 // <em> n^2 Log(n) </em> for 2 dimensional convolutions.
 
 // The size of the convolved result is always the same as the input model
-// unless linear convolution is done with the fullSize option set to True.
+// unless linear convolution is done with the fullSize option set to true.
 // In this case the result will be larger than the model and include the
 // full linear convolution (resultSize = psfSize+modelSize-1), rather than
 // the central portion.
@@ -137,7 +137,7 @@ typedef Convolver<Double> DoubleConvolver;
 
 // <note role=tip>
 // If you are intending to do 'fullsize' linear convolutions
-// you should also set the fullsize option to True as the cached transfer
+// you should also set the fullsize option to true as the cached transfer
 // function is a different size for fullsize linear convolutions.
 // </note>
 
@@ -237,13 +237,13 @@ class Convolver {
   // Create the cached Transfer function assuming that circular convolution
   // will be done
   // <group>
-  Convolver(const Array<FType>& psf, Bool cachePsf = False);
+  Convolver(const Array<FType>& psf, bool cachePsf = false);
   // </group>
   // Create the cached Transfer function assuming that linear convolution
   // with an array of size imageSize will be done.
   // <group>
-  Convolver(const Array<FType>& psf, const IPosition& imageSize, Bool fullSize = False,
-            Bool cachePsf = False);
+  Convolver(const Array<FType>& psf, const IPosition& imageSize, bool fullSize = false,
+            bool cachePsf = false);
   // </group>
 
   // The copy constructor and the assignment operator make copies (and not
@@ -260,11 +260,11 @@ class Convolver {
   // </group>
 
   // Perform linear convolution of the model with the previously
-  // specified psf. Return the answer in result. Set fullSize to True if you
+  // specified psf. Return the answer in result. Set fullSize to true if you
   // want the full convolution, rather than the central portion (the same
   // size as the model) returned.
   // <group>
-  void linearConv(Array<FType>& result, const Array<FType>& model, Bool fullSize = False);
+  void linearConv(Array<FType>& result, const Array<FType>& model, bool fullSize = false);
   // </group>
 
   // Perform circular convolution of the model with the previously
@@ -276,17 +276,17 @@ class Convolver {
   // Set the transfer function for future convolutions to psf.
   // Assume circular convolution will be done
   // <group>
-  void setPsf(const Array<FType>& psf, Bool cachePsf = False);
+  void setPsf(const Array<FType>& psf, bool cachePsf = false);
   // </group>
   // Set the transfer function for future convolutions to psf.
   // Assume linear convolution with a model of size imageSize
   // <group>
-  void setPsf(const Array<FType>& psf, IPosition imageShape, Bool fullSize = False,
-              Bool cachePsf = False);
+  void setPsf(const Array<FType>& psf, IPosition imageShape, bool fullSize = false,
+              bool cachePsf = false);
   // </group>
   // Get the psf currently used by this convolver
   // <group>
-  const Array<FType> getPsf(Bool cachePsf = True);
+  const Array<FType> getPsf(bool cachePsf = true);
   // </group>
 
   // Set to use convolution with lesser flips
@@ -302,16 +302,16 @@ class Convolver {
   FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theFFT;
   FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theIFFT;
 
-  void makeXfr(const Array<FType>& psf, const IPosition& imageSize, Bool linear, Bool fullSize);
+  void makeXfr(const Array<FType>& psf, const IPosition& imageSize, bool linear, bool fullSize);
   void makePsf(Array<FType>& psf);
   IPosition defaultShape(const Array<FType>& psf);
   IPosition extractShape(IPosition& psfSize, const IPosition& imageSize);
-  void doConvolution(Array<FType>& result, const Array<FType>& model, Bool fullSize);
-  void resizeXfr(const IPosition& imageShape, Bool linear, Bool fullSize);
+  void doConvolution(Array<FType>& result, const Array<FType>& model, bool fullSize);
+  void resizeXfr(const IPosition& imageShape, bool linear, bool fullSize);
   // #   void padArray(Array<FType>& paddedArr, const Array<FType>& origArr,
   // # 		const IPosition & blc);
-  Bool valid;
-  Bool doFast_p;
+  bool valid;
+  bool doFast_p;
   void validate();
 };
 

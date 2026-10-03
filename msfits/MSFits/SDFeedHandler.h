@@ -87,7 +87,7 @@ class SDFeedHandler {
   SDFeedHandler();
 
   // attach this to a MS - no columns are explicitly handled here
-  SDFeedHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  SDFeedHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // copy ctor
   SDFeedHandler(const SDFeedHandler &other);
@@ -98,7 +98,7 @@ class SDFeedHandler {
   SDFeedHandler &operator=(const SDFeedHandler &other);
 
   // attach to a MS, the handledCols and row arguments are ignored here
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS
   void resetRow(const Record &row);
@@ -137,10 +137,10 @@ class SDFeedHandler {
   void clearRow();
 
   // initialize everything
-  void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // initialize things which depend on row
-  void initRow(Vector<Bool> &handledCols, const Record &row);
+  void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 }  // namespace casacore

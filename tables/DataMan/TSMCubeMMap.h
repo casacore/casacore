@@ -131,27 +131,27 @@ class TSMCubeMMap : public TSMCube {
   // It is assumed that the section buffer is long enough.
   virtual void accessSection(const IPosition& start, const IPosition& end, char* section,
                              uInt colnr, uInt localPixelSize, uInt externalPixelSize,
-                             Bool writeFlag);
+                             bool writeFlag);
 
   // Read or write a section in a strided way.
   // It is assumed that the section buffer is long enough.
   virtual void accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
                              char* section, uInt colnr, uInt localPixelSize, uInt externalPixelSize,
-                             Bool writeFlag);
+                             bool writeFlag);
 
   // Set the cache size for the given slice and access path.
   virtual void setCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
                             const IPosition& windowLength, const IPosition& axisPath,
-                            Bool forceSmaller, Bool userSet);
+                            bool forceSmaller, bool userSet);
 
   // Resize the cache object.
-  // If forceSmaller is False, the cache will only be resized when it grows.
+  // If forceSmaller is false, the cache will only be resized when it grows.
   // If the given size exceeds the maximum size with more
   // than 10%, the maximum size will be used.
   // The cacheSize has to be given in buckets.
   // <br>The flag <src>userSet</src> inidicates if the cache size is set by
   // the user (by an Accessor object) or automatically (by TSMDataColumn).
-  virtual void setCacheSize(uInt cacheSize, Bool forceSmaller, Bool userSet);
+  virtual void setCacheSize(uInt cacheSize, bool forceSmaller, bool userSet);
 
  private:
   // Get the cache object.

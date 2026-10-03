@@ -66,7 +66,7 @@ class LCHDF5Mask : public LCRegionSingle {
              const String& maskName);
   LCHDF5Mask(const TiledShape& maskShape, const LCBox& box, const std::shared_ptr<HDF5File>& file,
              const String& maskName);
-  LCHDF5Mask(HDF5Lattice<Bool>& mask, const LCBox& box);
+  LCHDF5Mask(HDF5Lattice<bool>& mask, const LCBox& box);
   // </group>
 
   // Copy constructor (copy semantics).
@@ -84,8 +84,8 @@ class LCHDF5Mask : public LCRegionSingle {
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use.
-  LatticeIterInterface<Bool>* makeIter(const LatticeNavigator& navigator,
-                                       Bool useRef) const override;
+  LatticeIterInterface<bool>* makeIter(const LatticeNavigator& navigator,
+                                       bool useRef) const override;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
@@ -110,7 +110,7 @@ class LCHDF5Mask : public LCRegionSingle {
   static LCHDF5Mask* fromRecord(const TableRecord&, const String& tablename);
 
   // An LCHDF5Mask is writable if the underlying HDF5Lattice is.
-  Bool isWritable() const override;
+  bool isWritable() const override;
 
  protected:
   // Construct another LCHDF5Mask (for e.g. another lattice) by moving
@@ -121,13 +121,13 @@ class LCHDF5Mask : public LCRegionSingle {
 
  private:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Create the object from a record (for an existing mask).
-  LCHDF5Mask(HDF5Lattice<Bool>& mask, const IPosition& blc, const IPosition& latticeShape);
+  LCHDF5Mask(HDF5Lattice<bool>& mask, const IPosition& blc, const IPosition& latticeShape);
 
   LCBox itsBox;
-  HDF5Lattice<Bool> itsMask;
+  HDF5Lattice<bool> itsMask;
 };
 
 }  // namespace casacore

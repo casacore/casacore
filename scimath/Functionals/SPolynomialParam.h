@@ -120,8 +120,8 @@ class SPolynomialParam : public Function<T> {
   //  Comparisons.
   //  SPolynomials are equal if they are of the same order
   //  <group>
-  Bool operator==(const SPolynomialParam<T> &other) const { return (param_p == other.param_p); }
-  Bool operator!=(const SPolynomialParam<T> &other) const { return (param_p != other.param_p); }
+  bool operator==(const SPolynomialParam<T> &other) const { return (param_p == other.param_p); }
+  bool operator!=(const SPolynomialParam<T> &other) const { return (param_p != other.param_p); }
   // </group>
 
   // # Member functions

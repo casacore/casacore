@@ -36,7 +36,7 @@
 
 #include <casacore/casa/namespace.h>
 
-void sortall(Int*, uInt, int, Sort::Order, Bool);
+void sortall(Int*, uInt, int, Sort::Order, bool);
 
 uInt doSort(Vector<uInt>& inx, const Int* arr, uInt nr, Sort::Order ord, int type) {
   inx.resize(nr);
@@ -96,10 +96,10 @@ int main(int argc, const char* argv[]) {
   }
   // Outcomment the resulting number for assay when duplicates are
   // skipped for a random array. This number may differ from run to run.
-  Bool showFlag = True;
+  bool showFlag = true;
   if ((type & Sort::NoDuplicates) != 0) {
     cout << "   (no duplicates)";
-    showFlag = False;
+    showFlag = false;
   }
   cout << endl;
 
@@ -116,15 +116,15 @@ int main(int argc, const char* argv[]) {
     a5[i] = rand() % 10;
   }
   cout << "  ordered array ";
-  sortall(a1, nr, type, ord, True);
+  sortall(a1, nr, type, ord, true);
   cout << "  reversed array";
-  sortall(a2, nr, type, ord, True);
+  sortall(a2, nr, type, ord, true);
   cout << "  random array  ";
   sortall(a3, nr, type, ord, showFlag);
   cout << "  equal array   ";
-  sortall(a4, nr, type, ord, True);
+  sortall(a4, nr, type, ord, true);
   cout << "  10 diff. array";
-  sortall(a5, nr, type, ord, True);
+  sortall(a5, nr, type, ord, true);
 
   delete[] a1;
   delete[] a2;
@@ -154,7 +154,7 @@ int main(int argc, const char* argv[]) {
   return 0;  // exit with success status
 }
 
-void sortall(Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag) {
+void sortall(Int* arr, uInt nr, int type, Sort::Order ord, bool showFlag) {
   if (nr <= 5000000) {
     // Do an indirect sort for 'smaller' arrays only.
     Vector<uInt> inx(nr);

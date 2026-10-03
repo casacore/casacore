@@ -34,7 +34,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LCConcatenation::LCConcatenation() {}
 
-LCConcatenation::LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions,
+LCConcatenation::LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions,
                                  Int extendAxis)
     : LCRegionMulti(takeOver, regions), itsExtendAxis(extendAxis) {
   // Define a box for the entire shape (is length of regions vector)..
@@ -44,7 +44,7 @@ LCConcatenation::LCConcatenation(Bool takeOver, const Block<const LCRegion*>& re
   fill();
 }
 
-LCConcatenation::LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions,
+LCConcatenation::LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions,
                                  Int extendAxis, const LCBox& extendBox)
     : LCRegionMulti(takeOver, regions), itsExtendAxis(extendAxis), itsExtendBox(extendBox) {
   // Fill the other members variables and determine the bounding box.
@@ -70,19 +70,19 @@ LCConcatenation& LCConcatenation::operator=(const LCConcatenation& other) {
   return *this;
 }
 
-Bool LCConcatenation::equals(const LCRegion& other) const {
+bool LCConcatenation::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionMulti::equals(other)) {
-    return False;
+    return false;
   }
   const LCConcatenation& that = (const LCConcatenation&)other;
   // Check the private data
   if (!(itsExtendAxis == that.itsExtendAxis) || !itsRegionAxes.isEqual(that.itsRegionAxes) ||
       !(itsExtendBox == that.itsExtendBox)) {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 LCRegion* LCConcatenation::cloneRegion() const { return new LCConcatenation(*this); }
@@ -109,7 +109,7 @@ LCRegion* LCConcatenation::doTranslate(const Vector<Float>& translateVector,
   Block<const LCRegion*> regions;
   multiTranslate(regions, regTransVec, regLatShape);
   // Create the new LCConcatenation object.
-  LCConcatenation* extPtr = new LCConcatenation(True, regions, itsExtendAxis, *boxPtr);
+  LCConcatenation* extPtr = new LCConcatenation(true, regions, itsExtendAxis, *boxPtr);
   delete boxPtr;
   return extPtr;
 }
@@ -131,7 +131,7 @@ LCConcatenation* LCConcatenation::fromRecord(const TableRecord& rec, const Strin
   Block<const LCRegion*> regions;
   unmakeRecord(regions, rec.asRecord("regions"), tableName);
   LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
-  LCConcatenation* extPtr = new LCConcatenation(True, regions, rec.asInt("axis"), *boxPtr);
+  LCConcatenation* extPtr = new LCConcatenation(true, regions, rec.asInt("axis"), *boxPtr);
   delete boxPtr;
   return extPtr;
 }
@@ -203,9 +203,9 @@ void LCConcatenation::fill() {
   setShapeAndBoundingBox(latShape, Slicer(blc, trc, Slicer::endIsLast));
 }
 
-void LCConcatenation::multiGetSlice(Array<Bool>& buffer, const Slicer& section) {
+void LCConcatenation::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
-  buffer = False;
+  buffer = false;
   uInt i;
   // Construct a slicer for the regions axes only, since the concatenation
   // has one more axis.
@@ -234,7 +234,7 @@ void LCConcatenation::multiGetSlice(Array<Bool>& buffer, const Slicer& section) 
   uInt bufInx = 0;
   for (i = extStart; i <= extEnd; i += extInc, bufInx++) {
     if (findAreas(stbuf, endbuf, streg, endreg, regSection, i)) {
-      Array<Bool> tmpbuf;
+      Array<bool> tmpbuf;
       LCRegion* reg = (LCRegion*)(regions()[i]);
       reg->doGetSlice(tmpbuf, Slicer(streg, endreg, inc, Slicer::endIsLast));
       // The buffer dimensionality is 1 more than the region's.
@@ -248,8 +248,8 @@ void LCConcatenation::multiGetSlice(Array<Bool>& buffer, const Slicer& section) 
       bufStart(itsExtendAxis) = bufInx;
       bufEnd(itsExtendAxis) = bufInx;
       tmpShape(itsExtendAxis) = 1;
-      Array<Bool> reformBuf(tmpbuf.reform(tmpShape));
-      Array<Bool> bufsect(buffer(bufStart, bufEnd));
+      Array<bool> reformBuf(tmpbuf.reform(tmpShape));
+      Array<bool> bufsect(buffer(bufStart, bufEnd));
       DebugAssert(bufsect.shape() == reformBuf.shape(), AipsError);
       bufsect = reformBuf;
     }
@@ -257,7 +257,7 @@ void LCConcatenation::multiGetSlice(Array<Bool>& buffer, const Slicer& section) 
 }
 
 IPosition LCConcatenation::doNiceCursorShape(uInt maxPixels) const {
-  return Lattice<Bool>::doNiceCursorShape(maxPixels);
+  return Lattice<bool>::doNiceCursorShape(maxPixels);
 }
 
 }  // namespace casacore

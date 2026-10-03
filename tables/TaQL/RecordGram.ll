@@ -250,7 +250,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new RecordGramVal();
             RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'b';
-	    lvalp->val->bval = True;
+	    lvalp->val->bval = true;
 	    return LITERAL;
 	  }
 {FALSE}   {
@@ -258,7 +258,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new RecordGramVal();
             RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'b';
-	    lvalp->val->bval = False;
+	    lvalp->val->bval = false;
 	    return LITERAL;
 	  }
 {STRING}  {

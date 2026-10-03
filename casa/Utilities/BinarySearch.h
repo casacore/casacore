@@ -86,7 +86,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // ...  // Sets vi somehow
 // genSort(vi);
 // Int val;
-// Bool found;
+// bool found;
 // while (cin >> val && val != -999) {
 //     Int where = binarySearch(found, vi, val, vi.nelements());
 //     if (found) {
@@ -136,11 +136,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <group>
 // This version of the function is for containers that use () for indexing.
 template <class Container, class ElType>
-Int binarySearch(Bool &found, const Container &container, const ElType &value, uInt n,
+Int binarySearch(bool &found, const Container &container, const ElType &value, uInt n,
                  Int lower = 0);
 // This version of the function is for containers that use [] for indexing.
 template <class Container, class ElType>
-Int binarySearchBrackets(Bool &found, const Container &container, const ElType &value, uInt n,
+Int binarySearchBrackets(bool &found, const Container &container, const ElType &value, uInt n,
                          Int lower = 0);
 // </group>
 // </group>

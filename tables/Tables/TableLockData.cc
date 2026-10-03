@@ -40,13 +40,13 @@ TableLockData::TableLockData(const TableLock& lockOptions,
 
 TableLockData::~TableLockData() { delete itsLock; }
 
-void TableLockData::makeLock(const String& name, Bool create, FileLocker::LockType type,
+void TableLockData::makeLock(const String& name, bool create, FileLocker::LockType type,
                              uInt locknr) {
   // # Create lock file object only when not created yet.
   // # It is acceptable that no lock file exists for a readonly table
   // # (to be able to read older tables).
   if (itsLock == 0) {
-    itsLock = new LockFile(name + "/table.lock", interval(), create, True, False, locknr,
+    itsLock = new LockFile(name + "/table.lock", interval(), create, true, false, locknr,
                            isPermanent(), option() == NoLocking);
   }
   // # Acquire a lock when permanent locking is in use.
@@ -62,7 +62,7 @@ void TableLockData::makeLock(const String& name, Bool create, FileLocker::LockTy
   }
 }
 
-Bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts) {
+bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts) {
   // # Try to acquire a lock.
   // # Show a message when we have to wait for a long time.
   // # Start with n attempts, show a message and continue thereafter.
@@ -70,7 +70,7 @@ Bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, uInt natt
   if (nattempts > 0 && nattempts < n) {
     n = nattempts;
   }
-  Bool status = itsLock->acquire(info, type, n);
+  bool status = itsLock->acquire(info, type, n);
   if (!status && n != nattempts) {
     String s = "read";
     if (type == FileLocker::Write) {
@@ -106,7 +106,7 @@ Bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, uInt natt
   return status;
 }
 
-void TableLockData::release(Bool always) {
+void TableLockData::release(bool always) {
   // # Only release if not permanently locked.
   if (always || !isPermanent()) {
     MemoryIO* memIO = 0;

@@ -149,10 +149,10 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   // Functions to return column info.
   // <group>
   virtual int dataType() const;
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
   virtual uInt ndim(rownr_t rownr);
   virtual IPosition shape(rownr_t rownr);
-  virtual Bool isShapeDefined(rownr_t rownr);
+  virtual bool isShapeDefined(rownr_t rownr);
   // </group>
 
  private:
@@ -173,7 +173,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
 
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBool(rownr_t rownr, Bool* dataPtr);
+  virtual void getBool(rownr_t rownr, bool* dataPtr);
   virtual void getuChar(rownr_t rownr, uChar* dataPtr);
   virtual void getShort(rownr_t rownr, Short* dataPtr);
   virtual void getuShort(rownr_t rownr, uShort* dataPtr);
@@ -213,9 +213,9 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
 
   // # Now define the data members.
   int itsDataType;
-  Bool itsIsArray;
-  Bool itsIsConst;  // # Constant expression?
-  Bool itsTempWritable;
+  bool itsIsArray;
+  bool itsIsConst;  // # Constant expression?
+  bool itsTempWritable;
   String itsColumnName;
   String itsExpr;          // # TaQL expression
   String itsStyle;         // # TaQL style
@@ -223,7 +223,7 @@ class VirtualTaQLColumn : public VirtualColumnEngine, public DataManagerColumn {
   IPosition itsShape;      // # The shape of the column.
   uInt itsMaxLen;          // # The maximum length of a 'fixed length' string.
   union {
-    Bool itsBool;  // # Constant scalar values
+    bool itsBool;  // # Constant scalar values
     uChar itsuChar;
     Short itsShort;
     uShort itsuShort;

@@ -94,7 +94,7 @@ void doIt(const String& str) {
       cout << "  row " << i << ":" << endl;
       switch (expr.dataType()) {
         case TpBool: {
-          MArray<Bool> arr;
+          MArray<bool> arr;
           expr.get(i, arr);
           cout << arr.array();
           break;
@@ -127,7 +127,7 @@ void doIt(const String& str) {
 // Ask and execute command till empty string is given.
 void docomm() {
   char comm[1025];
-  while (True) {
+  while (true) {
     cout << "Table command (q=quit): ";
     cin.getline(comm, 1024);
     String str(comm);

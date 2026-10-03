@@ -57,7 +57,7 @@ void DataManagerColumn::setShapeTiled(rownr_t rownr, const IPosition& shape, con
 }
 
 // By default the shape is defined (for scalars).
-Bool DataManagerColumn::isShapeDefined(rownr_t) { return True; }
+bool DataManagerColumn::isShapeDefined(rownr_t) { return true; }
 
 // The default implementation of ndim is to use the shape.
 uInt DataManagerColumn::ndim(rownr_t rownr) { return shape(rownr).nelements(); }
@@ -68,11 +68,11 @@ IPosition DataManagerColumn::shape(rownr_t) { return IPosition(0); }
 // The tile shape of the array in the given row.
 IPosition DataManagerColumn::tileShape(rownr_t) { return IPosition(0); }
 
-Bool DataManagerColumn::canChangeShape() const { return False; }
+bool DataManagerColumn::canChangeShape() const { return false; }
 
 String DataManagerColumn::dataTypeId() const { return String(); }
 
-Bool DataManagerColumn::isWritable() const { return True; }
+bool DataManagerColumn::isWritable() const { return true; }
 
 void DataManagerColumn::throwGet() const {
   throw(DataManInvOper("DataManagerColumn::get not allowed in column " + columnName()));
@@ -81,7 +81,7 @@ void DataManagerColumn::throwPut() const {
   throw(DataManInvOper("DataManagerColumn::put not allowed in column " + columnName()));
 }
 
-void DataManagerColumn::getBool(rownr_t, Bool*) { throwGet(); }
+void DataManagerColumn::getBool(rownr_t, bool*) { throwGet(); }
 void DataManagerColumn::getuChar(rownr_t, uChar*) { throwGet(); }
 void DataManagerColumn::getShort(rownr_t, Short*) { throwGet(); }
 void DataManagerColumn::getuShort(rownr_t, uShort*) { throwGet(); }
@@ -94,7 +94,7 @@ void DataManagerColumn::getComplex(rownr_t, Complex*) { throwGet(); }
 void DataManagerColumn::getDComplex(rownr_t, DComplex*) { throwGet(); }
 void DataManagerColumn::getString(rownr_t, String*) { throwGet(); }
 
-void DataManagerColumn::putBool(rownr_t, const Bool*) { throwPut(); }
+void DataManagerColumn::putBool(rownr_t, const bool*) { throwPut(); }
 void DataManagerColumn::putuChar(rownr_t, const uChar*) { throwPut(); }
 void DataManagerColumn::putShort(rownr_t, const Short*) { throwPut(); }
 void DataManagerColumn::putuShort(rownr_t, const uShort*) { throwPut(); }
@@ -184,7 +184,7 @@ void DataManagerColumn::GetCells(const RefRows& rownrs, ArrayBase& arr) {
     const Vector<rownr_t>& rowvec = rownrs.rowVector();
     rownr_t nr = rowvec.nelements();
     if (nr > 0) {
-      Bool delR;
+      bool delR;
       const rownr_t* rows = rowvec.getStorage(delR);
       const T* cptr = static_cast<const T*>(colCache_p.dataPtr());
       rownr_t strow = colCache_p.start();

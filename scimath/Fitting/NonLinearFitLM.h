@@ -89,7 +89,7 @@ class NonLinearFitLM : public NonLinearFit<T> {
   //  data will be deduced from the Functional provided with
   //  <src>setFunction()</src>.
   //  Optionally, a fitter with SVD behaviour
-  explicit NonLinearFitLM(Bool svd = False);
+  explicit NonLinearFitLM(bool svd = false);
   // Copy constructor (deep copy)
   NonLinearFitLM(const NonLinearFitLM &other);
   // Assignment (deep copy)
@@ -101,11 +101,11 @@ class NonLinearFitLM : public NonLinearFit<T> {
  protected:
   // # Member functions
   //  Generalised fitter
-  virtual Bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
+  virtual bool fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
                      const Array<typename FunctionTraits<T>::BaseType> &x,
                      const Vector<typename FunctionTraits<T>::BaseType> &y,
                      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-                     const Vector<Bool> *const mask = 0);
+                     const Vector<bool> *const mask = 0);
 
  private:
   // # Data

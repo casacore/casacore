@@ -103,7 +103,7 @@ void calc(Table& tab, const String& name) {
   double vmax = max(vec);
   double vadev = avdev(vec, vmean);
   double vsdev = stddev(vec, vmean);
-  double vmed = median(vec, False);
+  double vmed = median(vec, false);
   cout << "Min    " << name << ":  " << vmin << endl;
   cout << "Max    " << name << ":  " << vmax << endl;
   cout << "Mean   " << name << ":  " << vmean << endl;

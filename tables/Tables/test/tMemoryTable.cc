@@ -168,7 +168,7 @@ int main() {
   return 0;  // exit with success status
 }
 
-void initArrays(Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb) {
+void initArrays(Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<bool>& arrb) {
   // The static_cast is a workaround for an SGI compiler bug
   indgen(static_cast<Cube<Float>&>(arrf));
   arrdc(0) = DComplex(1.2, 3.4);
@@ -179,9 +179,9 @@ void initArrays(Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb) {
     for (Int j = 0; j < shape(1); j++) {
       for (Int k = 0; k < shape(0); k++) {
         if (n++ % 3 == 2) {
-          arrb(k, j, i) = True;
+          arrb(k, j, i) = true;
         } else {
-          arrb(k, j, i) = False;
+          arrb(k, j, i) = false;
         }
       }
     }
@@ -206,10 +206,10 @@ void info(const Table& aTable) {
         break;
       case TpBool:
         if (cdesc.isArray()) {
-          ArrayColumn<Bool> ad(aTable, cdesc.name());
+          ArrayColumn<bool> ad(aTable, cdesc.name());
           cout << ad.getColumn() << endl;
         } else {
-          ScalarColumn<Bool> ab(aTable, cdesc.name());
+          ScalarColumn<bool> ab(aTable, cdesc.name());
           cout << ab.getColumn() << endl;
         }
         break;
@@ -290,7 +290,7 @@ void init(uInt aMode, Table& aTable) {
     td.comment() = "A test of class TableDesc";
     td.addColumn(ScalarColumnDesc<DComplex>("Col-1"));
     td.addColumn(ScalarColumnDesc<Int>("Col-2"));
-    td.addColumn(ScalarColumnDesc<Bool>("Col-3"));
+    td.addColumn(ScalarColumnDesc<bool>("Col-3"));
     td.addColumn(ScalarColumnDesc<Int>("Colvirt"));
 
     // Now create a new table from the description.
@@ -306,7 +306,7 @@ void init(uInt aMode, Table& aTable) {
 
   ScalarColumn<DComplex> aa(aTable, "Col-1");
   ScalarColumn<Int> ab(aTable, "Col-2");
-  ScalarColumn<Bool> ac(aTable, "Col-3");
+  ScalarColumn<bool> ac(aTable, "Col-3");
 
   // fill columns with data
   uInt i;
@@ -319,11 +319,11 @@ void init(uInt aMode, Table& aTable) {
     DComplex a(i + j, (i + j) * 2);
     aa.put(i + j, a);
     ab.put(i + j, i + j);
-    Bool b;
+    bool b;
     if ((i + j) % 2 == 0) {
-      b = True;
+      b = true;
     } else {
-      b = False;
+      b = false;
     }
     ac.put(i + j, b);
   }
@@ -404,7 +404,7 @@ void deleteAndRestore(Table& aTable) {
 }
 
 void addColumn(DataType aDataType, Table& aTable) {
-  ScalarColumn<Bool> ad;
+  ScalarColumn<bool> ad;
   ScalarColumn<DComplex> ae;
   ScalarColumn<String> aj;
 
@@ -413,7 +413,7 @@ void addColumn(DataType aDataType, Table& aTable) {
       cout << "Try to add Column: Col-4 and fill it. " << endl
            << "It Should be using space just freed up" << endl;
 
-      aTable.addColumn(ScalarColumnDesc<Bool>("Col-4"));
+      aTable.addColumn(ScalarColumnDesc<bool>("Col-4"));
 
       if (aTable.tableDesc().isColumn("Col-4")) {
         ad.attach(aTable, "Col-4");
@@ -421,12 +421,12 @@ void addColumn(DataType aDataType, Table& aTable) {
 
       // fill new column with data
       uInt i;
-      Bool b;
+      bool b;
       for (i = 0; i < aTable.nrow(); i++) {
         if (i < 10) {
-          b = True;
+          b = true;
         } else {
-          b = False;
+          b = false;
         }
         ad.put(i, b);
       }
@@ -475,7 +475,7 @@ void addColumn(DataType aDataType, Table& aTable) {
 void addDirectArrays(Table& aTable) {
   ArrayColumn<float> af;
   ArrayColumn<DComplex> ag;
-  ArrayColumn<Bool> ah;
+  ArrayColumn<bool> ah;
 
   cout << "Trying to add a few  Direct Array Columns." << endl;
 
@@ -483,11 +483,11 @@ void addDirectArrays(Table& aTable) {
 
   aTable.addColumn(ArrayColumnDesc<DComplex>("Col-7", IPosition(1, 2), ColumnDesc::Direct));
 
-  aTable.addColumn(ArrayColumnDesc<Bool>("Col-8", IPosition(3, 5, 7, 1), ColumnDesc::Direct));
+  aTable.addColumn(ArrayColumnDesc<bool>("Col-8", IPosition(3, 5, 7, 1), ColumnDesc::Direct));
 
   Cube<float> arrf(IPosition(3, 2, 3, 1));
   Vector<DComplex> arrdc(2);
-  Cube<Bool> arrb(IPosition(3, 5, 7, 1));
+  Cube<bool> arrb(IPosition(3, 5, 7, 1));
   initArrays(arrf, arrdc, arrb);
 
   if (aTable.tableDesc().isColumn("Col-6")) {

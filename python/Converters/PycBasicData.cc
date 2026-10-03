@@ -59,7 +59,7 @@ void register_convert_basicdata() {
   casacore::python::numpy::register_convert_arrayscalars();
   casacore::python::register_convert_casa_string();
   casacore::python::register_convert_casa_iposition();
-  casacore::python::register_convert_casa_vector<casacore::Bool>();
+  casacore::python::register_convert_casa_vector<bool>();
   casacore::python::register_convert_casa_vector<casacore::Int>();
   casacore::python::register_convert_casa_vector<casacore::Int64>();
   casacore::python::register_convert_casa_vector<casacore::Double>();

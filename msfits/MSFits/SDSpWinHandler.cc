@@ -64,7 +64,7 @@ SDSpWindowHandler::SDSpWindowHandler()
   ;
 }
 
-SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
+SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                      const Record &row)
     : fNCachePtr_p(0),
       f0CachePtr_p(0),
@@ -150,14 +150,14 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other) 
   return *this;
 }
 
-void SDSpWindowHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDSpWindowHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   clearAll();
   initAll(ms, handledCols, row);
 }
 
 void SDSpWindowHandler::resetRow(const Record &row) {
   clearRow();
-  Vector<Bool> dummyHandled;
+  Vector<bool> dummyHandled;
   initRow(dummyHandled, row);
 }
 
@@ -200,13 +200,13 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
     } else {
       *netSidebandKey_p = -1;
     }
-    Bool found = False;
+    bool found = false;
     // find any potential matches
     Vector<rownr_t> cacheRows = index_p->getRowNumbers();
     if (cacheRows.nelements() > 0) {
       // do the fN, f0, and bw also match
       const rownr_t *rowPtr;
-      Bool deleteItRows;
+      bool deleteItRows;
       rowPtr = cacheRows.getStorage(deleteItRows);
       uInt i = 0;
       while (i < cacheRows.nelements() && !found) {
@@ -353,7 +353,7 @@ void SDSpWindowHandler::clearRow() {
   rownr_p = -1;
 }
 
-void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) {
+void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {
   msSpWin_p = new MSSpectralWindow(ms.spectralWindow());
   AlwaysAssert(msSpWin_p, AipsError);
 
@@ -368,7 +368,7 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, c
   td.addColumn(ScalarColumnDesc<Int>("IF_CONV_CHAIN"));
   td.addColumn(ScalarColumnDesc<Int>("FREQ_GROUP"));
   td.addColumn(ScalarColumnDesc<Int>("NET_SIDEBAND"));
-  td.addColumn(ScalarColumnDesc<Bool>("FLAG_ROW"));
+  td.addColumn(ScalarColumnDesc<bool>("FLAG_ROW"));
   SetupNewTable newTab("", td, Table::Scratch);
   theCache_p = new Table(newTab, TableLock::PermanentLocking);
   AlwaysAssert(theCache_p, AipsError);
@@ -408,7 +408,7 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, c
   initRow(handledCols, row);
 }
 
-void SDSpWindowHandler::initRow(Vector<Bool> &handledCols, const Record &row) {
+void SDSpWindowHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   AlwaysAssert(handledCols.nelements() == row.description().nfields(), AipsError);
 
   bandwidField_p = row.fieldNumber("BANDWID");
@@ -416,45 +416,45 @@ void SDSpWindowHandler::initRow(Vector<Bool> &handledCols, const Record &row) {
     // allow for this alternative, older, spelling
     bandwidField_p = row.fieldNumber("BANDWIDT");
   }
-  if (bandwidField_p >= 0) handledCols(bandwidField_p) = True;
+  if (bandwidField_p >= 0) handledCols(bandwidField_p) = true;
 
   freqresField_p = row.fieldNumber("FREQRES");
-  if (freqresField_p >= 0) handledCols(freqresField_p) = True;
+  if (freqresField_p >= 0) handledCols(freqresField_p) = true;
 
   if (row.fieldNumber("MAIN_SPECTRAL_WINDOW_ID") >= 0 &&
       row.dataType("MAIN_SPECTRAL_WINDOW_ID") == TpInt) {
     spWinIdField_p.attachToRecord(row, "MAIN_SPECTRAL_WINDOW_ID");
-    handledCols(row.fieldNumber("MAIN_SPECTRAL_WINDOW_ID")) = True;
+    handledCols(row.fieldNumber("MAIN_SPECTRAL_WINDOW_ID")) = true;
   }
 
   if (row.fieldNumber("SPECTRAL_WINDOW_IF_CONV_CHAIN") >= 0 &&
       row.dataType("SPECTRAL_WINDOW_IF_CONV_CHAIN") == TpInt) {
     ifConvChainField_p.attachToRecord(row, "SPECTRAL_WINDOW_IF_CONV_CHAIN");
-    handledCols(row.fieldNumber("SPECTRAL_WINDOW_IF_CONV_CHAIN")) = True;
+    handledCols(row.fieldNumber("SPECTRAL_WINDOW_IF_CONV_CHAIN")) = true;
   }
 
   if (row.fieldNumber("SPECTRAL_WINDOW_FREQ_GROUP") >= 0 &&
       row.dataType("SPECTRAL_WINDOW_FREQ_GROUP") == TpInt) {
     freqGroupField_p.attachToRecord(row, "SPECTRAL_WINDOW_FREQ_GROUP");
-    handledCols(row.fieldNumber("SPECTRAL_WINDOW_FREQ_GROUP")) = True;
+    handledCols(row.fieldNumber("SPECTRAL_WINDOW_FREQ_GROUP")) = true;
   }
 
   if (row.fieldNumber("SPECTRAL_WINDOW_NET_SIDEBAND") >= 0 &&
       row.dataType("SPECTRAL_WINDOW_NET_SIDEBAND") == TpInt) {
     netSidebandField_p.attachToRecord(row, "SPECTRAL_WINDOW_NET_SIDEBAND");
-    handledCols(row.fieldNumber("SPECTRAL_WINDOW_NET_SIDEBAND")) = True;
+    handledCols(row.fieldNumber("SPECTRAL_WINDOW_NET_SIDEBAND")) = true;
   }
 
   if (row.fieldNumber("SPECTRAL_WINDOW_FLAG_ROW") >= 0 &&
       row.dataType("SPECTRAL_WINDOW_FLAG_ROW") == TpBool) {
     flagRowField_p.attachToRecord(row, "SPECTRAL_WINDOW_FLAG_ROW");
-    handledCols(row.fieldNumber("SPECTRAL_WINDOW_FLAG_ROW")) = True;
+    handledCols(row.fieldNumber("SPECTRAL_WINDOW_FLAG_ROW")) = true;
   }
 
   // ignore this field, produced by ms2sdfits for MS version 1, it doesn't carry any additional
   // information
   if (row.fieldNumber("SPECTRAL_WINDOW_NUM_CHAN") >= 0)
-    handledCols(row.fieldNumber("SPECTRAL_WINDOW_NUM_CHAN")) = True;
+    handledCols(row.fieldNumber("SPECTRAL_WINDOW_NUM_CHAN")) = true;
 
   // row number isn't set until the following fill
   rownr_p = -1;

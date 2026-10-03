@@ -76,6 +76,6 @@ IPosition LatticeNavigator::trc() const { return latticeShape() - 1; }
 
 IPosition LatticeNavigator::increment() const { return IPosition(latticeShape().nelements(), 1); }
 
-Bool LatticeNavigator::ok() const { return True; }
+bool LatticeNavigator::ok() const { return true; }
 
 }  // namespace casacore

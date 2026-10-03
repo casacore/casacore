@@ -31,7 +31,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LatticeRegion::LatticeRegion() : itsRegion(0), itsHasRegionMask(False) {}
+LatticeRegion::LatticeRegion() : itsRegion(0), itsHasRegionMask(false) {}
 
 LatticeRegion::LatticeRegion(const LCRegion& region)
     : itsRegion(region.cloneRegion()),
@@ -42,7 +42,7 @@ LatticeRegion::LatticeRegion(LCRegion* region)
     : itsRegion(region), itsSlicer(region->boundingBox()), itsHasRegionMask(region->hasMask()) {}
 
 LatticeRegion::LatticeRegion(const Slicer& slicer, const IPosition& latticeShape)
-    : itsRegion(0), itsHasRegionMask(False) {
+    : itsRegion(0), itsHasRegionMask(false) {
   // Make sure that the slicer has blc,trc filled in.
   IPosition blc, trc, inc;
   slicer.inferShapeFromSource(latticeShape, blc, trc, inc);
@@ -51,7 +51,7 @@ LatticeRegion::LatticeRegion(const Slicer& slicer, const IPosition& latticeShape
 }
 
 LatticeRegion::LatticeRegion(const LatticeRegion& other)
-    : Lattice<Bool>(),
+    : Lattice<bool>(),
       itsRegion(other.itsRegion->cloneRegion()),
       itsSlicer(other.itsSlicer),
       itsHasRegionMask(other.itsHasRegionMask) {}
@@ -71,9 +71,9 @@ LatticeRegion& LatticeRegion::operator=(const LatticeRegion& other) {
   return *this;
 }
 
-Lattice<Bool>* LatticeRegion::clone() const { return new LatticeRegion(*this); }
+Lattice<bool>* LatticeRegion::clone() const { return new LatticeRegion(*this); }
 
-Bool LatticeRegion::isWritable() const { return itsRegion->isWritable(); }
+bool LatticeRegion::isWritable() const { return itsRegion->isWritable(); }
 
 uInt LatticeRegion::advisedMaxPixels() const { return itsRegion->advisedMaxPixels(); }
 
@@ -105,7 +105,7 @@ void LatticeRegion::showCacheStatistics(std::ostream& os) const {
   itsRegion->showCacheStatistics(os);
 }
 
-Bool LatticeRegion::lock(FileLocker::LockType type, uInt nattempts) {
+bool LatticeRegion::lock(FileLocker::LockType type, uInt nattempts) {
   // Llock the PagedArray containing the mask.
   return itsRegion->lock(type, nattempts);
 }
@@ -113,7 +113,7 @@ void LatticeRegion::unlock() {
   // Unlock the PagedArray containing the mask.
   itsRegion->unlock();
 }
-Bool LatticeRegion::hasLock(FileLocker::LockType type) const { return itsRegion->hasLock(type); }
+bool LatticeRegion::hasLock(FileLocker::LockType type) const { return itsRegion->hasLock(type); }
 void LatticeRegion::resync() { itsRegion->resync(); }
 
 void LatticeRegion::flush() { itsRegion->flush(); }
@@ -128,55 +128,55 @@ uInt LatticeRegion::ndim() const { return itsSlicer.ndim(); }
 
 size_t LatticeRegion::nelements() const { return itsRegion->nelements(); }
 
-LatticeIterInterface<Bool>* LatticeRegion::makeIter(const LatticeNavigator& navigator,
-                                                    Bool useRef) const {
+LatticeIterInterface<bool>* LatticeRegion::makeIter(const LatticeNavigator& navigator,
+                                                    bool useRef) const {
   return itsRegion->makeIter(navigator, useRef);
 }
 
-Bool LatticeRegion::doGetSlice(Array<Bool>& buffer, const Slicer& section) {
+bool LatticeRegion::doGetSlice(Array<bool>& buffer, const Slicer& section) {
   // When no mask at all, simply return all true.
   if (!hasMask()) {
     buffer.resize(section.length());
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
   }
   // Return the required section.
   ///    LCRegion* reg = (LCRegion*)itsRegion;
   return itsRegion->doGetSlice(buffer, section);
 }
 
-void LatticeRegion::doPutSlice(const Array<Bool>& sourceBuffer, const IPosition& where,
+void LatticeRegion::doPutSlice(const Array<bool>& sourceBuffer, const IPosition& where,
                                const IPosition& stride) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->putSlice(sourceBuffer, where, stride);
 }
 
-void LatticeRegion::set(const Bool& value) {
+void LatticeRegion::set(const bool& value) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->set(value);
 }
-void LatticeRegion::apply(Bool (*function)(Bool)) {
+void LatticeRegion::apply(bool (*function)(bool)) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->apply(function);
 }
-void LatticeRegion::apply(Bool (*function)(const Bool&)) {
+void LatticeRegion::apply(bool (*function)(const bool&)) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->apply(function);
 }
-void LatticeRegion::apply(const Functional<Bool, Bool>& function) {
+void LatticeRegion::apply(const Functional<bool, bool>& function) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->apply(function);
 }
-void LatticeRegion::putAt(const Bool& value, const IPosition& where) {
+void LatticeRegion::putAt(const bool& value, const IPosition& where) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->putAt(value, where);
 }
-void LatticeRegion::copyData(const Lattice<Bool>& from) {
+void LatticeRegion::copyData(const Lattice<bool>& from) {
   AlwaysAssert(hasMask() && isWritable(), AipsError);
   itsRegion->copyData(from);
 }
 
-Bool LatticeRegion::ok() const { return itsRegion->ok(); }
+bool LatticeRegion::ok() const { return itsRegion->ok(); }
 
 Slicer LatticeRegion::convert(const Slicer& slicer) const {
   IPosition blc, trc, inc;

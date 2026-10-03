@@ -233,7 +233,7 @@ class ScalarColumnDesc : public BaseColumnDesc {
 };
 
 // # Explicitly instantiate these templates in ScaColDesc_tmpl.cc
-extern template class ScalarColumnDesc<Bool>;
+extern template class ScalarColumnDesc<bool>;
 extern template class ScalarColumnDesc<Char>;
 extern template class ScalarColumnDesc<Short>;
 extern template class ScalarColumnDesc<uShort>;

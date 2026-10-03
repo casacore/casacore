@@ -115,8 +115,8 @@ class FunctionHolder : public RecordTransformable {
     String nam;
     // type
     Types tp;
-    // Order (True if needed)
-    Bool order;
+    // Order (true if needed)
+    bool order;
   };
 
   // # Constructors
@@ -135,9 +135,9 @@ class FunctionHolder : public RecordTransformable {
 
   // # Member Functions
   //  Check the the FunctionHolder holds the specified type. Return
-  //  True if if does and False otherwise.
+  //  true if if does and false otherwise.
   //  <group>
-  Bool isEmpty() const;
+  bool isEmpty() const;
   // </group>
   // Get the known names
   const Vector<String> &names() const;
@@ -151,11 +151,11 @@ class FunctionHolder : public RecordTransformable {
   const Function<T> &asFunction() const;
   // </group>
   // Add a function
-  Bool addFunction(const Function<T> &fnc);
+  bool addFunction(const Function<T> &fnc);
   // Get the type of currently filled holder
   Types type() const;
-  // Create a Function from a record. An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
+  // Create a Function from a record. An error message is generated, and false
+  // returned if an invalid record is given. A valid record will return true.
   // A valid record contains at least the following fields (any additional fields are
   // ignored):
   // <ul>
@@ -171,15 +171,15 @@ class FunctionHolder : public RecordTransformable {
   // create a default polynomial of that given type.
   // Error messages are postfixed to error.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
+  virtual bool fromRecord(String &error, const RecordInterface &in);
+  virtual bool fromString(String &error, const String &in);
   template <class U>
-  Bool getRecord(String &error, Function<U> *&fn, const RecordInterface &in);
+  bool getRecord(String &error, Function<U> *&fn, const RecordInterface &in);
   // </group>
-  // Create a record from a Function. The return will be False and an error
+  // Create a record from a Function. The return will be false and an error
   // message generated only if the FunctionHolder does not contain a Function.
   // Error messages are postfixed to error.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  virtual bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   virtual const String &ident() const;
 
@@ -197,18 +197,18 @@ class FunctionHolder : public RecordTransformable {
   // List of known names
   mutable Vector<String> nam_p;
   // Filled list?
-  mutable Bool isFilled;
+  mutable bool isFilled;
 
   // # Member functions
   //  Initialise and check the name list
   void init() const;
   // Aid for to/from Record, String
   // <group>
-  Bool putType(String &error, RecordInterface &out) const;
+  bool putType(String &error, RecordInterface &out) const;
   template <class U>
-  Bool getType(String &error, Function<U> *&fn, const RecordInterface &in);
+  bool getType(String &error, Function<U> *&fn, const RecordInterface &in);
   template <class U>
-  Bool getType(String &error, Function<U> *&fn);
+  bool getType(String &error, Function<U> *&fn);
   void setParameters(Function<T> *&fn, const Vector<T> &params);
   void setParameters(Function<AutoDiff<T>> *&fn, const Vector<T> &params);
   // </group>

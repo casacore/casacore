@@ -39,7 +39,7 @@ LCPagedMask::LCPagedMask(const TiledShape& latticShape, const String& tableName)
       itsBox(IPosition(latticShape.shape().nelements(), 0), latticShape.shape() - 1,
              latticShape.shape()) {
   setBoundingBox(itsBox.boundingBox());
-  itsMask = PagedArray<Bool>(latticShape, tableName);
+  itsMask = PagedArray<bool>(latticShape, tableName);
   setMaskPtr(itsMask);
 }
 
@@ -52,11 +52,11 @@ LCPagedMask::LCPagedMask(const TiledShape& maskShape, const LCBox& box, const St
                   "shape of mask and box differ"));
   }
   setBoundingBox(itsBox.boundingBox());
-  itsMask = PagedArray<Bool>(maskShape, tableName);
+  itsMask = PagedArray<bool>(maskShape, tableName);
   setMaskPtr(itsMask);
 }
 
-LCPagedMask::LCPagedMask(PagedArray<Bool>& mask, const LCBox& box)
+LCPagedMask::LCPagedMask(PagedArray<bool>& mask, const LCBox& box)
     : LCRegionSingle(box.latticeShape()), itsBox(box) {
   // Check if box shape and mask shape are equal.
   if (itsBox.shape() != mask.shape()) {
@@ -86,11 +86,11 @@ LCPagedMask& LCPagedMask::operator=(const LCPagedMask& that) {
   return *this;
 }
 
-Bool LCPagedMask::equals(const LCRegion& other) const {
+bool LCPagedMask::equals(const LCRegion& other) const {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (!LCRegionSingle::equals(other)) {
-    return False;
+    return false;
   }
   const LCPagedMask& that = (const LCPagedMask&)other;
   // Check the box and mask.
@@ -124,22 +124,22 @@ void LCPagedMask::clearCache() { itsMask.clearCache(); }
 
 void LCPagedMask::showCacheStatistics(std::ostream& os) const { itsMask.showCacheStatistics(os); }
 
-LatticeIterInterface<Bool>* LCPagedMask::makeIter(const LatticeNavigator& navigator,
-                                                  Bool useRef) const {
+LatticeIterInterface<bool>* LCPagedMask::makeIter(const LatticeNavigator& navigator,
+                                                  bool useRef) const {
   return itsMask.makeIter(navigator, useRef);
 }
 
 void LCPagedMask::handleDelete() {
   // Test if the table can be deleted (i.e. is not used elsewhere).
   Table& tab(itsMask.table());
-  if (tab.isMultiUsed(True)) {
+  if (tab.isMultiUsed(true)) {
     throw(AipsError("Cannot delete the mask (used in another process)"));
   }
   // Mark the table for delete, so the destructor will delete it.
   tab.markForDelete();
 }
 
-void LCPagedMask::handleRename(const String& newName, Bool overwrite) {
+void LCPagedMask::handleRename(const String& newName, bool overwrite) {
   // Rename the underlying table.
   // Make sure the directory does not change.
   Table tab(itsMask.tableName(), Table::Update);
@@ -151,7 +151,7 @@ void LCPagedMask::handleRename(const String& newName, Bool overwrite) {
   }
 }
 
-Bool LCPagedMask::lock(FileLocker::LockType type, uInt nattempts) {
+bool LCPagedMask::lock(FileLocker::LockType type, uInt nattempts) {
   // Llock the PagedArray containing the mask.
   return itsMask.lock(type, nattempts);
 }
@@ -159,7 +159,7 @@ void LCPagedMask::unlock() {
   // Unlock the PagedArray containing the mask.
   itsMask.unlock();
 }
-Bool LCPagedMask::hasLock(FileLocker::LockType type) const { return itsMask.hasLock(type); }
+bool LCPagedMask::hasLock(FileLocker::LockType type) const { return itsMask.hasLock(type); }
 void LCPagedMask::resync() { itsMask.resync(); }
 
 void LCPagedMask::flush() { itsMask.flush(); }
@@ -192,13 +192,13 @@ LCPagedMask* LCPagedMask::fromRecord(const TableRecord& rec, const String& table
     lockOptions = TableLock::AutoLocking;
   }
   Table table(rec.asTable("mask", lockOptions));
-  PagedArray<Bool> mask(table);
+  PagedArray<bool> mask(table);
   LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
   LCPagedMask* regPtr = new LCPagedMask(mask, *boxPtr);
   delete boxPtr;
   return regPtr;
 }
 
-Bool LCPagedMask::isWritable() const { return itsMask.isWritable(); }
+bool LCPagedMask::isWritable() const { return itsMask.isWritable(); }
 
 }  // namespace casacore

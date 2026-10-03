@@ -35,7 +35,7 @@
 
 #include <casacore/casa/namespace.h>
 
-Bool doLinearConv() {
+bool doLinearConv() {
   Double beamData[] = {
       2.7000172105e-25, 9.8635317948e-24, 3.0190166275e-22, 7.7421342681e-21, 1.6634945915e-19,
       2.9946487959e-18, 4.5168693657e-17, 5.7081185033e-16, 6.0438070835e-15, 5.3616318199e-14,
@@ -2718,9 +2718,9 @@ Bool doLinearConv() {
 }
 
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   {
-    Bool failed = False;
+    bool failed = false;
     // Test the double precision constructor
     Array<Double> psf(IPosition(1, 4));
     psf = 0.;
@@ -2740,7 +2740,7 @@ int main() {
     expectedResult(IPosition(1, 1)) = 1.0;
     expectedResult(IPosition(1, 2)) = 0.1;
     expectedResult(IPosition(1, 3)) = 1.2;
-    if (!allNearAbs(expectedResult, result, 1.E-10)) failed = True;
+    if (!allNearAbs(expectedResult, result, 1.E-10)) failed = true;
 
     if (failed)
       cout << "Failed";
@@ -2761,16 +2761,16 @@ int main() {
       expectedResult(IPosition(1, 4)) = 0.1;
       expectedResult(IPosition(1, 5)) = 1.2;
       if (!allNearAbs(expectedResult, result, 1.E-10)) {
-        failed = True;
+        failed = true;
         cout << "Failed";
       } else
         cout << "Passed";
       cout << " the Circular Convolution Resize Test" << endl;
     }
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test the single precision constructor
     Matrix<Float> psf(2, 2);
     psf = 0.;
@@ -2798,17 +2798,17 @@ int main() {
     expectedResult(2, 5) = 0.3;
     expectedResult(1, 0) = 1.5;
     if (!allNearAbs(expectedResult, result, 1.E-5)) {
-      failed = True;
+      failed = true;
       cout << "Failed";
     }
 
     else
       cout << "Passed";
     cout << " the Floating Point 2-D Circular Convolution Test" << endl;
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test the double precision constructor with supplied image size
     Array<Double> psf(IPosition(1, 2));
     psf = 0.;
@@ -2821,14 +2821,14 @@ int main() {
     mod(IPosition(1, 0)) = 1.;
     mod(IPosition(1, 3)) = 2.;
     Array<Double> result;
-    conv.linearConv(result, mod, False);
+    conv.linearConv(result, mod, false);
     Array<Double> expectedResult(IPosition(1, 4));
     expectedResult(IPosition(1, 0)) = 1.;
     expectedResult(IPosition(1, 1)) = 0.;
     expectedResult(IPosition(1, 2)) = 1.;
     expectedResult(IPosition(1, 3)) = 2.;
     if (!allNearAbs(expectedResult, result, 1.E-10)) {
-      failed = True;
+      failed = true;
       cout << "Failed";
     } else
       cout << "Passed";
@@ -2839,7 +2839,7 @@ int main() {
       bigMod = 0;
       bigMod(0) = 1;
       bigMod(7) = 2;
-      conv.linearConv(bigResult, bigMod, True);
+      conv.linearConv(bigResult, bigMod, true);
       Vector<Double> expectedBigResult(9);
       expectedBigResult = 0;
       expectedBigResult(0) = 0.5;
@@ -2847,7 +2847,7 @@ int main() {
       expectedBigResult(7) = 1.0;
       expectedBigResult(8) = 2.0;
       if (!allNearAbs(expectedBigResult, bigResult, 1.E-10)) {
-        failed = True;
+        failed = true;
         cout << "Failed";
       } else
         cout << "Passed";
@@ -2869,7 +2869,7 @@ int main() {
       expectedResult(IPosition(1, 2)) = 2.0;
       expectedResult(IPosition(1, 3)) = 0.6;
       if (!allNearAbs(expectedResult, result, 1.E-10)) {
-        failed = True;
+        failed = true;
         cout << "Failed";
       } else
         cout << "Passed";
@@ -2885,16 +2885,16 @@ int main() {
       expectedResult(IPosition(1, 0)) = 1;
       expectedResult(IPosition(1, 1)) = 0.3;
       if (!allNearAbs(expectedResult, result, 1.E-10)) {
-        failed = True;
+        failed = true;
         cout << "Failed";
       } else
         cout << "Passed";
       cout << " the   small model test" << endl;
     }
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     //    Test the linear convolution with Single precision 2-D functions
     Matrix<Float> psf(2, 4);
     psf = 0.;
@@ -2909,7 +2909,7 @@ int main() {
     for (uInt i = 0; i < 4; i++)
       for (uInt j = 0; j < 2; j++) mod(j, i, 2) = 1.;
     Cube<Float> result;
-    conv.linearConv(result, mod, False);
+    conv.linearConv(result, mod, false);
     Cube<Float> expectedResult(2, 4, 3);
     expectedResult = mod;
     expectedResult(1, 3, 0) = 0.1;
@@ -2923,25 +2923,25 @@ int main() {
     expectedResult(0, 3, 2) = 1.1;
     expectedResult(1, 3, 2) = 1.1;
     if (!allNearAbs(expectedResult, result, 1.E-5)) {
-      failed = True;
+      failed = true;
       cout << "Failed";
     }
 
     else
       cout << "Passed";
     cout << " the Multiple Floating Point 2-D Linear Convolution Test" << endl;
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     if (!doLinearConv()) {
-      failed = True;
+      failed = true;
       cout << "Failed";
     } else {
       cout << "Passed";
     }
     cout << " the linear convolution test" << endl;
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
 
     /*
     Matrix<Double> mat1 = doLinearConv();

@@ -62,7 +62,7 @@ DynLib::DynLib(const std::string& library, const std::string& prefix, const std:
   attach(library, prefix, vers, funcName);
 }
 
-DynLib::DynLib(const std::string& library, Bool closeOnDestruction, const std::string& prefix,
+DynLib::DynLib(const std::string& library, bool closeOnDestruction, const std::string& prefix,
                const std::string& suffix)
     : itsHandle(0), itsDoClose(closeOnDestruction) {
   open(prefix + library + suffix);

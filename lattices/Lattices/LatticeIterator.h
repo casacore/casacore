@@ -215,15 +215,15 @@ class RO_LatticeIterator {
   // useRef=True means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
-  explicit RO_LatticeIterator(const Lattice<T>& data, Bool useRef = True);
+  explicit RO_LatticeIterator(const Lattice<T>& data, bool useRef = true);
 
   // Construct the Iterator with the supplied data, and iteration strategy
-  RO_LatticeIterator(const Lattice<T>& data, const LatticeNavigator& method, Bool useRef = True);
+  RO_LatticeIterator(const Lattice<T>& data, const LatticeNavigator& method, bool useRef = true);
 
   // Construct the Iterator with the supplied data.
   // It uses a LatticeStepper with the supplied cursor shape as the
   // iteration strategy.
-  RO_LatticeIterator(const Lattice<T>& data, const IPosition& cursorShape, Bool useRef = True);
+  RO_LatticeIterator(const Lattice<T>& data, const IPosition& cursorShape, bool useRef = true);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -246,7 +246,7 @@ class RO_LatticeIterator {
   RO_LatticeIterator<T> copy() const;
 
   // Is the iterator object empty?
-  Bool isNull() const { return !itsIterPtr; }
+  bool isNull() const { return !itsIterPtr; }
 
   // Return the underlying lattice.
   Lattice<T>& lattice() const { return itsIterPtr->lattice(); }
@@ -254,21 +254,21 @@ class RO_LatticeIterator {
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
   // postfix and prefix versions will do the same thing.
-  // <br>They return True if the cursor moved (which should always be the
+  // <br>They return true if the cursor moved (which should always be the
   // case if the iterator is not at the end).
   // <group>
-  Bool operator++();
-  Bool operator++(int);
+  bool operator++();
+  bool operator++(int);
   // </group>
 
   // Decrement operator - decrement the cursor to the previous
   // position. These functions are forwarded to the current LatticeNavigator
   // and both postfix and prefix versions will do the same thing.
-  // <br>They return True if the cursor moved (which should always be the
+  // <br>They return true if the cursor moved (which should always be the
   // case if the iterator is not at the start).
   // <group>
-  Bool operator--();
-  Bool operator--(int);
+  bool operator--();
+  bool operator--(int);
   // </group>
 
   // Function which resets the cursor to the beginning of the Lattice and
@@ -277,11 +277,11 @@ class RO_LatticeIterator {
 
   // Function which returns a value of "True" if the cursor is at the
   // beginning of the Lattice, otherwise, returns "False".
-  Bool atStart() const;
+  bool atStart() const;
 
   // Function which returns a value of "True" if an attempt has been made
   // to move the cursor beyond the end of the Lattice.
-  Bool atEnd() const;
+  bool atEnd() const;
 
   // Function to return the number of steps (increments or decrements) taken
   // since construction (or since last reset).  This is a running count of
@@ -324,8 +324,8 @@ class RO_LatticeIterator {
   // </group>
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False.
-  Bool ok() const;
+  // Returns true if everything is fine otherwise returns false.
+  bool ok() const;
 
  protected:
   // The pointer to the Iterator
@@ -427,14 +427,14 @@ class LatticeIterator : public RO_LatticeIterator<T> {
   // useRef=True means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
-  explicit LatticeIterator(Lattice<T>& data, Bool useRef = True);
+  explicit LatticeIterator(Lattice<T>& data, bool useRef = true);
 
   // Construct the Iterator with the supplied data, and iteration strategy
-  LatticeIterator(Lattice<T>& data, const LatticeNavigator& method, Bool useRef = True);
+  LatticeIterator(Lattice<T>& data, const LatticeNavigator& method, bool useRef = true);
 
   // Iterate through the data with a LatticeStepper that has uses the
   // supplied cursorShape.
-  LatticeIterator(Lattice<T>& data, const IPosition& cursorShape, Bool useRef = True);
+  LatticeIterator(Lattice<T>& data, const IPosition& cursorShape, bool useRef = true);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -486,8 +486,8 @@ class LatticeIterator : public RO_LatticeIterator<T> {
   //</group>
 
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine. Otherwise returns False.
-  Bool ok() const;
+  // Returns true if everything is fine. Otherwise returns false.
+  bool ok() const;
 
   // # Make members of parent class known.
  public:

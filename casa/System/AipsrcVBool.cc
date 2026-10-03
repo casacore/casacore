@@ -33,9 +33,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool AipsrcVector<Bool>::find(Vector<Bool> &value, const String &keyword) {
+bool AipsrcVector<bool>::find(Vector<bool> &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     const std::regex tTrue("^([tT]|[yY]|[1-9])");
@@ -43,7 +43,7 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value, const String &keyword) {
     Int m = std::count(res.begin(), res.end(), ' ') + 1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
-    value = Vector<Bool>(m);
+    value = Vector<bool>(m);
     for (Int i = 0; i < m; i++) {
       value(i) = std::regex_search(nres[i], tTrue);
     }
@@ -52,12 +52,12 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value, const String &keyword) {
   return x;
 }
 
-Bool AipsrcVector<Bool>::find(Vector<Bool> &value, const String &keyword,
-                              const Vector<Bool> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+bool AipsrcVector<bool>::find(Vector<bool> &value, const String &keyword,
+                              const Vector<bool> &deflt) {
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcVector<Bool>::registerRC(const String &keyword, const Vector<Bool> &deflt) {
+uInt AipsrcVector<bool>::registerRC(const String &keyword, const Vector<bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   const uInt n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
@@ -65,20 +65,20 @@ uInt AipsrcVector<Bool>::registerRC(const String &keyword, const Vector<Bool> &d
   return n;
 }
 
-const Vector<Bool> AipsrcVector<Bool>::get(uInt keyword) {
+const Vector<bool> AipsrcVector<bool>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword - 1];
 }
 
-void AipsrcVector<Bool>::set(uInt keyword, const Vector<Bool> &deflt) {
+void AipsrcVector<bool>::set(uInt keyword, const Vector<bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   tlst[keyword - 1].resize(deflt.nelements());
   tlst[keyword - 1] = deflt;
 }
 
-void AipsrcVector<Bool>::save(uInt keyword) {
+void AipsrcVector<bool>::save(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;

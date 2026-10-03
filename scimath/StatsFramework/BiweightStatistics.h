@@ -114,7 +114,7 @@ namespace casacore {
 // ConstrainedRangeStatistics and does not need to use any methods in that
 // class, so making it a specialization of the higher level ClassicalStatistics
 // seems the better choice.
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
  public:
@@ -140,7 +140,7 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
                               std::shared_ptr<AccumType> knownMin = nullptr,
                               std::shared_ptr<AccumType> knownMax = nullptr,
                               uInt binningThreshholdSizeBytes = 4096 * 4096,
-                              Bool persistSortedArray = False, uInt nBins = 10000);
+                              bool persistSortedArray = false, uInt nBins = 10000);
 
   virtual AccumType getMedianAndQuantiles(std::map<Double, AccumType>& quantileToValue,
                                           const std::set<Double>& quantiles,
@@ -148,20 +148,20 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
                                           std::shared_ptr<AccumType> knownMin = nullptr,
                                           std::shared_ptr<AccumType> knownMax = nullptr,
                                           uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                          Bool persistSortedArray = False, uInt nBins = 10000);
+                                          bool persistSortedArray = false, uInt nBins = 10000);
 
   virtual AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
                                        std::shared_ptr<AccumType> knownMin = nullptr,
                                        std::shared_ptr<AccumType> knownMax = nullptr,
                                        uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                       Bool persistSortedArray = False, uInt nBins = 10000);
+                                       bool persistSortedArray = false, uInt nBins = 10000);
 
   virtual std::map<Double, AccumType> getQuantiles(const std::set<Double>& quantiles,
                                                    std::shared_ptr<uInt64> npts = nullptr,
                                                    std::shared_ptr<AccumType> min = nullptr,
                                                    std::shared_ptr<AccumType> max = nullptr,
                                                    uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                                   Bool persistSortedArray = False,
+                                                   bool persistSortedArray = false,
                                                    uInt nBins = 10000);
 
   virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat);
@@ -175,9 +175,9 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   // accumulators, etc.
   virtual void reset();
 
-  // If c is True, an exception is thrown; this algorithm does not support
+  // If c is true, an exception is thrown; this algorithm does not support
   // computing stats as data are added.
-  virtual void setCalculateAsAdded(Bool c);
+  virtual void setCalculateAsAdded(bool c);
 
   // Provide guidance to algorithms by specifying a priori which statistics
   // the caller would like calculated. This algorithm always needs to compute
@@ -232,7 +232,7 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-                             const DataRanges& ranges, Bool isInclude) const;
+                             const DataRanges& ranges, bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
@@ -241,7 +241,7 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
                              const MaskIterator& maskBegin, uInt maskStride,
-                             const DataRanges& ranges, Bool isInclude) const;
+                             const DataRanges& ranges, bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -250,12 +250,12 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
                              uInt64 nr, uInt dataStride, const DataRanges& ranges,
-                             Bool isInclude) const;
+                             bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
                              uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-                             uInt maskStride, const DataRanges& ranges, Bool isInclude) const;
+                             uInt maskStride, const DataRanges& ranges, bool isInclude) const;
 
   void _locationAndScaleSums(AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
                              const DataIterator& dataBegin, const WeightsIterator& weightBegin,
@@ -270,26 +270,26 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
                      uInt dataStride) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
-                     uInt dataStride, const DataRanges& ranges, Bool isInclude) const;
+                     uInt dataStride, const DataRanges& ranges, bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
                      uInt dataStride, const MaskIterator& maskBegin, uInt maskStride) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
                      uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-                     const DataRanges& ranges, Bool isInclude) const;
+                     const DataRanges& ranges, bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
                      const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
                      const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                     const DataRanges& ranges, Bool isInclude) const;
+                     const DataRanges& ranges, bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
                      const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
                      const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                     Bool isInclude) const;
+                     bool isInclude) const;
 
   void _locationSums(AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
                      const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
@@ -303,26 +303,26 @@ class BiweightStatistics : public ClassicalStatistics<CASA_STATP> {
                   uInt dataStride) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-                  uInt dataStride, const DataRanges& ranges, Bool isInclude) const;
+                  uInt dataStride, const DataRanges& ranges, bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
                   uInt dataStride, const MaskIterator& maskBegin, uInt maskStride) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
                   uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-                  const DataRanges& ranges, Bool isInclude) const;
+                  const DataRanges& ranges, bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
                   const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
                   const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-                  const DataRanges& ranges, Bool isInclude) const;
+                  const DataRanges& ranges, bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
                   const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
                   const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-                  Bool isInclude) const;
+                  bool isInclude) const;
 
   void _scaleSums(AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
                   const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,

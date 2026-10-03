@@ -38,10 +38,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSWeather::MSWeather() : hasBeenDestroyed_p(True) {}
+MSWeather::MSWeather() : hasBeenDestroyed_p(true) {}
 
 MSWeather::MSWeather(const String &tableName, TableOption option)
-    : MSTable<MSWeatherEnums>(tableName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSWeatherEnums>(tableName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -50,7 +50,7 @@ MSWeather::MSWeather(const String &tableName, TableOption option)
 }
 
 MSWeather::MSWeather(const String &tableName, const String &tableDescName, TableOption option)
-    : MSTable<MSWeatherEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(False) {
+    : MSTable<MSWeatherEnums>(tableName, tableDescName, option), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -58,8 +58,8 @@ MSWeather::MSWeather(const String &tableName, const String &tableDescName, Table
                   "table is not a valid MSWeather"));
 }
 
-MSWeather::MSWeather(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
-    : MSTable<MSWeatherEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(False) {
+MSWeather::MSWeather(SetupNewTable &newTab, rownr_t nrrow, bool initialize)
+    : MSTable<MSWeatherEnums>(newTab, nrrow, initialize), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -68,7 +68,7 @@ MSWeather::MSWeather(SetupNewTable &newTab, rownr_t nrrow, Bool initialize)
 }
 
 MSWeather::MSWeather(const Table &table)
-    : MSTable<MSWeatherEnums>(table), hasBeenDestroyed_p(False) {
+    : MSTable<MSWeatherEnums>(table), hasBeenDestroyed_p(false) {
   // verify that the now opened table is valid
   if (!validate(this->tableDesc()))
     throw(
@@ -77,7 +77,7 @@ MSWeather::MSWeather(const Table &table)
 }
 
 MSWeather::MSWeather(const MSWeather &other)
-    : MSTable<MSWeatherEnums>(other), hasBeenDestroyed_p(False) {
+    : MSTable<MSWeatherEnums>(other), hasBeenDestroyed_p(false) {
   // verify that other is valid
   if (&other != this)
     if (!validate(this->tableDesc()))
@@ -94,7 +94,7 @@ MSWeather::~MSWeather() {
     LogIO os;
     os << LogIO::WARN << "~MSWeather() - Table written is not a valid MSWeather" << LogIO::POST;
   }
-  hasBeenDestroyed_p = True;
+  hasBeenDestroyed_p = true;
 }
 
 MSWeather &MSWeather::operator=(const MSWeather &other) {

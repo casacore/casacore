@@ -110,10 +110,10 @@ class PowerLogarithmicPolynomialParam : public Function1D<T> {
   // # Operators
   //  Comparisons.
   //  <group>
-  Bool operator==(const PowerLogarithmicPolynomialParam<T> &other) const {
+  bool operator==(const PowerLogarithmicPolynomialParam<T> &other) const {
     return (param_p == other.param_p);
   }
-  Bool operator!=(const PowerLogarithmicPolynomialParam<T> &other) const {
+  bool operator!=(const PowerLogarithmicPolynomialParam<T> &other) const {
     return (param_p != other.param_p);
   }
   // </group>

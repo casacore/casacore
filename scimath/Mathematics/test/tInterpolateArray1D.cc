@@ -51,28 +51,28 @@
   } while (0)
 
 unsigned tests_done = 0;
-const Bool debug = False;  // True;
+const bool debug = false;  // true;
 
 template <class T, class S>
 class TestLinearInterpolation1 {
  public:
   TestLinearInterpolation1() {
     Array<S> a(IPosition(2, 2, 1000));
-    Array<Bool> aflags(IPosition(2, 2, 1000));
+    Array<bool> aflags(IPosition(2, 2, 1000));
     Array<S> expect(IPosition(2, 2, 1000));
-    Array<Bool> expflags(IPosition(2, 2, 1000));
+    Array<bool> expflags(IPosition(2, 2, 1000));
 
     Vector<T> ingrid(1000);
 
     for (uInt i = 0; i < 1000; i++) {
       a(IPosition(2, 0, i)) = Complex(1., 1.);
       a(IPosition(2, 1, i)) = Complex(1., 1.);
-      aflags(IPosition(2, 0, i)) = False;
-      aflags(IPosition(2, 1, i)) = False;
+      aflags(IPosition(2, 0, i)) = false;
+      aflags(IPosition(2, 1, i)) = false;
       expect(IPosition(2, 0, i)) = Complex(1., 1.);
       expect(IPosition(2, 1, i)) = Complex(1., 1.);
-      expflags(IPosition(2, 0, i)) = False;
-      expflags(IPosition(2, 1, i)) = False;
+      expflags(IPosition(2, 0, i)) = false;
+      expflags(IPosition(2, 1, i)) = false;
       ingrid(i) = (T)i;
     }
 
@@ -88,14 +88,14 @@ class TestLinearInterpolation1 {
 
     for (Int it = 0; it < (Int)iterations; it++) {
       Array<S> yout;
-      Array<Bool> youtFlags;
+      Array<bool> youtFlags;
       Vector<T> xout(1000);
       Vector<T> xin;
       Array<S> yin;
-      Array<Bool> yinFlags;
+      Array<bool> yinFlags;
       Int method = InterpolateArray1D<T, S>::linear;
-      Bool goodIsTrue = False;
-      Bool extrapolate = False;
+      bool goodIsTrue = false;
+      bool extrapolate = false;
 
       xin.assign(ingrid);
       yin.assign(a);
@@ -142,21 +142,21 @@ class TestLinearInterpolation2 {
  public:
   TestLinearInterpolation2() {
     Array<S> a(IPosition(2, 2, 1000));
-    Array<Bool> aflags(IPosition(2, 2, 1000));
+    Array<bool> aflags(IPosition(2, 2, 1000));
     Array<S> expect(IPosition(2, 2, 1000));
-    Array<Bool> expflags(IPosition(2, 2, 1000));
+    Array<bool> expflags(IPosition(2, 2, 1000));
 
     Vector<T> ingrid(1000);
 
     for (uInt i = 0; i < 1000; i++) {
       a(IPosition(2, 0, i)) = Complex((Float)i, (Float)i);
       a(IPosition(2, 1, i)) = Complex((Float)i, (Float)i);
-      aflags(IPosition(2, 0, i)) = False;
-      aflags(IPosition(2, 1, i)) = False;
+      aflags(IPosition(2, 0, i)) = false;
+      aflags(IPosition(2, 1, i)) = false;
       expect(IPosition(2, 0, i)) = Complex(1., 1.);
       expect(IPosition(2, 1, i)) = Complex(1., 1.);
-      expflags(IPosition(2, 0, i)) = False;
-      expflags(IPosition(2, 1, i)) = False;
+      expflags(IPosition(2, 0, i)) = false;
+      expflags(IPosition(2, 1, i)) = false;
       ingrid(i) = (T)i;
     }
 
@@ -172,14 +172,14 @@ class TestLinearInterpolation2 {
 
     for (Int it = 0; it < (Int)iterations; it++) {
       Array<S> yout;
-      Array<Bool> youtFlags;
+      Array<bool> youtFlags;
       Vector<T> xout(1000);
       Vector<T> xin;
       Array<S> yin;
-      Array<Bool> yinFlags;
+      Array<bool> yinFlags;
       Int method = InterpolateArray1D<T, S>::linear;
-      Bool goodIsTrue = False;
-      Bool extrapolate = False;
+      bool goodIsTrue = false;
+      bool extrapolate = false;
 
       xin.assign(ingrid);
       yin.assign(a);

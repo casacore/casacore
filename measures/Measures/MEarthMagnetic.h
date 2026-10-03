@@ -222,14 +222,14 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic>>
   // </group>
   // Translate string to reference code
   // <group>
-  static Bool getType(MEarthMagnetic::Types &tp, const String &in);
-  Bool giveMe(MEarthMagnetic::Ref &mr, const String &in);
+  static bool getType(MEarthMagnetic::Types &tp, const String &in);
+  bool giveMe(MEarthMagnetic::Ref &mr, const String &in);
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
-  // Set the reference type to the specified String. False if illegal
+  // Set the offset in the reference (false if non-matching Measure)
+  virtual bool setOffset(const Measure &in);
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
@@ -252,7 +252,7 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic>>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Tell me if you are a pure model (e.g. a planet)
-  virtual Bool isModel() const;
+  virtual bool isModel() const;
 
   // Get Measure data
   // <group>

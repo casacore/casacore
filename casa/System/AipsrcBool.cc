@@ -31,20 +31,20 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword) {
+bool AipsrcValue<bool>::find(bool &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x)
     value = (res.size() > 0 && (res[0] == 't' || res[0] == 'T' || res[0] == 'y' || res[0] == 'Y' ||
                                 (res[0] >= '1' && res[0] <= '9')));
   return x;
 }
 
-Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword, const Bool &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+bool AipsrcValue<bool>::find(bool &value, const String &keyword, const bool &deflt) {
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcValue<Bool>::registerRC(const String &keyword, const Bool &deflt) {
+uInt AipsrcValue<bool>::registerRC(const String &keyword, const bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   const uInt n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
@@ -52,19 +52,19 @@ uInt AipsrcValue<Bool>::registerRC(const String &keyword, const Bool &deflt) {
   return n;
 }
 
-Bool AipsrcValue<Bool>::get(uInt keyword) {
+bool AipsrcValue<bool>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword - 1];
 }
 
-void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
+void AipsrcValue<bool>::set(uInt keyword, const bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   tlst[keyword - 1] = deflt;
 }
 
-void AipsrcValue<Bool>::save(uInt keyword) {
+void AipsrcValue<bool>::save(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;

@@ -49,7 +49,7 @@ LELImageCoord::LELImageCoord(const CoordinateSystem& coordinates, const ImageInf
 
 LELImageCoord::~LELImageCoord() {}
 
-Bool LELImageCoord::hasCoordinates() const { return True; }
+bool LELImageCoord::hasCoordinates() const { return true; }
 
 String LELImageCoord::classname() const { return "LELImageCoord"; }
 
@@ -107,7 +107,7 @@ LatticeExprNode LELImageCoord::makeSubLattice(const LatticeExprNode& expr,
     case TpDComplex:
       return SubImage<DComplex>(ImageExpr<DComplex>(LatticeExpr<DComplex>(expr), ""), region);
     case TpBool:
-      return SubImage<Bool>(ImageExpr<Bool>(LatticeExpr<Bool>(expr), ""), region);
+      return SubImage<bool>(ImageExpr<bool>(LatticeExpr<bool>(expr), ""), region);
     default:
       throw(AipsError("LELImageCoord::makeSubLattice - unknown datatype"));
   }
@@ -134,7 +134,7 @@ LatticeExprNode LELImageCoord::makeExtendLattice(const LatticeExprNode& expr,
       return ExtendImage<DComplex>(ImageExpr<DComplex>(LatticeExpr<DComplex>(expr), ""), newShape,
                                    newCsys);
     case TpBool:
-      return ExtendImage<Bool>(ImageExpr<Bool>(LatticeExpr<Bool>(expr), ""), newShape, newCsys);
+      return ExtendImage<bool>(ImageExpr<bool>(LatticeExpr<bool>(expr), ""), newShape, newCsys);
     default:
       throw(AipsError("LELImageCoord::makeExtendLattice - unknown datatype"));
   }

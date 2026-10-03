@@ -503,12 +503,12 @@ class Random {
   // These function allow you to manipulate the parameters (mean variance etc.)
   // of random number distribution. The parameters() function returns the
   // current value, the setParameters function allows you to change the
-  // parameters and the checkParameters function will return False if the
+  // parameters and the checkParameters function will return false if the
   // supplied parameters are not appropriate for the distribution.
   // <group>
   virtual void setParameters(const Vector<Double>& parms) = 0;
   virtual Vector<Double> parameters() const = 0;
-  virtual Bool checkParameters(const Vector<Double>& parms) const = 0;
+  virtual bool checkParameters(const Vector<Double>& parms) const = 0;
   // </group>
 
   // returns the default parameters for the specified distribution. Returns an
@@ -592,7 +592,7 @@ class Binomial : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -670,7 +670,7 @@ class DiscreteUniform : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -737,7 +737,7 @@ class Erlang : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -828,7 +828,7 @@ class Geometric : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -893,7 +893,7 @@ class HyperGeometric : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -978,14 +978,14 @@ class Normal : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
   Double itsMean;
   Double itsVariance;
   Double itsStdDev;
-  Bool itsCached;
+  bool itsCached;
   Double itsCachedValue;
 };
 
@@ -1048,7 +1048,7 @@ class LogNormal : public Normal {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -1110,7 +1110,7 @@ class NegativeExpntl : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -1175,7 +1175,7 @@ class Poisson : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -1242,7 +1242,7 @@ class Uniform : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:
@@ -1310,7 +1310,7 @@ class Weibull : public Random {
   // <group>
   virtual void setParameters(const Vector<Double>& parms);
   virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
  private:

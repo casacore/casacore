@@ -51,7 +51,7 @@ class HDF5DataSet;
 // </synopsis>
 class MultiFileBuffer {
  public:
-  MultiFileBuffer(size_t bufSize, Bool useODirect);
+  MultiFileBuffer(size_t bufSize, bool useODirect);
   ~MultiFileBuffer() {
     if (itsData) free(itsData);
   }
@@ -78,7 +78,7 @@ struct MultiFileInfo {
   // Initialize the object. The buffer is created when the file is opened.
   explicit MultiFileInfo();
   // Allocate the buffer.
-  void allocBuffer(size_t bufSize, Bool useODirect) {
+  void allocBuffer(size_t bufSize, bool useODirect) {
     buffer = std::make_shared<MultiFileBuffer>(bufSize, useODirect);
   }
   // # Data members.
@@ -86,8 +86,8 @@ struct MultiFileInfo {
   Int64 curBlock;                           // the data block held in buffer (<0 is none)
   Int64 fsize;                              // file size (in bytes)
   String name;                              // the virtual file name
-  Bool nested;                              // is the file a nested MultiFile?
-  Bool dirty;                               // has data in buffer been changed?
+  bool nested;                              // is the file a nested MultiFile?
+  bool dirty;                               // has data in buffer been changed?
   std::shared_ptr<MultiFileBuffer> buffer;  // buffer holding a data block
   std::shared_ptr<HDF5Group> group;
   std::shared_ptr<HDF5DataSet> dataSet;
@@ -132,9 +132,9 @@ class MultiFileBase {
   // but it will not be less than the absolute value of the given block size.
   // <br>If useODIrect=True, it means that O_DIRECT is used. If the OS does not
   // support it (as determined at configure time), the flag will always be
-  // set to False. If True, the data buffers will have a proper alignment
+  // set to false. If true, the data buffers will have a proper alignment
   // and size (as needed by O_DIRECT).
-  MultiFileBase(const String& name, Int blockSize, Bool useODirect);
+  MultiFileBase(const String& name, Int blockSize, bool useODirect);
 
   // The destructor flushes dirty blocks and closes the container file.
   virtual ~MultiFileBase();
@@ -157,7 +157,7 @@ class MultiFileBase {
   String fileName() const { return itsName; }
 
   // Is the container file writable?
-  Bool isWritable() const { return itsWritable; }
+  bool isWritable() const { return itsWritable; }
 
   // Open the given logical file and return its file id.
   // If the name is unknown, an exception is thrown.
@@ -223,10 +223,10 @@ class MultiFileBase {
   // Return the file id of a file in the MultiFileBase object.
   // If the name is unknown, an exception is thrown if throwExcp is set.
   // Otherwise it returns -1.
-  Int fileId(const String& name, Bool throwExcp = True) const;
+  Int fileId(const String& name, bool throwExcp = true) const;
 
   // Is O_DIRECT used?
-  Bool useODirect() const { return itsUseODirect; }
+  bool useODirect() const { return itsUseODirect; }
 
  protected:
   // Resync with another process by clearing the buffers and rereading
@@ -240,7 +240,7 @@ class MultiFileBase {
   // Write the dirty block and clear dirty flag.
   void writeDirty(MultiFileInfo& info) {
     writeBlock(info, info.curBlock, info.buffer->data());
-    info.dirty = False;
+    info.dirty = false;
   }
 
   // Add a file to the MultiFileBase object. It returns the file id.
@@ -264,9 +264,9 @@ class MultiFileBase {
   virtual void close() = 0;
   // Write the header info.
   virtual void writeHeader() = 0;
-  // Read the header info. If always==False, the info is only read if the
+  // Read the header info. If always==false, the info is only read if the
   // header counter has changed.
-  virtual void readHeader(Bool always = True) = 0;
+  virtual void readHeader(bool always = true) = 0;
   // Extend a logical file to fit lastblk.
   virtual void extend(MultiFileInfo& info, Int64 lastblk) = 0;
   // Write a data block of a logical file into the container file.
@@ -285,9 +285,9 @@ class MultiFileBase {
   Int64 itsHdrCounter;  // Counter of header changes
   std::vector<MultiFileInfo> itsInfo;
   std::shared_ptr<MultiFileBuffer> itsBuffer;
-  Bool itsUseODirect;  // use O_DIRECT?
-  Bool itsWritable;    // Is the file writable?
-  Bool itsChanged;     // Has header info changed since last flush?
+  bool itsUseODirect;  // use O_DIRECT?
+  bool itsWritable;    // Is the file writable?
+  bool itsChanged;     // Has header info changed since last flush?
   std::vector<Int64> itsFreeBlocks;
 };
 

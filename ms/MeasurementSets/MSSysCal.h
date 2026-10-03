@@ -87,7 +87,7 @@ class MSSysCal : public MSSysCalEnums, public MSTable<MSSysCalEnums> {
   // <group name=tableLikeConstructors>
   MSSysCal(const String &tableName, TableOption = Table::Old);
   MSSysCal(const String &tableName, const String &tableDescName, TableOption = Table::Old);
-  MSSysCal(SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+  MSSysCal(SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
   MSSysCal(const Table &table);
   MSSysCal(const MSSysCal &other);
   // </group>
@@ -119,7 +119,7 @@ class MSSysCal : public MSSysCalEnums, public MSTable<MSSysCalEnums> {
 
  private:
   // required by the need to throw an exception in the destructor
-  Bool hasBeenDestroyed_p;
+  bool hasBeenDestroyed_p;
 };
 
 }  // namespace casacore

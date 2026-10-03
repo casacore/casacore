@@ -100,7 +100,7 @@ rownr_t Adios2StMan::open64(rownr_t aRowNr, AipsIO &ios) { return pimpl->open64(
 
 rownr_t Adios2StMan::resync64(rownr_t aRowNr) { return pimpl->resync64(aRowNr); }
 
-Bool Adios2StMan::flush(AipsIO &ios, Bool doFsync) { return pimpl->flush(ios, doFsync); }
+bool Adios2StMan::flush(AipsIO &ios, bool doFsync) { return pimpl->flush(ios, doFsync); }
 
 DataManagerColumn *Adios2StMan::makeScalarColumn(const String &aName, int aDataType,
                                                  const String &aDataTypeID) {
@@ -479,7 +479,7 @@ rownr_t Adios2StMan::impl::getNrRows() { return itsRows; }
 
 rownr_t Adios2StMan::impl::resync64(rownr_t /*aNrRows*/) { return itsRows; }
 
-Bool Adios2StMan::impl::flush(AipsIO &ios, Bool /*doFsync*/) {
+bool Adios2StMan::impl::flush(AipsIO &ios, bool /*doFsync*/) {
   ios.putstart(DATA_MANAGER_TYPE, 2);
   ios << itsDataManName;
   // Here we used to write itsStManColumnType (int), but that was an otherwise

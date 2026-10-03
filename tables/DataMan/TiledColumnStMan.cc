@@ -75,7 +75,7 @@ DataManager* TiledColumnStMan::makeObject(const String& group, const Record& spe
 
 String TiledColumnStMan::dataManagerType() const { return "TiledColumnStMan"; }
 
-Bool TiledColumnStMan::canAccessColumn() const { return True; }
+bool TiledColumnStMan::canAccessColumn() const { return true; }
 
 void TiledColumnStMan::create64(rownr_t nrrow) {
   // Set up the various things.
@@ -99,11 +99,11 @@ void TiledColumnStMan::create64(rownr_t nrrow) {
   addRow64(nrrow);
 }
 
-Bool TiledColumnStMan::flush(AipsIO&, Bool fsync) {
+bool TiledColumnStMan::flush(AipsIO&, bool fsync) {
   // Flush the caches.
   // Exit if nothing has changed.
   if (!flushCaches(fsync)) {
-    return False;
+    return false;
   }
   // Create the header file and write data in it.
   AipsIO* headerFile = headerFileCreate();
@@ -113,10 +113,10 @@ Bool TiledColumnStMan::flush(AipsIO&, Bool fsync) {
   headerFilePut(*headerFile, 1);
   headerFile->putend();
   headerFileClose(headerFile);
-  return True;
+  return true;
 }
 
-void TiledColumnStMan::readHeader(rownr_t tabNrrow, Bool firstTime) {
+void TiledColumnStMan::readHeader(rownr_t tabNrrow, bool firstTime) {
   // Open the header file and read data from it.
   AipsIO* headerFile = headerFileOpen();
   headerFile->getstart("TiledColumnStMan");

@@ -34,8 +34,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <typename T>
-Bool Interpolate2D::interpNearest(T &result, const Vector<Double> &where, const Matrix<T> &data,
-                                  const Matrix<Bool> *&maskPtr) const {
+bool Interpolate2D::interpNearest(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                                  const Matrix<bool> *&maskPtr) const {
   // definition of the 'neighborhood' of outer edge data elements.
   static const Double half = .5001;
 
@@ -43,24 +43,24 @@ Bool Interpolate2D::interpNearest(T &result, const Vector<Double> &where, const 
 
   Double imax = shape(0) - 1.;
   Double wi = where[0];
-  if (wi < 0. - half || wi > imax + half || imax < 0) return False;
+  if (wi < 0. - half || wi > imax + half || imax < 0) return false;
 
   Double jmax = shape(1) - 1.;
   Double wj = where[1];
-  if (wj < 0 - half || wj > jmax + half || jmax < 0) return False;
+  if (wj < 0 - half || wj > jmax + half || jmax < 0) return false;
 
   uInt i = (wi <= 0.) ? 0 : (wi >= imax) ? uInt(imax) : uInt(wi + .5);
 
   uInt j = (wj <= 0.) ? 0 : (wj >= jmax) ? uInt(jmax) : uInt(wj + .5);
 
-  Bool dataValid = !maskPtr || (*maskPtr)(i, j);
+  bool dataValid = !maskPtr || (*maskPtr)(i, j);
   if (dataValid) result = data(i, j);
   return dataValid;
 }
 
 template <typename T>
-Bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const Matrix<T> &data,
-                                 const Matrix<Bool> *&maskPtr) const {
+bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                                 const Matrix<bool> *&maskPtr) const {
   const IPosition &shape = data.shape();
 
   // We find 4 points surrounding the one of interest.
@@ -79,26 +79,26 @@ Bool Interpolate2D::interpLinear(T &result, const Vector<Double> &where, const M
   if (j == sj) --j;
 
   // 2x2 starting from [i,j]
-  // mask==True is a good pixel
+  // mask==true is a good pixel
   if (i < si && j < sj) {
     if (maskPtr) {
       if (!(*maskPtr)(i, j) || !(*maskPtr)(i + 1, j) || !(*maskPtr)(i, j + 1) ||
           !(*maskPtr)(i + 1, j + 1))
-        return False;
+        return false;
     }
     Double TT = where[0] - i;
     Double UU = where[1] - j;
     result = (1.0 - TT) * (1.0 - UU) * data(i, j) + TT * (1.0 - UU) * data(i + 1, j) +
              TT * UU * data(i + 1, j + 1) + (1.0 - TT) * UU * data(i, j + 1);
-    return True;
+    return true;
   } else
-    return False;
+    return false;
 }
 
 template <typename T>
-Bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &where,
+bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &where,
                                   const Matrix<T> &dataI, const Matrix<T> &dataJ,
-                                  const Matrix<Bool> &mask) const {
+                                  const Matrix<bool> &mask) const {
   const IPosition &shape = mask.shape();
 
   // We find 4 points surrounding the one of interest.
@@ -116,12 +116,12 @@ Bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &
   if (i == si) --i;
   if (j == sj) --j;
   // 2x2 starting from [i,j]
-  // mask==True is a good pixel
+  // mask==true is a good pixel
   if (i < si && j < sj) {
     uInt k0 = dataI.steps()[0];
     uInt k1 = dataI.steps()[1];
-    const Bool *m = &mask(i, j);
-    if (!*m || !*(m + k0) || !*(m + k1) || !*(m + k0 + k1)) return False;
+    const bool *m = &mask(i, j);
+    if (!*m || !*(m + k0) || !*(m + k1) || !*(m + k0 + k1)) return false;
     Double TT = where[0] - i;
     Double UU = where[1] - j;
     Double x1 = (1.0 - TT);
@@ -144,14 +144,14 @@ Bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, const Vector<Double> &
     ;
     resultI += x * *(dI + k1);
     resultJ += x * *(dJ + k1);
-    return True;
+    return true;
   } else
-    return False;
+    return false;
 }
 
 template <typename T>
-Bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Matrix<T> &data,
-                                const Matrix<Bool> *&maskPtr) const {
+bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                                const Matrix<bool> *&maskPtr) const {
   //
   // bi-cubic interpolation
   //
@@ -179,7 +179,7 @@ Bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
 
   // Handle mask
 
-  if (anyBadMaskPixels(maskPtr, i - 1, i + 2, j - 1, j + 2)) return False;
+  if (anyBadMaskPixels(maskPtr, i - 1, i + 2, j - 1, j + 2)) return false;
 
   // Do it
 
@@ -234,12 +234,12 @@ Bool Interpolate2D::interpCubic(T &result, const Vector<Double> &where, const Ma
     result = TT * result + ((itsC[i][3] * UU + itsC[i][2]) * UU + itsC[i][1]) * UU + itsC[i][0];
   }
   //
-  return True;
+  return true;
 }
 
 template <typename T>
-Bool Interpolate2D::interpLanczos(T &result, const Vector<Double> &where, const Matrix<T> &data,
-                                  const Matrix<Bool> *&maskPtr) const {
+bool Interpolate2D::interpLanczos(T &result, const Vector<Double> &where, const Matrix<T> &data,
+                                  const Matrix<bool> *&maskPtr) const {
   //
   // Lanczos 2D interpolation
   //
@@ -254,7 +254,7 @@ Bool Interpolate2D::interpLanczos(T &result, const Vector<Double> &where, const 
   const T floory = std::floor(y);
 
   // Handle mask
-  if (anyBadMaskPixels(maskPtr, x - a + 1, x + a, y - a + 1, y + a)) return False;
+  if (anyBadMaskPixels(maskPtr, x - a + 1, x + a, y - a + 1, y + a)) return false;
 
   // Where we can't sum over the full support of the kernel due to proximity
   // to the edge, set the pixel value to zero. This is just one way of
@@ -262,7 +262,7 @@ Bool Interpolate2D::interpLanczos(T &result, const Vector<Double> &where, const 
   // interpolation.
   if (floorx < a || floorx >= shape[0] - a || floory < a || floory >= shape[1] - a) {
     result = 0;
-    return True;
+    return true;
   }
 
   // Interpolate
@@ -273,7 +273,7 @@ Bool Interpolate2D::interpLanczos(T &result, const Vector<Double> &where, const 
     }
   }
 
-  return True;
+  return true;
 }
 
 // Lanczos interpolation: helper function

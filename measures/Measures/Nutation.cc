@@ -101,7 +101,7 @@ const Euler &Nutation::operator()(Double epoch) {
 // # Member functions
 
 const Euler &Nutation::derivative(Double epoch) {
-  calcNut(epoch, True);
+  calcNut(epoch, true);
   lres_p++;
   lres_p %= 4;
   for (uInt i = 0; i < 3; i++) result_p[lres_p](i) = dval_p[i];
@@ -119,8 +119,8 @@ void Nutation::load_static_values() {
   // Get interval and other switches
   myInterval_reg = AipsrcValue<Double>::registerRC(String("measures.nutation.d_interval"),
                                                    Unit("d"), Unit("d"), Nutation::INTV);
-  myUseiers_reg = AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"), False);
-  myUsejpl_reg = AipsrcValue<Bool>::registerRC(String("measures.nutation.b_usejpl"), False);
+  myUseiers_reg = AipsrcValue<bool>::registerRC(String("measures.nutation.b_useiers"), false);
+  myUsejpl_reg = AipsrcValue<bool>::registerRC(String("measures.nutation.b_usejpl"), false);
 }
 
 void Nutation::refresh() {
@@ -136,7 +136,7 @@ Double Nutation::eqox(Double epoch) {
 }
 
 Double Nutation::derivativeEqox(Double epoch) {
-  calcNut(epoch, True);
+  calcNut(epoch, true);
   return deqeq_p;
 }
 
@@ -148,7 +148,7 @@ Double Nutation::eqoxCT(Double epoch) {
 }
 
 Double Nutation::derivativeEqoxCT(Double epoch) {
-  calcNut(epoch, True);
+  calcNut(epoch, true);
   return deval_p;
 }
 
@@ -158,17 +158,17 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
   return Quantity(eqox(epoch), "rad").get(unit);
 }
 
-void Nutation::calcNut(Double time, Bool calcDer) {
+void Nutation::calcNut(Double time, bool calcDer) {
   // Calculate the nutation value at epoch
   Double t = time;
   Double epsilon = 1e-6;
   if (!calcDer) {
     epsilon = AipsrcValue<Double>::get(Nutation::myInterval_reg);
   }
-  Bool renew = False;
+  bool renew = false;
   if (!nearAbs(time, checkEpoch_p, epsilon)) {
     checkEpoch_p = time;
-    renew = True;
+    renew = true;
     Double dEps = 0;
     Double dPsi = 0;
     switch (method_p) {
@@ -180,7 +180,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
         t = (t - MeasData::MJD2000) / MeasData::JDCEN;
         break;
       default:
-        if (AipsrcValue<Bool>::get(Nutation::myUseiers_reg)) {
+        if (AipsrcValue<bool>::get(Nutation::myUseiers_reg)) {
           dPsi = MeasTable::dPsiEps(0, t);
           dEps = MeasTable::dPsiEps(1, t);
         }
@@ -263,7 +263,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       } break;
       default:
         nval_p[0] = MeasTable::fundArg(0)(t);  // eps0
-        if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
+        if (AipsrcValue<bool>::get(Nutation::myUsejpl_reg)) {
           Vector<Double> mypl = MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
           nval_p[1] = mypl[0];
           nval_p[2] = mypl[1];
@@ -415,7 +415,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       } break;
       default:
         dval_p[0] = (MeasTable::fundArg(0).derivative())(t) / MeasData::JDCEN;
-        if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
+        if (AipsrcValue<bool>::get(Nutation::myUsejpl_reg)) {
           Vector<Double> mypl = MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
           dval_p[1] = mypl[2] * MeasData::JDCEN;
           dval_p[2] = mypl[3] * MeasData::JDCEN;

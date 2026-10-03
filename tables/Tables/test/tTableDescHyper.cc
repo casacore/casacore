@@ -124,7 +124,7 @@ void excpDesc() {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ScalarColumnDesc<float>("Time"));
-  td.addColumn(ScalarColumnDesc<Bool>("TimeNotNum"));
+  td.addColumn(ScalarColumnDesc<bool>("TimeNotNum"));
   td.addColumn(ScalarColumnDesc<Short>("TimeShort"));
   td.addColumn(ScalarColumnDesc<float>("Baseline"));
   td.addColumn(ArrayColumnDesc<float>("Pol", 1));

@@ -53,10 +53,10 @@ void ScalarRecordColumnData::createDataManagerColumn() {
 
 void ScalarRecordColumnData::initialize(rownr_t, rownr_t) {}
 
-Bool ScalarRecordColumnData::isDefined(rownr_t) const { return True; }
+bool ScalarRecordColumnData::isDefined(rownr_t) const { return true; }
 
 void ScalarRecordColumnData::get(rownr_t rownr, void* val) const {
-  checkReadLock(True);
+  checkReadLock(true);
   getRecord(rownr, *(TableRecord*)val);
   autoReleaseLock();
 }
@@ -67,7 +67,7 @@ void ScalarRecordColumnData::getScalarColumn(ArrayBase& val) const {
   if (vec.nelements() != nr) {
     throw(TableArrayConformanceError("ScalarRecordColumnData::getScalarColumn"));
   }
-  checkReadLock(True);
+  checkReadLock(true);
   for (rownr_t i = 0; i < nr; i++) {
     getRecord(i, vec(i));
   }
@@ -79,7 +79,7 @@ void ScalarRecordColumnData::getScalarColumnCells(const RefRows& rownrs, ArrayBa
   if (vec.nelements() != rownrs.nrow()) {
     throw(TableArrayConformanceError("ScalarRecordColumnData::getColumnCells"));
   }
-  checkReadLock(True);
+  checkReadLock(true);
   RefRowsSliceIter iter(rownrs);
   rownr_t i = 0;
   while (!iter.pastEnd()) {
@@ -96,7 +96,7 @@ void ScalarRecordColumnData::getScalarColumnCells(const RefRows& rownrs, ArrayBa
 }
 
 void ScalarRecordColumnData::put(rownr_t rownr, const void* val) {
-  checkWriteLock(True);
+  checkWriteLock(true);
   putRecord(rownr, *(const TableRecord*)val);
   autoReleaseLock();
 }
@@ -107,7 +107,7 @@ void ScalarRecordColumnData::putScalarColumn(const ArrayBase& val) {
   if (vec.nelements() != nr) {
     throw(TableArrayConformanceError("ScalarRecordColumnData::putScalarColumn"));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   for (rownr_t i = 0; i < nr; i++) {
     putRecord(i, vec(i));
   }
@@ -119,7 +119,7 @@ void ScalarRecordColumnData::putScalarColumnCells(const RefRows& rownrs, const A
   if (vec.nelements() != rownrs.nrow()) {
     throw(TableArrayConformanceError("ScalarRecordColumnData::putColumnCells"));
   }
-  checkWriteLock(True);
+  checkWriteLock(true);
   RefRowsSliceIter iter(rownrs);
   rownr_t i = 0;
   while (!iter.pastEnd()) {
@@ -143,7 +143,7 @@ void ScalarRecordColumnData::getRecord(rownr_t rownr, TableRecord& rec) const {
     AlwaysAssert(shape.nelements() == 1, AipsError);
     Array<uChar> data(shape);
     dataColPtr_p->getArrayV(rownr, data);
-    Bool deleteIt;
+    bool deleteIt;
     const uChar* buf = data.getStorage(deleteIt);
     auto memio = std::make_shared<MemoryIO>(buf, shape(0));
     AipsIO aio(memio);

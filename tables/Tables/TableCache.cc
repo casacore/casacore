@@ -98,7 +98,7 @@ uInt TableCache::nAutoLocks() {
   return n;
 }
 
-void TableCache::relinquishAutoLocks(Bool all) {
+void TableCache::relinquishAutoLocks(bool all) {
   std::lock_guard<std::mutex> sc(itsMutex);
   for (const auto& x : tableMap_p) {
     PlainTable& table = *static_cast<PlainTable*>(x.second);
@@ -108,7 +108,7 @@ void TableCache::relinquishAutoLocks(Bool all) {
         if (all) {
           table.unlock();
         } else {
-          table.autoReleaseLock(True);
+          table.autoReleaseLock(true);
         }
       }
     }
@@ -141,7 +141,7 @@ Vector<String> TableCache::getLockedTables(FileLocker::LockType lockType, int lo
   return Vector<String>(names);
 }
 
-void TableCache::flushTable(const String& name, Bool fsync, Bool recursive) {
+void TableCache::flushTable(const String& name, bool fsync, bool recursive) {
   std::lock_guard<std::mutex> sc(itsMutex);
   PlainTable* tab = getTable(name);
   if (tab) {

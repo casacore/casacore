@@ -79,7 +79,7 @@ class String;
 // <srcblock>
 // Record rec;
 // rec.define("hello", 6.5);
-// rec.define("world", True);
+// rec.define("world", true);
 // Vector<Int> naxis(5);
 // naxis(0) = 128;
 // naxis(1) = 64;
@@ -130,7 +130,7 @@ class FITSKeywordUtil {
   // This is required of any FITS keyword list. This is provided as
   // a convenience so that you do not have to know anything about the class
   // <linkto class=FitsKeywordList>FitsKeywordList</linkto>.
-  static FitsKeywordList makeKeywordList(Bool primHead = True, Bool binImage = True);
+  static FitsKeywordList makeKeywordList(bool primHead = true, bool binImage = true);
 
   // Add the fields from in to the out FitsKeywordList as keywords.
   // Upcases field names, turns arrays into indexed keywords, tries to interleave
@@ -139,7 +139,7 @@ class FITSKeywordUtil {
   // (COMMENT and HISTORY may be of any capitalization). Note however that
   // you will generally add History keywords with the class
   // <linkto class=FITSHistoryUtil>FITSHistoryUtil</linkto>.
-  // Returns False in the following instances:
+  // Returns false in the following instances:
   // <ul>
   // <li> The value of a string field is longer than 68 characters.  The value is truncated.
   // <li> An illegal type for a FITS keyword (e.g. Complex).  The field is ignored.
@@ -149,7 +149,7 @@ class FITSKeywordUtil {
   // many elements in a 1D array (first 999 are used). <li> A field is neither a scalar or an array
   // (e.g. a record).  The field is ignored.
   // </ul>
-  static Bool addKeywords(FitsKeywordList &out, const RecordInterface &in);
+  static bool addKeywords(FitsKeywordList &out, const RecordInterface &in);
 
   // Extract keywords from in and define them in out.
   // Output field names are downcased.  Keywords matching
@@ -162,9 +162,9 @@ class FITSKeywordUtil {
   // By default history keywords are ignored, since they
   // should be handled in class
   // <linkto class=FITSHistoryUtil>FITSHistoryUtil</linkto>.
-  // This always returns True.
-  static Bool getKeywords(RecordInterface &out, ConstFitsKeywordList &in,
-                          const Vector<String> &ignore, Bool ignoreHistory = True);
+  // This always returns true.
+  static bool getKeywords(RecordInterface &out, ConstFitsKeywordList &in,
+                          const Vector<String> &ignore, bool ignoreHistory = true);
 
   // Remove some keywords from a record. This can be useful
   // if, e.g., you first need to construct a coordinate system from the
@@ -173,14 +173,14 @@ class FITSKeywordUtil {
   static void removeKeywords(RecordInterface &out, const Vector<String> &ignore);
 
   // Convert a TDIMnnn keyword value into an IPosition.  This returns
-  // False if the tdim string has an invalid format.
-  static Bool fromTDIM(IPosition &shape, const String &tdim);
+  // false if the tdim string has an invalid format.
+  static bool fromTDIM(IPosition &shape, const String &tdim);
 
   // Convert an IPosition to a String appropriate for use as the
-  // value of a TDIMnnn keyword.  This returns False if the
+  // value of a TDIMnnn keyword.  This returns false if the
   // converted string has more than 71 characters
   // (making it impossible to be used as a string keyword value).
-  static Bool toTDIM(String &tdim, const IPosition &shape);
+  static bool toTDIM(String &tdim, const IPosition &shape);
 
   // Add a comment/history to the supplied record. It will automatically
   // figure out a unique name and add it to the end. If the comment contains

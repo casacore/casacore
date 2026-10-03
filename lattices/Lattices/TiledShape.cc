@@ -31,9 +31,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TiledShape::TiledShape() : itsTileDefined(True) {}
+TiledShape::TiledShape() : itsTileDefined(true) {}
 
-TiledShape::TiledShape(const IPosition& shape) : itsShape(shape), itsTileDefined(False) {
+TiledShape::TiledShape(const IPosition& shape) : itsShape(shape), itsTileDefined(false) {
   uInt n = shape.nelements();
   for (uInt i = 0; i < n; i++) {
     if (shape(i) <= 0) {
@@ -43,7 +43,7 @@ TiledShape::TiledShape(const IPosition& shape) : itsShape(shape), itsTileDefined
 }
 
 TiledShape::TiledShape(const IPosition& shape, const IPosition& tileShape)
-    : itsShape(shape), itsTileShape(tileShape), itsTileDefined(True) {
+    : itsShape(shape), itsTileShape(tileShape), itsTileDefined(true) {
   uInt n = shape.nelements();
   if (tileShape.nelements() != n) {
     throw(AipsError("TiledShape: #elements in shape and tileShape differ"));
@@ -99,7 +99,7 @@ IPosition TiledShape::defaultTileShape(uInt nrPixelsPerTile, const Vector<Double
   // Iterate until the tile shape is set nicely.
   // This is needed to prevent tile shape dimensions from underflow
   // or overflow.
-  while (True) {
+  while (true) {
     double prod = 1;
     uInt n = 0;
     for (i = 0; i < nrdim; i++) {
@@ -152,11 +152,11 @@ IPosition TiledShape::defaultTileShape(uInt nrPixelsPerTile, const Vector<Double
     }
   }
   // Return the found tile shape when fitting exactly.
-  Bool isFit = True;
+  bool isFit = true;
   Double size = 1;
   for (i = 0; i < nrdim; i++) {
     if (itsShape(i) % tileShape(i) != 0) {
-      isFit = False;
+      isFit = false;
     }
     size *= itsShape(i);
   }
@@ -218,7 +218,7 @@ IPosition TiledShape::defaultTileShape(uInt nrPixelsPerTile, const Vector<Double
     tshape(i) = (*values[i])[0];
   }
   Double minCost = 1000000;
-  while (True) {
+  while (true) {
     Int totalSize = 1;
     Double totalSpace = 1;
     Double costAxes = 0;

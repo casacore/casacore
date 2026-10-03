@@ -63,10 +63,10 @@ LogFilterExpr& LogFilterExpr::operator=(const LogFilterExpr& that) {
   return *this;
 }
 
-Bool LogFilterExpr::matches(const LogMessage& message) {
+bool LogFilterExpr::matches(const LogMessage& message) {
   // Evaluate the expression for this message.
   itsMessage = &message;
-  Bool valb;
+  bool valb;
   // This class contains the functions to get the values.
   itsExpr->get(*this, valb);
   return valb;

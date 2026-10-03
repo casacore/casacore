@@ -96,21 +96,21 @@ class LCSlicer {
   // <li> RegionType::RelCen is relative to image center.
   // </ul>
   // <group>
-  LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, Bool fractionalBlcTrc = False,
+  LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, bool fractionalBlcTrc = false,
            RegionType::AbsRelType = RegionType::Abs);
   LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vector<Float>& inc,
-           Bool fractionalBlcTrc = False, RegionType::AbsRelType = RegionType::Abs);
+           bool fractionalBlcTrc = false, RegionType::AbsRelType = RegionType::Abs);
   LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vector<Float>& inc,
-           const Vector<Bool>& fractionalBlc, const Vector<Bool>& fractionalTrc,
-           const Vector<Bool>& fractionalInc, const Vector<Int>& absRelBlc,
+           const Vector<bool>& fractionalBlc, const Vector<bool>& fractionalTrc,
+           const Vector<bool>& fractionalInc, const Vector<Int>& absRelBlc,
            const Vector<Int>& absRelTrc);
-  LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, Bool fractionalBlcTrc = False,
+  LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, bool fractionalBlcTrc = false,
            RegionType::AbsRelType = RegionType::Abs);
   LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
-           Bool fractionalBlcTrc = False, RegionType::AbsRelType = RegionType::Abs);
+           bool fractionalBlcTrc = false, RegionType::AbsRelType = RegionType::Abs);
   LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
-           const Vector<Bool>& fractionalBlc, const Vector<Bool>& fractionalTrc,
-           const Vector<Bool>& fractionalInc, const Vector<Int>& absRelBlc,
+           const Vector<bool>& fractionalBlc, const Vector<bool>& fractionalTrc,
+           const Vector<bool>& fractionalInc, const Vector<Int>& absRelBlc,
            const Vector<Int>& absRelTrc);
   LCSlicer(const Slicer& slicer);
   LCSlicer(const IPosition& blc, const IPosition& trc, RegionType::AbsRelType = RegionType::Abs);
@@ -129,17 +129,17 @@ class LCSlicer {
   LCSlicer& operator=(const LCSlicer& other);
 
   // Test for equality.
-  // True is returned when the given region is a slicer with exactly
+  // true is returned when the given region is a slicer with exactly
   // the same specification as this slicer.
   // It does not compare the comment.
   // <group>
-  Bool operator==(const LCSlicer& other) const;
-  Bool operator!=(const LCSlicer& other) const;
+  bool operator==(const LCSlicer& other) const;
+  bool operator!=(const LCSlicer& other) const;
   // </group>
 
   // The region is completely specified if it is absolute, not fractional,
   // and has no unspecified values.
-  Bool isComplete() const;
+  bool isComplete() const;
 
   // Get the dimensionality of the region.
   uInt ndim() const;
@@ -149,10 +149,10 @@ class LCSlicer {
   const Vector<Float>& blc() const;
   const Vector<Float>& trc() const;
   const Vector<Float>& inc() const;
-  Bool isFractional() const;
-  Bool isAbsolute() const;
-  Bool isUnspecified() const;
-  Bool isStrided() const;
+  bool isFractional() const;
+  bool isAbsolute() const;
+  bool isUnspecified() const;
+  bool isStrided() const;
   // </group>
 
   // Get the class name (to store in the record).
@@ -186,7 +186,7 @@ class LCSlicer {
 
  private:
   // Fill the pixel based flags from the general ones.
-  void fillFlags(Bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uInt nrinc);
+  void fillFlags(bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uInt nrinc);
 
   // Fill the vectors from the values given as doubles.
   void fillFromDouble(const Vector<Double>& blc, const Vector<Double>& trc,
@@ -204,27 +204,27 @@ class LCSlicer {
   Vector<Float> itsBlc;
   Vector<Float> itsTrc;
   Vector<Float> itsInc;
-  Vector<Bool> itsFracBlc;
-  Vector<Bool> itsFracTrc;
-  Vector<Bool> itsFracInc;
+  Vector<bool> itsFracBlc;
+  Vector<bool> itsFracTrc;
+  Vector<bool> itsFracInc;
   Vector<Int> itsAbsRelBlc;
   Vector<Int> itsAbsRelTrc;
-  Bool itsIsFractional;
-  Bool itsIsAbsolute;
-  Bool itsIsUnspecified;
-  Bool itsIsStrided;
+  bool itsIsFractional;
+  bool itsIsAbsolute;
+  bool itsIsUnspecified;
+  bool itsIsStrided;
   String itsComment;
 };
 
-inline Bool LCSlicer::operator!=(const LCSlicer& other) const { return (!operator==(other)); }
+inline bool LCSlicer::operator!=(const LCSlicer& other) const { return (!operator==(other)); }
 inline uInt LCSlicer::ndim() const { return itsBlc.nelements(); }
 inline const Vector<Float>& LCSlicer::blc() const { return itsBlc; }
 inline const Vector<Float>& LCSlicer::trc() const { return itsTrc; }
 inline const Vector<Float>& LCSlicer::inc() const { return itsInc; }
-inline Bool LCSlicer::isFractional() const { return itsIsFractional; }
-inline Bool LCSlicer::isAbsolute() const { return itsIsAbsolute; }
-inline Bool LCSlicer::isUnspecified() const { return itsIsUnspecified; }
-inline Bool LCSlicer::isStrided() const { return itsIsStrided; }
+inline bool LCSlicer::isFractional() const { return itsIsFractional; }
+inline bool LCSlicer::isAbsolute() const { return itsIsAbsolute; }
+inline bool LCSlicer::isUnspecified() const { return itsIsUnspecified; }
+inline bool LCSlicer::isStrided() const { return itsIsStrided; }
 inline const String& LCSlicer::comment() const { return itsComment; }
 inline void LCSlicer::setComment(const String& comment) { itsComment = comment; }
 

@@ -88,7 +88,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // // Construct the concatenation for a range (given as a relative box).
 // // Extend along the y-axis (axis numbers start counting at 0!).
 // // Take over the region pointers.
-// LCConcatenation region (True, cirPtr, 1, LCBox(n/2-n, n/2-1));
+// LCConcatenation region (true, cirPtr, 1, LCBox(n/2-n, n/2-1));
 // </srcblock>
 // </example>
 
@@ -101,13 +101,13 @@ class LCConcatenation : public LCRegionMulti {
   LCConcatenation();
 
   // Combine the given regions.
-  // When <src>takeOver</src> is True, the destructor will delete the
+  // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   // The extend range has to be given as a 1-dimensional box.
   // The default range is the entire axis.
   // <group>
-  LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis);
-  LCConcatenation(Bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis,
+  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis);
+  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis,
                   const LCBox& extendRange);
   // </group>
 
@@ -142,7 +142,7 @@ class LCConcatenation : public LCRegionMulti {
 
  protected:
   // Comparison
-  Bool equals(const LCRegion& other) const override;
+  bool equals(const LCRegion& other) const override;
 
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
@@ -151,7 +151,7 @@ class LCConcatenation : public LCRegionMulti {
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
-  void multiGetSlice(Array<Bool>& buffer, const Slicer& section) override;
+  void multiGetSlice(Array<bool>& buffer, const Slicer& section) override;
 
   // This function is needed here because the niceCursorShape of the
   // contributing region does not make any sense (other dimensionality).

@@ -155,53 +155,53 @@ void ColumnDescSet::checkSubTableDesc() const {
   }
 }
 
-Bool ColumnDescSet::isEqual(const ColumnDescSet& other, Bool& equalDataTypes) const {
-  equalDataTypes = False;
+bool ColumnDescSet::isEqual(const ColumnDescSet& other, bool& equalDataTypes) const {
+  equalDataTypes = false;
   if (ncolumn() != other.ncolumn()) {
-    return False;
+    return false;
   }
   return allExist(other, equalDataTypes);
 }
 
-Bool ColumnDescSet::isSubset(const ColumnDescSet& other, Bool& equalDataTypes) const {
-  equalDataTypes = False;
+bool ColumnDescSet::isSubset(const ColumnDescSet& other, bool& equalDataTypes) const {
+  equalDataTypes = false;
   if (ncolumn() > other.ncolumn()) {
-    return False;
+    return false;
   }
   return allExist(other, equalDataTypes);
 }
 
-Bool ColumnDescSet::isStrictSubset(const ColumnDescSet& other, Bool& equalDataTypes) const {
-  equalDataTypes = False;
+bool ColumnDescSet::isStrictSubset(const ColumnDescSet& other, bool& equalDataTypes) const {
+  equalDataTypes = false;
   if (ncolumn() >= other.ncolumn()) {
-    return False;
+    return false;
   }
   return allExist(other, equalDataTypes);
 }
 
-Bool ColumnDescSet::allExist(const ColumnDescSet& other, Bool& equalDataTypes) const {
-  equalDataTypes = True;
+bool ColumnDescSet::allExist(const ColumnDescSet& other, bool& equalDataTypes) const {
+  equalDataTypes = true;
   uInt nrcol = ncolumn();
   for (uInt i = 0; i < nrcol; i++) {
     const ColumnDesc& thisCol = (*this)[i];
     if (!other.isDefined(thisCol.name())) {
-      return False;  // name does not exist in other
+      return false;  // name does not exist in other
     }
     if (thisCol.dataType() != other[thisCol.name()].dataType()) {
-      equalDataTypes = False;  // unequal data type
+      equalDataTypes = false;  // unequal data type
     }
   }
-  return True;  // names are equal
+  return true;  // names are equal
 }
 
-Bool ColumnDescSet::isDisjoint(const ColumnDescSet& other) const {
+bool ColumnDescSet::isDisjoint(const ColumnDescSet& other) const {
   uInt nrcol = other.ncolumn();
   for (uInt i = 0; i < nrcol; i++) {
     if (isDefined(other[i].name())) {
-      return False;  // # name exists in other
+      return false;  // # name exists in other
     }
   }
-  return True;
+  return true;
 }
 
 // # Add another column set.

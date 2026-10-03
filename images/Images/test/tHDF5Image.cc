@@ -142,8 +142,8 @@ int main() {
     {
       HDF5Image<Float> pIm(String("tHDF5Image_tmp.img1"));
       AlwaysAssert(hdf5imagePixelType(String("tHDF5Image_tmp.img1")) == TpFloat, AipsError);
-      AlwaysAssert(pIm.name(True) == String("tHDF5Image_tmp.img1"), AipsError);
-      cout << "Absolute name = " << pIm.name(False) << endl;
+      AlwaysAssert(pIm.name(true) == String("tHDF5Image_tmp.img1"), AipsError);
+      cout << "Absolute name = " << pIm.name(false) << endl;
       AlwaysAssert(pIm.isPaged(), AipsError);
       AlwaysAssert(pIm.isWritable(), AipsError);
       AlwaysAssert(pIm.ok(), AipsError);

@@ -210,7 +210,7 @@ class Table {
   // <br>- <src>isScratch=False</src> indicates that a scratch table
   // with name <src>name</src> is not scratch anymore (because it is
   // closed or because its state is set to non-scratch).
-  typedef void ScratchCallback(const String& name, Bool isScratch, const String& oldName);
+  typedef void ScratchCallback(const String& name, bool isScratch, const String& oldName);
 
   // Set the pointer to the ScratchCallback function.
   // It returns the current value of the pointer.
@@ -268,32 +268,32 @@ class Table {
   // inspection interval of 5 seconds.
   // <br>The data will be stored in the given endian format.
   // <group>
-  explicit Table(SetupNewTable&, rownr_t nrrow = 0, Bool initialize = False,
+  explicit Table(SetupNewTable&, rownr_t nrrow = 0, bool initialize = false,
                  EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
-  Table(SetupNewTable&, TableType, rownr_t nrrow = 0, Bool initialize = False,
+  Table(SetupNewTable&, TableType, rownr_t nrrow = 0, bool initialize = false,
         EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
   Table(SetupNewTable&, TableType, const TableLock& lockOptions, rownr_t nrrow = 0,
-        Bool initialize = False, EndianFormat = Table::AipsrcEndian,
+        bool initialize = false, EndianFormat = Table::AipsrcEndian,
         const TSMOption& = TSMOption());
-  Table(SetupNewTable&, TableLock::LockOption, rownr_t nrrow = 0, Bool initialize = False,
+  Table(SetupNewTable&, TableLock::LockOption, rownr_t nrrow = 0, bool initialize = false,
         EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
-  Table(SetupNewTable&, const TableLock& lockOptions, rownr_t nrrow = 0, Bool initialize = False,
+  Table(SetupNewTable&, const TableLock& lockOptions, rownr_t nrrow = 0, bool initialize = false,
         EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
 #ifdef HAVE_MPI
   explicit Table(MPI_Comm mpiComm, TableType, EndianFormat = Table::AipsrcEndian,
                  const TSMOption& = TSMOption());
-  explicit Table(MPI_Comm mpiComm, SetupNewTable&, rownr_t nrrow = 0, Bool initialize = False,
+  explicit Table(MPI_Comm mpiComm, SetupNewTable&, rownr_t nrrow = 0, bool initialize = false,
                  EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
-  Table(MPI_Comm mpiComm, SetupNewTable&, TableType, rownr_t nrrow = 0, Bool initialize = False,
+  Table(MPI_Comm mpiComm, SetupNewTable&, TableType, rownr_t nrrow = 0, bool initialize = false,
         EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
   Table(MPI_Comm mpiComm, SetupNewTable&, TableType, const TableLock& lockOptions,
-        rownr_t nrrow = 0, Bool initialize = False, EndianFormat = Table::AipsrcEndian,
+        rownr_t nrrow = 0, bool initialize = false, EndianFormat = Table::AipsrcEndian,
         const TSMOption& = TSMOption());
   Table(MPI_Comm mpiComm, SetupNewTable&, TableLock::LockOption, rownr_t nrrow = 0,
-        Bool initialize = False, EndianFormat = Table::AipsrcEndian,
+        bool initialize = false, EndianFormat = Table::AipsrcEndian,
         const TSMOption& = TSMOption());
   Table(MPI_Comm mpiComm, SetupNewTable&, const TableLock& lockOptions, rownr_t nrrow = 0,
-        Bool initialize = False, EndianFormat = Table::AipsrcEndian,
+        bool initialize = false, EndianFormat = Table::AipsrcEndian,
         const TSMOption& = TSMOption());
 #endif
   // </group>
@@ -353,13 +353,13 @@ class Table {
   // for a ConcatTable the names of all its parts.
   // <br>Note that a part can be any type of table (e.g. a ConcatTable).
   // The recursive switch tells how to deal with that.
-  Block<String> getPartNames(Bool recursive = False) const;
+  Block<String> getPartNames(bool recursive = false) const;
 
   // Is this table the same as the other?
-  Bool isSameTable(const Table& other) const { return baseTabPtr_p == other.baseTabPtr_p; }
+  bool isSameTable(const Table& other) const { return baseTabPtr_p == other.baseTabPtr_p; }
 
   // Is the root table of this table the same as that of the other one?
-  Bool isSameRoot(const Table& other) const;
+  bool isSameRoot(const Table& other) const;
 
   // Close all open subtables.
   void closeSubTables() const;
@@ -385,12 +385,12 @@ class Table {
   const StorageOption& storageOption() const;
 
   // Is the table used (i.e. open) in this process.
-  static Bool isOpened(const String& tableName);
+  static bool isOpened(const String& tableName);
 
   // Is the table used (i.e. open) in another process.
   // If <src>checkSubTables</src> is set, it is also checked if
   // a subtable is used in another process.
-  Bool isMultiUsed(Bool checkSubTables = False) const;
+  bool isMultiUsed(bool checkSubTables = false) const;
 
   // Get the locking options.
   const TableLock& lockOptions() const;
@@ -398,8 +398,8 @@ class Table {
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
   // <group>
-  Bool hasLock(FileLocker::LockType = FileLocker::Write) const;
-  Bool hasLock(Bool write) const;
+  bool hasLock(FileLocker::LockType = FileLocker::Write) const;
+  bool hasLock(bool write) const;
   // </group>
 
   // Try to lock the table for read or write access (default is write).
@@ -411,8 +411,8 @@ class Table {
   // If <src>PermanentLocking</src> is in effect, a lock is already
   // present, so nothing will be done.
   // <group>
-  Bool lock(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
-  Bool lock(Bool write, uInt nattempts = 0);
+  bool lock(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
+  bool lock(bool write, uInt nattempts = 0);
   // </group>
 
   // Unlock the table. This will also synchronize the table data,
@@ -428,7 +428,7 @@ class Table {
   // If <src>all=True</src> all such tables will be unlocked.
   // If <src>all=False</src> only tables requested by another process
   // will be unlocked.
-  static void relinquishAutoLocks(Bool all = False);
+  static void relinquishAutoLocks(bool all = false);
 
   // Get the names of tables locked in this process.
   // By default all locked tables are given (note that a write lock
@@ -440,7 +440,7 @@ class Table {
 
   // Determine if column or keyword table data have changed
   // (or is being changed) since the last time this function was called.
-  Bool hasDataChanged();
+  bool hasDataChanged();
 
   // Flush the table, i.e. write out the buffers. If <src>sync=True</src>,
   // it is ensured that all data are physically written to disk.
@@ -454,7 +454,7 @@ class Table {
   // <br>If <src>fsync=True</src> the file contents are fsync-ed to disk,
   // thus ensured that the system buffers are actually written to disk.
   // <br>If <src>recursive=True</src> all subtables are flushed too.
-  void flush(Bool fsync = False, Bool recursive = False);
+  void flush(bool fsync = false, bool recursive = false);
 
   // Resynchronize the Table object with the table file.
   // This function is only useful if no read-locking is used, ie.
@@ -465,10 +465,10 @@ class Table {
 
   // Test if the object is null, i.e. does not reference a proper table.
   // This is the case if the default constructor is used.
-  Bool isNull() const { return (baseTabPtr_p == 0 ? True : baseTabPtr_p->isNull()); }
+  bool isNull() const { return (baseTabPtr_p == 0 ? true : baseTabPtr_p->isNull()); }
 
   // Throw an exception if the object is null, i.e.
-  // if function isNull() is True.
+  // if function isNull() is true.
   void throwIfNull() const;
 
   // Test if the given data type is native to the table system.
@@ -478,54 +478,54 @@ class Table {
   // <srcblock>
   //     if (Table::isNativeDataType (whatType(static_cast<T*>(0)))) {
   // </srcblock>
-  static Bool isNativeDataType(DataType dtype);
+  static bool isNativeDataType(DataType dtype);
 
   // Make the table file name.
   static String fileName(const String& tableName);
 
   // Test if a table with the given name exists and is readable.
-  // If not, an exception is thrown if <src>throwIf==True</src>.
-  static Bool isReadable(const String& tableName, bool throwIf = False);
+  // If not, an exception is thrown if <src>throwIf==true</src>.
+  static bool isReadable(const String& tableName, bool throwIf = false);
 
   // Show the structure of the table.
   // It shows the columns (with types), the data managers, and the subtables.
   // Optionally the columns can be sorted alphabetically.
-  void showStructure(std::ostream&, Bool showDataMans = True, Bool showColumns = True,
-                     Bool showSubTables = False, Bool sortColumns = False,
-                     Bool cOrder = False) const;
+  void showStructure(std::ostream&, bool showDataMans = true, bool showColumns = true,
+                     bool showSubTables = false, bool sortColumns = false,
+                     bool cOrder = false) const;
 
   // Show the table and/or column keywords, possibly also of all subtables.
   // Maximum <src>maxVal</src> values of Arrays will be shown.
-  void showKeywords(std::ostream&, Bool showSubTables = False, Bool showTabKey = True,
-                    Bool showColKey = False, Int maxVal = 25) const;
+  void showKeywords(std::ostream&, bool showSubTables = false, bool showTabKey = true,
+                    bool showColKey = false, Int maxVal = 25) const;
 
   // Show the table and/or column keywords of this table.
   // Maximum <src>maxVal</src> values of Arrays will be shown.
-  void showKeywordSets(std::ostream&, Bool showTabKey, Bool showColKey, Int maxVal) const;
+  void showKeywordSets(std::ostream&, bool showTabKey, bool showColKey, Int maxVal) const;
 
   // Test if a table with the given name exists and is writable.
-  static Bool isWritable(const String& tableName, bool throwIf = False);
+  static bool isWritable(const String& tableName, bool throwIf = false);
 
   // Find the non-writable files in a table.
   static Vector<String> nonWritableFiles(const String& tableName);
 
   // Test if this table is the root table (ie. if it is not the subset
   // of another table).
-  Bool isRootTable() const;
+  bool isRootTable() const;
 
   // Test if this table is opened as writable.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Test if the given column is writable.
   // <group>
-  Bool isColumnWritable(const String& columnName) const;
-  Bool isColumnWritable(uInt columnIndex) const;
+  bool isColumnWritable(const String& columnName) const;
+  bool isColumnWritable(uInt columnIndex) const;
   // </group>
 
   // Test if the given column is stored (otherwise it is virtual).
   // <group>
-  Bool isColumnStored(const String& columnName) const;
-  Bool isColumnStored(uInt columnIndex) const;
+  bool isColumnStored(const String& columnName) const;
+  bool isColumnStored(uInt columnIndex) const;
   // </group>
 
   // Get readonly access to the table keyword set.
@@ -607,7 +607,7 @@ class Table {
   // makes a physical copy of all referenced table rows and columns, thus
   // the result is a PlainTable.
   // <br>For PlainTables <src>deepCopy</src> is the same as <src>copy</src>
-  // unless <src>valueCopy==True</src> is given. In that case the values
+  // unless <src>valueCopy==true</src> is given. In that case the values
   // are copied which takes longer, but reorganizes the data files to get
   // rid of gaps in the data. Also if specific DataManager info is given
   // or if no rows have to be copied, a deep copy is made.
@@ -630,19 +630,19 @@ class Table {
   // <br>If <src>noRows=True</src> no rows are copied. Also no rows are
   // copied in all subtables. It is useful if one wants to make a copy
   // of only the Table structure.
-  void copy(const String& newName, TableOption, Bool noRows = False) const;
-  void deepCopy(const String& newName, TableOption, Bool valueCopy = False,
-                EndianFormat = AipsrcEndian, Bool noRows = False) const;
+  void copy(const String& newName, TableOption, bool noRows = false) const;
+  void deepCopy(const String& newName, TableOption, bool valueCopy = false,
+                EndianFormat = AipsrcEndian, bool noRows = false) const;
   void deepCopy(const String& newName, const Record& dataManagerInfo, TableOption,
-                Bool valueCopy = False, EndianFormat = AipsrcEndian, Bool noRows = False) const;
+                bool valueCopy = false, EndianFormat = AipsrcEndian, bool noRows = false) const;
   void deepCopy(const String& newName, const Record& dataManagerInfo, const StorageOption&,
-                TableOption, Bool valueCopy = False, EndianFormat = AipsrcEndian,
-                Bool noRows = False) const;
+                TableOption, bool valueCopy = false, EndianFormat = AipsrcEndian,
+                bool noRows = false) const;
   // </group>
 
   // Make a copy of a table to a MemoryTable object.
   // Use the given name for the memory table.
-  Table copyToMemoryTable(const String& name, Bool noRows = False) const;
+  Table copyToMemoryTable(const String& name, bool noRows = false) const;
 
   // Get the table type.
   TableType tableType() const;
@@ -662,7 +662,7 @@ class Table {
   void unmarkForDelete();
 
   // Test if the table is marked for delete.
-  Bool isMarkedForDelete() const;
+  bool isMarkedForDelete() const;
 
   // Get the number of rows.
   // It is unsynchronized meaning that it will not check if another
@@ -674,18 +674,18 @@ class Table {
   // Test if it is possible to add a row to this table.
   // It is possible if all storage managers used for the table
   // support it.
-  Bool canAddRow() const;
+  bool canAddRow() const;
 
   // Add one or more rows at the end of the table.
   // This will fail for tables not supporting addition of rows.
   // Optionally the rows can be initialized with the default
   // values as defined in the column descriptions.
-  void addRow(rownr_t nrrow = 1, Bool initialize = False);
+  void addRow(rownr_t nrrow = 1, bool initialize = false);
 
   // Test if it is possible to remove a row from this table.
   // It is possible if all storage managers used for the table
   // support it.
-  Bool canRemoveRow() const;
+  bool canRemoveRow() const;
 
   // Remove the given row(s).
   // The latter form can be useful with the select and rowNumbers functions
@@ -766,9 +766,9 @@ class Table {
 
   // Select rows using a mask block.
   // The length of the block must match the number of rows in the table.
-  // If an element in the mask is True, the corresponding row will be
+  // If an element in the mask is true, the corresponding row will be
   // selected.
-  Table operator()(const Block<Bool>& mask) const;
+  Table operator()(const Block<bool>& mask) const;
 
   // Project the given columns (i.e. select the columns).
   Table project(const Block<String>& columnNames) const;
@@ -859,7 +859,7 @@ class Table {
   // <br> <src>    RowNumbers rownrs = subset.rowNumbers()</src>
   // does not give the row numbers in <src>tab</src>, but in the root table
   // (which is probably not what you want).
-  RowNumbers rowNumbers(const Table& that, Bool tryFast = False) const;
+  RowNumbers rowNumbers(const Table& that, bool tryFast = false) const;
 
   // Add a column to the table.
   // The data manager used for the column depend on the function used.
@@ -872,18 +872,18 @@ class Table {
   // Use the first appropriate existing storage manager.
   // If there is none, a data manager is created using the default
   // data manager in the column description.
-  void addColumn(const ColumnDesc& columnDesc, Bool addToParent = True);
+  void addColumn(const ColumnDesc& columnDesc, bool addToParent = true);
   // Use an existing data manager with the given name or type.
-  // If the flag byName is True, a name is given, otherwise a type.
+  // If the flag byName is true, a name is given, otherwise a type.
   // If a name is given, an exception is thrown if the data manager is
   // unknown or does not allow addition of columns.
   // If a type is given, a storage manager of the given type will be
   // created if there is no such data manager allowing addition of rows.
-  void addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                 Bool addToParent = True);
+  void addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                 bool addToParent = true);
   // Use the given data manager (which is a new one).
   void addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
-                 Bool addToParent = True);
+                 bool addToParent = true);
   // </group>
 
   // Add a bunch of columns using the given new data manager.
@@ -901,9 +901,9 @@ class Table {
   // table.
   // <group>
   void addColumn(const TableDesc& tableDesc, const DataManager& dataManager,
-                 Bool addToParent = True);
+                 bool addToParent = true);
   void addColumn(const TableDesc& tableDesc, const Record& dataManagerInfo,
-                 Bool addToParent = True);
+                 bool addToParent = true);
   // </group>
 
   // Test if columns can be removed.
@@ -912,8 +912,8 @@ class Table {
   // would be removed..
   // <br>You can always remove columns from a reference table.
   // <group>
-  Bool canRemoveColumn(const String& columnName) const;
-  Bool canRemoveColumn(const Vector<String>& columnNames) const;
+  bool canRemoveColumn(const String& columnName) const;
+  bool canRemoveColumn(const Vector<String>& columnNames) const;
   // </group>
 
   // Remove columns.
@@ -925,7 +925,7 @@ class Table {
   // </group>
 
   // Test if a column can be renamed.
-  Bool canRenameColumn(const String& columnName) const;
+  bool canRenameColumn(const String& columnName) const;
 
   // Rename a column.
   // An exception is thrown if the old name does not exist or
@@ -954,14 +954,14 @@ class Table {
   // This will read the table name and open the table as writable
   // if the switch is set and if the table file is writable.
   // otherwise it is opened as readonly.
-  void getTableKeyword(AipsIO&, Bool openWritable);
+  void getTableKeyword(AipsIO&, bool openWritable);
 
   // Write a table to ostream (for <src>TypedKeywords<Table></src>).
   // This only shows its name and number of columns and rows.
   friend ostream& operator<<(ostream&, const Table&);
 
   // Find the data manager with the given name or for the given column name.
-  DataManager* findDataManager(const String& name, Bool byColumn = False) const;
+  DataManager* findDataManager(const String& name, bool byColumn = false) const;
 
   // Some deprecated functions for backward compatibility, now in TableUtil.h.
   // Use old way of indicating deprecate to avoid -Wc++14-extensions warnings.
@@ -975,13 +975,13 @@ class Table {
                          TableOption = Table::Old, const TSMOption& = TSMOption())
       __attribute__((deprecated("Now use TableUtil::openTable")));
   // # [[deprecated ("Now use TableUtil::canDeleteTable")]]
-  static Bool canDeleteTable(const String& tableName, Bool checkSubTables = False)
+  static bool canDeleteTable(const String& tableName, bool checkSubTables = false)
       __attribute__((deprecated("Now use TableUtil::canDeleteTable")));
   // # [[deprecated ("Now use TableUtil::canDeleteTable")]]
-  static Bool canDeleteTable(String& message, const String& tableName, Bool checkSubTables = False)
+  static bool canDeleteTable(String& message, const String& tableName, bool checkSubTables = false)
       __attribute__((deprecated("Now use TableUtil::canDeleteTable")));
   // # [[deprecated ("Now use TableUtil::deleteTable")]]
-  static void deleteTable(const String& tableName, Bool checkSubTables = False)
+  static void deleteTable(const String& tableName, bool checkSubTables = false)
       __attribute__((deprecated("Now use TableUtil::deleteTable")));
   // # [[deprecated ("Now use TableUtil::getLayout")]]
   static rownr_t getLayout(TableDesc& desc, const String& tableName)
@@ -1022,7 +1022,7 @@ class Table {
   // Construct a BaseTable object from the table file.
   static std::shared_ptr<BaseTable> makeBaseTable(const String& name, const String& type,
                                                   int tableOption, const TableLock& lockOptions,
-                                                  const TSMOption& tsmOpt, Bool addToCache,
+                                                  const TSMOption& tsmOpt, bool addToCache,
                                                   uInt locknr);
 
   // Get the pointer to the underlying BaseTable.
@@ -1038,56 +1038,56 @@ class Table {
   BaseTable* lookCache(const String& name, int tableOption, const TableLock& tableInfo);
 
   // Try if v1 is a subset of v2 and fill rows with its indices in v2.
-  // Return False if not a proper subset.
-  Bool fastRowNumbers(const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
+  // Return false if not a proper subset.
+  bool fastRowNumbers(const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
                       Vector<rownr_t>& rows) const;
 
   // Show the info of the given columns.
   // Sort the columns if needed.
   void showColumnInfo(ostream& os, const TableDesc&, uInt maxNameLength,
-                      const Array<String>& columnNames, Bool sort) const;
+                      const Array<String>& columnNames, bool sort) const;
 };
 
-inline Bool Table::isSameRoot(const Table& other) const {
+inline bool Table::isSameRoot(const Table& other) const {
   return baseTabPtr_p->root() == other.baseTabPtr_p->root();
 }
 
 inline void Table::reopenRW() { baseTabPtr_p->reopenRW(); }
 inline void Table::changeTiledDataOnly() { baseTabPtr_p->changeTiledDataOnly(); }
-inline void Table::flush(Bool fsync, Bool recursive) { baseTabPtr_p->flush(fsync, recursive); }
+inline void Table::flush(bool fsync, bool recursive) { baseTabPtr_p->flush(fsync, recursive); }
 inline void Table::resync() { baseTabPtr_p->resync(); }
 
 inline const StorageOption& Table::storageOption() const { return baseTabPtr_p->storageOption(); }
-inline Bool Table::isMultiUsed(Bool checkSubTables) const {
+inline bool Table::isMultiUsed(bool checkSubTables) const {
   return baseTabPtr_p->isMultiUsed(checkSubTables);
 }
 inline const TableLock& Table::lockOptions() const { return baseTabPtr_p->lockOptions(); }
-inline Bool Table::lock(FileLocker::LockType type, uInt nattempts) {
+inline bool Table::lock(FileLocker::LockType type, uInt nattempts) {
   return baseTabPtr_p->lock(type, nattempts);
 }
-inline Bool Table::lock(Bool write, uInt nattempts) {
+inline bool Table::lock(bool write, uInt nattempts) {
   return baseTabPtr_p->lock(write ? FileLocker::Write : FileLocker::Read, nattempts);
 }
 inline void Table::unlock() { baseTabPtr_p->unlock(); }
-inline Bool Table::hasLock(FileLocker::LockType type) const { return baseTabPtr_p->hasLock(type); }
-inline Bool Table::hasLock(Bool write) const {
+inline bool Table::hasLock(FileLocker::LockType type) const { return baseTabPtr_p->hasLock(type); }
+inline bool Table::hasLock(bool write) const {
   return baseTabPtr_p->hasLock(write ? FileLocker::Write : FileLocker::Read);
 }
 
-inline Bool Table::isRootTable() const { return baseTabPtr_p == baseTabPtr_p->root(); }
+inline bool Table::isRootTable() const { return baseTabPtr_p == baseTabPtr_p->root(); }
 
-inline Bool Table::isWritable() const { return baseTabPtr_p->isWritable(); }
-inline Bool Table::isColumnWritable(const String& columnName) const {
+inline bool Table::isWritable() const { return baseTabPtr_p->isWritable(); }
+inline bool Table::isColumnWritable(const String& columnName) const {
   return baseTabPtr_p->isColumnWritable(columnName);
 }
-inline Bool Table::isColumnWritable(uInt columnIndex) const {
+inline bool Table::isColumnWritable(uInt columnIndex) const {
   return baseTabPtr_p->isColumnWritable(columnIndex);
 }
 
-inline Bool Table::isColumnStored(const String& columnName) const {
+inline bool Table::isColumnStored(const String& columnName) const {
   return baseTabPtr_p->isColumnStored(columnName);
 }
-inline Bool Table::isColumnStored(uInt columnIndex) const {
+inline bool Table::isColumnStored(uInt columnIndex) const {
   return baseTabPtr_p->isColumnStored(columnIndex);
 }
 
@@ -1095,19 +1095,19 @@ inline void Table::rename(const String& newName, TableOption option) {
   baseTabPtr_p->rename(newName, option);
 }
 inline void Table::deepCopy(const String& newName, const Record& dataManagerInfo,
-                            TableOption option, Bool valueCopy, EndianFormat endianFormat,
-                            Bool noRows) const {
+                            TableOption option, bool valueCopy, EndianFormat endianFormat,
+                            bool noRows) const {
   baseTabPtr_p->deepCopy(newName, dataManagerInfo, StorageOption(), option, valueCopy, endianFormat,
                          noRows);
 }
 inline void Table::deepCopy(const String& newName, const Record& dataManagerInfo,
-                            const StorageOption& stopt, TableOption option, Bool valueCopy,
-                            EndianFormat endianFormat, Bool noRows) const {
+                            const StorageOption& stopt, TableOption option, bool valueCopy,
+                            EndianFormat endianFormat, bool noRows) const {
   baseTabPtr_p->deepCopy(newName, dataManagerInfo, stopt, option, valueCopy, endianFormat, noRows);
 }
-inline void Table::markForDelete() { baseTabPtr_p->markForDelete(True, ""); }
-inline void Table::unmarkForDelete() { baseTabPtr_p->unmarkForDelete(True, ""); }
-inline Bool Table::isMarkedForDelete() const { return baseTabPtr_p->isMarkedForDelete(); }
+inline void Table::markForDelete() { baseTabPtr_p->markForDelete(true, ""); }
+inline void Table::unmarkForDelete() { baseTabPtr_p->unmarkForDelete(true, ""); }
+inline bool Table::isMarkedForDelete() const { return baseTabPtr_p->isMarkedForDelete(); }
 
 inline rownr_t Table::nrow() const { return baseTabPtr_p->nrow(); }
 inline BaseTable* Table::baseTablePtr() const { return baseTabPtr_p; }
@@ -1122,37 +1122,37 @@ inline const String& Table::tableName() const { return baseTabPtr_p->tableName()
 inline Table::TableType Table::tableType() const { return TableType(baseTabPtr_p->tableType()); }
 inline int Table::tableOption() const { return baseTabPtr_p->tableOption(); }
 
-inline Bool Table::canAddRow() const { return baseTabPtr_p->canAddRow(); }
-inline Bool Table::canRemoveRow() const { return baseTabPtr_p->canRemoveRow(); }
-inline Bool Table::canRemoveColumn(const Vector<String>& columnNames) const {
+inline bool Table::canAddRow() const { return baseTabPtr_p->canAddRow(); }
+inline bool Table::canRemoveRow() const { return baseTabPtr_p->canRemoveRow(); }
+inline bool Table::canRemoveColumn(const Vector<String>& columnNames) const {
   return baseTabPtr_p->canRemoveColumn(columnNames);
 }
-inline Bool Table::canRenameColumn(const String& columnName) const {
+inline bool Table::canRenameColumn(const String& columnName) const {
   return baseTabPtr_p->canRenameColumn(columnName);
 }
 
-inline void Table::addRow(rownr_t nrrow, Bool initialize) {
+inline void Table::addRow(rownr_t nrrow, bool initialize) {
   baseTabPtr_p->addRow(nrrow, initialize);
 }
 inline void Table::removeRow(rownr_t rownr) { baseTabPtr_p->removeRow(rownr); }
 inline void Table::removeRow(const RowNumbers& rownrs) { baseTabPtr_p->removeRow(rownrs); }
-inline void Table::addColumn(const ColumnDesc& columnDesc, Bool addToParent) {
+inline void Table::addColumn(const ColumnDesc& columnDesc, bool addToParent) {
   baseTabPtr_p->addColumn(columnDesc, addToParent);
 }
-inline void Table::addColumn(const ColumnDesc& columnDesc, const String& dataManager, Bool byName,
-                             Bool addToParent) {
+inline void Table::addColumn(const ColumnDesc& columnDesc, const String& dataManager, bool byName,
+                             bool addToParent) {
   baseTabPtr_p->addColumn(columnDesc, dataManager, byName, addToParent);
 }
 inline void Table::addColumn(const ColumnDesc& columnDesc, const DataManager& dataManager,
-                             Bool addToParent) {
+                             bool addToParent) {
   baseTabPtr_p->addColumn(columnDesc, dataManager, addToParent);
 }
 inline void Table::addColumn(const TableDesc& tableDesc, const DataManager& dataManager,
-                             Bool addToParent) {
+                             bool addToParent) {
   baseTabPtr_p->addColumn(tableDesc, dataManager, addToParent);
 }
 inline void Table::addColumn(const TableDesc& tableDesc, const Record& dataManagerInfo,
-                             Bool addToParent) {
+                             bool addToParent) {
   baseTabPtr_p->addColumns(tableDesc, dataManagerInfo, addToParent);
 }
 inline void Table::removeColumn(const Vector<String>& columnNames) {
@@ -1165,12 +1165,12 @@ inline void Table::renameHypercolumn(const String& newName, const String& oldNam
   baseTabPtr_p->renameHypercolumn(newName, oldName);
 }
 
-inline DataManager* Table::findDataManager(const String& name, Bool byColumn) const {
+inline DataManager* Table::findDataManager(const String& name, bool byColumn) const {
   return baseTabPtr_p->findDataManager(name, byColumn);
 }
 
-inline void Table::showStructure(std::ostream& os, Bool showDataMans, Bool showColumns,
-                                 Bool showSubTables, Bool sortColumns, Bool cOrder) const {
+inline void Table::showStructure(std::ostream& os, bool showDataMans, bool showColumns,
+                                 bool showSubTables, bool sortColumns, bool cOrder) const {
   baseTabPtr_p->showStructure(os, showDataMans, showColumns, showSubTables, sortColumns, cOrder);
 }
 

@@ -48,7 +48,7 @@ Projection::Projection(const String &ctypeLon, const String &ctypeLat,
   }
   parameters_p = parameters;
   //
-  validate(True);
+  validate(true);
 }
 
 Projection::Projection(const Projection &other)
@@ -329,23 +329,23 @@ uInt Projection::nMinParameters(Projection::Type proj) {
   return 0;  // NOTREACHED
 }
 
-Bool Projection::near(const Projection &other, Double tol) const {
-  if (which_p != other.which_p) return False;
-  if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
+bool Projection::near(const Projection &other, Double tol) const {
+  if (which_p != other.which_p) return false;
+  if (parameters_p.nelements() != other.parameters_p.nelements()) return false;
 
   for (uInt i = 0; i < parameters_p.nelements(); i++) {
-    if (!casacore::near(parameters_p(i), other.parameters_p(i), tol)) return False;
+    if (!casacore::near(parameters_p(i), other.parameters_p(i), tol)) return false;
   }
 
-  return True;
+  return true;
 }
 
-Bool Projection::isZenithal(Projection::Type proj) {
-  return Bool(proj == AZP || proj == TAN || proj == SIN || proj == STG || proj == ARC ||
+bool Projection::isZenithal(Projection::Type proj) {
+  return bool(proj == AZP || proj == TAN || proj == SIN || proj == STG || proj == ARC ||
               proj == ZPN || proj == ZEA || proj == AIR || proj == SZP);
 }
 
-void Projection::validate(const Bool verbose) {
+void Projection::validate(const bool verbose) {
   uInt requiredSize = nParameters(which_p);
   uInt minSize = nMinParameters(which_p);
   uInt actualSize = parameters_p.nelements();

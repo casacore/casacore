@@ -94,7 +94,7 @@ class HDF5DataType {
   // For the complex types it makes a compound HDF5 data type.
   // The String type is meant for an array of strings.
   // <group>
-  explicit HDF5DataType(const Bool*);
+  explicit HDF5DataType(const bool*);
   explicit HDF5DataType(const uChar*);
   explicit HDF5DataType(const Short*);
   explicit HDF5DataType(const uShort*);
@@ -151,10 +151,10 @@ class HDF5DataType {
   uInt size() const { return itsSize; }
 
   // Test if the data type is Complex or DComplex.
-  static Bool isComplex(hid_t dtid);
+  static bool isComplex(hid_t dtid);
 
   // Test if the data type is an empty array.
-  static Bool isEmptyArray(hid_t dtid);
+  static bool isEmptyArray(hid_t dtid);
 
   // Get the shape of an array data type.
   // It returns an empty IPosition for non-arrays.

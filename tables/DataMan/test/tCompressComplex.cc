@@ -53,7 +53,7 @@
 // compares the results with the reference output file.
 
 // First build a description.
-void writeData(Bool isSD, Bool autoScale) {
+void writeData(bool isSD, bool autoScale) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
@@ -131,8 +131,8 @@ void writeData(Bool isSD, Bool autoScale) {
   ///  }
 }
 
-Bool checkData(Bool autoScale) {
-  Bool ok = True;
+bool checkData(bool autoScale) {
+  bool ok = true;
   // Read back the table.
   Table tab("tCompressComplex_tmp.data");
   ArrayColumn<Complex> source1(tab, "source1");
@@ -183,7 +183,7 @@ Bool checkData(Bool autoScale) {
       cout << "error in source1 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
-      ok = False;
+      ok = false;
     }
     AlwaysAssertExit(allEQ(arrvalf, iter1.array()));
     AlwaysAssertExit(allEQ(arrvalf(slicer), source1.getSlice(i, slicer)));
@@ -193,7 +193,7 @@ Bool checkData(Bool autoScale) {
         cout << "error in target1 in row " << i << endl;
         cout << "Read: " << arrvali << endl;
         cout << "Expected: " << arri1 << endl;
-        ok = False;
+        ok = false;
       }
     } else {
       Float offs = offset1(i);
@@ -202,7 +202,7 @@ Bool checkData(Bool autoScale) {
         cout << "error in offset1 in row " << i << endl;
         cout << "Read: " << offs << endl;
         cout << "Expected: " << so << endl;
-        ok = False;
+        ok = false;
       }
       Float scale = scale1(i);
       so = (arrvalf(0, 2, 3).imag() - arrvalf(1, 0, 0).imag()) / 65534;
@@ -210,7 +210,7 @@ Bool checkData(Bool autoScale) {
         cout << "error in scale1 in row " << i << endl;
         cout << "Read: " << scale << endl;
         cout << "Expected: " << so << endl;
-        ok = False;
+        ok = false;
       }
     }
     source2.get(i, arrvalf);
@@ -218,7 +218,7 @@ Bool checkData(Bool autoScale) {
       cout << "error in source2 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
-      ok = False;
+      ok = false;
     }
     AlwaysAssertExit(allEQ(arrvalf, iter2.array()));
     AlwaysAssertExit(allEQ(arrvalf(slicer), source2.getSlice(i, slicer)));
@@ -230,8 +230,8 @@ Bool checkData(Bool autoScale) {
   return ok;
 }
 
-Bool checkDataSD(bool autoScale) {
-  Bool ok = True;
+bool checkDataSD(bool autoScale) {
+  bool ok = true;
   // Read back the table.
   Table tab("tCompressComplex_tmp.data");
   ArrayColumn<Complex> source1(tab, "source1");
@@ -260,7 +260,7 @@ Bool checkDataSD(bool autoScale) {
     cout << "error in source1 in row 0" << endl;
     cout << "Read: " << arrvalf << endl;
     cout << "Expected: " << arrf1 << endl;
-    ok = False;
+    ok = false;
   }
   if (!autoScale) {
     target1.get(0, arrvali);
@@ -268,7 +268,7 @@ Bool checkDataSD(bool autoScale) {
       cout << "error in target1 in row 0" << endl;
       cout << "Read: " << arrvali << endl;
       cout << "Expected: " << arri1 << endl;
-      ok = False;
+      ok = false;
     }
   } else {
     Float offs = offset1(0);
@@ -277,7 +277,7 @@ Bool checkDataSD(bool autoScale) {
       cout << "error in offset1 in row 0" << endl;
       cout << "Read: " << offs << endl;
       cout << "Expected: " << so << endl;
-      ok = False;
+      ok = false;
     }
     Float scale = scale1(0);
     so = (arrvalf(0, 2, 3).imag() - arrvalf(0, 0, 0).real()) / 65534;
@@ -285,7 +285,7 @@ Bool checkDataSD(bool autoScale) {
       cout << "error in scale1 in row 0" << endl;
       cout << "Read: " << scale << endl;
       cout << "Expected: " << so << endl;
-      ok = False;
+      ok = false;
     }
   }
   i = 1;
@@ -304,7 +304,7 @@ Bool checkDataSD(bool autoScale) {
       cout << "error in source1 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
-      ok = False;
+      ok = false;
     }
     if (!autoScale) {
       target1.get(i, arrvali);
@@ -312,7 +312,7 @@ Bool checkDataSD(bool autoScale) {
         cout << "error in target1 in row " << i << endl;
         cout << "Read: " << arrvali << endl;
         cout << "Expected: " << arri1 << endl;
-        ok = False;
+        ok = false;
       }
     } else {
       Float offs = offset1(i);
@@ -321,7 +321,7 @@ Bool checkDataSD(bool autoScale) {
         cout << "error in offset1 in row " << i << endl;
         cout << "Read: " << offs << endl;
         cout << "Expected: " << so << endl;
-        ok = False;
+        ok = false;
       }
       Float scale = scale1(i);
       so = (arrvalf(0, 2, 3).imag() - arrvalf(1, 0, 0).imag()) / 65534;
@@ -329,7 +329,7 @@ Bool checkDataSD(bool autoScale) {
         cout << "error in scale1 in row " << i << endl;
         cout << "Read: " << scale << endl;
         cout << "Expected: " << so << endl;
-        ok = False;
+        ok = false;
       }
     }
     source2.get(i, arrvalf);
@@ -337,7 +337,7 @@ Bool checkDataSD(bool autoScale) {
       cout << "error in source2 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
-      ok = False;
+      ok = false;
     }
   }
   return ok;
@@ -459,14 +459,14 @@ void testSpeed() {
 int main() {
   Int sts = 0;
   try {
-    writeData(False, False);
-    if (!checkData(False)) sts = 1;
-    writeData(False, True);
-    if (!checkData(True)) sts = 1;
-    writeData(True, False);
-    if (!checkDataSD(False)) sts = 1;
-    writeData(True, True);
-    if (!checkDataSD(True)) sts = 1;
+    writeData(false, false);
+    if (!checkData(false)) sts = 1;
+    writeData(false, true);
+    if (!checkData(true)) sts = 1;
+    writeData(true, false);
+    if (!checkDataSD(false)) sts = 1;
+    writeData(true, true);
+    if (!checkDataSD(true)) sts = 1;
     testSpeed();
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

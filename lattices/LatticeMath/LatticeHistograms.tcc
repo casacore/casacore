@@ -65,20 +65,20 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, LogIO& os,
-                                        Bool showProgress, Bool forceDisk)
+                                        bool showProgress, bool forceDisk)
     : os_p(os),
-      goodParameterStatus_p(True),
+      goodParameterStatus_p(true),
       error_p(""),
       pInLattice_p(0),
       pStoreLattice_p(0),
       pStats_p(0),
-      binAll_p(True),
-      needStorageLattice_p(True),
-      doCumu_p(False),
-      doGauss_p(False),
-      doList_p(False),
-      doLog_p(False),
-      haveLogger_p(True),
+      binAll_p(true),
+      needStorageLattice_p(true),
+      doCumu_p(false),
+      doGauss_p(false),
+      doList_p(false),
+      doLog_p(false),
+      haveLogger_p(true),
       showProgress_p(showProgress),
       forceDisk_p(forceDisk),
       nBins_p(25)
@@ -101,20 +101,20 @@ LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, LogIO& 
 }
 
 template <class T>
-LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, Bool showProgress,
-                                        Bool forceDisk)
-    : goodParameterStatus_p(True),
+LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, bool showProgress,
+                                        bool forceDisk)
+    : goodParameterStatus_p(true),
       error_p(""),
       pInLattice_p(0),
       pStoreLattice_p(0),
       pStats_p(0),
-      binAll_p(True),
-      needStorageLattice_p(True),
-      doCumu_p(False),
-      doGauss_p(False),
-      doList_p(False),
-      doLog_p(False),
-      haveLogger_p(False),
+      binAll_p(true),
+      needStorageLattice_p(true),
+      doCumu_p(false),
+      doGauss_p(false),
+      doList_p(false),
+      doLog_p(false),
+      haveLogger_p(false),
       showProgress_p(showProgress),
       forceDisk_p(forceDisk),
       nBins_p(25)
@@ -171,7 +171,7 @@ LatticeHistograms<T>& LatticeHistograms<T>::operator=(const LatticeHistograms<T>
       delete pStats_p;
       pStats_p = 0;
     }
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
 
     // Do the rest
 
@@ -216,13 +216,13 @@ LatticeHistograms<T>::~LatticeHistograms()
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setAxes(const Vector<Int>& axes)
+bool LatticeHistograms<T>::setAxes(const Vector<Int>& axes)
 //
 // This function sets the cursor axes and the display axes
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Save current cursor axes
@@ -243,7 +243,7 @@ Bool LatticeHistograms<T>::setAxes(const Vector<Int>& axes)
     for (uInt i = 0; i < cursorAxes_p.nelements(); i++) {
       if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInLattice_p->ndim() - 1)) {
         error_p = "Invalid cursor axes";
-        return False;
+        return false;
       }
     }
   }
@@ -256,19 +256,19 @@ Bool LatticeHistograms<T>::setAxes(const Vector<Int>& axes)
   // Signal that we have changed the axes and need new accumulation lattices
 
   if (saveAxes.nelements() != cursorAxes_p.nelements() || !allEQ(saveAxes, cursorAxes_p))
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setNBins(const uInt& nBins)
+bool LatticeHistograms<T>::setNBins(const uInt& nBins)
 //
 // Set the number of bins
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Save number of bins
@@ -277,27 +277,27 @@ Bool LatticeHistograms<T>::setNBins(const uInt& nBins)
 
   if (nBins < 1) {
     error_p = "Invalid number of bins";
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   } else {
     nBins_p = nBins;
   }
 
   // Signal that we need a new accumulation lattice
 
-  if (saveNBins != nBins_p) needStorageLattice_p = True;
+  if (saveNBins != nBins_p) needStorageLattice_p = true;
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setIncludeRange(const Vector<T>& include)
+bool LatticeHistograms<T>::setIncludeRange(const Vector<T>& include)
 //
 // Assign the desired inclusion range
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Save current ranges
@@ -306,87 +306,87 @@ Bool LatticeHistograms<T>::setIncludeRange(const Vector<T>& include)
 
   // CHeck
 
-  Bool noInclude;
+  bool noInclude;
   ostringstream os;
   if (!setInclude(range_p, noInclude, include, os)) {
     error_p = "Invalid pixel inclusion range";
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   }
   binAll_p = noInclude;
 
   // Signal that we need new accumulation lattices
 
   if (saveRange.nelements() != range_p.nelements() || !allEQ(saveRange, range_p))
-    needStorageLattice_p = True;
+    needStorageLattice_p = true;
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setGaussian(const Bool& doGauss)
+bool LatticeHistograms<T>::setGaussian(const bool& doGauss)
 //
 // Specify whether there should be a Gaussian overlay or not
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   doGauss_p = doGauss;
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setForm(const Bool& doLog, const Bool& doCumu)
+bool LatticeHistograms<T>::setForm(const bool& doLog, const bool& doCumu)
 //
 // Specify whether the form of the histogram should be linear/log
 // or cumulative or not.
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   doLog_p = doLog;
   doCumu_p = doCumu;
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setStatsList(const Bool& doList)
+bool LatticeHistograms<T>::setStatsList(const bool& doList)
 //
 // See if user wants to list statistics as well
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   doList_p = doList;
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setPlotting(PGPlotter& plotter, const Vector<Int>& nxy)
+bool LatticeHistograms<T>::setPlotting(PGPlotter& plotter, const Vector<Int>& nxy)
 //
 // Assign the desired PGPLOT device name and number
 // of subplots
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Is new plotter attached ?
 
   if (!plotter.isAttached()) {
     error_p = "Input plotter is not attached";
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   }
 
   // Don't reattach to the same plotter.  The assignment will
@@ -405,21 +405,21 @@ Bool LatticeHistograms<T>::setPlotting(PGPlotter& plotter, const Vector<Int>& nx
   ostringstream os;
   if (!LatticeStatsBase::setNxy(nxy_p, os)) {
     error_p = "Invalid number of subplots";
-    goodParameterStatus_p = False;
-    return False;
+    goodParameterStatus_p = false;
+    return false;
   }
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
+bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
 //
 // Assign pointer to lattice
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   DataType latticeType = whatType<T>();
@@ -427,9 +427,9 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
     ostringstream oss;
     oss << "Lattices of type " << latticeType << " are not currently supported" << endl;
     error_p = oss.str();
-    goodParameterStatus_p = False;
+    goodParameterStatus_p = false;
     pInLattice_p = 0;
-    return False;
+    return false;
   }
 
   // Clone pointer
@@ -445,9 +445,9 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
   // Signal that we have changed the lattice and need a new accumulation
   // lattice
 
-  needStorageLattice_p = True;
+  needStorageLattice_p = true;
 
-  return True;
+  return true;
 }
 
 template <class T>
@@ -456,44 +456,44 @@ void LatticeHistograms<T>::closePlotting() {
 }
 
 template <class T>
-Bool LatticeHistograms<T>::display()
+bool LatticeHistograms<T>::display()
 //
 // This function displays (plotting and listing) the requested
 // histograms as a function of the display axes
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Generate storage lattices if required
 
   if (needStorageLattice_p) {
-    if (!generateStorageLattice()) return False;
+    if (!generateStorageLattice()) return false;
   }
 
   // Display histograms
 
   displayHistograms();
 
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::getHistograms(Array<T>& values, Array<T>& counts) {
+bool LatticeHistograms<T>::getHistograms(Array<T>& values, Array<T>& counts) {
   Array<Vector<T>> stats;
   return getHistograms(values, counts, stats);
 }
 
 template <class T>
-Bool LatticeHistograms<T>::getHistograms(Array<T>& values, Array<T>& counts,
+bool LatticeHistograms<T>::getHistograms(Array<T>& values, Array<T>& counts,
                                          Array<Vector<T>>& stats) {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
   // Generate storage lattices if required
   if (needStorageLattice_p) {
-    if (!generateStorageLattice()) return False;
+    if (!generateStorageLattice()) return false;
   }
 
   // Set up iterator to work through histogram storage lattice line by line
@@ -530,12 +530,12 @@ Bool LatticeHistograms<T>::getHistograms(Array<T>& values, Array<T>& counts,
     extractOneHistogram(linearSum, linearYMax, valuesIterator.vector(), countsIterator.vector(),
                         stat, histIterator.vectorCursor());
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::getHistogram(Vector<T>& values, Vector<T>& counts, const IPosition& pos,
-                                        const Bool posInLattice)
+bool LatticeHistograms<T>::getHistogram(Vector<T>& values, Vector<T>& counts, const IPosition& pos,
+                                        const bool posInLattice)
 //
 // Retrieve histogram values and counts from specified
 // location into vectors
@@ -548,7 +548,7 @@ Bool LatticeHistograms<T>::getHistogram(Vector<T>& values, Vector<T>& counts, co
 //
 {
   if (!goodParameterStatus_p) {
-    return False;
+    return false;
   }
 
   // Make sure we have a correctly size position
@@ -558,21 +558,21 @@ Bool LatticeHistograms<T>::getHistogram(Vector<T>& values, Vector<T>& counts, co
       error_p = "Incorrectly sized position given";
       values.resize(0);
       counts.resize(0);
-      return False;
+      return false;
     }
   } else {
     if (pos.nelements() != displayAxes_p.nelements()) {
       error_p = "Incorrectly sized position given";
       values.resize(0);
       counts.resize(0);
-      return False;
+      return false;
     }
   }
 
   // Generate storage lattices if required
 
   if (needStorageLattice_p) {
-    if (!generateStorageLattice()) return False;
+    if (!generateStorageLattice()) return false;
   }
 
   // Set position for getting slice from storage lattice
@@ -599,7 +599,7 @@ Bool LatticeHistograms<T>::getHistogram(Vector<T>& values, Vector<T>& counts, co
   IPosition sliceShape(nDim + 1, 1);
   sliceShape(0) = nBins_p;
   Array<T> intCounts;
-  pStoreLattice_p->getSlice(intCounts, histPos, sliceShape, IPosition(nDim + 1, 1), False);
+  pStoreLattice_p->getSlice(intCounts, histPos, sliceShape, IPosition(nDim + 1, 1), false);
 
   // Copy integer counts to a Vector
 
@@ -625,13 +625,13 @@ Bool LatticeHistograms<T>::getHistogram(Vector<T>& values, Vector<T>& counts, co
   T linearSum, linearYMax;
   extractOneHistogram(linearSum, linearYMax, values, counts, statsT, intCountsV);
 
-  return True;
+  return true;
 }
 
 // Private functions
 
 template <class T>
-Bool LatticeHistograms<T>::displayHistograms()
+bool LatticeHistograms<T>::displayHistograms()
 //
 // Display the histograms as a function of the display axes
 //
@@ -640,12 +640,12 @@ Bool LatticeHistograms<T>::displayHistograms()
 
   if (plotter_p.isAttached()) {
     plotter_p.subp(nxy_p(0), nxy_p(1));
-    plotter_p.ask(True);
+    plotter_p.ask(true);
     plotter_p.sch(1.2);
     plotter_p.svp(0.1, 0.9, 0.1, 0.9);
   } else {
     error_p = "Plotter is not attached";
-    return False;
+    return false;
   }
 
   // Set up iterator to work through histogram storage lattice line by line.
@@ -690,13 +690,13 @@ Bool LatticeHistograms<T>::displayHistograms()
 
     if (!displayOneHistogram(linearSum, linearYMax, histIterator.position(), stats, values, counts,
                              plotter_p))
-      return False;
+      return false;
   }
-  return True;
+  return true;
 }
 
 template <class T>
-Bool LatticeHistograms<T>::displayOneHistogram(const T& linearSum, const T& linearYMax,
+bool LatticeHistograms<T>::displayOneHistogram(const T& linearSum, const T& linearYMax,
                                                const IPosition& histPos, const Vector<T>& stats,
                                                const Vector<T>& values, const Vector<T>& counts,
                                                PGPlotter& plotter)
@@ -717,7 +717,7 @@ Bool LatticeHistograms<T>::displayOneHistogram(const T& linearSum, const T& line
   // Do plots
 
   LatticeHistSpecialize::plot(plotter, doGauss_p, doCumu_p, doLog_p, linearSum, linearYMax,
-                              binWidth, values, counts, stats, 0, 1, True);
+                              binWidth, values, counts, stats, 0, 1, true);
 
   // Write values of the display axes on the plot
 
@@ -725,7 +725,7 @@ Bool LatticeHistograms<T>::displayOneHistogram(const T& linearSum, const T& line
   Float nchar = 0.5;
   if (type == TpComplex) nchar = 1.5;
   String coords = writeCoordinates(histPos);
-  if (!writeDispAxesValues(coords, plotter, nchar)) return False;
+  if (!writeDispAxesValues(coords, plotter, nchar)) return false;
 
   if (haveLogger_p && doList_p) {
     // List pixel coordinates of display axes for this histogram
@@ -735,7 +735,7 @@ Bool LatticeHistograms<T>::displayOneHistogram(const T& linearSum, const T& line
     os_p << coords << endl;
     listStatistics(os_p, stats, binWidth);
   }
-  return True;
+  return true;
 }
 
 template <class T>
@@ -787,7 +787,7 @@ void LatticeHistograms<T>::extractOneHistogram(T& linearSum, T& linearYMax, Vect
 }
 
 template <class T>
-Bool LatticeHistograms<T>::generateStorageLattice()
+bool LatticeHistograms<T>::generateStorageLattice()
 //
 // Generate the histogram, and statistics storage lattices.
 //
@@ -801,14 +801,14 @@ Bool LatticeHistograms<T>::generateStorageLattice()
 
   // Make the statistics object
 
-  if (!makeStatistics()) return False;
+  if (!makeStatistics()) return false;
 
   // Fill the histogram storage lattice
 
   makeHistograms();
 
-  needStorageLattice_p = False;
-  return True;
+  needStorageLattice_p = false;
+  return true;
 }
 
 template <class T>
@@ -836,7 +836,7 @@ void LatticeHistograms<T>::getStatistics(Vector<T>& stats, const IPosition& hist
   // Get the statistics
 
   Vector<AccumType> statsA;
-  pStats_p->getStats(statsA, pos, False);
+  pStats_p->getStats(statsA, pos, false);
   stats.resize(statsA.nelements());
   convertArray(stats, statsA);
 }
@@ -904,7 +904,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os, const Vector<T>& stats, T b
 
 template <class T>
 IPosition LatticeHistograms<T>::locHistInLattice(const IPosition& storagePosition,
-                                                 Bool relativeToParent) const
+                                                 bool relativeToParent) const
 //
 // Given a location in the histogram storage lattice, convert those locations on
 // the non-histogram axis (the histogram axis is the first one) to locations
@@ -924,7 +924,7 @@ IPosition LatticeHistograms<T>::locHistInLattice(const IPosition& storagePositio
 }
 
 template <class T>
-Bool LatticeHistograms<T>::makeStatistics() {
+bool LatticeHistograms<T>::makeStatistics() {
   // Create LatticeStatistics object.  Show progress meter.
 
   if (pStats_p != 0) delete pStats_p;
@@ -936,8 +936,8 @@ Bool LatticeHistograms<T>::makeStatistics() {
   // filled with it.
 
   Vector<T> exclude;
-  if (!pStats_p->setInExCludeRange(range_p, exclude, True)) return False;
-  if (!pStats_p->setAxes(cursorAxes_p)) return False;
+  if (!pStats_p->setInExCludeRange(range_p, exclude, true)) return false;
+  if (!pStats_p->setAxes(cursorAxes_p)) return false;
 
   // We get an arbitary statistics slice here so as to
   // activate the statistics object and make it a bit
@@ -945,9 +945,9 @@ Bool LatticeHistograms<T>::makeStatistics() {
 
   Vector<AccumType> stats;
   IPosition pos(displayAxes_p.nelements(), 0);
-  if (!pStats_p->getStats(stats, pos, False)) return False;
+  if (!pStats_p->getStats(stats, pos, false)) return false;
 
-  return True;
+  return true;
 }
 
 template <class T>
@@ -959,7 +959,7 @@ void LatticeHistograms<T>::makeHistograms() {
   // Set storage lattice shape.  The first axis is the histogram axis
 
   IPosition storeLatticeShape;
-  LatticeStatsBase::setStorageImageShape(storeLatticeShape, False, Int(nBins_p), displayAxes_p,
+  LatticeStatsBase::setStorageImageShape(storeLatticeShape, false, Int(nBins_p), displayAxes_p,
                                          pInLattice_p->shape());
 
   // Set the storage lattice tile shape to the tile shape of the
@@ -998,7 +998,7 @@ void LatticeHistograms<T>::makeHistograms() {
   // Iterate through lattice and create histograms
   // Output has to be a MaskedLattice, so make a writable SubLattice.
 
-  SubLattice<T> outLatt(*pStoreLattice_p, True);
+  SubLattice<T> outLatt(*pStoreLattice_p, true);
   LatticeApply<T, T>::tiledApply(outLatt, *pInLattice_p, collapser, IPosition(cursorAxes_p),
                                  newOutAxis, pProgressMeter);
   if (pProgressMeter != 0) {
@@ -1008,7 +1008,7 @@ void LatticeHistograms<T>::makeHistograms() {
 }
 
 template <class T>
-Bool LatticeHistograms<T>::setInclude(Vector<T>& range, Bool& noInclude, const Vector<T>& include,
+bool LatticeHistograms<T>::setInclude(Vector<T>& range, bool& noInclude, const Vector<T>& include,
                                       ostream& os)
 //
 // Take the user's data inclusion range
@@ -1018,14 +1018,14 @@ Bool LatticeHistograms<T>::setInclude(Vector<T>& range, Bool& noInclude, const V
 //             no include range
 //   os        Output stream for reporting
 // Outputs:
-//   noInclude If True user did not give an include range
+//   noInclude If true user did not give an include range
 //   range     A pixel value selection range.  Will be resized to
-//             zero length if both noInclude and noExclude are True
-//   Bool      True if successfull, will fail if user tries to give too
+//             zero length if both noInclude and noExclude are true
+//   Bool      true if successfull, will fail if user tries to give too
 //             many values for includeB or excludeB, or tries to give
 //             values for both
 {
-  noInclude = True;
+  noInclude = true;
   range.resize(0);
   if (include.nelements() == 0) {
     ;
@@ -1033,17 +1033,17 @@ Bool LatticeHistograms<T>::setInclude(Vector<T>& range, Bool& noInclude, const V
     range.resize(2);
     range(0) = -abs(include(0));
     range(1) = abs(include(0));
-    noInclude = False;
+    noInclude = false;
   } else if (include.nelements() == 2) {
     range.resize(2);
     range(0) = min(include(0), include(1));
     range(1) = max(include(0), include(1));
-    noInclude = False;
+    noInclude = false;
   } else {
     os << endl << "Too many elements for argument include" << endl;
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 template <class T>
@@ -1056,7 +1056,7 @@ String LatticeHistograms<T>::writeCoordinates(const IPosition& histPos) const
   const Int nDisplayAxes = displayAxes_p.nelements();
   if (nDisplayAxes > 0) {
     for (Int j = 0; j < nDisplayAxes; j++) {
-      oss << "Axis " << displayAxes_p(j) + 1 << "=" << locHistInLattice(histPos, True)(j + 1) + 1;
+      oss << "Axis " << displayAxes_p(j) + 1 << "=" << locHistInLattice(histPos, true)(j + 1) + 1;
       if (j < nDisplayAxes - 1) oss << ", ";
     }
   }
@@ -1064,7 +1064,7 @@ String LatticeHistograms<T>::writeCoordinates(const IPosition& histPos) const
 }
 
 template <class T>
-Bool LatticeHistograms<T>::writeDispAxesValues(const String& coords, PGPlotter& plotter,
+bool LatticeHistograms<T>::writeDispAxesValues(const String& coords, PGPlotter& plotter,
                                                Float nchar) const {
   // Fill the string stream with the name and value of each display axis
 
@@ -1090,7 +1090,7 @@ Bool LatticeHistograms<T>::writeDispAxesValues(const String& coords, PGPlotter& 
     plotter.stbg(tbg);
   }
 
-  return True;
+  return true;
 }
 
 template <class T>
@@ -1131,7 +1131,7 @@ void HistTiledCollapser<T>::initAccumulator(uInt64 n1, uInt64 n3)
 }
 
 template <class T>
-void HistTiledCollapser<T>::process(uInt index1, uInt index3, const T* pInData, const Bool* pInMask,
+void HistTiledCollapser<T>::process(uInt index1, uInt index3, const T* pInData, const bool* pInMask,
                                     uInt dataIncr, uInt maskIncr, uInt nrval,
                                     const IPosition& startPos, const IPosition&) {
   //
@@ -1144,7 +1144,7 @@ void HistTiledCollapser<T>::process(uInt index1, uInt index3, const T* pInData, 
 
   typedef typename NumericTraits<T>::PrecisionType AccumType;
   Vector<AccumType> stats;
-  pStats_p->getStats(stats, startPos, True);
+  pStats_p->getStats(stats, startPos, true);
   ThrowIf(
       stats.empty(),
       "Failed to compute statistics, if you set a range you have likely excluded all valid pixels");
@@ -1165,7 +1165,7 @@ void HistTiledCollapser<T>::process(uInt index1, uInt index3, const T* pInData, 
 }
 
 template <class T>
-void HistTiledCollapser<T>::endAccumulator(Array<T>& result, Array<Bool>& resultMask,
+void HistTiledCollapser<T>::endAccumulator(Array<T>& result, Array<bool>& resultMask,
                                            const IPosition& shape) {
   // Reshape arrays.  The mask is always true.  Any locations
   // in the storage lattice for which there were no valid points
@@ -1173,10 +1173,10 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result, Array<Bool>& result
   // we use to effectively mask it.
 
   resultMask.resize(shape);
-  resultMask.set(True);
+  resultMask.set(true);
   result.resize(shape);
   //
-  Bool deleteRes;
+  bool deleteRes;
   T* res = result.getStorage(deleteRes);
   T* resptr = res;
   const T* histPtr = pHist_p->storage();

@@ -42,7 +42,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class T>
 LELLattice<T>::LELLattice(const Lattice<T>& lattice) : pLattice_p(new SubLattice<T>(lattice)) {
   setAttr(
-      LELAttribute(False, lattice.shape(), lattice.niceCursorShape(), lattice.lelCoordinates()));
+      LELAttribute(false, lattice.shape(), lattice.niceCursorShape(), lattice.lelCoordinates()));
 
 #if defined(AIPS_TRACE)
   cout << "LELLattice:: constructor, pLattice_p.nrefs() = " << pLattice_p.nrefs() << endl;
@@ -77,7 +77,7 @@ void LELLattice<T>::eval(LELArray<T>& result, const Slicer& section) const {
   Array<T> tmp = pLattice_p->getSlice(section);
   result.value().reference(tmp);
   if (getAttribute().isMasked()) {
-    Array<Bool> mask = pLattice_p->getMaskSlice(section);
+    Array<bool> mask = pLattice_p->getMaskSlice(section);
     result.setMask(mask);
   } else {
     result.removeMask();
@@ -95,7 +95,7 @@ void LELLattice<T>::evalRef(LELArrayRef<T>& result, const Slicer& section) const
   // Cast to its base class LELArray to use the non-const value function.
   ((LELArray<T>&)result).value().reference(tmp);
   if (getAttribute().isMasked()) {
-    Array<Bool> mask = pLattice_p->getMaskSlice(section);
+    Array<bool> mask = pLattice_p->getMaskSlice(section);
     result.setMask(mask);
   } else {
     result.removeMask();
@@ -109,8 +109,8 @@ LELScalar<T> LELLattice<T>::getScalar() const {
 }
 
 template <class T>
-Bool LELLattice<T>::prepareScalarExpr() {
-  return False;
+bool LELLattice<T>::prepareScalarExpr() {
+  return false;
 }
 
 template <class T>
@@ -119,7 +119,7 @@ String LELLattice<T>::className() const {
 }
 
 template <class T>
-Bool LELLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELLattice<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return pLattice_p->lock(type, nattempts);
 }
 template <class T>
@@ -127,7 +127,7 @@ void LELLattice<T>::unlock() {
   pLattice_p->unlock();
 }
 template <class T>
-Bool LELLattice<T>::hasLock(FileLocker::LockType type) const {
+bool LELLattice<T>::hasLock(FileLocker::LockType type) const {
   return pLattice_p->hasLock(type);
 }
 template <class T>

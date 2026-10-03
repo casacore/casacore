@@ -39,23 +39,23 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool DirectionCoordinate::toWorld(MDirection &world, const Vector<Double> &pixel) const {
+bool DirectionCoordinate::toWorld(MDirection &world, const Vector<Double> &pixel) const {
   static MVDirection world_tmp;
   if (toWorld(world_tmp, pixel)) {
     world.set(world_tmp, MDirection::Ref(type_p));
-    return True;
+    return true;
   }
   //
-  return False;
+  return false;
 }
 
-Bool DirectionCoordinate::toWorld(MVDirection &world, const Vector<Double> &pixel) const {
+bool DirectionCoordinate::toWorld(MVDirection &world, const Vector<Double> &pixel) const {
   static Vector<Double> world_tmp(2);
   if (toWorld(world_tmp, pixel)) {
     world.setAngle(world_tmp(0) * to_radians_p[0], world_tmp(1) * to_radians_p[1]);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 MVDirection DirectionCoordinate::toWorld(const Vector<Double> &pixel) const {
@@ -64,7 +64,7 @@ MVDirection DirectionCoordinate::toWorld(const Vector<Double> &pixel) const {
   return x;
 }
 
-Bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MDirection &world) const {
+bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MDirection &world) const {
   if (type_p == MDirection::castType(world.getRef().getType())) {
     return toPixel(pixel, world.getValue());
   } else {
@@ -73,7 +73,7 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MDirection &world
   }
 }
 
-Bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MVDirection &world) const {
+bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MVDirection &world) const {
   static Vector<Double> world_tmp(2);
 
   // Convert to current units

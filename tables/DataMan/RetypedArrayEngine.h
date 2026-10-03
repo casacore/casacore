@@ -563,7 +563,7 @@ class RetypedArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType>
   // # Now define the data members.
   IPosition shape_p;              // # shape of a virtual element in the stored
   IPosition virtualFixedShape_p;  // # The shape in case virtual has FixedShape
-  Bool isVirtualFixedShape_p;
+  bool isVirtualFixedShape_p;
   TableRecord record_p;
   // #    VirtualType::CopyInfo* copyInfo_p; //# object used to set/get arrays
   void* copyInfo_p;  // # CFront compiler does not accept above

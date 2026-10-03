@@ -44,7 +44,7 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Vector<Int>& ifrSlot, Int 
   Array<T> data2(IPosition(4, nPol, nChan, nIfr, nTime));
   data2.set(defvalue);
 
-  Bool deleteData, deleteData2;
+  bool deleteData, deleteData2;
   const T* pdata = data.getStorage(deleteData);
   T* pdata2 = data2.getStorage(deleteData2);
   Int n = nPol * nChan;
@@ -69,7 +69,7 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex, I
   }
   Array<T> data2(IPosition(3, nPol, nChan, nRow));
 
-  Bool deleteData, deleteData2;
+  bool deleteData, deleteData2;
   const T* pData = data.getStorage(deleteData);
   T* pData2 = data2.getStorage(deleteData2);
   Int n = nPol * nChan;
@@ -90,11 +90,11 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex, I
 // average data (with flags & weights applied) over its last axis (time or
 // row), return in data (overwritten), dataFlag gives new flags.
 template <class T>
-void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data, const Array<Bool>& flag,
+void MSSelUtil2<T>::timeAverage(Array<bool>& dataFlag, Array<T>& data, const Array<bool>& flag,
                                 const Array<Float>& weight) {
-  Bool delData, delFlag, delWeight;
+  bool delData, delFlag, delWeight;
   const T* pdata = data.getStorage(delData);
-  const Bool* pflag = flag.getStorage(delFlag);
+  const bool* pflag = flag.getStorage(delFlag);
   const Float* pweight = weight.getStorage(delWeight);
   Int nPol = data.shape()(0), nChan = data.shape()(1);
   Int nIfr = 1, nTime = data.shape()(2);
@@ -108,11 +108,11 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data, const Arr
   }
   Array<Float> wt(IPosition(3, nPol, nChan, nIfr));
   dataFlag.resize(IPosition(3, nPol, nChan, nIfr));
-  dataFlag.set(True);
-  Bool delDataflag, delWt, delOut;
+  dataFlag.set(true);
+  bool delDataflag, delWt, delOut;
   Float* pwt = wt.getStorage(delWt);
   T* pout = out.getStorage(delOut);
-  Bool* pdflags = dataFlag.getStorage(delDataflag);
+  bool* pdflags = dataFlag.getStorage(delDataflag);
   out = 0;
   wt = 0;
   Int offset = 0, off1 = 0, offw = 0;
@@ -124,7 +124,7 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data, const Arr
           //	  if (!flag(i,j,k,l)) {
           if (!pflag[offset]) {
             //	    out(i,j,k)+=weight(k,l)*data(i,j,k,l);
-            pdflags[off1] = False;
+            pdflags[off1] = false;
             pout[off1] += pweight[offw] * pdata[offset];
             //	    wt(i,j,k)+=weight(k,l);
             pwt[off1] += pweight[offw];

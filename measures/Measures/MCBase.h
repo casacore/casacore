@@ -80,7 +80,7 @@ class String;
 // </srcblock>
 // To get a static state transition matrix:
 // <srcblock>
-//	static Bool made = False;		// set not yet done
+//	static bool made = false;		// set not yet done
 //	enum types {				// states
 //		A=0, B, C, D, E, ntyp };
 //	enum routes {				// routes
@@ -101,7 +101,7 @@ class String;
 //					// diagonal == nrout
 //	// Make the state machine
 //	MCBase::makeState(state[0], ntyp, nrout, routes);
-//      made = True;
+//      made = true;
 // </srcblock>
 // </example>
 //
@@ -163,7 +163,7 @@ class MCBase {
 
  private:
   // Routine to find the shortest route between two points
-  static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall, Bool *visit,
+  static bool findState(uInt &len, uInt *state, uInt *mcnt, bool &okall, bool *visit,
                         const uInt *tcnt, const uInt *tree, const uInt &in, const uInt &out,
                         const uInt ntyp, const uInt nrout, const uInt list[][3]);
   // </group>

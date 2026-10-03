@@ -98,7 +98,7 @@ class SDDataDescHandler {
   SDDataDescHandler &operator=(const SDDataDescHandler &other);
 
   // attach to a MS, the handledCols and row arguments are ignored here
-  void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+  void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
   // reset internals given indicated row, use the same MS; just resets the id pointer
   void resetRow(const Record &) { rownr_p = -1; }

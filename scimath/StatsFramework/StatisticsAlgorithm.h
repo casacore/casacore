@@ -130,7 +130,7 @@ namespace casacore {
 // QuantileComputer classes should never be explicitly instantiated in code
 // which uses the StatsFramework API.
 
-template <class AccumType, class DataIterator, class MaskIterator = const Bool*,
+template <class AccumType, class DataIterator, class MaskIterator = const bool*,
           class WeightsIterator = DataIterator>
 class StatisticsAlgorithm {
  public:
@@ -143,7 +143,7 @@ class StatisticsAlgorithm {
   // Add a dataset to an existing set of datasets on which statistics are to
   // be calculated. nr is the number of points to be considered. If
   // <src>dataStride</src> is greater than 1, when
-  // <src>nrAccountsForStride</src>=True indicates that the stride has been
+  // <src>nrAccountsForStride</src>=true indicates that the stride has been
   // taken into account in the value of <src>nr</src>. Otherwise, it has not
   // so that the actual number of points to include is nr/dataStride if
   // nr % dataStride == 0 or (int)(nr/dataStride) + 1 otherwise. if one calls
@@ -151,38 +151,38 @@ class StatisticsAlgorithm {
   // thrown. In this case, one should call setData(), rather than addData(),
   // to indicate that the underlying data provider should be removed.
   // <src>dataRanges</src> provide the ranges of data to include if
-  // <src>isInclude</src> is True, or ranges of data to exclude if
-  // <src>isInclude</src> is False. If a datum equals the end point of a data
-  // range, it is considered good (included) if <src>isInclude</src> is True,
-  // and it is considered bad (excluded) if <src>isInclude</src> is False.
+  // <src>isInclude</src> is true, or ranges of data to exclude if
+  // <src>isInclude</src> is false. If a datum equals the end point of a data
+  // range, it is considered good (included) if <src>isInclude</src> is true,
+  // and it is considered bad (excluded) if <src>isInclude</src> is false.
 
   void addData(const DataIterator& first, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False);
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False, uInt maskStride = 1);
+               uInt dataStride = 1, bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void addData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False);
+               uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void addData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False,
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false,
                uInt maskStride = 1);
   // </group>
 
@@ -193,7 +193,7 @@ class StatisticsAlgorithm {
                               std::shared_ptr<AccumType> knownMin = nullptr,
                               std::shared_ptr<AccumType> knownMax = nullptr,
                               uInt binningThreshholdSizeBytes = 4096 * 4096,
-                              Bool persistSortedArray = False, uInt nBins = 10000) = 0;
+                              bool persistSortedArray = false, uInt nBins = 10000) = 0;
 
   // The return value is the median; the quantiles are returned in the
   // <src>quantileToValue</src> map.
@@ -203,21 +203,21 @@ class StatisticsAlgorithm {
                                           std::shared_ptr<AccumType> knownMin = nullptr,
                                           std::shared_ptr<AccumType> knownMax = nullptr,
                                           uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                          Bool persistSortedArray = False, uInt nBins = 10000) = 0;
+                                          bool persistSortedArray = false, uInt nBins = 10000) = 0;
 
   // get the median of the absolute deviation about the median of the data.
   virtual AccumType getMedianAbsDevMed(std::shared_ptr<uInt64> knownNpts = nullptr,
                                        std::shared_ptr<AccumType> knownMin = nullptr,
                                        std::shared_ptr<AccumType> knownMax = nullptr,
                                        uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                       Bool persistSortedArray = False, uInt nBins = 10000) = 0;
+                                       bool persistSortedArray = false, uInt nBins = 10000) = 0;
 
   // Purposefully not virtual. Derived classes should not implement.
   AccumType getQuantile(Double quantile, std::shared_ptr<uInt64> knownNpts = nullptr,
                         std::shared_ptr<AccumType> knownMin = nullptr,
                         std::shared_ptr<AccumType> knownMax = nullptr,
                         uInt binningThreshholdSizeBytes = 4096 * 4096,
-                        Bool persistSortedArray = False, uInt nBins = 10000);
+                        bool persistSortedArray = false, uInt nBins = 10000);
 
   // get a map of quantiles to values.
   virtual std::map<Double, AccumType> getQuantiles(const std::set<Double>& quantiles,
@@ -225,7 +225,7 @@ class StatisticsAlgorithm {
                                                    std::shared_ptr<AccumType> min = nullptr,
                                                    std::shared_ptr<AccumType> max = nullptr,
                                                    uInt binningThreshholdSizeBytes = 4096 * 4096,
-                                                   Bool persistSortedArray = False,
+                                                   bool persistSortedArray = false,
                                                    uInt nBins = 10000) = 0;
 
   // get the value of the specified statistic. Purposefully not virtual.
@@ -254,32 +254,32 @@ class StatisticsAlgorithm {
   // parameter meanings. These methods are purposefully not virtual. Derived
   // classes should not implement.
   void setData(const DataIterator& first, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False);
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False, uInt maskStride = 1);
+               uInt dataStride = 1, bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void setData(const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               uInt dataStride = 1, Bool nrAccountsForStride = False);
+               uInt dataStride = 1, bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-               const DataRanges& dataRanges, Bool isInclude = True, uInt dataStride = 1,
-               Bool nrAccountsForStride = False);
+               const DataRanges& dataRanges, bool isInclude = true, uInt dataStride = 1,
+               bool nrAccountsForStride = false);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, uInt dataStride = 1,
-               Bool nrAccountsForStride = False, uInt maskStride = 1);
+               bool nrAccountsForStride = false, uInt maskStride = 1);
 
   void setData(const DataIterator& first, const WeightsIterator& weightFirst,
                const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-               Bool isInclude = True, uInt dataStride = 1, Bool nrAccountsForStride = False,
+               bool isInclude = true, uInt dataStride = 1, bool nrAccountsForStride = false,
                uInt maskStride = 1);
   // </group>
 
@@ -336,7 +336,7 @@ class StatisticsAlgorithm {
  private:
   std::set<StatisticsData::STATS> _statsToCalculate{}, _unsupportedStats{};
   StatisticsDataset<CASA_STATP> _dataset{};
-  Bool _resetDataset{True};
+  bool _resetDataset{true};
 
   void _resetExceptDataset();
 };

@@ -61,7 +61,7 @@ const TableExprNode* MSCorrParse::selectCorrType(const String& corrType) {
 
   IPosition rowShape;
   Slicer slicer;
-  Bool corrTypeExist = False;
+  bool corrTypeExist = false;
 
   ArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
   TableDesc tdSel;
@@ -93,7 +93,7 @@ const TableExprNode* MSCorrParse::selectCorrType(const String& corrType) {
       if (nCorr(i) == Stokes::type(corrType)) {
         slicer = Slicer(IPosition(2, i, 0), IPosition(2, i, rowShape(1) - 1), IPosition(2, 1, 1),
                         Slicer::endIsLast);
-        corrTypeExist = True;
+        corrTypeExist = true;
       }
     }
   }

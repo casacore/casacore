@@ -84,7 +84,7 @@ class MSPointingIndex : public MSTableIndex {
 
   void attach(const MSPointing &pointing);
 
-  // access to the antenna ID key, throws an exception if isNull() is False
+  // access to the antenna ID key, throws an exception if isNull() is false
   Int &antennaId() { return *antennaId_p; }
 
  private:

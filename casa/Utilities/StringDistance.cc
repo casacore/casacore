@@ -30,10 +30,10 @@ using namespace std;
 namespace casacore {
 
 StringDistance::StringDistance()
-    : itsMaxDistance(0), itsCountSwaps(False), itsIgnoreBlanks(False), itsCaseInsensitive(False) {}
+    : itsMaxDistance(0), itsCountSwaps(false), itsIgnoreBlanks(false), itsCaseInsensitive(false) {}
 
-StringDistance::StringDistance(const String& source, int maxDistance, Bool countSwaps,
-                               Bool ignoreBlanks, Bool caseInsensitive)
+StringDistance::StringDistance(const String& source, int maxDistance, bool countSwaps,
+                               bool ignoreBlanks, bool caseInsensitive)
     : itsSource(source),
       itsMaxDistance(maxDistance),
       itsCountSwaps(countSwaps),
@@ -53,7 +53,7 @@ StringDistance::StringDistance(const String& source, int maxDistance, Bool count
   itsMatrix = -1;
 }
 
-Bool StringDistance::match(const String& target) const {
+bool StringDistance::match(const String& target) const {
   String t(target);
   if (itsIgnoreBlanks) {
     t = removeBlanks(target);
@@ -86,12 +86,12 @@ Int StringDistance::distance(const String& target) const {
   return doDistance(itsSource, t, itsCountSwaps, itsMatrix);
 }
 
-Int StringDistance::distance(const String& source, const String& target, Bool countSwaps) {
+Int StringDistance::distance(const String& source, const String& target, bool countSwaps) {
   Matrix<Int> matrix(source.size() + 1, target.size() + 1);
   return doDistance(source, target, countSwaps, matrix);
 }
 
-Int StringDistance::doDistance(const String& source, const String& target, Bool countSwaps,
+Int StringDistance::doDistance(const String& source, const String& target, bool countSwaps,
                                Matrix<Int>& matrix) {
   int n = source.size();
   int m = target.size();

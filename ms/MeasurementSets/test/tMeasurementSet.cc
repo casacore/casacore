@@ -149,12 +149,12 @@ uInt tNonStatic(const String& sdmsName) {
   MeasurementSet ms(setup, 10);
   Record dminfo = ms.dataManagerInfo();
   // Check that the CompressFloat engine is created.
-  Bool fnd = False;
+  bool fnd = false;
   for (uInt i = 0; i < dminfo.nfields(); i++) {
     if (dminfo.subRecord(i).asString("TYPE") == "CompressFloat") {
       Vector<String> vec = dminfo.subRecord(i).asArrayString("COLUMNS");
       if (vec.nelements() == 1 && vec(0) == "FLOAT_DATA") {
-        fnd = True;
+        fnd = true;
       }
     }
   }
@@ -165,12 +165,12 @@ uInt tNonStatic(const String& sdmsName) {
   AlwaysAssertExit(!ms.isColumnStored("FLOAT_DATA"));
   AlwaysAssertExit(ms.isColumnStored("SIGMA"));
   // Check that the compressed column uses TiledShapeStMan.
-  fnd = False;
+  fnd = false;
   for (uInt i = 0; i < dminfo.nfields(); i++) {
     if (dminfo.subRecord(i).asString("TYPE") == "TiledShapeStMan") {
       Vector<String> vec = dminfo.subRecord(i).asArrayString("COLUMNS");
       if (vec.nelements() == 1 && vec(0) == "FLOAT_DATA_COMPRESSED") {
-        fnd = True;
+        fnd = true;
       }
     }
   }
@@ -179,12 +179,12 @@ uInt tNonStatic(const String& sdmsName) {
   ms.createDefaultSubtables(Table::New);
 
   ArrayColumn<Float> fldata(ms, MS::columnName(MS::FLOAT_DATA));
-  ScalarColumn<Bool> flrow(ms, MS::columnName(MS::FLAG_ROW));
+  ScalarColumn<bool> flrow(ms, MS::columnName(MS::FLAG_ROW));
   for (Int i = 0; i < 10; i++) {
     Matrix<Float> arr(4, 2);
     arr = Float(i);
     fldata.put(i, arr);
-    flrow.put(i, False);
+    flrow.put(i, false);
   }
 
   // verify that it is valid
@@ -296,22 +296,22 @@ uInt tConstructors(const String& msName) {
   }
 
   // try creating bad MS
-  Bool thrown = False;
+  bool thrown = false;
   try {
     MeasurementSet badms("tMeasurementSet_tmp.badmsTable");
   } catch (std::exception& x) {
-    thrown = True;
+    thrown = true;
   }
   if (!thrown) errCount++;
 
   // alternate form with TableDesc (none specified here)
   MeasurementSet tms2(msName, "");
   // try creating bad MS
-  thrown = False;
+  thrown = false;
   try {
     MeasurementSet badms("tMeasurementSet_tmp.badmsTable", "");
   } catch (std::exception& x) {
-    thrown = True;
+    thrown = true;
   }
   if (!thrown) errCount++;
 
@@ -321,12 +321,12 @@ uInt tConstructors(const String& msName) {
   MeasurementSet tabRefMS(tab);
 
   // try the same with a bad table
-  thrown = False;
+  thrown = false;
   try {
     Table badtab("tMeasurementSet_tmp.badmsTab;e", "");
     MeasurementSet badms(badtab);
   } catch (std::exception& x) {
-    thrown = True;
+    thrown = true;
   }
   if (!thrown) errCount++;
 
@@ -358,12 +358,12 @@ uInt tConstructors(const String& msName) {
     MSAntenna msant2("tMeasurementSet_tmp.msant2", "antTD", Table::Old);
 
     // try an invalid tableDesc
-    Bool thrown = False;
+    bool thrown = false;
     try {
       MSAntenna msant2b("tMeasurementSet_tmp.msant2", "badAntTD", Table::Old);
       msant2b.markForDelete();
     } catch (std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     // No exception is thrown here, even though the td name is wrong..
     // if (!thrown) errCount++;
@@ -374,12 +374,12 @@ uInt tConstructors(const String& msName) {
     msant3.markForDelete();
 
     // try invalid newtab
-    thrown = False;
+    thrown = false;
     try {
       SetupNewTable newtab("tMeasurementSet_tmp.msant3b", MSFeed::requiredTableDesc(), Table::New);
       MSAntenna msant3b(newtab, 5);
     } catch (std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     if (!thrown) errCount++;
 
@@ -397,14 +397,14 @@ uInt tConstructors(const String& msName) {
     MSAntenna msant4(tab);
 
     // try invalid table
-    thrown = False;
+    thrown = false;
     try {
       SetupNewTable newtab4("tMeasurementSet_tmp.badmsantTable", "badAntTD", Table::New);
       Table tab(newtab4);
       tab.markForDelete();
       MSAntenna msant4b(tab);
     } catch (std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     if (!thrown) errCount++;
 
@@ -412,14 +412,14 @@ uInt tConstructors(const String& msName) {
     MSAntenna msant5("tMeasurementSet_tmp.msantTable", Table::Old);
 
     // try invalid table
-    thrown = False;
+    thrown = false;
     try {
       {
         Table tab("tMeasurementSet_tmp.badmsantTable", "badAntTD", Table::New);
       }
       MSAntenna msant5b("tMeasurementSet_tmp.badmsantTable");
     } catch (std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     if (!thrown) errCount++;
 
@@ -432,7 +432,7 @@ uInt tConstructors(const String& msName) {
       msfeed.markForDelete();
       MSAntenna msant6b(msfeed);
     } catch (std::exception& x) {
-      thrown = True;
+      thrown = true;
     }
     if (!thrown) errCount++;
   }
@@ -546,11 +546,11 @@ uInt tSetupNewTabError() {
   StManAipsIO stman;
   setup.bindAll(stman);
 
-  Bool thrown = False;
+  bool thrown = false;
   try {
     MeasurementSet ms(setup, 0);
   } catch (std::exception& x) {
-    thrown = True;
+    thrown = true;
   }
   if (!thrown) {
     cerr << "MeasurementSet(SetupNewTable &, uInt) "
@@ -564,13 +564,13 @@ uInt tSetupNewTabError() {
 uInt tDestructorError(const String& sdmsName) {
   uInt errCount = 0;
 
-  Bool thrown = False;
+  bool thrown = false;
   try {
     MeasurementSet ms(sdmsName);
     // remove a column
     ms.removeColumn(MS::columnName(MS::TIME));
   } catch (std::exception& x) {
-    thrown = True;
+    thrown = true;
   }
 
   if (!thrown) {

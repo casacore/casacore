@@ -49,7 +49,7 @@
 // compares the results with the reference output file.
 
 // First build a description.
-void writeData(Bool autoScale) {
+void writeData(bool autoScale) {
   // First register the virtual column engine.
   CompressFloat::registerClass();
 
@@ -117,8 +117,8 @@ void writeData(Bool autoScale) {
   ///  }
 }
 
-Bool checkData(Bool autoScale) {
-  Bool ok = True;
+bool checkData(bool autoScale) {
+  bool ok = true;
   // Read back the table.
   Table tab("tCompressFloat_tmp.data");
   ArrayColumn<Float> source1(tab, "source1");
@@ -166,7 +166,7 @@ Bool checkData(Bool autoScale) {
       cout << "error in source1 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
-      ok = False;
+      ok = false;
     }
     AlwaysAssertExit(allEQ(arrvalf, iter1.array()));
     AlwaysAssertExit(allEQ(arrvalf(slicer), source1.getSlice(i, slicer)));
@@ -176,7 +176,7 @@ Bool checkData(Bool autoScale) {
         cout << "error in target1 in row " << i << endl;
         cout << "Read: " << arrvali << endl;
         cout << "Expected: " << arri1 << endl;
-        ok = False;
+        ok = false;
       }
     }
     source2.get(i, arrvalf);
@@ -184,7 +184,7 @@ Bool checkData(Bool autoScale) {
       cout << "error in source2 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
-      ok = False;
+      ok = false;
     }
     AlwaysAssertExit(allEQ(arrvalf, iter2.array()));
     AlwaysAssertExit(allEQ(arrvalf(slicer), source2.getSlice(i, slicer)));
@@ -213,7 +213,7 @@ void testSpeed() {
     SetupNewTable newtab("tCompressFloat_tmp.data", td, Table::New);
     // Create the virtual column engine with the scale factors
     // and bind the columns to them.
-    CompressFloat engine1("source1", "target1", "scale1", "offset1", False);
+    CompressFloat engine1("source1", "target1", "scale1", "offset1", false);
     CompressFloat engine3("source3", "target3", 2.0, 4.0);
     newtab.bindColumn("source1", engine1);
     newtab.bindColumn("source3", engine3);
@@ -311,10 +311,10 @@ void testSpeed() {
 int main() {
   Int sts = 0;
   try {
-    writeData(False);
-    if (!checkData(False)) sts = 1;
-    writeData(True);
-    if (!checkData(True)) sts = 1;
+    writeData(false);
+    if (!checkData(false)) sts = 1;
+    writeData(true);
+    if (!checkData(true)) sts = 1;
     testSpeed();
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

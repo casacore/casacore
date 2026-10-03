@@ -147,9 +147,9 @@ class ScalarMeasColumn;
 //    // need a vector to put the MEpochs into
 //    Vector<MEpoch> ew;
 //
-//    // setting the resize parameter to True automatically sets ew to the
+//    // setting the resize parameter to true automatically sets ew to the
 //    // same shape as the array contained in the row
-//    arrayCol.get(0, ew, True);
+//    arrayCol.get(0, ew, true);
 // </srcblock>
 // </example>
 
@@ -193,9 +193,9 @@ class ArrayMeasColumn : public TableMeasColumn {
   void attach(const Table& tab, const String& columnName);
 
   // Get the Measure array in the specified row.  For get() the supplied
-  // array's shape should match the shape in the row unless resize is True.
+  // array's shape should match the shape in the row unless resize is true.
   // <group name=get>
-  void get(rownr_t rownr, Array<M>& meas, Bool resize = False) const;
+  void get(rownr_t rownr, Array<M>& meas, bool resize = false) const;
   Array<M> operator()(rownr_t rownr) const;
   // </group>
 
@@ -224,12 +224,12 @@ class ArrayMeasColumn : public TableMeasColumn {
   // However, it is possible that part of the table is already
   // written and that the entire measure column is filled in later.
   // In that case the reference, offset, or units can be set by using
-  // a False <src>tableMustBeEmpty</src> argument.
+  // a false <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode(uInt refCode, Bool tableMustBeEmpty = True);
-  void setDescOffset(const Measure& offset, Bool tableMustBeEmpty = True);
-  void setDescUnits(const Vector<Unit>& units, Bool tableMustBeEmpty = True);
+  void setDescRefCode(uInt refCode, bool tableMustBeEmpty = true);
+  void setDescOffset(const Measure& offset, bool tableMustBeEmpty = true);
+  void setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty = true);
   // </group>
 
   // Add a Measure array to the specified row.

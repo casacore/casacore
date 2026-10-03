@@ -248,18 +248,18 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency>> {
   // </group>
   // Translate string to reference code
   // <group>
-  static Bool getType(MFrequency::Types &tp, const String &in);
+  static bool getType(MFrequency::Types &tp, const String &in);
 
   // Throws an exception if the type string is not recognized
   static MFrequency::Types typeFromString(const String &in);
 
-  Bool giveMe(MFrequency::Ref &mr, const String &in);
+  bool giveMe(MFrequency::Ref &mr, const String &in);
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
-  // Set the reference type to the specified String. False if illegal
+  // Set the offset in the reference (false if non-matching Measure)
+  virtual bool setOffset(const Measure &in);
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,

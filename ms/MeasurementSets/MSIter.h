@@ -188,11 +188,11 @@ class MSIter {
   // concurrent readers from interfering with each other.
 
   MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, Double timeInterval = 0,
-         Bool addDefaultSortColumns = True, Bool storeSorted = True);
+         bool addDefaultSortColumns = true, bool storeSorted = true);
 
   // Same as above with multiple MSs as input.
   MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns, Double timeInterval = 0,
-         Bool addDefaultSortColumns = True, Bool storeSorted = True);
+         bool addDefaultSortColumns = true, bool storeSorted = true);
 
   // This constructor is similar to the previous ones but the comparison
   // functions used to group the iterations are given explicitly, making
@@ -235,8 +235,8 @@ class MSIter {
   // Reset iterator to start of data
   virtual void origin();
 
-  // Return False if there is no more data
-  virtual Bool more() const;
+  // Return false if there is no more data
+  virtual bool more() const;
 
   // Advance iterator through data
   virtual MSIter& operator++(int);
@@ -259,7 +259,7 @@ class MSIter {
   size_t msId() const;
 
   // Return true if msId has changed since last iteration
-  Bool newMS() const;
+  bool newMS() const;
 
   // Return the current ArrayIds for all rows in this iteration
   const ScalarColumn<Int>& colArrayIds() const;
@@ -273,42 +273,42 @@ class MSIter {
   // Return the ArrayId of the first element in this iteration
   Int arrayId() const;
 
-  // Return True if ArrayId has changed since last iteration
+  // Return true if ArrayId has changed since last iteration
   // Note that if MS_ARRAY is not part of the sorting columns this
   // will always be true.
-  Bool newArray() const;
+  bool newArray() const;
 
   // Return the FieldId of the first element in this iteration
   Int fieldId() const;
 
-  // Return True if FieldId/Source has changed since last iteration
+  // Return true if FieldId/Source has changed since last iteration
   // Note that if MS_FIELD_ID is not part of the sorting columns this
   // will always be true.
-  Bool newField() const;
+  bool newField() const;
 
   // Return SpectralWindow of the first element in this iteration
   Int spectralWindowId() const;
 
-  // Return True if SpectralWindow has changed since last iteration
+  // Return true if SpectralWindow has changed since last iteration
   // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
   // will always be true.
-  Bool newSpectralWindow() const;
+  bool newSpectralWindow() const;
 
   // Return DataDescriptionId of the first element in this iteration
   Int dataDescriptionId() const;
 
-  // Return True if DataDescriptionId has changed since last iteration
+  // Return true if DataDescriptionId has changed since last iteration
   // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
   // will always be true.
-  Bool newDataDescriptionId() const;
+  bool newDataDescriptionId() const;
 
   // Return PolarizationId of the first element in this iteration
   Int polarizationId() const;
 
-  // Return True if polarization has changed since last iteration
+  // Return true if polarization has changed since last iteration
   // Note that if MS_DATA_DESC_ID is not part of the sorting columns this
   // will always be true.
-  Bool newPolarizationId() const;
+  bool newPolarizationId() const;
 
   // Return frame for polarization of the first element in this iteration
   // @returns PolFrame enum
@@ -360,8 +360,8 @@ class MSIter {
   // in the feed table). The cube axes are receptor, antenna, feed.
   const Cube<RigidVector<Double, 2>>& getBeamOffsets() const;
 
-  // True if all elements of the cube returned by getBeamOffsets are zero
-  Bool allBeamOffsetsZero() const;
+  // true if all elements of the cube returned by getBeamOffsets are zero
+  bool allBeamOffsetsZero() const;
 
   // Get the spw, start  and nchan for all the ms's is this msiter that
   // match the frequecy "freqstart-freqStep" and "freqEnd+freqStep" range
@@ -396,7 +396,7 @@ class MSIter {
 
  protected:
   // handle the construction details
-  void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
+  void construct(const Block<Int>& sortColumns, bool addDefaultSortColumns);
   // handle the construction details using explicit comparison functions
   void construct(const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns);
   // advance the iteration
@@ -417,15 +417,15 @@ class MSIter {
   void setFieldInfo() const;
 
   // Determine if the numbers in r1 are a sorted subset of those in r2
-  Bool isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2);
+  bool isSubSet(const Vector<rownr_t>& r1, const Vector<rownr_t>& r2);
 
   MSIter* This;
   Block<MeasurementSet> bms_p;
   Block<TableIterator*> tabIter_p;
-  Block<Bool> tabIterAtStart_p;
+  Block<bool> tabIterAtStart_p;
 
   // This booleans determine if given columns are part of the sorting
-  Bool timeInSort_p, arrayInSort_p, ddInSort_p, fieldInSort_p;
+  bool timeInSort_p, arrayInSort_p, ddInSort_p, fieldInSort_p;
 
   size_t nMS_p, curMS_p;
   ssize_t lastMS_p;
@@ -445,7 +445,7 @@ class MSIter {
   mutable Int curDataDescIdFirst_p, curSpectralWindowIdFirst_p, curPolarizationIdFirst_p;
   // These variables point to the IDs of the previous iteration.
   Int lastDataDescId_p, lastSpectralWindowId_p, lastPolarizationId_p;
-  Bool more_p, newMS_p, newArrayId_p, newFieldId_p, newSpectralWindowId_p, newPolarizationId_p,
+  bool more_p, newMS_p, newArrayId_p, newFieldId_p, newSpectralWindowId_p, newPolarizationId_p,
       newDataDescId_p;
   mutable bool spwDepFeed_p, checkFeed_p;
 
@@ -453,7 +453,7 @@ class MSIter {
   mutable bool feedInfoCached_p;
 
   // Globally control disk storage of SORTED_TABLE
-  Bool storeSorted_p;
+  bool storeSorted_p;
 
   // time selection
   Double interval_p;
@@ -481,12 +481,12 @@ class MSIter {
                                                        // each element of the cube in radians)
                                                        // in the antenna coordinate system.
                                                        // Cube axes are: receptor, antenna, feed.
-  mutable Bool allBeamOffsetsZero_p;                   // True if all elements of beamOffsets_p
+  mutable bool allBeamOffsetsZero_p;                   // true if all elements of beamOffsets_p
                                                        // are zero (to speed things up in a
                                                        // single beam case)
   mutable PolFrame polFrame_p;                         // polarization Frame. It is lazily cached,
                                                        // hence mutable. See cacheExtraDDInfo()
-  mutable Bool freqCacheOK_p;                          // signal that the frequency cache is fine
+  mutable bool freqCacheOK_p;                          // signal that the frequency cache is fine
   mutable Vector<Double> frequency_p;
   MFrequency frequency0_p;
   MFrequency restFrequency_p;
@@ -496,14 +496,14 @@ class MSIter {
                                            // 0 if not using a time interval.
 };
 
-inline Bool MSIter::more() const { return more_p; }
+inline bool MSIter::more() const { return more_p; }
 inline Table MSIter::table() const { return curTable_p; }
 inline const MS& MSIter::ms() const { return bms_p[curMS_p]; }
 inline const MSColumns& MSIter::msColumns() const { return *msc_p; }
-inline Bool MSIter::newMS() const { return newMS_p; }
-inline Bool MSIter::newArray() const { return newArrayId_p; }
-inline Bool MSIter::newField() const { return newFieldId_p; }
-inline Bool MSIter::newSpectralWindow() const { return newSpectralWindowId_p; }
+inline bool MSIter::newMS() const { return newMS_p; }
+inline bool MSIter::newArray() const { return newArrayId_p; }
+inline bool MSIter::newField() const { return newFieldId_p; }
+inline bool MSIter::newSpectralWindow() const { return newSpectralWindowId_p; }
 inline size_t MSIter::msId() const { return curMS_p; }
 inline size_t MSIter::numMS() const { return nMS_p; }
 inline const ScalarColumn<Int>& MSIter::colArrayIds() const { return colArray_p; }
@@ -541,8 +541,8 @@ inline Int MSIter::dataDescriptionId() const {
   }
   return curDataDescIdFirst_p;
 }
-inline Bool MSIter::newPolarizationId() const { return newPolarizationId_p; }
-inline Bool MSIter::newDataDescriptionId() const { return newDataDescId_p; }
+inline bool MSIter::newPolarizationId() const { return newPolarizationId_p; }
+inline bool MSIter::newDataDescriptionId() const { return newDataDescId_p; }
 inline Int MSIter::polFrame() const {
   if (curPolarizationIdFirst_p == -1) {
     cacheCurrentDDInfo();
@@ -572,7 +572,7 @@ inline const Cube<RigidVector<Double, 2>>& MSIter::getBeamOffsets() const {
   if (!feedInfoCached_p) setFeedInfo();
   return beamOffsets_p;
 }
-inline Bool MSIter::allBeamOffsetsZero() const {
+inline bool MSIter::allBeamOffsetsZero() const {
   if (!feedInfoCached_p) setFeedInfo();
   return allBeamOffsetsZero_p;
 }

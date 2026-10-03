@@ -63,8 +63,8 @@ int main() {
   // test the "find with default"
   {
     String result;
-    AlwaysAssertExit(Aipsrc::find(result, "foobar", "default") == False && result == "default");
-    AlwaysAssertExit(Aipsrc::findNoHome(result, "foobar", "default") == False &&
+    AlwaysAssertExit(Aipsrc::find(result, "foobar", "default") == false && result == "default");
+    AlwaysAssertExit(Aipsrc::findNoHome(result, "foobar", "default") == false &&
                      result == "default");
   }
 

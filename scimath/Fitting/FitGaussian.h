@@ -154,8 +154,8 @@ class FitGaussian {
   uInt nRetryFactors() { return itsRetryFctr.nrow(); };
 
   // Mask out some parameters so that they are not modified during fitting
-  Bool& mask(uInt gaussian, uInt parameter);
-  const Bool& mask(uInt gaussian, uInt parameter) const;
+  bool& mask(uInt gaussian, uInt parameter);
+  const bool& mask(uInt gaussian, uInt parameter) const;
 
   // Run the fit, using the data provided in the arguments pos and f.
   // The fit will retry from different initial estimates until it converges
@@ -180,8 +180,8 @@ class FitGaussian {
   // Return the RMS of the fit
   T RMS();
 
-  // Returns True if the fit (eventually) converged to a value.
-  Bool converged();
+  // Returns true if the fit (eventually) converged to a value.
+  bool converged();
 
  private:
   uInt itsDimension;   // how many dimensions (1, 2, or 3)
@@ -190,12 +190,12 @@ class FitGaussian {
   Double itsMaxTime;   // maximum time to spend fitting in secs
   T itsChisquare;      // chisquare of fit
   T itsRMS;            // RMS of fit (sqrt[chisquare / N])
-  Bool itsSuccess;     // flags success or failure
+  bool itsSuccess;     // flags success or failure
   LogIO os;
 
   Matrix<T> itsFirstEstimate;  // user's estimate.
   Matrix<T> itsRetryFctr;      // source of retry information
-  Matrix<Bool> itsMask;        // masks parameters not to change in fitting
+  Matrix<bool> itsMask;        // masks parameters not to change in fitting
 
   // Sets the retry matrix to a default value.  This is done automatically if
   // the retry matrix is not set directly.

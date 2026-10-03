@@ -73,7 +73,7 @@ class FileUnbufferedIO : public FiledesIO {
   // I/O behaviour. It requires the size and the alignment of the data read
   // or written to be a multiple of the the disk's logical block size.
   explicit FileUnbufferedIO(const RegularFile& fileName, ByteIO::OpenOption option,
-                            Bool useODirect = False);
+                            bool useODirect = false);
 
   // The destructor closes the file.
   ~FileUnbufferedIO() override;
@@ -88,7 +88,7 @@ class FileUnbufferedIO : public FiledesIO {
   void reopenRW() override;
 
  private:
-  Bool itsUseODirect;
+  bool itsUseODirect;
 };
 
 }  // namespace casacore

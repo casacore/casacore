@@ -63,13 +63,13 @@ StatisticsAlgorithmQuantileComputer<CASA_STATP>* HingesFencesQuantileComputer<CA
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::reset() {
   ConstrainedRangeQuantileComputer<CASA_STATP>::reset();
-  _hasRange = False;
+  _hasRange = false;
 }
 
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
   if (_hasRange) {
@@ -84,8 +84,8 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    const DataRanges& ranges, bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(binCounts, sameVal, allSame, dataBegin,
@@ -101,7 +101,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
@@ -119,8 +119,8 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, Bool isInclude,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
   if (_hasRange) {
@@ -137,7 +137,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
   if (_hasRange) {
@@ -152,8 +152,8 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    uInt64 nr, uInt dataStride, const DataRanges& ranges, bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
   if (_hasRange) {
@@ -170,9 +170,9 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
+    const DataRanges& ranges, bool isInclude, const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
@@ -188,7 +188,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts, std::vector<std::shared_ptr<AccumType>>& sameVal,
-    std::vector<Bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<bool>& allSame, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit) const {
@@ -219,7 +219,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
                                                               const DataIterator& dataBegin,
                                                               uInt64 nr, uInt dataStride,
                                                               const DataRanges& ranges,
-                                                              Bool isInclude) const {
+                                                              bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(ary, dataBegin, nr, dataStride,
                                                                  ranges, isInclude);
@@ -248,7 +248,7 @@ CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude) const {
+    bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
         ary, dataBegin, nr, dataStride, maskBegin, maskStride, ranges, isInclude);
@@ -275,7 +275,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_populateArray(DataArray& ary,
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude) const {
+    uInt dataStride, const DataRanges& ranges, bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(ary, dataBegin, weightsBegin, nr,
                                                                  dataStride, ranges, isInclude);
@@ -302,7 +302,7 @@ CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude) const {
+    bool isInclude) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArray(
         ary, dataBegin, weightsBegin, nr, dataStride, maskBegin, maskStride, ranges, isInclude);
@@ -328,7 +328,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude, const IncludeLimits& includeLimits,
+    uInt dataStride, const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
     uInt64 maxCount) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
@@ -359,7 +359,7 @@ CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
         arys, currentCount, dataBegin, nr, dataStride, maskBegin, maskStride, ranges, isInclude,
@@ -389,7 +389,7 @@ CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const DataRanges& ranges,
-    Bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
+    bool isInclude, const IncludeLimits& includeLimits, uInt64 maxCount) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
         arys, currentCount, dataBegin, weightsBegin, nr, dataStride, ranges, isInclude,
@@ -421,7 +421,7 @@ CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<DataArray>& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude, const IncludeLimits& includeLimits,
+    uInt maskStride, const DataRanges& ranges, bool isInclude, const IncludeLimits& includeLimits,
     uInt64 maxCount) const {
   if (_hasRange) {
     ConstrainedRangeQuantileComputer<CASA_STATP>::_populateArrays(
@@ -435,7 +435,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_populateArrays(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary,
                                                                   const DataIterator& dataBegin,
                                                                   uInt64 nr, uInt dataStride,
                                                                   uInt maxElements) const {
@@ -449,9 +449,9 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(DataArray& ary
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude, uInt maxElements) const {
+    const DataRanges& ranges, bool isInclude, uInt maxElements) const {
   if (_hasRange) {
     return ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
         ary, dataBegin, nr, dataStride, ranges, isInclude, maxElements);
@@ -462,7 +462,7 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, uInt maxElements) const {
   if (_hasRange) {
@@ -475,9 +475,9 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, Bool isInclude,
+    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges, bool isInclude,
     uInt maxElements) const {
   if (_hasRange) {
     return ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
@@ -489,7 +489,7 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
     uInt dataStride, uInt maxElements) const {
   if (_hasRange) {
@@ -502,9 +502,9 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude, uInt maxElements) const {
+    uInt dataStride, const DataRanges& ranges, bool isInclude, uInt maxElements) const {
   if (_hasRange) {
     return ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
         ary, dataBegin, weightsBegin, nr, dataStride, ranges, isInclude, maxElements);
@@ -515,7 +515,7 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, uInt maxElements) const {
   if (_hasRange) {
@@ -528,10 +528,10 @@ Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
 }
 
 CASA_STATD
-Bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
+bool HingesFencesQuantileComputer<CASA_STATP>::_populateTestArray(
     DataArray& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude, uInt maxElements) const {
+    bool isInclude, uInt maxElements) const {
   if (_hasRange) {
     return ConstrainedRangeQuantileComputer<CASA_STATP>::_populateTestArray(
         ary, dataBegin, weightsBegin, nr, dataStride, maskBegin, maskStride, ranges, isInclude,

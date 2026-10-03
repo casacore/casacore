@@ -45,7 +45,7 @@ SubImage<T>::SubImage() : itsImagePtr(0), itsSubLatPtr(0) {}
 
 template <class T>
 SubImage<T>::SubImage(const ImageInterface<T>& image, AxesSpecifier axesSpec,
-                      Bool preserveAxesOrder)
+                      bool preserveAxesOrder)
     : itsImagePtr(image.cloneII()) {
   itsSubLatPtr = new SubLattice<T>(image, axesSpec);
   setCoords(image.coordinates(), preserveAxesOrder);
@@ -53,8 +53,8 @@ SubImage<T>::SubImage(const ImageInterface<T>& image, AxesSpecifier axesSpec,
 }
 
 template <class T>
-SubImage<T>::SubImage(ImageInterface<T>& image, Bool writableIfPossible, AxesSpecifier axesSpec,
-                      Bool preserveAxesOrder)
+SubImage<T>::SubImage(ImageInterface<T>& image, bool writableIfPossible, AxesSpecifier axesSpec,
+                      bool preserveAxesOrder)
     : itsImagePtr(image.cloneII()) {
   itsSubLatPtr = new SubLattice<T>(image, writableIfPossible, axesSpec);
   setCoords(image.coordinates(), preserveAxesOrder);
@@ -63,7 +63,7 @@ SubImage<T>::SubImage(ImageInterface<T>& image, Bool writableIfPossible, AxesSpe
 
 template <class T>
 SubImage<T>::SubImage(const ImageInterface<T>& image, const LattRegionHolder& region,
-                      AxesSpecifier axesSpec, Bool preserveAxesOrder)
+                      AxesSpecifier axesSpec, bool preserveAxesOrder)
     : itsImagePtr(image.cloneII()) {
   itsSubLatPtr = new SubLattice<T>(
       image, region.toLatticeRegion(image.coordinates(), image.shape()), axesSpec);
@@ -80,7 +80,7 @@ SubImage<T>::SubImage(const ImageInterface<T>& image, const LattRegionHolder& re
 
 template <class T>
 SubImage<T>::SubImage(ImageInterface<T>& image, const LattRegionHolder& region,
-                      Bool writableIfPossible, AxesSpecifier axesSpec, Bool preserveAxesOrder)
+                      bool writableIfPossible, AxesSpecifier axesSpec, bool preserveAxesOrder)
     : itsImagePtr(image.cloneII()) {
   itsSubLatPtr =
       new SubLattice<T>(image, region.toLatticeRegion(image.coordinates(), image.shape()),
@@ -98,7 +98,7 @@ SubImage<T>::SubImage(ImageInterface<T>& image, const LattRegionHolder& region,
 
 template <class T>
 SubImage<T>::SubImage(const ImageInterface<T>& image, const Slicer& slicer, AxesSpecifier axesSpec,
-                      Bool preserveAxesOrder)
+                      bool preserveAxesOrder)
     : itsImagePtr(image.cloneII()) {
   itsSubLatPtr = new SubLattice<T>(image, slicer, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
@@ -112,8 +112,8 @@ SubImage<T>::SubImage(const ImageInterface<T>& image, const Slicer& slicer, Axes
 }
 
 template <class T>
-SubImage<T>::SubImage(ImageInterface<T>& image, const Slicer& slicer, Bool writableIfPossible,
-                      AxesSpecifier axesSpec, Bool preserveAxesOrder)
+SubImage<T>::SubImage(ImageInterface<T>& image, const Slicer& slicer, bool writableIfPossible,
+                      AxesSpecifier axesSpec, bool preserveAxesOrder)
     : itsImagePtr(image.cloneII()) {
   itsSubLatPtr = new SubLattice<T>(image, slicer, writableIfPossible, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
@@ -182,7 +182,7 @@ String SubImage<T>::imageType() const {
 }
 
 template <class T>
-void SubImage<T>::setCoords(const CoordinateSystem& coords, Bool preserveAxesOrder) {
+void SubImage<T>::setCoords(const CoordinateSystem& coords, bool preserveAxesOrder) {
   const AxesMapping& axesMap = itsSubLatPtr->getAxesMap();
   AlwaysAssert(!axesMap.isReordered(), AipsError);
   if (!axesMap.isRemoved()) {
@@ -210,46 +210,46 @@ void SubImage<T>::setCoords(const CoordinateSystem& coords, Bool preserveAxesOrd
 }
 
 template <class T>
-Bool SubImage<T>::ok() const {
+bool SubImage<T>::ok() const {
   return itsSubLatPtr->ok();
 }
 
 template <class T>
-Bool SubImage<T>::isMasked() const {
+bool SubImage<T>::isMasked() const {
   return itsSubLatPtr->isMasked();
 }
 
 template <class T>
-Bool SubImage<T>::isPersistent() const {
+bool SubImage<T>::isPersistent() const {
   return itsSubLatPtr->isPersistent();
 }
 
 template <class T>
-Bool SubImage<T>::isPaged() const {
+bool SubImage<T>::isPaged() const {
   return itsSubLatPtr->isPaged();
 }
 
 template <class T>
-Bool SubImage<T>::canReferenceArray() const {
+bool SubImage<T>::canReferenceArray() const {
   return itsSubLatPtr->canReferenceArray();
 }
 
 template <class T>
-Bool SubImage<T>::isWritable() const {
+bool SubImage<T>::isWritable() const {
   return itsSubLatPtr->isWritable();
 }
 
 template <class T>
-Bool SubImage<T>::hasPixelMask() const {
+bool SubImage<T>::hasPixelMask() const {
   return itsSubLatPtr->hasPixelMask();
 }
 
 template <class T>
-const Lattice<Bool>& SubImage<T>::pixelMask() const {
+const Lattice<bool>& SubImage<T>::pixelMask() const {
   return itsSubLatPtr->pixelMask();
 }
 template <class T>
-Lattice<Bool>& SubImage<T>::pixelMask() {
+Lattice<bool>& SubImage<T>::pixelMask() {
   return itsSubLatPtr->pixelMask();
 }
 
@@ -274,7 +274,7 @@ size_t SubImage<T>::nelements() const {
 }
 
 template <class T>
-Bool SubImage<T>::conform(const Lattice<T>& other) const {
+bool SubImage<T>::conform(const Lattice<T>& other) const {
   return shape().isEqual(other.shape());
 }
 
@@ -284,12 +284,12 @@ void SubImage<T>::resize(const TiledShape&) {
 }
 
 template <class T>
-String SubImage<T>::name(Bool stripPath) const {
+String SubImage<T>::name(bool stripPath) const {
   return itsImagePtr->name(stripPath);
 }
 
 template <class T>
-Bool SubImage<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
+bool SubImage<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
   return itsSubLatPtr->doGetSlice(buffer, section);
 }
 
@@ -300,7 +300,7 @@ void SubImage<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& wher
 }
 
 template <class T>
-Bool SubImage<T>::doGetMaskSlice(Array<Bool>& buffer, const Slicer& section) {
+bool SubImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   return itsSubLatPtr->doGetMaskSlice(buffer, section);
 }
 
@@ -315,7 +315,7 @@ IPosition SubImage<T>::doNiceCursorShape(uInt maxPixels) const {
 }
 
 template <class T>
-ImageAttrHandler& SubImage<T>::attrHandler(Bool createHandler) {
+ImageAttrHandler& SubImage<T>::attrHandler(bool createHandler) {
   return itsImagePtr->attrHandler(createHandler);
 }
 
@@ -331,12 +331,12 @@ void SubImage<T>::putAt(const T& value, const IPosition& where) {
 
 template <class T>
 LatticeIterInterface<T>* SubImage<T>::makeIter(const LatticeNavigator& navigator,
-                                               Bool useRef) const {
+                                               bool useRef) const {
   return itsSubLatPtr->makeIter(navigator, useRef);
 }
 
 template <class T>
-Bool SubImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool SubImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
   return itsSubLatPtr->lock(type, nattempts);
 }
 template <class T>
@@ -345,7 +345,7 @@ void SubImage<T>::unlock() {
   itsImagePtr->unlock();
 }
 template <class T>
-Bool SubImage<T>::hasLock(FileLocker::LockType type) const {
+bool SubImage<T>::hasLock(FileLocker::LockType type) const {
   return itsSubLatPtr->hasLock(type);
 }
 template <class T>

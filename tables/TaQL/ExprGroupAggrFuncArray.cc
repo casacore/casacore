@@ -42,7 +42,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <typename T>
 void TEGClearMasked(MArray<T>& arr) {
   if (arr.hasMask()) {
-    Array<Bool>::const_contiter m = arr.mask().cbegin();
+    Array<bool>::const_contiter m = arr.mask().cbegin();
     for (typename Array<T>::contiter p = arr.array().cbegin(); p != arr.array().cend(); ++p, ++m) {
       if (*m) *p = T();
     }
@@ -53,12 +53,12 @@ template <typename T>
 void TEGMin(const MArray<T>& src, MArray<T>& dst) {
   typename Array<T>::const_iterator in = src.array().begin();
   if (src.hasMask()) {
-    typename Array<Bool>::const_iterator min = src.mask().begin();
-    typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+    typename Array<bool>::const_iterator min = src.mask().begin();
+    typename Array<bool>::contiter mout = dst.wmask().cbegin();
     for (typename Array<T>::contiter out = dst.array().cbegin(); out != dst.array().cend();
          ++in, ++min, ++out, ++mout) {
       if (!*min) {
-        *mout = False;
+        *mout = false;
         if (*in < *out) *out = *in;
       }
     }
@@ -74,12 +74,12 @@ template <typename T>
 void TEGMax(const MArray<T>& src, MArray<T>& dst) {
   typename Array<T>::const_iterator in = src.array().begin();
   if (src.hasMask()) {
-    typename Array<Bool>::const_iterator min = src.mask().begin();
-    typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+    typename Array<bool>::const_iterator min = src.mask().begin();
+    typename Array<bool>::contiter mout = dst.wmask().cbegin();
     for (typename Array<T>::contiter out = dst.array().cbegin(); out != dst.array().cend();
          ++in, ++min, ++out, ++mout) {
       if (!*min) {
-        *mout = False;
+        *mout = false;
         if (*in > *out) *out = *in;
       }
     }
@@ -95,12 +95,12 @@ template <typename T>
 void TEGSum(const MArray<T>& src, MArray<T>& dst) {
   if (src.hasMask()) {
     typename Array<T>::const_iterator in = src.array().begin();
-    typename Array<Bool>::const_iterator min = src.mask().begin();
-    typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+    typename Array<bool>::const_iterator min = src.mask().begin();
+    typename Array<bool>::contiter mout = dst.wmask().cbegin();
     for (typename Array<T>::contiter out = dst.array().cbegin(); out != dst.array().cend();
          ++in, ++min, ++out, ++mout) {
       if (!*min) {
-        *mout = False;
+        *mout = false;
         *out += *in;
       }
     }
@@ -113,12 +113,12 @@ template <typename T>
 void TEGProduct(const MArray<T>& src, MArray<T>& dst) {
   if (src.hasMask()) {
     typename Array<T>::const_iterator in = src.array().begin();
-    typename Array<Bool>::const_iterator min = src.mask().begin();
-    typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+    typename Array<bool>::const_iterator min = src.mask().begin();
+    typename Array<bool>::contiter mout = dst.wmask().cbegin();
     for (typename Array<T>::contiter out = dst.array().cbegin(); out != dst.array().cend();
          ++in, ++min, ++out, ++mout) {
       if (!*min) {
-        *mout = False;
+        *mout = false;
         *out *= *in;
       }
     }
@@ -131,12 +131,12 @@ template <typename T>
 void TEGSumSqr(const MArray<T>& src, MArray<T>& dst) {
   if (src.hasMask()) {
     typename Array<T>::const_iterator in = src.array().begin();
-    typename Array<Bool>::const_iterator min = src.mask().begin();
-    typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+    typename Array<bool>::const_iterator min = src.mask().begin();
+    typename Array<bool>::contiter mout = dst.wmask().cbegin();
     for (typename Array<T>::contiter out = dst.array().cbegin(); out != dst.array().cend();
          ++in, ++min, ++out, ++mout) {
       if (!*min) {
-        *mout = False;
+        *mout = false;
         *out += *in * *in;
       }
     }
@@ -154,7 +154,7 @@ void TEGMeanAdd(const MArray<T>& src, Array<T>& dst, Array<Int64>& nr) {
   typename Array<Int64>::contiter itn = nr.cbegin();
   if (src.hasMask()) {
     typename Array<T>::const_iterator in = src.array().begin();
-    typename Array<Bool>::const_iterator min = src.mask().begin();
+    typename Array<bool>::const_iterator min = src.mask().begin();
     for (typename Array<T>::contiter out = dst.cbegin(); out != dst.cend();
          ++in, ++min, ++out, ++itn) {
       if (!*min) {
@@ -175,33 +175,33 @@ template <typename T>
 void TEGMeanFinish(MArray<T>& val, const Array<Int64>& nr) {
   DebugAssert(nr.contiguousStorage() && val.array().contiguousStorage(), AipsError);
   typename Array<T>::contiter itv = val.array().cbegin();
-  typename Array<Bool>::contiter itm = val.wmask().cbegin();
+  typename Array<bool>::contiter itm = val.wmask().cbegin();
   for (Array<Int64>::const_contiter itn = nr.cbegin(); itn != nr.cend(); ++itn, ++itv, ++itm) {
     if (*itn > 0) {
       *itv /= *itn;
     } else if (val.hasMask()) {
-      *itm = True;
+      *itm = true;
     }
   }
 }
 
 TableExprGroupArrayAny::TableExprGroupArrayAny(TableExprNodeRep* node)
-    : TableExprGroupFuncBool(node, False) {}
+    : TableExprGroupFuncBool(node, false) {}
 TableExprGroupArrayAny::~TableExprGroupArrayAny() {}
 void TableExprGroupArrayAny::apply(const TableExprId& id) {
   if (!itsValue) {
-    Bool v = anyTrue(itsOperand->getArrayBool(id));
-    if (v) itsValue = True;
+    bool v = anyTrue(itsOperand->getArrayBool(id));
+    if (v) itsValue = true;
   }
 }
 
 TableExprGroupArrayAll::TableExprGroupArrayAll(TableExprNodeRep* node)
-    : TableExprGroupFuncBool(node, True) {}
+    : TableExprGroupFuncBool(node, true) {}
 TableExprGroupArrayAll::~TableExprGroupArrayAll() {}
 void TableExprGroupArrayAll::apply(const TableExprId& id) {
   if (itsValue) {
-    Bool v = allTrue(itsOperand->getArrayBool(id));
-    if (!v) itsValue = False;
+    bool v = allTrue(itsOperand->getArrayBool(id));
+    if (!v) itsValue = false;
   }
 }
 
@@ -343,7 +343,7 @@ void TableExprGroupVarianceArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     Array<Double>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
       for (size_t i = 0; i < arr.size(); ++i, ++in, ++min) {
         if (!*min) {
           itsNr++;
@@ -402,7 +402,7 @@ TableExprGroupFractileArrayDouble::TableExprGroupFractileArrayDouble(TableExprNo
                                                                      Double fraction)
     : TableExprGroupFuncDouble(node), itsFrac(fraction) {}
 TableExprGroupFractileArrayDouble::~TableExprGroupFractileArrayDouble() {}
-Bool TableExprGroupFractileArrayDouble::isLazy() const { return True; }
+bool TableExprGroupFractileArrayDouble::isLazy() const { return true; }
 void TableExprGroupFractileArrayDouble::apply(const TableExprId&) {}
 Double TableExprGroupFractileArrayDouble::getDouble(const vector<TableExprId>& ids) {
   try {
@@ -488,7 +488,7 @@ void TableExprGroupVarianceArrayDComplex::apply(const TableExprId& id) {
   if (!arr.empty()) {
     Array<DComplex>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
       for (size_t i = 0; i < arr.size(); ++i, ++in, ++min) {
         if (!*min) {
           itsNr++;
@@ -530,25 +530,25 @@ TableExprGroupArrayAnys::TableExprGroupArrayAnys(TableExprNodeRep* node)
     : TableExprGroupFuncArrayBool(node) {}
 TableExprGroupArrayAnys::~TableExprGroupArrayAnys() {}
 void TableExprGroupArrayAnys::apply(const TableExprId& id) {
-  MArray<Bool> arr(itsOperand->getArrayBool(id));
+  MArray<bool> arr(itsOperand->getArrayBool(id));
   if (!arr.empty()) {
     if (checkShape(arr, "GANYS")) {
       itsValue.array() = arr.array();
       itsValue.wmask() = arr.mask();
     } else if (arr.hasMask()) {
-      Array<Bool>::const_iterator in = arr.array().begin();
-      Array<Bool>::const_iterator min = arr.mask().begin();
-      Array<Bool>::contiter mout = itsValue.wmask().cbegin();
-      for (Array<Bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      Array<bool>::const_iterator in = arr.array().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::contiter mout = itsValue.wmask().cbegin();
+      for (Array<bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++mout) {
         if (!*min) {
-          *mout = False;
+          *mout = false;
           *out = *out || *in;
         }
       }
     } else {
-      Array<Bool>::const_iterator in = arr.array().begin();
-      for (Array<Bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      Array<bool>::const_iterator in = arr.array().begin();
+      for (Array<bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++out) {
         *out = *out || *in;
       }
@@ -560,25 +560,25 @@ TableExprGroupArrayAlls::TableExprGroupArrayAlls(TableExprNodeRep* node)
     : TableExprGroupFuncArrayBool(node) {}
 TableExprGroupArrayAlls::~TableExprGroupArrayAlls() {}
 void TableExprGroupArrayAlls::apply(const TableExprId& id) {
-  MArray<Bool> arr(itsOperand->getArrayBool(id));
+  MArray<bool> arr(itsOperand->getArrayBool(id));
   if (!arr.empty()) {
     if (checkShape(arr, "GALLS")) {
       itsValue.array() = arr.array();
       itsValue.wmask() = arr.mask();
     } else if (arr.hasMask()) {
-      Array<Bool>::const_iterator in = arr.array().begin();
-      Array<Bool>::const_iterator min = arr.mask().begin();
-      Array<Bool>::contiter mout = itsValue.wmask().cbegin();
-      for (Array<Bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      Array<bool>::const_iterator in = arr.array().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::contiter mout = itsValue.wmask().cbegin();
+      for (Array<bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++mout) {
         if (!*min) {
-          *mout = False;
+          *mout = false;
           *out = *out && *in;
         }
       }
     } else {
-      Array<Bool>::const_iterator in = arr.array().begin();
-      for (Array<Bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
+      Array<bool>::const_iterator in = arr.array().begin();
+      for (Array<bool>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++out) {
         *out = *out && *in;
       }
@@ -590,27 +590,27 @@ TableExprGroupArrayNTrues::TableExprGroupArrayNTrues(TableExprNodeRep* node)
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupArrayNTrues::~TableExprGroupArrayNTrues() {}
 void TableExprGroupArrayNTrues::apply(const TableExprId& id) {
-  MArray<Bool> arr(itsOperand->getArrayBool(id));
+  MArray<bool> arr(itsOperand->getArrayBool(id));
   if (!arr.empty()) {
     if (checkShape(arr, "GNTRUES")) {
       itsValue.array() = 0;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator in = arr.array().begin();
-      Array<Bool>::const_iterator min = arr.mask().begin();
-      Array<Bool>::contiter mout = itsValue.wmask().cbegin();
+      Array<bool>::const_iterator in = arr.array().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::contiter mout = itsValue.wmask().cbegin();
       for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++mout) {
         if (!*min) {
-          *mout = False;
+          *mout = false;
           if (*in) {
             (*out)++;
           }
         }
       }
     } else {
-      Array<Bool>::const_iterator in = arr.array().begin();
+      Array<bool>::const_iterator in = arr.array().begin();
       for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++out) {
         if (*in) {
@@ -625,27 +625,27 @@ TableExprGroupArrayNFalses::TableExprGroupArrayNFalses(TableExprNodeRep* node)
     : TableExprGroupFuncArrayInt(node) {}
 TableExprGroupArrayNFalses::~TableExprGroupArrayNFalses() {}
 void TableExprGroupArrayNFalses::apply(const TableExprId& id) {
-  MArray<Bool> arr(itsOperand->getArrayBool(id));
+  MArray<bool> arr(itsOperand->getArrayBool(id));
   if (!arr.empty()) {
     if (checkShape(arr, "GNFALSES")) {
       itsValue.array() = 0;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator in = arr.array().begin();
-      Array<Bool>::const_iterator min = arr.mask().begin();
-      Array<Bool>::contiter mout = itsValue.wmask().cbegin();
+      Array<bool>::const_iterator in = arr.array().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::contiter mout = itsValue.wmask().cbegin();
       for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++mout) {
         if (!*min) {
-          *mout = False;
+          *mout = false;
           if (!*in) {
             (*out)++;
           }
         }
       }
     } else {
-      Array<Bool>::const_iterator in = arr.array().begin();
+      Array<bool>::const_iterator in = arr.array().begin();
       for (Array<Int64>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++out) {
         if (!*in) {
@@ -664,7 +664,7 @@ void TableExprGroupMinsArrayInt::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GMINS")) {
       itsValue.array() = std::numeric_limits<Int64>::max();
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGMin(arr, itsValue);
   }
@@ -679,7 +679,7 @@ void TableExprGroupMaxsArrayInt::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GMAXS")) {
       itsValue.array() = std::numeric_limits<Int64>::min();
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGMax(arr, itsValue);
   }
@@ -694,7 +694,7 @@ void TableExprGroupSumsArrayInt::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMS")) {
       itsValue.array() = 0;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGSum(arr, itsValue);
   }
@@ -708,7 +708,7 @@ void TableExprGroupProductsArrayInt::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GPRODUCTS")) {
       itsValue.array() = 1;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGProduct(arr, itsValue);
   }
@@ -723,7 +723,7 @@ void TableExprGroupSumSqrsArrayInt::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMSQRS")) {
       itsValue.array() = 0;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGSumSqr(arr, itsValue);
   }
@@ -737,7 +737,7 @@ void TableExprGroupMinsArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GMINS")) {
       itsValue.array() = std::numeric_limits<Double>::max();
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGMin(arr, itsValue);
   }
@@ -752,7 +752,7 @@ void TableExprGroupMaxsArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GMAXS")) {
       itsValue.array() = std::numeric_limits<Double>::min();
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGMax(arr, itsValue);
   }
@@ -767,7 +767,7 @@ void TableExprGroupSumsArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMS")) {
       itsValue.array() = 0;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGSum(arr, itsValue);
   }
@@ -781,7 +781,7 @@ void TableExprGroupProductsArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GPRODUCTS")) {
       itsValue.array() = 1;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGProduct(arr, itsValue);
   }
@@ -796,7 +796,7 @@ void TableExprGroupSumSqrsArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMSQRS")) {
       itsValue.array() = 0;
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGSumSqr(arr, itsValue);
   }
@@ -810,7 +810,7 @@ void TableExprGroupMeansArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GMEANS")) {
       itsValue.array() = 0;
-      itsValue.wmask() = False;
+      itsValue.wmask() = false;
       itsNr.resize(arr.shape());
       itsNr = 0;
     }
@@ -831,7 +831,7 @@ void TableExprGroupVariancesArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GVARIANCES")) {
       itsValue.array() = 0;
-      itsValue.wmask() = False;
+      itsValue.wmask() = false;
       itsCurMean.resize(arr.shape());
       itsCurMean = 0;
       itsNr.resize(arr.shape());
@@ -841,7 +841,7 @@ void TableExprGroupVariancesArrayDouble::apply(const TableExprId& id) {
     Array<Int64>::contiter itn = itsNr.cbegin();
     Array<Double>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
       for (Array<Double>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++itm, ++itn) {
         if (!*min) {
@@ -867,14 +867,14 @@ void TableExprGroupVariancesArrayDouble::apply(const TableExprId& id) {
 void TableExprGroupVariancesArrayDouble::finish() {
   DebugAssert(itsNr.contiguousStorage() && itsValue.array().contiguousStorage(), AipsError);
   Array<Double>::contiter itv = itsValue.array().cbegin();
-  Array<Bool>::contiter itm = itsValue.wmask().cbegin();
+  Array<bool>::contiter itm = itsValue.wmask().cbegin();
   for (Array<Int64>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
        ++itn, ++itv, ++itm) {
     if (*itn > itsDdof) {
       *itv /= *itn - itsDdof;
     } else {
       *itv = 0;
-      *itm = True;
+      *itm = true;
     }
   }
 }
@@ -896,14 +896,14 @@ void TableExprGroupRmssArrayDouble::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GRMSS")) {
       itsValue.array() = 0;
-      itsValue.wmask() = False;
+      itsValue.wmask() = false;
       itsNr.resize(arr.shape());
       itsNr = 0;
     }
     Array<Int64>::contiter itn = itsNr.cbegin();
     Array<Double>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
       for (Array<Double>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++itn) {
         if (!*min) {
@@ -923,13 +923,13 @@ void TableExprGroupRmssArrayDouble::apply(const TableExprId& id) {
 void TableExprGroupRmssArrayDouble::finish() {
   DebugAssert(itsNr.contiguousStorage() && itsValue.array().contiguousStorage(), AipsError);
   Array<Double>::contiter itv = itsValue.array().cbegin();
-  Array<Bool>::contiter itm = itsValue.wmask().cbegin();
+  Array<bool>::contiter itm = itsValue.wmask().cbegin();
   for (Array<Int64>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
        ++itn, ++itv, ++itm) {
     if (*itn > 0) {
       *itv = sqrt(*itv / *itn);
     } else if (itsValue.hasMask()) {
-      *itm = True;
+      *itm = true;
     }
   }
 }
@@ -942,7 +942,7 @@ void TableExprGroupSumsArrayDComplex::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMS")) {
       itsValue.array() = DComplex();
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGSum(arr, itsValue);
   }
@@ -955,7 +955,7 @@ void TableExprGroupProductsArrayDComplex::apply(const TableExprId& id) {
   MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
   if (checkShape(arr, "GPRODUCTS")) {
     itsValue.array() = DComplex(1, 0);
-    itsValue.wmask() = True;
+    itsValue.wmask() = true;
   }
   TEGProduct(arr, itsValue);
 }
@@ -969,7 +969,7 @@ void TableExprGroupSumSqrsArrayDComplex::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GSUMSQRS")) {
       itsValue.array() = DComplex();
-      itsValue.wmask() = True;
+      itsValue.wmask() = true;
     }
     TEGSumSqr(arr, itsValue);
   }
@@ -983,7 +983,7 @@ void TableExprGroupMeansArrayDComplex::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GMEANS")) {
       itsValue.array() = DComplex();
-      itsValue.wmask() = False;
+      itsValue.wmask() = false;
       itsNr.resize(arr.shape());
       itsNr = 0;
     }
@@ -1004,7 +1004,7 @@ void TableExprGroupVariancesArrayDComplex::apply(const TableExprId& id) {
   if (!arr.empty()) {
     if (checkShape(arr, "GVARIANCES")) {
       itsValue.array() = 0;
-      itsValue.wmask() = False;
+      itsValue.wmask() = false;
       itsCurMean.resize(arr.shape());
       itsNr.resize(arr.shape());
       itsNr = 0;
@@ -1013,7 +1013,7 @@ void TableExprGroupVariancesArrayDComplex::apply(const TableExprId& id) {
     Array<Int64>::contiter itn = itsNr.cbegin();
     Array<DComplex>::const_iterator in = arr.array().begin();
     if (arr.hasMask()) {
-      Array<Bool>::const_iterator min = arr.mask().begin();
+      Array<bool>::const_iterator min = arr.mask().begin();
       for (Array<Double>::contiter out = itsValue.array().cbegin(); out != itsValue.array().cend();
            ++in, ++min, ++out, ++itm, ++itn) {
         if (!*min) {
@@ -1039,14 +1039,14 @@ void TableExprGroupVariancesArrayDComplex::apply(const TableExprId& id) {
 void TableExprGroupVariancesArrayDComplex::finish() {
   DebugAssert(itsNr.contiguousStorage() && itsValue.array().contiguousStorage(), AipsError);
   Array<Double>::contiter itv = itsValue.array().cbegin();
-  Array<Bool>::contiter itm = itsValue.wmask().cbegin();
+  Array<bool>::contiter itm = itsValue.wmask().cbegin();
   for (Array<Int64>::const_contiter itn = itsNr.cbegin(); itn != itsNr.cend();
        ++itn, ++itv, ++itm) {
     if (*itn > itsDdof) {
       *itv /= *itn - itsDdof;
     } else {
       *itv = 0;
-      *itm = True;
+      *itm = true;
     }
   }
 }
@@ -1098,7 +1098,7 @@ void TableExprGroupHistInt::apply(const TableExprId& id) {
     }
   } else {
     Array<Int64>::const_iterator iterEnd = arr.array().end();
-    Array<Bool>::const_iterator miter = arr.mask().begin();
+    Array<bool>::const_iterator miter = arr.mask().begin();
     for (Array<Int64>::const_iterator iter = arr.array().begin(); iter != iterEnd;
          ++iter, ++miter) {
       if (!*miter) add(*iter);
@@ -1120,7 +1120,7 @@ void TableExprGroupHistDouble::apply(const TableExprId& id) {
     }
   } else {
     Array<Double>::const_iterator iterEnd = arr.array().end();
-    Array<Bool>::const_iterator miter = arr.mask().begin();
+    Array<bool>::const_iterator miter = arr.mask().begin();
     for (Array<Double>::const_iterator iter = arr.array().begin(); iter != iterEnd;
          ++iter, ++miter) {
       if (!*miter) add(*iter);

@@ -82,12 +82,12 @@ LattRegionHolder& LattRegionHolder::operator=(const LattRegionHolder& other) {
 
 LattRegionHolder* LattRegionHolder::clone() const { return new LattRegionHolder(*this); }
 
-Bool LattRegionHolder::operator==(const LattRegionHolder& other) const {
+bool LattRegionHolder::operator==(const LattRegionHolder& other) const {
   if (isWCRegion() != other.isWCRegion() || isLCRegion() != other.isLCRegion() ||
       isLCSlicer() != other.isLCSlicer()) {
-    return False;
+    return false;
   }
-  Bool match = True;
+  bool match = true;
   if (isLCRegion()) {
     match = (*itsLC == *other.asLCRegionPtr());
   } else if (isLCSlicer()) {
@@ -96,7 +96,7 @@ Bool LattRegionHolder::operator==(const LattRegionHolder& other) const {
   return match;
 }
 
-Bool LattRegionHolder::isWCRegion() const { return False; }
+bool LattRegionHolder::isWCRegion() const { return false; }
 
 const LCRegion* LattRegionHolder::asLCRegionPtr() const {
   AlwaysAssert(isLCRegion(), AipsError);

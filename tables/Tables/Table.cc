@@ -92,19 +92,19 @@ Table::Table(Table::TableType type, Table::EndianFormat endianFormat, const TSMO
   SetupNewTable newtab("", TableDesc(), Table::Scratch);
   BaseTable* ptr;
   if (type == Table::Memory) {
-    ptr = new MemoryTable(newtab, 0, False);
+    ptr = new MemoryTable(newtab, 0, false);
   } else {
-    ptr = new PlainTable(newtab, 0, False, TableLock(), endianFormat, tsmOpt);
+    ptr = new PlainTable(newtab, 0, false, TableLock(), endianFormat, tsmOpt);
   }
   initBasePtr(ptr);
 }
 
-Table::Table(SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
+Table::Table(SetupNewTable& newtab, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   initBasePtr(new PlainTable(newtab, nrrow, initialize, TableLock(), endianFormat, tsmOpt));
 }
-Table::Table(SetupNewTable& newtab, Table::TableType type, rownr_t nrrow, Bool initialize,
+Table::Table(SetupNewTable& newtab, Table::TableType type, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   BaseTable* ptr;
@@ -116,7 +116,7 @@ Table::Table(SetupNewTable& newtab, Table::TableType type, rownr_t nrrow, Bool i
   initBasePtr(ptr);
 }
 Table::Table(SetupNewTable& newtab, Table::TableType type, const TableLock& lockOptions,
-             rownr_t nrrow, Bool initialize, Table::EndianFormat endianFormat,
+             rownr_t nrrow, bool initialize, Table::EndianFormat endianFormat,
              const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   BaseTable* ptr;
@@ -128,12 +128,12 @@ Table::Table(SetupNewTable& newtab, Table::TableType type, const TableLock& lock
   initBasePtr(ptr);
 }
 Table::Table(SetupNewTable& newtab, TableLock::LockOption lockOption, rownr_t nrrow,
-             Bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
+             bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   initBasePtr(
       new PlainTable(newtab, nrrow, initialize, TableLock(lockOption), endianFormat, tsmOpt));
 }
-Table::Table(SetupNewTable& newtab, const TableLock& lockOptions, rownr_t nrrow, Bool initialize,
+Table::Table(SetupNewTable& newtab, const TableLock& lockOptions, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   initBasePtr(new PlainTable(newtab, nrrow, initialize, lockOptions, endianFormat, tsmOpt));
@@ -147,14 +147,14 @@ Table::Table(MPI_Comm mpiComm, Table::TableType type, Table::EndianFormat endian
   SetupNewTable newtab("", TableDesc(), Table::Scratch);
   BaseTable* ptr;
   if (type == Table::Memory) {
-    ptr = new MemoryTable(newtab, 0, False);
+    ptr = new MemoryTable(newtab, 0, false);
   } else {
-    ptr = new PlainTable(mpiComm, newtab, 0, False, TableLock(), endianFormat, tsmOpt);
+    ptr = new PlainTable(mpiComm, newtab, 0, false, TableLock(), endianFormat, tsmOpt);
   }
   initBasePtr(ptr);
 }
 
-Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
+Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   initBasePtr(
@@ -162,7 +162,7 @@ Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow, Bool initia
 }
 
 Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type, rownr_t nrrow,
-             Bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
+             bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   BaseTable* ptr;
   if (type == Table::Memory) {
@@ -174,7 +174,7 @@ Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type, row
 }
 
 Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
-             const TableLock& lockOptions, rownr_t nrrow, Bool initialize,
+             const TableLock& lockOptions, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   BaseTable* ptr;
@@ -187,7 +187,7 @@ Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
 }
 
 Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, TableLock::LockOption lockOption,
-             rownr_t nrrow, Bool initialize, Table::EndianFormat endianFormat,
+             rownr_t nrrow, bool initialize, Table::EndianFormat endianFormat,
              const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   initBasePtr(new PlainTable(mpiComm, newtab, nrrow, initialize, TableLock(lockOption),
@@ -195,7 +195,7 @@ Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, TableLock::LockOption lock
 }
 
 Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, const TableLock& lockOptions, rownr_t nrrow,
-             Bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
+             bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
     : baseTabPtr_p(0), lastModCounter_p(0) {
   initBasePtr(
       new PlainTable(mpiComm, newtab, nrrow, initialize, lockOptions, endianFormat, tsmOpt));
@@ -254,7 +254,7 @@ void Table::initBasePtr(BaseTable* ptr) {
   countedTabPtr_p.reset(baseTabPtr_p);
 }
 
-Block<String> Table::getPartNames(Bool recursive) const {
+Block<String> Table::getPartNames(bool recursive) const {
   Block<String> names;
   baseTabPtr_p->getPartNames(names, recursive);
   return names;
@@ -272,7 +272,7 @@ Vector<String> Table::nonWritableFiles(const String& tableName) {
   DirectoryIterator iter(tabName);
   while (!iter.pastEnd()) {
     if (!iter.file().isWritable()) {
-      names.resize(n + 1, True);
+      names.resize(n + 1, true);
       names(n++) = iter.name();
     }
     iter++;
@@ -284,23 +284,23 @@ Table::EndianFormat Table::endianFormat() const {
   return baseTabPtr_p->asBigEndian() ? Table::BigEndian : Table::LittleEndian;
 }
 
-Bool Table::isNativeDataType(DataType dtype) { return StManColumnBase::isNativeDataType(dtype); }
+bool Table::isNativeDataType(DataType dtype) { return StManColumnBase::isNativeDataType(dtype); }
 
-void Table::copy(const String& newName, TableOption option, Bool noRows) const {
+void Table::copy(const String& newName, TableOption option, bool noRows) const {
   if (noRows) {
-    baseTabPtr_p->deepCopy(newName, Record(), StorageOption(), option, False, AipsrcEndian, noRows);
+    baseTabPtr_p->deepCopy(newName, Record(), StorageOption(), option, false, AipsrcEndian, noRows);
   } else {
     baseTabPtr_p->copy(newName, option);
   }
 }
 
-void Table::deepCopy(const String& newName, TableOption option, Bool valueCopy,
-                     EndianFormat endianFormat, Bool noRows) const {
+void Table::deepCopy(const String& newName, TableOption option, bool valueCopy,
+                     EndianFormat endianFormat, bool noRows) const {
   baseTabPtr_p->deepCopy(newName, Record(), StorageOption(), option, valueCopy, endianFormat,
                          noRows);
 }
 
-Table Table::copyToMemoryTable(const String& newName, Bool noRows) const {
+Table Table::copyToMemoryTable(const String& newName, bool noRows) const {
   Table newtab = TableCopy::makeEmptyMemoryTable(newName, *this, noRows);
   if (!noRows) {
     TableCopy::copyRows(newtab, *this);
@@ -315,10 +315,10 @@ void Table::open(const String& name, const String& type, int tableOption,
                  const TableLock& lockOptions, const TSMOption& tsmOpt) {
   // # Option Delete is effectively the same as Old followed by a
   // # markForDelete.
-  Bool deleteOpt = False;
+  bool deleteOpt = false;
   if (tableOption == Table::Delete) {
     tableOption = Table::Old;
-    deleteOpt = True;
+    deleteOpt = true;
   }
   // Make name absolute in case a chdir is done in e.g. Python.
   String absName = Path(name).absoluteName();
@@ -353,7 +353,7 @@ void Table::open(const String& name, const String& type, int tableOption,
       throw(TableNoFile(absName));
     }
     // Create the BaseTable object and add a PlainTable to the cache.
-    countedTabPtr_p = makeBaseTable(absName, type, tableOption, lockOptions, tsmOpt, True, 0);
+    countedTabPtr_p = makeBaseTable(absName, type, tableOption, lockOptions, tsmOpt, true, 0);
   }
   baseTabPtr_p = countedTabPtr_p.get();
   if (deleteOpt) {
@@ -365,7 +365,7 @@ void Table::open(const String& name, const String& type, int tableOption,
 // TableUtil::getLayout !!!!!
 std::shared_ptr<BaseTable> Table::makeBaseTable(const String& name, const String& type,
                                                 int tableOption, const TableLock& lockOptions,
-                                                const TSMOption& tsmOpt, Bool addToCache,
+                                                const TSMOption& tsmOpt, bool addToCache,
                                                 uInt locknr) {
   std::shared_ptr<BaseTable> baseTabPtr;
   // # Determine the file option for the table.
@@ -415,18 +415,18 @@ void Table::throwIfNull() const {
   }
 }
 
-Bool Table::isOpened(const String& tableName) {
+bool Table::isOpened(const String& tableName) {
   return (PlainTable::tableCache()(Path(tableName).absoluteName()) != 0);
 }
 
 // Check if the table data has changed.
-Bool Table::hasDataChanged() {
+bool Table::hasDataChanged() {
   // If the table is not read locked try to get one (without waiting).
   // If not succeeding, another process is writing, thus data is changing.
   // Otherwise unlock immediately.
   if (!hasLock(FileLocker::Read)) {
     if (!lock(FileLocker::Read, 1)) {
-      return True;
+      return true;
     }
     unlock();
   }
@@ -434,14 +434,14 @@ Bool Table::hasDataChanged() {
   uInt counter = baseTabPtr_p->getModifyCounter();
   if (counter != lastModCounter_p) {
     lastModCounter_p = counter;
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 uInt Table::nAutoLocks() { return PlainTable::tableCache().nAutoLocks(); }
 
-void Table::relinquishAutoLocks(Bool all) { PlainTable::tableCache().relinquishAutoLocks(all); }
+void Table::relinquishAutoLocks(bool all) { PlainTable::tableCache().relinquishAutoLocks(all); }
 
 Vector<String> Table::getLockedTables(FileLocker::LockType lockType, int lockOption) {
   return PlainTable::tableCache().getLockedTables(lockType, lockOption);
@@ -455,7 +455,7 @@ TableRecord& Table::rwKeywordSet() {
   return baseTabPtr_p->rwKeywordSet();
 }
 
-Bool Table::canRemoveColumn(const String& columnName) const {
+bool Table::canRemoveColumn(const String& columnName) const {
   return baseTabPtr_p->canRemoveColumn(Vector<String>(1, columnName));
 }
 void Table::removeColumn(const String& columnName) {
@@ -464,7 +464,7 @@ void Table::removeColumn(const String& columnName) {
 
 RowNumbers Table::rowNumbers() const { return baseTabPtr_p->rowNumbers(); }
 
-RowNumbers Table::rowNumbers(const Table& that, Bool tryFast) const {
+RowNumbers Table::rowNumbers(const Table& that, bool tryFast) const {
   Vector<rownr_t> thisRows(rowNumbers());
   const rownr_t highValue = std::numeric_limits<rownr_t>::max();
   // If that is the root table of this, we can simply use rowNumbers().
@@ -495,12 +495,12 @@ RowNumbers Table::rowNumbers(const Table& that, Bool tryFast) const {
     Vector<rownr_t> tmp(maxv + 1, highValue);
     rownrs.reference(tmp);
   }
-  Bool deleteIt;
+  bool deleteIt;
   rownr_t* rownrsData = rownrs.getStorage(deleteIt);
   // Now make the mapping.
   // thatRows is not needed anymore, so resize at the end to reclaim memory.
   if (!that.isRootTable()) {
-    Bool deleteThat;
+    bool deleteThat;
     const rownr_t* thatRowData = thatRows.getStorage(deleteThat);
     for (rownr_t i = 0; i < nrthat; i++) {
       rownrsData[thatRowData[i]] = i;
@@ -512,7 +512,7 @@ RowNumbers Table::rowNumbers(const Table& that, Bool tryFast) const {
   // First get the rownrs of this in root to achieve it.
   // Use a very high value if the rownr is too high.
   thisRows.unique();
-  Bool deleteThis;
+  bool deleteThis;
   rownr_t* thisRowData = thisRows.getStorage(deleteThis);
   rownr_t nrthis = thisRows.nelements();
   for (rownr_t i = 0; i < nrthis; i++) {
@@ -530,24 +530,24 @@ RowNumbers Table::rowNumbers(const Table& that, Bool tryFast) const {
   return thisRows;
 }
 
-Bool Table::fastRowNumbers(const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
+bool Table::fastRowNumbers(const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
                            Vector<rownr_t>& rows) const {
   // v1 cannot be a superset of v2.
   if (v1.size() > v2.size()) {
-    return False;
+    return false;
   }
   rows.resize(v1.size());
   if (v1.empty()) {
-    return True;
+    return true;
   }
-  Bool d1, d2, d3;
+  bool d1, d2, d3;
   const rownr_t* r1 = v1.getStorage(d1);
   const rownr_t* r2 = v2.getStorage(d2);
   rownr_t* routc = rows.getStorage(d3);
   rownr_t* rout = routc;
   rownr_t i1 = 0;
   rownr_t i2 = 0;
-  Bool ok = True;
+  bool ok = true;
   while (ok) {
     if (r1[i1] == r2[i2]) {
       *rout++ = i2;
@@ -556,7 +556,7 @@ Bool Table::fastRowNumbers(const Vector<rownr_t>& v1, const Vector<rownr_t>& v2,
       }
     }
     if (++i2 >= v2.size()) {
-      ok = False;
+      ok = false;
     }
   }
   v1.freeStorage(r1, d1);
@@ -627,7 +627,7 @@ Table Table::operator()(const RowNumbers& rownrs) const {
   return Table(baseTabPtr_p->select(rownrs));
 }
 // # Select rows based on a mask.
-Table Table::operator()(const Block<Bool>& mask) const { return Table(baseTabPtr_p->select(mask)); }
+Table Table::operator()(const Block<bool>& mask) const { return Table(baseTabPtr_p->select(mask)); }
 
 // # Select columns.
 Table Table::project(const Block<String>& names) const {
@@ -650,12 +650,12 @@ Table Table::operator^(const Table& that) const {
 Table Table::operator!() const { return Table(baseTabPtr_p->tabNot()); }
 
 // # Test if table exists and is readable.
-Bool Table::isReadable(const String& tableName, Bool throwIf) {
+bool Table::isReadable(const String& tableName, bool throwIf) {
   String tabName = Path(tableName).absoluteName();
   // First see if it is in the table cache. By doing so a new table
   // does not need to exist on disk yet.
   if (PlainTable::tableCache()(tabName)) {
-    return True;
+    return true;
   }
   // # Check if the table directory exists.
   File dir(tabName);
@@ -663,13 +663,13 @@ Bool Table::isReadable(const String& tableName, Bool throwIf) {
     if (throwIf) {
       throw TableNoFile(tabName);
     }
-    return False;
+    return false;
   }
   if (!dir.isDirectory()) {
     if (throwIf) {
       throw TableNoDir(tabName);
     }
-    return False;
+    return false;
   }
   // # Test if the table.dat file exists.
   String datFile = Table::fileName(tabName);
@@ -678,35 +678,35 @@ Bool Table::isReadable(const String& tableName, Bool throwIf) {
     if (throwIf) {
       throw TableNoDatFile(tabName);
     }
-    return False;
+    return false;
   }
   // # Open the table file and get its type.
   // # An exception might be thrown, but chances are very low.
   AipsIO ios(Table::fileName(tabName));
-  Bool valid = True;
+  bool valid = true;
   try {
     if (ios.getNextType() != "Table") {
       if (throwIf) {
         throw TableInvType(tabName, "Table", tabName);
       }
-      valid = False;
+      valid = false;
     }
   } catch (std::exception& x) {
     if (throwIf) {
       throw;
     }
-    valid = False;
+    valid = false;
   }
   return valid;
 }
 // # Test if table exists and is writable.
-Bool Table::isWritable(const String& tableName, Bool throwIf) {
+bool Table::isWritable(const String& tableName, bool throwIf) {
   String tabName = Path(tableName).absoluteName();
   if (!isReadable(tabName, throwIf)) {
-    return False;
+    return false;
   }
   File file(Table::fileName(tabName));
-  Bool wb = file.isWritable();
+  bool wb = file.isWritable();
   if (throwIf && !wb) {
     throw TableError("Table " + tableName + " is not writable");
   }
@@ -733,11 +733,11 @@ AipsIO& operator<<(AipsIO& ios, const Table& tab) {
 // #// 2. Only read in the table when needed (i.e. when a get for
 // #//    the table is done).
 AipsIO& operator>>(AipsIO& ios, Table& tab) {
-  tab.getTableKeyword(ios, True);
+  tab.getTableKeyword(ios, true);
   return ios;
 }
 
-void Table::getTableKeyword(AipsIO& ios, Bool openWritable) {
+void Table::getTableKeyword(AipsIO& ios, bool openWritable) {
   String name;
   ios >> name;
   TableOption opt = Table::Old;
@@ -759,7 +759,7 @@ ostream& operator<<(ostream& ios, const Table& tab) {
   return ios;
 }
 
-void Table::showKeywords(ostream& ios, Bool showSubTables, Bool showTabKey, Bool showColKey,
+void Table::showKeywords(ostream& ios, bool showSubTables, bool showTabKey, bool showColKey,
                          Int maxVal) const {
   if (showTabKey || showColKey) {
     // Show table and/or column keywords.
@@ -783,14 +783,14 @@ void Table::showKeywords(ostream& ios, Bool showSubTables, Bool showTabKey, Bool
   }
 }
 
-void Table::showKeywordSets(ostream& ios, Bool showTabKey, Bool showColKey, Int maxVal) const {
-  Bool shown = False;
+void Table::showKeywordSets(ostream& ios, bool showTabKey, bool showColKey, Int maxVal) const {
+  bool shown = false;
   if (showTabKey) {
     if (keywordSet().size() > 0) {
       ios << "  Table Keywords" << endl;
       keywordSet().print(ios, maxVal, "    ");
       ios << endl;
-      shown = True;
+      shown = true;
     }
   }
   if (showColKey) {
@@ -801,7 +801,7 @@ void Table::showKeywordSets(ostream& ios, Bool showTabKey, Bool showColKey, Int 
         ios << "  Column " << colNames[i] << endl;
         keys.print(ios, maxVal, "    ");
         ios << endl;
-        shown = True;
+        shown = true;
       }
     }
   }
@@ -818,13 +818,13 @@ Table Table::openTable(const String& tableName, const TableLock& lockOptions, Ta
                        const TSMOption& tsmOpt) {
   return TableUtil::openTable(tableName, lockOptions, tabOpt, tsmOpt);
 }
-Bool Table::canDeleteTable(const String& tableName, Bool checkSubTables) {
+bool Table::canDeleteTable(const String& tableName, bool checkSubTables) {
   return TableUtil::canDeleteTable(tableName, checkSubTables);
 }
-Bool Table::canDeleteTable(String& message, const String& tableName, Bool checkSubTables) {
+bool Table::canDeleteTable(String& message, const String& tableName, bool checkSubTables) {
   return TableUtil::canDeleteTable(message, tableName, checkSubTables);
 }
-void Table::deleteTable(const String& tableName, Bool checkSubTables) {
+void Table::deleteTable(const String& tableName, bool checkSubTables) {
   TableUtil::deleteTable(tableName, checkSubTables);
 }
 rownr_t Table::getLayout(TableDesc& desc, const String& tableName) {

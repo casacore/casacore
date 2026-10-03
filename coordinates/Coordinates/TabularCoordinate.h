@@ -165,30 +165,30 @@ class TabularCoordinate : public Coordinate {
   virtual uInt nWorldAxes() const;
   // </group>
 
-  // Convert a pixel position to a world position or vice versa. Returns True
-  // if the conversion succeeds, otherwise it returns False and method
+  // Convert a pixel position to a world position or vice versa. Returns true
+  // if the conversion succeeds, otherwise it returns false and method
   // errorMessage contains an error message.  The output
   // vectors are appropriately resized.
   // The Bool parameter in toWorld() has no effect as this coordinate does
   // not support a conversion layer frame.
   // <group>
-  virtual Bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, Bool = True) const;
-  virtual Bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
-  Bool toWorld(Double &world, Double pixel) const;
-  Bool toPixel(Double &pixel, Double world) const;
+  virtual bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool = true) const;
+  virtual bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
+  bool toWorld(Double &world, Double pixel) const;
+  bool toPixel(Double &pixel, Double world) const;
   // </group>
 
   // Batch up a lot of transformations. The first (most rapidly varying) axis
-  // of the matrices contain the coordinates. Returns False if any conversion
+  // of the matrices contain the coordinates. Returns false if any conversion
   // failed  and  <src>errorMessage()</src> will hold a message.
-  // The <src>failures</src> array (True for fail, False for success)
+  // The <src>failures</src> array (true for fail, false for success)
   // is the length of the number of conversions and
   // holds an error status for each conversion.
   // <group>
-  virtual Bool toWorldMany(Matrix<Double> &world, const Matrix<Double> &pixel,
-                           Vector<Bool> &failures) const;
-  virtual Bool toPixelMany(Matrix<Double> &pixel, const Matrix<Double> &world,
-                           Vector<Bool> &failures) const;
+  virtual bool toWorldMany(Matrix<Double> &world, const Matrix<Double> &pixel,
+                           Vector<bool> &failures) const;
+  virtual bool toPixelMany(Matrix<Double> &pixel, const Matrix<Double> &world,
+                           Vector<bool> &failures) const;
   // </group>
 
   // Make absolute coordinates relative and vice-versa (with
@@ -214,24 +214,24 @@ class TabularCoordinate : public Coordinate {
   // Set the value of the requested attribute.  Note that these just
   // change the internal values, they do not cause any recomputation.
   // <group>
-  virtual Bool setWorldAxisNames(const Vector<String> &names);
-  virtual Bool setReferencePixel(const Vector<Double> &refPix);
-  virtual Bool setLinearTransform(const Matrix<Double> &xform);
-  virtual Bool setIncrement(const Vector<Double> &inc);
-  virtual Bool setReferenceValue(const Vector<Double> &refval);
+  virtual bool setWorldAxisNames(const Vector<String> &names);
+  virtual bool setReferencePixel(const Vector<Double> &refPix);
+  virtual bool setLinearTransform(const Matrix<Double> &xform);
+  virtual bool setIncrement(const Vector<Double> &inc);
+  virtual bool setReferenceValue(const Vector<Double> &refval);
   // </group>
 
   // Set/get the axis unit. Adjust the increment and
   // reference value by the ratio of the old and new units.
   // The unit must be compatible with the current units.
   // <group>
-  virtual Bool setWorldAxisUnits(const Vector<String> &units);
+  virtual bool setWorldAxisUnits(const Vector<String> &units);
   virtual Vector<String> worldAxisUnits() const;
   // </group>
 
   // Overwrite the world axis units with no compatibility
   // checks or adjustment.
-  Bool overwriteWorldAxisUnits(const Vector<String> &units);
+  bool overwriteWorldAxisUnits(const Vector<String> &units);
 
   // Get the table, i.e. the pixel and world values. The length of these
   // Vectors will be zero if this axis is pure linear.
@@ -242,11 +242,11 @@ class TabularCoordinate : public Coordinate {
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
-  // axes in the Coordinate.  If the comparison returns False, method
+  // axes in the Coordinate.  If the comparison returns false, method
   // errorMessage() contains a message about why.
   // <group>
-  virtual Bool near(const Coordinate &other, Double tol = 1e-6) const;
-  virtual Bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
+  virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
                     Double tol = 1e-6) const;
   // </group>
 
@@ -256,12 +256,12 @@ class TabularCoordinate : public Coordinate {
   // associated with all the axes of the Coordinate.   Currently the
   // output reference pixel is always shape/2. If the pointer returned is 0,
   // it failed with a message in <src>errorMessage</src>
-  virtual Coordinate *makeFourierCoordinate(const Vector<Bool> &axes,
+  virtual Coordinate *makeFourierCoordinate(const Vector<bool> &axes,
                                             const Vector<Int> &shape) const;
 
   // Save the TabularCoordinate into the supplied record using the supplied field name.
-  // The field must not exist, otherwise <src>False</src> is returned.
-  virtual Bool save(RecordInterface &container, const String &fieldName) const;
+  // The field must not exist, otherwise <src>false</src> is returned.
+  virtual bool save(RecordInterface &container, const String &fieldName) const;
 
   // Recover the TabularCoordinate from a record.
   // A null pointer means that the restoration did not succeed - probably

@@ -33,9 +33,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword) {
+bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     RegexReplaceAll(res, ws, " ");
@@ -51,9 +51,9 @@ Bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword) {
   return x;
 }
 
-Bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword,
+bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword,
                                 const Vector<String> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 uInt AipsrcVector<String>::registerRC(const String &keyword, const Vector<String> &deflt) {

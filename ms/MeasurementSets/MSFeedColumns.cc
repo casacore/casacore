@@ -72,7 +72,7 @@ void MSFeedColumns::attachOptionalCols(const MSFeed& msFeed) {
   if (cds.isDefined(phasedFeedId)) phasedFeedId_p.attach(msFeed, phasedFeedId);
 }
 
-void MSFeedColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSFeedColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 
@@ -106,19 +106,19 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
   // Matching loop
   while (r > 0) {
     r--;
-    Bool ignore = False;
+    bool ignore = false;
     for (size_t i = 0; i < ignoreRows.nelements(); ++i) {
       if (ignoreRows[i] == r) {
-        ignore = True;
+        ignore = true;
         break;
       }
     }
     if (!ignore) {
-      Bool fLengthMatches = False;
+      bool fLengthMatches = false;
 
       if (focusLengthQuant().isNull() || (focusLengthQ.getFullUnit() == Unit(""))) {
         // one or both MSs do not have the optional FOCUS_LENGTH column: treat as always matching
-        fLengthMatches = True;
+        fLengthMatches = true;
       } else {
         Double fLengthM = focusLengthQ.getValue(m);
         fLengthMatches = (focusLengthQuant()(r).getValue(m) == fLengthM);
@@ -129,7 +129,7 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
           positionQuant()(r)(IPosition(1, 0)).getValue(m) == pos0InM &&
           positionQuant()(r)(IPosition(1, 1)).getValue(m) == pos1InM &&
           positionQuant()(r)(IPosition(1, 2)).getValue(m) == pos2InM && fLengthMatches) {
-        Bool matches = True;
+        bool matches = true;
         for (Int i = 0; i < numRec; ++i) {  // compare all receptors
           if (!(beamOffsetQuant()(r)(IPosition(2, 0, i)).getValue(d) ==
                     beamOffsetQ(IPosition(2, 0, i)).getValue(d) &&
@@ -139,7 +139,7 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
                 receptorAngleQuant()(r)(IPosition(1, i)).getValue(d) ==
                     receptorAngleQ(IPosition(1, i)).getValue(d) &&
                 allEQ(polResponse()(r), polResp))) {
-            matches = False;
+            matches = false;
             break;
           }
         }

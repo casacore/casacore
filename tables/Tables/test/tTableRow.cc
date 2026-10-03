@@ -63,7 +63,7 @@
 // (because the emulated exceptions result in leaks).
 
 // First build a description.
-void a(Bool) {
+void a(bool) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
@@ -154,14 +154,14 @@ void a(Bool) {
     if (!allEQ(arrval, arrf)) {
       cout << "error in arr1 in row " << i << endl;
     }
-    colarr2.get(i, arrstr, True);
+    colarr2.get(i, arrstr, true);
     AlwaysAssertExit(arrstr.ndim() == 1);
     AlwaysAssertExit(arrstr.shape()(0) == i);
     if (!allEQ(arrstr, arrs(Slice(0, i)))) {
       cout << "error in arr2 in row " << i << endl;
     }
     if (i % 2 == 0) {
-      colarr3.get(i, arr3val, True);
+      colarr3.get(i, arr3val, true);
       AlwaysAssertExit(arr3val.ndim() == 3);
       if (!allEQ(arr3val, arrf)) {
         cout << "error in arr3 in row " << i << endl;
@@ -185,7 +185,7 @@ void a(Bool) {
   AlwaysAssertExit(row.record().description() == rowc.record().description());
 }
 
-void b(Bool doExcp) {
+void b(bool doExcp) {
   Table tab("tTableRow_tmp.data");
   if (doExcp) {
     try {
@@ -200,7 +200,7 @@ void b(Bool doExcp) {
     }
   }
   ROTableRow rowx(tab, stringToVector("ab,arr1"));
-  ROTableRow rowy(tab, stringToVector("ab,bcd,arr1"), True);
+  ROTableRow rowy(tab, stringToVector("ab,bcd,arr1"), true);
   RORecordFieldPtr<Int> ab(rowx.record(), 0);
   RORecordFieldPtr<uInt> ad(rowy.record(), 0);
   RORecordFieldPtr<DComplex> ag(rowy.record(), 1);
@@ -310,7 +310,7 @@ void c(Int nrow) {
   ArrayColumn<float> colarr1(tab, "arr1");
   Cube<float> arrval(IPosition(3, 2, 3, 4));
   for (i = 0; i < nrow; i++) {
-    colarr1.get(i, arrval, True);
+    colarr1.get(i, arrval, true);
   }
   timer.show(" array column");
 

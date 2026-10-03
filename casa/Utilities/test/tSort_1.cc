@@ -34,9 +34,9 @@
 
 #include <casacore/casa/namespace.h>
 // # Forward Declarations
-Bool sortarr(Int*, uInt nr, int);
-Bool sortall(Int*, uInt nr, uInt type);
-Bool sort2(uInt nr);
+bool sortarr(Int*, uInt nr, int);
+bool sortall(Int*, uInt nr, uInt type);
+bool sort2(uInt nr);
 
 // Define file global variable for cmp-routine.
 static Int* gbla;
@@ -46,7 +46,7 @@ static Int* gbla;
 // The timing results are written to stdout.
 
 int main(int argc, const char* argv[]) {
-  Bool success = True;
+  bool success = true;
   uInt nr = 5000;
   if (argc > 1) {
     istringstream istr(argv[1]);
@@ -74,31 +74,31 @@ int main(int argc, const char* argv[]) {
   }
   cout << "Sorting ordered array" << endl;
   if (!sortall(a1, nr, 0)) {
-    success = False;
+    success = false;
   }
   cout << "Sorting reversed array" << endl;
   if (!sortall(a2, nr, 0)) {
-    success = False;
+    success = false;
   }
   cout << "Sorting random array" << endl;
   if (!sortall(a3, nr, 0)) {
-    success = False;
+    success = false;
   }
   cout << "Sorting equal array" << endl;
   if (!sortall(a4, nr, 0)) {
-    success = False;
+    success = false;
   }
   cout << "Sorting random array with 2 different elements" << endl;
   if (!sortall(a5, nr, 2)) {
-    success = False;
+    success = false;
   }
   cout << "Sorting random array with 5 different elements" << endl;
   if (!sortall(a6, nr, 5)) {
-    success = False;
+    success = false;
   }
   cout << "Sorting random array with 10 different elements" << endl;
   if (!sortall(a7, nr, 10)) {
-    success = False;
+    success = false;
   }
   delete[] a1;
   delete[] a2;
@@ -155,25 +155,25 @@ void qksort(Int nr, uInt* inx) {
   qksort(nr - j - 1, inx + j + 1);
 }
 
-Bool sortall(Int* arr, uInt nr, uInt type) {
-  Bool success = True;
+bool sortall(Int* arr, uInt nr, uInt type) {
+  bool success = true;
   if (nr <= 5000) {
     cout << "InsSort   ";
     if (!sortarr(arr, nr, Sort::InsSort)) {
-      success = False;
+      success = false;
     }
   }
   cout << "ParSort   ";
   if (!sortarr(arr, nr, Sort::ParSort)) {
-    success = False;
+    success = false;
   }
   cout << "QuickSort ";
   if (!sortarr(arr, nr, Sort::QuickSort)) {
-    success = False;
+    success = false;
   }
   cout << "HeapSort  ";
   if (!sortarr(arr, nr, Sort::HeapSort)) {
-    success = False;
+    success = false;
   }
   Timer tim;
   uInt i;
@@ -183,7 +183,7 @@ Bool sortall(Int* arr, uInt nr, uInt type) {
     uInt* inx = new uInt[nr];
     if (inx == 0) {
       cout << "Allocation Error" << endl;
-      return False;
+      return false;
     }
     for (i = 0; i < nr; i++) {
       inx[i] = i;
@@ -194,7 +194,7 @@ Bool sortall(Int* arr, uInt nr, uInt type) {
     for (i = 1; i < nr; i++) {
       if (arr[inx[i]] < arr[inx[i - 1]]) {
         cout << "Out of order";
-        success = False;
+        success = false;
         break;
       }
     }
@@ -205,7 +205,7 @@ Bool sortall(Int* arr, uInt nr, uInt type) {
   uInt* inx = new uInt[nr];
   if (inx == 0) {
     cout << "Allocation Error" << endl;
-    return False;
+    return false;
   }
   for (i = 0; i < nr; i++) {
     inx[i] = i;
@@ -216,7 +216,7 @@ Bool sortall(Int* arr, uInt nr, uInt type) {
   for (i = 1; i < nr; i++) {
     if (arr[inx[i]] < arr[inx[i - 1]]) {
       cout << "Out of order";
-      success = False;
+      success = false;
       break;
     }
   }
@@ -231,61 +231,61 @@ Bool sortall(Int* arr, uInt nr, uInt type) {
   return success;
 }
 
-Bool sortarr1(Int* arr, uInt nr, int opt) {
-  Bool success = True;
+bool sortarr1(Int* arr, uInt nr, int opt) {
+  bool success = true;
   Sort sort;
   sort.sortKey(arr, TpInt);
   Vector<uInt> ptr;
   Timer tim;
-  sort.sort(ptr, nr, opt, False);
+  sort.sort(ptr, nr, opt, false);
   tim.show();
   for (uInt i = 1; i < nr; i++) {
     if (arr[ptr(i)] < arr[ptr(i - 1)]) {
       cout << "Out of order " << arr[ptr(i)] << "," << arr[ptr(i - 1)] << endl;
-      success = False;
+      success = false;
       break;
     }
     if (arr[ptr(i)] == arr[ptr(i - 1)] && ptr(i) <= ptr(i - 1)) {
       cout << "not stable " << ptr(i) << "<=" << ptr(i - 1) << endl;
-      success = False;
+      success = false;
       break;
     }
   }
   return success;
 }
 
-Bool sortarr2(Int* arr, uInt nr, int opt) {
-  Bool success = True;
+bool sortarr2(Int* arr, uInt nr, int opt) {
+  bool success = true;
   Sort sort;
   sort.sortKey(arr, std::shared_ptr<BaseCompare>(new ObjCompare<Int>), 4);
   Vector<uInt> ptr;
   Timer tim;
   sort.sort(ptr, nr, opt);
-  /// sort.sort (ptr,nr,opt,False);
+  /// sort.sort (ptr,nr,opt,false);
   tim.show("  with obj");
   for (uInt i = 1; i < nr; i++) {
     if (arr[ptr(i)] < arr[ptr(i - 1)]) {
       cout << "Out of order " << arr[ptr(i)] << "," << arr[ptr(i - 1)] << endl;
-      success = False;
+      success = false;
       break;
     }
     if (arr[ptr(i)] == arr[ptr(i - 1)] && ptr(i) <= ptr(i - 1)) {
       cout << "not stable " << ptr(i) << "<=" << ptr(i - 1) << endl;
-      success = False;
+      success = false;
       break;
     }
   }
   return success;
 }
 
-Bool sortarr(Int* arr, uInt nr, int opt) {
+bool sortarr(Int* arr, uInt nr, int opt) {
   //    return sortarr1(arr,nr,opt) && sortarr2(arr,nr,opt);
   return sortarr2(arr, nr, opt);
 }
 
 // Sort two arrays using Sort or in a Combined way.
 // It resembles sorting on baselines.
-Bool sort2(uInt nr) {
+bool sort2(uInt nr) {
   uInt nrbl = 45 * 46 / 2;
   uInt nrt = (nr + nrbl - 1) / nrbl;
   Vector<Int> vec1(nrt * nrbl);
@@ -327,5 +327,5 @@ Bool sort2(uInt nr) {
     cout << "indsort   ";
     timer.show();
   }
-  return True;
+  return true;
 }

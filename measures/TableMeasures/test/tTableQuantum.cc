@@ -48,7 +48,7 @@
 
 #include <casacore/casa/namespace.h>
 int main(int argc, const char* argv[]) {
-  Bool doExcep = (argc < 2);
+  bool doExcep = (argc < 2);
   uInt nrrow = 5000;
   if (argc >= 2) {
     istringstream istr(argv[1]);
@@ -309,7 +309,7 @@ int main(int argc, const char* argv[]) {
     // Fill an array with quanta.
     IPosition shape(2, 3, 2);
     Array<Quantum<Double>> quantArr(shape);
-    Bool deleteIt;
+    bool deleteIt;
     Quantum<Double>* q_p = quantArr.getStorage(deleteIt);
     q_p->setValue(1.41212);
     q_p->setUnit("GHz");
@@ -379,7 +379,7 @@ int main(int argc, const char* argv[]) {
       if (doExcep) {
         try {
           Array<Quantum<Double>> badShapeArr(IPosition(2, 2));
-          roaqCol.get(0, badShapeArr, False);
+          roaqCol.get(0, badShapeArr, false);
         } catch (std::exception& x) {
           cout << "The following line should be a ";
           cout << "Table array conformance error exception.\n";
@@ -389,7 +389,7 @@ int main(int argc, const char* argv[]) {
       {
         // This should succeed.
         Array<Quantum<Double>> badShapeArr(IPosition(2, 2));
-        roaqCol.get(0, badShapeArr, True);
+        roaqCol.get(0, badShapeArr, true);
         cout << badShapeArr << endl;
       }
 

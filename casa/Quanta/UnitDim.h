@@ -132,9 +132,9 @@ class UnitDim {
   // Compare dimension of units
   // <group name="compare">
   // Compare for equal dimensions
-  Bool operator==(const UnitDim &other) const;
+  bool operator==(const UnitDim &other) const;
   // Compare for unequal dimensions
-  Bool operator!=(const UnitDim &other) const;
+  bool operator!=(const UnitDim &other) const;
   // </group>
 
   // # General Member Functions

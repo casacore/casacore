@@ -42,7 +42,7 @@ SSMStringHandler::SSMStringHandler(SSMBase* aBase)
       itsNextBucket(-1),
       itsData(0),
       itsIntBuf(0),
-      isChanged(False),
+      isChanged(false),
       itsLastBucket(-1) {}
 
 SSMStringHandler::~SSMStringHandler() {
@@ -81,7 +81,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, const Strin
 }
 
 void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLength,
-                               const Array<String>& string, Bool handleShape) {
+                               const Array<String>& string, bool handleShape) {
   const IPosition& aShape = string.shape();
 
   // Check if current bucket is wanted bucket, else get wanted bucket.
@@ -89,7 +89,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length, Int totalLe
     getBucket(bucketNr);
   }
 
-  Bool deleteIt;
+  bool deleteIt;
   const String* aString = string.getStorage(deleteIt);
 
   if (handleShape) {
@@ -157,7 +157,7 @@ void SSMStringHandler::replaceData(Int& offset, Int length, const Char* data) {
     memcpy(itsData + offset, data, nCopy);
     data += nCopy;
     offset += nCopy;
-    isChanged = True;
+    isChanged = true;
     if (length > 0) {
       offset = 0;
       getBucket(itsNextBucket);
@@ -189,7 +189,7 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const String
   }
 
   if (itsLastBucket == -1) {
-    getNewBucket(False);
+    getNewBucket(false);
   } else if (itsCurrentBucket != itsLastBucket) {
     getBucket(itsLastBucket);
   }
@@ -199,7 +199,7 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const String
 
   if (static_cast<Int>(string.length()) > itsLength - itsUsedLength &&
       itsLength - itsUsedLength < 50) {
-    getNewBucket(False);
+    getNewBucket(false);
   }
 
   offset = itsUsedLength;
@@ -209,10 +209,10 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const String
 }
 
 void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const Array<String>& string,
-                           Bool handleShape) {
+                           bool handleShape) {
   const IPosition& aShape = string.shape();
   Int totalLength = 0;
-  Bool deleteIt;
+  bool deleteIt;
   const String* aString = string.getStorage(deleteIt);
 
   for (uInt i = 0; i < string.nelements(); i++) {
@@ -248,7 +248,7 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const Array<
   }
 
   if (itsLastBucket == -1) {
-    getNewBucket(False);
+    getNewBucket(false);
   } else if (itsCurrentBucket != itsLastBucket) {
     getBucket(itsLastBucket);
   }
@@ -257,7 +257,7 @@ void SSMStringHandler::put(Int& bucketNr, Int& offset, Int& length, const Array<
   // a new bucket anyway.
 
   if (totalLength > itsLength - itsUsedLength && itsLength - itsUsedLength < 50) {
-    getNewBucket(False);
+    getNewBucket(false);
   }
 
   bucketNr = itsCurrentBucket;
@@ -299,9 +299,9 @@ void SSMStringHandler::putData(Int length, const Char* data) {
     data += toDo;
     itsNDeleted -= toDo;
     itsUsedLength += toDo;
-    isChanged = True;
+    isChanged = true;
     if (length > 0) {
-      getNewBucket(True);
+      getNewBucket(true);
     }
   }
 }
@@ -337,7 +337,7 @@ void SSMStringHandler::remove(Int bucketNr, Int offset, Int length) {
   if (offset + n == itsUsedLength) {
     itsUsedLength = offset;
   }
-  isChanged = True;
+  isChanged = true;
 
   if (itsNDeleted == itsLength) {
     itsSSMPtr->removeBucket(itsCurrentBucket);
@@ -345,7 +345,7 @@ void SSMStringHandler::remove(Int bucketNr, Int offset, Int length) {
       itsLastBucket = -1;
     }
     itsCurrentBucket = -1;
-    isChanged = False;
+    isChanged = false;
   }
 
   // Check if continuation in next bucket
@@ -373,7 +373,7 @@ void SSMStringHandler::get(String& string, Int bucket, Int offset, Int length) {
 }
 
 void SSMStringHandler::get(Array<String>& string, Int bucket, Int offset, Int length,
-                           Bool handleShape) {
+                           bool handleShape) {
   IPosition aShape;
   uInt aFilledFlag = 0;
   String emptyString;
@@ -393,7 +393,7 @@ void SSMStringHandler::get(Array<String>& string, Int bucket, Int offset, Int le
     }
   }
 
-  Bool deleteIt;
+  bool deleteIt;
   String* aString = string.getStorage(deleteIt);
 
   for (uInt i = 0; i < string.nelements(); i++) {
@@ -424,7 +424,7 @@ void SSMStringHandler::putShape(Int& bucketNr, Int& offset, Int& length, const I
   Int totalLength = 0;
 
   if (itsLastBucket == -1) {
-    getNewBucket(False);
+    getNewBucket(false);
   } else if (itsCurrentBucket != itsLastBucket) {
     getBucket(itsLastBucket);
   }
@@ -450,7 +450,7 @@ void SSMStringHandler::putShape(Int& bucketNr, Int& offset, Int& length, const I
   }
 
   if (itsLastBucket == -1) {
-    getNewBucket(False);
+    getNewBucket(false);
   } else if (itsCurrentBucket != itsLastBucket) {
     getBucket(itsLastBucket);
   }
@@ -459,7 +459,7 @@ void SSMStringHandler::putShape(Int& bucketNr, Int& offset, Int& length, const I
   // a new bucket anyway.
 
   if (totalLength > itsLength - itsUsedLength && itsLength - itsUsedLength < 50) {
-    getNewBucket(False);
+    getNewBucket(false);
   }
 
   bucketNr = itsCurrentBucket;
@@ -508,11 +508,11 @@ void SSMStringHandler::flush() {
     CanonicalConversion::fromLocal(aPtr + itsIntSize * 3, itsNextBucket);
     memcpy(aPtr + itsStart, itsData, itsLength);
     itsSSMPtr->setBucketDirty();
-    isChanged = False;
+    isChanged = false;
   }
 }
 
-void SSMStringHandler::getBucket(uInt bucketNr, Bool isNew) {
+void SSMStringHandler::getBucket(uInt bucketNr, bool isNew) {
   // check if itsCurrentBuffer is in use, if so save this one first
   flush();
   itsCurrentBucket = bucketNr;
@@ -525,15 +525,15 @@ void SSMStringHandler::getBucket(uInt bucketNr, Bool isNew) {
   }
 }
 
-void SSMStringHandler::getNewBucket(Bool doConcat) {
+void SSMStringHandler::getNewBucket(bool doConcat) {
   Int bucketNr = itsSSMPtr->getNewBucket();
   if (doConcat) {
     itsNextBucket = bucketNr;
 
     // save nextbucket
-    isChanged = True;
+    isChanged = true;
   }
-  getBucket(bucketNr, True);
+  getBucket(bucketNr, true);
 
   // zero dataspace
   itsUsedLength = 0;

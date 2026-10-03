@@ -41,8 +41,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constructors
 MeasComet::MeasComet()
     : tab_p(),
-      measFlag_p(True),
-      measured_p(False),
+      measFlag_p(true),
+      measured_p(false),
       row_p(),
       mjd0_p(0),
       mjdl_p(0),
@@ -52,7 +52,7 @@ MeasComet::MeasComet()
       topo_p(),
       mtype_p(MDirection::APP),  // default, if the keyword obsloc is not defined, is apparent
                                  // geocentric
-      msgDone_p(False),
+      msgDone_p(false),
       tp_p(),
       haveDiskLongLat_p(false),
       ncols_p(5),
@@ -65,8 +65,8 @@ MeasComet::MeasComet()
 
 MeasComet::MeasComet(const String &path)
     : tab_p(),
-      measFlag_p(True),
-      measured_p(False),
+      measFlag_p(true),
+      measured_p(false),
       row_p(),
       mjd0_p(0),
       mjdl_p(0),
@@ -75,7 +75,7 @@ MeasComet::MeasComet(const String &path)
       name_p(),
       topo_p(),
       mtype_p(MDirection::APP),
-      msgDone_p(False),
+      msgDone_p(false),
       tp_p(path),
       haveDiskLongLat_p(false),
       ncols_p(5),
@@ -87,8 +87,8 @@ MeasComet::MeasComet(const String &path)
 
 MeasComet::MeasComet(const Table &tabin, const String &path)
     : tab_p(),
-      measFlag_p(True),
-      measured_p(False),
+      measFlag_p(true),
+      measured_p(false),
       row_p(),
       mjd0_p(0),
       mjdl_p(0),
@@ -97,7 +97,7 @@ MeasComet::MeasComet(const Table &tabin, const String &path)
       name_p(),
       topo_p(),
       mtype_p(MDirection::APP),
-      msgDone_p(False),
+      msgDone_p(false),
       tp_p(path),
       haveDiskLongLat_p(false),
       ncols_p(5),
@@ -109,8 +109,8 @@ MeasComet::MeasComet(const Table &tabin, const String &path)
 
 MeasComet::MeasComet(const MeasComet &other)
     : tab_p(),
-      measFlag_p(True),
-      measured_p(False),
+      measFlag_p(true),
+      measured_p(false),
       row_p(),
       mjd0_p(0),
       mjdl_p(0),
@@ -119,7 +119,7 @@ MeasComet::MeasComet(const MeasComet &other)
       name_p(),
       topo_p(),
       mtype_p(MDirection::APP),
-      msgDone_p(False),
+      msgDone_p(false),
       tp_p(other.tp_p),
       haveDiskLongLat_p(other.haveDiskLongLat_p),
       ncols_p(other.ncols_p),
@@ -152,13 +152,13 @@ Double MeasComet::getEnd() const { return mjdl_p; }
 
 Int MeasComet::nelements() const { return nrow_p; }
 
-Bool MeasComet::hasPosrefsys() const { return hasPosrefsys_p; }
+bool MeasComet::hasPosrefsys() const { return hasPosrefsys_p; }
 MDirection::Types MeasComet::getPosrefsysType() const { return posrefsystype_p; }
 
-Bool MeasComet::get(MVPosition &returnValue, Double date) const {
+bool MeasComet::get(MVPosition &returnValue, Double date) const {
   if (!fillMeas(date)) {
     returnValue = MVPosition();
-    return False;
+    return false;
   }
 
   Double f = (date - ldat_p[0][0]) / dmjd_p;
@@ -167,7 +167,7 @@ Bool MeasComet::get(MVPosition &returnValue, Double date) const {
   const MVPosition deltaX(getRelPosition(1) - returnValue);
   returnValue += f * deltaX;
 
-  return True;
+  return true;
 }
 
 MVPosition MeasComet::getRelPosition(const uInt index) const {
@@ -176,10 +176,10 @@ MVPosition MeasComet::getRelPosition(const uInt index) const {
                     Quantity(ldat_p[index][MeasComet::DEC], "deg"));
 }
 
-Bool MeasComet::getDisk(MVDirection &returnValue, Double date) const {
+bool MeasComet::getDisk(MVDirection &returnValue, Double date) const {
   if (!haveDiskLongLat_p || !fillMeas(date)) {
     returnValue = MVDirection();
-    return False;
+    return false;
   }
 
   Double f = (date - ldat_p[0][0]) / dmjd_p;
@@ -189,7 +189,7 @@ Bool MeasComet::getDisk(MVDirection &returnValue, Double date) const {
   Double pa = returnValue.positionAngle(ll_on_second_date);
 
   returnValue.shiftAngle(f * sep, pa);
-  return True;
+  return true;
 }
 
 MVDirection MeasComet::getDiskLongLat(const uInt index) const {
@@ -197,21 +197,21 @@ MVDirection MeasComet::getDiskLongLat(const uInt index) const {
                      Quantity(ldat_p[index][MeasComet::DISKLAT], "deg"));
 }
 
-Bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) const {
+bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) const {
   returnValue = 0.0;
-  if (!fillMeas(date)) return False;
+  if (!fillMeas(date)) return false;
   Double f = (date - ldat_p[0][0]) / dmjd_p;
   Double radvel = ldat_p[0][MeasComet::RADVEL];
   Double deltarv = ldat_p[1][MeasComet::RADVEL] - radvel;
 
   radvel += f * deltarv;
   returnValue = MVRadialVelocity(Quantity(radvel, "AU/d"));
-  return True;
+  return true;
 }
 
 MeasComet *MeasComet::clone() const { return (new MeasComet(*this)); }
 
-Bool MeasComet::initMeas(const String &which, const Table *tabin) {
+bool MeasComet::initMeas(const String &which, const Table *tabin) {
   Vector<String> reqcols(5);  // Required columns.
   reqcols[0] = "MJD";
   reqcols[1] = "RA";
@@ -227,15 +227,15 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
     LogIO os(LogOrigin("MeasComet", String("initMeas(String, Table *)"), WHERE));
 
     closeMeas();  // seems to need this to ensure full initialization (TT)
-    measFlag_p = False;
+    measFlag_p = false;
     tp_p = which;
     TableRecord kws;
     Double dt;
     String vs;
-    Bool ok = True;
+    bool ok = true;
     if (!MeasIERS::getTable(tab_p, kws, row_p, rfp_p, vs, dt, reqcols, optcols, tp_p, tplc,
                             String("ephemerides"), tabin)) {
-      return False;
+      return false;
     }
 
     ncols_p = reqcols.nelements() + optcols.nelements();
@@ -249,7 +249,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
 
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 || !kws.isDefined("dMJD") ||
         kws.asDouble("dMJD") <= 0 || !kws.isDefined("NAME")) {
-      ok = False;
+      ok = false;
       os << LogIO::SEVERE;
       if (!kws.isDefined("MJD0"))
         os << "MJD0 is not defined.\n";
@@ -299,7 +299,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
         os << LogIO::SEVERE << "MJD has a problem." << LogIO::POST;
         os << LogIO::DEBUG1 << "*(rfp_p[0]) = " << *(rfp_p[0]) << "\nmjd0_p = " << mjd0_p
            << "\nnrow_p = " << nrow_p << "\ndmjd_p = " << dmjd_p << LogIO::POST;
-        ok = False;
+        ok = false;
       } else {
         mjdl_p = mjd0_p + nrow_p * dmjd_p;
       }
@@ -307,7 +307,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
     if (!ok) {
       os << String("Invalid comet table ") + tp_p << LogIO::EXCEPTION;
     }
-    measured_p = True;
+    measured_p = true;
   }
 
   haveTriedExtras_p = false;  // Defer reading them until asked to.
@@ -315,7 +315,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
   return (measured_p);
 }
 
-Double MeasComet::getTemperature(const Bool squawk) {
+Double MeasComet::getTemperature(const bool squawk) {
   if (!haveTriedExtras_p) getExtras();
 
   if (temperature_p < 0.0 && squawk) {
@@ -328,7 +328,7 @@ Double MeasComet::getTemperature(const Bool squawk) {
   return temperature_p;
 }
 
-Double MeasComet::getMeanRad(const Bool squawk) {
+Double MeasComet::getMeanRad(const bool squawk) {
   if (!haveTriedExtras_p) getExtras();
 
   if (mean_rad_p < 0.0 && squawk) {
@@ -342,7 +342,7 @@ Double MeasComet::getMeanRad(const Bool squawk) {
 }
 
 Double MeasComet::get_Quantity_keyword(const TableRecord &ks, const String &kw, const Unit &unit,
-                                       Bool &success) {
+                                       bool &success) {
   try {
     const Record rec(ks.asRecord(kw));
     const Quantity q(rec.asDouble("value"), rec.asString("unit"));
@@ -357,12 +357,12 @@ Double MeasComet::get_Quantity_keyword(const TableRecord &ks, const String &kw, 
 
 String MeasComet::getTablePath() { return Path(tab_p.tableName()).absoluteName(); }
 
-Bool MeasComet::getExtras() {
+bool MeasComet::getExtras() {
   if (haveTriedExtras_p)  // That was easy.
     return true;
 
   const TableRecord ks(tab_p.keywordSet());
-  Bool got_q = true;
+  bool got_q = true;
 
   // Use impossible values to indicate failure to _successfully_ read any given
   // quantity.
@@ -381,23 +381,23 @@ Bool MeasComet::getExtras() {
 
 void MeasComet::closeMeas() {
   if (Table::isOpened(tp_p) || measured_p || !measFlag_p) {
-    measFlag_p = True;
-    measured_p = False;
+    measFlag_p = true;
+    measured_p = false;
     mjd0_p = 0;
     mjdl_p = 0;
     dmjd_p = 0;
     nrow_p = 0;
     tp_p = "";
-    msgDone_p = False;
+    msgDone_p = false;
     for (uInt i = 0; i < 2; ++i) lnr_p[i] = -1;
     row_p = ROTableRow();
     tab_p = Table();
   }
 }
 
-Bool MeasComet::fillMeas(Double utf) const {
+bool MeasComet::fillMeas(Double utf) const {
   Int ut = ifloor((utf - mjd0_p) / dmjd_p) - 1;
-  if (ut < 0 || ut >= nrow_p - 1) return False;
+  if (ut < 0 || ut >= nrow_p - 1) return false;
   if (ut != lnr_p[0]) {
     if (ut == lnr_p[1]) {
       // Shift one
@@ -414,7 +414,7 @@ Bool MeasComet::fillMeas(Double utf) const {
     for (uInt i = 0; i < ncols_p; ++i) ldat_p[1][i] = *(rfp_p[i]);
     lnr_p[1] = ut + 1;
   }
-  return True;
+  return true;
 }
 
 }  // namespace casacore

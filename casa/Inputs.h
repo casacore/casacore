@@ -164,7 +164,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // 26
 // 27      for (;;) { // forever
 // 28          xyfile >> x >> y;
-// 29          if (inputs.getBool("overplot") == True) {
+// 29          if (inputs.getBool("overplot") == true) {
 // 30              plot(x,y,inputs.getBool("lines"));
 // 31          } else {
 // 32              plot.newPlot();
@@ -216,7 +216,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //
 // 12 - This is another instantiation of a Param inside of Input.  This
 // parameter will be referenced by the keyword "overplot".  It is
-// initialized to False and is of type Bool.
+// initialized to false and is of type Bool.
 //
 // 13 - This line is the third and final Param placed in inputs and is
 // recognized by the code when accessed with keyword "lines".

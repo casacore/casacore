@@ -40,7 +40,7 @@ Interpolate1D<Double, Double> *VanVleck::itsInterp = NULL;
 uInt VanVleck::itsSize = 65;
 uInt VanVleck::itsNx = 0;
 uInt VanVleck::itsNy = 0;
-Bool VanVleck::itsEquiSpaced = False;
+bool VanVleck::itsEquiSpaced = false;
 Vector<Double> VanVleck::itsQx0;
 Vector<Double> VanVleck::itsQx1;
 Vector<Double> VanVleck::itsQy0;
@@ -121,8 +121,8 @@ void VanVleck::setQuantization(const Matrix<Double> &qx, const Matrix<Double> &q
 
   uInt nx = qx.ncolumn();
   uInt ny = qy.ncolumn();
-  Bool nxChanged = itsNx != nx;
-  Bool nyChanged = itsNy != ny;
+  bool nxChanged = itsNx != nx;
+  bool nyChanged = itsNy != ny;
 
   if (nxChanged) {
     itsQx0.resize(nx);
@@ -158,8 +158,8 @@ void VanVleck::setQuantization(const Matrix<Double> &qx, const Matrix<Double> &q
   initInterpolator();
 }
 
-Bool VanVleck::setEquiSpaced(Double xlev, Double ylev, Double xmean, Double ymean, Int n) {
-  Bool result = n == 3 || n == 9;
+bool VanVleck::setEquiSpaced(Double xlev, Double ylev, Double xmean, Double ymean, Int n) {
+  bool result = n == 3 || n == 9;
   if (result) {
     std::lock_guard<std::mutex> lock(theirMutex);
     itsNx = itsNy = n;
@@ -167,7 +167,7 @@ Bool VanVleck::setEquiSpaced(Double xlev, Double ylev, Double xmean, Double ymea
     itsYlev = ylev;
     itsXmean = xmean;
     itsYmean = ymean;
-    itsEquiSpaced = True;
+    itsEquiSpaced = true;
     initInterpolator();
   }
   return result;
@@ -295,12 +295,12 @@ void VanVleck::initInterpolator() {
     i++;
   }
   if (nels != rs.nelements()) {
-    rs.resize(nels, True);
-    rhos.resize(nels, True);
+    rs.resize(nels, true);
+    rhos.resize(nels, true);
   }
   ScalarSampledFunctional<Double> fx(rs);
   ScalarSampledFunctional<Double> fy(rhos);
-  itsInterp = new Interpolate1D<Double, Double>(fx, fy, True, True);
+  itsInterp = new Interpolate1D<Double, Double>(fx, fy, true, true);
   AlwaysAssert(itsInterp, AipsError);
   itsInterp->setMethod(Interpolate1D<Double, Double>::spline);
 }
@@ -318,8 +318,8 @@ Double VanVleck::r(const Double rho) {
   return (*itsInterp)(rho);
 }
 
-Bool VanVleck::dcoff(Double &dcoffset, Double &threshold, Int n, Double zerolag, Double bias) {
-  Bool result = True;
+bool VanVleck::dcoff(Double &dcoffset, Double &threshold, Int n, Double zerolag, Double bias) {
+  bool result = true;
   if (n == 3) {
     result = dcoff3(dcoffset, threshold, zerolag, bias);
   } else {
@@ -365,10 +365,10 @@ Double VanVleck::rinc(Double &rhoi, Double &rhof) {
 
 Double VanVleck::threshNgt3(Int n, Double zerolag) {
   Double x = 0.0;
-  Bool odd = True;
+  bool odd = true;
   if (n % 2 == 0) {
     x = 1.0;
-    odd = False;
+    odd = false;
   }
   Double tol = 1.0e-8;
   Double sqrt2 = sqrt(2.0);
@@ -518,16 +518,16 @@ Double VanVleck::predictNgt3(Int n, Double threshhold) {
   return result;
 }
 
-Bool VanVleck::dcoff3(Double &dcoffset, Double &threshold, Double zerolag, Double bias) {
+bool VanVleck::dcoff3(Double &dcoffset, Double &threshold, Double zerolag, Double bias) {
   // the input data, bias and zerolag, should satisfy the
   // inequality constraints 0 <= bias < 1 and
   // sqrt(bias) < zerolag < 2-sqrt(bias)
 
-  Bool result = True;
+  bool result = true;
   Double rtbias = sqrt(bias);
   if (bias < 0.0 || bias >= 1.0 || rtbias >= zerolag || zerolag >= (2.0 - rtbias)) {
-    // fall back and return False
-    result = False;
+    // fall back and return false
+    result = false;
     dcoffset = 0.0;
     threshold = threshN3(zerolag);
   } else {

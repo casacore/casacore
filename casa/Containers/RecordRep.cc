@@ -45,17 +45,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 RecordRep::RecordRep() : nused_p(0) {}
 
 RecordRep::RecordRep(const RecordDesc& description) : desc_p(description), nused_p(0) {
-  restructure(desc_p, True);
+  restructure(desc_p, true);
 }
 
 RecordRep::RecordRep(const RecordRep& other) : desc_p(other.desc_p), nused_p(0) {
-  restructure(desc_p, False);
+  restructure(desc_p, false);
   copy_other(other);
 }
 
 RecordRep& RecordRep::operator=(const RecordRep& other) {
   if (this != &other) {
-    restructure(other.desc_p, False);
+    restructure(other.desc_p, false);
     copy_other(other);
   }
   return *this;
@@ -63,7 +63,7 @@ RecordRep& RecordRep::operator=(const RecordRep& other) {
 
 RecordRep::~RecordRep() { delete_myself(desc_p.nfields()); }
 
-void RecordRep::restructure(const RecordDesc& newDescription, Bool recursive) {
+void RecordRep::restructure(const RecordDesc& newDescription, bool recursive) {
   delete_myself(desc_p.nfields());
   desc_p = newDescription;
   nused_p = desc_p.nfields();
@@ -118,7 +118,7 @@ void RecordRep::removeField(Int whichField) {
 }
 
 void RecordRep::addFieldToDesc(const String& name, DataType type, const IPosition& shape,
-                               Bool fixedShape) {
+                               bool fixedShape) {
   if (fixedShape) {
     desc_p.addField(name, type, shape);
   } else {
@@ -129,7 +129,7 @@ void RecordRep::addFieldToDesc(const String& name, DataType type, const IPositio
 void RecordRep::removeFieldFromDesc(Int whichField) { desc_p.removeField(whichField); }
 
 void RecordRep::addDataField(const String& name, DataType type, const IPosition& shape,
-                             Bool fixedShape, const void* data) {
+                             bool fixedShape, const void* data) {
   AlwaysAssert(type == TpBool || type == TpArrayBool || type == TpUChar || type == TpArrayUChar ||
                    type == TpShort || type == TpArrayShort || type == TpInt || type == TpArrayInt ||
                    type == TpUInt || type == TpArrayUInt || type == TpInt64 ||
@@ -167,7 +167,7 @@ void RecordRep::checkShape(DataType type, const IPosition& shape, const void* va
   IPosition arrShape;
   switch (type) {
     case TpArrayBool:
-      arrShape = static_cast<const Array<Bool>*>(value)->shape();
+      arrShape = static_cast<const Array<bool>*>(value)->shape();
       break;
     case TpArrayUChar:
       arrShape = static_cast<const Array<uChar>*>(value)->shape();
@@ -244,8 +244,8 @@ void* RecordRep::createDataField(DataType type, const IPosition& shape) {
   }
   switch (type) {
     case TpBool: {
-      Bool* ptr = new Bool;
-      *ptr = False;
+      bool* ptr = new bool;
+      *ptr = false;
       return ptr;
     }
     case TpUChar: {
@@ -290,8 +290,8 @@ void* RecordRep::createDataField(DataType type, const IPosition& shape) {
     case TpString:
       return new String;
     case TpArrayBool: {
-      Array<Bool>* ptr = new Array<Bool>(arrayShape);
-      *ptr = False;
+      Array<bool>* ptr = new Array<bool>(arrayShape);
+      *ptr = false;
       return ptr;
     }
     case TpArrayUChar: {
@@ -345,7 +345,7 @@ void RecordRep::makeDataVec(Int whichField, DataType type) {
   IPosition shape(1, 1);
   switch (type) {
     case TpBool:
-      datavec_p[whichField] = new Array<Bool>(shape, static_cast<Bool*>(data_p[whichField]), SHARE);
+      datavec_p[whichField] = new Array<bool>(shape, static_cast<bool*>(data_p[whichField]), SHARE);
       break;
     case TpUChar:
       datavec_p[whichField] =
@@ -404,8 +404,8 @@ void RecordRep::delete_myself(uInt nfields) {
 void RecordRep::deleteDataField(DataType type, void* ptr, void* vecptr) {
   switch (type) {
     case TpBool:
-      delete static_cast<Bool*>(ptr);
-      delete static_cast<Array<Bool>*>(vecptr);
+      delete static_cast<bool*>(ptr);
+      delete static_cast<Array<bool>*>(vecptr);
       break;
     case TpUChar:
       delete static_cast<uChar*>(ptr);
@@ -448,7 +448,7 @@ void RecordRep::deleteDataField(DataType type, void* ptr, void* vecptr) {
       delete static_cast<Array<String>*>(vecptr);
       break;
     case TpArrayBool:
-      delete static_cast<Array<Bool>*>(ptr);
+      delete static_cast<Array<bool>*>(ptr);
       break;
     case TpArrayUChar:
       delete static_cast<Array<uChar>*>(ptr);
@@ -485,10 +485,10 @@ void RecordRep::deleteDataField(DataType type, void* ptr, void* vecptr) {
   }
 }
 
-Bool RecordRep::conform(const RecordRep& other) const {
+bool RecordRep::conform(const RecordRep& other) const {
   // First check (non-recursively) if the descriptions conform.
   if (!desc_p.conform(other.desc_p)) {
-    return False;
+    return false;
   }
   // Now check for each fixed sub-record if it conforms.
   for (uInt i = 0; i < nused_p; i++) {
@@ -497,12 +497,12 @@ Bool RecordRep::conform(const RecordRep& other) const {
       if (thisRecord.isFixed()) {
         const Record& thatRecord = *static_cast<Record*>(const_cast<void*>(other.data_p[i]));
         if (!thisRecord.conform(thatRecord)) {
-          return False;
+          return false;
         }
       }
     }
   }
-  return True;
+  return true;
 }
 
 void RecordRep::copyData(const RecordRep& other) {
@@ -528,7 +528,7 @@ void RecordRep::copyDataField(DataType type, Int whichField, const void* that) c
 void RecordRep::copyDataField(DataType type, void* ptr, const void* that) const {
   switch (type) {
     case TpBool:
-      *static_cast<Bool*>(ptr) = *static_cast<const Bool*>(that);
+      *static_cast<bool*>(ptr) = *static_cast<const bool*>(that);
       break;
     case TpUChar:
       *static_cast<uChar*>(ptr) = *static_cast<const uChar*>(that);
@@ -561,8 +561,8 @@ void RecordRep::copyDataField(DataType type, void* ptr, const void* that) const 
       *static_cast<String*>(ptr) = *static_cast<const String*>(that);
       break;
     case TpArrayBool:
-      static_cast<Array<Bool>*>(ptr)->resize(static_cast<const Array<Bool>*>(that)->shape());
-      *static_cast<Array<Bool>*>(ptr) = *static_cast<const Array<Bool>*>(that);
+      static_cast<Array<bool>*>(ptr)->resize(static_cast<const Array<bool>*>(that)->shape());
+      *static_cast<Array<bool>*>(ptr) = *static_cast<const Array<bool>*>(that);
       break;
     case TpArrayUChar:
       static_cast<Array<uChar>*>(ptr)->resize(static_cast<const Array<uChar>*>(that)->shape());
@@ -674,7 +674,7 @@ void RecordRep::printDataField(std::ostream& os, DataType type, const String& in
                                Int maxNrValues, const void* ptr) const {
   switch (type) {
     case TpBool:
-      os << "Bool " << *static_cast<const Bool*>(ptr);
+      os << "Bool " << *static_cast<const bool*>(ptr);
       break;
     case TpUChar:
       os << "uChar " << Int(*static_cast<const uChar*>(ptr));
@@ -707,13 +707,13 @@ void RecordRep::printDataField(std::ostream& os, DataType type, const String& in
       os << "String " << '"' << *static_cast<const String*>(ptr) << '"';
       break;
     case TpArrayBool:
-      os << "Bool array with shape " << static_cast<const Array<Bool>*>(ptr)->shape();
+      os << "Bool array with shape " << static_cast<const Array<bool>*>(ptr)->shape();
       if (maxNrValues != 0) {
-        const Array<Bool>& arr = *static_cast<const Array<Bool>*>(ptr);
+        const Array<bool>& arr = *static_cast<const Array<bool>*>(ptr);
         if (maxNrValues < 0) {
           os << endl << arr;
         } else {
-          Vector<Bool> vec = arr.reform(IPosition(1, arr.nelements()));
+          Vector<bool> vec = arr.reform(IPosition(1, arr.nelements()));
           if (uInt(maxNrValues + 1) >= vec.nelements()) {
             os << endl << indent << "  " << vec;
           } else {
@@ -904,7 +904,7 @@ void RecordRep::print(std::ostream& os, Int maxNrValues, const String& indent) c
 void RecordRep::putDataField(AipsIO& os, DataType type, const void* ptr) const {
   switch (type) {
     case TpBool:
-      os << *static_cast<const Bool*>(ptr);
+      os << *static_cast<const bool*>(ptr);
       break;
     case TpUChar:
       os << *static_cast<const uChar*>(ptr);
@@ -937,7 +937,7 @@ void RecordRep::putDataField(AipsIO& os, DataType type, const void* ptr) const {
       os << *static_cast<const String*>(ptr);
       break;
     case TpArrayBool:
-      putArray(os, *static_cast<const Array<Bool>*>(ptr), "Array<void>");
+      putArray(os, *static_cast<const Array<bool>*>(ptr), "Array<void>");
       break;
     case TpArrayUChar:
       putArray(os, *static_cast<const Array<uChar>*>(ptr), "Array<uChar>");
@@ -977,7 +977,7 @@ void RecordRep::putDataField(AipsIO& os, DataType type, const void* ptr) const {
 void RecordRep::getDataField(AipsIO& os, DataType type, void* ptr) {
   switch (type) {
     case TpBool:
-      os >> *static_cast<Bool*>(ptr);
+      os >> *static_cast<bool*>(ptr);
       break;
     case TpUChar:
       os >> *static_cast<uChar*>(ptr);
@@ -1010,7 +1010,7 @@ void RecordRep::getDataField(AipsIO& os, DataType type, void* ptr) {
       os >> *static_cast<String*>(ptr);
       break;
     case TpArrayBool:
-      os >> *static_cast<Array<Bool>*>(ptr);
+      os >> *static_cast<Array<bool>*>(ptr);
       break;
     case TpArrayUChar:
       os >> *static_cast<Array<uChar>*>(ptr);
@@ -1089,7 +1089,7 @@ void RecordRep::getRecord(AipsIO& os, Int& recordType) {
     RecordDesc desc;
     os >> desc;
     os >> recordType;
-    restructure(desc, True);
+    restructure(desc, true);
     // Read the data.
     getData(os, version);
   }
@@ -1118,7 +1118,7 @@ void RecordRep::getKeySet(AipsIO& os, uInt version, uInt type) {
   getKeyDesc(os, desc);
   // Define the record from the description.
   // Read the keyword values and define the corresponding record value.
-  restructure(desc, True);
+  restructure(desc, true);
   getScalarKeys(os);
   if (type == 1) {
     getArrayKeys(os);

@@ -41,17 +41,17 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TableRecordRep::TableRecordRep() : RecordRep() {}
 
 TableRecordRep::TableRecordRep(const RecordDesc& description) : RecordRep(), desc_p(description) {
-  restructure(desc_p, True);
+  restructure(desc_p, true);
 }
 
 TableRecordRep::TableRecordRep(const TableRecordRep& other) : RecordRep(), desc_p(other.desc_p) {
-  restructure(desc_p, False);
+  restructure(desc_p, false);
   copy_other(other);
 }
 
 TableRecordRep& TableRecordRep::operator=(const TableRecordRep& other) {
   if (this != &other) {
-    restructure(other.desc_p, False);
+    restructure(other.desc_p, false);
     copy_other(other);
   }
   return *this;
@@ -59,7 +59,7 @@ TableRecordRep& TableRecordRep::operator=(const TableRecordRep& other) {
 
 TableRecordRep::~TableRecordRep() { delete_myself(desc_p.nfields()); }
 
-void TableRecordRep::restructure(const RecordDesc& newDescription, Bool recursive) {
+void TableRecordRep::restructure(const RecordDesc& newDescription, bool recursive) {
   delete_myself(desc_p.nfields());
   desc_p = newDescription;
   nused_p = desc_p.nfields();
@@ -96,7 +96,7 @@ void TableRecordRep::removeData(Int whichField, void* ptr, void* vecptr) {
 }
 
 void TableRecordRep::addFieldToDesc(const String& name, DataType type, const IPosition& shape,
-                                    Bool fixedShape) {
+                                    bool fixedShape) {
   if (fixedShape) {
     desc_p.addField(name, type, shape);
   } else {
@@ -167,10 +167,10 @@ void TableRecordRep::defineDataField(Int whichField, DataType type, const void* 
   }
 }
 
-Bool TableRecordRep::conform(const TableRecordRep& other) const {
+bool TableRecordRep::conform(const TableRecordRep& other) const {
   // First check (non-recursively) if the descriptions conform.
   if (!desc_p.conform(other.desc_p)) {
-    return False;
+    return false;
   }
   // Now check for each fixed sub-record and table if it conforms.
   for (Int i = 0; i < Int(nused_p); i++) {
@@ -180,7 +180,7 @@ Bool TableRecordRep::conform(const TableRecordRep& other) const {
         const TableRecord& thatRecord =
             *static_cast<TableRecord*>(const_cast<void*>(other.data_p[i]));
         if (!thisRecord.conform(thatRecord)) {
-          return False;
+          return false;
         }
       }
     } else if (desc_p.type(i) == TpTable) {
@@ -189,12 +189,12 @@ Bool TableRecordRep::conform(const TableRecordRep& other) const {
         const TableKeyword& thatKey =
             *static_cast<TableKeyword*>(const_cast<void*>(other.data_p[i]));
         if (!thisKey.conform(thatKey)) {
-          return False;
+          return false;
         }
       }
     }
   }
-  return True;
+  return true;
 }
 
 void TableRecordRep::copyData(const TableRecordRep& other) {
@@ -304,7 +304,7 @@ void TableRecordRep::closeTables() const {
   }
 }
 
-void TableRecordRep::flushTables(Bool fsync) const {
+void TableRecordRep::flushTables(bool fsync) const {
   for (uInt i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpTable) {
       static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->flush(fsync);
@@ -312,15 +312,15 @@ void TableRecordRep::flushTables(Bool fsync) const {
   }
 }
 
-Bool TableRecordRep::areTablesMultiUsed() const {
+bool TableRecordRep::areTablesMultiUsed() const {
   for (uInt i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpTable) {
-      if (static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->isMultiUsed(True)) {
-        return True;
+      if (static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->isMultiUsed(true)) {
+        return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 void TableRecordRep::print(std::ostream& os, Int maxNrValues, const String& indent) const {
@@ -384,7 +384,7 @@ void TableRecordRep::getRecord(AipsIO& os, Int& recordType, const TableAttr& par
     RecordDesc desc;
     os >> desc;
     os >> recordType;
-    restructure(desc, True);
+    restructure(desc, true);
     // Read the data.
     getData(os, version, parentAttr);
   }
@@ -430,7 +430,7 @@ void TableRecordRep::getTableKeySet(AipsIO& os, uInt version, const TableAttr& p
   getKeyDesc(os, desc);
   // Define the record from the description.
   // Read the keyword values and define the corresponding record value.
-  restructure(desc, True);
+  restructure(desc, true);
   getScalarKeys(os);
   if (type > 0) {
     getArrayKeys(os);

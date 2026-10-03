@@ -98,12 +98,12 @@ COMMENT   {COMMENT1}|{COMMENT2}|{COMMENT3}
 	  }
 {TRUE}    {
             JsonParser::position() += yyleng;
-            lvalp->val = new JsonValue (True);
+            lvalp->val = new JsonValue (true);
 	    return LITERAL;
 	  }
 {FALSE}   {
             JsonParser::position() += yyleng;
-            lvalp->val = new JsonValue (False);
+            lvalp->val = new JsonValue (false);
 	    return LITERAL;
 	  }
 {NULL}   {
