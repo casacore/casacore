@@ -136,113 +136,112 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // library. But many compilers are not good enough to automatically do the type
 // promotion. Hence these functions are explicitly defined.
 // <group>
-inline Float pow(Float f1, Double f2) { return Float(std::pow(Double(f1), f2)); }
-inline Float pow(Double f1, Float f2) { return Float(std::pow(f1, Double(f2))); }
-inline Int pow(Int f1, Int f2) { return Int(std::pow(Double(f1), Double(f2))); }
+inline float pow(float f1, double f2) { return float(std::pow(double(f1), f2)); }
+inline float pow(double f1, float f2) { return float(std::pow(f1, double(f2))); }
+inline int pow(int f1, int f2) { return int(std::pow(double(f1), double(f2))); }
 // </group>
 
 // Return the integer "less than" point (i.e. the one further from zero if
 // "point" is negative.
 // <group>
-inline Int ifloor(Float point) {
+inline int ifloor(float point) {
   if (point >= 0.0)
-    return Int(point);
+    return int(point);
   else
-    return Int(point - 1.0);
+    return int(point - 1.0);
 }
-inline Int ifloor(Double point) {
+inline int ifloor(double point) {
   if (point >= 0.0)
-    return Int(point);
+    return int(point);
   else
-    return Int(point - 1.0);
+    return int(point - 1.0);
 }
 // </group>
 
 //  Functions to get the max or min of two numbers.
 // <group>
-inline Int max(Int a, Int b) {
+inline int max(int a, int b) {
   if (a > b)
     return a;
   else
     return b;
 }
-inline Int min(Int a, Int b) {
+inline int min(int a, int b) {
   if (a > b)
     return b;
   else
     return a;
 }
-
-inline uInt max(uInt a, uInt b) {
+inline unsigned int max(unsigned int a, unsigned int b) {
   if (a > b)
     return a;
   else
     return b;
 }
-inline uInt min(uInt a, uInt b) {
-  if (a > b)
-    return b;
-  else
-    return a;
-}
-
-inline uInt64 max(uInt64 a, uInt64 b) {
-  if (a > b)
-    return a;
-  else
-    return b;
-}
-inline uInt64 min(uInt64 a, uInt64 b) {
+inline unsigned int min(unsigned int a, unsigned int b) {
   if (a > b)
     return b;
   else
     return a;
 }
 
-inline Double max(Double a, Double b) {
+inline uint64_t max(uint64_t a, uint64_t b) {
   if (a > b)
     return a;
   else
     return b;
 }
-inline Double min(Double a, Double b) {
-  if (a > b)
-    return b;
-  else
-    return a;
-}
-inline Double max(Double a, Float b) {
-  if (a > b)
-    return a;
-  else
-    return b;
-}
-inline Double min(Double a, Float b) {
-  if (a > b)
-    return b;
-  else
-    return a;
-}
-inline Double max(Float a, Double b) {
-  if (a > b)
-    return a;
-  else
-    return b;
-}
-inline Double min(Float a, Double b) {
+inline uint64_t min(uint64_t a, uint64_t b) {
   if (a > b)
     return b;
   else
     return a;
 }
 
-inline Float max(Float a, Float b) {
+inline double max(double a, double b) {
   if (a > b)
     return a;
   else
     return b;
 }
-inline Float min(Float a, Float b) {
+inline double min(double a, double b) {
+  if (a > b)
+    return b;
+  else
+    return a;
+}
+inline double max(double a, float b) {
+  if (a > b)
+    return a;
+  else
+    return b;
+}
+inline double min(double a, float b) {
+  if (a > b)
+    return b;
+  else
+    return a;
+}
+inline double max(float a, double b) {
+  if (a > b)
+    return a;
+  else
+    return b;
+}
+inline double min(float a, double b) {
+  if (a > b)
+    return b;
+  else
+    return a;
+}
+
+inline float max(float a, float b) {
+  if (a > b)
+    return a;
+  else
+    return b;
+}
+inline float min(float a, float b) {
   if (a > b)
     return b;
   else
@@ -252,26 +251,26 @@ inline Float min(Float a, Float b) {
 
 // Return the square of a value.
 // <group>
-inline Int square(Int val) { return val * val; }
-inline Int64 square(Int64 val) { return val * val; }
-inline Float square(Float val) { return val * val; }
-inline Double square(Double val) { return val * val; }
+inline int square(int val) { return val * val; }
+inline int64_t square(int64_t val) { return val * val; }
+inline float square(float val) { return val * val; }
+inline double square(double val) { return val * val; }
 // </group>
 
 // Return the cube of a value.
 // <group>
-inline Int cube(Int val) { return val * val * val; }
-inline Int64 cube(Int64 val) { return val * val * val; }
-inline Float cube(Float val) { return val * val * val; }
-inline Double cube(Double val) { return val * val * val; }
+inline int cube(int val) { return val * val * val; }
+inline int64_t cube(int64_t val) { return val * val * val; }
+inline float cube(float val) { return val * val * val; }
+inline double cube(double val) { return val * val * val; }
 // </group>
 
 // Return the sign of a value.
 // <group>
-inline Int sign(Int val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
-inline Int64 sign(Int64 val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
-inline Float sign(Float val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
-inline Double sign(Double val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
+inline int sign(int val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
+inline int64_t sign(int64_t val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
+inline float sign(float val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
+inline double sign(double val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
 // </group>
 
 // Return the floor modulo as used by Python (unlike C); divisor sign is used.
@@ -279,23 +278,23 @@ inline Double sign(Double val) { return val < 0 ? -1 : (val > 0 ? 1 : 0); }
 // In Python:   5%3=2  -5%3=1   5%-3=-1  -5%-3=-2
 // In C:        5%3=2  -5%3=-2  5%-3=2   -5%-3=-2
 // <group>
-inline Int floormod(Int x, Int y) {
-  Int r = x % y;
+inline int floormod(int x, int y) {
+  int r = x % y;
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
-inline Int64 floormod(Int64 x, Int64 y) {
-  Int64 r = x % y;
+inline int64_t floormod(int64_t x, int64_t y) {
+  int64_t r = x % y;
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
-inline Float floormod(Float x, Float y) {
-  Float r = fmod(x, y);
+inline float floormod(float x, float y) {
+  float r = fmod(x, y);
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
-inline Double floormod(Double x, Double y) {
-  Double r = fmod(x, y);
+inline double floormod(double x, double y) {
+  double r = fmod(x, y);
   if (r != 0 && (x < 0) != (y < 0)) r += y;
   return r;
 }
@@ -306,24 +305,26 @@ inline Double floormod(Double x, Double y) {
 // If tol <= 0, returns val1 == val2. If either val is 0.0, take care of area
 // around the minimum number that can be represented.
 // <group>
-bool near(uInt val1, uInt val2, Double tol = 1.0e-5);
-bool near(Int val1, Int val2, Double tol = 1.0e-5);
-bool near(Float val1, Float val2, Double tol = 1.0e-5);
-bool near(Float val1, Double val2, Double tol = 1.0e-5);
-bool near(Double val1, Float val2, Double tol = 1.0e-5);
-bool near(Double val1, Double val2, Double tol = 1.0e-13);
+bool near(unsigned int val1, unsigned int val2, double tol = 1.0e-5);
+bool near(int val1, int val2, double tol = 1.0e-5);
+bool near(float val1, float val2, double tol = 1.0e-5);
+bool near(float val1, double val2, double tol = 1.0e-5);
+bool near(double val1, float val2, double tol = 1.0e-5);
+bool near(double val1, double val2, double tol = 1.0e-13);
 // </group>
 
 // The "allNear" versions are aliases for the normal "near" versions. They
 // exist to make template functions that work for both arrays and scalars
 // easier to write. These functions should be moved to ArrayMath.h
 // <group>
-inline bool allNear(uInt val1, uInt val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline bool allNear(Int val1, Int val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline bool allNear(Float val1, Double val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline bool allNear(Double val1, Float val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline bool allNear(Float val1, Float val2, Double tol = 1.0e-5) { return near(val1, val2, tol); }
-inline bool allNear(Double val1, Double val2, Double tol = 1.0e-13) {
+inline bool allNear(unsigned int val1, unsigned int val2, double tol = 1.0e-5) {
+  return near(val1, val2, tol);
+}
+inline bool allNear(int val1, int val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(float val1, double val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(double val1, float val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(float val1, float val2, double tol = 1.0e-5) { return near(val1, val2, tol); }
+inline bool allNear(double val1, double val2, double tol = 1.0e-13) {
   return near(val1, val2, tol);
 }
 // </group>
@@ -331,30 +332,32 @@ inline bool allNear(Double val1, Double val2, Double tol = 1.0e-13) {
 // Functions to return whether a value is "absolutely" near another. Returns
 // <src> tol > abs(val2 - val1)</src>
 // <group>
-bool nearAbs(uInt val1, uInt val2, Double tol = 1.0e-5);
-bool nearAbs(Int val1, Int val2, Double tol = 1.0e-5);
-bool nearAbs(Float val1, Float val2, Double tol = 1.0e-5);
-bool nearAbs(Float val1, Double val2, Double tol = 1.0e-5);
-bool nearAbs(Double val1, Float val2, Double tol = 1.0e-5);
-bool nearAbs(Double val1, Double val2, Double tol = 1.0e-13);
+bool nearAbs(unsigned int val1, unsigned int val2, double tol = 1.0e-5);
+bool nearAbs(int val1, int val2, double tol = 1.0e-5);
+bool nearAbs(float val1, float val2, double tol = 1.0e-5);
+bool nearAbs(float val1, double val2, double tol = 1.0e-5);
+bool nearAbs(double val1, float val2, double tol = 1.0e-5);
+bool nearAbs(double val1, double val2, double tol = 1.0e-13);
 // </group>
 
 // The "allNearAbs" versions are aliases for the normal "nearAbs"
 // versions. They exist to make template functions that work for both arrays
 // and scalars easier to write. These functions should be in ArrayMath.h
 // <group>
-inline bool allNearAbs(uInt val1, uInt val2, uInt tol = 1) { return nearAbs(val1, val2, tol); }
-inline bool allNearAbs(Int val1, Int val2, Int tol = 1) { return nearAbs(val1, val2, tol); }
-inline bool allNearAbs(Float val1, Float val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(unsigned int val1, unsigned int val2, unsigned int tol = 1) {
   return nearAbs(val1, val2, tol);
 }
-inline bool allNearAbs(Float val1, Double val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(int val1, int val2, int tol = 1) { return nearAbs(val1, val2, tol); }
+inline bool allNearAbs(float val1, float val2, double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline bool allNearAbs(Double val1, Float val2, Double tol = 1.0e-5) {
+inline bool allNearAbs(float val1, double val2, double tol = 1.0e-5) {
   return nearAbs(val1, val2, tol);
 }
-inline bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13) {
+inline bool allNearAbs(double val1, float val2, double tol = 1.0e-5) {
+  return nearAbs(val1, val2, tol);
+}
+inline bool allNearAbs(double val1, double val2, double tol = 1.0e-13) {
   return nearAbs(val1, val2, tol);
 }
 // </group>
@@ -362,14 +365,14 @@ inline bool allNearAbs(Double val1, Double val2, Double tol = 1.0e-13) {
 // Functions to test if a floating point number is finite.
 // It is if it is NaN nor infinity.
 // <group>
-inline bool isFinite(const Float& val) {
+inline bool isFinite(const float& val) {
 #if defined(AIPS_DARWIN)
   return std::isfinite(val);
 #else
   return finite(val);
 #endif
 }
-inline bool isFinite(const Double& val) {
+inline bool isFinite(const double& val) {
 #if defined(AIPS_DARWIN)
   return std::isfinite(val);
 #else
@@ -382,11 +385,11 @@ inline bool isFinite(const Double& val) {
 // Macro examining the bit pattern (for portability and efficiency). The
 // Double version invokes the IEEE function isnan found in ieeefp.h or math.h
 // <group>
-inline bool isNaN(const Float& val) {
-  return (((*(Int*)&(val) & 0x7f800000) == 0x7f800000) &&
-          ((*(Int*)&(val) & 0x007fffff) != 0x00000000));
+inline bool isNaN(const float& val) {
+  return (((*(int*)&(val) & 0x7f800000) == 0x7f800000) &&
+          ((*(int*)&(val) & 0x007fffff) != 0x00000000));
 }
-inline bool isNaN(Double val) { return (std::isnan(val)); }
+inline bool isNaN(double val) { return (std::isnan(val)); }
 // </group>
 
 // Round a number to <src>ndigit</src> significant digits, usually used
@@ -397,31 +400,31 @@ inline bool isNaN(Double val) { return (std::isnan(val)); }
 // if <src>A > 10^F</src>, otherwise N+1 digits.
 // <br>For the default 2.5, a value of 32157 is rounded to 32000,
 // while 22157 is rounded to 22200.
-Double roundDouble(Double val, Double ndigit = 2.5);
+double roundDouble(double val, double ndigit = 2.5);
 
 // Functions that return IEEE NaN's. The specific NaN returned has all bits
 // set. This is 'quiet' NaN, and because the sign bit is set it may be
 // considered a negative number (but NaN's are not numbers!).
 // <group>
-Float floatNaN();
-Double doubleNaN();
-void setNaN(Float& val);
-void setNaN(Double& val);
+float floatNaN();
+double doubleNaN();
+void setNaN(float& val);
+void setNaN(double& val);
 // </group>
 
 // Functions to test for IEEE Infinity's. Should work for positive or negative
 // infinity.
 // <group>
-bool isInf(Float val);
-bool isInf(Double val);
+bool isInf(float val);
+bool isInf(double val);
 // </group>
 
 // Functions that return an IEEE Infinity,  (positive infinity).
 // <group>
-Float floatInf();
-Double doubleInf();
-void setInf(Float& val);
-void setInf(Double& val);
+float floatInf();
+double doubleInf();
+void setInf(float& val);
+void setInf(double& val);
 // </group>
 // </group>
 

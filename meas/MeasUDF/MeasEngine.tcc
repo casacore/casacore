@@ -81,7 +81,7 @@ void MeasEngine<M>::handleMeasArray(const TENShPtr& operand) {
     const Record& measAttr = operand->attributes().subRecord("MEASINFO");
     String type = measAttr.asString("type");
     String ref = measAttr.asString("Ref");
-    Int valueType = measAttr.asInt("ValueType");
+    int valueType = measAttr.asInt("ValueType");
     // Check if type matches.
     if (type != M::showMe()) {
       throw AipsError(M::showMe() + " value expected in a MEAS function, found " + type);
@@ -129,7 +129,7 @@ void MeasEngine<M>::handleMeasArray(const TENShPtr& operand) {
       // Get and check the node's refType if it is fixed.
       typename M::Types nodeRefType = M::N_Types;
       if (!(measTmp.measDesc().isRefCodeVariable() || measTmp.measDesc().hasOffset())) {
-        uInt refCode = measTmp.measDesc().getRefCode();
+        unsigned int refCode = measTmp.measDesc().getRefCode();
         nodeRefType = static_cast<typename M::Types>(refCode);
         if (itsRefType != M::N_Types && nodeRefType != itsRefType) {
           throw AipsError("MEAS " + std::string(M::showMe()) + " reference type " +
@@ -182,7 +182,7 @@ void MeasEngine<M>::handleConstant(const TENShPtr& operand) {
 }
 
 template <typename M>
-Record MeasEngine<M>::makeAttributes(typename M::Types refType, Int valueType) const {
+Record MeasEngine<M>::makeAttributes(typename M::Types refType, int valueType) const {
   // This is the opposite of testing attributes in handleMeasArray above.
   Record srec;
   srec.define("type", M::showMe());

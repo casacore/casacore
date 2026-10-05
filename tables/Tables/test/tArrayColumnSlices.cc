@@ -48,7 +48,7 @@ void createTab() {
   ArrayColumn<float> arr1(tab, "arr1");
   Array<float> arrf(IPosition(2, 20, 30));
   indgen(arrf);
-  for (uInt i = 0; i < 10; i++) {
+  for (unsigned int i = 0; i < 10; i++) {
     arr1.put(i, arrf);
     arrf += (float)(arrf.nelements());
   }
@@ -60,14 +60,14 @@ void readCellSlices() {
   {
     // No axes, thus all entire axes.
     Vector<Vector<Slice>> slices;
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       AlwaysAssertExit(allEQ(arr1(i), arr1.getSlice(i, slices)));
     }
   }
   {
     // Empty axes, thus entire axes.
     Vector<Vector<Slice>> slices(2);
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       AlwaysAssertExit(allEQ(arr1(i), arr1.getSlice(i, slices)));
     }
   }
@@ -81,7 +81,7 @@ void readCellSlices() {
     slices[1][0] = Slice(0, 10);
     slices[1][1] = Slice(10, 4);
     slices[1][2] = Slice(14, 16);
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       cout << "get row " << i << endl;
       AlwaysAssertExit(allEQ(arr1(i), arr1.getSlice(i, slices)));
     }
@@ -96,7 +96,7 @@ void readCellSlices() {
     slices[1][0] = Slice(1, 3, 3);
     slices[1][1] = Slice(10, 2, 3);
     slices[1][2] = Slice(16, 1);
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       cout << "get row " << i << endl;
       AlwaysAssertExit(allEQ(
           arr1.getSlice(i, Slicer(IPosition(2, 2, 1), IPosition(2, 8, 6), IPosition(2, 2, 3))),
@@ -142,7 +142,7 @@ void writeCellSlices() {
     slices[1][0] = Slice(1, 3, 3);
     slices[1][1] = Slice(10, 2, 3);
     slices[1][2] = Slice(16, 1);
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       cout << "put row " << i << endl;
       Array<float> arr = float(1) + arr1.getSlice(i, Slicer(IPosition(2, 2, 1), IPosition(2, 8, 6),
                                                             IPosition(2, 2, 3)));

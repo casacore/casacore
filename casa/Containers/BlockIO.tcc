@@ -34,36 +34,36 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-void putBlock(AipsIO& ios, const Block<T>& blk, Int nr) {
+void putBlock(AipsIO& ios, const Block<T>& blk, int nr) {
   if (nr < 0) {
     nr = 0;
-  } else if (nr > Int(blk.nelements())) {
+  } else if (nr > int(blk.nelements())) {
     nr = blk.nelements();
   }
   ios.putstart("Block", 1);
-  putAipsIO(ios, (uInt)nr, blk.storage());
+  putAipsIO(ios, (unsigned int)nr, blk.storage());
   ios.putend();
 }
 
 template <class T>
 void getBlock(AipsIO& ios, Block<T>& blk) {
   ios.getstart("Block");
-  uInt nr;
+  unsigned int nr;
   ios >> nr;
   blk.resize(nr, true);
-  getAipsIO(ios, (uInt)nr, blk.storage());
+  getAipsIO(ios, (unsigned int)nr, blk.storage());
   ios.getend();
 }
 
 template <class T>
-void showBlock(ostream& ios, const Block<T>& blk, Int nr) {
+void showBlock(ostream& ios, const Block<T>& blk, int nr) {
   if (nr < 0) {
     nr = 0;
-  } else if (nr > Int(blk.nelements())) {
+  } else if (nr > int(blk.nelements())) {
     nr = blk.nelements();
   }
   ios << "[";
-  for (Int i = 0; i < nr; i++) {
+  for (int i = 0; i < nr; i++) {
     if (i > 0) {
       ios << ", ";
     }

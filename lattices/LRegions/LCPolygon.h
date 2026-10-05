@@ -109,8 +109,8 @@ class LCPolygon : public LCRegionFixed {
   // <br>LCPolygon can be used for an N-dimensional lattice by making
   // another lattice representing any 2 axes from the original lattice.
   // <group>
-  LCPolygon(const Vector<Float>& x, const Vector<Float>& y, const IPosition& latticeShape);
-  LCPolygon(const Vector<Double>& x, const Vector<Double>& y, const IPosition& latticeShape);
+  LCPolygon(const Vector<float>& x, const Vector<float>& y, const IPosition& latticeShape);
+  LCPolygon(const Vector<double>& x, const Vector<double>& y, const IPosition& latticeShape);
   // </group>
 
   // Copy constructor (reference semantics).
@@ -125,10 +125,10 @@ class LCPolygon : public LCRegionFixed {
   LCRegion* cloneRegion() const override;
 
   // Get the X-values.
-  const Vector<Float>& x() const;
+  const Vector<float>& x() const;
 
   // Get the Y-values.
-  const Vector<Float>& y() const;
+  const Vector<float>& y() const;
 
   // Get the class name (to store in the record).
   static String className();
@@ -149,7 +149,7 @@ class LCPolygon : public LCRegionFixed {
   // Construct another LCPolygon (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:
@@ -160,29 +160,29 @@ class LCPolygon : public LCRegionFixed {
   void defineMask();
 
   // Fill the mask from the given points.
-  void fillMask(bool* mask, Int nx, Int ny, Int blcx, Int blcy, const Float* ptrX,
-                const Float* ptrY, uInt nrline);
+  void fillMask(bool* mask, int nx, int ny, int blcx, int blcy, const float* ptrX,
+                const float* ptrY, unsigned int nrline);
 
   // Truncate a start value to a pixel point.
   // A pixel point is taken if near the value, otherwise floor(value+1).
   // The returned value is never < 0.
-  Int truncateStart(Float v);
+  int truncateStart(float v);
 
   // Truncate an end value to a pixel point.
   // A pixel point is taken if near the value, otherwise floor(value).
   // The returned value is never > maxEnd.
-  Int truncateEnd(Float v, Int maxEnd);
+  int truncateEnd(float v, int maxEnd);
 
   // takes into account when one value is zero and the other is absolutely (as
   // opposed to relatively) near zero.
-  static bool _isNear(Float val1, Float val2);
+  static bool _isNear(float val1, float val2);
 
-  Vector<Float> itsX;
-  Vector<Float> itsY;
+  Vector<float> itsX;
+  Vector<float> itsY;
 };
 
-inline const Vector<Float>& LCPolygon::x() const { return itsX; }
-inline const Vector<Float>& LCPolygon::y() const { return itsY; }
+inline const Vector<float>& LCPolygon::x() const { return itsX; }
+inline const Vector<float>& LCPolygon::y() const { return itsY; }
 
 }  // namespace casacore
 

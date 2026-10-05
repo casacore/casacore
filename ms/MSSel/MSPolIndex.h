@@ -87,11 +87,11 @@ class MSPolarizationIndex {
 
   // Look up POLARIZATION_ID's for a given set of polarization correlation
   // types and receptor cross-products
-  Vector<Int> matchCorrTypeAndProduct(const Vector<Int>& corrType, const Matrix<Int>& corrProduct);
+  Vector<int> matchCorrTypeAndProduct(const Vector<int>& corrType, const Matrix<int>& corrProduct);
   // ///////////////////  Add for MS selection //////////////////////////////
   // Only Look up POLARIZATION_ID's for a given set of polarization correlation
   // types
-  Vector<Int> matchCorrType(const Vector<Int>& corrType, bool exactMatch = true);
+  Vector<int> matchCorrType(const Vector<int>& corrType, bool exactMatch = true);
 
  private:
   // Disallow null constructor
@@ -101,8 +101,8 @@ class MSPolarizationIndex {
   MSPolarizationColumns msPolarizationCols_p;
 
   // Vector cache of polarization id's
-  Vector<Int> polarizationIds_p;
-  Int nrows_p;
+  Vector<int> polarizationIds_p;
+  int nrows_p;
 };
 
 }  // namespace casacore

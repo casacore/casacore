@@ -102,7 +102,8 @@ class ImageBeamSet {
 
   // Create an ImageBeamSet of the specified shape with all
   // GaussianBeams initialized to <src>beam</src>.
-  ImageBeamSet(uInt nchan, uInt nstokes, const GaussianBeam& beam = GaussianBeam::NULL_BEAM);
+  ImageBeamSet(unsigned int nchan, unsigned int nstokes,
+               const GaussianBeam& beam = GaussianBeam::NULL_BEAM);
 
   // The copy constructor (reference semantics).
   ImageBeamSet(const ImageBeamSet& other);
@@ -124,8 +125,8 @@ class ImageBeamSet {
 
   // Get the number of elements in the beam array.
   // <group>
-  uInt nelements() const { return _beams.size(); }
-  uInt size() const { return _beams.size(); }
+  unsigned int nelements() const { return _beams.size(); }
+  unsigned int size() const { return _beams.size(); }
   // </group>
 
   bool hasSingleBeam() const { return _beams.size() == 1; }
@@ -142,11 +143,11 @@ class ImageBeamSet {
 
   // Get the number of channels in the beam array. Note that this will
   // always return a minimum of 1, even if nchan was specified as 0 on construction.
-  uInt nchan() const { return _beams.shape()[0]; }
+  unsigned int nchan() const { return _beams.shape()[0]; }
 
   // Get the number of stokes in the beam array. Note that this will always
   // return a minimum of 1, even if nstokes was specified as 0 on construction.
-  uInt nstokes() const { return _beams.shape()[1]; }
+  unsigned int nstokes() const { return _beams.shape()[1]; }
 
   // Get the single global beam. If there are multiple beams,
   // an exception is thrown.
@@ -156,8 +157,8 @@ class ImageBeamSet {
   // Note that a single channel or stokes in the beam set is valid for
   // all channels cq. stokes.
   // <group>
-  const GaussianBeam& getBeam(Int chan, Int stokes) const;
-  const GaussianBeam& operator()(Int chan, Int stokes) const { return getBeam(chan, stokes); }
+  const GaussianBeam& getBeam(int chan, int stokes) const;
+  const GaussianBeam& operator()(int chan, int stokes) const { return getBeam(chan, stokes); }
   // </group>
 
   // Get a beam at the given 2-dim IPosition. It should match exactly,
@@ -170,11 +171,11 @@ class ImageBeamSet {
   // If <src>chan</src> or <src>stokes</src> is negative, then the beam applies
   // to all channels or stokes, respectively. If both are negative, the specified
   // beam becomes the global beam and the beam set is resized to (1, 1).
-  void setBeam(Int chan, Int stokes, const GaussianBeam& beam);
+  void setBeam(int chan, int stokes, const GaussianBeam& beam);
 
   // Resize the beam array. <src>nchan</src>=0 or <src>nstokes</src>=0
   // is silently changed to 1.
-  void resize(uInt nchan, uInt nstokes);
+  void resize(unsigned int nchan, unsigned int nstokes);
 
   // Return a subset of the beam array.
   // The slicer is usually the slicer used for a subimage.
@@ -219,11 +220,11 @@ class ImageBeamSet {
   // the specified value of <src>stokes</src> is valid and if not, an exception
   // is thrown.
   // <group>
-  const GaussianBeam& getMinAreaBeamForPol(IPosition& pos, uInt stokes) const;
+  const GaussianBeam& getMinAreaBeamForPol(IPosition& pos, unsigned int stokes) const;
 
-  const GaussianBeam& getMaxAreaBeamForPol(IPosition& pos, uInt stokes) const;
+  const GaussianBeam& getMaxAreaBeamForPol(IPosition& pos, unsigned int stokes) const;
 
-  const GaussianBeam& getMedianAreaBeamForPol(IPosition& pos, uInt stokes) const;
+  const GaussianBeam& getMedianAreaBeamForPol(IPosition& pos, unsigned int stokes) const;
   // </group>
 
   static const String& className();
@@ -259,7 +260,7 @@ class ImageBeamSet {
   static const String _DEFAULT_AREA_UNIT;
 
   Matrix<GaussianBeam> _beams;
-  Matrix<Double> _areas;
+  Matrix<double> _areas;
   String _areaUnit;
   GaussianBeam _minBeam, _maxBeam;
   IPosition _minBeamPos, _maxBeamPos;
@@ -271,9 +272,10 @@ class ImageBeamSet {
                     const IPosition& location2, bool overwriteMaxMin);
 
   // Show the spectral info.
-  static void _chanInfoToStream(ostream& os, const SpectralCoordinate* spCoord, const uInt chan,
-                                const uInt chanWidth, const uInt freqPrec, const uInt velWidth,
-                                const uInt velPrec);
+  static void _chanInfoToStream(ostream& os, const SpectralCoordinate* spCoord,
+                                const unsigned int chan, const unsigned int chanWidth,
+                                const unsigned int freqPrec, const unsigned int velWidth,
+                                const unsigned int velPrec);
 
   // Show the beam info.
   static void _beamToStream(ostream& os, const GaussianBeam& beam, const Unit& unit);

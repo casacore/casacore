@@ -35,8 +35,8 @@ namespace casacore {
 class StatisticsAlgorithmFactoryData {
  public:
   struct BiweightData {
-    Int maxIter;
-    Double c;
+    int maxIter;
+    double c;
   };
 
   StatisticsAlgorithmFactoryData() = delete;
@@ -51,8 +51,8 @@ class StatisticsAlgorithmFactoryData {
   };
 
   struct ChauvenetData {
-    Double zScore;
-    Int maxIter;
+    double zScore;
+    int maxIter;
   };
 
   ~StatisticsAlgorithmFactoryData() {};

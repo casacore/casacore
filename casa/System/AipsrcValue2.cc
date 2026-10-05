@@ -34,8 +34,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Instantiate extern templates for often used types.
 template class AipsrcValue<bool>;
-template class AipsrcValue<Int>;
-template class AipsrcValue<Double>;
+template class AipsrcValue<int>;
+template class AipsrcValue<double>;
 template class AipsrcValue<String>;
 
 template <>

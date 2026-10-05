@@ -35,11 +35,11 @@ int main() {
   try {
     // Test parameter setting and recovery
 
-    for (Int i = 0; i < Projection::N_PROJ; i++) {
-      uInt nP = Projection::nParameters(Projection::Type(i));
-      Vector<Double> pars(nP);
-      for (uInt j = 0; j < nP; j++) {
-        pars(j) = Double(j);
+    for (int i = 0; i < Projection::N_PROJ; i++) {
+      unsigned int nP = Projection::nParameters(Projection::Type(i));
+      Vector<double> pars(nP);
+      for (unsigned int j = 0; j < nP; j++) {
+        pars(j) = double(j);
       }
       Projection::Type type = (Projection::Type)i;
       Projection proj(type, pars);
@@ -87,7 +87,7 @@ int main() {
 
     // Test near function
 
-    Vector<Double> pars(2);
+    Vector<double> pars(2);
     pars(0) = 0.1;
     pars(1) = 0.2;
     {

@@ -69,7 +69,7 @@ SubImage<T>::SubImage(const ImageInterface<T>& image, const LattRegionHolder& re
       image, region.toLatticeRegion(image.coordinates(), image.shape()), axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
   //
-  Vector<Float> blc, inc;
+  Vector<float> blc, inc;
   convertIPosition(blc, slicer.start());
   convertIPosition(inc, slicer.stride());
   //
@@ -87,7 +87,7 @@ SubImage<T>::SubImage(ImageInterface<T>& image, const LattRegionHolder& region,
                         writableIfPossible, axesSpec);
   const Slicer& slicer = itsSubLatPtr->getRegionPtr()->slicer();
   //
-  Vector<Float> blc, inc;
+  Vector<float> blc, inc;
   convertIPosition(blc, slicer.start());
   convertIPosition(inc, slicer.stride());
   //
@@ -103,7 +103,7 @@ SubImage<T>::SubImage(const ImageInterface<T>& image, const Slicer& slicer, Axes
   itsSubLatPtr = new SubLattice<T>(image, slicer, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
   //
-  Vector<Float> blc, inc;
+  Vector<float> blc, inc;
   convertIPosition(blc, refslicer.start());
   convertIPosition(inc, refslicer.stride());
   CoordinateSystem subCoords(image.coordinates().subImage(blc, inc, refslicer.length().asVector()));
@@ -118,7 +118,7 @@ SubImage<T>::SubImage(ImageInterface<T>& image, const Slicer& slicer, bool writa
   itsSubLatPtr = new SubLattice<T>(image, slicer, writableIfPossible, axesSpec);
   const Slicer& refslicer = itsSubLatPtr->getRegionPtr()->slicer();
   //
-  Vector<Float> blc, inc;
+  Vector<float> blc, inc;
   convertIPosition(blc, refslicer.start());
   convertIPosition(inc, refslicer.stride());
   CoordinateSystem subCoords(image.coordinates().subImage(blc, inc, refslicer.length().asVector()));
@@ -189,12 +189,12 @@ void SubImage<T>::setCoords(const CoordinateSystem& coords, bool preserveAxesOrd
     setCoordsMember(coords);
   } else {
     const IPosition& map = axesMap.getToNew();
-    const uInt naxes = map.nelements();
-    Vector<Double> pixels(naxes), world(naxes);
+    const unsigned int naxes = map.nelements();
+    Vector<double> pixels(naxes), world(naxes);
     pixels = 0;
     coords.toWorld(world, pixels);
     CoordinateSystem crd(coords);
-    for (Int i = naxes; i > 0;) {
+    for (int i = naxes; i > 0;) {
       i--;
       if (map(i) < 0) {
         crd.removeWorldAxis(i, world(i));
@@ -264,7 +264,7 @@ IPosition SubImage<T>::shape() const {
 }
 
 template <class T>
-uInt SubImage<T>::ndim() const {
+unsigned int SubImage<T>::ndim() const {
   return itsSubLatPtr->ndim();
 }
 
@@ -305,12 +305,12 @@ bool SubImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
 }
 
 template <class T>
-uInt SubImage<T>::advisedMaxPixels() const {
+unsigned int SubImage<T>::advisedMaxPixels() const {
   return itsSubLatPtr->advisedMaxPixels();
 }
 
 template <class T>
-IPosition SubImage<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition SubImage<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return itsSubLatPtr->niceCursorShape(maxPixels);
 }
 
@@ -336,7 +336,7 @@ LatticeIterInterface<T>* SubImage<T>::makeIter(const LatticeNavigator& navigator
 }
 
 template <class T>
-bool SubImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool SubImage<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsSubLatPtr->lock(type, nattempts);
 }
 template <class T>
@@ -369,9 +369,9 @@ void SubImage<T>::reopen() {
 }
 
 template <class T>
-void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const {
+void SubImage<T>::convertIPosition(Vector<float>& x, const IPosition& pos) const {
   x.resize(pos.nelements());
-  for (uInt i = 0; i < x.nelements(); i++) x[i] = Float(pos(i));
+  for (unsigned int i = 0; i < x.nelements(); i++) x[i] = float(pos(i));
 }
 
 }  // namespace casacore

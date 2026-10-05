@@ -103,15 +103,15 @@ class FuncExpression {
   // Get the executable program
   const vector<FuncExprData::ExprOperator> &getCode() const;
   // Get the number of parameters in executable program
-  uInt getNpar() const { return npar_p; }
+  unsigned int getNpar() const { return npar_p; }
   // Get the number of dimensions of executable program
-  uInt getNdim() const { return ndim_p; }
+  unsigned int getNdim() const { return ndim_p; }
   // Get reference to the compiled program
   const vector<FuncExprData::ExprOperator> &getCode() { return code_p; }
   // Get reference to compiled constants
-  const vector<Double> &getConst() { return const_p; }
+  const vector<double> &getConst() { return const_p; }
   // Execute the program
-  bool exec(Double &res) const;
+  bool exec(double &res) const;
   // Print the stack information (mainly for debugging)
   void print(ostream &os) const;
 
@@ -128,13 +128,13 @@ class FuncExpression {
   // The current state of the compilation
   FuncExprData::ExprCompState state_p;
   // The current constant stack
-  vector<Double> const_p;
+  vector<double> const_p;
   // The number of parameters in code
-  uInt npar_p;
+  unsigned int npar_p;
   // The number of dimensions of expression
-  uInt ndim_p;
+  unsigned int ndim_p;
   // Executing stack
-  mutable vector<Double> exec_p;
+  mutable vector<double> exec_p;
 
   // # Member functions
   //  Compile a statement (in prg, which will be adjusted)
@@ -146,7 +146,7 @@ class FuncExpression {
   // Save an operation on compilation RP stack.
   bool setOp(FuncExprData::ExprOperator &oper);
   // Save a value on constant stack.
-  bool setVal(const Double &val);
+  bool setVal(const double &val);
   // Save an executable code
   bool setCode(const FuncExprData::ExprOperator &oper);
   // Initialise the state

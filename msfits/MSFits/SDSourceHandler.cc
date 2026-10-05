@@ -135,7 +135,7 @@ void SDSourceHandler::resetRow(const Record &row) {
   initRow(dummyHandled, row);
 }
 
-void SDSourceHandler::fill(const Record &row, Int spectralWindowId) {
+void SDSourceHandler::fill(const Record &row, int spectralWindowId) {
   // don't bother unless there is something there
   if (msSource_p) {
     if (object_p.isAttached()) {
@@ -148,7 +148,7 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId) {
     } else {
       *codeKey_p = "";
     }
-    uInt rownr = 0;
+    unsigned int rownr = 0;
     Vector<rownr_t> foundRows = index_p->getRowNumbers();
     bool rowFound, sourceFound;
     rowFound = sourceFound = false;
@@ -161,15 +161,15 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId) {
       transition += ", ";
       transition += *molecule_p;
     }
-    Double restfreq = 0.0;
+    double restfreq = 0.0;
     if (restfreq_p >= 0) restfreq = row.asDouble(restfreq_p);
-    Double sysvel = 0.0;
+    double sysvel = 0.0;
     if (vframe_p >= 0) {
       sysvel = row.asDouble(vframe_p);
     }
     if (foundRows.nelements() > 0) {
       // we have at least 1 candidate, look for a matching spectral window ID
-      uInt whichOne = 0;
+      unsigned int whichOne = 0;
       while (!rowFound && whichOne < foundRows.nelements()) {
         // A source ID probably matches if TIME, INTERVAL, DIRECTION, POSITION, PROPER_MOTION,
         // SYSVEL, and PULSAR_ID match
@@ -271,10 +271,10 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId) {
         msSourceCols_p->transition().put(rownr, Vector<String>(1, transition));
       }
       if (hasRestFreq_p) {
-        msSourceCols_p->restFrequency().put(rownr, Vector<Double>(1, restfreq));
+        msSourceCols_p->restFrequency().put(rownr, Vector<double>(1, restfreq));
       }
       if (hasSysVel_p) {
-        msSourceCols_p->sysvel().put(rownr, Vector<Double>(1, sysvel));
+        msSourceCols_p->sysvel().put(rownr, Vector<double>(1, sysvel));
       }
       if (hasPosition_p) {
         msSourceCols_p->position().put(rownr, *positionField_p);
@@ -293,12 +293,12 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId) {
       if (directionField_p.isAttached()) {
         msSourceCols_p->direction().put(rownr, *directionField_p);
       } else {
-        msSourceCols_p->direction().put(rownr, Vector<Double>(2, 0.0));
+        msSourceCols_p->direction().put(rownr, Vector<double>(2, 0.0));
       }
       if (properMotionField_p.isAttached()) {
         msSourceCols_p->properMotion().put(rownr, *properMotionField_p);
       } else {
-        msSourceCols_p->properMotion().put(rownr, Vector<Double>(2, 0.0));
+        msSourceCols_p->properMotion().put(rownr, Vector<double>(2, 0.0));
       }
       if (pulsarIdField_p.isAttached()) {
         if (*pulsarIdField_p >= 0) {
@@ -382,7 +382,7 @@ void SDSourceHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, con
     hasPosition_p = true;
   }
   // and add these columns in, if there any
-  for (uInt i = 0; i < td.ncolumn(); i++) {
+  for (unsigned int i = 0; i < td.ncolumn(); i++) {
     msSource_p->addColumn(td[i], "StandardStMan", false);
   }
 
@@ -411,7 +411,7 @@ void SDSourceHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   vframe_p = row.fieldNumber("VFRAME");
   if (vframe_p >= 0) handledCols(vframe_p) = true;
 
-  Int tmp = row.fieldNumber("TRANSITI");
+  int tmp = row.fieldNumber("TRANSITI");
   if (tmp >= 0) {
     transiti_p.attachToRecord(row, tmp);
     handledCols(tmp) = true;

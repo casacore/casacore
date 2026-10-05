@@ -35,9 +35,9 @@ String MSSSpwErrorHandler::constructMessage() {
   if (messageList.size() > 0) {
     Mesg << messageList[0];
     if (tokenList.size() > 0)
-      for (uInt i = 0; i < tokenList.size(); i++) Mesg << tokenList[i] << " ";
+      for (unsigned int i = 0; i < tokenList.size(); i++) Mesg << tokenList[i] << " ";
     else
-      for (uInt i = 1; i < messageList.size(); i++) Mesg << std::endl << messageList[i];
+      for (unsigned int i = 1; i < messageList.size(); i++) Mesg << std::endl << messageList[i];
   }
   String casaMesg(Mesg.str());
   return casaMesg;

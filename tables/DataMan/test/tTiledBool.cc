@@ -63,15 +63,15 @@ void writeTable(const TSMOption& tsmOpt, const IPosition& arrayShape, const IPos
   ArrayColumn<bool> flag(table, "Flag");
   Matrix<bool> farray(arrayShape);
   Matrix<bool> fresult(arrayShape);
-  for (uInt i = 0; i < 101; i++) {
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+  for (unsigned int i = 0; i < 101; i++) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     table.addRow();
     flag.put(i, farray);
   }
-  for (uInt i = 0; i < table.nrow(); i++) {
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+  for (unsigned int i = 0; i < table.nrow(); i++) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     flag.get(i, fresult);
@@ -86,10 +86,10 @@ void readTable(const TSMOption& tsmOpt) {
   Table table("tTiledBool_tmp.data", Table::Old, tsmOpt);
   cout << "Checking " << table.nrow() << " rows" << endl;
   ArrayColumn<bool> flag(table, "Flag");
-  for (uInt i = 0; i < table.nrow(); i++) {
+  for (unsigned int i = 0; i < table.nrow(); i++) {
     flag.get(i, fresult);
     farray.resize(fresult.shape());
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     if (!allEQ(farray, fresult)) {

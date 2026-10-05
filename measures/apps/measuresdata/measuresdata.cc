@@ -124,22 +124,22 @@ struct columnDescr;
 struct formatDescr;
 
 // Routines
-Int last_mjd(const Table *tab);
-Double today_mjd();
-Double today_now();
-Double double_data(const String &in);
-String date_string(Double date);
-String version_string(Double vs, uInt w = 9, uInt p = 4);
-Double vsdate_mjd(const Table *tab);
+int last_mjd(const Table *tab);
+double today_mjd();
+double today_now();
+double double_data(const String &in);
+String date_string(double date);
+String version_string(double vs, unsigned int w = 9, unsigned int p = 4);
+double vsdate_mjd(const Table *tab);
 String get_version(const Table *tab);
-Double dget_version(const Table *tab);
-Double dget_tversion(const Table *tab);
-void put_version(Table *tab, Double vs);
+double dget_version(const Table *tab);
+double dget_tversion(const Table *tab);
+void put_version(Table *tab, double vs);
 void put_vsdate(Table *tab);
-Int int_data(const String &in);
+int int_data(const String &in);
 bool split_data(vector<String> &out, const String &in, const Regex &pat = RXwhite);
 Table *openr_table(const String &tnam);
-bool close_table(const String &tnam, Table *&tab, Double vsup = 0, bool timup = true,
+bool close_table(const String &tnam, Table *&tab, double vsup = 0, bool timup = true,
                  bool timshow = true);
 bool IERSeop(tableProperties &tprop, inputValues &inVal);
 bool IERSpred(tableProperties &tprop, inputValues &inVal);
@@ -166,18 +166,18 @@ struct inputValues {
   String in;              // Input file name (e.g. ./tai.in)
   bool refresh;           // Refresh, even if not necesaary for this file
   bool renew;             // Force renew complete table, rather than an update
-  Block<Int> derange;     // Range of DE table years.
+  Block<int> derange;     // Range of DE table years.
   String ofile;           // Name of output link file
-  uInt x__n;              // Current pointer in list of processes
+  unsigned int x__n;      // Current pointer in list of processes
   bool x__rep;            // Repeating
   bool x__fn;             // Should be a filename given
-  vector<Double> x__val;  // Parameter values
+  vector<double> x__val;  // Parameter values
   // Derived data
   bool testOnly;         // Test if to be updated/renewed
   vector<String> types;  // List of all types to do (e.g. TAI_UTC IERSeop97)
   String intype;         // Given intype (e.g. al)
   String fulltype;       // Given proper input type (e.g. ALL)
-  Double lastmjd;        // Current last mjd
+  double lastmjd;        // Current last mjd
   bool noup;             // Skip update
   bool forcedel;         // Force delete
   bool end;              // End of cyle
@@ -191,12 +191,12 @@ const inputValues defVal = {
     "-",                // Name of input file (or - if unknown)
     false,              // Force refresh
     false,              // Force renew
-    Block<Int>(2),      // DE table range
+    Block<int>(2),      // DE table range
     "measuresdata.rc",  // Output rc file
     0,                  // Current pointer in list of processes
     false,              // Repeating
     false,              // Should be a filename given
-    vector<Double>(),   // Parameter values
+    vector<double>(),   // Parameter values
     // Derived
     true,              // Test if to be updated/renewed
     vector<String>(),  // All types to do
@@ -251,10 +251,10 @@ struct columnDescr {
     CTAD,       // Double array
     N_ColTypes  // Number of types
   };
-  String colName;    // Name of column
-  String unit;       // Units in column
-  ColTypes colType;  // Column type
-  uInt colId;        // Number input column
+  String colName;      // Name of column
+  String unit;         // Units in column
+  ColTypes colType;    // Column type
+  unsigned int colId;  // Number input column
 };
 
 // TAI_UTC
@@ -325,11 +325,11 @@ const columnDescr DE405Col[] = {{"MJD", "d", columnDescr::CTD, 0},
 // Table properties
 struct tableProperties {
   String type;       // Table type (e.g. TAI_UTC)
-  Double version;    // Double version of table
-  Double updper;     // Minimum update period in days
+  double version;    // Double version of table
+  double updper;     // Minimum update period in days
   bool renew;        // Always renew, not update this table (normally false)
-  Double MJD0;       // Start MJD of table
-  Double dMJD;       // Increment MJD in table
+  double MJD0;       // Start MJD of table
+  double dMJD;       // Increment MJD in table
   String tnam;       // Table name (e.g. geodetic/TAI_UTC)
   String connectAs;  // Connection protocol (ftp or html)
   String protoc;     // Data protocol (ascii)
@@ -337,7 +337,7 @@ struct tableProperties {
   const columnDescr *cdesc;                        // Column descriptions
   TableDesc *td;                                   // Table descriptor
   vector<String> colnames;                         // Column names
-  vector<uInt> colids;                             // Input column id
+  vector<unsigned int> colids;                     // Input column id
   vector<TableColumn *> columns;                   // Table columns for access
   String title;                                    // Long title
   String contents;                                 // Contents indicator; e.g. leapSecond
@@ -389,7 +389,7 @@ const tableProperties allProperties[] = {
      TAI_UTCCol,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "TAI_UTC difference obtained from USNO",
      "leapSecond",
@@ -415,7 +415,7 @@ const tableProperties allProperties[] = {
      IERSeop97Col,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "IERS EOPC04_20 Earth Orientation Data from IERS",
      "eop97",
@@ -441,7 +441,7 @@ const tableProperties allProperties[] = {
      IERSeop2000Col,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "IERS EOP2000C04_20 Earth Orientation Data IAU2000",
      "eop2000",
@@ -467,7 +467,7 @@ const tableProperties allProperties[] = {
      IERSpredictCol,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "IERS Earth Orientation Data predicted from NEOS",
      "predict",
@@ -493,7 +493,7 @@ const tableProperties allProperties[] = {
      IERSpredict2000Col,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "IERS EOP2000C04_05 Earth Orientation Data IAU2000",
      "predict2000",
@@ -519,7 +519,7 @@ const tableProperties allProperties[] = {
      IGRFCol,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "IGRF12 reference magnetic field",
      "earthField",
@@ -545,7 +545,7 @@ const tableProperties allProperties[] = {
      DE200Col,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "JPL Planetary ephemeris DE200",
      "DE200",
@@ -571,7 +571,7 @@ const tableProperties allProperties[] = {
      DE405Col,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "JPL Planetary ephemeris DE405",
      "DE405",
@@ -597,7 +597,7 @@ const tableProperties allProperties[] = {
      DE405Col,
      0,
      vector<String>(),
-     vector<uInt>(),
+     vector<unsigned int>(),
      vector<TableColumn *>(),
      "",
      "",
@@ -619,7 +619,7 @@ map<String, tableProperties> properties;
 
 // Check existence of and fill properties
 void fillProperty(vector<String> &field, const String &in) {
-  for (uInt i = 0;; ++i) {  // Check if properties exist
+  for (unsigned int i = 0;; ++i) {  // Check if properties exist
     if (allProperties[i].type.empty()) break;
     if (allProperties[i].type == in) {
       properties[in] = allProperties[i];
@@ -631,20 +631,20 @@ void fillProperty(vector<String> &field, const String &in) {
 // Expand multiple fields and fill properties and types
 void expandTypes(vector<String> &field, const String &in) {
   vector<String> tmp;
-  for (uInt i = 0;; ++i) {
+  for (unsigned int i = 0;; ++i) {
     if (intypes[i][0].empty()) break;
     if (intypes[i][0] == in && !split_data(tmp, intypes[i][1])) tmp.resize(0);
   };
   if ((!tmp.empty() && tmp.size() == 1 && tmp[0] == in) || tmp.empty())
     fillProperty(field, in);
   else
-    for (uInt j = 0; j < tmp.size(); ++j) expandTypes(field, tmp[j]);
+    for (unsigned int j = 0; j < tmp.size(); ++j) expandTypes(field, tmp[j]);
 }
 
 // Create type related lists and maps
 void makeMaps() {
   // Multiple types
-  for (uInt i = 0;; ++i) {
+  for (unsigned int i = 0;; ++i) {
     vector<String> field;
     if (intypes[i][0].empty()) break;
     types.push_back(intypes[i][0]);
@@ -656,24 +656,24 @@ void makeMaps() {
 // Create table properties
 void makeProperties() {
   // Create Table descriptor
-  for (uInt i = 0;; ++i) {
+  for (unsigned int i = 0;; ++i) {
     if (allProperties[i].type.empty()) break;
     properties[allProperties[i].type].td = new TableDesc(allProperties[i].type, TableDesc::Scratch);
-    for (uInt j = 0;; ++j) {
+    for (unsigned int j = 0;; ++j) {
       if (allProperties[i].cdesc[j].colName.empty()) break;
       properties[allProperties[i].type].colnames.push_back(allProperties[i].cdesc[j].colName);
       properties[allProperties[i].type].colids.push_back(allProperties[i].cdesc[j].colId);
       BaseColumnDesc *tcd = 0;
       switch (allProperties[i].cdesc[j].colType) {
         case columnDescr::CTD:
-          tcd = new ScalarColumnDesc<Double>(allProperties[i].cdesc[j].colName, "",
+          tcd = new ScalarColumnDesc<double>(allProperties[i].cdesc[j].colName, "",
                                              "IncrementalStMan", "IncrementalStMan");
           if (!allProperties[i].cdesc[j].unit.empty()) {
             tcd->rwKeywordSet().define("UNIT", allProperties[i].cdesc[j].unit);
           };
           break;
         case columnDescr::CTI:
-          tcd = new ScalarColumnDesc<Int>(allProperties[i].cdesc[j].colName, "", "IncrementalStMan",
+          tcd = new ScalarColumnDesc<int>(allProperties[i].cdesc[j].colName, "", "IncrementalStMan",
                                           "IncrementalStMan");
           if (!allProperties[i].cdesc[j].unit.empty()) {
             tcd->rwKeywordSet().define("UNIT", allProperties[i].cdesc[j].unit);
@@ -687,7 +687,7 @@ void makeProperties() {
           };
           break;
         case columnDescr::CTAD:
-          tcd = new ArrayColumnDesc<Double>(allProperties[i].cdesc[j].colName, "",
+          tcd = new ArrayColumnDesc<double>(allProperties[i].cdesc[j].colName, "",
                                             "IncrementalStMan", "IncrementalStMan", 1);
           if (!allProperties[i].cdesc[j].unit.empty()) {
             tcd->rwKeywordSet().define("UNIT", allProperties[i].cdesc[j].unit);
@@ -704,14 +704,14 @@ void makeProperties() {
   };
 
   // Create format descriptors
-  for (uInt i = 0;; ++i) {
+  for (unsigned int i = 0;; ++i) {
     if (allProperties[i].type.empty()) break;      // End of list
     if (!allProperties[i].formatString) continue;  // No format given
     // Split the long format
     vector<String> tmp;
     if (!split_data(tmp, *allProperties[i].formatString)) tmp.resize(0);
-    uInt off(0);
-    for (uInt j = 0; j < tmp.size(); ++j) {
+    unsigned int off(0);
+    for (unsigned int j = 0; j < tmp.size(); ++j) {
       formatDescr fd = {formatDescr::X, off, 0};
       if (upcase(tmp[j]) == "X")
         fd.n = 1;
@@ -738,7 +738,7 @@ void makeProperties() {
   };
 
   // Create info vector
-  for (uInt i = 0;; ++i) {
+  for (unsigned int i = 0;; ++i) {
     if (allProperties[i].type.empty()) break;     // End of list
     if (allProperties[i].info.empty()) continue;  // No info given
     // Split the info fields
@@ -750,7 +750,7 @@ void makeProperties() {
 
 // Remove columns
 void rmColumns(Table *, tableProperties &tprop) {
-  for (uInt j = 0; j < tprop.columns.size(); ++j) {
+  for (unsigned int j = 0; j < tprop.columns.size(); ++j) {
     delete tprop.columns[j];
     tprop.columns[j] = 0;
   };
@@ -760,19 +760,19 @@ void rmColumns(Table *, tableProperties &tprop) {
 // Create columns
 void createColumns(Table *tab, tableProperties &tprop) {
   rmColumns(tab, tprop);
-  for (uInt j = 0; j < tprop.colnames.size(); ++j) {
+  for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
     switch (tprop.cdesc[j].colType) {
       case columnDescr::CTD:
-        tprop.columns.push_back(new ScalarColumn<Double>(*tab, tprop.colnames[j]));
+        tprop.columns.push_back(new ScalarColumn<double>(*tab, tprop.colnames[j]));
         break;
       case columnDescr::CTI:
-        tprop.columns.push_back(new ScalarColumn<Int>(*tab, tprop.colnames[j]));
+        tprop.columns.push_back(new ScalarColumn<int>(*tab, tprop.colnames[j]));
         break;
       case columnDescr::CTS:
         tprop.columns.push_back(new ScalarColumn<String>(*tab, tprop.colnames[j]));
         break;
       case columnDescr::CTAD:
-        tprop.columns.push_back(new ArrayColumn<Double>(*tab, tprop.colnames[j]));
+        tprop.columns.push_back(new ArrayColumn<double>(*tab, tprop.colnames[j]));
         break;
       default:
         throw(AipsError("Program error: undefined column type used"));
@@ -789,8 +789,8 @@ void createColumns(Table *tab, tableProperties &tprop) {
 String minimaxNC(const String &in, const vector<String> &tname) {
   String a;
   String b;
-  uInt N_name(tname.size());
-  uInt i(0);
+  unsigned int N_name(tname.size());
+  unsigned int i(0);
   a = upcase(in);
   // Exact fit?
   for (i = 0; i < N_name; i++)
@@ -804,7 +804,7 @@ String minimaxNC(const String &in, const vector<String> &tname) {
       ib = ia < ib ? ia : ib;
       b = upcase(tname[i]);
       if (ia == ib && a.substr(0, ib) == b.substr(0, ib)) {
-        uInt j;
+        unsigned int j;
         // Look for more partials
         for (j = i + 1; j < N_name; j++) {
           ib = tname[j].length();
@@ -824,34 +824,34 @@ String minimaxNC(const String &in, const vector<String> &tname) {
 
 String boolToString(bool yn) { return (yn ? String("y") : String("n")); }
 
-String uIntToString(uInt yn) {
+String uIntToString(unsigned int yn) {
   String out;
   ostringstream sout(out);
   sout << yn;
   return sout.str();
 }
 
-String blockIntToString(Block<Int> yn) {
+String blockIntToString(Block<int> yn) {
   String out;
-  for (uInt i = 0; i < yn.nelements(); ++i) {
+  for (unsigned int i = 0; i < yn.nelements(); ++i) {
     if (i > 0) out += ",";
-    out += uIntToString(uInt(yn[i]));
+    out += uIntToString(static_cast<unsigned int>(yn[i]));
   };
   return out;
 }
 
-uInt StringToUInt(String s) {
-  uInt out;
+unsigned int StringToUInt(String s) {
+  unsigned int out;
   istringstream ss(s);
   ss >> out;
   return out;
 }
 
 // Get today's MJD
-Double today_mjd() { return (floor(today_now())); }
+double today_mjd() { return (floor(today_now())); }
 
 // Get now as MJD
-Double today_now() {
+double today_now() {
   Quantity qdat;
   if (!Quantity::read(qdat, "today")) {
     throw(AipsError("Problems obtaining current time"));
@@ -860,12 +860,12 @@ Double today_now() {
 }
 
 // Get string from date
-String date_string(Double date) {
+String date_string(double date) {
   return (MVTime(date).string((MVTime::formatTypes)(MVTime::YMD | MVTime::CLEAN), 4));
 }
 
 // Get version string
-String version_string(Double vs, uInt w, uInt p) {
+String version_string(double vs, unsigned int w, unsigned int p) {
   String out;
   ostringstream sout(out);
   sout.setf(ios::fixed, ios::floatfield);
@@ -876,35 +876,35 @@ String version_string(Double vs, uInt w, uInt p) {
 // Split line (at pattern) into vector of strings.
 bool split_data(vector<String> &out, const String &in, const Regex &pat) {
   out.resize(0);
-  const Int maxn = 100;
+  const int maxn = 100;
   String sout[maxn];
-  Int N = split(in, sout, maxn, pat);
-  for (Int i = 0; i < N; ++i)
+  int N = split(in, sout, maxn, pat);
+  for (int i = 0; i < N; ++i)
     if (!sout[i].empty()) out.push_back(sout[i]);
   if (out.size() == 0 || N == maxn) return false;
   return true;
 }
 
 // Make Double from string
-Double double_data(const String &in) {
+double double_data(const String &in) {
   Regex tst(RXdouble);
-  Double x;
-  Int mlen;
+  double x;
+  int mlen;
   if (tst.find(in.c_str(), in.size(), mlen) == String::npos)
     x = 0;
   else {
     String tmp(in);
-    if (Int(tmp.size()) > mlen && (tmp[mlen] == 'D' || tmp[mlen] == 'd')) tmp[mlen] = 'e';
+    if (int(tmp.size()) > mlen && (tmp[mlen] == 'D' || tmp[mlen] == 'd')) tmp[mlen] = 'e';
     istringstream(tmp) >> x;
   };
   return x;
 }
 
 // Make Int from string
-Int int_data(const String &in) {
+int int_data(const String &in) {
   Regex tst(RXint);
-  Int x;
-  Int mlen;
+  int x;
+  int mlen;
   if (tst.find(in.c_str(), in.size(), mlen) == String::npos)
     x = 0;
   else
@@ -942,7 +942,7 @@ bool testu_table(const tableProperties &tprop, inputValues &inVal) {
         inVal.forcedel = true;
         inVal.noup = false;
       } else if (String(inVal.type, 0, 2) == String("DE")) {
-        Int uyr = MVTime(inVal.lastmjd).year();
+        int uyr = MVTime(inVal.lastmjd).year();
         if (uyr < inVal.derange[1]) {
           // this only guarantees there will be /some/ data from derange[1]
           // but it looks like the DE ascii files finish in December of
@@ -986,7 +986,7 @@ Table *openr_table(const String &tnam) {
 // title is description; type is short name
 Table *create_table(const inputValues &inVal, tableProperties &tprop) {
   // Test existence and renewal
-  Double vs = 1.0;
+  double vs = 1.0;
   if (testr_table(tprop.tnam)) {
     if (inVal.forcedel || !Table::isWritable(tprop.tnam)) {
       Table t(tprop.tnam);
@@ -1022,10 +1022,10 @@ Table *create_table(const inputValues &inVal, tableProperties &tprop) {
 // Close table tab (with name tnam) and update version (if vsup>0);
 // the version date (if timup true);
 // and show the table time statistics (if timshow true).
-bool close_table(const String &tnam, Table *&tab, Double vsup, bool timup, bool timshow) {
-  Double vs = dget_version(tab);
-  uInt n = tab->nrow();
-  Int tim(0);
+bool close_table(const String &tnam, Table *&tab, double vsup, bool timup, bool timshow) {
+  double vs = dget_version(tab);
+  unsigned int n = tab->nrow();
+  int tim(0);
   if (timshow) tim = last_mjd(tab);
   if (vsup > 0) {
     vs += vsup;
@@ -1046,19 +1046,19 @@ bool close_table(const String &tnam, Table *&tab, Double vsup, bool timup, bool 
 
 //*************************************************************************//
 // Get last MJD in table
-Int last_mjd(const Table *tab) {
-  uInt n = tab->nrow();
-  Double mjd;
+int last_mjd(const Table *tab) {
+  unsigned int n = tab->nrow();
+  double mjd;
   if (n < 1)
     mjd = 0;
   else
-    ScalarColumn<Double>(*tab, "MJD").get(n - 1, mjd);
-  return Int(mjd);
+    ScalarColumn<double>(*tab, "MJD").get(n - 1, mjd);
+  return int(mjd);
 }
 
 //*************************************************************************//
 // Obtain VS_DATE from table
-Double vsdate_mjd(const Table *tab) {
+double vsdate_mjd(const Table *tab) {
   String dat;
   tab->keywordSet().get(String("VS_DATE"), dat);
   Quantity qdat;
@@ -1083,11 +1083,11 @@ String get_version(const Table *tab) {
   return vs;
 }
 
-Double dget_version(const Table *tab) { return double_data(get_version(tab)); }
+double dget_version(const Table *tab) { return double_data(get_version(tab)); }
 
 //*************************************************************************//
 // Put VS_VERSION in table
-void put_version(Table *tab, Double vs) {
+void put_version(Table *tab, double vs) {
   tab->rwKeywordSet().define("VS_VERSION", version_string(vs));
 }
 
@@ -1103,11 +1103,11 @@ String get_tversion(const Table *tab) {
 }
 
 //*************************************************************************//
-Double dget_tversion(const Table *tab) { return double_data(get_tversion(tab)); }
+double dget_tversion(const Table *tab) { return double_data(get_tversion(tab)); }
 
 //*************************************************************************//
 // Put TAB_VERSION in table
-void put_tversion(Table *tab, Double vs) {
+void put_tversion(Table *tab, double vs) {
   tab->rwKeywordSet().define("TAB_VERSION", version_string(vs));
 }
 
@@ -1163,7 +1163,7 @@ bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
           << " derange=" << blockIntToString(inVal.derange) << " x__n=" << inVal.x__n
           << " x__fn=" << boolToString(true) << " x__rep=" << boolToString(inVal.x__rep)
           << " x__val=";
-    for (uInt i = 0; i < inVal.x__val.size(); ++i) {
+    for (unsigned int i = 0; i < inVal.x__val.size(); ++i) {
       if (i) ofile << ",";
       ///      ofile << version_string(inVal.x__val[i], 15, 6);
       ofile << setfill('0') << setprecision(6) << inVal.x__val[i];
@@ -1193,7 +1193,7 @@ bool TAI_UTC(tableProperties &tprop, inputValues &inVal) {
   // Split data lines into fields
   vector<vector<String>> fields;
   vector<String> field;
-  for (uInt i = 0; i < lines.size(); ++i) {
+  for (unsigned int i = 0; i < lines.size(); ++i) {
     if (split_data(field, lines[i])) fields.push_back(field);
   };
 
@@ -1203,12 +1203,12 @@ bool TAI_UTC(tableProperties &tprop, inputValues &inVal) {
   };
 
   // Create table fields
-  vector<vector<Double>> allcol;
-  for (uInt j = 0; j < tprop.colnames.size(); ++j) {
-    allcol.push_back(vector<Double>());
+  vector<vector<double>> allcol;
+  for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
+    allcol.push_back(vector<double>());
   };
-  for (uInt i = 0; i < fields.size(); ++i) {
-    for (uInt j = 0; j < tprop.colnames.size(); ++j) {
+  for (unsigned int i = 0; i < fields.size(); ++i) {
+    for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
       allcol[j].push_back(double_data(fields[i][tprop.colids[j]]));
     };
     allcol[0][i] -= 2400000.5;
@@ -1225,8 +1225,8 @@ bool TAI_UTC(tableProperties &tprop, inputValues &inVal) {
   // Fill data
   tab->addRow((allcol[0].size() - tab->nrow()));
   createColumns(tab, tprop);
-  for (uInt i = 0; i < allcol[0].size(); ++i) {
-    for (uInt j = 0; j < tprop.columns.size(); ++j) {
+  for (unsigned int i = 0; i < allcol[0].size(); ++i) {
+    for (unsigned int j = 0; j < tprop.columns.size(); ++j) {
       tprop.columns[j]->putScalar(i, allcol[j][i]);
     };
   };
@@ -1258,7 +1258,7 @@ bool IERSeop(tableProperties &tprop, inputValues &inVal) {
   ;
   ;
   // Determine what to read next
-  Double ml = max(Double(inVal.lastmjd), tprop.MJD0);
+  double ml = max(double(inVal.lastmjd), tprop.MJD0);
 
   // Check if in present and to be used
   if (inVal.testOnly || !inVal.x__fn || tprop.fileAddress[2] != inVal.in) return true;
@@ -1270,29 +1270,29 @@ bool IERSeop(tableProperties &tprop, inputValues &inVal) {
   // Split data lines into fields
   vector<vector<String>> fields;
   vector<String> field;
-  for (uInt i = 0; i < lines.size(); ++i) {
+  for (unsigned int i = 0; i < lines.size(); ++i) {
     if (split_data(field, lines[i])) fields.push_back(field);
   };
 
   // Check format file
-  uInt j = fields.size();
+  unsigned int j = fields.size();
   while (j >= 20 && fields[j - 1].size() < 2) --j;  // Strip trailing lines
 
-  uInt ncol = *max_element(tprop.colids.begin(), tprop.colids.end()) + 1;
+  unsigned int ncol = *max_element(tprop.colids.begin(), tprop.colids.end()) + 1;
 
   if (fields.size() < 20 || fields[j - 2].size() != ncol) {
     throw(AipsError("Incorrect input file for " + tprop.tnam));
   };
 
   // Create table fields
-  vector<vector<Double>> allcol;
-  for (uInt j = 0; j < tprop.colnames.size(); ++j) {
-    allcol.push_back(vector<Double>());
+  vector<vector<double>> allcol;
+  for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
+    allcol.push_back(vector<double>());
   };
-  for (uInt i = 0; i < fields.size(); ++i) {
+  for (unsigned int i = 0; i < fields.size(); ++i) {
     if (fields[i].size() != 0 and fields[i][0] == '#') continue;
     if (fields[i].size() == ncol) {
-      for (uInt j = 0; j < tprop.colnames.size(); ++j) {
+      for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
         allcol[j].push_back(double_data(fields[i][tprop.colids[j]]));
       };
     };
@@ -1303,12 +1303,12 @@ bool IERSeop(tableProperties &tprop, inputValues &inVal) {
 
   // Fill table
   if (allcol[0].back() - ml > 0) {
-    tab->addRow(Int(allcol[0].back() - ml));
+    tab->addRow(int(allcol[0].back() - ml));
     createColumns(tab, tprop);
-    for (uInt i = 0; i < allcol[0].size(); ++i) {
+    for (unsigned int i = 0; i < allcol[0].size(); ++i) {
       if (allcol[0][i] > ml) {
-        uInt k = Int(allcol[0][i] - tprop.MJD0 - 1);
-        for (uInt j = 0; j < tprop.columns.size(); ++j) {
+        unsigned int k = int(allcol[0][i] - tprop.MJD0 - 1);
+        for (unsigned int j = 0; j < tprop.columns.size(); ++j) {
           tprop.columns[j]->putScalar(k, allcol[j][i]);
         };
       };
@@ -1350,10 +1350,10 @@ bool IERSpred(tableProperties &tprop, inputValues &inVal) {
   // Split data lines into fields
   vector<vector<String>> fields;
   vector<String> field;
-  for (uInt i = 0; i < lines.size(); ++i) {
+  for (unsigned int i = 0; i < lines.size(); ++i) {
     if (lines[i].size() >= tprop.fdesc.back().start + tprop.fdesc.back().n) {
       field.resize(0);
-      for (uInt j = 0; j < tprop.fdesc.size(); ++j) {
+      for (unsigned int j = 0; j < tprop.fdesc.size(); ++j) {
         if (tprop.fdesc[j].start < lines[i].size())
           field.push_back(lines[i].substr(tprop.fdesc[j].start, tprop.fdesc[j].n));
         else
@@ -1364,12 +1364,12 @@ bool IERSpred(tableProperties &tprop, inputValues &inVal) {
   };
 
   // Create table fields
-  vector<vector<Double>> allcol;
-  for (uInt j = 0; j < tprop.colnames.size(); ++j) {
-    allcol.push_back(vector<Double>());
+  vector<vector<double>> allcol;
+  for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
+    allcol.push_back(vector<double>());
   };
-  for (uInt i = 0; i < fields.size(); ++i) {
-    for (uInt j = 0; j < tprop.colnames.size(); ++j) {
+  for (unsigned int i = 0; i < fields.size(); ++i) {
+    for (unsigned int j = 0; j < tprop.colnames.size(); ++j) {
       allcol[j].push_back(double_data(fields[i][tprop.colids[j]]));
     };
     allcol[7][i] /= 1000.0;  // Make s
@@ -1387,14 +1387,14 @@ bool IERSpred(tableProperties &tprop, inputValues &inVal) {
   tab->keywordSet().get("MJD0", tprop.MJD0);
   if (tprop.MJD0 <= 0) tprop.MJD0 = allcol[0][0] - 1;
   tab->rwKeywordSet().define("MJD0", tprop.MJD0);
-  Double ml = max(Double(inVal.lastmjd), tprop.MJD0);
+  double ml = max(double(inVal.lastmjd), tprop.MJD0);
   if (allcol[0].back() - ml > 0) {
-    tab->addRow(Int(allcol[0].back() - ml));
+    tab->addRow(int(allcol[0].back() - ml));
     createColumns(tab, tprop);
-    for (uInt i = 0; i < allcol[0].size(); ++i) {
+    for (unsigned int i = 0; i < allcol[0].size(); ++i) {
       if (allcol[0][i] > ml) {
-        uInt k = Int(allcol[0][i] - tprop.MJD0 - 1);
-        for (uInt j = 0; j < tprop.columns.size(); ++j) {
+        unsigned int k = int(allcol[0][i] - tprop.MJD0 - 1);
+        for (unsigned int j = 0; j < tprop.columns.size(); ++j) {
           tprop.columns[j]->putScalar(k, allcol[j][i]);
         };
       };
@@ -1426,12 +1426,12 @@ bool IGRF(tableProperties &tprop, inputValues &inVal) {
   // Split data lines into fields
   vector<vector<String>> fields;
   vector<String> field;
-  uInt expsize = tprop.fdesc.back().start + tprop.fdesc.back().n;  // Size
-  for (uInt i = 0; i < lines.size(); ++i) {
+  unsigned int expsize = tprop.fdesc.back().start + tprop.fdesc.back().n;  // Size
+  for (unsigned int i = 0; i < lines.size(); ++i) {
     if (lines[i].size() > 180) {
       if (lines[i].size() < expsize) lines[i].resize(expsize, ' ');
       field.resize(0);
-      for (uInt j = 0; j < tprop.fdesc.size(); ++j) {
+      for (unsigned int j = 0; j < tprop.fdesc.size(); ++j) {
         field.push_back(lines[i].substr(tprop.fdesc[j].start, tprop.fdesc[j].n));
       };
       fields.push_back(field);
@@ -1439,15 +1439,15 @@ bool IGRF(tableProperties &tprop, inputValues &inVal) {
   };
 
   // Create table fields
-  vector<vector<Double>> allcol;
-  uInt n(0);  // Number of coefficients
-  uInt m(0);
-  for (uInt i = 0; i < fields.size(); ++i) {
+  vector<vector<double>> allcol;
+  unsigned int n(0);  // Number of coefficients
+  unsigned int m(0);
+  for (unsigned int i = 0; i < fields.size(); ++i) {
     if (int_data(fields[i][1]) > 0) {  // Found field
       n = int_data(fields[i][1]);
       m = int_data(fields[i][2]);
-      vector<Double> coldat;
-      for (uInt j = 3; j < tprop.fdesc.size(); ++j) {
+      vector<double> coldat;
+      for (unsigned int j = 3; j < tprop.fdesc.size(); ++j) {
         coldat.push_back(double_data(fields[i][j]));
       };
       allcol.push_back(coldat);
@@ -1468,22 +1468,22 @@ bool IGRF(tableProperties &tprop, inputValues &inVal) {
   // Fill table
   tab->addRow((allcol[0].size() - tab->nrow() - 1));
   createColumns(tab, tprop);
-  for (uInt i = 0; i < allcol[0].size() - 1; ++i) {
+  for (unsigned int i = 0; i < allcol[0].size() - 1; ++i) {
     tprop.columns[0]->putScalar(i, (tprop.MJD0 + 5 * (i + 1) * 365.25));
-    vector<Double> col;
-    for (uInt j = 0; j < allcol.size(); ++j) col.push_back(allcol[j][i]);
-    Vector<Double> Vcol(col);
-    static_cast<ArrayColumn<Double> *>(tprop.columns[1])->put(i, Vcol);
+    vector<double> col;
+    for (unsigned int j = 0; j < allcol.size(); ++j) col.push_back(allcol[j][i]);
+    Vector<double> Vcol(col);
+    static_cast<ArrayColumn<double> *>(tprop.columns[1])->put(i, Vcol);
     col.resize(0);
     if (i == allcol[0].size() - 2) {
-      for (uInt j = 0; j < allcol.size(); ++j) col.push_back(allcol[j][i + 1]);
+      for (unsigned int j = 0; j < allcol.size(); ++j) col.push_back(allcol[j][i + 1]);
     } else {
-      for (uInt j = 0; j < allcol.size(); ++j) {
+      for (unsigned int j = 0; j < allcol.size(); ++j) {
         col.push_back(((allcol[j][i + 1] - allcol[j][i]) / 5));
       };
     };
-    Vcol = Vector<Double>(col);
-    static_cast<ArrayColumn<Double> *>(tprop.columns[2])->put(i, Vcol);
+    Vcol = Vector<double>(col);
+    static_cast<ArrayColumn<double> *>(tprop.columns[2])->put(i, Vcol);
   };
   rmColumns(tab, tprop);
 
@@ -1497,14 +1497,14 @@ bool IGRF(tableProperties &tprop, inputValues &inVal) {
 //*************************************************************************//
 
 // Fill JPL planetary tables
-const uInt DE_FN_INC = 20;  // DE ascii files are for 20 year intervals
+const unsigned int DE_FN_INC = 20;  // DE ascii files are for 20 year intervals
 bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   /// cout << "--- JPL tables cannot be created yet ----" << endl;;;
   /// return true;;;
   // Test if to update
   if (testu_table(tprop, inVal) && inVal.noup) return true;
 
-  Int uyr = 0;  // value will be set from data file name
+  int uyr = 0;  // value will be set from data file name
   // Check if header present
   Path hpath(tprop.vinfo[0]);
   if (hpath.isValid() && File(hpath).exists() && File(hpath).isReadable()) {
@@ -1512,7 +1512,7 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
       // "in" is the header file
       // (first time after header retreival)
       tprop.fileAddress[2] = tprop.vinfo[1];
-      Int de_syear = Int(inVal.derange[0]) / DE_FN_INC * DE_FN_INC;
+      int de_syear = int(inVal.derange[0]) / DE_FN_INC * DE_FN_INC;
       tprop.fileAddress[2].replace(4, 4, uIntToString(de_syear));
       return true;
     } else {
@@ -1532,7 +1532,7 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   };
 
   // Dates
-  Int stdat = Int(MVTime(uyr, 1, 1).day());
+  int stdat = int(MVTime(uyr, 1, 1).day());
 
   // Check if in present and to be used
   if (inVal.testOnly || !inVal.x__fn) return true;
@@ -1541,27 +1541,27 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   if (!(hpath.isValid() && File(hpath).exists() && File(hpath).isReadable())) {
     throw(AipsError("Cannot obtain the header file " + tprop.vinfo[0]));
   };
-  uInt ksize(0);
-  uInt ncoeff(0);
-  Double stepo(0);
-  uInt incepo(0);
+  unsigned int ksize(0);
+  unsigned int ncoeff(0);
+  double stepo(0);
+  unsigned int incepo(0);
   vector<String> kwnames;
-  vector<Double> kwval;
-  vector<Int> ptt;
-  Vector<Int> pttA;
+  vector<double> kwval;
+  vector<int> ptt;
+  Vector<int> pttA;
   vector<String> hlines;
   read_data(hlines, tprop.vinfo[0], hpath, false);
 
   // Split header lines into fields
   vector<vector<String>> hfields;
   vector<String> field;
-  for (uInt i = 0; i < hlines.size(); ++i) {
+  for (unsigned int i = 0; i < hlines.size(); ++i) {
     if (split_data(field, hlines[i])) hfields.push_back(field);
   };
 
   // Get header info
-  uInt bl = hfields.size();
-  uInt bc(0);
+  unsigned int bl = hfields.size();
+  unsigned int bc(0);
   for (; bc < bl; ++bc) {  // Sizes
     if (hfields[bc].size() > 3 && hfields[bc][0] == "KSIZE=") {
       ksize = int_data(hfields[bc][1]);
@@ -1583,9 +1583,9 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
     if (hfields[bc].size() < 2 || hfields[bc][0] != "GROUP" || hfields[bc][1] != "1040") continue;
     for (++bc; bc < bl; ++bc) {
       if (hfields[bc].size() < 1 || int_data(hfields[bc][0]) == 0) continue;
-      uInt n = int_data(hfields[bc][0]);
+      unsigned int n = int_data(hfields[bc][0]);
       for (++bc; bc < bl; ++bc) {
-        for (uInt j = 0; j < hfields[bc].size() && kwnames.size() < n; ++j) {
+        for (unsigned int j = 0; j < hfields[bc].size() && kwnames.size() < n; ++j) {
           kwnames.push_back(hfields[bc][j]);
         };
         if (kwnames.size() >= n) break;
@@ -1598,10 +1598,10 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
     if (hfields[bc].size() < 2 || hfields[bc][0] != "GROUP" || hfields[bc][1] != "1041") continue;
     for (++bc; bc < bl; ++bc) {
       if (hfields[bc].size() < 1 || int_data(hfields[bc][0]) == 0) continue;
-      uInt n = int_data(hfields[bc][0]);
+      unsigned int n = int_data(hfields[bc][0]);
       if (n != kwnames.size()) throw(AipsError(tprop.vinfo[0] + " format error"));
       for (++bc; bc < bl; ++bc) {
-        for (uInt j = 0; j < hfields[bc].size() && kwval.size() < kwnames.size(); ++j) {
+        for (unsigned int j = 0; j < hfields[bc].size() && kwval.size() < kwnames.size(); ++j) {
           kwval.push_back(double_data(hfields[bc][j]));
         };
         if (kwval.size() >= kwnames.size()) break;
@@ -1614,7 +1614,7 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
     if (hfields[bc].size() < 2 || hfields[bc][0] != "GROUP" || hfields[bc][1] != "1050") continue;
     for (++bc; bc < bl; ++bc) {
       if (hfields[bc].size() < 1 || int_data(hfields[bc][0]) == 0) continue;
-      for (uInt j = 0; j < hfields[bc].size() && j < 13; ++j) {
+      for (unsigned int j = 0; j < hfields[bc].size() && j < 13; ++j) {
         ptt.push_back(int_data(hfields[bc][j]));
       };
       if (ptt.size() >= 3 * 13) break;
@@ -1625,19 +1625,19 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
     throw(AipsError("Illegal header file " + tprop.vinfo[0]));
   };
   pttA.resize(ptt.size());
-  for (uInt i = 0; i < ptt.size(); ++i) pttA[i] = ptt[i];
+  for (unsigned int i = 0; i < ptt.size(); ++i) pttA[i] = ptt[i];
 
   // Read data file
   ifstream infile(Path(inVal.in).absoluteName().c_str());
   vector<String> line;
-  vector<Double> allmjd;
-  vector<vector<Double>> allcol;
+  vector<double> allmjd;
+  vector<vector<double>> allcol;
   while (read_line(line, infile)) {
-    if (line.size() < 2 || int_data(line[1]) != Int(ncoeff)) continue;
-    Double st0 = 0.0;
-    vector<Double> res;
+    if (line.size() < 2 || int_data(line[1]) != int(ncoeff)) continue;
+    double st0 = 0.0;
+    vector<double> res;
     while (read_line(line, infile)) {
-      for (uInt i = 0; i < line.size(); ++i) {
+      for (unsigned int i = 0; i < line.size(); ++i) {
         if (res.size() == 0 && i < 2) {
           if (i == 0) st0 = double_data(line[i]) - 2400000.5;
           continue;
@@ -1665,25 +1665,26 @@ bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   // Fill table
   tab->keywordSet().get("MJD0", tprop.MJD0);
   if (tprop.MJD0 <= 0) {
-    Int istepo(stepo);
+    int istepo(stepo);
     tprop.MJD0 = ((stdat - istepo) / incepo - 1) * incepo + istepo;
   }
   tab->rwKeywordSet().define("MJD0", tprop.MJD0);
   tprop.dMJD = incepo;
   tab->rwKeywordSet().define("dMJD", tprop.dMJD);
-  for (uInt i = 0; i < kwnames.size(); ++i) tab->rwKeywordSet().define(kwnames[i], kwval[i]);
+  for (unsigned int i = 0; i < kwnames.size(); ++i)
+    tab->rwKeywordSet().define(kwnames[i], kwval[i]);
   createColumns(tab, tprop);
   TableColumn tcd = TableColumn(*tab, "x");
   tcd.rwKeywordSet().define("Rows", 3);
   tcd.rwKeywordSet().define("Columns", 13);
   tcd.rwKeywordSet().define("Description", pttA);  ///
   // Data
-  uInt row_nr = tab->nrow();
+  unsigned int row_nr = tab->nrow();
   tab->addRow(allmjd.size());
-  for (uInt i = 0; i < allmjd.size(); ++i) {
+  for (unsigned int i = 0; i < allmjd.size(); ++i) {
     tprop.columns[0]->putScalar(row_nr + i, allmjd[i]);
-    Vector<Double> colA(allcol[i]);
-    static_cast<ArrayColumn<Double> *>(tprop.columns[1])->put(row_nr + i, colA);
+    Vector<double> colA(allcol[i]);
+    static_cast<ArrayColumn<double> *>(tprop.columns[1])->put(row_nr + i, colA);
   };
   rmColumns(tab, tprop);
 
@@ -1766,7 +1767,7 @@ int main(int argc, const char **argv) {
     };
     if (multypes.count(inVal.fulltype)) inVal.types = multypes[inVal.fulltype];
     cout << "The processed type[s]:";
-    for (uInt i = 0; i < inVal.types.size(); ++i) cout << " " << inVal.types[i];
+    for (unsigned int i = 0; i < inVal.types.size(); ++i) cout << " " << inVal.types[i];
     cout << endl;
     inVal.x__n = inputs.getInt("x__n");
     if (!inVal.types.empty() && inVal.x__n >= inVal.types.size()) {
@@ -1849,7 +1850,7 @@ int main(int argc, const char **argv) {
       if (split_data(out, val, Regex("[)]"))) {
         val = out[0];
         if (split_data(out, val, Regex("[,]"))) {
-          for (uInt i = 0; i < out.size(); ++i) {
+          for (unsigned int i = 0; i < out.size(); ++i) {
             inVal.x__val.push_back(double_data(out[i]));
           };
         };
@@ -1857,7 +1858,7 @@ int main(int argc, const char **argv) {
     };
     if (!inputs.getString("param").empty()) {
       cout << "Given parameters: ";
-      for (uInt i = 0; i < inVal.x__val.size(); ++i) {
+      for (unsigned int i = 0; i < inVal.x__val.size(); ++i) {
         if (i) cout << ", ";
         cout << inVal.x__val[i];
       };

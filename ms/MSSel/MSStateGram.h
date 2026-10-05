@@ -68,7 +68,7 @@ class TableExprNode;
 
 // Declare the bison parser (is implemented by bison command).
 int msStateGramParseCommand(const MeasurementSet* ms, const String& command);
-int msStateGramParseCommand(const MeasurementSet* ms, const String& command, Vector<Int>&);
+int msStateGramParseCommand(const MeasurementSet* ms, const String& command, Vector<int>&);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -80,7 +80,7 @@ void msStateGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msStateGramPosition();
+int& msStateGramPosition();
 
 // Declare the input routine for flex/bison.
 int msStateGramInput(char* buf, int max_size);

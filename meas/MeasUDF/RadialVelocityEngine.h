@@ -97,7 +97,7 @@ class RadialVelocityEngine : public MeasEngine<MRadialVelocity> {
   RadialVelocityEngine();
 
   // Get the values.
-  Array<Double> getArrayDouble(const TableExprId& id);
+  Array<double> getArrayDouble(const TableExprId& id);
 
   // Get the radial velocities.
   Array<MRadialVelocity> getRadialVelocities(const TableExprId& id);
@@ -107,7 +107,7 @@ class RadialVelocityEngine : public MeasEngine<MRadialVelocity> {
   // If 'proper' is true, it is tested if a proper radial velocity is given
   // (with proper unit and/or type). If not. false is returned.
   // If 'proper' is false, the value is always considered as radial velocity.
-  void handleRadialVelocity(std::vector<TENShPtr>& args, uInt& argnr);
+  void handleRadialVelocity(std::vector<TENShPtr>& args, unsigned int& argnr);
 
   // Set the MeasConvert object.
   void setConverter(MRadialVelocity::Types toType);

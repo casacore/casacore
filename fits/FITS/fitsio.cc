@@ -56,18 +56,18 @@ FitsTape9Output::~FitsTape9Output() {}
 
 // # Cache used to hold errors from read_header_rec, messages and accompanying error levels
 Block<String> messages_(32);
-Block<Int> errLevels_(32);
-uInt nerrs_ = 0;
+Block<int> errLevels_(32);
+unsigned int nerrs_ = 0;
 //============================================================================================
 // special error handler function used by read_header_rec
 void readHeaderRecErrHandler(const char *errMessage, FITSError::ErrorLevel severity) {
   if (nerrs_ >= messages_.nelements()) {
-    uInt newSize = messages_.nelements() * 2;
+    unsigned int newSize = messages_.nelements() * 2;
     messages_.resize(newSize, true, true);
     errLevels_.resize(newSize, true, true);
   }
   messages_[nerrs_] = String(errMessage);
-  errLevels_[nerrs_] = Int(severity);
+  errLevels_[nerrs_] = int(severity);
   nerrs_++;
 }
 //=============================================================================================
@@ -109,7 +109,8 @@ char *FitsDiskInput::skip(int n) {  // skip n logical records and read
   // move the i/o pointer to the end position of the skipped block.
   // (m_iosize - m_current ) is the bytes of data left within the m_buffer
   // still need to test this part with big fits file.
-  OFF_T bytpost = (m_fptr->Fptr)->bytepos + (m_recsize * uInt(n)) - (m_iosize - m_current);
+  OFF_T bytpost =
+      (m_fptr->Fptr)->bytepos + (m_recsize * static_cast<unsigned int>(n)) - (m_iosize - m_current);
   int l_status = 0;
   ffmbyt(m_fptr, bytpost, REPORT_EOF, &l_status);
   if (l_status) {
@@ -340,7 +341,7 @@ Vector<String> FitsInput::kwlist_str(bool length80) {
       String tmp(
           "                                                                                ");
       //          12345678901234567890123456789012345678901234567890123456789012345678901234567890
-      for (uInt i = 0; i < cards.nelements(); i++) {
+      for (unsigned int i = 0; i < cards.nelements(); i++) {
         String tmp2(tmp);
         tmp2.replace(0, cards(i).length(), cards(i));
         cards(i) = tmp2;
@@ -511,7 +512,7 @@ void FitsInput::read_header_rec() {
   m_kc.parse(m_curr, m_kw, 0, readHeaderRecErrHandler, true);
   // cout << "[ FitsInput::read_header_rec()] Number of errors from parsing: nerrs_ = " << nerrs_
   // <<endl;
-  uInt parseErrs = nerrs_;
+  unsigned int parseErrs = nerrs_;
   HeaderDataUnit::HDUErrs n;
   // cout << ">>FitsInput::read_header_rec() - hdu_type=" << m_hdu_type << endl;
   if (!HeaderDataUnit::determine_type(m_kw, m_hdu_type, m_data_type, readHeaderRecErrHandler, n)) {
@@ -519,7 +520,7 @@ void FitsInput::read_header_rec() {
     // convey that are the ones returned by determine_type, the ones returned
     // by parse are useless and needlessly confusing, so don't show them
     // cout<< "[ FitsInput::read_header_rec()] Error mesages from determin_type(): " << endl;
-    for (uInt i = parseErrs; i < nerrs_; i++) {
+    for (unsigned int i = parseErrs; i < nerrs_; i++) {
       m_errfn(messages_[i].c_str(), FITSError::ErrorLevel(errLevels_[i]));
     }
     nerrs_ = 0;
@@ -530,7 +531,7 @@ void FitsInput::read_header_rec() {
   //  spit out all of the cached error messages
   //  cout<< "[ FitsInput::read_header_rec()] Error message from parsing and determin_type():" <<
   //  endl;
-  for (uInt i = 0; i < nerrs_; i++) {
+  for (unsigned int i = 0; i < nerrs_; i++) {
     m_errfn(messages_[i].c_str(), FITSError::ErrorLevel(errLevels_[i]));
   }
   nerrs_ = 0;
@@ -715,7 +716,7 @@ int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
       if (uk.curr()->asBool() == true) m_extend = true;
   }
   HeaderDataUnit::HDUErrs n;
-  Int nd;
+  int nd;
   if (!HeaderDataUnit::compute_size(uk, m_data_size, nd, m_hdu_type, m_data_type, m_errfn, n)) {
     errmsg(BADSIZE, "[FitsInput::process_header()] Failed to compute size of data.");
     m_rec_type = FITS::UnrecognizableRecord;
@@ -1036,7 +1037,7 @@ void FitsOutput::setfptr(fitsfile *ffp) {
 }
 //=========================================================================================
 int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds,
-                          Int is) {
+                          int is) {
   if ((m_rec_type == FITS::EndOfFile) || (m_rec_type == FITS::SpecialRecord) || m_header_done ||
       t == FITS::NotAHDU) {
     errmsg(BADOPER, "Illegal operation -- cannot write FITS header.");
@@ -1086,7 +1087,7 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType
   // Create, initialize, and move the i/o pointer to a new extension appended to the end of the FITS
   // file.
   /*
-   Int l_status = 0;
+   int l_status = 0;
    if(ffcrhd(m_fptr, &l_status)){
    errmsg(BADOPER,"[FitsOutput::write_hdr() Create new HDU failed!");
    fits_report_error(stderr, l_status); // print error report
@@ -1120,7 +1121,7 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType
 
 // FitsOutput::set_data_into() is used by PrimaryArray::write_priArr_hdr() etc.
 void FitsOutput::set_data_info(FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds,
-                               Int is) {
+                               int is) {
   if (t == FITS::PrimaryArrayHDU || t == FITS::PrimaryGroupHDU || t == FITS::PrimaryTableHDU) {
     m_isaprimary = true;
     if (kwl(FITS::SIMPLE)->asBool() == true) {
@@ -1181,7 +1182,7 @@ int FitsOutput::write_all(FITS::HDUType t, char *addr, char pad) {
 }
 // BlockOutput::write() is wraped to cfitsio already. So no need
 // to directly wrap FitsOuput::write(). GYL
-int FitsOutput::write(FITS::HDUType t, char *addr, Int bytes, char pad) {
+int FitsOutput::write(FITS::HDUType t, char *addr, int bytes, char pad) {
   int n;
   if (!hdu_inprogress()) {
     errmsg(BADOPER, "[FitsOutput::write()] Illegal operation -- no HDU in progress");

@@ -80,29 +80,29 @@ const String& ColumnsIndexArray::columnName() const {
 void ColumnsIndexArray::deleteObjects() {
   switch (itsDataType) {
     case TpUChar:
-      delete (RecordFieldPtr<uChar>*)(itsLowerField);
-      delete (RecordFieldPtr<uChar>*)(itsUpperField);
-      delete (Vector<uChar>*)(itsDataVector);
+      delete (RecordFieldPtr<unsigned char>*)(itsLowerField);
+      delete (RecordFieldPtr<unsigned char>*)(itsUpperField);
+      delete (Vector<unsigned char>*)(itsDataVector);
       break;
     case TpShort:
-      delete (RecordFieldPtr<Short>*)(itsLowerField);
-      delete (RecordFieldPtr<Short>*)(itsUpperField);
-      delete (Vector<Short>*)(itsDataVector);
+      delete (RecordFieldPtr<short>*)(itsLowerField);
+      delete (RecordFieldPtr<short>*)(itsUpperField);
+      delete (Vector<short>*)(itsDataVector);
       break;
     case TpInt:
-      delete (RecordFieldPtr<Int>*)(itsLowerField);
-      delete (RecordFieldPtr<Int>*)(itsUpperField);
-      delete (Vector<Int>*)(itsDataVector);
+      delete (RecordFieldPtr<int>*)(itsLowerField);
+      delete (RecordFieldPtr<int>*)(itsUpperField);
+      delete (Vector<int>*)(itsDataVector);
       break;
     case TpUInt:
-      delete (RecordFieldPtr<uInt>*)(itsLowerField);
-      delete (RecordFieldPtr<uInt>*)(itsUpperField);
-      delete (Vector<uInt>*)(itsDataVector);
+      delete (RecordFieldPtr<unsigned int>*)(itsLowerField);
+      delete (RecordFieldPtr<unsigned int>*)(itsUpperField);
+      delete (Vector<unsigned int>*)(itsDataVector);
       break;
     case TpInt64:
-      delete (RecordFieldPtr<Int64>*)(itsLowerField);
-      delete (RecordFieldPtr<Int64>*)(itsUpperField);
-      delete (Vector<Int64>*)(itsDataVector);
+      delete (RecordFieldPtr<int64_t>*)(itsLowerField);
+      delete (RecordFieldPtr<int64_t>*)(itsUpperField);
+      delete (Vector<int64_t>*)(itsDataVector);
       break;
     case TpString:
       delete (RecordFieldPtr<String>*)(itsLowerField);
@@ -149,33 +149,33 @@ void ColumnsIndexArray::makeObjects(const RecordDesc& description) {
   itsDataType = description.type(0);
   switch (itsDataType) {
     case TpUChar: {
-      itsLowerField = new RecordFieldPtr<uChar>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<uChar>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<uChar>;
+      itsLowerField = new RecordFieldPtr<unsigned char>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<unsigned char>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<unsigned char>;
       break;
     }
     case TpShort: {
-      itsLowerField = new RecordFieldPtr<Short>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<Short>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<Short>;
+      itsLowerField = new RecordFieldPtr<short>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<short>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<short>;
       break;
     }
     case TpInt: {
-      itsLowerField = new RecordFieldPtr<Int>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<Int>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<Int>;
+      itsLowerField = new RecordFieldPtr<int>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<int>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<int>;
       break;
     }
     case TpUInt: {
-      itsLowerField = new RecordFieldPtr<uInt>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<uInt>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<uInt>;
+      itsLowerField = new RecordFieldPtr<unsigned int>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<unsigned int>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<unsigned int>;
       break;
     }
     case TpInt64: {
-      itsLowerField = new RecordFieldPtr<Int64>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<Int64>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<Int64>;
+      itsLowerField = new RecordFieldPtr<int64_t>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<int64_t>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<int64_t>;
       break;
     }
     case TpString: {
@@ -206,35 +206,35 @@ void ColumnsIndexArray::readData() {
   const String& name = desc.name(0);
   switch (itsDataType) {
     case TpUChar: {
-      Vector<uChar>* vecptr = (Vector<uChar>*)itsDataVector;
+      Vector<unsigned char>* vecptr = (Vector<unsigned char>*)itsDataVector;
       getArray(*vecptr, name);
       itsData = vecptr->getStorage(deleteIt);
       sort.sortKey(itsData, desc.type(0));
       break;
     }
     case TpShort: {
-      Vector<Short>* vecptr = (Vector<Short>*)itsDataVector;
+      Vector<short>* vecptr = (Vector<short>*)itsDataVector;
       getArray(*vecptr, name);
       itsData = vecptr->getStorage(deleteIt);
       sort.sortKey(itsData, desc.type(0));
       break;
     }
     case TpInt: {
-      Vector<Int>* vecptr = (Vector<Int>*)itsDataVector;
+      Vector<int>* vecptr = (Vector<int>*)itsDataVector;
       getArray(*vecptr, name);
       itsData = vecptr->getStorage(deleteIt);
       sort.sortKey(itsData, desc.type(0));
       break;
     }
     case TpUInt: {
-      Vector<uInt>* vecptr = (Vector<uInt>*)itsDataVector;
+      Vector<unsigned int>* vecptr = (Vector<unsigned int>*)itsDataVector;
       getArray(*vecptr, name);
       itsData = vecptr->getStorage(deleteIt);
       sort.sortKey(itsData, desc.type(0));
       break;
     }
     case TpInt64: {
-      Vector<Int64>* vecptr = (Vector<Int64>*)itsDataVector;
+      Vector<int64_t>* vecptr = (Vector<int64_t>*)itsDataVector;
       getArray(*vecptr, name);
       itsData = vecptr->getStorage(deleteIt);
       sort.sortKey(itsData, desc.type(0));
@@ -263,12 +263,12 @@ void ColumnsIndexArray::readData() {
 
 rownr_t ColumnsIndexArray::bsearch(bool& found, void* fieldPtr) const {
   found = false;
-  Int64 lower = 0;
-  Int64 upper = itsUniqueIndex.nelements() - 1;
-  Int64 middle = 0;
+  int64_t lower = 0;
+  int64_t upper = itsUniqueIndex.nelements() - 1;
+  int64_t middle = 0;
   while (lower <= upper) {
     middle = (upper + lower) / 2;
-    Int cmp = compare(fieldPtr, itsData, itsDataType, itsDataInx[itsUniqueInx[middle]]);
+    int cmp = compare(fieldPtr, itsData, itsDataType, itsDataInx[itsUniqueInx[middle]]);
     if (cmp < 0) {
       upper = middle - 1;  // go to left
     } else if (cmp > 0) {
@@ -282,11 +282,11 @@ rownr_t ColumnsIndexArray::bsearch(bool& found, void* fieldPtr) const {
   return middle;
 }
 
-Int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, Int dataType, rownr_t index) {
+int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, int dataType, rownr_t index) {
   switch (dataType) {
     case TpUChar: {
-      const uChar left = *(*(RecordFieldPtr<uChar>*)(fieldPtr));
-      const uChar right = ((const uChar*)(dataPtr))[index];
+      const unsigned char left = *(*(RecordFieldPtr<unsigned char>*)(fieldPtr));
+      const unsigned char right = ((const unsigned char*)(dataPtr))[index];
       if (left < right) {
         return -1;
       } else if (left > right) {
@@ -295,8 +295,8 @@ Int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, Int dataType, rown
       break;
     }
     case TpShort: {
-      const Short left = *(*(RecordFieldPtr<Short>*)(fieldPtr));
-      const Short right = ((const Short*)(dataPtr))[index];
+      const short left = *(*(RecordFieldPtr<short>*)(fieldPtr));
+      const short right = ((const short*)(dataPtr))[index];
       if (left < right) {
         return -1;
       } else if (left > right) {
@@ -305,8 +305,8 @@ Int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, Int dataType, rown
       break;
     }
     case TpInt: {
-      const Int left = *(*(RecordFieldPtr<Int>*)(fieldPtr));
-      const Int right = ((const Int*)(dataPtr))[index];
+      const int left = *(*(RecordFieldPtr<int>*)(fieldPtr));
+      const int right = ((const int*)(dataPtr))[index];
       if (left < right) {
         return -1;
       } else if (left > right) {
@@ -315,8 +315,8 @@ Int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, Int dataType, rown
       break;
     }
     case TpUInt: {
-      const uInt left = *(*(RecordFieldPtr<uInt>*)(fieldPtr));
-      const uInt right = ((const uInt*)(dataPtr))[index];
+      const unsigned int left = *(*(RecordFieldPtr<unsigned int>*)(fieldPtr));
+      const unsigned int right = ((const unsigned int*)(dataPtr))[index];
       if (left < right) {
         return -1;
       } else if (left > right) {
@@ -325,8 +325,8 @@ Int ColumnsIndexArray::compare(void* fieldPtr, void* dataPtr, Int dataType, rown
       break;
     }
     case TpInt64: {
-      const Int64 left = *(*(RecordFieldPtr<Int64>*)(fieldPtr));
-      const Int64 right = ((const Int64*)(dataPtr))[index];
+      const int64_t left = *(*(RecordFieldPtr<int64_t>*)(fieldPtr));
+      const int64_t right = ((const int64_t*)(dataPtr))[index];
       if (left < right) {
         return -1;
       } else if (left > right) {
@@ -450,19 +450,19 @@ void ColumnsIndexArray::setChanged(const String& columnName) {
   }
 }
 
-void ColumnsIndexArray::getArray(Vector<uChar>& result, const String& name) {
-  ArrayColumn<uChar> arrCol(itsTable, name);
+void ColumnsIndexArray::getArray(Vector<unsigned char>& result, const String& name) {
+  ArrayColumn<unsigned char> arrCol(itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<uChar> arr = arrCol(0);
+    Array<unsigned char> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize(nrrow * npts);
     objmove(result.data(), arr.data(), npts);
     for (rownr_t i = 1; i < nrrow; i++) {
       if (arrCol.isDefined(i)) {
-        Array<uChar> arr = arrCol(i);
+        Array<unsigned char> arr = arrCol(i);
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
@@ -477,19 +477,19 @@ void ColumnsIndexArray::getArray(Vector<uChar>& result, const String& name) {
   }
 }
 
-void ColumnsIndexArray::getArray(Vector<Short>& result, const String& name) {
-  ArrayColumn<Short> arrCol(itsTable, name);
+void ColumnsIndexArray::getArray(Vector<short>& result, const String& name) {
+  ArrayColumn<short> arrCol(itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<Short> arr = arrCol(0);
+    Array<short> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize(nrrow * npts);
     objmove(result.data(), arr.data(), npts);
     for (rownr_t i = 1; i < nrrow; i++) {
       if (arrCol.isDefined(i)) {
-        Array<Short> arr = arrCol(i);
+        Array<short> arr = arrCol(i);
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
@@ -504,19 +504,19 @@ void ColumnsIndexArray::getArray(Vector<Short>& result, const String& name) {
   }
 }
 
-void ColumnsIndexArray::getArray(Vector<Int>& result, const String& name) {
-  ArrayColumn<Int> arrCol(itsTable, name);
+void ColumnsIndexArray::getArray(Vector<int>& result, const String& name) {
+  ArrayColumn<int> arrCol(itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<Int> arr = arrCol(0);
+    Array<int> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize(nrrow * npts);
     objmove(result.data(), arr.data(), npts);
     for (rownr_t i = 1; i < nrrow; i++) {
       if (arrCol.isDefined(i)) {
-        Array<Int> arr = arrCol(i);
+        Array<int> arr = arrCol(i);
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
@@ -531,19 +531,19 @@ void ColumnsIndexArray::getArray(Vector<Int>& result, const String& name) {
   }
 }
 
-void ColumnsIndexArray::getArray(Vector<uInt>& result, const String& name) {
-  ArrayColumn<uInt> arrCol(itsTable, name);
+void ColumnsIndexArray::getArray(Vector<unsigned int>& result, const String& name) {
+  ArrayColumn<unsigned int> arrCol(itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<uInt> arr = arrCol(0);
+    Array<unsigned int> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize(nrrow * npts);
     objmove(result.data(), arr.data(), npts);
     for (rownr_t i = 1; i < nrrow; i++) {
       if (arrCol.isDefined(i)) {
-        Array<uInt> arr = arrCol(i);
+        Array<unsigned int> arr = arrCol(i);
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {
@@ -558,19 +558,19 @@ void ColumnsIndexArray::getArray(Vector<uInt>& result, const String& name) {
   }
 }
 
-void ColumnsIndexArray::getArray(Vector<Int64>& result, const String& name) {
-  ArrayColumn<Int64> arrCol(itsTable, name);
+void ColumnsIndexArray::getArray(Vector<int64_t>& result, const String& name) {
+  ArrayColumn<int64_t> arrCol(itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<Int64> arr = arrCol(0);
+    Array<int64_t> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize(nrrow * npts);
     objmove(result.data(), arr.data(), npts);
     for (rownr_t i = 1; i < nrrow; i++) {
       if (arrCol.isDefined(i)) {
-        Array<Int64> arr = arrCol(i);
+        Array<int64_t> arr = arrCol(i);
         rownr_t n = arr.nelements();
         nrel[i] = n;
         if (npts + n > result.nelements()) {

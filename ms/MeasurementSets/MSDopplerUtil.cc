@@ -51,7 +51,7 @@ MSDopplerUtil::~MSDopplerUtil() {
 
 //----------------------------------------------------------------------------
 
-bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fieldId) {
+bool MSDopplerUtil::dopplerInfo(Vector<double>& restFrequency, int spwId, int fieldId) {
   // Retrieve a list of all rest frequencies used in Doppler
   // tracking of the specified spectral window id.
   // Output:
@@ -60,23 +60,23 @@ bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
   //
   // Initialization
   restFrequency.resize();
-  Int nRestFreq = 0;
+  int nRestFreq = 0;
   bool found = false;
 
   // Accessor for the MS columns and sub-tables
   MSColumns msc(ms_p);
   // Retrieve the doppler id & source id
-  Int dopId =
+  int dopId =
       (msc.spectralWindow().dopplerId().isNull() ? -1 : msc.spectralWindow().dopplerId()(spwId));
-  Int srcId = msc.field().sourceId()(fieldId);
+  int srcId = msc.field().sourceId()(fieldId);
   // Use the doppler table if specified and it exists
   if (dopId >= 0 && (!ms_p.doppler().isNull())) {
     // Find the matching DOPPLER sub-table rows for this DOPPLER_ID
-    for (uInt idoprow = 0; idoprow < msc.doppler().nrow(); idoprow++) {
+    for (unsigned int idoprow = 0; idoprow < msc.doppler().nrow(); idoprow++) {
       if (msc.doppler().dopplerId()(idoprow) == dopId &&
           msc.doppler().sourceId()(idoprow) == srcId) {
         // Find the rest frequency information in the SOURCE subtable
-        Int transId = msc.doppler().transitionId()(idoprow);
+        int transId = msc.doppler().transitionId()(idoprow);
 
         // When loading g192_a.ms (from regression) into plotxy (probably a
         // wrong thing to do), transId is -1, which causes a segv further down
@@ -93,11 +93,11 @@ bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
           sourceIndex.spectralWindowId() = spwId;
           Vector<rownr_t> rows = sourceIndex.getRowNumbers();
           for (rownr_t irow = 0; irow < rows.nelements(); irow++) {
-            Vector<Double> restFrq = msc.source().restFrequency()(irow);
+            Vector<double> restFrq = msc.source().restFrequency()(irow);
             if (restFrq.nelements() > 0) {
               // Does this already exist in the output rest frequency array ?
               bool exists = false;
-              for (uInt k = 0; k < restFrequency.nelements(); k++) {
+              for (unsigned int k = 0; k < restFrequency.nelements(); k++) {
                 if (restFrq(transId) == restFrequency(k)) {
                   exists = true;
                 }
@@ -123,11 +123,11 @@ bool MSDopplerUtil::dopplerInfo(Vector<Double>& restFrequency, Int spwId, Int fi
       if (!msc.source().restFrequency().isNull()) {
         for (rownr_t irow = 0; irow < rows.nelements(); irow++) {
           if (msc.source().restFrequency().isDefined(rows(irow))) {
-            Vector<Double> restFrq = msc.source().restFrequency()(rows(irow));
+            Vector<double> restFrq = msc.source().restFrequency()(rows(irow));
             // Does this already exist in the output rest frequency array ?
-            for (uInt transId = 0; transId < restFrq.nelements(); transId++) {
+            for (unsigned int transId = 0; transId < restFrq.nelements(); transId++) {
               bool exists = false;
-              for (uInt k = 0; k < restFrequency.nelements(); k++) {
+              for (unsigned int k = 0; k < restFrequency.nelements(); k++) {
                 if (restFrq(transId) == restFrequency(k)) {
                   exists = true;
                 }

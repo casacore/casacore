@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # forward
-template <class T, Int n>
+template <class T, int n>
 class SquareMatrix;
 // <summary> Fast Vector classes with fixed (templated) length </summary>
 
@@ -97,7 +97,7 @@ class SquareMatrix;
 //   <li> default implementation of innerProduct is wrong for Complex vectors
 // </todo>
 
-template <class T, Int n>
+template <class T, int n>
 class RigidVector {
   // # friends (could be out of line if compiler accepted that)
   //  Add two RigidVectors.
@@ -113,7 +113,7 @@ class RigidVector {
   // The innerproduct of 2 RigidVectors.
   friend T operator*(const RigidVector<T, n>& l, const RigidVector<T, n>& r) {
     T sum = T(0);
-    for (Int i = 0; i < n; i++) sum += l.v_p[i] * r.v_p[i];
+    for (int i = 0; i < n; i++) sum += l.v_p[i] * r.v_p[i];
     return sum;
   }
   // Multiply a RigidVector by a scalar.
@@ -133,7 +133,7 @@ class RigidVector {
   }
   // Special matrix multiply of Complex matrix * Float vector.
   friend RigidVector<Complex, 4> operator*(const SquareMatrix<Complex, 4>& m,
-                                           const RigidVector<Float, 4>& v);
+                                           const RigidVector<float, 4>& v);
 
  public:
   //    RigidVector(Int dummy) {
@@ -141,11 +141,11 @@ class RigidVector {
   //    }
   // Default constructor
   RigidVector() {
-    for (Int i = 0; i < n; i++) v_p[i] = T(0);
+    for (int i = 0; i < n; i++) v_p[i] = T(0);
   }
   // Construct from scalar, sets all elements to c
   RigidVector(const T& c) {
-    for (Int i = 0; i < n; i++) v_p[i] = c;
+    for (int i = 0; i < n; i++) v_p[i] = c;
   }
   // Construct a 2-element vector, fails for wrong size vectors.
   RigidVector(const T& v0, const T& v1) {
@@ -189,68 +189,68 @@ class RigidVector {
   }
   // Construct from a c-array (copy semantics)
   RigidVector(const T v[n]) {
-    for (Int i = 0; i < n; i++) v_p[i] = v[i];
+    for (int i = 0; i < n; i++) v_p[i] = v[i];
   }
   // Construct from a Vector.
   RigidVector(const Vector<T>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] = v(i);
+    for (int i = 0; i < n; i++) v_p[i] = v(i);
   }
   // Copy constructor, copy semantics.
   RigidVector(const RigidVector<T, n>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] = v.v_p[i];
+    for (int i = 0; i < n; i++) v_p[i] = v.v_p[i];
   }
   // Assign from a RigidVector.
   RigidVector<T, n>& operator=(const RigidVector<T, n>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] = v.v_p[i];
+    for (int i = 0; i < n; i++) v_p[i] = v.v_p[i];
     return *this;
   }
   // Assign from a Vector.
   RigidVector<T, n>& operator=(const Vector<T>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] = v(i);
+    for (int i = 0; i < n; i++) v_p[i] = v(i);
     return *this;
   }
   // Assign a scalar, sets all elements to c.
   RigidVector<T, n>& operator=(const T& c) {
-    for (Int i = 0; i < n; i++) v_p[i] = c;
+    for (int i = 0; i < n; i++) v_p[i] = c;
     return *this;
   }
   // Negation
   RigidVector<T, n>& operator-() {
-    for (Int i = 0; i < n; i++) v_p[i] = -v_p[i];
+    for (int i = 0; i < n; i++) v_p[i] = -v_p[i];
     return *this;
   }
   // Addition
   RigidVector<T, n>& operator+=(const RigidVector<T, n>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] += v.v_p[i];
+    for (int i = 0; i < n; i++) v_p[i] += v.v_p[i];
     return *this;
   }
   RigidVector<T, n>& operator*=(const RigidVector<T, n>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] *= v.v_p[i];
+    for (int i = 0; i < n; i++) v_p[i] *= v.v_p[i];
     return *this;
   }
   // Subtraction
   RigidVector<T, n>& operator-=(const RigidVector<T, n>& v) {
-    for (Int i = 0; i < n; i++) v_p[i] -= v.v_p[i];
+    for (int i = 0; i < n; i++) v_p[i] -= v.v_p[i];
     return *this;
   }
   // Multiplication by scalar.
   RigidVector<T, n>& operator*=(const T& val) {
-    for (Int i = 0; i < n; i++) v_p[i] *= val;
+    for (int i = 0; i < n; i++) v_p[i] *= val;
     return *this;
   }
   // Multiply vector by matrix: v*=M is equivalent to v=M*v;
   RigidVector<T, n>& operator*=(const SquareMatrix<T, n>& m);
 
   // Indexing by reference
-  T& operator()(Int i) { return v_p[i]; }
+  T& operator()(int i) { return v_p[i]; }
   // Indexing by const reference
-  const T& operator()(Int i) const { return v_p[i]; }
+  const T& operator()(int i) const { return v_p[i]; }
   // # Get const access to the underlying c-array
   // #const T*& cArray() const { return v_p;}
   //  Convert to a regular Vector
   Vector<T> vector() const {
     Vector<T> v(n);
-    for (Int i = 0; i < n; i++) v(i) = v_p[i];
+    for (int i = 0; i < n; i++) v(i) = v_p[i];
     return v;
   }
   // Square Root
@@ -288,9 +288,9 @@ class RigidVector {
 // #    return result*=m;
 // #}
 // Multiply vector by matrix.
-inline RigidVector<Float, 4> operator*(const SquareMatrix<Float, 4>& m,
-                                       const RigidVector<Float, 4>& v) {
-  RigidVector<Float, 4> result(v);
+inline RigidVector<float, 4> operator*(const SquareMatrix<float, 4>& m,
+                                       const RigidVector<float, 4>& v) {
+  RigidVector<float, 4> result(v);
   return result *= m;
 }
 // Multiply vector by matrix.

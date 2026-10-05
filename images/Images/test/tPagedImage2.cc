@@ -55,7 +55,7 @@ int main() {
 
     // Create a PagedImage.
     {
-      PagedImage<Float> pIm(shape, CoordinateUtil::defaultCoords2D(), "tPagedImage2_tmp.img");
+      PagedImage<float> pIm(shape, CoordinateUtil::defaultCoords2D(), "tPagedImage2_tmp.img");
       AlwaysAssertExit(!pIm.isMasked());
       AlwaysAssertExit(pIm.isWritable());
       AlwaysAssertExit(pIm.isPaged());
@@ -82,7 +82,7 @@ int main() {
     }
 
     {
-      PagedImage<Float> pIm("tPagedImage2_tmp.img");
+      PagedImage<float> pIm("tPagedImage2_tmp.img");
       AlwaysAssertExit(pIm.getDefaultMask() == "reg1");
       AlwaysAssertExit(!pIm.isMasked());
       AlwaysAssertExit(!pIm.hasPixelMask());

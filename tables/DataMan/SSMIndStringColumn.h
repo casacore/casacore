@@ -83,7 +83,7 @@ class SSMIndStringColumn : public SSMDirColumn {
   // Create a SSMIndStringColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  SSMIndStringColumn(SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMIndStringColumn(SSMBase* aParent, int aDataType, unsigned int aColNr);
 
   virtual ~SSMIndStringColumn();
 
@@ -113,7 +113,7 @@ class SSMIndStringColumn : public SSMDirColumn {
   virtual bool isShapeDefined(rownr_t aRowNr);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim(rownr_t aRowNr);
+  virtual unsigned int ndim(rownr_t aRowNr);
 };
 
 }  // namespace casacore

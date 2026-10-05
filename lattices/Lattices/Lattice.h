@@ -364,7 +364,7 @@ class Lattice : public LatticeBase {
   // include in the cursor of an iterator. The default implementation
   // returns a number that is a power of two and includes enough pixels to
   // consume between 4 and 8 MBytes of memory.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // These functions are used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
@@ -410,7 +410,7 @@ inline void Lattice<bool>::handleMathTo(Lattice<bool>&, int) const {
 }
 
 // # Declare extern templates for often used types.
-extern template class Lattice<Float>;
+extern template class Lattice<float>;
 extern template class Lattice<Complex>;
 
 }  // namespace casacore

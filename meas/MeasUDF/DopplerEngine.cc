@@ -32,7 +32,7 @@ namespace casacore {
 
 DopplerEngine::~DopplerEngine() {}
 
-void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, bool allowRadVel,
+void DopplerEngine::handleDoppler(vector<TENShPtr>& args, unsigned int& argnr, bool allowRadVel,
                                   bool allowFreq) {
   // Default type is RADIO.
   itsRefType = MDoppler::RADIO;
@@ -46,7 +46,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, bool allo
     if (allowRadVel) {
       try {
         itsRadVelEngine.reset(new RadialVelocityEngine());
-        uInt nargnr = argnr;
+        unsigned int nargnr = argnr;
         itsRadVelEngine->handleRadialVelocity(args, nargnr);
         if (nargnr > argnr) {
           itsType = RADVEL;
@@ -62,7 +62,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, bool allo
       // No radial velocity; try as frequency (if allowed).
       try {
         itsFreqEngine.reset(new FrequencyEngine());
-        uInt nargnr = argnr;
+        unsigned int nargnr = argnr;
         itsFreqEngine->handleFrequency(args, nargnr);
         if (nargnr > argnr) {
           itsType = FREQ;
@@ -95,7 +95,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, uInt& argnr, bool allo
       throw AipsError("A doppler value given in a MEAS function cannot have a unit");
     }
     // Values can be given as [t1,t2,...],reftype
-    uInt nargnr = argnr + 1;
+    unsigned int nargnr = argnr + 1;
     // See if there is a reference type.
     if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
       if (handleMeasType(args[nargnr], true)) {
@@ -128,7 +128,7 @@ Array<MDoppler> DopplerEngine::getDopplers(const TableExprId& id) {
   return dopplers;
 }
 
-void DopplerEngine::handleRestFreq(vector<TENShPtr>& args, uInt& argnr) {
+void DopplerEngine::handleRestFreq(vector<TENShPtr>& args, unsigned int& argnr) {
   if (args.size() <= argnr) {
     throw AipsError("No rest frequency given after the frequency in MEAS.DOPPLER");
   }
@@ -162,7 +162,7 @@ void DopplerEngine::handleLine(const TENShPtr& operand) {
   }
   Array<String> names = operand->getStringAS(0).array();
   itsConstRestFreqs.resize(names.shape());
-  for (uInt i = 0; i < names.size(); ++i) {
+  for (unsigned int i = 0; i < names.size(); ++i) {
     MFrequency mfreq;
     if (!MeasTable::Line(mfreq, names.data()[i])) {
       throw AipsError("Line '" + names.data()[i] +
@@ -179,7 +179,7 @@ Array<MVFrequency> DopplerEngine::getRestFreqs(const TableExprId& id) {
     return itsConstRestFreqs;
   }
   // Get the values.
-  Array<Double> values = itsRestFreqNode->getDoubleAS(id).array();
+  Array<double> values = itsRestFreqNode->getDoubleAS(id).array();
   // Turn them into to MVFrequencies.
   Array<MVFrequency> freqs(values.shape());
   Unit unit = itsRestFreqNode->unit();
@@ -187,7 +187,7 @@ Array<MVFrequency> DopplerEngine::getRestFreqs(const TableExprId& id) {
     unit = "Hz";
   }
   Quantity q(0, unit);
-  for (uInt i = 0; i < values.size(); ++i) {
+  for (unsigned int i = 0; i < values.size(); ++i) {
     q.setValue(values.data()[i]);
     freqs.data()[i] = MVFrequency(q);
   }
@@ -197,25 +197,25 @@ Array<MVFrequency> DopplerEngine::getRestFreqs(const TableExprId& id) {
 void DopplerEngine::handleValues(TableExprNode& operand, const TableExprId& id,
                                  Array<MDoppler>& dopplers) {
   if (itsType == DOPPLER) {
-    Array<Double> values = operand.getDoubleAS(id).array();
+    Array<double> values = operand.getDoubleAS(id).array();
     dopplers.resize(values.shape());
     Quantity q(0, itsInUnit);
-    for (uInt i = 0; i < values.size(); ++i) {
+    for (unsigned int i = 0; i < values.size(); ++i) {
       q.setValue(values.data()[i]);
       dopplers.data()[i] = MDoppler(q, itsRefType);
     }
   } else if (itsType == RADVEL) {
     Array<MRadialVelocity> vels = itsRadVelEngine->getRadialVelocities(id);
     dopplers.resize(vels.shape());
-    for (uInt i = 0; i < vels.size(); ++i) {
+    for (unsigned int i = 0; i < vels.size(); ++i) {
       dopplers.data()[i] = vels.data()[i].toDoppler();
     }
   } else {
     Array<MFrequency> freqs = itsFreqEngine->getFrequencies(id);
     Array<MVFrequency> rests = getRestFreqs(id);
-    uInt incf = 1;
-    uInt incr = 1;
-    uInt size = freqs.size();
+    unsigned int incf = 1;
+    unsigned int incr = 1;
+    unsigned int size = freqs.size();
     if (freqs.size() == 1) {
       incf = 0;
       size = rests.size();
@@ -228,19 +228,19 @@ void DopplerEngine::handleValues(TableExprNode& operand, const TableExprId& id,
     } else {
       throw AipsError("Frequencies and rest frequencies in MEAS.DOPPLER must have same shape");
     }
-    uInt inxf = 0;
-    uInt inxr = 0;
-    for (uInt i = 0; i < size; ++i, inxf += incf, inxr += incr) {
+    unsigned int inxf = 0;
+    unsigned int inxr = 0;
+    for (unsigned int i = 0; i < size; ++i, inxf += incf, inxr += incr) {
       dopplers.data()[i] = freqs.data()[inxf].toDoppler(rests.data()[inxr]);
     }
   }
 }
 
-Array<Double> DopplerEngine::getArrayDouble(const TableExprId& id) {
+Array<double> DopplerEngine::getArrayDouble(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   Array<MDoppler> res(getDopplers(id));
   // Convert the doppler to the given type.
-  Array<Double> out;
+  Array<double> out;
   if (res.size() > 0) {
     IPosition shape = res.shape();
     out.resize(shape);

@@ -113,7 +113,7 @@ class TapeIO : public ByteIO {
   void attach(const Path& device, bool writable = false);
 
   // Write the specified number of bytes.
-  virtual void write(Int64 size, const void* buf);
+  virtual void write(int64_t size, const void* buf);
 
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
@@ -122,30 +122,30 @@ class TapeIO : public ByteIO {
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
   // current file (and size is non-zero and throwException is false).
-  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
+  virtual int64_t read(int64_t size, void* buf, bool throwException = true);
 
   // Rewind the tape device to the beginning.
   virtual void rewind();
 
   // skip the specified number of files (ie tape marks) on the tape. Throws an
   // exception if you try to skip past the last filemark.
-  virtual void skip(uInt howMany = 1);
+  virtual void skip(unsigned int howMany = 1);
 
   // write the specified number of filemarks.
-  virtual void mark(uInt howMany = 1);
+  virtual void mark(unsigned int howMany = 1);
 
   // returns true if the tape device is configured to use a fixed block size
   bool fixedBlocks() const;
 
   // returns the block size in bytes. Returns zero if the device is configured
   // to use variable length blocks.
-  uInt fixedBlockSize() const;
+  unsigned int fixedBlockSize() const;
 
   // Configure the tape device to use fixed length blocks of the specified
   // size. The size must be bigger than zero (dugh!). Values bigger than 64k
   // may cause problems on some systems. Currently this function only does
   // anything under Solaris and Linux systems.
-  void setFixedBlockSize(uInt sizeInBytes);
+  void setFixedBlockSize(unsigned int sizeInBytes);
 
   // Configure the tape device to use variable length blocks. Currently this
   // function only does anything under Solaris and Linux systems.
@@ -153,7 +153,7 @@ class TapeIO : public ByteIO {
 
   // Get the length of the tape device.  Not a meaningful function for this
   // class and this function always returns -1.
-  virtual Int64 length();
+  virtual int64_t length();
 
   // Is the tape device readable?
   virtual bool isReadable() const;
@@ -190,7 +190,7 @@ class TapeIO : public ByteIO {
   // position. May not work on all Tape devices use the isSeekable(0 member
   // function to see if this function is usuable. Otherwise an Exception
   // (AipsError) is thrown.
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
 
  private:
   // The following functions are made private so that the compiler does not
@@ -198,8 +198,8 @@ class TapeIO : public ByteIO {
   TapeIO(const TapeIO& that);
   TapeIO& operator=(const TapeIO& that);
 
-  void setBlockSize(uInt sizeInBytes);
-  uInt getBlockSize() const;
+  void setBlockSize(unsigned int sizeInBytes);
+  unsigned int getBlockSize() const;
 
   int itsDevice;
   bool itsOwner;

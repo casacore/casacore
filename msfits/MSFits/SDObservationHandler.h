@@ -107,32 +107,32 @@ class SDObservationHandler {
   void resetRow(const Record &row);
 
   // fill - a new row is added only when necessary
-  void fill(const Record &row, const String &telescopeName, const Vector<Double> &timeRange);
+  void fill(const Record &row, const String &telescopeName, const Vector<double> &timeRange);
 
   // get the current observation ID
-  Int observationId() { return rownr_p; }
+  int observationId() { return rownr_p; }
 
   // update the time range
-  void updateTimeRange(const Vector<Double> &timeRange);
+  void updateTimeRange(const Vector<double> &timeRange);
 
  private:
   ColumnsIndex *index_p;
   RecordFieldPtr<String> telescopeKey_p, observerKey_p, projectKey_p, ns_obsidKey_p;
-  RecordFieldPtr<Double> releaseDateKey_p;
+  RecordFieldPtr<double> releaseDateKey_p;
   RecordFieldPtr<bool> flagRowKey_p;
 
   MSObservation *msObs_p;
   MSObservationColumns *msObsCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
   ScalarColumn<String> nsObsIdCol_p;
 
   // pointers to fields in record, only used if attached
   RORecordFieldPtr<String> observer_p, projid_p, obsid_p;
-  RORecordFieldPtr<Double> releaseDate_p;
+  RORecordFieldPtr<double> releaseDate_p;
   RORecordFieldPtr<bool> flagRow_p;
-  RORecordFieldPtr<Array<Double>> timeRange_p;
+  RORecordFieldPtr<Array<double>> timeRange_p;
 
   // cleanup everything
   void clearAll();

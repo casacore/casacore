@@ -125,7 +125,7 @@ class Stokes {
 
   //		convert Int to StokesTypes, returns Stokes::Undefined if
   //		it is an invalid type
-  static StokesTypes type(Int stokesNumber);
+  static StokesTypes type(int stokesNumber);
 
   //		convert String to StokesTypes, returns Stokes::Undefined if
   //		it is an unrecognized string.  The valid strings are the
@@ -146,8 +146,8 @@ class Stokes {
   //              I,Q,U,V and the single dish types will produce empty
   //              optional.
   //              <group>
-  static std::optional<Int> receptor1(StokesTypes stokesType);
-  static std::optional<Int> receptor2(StokesTypes stokesType);
+  static std::optional<int> receptor1(StokesTypes stokesType);
+  static std::optional<int> receptor2(StokesTypes stokesType);
   //              </group>
 
   // These two functions map stokes type to FITS type and vice versa. If you add a
@@ -159,8 +159,8 @@ class Stokes {
   //     <li> Otherwise, FITS type <-> 100 + Int(stokesType). This is not standard FITS.
   // </ul>
   // <group>
-  static Int FITSValue(StokesTypes which);
-  static StokesTypes fromFITSValue(Int);
+  static int FITSValue(StokesTypes which);
+  static StokesTypes fromFITSValue(int);
   // </group>
  private:
 };

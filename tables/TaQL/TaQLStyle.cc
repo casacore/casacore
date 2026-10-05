@@ -29,7 +29,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TaQLStyle::TaQLStyle(uInt origin)
+TaQLStyle::TaQLStyle(unsigned int origin)
     : itsOrigin(origin),
       itsEndExcl(false),
       itsCOrder(false),

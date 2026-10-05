@@ -55,12 +55,12 @@ void testScalar() {
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
     AlwaysAssertExit(node2.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
-    Array<Double> arr2 = node2.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr2 = node2.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(arr2.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
     /// cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "m");
     AlwaysAssertExit(node2.unit().getName() == "m");
@@ -82,12 +82,12 @@ void testScalar() {
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
     AlwaysAssertExit(node2.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
-    Array<Double> arr2 = node2.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr2 = node2.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(arr2.shape() == IPosition(2, 3, 2));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
     /// cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "m");
     AlwaysAssertExit(node2.unit().getName() == "m");
@@ -111,13 +111,13 @@ void testScalar() {
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
     AlwaysAssertExit(node2.getNodeRep()->isConstant());
     AlwaysAssertExit(node3.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
-    Double arr2 = node2.getDouble(0);
-    Array<Double> arr3 = node3.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
+    double arr2 = node2.getDouble(0);
+    Array<double> arr3 = node3.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 2));
     AlwaysAssertExit(arr3.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter3(arr3);
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter3(arr3);
     /// cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "rad");
     AlwaysAssertExit(node2.unit().getName() == "m");
@@ -138,10 +138,10 @@ void testScalar() {
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
     AlwaysAssertExit(node2.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
-    Double arr2 = node2.getDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
+    double arr2 = node2.getDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 2));
-    VectorIterator<Double> veciter1(arr1);
+    VectorIterator<double> veciter1(arr1);
     /// cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node1.unit().getName() == "rad");
     AlwaysAssertExit(node2.unit().getName() == "m");
@@ -158,12 +158,12 @@ void testScalar() {
                             .node());
     AlwaysAssertExit(node1.getNodeRep()->isConstant());
     AlwaysAssertExit(node2.getNodeRep()->isConstant());
-    Array<Double> arr1 = node1.getArrayDouble(0);
-    Array<Double> arr2 = node2.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr2 = node2.getArrayDouble(0);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(arr2.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
     /// cout << "taql=" << arr1 << endl;
     AlwaysAssertExit(node1.unit().getName().empty());
     AlwaysAssertExit(node2.unit().getName() == "m");
@@ -199,12 +199,12 @@ void testArray() {
   AlwaysAssertExit(node2.getNodeRep()->isConstant());
   /// cout << "taql=" << node1.getArrayDouble(0) << endl;
   /// cout << "taql=" << node2.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   AlwaysAssertExit(arr1.shape() == IPosition(2, 3, 6));
   AlwaysAssertExit(arr2.shape() == IPosition(4, 2, 2, 1, 3));
-  VectorIterator<Double> arr1iter(arr1);
-  VectorIterator<Double> arr2iter(arr2);
+  VectorIterator<double> arr1iter(arr1);
+  VectorIterator<double> arr2iter(arr2);
   // Check with Measures.
   Vector<MPosition> pos(6);
   pos[0] = MPosition(MVPosition(3.82849e+06, 443253, 5.06498e+06), MPosition::ITRF);
@@ -213,7 +213,7 @@ void testArray() {
   pos[3] = MPosition(MVPosition(3.84924e+06, 430628, 5.05901e+06), MPosition::ITRF);
   pos[4] = MPosition(MVPosition(3.81849e+06, 443153, 5.06398e+06), MPosition::ITRF);
   pos[5] = MPosition(MVPosition(3.82924e+06, 430328, 5.05701e+06), MPosition::ITRF);
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
     MVPosition npos = MPosition::Convert(pos[ip], MPosition::Ref(MPosition::WGS84))().getValue();
     AlwaysAssertExit(allNear(npos.getValue(), arr1iter.vector(), 1e-8));
     AlwaysAssertExit(allNear(npos.getAngle().getValue(), arr2iter.vector(), 1e-8));
@@ -244,15 +244,15 @@ void testColumn() {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(!node2.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.nrow() == 3 && node2.nrow() == 3);
-  for (uInt i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     /// cout << "taql=" << node1.getArrayDouble(i) << endl;
     /// cout << "taql=" << node2.getArrayDouble(i) << endl;
-    Array<Double> arr1 = node1.getArrayDouble(i);
-    Array<Double> arr2 = node2.getArrayDouble(i);
+    Array<double> arr1 = node1.getArrayDouble(i);
+    Array<double> arr2 = node2.getArrayDouble(i);
     AlwaysAssertExit(arr1.shape() == IPosition(1, 3));
     AlwaysAssertExit(arr2.shape() == IPosition(1, 3));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
     MVPosition npos = MPosition::Convert(pos[i], MPosition::Ref(MPosition::ITRF))().getValue();
     AlwaysAssertExit(allNear(npos.getValue(), veciter1.vector(), 1e-8));
     AlwaysAssertExit(allNear(npos.getValue(), veciter2.vector(), 1e-6));
@@ -274,13 +274,13 @@ void testName() {
   AlwaysAssertExit(node1.getNodeRep()->isConstant());
   AlwaysAssertExit(node2.getNodeRep()->isConstant());
   /// cout << "taql=" << node1.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   AlwaysAssertExit(arr1.shape() == IPosition(2, 3, 2));
   AlwaysAssertExit(arr2.shape() == IPosition(1, 2));
-  VectorIterator<Double> arr1iter(arr1);
+  VectorIterator<double> arr1iter(arr1);
   // Check with Measures.
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
     MVPosition npos1 = MPosition::Convert(pos[ip], MPosition::Ref(MPosition::ITRF))().getValue();
     MVPosition npos2 = MPosition::Convert(pos[ip], MPosition::Ref(MPosition::WGS84))().getValue();
     AlwaysAssertExit(allNear(npos1.getValue(), arr1iter.vector(), 1e-8));

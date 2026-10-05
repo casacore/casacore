@@ -80,7 +80,7 @@ class ObjectID {
   // a unique ObjectID.
   ObjectID(bool makeNull = false);
   // Create explicitly from the provided constituents.
-  ObjectID(Int sequence, Int pid, Int time, const String &hostname);
+  ObjectID(int sequence, int pid, int time, const String &hostname);
 
   // Copy <src>other</src>. Note that if the ObjectID is embedded inside an
   // object, the enclosing object probably does not want to copy the ObjectID
@@ -119,9 +119,9 @@ class ObjectID {
   // Ordinarily the user does not need to get at the exact state of the,
   // ObjectID, however it is available for those times when it is necessary.
   // <group>
-  Int sequence() const;
-  Int pid() const;
-  Int creationTime() const;
+  int sequence() const;
+  int pid() const;
+  int creationTime() const;
   const String &hostName() const;
   // </group>
 
@@ -132,26 +132,26 @@ class ObjectID {
   static String extractIDs(Block<ObjectID> &objectIDs, const String &command);
 
  private:
-  Int sequence_number_p;
-  Int process_id_p;
-  Int creation_time_p;
+  int sequence_number_p;
+  int process_id_p;
+  int creation_time_p;
   String hostname_p;
 
   // Make a unique sequence number, returns 0 on first call, 1 on next, ...
-  static Int sequence_number();
+  static int sequence_number();
 };
 
-uInt hashFunc(const ObjectID &);
+unsigned int hashFunc(const ObjectID &);
 
 ostream &operator<<(ostream &os, const ObjectID &id);
 
 // # Inlines
 
-inline Int ObjectID::sequence() const { return sequence_number_p; }
+inline int ObjectID::sequence() const { return sequence_number_p; }
 
-inline Int ObjectID::pid() const { return process_id_p; }
+inline int ObjectID::pid() const { return process_id_p; }
 
-inline Int ObjectID::creationTime() const { return creation_time_p; }
+inline int ObjectID::creationTime() const { return creation_time_p; }
 
 inline const String &ObjectID::hostName() const { return hostname_p; }
 

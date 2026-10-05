@@ -45,7 +45,7 @@ void EarthMagneticUDF::setup(const Table&, const TaQLStyle&) {
   }
   // Get the 'to' value type.
   // Determine the argnr of the earthmagnetic/direction values.
-  uInt argnr = 0;
+  unsigned int argnr = 0;
   bool asLOS = false;
   bool asLong = false;
   bool useModel = false;
@@ -147,12 +147,12 @@ void EarthMagneticUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType, itsValueType));
 }
 
-Double EarthMagneticUDF::getDouble(const TableExprId& id) {
+double EarthMagneticUDF::getDouble(const TableExprId& id) {
   return itsEngine.getArrayDouble(id).data()[0];
 }
 
-MArray<Double> EarthMagneticUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id));
+MArray<double> EarthMagneticUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id));
 }
 
 }  // namespace casacore

@@ -64,133 +64,133 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 #endif
 
 extern "C" {
-void grdsf(Double*, Double*);
-void cgrd1d(Int*, Int*, Complex*, const Complex*, Int*, Int*, Double*, Double*);
-void cgrd2d(Int*, Int*, Int*, Int*, Complex*, const Complex*, Int*, Int*, Double*, Double*,
-            Double*);
-void cgrd3d(Int*, Int*, Int*, Int*, Int*, Int*, Complex*, const Complex*, Int*, Int*, Double*,
-            Double*, Double*, Double*);
-void cdgrd1d(Int*, Int*, const Complex*, Complex*, Int*, Int*, Double*, Double*);
-void cdgrd2d(Int*, Int*, Int*, Int*, const Complex*, Complex*, Int*, Int*, Double*, Double*,
-             Double*);
-void cdgrd3d(Int*, Int*, Int*, Int*, Int*, Int*, const Complex*, Complex*, Int*, Int*, Double*,
-             Double*, Double*, Double*);
+void grdsf(double*, double*);
+void cgrd1d(int*, int*, Complex*, const Complex*, int*, int*, double*, double*);
+void cgrd2d(int*, int*, int*, int*, Complex*, const Complex*, int*, int*, double*, double*,
+            double*);
+void cgrd3d(int*, int*, int*, int*, int*, int*, Complex*, const Complex*, int*, int*, double*,
+            double*, double*, double*);
+void cdgrd1d(int*, int*, const Complex*, Complex*, int*, int*, double*, double*);
+void cdgrd2d(int*, int*, int*, int*, const Complex*, Complex*, int*, int*, double*, double*,
+             double*);
+void cdgrd3d(int*, int*, int*, int*, int*, int*, const Complex*, Complex*, int*, int*, double*,
+             double*, double*, double*);
 
-void fgrd1d(Int*, Int*, Float*, const Float*, Int*, Int*, Double*, Double*);
-void fgrd2d(Int*, Int*, Int*, Int*, Float*, const Float*, Int*, Int*, Double*, Double*, Double*);
-void fgrd3d(Int*, Int*, Int*, Int*, Int*, Int*, Float*, const Float*, Int*, Int*, Double*, Double*,
-            Double*, Double*);
-void fdgrd1d(Int*, Int*, const Float*, Float*, Int*, Int*, Double*, Double*);
-void fdgrd2d(Int*, Int*, Int*, Int*, const Float*, Float*, Int*, Int*, Double*, Double*, Double*);
-void fdgrd3d(Int*, Int*, Int*, Int*, Int*, Int*, const Float*, Float*, Int*, Int*, Double*, Double*,
-             Double*, Double*);
+void fgrd1d(int*, int*, float*, const float*, int*, int*, double*, double*);
+void fgrd2d(int*, int*, int*, int*, float*, const float*, int*, int*, double*, double*, double*);
+void fgrd3d(int*, int*, int*, int*, int*, int*, float*, const float*, int*, int*, double*, double*,
+            double*, double*);
+void fdgrd1d(int*, int*, const float*, float*, int*, int*, double*, double*);
+void fdgrd2d(int*, int*, int*, int*, const float*, float*, int*, int*, double*, double*, double*);
+void fdgrd3d(int*, int*, int*, int*, int*, int*, const float*, float*, int*, int*, double*, double*,
+             double*, double*);
 
-void dgrd1d(Int*, Int*, Double*, const Double*, Int*, Int*, Double*, Double*);
-void dgrd2d(Int*, Int*, Int*, Int*, Double*, const Double*, Int*, Int*, Double*, Double*, Double*);
-void dgrd3d(Int*, Int*, Int*, Int*, Int*, Int*, Double*, const Double*, Int*, Int*, Double*,
-            Double*, Double*, Double*);
-void ddgrd1d(Int*, Int*, const Double*, Double*, Int*, Int*, Double*, Double*);
-void ddgrd2d(Int*, Int*, Int*, Int*, const Double*, Double*, Int*, Int*, Double*, Double*, Double*);
-void ddgrd3d(Int*, Int*, Int*, Int*, Int*, Int*, const Double*, Double*, Int*, Int*, Double*,
-             Double*, Double*, Double*);
+void dgrd1d(int*, int*, double*, const double*, int*, int*, double*, double*);
+void dgrd2d(int*, int*, int*, int*, double*, const double*, int*, int*, double*, double*, double*);
+void dgrd3d(int*, int*, int*, int*, int*, int*, double*, const double*, int*, int*, double*,
+            double*, double*, double*);
+void ddgrd1d(int*, int*, const double*, double*, int*, int*, double*, double*);
+void ddgrd2d(int*, int*, int*, int*, const double*, double*, int*, int*, double*, double*, double*);
+void ddgrd3d(int*, int*, int*, int*, int*, int*, const double*, double*, int*, int*, double*,
+             double*, double*, double*);
 }
 
 // Double versions
 
-inline void grd1d(Int* ni, Int* li, Double* grid, const Double* value, Int* sampling, Int* support,
-                  Double* posi, Double* convFunc) {
+inline void grd1d(int* ni, int* li, double* grid, const double* value, int* sampling, int* support,
+                  double* posi, double* convFunc) {
   dgrd1d(ni, li, grid, value, sampling, support, posi, convFunc);
 }
 
-inline void grd2d(Int* ni, Int* nj, Int* li, Int* lj, Double* grid, const Double* value,
-                  Int* sampling, Int* support, Double* posi, Double* posj, Double* convFunc) {
+inline void grd2d(int* ni, int* nj, int* li, int* lj, double* grid, const double* value,
+                  int* sampling, int* support, double* posi, double* posj, double* convFunc) {
   dgrd2d(ni, nj, li, lj, grid, value, sampling, support, posi, posj, convFunc);
 }
 
-inline void grd3d(Int* ni, Int* nj, Int* nk, Int* li, Int* lj, Int* lk, Double* grid,
-                  const Double* value, Int* sampling, Int* support, Double* posi, Double* posj,
-                  Double* posk, Double* convFunc) {
+inline void grd3d(int* ni, int* nj, int* nk, int* li, int* lj, int* lk, double* grid,
+                  const double* value, int* sampling, int* support, double* posi, double* posj,
+                  double* posk, double* convFunc) {
   dgrd3d(ni, nj, nk, li, lj, lk, grid, value, sampling, support, posi, posj, posk, convFunc);
 }
 
-inline void dgrd1d(Int* ni, Int* li, const Double* grid, Double* value, Int* sampling, Int* support,
-                   Double* posi, Double* convFunc) {
+inline void dgrd1d(int* ni, int* li, const double* grid, double* value, int* sampling, int* support,
+                   double* posi, double* convFunc) {
   ddgrd1d(ni, li, grid, value, sampling, support, posi, convFunc);
 }
-inline void dgrd2d(Int* ni, Int* nj, Int* li, Int* lj, const Double* grid, Double* value,
-                   Int* sampling, Int* support, Double* posi, Double* posj, Double* convFunc) {
+inline void dgrd2d(int* ni, int* nj, int* li, int* lj, const double* grid, double* value,
+                   int* sampling, int* support, double* posi, double* posj, double* convFunc) {
   ddgrd2d(ni, nj, li, lj, grid, value, sampling, support, posi, posj, convFunc);
 }
 
-inline void dgrd3d(Int* ni, Int* nj, Int* nk, Int* li, Int* lj, Int* lk, const Double* grid,
-                   Double* value, Int* sampling, Int* support, Double* posi, Double* posj,
-                   Double* posk, Double* convFunc) {
+inline void dgrd3d(int* ni, int* nj, int* nk, int* li, int* lj, int* lk, const double* grid,
+                   double* value, int* sampling, int* support, double* posi, double* posj,
+                   double* posk, double* convFunc) {
   ddgrd3d(ni, nj, nk, li, lj, lk, grid, value, sampling, support, posi, posj, posk, convFunc);
 }
 
 // Complex versions
 
-inline void grd1d(Int* ni, Int* li, Complex* grid, const Complex* value, Int* sampling,
-                  Int* support, Double* posi, Double* convFunc) {
+inline void grd1d(int* ni, int* li, Complex* grid, const Complex* value, int* sampling,
+                  int* support, double* posi, double* convFunc) {
   cgrd1d(ni, li, grid, value, sampling, support, posi, convFunc);
 }
 
-inline void grd2d(Int* ni, Int* nj, Int* li, Int* lj, Complex* grid, const Complex* value,
-                  Int* sampling, Int* support, Double* posi, Double* posj, Double* convFunc) {
+inline void grd2d(int* ni, int* nj, int* li, int* lj, Complex* grid, const Complex* value,
+                  int* sampling, int* support, double* posi, double* posj, double* convFunc) {
   cgrd2d(ni, nj, li, lj, grid, value, sampling, support, posi, posj, convFunc);
 }
 
-inline void grd3d(Int* ni, Int* nj, Int* nk, Int* li, Int* lj, Int* lk, Complex* grid,
-                  const Complex* value, Int* sampling, Int* support, Double* posi, Double* posj,
-                  Double* posk, Double* convFunc) {
+inline void grd3d(int* ni, int* nj, int* nk, int* li, int* lj, int* lk, Complex* grid,
+                  const Complex* value, int* sampling, int* support, double* posi, double* posj,
+                  double* posk, double* convFunc) {
   cgrd3d(ni, nj, nk, li, lj, lk, grid, value, sampling, support, posi, posj, posk, convFunc);
 }
 
-inline void dgrd1d(Int* ni, Int* li, const Complex* grid, Complex* value, Int* sampling,
-                   Int* support, Double* posi, Double* convFunc) {
+inline void dgrd1d(int* ni, int* li, const Complex* grid, Complex* value, int* sampling,
+                   int* support, double* posi, double* convFunc) {
   cdgrd1d(ni, li, grid, value, sampling, support, posi, convFunc);
 }
-inline void dgrd2d(Int* ni, Int* nj, Int* li, Int* lj, const Complex* grid, Complex* value,
-                   Int* sampling, Int* support, Double* posi, Double* posj, Double* convFunc) {
+inline void dgrd2d(int* ni, int* nj, int* li, int* lj, const Complex* grid, Complex* value,
+                   int* sampling, int* support, double* posi, double* posj, double* convFunc) {
   cdgrd2d(ni, nj, li, lj, grid, value, sampling, support, posi, posj, convFunc);
 }
 
-inline void dgrd3d(Int* ni, Int* nj, Int* nk, Int* li, Int* lj, Int* lk, const Complex* grid,
-                   Complex* value, Int* sampling, Int* support, Double* posi, Double* posj,
-                   Double* posk, Double* convFunc) {
+inline void dgrd3d(int* ni, int* nj, int* nk, int* li, int* lj, int* lk, const Complex* grid,
+                   Complex* value, int* sampling, int* support, double* posi, double* posj,
+                   double* posk, double* convFunc) {
   cdgrd3d(ni, nj, nk, li, lj, lk, grid, value, sampling, support, posi, posj, posk, convFunc);
 }
 
 // Float versions
 
-inline void grd1d(Int* ni, Int* li, Float* grid, const Float* value, Int* sampling, Int* support,
-                  Double* posi, Double* convFunc) {
+inline void grd1d(int* ni, int* li, float* grid, const float* value, int* sampling, int* support,
+                  double* posi, double* convFunc) {
   fgrd1d(ni, li, grid, value, sampling, support, posi, convFunc);
 }
 
-inline void grd2d(Int* ni, Int* nj, Int* li, Int* lj, Float* grid, const Float* value,
-                  Int* sampling, Int* support, Double* posi, Double* posj, Double* convFunc) {
+inline void grd2d(int* ni, int* nj, int* li, int* lj, float* grid, const float* value,
+                  int* sampling, int* support, double* posi, double* posj, double* convFunc) {
   fgrd2d(ni, nj, li, lj, grid, value, sampling, support, posi, posj, convFunc);
 }
 
-inline void grd3d(Int* ni, Int* nj, Int* nk, Int* li, Int* lj, Int* lk, Float* grid,
-                  const Float* value, Int* sampling, Int* support, Double* posi, Double* posj,
-                  Double* posk, Double* convFunc) {
+inline void grd3d(int* ni, int* nj, int* nk, int* li, int* lj, int* lk, float* grid,
+                  const float* value, int* sampling, int* support, double* posi, double* posj,
+                  double* posk, double* convFunc) {
   fgrd3d(ni, nj, nk, li, lj, lk, grid, value, sampling, support, posi, posj, posk, convFunc);
 }
 
-inline void dgrd1d(Int* ni, Int* li, const Float* grid, Float* value, Int* sampling, Int* support,
-                   Double* posi, Double* convFunc) {
+inline void dgrd1d(int* ni, int* li, const float* grid, float* value, int* sampling, int* support,
+                   double* posi, double* convFunc) {
   fdgrd1d(ni, li, grid, value, sampling, support, posi, convFunc);
 }
-inline void dgrd2d(Int* ni, Int* nj, Int* li, Int* lj, const Float* grid, Float* value,
-                   Int* sampling, Int* support, Double* posi, Double* posj, Double* convFunc) {
+inline void dgrd2d(int* ni, int* nj, int* li, int* lj, const float* grid, float* value,
+                   int* sampling, int* support, double* posi, double* posj, double* convFunc) {
   fdgrd2d(ni, nj, li, lj, grid, value, sampling, support, posi, posj, convFunc);
 }
 
-inline void dgrd3d(Int* ni, Int* nj, Int* nk, Int* li, Int* lj, Int* lk, const Float* grid,
-                   Float* value, Int* sampling, Int* support, Double* posi, Double* posj,
-                   Double* posk, Double* convFunc) {
+inline void dgrd3d(int* ni, int* nj, int* nk, int* li, int* lj, int* lk, const float* grid,
+                   float* value, int* sampling, int* support, double* posi, double* posj,
+                   double* posk, double* convFunc) {
   fdgrd3d(ni, nj, nk, li, lj, lk, grid, value, sampling, support, posi, posj, posk, convFunc);
 }
 
@@ -216,7 +216,7 @@ bool ConvolveGridder<Domain, Range>::grid(Array<Range>& gridded, const Vector<Do
     bool del;
     posVec = this->position(posVec, p);
     const IPosition& fs = gridded.shape();
-    std::vector<Int> s(fs.begin(), fs.end());
+    std::vector<int> s(fs.begin(), fs.end());
     switch (loc.nelements()) {
       case 1:
         grd1d(&s[0], &loc(0), gridded.getStorage(del), &value, &support, &sampling, &posVec(0),
@@ -249,7 +249,7 @@ bool ConvolveGridder<Domain, Range>::degrid(const Array<Range>& gridded, const V
     bool del;
     posVec = this->position(posVec, p);
     const IPosition& fs = gridded.shape();
-    std::vector<Int> s(fs.begin(), fs.end());
+    std::vector<int> s(fs.begin(), fs.end());
     switch (loc.nelements()) {
       case 1:
         dgrd1d(&s[0], &loc(0), gridded.getStorage(del), &value, &support, &sampling, &posVec(0),
@@ -274,18 +274,18 @@ bool ConvolveGridder<Domain, Range>::degrid(const Array<Range>& gridded, const V
 }
 
 template <class Domain, class Range>
-Range ConvolveGridder<Domain, Range>::correctionFactor1D(Int loc, Int len) {
-  Int offset = loc - len / 2;
+Range ConvolveGridder<Domain, Range>::correctionFactor1D(int loc, int len) {
+  int offset = loc - len / 2;
   if (cType == "BOX") {
     if (offset != 0.0) {
-      Double arg = M_PI * Double(offset) / Double(len);
+      double arg = M_PI * double(offset) / double(len);
       return std::sin(arg) / arg;
     } else {
       return 1.0;
     }
   } else {
-    Double nu = std::abs(Double(offset) / Double(len / 2));
-    Double val;
+    double nu = std::abs(double(offset) / double(len / 2));
+    double val;
     grdsf(&nu, &val);
     return val;
   }
@@ -300,7 +300,7 @@ void ConvolveGridder<Domain, Range>::setConvolutionFunction(const String& type) 
     sampling = 100;
     convFunc.resize(sampling * (support + 1));
     convFunc = 0.0;
-    for (Int i = 0; i < sampling * (support + 1); i++) {
+    for (int i = 0; i < sampling * (support + 1); i++) {
       convFunc(i) = 1.0;
     }
   } else {
@@ -309,9 +309,9 @@ void ConvolveGridder<Domain, Range>::setConvolutionFunction(const String& type) 
     sampling = 100;
     convFunc.resize(sampling * (support + 1));
     convFunc = 0.0;
-    for (Int i = 0; i < sampling * support; i++) {
-      Double nu = Double(i) / Double(support * sampling);
-      Double val;
+    for (int i = 0; i < sampling * support; i++) {
+      double nu = double(i) / double(support * sampling);
+      double val;
       grdsf(&nu, &val);
       convFunc(i) = (1.0 - nu * nu) * val;
     }
@@ -319,17 +319,17 @@ void ConvolveGridder<Domain, Range>::setConvolutionFunction(const String& type) 
 }
 
 template <class Domain, class Range>
-Vector<Double>& ConvolveGridder<Domain, Range>::cFunction() {
+Vector<double>& ConvolveGridder<Domain, Range>::cFunction() {
   return convFunc;
 }
 
 template <class Domain, class Range>
-Vector<Int>& ConvolveGridder<Domain, Range>::cSupport() {
+Vector<int>& ConvolveGridder<Domain, Range>::cSupport() {
   return supportVec;
 }
 
 template <class Domain, class Range>
-Int& ConvolveGridder<Domain, Range>::cSampling() {
+int& ConvolveGridder<Domain, Range>::cSampling() {
   return sampling;
 }
 

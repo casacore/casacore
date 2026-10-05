@@ -89,14 +89,14 @@ class MSStateParse : public MSParse {
   // Associate the ms and the shorthand.
   MSStateParse(const MeasurementSet* ms);
 
-  const TableExprNode* selectStateIds(const Vector<Int>& stateIDs);
+  const TableExprNode* selectStateIds(const Vector<int>& stateIDs);
 
   // Get table expression node object.
   static const TableExprNode* node();
   static MSStateParse* thisMSSIParser;
   static std::shared_ptr<MSSelectionErrorHandler> thisMSSErrorHandler;
   // static MSSelectionErrorHandler* thisMSSErrorHandler;
-  static Vector<Int> selectedIDs() { return idList; };
+  static Vector<int> selectedIDs() { return idList; };
   static void reset() { idList.resize(0); };
   static void cleanupNode() {
     if (node_p) delete node_p;
@@ -111,7 +111,7 @@ class MSStateParse : public MSParse {
  private:
   static TableExprNode* node_p;
   const String colName;
-  static Vector<Int> idList;
+  static Vector<int> idList;
 };
 
 }  // namespace casacore

@@ -53,17 +53,17 @@ template <class T>
 void invert(Matrix<T> &out, T &det, const Matrix<T> &in) {
   AlwaysAssert(in.nrow() == in.ncolumn(), AipsError);
 
-  Int m = in.nrow();
-  Int lda = m;
-  Int n = m;  // m, n, lda
+  int m = in.nrow();
+  int lda = m;
+  int n = m;  // m, n, lda
 
   out.resize(in.shape());
   out = in;
   bool deleteIt;
   T *a = out.getStorage(deleteIt);  // a
 
-  Block<Int> ipiv(m);  // ipiv
-  Int info;            // info
+  Block<int> ipiv(m);  // ipiv
+  int info;            // info
 
   getrf(&m, &n, a, &lda, ipiv.storage(), &info);
 
@@ -71,10 +71,10 @@ void invert(Matrix<T> &out, T &det, const Matrix<T> &in) {
     // Calculate the determinate
     // It is just the product of the diagonal elements
     det = out(0, 0);
-    for (Int i = 1; i < n; i++) det *= out(i, i);
+    for (int i = 1; i < n; i++) det *= out(i, i);
 
     // Calculate the inverse using back substitution
-    Int lwork = 32 * n;  // Lazy - we should really get this from ilaenv
+    int lwork = 32 * n;  // Lazy - we should really get this from ilaenv
     Block<T> work(lwork);
     getri(&m, a, &lda, ipiv.storage(), work.storage(), &lwork, &info);
   }
@@ -87,7 +87,7 @@ void invert(Matrix<T> &out, T &det, const Matrix<T> &in) {
 
 template <class T>
 Matrix<T> invertSymPosDef(const Matrix<T> &in) {
-  Int i, j, k, n;
+  int i, j, k, n;
   n = in.nrow();
 
   Vector<T> diag(n);
@@ -125,7 +125,7 @@ void invertSymPosDef(Matrix<T> &out, T &determinate, const Matrix<T> &in) {
   // Resize out to match in
   out.resize(in.shape());
 
-  Int i, j, k, n;
+  int i, j, k, n;
   n = in.nrow();
 
   Vector<T> diag(n);
@@ -168,7 +168,7 @@ void CholeskyDecomp(Matrix<T> &A, Vector<T> &diag) {
   // Cholesky factor L.  The diagonal elements of L are returned in vector
   // diag.
 
-  Int i, j, k, n;
+  int i, j, k, n;
   T sum;
   n = A.nrow();
   // Cholesky decompose A = L*trans(L)
@@ -199,7 +199,7 @@ void CholeskySolve(Matrix<T> &A, Vector<T> &diag, Vector<T> &b, Vector<T> &x) {
   // diagonal elements which are in vector diag.  On return x contains the
   // solution.  b and x can be the same vector to save memory space.
 
-  Int i, k, n;
+  int i, k, n;
   T sum;
 
   n = A.nrow();

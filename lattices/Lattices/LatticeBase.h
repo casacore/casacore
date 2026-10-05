@@ -123,7 +123,7 @@ class LatticeBase {
   // lock() and hasLock return true, which is suitable for all
   // non-paged lattices.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   // </group>
@@ -162,7 +162,7 @@ class LatticeBase {
   // Return the number of axes in this Lattice. This includes all
   // degenerate axes.
   // <br>The default implementation returns shape().nelements().
-  virtual uInt ndim() const;
+  virtual unsigned int ndim() const;
 
   // Return the total number of elements in this Lattice.
   // <br>The default implementation returns shape().product().
@@ -183,7 +183,7 @@ class LatticeBase {
   // include in the cursor of an iterator. The Lattice class has a default
   // implementation which returns a number that is a power of two and
   // includes enough pixels to consume between 4 and 8 MBytes of memory.
-  virtual uInt advisedMaxPixels() const = 0;
+  virtual unsigned int advisedMaxPixels() const = 0;
 
   // Returns a recommended cursor shape for iterating through all the pixels
   // in the Lattice. The default implementation sets up a shape that
@@ -197,7 +197,7 @@ class LatticeBase {
   // </srcblock>
   // The default argument is the result of <src>advisedMaxPixels()</src>.
   // <group>
-  IPosition niceCursorShape(uInt maxPixels) const { return doNiceCursorShape(maxPixels); }
+  IPosition niceCursorShape(unsigned int maxPixels) const { return doNiceCursorShape(maxPixels); }
   IPosition niceCursorShape() const { return doNiceCursorShape(advisedMaxPixels()); }
   // </group>
 
@@ -209,15 +209,15 @@ class LatticeBase {
   // various Lattice classes.
   // <br>The default implementation tries to fit as many axes
   // as possible given <src>maxPixels</src>.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Maximum cache size - not necessarily all used. In pixels.
   // Default returns 0, which means that there is no maximum.
-  virtual uInt maximumCacheSize() const;
+  virtual unsigned int maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
   // <br>The default implementation does nothing.
-  virtual void setMaximumCacheSize(uInt howManyPixels);
+  virtual void setMaximumCacheSize(unsigned int howManyPixels);
 
   // Set the actual cache size for this Array to be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
@@ -225,7 +225,7 @@ class LatticeBase {
   // set using the setMaximumCacheSize member function.
   // Tiles are cached using a first in first out algorithm.
   // <br>The default implementation does nothing.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Set the cache size as to "fit" the indicated path.
   // <br>The default implementation does nothing.

@@ -126,12 +126,13 @@ class AutoDiffX : public AutoDiff<T> {
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // total number of derivatives is ndiffs, the nth derivative is one, and all
   // others are zero.
-  AutoDiffX(const T &v, const uInt ndiffs, const uInt n) : AutoDiff<T>(v, ndiffs, n) {}
+  AutoDiffX(const T &v, const unsigned int ndiffs, const unsigned int n)
+      : AutoDiff<T>(v, ndiffs, n) {}
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The
   // total number of derivatives is ndiffs.
   // All derivatives are zero.
-  AutoDiffX(const T &v, const uInt ndiffs) : AutoDiff<T>(v, ndiffs) {}
+  AutoDiffX(const T &v, const unsigned int ndiffs) : AutoDiff<T>(v, ndiffs) {}
 
   // Construct one from another
   AutoDiffX(const AutoDiff<T> &other) : AutoDiff<T>(other) {}

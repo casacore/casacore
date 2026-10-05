@@ -134,15 +134,15 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-class CompressComplex : public BaseMappedArrayEngine<Complex, Int> {
+class CompressComplex : public BaseMappedArrayEngine<Complex, int> {
  public:
   // Construct an engine to scale all arrays in a column with
   // the given offset and scale factor.
   // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
   // The virtual column using this engine must have data type Complex.
-  CompressComplex(const String& virtualColumnName, const String& storedColumnName, Float scale,
-                  Float offset = 0);
+  CompressComplex(const String& virtualColumnName, const String& storedColumnName, float scale,
+                  float offset = 0);
 
   // Construct an engine to scale the arrays in a column.
   // The scale and offset values are taken from a column with
@@ -266,63 +266,63 @@ class CompressComplex : public BaseMappedArrayEngine<Complex, Int> {
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnGet(Float scale, Float offset, Array<Complex>& array,
-                          const Array<Int>& target);
+  virtual void scaleOnGet(float scale, float offset, Array<Complex>& array,
+                          const Array<int>& target);
 
   // Scale and/or offset array to target.
   // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
-                          Array<Int>& target);
+  virtual void scaleOnPut(float scale, float offset, const Array<Complex>& array,
+                          Array<int>& target);
 
   // Scale and/or offset target to array for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
   // Otherwise it iterates through the array and applies the scale
   // and offset per row.
-  void scaleColumnOnGet(Array<Complex>& array, const Array<Int>& target);
+  void scaleColumnOnGet(Array<Complex>& array, const Array<int>& target);
 
   // Scale and/or offset array to target for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
   // Otherwise it iterates through the array and applies the scale
   // and offset per row.
-  void scaleColumnOnPut(const Array<Complex>& array, Array<Int>& target);
+  void scaleColumnOnPut(const Array<Complex>& array, Array<int>& target);
 
  protected:
   // # Now define the data members.
   String scaleName_p;                   // # name of scale column
   String offsetName_p;                  // # name of offset column
-  Float scale_p;                        // # fixed scale factor
-  Float offset_p;                       // # fixed offset value
+  float scale_p;                        // # fixed scale factor
+  float offset_p;                       // # fixed offset value
   bool fixed_p;                         // # scale/offset is fixed
   bool autoScale_p;                     // # determine scale/offset automatically
-  ScalarColumn<Float>* scaleColumn_p;   // # column with scale value
-  ScalarColumn<Float>* offsetColumn_p;  // # column with offset value
-  Array<Int> buffer_p;                  // # buffer to avoid Array constructions
+  ScalarColumn<float>* scaleColumn_p;   // # column with scale value
+  ScalarColumn<float>* offsetColumn_p;  // # column with offset value
+  Array<int> buffer_p;                  // # buffer to avoid Array constructions
                                         // # (makes multi-threading harder)
 
   // Get the scale value for this row.
-  Float getScale(rownr_t rownr);
+  float getScale(rownr_t rownr);
 
   // Get the offset value for this row.
-  Float getOffset(rownr_t rownr);
+  float getOffset(rownr_t rownr);
 
   // Find minimum and maximum from the array data.
   // NaN and infinite values are ignored. If no values are finite,
   // minimum and maximum are set to NaN.
-  virtual void findMinMax(Float& minVal, Float& maxVal, const Array<Complex>& array) const;
+  virtual void findMinMax(float& minVal, float& maxVal, const Array<Complex>& array) const;
 
   // Make scale and offset from the minimum and maximum of the array data.
   // If minVal is NaN, scale is set to 0.
-  void makeScaleOffset(Float& scale, Float& offset, Float minVal, Float maxVal) const;
+  void makeScaleOffset(float& scale, float& offset, float minVal, float maxVal) const;
 
   // Put a part of an array in a row using given scale/offset values.
-  void putPart(rownr_t rownr, const Slicer& slicer, const Array<Complex>& array, Float scale,
-               Float offset);
+  void putPart(rownr_t rownr, const Slicer& slicer, const Array<Complex>& array, float scale,
+               float offset);
 
   // Fill the array part into the full array and put it using the
   // given min/max values.
   void putFullPart(rownr_t rownr, const Slicer& slicer, Array<Complex>& fullArray,
-                   const Array<Complex>& partArray, Float minVal, Float maxVal);
+                   const Array<Complex>& partArray, float minVal, float maxVal);
 
  public:
   // Define the "constructor" to construct this engine when a
@@ -409,8 +409,8 @@ class CompressComplexSD : public CompressComplex {
   // StoredColumnName is the name of the column where the scaled
   // data will be put and must have data type Int.
   // The virtual column using this engine must have data type Complex.
-  CompressComplexSD(const String& virtualColumnName, const String& storedColumnName, Float scale,
-                    Float offset = 0);
+  CompressComplexSD(const String& virtualColumnName, const String& storedColumnName, float scale,
+                    float offset = 0);
 
   // Construct an engine to scale the arrays in a column.
   // The scale and offset values are taken from a column with
@@ -461,19 +461,19 @@ class CompressComplexSD : public CompressComplex {
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnGet(Float scale, Float offset, Array<Complex>& array,
-                          const Array<Int>& target);
+  virtual void scaleOnGet(float scale, float offset, Array<Complex>& array,
+                          const Array<int>& target);
 
   // Scale and/or offset array to target.
   // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  virtual void scaleOnPut(Float scale, Float offset, const Array<Complex>& array,
-                          Array<Int>& target);
+  virtual void scaleOnPut(float scale, float offset, const Array<Complex>& array,
+                          Array<int>& target);
 
   // Find minimum and maximum from the array data.
   // NaN and infinite values and zero imaginary parts are ignored.
   // If no values are finite, minimum and maximum are set to NaN.
-  virtual void findMinMax(Float& minVal, Float& maxVal, const Array<Complex>& array) const;
+  virtual void findMinMax(float& minVal, float& maxVal, const Array<Complex>& array) const;
 
  public:
   // Define the "constructor" to construct this engine when a
@@ -485,10 +485,10 @@ class CompressComplexSD : public CompressComplex {
   static DataManager* makeObject(const String& dataManagerType, const Record& spec);
 };
 
-inline Float CompressComplex::getScale(rownr_t rownr) {
+inline float CompressComplex::getScale(rownr_t rownr) {
   return (fixed_p ? scale_p : (*scaleColumn_p)(rownr));
 }
-inline Float CompressComplex::getOffset(rownr_t rownr) {
+inline float CompressComplex::getOffset(rownr_t rownr) {
   return (fixed_p ? offset_p : (*offsetColumn_p)(rownr));
 }
 

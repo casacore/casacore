@@ -28,7 +28,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-StorageOption::StorageOption(StorageOption::Option option, Int blockSize, Int useODirect)
+StorageOption::StorageOption(StorageOption::Option option, int blockSize, int useODirect)
     : itsOption(option),
       itsBlockSize(blockSize),
       itsUseODirect(useODirect > 0),
@@ -52,7 +52,7 @@ void StorageOption::fillOption() {
   }
   // Default block size is 4MB.
   if (itsBlockSize <= -2) {
-    AipsrcValue<Int>::find(itsBlockSize, "table.storage.blocksize", 0);
+    AipsrcValue<int>::find(itsBlockSize, "table.storage.blocksize", 0);
   }
   if (itsBlockSize <= 0) {
     itsBlockSize = 4 * 1024 * 1024;

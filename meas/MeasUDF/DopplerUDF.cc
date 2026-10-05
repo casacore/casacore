@@ -38,7 +38,7 @@ void DopplerUDF::setup(const Table&, const TaQLStyle&) {
   // Get the 'to' reference type.
   itsEngine.handleMeasType(operands()[0], true);
   itsRefType = itsEngine.refType();
-  uInt argnr = 1;
+  unsigned int argnr = 1;
   if (operands().size() <= argnr) {
     throw AipsError("No values given in a MEAS.DOPPLER function");
   }
@@ -63,10 +63,10 @@ void DopplerUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType));
 }
 
-Double DopplerUDF::getDouble(const TableExprId& id) { return getArrayDouble(id).array().data()[0]; }
+double DopplerUDF::getDouble(const TableExprId& id) { return getArrayDouble(id).array().data()[0]; }
 
-MArray<Double> DopplerUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id));
+MArray<double> DopplerUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id));
 }
 
 }  // namespace casacore

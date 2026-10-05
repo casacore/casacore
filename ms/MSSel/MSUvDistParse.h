@@ -91,11 +91,11 @@ class MSUvDistParse : public MSParse {
 
   //    ~MSUvDistParse() {if (node_p) delete node_p;node_p=0x0;}
 
-  const TableExprNode* selectUVRange(const Double& startUV, const Double& endUV, const String& unit,
+  const TableExprNode* selectUVRange(const double& startUV, const double& endUV, const String& unit,
                                      bool doSlow = false);
 
   Vector<bool> selectedUnits() { return meterUnits_p; }
-  Matrix<Double> selectedUV() { return selectedUV_p; }
+  Matrix<double> selectedUV() { return selectedUV_p; }
   static void reset() {
     selectedUV_p.resize(2, 0);
     meterUnits_p.resize(0);
@@ -111,9 +111,9 @@ class MSUvDistParse : public MSParse {
 
  private:
   static TableExprNode* node_p;
-  static Matrix<Double> selectedUV_p;
+  static Matrix<double> selectedUV_p;
   static Vector<bool> meterUnits_p;
-  void accumulateUVList(const Double r0, const Double r1, const bool wavelengthUnits,
+  void accumulateUVList(const double r0, const double r1, const bool wavelengthUnits,
                         const bool meterUnits);
 };
 

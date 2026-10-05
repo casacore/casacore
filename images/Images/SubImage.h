@@ -178,7 +178,7 @@ class SubImage : public ImageInterface<T> {
 
   // Returns the number of axes in this SubImage. This includes all
   // degenerate axes.
-  virtual uInt ndim() const;
+  virtual unsigned int ndim() const;
 
   // Returns the total number of elements in this SubImage.
   virtual size_t nelements() const;
@@ -189,7 +189,7 @@ class SubImage : public ImageInterface<T> {
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Get access to the attribute handler (of the parent image).
   // If a handler keyword does not exist yet, it is created if
@@ -229,11 +229,11 @@ class SubImage : public ImageInterface<T> {
   virtual LatticeIterInterface<T>* makeIter(const LatticeNavigator& navigator, bool useRef) const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -257,7 +257,7 @@ class SubImage : public ImageInterface<T> {
   void setMembers(const Slicer& slicer);
 
   // Helper
-  void convertIPosition(Vector<Float>& x, const IPosition& pos) const;
+  void convertIPosition(Vector<float>& x, const IPosition& pos) const;
 
   // # itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;
@@ -272,7 +272,7 @@ class SubImage : public ImageInterface<T> {
 };
 
 // # Declare extern templates for often used types.
-extern template class SubImage<Float>;
+extern template class SubImage<float>;
 extern template class SubImage<Complex>;
 
 }  // namespace casacore

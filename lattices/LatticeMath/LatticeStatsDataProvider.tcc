@@ -43,7 +43,7 @@ LatticeStatsDataProvider<T>::LatticeStatsDataProvider()
 
 template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider(const Lattice<T>& lattice,
-                                                      uInt iteratorLimitBytes)
+                                                      unsigned int iteratorLimitBytes)
     : LatticeStatsDataProviderBase<T>(),
       _iter(),
       _currentSlice(),
@@ -68,16 +68,16 @@ void LatticeStatsDataProvider<T>::operator++() {
 }
 
 template <class T>
-uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
+unsigned int LatticeStatsDataProvider<T>::estimatedSteps() const {
   if (!_iter) {
     return 1;
   }
   IPosition lattShape = _iter->latticeShape();
   IPosition cursShape = _iter->cursor().shape();
-  uInt ndim = lattShape.size();
-  uInt count = 1;
-  for (uInt i = 0; i < ndim; i++) {
-    uInt nsteps = lattShape[i] / cursShape[i];
+  unsigned int ndim = lattShape.size();
+  unsigned int count = 1;
+  for (unsigned int i = 0; i < ndim; i++) {
+    unsigned int nsteps = lattShape[i] / cursShape[i];
     if (lattShape[i] % cursShape[i] != 0) {
       ++nsteps;
     }
@@ -101,7 +101,7 @@ void LatticeStatsDataProvider<T>::finalize() {
 }
 
 template <class T>
-uInt64 LatticeStatsDataProvider<T>::getCount() {
+uint64_t LatticeStatsDataProvider<T>::getCount() {
   if (!_iter) {
     return _currentSlice.size();
   }
@@ -123,7 +123,7 @@ const bool* LatticeStatsDataProvider<T>::getMask() {
 }
 
 template <class T>
-uInt LatticeStatsDataProvider<T>::getNMaxThreads() const {
+unsigned int LatticeStatsDataProvider<T>::getNMaxThreads() const {
 #ifdef _OPENMP
   return _nMaxThreads;
 #else
@@ -145,7 +145,8 @@ void LatticeStatsDataProvider<T>::reset() {
 }
 
 template <class T>
-void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice, uInt iteratorLimitBytes) {
+void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice,
+                                             unsigned int iteratorLimitBytes) {
   finalize();
   if (lattice.size() > iteratorLimitBytes / sizeof(T)) {
     TileStepper stepper(lattice.shape(), lattice.niceCursorShape(lattice.advisedMaxPixels()));
@@ -157,12 +158,12 @@ void LatticeStatsDataProvider<T>::setLattice(const Lattice<T>& lattice, uInt ite
   }
 #ifdef _OPENMP
   _nMaxThreads = min(omp_get_max_threads(),
-                     (Int)ceil((Float)lattice.size() / ClassicalStatisticsData::BLOCK_SIZE));
+                     (int)ceil((float)lattice.size() / ClassicalStatisticsData::BLOCK_SIZE));
 #endif
 }
 
 template <class T>
-void LatticeStatsDataProvider<T>::updateMaxPos(const std::pair<Int64, Int64>& maxpos) {
+void LatticeStatsDataProvider<T>::updateMaxPos(const std::pair<int64_t, int64_t>& maxpos) {
   IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
   if (_iter) {
     p += _iter->position();
@@ -171,7 +172,7 @@ void LatticeStatsDataProvider<T>::updateMaxPos(const std::pair<Int64, Int64>& ma
 }
 
 template <class T>
-void LatticeStatsDataProvider<T>::updateMinPos(const std::pair<Int64, Int64>& minpos) {
+void LatticeStatsDataProvider<T>::updateMinPos(const std::pair<int64_t, int64_t>& minpos) {
   IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
   if (_iter) {
     p += _iter->position();

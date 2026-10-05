@@ -166,13 +166,13 @@ void LogSink::postGloballyThenThrow(const LogMessage &message) {
   }
 }
 
-uInt LogSink::nelements() const { return local_sink_p->nelements(); }
+unsigned int LogSink::nelements() const { return local_sink_p->nelements(); }
 
-Double LogSink::getTime(uInt i) const { return local_sink_p->getTime(i); }
-String LogSink::getPriority(uInt i) const { return local_sink_p->getPriority(i); }
-String LogSink::getMessage(uInt i) const { return local_sink_p->getMessage(i); }
-String LogSink::getLocation(uInt i) const { return local_sink_p->getLocation(i); }
-String LogSink::getObjectID(uInt i) const { return local_sink_p->getObjectID(i); }
+double LogSink::getTime(unsigned int i) const { return local_sink_p->getTime(i); }
+String LogSink::getPriority(unsigned int i) const { return local_sink_p->getPriority(i); }
+String LogSink::getMessage(unsigned int i) const { return local_sink_p->getMessage(i); }
+String LogSink::getLocation(unsigned int i) const { return local_sink_p->getLocation(i); }
+String LogSink::getObjectID(unsigned int i) const { return local_sink_p->getObjectID(i); }
 
 const LogFilterInterface &LogSink::filter() const { return this->LogSinkInterface::filter(); }
 
@@ -213,7 +213,7 @@ bool LogSink::postLocally(const LogMessage &message) {
   }
 }
 
-void LogSink::writeLocally(Double time, const String &message, const String &priority,
+void LogSink::writeLocally(double time, const String &message, const String &priority,
                            const String &location, const String &objectID) {
   local_sink_p->writeLocally(time, message, priority, location, objectID);
 }

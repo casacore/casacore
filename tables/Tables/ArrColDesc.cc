@@ -34,7 +34,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 ArrayColumnDescBase::ArrayColumnDescBase(const String& name, const String& comment,
                                          const String& dataManagerType,
                                          const String& dataManagerGroup, DataType dt,
-                                         const String& dataTypeId, Int options, uInt ndim,
+                                         const String& dataTypeId, int options, unsigned int ndim,
                                          const IPosition& shape)
     : BaseColumnDesc(name, comment, dataManagerType, dataManagerGroup, dt, dataTypeId, options,
                      ndim, shape, false, true, false) {
@@ -60,7 +60,7 @@ String ArrayColumnDescBase::className() const { return "ArrayColumnDesc<" + data
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void ArrayColumnDescBase::putDesc(AipsIO& ios) const {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   // Formerly a switch was written to determine if a default existed.
   // This switch was always false.
   // Keep writing this switch (which is not used anymore).
@@ -68,7 +68,7 @@ void ArrayColumnDescBase::putDesc(AipsIO& ios) const {
 }
 
 void ArrayColumnDescBase::getDesc(AipsIO& ios) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   // Formerly a switch was written to determine if a default existed.
   // This switch was always false.

@@ -115,7 +115,7 @@ class ArrayColumnData : public PlainColumn {
   void initialize(rownr_t startRownr, rownr_t endRownr);
 
   // Get the global #dimensions of an array (ie. for all rows).
-  uInt ndimColumn() const;
+  unsigned int ndimColumn() const;
 
   // Get the global shape of an array (ie. for all rows).
   IPosition shapeColumn() const;
@@ -126,7 +126,7 @@ class ArrayColumnData : public PlainColumn {
 
   // Get the #dimensions of an array in a particular cell.
   // If the cell does not contain an array, 0 is returned.
-  uInt ndim(rownr_t rownr) const;
+  unsigned int ndim(rownr_t rownr) const;
 
   // Get the shape of an array in a particular cell.
   // If the cell does not contain an array, an empty IPosition is returned.

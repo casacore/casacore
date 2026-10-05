@@ -236,7 +236,7 @@ class MUString {
   // Create from String; setting pointer at start
   // <group>
   MUString(const String &in);
-  MUString(const Char *in);
+  MUString(const char *in);
   MUString(char in);
   // </group>
   // Copy constructor; new pointer will be same as old
@@ -271,7 +271,7 @@ class MUString {
   void skipSign();
   bool testSign() const;
   bool tSkipSign();
-  Int getSign();
+  int getSign();
   // </group>
 
   // Act on integer field. If no integer found in 0 returned; and false
@@ -279,11 +279,11 @@ class MUString {
   void skipInt();
   bool testInt() const;
   bool tSkipInt();
-  Int getInt();
+  int getInt();
   void skipuInt();
   bool tSkipuInt();
   bool testuInt() const;
-  uInt getuInt();
+  unsigned int getuInt();
   // </group>
 
   // Act on Double field. If no value 0 returned and false.
@@ -291,18 +291,18 @@ class MUString {
   void skipDouble();
   bool testDouble() const;
   bool tSkipDouble();
-  Double getDouble();
+  double getDouble();
   // </group>
 
   // Act on character(s)
   // <group>
-  void skipChar(Int n = 1);
-  void skipChar(Char ch);
-  bool tSkipChar(Char nc);
-  void skipCharNC(Char ch);
-  bool tSkipCharNC(Char ch);
-  bool tSkipOneChar(Char ch);
-  bool tSkipOneCharNC(Char ch);
+  void skipChar(int n = 1);
+  void skipChar(char ch);
+  bool tSkipChar(char nc);
+  void skipCharNC(char ch);
+  bool tSkipCharNC(char ch);
+  bool tSkipOneChar(char ch);
+  bool tSkipOneCharNC(char ch);
   void skipChar(const Regex &ex);
   bool tSkipChar(const Regex &ex);
   void skipAlpha();
@@ -311,13 +311,13 @@ class MUString {
   bool tSkipNum();
   void skipAlphaNum();
   bool tSkipAlphaNum();
-  bool testChar(Char ch) const;
-  bool testCharNC(Char ch) const;
+  bool testChar(char ch) const;
+  bool testCharNC(char ch) const;
   bool testChar(const Regex &ex) const;
   bool testAlpha() const;
   bool testNum() const;
   bool testAlphaNum() const;
-  Char getChar();
+  char getChar();
   String getAlpha();
   String getAlphaNum();
   // </group>
@@ -343,23 +343,23 @@ class MUString {
   // (excluding them)
   // will be put in Last. If false, the ptr will be as originally; if true
   // it will point beyond the matched closing character
-  bool matchPair(Char nd);
+  bool matchPair(char nd);
 
   // Get frequency of occurrence
-  Int freqChar(Char ch) const;
+  int freqChar(char ch) const;
 
   // Get part of string
   // <group>
   String get();
-  String get(uInt st);
-  String get(uInt st, uInt nd);
+  String get(unsigned int st);
+  String get(unsigned int st, unsigned int nd);
   // </group>
 
   // Get pointer
-  Int getPtr() const;
+  int getPtr() const;
 
   // (Re-)set pointer
-  void setPtr(Int in = 0);
+  void setPtr(int in = 0);
 
   // test for end of string
   bool eos() const;
@@ -372,8 +372,8 @@ class MUString {
 
   // Do minimax check on list of Strings
   // <group>
-  static uInt minimaxNC(const String &in, Int N_name, const String tname[]);
-  static uInt minimaxNC(const String &in, const Vector<String> &tname);
+  static unsigned int minimaxNC(const String &in, int N_name, const String tname[]);
+  static unsigned int minimaxNC(const String &in, const Vector<String> &tname);
   // </group>
 
  private:
@@ -381,13 +381,13 @@ class MUString {
   // String value
   String str;
   // 0-based pointer into string
-  uInt ptr;
+  unsigned int ptr;
   // Length of string
-  uInt len;
+  unsigned int len;
   // Pointer stack
-  Block<uInt> stack;
+  Block<unsigned int> stack;
   // Pointer into stack
-  uInt stpt;
+  unsigned int stpt;
   // Status of last get
   bool stat;
   // String found at last get
@@ -395,12 +395,12 @@ class MUString {
 
   // Member functions
   // Make a new pointer between 0 and len inclusive
-  void adjustPtr(Int in);
+  void adjustPtr(int in);
 
   // Initialise last settings; return pointer
-  Int initLast();
+  int initLast();
   // Set last settings
-  void setLast(Int st);
+  void setLast(int st);
 };
 
 // Global functions

@@ -123,7 +123,7 @@ class LCRegionSingle : public LCRegion {
                           const IPosition& stride);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Make an iterator.
   // When the underlying region has a mask, an iterator for that region

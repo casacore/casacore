@@ -162,8 +162,8 @@ class LogMessage {
   // change in a particular LogMessage object. Generally you will set the
   // line number with the <src>__LINE__</src> macro.
   // <group>
-  uInt line() const;
-  LogMessage &line(uInt which);
+  unsigned int line() const;
+  LogMessage &line(unsigned int which);
   // </group>
 
   // Set the source location - usually this will be called with the

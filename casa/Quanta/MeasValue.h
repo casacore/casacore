@@ -152,7 +152,7 @@ class MeasValue {
   // Get the internal value as a <src>Vector<Double></src>.
   // Note that the vector could
   // be empty, or not be a true representation (different data sizes e.g.)
-  virtual Vector<Double> getVector() const = 0;
+  virtual Vector<double> getVector() const = 0;
 
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
@@ -160,19 +160,19 @@ class MeasValue {
   // the TableMeasures.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double>> getRecordValue() const = 0;
-  virtual Vector<Quantum<Double>> getXRecordValue() const;
-  virtual Vector<Quantum<Double>> getTMRecordValue() const;
+  virtual Vector<Quantum<double>> getRecordValue() const = 0;
+  virtual Vector<Quantum<double>> getXRecordValue() const;
+  virtual Vector<Quantum<double>> getTMRecordValue() const;
   // </group>
   // Set the internal value from a Vector of values (obtained in principle
   // with a getVector()). It will be assumed that the Vector is correctly
   // formatted. If Vector is too long, the remainder will be discarded.
   // If Vector is too short, action will depend on the individual classes,
   // but in general act the same way as a constructor with a short Vector.
-  virtual void putVector(const Vector<Double> &in) = 0;
+  virtual void putVector(const Vector<double> &in) = 0;
 
   // Set the internal value if correct values and dimensions
-  virtual bool putValue(const Vector<Quantum<Double>> &in) = 0;
+  virtual bool putValue(const Vector<Quantum<double>> &in) = 0;
 
   // Some of the Measure values used need the occasional adjustments to proper
   // values. Examples are MVDirection (direction cosines) which have to be
@@ -182,9 +182,9 @@ class MeasValue {
   // Adjust value
   virtual void adjust();
   // Adjust value and return a normalisation value
-  virtual void adjust(Double &val);
+  virtual void adjust(double &val);
   // Re-adjust, i.e. undo a previous adjust, with value
-  virtual void readjust(Double val);
+  virtual void readjust(double val);
   // </group>
  private:
 };

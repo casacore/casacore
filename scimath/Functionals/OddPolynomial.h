@@ -89,7 +89,7 @@ class OddPolynomial : public OddPolynomialParam<T> {
   OddPolynomial() : OddPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero.
-  explicit OddPolynomial(uInt order) : OddPolynomialParam<T>(order) {}
+  explicit OddPolynomial(unsigned int order) : OddPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   OddPolynomial(const OddPolynomial<T> &other) : OddPolynomialParam<T>(other) {}
@@ -146,7 +146,7 @@ class OddPolynomial_PS<AutoDiff<T>> : public OddPolynomialParam<AutoDiff<T>> {
   //  Constructs one dimensional OddPolynomials.
   //  <group>
   OddPolynomial_PS() : OddPolynomialParam<AutoDiff<T>>() {}
-  explicit OddPolynomial_PS(uInt order) : OddPolynomialParam<AutoDiff<T>>(order) {}
+  explicit OddPolynomial_PS(unsigned int order) : OddPolynomialParam<AutoDiff<T>>(order) {}
   // </group>
 
   // Copy constructor (deep copy)

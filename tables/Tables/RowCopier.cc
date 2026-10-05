@@ -60,7 +60,7 @@ class ColumnHolder {
 ColumnHolder::ColumnHolder(Table &outTab, const Table &inTab) : in(inTab), out(outTab) {}
 
 ColumnHolder::~ColumnHolder() {
-  for (uInt colNum = 0; colNum < inTabCol.nelements(); colNum++) {
+  for (unsigned int colNum = 0; colNum < inTabCol.nelements(); colNum++) {
     delete inTabCol[colNum];
     delete outTabCol[colNum];
     inTabCol[colNum] = 0;
@@ -99,7 +99,7 @@ bool ColumnHolder::copy(rownr_t toRow, rownr_t fromRow) {
   }
 
   // loop over all columns
-  for (uInt i = 0; i < inTabCol.nelements(); i++) {
+  for (unsigned int i = 0; i < inTabCol.nelements(); i++) {
     outTabCol[i]->put(toRow, (*inTabCol[i]), (fromRow));
   }
   return true;
@@ -111,7 +111,7 @@ RowCopier::RowCopier(Table &out, const Table &in) {
   }
 
   columns_p = std::make_shared<ColumnHolder>(out, in);
-  for (uInt i = 0; i < out.tableDesc().ncolumn(); i++) {
+  for (unsigned int i = 0; i < out.tableDesc().ncolumn(); i++) {
     TableColumn outCol(out, i);
     String name(outCol.columnDesc().name());
     if (in.tableDesc().isColumn(name)) {
@@ -132,7 +132,7 @@ RowCopier::RowCopier(Table &out, const Table &in, const Vector<String> &outNames
   if (inNames.nelements() != outNames.nelements()) {
     throw(TableError("RowCopier: Non-conformant column name vectors"));
   }
-  for (uInt i = 0; i < inNames.nelements(); i++) {
+  for (unsigned int i = 0; i < inNames.nelements(); i++) {
     columns_p->attach(outNames(i), inNames(i));
   }
 }

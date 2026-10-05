@@ -44,7 +44,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-bool SpectralCoordinate::toWorld(MFrequency& world, Double pixel) const {
+bool SpectralCoordinate::toWorld(MFrequency& world, double pixel) const {
   static MVFrequency world_tmp;
   if (toWorld(world_tmp, pixel)) {
     world.set(world_tmp, MFrequency::Ref(type_p));
@@ -53,9 +53,9 @@ bool SpectralCoordinate::toWorld(MFrequency& world, Double pixel) const {
   return false;
 }
 
-bool SpectralCoordinate::toWorld(MVFrequency& world, Double pixel) const {
-  Double world_tmp;
-  static Quantum<Double> q_tmp;
+bool SpectralCoordinate::toWorld(MVFrequency& world, double pixel) const {
+  double world_tmp;
+  static Quantum<double> q_tmp;
   //
   if (toWorld(world_tmp, pixel)) {
     q_tmp.setValue(world_tmp);
@@ -66,24 +66,24 @@ bool SpectralCoordinate::toWorld(MVFrequency& world, Double pixel) const {
   return false;
 }
 
-bool SpectralCoordinate::toPixel(Double& pixel, const MFrequency& world) const {
+bool SpectralCoordinate::toPixel(double& pixel, const MFrequency& world) const {
   return toPixel(pixel, world.getValue());
 }
 
-bool SpectralCoordinate::toPixel(Double& pixel, const MVFrequency& world) const {
-  Double world_tmp;
+bool SpectralCoordinate::toPixel(double& pixel, const MVFrequency& world) const {
+  double world_tmp;
   world_tmp = world.get(Unit(worldAxisUnits()(0))).getValue();
   return toPixel(pixel, world_tmp);
 }
 
-bool SpectralCoordinate::pixelToVelocity(Quantum<Double>& velocity, Double pixel) const {
-  Double world;
+bool SpectralCoordinate::pixelToVelocity(Quantum<double>& velocity, double pixel) const {
+  double world;
   if (!toWorld(world, pixel)) return false;
   return frequencyToVelocity(velocity, world);
 }
 
-bool SpectralCoordinate::pixelToVelocity(Double& velocity, Double pixel) const {
-  Double world;
+bool SpectralCoordinate::pixelToVelocity(double& velocity, double pixel) const {
+  double world;
   if (!toWorld(world, pixel)) return false;
   velocity = pVelocityMachine_p->makeVelocity(world).getValue();
   //
@@ -95,15 +95,15 @@ bool SpectralCoordinate::pixelToVelocity(Double& velocity, Double pixel) const {
   }
 }
 
-bool SpectralCoordinate::pixelToVelocity(Vector<Double>& velocity,
-                                         const Vector<Double>& pixel) const {
+bool SpectralCoordinate::pixelToVelocity(Vector<double>& velocity,
+                                         const Vector<double>& pixel) const {
   velocity.resize(pixel.nelements());
 
   // Perhaps its faster to make a vector of world and do them
   // all in one go in the machine ?  Haven't tested it.
 
-  Double world;
-  for (uInt i = 0; i < pixel.nelements(); i++) {
+  double world;
+  for (unsigned int i = 0; i < pixel.nelements(); i++) {
     if (!toWorld(world, pixel(i))) return false;
     velocity(i) = pVelocityMachine_p->makeVelocity(world).getValue();
   }
@@ -116,7 +116,7 @@ bool SpectralCoordinate::pixelToVelocity(Vector<Double>& velocity,
   }
 }
 
-bool SpectralCoordinate::frequencyToVelocity(Quantum<Double>& velocity, Double frequency) const {
+bool SpectralCoordinate::frequencyToVelocity(Quantum<double>& velocity, double frequency) const {
   velocity = pVelocityMachine_p->makeVelocity(frequency);
   MVFrequency mvf(frequency);
   //
@@ -128,8 +128,8 @@ bool SpectralCoordinate::frequencyToVelocity(Quantum<Double>& velocity, Double f
   }
 }
 
-bool SpectralCoordinate::frequencyToVelocity(Double& velocity, Double frequency) const {
-  static Quantum<Double> t;
+bool SpectralCoordinate::frequencyToVelocity(double& velocity, double frequency) const {
+  static Quantum<double> t;
   t = pVelocityMachine_p->makeVelocity(frequency);
   velocity = t.getValue();
   if (isNaN(velocity)) {
@@ -140,8 +140,8 @@ bool SpectralCoordinate::frequencyToVelocity(Double& velocity, Double frequency)
   }
 }
 
-bool SpectralCoordinate::frequencyToVelocity(Vector<Double>& velocity,
-                                             const Vector<Double>& frequency) const
+bool SpectralCoordinate::frequencyToVelocity(Vector<double>& velocity,
+                                             const Vector<double>& frequency) const
 
 {
   velocity.resize(frequency.nelements());
@@ -155,12 +155,12 @@ bool SpectralCoordinate::frequencyToVelocity(Vector<Double>& velocity,
   }
 }
 
-bool SpectralCoordinate::frequencyToVelocity(Quantum<Double>& velocity,
+bool SpectralCoordinate::frequencyToVelocity(Quantum<double>& velocity,
                                              const MFrequency& frequency) const {
   return frequencyToVelocity(velocity, frequency.getValue());
 }
 
-bool SpectralCoordinate::frequencyToVelocity(Quantum<Double>& velocity,
+bool SpectralCoordinate::frequencyToVelocity(Quantum<double>& velocity,
                                              const MVFrequency& frequency) const {
   velocity = pVelocityMachine_p->operator()(frequency);
   if (isNaN(velocity.getValue())) {
@@ -171,14 +171,14 @@ bool SpectralCoordinate::frequencyToVelocity(Quantum<Double>& velocity,
   }
 }
 
-bool SpectralCoordinate::frequencyToWavelength(Vector<Double>& wavelength,
-                                               const Vector<Double>& frequency) const {
+bool SpectralCoordinate::frequencyToWavelength(Vector<double>& wavelength,
+                                               const Vector<double>& frequency) const {
   wavelength.resize(frequency.nelements());
 
   // wave = C::c/freq * 1/to_hz_p * 1/to_m_p
-  Double factor = C::c / to_hz_p / to_m_p;
+  double factor = C::c / to_hz_p / to_m_p;
   bool rval = true;
-  for (uInt i = 0; i < frequency.nelements(); i++) {
+  for (unsigned int i = 0; i < frequency.nelements(); i++) {
     if (frequency(i) > 0.) {
       wavelength(i) = factor / frequency(i);
     } else {
@@ -190,16 +190,16 @@ bool SpectralCoordinate::frequencyToWavelength(Vector<Double>& wavelength,
   return rval;
 }
 
-bool SpectralCoordinate::frequencyToAirWavelength(Vector<Double>& wavelength,
-                                                  const Vector<Double>& frequency) const {
+bool SpectralCoordinate::frequencyToAirWavelength(Vector<double>& wavelength,
+                                                  const Vector<double>& frequency) const {
   wavelength.resize(frequency.nelements());
 
   // airwave = C::c/freq * 1/to_hz_p * 1/to_m_p/refractive_index
-  Double factor = C::c / to_hz_p / to_m_p;
+  double factor = C::c / to_hz_p / to_m_p;
   bool rval = true;
-  for (uInt i = 0; i < frequency.nelements(); i++) {
+  for (unsigned int i = 0; i < frequency.nelements(); i++) {
     if (frequency(i) > 0.) {
-      Double vacWave = factor / frequency(i);
+      double vacWave = factor / frequency(i);
       // cout << "toWave: vacWave " << vacWave << " to_m_p " << to_m_p << endl;
       wavelength(i) = vacWave / FITSSpectralUtil::refractiveIndex(vacWave * 1E6 * to_m_p);
       // cout << "toWave air wave " << wavelength(i) << endl;
@@ -212,16 +212,16 @@ bool SpectralCoordinate::frequencyToAirWavelength(Vector<Double>& wavelength,
   return rval;
 }
 
-bool SpectralCoordinate::airWavelengthToFrequency(Vector<Double>& frequency,
-                                                  const Vector<Double>& airWavelength) const {
+bool SpectralCoordinate::airWavelengthToFrequency(Vector<double>& frequency,
+                                                  const Vector<double>& airWavelength) const {
   frequency.resize(airWavelength.nelements());
 
   // freq = C::c/wave * 1/to_hz_p * 1/to_m_p, wave = n(airwave)*airwave
-  Double factor = C::c / to_hz_p / to_m_p;
+  double factor = C::c / to_hz_p / to_m_p;
   bool rval = true;
-  for (uInt i = 0; i < airWavelength.nelements(); i++) {
+  for (unsigned int i = 0; i < airWavelength.nelements(); i++) {
     if (airWavelength(i) > 0.) {
-      Double lambda_um = airWavelength(i) * 1E6L * to_m_p;  // in micrometers
+      double lambda_um = airWavelength(i) * 1E6L * to_m_p;  // in micrometers
       frequency(i) = factor / airWavelength(i) / FITSSpectralUtil::refractiveIndex(lambda_um);
       // cout << "toFreq: air wave " << airWavelength(i) << " lambda_um " << lambda_um << endl;
       // cout << "toFreq: freq " << frequency(i) << endl;
@@ -234,23 +234,23 @@ bool SpectralCoordinate::airWavelengthToFrequency(Vector<Double>& frequency,
   return rval;
 }
 
-bool SpectralCoordinate::wavelengthToFrequency(Vector<Double>& frequency,
-                                               const Vector<Double>& wavelength) const {
+bool SpectralCoordinate::wavelengthToFrequency(Vector<double>& frequency,
+                                               const Vector<double>& wavelength) const {
   // since the functional form of the conversion is identical, we can reuse the inverse function
   return frequencyToWavelength(frequency, wavelength);
 }
 
-bool SpectralCoordinate::velocityToPixel(Double& pixel, Double velocity) const {
-  Double frequency;
+bool SpectralCoordinate::velocityToPixel(double& pixel, double velocity) const {
+  double frequency;
   if (!velocityToFrequency(frequency, velocity)) return false;
   return toPixel(pixel, frequency);
 }
 
-bool SpectralCoordinate::velocityToPixel(Vector<Double>& pixel,
-                                         const Vector<Double>& velocity) const {
+bool SpectralCoordinate::velocityToPixel(Vector<double>& pixel,
+                                         const Vector<double>& velocity) const {
   pixel.resize(velocity.nelements());
-  Double frequency, pix;
-  for (uInt i = 0; i < velocity.nelements(); i++) {
+  double frequency, pix;
+  for (unsigned int i = 0; i < velocity.nelements(); i++) {
     if (!velocityToFrequency(frequency, velocity(i))) return false;
     if (!toPixel(pix, frequency)) return false;
     pixel(i) = pix;
@@ -259,7 +259,7 @@ bool SpectralCoordinate::velocityToPixel(Vector<Double>& pixel,
   return true;
 }
 
-bool SpectralCoordinate::velocityToFrequency(Double& frequency, Double velocity) const {
+bool SpectralCoordinate::velocityToFrequency(double& frequency, double velocity) const {
   frequency = pVelocityMachine_p->makeFrequency(velocity).getValue();
 
   if (frequency <= 0.) {
@@ -270,10 +270,10 @@ bool SpectralCoordinate::velocityToFrequency(Double& frequency, Double velocity)
   }
 }
 
-bool SpectralCoordinate::velocityToFrequency(Vector<Double>& frequency,
-                                             const Vector<Double>& velocity) const {
+bool SpectralCoordinate::velocityToFrequency(Vector<double>& frequency,
+                                             const Vector<double>& velocity) const {
   frequency.resize(velocity.nelements());
-  for (uInt i = 0; i < velocity.nelements(); i++) {
+  for (unsigned int i = 0; i < velocity.nelements(); i++) {
     frequency(i) = pVelocityMachine_p->makeFrequency(velocity(i)).getValue();
   }
   //
@@ -287,8 +287,8 @@ bool SpectralCoordinate::velocityToFrequency(Vector<Double>& frequency,
 
 void SpectralCoordinate::makeVelocityMachine(const String& velUnit, MDoppler::Types velType,
                                              const Unit& freqUnit, MFrequency::Types freqType,
-                                             Double restFreq) {
-  Quantum<Double> rF(restFreq, freqUnit);
+                                             double restFreq) {
+  Quantum<double> rF(restFreq, freqUnit);
   pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(freqType), freqUnit, MVFrequency(rF),
                                            MDoppler::Ref(velType), Unit(velUnit));
 }
@@ -302,7 +302,7 @@ void SpectralCoordinate::updateVelocityMachine(const String& velUnit, MDoppler::
   }
 }
 
-Int SpectralCoordinate::makeConversionMachines(MFrequency::Types type,
+int SpectralCoordinate::makeConversionMachines(MFrequency::Types type,
                                                MFrequency::Types conversionType,
                                                const MEpoch& epoch, const MPosition& position,
                                                const MDirection& direction) {
@@ -350,17 +350,17 @@ Int SpectralCoordinate::makeConversionMachines(MFrequency::Types type,
   return 1;
 }
 
-void SpectralCoordinate::convertTo(Vector<Double>& world) const {
+void SpectralCoordinate::convertTo(Vector<double>& world) const {
   if (pConversionMachineTo_p) {
-    for (uInt i = 0; i < world.size(); i++) {
+    for (unsigned int i = 0; i < world.size(); i++) {
       world[i] = (*pConversionMachineTo_p)(world[i]).get(unit_p).getValue();
     }
   }
 }
 
-void SpectralCoordinate::convertFrom(Vector<Double>& world) const {
+void SpectralCoordinate::convertFrom(Vector<double>& world) const {
   if (pConversionMachineFrom_p) {
-    for (uInt i = 0; i < world.size(); i++) {
+    for (unsigned int i = 0; i < world.size(); i++) {
       world[i] = (*pConversionMachineFrom_p)(world[i]).get(unit_p).getValue();
     }
   }

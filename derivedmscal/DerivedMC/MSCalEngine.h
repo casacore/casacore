@@ -134,28 +134,28 @@ class MSCalEngine {
   void setDirColName(const String& colName);
 
   // Get the hourangle for the given row.
-  double getHA(Int antnr, rownr_t rownr);
+  double getHA(int antnr, rownr_t rownr);
 
   // Get the hourangle/DEC for the given row.
-  void getHaDec(Int antnr, rownr_t rownr, Array<Double>&);
+  void getHaDec(int antnr, rownr_t rownr, Array<double>&);
 
   // Get the parallatic angle for the given row.
-  double getPA(Int antnr, rownr_t rownr);
+  double getPA(int antnr, rownr_t rownr);
 
   // Get the local sidereal time for the given row.
-  double getLAST(Int antnr, rownr_t rownr);
+  double getLAST(int antnr, rownr_t rownr);
 
   // Get the azimuth/elevation for the given row.
-  void getAzEl(Int antnr, rownr_t rownr, Array<Double>&);
+  void getAzEl(int antnr, rownr_t rownr, Array<double>&);
 
   // Get the ITRF coordinates for the given row.
-  void getItrf(Int antnr, rownr_t rownr, Array<Double>&);
+  void getItrf(int antnr, rownr_t rownr, Array<double>&);
 
   // Get the UVW in J2000 or APP for the given row.
-  void getNewUVW(bool asApp, rownr_t rownr, Array<Double>&);
+  void getNewUVW(bool asApp, rownr_t rownr, Array<double>&);
 
   // Get the delay for the given row.
-  double getDelay(Int antnr, rownr_t rownr);
+  double getDelay(int antnr, rownr_t rownr);
 
  private:
   // Copy constructor cannot be used.
@@ -167,7 +167,7 @@ class MSCalEngine {
   // Set the data in the measure converter machines.
   // The antenna positions are only filled in antnr>=0 or if fillAnt is set.
   // It returns the mount of the antenna.
-  Int setData(Int antnr, rownr_t rownr, bool fillAnt = false);
+  int setData(int antnr, rownr_t rownr, bool fillAnt = false);
 
   // Initialize the column objects, etc.
   void init();
@@ -177,33 +177,33 @@ class MSCalEngine {
 
   // Fill or update the antenna positions from the ANTENNA subtable at
   // row calDescId. It is stored in the calInx-th entry of itsAntPos/itsMount.
-  void fillAntPos(Int calDescId, Int calInx);
+  void fillAntPos(int calDescId, int calInx);
 
   // Fill or update the field directions from the FIELD subtable at
   // row calDescId. It is stored in the calInx-th entry of itsFieldDir.
-  void fillFieldDir(Int calDescId, Int calInx);
+  void fillFieldDir(int calDescId, int calInx);
 
   // Get a calibration MS subtable for the given id.
-  Table getSubTable(Int calDescId, const String& subTabName, bool mustExist = true);
+  Table getSubTable(int calDescId, const String& subTabName, bool mustExist = true);
 
   // # Declare member variables.
   Table itsTable;      // # MS or CalTable to use
-  Int itsLastCalInx;   // # id of CAL_DESC last used
-  Int itsLastFieldId;  // # id of the field last used
-  Int itsLastAntId;    // # -1 is array position used
-  Double itsLastTime;
-  ScalarColumn<Int> itsAntCol[2];           // # ANTENNA1 and ANTENNA2
-  ScalarColumn<Int> itsFeedCol[2];          // # FEED1 and FEED2
-  ScalarColumn<Int> itsFieldCol;            // # FIELD_ID
-  ScalarColumn<Double> itsTimeCol;          // # TIME
+  int itsLastCalInx;   // # id of CAL_DESC last used
+  int itsLastFieldId;  // # id of the field last used
+  int itsLastAntId;    // # -1 is array position used
+  double itsLastTime;
+  ScalarColumn<int> itsAntCol[2];           // # ANTENNA1 and ANTENNA2
+  ScalarColumn<int> itsFeedCol[2];          // # FEED1 and FEED2
+  ScalarColumn<int> itsFieldCol;            // # FIELD_ID
+  ScalarColumn<double> itsTimeCol;          // # TIME
   ScalarMeasColumn<MEpoch> itsTimeMeasCol;  // # TIME as Measure
-  ScalarColumn<Int> itsCalCol;              // # CAL_DESC_ID
+  ScalarColumn<int> itsCalCol;              // # CAL_DESC_ID
   map<std::string, int> itsCalMap;          // # map of MS name to index
-  vector<Int> itsCalIdMap;                  // # map of calId to index
+  vector<int> itsCalIdMap;                  // # map of calId to index
   MPosition itsArrayPos;
   Vector<double> itsArrayItrf;               // # ITRF array position
   vector<vector<MPosition>> itsAntPos;       // # ITRF antenna positions
-  vector<vector<Int>> itsMount;              // # 1=alt-az  0=else
+  vector<vector<int>> itsMount;              // # 1=alt-az  0=else
   vector<vector<MDirection>> itsFieldDir;    // # J2000 field directions
   bool itsReadFieldDir;                      // # false: explicit directions
   String itsDirColName;                      // # FIELD DIR column to read

@@ -116,7 +116,7 @@ class LatticeLocker {
   // the system waits 1 second between each attempt, so nattempts
   // is more or less equal to a wait period in seconds.
   // An exception is thrown when the lock cannot be acquired.
-  explicit LatticeLocker(LatticeBase& lattice, FileLocker::LockType, uInt nattempts = 0);
+  explicit LatticeLocker(LatticeBase& lattice, FileLocker::LockType, unsigned int nattempts = 0);
 
   // If the constructor acquired the lock, the destructor releases
   // the lock and flushes the data if changed.

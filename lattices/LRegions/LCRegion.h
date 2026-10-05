@@ -128,8 +128,8 @@ class LCRegion : public Lattice<bool> {
   // <group>
   LCRegion* translate(const IPosition& translateVector) const;
   LCRegion* translate(const IPosition& translateVector, const IPosition& newLatticeShape) const;
-  LCRegion* translate(const Vector<Float>& translateVector) const;
-  LCRegion* translate(const Vector<Float>& translateVector, const IPosition& newLatticeShape) const;
+  LCRegion* translate(const Vector<float>& translateVector) const;
+  LCRegion* translate(const Vector<float>& translateVector, const IPosition& newLatticeShape) const;
   // </group>
 
   // Give the full lattice shape.
@@ -156,7 +156,7 @@ class LCRegion : public Lattice<bool> {
   static LCRegion* fromRecord(const TableRecord&, const String& tableName);
 
   // Return the dimensionality of the region.
-  virtual uInt ndim() const;
+  virtual unsigned int ndim() const;
 
   // Return the shape of the region (i.e. of its bounding box).
   virtual IPosition shape() const;
@@ -195,7 +195,7 @@ class LCRegion : public Lattice<bool> {
   // </group>
 
   // Do the actual translate in a derived class.
-  virtual LCRegion* doTranslate(const Vector<Float>& translateVector,
+  virtual LCRegion* doTranslate(const Vector<float>& translateVector,
                                 const IPosition& newLatticeShape) const = 0;
 
   // Define the type and class name in the record.
@@ -212,7 +212,7 @@ inline const IPosition& LCRegion::latticeShape() const { return itsShape; }
 inline LCRegion* LCRegion::translate(const IPosition& translateVector) const {
   return translate(translateVector, itsShape);
 }
-inline LCRegion* LCRegion::translate(const Vector<Float>& translateVector) const {
+inline LCRegion* LCRegion::translate(const Vector<float>& translateVector) const {
   return translate(translateVector, itsShape);
 }
 inline const String& LCRegion::comment() const { return itsComment; }

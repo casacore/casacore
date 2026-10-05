@@ -190,7 +190,7 @@ class FunctionHolder : public RecordTransformable {
   // Aids (only filled after a succesful to/fromRecord
   // <group>
   mutable Types nf_p;
-  mutable Int order_p;
+  mutable int order_p;
   mutable String text_p;
   mutable std::unique_ptr<RecordInterface> mode_p;
   // </group>

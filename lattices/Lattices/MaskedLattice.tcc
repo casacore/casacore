@@ -115,19 +115,19 @@ const LatticeRegion& MaskedLattice<T>::region() const {
 
 template <class T>
 bool MaskedLattice<T>::getMask(COWPtr<Array<bool>>& buffer, bool removeDegenerateAxes) const {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   return getMaskSlice(buffer, Slicer(IPosition(nd, 0), shape()), removeDegenerateAxes);
 }
 
 template <class T>
 bool MaskedLattice<T>::getMask(Array<bool>& buffer, bool removeDegenerateAxes) {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   return getMaskSlice(buffer, Slicer(IPosition(nd, 0), shape()), removeDegenerateAxes);
 }
 
 template <class T>
 Array<bool> MaskedLattice<T>::getMask(bool removeDegenerateAxes) const {
-  uInt nd = ndim();
+  unsigned int nd = ndim();
   return getMaskSlice(Slicer(IPosition(nd, 0), shape()), removeDegenerateAxes);
 }
 

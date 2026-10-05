@@ -171,25 +171,25 @@ bool TableLogSink::postLocally(const LogMessage& message) {
   return posted;
 }
 
-uInt TableLogSink::nelements() const { return table().nrow(); }
+unsigned int TableLogSink::nelements() const { return table().nrow(); }
 
-Double TableLogSink::getTime(uInt i) const {
+double TableLogSink::getTime(unsigned int i) const {
   AlwaysAssert(i < table().nrow(), AipsError);
   return roTime()(i);
 }
-String TableLogSink::getPriority(uInt i) const {
+String TableLogSink::getPriority(unsigned int i) const {
   AlwaysAssert(i < table().nrow(), AipsError);
   return roPriority()(i);
 }
-String TableLogSink::getMessage(uInt i) const {
+String TableLogSink::getMessage(unsigned int i) const {
   AlwaysAssert(i < table().nrow(), AipsError);
   return roMessage()(i);
 }
-String TableLogSink::getLocation(uInt i) const {
+String TableLogSink::getLocation(unsigned int i) const {
   AlwaysAssert(i < table().nrow(), AipsError);
   return roLocation()(i);
 }
-String TableLogSink::getObjectID(uInt i) const {
+String TableLogSink::getObjectID(unsigned int i) const {
   AlwaysAssert(i < table().nrow(), AipsError);
   return roObjectID()(i);
 }
@@ -216,7 +216,7 @@ TableDesc TableLogSink::logTableDescription() {
   TableDesc desc;
   desc.comment() = "Log message table";
 
-  desc.addColumn(ScalarColumnDesc<Double>(columnName(TIME), "MJD in seconds"));
+  desc.addColumn(ScalarColumnDesc<double>(columnName(TIME), "MJD in seconds"));
   ScalarColumnDesc<String> pdesc(columnName(PRIORITY));
   pdesc.setMaxLength(9);  // Longest is DEBUGGING
   desc.addColumn(pdesc);
@@ -228,9 +228,9 @@ TableDesc TableLogSink::logTableDescription() {
 
 void TableLogSink::flush(bool) { log_table_p.flush(); }
 
-void TableLogSink::writeLocally(Double mtime, const String& mmessage, const String& mpriority,
+void TableLogSink::writeLocally(double mtime, const String& mmessage, const String& mpriority,
                                 const String& mlocation, const String& mobjectID) {
-  uInt offset = table().nrow();
+  unsigned int offset = table().nrow();
   // cout << "writing " << mmessage << " at row " << offset << endl;
   table().addRow(1);
   time().put(offset, mtime);

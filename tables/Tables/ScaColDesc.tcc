@@ -112,13 +112,13 @@ void ScalarColumnDesc<T>::registerClass() const {
 // the version is put "manually".
 template <class T>
 void ScalarColumnDesc<T>::putDesc(AipsIO& ios) const {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   ValType::put(ios, &defaultVal_p);
 }
 
 template <class T>
 void ScalarColumnDesc<T>::getDesc(AipsIO& ios) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   ValType::get(ios, &defaultVal_p);
 }

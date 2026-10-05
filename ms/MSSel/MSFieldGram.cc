@@ -68,7 +68,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSFieldGram = 0;
-static Int posMSFieldGram = 0;
+static int posMSFieldGram = 0;
 // MSFieldGramwrap out of namespace
 
 // # Parse the command.
@@ -109,7 +109,7 @@ static Int posMSFieldGram = 0;
 // }
 
 TableExprNode msFieldGramParseCommand(const MSField& msFieldSubTable, const TableExprNode& ten,
-                                      const String& command, Vector<Int>& selectedIDs) {
+                                      const String& command, Vector<int>& selectedIDs) {
   //    MSFieldParse *thisParser = new MSFieldParse(ms);
   TableExprNode fieldTEN;
   MSFieldParse* thisParser = new MSFieldParse(msFieldSubTable, ten);
@@ -124,7 +124,7 @@ TableExprNode msFieldGramParseCommand(const MSField& msFieldSubTable, const Tabl
 }
 
 TableExprNode baseMSFieldGramParseCommand(MSFieldParse* parser, const String& command,
-                                          Vector<Int>& selectedIDs) {
+                                          Vector<int>& selectedIDs) {
   //    MSFieldParse parser(ms);               // setup measurement set
   try {
     MSFieldGramrestart(MSFieldGramin);
@@ -150,7 +150,7 @@ TableExprNode baseMSFieldGramParseCommand(MSFieldParse* parser, const String& co
 const TableExprNode* msFieldGramParseNode() { return MSFieldParse::node(); }
 void msFieldGramParseDeleteNode() { MSFieldParse::cleanup(); }
 // # Give the string position.
-Int& msFieldGramPosition() { return posMSFieldGram; }
+int& msFieldGramPosition() { return posMSFieldGram; }
 
 // # Get the next input characters for flex.
 int msFieldGramInput(char* buf, int max_size) {

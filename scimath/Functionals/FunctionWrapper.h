@@ -101,12 +101,12 @@ class FunctionWrapper : public WrapperParam<T> {
   // Construct a  1-dimensional function with parameters.
   FunctionWrapper(T (*f)(const T &, const Vector<T> &), const Vector<T> &par);
   // Construct an n-dimensional  function with no parameters.
-  FunctionWrapper(T (*f)(const Vector<T> &), const Int dim = 1);
+  FunctionWrapper(T (*f)(const Vector<T> &), const int dim = 1);
   // Construct an n-dimensional  function with parameter.
-  FunctionWrapper(T (*f)(const Vector<T> &, const T &), const T &par, const uInt dim = 1);
+  FunctionWrapper(T (*f)(const Vector<T> &, const T &), const T &par, const unsigned int dim = 1);
   // Construct an n-dimensional  function with parameters.
   FunctionWrapper(T (*f)(const Vector<T> &, const Vector<T> &), const Vector<T> &par,
-                  const uInt dim = 1);
+                  const unsigned int dim = 1);
   // Copy constructor (reference semantics)
   // <group>
   FunctionWrapper(const FunctionWrapper<T> &other);
@@ -125,7 +125,7 @@ class FunctionWrapper : public WrapperParam<T> {
 
   // # Member functions
   //  Get the dimensionality
-  virtual uInt ndim() const;
+  virtual unsigned int ndim() const;
   // Return a copy of this object from the heap. The caller is responsible
   // for deleting this pointer.
   // <group>

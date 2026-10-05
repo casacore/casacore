@@ -47,7 +47,7 @@ FileLocker::FileLocker()
       itsReadLocked(false),
       itsWriteLocked(false) {}
 
-FileLocker::FileLocker(int fd, uInt start, uInt length)
+FileLocker::FileLocker(int fd, unsigned int start, unsigned int length)
     : itsFD(fd),
       itsError(0),
       itsStart(start),
@@ -58,7 +58,7 @@ FileLocker::FileLocker(int fd, uInt start, uInt length)
 
 FileLocker::~FileLocker() {}
 
-bool FileLocker::acquire(LockType type, uInt nattempts) {
+bool FileLocker::acquire(LockType type, unsigned int nattempts) {
   itsError = 0;
   // Always success if locking is not supported.
 #if defined(AIPS_NOFILELOCK)
@@ -101,7 +101,7 @@ bool FileLocker::acquire(LockType type, uInt nattempts) {
     itsError = errno;
   }
   // Do finite number of attempts. Wait 1 second between each attempt.
-  for (uInt i = 0; i < nattempts; i++) {
+  for (unsigned int i = 0; i < nattempts; i++) {
     if (fcntl(itsFD, F_SETLK, &ls) != -1) {
       itsError = 0;
       itsReadLocked = true;
@@ -195,12 +195,12 @@ bool FileLocker::canLock(LockType type) {
 #if defined(AIPS_NOFILELOCK)
   return true;
 #else
-  uInt pid;
+  unsigned int pid;
   return canLock(pid, type);
 #endif
 }
 
-bool FileLocker::canLock(uInt& pid, LockType type) {
+bool FileLocker::canLock(unsigned int& pid, LockType type) {
 #if defined(AIPS_NOFILELOCK)
   return true;
 #else

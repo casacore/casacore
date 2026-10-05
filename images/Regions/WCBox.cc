@@ -60,8 +60,8 @@ WCBox::WCBox()
   unitInit();
 }
 
-WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& trc,
-             const CoordinateSystem& cSys, const Vector<Int>& absRel)
+WCBox::WCBox(const Vector<Quantum<double>>& blc, const Vector<Quantum<double>>& trc,
+             const CoordinateSystem& cSys, const Vector<int>& absRel)
     //
     // Constructor from Quantities.  blc and trc are in the
     // order of the pixel axes of CS.  Currently relative
@@ -98,8 +98,8 @@ WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& 
 
   // Set pixelAxes and absRel  (defaults to abs) vectors
 
-  const uInt nAxes = itsBlc.nelements();
-  uInt i;
+  const unsigned int nAxes = itsBlc.nelements();
+  unsigned int i;
   if (nAxes > 0) {
     itsPixelAxes.resize(nAxes);
     for (i = 0; i < nAxes; i++) itsPixelAxes(i) = i;
@@ -123,8 +123,8 @@ WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& 
   }
 }
 
-WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& trc,
-             const IPosition& pixelAxes, const CoordinateSystem& cSys, const Vector<Int>& absRel)
+WCBox::WCBox(const Vector<Quantum<double>>& blc, const Vector<Quantum<double>>& trc,
+             const IPosition& pixelAxes, const CoordinateSystem& cSys, const Vector<int>& absRel)
     //
     // Constructor from Quantities with specification of
     // axes. Currently relative world coordinates are not handled,
@@ -160,8 +160,8 @@ WCBox::WCBox(const Vector<Quantum<Double>>& blc, const Vector<Quantum<Double>>& 
 
   // If the absRel vector is null, it defaults to absolute
 
-  const uInt nAxes = itsPixelAxes.nelements();
-  uInt i;
+  const unsigned int nAxes = itsPixelAxes.nelements();
+  unsigned int i;
   if (itsAbsRel.nelements() == 0 && nAxes > 0) {
     itsAbsRel.resize(nAxes);
     for (i = 0; i < nAxes; i++) itsAbsRel(i) = RegionType::Abs;
@@ -204,14 +204,14 @@ WCBox::WCBox(const LCRegion& region, const CoordinateSystem& cSys)
 
   // Create vectors for conversions
 
-  Vector<Double> wBlc(itsCSys.nWorldAxes());
-  Vector<Double> wTrc(itsCSys.nWorldAxes());
-  Vector<Double> pixel(itsCSys.nPixelAxes());
+  Vector<double> wBlc(itsCSys.nWorldAxes());
+  Vector<double> wTrc(itsCSys.nWorldAxes());
+  Vector<double> pixel(itsCSys.nPixelAxes());
 
   // Convert corners.  The conversion arranges the world values
   // in the order corresponding to the pixel axes.
 
-  uInt i;
+  unsigned int i;
   for (i = 0; i < start.nelements(); i++) pixel(i) = start(i);
   if (!itsCSys.toWorld(wBlc, pixel)) {
     throw(AipsError("WCBox - Cannot convert blc of LCBox because " + itsCSys.errorMessage()));
@@ -228,10 +228,10 @@ WCBox::WCBox(const LCRegion& region, const CoordinateSystem& cSys)
   itsPixelAxes.resize(itsBlc.nelements());
   itsAbsRel.resize(itsBlc.nelements());
   for (i = 0; i < itsCSys.nPixelAxes(); i++) {
-    Int worldAxis = itsCSys.pixelAxisToWorldAxis(i);
+    int worldAxis = itsCSys.pixelAxisToWorldAxis(i);
     if (worldAxis != -1) {
-      itsBlc(i) = Quantum<Double>(wBlc(i), itsCSys.worldAxisUnits()(worldAxis));
-      itsTrc(i) = Quantum<Double>(wTrc(i), itsCSys.worldAxisUnits()(worldAxis));
+      itsBlc(i) = Quantum<double>(wBlc(i), itsCSys.worldAxisUnits()(worldAxis));
+      itsTrc(i) = Quantum<double>(wTrc(i), itsCSys.worldAxisUnits()(worldAxis));
     } else {
       throw(AipsError("WCBox - missing world axis in Coordinate System"));
     }
@@ -313,7 +313,7 @@ bool WCBox::operator==(const WCRegion& other) const {
   // Exact match for units and values is required.  That is,
   // the check is not done in intrinsic values.
 
-  for (uInt i = 0; i < itsBlc.nelements(); i++) {
+  for (unsigned int i = 0; i < itsBlc.nelements(); i++) {
     if (itsBlc(i).getValue() != that.itsBlc(i).getValue()) return false;
     if (itsBlc(i).getUnit() != that.itsBlc(i).getUnit()) return false;
     //
@@ -331,13 +331,13 @@ bool WCBox::operator==(const WCRegion& other) const {
 WCRegion* WCBox::cloneRegion() const { return new WCBox(*this); }
 
 WCBox WCBox::splitBox(const IPosition& axes) const {
-  uInt nAxes = axes.nelements();
-  Vector<Quantum<Double>> blc(nAxes);
-  Vector<Quantum<Double>> trc(nAxes);
+  unsigned int nAxes = axes.nelements();
+  Vector<Quantum<double>> blc(nAxes);
+  Vector<Quantum<double>> trc(nAxes);
   IPosition pixelAxes(nAxes);
-  Vector<Int> absRel(nAxes);
-  for (uInt i = 0; i < nAxes; i++) {
-    uInt axis = axes(i);
+  Vector<int> absRel(nAxes);
+  for (unsigned int i = 0; i < nAxes; i++) {
+    unsigned int axis = axes(i);
     AlwaysAssert(axis < itsBlc.nelements(), AipsError);
     blc(i) = itsBlc(axis);
     trc(i) = itsTrc(axis);
@@ -367,17 +367,17 @@ TableRecord WCBox::toRecord(const String&) const
   rec.define("absrel", itsAbsRel);
   rec.define("oneRel", true);
   //
-  const uInt nAxes = itsPixelAxes.nelements();
-  Vector<Int> pixelAxes(nAxes);
+  const unsigned int nAxes = itsPixelAxes.nelements();
+  Vector<int> pixelAxes(nAxes);
   if (nAxes > 0) pixelAxes = (itsPixelAxes + 1).asVector();
   rec.define("pixelAxes", pixelAxes);
   //
   String error;
   TableRecord recBlc, recTrc, recT;
-  Quantum<Double> tmpQ;
-  Double tmpD;
+  Quantum<double> tmpQ;
+  double tmpD;
   //
-  for (uInt j = 0; j < nAxes; j++) {
+  for (unsigned int j = 0; j < nAxes; j++) {
     tmpQ = itsBlc(j);
     if (tmpQ.getUnit() == "pix") {
       tmpD = tmpQ.getValue();
@@ -393,7 +393,7 @@ TableRecord WCBox::toRecord(const String&) const
   rec.defineRecord("blc", recBlc);
 
   //
-  for (uInt j = 0; j < nAxes; j++) {
+  for (unsigned int j = 0; j < nAxes; j++) {
     tmpQ = itsTrc(j);
     if (tmpQ.getUnit() == "pix") {
       tmpD = tmpQ.getValue();
@@ -431,34 +431,34 @@ WCBox* WCBox::fromRecord(const TableRecord& rec, const String&) {
 
   // Get the pixelAxes.  Pixel things must be converted to zero rel
 
-  Vector<Int> axes = Vector<Int>(rec.toArrayInt("pixelAxes"));
-  const uInt nAxes = axes.nelements();
+  Vector<int> axes = Vector<int>(rec.toArrayInt("pixelAxes"));
+  const unsigned int nAxes = axes.nelements();
   IPosition pixelAxes(nAxes);
-  for (uInt i = 0; i < nAxes; i++) {
+  for (unsigned int i = 0; i < nAxes; i++) {
     pixelAxes(i) = axes(i);
     if (oneRel) pixelAxes(i) -= 1;
   }
 
   // Get the absRel vector
 
-  Vector<Int> absRel = Vector<Int>(rec.toArrayInt("absrel"));
-  uInt nAbsRel = absRel.nelements();
+  Vector<int> absRel = Vector<int>(rec.toArrayInt("absrel"));
+  unsigned int nAbsRel = absRel.nelements();
 
   // Get the blc and trc quantity vectors
 
   String error;
-  Vector<Quantum<Double>> blc, trc;
-  Double tmpD;
+  Vector<Quantum<double>> blc, trc;
+  double tmpD;
   QuantumHolder h;
   //
-  uInt j;
+  unsigned int j;
   const RecordInterface& blcRec = rec.asRecord("blc");
   const RecordInterface& trcRec = rec.asRecord("trc");
   if (blcRec.nfields() != trcRec.nfields()) {
     throw(AipsError("WCBox::fromRecord - blc and trc must be the same length"));
   }
   //
-  uInt nFields = blcRec.nfields();
+  unsigned int nFields = blcRec.nfields();
   if (nAbsRel == 0) {
     if (nFields > 0) {
       absRel.resize(nFields);
@@ -530,27 +530,27 @@ LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& lat
 
   // World coordinate vectors
 
-  Vector<Double> wBlc(cSysTmp.referenceValue().copy());
+  Vector<double> wBlc(cSysTmp.referenceValue().copy());
   Vector<String> blcUnits(cSysTmp.worldAxisUnits().copy());
-  Vector<Double> wTrc(cSysTmp.referenceValue().copy());
+  Vector<double> wTrc(cSysTmp.referenceValue().copy());
   Vector<String> trcUnits(cSysTmp.worldAxisUnits().copy());
 
   // Reorder world coordinates for output CS and set units.
   // "funny" values and units (default, pix, frac) are handled later and are
   // ignored at this stage
 
-  uInt i;
+  unsigned int i;
   for (i = 0; i < itsPixelAxes.nelements(); i++) {
-    Int latticePixelAxis = pixelAxesMap(i);
+    int latticePixelAxis = pixelAxesMap(i);
     Quantity value = itsBlc(i);
     if (value.getUnit() != "pix" && value.getUnit() != "frac" && value.getUnit() != "default") {
-      Int worldAxis = cSysTmp.pixelAxisToWorldAxis(latticePixelAxis);
+      int worldAxis = cSysTmp.pixelAxisToWorldAxis(latticePixelAxis);
       wBlc(worldAxis) = value.getValue();
       blcUnits(worldAxis) = value.getUnit();
     }
     value = itsTrc(i);
     if (value.getUnit() != "pix" && value.getUnit() != "frac" && value.getUnit() != "default") {
-      Int worldAxis = cSysTmp.pixelAxisToWorldAxis(latticePixelAxis);
+      int worldAxis = cSysTmp.pixelAxisToWorldAxis(latticePixelAxis);
       wTrc(worldAxis) = value.getValue();
       trcUnits(worldAxis) = value.getUnit();
     }
@@ -562,7 +562,7 @@ LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& lat
     throw(AipsError("WCBox:doToLCregion - blc units are inconsistent with CoordinateSystem"));
   }
   makeWorldAbsolute(wBlc, itsAbsRel, cSysTmp, latticeShape);
-  Vector<Double> pBlc;
+  Vector<double> pBlc;
   if (!cSysTmp.toPixel(pBlc, wBlc)) {
     throw(AipsError("WCBox:doToLCregion - conversion of blc to pixel coordinates failed"));
   }
@@ -571,7 +571,7 @@ LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& lat
     throw(AipsError("WCBox:doToLCregion - trc units are inconsistent with CoordinateSystem"));
   }
   makeWorldAbsolute(wTrc, itsAbsRel, cSysTmp, latticeShape);
-  Vector<Double> pTrc;
+  Vector<double> pTrc;
   if (!cSysTmp.toPixel(pTrc, wTrc)) {
     throw(AipsError("WCBox:doToLCregion - conversion of trc to pixel coordinates failed"));
   }
@@ -579,15 +579,15 @@ LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& lat
   // Now recover only those values from pBlc that we actually
   // want.  Here we handle frac/pixel/default units as well.
 
-  Vector<Double> refPix = cSysTmp.referencePixel();
-  const uInt nAxes = outOrder.nelements();
-  Vector<Double> outBlc(nAxes);
-  Vector<Double> outTrc(nAxes);
+  Vector<double> refPix = cSysTmp.referencePixel();
+  const unsigned int nAxes = outOrder.nelements();
+  Vector<double> outBlc(nAxes);
+  Vector<double> outTrc(nAxes);
   IPosition outShape(nAxes);
   for (i = 0; i < itsPixelAxes.nelements(); i++) {
-    Int latticePixelAxis = pixelAxesMap(i);
+    int latticePixelAxis = pixelAxesMap(i);
     //
-    Double pixel = pBlc(latticePixelAxis);
+    double pixel = pBlc(latticePixelAxis);
     convertPixel(pixel, itsBlc(i), itsAbsRel(i), refPix(i), latticeShape(latticePixelAxis), true);
     outBlc(outOrder(i)) = pixel;
     //
@@ -599,7 +599,7 @@ LCRegion* WCBox::doToLCRegion(const CoordinateSystem& cSys, const IPosition& lat
   }
   //
   for (i = itsPixelAxes.nelements(); i < nAxes; i++) {
-    Int latticePixelAxis = pixelAxesMap(i);
+    int latticePixelAxis = pixelAxesMap(i);
     outBlc(outOrder(i)) = 0;
     outTrc(outOrder(i)) = latticeShape(latticePixelAxis) - 1;
     outShape(outOrder(i)) = latticeShape(latticePixelAxis);
@@ -616,7 +616,7 @@ String WCBox::type() const { return className(); }
 
 // Private functions
 
-void WCBox::checkUnits(const IPosition& pixelAxes, const Vector<Quantum<Double>>& values,
+void WCBox::checkUnits(const IPosition& pixelAxes, const Vector<Quantum<double>>& values,
                        const CoordinateSystem& cSys)
 //
 // CHeck the units of the given quanta are consistent
@@ -629,12 +629,12 @@ void WCBox::checkUnits(const IPosition& pixelAxes, const Vector<Quantum<Double>>
   }
   //
   Vector<String> units = cSys.worldAxisUnits();
-  Quantum<Double> tmp;
+  Quantum<double> tmp;
 
   // Check units
 
-  for (uInt i = 0; i < values.nelements(); i++) {
-    Int worldAxis = itsCSys.pixelAxisToWorldAxis(pixelAxes(i));
+  for (unsigned int i = 0; i < values.nelements(); i++) {
+    int worldAxis = itsCSys.pixelAxisToWorldAxis(pixelAxes(i));
     if (worldAxis != -1) {
       tmp = values(i);
       if (tmp.getUnit() != "pix" && tmp.getUnit() != "default" && tmp.getUnit() != "def" &&
@@ -652,8 +652,8 @@ void WCBox::checkUnits(const IPosition& pixelAxes, const Vector<Quantum<Double>>
   }
 }
 
-void WCBox::convertPixel(Double& pixel, const Quantum<Double>& value, const Int absRel,
-                         const Double refPix, const Int shape, const bool isBlc) const {
+void WCBox::convertPixel(double& pixel, const Quantum<double>& value, const int absRel,
+                         const double refPix, const int shape, const bool isBlc) const {
   // Defaults get 0 or shape-1
 
   if (value.getUnit() == "default") {
@@ -683,7 +683,7 @@ void WCBox::convertPixel(Double& pixel, const Quantum<Double>& value, const Int 
       if (absRel == RegionType::RelRef) {
         pixel += refPix;
       } else if (absRel == RegionType::RelCen) {
-        pixel += Double(shape) / 2;
+        pixel += double(shape) / 2;
       }
     }
   }

@@ -75,9 +75,9 @@ class RetypedArrayEx1 {
   // RetypedArrayEx1 when instantiating Array<RetypedArrayEx1>.
   // Therefore we have to declare it as a void*.
   // #    static void set (void* copyInfo, Array<RetypedArrayEx1>& out,
-  static void set(void* copyInfo, void* out, const casacore::Array<casacore::Float>& in,
+  static void set(void* copyInfo, void* out, const casacore::Array<float>& in,
                   const casacore::IPosition& shape);
-  static void get(void* copyInfo, casacore::Array<casacore::Float>& out, const void* in,
+  static void get(void* copyInfo, casacore::Array<float>& out, const void* in,
                   const casacore::IPosition& shape);
 
   float x() const { return x_p; }
@@ -124,7 +124,7 @@ class RetypedArrayEx2 {
 
    private:
     Vector<bool>* mask_p;
-    uInt nrTrue_p;
+    unsigned int nrTrue_p;
   };
 
   static void set(void* copyInfo, void* out, const Array<DComplex>& in, const IPosition& shape) {

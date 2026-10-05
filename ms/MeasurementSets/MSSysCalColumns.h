@@ -85,96 +85,96 @@ class MSSysCalColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& antennaId() { return antennaId_p; }
-  ScalarColumn<Int>& feedId() { return feedId_p; }
-  ScalarColumn<Double>& interval() { return interval_p; }
-  ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p; }
-  ScalarColumn<Int>& spectralWindowId() { return spectralWindowId_p; }
-  ScalarColumn<Double>& time() { return time_p; }
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p; }
+  ScalarColumn<int>& antennaId() { return antennaId_p; }
+  ScalarColumn<int>& feedId() { return feedId_p; }
+  ScalarColumn<double>& interval() { return interval_p; }
+  ScalarQuantColumn<double>& intervalQuant() { return intervalQuant_p; }
+  ScalarColumn<int>& spectralWindowId() { return spectralWindowId_p; }
+  ScalarColumn<double>& time() { return time_p; }
+  ScalarQuantColumn<double>& timeQuant() { return timeQuant_p; }
   ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p; }
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Float>& phaseDiff() { return phaseDiff_p; }
-  ScalarQuantColumn<Float>& phaseDiffQuant() { return phaseDiffQuant_p; }
+  ScalarColumn<float>& phaseDiff() { return phaseDiff_p; }
+  ScalarQuantColumn<float>& phaseDiffQuant() { return phaseDiffQuant_p; }
   ScalarColumn<bool>& phaseDiffFlag() { return phaseDiffFlag_p; }
-  ArrayColumn<Float>& tant() { return tant_p; }
-  ArrayQuantColumn<Float>& tantQuant() { return tantQuant_p; }
+  ArrayColumn<float>& tant() { return tant_p; }
+  ArrayQuantColumn<float>& tantQuant() { return tantQuant_p; }
   ScalarColumn<bool>& tantFlag() { return tantFlag_p; }
-  ArrayColumn<Float>& tantSpectrum() { return tantSpectrum_p; }
-  ArrayQuantColumn<Float>& tantSpectrumQuant() { return tantSpectrumQuant_p; }
-  ArrayColumn<Float>& tantTsys() { return tantTsys_p; }
+  ArrayColumn<float>& tantSpectrum() { return tantSpectrum_p; }
+  ArrayQuantColumn<float>& tantSpectrumQuant() { return tantSpectrumQuant_p; }
+  ArrayColumn<float>& tantTsys() { return tantTsys_p; }
   ScalarColumn<bool>& tantTsysFlag() { return tantTsysFlag_p; }
-  ArrayColumn<Float>& tantTsysSpectrum() { return tantTsysSpectrum_p; }
-  ArrayColumn<Float>& tcal() { return tcal_p; }
-  ArrayQuantColumn<Float>& tcalQuant() { return tcalQuant_p; }
+  ArrayColumn<float>& tantTsysSpectrum() { return tantTsysSpectrum_p; }
+  ArrayColumn<float>& tcal() { return tcal_p; }
+  ArrayQuantColumn<float>& tcalQuant() { return tcalQuant_p; }
   ScalarColumn<bool>& tcalFlag() { return tcalFlag_p; }
-  ArrayColumn<Float>& tcalSpectrum() { return tcalSpectrum_p; }
-  ArrayQuantColumn<Float>& tcalSpectrumQuant() { return tcalSpectrumQuant_p; }
-  ArrayColumn<Float>& trx() { return trx_p; }
-  ArrayQuantColumn<Float>& trxQuant() { return trxQuant_p; }
+  ArrayColumn<float>& tcalSpectrum() { return tcalSpectrum_p; }
+  ArrayQuantColumn<float>& tcalSpectrumQuant() { return tcalSpectrumQuant_p; }
+  ArrayColumn<float>& trx() { return trx_p; }
+  ArrayQuantColumn<float>& trxQuant() { return trxQuant_p; }
   ScalarColumn<bool>& trxFlag() { return trxFlag_p; }
-  ArrayColumn<Float>& trxSpectrum() { return trxSpectrum_p; }
-  ArrayQuantColumn<Float>& trxSpectrumQuant() { return trxSpectrumQuant_p; }
-  ArrayColumn<Float>& tsky() { return tsky_p; }
-  ArrayQuantColumn<Float>& tskyQuant() { return tskyQuant_p; }
+  ArrayColumn<float>& trxSpectrum() { return trxSpectrum_p; }
+  ArrayQuantColumn<float>& trxSpectrumQuant() { return trxSpectrumQuant_p; }
+  ArrayColumn<float>& tsky() { return tsky_p; }
+  ArrayQuantColumn<float>& tskyQuant() { return tskyQuant_p; }
   ScalarColumn<bool>& tskyFlag() { return tskyFlag_p; }
-  ArrayColumn<Float>& tskySpectrum() { return tskySpectrum_p; }
-  ArrayQuantColumn<Float>& tskySpectrumQuant() { return tskySpectrumQuant_p; }
-  ArrayColumn<Float>& tsys() { return tsys_p; }
-  ArrayQuantColumn<Float>& tsysQuant() { return tsysQuant_p; }
+  ArrayColumn<float>& tskySpectrum() { return tskySpectrum_p; }
+  ArrayQuantColumn<float>& tskySpectrumQuant() { return tskySpectrumQuant_p; }
+  ArrayColumn<float>& tsys() { return tsys_p; }
+  ArrayQuantColumn<float>& tsysQuant() { return tsysQuant_p; }
   ScalarColumn<bool>& tsysFlag() { return tsysFlag_p; }
-  ArrayColumn<Float>& tsysSpectrum() { return tsysSpectrum_p; }
-  ArrayQuantColumn<Float>& tsysSpectrumQuant() { return tsysSpectrumQuant_p; }
+  ArrayColumn<float>& tsysSpectrum() { return tsysSpectrum_p; }
+  ArrayQuantColumn<float>& tsysSpectrumQuant() { return tsysSpectrumQuant_p; }
   // </group>
 
   // Const access to columns
   // <group>
-  const ScalarColumn<Int>& antennaId() const { return antennaId_p; }
-  const ScalarColumn<Int>& feedId() const { return feedId_p; }
-  const ScalarColumn<Double>& interval() const { return interval_p; }
-  const ScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p; }
-  const ScalarColumn<Int>& spectralWindowId() const { return spectralWindowId_p; }
-  const ScalarColumn<Double>& time() const { return time_p; }
-  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p; }
+  const ScalarColumn<int>& antennaId() const { return antennaId_p; }
+  const ScalarColumn<int>& feedId() const { return feedId_p; }
+  const ScalarColumn<double>& interval() const { return interval_p; }
+  const ScalarQuantColumn<double>& intervalQuant() const { return intervalQuant_p; }
+  const ScalarColumn<int>& spectralWindowId() const { return spectralWindowId_p; }
+  const ScalarColumn<double>& time() const { return time_p; }
+  const ScalarQuantColumn<double>& timeQuant() const { return timeQuant_p; }
   const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p; }
   // </group>
 
   // Const access to optional columns
   // <group>
-  const ScalarColumn<Float>& phaseDiff() const { return phaseDiff_p; }
-  const ScalarQuantColumn<Float>& phaseDiffQuant() const { return phaseDiffQuant_p; }
+  const ScalarColumn<float>& phaseDiff() const { return phaseDiff_p; }
+  const ScalarQuantColumn<float>& phaseDiffQuant() const { return phaseDiffQuant_p; }
   const ScalarColumn<bool>& phaseDiffFlag() const { return phaseDiffFlag_p; }
-  const ArrayColumn<Float>& tant() const { return tant_p; }
-  const ArrayQuantColumn<Float>& tantQuant() const { return tantQuant_p; }
+  const ArrayColumn<float>& tant() const { return tant_p; }
+  const ArrayQuantColumn<float>& tantQuant() const { return tantQuant_p; }
   const ScalarColumn<bool>& tantFlag() const { return tantFlag_p; }
-  const ArrayColumn<Float>& tantSpectrum() const { return tantSpectrum_p; }
-  const ArrayQuantColumn<Float>& tantSpectrumQuant() const { return tantSpectrumQuant_p; }
-  const ArrayColumn<Float>& tantTsys() const { return tantTsys_p; }
+  const ArrayColumn<float>& tantSpectrum() const { return tantSpectrum_p; }
+  const ArrayQuantColumn<float>& tantSpectrumQuant() const { return tantSpectrumQuant_p; }
+  const ArrayColumn<float>& tantTsys() const { return tantTsys_p; }
   const ScalarColumn<bool>& tantTsysFlag() const { return tantTsysFlag_p; }
-  const ArrayColumn<Float>& tantTsysSpectrum() const { return tantTsysSpectrum_p; }
-  const ArrayColumn<Float>& tcal() const { return tcal_p; }
-  const ArrayQuantColumn<Float>& tcalQuant() const { return tcalQuant_p; }
+  const ArrayColumn<float>& tantTsysSpectrum() const { return tantTsysSpectrum_p; }
+  const ArrayColumn<float>& tcal() const { return tcal_p; }
+  const ArrayQuantColumn<float>& tcalQuant() const { return tcalQuant_p; }
   const ScalarColumn<bool>& tcalFlag() const { return tcalFlag_p; }
-  const ArrayColumn<Float>& tcalSpectrum() const { return tcalSpectrum_p; }
-  const ArrayQuantColumn<Float>& tcalSpectrumQuant() const { return tcalSpectrumQuant_p; }
-  const ArrayColumn<Float>& trx() const { return trx_p; }
-  const ArrayQuantColumn<Float>& trxQuant() const { return trxQuant_p; }
+  const ArrayColumn<float>& tcalSpectrum() const { return tcalSpectrum_p; }
+  const ArrayQuantColumn<float>& tcalSpectrumQuant() const { return tcalSpectrumQuant_p; }
+  const ArrayColumn<float>& trx() const { return trx_p; }
+  const ArrayQuantColumn<float>& trxQuant() const { return trxQuant_p; }
   const ScalarColumn<bool>& trxFlag() const { return trxFlag_p; }
-  const ArrayColumn<Float>& trxSpectrum() const { return trxSpectrum_p; }
-  const ArrayQuantColumn<Float>& trxSpectrumQuant() const { return trxSpectrumQuant_p; }
-  const ArrayColumn<Float>& tsky() const { return tsky_p; }
-  const ArrayQuantColumn<Float>& tskyQuant() const { return tskyQuant_p; }
+  const ArrayColumn<float>& trxSpectrum() const { return trxSpectrum_p; }
+  const ArrayQuantColumn<float>& trxSpectrumQuant() const { return trxSpectrumQuant_p; }
+  const ArrayColumn<float>& tsky() const { return tsky_p; }
+  const ArrayQuantColumn<float>& tskyQuant() const { return tskyQuant_p; }
   const ScalarColumn<bool>& tskyFlag() const { return tskyFlag_p; }
-  const ArrayColumn<Float>& tskySpectrum() const { return tskySpectrum_p; }
-  const ArrayQuantColumn<Float>& tskySpectrumQuant() const { return tskySpectrumQuant_p; }
-  const ArrayColumn<Float>& tsys() const { return tsys_p; }
-  const ArrayQuantColumn<Float>& tsysQuant() const { return tsysQuant_p; }
+  const ArrayColumn<float>& tskySpectrum() const { return tskySpectrum_p; }
+  const ArrayQuantColumn<float>& tskySpectrumQuant() const { return tskySpectrumQuant_p; }
+  const ArrayColumn<float>& tsys() const { return tsys_p; }
+  const ArrayQuantColumn<float>& tsysQuant() const { return tsysQuant_p; }
   const ScalarColumn<bool>& tsysFlag() const { return tsysFlag_p; }
-  const ArrayColumn<Float>& tsysSpectrum() const { return tsysSpectrum_p; }
-  const ArrayQuantColumn<Float>& tsysSpectrumQuant() const { return tsysSpectrumQuant_p; }
+  const ArrayColumn<float>& tsysSpectrum() const { return tsysSpectrum_p; }
+  const ArrayQuantColumn<float>& tsysSpectrumQuant() const { return tsysSpectrumQuant_p; }
   // </group>
 
   // Convenience function that returns the number of rows in any of the
@@ -213,51 +213,51 @@ class MSSysCalColumns {
   bool isNull_p;
 
   // # required columns
-  ScalarColumn<Int> antennaId_p;
-  ScalarColumn<Int> feedId_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Int> spectralWindowId_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<int> antennaId_p;
+  ScalarColumn<int> feedId_p;
+  ScalarColumn<double> interval_p;
+  ScalarColumn<int> spectralWindowId_p;
+  ScalarColumn<double> time_p;
   // # optional columns
-  ScalarColumn<Float> phaseDiff_p;
+  ScalarColumn<float> phaseDiff_p;
   ScalarColumn<bool> phaseDiffFlag_p;
-  ArrayColumn<Float> tant_p;
+  ArrayColumn<float> tant_p;
   ScalarColumn<bool> tantFlag_p;
-  ArrayColumn<Float> tantSpectrum_p;
-  ArrayColumn<Float> tantTsys_p;
+  ArrayColumn<float> tantSpectrum_p;
+  ArrayColumn<float> tantTsys_p;
   ScalarColumn<bool> tantTsysFlag_p;
-  ArrayColumn<Float> tantTsysSpectrum_p;
-  ArrayColumn<Float> tcal_p;
+  ArrayColumn<float> tantTsysSpectrum_p;
+  ArrayColumn<float> tcal_p;
   ScalarColumn<bool> tcalFlag_p;
-  ArrayColumn<Float> tcalSpectrum_p;
-  ArrayColumn<Float> trx_p;
+  ArrayColumn<float> tcalSpectrum_p;
+  ArrayColumn<float> trx_p;
   ScalarColumn<bool> trxFlag_p;
-  ArrayColumn<Float> trxSpectrum_p;
-  ArrayColumn<Float> tsky_p;
+  ArrayColumn<float> trxSpectrum_p;
+  ArrayColumn<float> tsky_p;
   ScalarColumn<bool> tskyFlag_p;
-  ArrayColumn<Float> tskySpectrum_p;
-  ArrayColumn<Float> tsys_p;
+  ArrayColumn<float> tskySpectrum_p;
+  ArrayColumn<float> tsys_p;
   ScalarColumn<bool> tsysFlag_p;
-  ArrayColumn<Float> tsysSpectrum_p;
+  ArrayColumn<float> tsysSpectrum_p;
 
   // # Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   // # Access to Quantum columns
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
   // # optional Quantum columns
-  ScalarQuantColumn<Float> phaseDiffQuant_p;
-  ArrayQuantColumn<Float> tantQuant_p;
-  ArrayQuantColumn<Float> tantSpectrumQuant_p;
-  ArrayQuantColumn<Float> tcalQuant_p;
-  ArrayQuantColumn<Float> tcalSpectrumQuant_p;
-  ArrayQuantColumn<Float> trxQuant_p;
-  ArrayQuantColumn<Float> trxSpectrumQuant_p;
-  ArrayQuantColumn<Float> tskyQuant_p;
-  ArrayQuantColumn<Float> tskySpectrumQuant_p;
-  ArrayQuantColumn<Float> tsysQuant_p;
-  ArrayQuantColumn<Float> tsysSpectrumQuant_p;
+  ScalarQuantColumn<float> phaseDiffQuant_p;
+  ArrayQuantColumn<float> tantQuant_p;
+  ArrayQuantColumn<float> tantSpectrumQuant_p;
+  ArrayQuantColumn<float> tcalQuant_p;
+  ArrayQuantColumn<float> tcalSpectrumQuant_p;
+  ArrayQuantColumn<float> trxQuant_p;
+  ArrayQuantColumn<float> trxSpectrumQuant_p;
+  ArrayQuantColumn<float> tskyQuant_p;
+  ArrayQuantColumn<float> tskySpectrumQuant_p;
+  ArrayQuantColumn<float> tsysQuant_p;
+  ArrayQuantColumn<float> tsysSpectrumQuant_p;
 };
 
 // # Define the RO version for backward compatibility.

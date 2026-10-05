@@ -38,11 +38,11 @@ extern "C" {
 #endif
 
 /* Table of constant values
-static Int c__1 = 1;
-static Int c__8 = 8;
+static int c__1 = 1;
+static int c__8 = 8;
 */
 
-/* Subroutine */ Int sphfn(Int *ialf, Int *im, Int *iflag, float *eta, float *psi, Int *ierr) {
+/* Subroutine */ int sphfn(int *ialf, int *im, int *iflag, float *eta, float *psi, int *ierr) {
   /* Initialized data */
 
   static float alpha[5] = {(float)0., (float).5, (float)1., (float)1.5, (float)2.};
@@ -136,13 +136,13 @@ static Int c__8 = 8;
 
   /*
   Builtin functions
-  Int s_wsfe(cilist *), do_fio(Int *, char *, ftnlen), e_wsfe();
+  int s_wsfe(cilist *), do_fio(int *, char *, ftnlen), e_wsfe();
   */
 
   /* Local variables */
-  static Int j, k;
+  static int j, k;
   static float x;
-  extern /* Subroutine */ int msgwrt_(Int *);
+  extern /* Subroutine */ int msgwrt_(int *);
   static float eta2;
 
   /* Fortran I/O blocks
@@ -326,7 +326,7 @@ L900:
   /*
       io___23.ciunit = msgtxt;
        s_wsfe(&io___23);
-      do_fio(&c__1, (char *)&(*ierr), (ftnlen)sizeof(Int));
+      do_fio(&c__1, (char *)&(*ierr), (ftnlen)sizeof(int));
       e_wsfe();
       msgwrt_(&c__8);
   */
@@ -341,8 +341,8 @@ L999:
 }
 #endif
 
-float sphfn(Int ialf, Int im, float eta) {
-  Int ialphahold, imhold, iflaghold, ierrhold;
+float sphfn(int ialf, int im, float eta) {
+  int ialphahold, imhold, iflaghold, ierrhold;
   ialphahold = ialf;
   imhold = im;
   iflaghold = 0;

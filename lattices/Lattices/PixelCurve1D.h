@@ -94,22 +94,22 @@ class PixelCurve1D {
   // Define a straight line from (x1,y1) to (x2,y2).
   // The default number of points is the length of the line.
   explicit PixelCurve1D(double x1 = 0, double y1 = 0, double x2 = 1, double y2 = 1,
-                        uInt npoints = 0);
+                        unsigned int npoints = 0);
 
   // Define a curve with an arbitrary function from x1 to x2.
   // The default number of points is the length of the curve.
   // The length of the curve is determined numerically by integration
   // of sqrt(1+sqr(df/dx)).
-  PixelCurve1D(const Function1D<float, float>&, float x1, float x2, uInt npoints = 0);
+  PixelCurve1D(const Function1D<float, float>&, float x1, float x2, unsigned int npoints = 0);
 
   // Define a curve from a polyline with the given points.
   // Both vectors have to be equally long and at least 2 long.
   // The argument <src>npoints</src> defines the number of points
   // (with regular steps) in which the curve is divided.
   // The default is the length of the polyline.
-  PixelCurve1D(const Vector<Int>& x, const Vector<Int>& y, uInt npoints = 0);
-  PixelCurve1D(const Vector<float>& x, const Vector<float>& y, uInt npoints = 0);
-  PixelCurve1D(const Vector<double>& x, const Vector<double>& y, uInt npoints = 0);
+  PixelCurve1D(const Vector<int>& x, const Vector<int>& y, unsigned int npoints = 0);
+  PixelCurve1D(const Vector<float>& x, const Vector<float>& y, unsigned int npoints = 0);
+  PixelCurve1D(const Vector<double>& x, const Vector<double>& y, unsigned int npoints = 0);
 
   PixelCurve1D(const PixelCurve1D& that);
 
@@ -117,17 +117,18 @@ class PixelCurve1D {
 
   PixelCurve1D& operator=(const PixelCurve1D& that);
 
-  uInt npoints() const { return itsNpoints; }
+  unsigned int npoints() const { return itsNpoints; }
 
   // Get the pixel coordinates in the original lattice for point start
   // till end with given step.
-  void getPixelCoord(Vector<float>& x, Vector<float>& y, uInt start, uInt end, uInt incr = 1) const;
+  void getPixelCoord(Vector<float>& x, Vector<float>& y, unsigned int start, unsigned int end,
+                     unsigned int incr = 1) const;
 
  private:
   // Initialize the object.
-  void init(const Vector<double>& x, const Vector<double>& y, uInt npoints);
+  void init(const Vector<double>& x, const Vector<double>& y, unsigned int npoints);
 
-  uInt itsNpoints;
+  unsigned int itsNpoints;
   Vector<double> itsX;
   Vector<double> itsY;
 };

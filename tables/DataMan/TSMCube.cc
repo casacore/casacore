@@ -75,7 +75,7 @@ static void TSMCube_MoveData(char* a, char* b, int n) {
 #undef TSM_COPY
 
 TSMCube::TSMCube(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
-                 const IPosition& tileShape, const Record& values, Int64 fileOffset,
+                 const IPosition& tileShape, const Record& values, int64_t fileOffset,
                  bool useDerived)
     : cachedTile_p(0),
       stmanPtr_p(stman),
@@ -115,7 +115,7 @@ TSMCube::TSMCube(TiledStMan* stman, AipsIO& ios, bool useDerived)
       cache_p(0),
       userSetCache_p(false),
       lastColAccess_p(NoAccess) {
-  Int fileSeqnr = getObject(ios);
+  int fileSeqnr = getObject(ios);
   if (fileSeqnr >= 0) {
     filePtr_p = stmanPtr_p->getFile(fileSeqnr);
   }
@@ -155,7 +155,7 @@ void TSMCube::showCacheStatistics(ostream& os) const {
   }
 }
 
-uInt TSMCube::coordinateSize(const String& coordinateName) const {
+unsigned int TSMCube::coordinateSize(const String& coordinateName) const {
   if (!values_p.isDefined(coordinateName)) {
     return 0;
   }
@@ -167,7 +167,7 @@ uInt TSMCube::coordinateSize(const String& coordinateName) const {
 }
 
 IPosition TSMCube::cellShape() const {
-  uInt nr = stmanPtr_p->nrCoordVector();
+  unsigned int nr = stmanPtr_p->nrCoordVector();
   if (nr < cubeShape_p.nelements()) {
     return cubeShape_p.getFirst(nr);
   }
@@ -178,14 +178,14 @@ IPosition TSMCube::adjustTileShape(const IPosition& cubeShape, const IPosition& 
   // Make this function independent of the length of tileShape,
   // so it can be shorter or longer than the cube shape.
   // The returned tile shape always has the length of the cube shape.
-  uInt nrdim = cubeShape.nelements();
+  unsigned int nrdim = cubeShape.nelements();
   // Make length of tile shape equal to length of cube shape.
   // Fill with 0 (meaning undefined tile axes).
   IPosition tileShp(nrdim, 0);
   IPosition cubeUnk(nrdim);
-  uInt nrunk = 0;
-  uInt length = 1;
-  for (uInt i = 0; i < nrdim; i++) {
+  unsigned int nrunk = 0;
+  unsigned int length = 1;
+  for (unsigned int i = 0; i < nrdim; i++) {
     if (i < tileShape.nelements()) {
       tileShp(i) = tileShape(i);
     }
@@ -208,12 +208,12 @@ IPosition TSMCube::adjustTileShape(const IPosition& cubeShape, const IPosition& 
   // Calculate a default for the unknown tile axes.
   // Use the remainder of the 32768 for it.
   if (nrunk > 0) {
-    Float rem = 32768. / length;
-    Int leng = max(1, Int(rem + 0.5));
+    float rem = 32768. / length;
+    int leng = max(1, int(rem + 0.5));
     IPosition tileUnk = TiledStMan::makeTileShape(cubeUnk, 0.5, leng);
     length *= tileUnk.product();
-    uInt j = 0;
-    for (uInt i = 0; i < nrdim; i++) {
+    unsigned int j = 0;
+    for (unsigned int i = 0; i < nrdim; i++) {
       if (tileShp(i) == 0 && j < nrunk) {
         tileShp(i) = tileUnk(j++);
       }
@@ -221,8 +221,8 @@ IPosition TSMCube::adjustTileShape(const IPosition& cubeShape, const IPosition& 
   }
   // If the cube is extendible, calculate the last tile axis if needed.
   if (cubeShape(nrdim - 1) == 0 && tileShp(nrdim - 1) == 0) {
-    Float rem = 32768. / length;
-    tileShp(nrdim - 1) = max(1, Int(rem + 0.5));
+    float rem = 32768. / length;
+    tileShp(nrdim - 1) = max(1, int(rem + 0.5));
   }
   return tileShp;
 }
@@ -275,20 +275,20 @@ void TSMCube::putObject(AipsIO& ios) {
   ios << nrdim_p;
   ios << cubeShape_p;
   ios << tileShape_p;
-  Int seqnr = -1;
+  int seqnr = -1;
   if (filePtr_p != 0) {
     seqnr = filePtr_p->sequenceNumber();
   }
   ios << seqnr;
   if (vers1) {
-    ios << uInt(fileOffset_p);
+    ios << static_cast<unsigned int>(fileOffset_p);
   } else {
     ios << fileOffset_p;
   }
 }
-Int TSMCube::getObject(AipsIO& ios) {
-  uInt version;
-  Int fileSeqnr;
+int TSMCube::getObject(AipsIO& ios) {
+  unsigned int version;
+  int fileSeqnr;
   ios >> version;
   ios >> values_p;
   ios >> extensible_p;
@@ -297,7 +297,7 @@ Int TSMCube::getObject(AipsIO& ios) {
   ios >> tileShape_p;
   ios >> fileSeqnr;
   if (version == 1) {
-    uInt offs;
+    unsigned int offs;
     ios >> offs;
     fileOffset_p = offs;
   } else {
@@ -336,7 +336,7 @@ void TSMCube::setupNrTiles() {
   // Also determine the nr of tiles needed (total and per dimension).
   tilesPerDim_p.resize(nrdim_p);
   nrTiles_p = 1;
-  for (uInt i = 0; i < nrdim_p; i++) {
+  for (unsigned int i = 0; i < nrdim_p; i++) {
     nrTilesSubCube_p = nrTiles_p;
     tilesPerDim_p(i) = (cubeShape_p(i) + tileShape_p(i) - 1) / tileShape_p(i);
     nrTiles_p *= tilesPerDim_p(i);
@@ -370,14 +370,14 @@ void TSMCube::deleteCache() {
 
 bool TSMCube::isExtensible() const { return extensible_p; }
 
-void TSMCube::extend(uInt64 nr, const Record& coordValues, const TSMColumn* lastCoordColumn) {
+void TSMCube::extend(uint64_t nr, const Record& coordValues, const TSMColumn* lastCoordColumn) {
   if (!extensible_p) {
     throw TSMError("Hypercube in TSM " + stmanPtr_p->dataManagerName() + " is not extensible");
   }
   // Make the cache here, otherwise nrTiles_p is too high.
   makeCache();
-  uInt lastDim = nrdim_p - 1;
-  uInt nrold = nrTiles_p;
+  unsigned int lastDim = nrdim_p - 1;
+  unsigned int nrold = nrTiles_p;
   cubeShape_p(lastDim) += nr;
   tilesPerDim_p(lastDim) = (cubeShape_p(lastDim) + tileShape_p(lastDim) - 1) / tileShape_p(lastDim);
   nrTiles_p = nrTilesSubCube_p * tilesPerDim_p(lastDim);
@@ -389,13 +389,14 @@ void TSMCube::extend(uInt64 nr, const Record& coordValues, const TSMColumn* last
   }
 }
 
-void TSMCube::extendCoordinates(const Record& coordValues, const String& name, uInt length) {
+void TSMCube::extendCoordinates(const Record& coordValues, const String& name,
+                                unsigned int length) {
   // # Determine if the coordinate field is already defined.
   bool defined = values_p.isDefined(name);
   // # Determine the extension length of the coordinate vector.
   // # This is the given length (which is the entire cube axis)
   // # minus already defined coordinate length.
-  uInt vectorLength = length;
+  unsigned int vectorLength = length;
   if (defined) {
     vectorLength -= coordinateSize(name);
   }
@@ -434,41 +435,41 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
         Array<bool> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayBool(name);
       }
     } break;
     case TpInt:
     case TpArrayInt: {
       if (!defined) {
-        values_p.define(name, Array<Int>());
+        values_p.define(name, Array<int>());
       }
-      RecordFieldPtr<Array<Int>> field(values_p, name);
-      Array<Int>& array = *field;
+      RecordFieldPtr<Array<int>> field(values_p, name);
+      Array<int>& array = *field;
       if (vectorLength > 0) {
-        Vector<Int> vector(vectorLength);
+        Vector<int> vector(vectorLength);
         vector = 0;
-        Array<Int> newArray(concatenateArray(array, vector));
+        Array<int> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayInt(name);
       }
     } break;
     case TpUInt:
     case TpArrayUInt: {
       if (!defined) {
-        values_p.define(name, Array<uInt>());
+        values_p.define(name, Array<unsigned int>());
       }
-      RecordFieldPtr<Array<uInt>> field(values_p, name);
-      Array<uInt>& array = *field;
+      RecordFieldPtr<Array<unsigned int>> field(values_p, name);
+      Array<unsigned int>& array = *field;
       if (vectorLength > 0) {
-        Vector<uInt> vector(vectorLength);
+        Vector<unsigned int> vector(vectorLength);
         vector = 0;
-        Array<uInt> newArray(concatenateArray(array, vector));
+        Array<unsigned int> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayuInt(name);
       }
     } break;
@@ -485,7 +486,7 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
         Array<float> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayFloat(name);
       }
     } break;
@@ -502,7 +503,7 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
         Array<double> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayDouble(name);
       }
     } break;
@@ -519,7 +520,7 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
         Array<Complex> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayComplex(name);
       }
     } break;
@@ -536,7 +537,7 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
         Array<DComplex> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayDComplex(name);
       }
     } break;
@@ -553,7 +554,7 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
         Array<String> newArray(concatenateArray(array, vector));
         array.reference(newArray);
       }
-      if (start(0) < Int(length)) {
+      if (start(0) < int(length)) {
         array(start, end) = coordValues.toArrayString(name);
       }
     } break;
@@ -563,7 +564,7 @@ void TSMCube::extendCoordinates(const Record& coordValues, const String& name, u
 }
 
 bool TSMCube::matches(const Block<TSMColumn*>& idColSet, const Record& idValues) {
-  for (uInt i = 0; i < idColSet.nelements(); i++) {
+  for (unsigned int i = 0; i < idColSet.nelements(); i++) {
     const String& name = idColSet[i]->columnName();
     switch (values_p.dataType(name)) {
       case TpBool:
@@ -625,26 +626,28 @@ void TSMCube::deleteCallBack(void* owner, char* buffer) {
   }
 }
 char* TSMCube::initCallBack(void* owner) {
-  uInt64 size = ((TSMCube*)owner)->localTileLength();
+  uint64_t size = ((TSMCube*)owner)->localTileLength();
   char* buffer = new char[size];
   memset(buffer, 0, size);
   return buffer;
 }
 
-uInt TSMCube::cacheSize() const {
+unsigned int TSMCube::cacheSize() const {
   if (cache_p == 0) {
     return 0;
   }
   return cache_p->cacheSize();
 }
 
-uInt TSMCube::validateCacheSize(uInt cacheSize) const {
+unsigned int TSMCube::validateCacheSize(unsigned int cacheSize) const {
   return validateCacheSize(cacheSize, stmanPtr_p->maximumCacheSize(), bucketSize_p);
 }
 
-uInt TSMCube::validateCacheSize(uInt cacheSize, uInt maxSizeMiB, uInt bucketSize) {
+unsigned int TSMCube::validateCacheSize(unsigned int cacheSize, unsigned int maxSizeMiB,
+                                        unsigned int bucketSize) {
   // An overdraft of 10% is allowed.
-  uInt maxnb = std::max(1u, uInt(1024. * 1024. * maxSizeMiB / bucketSize));
+  unsigned int maxnb =
+      std::max(1u, static_cast<unsigned int>(1024. * 1024. * maxSizeMiB / bucketSize));
   if (maxSizeMiB > 0 && cacheSize > maxnb) {
     if (10 * cacheSize > 11 * maxnb) {
       return maxnb;
@@ -653,7 +656,7 @@ uInt TSMCube::validateCacheSize(uInt cacheSize, uInt maxSizeMiB, uInt bucketSize
   return cacheSize;
 }
 
-void TSMCube::setCacheSize(uInt cacheSize, bool forceSmaller, bool userSet) {
+void TSMCube::setCacheSize(unsigned int cacheSize, bool forceSmaller, bool userSet) {
   // Resize the cache in the expectation that this access is
   // the first of a bunch of accesses at the same tiles.
   // However, don't let the cache exceed the maximum,
@@ -671,10 +674,11 @@ void TSMCube::setCacheSize(uInt cacheSize, bool forceSmaller, bool userSet) {
 void TSMCube::setCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
                            const IPosition& windowLength, const IPosition& axisPath,
                            bool forceSmaller, bool userSet) {
-  uInt cacheSize = calcCacheSize(sliceShape, windowStart, windowLength, axisPath);
+  unsigned int cacheSize = calcCacheSize(sliceShape, windowStart, windowLength, axisPath);
   // If not userset, do not cache if more than 25% of the memory is needed.
   if (!userSet) {
-    uInt maxSize = uInt(HostInfo::memoryTotal(true) * 1024. * 0.25 / bucketSize_p);
+    unsigned int maxSize =
+        static_cast<unsigned int>(HostInfo::memoryTotal(true) * 1024. * 0.25 / bucketSize_p);
     if (cacheSize > maxSize) {
       cacheSize = 1;
     }
@@ -683,22 +687,24 @@ void TSMCube::setCacheSize(const IPosition& sliceShape, const IPosition& windowS
 }
 
 // Calculate the cache size for the given slice and access path.
-uInt TSMCube::calcCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
-                            const IPosition& windowLength, const IPosition& axisPath) const {
+unsigned int TSMCube::calcCacheSize(const IPosition& sliceShape, const IPosition& windowStart,
+                                    const IPosition& windowLength,
+                                    const IPosition& axisPath) const {
   return calcCacheSize(cubeShape_p, tileShape_p, extensible_p, sliceShape, windowStart,
                        windowLength, axisPath, stmanPtr_p->maximumCacheSize(), bucketSize_p);
 }
 
-uInt TSMCube::calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape, bool extensible,
-                            const IPosition& sliceShape, const IPosition& windowStart,
-                            const IPosition& windowLength, const IPosition& axisPath,
-                            uInt maxCacheSize, uInt bucketSize) {
-  uInt nrdim = cubeShape.nelements();
+unsigned int TSMCube::calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                                    bool extensible, const IPosition& sliceShape,
+                                    const IPosition& windowStart, const IPosition& windowLength,
+                                    const IPosition& axisPath, unsigned int maxCacheSize,
+                                    unsigned int bucketSize) {
+  unsigned int nrdim = cubeShape.nelements();
   if (sliceShape.nelements() > nrdim || windowStart.nelements() > nrdim ||
       windowLength.nelements() > nrdim || axisPath.nelements() > nrdim) {
     throw TSMError("calcCacheSize: invalid arguments");
   }
-  uInt i;
+  unsigned int i;
   // The unspecified sliceShape dimensions are 1.
   IPosition slice(nrdim, 1);
   for (i = 0; i < sliceShape.nelements(); i++) {
@@ -734,12 +740,12 @@ uInt TSMCube::calcCacheSize(const IPosition& cubeShape, const IPosition& tileSha
   IPosition reused(nrdim);
   IPosition sliceTiles(nrdim);
   for (i = 0; i < nrdim; i++) {
-    uInt axis = path(i);
-    uInt startTile = start(axis) / tileShape(axis);
-    uInt endTile = end(axis) / tileShape(axis);
+    unsigned int axis = path(i);
+    unsigned int startTile = start(axis) / tileShape(axis);
+    unsigned int endTile = end(axis) / tileShape(axis);
     ntiles(i) = 1 + endTile - startTile;
     // Get start pixel in first tile.
-    Int st = start(axis) % tileShape(axis);
+    int st = start(axis) % tileShape(axis);
     // Nr of tiles needed for a slice (note that start plays a role).
     sliceTiles(i) = 1 + (st + slice(axis) - 1) / tileShape(axis);
     reused(i) = 0;
@@ -758,13 +764,13 @@ uInt TSMCube::calcCacheSize(const IPosition& cubeShape, const IPosition& tileSha
   // Determine the optimum cache size taking the maximum cache
   // size into account. This is done by starting at the highest
   // dimension and working our way down until the cache size fits.
-  uInt nrd = nrdim;
+  unsigned int nrd = nrdim;
   while (nrd > 0) {
     nrd--;
     // Caching is needed if lower dimensions are reused because
     // a higher dimension loops through a tile.
     // So skip dimensions until a reused dimension is found.
-    uInt nr = nrd;
+    unsigned int nr = nrd;
     while (nr > 0 && reused(nr) == 0) {
       nr--;
     }
@@ -772,7 +778,7 @@ uInt TSMCube::calcCacheSize(const IPosition& cubeShape, const IPosition& tileSha
     // of the remaining axes.
     // If a tile is reused, we also need to take into account
     // the number of tiles needed for the slice.
-    uInt64 cacheSize = 1;
+    uint64_t cacheSize = 1;
     for (i = 0; i < nr; i++) {
       cacheSize *= ntiles(i);
     }
@@ -802,14 +808,15 @@ void TSMCube::resizeTileSections() {
   return;
 }
 
-void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* section, uInt colnr,
-                            uInt localPixelSize, uInt, bool writeFlag) {
+void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* section,
+                            unsigned int colnr, unsigned int localPixelSize, unsigned int,
+                            bool writeFlag) {
   // Set flag if writing.
   if (writeFlag) {
     stmanPtr_p->setDataChanged();
   }
   // Prepare for the iteration through the necessary tiles.
-  uInt i, j;
+  unsigned int i, j;
 
   // Initialize the various variables and determine the number of
   // tiles needed (which will determine the cache size).
@@ -817,8 +824,8 @@ void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* 
   // or if it is a line (this cases occur quite often and can be
   // handled in a more optimal way).
   bool oneEntireTile = true;
-  uInt lineIndex = 0;
-  uInt nOneLong = 0;
+  unsigned int lineIndex = 0;
+  unsigned int nOneLong = 0;
   for (i = 0; i < nrdim_p; i++) {
     startTile_p(i) = start(i) / tileShape_p(i);
     endTile_p(i) = end(i) / tileShape_p(i);
@@ -853,13 +860,13 @@ void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* 
   // A tile can contain more than one data array.
   // Each array is contiguous, so the first pixel of an array
   // starts after the other arrays.
-  uInt pixelOffset = localOffset_p[colnr];
+  unsigned int pixelOffset = localOffset_p[colnr];
 
   // If the section matches the tile shape, we can simply
   // copy all values and do not have to do difficult iterations.
   if (oneEntireTile) {
     // Get the tile from the cache.
-    uInt tileNr = expandedTilesPerDim_p.offset(startTile_p);
+    unsigned int tileNr = expandedTilesPerDim_p.offset(startTile_p);
     char* dataArray = cachePtr->getBucket(tileNr);
     // If writing, set cache slot to dirty.
     if (writeFlag) {
@@ -894,9 +901,9 @@ void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* 
   IPosition dataLength(nrdim_p);
   IPosition dataPos(nrdim_p);
   IPosition sectionPos(nrdim_p);
-  uInt dataOffset;
+  unsigned int dataOffset;
   size_t sectionOffset;
-  uInt tileNr = expandedTilesPerDim_p.offset(tilePos);
+  unsigned int tileNr = expandedTilesPerDim_p.offset(tilePos);
 
   while (true) {
     //      cout << "tilePos=" << tilePos << endl;
@@ -925,7 +932,7 @@ void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* 
     IPosition sectionIncr = localPixelSize * expandedSectionShape.offsetIncrement(dataLength);
 
     while (true) {
-      uInt localSize = dataLength(0) * localPixelSize;
+      unsigned int localSize = dataLength(0) * localPixelSize;
       /* merge zero increments into one copy */
       for (j = 1; j < nrdim_p; j++) {
         if (dataIncr(j) == 0 && sectionIncr(j) == 0) {
@@ -981,29 +988,30 @@ void TSMCube::accessSection(const IPosition& start, const IPosition& end, char* 
   }
 }
 
-void TSMCube::accessLine(char* section, uInt pixelOffset, uInt localPixelSize, bool writeFlag,
-                         BucketCache* cachePtr, const IPosition& startTile, uInt endTile,
-                         const IPosition& startPixelInFirstTile, uInt endPixelInLastTile,
-                         uInt lineIndex) {
+void TSMCube::accessLine(char* section, unsigned int pixelOffset, unsigned int localPixelSize,
+                         bool writeFlag, BucketCache* cachePtr, const IPosition& startTile,
+                         unsigned int endTile, const IPosition& startPixelInFirstTile,
+                         unsigned int endPixelInLastTile, unsigned int lineIndex) {
   // Get the stride to get to the next tile.
-  uInt tileIncr = expandedTilesPerDim_p(lineIndex);
-  uInt tileNr = expandedTilesPerDim_p.offset(startTile);
-  uInt stTile = startTile(lineIndex);
+  unsigned int tileIncr = expandedTilesPerDim_p(lineIndex);
+  unsigned int tileNr = expandedTilesPerDim_p.offset(startTile);
+  unsigned int stTile = startTile(lineIndex);
   // Get the stride to get to the next pixel in a tile.
-  uInt stride = expandedTileShape_p(lineIndex) * localPixelSize;
+  unsigned int stride = expandedTileShape_p(lineIndex) * localPixelSize;
   bool contiguous = (stride == localPixelSize);
   // Calculate the absolute pixel offset in the first tile
   // and in the other tiles.
-  uInt offset = pixelOffset + localPixelSize * expandedTileShape_p.offset(startPixelInFirstTile);
-  uInt offsetInOtherTile = offset - startPixelInFirstTile(lineIndex) * stride;
-  uInt nrPixel = tileShape_p(lineIndex) - startPixelInFirstTile(lineIndex);
+  unsigned int offset =
+      pixelOffset + localPixelSize * expandedTileShape_p.offset(startPixelInFirstTile);
+  unsigned int offsetInOtherTile = offset - startPixelInFirstTile(lineIndex) * stride;
+  unsigned int nrPixel = tileShape_p(lineIndex) - startPixelInFirstTile(lineIndex);
 
   // Loop through all tiles.
   while (stTile <= endTile) {
     if (stTile == endTile) {
       nrPixel -= tileShape_p(lineIndex) - endPixelInLastTile - 1;
     }
-    uInt localSize = nrPixel * localPixelSize;
+    unsigned int localSize = nrPixel * localPixelSize;
 
     //      cout << "tilePos=" << startTile << endl;
     //      cout << "tileNr=" << tileNr << endl;
@@ -1048,10 +1056,10 @@ void TSMCube::accessLine(char* section, uInt pixelOffset, uInt localPixelSize, b
               }
               section = (char*)sect;
             } break;
-            case (sizeof(Int)): {
-              Int* sect = (Int*)section;
+            case (sizeof(int)): {
+              int* sect = (int*)section;
               while (nrPixel > 0) {
-                *(Int*)dataArray = *sect++;
+                *(int*)dataArray = *sect++;
                 dataArray += stride;
                 nrPixel--;
               }
@@ -1107,10 +1115,10 @@ void TSMCube::accessLine(char* section, uInt pixelOffset, uInt localPixelSize, b
               }
               section = (char*)sect;
             } break;
-            case (sizeof(Int)): {
-              Int* sect = (Int*)section;
+            case (sizeof(int)): {
+              int* sect = (int*)section;
               while (nrPixel > 0) {
-                *sect++ = *(Int*)dataArray;
+                *sect++ = *(int*)dataArray;
                 dataArray += stride;
                 nrPixel--;
               }
@@ -1157,8 +1165,8 @@ void TSMCube::accessLine(char* section, uInt pixelOffset, uInt localPixelSize, b
 }
 
 void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const IPosition& stride,
-                            char* section, uInt colnr, uInt localPixelSize, uInt externalPixelSize,
-                            bool writeFlag) {
+                            char* section, unsigned int colnr, unsigned int localPixelSize,
+                            unsigned int externalPixelSize, bool writeFlag) {
   // If all strides are 1, use accessSection.
   if (stride.allOne()) {
     accessSection(start, end, section, colnr, localPixelSize, externalPixelSize, writeFlag);
@@ -1168,14 +1176,14 @@ void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const 
   if (writeFlag) {
     stmanPtr_p->setDataChanged();
   }
-  uInt i, j;
+  unsigned int i, j;
   // Get the cache (if needed).
   BucketCache* cachePtr = getCache();
 
   // A tile can contain more than one data array.
   // Each array is contiguous, so the first pixel of an array
   // starts after the other arrays.
-  uInt pixelOffset = localOffset_p[colnr];
+  unsigned int pixelOffset = localOffset_p[colnr];
   // At this point we start looping through all tiles.
   // startPixel initially contains the first pixel in the first tile.
   // tilePos contains the position of the current tile.
@@ -1191,7 +1199,7 @@ void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const 
   TSMShape expandedSectionShape(sectionShape);
   IPosition dataLength(nrdim_p);
   IPosition dataPos(nrdim_p);
-  uInt dataOffset;
+  unsigned int dataOffset;
   size_t sectionOffset;
 
   // Determine if the first dimension is strided.
@@ -1211,8 +1219,8 @@ void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const 
       }
       tilePos(i) = pixelPos(i) / tileShape_p(i);
       startPixel(i) = pixelPos(i) - tilePos(i) * tileShape_p(i);
-      uInt leng = (tileShape_p(i) - startPixel(i) + stride(i) - 1) / stride(i);
-      if (Int(leng + sectionPos(i)) > sectionShape(i)) {
+      unsigned int leng = (tileShape_p(i) - startPixel(i) + stride(i) - 1) / stride(i);
+      if (int(leng + sectionPos(i)) > sectionShape(i)) {
         leng = sectionShape(i) - sectionPos(i);
       }
       nrPixel(i) = leng;
@@ -1230,7 +1238,7 @@ void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const 
       }
       firstTime = false;
     }
-    uInt tileNr = expandedTilesPerDim_p.offset(tilePos);
+    unsigned int tileNr = expandedTilesPerDim_p.offset(tilePos);
     //      cout << "tilePos=" << tilePos << endl;
     //      cout << "tileNr=" << tileNr << endl;
     //      cout << "start=" << startPixel << endl;
@@ -1250,21 +1258,21 @@ void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const 
     IPosition sectionIncr = localPixelSize * expandedSectionShape.offsetIncrement(nrPixel);
     dataOffset = pixelOffset + localPixelSize * expandedTileShape_p.offset(startPixel);
     sectionOffset = localPixelSize * expandedSectionShape.offset(sectionPos);
-    uInt strideSize = 0;
-    uInt localSize = nrPixel(0) * localPixelSize;
+    unsigned int strideSize = 0;
+    unsigned int localSize = nrPixel(0) * localPixelSize;
     if (strided) {
       strideSize = stride(0) * localPixelSize;
     }
 
     while (true) {
       if (strided) {
-        uInt nrp = nrPixel(0);
+        unsigned int nrp = nrPixel(0);
         for (j = 0; j < nrp; j++) {
           if (writeFlag) {
-            TSMCube_MoveData((Char*)(dataArray + dataOffset), (Char*)(section + sectionOffset),
+            TSMCube_MoveData((char*)(dataArray + dataOffset), (char*)(section + sectionOffset),
                              localPixelSize);
           } else {
-            TSMCube_MoveData((Char*)(section + sectionOffset), (Char*)(dataArray + dataOffset),
+            TSMCube_MoveData((char*)(section + sectionOffset), (char*)(dataArray + dataOffset),
                              localPixelSize);
           }
           dataOffset += strideSize;
@@ -1281,7 +1289,7 @@ void TSMCube::accessStrided(const IPosition& start, const IPosition& end, const 
       }
       for (j = 1; j < nrdim_p; j++) {
         // Catch attempt to increment dataOffset below 0
-        DebugAssert(dataIncr(j) >= 0 || dataOffset >= static_cast<uInt>(-dataIncr(j)),
+        DebugAssert(dataIncr(j) >= 0 || dataOffset >= static_cast<unsigned int>(-dataIncr(j)),
                     DataManError);
         dataOffset += dataIncr(j);
         sectionOffset += sectionIncr(j);

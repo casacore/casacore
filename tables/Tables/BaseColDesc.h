@@ -106,8 +106,9 @@ class BaseColumnDesc {
  public:
   // Construct the column base object.
   BaseColumnDesc(const String& name, const String& comment, const String& dataManagerType,
-                 const String& dataManagerGroup, DataType, const String& dataTypeId, Int options,
-                 uInt ndim, const IPosition& shape, bool isScalar, bool isArray, bool isTable);
+                 const String& dataManagerGroup, DataType, const String& dataTypeId, int options,
+                 unsigned int ndim, const IPosition& shape, bool isScalar, bool isArray,
+                 bool isTable);
 
   // Copy constructor (copy semantics).
   BaseColumnDesc(const BaseColumnDesc&);
@@ -158,7 +159,7 @@ class BaseColumnDesc {
   String& comment() { return comment_p; }
 
   // Get the options.
-  Int options() const { return option_p; }
+  int options() const { return option_p; }
 
   // Test if column is scalar, array or table.
   // <group>
@@ -168,7 +169,7 @@ class BaseColumnDesc {
   // </group>
 
   // Get the number of dimensions.
-  Int ndim() const { return nrdim_p; }
+  int ndim() const { return nrdim_p; }
 
   // Get the predefined shape.
   // If not defined, a zero shape will be returned.
@@ -180,7 +181,7 @@ class BaseColumnDesc {
   // and the shape.
   // Otherwise it can only be used if the dimensionality has not been
   // defined yet.
-  void setNdim(uInt ndim);
+  void setNdim(unsigned int ndim);
 
   // Set the predefined shape.
   // This is only allowed for arrays, for which the shape
@@ -198,17 +199,17 @@ class BaseColumnDesc {
   // Option <src>ColumnDesc::Direct</src> forces <src>FixedShape</src>.
   // If <src>FixedShape</src> is not given (implicitly or explicitly),
   // the column can have no shape, so its shape is cleared.
-  void setOptions(Int options);
+  void setOptions(int options);
 
   // Get the maximum value length.
-  uInt maxLength() const { return maxLength_p; }
+  unsigned int maxLength() const { return maxLength_p; }
 
   // Set the maximum value length.
   // So far, this is only possible for columns containing String values.
   // An exception is thrown if the column data type is not TpString.
   // Some storage managers support fixed length strings and can store
   // them more efficiently than variable length strings.
-  void setMaxLength(uInt maxLength);
+  void setMaxLength(unsigned int maxLength);
 
   // Get table description (in case column contains subtables).
   // <group>
@@ -225,10 +226,10 @@ class BaseColumnDesc {
   String dataManGroup_p;     // # data manager group
   DataType dtype_p;          // # datatype
   String dtypeId_p;          // # datatype id for TpOther
-  Int option_p;              // # column options
-  Int nrdim_p;               // # #dimensions (<0 = unknown)
+  int option_p;              // # column options
+  int nrdim_p;               // # #dimensions (<0 = unknown)
   IPosition shape_p;         // # table array shape
-  uInt maxLength_p;          // # maximum value length (for strings)
+  unsigned int maxLength_p;  // # maximum value length (for strings)
   TableRecord* keySetPtr_p;  // # set of keywords
   bool isScalar_p;           // # true = column contains scalars
   bool isArray_p;            // # true = column contains arrays

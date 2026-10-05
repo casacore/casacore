@@ -114,14 +114,14 @@ class MVEarthMagnetic : public MVPosition {
   // Creates from an MVPosition
   MVEarthMagnetic(const MVPosition &other);
   // Creates a specified vector
-  MVEarthMagnetic(Double in0, Double in1, Double in2);
+  MVEarthMagnetic(double in0, double in1, double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  explicit MVEarthMagnetic(Double in0);
+  explicit MVEarthMagnetic(double in0);
   MVEarthMagnetic(const Quantity &l);
   // </group>
   // Creates the EarthMagnetic from specified (azimuth,elevation) angles and length
-  MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1);
+  MVEarthMagnetic(const Quantity &l, double angle0, double angle1);
   // Creates the EarthMagnetic from specified angles and length. or EarthMagnetics
   // <thrown>
   //    <li> AipsError if quantities not in angle format
@@ -129,28 +129,28 @@ class MVEarthMagnetic : public MVPosition {
   // <group>
   MVEarthMagnetic(const Quantity &l, const Quantity &angle0, const Quantity &angle1);
   // If not enough angles: pole assumed (if none), or elevation =0 (if 1)
-  MVEarthMagnetic(const Quantum<Vector<Double>> &angle);
-  MVEarthMagnetic(const Quantity &l, const Quantum<Vector<Double>> &angle);
+  MVEarthMagnetic(const Quantum<Vector<double>> &angle);
+  MVEarthMagnetic(const Quantity &l, const Quantum<Vector<double>> &angle);
   // </group>
   // Create from specified length and/or angles and/or EarthMagnetic
   // <group>
-  MVEarthMagnetic(const Vector<Double> &other);
+  MVEarthMagnetic(const Vector<double> &other);
   MVEarthMagnetic(const Vector<Quantity> &other);
   // </group>
 
   // # Operators
   //  Multiplication defined as in-product
   //  <group>
-  Double operator*(const MVEarthMagnetic &other) const;
+  double operator*(const MVEarthMagnetic &other) const;
   // </group>
 
   // Equality comparisons
   // <group>
   bool operator==(const MVEarthMagnetic &other) const;
   bool operator!=(const MVEarthMagnetic &other) const;
-  bool near(const MVEarthMagnetic &other, Double tol = 1e-13) const;
+  bool near(const MVEarthMagnetic &other, double tol = 1e-13) const;
   bool near(const MVEarthMagnetic &other, Quantity tol) const;
-  bool nearAbs(const MVEarthMagnetic &other, Double tol = 1e-13) const;
+  bool nearAbs(const MVEarthMagnetic &other, double tol = 1e-13) const;
   // </group>
 
   // Addition and subtraction
@@ -172,19 +172,19 @@ class MVEarthMagnetic : public MVPosition {
   // Normalise direction aspects by adjusting the length to 1
   // <group>
   virtual void adjust();
-  virtual void adjust(Double &res);
-  virtual void readjust(Double res);
+  virtual void adjust(double &res);
+  virtual void readjust(double res);
   // </group>
   // Get modulus of EarthMagnetic
-  virtual Double radius();
+  virtual double radius();
   // Generate a 3-vector of coordinates (length(T), angles(rad))
-  Vector<Double> get() const;
+  Vector<double> get() const;
   // Generate a 3-vector of x,y,z in tesla
-  const Vector<Double> &getValue() const;
+  const Vector<double> &getValue() const;
   // Generate angle 2-vector (in rad)
-  Quantum<Vector<Double>> getAngle() const;
+  Quantum<Vector<double>> getAngle() const;
   // and with specified units
-  Quantum<Vector<Double>> getAngle(const Unit &unit) const;
+  Quantum<Vector<double>> getAngle(const Unit &unit) const;
   // Generate the length
   Quantity getLength() const;
   // and generate it with the specified units
@@ -192,12 +192,12 @@ class MVEarthMagnetic : public MVPosition {
   // Get the EarthMagnetic angle between the directions. I.e. the angle between
   // the direction from one to the pole, and from one to the other.
   // <group>
-  Double earthMagneticAngle(const MVEarthMagnetic &other) const;
+  double earthMagneticAngle(const MVEarthMagnetic &other) const;
   Quantity earthMagneticAngle(const MVEarthMagnetic &other, const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.
   // <group>
-  Double separation(const MVEarthMagnetic &other) const;
+  double separation(const MVEarthMagnetic &other) const;
   Quantity separation(const MVEarthMagnetic &other, const Unit &unit) const;
   // </group>
   // Produce the cross product
@@ -208,17 +208,17 @@ class MVEarthMagnetic : public MVPosition {
   // Clone
   virtual MeasValue *clone() const;
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double>> getRecordValue() const;
+  virtual Vector<Quantum<double>> getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual bool putValue(const Vector<Quantum<Double>> &in);
+  virtual bool putValue(const Vector<Quantum<double>> &in);
 };
 
 // # Global functions
@@ -226,12 +226,12 @@ class MVEarthMagnetic : public MVPosition {
 //  <group>
 MVEarthMagnetic operator*(const RotMatrix &left, const MVEarthMagnetic &right);
 MVEarthMagnetic operator*(const MVEarthMagnetic &left, const RotMatrix &right);
-MVEarthMagnetic operator*(Double left, const MVEarthMagnetic &right);
-MVEarthMagnetic operator*(const MVEarthMagnetic &left, Double right);
-Double operator*(const Vector<Double> &left, const MVEarthMagnetic &right);
-Double operator*(const MVEarthMagnetic &left, const Vector<Double> &right);
-Double operator*(const MVPosition &left, const MVEarthMagnetic &right);
-Double operator*(const MVEarthMagnetic &left, const MVPosition &right);
+MVEarthMagnetic operator*(double left, const MVEarthMagnetic &right);
+MVEarthMagnetic operator*(const MVEarthMagnetic &left, double right);
+double operator*(const Vector<double> &left, const MVEarthMagnetic &right);
+double operator*(const MVEarthMagnetic &left, const Vector<double> &right);
+double operator*(const MVPosition &left, const MVEarthMagnetic &right);
+double operator*(const MVEarthMagnetic &left, const MVPosition &right);
 // </group>
 
 }  // namespace casacore

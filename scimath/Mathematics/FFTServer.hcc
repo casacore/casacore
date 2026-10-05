@@ -83,7 +83,7 @@ resize(const IPosition & fftSize,
   DebugAssert(fftSize.nelements() > 0, AipsError);
   DebugAssert(fftSize.product() > 0, AipsError);
   // Only resize if different type or size.
-  uInt ndim = fftSize.nelements();
+  unsigned int ndim = fftSize.nelements();
   if (transformType != itsTransformType  ||
       itsSize.nelements() != ndim  ||  fftSize != itsSize) {
     itsTransformType = transformType;
@@ -95,7 +95,7 @@ resize(const IPosition & fftSize,
     itsWorkOut.resize (nelem / itsSize[0] * (itsSize[0]/2+1));
     itsWorkC2C.resize (nelem);
     IPosition transpose(ndim);
-    for (uInt i=0; i<ndim; ++i) {
+    for (unsigned int i=0; i<ndim; ++i) {
       transpose[i] = itsSize[ndim-1-i];
     }
     switch (itsTransformType) {
@@ -245,7 +245,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const bool constInput)
 
   objcopy(&(itsWorkOut[0]), dataPtr, itsWorkOut.size());
   itsFFTW.c2r(itsSize, &(itsWorkOut[0]), &(itsWorkIn[0]));
-  for (uInt i = 0; i < itsWorkIn.size(); i++) {
+  for (unsigned int i = 0; i < itsWorkIn.size(); i++) {
     itsWorkIn[i] /= 1.0*itsWorkIn.size();
   }
   objcopy(resultPtr, &(itsWorkIn[0]), itsWorkIn.size());
@@ -285,7 +285,7 @@ fft0(Array<S> & cValues, const bool toFrequency)
   objcopy(&(itsWorkC2C[0]), complexPtr, itsWorkC2C.size());
   itsFFTW.c2c(itsSize, &(itsWorkC2C[0]), toFrequency);
   if (!toFrequency) {
-    for (uInt i = 0; i < itsWorkC2C.size(); ++i) {
+    for (unsigned int i = 0; i < itsWorkC2C.size(); ++i) {
       itsWorkC2C[i] /= 1.0*itsWorkC2C.size();
     }
   }
@@ -312,7 +312,7 @@ fft0(Array<S> & cResult, const Array<S> & cData, const bool toFrequency)
 template<class T, class S> IPosition FFTServer<T,S>::
 determineShape(const IPosition & rShape, const Array<S> & cData){
   const IPosition cShape=cData.shape();
-  const uInt cDim = cShape.nelements();
+  const unsigned int cDim = cShape.nelements();
   DebugAssert(cDim > 0, AipsError);
   // If rShape is non-zero then it must match one of the two possible shapes
   if (rShape.product() != 0) {
@@ -334,7 +334,7 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
   // must be odd length in its first axis.
   {
     VectorIterator<S> iter((Array<S> &) cData);
-    uInt lastElem = cShape(0)-1;
+    unsigned int lastElem = cShape(0)-1;
     while (!iter.pastEnd()) {
       if (!near(iter.vector()(lastElem).imag(), (T)0.0)) {
 	IPosition oddLength(cShape);
@@ -347,7 +347,7 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
   // See if the FFTServer size can be used to guess the output Array size;
   if (itsSize.nelements() == cDim) {
     bool match = true;
-    for (uInt i = 1; i < cDim; ++i) {
+    for (unsigned int i = 1; i < cDim; ++i) {
       if (itsSize(i) != cShape(i)) {
 	match = false;
       }
@@ -366,15 +366,15 @@ template<class T, class S> void FFTServer<T,S>::
 flip(Array<S> & cData, const bool toZero, const bool isHermitian)
 {
   const IPosition shape = cData.shape();
-  const uInt ndim = shape.nelements();
-  const uInt nElements = cData.nelements();
+  const unsigned int ndim = shape.nelements();
+  const unsigned int nElements = cData.nelements();
   if (nElements == 1) {
     return;
   }
   AlwaysAssert(nElements != 0, AipsError);
   {
-    Int buffLen = itsBuffer.nelements();
-    for (uInt i = 0; i < ndim; ++i) {
+    int buffLen = itsBuffer.nelements();
+    for (unsigned int i = 0; i < ndim; ++i) {
       buffLen = max(buffLen, shape(i));
     }
     itsBuffer.resize(buffLen, false, false);
@@ -385,11 +385,11 @@ flip(Array<S> & cData, const bool toZero, const bool isHermitian)
   S * rowPtr = 0;
   S * rowPtr2 = 0;
   S * rowPtr2o = 0;
-  uInt rowLen, rowLen2, rowLen2o;
-  uInt nFlips;
-  uInt stride = 1;
-  uInt r;
-  uInt n=0;
+  unsigned int rowLen, rowLen2, rowLen2o;
+  unsigned int nFlips;
+  unsigned int stride = 1;
+  unsigned int r;
+  unsigned int n=0;
   if (isHermitian) {
     n = 1;
     stride = shape(0);
@@ -430,15 +430,15 @@ template<class T, class S> void FFTServer<T,S>::
 flip(Array<T> & rData, const bool toZero, const bool isHermitian)
 {
   const IPosition shape = rData.shape();
-  const uInt ndim = shape.nelements();
-  const uInt nElements = rData.nelements();
+  const unsigned int ndim = shape.nelements();
+  const unsigned int nElements = rData.nelements();
   if (nElements == 1) {
     return;
   }
   AlwaysAssert(nElements != 0, AipsError);
   {
-    Int buffLen = itsBuffer.nelements();
-    for (uInt i = 0; i < ndim; ++i) {
+    int buffLen = itsBuffer.nelements();
+    for (unsigned int i = 0; i < ndim; ++i) {
       buffLen = max(buffLen, (shape(i)+1)/2);
     }
     itsBuffer.resize(buffLen, false, false);
@@ -449,11 +449,11 @@ flip(Array<T> & rData, const bool toZero, const bool isHermitian)
   T * rowPtr = 0;
   T * rowPtr2 = 0;
   T * rowPtr2o = 0;
-  uInt rowLen, rowLen2, rowLen2o;
-  uInt nFlips;
-  uInt stride = 1;
-  uInt r;
-  uInt n=0;
+  unsigned int rowLen, rowLen2, rowLen2o;
+  unsigned int nFlips;
+  unsigned int stride = 1;
+  unsigned int r;
+  unsigned int n=0;
   if (isHermitian) {
     n = 1;
     stride = shape(0);
@@ -491,11 +491,11 @@ flip(Array<T> & rData, const bool toZero, const bool isHermitian)
 }
 
 template<class T, class S> void FFTServer<T,S>::
-fftshift(Array<S> & cValues, const uInt& whichAxis,
-	 const Double& relshift, const bool toFrequency)
+fftshift(Array<S> & cValues, const unsigned int& whichAxis,
+	 const double& relshift, const bool toFrequency)
 {
   const IPosition arrayShape = cValues.shape();
-  const uInt vsize = arrayShape[whichAxis];
+  const unsigned int vsize = arrayShape[whichAxis];
   DebugAssert(vsize > 0, AipsError);
       
   // relshift is the freq shift normalised to the bandwidth
@@ -510,8 +510,8 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
   while(!ait.pastEnd()){
     Array<S> cv = ait.array(); // reference
     fft0(cv, toFrequency);
-    for(uInt i=0; i<vsize; i++){
-      cv(IPosition(1,i)) *= (S)exp(Double(Int((i+vsize/2)%vsize)-Int(vsize/2))*exponent);
+    for(unsigned int i=0; i<vsize; i++){
+      cv(IPosition(1,i)) *= (S)exp(double(int((i+vsize/2)%vsize)-int(vsize/2))*exponent);
     }
     fft0(cv, !toFrequency);
     ait.next();
@@ -521,13 +521,13 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
 template<class T, class S> void FFTServer<T,S>::
 fftshift(Array<S> & outValues, Array<bool> & outFlags,
 	 const Array<S> & cValues, const Array<bool> & inFlags,
-	 const uInt& whichAxis, 
-	 const Double& relshift, 
+	 const unsigned int& whichAxis, 
+	 const double& relshift, 
 	 const bool goodIsTrue,
 	 const bool toFrequency){
 
   const IPosition arrayShape = cValues.shape();
-  const Int vsize = arrayShape[whichAxis];
+  const int vsize = arrayShape[whichAxis];
 
   if(vsize<2){ // nothing to do
     return;
@@ -548,8 +548,8 @@ fftshift(Array<S> & outValues, Array<bool> & outFlags,
 
   const Complex exponent =  2.*M_PI*Complex(0.,1.)*relshift;
 
-  Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
-  Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
+  int numToFlag  = static_cast<int> (ceil(vsize*fabs(relshift)));
+  int numToFlag2 = static_cast<int> (floor(vsize*fabs(relshift)));
   bool flagNeighbour = (numToFlag2<numToFlag);
       
   ArrayIterator<S> ait(outValues, IPosition(1,whichAxis), true); // axes are the cursor  
@@ -562,7 +562,7 @@ fftshift(Array<S> & outValues, Array<bool> & outFlags,
     if(flags(IPosition(1,0))!=goodIsTrue){ // first channel is flagged 
       cv(IPosition(1,0)) = cv(IPosition(1,1));
     }
-    for(Int i=1; i<vsize-1; i++){
+    for(int i=1; i<vsize-1; i++){
       if(flags(IPosition(1,i))!=goodIsTrue){ // this channel is flagged
 	cv(IPosition(1,i)) = (cv(IPosition(1,i-1))+cv(IPosition(1,i+1)))/2.; 
       }
@@ -573,14 +573,14 @@ fftshift(Array<S> & outValues, Array<bool> & outFlags,
 
     // apply shift
     fft0(cv, toFrequency);
-    for(Int i=0; i<vsize; i++){
-      cv(IPosition(1,i)) *= (S)exp(Double(Int((i+vsize/2)%vsize)-Int(vsize/2))*exponent);
+    for(int i=0; i<vsize; i++){
+      cv(IPosition(1,i)) *= (S)exp(double(int((i+vsize/2)%vsize)-int(vsize/2))*exponent);
     }
     fft0(cv, !toFrequency);
 
     // generate the new flags
     if(relshift>0.){
-      for(Int i=vsize-1-numToFlag; i>=0; i--){
+      for(int i=vsize-1-numToFlag; i>=0; i--){
 	if( (flags(IPosition(1,i))!=goodIsTrue) && (i+numToFlag < vsize)){ // this channel is flagged
 	  flags(IPosition(1,i+numToFlag)) = !goodIsTrue;
 	  flags(IPosition(1,i)) = goodIsTrue;
@@ -591,7 +591,7 @@ fftshift(Array<S> & outValues, Array<bool> & outFlags,
       }
     }
     else{
-      for(Int i=numToFlag; i<vsize; i++){
+      for(int i=numToFlag; i<vsize; i++){
 	if( (flags(IPosition(1,i))!=goodIsTrue) && (0 <= i-numToFlag) ){ // this channel is flagged
 	  flags(IPosition(1,i-numToFlag)) = !goodIsTrue;
 	  flags(IPosition(1,i)) = goodIsTrue;
@@ -603,12 +603,12 @@ fftshift(Array<S> & outValues, Array<bool> & outFlags,
     }      
     // flag the edge channels which were wrapped by the shift
     if(relshift>0.){ // start at bottom
-      for(Int i=0; i<numToFlag; i++){
+      for(int i=0; i<numToFlag; i++){
 	flags(IPosition(1,i)) = !goodIsTrue;
       }
     }
     else{ // start at top
-      for(Int i=vsize-1; i>vsize-1-numToFlag; i--){
+      for(int i=vsize-1; i>vsize-1-numToFlag; i--){
 	flags(IPosition(1,i)) = !goodIsTrue;
       }
     }      
@@ -622,12 +622,12 @@ fftshift(Array<S> & outValues, Array<bool> & outFlags,
 template<class T, class S> void FFTServer<T,S>::
 fftshift(Array<T> & outValues, Array<bool> & outFlags,
 	 const Array<T> & rValues, const Array<bool> & inFlags,
-	 const uInt& whichAxis, 
-	 const Double& relshift, 
+	 const unsigned int& whichAxis, 
+	 const double& relshift, 
 	 const bool goodIsTrue){
 
   const IPosition arrayShape = rValues.shape();
-  const Int vsize = arrayShape[whichAxis];
+  const int vsize = arrayShape[whichAxis];
 
   if(vsize<2){ // nothing to do
     return;
@@ -648,8 +648,8 @@ fftshift(Array<T> & outValues, Array<bool> & outFlags,
 
   const Complex exponent =  -2.*M_PI*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case
 
-  Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
-  Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
+  int numToFlag  = static_cast<int> (ceil(vsize*fabs(relshift)));
+  int numToFlag2 = static_cast<int> (floor(vsize*fabs(relshift)));
   bool flagNeighbour = (numToFlag2<numToFlag);
       
   ArrayIterator<T> ait(outValues, IPosition(1,whichAxis), true); // axes are the cursor  
@@ -662,7 +662,7 @@ fftshift(Array<T> & outValues, Array<bool> & outFlags,
     if(flags(IPosition(1,0))!=goodIsTrue){ // first channel is flagged 
       rv(IPosition(1,0)) = rv(IPosition(1,1));
     }
-    for(Int i=1; i<vsize-1; i++){
+    for(int i=1; i<vsize-1; i++){
       if(flags(IPosition(1,i))!=goodIsTrue){ // this channel is flagged
 	rv(IPosition(1,i)) = (rv(IPosition(1,i-1))+rv(IPosition(1,i+1)))/2.; 
       }
@@ -674,14 +674,14 @@ fftshift(Array<T> & outValues, Array<bool> & outFlags,
     // apply shift
     Array<S> cResult;
     fft0(cResult, rv);
-    for(uInt i=0; i<cResult.size(); i++){
-      cResult(IPosition(1,i)) *= (S)exp(Double(Int((i+vsize/2)%vsize)-Int(vsize/2))*exponent);
+    for(unsigned int i=0; i<cResult.size(); i++){
+      cResult(IPosition(1,i)) *= (S)exp(double(int((i+vsize/2)%vsize)-int(vsize/2))*exponent);
     }
     fft0(rv, cResult);
 
     // generate the new flags
     if(relshift>0.){
-      for(Int i=vsize-1-numToFlag; i>=0; i--){
+      for(int i=vsize-1-numToFlag; i>=0; i--){
 	if( (flags(IPosition(1,i))!=goodIsTrue) && (i+numToFlag < vsize)){ // this channel is flagged
 	  flags(IPosition(1,i+numToFlag)) = !goodIsTrue;
 	  flags(IPosition(1,i)) = goodIsTrue;
@@ -692,7 +692,7 @@ fftshift(Array<T> & outValues, Array<bool> & outFlags,
       }
     }
     else{
-      for(Int i=numToFlag; i<vsize; i++){
+      for(int i=numToFlag; i<vsize; i++){
 	if( (flags(IPosition(1,i))!=goodIsTrue) && (0 <= i-numToFlag) ){ // this channel is flagged
 	  flags(IPosition(1,i-numToFlag)) = !goodIsTrue;
 	  flags(IPosition(1,i)) = goodIsTrue;
@@ -704,12 +704,12 @@ fftshift(Array<T> & outValues, Array<bool> & outFlags,
     }      
     // flag the edge channels which were wrapped by the shift
     if(relshift>0.){ // start at bottom
-      for(Int i=0; i<numToFlag; i++){
+      for(int i=0; i<numToFlag; i++){
 	flags(IPosition(1,i)) = !goodIsTrue;
       }
     }
     else{ // start at top
-      for(Int i=vsize-1; i>vsize-1-numToFlag; i--){
+      for(int i=vsize-1; i>vsize-1-numToFlag; i--){
 	flags(IPosition(1,i)) = !goodIsTrue;
       }
     }      

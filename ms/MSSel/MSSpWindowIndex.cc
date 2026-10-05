@@ -52,7 +52,7 @@ MSSpWindowIndex::MSSpWindowIndex(const MSSpectralWindow& spectralWindow)
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSSpWindowIndex::matchFreqGrp(const Int& freqGrp) {
+Vector<int> MSSpWindowIndex::matchFreqGrp(const int& freqGrp) {
   // Match a frequency goup to a set of spectral window id's
   // Input:
   //    freqGrp             const Int&               Freq group to match
@@ -61,26 +61,26 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Int& freqGrp) {
   //
   LogicalArray maskArray = (msSpWindowCols_p.freqGroup().getColumn() == freqGrp &&
                             !msSpWindowCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskSpWindowId(spWindowIds_p, maskArray);
+  MaskedArray<int> maskSpWindowId(spWindowIds_p, maskArray);
   return maskSpWindowId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps) {
+Vector<int> MSSpWindowIndex::matchFreqGrp(const Vector<int>& freqGrps) {
   // Match a set of frequency groups to a set of spectral window id's
   // Input:
   //    freqGrps            const Vector<Int>&       Freq groups to match
   // Output:
   //    matchFreqGrp        Vector<Int>              Matching spw. id.'s
   //
-  Vector<Int> matchedSpWindowIds;
+  Vector<int> matchedSpWindowIds;
   // Match each spw id individually
-  for (uInt freqgrp = 0; freqgrp < freqGrps.nelements(); freqgrp++) {
+  for (unsigned int freqgrp = 0; freqgrp < freqGrps.nelements(); freqgrp++) {
     // Add to list of SpWindow id's
-    Vector<Int> currentMatch = matchFreqGrp(freqGrps(freqgrp));
+    Vector<int> currentMatch = matchFreqGrp(freqGrps(freqgrp));
     if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedSpWindowIds);
+      Vector<int> temp(matchedSpWindowIds);
       matchedSpWindowIds.resize(matchedSpWindowIds.nelements() + currentMatch.nelements(), true);
       matchedSpWindowIds = concatenateArray(temp, currentMatch);
     }
@@ -90,7 +90,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSSpWindowIndex::matchFreqGrpName(const String& freqGrpName) {
+Vector<int> MSSpWindowIndex::matchFreqGrpName(const String& freqGrpName) {
   // Match a frequency goup name to a set of spectral window id's
   // Input:
   //    freqGrpName         const String&            Freq group name to match
@@ -99,14 +99,14 @@ Vector<Int> MSSpWindowIndex::matchFreqGrpName(const String& freqGrpName) {
   //
   LogicalArray maskArray = (msSpWindowCols_p.freqGroupName().getColumn() == freqGrpName &&
                             !msSpWindowCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskSpWindowId(spWindowIds_p, maskArray);
+  MaskedArray<int> maskSpWindowId(spWindowIds_p, maskArray);
   return maskSpWindowId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
-                                       const Vector<MVFrequency>& chanWidth, const Double& tol) {
+Vector<int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
+                                       const Vector<MVFrequency>& chanWidth, const double& tol) {
   // Match a frequency axis sampling to a set of spectral window id's
   // Input:
   //    chanFreq        const Vector<MFrequency>&    Channel frequencies
@@ -118,17 +118,17 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
   //
 
   // Do the match per frequency channel on each row
-  uInt nChan = std::min(chanFreq.nelements(), chanWidth.nelements());
-  uInt nrows = msSpWindowCols_p.nrow();
+  unsigned int nChan = std::min(chanFreq.nelements(), chanWidth.nelements());
+  unsigned int nrows = msSpWindowCols_p.nrow();
   Vector<bool> freqMatch(nrows, false);
-  for (uInt row = 0; row < nrows; row++) {
+  for (unsigned int row = 0; row < nrows; row++) {
     Vector<MFrequency> rowChanFreq;
     msSpWindowCols_p.chanFreqMeas().get(row, rowChanFreq);
     Vector<Quantity> rowChanWidth;
     msSpWindowCols_p.chanWidthQuant().get(row, rowChanWidth);
     freqMatch(row) = (rowChanFreq.nelements() == nChan && rowChanWidth.nelements() == nChan);
     if (freqMatch(row)) {
-      for (uInt chan = 0; chan < nChan; chan++) {
+      for (unsigned int chan = 0; chan < nChan; chan++) {
         freqMatch(row) =
             (freqMatch(row) &&
              chanFreq(chan).getRef().getType() == rowChanFreq(chan).getRef().getType() &&
@@ -140,7 +140,7 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
 
   // Return matching row numbers
   LogicalArray maskArray(freqMatch);
-  MaskedArray<Int> maskSpwId(spWindowIds_p, maskArray);
+  MaskedArray<int> maskSpwId(spWindowIds_p, maskArray);
   return maskSpwId.getCompressedArray();
 }
 

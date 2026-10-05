@@ -117,8 +117,8 @@ class FITSMultiTable : public FITSTabular {
   FITSTabular *table_p;
 
   Vector<String> file_names_p;
-  uInt nfiles_p;
-  uInt which_file_p;
+  unsigned int nfiles_p;
+  unsigned int which_file_p;
   bool hasChanged_p;
 
   Record row_p;

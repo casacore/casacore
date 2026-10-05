@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class V>
-void getArrayVal(V& val, int type, const Record& gr, const String& name, uInt index = 0);
+void getArrayVal(V& val, int type, const Record& gr, const String& name, unsigned int index = 0);
 
 template <class V>
 void getArray(Array<V>& val, int type, const Record& gr, const String& name);
@@ -143,15 +143,15 @@ class SerialHelper {
   //  <li> if the index is out of range.
   // </ul>
   // <group>
-  void get(bool& val, const String& name, uInt index = 0) const;
+  void get(bool& val, const String& name, unsigned int index = 0) const;
   //      void get(uChar &val, const String& name, uInt index = 0) const;
-  void get(Short& val, const String& name, uInt index = 0) const;
-  void get(Int& val, const String& name, uInt index = 0) const;
-  void get(Float& val, const String& name, uInt index = 0) const;
-  void get(Double& val, const String& name, uInt index = 0) const;
-  void get(Complex& val, const String& name, uInt index = 0) const;
-  void get(DComplex& val, const String& name, uInt index = 0) const;
-  void get(String& val, const String& name, uInt index = 0) const;
+  void get(short& val, const String& name, unsigned int index = 0) const;
+  void get(int& val, const String& name, unsigned int index = 0) const;
+  void get(float& val, const String& name, unsigned int index = 0) const;
+  void get(double& val, const String& name, unsigned int index = 0) const;
+  void get(Complex& val, const String& name, unsigned int index = 0) const;
+  void get(DComplex& val, const String& name, unsigned int index = 0) const;
+  void get(String& val, const String& name, unsigned int index = 0) const;
   void get(Record& val, const String& name) const;
   // </group>
 
@@ -170,10 +170,10 @@ class SerialHelper {
   // <group>
   void get(Array<bool>& val, const String& name) const;
   //      void get(Array<uChar &val, const String& name) const;
-  void get(Array<Short>& val, const String& name) const;
-  void get(Array<Int>& val, const String& name) const;
-  void get(Array<Float>& val, const String& name) const;
-  void get(Array<Double>& val, const String& name) const;
+  void get(Array<short>& val, const String& name) const;
+  void get(Array<int>& val, const String& name) const;
+  void get(Array<float>& val, const String& name) const;
+  void get(Array<double>& val, const String& name) const;
   void get(Array<Complex>& val, const String& name) const;
   void get(Array<DComplex>& val, const String& name) const;
   void get(Array<String>& val, const String& name) const;

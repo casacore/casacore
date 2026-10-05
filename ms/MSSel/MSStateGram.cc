@@ -68,14 +68,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSStateGram = 0;
-static Int posMSStateGram = 0;
+static int posMSStateGram = 0;
 // MSStateGramwrap out of namespace
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msStateGramParseCommand(const MeasurementSet* ms, const String& command) {
   try {
-    Int ret;
+    int ret;
     MSStateGramrestart(MSStateGramin);
     yy_start = 1;
     strpMSStateGram = command.c_str();       // get pointer to command string
@@ -95,11 +95,11 @@ int msStateGramParseCommand(const MeasurementSet* ms, const String& command) {
 }
 
 int msStateGramParseCommand(const MeasurementSet* ms, const String& command,
-                            Vector<Int>& selectedIDs)
+                            Vector<int>& selectedIDs)
 
 {
   try {
-    Int ret;
+    int ret;
     MSStateGramrestart(MSStateGramin);
     yy_start = 1;
     strpMSStateGram = command.c_str();       // get pointer to command string
@@ -123,7 +123,7 @@ int msStateGramParseCommand(const MeasurementSet* ms, const String& command,
 const TableExprNode* msStateGramParseNode() { return MSStateParse::node(); }
 void msStateGramParseDeleteNode() { MSStateParse::cleanupNode(); }
 // # Give the string position.
-Int& msStateGramPosition() { return posMSStateGram; }
+int& msStateGramPosition() { return posMSStateGram; }
 
 // # Get the next input characters for flex.
 int msStateGramInput(char* buf, int max_size) {

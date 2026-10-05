@@ -135,10 +135,10 @@ class ScalarColumnData : public PlainColumn {
 
   // Add the sort key to the Sort object on behalf of the Table sort function.
   // <group>
-  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpFunc, Int order,
+  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpFunc, int order,
                            std::shared_ptr<ArrayBase>& dataSave);
   // Do it only for the given row numbers.
-  void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpFunc, Int order,
+  void makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpFunc, int order,
                       const Vector<rownr_t>& rownrs, std::shared_ptr<ArrayBase>& dataSave);
   // </group>
 
@@ -186,7 +186,7 @@ class ScalarColumnData : public PlainColumn {
   //   <li> TableInvSort
   // </thrown>
   void fillSortKey(const Vector<T>* dataPtr, Sort&, std::shared_ptr<BaseCompare>& cmpObj,
-                   Int order);
+                   int order);
 };
 
 }  // namespace casacore

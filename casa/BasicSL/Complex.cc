@@ -37,11 +37,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // Note: max() cannot be used from Math.h until it is derived from <math>
 // Note: abs() not defined in SGI
 //
-bool near(const Complex &val1, const Complex &val2, Double tol) {
+bool near(const Complex &val1, const Complex &val2, double tol) {
   if (tol <= 0) return val1 == val2;
   if (val1 == val2) return true;
   if (near(val1.real(), val2.real(), tol) && near(val1.imag(), val2.imag(), tol)) return true;
-  Float aval1(std::abs(val1)), aval2(std::abs(val2));
+  float aval1(std::abs(val1)), aval2(std::abs(val2));
   if (aval1 == 0)
     return aval2 <= (1 + tol) * FLT_MIN;
   else if (aval2 == 0)
@@ -51,21 +51,21 @@ bool near(const Complex &val1, const Complex &val2, Double tol) {
   return std::abs(dval) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
-bool near(const DComplex &val1, const DComplex &val2, Double tol) {
+bool near(const DComplex &val1, const DComplex &val2, double tol) {
   if (tol <= 0) return val1 == val2;
   if (val1 == val2) return true;
   if (std::abs(val1) == 0)
     return std::abs(val2) <= (1 + tol) * DBL_MIN;
   else if (std::abs(val2) == 0)
     return std::abs(val1) <= (1 + tol) * DBL_MIN;
-  Double aval1(std::abs(val1)), aval2(std::abs(val2));
+  double aval1(std::abs(val1)), aval2(std::abs(val2));
   return std::abs(val1 - val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
-bool nearAbs(const Complex &val1, const Complex &val2, Double tol) {
+bool nearAbs(const Complex &val1, const Complex &val2, double tol) {
   return std::abs(val2 - val1) <= tol;
 }
-bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol) {
+bool nearAbs(const DComplex &val1, const DComplex &val2, double tol) {
   return std::abs(val2 - val1) <= tol;
 }
 
@@ -74,16 +74,16 @@ bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol) {
 bool isNaN(const Complex &val) { return isNaN(val.real()) || isNaN(val.imag()); }
 bool isNaN(const DComplex &val) { return isNaN(val.real()) || isNaN(val.imag()); }
 void setNaN(Complex &val) {
-  Float x;
+  float x;
   setNaN(x);
-  Float y;
+  float y;
   setNaN(y);
   val = Complex(x, y);
 }
 void setNaN(DComplex &val) {
-  Double x;
+  double x;
   setNaN(x);
-  Double y;
+  double y;
   setNaN(y);
   val = DComplex(x, y);
 }
@@ -93,16 +93,16 @@ void setNaN(DComplex &val) {
 bool isInf(const Complex &val) { return isInf(val.real()) || isInf(val.imag()); }
 bool isInf(const DComplex &val) { return isInf(val.real()) || isInf(val.imag()); }
 void setInf(Complex &val) {
-  Float x;
+  float x;
   setInf(x);
-  Float y;
+  float y;
   setInf(y);
   val = Complex(x, y);
 }
 void setInf(DComplex &val) {
-  Double x;
+  double x;
   setInf(x);
-  Double y;
+  double y;
   setInf(y);
   val = DComplex(x, y);
 }
@@ -123,12 +123,12 @@ Complex fmod(const Complex &in, const Complex &f) {
 
 // Inverse trigonometry (see Abromowitz)
 DComplex atan(const DComplex &in) {
-  const Double n = norm(in);
+  const double n = norm(in);
   return DComplex(0.5 * std::atan(2.0 * real(in) / (1.0 - n)),
                   0.25 * std::log((1.0 + n + 2 * imag(in)) / (1.0 + n - 2 * imag(in))));
 }
 Complex atan(const Complex &in) {
-  const Float n = norm(in);
+  const float n = norm(in);
   return Complex(0.5 * std::atan(2.0 * real(in) / (1.0 - n)),
                  0.25 * std::log((1.0 + n + 2 * imag(in)) / (1.0 + n - 2 * imag(in))));
 }

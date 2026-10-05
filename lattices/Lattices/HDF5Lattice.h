@@ -199,7 +199,7 @@ class HDF5Lattice : public Lattice<T> {
   // indicated number of tiles. This cache is not shared with other
   // HDF5Lattices,
   // Tiles are cached using an LRU algorithm.
-  virtual void setCacheSizeInTiles(uInt howManyTiles);
+  virtual void setCacheSizeInTiles(unsigned int howManyTiles);
 
   // Set the cache size as to "fit" the indicated access pattern.
   virtual void setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
@@ -232,10 +232,10 @@ class HDF5Lattice : public Lattice<T> {
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape(uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape(unsigned int maxPixels) const;
 
   // Flush the data (but do not unlock).
   virtual void flush();

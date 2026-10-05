@@ -57,11 +57,11 @@ void writeData(bool isSD, bool autoScale) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
-  td.addColumn(ArrayColumnDesc<Int>("target1", 3));
+  td.addColumn(ArrayColumnDesc<int>("target1", 3));
   td.addColumn(ArrayColumnDesc<Complex>("source1"));
   td.addColumn(ArrayColumnDesc<Complex>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-  td.addColumn(ScalarColumnDesc<Float>("scale1"));
-  td.addColumn(ScalarColumnDesc<Float>("offset1"));
+  td.addColumn(ScalarColumnDesc<float>("scale1"));
+  td.addColumn(ScalarColumnDesc<float>("offset1"));
   td.defineHypercolumn("tileddata", 4, stringToVector("target1"));
 
   // Now create a new table from the description.
@@ -82,14 +82,14 @@ void writeData(bool isSD, bool autoScale) {
   // Fill the table via the virtual columns.
   ArrayColumn<Complex> source1(tab, "source1");
   ArrayColumn<Complex> source2(tab, "source2");
-  ScalarColumn<Float> scale1(tab, "scale1");
-  ScalarColumn<Float> offset1(tab, "offset1");
+  ScalarColumn<float> scale1(tab, "scale1");
+  ScalarColumn<float> offset1(tab, "offset1");
 
   Cube<Complex> arrf(IPosition(3, 2, 3, 4));
-  uInt i;
+  unsigned int i;
   i = 16;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
       arrf(0, i1, i2) = Complex(i, i + 36);
       i += 12;
       arrf(1, i1, i2) = Complex(i, 0);
@@ -137,11 +137,11 @@ bool checkData(bool autoScale) {
   Table tab("tCompressComplex_tmp.data");
   ArrayColumn<Complex> source1(tab, "source1");
   ArrayColumn<Complex> source2(tab, "source2");
-  ArrayColumn<Int> target1(tab, "target1");
-  ScalarColumn<Float> scale1(tab, "scale1");
-  ScalarColumn<Float> offset1(tab, "offset1");
-  Cube<Int> arri1(IPosition(3, 2, 3, 4));
-  Cube<Int> arrvali(IPosition(3, 2, 3, 4));
+  ArrayColumn<int> target1(tab, "target1");
+  ScalarColumn<float> scale1(tab, "scale1");
+  ScalarColumn<float> offset1(tab, "offset1");
+  Cube<int> arri1(IPosition(3, 2, 3, 4));
+  Cube<int> arrvali(IPosition(3, 2, 3, 4));
   Cube<Complex> arrf1(IPosition(3, 2, 3, 4));
   Cube<Complex> arrvalf(IPosition(3, 2, 3, 4));
   RefRows refrows(1, 9, 2);
@@ -163,9 +163,9 @@ bool checkData(bool autoScale) {
   AlwaysAssertExit(allEQ(arrColSlice2, arrCol2(slicercol)));
   AlwaysAssertExit(allEQ(arrCells2, arrCol2(slicercells)));
   AlwaysAssertExit(allEQ(arrCellsSlice2, arrCol2(slicercsl)));
-  uInt i = 0;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
+  unsigned int i = 0;
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
       arrf1(0, i1, i2) = Complex(16 + 12 * i, 16 + 12 * i + 36);
       arri1(0, i1, i2) = 65536 * (6 * i - 2) + (6 * i - 2 + 18);
       i++;
@@ -196,15 +196,15 @@ bool checkData(bool autoScale) {
         ok = false;
       }
     } else {
-      Float offs = offset1(i);
-      Float so = (arrvalf(0, 2, 3).imag() + arrvalf(1, 0, 0).imag()) / 2;
+      float offs = offset1(i);
+      float so = (arrvalf(0, 2, 3).imag() + arrvalf(1, 0, 0).imag()) / 2;
       if (!near(offs, so)) {
         cout << "error in offset1 in row " << i << endl;
         cout << "Read: " << offs << endl;
         cout << "Expected: " << so << endl;
         ok = false;
       }
-      Float scale = scale1(i);
+      float scale = scale1(i);
       so = (arrvalf(0, 2, 3).imag() - arrvalf(1, 0, 0).imag()) / 65534;
       if (!near(scale, so)) {
         cout << "error in scale1 in row " << i << endl;
@@ -223,7 +223,7 @@ bool checkData(bool autoScale) {
     AlwaysAssertExit(allEQ(arrvalf, iter2.array()));
     AlwaysAssertExit(allEQ(arrvalf(slicer), source2.getSlice(i, slicer)));
     arrf1 += Complex(12 * arrf1.nelements(), 12 * arrf1.nelements());
-    arri1 += Int(65536 * 6 * arri1.nelements() + 6 * arri1.nelements());
+    arri1 += int(65536 * 6 * arri1.nelements() + 6 * arri1.nelements());
     iter1.next();
     iter2.next();
   }
@@ -236,16 +236,16 @@ bool checkDataSD(bool autoScale) {
   Table tab("tCompressComplex_tmp.data");
   ArrayColumn<Complex> source1(tab, "source1");
   ArrayColumn<Complex> source2(tab, "source2");
-  ArrayColumn<Int> target1(tab, "target1");
-  ScalarColumn<Float> scale1(tab, "scale1");
-  ScalarColumn<Float> offset1(tab, "offset1");
-  Cube<Int> arri1(IPosition(3, 2, 3, 4));
-  Cube<Int> arrvali(IPosition(3, 2, 3, 4));
+  ArrayColumn<int> target1(tab, "target1");
+  ScalarColumn<float> scale1(tab, "scale1");
+  ScalarColumn<float> offset1(tab, "offset1");
+  Cube<int> arri1(IPosition(3, 2, 3, 4));
+  Cube<int> arrvali(IPosition(3, 2, 3, 4));
   Cube<Complex> arrf1(IPosition(3, 2, 3, 4));
   Cube<Complex> arrvalf(IPosition(3, 2, 3, 4));
-  uInt i = 0;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
+  unsigned int i = 0;
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
       arrf1(0, i1, i2) = Complex(16 + 12 * i, 16 + 12 * i + 36);
       arri1(0, i1, i2) = 65536 * (6 * i - 2) + 2 * (3 * i - 1 + 9) + 1;
       i++;
@@ -271,15 +271,15 @@ bool checkDataSD(bool autoScale) {
       ok = false;
     }
   } else {
-    Float offs = offset1(0);
-    Float so = (arrvalf(0, 2, 3).imag() + arrvalf(0, 0, 0).real()) / 2;
+    float offs = offset1(0);
+    float so = (arrvalf(0, 2, 3).imag() + arrvalf(0, 0, 0).real()) / 2;
     if (!near(offs, so, 1e-4)) {
       cout << "error in offset1 in row 0" << endl;
       cout << "Read: " << offs << endl;
       cout << "Expected: " << so << endl;
       ok = false;
     }
-    Float scale = scale1(0);
+    float scale = scale1(0);
     so = (arrvalf(0, 2, 3).imag() - arrvalf(0, 0, 0).real()) / 65534;
     if (!near(scale, so, 1e-4)) {
       cout << "error in scale1 in row 0" << endl;
@@ -289,15 +289,15 @@ bool checkDataSD(bool autoScale) {
     }
   }
   i = 1;
-  for (uInt i2 = 0; i2 < 4; i2++) {
-    for (uInt i1 = 0; i1 < 3; i1++) {
+  for (unsigned int i2 = 0; i2 < 4; i2++) {
+    for (unsigned int i1 = 0; i1 < 3; i1++) {
       arri1(1, i1, i2) = 65536 * (6 * i - 2) + -10 + 1;
       i += 2;
     }
   }
   for (i = 1; i < 10; i++) {
     arrf1 += Complex(12 * arrf1.nelements(), 12 * arrf1.nelements());
-    arri1 += Int(65536 * 6 * arri1.nelements() + 6 * arri1.nelements());
+    arri1 += int(65536 * 6 * arri1.nelements() + 6 * arri1.nelements());
     cout << "get SD row " << i << endl;
     source1.get(i, arrvalf);
     if (!allNear(arrvalf, arrf1, 1e-4)) {
@@ -315,15 +315,15 @@ bool checkDataSD(bool autoScale) {
         ok = false;
       }
     } else {
-      Float offs = offset1(i);
-      Float so = (arrvalf(0, 2, 3).imag() + arrvalf(1, 0, 0).imag()) / 2;
+      float offs = offset1(i);
+      float so = (arrvalf(0, 2, 3).imag() + arrvalf(1, 0, 0).imag()) / 2;
       if (!near(offs, so, 1e-4)) {
         cout << "error in offset1 in row " << i << endl;
         cout << "Read: " << offs << endl;
         cout << "Expected: " << so << endl;
         ok = false;
       }
-      Float scale = scale1(i);
+      float scale = scale1(i);
       so = (arrvalf(0, 2, 3).imag() - arrvalf(1, 0, 0).imag()) / 65534;
       if (!near(scale, so, 1e-4)) {
         cout << "error in scale1 in row " << i << endl;
@@ -348,14 +348,14 @@ void testSpeed() {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class TableDesc";
-    td.addColumn(ArrayColumnDesc<Int>("target1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ArrayColumnDesc<int>("target1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
     td.addColumn(ArrayColumnDesc<Complex>("source1", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
     td.addColumn(
         ArrayColumnDesc<Complex>("source2", "", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ArrayColumnDesc<Int>("target3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
+    td.addColumn(ArrayColumnDesc<int>("target3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
     td.addColumn(ArrayColumnDesc<Complex>("source3", IPosition(3, 2, 3, 4), ColumnDesc::Direct));
-    td.addColumn(ScalarColumnDesc<Float>("scale1"));
-    td.addColumn(ScalarColumnDesc<Float>("offset1"));
+    td.addColumn(ScalarColumnDesc<float>("scale1"));
+    td.addColumn(ScalarColumnDesc<float>("offset1"));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tCompressComplex_tmp.data", td, Table::New);
@@ -370,14 +370,14 @@ void testSpeed() {
     // Fill the table via the virtual columns.
     ArrayColumn<Complex> source1(tab, "source1");
     ArrayColumn<Complex> source2(tab, "source2");
-    ScalarColumn<Float> scale1(tab, "scale1");
-    ScalarColumn<Float> offset1(tab, "offset1");
+    ScalarColumn<float> scale1(tab, "scale1");
+    ScalarColumn<float> offset1(tab, "offset1");
 
     Cube<Complex> arrf(IPosition(3, 2, 3, 4));
-    uInt i;
+    unsigned int i;
     i = 20;
-    for (uInt i2 = 0; i2 < 4; i2++) {
-      for (uInt i1 = 0; i1 < 3; i1++) {
+    for (unsigned int i2 = 0; i2 < 4; i2++) {
+      for (unsigned int i1 = 0; i1 < 3; i1++) {
         arrf(0, i1, i2) = Complex(i, i + 36);
         i += 6;
         arrf(1, i1, i2) = Complex(i, 0);
@@ -399,8 +399,8 @@ void testSpeed() {
       ArrayColumn<Complex> source(tab, "source1");
       Cube<Complex> arrvalf(IPosition(3, 2, 3, 4));
       Timer timer;
-      uInt nrow = tab.nrow();
-      for (uInt i = 0; i < nrow; i++) {
+      unsigned int nrow = tab.nrow();
+      for (unsigned int i = 0; i < nrow; i++) {
         source.get(i, arrvalf);
       }
       timer.show();
@@ -411,8 +411,8 @@ void testSpeed() {
       ArrayColumn<Complex> source(tab, "source2");
       Cube<Complex> arrvalf(IPosition(3, 2, 3, 4));
       Timer timer;
-      uInt nrow = tab.nrow();
-      for (uInt i = 0; i < nrow; i++) {
+      unsigned int nrow = tab.nrow();
+      for (unsigned int i = 0; i < nrow; i++) {
         source.get(i, arrvalf);
       }
       timer.show();
@@ -423,8 +423,8 @@ void testSpeed() {
       ArrayColumn<Complex> source(tab, "source3");
       Cube<Complex> arrvalf(IPosition(3, 2, 3, 4));
       Timer timer;
-      uInt nrow = tab.nrow();
-      for (uInt i = 0; i < nrow; i++) {
+      unsigned int nrow = tab.nrow();
+      for (unsigned int i = 0; i < nrow; i++) {
         source.get(i, arrvalf);
       }
       timer.show();
@@ -457,7 +457,7 @@ void testSpeed() {
 }
 
 int main() {
-  Int sts = 0;
+  int sts = 0;
   try {
     writeData(false, false);
     if (!checkData(false)) sts = 1;

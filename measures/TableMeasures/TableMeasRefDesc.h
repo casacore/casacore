@@ -166,8 +166,8 @@ class TableMeasRefDesc {
   // Optionally a Measure offset can be specified.
   // The reference code and offset should not need a reference frame.
   // <group>
-  explicit TableMeasRefDesc(uInt refCode = 0);
-  TableMeasRefDesc(uInt refCode, const TableMeasOffsetDesc&);
+  explicit TableMeasRefDesc(unsigned int refCode = 0);
+  TableMeasRefDesc(unsigned int refCode, const TableMeasOffsetDesc&);
   // </group>
 
   // Define a variable reference by supplying the name of the column
@@ -197,7 +197,7 @@ class TableMeasRefDesc {
   TableMeasRefDesc& operator=(const TableMeasRefDesc& that);
 
   // Return the reference code.
-  uInt getRefCode() const { return itsRefCode; }
+  unsigned int getRefCode() const { return itsRefCode; }
 
   // Is the reference variable?
   bool isRefCodeVariable() const { return (!itsColumn.empty()); }
@@ -234,7 +234,7 @@ class TableMeasRefDesc {
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
   // <group>
-  void resetRefCode(uInt refCode);
+  void resetRefCode(unsigned int refCode);
   void resetOffset(const Measure& offset);
   // </group>
 
@@ -255,8 +255,8 @@ class TableMeasRefDesc {
   // never-changing string representations.
   // These functions convert current refcode to and from table refcode.
   // <group>
-  uInt tab2cur(uInt tabRefCode) const;
-  uInt cur2tab(uInt curRefCode) const;
+  unsigned int tab2cur(unsigned int tabRefCode) const;
+  unsigned int cur2tab(unsigned int curRefCode) const;
   // </group>
 
   // Set the function used to get all reference codes for a MeasureHolder.
@@ -264,14 +264,15 @@ class TableMeasRefDesc {
   // to add extra codes when testing.
   // <br> The default function simply calls MeasureHolder.asMeasure.allTypes.
   // <group>
-  typedef void TypesFunc(Vector<String>& types, Vector<uInt>& codes, const MeasureHolder&);
+  typedef void TypesFunc(Vector<String>& types, Vector<unsigned int>& codes, const MeasureHolder&);
   static void setTypesFunc(TypesFunc* func) { theirTypesFunc = func; }
-  static void defaultTypesFunc(Vector<String>& types, Vector<uInt>& codes, const MeasureHolder&);
+  static void defaultTypesFunc(Vector<String>& types, Vector<unsigned int>& codes,
+                               const MeasureHolder&);
   static TypesFunc* theirTypesFunc;
   // </group>
 
  private:
-  uInt itsRefCode;
+  unsigned int itsRefCode;
   // The name of column containing its variable references.
   String itsColumn;
   // Is the reference code column a string column?
@@ -284,18 +285,19 @@ class TableMeasRefDesc {
   // # These are the codes as used in the table, which might be different
   // # from the current values.
   Vector<String> itsTabRefTypes;
-  Vector<uInt> itsTabRefCodes;
+  Vector<unsigned int> itsTabRefCodes;
   // # Define the mappings of table measref codes to current ones and back.
   // # There are only filled in and used if a variable reference code is used.
-  Block<Int> itsTab2Cur;
-  Block<Int> itsCur2Tab;
+  Block<int> itsTab2Cur;
+  Block<int> itsCur2Tab;
 
   // Fill the reference code mappings for table<->current.
   // <group>
   void initTabRefMap();
   void fillTabRefMap(const MeasureHolder& measHolder);
-  uInt fillMap(Block<Int>& f2t, const Vector<uInt>& codesf, const Vector<String>& typesf,
-               Vector<uInt>& codest, Vector<String>& typest, Int maxnr);
+  unsigned int fillMap(Block<int>& f2t, const Vector<unsigned int>& codesf,
+                       const Vector<String>& typesf, Vector<unsigned int>& codest,
+                       Vector<String>& typest, int maxnr);
   // </group>
 
   // Write the actual keywords.

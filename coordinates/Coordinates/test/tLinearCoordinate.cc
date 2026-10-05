@@ -37,15 +37,15 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/namespace.h>
 
-LinearCoordinate makeCoordinate(Vector<String>& names, Vector<String>& units, Vector<Double>& crpix,
-                                Vector<Double>& crval, Vector<Double>& cdelt, Matrix<Double>& xform,
-                                uInt n = 2);
+LinearCoordinate makeCoordinate(Vector<String>& names, Vector<String>& units, Vector<double>& crpix,
+                                Vector<double>& crval, Vector<double>& cdelt, Matrix<double>& xform,
+                                unsigned int n = 2);
 
 int main() {
   try {
     Vector<String> names, units;
-    Vector<Double> crpix, crval, cdelt;
-    Matrix<Double> xform;
+    Vector<double> crpix, crval, cdelt;
+    Matrix<double> xform;
 
     // Constructors
 
@@ -64,7 +64,7 @@ int main() {
       if (!lc.near(lc2)) {
         throw(AipsError("Failed near test 1"));
       }
-      Vector<Int> excludeAxes(1, 1);
+      Vector<int> excludeAxes(1, 1);
       if (!lc.near(lc2, excludeAxes)) {
         throw(AipsError("Failed near test 2"));
       }
@@ -73,13 +73,13 @@ int main() {
     // Test Quantum constructor interface
 
     {
-      Matrix<Double> xform(2, 2);
+      Matrix<double> xform(2, 2);
       xform = 0.0;
       xform.diagonal() = 1.0;
       //
-      Vector<Double> crval(2);
-      Vector<Double> crpix(2);
-      Vector<Double> cdelt(2);
+      Vector<double> crval(2);
+      Vector<double> crpix(2);
+      Vector<double> cdelt(2);
       Vector<String> names(2);
       Vector<String> units(2);
       //
@@ -94,12 +94,12 @@ int main() {
       //
       LinearCoordinate lc1(names, units, crval, cdelt, xform, crpix);
       //
-      Vector<Quantum<Double>> crval2(2);
-      Vector<Quantum<Double>> cdelt2(2);
-      crval2(0) = Quantum<Double>(crval(0), units(0));
-      crval2(1) = Quantum<Double>(crval(1), units(1));
-      cdelt2(0) = Quantum<Double>(100 * cdelt(0), "cm");
-      cdelt2(1) = Quantum<Double>(100 * cdelt(1), "cm");
+      Vector<Quantum<double>> crval2(2);
+      Vector<Quantum<double>> cdelt2(2);
+      crval2(0) = Quantum<double>(crval(0), units(0));
+      crval2(1) = Quantum<double>(crval(1), units(1));
+      cdelt2(0) = Quantum<double>(100 * cdelt(0), "cm");
+      cdelt2(1) = Quantum<double>(100 * cdelt(1), "cm");
       //
       LinearCoordinate lc2(names, crval2, cdelt2, xform, crpix);
       //
@@ -228,7 +228,7 @@ int main() {
         throw(AipsError("Failed linear transform set/recovery test"));
       }
       //
-      Int prec;
+      int prec;
       Coordinate::formatType fType = Coordinate::SCIENTIFIC;
       lc.getPrecision(prec, fType, true, 6, 4, 2);
       if (prec != 6) {
@@ -241,8 +241,8 @@ int main() {
       }
       //
       String unit;
-      Double val = 20.12345;
-      Quantum<Double> valq(val, Unit(units(1)));
+      double val = 20.12345;
+      Quantum<double> valq(val, Unit(units(1)));
       String str = lc.format(unit, Coordinate::FIXED, val, 1, true, true, 4);
       String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 1, true, true, 4);
       if (str != "20.1234" || str2 != "20.1234") {
@@ -263,7 +263,7 @@ int main() {
       }
       //
       {
-        Vector<Double> w(2);
+        Vector<double> w(2);
         Vector<String> u(2);
         w = lc.referenceValue();
         u = lc.worldAxisUnits();
@@ -289,7 +289,7 @@ int main() {
 
     {
       LinearCoordinate lc = makeCoordinate(names, units, crpix, crval, cdelt, xform);
-      Vector<Double> pixel(2), world2(2), world;
+      Vector<double> pixel(2), world2(2), world;
       pixel(0) = 12.2;
       pixel(1) = -20.32;
       if (!lc.toWorld(world, pixel)) {
@@ -305,7 +305,7 @@ int main() {
         throw(AipsError("toWorld conversion gave wrong answer"));
       }
       //
-      Vector<Double> pixel2;
+      Vector<double> pixel2;
       if (!lc.toPixel(pixel2, world)) {
         throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
       }
@@ -326,14 +326,14 @@ int main() {
         throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
       }
       //
-      Vector<Double> pixel(2), world;
+      Vector<double> pixel(2), world;
       pixel(0) = 12.2;
       pixel(1) = -20.32;
       if (!lc.toWorld(world, pixel)) {
         throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
       }
       //
-      Vector<Double> pixel2;
+      Vector<double> pixel2;
       if (!lc.toPixel(pixel2, world)) {
         throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
       }
@@ -353,8 +353,8 @@ int main() {
       LinearCoordinate lc(names, units, crval, cdelt, xform, crpix);
       //
       Vector<bool> axes(names.nelements(), true);
-      Vector<Int> shape(names.nelements());
-      for (uInt i = 0; i < shape.nelements(); i++) {
+      Vector<int> shape(names.nelements());
+      for (unsigned int i = 0; i < shape.nelements(); i++) {
         shape(i) = 10 * (i + 2);
       }
 
@@ -365,8 +365,8 @@ int main() {
         //
         Vector<String> units2 = pC->worldAxisUnits();
         Vector<String> names2 = pC->worldAxisNames();
-        Vector<Double> crval2 = pC->referenceValue();
-        Vector<Double> crpix2 = pC->referencePixel();
+        Vector<double> crval2 = pC->referenceValue();
+        Vector<double> crpix2 = pC->referencePixel();
         if (units2(0) != String("s") || units2(1) != String("s") || units2(2) != String("Hz")) {
           throw(AipsError("makeFourierCoordinate (1) failed units test"));
         }
@@ -377,8 +377,8 @@ int main() {
         if (!allNear(crval2, 0.0, 1e-13)) {
           throw(AipsError("makeFourierCoordinate (1) failed crval test"));
         }
-        for (uInt i = 0; i < pC->nPixelAxes(); i++) {
-          if (!near(Double(Int(shape(i) / 2)), crpix2(i))) {
+        for (unsigned int i = 0; i < pC->nPixelAxes(); i++) {
+          if (!near(double(int(shape(i) / 2)), crpix2(i))) {
             throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
           }
         }
@@ -394,8 +394,8 @@ int main() {
         //
         const Vector<String>& units2 = pC->worldAxisUnits();
         const Vector<String>& names2 = pC->worldAxisNames();
-        const Vector<Double>& crval2 = pC->referenceValue();
-        const Vector<Double>& crpix2 = pC->referencePixel();
+        const Vector<double>& crval2 = pC->referenceValue();
+        const Vector<double>& crpix2 = pC->referencePixel();
         if (units2(0) != String("s") || units2(1) != String("Hz") || units2(2) != String("Hz")) {
           throw(AipsError("makeFourierCoordinate (2) failed units test"));
         }
@@ -403,7 +403,7 @@ int main() {
             names2(2) != String("Frequency")) {
           throw(AipsError("makeFourierCoordinate (2) failed names test"));
         }
-        for (uInt i = 0; i < pC->nPixelAxes(); i++) {
+        for (unsigned int i = 0; i < pC->nPixelAxes(); i++) {
           if (i == 1) {
             if (!near(crpix(i), crpix2(i))) {
               throw(AipsError("makeFourierCoordinate (2) failed crpix test"));
@@ -412,7 +412,7 @@ int main() {
               throw(AipsError("makeFourierCoordinate (2) failed crval test"));
             }
           } else {
-            if (!near(Double(Int(shape(i) / 2)), crpix2(i))) {
+            if (!near(double(int(shape(i) / 2)), crpix2(i))) {
               throw(AipsError("makeFourierCoordinate (2) failed crpix test"));
             }
             if (!near(0.0, crval2(i))) {
@@ -475,9 +475,9 @@ int main() {
   return (0);
 }
 
-LinearCoordinate makeCoordinate(Vector<String>& names, Vector<String>& units, Vector<Double>& crpix,
-                                Vector<Double>& crval, Vector<Double>& cdelt, Matrix<Double>& xform,
-                                uInt n) {
+LinearCoordinate makeCoordinate(Vector<String>& names, Vector<String>& units, Vector<double>& crpix,
+                                Vector<double>& crval, Vector<double>& cdelt, Matrix<double>& xform,
+                                unsigned int n) {
   Vector<String> uu(5);
   uu(0) = "m";
   uu(1) = "rad";
@@ -492,7 +492,7 @@ LinearCoordinate makeCoordinate(Vector<String>& names, Vector<String>& units, Ve
   crval.resize(n);
   xform.resize(n, n);
   //
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     ostringstream oss;
     oss << i;
     names(i) = "axis" + oss.str();

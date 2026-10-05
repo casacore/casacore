@@ -76,7 +76,7 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   TableExprNodeSetElemBase& operator=(const TableExprNodeSetElemBase&) = delete;
 
   // Show the node.
-  void show(ostream& os, uInt indent) const override;
+  void show(ostream& os, unsigned int indent) const override;
 
   // Flatten the node tree by adding the node and its children to the vector.
   virtual void flattenTree(std::vector<TableExprNodeRep*>&) override;
@@ -114,12 +114,12 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  virtual void fillVector(Vector<bool>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<Double>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<DComplex>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<String>& vec, Int64& cnt, const TableExprId& id) const;
-  virtual void fillVector(Vector<MVTime>& vec, Int64& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<bool>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<int64_t>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<double>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<DComplex>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<String>& vec, int64_t& cnt, const TableExprId& id) const;
+  virtual void fillVector(Vector<MVTime>& vec, int64_t& cnt, const TableExprId& id) const;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
@@ -129,8 +129,9 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
   // are initialized that way.
   // <group>
   virtual void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const;
-  virtual void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const;
-  virtual void matchDouble(bool* match, const Double* value, size_t nval,
+  virtual void matchInt(bool* match, const int64_t* value, size_t nval,
+                        const TableExprId& id) const;
+  virtual void matchDouble(bool* match, const double* value, size_t nval,
                            const TableExprId& id) const;
   virtual void matchDComplex(bool* match, const DComplex* value, size_t nval,
                              const TableExprId& id) const;
@@ -153,8 +154,8 @@ class TableExprNodeSetElemBase : public TableExprNodeRep {
 
   // Get the start or end value of a Double or DateTime interval.
   // <group>
-  void getStart(const TableExprId& id, Double&) const;
-  void getEnd(const TableExprId& id, Double&) const;
+  void getStart(const TableExprId& id, double&) const;
+  void getEnd(const TableExprId& id, double&) const;
   // </group>
 
   // Get the start or end value of a String interval.
@@ -218,12 +219,12 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  void fillVector(Vector<bool>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<Double>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<DComplex>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<String>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<MVTime>& vec, Int64& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<bool>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<int64_t>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<double>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<DComplex>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<String>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<MVTime>& vec, int64_t& cnt, const TableExprId& id) const override;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
@@ -233,8 +234,9 @@ class TableExprNodeSetElemSingle : public TableExprNodeSetElemBase {
   // are initialized that way.
   // <group>
   void matchBool(bool* match, const bool* value, size_t nval, const TableExprId& id) const override;
-  void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
-  void matchDouble(bool* match, const Double* value, size_t nval,
+  void matchInt(bool* match, const int64_t* value, size_t nval,
+                const TableExprId& id) const override;
+  void matchDouble(bool* match, const double* value, size_t nval,
                    const TableExprId& id) const override;
   void matchDComplex(bool* match, const DComplex* value, size_t nval,
                      const TableExprId& id) const override;
@@ -309,9 +311,9 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // which gets incremented with the number of values appended.
   // This is used by the system to convert a set to a vector.
   // <group>
-  void fillVector(Vector<Int64>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<Double>& vec, Int64& cnt, const TableExprId& id) const override;
-  void fillVector(Vector<MVTime>& vec, Int64& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<int64_t>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<double>& vec, int64_t& cnt, const TableExprId& id) const override;
+  void fillVector(Vector<MVTime>& vec, int64_t& cnt, const TableExprId& id) const override;
   // </group>
 
   // Set a flag in the match output array if the corresponding element
@@ -320,8 +322,9 @@ class TableExprNodeSetElemDiscrete : public TableExprNodeSetElemBase {
   // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchInt(bool* match, const Int64* value, size_t nval, const TableExprId& id) const override;
-  void matchDouble(bool* match, const Double* value, size_t nval,
+  void matchInt(bool* match, const int64_t* value, size_t nval,
+                const TableExprId& id) const override;
+  void matchDouble(bool* match, const double* value, size_t nval,
                    const TableExprId& id) const override;
   void matchDate(bool* match, const MVTime* value, size_t nval,
                  const TableExprId& id) const override;
@@ -401,7 +404,7 @@ class TableExprNodeSetElemCont : public TableExprNodeSetElemBase {
   // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchDouble(bool* match, const Double* value, size_t nval,
+  void matchDouble(bool* match, const double* value, size_t nval,
                    const TableExprId& id) const override;
   void matchString(bool* match, const String* value, size_t nval,
                    const TableExprId& id) const override;
@@ -470,7 +473,7 @@ class TableExprNodeSetElemMidWidth : public TableExprNodeSetElemCont {
   // <br>Note that it does NOT set match values to false; it is assumed they
   // are initialized that way.
   // <group>
-  void matchDouble(bool* match, const Double* value, size_t nval,
+  void matchDouble(bool* match, const double* value, size_t nval,
                    const TableExprId& id) const override;
   void matchDate(bool* match, const MVTime* value, size_t nval,
                  const TableExprId& id) const override;
@@ -552,7 +555,7 @@ class TableExprNodeSetElem : public TableExprNodeRep {
   const TENSEBShPtr& getElem() const { return itsElem; }
 
   // Show the node.
-  void show(ostream& os, uInt indent) const override { itsElem->show(os, indent); }
+  void show(ostream& os, unsigned int indent) const override { itsElem->show(os, indent); }
 
   // Is it a discrete set element.
   bool isDiscrete() const { return itsElem->isDiscrete(); }

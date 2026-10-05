@@ -46,12 +46,12 @@ class LatticeStatsDataProviderBase
   virtual ~LatticeStatsDataProviderBase();
 
   // estimated number of steps to iterate through the the lattice
-  virtual uInt estimatedSteps() const = 0;
+  virtual unsigned int estimatedSteps() const = 0;
 
   virtual void finalize();
 
   // Get the stride for the current mask (only called if hasMask() returns true).
-  uInt getMaskStride();
+  unsigned int getMaskStride();
 
   // Get the associated range(s) of the current dataset. Only called if hasRanges() returns true;
   std::vector<
@@ -59,7 +59,7 @@ class LatticeStatsDataProviderBase
   getRanges();
 
   // Get the stride for the current data set.
-  uInt getStride();
+  unsigned int getStride();
 
   // Returns NULL; lattices do not have associated weights.
   const T* getWeights();

@@ -120,7 +120,7 @@ class MemoryTable : public BaseTable {
   virtual bool hasLock(FileLocker::LockType) const;
 
   // Locking the table is a no-op.
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
 
   // Unlocking the table is a no-op.
   virtual void unlock();
@@ -132,7 +132,7 @@ class MemoryTable : public BaseTable {
   virtual void resync();
 
   // Get the modify counter. It always returns 0.
-  virtual uInt getModifyCounter() const;
+  virtual unsigned int getModifyCounter() const;
 
   // Test if the table is opened as writable. It always returns true.
   virtual bool isWritable() const;
@@ -167,7 +167,7 @@ class MemoryTable : public BaseTable {
   virtual void flushTableInfo();
 
   // Get a column object using its index.
-  virtual BaseColumn* getColumn(uInt columnIndex) const;
+  virtual BaseColumn* getColumn(unsigned int columnIndex) const;
 
   // Get a column object using its name.
   virtual BaseColumn* getColumn(const String& columnName) const;

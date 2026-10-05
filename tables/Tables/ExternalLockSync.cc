@@ -37,11 +37,11 @@ void ExternalLockSync::makeLock(const String& tableName, bool create, FileLocker
   itsLock.makeLock(tableName, create, type);
 }
 
-bool ExternalLockSync::acquire(FileLocker::LockType type, uInt nattempts) {
+bool ExternalLockSync::acquire(FileLocker::LockType type, unsigned int nattempts) {
   if (!itsLock.acquire(&(itsSync.memoryIO()), type, nattempts)) {
     return false;
   }
-  uInt nrcol;
+  unsigned int nrcol;
   bool tableChanged;
   Block<bool> dataManChanged;
   itsSync.read(itsNrrow, nrcol, tableChanged, dataManChanged);

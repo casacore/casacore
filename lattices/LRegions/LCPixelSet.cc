@@ -69,7 +69,7 @@ bool LCPixelSet::equals(const LCRegion& other) const {
 
 LCRegion* LCPixelSet::cloneRegion() const { return new LCPixelSet(*this); }
 
-LCRegion* LCPixelSet::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCPixelSet::doTranslate(const Vector<float>& translateVector,
                                   const IPosition& newLatticeShape) const {
   LCBox* boxPtr = (LCBox*)(itsBox.translate(translateVector, newLatticeShape));
   LCPixelSet* regPtr = new LCPixelSet(maskArray(), *boxPtr);

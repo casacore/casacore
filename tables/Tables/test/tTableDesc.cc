@@ -56,13 +56,13 @@ void a(bool doExcp) {
   // Do it in separate scope to destruct it (thus to write it).
   {
     TableDesc subtd("tTableDesc_tmp_sub", "1", TableDesc::New);
-    subtd.rwKeywordSet().define("subint", Int(10));
+    subtd.rwKeywordSet().define("subint", int(10));
     subtd.addColumn(ScalarColumnDesc<double>("ra"));
     subtd.addColumn(ScalarColumnDesc<double>("dec"));
   }
   TableDesc subtd("tTableDesc_tmp_sub", "1", TableDesc::Update);
   // Now build the main table description.
-  uInt i;
+  unsigned int i;
   ColumnDesc cd, cd2;
   Vector<double> arr(4);
   for (i = 0; i < 4; i++) {
@@ -72,20 +72,20 @@ void a(bool doExcp) {
   td.comment() = "A test of class TableDesc";
   td.rwKeywordSet().define("ra", float(3.14));
   td.rwKeywordSet().define("equinox", double(1950));
-  td.rwKeywordSet().define("aa", Int(1));
+  td.rwKeywordSet().define("aa", int(1));
 
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
   if (doExcp) {
     try {
-      td.addColumn(ScalarColumnDesc<Int>("ab"));  // already exists
+      td.addColumn(ScalarColumnDesc<int>("ab"));  // already exists
     } catch (std::exception& x) {
       cout << x.what() << endl;
     }
   }
-  td.addColumn(ScalarColumnDesc<Int>("ac"));
+  td.addColumn(ScalarColumnDesc<int>("ac"));
   td.rwColumnDesc("ac").rwKeywordSet().define("scale", Complex(0, 0));
   td.rwColumnDesc("ac").rwKeywordSet().define("unit", "");
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.rwColumnDesc("ac").rwKeywordSet().define("unit", "DEG");
   td.addColumn(ScalarColumnDesc<ExampleDesc>("ae"));
   td.addColumn(ArrayColumnDesc<ExampleDesc>("arr0"));
@@ -99,8 +99,9 @@ void a(bool doExcp) {
   }
 
   td.addColumn(ArrayColumnDesc<Complex>("Arr1", "comment for Arr1", 0));
-  td.addColumn(ArrayColumnDesc<Int>("A2r1", "comment for Arr1", 3));
-  ArrayColumnDesc<uInt> coldes("Arr3", "comment for Arr1", IPosition(2, 3, 4), ColumnDesc::Direct);
+  td.addColumn(ArrayColumnDesc<int>("A2r1", "comment for Arr1", 3));
+  ArrayColumnDesc<unsigned int> coldes("Arr3", "comment for Arr1", IPosition(2, 3, 4),
+                                       ColumnDesc::Direct);
   td.addColumn(coldes);
 
   // Set the shape of some columns.
@@ -182,7 +183,7 @@ void a(bool doExcp) {
 
   // Try some ColumnDesc functions.
   // First add the column; remove it at the end.
-  td.addColumn(ArrayColumnDesc<Int>("ArrExtra"));
+  td.addColumn(ArrayColumnDesc<int>("ArrExtra"));
   ColumnDesc& cdesc = td.rwColumnDesc("ArrExtra");
   AlwaysAssertExit(cdesc.ndim() == -1);
   AlwaysAssertExit(cdesc.shape() == IPosition());
@@ -267,12 +268,12 @@ void b(bool doExcp) {
 
   // Define another descr. and add it to the first descr.
   TableDesc tdscr("TabSub", TableDesc::Scratch);
-  tdscr.rwKeywordSet().define("key1", Int(0));
+  tdscr.rwKeywordSet().define("key1", int(0));
   ScalarColumnDesc<String> colaDesc("cola");
   colaDesc.setMaxLength(32);
   tdscr.addColumn(colaDesc);
   td.addColumn(SubTableDesc("colsub", "colsub comment", tdscr));
-  tdscr.rwKeywordSet().define("key2", Int(0));
+  tdscr.rwKeywordSet().define("key2", int(0));
   tdscr.show();
   cout << endl;
   TableDesc tda(td, "OtherName", "O2", TableDesc::Scratch);  // copy the descr.
@@ -343,18 +344,18 @@ void d(bool doExcp) {
   TableDesc td("tTableDesc_tmp1", TableDesc::New);
 
   // Add an Int column.
-  ColumnDesc c1 = td.addColumn(ScalarColumnDesc<Int>("colint", "comment"));
+  ColumnDesc c1 = td.addColumn(ScalarColumnDesc<int>("colint", "comment"));
 
   // Define a keyword colint_key1 (=10) for that column.
-  c1.rwKeywordSet().define("colint_key1", Int(10));
+  c1.rwKeywordSet().define("colint_key1", int(10));
 
   // It can also be done the other way around.
-  ScalarColumnDesc<Int> colint("colint2", "comment2");
-  colint.rwKeywordSet().define("colint_key1", Int(20));
+  ScalarColumnDesc<int> colint("colint2", "comment2");
+  colint.rwKeywordSet().define("colint_key1", int(20));
   td.addColumn(colint);
 
   // Add a third column.
-  c1 = td.addColumn(ScalarColumnDesc<Int>("colint3", "comment"));
+  c1 = td.addColumn(ScalarColumnDesc<int>("colint3", "comment"));
 
   // Extend the comment.
   td.rwColumnDesc("colint").comment() += " addition";
@@ -390,10 +391,10 @@ void d(bool doExcp) {
   DataManager::registerCtor("c2_engine", 0);
 
   // Define a virtual column.
-  td.addColumn(ScalarColumnDesc<Int>("c1", "c1-comment", "c1_engine", ""));
+  td.addColumn(ScalarColumnDesc<int>("c1", "c1-comment", "c1_engine", ""));
 
   // Show name and comment of all column descriptions.
-  for (uInt jj = 0; jj < td.ncolumn(); jj++) {
+  for (unsigned int jj = 0; jj < td.ncolumn(); jj++) {
     c1 = td[jj];
     cout << c1.name() << " " << c1.comment() << endl;
   }

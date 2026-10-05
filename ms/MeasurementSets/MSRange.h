@@ -142,7 +142,7 @@ class MSRange {
 
   // Same as previous function, with Vector of MSS::Field keys instead
   // of Strings
-  Record range(const Vector<Int>& items, bool useFlags = true, bool OneBased = false);
+  Record range(const Vector<int>& items, bool useFlags = true, bool OneBased = false);
 
   // Similar to above, with a single enum, for convenience
   Record range(MSS::Field item, bool useFlags = true);
@@ -150,7 +150,7 @@ class MSRange {
   // Set the block size (in Mbytes) to use when reading the data column.
   // The default is 10 MB. Actual memory used is higher due to
   // temporaries and caching.
-  void setBlockSize(Int blockSize = 10);
+  void setBlockSize(int blockSize = 10);
 
  protected:
   // check the data description selection (one or more with same shape, or
@@ -159,28 +159,28 @@ class MSRange {
 
   // get the range of a ScalarColumn<Int>, correct for 1-based
   // indexing if oneBased is true, and add to out record.
-  void scalarRange(Record& out, const String& item, const ScalarColumn<Int>& id, bool oneBased);
+  void scalarRange(Record& out, const String& item, const ScalarColumn<int>& id, bool oneBased);
 
   // get the range of a ScalarColumn<Int>
-  Vector<Int> scalarRange(const ScalarColumn<Int>& id);
+  Vector<int> scalarRange(const ScalarColumn<int>& id);
 
   // get the minimum and maximum of a Complex data column, after
   // application of some function to convert to Float (e.g., real,
   // amplitude,...). This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
-  void minMax(Matrix<Float>& minmax, const Vector<bool>& funcSel, const ArrayColumn<Complex>& data1,
-              const ArrayColumn<Complex>& data2, const ArrayColumn<bool>& flag, Int dataType,
+  void minMax(Matrix<float>& minmax, const Vector<bool>& funcSel, const ArrayColumn<Complex>& data1,
+              const ArrayColumn<Complex>& data2, const ArrayColumn<bool>& flag, int dataType,
               bool useFlags);
 
   // get the minimum and maximum of a Float data column
   // This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
-  void minMax(Float& mini, Float& maxi, const ArrayColumn<Float>& data,
+  void minMax(float& mini, float& maxi, const ArrayColumn<float>& data,
               const ArrayColumn<bool>& flag, bool useFlags);
 
   // Get the range of interferometer numbers given the antenna1 and antenna2
   // columns.
-  Vector<Int> ifrNumbers(const ScalarColumn<Int>& ant1, const ScalarColumn<Int>& ant2);
+  Vector<int> ifrNumbers(const ScalarColumn<int>& ant1, const ScalarColumn<int>& ant2);
 
  private:
   // The function types
@@ -190,10 +190,10 @@ class MSRange {
   enum { Observed, Corrected, Model, Ratio, Residual, ObsResidual, ObsFloat, nDataType };
 
   MeasurementSet ms_p;  // the original ms
-  Int blockSize_p;
-  Vector<Int> ddId_p;
-  Vector<uInt> spwId_p;
-  Vector<uInt> polId_p;
+  int blockSize_p;
+  Vector<int> ddId_p;
+  Vector<unsigned int> spwId_p;
+  Vector<unsigned int> polId_p;
   bool constantShape_p;
   const MSSelector* sel_p;
 };

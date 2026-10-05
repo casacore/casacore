@@ -116,7 +116,7 @@ class StokesConverter {
   // has been scaled to the level Stokes I (common practice
   // in radioastronomy: even though officially I=XX+YY, in practice
   // we need to do I=(XX+YY)/2, set rescale to true to do the latter).
-  StokesConverter(const Vector<Int>& out, const Vector<Int>& in, bool rescale = false);
+  StokesConverter(const Vector<int>& out, const Vector<int>& in, bool rescale = false);
 
   // desctructor
   ~StokesConverter();
@@ -129,7 +129,7 @@ class StokesConverter {
 
   // Change or Set the conversion. Arguments are the same as for
   // constructor above.
-  void setConversion(const Vector<Int>& out, const Vector<Int>& in, bool rescale = false);
+  void setConversion(const Vector<int>& out, const Vector<int>& in, bool rescale = false);
 
   // convert data, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
@@ -146,7 +146,7 @@ class StokesConverter {
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed.
   // Set sigma to true when converting sigma's using this routine.
-  void convert(Array<Float>& out, const Array<Float>& in, bool sigma = false) const;
+  void convert(Array<float>& out, const Array<float>& in, bool sigma = false) const;
 
   // invert flags, first dimension of input must match
   // that of the output conversion vector used to set up the conversion.
@@ -160,14 +160,14 @@ class StokesConverter {
   void initConvMatrix();
 
  private:
-  Vector<Int> in_p, out_p;
+  Vector<int> in_p, out_p;
   bool rescale_p;
   // # mutable because operator Matrix(Slice,Slice) doesn't have const version
   mutable Matrix<Complex> conv_p;
   mutable Matrix<Complex> iquvConv_p;
   bool doIQUV_p;
   Matrix<bool> flagConv_p;
-  Matrix<Float> wtConv_p;
+  Matrix<float> wtConv_p;
   Matrix<Complex> polConv_p;
 };
 

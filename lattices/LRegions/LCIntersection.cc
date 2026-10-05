@@ -69,7 +69,7 @@ bool LCIntersection::equals(const LCRegion& other) const { return LCRegionMulti:
 
 LCRegion* LCIntersection::cloneRegion() const { return new LCIntersection(*this); }
 
-LCRegion* LCIntersection::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCIntersection::doTranslate(const Vector<float>& translateVector,
                                       const IPosition& newLatticeShape) const {
   Block<const LCRegion*> regions;
   multiTranslate(regions, translateVector, newLatticeShape);
@@ -94,18 +94,18 @@ LCIntersection* LCIntersection::fromRecord(const TableRecord& rec, const String&
 }
 
 void LCIntersection::defineBox() {
-  uInt i;
+  unsigned int i;
   // Get the intersection of blc and trc.
   const IPosition& shape = latticeShape();
-  uInt nrdim = shape.nelements();
+  unsigned int nrdim = shape.nelements();
   IPosition blc(nrdim, 0);
   IPosition trc(shape - 1);
-  uInt nr = regions().nelements();
+  unsigned int nr = regions().nelements();
   itsOffsets.resize(nr, true);
   for (i = 0; i < nr; i++) {
     const IPosition& regblc = regions()[i]->boundingBox().start();
     const IPosition& regtrc = regions()[i]->boundingBox().end();
-    for (uInt j = 0; j < nrdim; j++) {
+    for (unsigned int j = 0; j < nrdim; j++) {
       if (regtrc(j) < blc(j) || regblc(j) > trc(j)) {
         throw(
             AipsError("LCIntersection::LCIntersection - "
@@ -141,8 +141,8 @@ void LCIntersection::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   bool* buf = buffer.getStorage(deleteBuf);
   bool* bufend = buf + section.length().product();
   Array<bool> tmpbuf(buffer.shape());
-  uInt nr = regions().nelements();
-  for (uInt i = 1; i < nr; i++) {
+  unsigned int nr = regions().nelements();
+  for (unsigned int i = 1; i < nr; i++) {
     LCRegion* reg = (LCRegion*)(regions()[i]);
     reg->doGetSlice(tmpbuf,
                     Slicer(section.start() + itsOffsets[i], section.length(), section.stride()));

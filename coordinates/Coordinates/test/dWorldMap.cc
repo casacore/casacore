@@ -31,8 +31,8 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void list(bool ok, bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose, Vector<Int>& pmap,
-          Vector<Int>& ptranspose, CoordinateSystem& cSys1, CoordinateSystem& cSys2);
+void list(bool ok, bool ok2, Vector<int>& wmap, Vector<int>& wtranspose, Vector<int>& pmap,
+          Vector<int>& ptranspose, CoordinateSystem& cSys1, CoordinateSystem& cSys2);
 
 int main()
 //
@@ -40,7 +40,7 @@ int main()
 //
 {
   try {
-    Vector<Int> wmap, pmap, wtranspose, ptranspose;
+    Vector<int> wmap, pmap, wtranspose, ptranspose;
     Vector<bool> refChange;
     {
       cout << "2D [ra, dec] & 0D" << endl;
@@ -97,8 +97,8 @@ int main()
 
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Vector<Int> worldOrder(cSys2.nWorldAxes());
-      Vector<Int> pixelOrder(cSys2.nPixelAxes());
+      Vector<int> worldOrder(cSys2.nWorldAxes());
+      Vector<int> pixelOrder(cSys2.nPixelAxes());
       worldOrder(0) = 1;
       worldOrder(1) = 2;
       worldOrder(2) = 0;
@@ -114,9 +114,9 @@ int main()
       cout << "2D [ra,dec] & 3D [ra, dec, spec] " << endl;
       cout << "   [0, 1]   &    [0, 1, -1]" << endl;
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
       if (pSpec >= 0) {
-        Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+        int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
         cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
         //
         CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
@@ -135,17 +135,17 @@ int main()
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
 
-      Vector<Int> worldOrder(cSys2.nWorldAxes());
-      Vector<Int> pixelOrder(cSys2.nPixelAxes());
+      Vector<int> worldOrder(cSys2.nWorldAxes());
+      Vector<int> pixelOrder(cSys2.nPixelAxes());
       worldOrder(0) = 2;
       worldOrder(1) = 1;
       worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys2.transpose(worldOrder, pixelOrder);
       //
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
       if (pSpec >= 0) {
-        Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+        int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
         cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
         //
         bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
@@ -164,17 +164,17 @@ int main()
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
 
-      Vector<Int> worldOrder(cSys1.nWorldAxes());
-      Vector<Int> pixelOrder(cSys1.nPixelAxes());
+      Vector<int> worldOrder(cSys1.nWorldAxes());
+      Vector<int> pixelOrder(cSys1.nPixelAxes());
       worldOrder(0) = 2;
       worldOrder(1) = 1;
       worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys1.transpose(worldOrder, pixelOrder);
       //
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys1);
+      int pSpec = CoordinateUtil::findSpectralAxis(cSys1);
       if (pSpec >= 0) {
-        Int wSpec = cSys1.pixelAxisToWorldAxis(pSpec);
+        int wSpec = cSys1.pixelAxisToWorldAxis(pSpec);
         cSys1.removeWorldAxis(wSpec, cSys1.referenceValue()(wSpec));
         //
         bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
@@ -223,8 +223,8 @@ int main()
   return 0;
 }
 
-void list(bool ok, bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose, Vector<Int>& pmap,
-          Vector<Int>& ptranspose, CoordinateSystem& cSys1, CoordinateSystem& cSys2) {
+void list(bool ok, bool ok2, Vector<int>& wmap, Vector<int>& wtranspose, Vector<int>& pmap,
+          Vector<int>& ptranspose, CoordinateSystem& cSys1, CoordinateSystem& cSys2) {
   cout << endl;
   if (!ok) {
     cout << "worldMap failed with message " << cSys1.errorMessage() << endl;

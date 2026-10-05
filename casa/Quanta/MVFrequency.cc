@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # Constructors
 MVFrequency::MVFrequency() : val(0.0) {}
 
-MVFrequency::MVFrequency(Double d) : val(d) {}
+MVFrequency::MVFrequency(double d) : val(d) {}
 
 MVFrequency::MVFrequency(const MVFrequency &other) : MeasValue(), val(other.val) {}
 
@@ -46,10 +46,10 @@ MVFrequency::MVFrequency(const Quantity &other) {
   val = makeF(other.getValue(), other.getFullUnit());
 }
 
-MVFrequency::MVFrequency(const Quantum<Vector<Double>> &other) {
-  Vector<Double> tmp;
+MVFrequency::MVFrequency(const Quantum<Vector<double>> &other) {
+  Vector<double> tmp;
   tmp = other.getValue();
-  uInt i = tmp.nelements();
+  unsigned int i = tmp.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -59,8 +59,8 @@ MVFrequency::MVFrequency(const Quantum<Vector<Double>> &other) {
   }
 }
 
-MVFrequency::MVFrequency(const Vector<Double> &other) {
-  uInt i = other.nelements();
+MVFrequency::MVFrequency(const Vector<double> &other) {
+  unsigned int i = other.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -87,7 +87,7 @@ MVFrequency &MVFrequency::operator=(const MVFrequency &other) {
 MVFrequency::~MVFrequency() {}
 
 // Operators
-MVFrequency::operator Double() const { return val; }
+MVFrequency::operator double() const { return val; }
 
 MVFrequency &MVFrequency::operator+=(const MVFrequency &other) {
   val += other.val;
@@ -103,11 +103,11 @@ bool MVFrequency::operator==(const MVFrequency &other) const { return (val == ot
 
 bool MVFrequency::operator!=(const MVFrequency &other) const { return (val != other.val); }
 
-bool MVFrequency::near(const MVFrequency &other, Double tol) const {
+bool MVFrequency::near(const MVFrequency &other, double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
+bool MVFrequency::nearAbs(const MVFrequency &other, double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -123,19 +123,19 @@ void MVFrequency::print(ostream &os) const { os << val; }
 
 MeasValue *MVFrequency::clone() const { return (new MVFrequency(*this)); }
 
-Double MVFrequency::getValue() const { return val; }
+double MVFrequency::getValue() const { return val; }
 
 Quantity MVFrequency::get() const { return Quantity(val, "Hz"); }
 
 Quantity MVFrequency::get(const Unit &unit) const { return Quantity(makeF(val, unit, true), unit); }
 
-Vector<Double> MVFrequency::getVector() const {
-  Vector<Double> x(1);
+Vector<double> MVFrequency::getVector() const {
+  Vector<double> x(1);
   x(0) = val;
   return x;
 }
 
-void MVFrequency::putVector(const Vector<Double> &in) {
+void MVFrequency::putVector(const Vector<double> &in) {
   if (in.nelements() < 1) {
     val = 0.0;
   } else {
@@ -143,20 +143,20 @@ void MVFrequency::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double>> MVFrequency::getRecordValue() const {
-  Vector<Quantum<Double>> tmp(1);
+Vector<Quantum<double>> MVFrequency::getRecordValue() const {
+  Vector<Quantum<double>> tmp(1);
   tmp(0) = get();
   return tmp;
 }
 
-bool MVFrequency::putValue(const Vector<Quantum<Double>> &in) {
+bool MVFrequency::putValue(const Vector<Quantum<double>> &in) {
   static const UnitVal InvTime = UnitVal::NODIM / UnitVal::TIME;
   static const UnitVal AngleTime = UnitVal::ANGLE / UnitVal::TIME;
   static const UnitVal InvLength = UnitVal::NODIM / UnitVal::LENGTH;
   static const UnitVal Energy =
       UnitVal::MASS * UnitVal::LENGTH * UnitVal::LENGTH / UnitVal::TIME / UnitVal::TIME;
   static const UnitVal Impuls = UnitVal::MASS * UnitVal::LENGTH;
-  uInt i = in.nelements();
+  unsigned int i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -173,16 +173,16 @@ bool MVFrequency::putValue(const Vector<Quantum<Double>> &in) {
   return true;
 }
 
-Double MVFrequency::makeF(Double v, const Unit &dt, bool rev) const {
+double MVFrequency::makeF(double v, const Unit &dt, bool rev) const {
   static const UnitVal InvTime = UnitVal::NODIM / UnitVal::TIME;
   static const UnitVal AngleTime = UnitVal::ANGLE / UnitVal::TIME;
   static const UnitVal InvLength = UnitVal::NODIM / UnitVal::LENGTH;
   static const UnitVal Energy =
       UnitVal::MASS * UnitVal::LENGTH * UnitVal::LENGTH / UnitVal::TIME / UnitVal::TIME;
   static const UnitVal Impuls = UnitVal::MASS * UnitVal::LENGTH;
-  static const Double LVel = QC::c().getBaseValue();
-  static const Double Planck = QC::h().getBaseValue();
-  Double x;
+  static const double LVel = QC::c().getBaseValue();
+  static const double Planck = QC::h().getBaseValue();
+  double x;
   if (dt.getValue() == UnitVal::TIME) {
     return (1.0 / dt.getValue().getFac() / v);
   } else if (dt.getValue() == InvTime) {

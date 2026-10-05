@@ -85,26 +85,26 @@ bool LCExtension::equals(const LCRegion& other) const {
 
 LCRegion* LCExtension::cloneRegion() const { return new LCExtension(*this); }
 
-LCRegion* LCExtension::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCExtension::doTranslate(const Vector<float>& translateVector,
                                    const IPosition& newLatticeShape) const {
-  uInt i;
+  unsigned int i;
   // First translate the extendBox.
   // Take appropriate elements from the vectors.
-  uInt nre = itsExtendAxes.nelements();
-  Vector<Float> boxTransVec(nre);
+  unsigned int nre = itsExtendAxes.nelements();
+  Vector<float> boxTransVec(nre);
   IPosition boxLatShape(nre);
   for (i = 0; i < nre; i++) {
-    uInt axis = itsExtendAxes(i);
+    unsigned int axis = itsExtendAxes(i);
     boxTransVec(i) = translateVector(axis);
     boxLatShape(i) = newLatticeShape(axis);
   }
   LCBox* boxPtr = (LCBox*)(itsExtendBox.translate(boxTransVec, boxLatShape));
   // Now translate the region.
-  uInt nrr = itsRegionAxes.nelements();
-  Vector<Float> regTransVec(nrr);
+  unsigned int nrr = itsRegionAxes.nelements();
+  Vector<float> regTransVec(nrr);
   IPosition regLatShape(nrr);
   for (i = 0; i < nrr; i++) {
-    uInt axis = itsRegionAxes(i);
+    unsigned int axis = itsRegionAxes(i);
     regTransVec(i) = translateVector(axis);
     regLatShape(i) = newLatticeShape(axis);
   }
@@ -135,20 +135,20 @@ LCExtension* LCExtension::fromRecord(const TableRecord& rec, const String& table
   regPtr = LCRegion::fromRecord(rec.asRecord("region"), tableName);
   LCBox* boxPtr = 0;
   boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
-  LCExtension* extPtr = new LCExtension(true, regPtr, Vector<Int>(rec.toArrayInt("axes")), *boxPtr);
+  LCExtension* extPtr = new LCExtension(true, regPtr, Vector<int>(rec.toArrayInt("axes")), *boxPtr);
   delete boxPtr;
   return extPtr;
 }
 
 void LCExtension::fillRegionAxes() {
-  uInt nre = itsExtendAxes.nelements();
-  uInt nrr = region().ndim();
-  uInt nrdim = nre + nrr;
+  unsigned int nre = itsExtendAxes.nelements();
+  unsigned int nrr = region().ndim();
+  unsigned int nrdim = nre + nrr;
   // allAxes will get the remaining (thus region) axes at the end.
   IPosition allAxes = IPosition::makeAxisPath(nrdim, itsExtendAxes);
   itsRegionAxes.resize(nrr);
-  for (uInt i = nre; i < nrdim; i++) {
-    uInt axis = allAxes(i);
+  for (unsigned int i = nre; i < nrdim; i++) {
+    unsigned int axis = allAxes(i);
     itsRegionAxes(i - nre) = axis;
   }
 }
@@ -158,7 +158,7 @@ void LCExtension::fill(const IPosition& extendAxes, const LCBox& extendBox) {
   // They do not need to be in ascending order, but duplicates are
   // not allowed.
   IPosition regionShape = region().shape();
-  uInt nre = extendAxes.nelements();
+  unsigned int nre = extendAxes.nelements();
   if (nre == 0) {
     throw(
         AipsError("LCExtension::LCExtension - "
@@ -174,13 +174,13 @@ void LCExtension::fill(const IPosition& extendAxes, const LCBox& extendBox) {
   // So sort them and fill itsExtendAxes and itsExtendBox.
   itsExtendAxes.resize(nre);
   IPosition boxLatShape(nre);
-  Vector<Float> boxLatBlc(nre);
-  Vector<Float> boxLatTrc(nre);
-  Vector<uInt> reginx(nre);
-  GenSortIndirect<ssize_t, uInt>::sort(reginx, extendAxes.storage(), nre);
-  Int first = -1;
-  for (uInt i = 0; i < nre; i++) {
-    uInt axis = reginx(i);
+  Vector<float> boxLatBlc(nre);
+  Vector<float> boxLatTrc(nre);
+  Vector<unsigned int> reginx(nre);
+  GenSortIndirect<ssize_t, unsigned int>::sort(reginx, extendAxes.storage(), nre);
+  int first = -1;
+  for (unsigned int i = 0; i < nre; i++) {
+    unsigned int axis = reginx(i);
     itsExtendAxes(i) = extendAxes(axis);
     boxLatShape(i) = extendBox.latticeShape()(axis);
     boxLatBlc(i) = extendBox.blc()(axis);
@@ -198,16 +198,16 @@ void LCExtension::fill(const IPosition& extendAxes, const LCBox& extendBox) {
   fillRegionAxes();
   // Make up the lattice shape from the region and box latticeshape.
   // Fill the bounding box from blc/trc in region and box.
-  uInt nrr = itsRegionAxes.nelements();
-  uInt nrdim = nre + nrr;
+  unsigned int nrr = itsRegionAxes.nelements();
+  unsigned int nrdim = nre + nrr;
   IPosition latShape(nrdim);
   IPosition blc(nrdim);
   IPosition trc(nrdim);
   const IPosition& regionShp = region().latticeShape();
   const IPosition& regionBlc = region().boundingBox().start();
   const IPosition& regionTrc = region().boundingBox().end();
-  for (uInt i = 0; i < nrr; i++) {
-    uInt axis = itsRegionAxes(i);
+  for (unsigned int i = 0; i < nrr; i++) {
+    unsigned int axis = itsRegionAxes(i);
     latShape(axis) = regionShp(i);
     blc(axis) = regionBlc(i);
     trc(axis) = regionTrc(i);
@@ -215,8 +215,8 @@ void LCExtension::fill(const IPosition& extendAxes, const LCBox& extendBox) {
   const IPosition& boxShp = itsExtendBox.latticeShape();
   const IPosition& boxBlc = itsExtendBox.boundingBox().start();
   const IPosition& boxTrc = itsExtendBox.boundingBox().end();
-  for (uInt i = 0; i < nre; i++) {
-    uInt axis = itsExtendAxes(i);
+  for (unsigned int i = 0; i < nre; i++) {
+    unsigned int axis = itsExtendAxes(i);
     latShape(axis) = boxShp(i);
     blc(axis) = boxBlc(i);
     trc(axis) = boxTrc(i);
@@ -227,9 +227,9 @@ void LCExtension::fill(const IPosition& extendAxes, const LCBox& extendBox) {
 
 void LCExtension::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   buffer.resize(section.length());
-  uInt i;
-  uInt nre = itsExtendAxes.nelements();
-  uInt nrr = itsRegionAxes.nelements();
+  unsigned int i;
+  unsigned int nre = itsExtendAxes.nelements();
+  unsigned int nrr = itsRegionAxes.nelements();
   // Read the required region section.
   // This means we have to create a Slicer for those axes only.
   IPosition blc(nrr);
@@ -237,7 +237,7 @@ void LCExtension::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   IPosition inc(nrr);
   IPosition shape(buffer.ndim(), 1);
   for (i = 0; i < nrr; i++) {
-    uInt axis = itsRegionAxes(i);
+    unsigned int axis = itsRegionAxes(i);
     blc(i) = section.start()(axis);
     len(i) = section.length()(axis);
     inc(i) = section.stride()(axis);
@@ -274,7 +274,7 @@ void LCExtension::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   }
 }
 
-IPosition LCExtension::doNiceCursorShape(uInt maxPixels) const {
+IPosition LCExtension::doNiceCursorShape(unsigned int maxPixels) const {
   return Lattice<bool>::doNiceCursorShape(maxPixels);
 }
 

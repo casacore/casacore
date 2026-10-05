@@ -68,7 +68,7 @@ bool LCLELMask::equals(const LCRegion& that) const {
 
 LCRegion* LCLELMask::cloneRegion() const { return new LCLELMask(*this); }
 
-bool LCLELMask::lock(FileLocker::LockType type, uInt nattempts) {
+bool LCLELMask::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsExpr.lock(type, nattempts);
 }
 void LCLELMask::unlock() { itsExpr.unlock(); }
@@ -77,7 +77,7 @@ void LCLELMask::resync() { itsExpr.resync(); }
 void LCLELMask::tempClose() { itsExpr.tempClose(); }
 void LCLELMask::reopen() { itsExpr.reopen(); }
 
-LCRegion* LCLELMask::doTranslate(const Vector<Float>&, const IPosition&) const {
+LCRegion* LCLELMask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCLELMask cannot be translated.
   throw(AipsError("LCLELMask::translate is not supported"));
   return 0;

@@ -90,7 +90,7 @@ void doIt(bool doExcp) {
     }
   }
   // Do a valid create and assure its timestamp is greater and it is empty.
-  uInt time1 = risFile.modifyTime();
+  unsigned int time1 = risFile.modifyTime();
   risFile.create();
   AlwaysAssertExit(risFile.modifyTime() > time1);
   AlwaysAssertExit(risFile.size() == 0);
@@ -99,7 +99,7 @@ void doIt(bool doExcp) {
   //   to another file
   RegularFile risCopy("tRegularFile_tmp/moveto/isFile1");
   RegularFile risFile1("tRegularFile_tmp/isFile1");
-  uInt size1 = risFile1.size();
+  unsigned int size1 = risFile1.size();
   cout << size1 << endl;
   risFile1.copy("tRegularFile_tmp/isFile");
   AlwaysAssertExit(risFile.size() == size1);

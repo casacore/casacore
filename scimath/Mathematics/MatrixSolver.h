@@ -37,7 +37,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-typedef Float FType;  // floating type (Float, Double)
+typedef float FType;  // floating type (Float, Double)
 
 //<summary>
 // MatrixSolver.h: the base class for solvers of linear equations AX=B
@@ -121,10 +121,10 @@ class MatrixSolver {
   FType Tolerance();
 
   // Set the maximum number of iterations.
-  void setMaxIters(uInt maxiters);
+  void setMaxIters(unsigned int maxiters);
 
   // Return the maximum number of iterations.
-  uInt MaxIters();
+  unsigned int MaxIters();
 
   // Set the gain for solution
   void setGain(FType g);
@@ -168,7 +168,7 @@ class MatrixSolver {
   FType SolTolerance;
 
   // Maximum number of iterations
-  uInt MaxIterations;
+  unsigned int MaxIterations;
 
   // Has a solution been found?
   bool solved;
@@ -181,9 +181,9 @@ inline void MatrixSolver::setTolerance(FType tol) { SolTolerance = tol; }
 
 inline FType MatrixSolver::Tolerance() { return SolTolerance; }
 
-inline void MatrixSolver::setMaxIters(uInt maxiters) { MaxIterations = maxiters; }
+inline void MatrixSolver::setMaxIters(unsigned int maxiters) { MaxIterations = maxiters; }
 
-inline uInt MatrixSolver::MaxIters() { return MaxIterations; }
+inline unsigned int MatrixSolver::MaxIters() { return MaxIterations; }
 
 inline void MatrixSolver::setGain(FType g) { gain = g; }
 

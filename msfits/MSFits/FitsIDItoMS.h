@@ -124,9 +124,9 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   // software correlator used by the EVN).
   //
 
-  FITSIDItoMS1(FitsInput& in, const String& correlat, const Int& obsType = 0,
-               const bool& initFirstMain = true, const Float& vanVleck = 0.0,
-               const Float& corVer = 0.0);
+  FITSIDItoMS1(FitsInput& in, const String& correlat, const int& obsType = 0,
+               const bool& initFirstMain = true, const float& vanVleck = 0.0,
+               const float& corVer = 0.0);
 
   ~FITSIDItoMS1();
 
@@ -214,7 +214,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   const Table& nextRow();
 
   // Get the version of the archived MS.
-  Float msVersion() const { return itsVersion; }
+  float msVersion() const { return itsVersion; }
 
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
@@ -237,7 +237,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
                            bool addEOP = false);
 
   // Fill the main table from the Primary group data
-  void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
+  void fillMSMainTable(const String& MSFileName, int& nField, int& nSpW);
 
  private:
   //
@@ -249,7 +249,7 @@ class FITSIDItoMS1 : public BinaryTableExtension {
 
   // The number of elements for each column of the
   // BinaryTableExtension
-  Vector<Int> itsNelem;
+  Vector<int> itsNelem;
 
   // For each column: is it an array?
   Vector<bool> itsIsArray;
@@ -264,12 +264,12 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   TableInfo itsTableInfo;
 
   // The MS version.
-  Float itsVersion;
+  float itsVersion;
 
   //
   // Buffer for storing the MSK's, MS-specific FITS keywords.
   //
-  uInt itsNrMSKs;
+  unsigned int itsNrMSKs;
   Vector<String> itsMSKC;
   Vector<String> itsMSKN;
   Vector<String> itsMSKV;
@@ -277,27 +277,27 @@ class FITSIDItoMS1 : public BinaryTableExtension {
 
   // # FitsInput &infile_p;
   String msFile_p;
-  Vector<Int> nPixel_p, corrType_p;
-  Block<Int> corrIndex_p, corrSwapIndex_p;
-  Matrix<Int> corrProduct_p;
+  Vector<int> nPixel_p, corrType_p;
+  Block<int> corrIndex_p, corrSwapIndex_p;
+  Matrix<int> corrProduct_p;
   Vector<String> coordType_p;
-  Vector<Double> refVal_p, refPix_p, delta_p;
+  Vector<double> refVal_p, refPix_p, delta_p;
   static String array_p;
   String object_p, timsys_p;
-  Double epoch_p;
-  static Double rdate;
-  Int nAnt_p;
-  Vector<Double> receptorAngle_p;
+  double epoch_p;
+  static double rdate;
+  int nAnt_p;
+  Vector<double> receptorAngle_p;
   MFrequency::Types freqsys_p;
-  Double restfreq_p;
+  double restfreq_p;
   LogIO* itsLog;
   // # Int nIF_p;
-  Double startTime_p;
-  Double lastTime_p;
-  Int itsObsType;
+  double startTime_p;
+  double lastTime_p;
+  int itsObsType;
   String itsCorrelat;
-  Float itsCorVer;
-  Float itsVanVleck;
+  float itsCorVer;
+  float itsVanVleck;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static bool firstMain;
@@ -311,13 +311,13 @@ class FITSIDItoMS1 : public BinaryTableExtension {
   bool uv_data_hasWeights_p;
   bool weightypKwPresent_p;
   String weightyp_p;
-  Int nStokes_p;
-  Int nBand_p;
-  Double visScl_p;
-  static std::map<Int, Int> antIdFromNo;
-  static std::map<Int, Int> digiLevels;
-  static Vector<Double> effChBw;
-  Int nFreqid_p;
+  int nStokes_p;
+  int nBand_p;
+  double visScl_p;
+  static std::map<int, int> antIdFromNo;
+  static std::map<int, int> digiLevels;
+  static Vector<double> effChBw;
+  int nFreqid_p;
 
   //
   // # Member Functions

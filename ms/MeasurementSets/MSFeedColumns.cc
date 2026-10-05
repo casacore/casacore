@@ -80,28 +80,29 @@ void MSFeedColumns::setDirectionRef(MDirection::Types ref) { beamOffsetMeas_p.se
 
 void MSFeedColumns::setPositionRef(MPosition::Types ref) { positionMeas_p.setDescRefCode(ref); }
 
-Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIntervalQ, Int antId,
-                               Int fId, Int spwId, const Quantum<Double>& timeQ,
-                               const Quantum<Double>& intervalQ, Int numRec,
-                               const Array<Quantum<Double>>& beamOffsetQ,
-                               const Array<String>& polType, const Array<Complex>& polResp,
-                               const Array<Quantum<Double>>& positionQ,
-                               const Array<Quantum<Double>>& receptorAngleQ,
-                               const RowNumbers& ignoreRows, const Quantum<Double>& focusLengthQ) {
+int64_t MSFeedColumns::matchFeed(Quantum<double>& newTimeQ, Quantum<double>& newIntervalQ,
+                                 int antId, int fId, int spwId, const Quantum<double>& timeQ,
+                                 const Quantum<double>& intervalQ, int numRec,
+                                 const Array<Quantum<double>>& beamOffsetQ,
+                                 const Array<String>& polType, const Array<Complex>& polResp,
+                                 const Array<Quantum<double>>& positionQ,
+                                 const Array<Quantum<double>>& receptorAngleQ,
+                                 const RowNumbers& ignoreRows,
+                                 const Quantum<double>& focusLengthQ) {
   const Unit d("deg");
   const Unit s("s");
   const Unit m("m");
 
-  newTimeQ = newIntervalQ = Quantum<Double>(0., s);
+  newTimeQ = newIntervalQ = Quantum<double>(0., s);
 
   rownr_t r = nrow();
   if (r == 0) return -1;
 
-  const Double timeInS = timeQ.getValue(s);
-  const Double halfIntervalInS = intervalQ.getValue(s) / 2.;
-  const Double pos0InM = positionQ(IPosition(1, 0)).getValue(m);
-  const Double pos1InM = positionQ(IPosition(1, 1)).getValue(m);
-  const Double pos2InM = positionQ(IPosition(1, 2)).getValue(m);
+  const double timeInS = timeQ.getValue(s);
+  const double halfIntervalInS = intervalQ.getValue(s) / 2.;
+  const double pos0InM = positionQ(IPosition(1, 0)).getValue(m);
+  const double pos1InM = positionQ(IPosition(1, 1)).getValue(m);
+  const double pos2InM = positionQ(IPosition(1, 2)).getValue(m);
 
   // Matching loop
   while (r > 0) {
@@ -120,7 +121,7 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
         // one or both MSs do not have the optional FOCUS_LENGTH column: treat as always matching
         fLengthMatches = true;
       } else {
-        Double fLengthM = focusLengthQ.getValue(m);
+        double fLengthM = focusLengthQ.getValue(m);
         fLengthMatches = (focusLengthQuant()(r).getValue(m) == fLengthM);
       }
 
@@ -130,7 +131,7 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
           positionQuant()(r)(IPosition(1, 1)).getValue(m) == pos1InM &&
           positionQuant()(r)(IPosition(1, 2)).getValue(m) == pos2InM && fLengthMatches) {
         bool matches = true;
-        for (Int i = 0; i < numRec; ++i) {  // compare all receptors
+        for (int i = 0; i < numRec; ++i) {  // compare all receptors
           if (!(beamOffsetQuant()(r)(IPosition(2, 0, i)).getValue(d) ==
                     beamOffsetQ(IPosition(2, 0, i)).getValue(d) &&
                 beamOffsetQuant()(r)(IPosition(2, 1, i)).getValue(d) ==
@@ -144,7 +145,7 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
           }
         }
         if (matches) {
-          Double modHalfIntervalInS = intervalQuant()(r).getValue(s) / 2.;
+          double modHalfIntervalInS = intervalQuant()(r).getValue(s) / 2.;
           if (modHalfIntervalInS ==
               0.) {                     // to accomodate certain misuses of the MS, treat 0 as inf
             modHalfIntervalInS = 5E17;  // the age of the universe, roughly
@@ -153,9 +154,9 @@ Int64 MSFeedColumns::matchFeed(Quantum<Double>& newTimeQ, Quantum<Double>& newIn
                 timeQuant()(r).getValue(s) + modHalfIntervalInS >=
                     timeInS + halfIntervalInS)) {  // only difference is the validity time
             newTimeQ = (timeQuant()(r) + timeQ) / 2.;
-            Double maxTime = std::max(timeQuant()(r).getValue(s) + modHalfIntervalInS,
+            double maxTime = std::max(timeQuant()(r).getValue(s) + modHalfIntervalInS,
                                       timeInS + halfIntervalInS);
-            newIntervalQ = Quantum<Double>(2 * (maxTime - newTimeQ.getValue(s)), s);
+            newIntervalQ = Quantum<double>(2 * (maxTime - newTimeQ.getValue(s)), s);
           }
           return r;
         }

@@ -196,9 +196,9 @@ class Unit {
   // </thrown>
   // <group name="constructor">
   Unit(const std::string &other);
-  Unit(const Char *other);
-  explicit Unit(Char other);
-  Unit(const Char *other, Int len);
+  Unit(const char *other);
+  explicit Unit(char other);
+  Unit(const char *other, int len);
   // </group>
   // Destructor
   ~Unit();

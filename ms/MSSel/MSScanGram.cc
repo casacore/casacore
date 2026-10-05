@@ -64,12 +64,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSScanGram = 0;
-static Int posMSScanGram = 0;
+static int posMSScanGram = 0;
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 TableExprNode baseMSScanGramParseCommand(MSScanParse* parser, const String& command,
-                                         Vector<Int>& selectedIDs, Int maxScans) {
+                                         Vector<int>& selectedIDs, int maxScans) {
   try {
     MSScanGramrestart(MSScanGramin);
     yy_start = 1;
@@ -92,7 +92,7 @@ TableExprNode baseMSScanGramParseCommand(MSScanParse* parser, const String& comm
 }
 
 TableExprNode msScanGramParseCommand(const MeasurementSet* ms, const String& command,
-                                     Vector<Int>& selectedIDs, Int maxScans) {
+                                     Vector<int>& selectedIDs, int maxScans) {
   TableExprNode ret;
   MSScanParse* thisParser = new MSScanParse(ms);
   try {
@@ -106,8 +106,8 @@ TableExprNode msScanGramParseCommand(const MeasurementSet* ms, const String& com
 }
 
 TableExprNode msScanGramParseCommand(const MeasurementSet* ms, const TableExprNode& colAsTEN,
-                                     const String& command, Vector<Int>& selectedIDs,
-                                     Int maxScans) {
+                                     const String& command, Vector<int>& selectedIDs,
+                                     int maxScans) {
   TableExprNode ret;
   MSScanParse* thisParser = new MSScanParse(ms, colAsTEN);
   try {
@@ -131,7 +131,7 @@ void msScanGramParseDeleteNode() {
 }
 
 // # Give the string position.
-Int& msScanGramPosition() { return posMSScanGram; }
+int& msScanGramPosition() { return posMSScanGram; }
 
 // # Get the next input characters for flex.
 int msScanGramInput(char* buf, int max_size) {

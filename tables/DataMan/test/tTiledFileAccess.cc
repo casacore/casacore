@@ -45,11 +45,11 @@ int main() {
   // at offset 0.
   {
     IPosition shape(2, 16, 32);
-    Array<Float> arr(shape);
+    Array<float> arr(shape);
     indgen(arr);
     {
       bool deleteIt;
-      const Float* dataPtr = arr.getStorage(deleteIt);
+      const float* dataPtr = arr.getStorage(deleteIt);
       std::shared_ptr<ByteIO> fios(
           new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
       CanonicalIO ios(fios);
@@ -82,16 +82,16 @@ int main() {
   // which is true for all data types except long.
   {
     IPosition shape(2, 32, 16);
-    Array<Float> arr(shape);
+    Array<float> arr(shape);
     indgen(arr);
-    uInt off2;
+    unsigned int off2;
     {
       bool deleteIt;
-      const Float* dataPtr = arr.getStorage(deleteIt);
+      const float* dataPtr = arr.getStorage(deleteIt);
       std::shared_ptr<ByteIO> fios(
           new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
       RawIO ios(fios);
-      uChar nr = 0;
+      unsigned char nr = 0;
       off2 = ios.write(1, &nr);
       ios.write(shape.product(), dataPtr);
       arr.freeStorage(dataPtr, deleteIt);
@@ -123,7 +123,7 @@ int main() {
     IPosition shape(2, 17, 40);
     Array<DComplex> arr(shape);
     indgen(arr);
-    uInt off2;
+    unsigned int off2;
     {
       bool deleteIt;
       const DComplex* dataPtr = arr.getStorage(deleteIt);
@@ -162,7 +162,7 @@ int main() {
       IPosition st(2, 0, 0);
       IPosition end(2, 15, 0);
       IPosition leng(2, 16, 1);
-      for (Int i = 0; i < shape(0); i++) {
+      for (int i = 0; i < shape(0); i++) {
         st(1) = i;
         end(1) = i;
         AlwaysAssertExit(allEQ(arr(st, end) + DComplex(1, 2), tfac.getDComplex(Slicer(st, leng))));
@@ -179,15 +179,15 @@ int main() {
   // Read it also back as Float with a scale and offset.
   {
     IPosition shape(2, 10, 10);
-    Array<uChar> arrs(shape);
-    Array<Float> arrf(shape);
-    Float scale = 2;
-    Float offset = 2;
+    Array<unsigned char> arrs(shape);
+    Array<float> arrf(shape);
+    float scale = 2;
+    float offset = 2;
     indgen(arrs);
     indgen(arrf, float(2), float(2));
     {
       bool deleteIt;
-      const uChar* dataPtr = arrs.getStorage(deleteIt);
+      const unsigned char* dataPtr = arrs.getStorage(deleteIt);
       std::shared_ptr<ByteIO> fios(
           new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
       CanonicalIO ios(fios);
@@ -199,7 +199,8 @@ int main() {
       TiledFileAccess tfac("tTiledFileAccess_tmp.dat", 0, shape, IPosition(2, 10, 5), TpUChar,
                            TSMOption::Cache, true, true);
       AlwaysAssertExit(allEQ(arrs, tfac.getUChar(slicer)));
-      AlwaysAssertExit(allEQ(arrf, tfac.getFloat(slicer, scale, offset, uChar(255))));
+      AlwaysAssertExit(
+          allEQ(arrf, tfac.getFloat(slicer, scale, offset, static_cast<unsigned char>(255))));
       AlwaysAssertExit(tfac.shape() == shape);
       AlwaysAssertExit(tfac.tileShape() == IPosition(2, 10, 5));
     } catch (std::exception& x) {
@@ -212,15 +213,15 @@ int main() {
   // Read it also back as Float with a scale and offset.
   {
     IPosition shape(2, 17, 40);
-    Array<Short> arrs(shape);
-    Array<Float> arrf(shape);
-    Float scale = 2;
-    Float offset = -10;
+    Array<short> arrs(shape);
+    Array<float> arrf(shape);
+    float scale = 2;
+    float offset = -10;
     indgen(arrs);
     indgen(arrf, float(-10), float(2));
     {
       bool deleteIt;
-      const Short* dataPtr = arrs.getStorage(deleteIt);
+      const short* dataPtr = arrs.getStorage(deleteIt);
       std::shared_ptr<ByteIO> fios(
           new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
       CanonicalIO ios(fios);

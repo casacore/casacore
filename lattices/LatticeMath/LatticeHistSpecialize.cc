@@ -41,20 +41,21 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins) {
-  return min(nBins - 1, uInt((datum - dmin) / width));
+unsigned int LatticeHistSpecialize::bin(float datum, float dmin, float width, unsigned int nBins) {
+  return min(nBins - 1, static_cast<unsigned int>((datum - dmin) / width));
 }
 
 void LatticeHistSpecialize::process(const Complex* pInData, const bool* pInMask,
                                     Block<Complex>* pHist, const Vector<Complex>& clip,
-                                    Complex binWidth, uInt offset, uInt nrval, uInt nBins,
-                                    uInt dataIncr, uInt maskIncr) {
+                                    Complex binWidth, unsigned int offset, unsigned int nrval,
+                                    unsigned int nBins, unsigned int dataIncr,
+                                    unsigned int maskIncr) {
   Complex datum, useIt;
-  uInt rbin;
-  uInt index;
+  unsigned int rbin;
+  unsigned int index;
   //
   if (pInMask == 0) {
-    for (uInt i = 0; i < nrval; i++) {
+    for (unsigned int i = 0; i < nrval; i++) {
       datum = *pInData;
       useIt = LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum);
       if (real(useIt) > 0.5) {
@@ -75,7 +76,7 @@ void LatticeHistSpecialize::process(const Complex* pInData, const bool* pInMask,
       pInData += dataIncr;
     }
   } else {
-    for (uInt i = 0; i < nrval; i++) {
+    for (unsigned int i = 0; i < nrval; i++) {
       datum = *pInData;
       if (*pInMask) {
         useIt = LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum);
@@ -100,9 +101,9 @@ void LatticeHistSpecialize::process(const Complex* pInData, const bool* pInMask,
   }
 }
 
-void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& gX,
-                                      Vector<Float>& gY, Float dMean, Float dSigma, Float dSum,
-                                      Float xMin, Float xMax, Float binWidth, bool doCumu,
+void LatticeHistSpecialize::makeGauss(unsigned int& nGPts, float& gMax, Vector<float>& gX,
+                                      Vector<float>& gY, float dMean, float dSigma, float dSum,
+                                      float xMin, float xMax, float binWidth, bool doCumu,
                                       bool doLog)
 //
 // Make overlay Gaussian with the given parameters
@@ -116,15 +117,15 @@ void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& g
 
   // Set up Gaussian functional
 
-  const Float gaussAmp = dSum * M_SQRT1_2 * (0.5 * M_2_SQRTPI) / dSigma;
-  const Float gWidth = sqrt(8.0 * M_LN2) * dSigma;
-  const Gaussian1D<Float> gauss(gaussAmp, dMean, gWidth);
+  const float gaussAmp = dSum * M_SQRT1_2 * (0.5 * M_2_SQRTPI) / dSigma;
+  const float gWidth = sqrt(8.0 * M_LN2) * dSigma;
+  const Gaussian1D<float> gauss(gaussAmp, dMean, gWidth);
 
   // Generate Gaussian.
 
-  Float dgx = (xMax - xMin) / Float(nGPts);
-  Float xx;
-  uInt i;
+  float dgx = (xMax - xMin) / float(nGPts);
+  float xx;
+  unsigned int i;
   for (i = 0, xx = xMin, gMax = 0.0; i < nGPts; i++) {
     gX(i) = xx;
     gY(i) = gauss(xx);
@@ -135,7 +136,7 @@ void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& g
 
   // Make cumulative if desired
 
-  const Float scale = dgx / binWidth;
+  const float scale = dgx / binWidth;
   if (doCumu) makeCumulative(gY, gMax, nGPts, scale);
 
   // Take log if desired
@@ -143,8 +144,8 @@ void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& g
   if (doLog) makeLogarithmic(gY, gMax, nGPts);
 }
 
-void LatticeHistSpecialize::makeCumulative(Vector<Complex>& counts, Complex& yMax, uInt nBins,
-                                           Float scale)
+void LatticeHistSpecialize::makeCumulative(Vector<Complex>& counts, Complex& yMax,
+                                           unsigned int nBins, float scale)
 //
 // Code is the same as Float.  Could really make this
 // templated, but still need access to this function
@@ -152,15 +153,16 @@ void LatticeHistSpecialize::makeCumulative(Vector<Complex>& counts, Complex& yMa
 //
 {
   counts(0) = scale * counts(0);
-  for (uInt i = 1; i < nBins; i++) {
+  for (unsigned int i = 1; i < nBins; i++) {
     counts(i) = counts(i) * scale + counts(i - 1);
   }
   yMax = counts(nBins - 1);
 }
 
-void LatticeHistSpecialize::makeLogarithmic(Vector<Complex>& counts, Complex& yMax, uInt nBins) {
+void LatticeHistSpecialize::makeLogarithmic(Vector<Complex>& counts, Complex& yMax,
+                                            unsigned int nBins) {
   yMax = 0.0;
-  for (uInt i = 0; i < nBins; i++) {
+  for (unsigned int i = 0; i < nBins; i++) {
     ///     if (real(counts(i)) > 0.0) counts(i).real() = log10(counts(i).real());
     ///     if (imag(counts(i)) > 0.0) counts(i).imag() = log10(counts(i).imag());
     if (real(counts(i)) > 0.0) {
@@ -181,16 +183,17 @@ void LatticeHistSpecialize::makeLogarithmic(Vector<Complex>& counts, Complex& yM
   }
 }
 
-Float LatticeHistSpecialize::mul(Float v1, Float v2) { return v1 * v2; }
+float LatticeHistSpecialize::mul(float v1, float v2) { return v1 * v2; }
 
 Complex LatticeHistSpecialize::mul(Complex v1, Complex v2) {
   return Complex(real(v1) * real(v2), imag(v1) * imag(v2));
 }
 
 void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, bool doLog,
-                                 Float linearSum, Float yMax, Float binWidth,
-                                 const Vector<Float>& values, const Vector<Float>& counts,
-                                 const Vector<Float>& stats, uInt label, uInt ci, bool page)
+                                 float linearSum, float yMax, float binWidth,
+                                 const Vector<float>& values, const Vector<float>& counts,
+                                 const Vector<float>& stats, unsigned int label, unsigned int ci,
+                                 bool page)
 //
 // The histogram is already in its desired form - linear, log, cumu
 // yMax is in that form too.
@@ -200,15 +203,15 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, 
 //          2     Top/right
 //
 {
-  Float xMin = stats(LatticeStatsBase::MIN);
-  Float xMax = stats(LatticeStatsBase::MAX);
-  Float yMin = 0.0;
-  Float yMax2 = yMax;
+  float xMin = stats(LatticeStatsBase::MIN);
+  float xMax = stats(LatticeStatsBase::MAX);
+  float yMin = 0.0;
+  float yMax2 = yMax;
   //
-  Vector<Float> gX, gY;
+  Vector<float> gX, gY;
   if (doGauss) {
-    uInt nGPts = 0;
-    Float gMax;
+    unsigned int nGPts = 0;
+    float gMax;
     makeGauss(nGPts, gMax, gX, gY, stats(LatticeStatsBase::MEAN), stats(LatticeStatsBase::SIGMA),
               linearSum, xMin, xMax, binWidth, doCumu, doLog);
     yMax2 = max(yMax2, gMax);
@@ -256,7 +259,7 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, 
 void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, bool doLog,
                                  Complex linearSum, Complex yMax, Complex binWidth,
                                  const Vector<Complex>& values, const Vector<Complex>& counts,
-                                 const Vector<Complex>& stats, uInt, uInt, bool)
+                                 const Vector<Complex>& stats, unsigned int, unsigned int, bool)
 //
 // The histogram is already in its desired form - linear, log, cumu
 // yMax is in that form too.
@@ -268,11 +271,11 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, bool doGauss, bool doCumu, 
        imag(counts), imag(stats), 2, 7, false);
 }
 
-void LatticeHistSpecialize::plotHist(const Vector<Float>& x, const Vector<Float>& y,
+void LatticeHistSpecialize::plotHist(const Vector<float>& x, const Vector<float>& y,
                                      PGPlotter& plotter) {
-  const Float width = (x(1) - x(0)) / 2.0;
-  Float xx, yy;
-  for (uInt i = 0; i < x.nelements(); i++) {
+  const float width = (x(1) - x(0)) / 2.0;
+  float xx, yy;
+  for (unsigned int i = 0; i < x.nelements(); i++) {
     xx = x(i) - width;
     yy = y(i);
     //
@@ -288,15 +291,15 @@ void LatticeHistSpecialize::plotHist(const Vector<Float>& x, const Vector<Float>
   }
 }
 
-Float LatticeHistSpecialize::setBinWidth(Float dmin, Float dmax, uInt nBins) {
-  Float width = (dmax - dmin) / Float(nBins);
+float LatticeHistSpecialize::setBinWidth(float dmin, float dmax, unsigned int nBins) {
+  float width = (dmax - dmin) / float(nBins);
   if (near(width, 0.0f, 1e-6)) {
     width = 0.001;
   }
   return width;
 }
 
-Complex LatticeHistSpecialize::setBinWidth(Complex dmin, Complex dmax, uInt nBins) {
+Complex LatticeHistSpecialize::setBinWidth(Complex dmin, Complex dmax, unsigned int nBins) {
   return Complex(setBinWidth(real(dmin), real(dmax), nBins),
                  setBinWidth(imag(dmin), imag(dmax), nBins));
 }

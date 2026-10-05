@@ -156,7 +156,7 @@ void doIt(bool doExcp) {
 
   //    uInt addField(const String &fieldName, DataType scalarOrArrayType,
   //		  const IPosition &shape);
-  uInt whichField = b.addField("array", TpArrayInt, IPosition(2, 3, 4));
+  unsigned int whichField = b.addField("array", TpArrayInt, IPosition(2, 3, 4));
   whichField--;
   AlwaysAssertExit(b.shape(whichField) == IPosition(2, 3, 4));
   b.removeField(whichField);
@@ -231,7 +231,7 @@ void doIt(bool doExcp) {
   g.addField("TpArrayComplex", TpArrayComplex, IPosition(1, 1));
   g.addField("TpArrayDComplex", TpArrayDComplex, IPosition(1, 1));
   g.addField("TpArrayString", TpArrayString, IPosition(1, 1));
-  Int gn = g.nfields() - 1;
+  int gn = g.nfields() - 1;
   AlwaysAssert(gn == g.fieldNumber("TpArrayString"), AipsError);
   AlwaysAssert(g.shape(gn) == IPosition(1, 1), AipsError);
 

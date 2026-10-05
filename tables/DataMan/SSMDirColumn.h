@@ -75,7 +75,7 @@ class SSMDirColumn : public SSMColumn {
   // Create a SSMDirColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  SSMDirColumn(SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMDirColumn(SSMBase* aParent, int aDataType, unsigned int aColNr);
 
   virtual ~SSMDirColumn();
 
@@ -88,7 +88,7 @@ class SSMDirColumn : public SSMColumn {
   // An array of 'fixed length' strings is not handled specially,
   // thus this function is ignored.
   // It is needed to override the bahviour of the base class.
-  virtual void setMaxLength(uInt maxLength);
+  virtual void setMaxLength(unsigned int maxLength);
 
   // Get an array value in the given row.
   virtual void getArrayV(rownr_t rownr, ArrayBase& dataPtr);

@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 LCSlicer::LCSlicer()
     : itsIsFractional(false), itsIsAbsolute(false), itsIsUnspecified(true), itsIsStrided(false) {}
 
-LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, bool fractional,
+LCSlicer::LCSlicer(const Vector<float>& blc, const Vector<float>& trc, bool fractional,
                    RegionType::AbsRelType absRel)
     : itsBlc(blc.copy()), itsTrc(trc.copy()), itsInc(blc.size()) {
   itsInc = 1;
@@ -46,17 +46,17 @@ LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, bool frac
   fill();
 }
 
-LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vector<Float>& inc,
+LCSlicer::LCSlicer(const Vector<float>& blc, const Vector<float>& trc, const Vector<float>& inc,
                    bool fractional, RegionType::AbsRelType absRel)
     : itsBlc(blc.copy()), itsTrc(trc.copy()), itsInc(inc.copy()) {
   fillFlags(fractional, absRel, blc.size(), trc.size(), inc.size());
   fill();
 }
 
-LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vector<Float>& inc,
+LCSlicer::LCSlicer(const Vector<float>& blc, const Vector<float>& trc, const Vector<float>& inc,
                    const Vector<bool>& fractionalBlc, const Vector<bool>& fractionalTrc,
-                   const Vector<bool>& fractionalInc, const Vector<Int>& absRelBlc,
-                   const Vector<Int>& absRelTrc)
+                   const Vector<bool>& fractionalInc, const Vector<int>& absRelBlc,
+                   const Vector<int>& absRelTrc)
     : itsBlc(blc.copy()),
       itsTrc(trc.copy()),
       itsInc(inc.copy()),
@@ -68,24 +68,24 @@ LCSlicer::LCSlicer(const Vector<Float>& blc, const Vector<Float>& trc, const Vec
   fill();
 }
 
-LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, bool fractional,
+LCSlicer::LCSlicer(const Vector<double>& blc, const Vector<double>& trc, bool fractional,
                    RegionType::AbsRelType absRel) {
-  Vector<Double> inc(blc.size());
+  Vector<double> inc(blc.size());
   inc = 1;
   fillFlags(fractional, absRel, blc.size(), trc.size(), inc.size());
   fillFromDouble(blc, trc, inc);
 }
 
-LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
+LCSlicer::LCSlicer(const Vector<double>& blc, const Vector<double>& trc, const Vector<double>& inc,
                    bool fractional, RegionType::AbsRelType absRel) {
   fillFlags(fractional, absRel, blc.size(), trc.size(), inc.size());
   fillFromDouble(blc, trc, inc);
 }
 
-LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const Vector<Double>& inc,
+LCSlicer::LCSlicer(const Vector<double>& blc, const Vector<double>& trc, const Vector<double>& inc,
                    const Vector<bool>& fractionalBlc, const Vector<bool>& fractionalTrc,
-                   const Vector<bool>& fractionalInc, const Vector<Int>& absRelBlc,
-                   const Vector<Int>& absRelTrc)
+                   const Vector<bool>& fractionalInc, const Vector<int>& absRelBlc,
+                   const Vector<int>& absRelTrc)
     : itsFracBlc(fractionalBlc.copy()),
       itsFracTrc(fractionalTrc.copy()),
       itsFracInc(fractionalInc.copy()),
@@ -95,7 +95,7 @@ LCSlicer::LCSlicer(const Vector<Double>& blc, const Vector<Double>& trc, const V
 }
 
 LCSlicer::LCSlicer(const Slicer& slicer) {
-  uInt ndim = slicer.ndim();
+  unsigned int ndim = slicer.ndim();
   fillFlags(false, false, ndim, ndim, ndim);
   fillFromIPosition(slicer.start(), slicer.end(), slicer.stride());
 }
@@ -114,7 +114,7 @@ LCSlicer::LCSlicer(const IPosition& blc, const IPosition& trc, const IPosition& 
 }
 
 LCSlicer::LCSlicer(const IPosition& blc, const IPosition& trc, const IPosition& inc,
-                   const Vector<Int>& absRelBlc, const Vector<Int>& absRelTrc)
+                   const Vector<int>& absRelBlc, const Vector<int>& absRelTrc)
     : itsFracBlc(blc.size()),
       itsFracTrc(trc.size()),
       itsFracInc(inc.size()),
@@ -145,7 +145,7 @@ LCSlicer::~LCSlicer() {}
 
 LCSlicer& LCSlicer::operator=(const LCSlicer& other) {
   if (this != &other) {
-    uInt nr = other.itsBlc.size();
+    unsigned int nr = other.itsBlc.size();
     itsBlc.resize(nr);
     itsTrc.resize(nr);
     itsInc.resize(nr);
@@ -178,7 +178,7 @@ bool LCSlicer::operator==(const LCSlicer& other) const {
       itsIsStrided != other.itsIsStrided) {
     return false;
   }
-  for (uInt i = 0; i < itsInc.size(); i++) {
+  for (unsigned int i = 0; i < itsInc.size(); i++) {
     if (!near(itsBlc[i], other.itsBlc[i]) || !near(itsTrc[i], other.itsTrc[i]) ||
         !near(itsInc[i], other.itsInc[i])) {
       return false;
@@ -192,7 +192,8 @@ bool LCSlicer::operator==(const LCSlicer& other) const {
   return true;
 }
 
-void LCSlicer::fillFlags(bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uInt nrinc) {
+void LCSlicer::fillFlags(bool fractional, int absRel, unsigned int nrblc, unsigned int nrtrc,
+                         unsigned int nrinc) {
   itsFracBlc.resize(nrblc);
   itsFracTrc.resize(nrtrc);
   itsFracInc.resize(nrinc);
@@ -205,9 +206,9 @@ void LCSlicer::fillFlags(bool fractional, Int absRel, uInt nrblc, uInt nrtrc, uI
   itsAbsRelTrc = absRel;
 }
 
-void LCSlicer::fillFromDouble(const Vector<Double>& blc, const Vector<Double>& trc,
-                              const Vector<Double>& inc) {
-  uInt i;
+void LCSlicer::fillFromDouble(const Vector<double>& blc, const Vector<double>& trc,
+                              const Vector<double>& inc) {
+  unsigned int i;
   itsBlc.resize(blc.size());
   for (i = 0; i < blc.size(); i++) {
     itsBlc[i] = blc[i];
@@ -224,7 +225,7 @@ void LCSlicer::fillFromDouble(const Vector<Double>& blc, const Vector<Double>& t
 }
 
 void LCSlicer::fillFromIPosition(const IPosition& blc, const IPosition& trc, const IPosition& inc) {
-  uInt i;
+  unsigned int i;
   itsBlc.resize(blc.size());
   for (i = 0; i < blc.size(); i++) {
     itsBlc[i] = blc[i];
@@ -242,9 +243,9 @@ void LCSlicer::fillFromIPosition(const IPosition& blc, const IPosition& trc, con
 
 void LCSlicer::fill() {
   // Check if the corresponding vectors have equal lengths.
-  uInt nrblc = itsBlc.size();
-  uInt nrtrc = itsTrc.size();
-  uInt nrinc = itsInc.size();
+  unsigned int nrblc = itsBlc.size();
+  unsigned int nrtrc = itsTrc.size();
+  unsigned int nrinc = itsInc.size();
   if (itsFracBlc.size() != nrblc || itsAbsRelBlc.size() != nrblc) {
     throw(
         AipsError("LCSlicer::LCSLicer - "
@@ -262,12 +263,12 @@ void LCSlicer::fill() {
   }
   // Give all vectors the same length.
   // Pad with default values.
-  uInt nr = max(max(nrblc, nrtrc), nrinc);
+  unsigned int nr = max(max(nrblc, nrtrc), nrinc);
   if (nrblc < nr) {
     itsBlc.resize(nr, true);
     itsFracBlc.resize(nr, true);
     itsAbsRelBlc.resize(nr, true);
-    for (uInt i = nrblc; i < nr; i++) {
+    for (unsigned int i = nrblc; i < nr; i++) {
       itsBlc[i] = Slicer::MimicSource;
       itsFracBlc[i] = false;
       itsAbsRelBlc[i] = RegionType::Abs;
@@ -277,7 +278,7 @@ void LCSlicer::fill() {
     itsTrc.resize(nr, true);
     itsFracTrc.resize(nr, true);
     itsAbsRelTrc.resize(nr, true);
-    for (uInt i = nrtrc; i < nr; i++) {
+    for (unsigned int i = nrtrc; i < nr; i++) {
       itsTrc[i] = Slicer::MimicSource;
       itsFracTrc[i] = false;
       itsAbsRelTrc[i] = RegionType::Abs;
@@ -286,7 +287,7 @@ void LCSlicer::fill() {
   if (nrinc < nr) {
     itsInc.resize(nr, true);
     itsFracInc.resize(nr, true);
-    for (uInt i = nrinc; i < nr; i++) {
+    for (unsigned int i = nrinc; i < nr; i++) {
       itsInc[i] = 1;
       itsFracInc[i] = false;
     }
@@ -298,13 +299,13 @@ void LCSlicer::fill() {
   itsIsAbsolute = true;
   itsIsUnspecified = false;
   itsIsStrided = false;
-  for (uInt i = 0; i < nr; i++) {
-    if (static_cast<Int64>(itsBlc[i]) < Slicer::MimicSource + 10) {
+  for (unsigned int i = 0; i < nr; i++) {
+    if (static_cast<int64_t>(itsBlc[i]) < Slicer::MimicSource + 10) {
       itsIsUnspecified = true;
       itsFracBlc[i] = false;
       itsAbsRelBlc[i] = RegionType::Abs;
     }
-    if (static_cast<Int64>(itsTrc[i]) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(itsTrc[i]) < Slicer::MimicSource + 10) {
       itsIsUnspecified = true;
       itsFracTrc[i] = false;
       itsAbsRelTrc[i] = RegionType::Abs;
@@ -322,33 +323,33 @@ void LCSlicer::fill() {
 }
 
 Slicer LCSlicer::toSlicer(const IPosition& referencePixel, const IPosition& newLatticeShape) const {
-  uInt nr = referencePixel.size();
-  Vector<Float> vec(nr);
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = referencePixel.size();
+  Vector<float> vec(nr);
+  for (unsigned int i = 0; i < nr; i++) {
     vec[i] = referencePixel[i];
   }
   return toSlicer(vec, newLatticeShape);
 }
-Slicer LCSlicer::toSlicer(const Vector<Double>& referencePixel,
+Slicer LCSlicer::toSlicer(const Vector<double>& referencePixel,
                           const IPosition& newLatticeShape) const {
-  uInt nr = referencePixel.size();
-  Vector<Float> vec(nr);
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = referencePixel.size();
+  Vector<float> vec(nr);
+  for (unsigned int i = 0; i < nr; i++) {
     vec[i] = referencePixel[i];
   }
   return toSlicer(vec, newLatticeShape);
 }
-Slicer LCSlicer::toSlicer(const Vector<Float>& referencePixel,
+Slicer LCSlicer::toSlicer(const Vector<float>& referencePixel,
                           const IPosition& newLatticeShape) const {
-  uInt i;
+  unsigned int i;
   if (referencePixel.size() != newLatticeShape.size()) {
     throw(
         AipsError("LCSlicer::makeComplete - "
                   "referencePixel and newLatticeShape vectors "
                   "do not have same length"));
   }
-  uInt ndreg = ndim();
-  uInt ndout = newLatticeShape.size();
+  unsigned int ndreg = ndim();
+  unsigned int ndout = newLatticeShape.size();
   if (ndout < ndreg) {
     throw(
         AipsError("LCSlicer::makeComplete - "
@@ -366,8 +367,8 @@ Slicer LCSlicer::toSlicer(const Vector<Float>& referencePixel,
   // The float representation of MimicSource (-2147483646) is inaccurate in the
   // last digits, so be relaxed in testing it. Use a margin of 10.
   for (i = 0; i < ndreg; i++) {
-    Float v = itsBlc[i];
-    if (static_cast<Int64>(v) < Slicer::MimicSource + 10) {
+    float v = itsBlc[i];
+    if (static_cast<int64_t>(v) < Slicer::MimicSource + 10) {
       v = 0;
     } else {
       if (itsFracBlc[i]) {
@@ -376,12 +377,12 @@ Slicer LCSlicer::toSlicer(const Vector<Float>& referencePixel,
       if (itsAbsRelBlc[i] == RegionType::RelRef) {
         v += referencePixel[i];
       } else if (itsAbsRelBlc[i] == RegionType::RelCen) {
-        v += Float(newLatticeShape[i]) / 2;
+        v += float(newLatticeShape[i]) / 2;
       }
     }
-    blc[i] = Int(v + 0.5);
+    blc[i] = int(v + 0.5);
     v = itsTrc[i];
-    if (static_cast<Int64>(v) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(v) < Slicer::MimicSource + 10) {
       v = newLatticeShape[i] - 1;
     } else {
       if (itsFracTrc[i]) {
@@ -391,19 +392,19 @@ Slicer LCSlicer::toSlicer(const Vector<Float>& referencePixel,
       if (itsAbsRelTrc[i] == RegionType::RelRef) {
         v += referencePixel[i];
       } else if (itsAbsRelTrc[i] == RegionType::RelCen) {
-        v += Float(newLatticeShape[i]) / 2;
+        v += float(newLatticeShape[i]) / 2;
       }
     }
-    trc[i] = Int(v + 0.5);
+    trc[i] = int(v + 0.5);
     v = itsInc[i];
-    if (static_cast<Int64>(v) < Slicer::MimicSource + 10) {
+    if (static_cast<int64_t>(v) < Slicer::MimicSource + 10) {
       v = 1;
     } else {
       if (itsFracInc[i]) {
         v *= newLatticeShape[i];
       }
     }
-    inc[i] = Int(v + 0.5);
+    inc[i] = int(v + 0.5);
   }
   for (i = 0; i < ndout; i++) {
     // Make sure box does not exceed lattice.
@@ -437,14 +438,14 @@ String LCSlicer::type() const { return className(); }
 
 TableRecord LCSlicer::toRecord(const String&) const {
   TableRecord rec;
-  rec.define("isRegion", Int(RegionType::ArrSlicer));
+  rec.define("isRegion", int(RegionType::ArrSlicer));
   rec.define("name", className());
   rec.define("comment", itsComment);
   // Write 1-relative.
   rec.define("oneRel", true);
-  Vector<Float> blc(itsBlc.copy());
-  Vector<Float> trc(itsTrc.copy());
-  for (uInt i = 0; i < itsBlc.size(); i++) {
+  Vector<float> blc(itsBlc.copy());
+  Vector<float> trc(itsTrc.copy());
+  for (unsigned int i = 0; i < itsBlc.size(); i++) {
     if (!itsFracBlc[i] && itsAbsRelBlc[i] == RegionType::Abs) {
       blc[i]++;
     }
@@ -464,7 +465,7 @@ TableRecord LCSlicer::toRecord(const String&) const {
 }
 
 LCSlicer* LCSlicer::fromRecord(const TableRecord& rec, const String&) {
-  uInt i;
+  unsigned int i;
   if (!rec.isDefined("isRegion") || rec.asInt("isRegion") != RegionType::ArrSlicer) {
     throw(
         AipsError("LCSlicer::fromRecord - "
@@ -472,12 +473,12 @@ LCSlicer* LCSlicer::fromRecord(const TableRecord& rec, const String&) {
   }
   // If 1-relative, subtract 1 from blc and trc.
   bool oneRel = rec.asBool("oneRel");
-  Vector<Float> blc(rec.toArrayFloat("blc").copy());
-  Vector<Float> trc(rec.toArrayFloat("trc").copy());
+  Vector<float> blc(rec.toArrayFloat("blc").copy());
+  Vector<float> trc(rec.toArrayFloat("trc").copy());
   Vector<bool> fracblc(rec.toArrayBool("fracblc"));
   Vector<bool> fractrc(rec.toArrayBool("fractrc"));
-  Vector<Int> arblc(rec.toArrayInt("arblc"));
-  Vector<Int> artrc(rec.toArrayInt("artrc"));
+  Vector<int> arblc(rec.toArrayInt("arblc"));
+  Vector<int> artrc(rec.toArrayInt("artrc"));
   // If blc,trc is 1-relative, make it 0-relative by subtracting 1.
   // Do it only if absolute non-fractional.
   // The float representation of MimicSource is inaccurate, so

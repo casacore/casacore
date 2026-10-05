@@ -36,10 +36,10 @@ TableIterProxy::TableIterProxy() : firstTime_p(true) {}
 
 TableIterProxy::TableIterProxy(const TableProxy& tab, const Vector<String>& columns,
                                const String& order, const String& sortType,
-                               const Vector<Double>& iterSteps)
+                               const Vector<double>& iterSteps)
     : firstTime_p(true) {
   Block<String> names(columns.nelements());
-  for (uInt i = 0; i < names.nelements(); i++) {
+  for (unsigned int i = 0; i < names.nelements(); i++) {
     names[i] = columns(i);
   }
   String corder(order);
@@ -74,13 +74,13 @@ TableIterProxy::TableIterProxy(const TableProxy& tab, const Vector<String>& colu
 }
 
 void TableIterProxy::makeStepIter(const Table& tab, const Block<String>& columns,
-                                  const Vector<Double>& iterSteps, TableIterator::Order order,
+                                  const Vector<double>& iterSteps, TableIterator::Order order,
                                   TableIterator::Option option) {
   // First determine if all columns are scalar and have a valid data type.
   // Also find out if a case-insenstive string comparison is needed.
   Block<std::shared_ptr<BaseCompare>> comps(columns.size());
-  Block<Int> orders(columns.size(), order);
-  for (uInt i = 0; i < iterSteps.size(); ++i) {
+  Block<int> orders(columns.size(), order);
+  for (unsigned int i = 0; i < iterSteps.size(); ++i) {
     if (i < columns.size() && iterSteps[i] > 0) {
       const ColumnDesc& colDesc = tab.tableDesc()[columns[i]];
       if (!colDesc.isScalar()) {
@@ -114,41 +114,41 @@ void TableIterProxy::makeStepIter(const Table& tab, const Block<String>& columns
     Table sortab = tab.sort(columns, comps, orders, option);
   }
   // Now see if an interval comparison has to be done when iterating.
-  for (uInt i = 0; i < iterSteps.size(); ++i) {
+  for (unsigned int i = 0; i < iterSteps.size(); ++i) {
     if (i < columns.size() && iterSteps[i] > 0) {
       DataType dtype = sortab.tableDesc()[columns[i]].dataType();
       switch (dtype) {
         case TpUChar: {
-          uChar start = ScalarColumn<uChar>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<uChar>>(iterSteps[i], start);
+          unsigned char start = ScalarColumn<unsigned char>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<unsigned char>>(iterSteps[i], start);
         } break;
         case TpShort: {
-          Short start = ScalarColumn<Short>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<Short>>(iterSteps[i], start);
+          short start = ScalarColumn<short>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<short>>(iterSteps[i], start);
         } break;
         case TpUShort: {
-          uShort start = ScalarColumn<uShort>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<uShort>>(iterSteps[i], start);
+          unsigned short start = ScalarColumn<unsigned short>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<unsigned short>>(iterSteps[i], start);
         } break;
         case TpInt: {
-          Int start = ScalarColumn<Int>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<Int>>(iterSteps[i], start);
+          int start = ScalarColumn<int>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<int>>(iterSteps[i], start);
         } break;
         case TpUInt: {
-          uInt start = ScalarColumn<uInt>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<uInt>>(iterSteps[i], start);
+          unsigned int start = ScalarColumn<unsigned int>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<unsigned int>>(iterSteps[i], start);
         } break;
         case TpInt64: {
-          Int64 start = ScalarColumn<Int64>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<Int64>>(iterSteps[i], start);
+          int64_t start = ScalarColumn<int64_t>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<int64_t>>(iterSteps[i], start);
         } break;
         case TpFloat: {
-          Float start = ScalarColumn<Float>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<Float>>(iterSteps[i], start);
+          float start = ScalarColumn<float>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<float>>(iterSteps[i], start);
         } break;
         case TpDouble: {
-          Double start = ScalarColumn<Double>(sortab, columns[i])(0);
-          comps[i] = std::make_shared<CompareIntervalInt<Double>>(iterSteps[i], start);
+          double start = ScalarColumn<double>(sortab, columns[i])(0);
+          comps[i] = std::make_shared<CompareIntervalInt<double>>(iterSteps[i], start);
         } break;
         default:
           break;

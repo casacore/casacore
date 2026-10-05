@@ -43,15 +43,15 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //------------------------------------------------------------------
 //
 MSSpwIndex::MSSpwIndex(const MSSpectralWindow& msSpw) : msSpwSubTable_p(msSpw) {
-  Int nrows = msSpwSubTable_p.nrow();
+  int nrows = msSpwSubTable_p.nrow();
   spwIDs.resize(nrows);
   indgen(spwIDs);
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const bool regex) {
-  Int pos = 0;
+Vector<int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const bool regex) {
+  int pos = 0;
   Regex reg;
   if (regex)
     reg = pattern;
@@ -63,11 +63,11 @@ Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const bool re
   LogicalArray maskArray(sh, false);
   IPosition i = sh;
   for (i(0) = 0; i(0) < sh(0); i(0)++) {
-    Int ret = RegexMatches(msSpwSubTable_p.name().getColumn()(i), reg, pos);
+    int ret = RegexMatches(msSpwSubTable_p.name().getColumn()(i), reg, pos);
     maskArray(i) = ((ret > 0));  //&&	 !msSpwSubTable_p.flagRow().getColumn()(i));
   }
 
-  MaskedArray<Int> maskSpwID(spwIDs, maskArray);
+  MaskedArray<int> maskSpwID(spwIDs, maskArray);
   return maskSpwID.getCompressedArray();
 }
 //
@@ -76,7 +76,7 @@ Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern, const bool re
 // greater than the number of SPWs by matching them as name
 // strings. Elements for which this match fails or which are less
 // than the number of SPWs remain unmodified.
-void MSSpwIndex::matchNameAsIntID(Vector<Int>& list) {
+void MSSpwIndex::matchNameAsIntID(Vector<int>& list) {
   int nSpw = msSpwSubTable_p.name().getColumn().nelements();
   for (unsigned int i = 0; i < list.nelements(); i++) {
     if (list[i] >= nSpw) {
@@ -92,18 +92,18 @@ void MSSpwIndex::matchNameAsIntID(Vector<Int>& list) {
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchName(const String& name) {
+Vector<int> MSSpwIndex::matchName(const String& name) {
   LogicalArray maskArray = (msSpwSubTable_p.name().getColumn() == name);
   //      && !msSpwSubTable_p.flagRow().getColumn());
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
 
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchId(const Vector<Int>& sourceId) {
-  Vector<Int> IDs;
+Vector<int> MSSpwIndex::matchId(const Vector<int>& sourceId) {
+  Vector<int> IDs;
   IDs = set_intersection(sourceId, spwIDs);
   //
   // If IDs has less than sourceId, some sourceIds found no match.
@@ -114,7 +114,7 @@ Vector<Int> MSSpwIndex::matchId(const Vector<Int>& sourceId) {
     vector<int> tt = IDs.tovector();
     std::ostringstream Mesg, tok;
     Mesg << "Spw Expression: No match found for ";
-    for (uInt i = 0; i < sourceId.nelements(); i++) {
+    for (unsigned int i = 0; i < sourceId.nelements(); i++) {
       vector<int>::iterator ndx = find(tt.begin(), tt.end(), sourceId[i]);
       if (ndx == tt.end()) tok << sourceId[i] << ",";
     }
@@ -126,27 +126,27 @@ Vector<Int> MSSpwIndex::matchId(const Vector<Int>& sourceId) {
 //
 //------------------------------------------------------------------
 //
-bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<Int>& spw,
-                                     Vector<Int>& start, Vector<Int>& nchan) {
-  Int nspw = msSpwSubTable_p.nrow();
+bool MSSpwIndex::matchFrequencyRange(const double f0, const double f1, Vector<int>& spw,
+                                     Vector<int>& start, Vector<int>& nchan) {
+  int nspw = msSpwSubTable_p.nrow();
   bool found = false;
 
   spw.resize();
   start.resize();
   nchan.resize();
-  Int nmatch = 0;
-  for (Int k = 0; k < nspw; ++k) {
+  int nmatch = 0;
+  for (int k = 0; k < nspw; ++k) {
     bool locfound = false;
     bool dum;
 
-    Vector<Double> chanfreq = msSpwSubTable_p.chanFreq()(k);
+    Vector<double> chanfreq = msSpwSubTable_p.chanFreq()(k);
 
-    Sort sort(chanfreq.getStorage(dum), sizeof(Double));
-    sort.sortKey((uInt)0, TpDouble);
-    Int nch = chanfreq.nelements();
-    Vector<uInt> sortIndx;
+    Sort sort(chanfreq.getStorage(dum), sizeof(double));
+    sort.sortKey((unsigned int)0, TpDouble);
+    int nch = chanfreq.nelements();
+    Vector<unsigned int> sortIndx;
     sort.sort(sortIndx, nch);
-    Vector<Double> chanwidth = msSpwSubTable_p.chanWidth()(k);
+    Vector<double> chanwidth = msSpwSubTable_p.chanWidth()(k);
     if (f0 > chanfreq(sortIndx[0]) && f0 < chanfreq(sortIndx[nch - 1])) {
       locfound = true;
     }
@@ -154,11 +154,11 @@ bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<In
       locfound = true;
     }
     if (locfound) {
-      Vector<Int> chanIn(chanfreq.nelements());
+      Vector<int> chanIn(chanfreq.nelements());
       chanIn = -1;
-      Int numMatched = 0;
+      int numMatched = 0;
 
-      for (uInt kk = 0; kk < chanfreq.nelements(); ++kk) {
+      for (unsigned int kk = 0; kk < chanfreq.nelements(); ++kk) {
         if (((chanfreq[kk] + 0.5 * fabs(chanwidth[kk])) > f0) &&
             ((chanfreq[kk] - 0.5 * fabs(chanwidth[kk])) < f1)) {
           chanIn[numMatched] = kk;
@@ -194,25 +194,25 @@ bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, Vector<In
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, bool approx,
-                                            const Float f3) {
-  Int nSpwRows = msSpwSubTable_p.nrow();
+Vector<int> MSSpwIndex::matchFrequencyRange(const float f0, const float f1, bool approx,
+                                            const float f3) {
+  int nSpwRows = msSpwSubTable_p.nrow();
   bool Found;
-  Int mode;
-  Vector<Int> IDs;
-  Float localStep;
+  int mode;
+  Vector<int> IDs;
+  float localStep;
   mode = RANGE;
   if ((f1 < 0) || (f0 == f1)) mode = EXACT;
   if (approx) mode = APPROX;
 
-  ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
-  ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
-  for (Int n = 0; n < nSpwRows; n++) {
-    Float totalBandWidth, refFreq;
+  ArrayColumn<double> chanWidth(msSpwSubTable_p.chanWidth());
+  ArrayColumn<double> chanFreq(msSpwSubTable_p.chanFreq());
+  for (int n = 0; n < nSpwRows; n++) {
+    float totalBandWidth, refFreq;
 
-    Double maxChanWidth;
+    double maxChanWidth;
     {
-      Vector<Double> shouldNotBeRequired;
+      Vector<double> shouldNotBeRequired;
       chanWidth.get(n, shouldNotBeRequired, true);
       maxChanWidth = max(shouldNotBeRequired);
       if (f3 < 0)
@@ -227,9 +227,9 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, bool
     else
       totalBandWidth = 0;
     //	refFreq = msSpwSubTable_p.refFrequency()(n);
-    Vector<Double> chanFreqList;
+    Vector<double> chanFreqList;
     chanFreq.get(n, chanFreqList, true);
-    Int nChan = chanFreqList.nelements();
+    int nChan = chanFreqList.nelements();
     refFreq = (chanFreqList(nChan - 1) + chanFreqList(0)) / 2.0;
     ;
 
@@ -256,7 +256,7 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, bool
             Found = true;
           break;
         } else {
-          for (Float freq = f0; freq <= f1; freq += localStep) {
+          for (float freq = f0; freq <= f1; freq += localStep) {
             if (fabs(freq - refFreq) < maxChanWidth) {
               Found = true;
               break;
@@ -294,65 +294,65 @@ Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1, bool
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchLT(const Float* phyVal) {
-  Vector<Double> refFreqs = msSpwSubTable_p.refFrequency().getColumn();
-  LogicalArray maskArray = (refFreqs < (Double)phyVal[0]);
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+Vector<int> MSSpwIndex::matchLT(const float* phyVal) {
+  Vector<double> refFreqs = msSpwSubTable_p.refFrequency().getColumn();
+  LogicalArray maskArray = (refFreqs < (double)phyVal[0]);
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchGT(const Float* phyVal) {
-  Vector<Double> refFreqs = msSpwSubTable_p.refFrequency().getColumn();
-  LogicalArray maskArray = (refFreqs > (Double)phyVal[0]);
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+Vector<int> MSSpwIndex::matchGT(const float* phyVal) {
+  Vector<double> refFreqs = msSpwSubTable_p.refFrequency().getColumn();
+  LogicalArray maskArray = (refFreqs > (double)phyVal[0]);
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchGTAndLT(const Float* phyValMin, const Float* phyValMax) {
-  Vector<Double> refFreqs = msSpwSubTable_p.refFrequency().getColumn();
-  LogicalArray maskArray = ((refFreqs > (Double)phyValMin[0]) && (refFreqs < (Double)phyValMax[0]));
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+Vector<int> MSSpwIndex::matchGTAndLT(const float* phyValMin, const float* phyValMax) {
+  Vector<double> refFreqs = msSpwSubTable_p.refFrequency().getColumn();
+  LogicalArray maskArray = ((refFreqs > (double)phyValMin[0]) && (refFreqs < (double)phyValMax[0]));
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchLT(const Int n) {
+Vector<int> MSSpwIndex::matchLT(const int n) {
   LogicalArray maskArray =
       //      ((spwIDs <= n));// && (!msSpwSubTable_p.flagRow().getColumn()));
       ((spwIDs < n));  // && (!msSpwSubTable_p.flagRow().getColumn()));
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchGT(const Int n) {
+Vector<int> MSSpwIndex::matchGT(const int n) {
   LogicalArray maskArray = ((spwIDs > n));  // && (!msSpwSubTable_p.flagRow().getColumn()));
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::matchGTAndLT(const Int n0, const Int n1) {
+Vector<int> MSSpwIndex::matchGTAndLT(const int n0, const int n1) {
   LogicalArray maskArray =
       ((spwIDs > n0) && (spwIDs < n1));  // &&(!msSpwSubTable_p.flagRow().getColumn()));
-  MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+  MaskedArray<int> maskSpwId(spwIDs, maskArray);
   return maskSpwId.getCompressedArray();
 }
 //
 //------------------------------------------------------------------
 //
-Vector<Float> MSSpwIndex::convertToMKS(const Float f0, const Float f1, const String& unit) {
-  Vector<Float> freqs(2);
+Vector<float> MSSpwIndex::convertToMKS(const float f0, const float f1, const String& unit) {
+  Vector<float> freqs(2);
   String units(unit);
   ToLowerCaseInPlace(units);
-  Float factor = 1.0;
+  float factor = 1.0;
 
   if (units[0] == 'k')
     factor *= 1000;
@@ -370,32 +370,32 @@ Vector<Float> MSSpwIndex::convertToMKS(const Float f0, const Float f1, const Str
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vector<Float>& freqList,
-                                              Int& nFSpec) {
+Vector<int> MSSpwIndex::convertToChannelIndex(const Vector<int>& spw, const Vector<float>& freqList,
+                                              int& nFSpec) {
   LogIO log_l(LogOrigin("MSSpw Expression parser", "MSSpwIndex::convertToChannelIndex", WHERE));
 
-  Vector<Int> localFreqList;
-  vector<Int> localFoundSpwList;
-  Vector<Int> numChans = msSpwSubTable_p.numChan().getColumn();
+  Vector<int> localFreqList;
+  vector<int> localFoundSpwList;
+  Vector<int> numChans = msSpwSubTable_p.numChan().getColumn();
 
-  Int nSpw = spw.nelements(), nFList = freqList.nelements();
+  int nSpw = spw.nelements(), nFList = freqList.nelements();
   nFSpec = nFList / 4;  // 4 integers per channel specification
 
-  ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
-  ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
+  ArrayColumn<double> chanWidth(msSpwSubTable_p.chanWidth());
+  ArrayColumn<double> chanFreq(msSpwSubTable_p.chanFreq());
 
   bool someMatchFailed = false;
   std::ostringstream Mesg;
 
   if (nFList > 0) {
     localFreqList.resize(nSpw * nFSpec * 3);
-    Int pos = 0;
+    int pos = 0;
 
-    for (Int i = 0; i < nSpw; i++)
-      for (Int j = 0; j < nFList; j += 4) {
+    for (int i = 0; i < nSpw; i++)
+      for (int j = 0; j < nFList; j += 4) {
         if ((freqList(j + 3) == static_cast<int>(MSSpwIndex::MSSPW_INDEX)) ||
             (freqList(j + 3) == static_cast<int>(MSSpwIndex::MSSPW_INDEXRANGE))) {
-          Int start = (Int)freqList(j), stop = (Int)freqList(j + 1), step = (Int)freqList(j + 2);
+          int start = (int)freqList(j), stop = (int)freqList(j + 1), step = (int)freqList(j + 2);
           if (start == -1) start = 0;
           if (stop == -1) stop = numChans(spw(i)) - 1;
           if (stop == start) {
@@ -424,7 +424,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
           }
           if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
 
-          step = (((Int)step <= 0) ? 1 : step);
+          step = (((int)step <= 0) ? 1 : step);
 
           localFreqList(pos++) = start;
           localFreqList(pos++) = stop;
@@ -432,15 +432,15 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
         } else if (freqList(j + 3) ==
                    static_cast<int>(MSSpwIndex::MSSPW_UNITHZ))  // If the spec is XXHz
         {
-          Float start = freqList(j), stop = freqList(j + 1), step = freqList(j + 2);
-          Vector<Double> cf, cw;
+          float start = freqList(j), stop = freqList(j + 1), step = freqList(j + 2);
+          Vector<double> cf, cw;
           chanFreq.get(spw(i), cf, true);
           chanWidth.get(spw(i), cw, true);
           if (abs(cw(0)) == 0)
             throw(MSSelectionSpwError(
                 "Error in the MS SPECTRAL_WINDOW sub-table (channel width==0)."));
 
-          Int cwDir = (Int)(cw(0) / abs(cw(0)));
+          int cwDir = (int)(cw(0) / abs(cw(0)));
           //
           // Do a brain-dead linear search for the channel
           // number (linear search is *probably* OK - unless
@@ -475,7 +475,7 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
           // 	  {someMatchFailed=True; stop=-1;}
           //     }
           // }
-          Double maxCW = max(cw), minCW = min(cw);
+          double maxCW = max(cw), minCW = min(cw);
           if (minCW != maxCW) {
             log_l << "Channel width across the band is not constant.  "
                   << "Using the maximum of the channel width range." << LogIO::WARN;
@@ -490,17 +490,17 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
           // cwDir carries the direction in which
           // freq. increases with increase channel index.
           //
-          step = (((Int)step <= 0) ? 1 : step);  //*cwDir;
+          step = (((int)step <= 0) ? 1 : step);  //*cwDir;
           if (start > stop) {
-            Float tmp = start;
+            float tmp = start;
             start = stop;
             stop = tmp;
           }
 
           if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
-          localFreqList(pos++) = (Int)start;
-          localFreqList(pos++) = (Int)stop;
-          localFreqList(pos++) = (Int)step;
+          localFreqList(pos++) = (int)start;
+          localFreqList(pos++) = (int)stop;
+          localFreqList(pos++) = (int)step;
         } else  // If the spec is XXKm/s
         {
           //
@@ -520,10 +520,10 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
         }
       }
   } else {
-    Int j = 0;
+    int j = 0;
     nFSpec = 1;
     localFreqList.resize(nSpw * 3);
-    for (Int i = 0; i < nSpw; i++) {
+    for (int i = 0; i < nSpw; i++) {
       localFreqList(j++) = 0;
       localFreqList(j++) = numChans(spw(i)) - 1;
       localFreqList(j++) = 1;
@@ -552,15 +552,15 @@ Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, const Vect
 //
 //------------------------------------------------------------------
 //
-Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
+int MSSpwIndex::findChanIndex_p(const float& freq, const Vector<double>& chanFreqList,
                                 const bool& greaterThan, const bool& ascendingOrder) {
-  Int chanIndex = -1, n = chanFreqList.nelements();
+  int chanIndex = -1, n = chanFreqList.nelements();
   if (ascendingOrder) {
     if (greaterThan) {
       if (freq <= chanFreqList(0))
         chanIndex = 0;
       else
-        for (Int ii = 0; ii < n; ii++)
+        for (int ii = 0; ii < n; ii++)
           if (chanFreqList(ii) >= freq) {
             chanIndex = ii;
             break;
@@ -569,7 +569,7 @@ Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFre
       if (freq >= chanFreqList(n - 1))
         chanIndex = n - 1;
       else
-        for (Int ii = n - 1; ii >= 0; ii--)
+        for (int ii = n - 1; ii >= 0; ii--)
           if (chanFreqList(ii) <= freq) {
             chanIndex = ii;
             break;
@@ -580,7 +580,7 @@ Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFre
       if (freq <= chanFreqList(n - 1))
         chanIndex = n - 1;
       else
-        for (Int ii = n - 1; ii >= 0; ii--)
+        for (int ii = n - 1; ii >= 0; ii--)
           if (chanFreqList(ii) >= freq) {
             chanIndex = ii;
             break;
@@ -589,7 +589,7 @@ Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFre
       if (freq >= chanFreqList(0))
         chanIndex = 0;
       else
-        for (Int ii = 0; ii < n; ii++)
+        for (int ii = 0; ii < n; ii++)
           if (chanFreqList(ii) <= freq) {
             chanIndex = ii;
             break;
@@ -601,31 +601,31 @@ Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFre
 //
 //------------------------------------------------------------------
 //
-Vector<Int> MSSpwIndex::convertToSpwIndex(const Vector<Float>& freqList, Int& nFSpec) {
-  Vector<Int> localFreqList;
-  Int nFList = freqList.nelements();
+Vector<int> MSSpwIndex::convertToSpwIndex(const Vector<float>& freqList, int& nFSpec) {
+  Vector<int> localFreqList;
+  int nFList = freqList.nelements();
   nFSpec = nFList / 4;  // 4 integers per channel specification
 
   if (nFList > 0) {
     //	localFreqList.resize(nFSpec);
-    Int pos = 0;
+    int pos = 0;
 
-    for (Int j = 0; j < nFList; j += 4) {
+    for (int j = 0; j < nFList; j += 4) {
       if ((freqList(j + 3) == static_cast<int>(MSSpwIndex::MSSPW_INDEX)) ||
           (freqList(j + 3) == static_cast<int>(MSSpwIndex::MSSPW_INDEXRANGE))) {
-        Int start = (Int)freqList(j), stop = (Int)freqList(j + 1), step = (Int)freqList(j + 2);
+        int start = (int)freqList(j), stop = (int)freqList(j + 1), step = (int)freqList(j + 2);
         //		  if (step==0) step=1;
         step = (step <= 0 ? 1 : step);
 
-        Int n = 0;
-        for (Int ii = start; ii <= stop; ii += step) n++;
+        int n = 0;
+        for (int ii = start; ii <= stop; ii += step) n++;
         localFreqList.resize(n + localFreqList.nelements(), true);
 
-        for (Int ii = start; ii <= stop; ii += step) localFreqList(pos++) = ii;
+        for (int ii = start; ii <= stop; ii += step) localFreqList(pos++) = ii;
         //		  localFreqList(pos++)=stop;
         //		  localFreqList(pos++)=step;
       } else if (freqList(j + 3) == static_cast<int>(MSSpwIndex::MSSPW_UNITHZ)) {
-        Float start = freqList(j), stop = freqList(j + 1), step = freqList(j + 2);
+        float start = freqList(j), stop = freqList(j + 1), step = freqList(j + 2);
 
         localFreqList = matchFrequencyRange(start, stop, false, step);
         //		  cout << "Freq SPW List  = " << start << " " << stop << " " << step << " "

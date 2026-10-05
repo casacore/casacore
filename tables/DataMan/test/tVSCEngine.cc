@@ -72,7 +72,7 @@ void a() {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class TableDesc";
-  td.addColumn(ScalarColumnDesc<Int>("x"));
+  td.addColumn(ScalarColumnDesc<int>("x"));
   td.addColumn(ScalarColumnDesc<float>("y"));
   td.addColumn(ScalarColumnDesc<String>("z"));
   td.addColumn(ScalarColumnDesc<VSCExample>("colA"));
@@ -86,7 +86,7 @@ void a() {
 
   // Fill the table via the virtual columns.
   ScalarColumn<VSCExample> colA(tab, "colA");
-  uInt i;
+  unsigned int i;
   for (i = 0; i < 10; i++) {
     colA.put(i, VSCExample(i, i + 1, std::to_string(i + 2)));
   }
@@ -104,15 +104,15 @@ void a() {
 void b() {
   // Read back the table.
   Table tab("tVSCEngine_tmp.data");
-  ScalarColumn<Int> colx(tab, "x");
+  ScalarColumn<int> colx(tab, "x");
   ScalarColumn<float> coly(tab, "y");
   ScalarColumn<String> colz(tab, "z");
   ScalarColumn<VSCExample> colA(tab, "colA");
-  Int valx;
+  int valx;
   float valy;
   String valz;
   VSCExample valA;
-  Int i;
+  int i;
   for (i = 0; i < 10; i++) {
     cout << "get row " << i << endl;
     colx.get(i, valx);

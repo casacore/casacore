@@ -120,14 +120,14 @@ void UnitMap::removeUser(const String& s) {
 
 void UnitMap::removeUser(const UnitName& name) { UnitMap::removeUser(name.getName()); }
 
-const String& UnitMap::getStringFITS(uInt which) {
+const String& UnitMap::getStringFITS(unsigned int which) {
   static const String FITSstring[N_FITS] = {"beam", "d",  "deg", "deg", "Hz", "Jy",    "K",
                                             "K",    "km", "m",   "m",   "Pa", "pixel", "s",
                                             "s",    "s",  "V",   "a",   "a"};
   return FITSstring[which];
 }
 
-bool UnitMap::getNameFITS(const UnitName*& name, uInt which) {
+bool UnitMap::getNameFITS(const UnitName*& name, unsigned int which) {
   static const UnitName FITSunit[N_FITS] = {
       UnitName("BEAM", UnitVal(1.0, getStringFITS(0)), "dimensionless beam"),
       UnitName("DAYS", UnitVal(1.0, getStringFITS(1)), "day"),
@@ -162,7 +162,7 @@ void UnitMap::addFITS() {
   // Double checked locking is unsafe pre-C++11!
   std::lock_guard<std::mutex> lock(UnitMap::fitsMutex);
   if (!maps.doneFITS) {
-    uInt cnt = 0;
+    unsigned int cnt = 0;
     const UnitName* Fname;
     while (UnitMap::getNameFITS(Fname, cnt)) {
       UnitMap::putUser(*Fname);
@@ -176,7 +176,7 @@ void UnitMap::clearFITS() {
   UMaps& maps = getMaps();
   std::lock_guard<std::mutex> lock(UnitMap::fitsMutex);
   if (maps.doneFITS) {
-    uInt cnt = 0;
+    unsigned int cnt = 0;
     const UnitName* Fname;
     while (UnitMap::getNameFITS(Fname, cnt)) {
       UnitMap::removeUser(*Fname);
@@ -197,7 +197,7 @@ Unit UnitMap::fromFITS(const Unit& un) {
       y += String(1, mus.getChar());
     else {
       z = mus.getAlpha();
-      for (uInt i = 0; i < N_FITS; i++) {
+      for (unsigned int i = 0; i < N_FITS; i++) {
         getNameFITS(nam, i);
         if (z == nam->getName()) {
           z = getStringFITS(i);
@@ -221,7 +221,7 @@ Unit UnitMap::toFITS(const Unit& un) {
       y += String(1, mus.getChar());
     else {
       z = mus.getAlpha();
-      for (Int i = N_FITS - 1; i >= 0; i--) {
+      for (int i = N_FITS - 1; i >= 0; i--) {
         if (z == getStringFITS(i)) {
           getNameFITS(nam, i);
           z = nam->getName();

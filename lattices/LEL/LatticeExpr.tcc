@@ -145,7 +145,7 @@ bool LatticeExpr<T>::isWritable() const {
 }
 
 template <class T>
-bool LatticeExpr<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LatticeExpr<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return expr_p.lock(type, nattempts);
 }
 template <class T>
@@ -167,7 +167,7 @@ IPosition LatticeExpr<T>::shape() const {
 }
 
 template <class T>
-IPosition LatticeExpr<T>::doNiceCursorShape(uInt) const {
+IPosition LatticeExpr<T>::doNiceCursorShape(unsigned int) const {
   return expr_p.getAttribute().tileShape();
 }
 

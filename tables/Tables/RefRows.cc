@@ -34,7 +34,7 @@ RefRows::RefRows(const Vector<rownr_t>& rowNumbers, bool isSliced, bool collapse
   init(rowNumbers, isSliced, collapse);
 }
 
-RefRows::RefRows(const Vector<uInt>& rowNumbers, bool isSliced, bool collapse) {
+RefRows::RefRows(const Vector<unsigned int>& rowNumbers, bool isSliced, bool collapse) {
   init(RowNumbers(rowNumbers), isSliced, collapse);
 }
 

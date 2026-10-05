@@ -79,7 +79,7 @@ class ImageProxy {
   // Construct from the concatenation of the images along the axis.
   // The axis must be given as a Fortran-array axis.
   // All images must be of the same data type.
-  ImageProxy(const Vector<String>& names, Int axis);
+  ImageProxy(const Vector<String>& names, int axis);
 
   // Construct from a string that contains an image name or image expression.
   // It is opened using ImageOpener.
@@ -90,7 +90,7 @@ class ImageProxy {
   // All images must be of the same data type.
   // # The dummy arguments are needed to let all constructors have a
   // # different number of arguments (for Boost-Python).
-  ImageProxy(const std::vector<ImageProxy>& images, Int axis, Int dummy1 = 0, Int dummy2 = 0);
+  ImageProxy(const std::vector<ImageProxy>& images, int axis, int dummy1 = 0, int dummy2 = 0);
 
   // Construct from a ValueHolder containing an Array of Float or Complex.
   // If the name is empty it is created as a temporary image, otherwise
@@ -109,7 +109,7 @@ class ImageProxy {
   ImageProxy(const IPosition& shape, const ValueHolder& value, const Record& coordinates,
              const String& imageName = String(), bool overwrite = true, bool asHDF5 = false,
              const String& maskName = String(), const IPosition& tileShape = IPosition(),
-             Int dummy = 0);
+             int dummy = 0);
 
   // Construct from an existing image object.
   ImageProxy(const std::shared_ptr<LatticeBase>&);
@@ -151,10 +151,10 @@ class ImageProxy {
   IPosition shape() const;
 
   // Get the dimensionality of the image.
-  uInt ndim() const;
+  unsigned int ndim() const;
 
   // Get the size of the image (nr of pixels).
-  uInt size() const;
+  unsigned int size() const;
 
   // Get the data type of the image.
   String dataType() const;
@@ -184,7 +184,7 @@ class ImageProxy {
   // Try to acquire a read or write lock.
   // nattempts=0 means wait until acquired. Otherwise every second an
   // attempt is done.
-  void lock(bool writeLock = false, Int nattempts = 0);
+  void lock(bool writeLock = false, int nattempts = 0);
 
   // Release the lock acquired by lock().
   void unlock();
@@ -199,13 +199,13 @@ class ImageProxy {
   Vector<String> attrNames(const String& groupName) const;
 
   // Get the number of rows in an attribute group.
-  uInt attrNrows(const String& groupName) const;
+  unsigned int attrNrows(const String& groupName) const;
 
   // Get the value of an attribute in a group row.
-  ValueHolder getAttr(const String& groupName, const String& attrName, uInt rownr) const;
+  ValueHolder getAttr(const String& groupName, const String& attrName, unsigned int rownr) const;
 
   // Get all attributes in a group row.
-  Record getAttrRow(const String& groupName, uInt rownr) const;
+  Record getAttrRow(const String& groupName, unsigned int rownr) const;
 
   // Get the unit(s) of an attribute in a group.
   Vector<String> getAttrUnit(const String& groupName, const String& attrName) const;
@@ -215,7 +215,7 @@ class ImageProxy {
 
   // Put the value, unit, and measinfo of an attribute in a group row.
   // The attribute or row is added if new.
-  void putAttr(const String& groupName, const String& attrName, uInt rownr,
+  void putAttr(const String& groupName, const String& attrName, unsigned int rownr,
                const ValueHolder& value, const Vector<String>& units,
                const Vector<String>& measInfo);
 
@@ -238,12 +238,12 @@ class ImageProxy {
   // Convert a pixel coordinate to world coordinate.
   // if <src>reverseAxes=True</src> the input and output vector will be
   // reversed (as needed for pyrap).
-  Vector<Double> toWorld(const Vector<Double>& pixel, bool reverseAxes);
+  Vector<double> toWorld(const Vector<double>& pixel, bool reverseAxes);
 
   // Convert a world coordinate to pixel coordinate.
   // if <src>reverseAxes=True</src> the input and output vector will be
   // reversed (as needed for pyrap).
-  Vector<Double> toPixel(const Vector<Double>& world, bool reverseAxes);
+  Vector<double> toPixel(const Vector<double>& world, bool reverseAxes);
 
   // Get the image info.
   Record imageInfo() const;
@@ -260,7 +260,7 @@ class ImageProxy {
   // See class ImageFITSConverter for a description of the arguments.
   // Currently only a float image can be written to FITS.
   void toFits(const String& fitsfile, bool overwrite = true, bool velocity = true,
-              bool optical = true, Int bitpix = -32, Double minpix = 1, Double maxpix = -1) const;
+              bool optical = true, int bitpix = -32, double minpix = 1, double maxpix = -1) const;
 
   // Write the image to an image file with the given name.
   // An exception is thrown if the name is the name of an already open image.
@@ -276,7 +276,7 @@ class ImageProxy {
   // and max=abs(val).
   // Robust statistics (Median, MedAbsDevMed, and Quartile) can be returned
   // too.
-  Record statistics(const Vector<Int>& axes, const String& mask, const ValueHolder& minMaxValues,
+  Record statistics(const Vector<int>& axes, const String& mask, const ValueHolder& minMaxValues,
                     bool exclude = false, bool robust = false) const;
 
   // Regrid the image on the given axes to the given coordinate system.
@@ -284,10 +284,10 @@ class ImageProxy {
   // temporary image is made.
   // If the output shape is empty, the old shape is used.
   // <src>replicate=True</src> means replication rather than regridding.
-  ImageProxy regrid(const Vector<Int>& axes = Vector<Int>(), const String& outfile = String(),
+  ImageProxy regrid(const Vector<int>& axes = Vector<int>(), const String& outfile = String(),
                     bool overwriteOutFile = true, const IPosition& outShape = IPosition(),
                     const Record& coordSys = Record(), const String& method = "linear",
-                    Int decimate = 10, bool replicate = false, bool doRefChange = true,
+                    int decimate = 10, bool replicate = false, bool doRefChange = true,
                     bool forceRegrid = false);
 
   // Check and adjust blc, trc, or inc using the shape.
@@ -304,7 +304,7 @@ class ImageProxy {
                     const Quantity& pa, Record& region,
                     const String& mask,
                     const String& method = "cubic",
-                    Int decimate = 0,
+                    int decimate = 0,
                     Bool replicate = False,
                     Bool dropdeg = False,
                     Bool overwrite = False);
@@ -324,7 +324,7 @@ class ImageProxy {
                       Bool overwrite = False,
                       Bool list = True);
 
-  Vector<Double> topixel(Record& value);
+  Vector<double> topixel(Record& value);
 
   */
 
@@ -345,11 +345,11 @@ class ImageProxy {
 
   // Form a concatenated image.
   // <group>
-  void concatImages(const std::vector<ImageProxy>& images, Int axis);
-  void concatImagesFloat(const std::vector<ImageProxy>& images, Int axis);
-  void concatImagesDouble(const std::vector<ImageProxy>& images, Int axis);
-  void concatImagesComplex(const std::vector<ImageProxy>& images, Int axis);
-  void concatImagesDComplex(const std::vector<ImageProxy>& images, Int axis);
+  void concatImages(const std::vector<ImageProxy>& images, int axis);
+  void concatImagesFloat(const std::vector<ImageProxy>& images, int axis);
+  void concatImagesDouble(const std::vector<ImageProxy>& images, int axis);
+  void concatImagesComplex(const std::vector<ImageProxy>& images, int axis);
+  void concatImagesDComplex(const std::vector<ImageProxy>& images, int axis);
   // </group>
 
   // Setup the pointers for the various image data types.
@@ -380,14 +380,14 @@ class ImageProxy {
 
   // Calculate the statistics.
   template <typename T>
-  Record makeStatistics(const ImageInterface<T>& image, const Vector<Int>& axes, const String& mask,
+  Record makeStatistics(const ImageInterface<T>& image, const Vector<int>& axes, const String& mask,
                         const ValueHolder& minMaxValues, bool exclude, bool robust) const;
 
   // Do the actual regridding.
   template <typename T>
-  ImageProxy doRegrid(const ImageInterface<T>& image, const Vector<Int>& axes,
+  ImageProxy doRegrid(const ImageInterface<T>& image, const Vector<int>& axes,
                       const String& outfile, const IPosition& shape, const Record& coordSys,
-                      const String& method, Int decimate, bool replicate, bool doRefChange,
+                      const String& method, int decimate, bool replicate, bool doRefChange,
                       bool force);
 
   // Make a coordinate system from the Record.
@@ -397,8 +397,8 @@ class ImageProxy {
   // # Data members.
   // # itsLattice is the real data; the pointers are for type convenience only.
   std::shared_ptr<LatticeBase> itsLattice;
-  ImageInterface<Float>* itsImageFloat;        // # reference, so no delete
-  ImageInterface<Double>* itsImageDouble;      // # reference, so no delete
+  ImageInterface<float>* itsImageFloat;        // # reference, so no delete
+  ImageInterface<double>* itsImageDouble;      // # reference, so no delete
   ImageInterface<Complex>* itsImageComplex;    // # reference, so no delete
   ImageInterface<DComplex>* itsImageDComplex;  // # reference, so no delete
   const CoordinateSystem* itsCoordSys;         // # reference, so no delete

@@ -94,14 +94,14 @@ class EpochEngine : public MeasEngine<MEpoch> {
   bool sidFrac() const { return itsSidFrac; }
 
   // Get the values.
-  Array<Double> getArrayDouble(const TableExprId& id);
+  Array<double> getArrayDouble(const TableExprId& id);
 
   // Get the epochs.
   Array<MEpoch> getEpochs(const TableExprId& id);
 
   // Handle the argument(s) giving the input epochs and reference type.
   // The epoch can be a column in a table.
-  void handleEpoch(std::vector<TENShPtr>& args, uInt& argnr);
+  void handleEpoch(std::vector<TENShPtr>& args, unsigned int& argnr);
 
   // Set the MeasConvert object.
   void setConverter(MEpoch::Types toType, bool sidFrac);

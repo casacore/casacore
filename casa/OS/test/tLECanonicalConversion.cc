@@ -126,24 +126,24 @@ void checkFlags(int& error) {
 
   // Check for (unsigned) int64
 #if defined(AIPS_LITTLE_ENDIAN)
-  flag = sizeof(Int64) != SIZE_LECAN_INT64;
+  flag = sizeof(int64_t) != SIZE_LECAN_INT64;
 #endif
   if ((flag ^ CONVERT_LECAN_INT64) != 0) {
     cout << "invalid CONVERT_LECAN_INT64 definition" << endl;
     error = 1;
   }
 #if defined(AIPS_LITTLE_ENDIAN)
-  flag = sizeof(uInt64) != SIZE_LECAN_UINT64;
+  flag = sizeof(uint64_t) != SIZE_LECAN_UINT64;
 #endif
   if ((flag ^ CONVERT_LECAN_UINT64) != 0) {
     cout << "invalid CONVERT_LECAN_UINT64 definition" << endl;
     error = 1;
   }
-  if (sizeof(Int64) < 8) {
+  if (sizeof(int64_t) < 8) {
     cout << "sizeof(Int64) must be >=8" << endl;
     error = 1;
   }
-  if (sizeof(uInt64) < 8) {
+  if (sizeof(uint64_t) < 8) {
     cout << "sizeof(uInt64) must >=8" << endl;
     error = 1;
   }
@@ -299,10 +299,10 @@ void checkConversion(int& error) {
     val[3] = 54;
     val[2] = 78;
     val[1] = 145 - 256;
-    Int64 result;
+    int64_t result;
     LECanonicalConversion::toLocal(&result, val + 1, 1);
     if (result != 2 * 256 * 256 * 256 + 54 * 256 * 256 + 78 * 256 + 145 +
-                      6 * (Int64)(256) * 256 * 256 * 256) {
+                      6 * (int64_t)(256) * 256 * 256 * 256) {
       cout << "invalid Int64 to conversion 1 " << result << endl;
       error = 1;
     }
@@ -317,7 +317,7 @@ void checkConversion(int& error) {
     val[6] = -1;
     val[5] = -2;
     LECanonicalConversion::toLocal(&result, val + 1, 1);
-    if (result != -((Int64)(256) * 256 * 256 * 256 + (Int64)(253) * 256 * 256 * 256 +
+    if (result != -((int64_t)(256) * 256 * 256 * 256 + (int64_t)(253) * 256 * 256 * 256 +
                     201 * 256 * 256 + 177 * 256 + 111)) {
       cout << "invalid Int64 to conversion 2 " << result << endl;
       error = 1;
@@ -338,10 +338,10 @@ void checkConversion(int& error) {
     val[3] = 54;
     val[2] = 78;
     val[1] = 100;
-    uInt64 result;
+    uint64_t result;
     LECanonicalConversion::toLocal(&result, val + 1, 1);
     if (result != 128U * 256U * 256U * 256U + 54U * 256U * 256U + 78U * 256U + 100U +
-                      5U * (uInt64)(256) * 256U * 256U * 256U) {
+                      5U * (uint64_t)(256) * 256U * 256U * 256U) {
       cout << "invalid uInt64 to conversion " << result << endl;
       error = 1;
     }

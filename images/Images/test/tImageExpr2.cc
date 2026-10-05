@@ -34,8 +34,8 @@ using namespace casacore;
 int main() {
   try {
     {
-      PagedImage<Float> a(IPosition(4, 20, 20, 1, 20), CoordinateUtil::defaultCoords4D(), "A.im");
-      PagedImage<Float> b(IPosition(4, 20, 20, 1, 1), CoordinateUtil::defaultCoords4D(), "B.im");
+      PagedImage<float> a(IPosition(4, 20, 20, 1, 20), CoordinateUtil::defaultCoords4D(), "A.im");
+      PagedImage<float> b(IPosition(4, 20, 20, 1, 1), CoordinateUtil::defaultCoords4D(), "B.im");
     }
     ImageRegion* reg = 0;
     reg = ImageRegion::fromLatticeExpression("(A.im + B.im) > 0");

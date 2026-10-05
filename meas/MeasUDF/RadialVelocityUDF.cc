@@ -37,7 +37,7 @@ void RadialVelocityUDF::setup(const Table&, const TaQLStyle&) {
   }
   // Get the 'to' reference type.
   // Determine the argnr of the epoch.
-  uInt argnr = 0;
+  unsigned int argnr = 0;
   itsEngine.handleMeasType(operands()[0], true);
   itsRefType = itsEngine.refType();
   argnr = 1;
@@ -87,11 +87,11 @@ void RadialVelocityUDF::setup(const Table&, const TaQLStyle&) {
   setAttributes(itsEngine.makeAttributes(itsRefType));
 }
 
-bool RadialVelocityUDF::tryDoppler(uInt& argnr) {
+bool RadialVelocityUDF::tryDoppler(unsigned int& argnr) {
   // Try if a doppler value is given.
   // It is if no unit is given and a possible type is doppler.
   if (operands().size() > argnr && operands()[argnr]->unit().empty()) {
-    uInt argnrOld = argnr;
+    unsigned int argnrOld = argnr;
     try {
       itsDopplerEngine.handleDoppler(operands(), argnr, false, false);
       itsEngine.setDopplerEngine(itsDopplerEngine);
@@ -103,12 +103,12 @@ bool RadialVelocityUDF::tryDoppler(uInt& argnr) {
   return false;
 }
 
-Double RadialVelocityUDF::getDouble(const TableExprId& id) {
+double RadialVelocityUDF::getDouble(const TableExprId& id) {
   return getArrayDouble(id).array().data()[0];
 }
 
-MArray<Double> RadialVelocityUDF::getArrayDouble(const TableExprId& id) {
-  return MArray<Double>(itsEngine.getArrayDouble(id));
+MArray<double> RadialVelocityUDF::getArrayDouble(const TableExprId& id) {
+  return MArray<double>(itsEngine.getArrayDouble(id));
 }
 
 }  // namespace casacore

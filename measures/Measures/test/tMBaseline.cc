@@ -82,10 +82,10 @@ int main() {
     cout << "Testing all conversions forward/backward" << endl;
 
     bool isok = true;
-    Vector<Double> tvec(3);
+    Vector<double> tvec(3);
     tvec = 0.0;
-    for (uInt i = MBaseline::J2000; i < MBaseline::N_Types; i++) {
-      for (uInt j = MBaseline::J2000; j < MBaseline::N_Types; j++) {
+    for (unsigned int i = MBaseline::J2000; i < MBaseline::N_Types; i++) {
+      for (unsigned int j = MBaseline::J2000; j < MBaseline::N_Types; j++) {
         MBaseline::Ref rin(i, mf);
         MBaseline::Ref rout(j, mf);
         MBaseline mb0(mvb0, rin);
@@ -112,7 +112,7 @@ int main() {
       if (x != mvb0) cout << "Copy constructor error" << endl;
       x = mvb0;
       if (x != mvb0) cout << "Assignment error" << endl;
-      Vector<Quantum<Double>> vq(3);
+      Vector<Quantum<double>> vq(3);
       vq = Quantity(23, "m");
       x.putValue(vq);
       cout << "putValue:       " << vq << ", " << x << endl;
@@ -128,7 +128,7 @@ int main() {
       cout << "getlength:      " << x.getLength("cm") << endl;
       cout << "radius:         " << x.radius() << endl;
       cout << "getXRecordValue:" << x.getXRecordValue() << endl;
-      Vector<Double> x1(3);
+      Vector<double> x1(3);
       x1(0) = 30;
       x1(1) = 40;
       x1(2) = 0;
@@ -141,7 +141,7 @@ int main() {
       cout << "QV constructor: " << MVBaseline(x2.getAngle()) << endl;
       cout << "QV constructor: " << MVBaseline(Quantity(34, "m"), x2.getAngle()) << endl;
       cout << "V constructor:  " << MVBaseline(x1) << endl;
-      cout << "D constructor:  " << MVBaseline(Double(78)) << endl;
+      cout << "D constructor:  " << MVBaseline(double(78)) << endl;
       cout << "operator+:      " << x + x2 << endl;
       cout << "operator-:      " << x - x2 << endl;
       cout << "operator-pre-:  " << -x2 << endl;
@@ -176,7 +176,7 @@ int main() {
       MBaseline::Ref mr;
       cout << "getType:        " << MBaseline::getType(tp, s0) << ", ";
       // next () to stop egcs warning
-      cout << (uInt)tp << endl;
+      cout << (unsigned int)tp << endl;
       cout << "giveMe:         " << mb.giveMe(mr, s0) << ", ";
       cout << mr << endl;
       cout << "setRefString:   " << mb.setRefString("hadec") << ", ";

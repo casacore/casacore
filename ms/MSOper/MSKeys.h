@@ -38,10 +38,10 @@ class String;
 // and field ID. Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct SubScanKey {
-  Int obsID;
-  Int arrayID;
-  Int scan;
-  Int fieldID;
+  int obsID;
+  int arrayID;
+  int scan;
+  int fieldID;
 };
 
 // define operator<() so it can be used as a key in std::map
@@ -55,9 +55,9 @@ std::ostream& operator<<(std::ostream& os, const SubScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ScanKey {
-  Int obsID;
-  Int arrayID;
-  Int scan;
+  int obsID;
+  int arrayID;
+  int scan;
 };
 
 // create a ScanKey from a SubScanKey, just omits the SubScanKey's fieldID
@@ -77,7 +77,7 @@ bool operator<(const ScanKey& lhs, const ScanKey& rhs);
 bool operator==(const ScanKey& lhs, const ScanKey& rhs);
 
 // extract all the unique scan numbers from the specified scans
-std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys);
+std::set<int> scanNumbers(const std::set<ScanKey>& scanKeys);
 
 std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey);
 
@@ -85,8 +85,8 @@ std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ArrayKey {
-  Int obsID;
-  Int arrayID;
+  int obsID;
+  int arrayID;
 };
 
 // define operator<() so it can be used as a key in std::map
@@ -99,13 +99,13 @@ inline bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
 inline bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) { return !(lhs == rhs); }
 
 // construct scan keys given a set of scan numbers and an ArrayKey
-std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
+std::set<ScanKey> scanKeys(const std::set<int>& scans, const ArrayKey& arrayKey);
 
 // represents primary key in the SOURCE table
 struct SourceKey {
   // SOURCE_ID column
-  uInt id;
-  uInt spw;
+  unsigned int id;
+  unsigned int spw;
 };
 
 // define operator<() so it can be used as a key in std::map

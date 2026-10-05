@@ -150,7 +150,7 @@ String LELUnary<T>::className() const {
 }
 
 template <class T>
-bool LELUnary<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELUnary<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return pExpr_p->lock(type, nattempts);
 }
 template <class T>

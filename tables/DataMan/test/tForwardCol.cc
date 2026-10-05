@@ -56,7 +56,7 @@ TableDesc makeDesc();
 void a(const TableDesc&);
 void b(const TableDesc&);
 void c(const TableDesc&);
-void check(const String& tableName, Int abOffset, Int acOffset);
+void check(const String& tableName, int abOffset, int acOffset);
 
 int main() {
   try {
@@ -86,9 +86,9 @@ TableDesc makeDesc() {
   // Build the table description.
   TableDesc td("tTableDesc", "1", TableDesc::Scratch);
   td.comment() = "A test of class ForwardColumn";
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<Int>("ac"));
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<int>("ac"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.addColumn(ScalarColumnDesc<float>("ae"));
   td.addColumn(ScalarColumnDesc<String>("af"));
   td.addColumn(ScalarColumnDesc<DComplex>("ag"));
@@ -105,10 +105,10 @@ void a(const TableDesc& td) {
   newtab.setShapeColumn("arr3", IPosition(3, 2, 3, 4));
   Table tab(newtab, 10);
 
-  ScalarColumn<Int> ab1(tab, "ab");
-  ScalarColumn<Int> ab2(tab, "ab");
-  ScalarColumn<Int> ac(tab, "ac");
-  ScalarColumn<uInt> ad(tab, "ad");
+  ScalarColumn<int> ab1(tab, "ab");
+  ScalarColumn<int> ab2(tab, "ab");
+  ScalarColumn<int> ac(tab, "ac");
+  ScalarColumn<unsigned int> ad(tab, "ad");
   ScalarColumn<float> ae(tab, "ae");
   ScalarColumn<String> af(tab, "af");
   TableColumn ag1(tab, "ag");
@@ -117,7 +117,7 @@ void a(const TableDesc& td) {
   ArrayColumn<float> arr2(tab, "arr2");
   ArrayColumn<float> arr3(tab, "arr3");
   Cube<float> arrf(IPosition(3, 2, 3, 4));
-  uInt i;
+  unsigned int i;
   char str[8];
   indgen(arrf);
   for (i = 0; i < 10; i++) {
@@ -168,13 +168,13 @@ void c(const TableDesc& tdin) {
 
   // Update the values.
   // Column ac will be updated in the original table.
-  ScalarColumn<Int> ab1(forwTab, "ab");
-  uInt i;
+  ScalarColumn<int> ab1(forwTab, "ab");
+  unsigned int i;
   for (i = 0; i < 10; i++) {
     ab1.put(i, i + 10);
   }
-  forwTab.addColumn(ScalarColumnDesc<Int>("ac"), "ForwardEngine1", true);
-  ScalarColumn<Int> ac(forwTab, "ac");
+  forwTab.addColumn(ScalarColumnDesc<int>("ac"), "ForwardEngine1", true);
+  ScalarColumn<int> ac(forwTab, "ac");
   for (i = 0; i < 10; i++) {
     ac.put(i, i + 11);
   }
@@ -189,22 +189,22 @@ void c(const TableDesc& tdin) {
   Table forwTab2(newtab2, 10);
 }
 
-void check(const String& tableName, Int abOffset, Int acOffset) {
+void check(const String& tableName, int abOffset, int acOffset) {
   cout << "Checking table " << tableName << endl;
   // Read back the table and check the data.
   Table tab(tableName);
-  ScalarColumn<Int> ab2(tab, "ab");
-  ScalarColumn<Int> ac(tab, "ac");
-  ScalarColumn<uInt> ad(tab, "ad");
+  ScalarColumn<int> ab2(tab, "ab");
+  ScalarColumn<int> ac(tab, "ac");
+  ScalarColumn<unsigned int> ad(tab, "ad");
   ScalarColumn<float> ae(tab, "ae");
   ScalarColumn<String> af(tab, "af");
   ScalarColumn<DComplex> ag(tab, "ag");
   ArrayColumn<float> arr1(tab, "arr1");
   ArrayColumn<float> arr2(tab, "arr2");
   ArrayColumn<float> arr3(tab, "arr3");
-  Int i;
-  Int abval, acval;
-  uInt adval;
+  int i;
+  int abval, acval;
+  unsigned int adval;
   float aeval;
   String afval;
   DComplex agval;
@@ -225,7 +225,7 @@ void check(const String& tableName, Int abOffset, Int acOffset) {
     af.get(i, afval);
     ag.get(i, agval);
     snprintf(str, sizeof(str), "V%i", i);
-    if (abval != i + abOffset || acval != i + 1 + acOffset || Int(adval) != i + 2 ||
+    if (abval != i + abOffset || acval != i + 1 + acOffset || int(adval) != i + 2 ||
         aeval != i + 3 || afval != str || agval != DComplex(i + 2)) {
       cout << "error in row " << i << ": " << abval << ", " << acval << ", " << adval << ", "
            << aeval << ", " << afval << ", " << agval << endl;
@@ -253,7 +253,7 @@ void check(const String& tableName, Int abOffset, Int acOffset) {
     }
     arrf += (float)(arrf.nelements());
   }
-  Vector<Int> abvec = ab2.getColumn();
+  Vector<int> abvec = ab2.getColumn();
   cout << tab.nrow() << " " << abvec.nelements() << endl;
   for (i = 0; i < 10; i++) {
     if (abvec(i) != i + abOffset) {
@@ -265,7 +265,7 @@ void check(const String& tableName, Int abOffset, Int acOffset) {
     cout << "arr1a not 4-dim" << endl;
   }
   i = 0;
-  uInt j0, j1, j2, j3;
+  unsigned int j0, j1, j2, j3;
   for (j3 = 0; j3 < 10; j3++)
     for (j2 = 0; j2 < 4; j2++)
       for (j1 = 0; j1 < 3; j1++)
@@ -296,7 +296,7 @@ void check(const String& tableName, Int abOffset, Int acOffset) {
     if (iter.table().nrow() != 1) {
       cout << "More than 1 row in TableIterator " << i << endl;
     }
-    ScalarColumn<Int> ab(iter.table(), "ab");
+    ScalarColumn<int> ab(iter.table(), "ab");
     if (ab(0) != 9 - i + abOffset) {
       cout << "Invalid value " << ab(0) << " in TableIterator " << i << endl;
     }

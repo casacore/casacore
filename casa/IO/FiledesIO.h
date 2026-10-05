@@ -104,11 +104,11 @@ class FiledesIO : public ByteIO {
   virtual ~FiledesIO();
 
   // Write the number of bytes.
-  virtual void write(Int64 size, const void* buf);
+  virtual void write(int64_t size, const void* buf);
 
   // Write the number of bytes at offset from start of the file.
   // The file offset is not changed
-  virtual void pwrite(Int64 size, Int64 offset, const void* buf);
+  virtual void pwrite(int64_t size, int64_t offset, const void* buf);
 
   // Read <src>size</src> bytes from the descriptor. Returns the number of
   // bytes actually read or a negative number if an error occurred. Will throw
@@ -116,14 +116,14 @@ class FiledesIO : public ByteIO {
   // read, or an error occured, unless throwException is set to false. Will
   // always throw an exception if the descriptor is not readable or the
   // system call returned an undocumented value.
-  virtual Int64 read(Int64 size, void* buf, bool throwException = true);
+  virtual int64_t read(int64_t size, void* buf, bool throwException = true);
 
   // Like read except reads from offset of the start of the file.
   // The file offset is not changed
-  virtual Int64 pread(Int64 size, Int64 offset, void* buf, bool throwException = true);
+  virtual int64_t pread(int64_t size, int64_t offset, void* buf, bool throwException = true);
 
   // Get the length of the byte stream.
-  virtual Int64 length();
+  virtual int64_t length();
 
   // Is the IO stream readable?
   virtual bool isReadable() const;
@@ -144,13 +144,13 @@ class FiledesIO : public ByteIO {
   virtual void fsync();
 
   // Truncate the file to the given size.
-  virtual void truncate(Int64 size);
+  virtual void truncate(int64_t size);
 
   // Some static convenience functions for file create/open/close.
   // Close is only done if the fd is non-negative.
   // <group>
-  static int create(const Char* name, int mode = 0666);
-  static int open(const Char* name, bool writable = false, bool throwExcp = true);
+  static int create(const char* name, int mode = 0666);
+  static int open(const char* name, bool writable = false, bool throwExcp = true);
   static void close(int fd);
   // </group>
 
@@ -166,7 +166,7 @@ class FiledesIO : public ByteIO {
 
   // Reset the position pointer to the given value. It returns the
   // new position.
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
 
  private:
   bool itsSeekable;

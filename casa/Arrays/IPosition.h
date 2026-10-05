@@ -196,18 +196,18 @@ class IPosition {
   // array must be one dimensional.
   // <group>
   IPosition(const Array<int>& other);
-  IPosition(const Array<long long>& other);
+  IPosition(const Array<int64_t>& other);
   Vector<int> asVector() const;
-  Vector<long long> asVector64() const;
+  Vector<int64_t> asVector64() const;
   // </group>
 
   // Convert an IPosition to and from an Array<int/int64>. In either case, the
   // array must be one dimensional.
   // <group>
   IPosition(const std::vector<int>& other);
-  IPosition(const std::vector<long long>& other);
+  IPosition(const std::vector<int64_t>& other);
   std::vector<int> asStdVector() const;
-  std::vector<long long> asStdVector64() const;
+  std::vector<int64_t> asStdVector64() const;
   // </group>
 
   // Resize and fill this IPosition object.
@@ -343,7 +343,7 @@ class IPosition {
 
   // Returns 0 if nelements() == 0, otherwise it returns the product of
   // its elements.
-  long long product() const;
+  int64_t product() const;
 
   // Are all elements equal to 1?
   // Useful to check if a given stride is really a stride.
@@ -524,10 +524,10 @@ bool operator>=(ssize_t val, const IPosition& right);
 
 // <group name="IPosition Indexing">
 // Convert from offset to IPosition in an array.
-IPosition toIPositionInArray(long long offset, const IPosition& shape);
+IPosition toIPositionInArray(int64_t offset, const IPosition& shape);
 
 // Convert from IPosition to offset in an array.
-long long toOffsetInArray(const IPosition& iposition, const IPosition& shape);
+int64_t toOffsetInArray(const IPosition& iposition, const IPosition& shape);
 
 // Determine if the given offset or IPosition is inside the array. Returns
 // true if it is inside the Array.
@@ -535,7 +535,7 @@ long long toOffsetInArray(const IPosition& iposition, const IPosition& shape);
 //   <li> ArrayConformanceError: If all the IPositions are not the same length
 // </thrown>
 // <group>
-bool isInsideArray(const long long offset, const IPosition& shape);
+bool isInsideArray(const int64_t offset, const IPosition& shape);
 bool isInsideArray(const IPosition& iposition, const IPosition& shape);
 // </group>
 // </group>

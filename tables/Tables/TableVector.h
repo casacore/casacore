@@ -185,7 +185,7 @@ class TableVector {
   void set(rownr_t index, const T& value);
 
   // Get nr of dimensions (is always 1).
-  uInt ndim() const;
+  unsigned int ndim() const;
 
   // Get nr of elements (ie. vector length).
   rownr_t nelements() const;
@@ -221,7 +221,7 @@ inline bool TableVector<T>::isNull() const {
 }
 
 template <class T>
-inline uInt TableVector<T>::ndim() const {
+inline unsigned int TableVector<T>::ndim() const {
   return tabVecPtr_p->ndim();
 }
 

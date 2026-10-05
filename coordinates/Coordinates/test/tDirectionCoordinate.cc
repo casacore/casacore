@@ -50,14 +50,14 @@
 #include <casacore/casa/namespace.h>
 #include <iomanip>
 
-DirectionCoordinate makeCoordinate(MDirection::Types type, Projection& proj, Vector<Double>& crval,
-                                   Vector<Double>& crpix, Vector<Double>& cdelt,
-                                   Matrix<Double>& xform);
+DirectionCoordinate makeCoordinate(MDirection::Types type, Projection& proj, Vector<double>& crval,
+                                   Vector<double>& crpix, Vector<double>& cdelt,
+                                   Matrix<double>& xform);
 
 void doit(DirectionCoordinate& lc, MDirection::Types type, const Vector<String>& axisName,
           const String& axisUnit);
-void doit2(DirectionCoordinate& lc, Vector<Double>& crval, Vector<Double>& crpix,
-           Vector<Double>& cdelt, Matrix<Double>& xform);
+void doit2(DirectionCoordinate& lc, Vector<double>& crval, Vector<double>& crpix,
+           Vector<double>& cdelt, Matrix<double>& xform);
 void doit3(DirectionCoordinate& lc);
 void doit4(DirectionCoordinate& lc);
 void doit5(DirectionCoordinate& lc);
@@ -96,8 +96,8 @@ int main() {
 
   try {
     Projection proj;
-    Vector<Double> crval, crpix, cdelt;
-    Matrix<Double> xform;
+    Vector<double> crval, crpix, cdelt;
+    Matrix<double> xform;
 
     // Constructors
 
@@ -109,7 +109,7 @@ int main() {
     }
     //
     {
-      for (uInt i = 0; i < MDirection::N_Types; i++) {
+      for (unsigned int i = 0; i < MDirection::N_Types; i++) {
         MDirection::Types tp = MDirection::castType(i);
         MDirection::GlobalTypes gt = MDirection::globalType(i);
         if (gt != MDirection::GAZEL) {
@@ -126,7 +126,7 @@ int main() {
       if (!lc.near(lc2)) {
         throw(AipsError(String("Failed near test 1 because") + lc.errorMessage()));
       }
-      Vector<Int> excludeAxes(1, 0);
+      Vector<int> excludeAxes(1, 0);
       if (!lc.near(lc2, excludeAxes)) {
         throw(AipsError(String("Failed near test 2 because") + lc.errorMessage()));
       }
@@ -135,15 +135,15 @@ int main() {
     // Test Quantum constructor interface
 
     {
-      Matrix<Double> xform(2, 2);
+      Matrix<double> xform(2, 2);
       xform = 0.0;
       xform.diagonal() = 1.0;
       Projection proj(Projection::SIN);
       MDirection::Types type(MDirection::B1950);
       //
-      Vector<Double> crval(2);
-      Vector<Double> crpix(2);
-      Vector<Double> cdelt(2);
+      Vector<double> crval(2);
+      Vector<double> crpix(2);
+      Vector<double> cdelt(2);
       //
       crval(0) = 0.1;
       crval(1) = 0.5;
@@ -155,12 +155,12 @@ int main() {
       DirectionCoordinate dc1(type, proj, crval(0), crval(1), cdelt(0), cdelt(1), xform, crpix(0),
                               crpix(1));
       //
-      Quantum<Double> lon(crval(0) * 180.0 / M_PI, "deg");
-      Quantum<Double> lat(crval(1) * 180.0 / M_PI, "deg");
-      Quantum<Double> dlon(cdelt(0) * 180.0 / M_PI, "deg");
-      Quantum<Double> dlat(cdelt(1) * 180.0 / M_PI, "deg");
-      Quantum<Double> longPole(999.0, "deg");
-      Quantum<Double> latPole(999.0, "deg");
+      Quantum<double> lon(crval(0) * 180.0 / M_PI, "deg");
+      Quantum<double> lat(crval(1) * 180.0 / M_PI, "deg");
+      Quantum<double> dlon(cdelt(0) * 180.0 / M_PI, "deg");
+      Quantum<double> dlat(cdelt(1) * 180.0 / M_PI, "deg");
+      Quantum<double> longPole(999.0, "deg");
+      Quantum<double> latPole(999.0, "deg");
       //
       DirectionCoordinate dc2(type, proj, lon, lat, dlon, dlat, xform, crpix(0), crpix(1), longPole,
                               latPole);
@@ -281,20 +281,20 @@ int main() {
       DirectionCoordinate dc = makeCoordinate(MDirection::J2000, proj, crval, crpix, cdelt, xform);
       // No rotation
       Coordinate* c = dc.rotate(Quantity(0, "deg"));
-      Vector<Double> p1(2);
+      Vector<double> p1(2);
       p1[0] = 10;
       p1[1] = 20;
-      Vector<Double> p2(2);
+      Vector<double> p2(2);
       p2[0] = 200;
       p2[1] = 240;
-      Vector<Double> got, exp;
+      Vector<double> got, exp;
       c->toWorld(got, p1);
       dc.toWorld(exp, p1);
-      Vector<Double> p1World = exp.copy();
+      Vector<double> p1World = exp.copy();
       AlwaysAssert(allTrue(got == exp), AipsError);
       c->toWorld(got, p2);
       dc.toWorld(exp, p2);
-      Vector<Double> p2World = exp.copy();
+      Vector<double> p2World = exp.copy();
 
       AlwaysAssert(allTrue(got == exp), AipsError);
       delete c;
@@ -302,7 +302,7 @@ int main() {
       // non-zero rotation
       c = dc.rotate(Quantity(30, "deg"));
       c->toPixel(got, p1World);
-      Vector<Double> orig;
+      Vector<double> orig;
       dc.toPixel(orig, p1World);
       exp[0] = 72.05771366;
       exp[1] = -11.60254038;
@@ -311,8 +311,8 @@ int main() {
     }
     {
       cout << "*** Test convert()" << endl;
-      Projection p(Projection::SIN, Vector<Double>(2, 0));
-      Matrix<Double> xform(2, 2, 0);
+      Projection p(Projection::SIN, Vector<double>(2, 0));
+      Matrix<double> xform(2, 2, 0);
       xform.diagonal() = 1;
       DirectionCoordinate origGalactic(
           MDirection::GALACTIC, p, Quantity(0.15064170309942734, "rad"),
@@ -328,31 +328,31 @@ int main() {
       converted.save(s, "coords");
       cout << "*** converted " << s << endl;
 
-      Vector<Double> origRefVal = origGalactic.referenceValue();
+      Vector<double> origRefVal = origGalactic.referenceValue();
       Vector<String> units = origGalactic.worldAxisUnits();
       MDirection origRefDir(Quantity(origRefVal[0], units[0]), Quantity(origRefVal[1], units[1]),
                             MDirection::GALACTIC);
-      Quantum<Vector<Double>> expRefDir =
+      Quantum<Vector<double>> expRefDir =
           MDirection::Convert(origRefDir, MDirection::J2000)().getAngle();
-      Vector<Double> gotRefDir = converted.referenceValue();
+      Vector<double> gotRefDir = converted.referenceValue();
       AlwaysAssert(near(gotRefDir[0], expRefDir.getValue(units[0])[0], 1e-8), AipsError);
       AlwaysAssert(near(gotRefDir[1], expRefDir.getValue(units[1])[1], 1e-8), AipsError);
-      Vector<Double> origWorld;
-      Vector<Double> pixel(2, 20);
+      Vector<double> origWorld;
+      Vector<double> pixel(2, 20);
       origGalactic.toWorld(origWorld, pixel);
       MDirection origDir2(Quantity(origWorld[0], units[0]), Quantity(origWorld[1], units[1]),
                           MDirection::GALACTIC);
-      Quantum<Vector<Double>> expDir =
+      Quantum<Vector<double>> expDir =
           MDirection::Convert(origDir2, MDirection::J2000)().getAngle();
-      Vector<Double> gotDir;
+      Vector<double> gotDir;
       converted.toWorld(gotDir, pixel);
-      Vector<Double> pixela(2, -6.5);
+      Vector<double> pixela(2, -6.5);
       pixela[0] = 1573.5;
-      Vector<Double> pixelb = pixela.copy();
+      Vector<double> pixelb = pixela.copy();
       pixelb[0] = 1574.5;
       // Vector<Double> pixelc = pixela.copy();
       // pixelc[0] = 1500;
-      Vector<Double> worlda, worldb, worldc;
+      Vector<double> worlda, worldb, worldc;
       converted.toWorld(worlda, pixela);
       converted.toWorld(worldb, pixelb);
       // converted.toWorld(worldc, pixelc);
@@ -362,84 +362,84 @@ int main() {
       // cout << "*** c " << worldc << endl;
       cout << "*** inc " << converted.increment() << endl;
 
-      std::map<std::pair<Int, Int>, Double> expAngle;
-      expAngle[std::pair<Int, Int>(0, -80)] = -165.668663;
-      expAngle[std::pair<Int, Int>(0, -60)] = -159.272545;
-      expAngle[std::pair<Int, Int>(0, -40)] = -136.458146;
-      expAngle[std::pair<Int, Int>(0, -20)] = -56.3749304;
-      expAngle[std::pair<Int, Int>(0, 0)] = -23.4795798;
-      expAngle[std::pair<Int, Int>(0, 20)] = -15.2757315;
-      expAngle[std::pair<Int, Int>(0, 40)] = -12.3186824;
-      expAngle[std::pair<Int, Int>(0, 60)] = -11.4331534;
-      expAngle[std::pair<Int, Int>(0, 80)] = -11.9775365;
-      expAngle[std::pair<Int, Int>(4, -80)] = 128.395658;
-      expAngle[std::pair<Int, Int>(4, -60)] = 114.424745;
-      expAngle[std::pair<Int, Int>(4, -40)] = 93.4929423;
-      expAngle[std::pair<Int, Int>(4, -20)] = 71.2514923;
-      expAngle[std::pair<Int, Int>(4, 0)] = 55.048387;
-      expAngle[std::pair<Int, Int>(4, 20)] = 45.7495975;
-      expAngle[std::pair<Int, Int>(4, 40)] = 41.4598396;
-      expAngle[std::pair<Int, Int>(4, 60)] = 40.9329567;
-      expAngle[std::pair<Int, Int>(4, 80)] = 44.0088699;
-      expAngle[std::pair<Int, Int>(8, -80)] = 68.355075;
-      expAngle[std::pair<Int, Int>(8, -60)] = 61.8452755;
-      expAngle[std::pair<Int, Int>(8, -40)] = 58.6597989;
-      expAngle[std::pair<Int, Int>(8, -20)] = 58.6455176;
-      expAngle[std::pair<Int, Int>(8, 0)] = 61.8014664;
-      expAngle[std::pair<Int, Int>(8, 20)] = 68.2804866;
-      expAngle[std::pair<Int, Int>(8, 40)] = 78.0043392;
-      expAngle[std::pair<Int, Int>(8, 60)] = 89.9436203;
-      expAngle[std::pair<Int, Int>(8, 80)] = 101.89424;
-      expAngle[std::pair<Int, Int>(12, -80)] = 11.9775367;
-      expAngle[std::pair<Int, Int>(12, -60)] = 11.4331535;
-      expAngle[std::pair<Int, Int>(12, -40)] = 12.3186824;
-      expAngle[std::pair<Int, Int>(12, -20)] = 15.2757315;
-      expAngle[std::pair<Int, Int>(12, 0)] = 23.4795796;
-      expAngle[std::pair<Int, Int>(12, 20)] = 56.3749301;
-      expAngle[std::pair<Int, Int>(12, 40)] = 136.458146;
-      expAngle[std::pair<Int, Int>(12, 60)] = 159.272545;
-      expAngle[std::pair<Int, Int>(12, 80)] = 165.668663;
-      expAngle[std::pair<Int, Int>(16, -80)] = -44.0088701;
-      expAngle[std::pair<Int, Int>(16, -60)] = -40.9329566;
-      expAngle[std::pair<Int, Int>(16, -40)] = -41.4598395;
-      expAngle[std::pair<Int, Int>(16, -20)] = -45.7495973;
-      expAngle[std::pair<Int, Int>(16, 0)] = -55.0483868;
-      expAngle[std::pair<Int, Int>(16, 20)] = -71.2514922;
-      expAngle[std::pair<Int, Int>(16, 40)] = -93.4929422;
-      expAngle[std::pair<Int, Int>(16, 60)] = -114.424745;
-      expAngle[std::pair<Int, Int>(16, 80)] = -128.395658;
-      expAngle[std::pair<Int, Int>(20, -80)] = -101.894241;
-      expAngle[std::pair<Int, Int>(20, -60)] = -89.9436205;
-      expAngle[std::pair<Int, Int>(20, -40)] = -78.0043394;
-      expAngle[std::pair<Int, Int>(20, -20)] = -68.2804869;
-      expAngle[std::pair<Int, Int>(20, 0)] = -61.8014666;
-      expAngle[std::pair<Int, Int>(20, 20)] = -58.6455178;
-      expAngle[std::pair<Int, Int>(20, 40)] = -58.659799;
-      expAngle[std::pair<Int, Int>(20, 60)] = -61.8452755;
-      expAngle[std::pair<Int, Int>(20, 80)] = -68.3550746;
+      std::map<std::pair<int, int>, double> expAngle;
+      expAngle[std::pair<int, int>(0, -80)] = -165.668663;
+      expAngle[std::pair<int, int>(0, -60)] = -159.272545;
+      expAngle[std::pair<int, int>(0, -40)] = -136.458146;
+      expAngle[std::pair<int, int>(0, -20)] = -56.3749304;
+      expAngle[std::pair<int, int>(0, 0)] = -23.4795798;
+      expAngle[std::pair<int, int>(0, 20)] = -15.2757315;
+      expAngle[std::pair<int, int>(0, 40)] = -12.3186824;
+      expAngle[std::pair<int, int>(0, 60)] = -11.4331534;
+      expAngle[std::pair<int, int>(0, 80)] = -11.9775365;
+      expAngle[std::pair<int, int>(4, -80)] = 128.395658;
+      expAngle[std::pair<int, int>(4, -60)] = 114.424745;
+      expAngle[std::pair<int, int>(4, -40)] = 93.4929423;
+      expAngle[std::pair<int, int>(4, -20)] = 71.2514923;
+      expAngle[std::pair<int, int>(4, 0)] = 55.048387;
+      expAngle[std::pair<int, int>(4, 20)] = 45.7495975;
+      expAngle[std::pair<int, int>(4, 40)] = 41.4598396;
+      expAngle[std::pair<int, int>(4, 60)] = 40.9329567;
+      expAngle[std::pair<int, int>(4, 80)] = 44.0088699;
+      expAngle[std::pair<int, int>(8, -80)] = 68.355075;
+      expAngle[std::pair<int, int>(8, -60)] = 61.8452755;
+      expAngle[std::pair<int, int>(8, -40)] = 58.6597989;
+      expAngle[std::pair<int, int>(8, -20)] = 58.6455176;
+      expAngle[std::pair<int, int>(8, 0)] = 61.8014664;
+      expAngle[std::pair<int, int>(8, 20)] = 68.2804866;
+      expAngle[std::pair<int, int>(8, 40)] = 78.0043392;
+      expAngle[std::pair<int, int>(8, 60)] = 89.9436203;
+      expAngle[std::pair<int, int>(8, 80)] = 101.89424;
+      expAngle[std::pair<int, int>(12, -80)] = 11.9775367;
+      expAngle[std::pair<int, int>(12, -60)] = 11.4331535;
+      expAngle[std::pair<int, int>(12, -40)] = 12.3186824;
+      expAngle[std::pair<int, int>(12, -20)] = 15.2757315;
+      expAngle[std::pair<int, int>(12, 0)] = 23.4795796;
+      expAngle[std::pair<int, int>(12, 20)] = 56.3749301;
+      expAngle[std::pair<int, int>(12, 40)] = 136.458146;
+      expAngle[std::pair<int, int>(12, 60)] = 159.272545;
+      expAngle[std::pair<int, int>(12, 80)] = 165.668663;
+      expAngle[std::pair<int, int>(16, -80)] = -44.0088701;
+      expAngle[std::pair<int, int>(16, -60)] = -40.9329566;
+      expAngle[std::pair<int, int>(16, -40)] = -41.4598395;
+      expAngle[std::pair<int, int>(16, -20)] = -45.7495973;
+      expAngle[std::pair<int, int>(16, 0)] = -55.0483868;
+      expAngle[std::pair<int, int>(16, 20)] = -71.2514922;
+      expAngle[std::pair<int, int>(16, 40)] = -93.4929422;
+      expAngle[std::pair<int, int>(16, 60)] = -114.424745;
+      expAngle[std::pair<int, int>(16, 80)] = -128.395658;
+      expAngle[std::pair<int, int>(20, -80)] = -101.894241;
+      expAngle[std::pair<int, int>(20, -60)] = -89.9436205;
+      expAngle[std::pair<int, int>(20, -40)] = -78.0043394;
+      expAngle[std::pair<int, int>(20, -20)] = -68.2804869;
+      expAngle[std::pair<int, int>(20, 0)] = -61.8014666;
+      expAngle[std::pair<int, int>(20, 20)] = -58.6455178;
+      expAngle[std::pair<int, int>(20, 40)] = -58.659799;
+      expAngle[std::pair<int, int>(20, 60)] = -61.8452755;
+      expAngle[std::pair<int, int>(20, 80)] = -68.3550746;
       // test various points around the sky
-      for (Int ha = 0; ha < 24; ha += 4) {
-        for (Int dec = -80; dec < 85; dec += 20) {
+      for (int ha = 0; ha < 24; ha += 4) {
+        for (int dec = -80; dec < 85; dec += 20) {
           DirectionCoordinate j2000(MDirection::J2000, p, Quantity(ha * 15, "deg"),
                                     Quantity(dec, "deg"), Quantity(-1, "arcsec"),
                                     Quantity(1, "arcsec"), xform, 100, 100);
           units = j2000.worldAxisUnits();
-          Vector<Double> j2000RefVal = j2000.referenceValue();
+          Vector<double> j2000RefVal = j2000.referenceValue();
           MDirection j2000RefDir(Quantity(j2000RefVal[0], units[0]),
                                  Quantity(j2000RefVal[1], units[1]), MDirection::J2000);
           DirectionCoordinate toGalactic = j2000.convert(angle, MDirection::GALACTIC);
           AlwaysAssert(allEQ(toGalactic.worldAxisUnits(), units), AipsError);
           AlwaysAssert(allEQ(toGalactic.linearTransform(), xform), AipsError);
           AlwaysAssert(toGalactic.projection().type() == p.type(), AipsError);
-          AlwaysAssert(near(angle.getValue("deg"), expAngle[std::pair<Int, Int>(ha, dec)], 1e-7),
+          AlwaysAssert(near(angle.getValue("deg"), expAngle[std::pair<int, int>(ha, dec)], 1e-7),
                        AipsError);
           DirectionCoordinate backToJ2000 = toGalactic.convert(angle, MDirection::J2000);
-          Vector<Double> newJ2000RefVal = backToJ2000.referenceValue();
+          Vector<double> newJ2000RefVal = backToJ2000.referenceValue();
           if (newJ2000RefVal[0] < -0.1) {
             newJ2000RefVal[0] += 2 * M_PI;
           }
           AlwaysAssert(allNearAbs(newJ2000RefVal, j2000RefVal, 1e-9), AipsError);
-          AlwaysAssert(near(angle.getValue("deg"), -expAngle[std::pair<Int, Int>(ha, dec)], 1e-7),
+          AlwaysAssert(near(angle.getValue("deg"), -expAngle[std::pair<int, int>(ha, dec)], 1e-7),
                        AipsError);
         }
       }
@@ -468,14 +468,14 @@ int main() {
     }
     {
       // test isNCP()
-      Vector<Double> parms(2, 0);
+      Vector<double> parms(2, 0);
       Projection projection(Projection::SIN, parms);
-      Double refLong = 0;
-      Double refLat = 0.5;
-      Double inc = M_PI / 180 / 3600;
-      Matrix<Double> xform = Matrix<Double>::identity(2);
-      Double refX = 0;
-      Double refY = 0;
+      double refLong = 0;
+      double refLat = 0.5;
+      double inc = M_PI / 180 / 3600;
+      Matrix<double> xform = Matrix<double>::identity(2);
+      double refX = 0;
+      double refY = 0;
       DirectionCoordinate dc(MDirection::J2000, projection, refLong, refLat, inc, -inc, xform, refX,
                              refY);
       AlwaysAssert(!dc.isNCP(), AipsError);
@@ -491,14 +491,14 @@ int main() {
     }
     {
       cout << "*** test toWorld without converting to conversion layer frame" << endl;
-      Matrix<Double> xform(2, 2, 0);
+      Matrix<double> xform(2, 2, 0);
       xform.diagonal() = 1;
       DirectionCoordinate dc(MDirection::J2000, Projection::SIN, Quantity(0, "deg"),
                              Quantity(0, "deg"), Quantity(-1, "arcsec"), Quantity(1, "arcsec"),
                              xform, 0, 0);
       dc.setReferenceConversion(MDirection::GALACTIC);
-      Vector<Double> pixel(2, 60);
-      Vector<Double> world(2);
+      Vector<double> pixel(2, 60);
+      Vector<double> world(2);
       // default uses true
       dc.toWorld(world, pixel);
       AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
@@ -520,9 +520,9 @@ int main() {
   return (0);
 }
 
-DirectionCoordinate makeCoordinate(MDirection::Types type, Projection& proj, Vector<Double>& crval,
-                                   Vector<Double>& crpix, Vector<Double>& cdelt,
-                                   Matrix<Double>& xform) {
+DirectionCoordinate makeCoordinate(MDirection::Types type, Projection& proj, Vector<double>& crval,
+                                   Vector<double>& crpix, Vector<double>& cdelt,
+                                   Matrix<double>& xform) {
   crval.resize(2);
   crpix.resize(2);
   cdelt.resize(2);
@@ -628,8 +628,8 @@ void doit(DirectionCoordinate& lc, MDirection::Types type, const Vector<String>&
   delete plc2;
 }
 
-void doit2(DirectionCoordinate& lc, Vector<Double>& crval, Vector<Double>& crpix,
-           Vector<Double>& cdelt, Matrix<Double>& xform) {
+void doit2(DirectionCoordinate& lc, Vector<double>& crval, Vector<double>& crpix,
+           Vector<double>& cdelt, Matrix<double>& xform) {
   if (!allEQ(crval, lc.referenceValue())) {
     throw(AipsError("Failed reference value recovery test"));
   }
@@ -671,10 +671,10 @@ void doit2(DirectionCoordinate& lc, Vector<Double>& crval, Vector<Double>& crpix
   }
   //
   xform.diagonal() = -2.0;
-  Matrix<Double> xformOut(2, 2);
+  Matrix<double> xformOut(2, 2);
   xformOut = 0.;
   xformOut.diagonal() = 1.0;
-  Vector<Double> cdeltOut;
+  Vector<double> cdeltOut;
   cdeltOut = cdelt * -2.0;
   if (!lc.setLinearTransform(xform)) {
     throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
@@ -691,9 +691,9 @@ void doit3(DirectionCoordinate& lc) {
   //
   // Test conversion
   //
-  const Vector<Double>& refPix = lc.referencePixel();
-  const Vector<Double>& refVal = lc.referenceValue();
-  Vector<Double> pixel(2), world(2);
+  const Vector<double>& refPix = lc.referencePixel();
+  const Vector<double>& refVal = lc.referenceValue();
+  Vector<double> pixel(2), world(2);
   //
   pixel = refPix.copy();
   if (!lc.toWorld(world, pixel)) {
@@ -724,7 +724,7 @@ void doit3(DirectionCoordinate& lc) {
   if (!lc.toWorld(world, pixel)) {
     throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
   }
-  Vector<Double> pixel2(2);
+  Vector<double> pixel2(2);
   if (!lc.toPixel(pixel2, world)) {
     throw(AipsError(String("toPixel conversion (1) failed because ") + lc.errorMessage()));
   }
@@ -738,7 +738,7 @@ void doit3(DirectionCoordinate& lc) {
   if (!allNear(dirV.get(), world, 1e-6)) {
     throw(AipsError("Coordinate conversion values (MVDirection) are wrong"));
   }
-  Vector<Double> pix2;
+  Vector<double> pix2;
   pix2 = lc.toPixel(dirV);
   AlwaysAssert(allNear(pix2, pixel, 1e-6), AipsError);
 
@@ -750,7 +750,7 @@ void doit3(DirectionCoordinate& lc) {
   if (!allNear(dirV.get(), world, 1e-6)) {
     throw(AipsError("Coordinate conversion values (MVDirection) are wrong"));
   }
-  Vector<Double> pixel3;
+  Vector<double> pixel3;
   if (!lc.toPixel(pixel3, dirV)) {
     throw(AipsError(String("toPixel conversion (3) failed because ") + lc.errorMessage()));
   }
@@ -777,7 +777,7 @@ void doit3(DirectionCoordinate& lc) {
     throw(AipsError("Coordinate conversion reflection 2 failed"));
   }
   MDirection converted = MDirection::Convert(dir, MDirection::SUPERGAL)();
-  Vector<Double> pixel4;
+  Vector<double> pixel4;
   if (!lc.toPixel(pixel4, converted)) {
     throw(AipsError(String("toPixel conversion (3) after conversion failed because ") +
                     lc.errorMessage()));
@@ -788,18 +788,18 @@ void doit3(DirectionCoordinate& lc) {
   // relative/absolute world
 
   {
-    Vector<Double> refVal = lc.referenceValue().copy();
-    Vector<Double> world4 = refVal;
+    Vector<double> refVal = lc.referenceValue().copy();
+    Vector<double> world4 = refVal;
     lc.makeWorldRelative(world4);
     if (!allNearAbs(world4, 0.0, 1e-6)) {
       throw(AipsError("Coordinate makeWorldRelative 1 gave wrong results"));
     }
     //
-    Vector<Double> incr = 100.0 * lc.increment().copy();
+    Vector<double> incr = 100.0 * lc.increment().copy();
     world4 += incr;
-    Vector<Double> tmp = world4.copy();
+    Vector<double> tmp = world4.copy();
     lc.makeWorldRelative(world4);
-    Vector<Double> world4b(world4.copy());
+    Vector<double> world4b(world4.copy());
     lc.makeWorldAbsolute(world4);
     if (!allNearAbs(world4, tmp, 1e-6)) {
       throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection 1 gave wrong results"));
@@ -830,7 +830,7 @@ void doit3(DirectionCoordinate& lc) {
   //
   // Formatting.
   //
-  Int prec;
+  int prec;
   Coordinate::formatType fType = Coordinate::SCIENTIFIC;
   lc.getPrecision(prec, fType, true, 6, 4, 2);
   if (prec != 6) {
@@ -843,16 +843,16 @@ void doit3(DirectionCoordinate& lc) {
   }
   //
   String unit("rad");
-  Double val = 0.12343;
-  Quantum<Double> valq(0.12343, "rad");
+  double val = 0.12343;
+  Quantum<double> valq(0.12343, "rad");
   valq.convert(Unit("deg"));
   //
   String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
   if (unit != "rad" || str != "0.1234") {
     throw(AipsError("Failed format test 1a"));
   }
-  uInt axis = 0;
-  Int prec2 = 4;
+  unsigned int axis = 0;
+  int prec2 = 4;
   str = lc.formatQuantity(unit, Coordinate::FIXED, valq, axis, true, true, prec2);
   if (unit != "rad" || str != "0.1234") {
     throw(AipsError("Failed format test 1b"));
@@ -924,11 +924,11 @@ void doit4(DirectionCoordinate& dC)
 // Mixed conversions
 //
 {
-  Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
+  Vector<double> pixelIn(2), worldIn(2), pixelOut, worldOut;
   Vector<bool> pixelAxes(2), worldAxes(2);
   Vector<String> units = dC.worldAxisUnits().copy();
-  Vector<Double> refVal = dC.referenceValue().copy();
-  Vector<Double> refPix = dC.referencePixel().copy();
+  Vector<double> refVal = dC.referenceValue().copy();
+  Vector<double> refPix = dC.referencePixel().copy();
   //
   IPosition shape(2, 512);
   if (!dC.setWorldMixRanges(shape)) {
@@ -939,8 +939,8 @@ void doit4(DirectionCoordinate& dC)
   //
   pixelAxes.set(false);
   worldAxes.set(false);
-  Vector<Double> minWorld = dC.worldMixMin().copy();
-  Vector<Double> maxWorld = dC.worldMixMax().copy();
+  Vector<double> minWorld = dC.worldMixMin().copy();
+  Vector<double> maxWorld = dC.worldMixMax().copy();
   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Forced fail 1 of toMix did not occur")));
   }
@@ -1025,8 +1025,8 @@ void doit4(DirectionCoordinate& dC)
   pixelAxes(1) = true;
   worldAxes.set(false);
   worldAxes(0) = true;
-  Vector<Double> saveWorldIn(worldIn.copy());
-  Vector<Double> savePixelIn(pixelIn.copy());
+  Vector<double> saveWorldIn(worldIn.copy());
+  Vector<double> savePixelIn(pixelIn.copy());
   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
     throw(AipsError(String("Conversion failed because ") + dC.errorMessage()));
   }
@@ -1085,7 +1085,7 @@ void doit5(DirectionCoordinate& dC)
 //
 {
   Vector<bool> axes(2, true);
-  Vector<Int> shape(2);
+  Vector<int> shape(2);
   shape(0) = 128;
   shape(1) = 256;
 
@@ -1093,16 +1093,16 @@ void doit5(DirectionCoordinate& dC)
 
   {
     dC.setWorldAxisUnits(Vector<String>(2, "arcmin"));
-    Vector<Double> inc(2, 1);
+    Vector<double> inc(2, 1);
     inc[0] = -1;
     dC.setIncrement(inc);
     std::unique_ptr<Coordinate> pC(dC.makeFourierCoordinate(axes, shape));
     //
     Vector<String> units2 = pC->worldAxisUnits();
     Vector<String> names2 = pC->worldAxisNames();
-    Vector<Double> crval2 = pC->referenceValue();
-    Vector<Double> crpix2 = pC->referencePixel();
-    Vector<Double> inc2 = pC->increment();
+    Vector<double> crval2 = pC->referenceValue();
+    Vector<double> crpix2 = pC->referencePixel();
+    Vector<double> inc2 = pC->increment();
     if (units2(0) != String("lambda") || units2(1) != String("lambda")) {
       throw(AipsError("makeFourierCoordinate (1) failed units test"));
     }
@@ -1119,8 +1119,8 @@ void doit5(DirectionCoordinate& dC)
     if (!near(inc2[1], 13.4287, 1e-5)) {
       throw(AipsError("makeFourierCoordinate (1) failed cdelt[1] test"));
     }
-    for (uInt i = 0; i < pC->nPixelAxes(); i++) {
-      if (!near(Double(Int(shape(i) / 2)), crpix2(i))) {
+    for (unsigned int i = 0; i < pC->nPixelAxes(); i++) {
+      if (!near(double(int(shape(i) / 2)), crpix2(i))) {
         throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
       }
     }
@@ -1141,28 +1141,28 @@ void doit5(DirectionCoordinate& dC)
 }
 
 void doit6() {
-  Vector<Double> crval(2);
-  Vector<Double> cdelt(2);
-  Vector<Double> crpix(2);
+  Vector<double> crval(2);
+  Vector<double> cdelt(2);
+  Vector<double> crpix(2);
   crval(0) = 10.0;
   crval(1) = -50.0;
   crpix(0) = 100.0;
   crpix(1) = 120.0;
   cdelt(0) = -10.0 / 3600.0;
   cdelt(1) = 20.0 / 3600;
-  Matrix<Double> xform(2, 2);
+  Matrix<double> xform(2, 2);
   xform = 0.0;
   xform.diagonal() = 1.0;
   Projection proj(Projection::CAR);
   MDirection::Types type = MDirection::J2000;
-  Double longPole = 175;
-  Double latPole = -90;
+  double longPole = 175;
+  double latPole = -90;
   //
   DirectionCoordinate dc(type, proj, crval(0) * M_PI / 180.0, crval(1) * M_PI / 180.0,
                          cdelt(0) * M_PI / 180.0, cdelt(1) * M_PI / 180.0, xform, crpix(0),
                          crpix(1), longPole * M_PI / 180.0, latPole * M_PI / 180.0);
   //
-  Vector<Double> poles = dc.longLatPoles();
+  Vector<double> poles = dc.longLatPoles();
   bool ok = (near(poles(0), crval(0)) && near(poles(1), crval(1)) && near(poles(2), longPole));
 
   // The lat pole get recomputed so don't test it
@@ -1171,17 +1171,17 @@ void doit6() {
     throw(AipsError("Failed longLatPoles 1 extraction test"));
   }
   //
-  Quantum<Double> refLong(10.0, Unit("deg"));
-  Quantum<Double> refLat(-50.0, Unit("deg"));
-  Quantum<Double> incLong(-10.0, Unit("arcsec"));
-  Quantum<Double> incLat(20.0, Unit("arcsec"));
-  Quantum<Double> longPole2(175.0, Unit("deg"));
-  Quantum<Double> latPole2(-90.0, Unit("deg"));
+  Quantum<double> refLong(10.0, Unit("deg"));
+  Quantum<double> refLat(-50.0, Unit("deg"));
+  Quantum<double> incLong(-10.0, Unit("arcsec"));
+  Quantum<double> incLat(20.0, Unit("arcsec"));
+  Quantum<double> longPole2(175.0, Unit("deg"));
+  Quantum<double> latPole2(-90.0, Unit("deg"));
   //
   DirectionCoordinate dc2(type, proj, refLong, refLat, incLong, incLat, xform, crpix(0), crpix(1),
                           longPole2, latPole2);
   //
-  Vector<Double> poles2 = dc2.longLatPoles();
+  Vector<double> poles2 = dc2.longLatPoles();
   ok =
       (near(poles2(0), refLong.getValue(Unit("deg"))) &&
        near(poles2(1), refLat.getValue(Unit("deg"))) && near(poles2(2), longPole2.getValue("deg")));
@@ -1198,15 +1198,15 @@ void doit7() {
   // Test conversion with reference change
   //
   Projection proj;
-  Vector<Double> crval, crpix, cdelt;
-  Matrix<Double> xform;
+  Vector<double> crval, crpix, cdelt;
+  Matrix<double> xform;
   //
   DirectionCoordinate lc = makeCoordinate(MDirection::J2000, proj, crval, crpix, cdelt, xform);
   //
   Vector<String> units = lc.worldAxisUnits().copy();
   units = String("deg");
   lc.setWorldAxisUnits(units);
-  Vector<Double> rv(2);
+  Vector<double> rv(2);
   rv(0) = 120.0;
   rv(1) = -35.0;
   lc.setReferenceValue(rv);
@@ -1218,14 +1218,14 @@ void doit7() {
     throw(AipsError(String("did not recover referenceConversion type")));
   }
   //
-  Vector<Double> pixel = lc.referencePixel().copy() + 10.0;
-  Vector<Double> world;
+  Vector<double> pixel = lc.referencePixel().copy() + 10.0;
+  Vector<double> world;
   if (!lc.toWorld(world, pixel)) {
     throw(AipsError(String("toWorld + type change conversion (1) failed because ") +
                     lc.errorMessage()));
   }
   //
-  Vector<Double> pixel2;
+  Vector<double> pixel2;
   if (!lc.toPixel(pixel2, world)) {
     throw(AipsError(String("toPixel + type change conversion (1) failed because ") +
                     lc.errorMessage()));
@@ -1236,8 +1236,8 @@ void doit7() {
 }
 void doit8() {
   Projection proj;
-  Vector<Double> crval, crpix, cdelt;
-  Matrix<Double> xform;
+  Vector<double> crval, crpix, cdelt;
+  Matrix<double> xform;
 
   // No frame conversion
 
@@ -1245,13 +1245,13 @@ void doit8() {
     DirectionCoordinate lc = makeCoordinate(MDirection::J2000, proj, crval, crpix, cdelt, xform);
     //
     Vector<bool> failures, failures2;
-    const Int nCoord = 1000;
-    Matrix<Double> pixel(2, nCoord), pixel2;
-    Matrix<Double> world(2, nCoord);
+    const int nCoord = 1000;
+    Matrix<double> pixel(2, nCoord), pixel2;
+    Matrix<double> world(2, nCoord);
     //
-    Double incr = 1001.0 / nCoord;  // Make sure pixel!=0 so dont have problems with 'near' function
-    Double pix = -500.0;
-    for (Int i = 0; i < nCoord; i++) {
+    double incr = 1001.0 / nCoord;  // Make sure pixel!=0 so dont have problems with 'near' function
+    double pix = -500.0;
+    for (int i = 0; i < nCoord; i++) {
       pixel.column(i) = pix;
       pix += incr;
     }
@@ -1267,8 +1267,8 @@ void doit8() {
       throw(AipsError("to{World,Pixel}Many reflection failed"));
     }
     //
-    Vector<Double> world2;
-    for (Int i = 0; i < nCoord; i++) {
+    Vector<double> world2;
+    for (int i = 0; i < nCoord; i++) {
       if (!lc.toWorld(world2, pixel.column(i))) {
         throw(AipsError(String("toWorld failed because ") + lc.errorMessage()));
       }
@@ -1285,13 +1285,13 @@ void doit8() {
     lc.setReferenceConversion(MDirection::GALACTIC);
     //
     Vector<bool> failures, failures2;
-    const Int nCoord = 1000;
-    Matrix<Double> pixel(2, nCoord), pixel2;
-    Matrix<Double> world(2, nCoord);
+    const int nCoord = 1000;
+    Matrix<double> pixel(2, nCoord), pixel2;
+    Matrix<double> world(2, nCoord);
     //
-    Double incr = 1001.0 / nCoord;  // Make sure pixel!=0 so dont have problems with 'near' function
-    Double pix = -500.0;
-    for (Int i = 0; i < nCoord; i++) {
+    double incr = 1001.0 / nCoord;  // Make sure pixel!=0 so dont have problems with 'near' function
+    double pix = -500.0;
+    for (int i = 0; i < nCoord; i++) {
       pixel.column(i) = pix;
       pix += incr;
     }
@@ -1307,8 +1307,8 @@ void doit8() {
       throw(AipsError("to{World,Pixel}Many reflection failed"));
     }
     //
-    Vector<Double> world2;
-    for (Int i = 0; i < nCoord; i++) {
+    Vector<double> world2;
+    for (int i = 0; i < nCoord; i++) {
       if (!lc.toWorld(world2, pixel.column(i))) {
         throw(AipsError(String("toWorld failed because ") + lc.errorMessage()));
       }
@@ -1320,12 +1320,12 @@ void doit8() {
 }
 
 void doit9() {
-  Matrix<Double> xform(2, 2);
+  Matrix<double> xform(2, 2);
   xform = 0.0;
   xform.diagonal() = 1.0;
   DirectionCoordinate dc(MDirection::SUN, Projection::SIN, 0.0, 0.0, -1.0e-6, 1.0e-6, xform, 0.0,
                          0.0, 999.0, 999.0);
-  Vector<Double> pixel(2), world;
+  Vector<double> pixel(2), world;
   pixel = 0.0;
   bool ok = dc.toWorld(world, pixel);
   AlwaysAssert(ok, AipsError);
@@ -1333,7 +1333,7 @@ void doit9() {
 }
 
 void doit10() {
-  Matrix<Double> xform(2, 2);
+  Matrix<double> xform(2, 2);
   xform = 0.0;
   xform.diagonal() = 1.0;
   DirectionCoordinate dc(MDirection::GALACTIC, Projection::SIN, 0.0, 0.0, -1.0e-6, 1.0e-6, xform,
@@ -1346,21 +1346,21 @@ void doit10() {
     throw(AipsError(String("failed to set Units because ") + dc.errorMessage()));
   }
   //
-  Vector<Double> incr = dc.increment().copy();
+  Vector<double> incr = dc.increment().copy();
   incr(0) = 1.0;
   if (!dc.setIncrement(incr)) {
     throw(AipsError(String("failed to set increment because ") + dc.errorMessage()));
   }
   //
   /*
-     Vector<Double> refVal = dc.referenceValue().copy();
+     Vector<double> refVal = dc.referenceValue().copy();
      refVal(0) = 200;
      if (!dc.setReferenceValue(refVal)) {
        throw(AipsError(String("failed to set refVal because ") + dc.errorMessage()));
      }
   */
   //
-  Vector<Double> refPix = dc.referencePixel().copy();
+  Vector<double> refPix = dc.referencePixel().copy();
   refPix(0) = 200;
   if (!dc.setReferencePixel(refPix)) {
     throw(AipsError(String("failed to set refPix because ") + dc.errorMessage()));

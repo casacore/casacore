@@ -48,10 +48,10 @@ size_t CanonicalDataConversion::toLocal(int& to, const void* from) const {
 size_t CanonicalDataConversion::toLocal(unsigned int& to, const void* from) const {
   return CanonicalConversion::toLocal(to, from);
 }
-size_t CanonicalDataConversion::toLocal(Int64& to, const void* from) const {
+size_t CanonicalDataConversion::toLocal(int64_t& to, const void* from) const {
   return CanonicalConversion::toLocal(to, from);
 }
-size_t CanonicalDataConversion::toLocal(uInt64& to, const void* from) const {
+size_t CanonicalDataConversion::toLocal(uint64_t& to, const void* from) const {
   return CanonicalConversion::toLocal(to, from);
 }
 size_t CanonicalDataConversion::toLocal(float& to, const void* from) const {
@@ -79,10 +79,10 @@ size_t CanonicalDataConversion::toLocal(int* to, const void* from, size_t nr) co
 size_t CanonicalDataConversion::toLocal(unsigned int* to, const void* from, size_t nr) const {
   return CanonicalConversion::toLocal(to, from, nr);
 }
-size_t CanonicalDataConversion::toLocal(Int64* to, const void* from, size_t nr) const {
+size_t CanonicalDataConversion::toLocal(int64_t* to, const void* from, size_t nr) const {
   return CanonicalConversion::toLocal(to, from, nr);
 }
-size_t CanonicalDataConversion::toLocal(uInt64* to, const void* from, size_t nr) const {
+size_t CanonicalDataConversion::toLocal(uint64_t* to, const void* from, size_t nr) const {
   return CanonicalConversion::toLocal(to, from, nr);
 }
 size_t CanonicalDataConversion::toLocal(float* to, const void* from, size_t nr) const {
@@ -110,10 +110,10 @@ size_t CanonicalDataConversion::fromLocal(void* to, int from) const {
 size_t CanonicalDataConversion::fromLocal(void* to, unsigned int from) const {
   return CanonicalConversion::fromLocal(to, from);
 }
-size_t CanonicalDataConversion::fromLocal(void* to, Int64 from) const {
+size_t CanonicalDataConversion::fromLocal(void* to, int64_t from) const {
   return CanonicalConversion::fromLocal(to, from);
 }
-size_t CanonicalDataConversion::fromLocal(void* to, uInt64 from) const {
+size_t CanonicalDataConversion::fromLocal(void* to, uint64_t from) const {
   return CanonicalConversion::fromLocal(to, from);
 }
 size_t CanonicalDataConversion::fromLocal(void* to, float from) const {
@@ -141,10 +141,10 @@ size_t CanonicalDataConversion::fromLocal(void* to, const int* from, size_t nr) 
 size_t CanonicalDataConversion::fromLocal(void* to, const unsigned int* from, size_t nr) const {
   return CanonicalConversion::fromLocal(to, from, nr);
 }
-size_t CanonicalDataConversion::fromLocal(void* to, const Int64* from, size_t nr) const {
+size_t CanonicalDataConversion::fromLocal(void* to, const int64_t* from, size_t nr) const {
   return CanonicalConversion::fromLocal(to, from, nr);
 }
-size_t CanonicalDataConversion::fromLocal(void* to, const uInt64* from, size_t nr) const {
+size_t CanonicalDataConversion::fromLocal(void* to, const uint64_t* from, size_t nr) const {
   return CanonicalConversion::fromLocal(to, from, nr);
 }
 size_t CanonicalDataConversion::fromLocal(void* to, const float* from, size_t nr) const {
@@ -164,8 +164,8 @@ bool CanonicalDataConversion::canCopy(const unsigned short*) const {
 }
 bool CanonicalDataConversion::canCopy(const int*) const { return (CONVERT_CAN_INT == 0); }
 bool CanonicalDataConversion::canCopy(const unsigned int*) const { return (CONVERT_CAN_UINT == 0); }
-bool CanonicalDataConversion::canCopy(const Int64*) const { return (CONVERT_CAN_INT64 == 0); }
-bool CanonicalDataConversion::canCopy(const uInt64*) const { return (CONVERT_CAN_UINT64 == 0); }
+bool CanonicalDataConversion::canCopy(const int64_t*) const { return (CONVERT_CAN_INT64 == 0); }
+bool CanonicalDataConversion::canCopy(const uint64_t*) const { return (CONVERT_CAN_UINT64 == 0); }
 bool CanonicalDataConversion::canCopy(const float*) const { return (CONVERT_CAN_FLOAT == 0); }
 bool CanonicalDataConversion::canCopy(const double*) const { return (CONVERT_CAN_DOUBLE == 0); }
 
@@ -181,8 +181,10 @@ unsigned int CanonicalDataConversion::externalSize(const int*) const { return SI
 unsigned int CanonicalDataConversion::externalSize(const unsigned int*) const {
   return SIZE_CAN_UINT;
 }
-unsigned int CanonicalDataConversion::externalSize(const Int64*) const { return SIZE_CAN_INT64; }
-unsigned int CanonicalDataConversion::externalSize(const uInt64*) const { return SIZE_CAN_UINT64; }
+unsigned int CanonicalDataConversion::externalSize(const int64_t*) const { return SIZE_CAN_INT64; }
+unsigned int CanonicalDataConversion::externalSize(const uint64_t*) const {
+  return SIZE_CAN_UINT64;
+}
 unsigned int CanonicalDataConversion::externalSize(const float*) const { return SIZE_CAN_FLOAT; }
 unsigned int CanonicalDataConversion::externalSize(const double*) const { return SIZE_CAN_DOUBLE; }
 

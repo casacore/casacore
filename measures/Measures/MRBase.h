@@ -119,7 +119,7 @@ class MRBase {
   // (and should be interpreted as), but
   // compiler does not accept it:</note>
   //   <src> Ms::Types getType();</src>
-  virtual uInt getType() const = 0;
+  virtual unsigned int getType() const = 0;
   // Return the frame of the reference
   virtual MeasFrame &getFrame() = 0;
   // Return the first frame which has specified information. Checking is done in
@@ -147,8 +147,8 @@ class MRBase {
   // compiler does not accept it:</note>
   //   <src> void set(Ms::Types tp);</src>
   // <group>
-  virtual void setType(uInt tp) = 0;
-  virtual void set(uInt tp) = 0;
+  virtual void setType(unsigned int tp) = 0;
+  virtual void set(unsigned int tp) = 0;
   // </group>
   // Set a new offset:<br>
   //   void set(const Measure &ep);

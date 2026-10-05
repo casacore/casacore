@@ -40,14 +40,14 @@ ISMIndex::ISMIndex() : nused_p(1), rows_p(2, 0), bucketNr_p(1, 0) {}
 ISMIndex::~ISMIndex() {}
 
 void ISMIndex::get(AipsIO& os) {
-  uInt version = os.getstart("ISMIndex");
+  unsigned int version = os.getstart("ISMIndex");
   os >> nused_p;
   if (version > 1) {
     // stored as 64-bit
     getBlock(os, rows_p);
   } else {
     // stored as 32-bit
-    Block<uInt> rows;
+    Block<unsigned int> rows;
     getBlock(os, rows);
     rows_p.resize(rows.size());
     std::copy(rows.begin(), rows.end(), rows_p.begin());
@@ -58,13 +58,13 @@ void ISMIndex::get(AipsIO& os) {
 
 void ISMIndex::put(AipsIO& os) {
   // If the last rownr fits in 32-bit, write as version 1 (thus 32-bit).
-  uInt version = (rows_p[nused_p] > DataManager::MAXROWNR32 ? 2 : 1);
+  unsigned int version = (rows_p[nused_p] > DataManager::MAXROWNR32 ? 2 : 1);
   os.putstart("ISMIndex", version);
   os << nused_p;
   if (version > 1) {
     putBlock(os, rows_p, nused_p + 1);
   } else {
-    Block<uInt> rows(nused_p + 1);
+    Block<unsigned int> rows(nused_p + 1);
     std::copy(rows_p.begin(), rows_p.begin() + nused_p + 1, rows.begin());
     putBlock(os, rows, nused_p + 1);
   }
@@ -72,13 +72,13 @@ void ISMIndex::put(AipsIO& os) {
   os.putend();
 }
 
-void ISMIndex::addBucketNr(rownr_t rownr, uInt bucketNr) {
+void ISMIndex::addBucketNr(rownr_t rownr, unsigned int bucketNr) {
   if (nused_p >= bucketNr_p.nelements()) {
     rows_p.resize(nused_p + 64 + 1);
     bucketNr_p.resize(nused_p + 64);
   }
   bool found;
-  uInt index = binarySearchBrackets(found, rows_p, rownr, nused_p);
+  unsigned int index = binarySearchBrackets(found, rows_p, rownr, nused_p);
   AlwaysAssert(!found, AipsError);
   objmove(&rows_p[index + 1], &rows_p[index], nused_p + 1 - index);
   if (nused_p > index) {
@@ -91,15 +91,15 @@ void ISMIndex::addBucketNr(rownr_t rownr, uInt bucketNr) {
 
 void ISMIndex::addRow(rownr_t nrrow) { rows_p[nused_p] += nrrow; }
 
-Int ISMIndex::removeRow(rownr_t rownr) {
+int ISMIndex::removeRow(rownr_t rownr) {
   // Decrement the row number for all intervals after the row
   // to be removed.
-  uInt index = getIndex(rownr);
-  for (uInt i = index + 1; i <= nused_p; i++) {
+  unsigned int index = getIndex(rownr);
+  for (unsigned int i = index + 1; i <= nused_p; i++) {
     rows_p[i]--;
   }
   // Remove the entire bucket when no row is left.
-  Int emptyBucket = -1;
+  int emptyBucket = -1;
   if (rows_p[index] == rows_p[index + 1]) {
     emptyBucket = bucketNr_p[index];
     if (nused_p > index + 1) {
@@ -115,10 +115,10 @@ Int ISMIndex::removeRow(rownr_t rownr) {
   return emptyBucket;
 }
 
-uInt ISMIndex::getIndex(rownr_t rownr) const {
+unsigned int ISMIndex::getIndex(rownr_t rownr) const {
   // If no exact match, the interval starts at the previous index.
   bool found;
-  uInt index = binarySearchBrackets(found, rows_p, rownr, (uInt)nused_p + 1);
+  unsigned int index = binarySearchBrackets(found, rows_p, rownr, (unsigned int)nused_p + 1);
   if (!found) {
     index--;
   }
@@ -126,15 +126,16 @@ uInt ISMIndex::getIndex(rownr_t rownr) const {
   return index;
 }
 
-uInt ISMIndex::getBucketNr(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& bucketNrrow) const {
-  uInt index = getIndex(rownr);
+unsigned int ISMIndex::getBucketNr(rownr_t rownr, rownr_t& bucketStartRow,
+                                   rownr_t& bucketNrrow) const {
+  unsigned int index = getIndex(rownr);
   bucketStartRow = rows_p[index];
   bucketNrrow = rows_p[index + 1] - bucketStartRow;
   return bucketNr_p[index];
 }
 
-bool ISMIndex::nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
-                            uInt& bucketNr) const {
+bool ISMIndex::nextBucketNr(unsigned int& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
+                            unsigned int& bucketNr) const {
   // When first time, get the index of the bucket containing the row.
   // End the iteration when the first row is past the end.
   if (cursor == 0) {
@@ -157,7 +158,7 @@ bool ISMIndex::nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& buck
 
 void ISMIndex::show(ostream& os) const {
   os << "ISMIndex " << nused_p << " strow:bucket";
-  for (uInt i = 0; i < nused_p; ++i) {
+  for (unsigned int i = 0; i < nused_p; ++i) {
     cout << ' ' << rows_p[i] << ':' << bucketNr_p[i];
   }
   cout << endl;

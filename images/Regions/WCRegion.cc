@@ -59,22 +59,22 @@ bool WCRegion::operator==(const WCRegion& other) const {
   return (type() == other.type());
 }
 
-uInt WCRegion::ndim() const { return itsAxesDesc.nfields(); }
+unsigned int WCRegion::ndim() const { return itsAxesDesc.nfields(); }
 
 void WCRegion::defineRecordFields(RecordInterface& record, const String& className) const {
-  record.define("isRegion", Int(RegionType::WC));
+  record.define("isRegion", int(RegionType::WC));
   record.define("name", className);
   record.define("comment", itsComment);
 }
 
-const Record& WCRegion::getAxisDesc(uInt axis) const {
+const Record& WCRegion::getAxisDesc(unsigned int axis) const {
   AlwaysAssert(axis < itsAxesDesc.nfields(), AipsError);
   return itsAxesDesc.subRecord(axis);
 }
 
-Int WCRegion::axisNr(const Record& desc, const Record& axesDesc) const {
-  uInt nf = axesDesc.nfields();
-  for (uInt i = 0; i < nf; i++) {
+int WCRegion::axisNr(const Record& desc, const Record& axesDesc) const {
+  unsigned int nf = axesDesc.nfields();
+  for (unsigned int i = 0; i < nf; i++) {
     if (isAxisDescEqual(desc, axesDesc.subRecord(i))) {
       return i;
     }
@@ -83,12 +83,12 @@ Int WCRegion::axisNr(const Record& desc, const Record& axesDesc) const {
 }
 
 bool WCRegion::isAxisDescEqual(const Record& desc1, const Record& desc2) const {
-  uInt nf = desc1.nfields();
+  unsigned int nf = desc1.nfields();
   if (desc2.nfields() != nf) {
     return false;
   }
-  for (uInt j = 0; j < nf; j++) {
-    Int fld = desc1.fieldNumber(desc2.name(j));
+  for (unsigned int j = 0; j < nf; j++) {
+    int fld = desc1.fieldNumber(desc2.name(j));
     if (fld < 0) {
       return false;  // field does not exist
     }
@@ -119,22 +119,22 @@ void WCRegion::addAxisDesc(const Record& desc) {
   itsAxesDesc.defineRecord(itsAxesDesc.nfields(), desc);
 }
 
-Record WCRegion::makeAxisDesc(const CoordinateSystem& cSys, uInt axis) const {
-  Int coord, axisInCoord;
+Record WCRegion::makeAxisDesc(const CoordinateSystem& cSys, unsigned int axis) const {
+  int coord, axisInCoord;
   Record axisrec;
   AlwaysAssert(axis < cSys.nPixelAxes(), AipsError);
   cSys.findPixelAxis(coord, axisInCoord, axis);
-  Int type = cSys.type(coord);
+  int type = cSys.type(coord);
   axisrec.define("type", type);
   axisrec.define("axis", axisInCoord);
   switch (type) {
     case Coordinate::DIRECTION: {
-      Int type = cSys.directionCoordinate(coord).directionType(true);
+      int type = cSys.directionCoordinate(coord).directionType(true);
       axisrec.define("dirtype", type);
       break;
     }
     case Coordinate::SPECTRAL: {
-      Int type = cSys.spectralCoordinate(coord).frequencySystem(true);
+      int type = cSys.spectralCoordinate(coord).frequencySystem(true);
       axisrec.define("freqtype", type);
       break;
     }
@@ -147,7 +147,7 @@ Record WCRegion::makeAxisDesc(const CoordinateSystem& cSys, uInt axis) const {
 
 Record WCRegion::makeAxesDesc(const CoordinateSystem& cSys) const {
   Record desc;
-  for (uInt i = 0; i < cSys.nPixelAxes(); i++) {
+  for (unsigned int i = 0; i < cSys.nPixelAxes(); i++) {
     desc.defineRecord(i, makeAxisDesc(cSys, i));
   }
   return desc;
@@ -156,7 +156,7 @@ Record WCRegion::makeAxesDesc(const CoordinateSystem& cSys) const {
 bool WCRegion::canExtend() const { return false; }
 
 LCRegion* WCRegion::toLCRegion(const CoordinateSystem& cSys, const IPosition& shape) const {
-  uInt i, n;
+  unsigned int i, n;
   // Make sure shape length matches number of pixel axes.
 
   if (shape.nelements() != cSys.nPixelAxes()) {
@@ -172,13 +172,13 @@ LCRegion* WCRegion::toLCRegion(const CoordinateSystem& cSys, const IPosition& sh
   // of the new coordinate system.
   // An exception is thrown if a region axis is not used in the
   // coordinate system.
-  uInt ndout = shape.nelements();
-  uInt ndreg = itsAxesDesc.nfields();
+  unsigned int ndout = shape.nelements();
+  unsigned int ndreg = itsAxesDesc.nfields();
   IPosition pixelAxesMap(ndout);
   IPosition axisUsed(ndout, 0);
   n = 0;
   for (i = 0; i < ndreg; i++) {
-    Int axis = axisNr(getAxisDesc(i), desc);
+    int axis = axisNr(getAxisDesc(i), desc);
     if (axis < 0) {
       throw(
           AipsError("WCRegion::toLCRegion - "
@@ -198,13 +198,13 @@ LCRegion* WCRegion::toLCRegion(const CoordinateSystem& cSys, const IPosition& sh
 
 LCRegion* WCRegion::toLCRegionAxes(const CoordinateSystem& cSys, const IPosition& shape,
                                    const IPosition& pixelAxesMap, const IPosition& outOrder) const {
-  uInt i;
+  unsigned int i;
   // We have an nD region which is used for an mD image (m>=n).
   // outOrder(i) gives output axis of axis i.
   // pixelAxesMap(i) gives cSys/shape axis of axis i.
   // First determine along which axes the region has to be extended.
-  uInt ndreg = itsAxesDesc.nfields();
-  uInt ndout = pixelAxesMap.nelements();
+  unsigned int ndreg = itsAxesDesc.nfields();
+  unsigned int ndout = pixelAxesMap.nelements();
   DebugAssert(ndout >= ndreg, AipsError);
   // If no extension is needed or if the region can extend itself,
   // life is simple.
@@ -217,9 +217,9 @@ LCRegion* WCRegion::toLCRegionAxes(const CoordinateSystem& cSys, const IPosition
   IPosition outOrd(ndreg);
   IPosition extendAxes(ndout - ndreg);
   IPosition extendShape(ndout - ndreg);
-  Vector<uInt> inx(ndreg);
-  std::vector<Int> tmp(outOrder.begin(), outOrder.end());
-  GenSortIndirect<Int, uInt>::sort(inx, &(tmp[0]), ndreg);
+  Vector<unsigned int> inx(ndreg);
+  std::vector<int> tmp(outOrder.begin(), outOrder.end());
+  GenSortIndirect<int, unsigned int>::sort(inx, &(tmp[0]), ndreg);
   for (i = 0; i < ndreg; i++) {
     pixAxesMap(i) = pixelAxesMap(i);
     outOrd(inx(i)) = i;
@@ -234,18 +234,18 @@ LCRegion* WCRegion::toLCRegionAxes(const CoordinateSystem& cSys, const IPosition
   return extPtr;
 }
 
-void WCRegion::makeWorldAbsolute(Vector<Double>& world, const Vector<Int>& absRel,
+void WCRegion::makeWorldAbsolute(Vector<double>& world, const Vector<int>& absRel,
                                  const CoordinateSystem& cSys, const IPosition& shape) const {
   // For values that are already absolute, temporarily use rel = 0
   // The absrel vector may have any length from 0 to nWorld
   // Any relative values may be relative to ref val or image centre
   // First deal with relative to reference value
 
-  Vector<Int> ar(world.nelements());
-  const uInt nAR = absRel.nelements();
-  Vector<Double> t(world.copy());
+  Vector<int> ar(world.nelements());
+  const unsigned int nAR = absRel.nelements();
+  Vector<double> t(world.copy());
   //
-  for (uInt i = 0; i < world.nelements(); i++) {
+  for (unsigned int i = 0; i < world.nelements(); i++) {
     if (i < nAR) {
       ar(i) = absRel(i);
     } else {
@@ -253,7 +253,7 @@ void WCRegion::makeWorldAbsolute(Vector<Double>& world, const Vector<Int>& absRe
     }
     if (ar(i) == RegionType::Abs) t(i) = 0.0;
   }
-  Vector<Double> t2(t.copy());
+  Vector<double> t2(t.copy());
 
   // Convert to absolute at reference pixel
 
@@ -261,15 +261,15 @@ void WCRegion::makeWorldAbsolute(Vector<Double>& world, const Vector<Int>& absRe
 
   // Now deal with relative to the image centre
 
-  Vector<Double> p(shape.nelements());
-  for (uInt i = 0; i < shape.nelements(); i++) {
+  Vector<double> p(shape.nelements());
+  for (unsigned int i = 0; i < shape.nelements(); i++) {
     if (shape(i) == 1) {
       p(i) = 0.0;
     } else {
-      p(i) = (Double(shape(i)) / 2.0) - 0.5;
+      p(i) = (double(shape(i)) / 2.0) - 0.5;
     }
   }
-  Vector<Double> w;
+  Vector<double> w;
   if (!cSys.toWorld(w, p)) {
     throw(AipsError(cSys.errorMessage()));
   }
@@ -279,7 +279,7 @@ void WCRegion::makeWorldAbsolute(Vector<Double>& world, const Vector<Int>& absRe
 
   // Overwrite result for relative values.
 
-  for (uInt i = 0; i < world.nelements(); i++) {
+  for (unsigned int i = 0; i < world.nelements(); i++) {
     if (ar(i) == RegionType::RelRef) {
       world(i) = t(i);
     } else if (ar(i) == RegionType::RelCen) {
@@ -303,10 +303,10 @@ void WCRegion::checkAxes(const IPosition& pixelAxes, const CoordinateSystem& cSy
                          const Vector<String>& quantityUnits) const {
   // Make sure we have world axes for these pixel axes
 
-  Vector<Int> worldAxes(pixelAxes.size());
+  Vector<int> worldAxes(pixelAxes.size());
   Vector<String> units = cSys.worldAxisUnits();
 
-  for (uInt i = 0; i < pixelAxes.size(); i++) {
+  for (unsigned int i = 0; i < pixelAxes.size(); i++) {
     worldAxes[i] = cSys.pixelAxisToWorldAxis(pixelAxes[i]);
     if (worldAxes[i] == -1) {
       throw(AipsError("WCRegion::" + std::string(__FUNCTION__) + "from " + std::string(type()) +
@@ -329,8 +329,8 @@ void WCRegion::checkAxes(const IPosition& pixelAxes, const CoordinateSystem& cSy
   }
 }
 
-void WCRegion::convertPixel(Double& pixel, const Double& value, const String& unit,
-                            const Int absRel, const Double refPix, const Int shape) {
+void WCRegion::convertPixel(double& pixel, const double& value, const String& unit,
+                            const int absRel, const double refPix, const int shape) {
   bool isWorld = true;
   if (unit == "pix") {
     pixel = value;
@@ -345,7 +345,7 @@ void WCRegion::convertPixel(Double& pixel, const Double& value, const String& un
   if (absRel == RegionType::RelRef) {
     pixel += refPix;
   } else if (absRel == RegionType::RelCen) {
-    pixel += Double(shape) / 2;
+    pixel += double(shape) / 2;
   }
 }
 

@@ -45,7 +45,7 @@ ImageAttrHandlerHDF5& ImageAttrHandlerHDF5::attachHid(const HDF5Object& hid, boo
   if (HDF5Group::exists(hid, "ATTRGROUPS")) {
     itsGroup = std::make_shared<HDF5Group>(hid, "ATTRGROUPS", true);
     vector<String> names = HDF5Group::linkNames(*itsGroup);
-    for (uInt i = 0; i < names.size(); ++i) {
+    for (unsigned int i = 0; i < names.size(); ++i) {
       // Add group to map, but with a null object. It gets filled once
       // the group gets used.
       itsGroupMap[names[i]] = ImageAttrGroupHDF5();
@@ -77,7 +77,7 @@ bool ImageAttrHandlerHDF5::hasGroup(const String& groupName) {
 
 Vector<String> ImageAttrHandlerHDF5::groupNames() const {
   Vector<String> names(itsGroupMap.size());
-  uInt i = 0;
+  unsigned int i = 0;
   for (map<String, ImageAttrGroupHDF5>::const_iterator it = itsGroupMap.begin();
        it != itsGroupMap.end(); ++it) {
     names[i++] = it->first;

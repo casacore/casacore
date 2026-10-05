@@ -59,14 +59,14 @@ int main() {
     GaussianBeam beam;
     AlwaysAssert(mii.defaultRestoringBeam() == beam, AipsError);
     //
-    beam = GaussianBeam(Quantum<Double>(45.0, "arcsec"), Quantum<Double>(45.0, "arcsec"),
-                        Quantum<Double>(-45.0, "deg"));
+    beam = GaussianBeam(Quantum<double>(45.0, "arcsec"), Quantum<double>(45.0, "arcsec"),
+                        Quantum<double>(-45.0, "deg"));
     mii.setRestoringBeam(beam);
     AlwaysAssert(mii.restoringBeam() == beam, AipsError);
     mii.setRestoringBeam(beam);
 
     AlwaysAssert(mii.restoringBeam() == beam, AipsError);
-    beam.setMajorMinor(Quantum<Double>(1.0, "deg"), beam.getMinor());
+    beam.setMajorMinor(Quantum<double>(1.0, "deg"), beam.getMinor());
     mii.setRestoringBeam(beam);
     AlwaysAssert(mii.restoringBeam() == beam, AipsError);
     mii.removeRestoringBeam();
@@ -74,7 +74,7 @@ int main() {
     //
     // ImageType
     //
-    for (uInt i = 0; i < ImageInfo::nTypes; i++) {
+    for (unsigned int i = 0; i < ImageInfo::nTypes; i++) {
       ImageInfo::ImageTypes type = static_cast<ImageInfo::ImageTypes>(i);
       {
         mii.setImageType(type);
@@ -103,8 +103,8 @@ int main() {
     ImageInfo mii2(mii);
     equal(mii2, mii);
     //
-    GaussianBeam beam2(Quantum<Double>(7.2, "arcsec"), Quantum<Double>(3.6, "arcsec"),
-                       Quantum<Double>(-90.0, "deg"));
+    GaussianBeam beam2(Quantum<double>(7.2, "arcsec"), Quantum<double>(3.6, "arcsec"),
+                       Quantum<double>(-90.0, "deg"));
     mii2.setRestoringBeam(beam2);
     mii2.setImageType(ImageInfo::Intensity);
     mii.setObjectName(String("NGC1399"));
@@ -138,9 +138,9 @@ int main() {
     Record rbmin(keywordNumRec);
     Record rbpa(keywordNumRec);
     Record robject(keywordStrRec);
-    RecordFieldPtr<Double> bmajval(rbmaj, 0);
-    RecordFieldPtr<Double> bminval(rbmin, 0);
-    RecordFieldPtr<Double> bpaval(rbpa, 0);
+    RecordFieldPtr<double> bmajval(rbmaj, 0);
+    RecordFieldPtr<double> bminval(rbmin, 0);
+    RecordFieldPtr<double> bpaval(rbpa, 0);
     RecordFieldPtr<String> objectval(robject, 0);
     bmajval.define(0.002);
     bminval.define(0.001);
@@ -238,10 +238,10 @@ int main() {
       myinfo.setBeams(bset);
       DirectionCoordinate dc;
       dc.setWorldAxisUnits(Vector<String>(2, "arcsec"));
-      dc.setIncrement(Vector<Double>(2, 0.7));
-      for (uInt i = 0; i < 10; i++) {
-        for (uInt j = 0; j < 4; j++) {
-          Double expec = (i == 2 && j == 2) ? 34.686429656840772 : 18.499429150315081;
+      dc.setIncrement(Vector<double>(2, 0.7));
+      for (unsigned int i = 0; i < 10; i++) {
+        for (unsigned int j = 0; j < 4; j++) {
+          double expec = (i == 2 && j == 2) ? 34.686429656840772 : 18.499429150315081;
           AlwaysAssert(near(myinfo.getBeamAreaInPixels(i, j, dc), expec), AipsError);
         }
       }

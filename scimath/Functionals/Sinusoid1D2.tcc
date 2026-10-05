@@ -55,7 +55,7 @@ AutoDiff<T> Sinusoid1D<AutoDiff<T>>::eval(typename Function<AutoDiff<T>>::Functi
   tmp.value() = this->param_p[Sinusoid1DParam<AutoDiff<T>>::AMPLITUDE].value() * cosarg;
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives() > 0) {
-    for (uInt j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
+    for (unsigned int j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
     // derivative wrt amplitude
     typename AutoDiff<T>::value_type dev = cosarg;
     if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T>>::AMPLITUDE))

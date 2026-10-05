@@ -68,53 +68,55 @@ class LatticeHistSpecialize {
  public:
   // Make historgam cumulative
   template <class T>
-  static void makeCumulative(Vector<T>& counts, T& yMax, uInt nBins,
+  static void makeCumulative(Vector<T>& counts, T& yMax, unsigned int nBins,
                              typename NumericTraits<T>::BaseType scale);
-  static void makeCumulative(Vector<Complex>& counts, Complex& yMax, uInt nBins, Float scale);
+  static void makeCumulative(Vector<Complex>& counts, Complex& yMax, unsigned int nBins,
+                             float scale);
 
   // Make histogram logarithmic
   template <class T>
-  static void makeLogarithmic(Vector<T>& counts, T& yMax, uInt nBins);
-  static void makeLogarithmic(Vector<Complex>& counts, Complex& yMax, uInt nBins);
+  static void makeLogarithmic(Vector<T>& counts, T& yMax, unsigned int nBins);
+  static void makeLogarithmic(Vector<Complex>& counts, Complex& yMax, unsigned int nBins);
 
   // Multiply.  Real and imaginary treated as independent
   // C1*C2 = (r1*r2,i1*i2)
-  static Float mul(Float v1, Float v2);
+  static float mul(float v1, float v2);
   static Complex mul(Complex v1, Complex v2);
 
   // Plot histograms
-  static void plot(PGPlotter& plot, bool doGauss, bool doCumu, bool doLog, Float linearSum,
-                   Float yMax, Float binWidth, const Vector<Float>& values,
-                   const Vector<Float>& counts, const Vector<Float>& stats, uInt whereLabel,
-                   uInt ci, bool page);
+  static void plot(PGPlotter& plot, bool doGauss, bool doCumu, bool doLog, float linearSum,
+                   float yMax, float binWidth, const Vector<float>& values,
+                   const Vector<float>& counts, const Vector<float>& stats, unsigned int whereLabel,
+                   unsigned int ci, bool page);
   static void plot(PGPlotter& plot, bool doGauss, bool doCumu, bool doLog, Complex linearSum,
                    Complex yMax, Complex binWidth, const Vector<Complex>& values,
-                   const Vector<Complex>& counts, const Vector<Complex>& stats, uInt whereLabel,
-                   uInt ci, bool page);
+                   const Vector<Complex>& counts, const Vector<Complex>& stats,
+                   unsigned int whereLabel, unsigned int ci, bool page);
 
   // Process data chunk creating histogram.
   template <class T>
   static void process(const T* pInData, const bool* pInMask, Block<T>* pHist, const Vector<T>& clip,
-                      T binWidth, uInt offset, uInt nrval, uInt nBins, uInt dataIncr,
-                      uInt maskIncr);
+                      T binWidth, unsigned int offset, unsigned int nrval, unsigned int nBins,
+                      unsigned int dataIncr, unsigned int maskIncr);
   //
   static void process(const Complex* pInData, const bool* pInMask, Block<Complex>* pHist,
-                      const Vector<Complex>& clip, Complex binWidth, uInt offset, uInt nrval,
-                      uInt nBins, uInt dataIncr, uInt maskIncr);
+                      const Vector<Complex>& clip, Complex binWidth, unsigned int offset,
+                      unsigned int nrval, unsigned int nBins, unsigned int dataIncr,
+                      unsigned int maskIncr);
 
   // Set bin width.  For complex, real and imaginary treated separately
-  static Float setBinWidth(Float dmin, Float dmax, uInt nBins);
+  static float setBinWidth(float dmin, float dmax, unsigned int nBins);
   //
-  static Complex setBinWidth(Complex dmin, Complex dmax, uInt nBins);
+  static Complex setBinWidth(Complex dmin, Complex dmax, unsigned int nBins);
 
  private:
-  static uInt bin(Float datum, Float min, Float width, uInt nBins);
+  static unsigned int bin(float datum, float min, float width, unsigned int nBins);
   //
-  static void makeGauss(uInt& nGPts, Float& gMax, Vector<Float>& gX, Vector<Float>& gY, Float dMean,
-                        Float dSigma, Float dSum, Float xMin, Float xMax, Float binWidth,
-                        bool doCumu, bool doLog);
+  static void makeGauss(unsigned int& nGPts, float& gMax, Vector<float>& gX, Vector<float>& gY,
+                        float dMean, float dSigma, float dSum, float xMin, float xMax,
+                        float binWidth, bool doCumu, bool doLog);
   //
-  static void plotHist(const Vector<Float>& x, const Vector<Float>& y, PGPlotter& plotter);
+  static void plotHist(const Vector<float>& x, const Vector<float>& y, PGPlotter& plotter);
 };
 
 }  // namespace casacore

@@ -36,7 +36,7 @@
 #include <casacore/casa/namespace.h>
 
 bool doLinearConv() {
-  Double beamData[] = {
+  double beamData[] = {
       2.7000172105e-25, 9.8635317948e-24, 3.0190166275e-22, 7.7421342681e-21, 1.6634945915e-19,
       2.9946487959e-18, 4.5168693657e-17, 5.7081185033e-16, 6.0438070835e-15, 5.3616318199e-14,
       3.9851734651e-13, 2.481758939e-12,  1.2949036808e-11, 5.6608499138e-11, 2.0734351736e-10,
@@ -255,7 +255,7 @@ bool doLinearConv() {
       5.6608499138e-11, 1.2949036808e-11, 2.481758939e-12,  3.9851734651e-13, 5.3616318199e-14,
       6.0438070835e-15, 5.7081185033e-16, 4.5168693657e-17, 2.9946487959e-18, 1.6634945915e-19,
       7.7421342681e-21, 3.0190166275e-22, 9.8635317948e-24, 2.7000172105e-25};
-  Double kernelData[] = {8.8039155317e-17,
+  double kernelData[] = {8.8039155317e-17,
                          6.24999142e-16,
                          4.0724755416e-15,
                          2.435668312e-14,
@@ -2280,7 +2280,7 @@ bool doLinearConv() {
                          4.0724755416e-15,
                          6.24999142e-16,
                          8.8039155317e-17};
-  Double expectedData[] = {
+  double expectedData[] = {
       3.8457113701e-11, 1.5355541691e-10, 5.7920120093e-10, 2.0639292626e-09, 6.9482251076e-09,
       2.2098842466e-08, 6.6402420022e-08, 1.8850309303e-07, 5.0556217426e-07, 1.2810126683e-06,
       3.06659351e-06,   6.9356002718e-06, 1.4819652283e-05, 2.9917072255e-05, 5.705953493e-05,
@@ -2686,31 +2686,31 @@ bool doLinearConv() {
       5.705953493e-05,  2.9917072255e-05, 1.4819652283e-05, 6.9356002724e-06, 3.0665935102e-06,
       1.2810126683e-06, 5.0556217397e-07, 1.8850309274e-07, 6.6402419511e-08, 2.2098842129e-08,
       6.9482249317e-09, 2.0639297636e-09, 5.792005369e-10,  1.5355542172e-10, 3.8456906847e-11};
-  Matrix<Double> beamMatrixIn(33, 33);
-  Double *p;
+  Matrix<double> beamMatrixIn(33, 33);
+  double *p;
   p = beamData;
-  for (uInt i = 0; i < 33; i++) {
-    for (uInt j = 0; j < 33; j++) {
+  for (unsigned int i = 0; i < 33; i++) {
+    for (unsigned int j = 0; j < 33; j++) {
       beamMatrixIn(i, j) = *p++;
     }
   }
-  Matrix<Double> kernelMatrix(45, 45);
-  Matrix<Double> beamMatrixOut;
+  Matrix<double> kernelMatrix(45, 45);
+  Matrix<double> beamMatrixOut;
   p = kernelData;
-  for (uInt i = 0; i < 45; i++) {
-    for (uInt j = 0; j < 45; j++) {
+  for (unsigned int i = 0; i < 45; i++) {
+    for (unsigned int j = 0; j < 45; j++) {
       kernelMatrix(i, j) = *p++;
     }
   }
-  Matrix<Double> expectedMatrix(45, 45);
+  Matrix<double> expectedMatrix(45, 45);
   p = expectedData;
-  for (uInt i = 0; i < 45; i++) {
-    for (uInt j = 0; j < 45; j++) {
+  for (unsigned int i = 0; i < 45; i++) {
+    for (unsigned int j = 0; j < 45; j++) {
       expectedMatrix(i, j) = *p++;
     }
   }
 
-  Convolver<Double> conv(beamMatrixIn, kernelMatrix.shape());
+  Convolver<double> conv(beamMatrixIn, kernelMatrix.shape());
   conv.linearConv(beamMatrixOut, kernelMatrix);
 
   cout << "*** max " << max(abs(beamMatrixOut - expectedMatrix)) << endl;
@@ -2722,20 +2722,20 @@ int main() {
   {
     bool failed = false;
     // Test the double precision constructor
-    Array<Double> psf(IPosition(1, 4));
+    Array<double> psf(IPosition(1, 4));
     psf = 0.;
     psf(IPosition(1, 1)) = 0.1;
     psf(IPosition(1, 2)) = 1.;
     psf(IPosition(1, 3)) = 0.5;
-    Convolver<Double> conv(psf);
+    Convolver<double> conv(psf);
     // Now test circular Convolution (1 - Dimensional)
-    Vector<Double> mod(4);
+    Vector<double> mod(4);
     mod = 0;
     mod(3) = 1;
     mod(0) = 2;
-    Vector<Double> result;
+    Vector<double> result;
     conv.circularConv(result, mod);
-    Array<Double> expectedResult(IPosition(1, 4));
+    Array<double> expectedResult(IPosition(1, 4));
     expectedResult(IPosition(1, 0)) = 2.5;
     expectedResult(IPosition(1, 1)) = 1.0;
     expectedResult(IPosition(1, 2)) = 0.1;
@@ -2772,24 +2772,24 @@ int main() {
   {
     bool failed = false;
     // Test the single precision constructor
-    Matrix<Float> psf(2, 2);
+    Matrix<float> psf(2, 2);
     psf = 0.;
     psf(1, 1) = 1;
     psf(0, 1) = .5;
     psf(1, 0) = .1;
     //    cout << "Psf:" << psf << endl;
-    Convolver<Float> conv(psf);
+    Convolver<float> conv(psf);
     // And test single precision circular convolution
-    Matrix<Float> mod(6, 6);
+    Matrix<float> mod(6, 6);
     mod = 0;
     mod(0, 0) = 1;
     mod(5, 5) = 2;
     mod(2, 0) = 3;
     //    cout << "Model:" << mod << endl;
-    Matrix<Float> result;
+    Matrix<float> result;
     conv.circularConv(result, mod);
     //    cout << "Result:" << result << endl;
-    Matrix<Float> expectedResult(6, 6);
+    Matrix<float> expectedResult(6, 6);
     expectedResult = mod;
     expectedResult(5, 0) = 0.5;
     expectedResult(0, 5) = 0.1;
@@ -2810,19 +2810,19 @@ int main() {
   {
     bool failed = false;
     // Test the double precision constructor with supplied image size
-    Array<Double> psf(IPosition(1, 2));
+    Array<double> psf(IPosition(1, 2));
     psf = 0.;
     psf(IPosition(1, 0)) = .5;
     psf(IPosition(1, 1)) = 1.;
-    Convolver<Double> conv(psf, IPosition(1, 4));
+    Convolver<double> conv(psf, IPosition(1, 4));
     // And test linear convolution
-    Array<Double> mod(IPosition(1, 4));
+    Array<double> mod(IPosition(1, 4));
     mod = 0.;
     mod(IPosition(1, 0)) = 1.;
     mod(IPosition(1, 3)) = 2.;
-    Array<Double> result;
+    Array<double> result;
     conv.linearConv(result, mod, false);
-    Array<Double> expectedResult(IPosition(1, 4));
+    Array<double> expectedResult(IPosition(1, 4));
     expectedResult(IPosition(1, 0)) = 1.;
     expectedResult(IPosition(1, 1)) = 0.;
     expectedResult(IPosition(1, 2)) = 1.;
@@ -2835,12 +2835,12 @@ int main() {
     cout << " the Linear Convolution in Double Precision Test" << endl;
     if (!failed) {
       // see if the convolver can automatically resize if given a bigger image
-      Vector<Double> bigMod(8), bigResult;
+      Vector<double> bigMod(8), bigResult;
       bigMod = 0;
       bigMod(0) = 1;
       bigMod(7) = 2;
       conv.linearConv(bigResult, bigMod, true);
-      Vector<Double> expectedBigResult(9);
+      Vector<double> expectedBigResult(9);
       expectedBigResult = 0;
       expectedBigResult(0) = 0.5;
       expectedBigResult(1) = 1.0;
@@ -2896,21 +2896,21 @@ int main() {
   {
     bool failed = false;
     //    Test the linear convolution with Single precision 2-D functions
-    Matrix<Float> psf(2, 4);
+    Matrix<float> psf(2, 4);
     psf = 0.;
     psf(1, 2) = 1.;
     psf(1, 3) = .1;
-    Cube<Float> mod(2, 4, 3);
-    Convolver<Float> conv(psf, mod.shape());
+    Cube<float> mod(2, 4, 3);
+    Convolver<float> conv(psf, mod.shape());
     mod = 0.;
     mod(1, 2, 0) = 1.;
     mod(0, 0, 1) = 2.;
     mod(1, 3, 1) = 4.;
-    for (uInt i = 0; i < 4; i++)
-      for (uInt j = 0; j < 2; j++) mod(j, i, 2) = 1.;
-    Cube<Float> result;
+    for (unsigned int i = 0; i < 4; i++)
+      for (unsigned int j = 0; j < 2; j++) mod(j, i, 2) = 1.;
+    Cube<float> result;
     conv.linearConv(result, mod, false);
-    Cube<Float> expectedResult(2, 4, 3);
+    Cube<float> expectedResult(2, 4, 3);
     expectedResult = mod;
     expectedResult(1, 3, 0) = 0.1;
     expectedResult(0, 1, 1) = 0.2;
@@ -2944,11 +2944,11 @@ int main() {
     if (failed) anyFailures = true;
 
     /*
-    Matrix<Double> mat1 = doLinearConv();
-    Matrix<Double> mat2 = doLinearConv();
-    Matrix<Double> mat3 = doLinearConv();
-    Matrix<Double> mat4 = doLinearConv();
-    Matrix<Double> mat5 = doLinearConv();
+    Matrix<double> mat1 = doLinearConv();
+    Matrix<double> mat2 = doLinearConv();
+    Matrix<double> mat3 = doLinearConv();
+    Matrix<double> mat4 = doLinearConv();
+    Matrix<double> mat5 = doLinearConv();
 
     cout << "*** all " << allTrue(mat0 == mat1) << endl;
     cout << "*** all " << allTrue(mat0 == mat2) << endl;

@@ -32,7 +32,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSUvDistParse* MSUvDistParse::thisMSUParser = 0x0;  // Global pointer to the parser object
 TableExprNode* MSUvDistParse::node_p = 0x0;
-Matrix<Double> MSUvDistParse::selectedUV_p(2, 0);
+Matrix<double> MSUvDistParse::selectedUV_p(2, 0);
 Vector<bool> MSUvDistParse::meterUnits_p(0, false);
 
 // # Constructor
@@ -44,11 +44,11 @@ MSUvDistParse::MSUvDistParse(const MeasurementSet* ms) : MSParse(ms, "UvDist") {
   node_p = new TableExprNode();
 }
 
-const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const Double& endUV,
+const TableExprNode* MSUvDistParse::selectUVRange(const double& startUV, const double& endUV,
                                                   const String& unit, bool doSlow) {
   bool wavelengthUnit = false, distanceUnit = false;
-  Double startPoint;
-  Double endPoint;
+  double startPoint;
+  double endPoint;
   // Column accessors
   MSMainColumns msMainCol(*ms());
   MSSpWindowColumns msSpwCol(ms()->spectralWindow());
@@ -96,7 +96,7 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
     // This version of TEN based query is about 60X faster than the
     // slower code below
     //
-    Int nDDIDRows;
+    int nDDIDRows;
     //      TableExprNode uvwDist = sqrt(sumSquare(ms()->col(MS::columnName(MS::UVW))));
 
     //
@@ -121,22 +121,22 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
     // (which then indexes into the SpectralWindow sub-table from
     // where the ref. freq. info. is picked up.
     //
-    Vector<Int> mapDDID2SpwID;
+    Vector<int> mapDDID2SpwID;
     nDDIDRows = msDataDescSubTable.nrow();
     mapDDID2SpwID.resize(nDDIDRows);
 
-    for (Int i = 0; i < nDDIDRows; i++) mapDDID2SpwID(i) = msDataDescSubTable.spectralWindowId()(i);
+    for (int i = 0; i < nDDIDRows; i++) mapDDID2SpwID(i) = msDataDescSubTable.spectralWindowId()(i);
     //
     // If the limits were supplied in wavelength units, convert the
     // limits to meters for all available spectral window(s) and an
     // OR'ed TEN for each Spw.
     //
     if (wavelengthUnit) {
-      Float scaledStartPoint, scaledEndPoint;
+      float scaledStartPoint, scaledEndPoint;
       const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID);
-      for (Int i = 0; i < nDDIDRows; i++) {
-        Int SpwID = mapDDID2SpwID(i);
-        Double Lambda = C::c / msSpwCol.refFrequency()(SpwID);
+      for (int i = 0; i < nDDIDRows; i++) {
+        int SpwID = mapDDID2SpwID(i);
+        double Lambda = C::c / msSpwCol.refFrequency()(SpwID);
         scaledStartPoint = startPoint * Lambda;
         scaledEndPoint = endPoint * Lambda;
 
@@ -165,16 +165,16 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
     //
     // Loop over all rows in the MS
     //
-    Vector<Int> rowsel;
+    Vector<int> rowsel;
 
-    Int nRowSel = 0;
+    int nRowSel = 0;
     if (wavelengthUnit) {
-      for (uInt row = 0; row < ms()->nrow(); row++) {
-        Int ddid = msMainCol.dataDescId()(row);
-        Int spwid = msDataDescSubTable.spectralWindowId()(ddid);
-        Double refFreq = msSpwCol.refFrequency()(spwid);
-        Vector<Double> uvw = msMainCol.uvw()(row);
-        Double uvDist = sqrt(uvw(0) * uvw(0) + uvw(1) * uvw(1) + uvw(2) * uvw(2)) * refFreq / C::c;
+      for (unsigned int row = 0; row < ms()->nrow(); row++) {
+        int ddid = msMainCol.dataDescId()(row);
+        int spwid = msDataDescSubTable.spectralWindowId()(ddid);
+        double refFreq = msSpwCol.refFrequency()(spwid);
+        Vector<double> uvw = msMainCol.uvw()(row);
+        double uvDist = sqrt(uvw(0) * uvw(0) + uvw(1) * uvw(1) + uvw(2) * uvw(2)) * refFreq / C::c;
         if ((startPoint <= uvDist) && (uvDist <= endPoint)) {
           nRowSel++;
           rowsel.resize(nRowSel, true);
@@ -185,9 +185,9 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
     }
 
     if (distanceUnit) {
-      for (uInt row = 0; row < ms()->nrow(); row++) {
-        Vector<Double> uvw = msMainCol.uvw()(row);
-        Double uvDist = sqrt(uvw(0) * uvw(0) + uvw(1) * uvw(1) + uvw(2) * uvw(2));
+      for (unsigned int row = 0; row < ms()->nrow(); row++) {
+        Vector<double> uvw = msMainCol.uvw()(row);
+        double uvDist = sqrt(uvw(0) * uvw(0) + uvw(1) * uvw(1) + uvw(2) * uvw(2));
         if ((startPoint <= uvDist) && (uvDist <= endPoint)) {
           nRowSel++;
           rowsel.resize(nRowSel, true);
@@ -209,9 +209,9 @@ const TableExprNode* MSUvDistParse::selectUVRange(const Double& startUV, const D
 
 const TableExprNode* MSUvDistParse::node() { return node_p; }
 
-void MSUvDistParse::accumulateUVList(const Double r0, const Double r1, const bool wavelengthUnit,
+void MSUvDistParse::accumulateUVList(const double r0, const double r1, const bool wavelengthUnit,
                                      const bool) {
-  Int n0 = selectedUV_p.shape()(1);
+  int n0 = selectedUV_p.shape()(1);
   IPosition newShape(selectedUV_p.shape());
   newShape(1)++;
   selectedUV_p.resize(newShape, true);

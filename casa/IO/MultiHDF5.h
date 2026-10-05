@@ -101,14 +101,14 @@ class MultiHDF5 : public MultiFileBase {
   // Open or create a MultiHDF5 with the given name.
   // Upon creation the block size can be given. If 0, it uses the block size
   // of the file system the file is on.
-  explicit MultiHDF5(const String& name, ByteIO::OpenOption, Int blockSize = 0);
+  explicit MultiHDF5(const String& name, ByteIO::OpenOption, int blockSize = 0);
 
   // Open or create a MultiHDF5 which is nested in the given parent.
   // The data are read/written in a group with the given name in the parent.
   // Upon creation the block size can be given. If 0, it uses the block size
   // of the parent.
   explicit MultiHDF5(const String& name, const std::shared_ptr<MultiFileBase>& parent,
-                     ByteIO::OpenOption, Int blockSize = 0);
+                     ByteIO::OpenOption, int blockSize = 0);
 
   // The destructor flushes and closes the file.
   ~MultiHDF5() override;
@@ -121,7 +121,7 @@ class MultiHDF5 : public MultiFileBase {
   // It creates a new group under which the virtual files are created.
   std::shared_ptr<MultiFileBase> makeNested(const std::shared_ptr<MultiFileBase>& parent,
                                             const String& name, ByteIO::OpenOption,
-                                            Int blockSize) const override;
+                                            int blockSize) const override;
 
   // Open the given logical file and return its file id.
   // If the name is unknown, an exception is thrown.
@@ -151,7 +151,7 @@ class MultiHDF5 : public MultiFileBase {
   // Do the class-specific actions on deleting a file.
   void doDeleteFile(MultiFileInfo&) override;
   // Truncate the file to <src>nrblk</src> blocks (does nothing).
-  void doTruncateFile(MultiFileInfo& info, uInt64 nrblk) override;
+  void doTruncateFile(MultiFileInfo& info, uint64_t nrblk) override;
   // Flush the file itself.
   void doFlushFile() override;
   // Flush and close the file.
@@ -162,11 +162,11 @@ class MultiHDF5 : public MultiFileBase {
   // header counter has changed.
   void readHeader(bool always = true) override;
   // Extend the virtual file to fit lastblk.
-  void extend(MultiFileInfo& info, Int64 lastblk) override;
+  void extend(MultiFileInfo& info, int64_t lastblk) override;
   // Read a data block.
-  void readBlock(MultiFileInfo& info, Int64 blknr, void* buffer) override;
+  void readBlock(MultiFileInfo& info, int64_t blknr, void* buffer) override;
   // Write a data block.
-  void writeBlock(MultiFileInfo& info, Int64 blknr, const void* buffer) override;
+  void writeBlock(MultiFileInfo& info, int64_t blknr, const void* buffer) override;
 
   // # Data members
   std::shared_ptr<HDF5File> itsFile;

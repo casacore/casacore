@@ -35,7 +35,7 @@
 %union {
   const TableExprNode* node;
   char * str;
-  Vector<Int>* iv;
+  Vector<int>* iv;
   // Block<TableExprNode>* exprb;
   // TableExprNodeSetElem* elem;
   // TableExprNodeSet* settp;
@@ -78,7 +78,7 @@
 %{
 #include <casacore/ms/MSSel/MSSelectionTools.h>
   int MSStateGramlex (YYSTYPE*);
-  void checkStateError(Vector<Int>& list, ostringstream& msg, bool force=false, char* = NULL)
+  void checkStateError(Vector<int>& list, ostringstream& msg, bool force=false, char* = NULL)
   {
     if ((list.nelements() == 0) || force)
       {
@@ -109,7 +109,7 @@ indexcombexpr  : indexlist
                  {
 		   ostringstream m;
 	           MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		   Vector<Int> selectedIDs(myMSSI.maskStateIDs(*($1)));
+		   Vector<int> selectedIDs(myMSSI.maskStateIDs(*($1)));
 		   if (selectedIDs.nelements() != set_intersection(selectedIDs,(*($1))).nelements())
 		     {
 		       m << "Possible out of range index in the list " << *($1)
@@ -129,11 +129,11 @@ indexcombexpr  : indexlist
 //
 logicallist: stateid AMPERSAND stateid
           {
-	    $$ = new Vector<Int>(set_intersection(*$1,*$3));
+	    $$ = new Vector<int>(set_intersection(*$1,*$3));
 	  };
         | logicallist AMPERSAND stateid
 	  {
-	    $$ = new Vector<Int>(set_intersection(*$1,*$3));
+	    $$ = new Vector<int>(set_intersection(*$1,*$3));
 	  };
 //
 // A single state name (this could be a regex and
@@ -148,8 +148,8 @@ stateid: IDENTIFIER
 	    // Convert name to index
 	    //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$=new Vector<Int>(myMSSI.matchStateObsMode($1));
-	  //$$=new Vector<Int>(myMSAI.matchStateRegexOrPattern($1));
+	  $$=new Vector<int>(myMSSI.matchStateObsMode($1));
+	  //$$=new Vector<int>(myMSAI.matchStateRegexOrPattern($1));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -166,7 +166,7 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1));
+	  $$ = new Vector<int>(myMSSI.matchStateRegexOrPattern($1));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -182,7 +182,7 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1,true));
+	  $$ = new Vector<int>(myMSSI.matchStateRegexOrPattern($1,true));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -193,20 +193,20 @@ stateid: IDENTIFIER
 
 stateidrange: INT // A single state index
             {
-	      $$ = new Vector<Int>(1);
+	      $$ = new Vector<int>(1);
 	      (*($$))(0) = atoi($1);
 	      free($1);
 	    }
            | INT DASH INT // A range of integer state indices
             {
-              Int start = atoi($1);
-              Int end   = atoi($3);
-              Int len = end - start + 1;
-              Vector<Int> stateids(len);
-              for(Int i = 0; i < len; i++) {
+              int start = atoi($1);
+              int end   = atoi($3);
+              int len = end - start + 1;
+              Vector<int> stateids(len);
+              for(int i = 0; i < len; i++) {
                 stateids[i] = start + i;
               }
-              $$ = new Vector<Int>(stateids);	   
+              $$ = new Vector<int>(stateids);	   
 	      free($1); free($3);
             }
           ;
@@ -214,8 +214,8 @@ stateidrange: INT // A single state index
 stateidbounds: LT INT // <ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  Int n=atoi($2);
-		  $$ = new Vector<Int>(myMSSI.matchStateIDLT(n));
+		  int n=atoi($2);
+		  $$ = new Vector<int>(myMSSI.matchStateIDLT(n));
 
 		  ostringstream m; m << "No state ID found <" << n;
 		  checkStateError(*($$), m);
@@ -226,8 +226,8 @@ stateidbounds: LT INT // <ID
               | GT INT // >ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  Int n=atoi($2);
-		  $$ = new Vector<Int>(myMSSI.matchStateIDGT(n));
+		  int n=atoi($2);
+		  $$ = new Vector<int>(myMSSI.matchStateIDGT(n));
 
 		  ostringstream m; m << "No state ID found >" << n;
 		  checkStateError(*($$), m);
@@ -237,8 +237,8 @@ stateidbounds: LT INT // <ID
               | GT INT AMPERSAND LT INT // >ID & <ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  Int n0=atoi($2), n1=atoi($5);
-		  $$ = new Vector<Int>(myMSSI.matchStateIDGTAndLT(n0,n1));
+		  int n0=atoi($2), n1=atoi($5);
+		  $$ = new Vector<int>(myMSSI.matchStateIDGTAndLT(n0,n1));
 
 		  ostringstream m; 
 		  m << "No state found in the range [" << n0 << "," << n1 << "]";
@@ -266,16 +266,16 @@ stateidlist: stateid // A singe state ID
           ;
 indexlist : stateidlist
             {
-	      $$ = new Vector<Int>(*$1);
+	      $$ = new Vector<int>(*$1);
 	      delete $1;
 	    }
           | indexlist COMMA stateidlist  
             {
               $$ = $1;
-	      Int N0=(*($1)).nelements(), 
+	      int N0=(*($1)).nelements(), 
 		N1 = (*($3)).nelements();
 	      (*($$)).resize(N0+N1,true);  // Resize the existing list
-	      for(Int i=N0;i<N0+N1;i++)
+	      for(int i=N0;i<N0+N1;i++)
 		(*($$))(i) = (*($3))(i-N0);
 	      delete $3;
             }

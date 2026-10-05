@@ -147,7 +147,7 @@ class LELCoordinates {
   // <br>0: equal
   // <br>1: this is superset
   // <br>9: invalid (mismatch)
-  Int compare(const LELCoordinates& other) const;
+  int compare(const LELCoordinates& other) const;
 
   // Return the underlying letter object.
   // This should in general not be used, but for specific (Image) cases

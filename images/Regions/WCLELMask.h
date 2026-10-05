@@ -127,7 +127,7 @@ class WCLELMask : public WCRegion {
   virtual WCRegion* cloneRegion() const;
 
   // Get the dimensionality (i.e. the number of axes).
-  virtual uInt ndim() const;
+  virtual unsigned int ndim() const;
 
   // WCLELMask cannot extend a region.
   virtual bool canExtend() const;

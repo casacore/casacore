@@ -112,13 +112,13 @@ class TableTrace {
   // Write a trace message for a scalar column.
   static void trace(int tabid, const String& columnName, char oper);
   // Write a trace message for a scalar row.
-  static void trace(int tabid, const String& columnName, char oper, Int64 row);
+  static void trace(int tabid, const String& columnName, char oper, int64_t row);
   // Write a trace message for ranges of scalar rows.
   static void trace(int tabid, const String& columnName, char oper, const RefRows& rownrs);
   // Write a trace message for an array column.
   static void trace(int tabid, const String& columnName, char oper, const IPosition& shape);
   // Write a trace message for an array row.
-  static void trace(int tabid, const String& columnName, char oper, Int64 row,
+  static void trace(int tabid, const String& columnName, char oper, int64_t row,
                     const IPosition& shape);
   // Write a trace message for ranges of array rows.
   static void trace(int tabid, const String& columnName, char oper, const RefRows& rownrs,
@@ -127,7 +127,7 @@ class TableTrace {
   static void trace(int tabid, const String& columnName, char oper, const IPosition& shape,
                     const IPosition& blc, const IPosition& trc, const IPosition& inc);
   // Write a trace message for an array row slice.
-  static void trace(int tabid, const String& columnName, char oper, Int64 row,
+  static void trace(int tabid, const String& columnName, char oper, int64_t row,
                     const IPosition& shape, const IPosition& blc, const IPosition& trc,
                     const IPosition& inc);
   // Write a trace message for ranges of array rows slice.

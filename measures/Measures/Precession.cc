@@ -39,7 +39,7 @@ Precession::Precession()
 
 Precession::Precession(const Precession &other) { copy(other); }
 
-Precession::Precession(PrecessionTypes type, Double catepoch)
+Precession::Precession(PrecessionTypes type, double catepoch)
     : method_p(type), fixedEpoch_p(catepoch), lres_p(0) {
   fillEpoch();
 }
@@ -57,7 +57,7 @@ void Precession::init() {
   fillEpoch();
 }
 
-void Precession::init(PrecessionTypes type, Double catepoch) {
+void Precession::init(PrecessionTypes type, double catepoch) {
   method_p = type;
   fixedEpoch_p = catepoch;
   fillEpoch();
@@ -68,12 +68,12 @@ Precession::~Precession() {}
 
 // # Operators
 //  Calculate precession Euler angles
-const Euler &Precession::operator()(Double epoch) {
+const Euler &Precession::operator()(double epoch) {
   calcPrec(epoch);
-  Double dt = epoch - checkEpoch_p;
+  double dt = epoch - checkEpoch_p;
   lres_p++;
   lres_p %= 4;
-  for (uInt i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     result_p[lres_p](i) = pval_p[i] + dt * dval_p[i];
   }
   return result_p[lres_p];
@@ -81,11 +81,11 @@ const Euler &Precession::operator()(Double epoch) {
 
 // # Member functions
 //  Calculate derivative of precession Euler angles
-const Euler &Precession::derivative(Double epoch) {
+const Euler &Precession::derivative(double epoch) {
   calcPrec(epoch);
   ++lres_p;
   lres_p %= 4;
-  for (uInt i = 0; i < 3; ++i) result_p[lres_p](i) = dval_p[i];
+  for (unsigned int i = 0; i < 3; ++i) result_p[lres_p](i) = dval_p[i];
   return result_p[lres_p];
 }
 
@@ -96,18 +96,18 @@ void Precession::copy(const Precession &other) {
   cent_p = other.cent_p;
   refEpoch_p = other.refEpoch_p;
   checkEpoch_p = other.checkEpoch_p;
-  for (uInt i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     zeta_p[i] = other.zeta_p[i];
     pval_p[i] = other.pval_p[i];
     dval_p[i] = other.dval_p[i];
   }
-  for (uInt i = 0; i < 4; ++i) result_p[i] = other.result_p[i];
+  for (unsigned int i = 0; i < 4; ++i) result_p[i] = other.result_p[i];
 }
 
 void Precession::initialize() {
   // Get the interpolation interval
   if (!Precession::myInterval_reg) {
-    myInterval_reg = AipsrcValue<Double>::registerRC(String("measures.precession.d_interval"),
+    myInterval_reg = AipsrcValue<double>::registerRC(String("measures.precession.d_interval"),
                                                      Unit("d"), Unit("d"), Precession::INTV);
   }
 }
@@ -138,10 +138,10 @@ void Precession::fillEpoch() {
   }
   switch (method_p) {
     case IAU2000:
-      for (uInt i = 0; i < 3; ++i) zeta_p[i] = Polynomial<Double>(5);
+      for (unsigned int i = 0; i < 3; ++i) zeta_p[i] = Polynomial<double>(5);
       break;
     default:
-      for (uInt i = 0; i < 3; ++i) zeta_p[i] = Polynomial<Double>(3);
+      for (unsigned int i = 0; i < 3; ++i) zeta_p[i] = Polynomial<double>(3);
       break;
   }
   T_p = (fixedEpoch_p - refEpoch_p) / cent_p;
@@ -157,13 +157,13 @@ void Precession::fillEpoch() {
       MeasTable::precessionCoef(T_p, zeta_p);
       break;
   }
-  for (uInt i = 0; i < 4; ++i) result_p[i].set(3, 2, 3);
+  for (unsigned int i = 0; i < 4; ++i) result_p[i].set(3, 2, 3);
 }
 
 void Precession::refresh() { checkEpoch_p = 1e30; }
 
-void Precession::calcPrec(Double t) {
-  if (!nearAbs(t, checkEpoch_p, AipsrcValue<Double>::get(Precession::myInterval_reg))) {
+void Precession::calcPrec(double t) {
+  if (!nearAbs(t, checkEpoch_p, AipsrcValue<double>::get(Precession::myInterval_reg))) {
     checkEpoch_p = t;
     switch (method_p) {
       case B1950:
@@ -173,7 +173,7 @@ void Precession::calcPrec(Double t) {
         t = (t - fixedEpoch_p) / cent_p;
         break;
     }
-    for (uInt i = 0; i < 3; ++i) {
+    for (unsigned int i = 0; i < 3; ++i) {
       pval_p[i] = (zeta_p[i])(t);
       dval_p[i] = ((zeta_p[i]).derivative())(t);
       switch (method_p) {

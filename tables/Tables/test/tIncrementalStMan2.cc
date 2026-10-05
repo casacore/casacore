@@ -49,7 +49,7 @@
 // compares the results with the reference output file.
 
 // First build a description.
-uInt makeTab(uInt bucketSize) {
+unsigned int makeTab(unsigned int bucketSize) {
   Table tab;
   DataManager::registerCtor("IncrementalStMan", IncrementalStMan::makeObject);
   // Build the table description.
@@ -66,7 +66,7 @@ uInt makeTab(uInt bucketSize) {
   tab = Table(newtab, 100000);
   ScalarColumn<bool> c1(tab, "c1");
   ScalarColumn<bool> c2(tab, "c2");
-  for (uInt i = 0; i < tab.nrow(); ++i) {
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
     c1.put(i, true);
     c2.put(i, true);
   }
@@ -81,7 +81,7 @@ void checkTab() {
   ScalarColumn<bool> c2(tab, "c2");
   Vector<bool> a1 = c1.getColumn();
   Vector<bool> a2 = c2.getColumn();
-  for (uInt i = 0; i < a1.size(); ++i) {
+  for (unsigned int i = 0; i < a1.size(); ++i) {
     if (a1[i] != a2[i]) {
       cout << "mismatch at row " << i << ' ' << a1[i] << ' ' << a2[i] << endl;
       AlwaysAssertExit(false);
@@ -90,14 +90,14 @@ void checkTab() {
 }
 
 // Update some rows by setting them to false.
-void updateTab(uInt step) {
+void updateTab(unsigned int step) {
   if (step > 0) {
     Table tab("tIncrementalStMan2_tmp.data", Table::Update);
     ROIncrementalStManAccessor acc(tab, "ISM");
     ScalarColumn<bool> c1(tab, "c1");
     ScalarColumn<bool> c2(tab, "c2");
     cout << "updateTab step=" << step << endl;
-    for (uInt i = step; i < tab.nrow(); i += step) {
+    for (unsigned int i = step; i < tab.nrow(); i += step) {
       if (i == 61699 || i == 61699 - 781) {
         c1.put(i, false);
       } else {
@@ -112,18 +112,18 @@ void updateTab(uInt step) {
 }
 
 int main(int argc, const char* argv[]) {
-  uInt bucketSize = 100;
+  unsigned int bucketSize = 100;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> bucketSize;
   }
   try {
-    uInt nrow = makeTab(bucketSize);
+    unsigned int nrow = makeTab(bucketSize);
     checkTab();
     // Now update some rows.
     // Do it in the middle, so ISM has to split buckets.
-    uInt step = 2;
-    for (uInt i = 0; i < 16; ++i) {
+    unsigned int step = 2;
+    for (unsigned int i = 0; i < 16; ++i) {
       updateTab(nrow / step);
       step *= 2;
     }

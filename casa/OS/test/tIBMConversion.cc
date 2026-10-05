@@ -29,7 +29,7 @@
 
 #include <casacore/casa/namespace.h>
 void showFloat(float f) {
-  uChar* c = (uChar*)(&f);
+  unsigned char* c = (unsigned char*)(&f);
   int i0 = c[0];
   int i1 = c[1];
   int i2 = c[2];
@@ -163,7 +163,7 @@ void checkConversion(int& error) {
     val[2] = 54;
     val[3] = 78;
     val[4] = 145 - 256;
-    Int64 result;
+    int64_t result;
     IBMConversion::toLocal(&result, val + 1, 1);
     if (result != 2 * 256 * 256 * 256 + 54 * 256 * 256 + 78 * 256 + 145) {
       cout << "invalid Int64 to conversion 1 " << result << endl;
@@ -191,7 +191,7 @@ void checkConversion(int& error) {
     val[2] = 54;
     val[3] = 78;
     val[4] = 100;
-    uInt64 result;
+    uint64_t result;
     IBMConversion::toLocal(&result, val + 1, 1);
     if (result != 128U * 256U * 256U * 256U + 54U * 256U * 256U + 78U * 256U + 100U) {
       cout << "invalid uInt64 to conversion " << result << endl;
@@ -211,8 +211,8 @@ void checkFloat(int& error) {
   unsigned char out[5];
   val[3] = 0;
   val[4] = 0;
-  for (uInt i = 0; i < 2; i++) {
-    for (uInt j = 35; j < 97; j++) {
+  for (unsigned int i = 0; i < 2; i++) {
+    for (unsigned int j = 35; j < 97; j++) {
       val[1] = (i << 7) + j;
       double v;
       if (j >= 64) {
@@ -223,7 +223,7 @@ void checkFloat(int& error) {
       if (i == 1) {
         v *= -1;
       }
-      for (uInt k = 1; k < 256; k++) {
+      for (unsigned int k = 1; k < 256; k++) {
         val[2] = k;
         IBMConversion::toLocal(&f1, val + 1, 1);
         float v1 = v * double(k) / 256;
@@ -255,8 +255,8 @@ void checkDouble(int& error) {
   val[6] = 0;
   val[7] = 0;
   val[8] = 0;
-  for (uInt i = 0; i < 2; i++) {
-    for (uInt j = 0; j < 128; j++) {
+  for (unsigned int i = 0; i < 2; i++) {
+    for (unsigned int j = 0; j < 128; j++) {
       val[1] = (i << 7) + j;
       double v;
       if (j < 64) {
@@ -275,10 +275,10 @@ void checkDouble(int& error) {
       if (i == 1) {
         v *= -1;
       }
-      for (uInt k = 1; k < 256; k++) {
+      for (unsigned int k = 1; k < 256; k++) {
         val[2] = k;
         double v1 = double(k) / 256;
-        for (uInt l = 0; l < 32; l++) {
+        for (unsigned int l = 0; l < 32; l++) {
           val[5] = l;
           IBMConversion::toLocal(&f1, val + 1, 1);
           double v2 = v * (v1 + double(l) / (double(256 * 256) * 256 * 256));

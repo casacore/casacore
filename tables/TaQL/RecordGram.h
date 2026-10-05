@@ -85,7 +85,7 @@ void RecordGramerror(const char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& recordGramPosition();
+int& recordGramPosition();
 
 // Declare the input routine for flex/bison.
 int recordGramInput(char* buf, int max_size);
@@ -115,11 +115,11 @@ inline String recordGramRemoveQuotes(const String& in) { return tableGramRemoveQ
 
 class RecordGramVal {
  public:
-  Int type;        // # i=Int, f=Double, c=DComplex, s=String r=Regex
+  int type;        // # i=Int, f=Double, c=DComplex, s=String r=Regex
   String str;      // # string literal; table name; field name; unit
   bool bval;       // # bool literal
-  Int64 ival;      // # integer literal
-  Double dval[2];  // # Double/DComplex literal
+  int64_t ival;    // # integer literal
+  double dval[2];  // # Double/DComplex literal
 };
 
 // <summary>
@@ -188,14 +188,14 @@ class RecordGram {
   // return an array with length 1.
   // <group>
   static bool expr2Bool(const String& expr, const Record& vars = Record());
-  static Int64 expr2Int(const String& expr, const Record& vars = Record());
+  static int64_t expr2Int(const String& expr, const Record& vars = Record());
   static double expr2Double(const String& expr, const Record& vars = Record(),
                             const String& unit = String());
   static DComplex expr2Complex(const String& expr, const Record& vars = Record());
   static String expr2String(const String& expr, const Record& vars = Record());
   static MVTime expr2Date(const String& expr, const Record& vars = Record());
   static Array<bool> expr2ArrayBool(const String& expr, const Record& vars = Record());
-  static Array<Int64> expr2ArrayInt(const String& expr, const Record& vars = Record());
+  static Array<int64_t> expr2ArrayInt(const String& expr, const Record& vars = Record());
   static Array<double> expr2ArrayDouble(const String& expr, const Record& vars = Record(),
                                         const String& unit = String());
   static Array<DComplex> expr2ArrayComplex(const String& expr, const Record& vars = Record());

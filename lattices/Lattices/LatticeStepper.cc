@@ -33,7 +33,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
-                               const uInt hangOverPolicy)
+                               const unsigned int hangOverPolicy)
     : itsIndexer(latticeShape),
       itsCursorShape(latticeShape.nelements()),
       itsCursorPos(latticeShape.nelements(), 0),
@@ -49,7 +49,7 @@ LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& c
 }
 
 LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
-                               const IPosition& axisPath, const uInt hangOverPolicy)
+                               const IPosition& axisPath, const unsigned int hangOverPolicy)
     : itsIndexer(latticeShape),
       itsCursorShape(latticeShape.nelements()),
       itsCursorPos(latticeShape.nelements(), 0),
@@ -66,7 +66,7 @@ LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& c
 
 LatticeStepper::LatticeStepper(const IPosition& latticeShape, const IPosition& cursorShape,
                                const IPosition& cursorAxes, const IPosition& axisPath,
-                               const uInt hangOverPolicy)
+                               const unsigned int hangOverPolicy)
     : itsIndexer(latticeShape),
       itsCursorShape(latticeShape.nelements()),
       itsCursorPos(latticeShape.nelements(), 0),
@@ -135,8 +135,8 @@ bool LatticeStepper::operator++(int) {
       const IPosition curPos(itsCursorPos);
       const IPosition curEndPos(itsCursorPos + itsCursorShape - 1);
       const IPosition latShape(itsIndexer.shape());
-      const uInt ndim = itsIndexer.ndim();
-      uInt i = 0;
+      const unsigned int ndim = itsIndexer.ndim();
+      unsigned int i = 0;
       while (i < ndim && curEndPos(i) < latShape(i) && curPos(i) >= 0) {
         i++;
       }
@@ -162,11 +162,11 @@ bool LatticeStepper::operator--(int) {
   if (successful) {
     // test for hang over since cursor has moved
     const IPosition curPos(itsCursorPos);
-    const uInt ndim = itsIndexer.ndim();
+    const unsigned int ndim = itsIndexer.ndim();
     if (itsNiceFit == false) {
       const IPosition curEndPos(itsCursorPos + itsCursorShape);
       const IPosition latShape(itsIndexer.shape());
-      uInt i = 0;
+      unsigned int i = 0;
       while (i < ndim && curPos(i) >= 0 && curEndPos(i) < latShape(i)) {
         i++;
       }
@@ -186,9 +186,9 @@ void LatticeStepper::reset() {
   itsStart = true;
   itsHangover = false;
   if (!itsNiceFit) {
-    const uInt ndim = itsIndexer.ndim();
+    const unsigned int ndim = itsIndexer.ndim();
     const IPosition latShape(itsIndexer.shape());
-    for (uInt i = 0; i < ndim; i++) {
+    for (unsigned int i = 0; i < ndim; i++) {
       if (itsCursorShape(i) > latShape(i)) {
         itsHangover = true;
       }
@@ -207,7 +207,7 @@ bool LatticeStepper::atEnd() const {
   return itsEnd;
 }
 
-uInt LatticeStepper::nsteps() const {
+unsigned int LatticeStepper::nsteps() const {
   DebugAssert(ok() == true, AipsError);
   return itsNsteps;
 }
@@ -236,8 +236,8 @@ IPosition LatticeStepper::relativeEndPosition() const {
   IPosition trc(itsCursorPos + itsCursorShape - 1);
   if (itsHangover) {
     const IPosition latticeShape(subLatticeShape());
-    const uInt nDim = trc.nelements();
-    for (uInt n = 0; n < nDim; n++) {
+    const unsigned int nDim = trc.nelements();
+    for (unsigned int n = 0; n < nDim; n++) {
       if (trc(n) >= latticeShape(n)) {
         trc(n) = latticeShape(n) - 1;
       }
@@ -262,9 +262,9 @@ void LatticeStepper::setCursorShape(const IPosition& cursorShape) {
 
 void LatticeStepper::setCursorShape(const IPosition& cursorShape, const IPosition& cursorAxes) {
   const IPosition& latticeShape = itsIndexer.fullShape();
-  uInt latticeDim = itsIndexer.ndim();
-  uInt ndimCS = cursorShape.nelements();
-  uInt ndimCA = cursorAxes.nelements();
+  unsigned int latticeDim = itsIndexer.ndim();
+  unsigned int ndimCS = cursorShape.nelements();
+  unsigned int ndimCA = cursorAxes.nelements();
   if (ndimCS == 0 || ndimCS > latticeDim) {
     throw(
         AipsError("LatticeStepper::setCursorShape: cursorShape"
@@ -282,10 +282,10 @@ void LatticeStepper::setCursorShape(const IPosition& cursorShape, const IPositio
                   " equal to cursorShape, or cursorShape should"
                   " contain all axes"));
   }
-  uInt i;
+  unsigned int i;
   // Check if the cursor axes are given correctly and in ascending order.
   for (i = 0; i < ndimCA; i++) {
-    if (cursorAxes(i) < 0 || cursorAxes(i) >= Int(latticeDim)) {
+    if (cursorAxes(i) < 0 || cursorAxes(i) >= int(latticeDim)) {
       throw(
           AipsError("LatticeStepper::setCursorShape: "
                     "cursorAxes value <0 or >latticeDim"));
@@ -299,7 +299,7 @@ void LatticeStepper::setCursorShape(const IPosition& cursorShape, const IPositio
     }
   }
   // Count the cursor shape axes with length > 1.
-  uInt count = 0;
+  unsigned int count = 0;
   for (i = 0; i < ndimCS; i++) {
     if (cursorShape(i) > 1) {
       count++;
@@ -309,9 +309,9 @@ void LatticeStepper::setCursorShape(const IPosition& cursorShape, const IPositio
   // check if the cursor shape for non-cursorAxes is 1.
   if (ndimCA > 0 && ndimCA != ndimCS) {
     for (i = 0; i < ndimCS; i++) {
-      uInt j;
+      unsigned int j;
       for (j = 0; j < ndimCA; j++) {
-        if (Int(i) == cursorAxes(j)) {
+        if (int(i) == cursorAxes(j)) {
           break;
         }
       }
@@ -411,9 +411,9 @@ const IPosition& LatticeStepper::axisPath() const {
 
 // check if the cursor shape is an sub-multiple of the Lattice shape
 bool LatticeStepper::niceFit() const {
-  const uInt cursorDim = itsCursorShape.nelements();
+  const unsigned int cursorDim = itsCursorShape.nelements();
   // Determine if the Lattice shape is a multiple of the cursor shape.
-  uInt i = 0;
+  unsigned int i = 0;
   while (i < cursorDim && itsIndexer.shape(i) % itsCursorShape(i) == 0) {
     i++;
   }
@@ -422,8 +422,9 @@ bool LatticeStepper::niceFit() const {
 
 LatticeNavigator* LatticeStepper::clone() const { return new LatticeStepper(*this); }
 
-uInt LatticeStepper::calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
-                                   uInt maxCacheSize, uInt bucketSize) const {
+unsigned int LatticeStepper::calcCacheSize(const IPosition& cubeShape, const IPosition& tileShape,
+                                           unsigned int maxCacheSize,
+                                           unsigned int bucketSize) const {
   return (bucketSize == 0
               ? 0
               : TSMCube::calcCacheSize(cubeShape, tileShape, false, itsCursorShape, blc(),
@@ -433,7 +434,7 @@ uInt LatticeStepper::calcCacheSize(const IPosition& cubeShape, const IPosition& 
 bool LatticeStepper::ok() const {
   ostringstream str;
   str << "LatticeStepper::ok - ";
-  const uInt latticeDim = itsIndexer.ndim();
+  const unsigned int latticeDim = itsIndexer.ndim();
   // Check the cursor shape is OK
   if (itsCursorShape.nelements() != latticeDim) {
     str << "cursor shape " << itsCursorShape << " has wrong number of dimensions (ie. not "
@@ -441,10 +442,10 @@ bool LatticeStepper::ok() const {
     throw AipsError(String(str.str()));
     return false;
   }
-  for (uInt i = 0; i < latticeDim; i++) {
+  for (unsigned int i = 0; i < latticeDim; i++) {
     // the cursor shape must be <= the corresponding lattice axes AND
     // a cursor shape with an axis of length zero makes no sense
-    if (itsCursorShape(i) > Int(itsIndexer.fullShape(i)) || itsCursorShape(i) <= 0) {
+    if (itsCursorShape(i) > int(itsIndexer.fullShape(i)) || itsCursorShape(i) <= 0) {
       str << "cursor shape " << itsCursorShape << " is too big or small for full lattice shape "
           << itsIndexer.fullShape();
       throw AipsError(String(str.str()));
@@ -476,16 +477,16 @@ bool LatticeStepper::ok() const {
     return false;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
-  for (uInt n = 0; n < latticeDim; n++) {
-    if (itsAxisPath(n) >= Int(latticeDim)) {
+  for (unsigned int n = 0; n < latticeDim; n++) {
+    if (itsAxisPath(n) >= int(latticeDim)) {
       str << "axis path " << itsAxisPath << " has elements >= the lattice dim " << latticeDim - 1;
       throw AipsError(String(str.str()));
       return false;
     }
   }
   // each itsAxisPath value must be unique
-  for (uInt k = 0; k < (latticeDim - 1); k++) {
-    for (uInt j = k + 1; j < latticeDim; j++) {
+  for (unsigned int k = 0; k < (latticeDim - 1); k++) {
+    for (unsigned int j = k + 1; j < latticeDim; j++) {
       if (itsAxisPath(k) == itsAxisPath(j)) {
         str << "axis path " << itsAxisPath << " does not have unique elements";
         throw AipsError(String(str.str()));

@@ -125,7 +125,7 @@ class LCExtension : public LCRegionMulti {
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
@@ -133,7 +133,7 @@ class LCExtension : public LCRegionMulti {
 
   // This function is needed here because the niceCursorShape of the
   // contributing region does not make any sense (other dimensionality).
-  IPosition doNiceCursorShape(uInt maxPixels) const override;
+  IPosition doNiceCursorShape(unsigned int maxPixels) const override;
 
  private:
   // Fill the object.

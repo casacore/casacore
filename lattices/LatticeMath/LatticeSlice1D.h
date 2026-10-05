@@ -111,19 +111,19 @@ class LatticeSlice1D {
   // Get 1-D slice.  PixelCurve1D supplies the locus of the slice in
   // the plane specified by axis0 and axis1.  The pixel coordinate for
   // the rest of the lattice is specified in <src>coord</src>.
-  void getSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D& curve, uInt axis0,
-                uInt axis1, const IPosition& coord);
+  void getSlice(Vector<T>& data, Vector<bool>& mask, const PixelCurve1D& curve, unsigned int axis0,
+                unsigned int axis1, const IPosition& coord);
 
   // Get 1-D slice between blc & trc. These start and end points must be
   // in a cardinal plane of the lattice.  If nPts is 0 it is set automatically to
   // the length of the slice.
   void getSlice(Vector<T>& data, Vector<bool>& mask, const IPosition& blc, const IPosition& trc,
-                uInt nPts = 0);
+                unsigned int nPts = 0);
 
   // Get the (x,y) pixel coordinates from the last slice and the distance along
   // the slice in pixels.. Also recover the axes of the slice plane
-  void getPosition(uInt& axis0, uInt& axis1, Vector<Float>& x, Vector<Float>& y,
-                   Vector<Float>& distance) const;
+  void getPosition(unsigned int& axis0, unsigned int& axis1, Vector<float>& x, Vector<float>& y,
+                   Vector<float>& distance) const;
 
   // Recover interpolation method
   Method interpolationMethod() const { return itsMethod; };
@@ -146,11 +146,11 @@ class LatticeSlice1D {
   MaskedLattice<T>* itsLatticePtr;
   Interpolate2D* itsInterpPtr;
   Method itsMethod;
-  Vector<Float> itsX;
-  Vector<Float> itsY;
-  Vector<Double> itsPos;
-  uInt itsAxis0;
-  uInt itsAxis1;
+  Vector<float> itsX;
+  Vector<float> itsY;
+  Vector<double> itsPos;
+  unsigned int itsAxis0;
+  unsigned int itsAxis1;
 };
 
 }  // namespace casacore

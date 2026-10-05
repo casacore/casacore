@@ -47,7 +47,7 @@ WCCompound::WCCompound(const ImageRegion* region1, const ImageRegion* region2,
                        const ImageRegion* region7, const ImageRegion* region8,
                        const ImageRegion* region9, const ImageRegion* region10) {
   Block<const ImageRegion*> regions(10);
-  uInt n = 0;
+  unsigned int n = 0;
   regions[n++] = region1;
   if (region2 != 0) regions[n++] = region2;
   if (region3 != 0) regions[n++] = region3;
@@ -74,23 +74,23 @@ WCCompound::WCCompound(bool takeOver, const Block<const WCRegion*>& regions) : i
 
 WCCompound::WCCompound(const WCCompound& other)
     : WCRegion(other), itsRegions(other.itsRegions.nelements()), itsAxesUsed(other.itsAxesUsed) {
-  uInt nr = itsRegions.nelements();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = itsRegions.nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     itsRegions[i] = other.itsRegions[i]->cloneRegion();
   }
 }
 
 WCCompound::~WCCompound() {
-  uInt nr = itsRegions.nelements();
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int nr = itsRegions.nelements();
+  for (unsigned int i = 0; i < nr; i++) {
     delete itsRegions[i];
   }
 }
 
 WCCompound& WCCompound::operator=(const WCCompound& other) {
-  uInt i;
+  unsigned int i;
   if (this != &other) {
-    uInt nr = itsRegions.nelements();
+    unsigned int nr = itsRegions.nelements();
     for (i = 0; i < nr; i++) {
       delete itsRegions[i];
     }
@@ -108,25 +108,25 @@ WCCompound& WCCompound::operator=(const WCCompound& other) {
 void WCCompound::multiToLCRegion(Block<const LCRegion*>& regions, const CoordinateSystem& cSys,
                                  const IPosition& shape, const IPosition& pixelAxesMap,
                                  const IPosition& outOrder) const {
-  uInt nr = itsRegions.nelements();
+  unsigned int nr = itsRegions.nelements();
   regions.resize(nr, true);
-  uInt nd = pixelAxesMap.nelements();
+  unsigned int nd = pixelAxesMap.nelements();
   IPosition pixAxesMap(pixelAxesMap);
   IPosition outOrd(outOrder);
   IPosition axisUsed(nd);
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     const IPosition& axes = itsAxesUsed[i];
     axisUsed = 0;
     // The used axes of the region are the first axes.
     // The latter axes are the auto-extension axes.
-    uInt na = axes.nelements();
-    uInt j;
+    unsigned int na = axes.nelements();
+    unsigned int j;
     for (j = 0; j < na; j++) {
       pixAxesMap(j) = pixelAxesMap(axes(j));
       outOrd(j) = outOrder(axes(j));
       axisUsed(axes(j)) = 1;
     }
-    for (uInt k = 0; k < nd; k++) {
+    for (unsigned int k = 0; k < nd; k++) {
       if (axisUsed(k) == 0) {
         pixAxesMap(j) = pixelAxesMap(k);
         outOrd(j++) = outOrder(k);
@@ -149,11 +149,11 @@ bool WCCompound::operator==(const WCRegion& other) const {
   }
   // The regions do not have to be in the same order.
   // It makes it a bit slower.
-  uInt nr = itsRegions.nelements();
+  unsigned int nr = itsRegions.nelements();
   Vector<bool> used(nr, false);
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     bool found = false;
-    for (uInt j = 0; j < nr; j++) {
+    for (unsigned int j = 0; j < nr; j++) {
       if (!used(j)) {
         if (*itsRegions[i] == *(that.itsRegions[j])) {
           used(j) = true;
@@ -170,9 +170,9 @@ bool WCCompound::operator==(const WCRegion& other) const {
 }
 
 void WCCompound::makeWCRegion(const Block<const ImageRegion*>& regions) {
-  uInt nr = regions.nelements();
+  unsigned int nr = regions.nelements();
   itsRegions.resize(nr);
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     if (regions[i]->isLCSlicer()) {
       throw(
           AipsError("WCCompound::WCCompound - "
@@ -187,9 +187,9 @@ void WCCompound::init(bool takeOver) {
   // Copy the region object if takeOver=False.
   // Compose the axes description of the entire compound.
   // Find out which compound axes are used in each region.
-  uInt nr = itsRegions.nelements();
+  unsigned int nr = itsRegions.nelements();
   itsAxesUsed.resize(nr);
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     AlwaysAssert(itsRegions[i] != 0, AipsError);
     // Clone the object if needed.
     if (!takeOver) {
@@ -197,10 +197,10 @@ void WCCompound::init(bool takeOver) {
     }
     // Add axes to description if not already defined.
     // Fill in the axes used.
-    uInt nd = itsRegions[i]->ndim();
+    unsigned int nd = itsRegions[i]->ndim();
     IPosition& axesUsed = itsAxesUsed[i];
     axesUsed.resize(nd);
-    for (uInt j = 0; j < nd; j++) {
+    for (unsigned int j = 0; j < nd; j++) {
       const Record& desc = itsRegions[i]->getAxisDesc(j);
       // If the axis is already defined, it has that axis number.
       // Otherwise add its description and use that as axis number.
@@ -215,8 +215,8 @@ void WCCompound::init(bool takeOver) {
 
 TableRecord WCCompound::makeRecord(const String& tableName) const {
   TableRecord rec;
-  Int nr = itsRegions.nelements();
-  for (Int i = 0; i < nr; i++) {
+  int nr = itsRegions.nelements();
+  for (int i = 0; i < nr; i++) {
     rec.defineRecord(i, itsRegions[i]->toRecord(tableName));
   }
   rec.define("nr", nr);
@@ -225,9 +225,9 @@ TableRecord WCCompound::makeRecord(const String& tableName) const {
 
 void WCCompound::unmakeRecord(Block<const WCRegion*>& regions, const TableRecord& rec,
                               const String& tableName) {
-  Int nr = rec.asInt("nr");
+  int nr = rec.asInt("nr");
   regions.resize(nr, true);
-  for (Int i = 0; i < nr; i++) {
+  for (int i = 0; i < nr; i++) {
     regions[i] = WCRegion::fromRecord(rec.asRecord(i), tableName);
   }
 }

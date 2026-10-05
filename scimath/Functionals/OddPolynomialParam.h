@@ -101,7 +101,7 @@ class OddPolynomialParam : public Function1D<T> {
 
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero.
-  explicit OddPolynomialParam(uInt order);
+  explicit OddPolynomialParam(unsigned int order);
 
   // Make this a copy of other (deep copy).
   // <group>
@@ -130,11 +130,11 @@ class OddPolynomialParam : public Function1D<T> {
   }
 
   // What is the order of the polynomial, i.e. maximum exponent of "x".
-  uInt order() const { return 2 * param_p.nelements() - 1; }
+  unsigned int order() const { return 2 * param_p.nelements() - 1; }
 
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n/2.
-  T coefficient(uInt which) const {
+  T coefficient(unsigned int which) const {
     DebugAssert(which <= order(), AipsError);
     return param_p[which];
   }
@@ -143,7 +143,7 @@ class OddPolynomialParam : public Function1D<T> {
   const Vector<T> &coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>.
-  void setCoefficient(uInt which, const T value) {
+  void setCoefficient(unsigned int which, const T value) {
     DebugAssert(which <= order(), AipsError);
     param_p[which] = value;
   }

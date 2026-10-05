@@ -32,16 +32,16 @@
 #include <casacore/casa/namespace.h>
 // Test the non-cache functions.
 
-void primesNoncacheTests(uInt number, bool shouldBePrime, uInt numberOfFactors) {
+void primesNoncacheTests(unsigned int number, bool shouldBePrime, unsigned int numberOfFactors) {
   AlwaysAssertExit(Primes::isPrime(number) == shouldBePrime);
 
-  Block<uInt> factors = Primes::factor(number);
+  Block<unsigned int> factors = Primes::factor(number);
   AlwaysAssertExit(factors.nelements() == numberOfFactors);
 
   AlwaysAssertExit(Primes::smallestPrimeFactor(number) == factors[0]);
 }
 
-void largerPrimesTest(uInt number, uInt next, uInt closest) {
+void largerPrimesTest(unsigned int number, unsigned int next, unsigned int closest) {
   AlwaysAssertExit(Primes::aLargerPrimeThan(number) == next);
 
   AlwaysAssertExit(Primes::nextLargerPrimeThan(number) == closest);

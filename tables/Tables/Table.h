@@ -411,8 +411,8 @@ class Table {
   // If <src>PermanentLocking</src> is in effect, a lock is already
   // present, so nothing will be done.
   // <group>
-  bool lock(FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
-  bool lock(bool write, uInt nattempts = 0);
+  bool lock(FileLocker::LockType = FileLocker::Write, unsigned int nattempts = 0);
+  bool lock(bool write, unsigned int nattempts = 0);
   // </group>
 
   // Unlock the table. This will also synchronize the table data,
@@ -422,7 +422,7 @@ class Table {
 
   // Determine the number of locked tables opened with the AutoLock option
   // (Locked table means locked for read and/or write).
-  static uInt nAutoLocks();
+  static unsigned int nAutoLocks();
 
   // Unlock locked tables opened with the AutoLock option.
   // If <src>all=True</src> all such tables will be unlocked.
@@ -497,11 +497,11 @@ class Table {
   // Show the table and/or column keywords, possibly also of all subtables.
   // Maximum <src>maxVal</src> values of Arrays will be shown.
   void showKeywords(std::ostream&, bool showSubTables = false, bool showTabKey = true,
-                    bool showColKey = false, Int maxVal = 25) const;
+                    bool showColKey = false, int maxVal = 25) const;
 
   // Show the table and/or column keywords of this table.
   // Maximum <src>maxVal</src> values of Arrays will be shown.
-  void showKeywordSets(std::ostream&, bool showTabKey, bool showColKey, Int maxVal) const;
+  void showKeywordSets(std::ostream&, bool showTabKey, bool showColKey, int maxVal) const;
 
   // Test if a table with the given name exists and is writable.
   static bool isWritable(const String& tableName, bool throwIf = false);
@@ -519,13 +519,13 @@ class Table {
   // Test if the given column is writable.
   // <group>
   bool isColumnWritable(const String& columnName) const;
-  bool isColumnWritable(uInt columnIndex) const;
+  bool isColumnWritable(unsigned int columnIndex) const;
   // </group>
 
   // Test if the given column is stored (otherwise it is virtual).
   // <group>
   bool isColumnStored(const String& columnName) const;
-  bool isColumnStored(uInt columnIndex) const;
+  bool isColumnStored(unsigned int columnIndex) const;
   // </group>
 
   // Get readonly access to the table keyword set.
@@ -808,7 +808,7 @@ class Table {
   // Sort on multiple columns. The principal column has to be the
   // first element in the Block of column names.
   // The order can be given per column.
-  Table sort(const Block<String>& columnNames, const Block<Int>& sortOrders,
+  Table sort(const Block<String>& columnNames, const Block<int>& sortOrders,
              int = Sort::ParSort) const;
   // Sort on multiple columns. The principal column has to be the
   // first element in the Block of column names.
@@ -818,7 +818,7 @@ class Table {
   // from class <linkto class="ObjCompare:description">ObjCompare</linkto>.
   Table sort(const Block<String>& columnNames,
              const Block<std::shared_ptr<BaseCompare>>& compareObjects,
-             const Block<Int>& sortOrders, int = Sort::ParSort) const;
+             const Block<int>& sortOrders, int = Sort::ParSort) const;
   // </group>
 
   // Get a vector of row numbers in the root table of rows in this table.
@@ -1002,7 +1002,7 @@ class Table {
   // The shared_ptr above is only for reference counting.
   BaseTable* baseTabPtr_p;
   // Counter of last call to hasDataChanged.
-  uInt lastModCounter_p;
+  unsigned int lastModCounter_p;
   // Pointer to the ScratchCallback function.
   static ScratchCallback* scratchCallback_p;
 
@@ -1023,7 +1023,7 @@ class Table {
   static std::shared_ptr<BaseTable> makeBaseTable(const String& name, const String& type,
                                                   int tableOption, const TableLock& lockOptions,
                                                   const TSMOption& tsmOpt, bool addToCache,
-                                                  uInt locknr);
+                                                  unsigned int locknr);
 
   // Get the pointer to the underlying BaseTable.
   // This is needed for some friend classes.
@@ -1044,7 +1044,7 @@ class Table {
 
   // Show the info of the given columns.
   // Sort the columns if needed.
-  void showColumnInfo(ostream& os, const TableDesc&, uInt maxNameLength,
+  void showColumnInfo(ostream& os, const TableDesc&, unsigned int maxNameLength,
                       const Array<String>& columnNames, bool sort) const;
 };
 
@@ -1062,10 +1062,10 @@ inline bool Table::isMultiUsed(bool checkSubTables) const {
   return baseTabPtr_p->isMultiUsed(checkSubTables);
 }
 inline const TableLock& Table::lockOptions() const { return baseTabPtr_p->lockOptions(); }
-inline bool Table::lock(FileLocker::LockType type, uInt nattempts) {
+inline bool Table::lock(FileLocker::LockType type, unsigned int nattempts) {
   return baseTabPtr_p->lock(type, nattempts);
 }
-inline bool Table::lock(bool write, uInt nattempts) {
+inline bool Table::lock(bool write, unsigned int nattempts) {
   return baseTabPtr_p->lock(write ? FileLocker::Write : FileLocker::Read, nattempts);
 }
 inline void Table::unlock() { baseTabPtr_p->unlock(); }
@@ -1080,14 +1080,14 @@ inline bool Table::isWritable() const { return baseTabPtr_p->isWritable(); }
 inline bool Table::isColumnWritable(const String& columnName) const {
   return baseTabPtr_p->isColumnWritable(columnName);
 }
-inline bool Table::isColumnWritable(uInt columnIndex) const {
+inline bool Table::isColumnWritable(unsigned int columnIndex) const {
   return baseTabPtr_p->isColumnWritable(columnIndex);
 }
 
 inline bool Table::isColumnStored(const String& columnName) const {
   return baseTabPtr_p->isColumnStored(columnName);
 }
-inline bool Table::isColumnStored(uInt columnIndex) const {
+inline bool Table::isColumnStored(unsigned int columnIndex) const {
   return baseTabPtr_p->isColumnStored(columnIndex);
 }
 

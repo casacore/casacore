@@ -69,14 +69,14 @@ void a(const std::shared_ptr<MultiFileBase>& mfile) {
   BucketFile file("tBucketFile_tmp.data", 0, false, mfile);
   AlwaysAssertExit(file.isWritable());
   AlwaysAssertExit(file.name() == "tBucketFile_tmp.data");
-  Int ival = 10;
+  int ival = 10;
   float fval = 20;
-  file.write(&ival, sizeof(Int));
+  file.write(&ival, sizeof(int));
   file.write(&fval, sizeof(fval));
-  Int ival2;
+  int ival2;
   float fval2;
   file.seek(0);
-  file.read(&ival2, sizeof(Int));
+  file.read(&ival2, sizeof(int));
   file.read(&fval2, sizeof(fval));
   AlwaysAssertExit(ival2 == ival);
   AlwaysAssertExit(fval2 == fval);
@@ -88,11 +88,11 @@ void b(const std::shared_ptr<MultiFileBase>& mfile) {
   AlwaysAssertExit(!file.isWritable());
   AlwaysAssertExit(file.name() == "tBucketFile_tmp.data");
   file.open();
-  Int ival = 10;
+  int ival = 10;
   float fval = 20;
-  Int ival2;
+  int ival2;
   float fval2;
-  file.read(&ival2, sizeof(Int));
+  file.read(&ival2, sizeof(int));
   file.read(&fval2, sizeof(fval));
   AlwaysAssertExit(ival2 == ival);
   AlwaysAssertExit(fval2 == fval);
@@ -100,19 +100,19 @@ void b(const std::shared_ptr<MultiFileBase>& mfile) {
   // Set the file to read/write access.
   file.setRW();
   file.seek(0);
-  file.read(&ival2, sizeof(Int));
+  file.read(&ival2, sizeof(int));
   file.read(&fval2, sizeof(fval));
   AlwaysAssertExit(ival2 == ival);
   AlwaysAssertExit(fval2 == fval);
   file.write(&fval, sizeof(fval));
-  file.write(&ival, sizeof(Int));
+  file.write(&ival, sizeof(int));
   file.seek(0);
-  file.read(&ival2, sizeof(Int));
+  file.read(&ival2, sizeof(int));
   file.read(&fval2, sizeof(fval));
   AlwaysAssertExit(ival2 == ival);
   AlwaysAssertExit(fval2 == fval);
   file.read(&fval2, sizeof(fval));
-  file.read(&ival2, sizeof(Int));
+  file.read(&ival2, sizeof(int));
   AlwaysAssertExit(ival2 == ival);
   AlwaysAssertExit(fval2 == fval);
 }

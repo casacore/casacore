@@ -154,10 +154,10 @@ class SSMStringHandler;
 class SSMBase : public DataManager {
  public:
   // Create a Standard storage manager with default name SSM.
-  explicit SSMBase(Int aBucketSize = 0, uInt aCacheSize = 1);
+  explicit SSMBase(int aBucketSize = 0, unsigned int aCacheSize = 1);
 
   // Create a Standard storage manager with the given name.
-  explicit SSMBase(const String& aDataManName, Int aBucketSize = 0, uInt aCacheSize = 1);
+  explicit SSMBase(const String& aDataManName, int aBucketSize = 0, unsigned int aCacheSize = 1);
 
   // Create a Standard storage manager with the given name.
   // The specifications are part of the record (as created by dataManagerSpec).
@@ -190,7 +190,7 @@ class SSMBase : public DataManager {
   virtual void setProperties(const Record& spec);
 
   // Get the version of the class.
-  uInt getVersion() const;
+  unsigned int getVersion() const;
 
   // Set the cache size (in buckets).
   // If <src>canExceedNrBuckets=True</src>, the given cache size can be
@@ -198,10 +198,10 @@ class SSMBase : public DataManager {
   // be made large enough for a future file extension.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize(uInt aCacheSize, bool canExceedNrBuckets = true);
+  void setCacheSize(unsigned int aCacheSize, bool canExceedNrBuckets = true);
 
   // Get the current cache size (in buckets).
-  uInt getCacheSize() const;
+  unsigned int getCacheSize() const;
 
   // Clear the cache used by this storage manager.
   // It will flush the cache as needed and remove all buckets from it.
@@ -217,7 +217,7 @@ class SSMBase : public DataManager {
   void showBaseStatistics(ostream& anOs) const;
 
   // Get the bucket size.
-  uInt getBucketSize() const;
+  unsigned int getBucketSize() const;
 
   // Get the number of rows in this storage manager.
   rownr_t getNRow() const;
@@ -240,10 +240,10 @@ class SSMBase : public DataManager {
   static DataManager* makeObject(const String& aDataManType, const Record& spec);
 
   // Get access to the given column.
-  SSMColumn& getColumn(uInt aColNr);
+  SSMColumn& getColumn(unsigned int aColNr);
 
   // Get access to the given Index.
-  SSMIndex& getIndex(uInt anIdxNr);
+  SSMIndex& getIndex(unsigned int anIdxNr);
 
   // Make the current bucket in the cache dirty (i.e. something has been
   // changed in it and it needs to be written when removed from the cache).
@@ -257,20 +257,20 @@ class SSMBase : public DataManager {
   // Find the bucket containing the column and row and return the pointer
   // to the beginning of the column data in that bucket.
   // It also fills in the start and end row for the column data.
-  char* find(rownr_t aRowNr, uInt aColNr, rownr_t& aStartRow, rownr_t& anEndRow,
+  char* find(rownr_t aRowNr, unsigned int aColNr, rownr_t& aStartRow, rownr_t& anEndRow,
              const String& colName);
 
   // Add a new bucket and get its bucket number.
-  uInt getNewBucket();
+  unsigned int getNewBucket();
 
   // Read the bucket (if needed) and return the pointer to it.
-  char* getBucket(uInt aBucketNr);
+  char* getBucket(unsigned int aBucketNr);
 
   // Remove a bucket from the bucket cache.
-  void removeBucket(uInt aBucketNr);
+  void removeBucket(unsigned int aBucketNr);
 
   // Get rows per bucket for the given column.
-  uInt getRowsPerBucket(uInt aColumn) const;
+  unsigned int getRowsPerBucket(unsigned int aColumn) const;
 
   // Return a pointer to the (one and only) StringHandler object.
   SSMStringHandler* getStringHandler();
@@ -327,10 +327,10 @@ class SSMBase : public DataManager {
 
   // Determine and set the bucket size.
   // It returns the number of rows per bucket.
-  uInt setBucketSize();
+  unsigned int setBucketSize();
 
   // Get the number of indices in use.
-  uInt getNrIndices() const;
+  unsigned int getNrIndices() const;
 
   // Add rows to the storage manager.
   // Per column it extends number of rows.
@@ -387,10 +387,10 @@ class SSMBase : public DataManager {
   rownr_t itsNrRows;
 
   // Column offset
-  Block<uInt> itsColumnOffset;
+  Block<unsigned int> itsColumnOffset;
 
   // Row Index ID containing all the columns in a bucket
-  Block<uInt> itsColIndexMap;
+  Block<unsigned int> itsColIndexMap;
 
   // Will contain all indices
   Block<SSMIndex*> itsPtrIndex;
@@ -405,39 +405,39 @@ class SSMBase : public DataManager {
   SSMStringHandler* itsStringHandler;
 
   // The persistent cache size.
-  uInt itsPersCacheSize;
+  unsigned int itsPersCacheSize;
 
   // The actual cache size.
-  uInt itsCacheSize;
+  unsigned int itsCacheSize;
 
   // The initial number of buckets in the cache.
-  uInt itsNrBuckets;
+  unsigned int itsNrBuckets;
 
   // Nr of buckets needed for index.
-  uInt itsNrIdxBuckets;
+  unsigned int itsNrIdxBuckets;
 
   // Number of the first index bucket
-  Int itsFirstIdxBucket;
+  int itsFirstIdxBucket;
 
   // Offset of index in first bucket.
   // If >0, the index fits in a single bucket.
-  uInt itsIdxBucketOffset;
+  unsigned int itsIdxBucketOffset;
 
   // Number of the first String Bucket
-  Int itsLastStringBucket;
+  int itsLastStringBucket;
 
   // length of index memoryblock
-  uInt itsIndexLength;
+  unsigned int itsIndexLength;
 
   // The nr of free buckets.
-  uInt itsFreeBucketsNr;
+  unsigned int itsFreeBucketsNr;
 
   // The first free bucket.
-  Int itsFirstFreeBucket;
+  int itsFirstFreeBucket;
 
   // The bucket size.
-  uInt itsBucketSize;
-  uInt itsBucketRows;
+  unsigned int itsBucketSize;
+  unsigned int itsBucketRows;
 
   // The assembly of all columns.
   Block<SSMColumn*> itsPtrColumn;
@@ -446,13 +446,13 @@ class SSMBase : public DataManager {
   bool isDataChanged;
 };
 
-inline uInt SSMBase::getNrIndices() const { return itsPtrIndex.nelements(); }
+inline unsigned int SSMBase::getNrIndices() const { return itsPtrIndex.nelements(); }
 
-inline uInt SSMBase::getCacheSize() const { return itsCacheSize; }
+inline unsigned int SSMBase::getCacheSize() const { return itsCacheSize; }
 
 inline rownr_t SSMBase::getNRow() const { return itsNrRows; }
 
-inline uInt SSMBase::getBucketSize() const { return itsBucketSize; }
+inline unsigned int SSMBase::getBucketSize() const { return itsBucketSize; }
 
 inline BucketCache& SSMBase::getCache() {
   if (itsCache == 0) {
@@ -461,9 +461,9 @@ inline BucketCache& SSMBase::getCache() {
   return *itsCache;
 }
 
-inline SSMColumn& SSMBase::getColumn(uInt aColNr) { return *(itsPtrColumn[aColNr]); }
+inline SSMColumn& SSMBase::getColumn(unsigned int aColNr) { return *(itsPtrColumn[aColNr]); }
 
-inline SSMIndex& SSMBase::getIndex(uInt anIdxNr) { return *(itsPtrIndex[anIdxNr]); }
+inline SSMIndex& SSMBase::getIndex(unsigned int anIdxNr) { return *(itsPtrIndex[anIdxNr]); }
 
 inline SSMStringHandler* SSMBase::getStringHandler() { return itsStringHandler; }
 

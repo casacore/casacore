@@ -95,13 +95,13 @@ VelocityMachine &VelocityMachine::operator=(const VelocityMachine &other) {
 VelocityMachine::~VelocityMachine() {}
 
 // # Operators
-const Quantum<Double> &VelocityMachine::operator()(const MVFrequency &in) {
+const Quantum<double> &VelocityMachine::operator()(const MVFrequency &in) {
   resv_p.setValue(cvvo_p(cvfv_p(in).toDoppler(rest_p).getValue()).getValue().get().getValue() /
                   vfac_p);
   return resv_p;
 }
 
-const Quantum<Double> &VelocityMachine::operator()(const MVDoppler &in) {
+const Quantum<double> &VelocityMachine::operator()(const MVDoppler &in) {
   resf_p.setValue(MVFrequency(cvvf_p(MFrequency::fromDoppler(cvov_p(in), rest_p, vfm_p).getValue())
                                   .getValue()
                                   .getValue())
@@ -110,7 +110,7 @@ const Quantum<Double> &VelocityMachine::operator()(const MVDoppler &in) {
   return resf_p;
 }
 
-const Quantum<Double> &VelocityMachine::operator()(const Quantum<Double> &in) {
+const Quantum<double> &VelocityMachine::operator()(const Quantum<double> &in) {
   static UnitVal Velocity = UnitVal::LENGTH / UnitVal::TIME;
   if (in.getFullUnit().getValue() == Velocity || in.getFullUnit().getValue() == UnitVal::NODIM) {
     return this->operator()(MVDoppler(in));
@@ -118,8 +118,8 @@ const Quantum<Double> &VelocityMachine::operator()(const Quantum<Double> &in) {
   return this->operator()(MVFrequency(in));
 }
 
-const Quantum<Double> &VelocityMachine::makeVelocity(Double in) {
-  Double rfreqValue = rest_p.get().getValue();
+const Quantum<double> &VelocityMachine::makeVelocity(double in) {
+  double rfreqValue = rest_p.get().getValue();
   ThrowIf(rfreqValue == 0, "Rest frequency is 0 so cannot convert to velocity");
   ThrowIf(rfreqValue < 0, "Rest frequency is " + std::to_string(rest_p) +
                               " which is invalid because it is less than 0 so cannot "
@@ -129,7 +129,7 @@ const Quantum<Double> &VelocityMachine::makeVelocity(Double in) {
   return resv_p;
 }
 
-const Quantum<Double> &VelocityMachine::makeFrequency(Double in) {
+const Quantum<double> &VelocityMachine::makeFrequency(double in) {
   resf_p.setValue(MVFrequency(cvvf_p(MFrequency::fromDoppler(cvov_p(in), rest_p, vfm_p).getValue())
                                   .getValue()
                                   .getValue())
@@ -138,11 +138,11 @@ const Quantum<Double> &VelocityMachine::makeFrequency(Double in) {
   return resf_p;
 }
 
-const Quantum<Vector<Double>> &VelocityMachine::makeVelocity(const Vector<Double> &in) {
-  uInt n = in.nelements();
+const Quantum<Vector<double>> &VelocityMachine::makeVelocity(const Vector<double> &in) {
+  unsigned int n = in.nelements();
   vresv_p.getValue().resize(n);
-  for (uInt i = 0; i < n; ++i) {
-    Double t = cvfv_p(in[i]).getValue();
+  for (unsigned int i = 0; i < n; ++i) {
+    double t = cvfv_p(in[i]).getValue();
     t /= rest_p.getValue();
     t *= t;
     vresv_p.getValue()[i] =
@@ -151,10 +151,10 @@ const Quantum<Vector<Double>> &VelocityMachine::makeVelocity(const Vector<Double
   return vresv_p;
 }
 
-const Quantum<Vector<Double>> &VelocityMachine::makeFrequency(const Vector<Double> &in) {
-  uInt n = in.nelements();
+const Quantum<Vector<double>> &VelocityMachine::makeFrequency(const Vector<double> &in) {
+  unsigned int n = in.nelements();
   vresf_p.getValue().resize(n);
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     vresf_p.getValue()(i) =
         MVFrequency(cvvf_p(MFrequency::fromDoppler(cvov_p(in(i)), rest_p, vfm_p).getValue())
                         .getValue()

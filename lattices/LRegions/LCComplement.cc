@@ -54,7 +54,7 @@ bool LCComplement::equals(const LCRegion& other) const { return LCRegionMulti::e
 
 LCRegion* LCComplement::cloneRegion() const { return new LCComplement(*this); }
 
-LCRegion* LCComplement::doTranslate(const Vector<Float>& translateVector,
+LCRegion* LCComplement::doTranslate(const Vector<float>& translateVector,
                                     const IPosition& newLatticeShape) const {
   Block<const LCRegion*> regions;
   multiTranslate(regions, translateVector, newLatticeShape);
@@ -91,7 +91,7 @@ void LCComplement::multiGetSlice(Array<bool>& buffer, const Slicer& section) {
   // Determine which part to get from the region (which is region 0).
   // Get and store negation in buffer when anything found.
   const IPosition& shape = buffer.shape();
-  uInt nrdim = shape.nelements();
+  unsigned int nrdim = shape.nelements();
   IPosition stbuf(nrdim);
   IPosition endbuf(nrdim);
   IPosition streg(nrdim);

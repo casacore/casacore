@@ -71,12 +71,12 @@ ScalarSampledFunctional<T> &ScalarSampledFunctional<T>::operator=(
 }
 
 template <class T>
-T ScalarSampledFunctional<T>::operator()(const uInt &index) const {
+T ScalarSampledFunctional<T>::operator()(const unsigned int &index) const {
   return refData(index);
 }
 
 template <class T>
-uInt ScalarSampledFunctional<T>::nelements() const {
+unsigned int ScalarSampledFunctional<T>::nelements() const {
   return refData.nelements();
 }
 

@@ -98,7 +98,7 @@ class TiledCollapser {
   // corresponds with the number of pixels produced per collapsed chunk.
   // <br><src>processAxis</src> is the axis of the line being passed
   // to the <src>process</src> function.
-  virtual void init(uInt nOutPixelsPerCollapse) = 0;
+  virtual void init(unsigned int nOutPixelsPerCollapse) = 0;
 
   // Can the process function in the derived class handle a null mask pointer?
   // If not, LatticeApply ensures that it'll always pass a mask block,
@@ -120,7 +120,7 @@ class TiledCollapser {
   // <br>In the <src>endAccumulator</src> function the accumulator
   // data has to be copied into an Array object with the correct
   // shape and data type.
-  virtual void initAccumulator(uInt64 n1, uInt64 n3) = 0;
+  virtual void initAccumulator(uint64_t n1, uint64_t n3) = 0;
 
   // Collapse the given input data containing (<src>nrval</src> values
   // with an increment of <src>inDataIncr</src> elements).
@@ -136,9 +136,9 @@ class TiledCollapser {
   // The position of other values can be calculated from index and shape
   // using function <src>toPositionInArray</src> in class
   // <linkto class=IPosition>IPosition</linkto>.
-  virtual void process(uInt accumIndex1, uInt accumIndex3, const T* inData, const bool* inMask,
-                       uInt inDataIncr, uInt inMaskIncr, uInt nrval, const IPosition& startPos,
-                       const IPosition& shape) = 0;
+  virtual void process(unsigned int accumIndex1, unsigned int accumIndex3, const T* inData,
+                       const bool* inMask, unsigned int inDataIncr, unsigned int inMaskIncr,
+                       unsigned int nrval, const IPosition& startPos, const IPosition& shape) = 0;
 
   // End the accumulator. It should return the accumulator as an
   // Array of datatype U (e.g. double the precision of type T)

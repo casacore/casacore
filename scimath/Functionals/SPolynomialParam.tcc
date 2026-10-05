@@ -36,14 +36,14 @@ template <class T>
 SPolynomialParam<T>::SPolynomialParam() : Function<T>(4) {
   param_p[0] = 1;
   param_p[2] = 1;
-  for (uInt i = 0; i < 3; ++i) mask(i) = false;
+  for (unsigned int i = 0; i < 3; ++i) mask(i) = false;
 }
 
 template <class T>
-SPolynomialParam<T>::SPolynomialParam(uInt order) : Function<T>(order + 4) {
+SPolynomialParam<T>::SPolynomialParam(unsigned int order) : Function<T>(order + 4) {
   param_p[0] = 1;
   param_p[2] = 1;
-  for (uInt i = 0; i < 3; ++i) mask(i) = false;
+  for (unsigned int i = 0; i < 3; ++i) mask(i) = false;
 }
 
 template <class T>
@@ -61,13 +61,13 @@ SPolynomialParam<T> &SPolynomialParam<T>::operator=(const SPolynomialParam<T> &o
 template <class T>
 Vector<T> SPolynomialParam<T>::coefficients() const {
   Vector<T> tmp(order() + 1);
-  for (uInt i = 3; i < nparameters(); ++i) tmp(i - 3) = param_p[i];
+  for (unsigned int i = 3; i < nparameters(); ++i) tmp(i - 3) = param_p[i];
   return tmp;
 }
 
 template <class T>
 void SPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
-  for (uInt i = 3; i < nparameters(); ++i) param_p[i] = coefficients[i - 3];
+  for (unsigned int i = 3; i < nparameters(); ++i) param_p[i] = coefficients[i - 3];
 }
 
 }  // namespace casacore

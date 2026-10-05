@@ -194,9 +194,10 @@ class IncrementalStMan : public ISMBase {
   // when the size is too small to hold the values of at least 2 rows.
   // For this check it uses 0 for the length of variable length strings.
   // <group>
-  explicit IncrementalStMan(uInt bucketSize = 0, bool checkBucketSize = true, uInt cacheSize = 1);
-  explicit IncrementalStMan(const String& dataManagerName, uInt bucketSize = 0,
-                            bool checkBucketSize = true, uInt cacheSize = 1);
+  explicit IncrementalStMan(unsigned int bucketSize = 0, bool checkBucketSize = true,
+                            unsigned int cacheSize = 1);
+  explicit IncrementalStMan(const String& dataManagerName, unsigned int bucketSize = 0,
+                            bool checkBucketSize = true, unsigned int cacheSize = 1);
   // </group>
 
   ~IncrementalStMan();

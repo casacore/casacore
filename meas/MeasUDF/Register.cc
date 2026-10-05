@@ -149,13 +149,13 @@ void HelpMeasUDF::showFuncsPosition(ostream& os, bool showTypes) {
     os << endl << "Known observatory positions (names are case-insenstive):" << endl;
     Vector<String> obs = MeasTable::Observatories().copy();
     genSort(obs);
-    uInt maxLen = 0;
-    for (uInt i = 0; i < obs.size(); ++i) {
+    unsigned int maxLen = 0;
+    for (unsigned int i = 0; i < obs.size(); ++i) {
       if (obs[i].size() > maxLen) maxLen = obs[i].size();
     }
-    uInt npl = 80 / (maxLen + 1);
-    uInt n = 0;
-    for (uInt i = 0; i < obs.size(); ++i) {
+    unsigned int npl = 80 / (maxLen + 1);
+    unsigned int n = 0;
+    for (unsigned int i = 0; i < obs.size(); ++i) {
       os << setw(maxLen + 1) << obs[i];
       if (++n == npl) {
         os << endl;

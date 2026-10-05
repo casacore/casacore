@@ -107,11 +107,11 @@ Param::operator==(const Param&) const {
   return false;
 }
 
-Double Param::getDouble(bool prompt) const  // Double value
+double Param::getDouble(bool prompt) const  // Double value
 {
 #if defined(EVAL)
-  Double d;
-  Int n = eval_double((const char*)value, &d, 1, &iret);
+  double d;
+  int n = eval_double((const char*)value, &d, 1, &iret);
   if (n == 1) {
     return d;
   } else {
@@ -125,14 +125,14 @@ Double Param::getDouble(bool prompt) const  // Double value
 #endif
 }
 
-Block<Double> Param::getDoubleArray(bool prompt) const  // Double value
+Block<double> Param::getDoubleArray(bool prompt) const  // Double value
 {
-  Int i;
-  Int idx = 0;
-  Int n = std::count(value.begin(), value.end(), ',') + 1;
+  int i;
+  int idx = 0;
+  int n = std::count(value.begin(), value.end(), ',') + 1;
   String z;
   String val(value);  // need a non-const String
-  Block<Double> x(n);
+  Block<double> x(n);
 
   if (prompt) {
     cerr << "No prompting implemented yet" << endl;
@@ -150,7 +150,7 @@ Block<Double> Param::getDoubleArray(bool prompt) const  // Double value
   return x;
 }
 
-Int Param::getInt(bool prompt) const  // Int value
+int Param::getInt(bool prompt) const  // Int value
 {
   if (prompt) {
     cerr << "No prompting implemented yet" << endl;
@@ -158,13 +158,13 @@ Int Param::getInt(bool prompt) const  // Int value
   return atoi(value.c_str());
 }
 
-Block<Int> Param::getIntArray(bool prompt) const {
-  Int i;
-  Int idx = 0;
-  Int n = std::count(value.begin(), value.end(), ',') + 1;
+Block<int> Param::getIntArray(bool prompt) const {
+  int i;
+  int idx = 0;
+  int n = std::count(value.begin(), value.end(), ',') + 1;
   String z;
   String val(value);  // need a non-const String
-  Block<Int> x(n);
+  Block<int> x(n);
 
   if (prompt) {
     cerr << "No prompting implemented yet" << endl;
@@ -191,9 +191,9 @@ const String& Param::getString(bool prompt) const  // string value
 }
 
 Block<String> Param::getStringArray(bool prompt) const {
-  Int i;
-  Int idx = 0;
-  Int n = std::count(value.begin(), value.end(), ',') + 1;
+  int i;
+  int idx = 0;
+  int n = std::count(value.begin(), value.end(), ',') + 1;
   String z;
   String val(value);  // need a non-const String
   Block<String> x(n);
@@ -227,9 +227,9 @@ bool Param::getBool(bool prompt) const  // Bool value
 Block<bool>
 Param::getBoolArray(bool prompt) const
 {
-    Int i;
-    Int idx;
-    Int n = value.freq(",")+1;
+    int i;
+    int idx;
+    int n = value.freq(",")+1;
     String z;
     Block<bool> x(n);
 

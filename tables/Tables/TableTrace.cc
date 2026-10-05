@@ -173,7 +173,7 @@ void TableTrace::trace(int tabid, const String& columnName, char oper) {
   writeTraceFirst(tabid, columnName, oper);
   *theirStream << '*' << endl;
 }
-void TableTrace::trace(int tabid, const String& columnName, char oper, Int64 row) {
+void TableTrace::trace(int tabid, const String& columnName, char oper, int64_t row) {
   writeTraceFirst(tabid, columnName, oper);
   *theirStream << row << endl;
 }
@@ -189,7 +189,7 @@ void TableTrace::trace(int tabid, const String& columnName, char oper, const IPo
   showContainer(*theirStream, shape);
   *theirStream << endl;
 }
-void TableTrace::trace(int tabid, const String& columnName, char oper, Int64 row,
+void TableTrace::trace(int tabid, const String& columnName, char oper, int64_t row,
                        const IPosition& shape) {
   writeTraceFirst(tabid, columnName, oper);
   *theirStream << row << ' ';
@@ -213,7 +213,7 @@ void TableTrace::trace(int tabid, const String& columnName, char oper, const IPo
   writeSlice(blc, trc, inc);
   *theirStream << endl;
 }
-void TableTrace::trace(int tabid, const String& columnName, char oper, Int64 row,
+void TableTrace::trace(int tabid, const String& columnName, char oper, int64_t row,
                        const IPosition& shape, const IPosition& blc, const IPosition& trc,
                        const IPosition& inc) {
   writeTraceFirst(tabid, columnName, oper);
@@ -266,7 +266,7 @@ void TableTrace::initOper() {
   AipsrcValue<String>::find(operStr, "table.trace.operation", "");
   if (!operStr.empty()) {
     ToLowerCaseInPlace(operStr);
-    for (uInt i = 0; i < operStr.size(); ++i) {
+    for (unsigned int i = 0; i < operStr.size(); ++i) {
       if (operStr[i] == 's') {
         theirDoTrace |= 2;
       } else if (operStr[i] == 'r') {
@@ -286,7 +286,7 @@ void TableTrace::initColumn() {
   AipsrcValue<String>::find(colStr, "table.trace.column", "");
   if (!typeStr.empty()) {
     ToLowerCaseInPlace(typeStr);
-    for (uInt i = 0; i < typeStr.size(); ++i) {
+    for (unsigned int i = 0; i < typeStr.size(); ++i) {
       if (typeStr[i] == 's') {
         theirColType |= SCALAR;
       } else if (typeStr[i] == 'a') {
@@ -301,7 +301,7 @@ void TableTrace::initColumn() {
   }
   Vector<String> cols = stringToVector(colStr, ',');
   theirColumns.reserve(cols.size());
-  for (uInt i = 0; i < cols.size(); ++i) {
+  for (unsigned int i = 0; i < cols.size(); ++i) {
     if (!cols[i].empty()) {
       theirColumns.push_back(Regex(Regex::fromPattern(cols[i])));
     }

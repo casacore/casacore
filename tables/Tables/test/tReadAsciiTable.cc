@@ -48,10 +48,10 @@
 void a(const String& dir);
 void aa(const String& dir);
 void ab(const String& dir);
-void a1(const String& dir, const String& commentMarker, Int firstLine, Int lastLine);
-void a2(const String& dir, const String& commentMarker, Int firstLine, Int lastLine);
-void b(const String& dir, const String& suffix, Char separator, const String& commentMarker,
-       Int firstLine, Int lastLine);
+void a1(const String& dir, const String& commentMarker, int firstLine, int lastLine);
+void a2(const String& dir, const String& commentMarker, int firstLine, int lastLine);
+void b(const String& dir, const String& suffix, char separator, const String& commentMarker,
+       int firstLine, int lastLine);
 void b1(const String& dir);
 void b2(const String& dir);
 void b3(const String& dir, const IPosition& autoShape);
@@ -105,15 +105,15 @@ void a(const String& dir) {
   Table tab("tReadAsciiTable_tmp.data_tab");
   cout << endl;
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Int> coli(tab, "COLI");
+  ScalarColumn<int> coli(tab, "COLI");
   ScalarColumn<float> colf(tab, "COLF");
   ScalarColumn<double> cold(tab, "COLD");
   ScalarColumn<Complex> colx(tab, "COLX");
   ScalarColumn<Complex> colz(tab, "COLZ");
   ScalarColumn<String> cols(tab, "COLS");
-  ScalarColumn<Double> colra(tab, "COLRA");
-  ScalarColumn<Double> coldec(tab, "COLDEC");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  ScalarColumn<double> colra(tab, "COLRA");
+  ScalarColumn<double> coldec(tab, "COLDEC");
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " " << colz(i) << " "
          << cols(i) << " " << colra(i) << " " << coldec(i) << endl;
   }
@@ -129,15 +129,15 @@ void aa(const String& dir) {
   cout << "Input format: [" << formStr << ']' << endl;
   cout << endl;
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Int> coli(tab, "COLI");
+  ScalarColumn<int> coli(tab, "COLI");
   ScalarColumn<float> colf(tab, "COLF");
   ScalarColumn<double> cold(tab, "COLD");
   ScalarColumn<Complex> colx(tab, "COLX");
   ScalarColumn<Complex> colz(tab, "COLZ");
   ScalarColumn<String> cols(tab, "COLS");
-  ScalarColumn<Double> colra(tab, "COLRA");
-  ScalarColumn<Double> coldec(tab, "COLDEC");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  ScalarColumn<double> colra(tab, "COLRA");
+  ScalarColumn<double> coldec(tab, "COLDEC");
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " " << colz(i) << " "
          << cols(i) << " " << colra(i) << " " << coldec(i) << endl;
   }
@@ -152,21 +152,21 @@ void ab(const String& dir) {
   cout << "Input format: [" << formStr << ']' << endl;
   cout << endl;
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Int> coli(tab, "COLI");
+  ScalarColumn<int> coli(tab, "COLI");
   ScalarColumn<float> colf(tab, "COLF");
   ScalarColumn<double> cold(tab, "COLD");
   ScalarColumn<Complex> colx(tab, "COLX");
   ScalarColumn<Complex> colz(tab, "COLZ");
   ScalarColumn<String> cols(tab, "COLS");
-  ScalarColumn<Double> colra(tab, "COLRA");
-  ScalarColumn<Double> coldec(tab, "COLDEC");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  ScalarColumn<double> colra(tab, "COLRA");
+  ScalarColumn<double> coldec(tab, "COLDEC");
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " " << colz(i) << " "
          << cols(i) << " " << colra(i) << " " << coldec(i) << endl;
   }
 }
 
-void a1(const String& dir, const String& commentMarker, Int firstLine, Int lastLine) {
+void a1(const String& dir, const String& commentMarker, int firstLine, int lastLine) {
   cout << ">>>" << endl;
   String formStr =
       readAsciiTable(dir + "tReadAsciiTable.in_tah", "", "tReadAsciiTable_tmp.data_tah", true, ' ',
@@ -176,7 +176,7 @@ void a1(const String& dir, const String& commentMarker, Int firstLine, Int lastL
   Table tab("tReadAsciiTable_tmp.data_tah");
   cout << endl;
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Int> col1(tab, "Column1");
+  ScalarColumn<int> col1(tab, "Column1");
   ScalarColumn<double> col2(tab, "Column2");
   ScalarColumn<double> col3(tab, "Column3");
   ScalarColumn<double> col4(tab, "Column4");
@@ -184,13 +184,13 @@ void a1(const String& dir, const String& commentMarker, Int firstLine, Int lastL
   ScalarColumn<double> col6(tab, "Column6");
   ScalarColumn<double> col7(tab, "Column7");
   ScalarColumn<String> col8(tab, "Column8");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << col1(i) << " " << col2(i) << " " << col3(i) << " " << col4(i) << " " << col5(i) << " "
          << col6(i) << " " << col7(i) << " " << col8(i) << endl;
   }
 }
 
-void a2(const String& dir, const String& commentMarker, Int firstLine, Int lastLine) {
+void a2(const String& dir, const String& commentMarker, int firstLine, int lastLine) {
   cout << ">>>" << endl;
   Vector<String> names(7);
   Vector<String> types(7);
@@ -216,21 +216,21 @@ void a2(const String& dir, const String& commentMarker, Int firstLine, Int lastL
   Table tab("tReadAsciiTable_tmp.data_tah");
   cout << endl;
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Int> coli(tab, "COLI");
+  ScalarColumn<int> coli(tab, "COLI");
   ScalarColumn<float> colf(tab, "COLF");
   ScalarColumn<double> cold(tab, "COLD");
   ScalarColumn<Complex> colx(tab, "COLX");
   ScalarColumn<float> colz1(tab, "COLZ1");
   ScalarColumn<double> colz2(tab, "COLZ2");
   ScalarColumn<String> cols(tab, "COLS");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " " << colz1(i) << " "
          << colz2(i) << " " << cols(i) << endl;
   }
 }
 
-void b(const String& dir, const String& suffix, Char separator, const String& commentMarker,
-       Int firstLine, Int lastLine) {
+void b(const String& dir, const String& suffix, char separator, const String& commentMarker,
+       int firstLine, int lastLine) {
   cout << ">>>" << endl;
   String formStr =
       readAsciiTable(dir + "tReadAsciiTable.in_tkh" + suffix,
@@ -282,8 +282,8 @@ void b(const String& dir, const String& suffix, Char separator, const String& co
     cout << "DKEYS " << keycol.asString("DKEYS") << endl;
   }
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Short> cols(tab, "COLS");
-  ScalarColumn<Int> coli(tab, "COLI");
+  ScalarColumn<short> cols(tab, "COLS");
+  ScalarColumn<int> coli(tab, "COLI");
   ScalarColumn<float> colf(tab, "COLF");
   ScalarColumn<double> cold(tab, "COLD");
   ScalarColumn<Complex> colx(tab, "COLX");
@@ -292,7 +292,7 @@ void b(const String& dir, const String& suffix, Char separator, const String& co
   ScalarColumn<DComplex> coldz(tab, "COLDZ");
   ScalarColumn<String> cola(tab, "COLA");
   ScalarColumn<bool> colb(tab, "COLB");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << cols(i) << " " << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " "
          << coldx(i) << " " << colz(i) << " " << coldz(i) << " " << cola(i) << " " << colb(i)
          << endl;
@@ -344,8 +344,8 @@ void b1(const String& dir) {
     cout << "DKEYS " << keycol.asString("DKEYS") << endl;
   }
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
-  ScalarColumn<Short> cols(tab, "COLS");
-  ScalarColumn<Int> coli(tab, "COLI");
+  ScalarColumn<short> cols(tab, "COLS");
+  ScalarColumn<int> coli(tab, "COLI");
   ScalarColumn<float> colf(tab, "COLF");
   ScalarColumn<double> cold(tab, "COLD");
   ScalarColumn<Complex> colx(tab, "COLX");
@@ -354,7 +354,7 @@ void b1(const String& dir) {
   ScalarColumn<DComplex> coldz(tab, "COLDZ");
   ScalarColumn<String> cola(tab, "COLA");
   ScalarColumn<bool> colb(tab, "COLB");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << cols(i) << " " << coli(i) << " " << colf(i) << " " << cold(i) << " " << colx(i) << " "
          << colz(i) << " " << coldx(i) << " " << coldz(i) << " " << cola(i) << " " << colb(i)
          << endl;
@@ -403,7 +403,7 @@ void b2(const String& dir) {
   ScalarColumn<String> col8(tab, "Column8");
   ScalarColumn<String> col9(tab, "Column9");
   ScalarColumn<String> col10(tab, "Column10");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << col1(i) << " " << col2(i) << " " << col3(i) << " " << col4(i) << " " << col5(i) << " "
          << col6(i) << " " << col7(i) << " " << col8(i) << " " << col9(i) << " " << col10(i)
          << endl;
@@ -421,7 +421,7 @@ void b3(const String& dir, const IPosition& autoShape) {
   Table tab("tReadAsciiTable_tmp.data_tk");
   cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn() << " columns" << endl;
   ArrayColumn<String> col1(tab, "Column1");
-  for (uInt i = 0; i < tab.nrow(); i++) {
+  for (unsigned int i = 0; i < tab.nrow(); i++) {
     cout << col1(i) << endl;
   }
 }

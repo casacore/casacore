@@ -99,12 +99,12 @@ class RadialVelocityUDF : public UDFBase {
   virtual void setup(const Table&, const TaQLStyle&);
 
   // Get the value.
-  virtual Double getDouble(const TableExprId& id);
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
 
  private:
   // Try if the value is given as Doppler. true is returned if so.
-  bool tryDoppler(uInt& argnr);
+  bool tryDoppler(unsigned int& argnr);
 
   // # Data members.
   RadialVelocityEngine itsEngine;

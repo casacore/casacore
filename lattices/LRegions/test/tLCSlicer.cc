@@ -120,14 +120,14 @@ void doIt() {
     cout << sl.start() << sl.end() << sl.stride() << endl;
   }
   // Test using vectors with combination of fractional and absolute/relative.
-  Vector<Float> blc(3);
-  Vector<Float> trc(3);
-  Vector<Float> inc(3);
+  Vector<float> blc(3);
+  Vector<float> trc(3);
+  Vector<float> inc(3);
   Vector<bool> fracblc(3);
   Vector<bool> fractrc(3);
   Vector<bool> fracinc(3);
-  Vector<Int> relblc(3);
-  Vector<Int> reltrc(3);
+  Vector<int> relblc(3);
+  Vector<int> reltrc(3);
   blc(0) = 0.125;
   blc(1) = 8;
   blc(2) = 3;
@@ -160,8 +160,8 @@ void doIt() {
     cout << sl.start() << sl.end() << sl.stride() << endl;
   }
   {
-    Vector<Double> blc(3);
-    Vector<Double> trc(2);
+    Vector<double> blc(3);
+    Vector<double> trc(2);
     blc(0) = 0.4;
     blc(1) = 0.1;
     blc(2) = 0.3;
@@ -180,20 +180,20 @@ void doIt() {
   {
     // Test if constructing from a record works fine.
     // Such a record is created by the quarter function in regionmanager.g.
-    Vector<Float> vec(2);
+    Vector<float> vec(2);
     Vector<bool> flags(2);
     flags = true;
-    Vector<Int> absrel(2);
+    Vector<int> absrel(2);
     absrel = RegionType::Abs;
     vec = 0.25;
     TableRecord rec;
     rec.define("name", "LCSLicer");
-    rec.define("isRegion", Int(RegionType::ArrSlicer));
+    rec.define("isRegion", int(RegionType::ArrSlicer));
     vec = 0.25;
     rec.define("blc", vec);
     vec = 0.75;
     rec.define("trc", vec);
-    rec.define("inc", Vector<Float>());
+    rec.define("inc", Vector<float>());
     rec.define("fracblc", flags);
     rec.define("fractrc", flags);
     rec.define("fracinc", Vector<bool>());
@@ -207,7 +207,7 @@ void doIt() {
     delete lc;
   }
   {
-    Vector<Float> blc(4, 0), trc(4, 0), refPix(4, 0);
+    Vector<float> blc(4, 0), trc(4, 0), refPix(4, 0);
     blc[3] = 23;
     trc[0] = 399;
     trc[1] = 399;
@@ -223,10 +223,10 @@ void doIt() {
   }
   // Test if MimicSource works fine, also in to/fromRecord.
   {
-    Vector<Float> blc(1, Slicer::MimicSource);
-    Vector<Float> trc(1, Slicer::MimicSource);
-    Vector<Float> inc(1, Slicer::MimicSource);
-    Vector<Float> refPix(1, 100);
+    Vector<float> blc(1, Slicer::MimicSource);
+    Vector<float> trc(1, Slicer::MimicSource);
+    Vector<float> inc(1, Slicer::MimicSource);
+    Vector<float> refPix(1, 100);
     IPosition newLatticeShape(1, 400);
     {
       LCSlicer lcslicer(blc, trc, false, RegionType::RelRef);

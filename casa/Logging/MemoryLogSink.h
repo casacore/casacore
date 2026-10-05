@@ -85,22 +85,22 @@ class MemoryLogSink : public LogSinkInterface {
   virtual ~MemoryLogSink();
 
   // Get number of messages in sink.
-  virtual uInt nelements() const;
+  virtual unsigned int nelements() const;
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime(uInt i) const;
-  virtual String getPriority(uInt i) const;
-  virtual String getMessage(uInt i) const;
-  virtual String getLocation(uInt i) const;
-  virtual String getObjectID(uInt i) const;
+  virtual double getTime(unsigned int i) const;
+  virtual String getPriority(unsigned int i) const;
+  virtual String getMessage(unsigned int i) const;
+  virtual String getLocation(unsigned int i) const;
+  virtual String getObjectID(unsigned int i) const;
   // </group>
 
   // If the message passes the filter, write it to memory
   virtual bool postLocally(const LogMessage& message);
 
   // Write a message (usually from another logsink) into the local one.
-  virtual void writeLocally(Double time, const String& message, const String& priority,
+  virtual void writeLocally(double time, const String& message, const String& priority,
                             const String& location, const String& objectID);
 
   // Clear the local sink (i.e. remove all messages from it).
@@ -117,10 +117,10 @@ class MemoryLogSink : public LogSinkInterface {
 
   // Rezize the blocks to the given size, but at least 64 elements
   // more than the current size.
-  void resize(uInt nrnew);
+  void resize(unsigned int nrnew);
 
-  uInt nmsg_p;
-  Block<Double> time_p;
+  unsigned int nmsg_p;
+  Block<double> time_p;
   Block<String> priority_p;
   Block<String> message_p;
   Block<String> location_p;

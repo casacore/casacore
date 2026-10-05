@@ -52,7 +52,7 @@
 // Outcomment and uncomment the correct typedef and define.
 // typedef Int Type;
 
-typedef Double Type;
+typedef double Type;
 #define ARRINIT indgen(array)
 #define ARRINCR array += (Type)1
 
@@ -75,7 +75,7 @@ TSMOption makeAcc(int acc, bool read = true) {
   return TSMOption(TSMOption::Cache, 0, 0);
 }
 
-bool readTable(int acc, bool chk, const IPosition& shape, uInt nrrow) {
+bool readTable(int acc, bool chk, const IPosition& shape, unsigned int nrrow) {
   bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
@@ -87,7 +87,7 @@ bool readTable(int acc, bool chk, const IPosition& shape, uInt nrrow) {
   Array<Type> array(shape);
   ARRINIT;
   Timer timer;
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     data.get(i, result);
     if (chk) {
       if (!allEQ(array, result)) {
@@ -105,7 +105,7 @@ bool readTable(int acc, bool chk, const IPosition& shape, uInt nrrow) {
 }
 
 bool readSlices(int acc, bool chk, const IPosition& shape, const IPosition& blc,
-                const IPosition& trc, const IPosition& inc, uInt nrrow) {
+                const IPosition& trc, const IPosition& inc, unsigned int nrrow) {
   bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
@@ -119,7 +119,7 @@ bool readSlices(int acc, bool chk, const IPosition& shape, const IPosition& blc,
   Slicer slicer(blc, trc, inc, Slicer::endIsLast);
   Array<Type> arraySlice(array(blc, trc, inc));
   Timer timer;
-  for (uInt i = 0; i < nrrow; i++) {
+  for (unsigned int i = 0; i < nrrow; i++) {
     data.getSlice(i, slicer, result);
     if (chk) {
       if (!allEQ(arraySlice, result)) {
@@ -137,7 +137,7 @@ bool readSlices(int acc, bool chk, const IPosition& shape, const IPosition& blc,
 }
 
 bool readColX(int acc, bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
-              const IPosition& inc, uInt nrrow) {
+              const IPosition& inc, unsigned int nrrow) {
   bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
@@ -146,7 +146,7 @@ bool readColX(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
-  uInt lastAxis = shape.nelements();
+  unsigned int lastAxis = shape.nelements();
   IPosition shpa = shape.concatenate(IPosition(1, 1));
   IPosition blca = blc.concatenate(IPosition(1, 0));
   IPosition trca = trc.concatenate(IPosition(1, 0));
@@ -157,7 +157,7 @@ bool readColX(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
   IPosition bl, tr, ic;
   IPosition resShp = slicer.inferShapeFromSource(shape, bl, tr, ic);
   Timer timer;
-  for (Int i = 0; i < resShp(0); i++) {
+  for (int i = 0; i < resShp(0); i++) {
     bl(0) = i;
     tr(0) = i;
     Slicer slc(bl, tr, ic, Slicer::endIsLast);
@@ -166,7 +166,7 @@ bool readColX(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
       IPosition end = result.shape() - 1;
       end(lastAxis) = 0;
       IPosition st = IPosition(end.nelements(), 0);
-      for (uInt j = 0; j < nrrow; j++) {
+      for (unsigned int j = 0; j < nrrow; j++) {
         st(lastAxis) = j;
         end(lastAxis) = j;
         blca(0) = i;
@@ -190,7 +190,7 @@ bool readColX(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
 }
 
 bool readColY(int acc, bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
-              const IPosition& inc, uInt nrrow) {
+              const IPosition& inc, unsigned int nrrow) {
   bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
@@ -199,7 +199,7 @@ bool readColY(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
-  uInt lastAxis = shape.nelements();
+  unsigned int lastAxis = shape.nelements();
   IPosition shpa = shape.concatenate(IPosition(1, 1));
   IPosition blca = blc.concatenate(IPosition(1, 0));
   IPosition trca = trc.concatenate(IPosition(1, 0));
@@ -210,7 +210,7 @@ bool readColY(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
   IPosition bl, tr, ic;
   IPosition resShp = slicer.inferShapeFromSource(shape, bl, tr, ic);
   Timer timer;
-  for (Int i = 0; i < resShp(1); i++) {
+  for (int i = 0; i < resShp(1); i++) {
     bl(1) = i;
     tr(1) = i;
     Slicer slc(bl, tr, ic, Slicer::endIsLast);
@@ -219,7 +219,7 @@ bool readColY(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
       IPosition end = result.shape() - 1;
       end(lastAxis) = 0;
       IPosition st = IPosition(end.nelements(), 0);
-      for (uInt j = 0; j < nrrow; j++) {
+      for (unsigned int j = 0; j < nrrow; j++) {
         st(lastAxis) = j;
         end(lastAxis) = j;
         blca(1) = i;
@@ -243,7 +243,7 @@ bool readColY(int acc, bool chk, const IPosition& shape, const IPosition& blc, c
 }
 
 bool readCol(int acc, bool chk, const IPosition& shape, const IPosition& blc, const IPosition& trc,
-             const IPosition& inc, uInt nrrow) {
+             const IPosition& inc, unsigned int nrrow) {
   bool ok = true;
   Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
@@ -252,7 +252,7 @@ bool readCol(int acc, bool chk, const IPosition& shape, const IPosition& blc, co
   }
   ArrayColumn<Type> data(table, "Data");
   Array<Type> result;
-  uInt lastAxis = shape.nelements();
+  unsigned int lastAxis = shape.nelements();
   IPosition shpa = shape.concatenate(IPosition(1, 1));
   IPosition blca = blc.concatenate(IPosition(1, 0));
   IPosition trca = trc.concatenate(IPosition(1, 0));
@@ -267,7 +267,7 @@ bool readCol(int acc, bool chk, const IPosition& shape, const IPosition& blc, co
     IPosition end = result.shape() - 1;
     end(lastAxis) = 0;
     IPosition st = IPosition(end.nelements(), 0);
-    for (uInt i = 0; i < nrrow; i++) {
+    for (unsigned int i = 0; i < nrrow; i++) {
       st(lastAxis) = i;
       end(lastAxis) = i;
       Array<Type> arr(result(st, end));
@@ -285,7 +285,8 @@ bool readCol(int acc, bool chk, const IPosition& shape, const IPosition& blc, co
   return ok;
 }
 
-void writeVar(int acc, bool chk, const IPosition& shape, const IPosition& tileShape, uInt nrrow) {
+void writeVar(int acc, bool chk, const IPosition& shape, const IPosition& tileShape,
+              unsigned int nrrow) {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.addColumn(ArrayColumnDesc<Type>("Data", shape.nelements()));
@@ -299,7 +300,7 @@ void writeVar(int acc, bool chk, const IPosition& shape, const IPosition& tileSh
   Table table(newtab, 0, false, Table::AipsrcEndian, makeAcc(acc, false));
   ArrayColumn<Type> data(table, "Data");
   Array<Type> array(shape);
-  uInt i;
+  unsigned int i;
   ARRINIT;
   Timer timer;
   try {
@@ -336,7 +337,7 @@ int main(int argc, const char* argv[]) {
       cout << "    &16= 1: read column slices" << endl;
       return 0;
     }
-    uInt acc, mode, nrow, nx, ny;
+    unsigned int acc, mode, nrow, nx, ny;
     {
       istringstream istr(argv[1]);
       istr >> acc;
@@ -357,47 +358,47 @@ int main(int argc, const char* argv[]) {
       istringstream istr(argv[5]);
       istr >> ny;
     }
-    uInt tx = nx;
+    unsigned int tx = nx;
     if (argc >= 7) {
       istringstream istr(argv[6]);
       istr >> tx;
     }
-    uInt ty = ny;
+    unsigned int ty = ny;
     if (argc >= 8) {
       istringstream istr(argv[7]);
       istr >> ty;
     }
-    uInt tz = 1;
+    unsigned int tz = 1;
     if (argc >= 9) {
       istringstream istr(argv[8]);
       istr >> tz;
     }
-    uInt sx = 0;
+    unsigned int sx = 0;
     if (argc >= 10) {
       istringstream istr(argv[9]);
       istr >> sx;
     }
-    uInt sy = 0;
+    unsigned int sy = 0;
     if (argc >= 11) {
       istringstream istr(argv[10]);
       istr >> sy;
     }
-    uInt ex = nx - 1;
+    unsigned int ex = nx - 1;
     if (argc >= 12) {
       istringstream istr(argv[11]);
       istr >> ex;
     }
-    uInt ey = ny - 1;
+    unsigned int ey = ny - 1;
     if (argc >= 13) {
       istringstream istr(argv[12]);
       istr >> ey;
     }
-    uInt ix = 1;
+    unsigned int ix = 1;
     if (argc >= 14) {
       istringstream istr(argv[13]);
       istr >> ix;
     }
-    uInt iy = 1;
+    unsigned int iy = 1;
     if (argc >= 15) {
       istringstream istr(argv[14]);
       istr >> iy;

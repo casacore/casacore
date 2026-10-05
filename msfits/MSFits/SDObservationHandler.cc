@@ -112,7 +112,7 @@ void SDObservationHandler::resetRow(const Record &row) {
 }
 
 void SDObservationHandler::fill(const Record &, const String &telescopeName,
-                                const Vector<Double> &timeRange) {
+                                const Vector<double> &timeRange) {
   // don't bother unless there is something there
   if (msObs_p) {
     // NS_OBSID key must be set first since it might cause a new column
@@ -157,12 +157,12 @@ void SDObservationHandler::fill(const Record &, const String &telescopeName,
       *flagRowKey_p = false;
     }
     bool found = false;
-    uInt whichRow = 0;
+    unsigned int whichRow = 0;
 
     // if there is a time range field, there may be more than one matching row
     if (timeRange_p.isAttached()) {
       Vector<rownr_t> rows = index_p->getRowNumbers();
-      uInt whichElement = 0;
+      unsigned int whichElement = 0;
       while (!found && whichElement < rows.nelements()) {
         whichRow = rows(whichElement++);
         if (allEQ(*timeRange_p, msObsCols_p->timeRange()(whichRow))) found = true;
@@ -249,7 +249,7 @@ void SDObservationHandler::makeIndex() {
   delete index_p;
   index_p = 0;
 
-  Int nKeys = 5;
+  int nKeys = 5;
   if (!nsObsIdCol_p.isNull()) nKeys++;
 
   Vector<String> keys(nKeys);
@@ -321,9 +321,9 @@ void SDObservationHandler::initRow(Vector<bool> &handledCols, const Record &row)
   rownr_p = -1;
 }
 
-void SDObservationHandler::updateTimeRange(const Vector<Double> &timeRange) {
+void SDObservationHandler::updateTimeRange(const Vector<double> &timeRange) {
   if (rownr_p >= 0) {
-    Vector<Double> oldTimeRange = msObsCols_p->timeRange()(rownr_p);
+    Vector<double> oldTimeRange = msObsCols_p->timeRange()(rownr_p);
     oldTimeRange(0) = min(oldTimeRange(0), timeRange(0));
     oldTimeRange(1) = max(oldTimeRange(1), timeRange(1));
     msObsCols_p->timeRange().put(rownr_p, oldTimeRange);

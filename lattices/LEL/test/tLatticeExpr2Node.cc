@@ -39,7 +39,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-bool checkFloat(const LatticeExprNode& expr, const Array<Float>& result, Float scalarResult,
+bool checkFloat(const LatticeExprNode& expr, const Array<float>& result, float scalarResult,
                 bool isInvalid, const Array<bool>& mask) {
   // Test if result is indeed a scalar.
   // If so, test if invalid if it should be.
@@ -70,7 +70,7 @@ bool checkFloat(const LatticeExprNode& expr, const Array<Float>& result, Float s
     return false;
   }
   // Get the result (value and optional mask).
-  LELArray<Float> arr(shape);
+  LELArray<float> arr(shape);
   IPosition origin(shape);
   origin = 0;
   Slicer region(origin, shape);
@@ -229,15 +229,15 @@ bool checkBool(const LatticeExprNode& expr, const Array<bool>& result, bool scal
   return true;
 }
 
-bool doIt(const SubLattice<Float>& aF, const SubLattice<Float>& bF) {
+bool doIt(const SubLattice<float>& aF, const SubLattice<float>& bF) {
   Array<bool> lmask;
-  Array<Float> emptyFArr;
+  Array<float> emptyFArr;
   Array<bool> emptyBArr;
   Array<Complex> emptyCArr;
   Array<bool> emptyMask;
-  Array<Float> arra;
+  Array<float> arra;
   arra = aF.get();
-  Array<Float> arrb;
+  Array<float> arrb;
   arrb = bF.get();
   Array<bool> aMask = aF.getMask().copy();
   Array<bool> bMask = bF.getMask().copy();
@@ -296,9 +296,9 @@ bool doIt(const SubLattice<Float>& aF, const SubLattice<Float>& bF) {
   if (!checkFloat(min(aF) / max(bF), emptyFArr, min(arra) / max(arrb), invalid, emptyMask))
     ok = false;
 
-  Array<Float> maxarra(arra.shape());
+  Array<float> maxarra(arra.shape());
   maxarra = max(arra);
-  Array<Float> minarrb(arrb.shape());
+  Array<float> minarrb(arrb.shape());
   minarrb = min(arrb);
   if (!checkFloat(atan2(aF, bF), atan2(arra, arrb), 0, false, mask)) ok = false;
   if (!checkFloat(atan2(aF, min(bF)), atan2(arra, minarrb), 0, false, asMask)) ok = false;
@@ -339,19 +339,19 @@ bool doIt(const SubLattice<Float>& aF, const SubLattice<Float>& bF) {
 
   Array<Complex> arrc(arra.shape());
   bool delc, dela, delb;
-  uInt nr = arrc.nelements();
+  unsigned int nr = arrc.nelements();
   Complex* cptr = arrc.getStorage(delc);
-  const Float* aptr = arra.getStorage(dela);
-  const Float* bptr = arrb.getStorage(delb);
-  for (uInt i = 0; i < nr; i++) {
+  const float* aptr = arra.getStorage(dela);
+  const float* bptr = arrb.getStorage(delb);
+  for (unsigned int i = 0; i < nr; i++) {
     cptr[i] = Complex(aptr[i], bptr[i]);
   }
   if (!checkComplex(formComplex(aF, bF), arrc, 0, false, mask)) ok = false;
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     cptr[i] = Complex(aptr[i], min(arrb));
   }
   if (!checkComplex(formComplex(aF, min(bF)), arrc, 0, false, asMask)) ok = false;
-  for (uInt i = 0; i < nr; i++) {
+  for (unsigned int i = 0; i < nr; i++) {
     cptr[i] = Complex(max(arra), bptr[i]);
   }
   if (!checkComplex(formComplex(max(aF), bF), arrc, 0, false, bsMask)) ok = false;
@@ -700,14 +700,14 @@ int main() {
   bool ok = true;
   try {
     IPosition shape(2, 2, 2);
-    Array<Float> arra(shape);
-    Array<Float> arrb(shape);
+    Array<float> arra(shape);
+    Array<float> arrb(shape);
     // Make sure to fill the arrays with positive values,
     // otherwise some iif tests in doIt will fail.
-    indgen(arra, Float(1), Float(1));
-    indgen(arrb, Float(11), Float(1));
-    ArrayLattice<Float> aF(arra);
-    ArrayLattice<Float> bF(arrb);
+    indgen(arra, float(1), float(1));
+    indgen(arrb, float(11), float(1));
+    ArrayLattice<float> aF(arra);
+    ArrayLattice<float> bF(arrb);
     Array<bool> mat1(shape);
     Array<bool> mat2(shape);
     mat1 = true;
@@ -716,31 +716,31 @@ int main() {
     LCBox box(shape);
     LCPixelSet mask1(mat1, box);
     LCPixelSet mask2(mat2, box);
-    if (!doIt(SubLattice<Float>(aF), SubLattice<Float>(bF))) {
+    if (!doIt(SubLattice<float>(aF), SubLattice<float>(bF))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF), SubLattice<Float>(bF, mask1))) {
+    if (!doIt(SubLattice<float>(aF), SubLattice<float>(bF, mask1))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask1), SubLattice<Float>(bF))) {
+    if (!doIt(SubLattice<float>(aF, mask1), SubLattice<float>(bF))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask1), SubLattice<Float>(bF, mask1))) {
+    if (!doIt(SubLattice<float>(aF, mask1), SubLattice<float>(bF, mask1))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF), SubLattice<Float>(bF, mask2))) {
+    if (!doIt(SubLattice<float>(aF), SubLattice<float>(bF, mask2))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask2), SubLattice<Float>(bF))) {
+    if (!doIt(SubLattice<float>(aF, mask2), SubLattice<float>(bF))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask2), SubLattice<Float>(bF, mask2))) {
+    if (!doIt(SubLattice<float>(aF, mask2), SubLattice<float>(bF, mask2))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask1), SubLattice<Float>(bF, mask2))) {
+    if (!doIt(SubLattice<float>(aF, mask1), SubLattice<float>(bF, mask2))) {
       ok = false;
     }
-    if (!doIt(SubLattice<Float>(aF, mask2), SubLattice<Float>(bF, mask1))) {
+    if (!doIt(SubLattice<float>(aF, mask2), SubLattice<float>(bF, mask1))) {
       ok = false;
     }
   } catch (std::exception& x) {

@@ -53,7 +53,7 @@ void NullTable::mergeLock(const TableLock&) { throw makeError("mergeLoc"); }
 
 bool NullTable::hasLock(FileLocker::LockType) const { throw makeError("hasLock"); }
 
-bool NullTable::lock(FileLocker::LockType, uInt) { throw makeError("lock"); }
+bool NullTable::lock(FileLocker::LockType, unsigned int) { throw makeError("lock"); }
 
 void NullTable::unlock() { throw makeError("unlock"); }
 
@@ -61,7 +61,7 @@ void NullTable::flush(bool, bool) { throw makeError("flush"); }
 
 void NullTable::resync() { throw makeError("resync"); }
 
-uInt NullTable::getModifyCounter() const { throw makeError("getModifyCounter"); }
+unsigned int NullTable::getModifyCounter() const { throw makeError("getModifyCounter"); }
 
 bool NullTable::isWritable() const { throw makeError("isWritable"); }
 
@@ -78,7 +78,7 @@ TableRecord& NullTable::keywordSet() { throw makeError("keywordSet"); }
 
 TableRecord& NullTable::rwKeywordSet() { throw makeError("rwKeywordSet"); }
 
-BaseColumn* NullTable::getColumn(uInt) const { throw makeError("getColumn"); }
+BaseColumn* NullTable::getColumn(unsigned int) const { throw makeError("getColumn"); }
 
 BaseColumn* NullTable::getColumn(const String&) const { throw makeError("getColumn"); }
 
@@ -134,7 +134,7 @@ bool NullTable::adjustRownrs(rownr_t, Vector<rownr_t>&, bool) const {
 
 std::shared_ptr<BaseTable> NullTable::doSort(Block<BaseColumn*>&,
                                              const Block<std::shared_ptr<BaseCompare>>&,
-                                             const Block<Int>&, int,
+                                             const Block<int>&, int,
                                              std::shared_ptr<Vector<rownr_t>>,
                                              std::shared_ptr<Vector<size_t>>) {
   throw makeError("doSort");

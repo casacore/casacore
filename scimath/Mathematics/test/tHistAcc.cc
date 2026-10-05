@@ -34,25 +34,25 @@
 
 int main() {
   try {
-    uInt i;          // Index
-    uInt nv = 1000;  // Nr of input values
+    unsigned int i;          // Index
+    unsigned int nv = 1000;  // Nr of input values
 
     String captioni(" tHistAcc test for <Int>");
     String captionf(" tHistAcc test for <Float>");
 
-    StatAcc<Int> si;    // Statistics accumulator
-    StatAcc<Float> sf;  // Statistics accumulator
+    StatAcc<int> si;    // Statistics accumulator
+    StatAcc<float> sf;  // Statistics accumulator
 
-    HistAcc<Int> hmani(-2, 10, 1);    // Manually defined bins
-    HistAcc<Float> hmanf(-2, 10, 1);  // Manually defined bins
+    HistAcc<int> hmani(-2, 10, 1);    // Manually defined bins
+    HistAcc<float> hmanf(-2, 10, 1);  // Manually defined bins
 
-    HistAcc<Float> hautof(25);       // Fully automatic
-    HistAcc<Int> hautoi(25);         // Fully automatic
-    HistAcc<Float> hsemif(25, 2.0);  // Semi automatic (width given)
+    HistAcc<float> hautof(25);       // Fully automatic
+    HistAcc<int> hautoi(25);         // Fully automatic
+    HistAcc<float> hsemif(25, 2.0);  // Semi automatic (width given)
 
-    Vector<Int> vvi(nv, 0);      // values of required type
-    Vector<Float> vvf(nv, 0.0);  // values of required type
-    Block<Float> bvf(nv);        // values of required type
+    Vector<int> vvi(nv, 0);      // values of required type
+    Vector<float> vvf(nv, 0.0);  // values of required type
+    Block<float> bvf(nv);        // values of required type
 
     ACG gen(10, 20);               // random number generator
     Normal rnd(&gen, -5.0, 10.0);  // Normal distr (mean, variance)
@@ -61,8 +61,8 @@ int main() {
     for (i = 0; i < nv; i++) {
       vvi(i) = i;              // temporary
       vvf(i) = rnd();          // Array values
-      vvi(i) = Int(vvf(i));    // round to Int
-      vvf(i) = Float(vvi(i));  // whole numbers Float
+      vvi(i) = int(vvf(i));    // round to Int
+      vvf(i) = float(vvi(i));  // whole numbers Float
       bvf[i] = vvi(i);         // Block too
     }
 
@@ -92,8 +92,8 @@ int main() {
     cout << "  hmanf.getStatistics().getMean():    ";
     cout << hmanf.getStatistics().getMean().value() << endl;
 
-    Block<uInt> binsi;
-    Block<Float> valsf;
+    Block<unsigned int> binsi;
+    Block<float> valsf;
     hmanf.getHistogram(binsi, valsf);
     cout << "  length of binsi=" << binsi.nelements() << endl;
     cout << "  length of valsf=" << valsf.nelements() << endl;

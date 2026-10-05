@@ -90,18 +90,18 @@ void TableExprGroupNFalse::apply(const TableExprId& id) {
 }
 
 TableExprGroupMinInt::TableExprGroupMinInt(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node, std::numeric_limits<Int64>::max()) {}
+    : TableExprGroupFuncInt(node, std::numeric_limits<int64_t>::max()) {}
 TableExprGroupMinInt::~TableExprGroupMinInt() {}
 void TableExprGroupMinInt::apply(const TableExprId& id) {
-  Int64 v = itsOperand->getInt(id);
+  int64_t v = itsOperand->getInt(id);
   if (v < itsValue) itsValue = v;
 }
 
 TableExprGroupMaxInt::TableExprGroupMaxInt(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node, std::numeric_limits<Int64>::min()) {}
+    : TableExprGroupFuncInt(node, std::numeric_limits<int64_t>::min()) {}
 TableExprGroupMaxInt::~TableExprGroupMaxInt() {}
 void TableExprGroupMaxInt::apply(const TableExprId& id) {
-  Int64 v = itsOperand->getInt(id);
+  int64_t v = itsOperand->getInt(id);
   if (v > itsValue) itsValue = v;
 }
 
@@ -118,23 +118,23 @@ TableExprGroupSumSqrInt::TableExprGroupSumSqrInt(TableExprNodeRep* node)
     : TableExprGroupFuncInt(node) {}
 TableExprGroupSumSqrInt::~TableExprGroupSumSqrInt() {}
 void TableExprGroupSumSqrInt::apply(const TableExprId& id) {
-  Int64 v = itsOperand->getInt(id);
+  int64_t v = itsOperand->getInt(id);
   itsValue += v * v;
 }
 
 TableExprGroupMinDouble::TableExprGroupMinDouble(TableExprNodeRep* node)
-    : TableExprGroupFuncDouble(node, std::numeric_limits<Double>::max()) {}
+    : TableExprGroupFuncDouble(node, std::numeric_limits<double>::max()) {}
 TableExprGroupMinDouble::~TableExprGroupMinDouble() {}
 void TableExprGroupMinDouble::apply(const TableExprId& id) {
-  Double v = itsOperand->getDouble(id);
+  double v = itsOperand->getDouble(id);
   if (v < itsValue) itsValue = v;
 }
 
 TableExprGroupMaxDouble::TableExprGroupMaxDouble(TableExprNodeRep* node)
-    : TableExprGroupFuncDouble(node, std::numeric_limits<Double>::min()) {}
+    : TableExprGroupFuncDouble(node, std::numeric_limits<double>::min()) {}
 TableExprGroupMaxDouble::~TableExprGroupMaxDouble() {}
 void TableExprGroupMaxDouble::apply(const TableExprId& id) {
-  Double v = itsOperand->getDouble(id);
+  double v = itsOperand->getDouble(id);
   if (v > itsValue) itsValue = v;
 }
 
@@ -156,7 +156,7 @@ TableExprGroupSumSqrDouble::TableExprGroupSumSqrDouble(TableExprNodeRep* node)
     : TableExprGroupFuncDouble(node) {}
 TableExprGroupSumSqrDouble::~TableExprGroupSumSqrDouble() {}
 void TableExprGroupSumSqrDouble::apply(const TableExprId& id) {
-  Double v = itsOperand->getDouble(id);
+  double v = itsOperand->getDouble(id);
   itsValue += v * v;
 }
 
@@ -173,7 +173,8 @@ void TableExprGroupMeanDouble::finish() {
   }
 }
 
-TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node, uInt ddof)
+TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node,
+                                                           unsigned int ddof)
     : TableExprGroupFuncDouble(node), itsDdof(ddof), itsNr(0), itsCurMean(0) {}
 TableExprGroupVarianceDouble::~TableExprGroupVarianceDouble() {}
 void TableExprGroupVarianceDouble::apply(const TableExprId& id) {
@@ -181,8 +182,8 @@ void TableExprGroupVarianceDouble::apply(const TableExprId& id) {
   // numerically stable algorithm
   // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
   itsNr++;
-  Double v = itsOperand->getDouble(id);
-  Double delta = v - itsCurMean;
+  double v = itsOperand->getDouble(id);
+  double delta = v - itsCurMean;
   itsCurMean += delta / itsNr;
   itsValue += delta * (v - itsCurMean);  // itsValue contains the M2 value
 }
@@ -194,7 +195,7 @@ void TableExprGroupVarianceDouble::finish() {
   }
 }
 
-TableExprGroupStdDevDouble::TableExprGroupStdDevDouble(TableExprNodeRep* node, uInt ddof)
+TableExprGroupStdDevDouble::TableExprGroupStdDevDouble(TableExprNodeRep* node, unsigned int ddof)
     : TableExprGroupVarianceDouble(node, ddof) {}
 TableExprGroupStdDevDouble::~TableExprGroupStdDevDouble() {}
 void TableExprGroupStdDevDouble::finish() {
@@ -206,7 +207,7 @@ TableExprGroupRmsDouble::TableExprGroupRmsDouble(TableExprNodeRep* node)
     : TableExprGroupFuncDouble(node), itsNr(0) {}
 TableExprGroupRmsDouble::~TableExprGroupRmsDouble() {}
 void TableExprGroupRmsDouble::apply(const TableExprId& id) {
-  Double v = itsOperand->getDouble(id);
+  double v = itsOperand->getDouble(id);
   itsValue += v * v;
   itsNr++;
 }
@@ -216,20 +217,20 @@ void TableExprGroupRmsDouble::finish() {
   }
 }
 
-TableExprGroupFractileDouble::TableExprGroupFractileDouble(TableExprNodeRep* node, Double fraction)
+TableExprGroupFractileDouble::TableExprGroupFractileDouble(TableExprNodeRep* node, double fraction)
     : TableExprGroupFuncDouble(node), itsFrac(fraction) {}
 TableExprGroupFractileDouble::~TableExprGroupFractileDouble() {}
 bool TableExprGroupFractileDouble::isLazy() const { return true; }
 void TableExprGroupFractileDouble::apply(const TableExprId&) {}
-Double TableExprGroupFractileDouble::getDouble(const vector<TableExprId>& ids) {
-  vector<Double> values;
+double TableExprGroupFractileDouble::getDouble(const vector<TableExprId>& ids) {
+  vector<double> values;
   values.reserve(ids.size());
   for (size_t i = 0; i < ids.size(); ++i) {
     values.push_back(itsOperand->getDouble(ids[i]));
   }
   if (!values.empty()) {
-    return GenSort<Double>::kthLargest(&(values[0]), values.size(),
-                                       static_cast<Int>((values.size() - 1.) * itsFrac + 0.001));
+    return GenSort<double>::kthLargest(&(values[0]), values.size(),
+                                       static_cast<int>((values.size() - 1.) * itsFrac + 0.001));
   }
   return 0;
 }
@@ -269,7 +270,8 @@ void TableExprGroupMeanDComplex::finish() {
   }
 }
 
-TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node, uInt ddof)
+TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node,
+                                                               unsigned int ddof)
     : TableExprGroupFuncDouble(node), itsDdof(ddof), itsNr(0) {}
 TableExprGroupVarianceDComplex::~TableExprGroupVarianceDComplex() {}
 void TableExprGroupVarianceDComplex::apply(const TableExprId& id) {
@@ -279,7 +281,7 @@ void TableExprGroupVarianceDComplex::apply(const TableExprId& id) {
   itsNr++;
   DComplex v = itsOperand->getDComplex(id);
   DComplex delta = v - itsCurMean;
-  itsCurMean += delta / Double(itsNr);
+  itsCurMean += delta / double(itsNr);
   DComplex d = v - itsCurMean;
   itsValue += real(delta) * real(d) + imag(delta) * imag(d);
 }
@@ -291,7 +293,8 @@ void TableExprGroupVarianceDComplex::finish() {
   }
 }
 
-TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node, uInt ddof)
+TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node,
+                                                           unsigned int ddof)
     : TableExprGroupVarianceDComplex(node, ddof) {}
 TableExprGroupStdDevDComplex::~TableExprGroupStdDevDComplex() {}
 void TableExprGroupStdDevDComplex::finish() {

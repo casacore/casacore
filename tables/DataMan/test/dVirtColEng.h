@@ -106,17 +106,17 @@ class DummyVirtualScalar : public VirtualScalarColumn<double> {
   // Get a value.
   //+grp
   void get(rownr_t rownr, double& data);
-  // We also implement the getdoubleV, because that saves a
+  // We also implement the getDoubleV, because that saves a
   // virtual function call.
-  void getdoubleV(rownr_t rownr, double* dataPtr);
+  void getDoubleV(rownr_t rownr, double* dataPtr);
   //-grp
 
   // Put a value.
   //+grp
   void put(rownr_t rownr, const double& data);
-  // We also implement the putdoubleV, because that saves a
+  // We also implement the putDoubleV, because that saves a
   // virtual function call.
-  void putdoubleV(rownr_t rownr, const double* dataPtr);
+  void putDoubleV(rownr_t rownr, const double* dataPtr);
   //-grp
 
   // # We could also define the get/putBlockDoubleV functions, but
@@ -128,10 +128,10 @@ class DummyVirtualScalar : public VirtualScalarColumn<double> {
   // # Now define the data members.
   DummyVirtualEngine* enginePtr_p;  // pointer to engine object
   double scale_p;                   // scale factor
-  Int writable_p;                   // 1 = column is writable
+  int writable_p;                   // 1 = column is writable
   //                                    -1 = column is not writable
   //                                     0 = not known yet
-  ScalarColumn<Int>* column_p;  // the unscaled table column
+  ScalarColumn<int>* column_p;  // the unscaled table column
 };
 
 // <category lib=aips module="Tables" sect="Virtual Columns">
@@ -203,7 +203,7 @@ class DummyVirtualArray : public VirtualArrayColumn<double> {
   bool isShapeDefined(rownr_t rownr);
 
   // Get the dimensionality of the (underlying) array.
-  uInt ndim(rownr_t rownr);
+  unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the (underlying) array.
   IPosition shape(rownr_t rownr);
@@ -221,10 +221,10 @@ class DummyVirtualArray : public VirtualArrayColumn<double> {
   // # Now define the data members.
   DummyVirtualEngine* enginePtr_p;  // pointer to engine object
   double scale_p;                   // scale factor
-  Int writable_p;                   // 1 = column is writable
+  int writable_p;                   // 1 = column is writable
   //                                   -1 = column is not writable
   //                                    0 = not known yet
-  ArrayColumn<Int>* column_p;  // the unscaled table column (for put)
+  ArrayColumn<int>* column_p;  // the unscaled table column (for put)
 };
 
 // <category lib=aips module="Tables" sect="Virtual Columns">

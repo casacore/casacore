@@ -97,36 +97,36 @@ class MSSpwIndex {
   virtual ~MSSpwIndex() {};
 
   // Look up FIELD_ID's for a given field name, or set of field names
-  Vector<Int> matchName(const String& name);
-  Vector<Int> matchName(const Vector<String>& names);
+  Vector<int> matchName(const String& name);
+  Vector<int> matchName(const Vector<String>& names);
   void matchNameAsIntID(Vector<int>& list);
 
-  Vector<Int> matchFrequencyRange(const Float f0, const Float f1, bool approx, const Float f3 = 0);
+  Vector<int> matchFrequencyRange(const float f0, const float f1, bool approx, const float f3 = 0);
 
   // A version of match freq range that does not throw an exception but returns
   // false if no match...else spw, start, nchan returns the matches
   // f0 and f1 are in Hz and the match is done in the frame defined in the
   // SpectralWindow table.
-  bool matchFrequencyRange(const Double f0, const Double f1, Vector<Int>& spw, Vector<Int>& start,
-                           Vector<Int>& nchan);
+  bool matchFrequencyRange(const double f0, const double f1, Vector<int>& spw, Vector<int>& start,
+                           Vector<int>& nchan);
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up FIELD_ID's for a given source id
-  Vector<Int> matchId(const Vector<Int>& spwIds);
+  Vector<int> matchId(const Vector<int>& spwIds);
 
-  Vector<Int> matchLT(const Int n);
-  Vector<Int> matchGT(const Int n);
-  Vector<Int> matchGTAndLT(const Int n0, const int n1);
-  Vector<Int> matchLT(const Float*);
-  Vector<Int> matchGT(const Float*);
-  Vector<Int> matchGTAndLT(const Float* phyValMin, const Float* phyValMax);
-  Vector<Float> convertToMKS(const Float f0, const Float f1, const String& unit);
-  Vector<Int> convertToChannelIndex(const Vector<Int>& spw, const Vector<Float>& freqList,
-                                    Int& nFSpec);
-  Vector<Int> convertToSpwIndex(const Vector<Float>& freqList, Int& nFSpec);
+  Vector<int> matchLT(const int n);
+  Vector<int> matchGT(const int n);
+  Vector<int> matchGTAndLT(const int n0, const int n1);
+  Vector<int> matchLT(const float*);
+  Vector<int> matchGT(const float*);
+  Vector<int> matchGTAndLT(const float* phyValMin, const float* phyValMax);
+  Vector<float> convertToMKS(const float f0, const float f1, const String& unit);
+  Vector<int> convertToChannelIndex(const Vector<int>& spw, const Vector<float>& freqList,
+                                    int& nFSpec);
+  Vector<int> convertToSpwIndex(const Vector<float>& freqList, int& nFSpec);
 
  private:
-  Int findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
+  int findChanIndex_p(const float& freq, const Vector<double>& chanFreqList,
                       const bool& greaterThan, const bool& ascendingOrder);
   // Construct from an MS FIELD subtable
   MSSpwIndex();
@@ -134,7 +134,7 @@ class MSSpwIndex {
   MSSpWindowColumns msSpwSubTable_p;
   //  MSDataDescColumns msDataDescSubTable_p;
   enum MODES { EXACT = 1, APPROX, RANGE };
-  Vector<Int> spwIDs;
+  Vector<int> spwIDs;
 };
 
 }  // namespace casacore

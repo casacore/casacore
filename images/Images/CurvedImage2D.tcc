@@ -45,7 +45,7 @@ CurvedImage2D<T>::CurvedImage2D() : itsImagePtr(0), itsCurLatPtr(0) {}
 template <class T>
 CurvedImage2D<T>::CurvedImage2D(const ImageInterface<T>& image,
                                 const CLInterpolator2D<T>& interpolator, const PixelCurve1D& curve,
-                                uInt axis1, uInt axis2, Int curveAxis)
+                                unsigned int axis1, unsigned int axis2, int curveAxis)
     : itsImagePtr(image.cloneII()) {
   itsCurLatPtr = new CurvedLattice2D<T>(image, interpolator, curve, axis1, axis2, curveAxis);
 
@@ -180,12 +180,12 @@ bool CurvedImage2D<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section
 }
 
 template <class T>
-uInt CurvedImage2D<T>::advisedMaxPixels() const {
+unsigned int CurvedImage2D<T>::advisedMaxPixels() const {
   return itsCurLatPtr->advisedMaxPixels();
 }
 
 template <class T>
-IPosition CurvedImage2D<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition CurvedImage2D<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return itsCurLatPtr->niceCursorShape(maxPixels);
 }
 
@@ -196,7 +196,7 @@ LatticeIterInterface<T>* CurvedImage2D<T>::makeIter(const LatticeNavigator& navi
 }
 
 template <class T>
-bool CurvedImage2D<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool CurvedImage2D<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsCurLatPtr->lock(type, nattempts);
 }
 template <class T>

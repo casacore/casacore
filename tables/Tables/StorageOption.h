@@ -92,7 +92,7 @@ class StorageOption {
   // A size value -1 means use the default of 4*1024*1024.
   // <br>useODirect<0 means reading the option from the aipsrc file.
   // It is only set if the OS supports O_DIRECT.
-  StorageOption(Option option = Aipsrc, Int blockSize = -2, Int useODirect = -3);
+  StorageOption(Option option = Aipsrc, int blockSize = -2, int useODirect = -3);
 
   // Fill the option in case Aipsrc or Default was given.
   // It is done as explained in the synopsis.
@@ -105,10 +105,10 @@ class StorageOption {
   void setOption(Option option) { itsOption = option; }
 
   // Get the block size (in bytes).
-  uInt blockSize() const { return itsBlockSize; }
+  unsigned int blockSize() const { return itsBlockSize; }
 
   // Set the block size (in bytes).
-  void setBlockSize(Int blockSize) { itsBlockSize = blockSize; }
+  void setBlockSize(int blockSize) { itsBlockSize = blockSize; }
 
   // Get the O_DIRECT option.
   bool useODirect() const { return itsUseODirect; }
@@ -119,7 +119,7 @@ class StorageOption {
 
  private:
   Option itsOption;
-  Int itsBlockSize;
+  int itsBlockSize;
   bool itsUseODirect;
   bool itsUseAipsrcODirect;
 };

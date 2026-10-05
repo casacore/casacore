@@ -95,7 +95,7 @@ class Polynomial : public PolynomialParam<T> {
   Polynomial() : PolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero.
-  explicit Polynomial(uInt order) : PolynomialParam<T>(order) {}
+  explicit Polynomial(unsigned int order) : PolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   Polynomial(const Polynomial<T> &other) : PolynomialParam<T>(other) {}
@@ -157,7 +157,7 @@ class Polynomial_PS<AutoDiff<T>> : public PolynomialParam<AutoDiff<T>> {
   //  Constructs one dimensional Polynomials.
   //  <group>
   Polynomial_PS() : PolynomialParam<AutoDiff<T>>() {}
-  explicit Polynomial_PS(uInt order) : PolynomialParam<AutoDiff<T>>(order) {}
+  explicit Polynomial_PS(unsigned int order) : PolynomialParam<AutoDiff<T>>(order) {}
   // </group>
 
   // Copy constructor (deep copy)

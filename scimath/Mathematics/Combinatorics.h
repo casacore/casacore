@@ -65,20 +65,20 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class Combinatorics {
  public:
   // Get n!
-  static uInt factorial(const uInt n) {
+  static unsigned int factorial(const unsigned int n) {
     fillCache(n);
     return _factorialCache[n];
   }
 
   // "n choose k" = n!/(k!(n-k)!)
   // Exception is thrown if k > n.
-  static uInt choose(const uInt n, const uInt k);
+  static unsigned int choose(const unsigned int n, const unsigned int k);
 
  private:
-  static void fillCache(const uInt n);
+  static void fillCache(const unsigned int n);
 
-  static Vector<uInt> _factorialCache;
-  static volatile uInt _factorialCacheSize;  // # volatile for double checked lock
+  static Vector<unsigned int> _factorialCache;
+  static volatile unsigned int _factorialCacheSize;  // # volatile for double checked lock
   static std::mutex theirMutex;
 };
 }  // namespace casacore

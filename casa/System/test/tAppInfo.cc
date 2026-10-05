@@ -35,7 +35,7 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Double tz = AppInfo::timeZone();
+  double tz = AppInfo::timeZone();
   cout << "Timezone offset (hours) : " << tz * 24.0 << endl;
   AlwaysAssertExit(tz == AppInfo::timeZone() && tz >= -1.0 && tz <= 1.0);
 
@@ -51,7 +51,7 @@ int main() {
     dirs(0) = ".";
     dirs(1) = "/tmp";
     dirs(2) = "/doesnotexist";
-    uInt index = AipsrcVector<String>::registerRC("user.directories.work", dirs);
+    unsigned int index = AipsrcVector<String>::registerRC("user.directories.work", dirs);
     AipsrcVector<String>::set(index, dirs);
     cerr << "\n\n=====Expect a single WARN level log message\n" << endl;
     tmp = AppInfo::workDirectories();

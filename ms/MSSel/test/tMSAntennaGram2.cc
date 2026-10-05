@@ -65,7 +65,7 @@ int main(int argc, const char* argv[]) {
     cout << "ms file is  " << msName << std::endl;
     MeasurementSet ms(msName);
     MSSelection mss;
-    for (Int i = 2; i < argc; i++) {
+    for (int i = 2; i < argc; i++) {
       cout << "Parsing expression: " << argv[i] << std::endl;
       mss.setAntennaExpr(String(argv[i]));
     }

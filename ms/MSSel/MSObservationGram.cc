@@ -64,12 +64,12 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
 static const char* strpMSObservationGram = 0;
-static Int posMSObservationGram = 0;
+static int posMSObservationGram = 0;
 
 // # Parse the command.
 // # Do a yyrestart(yyin) first to make the flex scanner reentrant.
 TableExprNode baseMSObservationGramParseCommand(MSObservationParse* parser, const String& command,
-                                                Vector<Int>& selectedIDs) {
+                                                Vector<int>& selectedIDs) {
   try {
     MSObservationGramrestart(MSObservationGramin);
     yy_start = 1;
@@ -93,7 +93,7 @@ TableExprNode baseMSObservationGramParseCommand(MSObservationParse* parser, cons
 TableExprNode msObservationGramParseCommand(const MeasurementSet* ms,
                                             const MSObservation& obsSubTable,
                                             const TableExprNode& colAsTEN, const String& command,
-                                            Vector<Int>& selectedIDs) {
+                                            Vector<int>& selectedIDs) {
   TableExprNode ret;
   MSObservationParse* thisParser = new MSObservationParse(ms, obsSubTable, colAsTEN);
   try {
@@ -146,7 +146,7 @@ void msObservationGramParseDeleteNode() {
 }
 
 // # Give the string position.
-Int& msObservationGramPosition() { return posMSObservationGram; }
+int& msObservationGramPosition() { return posMSObservationGram; }
 
 // # Get the next input characters for flex.
 int msObservationGramInput(char* buf, int max_size) {

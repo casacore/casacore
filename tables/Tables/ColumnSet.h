@@ -113,7 +113,7 @@ class ColumnSet {
   PlainColumn* getColumn(const String& columnName) const;
 
   // Get a column by index.
-  PlainColumn* getColumn(uInt columnIndex) const;
+  PlainColumn* getColumn(unsigned int columnIndex) const;
 
   // Add a data manager.
   // It increments seqCount_p and returns that as a unique sequence number.
@@ -238,7 +238,7 @@ class ColumnSet {
   // Get the correct data manager.
   // This is used by the column objects to link themselves to the
   // correct datamanagers when they are read back.
-  DataManager* getDataManager(uInt seqnr) const;
+  DataManager* getDataManager(unsigned int seqnr) const;
 
   // Check if no double data manager names have been given.
   void checkDataManagerNames(const String& tableName) const;
@@ -266,19 +266,19 @@ class ColumnSet {
   void removeLastDataManager();
 
   // Let the data managers (from the given index on) initialize themselves.
-  void initSomeDataManagers(uInt from, Table& tab);
+  void initSomeDataManagers(unsigned int from, Table& tab);
 
   // Let the data managers (from the given index on) prepare themselves.
-  void prepareSomeDataManagers(uInt from);
+  void prepareSomeDataManagers(unsigned int from);
 
   // Open or create the MultiFile if needed.
-  void openMultiFile(uInt from, const Table& tab, ByteIO::OpenOption);
+  void openMultiFile(unsigned int from, const Table& tab, ByteIO::OpenOption);
 
   // Check if a data manager name has not already been used.
   // Start checking at the given index in the array.
   // It returns false if the name has already been used.
   // By default an exception is thrown if the name has already been used.
-  bool checkDataManagerName(const String& name, uInt from, const String& tableName,
+  bool checkDataManagerName(const String& name, unsigned int from, const String& tableName,
                             bool doTthrow = true) const;
 
   // Do the actual addition of a column.
@@ -289,7 +289,7 @@ class ColumnSet {
   // a data manager have to be removed. A count of -1 means that all
   // columns have to be removed. For such columns the flag in the
   // returned Block is false, otherwise true.
-  std::map<void*, Int> checkRemoveColumn(const Vector<String>& columnNames);
+  std::map<void*, int> checkRemoveColumn(const Vector<String>& columnNames);
 
   // Check if the table is locked for read or write.
   // If manual or permanent locking is in effect, it checks if the
@@ -305,7 +305,7 @@ class ColumnSet {
   BaseTable* baseTablePtr_p;
   TableLockData* lockPtr_p;          // # lock object
   std::map<String, void*> colMap_p;  // # list of PlainColumns
-  uInt seqCount_p;                   // # sequence number count
+  unsigned int seqCount_p;           // # sequence number count
   // #                                           (used for unique seqnr)
   Block<void*> blockDataMan_p;   // # list of data managers
   Block<bool> dataManChanged_p;  // # data has changed

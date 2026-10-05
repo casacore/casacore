@@ -106,23 +106,23 @@ class AipsrcVector : public Aipsrc {
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
   // <group>
-  static uInt registerRC(const String &keyword, const Vector<T> &deflt);
-  static uInt registerRC(const String &keyword, const Unit &defun, const Unit &resun,
-                         const Vector<T> &deflt);
+  static unsigned int registerRC(const String &keyword, const Vector<T> &deflt);
+  static unsigned int registerRC(const String &keyword, const Unit &defun, const Unit &resun,
+                                 const Vector<T> &deflt);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
   // <group>
-  static const Vector<T> get(uInt keyword);
+  static const Vector<T> get(unsigned int keyword);
   // </group>
 
   // Sets allow registered values to be set
   // <group>
-  static void set(uInt keyword, const Vector<T> &deflt);
+  static void set(unsigned int keyword, const Vector<T> &deflt);
   // </group>
 
   // Save registered value to <src>$HOME/.aipsrc</src>
-  static void save(uInt keyword);
+  static void save(unsigned int keyword);
 
  private:
   // # Data
@@ -149,10 +149,10 @@ class AipsrcVector_String<String> : public Aipsrc {
  public:
   static bool find(Vector<String> &value, const String &keyword);
   static bool find(Vector<String> &value, const String &keyword, const Vector<String> &deflt);
-  static uInt registerRC(const String &keyword, const Vector<String> &deflt);
-  static const Vector<String> get(uInt keyword);
-  static void set(uInt keyword, const Vector<String> &deflt);
-  static void save(uInt keyword);
+  static unsigned int registerRC(const String &keyword, const Vector<String> &deflt);
+  static const Vector<String> get(unsigned int keyword);
+  static void set(unsigned int keyword, const Vector<String> &deflt);
+  static void save(unsigned int keyword);
 
  private:
   inline static std::mutex theirMutex;
@@ -177,10 +177,10 @@ class AipsrcVector_Bool<bool> : public Aipsrc {
  public:
   static bool find(Vector<bool> &value, const String &keyword);
   static bool find(Vector<bool> &value, const String &keyword, const Vector<bool> &deflt);
-  static uInt registerRC(const String &keyword, const Vector<bool> &deflt);
-  static const Vector<bool> get(uInt keyword);
-  static void set(uInt keyword, const Vector<bool> &deflt);
-  static void save(uInt keyword);
+  static unsigned int registerRC(const String &keyword, const Vector<bool> &deflt);
+  static const Vector<bool> get(unsigned int keyword);
+  static void set(unsigned int keyword, const Vector<bool> &deflt);
+  static void save(unsigned int keyword);
 
  private:
   inline static std::mutex theirMutex;

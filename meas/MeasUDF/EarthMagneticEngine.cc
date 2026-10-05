@@ -46,11 +46,11 @@ EarthMagneticEngine::EarthMagneticEngine()
 
 EarthMagneticEngine::~EarthMagneticEngine() {}
 
-void EarthMagneticEngine::handleEarthMagnetic(vector<TENShPtr>& args, uInt& argnr) {
+void EarthMagneticEngine::handleEarthMagnetic(vector<TENShPtr>& args, unsigned int& argnr) {
   // Types are unknown.
   itsRefType = MEarthMagnetic::ITRF;
   itsValueType = 0;
-  uInt nargnr = argnr + 1;
+  unsigned int nargnr = argnr + 1;
   bool asScalar = false;
   if (!args[argnr]->isReal()) {
     throw AipsError(
@@ -118,7 +118,7 @@ String EarthMagneticEngine::stripMeasType(const String& typex) {
   return type;
 }
 
-void EarthMagneticEngine::deriveAttr(const Unit& unit, Int) {
+void EarthMagneticEngine::deriveAttr(const Unit& unit, int) {
   // Check if the unit is length or angle.
   if (unit.empty()) {
     itsInUnit = "rad";
@@ -138,7 +138,7 @@ void EarthMagneticEngine::deriveAttr(const Unit& unit, Int) {
   }
 }
 
-void EarthMagneticEngine::setValueType(Int valueType) { itsValueType = valueType; }
+void EarthMagneticEngine::setValueType(int valueType) { itsValueType = valueType; }
 
 void EarthMagneticEngine::handleScalars(const TENShPtr& e1, const TENShPtr& e2,
                                         const TENShPtr& e3) {
@@ -173,7 +173,7 @@ MEarthMagnetic EarthMagneticEngine::makeEarthMagnetic(const Quantity& qh, const 
 
 void EarthMagneticEngine::handleValues(TableExprNode& operand, const TableExprId& id,
                                        Array<MEarthMagnetic>& earthMagnetics) {
-  Array<Double> values;
+  Array<double> values;
   values = operand.getArrayDouble(id);
   IPosition shape = values.shape();
   if (shape[0] % 3 != 0) {
@@ -196,9 +196,9 @@ void EarthMagneticEngine::handleValues(TableExprNode& operand, const TableExprId
     qh = Quantity(0, "nT");
   }
   bool delIt;
-  const Double* valVec = values.getStorage(delIt);
+  const double* valVec = values.getStorage(delIt);
   MEarthMagnetic* emVec = earthMagnetics.data();
-  for (uInt i = 0; i < earthMagnetics.size(); ++i) {
+  for (unsigned int i = 0; i < earthMagnetics.size(); ++i) {
     q1.setValue(valVec[i * 3]);
     q2.setValue(valVec[i * 3 + 1]);
     qh.setValue(valVec[i * 3 + 2]);
@@ -231,7 +231,7 @@ void EarthMagneticEngine::setDirectionEngine(DirectionEngine& engine) {
   itsFrame.set(MDirection());
 }
 
-void EarthMagneticEngine::set(MEarthMagnetic::Types toRefType, Int toValueType, bool asLOS,
+void EarthMagneticEngine::set(MEarthMagnetic::Types toRefType, int toValueType, bool asLOS,
                               bool asLong, bool useModel) {
   itsToValueType = toValueType;
   itsAsLOS = asLOS;
@@ -265,11 +265,11 @@ Array<MEarthMagnetic> EarthMagneticEngine::getEarthMagnetics(const TableExprId& 
   return earthMagnetics;
 }
 
-Array<Double> EarthMagneticEngine::getHeights(const TableExprId& id) {
+Array<double> EarthMagneticEngine::getHeights(const TableExprId& id) {
   return itsExprNode.getDoubleAS(id).array();
 }
 
-Array<Double> EarthMagneticEngine::getArrayDouble(const TableExprId& id) {
+Array<double> EarthMagneticEngine::getArrayDouble(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   // Get epochs and positions if given.
   Array<MEpoch> eps(IPosition(1, 1));
@@ -284,10 +284,10 @@ Array<Double> EarthMagneticEngine::getArrayDouble(const TableExprId& id) {
   IPosition vshape;
   Array<MEarthMagnetic> ems;
   Array<MDirection> dirs;
-  Array<Double> heights;
+  Array<double> heights;
   const MEarthMagnetic* ePtr = 0;
   const MDirection* dPtr = 0;
-  const Double* hPtr = 0;
+  const double* hPtr = 0;
   size_t nval1 = 1;
   size_t nval2 = 1;
   if (itsUseModel) {
@@ -310,7 +310,7 @@ Array<Double> EarthMagneticEngine::getArrayDouble(const TableExprId& id) {
     cout << "ems=" << ems << endl;
   }
   // Convert the earthMagnetic to the given type for all values.
-  Array<Double> out;
+  Array<double> out;
   if (nval1 == 0 || nval2 == 0 || eps.empty() || pos.empty()) {
     return out;
   }

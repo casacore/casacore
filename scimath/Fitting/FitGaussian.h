@@ -122,25 +122,25 @@ class FitGaussian {
   // can be modified later if necessary.
   // <group>
   FitGaussian();
-  FitGaussian(uInt dimension);
-  FitGaussian(uInt dimension, uInt numgaussians);
+  FitGaussian(unsigned int dimension);
+  FitGaussian(unsigned int dimension, unsigned int numgaussians);
   // </group>
 
   // Adjust the number of dimensions
-  void setDimensions(uInt dimensions);
+  void setDimensions(unsigned int dimensions);
 
   // Adjust the number of gaussians to fit
-  void setNumGaussians(uInt numgaussians);
+  void setNumGaussians(unsigned int numgaussians);
 
   // Set the initial estimate (the starting point of the first fit.)
   void setFirstEstimate(const Matrix<T>& estimate);
 
   // Set the maximum number of retries.
-  void setMaxRetries(uInt nretries) { itsMaxRetries = nretries; };
+  void setMaxRetries(unsigned int nretries) { itsMaxRetries = nretries; };
 
   // Set the maximum amount of time to spend (in seconds).  If time runs out
   // during a fit the process will still complete that fit.
-  void setMaxTime(Double maxtime) { itsMaxTime = maxtime; };
+  void setMaxTime(double maxtime) { itsMaxTime = maxtime; };
 
   // Set the retry factors, the values that are added/multiplied with the
   // first estimate on subsequent attempts if the first attempt fails.
@@ -151,20 +151,20 @@ class FitGaussian {
   // </group>
 
   // Return the number of retry options available
-  uInt nRetryFactors() { return itsRetryFctr.nrow(); };
+  unsigned int nRetryFactors() { return itsRetryFctr.nrow(); };
 
   // Mask out some parameters so that they are not modified during fitting
-  bool& mask(uInt gaussian, uInt parameter);
-  const bool& mask(uInt gaussian, uInt parameter) const;
+  bool& mask(unsigned int gaussian, unsigned int parameter);
+  const bool& mask(unsigned int gaussian, unsigned int parameter) const;
 
   // Run the fit, using the data provided in the arguments pos and f.
   // The fit will retry from different initial estimates until it converges
   // to a value with an RMS error less than maximumRMS.  If this cannot be
   // accomplished it will simply take the result that generated the best RMS.
-  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS = 1.0, uInt maxiter = 1024,
-                T convcriteria = 0.0001);
+  Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, T maximumRMS = 1.0,
+                unsigned int maxiter = 1024, T convcriteria = 0.0001);
   Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f, const Vector<T>& sigma,
-                T maximumRMS = 1.0, uInt maxiter = 1024, T convcriteria = 0.0001);
+                T maximumRMS = 1.0, unsigned int maxiter = 1024, T convcriteria = 0.0001);
 
   // Allow access to the fit parameters from this class
   const Matrix<T>& solution() { return itsSolutionParameters; };
@@ -184,13 +184,13 @@ class FitGaussian {
   bool converged();
 
  private:
-  uInt itsDimension;   // how many dimensions (1, 2, or 3)
-  uInt itsNGaussians;  // number of gaussians to fit
-  uInt itsMaxRetries;  // maximum number of retries to attempt
-  Double itsMaxTime;   // maximum time to spend fitting in secs
-  T itsChisquare;      // chisquare of fit
-  T itsRMS;            // RMS of fit (sqrt[chisquare / N])
-  bool itsSuccess;     // flags success or failure
+  unsigned int itsDimension;   // how many dimensions (1, 2, or 3)
+  unsigned int itsNGaussians;  // number of gaussians to fit
+  unsigned int itsMaxRetries;  // maximum number of retries to attempt
+  double itsMaxTime;           // maximum time to spend fitting in secs
+  T itsChisquare;              // chisquare of fit
+  T itsRMS;                    // RMS of fit (sqrt[chisquare / N])
+  bool itsSuccess;             // flags success or failure
   LogIO os;
 
   Matrix<T> itsFirstEstimate;  // user's estimate.
@@ -202,10 +202,10 @@ class FitGaussian {
   Matrix<T> defaultRetryMatrix();
 
   // Add one or more rows to the retry matrix.
-  void expandRetryMatrix(uInt rowstoadd);
+  void expandRetryMatrix(unsigned int rowstoadd);
 
   // Find the number of unmasked parameters to be fit
-  uInt countFreeParameters();
+  unsigned int countFreeParameters();
 
   // The solutions to the fit
   Matrix<T> itsSolutionParameters;

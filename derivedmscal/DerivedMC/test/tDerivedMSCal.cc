@@ -43,8 +43,8 @@
 using namespace casacore;
 using namespace std;
 
-void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
-           ArrayColumn<double>& azel) {
+void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha,
+           ScalarColumn<double>& last, ArrayColumn<double>& azel) {
   double mha = mdv.hourAngle();
   double tha = ha(rownr);
   AlwaysAssertExit(near(mha, tha, 1e-10));
@@ -59,8 +59,8 @@ void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarCol
   AlwaysAssertExit(azel.isDefined(rownr));
 }
 
-void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
-           ArrayColumn<double>& azel, ArrayColumn<double>& itrf) {
+void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha,
+           ScalarColumn<double>& last, ArrayColumn<double>& azel, ArrayColumn<double>& itrf) {
   check(mdv, rownr, ha, last, azel);
   Vector<double> titrf = itrf(rownr);
   cout << titrf << endl;
@@ -69,15 +69,15 @@ void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarCol
   AlwaysAssertExit(itrf.isDefined(rownr));
 }
 
-void check(MSDerivedValues& mdv, uInt rownr, ScalarColumn<double>& ha, ScalarColumn<double>& last,
-           ScalarColumn<double>& pa, ArrayColumn<double>& azel) {
+void check(MSDerivedValues& mdv, unsigned int rownr, ScalarColumn<double>& ha,
+           ScalarColumn<double>& last, ScalarColumn<double>& pa, ArrayColumn<double>& azel) {
   check(mdv, rownr, ha, last, azel);
   double mpa = mdv.parAngle();
   double tpa = pa(rownr);
   AlwaysAssertExit(near(mpa, tpa, 1e-10));
 }
 
-void check(uInt rownr, ArrayColumn<Double>& uvw, ArrayColumn<Double>& uvwJ2000) {
+void check(unsigned int rownr, ArrayColumn<double>& uvw, ArrayColumn<double>& uvwJ2000) {
   if (uvw.isNull()) {
     AlwaysAssertExit(allEQ(uvwJ2000(rownr), 0.));
   } else {
@@ -149,15 +149,15 @@ int main(int argc, char* argv[]) {
     ArrayColumn<double> itrf(tab, "ITRF");
     ArrayColumn<double> uvwJ2000(tab, "UVW_J2000");
     ScalarMeasColumn<MEpoch> time(tab, "TIME");
-    ScalarColumn<Int> fld(tab, "FIELD_ID");
-    ScalarColumn<Int> ant1(tab, "ANTENNA1");
-    ScalarColumn<Int> ant2;
+    ScalarColumn<int> fld(tab, "FIELD_ID");
+    ScalarColumn<int> ant1(tab, "ANTENNA1");
+    ScalarColumn<int> ant2;
     if (tab.tableDesc().isColumn("ANTENNA2")) {
       ant2.attach(tab, "ANTENNA2");
     } else {
       ant2.attach(tab, "ANTENNA1");
     }
-    ArrayColumn<Double> uvw;
+    ArrayColumn<double> uvw;
     if (tab.tableDesc().isColumn("UVW")) {
       uvw.attach(tab, "UVW");
     }
@@ -181,9 +181,9 @@ int main(int argc, char* argv[]) {
     // Now loop through quite some rows and compare result of DerivedMSCal
     // with MSDerivedValues.
     rownr_t nr = std::max(tab.nrow(), rownr_t(1000));
-    Int lastFldId = -1;
+    int lastFldId = -1;
     for (rownr_t i = 0; i < nr; ++i) {
-      Int fldId = fld(i);
+      int fldId = fld(i);
       if (fldId != lastFldId) {
         mdv.setFieldCenter(fldId);
         lastFldId = fldId;
@@ -202,13 +202,13 @@ int main(int argc, char* argv[]) {
     // Now time getting the hourangle using DataMan and MSDerivedValues.
     [[maybe_unused]] double totha = 0;
     Timer timer;
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       totha += ha(i);
     }
     timer.show("DataMan  ha");
     totha = 0;
     timer.mark();
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       // Note: setFieldCenter is very expensive; takes 95% of the time.
       // Therefore it is omitted in this loop.
       if (i == 0) {
@@ -220,13 +220,13 @@ int main(int argc, char* argv[]) {
     }
     timer.show("Values   ha");
     timer.mark();
-    for (uInt i = 0; i < tab.nrow(); ++i) {
+    for (unsigned int i = 0; i < tab.nrow(); ++i) {
       uvwJ2000(i);
     }
     timer.show("DataMan uvw");
     if (!uvw.isNull()) {
       timer.mark();
-      for (uInt i = 0; i < tab.nrow(); ++i) {
+      for (unsigned int i = 0; i < tab.nrow(); ++i) {
         uvw(i);
       }
       timer.show("Table   uvw");

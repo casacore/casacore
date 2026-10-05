@@ -59,7 +59,7 @@ namespace TableParseUtil {
 // If <src>alwaysOpen=False</src> the table will only be looked up,
 // but not opened if not found. This is meant for concatenated tables
 // in TaQLNodeHandler.
-Table getTable(Int tabnr, const String& name, const Table& ftab,
+Table getTable(int tabnr, const String& name, const Table& ftab,
                const std::vector<const Table*>& tempTables,
                const std::vector<TableParseQuery*>& stack, bool alwaysOpen = true);
 

@@ -59,16 +59,16 @@ void getInfoVersion1(AipsIO& ios, std::vector<MultiFileInfo>& info) {
   // Get the old MultiFileInfo not containing the 'nested' field.
   // The following code is a copy of STLIO.tcc.
   ios.getstart("Block");
-  uInt nr;
+  unsigned int nr;
   ios >> nr;
   info.resize(nr);
-  for (uInt i = 0; i < nr; ++i) {
+  for (unsigned int i = 0; i < nr; ++i) {
     ios >> info[i].name >> info[i].blockNrs >> info[i].fsize;
   }
   ios.getend();
 }
 
-MultiFileBase::MultiFileBase(const String& name, Int blockSize, bool useODirect)
+MultiFileBase::MultiFileBase(const String& name, int blockSize, bool useODirect)
     : itsBlockSize(blockSize),
       itsNrBlock(0),
       itsHdrCounter(0),
@@ -96,7 +96,7 @@ void MultiFileBase::setNewFile() {
   if (itsBlockSize <= 0) {
     struct fileSTAT sfs;
     fileSTAT(itsName.c_str(), &sfs);
-    Int64 blksz = sfs.st_blksize;
+    int64_t blksz = sfs.st_blksize;
     itsBlockSize = std::max(-itsBlockSize, blksz);
   }
   AlwaysAssert(itsBlockSize > 0, AipsError);
@@ -109,8 +109,8 @@ MultiFileBase::~MultiFileBase() {
   itsInfo.clear();
 }
 
-Int MultiFileBase::openFile(const String& name) {
-  Int id = fileId(name, true);
+int MultiFileBase::openFile(const String& name) {
+  int id = fileId(name, true);
   if (itsInfo[id].buffer) {
     throw AipsError("MFFileIO: logical file " + name + " already opened in " + itsName);
   }
@@ -119,8 +119,8 @@ Int MultiFileBase::openFile(const String& name) {
   return id;
 }
 
-Int MultiFileBase::createFile(const String& name, ByteIO::OpenOption opt) {
-  Int id = fileId(name, false);
+int MultiFileBase::createFile(const String& name, ByteIO::OpenOption opt) {
+  int id = fileId(name, false);
   if (id >= 0) {
     if (opt == ByteIO::NewNoReplace) {
       throw AipsError("MFFileIO: logical file " + name + " already exists in " + itsName);
@@ -132,8 +132,8 @@ Int MultiFileBase::createFile(const String& name, ByteIO::OpenOption opt) {
   return id;
 }
 
-uInt MultiFileBase::nfile() const {
-  Int nf = 0;
+unsigned int MultiFileBase::nfile() const {
+  int nf = 0;
   for (const MultiFileInfo& info : itsInfo) {
     if (!info.name.empty()) {
       nf++;
@@ -158,8 +158,8 @@ void MultiFileBase::flush() {
   doFlushFile();
 }
 
-void MultiFileBase::flushFile(Int fileId) {
-  if (fileId >= Int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
+void MultiFileBase::flushFile(int fileId) {
+  if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::write - invalid fileId given");
   }
   if (itsInfo[fileId].dirty) {
@@ -167,7 +167,7 @@ void MultiFileBase::flushFile(Int fileId) {
   }
 }
 
-void MultiFileBase::closeFile(Int fileId) {
+void MultiFileBase::closeFile(int fileId) {
   // Flush the file (as needed) and delete the buffer.
   flushFile(fileId);
   itsInfo[fileId].buffer.reset();
@@ -175,23 +175,23 @@ void MultiFileBase::closeFile(Int fileId) {
   doCloseFile(itsInfo[fileId]);
 }
 
-Int64 MultiFileBase::read(Int fileId, void* buf, Int64 size, Int64 offset) {
-  if (fileId >= Int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
+int64_t MultiFileBase::read(int fileId, void* buf, int64_t size, int64_t offset) {
+  if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::read - invalid fileId given");
   }
   char* buffer = static_cast<char*>(buf);
   MultiFileInfo& info = itsInfo[fileId];
   char* infoBuffer = info.buffer->data();
   // Determine the logical block to read and the start offset in that block.
-  Int64 nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
-  Int64 blknr = offset / itsBlockSize;
-  Int64 start = offset - blknr * itsBlockSize;
-  Int64 done = 0;
-  Int64 szdo = std::min(size, info.fsize - offset);  // not past EOF
+  int64_t nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
+  int64_t blknr = offset / itsBlockSize;
+  int64_t start = offset - blknr * itsBlockSize;
+  int64_t done = 0;
+  int64_t szdo = std::min(size, info.fsize - offset);  // not past EOF
   // Read until done.
   while (done < szdo) {
     AlwaysAssert(blknr < nrblk, AipsError);
-    Int64 todo = std::min(szdo - done, itsBlockSize - start);
+    int64_t todo = std::min(szdo - done, itsBlockSize - start);
     // If already in buffer, copy from there.
     if (blknr == info.curBlock) {
       memcpy(buffer, infoBuffer + start, todo);
@@ -220,8 +220,8 @@ Int64 MultiFileBase::read(Int fileId, void* buf, Int64 size, Int64 offset) {
   return done;
 }
 
-Int64 MultiFileBase::write(Int fileId, const void* buf, Int64 size, Int64 offset) {
-  if (fileId >= Int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
+int64_t MultiFileBase::write(int fileId, const void* buf, int64_t size, int64_t offset) {
+  if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::write - invalid fileId given");
   }
   const char* buffer = static_cast<const char*>(buf);
@@ -229,19 +229,19 @@ Int64 MultiFileBase::write(Int fileId, const void* buf, Int64 size, Int64 offset
   MultiFileInfo& info = itsInfo[fileId];
   char* infoBuffer = info.buffer->data();
   // Determine the logical block to write and the start offset in that block.
-  Int64 blknr = offset / itsBlockSize;
-  Int64 start = offset - blknr * itsBlockSize;
-  Int64 done = 0;
+  int64_t blknr = offset / itsBlockSize;
+  int64_t start = offset - blknr * itsBlockSize;
+  int64_t done = 0;
   // If beyond EOF, add blocks as needed.
-  Int64 lastblk = blknr + (start + size + itsBlockSize - 1) / itsBlockSize;
-  Int64 curnrb = (info.fsize + itsBlockSize - 1) / itsBlockSize;
+  int64_t lastblk = blknr + (start + size + itsBlockSize - 1) / itsBlockSize;
+  int64_t curnrb = (info.fsize + itsBlockSize - 1) / itsBlockSize;
   if (lastblk >= curnrb) {
     extend(info, lastblk);
     itsChanged = true;
   }
   // Write until all done.
   while (done < size) {
-    Int64 todo = std::min(size - done, itsBlockSize - start);
+    int64_t todo = std::min(size - done, itsBlockSize - start);
     // Favor sequential writing, thus write current buffer first.
     if (blknr == info.curBlock) {
       memcpy(infoBuffer + start, buffer, todo);
@@ -280,8 +280,8 @@ Int64 MultiFileBase::write(Int fileId, const void* buf, Int64 size, Int64 offset
   return done;
 }
 
-void MultiFileBase::truncate(Int fileId, Int64 size) {
-  if (fileId >= Int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
+void MultiFileBase::truncate(int fileId, int64_t size) {
+  if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::truncate - invalid fileId given");
   }
   AlwaysAssert(itsWritable, AipsError);
@@ -316,7 +316,7 @@ void MultiFileBase::resync() {
   readHeader();
 }
 
-Int MultiFileBase::addFile(const String& fname) {
+int MultiFileBase::addFile(const String& fname) {
   if (fname.empty()) {
     throw AipsError("MultiFileBase::addFile - empty file name given");
   }
@@ -324,8 +324,8 @@ Int MultiFileBase::addFile(const String& fname) {
   String bname = Path(fname).baseName();
   // Check that file name is not used yet.
   // Also determine (last) free file slot.
-  uInt inx = itsInfo.size();
-  uInt i = 0;
+  unsigned int inx = itsInfo.size();
+  unsigned int i = 0;
   for (std::vector<MultiFileInfo>::iterator iter = itsInfo.begin(); iter != itsInfo.end();
        ++iter, ++i) {
     if (iter->name.empty()) {
@@ -345,7 +345,7 @@ Int MultiFileBase::addFile(const String& fname) {
   return inx;
 }
 
-Int MultiFileBase::fileId(const String& fname, bool throwExcp) const {
+int MultiFileBase::fileId(const String& fname, bool throwExcp) const {
   // Only use the basename part (to avoid directory rename problems).
   String bname = Path(fname).baseName();
   for (size_t i = 0; i < itsInfo.size(); ++i) {
@@ -360,8 +360,8 @@ Int MultiFileBase::fileId(const String& fname, bool throwExcp) const {
   return -1;
 }
 
-void MultiFileBase::deleteFile(Int fileId) {
-  if (fileId >= Int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
+void MultiFileBase::deleteFile(int fileId) {
+  if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::deleteFile - invalid fileId given");
   }
   MultiFileInfo& info = itsInfo[fileId];
@@ -373,8 +373,8 @@ void MultiFileBase::deleteFile(Int fileId) {
   itsChanged = true;
 }
 
-Int64 MultiFileBase::fileSize(Int fileId) const {
-  if (fileId >= Int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
+int64_t MultiFileBase::fileSize(int fileId) const {
+  if (fileId >= int(itsInfo.size()) || itsInfo[fileId].name.empty()) {
     throw AipsError("MultiFileBase::fileSize - invalid fileId given");
   }
   return itsInfo[fileId].fsize;

@@ -65,7 +65,7 @@ bool NonLinearFitLM<T>::fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   converge_p = false;
   // Initialise fitter
   sol.resize(pCount_p);
-  for (uInt i = 0, k = 0; i < pCount_p; ++i) {
+  for (unsigned int i = 0, k = 0; i < pCount_p; ++i) {
     sol[i] = (*ptr_derive_p)[i].value();
     if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   }
@@ -95,7 +95,7 @@ bool NonLinearFitLM<T>::fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   sol_p += condEq_p;
   this->getErrors(err_p);
   errors_p = true;
-  for (uInt i = 0, k = 0; i < pCount_p; i++) {
+  for (unsigned int i = 0, k = 0; i < pCount_p; i++) {
     if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
     (*ptr_derive_p)[i].value() = sol[i];
   }

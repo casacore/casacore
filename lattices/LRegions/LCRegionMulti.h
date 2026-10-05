@@ -111,7 +111,7 @@ class LCRegionMulti : public LCRegion {
   static void unmakeRecord(Block<const LCRegion*>&, const TableRecord&, const String& tableName);
 
   // Translate all regions.
-  void multiTranslate(Block<const LCRegion*>&, const Vector<Float>& translateVector,
+  void multiTranslate(Block<const LCRegion*>&, const Vector<float>& translateVector,
                       const IPosition& newLatticeShape) const;
 
   // Determine if all regions have mask (used by LCIntersection).
@@ -120,7 +120,7 @@ class LCRegionMulti : public LCRegion {
   // Find which area of the section and region are needed.
   // false is returned if no part of the region is included in the section.
   bool findAreas(IPosition& bufStart, IPosition& bufEnd, IPosition& regStart, IPosition& regEnd,
-                 const Slicer& section, uInt regNr) const;
+                 const Slicer& section, unsigned int regNr) const;
 
   // Get the contributing regions.
   const Block<const LCRegion*>& regions() const;
@@ -140,7 +140,7 @@ class LCRegionMulti : public LCRegion {
   virtual void multiGetSlice(Array<bool>& buffer, const Slicer& section) = 0;
 
   // Get the best cursor shape.
-  IPosition doNiceCursorShape(uInt maxPixels) const override;
+  IPosition doNiceCursorShape(unsigned int maxPixels) const override;
 
  private:
   // Check if the regions are correct.
@@ -149,7 +149,7 @@ class LCRegionMulti : public LCRegion {
 
   // # >=0 means this region has a mask.
   // # Its value gives the region with the biggest mask.
-  Int itsHasMask;
+  int itsHasMask;
   Block<const LCRegion*> itsRegions;
 };
 

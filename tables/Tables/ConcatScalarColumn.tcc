@@ -45,7 +45,7 @@ template <typename T>
 void ConcatScalarColumn<T>::getScalarColumn(ArrayBase& arr) const {
   Vector<T>& vec = static_cast<Vector<T>&>(arr);
   rownr_t st = 0;
-  for (uInt i = 0; i < refColPtr_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < refColPtr_p.nelements(); ++i) {
     rownr_t nr = refColPtr_p[i]->nrow();
     Vector<T> part = vec(Slice(st, nr));
     refColPtr_p[i]->getScalarColumn(part);
@@ -65,7 +65,7 @@ void ConcatScalarColumn<T>::getScalarColumnCells(const RefRows& rownrs, ArrayBas
   GenSortIndirect<rownr_t, rownr_t>::sort(inx, rows);
   const ConcatRows& ccRows = refTabPtr_p->rows();
   rownr_t tabRownr;
-  uInt tableNr = 0;
+  unsigned int tableNr = 0;
   // Map each row to rownr and tablenr.
   // Note this is pretty fast because it is done in row order.
   for (rownr_t i = 0; i < inx.nelements(); ++i) {
@@ -81,7 +81,7 @@ template <typename T>
 void ConcatScalarColumn<T>::putScalarColumn(const ArrayBase& arr) {
   Vector<T> vec(static_cast<const Vector<T>&>(arr));
   rownr_t st = 0;
-  for (uInt i = 0; i < refColPtr_p.nelements(); ++i) {
+  for (unsigned int i = 0; i < refColPtr_p.nelements(); ++i) {
     rownr_t nr = refColPtr_p[i]->nrow();
     Vector<T> part = vec(Slice(st, nr));
     refColPtr_p[i]->putScalarColumn(part);
@@ -101,7 +101,7 @@ void ConcatScalarColumn<T>::putScalarColumnCells(const RefRows& rownrs, const Ar
   GenSortIndirect<rownr_t, rownr_t>::sort(inx, rows);
   const ConcatRows& ccRows = refTabPtr_p->rows();
   rownr_t tabRownr;
-  uInt tableNr = 0;
+  unsigned int tableNr = 0;
   // Map each row to rownr and tablenr.
   // Note this is pretty fast because it is done in row order.
   for (rownr_t i = 0; i < inx.nelements(); ++i) {
@@ -115,7 +115,7 @@ void ConcatScalarColumn<T>::putScalarColumnCells(const RefRows& rownrs, const Ar
 
 template <class T>
 void ConcatScalarColumn<T>::makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj,
-                                        Int order, std::shared_ptr<ArrayBase>& dataSave) {
+                                        int order, std::shared_ptr<ArrayBase>& dataSave) {
   // # Get the data as a column.
   Vector<T>* vecPtr = new Vector<T>(nrow());
   dataSave.reset(vecPtr);
@@ -125,7 +125,7 @@ void ConcatScalarColumn<T>::makeSortKey(Sort& sortobj, std::shared_ptr<BaseCompa
 
 template <class T>
 void ConcatScalarColumn<T>::makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj,
-                                           Int order, const Vector<rownr_t>& rownrs,
+                                           int order, const Vector<rownr_t>& rownrs,
                                            std::shared_ptr<ArrayBase>& dataSave) {
   // # Get the data as a column.
   Vector<T>* vecPtr = new Vector<T>(rownrs.size());
@@ -136,7 +136,7 @@ void ConcatScalarColumn<T>::makeRefSortKey(Sort& sortobj, std::shared_ptr<BaseCo
 
 template <class T>
 void ConcatScalarColumn<T>::fillSortKey(const Vector<T>* vecPtr, Sort& sortobj,
-                                        std::shared_ptr<BaseCompare>& cmpObj, Int order) {
+                                        std::shared_ptr<BaseCompare>& cmpObj, int order) {
   // # Pass the real vector storage as the sort data.
   // # Use the compare object if given, otherwise pass data type.
   // # Throw an exception if no compare function is given for

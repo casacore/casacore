@@ -104,20 +104,20 @@ class SDWeatherHandler {
 
   // fill - a new row is added as necessary, there is no lookback to see if a row could be
   // reused.  Only the current row might be reused.
-  void fill(const Record &row, Int antennaId, Double time, Vector<Double> &timeRange);
+  void fill(const Record &row, int antennaId, double time, Vector<double> &timeRange);
 
  private:
   MSWeather *msWeather_p;
   MSWeatherColumns *msWeatherCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
-  Int humidityId_p, tambientId_p, pressureId_p, dewpointId_p, windspeeId_p, winddireId_p;
+  int humidityId_p, tambientId_p, pressureId_p, dewpointId_p, windspeeId_p, winddireId_p;
 
   // additional fields from an SDFITS file that had a previous life as a MS
-  RORecordFieldPtr<Float> H2OField_p, ionosElectronField_p, pressureField_p, humidityField_p,
+  RORecordFieldPtr<float> H2OField_p, ionosElectronField_p, pressureField_p, humidityField_p,
       temperatureField_p, windDirField_p, windSpeedField_p;
-  RORecordFieldPtr<Double> timeField_p, intervalField_p;
+  RORecordFieldPtr<double> timeField_p, intervalField_p;
 
   // cleanup everything
   void clearAll();

@@ -43,14 +43,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // If we have lots and lots of progress meters we should figure out
 // a way to reclaim the following storage.
-static Block<Double> stderr_min, stderr_max, stderr_last;
+static Block<double> stderr_min, stderr_max, stderr_last;
 static Block<String> stderr_title;
-static Block<Int> stderr_time;
+static Block<int> stderr_time;
 static Block<bool> stderr_startflag;
 const char *ProgressMeter::PROGRESSFILE = "/tmp/xidjapdfs";
-static Int stderr_creation_function(Double min, Double max, const String &t, const String &,
+static int stderr_creation_function(double min, double max, const String &t, const String &,
                                     const String &, const String &, bool) {
-  Int n = stderr_min.nelements() + 1;
+  int n = stderr_min.nelements() + 1;
   stderr_min.resize(n);
   stderr_max.resize(n);
   stderr_last.resize(n);
@@ -67,8 +67,8 @@ static Int stderr_creation_function(Double min, Double max, const String &t, con
   return n;
 }
 
-static void stderr_show_function(Int id, Double value) {
-  if (id < 0 || id > Int(stderr_min.nelements())) {
+static void stderr_show_function(int id, double value) {
+  if (id < 0 || id > int(stderr_min.nelements())) {
     return;
   }
   id--;  // 0-relative
@@ -80,8 +80,8 @@ static void stderr_show_function(Int id, Double value) {
   return;
 }
 
-static void stderr_busy_function(Int id) {
-  if (id < 0 || id > Int(stderr_min.nelements())) {
+static void stderr_busy_function(int id) {
+  if (id < 0 || id > int(stderr_min.nelements())) {
     return;
   }
   id--;  // 0-relative
@@ -92,8 +92,8 @@ static void stderr_busy_function(Int id) {
   return;
 }
 
-static void stderr_done_function(Int id) {
-  if (id < 0 || id > Int(stderr_min.nelements())) {
+static void stderr_done_function(int id) {
+  if (id < 0 || id > int(stderr_min.nelements())) {
     return;
   }
   id--;  // 0-relative
@@ -104,15 +104,15 @@ static void stderr_done_function(Int id) {
   return;
 }
 
-static void stderr_update_function(Int id, Double value) {
-  if (id < 0 || id > Int(stderr_min.nelements())) {
+static void stderr_update_function(int id, double value) {
+  if (id < 0 || id > int(stderr_min.nelements())) {
     cerr << __FILE__ << " illegal id " << id << endl;
     return;
   }
   id--;  // 0-relative
-  Int percent = Int((value - stderr_min[id]) / (stderr_max[id] - stderr_min[id]) * 100.0);
-  Int lastpercent =
-      Int((stderr_last[id] - stderr_min[id]) / (stderr_max[id] - stderr_min[id]) * 100.0);
+  int percent = int((value - stderr_min[id]) / (stderr_max[id] - stderr_min[id]) * 100.0);
+  int lastpercent =
+      int((stderr_last[id] - stderr_min[id]) / (stderr_max[id] - stderr_min[id]) * 100.0);
   //    if (::fabs((stderr_last[id] - stderr_min[id])/stderr_min[id]) <  0.001) cerr << "\n0%";
   if (!stderr_startflag[id] &&
       ::fabs((stderr_last[id] - stderr_min[id]) / stderr_min[id]) < 0.001) {
@@ -123,7 +123,7 @@ static void stderr_update_function(Int id, Double value) {
     stderr_last[id] = value;
     // Probably we could do this more efficiently. We need to get all the
     // "missing" ..'s etc if we have jumped a lot since our last updated.
-    for (Int i = lastpercent + 1; i <= percent; i++) {
+    for (int i = lastpercent + 1; i <= percent; i++) {
       if (i % 2 == 0 && i % 10 != 0) {
         cerr << ".";
       } else if (i % 10 == 0) {
@@ -136,24 +136,24 @@ static void stderr_update_function(Int id, Double value) {
   }
 }
 
-Int (*ProgressMeter::creation_function_p)(Double, Double, const String &, const String &,
+int (*ProgressMeter::creation_function_p)(double, double, const String &, const String &,
                                           const String &, const String &,
                                           bool) = stderr_creation_function;
 
-void (*ProgressMeter::update_function_p)(Int, Double) = stderr_update_function;
+void (*ProgressMeter::update_function_p)(int, double) = stderr_update_function;
 
-void (*ProgressMeter::show_function_p)(Int, Double) = stderr_show_function;
+void (*ProgressMeter::show_function_p)(int, double) = stderr_show_function;
 
-void (*ProgressMeter::busy_function_p)(Int) = stderr_busy_function;
+void (*ProgressMeter::busy_function_p)(int) = stderr_busy_function;
 
-void (*ProgressMeter::done_function_p)(Int) = stderr_done_function;
+void (*ProgressMeter::done_function_p)(int) = stderr_done_function;
 
 ProgressMeter::ProgressMeter()
     : id_p(-1), min_p(0.0), max_p(1.0), update_every_p(1), update_count_p(0) {}
 
-ProgressMeter::ProgressMeter(Double min, Double max, const String &title, const String &subtitle,
+ProgressMeter::ProgressMeter(double min, double max, const String &title, const String &subtitle,
                              const String &minlabel, const String &maxlabel, bool estimateTime,
-                             Int updateEvery)
+                             int updateEvery)
     : id_p(-1), min_p(min), max_p(max), update_every_p(updateEvery), update_count_p(0) {
   // Correct silently
   if (update_every_p <= 0) {
@@ -164,7 +164,7 @@ ProgressMeter::ProgressMeter(Double min, Double max, const String &title, const 
   }
 }
 
-ProgressMeter::ProgressMeter(Double min, Double max, const String &title)
+ProgressMeter::ProgressMeter(double min, double max, const String &title)
     : id_p(-1), min_p(min), max_p(max), update_every_p(1), update_count_p(0) {
   if (creation_function_p) {
     id_p = creation_function_p(min, max, title, "", "", "", false);
@@ -177,7 +177,7 @@ ProgressMeter::~ProgressMeter() {
   update(max_p, true);
 }
 
-void ProgressMeter::_update(Double value, bool force) {
+void ProgressMeter::_update(double value, bool force) {
   update_count_p++;
   if (update_count_p == 1) {
     startTime = time(&startTime);
@@ -200,7 +200,7 @@ void ProgressMeter::busy() { busy_function_p(id_p); }
 
 void ProgressMeter::done() { done_function_p(id_p); }
 
-void ProgressMeter::update(Double value, bool force) {
+void ProgressMeter::update(double value, bool force) {
   update_count_p++;
   // Always force the first one through
   if (update_count_p == 1) {
@@ -230,8 +230,8 @@ void ProgressMeter::update(Double value, bool force) {
   }
 }
 
-Double ProgressMeter::min() const { return min_p; }
+double ProgressMeter::min() const { return min_p; }
 
-Double ProgressMeter::max() const { return max_p; }
+double ProgressMeter::max() const { return max_p; }
 
 }  // namespace casacore

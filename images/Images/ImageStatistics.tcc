@@ -136,7 +136,7 @@ bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image, bool clone)
 }
 
 template <class T>
-bool ImageStatistics<T>::_getBeamArea(Array<Double>& beamArea, String& msg) const {
+bool ImageStatistics<T>::_getBeamArea(Array<double>& beamArea, String& msg) const {
   ImageInfo ii = pInImage_p->imageInfo();
   bool hasMultiBeams = ii.hasMultipleBeams();
   bool hasSingleBeam = !hasMultiBeams && ii.hasBeam();
@@ -164,7 +164,7 @@ bool ImageStatistics<T>::_getBeamArea(Array<Double>& beamArea, String& msg) cons
     beamAreaShape[0] = 1;
   } else {
     beamAreaShape.resize(this->_storageLatticeShape().size() - 1);
-    for (uInt i = 0; i < beamAreaShape.size(); i++) {
+    for (unsigned int i = 0; i < beamAreaShape.size(); i++) {
       beamAreaShape[i] = this->_storageLatticeShape()[i];
     }
   }
@@ -184,13 +184,13 @@ bool ImageStatistics<T>::_getBeamArea(Array<Double>& beamArea, String& msg) cons
   bool foundSpec = !cSys.hasSpectralAxis() || shape[cSys.spectralAxisNumber(false)] == 1;
   bool foundPol =
       !cSys.hasPolarizationCoordinate() || shape[cSys.polarizationAxisNumber(false)] == 1;
-  Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
-  Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
+  int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
+  int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
   bool found = false;
-  Int storageSpecAxis = -1;
-  Int storagePolAxis = -1;
+  int storageSpecAxis = -1;
+  int storagePolAxis = -1;
 
-  for (uInt i = 0; i < displayAxes_p.size(); i++) {
+  for (unsigned int i = 0; i < displayAxes_p.size(); i++) {
     if (displayAxes_p[i] == specAxis) {
       foundSpec = true;
       storageSpecAxis = i;
@@ -213,7 +213,7 @@ bool ImageStatistics<T>::_getBeamArea(Array<Double>& beamArea, String& msg) cons
   }
   const ImageBeamSet& beams = ii.getBeamSet();
   IPosition beamsShape = beams.shape();
-  Int beamPolAxis = -1;
+  int beamPolAxis = -1;
   if (cSys.hasPolarizationCoordinate()) {
     beamPolAxis = specAxis < 0 ? 0 : 1;
   }
@@ -222,7 +222,7 @@ bool ImageStatistics<T>::_getBeamArea(Array<Double>& beamArea, String& msg) cons
   IPosition curBeamPos(beams.shape().nelements(), 0);
   IPosition axisPath = IPosition::makeAxisPath(beamAreaShape.size());
   ArrayPositionIterator iter(beamAreaShape, axisPath, false);
-  Double pixAreaRad2 = dCoord.getPixelArea().getValue("rad2");
+  double pixAreaRad2 = dCoord.getPixelArea().getValue("rad2");
   while (!iter.pastEnd()) {
     const IPosition curPos = iter.pos();
     if (storageSpecAxis >= 0) {
@@ -264,7 +264,7 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // out how big the field width needs to be.  Min of 6 so label fits.
 
   DataType type = whatType<T>();
-  Int oDWidth = 14;
+  int oDWidth = 14;
   if (type == TpComplex) {
     oDWidth = 2 * oDWidth + 3;  // (x,y)
   }
@@ -272,7 +272,7 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // Have to convert LogIO object to ostream before can apply
   // the manipulators
 
-  Int oPrec = 6;
+  int oPrec = 6;
   setStream(os_p.output(), oPrec);
 
   // Write the pixel and world coordinate of the higher order display axes to the logger
@@ -287,7 +287,7 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // of the first display axis.  Do this by formatting a dummy value.
 
   Vector<String> sWorld(1);
-  Vector<Double> pixels(1);
+  Vector<double> pixels(1);
   pixels(0) = 1.0;
   IPosition blc(pInImage_p->ndim(), 0);
   IPosition trc(pInImage_p->shape() - 1);
@@ -295,13 +295,15 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   CoordinateSystem cSys = pInImage_p->coordinates();
   ImageUtilities::pixToWorld(sWorld, cSys, displayAxes_p(0), cursorAxes_p, blc, trc, pixels, -1);
   String cName = ImageUtilities::shortAxisName(cSys.worldAxisNames()(displayAxes_p(0)));
-  Int oCWidth = max(uInt(cName.length()), uInt(sWorld(0).length())) + 1;
+  int oCWidth = max(static_cast<unsigned int>(cName.length()),
+                    static_cast<unsigned int>(sWorld(0).length())) +
+                1;
 
   // Write headers
 
-  const uInt nStatsAxes = cursorAxes_p.nelements();
+  const unsigned int nStatsAxes = cursorAxes_p.nelements();
   os_p << endl;
-  Int len0;
+  int len0;
   if (nStatsAxes == 1) {
     os_p << "Profile ";
     len0 = 8;
@@ -329,11 +331,11 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
 
   // Convert pixel coordinates Vector of the first display axis to world coordinates
 
-  const uInt n1 = stats.shape()(0);
+  const unsigned int n1 = stats.shape()(0);
   sWorld.resize(n1);
   pixels.resize(n1);
   //
-  for (uInt j = 0; j < n1; j++) pixels(j) = Double(j);
+  for (unsigned int j = 0; j < n1; j++) pixels(j) = double(j);
   if (!ImageUtilities::pixToWorld(sWorld, cSys, displayAxes_p(0), cursorAxes_p, blc, trc, pixels,
                                   -1))
     return false;
@@ -341,7 +343,7 @@ bool ImageStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // Write statistics to logger.  We write the pixel location
   // relative to the parent image (zero based)
 
-  for (uInt j = 0; j < n1; j++) {
+  for (unsigned int j = 0; j < n1; j++) {
     os_p.output() << setw(len0) << j + blcParent_p(displayAxes_p(0));
     os_p.output() << setw(oCWidth) << sWorld(j);
     ostringstream os00;
@@ -407,7 +409,7 @@ void ImageStatistics<T>::displayStats(AccumType nPts, AccumType sum, AccumType m
   // the manipulators.  Also formatting Complex numbers with
   // the setw manipulator fails, so I go to a lot of trouble
   // with ostringstreams (which are useable only once).
-  const Int oPrec = 6;
+  const int oPrec = 6;
   setStream(os_p.output(), oPrec);
   Unit bunit = pInImage_p->units();
   String sbunit = bunit.getName();
@@ -422,7 +424,7 @@ void ImageStatistics<T>::displayStats(AccumType nPts, AccumType sum, AccumType m
   messages.push_back("Values --- ");
   ostringstream oss;
   if (_canDoFlux()) {
-    Array<Double> beamArea;
+    Array<double> beamArea;
     String msg;
     bool hasBeam = _getBeamArea(beamArea, msg);
     bool isFluxDensity;
@@ -541,7 +543,7 @@ void ImageStatistics<T>::displayStats(AccumType nPts, AccumType sum, AccumType m
 
 template <class T>
 Quantum<typename ImageStatistics<T>::AccumType> ImageStatistics<T>::_flux(
-    bool& isFluxDensity, AccumType sum, Double beamAreaInPixels) const {
+    bool& isFluxDensity, AccumType sum, double beamAreaInPixels) const {
   ThrowIf(!_canDoFlux(), "This object cannot be used to determine flux densities");
   isFluxDensity = true;
   Quantum<AccumType> flux(0, "");
@@ -556,7 +558,7 @@ Quantum<typename ImageStatistics<T>::AccumType> ImageStatistics<T>::_flux(
     flux.setUnit("Jy");
     if (StringContains(sbunit, "/beam")) {
       intensityBeamBased = true;
-      uInt iBeam = sbunit.find("/beam");
+      unsigned int iBeam = sbunit.find("/beam");
       if (beamAreaInPixels > 0) {
         flux.setValue(sum / beamAreaInPixels);
       }
@@ -564,8 +566,8 @@ Quantum<typename ImageStatistics<T>::AccumType> ImageStatistics<T>::_flux(
     }
   }
   if (pInImage_p->coordinates().hasSpectralAxis()) {
-    Int specAxis = pInImage_p->coordinates().spectralAxisNumber(false);
-    Vector<Int>::const_iterator myend = cursorAxes_p.end();
+    int specAxis = pInImage_p->coordinates().spectralAxisNumber(false);
+    Vector<int>::const_iterator myend = cursorAxes_p.end();
     if (pInImage_p->shape()[specAxis] > 1 &&
         std::find(cursorAxes_p.begin(), myend, specAxis) != myend) {
       // integrate over nondegenerate spectral axis
@@ -573,10 +575,10 @@ Quantum<typename ImageStatistics<T>::AccumType> ImageStatistics<T>::_flux(
         // the resolution varies by channel, so the previously computed
         // value based on the passed in sum is bogus because the beam area
         // varies
-        vector<Int> newCursorAxes = cursorAxes_p.tovector();
+        vector<int> newCursorAxes = cursorAxes_p.tovector();
         newCursorAxes.erase(std::find(newCursorAxes.begin(), newCursorAxes.end(), specAxis));
         ImageStatistics<T> newStats(*this);
-        newStats.setAxes(Vector<Int>(newCursorAxes));
+        newStats.setAxes(Vector<int>(newCursorAxes));
         Array<AccumType> fluxDensities;
         newStats.getStatistic(fluxDensities, LatticeStatsBase::FLUX);
         flux.setValue(casacore::sum(fluxDensities));
@@ -584,7 +586,7 @@ Quantum<typename ImageStatistics<T>::AccumType> ImageStatistics<T>::_flux(
       const SpectralCoordinate& spCoord = pInImage_p->coordinates().spectralCoordinate();
       Quantity inc(0, "");
       if (spCoord.restFrequency() > 0) {
-        Double v0, v1;
+        double v0, v1;
         if (spCoord.pixelToVelocity(v0, 0) && spCoord.pixelToVelocity(v1, 1)) {
           inc = Quantity(abs(v1 - v0), spCoord.velocityUnit());
         }
@@ -629,7 +631,7 @@ Quantum<typename ImageStatistics<T>::AccumType> ImageStatistics<T>::_flux(
 template <class T>
 bool ImageStatistics<T>::_computeFlux(Array<AccumType>& flux, const Array<AccumType>& npts,
                                       const Array<AccumType>& sum) {
-  Array<Double> beamArea;
+  Array<double> beamArea;
   String msg;
   bool gotBeamArea = _getBeamArea(beamArea, msg);
   if (!gotBeamArea) {
@@ -643,11 +645,11 @@ bool ImageStatistics<T>::_computeFlux(Array<AccumType>& flux, const Array<AccumT
   ReadOnlyVectorIterator<AccumType> sumIt(sum);
   ReadOnlyVectorIterator<AccumType> nPtsIt(npts);
   VectorIterator<AccumType> fluxIt(flux);
-  std::unique_ptr<ReadOnlyVectorIterator<Double>> beamAreaIter(
-      gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : nullptr);
-  uInt n1 = nPtsIt.vector().nelements();
+  std::unique_ptr<ReadOnlyVectorIterator<double>> beamAreaIter(
+      gotBeamArea ? new ReadOnlyVectorIterator<double>(beamArea) : nullptr);
+  unsigned int n1 = nPtsIt.vector().nelements();
   while (!nPtsIt.pastEnd()) {
-    for (uInt i = 0; i < n1; ++i) {
+    for (unsigned int i = 0; i < n1; ++i) {
       if (nPtsIt.vector()(i) > 0.5) {
         bool isFluxDensity;
         fluxIt.vector()(i) =
@@ -668,7 +670,7 @@ bool ImageStatistics<T>::_computeFlux(Array<AccumType>& flux, const Array<AccumT
 template <class T>
 bool ImageStatistics<T>::_computeFlux(Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
                                       bool posInLattice) {
-  Array<Double> beamArea;
+  Array<double> beamArea;
   String msg;
   bool unused;
   if (_getBeamArea(beamArea, msg)) {
@@ -701,11 +703,11 @@ bool ImageStatistics<T>::_canDoFlux() const {
     return false;
   }
   bool cursorHasDirection = false;
-  Vector<Int> dirAxesNumbers = csys.directionAxesNumbers();
-  Vector<Int>::const_iterator dIter = dirAxesNumbers.begin();
-  Vector<Int>::const_iterator dEnd = dirAxesNumbers.end();
-  Vector<Int>::const_iterator curBegin = cursorAxes_p.begin();
-  Vector<Int>::const_iterator curEnd = cursorAxes_p.end();
+  Vector<int> dirAxesNumbers = csys.directionAxesNumbers();
+  Vector<int>::const_iterator dIter = dirAxesNumbers.begin();
+  Vector<int>::const_iterator dEnd = dirAxesNumbers.end();
+  Vector<int>::const_iterator curBegin = cursorAxes_p.begin();
+  Vector<int>::const_iterator curEnd = cursorAxes_p.end();
   while (dIter != dEnd) {
     if (std::find(curBegin, curEnd, *dIter) != curEnd) {
       cursorHasDirection = true;
@@ -716,11 +718,11 @@ bool ImageStatistics<T>::_canDoFlux() const {
   if (!cursorHasDirection) {
     return false;
   }
-  std::set<Int> okCursorAxes;
+  std::set<int> okCursorAxes;
   okCursorAxes.insert(dirAxesNumbers.begin(), dirAxesNumbers.end());
   IPosition shape = pInImage_p->shape();
   if (csys.hasSpectralAxis()) {
-    Int specAxis = csys.spectralAxisNumber(false);
+    int specAxis = csys.spectralAxisNumber(false);
     if (shape[specAxis] > 1 && std::find(curBegin, curEnd, specAxis) != curEnd &&
         csys.spectralCoordinate().isTabular()) {
       // spectral axis is tabular,
@@ -731,7 +733,7 @@ bool ImageStatistics<T>::_canDoFlux() const {
     }
     okCursorAxes.insert(specAxis);
   }
-  Vector<Int>::const_iterator curIter = curBegin;
+  Vector<int>::const_iterator curIter = curBegin;
   while (curIter != curEnd) {
     if (shape[*curIter] > 1 &&
         std::find(okCursorAxes.begin(), okCursorAxes.end(), *curIter) == okCursorAxes.end()) {
@@ -745,7 +747,7 @@ bool ImageStatistics<T>::_canDoFlux() const {
 }
 
 template <class T>
-void ImageStatistics<T>::setPrecision(Int precision) {
+void ImageStatistics<T>::setPrecision(int precision) {
   precision_ = precision;
 }
 
@@ -760,7 +762,7 @@ IPosition ImageStatistics<T>::getBlc() const {
 }
 
 template <class T>
-Int ImageStatistics<T>::getPrecision() const {
+int ImageStatistics<T>::getPrecision() const {
   return precision_;
 }
 
@@ -775,18 +777,18 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
   xLabel = cSys.worldAxisNames()(displayAxes_p(0)) + " (pixels)";
 
   hLabel = String("");
-  const uInt nDisplayAxes = displayAxes_p.nelements();
+  const unsigned int nDisplayAxes = displayAxes_p.nelements();
   ostringstream oss;
   if (nDisplayAxes > 1) {
     Vector<String> sWorld(1);
-    Vector<Double> pixels(1);
+    Vector<double> pixels(1);
     IPosition blc(pInImage_p->ndim(), 0);
     IPosition trc(pInImage_p->shape() - 1);
 
-    for (uInt j = 1; j < nDisplayAxes; j++) {
-      Int worldAxis = cSys.pixelAxisToWorldAxis(displayAxes_p(j));
+    for (unsigned int j = 1; j < nDisplayAxes; j++) {
+      int worldAxis = cSys.pixelAxisToWorldAxis(displayAxes_p(j));
       String name = cSys.worldAxisNames()(worldAxis);
-      pixels(0) = Double(locInLattice(dPos, false)(j));
+      pixels(0) = double(locInLattice(dPos, false)(j));
 
       if (!ImageUtilities::pixToWorld(sWorld, cSys, displayAxes_p(j), cursorAxes_p, blc, trc,
                                       pixels, -1))
@@ -801,7 +803,7 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
 }
 
 template <class T>
-void ImageStatistics<T>::listMinMax(ostringstream& osMin, ostringstream& osMax, Int oWidth,
+void ImageStatistics<T>::listMinMax(ostringstream& osMin, ostringstream& osMax, int oWidth,
                                     DataType type) {
   if (!fixedMinMax_p) {
     // Find world coordinates of min and max. We list pixel coordinates

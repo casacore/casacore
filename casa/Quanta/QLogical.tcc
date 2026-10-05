@@ -83,7 +83,7 @@ bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 }
 
 template <class Qtype>
-bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol) {
+bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, double tol) {
   UnitVal kind, knew;
   if (left.getFullUnit().getValue() == other.getFullUnit().getValue()) {
     return QMakeBool(near(left.getValue(), other.get(left.getFullUnit()).getValue(), tol));
@@ -99,7 +99,7 @@ bool near(const Quantum<Qtype> &left, const Qtype &other) {
 }
 
 template <class Qtype>
-bool near(const Quantum<Qtype> &left, const Qtype &other, Double tol) {
+bool near(const Quantum<Qtype> &left, const Qtype &other, double tol) {
   Quantum<Qtype> loc;
   loc = other;
   return QMakeBool(near(left, loc, tol));
@@ -113,7 +113,7 @@ bool near(const Qtype &left, const Quantum<Qtype> &other) {
 }
 
 template <class Qtype>
-bool near(const Qtype &left, const Quantum<Qtype> &other, Double tol) {
+bool near(const Qtype &left, const Quantum<Qtype> &other, double tol) {
   Quantum<Qtype> loc;
   loc = left;
   return QMakeBool(near(loc, other, tol));
@@ -128,7 +128,7 @@ bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 }
 
 template <class Qtype>
-bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol) {
+bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, double tol) {
   if (left.getFullUnit().getValue() == other.getFullUnit().getValue()) {
     return QMakeBool(nearAbs(left.getValue(), other.get(left.getFullUnit()).getValue(), tol));
   }
@@ -151,7 +151,7 @@ bool nearAbs(const Quantum<Qtype> &left, const Qtype &other) {
 }
 
 template <class Qtype>
-bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, Double tol) {
+bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, double tol) {
   Quantum<Qtype> loc;
   loc = other;
   return QMakeBool(nearAbs(left, loc, tol));
@@ -165,7 +165,7 @@ bool nearAbs(const Qtype &left, const Quantum<Qtype> &other) {
 }
 
 template <class Qtype>
-bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol) {
+bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, double tol) {
   Quantum<Qtype> loc;
   loc = left;
   return QMakeBool(nearAbs(loc, other, tol));

@@ -109,7 +109,7 @@ class TabVecRep {
   virtual ~TabVecRep();
 
   // Get nr of dimensions.
-  inline uInt ndim() const;
+  inline unsigned int ndim() const;
 
   // Get nr of elements (ie. vector length).
   inline rownr_t nelements() const;
@@ -127,7 +127,7 @@ class TabVecRep {
   inline TabVecRep<T>* link();
 
   // Decrements the reference count and returns the resulting count.
-  inline uInt unlink();
+  inline unsigned int unlink();
 
   // Get the tag (the type of vector).
   inline TabVecTag getTag() const;
@@ -148,9 +148,9 @@ class TabVecRep {
   virtual void assign(const TabVecRep<T>&);
 
  protected:
-  uInt count_p;  // # reference count
+  unsigned int count_p;  // # reference count
   TabVecTag tag_p;
-  Int64 nrel_p;  // # #elements (<0 = ask derived class)
+  int64_t nrel_p;  // # #elements (<0 = ask derived class)
 
   // Get nr of elements.
   virtual rownr_t nelem() const;
@@ -167,7 +167,7 @@ class TabVecRep {
 };
 
 template <class T>
-inline uInt TabVecRep<T>::ndim() const {
+inline unsigned int TabVecRep<T>::ndim() const {
   return 1;
 }
 
@@ -193,7 +193,7 @@ inline TabVecRep<T>* TabVecRep<T>::link() {
   return this;
 }
 template <class T>
-inline uInt TabVecRep<T>::unlink() {
+inline unsigned int TabVecRep<T>::unlink() {
   return --count_p;
 }
 

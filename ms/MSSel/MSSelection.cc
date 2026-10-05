@@ -82,7 +82,7 @@ MSSelection::MSSelection()
       stateExpr_p(""),
       observationExpr_p(""),
       feedExpr_p(""),
-      exprOrder_p(MAX_EXPR, Int(NO_EXPR)),
+      exprOrder_p(MAX_EXPR, int(NO_EXPR)),
       antenna1IDs_p(),
       antenna2IDs_p(),
       fieldIDs_p(),
@@ -133,7 +133,7 @@ MSSelection::MSSelection(const MeasurementSet& ms, const MSSMode& mode, const St
       stateExpr_p(""),
       observationExpr_p(""),
       feedExpr_p(""),
-      exprOrder_p(MAX_EXPR, Int(NO_EXPR)),
+      exprOrder_p(MAX_EXPR, int(NO_EXPR)),
       antenna1IDs_p(),
       antenna2IDs_p(),
       fieldIDs_p(),
@@ -380,10 +380,10 @@ TableExprNode MSSelection::getTEN(const MeasurementSet* ms) {
 
 //----------------------------------------------------------------------------
 
-String MSSelection::indexExprStr(Vector<Int> index) {
+String MSSelection::indexExprStr(Vector<int> index) {
   std::string expression;
 
-  for (uInt i = 0; i < index.nelements(); i++) {
+  for (unsigned int i = 0; i < index.nelements(); i++) {
     if (i == 0)
       expression = std::to_string(index[i]);
     else
@@ -402,7 +402,7 @@ String MSSelection::nameExprStr(Vector<String> name) {
   // to be invalid now (Nov. 2006).
   // expression = "'";
 
-  for (uInt i = 0; i < name.nelements(); i++) {
+  for (unsigned int i = 0; i < name.nelements(); i++) {
     if (i == 0)
       expression = expression + name[i];
     else
@@ -554,7 +554,7 @@ TableExprNode MSSelection::toTableExprNode(MSSelectableTable* msLike) {
   initErrorHandler(FEED_EXPR);
 
   try {
-    for (uInt i = 0; i < exprOrder_p.nelements(); i++) {
+    for (unsigned int i = 0; i < exprOrder_p.nelements(); i++) {
       TableExprNode node;
       switch (exprOrder_p[i]) {
         case ANTENNA_EXPR: {
@@ -829,7 +829,7 @@ bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, const String& outMSN
 bool MSSelection::exprIsNull(const MSExprType type) {
   bool exprIsNull = false;
   if (type == NO_EXPR)
-    for (uInt i = 0; i < exprOrder_p.nelements(); i++) {
+    for (unsigned int i = 0; i < exprOrder_p.nelements(); i++) {
       exprIsNull = (antennaExpr_p == "") && (feedExpr_p == "") && (fieldExpr_p == "") &&
                    (spwExpr_p == "") && (scanExpr_p == "") && (arrayExpr_p == "") &&
                    (timeExpr_p == "") && (uvDistExpr_p == "") && (taqlExpr_p == "") &&
@@ -905,9 +905,9 @@ void MSSelection::clear(const MSExprType type) {
     polnExpr_p = "";
     stateExpr_p = "";
     observationExpr_p = "";
-    exprOrder_p = Vector<Int>(MAX_EXPR, int(NO_EXPR));
+    exprOrder_p = Vector<int>(MAX_EXPR, int(NO_EXPR));
   } else {
-    for (uInt i = 0; i < exprOrder_p.nelements(); i++)
+    for (unsigned int i = 0; i < exprOrder_p.nelements(); i++)
       if (exprOrder_p[i] == type) {
         exprOrder_p[i] = NO_EXPR;
         switch (type) {
@@ -958,7 +958,7 @@ void MSSelection::clear(const MSExprType type) {
 
 bool MSSelection::setOrder(MSSelection::MSExprType type) {
   bool ret = false;
-  for (uInt i = 0; i < exprOrder_p.nelements(); i++) {
+  for (unsigned int i = 0; i < exprOrder_p.nelements(); i++) {
     if (exprOrder_p[i] == NO_EXPR) {
       exprOrder_p[i] = type;
       ret = true;
@@ -1231,35 +1231,35 @@ const String MSSelection::getExpr(const MSExprType type) {
 // associated channel selection indices in ascending order of
 // SPWIDs.
 //
-Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int defaultStep,
+Matrix<int> MSSelection::getChanList(const MeasurementSet* ms, const int defaultStep,
                                      const bool sorted) {
   if (chanIDs_p.nelements() <= 0) getTEN(ms);
-  uInt nrows = chanIDs_p.nrow(), ncols = chanIDs_p.ncolumn();
-  Matrix<Int> chanIDList;
+  unsigned int nrows = chanIDs_p.nrow(), ncols = chanIDs_p.ncolumn();
+  Matrix<int> chanIDList;
   if (nrows > 0) {
     if (sorted) {
-      Vector<Int> spwIDList(chanIDs_p.column(0));  // Extract the SPW IDs
-      Vector<uInt> sortedNdx;
+      Vector<int> spwIDList(chanIDs_p.column(0));  // Extract the SPW IDs
+      Vector<unsigned int> sortedNdx;
       //
       // Make a list of indices which will sort the chanID_p Matrix on
       // SPW ID (the first column of each row).
       //
       bool deleteit;
-      Sort sort(spwIDList.getStorage(deleteit), sizeof(Int));
-      sort.sortKey((uInt)0, TpInt);
+      Sort sort(spwIDList.getStorage(deleteit), sizeof(int));
+      sort.sortKey((unsigned int)0, TpInt);
       sort.sort(sortedNdx, nrows);
       //
       // Using the sorted indices, copy from the unsorted private
       // ChaIDs_p to the output (sorted) Matrix chandIDList.
       //
       chanIDList.resize(chanIDs_p.shape());
-      for (uInt targetRow = 0; targetRow < nrows; targetRow++)
-        for (uInt j = 0; j < ncols; j++)
+      for (unsigned int targetRow = 0; targetRow < nrows; targetRow++)
+        for (unsigned int j = 0; j < ncols; j++)
           chanIDList(targetRow, j) = chanIDs_p(sortedNdx(targetRow), j);
     } else
       chanIDList = chanIDs_p;
 
-    for (uInt targetRow = 0; targetRow < nrows; targetRow++) {
+    for (unsigned int targetRow = 0; targetRow < nrows; targetRow++) {
       if (chanIDList(targetRow, ncols - 1) == 0) chanIDList(targetRow, ncols - 1) = defaultStep;
       // if (chanIDList(targetRow,ncols-2) == chanIDList(targetRow,ncols-3)) // Stop == Step
       //   chanIDList(targetRow,ncols-1)=0;
@@ -1273,30 +1273,30 @@ Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int default
 // associated channel selection indices in ascending order of
 // SPWIDs.
 //
-Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, const bool sorted) {
+Matrix<double> MSSelection::getChanFreqList(const MeasurementSet* ms, const bool sorted) {
   LogIO log_l(LogOrigin("MSSelection", "getChanFreqList"));
 
   if (chanIDs_p.nelements() == 0) getTEN(ms);
-  Matrix<Int> chanList_l = getChanList(ms, 1, sorted);
-  Matrix<Double> freqList_l;
+  Matrix<int> chanList_l = getChanList(ms, 1, sorted);
+  Matrix<double> freqList_l;
   freqList_l.resize(chanList_l.shape());
 
   if (chanList_l.shape()(0) == 0) return freqList_l;
 
   const MSSpWindowColumns msSpwSubTable(ms_p->spectralWindow());
-  if (msSpwSubTable.nrow() <= (uInt)max(chanList_l.column(0)))
+  if (msSpwSubTable.nrow() <= (unsigned int)max(chanList_l.column(0)))
     throw(MSSelectionError(
         String("MSS::getChanFreqList:: Internal error:  Selected list of SPW IDs > "
                "no. of rows in the SPECTRAL_WINDOW sub-table.")));
-  Int spwID;
-  for (uInt i = 0; i < chanList_l.shape()(0); i++) {
+  int spwID;
+  for (unsigned int i = 0; i < chanList_l.shape()(0); i++) {
     spwID = chanList_l(i, 0);  // First column has the SPW ID
-    Array<Double> chanFreq(msSpwSubTable.chanFreq()(spwID));
-    Double avgChanWidth = chanList_l(i, 3) * sum(msSpwSubTable.chanWidth()(spwID)) /
+    Array<double> chanFreq(msSpwSubTable.chanFreq()(spwID));
+    double avgChanWidth = chanList_l(i, 3) * sum(msSpwSubTable.chanWidth()(spwID)) /
                           msSpwSubTable.chanWidth()(spwID).nelements();
 
-    Int validStartChan, validEndChan;
-    freqList_l(i, 0) = (Double)chanList_l(i, 0);  // The SPW ID
+    int validStartChan, validEndChan;
+    freqList_l(i, 0) = (double)chanList_l(i, 0);  // The SPW ID
     validStartChan =
         chanList_l(i, 1);  // chanList is already verified to be within valid limts [0,nchan-1]
     validEndChan = chanList_l(i, 2);
@@ -1314,23 +1314,23 @@ Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, const bool
 //----------------------------------------------------------------------------
 
 void MSSelection::getChanSlices(Vector<Vector<Slice>>& chanslices, const MeasurementSet* ms,
-                                const Int defaultChanStep) {
+                                const int defaultChanStep) {
   // The total number of spws
-  Int nspw = ms->spectralWindow().nrow();
+  int nspw = ms->spectralWindow().nrow();
 
   // Nominally empty selection for all spws
   chanslices.resize(nspw);
   chanslices.set(Vector<Slice>());
 
   // Get the chan selection matrix
-  Matrix<Int> chanmat = this->getChanList(ms, defaultChanStep);
+  Matrix<int> chanmat = this->getChanList(ms, defaultChanStep);
 
-  for (uInt i = 0; i < chanmat.nrow(); ++i) {
+  for (unsigned int i = 0; i < chanmat.nrow(); ++i) {
     // Reference to the current spw's slice list
     Vector<Slice>& currspwsl(chanslices(chanmat(i, 0)));
 
     // Add a slice element and fill it
-    Int islice = currspwsl.nelements();
+    int islice = currspwsl.nelements();
     currspwsl.resize(islice + 1, true);
     currspwsl(islice) =
         Slice(chanmat(i, 1), (chanmat(i, 2) - chanmat(i, 1) + chanmat(i, 3)) / chanmat(i, 3),
@@ -1342,23 +1342,23 @@ void MSSelection::getChanSlices(Vector<Vector<Slice>>& chanslices, const Measure
 //----------------------------------------------------------------------------
 void MSSelection::getCorrSlices(Vector<Vector<Slice>>& corrslices, const MeasurementSet* ms) {
   // The total number of polids
-  Int npol = ms->polarization().nrow();
+  int npol = ms->polarization().nrow();
 
   // Nominally empty selection for all polids
   corrslices.resize(npol);
   corrslices.set(Vector<Slice>());
 
   // Get the corr indices as an ordered map
-  std::map<Int, Vector<Vector<Int>>> corrmap(this->getCorrMap(ms));
+  std::map<int, Vector<Vector<int>>> corrmap(this->getCorrMap(ms));
 
   // Iterate over the ordered map to fill the slices
   for (const auto& elem : corrmap) {
-    Int pol = elem.first;
-    Vector<Int> corridx = elem.second[0];
+    int pol = elem.first;
+    Vector<int> corridx = elem.second[0];
 
-    Int ncorr = corridx.nelements();
+    int ncorr = corridx.nelements();
     corrslices(pol).resize(ncorr);
-    for (Int i = 0; i < ncorr; ++i) corrslices(pol)(i) = Slice(corridx(i), 1, 1);
+    for (int i = 0; i < ncorr; ++i) corrslices(pol)(i) = Slice(corridx(i), 1, 1);
   }
 }
 
@@ -1381,7 +1381,7 @@ void MSSelection::fromSelectionItem(const Record& selectionItem) {
   //   }
   //   cout << "------------------------------------------------------" << std::endl;
 
-  exprOrder_p = Vector<Int>(MAX_EXPR, Int(NO_EXPR));
+  exprOrder_p = Vector<int>(MAX_EXPR, int(NO_EXPR));
 
   // Extract and set all expressions
   //

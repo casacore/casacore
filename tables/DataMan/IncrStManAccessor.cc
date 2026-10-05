@@ -54,10 +54,10 @@ ROIncrementalStManAccessor& ROIncrementalStManAccessor::operator=(
   return *this;
 }
 
-void ROIncrementalStManAccessor::setCacheSize(uInt size, bool canExceedNrBuckets) {
+void ROIncrementalStManAccessor::setCacheSize(unsigned int size, bool canExceedNrBuckets) {
   dataManPtr_p->setCacheSize(size, canExceedNrBuckets);
 }
-uInt ROIncrementalStManAccessor::cacheSize() const { return dataManPtr_p->cacheSize(); }
+unsigned int ROIncrementalStManAccessor::cacheSize() const { return dataManPtr_p->cacheSize(); }
 
 void ROIncrementalStManAccessor::clearCache() { dataManPtr_p->clearCache(); }
 
@@ -69,12 +69,10 @@ void ROIncrementalStManAccessor::showBucketLayout(ostream& os) const {
   dataManPtr_p->showBucketLayout(os);
 }
 
-bool ROIncrementalStManAccessor::checkBucketLayout(uInt& offendingCursor,
-                                                   rownr_t& offendingBucketStartRow,
-                                                   uInt& offendingBucketNrow,
-                                                   uInt& offendingBucketNr, uInt& offendingCol,
-                                                   uInt& offendingIndex, rownr_t& offendingRow,
-                                                   rownr_t& offendingPrevRow) const {
+bool ROIncrementalStManAccessor::checkBucketLayout(
+    unsigned int& offendingCursor, rownr_t& offendingBucketStartRow,
+    unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr, unsigned int& offendingCol,
+    unsigned int& offendingIndex, rownr_t& offendingRow, rownr_t& offendingPrevRow) const {
   bool ok;
   ok = dataManPtr_p->checkBucketLayout(offendingCursor, offendingBucketStartRow,
                                        offendingBucketNrow, offendingBucketNr, offendingCol,

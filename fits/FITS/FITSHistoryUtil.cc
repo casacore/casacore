@@ -41,8 +41,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType,
-                                      ConstFitsKeywordList &in) {
+unsigned int FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType,
+                                              ConstFitsKeywordList &in) {
   LogIO os;
   os << LogOrigin("FITSHistoryUtil", "getHistoryGroup", WHERE);
 
@@ -54,7 +54,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType
   // if in is at the top, strangely enough, this gets the first kw
   // if curr() is used, the first kw would be parsed twice
   const FitsKeyword *key = in.next();
-  uInt nFound = 0;
+  unsigned int nFound = 0;
   bool foundStart = false;
 
   String tmp;
@@ -123,7 +123,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, String &groupType
 }
 
 void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out, const vector<String> &strings,
-                                      uInt nstrings, const String &groupType) {
+                                      unsigned int nstrings, const String &groupType) {
   LogIO os;
   os << LogOrigin("FITSHistoryUtil", "addHistoryGroup", WHERE);
   if (nstrings > strings.size()) {
@@ -139,14 +139,14 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out, const vector<String>
     out.history(tmp.c_str());
   }
 
-  const Int maxlen = 72;  // 80 - length('HISTORY ');
+  const int maxlen = 72;  // 80 - length('HISTORY ');
 
   String tmp;
-  for (uInt i = 0; i < nstrings; i++) {
+  for (unsigned int i = 0; i < nstrings; i++) {
     // Break at \n if any.
     Vector<String> lines = stringToVector(strings[i], '\n');
-    for (uInt j = 0; j < lines.nelements(); j++) {
-      if (Int(lines(j).length()) <= maxlen) {
+    for (unsigned int j = 0; j < lines.nelements(); j++) {
+      if (int(lines(j).length()) <= maxlen) {
         out.history(lines(j).c_str());
       } else {
         // Alas, we need to break the line. maxlen is effectively one
@@ -182,7 +182,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out, const vector<String>
 }
 
 void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &history,
-                                  uInt nstrings, bool aipsppFormat) {
+                                  unsigned int nstrings, bool aipsppFormat) {
   LogIO os;
   os << LogOrigin("FITSHistoryUtil", "fromHistory", WHERE);
   LogSink &sink = logger.sink();
@@ -200,8 +200,8 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &hi
     MEpoch::Types timeSystem;  // we don't care about this for log files!
     String date, priority, message, location, location2, objid, objid2;
     String tmp, msg;
-    Double dtime;
-    for (uInt i = 0; i < nstrings / 2; i++) {
+    double dtime;
+    for (unsigned int i = 0; i < nstrings / 2; i++) {
       // The message is the easy part.
 
       msg = history(2 * i + 1);
@@ -211,7 +211,7 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &hi
       tmp = history(2 * i);
       date = RegexSubStr(tmp, timePattern);
       if (FITSDateUtil::fromFITS(time, timeSystem, date, "")) {
-        dtime = Double(time) * 86400.0;
+        dtime = double(time) * 86400.0;
       } else {
         // Maybe we should whinge if we couldn't decode the time?
 
@@ -258,22 +258,23 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder &logger, const Vector<String> &hi
   } else {
     // Regular FITS HISTORY.
 
-    for (uInt i = 0; i < nstrings; i++) {
+    for (unsigned int i = 0; i < nstrings; i++) {
       sink.writeLocally(-1.0, history(i), String(""), String(""), String(""));
     }
   }
 }
 
-uInt FITSHistoryUtil::toHISTORY(vector<String> &history, bool &aipsppFormat, uInt &nstrings,
-                                uInt firstLine, const LoggerHolder &logger) {
+unsigned int FITSHistoryUtil::toHISTORY(vector<String> &history, bool &aipsppFormat,
+                                        unsigned int &nstrings, unsigned int firstLine,
+                                        const LoggerHolder &logger) {
   String priority, message, location, id;
-  Double timeInSec;
+  double timeInSec;
   history.resize(0);
   nstrings = 0;
   bool thisLineFormat;
   String tmp1, tmp2;
   //
-  uInt line = 0;
+  unsigned int line = 0;
   for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++, line++) {
     if (line >= firstLine) {
       priority = iter->priority();

@@ -60,13 +60,13 @@ class TaQLConstNodeRep : public TaQLNodeRep {
   // Do not change the values of this enum, as objects might be persistent.
   enum Type { CTBool = 0, CTInt = 1, CTReal = 2, CTComplex = 3, CTString = 4, CTTime = 5 };
   explicit TaQLConstNodeRep(bool value);
-  explicit TaQLConstNodeRep(Int64 value);
-  explicit TaQLConstNodeRep(Double value);
-  explicit TaQLConstNodeRep(Double value, const String& unit);
+  explicit TaQLConstNodeRep(int64_t value);
+  explicit TaQLConstNodeRep(double value);
+  explicit TaQLConstNodeRep(double value, const String& unit);
   explicit TaQLConstNodeRep(DComplex value);
   explicit TaQLConstNodeRep(const String& value, bool isTableName = false);
   explicit TaQLConstNodeRep(const MVTime& value);
-  explicit TaQLConstNodeRep(Int64 value, const String& subTableName);
+  explicit TaQLConstNodeRep(int64_t value, const String& subTableName);
   void setIsTableName() { itsIsTableName = true; }
   const String& getString() const;
   const String& getUnit() const { return itsUnit; }
@@ -78,8 +78,8 @@ class TaQLConstNodeRep : public TaQLNodeRep {
   Type itsType;
   bool itsIsTableName;
   bool itsBValue;
-  Int64 itsIValue;
-  Double itsRValue;
+  int64_t itsIValue;
+  double itsRValue;
   DComplex itsCValue;
   String itsSValue;
   MVTime itsTValue;
@@ -107,7 +107,7 @@ class TaQLRegexNodeRep : public TaQLNodeRep {
  public:
   explicit TaQLRegexNodeRep(const String& value);
   TaQLRegexNodeRep(const String& value, bool caseInsensitive, bool negate, bool ignoreBlanks,
-                   Int maxDistance);
+                   int maxDistance);
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
   virtual void show(std::ostream& os) const override;
   virtual void save(AipsIO& aio) const override;
@@ -118,7 +118,7 @@ class TaQLRegexNodeRep : public TaQLNodeRep {
   bool itsNegate;  // # true means !~
   // # The following members are only used for distance.
   bool itsIgnoreBlanks;
-  Int itsMaxDistance;
+  int itsMaxDistance;
 };
 
 // <summary>
@@ -233,7 +233,7 @@ class TaQLMultiNodeRep : public TaQLNodeRep {
     itsPostfix = postfix;
   }
   void setSeparator(const String& sep) { itsSep = sep; }
-  void setSeparator(uInt incr, const String& sep) {
+  void setSeparator(unsigned int incr, const String& sep) {
     itsIncr = incr;
     itsSep2 = sep;
   }
@@ -250,7 +250,7 @@ class TaQLMultiNodeRep : public TaQLNodeRep {
   String itsPostfix;
   String itsSep;
   String itsSep2;
-  uInt itsIncr;
+  unsigned int itsIncr;
 };
 
 // <summary>
@@ -1096,13 +1096,13 @@ class TaQLAddColNodeRep : public TaQLNodeRep {
 
 class TaQLRenDropNodeRep : public TaQLNodeRep {
  public:
-  TaQLRenDropNodeRep(Int type, const TaQLMultiNode& cols);
+  TaQLRenDropNodeRep(int type, const TaQLMultiNode& cols);
   virtual TaQLNodeResult visit(TaQLNodeVisitor&) const override;
   virtual void show(std::ostream& os) const override;
   virtual void save(AipsIO& aio) const override;
   static TaQLNode restore(AipsIO& aio);
 
-  Int itsType;
+  int itsType;
   TaQLMultiNode itsNames;
 };
 

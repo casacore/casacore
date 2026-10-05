@@ -40,7 +40,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-const Int maxLatSize = HostInfo::memoryTotal() / 1024 / 8;
+const int maxLatSize = HostInfo::memoryTotal() / 1024 / 8;
 
 template <class T>
 LatticeConvolver<T>::LatticeConvolver(const Lattice<T>& psf, bool doFast)
@@ -169,7 +169,7 @@ void LatticeConvolver<T>::circular(Lattice<T>& modelAndResult) {
 template <class T>
 void LatticeConvolver<T>::convolve(Lattice<T>& result, const Lattice<T>& model) const {
   //  cerr << "convolve: " << model.shape() << " " << itsXfr->shape() << endl;
-  const uInt ndim = itsFFTShape.nelements();
+  const unsigned int ndim = itsFFTShape.nelements();
   DebugAssert(result.ndim() == ndim, AipsError);
   DebugAssert(model.ndim() == ndim, AipsError);
   const IPosition modelShape = model.shape();
@@ -192,7 +192,7 @@ void LatticeConvolver<T>::convolve(Lattice<T>& result, const Lattice<T>& model) 
   }
 
   IPosition sliceShape(ndim, 1);
-  for (uInt n = 0; n < ndim; n++) {
+  for (unsigned int n = 0; n < ndim; n++) {
     if (itsFFTShape(n) > 1) {
       sliceShape(n) = modelShape(n);
     }
@@ -214,7 +214,7 @@ void LatticeConvolver<T>::convolve(Lattice<T>& result, const Lattice<T>& model) 
     {  // Multiply the transformed model with the transfer function
       IPosition tileShape(itsXfr->niceCursorShape());
       const IPosition otherTileShape(fftModel.niceCursorShape());
-      for (uInt i = 0; i < ndim; i++) {
+      for (unsigned int i = 0; i < ndim; i++) {
         if (tileShape(i) > otherTileShape(i)) tileShape(i) = otherTileShape(i);
       }
       TileStepper tiledNav(XFRShape, tileShape);
@@ -313,12 +313,12 @@ ConvEnums::ConvType LatticeConvolver<T>::type() const {
 template <class T>
 void LatticeConvolver<T>::pad(Lattice<T>& paddedLat, const Lattice<T>& inLat) {
   paddedLat.set(T(0));
-  const uInt ndim = inLat.ndim();
+  const unsigned int ndim = inLat.ndim();
   const IPosition inLatShape = inLat.shape();
   const IPosition FFTShape = paddedLat.shape();
   IPosition inBlc(ndim, 0);
   IPosition patchShape(inLatShape);
-  for (uInt k = 0; k < ndim; k++) {
+  for (unsigned int k = 0; k < ndim; k++) {
     if (FFTShape(k) < inLatShape(k)) {
       inBlc(k) = inLatShape(k) / 2 - FFTShape(k) / 2;
       patchShape(k) = FFTShape(k);
@@ -437,8 +437,8 @@ IPosition LatticeConvolver<T>::calcFFTShape(const IPosition& psfShape, const IPo
   // FFTShape on this axis is set to one. The iteration is done in the convolve
   // function.
   IPosition FFTShape = modelShape + psfShape / 2;
-  const uInt ndim = FFTShape.nelements();
-  for (uInt i = 0; i < ndim; i++) {
+  const unsigned int ndim = FFTShape.nelements();
+  for (unsigned int i = 0; i < ndim; i++) {
     if (psfShape(i) == 1 || modelShape(i) == 1) {
       FFTShape(i) = 1;
     } else if (FFTShape(i) < psfShape(i)) {

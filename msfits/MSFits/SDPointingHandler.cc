@@ -102,8 +102,8 @@ void SDPointingHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, co
   initAll(ms, handledCols, row);
 }
 
-void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
-                             const Vector<Double> &timeRange, const MDirection &direction,
+void SDPointingHandler::fill(const Record &, int antennaId, double time,
+                             const Vector<double> &timeRange, const MDirection &direction,
                              const MeasFrame &frame) {
   // don't bother unless there is something there
   if (msPointing_p) {
@@ -123,8 +123,8 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
     if (!newRow && trackingField_p.isAttached()) {
       newRow = *trackingField_p == msPointingCols_p->tracking()(rownr_p);
     }
-    Double interval = timeRange(1) - timeRange(0);
-    Double thisTime = time;
+    double interval = timeRange(1) - timeRange(0);
+    double thisTime = time;
     // or should a former MS time and interval be used here instead
     if (timeField_p.isAttached()) {
       thisTime = *timeField_p;
@@ -138,10 +138,10 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
       // if the time falls within the row interval of the row time
       // or the row time falls within the interval of time, then the rows overlap and
       // can be reused
-      Double rowTime = msPointingCols_p->time()(rownr_p);
-      Double rowInterval = msPointingCols_p->interval()(rownr_p);
-      Double rid2 = rowInterval / 2.0;
-      Double id2 = interval / 2.0;
+      double rowTime = msPointingCols_p->time()(rownr_p);
+      double rowInterval = msPointingCols_p->interval()(rownr_p);
+      double rid2 = rowInterval / 2.0;
+      double id2 = interval / 2.0;
       newRow = !(((time - id2) < (rowTime + rid2)) && ((rowTime - rid2) < (time + id2)));
     }
     if (newRow) {
@@ -168,12 +168,12 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
       }
       msPointingCols_p->timeOrigin().put(rownr_p, 0.0);
       // direction is tricky
-      Int npoly = 0;
+      int npoly = 0;
       if (pointingDirRateField_p.isAttached()) {
         directionRate_p = *pointingDirRateField_p;
         // only add this if the rates here are non-zero AND non-inf AND not a NaN
-        Double d0 = directionRate_p(0);
-        Double d1 = directionRate_p(1);
+        double d0 = directionRate_p(0);
+        double d1 = directionRate_p(1);
         if (!near(d0, 0.0) && !near(d1, 0.0) && !isInf(d0) && !isInf(d1) && !isNaN(d0) &&
             !isNaN(d1)) {
           npoly = 1;
@@ -185,7 +185,7 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
       if (npoly == 1) {
         // assumes the direction reference is the same as for dirs(0)
         dirs(1) =
-            MDirection(Quantum<Vector<Double>>(*pointingDirRateField_p), direction_p.getRef());
+            MDirection(Quantum<Vector<double>>(*pointingDirRateField_p), direction_p.getRef());
       }
       if (dirColRef_p != direction_p.getRef()) {
         MDirection::Ref mref(dirColRef_p);
@@ -208,9 +208,9 @@ void SDPointingHandler::fill(const Record &, Int antennaId, Double time,
     } else {
       // re-use this row, make sure that the time range is fully set
       // and place the time in the center of it
-      Double rowTime = msPointingCols_p->time()(rownr_p);
-      Double rowInterval = msPointingCols_p->interval()(rownr_p);
-      Double minTime, maxTime;
+      double rowTime = msPointingCols_p->time()(rownr_p);
+      double rowInterval = msPointingCols_p->interval()(rownr_p);
+      double minTime, maxTime;
       minTime = min(time - interval / 2.0, rowTime - rowInterval / 2.0);
       maxTime = max(time + interval / 2.0, rowTime + rowInterval / 2.0);
       time_p = (maxTime + minTime) / 2.0;

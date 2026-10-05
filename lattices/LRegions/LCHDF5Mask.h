@@ -89,10 +89,10 @@ class LCHDF5Mask : public LCRegionSingle {
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile.
-  uInt advisedMaxPixels() const override;
+  unsigned int advisedMaxPixels() const override;
 
   // Help the user pick a cursor for most efficient access.
-  IPosition doNiceCursorShape(uInt maxPixels) const override;
+  IPosition doNiceCursorShape(unsigned int maxPixels) const override;
 
   // Flush the data (but do not unlock).
   void flush() override;
@@ -116,7 +116,7 @@ class LCHDF5Mask : public LCRegionSingle {
   // Construct another LCHDF5Mask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:

@@ -33,19 +33,19 @@
 namespace casacore {
 
 template <class T>
-void LatticeHistSpecialize::makeCumulative(Vector<T>& counts, T& yMax, uInt nBins,
+void LatticeHistSpecialize::makeCumulative(Vector<T>& counts, T& yMax, unsigned int nBins,
                                            typename NumericTraits<T>::BaseType scale) {
   counts(0) = scale * counts(0);
-  for (uInt i = 1; i < nBins; i++) {
+  for (unsigned int i = 1; i < nBins; i++) {
     counts(i) = counts(i) * scale + counts(i - 1);
   }
   yMax = counts(nBins - 1);
 }
 
 template <class T>
-void LatticeHistSpecialize::makeLogarithmic(Vector<T>& counts, T& yMax, uInt nBins) {
+void LatticeHistSpecialize::makeLogarithmic(Vector<T>& counts, T& yMax, unsigned int nBins) {
   yMax = 0.0;
-  for (uInt i = 0; i < nBins; i++) {
+  for (unsigned int i = 0; i < nBins; i++) {
     if (counts(i) > 0.0) counts(i) = std::log10(counts(i));
     yMax = std::max(yMax, counts(i));
   }
@@ -53,14 +53,15 @@ void LatticeHistSpecialize::makeLogarithmic(Vector<T>& counts, T& yMax, uInt nBi
 
 template <class T>
 void LatticeHistSpecialize::process(const T* pInData, const bool* pInMask, Block<T>* pHist,
-                                    const Vector<T>& clip, T binWidth, uInt offset, uInt nrval,
-                                    uInt nBins, uInt dataIncr, uInt maskIncr) {
+                                    const Vector<T>& clip, T binWidth, unsigned int offset,
+                                    unsigned int nrval, unsigned int nBins, unsigned int dataIncr,
+                                    unsigned int maskIncr) {
   T datum;
-  uInt rBin;
-  uInt index;
+  unsigned int rBin;
+  unsigned int index;
   //
   if (pInMask == 0) {
-    for (uInt i = 0; i < nrval; i++) {
+    for (unsigned int i = 0; i < nrval; i++) {
       datum = *pInData;
       if (LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum) > 0.5) {
         rBin = bin(datum, clip(0), binWidth, nBins);
@@ -71,7 +72,7 @@ void LatticeHistSpecialize::process(const T* pInData, const bool* pInMask, Block
       pInData += dataIncr;
     }
   } else {
-    for (uInt i = 0; i < nrval; i++) {
+    for (unsigned int i = 0; i < nrval; i++) {
       datum = *pInData;
       if (*pInMask && (LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum) > 0.5)) {
         rBin = bin(datum, clip(0), binWidth, nBins);

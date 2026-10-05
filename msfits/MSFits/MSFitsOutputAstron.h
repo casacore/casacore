@@ -53,52 +53,53 @@ class MSFitsOutputAstron {
   // <br>If combineSpw=True, all spectral-windows of a frequency group
   // are combined.
   static bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms, const String& column,
-                            Int startchan = -1, Int nchan = -1, Int stepchan = -1,
+                            int startchan = -1, int nchan = -1, int stepchan = -1,
                             bool writeSysCal = false, bool asMultiSource = false,
                             bool combineSpw = false, bool writeStation = false,
-                            Double sensitivity = 1.0);
+                            double sensitivity = 1.0);
 
  private:
   // Write the main table.
-  static FitsOutput* writeMain(Int& refPixelFreq, Double& refFreq, Double& refFreq1, Double& chanbw,
+  static FitsOutput* writeMain(int& refPixelFreq, double& refFreq, double& refFreq1, double& chanbw,
                                const String& outFITSFile, const MeasurementSet& rawms,
-                               const String& column, const Block<Int>& spwidMap, Int nrspw,
-                               Int startchan, Int nchan, Int stepchan, const Block<Int>& fieldidMap,
+                               const String& column, const Block<int>& spwidMap, int nrspw,
+                               int startchan, int nchan, int stepchan, const Block<int>& fieldidMap,
                                bool asMultiSource, bool combineSpw);
 
   // Write the FQ table.
   // If combineSpw is true, all spectral-windows are written in one
   // row of the FITS table.
-  static bool writeFQ(FitsOutput* output, const MeasurementSet& ms, const Block<Int>& spwidMap,
-                      Int nrspw, Double refFreq, Int refPixelFreq, Double chanbw, bool combineSpw);
+  static bool writeFQ(FitsOutput* output, const MeasurementSet& ms, const Block<int>& spwidMap,
+                      int nrspw, double refFreq, int refPixelFreq, double chanbw, bool combineSpw);
 
   // Write the AN table.
-  static bool writeAN(FitsOutput* output, const MeasurementSet& ms, Double refFreq,
+  static bool writeAN(FitsOutput* output, const MeasurementSet& ms, double refFreq,
                       bool writeStation);
 
   // Write the SU table.
-  static bool writeSU(FitsOutput* output, const MeasurementSet& ms, const Block<Int>& fieldidMap,
-                      Int nrfield, const Block<Int>& spwidMap, Int nrspw);
+  static bool writeSU(FitsOutput* output, const MeasurementSet& ms, const Block<int>& fieldidMap,
+                      int nrfield, const Block<int>& spwidMap, int nrspw);
 
   // Write the TY table.
   static bool writeTY(FitsOutput* output, const MeasurementSet& ms, const Table& syscal,
-                      const Block<Int>& spwidMap, uInt nrif, bool combineSpw);
+                      const Block<int>& spwidMap, unsigned int nrif, bool combineSpw);
 
   // Write the GC table.
   static bool writeGC(FitsOutput* output, const MeasurementSet& ms, const Table& syscal,
-                      const Block<Int>& spwidMap, uInt nrif, bool combineSpw, Double sensitivity,
-                      Int refPixelFreq, Double refFreq, Double chanbw);
+                      const Block<int>& spwidMap, unsigned int nrif, bool combineSpw,
+                      double sensitivity, int refPixelFreq, double refFreq, double chanbw);
 
   // Convert time to day and fraction.
-  static void timeToDay(Int& day, Double& dayFraction, Double time);
+  static void timeToDay(int& day, double& dayFraction, double time);
 
   // Get the time and hourangle from the MS at the given row.
   // It uses the field-id and observation-id to calculate the hourangle.
-  static void getStartHA(Double& startTime, Double& startHA, const MeasurementSet& ms, uInt rownr);
+  static void getStartHA(double& startTime, double& startHA, const MeasurementSet& ms,
+                         unsigned int rownr);
 
   // Handle the SYSCAL table.
   // It skips the entries not needed and sorts it in the correct order.
-  static Table handleSysCal(const MeasurementSet& ms, const Vector<Int>& spwids, bool isSubset);
+  static Table handleSysCal(const MeasurementSet& ms, const Vector<int>& spwids, bool isSubset);
 
   // Determine which ids are selected in the main table
   // (used for fields and spectral-window).
@@ -109,7 +110,7 @@ class MSFitsOutputAstron {
   // If isSubset is false the main table is not a selection, but
   // represents an entire MS. In that case the map and selids are
   // simply filled with values 0-nrid.
-  static Int makeIdMap(Block<Int>& map, Vector<Int>& selids, const Vector<Int>& allids,
+  static int makeIdMap(Block<int>& map, Vector<int>& selids, const Vector<int>& allids,
                        bool isSubset);
 };
 

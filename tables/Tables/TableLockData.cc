@@ -41,7 +41,7 @@ TableLockData::TableLockData(const TableLock& lockOptions,
 TableLockData::~TableLockData() { delete itsLock; }
 
 void TableLockData::makeLock(const String& name, bool create, FileLocker::LockType type,
-                             uInt locknr) {
+                             unsigned int locknr) {
   // # Create lock file object only when not created yet.
   // # It is acceptable that no lock file exists for a readonly table
   // # (to be able to read older tables).
@@ -51,7 +51,7 @@ void TableLockData::makeLock(const String& name, bool create, FileLocker::LockTy
   }
   // # Acquire a lock when permanent locking is in use.
   if (isPermanent()) {
-    uInt nattempts = 1;
+    unsigned int nattempts = 1;
     if (option() == PermanentLockingWait) {
       nattempts = 0;  // wait
     }
@@ -62,11 +62,11 @@ void TableLockData::makeLock(const String& name, bool create, FileLocker::LockTy
   }
 }
 
-bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, uInt nattempts) {
+bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, unsigned int nattempts) {
   // # Try to acquire a lock.
   // # Show a message when we have to wait for a long time.
   // # Start with n attempts, show a message and continue thereafter.
-  uInt n = 30;
+  unsigned int n = 30;
   if (nattempts > 0 && nattempts < n) {
     n = nattempts;
   }
@@ -77,21 +77,21 @@ bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, uInt natt
       s = "write";
     }
     LogIO os;
-    os << "Process " << uInt(getpid()) << ": waiting for " << s << "-lock on file "
-       << itsLock->name();
+    os << "Process " << static_cast<unsigned int>(getpid()) << ": waiting for " << s
+       << "-lock on file " << itsLock->name();
     os.post();
     if (nattempts > 0) {
       nattempts -= n;
     }
     status = itsLock->acquire(info, type, nattempts);
     if (status) {
-      os << "Process " << uInt(getpid()) << ": acquired " << s << "-lock on file "
-         << itsLock->name();
+      os << "Process " << static_cast<unsigned int>(getpid()) << ": acquired " << s
+         << "-lock on file " << itsLock->name();
       os.post();
     } else {
       if (nattempts > 0) {
-        os << "Process " << uInt(getpid()) << ": gave up acquiring " << s << "-lock on file "
-           << itsLock->name() << " after " << nattempts << " seconds";
+        os << "Process " << static_cast<unsigned int>(getpid()) << ": gave up acquiring " << s
+           << "-lock on file " << itsLock->name() << " after " << nattempts << " seconds";
         os.post();
       }
     }

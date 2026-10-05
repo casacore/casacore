@@ -144,17 +144,17 @@ void removeCR(String& line) {
   }
 }
 
-uInt lskipws(const String& value, uInt st, uInt end) {
+unsigned int lskipws(const String& value, unsigned int st, unsigned int end) {
   for (; st < end && isspace(value[st]); ++st);
   return st;
 }
 
-uInt rskipws(const String& value, uInt st, uInt end) {
+unsigned int rskipws(const String& value, unsigned int st, unsigned int end) {
   for (; end > st && isspace(value[end - 1]); --end);
   return end;
 }
 
-uInt skipQuoted(const String& str, uInt st, uInt end) {
+unsigned int skipQuoted(const String& str, unsigned int st, unsigned int end) {
   // Skip until the matching end quote is found.
   char ch = str[st++];
   for (; st < end; ++st) {
@@ -174,10 +174,10 @@ uInt skipQuoted(const String& str, uInt st, uInt end) {
 vector<String> splitLine(const String& line) {
   vector<String> parts;
   // Skip leading and trailing whitespace.
-  uInt st = lskipws(line, 0, line.size());
+  unsigned int st = lskipws(line, 0, line.size());
   if (!line.empty() && line[st] != '#') {  // skip if only comment
-    uInt end = rskipws(line, st, line.size());
-    uInt stcmd = st;  // first non-blank character
+    unsigned int end = rskipws(line, st, line.size());
+    unsigned int stcmd = st;  // first non-blank character
     while (st < end) {
       if (line[st] == '"' || line[st] == '\'') {
         st = skipQuoted(line, st, end);
@@ -185,7 +185,7 @@ vector<String> splitLine(const String& line) {
         end = rskipws(line, stcmd, st);  // A comment ends the line
       } else if (line[st] == ';') {
         // Save the command.
-        uInt endcmd = rskipws(line, stcmd, st);
+        unsigned int endcmd = rskipws(line, stcmd, st);
         if (stcmd < endcmd) {
           parts.push_back(line.substr(stcmd, endcmd - stcmd));
           parts.push_back(String());
@@ -198,7 +198,7 @@ vector<String> splitLine(const String& line) {
     }
     // Handle possible last command.
     if (stcmd < end) {
-      uInt endcmd = rskipws(line, stcmd, st);
+      unsigned int endcmd = rskipws(line, stcmd, st);
       if (stcmd < endcmd) {
         parts.push_back(line.substr(stcmd, endcmd - stcmd));
       }
@@ -212,7 +212,7 @@ vector<String> splitWS(const String& str) {
   vector<String> parts;
   String part;
   int qpos = -1;
-  for (uInt i = 0; i < str.size(); ++i) {
+  for (unsigned int i = 0; i < str.size(); ++i) {
     if (qpos < 0) {
       // Not in quoted string.
       if (str[i] == '"' || str[i] == '\'') {
@@ -276,7 +276,7 @@ bool readLineSkip(String& line, const String& prompt) {
 
 // Show a date/time. Do not show time part if 0.
 void showTime(const MVTime& time, ostream& os) {
-  Double val = time.day();
+  double val = time.day();
   if (val == floor(val)) {
     time.print(os, MVTime::Format(MVTime::formatTypes(MVTime::DMY | MVTime::NO_TIME)));
   } else {
@@ -309,7 +309,7 @@ void showTime(const Array<double>& times, const String& unit, ostream& os) {
 void showPos(const Array<double>& pos, const Vector<String>& units, ostream& os) {
   AlwaysAssert(pos.size() % units.size() == 0, AipsError);
   Vector<Quantity> q(units.size());
-  for (uInt i = 0; i < units.size(); ++i) {
+  for (unsigned int i = 0; i < units.size(); ++i) {
     q[i] = Quantity(0., units[i]);
   }
   bool firstTime = true;
@@ -323,7 +323,7 @@ void showPos(const Array<double>& pos, const Vector<String>& units, ostream& os)
     } else {
       firstTime = false;
     }
-    for (uInt i = 0; i < units.size(); ++i) {
+    for (unsigned int i = 0; i < units.size(); ++i) {
       q[i].setValue(*iter);
       iter++;
     }
@@ -339,7 +339,7 @@ void showPos(const Array<double>& pos, const Vector<String>& units, ostream& os)
 void showDir(const Array<double>& dir, const Vector<String>& units, ostream& os) {
   AlwaysAssert(dir.size() % units.size() == 0, AipsError);
   Vector<Quantity> q(units.size());
-  for (uInt i = 0; i < units.size(); ++i) {
+  for (unsigned int i = 0; i < units.size(); ++i) {
     q[i] = Quantity(0., units[i]);
   }
   bool firstTime = true;
@@ -354,7 +354,7 @@ void showDir(const Array<double>& dir, const Vector<String>& units, ostream& os)
       firstTime = false;
     }
     os << '[';
-    for (uInt i = 0; i < units.size(); ++i) {
+    for (unsigned int i = 0; i < units.size(); ++i) {
       q[i].setValue(*iter);
       MVAngle angle(q[i]);
       if (i == 0) {
@@ -420,14 +420,14 @@ void showArray(const Array<MVTime>& arr, ostream& os) {
 // First test if they exist and contain scalars or arrays.
 void showTable(const Table& tab, const Vector<String>& colnam, bool printMeasure,
                const String& separator, ostream& os) {
-  uInt nrcol = 0;
+  unsigned int nrcol = 0;
   Block<TableColumn*> tableColumns(colnam.nelements());
   Block<Vector<String>> timeUnit(colnam.nelements());
   Block<Vector<String>> posUnit(colnam.nelements());
   Block<Vector<String>> dirUnit(colnam.nelements());
   Block<String> colUnits(colnam.nelements());
   bool hasUnits = false;
-  for (uInt i = 0; i < colnam.nelements(); i++) {
+  for (unsigned int i = 0; i < colnam.nelements(); i++) {
     if (!tab.tableDesc().isColumn(colnam(i))) {
       os << "Column " << colnam(i) << " does not exist" << endl;
     } else {
@@ -474,7 +474,7 @@ void showTable(const Table& tab, const Vector<String>& colnam, bool printMeasure
   // Show possible units.
   if (hasUnits) {
     os << "Unit: ";
-    for (uInt j = 0; j < nrcol; j++) {
+    for (unsigned int j = 0; j < nrcol; j++) {
       if (j > 0) {
         os << separator;
       }
@@ -485,7 +485,7 @@ void showTable(const Table& tab, const Vector<String>& colnam, bool printMeasure
   // Use TableProxy, so we can be type-agnostic.
   TableProxy proxy(tab);
   for (rownr_t i = 0; i < tab.nrow(); i++) {
-    for (uInt j = 0; j < nrcol; j++) {
+    for (unsigned int j = 0; j < nrcol; j++) {
       if (j > 0) {
         os << separator;
       }
@@ -514,7 +514,7 @@ void showTable(const Table& tab, const Vector<String>& colnam, bool printMeasure
     os << endl;
   }
 
-  for (uInt i = 0; i < nrcol; i++) {
+  for (unsigned int i = 0; i < nrcol; i++) {
     delete tableColumns[i];
   }
 }
@@ -728,7 +728,7 @@ Table taqlCommand(const Options& options, const String& varName, const String& c
         if (printHeader) {
           // Show the selected column names.
           os << colNames.nelements() << " selected columns: ";
-          for (uInt i = 0; i < colNames.nelements(); i++) {
+          for (unsigned int i = 0; i < colNames.nelements(); i++) {
             os << " " << colNames(i);
           }
           os << endl;
@@ -838,7 +838,7 @@ void showOptions(const Options& options) {
   cerr << endl;
 }
 
-void showTableInfo(const String& name, const Table& tab, const String& command, Int level,
+void showTableInfo(const String& name, const Table& tab, const String& command, int level,
                    ostream& os) {
   TableDesc tdesc(tab.actualTableDesc());
   os << "  " << name << " resulted from:";
@@ -855,16 +855,16 @@ void showTableInfo(const String& name, const Table& tab, const String& command, 
     os << "    " << colNames << endl;
     if (level > 1) {
       genSort(colNames);
-      uInt maxLen = 0;
-      for (uInt i = 0; i < colNames.size(); ++i) {
+      unsigned int maxLen = 0;
+      for (unsigned int i = 0; i < colNames.size(); ++i) {
         if (colNames[i].size() > maxLen) {
           maxLen = colNames[i].size();
         }
       }
-      for (uInt i = 0; i < colNames.size(); ++i) {
+      for (unsigned int i = 0; i < colNames.size(); ++i) {
         const ColumnDesc& cdesc = tdesc[colNames[i]];
         os << "    " << colNames[i];
-        for (uInt j = colNames[i].size(); j < maxLen; ++j) {
+        for (unsigned int j = colNames[i].size(); j < maxLen; ++j) {
           os << ' ';
         }
         os << ' ' << ValType::getTypeStr(cdesc.dataType());
@@ -920,7 +920,7 @@ vector<const Table*> replaceVars(String& str, const TableMap& tableMap) {
   String out;
   out.reserve(str.size());
   // Loop through the entire string.
-  for (uInt i = 0; i < str.size(); ++i) {
+  for (unsigned int i = 0; i < str.size(); ++i) {
     char tmp = str[i];
     // If a dollar was found, we might have a name.
     // Alphabetics and underscore are always part of name.
@@ -1007,11 +1007,11 @@ bool execCommand(const String& command, TableMap& tableMap, const Options& optio
         // First try it as a name.
         // A name can be followed by question marks giving the level of
         // info to be printed.
-        Int sz = strc.size();
+        int sz = strc.size();
         while (sz > 0 && strc[sz - 1] == '?') {
           --sz;
         }
-        Int level = strc.size() - sz;
+        int level = strc.size() - sz;
         String name = strc.substr(0, sz);
         RTrimInPlace(name, " \t");
         TableMap::const_iterator it = tableMap.find(name);
@@ -1120,7 +1120,7 @@ String removeQuotes(const String& s, bool removeQuote) {
 
 // Parse the given options and set flags accordingly.
 // Stop at first non-option (indicated by st).
-bool parseArgs(const vector<String>& args, uInt& st, Options& options, bool removeQuote) {
+bool parseArgs(const vector<String>& args, unsigned int& st, Options& options, bool removeQuote) {
   options.fname = String();
   for (st = 0; st < args.size(); ++st) {
     String arg(args[st]);
@@ -1245,7 +1245,7 @@ bool parseArgs(const vector<String>& args, uInt& st, Options& options, bool remo
 bool executeArgs(const vector<String> args, bool topLevel, TableMap& tableMap, Options& options) {
   // Parse the options as given.
   Options localOptions(options);
-  uInt st = 0;
+  unsigned int st = 0;
   if (!parseArgs(args, st, localOptions, !topLevel)) {
     return true;
   }

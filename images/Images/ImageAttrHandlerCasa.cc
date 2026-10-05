@@ -51,7 +51,7 @@ ImageAttrHandlerCasa& ImageAttrHandlerCasa::attachTable(const Table& image, bool
   // If ATTRGROUPS is defined, get all subtables (groups) in it.
   if (itsImageTable.keywordSet().isDefined("ATTRGROUPS")) {
     const TableRecord& rec = itsImageTable.keywordSet().subRecord("ATTRGROUPS");
-    for (uInt i = 0; i < rec.nfields(); ++i) {
+    for (unsigned int i = 0; i < rec.nfields(); ++i) {
       if (rec.dataType(i) == TpTable) {
         // Add group to map, but with a null object. It gets filled once
         // the group gets used.
@@ -74,7 +74,7 @@ bool ImageAttrHandlerCasa::hasGroup(const String& groupName) {
 
 Vector<String> ImageAttrHandlerCasa::groupNames() const {
   Vector<String> names(itsGroupMap.size());
-  uInt i = 0;
+  unsigned int i = 0;
   for (map<String, ImageAttrGroupCasa>::const_iterator it = itsGroupMap.begin();
        it != itsGroupMap.end(); ++it) {
     names[i++] = it->first;

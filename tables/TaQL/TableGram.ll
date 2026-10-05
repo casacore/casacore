@@ -608,7 +608,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {INT}     {
             tableGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtoll(TableGramtext, &endPtr, 10);
+            int64_t v = strtoll(TableGramtext, &endPtr, 10);
             if (endPtr != TableGramtext+yyleng) {
                 throw TableInvExpr ("Integer number not fully parsed");
             }
@@ -619,7 +619,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {HEXINT}  {
             tableGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtoll(TableGramtext, &endPtr, 0);
+            int64_t v = strtoll(TableGramtext, &endPtr, 0);
             if (endPtr != TableGramtext+yyleng) {
                 throw TableInvExpr ("Hex number not fully parsed");
             }
@@ -740,7 +740,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
  /* A temporary table number possibly followed by a subtable name*/
 {TEMPTAB} {
             tableGramPosition() += yyleng;
-            Int64 ival = atoi(TableGramtext+1);
+            int64_t ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
@@ -748,7 +748,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 <SHOWstate>{TEMPTAB} {
             tableGramPosition() += yyleng;
-            Int64 ival = atoi(TableGramtext+1);
+            int64_t ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);

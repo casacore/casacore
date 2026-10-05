@@ -35,7 +35,7 @@ TableMeasType::TableMeasType() : itsNtypes(0), itsStypes(0), itsTyps(0) {}
 
 TableMeasType::TableMeasType(const Measure& meas)
     : itsNtypes(0), itsStypes(0), itsTyps(0), itsMeasHolder(meas) {
-  Int nextras;
+  int nextras;
   itsStypes = itsMeasHolder.asMeasure().allTypes(itsNtypes, nextras, itsTyps);
 }
 
@@ -62,8 +62,8 @@ TableMeasType& TableMeasType::operator=(const TableMeasType& that) {
 
 const String& TableMeasType::type() const { return itsMeasHolder.asMeasure().tellMe(); }
 
-uInt TableMeasType::refCode(const String& refString) const {
-  Int i;
+unsigned int TableMeasType::refCode(const String& refString) const {
+  int i;
   for (i = 0; i < itsNtypes; i++) {
     if (itsStypes[i] == refString) {
       break;
@@ -76,8 +76,8 @@ uInt TableMeasType::refCode(const String& refString) const {
   return itsTyps[i];
 }
 
-const String& TableMeasType::refType(uInt refCode) const {
-  Int i;
+const String& TableMeasType::refType(unsigned int refCode) const {
+  int i;
   for (i = 0; i < itsNtypes; i++) {
     if (itsTyps[i] == refCode) {
       break;

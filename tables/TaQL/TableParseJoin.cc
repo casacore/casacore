@@ -40,7 +40,7 @@ TableParseJoin::TableParseJoin(TableParseQuery* parent)
   }
 }
 
-Int64 TableParseJoin::findRow(const TableExprId& id) const {
+int64_t TableParseJoin::findRow(const TableExprId& id) const {
   // In the initialization phase of TaQLJoin, the itsJoin pointer
   // is not set. In that case the given row id is already the original
   // rownr in the join table and should be returned as such.
@@ -54,7 +54,7 @@ Int64 TableParseJoin::findRow(const TableExprId& id) const {
   return itsLastJoinRow;
 }
 
-void TableParseJoin::addTable(Int tabnr, const String& name, const Table& ftab,
+void TableParseJoin::addTable(int tabnr, const String& name, const Table& ftab,
                               const String& shorthand, const std::vector<const Table*>& tempTables,
                               const std::vector<TableParseQuery*>& stack) {
   // First add the table to the FROM tables in the parent which gives
@@ -130,8 +130,8 @@ void TableParseJoin::handleConditionParts(std::vector<TENShPtr>& parts) {
       }
     }
     // Test if all tables used in the condition exist at the right place.
-    uInt nmatchLeft = findMatchingTables(leftTables, itsFromTables);
-    uInt nmatchRight = findMatchingTables(rightTables, itsJoinTables);
+    unsigned int nmatchLeft = findMatchingTables(leftTables, itsFromTables);
+    unsigned int nmatchRight = findMatchingTables(rightTables, itsJoinTables);
     if (nmatchLeft == 0) {
       throw TableInvExpr(
           "When using an IN condition in a join, "
@@ -161,8 +161,8 @@ void TableParseJoin::handleConditionParts(std::vector<TENShPtr>& parts) {
   // Note that this TableParseJoin object is already part of the vector,
   // but it is innocent to test it.
   const std::vector<TableParseJoin>& joins = itsParent->joins();
-  for (Int i = joins.size() - 1; i >= 0; --i) {
-    uInt nmatch = findMatchingTables(mainTables, joins[i].itsJoinTables);
+  for (int i = joins.size() - 1; i >= 0; --i) {
+    unsigned int nmatch = findMatchingTables(mainTables, joins[i].itsJoinTables);
     if (nmatch > 0) {
       // Keep the index of the parent (not its pointer).
       // Note that a pointer might be invalidated if the vector gets extended.
@@ -209,9 +209,9 @@ void TableParseJoin::addUniqueTables(std::vector<Table>& tables, const std::vect
   }
 }
 
-uInt TableParseJoin::findMatchingTables(const std::vector<Table>& exprTables,
-                                        const std::vector<Table>& tables) const {
-  uInt nmatch = 0;
+unsigned int TableParseJoin::findMatchingTables(const std::vector<Table>& exprTables,
+                                                const std::vector<Table>& tables) const {
+  unsigned int nmatch = 0;
   for (const Table& exprTab : exprTables) {
     for (const Table& tab : tables) {
       if (tab.isSameTable(exprTab)) {

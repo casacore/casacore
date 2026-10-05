@@ -107,7 +107,7 @@ class Aberration {
  public:
   // # Constants
   //  Interval to be used for linear approximation (in days)
-  static constexpr Double INTV = 0.04;
+  static constexpr double INTV = 0.04;
 
   // # Enumerations
   //  Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
@@ -128,11 +128,11 @@ class Aberration {
 
   // # Operators
   //  Operator () calculates the Aberration direction cosine vector
-  const MVPosition &operator()(Double epoch);
+  const MVPosition &operator()(double epoch);
 
   // # General Member Functions
   //  Return derivative of Aberration (d<sup>-1</sup>) w.r.t. time
-  const MVPosition &derivative(Double epoch);
+  const MVPosition &derivative(double epoch);
 
   // Re-initialise Aberration object
   // <group>
@@ -147,21 +147,21 @@ class Aberration {
   //  Method to be used
   AberrationTypes method;
   // Check epoch for linear approximation
-  Double checkEpoch = 1e30;
+  double checkEpoch = 1e30;
   // Cached calculated angles
-  Double aval[3];
+  double aval[3];
   // Cached derivatives
-  Double dval[3];
+  double dval[3];
   // To be able to use referenced results in simple calculations, a circular
   // result buffer is used.
   // Current buffer pointer.
-  Int lres;
+  int lres;
   // Last calculation
   MVPosition result[4];
   // Interpolation interval
-  inline static uInt interval_reg;
+  inline static unsigned int interval_reg;
   // JPL use
-  inline static uInt usejpl_reg;
+  inline static unsigned int usejpl_reg;
   inline static std::once_flag initialize_once_flag;
 
   // # Member functions
@@ -170,7 +170,7 @@ class Aberration {
   // Fill an empty copy
   static void initialize();
   // Calculate Aberration angles for time t
-  void calcAber(Double t);
+  void calcAber(double t);
 };
 
 }  // namespace casacore

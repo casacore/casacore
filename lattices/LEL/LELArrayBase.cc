@@ -71,8 +71,8 @@ void LELArrayBase::combineMask(const Array<bool>& mask) {
     bool del1, del2;
     bool* m1 = itsMaskPtr->getStorage(del1);
     const bool* m2 = mask.getStorage(del2);
-    uInt nr = itsMaskPtr->nelements();
-    for (uInt i = 0; i < nr; i++) {
+    unsigned int nr = itsMaskPtr->nelements();
+    for (unsigned int i = 0; i < nr; i++) {
       if (!m2[i]) {
         m1[i] = false;
       }
@@ -86,7 +86,7 @@ void LELArrayBase::combineOrAnd(bool desiredValue, const Array<bool>& value) {
   // Combine the mask for an array and a scalar with a false mask.
   bool deleteValue, deleteMask;
   const bool* val = value.getStorage(deleteValue);
-  uInt nr = value.nelements();
+  unsigned int nr = value.nelements();
   if (itsMaskPtr == 0) {
     // Entire mask is true, so create one.
     itsMaskPtr = new Array<bool>(value.shape());
@@ -95,8 +95,8 @@ void LELArrayBase::combineOrAnd(bool desiredValue, const Array<bool>& value) {
   // If value is unequal desiredValue, mask should also be false
   // (because  false || Unknown == Unknown  and  true && Unknown == Unknown).
   bool* m = itsMaskPtr->getStorage(deleteMask);
-  uInt ntrue = 0;
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int ntrue = 0;
+  for (unsigned int i = 0; i < nr; i++) {
     if (val[i] != desiredValue) {
       m[i] = false;
     } else if (m[i]) {
@@ -114,17 +114,17 @@ void LELArrayBase::combineOrAnd(bool desiredValue, Array<bool>& value, const Arr
   bool deleteValue, deleteTemp, deleteMask;
   bool* val = value.getStorage(deleteValue);
   const bool* tmp = temp.getStorage(deleteTemp);
-  uInt nr = value.nelements();
+  unsigned int nr = value.nelements();
   if (itsMaskPtr == 0) {
-    for (uInt i = 0; i < nr; i++) {
+    for (unsigned int i = 0; i < nr; i++) {
       if (tmp[i] == desiredValue) {
         val[i] = desiredValue;
       }
     }
   } else {
     bool* m = itsMaskPtr->getStorage(deleteMask);
-    uInt ntrue = 0;
-    for (uInt i = 0; i < nr; i++) {
+    unsigned int ntrue = 0;
+    for (unsigned int i = 0; i < nr; i++) {
       if (tmp[i] == desiredValue) {
         val[i] = desiredValue;
         m[i] = true;
@@ -148,14 +148,14 @@ void LELArrayBase::combineOrAnd(bool desiredValue, Array<bool>& value, const Arr
   bool* val = value.getStorage(deleteValue);
   const bool* tmp = temp.getStorage(deleteTemp);
   const bool* tm = tempMask.getStorage(deleteTempMask);
-  uInt nr = value.nelements();
+  unsigned int nr = value.nelements();
   if (itsMaskPtr == 0) {
     itsMaskPtr = new Array<bool>(value.shape());
     *itsMaskPtr = true;
   }
   bool* m = itsMaskPtr->getStorage(deleteMask);
-  uInt ntrue = 0;
-  for (uInt i = 0; i < nr; i++) {
+  unsigned int ntrue = 0;
+  for (unsigned int i = 0; i < nr; i++) {
     if (m[i] && val[i] == desiredValue) {
       ntrue++;
     } else if (tm[i] && tmp[i] == desiredValue) {

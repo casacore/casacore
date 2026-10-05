@@ -179,7 +179,7 @@ class ScalarMeasColumn : public TableMeasColumn {
   // it to the given reference.
   // <group>
   M convert(rownr_t rownr, const MeasRef<M>& measRef) const;
-  M convert(rownr_t rownr, uInt refCode) const;
+  M convert(rownr_t rownr, unsigned int refCode) const;
   // </group>
 
   // Returns the column's fixed reference or the reference of the last
@@ -200,7 +200,7 @@ class ScalarMeasColumn : public TableMeasColumn {
   // a false <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode(uInt refCode, bool tableMustBeEmpty = true);
+  void setDescRefCode(unsigned int refCode, bool tableMustBeEmpty = true);
   void setDescOffset(const Measure& offset, bool tableMustBeEmpty = true);
   void setDescUnits(const Vector<Unit>& units, bool tableMustBeEmpty = true);
   // </group>
@@ -221,10 +221,10 @@ class ScalarMeasColumn : public TableMeasColumn {
   // # Column which contains the Measure's actual data. An array column
   // # is needed if the data component of the underlying Measure is
   // # represented by more than 1 value
-  ArrayColumn<Double>* itsArrDataCol;
-  ScalarColumn<Double>* itsScaDataCol;
+  ArrayColumn<double>* itsArrDataCol;
+  ScalarColumn<double>* itsScaDataCol;
   // # Its MeasRef code column when references are variable.
-  ScalarColumn<Int>* itsRefIntCol;
+  ScalarColumn<int>* itsRefIntCol;
   ScalarColumn<String>* itsRefStrCol;
   // # Column containing its variable offsets. Only applicable if the
   // # measure references have offsets and they are variable.

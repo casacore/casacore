@@ -59,7 +59,7 @@ int main(int argc, const char* argv[]) {
     String inputFilename = inputs.getString("input");
     String outputFilename = inputs.getString("output");
     String storageManagerType = inputs.getString("storage");
-    Int whichHDU = inputs.getInt("which_hdu");
+    int whichHDU = inputs.getInt("which_hdu");
     bool sdfits = inputs.getBool("sdfits");
 
     ToLowerCaseInPlace(storageManagerType);
@@ -105,7 +105,7 @@ int main(int argc, const char* argv[]) {
 
     if (sdfits) {
       Vector<String> cols(td.columnNames());
-      for (uInt i = 0; i < cols.nelements(); i++) {
+      for (unsigned int i = 0; i < cols.nelements(); i++) {
         if (RegexMatches(cols(i), Regex("^TDIM.*"))) {
           td.removeColumn(cols(i));
         }
@@ -119,7 +119,7 @@ int main(int argc, const char* argv[]) {
     }
     Table tab(newtab, TableLock::PermanentLocking, infits->nrow());
     TableRow row(tab);
-    uInt rownr = 0;
+    unsigned int rownr = 0;
 
     while (rownr < tab.nrow()) {
       row.putMatchingFields(rownr, TableRecord(infits->currentRow()));

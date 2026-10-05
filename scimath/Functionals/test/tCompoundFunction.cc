@@ -40,19 +40,19 @@
 #include <casacore/casa/namespace.h>
 int main() {
   //     CompoundFunction();
-  CompoundFunction<Double> sumfunc;
+  CompoundFunction<double> sumfunc;
   AlwaysAssertExit(sumfunc.nparameters() == 0 && sumfunc(-11.0) == 0.0);
 
   //     uInt addFunction(const Function<T> &newFunction);
-  Polynomial<Double> poly(2);
+  Polynomial<double> poly(2);
   poly[2] = 1.0;                                        // x^2
-  Gaussian1D<Double> gauss(1.0, 0.0, sqrt(log(16.0)));  // e^{-x^2}
+  Gaussian1D<double> gauss(1.0, 0.0, sqrt(log(16.0)));  // e^{-x^2}
   sumfunc.addFunction(poly);
   sumfunc.addFunction(gauss);  // x^2 + e^{-x^2}
 
   //   T operator()(const T &x) const;
   AlwaysAssertExit(near(sumfunc(2.0), 2.0 * 2.0 + 1.0 / M_E / M_E / M_E / M_E));
-  Double xvec = 1.0;
+  double xvec = 1.0;
   AlwaysAssertExit(near(sumfunc(xvec), 1.0 * 1.0 + 1.0 / M_E));
 
   //   uInt nparameters()
@@ -60,8 +60,8 @@ int main() {
 
   //     CompoundFunction(const CompoundFunction<T> &other);
   //     operator=(const CompoundFunction<T> &other);
-  CompoundFunction<Double> f2(sumfunc);
-  CompoundFunction<Double> f3;
+  CompoundFunction<double> f2(sumfunc);
+  CompoundFunction<double> f3;
   f3 = sumfunc;
 
   //     void setParameter(uInt which, const T &val);
@@ -73,7 +73,7 @@ int main() {
 
   //     const Function<T> *function(uInt which) const
   //     Function<T> *function(uInt which);
-  const CompoundFunction<Double> sfref = sumfunc;
+  const CompoundFunction<double> sfref = sumfunc;
   AlwaysAssertExit((sumfunc.function(0))(3.0) == 9.0);
   AlwaysAssertExit(near((sfref.function(1))(-1.0), 1.0 / M_E));
   //     T getparameter(uInt which) const;
@@ -86,7 +86,7 @@ int main() {
 
   //     virtual Function<T> *cloneFunction() const;
   //     ~CompoundFunction();
-  Function<Double> *fptr = sumfunc.clone();
+  Function<double> *fptr = sumfunc.clone();
   AlwaysAssertExit(allEQ(sumfunc.parameters().getParameters(), fptr->parameters().getParameters()));
   delete fptr;
 

@@ -143,7 +143,7 @@ class CompiledParam : public Function<T> {
   const FuncExpression &function() const;
 
   // Returns the dimension of function
-  virtual uInt ndim() const { return ndim_p; }
+  virtual unsigned int ndim() const { return ndim_p; }
 
   // Returns the text of the function string
   const String &getText() const { return text_p; }
@@ -154,7 +154,7 @@ class CompiledParam : public Function<T> {
  protected:
   // # Data
   //  Number of dimensions of underlying function
-  uInt ndim_p;
+  unsigned int ndim_p;
   // Possible error message
   String msg_p;
   // Input text string

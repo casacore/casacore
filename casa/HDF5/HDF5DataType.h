@@ -95,14 +95,14 @@ class HDF5DataType {
   // The String type is meant for an array of strings.
   // <group>
   explicit HDF5DataType(const bool*);
-  explicit HDF5DataType(const uChar*);
-  explicit HDF5DataType(const Short*);
-  explicit HDF5DataType(const uShort*);
-  explicit HDF5DataType(const Int*);
-  explicit HDF5DataType(const uInt*);
-  explicit HDF5DataType(const Int64*);
-  explicit HDF5DataType(const Float*);
-  explicit HDF5DataType(const Double*);
+  explicit HDF5DataType(const unsigned char*);
+  explicit HDF5DataType(const short*);
+  explicit HDF5DataType(const unsigned short*);
+  explicit HDF5DataType(const int*);
+  explicit HDF5DataType(const unsigned int*);
+  explicit HDF5DataType(const int64_t*);
+  explicit HDF5DataType(const float*);
+  explicit HDF5DataType(const double*);
   explicit HDF5DataType(const Complex*);
   explicit HDF5DataType(const DComplex*);
   explicit HDF5DataType(const String*);
@@ -116,7 +116,7 @@ class HDF5DataType {
   // Both arguments are dummy (needed to distinguish the constructor).
   // An empty array as represented as a compound data type with integer
   // field names emptyarray, rank and casatype.
-  HDF5DataType(Int, Int);
+  HDF5DataType(int, int);
 
   // Define a compound data type consisting of the given fields and types.
   // An exception is thrown if the vectors are empty or have mismatching
@@ -148,7 +148,7 @@ class HDF5DataType {
 
   // Get the size in bytes of the data type (in memory).
   // Note that the size of a string is variable, thus 0.
-  uInt size() const { return itsSize; }
+  unsigned int size() const { return itsSize; }
 
   // Test if the data type is Complex or DComplex.
   static bool isComplex(hid_t dtid);
@@ -170,12 +170,12 @@ class HDF5DataType {
  private:
   // Add a field to a compound data type.
   // It does it for the memory and file data type.
-  void addToCompound(const char* name, uInt offset, const HDF5DataType& dtype);
+  void addToCompound(const char* name, unsigned int offset, const HDF5DataType& dtype);
 
   // # Data members
   HDF5HidDataType itsHidMem;
   HDF5HidDataType itsHidFile;
-  uInt itsSize;
+  unsigned int itsSize;
 };
 
 }  // namespace casacore

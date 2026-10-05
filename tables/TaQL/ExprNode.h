@@ -98,8 +98,8 @@ class MArray;
 // appropriate TableExprNodeConst object.
 // <p>
 // The derived classes also reflect the data type of the node.
-// Data types Bool, Int64, Double, DComplex and String are used.
-// Char, uChar, Short, uShort, Int and uInt are converted to Int64,
+// Data types Bool, int64_t, Double, DComplex and String are used.
+// Char, uChar, Short, uShort, Int and uInt are converted to int64_t,
 // float to Double, and Complex to DComplex.
 // Binary operators +, -, *, /, %, &, }, ^, ==, >=, >, <, <= and != are
 // recognized. Also &&, ||, parentheses and unary +, -, ~ and ! are recognized.
@@ -195,12 +195,12 @@ class TableExprNode {
   // is not done automatically.
   // <group>
   TableExprNode(const bool& value);
-  TableExprNode(const Int& value);
-  TableExprNode(const uInt& value);
-  TableExprNode(const Int64& value);
-  TableExprNode(const uInt64& value);
-  TableExprNode(const Float& value);
-  TableExprNode(const Double& value);
+  TableExprNode(const int& value);
+  TableExprNode(const unsigned int& value);
+  TableExprNode(const int64_t& value);
+  TableExprNode(const uint64_t& value);
+  TableExprNode(const float& value);
+  TableExprNode(const double& value);
   TableExprNode(const Complex& value);
   TableExprNode(const DComplex& value);
   TableExprNode(const String& value);
@@ -211,33 +211,33 @@ class TableExprNode {
   TableExprNode(const TaqlRegex& value);
   TableExprNode(const MVTime& value);
   TableExprNode(const Array<bool>& value);
-  TableExprNode(const Array<uChar>& value);
-  TableExprNode(const Array<Short>& value);
-  TableExprNode(const Array<uShort>& value);
-  TableExprNode(const Array<Int>& value);
-  TableExprNode(const Array<uInt>& value);
-  TableExprNode(const Array<Int64>& value);
+  TableExprNode(const Array<unsigned char>& value);
+  TableExprNode(const Array<short>& value);
+  TableExprNode(const Array<unsigned short>& value);
+  TableExprNode(const Array<int>& value);
+  TableExprNode(const Array<unsigned int>& value);
+  TableExprNode(const Array<int64_t>& value);
   // # The following constructor has to be explicit, othwerwise
   // #    Table(Vector<rownr_t>)
   // # gives an ambiguous error as the preferred class RowNumbers
   // # has a similar constructor.
-  explicit TableExprNode(const Array<uInt64>& value);
-  TableExprNode(const Array<Float>& value);
-  TableExprNode(const Array<Double>& value);
+  explicit TableExprNode(const Array<uint64_t>& value);
+  TableExprNode(const Array<float>& value);
+  TableExprNode(const Array<double>& value);
   TableExprNode(const Array<Complex>& value);
   TableExprNode(const Array<DComplex>& value);
   TableExprNode(const Array<String>& value);
   TableExprNode(const Array<MVTime>& value);
   TableExprNode(const MArray<bool>& value);
-  TableExprNode(const MArray<uChar>& value);
-  TableExprNode(const MArray<Short>& value);
-  TableExprNode(const MArray<uShort>& value);
-  TableExprNode(const MArray<Int>& value);
-  TableExprNode(const MArray<uInt>& value);
-  TableExprNode(const MArray<Int64>& value);
-  TableExprNode(const MArray<uInt64>& value);
-  TableExprNode(const MArray<Float>& value);
-  TableExprNode(const MArray<Double>& value);
+  TableExprNode(const MArray<unsigned char>& value);
+  TableExprNode(const MArray<short>& value);
+  TableExprNode(const MArray<unsigned short>& value);
+  TableExprNode(const MArray<int>& value);
+  TableExprNode(const MArray<unsigned int>& value);
+  TableExprNode(const MArray<int64_t>& value);
+  TableExprNode(const MArray<uint64_t>& value);
+  TableExprNode(const MArray<float>& value);
+  TableExprNode(const MArray<double>& value);
   TableExprNode(const MArray<Complex>& value);
   TableExprNode(const MArray<DComplex>& value);
   TableExprNode(const MArray<String>& value);
@@ -306,33 +306,33 @@ class TableExprNode {
   // operator on the resulting values.
   // <group>
   void get(const TableExprId& id, bool& value) const;
-  void get(const TableExprId& id, Int64& value) const;
-  void get(const TableExprId& id, Double& value) const;
+  void get(const TableExprId& id, int64_t& value) const;
+  void get(const TableExprId& id, double& value) const;
   void get(const TableExprId& id, DComplex& value) const;
   void get(const TableExprId& id, String& value) const;
   void get(const TableExprId& id, TaqlRegex& value) const;
   void get(const TableExprId& id, MVTime& value) const;
   void get(const TableExprId& id, MArray<bool>& value) const;
-  void get(const TableExprId& id, MArray<Int64>& value) const;
-  void get(const TableExprId& id, MArray<Double>& value) const;
+  void get(const TableExprId& id, MArray<int64_t>& value) const;
+  void get(const TableExprId& id, MArray<double>& value) const;
   void get(const TableExprId& id, MArray<DComplex>& value) const;
   void get(const TableExprId& id, MArray<String>& value) const;
   void get(const TableExprId& id, MArray<MVTime>& value) const;
   void get(const TableExprId& id, Array<bool>& value) const;
-  void get(const TableExprId& id, Array<Int64>& value) const;
-  void get(const TableExprId& id, Array<Double>& value) const;
+  void get(const TableExprId& id, Array<int64_t>& value) const;
+  void get(const TableExprId& id, Array<double>& value) const;
   void get(const TableExprId& id, Array<DComplex>& value) const;
   void get(const TableExprId& id, Array<String>& value) const;
   void get(const TableExprId& id, Array<MVTime>& value) const;
   bool getBool(const TableExprId& id) const;
-  Int64 getInt(const TableExprId& id) const;
-  Double getDouble(const TableExprId& id) const;
+  int64_t getInt(const TableExprId& id) const;
+  double getDouble(const TableExprId& id) const;
   DComplex getDComplex(const TableExprId& id) const;
   MVTime getDate(const TableExprId& id) const;
   String getString(const TableExprId& id) const;
   Array<bool> getArrayBool(const TableExprId& id) const;
-  Array<Int64> getArrayInt(const TableExprId& id) const;
-  Array<Double> getArrayDouble(const TableExprId& id) const;
+  Array<int64_t> getArrayInt(const TableExprId& id) const;
+  Array<double> getArrayDouble(const TableExprId& id) const;
   Array<DComplex> getArrayDComplex(const TableExprId& id) const;
   Array<String> getArrayString(const TableExprId& id) const;
   Array<MVTime> getArrayDate(const TableExprId& id) const;
@@ -340,8 +340,8 @@ class TableExprNode {
   // This is useful in case one can give an argument as scalar or array.
   // <group>
   MArray<bool> getBoolAS(const TableExprId& id) const;
-  MArray<Int64> getIntAS(const TableExprId& id) const;
-  MArray<Double> getDoubleAS(const TableExprId& id) const;
+  MArray<int64_t> getIntAS(const TableExprId& id) const;
+  MArray<double> getDoubleAS(const TableExprId& id) const;
   MArray<DComplex> getDComplexAS(const TableExprId& id) const;
   MArray<String> getStringAS(const TableExprId& id) const;
   MArray<MVTime> getDateAS(const TableExprId& id) const;
@@ -361,14 +361,14 @@ class TableExprNode {
   // returned by function <src>getColumnDataType</src>.
   // <group>
   Array<bool> getColumnBool(const RowNumbers& rownrs) const;
-  Array<uChar> getColumnuChar(const RowNumbers& rownrs) const;
-  Array<Short> getColumnShort(const RowNumbers& rownrs) const;
-  Array<uShort> getColumnuShort(const RowNumbers& rownrs) const;
-  Array<Int> getColumnInt(const RowNumbers& rownrs) const;
-  Array<uInt> getColumnuInt(const RowNumbers& rownrs) const;
-  Array<Int64> getColumnInt64(const RowNumbers& rownrs) const;
-  Array<Float> getColumnFloat(const RowNumbers& rownrs) const;
-  Array<Double> getColumnDouble(const RowNumbers& rownrs) const;
+  Array<unsigned char> getColumnuChar(const RowNumbers& rownrs) const;
+  Array<short> getColumnShort(const RowNumbers& rownrs) const;
+  Array<unsigned short> getColumnuShort(const RowNumbers& rownrs) const;
+  Array<int> getColumnInt(const RowNumbers& rownrs) const;
+  Array<unsigned int> getColumnuInt(const RowNumbers& rownrs) const;
+  Array<int64_t> getColumnInt64(const RowNumbers& rownrs) const;
+  Array<float> getColumnFloat(const RowNumbers& rownrs) const;
+  Array<double> getColumnDouble(const RowNumbers& rownrs) const;
   Array<Complex> getColumnComplex(const RowNumbers& rownrs) const;
   Array<DComplex> getColumnDComplex(const RowNumbers& rownrs) const;
   Array<String> getColumnString(const RowNumbers& rownrs) const;
@@ -382,40 +382,40 @@ class TableExprNode {
  private:
 #endif
   // <group>
-  Array<bool> getColumnBool(const Vector<uInt>& rownrs) const {
+  Array<bool> getColumnBool(const Vector<unsigned int>& rownrs) const {
     return getColumnBool(RowNumbers(rownrs));
   }
-  Array<uChar> getColumnuChar(const Vector<uInt>& rownrs) const {
+  Array<unsigned char> getColumnuChar(const Vector<unsigned int>& rownrs) const {
     return getColumnuChar(RowNumbers(rownrs));
   }
-  Array<Short> getColumnShort(const Vector<uInt>& rownrs) const {
+  Array<short> getColumnShort(const Vector<unsigned int>& rownrs) const {
     return getColumnShort(RowNumbers(rownrs));
   }
-  Array<uShort> getColumnuShort(const Vector<uInt>& rownrs) const {
+  Array<unsigned short> getColumnuShort(const Vector<unsigned int>& rownrs) const {
     return getColumnuShort(RowNumbers(rownrs));
   }
-  Array<Int> getColumnInt(const Vector<uInt>& rownrs) const {
+  Array<int> getColumnInt(const Vector<unsigned int>& rownrs) const {
     return getColumnInt(RowNumbers(rownrs));
   }
-  Array<uInt> getColumnuInt(const Vector<uInt>& rownrs) const {
+  Array<unsigned int> getColumnuInt(const Vector<unsigned int>& rownrs) const {
     return getColumnuInt(RowNumbers(rownrs));
   }
-  Array<Int64> getColumnInt64(const Vector<uInt>& rownrs) const {
+  Array<int64_t> getColumnInt64(const Vector<unsigned int>& rownrs) const {
     return getColumnInt64(RowNumbers(rownrs));
   }
-  Array<Float> getColumnFloat(const Vector<uInt>& rownrs) const {
+  Array<float> getColumnFloat(const Vector<unsigned int>& rownrs) const {
     return getColumnFloat(RowNumbers(rownrs));
   }
-  Array<Double> getColumnDouble(const Vector<uInt>& rownrs) const {
+  Array<double> getColumnDouble(const Vector<unsigned int>& rownrs) const {
     return getColumnDouble(RowNumbers(rownrs));
   }
-  Array<Complex> getColumnComplex(const Vector<uInt>& rownrs) const {
+  Array<Complex> getColumnComplex(const Vector<unsigned int>& rownrs) const {
     return getColumnComplex(RowNumbers(rownrs));
   }
-  Array<DComplex> getColumnDComplex(const Vector<uInt>& rownrs) const {
+  Array<DComplex> getColumnDComplex(const Vector<unsigned int>& rownrs) const {
     return getColumnDComplex(RowNumbers(rownrs));
   }
-  Array<String> getColumnString(const Vector<uInt>& rownrs) const {
+  Array<String> getColumnString(const Vector<unsigned int>& rownrs) const {
     return getColumnString(RowNumbers(rownrs));
   }
   // </group>
@@ -486,7 +486,7 @@ class TableExprNode {
   // Create cone function node of the given type with the given arguments.
   // <group>
   static TableExprNode newConeNode(TableExprFuncNode::FunctionType, const TableExprNodeSet& set,
-                                   uInt origin = 0);
+                                   unsigned int origin = 0);
   static TableExprNode newConeNode(TableExprFuncNode::FunctionType, const TableExprNode& node1,
                                    const TableExprNode& node2);
   static TableExprNode newConeNode(TableExprFuncNode::FunctionType, const TableExprNode& node1,
@@ -496,7 +496,7 @@ class TableExprNode {
   // Create rownumber() function node.
   // Origin indicates whether the first row should be zero (for C++ binding)
   // or an other value (one for TaQL binding).
-  static TableExprNode newRownrNode(const TableExprInfo&, uInt origin);
+  static TableExprNode newRownrNode(const TableExprInfo&, unsigned int origin);
 
   // Create rowid() function node.
   // Origin is always 0.
@@ -556,10 +556,10 @@ inline void TableExprNode::ranges(Block<TableExprRange>& blrange) { node_p->rang
 inline void TableExprNode::get(const TableExprId& id, bool& value) const {
   value = node_p->getBool(id);
 }
-inline void TableExprNode::get(const TableExprId& id, Int64& value) const {
+inline void TableExprNode::get(const TableExprId& id, int64_t& value) const {
   value = node_p->getInt(id);
 }
-inline void TableExprNode::get(const TableExprId& id, Double& value) const {
+inline void TableExprNode::get(const TableExprId& id, double& value) const {
   value = node_p->getDouble(id);
 }
 inline void TableExprNode::get(const TableExprId& id, DComplex& value) const {
@@ -577,10 +577,10 @@ inline void TableExprNode::get(const TableExprId& id, MVTime& value) const {
 inline void TableExprNode::get(const TableExprId& id, MArray<bool>& value) const {
   value = node_p->getArrayBool(id);
 }
-inline void TableExprNode::get(const TableExprId& id, MArray<Int64>& value) const {
+inline void TableExprNode::get(const TableExprId& id, MArray<int64_t>& value) const {
   value = node_p->getArrayInt(id);
 }
-inline void TableExprNode::get(const TableExprId& id, MArray<Double>& value) const {
+inline void TableExprNode::get(const TableExprId& id, MArray<double>& value) const {
   value = node_p->getArrayDouble(id);
 }
 inline void TableExprNode::get(const TableExprId& id, MArray<DComplex>& value) const {
@@ -595,10 +595,10 @@ inline void TableExprNode::get(const TableExprId& id, MArray<MVTime>& value) con
 inline void TableExprNode::get(const TableExprId& id, Array<bool>& value) const {
   value = node_p->getArrayBool(id).array();
 }
-inline void TableExprNode::get(const TableExprId& id, Array<Int64>& value) const {
+inline void TableExprNode::get(const TableExprId& id, Array<int64_t>& value) const {
   value = node_p->getArrayInt(id).array();
 }
-inline void TableExprNode::get(const TableExprId& id, Array<Double>& value) const {
+inline void TableExprNode::get(const TableExprId& id, Array<double>& value) const {
   value = node_p->getArrayDouble(id).array();
 }
 inline void TableExprNode::get(const TableExprId& id, Array<DComplex>& value) const {
@@ -611,8 +611,8 @@ inline void TableExprNode::get(const TableExprId& id, Array<MVTime>& value) cons
   value = node_p->getArrayDate(id).array();
 }
 inline bool TableExprNode::getBool(const TableExprId& id) const { return node_p->getBool(id); }
-inline Int64 TableExprNode::getInt(const TableExprId& id) const { return node_p->getInt(id); }
-inline Double TableExprNode::getDouble(const TableExprId& id) const {
+inline int64_t TableExprNode::getInt(const TableExprId& id) const { return node_p->getInt(id); }
+inline double TableExprNode::getDouble(const TableExprId& id) const {
   return node_p->getDouble(id);
 }
 inline DComplex TableExprNode::getDComplex(const TableExprId& id) const {
@@ -625,10 +625,10 @@ inline String TableExprNode::getString(const TableExprId& id) const {
 inline Array<bool> TableExprNode::getArrayBool(const TableExprId& id) const {
   return node_p->getArrayBool(id).array();
 }
-inline Array<Int64> TableExprNode::getArrayInt(const TableExprId& id) const {
+inline Array<int64_t> TableExprNode::getArrayInt(const TableExprId& id) const {
   return node_p->getArrayInt(id).array();
 }
-inline Array<Double> TableExprNode::getArrayDouble(const TableExprId& id) const {
+inline Array<double> TableExprNode::getArrayDouble(const TableExprId& id) const {
   return node_p->getArrayDouble(id).array();
 }
 inline Array<DComplex> TableExprNode::getArrayDComplex(const TableExprId& id) const {
@@ -643,10 +643,10 @@ inline Array<MVTime> TableExprNode::getArrayDate(const TableExprId& id) const {
 inline MArray<bool> TableExprNode::getBoolAS(const TableExprId& id) const {
   return node_p->getBoolAS(id);
 }
-inline MArray<Int64> TableExprNode::getIntAS(const TableExprId& id) const {
+inline MArray<int64_t> TableExprNode::getIntAS(const TableExprId& id) const {
   return node_p->getIntAS(id);
 }
-inline MArray<Double> TableExprNode::getDoubleAS(const TableExprId& id) const {
+inline MArray<double> TableExprNode::getDoubleAS(const TableExprId& id) const {
   return node_p->getDoubleAS(id);
 }
 inline MArray<DComplex> TableExprNode::getDComplexAS(const TableExprId& id) const {
@@ -662,28 +662,28 @@ inline MArray<MVTime> TableExprNode::getDateAS(const TableExprId& id) const {
 inline Array<bool> TableExprNode::getColumnBool(const RowNumbers& rownrs) const {
   return node_p->getColumnBool(rownrs);
 }
-inline Array<uChar> TableExprNode::getColumnuChar(const RowNumbers& rownrs) const {
+inline Array<unsigned char> TableExprNode::getColumnuChar(const RowNumbers& rownrs) const {
   return node_p->getColumnuChar(rownrs);
 }
-inline Array<Short> TableExprNode::getColumnShort(const RowNumbers& rownrs) const {
+inline Array<short> TableExprNode::getColumnShort(const RowNumbers& rownrs) const {
   return node_p->getColumnShort(rownrs);
 }
-inline Array<uShort> TableExprNode::getColumnuShort(const RowNumbers& rownrs) const {
+inline Array<unsigned short> TableExprNode::getColumnuShort(const RowNumbers& rownrs) const {
   return node_p->getColumnuShort(rownrs);
 }
-inline Array<Int> TableExprNode::getColumnInt(const RowNumbers& rownrs) const {
+inline Array<int> TableExprNode::getColumnInt(const RowNumbers& rownrs) const {
   return node_p->getColumnInt(rownrs);
 }
-inline Array<uInt> TableExprNode::getColumnuInt(const RowNumbers& rownrs) const {
+inline Array<unsigned int> TableExprNode::getColumnuInt(const RowNumbers& rownrs) const {
   return node_p->getColumnuInt(rownrs);
 }
-inline Array<Int64> TableExprNode::getColumnInt64(const RowNumbers& rownrs) const {
+inline Array<int64_t> TableExprNode::getColumnInt64(const RowNumbers& rownrs) const {
   return node_p->getColumnInt64(rownrs);
 }
-inline Array<Float> TableExprNode::getColumnFloat(const RowNumbers& rownrs) const {
+inline Array<float> TableExprNode::getColumnFloat(const RowNumbers& rownrs) const {
   return node_p->getColumnFloat(rownrs);
 }
-inline Array<Double> TableExprNode::getColumnDouble(const RowNumbers& rownrs) const {
+inline Array<double> TableExprNode::getColumnDouble(const RowNumbers& rownrs) const {
   return node_p->getColumnDouble(rownrs);
 }
 inline Array<Complex> TableExprNode::getColumnComplex(const RowNumbers& rownrs) const {
@@ -1579,14 +1579,14 @@ inline TableExprNode arrayFlatten(const TableExprNode& array) {
 inline TableExprNode transpose(const TableExprNode& array) {
   // Needs an empty axes argument.
   return TableExprNode::newFunctionNode(TableExprFuncNode::transposeFUNC, array,
-                                        TableExprNode(Vector<Int>()));
+                                        TableExprNode(Vector<int>()));
 }
 inline TableExprNode transpose(const TableExprNode& array, const TableExprNodeSet& axes) {
   return TableExprNode::newFunctionNode(TableExprFuncNode::transposeFUNC, array, axes);
 }
 inline TableExprNode diagonal(const TableExprNode& array) {
   return TableExprNode::newFunctionNode(TableExprFuncNode::diagonalFUNC, array,
-                                        TableExprNode(Vector<Int>()));
+                                        TableExprNode(Vector<int>()));
 }
 inline TableExprNode isdefined(const TableExprNode& node) {
   return TableExprNode::newFunctionNode(TableExprFuncNode::isdefFUNC, node);

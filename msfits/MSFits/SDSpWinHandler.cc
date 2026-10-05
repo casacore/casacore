@@ -161,15 +161,15 @@ void SDSpWindowHandler::resetRow(const Record &row) {
   initRow(dummyHandled, row);
 }
 
-void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
-                             Double refFrequency, Double originalFreqDelt, Int freqRefType) {
+void SDSpWindowHandler::fill(const Record &row, const Vector<double> &frequency,
+                             double refFrequency, double originalFreqDelt, int freqRefType) {
   // don't bother unless there is something there
   if (msSpWin_p) {
     // this is arbitrary  we have match if things are within this fraction of a channel
-    Double chanTol = 0.001;
+    double chanTol = 0.001;
     *nchanKey_p = frequency.nelements();
     *freqRefTypeKey_p = freqRefType;
-    Double thisFN, thisF0, thisBW;
+    double thisFN, thisF0, thisBW;
     thisFN = thisF0 = thisBW = 0.0;
     if (bandwidField_p >= 0) {
       thisBW = row.asDouble(bandwidField_p);
@@ -181,7 +181,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
         if (thisBW == 0.0) thisBW = abs(thisFN - thisF0);
       }
     }
-    Double thisFreqRes = 0.0;
+    double thisFreqRes = 0.0;
     if (freqresField_p >= 0) {
       thisFreqRes = row.asDouble(freqresField_p);
     }
@@ -208,14 +208,14 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
       const rownr_t *rowPtr;
       bool deleteItRows;
       rowPtr = cacheRows.getStorage(deleteItRows);
-      uInt i = 0;
+      unsigned int i = 0;
       while (i < cacheRows.nelements() && !found) {
-        uInt rownr = rowPtr[i];
+        unsigned int rownr = rowPtr[i];
         found = (abs((bwCachePtr_p[i] - thisBW) / originalFreqDelt) < chanTol);
         found = found && (abs((f0CachePtr_p[i] - thisF0) / originalFreqDelt) < chanTol);
         found = found && (abs((fNCachePtr_p[i] - thisFN) / originalFreqDelt) < chanTol);
         if (found) {
-          rownr_p = Int(rownr);
+          rownr_p = int(rownr);
         }
         i++;
       }
@@ -224,8 +224,8 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
       // not found in the cache, may try to look for it in a specific place if this
       // originally came from a MS, otherwise we'll just add it in.
       // either way we need to calculate the widths and resolution here
-      Int nchan = *nchanKey_p;
-      Vector<Double> chWidth(nchan);
+      int nchan = *nchanKey_p;
+      Vector<double> chWidth(nchan);
       if (nchan > 2) {
         chWidth = frequency;
         chWidth(Slice(1, (nchan - 2))) =
@@ -238,7 +238,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
         chWidth(0) = frequency(1) - frequency(0);
       }
       chWidth = abs(chWidth);
-      Vector<Double> freqres(nchan);
+      Vector<double> freqres(nchan);
       if (freqresField_p >= 0) {
         freqres = thisFreqRes;
       } else {
@@ -247,8 +247,8 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
       }
       // one last try, if this is from a MS, try the indicated row in the main table
       if (spWinIdField_p.isAttached() && *spWinIdField_p >= 0 &&
-          uInt(*spWinIdField_p) < msSpWin_p->nrow()) {
-        Int rownr = *spWinIdField_p;
+          static_cast<unsigned int>(*spWinIdField_p) < msSpWin_p->nrow()) {
+        int rownr = *spWinIdField_p;
         found = msSpWinCols_p->numChan()(rownr) == nchan;
         found = found && msSpWinCols_p->refFrequency()(rownr) == refFrequency;
         // for SDFITS, these test should be sufficient - i.e. only necessary to look
@@ -258,7 +258,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
           end = beg - 1;
           beg = 0;
           if (nchan > 1) {
-            Double shift = abs((msSpWinCols_p->chanFreq()(rownr)(beg)-thisF0) / chWidth(0));
+            double shift = abs((msSpWinCols_p->chanFreq()(rownr)(beg)-thisF0) / chWidth(0));
             if (nchan > 2) {
               shift = max(shift,
                           abs((msSpWinCols_p->chanFreq()(rownr)(end)-thisFN) / chWidth(nchan - 1)));
@@ -362,12 +362,12 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, c
 
   // construct a cache table with zero rows
   TableDesc td;
-  td.addColumn(ScalarColumnDesc<Int>("ID"));
-  td.addColumn(ScalarColumnDesc<Int>("NCHAN"));
-  td.addColumn(ScalarColumnDesc<Int>("FREQREFTYPE"));
-  td.addColumn(ScalarColumnDesc<Int>("IF_CONV_CHAIN"));
-  td.addColumn(ScalarColumnDesc<Int>("FREQ_GROUP"));
-  td.addColumn(ScalarColumnDesc<Int>("NET_SIDEBAND"));
+  td.addColumn(ScalarColumnDesc<int>("ID"));
+  td.addColumn(ScalarColumnDesc<int>("NCHAN"));
+  td.addColumn(ScalarColumnDesc<int>("FREQREFTYPE"));
+  td.addColumn(ScalarColumnDesc<int>("IF_CONV_CHAIN"));
+  td.addColumn(ScalarColumnDesc<int>("FREQ_GROUP"));
+  td.addColumn(ScalarColumnDesc<int>("NET_SIDEBAND"));
   td.addColumn(ScalarColumnDesc<bool>("FLAG_ROW"));
   SetupNewTable newTab("", td, Table::Scratch);
   theCache_p = new Table(newTab, TableLock::PermanentLocking);

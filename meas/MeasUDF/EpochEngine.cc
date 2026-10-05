@@ -32,7 +32,7 @@ EpochEngine::EpochEngine() : itsPositionEngine(0) {}
 
 EpochEngine::~EpochEngine() {}
 
-void EpochEngine::handleEpoch(vector<TENShPtr>& args, uInt& argnr) {
+void EpochEngine::handleEpoch(vector<TENShPtr>& args, unsigned int& argnr) {
   // Initialize type to unknown.
   itsRefType = MEpoch::N_Types;
   // Convert a string epoch argument to a date.
@@ -54,7 +54,7 @@ void EpochEngine::handleEpoch(vector<TENShPtr>& args, uInt& argnr) {
     throw AipsError("Invalid epoch given in a MEAS function");
   }
   // Values can be given as [t1,t2,...],reftype
-  uInt nargnr = argnr + 1;
+  unsigned int nargnr = argnr + 1;
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
     if (handleMeasType(args[nargnr], false)) {
@@ -105,14 +105,14 @@ void EpochEngine::handleValues(TableExprNode& operand, const TableExprId& id,
     unit = "s";
   }
   // Get values (as doubles or dates).
-  Array<Double> values;
+  Array<double> values;
   if (operand.getNodeRep()->isReal()) {
     values.reference(operand.getDoubleAS(id).array());
   } else {
     unit = "s";
     Array<MVTime> dates = operand.getDateAS(id).array();
     values.resize(dates.shape());
-    for (uInt i = 0; i < dates.size(); ++i) {
+    for (unsigned int i = 0; i < dates.size(); ++i) {
       values.data()[i] = dates.data()[i].second();
     }
   }
@@ -122,9 +122,9 @@ void EpochEngine::handleValues(TableExprNode& operand, const TableExprId& id,
   }
   epochs.resize(values.shape());
   bool delIt;
-  const Double* valVec = values.getStorage(delIt);
+  const double* valVec = values.getStorage(delIt);
   MEpoch* epVec = epochs.data();
-  for (uInt i = 0; i < epochs.size(); ++i) {
+  for (unsigned int i = 0; i < epochs.size(); ++i) {
     epVec[i] = MEpoch(Quantity(valVec[i], unit), itsRefType);
   }
   values.freeStorage(valVec, delIt);
@@ -144,7 +144,7 @@ Array<MEpoch> EpochEngine::getEpochs(const TableExprId& id) {
   return epochs;
 }
 
-Array<Double> EpochEngine::getArrayDouble(const TableExprId& id) {
+Array<double> EpochEngine::getArrayDouble(const TableExprId& id) {
   DebugAssert(id.byRow(), AipsError);
   Array<MEpoch> res(getEpochs(id));
   // Get positions if given.
@@ -153,7 +153,7 @@ Array<Double> EpochEngine::getArrayDouble(const TableExprId& id) {
     pos.reference(itsPositionEngine->getPositions(id));
   }
   // Convert the epoch to the given type for all positions.
-  Array<Double> out;
+  Array<double> out;
   if (res.size() > 0 && pos.size() > 0) {
     IPosition shape = res.shape();
     if (pos.size() > 1) {

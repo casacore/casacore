@@ -161,7 +161,7 @@ class MSSelection {
   MSSelection& operator=(const MSSelection& other);
 
   // Helper method for converting index vectors to expression strings
-  static String indexExprStr(Vector<Int> index);
+  static String indexExprStr(Vector<int> index);
 
   // Helper method for converting name vectors to expression strings
   static String nameExprStr(Vector<String> name);
@@ -191,37 +191,37 @@ class MSSelection {
   TableExprNode getTEN(const MeasurementSet* ms = NULL);
 
   // Accessor for the list of the selected scan IDs.
-  inline Vector<Int> getScanList(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getScanList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return scanIDs_p;
   }
 
   // Accessor for the list of the selected observation IDs.
-  inline Vector<Int> getObservationList(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getObservationList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return observationIDs_p;
   }
 
   // Accessor for the list of the selected feed1 IDs.
-  inline Vector<Int> getFeed1List(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getFeed1List(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return feed1IDs_p;
   }
 
   // Accessor for the list of the selected feed2 IDs.
-  inline Vector<Int> getFeed2List(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getFeed2List(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return feed2IDs_p;
   }
 
   // Similar to baselines for antennas
-  inline Matrix<Int> getFeedPairList(const MeasurementSet* ms = NULL) {
+  inline Matrix<int> getFeedPairList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return feedPairIDs_p;
   }
 
   // Accessor for the list of selected sub-array IDs.
-  inline Vector<Int> getSubArrayList(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getSubArrayList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return arrayIDs_p;
   }
@@ -229,7 +229,7 @@ class MSSelection {
   // Accessor for the list of antenna-1 of the selected baselines.
   // Antennas affected by the baseline negation operator have the
   // antenna IDs multiplied by -1.
-  inline Vector<Int> getAntenna1List(
+  inline Vector<int> getAntenna1List(
       const MeasurementSet* ms = NULL) {  // if (antenna1IDs_p.nelements() <= 0)
     getTEN(ms);
     return antenna1IDs_p;
@@ -238,7 +238,7 @@ class MSSelection {
   // Accessor for the list of antenna-2 of the selected baselines.
   // Antennas affected by the baseline negation operator have the
   // antenna IDs multiplied by -1.
-  inline Vector<Int> getAntenna2List(
+  inline Vector<int> getAntenna2List(
       const MeasurementSet* ms = NULL) {  // if (antenna2IDs_p.nelements() <= 0)
     getTEN(ms);
     return antenna2IDs_p;
@@ -261,20 +261,20 @@ class MSSelection {
   // The expression "!1&10" will result in a baseline list [-1,
   // -10].  Etc...
   //
-  inline Matrix<Int> getBaselineList(const MeasurementSet* ms = NULL) {
+  inline Matrix<int> getBaselineList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return baselineIDs_p;
   }
 
   // Accessor for the list of selected field IDs.
-  inline Vector<Int> getFieldList(
+  inline Vector<int> getFieldList(
       const MeasurementSet* ms = NULL) {  // if (fieldIDs_p.nelements() <= 0)
     getTEN(ms);
     return fieldIDs_p;
   }
 
   // Accessor for the list of selected state Obs_Modes.
-  inline Vector<Int> getStateObsModeList(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getStateObsModeList(const MeasurementSet* ms = NULL) {
     if (stateObsModeIDs_p.nelements() <= 0) getTEN(ms);
     return stateObsModeIDs_p;
   }
@@ -282,14 +282,14 @@ class MSSelection {
   // Accessor for the list of the specified time range(s) as the
   // start and end MJD values.  The time ranges are stored as columns,
   // i.e. the output Matrix is 2 x n_ranges.
-  inline Matrix<Double> getTimeList(const MeasurementSet* ms = NULL) {
+  inline Matrix<double> getTimeList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return selectedTimesList_p;
   }
 
   // Accessor for the list of the specified uv-range(s) as the start
   // and end values in units used in the MS.
-  inline Matrix<Double> getUVList(const MeasurementSet* ms = NULL) {
+  inline Matrix<double> getUVList(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return selectedUVRange_p;
   }
@@ -303,7 +303,7 @@ class MSSelection {
   }
 
   // Accessor for the list of the selected Spectral Window IDs.
-  inline Vector<Int> getSpwList(
+  inline Vector<int> getSpwList(
       const MeasurementSet* ms = NULL) {  // if (spwIDs_p.nelements() <= 0)
     getTEN(ms);
     return spwIDs_p;
@@ -323,13 +323,13 @@ class MSSelection {
   // results in multiple rows in the Matrix. If sorted is true, the
   // rows of the output Matrix will be sorted by the SPW IDs (the
   // entries in the first column).
-  Matrix<Int> getChanList(const MeasurementSet* ms = NULL, const Int defaultStep = 1,
+  Matrix<int> getChanList(const MeasurementSet* ms = NULL, const int defaultStep = 1,
                           const bool sorted = false);
 
   //
   // Same as getChanList, except that the channels and steps are in Hz.
   //
-  Matrix<Double> getChanFreqList(const MeasurementSet* ms = NULL, const bool sorted = false);
+  Matrix<double> getChanFreqList(const MeasurementSet* ms = NULL, const bool sorted = false);
 
   // Accessor for the list of the selected Data Description IDs
   // (DDID) from the polarization expression parsing.  The actual
@@ -338,7 +338,7 @@ class MSSelection {
   // getSPWDDIDList() below).
   // Note that there is no guarantee that returned vector
   // is inmight not be in sorted order.
-  inline Vector<Int> getDDIDList(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getDDIDList(const MeasurementSet* ms = NULL) {
     if (ddIDs_p.nelements() <= 0) getTEN(ms);
     return ddIDs_p;
   }
@@ -353,7 +353,7 @@ class MSSelection {
   // from getDDIDList() and getSPWDDIDList() (which can be generated
   // using the set_intersection(Vector<Int>&, Vector<Int>&) global
   // method in MSSelectionTool.{cc,h}).
-  inline Vector<Int> getSPWDDIDList(const MeasurementSet* ms = NULL) {
+  inline Vector<int> getSPWDDIDList(const MeasurementSet* ms = NULL) {
     if (spwDDIDs_p.nelements() <= 0) getTEN(ms);
     return spwDDIDs_p;
   }
@@ -367,7 +367,7 @@ class MSSelection {
   // what the user intended (i.e., e.g. not all DD IDs due to user
   // POL expression might be selected due to SPW expressions).
   //
-  inline std::map<Int, Vector<Int>> getPolMap(const MeasurementSet* ms = NULL) {
+  inline std::map<int, Vector<int>> getPolMap(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return selectedPolMap_p;
   };
@@ -445,7 +445,7 @@ class MSSelection {
   //
   // o To get a list of POLARIZATION IDs selected (rows of the POLARIZATION
   //   table), make a list of all the keys of this map.
-  inline std::map<Int, Vector<Vector<Int>>> getCorrMap(const MeasurementSet* ms = NULL) {
+  inline std::map<int, Vector<Vector<int>>> getCorrMap(const MeasurementSet* ms = NULL) {
     getTEN(ms);
     return selectedSetupMap_p;
   };
@@ -455,7 +455,7 @@ class MSSelection {
   // Table system for in-row selection of frequency channels and
   // polarizations.
   void getChanSlices(Vector<Vector<Slice>>& chanslices, const MeasurementSet* ms = NULL,
-                     const Int defaultChanStep = 1);
+                     const int defaultChanStep = 1);
 
   void getCorrSlices(Vector<Vector<Slice>>& corrslices, const MeasurementSet* ms = NULL);
 
@@ -565,9 +565,9 @@ class MSSelection {
   // to generate error or warning messages if a value outside the
   // range is used in the expressions.  The default maximum value
   // for scan, observation and sub-array IDs is 1000.
-  inline void setMaxScans(const Int& n = 1000) { maxScans_p = n; };
-  inline void setMaxObs(const Int& n = 1000) { maxObs_p = n; };
-  inline void setMaxArray(const Int& n = 1000) { maxArray_p = n; };
+  inline void setMaxScans(const int& n = 1000) { maxScans_p = n; };
+  inline void setMaxObs(const int& n = 1000) { maxObs_p = n; };
+  inline void setMaxArray(const int& n = 1000) { maxArray_p = n; };
 
   // Set the error handler to be used for reporting errors while
   // parsing the type of expression give by the first argument.
@@ -618,18 +618,18 @@ class MSSelection {
   String observationExpr_p;
   String feedExpr_p;
   // Priority
-  Vector<Int> exprOrder_p;
-  Vector<Int> antenna1IDs_p, antenna2IDs_p, fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p, ddIDs_p,
+  Vector<int> exprOrder_p;
+  Vector<int> antenna1IDs_p, antenna2IDs_p, fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p, ddIDs_p,
       stateObsModeIDs_p, observationIDs_p, spwDDIDs_p, feed1IDs_p, feed2IDs_p;
-  Matrix<Int> chanIDs_p;
-  Matrix<Int> baselineIDs_p;
-  Matrix<Int> feedPairIDs_p;
-  Matrix<Double> selectedTimesList_p;
-  Matrix<Double> selectedUVRange_p;
+  Matrix<int> chanIDs_p;
+  Matrix<int> baselineIDs_p;
+  Matrix<int> feedPairIDs_p;
+  Matrix<double> selectedTimesList_p;
+  Matrix<double> selectedUVRange_p;
   Vector<bool> selectedUVUnits_p;
-  std::map<Int, Vector<Int>> selectedPolMap_p;
-  std::map<Int, Vector<Vector<Int>>> selectedSetupMap_p;
-  Int maxScans_p, maxObs_p, maxArray_p;
+  std::map<int, Vector<int>> selectedPolMap_p;
+  std::map<int, Vector<Vector<int>>> selectedSetupMap_p;
+  int maxScans_p, maxObs_p, maxArray_p;
   bool isMS_p, toTENCalled_p;
 };
 

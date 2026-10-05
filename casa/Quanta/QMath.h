@@ -162,9 +162,9 @@ Quantum<Qtype> operator/(const Qtype &left, const Quantum<Qtype> &other);
 //   <li> AipsError if root exponent zero
 // </thrown>
 template <class Qtype>
-Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p);
+Quantum<Qtype> pow(const Quantum<Qtype> &left, int p);
 template <class Qtype>
-Quantum<Qtype> root(const Quantum<Qtype> &left, Int p);
+Quantum<Qtype> root(const Quantum<Qtype> &left, int p);
 template <class Qtype>
 Quantum<Qtype> sqrt(const Quantum<Qtype> &left);
 template <class Qtype>
@@ -217,16 +217,16 @@ Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 
 // Functions to implement integer ceil/floor and others
 // <group name="foreign">
-Int ceil(const Int &val);
-Int floor(const Int &val);
-Array<Complex> operator*(const Array<Complex> &in, Double f);
-Array<Complex> operator/(const Array<Complex> &in, Double f);
-Array<DComplex> operator*(const Array<DComplex> &in, Double f);
-Array<DComplex> operator/(const Array<DComplex> &in, Double f);
-Array<Float> operator*(const Array<Float> &in, Double f);
-Array<Float> operator/(const Array<Float> &in, Double f);
-Array<Int> operator*(const Array<Int> &in, Double f);
-Array<Int> operator/(const Array<Int> &in, Double f);
+int ceil(const int &val);
+int floor(const int &val);
+Array<Complex> operator*(const Array<Complex> &in, double f);
+Array<Complex> operator/(const Array<Complex> &in, double f);
+Array<DComplex> operator*(const Array<DComplex> &in, double f);
+Array<DComplex> operator/(const Array<DComplex> &in, double f);
+Array<float> operator*(const Array<float> &in, double f);
+Array<float> operator/(const Array<float> &in, double f);
+Array<int> operator*(const Array<int> &in, double f);
+Array<int> operator/(const Array<int> &in, double f);
 // </group>
 // # Inline Implementations
 

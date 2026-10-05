@@ -57,7 +57,7 @@ TableMeasOffsetDesc* TableMeasOffsetDesc::reconstruct(const TableRecord& measInf
 TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo, const String& prefix,
                                          const Table& tab)
     : itsTMDesc(0) {
-  Int fnr;
+  int fnr;
   fnr = measInfo.fieldNumber(prefix + "Msr");
   if (fnr >= 0) {
     // this is a non-variable offset.  The offset is fully defined in the

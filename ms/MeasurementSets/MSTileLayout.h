@@ -111,12 +111,12 @@ class MSTileLayout {
   // one or two integrations per pointing). Note that accessing fast mosaic
   // data with large tiles in field_id order can be 10-100 times slower than
   // sequential access.
-  static IPosition tileShape(const IPosition& dataShape, Int observationType = Standard,
-                             Int nIfr = 0, Int nInt = 1);
+  static IPosition tileShape(const IPosition& dataShape, int observationType = Standard,
+                             int nIfr = 0, int nInt = 1);
 
   // same as above, but pick standard nIfr (number of interferometers)
   // for named array and default nInt.
-  static IPosition tileShape(const IPosition& dataShape, Int observationType, const String& array);
+  static IPosition tileShape(const IPosition& dataShape, int observationType, const String& array);
 };
 
 }  // namespace casacore

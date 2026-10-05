@@ -68,7 +68,7 @@ void doIt(const String& name, double interval) {
               "6=status, 7=speed, 8=open/close 9=show, else=end: ";
       cin >> op;
       if (op == 1 || op == 3) {
-        uInt nattempt = 1;
+        unsigned int nattempt = 1;
         if (op == 3) {
           cout << "nattempts :";
           cin >> nattempt;
@@ -79,7 +79,7 @@ void doIt(const String& name, double interval) {
           cout << " Already locked by another process" << endl;
         }
       } else if (op == 2 || op == 4) {
-        uInt nattempt = 1;
+        unsigned int nattempt = 1;
         if (op == 4) {
           cout << "nattempts :";
           cin >> nattempt;
@@ -111,9 +111,9 @@ void doIt(const String& name, double interval) {
       } else if (op == 8) {
         RegularFileIO tmp(name);
       } else if (op == 9) {
-        uInt pid;
+        unsigned int pid;
         bool perm;
-        uInt res = LockFile::showLock(pid, perm, name);
+        unsigned int res = LockFile::showLock(pid, perm, name);
         cout << "result=" << res << ", pid=" << pid << ", permlocked=" << perm << endl;
       } else {
         break;
@@ -149,8 +149,8 @@ void doTest() {
   AlwaysAssertExit(lock.acquire(memio));
   AlwaysAssertExit(memio.length() == 0);
   // # Store information (<1024 bytes) in the memio object.
-  uInt value = 10;
-  memio.write(sizeof(uInt), &value);
+  unsigned int value = 10;
+  memio.write(sizeof(unsigned int), &value);
   AlwaysAssertExit(lock.release(memio));
   memio.seek(0);
   // # Store different value in memio to be sure acquire gets it right.
@@ -162,8 +162,8 @@ void doTest() {
   memio.read(sizeof(value), &value);
   AlwaysAssertExit(value == 10);
   // # Write very long info.
-  Int val[10000];
-  Int i;
+  int val[10000];
+  int i;
   for (i = 0; i < 10000; i++) {
     val[i] = i - 5000;
   }
@@ -174,8 +174,8 @@ void doTest() {
   // # Acquire lock and get info.
   {
     MemoryIO memio2;
-    uInt n;
-    Int v[10000];
+    unsigned int n;
+    int v[10000];
     lock.acquire(memio2);
     memio2.read(sizeof(n), &n);
     AlwaysAssertExit(n == 10);

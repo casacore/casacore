@@ -87,15 +87,16 @@ class LELLattCoordBase {
   // It returns the pixel axis number of the spectral coordinates.
   // -1 indicates that there is no pixel spectral axis.
   // An exception is thrown if there are no world spectral coordinates.
-  virtual uInt getSpectralInfo(Vector<Double>& worldCoordinates, const IPosition& shape) const = 0;
+  virtual unsigned int getSpectralInfo(Vector<double>& worldCoordinates,
+                                       const IPosition& shape) const = 0;
 
   // Check how the coordinates of this and that compare.
-  virtual Int compare(const LELLattCoordBase& other) const = 0;
+  virtual int compare(const LELLattCoordBase& other) const = 0;
 
   // Check how the coordinates of this and that image compare.
   // This function is used by <src>conform</src> to make a
   // double virtual dispatch possible.
-  virtual Int doCompare(const LELImageCoord& other) const = 0;
+  virtual int doCompare(const LELImageCoord& other) const = 0;
 };
 
 }  // namespace casacore

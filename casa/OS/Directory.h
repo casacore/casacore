@@ -115,14 +115,14 @@ class Directory : public File {
 
   // Return the number of entries in the directory (not counting . and ..).
   // If the directory does not exist, an exception will be thrown.
-  uInt nEntries() const;
+  unsigned int nEntries() const;
 
   // Get the amount of free space (in bytes) on the file system this
   // directory is on. When the directory path is a symbolic link, that
   // link is resolved first.
   // <group>
-  Double freeSpace() const;
-  uInt freeSpaceInMB() const;
+  double freeSpace() const;
+  unsigned int freeSpaceInMB() const;
   // </group>
 
   // Create the directory.
@@ -214,7 +214,7 @@ class Directory : public File {
   static Vector<String> shellExpand(const Vector<String>& files, bool stripPath = false);
   // Return the total size  of everything in the Directory. If the Directory
   // does not exist, an exception will be thrown.
-  virtual Int64 size() const;
+  virtual int64_t size() const;
 
   // Check if a directory is mounted via NFS or not.
   bool isNFSMounted() const;
@@ -234,7 +234,9 @@ inline void Directory::copy(const String& target, bool overwrite,
   copy(Path(target), overwrite, setUserWritePermission);
 }
 inline void Directory::move(const String& target, bool overwrite) { move(Path(target), overwrite); }
-inline uInt Directory::freeSpaceInMB() const { return uInt(0.5 + freeSpace() / (1024 * 1024)); }
+inline unsigned int Directory::freeSpaceInMB() const {
+  return static_cast<unsigned int>(0.5 + freeSpace() / (1024 * 1024));
+}
 
 }  // namespace casacore
 

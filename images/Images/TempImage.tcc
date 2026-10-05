@@ -46,7 +46,7 @@ TempImage<T>::TempImage()
 
 template <class T>
 TempImage<T>::TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-                        Double maxMemoryInMb)
+                        double maxMemoryInMb)
     : ImageInterface<T>(RegionHandlerMemory()),
       mapPtr_p(new TempLattice<T>(mapShape, maxMemoryInMb)),
       maskPtr_p(0) {
@@ -55,7 +55,7 @@ TempImage<T>::TempImage(const TiledShape& mapShape, const CoordinateSystem& coor
 
 template <class T>
 TempImage<T>::TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
-                        Int maxMemoryInMb)
+                        int maxMemoryInMb)
     : ImageInterface<T>(RegionHandlerMemory()),
       mapPtr_p(new TempLattice<T>(mapShape, maxMemoryInMb)),
       maskPtr_p(0) {
@@ -295,22 +295,22 @@ void TempImage<T>::apply(const Functional<T, T>& function) {
 }
 
 template <class T>
-uInt TempImage<T>::advisedMaxPixels() const {
+unsigned int TempImage<T>::advisedMaxPixels() const {
   return mapPtr_p->advisedMaxPixels();
 }
 
 template <class T>
-IPosition TempImage<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition TempImage<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return mapPtr_p->niceCursorShape(maxPixels);
 }
 
 template <class T>
-uInt TempImage<T>::maximumCacheSize() const {
+unsigned int TempImage<T>::maximumCacheSize() const {
   return mapPtr_p->maximumCacheSize();
 }
 
 template <class T>
-void TempImage<T>::setMaximumCacheSize(uInt howManyPixels) {
+void TempImage<T>::setMaximumCacheSize(unsigned int howManyPixels) {
   mapPtr_p->setMaximumCacheSize(howManyPixels);
 }
 
@@ -321,7 +321,7 @@ void TempImage<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPosi
 }
 
 template <class T>
-void TempImage<T>::setCacheSizeInTiles(uInt howManyTiles) {
+void TempImage<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
   mapPtr_p->setCacheSizeInTiles(howManyTiles);
 }
 

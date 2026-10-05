@@ -64,19 +64,19 @@ int main() {
       cout << "Entries:        " << comet.nelements() << endl;
       cout << "--------------------------------------" << endl;
       cout << "Radial velocity:" << endl;
-      for (Double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
+      for (double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
         MVRadialVelocity y;
         cout << MVTime(x).string(MVTime::YMD) << " " << comet.getRadVel(y, x) << ": " << y << endl;
       };
       cout << "--------------------------------------" << endl;
       cout << "Position:" << endl;
-      for (Double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
+      for (double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
         MVPosition y;
         cout << MVTime(x).string(MVTime::YMD) << " " << comet.get(y, x) << ": " << y << endl;
       };
       cout << "--------------------------------------" << endl;
       cout << "Disk longitude and latitude:" << endl;
-      for (Double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
+      for (double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
         MVDirection y;
         cout << MVTime(x).string(MVTime::YMD) << " " << comet.getDisk(y, x) << ": " << y << endl;
       };
@@ -114,7 +114,7 @@ int main() {
       cout << "Entries:        " << comet.nelements() << endl;
       cout << "--------------------------------------" << endl;
       cout << "Radial velocity:" << endl;
-      for (Double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
+      for (double x = 50802.75; x < 50803.0625001; x += 10.0 / 60. / 24.) {
         MVRadialVelocity y;
         cout << MVTime(x).string(MVTime::YMD) << " " << comet.getRadVel(y, x) << ": " << y << endl;
       };
@@ -155,7 +155,7 @@ int main() {
       cout << "Entries:        " << cl->nelements() << endl;
       cout << "--------------------------------------" << endl;
       cout << "Radial velocity:" << endl;
-      for (Double x = 50802.75; x < 50802.8; x += 10.0 / 60. / 24.) {
+      for (double x = 50802.75; x < 50802.8; x += 10.0 / 60. / 24.) {
         MVRadialVelocity y;
         cout << MVTime(x).string(MVTime::YMD) << " " << cl->getRadVel(y, x) << ": " << y << endl;
       };
@@ -197,14 +197,14 @@ int main() {
     cout << "Entries:        " << comet.nelements() << endl;
     cout << "--------------------------------------" << endl;
     cout << "Some radial velocities:" << endl;
-    for(Double x= 55555.75; x < 56000.0625; x += 40.0){
+    for(double x= 55555.75; x < 56000.0625; x += 40.0){
       MVRadialVelocity y;
       cout << MVTime(x).string(MVTime::YMD) << " " <<
         comet.getRadVel(y, x) << ": " << y << endl;
     };
     cout << "--------------------------------------" << endl;
     cout << "Some positions:" << endl;
-    for(Double x=55444.75; x < 56030.0625; x += 40.0){
+    for(double x=55444.75; x < 56030.0625; x += 40.0){
       MVPosition y;
       cout << MVTime(x).string(MVTime::YMD) << " " <<
         comet.get(y, x) << ": " << y << endl;
@@ -212,7 +212,7 @@ int main() {
     cout << "--------------------------------------" << endl;
     cout << "A disk longitude and latitude\n"
          << "(should fail gracefully by showing 0:):" << endl;
-    Double x = 55444.75;
+    double x = 55444.75;
     MVDirection y;
     cout << MVTime(x).string(MVTime::YMD) << " "
          << comet.getDisk(y, x) << ": " << y << endl;

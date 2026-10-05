@@ -112,18 +112,19 @@ void Convolver<FType>::makeXfr(const Array<FType>& psf, const IPosition& imageSi
   Array<FType> psfND = psfND1.copy();
   thePsfSize = psfND.shape();
   IPosition imageNDSize = imageSize.nonDegenerate();
-  uInt psfDim = thePsfSize.nelements();
+  unsigned int psfDim = thePsfSize.nelements();
   IPosition convImageSize = extractShape(thePsfSize, imageNDSize);
   theFFTSize.resize(psfDim);
   if (linear)
     if (fullSize)
       theFFTSize = thePsfSize + extractShape(thePsfSize, imageNDSize);
     else
-      for (uInt i = 0; i < psfDim; i++)
+      for (unsigned int i = 0; i < psfDim; i++)
         theFFTSize(i) =
-            std::max(thePsfSize(i), convImageSize(i) + 2 * Int((thePsfSize(i) + 3) / 4));
+            std::max(thePsfSize(i), convImageSize(i) + 2 * int((thePsfSize(i) + 3) / 4));
   else
-    for (uInt i = 0; i < psfDim; i++) theFFTSize(i) = std::max(thePsfSize(i), convImageSize(i));
+    for (unsigned int i = 0; i < psfDim; i++)
+      theFFTSize(i) = std::max(thePsfSize(i), convImageSize(i));
   {
     IPosition tmp = theXfr.shape();
     tmp = 0;
@@ -184,8 +185,8 @@ void Convolver<FType>::linearConv(Array<FType>& result, const Array<FType>& mode
     }
   } else {
     bool doResize = false;
-    for (uInt i = 0; i < thePsfSize.nelements(); i++) {
-      if (theFFTSize < std::max(thePsfSize(i), imageSize(i) + 2 * Int((thePsfSize(i) + 3) / 4)))
+    for (unsigned int i = 0; i < thePsfSize.nelements(); i++) {
+      if (theFFTSize < std::max(thePsfSize(i), imageSize(i) + 2 * int((thePsfSize(i) + 3) / 4)))
         doResize = true;
     }
     if (doResize) resizeXfr(imageSize, true, false);

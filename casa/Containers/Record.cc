@@ -55,9 +55,9 @@ Record::Record(const Record& other)
 
 Record::Record(const RecordInterface& other)
     : RecordInterface(other), rep_p(new RecordRep(other.description())), parent_p(0) {
-  uInt n = other.nfields();
+  unsigned int n = other.nfields();
   const RecordDesc& desc = description();
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     DataType dtype = desc.type(i);
     if (dtype == TpRecord) {
       const RecordInterface& subrec = *((RecordInterface*)(other.get_pointer(i, dtype)));
@@ -91,7 +91,7 @@ RecordInterface* Record::clone() const { return new Record(*this); }
 
 void Record::assign(const RecordInterface& that) { *this = that; }
 
-void Record::print(ostream& os, Int maxNrValues, const String& indent) const {
+void Record::print(ostream& os, int maxNrValues, const String& indent) const {
   rep_p.ref().print(os, maxNrValues, indent);
 }
 
@@ -100,11 +100,11 @@ void Record::makeUnique() { rwRef(); }
 RecordRep& Record::rwRef() { return rep_p.rwRef(); }
 
 const String& Record::comment(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return ref().comment(whichField);
 }
 void Record::setComment(const RecordFieldId& id, const String& comment) {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   rwRef().setComment(whichField, comment);
 }
 
@@ -117,15 +117,15 @@ void Record::restructure(const RecordDesc& newDescription, bool recursive) {
   rwRef().restructure(newDescription, recursive);
 }
 
-uInt Record::nfields() const { return description().nfields(); }
-Int Record::fieldNumber(const String& fieldName) const {
+unsigned int Record::nfields() const { return description().nfields(); }
+int Record::fieldNumber(const String& fieldName) const {
   return description().fieldNumber(fieldName);
 }
-DataType Record::type(Int whichField) const { return description().type(whichField); }
+DataType Record::type(int whichField) const { return description().type(whichField); }
 
 void Record::removeField(const RecordFieldId& id) {
   throwIfFixed();
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   rwRef().removeField(whichField);
 }
 
@@ -138,14 +138,14 @@ void Record::addDataField(const String& name, DataType type, const IPosition& sh
   rwRef().addDataField(name, type, shape, fixedShape, value);
 }
 
-void Record::defineDataField(Int whichField, DataType type, const void* value) {
+void Record::defineDataField(int whichField, DataType type, const void* value) {
   rwRef().defineDataField(whichField, type, value);
 }
 
-void* Record::get_pointer(Int whichField, DataType type) const {
+void* Record::get_pointer(int whichField, DataType type) const {
   return ref().get_pointer(whichField, type);
 }
-void* Record::get_pointer(Int whichField, DataType type, const String& recordType) const {
+void* Record::get_pointer(int whichField, DataType type, const String& recordType) const {
   return ref().get_pointer(whichField, type, recordType);
 }
 
@@ -153,7 +153,7 @@ void Record::defineRecord(const RecordFieldId& id, const RecordInterface& value,
   defineRecord(id, Record(value), type);
 }
 void Record::defineRecord(const RecordFieldId& id, const Record& value, RecordType type) {
-  Int whichField = newIdToNumber(id);
+  int whichField = newIdToNumber(id);
   if (whichField < 0) {
     throwIfFixed();
     String name;
@@ -174,18 +174,18 @@ void Record::defineRecord(const RecordFieldId& id, const Record& value, RecordTy
 const RecordInterface& Record::asRecord(const RecordFieldId& id) const { return subRecord(id); }
 RecordInterface& Record::asrwRecord(const RecordFieldId& id) { return rwSubRecord(id); }
 const Record& Record::subRecord(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Record*)get_pointer(whichField, TpRecord);
 }
 Record& Record::rwSubRecord(const RecordFieldId& id) {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   rwRef();
   return *(Record*)get_pointer(whichField, TpRecord);
 }
 
 void Record::mergeField(const Record& other, const RecordFieldId& id, DuplicatesFlag flag) {
   throwIfFixed();
-  Int whichField = other.idToNumber(id);
+  int whichField = other.idToNumber(id);
   rwRef().mergeField(other.ref(), whichField, flag);
 }
 
@@ -202,7 +202,7 @@ void Record::getRecord(AipsIO& os) {
   AlwaysAssert((!isFixed() || nfields() == 0), AipsError);
   // Reading the record type back means casting it from an int
   // to the correct type.
-  Int type;
+  int type;
   rwRef().getRecord(os, type);
   recordType() = (RecordInterface::RecordType)type;
 }

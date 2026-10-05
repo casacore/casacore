@@ -103,7 +103,7 @@ class LCLELMask : public LCRegionSingle {
 
   // Handle the (un)locking.
   // <group>
-  bool lock(FileLocker::LockType, uInt nattempts) override;
+  bool lock(FileLocker::LockType, unsigned int nattempts) override;
   void unlock() override;
   bool hasLock(FileLocker::LockType) const override;
   // </group>
@@ -139,7 +139,7 @@ class LCLELMask : public LCRegionSingle {
   bool equals(const LCRegion& other) const override;
 
   // Translating an LCLELMask is not possible, so it throws an exception.
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
  private:

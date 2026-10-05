@@ -66,7 +66,7 @@ RecordDescRep& RecordDescRep::operator=(const RecordDescRep& other) {
 }
 
 RecordDescRep::~RecordDescRep() {
-  for (uInt i = 0; i < n_p; i++) {
+  for (unsigned int i = 0; i < n_p; i++) {
     if (sub_records_p[i]) {
       delete sub_records_p[i];
       sub_records_p[i] = 0;
@@ -79,7 +79,7 @@ void RecordDescRep::addFieldName(const String& fieldName, DataType type) {
     throw(AipsError("RecordDesc::addField() - field " + fieldName + " already has been defined"));
   }
   increment_length();
-  uInt n = n_p - 1;
+  unsigned int n = n_p - 1;
   types_p[n] = type;
   names_p[n] = fieldName;
   name_map_p.insert(std::make_pair(fieldName, n));
@@ -89,7 +89,7 @@ void RecordDescRep::addFieldName(const String& fieldName, DataType type) {
   shapes_p[n] = IPosition(1, 1);
 }
 
-uInt RecordDescRep::addField(const String& fieldName, DataType type) {
+unsigned int RecordDescRep::addField(const String& fieldName, DataType type) {
   addFieldName(fieldName, type);
   if (type == TpRecord) {
     sub_records_p[n_p - 1] = new RecordDesc;
@@ -99,7 +99,7 @@ uInt RecordDescRep::addField(const String& fieldName, DataType type) {
   return n_p;
 }
 void RecordDescRep::addFieldAny(DataType type) {
-  uInt n = n_p - 1;
+  unsigned int n = n_p - 1;
   switch (type) {
     case TpBool:
     case TpChar:
@@ -139,13 +139,14 @@ void RecordDescRep::addFieldAny(DataType type) {
   }
 }
 
-uInt RecordDescRep::addArray(const String& fieldName, DataType type, const IPosition& shape) {
+unsigned int RecordDescRep::addArray(const String& fieldName, DataType type,
+                                     const IPosition& shape) {
   addFieldName(fieldName, type);
   addFieldArray(type, shape);
   return n_p;
 }
 void RecordDescRep::addFieldArray(DataType type, const IPosition& shape) {
-  uInt n = n_p - 1;
+  unsigned int n = n_p - 1;
   shapes_p[n].resize(shape.nelements());
   shapes_p[n] = shape;
   is_array_p[n] = true;
@@ -212,39 +213,40 @@ void RecordDescRep::addFieldArray(DataType type, const IPosition& shape) {
   }
 }
 
-uInt RecordDescRep::addRecord(const String& fieldName, const RecordDesc& subDesc) {
+unsigned int RecordDescRep::addRecord(const String& fieldName, const RecordDesc& subDesc) {
   addFieldName(fieldName, TpRecord);
   sub_records_p[n_p - 1] = new RecordDesc(subDesc);
   AlwaysAssert(sub_records_p[n_p - 1] != 0, AipsError);
   return n_p;
 }
 
-uInt RecordDescRep::addTable(const String& fieldName, const String& tableDescName) {
+unsigned int RecordDescRep::addTable(const String& fieldName, const String& tableDescName) {
   addFieldName(fieldName, TpTable);
   tableDescNames_p[n_p - 1] = tableDescName;
   return n_p;
 }
 
-const String& RecordDescRep::comment(Int whichField) const {
-  AlwaysAssert(whichField >= 0 && whichField < Int(n_p), AipsError);
+const String& RecordDescRep::comment(int whichField) const {
+  AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
   return comments_p[whichField];
 }
 
-void RecordDescRep::setComment(Int whichField, const String& comment) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(n_p), AipsError);
+void RecordDescRep::setComment(int whichField, const String& comment) {
+  AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
   comments_p[whichField] = comment;
 }
 
-void RecordDescRep::setShape(Int whichField, const IPosition& shape) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(n_p), AipsError);
+void RecordDescRep::setShape(int whichField, const IPosition& shape) {
+  AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
   AlwaysAssert(isArray(whichField), AipsError);
   shapes_p[whichField] = shape;
 }
 
-uInt RecordDescRep::mergeField(const RecordDescRep& other, Int whichField, int duplicateAction) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(other.nfields()), AipsError);
+unsigned int RecordDescRep::mergeField(const RecordDescRep& other, int whichField,
+                                       int duplicateAction) {
+  AlwaysAssert(whichField >= 0 && whichField < int(other.nfields()), AipsError);
   String newName = other.name(whichField);
-  Int duplicateNumber = fieldNumber(newName);
+  int duplicateNumber = fieldNumber(newName);
   if (duplicateNumber >= 0) {
     switch (duplicateAction) {
       case RecordInterface::SkipDuplicates:
@@ -265,7 +267,7 @@ uInt RecordDescRep::mergeField(const RecordDescRep& other, Int whichField, int d
   return nfields();
 }
 
-void RecordDescRep::addRepField(const RecordDescRep& other, const String& newName, Int whichField) {
+void RecordDescRep::addRepField(const RecordDescRep& other, const String& newName, int whichField) {
   if (other.isScalar(whichField)) {
     addField(newName, other.type(whichField));
   } else if (other.isArray(whichField)) {
@@ -280,15 +282,15 @@ void RecordDescRep::addRepField(const RecordDescRep& other, const String& newNam
   comments_p[n_p - 1] = other.comment(whichField);
 }
 
-uInt RecordDescRep::merge(const RecordDescRep& other, int duplicateAction) {
-  for (uInt i = 0; i < other.nfields(); i++) {
+unsigned int RecordDescRep::merge(const RecordDescRep& other, int duplicateAction) {
+  for (unsigned int i = 0; i < other.nfields(); i++) {
     mergeField(other, i, duplicateAction);
   }
   return nfields();
 }
 
-uInt RecordDescRep::removeField(Int whichField) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(n_p), AipsError);
+unsigned int RecordDescRep::removeField(int whichField) {
+  AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
   if (sub_records_p[whichField]) {
     delete sub_records_p[whichField];
     sub_records_p[whichField] = 0;
@@ -312,26 +314,26 @@ uInt RecordDescRep::removeField(Int whichField) {
   return n_p;
 }
 
-void RecordDescRep::renameField(const String& newName, Int whichField) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(n_p), AipsError);
-  Int inx = name_map_p[names_p[whichField]];
+void RecordDescRep::renameField(const String& newName, int whichField) {
+  AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
+  int inx = name_map_p[names_p[whichField]];
   name_map_p.erase(names_p[whichField]);
   name_map_p.insert(std::make_pair(newName, inx));
   names_p[whichField] = newName;
 }
 
-void RecordDescRep::setShape(const IPosition& shape, Int whichField) {
-  AlwaysAssert(whichField >= 0 && whichField < Int(n_p), AipsError);
+void RecordDescRep::setShape(const IPosition& shape, int whichField) {
+  AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
   shapes_p[whichField].resize(shape.nelements());
   shapes_p[whichField] = shape;
 }
 
-Int RecordDescRep::fieldNumber(const String& fieldName) const {
-  std::map<String, Int>::const_iterator iter = name_map_p.find(fieldName);
+int RecordDescRep::fieldNumber(const String& fieldName) const {
+  std::map<String, int>::const_iterator iter = name_map_p.find(fieldName);
   return (iter == name_map_p.end() ? -1 : iter->second);
 }
 
-String RecordDescRep::makeName(Int whichField) const {
+String RecordDescRep::makeName(int whichField) const {
   char strc[13];
   snprintf(strc, sizeof(strc), "*%i", whichField + 1);
   return uniqueName(strc);
@@ -349,7 +351,7 @@ String RecordDescRep::uniqueName(const String& name) const {
   return newName;
 }
 
-RecordDesc& RecordDescRep::subRecord(Int whichField) {
+RecordDesc& RecordDescRep::subRecord(int whichField) {
   AlwaysAssert(isSubRecord(whichField), AipsError);
   return *sub_records_p[whichField];
 }
@@ -358,12 +360,12 @@ bool RecordDescRep::conform(const RecordDescRep& other) const {
   if (this == &other) {
     return true;
   }
-  uInt n = nfields();
+  unsigned int n = nfields();
   if (n != other.nfields()) {
     return false;
   }
 
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     if (type(i) != other.type(i)) {
       return false;
     }
@@ -390,8 +392,8 @@ bool RecordDescRep::operator==(const RecordDescRep& other) const {
     return false;
   }
   // Now check recursively if the sub-records conform.
-  uInt n = nfields();
-  for (uInt i = 0; i < n; i++) {
+  unsigned int n = nfields();
+  for (unsigned int i = 0; i < n; i++) {
     if (sub_records_p[i]) {
       if (subRecord(i) != other.subRecord(i)) {
         return false;
@@ -429,9 +431,9 @@ bool RecordDescRep::isStrictSubset(const RecordDescRep& other, bool& equalDataTy
 
 bool RecordDescRep::allExist(const RecordDescRep& other, bool& equalDataTypes) const {
   equalDataTypes = true;
-  uInt n = nfields();
-  for (uInt i = 0; i < n; i++) {
-    Int whichField = other.fieldNumber(names_p[i]);
+  unsigned int n = nfields();
+  for (unsigned int i = 0; i < n; i++) {
+    int whichField = other.fieldNumber(names_p[i]);
     if (whichField < 0) {
       return false;  // name does not exist in other
     }
@@ -443,8 +445,8 @@ bool RecordDescRep::allExist(const RecordDescRep& other, bool& equalDataTypes) c
 }
 
 bool RecordDescRep::isDisjoint(const RecordDescRep& other) const {
-  uInt n = nfields();
-  for (uInt i = 0; i < n; i++) {
+  unsigned int n = nfields();
+  for (unsigned int i = 0; i < n; i++) {
     if (other.fieldNumber(names_p[i]) >= 0) {
       return false;  // name exists in other
     }
@@ -453,7 +455,7 @@ bool RecordDescRep::isDisjoint(const RecordDescRep& other) const {
 }
 
 void RecordDescRep::copy_other(const RecordDescRep& other) {
-  uInt i;
+  unsigned int i;
   // First, we need to free up the storage of any extant sub records
   for (i = 0; i < n_p; i++) {
     if (sub_records_p[i]) {
@@ -483,7 +485,7 @@ void RecordDescRep::copy_other(const RecordDescRep& other) {
 void RecordDescRep::increment_length() {
   n_p++;
   if (n_p > types_p.nelements()) {
-    uInt newSize = 2 * n_p;
+    unsigned int newSize = 2 * n_p;
     types_p.resize(newSize);
     names_p.resize(newSize);
     shapes_p.resize(newSize);
@@ -494,7 +496,7 @@ void RecordDescRep::increment_length() {
     // This is to shut up tools that note when you read an unset
     // value.
     IPosition scalarShape(1, 1);
-    for (uInt i = n_p; i < types_p.nelements(); i++) {
+    for (unsigned int i = n_p; i < types_p.nelements(); i++) {
       types_p[i] = 0;
       sub_records_p[i] = 0;
       is_array_p[i] = false;

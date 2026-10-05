@@ -52,7 +52,7 @@ ForwardColumnEngine::ForwardColumnEngine(const Table& referencedTable)
     : refColumns_p(0), refTable_p(referencedTable) {}
 
 ForwardColumnEngine::~ForwardColumnEngine() {
-  for (uInt i = 0; i < refColumns_p.nelements(); i++) {
+  for (unsigned int i = 0; i < refColumns_p.nelements(); i++) {
     delete refColumns_p[i];
   }
 }
@@ -90,7 +90,7 @@ bool ForwardColumnEngine::canRemoveColumn() const { return true; }
 // Note that the column has already been added by makeXXColumn.
 // This function is merely for initializing the added column.
 void ForwardColumnEngine::addColumn(DataManagerColumn* colp) {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (colp == refColumns_p[i]) {
       refColumns_p[i]->fillTableName(table(), refTable_p);
       refColumns_p[i]->prepare(table());
@@ -101,7 +101,7 @@ void ForwardColumnEngine::addColumn(DataManagerColumn* colp) {
 }
 
 void ForwardColumnEngine::removeColumn(DataManagerColumn* colp) {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (refColumns_p[i] == colp) {
       delete refColumns_p[i];
       decrementNcolumn();
@@ -116,7 +116,7 @@ void ForwardColumnEngine::removeColumn(DataManagerColumn* colp) {
 }
 
 void ForwardColumnEngine::addForwardColumn(ForwardColumn* colp) {
-  uInt nr = refColumns_p.nelements();
+  unsigned int nr = refColumns_p.nelements();
   refColumns_p.resize(nr + 1);
   refColumns_p[nr] = colp;
 }
@@ -140,7 +140,7 @@ void ForwardColumnEngine::baseCreate() {
   // Define a keyword telling the data manager name.
   table().rwKeywordSet().define(keywordName("_ForwardColumn_Name"), dataManName_p);
   // Define a keyword in all columns telling the original table.
-  for (uInt i = 0; i < refColumns_p.nelements(); i++) {
+  for (unsigned int i = 0; i < refColumns_p.nelements(); i++) {
     refColumns_p[i]->fillTableName(table(), refTable_p);
   }
 }
@@ -155,13 +155,13 @@ void ForwardColumnEngine::basePrepare() {
     dataManName_p = keySet.asString(keyword);
   }
   // Attach all forwarding columns.
-  for (uInt i = 0; i < refColumns_p.nelements(); i++) {
+  for (unsigned int i = 0; i < refColumns_p.nelements(); i++) {
     refColumns_p[i]->prepare(table());
   }
 }
 
 void ForwardColumnEngine::reopenRW() {
-  for (uInt i = 0; i < refColumns_p.nelements(); i++) {
+  for (unsigned int i = 0; i < refColumns_p.nelements(); i++) {
     refColumns_p[i]->setRW();
   }
 }
@@ -290,7 +290,7 @@ void ForwardColumn::setShape(rownr_t rownr, const IPosition& shape) {
   colPtr_p->setShape(rownr, shape);
 }
 
-uInt ForwardColumn::ndim(rownr_t rownr) { return colPtr_p->ndim(rownr); }
+unsigned int ForwardColumn::ndim(rownr_t rownr) { return colPtr_p->ndim(rownr); }
 
 IPosition ForwardColumn::shape(rownr_t rownr) { return colPtr_p->shape(rownr); }
 
@@ -363,25 +363,35 @@ void ForwardColumn::putColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns
 void ForwardColumn::getBool(rownr_t rownr, bool* dataPtr) { colPtr_p->get(rownr, dataPtr); }
 void ForwardColumn::putBool(rownr_t rownr, const bool* dataPtr) { colPtr_p->put(rownr, dataPtr); }
 
-void ForwardColumn::getuChar(rownr_t rownr, uChar* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putuChar(rownr_t rownr, const uChar* dataPtr) { colPtr_p->put(rownr, dataPtr); }
-
-void ForwardColumn::getShort(rownr_t rownr, Short* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putShort(rownr_t rownr, const Short* dataPtr) { colPtr_p->put(rownr, dataPtr); }
-
-void ForwardColumn::getuShort(rownr_t rownr, uShort* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putuShort(rownr_t rownr, const uShort* dataPtr) {
+void ForwardColumn::getuChar(rownr_t rownr, unsigned char* dataPtr) {
+  colPtr_p->get(rownr, dataPtr);
+}
+void ForwardColumn::putuChar(rownr_t rownr, const unsigned char* dataPtr) {
   colPtr_p->put(rownr, dataPtr);
 }
 
-void ForwardColumn::getInt(rownr_t rownr, Int* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putInt(rownr_t rownr, const Int* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::getShort(rownr_t rownr, short* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::putShort(rownr_t rownr, const short* dataPtr) { colPtr_p->put(rownr, dataPtr); }
 
-void ForwardColumn::getuInt(rownr_t rownr, uInt* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putuInt(rownr_t rownr, const uInt* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::getuShort(rownr_t rownr, unsigned short* dataPtr) {
+  colPtr_p->get(rownr, dataPtr);
+}
+void ForwardColumn::putuShort(rownr_t rownr, const unsigned short* dataPtr) {
+  colPtr_p->put(rownr, dataPtr);
+}
 
-void ForwardColumn::getInt64(rownr_t rownr, Int64* dataPtr) { colPtr_p->get(rownr, dataPtr); }
-void ForwardColumn::putInt64(rownr_t rownr, const Int64* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+void ForwardColumn::getInt(rownr_t rownr, int* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::putInt(rownr_t rownr, const int* dataPtr) { colPtr_p->put(rownr, dataPtr); }
+
+void ForwardColumn::getuInt(rownr_t rownr, unsigned int* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::putuInt(rownr_t rownr, const unsigned int* dataPtr) {
+  colPtr_p->put(rownr, dataPtr);
+}
+
+void ForwardColumn::getInt64(rownr_t rownr, int64_t* dataPtr) { colPtr_p->get(rownr, dataPtr); }
+void ForwardColumn::putInt64(rownr_t rownr, const int64_t* dataPtr) {
+  colPtr_p->put(rownr, dataPtr);
+}
 
 void ForwardColumn::getfloat(rownr_t rownr, float* dataPtr) { colPtr_p->get(rownr, dataPtr); }
 void ForwardColumn::putfloat(rownr_t rownr, const float* dataPtr) { colPtr_p->put(rownr, dataPtr); }

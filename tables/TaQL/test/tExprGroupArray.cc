@@ -73,7 +73,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
@@ -87,13 +87,13 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
 }
 
 void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
-               const Array<Int64>& expVal, const String& str) {
+               const Array<int64_t>& expVal, const String& str) {
   cout << "Test Int " << str << endl;
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
@@ -102,7 +102,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   funcSets.push_back(std::shared_ptr<TableExprGroupFuncSet>(new TableExprGroupFuncSet()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   funcSets[0]->add(func);
-  MArray<Int64> val = func->getArrayInt(*funcid.getIds());
+  MArray<int64_t> val = func->getArrayInt(*funcid.getIds());
   if (!allEQ(val.array(), expVal)) {
     foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
@@ -111,7 +111,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   std::shared_ptr<TableExprGroupResult> groupResult(new TableExprGroupResult(funcSets, ids));
   TableExprIdAggr aid(groupResult);
   aid.setRownr(0);
-  MArray<Int64> val2 = aggr.getArrayInt(aid);
+  MArray<int64_t> val2 = aggr.getArrayInt(aid);
   if (!allEQ(val2.array(), expVal)) {
     foundError = true;
     cout << str << ": found value " << val2.array() << "; expected " << expVal << endl;
@@ -119,19 +119,19 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
 }
 
 void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
-               const Array<Double>& expVal, const String& str) {
+               const Array<double>& expVal, const String& str) {
   cout << "Test Double " << str << endl;
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
   funcid.finish();
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  MArray<Double> val = func->getArrayDouble(*funcid.getIds());
+  MArray<double> val = func->getArrayDouble(*funcid.getIds());
   if (!allNear(val.array(), expVal, 1.e-10)) {
     foundError = true;
     cout << str << ": found value " << val.array() << "; expected " << expVal << endl;
@@ -145,7 +145,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
   }
@@ -159,18 +159,18 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
 }
 
 void checkHist(const TableExprNode& expr, const std::vector<Record>& recs,
-               const Array<Int64>& expVal) {
+               const Array<int64_t>& expVal) {
   cout << "Test Double ghist " << endl;
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
   std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i = 0; i < recs.size(); ++i) {
+  for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply(id);
   }
   func->finish();
-  MArray<Int64> val = func->getArrayInt(std::vector<TableExprId>());
+  MArray<int64_t> val = func->getArrayInt(std::vector<TableExprId>());
   if (!allEQ(val.array(), expVal)) {
     foundError = true;
     cout << "ghist: found value " << val.array() << "; expected " << expVal << endl;
@@ -198,11 +198,11 @@ void doBoolArr() {
 
 void doIntArr() {
   // Define an Array with values.
-  Cube<Int64> arr(20, 30, 40);
+  Cube<int64_t> arr(20, 30, 40);
   indgen(arr);
   // Define records containing equal parts of the array.
   std::vector<Record> recs(arr.shape()[2]);
-  MatrixIterator<Int64> iter(arr);
+  MatrixIterator<int64_t> iter(arr);
   int i = 0;
   while (!iter.pastEnd()) {
     recs[i++].define("fld", iter.matrix());
@@ -215,11 +215,11 @@ void doIntArr() {
 
 void doDoubleArr() {
   // Define an Array with values.
-  Cube<Double> arr(5, 3, 1);
+  Cube<double> arr(5, 3, 1);
   indgen(arr, 10., 2.);
   // Define records containing equal parts of the array.
   std::vector<Record> recs(arr.shape()[2]);
-  MatrixIterator<Double> iter(arr);
+  MatrixIterator<double> iter(arr);
   int i = 0;
   while (!iter.pastEnd()) {
     recs[i++].define("fld", iter.matrix());
@@ -229,9 +229,9 @@ void doDoubleArr() {
   TableExprNode expr = makeRecordExpr(recs[0], "fld");
   checkLazy(TableExprNode::newFunctionNode(TableExprFuncNode::gaggrFUNC, expr), recs, arr, "gaggr");
   // Do a test of the histogram function (8 bins between 12 and 36).
-  Vector<Int64> hist(10, 0);
-  for (uInt i = 0; i < arr.size(); ++i) {
-    Double v = arr.data()[i];
+  Vector<int64_t> hist(10, 0);
+  for (unsigned int i = 0; i < arr.size(); ++i) {
+    double v = arr.data()[i];
     if (v < 12) {
       hist[0]++;
     } else if (v > 36) {

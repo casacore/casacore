@@ -43,18 +43,18 @@
 // and void*.
 
 int main() {
-  Int size = 100;  // should be a multiple of 4
-  Int* ia = new int[size];
+  int size = 100;  // should be a multiple of 4
+  int* ia = new int[size];
 
   objset(ia, 99, size);
 
   // Test setting values.
-  Int i;
+  int i;
   for (i = 0; i < size; i++) AlwaysAssertExit(ia[i] == 99);
   objset(ia + 1, 66, size / 2, 2);
   for (i = 0; i < size; i += 2) AlwaysAssertExit(ia[i] == 99 && ia[i + 1] == 66);
 
-  Int* ia2 = new int[size];
+  int* ia2 = new int[size];
 
   // Test objcopy.
   // Without strides.

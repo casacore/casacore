@@ -44,12 +44,12 @@ void createTables() {
   dir.create();
   // Create a main table.
   TableDesc td("", "", TableDesc::Scratch);
-  td.addColumn(ScalarColumnDesc<Int>("RowNr"));
+  td.addColumn(ScalarColumnDesc<int>("RowNr"));
   SetupNewTable newtab("tTableKeywords_tmp/maindata", td, Table::New);
   Table tab(newtab, 1);
   // Create 3 subtables (in different directories).
   TableDesc std("", "", TableDesc::Scratch);
-  std.addColumn(ScalarColumnDesc<Int>("SourceNr"));
+  std.addColumn(ScalarColumnDesc<int>("SourceNr"));
   SetupNewTable newtab2("tTableKeywords_tmp/submdata", std, Table::New);
   Table subtab2(newtab2, 2);
   SetupNewTable newtab3("tTableKeywords_tmp/maindata/subdata", std, Table::New);
@@ -57,7 +57,7 @@ void createTables() {
   // Store one subtable as a keyword in the main table, the
   // other as a column keyword.
   tab.rwKeywordSet().defineTable("SubTab2", subtab2);
-  ScalarColumn<Int> col(tab, "RowNr");
+  ScalarColumn<int> col(tab, "RowNr");
   col.rwKeywordSet().defineTable("SubTab3", subtab3);
   // Store another subtable as a keyword in SubTab3.
   SetupNewTable newtab4("tTableKeywords_tmp/maindata/subdata/sub4", std, Table::New);
@@ -75,7 +75,7 @@ void readTables(const String& name, bool swap) {
 
   Table subtab2 = tab.keywordSet().asTable("SubTab2");
   AlwaysAssertExit(subtab2.nrow() == 2);
-  ScalarColumn<Int> col(tab, "RowNr");
+  ScalarColumn<int> col(tab, "RowNr");
   Table subtab3 = col.keywordSet().asTable("SubTab3");
   AlwaysAssertExit(subtab3.nrow() == 3);
   Table subtab4 = subtab3.keywordSet().asTable("SubTab4");
@@ -123,7 +123,7 @@ void readFromOtherDir() {
     AlwaysAssertExit(tab.keywordSet().isDefined("SubTab2"));
     Table subtab3 = tab.keywordSet().asTable("SubTab2");
     AlwaysAssertExit(subtab3.nrow() == 3);
-    ScalarColumn<Int> col(tab, "RowNr");
+    ScalarColumn<int> col(tab, "RowNr");
     Table subtab2 = col.keywordSet().asTable("SubTab3");
     AlwaysAssertExit(subtab2.nrow() == 2);
     Table subtab4 = subtab3.keywordSet().asTable("SubTab4");

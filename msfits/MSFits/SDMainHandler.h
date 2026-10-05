@@ -104,18 +104,18 @@ class SDMainHandler {
   void resetRow(const Record &row);
 
   // fill - a new row is always added
-  void fill(const Record &row, const MEpoch &time, Int antennaId, Int feedId, Int dataDescId,
-            Int fieldId, const MVTime &exposure, Int observationId, const Matrix<Float> &floatData);
+  void fill(const Record &row, const MEpoch &time, int antennaId, int feedId, int dataDescId,
+            int fieldId, const MVTime &exposure, int observationId, const Matrix<float> &floatData);
 
  private:
   MeasurementSet *ms_p;
   MSMainColumns *msCols_p;
 
-  Int scanNumberId_p;
+  int scanNumberId_p;
   DataType scanNumberType_p;
 
   // fields from sdfits2ms, independent of MS version number so far
-  Int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p, timeCentroidId_p;
+  int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p, timeCentroidId_p;
 
   // cleanup everything
   void clearAll();

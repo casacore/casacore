@@ -212,8 +212,8 @@ typedef MSColumns ROMSColumns;
 extern template class ArrayMeasColumn<MDirection>;
 extern template class ScalarMeasColumn<MPosition>;
 extern template class ScalarMeasColumn<MEpoch>;
-extern template class ArrayQuantColumn<Double>;
-extern template class ScalarQuantColumn<Double>;
+extern template class ArrayQuantColumn<double>;
+extern template class ScalarQuantColumn<double>;
 
 }  // namespace casacore
 

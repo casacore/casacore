@@ -156,7 +156,7 @@ class RegionHandler {
   // Otherwise a number is appended to the root name to make it unique.
   // The number starts at the given number and is incremented until the name
   // is unique.
-  String makeUniqueRegionName(const std::string& rootName, uInt startNumber = 1) const;
+  String makeUniqueRegionName(const std::string& rootName, unsigned int startNumber = 1) const;
 
   // Make a mask for a lattice (e.g. a PagedImage or TempImage).
   // It creates it with the shape and tile shape of the lattice.

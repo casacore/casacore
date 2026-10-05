@@ -44,7 +44,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ISMBase::ISMBase(uInt bucketSize, bool checkBucketSize, uInt cacheSize)
+ISMBase::ISMBase(unsigned int bucketSize, bool checkBucketSize, unsigned int cacheSize)
     : DataManager(),
       ///  dataManName_p     ("ISM0"),
       version_p(3),
@@ -63,8 +63,8 @@ ISMBase::ISMBase(uInt bucketSize, bool checkBucketSize, uInt cacheSize)
       dataChanged_p(false),
       tempBuffer_p(0) {}
 
-ISMBase::ISMBase(const String& dataManagerName, uInt bucketSize, bool checkBucketSize,
-                 uInt cacheSize)
+ISMBase::ISMBase(const String& dataManagerName, unsigned int bucketSize, bool checkBucketSize,
+                 unsigned int cacheSize)
     : DataManager(),
       dataManName_p(dataManagerName),
       version_p(3),
@@ -132,7 +132,7 @@ ISMBase::ISMBase(const ISMBase& that)
       tempBuffer_p(0) {}
 
 ISMBase::~ISMBase() {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     delete colSet_p[i];
   }
   delete index_p;
@@ -149,7 +149,7 @@ String ISMBase::dataManagerName() const { return dataManName_p; }
 
 Record ISMBase::dataManagerSpec() const {
   Record rec = getProperties();
-  rec.define("BUCKETSIZE", Int(bucketSize_p));
+  rec.define("BUCKETSIZE", int(bucketSize_p));
   rec.define("PERSCACHESIZE", persCacheSize_p);
   return rec;
 }
@@ -158,7 +158,7 @@ Record ISMBase::getProperties() const {
   // Make sure the cache is initialized, so the header has certainly been read.
   const_cast<ISMBase*>(this)->getCache();
   Record rec;
-  rec.define("MaxCacheSize", Int(cacheSize_p));
+  rec.define("MaxCacheSize", int(cacheSize_p));
   return rec;
 }
 
@@ -189,10 +189,10 @@ void ISMBase::showIndexStatistics(ostream& os) {
 }
 
 void ISMBase::showBucketLayout(ostream& os) {
-  uInt cursor = 0;
+  unsigned int cursor = 0;
   rownr_t bstrow = 0;
   rownr_t bnrow;
-  uInt bucketNr;
+  unsigned int bucketNr;
   while (getIndex().nextBucketNr(cursor, bstrow, bnrow, bucketNr)) {
     os << " bucket strow=" << bstrow << " bucketnr=" << bucketNr << endl;
     ((ISMBucket*)(getCache().getBucket(bucketNr)))->show(os);
@@ -228,7 +228,7 @@ DataManager* ISMBase::makeObject(const String& group, const Record& spec) {
   return new ISMBase(group, spec);
 }
 
-void ISMBase::setCacheSize(uInt cacheSize, bool canExceedNrBuckets) {
+void ISMBase::setCacheSize(unsigned int cacheSize, bool canExceedNrBuckets) {
   cacheSize_p = cacheSize;
   // Limit the cache size if needed.
   if (!canExceedNrBuckets && cacheSize_p > getCache().nBucket()) {
@@ -278,7 +278,7 @@ void ISMBase::readIndex() {
     tio.reset(new LECanonicalIO(fio));
   }
   AipsIO os(tio);
-  uInt version = os.getstart("IncrementalStMan");
+  unsigned int version = os.getstart("IncrementalStMan");
   // # ISMBase.cc version 11.1 contained a little error.
   // # It used the version of putstart("IncrementalStMan") instead of
   // # the version from putstart("ISM").
@@ -309,7 +309,7 @@ void ISMBase::readIndex() {
     os >> firstFree_p;
   }
   os.getend();
-  Int64 off = nbucketInit_p;
+  int64_t off = nbucketInit_p;
   os.setpos(512 + off * bucketSize_p);
   index_p->get(os);
   os.close();
@@ -319,7 +319,7 @@ void ISMBase::writeIndex() {
   if (index_p == 0) {
     return;
   }
-  uInt nbuckets = getCache().nBucket();
+  unsigned int nbuckets = getCache().nBucket();
   // Write a few items at the beginning of the file.
   file_p->seek(0);
   // Use the file given by the BucketFile object.
@@ -348,19 +348,20 @@ void ISMBase::writeIndex() {
   os << getCache().firstFreeBucket();
   os.putend();
   // Write the index itself at the very end of the file.
-  Int64 off = nbuckets;
+  int64_t off = nbuckets;
   os.setpos(512 + off * bucketSize_p);
   index_p->put(os);
   os.close();
 }
 
 ISMBucket* ISMBase::getBucket(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& bucketNrrow) {
-  uInt bucketNr = getIndex().getBucketNr(rownr, bucketStartRow, bucketNrrow);
+  unsigned int bucketNr = getIndex().getBucketNr(rownr, bucketStartRow, bucketNrrow);
   return (ISMBucket*)(getCache().getBucket(bucketNr));
 }
 
-ISMBucket* ISMBase::nextBucket(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow) {
-  uInt bucketNr;
+ISMBucket* ISMBase::nextBucket(unsigned int& cursor, rownr_t& bucketStartRow,
+                               rownr_t& bucketNrrow) {
+  unsigned int bucketNr;
   if (getIndex().nextBucketNr(cursor, bucketStartRow, bucketNrrow, bucketNr)) {
     return (ISMBucket*)(getCache().getBucket(bucketNr));
   }
@@ -375,7 +376,7 @@ void ISMBase::setBucketDirty() {
 void ISMBase::addBucket(rownr_t rownr, ISMBucket* bucket) {
   // Add the bucket to the cache and the index.
   // It's the last bucket in the cache.
-  uInt bucketNr = getCache().addBucket((char*)bucket);
+  unsigned int bucketNr = getCache().addBucket((char*)bucket);
   getIndex().addBucketNr(rownr, bucketNr);
 }
 
@@ -390,8 +391,8 @@ bool ISMBase::canRemoveColumn() const { return false; }
 
 void ISMBase::addRow64(rownr_t nrrow) {
   getIndex().addRow(nrrow);
-  uInt nrcol = ncolumn();
-  for (uInt i = 0; i < nrcol; i++) {
+  unsigned int nrcol = ncolumn();
+  for (unsigned int i = 0; i < nrcol; i++) {
     colSet_p[i]->addRow(nrrow_p + nrrow, nrrow_p);
   }
   nrrow_p += nrrow;
@@ -400,18 +401,18 @@ void ISMBase::addRow64(rownr_t nrrow) {
 
 void ISMBase::removeRow64(rownr_t rownr) {
   // Get the bucket and interval to which the row belongs.
-  uInt i;
+  unsigned int i;
   rownr_t bucketStartRow;
   rownr_t bucketNrrow;
   ISMBucket* bucket = getBucket(rownr, bucketStartRow, bucketNrrow);
-  uInt bucketRownr = rownr - bucketStartRow;
+  unsigned int bucketRownr = rownr - bucketStartRow;
   // Remove that row from the bucket for all columns.
-  uInt nrcol = ncolumn();
+  unsigned int nrcol = ncolumn();
   for (i = 0; i < nrcol; i++) {
     colSet_p[i]->remove(bucketRownr, bucket, bucketNrrow, nrrow_p - 1);
   }
   // Remove the row from the index.
-  Int emptyBucket = getIndex().removeRow(rownr);
+  int emptyBucket = getIndex().removeRow(rownr);
   nrrow_p--;
   // When no more rows left, recreate index and cache.
   if (nrrow_p == 0) {
@@ -431,7 +432,7 @@ void ISMBase::removeRow64(rownr_t rownr) {
 void ISMBase::addColumn(DataManagerColumn* colp) {
   // AddColumn is not possible yet.
   throw(DataManInvOper("IncrementalStMan::addColumn not possible yet"));
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (colp == colSet_p[i]) {
       colSet_p[i]->doCreate((ISMBucket*)(getCache().getBucket(0)));
       dataChanged_p = true;
@@ -444,7 +445,7 @@ void ISMBase::addColumn(DataManagerColumn* colp) {
 void ISMBase::removeColumn(DataManagerColumn* colp) {
   // RemoveColumn is not possible yet.
   throw(DataManInvOper("IncrementalStMan::removeColumn not possible yet"));
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     if (colSet_p[i] == colp) {
       delete colSet_p[i];
       decrementNcolumn();
@@ -474,7 +475,7 @@ void ISMBase::recreate() {
   index_p = new ISMIndex();
   makeCache();
   // # Let the column objects create something if needed.
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     colSet_p[i]->doCreate((ISMBucket*)(getCache().getBucket(0)));
   }
   setBucketDirty();
@@ -486,8 +487,8 @@ bool ISMBase::flush(AipsIO& ios, bool fsync) {
   // # Let the column objects flush themselves (if needed).
   // # Check if anything has changed.
   bool changed = false;
-  uInt nrcol = ncolumn();
-  for (uInt i = 0; i < nrcol; i++) {
+  unsigned int nrcol = ncolumn();
+  for (unsigned int i = 0; i < nrcol; i++) {
     if (colSet_p[i]->flush(nrrow_p, fsync)) {
       changed = true;
     }
@@ -517,8 +518,8 @@ rownr_t ISMBase::resync64(rownr_t nrrow) {
   if (cache_p != 0) {
     cache_p->resync(nbucketInit_p, nFreeBucket_p, firstFree_p);
   }
-  uInt nrcol = ncolumn();
-  for (uInt i = 0; i < nrcol; i++) {
+  unsigned int nrcol = ncolumn();
+  for (unsigned int i = 0; i < nrcol; i++) {
     colSet_p[i]->resync(nrrow_p);
   }
   if (iosfile_p != 0) {
@@ -551,8 +552,8 @@ rownr_t ISMBase::open64(rownr_t tabNrrow, AipsIO& ios) {
     makeIndex();
   }
   // # Let the column objects initialize themselves (if needed).
-  uInt nrcol = ncolumn();
-  for (uInt i = 0; i < nrcol; i++) {
+  unsigned int nrcol = ncolumn();
+  for (unsigned int i = 0; i < nrcol; i++) {
     colSet_p[i]->getFile(nrrow_p);
   }
   return nrrow_p;
@@ -567,8 +568,8 @@ StManArrayFile* ISMBase::openArrayFile(ByteIO::OpenOption opt) {
 
 void ISMBase::reopenRW() {
   file_p->setRW();
-  uInt nrcol = ncolumn();
-  for (uInt i = 0; i < nrcol; i++) {
+  unsigned int nrcol = ncolumn();
+  for (unsigned int i = 0; i < nrcol; i++) {
     colSet_p[i]->reopenRW();
   }
 }
@@ -596,15 +597,15 @@ void ISMBase::init() {
   // On top of that each variable length element requires uIntSize_p bytes
   // and uIntSize_p for all elements together (representing total length
   // and length per element).
-  uInt fixedSize = 0;
-  uInt varSize = 0;
-  uInt nrcol = ncolumn();
-  uInt headerSize = uIntSize_p * (nrcol + 1);  // needed per column
-  for (uInt i = 0; i < nrcol; i++) {
-    uInt leng = colSet_p[i]->getFixedLength();
+  unsigned int fixedSize = 0;
+  unsigned int varSize = 0;
+  unsigned int nrcol = ncolumn();
+  unsigned int headerSize = uIntSize_p * (nrcol + 1);  // needed per column
+  for (unsigned int i = 0; i < nrcol; i++) {
+    unsigned int leng = colSet_p[i]->getFixedLength();
     fixedSize += 2 * uIntSize_p;  // indices per column
     if (leng == 0) {
-      uInt nr = colSet_p[i]->nelements();
+      unsigned int nr = colSet_p[i]->nelements();
       fixedSize += uIntSize_p * (nr + 1);  // length values
       varSize += 32 * nr;
     } else {
@@ -657,15 +658,15 @@ void ISMBase::init() {
   }
 }
 
-bool ISMBase::checkBucketLayout(uInt& offendingCursor, rownr_t& offendingBucketStartRow,
-                                uInt& offendingBucketNrow, uInt& offendingBucketNr,
-                                uInt& offendingCol, uInt& offendingIndex, rownr_t& offendingRow,
-                                rownr_t& offendingPrevRow) {
+bool ISMBase::checkBucketLayout(unsigned int& offendingCursor, rownr_t& offendingBucketStartRow,
+                                unsigned int& offendingBucketNrow, unsigned int& offendingBucketNr,
+                                unsigned int& offendingCol, unsigned int& offendingIndex,
+                                rownr_t& offendingRow, rownr_t& offendingPrevRow) {
   bool ok = false;
-  uInt cursor = 0;
+  unsigned int cursor = 0;
   rownr_t bucketStartRow = 0;
   rownr_t bucketNrow = 0;
-  uInt bucketNr = 0;
+  unsigned int bucketNr = 0;
   while (getIndex().nextBucketNr(cursor, bucketStartRow, bucketNrow, bucketNr)) {
     ok = ((ISMBucket*)(getCache().getBucket(bucketNr)))
              ->check(offendingCol, offendingIndex, offendingRow, offendingPrevRow);

@@ -106,8 +106,8 @@ class LCConcatenation : public LCRegionMulti {
   // The extend range has to be given as a 1-dimensional box.
   // The default range is the entire axis.
   // <group>
-  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis);
-  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, Int extendAxis,
+  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, int extendAxis);
+  LCConcatenation(bool takeOver, const Block<const LCRegion*>& regions, int extendAxis,
                   const LCBox& extendRange);
   // </group>
 
@@ -123,7 +123,7 @@ class LCConcatenation : public LCRegionMulti {
   LCRegion* cloneRegion() const override;
 
   // Get the extend axis.
-  Int extendAxis() const;
+  int extendAxis() const;
 
   // Get the extend box.
   const LCBox& extendBox() const;
@@ -147,7 +147,7 @@ class LCConcatenation : public LCRegionMulti {
   // Construct another LCRegion (for e.g. another lattice) by moving
   // this one. It recalculates the bounding box and mask.
   // A positive translation value indicates "to right".
-  LCRegion* doTranslate(const Vector<Float>& translateVector,
+  LCRegion* doTranslate(const Vector<float>& translateVector,
                         const IPosition& newLatticeShape) const override;
 
   // Do the actual getting of the mask.
@@ -155,7 +155,7 @@ class LCConcatenation : public LCRegionMulti {
 
   // This function is needed here because the niceCursorShape of the
   // contributing region does not make any sense (other dimensionality).
-  IPosition doNiceCursorShape(uInt maxPixels) const override;
+  IPosition doNiceCursorShape(unsigned int maxPixels) const override;
 
  private:
   // Fill the object.
@@ -164,12 +164,12 @@ class LCConcatenation : public LCRegionMulti {
   void fill();
   // </group>
 
-  Int itsExtendAxis;
+  int itsExtendAxis;
   IPosition itsRegionAxes;
   LCBox itsExtendBox;
 };
 
-inline Int LCConcatenation::extendAxis() const { return itsExtendAxis; }
+inline int LCConcatenation::extendAxis() const { return itsExtendAxis; }
 inline const LCBox& LCConcatenation::extendBox() const { return itsExtendBox; }
 
 }  // namespace casacore

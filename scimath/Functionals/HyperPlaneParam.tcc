@@ -32,7 +32,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-HyperPlaneParam<T>::HyperPlaneParam(uInt m) : Function<T>(m) {}
+HyperPlaneParam<T>::HyperPlaneParam(unsigned int m) : Function<T>(m) {}
 
 template <class T>
 HyperPlaneParam<T>::HyperPlaneParam(const HyperPlaneParam<T> &other) : Function<T>(other) {}

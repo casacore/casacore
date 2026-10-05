@@ -37,10 +37,10 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-bool checkFloat(Lattice<Float>& expr, const Float result, const IPosition shape,
+bool checkFloat(Lattice<float>& expr, const float result, const IPosition shape,
                 const bool supress);
 
-bool checkDouble(Lattice<Double>& expr, const Double result, const IPosition shape,
+bool checkDouble(Lattice<double>& expr, const double result, const IPosition shape,
                  const bool supress);
 
 bool checkComplex(Lattice<Complex>& expr, const Complex result, const IPosition shape,
@@ -60,8 +60,8 @@ int main(int argc, const char* argv[]) {
     inp.create("sup", "False", "Supress expected exceptions messages", "Bool");
     inp.readArguments(argc, argv);
 
-    const uInt nx = inp.getInt("nx");
-    const uInt ny = inp.getInt("ny");
+    const unsigned int nx = inp.getInt("nx");
+    const unsigned int ny = inp.getInt("ny");
     const bool supress = inp.getBool("sup");
 
     IPosition shape(2, nx, ny);
@@ -75,14 +75,14 @@ int main(int argc, const char* argv[]) {
 
     // FLoat Lattices
 
-    ArrayLattice<Float> aF(shape);
-    Float aFVal = 2.0;
+    ArrayLattice<float> aF(shape);
+    float aFVal = 2.0;
     aF.set(aFVal);
 
     // Double Lattices
 
-    ArrayLattice<Double> aD(shape);
-    Double aDVal = 2.0;
+    ArrayLattice<double> aD(shape);
+    double aDVal = 2.0;
     aD.set(aDVal);
 
     // Complex Lattices
@@ -103,17 +103,17 @@ int main(int argc, const char* argv[]) {
     {
       cout << "Float" << endl;
       LatticeExprNode node(aF);
-      LatticeExpr<Float> expr(node);
+      LatticeExpr<float> expr(node);
       if (!checkFloat(expr, aFVal, shape, supress)) ok = false;
 
-      LatticeExpr<Float> expr2(expr);
+      LatticeExpr<float> expr2(expr);
       if (!checkFloat(expr2, aFVal, shape, supress)) ok = false;
 
-      LatticeExpr<Float> expr3;
+      LatticeExpr<float> expr3;
       expr3 = expr;
       if (!checkFloat(expr2, aFVal, shape, supress)) ok = false;
 
-      Lattice<Float>* pExpr;
+      Lattice<float>* pExpr;
       pExpr = expr.clone();
       if (!checkFloat(*pExpr, aFVal, shape, supress)) ok = false;
       delete pExpr;
@@ -125,17 +125,17 @@ int main(int argc, const char* argv[]) {
     {
       cout << "Double" << endl;
       LatticeExprNode node(aD);
-      LatticeExpr<Double> expr(node);
+      LatticeExpr<double> expr(node);
       if (!checkDouble(expr, aDVal, shape, supress)) ok = false;
 
-      LatticeExpr<Double> expr2(expr);
+      LatticeExpr<double> expr2(expr);
       if (!checkDouble(expr2, aDVal, shape, supress)) ok = false;
 
-      LatticeExpr<Double> expr3;
+      LatticeExpr<double> expr3;
       expr3 = expr;
       if (!checkDouble(expr2, aDVal, shape, supress)) ok = false;
 
-      Lattice<Double>* pExpr;
+      Lattice<double>* pExpr;
       pExpr = expr.clone();
       if (!checkDouble(*pExpr, aDVal, shape, supress)) ok = false;
       delete pExpr;
@@ -223,11 +223,11 @@ int main(int argc, const char* argv[]) {
   return 0;
 }
 
-bool checkFloat(Lattice<Float>& expr, const Float result, const IPosition shape,
+bool checkFloat(Lattice<float>& expr, const float result, const IPosition shape,
                 const bool supress) {
   bool ok = true;
-  Array<Float> outArr(shape);
-  ArrayLattice<Float> outLat(shape);
+  Array<float> outArr(shape);
+  ArrayLattice<float> outLat(shape);
   IPosition origin(shape);
   origin = 0;
   IPosition stride(outArr.ndim(), 1);
@@ -276,7 +276,7 @@ bool checkFloat(Lattice<Float>& expr, const Float result, const IPosition shape,
     ok = false;
   }
 
-  COWPtr<Array<Float>> moo;
+  COWPtr<Array<float>> moo;
   expr.getSlice(moo, origin, shape, stride);
   outArr.reference(moo.rwRef());
   if (!allEQ(outArr, result)) {
@@ -304,11 +304,11 @@ bool checkFloat(Lattice<Float>& expr, const Float result, const IPosition shape,
   return ok;
 }
 
-bool checkDouble(Lattice<Double>& expr, const Double result, const IPosition shape,
+bool checkDouble(Lattice<double>& expr, const double result, const IPosition shape,
                  const bool supress) {
   bool ok = true;
-  Array<Double> outArr(shape);
-  ArrayLattice<Double> outLat(shape);
+  Array<double> outArr(shape);
+  ArrayLattice<double> outLat(shape);
   IPosition origin(shape);
   origin = 0;
   IPosition stride(outArr.ndim(), 1);
@@ -357,7 +357,7 @@ bool checkDouble(Lattice<Double>& expr, const Double result, const IPosition sha
     ok = false;
   }
 
-  COWPtr<Array<Double>> moo;
+  COWPtr<Array<double>> moo;
   expr.getSlice(moo, origin, shape, stride);
   outArr.reference(moo.rwRef());
   if (!allEQ(outArr, result)) {

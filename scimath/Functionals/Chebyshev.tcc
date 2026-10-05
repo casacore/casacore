@@ -57,10 +57,10 @@ T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
       case ChebyshevEnums::EDGE: {
         T tmp(0);
         if (xp < this->minx_p) {
-          for (uInt i = 0; i < this->nparameters(); i += 2) tmp += this->param_p[i];
-          for (uInt i = 1; i < this->nparameters(); i += 2) tmp -= this->param_p[i];
+          for (unsigned int i = 0; i < this->nparameters(); i += 2) tmp += this->param_p[i];
+          for (unsigned int i = 1; i < this->nparameters(); i += 2) tmp -= this->param_p[i];
         } else {
-          for (uInt i = 0; i < this->nparameters(); ++i) tmp += this->param_p[i];
+          for (unsigned int i = 0; i < this->nparameters(); ++i) tmp += this->param_p[i];
         }
         return tmp;
       } break;
@@ -78,7 +78,7 @@ T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
   xp = (T(2) * xp - this->minx_p - this->maxx_p) / (this->maxx_p - this->minx_p);
 
   // evaluate using Clenshaw recursion relation
-  for (Int i = this->nparameters() - 1; i > 0; i--) {
+  for (int i = this->nparameters() - 1; i > 0; i--) {
     tmp = T(2) * xp * yi1 - yi2 + this->param_p[i];
     yi2 = yi1;
     yi1 = tmp;

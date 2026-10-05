@@ -52,7 +52,7 @@ MSDataDescIndex::MSDataDescIndex(const MSDataDescription& dataDescription)
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSDataDescIndex::matchSpwId(const Int& spwId) {
+Vector<int> MSDataDescIndex::matchSpwId(const int& spwId) {
   // Match a spectral window id to a set of data desc id's
   // Input:
   //    spwId               const Int&               Spw id to match
@@ -61,26 +61,26 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Int& spwId) {
   //
   LogicalArray maskArray = (msDataDescCols_p.spectralWindowId().getColumn() == spwId &&
                             !msDataDescCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
+  MaskedArray<int> maskDataDescId(dataDescIds_p, maskArray);
   return maskDataDescId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds) {
+Vector<int> MSDataDescIndex::matchSpwId(const Vector<int>& spwIds) {
   // Match a set of spectral window id's to a set of data desc id's
   // Input:
   //    spwIds              const Vector<Int>&       Spw id's to match
   // Output:
   //    matchSpwId          Vector<Int>              Matching data desc id's
   //
-  Vector<Int> matchedDataDescIds;
+  Vector<int> matchedDataDescIds;
   // Match each spw id individually
-  for (uInt spwid = 0; spwid < spwIds.nelements(); spwid++) {
+  for (unsigned int spwid = 0; spwid < spwIds.nelements(); spwid++) {
     // Add to list of datadesc id's
-    Vector<Int> currentMatch = matchSpwId(spwIds(spwid));
+    Vector<int> currentMatch = matchSpwId(spwIds(spwid));
     if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedDataDescIds);
+      Vector<int> temp(matchedDataDescIds);
       matchedDataDescIds.resize(matchedDataDescIds.nelements() + currentMatch.nelements(), true);
       matchedDataDescIds = concatenateArray(temp, currentMatch);
     }
@@ -90,7 +90,7 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSDataDescIndex::matchPolId(const Int& polId) {
+Vector<int> MSDataDescIndex::matchPolId(const int& polId) {
   // Match a polarization id to a set of data desc id's
   // Input:
   //    polId               const Int&               pol id to match
@@ -99,26 +99,26 @@ Vector<Int> MSDataDescIndex::matchPolId(const Int& polId) {
   //
   LogicalArray maskArray = (msDataDescCols_p.polarizationId().getColumn() == polId &&
                             !msDataDescCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
+  MaskedArray<int> maskDataDescId(dataDescIds_p, maskArray);
   return maskDataDescId.getCompressedArray();
 }
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSDataDescIndex::matchPolId(const Vector<Int>& polIds) {
+Vector<int> MSDataDescIndex::matchPolId(const Vector<int>& polIds) {
   // Match a set of polarization id's to a set of data desc id's
   // Input:
   //    polIds              const Vector<Int>&       pol id's to match
   // Output:
   //    matchPolId          Vector<Int>              Matching data desc id's
   //
-  Vector<Int> matchedDataDescIds;
+  Vector<int> matchedDataDescIds;
   // Match each pol id individually
-  for (uInt polid = 0; polid < polIds.nelements(); polid++) {
+  for (unsigned int polid = 0; polid < polIds.nelements(); polid++) {
     // Add to list of datadesc id's
-    Vector<Int> currentMatch = matchPolId(polIds(polid));
+    Vector<int> currentMatch = matchPolId(polIds(polid));
     if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedDataDescIds);
+      Vector<int> temp(matchedDataDescIds);
       matchedDataDescIds.resize(matchedDataDescIds.nelements() + currentMatch.nelements(), true);
       matchedDataDescIds = concatenateArray(temp, currentMatch);
     }
@@ -128,7 +128,7 @@ Vector<Int> MSDataDescIndex::matchPolId(const Vector<Int>& polIds) {
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSDataDescIndex::matchSpwIdAndPolznId(const Int& spwId, const Int& polznId) {
+Vector<int> MSDataDescIndex::matchSpwIdAndPolznId(const int& spwId, const int& polznId) {
   // Match a spw. id. and polzn. id. to a set of data desc id.'s
   // Input:
   //    spwId                  const Int&            Spw id. to match
@@ -139,7 +139,7 @@ Vector<Int> MSDataDescIndex::matchSpwIdAndPolznId(const Int& spwId, const Int& p
   LogicalArray maskArray = (msDataDescCols_p.spectralWindowId().getColumn() == spwId &&
                             msDataDescCols_p.polarizationId().getColumn() == polznId &&
                             !msDataDescCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
+  MaskedArray<int> maskDataDescId(dataDescIds_p, maskArray);
   return maskDataDescId.getCompressedArray();
 }
 

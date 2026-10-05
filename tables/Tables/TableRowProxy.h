@@ -88,11 +88,11 @@ class TableRowProxy {
   bool isWritable() const;
 
   // Get values for the given row.
-  Record get(Int64 rownr) const;
+  Record get(int64_t rownr) const;
 
   // Put values for the given row.
   // The given record has to conform the fields in the table row.
-  void put(Int64 rownr, const Record& values, bool matchingFields);
+  void put(int64_t rownr, const Record& values, bool matchingFields);
 
  private:
   bool isWritable_p;

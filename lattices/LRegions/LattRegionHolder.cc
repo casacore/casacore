@@ -40,7 +40,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LattRegionHolder::LattRegionHolder(uInt ndim) : itsLC(0), itsSlicer(0), itsNdim(ndim) {}
+LattRegionHolder::LattRegionHolder(unsigned int ndim) : itsLC(0), itsSlicer(0), itsNdim(ndim) {}
 
 LattRegionHolder::LattRegionHolder(const LCRegion& region)
     : itsLC(region.cloneRegion()), itsSlicer(0), itsNdim(region.ndim()) {}
@@ -130,7 +130,7 @@ LatticeRegion LattRegionHolder::toLatticeRegion(const IPosition& shape) const {
         AipsError("LattRegionHolder::toLatticeRegion - "
                   "cannot convert a relative LCSlicer"));
   }
-  Vector<Float> refpix(shape.nelements());
+  Vector<float> refpix(shape.nelements());
   refpix = 0;
   return LatticeRegion(itsSlicer->toSlicer(refpix, shape), shape);
 }

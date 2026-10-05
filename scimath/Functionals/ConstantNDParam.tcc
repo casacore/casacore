@@ -32,7 +32,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-ConstantNDParam<T>::ConstantNDParam(uInt m) : Function<T>(1), _ndim(m) {}
+ConstantNDParam<T>::ConstantNDParam(unsigned int m) : Function<T>(1), _ndim(m) {}
 
 template <class T>
 ConstantNDParam<T>::ConstantNDParam(const ConstantNDParam<T> &other)

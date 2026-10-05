@@ -33,7 +33,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Define extern templates for often used types.
-template class Quantum<Double>;
+template class Quantum<double>;
 
 istream &operator>>(istream &is, Quantity &ku) {
   String str;
@@ -49,7 +49,7 @@ istream &operator>>(istream &is, Quantity &ku) {
 }
 
 bool readQuantity(Quantity &res, MUString &in) {
-  Double val0 = 0.0;
+  double val0 = 0.0;
   String unit = "";
   res = Quantity();
   UnitVal uv;

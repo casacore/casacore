@@ -37,17 +37,17 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Vector<Int> LatticeStatsBase::toStatisticTypes(const String& statsU, const std::regex& delimiter) {
+Vector<int> LatticeStatsBase::toStatisticTypes(const String& statsU, const std::regex& delimiter) {
   Vector<String> statsStrings = stringToVector(statsU, delimiter);
   return LatticeStatsBase::toStatisticTypes(statsStrings);
 }
 
-Vector<Int> LatticeStatsBase::toStatisticTypes(const Vector<String>& statsU) {
-  const uInt n = statsU.nelements();
-  Vector<Int> statsToPlot(n);
-  Int n2 = 0;
-  for (uInt i = 0; i < n; i++) {
-    Int tmp = LatticeStatsBase::toStatisticType(statsU(i));
+Vector<int> LatticeStatsBase::toStatisticTypes(const Vector<String>& statsU) {
+  const unsigned int n = statsU.nelements();
+  Vector<int> statsToPlot(n);
+  int n2 = 0;
+  for (unsigned int i = 0; i < n; i++) {
+    int tmp = LatticeStatsBase::toStatisticType(statsU(i));
     if (tmp != -1) {
       statsToPlot(n2) = tmp;
       n2++;
@@ -57,10 +57,10 @@ Vector<Int> LatticeStatsBase::toStatisticTypes(const Vector<String>& statsU) {
   return statsToPlot;
 }
 
-Int LatticeStatsBase::toStatisticType(const String& statU) {
+int LatticeStatsBase::toStatisticType(const String& statU) {
   String stat = statU;
   ToUpperCaseInPlace(stat);
-  Int statToPlot = -1;
+  int statToPlot = -1;
   if (StringContains(stat, "NPTS")) {
     statToPlot = NPTS;
   } else if (StringContains(stat, "SUMSQ")) {
@@ -91,7 +91,7 @@ Int LatticeStatsBase::toStatisticType(const String& statU) {
   return statToPlot;
 }
 
-String LatticeStatsBase::toStatisticName(Int iType) {
+String LatticeStatsBase::toStatisticName(int iType) {
   StatisticsTypes type = StatisticsTypes(iType);
   return toStatisticName(type);
 }
@@ -128,8 +128,8 @@ String LatticeStatsBase::toStatisticName(StatisticsTypes type) {
   return name;
 }
 
-bool LatticeStatsBase::setNxy(Vector<Int>& nxy, std::ostream& os) {
-  Int n = nxy.nelements();
+bool LatticeStatsBase::setNxy(Vector<int>& nxy, std::ostream& os) {
+  int n = nxy.nelements();
   nxy.resize(2, true);
   if (n > 2) {
     os << "Too many elements for argument nxy" << endl;
@@ -148,23 +148,23 @@ bool LatticeStatsBase::setNxy(Vector<Int>& nxy, std::ostream& os) {
 }
 
 void LatticeStatsBase::setStorageImageShape(IPosition& storeImageShape, const bool& last,
-                                            const Int& axisSize, const Vector<Int>& displayAxes,
+                                            const int& axisSize, const Vector<int>& displayAxes,
                                             const IPosition& imageShape) {
-  Int nStoreImageDim = displayAxes.nelements() + 1;
+  int nStoreImageDim = displayAxes.nelements() + 1;
   storeImageShape.resize(nStoreImageDim);
 
   if (last) {
-    for (Int i = 0; i < nStoreImageDim - 1; i++) storeImageShape(i) = imageShape(displayAxes(i));
+    for (int i = 0; i < nStoreImageDim - 1; i++) storeImageShape(i) = imageShape(displayAxes(i));
     storeImageShape(nStoreImageDim - 1) = axisSize;
   } else {
-    for (Int i = 1; i < nStoreImageDim; i++) storeImageShape(i) = imageShape(displayAxes(i - 1));
+    for (int i = 1; i < nStoreImageDim; i++) storeImageShape(i) = imageShape(displayAxes(i - 1));
     storeImageShape(0) = axisSize;
   }
 }
 
-void LatticeStatsBase::stretchMinMax(Float& dMin, Float& dMax) {
-  Float delta = 0.05 * (dMax - dMin);
-  Float absmax = max(abs(dMax), abs(dMin));
+void LatticeStatsBase::stretchMinMax(float& dMin, float& dMax) {
+  float delta = 0.05 * (dMax - dMin);
+  float absmax = max(abs(dMax), abs(dMin));
   if (delta < 1.0e-5 * absmax) delta = 0.01 * absmax;
 
   if (dMin == dMax) {
@@ -181,9 +181,9 @@ void LatticeStatsBase::stretchMinMax(Float& dMin, Float& dMax) {
   }
 }
 
-std::set<Double> LatticeStatsBase::quartileFracs() {
-  const static Double fracs[]{0.25, 0.75};
-  return std::set<Double>(fracs, fracs + 2);
+std::set<double> LatticeStatsBase::quartileFracs() {
+  const static double fracs[]{0.25, 0.75};
+  return std::set<double>(fracs, fracs + 2);
 }
 
 }  // namespace casacore

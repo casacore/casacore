@@ -45,7 +45,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
   // Find out the columns and data manager groups of the fields.
   std::map<String, String> dmTypeMap;
   std::map<String, String> dmGroupMap;
-  for (uInt i = 0; i < dminfo.nfields(); i++) {
+  for (unsigned int i = 0; i < dminfo.nfields(); i++) {
     const Record& sub = dminfo.asRecord(i);
     if (sub.isDefined("COLUMNS")) {
       String dmType = "";
@@ -57,7 +57,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
         dmGroup = sub.asString("NAME");
       }
       Vector<String> cols = sub.asArrayString("COLUMNS");
-      for (uInt j = 0; j < cols.nelements(); j++) {
+      for (unsigned int j = 0; j < cols.nelements(); j++) {
         dmTypeMap.insert(std::make_pair(cols[j], dmType));
         dmGroupMap.insert(std::make_pair(cols[j], dmGroup));
       }
@@ -68,7 +68,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
     return;
   }
   // Change data manager type and group as needed.
-  for (uInt i = 0; i < tdesc.ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdesc.ncolumn(); i++) {
     ColumnDesc& cdesc = tdesc.rwColumnDesc(i);
     const String& name = cdesc.name();
     std::map<String, String>::iterator iter1 = dmTypeMap.find(name);
@@ -89,11 +89,11 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
   // Remove hypercolumn definitions which are different from
   // data manager group in the column descriptions.
   Vector<String> hcNames = tdesc.hypercolumnNames();
-  for (uInt i = 0; i < hcNames.nelements(); i++) {
+  for (unsigned int i = 0; i < hcNames.nelements(); i++) {
     Vector<String> dataNames, coordNames, idNames;
     tdesc.hypercolumnDesc(hcNames[i], dataNames, coordNames, idNames);
     bool same = true;
-    for (uInt j = 0; j < dataNames.nelements(); j++) {
+    for (unsigned int j = 0; j < dataNames.nelements(); j++) {
       const ColumnDesc& cdesc = tdesc[dataNames[j]];
       if (cdesc.dataManagerGroup() != hcNames[i]) {
         same = false;
@@ -101,7 +101,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
       }
     }
     if (same) {
-      for (uInt j = 0; j < coordNames.nelements(); j++) {
+      for (unsigned int j = 0; j < coordNames.nelements(); j++) {
         const ColumnDesc& cdesc = tdesc[dataNames[j]];
         if (cdesc.dataManagerGroup() != hcNames[i]) {
           same = false;
@@ -110,7 +110,7 @@ void DataManInfo::adjustDesc(TableDesc& tdesc, const Record& dminfo) {
       }
     }
     if (same) {
-      for (uInt j = 0; j < idNames.nelements(); j++) {
+      for (unsigned int j = 0; j < idNames.nelements(); j++) {
         const ColumnDesc& cdesc = tdesc[dataNames[j]];
         if (cdesc.dataManagerGroup() != hcNames[i]) {
           same = false;
@@ -128,13 +128,13 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
   Vector<String> dataNames, coordNames, idNames;
   // Keep track of hypercolumns to be changed.
   Vector<String> hcChange;
-  uInt nrhc = 0;
+  unsigned int nrhc = 0;
   // Loop through all hypercolumn descriptions.
   Vector<String> hcNames = tabDesc.hypercolumnNames();
-  for (uInt i = 0; i < hcNames.nelements(); i++) {
+  for (unsigned int i = 0; i < hcNames.nelements(); i++) {
     // Find the hypercolumn in the dminfo.
     // If found, adjust if needed.
-    for (uInt j = 0; j < dminfo.nfields(); j++) {
+    for (unsigned int j = 0; j < dminfo.nfields(); j++) {
       const Record& rec = dminfo.subRecord(j);
       if (rec.asString("NAME") == hcNames(i)) {
         if (rec.asString("TYPE") == "TiledDataStMan") {
@@ -143,7 +143,7 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
           rwrec.define("TYPE", "TiledShapeStMan");
           // Get hypercolumn description.
           tabDesc.hypercolumnDesc(hcNames(i), dataNames, coordNames, idNames);
-          uInt nrid = idNames.nelements();
+          unsigned int nrid = idNames.nelements();
           if (nrid > 0) {
             // The hypercolumn definition contains ID columns, so it
             // has to be changed later in the TableDesc.
@@ -152,10 +152,10 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
             // Keep the dminfo columns which are not an ID column.
             Vector<String> colNames = rec.asArrayString("COLUMNS");
             Vector<String> colsout(colNames.nelements());
-            uInt nrout = 0;
-            for (uInt k = 0; k < colNames.nelements(); k++) {
+            unsigned int nrout = 0;
+            for (unsigned int k = 0; k < colNames.nelements(); k++) {
               bool found = false;
-              for (uInt k1 = 0; k1 < idNames.nelements(); k1++) {
+              for (unsigned int k1 = 0; k1 < idNames.nelements(); k1++) {
                 if (colNames(k) == idNames(k1)) {
                   found = true;
                   break;
@@ -180,7 +180,7 @@ void DataManInfo::adjustTSM(TableDesc& tabDesc, Record& dminfo) {
 
 Record DataManInfo::adjustStMan(const Record& dminfo, const String& dmType, bool replaceMSM) {
   Record newdm;
-  for (uInt j = 0; j < dminfo.nfields(); j++) {
+  for (unsigned int j = 0; j < dminfo.nfields(); j++) {
     Record rec = dminfo.subRecord(j);
     // Get the data manager name and create an object for it.
     String exName = rec.asString("NAME");
@@ -200,13 +200,13 @@ Record DataManInfo::adjustStMan(const Record& dminfo, const String& dmType, bool
 
 void DataManInfo::mergeInfo(Record& dminfo1, const Record& dminfo2) {
   // See for each new data manager what to do.
-  for (uInt i2 = 0; i2 < dminfo2.nfields(); ++i2) {
+  for (unsigned int i2 = 0; i2 < dminfo2.nfields(); ++i2) {
     Record dm2 = dminfo2.subRecord(i2);
     String type2(dm2.isDefined("TYPE") ? dm2.asString("TYPE") : String());
     String name2(dm2.isDefined("NAME") ? dm2.asString("NAME") : String());
     // Add the data manager to the first, but overwrite if already there.
-    uInt dmindex1 = dminfo1.nfields();
-    for (uInt i1 = 0; i1 < dminfo1.nfields(); ++i1) {
+    unsigned int dmindex1 = dminfo1.nfields();
+    for (unsigned int i1 = 0; i1 < dminfo1.nfields(); ++i1) {
       const Record& dm1 = dminfo1.subRecord(i1);
       // An empty or undefined type/name means use the other.
       String type1(dm1.isDefined("TYPE") ? dm1.asString("TYPE") : String());
@@ -236,7 +236,7 @@ void DataManInfo::mergeInfo(Record& dminfo1, const Record& dminfo2) {
   }
 }
 
-void DataManInfo::mergeColumns(Record& dminfo, uInt dmindex, Record& dm) {
+void DataManInfo::mergeColumns(Record& dminfo, unsigned int dmindex, Record& dm) {
   // Get the columns given in the new dm.
   Vector<String> cols;
   if (dm.isDefined("COLUMNS")) {
@@ -244,7 +244,7 @@ void DataManInfo::mergeColumns(Record& dminfo, uInt dmindex, Record& dm) {
   }
   if (!cols.empty()) {
     // Iterate over all dm-s to find the ones containing columns of the new dm.
-    for (uInt i = 0; i < dminfo.nfields(); ++i) {
+    for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
       Record dm2 = dminfo.subRecord(i);
       if (dm2.isDefined("COLUMNS")) {
         Vector<String> cols2(dm2.asArrayString("COLUMNS"));
@@ -277,9 +277,9 @@ Record DataManInfo::finalizeMerge(const TableDesc& desc, const Record& dminfo) {
   // Make a map of the data managers in the dminfo record, so possible
   // specifications can be used.
   // Also make a map of column to dminfo index.
-  std::map<std::pair<String, String>, uInt> dmMap;
-  std::map<String, uInt> colMap;
-  for (uInt i = 0; i < dminfo.nfields(); ++i) {
+  std::map<std::pair<String, String>, unsigned int> dmMap;
+  std::map<String, unsigned int> colMap;
+  for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
     const Record& dm = dminfo.subRecord(i);
     String type;
     if (dm.isDefined("TYPE")) {
@@ -302,7 +302,7 @@ Record DataManInfo::finalizeMerge(const TableDesc& desc, const Record& dminfo) {
   // Find out which columns share the same data manager by making a map
   // of data manager type/name to columns in the Table Description.
   std::map<std::pair<String, String>, std::vector<String>> descMap;
-  for (uInt i = 0; i < desc.ncolumn(); ++i) {
+  for (unsigned int i = 0; i < desc.ncolumn(); ++i) {
     const ColumnDesc& cd = desc[i];
     // Take the data manager type and name from dminfo if defined there.
     // Use type StandardStMan if none is given.
@@ -355,7 +355,7 @@ Record DataManInfo::finalizeMerge(const TableDesc& desc, const Record& dminfo) {
 void DataManInfo::makeUniqueNames(Record& dminfo) {
   // Ensure that data manager names are unique by adding a suffix if needed.
   // First set empty names to the name of the first column.
-  for (uInt i = 0; i < dminfo.nfields(); ++i) {
+  for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
     Record& dm = dminfo.rwSubRecord(i);
     String origName(dm.isDefined("NAME") ? dm.asString("NAME") : String());
     String name(origName);
@@ -373,7 +373,7 @@ void DataManInfo::makeUniqueNames(Record& dminfo) {
   // Now make the names unique if needed.
   // The first instance is kept as is, others get suffix _1, _2, etc.
   std::set<String> firstNames;
-  for (uInt i = 0; i < dminfo.nfields(); ++i) {
+  for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
     Record& dm = dminfo.rwSubRecord(i);
     String name = dm.asString("NAME");
     // The first instance of this name is kept as is.
@@ -386,14 +386,14 @@ void DataManInfo::makeUniqueNames(Record& dminfo) {
   }
 }
 
-String DataManInfo::uniqueName(const Record& dminfo, const String& name, Int excludeField) {
+String DataManInfo::uniqueName(const Record& dminfo, const String& name, int excludeField) {
   String newName = name;
-  uInt suffix = 0;
+  unsigned int suffix = 0;
   bool unique = false;
   while (!unique) {
     unique = true;
-    for (uInt i = 0; i < dminfo.nfields(); ++i) {
-      if (Int(i) != excludeField) {
+    for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
+      if (int(i) != excludeField) {
         const Record& dm = dminfo.subRecord(i);
         if (dm.isDefined("NAME") && dm.asString("NAME") == newName) {
           // Not unique, so add increased suffix and try again.
@@ -409,13 +409,13 @@ String DataManInfo::uniqueName(const Record& dminfo, const String& name, Int exc
 
 void DataManInfo::adaptNames(Record& dminfo, const Table& tab) {
   Record dmtab = tab.dataManagerInfo();
-  for (uInt i = 0; i < dminfo.nfields(); ++i) {
+  for (unsigned int i = 0; i < dminfo.nfields(); ++i) {
     Record& subinfo = dminfo.rwSubRecord(i);
     if (subinfo.isDefined("NAME") && subinfo.isDefined("COLUMNS")) {
       Vector<String> cols(subinfo.asArrayString("COLUMNS"));
       if (!cols.empty()) {
         String name = subinfo.asString(i);
-        for (uInt j = 0; j < dmtab.nfields(); ++j) {
+        for (unsigned int j = 0; j < dmtab.nfields(); ++j) {
           const Record& subtab = dmtab.subRecord(j);
           if (subtab.isDefined("NAME") && subtab.asString("NAME") == name) {
             // Add column name to DM name to make it unique.
@@ -433,24 +433,24 @@ Vector<String> DataManInfo::removeDminfoColumns(Record& dminfo, const Vector<Str
   // Find the given columns and remove them.
   // Keep track which columns are removed.
   Vector<String> remCols(columns.size());
-  uInt ncols = 0;
-  uInt newdm_index = 0;
-  for (uInt dminfo_index = 0; dminfo_index < dminfo.nfields(); dminfo_index++) {
+  unsigned int ncols = 0;
+  unsigned int newdm_index = 0;
+  for (unsigned int dminfo_index = 0; dminfo_index < dminfo.nfields(); dminfo_index++) {
     Record rec = dminfo.subRecord(dminfo_index);
     Vector<String> dmcols(rec.asArrayString("COLUMNS"));
-    uInt ndmcol = dmcols.size();
+    unsigned int ndmcol = dmcols.size();
     const String& dmtype = rec.asString("TYPE");
     if (keepType.empty() || dmtype.substr(0, keepType.size()) != keepType) {
       // This dmtype does not need to be kept, so columns can be removed.
-      for (uInt columns_index = 0; columns_index < columns.size(); ++columns_index) {
+      for (unsigned int columns_index = 0; columns_index < columns.size(); ++columns_index) {
         const String& col = columns[columns_index];
-        for (uInt dmcol_index = 0; dmcol_index < ndmcol; ++dmcol_index) {
+        for (unsigned int dmcol_index = 0; dmcol_index < ndmcol; ++dmcol_index) {
           if (col == dmcols[dmcol_index]) {
             // Column name matches, so remove it.
             // Add it to the vector of removed columns.
             remCols[ncols++] = col;
             --ndmcol;
-            for (uInt i = dmcol_index; i < ndmcol; ++i) {
+            for (unsigned int i = dmcol_index; i < ndmcol; ++i) {
               dmcols[i] = dmcols[i + 1];
             }
           }
@@ -494,11 +494,11 @@ void DataManInfo::showDataManStats(const Table& tab, std::ostream& os) {
   // Loop through all data managers.
   // Not all of them might have a name, so use the first column in
   // each of them to construct the Accessor object.
-  for (uInt i = 0; i < dmInfo.nfields(); ++i) {
+  for (unsigned int i = 0; i < dmInfo.nfields(); ++i) {
     String col = dmInfo.subRecord(i).asArrayString("COLUMNS").data()[0];
     RODataManAccessor acc(tab, col, true);
     os << "  Statistics for column " << col << " e.a.: ";
-    Int64 pos = os.tellp();
+    int64_t pos = os.tellp();
     acc.showCacheStatistics(os);
     if (os.tellp() == pos) {
       // Nothing written, thus end the line.

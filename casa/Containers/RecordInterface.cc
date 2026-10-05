@@ -69,11 +69,11 @@ void RecordInterface::checkName(const String& fieldName, DataType type) const {
 
 RecordDesc RecordInterface::description() const { return getDescription(); }
 
-Int RecordInterface::newIdToNumber(const RecordFieldId& id) const {
+int RecordInterface::newIdToNumber(const RecordFieldId& id) const {
   if (id.byName()) {
     return fieldNumber(id.fieldName());
   }
-  Int nfield = nfields();
+  int nfield = nfields();
   if (id.fieldNumber() > nfield) {
     throw(
         AipsError("RecordInterface::define - "
@@ -84,11 +84,11 @@ Int RecordInterface::newIdToNumber(const RecordFieldId& id) const {
   }
   return id.fieldNumber();
 }
-Int RecordInterface::idToNumber(const RecordFieldId& id) const {
+int RecordInterface::idToNumber(const RecordFieldId& id) const {
   if (!id.byName()) {
     return id.fieldNumber();
   }
-  Int whichField = fieldNumber(id.fieldName());
+  int whichField = fieldNumber(id.fieldName());
   if (whichField < 0) {
     throw(AipsError("RecordInterface: field " + id.fieldName() + " is unknown"));
   }
@@ -100,7 +100,7 @@ String RecordInterface::name(const RecordFieldId& id) const {
 }
 
 IPosition RecordInterface::shape(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   switch (type(whichField)) {
     case TpArrayBool:
       return asArrayBool(whichField).shape();
@@ -135,7 +135,7 @@ void RecordInterface::defineField(const RecordFieldId& id, DataType type, const 
 }
 void RecordInterface::defineField(const RecordFieldId& id, DataType type, const IPosition& shape,
                                   bool fixedShape, const void* value) {
-  Int whichField = newIdToNumber(id);
+  int whichField = newIdToNumber(id);
   if (whichField < 0) {
     throwIfFixed();
     String name;
@@ -154,17 +154,17 @@ void RecordInterface::defineField(const RecordFieldId& id, DataType type, const 
 void RecordInterface::define(const RecordFieldId& id, bool value) {
   defineField(id, TpBool, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, uChar value) {
+void RecordInterface::define(const RecordFieldId& id, unsigned char value) {
   defineField(id, TpUChar, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, Short value) {
+void RecordInterface::define(const RecordFieldId& id, short value) {
   defineField(id, TpShort, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, Int value) { defineField(id, TpInt, &value); }
-void RecordInterface::define(const RecordFieldId& id, uInt value) {
+void RecordInterface::define(const RecordFieldId& id, int value) { defineField(id, TpInt, &value); }
+void RecordInterface::define(const RecordFieldId& id, unsigned int value) {
   defineField(id, TpUInt, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, Int64 value) {
+void RecordInterface::define(const RecordFieldId& id, int64_t value) {
   defineField(id, TpInt64, &value);
 }
 void RecordInterface::define(const RecordFieldId& id, float value) {
@@ -185,19 +185,22 @@ void RecordInterface::define(const RecordFieldId& id, const String& value) {
 void RecordInterface::define(const RecordFieldId& id, const Array<bool>& value, bool fixedShape) {
   defineField(id, TpArrayBool, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<uChar>& value, bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<unsigned char>& value,
+                             bool fixedShape) {
   defineField(id, TpArrayUChar, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Short>& value, bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<short>& value, bool fixedShape) {
   defineField(id, TpArrayShort, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Int>& value, bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<int>& value, bool fixedShape) {
   defineField(id, TpArrayInt, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<uInt>& value, bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<unsigned int>& value,
+                             bool fixedShape) {
   defineField(id, TpArrayUInt, value.shape(), fixedShape, &value);
 }
-void RecordInterface::define(const RecordFieldId& id, const Array<Int64>& value, bool fixedShape) {
+void RecordInterface::define(const RecordFieldId& id, const Array<int64_t>& value,
+                             bool fixedShape) {
   defineField(id, TpArrayInt64, value.shape(), fixedShape, &value);
 }
 void RecordInterface::define(const RecordFieldId& id, const Array<float>& value, bool fixedShape) {
@@ -219,11 +222,15 @@ void RecordInterface::define(const RecordFieldId& id, const Array<String>& value
 }
 
 void RecordInterface::get(const RecordFieldId& id, bool& value) const { value = asBool(id); }
-void RecordInterface::get(const RecordFieldId& id, uChar& value) const { value = asuChar(id); }
-void RecordInterface::get(const RecordFieldId& id, Short& value) const { value = asShort(id); }
-void RecordInterface::get(const RecordFieldId& id, Int& value) const { value = asInt(id); }
-void RecordInterface::get(const RecordFieldId& id, uInt& value) const { value = asuInt(id); }
-void RecordInterface::get(const RecordFieldId& id, Int64& value) const { value = asInt64(id); }
+void RecordInterface::get(const RecordFieldId& id, unsigned char& value) const {
+  value = asuChar(id);
+}
+void RecordInterface::get(const RecordFieldId& id, short& value) const { value = asShort(id); }
+void RecordInterface::get(const RecordFieldId& id, int& value) const { value = asInt(id); }
+void RecordInterface::get(const RecordFieldId& id, unsigned int& value) const {
+  value = asuInt(id);
+}
+void RecordInterface::get(const RecordFieldId& id, int64_t& value) const { value = asInt64(id); }
 void RecordInterface::get(const RecordFieldId& id, float& value) const { value = asFloat(id); }
 void RecordInterface::get(const RecordFieldId& id, double& value) const { value = asDouble(id); }
 void RecordInterface::get(const RecordFieldId& id, Complex& value) const { value = asComplex(id); }
@@ -236,28 +243,28 @@ void RecordInterface::get(const RecordFieldId& id, Array<bool>& value) const {
   value.resize(array.shape());
   value = array;
 }
-void RecordInterface::get(const RecordFieldId& id, Array<uChar>& value) const {
-  Array<uChar> array = toArrayuChar(id);
+void RecordInterface::get(const RecordFieldId& id, Array<unsigned char>& value) const {
+  Array<unsigned char> array = toArrayuChar(id);
   value.resize(array.shape());
   value = array;
 }
-void RecordInterface::get(const RecordFieldId& id, Array<Short>& value) const {
-  Array<Short> array = toArrayShort(id);
+void RecordInterface::get(const RecordFieldId& id, Array<short>& value) const {
+  Array<short> array = toArrayShort(id);
   value.resize(array.shape());
   value = array;
 }
-void RecordInterface::get(const RecordFieldId& id, Array<Int>& value) const {
-  Array<Int> array = toArrayInt(id);
+void RecordInterface::get(const RecordFieldId& id, Array<int>& value) const {
+  Array<int> array = toArrayInt(id);
   value.resize(array.shape());
   value = array;
 }
-void RecordInterface::get(const RecordFieldId& id, Array<uInt>& value) const {
-  Array<uInt> array = toArrayuInt(id);
+void RecordInterface::get(const RecordFieldId& id, Array<unsigned int>& value) const {
+  Array<unsigned int> array = toArrayuInt(id);
   value.resize(array.shape());
   value = array;
 }
-void RecordInterface::get(const RecordFieldId& id, Array<Int64>& value) const {
-  Array<Int64> array = toArrayInt64(id);
+void RecordInterface::get(const RecordFieldId& id, Array<int64_t>& value) const {
+  Array<int64_t> array = toArrayInt64(id);
   value.resize(array.shape());
   value = array;
 }
@@ -288,123 +295,123 @@ void RecordInterface::get(const RecordFieldId& id, Array<String>& value) const {
 }
 
 bool RecordInterface::asBool(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpBool:
       break;
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     default:
       throw(AipsError("RecordInterface::asBool - invalid data type"));
   }
   return *(const bool*)get_pointer(whichField, TpBool);
 }
-uChar RecordInterface::asuChar(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+unsigned char RecordInterface::asuChar(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
       break;
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     default:
       throw(AipsError("RecordInterface::asuChar - invalid data type"));
   }
-  return *(const uChar*)get_pointer(whichField, TpUChar);
+  return *(const unsigned char*)get_pointer(whichField, TpUChar);
 }
-Short RecordInterface::asShort(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+short RecordInterface::asShort(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
       break;
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     default:
       throw(AipsError("RecordInterface::asShort - invalid data type"));
   }
-  return *(const Short*)get_pointer(whichField, TpShort);
+  return *(const short*)get_pointer(whichField, TpShort);
 }
-Int RecordInterface::asInt(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+int RecordInterface::asInt(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
       break;
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     case TpInt64:
-      return *(const Int64*)get_pointer(whichField, TpInt64);
+      return *(const int64_t*)get_pointer(whichField, TpInt64);
     default:
       throw(AipsError("RecordInterface::asInt - invalid data type"));
   }
-  return *(const Int*)get_pointer(whichField, TpInt);
+  return *(const int*)get_pointer(whichField, TpInt);
 }
-uInt RecordInterface::asuInt(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+unsigned int RecordInterface::asuInt(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
       break;
     case TpInt64:
-      return *(const Int64*)get_pointer(whichField, TpInt64);
+      return *(const int64_t*)get_pointer(whichField, TpInt64);
     default:
       throw(AipsError("RecordInterface::asuInt - invalid data type"));
   }
-  return *(const uInt*)get_pointer(whichField, TpUInt);
+  return *(const unsigned int*)get_pointer(whichField, TpUInt);
 }
-Int64 RecordInterface::asInt64(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+int64_t RecordInterface::asInt64(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     case TpInt64:
       break;
     default:
       throw(AipsError("RecordInterface::asInt64 - invalid data type"));
   }
-  return *(const Int64*)get_pointer(whichField, TpInt64);
+  return *(const int64_t*)get_pointer(whichField, TpInt64);
 }
 float RecordInterface::asFloat(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     case TpInt64:
-      return *(const Int64*)get_pointer(whichField, TpInt64);
+      return *(const int64_t*)get_pointer(whichField, TpInt64);
     case TpFloat:
       break;
     case TpDouble:
@@ -415,19 +422,19 @@ float RecordInterface::asFloat(const RecordFieldId& id) const {
   return *(const float*)get_pointer(whichField, TpFloat);
 }
 double RecordInterface::asDouble(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     case TpInt64:
-      return *(const Int64*)get_pointer(whichField, TpInt64);
+      return *(const int64_t*)get_pointer(whichField, TpInt64);
     case TpFloat:
       return *(const float*)get_pointer(whichField, TpFloat);
     case TpDouble:
@@ -438,19 +445,19 @@ double RecordInterface::asDouble(const RecordFieldId& id) const {
   return *(const double*)get_pointer(whichField, TpDouble);
 }
 Complex RecordInterface::asComplex(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     case TpInt64:
-      return *(const Int64*)get_pointer(whichField, TpInt64);
+      return *(const int64_t*)get_pointer(whichField, TpInt64);
     case TpFloat:
       return *(const float*)get_pointer(whichField, TpFloat);
     case TpDouble:
@@ -467,19 +474,19 @@ Complex RecordInterface::asComplex(const RecordFieldId& id) const {
   return *(const Complex*)get_pointer(whichField, TpComplex);
 }
 DComplex RecordInterface::asDComplex(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   DataType dataType = type(whichField);
   switch (dataType) {
     case TpUChar:
-      return *(const uChar*)get_pointer(whichField, TpUChar);
+      return *(const unsigned char*)get_pointer(whichField, TpUChar);
     case TpShort:
-      return *(const Short*)get_pointer(whichField, TpShort);
+      return *(const short*)get_pointer(whichField, TpShort);
     case TpInt:
-      return *(const Int*)get_pointer(whichField, TpInt);
+      return *(const int*)get_pointer(whichField, TpInt);
     case TpUInt:
-      return *(const uInt*)get_pointer(whichField, TpUInt);
+      return *(const unsigned int*)get_pointer(whichField, TpUInt);
     case TpInt64:
-      return *(const Int64*)get_pointer(whichField, TpInt64);
+      return *(const int64_t*)get_pointer(whichField, TpInt64);
     case TpFloat:
       return *(const float*)get_pointer(whichField, TpFloat);
     case TpDouble:
@@ -496,51 +503,51 @@ DComplex RecordInterface::asDComplex(const RecordFieldId& id) const {
   return *(const DComplex*)get_pointer(whichField, TpDComplex);
 }
 const String& RecordInterface::asString(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const String*)get_pointer(whichField, TpString);
 }
 const Array<bool>& RecordInterface::asArrayBool(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Array<bool>*)get_pointer(whichField, TpArrayBool);
 }
-const Array<uChar>& RecordInterface::asArrayuChar(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
-  return *(const Array<uChar>*)get_pointer(whichField, TpArrayUChar);
+const Array<unsigned char>& RecordInterface::asArrayuChar(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
+  return *(const Array<unsigned char>*)get_pointer(whichField, TpArrayUChar);
 }
-const Array<Short>& RecordInterface::asArrayShort(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
-  return *(const Array<Short>*)get_pointer(whichField, TpArrayShort);
+const Array<short>& RecordInterface::asArrayShort(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
+  return *(const Array<short>*)get_pointer(whichField, TpArrayShort);
 }
-const Array<Int>& RecordInterface::asArrayInt(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
-  return *(const Array<Int>*)get_pointer(whichField, TpArrayInt);
+const Array<int>& RecordInterface::asArrayInt(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
+  return *(const Array<int>*)get_pointer(whichField, TpArrayInt);
 }
-const Array<uInt>& RecordInterface::asArrayuInt(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
-  return *(const Array<uInt>*)get_pointer(whichField, TpArrayUInt);
+const Array<unsigned int>& RecordInterface::asArrayuInt(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
+  return *(const Array<unsigned int>*)get_pointer(whichField, TpArrayUInt);
 }
-const Array<Int64>& RecordInterface::asArrayInt64(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
-  return *(const Array<Int64>*)get_pointer(whichField, TpArrayInt64);
+const Array<int64_t>& RecordInterface::asArrayInt64(const RecordFieldId& id) const {
+  int whichField = idToNumber(id);
+  return *(const Array<int64_t>*)get_pointer(whichField, TpArrayInt64);
 }
 const Array<float>& RecordInterface::asArrayFloat(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Array<float>*)get_pointer(whichField, TpArrayFloat);
 }
 const Array<double>& RecordInterface::asArrayDouble(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Array<double>*)get_pointer(whichField, TpArrayDouble);
 }
 const Array<Complex>& RecordInterface::asArrayComplex(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Array<Complex>*)get_pointer(whichField, TpArrayComplex);
 }
 const Array<DComplex>& RecordInterface::asArrayDComplex(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Array<DComplex>*)get_pointer(whichField, TpArrayDComplex);
 }
 const Array<String>& RecordInterface::asArrayString(const RecordFieldId& id) const {
-  Int whichField = idToNumber(id);
+  int whichField = idToNumber(id);
   return *(const Array<String>*)get_pointer(whichField, TpArrayString);
 }
 

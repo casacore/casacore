@@ -34,14 +34,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //
 //----------------------------------------------------------------------------
 //
-Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2) {
-  Vector<Int> loc;
+Vector<int> set_intersection(const Vector<int>& v1, const Vector<int>& v2) {
+  Vector<int> loc;
   bool found = false;
-  Int n1 = v1.nelements(), n2 = v2.nelements();
+  int n1 = v1.nelements(), n2 = v2.nelements();
 
-  for (Int i = 0; i < n1; i++) {
+  for (int i = 0; i < n1; i++) {
     found = false;
-    for (Int j = 0; j < n2; j++)
+    for (int j = 0; j < n2; j++)
       if (v2(j) == v1(i)) {
         found = true;
         break;
@@ -57,16 +57,16 @@ Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2) {
 //
 //----------------------------------------------------------------------------
 //
-Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2) {
-  Vector<Int> loc;
+Vector<int> set_union(const Vector<int>& v1, const Vector<int>& v2) {
+  Vector<int> loc;
   bool found = false;
   loc = v2;
-  Int n1 = v1.nelements(), n2;
+  int n1 = v1.nelements(), n2;
 
-  for (Int i = 0; i < n1; i++) {
+  for (int i = 0; i < n1; i++) {
     n2 = loc.nelements();
     found = false;
-    for (Int j = 0; j < n2; j++)
+    for (int j = 0; j < n2; j++)
       if (loc(j) == v1(i)) {
         found = true;
         break;
@@ -136,7 +136,7 @@ bool mssSetData(const MeasurementSet& ms, MeasurementSet& selectedMS,
                 const String& fieldExpr, const String& spwExpr, const String& uvDistExpr,
                 const String& taQLExpr, const String& polnExpr, const String& scanExpr,
                 const String& arrayExpr, const String& stateExpr, const String& obsExpr,
-                const Int defaultChanStep, MSSelection* mymss) {
+                const int defaultChanStep, MSSelection* mymss) {
   return mssSetData2(ms, selectedMS, chanSlices, corrSlices, outMSName, timeExpr, antennaExpr,
                      fieldExpr, spwExpr, uvDistExpr, taQLExpr, polnExpr, scanExpr, arrayExpr,
                      stateExpr, obsExpr, "", defaultChanStep, mymss);
@@ -148,7 +148,7 @@ bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
                  const String& fieldExpr, const String& spwExpr, const String& uvDistExpr,
                  const String& taQLExpr, const String& polnExpr, const String& scanExpr,
                  const String& arrayExpr, const String& stateExpr, const String& obsExpr,
-                 const String& feedExpr, const Int defaultChanStep, MSSelection* mymss) {
+                 const String& feedExpr, const int defaultChanStep, MSSelection* mymss) {
   //
   // Parse the various expressions and produce the accmuluated TEN
   // internally.
@@ -185,7 +185,7 @@ bool mssSetData2(const MeasurementSet& ms, MeasurementSet& selectedMS,
 //
 String stripWhite(const String& str, bool onlyends) {
   // if ((str == "" ) || (str.length() <=0)) return str;
-  Int j0, j1;
+  int j0, j1;
   j0 = 0;
   j1 = str.length() - 1;
   if (onlyends) {
@@ -200,23 +200,23 @@ String stripWhite(const String& str, bool onlyends) {
 Record mssSelectedIndices(MSSelection& thisSelection, const MeasurementSet* ms) {
   Record retval;
   TableExprNode exprNode = thisSelection.toTableExprNode(ms);
-  Vector<Int> fieldlist = thisSelection.getFieldList();
-  Vector<Int> spwlist = thisSelection.getSpwList();
-  Vector<Int> scanlist = thisSelection.getScanList();
-  Vector<Int> antenna1list = thisSelection.getAntenna1List();
-  Vector<Int> antenna2list = thisSelection.getAntenna2List();
-  Matrix<Int> chanlist = thisSelection.getChanList();
-  Matrix<Int> baselinelist = thisSelection.getBaselineList();
-  Vector<Int> ddIDList = thisSelection.getDDIDList();
-  Vector<Int> spwDDIDList = thisSelection.getSPWDDIDList();
-  Vector<Int> stateIDList = thisSelection.getStateObsModeList();
-  Vector<Int> observationIDList = thisSelection.getObservationList();
-  Vector<Int> feed1List = thisSelection.getFeed1List();
-  Vector<Int> feed2List = thisSelection.getFeed2List();
-  Vector<Int> feedPairList = thisSelection.getFeedPairList();
-  std::map<Int, Vector<Int>> polMap = thisSelection.getPolMap();
-  std::map<Int, Vector<Vector<Int>>> corrMap = thisSelection.getCorrMap();
-  Vector<Int> allDDIDList;
+  Vector<int> fieldlist = thisSelection.getFieldList();
+  Vector<int> spwlist = thisSelection.getSpwList();
+  Vector<int> scanlist = thisSelection.getScanList();
+  Vector<int> antenna1list = thisSelection.getAntenna1List();
+  Vector<int> antenna2list = thisSelection.getAntenna2List();
+  Matrix<int> chanlist = thisSelection.getChanList();
+  Matrix<int> baselinelist = thisSelection.getBaselineList();
+  Vector<int> ddIDList = thisSelection.getDDIDList();
+  Vector<int> spwDDIDList = thisSelection.getSPWDDIDList();
+  Vector<int> stateIDList = thisSelection.getStateObsModeList();
+  Vector<int> observationIDList = thisSelection.getObservationList();
+  Vector<int> feed1List = thisSelection.getFeed1List();
+  Vector<int> feed2List = thisSelection.getFeed2List();
+  Vector<int> feedPairList = thisSelection.getFeedPairList();
+  std::map<int, Vector<int>> polMap = thisSelection.getPolMap();
+  std::map<int, Vector<Vector<int>>> corrMap = thisSelection.getCorrMap();
+  Vector<int> allDDIDList;
   if (ddIDList.nelements() == 0)
     allDDIDList = spwDDIDList;
   else if (spwDDIDList.nelements() == 0)
@@ -292,7 +292,7 @@ Vector<String>& split(const String& s, char delim, Vector<String>& elems) {
   while (std::getline(ss, item, delim)) tmp.push_back(item);
 
   elems.resize(tmp.size());
-  for (uInt i = 0; i < tmp.size(); i++) elems[i] = tmp[i];
+  for (unsigned int i = 0; i < tmp.size(); i++) elems[i] = tmp[i];
   return elems;
 }
 

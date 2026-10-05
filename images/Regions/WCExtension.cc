@@ -65,16 +65,16 @@ bool WCExtension::canExtend() const {
 void WCExtension::findAxes(IPosition& extendBoxAxes, IPosition& stretchBoxAxes,
                            IPosition& stretchRegionAxes) const {
   const WCRegion& box = *(regions()[1]);
-  uInt nstretch = regions()[0]->ndim() + box.ndim() - ndim();
-  uInt nextend = box.ndim() - nstretch;
+  unsigned int nstretch = regions()[0]->ndim() + box.ndim() - ndim();
+  unsigned int nextend = box.ndim() - nstretch;
   extendBoxAxes.resize(nextend);
   stretchBoxAxes.resize(nstretch);
   stretchRegionAxes.resize(nstretch);
   const Record& desc = regions()[0]->getAxesDesc();
-  uInt nre = 0;
-  uInt nrs = 0;
-  for (uInt i = 0; i < box.ndim(); i++) {
-    Int axis = axisNr(box.getAxisDesc(i), desc);
+  unsigned int nre = 0;
+  unsigned int nrs = 0;
+  for (unsigned int i = 0; i < box.ndim(); i++) {
+    int axis = axisNr(box.getAxisDesc(i), desc);
     if (axis < 0) {
       AlwaysAssert(nre < nextend, AipsError);
       extendBoxAxes(nre++) = i;
@@ -94,8 +94,8 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   // There should be 2 regions. The latter one should be a WCBox.
   DebugAssert(regions().nelements() == 2, AipsError);
   DebugAssert(regions()[1]->type() == WCBox::className(), AipsError);
-  uInt ndout = outOrder.nelements();
-  uInt ndreg = regions()[0]->ndim();
+  unsigned int ndout = outOrder.nelements();
+  unsigned int ndreg = regions()[0]->ndim();
   AlwaysAssert(ndreg <= ndout, AipsError);
   // Split the box into the extend and the stretch part.
   // The IPositions give the axis numbers in the extend box.
@@ -110,8 +110,8 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   // Split the pixelAxesMap and outOrder into the parts for the
   // region, the stretch box and the extend box (which can be more than
   // the box itself because there can be extra extend axes).
-  uInt ndstr = stretchBoxAxes.nelements();
-  uInt ndext = ndout - ndreg;
+  unsigned int ndstr = stretchBoxAxes.nelements();
+  unsigned int ndext = ndout - ndreg;
   DebugAssert(ndext >= extendBoxAxes.nelements(), AipsError);
   IPosition regPixMap(ndreg);
   IPosition regOutOrd(ndreg);
@@ -120,18 +120,18 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   IPosition extPixMap(ndext);
   IPosition extOutOrd(ndext);
   // In our axesDesc the first axes are used for the region.
-  for (uInt i = 0; i < ndreg; i++) {
+  for (unsigned int i = 0; i < ndreg; i++) {
     regPixMap(i) = pixelAxesMap(i);
     regOutOrd(i) = outOrder(i);
   }
   // The rest of the pixel/outOrder are for the extend box.
-  for (uInt i = 0; i < ndext; i++) {
+  for (unsigned int i = 0; i < ndext; i++) {
     extPixMap(i) = pixelAxesMap(i + ndreg);
     extOutOrd(i) = outOrder(i + ndreg);
   }
   // The stretch box uses some axes in the region.
-  for (uInt i = 0; i < ndstr; i++) {
-    uInt axis = stretchRegAxes(i);
+  for (unsigned int i = 0; i < ndstr; i++) {
+    unsigned int axis = stretchRegAxes(i);
     strPixMap(i) = pixelAxesMap(axis);
     strOutOrd(i) = outOrder(axis);
   }
@@ -144,34 +144,34 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   // where n is the length.
   // We use the same trick as in WCRegion by sorting them and using
   // the resulting index vector.
-  Vector<uInt> reginx(ndreg);
-  std::vector<Int> tmpreg(regOutOrd.begin(), regOutOrd.end());
-  GenSortIndirect<Int, uInt>::sort(reginx, &(tmpreg[0]), ndreg);
-  for (uInt i = 0; i < ndreg; i++) {
+  Vector<unsigned int> reginx(ndreg);
+  std::vector<int> tmpreg(regOutOrd.begin(), regOutOrd.end());
+  GenSortIndirect<int, unsigned int>::sort(reginx, &(tmpreg[0]), ndreg);
+  for (unsigned int i = 0; i < ndreg; i++) {
     regOutOrd(reginx(i)) = i;
   }
   if (ndext > 0) {
-    Vector<uInt> extinx(ndext);
-    std::vector<Int> tmpext(extOutOrd.begin(), extOutOrd.end());
-    GenSortIndirect<Int, uInt>::sort(extinx, &(tmpext[0]), ndext);
-    for (uInt i = 0; i < ndext; i++) {
+    Vector<unsigned int> extinx(ndext);
+    std::vector<int> tmpext(extOutOrd.begin(), extOutOrd.end());
+    GenSortIndirect<int, unsigned int>::sort(extinx, &(tmpext[0]), ndext);
+    for (unsigned int i = 0; i < ndext; i++) {
       extendAxes(i) = extOutOrd(extinx(i));
       extOutOrd(extinx(i)) = i;
     }
   }
   if (ndstr > 0) {
-    Vector<uInt> strinx(ndstr);
-    std::vector<Int> tmpstr(strOutOrd.begin(), strOutOrd.end());
-    GenSortIndirect<Int, uInt>::sort(strinx, &(tmpstr[0]), ndstr);
-    for (uInt i = 0; i < ndstr; i++) {
+    Vector<unsigned int> strinx(ndstr);
+    std::vector<int> tmpstr(strOutOrd.begin(), strOutOrd.end());
+    GenSortIndirect<int, unsigned int>::sort(strinx, &(tmpstr[0]), ndstr);
+    for (unsigned int i = 0; i < ndstr; i++) {
       stretchAxes(i) = regOutOrd(stretchRegAxes(i));
       strOutOrd(strinx(i)) = i;
     }
     // The box axes get already reordered by its toLCRegion.
     // So the stretched axis must be region axis in the new order.
-    std::vector<Int> tmpstretch(stretchAxes.begin(), stretchAxes.end());
-    GenSortIndirect<Int, uInt>::sort(strinx, &(tmpstretch[0]), ndstr);
-    for (uInt i = 0; i < ndstr; i++) {
+    std::vector<int> tmpstretch(stretchAxes.begin(), stretchAxes.end());
+    GenSortIndirect<int, unsigned int>::sort(strinx, &(tmpstretch[0]), ndstr);
+    for (unsigned int i = 0; i < ndstr; i++) {
       stretchRegAxes(i) = stretchAxes(strinx(i));
     }
   }

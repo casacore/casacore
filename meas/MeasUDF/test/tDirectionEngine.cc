@@ -51,7 +51,7 @@ void testScalar(bool asDirCos) {
                 MPosition::WGS84);  // near WSRT
   MeasFrame frame(coord, epo, pos);
   {
-    Vector<Double> dir;
+    Vector<double> dir;
     if (asDirCos) {
       dir = MDirection::Convert(coord, MDirection::Ref(MDirection::APP, frame))()
                 .getValue()
@@ -70,8 +70,8 @@ void testScalar(bool asDirCos) {
                                     "6.60417deg, 52.8deg, 10m, 'WGS84')")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
-    VectorIterator<Double> veciter(arr1);
+    Array<double> arr1 = node.getArrayDouble(0);
+    VectorIterator<double> veciter(arr1);
     /// cout << "taql=" << arr1 << endl;
     if (asDirCos) {
       AlwaysAssertExit(node.unit().getName().empty());
@@ -81,7 +81,7 @@ void testScalar(bool asDirCos) {
     AlwaysAssertExit(allNear(dir, veciter.vector(), 1e-8));
   }
   {
-    Vector<Double> dir;
+    Vector<double> dir;
     if (asDirCos) {
       dir = MDirection::Convert(coord, MDirection::Ref(MDirection::J2000))().getValue().getValue();
     } else {
@@ -97,14 +97,14 @@ void testScalar(bool asDirCos) {
                                     "'B1950')deg")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
-    VectorIterator<Double> veciter(arr1);
+    Array<double> arr1 = node.getArrayDouble(0);
+    VectorIterator<double> veciter(arr1);
     /// cout << "diff=" << dir-veciter.vector() << endl;
     AlwaysAssertExit(allNear(dir, veciter.vector(), 1e-8));
   }
   {
     // Test a nested meas. function.
-    Vector<Double> dir;
+    Vector<double> dir;
     if (asDirCos) {
       dir = coord.getValue().getValue();
     } else {
@@ -118,8 +118,8 @@ void testScalar(bool asDirCos) {
                                     "'B1950'))deg")
                            .node());
     AlwaysAssertExit(node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
-    VectorIterator<Double> veciter(arr1);
+    Array<double> arr1 = node.getArrayDouble(0);
+    VectorIterator<double> veciter(arr1);
     /// cout << "diff=" << dir-veciter.vector() << endl;
     AlwaysAssertExit(allNear(dir, veciter.vector(), 1e-8));
   }
@@ -127,10 +127,10 @@ void testScalar(bool asDirCos) {
     // Test ZENITH.
     TableExprNode node1(tableCommand("calc meas.azel([0,0,1], 'AZEL')deg").node());
     TableExprNode node2(tableCommand("calc meas.azel('ZENITH')deg").node());
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     AlwaysAssertExit(nearAbs(arr1.data()[0], 0.));
     AlwaysAssertExit(nearAbs(arr1.data()[1], 90.));
-    Array<Double> arr2 = node2.getArrayDouble(0);
+    Array<double> arr2 = node2.getArrayDouble(0);
     AlwaysAssertExit(nearAbs(arr2.data()[0], 0.));
     AlwaysAssertExit(nearAbs(arr2.data()[1], 90.));
   }
@@ -163,12 +163,12 @@ void testArray(bool asDirCos) {
   AlwaysAssertExit(node2.getNodeRep()->isConstant());
   /// cout << "taql=" << node1.getArrayDouble(0) << endl;
   /// cout << "taql=" << node2.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   AlwaysAssertExit(arr1.shape() == IPosition(4, asDirCos ? 3 : 2, 4, 3, 2));
   AlwaysAssertExit(arr2.shape() == IPosition(5, asDirCos ? 3 : 2, 2, 2, 3, 2));
-  VectorIterator<Double> arr1iter(arr1);
-  VectorIterator<Double> arr2iter(arr2);
+  VectorIterator<double> arr1iter(arr1);
+  VectorIterator<double> arr2iter(arr2);
   // Check with Measures.
   Vector<MDirection> coord(4);
   Vector<MEpoch> epo(3);
@@ -184,10 +184,10 @@ void testArray(bool asDirCos) {
                      MPosition::WGS84);  // near WSRT
   pos[1] = MPosition(Quantity(1000, "m"), Quantity(-60.60417, "deg"), Quantity(-32.8, "deg"),
                      MPosition::WGS84);
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
-    for (uInt ie = 0; ie < epo.size(); ++ie) {
-      for (uInt ic = 0; ic < coord.size(); ++ic) {
-        Vector<Double> dir;
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
+    for (unsigned int ie = 0; ie < epo.size(); ++ie) {
+      for (unsigned int ic = 0; ic < coord.size(); ++ic) {
+        Vector<double> dir;
         if (asDirCos) {
           dir = MDirection::Convert(
                     coord[ic],
@@ -247,16 +247,16 @@ void testColumn(bool asDirCos) {
   AlwaysAssertExit(!node1.getNodeRep()->isConstant());
   AlwaysAssertExit(!node2.getNodeRep()->isConstant());
   AlwaysAssertExit(node1.nrow() == 3 && node2.nrow() == 3);
-  for (uInt i = 0; i < 3; ++i) {
+  for (unsigned int i = 0; i < 3; ++i) {
     /// cout << "taql=" << node1.getArrayDouble(i) << endl;
     /// cout << "taql=" << node2.getArrayDouble(i) << endl;
-    Array<Double> arr1 = node1.getArrayDouble(i);
-    Array<Double> arr2 = node2.getArrayDouble(i);
+    Array<double> arr1 = node1.getArrayDouble(i);
+    Array<double> arr2 = node2.getArrayDouble(i);
     AlwaysAssertExit(arr1.shape() == IPosition(1, asDirCos ? 3 : 2));
     AlwaysAssertExit(arr2.shape() == IPosition(1, asDirCos ? 3 : 2));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
-    Vector<Double> dir;
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
+    Vector<double> dir;
     if (asDirCos) {
       dir = MDirection::Convert(
                 coord[i], MDirection::Ref(MDirection::APP, MeasFrame(coord[i], epo[i], pos[i])))()
@@ -293,14 +293,14 @@ void testName() {
                           .node());
   AlwaysAssertExit(node1.getNodeRep()->isConstant());
   /// cout << "taql=" << node1.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
   AlwaysAssertExit(arr1.shape() == IPosition(4, 2, 3, 1, 2));
-  VectorIterator<Double> arr1iter(arr1);
+  VectorIterator<double> arr1iter(arr1);
   // Check with Measures.
-  for (uInt ip = 0; ip < pos.size(); ++ip) {
-    for (uInt ie = 0; ie < epo.size(); ++ie) {
-      for (uInt ic = 0; ic < coord.size(); ++ic) {
-        Vector<Double> dir =
+  for (unsigned int ip = 0; ip < pos.size(); ++ip) {
+    for (unsigned int ie = 0; ie < epo.size(); ++ie) {
+      for (unsigned int ic = 0; ic < coord.size(); ++ic) {
+        Vector<double> dir =
             MDirection::Convert(
                 coord[ic],
                 MDirection::Ref(MDirection::APP, MeasFrame(coord[ic], epo[ie], pos[ip])))()

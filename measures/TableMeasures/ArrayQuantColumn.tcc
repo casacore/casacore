@@ -69,7 +69,7 @@ ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName
   itsUnitOut.resize(u.nelements());
   itsUnitOut = u;
   itsConvOut = false;
-  for (uInt i = 0; i < itsUnitOut.nelements(); i++) {
+  for (unsigned int i = 0; i < itsUnitOut.nelements(); i++) {
     if (!itsUnitOut(i).getName().empty()) {
       itsConvOut = true;
       break;
@@ -112,7 +112,7 @@ void ArrayQuantColumn<T>::init(const Table& tab, const String& columnName) {
   } else {
     Vector<String> units = tqDesc->getUnits();
     itsUnit.resize(units.nelements());
-    for (uInt i = 0; i < units.nelements(); i++) {
+    for (unsigned int i = 0; i < units.nelements(); i++) {
       itsUnit(i) = units(i);
     }
   }
@@ -158,7 +158,7 @@ void ArrayQuantColumn<T>::attach(const Table& tab, const String& columnName,
 template <class T>
 Vector<String> ArrayQuantColumn<T>::getUnits() const {
   Vector<String> names(itsUnit.nelements());
-  for (uInt i = 0; i < itsUnit.nelements(); i++) {
+  for (unsigned int i = 0; i < itsUnit.nelements(); i++) {
     names(i) = itsUnit(i).getName();
   }
   return names;
@@ -199,10 +199,10 @@ void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, bool resi
     localUnit.resize(1);
     localUnit(0) = (*itsScaUnitsCol)(rownr);
   }
-  uInt nrun = localUnit.nelements();
+  unsigned int nrun = localUnit.nelements();
 
-  uInt n = tmpDataCol.nelements();
-  for (uInt i = 0; i < n; i++) {
+  unsigned int n = tmpDataCol.nelements();
+  for (unsigned int i = 0; i < n; i++) {
     q_p[i].setValue(d_p[i]);
     if (itsArrUnitsCol != 0) {
       q_p[i].setUnit(u_p[i]);
@@ -234,8 +234,8 @@ void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Unit& u
   if (!u.getName().empty()) {
     bool deleteIt;
     Quantum<T>* q_p = q.getStorage(deleteIt);
-    uInt n = q.nelements();
-    for (uInt i = 0; i < n; i++) {
+    unsigned int n = q.nelements();
+    for (unsigned int i = 0; i < n; i++) {
       q_p[i].convert(u);
     }
     q.putStorage(q_p, deleteIt);
@@ -247,9 +247,9 @@ void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Vector<
                               bool resize) const {
   getData(rownr, q, resize);
   bool hasUnits = false;
-  uInt nrun = u.nelements();
+  unsigned int nrun = u.nelements();
   Vector<bool> hasUnit(nrun, false);
-  for (uInt i = 0; i < nrun; i++) {
+  for (unsigned int i = 0; i < nrun; i++) {
     if (!u(i).getName().empty()) {
       hasUnits = true;
       hasUnit(i) = true;
@@ -258,9 +258,9 @@ void ArrayQuantColumn<T>::get(rownr_t rownr, Array<Quantum<T>>& q, const Vector<
   if (hasUnits) {
     bool deleteIt;
     Quantum<T>* q_p = q.getStorage(deleteIt);
-    uInt n = q.nelements();
-    for (uInt i = 0; i < n; i++) {
-      uInt inx = i % nrun;
+    unsigned int n = q.nelements();
+    for (unsigned int i = 0; i < n; i++) {
+      unsigned int inx = i % nrun;
       if (hasUnit(inx)) {
         q_p[i].convert(u(inx));
       }
@@ -319,7 +319,7 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   // saved.
 
   // If q is empty, write empty arrays.
-  const uInt n = q.nelements();
+  const unsigned int n = q.nelements();
   if (n == 0) {
     Array<T> arr;
     itsDataCol->put(rownr, arr);
@@ -358,11 +358,11 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
     localUnit(0) = q_p[0].getFullUnit();
     itsScaUnitsCol->put(rownr, localUnit(0).getName());
   }
-  uInt nrun = localUnit.nelements();
+  unsigned int nrun = localUnit.nelements();
 
   // Copy the value component of each quantum into the local data array.
   // If using an array to store units, copy quantum unit to local unit array
-  for (uInt i = 0; i < n; i++) {
+  for (unsigned int i = 0; i < n; i++) {
     if (itsArrUnitsCol != 0) {
       u_p[i] = q_p[i].getFullUnit().getName();
       d_p[i] = q_p[i].getValue();

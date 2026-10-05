@@ -46,21 +46,21 @@
 #include <casacore/casa/namespace.h>
 
 // Write and check the image.
-void doIt(TempImage<Int>& scratch) {
+void doIt(TempImage<int>& scratch) {
   IPosition shape(3, 1);
   shape(2) = scratch.shape()(2);
   AlwaysAssertExit(scratch.isWritable());
-  LatticeIterator<Int> li(scratch, shape);
-  Int i = 0;
+  LatticeIterator<int> li(scratch, shape);
+  int i = 0;
   for (li.reset(); !li.atEnd(); li++, i++) {
     li.woCursor() = i;
   }
   shape = scratch.shape();
   shape(2) = 1;
-  COWPtr<Array<Int>> ptrM;
+  COWPtr<Array<int>> ptrM;
   scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), false);
   AlwaysAssertExit(ptrM->shape().isEqual(shape));
-  Array<Int> expectedResult(shape);
+  Array<int> expectedResult(shape);
   indgen(expectedResult);
   AlwaysAssertExit(allEQ(*ptrM, expectedResult));
   ptrM.rwRef() = 0;
@@ -133,7 +133,7 @@ void doIt(TempImage<Int>& scratch) {
 }
 
 // Stream, unstream, and check the image.
-void streamImage(ImageInterface<Int>& img) {
+void streamImage(ImageInterface<int>& img) {
   auto membuf = std::make_shared<MemoryIO>();
   auto canio = std::make_shared<CanonicalIO>(membuf);
   AipsIO os(canio);
@@ -152,7 +152,7 @@ void streamImage(ImageInterface<Int>& img) {
   }
   os.putend();
   // Get the image back.
-  TempImage<Int> scratch;
+  TempImage<int> scratch;
   os.setpos(0);
   AlwaysAssertExit(os.getstart("Image") == 0);
   {
@@ -162,7 +162,7 @@ void streamImage(ImageInterface<Int>& img) {
     AlwaysAssertExit(scratch.fromRecord(msg, rec));
   }
   {
-    Array<Int> arr;
+    Array<int> arr;
     os >> arr;
     scratch.put(arr);
   }
@@ -199,11 +199,11 @@ void streamImage(ImageInterface<Int>& img) {
 }
 
 void testTempCloseDelete() {
-  Int nchan = 10;
-  Int nx = 1000;
-  Int ny = 1000;
+  int nchan = 10;
+  int nx = 1000;
+  int ny = 1000;
 
-  TempImage<Float> tIm((TiledShape(IPosition(4, nx, ny, 1, nchan))),
+  TempImage<float> tIm((TiledShape(IPosition(4, nx, ny, 1, nchan))),
                        CoordinateUtil::defaultCoords4D(), 0);
   cerr << "isPaged " << tIm.isPaged() << endl;
   tIm.set(0.0);
@@ -211,13 +211,13 @@ void testTempCloseDelete() {
   tIm.tempClose();
   IPosition blc(4, 0, 0, 0, nchan);
   IPosition trc(4, nx - 1, ny - 1, 0, nchan);
-  Array<Float> goodplane(IPosition(4, nx, ny, 1, 1), 0.0f);
-  for (Int k = 0; k < nchan; ++k) {
+  Array<float> goodplane(IPosition(4, nx, ny, 1, 1), 0.0f);
+  for (int k = 0; k < nchan; ++k) {
     blc(3) = k;
     trc(3) = k;
     Slicer sl(blc, trc, Slicer::endIsLast);
-    SubImage<Float> imSub(tIm, sl, true);
-    goodplane += Float(k);
+    SubImage<float> imSub(tIm, sl, true);
+    goodplane += float(k);
     imSub.put(goodplane);
   }
 
@@ -228,13 +228,13 @@ void testTempCloseDelete() {
 int main() {
   try {
     {
-      TempImage<Int> scratch((TiledShape(IPosition(3, 64, 64, 257))),
+      TempImage<int> scratch((TiledShape(IPosition(3, 64, 64, 257))),
                              CoordinateUtil::defaultCoords3D(), 1);
       AlwaysAssertExit(scratch.isPaged());
       doIt(scratch);
     }
     {
-      TempImage<Int> small((TiledShape(IPosition(3, 64, 64, 16))),
+      TempImage<int> small((TiledShape(IPosition(3, 64, 64, 16))),
                            CoordinateUtil::defaultCoords3D(), 1);
       AlwaysAssertExit(small.ok());
       AlwaysAssertExit(!small.isPaged());
@@ -242,7 +242,7 @@ int main() {
     }
     {
       // per hyper-plane beam support
-      TempImage<Int> temp((TiledShape(IPosition(4, 64, 64, 4, 16))),
+      TempImage<int> temp((TiledShape(IPosition(4, 64, 64, 4, 16))),
                           CoordinateUtil::defaultCoords4D());
       ImageInfo info = temp.imageInfo();
       Quantity maj(5, "arcsec");
@@ -259,8 +259,8 @@ int main() {
         temp.setImageInfo(info);
       } catch (std::exception& x) {
       }
-      for (uInt i = 0; i < 4; i++) {
-        for (uInt j = 0; j < 16; j++) {
+      for (unsigned int i = 0; i < 4; i++) {
+        for (unsigned int j = 0; j < 16; j++) {
           info.setBeam(j, i, maj, min, pa);
         }
       }

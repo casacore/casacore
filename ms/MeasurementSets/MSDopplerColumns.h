@@ -82,21 +82,21 @@ class MSDopplerColumns {
 
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& dopplerId() { return dopplerId_p; }
-  ScalarColumn<Int>& sourceId() { return sourceId_p; }
-  ScalarColumn<Int>& transitionId() { return transitionId_p; }
-  ScalarColumn<Double>& velDef() { return velDef_p; }
-  ScalarQuantColumn<Double>& velDefQuant() { return velDefQuant_p; }
+  ScalarColumn<int>& dopplerId() { return dopplerId_p; }
+  ScalarColumn<int>& sourceId() { return sourceId_p; }
+  ScalarColumn<int>& transitionId() { return transitionId_p; }
+  ScalarColumn<double>& velDef() { return velDef_p; }
+  ScalarQuantColumn<double>& velDefQuant() { return velDefQuant_p; }
   ScalarMeasColumn<MDoppler>& velDefMeas() { return velDefMeas_p; }
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Int>& dopplerId() const { return dopplerId_p; }
-  const ScalarColumn<Int>& sourceId() const { return sourceId_p; }
-  const ScalarColumn<Int>& transitionId() const { return transitionId_p; }
-  const ScalarColumn<Double>& velDef() const { return velDef_p; }
-  const ScalarQuantColumn<Double>& velDefQuant() const { return velDefQuant_p; }
+  const ScalarColumn<int>& dopplerId() const { return dopplerId_p; }
+  const ScalarColumn<int>& sourceId() const { return sourceId_p; }
+  const ScalarColumn<int>& transitionId() const { return transitionId_p; }
+  const ScalarColumn<double>& velDef() const { return velDef_p; }
+  const ScalarQuantColumn<double>& velDefQuant() const { return velDefQuant_p; }
   const ScalarMeasColumn<MDoppler>& velDefMeas() const { return velDefMeas_p; }
   // </group>
 
@@ -125,16 +125,16 @@ class MSDopplerColumns {
   bool isNull_p;
 
   // # required columns
-  ScalarColumn<Int> dopplerId_p;
-  ScalarColumn<Int> sourceId_p;
-  ScalarColumn<Int> transitionId_p;
-  ScalarColumn<Double> velDef_p;
+  ScalarColumn<int> dopplerId_p;
+  ScalarColumn<int> sourceId_p;
+  ScalarColumn<int> transitionId_p;
+  ScalarColumn<double> velDef_p;
 
   // # Access to Measure columns
   ScalarMeasColumn<MDoppler> velDefMeas_p;
 
   // # Access to Quantum columns
-  ScalarQuantColumn<Double> velDefQuant_p;
+  ScalarQuantColumn<double> velDefQuant_p;
 };
 
 // # Define the RO version for backward compatibility.

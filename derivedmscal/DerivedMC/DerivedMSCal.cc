@@ -49,7 +49,7 @@ DerivedMSCal::DerivedMSCal(const Record&) {}
 DerivedMSCal::DerivedMSCal(const DerivedMSCal&) : VirtualColumnEngine(), itsEngine() {}
 
 DerivedMSCal::~DerivedMSCal() {
-  for (uInt i = 0; i < ncolumn(); i++) {
+  for (unsigned int i = 0; i < ncolumn(); i++) {
     delete itsColumns[i];
   }
 }

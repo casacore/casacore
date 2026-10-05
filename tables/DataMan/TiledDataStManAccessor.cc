@@ -67,7 +67,7 @@ void TiledDataStManAccessor::addHypercube(const IPosition& cubeShape, const IPos
   tiledDataManPtr_p->addHypercube(cubeShape, tileShape, values);
 }
 
-void TiledDataStManAccessor::extendHypercube(uInt incrInLastDim, const Record& values) {
+void TiledDataStManAccessor::extendHypercube(unsigned int incrInLastDim, const Record& values) {
   tiledDataManPtr_p->extendHypercube(incrInLastDim, values);
 }
 

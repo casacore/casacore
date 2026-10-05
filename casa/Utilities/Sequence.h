@@ -62,19 +62,19 @@ class Sequence {
 // This class provides a <src>uInt</src> based sequence for general use.
 // </synopsis>
 
-class uIntSequence : public Sequence<uInt> {
+class uIntSequence : public Sequence<unsigned int> {
  public:
   // Get the next <src>uInt</src> value in the sequence (thread-safe).
   // <group>
-  uInt getNext() { return SgetNext(); }
-  static uInt SgetNext();
+  unsigned int getNext() { return SgetNext(); }
+  static unsigned int SgetNext();
   // </group>
 
  private:
 #if defined(USE_THREADS)
-  static std::atomic<uInt> next;
+  static std::atomic<unsigned int> next;
 #else
-  static uInt next;
+  static unsigned int next;
 #endif
 };
 

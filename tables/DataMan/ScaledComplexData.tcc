@@ -218,7 +218,7 @@ void ScaledComplexData<S, T>::setShape(rownr_t rownr, const IPosition& shape) {
 }
 
 template <class S, class T>
-uInt ScaledComplexData<S, T>::ndim(rownr_t rownr) {
+unsigned int ScaledComplexData<S, T>::ndim(rownr_t rownr) {
   return column().ndim(rownr) - 1;
 }
 

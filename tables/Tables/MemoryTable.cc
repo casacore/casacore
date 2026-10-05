@@ -47,7 +47,7 @@ MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, bool initialize)
   std::shared_ptr<TableDesc> tdescPtr = newtab.tableDescPtr();
   std::shared_ptr<ColumnSet> colSetPtr = newtab.columnSetPtr();
   MemoryStMan stman(colSetPtr->uniqueDataManagerName("MSMTAB"));
-  for (uInt i = 0; i < tdescPtr->ncolumn(); i++) {
+  for (unsigned int i = 0; i < tdescPtr->ncolumn(); i++) {
     PlainColumn* col = colSetPtr->getColumn(i);
     if (!col->isBound() || col->isStored()) {
       newtab.bindColumn(tdescPtr->columnDesc(i).name(), stman);
@@ -97,7 +97,7 @@ void MemoryTable::mergeLock(const TableLock&) {}
 
 bool MemoryTable::hasLock(FileLocker::LockType) const { return true; }
 
-bool MemoryTable::lock(FileLocker::LockType, uInt) { return true; }
+bool MemoryTable::lock(FileLocker::LockType, unsigned int) { return true; }
 
 void MemoryTable::unlock() {}
 
@@ -105,7 +105,7 @@ void MemoryTable::flush(bool, bool) {}
 
 void MemoryTable::resync() {}
 
-uInt MemoryTable::getModifyCounter() const { return 0; }
+unsigned int MemoryTable::getModifyCounter() const { return 0; }
 
 bool MemoryTable::isWritable() const { return true; }
 
@@ -139,7 +139,7 @@ TableRecord& MemoryTable::rwKeywordSet() { return tdescPtr_p->rwKeywordSet(); }
 
 void MemoryTable::flushTableInfo() {}
 
-BaseColumn* MemoryTable::getColumn(uInt columnIndex) const {
+BaseColumn* MemoryTable::getColumn(unsigned int columnIndex) const {
   return colSetPtr_p->getColumn(columnIndex);
 }
 BaseColumn* MemoryTable::getColumn(const String& columnName) const {

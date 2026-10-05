@@ -34,7 +34,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSStateParse* MSStateParse::thisMSSIParser = 0x0;  // Global pointer to the parser object
 TableExprNode* MSStateParse::node_p = 0x0;
-Vector<Int> MSStateParse::idList;
+Vector<int> MSStateParse::idList;
 std::shared_ptr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
 // MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler=NULL;
 
@@ -59,9 +59,9 @@ MSStateParse::MSStateParse(const MeasurementSet* ms)
   //    setMS(ms);
 }
 
-const TableExprNode* MSStateParse::selectStateIds(const Vector<Int>& stateIds) {
+const TableExprNode* MSStateParse::selectStateIds(const Vector<int>& stateIds) {
   {
-    Vector<Int> tmp(set_union(stateIds, idList));
+    Vector<int> tmp(set_union(stateIds, idList));
     idList.resize(tmp.nelements());
     idList = tmp;
   }

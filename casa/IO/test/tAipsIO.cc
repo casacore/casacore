@@ -99,8 +99,8 @@ void doit(bool doExcp) {
     AipsIO io2(rawio);
     doIO(doExcp, true, io2);
   }
-  const uChar* iobuf = membuf->getBuffer();
-  uInt bufleng = membuf->length();
+  const unsigned char* iobuf = membuf->getBuffer();
+  unsigned int bufleng = membuf->length();
   auto membuf2 = std::make_shared<MemoryIO>(iobuf, bufleng);
   {
     auto rawio = std::make_shared<RawIO>(membuf2);
@@ -112,9 +112,9 @@ void doit(bool doExcp) {
 void doIO(bool doExcp, bool out, AipsIO& io) {
   bool tbi, tbo;
   tbi = true;
-  Char tci, tco;
+  char tci, tco;
   tci = -1;
-  uChar tuci, tuco;
+  unsigned char tuci, tuco;
   tuci = 2;
   short tsi, tso;
   tsi = -3;
@@ -124,9 +124,9 @@ void doIO(bool doExcp, bool out, AipsIO& io) {
   tii = -5;
   unsigned int tuii, tuio;
   tuii = 6;
-  Int64 tli, tlo;
+  int64_t tli, tlo;
   tli = -7;
-  uInt64 tuli, tulo;
+  uint64_t tuli, tulo;
   tuli = 8;
   float tfi, tfo;
   tfi = 3.15;
@@ -143,8 +143,8 @@ void doIO(bool doExcp, bool out, AipsIO& io) {
   String a("bcdefg");
   String cp;
   int* ip;
-  Int* lp;
-  Int lo;
+  int* lp;
+  int lo;
   String* cptr;
   String* sptr;
   String sap[6];
@@ -179,7 +179,7 @@ void doIO(bool doExcp, bool out, AipsIO& io) {
     }
   }
   bool barri[100];
-  Int arr[250001];
+  int arr[250001];
   for (i = 0; i < 250001; i++) {
     arr[i] = i;
   }

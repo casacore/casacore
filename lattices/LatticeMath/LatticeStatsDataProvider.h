@@ -52,14 +52,15 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // LatticeStatsDataProvider each loop (in that case, you probably will want
   // to create a single object before the loop and use setLattice() to update
   // its lattice).
-  LatticeStatsDataProvider(const Lattice<T>& lattice, uInt iteratorLimitBytes = 4096 * 4096);
+  LatticeStatsDataProvider(const Lattice<T>& lattice,
+                           unsigned int iteratorLimitBytes = 4096 * 4096);
 
   ~LatticeStatsDataProvider();
 
   void operator++();
 
   // estimated number of steps to iterate through the the lattice
-  uInt estimatedSteps() const;
+  unsigned int estimatedSteps() const;
 
   // Are there any data sets left to provide?
   bool atEnd() const;
@@ -71,7 +72,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // get the count of elements in the current data set. When implementing this method, be
   // certain to take stride into account; ie for a data set with nominally 100 elements that
   // is to have a stride of two, this method should return 50.
-  uInt64 getCount();
+  uint64_t getCount();
 
   // get the current data set
   const T* getData();
@@ -80,7 +81,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   const bool* getMask();
 
   // returns something reasonable based on the lattice size.
-  uInt getNMaxThreads() const;
+  unsigned int getNMaxThreads() const;
 
   // Does the current data set have an associated mask?
   bool hasMask() const;
@@ -100,13 +101,13 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   // LatticeStatsDataProvider each loop (in that case, you probably will want
   // to create a single object before the loop and use setLattice() to update
   // its lattice).
-  void setLattice(const Lattice<T>& lattice, uInt iteratorLimitBytes = 4096 * 4096);
+  void setLattice(const Lattice<T>& lattice, unsigned int iteratorLimitBytes = 4096 * 4096);
 
   // <group>
   // see base class documentation.
-  void updateMaxPos(const std::pair<Int64, Int64>& maxpos);
+  void updateMaxPos(const std::pair<int64_t, int64_t>& maxpos);
 
-  void updateMinPos(const std::pair<Int64, Int64>& minpos);
+  void updateMinPos(const std::pair<int64_t, int64_t>& minpos);
   // </group>
 
  private:
@@ -114,7 +115,7 @@ class LatticeStatsDataProvider : public LatticeStatsDataProviderBase<T> {
   Array<T> _currentSlice;
   const T* _currentPtr;
   bool _delData, _atEnd;
-  uInt _nMaxThreads;
+  unsigned int _nMaxThreads;
 
   void _freeStorage();
 };

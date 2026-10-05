@@ -144,7 +144,7 @@ void LoggerHolderRep::doReopen() {
 }
 
 void LoggerHolderRep::addParent(const LoggerHolder& logger) {
-  uInt nr = itsParents.nelements();
+  unsigned int nr = itsParents.nelements();
   itsParents.resize(nr + 1);
   itsParents[nr] = logger;
 }
@@ -158,7 +158,7 @@ void LoggerHolderRep::tempClose(bool closeParents) {
     itsIsClosed = true;
   }
   if (closeParents) {
-    for (uInt i = 0; i < itsParents.nelements(); i++) {
+    for (unsigned int i = 0; i < itsParents.nelements(); i++) {
       itsParents[i].tempClose(closeParents);
     }
   }

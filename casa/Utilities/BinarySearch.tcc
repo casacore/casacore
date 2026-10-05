@@ -35,16 +35,16 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // #!!!!! similarly.
 
 template <class Container, class ElType>
-Int binarySearch(bool &found, const Container &container, const ElType &value, uInt n,
-                 Int originalLower) {
+int binarySearch(bool &found, const Container &container, const ElType &value, unsigned int n,
+                 int originalLower) {
   found = false;
   if (n == 0) {
     return 0;
   }
 
-  Int lower = originalLower;
-  Int upper = lower + n - 1;
-  Int middle = 0;
+  int lower = originalLower;
+  int upper = lower + n - 1;
+  int middle = 0;
 
   bool ascending = (!(container(upper) < container(lower)));
   bool toLeft, toRight;
@@ -83,16 +83,16 @@ Int binarySearch(bool &found, const Container &container, const ElType &value, u
 }
 
 template <class Container, class ElType>
-Int binarySearchBrackets(bool &found, const Container &container, const ElType &value, uInt n,
-                         Int originalLower) {
+int binarySearchBrackets(bool &found, const Container &container, const ElType &value,
+                         unsigned int n, int originalLower) {
   found = false;
   if (n == 0) {
     return 0;
   }
 
-  Int lower = originalLower;
-  Int upper = lower + n - 1;
-  Int middle = 0;
+  int lower = originalLower;
+  int upper = lower + n - 1;
+  int middle = 0;
 
   bool ascending = (!(container[upper] < container[lower]));
   bool toLeft, toRight;

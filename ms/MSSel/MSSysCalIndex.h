@@ -85,16 +85,16 @@ class MSSysCalIndex : public MSTableIndex {
   void attach(const MSSysCal &sysCal);
 
   // access to the antenna ID key, throws an exception if isNull() is false
-  Int &antennaId() { return *antennaId_p; }
+  int &antennaId() { return *antennaId_p; }
 
   // access to the feed ID key, throws an exception if isNull() is false
-  Int &feedId() { return *feedId_p; }
+  int &feedId() { return *feedId_p; }
 
   // access to the spectral window ID key, throws an exception if isNull() is false
-  Int &spectralWindowId() { return *spwId_p; }
+  int &spectralWindowId() { return *spwId_p; }
 
  private:
-  RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;
+  RecordFieldPtr<int> antennaId_p, feedId_p, spwId_p;
 
   void attachIds();
 };

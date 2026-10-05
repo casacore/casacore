@@ -60,18 +60,18 @@ void MSCalEngine::setTable(const Table& table) {
   itsCalIdMap.clear();
 }
 
-double MSCalEngine::getHA(Int antnr, rownr_t rownr) {
+double MSCalEngine::getHA(int antnr, rownr_t rownr) {
   setData(antnr, rownr);
   return itsRADecToHADec().getValue().get()[0];
 }
 
-void MSCalEngine::getHaDec(Int antnr, rownr_t rownr, Array<double>& data) {
+void MSCalEngine::getHaDec(int antnr, rownr_t rownr, Array<double>& data) {
   setData(antnr, rownr);
   data = itsRADecToHADec().getValue().get();
 }
 
-double MSCalEngine::getPA(Int antnr, rownr_t rownr) {
-  Int mount = setData(antnr, rownr);
+double MSCalEngine::getPA(int antnr, rownr_t rownr) {
+  int mount = setData(antnr, rownr);
   if (mount == 1) {
     // Do the conversions using the machines.
     return itsRADecToAzEl().getValue().positionAngle(itsPoleToAzEl().getValue());
@@ -79,34 +79,34 @@ double MSCalEngine::getPA(Int antnr, rownr_t rownr) {
   return 0.;
 }
 
-double MSCalEngine::getLAST(Int antnr, rownr_t rownr) {
+double MSCalEngine::getLAST(int antnr, rownr_t rownr) {
   setData(antnr, rownr);
   return itsUTCToLAST().getValue().get();
 }
 
-void MSCalEngine::getAzEl(Int antnr, rownr_t rownr, Array<double>& data) {
+void MSCalEngine::getAzEl(int antnr, rownr_t rownr, Array<double>& data) {
   setData(antnr, rownr);
   data = itsRADecToAzEl().getValue().get();
 }
 
-void MSCalEngine::getItrf(Int antnr, rownr_t rownr, Array<double>& data) {
+void MSCalEngine::getItrf(int antnr, rownr_t rownr, Array<double>& data) {
   setData(antnr, rownr);
   data = itsRADecToItrf().getValue().get();
 }
 
 void MSCalEngine::getNewUVW(bool asApp, rownr_t rownr, Array<double>& data) {
   setData(-1, rownr, true);
-  Int ant1 = itsAntCol[0](rownr);
-  Int ant2 = itsAntCol[1](rownr);
+  int ant1 = itsAntCol[0](rownr);
+  int ant2 = itsAntCol[1](rownr);
   if (ant1 == ant2) {
     data = 0.;
   } else {
     vector<MBaseline>& antMB = itsAntMB[itsLastCalInx];
-    vector<Vector<Double>>& antUvw = itsAntUvw[itsLastCalInx];
+    vector<Vector<double>>& antUvw = itsAntUvw[itsLastCalInx];
     Block<bool>& uvwFilled = itsUvwFilled[itsLastCalInx];
     // Calculate UVW per antenna and subtract to get baseline.
     // Only calculate for an antenna if not done yet.
-    Int ant = ant1;
+    int ant = ant1;
     for (int i = 0; i < 2; ++i) {
       if (!uvwFilled[ant]) {
         itsBLToJ2000.setModel(antMB[ant]);
@@ -128,14 +128,14 @@ void MSCalEngine::getNewUVW(bool asApp, rownr_t rownr, Array<double>& data) {
   }
 }
 
-double MSCalEngine::getDelay(Int antnr, rownr_t rownr) {
+double MSCalEngine::getDelay(int antnr, rownr_t rownr) {
   setData(-1, rownr, true);
   // Get the direction in ITRF xyz.
   Vector<double> itrf = itsRADecToItrf().getValue().getValue();
-  Int ant1 = itsAntCol[0](rownr);
-  Int ant2 = itsAntCol[1](rownr);
-  AlwaysAssert(ant1 < Int(itsAntPos[itsLastCalInx].size()), AipsError);
-  AlwaysAssert(ant2 < Int(itsAntPos[itsLastCalInx].size()), AipsError);
+  int ant1 = itsAntCol[0](rownr);
+  int ant2 = itsAntCol[1](rownr);
+  AlwaysAssert(ant1 < int(itsAntPos[itsLastCalInx].size()), AipsError);
+  AlwaysAssert(ant2 < int(itsAntPos[itsLastCalInx].size()), AipsError);
   // Get the antenna positions in ITRF xyz.
   const Vector<double>& ap1 = itsAntPos[itsLastCalInx][ant1].getValue().getValue();
   const Vector<double>& ap2 = itsAntPos[itsLastCalInx][ant2].getValue().getValue();
@@ -165,18 +165,18 @@ void MSCalEngine::setDirColName(const String& colName) {
   itsReadFieldDir = true;
 }
 
-Int MSCalEngine::setData(Int antnr, rownr_t rownr, bool fillAnt) {
+int MSCalEngine::setData(int antnr, rownr_t rownr, bool fillAnt) {
   // Initialize if not done yet.
   if (itsLastCalInx < 0) {
     init();
   }
   // Get the CAL_DESC_ID (if present).
-  Int calInx = 0;
-  Int calDescId = 0;
+  int calInx = 0;
+  int calDescId = 0;
   if (!itsCalCol.isNull()) {
     calDescId = itsCalCol(rownr);
     // Update the CAL_DESC info if needed.
-    if (calDescId >= Int(itsCalIdMap.size())) {
+    if (calDescId >= int(itsCalIdMap.size())) {
       fillCalDesc();
     }
     // Map CAL_DESC_ID to the cal index.
@@ -190,7 +190,7 @@ Int MSCalEngine::setData(Int antnr, rownr_t rownr, bool fillAnt) {
   itsLastCalInx = calInx;
   // Get the array or antenna position and put into the measure frame.
   // Also get mount type (alt-az or other).
-  Int mount = 0;
+  int mount = 0;
   if (antnr < 0) {
     // Set the frame's array position if needed.
     if (antnr != itsLastAntId) {
@@ -205,12 +205,12 @@ Int MSCalEngine::setData(Int antnr, rownr_t rownr, bool fillAnt) {
     // Update the antenna positions if a higher antenna id is found.
     // In practice this will not happen, but it is possible that the ANTENNA
     // table was not fully filled yet.
-    Int antId = itsAntCol[antnr](rownr);
+    int antId = itsAntCol[antnr](rownr);
     if (antId != itsLastAntId) {
       if (itsAntPos[calInx].empty()) {
         fillAntPos(calDescId, calInx);
       }
-      AlwaysAssert(antId < Int(itsAntPos[calInx].size()), AipsError);
+      AlwaysAssert(antId < int(itsAntPos[calInx].size()), AipsError);
       itsFrame.resetPosition(itsAntPos[calInx][antId]);
       itsLastAntId = antId;
     }
@@ -218,15 +218,15 @@ Int MSCalEngine::setData(Int antnr, rownr_t rownr, bool fillAnt) {
   }
   // If needed, get the direction and put into the measure frame.
   // Get field id from the table; update the field positions if needed.
-  Int fieldId = 0;
+  int fieldId = 0;
   if (itsReadFieldDir) {
     fieldId = itsFieldCol(rownr);
   }
   if (fieldId != itsLastFieldId) {
-    if (fieldId >= Int(itsFieldDir[calInx].size())) {
+    if (fieldId >= int(itsFieldDir[calInx].size())) {
       fillFieldDir(calDescId, calInx);
     }
-    AlwaysAssert(fieldId < Int(itsFieldDir[calInx].size()), AipsError);
+    AlwaysAssert(fieldId < int(itsFieldDir[calInx].size()), AipsError);
     const MDirection& dir = itsFieldDir[calInx][fieldId];
     itsDirToJ2000.setModel(dir);
     // We can already convert the direction to J2000 if it is not a model
@@ -245,7 +245,7 @@ Int MSCalEngine::setData(Int antnr, rownr_t rownr, bool fillAnt) {
     itsLastFieldId = fieldId;
   }
   // Set the epoch in the measure frame.
-  Double time = itsTimeCol(rownr);
+  double time = itsTimeCol(rownr);
   if (time != itsLastTime) {
     MEpoch epoch = itsTimeMeasCol(rownr);
     itsFrame.resetEpoch(epoch);
@@ -301,7 +301,7 @@ void MSCalEngine::init() {
     if (itsReadFieldDir) {
       itsFieldDir.resize(1);
     }
-    itsCalIdMap = vector<Int>(1, 0);
+    itsCalIdMap = vector<int>(1, 0);
     if (itsTable.keywordSet().isDefined("OBSERVATION")) {
       obsTab = itsTable.keywordSet().asTable("OBSERVATION");
     }
@@ -323,7 +323,7 @@ void MSCalEngine::init() {
     fndObs = MeasTable::Observatory(itsArrayPos, telescope);
   }
   if (!fndObs && itsAntPos.size() > 0) {
-    uInt nant = itsAntPos[0].size();
+    unsigned int nant = itsAntPos[0].size();
     if (nant > 0) {
       itsArrayPos = itsAntPos[0][nant / 2];
       fndObs = true;
@@ -355,7 +355,7 @@ void MSCalEngine::init() {
   itsBLToJ2000.set(MBaseline(), MBaseline::Ref(MBaseline::J2000, itsFrame));
 }
 
-void MSCalEngine::fillAntPos(Int calDescId, Int calInx) {
+void MSCalEngine::fillAntPos(int calDescId, int calInx) {
   Table tab;
   if (itsCalCol.isNull()) {
     tab = itsTable.keywordSet().asTable("ANTENNA");
@@ -365,9 +365,9 @@ void MSCalEngine::fillAntPos(Int calDescId, Int calInx) {
   ScalarMeasColumn<MPosition> posCol(tab, "POSITION");
   ScalarColumn<String> mountCol(tab, "MOUNT");
   vector<MPosition>& antPos = itsAntPos[calInx];
-  vector<Int>& mounts = itsMount[calInx];
+  vector<int>& mounts = itsMount[calInx];
   vector<MBaseline>& antMB = itsAntMB[calInx];
-  vector<Vector<Double>>& antUvw = itsAntUvw[calInx];
+  vector<Vector<double>>& antUvw = itsAntUvw[calInx];
   Block<bool>& uvwFilled = itsUvwFilled[calInx];
   antPos.reserve(tab.nrow());
   mounts.reserve(tab.nrow());
@@ -375,15 +375,15 @@ void MSCalEngine::fillAntPos(Int calDescId, Int calInx) {
   for (rownr_t i = 0; i < tab.nrow(); ++i) {
     String mount = mountCol(i);
     ToLowerCaseInPlace(mount);
-    Int mountType = 0;
+    int mountType = 0;
     if (mount.substr(0, 6) == "alt-az") {
       mountType = 1;
     }
     mounts.push_back(mountType);
     antPos.push_back(MPosition::Convert(posCol(i), MPosition::ITRF)());
     // Form an MBaseline per antenna (use first antenna as baseline origin).
-    Vector<Double> pos = antPos[i].getValue().getVector();
-    Vector<Double> pos0 = antPos[0].getValue().getVector();
+    Vector<double> pos = antPos[i].getValue().getVector();
+    Vector<double> pos0 = antPos[0].getValue().getVector();
     MVPosition mvpos((pos[0] - pos0[0]), (pos[1] - pos0[1]), (pos[2] - pos0[2]));
     antMB.push_back(MBaseline(MVBaseline(mvpos), MBaseline::ITRF));
   }
@@ -392,7 +392,7 @@ void MSCalEngine::fillAntPos(Int calDescId, Int calInx) {
   uvwFilled = false;
 }
 
-void MSCalEngine::fillFieldDir(Int calDescId, Int calInx) {
+void MSCalEngine::fillFieldDir(int calDescId, int calInx) {
   // If direction is explicitly given, copy from the first one.
   if (!itsReadFieldDir) {
     if (calInx > 0) {
@@ -427,7 +427,7 @@ void MSCalEngine::fillCalDesc() {
   itsCalIdMap.reserve(tab.nrow());
   for (rownr_t i = itsCalIdMap.size(); i < tab.nrow(); ++i) {
     String msName = nameCol(i);
-    Int inx = itsCalMap.size();
+    int inx = itsCalMap.size();
     map<std::string, int>::iterator iter = itsCalMap.find(msName);
     if (iter == itsCalMap.end()) {
       // New MS name, so add it.
@@ -447,7 +447,7 @@ void MSCalEngine::fillCalDesc() {
   itsFieldDir.resize(itsCalMap.size());
 }
 
-Table MSCalEngine::getSubTable(Int calDescId, const String& subTabName, bool mustExist) {
+Table MSCalEngine::getSubTable(int calDescId, const String& subTabName, bool mustExist) {
   // If defined, open a subtable in the MS referred to by the name in the
   // MS_NAME column of the CAL_DESC subtable.
   Table calDescTab(itsTable.keywordSet().asTable("CAL_DESC"));

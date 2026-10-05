@@ -64,7 +64,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 FITSQualityImage::FITSQualityImage(const String& name)
-    : ImageInterface<Float>(),
+    : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
       fitsdata_p(0),
@@ -80,8 +80,9 @@ FITSQualityImage::FITSQualityImage(const String& name)
   setup();
 }
 
-FITSQualityImage::FITSQualityImage(const String& name, uInt whichDataHDU, uInt whichErrorHDU)
-    : ImageInterface<Float>(),
+FITSQualityImage::FITSQualityImage(const String& name, unsigned int whichDataHDU,
+                                   unsigned int whichErrorHDU)
+    : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
       fitsdata_p(0),
@@ -97,7 +98,7 @@ FITSQualityImage::FITSQualityImage(const String& name, uInt whichDataHDU, uInt w
 }
 
 FITSQualityImage::FITSQualityImage(const FITSQualityImage& other)
-    : ImageInterface<Float>(other),
+    : ImageInterface<float>(other),
       name_p(other.name_p),
       fitsdata_p(0),
       fitserror_p(0),
@@ -125,7 +126,7 @@ FITSQualityImage& FITSQualityImage::operator=(const FITSQualityImage& other)
 //
 {
   if (this != &other) {
-    ImageInterface<Float>::operator=(other);
+    ImageInterface<float>::operator=(other);
     delete fitsdata_p;
     fitsdata_p = 0;
     if (other.fitsdata_p != 0) {
@@ -160,7 +161,7 @@ FITSQualityImage::~FITSQualityImage() {
   pPixelMask_p = 0;
 }
 
-ImageInterface<Float>* FITSQualityImage::cloneII() const { return new FITSQualityImage(*this); }
+ImageInterface<float>* FITSQualityImage::cloneII() const { return new FITSQualityImage(*this); }
 
 bool FITSQualityImage::qualFITSInfo(String& error, TableRecord& dataExtMiscInfo,
                                     TableRecord& errorExtMiscInfo, const TableRecord& miscInfo) {
@@ -275,10 +276,10 @@ Lattice<bool>& FITSQualityImage::pixelMask() {
 
 const LatticeRegion* FITSQualityImage::getRegionPtr() const { return 0; }
 
-bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
+bool FITSQualityImage::doGetSlice(Array<float>& buffer, const Slicer& section) {
   // get the section dimension
   IPosition shp = section.length();
-  uInt ndim = section.ndim();
+  unsigned int ndim = section.ndim();
 
   // resize the buffer
   if (!buffer.shape().isEqual(shp)) buffer.resize(shp);
@@ -287,7 +288,7 @@ bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   IPosition tmpStart(ndim - 1);
   IPosition tmpEnd(ndim - 1);
   IPosition tmpStride(ndim - 1);
-  for (uInt index = 0; index < ndim - 1; index++) {
+  for (unsigned int index = 0; index < ndim - 1; index++) {
     tmpStart(index) = section.start()(index);
     tmpEnd(index) = section.end()(index);
     tmpStride(index) = section.stride()(index);
@@ -300,15 +301,15 @@ bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   // analyze the request
   if (section.start()(ndim - 1) != section.end()(ndim - 1)) {
     // data and error is requested
-    Array<Float> subData;
-    Array<Float> subError;
-    Array<Float> tmp;
+    Array<float> subData;
+    Array<float> subError;
+    Array<float> tmp;
 
     // prepare the call
     // for data values
     IPosition subStart(ndim);
     IPosition subEnd(ndim);
-    for (uInt index = 0; index < ndim - 1; index++) {
+    for (unsigned int index = 0; index < ndim - 1; index++) {
       subStart(index) = 0;
       subEnd(index) = shp(index) - 1;
     }
@@ -347,14 +348,14 @@ bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
     tmp = subError.addDegenerate(1);
   } else if (section.start()(ndim - 1) == 0) {
     // only data is requested
-    Array<Float> subData;
-    Array<Float> tmp;
+    Array<float> subData;
+    Array<float> tmp;
 
     // prepare the call
     // for data values
     IPosition subStart(ndim);
     IPosition subEnd(ndim);
-    for (uInt index = 0; index < ndim - 1; index++) {
+    for (unsigned int index = 0; index < ndim - 1; index++) {
       subStart(index) = 0;
       subEnd(index) = shp(index) - 1;
     }
@@ -375,14 +376,14 @@ bool FITSQualityImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
     tmp = subData.addDegenerate(1);
   } else if (section.start()(ndim - 1) == 1) {
     // only error values are requested
-    Array<Float> subError;
-    Array<Float> tmp;
+    Array<float> subError;
+    Array<float> tmp;
 
     // prepare the call
     // for error values
     IPosition subStart(ndim, 1);
     IPosition subEnd(ndim, 1);
-    for (uInt index = 0; index < ndim - 1; index++) {
+    for (unsigned int index = 0; index < ndim - 1; index++) {
       subStart(index) = 0;
       subEnd(index) = shp(index) - 1;
     }
@@ -417,7 +418,7 @@ bool FITSQualityImage::doGetMaskSlice(Array<bool>& buffer, const Slicer& section
   return pPixelMask_p->getSlice(buffer, section);
 }
 
-void FITSQualityImage::doPutSlice(const Array<Float>&, const IPosition&, const IPosition&) {
+void FITSQualityImage::doPutSlice(const Array<float>&, const IPosition&, const IPosition&) {
   throw(
       AipsError("FITSQualityImage::putSlice - "
                 "is not possible as FITSQualityImage is not writable"));
@@ -439,9 +440,9 @@ String FITSQualityImage::name(bool stripPath) const { return fitsdata_p->name(st
 
 IPosition FITSQualityImage::shape() const { return shape_p.shape(); }
 
-uInt FITSQualityImage::advisedMaxPixels() const { return shape_p.tileShape().product(); }
+unsigned int FITSQualityImage::advisedMaxPixels() const { return shape_p.tileShape().product(); }
 
-IPosition FITSQualityImage::doNiceCursorShape(uInt) const { return shape_p.tileShape(); }
+IPosition FITSQualityImage::doNiceCursorShape(unsigned int) const { return shape_p.tileShape(); }
 
 bool FITSQualityImage::ok() const { return true; }
 
@@ -477,12 +478,12 @@ void FITSQualityImage::reopen() {
 
 DataType FITSQualityImage::dataType() const { return fitsdata_p->dataType(); }
 
-uInt FITSQualityImage::maximumCacheSize() const {
+unsigned int FITSQualityImage::maximumCacheSize() const {
   reopenIfNeeded();
   return fitsdata_p->maximumCacheSize();
 }
 
-void FITSQualityImage::setMaximumCacheSize(uInt howManyPixels) {
+void FITSQualityImage::setMaximumCacheSize(unsigned int howManyPixels) {
   reopenIfNeeded();
   fitsdata_p->setMaximumCacheSize(howManyPixels);
   fitserror_p->setMaximumCacheSize(howManyPixels);
@@ -497,7 +498,7 @@ void FITSQualityImage::setCacheSizeFromPath(const IPosition& sliceShape,
   fitserror_p->setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 }
 
-void FITSQualityImage::setCacheSizeInTiles(uInt howManyTiles) {
+void FITSQualityImage::setCacheSizeInTiles(unsigned int howManyTiles) {
   reopenIfNeeded();
   fitsdata_p->setCacheSizeInTiles(howManyTiles);
   fitserror_p->setCacheSizeInTiles(howManyTiles);
@@ -521,10 +522,10 @@ void FITSQualityImage::getExtInfo() {
   LogIO os(LogOrigin("FITSQualityImage", "getExtInfo", WHERE));
 
   String extexpr;
-  Int whichDataHDU;
-  Int whichErrorHDU;
-  Int whichMaskHDU;
-  Int maskValue;
+  int whichDataHDU;
+  int whichErrorHDU;
+  int whichMaskHDU;
+  int maskValue;
   String errTypeStr;
   String maskTypeStr;
 
@@ -550,7 +551,7 @@ void FITSQualityImage::getExtInfo() {
   // store the data extension,
   // exit if there is none
   if (whichDataHDU > -1)
-    whichDataHDU_p = (uInt)whichDataHDU;
+    whichDataHDU_p = (unsigned int)whichDataHDU;
   else
     throw(
         AipsError("FITSQualityImage::getExtInfo - "
@@ -562,7 +563,7 @@ void FITSQualityImage::getExtInfo() {
   //       the error extension is essential to
   //       make a quality image
   if (whichErrorHDU > -1)
-    whichErrorHDU_p = (uInt)whichErrorHDU;
+    whichErrorHDU_p = (unsigned int)whichErrorHDU;
   else
     throw(
         AipsError("FITSQualityImage::getExtInfo - "
@@ -607,13 +608,14 @@ void FITSQualityImage::setup() {
   IPosition mm_shape(data_shape.nelements() + 1);
 
   // set the shape
-  for (uInt index = 0; index < data_shape.nelements(); index++) mm_shape(index) = data_shape(index);
+  for (unsigned int index = 0; index < data_shape.nelements(); index++)
+    mm_shape(index) = data_shape(index);
   mm_shape(mm_shape.nelements() - 1) = 2;
 
   // grab the coo-sys of the data image image
   CoordinateSystem cSys = fitsdata_p->coordinates();
 
-  Vector<Int> quality(2);
+  Vector<int> quality(2);
   quality(0) = Quality::DATA;
   quality(1) = Quality::ERROR;
   QualityCoordinate qualAxis(quality);

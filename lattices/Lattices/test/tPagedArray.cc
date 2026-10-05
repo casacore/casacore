@@ -54,7 +54,7 @@ String removeDir(const String& msg) {
 }
 
 void testTempClose() {
-  PagedArray<Int> scratch(IPosition(3, 64, 64, 257), "tPagedArray_tmp.scr");
+  PagedArray<int> scratch(IPosition(3, 64, 64, 257), "tPagedArray_tmp.scr");
   scratch.tempClose();
   AlwaysAssertExit(scratch.ok());
   IPosition shape(3, 1);
@@ -62,20 +62,20 @@ void testTempClose() {
   AlwaysAssertExit(scratch.ok());
   AlwaysAssertExit(scratch.isWritable());
   scratch.tempClose();
-  LatticeIterator<Int> li(scratch, shape);
+  LatticeIterator<int> li(scratch, shape);
   scratch.tempClose();
-  Int i = 0;
+  int i = 0;
   for (li.reset(); !li.atEnd(); li++, i++) {
     li.woCursor() = i;
   }
   shape = scratch.shape();
   shape(2) = 1;
-  COWPtr<Array<Int>> ptrM;
+  COWPtr<Array<int>> ptrM;
   scratch.tempClose();
   scratch.getSlice(ptrM, IPosition(3, 0), shape, IPosition(3, 1), false);
   scratch.reopen();
   AlwaysAssert(ptrM->shape().isEqual(shape), AipsError);
-  Array<Int> expectedResult(shape);
+  Array<int> expectedResult(shape);
   indgen(expectedResult);
   AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
   ptrM.rwRef() = 0;
@@ -92,23 +92,23 @@ void testTempClose() {
 int main() {
   try {
     {
-      PagedArray<Float> pa(IPosition(2, 12), "tPagedArray_tmp.table");
+      PagedArray<float> pa(IPosition(2, 12), "tPagedArray_tmp.table");
       pa.set(10.0);
-      Array<Float> arr;
+      Array<float> arr;
       pa.getSlice(arr, IPosition(2, 0), IPosition(2, 12), IPosition(2, 1));
       AlwaysAssert(allNear(arr, 10.0f, 1E-5), AipsError);
       indgen(arr);
-      Array<Float> arr1(arr(IPosition(2, 0), IPosition(2, 0, 11), IPosition(2, 1, 2)));
+      Array<float> arr1(arr(IPosition(2, 0), IPosition(2, 0, 11), IPosition(2, 1, 2)));
       pa.putSlice(arr1, IPosition(2, 0), IPosition(2, 1, 2));
-      Vector<Float> vec(10);
+      Vector<float> vec(10);
       indgen(vec);
       pa.putSlice(vec(IPosition(1, 0), IPosition(1, 9), IPosition(1, 2)), IPosition(2, 1, 1),
                   IPosition(2, 2, 1));
     }
     {
-      PagedArray<Float> pa("tPagedArray_tmp.table");
+      PagedArray<float> pa("tPagedArray_tmp.table");
       AlwaysAssert(pa.shape().isEqual(IPosition(2, 12)), AipsError);
-      Array<Float> arr;
+      Array<float> arr;
       Slicer sl(IPosition(2, 0), IPosition(2, 12));
       pa.getSlice(arr, sl);
       AlwaysAssert(near(pa(IPosition(2, 0)), 0.0f), AipsError);
@@ -124,26 +124,26 @@ int main() {
       AlwaysAssert(pa.isPersistent(), AipsError);
       AlwaysAssert(pa.isPaged(), AipsError);
       AlwaysAssert(pa.isWritable(), AipsError);
-      AlwaysAssert(pa.columnName() == PagedArray<Float>::defaultColumn(), AipsError);
-      AlwaysAssert(pa.rowNumber() == PagedArray<Float>::defaultRow(), AipsError);
+      AlwaysAssert(pa.columnName() == PagedArray<float>::defaultColumn(), AipsError);
+      AlwaysAssert(pa.rowNumber() == PagedArray<float>::defaultRow(), AipsError);
     }
     {
       Table pagedTable("tPagedArray_tmp.table");
-      PagedArray<Float> pa(pagedTable);
+      PagedArray<float> pa(pagedTable);
       AlwaysAssert(near(pa(IPosition(2, 11)), 99.0f), AipsError);
       AlwaysAssert(near(pa(IPosition(2, 11, 10)), 98.0f), AipsError);
     }
     {
-      PagedArray<Int> scratch(IPosition(3, 9));
-      LatticeIterator<Int> li(scratch, IPosition(3, 1, 1, 9));
-      Int i = 0;
+      PagedArray<int> scratch(IPosition(3, 9));
+      LatticeIterator<int> li(scratch, IPosition(3, 1, 1, 9));
+      int i = 0;
       for (li.reset(); !li.atEnd(); li++, i++) {
         li.woCursor() = i;
       }
-      COWPtr<Array<Int>> ptrM;
+      COWPtr<Array<int>> ptrM;
       scratch.getSlice(ptrM, IPosition(3, 0), IPosition(3, 9, 9, 1), IPosition(3, 1), true);
       AlwaysAssert(ptrM->shape().isEqual(IPosition(2, 9)), AipsError);
-      Array<Int> expectedResult(IPosition(2, 9));
+      Array<int> expectedResult(IPosition(2, 9));
       indgen(expectedResult);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
       ptrM.rwRef() = 0;
@@ -163,9 +163,9 @@ int main() {
       SetupNewTable arraySetup("tPagedArray_tmp_1.table", TableDesc(), Table::Scratch);
       Table arrayTable(arraySetup);
       const IPosition latticeShape(4, 128, 128, 4, 32);
-      PagedArray<Float> pa(latticeShape, arrayTable);
+      PagedArray<float> pa(latticeShape, arrayTable);
       AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape()), AipsError);
-      Array<Float> arr(IPosition(4, 1, 1, 4, 32));
+      Array<float> arr(IPosition(4, 1, 1, 4, 32));
       Slicer sl(IPosition(4, 0), IPosition(4, 1, 1, 4, 32));
       pa.clearCache();
       pa.setCacheSizeFromPath(arr.shape(), IPosition(4, 0), pa.tileShape() - 1,
@@ -175,7 +175,7 @@ int main() {
 
       SetupNewTable array1Setup("tPagedArray_tmp.table", TableDesc(), Table::New);
       Table array1Table(array1Setup);
-      PagedArray<Float> pa1(TiledShape(latticeShape, IPosition(4, 16, 16, 4, 32)), array1Table);
+      PagedArray<float> pa1(TiledShape(latticeShape, IPosition(4, 16, 16, 4, 32)), array1Table);
       AlwaysAssert(pa1.tileShape().isEqual(IPosition(4, 16, 16, 4, 32)), AipsError);
       pa1.clearCache();
       pa1.setCacheSizeFromPath(arr.shape(), IPosition(4, 0), IPosition(4, 16, 16, 4, 32) - 1,
@@ -191,32 +191,32 @@ int main() {
       AlwaysAssert(allNear(arr, 9.0f, 1E-5), AipsError);
 
       IPosition lat2Shape = IPosition(4, 16);
-      PagedArray<Float> pa2(lat2Shape, array1Table, PagedArray<Float>::defaultColumn(), 2);
+      PagedArray<float> pa2(lat2Shape, array1Table, PagedArray<float>::defaultColumn(), 2);
       arr.resize(lat2Shape);
       indgen(arr);
       pa2.putSlice(arr, IPosition(4, 0));
 
       IPosition lat3Shape = IPosition(2, 16);
-      PagedArray<Int> pa3(TiledShape(lat3Shape, lat3Shape), array1Table, "IntPagedArray", 1);
-      Array<Int> iarr(lat3Shape);
+      PagedArray<int> pa3(TiledShape(lat3Shape, lat3Shape), array1Table, "IntPagedArray", 1);
+      Array<int> iarr(lat3Shape);
       indgen(iarr);
       pa3.putSlice(iarr, IPosition(2, 0));
     }
     {
       Table file("tPagedArray_tmp.table");
-      PagedArray<Float> pa1(file);
+      PagedArray<float> pa1(file);
       AlwaysAssert(pa1.shape().isEqual(IPosition(4, 128, 128, 4, 32)), AipsError);
-      PagedArray<Float> pa2(file, PagedArray<Float>::defaultColumn(), 2);
+      PagedArray<float> pa2(file, PagedArray<float>::defaultColumn(), 2);
       AlwaysAssert(pa2.shape().isEqual(IPosition(4, 16)), AipsError);
-      PagedArray<Int> pa3(file, "IntPagedArray", 1);
+      PagedArray<int> pa3(file, "IntPagedArray", 1);
       AlwaysAssert(pa3.shape().isEqual(IPosition(2, 16)), AipsError);
-      Array<Int> iarr(pa3.shape()), expected(pa3.shape());
+      Array<int> iarr(pa3.shape()), expected(pa3.shape());
       pa3.setMaximumCacheSize(256 * 256);
       indgen(expected);
       pa3.getSlice(iarr, IPosition(2, 0), IPosition(2, 16), IPosition(2, 1));
       AlwaysAssert(allEQ(iarr, expected), AipsError);
       {
-        PagedArray<Int> pa4(pa3);
+        PagedArray<int> pa4(pa3);
         AlwaysAssert(pa4.shape().isEqual(IPosition(2, 16)), AipsError);
         iarr = 0;
         pa4.getSlice(iarr, IPosition(2, 0), IPosition(2, 16), IPosition(2, 1));
@@ -236,8 +236,8 @@ int main() {
       SetupNewTable arraySetup("tPagedArray_tmp_1.table", TableDesc(), Table::New);
       Table arrayTable(arraySetup);
       const IPosition latticeShape(4, 4, 16, 15, 8);
-      PagedArray<Float> pa(TiledShape(latticeShape, IPosition(4, 2, 8, 8, 3)), arrayTable);
-      Array<Float> arr(latticeShape);
+      PagedArray<float> pa(TiledShape(latticeShape, IPosition(4, 2, 8, 8, 3)), arrayTable);
+      Array<float> arr(latticeShape);
       indgen(arr);
       pa.put(arr);
       AlwaysAssertExit(allEQ(pa.get(), arr));
@@ -245,8 +245,8 @@ int main() {
       AlwaysAssertExit(allEQ(pa.get(), float(2) * arr));
     }
     {
-      PagedArray<Float> pa("tPagedArray_tmp_1.table");
-      Array<Float> arr(pa.shape());
+      PagedArray<float> pa("tPagedArray_tmp_1.table");
+      Array<float> arr(pa.shape());
       indgen(arr);
       AlwaysAssertExit(allEQ(pa.get(), float(2) * arr));
     }

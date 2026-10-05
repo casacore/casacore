@@ -86,15 +86,15 @@ class MSSpWindowIndex {
   virtual ~MSSpWindowIndex() {}
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency group or groups
-  Vector<Int> matchFreqGrp(const Int& freqGrp);
-  Vector<Int> matchFreqGrp(const Vector<Int>& freqGrps);
+  Vector<int> matchFreqGrp(const int& freqGrp);
+  Vector<int> matchFreqGrp(const Vector<int>& freqGrps);
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency group name
-  Vector<Int> matchFreqGrpName(const String& freqGrpName);
+  Vector<int> matchFreqGrpName(const String& freqGrpName);
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency axis sampling
-  Vector<Int> matchFreq(const Vector<MFrequency>& chanFreq, const Vector<MVFrequency>& chanWidth,
-                        const Double& freqTol);
+  Vector<int> matchFreq(const Vector<MFrequency>& chanFreq, const Vector<MVFrequency>& chanWidth,
+                        const double& freqTol);
 
  private:
   // Disallow null constructor
@@ -104,8 +104,8 @@ class MSSpWindowIndex {
   MSSpWindowColumns msSpWindowCols_p;
 
   // Vector cache of SpWindow id's
-  Vector<Int> spWindowIds_p;
-  Int nrows_p;
+  Vector<int> spWindowIds_p;
+  int nrows_p;
 };
 
 }  // namespace casacore

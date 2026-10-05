@@ -107,30 +107,30 @@ class SDFieldHandler {
   // fill - a new row is added at each call unless the data is from a previous MS fill
   // in which case an existing MAIN_FIELD_ID is used to see if that existing row might
   // be reused
-  void fill(const Record &row, const String &name, Int directionRefType,
-            const Matrix<Double> &directionPoly, Double time, Int sourceId);
+  void fill(const Record &row, const String &name, int directionRefType,
+            const Matrix<double> &directionPoly, double time, int sourceId);
 
   // get the current field ID
-  Int fieldId() { return rownr_p; }
+  int fieldId() { return rownr_p; }
 
  private:
   MSField *msField_p;
   MSFieldColumns *msFieldCols_p;
 
-  Int rownr_p;
+  int rownr_p;
 
   // fields which might be present if the data is originally from a MS
-  RORecordFieldPtr<Int> fieldIdField_p;
+  RORecordFieldPtr<int> fieldIdField_p;
   RORecordFieldPtr<String> codeField_p, nameField_p;
-  RORecordFieldPtr<Double> timeField_p;
-  RORecordFieldPtr<Array<Double>> delayDirField_p, delayDirRateField_p, phaseDirField_p,
+  RORecordFieldPtr<double> timeField_p;
+  RORecordFieldPtr<Array<double>> delayDirField_p, delayDirRateField_p, phaseDirField_p,
       phaseDirRateField_p, referenceDirField_p, referenceDirRateField_p;
   RORecordFieldPtr<bool> flagRowField_p;
 
   ColumnsIndex *index_p;
   RecordFieldPtr<String> nameKey_p;
-  RecordFieldPtr<Int> sourceIdKey_p;
-  RecordFieldPtr<Double> timeKey_p;
+  RecordFieldPtr<int> sourceIdKey_p;
+  RecordFieldPtr<double> timeKey_p;
 
   // cleanup everything
   void clearAll();

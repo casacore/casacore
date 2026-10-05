@@ -178,7 +178,7 @@ const String& MSTable<MSEnum>::unit(const String& which) const {
 }
 
 template <class MSEnum>
-void MSTable<MSEnum>::addColumnToDesc(TableDesc& td, MSTable<MSEnum>::ColEnum which, Int ndim,
+void MSTable<MSEnum>::addColumnToDesc(TableDesc& td, MSTable<MSEnum>::ColEnum which, int ndim,
                                       const String& refCol) {
   MSTableImpl::addColumnToDesc(td, columnName(which), columnDataType(which),
                                columnStandardComment(which), columnUnit(which),
@@ -195,7 +195,7 @@ void MSTable<MSEnum>::addColumnToDesc(TableDesc& td, MSTable<MSEnum>::ColEnum wh
 }
 
 template <class MSEnum>
-void MSTable<MSEnum>::addColumnToDesc(MSTableMaps& maps, MSTable<MSEnum>::ColEnum which, Int ndim,
+void MSTable<MSEnum>::addColumnToDesc(MSTableMaps& maps, MSTable<MSEnum>::ColEnum which, int ndim,
                                       const String& refCol) {
   MSTableImpl::addColumnToDesc(maps.requiredTD_p, columnName(maps, which),
                                columnDataType(maps, which), columnStandardComment(maps, which),

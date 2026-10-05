@@ -110,10 +110,10 @@ class TableRecordRep : public RecordRep {
   ~TableRecordRep();
 
   // Get the comment for this field.
-  const String& comment(Int whichField) const;
+  const String& comment(int whichField) const;
 
   // Set the comment for this field.
-  void setComment(Int whichField, const String& comment);
+  void setComment(int whichField, const String& comment);
 
   // Describes the current structure of this Record.
   const RecordDesc& description() const;
@@ -136,7 +136,7 @@ class TableRecordRep : public RecordRep {
   bool conform(const TableRecordRep& other) const;
 
   // Rename the given field.
-  void renameField(const String& newName, Int whichField);
+  void renameField(const String& newName, int whichField);
 
   // Copy all data of the TableRecord.
   void copyData(const TableRecordRep& other);
@@ -153,12 +153,12 @@ class TableRecordRep : public RecordRep {
   // When the field and value data type mismatch, type promotion
   // of scalars will be done if possible. If not possible, an exception
   // is thrown.
-  void defineDataField(Int whichField, DataType type, const void* value);
+  void defineDataField(int whichField, DataType type, const void* value);
 
   // Close the table in the given field.
   // When accessed again, it will be opened automatically.
   // This can be useful to save memory usage.
-  void closeTable(Int whichField) const;
+  void closeTable(int whichField) const;
 
   // Close all open tables.
   // When accessed again, it will be opened automatically.
@@ -176,11 +176,11 @@ class TableRecordRep : public RecordRep {
 
   // Put the description and data of the Record.
   // It also puts the fixedFlag attribute (of the mother object).
-  void putRecord(AipsIO& os, Int recordType, const TableAttr&) const;
+  void putRecord(AipsIO& os, int recordType, const TableAttr&) const;
 
   // Get the description and data of the Record.
   // It also gets the fixedFlag attribute (of the mother object).
-  void getRecord(AipsIO& os, Int& recordType, const TableAttr&);
+  void getRecord(AipsIO& os, int& recordType, const TableAttr&);
 
   // Put the data of a record.
   // This is used to write a subrecord, whose description has
@@ -190,7 +190,7 @@ class TableRecordRep : public RecordRep {
   // Read the data of a record.
   // This is used to read a subrecord, whose description has
   // already been read.
-  void getData(AipsIO& os, uInt version, const TableAttr&);
+  void getData(AipsIO& os, unsigned int version, const TableAttr&);
 
   // Reopen possible tables in keywords as read/write.
   // Tables are not reopened if they are not writable.
@@ -199,12 +199,12 @@ class TableRecordRep : public RecordRep {
   // Used by the RecordFieldPtr classes to attach in a type-safe way to the
   // correct field.
   // <group>
-  void* get_pointer(Int whichField, DataType type) const;
-  void* get_pointer(Int whichField, DataType type, const String& recordType) const;
+  void* get_pointer(int whichField, DataType type) const;
+  void* get_pointer(int whichField, DataType type, const String& recordType) const;
   // </group>
 
   // Merge a field from another record into this record.
-  void mergeField(const TableRecordRep& other, Int whichFieldFromOther,
+  void mergeField(const TableRecordRep& other, int whichFieldFromOther,
                   RecordInterface::DuplicatesFlag);
 
   // Merge all fields from the other record into this record.
@@ -214,7 +214,7 @@ class TableRecordRep : public RecordRep {
   // Print the contents of the record.
   // Only the first <src>maxNrValues</src> of an array will be printed.
   // A value < 0 means the entire array.
-  void print(std::ostream&, Int maxNrValues = 25, const String& indent = "") const;
+  void print(std::ostream&, int maxNrValues = 25, const String& indent = "") const;
 
  protected:
   // Utility function to avoid code duplication in the public member
@@ -222,21 +222,21 @@ class TableRecordRep : public RecordRep {
   void copy_other(const TableRecordRep& other);
 
   // Get the field number for a given name.
-  virtual Int fieldNumber(const String& name) const;
+  virtual int fieldNumber(const String& name) const;
 
   // Add a field to the description.
   virtual void addFieldToDesc(const String& name, DataType type, const IPosition& shape,
                               bool fixedShape);
 
   // Remove a data field.
-  virtual void removeData(Int whichField, void* ptr, void* vecptr);
+  virtual void removeData(int whichField, void* ptr, void* vecptr);
 
   // Remove a field from the description.
-  virtual void removeFieldFromDesc(Int whichField);
+  virtual void removeFieldFromDesc(int whichField);
 
   // Get a KeywordSet object as a TableRecord.
   // (type: 0=ScalarKeywordSet, 1=ArrayKeywordSet, 2=TableKeywordSet)
-  void getTableKeySet(AipsIO& os, uInt version, const TableAttr&, uInt type);
+  void getTableKeySet(AipsIO& os, unsigned int version, const TableAttr&, unsigned int type);
 
   // Holds the description.
   // # Although we could use the RecordDesc object from RecordRep,
@@ -247,17 +247,17 @@ class TableRecordRep : public RecordRep {
   RecordDesc desc_p;
 };
 
-inline const String& TableRecordRep::comment(Int whichField) const {
+inline const String& TableRecordRep::comment(int whichField) const {
   return desc_p.comment(whichField);
 }
 
-inline void TableRecordRep::setComment(Int whichField, const String& comment) {
+inline void TableRecordRep::setComment(int whichField, const String& comment) {
   desc_p.setComment(whichField, comment);
 }
 
 inline const RecordDesc& TableRecordRep::description() const { return desc_p; }
 
-inline void TableRecordRep::renameField(const String& newName, Int whichField) {
+inline void TableRecordRep::renameField(const String& newName, int whichField) {
   desc_p.renameField(newName, whichField);
 }
 

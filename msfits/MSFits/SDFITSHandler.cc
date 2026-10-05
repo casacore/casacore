@@ -76,11 +76,11 @@ void SDFITSHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const 
   initAll(ms, handledCols, row);
 }
 
-void SDFITSHandler::fill(const Record &, const MEpoch &time, const Double &interval) {
+void SDFITSHandler::fill(const Record &, const MEpoch &time, const double &interval) {
   // don't bother unless there is something there
   if (tab_p) {
     // fill it
-    Int rownr = tab_p->nrow();
+    int rownr = tab_p->nrow();
     tab_p->addRow();
     timeMeas_p.put(rownr, time);
     intervalQuant_p.put(rownr, Quantity(interval, "s"));
@@ -113,7 +113,7 @@ void SDFITSHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const
       AlwaysAssert(tab_p, AipsError);
       // only add columns not already in tab_p
       Vector<String> colNames(td.columnNames());
-      for (uInt i = 0; i < colNames.nelements(); i++) {
+      for (unsigned int i = 0; i < colNames.nelements(); i++) {
         if (!tab_p->tableDesc().isColumn(colNames(i))) {
           td.addColumn(td[i]);
         }
@@ -140,9 +140,9 @@ void SDFITSHandler::initRow(Vector<bool> &handledCols, const Vector<String> &col
   // need to get the mapping between row fields and tab columns
   // there are always the same number of elements in handledCols
   // as there are fields in row
-  Vector<Int> fieldMap(handledCols.nelements(), -1);
-  for (uInt i = 0; i < colNames.nelements(); i++) {
-    Int field = row.fieldNumber(colNames(i));
+  Vector<int> fieldMap(handledCols.nelements(), -1);
+  for (unsigned int i = 0; i < colNames.nelements(); i++) {
+    int field = row.fieldNumber(colNames(i));
     if (field >= 0) {
       fieldMap(field) = i;
       handledCols(field) = true;
@@ -158,8 +158,8 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<bool> &handledCols, Vector<Str
   TableDesc td;
   colNames.resize(handledCols.nelements());
   colNames = "";
-  uInt colCount = 0;
-  for (uInt i = 0; i < handledCols.nelements(); i++) {
+  unsigned int colCount = 0;
+  for (unsigned int i = 0; i < handledCols.nelements(); i++) {
     if (!handledCols(i)) {
       // construct the output name
       // its the input name unless it starts with NS_SDFITS_ in which case its
@@ -179,19 +179,19 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<bool> &handledCols, Vector<Str
             td.addColumn(ScalarColumnDesc<bool>(colName));
             break;
           case TpUChar:
-            td.addColumn(ScalarColumnDesc<uChar>(colName));
+            td.addColumn(ScalarColumnDesc<unsigned char>(colName));
             break;
           case TpShort:
-            td.addColumn(ScalarColumnDesc<Short>(colName));
+            td.addColumn(ScalarColumnDesc<short>(colName));
             break;
           case TpInt:
-            td.addColumn(ScalarColumnDesc<Int>(colName));
+            td.addColumn(ScalarColumnDesc<int>(colName));
             break;
           case TpFloat:
-            td.addColumn(ScalarColumnDesc<Float>(colName));
+            td.addColumn(ScalarColumnDesc<float>(colName));
             break;
           case TpDouble:
-            td.addColumn(ScalarColumnDesc<Double>(colName));
+            td.addColumn(ScalarColumnDesc<double>(colName));
             break;
           case TpComplex:
             td.addColumn(ScalarColumnDesc<Complex>(colName));
@@ -206,19 +206,19 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<bool> &handledCols, Vector<Str
             td.addColumn(ArrayColumnDesc<bool>(colName));
             break;
           case TpArrayUChar:
-            td.addColumn(ArrayColumnDesc<uChar>(colName));
+            td.addColumn(ArrayColumnDesc<unsigned char>(colName));
             break;
           case TpArrayShort:
-            td.addColumn(ArrayColumnDesc<Short>(colName));
+            td.addColumn(ArrayColumnDesc<short>(colName));
             break;
           case TpArrayInt:
-            td.addColumn(ArrayColumnDesc<Int>(colName));
+            td.addColumn(ArrayColumnDesc<int>(colName));
             break;
           case TpArrayFloat:
-            td.addColumn(ArrayColumnDesc<Float>(colName));
+            td.addColumn(ArrayColumnDesc<float>(colName));
             break;
           case TpArrayDouble:
-            td.addColumn(ArrayColumnDesc<Double>(colName));
+            td.addColumn(ArrayColumnDesc<double>(colName));
             break;
           case TpArrayComplex:
             td.addColumn(ArrayColumnDesc<Complex>(colName));
@@ -232,7 +232,7 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<bool> &handledCols, Vector<Str
           default:
             LogIO os;
             os << LogIO::SEVERE << WHERE << "Field " << colName << " has an invalid type, "
-               << Int(row.type(i)) << " -- this should never happen." << LogIO::EXCEPTION;
+               << int(row.type(i)) << " -- this should never happen." << LogIO::EXCEPTION;
             break;
         }
       }
@@ -241,14 +241,14 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<bool> &handledCols, Vector<Str
   colNames.resize(colCount, true);
   // add the TIME and INTERVAL columns
   // TIME is an MEpoch column
-  td.addColumn(ScalarColumnDesc<Double>("TIME"));
+  td.addColumn(ScalarColumnDesc<double>("TIME"));
   TableMeasDesc<MEpoch> measCol(TableMeasValueDesc(td, "TIME"), TableMeasRefDesc(MEpoch::DEFAULT));
   measCol.write(td);
   // and change the units to "s" from the default of "d"
   TableQuantumDesc timeqd(td, "TIME", Unit("s"));
   timeqd.write(td);
   // INTERVAL is a Quantity column
-  td.addColumn(ScalarColumnDesc<Double>("INTERVAL"));
+  td.addColumn(ScalarColumnDesc<double>("INTERVAL"));
   TableQuantumDesc quantCol(td, "INTERVAL", Unit("s"));
   quantCol.write(td);
 

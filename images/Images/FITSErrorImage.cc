@@ -31,14 +31,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-FITSErrorImage::FITSErrorImage(const String& name, uInt whichRep, uInt whichHDU,
+FITSErrorImage::FITSErrorImage(const String& name, unsigned int whichRep, unsigned int whichHDU,
                                FITSErrorImage::ErrorType errtype)
     : FITSImage(name, whichRep, whichHDU), errtype_p(errtype) {
   setupMask();
 }
 
-FITSErrorImage::FITSErrorImage(const String& name, const MaskSpecifier& maskSpec, uInt whichRep,
-                               uInt whichHDU, FITSErrorImage::ErrorType errtype)
+FITSErrorImage::FITSErrorImage(const String& name, const MaskSpecifier& maskSpec,
+                               unsigned int whichRep, unsigned int whichHDU,
+                               FITSErrorImage::ErrorType errtype)
     : FITSImage(name, maskSpec, whichRep, whichHDU), errtype_p(errtype) {
   setupMask();
 }
@@ -64,11 +65,11 @@ FITSErrorImage& FITSErrorImage::operator=(const FITSErrorImage& other)
 
 FITSErrorImage::~FITSErrorImage() {}
 
-ImageInterface<Float>* FITSErrorImage::cloneII() const { return new FITSErrorImage(*this); }
+ImageInterface<float>* FITSErrorImage::cloneII() const { return new FITSErrorImage(*this); }
 
 String FITSErrorImage::imageType() const { return "FITSErrorImage"; }
 
-bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
+bool FITSErrorImage::doGetSlice(Array<float>& buffer, const Slicer& section) {
   // set up the arrays
   IPosition shp = section.length();
   if (!buffer.shape().isEqual(shp)) buffer.resize(shp);
@@ -79,28 +80,28 @@ bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
 
   //
   bool deletePtrD;
-  const Float* pData = buffer_p.getStorage(deletePtrD);
+  const float* pData = buffer_p.getStorage(deletePtrD);
   bool deletePtrM;
-  Float* pBuffer = buffer.getStorage(deletePtrM);
+  float* pBuffer = buffer.getStorage(deletePtrM);
 
   // depending on the error type,
   // fill the resulting array with variance values
   switch (errtype_p) {
     case MSE:
-      for (uInt i = 0; i < buffer.nelements(); i++) pBuffer[i] = pData[i];
+      for (unsigned int i = 0; i < buffer.nelements(); i++) pBuffer[i] = pData[i];
       break;
     case RMSE:
-      for (uInt i = 0; i < buffer.nelements(); i++) pBuffer[i] = pData[i] * pData[i];
+      for (unsigned int i = 0; i < buffer.nelements(); i++) pBuffer[i] = pData[i] * pData[i];
       break;
     case INVMSE:
-      for (uInt i = 0; i < buffer.nelements(); i++)
+      for (unsigned int i = 0; i < buffer.nelements(); i++)
         if (pData[i])
           pBuffer[i] = 1.0 / pData[i];
         else
           pBuffer[i] = NAN;
       break;
     case INVRMSE:
-      for (uInt i = 0; i < buffer.nelements(); i++)
+      for (unsigned int i = 0; i < buffer.nelements(); i++)
         if (pData[i])
           pBuffer[i] = 1.0 / (pData[i] * pData[i]);
         else
@@ -121,7 +122,7 @@ bool FITSErrorImage::doGetSlice(Array<Float>& buffer, const Slicer& section) {
   return false;  // Not a reference
 }
 
-void FITSErrorImage::doPutSlice(const Array<Float>&, const IPosition&, const IPosition&) {
+void FITSErrorImage::doPutSlice(const Array<float>&, const IPosition&, const IPosition&) {
   // the image is read-only
   throw(
       AipsError("FITSErrorImage::putSlice - "

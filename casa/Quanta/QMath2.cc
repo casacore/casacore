@@ -31,24 +31,24 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Int ceil(const Int &val) { return (val); }
+int ceil(const int &val) { return (val); }
 
-Int floor(const Int &val) { return (val); }
+int floor(const int &val) { return (val); }
 
-Float real(const Float &val) { return val; }
+float real(const float &val) { return val; }
 
-Double real(const Double &val) { return val; }
+double real(const double &val) { return val; }
 
-Array<Complex> operator*(const Array<Complex> &in, Double f) { return in * Complex(f); }
-Array<Complex> operator/(const Array<Complex> &in, Double f) { return in / Complex(f); }
+Array<Complex> operator*(const Array<Complex> &in, double f) { return in * Complex(f); }
+Array<Complex> operator/(const Array<Complex> &in, double f) { return in / Complex(f); }
 
-Array<DComplex> operator*(const Array<DComplex> &in, Double f) { return in * DComplex(f); }
-Array<DComplex> operator/(const Array<DComplex> &in, Double f) { return in / DComplex(f); }
+Array<DComplex> operator*(const Array<DComplex> &in, double f) { return in * DComplex(f); }
+Array<DComplex> operator/(const Array<DComplex> &in, double f) { return in / DComplex(f); }
 
-Array<Float> operator*(const Array<Float> &in, Double f) { return in * Float(f); }
-Array<Float> operator/(const Array<Float> &in, Double f) { return in / Float(f); }
+Array<float> operator*(const Array<float> &in, double f) { return in * float(f); }
+Array<float> operator/(const Array<float> &in, double f) { return in / float(f); }
 
-Array<Int> operator*(const Array<Int> &in, Double f) { return in * Int(f); }
-Array<Int> operator/(const Array<Int> &in, Double f) { return in / Int(f); }
+Array<int> operator*(const Array<int> &in, double f) { return in * int(f); }
+Array<int> operator/(const Array<int> &in, double f) { return in / int(f); }
 
 }  // namespace casacore

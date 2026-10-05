@@ -133,29 +133,29 @@ bool operator!=(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
 bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
+bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other, double tol);
 template <class Qtype>
 bool near(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-bool near(const Quantum<Qtype> &left, const Qtype &other, Double tol);
+bool near(const Quantum<Qtype> &left, const Qtype &other, double tol);
 template <class Qtype>
 bool near(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-bool near(const Qtype &left, const Quantum<Qtype> &other, Double tol);
+bool near(const Qtype &left, const Quantum<Qtype> &other, double tol);
 template <class Qtype>
 bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 template <class Qtype>
-bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, Double tol);
+bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, double tol);
 template <class Qtype>
 bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other, const Quantum<Qtype> &tol);
 template <class Qtype>
 bool nearAbs(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
-bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, Double tol);
+bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, double tol);
 template <class Qtype>
 bool nearAbs(const Qtype &left, const Quantum<Qtype> &other);
 template <class Qtype>
-bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol);
+bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, double tol);
 // </group>
 //
 // Comparisons. The comparisons are done on values at equal units with
@@ -192,7 +192,7 @@ bool operator>=(const Qtype &left, const Quantum<Qtype> &other);
 //
 // Special make Bool routines to cater for array comparisons
 // <group name="foreign">
-bool QMakeBool(Int val);
+bool QMakeBool(int val);
 bool QMakeBool(const LogicalArray &val);
 // </group>
 

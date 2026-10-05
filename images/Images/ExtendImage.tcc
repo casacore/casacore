@@ -169,12 +169,12 @@ bool ExtendImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) 
 }
 
 template <class T>
-uInt ExtendImage<T>::advisedMaxPixels() const {
+unsigned int ExtendImage<T>::advisedMaxPixels() const {
   return itsExtLatPtr->advisedMaxPixels();
 }
 
 template <class T>
-IPosition ExtendImage<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition ExtendImage<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return itsExtLatPtr->niceCursorShape(maxPixels);
 }
 
@@ -185,7 +185,7 @@ LatticeIterInterface<T>* ExtendImage<T>::makeIter(const LatticeNavigator& naviga
 }
 
 template <class T>
-bool ExtendImage<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool ExtendImage<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return itsExtLatPtr->lock(type, nattempts);
 }
 template <class T>

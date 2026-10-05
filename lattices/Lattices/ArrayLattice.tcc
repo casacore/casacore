@@ -99,8 +99,8 @@ void ArrayLattice<T>::doPutSlice(const Array<T>& sourceBuffer, const IPosition& 
   if (!itsWritable) {
     throw(AipsError("ArrayLattice::putSlice - non-writable lattice"));
   }
-  const uInt sdim = sourceBuffer.ndim();
-  const uInt ldim = ndim();
+  const unsigned int sdim = sourceBuffer.ndim();
+  const unsigned int ldim = ndim();
   DebugAssert(ldim == where.nelements(), AipsError);
   DebugAssert(ldim == stride.nelements(), AipsError);
   if (sdim == ldim) {
@@ -141,7 +141,7 @@ void ArrayLattice<T>::putAt(const T& value, const IPosition& where) {
 }
 
 template <class T>
-uInt ArrayLattice<T>::advisedMaxPixels() const {
+unsigned int ArrayLattice<T>::advisedMaxPixels() const {
   return itsData.nelements();
 }
 

@@ -69,8 +69,8 @@ int main(int argc, char* argv[]) {
     String dtype(inputs.getString("datatypes"));
     String sep(inputs.getString("sep"));
     String comm(inputs.getString("commentmarker"));
-    Int first(inputs.getInt("firstline"));
-    Int last(inputs.getInt("lastline"));
+    int first(inputs.getInt("firstline"));
+    int last(inputs.getInt("lastline"));
     if (in.empty()) {
       throw AipsError(" an input file name must be given");
     }
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
     Vector<String> cols(stringToVector(colnm));
     Vector<String> typs(stringToVector(dtype));
     // Get the auto-shape (if given).
-    Vector<Int> vec;
+    Vector<int> vec;
     std::istringstream is(autoshp);
     if (!read(is, vec, 0, false)) {
       throw AipsError(" '" + autoshp + "' is an invalid autoshape (maybe enclose in [])");

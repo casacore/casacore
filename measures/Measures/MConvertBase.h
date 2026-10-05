@@ -160,13 +160,13 @@ class MConvertBase {
   // Set a new model unit only
   virtual void set(const Unit &inunit) = 0;
   // Add a method (Note: uInt should be an enum from the appropiate Measure)
-  virtual void addMethod(uInt method) = 0;
+  virtual void addMethod(unsigned int method) = 0;
   // Add a FrameTypes used (as specified in MeasFrame::FrameTypes)
-  virtual void addFrameType(uInt tp) = 0;
+  virtual void addFrameType(unsigned int tp) = 0;
   // Get number of methods
-  virtual Int nMethod() const = 0;
+  virtual int nMethod() const = 0;
   // Get method
-  virtual uInt getMethod(uInt which) const = 0;
+  virtual unsigned int getMethod(unsigned int which) const = 0;
   // Print a conversion engine
   virtual void print(ostream &os) const = 0;
 

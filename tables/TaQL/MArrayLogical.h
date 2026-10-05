@@ -267,36 +267,36 @@ MArray<bool> operator!(const MArray<T>& a) {
 // Compare with a given relative or absolute tolerance.
 // <group>
 template <typename T>
-MArray<bool> near(const MArray<T>& left, const MArray<T>& right, Double tol) {
+MArray<bool> near(const MArray<T>& left, const MArray<T>& right, double tol) {
   return (left.isNull() || right.isNull()
               ? MArray<bool>()
               : MArray<bool>(near(left.array(), right.array(), tol), left.combineMask(right)));
 }
 
 template <typename T>
-MArray<bool> nearAbs(const MArray<T>& left, const MArray<T>& right, Double tol) {
+MArray<bool> nearAbs(const MArray<T>& left, const MArray<T>& right, double tol) {
   return (left.isNull() || right.isNull()
               ? MArray<bool>()
               : MArray<bool>(nearAbs(left.array(), right.array(), tol), left.combineMask(right)));
 }
 
 template <typename T>
-MArray<bool> near(const MArray<T>& left, const T& right, Double tol) {
+MArray<bool> near(const MArray<T>& left, const T& right, double tol) {
   return MArray<bool>(near(left.array(), right, tol), left);
 }
 
 template <typename T>
-MArray<bool> nearAbs(const MArray<T>& left, const T& right, Double tol) {
+MArray<bool> nearAbs(const MArray<T>& left, const T& right, double tol) {
   return MArray<bool>(nearAbs(left.array(), right, tol), left);
 }
 
 template <typename T>
-MArray<bool> near(const T& left, const MArray<T>& right, Double tol) {
+MArray<bool> near(const T& left, const MArray<T>& right, double tol) {
   return MArray<bool>(near(left, right.array(), tol), right);
 }
 
 template <typename T>
-MArray<bool> nearAbs(const T& left, const MArray<T>& right, Double tol) {
+MArray<bool> nearAbs(const T& left, const MArray<T>& right, double tol) {
   return MArray<bool>(nearAbs(left, right.array(), tol), right);
 }
 // </group>
@@ -470,30 +470,32 @@ MArray<bool> partialAnys(const MArray<T>& a, const IPosition& collapseAxes) {
 
 // Get sliding ntrues.
 template <typename T>
-MArray<uInt> slidingNTrue(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
+MArray<unsigned int> slidingNTrue(const MArray<T>& a, const IPosition& halfBoxSize,
+                                  bool fillEdge = true) {
   if (a.isNull()) {
-    return MArray<uInt>();
+    return MArray<unsigned int>();
   } else if (!a.hasMask()) {
-    Array<uInt> res;
-    slidingArrayMath(res, a.array(), halfBoxSize, NTrueFunc<T, uInt>(), fillEdge);
-    return MArray<uInt>(res);
+    Array<unsigned int> res;
+    slidingArrayMath(res, a.array(), halfBoxSize, NTrueFunc<T, unsigned int>(), fillEdge);
+    return MArray<unsigned int>(res);
   }
-  MArray<uInt> res;
-  slidingArrayMath(res, a, halfBoxSize, MNTrueFunc<T, uInt>(), fillEdge);
+  MArray<unsigned int> res;
+  slidingArrayMath(res, a, halfBoxSize, MNTrueFunc<T, unsigned int>(), fillEdge);
   return res;
 }
 // Get sliding nfalses.
 template <typename T>
-MArray<uInt> slidingNFalse(const MArray<T>& a, const IPosition& halfBoxSize, bool fillEdge = true) {
+MArray<unsigned int> slidingNFalse(const MArray<T>& a, const IPosition& halfBoxSize,
+                                   bool fillEdge = true) {
   if (a.isNull()) {
-    return MArray<uInt>();
+    return MArray<unsigned int>();
   } else if (!a.hasMask()) {
-    Array<uInt> res;
-    slidingArrayMath(res, a.array(), halfBoxSize, NFalseFunc<T, uInt>(), fillEdge);
-    return MArray<uInt>(res);
+    Array<unsigned int> res;
+    slidingArrayMath(res, a.array(), halfBoxSize, NFalseFunc<T, unsigned int>(), fillEdge);
+    return MArray<unsigned int>(res);
   }
-  MArray<uInt> res;
-  slidingArrayMath(res, a, halfBoxSize, MNFalseFunc<T, uInt>(), fillEdge);
+  MArray<unsigned int> res;
+  slidingArrayMath(res, a, halfBoxSize, MNFalseFunc<T, unsigned int>(), fillEdge);
   return res;
 }
 // Get sliding all.
@@ -527,30 +529,30 @@ MArray<bool> slidingAnys(const MArray<T>& a, const IPosition& halfBoxSize, bool 
 
 // Get boxed ntrues.
 template <typename T>
-MArray<uInt> boxedNTrue(const MArray<T>& a, const IPosition& boxSize) {
+MArray<unsigned int> boxedNTrue(const MArray<T>& a, const IPosition& boxSize) {
   if (a.isNull()) {
-    return MArray<uInt>();
+    return MArray<unsigned int>();
   } else if (!a.hasMask()) {
-    Array<uInt> res;
-    boxedArrayMath(res, a.array(), boxSize, NTrueFunc<T, uInt>());
-    return MArray<uInt>(res);
+    Array<unsigned int> res;
+    boxedArrayMath(res, a.array(), boxSize, NTrueFunc<T, unsigned int>());
+    return MArray<unsigned int>(res);
   }
-  MArray<uInt> res;
-  boxedArrayMath(res, a, boxSize, MNTrueFunc<T, uInt>());
+  MArray<unsigned int> res;
+  boxedArrayMath(res, a, boxSize, MNTrueFunc<T, unsigned int>());
   return res;
 }
 // Get boxed nfalses.
 template <typename T>
-MArray<uInt> boxedNFalse(const MArray<T>& a, const IPosition& boxSize) {
+MArray<unsigned int> boxedNFalse(const MArray<T>& a, const IPosition& boxSize) {
   if (a.isNull()) {
-    return MArray<uInt>();
+    return MArray<unsigned int>();
   } else if (!a.hasMask()) {
-    Array<uInt> res;
-    boxedArrayMath(res, a.array(), boxSize, NFalseFunc<T, uInt>());
-    return MArray<uInt>(res);
+    Array<unsigned int> res;
+    boxedArrayMath(res, a.array(), boxSize, NFalseFunc<T, unsigned int>());
+    return MArray<unsigned int>(res);
   }
-  MArray<uInt> res;
-  boxedArrayMath(res, a, boxSize, MNFalseFunc<T, uInt>());
+  MArray<unsigned int> res;
+  boxedArrayMath(res, a, boxSize, MNFalseFunc<T, unsigned int>());
   return res;
 }
 // Get boxed all.

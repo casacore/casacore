@@ -70,8 +70,8 @@ int main(int argc, const char* argv[]) {
 
     MeasurementSet* mssel = 0;
     cout << "Original table has rows " << ms.nrow() << std::endl;
-    Vector<Int> selectedAnt1, selectedAnt2;
-    Matrix<Int> selectedBaselines;
+    Vector<int> selectedAnt1, selectedAnt2;
+    Matrix<int> selectedBaselines;
     node = msAntennaGramParseCommand(&ms, argv[2], selectedAnt1, selectedAnt2, selectedBaselines);
     if (node.isNull()) {
       cout << "NULL node " << std::endl;

@@ -130,7 +130,7 @@ class TSMOption {
   // A size value -2 means reading that size from the aipsrc file.
   // The buffer size has to be given in bytes.
   // The maximum cache size has to be given in MibiBytes (1024*1024 bytes).
-  TSMOption(Option option = Aipsrc, Int bufferSize = -2, Int maxCacheSizeMB = -2);
+  TSMOption(Option option = Aipsrc, int bufferSize = -2, int maxCacheSizeMB = -2);
 
   // Fill the option in case Aipsrc or Default was given.
   // It is done as explained in the synopsis.
@@ -140,15 +140,15 @@ class TSMOption {
   Option option() const { return itsOption; }
 
   // Get the buffer size.
-  Int bufferSize() const { return itsBufferSize; }
+  int bufferSize() const { return itsBufferSize; }
 
   // Get the maximum cache size (in MibiByte). -1 means undefined.
-  Int maxCacheSizeMB() const { return itsMaxCacheSize; }
+  int maxCacheSizeMB() const { return itsMaxCacheSize; }
 
  private:
   Option itsOption;
-  Int itsBufferSize;
-  Int itsMaxCacheSize;
+  int itsBufferSize;
+  int itsMaxCacheSize;
 };
 
 }  // namespace casacore

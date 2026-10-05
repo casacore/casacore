@@ -83,16 +83,16 @@ void MSFieldColumns::attachOptionalCols(const MSField& msField) {
   }
 }
 
-MDirection MSFieldColumns::interpolateDirMeas(const Array<MDirection>& arrDir, Int numPoly,
-                                              Double interTime, Double timeOrigin) {
+MDirection MSFieldColumns::interpolateDirMeas(const Array<MDirection>& arrDir, int numPoly,
+                                              double interTime, double timeOrigin) {
   Vector<MDirection> vecDir(arrDir);
   if ((numPoly == 0) || interTime < 1 || nearAbs(interTime, timeOrigin)) {
     return vecDir(0);
   } else {
-    Vector<Double> dir(vecDir(0).getAngle().getValue()), tmp;
-    Double dt = interTime - timeOrigin;
-    Double fac = 1;
-    for (Int i = 1; i < (numPoly + 1); i++) {
+    Vector<double> dir(vecDir(0).getAngle().getValue()), tmp;
+    double dt = interTime - timeOrigin;
+    double fac = 1;
+    for (int i = 1; i < (numPoly + 1); i++) {
       fac *= dt;
       tmp = vecDir(i).getAngle().getValue();
       tmp *= fac;
@@ -112,8 +112,8 @@ void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
   referenceDirMeas_p.setDescRefCode(ref);
 }
 
-MDirection MSFieldColumns::delayDirMeas(rownr_t row, Double interTime) const {
-  Int npoly = numPoly()(row);
+MDirection MSFieldColumns::delayDirMeas(rownr_t row, double interTime) const {
+  int npoly = numPoly()(row);
   if (npoly > 0) {
     return MSFieldColumns::interpolateDirMeas(delayDirMeasCol()(row), npoly, interTime,
                                               time()(row));
@@ -123,8 +123,8 @@ MDirection MSFieldColumns::delayDirMeas(rownr_t row, Double interTime) const {
   }
 }
 
-MDirection MSFieldColumns::phaseDirMeas(rownr_t row, Double interTime) const {
-  Int npoly = numPoly()(row);
+MDirection MSFieldColumns::phaseDirMeas(rownr_t row, double interTime) const {
+  int npoly = numPoly()(row);
   if (npoly > 0) {
     return MSFieldColumns::interpolateDirMeas(phaseDirMeasCol()(row), npoly, interTime,
                                               time()(row));
@@ -134,8 +134,8 @@ MDirection MSFieldColumns::phaseDirMeas(rownr_t row, Double interTime) const {
   }
 }
 
-MDirection MSFieldColumns::referenceDirMeas(rownr_t row, Double interTime) const {
-  Int npoly = numPoly()(row);
+MDirection MSFieldColumns::referenceDirMeas(rownr_t row, double interTime) const {
+  int npoly = numPoly()(row);
   if (npoly > 0) {
     return MSFieldColumns::interpolateDirMeas(referenceDirMeasCol()(row), npoly, interTime,
                                               time()(row));
@@ -145,7 +145,7 @@ MDirection MSFieldColumns::referenceDirMeas(rownr_t row, Double interTime) const
   }
 }
 
-MDirection MSFieldColumns::ephemerisDirMeas(rownr_t row, Double interTime) const {
+MDirection MSFieldColumns::ephemerisDirMeas(rownr_t row, double interTime) const {
   if (measCometIndex(row) >= 0) {
     const MDirection zeroDir = MDirection(Quantity(0, "deg"), Quantity(0, "deg"));
     return extractDirMeas(zeroDir, measCometIndex(row), interTime, timeMeas()(row));
@@ -154,13 +154,13 @@ MDirection MSFieldColumns::ephemerisDirMeas(rownr_t row, Double interTime) const
   }
 }
 
-MRadialVelocity MSFieldColumns::radVelMeas(rownr_t row, Double interTime) const {
+MRadialVelocity MSFieldColumns::radVelMeas(rownr_t row, double interTime) const {
   MRadialVelocity rval;
 
   if (measCometsV_p.size() > 0) {
-    Int index = measCometIndex(row);
+    int index = measCometIndex(row);
     if (index >= 0) {
-      Double originMJD, interMJD;
+      double originMJD, interMJD;
       getMJDs(originMJD, interMJD, interTime, timeMeas()(row));
 
       MVRadialVelocity mvradvel;
@@ -189,13 +189,13 @@ MRadialVelocity MSFieldColumns::radVelMeas(rownr_t row, Double interTime) const 
   return rval;
 }
 
-Quantity MSFieldColumns::rho(rownr_t row, Double interTime) const {
+Quantity MSFieldColumns::rho(rownr_t row, double interTime) const {
   Quantity rval(0., "m");
 
   if (measCometsV_p.size() > 0) {
-    Int index = measCometIndex(row);
+    int index = measCometIndex(row);
     if (index >= 0) {
-      Double originMJD, interMJD;
+      double originMJD, interMJD;
       getMJDs(originMJD, interMJD, interTime, timeMeas()(row));
 
       MVPosition mvpos;
@@ -218,10 +218,10 @@ bool MSFieldColumns::needInterTime(rownr_t row) const {
   return false;
 }
 
-Int MSFieldColumns::measCometIndex(rownr_t row) const {
-  Int rval = -1;
+int MSFieldColumns::measCometIndex(rownr_t row) const {
+  int rval = -1;
   if (measCometsV_p.size() > 0) {
-    Int ephId = ephemerisId()(row);
+    int ephId = ephemerisId()(row);
     if (ephId >= 0 && ephIdToMeasComet_p.find(ephId) != ephIdToMeasComet_p.end()) {
       rval = ephIdToMeasComet_p.at(ephId);
     }
@@ -231,7 +231,7 @@ Int MSFieldColumns::measCometIndex(rownr_t row) const {
 
 String MSFieldColumns::ephemPath(rownr_t row) const {
   String rval = "";
-  Int index = measCometIndex(row);
+  int index = measCometIndex(row);
   if (index >= 0) {
     rval = measCometsV_p(index)->getTablePath();
   }
@@ -239,8 +239,8 @@ String MSFieldColumns::ephemPath(rownr_t row) const {
 }
 
 bool MSFieldColumns::matchReferenceDir(rownr_t row, const MVDirection& dirVal,
-                                       const Double& sepInRad, MVDirection& mvdir,
-                                       Double time) const {
+                                       const double& sepInRad, MVDirection& mvdir,
+                                       double time) const {
   try {
     mvdir = referenceDirMeas(row, time).getAngle();
   } catch (std::exception& x) {
@@ -253,8 +253,8 @@ bool MSFieldColumns::matchReferenceDir(rownr_t row, const MVDirection& dirVal,
   }
 }
 
-bool MSFieldColumns::matchDelayDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
-                                   MVDirection& mvdir, Double time) const {
+bool MSFieldColumns::matchDelayDir(rownr_t row, const MVDirection& dirVal, const double& sepInRad,
+                                   MVDirection& mvdir, double time) const {
   try {
     mvdir = delayDirMeas(row, time).getAngle();
   } catch (std::exception& x) {
@@ -267,8 +267,8 @@ bool MSFieldColumns::matchDelayDir(rownr_t row, const MVDirection& dirVal, const
   }
 }
 
-bool MSFieldColumns::matchPhaseDir(rownr_t row, const MVDirection& dirVal, const Double& sepInRad,
-                                   MVDirection& mvdir, Double time) const {
+bool MSFieldColumns::matchPhaseDir(rownr_t row, const MVDirection& dirVal, const double& sepInRad,
+                                   MVDirection& mvdir, double time) const {
   try {
     mvdir = phaseDirMeas(row, time).getAngle();
   } catch (std::exception& x) {
@@ -281,11 +281,11 @@ bool MSFieldColumns::matchPhaseDir(rownr_t row, const MVDirection& dirVal, const
   }
 }
 
-Int64 MSFieldColumns::matchDirection(const MDirection& referenceDirection,
-                                     const MDirection& delayDirection,
-                                     const MDirection& phaseDirection,
-                                     const Quantum<Double>& maxSeparation, Int64 tryRow,
-                                     Double time) {
+int64_t MSFieldColumns::matchDirection(const MDirection& referenceDirection,
+                                       const MDirection& delayDirection,
+                                       const MDirection& phaseDirection,
+                                       const Quantum<double>& maxSeparation, int64_t tryRow,
+                                       double time) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   const MVDirection& referenceDirVal = referenceDirection.getValue();
@@ -294,7 +294,7 @@ Int64 MSFieldColumns::matchDirection(const MDirection& referenceDirection,
   // Convert the maximum separation to radians
   const Unit rad("rad");
   DebugAssert(maxSeparation.check(UnitVal::ANGLE), AipsError);
-  const Double tolInRad = maxSeparation.getValue(rad);
+  const double tolInRad = maxSeparation.getValue(rad);
 
   // Main matching loop
   MVDirection mvdir;
@@ -359,9 +359,9 @@ void MSFieldColumns::updateMeasComets() {
   }
 
   // (re)create all necessary MeasComet objects
-  Vector<Int> ephId = ephemerisId_p.getColumn();
+  Vector<int> ephId = ephemerisId_p.getColumn();
   for (size_t i = 0; i < ephId.size(); i++) {
-    Int theEphId = ephId(i);
+    int theEphId = ephId(i);
     // cout << "updateMeasComet: processing row " << i << ", found eph id " << theEphId <<
     // std::endl;
     if (theEphId >= 0 && ephIdToMeasComet_p.find(theEphId) == ephIdToMeasComet_p.end()) {
@@ -394,14 +394,14 @@ void MSFieldColumns::updateMeasComets() {
   }
 }
 
-MDirection MSFieldColumns::extractDirMeas(const MDirection& offsetDir, Int index, Double& interTime,
+MDirection MSFieldColumns::extractDirMeas(const MDirection& offsetDir, int index, double& interTime,
                                           MEpoch originEpoch) const {
   // this method is only called if numpoly==0
 
   if (index < 0) {  // no ephemeris available
     return offsetDir;
   } else {
-    Double originMJD, interMJD;
+    double originMJD, interMJD;
     getMJDs(originMJD, interMJD, interTime, originEpoch);
 
     MVPosition xmvpos;
@@ -422,7 +422,7 @@ MDirection MSFieldColumns::extractDirMeas(const MDirection& offsetDir, Int index
   }
 }
 
-void MSFieldColumns::getMJDs(Double& originMJD, Double& interMJD, const Double interTime,
+void MSFieldColumns::getMJDs(double& originMJD, double& interMJD, const double interTime,
                              const MEpoch originEpoch) const {
   // assume the same time reference frame of originEpoch and interTime
   MEpoch::Types assumedType = MEpoch::castType(originEpoch.getRef().getType());

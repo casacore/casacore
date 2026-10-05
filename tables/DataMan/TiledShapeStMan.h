@@ -189,7 +189,7 @@ class TiledShapeStMan : public TiledStMan {
   // default value is used.
   // <group>
   TiledShapeStMan(const String& hypercolumnName, const IPosition& defaultTileShape,
-                  uInt64 maximumCacheSize = 0);
+                  uint64_t maximumCacheSize = 0);
   TiledShapeStMan(const String& hypercolumnName, const Record& spec);
   // </group>
 
@@ -244,7 +244,7 @@ class TiledShapeStMan : public TiledStMan {
 
   // Find the hypercube for the given shape.
   // It returns -1 when not found.
-  Int findHypercube(const IPosition& shape);
+  int findHypercube(const IPosition& shape);
 
   // Add a hypercube.
   // The number of rows in the table must be large enough to
@@ -260,7 +260,7 @@ class TiledShapeStMan : public TiledStMan {
   // the last dimension.
   // The record should contain the id values (to get the correct
   // hypercube) and optionally coordinate values for the elements added.
-  void extendHypercube(rownr_t rownr, uInt cubeNr);
+  void extendHypercube(rownr_t rownr, unsigned int cubeNr);
 
   // Get the hypercube in which the given row is stored.
   virtual TSMCube* getHypercube(rownr_t rownr);
@@ -284,7 +284,7 @@ class TiledShapeStMan : public TiledStMan {
   virtual void readHeader(rownr_t nrrow, bool firstTime);
 
   // Update the map of row numbers to cube number plus offset.
-  void updateRowMap(uInt cubeNr, uInt pos, rownr_t rownr);
+  void updateRowMap(unsigned int cubeNr, unsigned int pos, rownr_t rownr);
 
   // Extend the map of row numbers to cube number plus offset
   // will new empty entries.
@@ -294,13 +294,13 @@ class TiledShapeStMan : public TiledStMan {
   //  The default tile shape.
   IPosition defaultTileShape_p;
   // The map of row number to cube and position in cube.
-  Block<uInt> rowMap_p;
-  Block<uInt> cubeMap_p;
-  Block<uInt> posMap_p;
+  Block<unsigned int> rowMap_p;
+  Block<unsigned int> cubeMap_p;
+  Block<unsigned int> posMap_p;
   // The nr of elements used in the map blocks.
-  uInt nrUsedRowMap_p;
+  unsigned int nrUsedRowMap_p;
   // The last hypercube found.
-  Int lastHC_p;
+  int lastHC_p;
 };
 
 }  // namespace casacore

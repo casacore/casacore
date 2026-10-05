@@ -67,51 +67,51 @@ inline bool getScalar(const ValueHolder& vh) {
   return vh.asBool();
 }
 template <>
-inline Char getScalar(const ValueHolder& vh) {
+inline char getScalar(const ValueHolder& vh) {
   return vh.asShort();
 }
 template <>
-inline uChar getScalar(const ValueHolder& vh) {
+inline unsigned char getScalar(const ValueHolder& vh) {
   return vh.asuChar();
 }
 template <>
-inline Short getScalar(const ValueHolder& vh) {
+inline short getScalar(const ValueHolder& vh) {
   return vh.asShort();
 }
 template <>
-inline uShort getScalar(const ValueHolder& vh) {
+inline unsigned short getScalar(const ValueHolder& vh) {
   return vh.asuShort();
 }
 template <>
-inline Int getScalar(const ValueHolder& vh) {
+inline int getScalar(const ValueHolder& vh) {
   return vh.asInt();
 }
 template <>
-inline uInt getScalar(const ValueHolder& vh) {
+inline unsigned int getScalar(const ValueHolder& vh) {
   return vh.asuInt();
 }
 template <>
-inline Long getScalar(const ValueHolder& vh) {
-  return vh.asInt();
+inline long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
 }
 template <>
-inline uLong getScalar(const ValueHolder& vh) {
-  return vh.asuInt();
+inline unsigned long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
 }
 template <>
-inline Int64 getScalar(const ValueHolder& vh) {
-  return vh.asInt();
+inline long long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
 }
 template <>
-inline uInt64 getScalar(const ValueHolder& vh) {
-  return vh.asuInt();
+inline unsigned long long getScalar(const ValueHolder& vh) {
+  return vh.asInt64();
 }
 template <>
-inline Float getScalar(const ValueHolder& vh) {
+inline float getScalar(const ValueHolder& vh) {
   return vh.asFloat();
 }
 template <>
-inline Double getScalar(const ValueHolder& vh) {
+inline double getScalar(const ValueHolder& vh) {
   return vh.asDouble();
 }
 template <>

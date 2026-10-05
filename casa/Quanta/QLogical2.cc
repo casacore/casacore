@@ -31,7 +31,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-bool QMakeBool(Int val) { return ((val)); }
+bool QMakeBool(int val) { return ((val)); }
 
 bool QMakeBool(const LogicalArray &val) { return (allAND(val, true)); }
 

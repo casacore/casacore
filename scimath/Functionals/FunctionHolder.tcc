@@ -154,9 +154,9 @@ void FunctionHolder<T>::init() const {
                                   {String("compiled"), COMPILED, false}};
   if (!isFilled) {
     isFilled = true;
-    for (uInt i = 0; i < N_Types; ++i) {
+    for (unsigned int i = 0; i < N_Types; ++i) {
       nam_p[i] = fnc[i].nam;
-      if (i != static_cast<uInt>(fnc[i].tp)) {
+      if (i != static_cast<unsigned int>(fnc[i].tp)) {
         throw(AipsError("Lists in FunctionHolder incorrect order"));
       }
     }
@@ -184,10 +184,10 @@ bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn, const RecordI
     if ((nf_p == COMBINE || nf_p == COMPOUND) && in.isDefined(String("nfunc")) &&
         in.isDefined(String("funcs")) &&
         in.type(in.idToNumber(RecordFieldId("funcs"))) == TpRecord) {
-      Int nfunc;
+      int nfunc;
       in.get(RecordFieldId("nfunc"), nfunc);
       Record fnsrec = in.asRecord(RecordFieldId("funcs"));
-      for (Int i = 0; i < nfunc; ++i) {
+      for (int i = 0; i < nfunc; ++i) {
         Record fnr = fnsrec.asRecord(i);
         FunctionHolder<T> fnch;
         Function<U> *fnc(0);
@@ -213,7 +213,7 @@ bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn, const RecordI
     if (in.isDefined(String("masks"))) {
       Vector<bool> masks;
       in.get(RecordFieldId("masks"), masks);
-      for (uInt i = 0; i < fn->nparameters(); ++i) fn->mask(i) = masks[i];
+      for (unsigned int i = 0; i < fn->nparameters(); ++i) fn->mask(i) = masks[i];
     }
     return true;
   } catch (const AipsError &x) {
@@ -230,7 +230,7 @@ template <class T>
 bool FunctionHolder<T>::fromString(String &error, const String &in) {
   order_p = -1;
   text_p = "";
-  Int nf;
+  int nf;
   init();
   nf = MUString::minimaxNC(in, nam_p);
   nf_p = static_cast<Types>(nf);
@@ -247,8 +247,8 @@ bool FunctionHolder<T>::fromString(String &error, const String &in) {
 template <class T>
 bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
   if (hold_p && putType(error, out)) {
-    out.define(RecordFieldId("ndim"), static_cast<Int>(hold_p->ndim()));
-    out.define(RecordFieldId("npar"), static_cast<Int>(hold_p->nparameters()));
+    out.define(RecordFieldId("ndim"), static_cast<int>(hold_p->ndim()));
+    out.define(RecordFieldId("npar"), static_cast<int>(hold_p->nparameters()));
     out.define(RecordFieldId("params"), hold_p->parameters().getParameters());
     out.define(RecordFieldId("masks"), hold_p->parameters().getParamMasks());
 
@@ -257,7 +257,7 @@ bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
     if (mode.nfields() > 0) out.defineRecord(RecordFieldId("mode"), mode);
 
     if (nf_p == COMBINE || nf_p == COMPOUND) {
-      Int x(0);
+      int x(0);
       if (nf_p == COMBINE) {
         x = dynamic_cast<const CombiFunction<T> *>(hold_p.get())->nFunctions();
       } else {
@@ -265,7 +265,7 @@ bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
       }
       out.define("nfunc", x);
       Record func;
-      for (Int i = 0; i < x; ++i) {
+      for (int i = 0; i < x; ++i) {
         Record fnc;
         if (nf_p == COMBINE) {
           FunctionHolder<T> fn(dynamic_cast<const CombiFunction<T> *>(hold_p.get())->function(i));
@@ -305,7 +305,7 @@ bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
     nf_p = GAUSSIAN3D;
   } else if (dynamic_cast<const GaussianND<T> *>(hold_p.get())) {
     nf_p = GAUSSIANND;
-    order_p = Int(-3.0 + sqrt(1.0 + 8.0 * hold_p->nparameters()) + 0.1) / 2;
+    order_p = int(-3.0 + sqrt(1.0 + 8.0 * hold_p->nparameters()) + 0.1) / 2;
   } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.get())) {
     nf_p = HYPERPLANE;
     order_p = hold_p->nparameters();
@@ -356,7 +356,7 @@ bool FunctionHolder<T>::getType(String &error, Function<U> *&fn, const RecordInt
     mode_p.reset(new Record(in.asRecord(RecordFieldId("mode"))));
   }
 
-  Int nf;
+  int nf;
   if (in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
     String tp;
     in.get(RecordFieldId("type"), tp);
@@ -469,12 +469,12 @@ bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
 
 template <class T>
 void FunctionHolder<T>::setParameters(Function<T> *&fn, const Vector<T> &params) {
-  for (uInt i = 0; i < fn->nparameters(); ++i) (*fn)[i] = params[i];
+  for (unsigned int i = 0; i < fn->nparameters(); ++i) (*fn)[i] = params[i];
 }
 
 template <class T>
 void FunctionHolder<T>::setParameters(Function<AutoDiff<T>> *&fn, const Vector<T> &params) {
-  for (uInt i = 0; i < fn->nparameters(); ++i) {
+  for (unsigned int i = 0; i < fn->nparameters(); ++i) {
     (*fn)[i] = AutoDiff<T>(params[i], fn->nparameters(), i);
   }
 }

@@ -116,10 +116,10 @@ class FITSSpectralUtil {
   //  <li> The combination FELO and RADIO is used (which does not make sense).
   //  <li> The combination VELO and OPTICAL is used (not yet implemented).
   // </ul>
-  static bool fromFITSHeader(Int &spectralAxis, Double &referenceChannel,
-                             Double &referenceFrequency, Double &deltaFrequency,
-                             Vector<Double> &frequencies, MFrequency::Types &refFrame,
-                             MDoppler::Types &velocityPreference, Double &restFrequency,
+  static bool fromFITSHeader(int &spectralAxis, double &referenceChannel,
+                             double &referenceFrequency, double &deltaFrequency,
+                             Vector<double> &frequencies, MFrequency::Types &refFrame,
+                             MDoppler::Types &velocityPreference, double &restFrequency,
                              LogIO &logger, const RecordInterface &header, char prefix = 'c',
                              bool oneRelative = true);
 
@@ -148,10 +148,10 @@ class FITSSpectralUtil {
   // This parameter has an effect only if preferWavelength is true.
 
   // This method always returns true.
-  static bool toFITSHeader(String &ctype, Double &crval, Double &cdelt, Double &crpix,
-                           String &cunit, bool &haveAlt, Double &altrval, Double &altrpix,
-                           Int &velref, Double &restfreq, String &specsys, LogIO &logger,
-                           Double refFrequency, Double refChannel, Double freqIncrement,
+  static bool toFITSHeader(String &ctype, double &crval, double &cdelt, double &crpix,
+                           String &cunit, bool &haveAlt, double &altrval, double &altrpix,
+                           int &velref, double &restfreq, String &specsys, LogIO &logger,
+                           double refFrequency, double refChannel, double freqIncrement,
                            MFrequency::Types referenceFrame, bool preferVelocity = true,
                            MDoppler::Types velocityPreference = MDoppler::OPTICAL,
                            bool preferWavelength = false, bool airWavelength = false,
@@ -170,7 +170,7 @@ class FITSSpectralUtil {
   //  <li> The tag is empty and velref is < 0 (no velref was supplied).
   // </ul>
   // The default value (set when the return value is false) is TOPO.
-  static bool frameFromTag(MFrequency::Types &referenceFrame, const String &tag, Int velref = -1);
+  static bool frameFromTag(MFrequency::Types &referenceFrame, const String &tag, int velref = -1);
 
   // Construct a reference frame tag from the given referenceFrame
   // An appropriate velref value is also constructed (this may need
@@ -178,7 +178,7 @@ class FITSSpectralUtil {
   // being used in a FITS file).  This returns false if the
   // reference frame is not recognized.  The value of tag defaults
   // to "-OBS".
-  static bool tagFromFrame(String &tag, Int &velref, MFrequency::Types referenceFrame);
+  static bool tagFromFrame(String &tag, int &velref, MFrequency::Types referenceFrame);
 
   // Construct a SPECSYS keyword value from the given referenceFrame
   // This returns false if the reference frame is not recognized.
@@ -191,7 +191,7 @@ class FITSSpectralUtil {
   // according to Greisen et al., 2006, A&A, 464, 746.
   // If vacuum wavelength is used there is an error of the order of 1E-9.
   // Argument must be in micrometers!
-  static Double refractiveIndex(const Double &lambda_um);
+  static double refractiveIndex(const double &lambda_um);
 };
 
 }  // namespace casacore

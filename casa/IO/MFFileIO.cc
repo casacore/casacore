@@ -47,8 +47,8 @@ void MFFileIO::remove() {
   itsId = -1;
 }
 
-Int64 MFFileIO::read(Int64 size, void* buffer, bool throwException) {
-  Int64 n = itsFile->read(itsId, buffer, size, itsPosition);
+int64_t MFFileIO::read(int64_t size, void* buffer, bool throwException) {
+  int64_t n = itsFile->read(itsId, buffer, size, itsPosition);
   itsPosition += n;
   if (throwException && n < size) {
     throw AipsError("MFFileIO::read - incorrect number of bytes (" + std::to_string(n) +
@@ -58,12 +58,12 @@ Int64 MFFileIO::read(Int64 size, void* buffer, bool throwException) {
   return n;
 }
 
-void MFFileIO::write(Int64 size, const void* buffer) {
+void MFFileIO::write(int64_t size, const void* buffer) {
   if (!itsIsWritable) {
     throw AipsError("Logical file " + itsName + " is not writable " + "in MultiFileBase " +
                     itsFile->fileName());
   }
-  Int64 n = itsFile->write(itsId, buffer, size, itsPosition);
+  int64_t n = itsFile->write(itsId, buffer, size, itsPosition);
   itsPosition += n;
   if (n != size) {
     throw AipsError("MFFileIO: write error in logical file " + itsName + " in MultiFileBase " +
@@ -80,11 +80,11 @@ void MFFileIO::flush() { itsFile->flushFile(itsId); }
 
 void MFFileIO::fsync() {}
 
-void MFFileIO::truncate(Int64 size) { itsFile->truncate(itsId, size); }
+void MFFileIO::truncate(int64_t size) { itsFile->truncate(itsId, size); }
 
 String MFFileIO::fileName() const { return itsName; }
 
-Int64 MFFileIO::length() { return itsFile->fileSize(itsId); }
+int64_t MFFileIO::length() { return itsFile->fileSize(itsId); }
 
 bool MFFileIO::isReadable() const { return true; }
 
@@ -92,10 +92,10 @@ bool MFFileIO::isWritable() const { return itsIsWritable && itsFile->isWritable(
 
 bool MFFileIO::isSeekable() const { return true; }
 
-Int64 MFFileIO::doSeek(Int64 offset, ByteIO::SeekOption dir) {
+int64_t MFFileIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
   // Determine the new position.
   // Exit with error status if negative.
-  Int64 newPos;
+  int64_t newPos;
   switch (dir) {
     case ByteIO::Begin:
       newPos = offset;

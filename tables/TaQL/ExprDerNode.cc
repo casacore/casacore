@@ -46,15 +46,15 @@ TableExprNodeConstBool::TableExprNodeConstBool(const bool& val)
     : TableExprNodeBinary(NTBool, VTScalar, OtLiteral, Constant), value_p(val) {}
 bool TableExprNodeConstBool::getBool(const TableExprId&) { return value_p; }
 
-TableExprNodeConstInt::TableExprNodeConstInt(const Int64& val)
+TableExprNodeConstInt::TableExprNodeConstInt(const int64_t& val)
     : TableExprNodeBinary(NTInt, VTScalar, OtLiteral, Constant), value_p(val) {}
-Int64 TableExprNodeConstInt::getInt(const TableExprId&) { return value_p; }
-Double TableExprNodeConstInt::getDouble(const TableExprId&) { return value_p; }
+int64_t TableExprNodeConstInt::getInt(const TableExprId&) { return value_p; }
+double TableExprNodeConstInt::getDouble(const TableExprId&) { return value_p; }
 DComplex TableExprNodeConstInt::getDComplex(const TableExprId&) { return double(value_p); }
 
-TableExprNodeConstDouble::TableExprNodeConstDouble(const Double& val)
+TableExprNodeConstDouble::TableExprNodeConstDouble(const double& val)
     : TableExprNodeBinary(NTDouble, VTScalar, OtLiteral, Constant), value_p(val) {}
-Double TableExprNodeConstDouble::getDouble(const TableExprId&) { return value_p; }
+double TableExprNodeConstDouble::getDouble(const TableExprId&) { return value_p; }
 DComplex TableExprNodeConstDouble::getDComplex(const TableExprId&) { return value_p; }
 
 TableExprNodeConstDComplex::TableExprNodeConstDComplex(const DComplex& val)
@@ -71,7 +71,7 @@ TaqlRegex TableExprNodeConstRegex::getRegex(const TableExprId&) { return value_p
 
 TableExprNodeConstDate::TableExprNodeConstDate(const MVTime& val)
     : TableExprNodeBinary(NTDate, VTScalar, OtLiteral, Constant), value_p(val) {}
-Double TableExprNodeConstDate::getDouble(const TableExprId&) { return value_p; }
+double TableExprNodeConstDate::getDouble(const TableExprId&) { return value_p; }
 MVTime TableExprNodeConstDate::getDate(const TableExprId&) { return value_p; }
 
 // <thrown>
@@ -151,13 +151,13 @@ bool TableExprNodeColumn::getBool(const TableExprId& id) {
   tabCol_p.getScalar(id.rownr(), val);
   return val;
 }
-Int64 TableExprNodeColumn::getInt(const TableExprId& id) {
-  Int64 val;
+int64_t TableExprNodeColumn::getInt(const TableExprId& id) {
+  int64_t val;
   tabCol_p.getScalar(id.rownr(), val);
   return val;
 }
-Double TableExprNodeColumn::getDouble(const TableExprId& id) {
-  Double val;
+double TableExprNodeColumn::getDouble(const TableExprId& id) {
+  double val;
   tabCol_p.getScalar(id.rownr(), val);
   return val;
 }
@@ -181,36 +181,36 @@ Array<bool> TableExprNodeColumn::getColumnBool(const Vector<rownr_t>& rownrs) {
   ScalarColumn<bool> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<uChar> TableExprNodeColumn::getColumnuChar(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<uChar> col(tabCol_p);
+Array<unsigned char> TableExprNodeColumn::getColumnuChar(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<unsigned char> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<Short> TableExprNodeColumn::getColumnShort(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Short> col(tabCol_p);
+Array<short> TableExprNodeColumn::getColumnShort(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<short> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<uShort> TableExprNodeColumn::getColumnuShort(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<uShort> col(tabCol_p);
+Array<unsigned short> TableExprNodeColumn::getColumnuShort(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<unsigned short> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<Int> TableExprNodeColumn::getColumnInt(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Int> col(tabCol_p);
+Array<int> TableExprNodeColumn::getColumnInt(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<int> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<uInt> TableExprNodeColumn::getColumnuInt(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<uInt> col(tabCol_p);
+Array<unsigned int> TableExprNodeColumn::getColumnuInt(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<unsigned int> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<Int64> TableExprNodeColumn::getColumnInt64(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Int64> col(tabCol_p);
+Array<int64_t> TableExprNodeColumn::getColumnInt64(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<int64_t> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<Float> TableExprNodeColumn::getColumnFloat(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Float> col(tabCol_p);
+Array<float> TableExprNodeColumn::getColumnFloat(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<float> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
-Array<Double> TableExprNodeColumn::getColumnDouble(const Vector<rownr_t>& rownrs) {
-  ScalarColumn<Double> col(tabCol_p);
+Array<double> TableExprNodeColumn::getColumnDouble(const Vector<rownr_t>& rownrs) {
+  ScalarColumn<double> col(tabCol_p);
   return col.getColumnCells(rownrs);
 }
 Array<Complex> TableExprNodeColumn::getColumnComplex(const Vector<rownr_t>& rownrs) {
@@ -226,12 +226,12 @@ Array<String> TableExprNodeColumn::getColumnString(const Vector<rownr_t>& rownrs
   return col.getColumnCells(rownrs);
 }
 
-TableExprNodeRownr::TableExprNodeRownr(const TableExprInfo& tableInfo, uInt origin)
+TableExprNodeRownr::TableExprNodeRownr(const TableExprInfo& tableInfo, unsigned int origin)
     : TableExprNodeBinary(NTInt, VTScalar, OtRownr, Variable),
       tableInfo_p(tableInfo),
       origin_p(origin) {}
 TableExprInfo TableExprNodeRownr::getTableInfo() const { return tableInfo_p; }
-Int64 TableExprNodeRownr::getInt(const TableExprId& id) {
+int64_t TableExprNodeRownr::getInt(const TableExprId& id) {
   AlwaysAssert(id.byRow(), AipsError);
   return id.rownr() + origin_p;
 }
@@ -260,9 +260,9 @@ void TableExprNodeRowid::applySelection(const Vector<rownr_t>& rownrs) {
     rownrs_p.reference(newRows);
   }
 }
-Int64 TableExprNodeRowid::getInt(const TableExprId& id) {
+int64_t TableExprNodeRowid::getInt(const TableExprId& id) {
   AlwaysAssert(id.byRow(), AipsError);
-  if (id.rownr() < Int64(rownrs_p.size())) {
+  if (id.rownr() < int64_t(rownrs_p.size())) {
     return rownrs_p[id.rownr()];
   }
   return 0;
@@ -272,10 +272,10 @@ Int64 TableExprNodeRowid::getInt(const TableExprId& id) {
 TableExprNodeRandom::TableExprNodeRandom(const TableExprInfo& tableInfo)
     : TableExprNodeBinary(NTDouble, VTScalar, OtRandom, Variable),
       tableInfo_p(tableInfo),
-      generator_p(Int(fmod(Time().modifiedJulianDay(), 1.) * 86400000),
-                  Int(Time().modifiedJulianDay())),
+      generator_p(int(fmod(Time().modifiedJulianDay(), 1.) * 86400000),
+                  int(Time().modifiedJulianDay())),
       random_p(&generator_p, 0, 1) {}
 TableExprInfo TableExprNodeRandom::getTableInfo() const { return tableInfo_p; }
-Double TableExprNodeRandom::getDouble(const TableExprId&) { return random_p(); }
+double TableExprNodeRandom::getDouble(const TableExprId&) { return random_p(); }
 
 }  // namespace casacore

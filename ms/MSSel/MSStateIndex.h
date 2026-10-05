@@ -85,25 +85,25 @@ class MSStateIndex {
   // Null destructor
   virtual ~MSStateIndex() {}
 
-  Vector<Int> matchStateIntent(const String& name);
-  Vector<Int> matchStateIntent(const Vector<String>& names);
+  Vector<int> matchStateIntent(const String& name);
+  Vector<int> matchStateIntent(const Vector<String>& names);
 
   // ADD for file name wildcard selection
-  Vector<Int> matchStateObsMode(const String& name);
-  Vector<Int> matchStateObsMode(const Vector<String>& names);
+  Vector<int> matchStateObsMode(const String& name);
+  Vector<int> matchStateObsMode(const Vector<String>& names);
 
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchStateRegexOrPattern(const String& pattern, const bool regex = false);
-  Vector<Int> matchStateObsModeRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchStateRegexOrPattern(const String& pattern, const bool regex = false);
+  Vector<int> matchStateObsModeRegexOrPattern(const String& pattern, const bool regex = false);
   // Look up FIELD_ID's for a given source id
-  Vector<Int> matchStateId(const Int& sourceId);
-  Vector<Int> matchStateId(const Vector<Int>& sourceIds);
+  Vector<int> matchStateId(const int& sourceId);
+  Vector<int> matchStateId(const Vector<int>& sourceIds);
 
-  Vector<Int> maskStateIDs(const Vector<Int>& ids);
+  Vector<int> maskStateIDs(const Vector<int>& ids);
 
-  Vector<Int> matchStateIDLT(const Int n);
-  Vector<Int> matchStateIDGT(const Int n);
-  Vector<Int> matchStateIDGTAndLT(const Int n0, const int n1);
+  Vector<int> matchStateIDLT(const int n);
+  Vector<int> matchStateIDGT(const int n);
+  Vector<int> matchStateIDGTAndLT(const int n0, const int n1);
 
  private:
   // Disallow null constructor
@@ -113,9 +113,9 @@ class MSStateIndex {
   MSStateColumns msStateCols_p;
 
   // Vector cache of field id's
-  Vector<Int> stateIds_p;
-  Int nrows_p;
-  Int matchAnyRegex(const Vector<String>& strList, const Regex& regex, const Int pos = 0);
+  Vector<int> stateIds_p;
+  int nrows_p;
+  int matchAnyRegex(const Vector<String>& strList, const Regex& regex, const int pos = 0);
 };
 
 }  // namespace casacore

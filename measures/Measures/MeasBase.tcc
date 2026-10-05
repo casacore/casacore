@@ -56,14 +56,14 @@ template <class Mv, class Mr>
 MeasBase<Mv, Mr>::MeasBase(const Mv &dt, const Mr &rf) : data(dt), ref(rf), unit() {}
 
 template <class Mv, class Mr>
-MeasBase<Mv, Mr>::MeasBase(const Mv &dt, uInt rf) : data(dt), ref(Mr(rf)), unit() {}
+MeasBase<Mv, Mr>::MeasBase(const Mv &dt, unsigned int rf) : data(dt), ref(Mr(rf)), unit() {}
 
 template <class Mv, class Mr>
 MeasBase<Mv, Mr>::MeasBase(const Quantity &dt, const Mr &rf)
     : data(dt), ref(rf), unit(dt.getUnit()) {}
 
 template <class Mv, class Mr>
-MeasBase<Mv, Mr>::MeasBase(const Quantity &dt, uInt rf)
+MeasBase<Mv, Mr>::MeasBase(const Quantity &dt, unsigned int rf)
     : data(dt), ref(Mr(rf)), unit(dt.getUnit()) {}
 
 template <class Mv, class Mr>
@@ -74,7 +74,7 @@ template <class Mv, class Mr>
 MeasBase<Mv, Mr>::MeasBase(const Mr &rf) : data(), ref(rf), unit() {}
 
 template <class Mv, class Mr>
-MeasBase<Mv, Mr>::MeasBase(const uInt rf) : data(), ref(Mr(rf)), unit() {}
+MeasBase<Mv, Mr>::MeasBase(const unsigned int rf) : data(), ref(Mr(rf)), unit() {}
 
 // # Destructor
 template <class Mv, class Mr>
@@ -134,7 +134,7 @@ void MeasBase<Mv, Mr>::set(const MeasValue &dt) {
 }
 
 template <class Mv, class Mr>
-bool MeasBase<Mv, Mr>::putValue(const Vector<Quantum<Double>> &in) {
+bool MeasBase<Mv, Mr>::putValue(const Vector<Quantum<double>> &in) {
   return data.putValue(in);
 }
 

@@ -177,8 +177,8 @@ void boolToBit(void* to, const void* from, size_t startBit, size_t nvalues) {
 // Check optimized conversions.
 void checkPerf() {
   cout << "checkAll ..." << endl;
-  uChar bits[256];
-  for (uInt i = 0; i < 256; ++i) {
+  unsigned char bits[256];
+  for (unsigned int i = 0; i < 256; ++i) {
     bits[i] = i;
   }
   bool flagArr[8 * 260];

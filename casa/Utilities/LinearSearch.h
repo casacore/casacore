@@ -117,16 +117,16 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // <group>
 // This version of the function is for containers that use () for indexing.
 template <class Container, class ElType>
-Int linearSearch1(const Container& container, const ElType& value, uInt lower = 0);
+int linearSearch1(const Container& container, const ElType& value, unsigned int lower = 0);
 template <class Container, class ElType>
-Int linearSearch(bool& found, const Container& container, const ElType& value, uInt n,
-                 uInt lower = 0);
+int linearSearch(bool& found, const Container& container, const ElType& value, unsigned int n,
+                 unsigned int lower = 0);
 // This version of the function is for containers that use [] for indexing.
 template <class Container, class ElType>
-Int linearSearchBrackets1(const Container& container, const ElType& value, uInt lower = 0);
+int linearSearchBrackets1(const Container& container, const ElType& value, unsigned int lower = 0);
 template <class Container, class ElType>
-Int linearSearchBrackets(bool& found, const Container& container, const ElType& value, uInt n,
-                         uInt lower = 0);
+int linearSearchBrackets(bool& found, const Container& container, const ElType& value,
+                         unsigned int n, unsigned int lower = 0);
 // </group>
 // </group>
 

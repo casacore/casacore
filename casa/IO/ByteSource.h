@@ -108,16 +108,16 @@ class ByteSource : virtual public BaseSinkSource {
   // If this function does not succeed, an exception will be thrown.
   // <group>
   ByteSource& operator>>(bool& value);
-  ByteSource& operator>>(Char& value);
-  ByteSource& operator>>(uChar& value);
-  ByteSource& operator>>(Short& value);
-  ByteSource& operator>>(uShort& value);
-  ByteSource& operator>>(Int& value);
-  ByteSource& operator>>(uInt& value);
-  ByteSource& operator>>(Int64& value);
-  ByteSource& operator>>(uInt64& value);
-  ByteSource& operator>>(Float& value);
-  ByteSource& operator>>(Double& value);
+  ByteSource& operator>>(char& value);
+  ByteSource& operator>>(unsigned char& value);
+  ByteSource& operator>>(short& value);
+  ByteSource& operator>>(unsigned short& value);
+  ByteSource& operator>>(int& value);
+  ByteSource& operator>>(unsigned int& value);
+  ByteSource& operator>>(int64_t& value);
+  ByteSource& operator>>(uint64_t& value);
+  ByteSource& operator>>(float& value);
+  ByteSource& operator>>(double& value);
   ByteSource& operator>>(Complex& value);
   ByteSource& operator>>(DComplex& value);
   ByteSource& operator>>(String& value);
@@ -127,16 +127,16 @@ class ByteSource : virtual public BaseSinkSource {
   // If this function does not succeed, an exception will be thrown.
   // <group>
   void read(size_t nvalues, bool* value);
-  void read(size_t nvalues, Char* value);
-  void read(size_t nvalues, uChar* value);
-  void read(size_t nvalues, Short* value);
-  void read(size_t nvalues, uShort* value);
-  void read(size_t nvalues, Int* value);
-  void read(size_t nvalues, uInt* value);
-  void read(size_t nvalues, Int64* value);
-  void read(size_t nvalues, uInt64* value);
-  void read(size_t nvalues, Float* value);
-  void read(size_t nvalues, Double* value);
+  void read(size_t nvalues, char* value);
+  void read(size_t nvalues, unsigned char* value);
+  void read(size_t nvalues, short* value);
+  void read(size_t nvalues, unsigned short* value);
+  void read(size_t nvalues, int* value);
+  void read(size_t nvalues, unsigned int* value);
+  void read(size_t nvalues, int64_t* value);
+  void read(size_t nvalues, uint64_t* value);
+  void read(size_t nvalues, float* value);
+  void read(size_t nvalues, double* value);
   void read(size_t nvalues, Complex* value);
   void read(size_t nvalues, DComplex* value);
   void read(size_t nvalues, String* value);

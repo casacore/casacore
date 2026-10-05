@@ -98,7 +98,7 @@ LatticeCleaner<T>::LatticeCleaner()
       itsDidStopPointMode(false),
       itsJustStarting(true),
       itsMaskThreshold(T(0.9)) {
-  itsMemoryMB = Double(HostInfo::memoryTotal() / 1024) / 16.0;
+  itsMemoryMB = double(HostInfo::memoryTotal() / 1024) / 16.0;
   itsScales.resize(0);
   itsScaleXfrs.resize(0);
   itsDirtyConvScales.resize(0);
@@ -135,7 +135,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T>& psf, const Lattice<T>& dirty
 
   // Ah, but when we are doing a mosaic, its actually worse than this!
   // So, we pass it in
-  itsMemoryMB = Double(HostInfo::memoryTotal() / 1024) / 16.0;
+  itsMemoryMB = double(HostInfo::memoryTotal() / 1024) / 16.0;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
@@ -222,7 +222,7 @@ void LatticeCleaner<T>::update(const Lattice<T>& dirty) {
   // Now we can redo the relevant convolutions
   TempLattice<Complex> cWork(itsDirty->shape(), itsMemoryMB);
 
-  for (Int scale = 0; scale < itsNscales; scale++) {
+  for (int scale = 0; scale < itsNscales; scale++) {
     // Dirty * scale
     os << "Updating dirty * scale image for scale " << scale + 1 << LogIO::POST;
 
@@ -254,15 +254,15 @@ void LatticeCleaner<T>::setMask(const Lattice<T>& mask, const T& maskThreshold) 
 }
 
 template <class T>
-bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int niter,
-                                   const Float gain, const Quantity& threshold, const bool choose) {
+bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const int niter,
+                                   const float gain, const Quantity& threshold, const bool choose) {
   return setcontrol(cleanType, niter, gain, threshold, Quantity(0.0, "%"), choose);
 }
 
 // Set up the control parameters
 template <class T>
-bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int niter,
-                                   const Float gain, const Quantity& aThreshold,
+bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const int niter,
+                                   const float gain, const Quantity& aThreshold,
                                    const Quantity& fThreshold, const bool choose) {
   itsCleanType = cleanType;
   itsMaxNiter = niter;
@@ -275,14 +275,14 @@ bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType, const Int ni
 
 // Set up speedup parameters
 template <class T>
-void LatticeCleaner<T>::speedup(const Float nDouble) {
+void LatticeCleaner<T>::speedup(const float nDouble) {
   itsDoSpeedup = true;
   itsNDouble = nDouble;
 };
 
 // Do the clean as set up
 template <class T>
-Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) {
+int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) {
   AlwaysAssert(model.shape() == itsDirty->shape(), AipsError);
 
   LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
@@ -290,7 +290,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
   T tmpMaximumResidual;
   tmpMaximumResidual = T();
 
-  Int nScalesToClean = itsNscales;
+  int nScalesToClean = itsNscales;
   if (itsCleanType == CleanEnums::HOGBOM) {
     os << LogIO::NORMAL1 << "Hogbom clean algorithm" << LogIO::POST;
     nScalesToClean = 1;
@@ -302,7 +302,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
     }
   }
 
-  Int scale;
+  int scale;
   Vector<T> scaleBias(nScalesToClean);
   if (nScalesToClean > 1) {
     os << LogIO::NORMAL1 << "Scale biases =";
@@ -353,21 +353,21 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
          << LogIO::POST;
     }
 
-    Int nx = model.shape()(0);
-    Int ny = model.shape()(1);
+    int nx = model.shape()(0);
+    int ny = model.shape()(1);
 
     AlwaysAssert(itsMask->shape()(0) == nx, AipsError);
     AlwaysAssert(itsMask->shape()(1) == ny, AipsError);
 
     LatticeStepper mls(itsMask->shape(), IPosition(4, nx, ny, 1, 1), IPosition(4, 0, 1, 3, 2));
-    RO_LatticeIterator<Float> maskli(*itsMask, mls);
+    RO_LatticeIterator<float> maskli(*itsMask, mls);
     maskli.reset();
-    Int xbeg = nx - 1;
-    Int ybeg = ny - 1;
-    Int xend = 0;
-    Int yend = 0;
-    for (Int iy = 0; iy < ny; iy++) {
-      for (Int ix = 0; ix < nx; ix++) {
+    int xbeg = nx - 1;
+    int ybeg = ny - 1;
+    int xend = 0;
+    int yend = 0;
+    for (int iy = 0; iy < ny; iy++) {
+      for (int ix = 0; ix < nx; ix++) {
         if (maskli.matrixCursor()(ix, iy) > 0.000001) {
           xbeg = min(xbeg, ix);
           ybeg = min(ybeg, iy);
@@ -404,7 +404,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
       os << LogIO::NORMAL1 << "as per MF/WF" << LogIO::POST;  // ???
     } else {
       os << "Cleaning inner quarter of the image" << LogIO::POST;
-      for (Int i = 0; i < Int(model.shape().nelements()); i++) {
+      for (int i = 0; i < int(model.shape().nelements()); i++) {
         blcDirty(i) = model.shape()(i) / 4;
         trcDirty(i) = blcDirty(i) + model.shape()(i) / 2 - 1;
         if (trcDirty(i) < 0) trcDirty(i) = 1;
@@ -416,7 +416,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
   PtrBlock<Lattice<T>*> scaleMaskSubs;
   if (itsMask) {
     scaleMaskSubs.resize(itsNscales);
-    for (Int is = 0; is < itsNscales; is++) {
+    for (int is = 0; is < itsNscales; is++) {
       scaleMaskSubs[is] = new SubLattice<T>(*(itsScaleMasks[is]), centerBox);
     }
   }
@@ -427,15 +427,15 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
   Vector<T> totalFluxScale(nScalesToClean);
   totalFluxScale = 0.0;
   T totalFlux = 0.0;
-  Int converged = 0;
-  Int stopPointModeCounter = 0;
-  Int optimumScale = 0;
+  int converged = 0;
+  int stopPointModeCounter = 0;
+  int optimumScale = 0;
   itsStrengthOptimum = 0.0;
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration" << LogIO::POST;
 
   itsIteration = itsStartingIter;
-  for (Int ii = itsStartingIter; ii < itsMaxNiter; ii++) {
+  for (int ii = itsStartingIter; ii < itsMaxNiter; ii++) {
     itsIteration++;
     // Find the peak residual
     itsStrengthOptimum = 0.0;
@@ -546,8 +546,8 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
     // Continuing: subtract the peak that we found from all dirty images
     // Define a subregion so that that the peak is centered
     IPosition support(model.shape());
-    support(0) = max(Int(itsScaleSizes(itsNscales - 1) + 0.5), support(0));
-    support(1) = max(Int(itsScaleSizes(itsNscales - 1) + 0.5), support(1));
+    support(0) = max(int(itsScaleSizes(itsNscales - 1) + 0.5), support(0));
+    support(1) = max(int(itsScaleSizes(itsNscales - 1) + 0.5), support(1));
 
     IPosition inc(model.shape().nelements(), 1);
 
@@ -588,7 +588,7 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model, LatticeCleanProgress* progress) 
   }
 
   if (itsMask) {
-    for (Int is = 0; is < itsNscales; is++) {
+    for (int is = 0; is < itsNscales; is++) {
       delete scaleMaskSubs[is];
     }
     scaleMaskSubs.resize(0);
@@ -682,7 +682,7 @@ bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice, const L
 }
 
 template <class T>
-bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc) {
+bool LatticeCleaner<T>::setscales(const int nscales, const float scaleInc) {
   LogIO os(LogOrigin("deconvolver", "setscales()", WHERE));
 
   itsNscales = nscales;
@@ -691,14 +691,14 @@ bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc) {
     itsNscales = 5;
   }
 
-  Vector<Float> scaleSizes(itsNscales);
+  Vector<float> scaleSizes(itsNscales);
 
   // Validate scales
   os << "Creating " << itsNscales << " scales" << LogIO::POST;
   scaleSizes(0) = 0.00001 * scaleInc;
   os << "scale 1 = 0.0 arcsec" << LogIO::POST;
-  for (Int scale = 1; scale < itsNscales; scale++) {
-    scaleSizes(scale) = scaleInc * pow(10.0, (Float(scale) - 2.0) / 2.0);
+  for (int scale = 1; scale < itsNscales; scale++) {
+    scaleSizes(scale) = scaleInc * pow(10.0, (float(scale) - 2.0) / 2.0);
     os << "scale " << scale + 1 << " = " << scaleSizes(scale) << " arcsec" << LogIO::POST;
   }
 
@@ -708,10 +708,10 @@ bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc) {
 // We calculate all the scales and the corresponding convolutions
 // and cross convolutions.
 template <class T>
-bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
+bool LatticeCleaner<T>::setscales(const Vector<float>& scaleSizes) {
   LogIO os(LogOrigin("deconvolver", "setscales()", WHERE));
 
-  Int scale;
+  int scale;
 
   if (itsScales.nelements() > 0) {
     destroyScales();
@@ -723,16 +723,16 @@ bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
 
   // Residual, psf, and mask, plus cross terms
   // e.g. for 5 scales this is 45. for 6 it is 60.
-  Int nImages = 3 * itsNscales + itsNscales * (itsNscales + 1);
+  int nImages = 3 * itsNscales + itsNscales * (itsNscales + 1);
   os << "Expect to use " << nImages << " scratch images" << LogIO::POST;
 
   // Now we can update the size of memory allocated
-  itsMemoryMB = 0.5 * Double(HostInfo::memoryTotal() / 1024) / Double(nImages);
+  itsMemoryMB = 0.5 * double(HostInfo::memoryTotal() / 1024) / double(nImages);
   os << "Maximum memory allocated per image " << itsMemoryMB << "MB" << LogIO::POST;
 
   itsScaleSizes.resize(itsNscales);
   itsScaleSizes = scaleSizes;  // make a copy that we can call our own
-  GenSort<Float>::sort(itsScaleSizes);
+  GenSort<float>::sort(itsScaleSizes);
 
   itsScales.resize(itsNscales);
   itsDirtyConvScales.resize(itsNscales);
@@ -793,8 +793,8 @@ bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
     LatticeExpr<T> realWork2(real(cWork));
     itsDirtyConvScales[scale]->copyData(realWork2);
 
-    for (Int otherscale = scale; otherscale < itsNscales; otherscale++) {
-      AlwaysAssert(index(scale, otherscale) < Int(itsPsfConvScales.nelements()), AipsError);
+    for (int otherscale = scale; otherscale < itsNscales; otherscale++) {
+      AlwaysAssert(index(scale, otherscale) < int(itsPsfConvScales.nelements()), AipsError);
 
       // PSF *  scale * otherscale
       LatticeExpr<Complex> ppsoExpr((*itsXfr) * conj(*itsScaleXfrs[scale]) *
@@ -820,34 +820,34 @@ bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes) {
 
 // Make a single scale size image
 template <class T>
-void LatticeCleaner<T>::makeScale(Lattice<T>& scale, const Float& scaleSize) {
-  Int nx = scale.shape()(0);
-  Int ny = scale.shape()(1);
+void LatticeCleaner<T>::makeScale(Lattice<T>& scale, const float& scaleSize) {
+  int nx = scale.shape()(0);
+  int ny = scale.shape()(1);
   Matrix<T> iscale(nx, ny);
   iscale = 0.0;
 
-  Double refi = nx / 2;
-  Double refj = ny / 2;
+  double refi = nx / 2;
+  double refj = ny / 2;
 
   if (scaleSize == 0.0) {
-    iscale(Int(refi), Int(refj)) = 1.0;
+    iscale(int(refi), int(refj)) = 1.0;
   } else {
     AlwaysAssert(scaleSize > 0.0, AipsError);
 
-    Int mini = max(0, (Int)(refi - scaleSize));
-    Int maxi = min(nx - 1, (Int)(refi + scaleSize));
-    Int minj = max(0, (Int)(refj - scaleSize));
-    Int maxj = min(ny - 1, (Int)(refj + scaleSize));
+    int mini = max(0, (int)(refi - scaleSize));
+    int maxi = min(nx - 1, (int)(refi + scaleSize));
+    int minj = max(0, (int)(refj - scaleSize));
+    int maxj = min(ny - 1, (int)(refj + scaleSize));
 
-    Float ypart = 0.0;
-    Float volume = 0.0;
-    Float rad2 = 0.0;
-    Float rad = 0.0;
+    float ypart = 0.0;
+    float volume = 0.0;
+    float rad2 = 0.0;
+    float rad = 0.0;
 
-    for (Int j = minj; j <= maxj; j++) {
-      ypart = square((refj - (Double)(j)) / scaleSize);
-      for (Int i = mini; i <= maxi; i++) {
-        rad2 = ypart + square((refi - (Double)(i)) / scaleSize);
+    for (int j = minj; j <= maxj; j++) {
+      ypart = square((refj - (double)(j)) / scaleSize);
+      for (int i = mini; i <= maxi; i++) {
+        rad2 = ypart + square((refi - (double)(i)) / scaleSize);
         if (rad2 < 1.0) {
           if (rad2 <= 0.0) {
             rad = 0.0;
@@ -868,14 +868,14 @@ void LatticeCleaner<T>::makeScale(Lattice<T>& scale, const Float& scaleSize) {
 
 // Calculate the spheroidal function
 template <class T>
-Float LatticeCleaner<T>::spheroidal(Float nu) {
+float LatticeCleaner<T>::spheroidal(float nu) {
   if (nu <= 0) {
     return 1.0;
   } else if (nu >= 1.0) {
     return 0.0;
   } else {
-    uInt np = 5;
-    uInt nq = 3;
+    unsigned int np = 5;
+    unsigned int nq = 3;
     Matrix<float> p(np, 2);
     Matrix<float> q(nq, 2);
     p(0, 0) = 8.203343e-2;
@@ -894,8 +894,8 @@ Float LatticeCleaner<T>::spheroidal(Float nu) {
     q(0, 1) = 1.0000000e0;
     q(1, 1) = 9.599102e-1;
     q(2, 1) = 2.918724e-1;
-    uInt part = 0;
-    Float nuend = 0.0;
+    unsigned int part = 0;
+    float nuend = 0.0;
     if (nu >= 0.0 && nu < 0.75) {
       part = 0;
       nuend = 0.75;
@@ -904,15 +904,15 @@ Float LatticeCleaner<T>::spheroidal(Float nu) {
       nuend = 1.0;
     }
 
-    Float top = p(0, part);
-    Float delnusq = pow(nu, 2.0) - pow(nuend, 2.0);
-    uInt k;
+    float top = p(0, part);
+    float delnusq = pow(nu, 2.0) - pow(nuend, 2.0);
+    unsigned int k;
     for (k = 1; k < np; k++) {
-      top += p(k, part) * pow(delnusq, (Float)k);
+      top += p(k, part) * pow(delnusq, (float)k);
     }
-    Float bot = q(0, part);
+    float bot = q(0, part);
     for (k = 1; k < nq; k++) {
-      bot += q(k, part) * pow(delnusq, (Float)k);
+      bot += q(k, part) * pow(delnusq, (float)k);
     }
 
     if (bot != 0.0) {
@@ -925,7 +925,7 @@ Float LatticeCleaner<T>::spheroidal(Float nu) {
 
 // Calculate index into PsfConvScales
 template <class T>
-Int LatticeCleaner<T>::index(const Int scale, const Int otherscale) {
+int LatticeCleaner<T>::index(const int scale, const int otherscale) {
   if (otherscale > scale) {
     return scale + itsNscales * (otherscale + 1);
   } else {
@@ -936,19 +936,19 @@ Int LatticeCleaner<T>::index(const Int scale, const Int otherscale) {
 template <class T>
 bool LatticeCleaner<T>::destroyScales() {
   if (!itsScalesValid) return true;
-  for (uInt scale = 0; scale < itsScales.nelements(); scale++) {
+  for (unsigned int scale = 0; scale < itsScales.nelements(); scale++) {
     if (itsScales[scale]) delete itsScales[scale];
     itsScales[scale] = 0;
   }
-  for (uInt scale = 0; scale < itsScaleXfrs.nelements(); scale++) {
+  for (unsigned int scale = 0; scale < itsScaleXfrs.nelements(); scale++) {
     if (itsScaleXfrs[scale]) delete itsScaleXfrs[scale];
     itsScaleXfrs[scale] = 0;
   }
-  for (uInt scale = 0; scale < itsDirtyConvScales.nelements(); scale++) {
+  for (unsigned int scale = 0; scale < itsDirtyConvScales.nelements(); scale++) {
     if (itsDirtyConvScales[scale]) delete itsDirtyConvScales[scale];
     itsDirtyConvScales[scale] = 0;
   }
-  for (uInt scale = 0; scale < itsPsfConvScales.nelements(); scale++) {
+  for (unsigned int scale = 0; scale < itsPsfConvScales.nelements(); scale++) {
     if (itsPsfConvScales[scale]) delete itsPsfConvScales[scale];
     itsPsfConvScales[scale] = 0;
   }
@@ -962,7 +962,7 @@ bool LatticeCleaner<T>::destroyScales() {
 
 template <class T>
 bool LatticeCleaner<T>::destroyMasks() {
-  for (uInt scale = 0; scale < itsScaleMasks.nelements(); scale++) {
+  for (unsigned int scale = 0; scale < itsScaleMasks.nelements(); scale++) {
     if (itsScaleMasks[scale]) delete itsScaleMasks[scale];
     itsScaleMasks[scale] = 0;
   }
@@ -1013,7 +1013,7 @@ bool LatticeCleaner<T>::destroyMasks() {
 template <class T>
 bool LatticeCleaner<T>::makeScaleMasks() {
   LogIO os(LogOrigin("deconvolver", "makeScaleMasks()", WHERE));
-  Int scale;
+  int scale;
 
   if (!itsScalesValid) {
     os << "Scales are not yet set - cannot set scale masks" << LogIO::EXCEPTION;
@@ -1047,7 +1047,7 @@ bool LatticeCleaner<T>::makeScaleMasks() {
 
     LatticeExprNode LEN;
     LEN = sum(*itsScaleMasks[scale]);
-    Float mysum = LEN.getFloat();
+    float mysum = LEN.getFloat();
     if (mysum <= 0.1) {
       os << LogIO::WARN << "Ignoring scale " << scale + 1
          << " since it is too large to fit within the mask" << LogIO::POST;
@@ -1058,12 +1058,12 @@ bool LatticeCleaner<T>::makeScaleMasks() {
 }
 
 template <class T>
-Float LatticeCleaner<T>::threshold() const {
+float LatticeCleaner<T>::threshold() const {
   if (!itsDoSpeedup) {
     return max(itsFracThreshold.get("%").getValue() * itsMaximumResidual / 100.0,
                itsThreshold.get("Jy").getValue());
   } else {
-    const Float factor = exp((Float)(itsIteration - itsStartingIter) / itsNDouble) / 2.7182818;
+    const float factor = exp((float)(itsIteration - itsStartingIter) / itsNDouble) / 2.7182818;
     return factor * max(itsFracThreshold.get("%").getValue() * itsMaximumResidual / 100.0,
                         itsThreshold.get("Jy").getValue());
   }
@@ -1097,8 +1097,8 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1, IPos
   if (shape1 == shape2) {
     return;
   }
-  for (uInt i = 0; i < shape1.nelements(); ++i) {
-    Int minLength = shape1[i];
+  for (unsigned int i = 0; i < shape1.nelements(); ++i) {
+    int minLength = shape1[i];
     if (shape2[i] < minLength) {
       minLength = shape2[i];
     }
@@ -1108,8 +1108,8 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1, IPos
     //  the same by making this number even
     //--minLength; // this code is a mistake and should be removed
     //}
-    const Int increment1 = shape1[i] - minLength;
-    const Int increment2 = shape2[i] - minLength;
+    const int increment1 = shape1[i] - minLength;
+    const int increment2 = shape2[i] - minLength;
     blc1[i] += increment1 / 2;
     trc1[i] -= increment1 / 2 + (increment1 % 2 != 0 ? 1 : 0);
     blc2[i] += increment2 / 2;

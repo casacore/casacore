@@ -71,7 +71,7 @@ class Quality {
 
   // Convert Int to QualityTypes, returns Quality::Undefined if
   // it is an invalid type
-  static QualityTypes type(Int qualityNumber);
+  static QualityTypes type(int qualityNumber);
 
   // Convert String to QualityTypes, returns Quality::Undefined if
   // it is an unrecognized string.  The valid strings are the

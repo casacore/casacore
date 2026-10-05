@@ -53,7 +53,7 @@ std::string FormatString(const char *picture, ...) {
 String::String(std::ostringstream &os) { *this = os.str(); }
 
 // Count occurrences
-int String::freq(Char c) const {
+int String::freq(char c) const {
   size_type p(0);
   int found(0);
   while (p < length()) {
@@ -75,7 +75,7 @@ int String::freq(const std::string &str) const {
   return found;
 }
 
-int String::freq(const Char *s) const {
+int String::freq(const char *s) const {
   size_type p(0);
   int found(0);
   while (p < length()) {
@@ -119,11 +119,11 @@ SubString String::at(const std::string &str, int startpos) {
   return _substr(IndexString(*this, str, startpos), str.length());
 }
 
-SubString String::at(const Char *s, int startpos) {
+SubString String::at(const char *s, int startpos) {
   return _substr(IndexString(*this, s, startpos), traits_type::length(s));
 }
 
-SubString String::at(Char c, int startpos) { return _substr(IndexString(*this, c, startpos), 1); }
+SubString String::at(char c, int startpos) { return _substr(IndexString(*this, c, startpos), 1); }
 
 SubString String::before(size_type pos) { return _substr(0, pos); }
 
@@ -131,11 +131,11 @@ SubString String::before(const std::string &str, size_type startpos) {
   return _substr(0, IndexString(*this, str, startpos));
 }
 
-SubString String::before(const Char *s, size_type startpos) {
+SubString String::before(const char *s, size_type startpos) {
   return _substr(0, IndexString(*this, s, startpos));
 }
 
-SubString String::before(Char c, size_type startpos) { return _substr(0, find(c, startpos)); }
+SubString String::before(char c, size_type startpos) { return _substr(0, find(c, startpos)); }
 
 SubString String::through(size_type pos) { return _substr(0, pos + 1); }
 
@@ -145,13 +145,13 @@ SubString String::through(const std::string &str, size_type startpos) {
   return _substr(0, last);
 }
 
-SubString String::through(const Char *s, size_type startpos) {
+SubString String::through(const char *s, size_type startpos) {
   size_type last(IndexString(*this, s, startpos));
   if (last != npos) last += traits_type::length(s);
   return _substr(0, last);
 }
 
-SubString String::through(Char c, size_type startpos) {
+SubString String::through(char c, size_type startpos) {
   size_type last(find(c, startpos));
   if (last != npos) last += 1;
   return _substr(0, last);
@@ -164,12 +164,12 @@ SubString String::from(const std::string &str, size_type startpos) {
   return _substr(first, length() - first);
 }
 
-SubString String::from(const Char *s, size_type startpos) {
+SubString String::from(const char *s, size_type startpos) {
   size_type first(IndexString(*this, s, startpos));
   return _substr(first, length() - first);
 }
 
-SubString String::from(Char c, size_type startpos) {
+SubString String::from(char c, size_type startpos) {
   size_type first(find(c, startpos));
   return _substr(first, length() - first);
 }
@@ -182,13 +182,13 @@ SubString String::after(const std::string &str, size_type startpos) {
   return _substr(first, length() - first);
 }
 
-SubString String::after(const Char *s, size_type startpos) {
+SubString String::after(const char *s, size_type startpos) {
   size_type first(IndexString(*this, s, startpos));
   if (first != npos) first += traits_type::length(s);
   return _substr(first, length() - first);
 }
 
-SubString String::after(Char c, size_type startpos) {
+SubString String::after(char c, size_type startpos) {
   size_type first(find(c, startpos));
   if (first != npos) first += 1;
   return _substr(first, length() - first);
@@ -197,9 +197,9 @@ SubString String::after(Char c, size_type startpos) {
 // Prepend string
 void String::prepend(const std::string &str) { insert(size_type(0), str); }
 
-void String::prepend(const Char *s) { insert(size_type(0), s); }
+void String::prepend(const char *s) { insert(size_type(0), s); }
 
-void String::prepend(Char c) { insert(size_type(0), 1, c); }
+void String::prepend(char c) { insert(size_type(0), 1, c); }
 
 // Delete
 void String::del(size_type pos, size_type len) { erase(pos, len); }
@@ -208,22 +208,22 @@ void String::del(const std::string &str, size_type startpos) {
   erase(IndexString(*this, str, startpos), str.length());
 }
 
-void String::del(const Char *s, size_type startpos) {
+void String::del(const char *s, size_type startpos) {
   erase(IndexString(*this, s, startpos), traits_type::length(s));
 }
 
-void String::del(Char c, size_type startpos) { erase(find(c, startpos), 1); }
+void String::del(char c, size_type startpos) { erase(find(c, startpos), 1); }
 
 // Global substitution
 int String::gsub(const std::string &pat, const std::string &repl) {
   return ReplaceAllInPlace(*this, pat, repl);
 }
 
-int String::gsub(const Char *pat, const std::string &repl) {
+int String::gsub(const char *pat, const std::string &repl) {
   return ReplaceAllInPlace(*this, String(pat), repl);
 }
 
-int String::gsub(const Char *pat, const Char *repl) {
+int String::gsub(const char *pat, const char *repl) {
   return ReplaceAllInPlace(*this, String(pat), String(repl));
 }
 
@@ -395,7 +395,7 @@ String trim(const std::string &str) {
   return s;
 }
 
-String replicate(Char c, String::size_type n) { return String(n, c); }
+String replicate(char c, String::size_type n) { return String(n, c); }
 
 String replicate(const std::string &str, String::size_type n) {
   String t(str);
@@ -431,7 +431,7 @@ int split(const std::string &str, std::string res[], int maxn, const Regex &sep)
   return i;
 }
 
-int split(const std::string &str, std::string res[], int maxn, const Char sep) {
+int split(const std::string &str, std::string res[], int maxn, const char sep) {
   return split(str, res, maxn, String(1, sep));
 }
 
@@ -448,7 +448,7 @@ String common_prefix(const std::string &x, const std::string &y, int startpos) {
 }
 
 String common_suffix(const std::string &x, const std::string &y, int startpos) {
-  if (startpos >= 0 || startpos + Int(x.length()) < 0 || startpos + Int(y.length()) < 0)
+  if (startpos >= 0 || startpos + int(x.length()) < 0 || startpos + int(y.length()) < 0)
     return String();
   String::const_iterator xs(x.end() + startpos + 1);
   String::const_iterator ys(y.end() + startpos + 1);
@@ -503,12 +503,12 @@ SubString &SubString::operator=(const String &str) {
   return *this;
 }
 
-SubString &SubString::operator=(const Char *s) {
+SubString &SubString::operator=(const char *s) {
   const_cast<std::string &>(ref_p).replace(pos_p, len_p, s);
   return *this;
 }
 
-SubString &SubString::operator=(const Char c) {
+SubString &SubString::operator=(const char c) {
   const_cast<std::string &>(ref_p).replace(pos_p, len_p, 1, c);
   return *this;
 }

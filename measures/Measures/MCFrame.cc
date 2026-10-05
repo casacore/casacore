@@ -49,53 +49,53 @@ struct MCFrameImplementation {
   // Conversion to TDB time
   std::optional<MeasConvert<MEpoch>> epConvTDB;
   // TDB time
-  std::optional<Double> epTDBp;
+  std::optional<double> epTDBp;
   // Conversion to UT1 time
   std::optional<MeasConvert<MEpoch>> epConvUT1;
   // UT1 time
-  std::optional<Double> epUT1p;
+  std::optional<double> epUT1p;
   // Conversion to TT time
   std::optional<MeasConvert<MEpoch>> epConvTT;
   // TT time
-  std::optional<Double> epTTp;
+  std::optional<double> epTTp;
   // Conversion to LAST time
   std::optional<MeasConvert<MEpoch>> epConvLAST;
   // LAST time
-  std::optional<Double> epLASTp;
+  std::optional<double> epLASTp;
   // Conversion to ITRF longitude/latitude
   std::optional<MeasConvert<MPosition>> posConvLong;
   // Longitude
-  std::optional<Vector<Double>> posLongp;
+  std::optional<Vector<double>> posLongp;
   // Position
   std::optional<MVPosition> posITRFp;
   // Conversion to geodetic longitude/latitude
   std::optional<MeasConvert<MPosition>> posConvLongGeo;
   // Latitude
-  std::optional<Vector<Double>> posLongGeop;
+  std::optional<Vector<double>> posLongGeop;
   // Position
   std::optional<MVPosition> posGeop;
   // Conversion to J2000
   std::optional<MeasConvert<MDirection>> dirConvJ2000;
   // Longitude
-  std::optional<Vector<Double>> j2000Longp;
+  std::optional<Vector<double>> j2000Longp;
   // J2000 coordinates
   std::optional<MVDirection> dirJ2000p;
   // Conversion to B1950
   std::optional<MeasConvert<MDirection>> dirConvB1950;
   // Longitude
-  std::optional<Vector<Double>> b1950Longp;
+  std::optional<Vector<double>> b1950Longp;
   // B1950 coordinates
   std::optional<MVDirection> dirB1950p;
   // Conversion to apparent coordinates
   std::optional<MeasConvert<MDirection>> dirConvApp;
   // Longitude
-  std::optional<Vector<Double>> appLongp;
+  std::optional<Vector<double>> appLongp;
   // Apparent coordinates
   std::optional<MVDirection> dirAppp;
   // Conversion to LSR radial velocity
   std::optional<MeasConvert<MRadialVelocity>> radConvLSR;
   // Radial velocity
-  std::optional<Double> radLSRp;
+  std::optional<double> radLSRp;
 };
 
 MCFrame::MCFrame() : impl_(std::make_unique<MCFrameImplementation>()) {}
@@ -138,7 +138,7 @@ void MCFrame::resetRadialVelocity() { impl_->radLSRp.reset(); }
 
 void MCFrame::resetComet() {}
 
-bool MCFrame::getTDB(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getTDB(double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epTDBp) {
       impl_->epTDBp =
@@ -153,7 +153,7 @@ bool MCFrame::getTDB(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getUT1(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getUT1(double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epUT1p) {
       impl_->epUT1p =
@@ -168,7 +168,7 @@ bool MCFrame::getUT1(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getTT(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getTT(double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epTTp) {
       impl_->epTTp =
@@ -183,7 +183,7 @@ bool MCFrame::getTT(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getLong(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLong(double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -198,7 +198,7 @@ bool MCFrame::getLong(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getLat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLat(double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -213,7 +213,7 @@ bool MCFrame::getLat(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getLatGeo(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLatGeo(double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongGeop.has_value())) {
       impl_->posGeop = impl_->posConvLongGeo
@@ -243,7 +243,7 @@ bool MCFrame::getITRF(MVPosition &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getRadius(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getRadius(double &tdb, const MeasFrame &frame) {
   if (frame.position()) {
     if (!(impl_->posLongp.has_value())) {
       impl_->posITRFp =
@@ -258,7 +258,7 @@ bool MCFrame::getRadius(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getLAST(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLAST(double &tdb, const MeasFrame &frame) {
   if (frame.epoch()) {
     if (!impl_->epLASTp) {
       impl_->epLASTp =
@@ -273,13 +273,13 @@ bool MCFrame::getLAST(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getLASTr(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLASTr(double &tdb, const MeasFrame &frame) {
   bool tmp = MCFrame::getLAST(tdb, frame);
   tdb *= C::circle;
   return tmp;
 }
 
-bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getJ2000Long(double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->j2000Longp.has_value())) {
       impl_->dirJ2000p =
@@ -295,7 +295,7 @@ bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getJ2000Lat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getJ2000Lat(double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->j2000Longp.has_value())) {
       impl_->dirJ2000p =
@@ -327,7 +327,7 @@ bool MCFrame::getJ2000(MVDirection &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getB1950Long(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getB1950Long(double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->b1950Longp.has_value())) {
       impl_->dirB1950p =
@@ -343,7 +343,7 @@ bool MCFrame::getB1950Long(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getB1950Lat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getB1950Lat(double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->b1950Longp.has_value())) {
       impl_->dirB1950p =
@@ -375,7 +375,7 @@ bool MCFrame::getB1950(MVDirection &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getAppLong(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getAppLong(double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->appLongp.has_value())) {
       impl_->dirAppp =
@@ -391,7 +391,7 @@ bool MCFrame::getAppLong(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getAppLat(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getAppLat(double &tdb, const MeasFrame &frame) {
   if (frame.direction()) {
     if (!(impl_->appLongp.has_value())) {
       impl_->dirAppp =
@@ -423,7 +423,7 @@ bool MCFrame::getApp(MVDirection &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getLSR(Double &tdb, const MeasFrame &frame) {
+bool MCFrame::getLSR(double &tdb, const MeasFrame &frame) {
   if (frame.radialVelocity()) {
     if (!impl_->radLSRp) {
       impl_->radLSRp =
@@ -438,9 +438,9 @@ bool MCFrame::getLSR(Double &tdb, const MeasFrame &frame) {
   return false;
 }
 
-bool MCFrame::getCometType(uInt &tdb, const MeasFrame &frame) {
+bool MCFrame::getCometType(unsigned int &tdb, const MeasFrame &frame) {
   if (frame.comet()) {
-    tdb = static_cast<uInt>(frame.comet()->getType());
+    tdb = static_cast<unsigned int>(frame.comet()->getType());
     return true;
   }
   tdb = 0;
@@ -449,7 +449,7 @@ bool MCFrame::getCometType(uInt &tdb, const MeasFrame &frame) {
 
 bool MCFrame::getComet(MVPosition &tdb, const MeasFrame &frame) {
   if (frame.comet()) {
-    Double x(0);
+    double x(0);
     if (getTDB(x, frame) && frame.comet()->get(tdb, x)) return true;
   }
   tdb = MVPosition(0.0);

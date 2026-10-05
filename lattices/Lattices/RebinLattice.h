@@ -108,7 +108,7 @@ class RebinLattice : public MaskedLattice<T> {
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   // </group>
@@ -143,7 +143,7 @@ class RebinLattice : public MaskedLattice<T> {
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual unsigned int advisedMaxPixels() const;
 
   // Check class internals - used for debugging. Should always return true
   virtual bool ok() const;

@@ -92,7 +92,7 @@ class AppInfo {
   // enough free space), a zero-length vector is returned. A warning is
   // issued to the logging system for directories which do not exist or are
   // not writable.
-  static Vector<String> workDirectories(uInt minimumFreeSpaceInMB = 0);
+  static Vector<String> workDirectories(unsigned int minimumFreeSpaceInMB = 0);
 
   // Choose a workDirectory with at least <src>minimumFreeSpace</src> MB of
   // free space available. It uses <src>workDirectories</src>. If there is
@@ -106,7 +106,7 @@ class AppInfo {
   //  <li> An <linkto class=AipsError>AipsError</linkto> is thrown if no
   //       directory with enough free space is found.
   // </thrown>
-  static String workDirectory(uInt minimumFreeSpaceInMB = 0);
+  static String workDirectory(unsigned int minimumFreeSpaceInMB = 0);
 
   // This function returns a fully qualified filename for a non-existent file
   // in a work directory with enough free space. That is, you can create a
@@ -118,19 +118,19 @@ class AppInfo {
   //  <li> An <linkto class=AipsError>AipsError</linkto> is thrown if no
   //       directory with enough free space is found.
   // </thrown>
-  static String workFileName(uInt minimumFreeSpaceInMB = 0,
+  static String workFileName(unsigned int minimumFreeSpaceInMB = 0,
                              const String &filenamePrefix = "aipstmp_");
 
   // Return the local time zone offset in day fractions. This value has to be
   // added to UTC to get local time. Generally the OS supplied value will be
   // used, however it can be overridden with
   // <src>system.time.tzoffset</src> if necessary.
-  static Double timeZone();
+  static double timeZone();
 
  private:
   // # Data
   static bool need_init_p;
-  static uInt tz_r;
+  static unsigned int tz_r;
   // # Methods
   //  Force an initialization of the AppInfo values.
   static void init();
@@ -138,9 +138,9 @@ class AppInfo {
 
 // # Inlines
 
-inline Double AppInfo::timeZone() {
+inline double AppInfo::timeZone() {
   if (need_init_p) init();
-  return AipsrcValue<Double>::get(tz_r);
+  return AipsrcValue<double>::get(tz_r);
 }
 
 }  // namespace casacore

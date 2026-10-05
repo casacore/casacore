@@ -95,8 +95,8 @@ void writeFixed(const TSMOption& tsmOpt) {
   Matrix<float> wresult(IPosition(2, 16, 25));
   indgen(darray);
   indgen(warray);
-  for (uInt i = 0; i < 101; i++) {
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+  for (unsigned int i = 0; i < 101; i++) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     table.addRow();
@@ -115,8 +115,8 @@ void writeFixed(const TSMOption& tsmOpt) {
   indgen(freqValues, float(200));
   indgen(polValues, float(300));
   timeValue = 34;
-  for (uInt i = 0; i < table.nrow(); i++) {
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+  for (unsigned int i = 0; i < table.nrow(); i++) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     data.get(i, dresult);
@@ -190,7 +190,7 @@ void readTable(const IPosition& dwShape, const TSMOption& tsmOpt) {
   ScalarColumn<float> time(table, "Time");
   float timeValue;
   timeValue = 34;
-  for (uInt i = 0; i < table.nrow(); i++) {
+  for (unsigned int i = 0; i < table.nrow(); i++) {
     Array<Complex> dresult(dwShape);
     Array<bool> fresult(dwShape);
     Array<float> wresult(dwShape);
@@ -201,7 +201,7 @@ void readTable(const IPosition& dwShape, const TSMOption& tsmOpt) {
     Array<bool> farray(fresult.shape());
     Array<float> warray(wresult.shape());
     indgen(darray, float(i) * Complex(100, 10));
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     indgen(warray, i * float(200));
@@ -273,7 +273,7 @@ void writeVar(const TSMOption& tsmOpt) {
   Matrix<float> warray(IPosition(2, 16, 25));
   indgen(darray);
   indgen(warray);
-  for (uInt i = 0; i < 5; i++) {
+  for (unsigned int i = 0; i < 5; i++) {
     table.addRow();
     cout << " pol.isDefined=" << pol.isDefined(i) << endl;
     pol.setShape(i, IPosition(1, 16), IPosition(1, 1));
@@ -283,7 +283,7 @@ void writeVar(const TSMOption& tsmOpt) {
     cout << "weig.isDefined=" << weight.isDefined(i) << endl;
     cout << "freq.isDefined=" << freq.isDefined(i) << endl;
     cout << pol.shape(i) << freq.shape(i) << data.shape(i) << weight.shape(i) << endl;
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     data.put(i, darray);
@@ -336,7 +336,7 @@ void writeFixVar(const TSMOption& tsmOpt) {
   Matrix<float> warray(IPosition(2, 16, 25));
   indgen(darray);
   indgen(warray);
-  for (uInt i = 0; i < 5; i++) {
+  for (unsigned int i = 0; i < 5; i++) {
     table.addRow();
     cout << " pol.isDefined=" << pol.isDefined(i) << endl;
     pol.setShape(i, IPosition(1, 16), IPosition(1, 1));
@@ -346,7 +346,7 @@ void writeFixVar(const TSMOption& tsmOpt) {
     cout << "weig.isDefined=" << weight.isDefined(i) << endl;
     cout << "freq.isDefined=" << freq.isDefined(i) << endl;
     cout << pol.shape(i) << freq.shape(i) << data.shape(i) << weight.shape(i) << endl;
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     data.put(i, darray);
@@ -391,8 +391,8 @@ void writeVarShaped(const TSMOption& tsmOpt) {
   ScalarColumn<float> time(table, "Time");
   ArrayColumn<float> freq(table, "Freq");
   ArrayColumn<float> pol(table, "Pol");
-  for (uInt i = 0; i < 10; i++) {
-    uInt n2 = 10 + i % 3;
+  for (unsigned int i = 0; i < 10; i++) {
+    unsigned int n2 = 10 + i % 3;
     table.addRow();
     cout << " pol.isDefined=" << pol.isDefined(i) << endl;
     pol.setShape(i, IPosition(1, 16), IPosition(1, 1));
@@ -406,7 +406,7 @@ void writeVarShaped(const TSMOption& tsmOpt) {
     Matrix<bool> farray(IPosition(2, 16, n2));
     Matrix<float> warray(IPosition(2, 16, n2));
     indgen(darray, float(i) * Complex(100, 10));
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     indgen(warray, i * float(200));
@@ -465,8 +465,8 @@ void writeNoHyper(const TSMOption& tsmOpt) {
   Matrix<float> wresult(IPosition(2, 16, 25));
   indgen(darray);
   indgen(warray);
-  for (uInt i = 0; i < 101; i++) {
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+  for (unsigned int i = 0; i < 101; i++) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     table.addRow();
@@ -485,8 +485,8 @@ void writeNoHyper(const TSMOption& tsmOpt) {
   indgen(freqValues, float(200));
   indgen(polValues, float(300));
   timeValue = 34;
-  for (uInt i = 0; i < table.nrow(); i++) {
-    for (uInt j = 0; j < farray.nelements(); ++j) {
+  for (unsigned int i = 0; i < table.nrow(); i++) {
+    for (unsigned int j = 0; j < farray.nelements(); ++j) {
       farray.data()[j] = ((i + j) % (i + 2) == 0);
     }
     data.get(i, dresult);
@@ -544,7 +544,7 @@ void writeFlags() {
   table.addRow();
   table.addRow();
 
-  for (uInt j = 0; j < fresult.nelements(); ++j) {
+  for (unsigned int j = 0; j < fresult.nelements(); ++j) {
     zeros.data()[j] = 0;
     ones.data()[j] = 1;
   }

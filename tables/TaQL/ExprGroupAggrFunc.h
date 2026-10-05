@@ -51,7 +51,7 @@ class TableExprGroupCountAll : public TableExprGroupFuncInt {
   virtual ~TableExprGroupCountAll();
   virtual void apply(const TableExprId& id);
   // Set result in case it is known directly.
-  void setResult(Int64 cnt) { itsValue = cnt; }
+  void setResult(int64_t cnt) { itsValue = cnt; }
 };
 
 // <summary>
@@ -314,7 +314,7 @@ class TableExprGroupMeanDouble : public TableExprGroupFuncDouble {
   virtual void finish();
 
  private:
-  Int64 itsNr;
+  int64_t itsNr;
 };
 
 // <summary>
@@ -330,15 +330,15 @@ class TableExprGroupMeanDouble : public TableExprGroupFuncDouble {
 // </synopsis>
 class TableExprGroupVarianceDouble : public TableExprGroupFuncDouble {
  public:
-  explicit TableExprGroupVarianceDouble(TableExprNodeRep* node, uInt ddof);
+  explicit TableExprGroupVarianceDouble(TableExprNodeRep* node, unsigned int ddof);
   virtual ~TableExprGroupVarianceDouble();
   virtual void apply(const TableExprId& id);
   virtual void finish();
 
  protected:
-  uInt itsDdof;
-  Int64 itsNr;
-  Double itsCurMean;
+  unsigned int itsDdof;
+  int64_t itsNr;
+  double itsCurMean;
 };
 
 // <summary>
@@ -354,7 +354,7 @@ class TableExprGroupVarianceDouble : public TableExprGroupFuncDouble {
 // </synopsis>
 class TableExprGroupStdDevDouble : public TableExprGroupVarianceDouble {
  public:
-  explicit TableExprGroupStdDevDouble(TableExprNodeRep* node, uInt ddof);
+  explicit TableExprGroupStdDevDouble(TableExprNodeRep* node, unsigned int ddof);
   virtual ~TableExprGroupStdDevDouble();
   virtual void finish();
 };
@@ -376,7 +376,7 @@ class TableExprGroupRmsDouble : public TableExprGroupFuncDouble {
   virtual void finish();
 
  private:
-  Int64 itsNr;
+  int64_t itsNr;
 };
 
 // <summary>
@@ -393,14 +393,14 @@ class TableExprGroupRmsDouble : public TableExprGroupFuncDouble {
 // </synopsis>
 class TableExprGroupFractileDouble : public TableExprGroupFuncDouble {
  public:
-  explicit TableExprGroupFractileDouble(TableExprNodeRep* node, Double fractile);
+  explicit TableExprGroupFractileDouble(TableExprNodeRep* node, double fractile);
   virtual ~TableExprGroupFractileDouble();
   virtual bool isLazy() const;
   virtual void apply(const TableExprId& id);
-  virtual Double getDouble(const vector<TableExprId>& ids);
+  virtual double getDouble(const vector<TableExprId>& ids);
 
  private:
-  Double itsFrac;
+  double itsFrac;
 };
 
 // <summary>
@@ -468,7 +468,7 @@ class TableExprGroupMeanDComplex : public TableExprGroupFuncDComplex {
   virtual void finish();
 
  private:
-  Int64 itsNr;
+  int64_t itsNr;
 };
 
 // <summary>
@@ -485,14 +485,14 @@ class TableExprGroupMeanDComplex : public TableExprGroupFuncDComplex {
 // </synopsis>
 class TableExprGroupVarianceDComplex : public TableExprGroupFuncDouble {
  public:
-  explicit TableExprGroupVarianceDComplex(TableExprNodeRep* node, uInt ddof);
+  explicit TableExprGroupVarianceDComplex(TableExprNodeRep* node, unsigned int ddof);
   virtual ~TableExprGroupVarianceDComplex();
   virtual void apply(const TableExprId& id);
   virtual void finish();
 
  protected:
-  uInt itsDdof;
-  Int64 itsNr;
+  unsigned int itsDdof;
+  int64_t itsNr;
   DComplex itsCurMean;
 };
 
@@ -509,7 +509,7 @@ class TableExprGroupVarianceDComplex : public TableExprGroupFuncDouble {
 // </synopsis>
 class TableExprGroupStdDevDComplex : public TableExprGroupVarianceDComplex {
  public:
-  explicit TableExprGroupStdDevDComplex(TableExprNodeRep* node, uInt ddof);
+  explicit TableExprGroupStdDevDComplex(TableExprNodeRep* node, unsigned int ddof);
   virtual ~TableExprGroupStdDevDComplex();
   virtual void finish();
 };

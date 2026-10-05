@@ -90,7 +90,7 @@ class FunctionParam {
   FunctionParam();
   // Construct a FunctionParam with <src>n</src> parameters with zero value and
   // all masks <em>true</em>
-  explicit FunctionParam(const uInt n);
+  explicit FunctionParam(const unsigned int n);
   // Construct a FunctionParam from the given vector, with all masks
   // <em>true</em>
   explicit FunctionParam(const Vector<T> &in);
@@ -100,7 +100,7 @@ class FunctionParam {
   template <class W>
   FunctionParam(const FunctionParam<W> &other)
       : npar_p(other.getParameters().nelements()), param_p(npar_p), mask_p(npar_p), maskedPtr_p(0) {
-    for (uInt i = 0; i < npar_p; ++i) {
+    for (unsigned int i = 0; i < npar_p; ++i) {
       FunctionTraits<T>::setValue(param_p[i], FunctionTraits<W>::getValue(other.getParameters()[i]),
                                   npar_p, i);
     }
@@ -115,8 +115,8 @@ class FunctionParam {
   FunctionParam &operator=(const FunctionParam<T> &other);
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &operator[](const uInt n) { return param_p[n]; }
-  const T &operator[](const uInt n) const { return param_p[n]; }
+  T &operator[](const unsigned int n) { return param_p[n]; }
+  const T &operator[](const unsigned int n) const { return param_p[n]; }
   // </group>
   // Compare two parameter sets for equal size, values and masks.
   // <group>
@@ -126,19 +126,19 @@ class FunctionParam {
 
   // # Member functions
   //  Return the number of parameters
-  uInt nelements() const { return param_p.nelements(); }
+  unsigned int nelements() const { return param_p.nelements(); }
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &parameter(const uInt n) { return param_p[n]; }
-  const T &parameter(const uInt n) const { return param_p[n]; }
+  T &parameter(const unsigned int n) { return param_p[n]; }
+  const T &parameter(const unsigned int n) const { return param_p[n]; }
   // </group>
 
   // Manipulate the mask associated with the nth parameter
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  bool &mask(const uInt n);
-  const bool &mask(const uInt n) const { return mask_p[n]; }
+  bool &mask(const unsigned int n);
+  const bool &mask(const unsigned int n) const { return mask_p[n]; }
   // </group>
 
   // Get all parameters at once.  Returns zero length
@@ -161,7 +161,7 @@ class FunctionParam {
   // results are cached.
   // <group>
   // Number of masked (<src>=true</src>) parameters
-  uInt nMaskedParameters() const;
+  unsigned int nMaskedParameters() const;
   // All masked parameters only
   // <group>
   Vector<T> &getMaskedParameters() const;
@@ -175,7 +175,7 @@ class FunctionParam {
  private:
   // # Data
   //  Number of parameters
-  uInt npar_p;
+  unsigned int npar_p;
   // Parameters
   Vector<T> param_p;
   // Masks

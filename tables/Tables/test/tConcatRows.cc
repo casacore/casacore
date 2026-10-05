@@ -48,14 +48,14 @@ void doIt() {
   AlwaysAssertExit(rows.ntable() == 2);
 
   // Check if rownr mapping is fine.
-  uInt tabnr;
+  unsigned int tabnr;
   rownr_t rownr;
-  for (uInt i = 0; i < 10; ++i) {
+  for (unsigned int i = 0; i < 10; ++i) {
     rows.mapRownr(tabnr, rownr, i);
     AlwaysAssertExit(tabnr == 0);
     AlwaysAssertExit(rownr == i);
   }
-  for (uInt i = 10; i < 25; ++i) {
+  for (unsigned int i = 10; i < 25; ++i) {
     rows.mapRownr(tabnr, rownr, i);
     AlwaysAssertExit(tabnr == 1);
     AlwaysAssertExit(rownr == i - 10);

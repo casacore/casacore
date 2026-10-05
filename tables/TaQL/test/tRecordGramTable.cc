@@ -100,7 +100,7 @@ void doIt(const String& str) {
           break;
         }
         case TpDouble: {
-          MArray<Double> arr;
+          MArray<double> arr;
           expr.get(i, arr);
           cout << arr.array();
           break;

@@ -307,7 +307,7 @@ class MSSelectionFeedParseError : public MSSelectionFeedError {
 //
 //-------------------------------------------------------------------
 //
-String constructMessage(const Int pos, const String& command);
+String constructMessage(const int pos, const String& command);
 }  // namespace casacore
 
 #endif

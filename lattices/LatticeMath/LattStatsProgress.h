@@ -74,21 +74,21 @@ class LattStatsProgress : public LatticeProgress {
   virtual ~LattStatsProgress();
 
   // increment the current step (postfix version)
-  void operator++(Int);
+  void operator++(int);
 
   // Initialize this object.  Here we create the ProgressMeter
   // This function is called by the <src>init</src> in LatticeProgress
   virtual void initDerived();
 
   // Tell the number of steps done so far.
-  virtual void nstepsDone(uInt nsteps);
+  virtual void nstepsDone(unsigned int nsteps);
 
   // The process has ended so clean things up.
   virtual void done();
 
  private:
   std::shared_ptr<ProgressMeter> _meter;
-  uInt _currentStep;
+  unsigned int _currentStep;
 };
 
 }  // namespace casacore

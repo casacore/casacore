@@ -83,25 +83,25 @@ class ConcatRows {
   ConcatRows() : itsRows(1, 0), itsNTable(0), itsLastStRow(1), itsLastEndRow(0) {}
 
   // Reserve the block for the given nr of tables.
-  void reserve(uInt ntable) { itsRows.resize(ntable + 1); }
+  void reserve(unsigned int ntable) { itsRows.resize(ntable + 1); }
 
   // Add a table with the given nr of rows.
   void add(rownr_t nrow);
 
   // Give the nr of tables.
-  uInt ntable() const { return itsNTable; }
+  unsigned int ntable() const { return itsNTable; }
 
   // Get the total nr of rows.
   rownr_t nrow() const { return itsRows[itsNTable]; }
 
   // Give the nr of rows for the i-th table.
-  rownr_t operator[](uInt i) const { return itsRows[i + 1]; }
+  rownr_t operator[](unsigned int i) const { return itsRows[i + 1]; }
 
   // Give the offset for the i-th table.
-  rownr_t offset(uInt i) const { return itsRows[i]; }
+  rownr_t offset(unsigned int i) const { return itsRows[i]; }
 
   // Map an overall row number to a table and row number.
-  void mapRownr(uInt& tableNr, rownr_t& tabRownr, rownr_t rownr) const {
+  void mapRownr(unsigned int& tableNr, rownr_t& tabRownr, rownr_t rownr) const {
     if (rownr < itsLastStRow || rownr >= itsLastEndRow) {
       findRownr(rownr);
     }
@@ -115,10 +115,10 @@ class ConcatRows {
 
   // # Data members.
   Block<rownr_t> itsRows;
-  uInt itsNTable;
+  unsigned int itsNTable;
   mutable rownr_t itsLastStRow;   // # Cached variables to spped up
   mutable rownr_t itsLastEndRow;  // # function mapRownr().
-  mutable uInt itsLastTableNr;
+  mutable unsigned int itsLastTableNr;
 };
 
 // <summary>
@@ -196,7 +196,7 @@ class ConcatRowsIter {
   RefRows getChunk() const { return RefRows(itsChunk, true); }
 
   // Get the nr of the table the current chunk is in.
-  uInt tableNr() const { return itsTabNr; }
+  unsigned int tableNr() const { return itsTabNr; }
 
  private:
   const ConcatRows* itsRows;
@@ -204,7 +204,7 @@ class ConcatRowsIter {
   rownr_t itsStart;
   rownr_t itsEnd;
   rownr_t itsIncr;
-  uInt itsTabNr;
+  unsigned int itsTabNr;
   bool itsPastEnd;
 };
 

@@ -78,8 +78,8 @@ void ArrayColumnData::createDataManagerColumn() {
 // # This removes an array if present.
 void ArrayColumnData::initialize(rownr_t, rownr_t) {}
 
-uInt ArrayColumnData::ndimColumn() const {
-  Int ndim = columnDesc().ndim();
+unsigned int ArrayColumnData::ndimColumn() const {
+  int ndim = columnDesc().ndim();
   return (ndim > 0 ? ndim : shapeCol_p.nelements());
 }
 IPosition ArrayColumnData::shapeColumn() const { return shapeCol_p; }
@@ -94,7 +94,7 @@ void ArrayColumnData::setShapeColumn(const IPosition& shp) {
     }
   }
   if (columnDesc().ndim() > 0) {
-    if (Int(shp.nelements()) != columnDesc().ndim()) {
+    if (int(shp.nelements()) != columnDesc().ndim()) {
       throw(
           TableInvOper("ArrayColumnData: mismatch in #dim of FixedShape array shape"
                        " of column " +
@@ -106,7 +106,7 @@ void ArrayColumnData::setShapeColumn(const IPosition& shp) {
 }
 
 bool ArrayColumnData::isDefined(rownr_t rownr) const { return dataColPtr_p->isShapeDefined(rownr); }
-uInt ArrayColumnData::ndim(rownr_t rownr) const { return dataColPtr_p->ndim(rownr); }
+unsigned int ArrayColumnData::ndim(rownr_t rownr) const { return dataColPtr_p->ndim(rownr); }
 IPosition ArrayColumnData::shape(rownr_t rownr) const { return dataColPtr_p->shape(rownr); }
 IPosition ArrayColumnData::tileShape(rownr_t rownr) const { return dataColPtr_p->tileShape(rownr); }
 
@@ -268,7 +268,7 @@ void ArrayColumnData::putColumnSliceCells(const RefRows& rownrs, const Slicer& n
 void ArrayColumnData::checkShape(const IPosition& shape) const {
   if ((columnDesc().options() & ColumnDesc::FixedShape) != ColumnDesc::FixedShape) {
     if (columnDesc().ndim() > 0) {
-      if (Int(shape.nelements()) != columnDesc().ndim()) {
+      if (int(shape.nelements()) != columnDesc().ndim()) {
         throw(
             TableInvOper("ArrayColumn::setShape: mismatch in #dim of array"
                          " of column " +
@@ -281,7 +281,7 @@ void ArrayColumnData::checkShape(const IPosition& shape) const {
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void ArrayColumnData::putFileDerived(AipsIO& ios) {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   ios << dataManPtr_p->sequenceNr();
   ios << shapeColDef_p;
   if (shapeColDef_p) {
@@ -290,9 +290,9 @@ void ArrayColumnData::putFileDerived(AipsIO& ios) {
 }
 
 void ArrayColumnData::getFileDerived(AipsIO& ios, const ColumnSet& colset) {
-  uInt version;
+  unsigned int version;
   ios >> version;
-  uInt seqnr;
+  unsigned int seqnr;
   ios >> seqnr;
   ios >> shapeColDef_p;
   if (shapeColDef_p) {

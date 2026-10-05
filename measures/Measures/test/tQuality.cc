@@ -34,13 +34,13 @@
 
 #include <casacore/casa/namespace.h>
 
-void roundtrip(Int &int_in, Int &int_out);
-Int check_str_type(String &qualstr);
+void roundtrip(int &int_in, int &int_out);
+int check_str_type(String &qualstr);
 
 int main() {
   try {
-    Int qualint;
-    Int myInt;
+    int qualint;
+    int myInt;
     String qualstr;
 
     // try a round trip for the first QualityType
@@ -92,7 +92,7 @@ int main() {
     // just some eye-candy: present all names
     Vector<String> allNames = Quality::allNames(true);
     cout << "All names: ";
-    for (uInt i = 0; i < allNames.size(); i++) {
+    for (unsigned int i = 0; i < allNames.size(); i++) {
       cout << allNames[i] << " ";
     }
     cout << endl;
@@ -105,7 +105,7 @@ int main() {
   return 0;
 }
 
-void roundtrip(Int &int_in, Int &int_out) {
+void roundtrip(int &int_in, int &int_out) {
   Quality::QualityTypes myType;
   String myTypeName;
 
@@ -117,7 +117,7 @@ void roundtrip(Int &int_in, Int &int_out) {
        << " --> int_out:  " << int_out << endl;
 }
 
-Int check_str_type(String &qualstr) {
+int check_str_type(String &qualstr) {
   Quality::QualityTypes myType;
   String myTypeName;
 
@@ -130,5 +130,5 @@ Int check_str_type(String &qualstr) {
   cout << "name: =  " << qualstr << " --> type: " << myType << " --> name: " << myTypeName << endl;
 
   // return just the type
-  return (Int)myType;
+  return (int)myType;
 }

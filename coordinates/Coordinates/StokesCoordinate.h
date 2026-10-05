@@ -103,7 +103,7 @@ class StokesCoordinate : public Coordinate {
   // length 4 and will contain Stokes::I, Q, U and V, however any valid value
   // from the stokes enum may be used. The values may not repeat however, e.g.
   // only one axis position may contain "I".
-  explicit StokesCoordinate(const Vector<Int> &whichStokes);
+  explicit StokesCoordinate(const Vector<int> &whichStokes);
 
   // Copy constructor (copy semantics)
   StokesCoordinate(const StokesCoordinate &other);
@@ -122,8 +122,8 @@ class StokesCoordinate : public Coordinate {
 
   // Always returns 1.
   // <group>
-  virtual uInt nPixelAxes() const;
-  virtual uInt nWorldAxes() const;
+  virtual unsigned int nPixelAxes() const;
+  virtual unsigned int nWorldAxes() const;
   // </group>
 
   // Convert a pixel to a world coordinate or vice versa. Returns true
@@ -133,15 +133,15 @@ class StokesCoordinate : public Coordinate {
   // The Bool parameter in toWorld() is ignored as this coordinate does not
   // support a conversion layer frame.
   // <group>
-  virtual bool toWorld(Vector<Double> &world, const Vector<Double> &pixel, bool = true) const;
-  virtual bool toPixel(Vector<Double> &pixel, const Vector<Double> &world) const;
+  virtual bool toWorld(Vector<double> &world, const Vector<double> &pixel, bool = true) const;
+  virtual bool toPixel(Vector<double> &pixel, const Vector<double> &world) const;
   // </group>
 
   // Interconvert between pixel and world as a Stokes type.
   // It returns false if no conversion could be done.
   // <group>
-  bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
-  bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
+  bool toPixel(int &pixel, Stokes::StokesTypes stokes) const;
+  bool toWorld(Stokes::StokesTypes &stokes, int pixel) const;
   // </group>
 
   // Interconvert between world stored as a Double and world stored as
@@ -149,8 +149,8 @@ class StokesCoordinate : public Coordinate {
   // Stokes type can be used.  The second function returns
   // Stokes::Undefined if world is illegal.
   // <group>
-  static Double toWorld(Stokes::StokesTypes stokes);
-  static Stokes::StokesTypes toWorld(Double world);
+  static double toWorld(Stokes::StokesTypes stokes);
+  static Stokes::StokesTypes toWorld(double world);
   // </group>
 
   // Make absolute coordinates relative and vice-versa.
@@ -158,39 +158,39 @@ class StokesCoordinate : public Coordinate {
   // same as absolute world coordinates.  Relative pixels do have meaning
   // and are implemented (rel = abs - refPix)
   // <group>
-  virtual void makePixelRelative(Vector<Double> &pixel) const;
-  virtual void makePixelAbsolute(Vector<Double> &pixel) const;
-  virtual void makeWorldRelative(Vector<Double> &world) const;
-  virtual void makeWorldAbsolute(Vector<Double> &world) const;
+  virtual void makePixelRelative(Vector<double> &pixel) const;
+  virtual void makePixelAbsolute(Vector<double> &pixel) const;
+  virtual void makeWorldRelative(Vector<double> &world) const;
+  virtual void makeWorldAbsolute(Vector<double> &world) const;
   // </group>
 
   // Get the Stokes values (Stokes::StokesType) that we constructed
   // with into a vector
-  Vector<Int> stokes() const;
+  Vector<int> stokes() const;
 
   // Get the stokes string representations
   Vector<String> stokesStrings() const;
 
   // Set a new vector of Stokes values (a vector of Stokes::StokesType)
-  void setStokes(const Vector<Int> &whichStokes);
+  void setStokes(const Vector<int> &whichStokes);
 
   // Report the value of the requested attribute.
   // <group>
   virtual Vector<String> worldAxisNames() const;
-  virtual Vector<Double> referencePixel() const;
-  virtual Matrix<Double> linearTransform() const;
-  virtual Vector<Double> increment() const;
-  virtual Vector<Double> referenceValue() const;
+  virtual Vector<double> referencePixel() const;
+  virtual Matrix<double> linearTransform() const;
+  virtual Vector<double> increment() const;
+  virtual Vector<double> referenceValue() const;
   // </group>
 
   // Set the value of the requested attribute.  For the StokesCoordinate,
   // these have no effect (always return true) except for setWorldAxisNames.
   // <group>
   virtual bool setWorldAxisNames(const Vector<String> &names);
-  virtual bool setReferencePixel(const Vector<Double> &refPix);
-  virtual bool setLinearTransform(const Matrix<Double> &xform);
-  virtual bool setIncrement(const Vector<Double> &inc);
-  virtual bool setReferenceValue(const Vector<Double> &refval);
+  virtual bool setReferencePixel(const Vector<double> &refPix);
+  virtual bool setLinearTransform(const Matrix<double> &xform);
+  virtual bool setIncrement(const Vector<double> &inc);
+  virtual bool setReferenceValue(const Vector<double> &refval);
   // </group>
 
   // The set function has no effect as the units must be empty for a StokesCoordinate
@@ -224,18 +224,18 @@ class StokesCoordinate : public Coordinate {
   // <linkto class=Stokes>Stokes</linkto>.
   //
   // Thus, all other arguments to do with formatting and precision are ignored.
-  virtual String format(String &units, Coordinate::formatType format, Double worldValue,
-                        uInt worldAxis, bool isAbsolute = true, bool showAsAbsolute = true,
-                        Int precision = -1, bool usePrecForMixed = false) const;
+  virtual String format(String &units, Coordinate::formatType format, double worldValue,
+                        unsigned int worldAxis, bool isAbsolute = true, bool showAsAbsolute = true,
+                        int precision = -1, bool usePrecForMixed = false) const;
 
   // Comparison function. Any private Double data members are compared
   // with the specified fractional tolerance.  Don't compare on the specified
   // axes in the Coordinate.  If the comparison returns false,  method
   // errorMessage returns a message about why.
   // <group>
-  virtual bool near(const Coordinate &other, Double tol = 1e-6) const;
-  virtual bool near(const Coordinate &other, const Vector<Int> &excludeAxes,
-                    Double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, double tol = 1e-6) const;
+  virtual bool near(const Coordinate &other, const Vector<int> &excludeAxes,
+                    double tol = 1e-6) const;
   // </group>
 
   // Save the StokesCoordinate into the supplied record using the supplied field name.
@@ -253,19 +253,19 @@ class StokesCoordinate : public Coordinate {
 
   // Comparison only made for specified axes in this and other Coordinate
   virtual bool doNearPixel(const Coordinate &other, const Vector<bool> &thisAxes,
-                           const Vector<bool> &otherAxes, Double tol = 1.0e-6) const;
+                           const Vector<bool> &otherAxes, double tol = 1.0e-6) const;
 
  private:
-  bool toWorld(Double &world, const Double pixel) const;
-  bool toPixel(Double &pixel, const Double world) const;
+  bool toWorld(double &world, const double pixel) const;
+  bool toPixel(double &pixel, const double world) const;
   //
-  Block<Int> values_p;
+  Block<int> values_p;
 
   // Keep these for subimaging purposes.
-  Double crval_p, crpix_p, matrix_p, cdelt_p;
+  double crval_p, crpix_p, matrix_p, cdelt_p;
   String name_p;
   String unit_p;
-  Int nValues_p;
+  int nValues_p;
 
   // Undefined and inaccessible
   StokesCoordinate();

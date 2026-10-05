@@ -41,7 +41,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # All FITS code seems to assume longs are 4 bytes. Currently
 // # this corresponds to an "int" on all useful platforms.
-typedef Int FitsLong;
+typedef int FitsLong;
 // # recovered by GYL
 
 // # Forward declarations
@@ -217,7 +217,7 @@ class FITS {
     x = 0;
     return FITS::SHORT;
   }
-  static FITS::ValueType getfitstype(NoConvert<Int> x) {
+  static FITS::ValueType getfitstype(NoConvert<int> x) {
     x = 0;
     return FITS::LONG;
   }
@@ -264,8 +264,8 @@ class FITS {
   static void l2f(void *, unsigned char *, int);
   static void f2l(short *, void *, int);
   static void l2f(void *, short *, int);
-  static void f2l(Int *, void *, int);
-  static void l2f(void *, Int *, int);
+  static void f2l(int *, void *, int);
+  static void l2f(void *, int *, int);
   static void f2l(long *, void *, int);
   static void l2f(void *, long *, int);
   static void f2l(float *, void *, int);
@@ -397,8 +397,8 @@ class FITS {
   // string (*s), then valType will have the value NOVALUE and
   // maxelem will be -1.
   static void parse_vatform(const char *s, FITS::ValueType &valType, int &maxelem);
-  static constexpr Int minInt = INT_MIN;
-  static constexpr Int maxInt = INT_MAX;
+  static constexpr int minInt = INT_MIN;
+  static constexpr int maxInt = INT_MAX;
   static constexpr float minfloat = FLT_MIN;
   static constexpr float maxfloat = FLT_MAX;
   static constexpr double mindouble = DBL_MIN;
@@ -450,10 +450,10 @@ class FITS {
   static constexpr int maxsigdigits = 17;
   static constexpr int maxdigl = 9;    // max digits in a long
   static constexpr int maxexpdig = 3;  // max digits in an exponent
-  static double tenD(Int, int);
-  static float tenF(Int, int);
-  static int ckaccum(double &, Int, int);
-  static int ckaccum(float &, Int, int);
+  static double tenD(int, int);
+  static float tenF(int, int);
+  static int ckaccum(double &, int, int);
+  static int ckaccum(float &, int, int);
 };
 
 inline FITS::FITS() {}  // just a dummy function to prevent instantiation
@@ -465,11 +465,11 @@ inline int FITS::letter2bin(char c) { return c - 'A'; }
 
 ostream &operator<<(ostream &, const FITS::ValueType &);
 
-inline double FITS::tenD(Int numb, int pow) {
+inline double FITS::tenD(int numb, int pow) {
   return (pow > 0) ? (((double)numb) * tenpowerD[pow])
                    : ((pow < 0) ? (((double)numb) / tenpowerD[-pow]) : ((double)numb));
 }
-inline float FITS::tenF(Int numb, int pow) {
+inline float FITS::tenF(int numb, int pow) {
   return (pow > 0) ? (((float)numb) * tenpowerF[pow])
                    : ((pow < 0) ? (((float)numb) / tenpowerF[-pow]) : ((float)numb));
 }
@@ -681,7 +681,7 @@ class FitsValueResult {
   union {
     bool b;
     int s[2];  // for strings, s[0] is offset, s[1] length
-    Int l;
+    int l;
     float f;
     double d;
   };
@@ -773,7 +773,7 @@ class FitsKeyword {
   bool asBool() const;
   const char *asString() const;
   int valStrlen() const;
-  Int asInt() const;
+  int asInt() const;
   float asFloat() const;
   double asDouble() const;
   IComplex asIComplex() const;
@@ -786,7 +786,7 @@ class FitsKeyword {
   //<group>
   FitsKeyword &operator=(bool);
   FitsKeyword &operator=(const char *);
-  FitsKeyword &operator=(Int);
+  FitsKeyword &operator=(int);
   FitsKeyword &operator=(float);
   FitsKeyword &operator=(double);
   FitsKeyword &operator=(IComplex);
@@ -826,7 +826,7 @@ class FitsKeyword {
   FITS::ValueType type_;
   union {
     bool bval;
-    Int ival;
+    int ival;
     float fval;
     double dval;
   };
@@ -892,7 +892,7 @@ inline FITS::ValueType FitsKeyword::type() const { return type_; }
 inline bool FitsKeyword::asBool() const { return bval; }
 inline const char *FitsKeyword::asString() const { return vallen ? (const char *)val : ""; }
 inline int FitsKeyword::valStrlen() const { return vallen; }
-inline Int FitsKeyword::asInt() const {
+inline int FitsKeyword::asInt() const {
   if (type() != FITS::LONG) {
     cerr << "Unexpected keyword type in FitsKeyword::asInt()\n";
     exit(1);
@@ -940,7 +940,7 @@ inline FitsKeyword &FitsKeyword::operator=(bool x) {
   type_ = FITS::LOGICAL;
   return *this;
 }
-inline FitsKeyword &FitsKeyword::operator=(Int x) {
+inline FitsKeyword &FitsKeyword::operator=(int x) {
   ival = x;
   type_ = FITS::LONG;
   return *this;
@@ -1001,7 +1001,7 @@ class FitsKeywordList {
   // <group>
   void mk(FITS::ReservedName k, bool v, const char *c = 0);
   void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
-  void mk(FITS::ReservedName k, Int v, const char *c = 0);
+  void mk(FITS::ReservedName k, int v, const char *c = 0);
   void mk(FITS::ReservedName k, long v, const char *c = 0);
   void mk(FITS::ReservedName k, double v, const char *c = 0);
   // </group>
@@ -1013,7 +1013,7 @@ class FitsKeywordList {
   // <group>
   void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, Int v, const char *c = 0);
+  void mk(int n, FITS::ReservedName k, int v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, long v, const char *c = 0);
   void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
   // </group>
@@ -1027,11 +1027,11 @@ class FitsKeywordList {
   // <group>
   void mk(const char *n, bool v, const char *c = 0);
   void mk(const char *n, const char *v = 0, const char *c = 0);
-  void mk(const char *n, Int v, const char *c = 0);
+  void mk(const char *n, int v, const char *c = 0);
   void mk(const char *n, long v, const char *c = 0);
   void mk(const char *n, float v, const char *c = 0);
   void mk(const char *n, double v, const char *c = 0);
-  void mk(const char *n, Int r, Int i, const char *c = 0);
+  void mk(const char *n, int r, int i, const char *c = 0);
   void mk(const char *n, float r, float i, const char *c = 0);
   void mk(const char *n, double r, double i, const char *c = 0);
   // </group>
@@ -1146,7 +1146,7 @@ inline void FitsKeywordList::mk(FITS::ReservedName k, bool v, const char *c) {
 inline void FitsKeywordList::mk(FITS::ReservedName k, const char *v, const char *c) {
   insert(make(k, FITS::STRING, v, c));
 }
-inline void FitsKeywordList::mk(FITS::ReservedName k, Int v, const char *c) {
+inline void FitsKeywordList::mk(FITS::ReservedName k, int v, const char *c) {
   insert(make(k, FITS::LONG, &v, c));
 }
 inline void FitsKeywordList::mk(FITS::ReservedName k, long v, const char *c) {
@@ -1164,7 +1164,7 @@ inline void FitsKeywordList::mk(int n, FITS::ReservedName k, bool v, const char 
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, const char *v, const char *c) {
   insert(make(n, k, FITS::STRING, v, c));
 }
-inline void FitsKeywordList::mk(int n, FITS::ReservedName k, Int v, const char *c) {
+inline void FitsKeywordList::mk(int n, FITS::ReservedName k, int v, const char *c) {
   insert(make(n, k, FITS::LONG, &v, c));
 }
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, long v, const char *c) {
@@ -1182,7 +1182,7 @@ inline void FitsKeywordList::mk(const char *n, bool v, const char *c) {
 inline void FitsKeywordList::mk(const char *n, const char *v, const char *c) {
   insert(make(n, FITS::STRING, v, c));
 }
-inline void FitsKeywordList::mk(const char *n, Int v, const char *c) {
+inline void FitsKeywordList::mk(const char *n, int v, const char *c) {
   insert(make(n, FITS::LONG, &v, c));
 }
 inline void FitsKeywordList::mk(const char *n, long v, const char *c) {
@@ -1194,7 +1194,7 @@ inline void FitsKeywordList::mk(const char *n, float v, const char *c) {
 inline void FitsKeywordList::mk(const char *n, double v, const char *c) {
   insert(make(n, FITS::DOUBLE, &v, c));
 }
-inline void FitsKeywordList::mk(const char *n, Int r, Int i, const char *c) {
+inline void FitsKeywordList::mk(const char *n, int r, int i, const char *c) {
   IComplex v(r, i);
   insert(make(n, FITS::ICOMPLEX, &v, c));
 }

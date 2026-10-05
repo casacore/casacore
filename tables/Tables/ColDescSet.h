@@ -95,12 +95,12 @@ class ColumnDescSet {
 
   // Get a column by its index.
   // <group>
-  ColumnDesc& operator[](uInt index) { return *(ColumnDesc*)(colSeq_p[index]); }
-  const ColumnDesc& operator[](uInt index) const { return *(ColumnDesc*)(colSeq_p[index]); }
+  ColumnDesc& operator[](unsigned int index) { return *(ColumnDesc*)(colSeq_p[index]); }
+  const ColumnDesc& operator[](unsigned int index) const { return *(ColumnDesc*)(colSeq_p[index]); }
   // </group>
 
   // Get nr of columns in this set.
-  uInt ncolumn() const { return cols_p.size(); }
+  unsigned int ncolumn() const { return cols_p.size(); }
 
   // Test if a column is defined in this set.
   bool isDefined(const String& name) const { return (cols_p.find(name) != cols_p.end()); }

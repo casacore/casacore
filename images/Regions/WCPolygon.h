@@ -205,7 +205,7 @@ class WCPolygon : public WCRegion {
   // Construct from two vectors of world coordinates
   // defining the polygon vertices.
   // <group>
-  WCPolygon(const Quantum<Vector<Double>>& x, const Quantum<Vector<Double>>& y,
+  WCPolygon(const Quantum<Vector<double>>& x, const Quantum<Vector<double>>& y,
             const IPosition& pixelAxes, const CoordinateSystem& cSys,
             const RegionType::AbsRelType absRel = RegionType::Abs);
   // </group>
@@ -251,8 +251,8 @@ class WCPolygon : public WCRegion {
   virtual String type() const;
 
  protected:
-  Quantum<Vector<Double>> itsX;
-  Quantum<Vector<Double>> itsY;
+  Quantum<Vector<double>> itsX;
+  Quantum<Vector<double>> itsY;
   IPosition itsPixelAxes;
   CoordinateSystem itsCSys;
   RegionType::AbsRelType itsAbsRel;

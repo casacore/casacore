@@ -98,7 +98,7 @@ class TableIterProxy {
   // However, if for a string column the interbval is set to non-zero, it
   // means that case-insensitive comparison will be used.
   TableIterProxy(const TableProxy& tab, const Vector<String>& columns, const String& order,
-                 const String& sortType, const Vector<Double>& intervals = Vector<Double>());
+                 const String& sortType, const Vector<double>& intervals = Vector<double>());
 
   // Copy constructor (copy semantics).
   TableIterProxy(const TableIterProxy&);
@@ -127,7 +127,7 @@ class TableIterProxy {
 
  private:
   // Make an iterator where iteration intervals may have been given.
-  void makeStepIter(const Table& tab, const Block<String>& columns, const Vector<Double>& iterSteps,
+  void makeStepIter(const Table& tab, const Block<String>& columns, const Vector<double>& iterSteps,
                     TableIterator::Order order, TableIterator::Option sortType);
 
   // # Data members

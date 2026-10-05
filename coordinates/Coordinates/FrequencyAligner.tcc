@@ -53,7 +53,7 @@ template <class T>
 FrequencyAligner<T>::FrequencyAligner() : itsRefFreqX(0), itsFreqX(0), itsDiffTol(0.0) {}
 
 template <class T>
-FrequencyAligner<T>::FrequencyAligner(const SpectralCoordinate& specCoord, uInt nPixels,
+FrequencyAligner<T>::FrequencyAligner(const SpectralCoordinate& specCoord, unsigned int nPixels,
                                       const MEpoch& refEpoch, const MDirection& dir,
                                       const MPosition& pos, MFrequency::Types freqSystem)
     : itsSpecCoord(specCoord),
@@ -104,9 +104,9 @@ template <class T>
 bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<T>& yIn,
                                 const Vector<bool>& maskIn, const MEpoch& epoch,
                                 bool useCachedAbcissa,
-                                typename InterpolateArray1D<Double, T>::InterpolationMethod method,
+                                typename InterpolateArray1D<double, T>::InterpolationMethod method,
                                 bool extrapolate) {
-  const uInt nPixels = itsRefFreqX.nelements();
+  const unsigned int nPixels = itsRefFreqX.nelements();
   AlwaysAssert(nPixels > 1, AipsError);
   AlwaysAssert(yIn.nelements() == nPixels, AipsError);
   AlwaysAssert(maskIn.nelements() == nPixels, AipsError);
@@ -118,7 +118,7 @@ bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Ve
 
   // Generate abcissa at this epoch
 
-  Double maxDiff = -1;
+  double maxDiff = -1;
   if (useCachedAbcissa) {
     maxDiff = abs(itsFreqX[0] - itsRefFreqX[0]);
   } else {
@@ -133,12 +133,12 @@ bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Ve
 }
 
 template <class T>
-bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<Double>& xIn,
+bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<double>& xIn,
                                 const Vector<T>& yIn, const Vector<bool>& maskIn,
                                 const MEpoch& epoch, bool useCachedAbcissa,
-                                typename InterpolateArray1D<Double, T>::InterpolationMethod method,
+                                typename InterpolateArray1D<double, T>::InterpolationMethod method,
                                 bool extrapolate) {
-  const uInt nPixels = itsRefFreqX.nelements();
+  const unsigned int nPixels = itsRefFreqX.nelements();
   AlwaysAssert(nPixels > 1, AipsError);
   AlwaysAssert(xIn.nelements() == nPixels, AipsError);
   AlwaysAssert(yIn.nelements() == nPixels, AipsError);
@@ -152,11 +152,11 @@ bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Ve
   // The user provided abcissa is in the input Frame. Convert it to the output
   // Frame at the specfied Epoch
 
-  Double maxDiff = -1;
+  double maxDiff = -1;
   if (useCachedAbcissa) {
     maxDiff = abs(itsFreqX[0] - itsRefFreqX[0]);
   } else {
-    for (uInt i = 0; i < nPixels; i++) {
+    for (unsigned int i = 0; i < nPixels; i++) {
       itsFreqX[i] = itsMachine(xIn[i]).getValue().getValue();
       maxDiff = casacore::max(casacore::abs(itsFreqX[i] - itsRefFreqX[i]), maxDiff);
     }
@@ -171,14 +171,14 @@ bool FrequencyAligner<T>::align(Vector<T>& yOut, Vector<bool>& maskOut, const Ve
 
 template <class T>
 bool FrequencyAligner<T>::alignMany(
-    Array<T>& yOut, Array<bool>& maskOut, const Array<T>& yIn, const Array<bool>& maskIn, uInt axis,
-    const MEpoch& epoch, typename InterpolateArray1D<Double, T>::InterpolationMethod method,
-    bool extrapolate) {
+    Array<T>& yOut, Array<bool>& maskOut, const Array<T>& yIn, const Array<bool>& maskIn,
+    unsigned int axis, const MEpoch& epoch,
+    typename InterpolateArray1D<double, T>::InterpolationMethod method, bool extrapolate) {
   // Checks
 
   const IPosition shp = yIn.shape();
   AlwaysAssert(shp.isEqual(maskIn.shape()), AipsError);
-  const Int n = itsRefFreqX.nelements();
+  const int n = itsRefFreqX.nelements();
   AlwaysAssert(n > 1, AipsError);
   AlwaysAssert(axis < shp.nelements(), AipsError);
   AlwaysAssert(shp(axis) == n, AipsError);
@@ -193,7 +193,7 @@ bool FrequencyAligner<T>::alignMany(
 
   // Generate abcissa at this epoch
 
-  Double maxDiff = makeAbcissa(itsFreqX, true);
+  double maxDiff = makeAbcissa(itsFreqX, true);
   maxDiff /= abs(itsRefFreqX[1] - itsRefFreqX[0]);  // Max diff as a fraction of a channel
 
   // Make iterators
@@ -225,13 +225,13 @@ bool FrequencyAligner<T>::alignMany(
 }
 
 template <class T>
-void FrequencyAligner<T>::getReferenceAbcissa(Vector<Double>& xOut) const {
+void FrequencyAligner<T>::getReferenceAbcissa(Vector<double>& xOut) const {
   xOut.resize(itsRefFreqX.nelements());
   xOut = itsRefFreqX;
 }
 
 template <class T>
-void FrequencyAligner<T>::getAbcissa(Vector<Double>& xOut) const {
+void FrequencyAligner<T>::getAbcissa(Vector<double>& xOut) const {
   xOut.resize(itsFreqX.nelements());
   xOut = itsFreqX;
 }
@@ -239,15 +239,15 @@ void FrequencyAligner<T>::getAbcissa(Vector<Double>& xOut) const {
 // Private functions
 
 template <class T>
-bool FrequencyAligner<T>::regrid(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<Double>& xOut,
-                                 const Vector<Double>& xIn, const Vector<T>& yIn,
+bool FrequencyAligner<T>::regrid(Vector<T>& yOut, Vector<bool>& maskOut, const Vector<double>& xOut,
+                                 const Vector<double>& xIn, const Vector<T>& yIn,
                                  const Vector<bool>& maskIn,
-                                 typename InterpolateArray1D<Double, T>::InterpolationMethod method,
-                                 bool extrapolate, Double maxDiff) const {
+                                 typename InterpolateArray1D<double, T>::InterpolationMethod method,
+                                 bool extrapolate, double maxDiff) const {
   bool ok = false;
   if (maxDiff > itsDiffTol) {
-    Int methodInt = static_cast<Int>(method);
-    InterpolateArray1D<Double, T>::interpolate(yOut, maskOut, xOut, xIn, yIn, maskIn, methodInt,
+    int methodInt = static_cast<int>(method);
+    InterpolateArray1D<double, T>::interpolate(yOut, maskOut, xOut, xIn, yIn, maskIn, methodInt,
                                                true, extrapolate);
     ok = true;
   } else {
@@ -284,19 +284,19 @@ void FrequencyAligner<T>::makeMachine(const MEpoch& refEpoch, const MDirection& 
 }
 
 template <class T>
-Double FrequencyAligner<T>::makeAbcissa(Vector<Double>& freq, bool doDiff) {
-  const uInt n = freq.nelements();
-  Double world;
-  Double maxDiff = -1;
+double FrequencyAligner<T>::makeAbcissa(Vector<double>& freq, bool doDiff) {
+  const unsigned int n = freq.nelements();
+  double world;
+  double maxDiff = -1;
   if (doDiff) {
-    for (uInt i = 0; i < n; i++) {
+    for (unsigned int i = 0; i < n; i++) {
       itsSpecCoord.toWorld(world, i);
       freq[i] = itsMachine(world).getValue().getValue();
       //
       maxDiff = casacore::max(casacore::abs(freq[i] - itsRefFreqX[i]), maxDiff);
     }
   } else {
-    for (uInt i = 0; i < n; i++) {
+    for (unsigned int i = 0; i < n; i++) {
       itsSpecCoord.toWorld(world, i);
       freq[i] = itsMachine(world).getValue().getValue();
     }
@@ -321,26 +321,26 @@ void FrequencyAligner<T>::copyOther(const FrequencyAligner<T>& other) {
 
 template <class T>
 SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate(bool doLinear) const {
-  const uInt n = itsRefFreqX.nelements();
+  const unsigned int n = itsRefFreqX.nelements();
   AlwaysAssert(n > 0, AipsError);
 
   // Get SpectralCoordinate
 
   const Vector<String>& units = itsSpecCoord.worldAxisUnits();
   Unit unit(units(0));
-  Quantum<Double> restFreq(itsSpecCoord.restFrequency(), unit);
+  Quantum<double> restFreq(itsSpecCoord.restFrequency(), unit);
 
   // Create SC. Units will be Hz
 
   SpectralCoordinate sC;
   if (doLinear) {
-    Double crpix = 0.0;
-    Quantum<Double> crval(itsRefFreqX[0], unit);
-    Quantum<Double> cdelt((itsRefFreqX[n - 1] - itsRefFreqX[0]) / Double(n - 1), unit);
+    double crpix = 0.0;
+    Quantum<double> crval(itsRefFreqX[0], unit);
+    Quantum<double> cdelt((itsRefFreqX[n - 1] - itsRefFreqX[0]) / double(n - 1), unit);
     //
     sC = SpectralCoordinate(itsFreqSystem, crval, cdelt, crpix, restFreq);
   } else {
-    Quantum<Vector<Double>> freqs(itsRefFreqX, unit);
+    Quantum<Vector<double>> freqs(itsRefFreqX, unit);
     sC = SpectralCoordinate(itsFreqSystem, freqs, restFreq);
   }
 

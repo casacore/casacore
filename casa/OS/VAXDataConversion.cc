@@ -54,11 +54,11 @@ size_t VAXDataConversion::toLocal(unsigned int& to, const void* from) const {
   VAXConversion::toLocal(to, from);
   return SIZE_VAX_UINT;
 }
-size_t VAXDataConversion::toLocal(Int64& to, const void* from) const {
+size_t VAXDataConversion::toLocal(int64_t& to, const void* from) const {
   VAXConversion::toLocal(to, from);
   return SIZE_VAX_INT64;
 }
-size_t VAXDataConversion::toLocal(uInt64& to, const void* from) const {
+size_t VAXDataConversion::toLocal(uint64_t& to, const void* from) const {
   VAXConversion::toLocal(to, from);
   return SIZE_VAX_UINT64;
 }
@@ -95,11 +95,11 @@ size_t VAXDataConversion::toLocal(unsigned int* to, const void* from, size_t nr)
   VAXConversion::toLocal(to, from, nr);
   return nr * SIZE_VAX_UINT;
 }
-size_t VAXDataConversion::toLocal(Int64* to, const void* from, size_t nr) const {
+size_t VAXDataConversion::toLocal(int64_t* to, const void* from, size_t nr) const {
   VAXConversion::toLocal(to, from, nr);
   return nr * SIZE_VAX_INT64;
 }
-size_t VAXDataConversion::toLocal(uInt64* to, const void* from, size_t nr) const {
+size_t VAXDataConversion::toLocal(uint64_t* to, const void* from, size_t nr) const {
   VAXConversion::toLocal(to, from, nr);
   return nr * SIZE_VAX_UINT64;
 }
@@ -136,11 +136,11 @@ size_t VAXDataConversion::fromLocal(void* to, unsigned int from) const {
   VAXConversion::fromLocal(to, from);
   return SIZE_VAX_UINT;
 }
-size_t VAXDataConversion::fromLocal(void* to, Int64 from) const {
+size_t VAXDataConversion::fromLocal(void* to, int64_t from) const {
   VAXConversion::fromLocal(to, from);
   return SIZE_VAX_INT64;
 }
-size_t VAXDataConversion::fromLocal(void* to, uInt64 from) const {
+size_t VAXDataConversion::fromLocal(void* to, uint64_t from) const {
   VAXConversion::fromLocal(to, from);
   return SIZE_VAX_UINT64;
 }
@@ -177,11 +177,11 @@ size_t VAXDataConversion::fromLocal(void* to, const unsigned int* from, size_t n
   VAXConversion::fromLocal(to, from, nr);
   return nr * SIZE_VAX_UINT;
 }
-size_t VAXDataConversion::fromLocal(void* to, const Int64* from, size_t nr) const {
+size_t VAXDataConversion::fromLocal(void* to, const int64_t* from, size_t nr) const {
   VAXConversion::fromLocal(to, from, nr);
   return nr * SIZE_VAX_INT64;
 }
-size_t VAXDataConversion::fromLocal(void* to, const uInt64* from, size_t nr) const {
+size_t VAXDataConversion::fromLocal(void* to, const uint64_t* from, size_t nr) const {
   VAXConversion::fromLocal(to, from, nr);
   return nr * SIZE_VAX_UINT64;
 }
@@ -244,18 +244,18 @@ bool VAXDataConversion::canCopy(const unsigned int*) const {
   return false;
 }
 
-bool VAXDataConversion::canCopy(const Int64*) const {
+bool VAXDataConversion::canCopy(const int64_t*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
-  if (sizeof(Int64) == SIZE_VAX_INT64) {
+  if (sizeof(int64_t) == SIZE_VAX_INT64) {
     return true;
   }
 #endif
   return false;
 }
 
-bool VAXDataConversion::canCopy(const uInt64*) const {
+bool VAXDataConversion::canCopy(const uint64_t*) const {
 #if defined(AIPS_LITTLE_ENDIAN)
-  if (sizeof(uInt64) == SIZE_VAX_UINT64) {
+  if (sizeof(uint64_t) == SIZE_VAX_UINT64) {
     return true;
   }
 #endif
@@ -274,8 +274,8 @@ unsigned int VAXDataConversion::externalSize(const unsigned short*) const {
 }
 unsigned int VAXDataConversion::externalSize(const int*) const { return SIZE_VAX_INT; }
 unsigned int VAXDataConversion::externalSize(const unsigned int*) const { return SIZE_VAX_UINT; }
-unsigned int VAXDataConversion::externalSize(const Int64*) const { return SIZE_VAX_INT64; }
-unsigned int VAXDataConversion::externalSize(const uInt64*) const { return SIZE_VAX_UINT64; }
+unsigned int VAXDataConversion::externalSize(const int64_t*) const { return SIZE_VAX_INT64; }
+unsigned int VAXDataConversion::externalSize(const uint64_t*) const { return SIZE_VAX_UINT64; }
 unsigned int VAXDataConversion::externalSize(const float*) const { return SIZE_VAX_FLOAT; }
 unsigned int VAXDataConversion::externalSize(const double*) const { return SIZE_VAX_DOUBLE; }
 

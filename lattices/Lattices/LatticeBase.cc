@@ -45,7 +45,7 @@ void LatticeBase::save(const String&) const {
   throw AipsError(imageType() + "::save is not implemented");
 }
 
-bool LatticeBase::lock(FileLocker::LockType, uInt) { return true; }
+bool LatticeBase::lock(FileLocker::LockType, unsigned int) { return true; }
 void LatticeBase::unlock() {}
 bool LatticeBase::hasLock(FileLocker::LockType) const { return true; }
 void LatticeBase::resync() {}
@@ -55,20 +55,21 @@ void LatticeBase::reopen() {}
 
 String LatticeBase::name(bool) const { return ""; }
 
-uInt LatticeBase::ndim() const { return shape().nelements(); }
+unsigned int LatticeBase::ndim() const { return shape().nelements(); }
 
 size_t LatticeBase::nelements() const { return shape().product(); }
 
 LELCoordinates LatticeBase::lelCoordinates() const { return LELCoordinates(); }
 
-IPosition LatticeBase::doNiceCursorShape(uInt maxPixels) const {
+IPosition LatticeBase::doNiceCursorShape(unsigned int maxPixels) const {
   IPosition originalShape(shape());
-  uInt ndim = originalShape.nelements();
+  unsigned int ndim = originalShape.nelements();
   IPosition cursorShape(ndim);
   if (ndim > 0) {
     cursorShape = 1;
     cursorShape(0) = originalShape(0);
-    for (uInt i = 1; i < ndim && cursorShape.product() * originalShape(i) <= Int(maxPixels); i++) {
+    for (unsigned int i = 1; i < ndim && cursorShape.product() * originalShape(i) <= int(maxPixels);
+         i++) {
       cursorShape(i) = originalShape(i);
     }
   }
@@ -77,11 +78,11 @@ IPosition LatticeBase::doNiceCursorShape(uInt maxPixels) const {
 
 bool LatticeBase::ok() const { return true; }
 
-uInt LatticeBase::maximumCacheSize() const { return 0; }
+unsigned int LatticeBase::maximumCacheSize() const { return 0; }
 
-void LatticeBase::setMaximumCacheSize(uInt) {}
+void LatticeBase::setMaximumCacheSize(unsigned int) {}
 
-void LatticeBase::setCacheSizeInTiles(uInt) {}
+void LatticeBase::setCacheSizeInTiles(unsigned int) {}
 
 void LatticeBase::setCacheSizeFromPath(const IPosition&, const IPosition&, const IPosition&,
                                        const IPosition&) {}

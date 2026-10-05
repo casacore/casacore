@@ -32,49 +32,49 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableExprData::~TableExprData() {}
 
-IPosition TableExprData::shape(const Block<Int>&) const { return IPosition(); }
+IPosition TableExprData::shape(const Block<int>&) const { return IPosition(); }
 
-bool TableExprData::getBool(const Block<Int>&) const {
+bool TableExprData::getBool(const Block<int>&) const {
   throw(AipsError("TableExprData::getBool not implemented"));
 }
 
-Int64 TableExprData::getInt(const Block<Int>&) const {
+int64_t TableExprData::getInt(const Block<int>&) const {
   throw(AipsError("TableExprData::getInt not implemented"));
 }
 
-Double TableExprData::getDouble(const Block<Int>& fieldNrs) const { return getInt(fieldNrs); }
+double TableExprData::getDouble(const Block<int>& fieldNrs) const { return getInt(fieldNrs); }
 
-DComplex TableExprData::getDComplex(const Block<Int>& fieldNrs) const {
+DComplex TableExprData::getDComplex(const Block<int>& fieldNrs) const {
   return getDouble(fieldNrs);
 }
 
-String TableExprData::getString(const Block<Int>&) const {
+String TableExprData::getString(const Block<int>&) const {
   throw(AipsError("TableExprData::getString not implemented"));
 }
 
-Array<bool> TableExprData::getArrayBool(const Block<Int>&) const {
+Array<bool> TableExprData::getArrayBool(const Block<int>&) const {
   throw(AipsError("TableExprData::getArrayBool not implemented"));
 }
 
-Array<Int64> TableExprData::getArrayInt(const Block<Int>&) const {
+Array<int64_t> TableExprData::getArrayInt(const Block<int>&) const {
   throw(AipsError("TableExprData::getArrayInt not implemented"));
 }
 
-Array<Double> TableExprData::getArrayDouble(const Block<Int>& fieldNrs) const {
-  Array<Int64> tmp = getArrayInt(fieldNrs);
-  Array<Double> result(tmp.shape());
+Array<double> TableExprData::getArrayDouble(const Block<int>& fieldNrs) const {
+  Array<int64_t> tmp = getArrayInt(fieldNrs);
+  Array<double> result(tmp.shape());
   convertArray(result, tmp);
   return result;
 }
 
-Array<DComplex> TableExprData::getArrayDComplex(const Block<Int>& fieldNrs) const {
-  Array<Double> tmp = getArrayDouble(fieldNrs);
+Array<DComplex> TableExprData::getArrayDComplex(const Block<int>& fieldNrs) const {
+  Array<double> tmp = getArrayDouble(fieldNrs);
   Array<DComplex> result(tmp.shape());
   convertArray(result, tmp);
   return result;
 }
 
-Array<String> TableExprData::getArrayString(const Block<Int>&) const {
+Array<String> TableExprData::getArrayString(const Block<int>&) const {
   throw(AipsError("TableExprData::getArrayString not implemented"));
 }
 

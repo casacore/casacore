@@ -36,7 +36,7 @@ template <class T>
 PolynomialParam<T>::PolynomialParam() : Function1D<T>(1) {}
 
 template <class T>
-PolynomialParam<T>::PolynomialParam(uInt order) : Function1D<T>(order + 1) {}
+PolynomialParam<T>::PolynomialParam(unsigned int order) : Function1D<T>(order + 1) {}
 
 template <class T>
 PolynomialParam<T>::PolynomialParam(const PolynomialParam<T> &other) : Function1D<T>(other) {}

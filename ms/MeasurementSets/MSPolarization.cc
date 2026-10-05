@@ -127,7 +127,7 @@ MSTableMaps MSPolarization::initMaps() {
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  unsigned int i;
   for (i = UNDEFINED_KEYWORD + 1; i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }

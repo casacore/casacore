@@ -82,10 +82,10 @@ class String;  // Forward declarations
 
 //<group name=ReadFITS>
 // blabla
-Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName = 0,
-                      Vector<String> *axisNames = 0, Vector<Float> *refPixel = 0,
-                      Vector<Float> *refLocation = 0, Vector<Float> *delta = 0,
-                      std::map<String, Double> *keywords = 0, String *objectName = 0);
+Array<float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, String *unitName = 0,
+                      Vector<String> *axisNames = 0, Vector<float> *refPixel = 0,
+                      Vector<float> *refLocation = 0, Vector<float> *delta = 0,
+                      std::map<String, double> *keywords = 0, String *objectName = 0);
 //</group>
 
 //<summary> write a FITS file to a Casacore array</summary>
@@ -123,12 +123,12 @@ Array<Float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage, Stri
 
 //<group name=WriteFITS>
 // blabla
-bool WriteFITS(const char *FileName, const Array<Float> &array, String &ErrorMessage,
+bool WriteFITS(const char *FileName, const Array<float> &array, String &ErrorMessage,
                const char *unitName = 0, const Vector<String> *axisNames = 0,
-               const Vector<Float> *refPixel = 0, const Vector<Float> *refLocation = 0,
-               const Vector<Float> *delta = 0, const std::map<String, Double> *keywords = 0,
-               const char *objectName = 0, Int BITPIX = -32, Float minPix = 1.0,
-               Float maxPix = -1.0);
+               const Vector<float> *refPixel = 0, const Vector<float> *refLocation = 0,
+               const Vector<float> *delta = 0, const std::map<String, double> *keywords = 0,
+               const char *objectName = 0, int BITPIX = -32, float minPix = 1.0,
+               float maxPix = -1.0);
 //</group>
 
 }  // namespace casacore

@@ -128,7 +128,7 @@ class ImageSummary {
   ImageSummary<T>& operator=(const ImageSummary<T>& other);
 
   // Retrieve number of image dimension
-  Int ndim() const;
+  int ndim() const;
 
   // Retrieve image shape
   IPosition shape() const;
@@ -140,13 +140,13 @@ class ImageSummary {
   Vector<String> axisNames(bool pixelOrder = true) const;
 
   // Retrieve reference pixels (0 or 1 rel)
-  Vector<Double> referencePixels(bool oneRel = true) const;
+  Vector<double> referencePixels(bool oneRel = true) const;
 
   // Retrieve reference values in pixel or world axis order.
-  Vector<Double> referenceValues(bool pixelOrder = true) const;
+  Vector<double> referenceValues(bool pixelOrder = true) const;
 
   // Retrieve axis increments in pixel or world axis order.
-  Vector<Double> axisIncrements(bool pixelOrder = true) const;
+  Vector<double> axisIncrements(bool pixelOrder = true) const;
 
   // Retrieve axis units in pixel or world axis order.
   Vector<String> axisUnits(bool pixelOrder = true) const;
@@ -167,7 +167,7 @@ class ImageSummary {
   String telescope() const;
 
   // Return rest frequency.  Returns false if none.
-  bool restFrequency(String& restFreqString, Quantum<Double>& restFreq) const;
+  bool restFrequency(String& restFreqString, Quantum<double>& restFreq) const;
 
   // Return frequency system.  Returns false if none.
   bool frequencySystem(String& freqTypeString, MFrequency::Types& freqType) const;

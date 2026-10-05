@@ -34,7 +34,7 @@
 #include <casacore/casa/stdio.h>  // for snprintf
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
-TSMFile::TSMFile(const TiledStMan* stman, uInt fileSequenceNr, const TSMOption& tsmOpt,
+TSMFile::TSMFile(const TiledStMan* stman, unsigned int fileSequenceNr, const TSMOption& tsmOpt,
                  const std::shared_ptr<MultiFileBase>& mfile)
     : fileSeqnr_p(fileSequenceNr), file_p(0), length_p(0) {
   // Create the file.
@@ -42,7 +42,7 @@ TSMFile::TSMFile(const TiledStMan* stman, uInt fileSequenceNr, const TSMOption& 
   snprintf(strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
   String fileName = stman->fileName() + strc;
   bool mapOpt = tsmOpt.option() == TSMOption::MMap;
-  uInt bufSize = 0;
+  unsigned int bufSize = 0;
   if (tsmOpt.option() == TSMOption::Buffer) {
     bufSize = tsmOpt.bufferSize();
   }
@@ -54,14 +54,14 @@ TSMFile::TSMFile(const String& fileName, bool writable, const TSMOption& tsmOpt,
     : fileSeqnr_p(0), file_p(0), length_p(0) {
   // Create the file.
   bool mapOpt = tsmOpt.option() == TSMOption::MMap;
-  uInt bufSize = 0;
+  unsigned int bufSize = 0;
   if (tsmOpt.option() == TSMOption::Buffer) {
     bufSize = tsmOpt.bufferSize();
   }
   file_p = new BucketFile(fileName, writable, bufSize, mapOpt, mfile);
 }
 
-TSMFile::TSMFile(const TiledStMan* stman, AipsIO& ios, uInt seqnr, const TSMOption& tsmOpt,
+TSMFile::TSMFile(const TiledStMan* stman, AipsIO& ios, unsigned int seqnr, const TSMOption& tsmOpt,
                  const std::shared_ptr<MultiFileBase>& mfile)
     : file_p(0) {
   getObject(ios);
@@ -72,7 +72,7 @@ TSMFile::TSMFile(const TiledStMan* stman, AipsIO& ios, uInt seqnr, const TSMOpti
   snprintf(strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
   String fileName = stman->fileName() + strc;
   bool mapOpt = tsmOpt.option() == TSMOption::MMap;
-  uInt bufSize = 0;
+  unsigned int bufSize = 0;
   if (tsmOpt.option() == TSMOption::Buffer) {
     bufSize = tsmOpt.bufferSize();
   }
@@ -83,11 +83,11 @@ TSMFile::~TSMFile() { delete file_p; }
 
 void TSMFile::putObject(AipsIO& ios) const {
   // Take care of forward compatibility (for small enough files).
-  uInt version = (length_p < 2u * 1024u * 1024u * 1024u ? 1 : 2);
+  unsigned int version = (length_p < 2u * 1024u * 1024u * 1024u ? 1 : 2);
   ios << version;
   ios << fileSeqnr_p;
   if (version == 1) {
-    uInt len = length_p;
+    unsigned int len = length_p;
     ios << len;
   } else {
     ios << length_p;
@@ -95,11 +95,11 @@ void TSMFile::putObject(AipsIO& ios) const {
 }
 
 void TSMFile::getObject(AipsIO& ios) {
-  uInt version;
+  unsigned int version;
   ios >> version;
   ios >> fileSeqnr_p;
   if (version == 1) {
-    uInt len;
+    unsigned int len;
     ios >> len;
     length_p = len;
   } else {

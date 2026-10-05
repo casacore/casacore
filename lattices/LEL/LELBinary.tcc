@@ -187,7 +187,7 @@ String LELBinary<T>::className() const {
 }
 
 template <class T>
-bool LELBinary<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELBinary<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   if (!pLeftExpr_p->lock(type, nattempts)) {
     return false;
   }
@@ -380,7 +380,7 @@ String LELBinaryCmp<T>::className() const {
 }
 
 template <class T>
-bool LELBinaryCmp<T>::lock(FileLocker::LockType type, uInt nattempts) {
+bool LELBinaryCmp<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   if (!pLeftExpr_p->lock(type, nattempts)) {
     return false;
   }

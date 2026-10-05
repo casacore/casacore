@@ -34,11 +34,11 @@
 
 int main() {
   try {
-    Int v1 = -10;
-    Int v2 = 9;
-    Int v3 = 1;
-    uInt nv = 0;  // nr ov test-values
-    Int v;
+    int v1 = -10;
+    int v2 = 9;
+    int v3 = 1;
+    unsigned int nv = 0;  // nr ov test-values
+    int v;
     for (v = v1; v <= v2; v += v3) {
       nv++;
     }
@@ -52,15 +52,15 @@ int main() {
     // For testing other types, change them here:
 
     String caption(" tStatAcc test for <Int>");
-    StatAcc<Int> s;  // accumulator
-    StatAcc<Int> s1;
-    Vector<Int> vv(nv, 0);  // values of required type
-    Block<Int> bv(nv);      // values of required type
+    StatAcc<int> s;  // accumulator
+    StatAcc<int> s1;
+    Vector<int> vv(nv, 0);  // values of required type
+    Block<int> bv(nv);      // values of required type
 
-    Vector<Float> ww(nv, 0.0);  // weights are always Float
-    Block<Float> bw(nv);        // weights are always Float
+    Vector<float> ww(nv, 0.0);  // weights are always Float
+    Block<float> bw(nv);        // weights are always Float
 
-    Int i = 0;  // index
+    int i = 0;  // index
     for (v = v1; v <= v2; v += v3) {
       vv(i) = v;  // Array values
       bv[i] = v;  // Block values

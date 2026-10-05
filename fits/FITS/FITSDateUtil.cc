@@ -40,16 +40,16 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time, MEpoch::Types system,
-                          DateStyle style, uInt precision) {
+                          DateStyle style, unsigned int precision) {
   date = "invalid";
   timesys = "invalid";
 
   // First get the DATE string.
   switch (style) {
     case OLD: {
-      Int month = time.month();
-      Int day = time.monthday();
-      Int year = time.year() - 1900;
+      int month = time.month();
+      int day = time.monthday();
+      int year = time.year() - 1900;
       AlwaysAssert(year >= 0 && year < 100, AipsError);  // 20th century only
       ostringstream out;
       out << setfill('0') << setw(2) << day << "/" << setw(2) << month << "/" << setw(2) << year;
@@ -113,12 +113,12 @@ bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system, const String &d
     ok = ok && isdigit(date[4]);
     ok = ok && isdigit(date[6]);
     ok = ok && isdigit(date[7]);
-    Int zero = '0';
+    int zero = '0';
     if (ok) {
-      Int year = (date[6] - zero) * 10 + date[7] - zero;
+      int year = (date[6] - zero) * 10 + date[7] - zero;
       year += 1900;
-      Int month = (date[3] - zero) * 10 + date[4] - zero;
-      Double day = (date[0] - zero) * 10 + date[1] - zero;
+      int month = (date[3] - zero) * 10 + date[4] - zero;
+      double day = (date[0] - zero) * 10 + date[1] - zero;
       time = MVTime(year, month, day);
     }
   } else {
@@ -182,25 +182,25 @@ bool FITSDateUtil::convertDateString(String &out, const String &in) {
   bool ok = FITSDateUtil::fromFITS(time, system, in, "");
   if (ok) {
     String sys;
-    uInt precision = findPrecision(in);
+    unsigned int precision = findPrecision(in);
     FITSDateUtil::toFITS(out, sys, time, MEpoch::UTC, AUTO_PICK, precision);
   }
   return ok;
 }
 
-uInt FITSDateUtil::findPrecision(const String &fitsDate) {
+unsigned int FITSDateUtil::findPrecision(const String &fitsDate) {
   if (fitsDate.find('/') != std::string::npos) {
     return 0;  // Old style has no time
   }
 
   // OK, new style
-  uInt prec = 0;
+  unsigned int prec = 0;
   if (fitsDate.find('T') != std::string::npos) {
     prec += 6;  // We are good at least to the second
     size_t decimalpos = fitsDate.find('.');
     if (decimalpos > 0 && decimalpos != std::string::npos) {
       // OK, we may have some decimal points, count 'em.
-      for (uInt i = decimalpos + 1; i < fitsDate.length() && isdigit(fitsDate[i]); i++) {
+      for (unsigned int i = decimalpos + 1; i < fitsDate.length() && isdigit(fitsDate[i]); i++) {
         prec++;
       }
     }

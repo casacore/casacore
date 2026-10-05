@@ -31,7 +31,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-BucketMapped::BucketMapped(BucketFile* file, Int64 startOffset, uInt bucketSize, uInt nrOfBuckets)
+BucketMapped::BucketMapped(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
+                           unsigned int nrOfBuckets)
     : BucketBase(file, startOffset, bucketSize, nrOfBuckets) {
   AlwaysAssert(itsFile->mappedFile() != 0, AipsError);
 }
@@ -44,31 +45,31 @@ void BucketMapped::doResync() {
 
 void BucketMapped::doFlush() { itsFile->mappedFile()->flush(); }
 
-void BucketMapped::doExtend(uInt) {
+void BucketMapped::doExtend(unsigned int) {
   // Extend the file by writing the last byte.
   char ch = 0;
-  itsFile->mappedFile()->seek(itsStartOffset + Int64(itsNewNrOfBuckets) * itsBucketSize - 1);
+  itsFile->mappedFile()->seek(itsStartOffset + int64_t(itsNewNrOfBuckets) * itsBucketSize - 1);
   itsFile->mappedFile()->write(1, &ch);
 }
 
-const char* BucketMapped::getBucket(uInt bucketNr) {
+const char* BucketMapped::getBucket(unsigned int bucketNr) {
   if (bucketNr >= itsCurNrOfBuckets) {
     if (bucketNr >= itsNewNrOfBuckets) {
-      throw(indexError<Int>(bucketNr));
+      throw(indexError<int>(bucketNr));
     }
     initializeBuckets(bucketNr);
   }
   return static_cast<const char*>(
-      itsFile->mappedFile()->getReadPointer(itsStartOffset + Int64(bucketNr) * itsBucketSize));
+      itsFile->mappedFile()->getReadPointer(itsStartOffset + int64_t(bucketNr) * itsBucketSize));
 }
 
-void BucketMapped::initializeBuckets(uInt bucketNr) {
+void BucketMapped::initializeBuckets(unsigned int bucketNr) {
   if (itsCurNrOfBuckets <= bucketNr) {
     doExtend(0);
     // Initialize this bucket and all uninitialized ones before it.
     while (itsCurNrOfBuckets <= bucketNr) {
       char* data = static_cast<char*>(itsFile->mappedFile()->getWritePointer(
-          itsStartOffset + Int64(itsCurNrOfBuckets) * itsBucketSize));
+          itsStartOffset + int64_t(itsCurNrOfBuckets) * itsBucketSize));
       memset(data, 0, itsBucketSize);
       itsCurNrOfBuckets++;
       setWritten();

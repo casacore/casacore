@@ -121,11 +121,11 @@ void SDSysCalHandler::resetRow(const Record &row) {
   initRow(dummyHandledCols, row);
 }
 
-void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spectralWindowId,
-                           Double time, Vector<Double> timeRange, uInt numReceptors) {
+void SDSysCalHandler::fill(const Record &row, int antennaId, int feedId, int spectralWindowId,
+                           double time, Vector<double> timeRange, unsigned int numReceptors) {
   // don't bother unless there is something there
   if (msSysCal_p) {
-    Vector<Float> tsys(numReceptors), tcal(numReceptors), trx(numReceptors);
+    Vector<float> tsys(numReceptors), tcal(numReceptors), trx(numReceptors);
     bool tsysFlag, tcalFlag, trxFlag;
     tsysFlag = tcalFlag = trxFlag = false;
     tsys = tcal = trx = 0.0;
@@ -176,9 +176,9 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
       newRow = !newRow && phaseDiffFlagField_p.isAttached() &&
                *phaseDiffFlagField_p != msSysCalCols_p->phaseDiffFlag()(rownr_p);
     }
-    Double interval = timeRange(1) - timeRange(0);
+    double interval = timeRange(1) - timeRange(0);
     // former MS time or the time used in this function argument?
-    Double thisTime = time;
+    double thisTime = time;
     if (timeField_p.isAttached()) {
       // former MS time
       thisTime = *timeField_p;
@@ -192,10 +192,10 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
       // if the time falls within the row interval of the row time
       // or the row time falls within the interval of time, then the rows overlap and
       // can be reused
-      Double rowTime = msSysCalCols_p->time()(rownr_p);
-      Double rowInterval = msSysCalCols_p->interval()(rownr_p);
-      Double rid2 = rowInterval / 2.0;
-      Double id2 = interval / 2.0;
+      double rowTime = msSysCalCols_p->time()(rownr_p);
+      double rowInterval = msSysCalCols_p->interval()(rownr_p);
+      double rid2 = rowInterval / 2.0;
+      double id2 = interval / 2.0;
       newRow = !(((time - id2) < (rowTime + rid2)) && ((rowTime - rid2) < (time + id2)));
     }
     if (newRow) {
@@ -253,9 +253,9 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
     } else {
       // reuse this row, make sure that the time range is fully set
       // and place the time in the center of it
-      Double rowTime = msSysCalCols_p->time()(rownr_p);
-      Double rowInterval = msSysCalCols_p->interval()(rownr_p);
-      Double minTime, maxTime;
+      double rowTime = msSysCalCols_p->time()(rownr_p);
+      double rowInterval = msSysCalCols_p->interval()(rownr_p);
+      double minTime, maxTime;
       minTime = min(time - interval / 2.0, rowTime - rowInterval / 2.0);
       maxTime = max(time + interval / 2.0, rowTime + rowInterval / 2.0);
       msSysCalCols_p->time().put(rownr_p, (maxTime + minTime) / 2.0);
@@ -311,7 +311,7 @@ void SDSysCalHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, con
     MSSysCal::addColumnToDesc(td, MSSysCal::TRX);
     MSSysCal::addColumnToDesc(td, MSSysCal::TRX_FLAG);
   }
-  for (uInt i = 0; i < td.ncolumn(); i++) {
+  for (unsigned int i = 0; i < td.ncolumn(); i++) {
     msSysCal_p->addColumn(td[i]);
   }
 
@@ -330,7 +330,7 @@ void SDSysCalHandler::initRow(Vector<bool> &handledCols, const Record &row) {
   trxId_p = row.fieldNumber("TRX");
   if (trxId_p >= 0) handledCols(trxId_p) = true;
 
-  Int tmp;
+  int tmp;
   tmp = row.fieldNumber("SYSCAL_INTERVAL");
   if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
     intervalField_p.attachToRecord(row, tmp);

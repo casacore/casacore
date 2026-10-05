@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # forward declarations
-template <class T, Int n>
+template <class T, int n>
 class RigidVector;
 
 // <summary>
@@ -102,7 +102,7 @@ class RigidVector;
 //        implemented yet, add on as-needed basis.
 // </todo>
 
-template <class T, Int n>
+template <class T, int n>
 class SquareMatrix {
   // Friends currently need to be explicit (non templated) type to work.
   friend class RigidVector<T, n>;
@@ -111,7 +111,7 @@ class SquareMatrix {
   //     friend class SquareMatrix<Complex,4>; // for directProduct of 2x2
   //  Global friend function for product of Complex matrix and Float 4-vector
   friend RigidVector<Complex, 4> operator*(const SquareMatrix<Complex, 4>& m,
-                                           const RigidVector<Float, 4>& v);
+                                           const RigidVector<float, 4>& v);
   // Global friend function to calculate direct product
   friend SquareMatrix<Complex, 4>& directProduct(SquareMatrix<Complex, 4>& result,
                                                  const SquareMatrix<Complex, 2>& left,
@@ -146,7 +146,7 @@ class SquareMatrix {
     type_p = General;
     const T* pa = &a[0][0];
     T* pa_p = &a_p[0][0];
-    for (Int i = 0; i < n * n; i++) *pa_p++ = *pa++;
+    for (int i = 0; i < n * n; i++) *pa_p++ = *pa++;
     return *this;
   }
   // Assign a Matrix, creates a general matrix.
@@ -154,7 +154,7 @@ class SquareMatrix {
   // Assign a c-style vector, creates a diagonal matrix
   SquareMatrix<T, n>& operator=(const T vec[n]) {
     type_p = Diagonal;
-    for (Int i = 0; i < n; i++) a_p[i][i] = vec[i];
+    for (int i = 0; i < n; i++) a_p[i][i] = vec[i];
     return *this;
   }
   // Assign a Vector, creates a diagonal matrix
@@ -171,10 +171,10 @@ class SquareMatrix {
   // i.e., A*=B; is equivalent with A=A*B where '*' is matrix multiplication.
   SquareMatrix<T, n>& operator*=(const SquareMatrix<T, n>& other);
   // Scalar multiplication
-  SquareMatrix<T, n>& operator*=(Float f);
+  SquareMatrix<T, n>& operator*=(float f);
   // Indexing, only const indexing is allowed. You cannot change the
   // matrix via indexing. No bounds checking.
-  T operator()(Int i, Int j) const {
+  T operator()(int i, int j) const {
     switch (type_p) {
       case ScalarId:
         return (i == j) ? a_p[0][0] : T();
@@ -187,7 +187,7 @@ class SquareMatrix {
   }
   // Non const indexing, throws exception if you try to change an element
   // which would require a type change of the matrix
-  T& operator()(Int i, Int j) {
+  T& operator()(int i, int j) {
     switch (type_p) {
       case ScalarId:
         return (i == j) ? a_p[0][0] : throwInvAccess();
@@ -243,7 +243,7 @@ class SquareMatrix {
  private:
   T& throwInvAccess();
   T a_p[n][n];
-  Int type_p;
+  int type_p;
 };
 
 // # the following does not compile with Sun native but should...
@@ -316,8 +316,8 @@ SquareMatrix<Complex, 4> adjoint(const SquareMatrix<Complex, 4>& m);
 // Write SquareMatrix to output, uses Matrix to do the work.
 ostream& operator<<(ostream& os, const SquareMatrix<Complex, 2>& m);
 ostream& operator<<(ostream& os, const SquareMatrix<Complex, 4>& m);
-ostream& operator<<(ostream& os, const SquareMatrix<Float, 2>& m);
-ostream& operator<<(ostream& os, const SquareMatrix<Float, 4>& m);
+ostream& operator<<(ostream& os, const SquareMatrix<float, 2>& m);
+ostream& operator<<(ostream& os, const SquareMatrix<float, 4>& m);
 // </group>
 
 }  // namespace casacore

@@ -71,7 +71,7 @@ void MEpoch::assure(const Measure &in) {
   }
 }
 
-MEpoch::Types MEpoch::castType(uInt tp) {
+MEpoch::Types MEpoch::castType(unsigned int tp) {
   MEpoch::checkMyTypes();
   AlwaysAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
   return static_cast<MEpoch::Types>(tp);
@@ -85,16 +85,16 @@ const String &MEpoch::showType(MEpoch::Types tp) {
   return tname[tp & ~MEpoch::EXTRA];
 }
 
-const String &MEpoch::showType(uInt tp) { return MEpoch::showType(MEpoch::castType(tp)); }
+const String &MEpoch::showType(unsigned int tp) { return MEpoch::showType(MEpoch::castType(tp)); }
 
-const String *MEpoch::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
-  static const Int N_name = 17;
-  static const Int N_extra = 0;
+const String *MEpoch::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
+  static const int N_name = 17;
+  static const int N_extra = 0;
   static const String tname[N_name] = {"LAST", "LMST", "GMST1", "GAST", "UT1", "UT2",
                                        "UTC",  "TAI",  "TDT",   "TCG",  "TDB", "TCB",
                                        "IAT",  "GMST", "TT",    "ET",   "UT"};
 
-  static const uInt oname[N_name] = {
+  static const unsigned int oname[N_name] = {
       MEpoch::LAST, MEpoch::LMST,  MEpoch::GMST1, MEpoch::GAST, MEpoch::UT1, MEpoch::UT2,
       MEpoch::UTC,  MEpoch::TAI,   MEpoch::TDT,   MEpoch::TCG,  MEpoch::TDB, MEpoch::TCB,
       MEpoch::TAI,  MEpoch::GMST1, MEpoch::TDT,   MEpoch::TDT,  MEpoch::UT1};
@@ -106,7 +106,7 @@ const String *MEpoch::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
   return tname;
 }
 
-const String *MEpoch::allTypes(Int &nall, Int &nextra, const uInt *&typ) const {
+const String *MEpoch::allTypes(int &nall, int &nextra, const unsigned int *&typ) const {
   return MEpoch::allMyTypes(nall, nextra, typ);
 }
 
@@ -117,27 +117,27 @@ void MEpoch::checkMyTypes() {
   static bool first(true);
   if (first) {
     first = false;
-    Int nall, nex;
-    const uInt *typ;
+    int nall, nex;
+    const unsigned int *typ;
     const String *const tps = MEpoch::allMyTypes(nall, nex, typ);
     MEpoch::Types tp;
-    for (Int i = 0; i < nall; i++) {
-      AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(typ[i])) && tp == Int(typ[i]) &&
-                       MEpoch::getType(tp, tps[i]) && tp == Int(typ[i]),
+    for (int i = 0; i < nall; i++) {
+      AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(typ[i])) && tp == int(typ[i]) &&
+                       MEpoch::getType(tp, tps[i]) && tp == int(typ[i]),
                    AipsError);
     }
-    for (Int i = 0; i < N_Types; i++) {
+    for (int i = 0; i < N_Types; i++) {
       AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(i)) && tp == i, AipsError);
     }
   }
 }
 
 bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+  const unsigned int *oname;
+  int nall, nex;
   const String *tname = MEpoch::allMyTypes(nall, nex, oname);
 
-  Int i = Measure::giveMe(in, nall, tname);
+  int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
     return false;

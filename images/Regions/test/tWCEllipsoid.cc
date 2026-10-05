@@ -40,9 +40,9 @@
   Array<bool> mask = ellipse.get();
   IPosition shape = mask.shape();
   IPosition index = shape-1;
-  uInt j=0;
+  unsigned int j=0;
   while(True) {
-  for (uInt i=0; i<shape(0); i++) {
+  for (unsigned int i=0; i<shape(0); i++) {
   index[0] = i;
   cout << mask(index) << " ";
   }
@@ -65,8 +65,8 @@
 */
 /*
   cout << shape << endl;
-  for (Int j=shape(1)-1; j>=0; j--) {
-  for (uInt i=0; i<shape(0); i++) {
+  for (int j=shape(1)-1; j>=0; j--) {
+  for (unsigned int i=0; i<shape(0); i++) {
 
   IPosition x;
   x.
@@ -149,17 +149,17 @@ int main() {
       LCEllipsoid *lcEllipse = dynamic_cast<LCEllipsoid *>(lcReg);
       IPosition lcShape = lcReg->shape();
 
-      Vector<Float> lcCenter = lcEllipse->center();
+      Vector<float> lcCenter = lcEllipse->center();
       AlwaysAssert(near(lcCenter[0], 0.0), AipsError);
       AlwaysAssert(near(lcCenter[1], 20.5), AipsError);
       AlwaysAssert(near(lcCenter[2], 10.0), AipsError);
-      Vector<Float> lcRadii = lcEllipse->radii();
-      Vector<Double> pixel(3, 1);
-      Vector<Double> world1;
+      Vector<float> lcRadii = lcEllipse->radii();
+      Vector<double> pixel(3, 1);
+      Vector<double> world1;
       csys.toWorld(world1, pixel);
       pixel = 2;
 
-      Vector<Double> world2;
+      Vector<double> world2;
 
       csys.toWorld(world2, pixel);
       AlwaysAssert(near(lcRadii[0], 5.0), AipsError);

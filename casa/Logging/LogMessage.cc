@@ -73,20 +73,20 @@ LogMessage &LogMessage::message(const String &message, bool keepLastTime) {
     time_p.now();
   }
   // Remove everything after the final newline
-  Int n = message_p.length();
+  int n = message_p.length();
   while (--n >= 0 && message_p[n] == '\n') {
     ;  // Nothing
   }
-  if (n + 1 < Int(message_p.length())) {
+  if (n + 1 < int(message_p.length())) {
     message_p = message_p.substr(0, n + 1);
   }
 
   return *this;
 }
 
-uInt LogMessage::line() const { return origin_p.line(); }
+unsigned int LogMessage::line() const { return origin_p.line(); }
 
-LogMessage &LogMessage::line(uInt which) {
+LogMessage &LogMessage::line(unsigned int which) {
   origin_p.line(which);
   return *this;
 }

@@ -42,9 +42,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-uInt LatticeFit::fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedParameters,
-                             LinearFit<Float>& fitter, const Lattice<Float>& inImage,
-                             uInt whichAxis, const Vector<bool>& fitMask, bool returnResiduals) {
+unsigned int LatticeFit::fitProfiles(Lattice<float>& outImage, Vector<float>& fittedParameters,
+                                     LinearFit<float>& fitter, const Lattice<float>& inImage,
+                                     unsigned int whichAxis, const Vector<bool>& fitMask,
+                                     bool returnResiduals) {
   IPosition outShape = outImage.shape();
   IPosition inShape = inImage.shape();
 
@@ -55,19 +56,19 @@ uInt LatticeFit::fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedPara
   if (whichAxis >= outImage.ndim()) {
     throw(AipsError("::baselineFit - whichAxis does not exist in image"));
   }
-  if (Int(fitMask.nelements()) != outShape(whichAxis)) {
+  if (int(fitMask.nelements()) != outShape(whichAxis)) {
     throw(AipsError("::baselineFit - improperly specified mask"));
   }
 
   // These selections etc will get easier when masked arrays are available.
-  Int nPointsToFit = fitMask.nelements();
+  int nPointsToFit = fitMask.nelements();
 
   // Set up x and sigma
-  Vector<Float> x(nPointsToFit);
-  Vector<Float> y(nPointsToFit);
-  Vector<Float> sigma(nPointsToFit);
+  Vector<float> x(nPointsToFit);
+  Vector<float> y(nPointsToFit);
+  Vector<float> sigma(nPointsToFit);
 
-  Int count, i;
+  int count, i;
 
   // data points with sigma = -1.0 are ignored in fitting
   for (count = 0, i = 0; i < nPointsToFit; i++) {
@@ -89,20 +90,20 @@ uInt LatticeFit::fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedPara
   cursorShape = 1;
   cursorShape(whichAxis) = inShape(whichAxis);
 
-  LatticeIterator<Float> outIter(outImage, cursorShape);
-  RO_LatticeIterator<Float> inIter(inImage, cursorShape);
+  LatticeIterator<float> outIter(outImage, cursorShape);
+  RO_LatticeIterator<float> inIter(inImage, cursorShape);
 
-  Vector<Float> xall(inShape(whichAxis));
+  Vector<float> xall(inShape(whichAxis));
   indgen(xall);
-  Vector<Float> solution(xall.nelements());
-  Vector<Float> yall(xall.nelements());
+  Vector<float> solution(xall.nelements());
+  Vector<float> yall(xall.nelements());
 
   count = 0;
   fittedParameters.resize(0);
   for (inIter.reset(), outIter.reset(); !inIter.atEnd(); inIter++, outIter++, count++) {
     yall = inIter.vectorCursor();
     fittedParameters = fitter.fit(x, yall, sigma);
-    for (uInt ii = 0; ii < solution.nelements(); ii++) {
+    for (unsigned int ii = 0; ii < solution.nelements(); ii++) {
       solution(ii) = (*fitter.fittedFunction())(xall(ii)).value();
     }
     if (returnResiduals) {
@@ -115,9 +116,10 @@ uInt LatticeFit::fitProfiles(Lattice<Float>& outImage, Vector<Float>& fittedPara
   return count;
 }
 
-uInt LatticeFit::fitProfiles(MaskedLattice<Float>* pFit, MaskedLattice<Float>* pResid,
-                             MaskedLattice<Float>& in, Lattice<Float>* pSigma,
-                             LinearFit<Float>& fitter, uInt axis, bool showProgress) {
+unsigned int LatticeFit::fitProfiles(MaskedLattice<float>* pFit, MaskedLattice<float>* pResid,
+                                     MaskedLattice<float>& in, Lattice<float>* pSigma,
+                                     LinearFit<float>& fitter, unsigned int axis,
+                                     bool showProgress) {
   LogIO os(LogOrigin("LatticeFit", "fitProfiles"));
   //
   IPosition inShape = in.shape();
@@ -132,54 +134,54 @@ uInt LatticeFit::fitProfiles(MaskedLattice<Float>* pFit, MaskedLattice<Float>* p
 
   IPosition inTileShape = in.niceCursorShape();
   TiledLineStepper stepper(in.shape(), inTileShape, axis);
-  RO_MaskedLatticeIterator<Float> inIter(in, stepper);
+  RO_MaskedLatticeIterator<float> inIter(in, stepper);
   //
-  LatticeIterator<Float>* pFitIter = 0;
+  LatticeIterator<float>* pFitIter = 0;
   LatticeIterator<bool>* pFitMaskIter = 0;
-  LatticeIterator<Float>* pResidIter = 0;
+  LatticeIterator<float>* pResidIter = 0;
   LatticeIterator<bool>* pResidMaskIter = 0;
   //
   if (pFit) {
-    pFitIter = new LatticeIterator<Float>(*pFit, stepper);
+    pFitIter = new LatticeIterator<float>(*pFit, stepper);
     if (pFit->hasPixelMask()) {
       pFitMaskIter = new LatticeIterator<bool>(pFit->pixelMask(), stepper);
     }
   }
   if (pResid) {
-    pResidIter = new LatticeIterator<Float>(*pResid, stepper);
+    pResidIter = new LatticeIterator<float>(*pResid, stepper);
     if (pResid->hasPixelMask()) {
       pResidMaskIter = new LatticeIterator<bool>(pResid->pixelMask(), stepper);
     }
   }
   //
-  Int nProfiles = inShape.product() / inIter.vectorCursor().nelements();
+  int nProfiles = inShape.product() / inIter.vectorCursor().nelements();
   ProgressMeter* pProgress = 0;
-  Double meterValue = 0.0;
+  double meterValue = 0.0;
   if (showProgress) {
-    pProgress = new ProgressMeter(0.0, Double(nProfiles), "Profile fitting", "Profiles fitted", "",
-                                  "", true, max(1, Int(nProfiles / 20)));
+    pProgress = new ProgressMeter(0.0, double(nProfiles), "Profile fitting", "Profiles fitted", "",
+                                  "", true, max(1, int(nProfiles / 20)));
   }
   //
-  const uInt n = inShape(axis);
-  Vector<Float> x(n);
-  Vector<Float> y(n);
-  for (uInt i = 0; i < x.nelements(); i++) x[i] = i;
-  const Function<FunctionTraits<Float>::DiffType, FunctionTraits<Float>::DiffType>* pFunc =
+  const unsigned int n = inShape(axis);
+  Vector<float> x(n);
+  Vector<float> y(n);
+  for (unsigned int i = 0; i < x.nelements(); i++) x[i] = i;
+  const Function<FunctionTraits<float>::DiffType, FunctionTraits<float>::DiffType>* pFunc =
       fitter.fittedFunction();
   //
   Vector<bool> inMask;
-  Vector<Float> inSigma;
+  Vector<float> inSigma;
   bool ok = false;
-  uInt nFail = 0;
+  unsigned int nFail = 0;
   //
   while (!inIter.atEnd()) {
     // Get data and mask (reflects pixelMask and region mask of SubImage)
 
-    const Vector<Float>& data = inIter.vectorCursor();
+    const Vector<float>& data = inIter.vectorCursor();
     inMask = inIter.getMask(true);
     //
     ok = true;
-    Vector<Float> sol;
+    Vector<float> sol;
     if (pSigma) {
       inSigma = pSigma->getSlice(inIter.position(), inIter.cursorShape(), true);
       try {
@@ -195,7 +197,7 @@ uInt LatticeFit::fitProfiles(MaskedLattice<Float>* pFit, MaskedLattice<Float>* p
         ok = false;
       }
     }
-    for (Vector<Float>::const_iterator iter = sol.begin(); iter != sol.end(); iter++) {
+    for (Vector<float>::const_iterator iter = sol.begin(); iter != sol.end(); iter++) {
       if (isNaN(*iter)) {
         ok = false;
       }
@@ -204,7 +206,7 @@ uInt LatticeFit::fitProfiles(MaskedLattice<Float>* pFit, MaskedLattice<Float>* p
     // Evaluate
     if (ok) {
       if (pFit) {
-        for (uInt i = 0; i < n; i++) {
+        for (unsigned int i = 0; i < n; i++) {
           pFitIter->rwVectorCursor()[i] = (*pFunc)(x(i)).value();
         }
       }
@@ -215,7 +217,7 @@ uInt LatticeFit::fitProfiles(MaskedLattice<Float>* pFit, MaskedLattice<Float>* p
         if (pFit) {
           pResidIter->rwVectorCursor() = data - pFitIter->rwVectorCursor();
         } else {
-          for (uInt i = 0; i < n; i++) {
+          for (unsigned int i = 0; i < n; i++) {
             pResidIter->rwVectorCursor()[i] = data[i] - (*pFunc)(x(i)).value();
           }
         }

@@ -59,9 +59,9 @@ class IPosition;
 // a JsonKVMap object, or a vector of JsonValue objects. In this way
 // JSON values can be nested in any way.
 //
-// Internally scalar values are kept as Bool, Int64, Double, DComplex or
+// Internally scalar values are kept as Bool, int64_t, Double, DComplex or
 // String values. The functions to obtain the value convert if possible.
-// Note that conversion from Int64 to Bool is supported.
+// Note that conversion from int64_t to Bool is supported.
 // The value can also be obtained as a ValueHolder object making it easier
 // to use in other Casacore code.
 // Null is also a valid JsonValue. A null value can be obtained as a
@@ -94,7 +94,7 @@ class JsonValue {
   // <group>
   JsonValue(bool);
   JsonValue(int);
-  JsonValue(Int64);
+  JsonValue(int64_t);
   JsonValue(double);
   JsonValue(const DComplex&);
   JsonValue(const char*);
@@ -158,7 +158,7 @@ class JsonValue {
   // Note that a null value can only be obtained as double (giving NaN).
   // <group>
   bool getBool() const;
-  Int64 getInt() const;
+  int64_t getInt() const;
   double getDouble() const;
   DComplex getDComplex() const;
   const String& getString() const;
@@ -168,7 +168,7 @@ class JsonValue {
   // If the value is a scalar, a vector with length 1 is returned.
   // <group>
   std::vector<bool> getVecBool() const;
-  std::vector<Int64> getVecInt() const;
+  std::vector<int64_t> getVecInt() const;
   std::vector<double> getVecDouble() const;
   std::vector<DComplex> getVecDComplex() const;
   std::vector<String> getVecString() const;
@@ -182,7 +182,7 @@ class JsonValue {
   // regularly nested vector.
   // <group>
   Array<bool> getArrayBool() const;
-  Array<Int64> getArrayInt() const;
+  Array<int64_t> getArrayInt() const;
   Array<double> getArrayDouble() const;
   Array<DComplex> getArrayDComplex() const;
   Array<String> getArrayString() const;
@@ -191,12 +191,12 @@ class JsonValue {
   // Get functions for templated purposes
   // <group>
   void get(bool& value) const { value = getBool(); }
-  void get(Int64& value) const { value = getInt(); }
+  void get(int64_t& value) const { value = getInt(); }
   void get(double& value) const { value = getDouble(); }
   void get(DComplex& value) const { value = getDComplex(); }
   void get(String& value) const { value = getString(); }
   void get(std::vector<bool>& value) const { value = getVecBool(); }
-  void get(std::vector<Int64>& value) const { value = getVecInt(); }
+  void get(std::vector<int64_t>& value) const { value = getVecInt(); }
   void get(std::vector<double>& value) const { value = getVecDouble(); }
   void get(std::vector<DComplex>& value) const { value = getVecDComplex(); }
   void get(std::vector<String>& value) const { value = getVecString(); }

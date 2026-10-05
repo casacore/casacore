@@ -49,7 +49,7 @@ FITSMask::FITSMask(TiledFileAccess* tiledFile)
                AipsError);
 }
 
-FITSMask::FITSMask(TiledFileAccess* tiledFile, Float scale, Float offset, uChar magic,
+FITSMask::FITSMask(TiledFileAccess* tiledFile, float scale, float offset, unsigned char magic,
                    bool hasBlanks)
     : itsTiledFilePtr(tiledFile),
       itsScale(scale),
@@ -62,7 +62,7 @@ FITSMask::FITSMask(TiledFileAccess* tiledFile, Float scale, Float offset, uChar 
   AlwaysAssert(itsTiledFilePtr->dataType() == TpUChar, AipsError);
 }
 
-FITSMask::FITSMask(TiledFileAccess* tiledFile, Float scale, Float offset, Short magic,
+FITSMask::FITSMask(TiledFileAccess* tiledFile, float scale, float offset, short magic,
                    bool hasBlanks)
     : itsTiledFilePtr(tiledFile),
       itsScale(scale),
@@ -75,7 +75,7 @@ FITSMask::FITSMask(TiledFileAccess* tiledFile, Float scale, Float offset, Short 
   AlwaysAssert(itsTiledFilePtr->dataType() == TpShort, AipsError);
 }
 
-FITSMask::FITSMask(TiledFileAccess* tiledFile, Float scale, Float offset, Int magic, bool hasBlanks)
+FITSMask::FITSMask(TiledFileAccess* tiledFile, float scale, float offset, int magic, bool hasBlanks)
     : itsTiledFilePtr(tiledFile),
       itsScale(scale),
       itsOffset(offset),
@@ -130,7 +130,7 @@ bool FITSMask::doGetSlice(Array<bool>& mask, const Slicer& section) {
   if (itsTiledFilePtr->dataType() == TpFloat) {
     itsTiledFilePtr->get(itsBuffer, section);
   } else if (itsTiledFilePtr->dataType() == TpDouble) {
-    Array<Double> tmp(shp);
+    Array<double> tmp(shp);
     itsTiledFilePtr->get(tmp, section);
     convertArray(itsBuffer, tmp);
   } else if (itsTiledFilePtr->dataType() == TpInt) {
@@ -142,7 +142,7 @@ bool FITSMask::doGetSlice(Array<bool>& mask, const Slicer& section) {
   }
   //
   bool deletePtrD;
-  const Float* pData = itsBuffer.getStorage(deletePtrD);
+  const float* pData = itsBuffer.getStorage(deletePtrD);
   bool deletePtrM;
   bool* pMask = mask.getStorage(deletePtrM);
   //
@@ -159,9 +159,9 @@ bool FITSMask::doGetSlice(Array<bool>& mask, const Slicer& section) {
   return false;  // Not a reference
 }
 
-void FITSMask::filterNaN(bool* pMask, const Float* pData, uInt nelems) {
+void FITSMask::filterNaN(bool* pMask, const float* pData, unsigned int nelems) {
   // loop over all elements
-  for (uInt i = 0; i < nelems; i++) {
+  for (unsigned int i = 0; i < nelems; i++) {
     // set defaults;
     // blanked values are NaNs.
     pMask[i] = true;
@@ -169,13 +169,13 @@ void FITSMask::filterNaN(bool* pMask, const Float* pData, uInt nelems) {
   }
 }
 
-void FITSMask::filterZeroNaN(bool* pMask, const Float* pData, uInt nelems) {
+void FITSMask::filterZeroNaN(bool* pMask, const float* pData, unsigned int nelems) {
   // loop over all elements
-  for (uInt i = 0; i < nelems; i++) {
+  for (unsigned int i = 0; i < nelems; i++) {
     // set defaults;
     // blanked values are NaNs and "0.0"
     pMask[i] = true;
-    if (isNaN(pData[i]) || pData[i] == (Float)0.0) pMask[i] = false;
+    if (isNaN(pData[i]) || pData[i] == (float)0.0) pMask[i] = false;
   }
 }
 

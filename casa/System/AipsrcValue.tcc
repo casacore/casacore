@@ -56,7 +56,7 @@ bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, co
   String res;
   bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
-    Quantum<Double> qres;
+    Quantum<double> qres;
     istringstream instr(res);
     instr >> qres;
     if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
@@ -72,40 +72,40 @@ bool AipsrcValue<T>::find(T &value, const String &keyword, const Unit &defun, co
 }
 
 template <class T>
-uInt AipsrcValue<T>::registerRC(const String &keyword, const T &deflt) {
+unsigned int AipsrcValue<T>::registerRC(const String &keyword, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(tlst[n - 1], keyword, deflt);
   return n;
 }
 
 template <class T>
-uInt AipsrcValue<T>::registerRC(const String &keyword, const Unit &default_unit,
-                                const Unit &result_unit, const T &deflt) {
+unsigned int AipsrcValue<T>::registerRC(const String &keyword, const Unit &default_unit,
+                                        const Unit &result_unit, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find((tlst)[n - 1], keyword, default_unit, result_unit, deflt);
   return n;
 }
 
 template <class T>
-const T AipsrcValue<T>::get(uInt keyword) {
+const T AipsrcValue<T>::get(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword - 1];
 }
 
 template <class T>
-void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
+void AipsrcValue<T>::set(unsigned int keyword, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   tlst[keyword - 1] = deflt;
 }
 
 template <class T>
-void AipsrcValue<T>::save(uInt keyword) {
+void AipsrcValue<T>::save(unsigned int keyword) {
   ostringstream oss;
   {
     std::lock_guard<std::mutex> lock(theirMutex);

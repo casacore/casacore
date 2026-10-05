@@ -79,18 +79,18 @@ class MSPolarizationColumns {
 
   // Access to required columns
   // <group>
-  ArrayColumn<Int>& corrProduct() { return corrProduct_p; }
-  ArrayColumn<Int>& corrType() { return corrType_p; }
+  ArrayColumn<int>& corrProduct() { return corrProduct_p; }
+  ArrayColumn<int>& corrType() { return corrType_p; }
   ScalarColumn<bool>& flagRow() { return flagRow_p; }
-  ScalarColumn<Int>& numCorr() { return numCorr_p; }
+  ScalarColumn<int>& numCorr() { return numCorr_p; }
   // </group>
 
   // Const access to required columns
   // <group>
-  const ArrayColumn<Int>& corrProduct() const { return corrProduct_p; }
-  const ArrayColumn<Int>& corrType() const { return corrType_p; }
+  const ArrayColumn<int>& corrProduct() const { return corrProduct_p; }
+  const ArrayColumn<int>& corrType() const { return corrType_p; }
   const ScalarColumn<bool>& flagRow() const { return flagRow_p; }
-  const ScalarColumn<Int>& numCorr() const { return numCorr_p; }
+  const ScalarColumn<int>& numCorr() const { return numCorr_p; }
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -103,7 +103,7 @@ class MSPolarizationColumns {
   // others are tested. Setting tryRow to a positive value greater than the
   // table length will throw an exception (AipsError), when compiled in debug
   // mode.
-  Int64 match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow = -1);
+  int64_t match(const Vector<Stokes::StokesTypes>& polType, int64_t tryRow = -1);
 
  protected:
   // # default constructor creates a object that is not usable. Use the attach
@@ -121,14 +121,14 @@ class MSPolarizationColumns {
 
   // # Functions which check the supplied values against the relevant column and
   // # the specified row.
-  bool matchCorrType(rownr_t row, const Vector<Int>& polType) const;
-  bool matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const;
+  bool matchCorrType(rownr_t row, const Vector<int>& polType) const;
+  bool matchCorrProduct(rownr_t row, const Matrix<int>& polProduct) const;
 
   // # required columns
-  ArrayColumn<Int> corrProduct_p;
-  ArrayColumn<Int> corrType_p;
+  ArrayColumn<int> corrProduct_p;
+  ArrayColumn<int> corrType_p;
   ScalarColumn<bool> flagRow_p;
-  ScalarColumn<Int> numCorr_p;
+  ScalarColumn<int> numCorr_p;
 };
 
 // # Define the RO version for backward compatibility.

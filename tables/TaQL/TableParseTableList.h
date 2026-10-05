@@ -57,14 +57,14 @@ class TableParsePair {
 
   // Associate the table and the shorthand.
   // The full name and the table number (from $i) can also be given.
-  TableParsePair(const Table& table, Int tabnr, const String& name, const String& shorthand,
-                 Int joinIndex = -1);
+  TableParsePair(const Table& table, int tabnr, const String& name, const String& shorthand,
+                 int joinIndex = -1);
 
   // Test if shorthand matches. If also matches if the given shorthand is empty.
   bool test(const String& str) const { return (str.empty() || shorthand_p == str); }
 
   // Get the given table number (of $i tables in TempTables)
-  Int tabnr() const { return tabnr_p; }
+  int tabnr() const { return tabnr_p; }
 
   // Get the given table name.
   const String& name() const { return name_p; }
@@ -81,14 +81,14 @@ class TableParsePair {
 
   // Get the index of the table in the list of join objects.
   // <0 means that it is no join table.
-  Int joinIndex() const { return joinIndex_p; }
+  int joinIndex() const { return joinIndex_p; }
 
   // Replace the Table object.
   void replaceTable(const Table& table) { table_p = table; }
 
  private:
-  Int tabnr_p = -1;
-  Int joinIndex_p = -1;
+  int tabnr_p = -1;
+  int joinIndex_p = -1;
   String name_p;
   String shorthand_p;
   Table table_p;
@@ -135,9 +135,9 @@ class TableParseTableList {
   // <br>- As a temporary table (from a nested query) given in ttab.
   // <br>- As the shorthand name of another table which will be looked up in
   //       the stack of query objects.
-  Table addTable(Int tabnr, const String& name, const Table& ttab, const String& shorthand,
+  Table addTable(int tabnr, const String& name, const Table& ttab, const String& shorthand,
                  bool addToFromList, const std::vector<const Table*>& tempTables,
-                 const std::vector<TableParseQuery*>& stack, Int joinsIndex = -1);
+                 const std::vector<TableParseQuery*>& stack, int joinsIndex = -1);
 
   // Replace the first Table object in the FROM list with the given one.
   void replaceTable(const Table& table);

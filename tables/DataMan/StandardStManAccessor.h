@@ -123,10 +123,10 @@ class ROStandardStManAccessor : public RODataManAccessor {
   // be made large enough for a future file extension.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize(uInt aSize, bool canExceedNrBuckets = true);
+  void setCacheSize(unsigned int aSize, bool canExceedNrBuckets = true);
 
   // Get the cache size (in buckets).
-  uInt getCacheSize() const;
+  unsigned int getCacheSize() const;
 
   // Clear the cache used by this storage manager.
   // It will flush the cache as needed and remove all buckets from it

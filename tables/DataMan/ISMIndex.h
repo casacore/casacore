@@ -91,11 +91,11 @@ class ISMIndex {
   // Remove a row from the index.
   // If the result of this is that the entire bucket gets empty,
   // that bucketnr is returned. Otherwise -1 is returned.
-  Int removeRow(rownr_t rownr);
+  int removeRow(rownr_t rownr);
 
   // Get the bucket number for the given row.
   // Also return the start row of the bucket and the number of rows in it.
-  uInt getBucketNr(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& bucketNrrow) const;
+  unsigned int getBucketNr(rownr_t rownr, rownr_t& bucketStartRow, rownr_t& bucketNrrow) const;
 
   // Read the bucket index from the AipsIO object.
   void get(AipsIO& os);
@@ -107,7 +107,7 @@ class ISMIndex {
   // Argument <src>rownr</src> gives the starting row of the bucket.
   // It is used to add the bucket number at the correct place
   // (such that the row numbers are kept in ascending order).
-  void addBucketNr(rownr_t rownr, uInt bucketNr);
+  void addBucketNr(rownr_t rownr, unsigned int bucketNr);
 
   // Get the number of the next bucket from the index and return
   // it in <src>bucketNr</src>. The starting row of that bucket and
@@ -119,23 +119,23 @@ class ISMIndex {
   // to 0 if you want to start at the first bucket).
   // <br>The next iterations return the next bucket number and fill
   // the starting row and number of rows.
-  bool nextBucketNr(uInt& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
-                    uInt& bucketNr) const;
+  bool nextBucketNr(unsigned int& cursor, rownr_t& bucketStartRow, rownr_t& bucketNrrow,
+                    unsigned int& bucketNr) const;
 
   // Show the index.
   void show(std::ostream&) const;
 
  private:
   // Get the index of the bucket containing the given row.
-  uInt getIndex(rownr_t rownr) const;
+  unsigned int getIndex(rownr_t rownr) const;
 
   // # Declare member variables.
   //  Number of entries used.
-  uInt nused_p;
+  unsigned int nused_p;
   // Rownr index (i.e. row rows_p[i] starts in bucketNr_p[i]).
   Block<rownr_t> rows_p;
   // Corresponding bucket number.
-  Block<uInt> bucketNr_p;
+  Block<unsigned int> bucketNr_p;
 };
 
 }  // namespace casacore

@@ -80,9 +80,9 @@ void doCopy() {
   //
   IPosition shape(2, 5, 10);
   IPosition pos(2, 0);
-  ArrayLattice<Float> latIn(shape);
+  ArrayLattice<float> latIn(shape);
   latIn.set(1.0);
-  SubLattice<Float> mLatIn(latIn, true);
+  SubLattice<float> mLatIn(latIn, true);
   ArrayLattice<bool> maskIn(shape);
   maskIn.set(true);
   mLatIn.setPixelMask(maskIn, true);
@@ -92,25 +92,25 @@ void doCopy() {
   {
     cerr << "  Unmasked output" << endl;
     //
-    ArrayLattice<Float> latOut(shape);
-    SubLattice<Float> mLatOut(latOut, true);
+    ArrayLattice<float> latOut(shape);
+    SubLattice<float> mLatOut(latOut, true);
     //
     LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, false);
-    AlwaysAssert(allNear(mLatOut.get(), Float(1.0), 1.0e-6), AipsError);
+    AlwaysAssert(allNear(mLatOut.get(), float(1.0), 1.0e-6), AipsError);
     AlwaysAssert(allEQ(mLatOut.getMask(), true), AipsError);
   }
   //
   {
     cerr << "  Masked output" << endl;
     //
-    ArrayLattice<Float> latOut(shape);
-    SubLattice<Float> mLatOut(latOut, true);
+    ArrayLattice<float> latOut(shape);
+    SubLattice<float> mLatOut(latOut, true);
     ArrayLattice<bool> latMaskOut(shape);
     latMaskOut.set(false);
     mLatOut.setPixelMask(latMaskOut, true);
     //
     LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, false);
-    AlwaysAssert(allNear(mLatOut.get(), Float(1.0), 1.0e-6), AipsError);
+    AlwaysAssert(allNear(mLatOut.get(), float(1.0), 1.0e-6), AipsError);
     AlwaysAssert(allEQ(mLatOut.getMask(), true), AipsError);
 
     // Now set one mask value to false so the output pixel should be zero
@@ -121,9 +121,9 @@ void doCopy() {
     LatticeUtilities::copyDataAndMask(os, mLatOut, mLatIn, true);
     //
     {
-      Array<Float> dataOut = mLatOut.get();
+      Array<float> dataOut = mLatOut.get();
       Array<bool> maskOut = mLatOut.getMask();
-      AlwaysAssert(near(dataOut(pos), Float(0.0), 1.0e-6), AipsError);
+      AlwaysAssert(near(dataOut(pos), float(0.0), 1.0e-6), AipsError);
       AlwaysAssert(maskOut(pos) == false, AipsError);
     }
   }
@@ -132,7 +132,7 @@ void doCopy() {
 void doReplicate() {
   cerr << "Replicate" << endl;
   IPosition shapeLat(2, 10, 20);
-  ArrayLattice<Float> lat(shapeLat);
+  ArrayLattice<float> lat(shapeLat);
 
   // Just use full lattice.  Having the region in the function
   // call is pretty useless
@@ -145,13 +145,13 @@ void doReplicate() {
 
   {
     IPosition shapePixels(2, 5, 10);
-    Array<Float> arr(shapePixels);
+    Array<float> arr(shapePixels);
     indgen(arr);
     LatticeUtilities::replicate(lat, slice, arr);
     //
-    Double tol = 1.0e-6;
+    double tol = 1.0e-6;
     LatticeStepper stepper(shapeLat, shapePixels, LatticeStepper::RESIZE);
-    LatticeIterator<Float> iter(lat, stepper);
+    LatticeIterator<float> iter(lat, stepper);
     for (iter.reset(); !iter.atEnd(); iter++) {
       AlwaysAssert(allNear(iter.cursor(), arr, tol), AipsError);
     }
@@ -161,7 +161,7 @@ void doReplicate() {
 
   {
     IPosition shapePixels(2, 7, 13);
-    Array<Float> arr(shapePixels);
+    Array<float> arr(shapePixels);
     indgen(arr);
     try {
       LatticeUtilities::replicate(lat, slice, arr);
@@ -175,19 +175,19 @@ void doReplicate() {
 void doBin() {
   cerr << "Bin" << endl;
   IPosition shape(2, 16, 20);
-  Array<Float> data(shape);
+  Array<float> data(shape);
   Array<bool> mask(shape);
-  Float val = 1.0;
+  float val = 1.0;
   data.set(val);
   mask.set(true);
-  MaskedArray<Float> mArrIn(data, mask);
+  MaskedArray<float> mArrIn(data, mask);
   //
-  MaskedArray<Float> mArrOut;
-  uInt axis = 0;
-  Int bin = 4;
+  MaskedArray<float> mArrOut;
+  unsigned int axis = 0;
+  int bin = 4;
   LatticeUtilities::bin(mArrOut, mArrIn, axis, bin);
   IPosition shapeOut = mArrOut.shape();
-  for (uInt i = 0; i < shape.nelements(); i++) {
+  for (unsigned int i = 0; i < shape.nelements(); i++) {
     if (i == axis) {
       AlwaysAssert(shapeOut(i) == shape(i) / bin, AipsError);
     } else {
@@ -195,7 +195,7 @@ void doBin() {
     }
   }
   //
-  Double tol = 1.0e-6;
+  double tol = 1.0e-6;
   AlwaysAssert(allNear(mArrOut.getArray(), val, tol), AipsError);
   AlwaysAssert(allEQ(mArrOut.getMask(), true), AipsError);
 }

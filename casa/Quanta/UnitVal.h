@@ -180,16 +180,16 @@ class UnitVal {
   UnitVal(const UnitVal &other);
 
   // Construct an non-dimensioned value
-  UnitVal(Double factor) { init(factor); }
+  UnitVal(double factor) { init(factor); }
 
   // Construct a fully dimensioned value
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  UnitVal(Double factor, const String &s, UMaps * = 0);
+  UnitVal(double factor, const String &s, UMaps * = 0);
 
   // Construct a value with a single unit at position specified
-  UnitVal(Double factor, Int pos) { init(factor, pos); }
+  UnitVal(double factor, int pos) { init(factor, pos); }
 
   // Destructor
   ~UnitVal();
@@ -214,7 +214,7 @@ class UnitVal {
   // # General member functions
 
   // Raise a unit to an integer power
-  UnitVal pow(Int p);
+  UnitVal pow(int p);
 
   // Take integer root
   // <thrown>
@@ -222,7 +222,7 @@ class UnitVal {
   // <li> AipsError if unit dimensions not multiple of power
   // </thrown>
   // <group>
-  UnitVal root(Int p) const;
+  UnitVal root(int p) const;
   UnitVal sqrt() const;
   // </group>
 
@@ -232,7 +232,7 @@ class UnitVal {
   const UnitDim &getDim() const;
 
   // Get the factor of the unit (as compared to pure SI units)
-  Double getFac() const;
+  double getFac() const;
   // </group>
 
   // # Helper functions
@@ -262,13 +262,13 @@ class UnitVal {
 
  protected:
   // alternate initialization
-  void init(Double factor);
-  void init(Double factor, Int pos);
+  void init(double factor);
+  void init(double factor, int pos);
 
  private:
   // # Data members
   //  The factor necessary to express the specified unit in the defining SI units
-  Double kindFactor;
+  double kindFactor;
 
   // The dimensions of the unit in the defining SI units
   UnitDim kindDim;
@@ -280,10 +280,10 @@ class UnitVal {
   // </group>
 
   // Determine sign of unit power (i.e. if '.' or '/')
-  static Int psign(MUString &str);
+  static int psign(MUString &str);
 
   // Determine exponent of unit symbol
-  static Int power(MUString &str);
+  static int power(MUString &str);
 
   // Determine symbol name in unit string
   static bool field(MUString &str, UnitVal &res, UMaps *);

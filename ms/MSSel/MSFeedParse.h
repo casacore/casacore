@@ -103,30 +103,30 @@ class MSFeedParse : public MSParse {
   }
 
   // Add the given feed selection.
-  const TableExprNode* selectFeedIds(const Vector<Int>& feedIds,
+  const TableExprNode* selectFeedIds(const Vector<int>& feedIds,
                                      BaselineListType baselineType = CrossOnly,
                                      bool negate = false);
 
   // Add the given "baseline" selection.
-  const TableExprNode* selectFeedIds(const Vector<Int>& feedIds1, const Vector<Int>& feedIds2,
+  const TableExprNode* selectFeedIds(const Vector<int>& feedIds1, const Vector<int>& feedIds2,
                                      BaselineListType baselineType = CrossOnly,
                                      bool negate = false);
 
   // Get a pointer to the table expression node object.
   TableExprNode node() const { return node_p; }
-  const Vector<Int>& selectedFeed1() const { return feed1List; }
-  const Vector<Int>& selectedFeed2() const { return feed2List; }
-  const Matrix<Int>& selectedFeedPairs() const { return feedPairList; }
+  const Vector<int>& selectedFeed1() const { return feed1List; }
+  const Vector<int>& selectedFeed2() const { return feed2List; }
+  const Matrix<int>& selectedFeedPairs() const { return feedPairList; }
 
   MSFeed& subTable() { return msSubTable_p; }
 
  private:
   const TableExprNode* setTEN(TableExprNode& condition, BaselineListType baselineType = CrossOnly,
                               bool negate = false);
-  void makeFeedPairList(const Vector<Int>& f1, const Vector<Int>& f2, Matrix<Int>& fp,
+  void makeFeedPairList(const Vector<int>& f1, const Vector<int>& f2, Matrix<int>& fp,
                         BaselineListType baselineType = CrossOnly, bool negate = false);
-  void makeFeedList(Vector<Int>& feedList, const Vector<Int>& thisList, bool negate = false);
-  bool addFeedPair(const Matrix<Int>& feedpairlist, const Int feed1, const Int feed2,
+  void makeFeedList(Vector<int>& feedList, const Vector<int>& thisList, bool negate = false);
+  bool addFeedPair(const Matrix<int>& feedpairlist, const int feed1, const int feed2,
                    BaselineListType baselineType = CrossOnly);
 
   // # Data members.
@@ -138,8 +138,8 @@ class MSFeedParse : public MSParse {
  private:
   TableExprNode node_p;
   const String colName1, colName2;
-  Vector<Int> feed1List, feed2List;
-  Matrix<Int> feedPairList;
+  Vector<int> feed1List, feed2List;
+  Matrix<int> feedPairList;
   MSFeed msSubTable_p;
   static TableExprNode column1AsTEN_p, column2AsTEN_p;
 };

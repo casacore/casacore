@@ -179,9 +179,9 @@ class AipsrcValue : public Aipsrc {
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
   // <group>
-  static uInt registerRC(const String &keyword, const T &deflt);
-  static uInt registerRC(const String &keyword, const Unit &default_unit, const Unit &result_unit,
-                         const T &deflt);
+  static unsigned int registerRC(const String &keyword, const T &deflt);
+  static unsigned int registerRC(const String &keyword, const Unit &default_unit,
+                                 const Unit &result_unit, const T &deflt);
   // </group>
 
   // Gets are like find, but using registered integers rather than names. The
@@ -189,16 +189,16 @@ class AipsrcValue : public Aipsrc {
   // This function can't return a reference, because this would give access to
   // the value without protection by the mutex.
   // <group>
-  static const T get(uInt keyword);
+  static const T get(unsigned int keyword);
   // </group>
 
   // Sets allow registered values to be set
   // <group>
-  static void set(uInt keyword, const T &deflt);
+  static void set(unsigned int keyword, const T &deflt);
   // </group>
 
   // Save registered value to <src>$HOME/.aipsrc</src>
-  static void save(uInt keyword);
+  static void save(unsigned int keyword);
 
  private:
   // # Data
@@ -225,10 +225,10 @@ class AipsrcValue<bool> : public Aipsrc {
  public:
   static bool find(bool &value, const String &keyword);
   static bool find(bool &value, const String &keyword, const bool &deflt);
-  static uInt registerRC(const String &keyword, const bool &deflt);
-  static bool get(uInt keyword);
-  static void set(uInt keyword, const bool &deflt);
-  static void save(uInt keyword);
+  static unsigned int registerRC(const String &keyword, const bool &deflt);
+  static bool get(unsigned int keyword);
+  static void set(unsigned int keyword, const bool &deflt);
+  static void save(unsigned int keyword);
 
  private:
   inline static std::mutex theirMutex;
@@ -239,8 +239,8 @@ class AipsrcValue<bool> : public Aipsrc {
 
 // # Declare extern templates for often used types.
 extern template class AipsrcValue<bool>;
-extern template class AipsrcValue<Int>;
-extern template class AipsrcValue<Double>;
+extern template class AipsrcValue<int>;
+extern template class AipsrcValue<double>;
 extern template class AipsrcValue<String>;
 
 }  // namespace casacore

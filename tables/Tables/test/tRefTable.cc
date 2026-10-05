@@ -39,20 +39,20 @@
 // Test program for RefTable::addColumn
 // </summary>
 
-void readTab(const String& tabName, uInt nrow, uInt ncol) {
+void readTab(const String& tabName, unsigned int nrow, unsigned int ncol) {
   cout << "read " << tabName << endl;
   Table tab(tabName);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == ncol);
   AlwaysAssertExit(tab.nrow() == nrow);
-  ScalarColumn<Int> ab(tab, "ab");
-  ScalarColumn<Int> ac(tab, "ac");
-  ScalarColumn<uInt> ad(tab, "ad");
-  ScalarColumn<Int> ax(tab, "ax");
-  for (uInt i = 0; i < tab.nrow(); ++i) {
-    AlwaysAssertExit(ab(i) == Int(i));
-    AlwaysAssertExit(ac(i) == Int(i + 1));
+  ScalarColumn<int> ab(tab, "ab");
+  ScalarColumn<int> ac(tab, "ac");
+  ScalarColumn<unsigned int> ad(tab, "ad");
+  ScalarColumn<int> ax(tab, "ax");
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
+    AlwaysAssertExit(ab(i) == int(i));
+    AlwaysAssertExit(ac(i) == int(i + 1));
     AlwaysAssertExit(ad(i) == i + 2);
-    AlwaysAssertExit(ax(i) == Int(2 * (i + 1)));
+    AlwaysAssertExit(ax(i) == int(2 * (i + 1)));
   }
 }
 
@@ -60,19 +60,19 @@ void makeTable() {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn(ScalarColumnDesc<Int>("ab", "Comment for column ab"));
-  td.addColumn(ScalarColumnDesc<uInt>("ad", "comment for ad"));
+  td.addColumn(ScalarColumnDesc<int>("ab", "Comment for column ab"));
+  td.addColumn(ScalarColumnDesc<unsigned int>("ad", "comment for ad"));
   td.addColumn(ScalarColumnDesc<DComplex>("ag"));
   // Now create a new table from the description.
   SetupNewTable newtab("tRefTable_tmp.data", td, Table::New);
   Table tab(newtab, 10);
   // Add a column.
-  tab.addColumn(ScalarColumnDesc<Int>("ac"));
-  ScalarColumn<Int> ab(tab, "ab");
-  ScalarColumn<Int> ac(tab, "ac");
-  ScalarColumn<uInt> ad(tab, "ad");
+  tab.addColumn(ScalarColumnDesc<int>("ac"));
+  ScalarColumn<int> ab(tab, "ab");
+  ScalarColumn<int> ac(tab, "ac");
+  ScalarColumn<unsigned int> ad(tab, "ad");
   TableColumn ag(tab, "ag");
-  for (Int i = 0; i < 10; i++) {
+  for (int i = 0; i < 10; i++) {
     ab.put(i, i);
     ac.put(i, i + 1);
     ad.put(i, i + 2);
@@ -85,19 +85,19 @@ void makeRef() {
   Table reftab(tab.project(Block<String>(1, "ab")));
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 4);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 1);
-  reftab.addColumn(ScalarColumnDesc<Int>("ac"), false);
+  reftab.addColumn(ScalarColumnDesc<int>("ac"), false);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 4);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 2);
-  reftab.addColumn(ScalarColumnDesc<Int>("ad"), true);
+  reftab.addColumn(ScalarColumnDesc<int>("ad"), true);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 4);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 3);
-  reftab.addColumn(ScalarColumnDesc<Int>("ax"), true);
+  reftab.addColumn(ScalarColumnDesc<int>("ax"), true);
   AlwaysAssertExit(tab.tableDesc().ncolumn() == 5);
   AlwaysAssertExit(reftab.tableDesc().ncolumn() == 4);
   reftab.rename("tRefTable_tmp.dataref", Table::New);
   reftab.flush();
-  ScalarColumn<Int> ax(reftab, "ax");
-  for (uInt i = 0; i < reftab.nrow(); ++i) {
+  ScalarColumn<int> ax(reftab, "ax");
+  for (unsigned int i = 0; i < reftab.nrow(); ++i) {
     ax.put(i, 2 * (i + 1));
   }
   readTab("tRefTable_tmp.dataref", 10, 4);

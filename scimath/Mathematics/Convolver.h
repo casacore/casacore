@@ -40,8 +40,8 @@ template <class FType>
 class Convolver;
 
 // Typedefs
-typedef Convolver<Float> FloatConvolver;
-typedef Convolver<Double> DoubleConvolver;
+typedef Convolver<float> FloatConvolver;
+typedef Convolver<double> DoubleConvolver;
 
 // <summary>
 // A class for doing multi-dimensional convolution

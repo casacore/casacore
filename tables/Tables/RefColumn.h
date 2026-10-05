@@ -118,13 +118,13 @@ class RefColumn : public BaseColumn {
   virtual void setShape(rownr_t rownr, const IPosition& shape, const IPosition& tileShape);
 
   // Get the global #dimensions of an array (i.e. for all rows).
-  virtual uInt ndimColumn() const;
+  virtual unsigned int ndimColumn() const;
 
   // Get the global shape of an array (i.e. for all rows).
   virtual IPosition shapeColumn() const;
 
   // Get the #dimensions of an array in a particular cell.
-  virtual uInt ndim(rownr_t rownr) const;
+  virtual unsigned int ndim(rownr_t rownr) const;
 
   // Get the shape of an array in a particular cell.
   virtual IPosition shape(rownr_t rownr) const;
@@ -212,13 +212,13 @@ class RefColumn : public BaseColumn {
   virtual ColumnCache& columnCache();
 
   // Set the maximum cache size (in bytes) to be used by a storage manager.
-  virtual void setMaximumCacheSize(uInt nbytes);
+  virtual void setMaximumCacheSize(unsigned int nbytes);
 
   // Add this column and its data to the Sort object.
   // It may allocate some storage on the heap, which will be saved
   // in the argument dataSave.
   // The function freeSortKey must be called to free this storage.
-  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, Int order,
+  virtual void makeSortKey(Sort&, std::shared_ptr<BaseCompare>& cmpObj, int order,
                            std::shared_ptr<ArrayBase>& dataSave);
 
   // Allocate value buffers for the table iterator.

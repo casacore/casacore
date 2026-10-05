@@ -49,16 +49,16 @@ AipsIO& operator<<(AipsIO& aio, const IPosition& ip) {
   if (use32) {
     // Write values as int.
     aio.putstart("IPosition", 1);
-    aio << (uInt)ip.nelements();
+    aio << (unsigned int)ip.nelements();
     for (size_t i = 0; i < ip.nelements(); ++i) {
       aio << int(ip[i]);
     }
   } else {
-    // Write values as long long.
+    // Write values as uint64_t.
     aio.putstart("IPosition", 2);
-    aio << (uInt)ip.nelements();
+    aio << (unsigned int)ip.nelements();
     for (size_t i = 0; i < ip.nelements(); ++i) {
-      aio << (long long)(ip[i]);
+      aio << (uint64_t)(ip[i]);
     }
   }
   aio.putend();
@@ -70,7 +70,7 @@ AipsIO& operator<<(AipsIO& aio, const IPosition& ip) {
 // </thrown>
 AipsIO& operator>>(AipsIO& aio, IPosition& ip) {
   int vers = aio.getstart("IPosition");
-  uInt nel;
+  unsigned int nel;
   aio >> nel;
   ip.resize(nel, false);
   if (vers == 1) {
@@ -80,7 +80,7 @@ AipsIO& operator>>(AipsIO& aio, IPosition& ip) {
       ip[i] = v;
     }
   } else if (vers == 2) {
-    long long v;
+    int64_t v;
     if (sizeof(ssize_t) <= 4) {
       throw ArrayError(
           "AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "

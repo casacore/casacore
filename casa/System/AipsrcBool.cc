@@ -44,27 +44,27 @@ bool AipsrcValue<bool>::find(bool &value, const String &keyword, const bool &def
   return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcValue<bool>::registerRC(const String &keyword, const bool &deflt) {
+unsigned int AipsrcValue<bool>::registerRC(const String &keyword, const bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(reinterpret_cast<bool &>(tlst[n - 1]), keyword, deflt);
   return n;
 }
 
-bool AipsrcValue<bool>::get(uInt keyword) {
+bool AipsrcValue<bool>::get(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword - 1];
 }
 
-void AipsrcValue<bool>::set(uInt keyword, const bool &deflt) {
+void AipsrcValue<bool>::set(unsigned int keyword, const bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   tlst[keyword - 1] = deflt;
 }
 
-void AipsrcValue<bool>::save(uInt keyword) {
+void AipsrcValue<bool>::save(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;

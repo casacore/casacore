@@ -50,8 +50,8 @@ class MSSelectableMainColumn {
   const Table* table() { return table_p; }
   virtual const ArrayColumn<bool>& flag() = 0;
   virtual bool flagRow(rownr_t i) = 0;
-  virtual const ScalarQuantColumn<Double>& exposureQuant() = 0;
-  virtual const ScalarQuantColumn<Double>& timeQuant() = 0;
+  virtual const ScalarQuantColumn<double>& exposureQuant() = 0;
+  virtual const ScalarQuantColumn<double>& timeQuant() = 0;
   virtual const MeasurementSet* asMS() = 0;
 
  protected:
@@ -78,8 +78,8 @@ class MSMainColInterface : public MSSelectableMainColumn {
 
   //    virtual bool flagRow(const Int& i) {return allTrue(msCols_p->flag()(i));}
   virtual bool flagRow(rownr_t i) { return msCols_p->flagRow()(i); }
-  virtual const ScalarQuantColumn<Double>& exposureQuant() { return msCols_p->exposureQuant(); }
-  virtual const ScalarQuantColumn<Double>& timeQuant() { return msCols_p->timeQuant(); }
+  virtual const ScalarQuantColumn<double>& exposureQuant() { return msCols_p->exposureQuant(); }
+  virtual const ScalarQuantColumn<double>& timeQuant() { return msCols_p->timeQuant(); }
 
   virtual const MeasurementSet* asMS() { return static_cast<const MeasurementSet*>(table()); }
 

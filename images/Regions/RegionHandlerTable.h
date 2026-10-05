@@ -169,7 +169,7 @@ class RegionHandlerTable : public RegionHandler {
   // (i.e. the field number of the "regions" or "masks" field).
   // <0 is returned if the region does not exist.
   // <br>Optionally an exception is thrown if the region does not exist.
-  virtual Int findRegionGroup(const String& regionName, RegionHandler::GroupType = Any,
+  virtual int findRegionGroup(const String& regionName, RegionHandler::GroupType = Any,
                               bool throwIfUnknown = true) const;
 
   GetCallback* itsCallback;

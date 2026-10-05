@@ -47,10 +47,10 @@ const ByteIO& TypeIO::byteIO() const { return *itsByteIO; }
 
 ByteIO& TypeIO::byteIO() { return *itsByteIO; }
 
-Int64 TypeIO::seek(Int64 offset, ByteIO::SeekOption option) {
+int64_t TypeIO::seek(int64_t offset, ByteIO::SeekOption option) {
   return itsByteIO->seek(offset, option);
 }
-Int64 TypeIO::seek(Int offset, ByteIO::SeekOption option) {
+int64_t TypeIO::seek(int offset, ByteIO::SeekOption option) {
   return itsByteIO->seek(offset, option);
 }
 
@@ -62,7 +62,7 @@ bool TypeIO::isSeekable() const { return itsByteIO->isSeekable(); }
 
 size_t TypeIO::write(size_t nvalues, const bool* value) {
   size_t nb = (nvalues + 7) / 8;
-  uChar* buf = new uChar[nb];
+  unsigned char* buf = new unsigned char[nb];
   Conversion::boolToBit(buf, value, nvalues);
   write(nb, buf);
   delete[] buf;
@@ -100,7 +100,7 @@ size_t TypeIO::write(size_t nvalues, const DComplex* value) {
 size_t TypeIO::write(size_t nvalues, const String* value) {
   size_t n = 0;
   for (size_t i = 0; i < nvalues; i++) {
-    uInt len = value[i].length();
+    unsigned int len = value[i].length();
     n += write(1, &len);
     n += write(len, value[i].c_str());
   }
@@ -109,7 +109,7 @@ size_t TypeIO::write(size_t nvalues, const String* value) {
 
 size_t TypeIO::read(size_t nvalues, bool* value) {
   size_t nb = (nvalues + 7) / 8;
-  uChar* buf = new uChar[nb];
+  unsigned char* buf = new unsigned char[nb];
   read(nb, buf);
   Conversion::bitToBool(value, buf, nvalues);
   delete[] buf;
@@ -149,10 +149,10 @@ size_t TypeIO::read(size_t nvalues, DComplex* value) {
 size_t TypeIO::read(size_t nvalues, String* str) {
   size_t n = 0;
   for (size_t i = 0; i < nvalues; i++) {
-    uInt len;
+    unsigned int len;
     n += read(1, &len);
     str[i].resize(len);        // resize storage which adds trailing 0
-    Char* ptr = &(str[i][0]);  // get actual string
+    char* ptr = &(str[i][0]);  // get actual string
     n += read(len, ptr);       // read string
 #ifdef USE_OLD_STRING
     ptr[len] = '\0';

@@ -26,13 +26,6 @@
 #ifndef CASA_AIPSTYPE_H
 #define CASA_AIPSTYPE_H
 
-// For temporary backward namespace compatibility, use casa as alias for casacore.
-// # Note: namespace casa = casacore; does not work for forward declarations.
-
-#if defined(UseCasaNamespace)
-#define casacore casa
-#endif
-
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Define the standard types used by Casacore
@@ -43,17 +36,27 @@ typedef bool Bool;
 const bool True = true;
 [[deprecated("Use false")]]
 const bool False = false;
-
+[[deprecated("Use char")]]
 typedef char Char;
+[[deprecated("Use unsigned char")]]
 typedef unsigned char uChar;
+[[deprecated("Use short")]]
 typedef short Short;
+[[deprecated("Use unsigned short")]]
 typedef unsigned short uShort;
+[[deprecated("Use int")]]
 typedef int Int;
+[[deprecated("Use unsigned int")]]
 typedef unsigned int uInt;
+[[deprecated("Use long")]]
 typedef long Long;
+[[deprecated("Use unsigned long")]]
 typedef unsigned long uLong;
+[[deprecated("Use float")]]
 typedef float Float;
+[[deprecated("Use double")]]
 typedef double Double;
+[[deprecated("Use long double")]]
 typedef long double lDouble;
 
 }  // namespace casacore

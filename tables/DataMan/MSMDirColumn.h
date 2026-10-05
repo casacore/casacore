@@ -80,7 +80,7 @@ class MSMDirColumn : public MSMColumn {
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim(rownr_t rownr);
+  virtual unsigned int ndim(rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.

@@ -37,8 +37,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // # This file defines classes derived from TableExprNode representing
 // # the data type and operator in a table expression.
 // #
-// # Data types Bool, Int64, Double, DComplex and String are used.
-// # Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
+// # Data types Bool, int64_t, Double, DComplex and String are used.
+// # Char, uChar, Short, uShort, Int, and uInt are converted to int64_t,
 // # Float to Double, and Complex to DComplex.
 // # Binary operators +, -, *, /, and % are recognized.
 // # Also unary + and - are recognized.
@@ -94,7 +94,7 @@ class TableExprNodeArrayPlusInt : public TableExprNodeArrayPlus {
  public:
   TableExprNodeArrayPlusInt(const TableExprNodeRep&);
   ~TableExprNodeArrayPlusInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -123,7 +123,7 @@ class TableExprNodeArrayPlusDouble : public TableExprNodeArrayPlus {
  public:
   TableExprNodeArrayPlusDouble(const TableExprNodeRep&);
   ~TableExprNodeArrayPlusDouble();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
 };
 
 // <summary>
@@ -211,7 +211,7 @@ class TableExprNodeArrayPlusDate : public TableExprNodeArrayPlus {
   TableExprNodeArrayPlusDate(const TableExprNodeRep&);
   ~TableExprNodeArrayPlusDate();
   virtual void handleUnits();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
   MArray<MVTime> getArrayDate(const TableExprId& id);
 };
 
@@ -265,7 +265,7 @@ class TableExprNodeArrayMinusInt : public TableExprNodeArrayMinus {
  public:
   TableExprNodeArrayMinusInt(const TableExprNodeRep&);
   ~TableExprNodeArrayMinusInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -293,7 +293,7 @@ class TableExprNodeArrayMinusDouble : public TableExprNodeArrayMinus {
  public:
   TableExprNodeArrayMinusDouble(const TableExprNodeRep&);
   ~TableExprNodeArrayMinusDouble();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
 };
 
 // <summary>
@@ -350,7 +350,7 @@ class TableExprNodeArrayMinusDate : public TableExprNodeArrayMinus {
   TableExprNodeArrayMinusDate(const TableExprNodeRep&);
   ~TableExprNodeArrayMinusDate();
   virtual void handleUnits();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
   MArray<MVTime> getArrayDate(const TableExprId& id);
 };
 
@@ -405,7 +405,7 @@ class TableExprNodeArrayTimesInt : public TableExprNodeArrayTimes {
  public:
   TableExprNodeArrayTimesInt(const TableExprNodeRep&);
   ~TableExprNodeArrayTimesInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -433,7 +433,7 @@ class TableExprNodeArrayTimesDouble : public TableExprNodeArrayTimes {
  public:
   TableExprNodeArrayTimesDouble(const TableExprNodeRep&);
   ~TableExprNodeArrayTimesDouble();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
 };
 
 // <summary>
@@ -515,7 +515,7 @@ class TableExprNodeArrayDivideDouble : public TableExprNodeArrayDivide {
  public:
   TableExprNodeArrayDivideDouble(const TableExprNodeRep&);
   ~TableExprNodeArrayDivideDouble();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
 };
 
 // <summary>
@@ -596,7 +596,7 @@ class TableExprNodeArrayModuloInt : public TableExprNodeArrayModulo {
  public:
   TableExprNodeArrayModuloInt(const TableExprNodeRep&);
   ~TableExprNodeArrayModuloInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -623,7 +623,7 @@ class TableExprNodeArrayModuloDouble : public TableExprNodeArrayModulo {
  public:
   TableExprNodeArrayModuloDouble(const TableExprNodeRep&);
   ~TableExprNodeArrayModuloDouble();
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
 };
 
 // <summary>
@@ -650,7 +650,7 @@ class TableExprNodeArrayBitAndInt : public TableExprNodeArray {
  public:
   TableExprNodeArrayBitAndInt(const TableExprNodeRep&);
   ~TableExprNodeArrayBitAndInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -677,7 +677,7 @@ class TableExprNodeArrayBitOrInt : public TableExprNodeArray {
  public:
   TableExprNodeArrayBitOrInt(const TableExprNodeRep&);
   ~TableExprNodeArrayBitOrInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -704,7 +704,7 @@ class TableExprNodeArrayBitXorInt : public TableExprNodeArray {
  public:
   TableExprNodeArrayBitXorInt(const TableExprNodeRep&);
   ~TableExprNodeArrayBitXorInt();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 // <summary>
@@ -730,8 +730,8 @@ class TableExprNodeArrayMIN : public TableExprNodeArray {
  public:
   TableExprNodeArrayMIN(const TableExprNodeRep&);
   ~TableExprNodeArrayMIN();
-  MArray<Int64> getArrayInt(const TableExprId& id);
-  MArray<Double> getArrayDouble(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
+  MArray<double> getArrayDouble(const TableExprId& id);
   MArray<DComplex> getArrayDComplex(const TableExprId& id);
 };
 
@@ -758,7 +758,7 @@ class TableExprNodeArrayBitNegate : public TableExprNodeArray {
  public:
   TableExprNodeArrayBitNegate(const TableExprNodeRep&);
   ~TableExprNodeArrayBitNegate();
-  MArray<Int64> getArrayInt(const TableExprId& id);
+  MArray<int64_t> getArrayInt(const TableExprId& id);
 };
 
 }  // namespace casacore

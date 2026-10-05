@@ -194,7 +194,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //       </UL>
 //  <li> Only the standard Casacore data types can be used in filled
 //       columns, be they scalars or arrays:  Bool, uChar, Short, uShort,
-//       Int, uInt, Int64, float, double, Complex, DComplex and String.
+//       Int, uInt, int64_t, float, double, Complex, DComplex and String.
 //       Furthermore scalars containing
 //       <linkto class=TableRecord>record</linkto> values are possible
 //  <li> A column can have a default value, which will automatically be stored

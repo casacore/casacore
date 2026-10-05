@@ -34,14 +34,14 @@
 #include <casacore/casa/namespace.h>
 int main() {
   try {
-    uInt i;
-    Float f;
-    Double d;
+    unsigned int i;
+    float f;
+    double d;
     cout << "testing the MLCG generator" << endl;
     {
       cout << "random integers, floats & doubles" << endl;
       MLCG g;
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         // Note the values are calculated here rather than in the print
         // statemement because of the problem discussed in
         // http://aips2.nrao.edu/mail/aips2-lib/1391
@@ -53,7 +53,7 @@ int main() {
       }
       cout << "resetting the generator. Should get the same numbers" << endl;
       g.reset();
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();
@@ -64,7 +64,7 @@ int main() {
     {
       cout << "Using a different seed" << endl;
       MLCG g(1, 0);
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();
@@ -73,7 +73,7 @@ int main() {
       }
       cout << "resetting the generator. Should get the same numbers" << endl;
       g.reset();
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();
@@ -85,7 +85,7 @@ int main() {
     {
       cout << "random integers, floats & doubles" << endl;
       ACG g;
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();
@@ -94,7 +94,7 @@ int main() {
       }
       cout << "resetting the generator. Should get the same numbers" << endl;
       g.reset();
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();
@@ -105,7 +105,7 @@ int main() {
     {
       cout << "Using a different seed" << endl;
       ACG g(7326458, 98);
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();
@@ -114,7 +114,7 @@ int main() {
       }
       cout << "resetting the generator. Should get the same numbers" << endl;
       g.reset();
-      for (uInt k = 0; k < 4; k++) {
+      for (unsigned int k = 0; k < 4; k++) {
         i = g.asuInt();
         f = g.asFloat();
         d = g.asDouble();

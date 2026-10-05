@@ -108,7 +108,7 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, LogIO& 
   if (setNewLattice(lattice, clone)) {
     // Cursor axes defaults to all
 
-    Vector<Int> cursorAxes;
+    Vector<int> cursorAxes;
     goodParameterStatus_p = setAxes(cursorAxes);
   } else {
     goodParameterStatus_p = false;
@@ -150,7 +150,7 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, bool sh
   if (setNewLattice(lattice, clone)) {
     // Cursor axes defaults to all
 
-    Vector<Int> cursorAxes;
+    Vector<int> cursorAxes;
     goodParameterStatus_p = setAxes(cursorAxes);
   } else {
     goodParameterStatus_p = false;
@@ -245,7 +245,7 @@ template <class T>
 LatticeStatistics<T>::~LatticeStatistics() {}
 
 template <class T>
-bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
+bool LatticeStatistics<T>::setAxes(const Vector<int>& axes)
 //
 // This function sets the cursor axes and the display axes
 //
@@ -256,25 +256,25 @@ bool LatticeStatistics<T>::setAxes(const Vector<Int>& axes)
 
   // Save current cursor axes
 
-  Vector<Int> saveAxes(cursorAxes_p.copy());
+  Vector<int> saveAxes(cursorAxes_p.copy());
 
   // Assign cursor axes.
 
   cursorAxes_p.resize(0);
   cursorAxes_p = axes;
-  uInt ndim = pInLattice_p->ndim();
+  unsigned int ndim = pInLattice_p->ndim();
   if (cursorAxes_p.nelements() == 0) {
     // User didn't give any axes.  Set them to all.
 
     cursorAxes_p.resize(ndim);
-    for (uInt i = 0; i < ndim; ++i) cursorAxes_p(i) = i;
+    for (unsigned int i = 0; i < ndim; ++i) cursorAxes_p(i) = i;
   } else {
     // Sort axes into increasing order and check
 
-    GenSort<Int>::sort(cursorAxes_p, Sort::Ascending, Sort::QuickSort | Sort::NoDuplicates);
+    GenSort<int>::sort(cursorAxes_p, Sort::Ascending, Sort::QuickSort | Sort::NoDuplicates);
     //
-    for (uInt i = 0; i < cursorAxes_p.nelements(); i++) {
-      if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(ndim - 1)) {
+    for (unsigned int i = 0; i < cursorAxes_p.nelements(); i++) {
+      if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > int(ndim - 1)) {
         ostringstream oss;
         oss << "Invalid cursor axes: " << axes;
         error_p = oss.str();
@@ -605,7 +605,7 @@ bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
   Array<AccumType> nPts;
   retrieveStorageStatistic(nPts, NPTS, dropDeg);
   ReadOnlyVectorIterator<AccumType> nPtsIt(nPts);
-  const uInt n1 = nPtsIt.vector().nelements();
+  const unsigned int n1 = nPtsIt.vector().nelements();
 
   // Setup
   slice.resize(nPts.shape());
@@ -619,7 +619,7 @@ bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
     ReadOnlyVectorIterator<AccumType> sumIt(sum);
     AccumType npts(0);
     while (!nPtsIt.pastEnd()) {
-      for (uInt i = 0; i < n1; ++i) {
+      for (unsigned int i = 0; i < n1; ++i) {
         npts = nPtsIt.vector()(i);
         sliceIt.vector()(i) = _mean(sumIt.vector()(i), npts);
       }
@@ -640,7 +640,7 @@ bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
     ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
     AccumType npts = 0;
     while (!nPtsIt.pastEnd()) {
-      for (uInt i = 0; i < n1; i++) {
+      for (unsigned int i = 0; i < n1; i++) {
         npts = nPtsIt.vector()(i);
         sliceIt.vector()(i) = _rms(sumSqIt.vector()(i), npts);
       }
@@ -657,7 +657,7 @@ bool LatticeStatistics<T>::calculateStatistic(Array<AccumType>& slice,
 }
 
 template <class T>
-bool LatticeStatistics<T>::configureBiweight(Int maxIter, Double c) {
+bool LatticeStatistics<T>::configureBiweight(int maxIter, double c) {
   bool reconfig = _saf.algorithm() != StatisticsData::BIWEIGHT;
   if (!reconfig) {
     StatisticsAlgorithmFactoryData::BiweightData data = _saf.biweightData();
@@ -683,7 +683,7 @@ bool LatticeStatistics<T>::configureClassical() {
 }
 
 template <class T>
-bool LatticeStatistics<T>::configureClassical(Double aOld, Double bOld, Double aNew, Double bNew) {
+bool LatticeStatistics<T>::configureClassical(double aOld, double bOld, double aNew, double bNew) {
   bool reconfig = false;
   if (_saf.algorithm() != StatisticsData::CLASSICAL) {
     _saf.configureClassical();
@@ -698,7 +698,7 @@ bool LatticeStatistics<T>::configureClassical(Double aOld, Double bOld, Double a
 }
 
 template <class T>
-bool LatticeStatistics<T>::configureHingesFences(Double f) {
+bool LatticeStatistics<T>::configureHingesFences(double f) {
   bool reconfig = false;
   if (_saf.algorithm() != StatisticsData::HINGESFENCES || !near(f, _saf.hingesFencesFactor())) {
     _saf.configureHingesFences(f);
@@ -727,7 +727,7 @@ bool LatticeStatistics<T>::configureFitToHalf(FitToHalfStatisticsData::CENTER ce
 }
 
 template <class T>
-bool LatticeStatistics<T>::configureChauvenet(Double zscore, Int maxIterations) {
+bool LatticeStatistics<T>::configureChauvenet(double zscore, int maxIterations) {
   bool reconfig = _saf.algorithm() != StatisticsData::CHAUVENETCRITERION;
   if (!reconfig) {
     typename StatisticsAlgorithmFactoryData::ChauvenetData data = _saf.chauvenetData();
@@ -774,20 +774,20 @@ bool LatticeStatistics<T>::generateStorageLattice() {
   // are along the last axis)
   IPosition storeLatticeShape;
   IPosition shape = pInLattice_p->shape();
-  LatticeStatsBase::setStorageImageShape(storeLatticeShape, true, Int(LatticeStatsBase::NACCUM),
+  LatticeStatsBase::setStorageImageShape(storeLatticeShape, true, int(LatticeStatsBase::NACCUM),
                                          displayAxes_p, shape);
   // Set the storage lattice tile shape to the tile shape of the
   // axes of the parent lattice from which it is created.
   // For the statistics axis, set the tile shape to NACCUM (small).
   IPosition tileShape(storeLatticeShape.nelements(), 1);
-  for (uInt i = 0; i < tileShape.nelements() - 1; i++) {
+  for (unsigned int i = 0; i < tileShape.nelements() - 1; i++) {
     tileShape(i) = pInLattice_p->niceCursorShape()(displayAxes_p(i));
   }
   tileShape(tileShape.nelements() - 1) = storeLatticeShape(storeLatticeShape.nelements() - 1);
   // Create storage lattice.  If lattice is > 10% of available memory,
   // put it on disk.
-  uInt memory = HostInfo::memoryTotal() / 1024;
-  Double useMemory = Double(memory) / 10.0;
+  unsigned int memory = HostInfo::memoryTotal() / 1024;
+  double useMemory = double(memory) / 10.0;
   if (forceDisk_p) useMemory = 0.0;
   if (haveLogger_p) {
     os_p << LogIO::NORMAL1 << "Creating new statistics storage lattice of shape "
@@ -799,9 +799,9 @@ bool LatticeStatistics<T>::generateStorageLattice() {
   // Set up min/max location variables
   std::shared_ptr<LattStatsProgress> pProgressMeter(
       showProgress_p ? std::make_shared<LattStatsProgress>() : NULL);
-  Double timeOld = 0;
-  Double timeNew = 0;
-  uInt nsets = pStoreLattice_p->size() / storeLatticeShape.getLast(1)[0];
+  double timeOld = 0;
+  double timeNew = 0;
+  unsigned int nsets = pStoreLattice_p->size() / storeLatticeShape.getLast(1)[0];
   bool forceTiledApply = _latticeStatsAlgortihm && *_latticeStatsAlgortihm == TILED_APPLY;
   ThrowIf(forceTiledApply && _saf.algorithm() != StatisticsData::CLASSICAL,
           "Tiled Apply method can only be run using the Classical Statistics algorithm");
@@ -809,14 +809,14 @@ bool LatticeStatistics<T>::generateStorageLattice() {
   bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL && !skipTiledApply;
   if (tryOldMethod) {
     if (!forceTiledApply) {
-      uInt nel = pInLattice_p->size() / nsets;
+      unsigned int nel = pInLattice_p->size() / nsets;
       timeOld = nsets * (_aOld + _bOld * nel);
       timeNew = nsets * (_aNew + _bNew * nel);
       tryOldMethod = timeOld < timeNew;
     }
   }
   bool ranOldMethod = false;
-  uInt ndim = shape.size();
+  unsigned int ndim = shape.size();
   if (tryOldMethod) {
     if (forceTiledApply && haveLogger_p) {
       os_p << LogIO::NORMAL << "Forcing use of Tiled Apply method" << LogIO::POST;
@@ -826,7 +826,7 @@ bool LatticeStatistics<T>::generateStorageLattice() {
     minPos_p.resize(ndim);
     maxPos_p.resize(ndim);
     StatsTiledCollapser<T, AccumType> collapser(range_p, noInclude_p, noExclude_p, fixedMinMax_p);
-    Int newOutAxis = pStoreLattice_p->ndim() - 1;
+    int newOutAxis = pStoreLattice_p->ndim() - 1;
     SubLattice<AccumType> outLatt(*pStoreLattice_p, true);
     try {
       LatticeApply<T, AccumType>::tiledApply(outLatt, *pInLattice_p, collapser,
@@ -862,14 +862,14 @@ bool LatticeStatistics<T>::generateStorageLattice() {
 }
 
 template <class T>
-void LatticeStatistics<T>::_doStatsLoop(uInt nsets,
+void LatticeStatistics<T>::_doStatsLoop(unsigned int nsets,
                                         std::shared_ptr<LattStatsProgress> progressMeter) {
   maxPos_p.resize(0);
   minPos_p.resize(0);
   const auto nCursorAxes = cursorAxes_p.size();
   const auto latticeShape(pInLattice_p->shape());
   IPosition cursorShape(pInLattice_p->ndim(), 1);
-  for (uInt i = 0; i < nCursorAxes; ++i) {
+  for (unsigned int i = 0; i < nCursorAxes; ++i) {
     cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
   }
   IPosition axisPath = cursorAxes_p;
@@ -884,8 +884,9 @@ void LatticeStatistics<T>::_doStatsLoop(uInt nsets,
   subLat.setRegion(slicer);
   const auto setSize = subLat.size();
   const auto nMaxThreads = OMP::nMaxThreads();
-  const auto nDPMaxThreads = min(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
-  const auto nArrMaxThreads = min(nMaxThreads, nsets);
+  const auto nDPMaxThreads =
+      std::min<size_t>(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
+  const auto nArrMaxThreads = std::min<size_t>(nMaxThreads, nsets);
   auto computed = false;
   const auto forceUsingArrays =
       _latticeStatsAlgortihm && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
@@ -930,37 +931,37 @@ void LatticeStatistics<T>::_doStatsLoop(uInt nsets,
 }
 
 template <class T>
-IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const {
-  const uInt ndim = pInLattice_p->ndim();
+IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uint64_t setSize) const {
+  const unsigned int ndim = pInLattice_p->ndim();
   IPosition cursorShape(ndim, 1);
   const auto isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
   // arbitrary, but reasonable, max memory limit in bytes for storing arrays in bytes
-  static const uInt64 limit = 2e7;
-  static const uInt sizeT = sizeof(T);
-  static const uInt sizeBool = sizeof(bool);
-  static const uInt sizeInt = sizeof(Int);
-  static const uInt sizeStats = sizeof(StatsData<AccumType>);
-  const uInt posSize = sizeof(Int) * ndim;
-  uInt chunkMult = pInLattice_p->isMasked() ? sizeT + sizeBool : sizeT;
-  uInt64 chunkSize = chunkMult * setSize + sizeStats + posSize;
+  static const uint64_t limit = 2e7;
+  static const unsigned int sizeT = sizeof(T);
+  static const unsigned int sizeBool = sizeof(bool);
+  static const unsigned int sizeInt = sizeof(int);
+  static const unsigned int sizeStats = sizeof(StatsData<AccumType>);
+  const unsigned int posSize = sizeof(int) * ndim;
+  unsigned int chunkMult = pInLattice_p->isMasked() ? sizeT + sizeBool : sizeT;
+  uint64_t chunkSize = chunkMult * setSize + sizeStats + posSize;
   if (isChauv) {
     chunkSize += sizeInt;
   }
-  const uInt64 nIterToAccum = limit / chunkSize;
+  const uint64_t nIterToAccum = limit / chunkSize;
   if (nIterToAccum == 0) {
     // chunk size is too big, we cannot use this method
     return IPosition(0);
   }
   auto latShape = pInLattice_p->shape();
   const auto nCursorAxes = cursorAxes_p.size();
-  for (uInt i = 0; i < nCursorAxes; ++i) {
+  for (unsigned int i = 0; i < nCursorAxes; ++i) {
     const auto curAx = cursorAxes_p[i];
     cursorShape[curAx] = latShape[curAx];
   }
-  uInt64 x = nIterToAccum;
+  uint64_t x = nIterToAccum;
   const auto nDisplayAxes = displayAxes_p.size();
-  for (uInt i = 0; i < nDisplayAxes; ++i) {
-    cursorShape[displayAxes_p[i]] = min(x, (uInt64)latShape[displayAxes_p[i]]);
+  for (unsigned int i = 0; i < nDisplayAxes; ++i) {
+    cursorShape[displayAxes_p[i]] = min(x, (uint64_t)latShape[displayAxes_p[i]]);
     x /= cursorShape[displayAxes_p[i]];
     if (x == 0) {
       break;
@@ -975,10 +976,10 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
   T overallMax = 0;
   T overallMin = 0;
   bool isReal = whatType<T>();
-  const uInt nMaxThreads = OMP::nMaxThreads();
+  const unsigned int nMaxThreads = OMP::nMaxThreads();
   IPosition displayAxes(displayAxes_p);
-  uInt nArraysMax = cursorShape.keepAxes(displayAxes).product();
-  uInt nSA = min(nMaxThreads, nArraysMax);
+  unsigned int nArraysMax = cursorShape.keepAxes(displayAxes).product();
+  unsigned int nSA = min(nMaxThreads, nArraysMax);
   StatisticsAlgorithmFactory<AccumType, typename Array<T>::const_iterator,
                              Array<bool>::const_iterator>
       saf2;
@@ -986,7 +987,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
   std::vector<std::shared_ptr<StatisticsAlgorithm<AccumType, typename Array<T>::const_iterator,
                                                   Array<bool>::const_iterator>>>
       sa(nSA);
-  for (uInt i = 0; i < nSA; ++i) {
+  for (unsigned int i = 0; i < nSA; ++i) {
     sa[i] = saf2.createStatsAlgorithm();
   }
   std::shared_ptr<DataRanges> range;
@@ -1000,22 +1001,22 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
   std::vector<IPosition> curPos;
   bool isMasked = pInLattice_p->isMasked();
   IPosition latShape = pInLattice_p->shape();
-  const uInt nCursorAxes = cursorAxes_p.size();
+  const unsigned int nCursorAxes = cursorAxes_p.size();
   IPosition chunkSliceStart(latShape.size(), 0);
   IPosition chunkSliceEnd = chunkSliceStart;
-  for (uInt i = 0; i < nCursorAxes; ++i) {
-    uInt curAx = cursorAxes_p[i];
+  for (unsigned int i = 0; i < nCursorAxes; ++i) {
+    unsigned int curAx = cursorAxes_p[i];
     chunkSliceEnd[curAx] = latShape[curAx] - 1;
   }
   const IPosition chunkSliceEndAtChunkIterBegin = chunkSliceEnd;
-  uInt nDisplayAxes = displayAxes_p.size();
+  unsigned int nDisplayAxes = displayAxes_p.size();
   IPosition cp;
   IPosition arrayShape;
   LatticeStepper myStepper(latShape, cursorShape, LatticeStepper::RESIZE);
-  uInt nIter = 1;
-  uInt ndim = latShape.size();
-  for (uInt i = 0; i < ndim; ++i) {
-    nIter *= ceil((Float)latShape[i] / (Float)cursorShape[i]);
+  unsigned int nIter = 1;
+  unsigned int ndim = latShape.size();
+  for (unsigned int i = 0; i < ndim; ++i) {
+    nIter *= ceil((float)latShape[i] / (float)cursorShape[i]);
   }
   if (progressMeter) {
     progressMeter->init(nIter);
@@ -1026,7 +1027,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     const Array<T>& chunk = latIter.cursor();
     IPosition chunkShape = chunk.shape();
     const Array<bool> maskChunk = isMasked ? latIter.getMask() : Array<bool>();
-    uInt nSets = chunkShape.keepAxes(displayAxes).product();
+    unsigned int nSets = chunkShape.keepAxes(displayAxes).product();
     if (dataArray.size() != nSets) {
       dataArray.resize(nSets);
       curPos.resize(nSets);
@@ -1037,7 +1038,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     chunkSliceStart = 0;
     chunkSliceEnd = chunkSliceEndAtChunkIterBegin;
     bool done = false;
-    uInt setIndex = 0;
+    unsigned int setIndex = 0;
     while (!done) {
       // use assign rather than = because array shapes can differ, throwing
       // a conformance exception if = is used
@@ -1049,8 +1050,8 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
       }
       curPos[setIndex] = cp + chunkSliceStart;
       done = true;
-      for (uInt i = 0; i < nDisplayAxes; ++i) {
-        uInt dax = displayAxes_p[i];
+      for (unsigned int i = 0; i < nDisplayAxes; ++i) {
+        unsigned int dax = displayAxes_p[i];
         if (chunkSliceStart[dax] < chunkShape[dax] - 1) {
           ++chunkSliceStart[dax];
           ++chunkSliceEnd[dax];
@@ -1063,8 +1064,8 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
         }
       }
     }
-    uInt nArrays = dataArray.size();
-    uInt nthreads = min(nMaxThreads, nArrays);
+    unsigned int nArrays = dataArray.size();
+    unsigned int nthreads = min(nMaxThreads, nArrays);
     _doComputationUsingArrays(sa, overallMin, overallMax, arrayShape, dataArray, maskArray, curPos,
                               nthreads, isChauv, isMasked, isReal, range);
     if (progressMeter) {
@@ -1079,29 +1080,29 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
                                                     Array<bool>::const_iterator>>>& sa,
     T& overallMin, T& overallMax, IPosition& arrayShape, std::vector<Array<T>>& dataArray,
     std::vector<Array<bool>>& maskArray, std::vector<IPosition>& curPos,
-    uInt
+    unsigned int
 #ifdef _OPENMP
         nthreads
 #endif
     ,
     bool isChauv, bool isMasked, bool isReal, std::shared_ptr<const DataRanges> range) {
-  uInt nArrays = dataArray.size();
+  unsigned int nArrays = dataArray.size();
   bool fixedCurMinMax = (fixedMinMax_p && !noInclude_p);
   T currentMin = fixedCurMinMax ? range_p[0] : 0;
   T currentMax = fixedCurMinMax ? range_p[1] : 0;
   std::vector<StatsData<AccumType>> statsArray(nArrays);
   std::vector<AccumType> q1(doRobust_p ? nArrays : 0);
   std::vector<AccumType> q3(doRobust_p ? nArrays : 0);
-  std::vector<uInt> chauvIterArray(isChauv ? nArrays : 0);
+  std::vector<unsigned int> chauvIterArray(isChauv ? nArrays : 0);
   ostringstream chos;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nthreads)
 #endif
-  for (uInt i = 0; i < nArrays; ++i) {
+  for (unsigned int i = 0; i < nArrays; ++i) {
 #ifdef _OPENMP
-    uInt tid = omp_get_thread_num();
+    unsigned int tid = omp_get_thread_num();
 #else
-    uInt tid = 0;
+    unsigned int tid = 0;
 #endif
     if (isMasked && maskArray[i].size() > 0) {
       if (!range) {
@@ -1129,7 +1130,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
       chauvIterArray[i] = ch->getNiter();
     }
   }
-  for (uInt i = 0; i < nArrays; ++i) {
+  for (unsigned int i = 0; i < nArrays; ++i) {
     StatsData<AccumType> stats = statsArray[i];
     IPosition mypos = curPos[i];
     AccumType qq1 = doRobust_p ? q1[i] : 0;
@@ -1168,7 +1169,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
 template <class T>
 void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
-    std::shared_ptr<LattStatsProgress> progressMeter, uInt nsets) {
+    std::shared_ptr<LattStatsProgress> progressMeter, unsigned int nsets) {
   bool fixedCurMinMax = (fixedMinMax_p && !noInclude_p);
   T currentMin = fixedCurMinMax ? range_p[0] : 0;
   T currentMax = fixedCurMinMax ? range_p[1] : 0;
@@ -1214,7 +1215,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
       // medabsdevmed = at least 3. In practice this can be more
       // because there can be multiple scans for median/quantiles
       // and medabsdevmed for large data sets.
-      uInt mult = doRobust_p ? 3 : 1;
+      unsigned int mult = doRobust_p ? 3 : 1;
       progressMeter->init(mult * nsets * dataProvider->estimatedSteps());
     }
     sa->setDataProvider(dataProvider);
@@ -1293,10 +1294,10 @@ template <class T>
 void LatticeStatistics<T>::_fillStorageLattice(T currentMin, T currentMax, const IPosition& curPos,
                                                const StatsData<AccumType>& stats, bool doQuantiles,
                                                AccumType q1, AccumType q3) {
-  const uInt ndim = pStoreLattice_p->ndim();
+  const unsigned int ndim = pStoreLattice_p->ndim();
   IPosition pos(ndim, 0);
-  const uInt nDispAxes = displayAxes_p.size();
-  for (uInt j = 0; j < nDispAxes; ++j) {
+  const unsigned int nDispAxes = displayAxes_p.size();
+  for (unsigned int j = 0; j < nDispAxes; ++j) {
     pos(j) = curPos(displayAxes_p(j));
   }
   std::map<LatticeStatsBase::StatisticsTypes, AccumType> statsMap;
@@ -1319,7 +1320,7 @@ void LatticeStatistics<T>::_fillStorageLattice(T currentMin, T currentMax, const
       statsMap.begin();
   typename std::map<LatticeStatsBase::StatisticsTypes, AccumType>::const_iterator end =
       statsMap.end();
-  uInt last = ndim - 1;
+  unsigned int last = ndim - 1;
   for (; iter != end; ++iter) {
     const LatticeStatsBase::StatisticsTypes key = iter->first;
     pos[last] = key;
@@ -1333,10 +1334,10 @@ void LatticeStatistics<T>::generateRobust() {
   if (showMsg) {
     os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
   }
-  const uInt nCursorAxes = cursorAxes_p.size();
+  const unsigned int nCursorAxes = cursorAxes_p.size();
   const IPosition latticeShape(pInLattice_p->shape());
   IPosition cursorShape(pInLattice_p->ndim(), 1);
-  for (uInt i = 0; i < nCursorAxes; ++i) {
+  for (unsigned int i = 0; i < nCursorAxes; ++i) {
     cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
   }
   IPosition axisPath = cursorAxes_p;
@@ -1348,7 +1349,7 @@ void LatticeStatistics<T>::generateRobust() {
   IPosition curPos, pos, pos2, pos3, posQ1, posQ3, posNpts, posMax, posMin;
   Slicer slicer;
   SubLattice<T> subLat;
-  uInt64 knownNpts;
+  uint64_t knownNpts;
   AccumType knownMax, knownMin;
   sa = _saf.createStatsAlgorithm();
   _configureDataProviders(lattDP, maskedLattDP);
@@ -1363,7 +1364,7 @@ void LatticeStatistics<T>::generateRobust() {
     posQ1 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q1);
     posQ3 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q3);
     posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
-    knownNpts = (uInt64)abs(pStoreLattice_p->getAt(posNpts));
+    knownNpts = (uint64_t)abs(pStoreLattice_p->getAt(posNpts));
     if (knownNpts == 0) {
       // Stick zero in storage lattice (it's not initialized)
       static const AccumType val(0);
@@ -1401,18 +1402,18 @@ template <class T>
 template <class U, class V>
 void LatticeStatistics<T>::_computeQuantiles(
     AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
-    std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg, uInt64 knownNpts,
+    std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg, uint64_t knownNpts,
     AccumType knownMin, AccumType knownMax) const {
-  static const std::set<Double> fracs = quartileFracs();
-  std::map<Double, AccumType> quantiles;
-  static const uInt maxArraySizeBytes = 1e8;
+  static const std::set<double> fracs = quartileFracs();
+  std::map<double, AccumType> quantiles;
+  static const unsigned int maxArraySizeBytes = 1e8;
   // try to prevent multiple passes for
   // large images
-  uInt64 nBins = max((uInt64)10000, knownNpts / 1000);
+  uint64_t nBins = max((uint64_t)10000, knownNpts / 1000);
   // computing the median and the quartiles simultaneously minimizes
   // the number of necessary data scans, as opposed to first calling
   // getMedian() and getQuartiles() separately
-  std::shared_ptr<uInt64> npts = std::make_shared<uInt64>(knownNpts);
+  std::shared_ptr<uint64_t> npts = std::make_shared<uint64_t>(knownNpts);
   std::shared_ptr<AccumType> mymin = std::make_shared<AccumType>(knownMin);
   std::shared_ptr<AccumType> mymax = std::make_shared<AccumType>(knownMax);
   median = statsAlg->getMedianAndQuantiles(quantiles, fracs, npts, mymin, mymax, maxArraySizeBytes,
@@ -1456,7 +1457,7 @@ void LatticeStatistics<T>::_configureDataProviders(
 }
 
 template <class T>
-void LatticeStatistics<T>::listMinMax(ostringstream& osMin, ostringstream& osMax, Int oWidth,
+void LatticeStatistics<T>::listMinMax(ostringstream& osMin, ostringstream& osMax, int oWidth,
                                       DataType type)
 
 // Min/max locations only meaningful for Float images currently.
@@ -1502,13 +1503,13 @@ bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
 
   // Get number of statistics and display axes
 
-  const uInt nDisplayAxes = displayAxes_p.nelements();
-  const uInt nStatsAxes = cursorAxes_p.nelements();
+  const unsigned int nDisplayAxes = displayAxes_p.nelements();
+  const unsigned int nStatsAxes = cursorAxes_p.nelements();
 
   // Set up the manipulators. We list the number of points as an integer so find
   // out how big the field width needs to be.  Min of 6 so label fits.
 
-  Int oDWidth = 15;
+  int oDWidth = 15;
   DataType type = whatType<T>();
   if (type == TpComplex) {
     oDWidth = 2 * oDWidth + 3;  // (x,y)
@@ -1519,21 +1520,21 @@ bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // the setw manipulator fails, so I go to a lot of trouble
   // with ostringstreams (which are useable only once).
 
-  Int oPrec = 6;
+  int oPrec = 6;
   setStream(os_p.output(), oPrec);
 
   // Write the pixel and world coordinate of the higher order display axes to the logger
 
-  uInt ndim = pInLattice_p->ndim();
+  unsigned int ndim = pInLattice_p->ndim();
   IPosition shape = pInLattice_p->shape();
   if (nDisplayAxes > 1) {
     Vector<String> sWorld(1);
-    Vector<Double> pixels(1);
+    Vector<double> pixels(1);
     IPosition blc(ndim, 0);
     IPosition trc(shape - 1);
     //
     os_p << LogIO::NORMAL;
-    for (uInt j = 1; j < nDisplayAxes; j++) {
+    for (unsigned int j = 1; j < nDisplayAxes; j++) {
       os_p << "Axis " << displayAxes_p(j) + 1 << " = " << locInLattice(dPos, true)(j) + 1;
       if (j < nDisplayAxes - 1) os_p << ", ";
     }
@@ -1543,7 +1544,7 @@ bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // of the first display axis.  Do this by formatting a dummy value.
 
   Vector<String> sWorld(1);
-  Vector<Double> pixels(1);
+  Vector<double> pixels(1);
   pixels(0) = 1.0;
   IPosition blc(ndim, 0);
   IPosition trc(shape - 1);
@@ -1551,7 +1552,7 @@ bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // Write headers
 
   os_p << LogIO::NORMAL << endl;
-  Int len0;
+  int len0;
   if (nStatsAxes == 1) {
     os_p << "Profile ";
     len0 = 8;
@@ -1578,8 +1579,8 @@ bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
   // Write statistics to logger.  We write the pixel location
   // relative to the parent lattice
 
-  const uInt n1 = stats.shape()(0);
-  for (uInt j = 0; j < n1; j++) {
+  const unsigned int n1 = stats.shape()(0);
+  for (unsigned int j = 0; j < n1; j++) {
     os_p.output() << setw(len0) << j + blcParent_p(displayAxes_p(0)) + 1;
     ostringstream os00;
     setStream(os00, oPrec);
@@ -1627,8 +1628,8 @@ bool LatticeStatistics<T>::listStats(bool hasBeam, const IPosition& dPos,
 }
 
 template <class T>
-bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, Int zLayer,
-                                         Int hAxis, Int hLayer) {
+bool LatticeStatistics<T>::getLayerStats(String& stats, double area, int zAxis, int zLayer,
+                                         int hAxis, int hLayer) {
   if (!goodParameterStatus_p) {
     return false;
   }
@@ -1677,8 +1678,8 @@ bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     }
 
     stringstream os;
-    const Int oPrec = 6;
-    Int oDWidth = 15;
+    const int oPrec = 6;
+    int oDWidth = 15;
     DataType type = whatType<T>();
     if (type == TpComplex) {
       oDWidth = 2 * oDWidth + 3;
@@ -1727,7 +1728,7 @@ bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     return true;
   }
 
-  const uInt n1 = pStoreLattice_p->shape()(0);
+  const unsigned int n1 = pStoreLattice_p->shape()(0);
 
   Matrix<AccumType> ord(n1, NSTATS);
 
@@ -1741,14 +1742,14 @@ bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
   LatticeStepper stepper(pStoreLattice_p->shape(), cursorShape, matrixAxes,
                          IPosition::makeAxisPath(pStoreLattice_p->ndim()));
   RO_LatticeIterator<AccumType> pixelIterator(*pStoreLattice_p, stepper);
-  uInt zAx = -1;
-  uInt hAx = -1;
-  for (uInt j = 0; j < displayAxes_p.nelements(); j++) {
+  unsigned int zAx = -1;
+  unsigned int hAx = -1;
+  for (unsigned int j = 0; j < displayAxes_p.nelements(); j++) {
     if (zAxis == displayAxes_p(j)) zAx = j;
     if (hAxis == displayAxes_p(j)) hAx = j;
   }
 
-  Int layer = 0;
+  int layer = 0;
   ostringstream os;
   for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
     IPosition dPos = pixelIterator.position();
@@ -1775,7 +1776,7 @@ bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
     Matrix<AccumType> matrix(pixelIterator.matrixCursor());
     bool canDoFlux = _canDoFlux();
     bool unused;
-    for (uInt i = 0; i < n1; i++) {
+    for (unsigned int i = 0; i < n1; i++) {
       const AccumType& nPts = matrix(i, NPTS);
       if (nPts > 0) {
         ord(i, MEAN) = _mean(matrix(i, SUM), nPts);
@@ -1787,8 +1788,8 @@ bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
       }
     }
 
-    for (uInt i = 0; i < LatticeStatsBase::NACCUM; i++) {
-      for (uInt j = 0; j < n1; j++) ord(j, i) = matrix(j, i);
+    for (unsigned int i = 0; i < LatticeStatsBase::NACCUM; i++) {
+      for (unsigned int j = 0; j < n1; j++) ord(j, i) = matrix(j, i);
     }
 
     listLayerStats(ord, os, layer);
@@ -1801,8 +1802,8 @@ bool LatticeStatistics<T>::getLayerStats(String& stats, Double area, Int zAxis, 
 }
 
 template <class T>
-bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxis, Int zLayer,
-                                         Int hAxis, Int hLayer) {
+bool LatticeStatistics<T>::getLayerStats(stat_list& stats, double area, int zAxis, int zLayer,
+                                         int hAxis, int hLayer) {
   char buffer[256];
 
   if (!goodParameterStatus_p) {
@@ -1853,7 +1854,7 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     }
 
     // const Int oPrec = 6;
-    Int oDWidth = 15;
+    int oDWidth = 15;
     DataType type = whatType<T>();
     if (type == TpComplex) {
       oDWidth = 2 * oDWidth + 3;
@@ -1894,7 +1895,7 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     return true;
   }
 
-  const uInt n1 = pStoreLattice_p->shape()(0);
+  const unsigned int n1 = pStoreLattice_p->shape()(0);
 
   Matrix<AccumType> ord(n1, NSTATS);
 
@@ -1908,14 +1909,14 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
   LatticeStepper stepper(pStoreLattice_p->shape(), cursorShape, matrixAxes,
                          IPosition::makeAxisPath(pStoreLattice_p->ndim()));
   RO_LatticeIterator<AccumType> pixelIterator(*pStoreLattice_p, stepper);
-  uInt zAx = -1;
-  uInt hAx = -1;
-  for (uInt j = 0; j < displayAxes_p.nelements(); j++) {
+  unsigned int zAx = -1;
+  unsigned int hAx = -1;
+  for (unsigned int j = 0; j < displayAxes_p.nelements(); j++) {
     if (zAxis == displayAxes_p(j)) zAx = j;
     if (hAxis == displayAxes_p(j)) hAx = j;
   }
 
-  Int layer = 0;
+  int layer = 0;
   for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
     IPosition dPos = pixelIterator.position();
     if (displayAxes_p.nelements() == 2) {
@@ -1940,7 +1941,7 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
 
     Matrix<AccumType> matrix(pixelIterator.matrixCursor());
     bool unused;
-    for (uInt i = 0; i < n1; i++) {
+    for (unsigned int i = 0; i < n1; i++) {
       const AccumType& nPts = matrix(i, NPTS);
       if (nPts > 0) {
         ord(i, MEAN) = _mean(matrix(i, SUM), nPts);
@@ -1952,14 +1953,14 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
       }
     }
 
-    for (uInt i = 0; i < LatticeStatsBase::NACCUM; i++) {
-      for (uInt j = 0; j < n1; j++) ord(j, i) = matrix(j, i);
+    for (unsigned int i = 0; i < LatticeStatsBase::NACCUM; i++) {
+      for (unsigned int j = 0; j < n1; j++) ord(j, i) = matrix(j, i);
     }
 
     // const uInt nDisplayAxes = displayAxes_p.nelements();
-    const uInt n1 = ord.shape()(0);
+    const unsigned int n1 = ord.shape()(0);
 
-    Int oDWidth = 15;
+    int oDWidth = 15;
     DataType type = whatType<T>();
     if (type == TpComplex) {
       oDWidth = 2 * oDWidth + 3;
@@ -1968,15 +1969,15 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
     // Int oPrec = 6;
 
     Vector<String> sWorld(1);
-    Vector<Double> pixels(1);
+    Vector<double> pixels(1);
     pixels(0) = 1.0;
     IPosition blc(pInLattice_p->ndim(), 0);
     IPosition trc(pInLattice_p->shape() - 1);
 
     // Write statistics to logger.  We write the pixel location
     // relative to the parent lattice
-    for (uInt j = 0; j < n1; j++) {
-      if (layer == (Int)j || n1 == 1) {
+    for (unsigned int j = 0; j < n1; j++) {
+      if (layer == (int)j || n1 == 1) {
         snprintf(buffer, sizeof(buffer), "%d", (int)ord.column(NPTS)(j));
         stats.push_back(stat_element("Npts", buffer));
 
@@ -2018,21 +2019,21 @@ bool LatticeStatistics<T>::getLayerStats(stat_list& stats, Double area, Int zAxi
 
 template <class T>
 bool LatticeStatistics<T>::listLayerStats(const Matrix<AccumType>& stats, ostringstream& os,
-                                          Int zLayer) {
+                                          int zLayer) {
   // const uInt nDisplayAxes = displayAxes_p.nelements();
-  const uInt n1 = stats.shape()(0);
+  const unsigned int n1 = stats.shape()(0);
 
-  Int oDWidth = 15;
+  int oDWidth = 15;
   DataType type = whatType<T>();
   if (type == TpComplex) {
     oDWidth = 2 * oDWidth + 3;
   }
 
-  Int oPrec = 6;
+  int oPrec = 6;
 
   setStream(os, oPrec);
   Vector<String> sWorld(1);
-  Vector<Double> pixels(1);
+  Vector<double> pixels(1);
   pixels(0) = 1.0;
   IPosition blc(pInLattice_p->ndim(), 0);
   IPosition trc(pInLattice_p->shape() - 1);
@@ -2052,8 +2053,8 @@ bool LatticeStatistics<T>::listLayerStats(const Matrix<AccumType>& stats, ostrin
 
   // Write statistics to logger.  We write the pixel location
   // relative to the parent lattice
-  for (uInt j = 0; j < n1; j++) {
-    if (zLayer == (Int)j || n1 == 1) {
+  for (unsigned int j = 0; j < n1; j++) {
+    if (zLayer == (int)j || n1 == 1) {
       // os << setw(len0)
       //    << j+blcParent_p(displayAxes_p(0));
 
@@ -2104,7 +2105,7 @@ IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition,
 //
 {
   IPosition pos(storagePosition);
-  for (uInt j = 0; j < pos.nelements() - 1; j++) {
+  for (unsigned int j = 0; j < pos.nelements() - 1; j++) {
     if (relativeToParent) {
       pos(j) = storagePosition(j) + blcParent_p(displayAxes_p(j));
     } else {
@@ -2122,14 +2123,14 @@ IPosition LatticeStatistics<T>::locInStorageLattice(const IPosition& latticePosi
 // in the storage lattice
 //
 {
-  uInt iType = uInt(type);
-  ThrowIf(iType >= uInt(LatticeStatsBase::NACCUM),
+  unsigned int iType = static_cast<unsigned int>(type);
+  ThrowIf(iType >= static_cast<unsigned int>(LatticeStatsBase::NACCUM),
           "Illegal statistics accumulation type " + ValueToString(type));
 
-  const uInt nDim = pStoreLattice_p->ndim();
+  const unsigned int nDim = pStoreLattice_p->ndim();
   IPosition pos(nDim, 0);
   pos(nDim - 1) = iType;
-  for (uInt j = 0; j < displayAxes_p.nelements(); j++) {
+  for (unsigned int j = 0; j < displayAxes_p.nelements(); j++) {
     pos(j) = latticePosition(displayAxes_p(j));
   }
   return pos;
@@ -2153,9 +2154,9 @@ void LatticeStatistics<T>::minMax(bool& none, AccumType& dMin, AccumType& dMax,
 {
   bool init = true;
   none = true;
-  const Int n1 = d.nelements();
+  const int n1 = d.nelements();
 
-  for (Int i = 0; i < n1; i++) {
+  for (int i = 0; i < n1; i++) {
     if (real(n(i)) > 0.5) {
       if (init) {
         dMin = d(i);
@@ -2202,7 +2203,7 @@ bool LatticeStatistics<T>::display()
 
   // Size of plotting abcissa axis
 
-  const uInt n1 = pStoreLattice_p->shape()(0);
+  const unsigned int n1 = pStoreLattice_p->shape()(0);
 
   // Allocate ordinate arrays for plotting and listing.  Try to preserve
   // the true Type of the data as long as we can.  Eventually, for
@@ -2231,7 +2232,7 @@ bool LatticeStatistics<T>::display()
   for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
     // Convert accumulations to  mean, sigma, and rms.
     Matrix<AccumType> matrix(pixelIterator.matrixCursor());  // Reference semantics
-    for (uInt i = 0; i < n1; i++) {
+    for (unsigned int i = 0; i < n1; i++) {
       const AccumType& nPts = matrix(i, NPTS);
       if (nPts > 0) {
         ord(i, MEAN) = _mean(matrix(i, SUM), nPts);
@@ -2243,8 +2244,8 @@ bool LatticeStatistics<T>::display()
     // Extract the direct (NPTS, SUM etc) values from the cursor matrix into the plot matrix
     // There is no easy way to do this other than as I have
 
-    for (uInt i = 0; i < LatticeStatsBase::NACCUM; i++) {
-      for (uInt j = 0; j < n1; j++) {
+    for (unsigned int i = 0; i < LatticeStatsBase::NACCUM; i++) {
+      for (unsigned int j = 0; j < n1; j++) {
         ord(j, i) = matrix(j, i);
       }
     }
@@ -2280,7 +2281,7 @@ bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
   }
   // Were there some good points ?
 
-  const Int nDim = pStoreLattice_p->ndim();
+  const int nDim = pStoreLattice_p->ndim();
   slice.resize(IPosition(0, 0));
   if (someGoodPoints()) {
     // Get desired statistic slice. Discard degenerate axes (requires
@@ -2289,7 +2290,7 @@ bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
     IPosition sliceShape(pStoreLattice_p->shape());
     sliceShape(nDim - 1) = 1;
 
-    Int ISTAT = Int(type);
+    int ISTAT = int(type);
     IPosition pos(nDim, 0);
     pos(nDim - 1) = ISTAT;
     pStoreLattice_p->getSlice(slice, pos, sliceShape, IPosition(nDim, 1), dropDeg);
@@ -2332,14 +2333,14 @@ bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, co
   // Get accumulation sums slice from storage lattice.
   // Last axis is statistics axis
 
-  const uInt nDim = displayAxes_p.nelements();
+  const unsigned int nDim = displayAxes_p.nelements();
   IPosition slicePos(nDim + 1, 0);
   if (posInLattice) {
     _latticePosToStoragePos(slicePos, pos);
   } else {
     // Use position as is
 
-    for (uInt i = 0; i < nDim; i++) {
+    for (unsigned int i = 0; i < nDim; i++) {
       slicePos(i) = pos(i);
     }
   }
@@ -2351,7 +2352,7 @@ bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice, co
   // Copy to vector
 
   slicePos = 0;
-  for (uInt i = 0; i < LatticeStatsBase::NACCUM; i++) {
+  for (unsigned int i = 0; i < LatticeStatsBase::NACCUM; i++) {
     slicePos(nDim) = i;
     slice(i) = tSlice(slicePos);
   }
@@ -2369,7 +2370,7 @@ void LatticeStatistics<T>::_latticePosToStoragePos(IPosition& storagePos,
           "lattice position does not have enough elements");
   // do NOT resize storagePos. It can have more elements than
   // latticePos as defined by the caller.
-  for (uInt i = 0; i < displayAxes_p.nelements(); i++) {
+  for (unsigned int i = 0; i < displayAxes_p.nelements(); i++) {
     storagePos[i] = latticePos(displayAxes_p[i]);
   }
 }
@@ -2397,10 +2398,10 @@ bool LatticeStatistics<T>::someGoodPoints()
       pStoreLattice_p->getSlice(stats, pos, shape, IPosition(1, 1));
 
       pos(0) = NPTS;
-      // this needs to be Int64, not Int as it was, to support > 2.1 Gpixel images
+      // this needs to be int64_t, not Int as it was, to support > 2.1 Gpixel images
       // of course it will still fail for > 9.1 Epixel images, but hopefully we
       // won't have to worry about those for a few more Moore timescales.
-      someGoodPointsValue_p = Int64(real(stats(pos)) + 0.1) > 0;
+      someGoodPointsValue_p = int64_t(real(stats(pos)) + 0.1) > 0;
       return someGoodPointsValue_p;
     } else {
       // Iterate through storage lattice by planes (first and last axis of storage lattice)
@@ -2409,7 +2410,7 @@ bool LatticeStatistics<T>::someGoodPoints()
       // constrained to be n1 >= 1
 
       IPosition cursorShape(pStoreLattice_p->ndim(), 1);
-      const Int n1 = pStoreLattice_p->shape()(0);
+      const int n1 = pStoreLattice_p->shape()(0);
       cursorShape(0) = n1;
       cursorShape(pStoreLattice_p->ndim() - 1) =
           pStoreLattice_p->shape()(pStoreLattice_p->ndim() - 1);
@@ -2423,8 +2424,8 @@ bool LatticeStatistics<T>::someGoodPoints()
       RO_LatticeIterator<AccumType> pixelIterator(*pStoreLattice_p, stepper);
 
       for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-        for (Int i = 0; i < n1; i++) {
-          if (uInt64(real(pixelIterator.matrixCursor()(i, NPTS)) + 0.1) > 0) {
+        for (int i = 0; i < n1; i++) {
+          if (uint64_t(real(pixelIterator.matrixCursor()(i, NPTS)) + 0.1) > 0) {
             someGoodPointsValue_p = true;
             return someGoodPointsValue_p;
           }
@@ -2511,8 +2512,8 @@ void LatticeStatistics<T>::displayStats(AccumType nPts, AccumType sum, AccumType
   // the setw manipulator fails, so I go to a lot of trouble
   // with ostringstreams (which are useable only once).
 
-  const Int oPrec = 6;
-  Int oWidth = 14;
+  const int oPrec = 6;
+  int oWidth = 14;
   DataType type = whatType<T>();
   if (type == TpComplex) {
     oWidth = 32;
@@ -2625,7 +2626,7 @@ void LatticeStatistics<T>::stretchMinMax(AccumType& dMin, AccumType& dMax) const
 }
 
 template <class T>
-void LatticeStatistics<T>::setStream(ostream& os, Int oPrec) {
+void LatticeStatistics<T>::setStream(ostream& os, int oPrec) {
   os.fill(' ');
   os.precision(oPrec);
   os.setf(ios::scientific, ios::floatfield);

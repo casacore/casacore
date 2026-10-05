@@ -122,47 +122,47 @@ class MCFrame {
   void makeComet();
 
   // Get time as Temps Dynamique Barycentrique (TDB, or Barycentric Dynamical Time) in days
-  bool getTDB(Double& tdb, const MeasFrame& frame);
+  bool getTDB(double& tdb, const MeasFrame& frame);
   // Get UT1 in days
-  bool getUT1(Double& tdb, const MeasFrame& frame);
+  bool getUT1(double& tdb, const MeasFrame& frame);
   // Get TT in days
-  bool getTT(Double& tdb, const MeasFrame& frame);
+  bool getTT(double& tdb, const MeasFrame& frame);
   // Get the longitude (in rad)
-  bool getLong(Double& tdb, const MeasFrame& frame);
+  bool getLong(double& tdb, const MeasFrame& frame);
   // Get the latitude (ITRF) (in rad)
-  bool getLat(Double& tdb, const MeasFrame& frame);
+  bool getLat(double& tdb, const MeasFrame& frame);
   // Get the position
   bool getITRF(MVPosition& tdb, const MeasFrame& frame);
   // Get the geocentric position (in m)
-  bool getRadius(Double& tdb, const MeasFrame& frame);
+  bool getRadius(double& tdb, const MeasFrame& frame);
   // Get the geodetic latitude
-  bool getLatGeo(Double& tdb, const MeasFrame& frame);
+  bool getLatGeo(double& tdb, const MeasFrame& frame);
   // Get the LAST (in days)
-  bool getLAST(Double& tdb, const MeasFrame& frame);
+  bool getLAST(double& tdb, const MeasFrame& frame);
   // Get the LAST (in rad)
-  bool getLASTr(Double& tdb, const MeasFrame& frame);
+  bool getLASTr(double& tdb, const MeasFrame& frame);
   // Get J2000 coordinates (direction cosines) and long/lat (rad)
   // <group>
   bool getJ2000(MVDirection& tdb, const MeasFrame& frame);
-  bool getJ2000Long(Double& tdb, const MeasFrame& frame);
-  bool getJ2000Lat(Double& tdb, const MeasFrame& frame);
+  bool getJ2000Long(double& tdb, const MeasFrame& frame);
+  bool getJ2000Lat(double& tdb, const MeasFrame& frame);
   // </group>
   // Get B1950 coordinates (direction cosines) and long/lat (rad)
   // <group>
   bool getB1950(MVDirection& tdb, const MeasFrame& frame);
-  bool getB1950Long(Double& tdb, const MeasFrame& frame);
-  bool getB1950Lat(Double& tdb, const MeasFrame& frame);
+  bool getB1950Long(double& tdb, const MeasFrame& frame);
+  bool getB1950Lat(double& tdb, const MeasFrame& frame);
   // </group>
   // Get apparent coordinates (direction cosines) and long/lat (rad)
   // <group>
   bool getApp(MVDirection& tdb, const MeasFrame& frame);
-  bool getAppLong(Double& tdb, const MeasFrame& frame);
-  bool getAppLat(Double& tdb, const MeasFrame& frame);
+  bool getAppLong(double& tdb, const MeasFrame& frame);
+  bool getAppLat(double& tdb, const MeasFrame& frame);
   // </group>
   // Get LSR radial velocity (m/s)
-  bool getLSR(Double& tdb, const MeasFrame& frame);
+  bool getLSR(double& tdb, const MeasFrame& frame);
   // Get Comet type
-  bool getCometType(uInt& tdb, const MeasFrame& frame);
+  bool getCometType(unsigned int& tdb, const MeasFrame& frame);
   // Get Comet position
   bool getComet(MVPosition& tdb, const MeasFrame& frame);
 

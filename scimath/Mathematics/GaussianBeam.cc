@@ -76,11 +76,11 @@ bool GaussianBeam::operator!=(const GaussianBeam& other) const { return !operato
 
 const Quantity& GaussianBeam::getMajor() const { return _major; }
 
-Double GaussianBeam::getMajor(const Unit& u) const { return _major.getValue(u); }
+double GaussianBeam::getMajor(const Unit& u) const { return _major.getValue(u); }
 
 const Quantity& GaussianBeam::getMinor() const { return _minor; }
 
-Double GaussianBeam::getMinor(const Unit& u) const { return _minor.getValue(u); }
+double GaussianBeam::getMinor(const Unit& u) const { return _minor.getValue(u); }
 
 Quantity GaussianBeam::getPA(const bool unwrap) const {
   if (unwrap) {
@@ -89,7 +89,7 @@ Quantity GaussianBeam::getPA(const bool unwrap) const {
   return _pa;
 }
 
-Double GaussianBeam::getPA(const Unit& u, const bool unwrap) const {
+double GaussianBeam::getPA(const Unit& u, const bool unwrap) const {
   return getPA(unwrap).getValue(u);
 }
 
@@ -136,12 +136,12 @@ void GaussianBeam::setPA(const Quantity& pa, bool unwrap) {
 
 bool GaussianBeam::isNull() const { return _major.getValue() == 0 || _minor.getValue() == 0; }
 
-Double GaussianBeam::getArea(const Unit& unit) const {
+double GaussianBeam::getArea(const Unit& unit) const {
   // NOTE we never want to return a Qauntity because of the
   // nonstandard handling of solid angle units in CASA
   Quantity qunit(1, unit);
   if (qunit.isConform("sr") || qunit.isConform("rad2")) {
-    static const Double coeff = M_PI / (4.0 * M_LN2);
+    static const double coeff = M_PI / (4.0 * M_LN2);
     return coeff * (_major * _minor).getValue(unit);
   } else {
     ostringstream oss;
@@ -235,7 +235,7 @@ void GaussianBeam::convert(const String& majUnit, const String& minUnit, const S
   _pa.convert(paUnit);
 }
 
-bool near(const GaussianBeam& left, const GaussianBeam& other, const Double relWidthTol,
+bool near(const GaussianBeam& left, const GaussianBeam& other, const double relWidthTol,
           const Quantity& absPATol) {
   if (!absPATol.isConform("rad")) {
     throw AipsError("GaussianBeam::near(): absPATol does not have angular units");

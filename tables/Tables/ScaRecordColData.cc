@@ -141,10 +141,10 @@ void ScalarRecordColumnData::getRecord(rownr_t rownr, TableRecord& rec) const {
   } else {
     IPosition shape = dataColPtr_p->shape(rownr);
     AlwaysAssert(shape.nelements() == 1, AipsError);
-    Array<uChar> data(shape);
+    Array<unsigned char> data(shape);
     dataColPtr_p->getArrayV(rownr, data);
     bool deleteIt;
-    const uChar* buf = data.getStorage(deleteIt);
+    const unsigned char* buf = data.getStorage(deleteIt);
     auto memio = std::make_shared<MemoryIO>(buf, shape(0));
     AipsIO aio(memio);
     rec.getRecord(aio, TableAttr(dataManager()->table()));
@@ -156,20 +156,20 @@ void ScalarRecordColumnData::putRecord(rownr_t rownr, const TableRecord& rec) {
   auto memio = std::make_shared<MemoryIO>();
   AipsIO aio(memio);
   rec.putRecord(aio, TableAttr(dataManager()->table().tableName()));
-  IPosition shape(1, Int(memio->length()));
-  Vector<uChar> data(shape, (uChar*)(memio->getBuffer()), SHARE);
+  IPosition shape(1, int(memio->length()));
+  Vector<unsigned char> data(shape, (unsigned char*)(memio->getBuffer()), SHARE);
   dataColPtr_p->setShape(rownr, shape);
   dataColPtr_p->putArrayV(rownr, data);
 }
 
-void ScalarRecordColumnData::makeSortKey(Sort&, std::shared_ptr<BaseCompare>&, Int,
+void ScalarRecordColumnData::makeSortKey(Sort&, std::shared_ptr<BaseCompare>&, int,
                                          std::shared_ptr<ArrayBase>&) {
   throw(
       TableError("Sorting on a column containing records "
                  "is not possible"));
 }
 
-void ScalarRecordColumnData::makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>&, Int,
+void ScalarRecordColumnData::makeRefSortKey(Sort&, std::shared_ptr<BaseCompare>&, int,
                                             const Vector<rownr_t>&, std::shared_ptr<ArrayBase>&) {
   throw(
       TableError("Sorting on a column containing records "
@@ -190,14 +190,14 @@ void ScalarRecordColumnData::freeIterBuf(void*& lastVal, void*& curVal) {
 // # It was felt that putstart takes too much space, so therefore
 // # the version is put "manually".
 void ScalarRecordColumnData::putFileDerived(AipsIO& ios) {
-  ios << (uInt)1;  // class version 1
+  ios << (unsigned int)1;  // class version 1
   ios << dataManPtr_p->sequenceNr();
 }
 
 void ScalarRecordColumnData::getFileDerived(AipsIO& ios, const ColumnSet& colset) {
-  uInt version;
+  unsigned int version;
   ios >> version;
-  uInt seqnr;
+  unsigned int seqnr;
   ios >> seqnr;
   dataManPtr_p = colset.getDataManager(seqnr);
   createDataManagerColumn();

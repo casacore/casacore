@@ -92,7 +92,7 @@ void MEarthMagnetic::assure(const Measure &in) {
   }
 }
 
-MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
+MEarthMagnetic::Types MEarthMagnetic::castType(unsigned int tp) {
   MEarthMagnetic::checkMyTypes();
   if ((tp & MEarthMagnetic::EXTRA) == 0) {
     AlwaysAssert(tp < MEarthMagnetic::N_Types, AipsError);
@@ -115,20 +115,20 @@ const String &MEarthMagnetic::showType(MEarthMagnetic::Types tp) {
   return pname[tp & ~MEarthMagnetic::EXTRA];
 }
 
-const String &MEarthMagnetic::showType(uInt tp) {
+const String &MEarthMagnetic::showType(unsigned int tp) {
   return MEarthMagnetic::showType(MEarthMagnetic::castType(tp));
 }
 
-const String *MEarthMagnetic::allMyTypes(Int &nall, Int &nextra, const uInt *&typ) {
-  static const Int N_name = 24;
-  static const Int N_extra = 0;
+const String *MEarthMagnetic::allMyTypes(int &nall, int &nextra, const unsigned int *&typ) {
+  static const int N_name = 24;
+  static const int N_extra = 0;
   static const String tname[N_name] = {"J2000",  "JMEAN",    "JTRUE",     "APP",       "B1950",
                                        "BMEAN",  "BTRUE",    "GALACTIC",  "HADEC",     "AZEL",
                                        "AZELSW", "AZELNE",   "AZELGEO",   "AZELSWGEO", "AZELNEGEO",
                                        "JNAT",   "ECLIPTIC", "MECLIPTIC", "TECLIPTIC", "SUPERGAL",
                                        "ITRF",   "TOPO",     "ICRS",      "IGRF"};
 
-  static const uInt oname[N_name] = {
+  static const unsigned int oname[N_name] = {
       MEarthMagnetic::J2000,     MEarthMagnetic::JMEAN,     MEarthMagnetic::JTRUE,
       MEarthMagnetic::APP,       MEarthMagnetic::B1950,     MEarthMagnetic::BMEAN,
       MEarthMagnetic::BTRUE,     MEarthMagnetic::GALACTIC,  MEarthMagnetic::HADEC,
@@ -145,16 +145,16 @@ const String *MEarthMagnetic::allMyTypes(Int &nall, Int &nextra, const uInt *&ty
   return tname;
 }
 
-const String *MEarthMagnetic::allTypes(Int &nall, Int &nextra, const uInt *&typ) const {
+const String *MEarthMagnetic::allTypes(int &nall, int &nextra, const unsigned int *&typ) const {
   return MEarthMagnetic::allMyTypes(nall, nextra, typ);
 }
 
 bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+  const unsigned int *oname;
+  int nall, nex;
   const String *tname = MEarthMagnetic::allMyTypes(nall, nex, oname);
 
-  Int i = Measure::giveMe(in, nall, tname);
+  int i = Measure::giveMe(in, nall, tname);
 
   if (i >= nall)
     return false;
@@ -170,20 +170,20 @@ void MEarthMagnetic::checkMyTypes() {
   static bool first(true);
   if (first) {
     first = false;
-    Int nall, nex;
-    const uInt *typ;
+    int nall, nex;
+    const unsigned int *typ;
     const String *const tps = MEarthMagnetic::allMyTypes(nall, nex, typ);
     MEarthMagnetic::Types tp;
-    for (Int i = 0; i < nall; i++) {
+    for (int i = 0; i < nall; i++) {
       AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(typ[i])) &&
-                       tp == Int(typ[i]) && MEarthMagnetic::getType(tp, tps[i]) &&
-                       tp == Int(typ[i]),
+                       tp == int(typ[i]) && MEarthMagnetic::getType(tp, tps[i]) &&
+                       tp == int(typ[i]),
                    AipsError);
     }
-    for (Int i = 0; i < N_Types; i++) {
+    for (int i = 0; i < N_Types; i++) {
       AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(i)) && tp == i, AipsError);
     }
-    for (Int i = IGRF; i < N_Models; i++) {
+    for (int i = IGRF; i < N_Models; i++) {
       AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(i)) && tp == i, AipsError);
     }
   }
@@ -224,13 +224,13 @@ String MEarthMagnetic::getRefString() const { return MEarthMagnetic::showType(re
 
 bool MEarthMagnetic::isModel() const { return ((ref.getType() & MEarthMagnetic::EXTRA) != 0); }
 
-Quantum<Vector<Double>> MEarthMagnetic::get(const Unit &inunit) const {
-  return Quantum<Vector<Double>>(data.getValue(), "T").get(inunit);
+Quantum<Vector<double>> MEarthMagnetic::get(const Unit &inunit) const {
+  return Quantum<Vector<double>>(data.getValue(), "T").get(inunit);
 }
 
-Quantum<Vector<Double>> MEarthMagnetic::getAngle() const { return (data.getAngle()); }
+Quantum<Vector<double>> MEarthMagnetic::getAngle() const { return (data.getAngle()); }
 
-Quantum<Vector<Double>> MEarthMagnetic::getAngle(const Unit &inunit) const {
+Quantum<Vector<double>> MEarthMagnetic::getAngle(const Unit &inunit) const {
   return (data.getAngle(inunit));
 }
 

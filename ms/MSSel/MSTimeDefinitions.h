@@ -31,7 +31,7 @@
 namespace casacore {
 
 typedef struct TimeFields {
-  Int year, month, day, hour, minute, sec, fsec;
+  int year, month, day, hour, minute, sec, fsec;
 } TimeFields;
 }  // namespace casacore
 #endif

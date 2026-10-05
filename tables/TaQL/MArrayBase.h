@@ -119,7 +119,7 @@ class MArrayBase {
   Array<bool>& wmask() { return itsMask; }
 
   // Return the number of valid array values, thus unflagged elements.
-  Int64 nvalid() const {
+  int64_t nvalid() const {
     if (itsNValid < 0) fillNValid();
     return itsNValid;
   }
@@ -128,7 +128,7 @@ class MArrayBase {
   bool empty() const { return itsSize == 0; }
 
   // Get the dimensionality.
-  uInt ndim() const { return itsShape.size(); }
+  unsigned int ndim() const { return itsShape.size(); }
 
   // Get the shape.
   const IPosition& shape() const { return itsShape; }
@@ -154,7 +154,7 @@ class MArrayBase {
   Array<bool> itsMask;
   IPosition itsShape;
   size_t itsSize;
-  mutable Int64 itsNValid;
+  mutable int64_t itsNValid;
   bool itsNull;  // true = array is null, thus undefined in a column
 };
 

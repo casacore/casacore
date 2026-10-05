@@ -56,37 +56,37 @@ class CompositeNumber {
   // constructor:
   // Note: if you later make a call with value > maxval, we
   // will recalculate the list of composite numbers
-  CompositeNumber(const uInt maxval = 8192);
+  CompositeNumber(const unsigned int maxval = 8192);
 
   // destructor
   ~CompositeNumber();
 
   // return the next larger composite number
-  uInt nextLarger(const uInt value);
+  unsigned int nextLarger(const unsigned int value);
 
   // return the next smaller composite number
-  uInt nextSmaller(const uInt value);
+  unsigned int nextSmaller(const unsigned int value);
 
   // return the nearest composite number
-  uInt nearest(const uInt value);
+  unsigned int nearest(const unsigned int value);
 
   // return the next larger even composite number
-  uInt nextLargerEven(const uInt value);
+  unsigned int nextLargerEven(const unsigned int value);
 
   // return the next smaller even composite number
-  uInt nextSmallerEven(const uInt value);
+  unsigned int nextSmallerEven(const unsigned int value);
 
   // return the closest even composite number
-  uInt nearestEven(const uInt value);
+  unsigned int nearestEven(const unsigned int value);
 
   // returns true is value is composite
-  bool isComposite(const uInt value);
+  bool isComposite(const unsigned int value);
 
  private:
-  Block<uInt> itsNumbers;
-  uInt itsMaxComplete;
+  Block<unsigned int> itsNumbers;
+  unsigned int itsMaxComplete;
 
-  void generate(const uInt maxval);
+  void generate(const unsigned int maxval);
 };
 
 }  // namespace casacore

@@ -114,14 +114,14 @@ bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem& coords) {
            << ", image.ndim() == " << shape().nelements();
   } else {
     // Check that the shape is compatible with the stokes coordinates
-    Int stkcrd = -1;
+    int stkcrd = -1;
     while (ok && (stkcrd = coords.findCoordinate(Coordinate::STOKES, stkcrd)) >= 0) {
       ok = true;
-      Int axis = coords.pixelAxes(stkcrd)(0);
+      int axis = coords.pixelAxes(stkcrd)(0);
       const StokesCoordinate& stokes = coords.stokesCoordinate(stkcrd);
       if (axis >= 0) {
-        Int nstokes = stokes.stokes().nelements();
-        Int axislength = shape()(axis);
+        int nstokes = stokes.stokes().nelements();
+        int axislength = shape()(axis);
         if (axislength > nstokes) {
           ok = false;
           errmsg << "Stokes axis is length " << axislength << " but we only have " << nstokes
@@ -222,7 +222,8 @@ ImageRegion ImageInterface<T>::getRegion(const String& regionName,
 }
 
 template <class T>
-String ImageInterface<T>::makeUniqueRegionName(const String& rootName, uInt startNumber) const {
+String ImageInterface<T>::makeUniqueRegionName(const String& rootName,
+                                               unsigned int startNumber) const {
   return regHandPtr_p->makeUniqueRegionName(rootName, startNumber);
 }
 
@@ -270,7 +271,7 @@ bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec) {
   //
   // Save the current ImageInterface object to an output state record
   //
-  Vector<Int> shape = this->shape().asVector();
+  Vector<int> shape = this->shape().asVector();
   outRec.define("shape", shape);
   //
   CoordinateSystem coordsys = coordinates();
@@ -291,7 +292,7 @@ bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec) {
 template <class T>
 bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec) {
   // Restore the current ImageInterface object from an input state record
-  Vector<Int> shape;
+  Vector<int> shape;
   inRec.get("shape", shape);
   IPosition shape2(shape);
   TiledShape newShape(shape2);

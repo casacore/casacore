@@ -105,22 +105,22 @@ void TempLattice<T>::apply(const Functional<T, T>& function) {
 }
 
 template <class T>
-uInt TempLattice<T>::advisedMaxPixels() const {
+unsigned int TempLattice<T>::advisedMaxPixels() const {
   return itsImpl->advisedMaxPixels();
 }
 
 template <class T>
-IPosition TempLattice<T>::doNiceCursorShape(uInt maxPixels) const {
+IPosition TempLattice<T>::doNiceCursorShape(unsigned int maxPixels) const {
   return itsImpl->doNiceCursorShape(maxPixels);
 }
 
 template <class T>
-uInt TempLattice<T>::maximumCacheSize() const {
+unsigned int TempLattice<T>::maximumCacheSize() const {
   return itsImpl->maximumCacheSize();
 }
 
 template <class T>
-void TempLattice<T>::setMaximumCacheSize(uInt howManyPixels) {
+void TempLattice<T>::setMaximumCacheSize(unsigned int howManyPixels) {
   itsImpl->setMaximumCacheSize(howManyPixels);
 }
 
@@ -132,7 +132,7 @@ void TempLattice<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPo
 }
 
 template <class T>
-void TempLattice<T>::setCacheSizeInTiles(uInt howManyTiles) {
+void TempLattice<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
   itsImpl->setCacheSizeInTiles(howManyTiles);
 }
 

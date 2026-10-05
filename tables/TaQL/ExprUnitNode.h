@@ -63,7 +63,7 @@ class TableExprNodeUnit : public TableExprNodeBinary {
 
   // Calculate the conversion factor and return it.
   // It is static to be useful for TableExprNodeArrayFunc as well.
-  static Double set(TableExprNodeRep& parent, const TENShPtr& child, const Unit& unit);
+  static double set(TableExprNodeRep& parent, const TENShPtr& child, const Unit& unit);
 
   // Create a new node if unit conversion is needed.
   // Otherwise return the current node.
@@ -77,13 +77,13 @@ class TableExprNodeUnit : public TableExprNodeBinary {
   static Unit adaptUnits(TENShPtr& node1, TENShPtr& node2, TENShPtr& node3);
 
   // Get the unit factor.
-  virtual Double getUnitFactor() const;
+  virtual double getUnitFactor() const;
 
-  virtual Double getDouble(const TableExprId& id);
+  virtual double getDouble(const TableExprId& id);
   virtual DComplex getDComplex(const TableExprId& id);
 
  private:
-  Double factor_p;
+  double factor_p;
 };
 
 // <summary>
@@ -111,12 +111,12 @@ class TableExprNodeArrayUnit : public TableExprNodeArray {
  public:
   TableExprNodeArrayUnit(const TENShPtr& child, const Unit& unit);
   ~TableExprNodeArrayUnit();
-  virtual Double getUnitFactor() const;
-  virtual MArray<Double> getArrayDouble(const TableExprId& id);
+  virtual double getUnitFactor() const;
+  virtual MArray<double> getArrayDouble(const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex(const TableExprId& id);
 
  private:
-  Double factor_p;
+  double factor_p;
 };
 
 }  // namespace casacore

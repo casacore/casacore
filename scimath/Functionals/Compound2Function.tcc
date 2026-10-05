@@ -40,12 +40,12 @@ AutoDiff<T> CompoundFunction<AutoDiff<T>>::eval(
   if (this->parset_p) fromParam_p();
   AutoDiff<T> tmp(T(0), this->nparameters());
   tmp.value() = 0;
-  for (uInt j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
+  for (unsigned int j = 0; j < tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
   // function value
-  for (uInt i = 0; i < this->nFunctions(); ++i) {
+  for (unsigned int i = 0; i < this->nFunctions(); ++i) {
     AutoDiff<T> t = this->function(i)(x);
     tmp.value() += t.value();
-    for (uInt j = 0; j < t.nDerivatives(); ++j) {
+    for (unsigned int j = 0; j < t.nDerivatives(); ++j) {
       tmp.deriv(this->paroff_p[i] + j) += t.deriv(j);
     }
   }
@@ -54,8 +54,8 @@ AutoDiff<T> CompoundFunction<AutoDiff<T>>::eval(
 
 // # Member functions
 template <class T>
-uInt CompoundFunction<AutoDiff<T>>::addFunction(const Function<AutoDiff<T>> &newFunction) {
-  uInt nf = CompoundParam<AutoDiff<T>>::addFunction(newFunction);
+unsigned int CompoundFunction<AutoDiff<T>>::addFunction(const Function<AutoDiff<T>> &newFunction) {
+  unsigned int nf = CompoundParam<AutoDiff<T>>::addFunction(newFunction);
   toParam_p();
   return nf;
 }
@@ -63,9 +63,9 @@ uInt CompoundFunction<AutoDiff<T>>::addFunction(const Function<AutoDiff<T>> &new
 template <class T>
 void CompoundFunction<AutoDiff<T>>::fromParam_p() const {
   if (this->parset_p) {
-    for (uInt i = 0; i < this->nparameters(); ++i) {
-      uInt k = this->functionPtr_p[this->funpar_p[i]]->nparameters();
-      uInt l = (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].nDerivatives();
+    for (unsigned int i = 0; i < this->nparameters(); ++i) {
+      unsigned int k = this->functionPtr_p[this->funpar_p[i]]->nparameters();
+      unsigned int l = (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].nDerivatives();
       // Set correct number of derivatives in sub-functions
       if (this->param_p[i].nDerivatives() < this->paroff_p[this->funpar_p[i]] + k) {
         if (l != 0) (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]] = AutoDiff<T>();
@@ -75,7 +75,7 @@ void CompoundFunction<AutoDiff<T>>::fromParam_p() const {
         l = k;
       }
       // Set the parameter data
-      for (uInt j = 0; j < l; ++j) {
+      for (unsigned int j = 0; j < l; ++j) {
         (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].deriv(j) =
             this->param_p[i].deriv(j + this->paroff_p[this->funpar_p[i]]);
       }
@@ -89,13 +89,13 @@ void CompoundFunction<AutoDiff<T>>::fromParam_p() const {
 
 template <class T>
 void CompoundFunction<AutoDiff<T>>::toParam_p() {
-  for (uInt i = 0; i < this->nparameters(); ++i) {
+  for (unsigned int i = 0; i < this->nparameters(); ++i) {
     // Set derivatives
     if (this->nparameters() != this->param_p[i].nDerivatives()) {
       this->param_p[i] = AutoDiff<T>(this->param_p[i].value(), this->nparameters());
     }
-    uInt k = this->functionPtr_p[this->funpar_p[i]]->nparameters();
-    uInt l = (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].nDerivatives();
+    unsigned int k = this->functionPtr_p[this->funpar_p[i]]->nparameters();
+    unsigned int l = (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].nDerivatives();
     // Set correct number of derivatives in sub-functions
     if (this->param_p[i].nDerivatives() < this->paroff_p[this->funpar_p[i]] + k) {
       if (l != 0) (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]] = AutoDiff<T>();
@@ -105,7 +105,7 @@ void CompoundFunction<AutoDiff<T>>::toParam_p() {
       l = k;
     }
     // Set the parameter data
-    for (uInt j = 0; j < l; ++j) {
+    for (unsigned int j = 0; j < l; ++j) {
       this->param_p[i].deriv(j + this->paroff_p[this->funpar_p[i]]) =
           (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].deriv(j);
     }

@@ -82,11 +82,11 @@ void MSMColumn::resize(rownr_t nr) {
   return;
 }
 
-uInt MSMColumn::findExt(rownr_t index, bool setCache) {
+unsigned int MSMColumn::findExt(rownr_t index, bool setCache) {
   // # Use a binary search to get the block containing the index.
-  Int st = 0;
-  Int ent = nrext_p;
-  Int i = 0;
+  int st = 0;
+  int ent = nrext_p;
+  int i = 0;
   while (st <= ent) {
     i = (st + ent) / 2;
     if (index < ncum_p[i]) {
@@ -101,7 +101,7 @@ uInt MSMColumn::findExt(rownr_t index, bool setCache) {
       }
     }
   }
-  if (i > Int(nrext_p)) {
+  if (i > int(nrext_p)) {
     throw(indexError<rownr_t>(index,
                               "MSMColumn::findExt - "
                               "rownr " +
@@ -124,7 +124,7 @@ void MSMColumn::getScalarColumnV(ArrayBase& vec) {
   // Only String has to be handled specifically.
   if (dtype() == TpString) {
     String* to = static_cast<String*>(ptr);
-    for (uInt i = 1; i <= nrext_p; ++i) {
+    for (unsigned int i = 1; i <= nrext_p; ++i) {
       const String* from = static_cast<String*>(data_p[i]);
       rownr_t nr = min(nrow, ncum_p[i]) - ncum_p[i - 1];
       for (rownr_t j = 0; j < nr; ++j) {
@@ -133,7 +133,7 @@ void MSMColumn::getScalarColumnV(ArrayBase& vec) {
     }
   } else {
     char* to = static_cast<char*>(ptr);
-    for (uInt i = 1; i <= nrext_p; ++i) {
+    for (unsigned int i = 1; i <= nrext_p; ++i) {
       const char* from = static_cast<char*>(data_p[i]);
       rownr_t nr = min(nrow, ncum_p[i]) - ncum_p[i - 1];
       memcpy(to, from, nr * elemSize());
@@ -154,7 +154,7 @@ void MSMColumn::putScalarColumnV(const ArrayBase& vec) {
   // Only String has to be handled specifically.
   if (dtype() == TpString) {
     const String* from = static_cast<const String*>(ptr);
-    for (uInt i = 1; i <= nrext_p; ++i) {
+    for (unsigned int i = 1; i <= nrext_p; ++i) {
       String* to = static_cast<String*>(data_p[i]);
       rownr_t nr = min(nrow, ncum_p[i]) - ncum_p[i - 1];
       for (rownr_t j = 0; j < nr; ++j) {
@@ -163,7 +163,7 @@ void MSMColumn::putScalarColumnV(const ArrayBase& vec) {
     }
   } else {
     const char* from = static_cast<const char*>(ptr);
-    for (uInt i = 1; i <= nrext_p; ++i) {
+    for (unsigned int i = 1; i <= nrext_p; ++i) {
       char* to = static_cast<char*>(data_p[i]);
       rownr_t nr = min(nrow, ncum_p[i]) - ncum_p[i - 1];
       memcpy(to, from, nr * elemSize());
@@ -194,123 +194,123 @@ void MSMColumn::putBool(rownr_t rownr, const bool* value) {
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getuChar(rownr_t rownr, uChar* value) {
+void MSMColumn::getuChar(rownr_t rownr, unsigned char* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const uChar*>(cache.dataPtr())[inx];
+  *value = static_cast<const unsigned char*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putuChar(rownr_t rownr, const uChar* value) {
+void MSMColumn::putuChar(rownr_t rownr, const unsigned char* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<uChar*>(static_cast<const uChar*>(cache.dataPtr()))[inx] = *value;
+  const_cast<unsigned char*>(static_cast<const unsigned char*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getShort(rownr_t rownr, Short* value) {
+void MSMColumn::getShort(rownr_t rownr, short* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const Short*>(cache.dataPtr())[inx];
+  *value = static_cast<const short*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putShort(rownr_t rownr, const Short* value) {
+void MSMColumn::putShort(rownr_t rownr, const short* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<Short*>(static_cast<const Short*>(cache.dataPtr()))[inx] = *value;
+  const_cast<short*>(static_cast<const short*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getuShort(rownr_t rownr, uShort* value) {
+void MSMColumn::getuShort(rownr_t rownr, unsigned short* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const uShort*>(cache.dataPtr())[inx];
+  *value = static_cast<const unsigned short*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putuShort(rownr_t rownr, const uShort* value) {
+void MSMColumn::putuShort(rownr_t rownr, const unsigned short* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<uShort*>(static_cast<const uShort*>(cache.dataPtr()))[inx] = *value;
+  const_cast<unsigned short*>(static_cast<const unsigned short*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getInt(rownr_t rownr, Int* value) {
+void MSMColumn::getInt(rownr_t rownr, int* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const Int*>(cache.dataPtr())[inx];
+  *value = static_cast<const int*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putInt(rownr_t rownr, const Int* value) {
+void MSMColumn::putInt(rownr_t rownr, const int* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<Int*>(static_cast<const Int*>(cache.dataPtr()))[inx] = *value;
+  const_cast<int*>(static_cast<const int*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getuInt(rownr_t rownr, uInt* value) {
+void MSMColumn::getuInt(rownr_t rownr, unsigned int* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const uInt*>(cache.dataPtr())[inx];
+  *value = static_cast<const unsigned int*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putuInt(rownr_t rownr, const uInt* value) {
+void MSMColumn::putuInt(rownr_t rownr, const unsigned int* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<uInt*>(static_cast<const uInt*>(cache.dataPtr()))[inx] = *value;
+  const_cast<unsigned int*>(static_cast<const unsigned int*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
-void MSMColumn::getInt64(rownr_t rownr, Int64* value) {
+void MSMColumn::getInt64(rownr_t rownr, int64_t* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   const ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  *value = static_cast<const Int64*>(cache.dataPtr())[inx];
+  *value = static_cast<const int64_t*>(cache.dataPtr())[inx];
 }
-void MSMColumn::putInt64(rownr_t rownr, const Int64* value) {
+void MSMColumn::putInt64(rownr_t rownr, const int64_t* value) {
   // Note that the ColumnCache references the appropriate data array in data_p.
   ColumnCache& cache = columnCache();
   if (rownr < cache.start() || rownr > cache.end()) {
     findExt(rownr, true);
   }
   rownr_t inx = rownr - cache.start();
-  const_cast<Int64*>(static_cast<const Int64*>(cache.dataPtr()))[inx] = *value;
+  const_cast<int64_t*>(static_cast<const int64_t*>(cache.dataPtr()))[inx] = *value;
   stmanPtr_p->setHasPut();
 }
 
@@ -416,13 +416,13 @@ void MSMColumn::putString(rownr_t rownr, const String* value) {
 
 void MSMColumn::remove(rownr_t index) {
   // # Find the extension.
-  uInt extnr = findExt(index, false);
+  unsigned int extnr = findExt(index, false);
   rownr_t nrval = ncum_p[extnr] - ncum_p[extnr - 1];
   void* datap = data_p[extnr];
   // # If the extension contains only this element, remove the extension.
   if (nrval == 1) {
     deleteData(datap, byPtr_p);
-    for (uInt i = extnr; i < nrext_p; i++) {
+    for (unsigned int i = extnr; i < nrext_p; i++) {
       data_p[i] = data_p[i + 1];
       ncum_p[i] = ncum_p[i + 1];
     }
@@ -433,7 +433,7 @@ void MSMColumn::remove(rownr_t index) {
   }
   nralloc_p--;
   // #cout << "Remove " << nrext_p << " " << nralloc_p << " " << extnr <<" "<<nrval<< endl;
-  for (uInt i = extnr; i <= nrext_p; i++) {
+  for (unsigned int i = extnr; i <= nrext_p; i++) {
     ncum_p[i]--;
   }
   columnCache().invalidate();
@@ -456,14 +456,14 @@ bool MSMColumn::ok() const {
   if (nrext_p == 0 && ncum_p[1] != 0) return false;
   // # All extension pointers must be filled in.
   // # The ncum_p array must be increasing.
-  for (uInt i = 1; i <= nrext_p; i++) {
+  for (unsigned int i = 1; i <= nrext_p; i++) {
     if (data_p[i] == 0 || ncum_p[i] <= ncum_p[i - 1]) return false;
   }
   return true;
 }
 
 void MSMColumn::deleteAll() {
-  for (uInt i = 1; i <= nrext_p; i++) {
+  for (unsigned int i = 1; i <= nrext_p; i++) {
     deleteData(data_p[i], byPtr_p);
   }
   nralloc_p = 0;
@@ -521,12 +521,12 @@ void MSMColumn::initData(void* datap, rownr_t nrval) {
 }
 
 void* MSMColumn::getArrayPtr(rownr_t rownr) {
-  uInt extnr = findExt(rownr, false);
+  unsigned int extnr = findExt(rownr, false);
   return (static_cast<void**>(data_p[extnr]))[rownr - ncum_p[extnr - 1]];
 }
 
 void MSMColumn::putArrayPtr(rownr_t rownr, void* ptr) {
-  uInt extnr = findExt(rownr, false);
+  unsigned int extnr = findExt(rownr, false);
   (static_cast<void**>(data_p[extnr]))[rownr - ncum_p[extnr - 1]] = ptr;
   stmanPtr_p->setHasPut();
 }

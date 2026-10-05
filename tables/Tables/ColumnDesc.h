@@ -238,7 +238,7 @@ class ColumnDesc {
   bool isTable() const { return colPtr_p->isTable(); }
 
   // Get the number of dimensions.
-  Int ndim() const { return colPtr_p->ndim(); }
+  int ndim() const { return colPtr_p->ndim(); }
 
   // Get the predefined shape.
   // If not defined, a zero shape will be returned.
@@ -250,7 +250,7 @@ class ColumnDesc {
   // and the shape.
   // Otherwise it can only be used if the dimensionality has not been
   // defined yet.
-  void setNdim(uInt ndim) { colPtr_p->setNdim(ndim); }
+  void setNdim(unsigned int ndim) { colPtr_p->setNdim(ndim); }
 
   // Set the predefined shape.
   // This is only allowed for arrays, for which the shape
@@ -273,14 +273,14 @@ class ColumnDesc {
   void setOptions(int options) { colPtr_p->setOptions(options); }
 
   // Get the maximum value length.
-  uInt maxLength() const { return colPtr_p->maxLength(); }
+  unsigned int maxLength() const { return colPtr_p->maxLength(); }
 
   // Set the maximum value length.
   // So far, this is only possible for columns containing String values.
   // An exception is thrown if the column data type is not TpString.
   // Some storage managers support fixed length strings and can store
   // them more efficiently than variable length strings.
-  void setMaxLength(uInt maxLength) { colPtr_p->setMaxLength(maxLength); }
+  void setMaxLength(unsigned int maxLength) { colPtr_p->setMaxLength(maxLength); }
 
   // Get table description (in case column contains subtables).
   // <group>

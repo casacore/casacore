@@ -124,7 +124,7 @@ class LELFunction1D : public LELInterface<T> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -221,7 +221,7 @@ class LELFunctionReal1D : public LELInterface<T> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -319,7 +319,7 @@ class LELFunctionND : public LELInterface<T> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -394,7 +394,7 @@ class LELFunctionND : public LELInterface<T> {
 // <todo asof="1998/01/21">
 // </todo>
 
-class LELFunctionFloat : public LELInterface<Float> {
+class LELFunctionFloat : public LELInterface<float> {
  public:
   // Constructor takes operation and left and right expressions
   // to be operated upon
@@ -404,10 +404,10 @@ class LELFunctionFloat : public LELInterface<Float> {
   ~LELFunctionFloat();
 
   // Recursively evaluate the expression
-  virtual void eval(LELArray<Float>& result, const Slicer& section) const;
+  virtual void eval(LELArray<float>& result, const Slicer& section) const;
 
   // Recursively evaluate the scalar expression
-  virtual LELScalar<Float> getScalar() const;
+  virtual LELScalar<float> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
   virtual bool prepareScalarExpr();
@@ -417,7 +417,7 @@ class LELFunctionFloat : public LELInterface<Float> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -499,7 +499,7 @@ class LELFunctionFloat : public LELInterface<Float> {
 // <todo asof="1998/01/21">
 // </todo>
 
-class LELFunctionDouble : public LELInterface<Double> {
+class LELFunctionDouble : public LELInterface<double> {
  public:
   // Constructor takes operation and left and right expressions
   // to be operated upon
@@ -509,10 +509,10 @@ class LELFunctionDouble : public LELInterface<Double> {
   ~LELFunctionDouble();
 
   // Recursively evaluate the expression
-  virtual void eval(LELArray<Double>& result, const Slicer& section) const;
+  virtual void eval(LELArray<double>& result, const Slicer& section) const;
 
   // Recursively evaluate the scalar expression
-  virtual LELScalar<Double> getScalar() const;
+  virtual LELScalar<double> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
   virtual bool prepareScalarExpr();
@@ -522,7 +522,7 @@ class LELFunctionDouble : public LELInterface<Double> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -531,8 +531,8 @@ class LELFunctionDouble : public LELInterface<Double> {
  private:
   // Count number of masked elements in a LatticeExprNode.
   // <group>
-  uInt nMaskedElements(const LatticeExprNode&) const;
-  uInt nMaskedOn(const Array<bool>& mask) const;
+  unsigned int nMaskedElements(const LatticeExprNode&) const;
+  unsigned int nMaskedOn(const Array<bool>& mask) const;
   // </group>
 
   LELFunctionEnums::Function function_p;
@@ -617,7 +617,7 @@ class LELFunctionComplex : public LELInterface<Complex> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -707,7 +707,7 @@ class LELFunctionDComplex : public LELInterface<DComplex> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();
@@ -798,7 +798,7 @@ class LELFunctionBool : public LELInterface<bool> {
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual bool lock(FileLocker::LockType, uInt nattempts);
+  virtual bool lock(FileLocker::LockType, unsigned int nattempts);
   virtual void unlock();
   virtual bool hasLock(FileLocker::LockType) const;
   virtual void resync();

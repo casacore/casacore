@@ -39,7 +39,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-bool DirectionCoordinate::toWorld(MDirection &world, const Vector<Double> &pixel) const {
+bool DirectionCoordinate::toWorld(MDirection &world, const Vector<double> &pixel) const {
   static MVDirection world_tmp;
   if (toWorld(world_tmp, pixel)) {
     world.set(world_tmp, MDirection::Ref(type_p));
@@ -49,8 +49,8 @@ bool DirectionCoordinate::toWorld(MDirection &world, const Vector<Double> &pixel
   return false;
 }
 
-bool DirectionCoordinate::toWorld(MVDirection &world, const Vector<Double> &pixel) const {
-  static Vector<Double> world_tmp(2);
+bool DirectionCoordinate::toWorld(MVDirection &world, const Vector<double> &pixel) const {
+  static Vector<double> world_tmp(2);
   if (toWorld(world_tmp, pixel)) {
     world.setAngle(world_tmp(0) * to_radians_p[0], world_tmp(1) * to_radians_p[1]);
     return true;
@@ -58,13 +58,13 @@ bool DirectionCoordinate::toWorld(MVDirection &world, const Vector<Double> &pixe
   return false;
 }
 
-MVDirection DirectionCoordinate::toWorld(const Vector<Double> &pixel) const {
+MVDirection DirectionCoordinate::toWorld(const Vector<double> &pixel) const {
   MVDirection x;
   ThrowIf(!toWorld(x, pixel), errorMessage());
   return x;
 }
 
-bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MDirection &world) const {
+bool DirectionCoordinate::toPixel(Vector<double> &pixel, const MDirection &world) const {
   if (type_p == MDirection::castType(world.getRef().getType())) {
     return toPixel(pixel, world.getValue());
   } else {
@@ -73,8 +73,8 @@ bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MDirection &world
   }
 }
 
-bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MVDirection &world) const {
-  static Vector<Double> world_tmp(2);
+bool DirectionCoordinate::toPixel(Vector<double> &pixel, const MVDirection &world) const {
+  static Vector<double> world_tmp(2);
 
   // Convert to current units
 
@@ -84,14 +84,14 @@ bool DirectionCoordinate::toPixel(Vector<Double> &pixel, const MVDirection &worl
   return toPixel(pixel, world_tmp);
 }
 
-Vector<Double> DirectionCoordinate::toPixel(const MVDirection &world) const {
-  Vector<Double> x;
+Vector<double> DirectionCoordinate::toPixel(const MVDirection &world) const {
+  Vector<double> x;
   ThrowIf(!toPixel(x, world), errorMessage());
   return x;
 }
 
-Vector<Double> DirectionCoordinate::toPixel(const MDirection &world) const {
-  Vector<Double> x;
+Vector<double> DirectionCoordinate::toPixel(const MDirection &world) const {
+  Vector<double> x;
   ThrowIf(!toPixel(x, world), errorMessage());
   return x;
 }

@@ -42,7 +42,7 @@ TableSyncData::TableSyncData()
 
 TableSyncData::~TableSyncData() { itsAipsIO.close(); }
 
-void TableSyncData::write(rownr_t nrrow, uInt nrcolumn, bool tableChanged,
+void TableSyncData::write(rownr_t nrrow, unsigned int nrcolumn, bool tableChanged,
                           const Block<bool>& dataManChanged) {
   // Increment change counter when the table has changed.
   bool changed = false;
@@ -54,15 +54,15 @@ void TableSyncData::write(rownr_t nrrow, uInt nrcolumn, bool tableChanged,
   }
   // Increment a counter when a data manager has changed.
   // Resize and initialize the block when needed.
-  uInt ndmOld = itsDataManChangeCounter.nelements();
-  uInt ndmNew = dataManChanged.nelements();
+  unsigned int ndmOld = itsDataManChangeCounter.nelements();
+  unsigned int ndmNew = dataManChanged.nelements();
   if (ndmNew != ndmOld) {
     itsDataManChangeCounter.resize(ndmNew, true, true);
-    for (uInt i = ndmOld; i < ndmNew; i++) {
+    for (unsigned int i = ndmOld; i < ndmNew; i++) {
       itsDataManChangeCounter[i] = 0;
     }
   }
-  for (uInt i = 0; i < ndmNew; i++) {
+  for (unsigned int i = 0; i < ndmNew; i++) {
     if (dataManChanged[i]) {
       itsDataManChangeCounter[i]++;
       changed = true;
@@ -81,7 +81,7 @@ void TableSyncData::write(rownr_t nrrow, uInt nrcolumn, bool tableChanged,
     itsAipsIO << itsNrrow;
   } else {
     itsAipsIO.putstart("sync", 1);
-    itsAipsIO << uInt(itsNrrow);
+    itsAipsIO << static_cast<unsigned int>(itsNrrow);
   }
   itsAipsIO << itsNrcolumn;
   itsAipsIO << itsModifyCounter;
@@ -105,19 +105,19 @@ void TableSyncData::write(rownr_t nrrow) {
     itsAipsIO << itsNrrow;
   } else {
     itsAipsIO.putstart("sync", 1);
-    itsAipsIO << uInt(itsNrrow);
+    itsAipsIO << static_cast<unsigned int>(itsNrrow);
   }
   itsAipsIO << itsNrcolumn;
   itsAipsIO << itsModifyCounter;
   itsAipsIO.putend();
 }
 
-bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged,
+bool TableSyncData::read(rownr_t& nrrow, unsigned int& nrcolumn, bool& tableChanged,
                          Block<bool>& dataManChanged) {
   // Read the data into the memoryIO object.
   // When no columns, don't read the remaining part (then it is used
   // by an external filler).
-  Int nrcol = -1;
+  int nrcol = -1;
   if (itsMemIO->length() > 0) {
     uint version = itsAipsIO.getstart("sync");
     if (version > 2) {
@@ -125,7 +125,7 @@ bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged,
                        " not supported by this version of Casacore");
     }
     if (version == 1) {
-      uInt n;
+      unsigned int n;
       itsAipsIO >> n;
       nrrow = n;
     } else {
@@ -146,8 +146,8 @@ bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged,
   }
   nrcolumn = nrcol;
   // The table has changed when the change counter has changed.
-  uInt tableChangeCounter;
-  Block<uInt> dataManChangeCounter;
+  unsigned int tableChangeCounter;
+  Block<unsigned int> dataManChangeCounter;
   itsAipsIO >> tableChangeCounter;
   itsAipsIO >> dataManChangeCounter;
   itsAipsIO.getend();
@@ -156,18 +156,18 @@ bool TableSyncData::read(rownr_t& nrrow, uInt& nrcolumn, bool& tableChanged,
   // A data manager has changed when its change counter has changed.
   // Increment a change counter when a data manager has changed.
   // Resize and initialize the array when needed.
-  uInt ndmOld = itsDataManChangeCounter.nelements();
-  uInt ndmNew = dataManChangeCounter.nelements();
+  unsigned int ndmOld = itsDataManChangeCounter.nelements();
+  unsigned int ndmNew = dataManChangeCounter.nelements();
   dataManChanged.resize(ndmNew, true, false);
   dataManChanged.set(false);
   if (ndmNew != ndmOld) {
     itsDataManChangeCounter.resize(ndmNew, true, true);
-    for (uInt i = ndmOld; i < ndmNew; i++) {
+    for (unsigned int i = ndmOld; i < ndmNew; i++) {
       dataManChanged[i] = true;
       itsDataManChangeCounter[i] = dataManChangeCounter[i];
     }
   }
-  for (uInt i = 0; i < ndmNew; i++) {
+  for (unsigned int i = 0; i < ndmNew; i++) {
     if (dataManChangeCounter[i] != itsDataManChangeCounter[i]) {
       dataManChanged[i] = true;
       itsDataManChangeCounter[i] = dataManChangeCounter[i];

@@ -33,13 +33,13 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 Projection::Projection(Projection::Type which) : which_p(which), parameters_p(0) { validate(); }
 
-Projection::Projection(Projection::Type which, const Vector<Double> &parameters)
+Projection::Projection(Projection::Type which, const Vector<double> &parameters)
     : which_p(which), parameters_p(parameters.copy()) {
   validate();
 }
 
 Projection::Projection(const String &ctypeLon, const String &ctypeLat,
-                       const Vector<Double> &parameters) {
+                       const Vector<double> &parameters) {
   String t1(ctypeLon);
   String t2(ctypeLat);
   which_p = type(t1, t2);
@@ -201,7 +201,7 @@ Projection::Type Projection::type(const String &name) {
   return retval;
 }
 
-uInt Projection::nParameters(Projection::Type proj) {
+unsigned int Projection::nParameters(Projection::Type proj) {
   // return maximum number of parameters
 
   switch (proj) {
@@ -265,7 +265,7 @@ uInt Projection::nParameters(Projection::Type proj) {
   return 0;  // NOTREACHED
 }
 
-uInt Projection::nMinParameters(Projection::Type proj) {
+unsigned int Projection::nMinParameters(Projection::Type proj) {
   // return minimum number of parameters
 
   switch (proj) {
@@ -329,11 +329,11 @@ uInt Projection::nMinParameters(Projection::Type proj) {
   return 0;  // NOTREACHED
 }
 
-bool Projection::near(const Projection &other, Double tol) const {
+bool Projection::near(const Projection &other, double tol) const {
   if (which_p != other.which_p) return false;
   if (parameters_p.nelements() != other.parameters_p.nelements()) return false;
 
-  for (uInt i = 0; i < parameters_p.nelements(); i++) {
+  for (unsigned int i = 0; i < parameters_p.nelements(); i++) {
     if (!casacore::near(parameters_p(i), other.parameters_p(i), tol)) return false;
   }
 
@@ -346,9 +346,9 @@ bool Projection::isZenithal(Projection::Type proj) {
 }
 
 void Projection::validate(const bool verbose) {
-  uInt requiredSize = nParameters(which_p);
-  uInt minSize = nMinParameters(which_p);
-  uInt actualSize = parameters_p.nelements();
+  unsigned int requiredSize = nParameters(which_p);
+  unsigned int minSize = nMinParameters(which_p);
+  unsigned int actualSize = parameters_p.nelements();
   if (actualSize < minSize) {
     throw(
         AipsError("Projection::validate() - there are missing"
@@ -366,7 +366,7 @@ void Projection::validate(const bool verbose) {
       case AZP:
       case SIN:
       case ZPN:
-        for (uInt i = actualSize; i < requiredSize; i++) {
+        for (unsigned int i = actualSize; i < requiredSize; i++) {
           parameters_p(i) = 0.;  // all default to 0
         }
         break;
@@ -375,7 +375,7 @@ void Projection::validate(const bool verbose) {
         break;
       case CYP:
       case CEA:
-        for (uInt i = actualSize; i < requiredSize; i++) {
+        for (unsigned int i = actualSize; i < requiredSize; i++) {
           parameters_p(i) = 1.;  // all default to 1.
         }
         break;

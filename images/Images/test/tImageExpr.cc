@@ -42,20 +42,20 @@
 
 void testExpr() {
   IPosition shape(2, 5, 10);
-  Array<Float> arr(shape);
+  Array<float> arr(shape);
   indgen(arr);
   {
     // Create the images.
-    PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr_tmp.img1");
+    PagedImage<float> im1(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr_tmp.img1");
     im1.put(arr);
-    PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr_tmp.img2");
+    PagedImage<float> im2(shape, CoordinateUtil::defaultCoords2D(), "tImageExpr_tmp.img2");
     im2.put(arr - float(5));
   }
   {
     // Form an expression and save it.
     String expr("'tImageExpr_tmp\\.img1' + tImageExpr_tmp.img2 + 5");
     LatticeExprNode node(ImageExprParse::command(expr));
-    ImageExpr<Float> img(node, expr);
+    ImageExpr<float> img(node, expr);
     AlwaysAssertExit(allEQ(img.get(), arr + arr));
     AlwaysAssertExit(!img.isPersistent());
     TableRecord rec;
@@ -70,7 +70,7 @@ void testExpr() {
   {
     // Reopen the expression from the file.
     LatticeBase* latt = ImageOpener::openImageExpr("tImageExpr_tmp.imgexpr");
-    ImageExpr<Float>* img = dynamic_cast<ImageExpr<Float>*>(latt);
+    ImageExpr<float>* img = dynamic_cast<ImageExpr<float>*>(latt);
     AlwaysAssertExit(img != 0);
     AlwaysAssertExit(allEQ(img->get(), arr + arr));
     AlwaysAssertExit(img->isPersistent());
@@ -85,7 +85,7 @@ void testExpr() {
     // Form an expression and save it.
     String expr("tImageExpr_tmp.imgexpr + tImageExpr_tmp.img1");
     LatticeExprNode node(ImageExprParse::command(expr));
-    ImageExpr<Float> img(node, expr);
+    ImageExpr<float> img(node, expr);
     AlwaysAssertExit(allEQ(img.get(), arr + arr + arr));
     AlwaysAssertExit(!img.isPersistent());
     img.save("tImageExpr_tmp:imgexpr2");
@@ -94,7 +94,7 @@ void testExpr() {
   {
     // Reopen the 2nd expression from the file.
     LatticeBase* latt = ImageOpener::openImageExpr("tImageExpr_tmp:imgexpr2");
-    ImageExpr<Float>* img = dynamic_cast<ImageExpr<Float>*>(latt);
+    ImageExpr<float>* img = dynamic_cast<ImageExpr<float>*>(latt);
     AlwaysAssertExit(img != 0);
     AlwaysAssertExit(allEQ(img->get(), arr + arr + arr));
     AlwaysAssertExit(img->isPersistent());
@@ -108,7 +108,7 @@ void testExpr() {
     cout << "try as expr" << endl;
     // Reopen as an expression from the file. Escape the colon.
     LatticeBase* latt = ImageOpener::openExpr("float('tImageExpr_tmp\\:imgexpr2')", nodes);
-    ImageExpr<Float>* img = dynamic_cast<ImageExpr<Float>*>(latt);
+    ImageExpr<float>* img = dynamic_cast<ImageExpr<float>*>(latt);
     AlwaysAssertExit(img != 0);
     AlwaysAssertExit(allEQ(img->get(), arr + arr + arr));
     AlwaysAssertExit(!img->isPersistent());

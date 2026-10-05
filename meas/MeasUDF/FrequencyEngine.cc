@@ -43,7 +43,7 @@ FrequencyEngine::FrequencyEngine()
 
 FrequencyEngine::~FrequencyEngine() {}
 
-void FrequencyEngine::handleFrequency(vector<TENShPtr>& args, uInt& argnr) {
+void FrequencyEngine::handleFrequency(vector<TENShPtr>& args, unsigned int& argnr) {
   // Initialize type to unknown.
   itsRefType = MFrequency::N_Types;
   // Check if the value is a double.
@@ -51,7 +51,7 @@ void FrequencyEngine::handleFrequency(vector<TENShPtr>& args, uInt& argnr) {
     throw AipsError("Invalid frequency given in a MEAS function");
   }
   // Values can be given as [t1,t2,...],reftype
-  uInt nargnr = argnr + 1;
+  unsigned int nargnr = argnr + 1;
   // See if there is a reference type.
   if (args.size() > nargnr && args[nargnr]->dataType() == TableExprNodeRep::NTString) {
     if (handleMeasType(args[nargnr], false)) {
@@ -68,7 +68,7 @@ void FrequencyEngine::handleFrequency(vector<TENShPtr>& args, uInt& argnr) {
 
 void FrequencyEngine::handleValues(TableExprNode& operand, const TableExprId& id,
                                    Array<MFrequency>& frequencies) {
-  Array<Double> values = operand.getDoubleAS(id).array();
+  Array<double> values = operand.getDoubleAS(id).array();
   const IPosition& shape = values.shape();
   frequencies.resize(shape);
   Unit unit = operand.unit();
@@ -77,9 +77,9 @@ void FrequencyEngine::handleValues(TableExprNode& operand, const TableExprId& id
   }
   Quantity q(0, unit);
   bool delIt;
-  const Double* valVec = values.getStorage(delIt);
+  const double* valVec = values.getStorage(delIt);
   MFrequency* freqVec = frequencies.data();
-  for (uInt i = 0; i < frequencies.size(); ++i) {
+  for (unsigned int i = 0; i < frequencies.size(); ++i) {
     q.setValue(valVec[i]);
     freqVec[i] = MFrequency(q, itsRefType);
   }
@@ -146,7 +146,7 @@ Array<MFrequency> FrequencyEngine::getFrequencies(const TableExprId& id) {
   return freqs;
 }
 
-Array<Double> FrequencyEngine::getArrayDouble(const TableExprId& id, int type) {
+Array<double> FrequencyEngine::getArrayDouble(const TableExprId& id, int type) {
   DebugAssert(id.byRow(), AipsError);
   Array<MFrequency> res(getFrequencies(id));
   // Get directions, epochs, positions, radvels and dopplers if given.
@@ -170,7 +170,7 @@ Array<Double> FrequencyEngine::getArrayDouble(const TableExprId& id, int type) {
   if (itsDopplerEngine) {
     dop.reference(itsDopplerEngine->getDopplers(id));
   }
-  Array<Double> out;
+  Array<double> out;
   if (!(res.empty() || dir.empty() || eps.empty() || pos.empty() || rv.empty() || dop.empty())) {
     IPosition shape;
     // Only add the other axes if one of them has multiple values.
@@ -225,7 +225,7 @@ Array<Double> FrequencyEngine::getArrayDouble(const TableExprId& id, int type) {
                    ++resIter) {
                 itsConverter.setModel(*resIter);
                 if (itsDopplerEngine) {
-                  Vector<Double> freqs(1, resIter->getValue().getValue());
+                  Vector<double> freqs(1, resIter->getValue().getValue());
                   if (type == FrequencyUDF::SHIFT) {
                     // Shift has to use a BETA Doppler, so convert.
                     // Note that it does the same as MFrequency::fromDoppler.

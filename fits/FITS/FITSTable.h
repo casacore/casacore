@@ -196,13 +196,13 @@ class FITSTable : public FITSTabular {
   // this creates an invalid (isValid() return false) FITSTable
   // Its primary purpose is so that FITSTables can be created before
   // the file name is known.  reopen() is then used to open the file.
-  FITSTable(uInt whichHDU = 1, bool allKeywords = false);
+  FITSTable(unsigned int whichHDU = 1, bool allKeywords = false);
 
   // 0-relative HDU. It can never be zero by the FITS rules.
   // allKeywords is passed to FITSTabular::keywordsFromHDU
   // See the documentation for that function for a list of
   // excluded keywords when allKeywords is false.
-  FITSTable(const String &fileName, uInt whichHDU = 1, bool allKeywords = false);
+  FITSTable(const String &fileName, unsigned int whichHDU = 1, bool allKeywords = false);
   ~FITSTable() { clear_self(); }
 
   // Has the end of file been reached yet
@@ -227,17 +227,17 @@ class FITSTable : public FITSTabular {
   // single FITS tables know how many rows there are
   // unlike general FITSTabulars, which may not know
   // (e.g. if it is a FITSMultiTable)
-  virtual uInt nrow() const { return raw_table_p->nrows(); }
+  virtual unsigned int nrow() const { return raw_table_p->nrows(); }
 
   // these tables should also know where they are
-  virtual Int rownr() const { return row_nr_p; }
+  virtual int rownr() const { return row_nr_p; }
 
   // and it should be possible to move to a desired row
   // the rownr() member can be used to verify that a move
   // was successful - this will happen if the requested row
   // was < rownr() or >= nrow() - i.e. movements backwards or
   // beyond the end of the file are not possible.
-  virtual void move(Int torow);
+  virtual void move(int torow);
 
   // the keywords from the Primary HDU
   virtual const TableRecord &primaryKeywords() const { return primaryKeys_p; }
@@ -270,9 +270,9 @@ class FITSTable : public FITSTabular {
 
   String name_p;
 
-  uInt hdu_nr_p;
+  unsigned int hdu_nr_p;
 
-  Int row_nr_p;
+  int row_nr_p;
   BinaryTableExtension *raw_table_p;
   FitsInput *io_p;
   TableRecord keywords_p;
@@ -285,13 +285,13 @@ class FITSTable : public FITSTabular {
   Record subStrShapes_p;
   bool allKeys_p;
   // One per field in row_p, of the right type. i.e. casting required.
-  uInt nfields_p;
+  unsigned int nfields_p;
   Block<void *> row_fields_p;
-  Block<Int> field_types_p;
+  Block<int> field_types_p;
   Block<bool> promoted_p;
-  Block<Int> tdims_p;
+  Block<int> tdims_p;
   // these are used by VADESC columns
-  Block<Int> vatypes_p;
+  Block<int> vatypes_p;
   Block<void *> vaptr_p;
   // I had trouble making a Block<VADescFitsField>
   VADescFitsField *va_p;
@@ -366,7 +366,7 @@ class FITSTableWriter {
   // variableShapes appears as the last argument for backwards compatibility with
   // existing code.
   FITSTableWriter(FitsOutput *file, const RecordDesc &description, const Record &maxLengths,
-                  uInt nrows, const Record &extraKeywords, const Record &units,
+                  unsigned int nrows, const Record &extraKeywords, const Record &units,
                   bool freeOutput = true, const Record &variableShapes = Record());
 
   ~FITSTableWriter();
@@ -392,7 +392,7 @@ class FITSTableWriter {
 
   bool delete_writer_p;
   FitsOutput *writer_p;
-  uInt nrows_written_p;
+  unsigned int nrows_written_p;
   BinaryTableExtension *bintable_p;
   Record row_p;
   Block<FITSFieldCopier *> copiers_p;
@@ -439,7 +439,7 @@ class FITSGroupWriter {
   // deleted by the destructor.  You might not want this to happen if
   // you are going to write any extensions to the same fits file.  You can get the
   // FitsOutput used here from write()
-  FITSGroupWriter(const String &fileName, const RecordDesc &description, uInt nrows,
+  FITSGroupWriter(const String &fileName, const RecordDesc &description, unsigned int nrows,
                   const Record &extraKeywords, bool freeOutput = true);
 
   ~FITSGroupWriter();
@@ -461,10 +461,10 @@ class FITSGroupWriter {
 
   bool delete_writer_p;
   FitsOutput *writer_p;
-  uInt nrows_written_p, nrows_total_p;
-  PrimaryGroup<Float> *group_p;
+  unsigned int nrows_written_p, nrows_total_p;
+  PrimaryGroup<float> *group_p;
   Record row_p;
-  Int error_count_p;
+  int error_count_p;
 
   // Checks error status of writer_p and group_p. Cleans up and throws an exception if bad.
   void check_error(const char *extra_info = 0);

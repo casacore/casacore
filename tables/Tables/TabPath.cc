@@ -46,7 +46,7 @@ TabPath::TabPath(const String& dir) : tabDir_p(10) {
 TabPath::~TabPath() { ; }
 
 bool TabPath::found(const String& name, String& dir) const {
-  uInt dirnr;
+  unsigned int dirnr;
   bool sw = false;
   for (dirnr = 0; dirnr < nrDir_p; dirnr++) {
     if (access((tabDir_p[dirnr] + name).c_str(), R_OK) == 0) {
@@ -62,9 +62,9 @@ bool TabPath::found(const String& name, String& dir) const {
 // <thrown>
 //   <li> indexError<Int>
 // </thrown>
-const String& TabPath::dir(uInt dirnr) const {
+const String& TabPath::dir(unsigned int dirnr) const {
   if (dirnr >= nrDir_p) {
-    throw(indexError<Int>((Int)dirnr, "TabPath"));
+    throw(indexError<int>((int)dirnr, "TabPath"));
   }
   return tabDir_p[dirnr];
 }

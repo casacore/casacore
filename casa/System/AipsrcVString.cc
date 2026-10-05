@@ -39,11 +39,11 @@ bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword) {
   if (x) {
     const Regex ws("[ 	]+");
     RegexReplaceAll(res, ws, " ");
-    Int m = std::count(res.begin(), res.end(), ' ') + 1;
+    int m = std::count(res.begin(), res.end(), ' ') + 1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<String>(m);
-    for (Int i = 0; i < m; i++) {
+    for (int i = 0; i < m; i++) {
       value(i) = nres[i];
     }
     delete[] nres;
@@ -56,33 +56,33 @@ bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword,
   return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcVector<String>::registerRC(const String &keyword, const Vector<String> &deflt) {
+unsigned int AipsrcVector<String>::registerRC(const String &keyword, const Vector<String> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const unsigned int n = Aipsrc::registerRC(keyword, ntlst);
   if (n > tlst.size()) tlst.resize(n);
   find(tlst[n - 1], keyword, deflt);
   return n;
 }
 
-const Vector<String> AipsrcVector<String>::get(uInt keyword) {
+const Vector<String> AipsrcVector<String>::get(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword - 1];
 }
 
-void AipsrcVector<String>::set(uInt keyword, const Vector<String> &deflt) {
+void AipsrcVector<String>::set(unsigned int keyword, const Vector<String> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   tlst[keyword - 1].resize(deflt.nelements());
   tlst[keyword - 1] = deflt;
 }
 
-void AipsrcVector<String>::save(uInt keyword) {
+void AipsrcVector<String>::save(unsigned int keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;
-  const Int n = (tlst[keyword - 1]).nelements();
-  for (Int i = 0; i < n; i++) oss << " " << (tlst[keyword - 1])(i);
+  const int n = (tlst[keyword - 1]).nelements();
+  for (int i = 0; i < n; i++) oss << " " << (tlst[keyword - 1])(i);
   Aipsrc::save((ntlst)[keyword - 1], oss.str());
 }
 

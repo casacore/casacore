@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Statics
-uInt MCuvw::ToRef_p[N_Routes][3] = {
+unsigned int MCuvw::ToRef_p[N_Routes][3] = {
     {Muvw::GALACTIC, Muvw::J2000, 0},    {Muvw::GALACTIC, Muvw::B1950, 2},
     {Muvw::J2000, Muvw::GALACTIC, 0},    {Muvw::B1950, Muvw::GALACTIC, 2},
     {Muvw::J2000, Muvw::B1950, 2},       {Muvw::J2000, Muvw::B1950_VLA, 2},
@@ -59,7 +59,7 @@ uInt MCuvw::ToRef_p[N_Routes][3] = {
     {Muvw::ITRF, Muvw::HADEC, 0},        {Muvw::HADEC, Muvw::ITRF, 0},
     {Muvw::TOPO, Muvw::HADEC, 0},        {Muvw::TOPO, Muvw::APP, 0},
     {Muvw::ICRS, Muvw::J2000, 0},        {Muvw::J2000, Muvw::ICRS, 0}};
-uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
+unsigned int MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
 std::once_flag MCuvw::theirInitOnceFlag;
 
 // # Constructors
@@ -73,10 +73,10 @@ MCuvw::~MCuvw() { clearConvert(); }
 // # Member functions
 
 void MCuvw::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outref) {
-  Int iin = inref.getType();
-  Int iout = outref.getType();
+  int iin = inref.getType();
+  int iout = outref.getType();
   if (iin != iout) {
-    Int tmp;
+    int tmp;
     while (iin != iout) {
       tmp = FromTo_p[iin][iout];
       iin = ToRef_p[tmp][1];
@@ -89,7 +89,7 @@ void MCuvw::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &outr
 void MCuvw::clearConvert() {}
 
 // # Conversion routines
-void MCuvw::initConvert(uInt which, MConvertBase &mc) {
+void MCuvw::initConvert(unsigned int which, MConvertBase &mc) {
   if (false) initConvert(which, mc);  // Stop warning
 
   switch (which) {
@@ -184,13 +184,13 @@ void MCuvw::doConvert(MeasValue &in, MRBase &inref, MRBase &outref, const MConve
 }
 
 void MCuvw::doConvert(MVuvw &in, MRBase &inref, MRBase &outref, const MConvertBase &mc) {
-  Double g2;
+  double g2;
   // Planetary aberration factor
-  Double lengthP = 0;
+  double lengthP = 0;
 
   measMath.initFrame(inref, outref);
 
-  for (Int i = 0; i < mc.nMethod(); i++) {
+  for (int i = 0; i < mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
       case HADEC_ITRF:
         getAPP();

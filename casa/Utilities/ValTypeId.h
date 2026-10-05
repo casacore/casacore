@@ -58,13 +58,13 @@ inline String valDataTypeId(const T*) {
   return T::dataTypeId();
 }
 inline String valDataTypeId(const bool* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const Char* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const uChar* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const Short* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const uShort* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const Int* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const uInt* obj) { return ValType::getTypeStr(obj); }
-inline String valDataTypeId(const Int64* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const char* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const unsigned char* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const short* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const unsigned short* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const int* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const unsigned int* obj) { return ValType::getTypeStr(obj); }
+inline String valDataTypeId(const int64_t* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const float* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const double* obj) { return ValType::getTypeStr(obj); }
 inline String valDataTypeId(const Complex* obj) { return ValType::getTypeStr(obj); }
