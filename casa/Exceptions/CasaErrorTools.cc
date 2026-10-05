@@ -51,7 +51,7 @@ String CasaErrorTools::replaceStackAddresses(const String& stackTrace) {
 
 namespace {
 
-std::map<casacore::String, casacore::uint64_t> sharedObjectMap;
+std::map<casacore::String, uint64_t> sharedObjectMap;
 
 extern "C" int callback(struct dl_phdr_info *info, size_t, void *) {
   sharedObjectMap[info->dlpi_name] = info->dlpi_addr;
@@ -100,11 +100,11 @@ String CasaErrorTools::replaceStackAddresses(const String &stackTrace) {
 
   // Break the stack trace into lines by splitting at the '\n'
 
-  string lines[500];
+  std::string lines[500];
   int nSplits = split(stackTrace, lines, 500, "\n");
 
   for (int i = 0; i < nSplits; i++) {
-    string &line = lines[i];
+    std::string &line = lines[i];
     String cleanedLine;
 
     try {
@@ -148,7 +148,7 @@ String CasaErrorTools::replaceStackAddresses(const String &stackTrace) {
 
       char offsetInHex[128];
 
-      snprintf(offsetInHex, 127, "0x%llx", offset);
+      snprintf(offsetInHex, 127, "0x%llx", static_cast<unsigned long long>(offset));
 
       cleanedLine = line.substr(0, leftSquare) + "[+" + offsetInHex + "]";
     } catch (bool) {
