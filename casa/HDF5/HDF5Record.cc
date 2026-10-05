@@ -440,8 +440,8 @@ void HDF5Record::writeArrString(hid_t groupHid, const String& name, const Array<
   IPosition shape = value.shape();
   if (shape[0] > 4000) {
     LogIO os;
-    os << "HDF5Record: Cut off size of attribute " + std::string(name) + " from " + std::to_string(shape[0]) +
-              " to 4000 values"
+    os << "HDF5Record: Cut off size of attribute " + std::string(name) + " from " +
+              std::to_string(shape[0]) + " to 4000 values"
        << LogIO::NORMAL << LogIO::POST;
     shape[0] = 4000;
   }
