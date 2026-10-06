@@ -885,8 +885,8 @@ void LatticeStatistics<T>::_doStatsLoop(unsigned int nsets,
   const auto setSize = subLat.size();
   const auto nMaxThreads = OMP::nMaxThreads();
   const auto nDPMaxThreads =
-      std::min<size_t>(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
-  const auto nArrMaxThreads = std::min<size_t>(nMaxThreads, nsets);
+      std::min<ssize_t>(nMaxThreads, setSize / ClassicalStatisticsData::BLOCK_SIZE + 1);
+  const auto nArrMaxThreads = std::min<ssize_t>(nMaxThreads, nsets);
   auto computed = false;
   const auto forceUsingArrays =
       _latticeStatsAlgortihm && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
