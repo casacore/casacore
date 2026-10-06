@@ -52,7 +52,7 @@ const unsigned int nchan = 8;
 // # Forward Declarations.
 class LofarColumn;
 
-class LofarStMan : public DataManager {
+class LofarStMan final : public DataManager {
  public:
   // Create a Lofar storage manager with the given name.
   // If no name is used, it is set to "LofarStMan"
@@ -62,34 +62,34 @@ class LofarStMan : public DataManager {
   // The specifications are part of the record (as created by dataManagerSpec).
   LofarStMan(const String& dataManagerName, const Record& spec);
 
-  ~LofarStMan();
+  ~LofarStMan() override;
 
   // Clone this object.
-  virtual DataManager* clone() const override;
+  DataManager* clone() const override;
 
   // Get the type name of the data manager (i.e. LofarStMan).
-  virtual String dataManagerType() const override;
+  String dataManagerType() const override;
 
   // Get the name given to the storage manager (in the constructor).
-  virtual String dataManagerName() const override;
+  String dataManagerName() const override;
 
   // Record a record containing data manager specifications.
-  virtual Record dataManagerSpec() const override;
+  Record dataManagerSpec() const override;
 
   // The storage manager is not a regular one.
-  virtual bool isRegular() const override;
+  bool isRegular() const override;
 
   // The storage manager cannot add rows.
-  virtual bool canAddRow() const override;
+  bool canAddRow() const override;
 
   // The storage manager cannot delete rows.
-  virtual bool canRemoveRow() const override;
+  bool canRemoveRow() const override;
 
   // The storage manager can add columns, which does not really do something.
-  virtual bool canAddColumn() const override;
+  bool canAddColumn() const override;
 
   // Columns can be removed, but it does not do anything at all.
-  virtual bool canRemoveColumn() const override;
+  bool canRemoveColumn() const override;
 
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
@@ -112,66 +112,66 @@ class LofarStMan : public DataManager {
 
   // Flush and optionally fsync the data.
   // It does nothing, and returns false.
-  virtual bool flush(AipsIO&, bool doFsync) override;
+  bool flush(AipsIO&, bool doFsync) override;
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
-  virtual void create(unsigned int nrrow) override;
+  void create(unsigned int nrrow) override;
 
   // Open the storage manager file for an existing table.
   // Return the number of rows in the data file.
   // <group>
-  virtual void open(unsigned int nrrow, AipsIO&) override;  // # should never be called
-  virtual unsigned int open1(unsigned int nrrow, AipsIO&) override;
+  void open(unsigned int nrrow, AipsIO&) override;  // # should never be called
+  unsigned int open1(unsigned int nrrow, AipsIO&) override;
   // </group>
 
   // Prepare the columns.
-  virtual void prepare() override;
+  void prepare() override;
 
   // Resync the storage manager with the new file contents.
   // It does nothing.
   // <group>
-  virtual void resync(unsigned int nrrow) override;  // # should never be called
-  virtual unsigned int resync1(unsigned int nrrow) override;
+  void resync(unsigned int nrrow) override;  // # should never be called
+  unsigned int resync1(unsigned int nrrow) override;
   // </group>
 
   // Reopen the storage manager files for read/write.
   // It does nothing.
-  virtual void reopenRW() override;
+  void reopenRW() override;
 
   // The data manager will be deleted (because all its columns are
   // requested to be deleted).
   // So clean up the things needed (e.g. delete files).
-  virtual void deleteManager() override;
+  void deleteManager() override;
 
   // Add rows to the storage manager.
   // It cannot do it, so throws an exception.
-  virtual void addRow(unsigned int nrrow) override;
+  void addRow(unsigned int nrrow) override;
 
   // Delete a row from all columns.
   // It cannot do it, so throws an exception.
-  virtual void removeRow(unsigned int rowNr) override;
+  void removeRow(unsigned int rowNr) override;
 
   // Do the final addition of a column.
   // It won't do anything.
-  virtual void addColumn(DataManagerColumn*) override;
+  void addColumn(DataManagerColumn*) override;
 
   // Remove a column from the data file.
   // It won't do anything.
-  virtual void removeColumn(DataManagerColumn*) override;
+  void removeColumn(DataManagerColumn*) override;
 
   // Create a column in the storage manager on behalf of a table column.
   // The caller has to delete the newly created object.
   // <group>
   // Create a scalar column.
-  virtual DataManagerColumn* makeScalarColumn(const String& aName, int aDataType,
-                                              const String& aDataTypeID) override;
+  DataManagerColumn* makeScalarColumn(const String& aName, int aDataType,
+                                      const String& aDataTypeID) override;
   // Create a direct array column.
-  virtual DataManagerColumn* makeDirArrColumn(const String& aName, int aDataType,
-                                              const String& aDataTypeID) override;
+  DataManagerColumn* makeDirArrColumn(const String& aName, int aDataType,
+                                      const String& aDataTypeID) override;
   // Create an indirect array column.
-  virtual DataManagerColumn* makeIndArrColumn(const String& aName, int aDataType,
-                                              const String& aDataTypeID) override;
+  DataManagerColumn* makeIndArrColumn(const String& aName, int aDataType,
+                                      const String& aDataTypeID) override;
   // </group>
 
   // # Declare member variables.
@@ -184,11 +184,11 @@ class LofarStMan : public DataManager {
 class LofarColumn : public StManColumn {
  public:
   explicit LofarColumn(LofarStMan* parent, int dtype) : StManColumn(dtype), itsParent(parent) {}
-  virtual ~LofarColumn();
+  ~LofarColumn() override;
   // Most columns are not writable (only DATA is writable).
-  virtual bool isWritable() const override;
+  bool isWritable() const override;
   // Set column shape of fixed shape columns; it does nothing.
-  virtual void setShapeColumn(const IPosition& shape) override;
+  void setShapeColumn(const IPosition& shape) final override;
   // Prepare the column. By default it does nothing.
   virtual void prepareCol();
 
@@ -201,8 +201,8 @@ class LofarColumn : public StManColumn {
 class Ant1Column : public LofarColumn {
  public:
   explicit Ant1Column(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~Ant1Column();
-  virtual void getIntV(unsigned int rowNr, int* dataPtr) override;
+  ~Ant1Column() override;
+  void getIntV(unsigned int rowNr, int* dataPtr) override;
 };
 
 // <summary>ANTENNA2 column in the LOFAR Storage Manager.</summary>
@@ -210,8 +210,8 @@ class Ant1Column : public LofarColumn {
 class Ant2Column : public LofarColumn {
  public:
   explicit Ant2Column(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~Ant2Column();
-  virtual void getIntV(unsigned int rowNr, int* dataPtr) override;
+  ~Ant2Column() override;
+  void getIntV(unsigned int rowNr, int* dataPtr) override;
 };
 
 // <summary>TIME and TIME_CENTROID column in the LOFAR Storage Manager.</summary>
@@ -219,8 +219,8 @@ class Ant2Column : public LofarColumn {
 class TimeColumn : public LofarColumn {
  public:
   explicit TimeColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~TimeColumn();
-  virtual void getDoubleV(unsigned int rowNr, double* dataPtr) override;
+  ~TimeColumn() override;
+  void getdoubleV(unsigned int rowNr, double* dataPtr) override;
 };
 
 // <summary>INTERVAL and EXPOSURE column in the LOFAR Storage Manager.</summary>
@@ -228,8 +228,8 @@ class TimeColumn : public LofarColumn {
 class IntervalColumn : public LofarColumn {
  public:
   explicit IntervalColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~IntervalColumn();
-  virtual void getDoubleV(unsigned int rowNr, double* dataPtr) override;
+  ~IntervalColumn() override;
+  void getdoubleV(unsigned int rowNr, double* dataPtr) override;
 };
 
 // <summary>All columns in the LOFAR Storage Manager with value 0.</summary>
@@ -237,8 +237,8 @@ class IntervalColumn : public LofarColumn {
 class ZeroColumn : public LofarColumn {
  public:
   explicit ZeroColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~ZeroColumn();
-  virtual void getIntV(unsigned int rowNr, int* dataPtr) override;
+  ~ZeroColumn() override;
+  void getIntV(unsigned int rowNr, int* dataPtr) override;
 
  private:
   int itsValue;
@@ -249,8 +249,8 @@ class ZeroColumn : public LofarColumn {
 class FalseColumn : public LofarColumn {
  public:
   explicit FalseColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~FalseColumn();
-  virtual void getBoolV(unsigned int rowNr, bool* dataPtr) override;
+  ~FalseColumn() override;
+  void getBoolV(unsigned int rowNr, bool* dataPtr) override;
 
  private:
   bool itsValue;
@@ -261,10 +261,10 @@ class FalseColumn : public LofarColumn {
 class UvwColumn : public LofarColumn {
  public:
   explicit UvwColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~UvwColumn();
+  ~UvwColumn() override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
-  virtual void getArraydoubleV(unsigned int rowNr, Array<double>* dataPtr) override;
+  IPosition shape(unsigned int rownr) override;
+  void getArraydoubleV(unsigned int rowNr, Array<double>* dataPtr) override;
 };
 
 // <summary>DATA column in the LOFAR Storage Manager.</summary>
@@ -272,12 +272,12 @@ class UvwColumn : public LofarColumn {
 class DataColumn : public LofarColumn {
  public:
   explicit DataColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~DataColumn();
-  virtual bool isWritable() const override;
+  ~DataColumn() override;
+  bool isWritable() const override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
-  virtual void getArrayComplexV(unsigned int rowNr, Array<Complex>* dataPtr) override;
-  virtual void putArrayComplexV(unsigned int rowNr, const Array<Complex>* dataPtr) override;
+  IPosition shape(unsigned int rownr) override;
+  void getArrayComplexV(unsigned int rowNr, Array<Complex>* dataPtr) override;
+  void putArrayComplexV(unsigned int rowNr, const Array<Complex>* dataPtr) override;
 };
 
 // <summary>FLAG column in the LOFAR Storage Manager.</summary>
@@ -285,10 +285,10 @@ class DataColumn : public LofarColumn {
 class FlagColumn : public LofarColumn {
  public:
   explicit FlagColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~FlagColumn();
+  ~FlagColumn() override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
-  virtual void getArrayBoolV(unsigned int rowNr, Array<bool>* dataPtr) override;
+  IPosition shape(unsigned int rownr) override;
+  void getArrayBoolV(unsigned int rowNr, Array<bool>* dataPtr) override;
 };
 
 // <summary>WEIGHT column in the LOFAR Storage Manager.</summary>
@@ -296,10 +296,10 @@ class FlagColumn : public LofarColumn {
 class WeightColumn : public LofarColumn {
  public:
   explicit WeightColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~WeightColumn();
+  ~WeightColumn() override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
-  virtual void getArrayfloatV(unsigned int rowNr, Array<float>* dataPtr) override;
+  IPosition shape(unsigned int rownr) override;
+  void getArrayfloatV(unsigned int rowNr, Array<float>* dataPtr) override;
 };
 
 // <summary>SIGMA column in the LOFAR Storage Manager.</summary>
@@ -307,10 +307,10 @@ class WeightColumn : public LofarColumn {
 class SigmaColumn : public LofarColumn {
  public:
   explicit SigmaColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~SigmaColumn();
+  ~SigmaColumn() override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
-  virtual void getArrayfloatV(unsigned int rowNr, Array<float>* dataPtr) override;
+  IPosition shape(unsigned int rownr) override;
+  void getArrayfloatV(unsigned int rowNr, Array<float>* dataPtr) override;
 };
 
 // <summary>WEIGHT_SPECTRUM column in the LOFAR Storage Manager.</summary>
@@ -318,10 +318,10 @@ class SigmaColumn : public LofarColumn {
 class WSpectrumColumn : public LofarColumn {
  public:
   explicit WSpectrumColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~WSpectrumColumn();
+  ~WSpectrumColumn() override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
-  virtual void getArrayfloatV(unsigned int rowNr, Array<float>* dataPtr) override;
+  IPosition shape(unsigned int rownr) override;
+  void getArrayfloatV(unsigned int rowNr, Array<float>* dataPtr) override;
 };
 
 // <summary>FLAG_CATEGORY column in the LOFAR Storage Manager.</summary>
@@ -329,11 +329,11 @@ class WSpectrumColumn : public LofarColumn {
 class FlagCatColumn : public LofarColumn {
  public:
   explicit FlagCatColumn(LofarStMan* parent, int dtype) : LofarColumn(parent, dtype) {}
-  virtual ~FlagCatColumn();
+  ~FlagCatColumn() override;
   using LofarColumn::isShapeDefined;
-  virtual bool isShapeDefined(unsigned int rownr) override;
+  bool isShapeDefined(unsigned int rownr) override;
   using LofarColumn::shape;
-  virtual IPosition shape(unsigned int rownr) override;
+  IPosition shape(unsigned int rownr) override;
 };
 
 LofarColumn::~LofarColumn() {}
@@ -354,12 +354,12 @@ void Ant2Column::getIntV(unsigned int rownr, int* dataPtr) {
 }
 
 TimeColumn::~TimeColumn() {}
-void TimeColumn::getDoubleV(unsigned int rownr, double* dataPtr) {
+void TimeColumn::getdoubleV(unsigned int rownr, double* dataPtr) {
   *dataPtr = 1 + 2 * (rownr / (nant * nant));
 }
 
 IntervalColumn::~IntervalColumn() {}
-void IntervalColumn::getDoubleV(unsigned int, double* dataPtr) { *dataPtr = 2; }
+void IntervalColumn::getdoubleV(unsigned int, double* dataPtr) { *dataPtr = 2; }
 
 ZeroColumn::~ZeroColumn() {}
 void ZeroColumn::getIntV(unsigned int, int* dataPtr) {

@@ -68,7 +68,7 @@ class ArrayColumn;
 // It is tested by tVirtColEng.cc.
 // </motivation>
 
-class DummyVirtualScalar : public VirtualScalarColumn<double> {
+class DummyVirtualScalar final : public VirtualScalarColumn<double> {
  public:
   // Construct it with the given scale factor.
   DummyVirtualScalar(DummyVirtualEngine*, double scale);
@@ -78,7 +78,7 @@ class DummyVirtualScalar : public VirtualScalarColumn<double> {
   DummyVirtualScalar(const DummyVirtualScalar&);
 
   // Destructor is mandatory.
-  ~DummyVirtualScalar();
+  ~DummyVirtualScalar() override;
 
   // Assignment is not needed and therefore forbidden.
   DummyVirtualScalar& operator=(const DummyVirtualScalar&) = delete;
@@ -101,22 +101,16 @@ class DummyVirtualScalar : public VirtualScalarColumn<double> {
  private:
   // The column may be writable, so we must override the default
   // implementation in the base class VirtualScalarColumn.
-  bool isWritable() const;
+  bool isWritable() const override;
 
   // Get a value.
   //+grp
-  void get(rownr_t rownr, double& data);
-  // We also implement the getDoubleV, because that saves a
-  // virtual function call.
-  void getDoubleV(rownr_t rownr, double* dataPtr);
+  void get(rownr_t rownr, double& data) override;
   //-grp
 
   // Put a value.
   //+grp
-  void put(rownr_t rownr, const double& data);
-  // We also implement the putDoubleV, because that saves a
-  // virtual function call.
-  void putDoubleV(rownr_t rownr, const double* dataPtr);
+  void put(rownr_t rownr, const double& data) override;
   //-grp
 
   // # We could also define the get/putBlockDoubleV functions, but

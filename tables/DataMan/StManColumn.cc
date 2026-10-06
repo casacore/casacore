@@ -138,21 +138,21 @@ void StManColumn::getuIntV(unsigned int, unsigned int*) { throwInvalidOp("getuIn
 
 void StManColumn::putuIntV(unsigned int, const unsigned int*) { throwInvalidOp("putuIntV"); }
 
-void StManColumn::getfloat(rownr_t rownr, float* dataPtr) { getFloatV(rownr, dataPtr); }
+void StManColumn::getfloat(rownr_t rownr, float* dataPtr) { getfloatV(rownr, dataPtr); }
 
-void StManColumn::putfloat(rownr_t rownr, const float* dataPtr) { putFloatV(rownr, dataPtr); }
+void StManColumn::putfloat(rownr_t rownr, const float* dataPtr) { putfloatV(rownr, dataPtr); }
 
-void StManColumn::getFloatV(unsigned int, float*) { throwInvalidOp("getFloatV"); }
+void StManColumn::getfloatV(unsigned int, float*) { throwInvalidOp("getfloatV"); }
 
-void StManColumn::putFloatV(unsigned int, const float*) { throwInvalidOp("putFloatV"); }
+void StManColumn::putfloatV(unsigned int, const float*) { throwInvalidOp("putfloatV"); }
 
-void StManColumn::getdouble(rownr_t rownr, double* dataPtr) { getDoubleV(rownr, dataPtr); }
+void StManColumn::getdouble(rownr_t rownr, double* dataPtr) { getdoubleV(rownr, dataPtr); }
 
-void StManColumn::putdouble(rownr_t rownr, const double* dataPtr) { putDoubleV(rownr, dataPtr); }
+void StManColumn::putdouble(rownr_t rownr, const double* dataPtr) { putdoubleV(rownr, dataPtr); }
 
-void StManColumn::getDoubleV(unsigned int, double*) { throwInvalidOp("getDoubleV"); }
+void StManColumn::getdoubleV(unsigned int, double*) { throwInvalidOp("getdoubleV"); }
 
-void StManColumn::putDoubleV(unsigned int, const double*) { throwInvalidOp("putDoubleV"); }
+void StManColumn::putdoubleV(unsigned int, const double*) { throwInvalidOp("putdoubleV"); }
 
 void StManColumn::getComplex(rownr_t rownr, Complex* dataPtr) { getComplexV(rownr, dataPtr); }
 
