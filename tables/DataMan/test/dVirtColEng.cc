@@ -145,15 +145,9 @@ bool DummyVirtualScalar::isWritable() const {
 }
 
 void DummyVirtualScalar::get(rownr_t rownr, double& data) { data = scale_p * (*column_p)(rownr); }
-void DummyVirtualScalar::getDoubleV(rownr_t rownr, double* dataPtr) {
-  *dataPtr = scale_p * (*column_p)(rownr);
-}
 
 void DummyVirtualScalar::put(rownr_t rownr, const double& data) {
   column_p->put(rownr, int(data / scale_p));
-}
-void DummyVirtualScalar::putDoubleV(rownr_t rownr, const double* dataPtr) {
-  column_p->put(rownr, int(*dataPtr / scale_p));
 }
 
 DummyVirtualArray::DummyVirtualArray(DummyVirtualEngine* dve, double scale)

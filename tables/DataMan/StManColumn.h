@@ -287,8 +287,8 @@ class StManColumn : public StManColumnBase {
   virtual void getuShortV(unsigned int rownr, unsigned short* dataPtr);
   virtual void getIntV(unsigned int rownr, int* dataPtr);
   virtual void getuIntV(unsigned int rownr, unsigned int* dataPtr);
-  virtual void getFloatV(unsigned int rownr, float* dataPtr);
-  virtual void getDoubleV(unsigned int rownr, double* dataPtr);
+  virtual void getfloatV(unsigned int rownr, float* dataPtr);
+  virtual void getdoubleV(unsigned int rownr, double* dataPtr);
   virtual void getComplexV(unsigned int rownr, Complex* dataPtr);
   virtual void getDComplexV(unsigned int rownr, DComplex* dataPtr);
   virtual void getStringV(unsigned int rownr, String* dataPtr);
@@ -302,8 +302,8 @@ class StManColumn : public StManColumnBase {
   virtual void putuShortV(unsigned int rownr, const unsigned short* dataPtr);
   virtual void putIntV(unsigned int rownr, const int* dataPtr);
   virtual void putuIntV(unsigned int rownr, const unsigned int* dataPtr);
-  virtual void putFloatV(unsigned int rownr, const float* dataPtr);
-  virtual void putDoubleV(unsigned int rownr, const double* dataPtr);
+  virtual void putfloatV(unsigned int rownr, const float* dataPtr);
+  virtual void putdoubleV(unsigned int rownr, const double* dataPtr);
   virtual void putComplexV(unsigned int rownr, const Complex* dataPtr);
   virtual void putDComplexV(unsigned int rownr, const DComplex* dataPtr);
   virtual void putStringV(unsigned int rownr, const String* dataPtr);
