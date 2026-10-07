@@ -83,3 +83,4 @@ INT       ({WHITE}{DIGIT}+{WHITE})
 {WHITE}   { msObservationGramPosition() += yyleng;} /* Eat white spaces */
 .         { msObservationGramPosition() += yyleng;return MSObservationGramtext[0];}
 %%
+#pragma GCC diagnostic pop

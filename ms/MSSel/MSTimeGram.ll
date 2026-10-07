@@ -121,3 +121,4 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
                 }
 . {return UNKNOWN;}
 %%
+#pragma GCC diagnostic pop

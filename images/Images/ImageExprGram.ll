@@ -258,3 +258,4 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 .         { return YYERRCODE; }
 
 %%
+#pragma GCC diagnostic pop

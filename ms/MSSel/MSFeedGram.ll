@@ -74,3 +74,4 @@ INT       {DIGIT}+
 .         { return YYERRCODE; }
 
 %%
+#pragma GCC diagnostic pop

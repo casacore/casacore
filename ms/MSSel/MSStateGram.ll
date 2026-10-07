@@ -131,3 +131,4 @@ SIDENTIFIER ({WHITE}[A-Za-z0-9_\+\-\{\}=;@#$%:!'*''?' ]+{WHITE})
 ")"       { msStateGramPosition() += yyleng; return RPAREN;}
 .         { msStateGramPosition() += yyleng; return MSStateGramtext[0];}
 %%
+#pragma GCC diagnostic pop

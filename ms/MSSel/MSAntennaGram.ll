@@ -160,3 +160,4 @@ PATTERN   {PATT1}|{PATT2}
 .         { return YYERRCODE; }
 
 %%
+#pragma GCC diagnostic pop

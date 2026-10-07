@@ -83,3 +83,4 @@ INT       ({WHITE}{DIGIT}+{WHITE})
 {WHITE}   { msArrayGramPosition() += yyleng;} /* Eat white spaces */
 .         { msArrayGramPosition() += yyleng;return MSArrayGramtext[0];}
 %%
+#pragma GCC diagnostic pop

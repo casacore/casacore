@@ -151,3 +151,4 @@ COMMENT   {COMMENT1}|{COMMENT2}|{COMMENT3}
 .         { return TOKENERROR; }
 
 %%
+#pragma GCC diagnostic pop

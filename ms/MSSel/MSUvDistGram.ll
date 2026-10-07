@@ -89,3 +89,4 @@ UNIT      ({DISTANCEUNIT}|{WAVELENGTHUNIT})
 {WHITE}   { msUvDistGramPosition() += yyleng;} /* Eat white spaces */
 .         { msUvDistGramPosition() += yyleng;return MSUvDistGramtext[0];}
 %%
+#pragma GCC diagnostic pop

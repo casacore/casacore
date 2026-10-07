@@ -177,3 +177,4 @@ SIDENTIFIER  ({NAMES}+"*")
 {WHITE}   { msSpwGramPosition() += yyleng;} /* Eat white spaces */
 .         { msSpwGramPosition() += yyleng;return MSSpwGramtext[0];}
 %%
+#pragma GCC diagnostic pop

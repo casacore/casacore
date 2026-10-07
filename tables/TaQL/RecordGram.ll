@@ -333,3 +333,4 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 .         { return YYERRCODE; }
 
 %%
+#pragma GCC diagnostic pop
