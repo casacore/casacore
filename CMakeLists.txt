@@ -185,7 +185,6 @@ if (NOT CMAKE_CXX_FLAGS)
   -pedantic \
   -Wnon-virtual-dtor \
   -Wzero-as-null-pointer-constant \
-  -Wduplicated-branches \
   -Wundef \
   -Wvla \
   -Wpointer-arith \
