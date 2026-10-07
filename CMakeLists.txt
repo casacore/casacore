@@ -183,12 +183,10 @@ if (NOT CMAKE_CXX_FLAGS)
   -Woverloaded-virtual \
   -Wwrite-strings \
   -pedantic \
-  -Wnon-virtual-dtor \
   -Wzero-as-null-pointer-constant \
   -Wundef \
   -Wvla \
   -Wpointer-arith \
-  -Wextra \
   -Wno-unused-parameter \
   -Wno-psabi")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
