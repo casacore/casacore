@@ -92,7 +92,7 @@ LatticeIterInterface<T>& LatticeIterInterface<T>::operator=(const LatticeIterInt
 template <class T>
 void LatticeIterInterface<T>::copyBase(const LatticeIterInterface<T>& other) {
   delete itsCurPtr;
-  itsCurPtr = 0;
+  itsCurPtr = nullptr;
   itsBuffer.resize();
   itsCursorAxes.resize(0);
   itsNavPtr = other.itsNavPtr->clone();
@@ -368,7 +368,7 @@ bool LatticeIterInterface<T>::ok() const {
   String message;
   bool flag = true;
   // Check that we have a pointer to a cursor and not a NULL pointer.
-  if (itsCurPtr == 0) {
+  if (itsCurPtr == nullptr) {
     message += "Cursor pointer is uninitialized\n";
     flag = false;
   }
@@ -393,7 +393,7 @@ bool LatticeIterInterface<T>::ok() const {
     flag = false;
   }
   // Check that we have a pointer to a navigator and not a NULL pointer.
-  if (itsNavPtr == 0) {
+  if (itsNavPtr == nullptr) {
     message += "Navigator pointer is uninitialized\n";
     flag = false;
   }

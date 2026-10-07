@@ -197,7 +197,7 @@ class SPtrHolder {
   // not manually delete the pointer unless the transfer function is called.
   // The pointer must also only be put into
   // <em>one</em> holder to avoid double deletion.
-  explicit SPtrHolder(T *ptr = 0) : itsPtr(ptr) {}
+  explicit SPtrHolder(T *ptr = nullptr) : itsPtr(ptr) {}
 
   ~SPtrHolder() { delete itsPtr; }
 
@@ -213,12 +213,12 @@ class SPtrHolder {
   // I.e. return the pointer and set it to 0 in the object.
   T *transfer() {
     T *ptr = itsPtr;
-    itsPtr = 0;
+    itsPtr = nullptr;
     return ptr;
   }
 
   // Release the pointer.
-  void release() { itsPtr = 0; }
+  void release() { itsPtr = nullptr; }
 
   // Make it possible to dereference the pointer object.
   // <group>

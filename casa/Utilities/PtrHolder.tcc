@@ -51,7 +51,7 @@ void PtrHolder<T>::clear(bool deleteCurrentPtr) {
   if (deleteCurrentPtr) {
     delete_pointer_if_necessary();
   }
-  ptr_p = 0;
+  ptr_p = nullptr;
 }
 
 template <class T>
@@ -62,7 +62,7 @@ void PtrHolder<T>::delete_pointer_if_necessary() {
     } else {
       delete ptr_p;
     }
-    ptr_p = 0;
+    ptr_p = nullptr;
   }
 }
 

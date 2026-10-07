@@ -37,7 +37,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-RebinImage<T>::RebinImage() : itsImagePtr(0), itsRebinPtr(0) {}
+RebinImage<T>::RebinImage() : itsImagePtr(nullptr), itsRebinPtr(nullptr) {}
 
 template <class T>
 RebinImage<T>::RebinImage(const ImageInterface<T>& image, const IPosition& factors)
@@ -73,9 +73,9 @@ template <class T>
 RebinImage<T>& RebinImage<T>::operator=(const RebinImage<T>& other) {
   if (this != &other) {
     delete itsImagePtr;
-    itsImagePtr = 0;
+    itsImagePtr = nullptr;
     delete itsRebinPtr;
-    itsRebinPtr = 0;
+    itsRebinPtr = nullptr;
     ImageInterface<T>::operator=(other);
     itsImagePtr = other.itsImagePtr->cloneII();
     itsRebinPtr = new RebinLattice<T>(*other.itsRebinPtr);

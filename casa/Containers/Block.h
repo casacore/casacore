@@ -253,7 +253,7 @@ class Block : public BlockTrace {
         used_p(n),
         array(storagePointer),
         destroyPointer(takeOverStorage) {
-    if (destroyPointer) storagePointer = 0;
+    if (destroyPointer) storagePointer = nullptr;
   }
 
   // Copy the other block into this one. Uses copy, not reference, semantics.

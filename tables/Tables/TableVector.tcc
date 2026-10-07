@@ -57,7 +57,7 @@ TableVector<T>::TableVector(rownr_t leng) {
 // # Copy constructor (reference semantics).
 template <class T>
 TableVector<T>::TableVector(const TableVector<T>& that) : tabVecPtr_p(that.tabVecPtr_p) {
-  if (tabVecPtr_p != 0) {
+  if (tabVecPtr_p != nullptr) {
     tabVecPtr_p->link();
   }
 }
@@ -100,7 +100,7 @@ void TableVector<T>::reference(const TableVector<T>& that) {
   destruct();
   // # Now reference the other table vector.
   tabVecPtr_p = that.tabVecPtr_p;
-  if (tabVecPtr_p != 0) {
+  if (tabVecPtr_p != nullptr) {
     tabVecPtr_p->link();
   }
 }
