@@ -53,18 +53,18 @@ LSQFit::LSQFit(unsigned int nUnknowns, unsigned int nConstraints)
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
-      piv_p(0),
-      norm_p(0),
+      piv_p(nullptr),
+      norm_p(nullptr),
       nnc_p(0),
-      nceq_p(0),
-      known_p(0),
-      error_p(0),
-      constr_p(0),
-      sol_p(0),
-      nar_p(0),
-      lar_p(0),
-      wsol_p(0),
-      wcov_p(0) {
+      nceq_p(nullptr),
+      known_p(nullptr),
+      error_p(nullptr),
+      constr_p(nullptr),
+      sol_p(nullptr),
+      nar_p(nullptr),
+      lar_p(nullptr),
+      wsol_p(nullptr),
+      wcov_p(nullptr) {
   init();
   clear();
 }
@@ -85,18 +85,18 @@ LSQFit::LSQFit(unsigned int nUnknowns, const LSQReal &, unsigned int nConstraint
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
-      piv_p(0),
-      norm_p(0),
+      piv_p(nullptr),
+      norm_p(nullptr),
       nnc_p(0),
-      nceq_p(0),
-      known_p(0),
-      error_p(0),
-      constr_p(0),
-      sol_p(0),
-      nar_p(0),
-      lar_p(0),
-      wsol_p(0),
-      wcov_p(0) {
+      nceq_p(nullptr),
+      known_p(nullptr),
+      error_p(nullptr),
+      constr_p(nullptr),
+      sol_p(nullptr),
+      nar_p(nullptr),
+      lar_p(nullptr),
+      wsol_p(nullptr),
+      wcov_p(nullptr) {
   init();
   clear();
 }
@@ -116,18 +116,18 @@ LSQFit::LSQFit(unsigned int nUnknowns, const LSQComplex &, unsigned int nConstra
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
-      piv_p(0),
-      norm_p(0),
+      piv_p(nullptr),
+      norm_p(nullptr),
       nnc_p(0),
-      nceq_p(0),
-      known_p(0),
-      error_p(0),
-      constr_p(0),
-      sol_p(0),
-      nar_p(0),
-      lar_p(0),
-      wsol_p(0),
-      wcov_p(0) {
+      nceq_p(nullptr),
+      known_p(nullptr),
+      error_p(nullptr),
+      constr_p(nullptr),
+      sol_p(nullptr),
+      nar_p(nullptr),
+      lar_p(nullptr),
+      wsol_p(nullptr),
+      wcov_p(nullptr) {
   init();
   clear();
 }
@@ -148,18 +148,18 @@ LSQFit::LSQFit()
       maxiter_p(0),
       niter_p(0),
       ready_p(NONREADY),
-      piv_p(0),
-      norm_p(0),
+      piv_p(nullptr),
+      norm_p(nullptr),
       nnc_p(0),
-      nceq_p(0),
-      known_p(0),
-      error_p(0),
-      constr_p(0),
-      sol_p(0),
-      nar_p(0),
-      lar_p(0),
-      wsol_p(0),
-      wcov_p(0) {}
+      nceq_p(nullptr),
+      known_p(nullptr),
+      error_p(nullptr),
+      constr_p(nullptr),
+      sol_p(nullptr),
+      nar_p(nullptr),
+      lar_p(nullptr),
+      wsol_p(nullptr),
+      wcov_p(nullptr) {}
 
 LSQFit::LSQFit(const LSQFit &other)
     : state_p(other.state_p),
@@ -177,18 +177,18 @@ LSQFit::LSQFit(const LSQFit &other)
       maxiter_p(other.maxiter_p),
       niter_p(other.niter_p),
       ready_p(other.ready_p),
-      piv_p(0),
-      norm_p(0),
+      piv_p(nullptr),
+      norm_p(nullptr),
       nnc_p(other.nnc_p),
-      nceq_p(0),
-      known_p(0),
-      error_p(0),
-      constr_p(0),
-      sol_p(0),
-      nar_p(0),
-      lar_p(0),
-      wsol_p(0),
-      wcov_p(0) {
+      nceq_p(nullptr),
+      known_p(nullptr),
+      error_p(nullptr),
+      constr_p(nullptr),
+      sol_p(nullptr),
+      nar_p(nullptr),
+      lar_p(nullptr),
+      wsol_p(nullptr),
+      wcov_p(nullptr) {
   init();
   copy(other);
 }
@@ -244,27 +244,27 @@ void LSQFit::clear() {
 
 void LSQFit::deinit() {
   delete[] piv_p;
-  piv_p = 0;
+  piv_p = nullptr;
   delete norm_p;
-  norm_p = 0;
+  norm_p = nullptr;
   delete[] known_p;
-  known_p = 0;
+  known_p = nullptr;
   delete[] error_p;
-  error_p = 0;
+  error_p = nullptr;
   delete[] sol_p;
-  sol_p = 0;
+  sol_p = nullptr;
   delete[] constr_p;
-  constr_p = 0;
+  constr_p = nullptr;
   delete nceq_p;
-  nceq_p = 0;
+  nceq_p = nullptr;
   delete nar_p;
-  nar_p = 0;
+  nar_p = nullptr;
   delete[] lar_p;
-  lar_p = 0;
+  lar_p = nullptr;
   delete[] wsol_p;
-  wsol_p = 0;
+  wsol_p = nullptr;
   delete[] wcov_p;
-  wcov_p = 0;
+  wcov_p = nullptr;
 }
 
 void LSQFit::copy(const LSQFit &other, bool all) {
@@ -761,7 +761,7 @@ void LSQFit::extendConstraints(unsigned int n) {
   if ((constr_p && ncon_p == n) || nun_p == 0) return;  // Already right size
   if (n == 0) {
     delete[] constr_p;
-    constr_p = 0;
+    constr_p = nullptr;
   } else {
     double *newcon = new double[n * nun_p];  // Newly sized area
     double *newknw = new double[n + nun_p];
@@ -900,12 +900,12 @@ void LSQFit::debugIt(unsigned int &nun, unsigned int &np, unsigned int &ncon, un
   ncon = ncon_p;
   ner = N_ErrorField;
   rank = r_p;
-  nEq = (norm_p ? norm_p->trian_p : 0);
+  nEq = (norm_p ? norm_p->trian_p : nullptr);
   known = known_p;
   constr = constr_p;
   er = error_p;
   piv = piv_p;
-  sEq = (nceq_p ? nceq_p->trian_p : 0);
+  sEq = (nceq_p ? nceq_p->trian_p : nullptr);
   sol = wsol_p;
   prec = sqrt(prec_p);
   nonlin = nonlin_p;

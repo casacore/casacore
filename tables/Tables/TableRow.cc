@@ -39,20 +39,20 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ROTableRow::ROTableRow() : itsRecord(0) { init(); }
+ROTableRow::ROTableRow() : itsRecord(nullptr) { init(); }
 
-ROTableRow::ROTableRow(const Table& table, bool storedColumnsOnly) : itsRecord(0) {
+ROTableRow::ROTableRow(const Table& table, bool storedColumnsOnly) : itsRecord(nullptr) {
   init();
   create(table, storedColumnsOnly, false);
 }
 
 ROTableRow::ROTableRow(const Table& table, const Vector<String>& columnNames, bool exclude)
-    : itsRecord(0) {
+    : itsRecord(nullptr) {
   init();
   create(table, columnNames, exclude, false);
 }
 
-ROTableRow::ROTableRow(const ROTableRow& that) : itsRecord(0) {
+ROTableRow::ROTableRow(const ROTableRow& that) : itsRecord(nullptr) {
   init();
   copy(that);
 }
@@ -76,7 +76,7 @@ void ROTableRow::copy(const ROTableRow& that) {
     itsNrused = that.itsNrused;
     itsLastRow = that.itsLastRow;
     itsReread = that.itsReread;
-    if (that.itsRecord != 0) {
+    if (that.itsRecord != nullptr) {
       makeObjects(that.itsRecord->description());
     }
   }
@@ -93,7 +93,7 @@ Vector<String> ROTableRow::columnNames() const {
 }
 
 void ROTableRow::deleteObjects() {
-  if (itsRecord == 0) {
+  if (itsRecord == nullptr) {
     return;
   }
   const RecordDesc& description = itsRecord->description();
@@ -195,12 +195,12 @@ void ROTableRow::deleteObjects() {
       default:
         throw(TableError("TableRow: unknown data type"));
     }
-    itsTabCols[i] = 0;
-    itsColumns[i] = 0;
-    itsFields[i] = 0;
+    itsTabCols[i] = nullptr;
+    itsColumns[i] = nullptr;
+    itsFields[i] = nullptr;
   }
   delete itsRecord;
-  itsRecord = 0;
+  itsRecord = nullptr;
 }
 
 void ROTableRow::addColumnToDesc(RecordDesc& description, const TableColumn& column,

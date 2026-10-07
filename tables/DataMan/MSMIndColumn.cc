@@ -53,7 +53,7 @@ void MSMIndColumn::setShapeColumn(const IPosition& shape) { fixedShape_p = shape
 void MSMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
   // See if there is already a shape and if it matches.
   Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
-  if (ptr != 0) {
+  if (ptr != nullptr) {
     if (ptr->shape().isEqual(shape)) {
       return;
     }
@@ -68,7 +68,7 @@ void MSMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
 // # Read shape if not read yet.
 MSMIndColumn::Data* MSMIndColumn::getShape(rownr_t rownr) {
   void* ptr = getArrayPtr(rownr);
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     throw(DataManInvOper("MSM: no array in row " + String(std::to_string(rownr)) + " in column " +
                          columnName() + " of " + stmanPtr_p->fileName()));
   }
@@ -76,7 +76,7 @@ MSMIndColumn::Data* MSMIndColumn::getShape(rownr_t rownr) {
 }
 
 bool MSMIndColumn::isShapeDefined(rownr_t rownr) {
-  return (getArrayPtr(rownr) == 0 ? false : true);
+  return (getArrayPtr(rownr) == nullptr ? false : true);
 }
 
 unsigned int MSMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }

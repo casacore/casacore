@@ -38,15 +38,15 @@ LinearXform* LinearXform::fourierInvert(String& errMsg, const Vector<bool>& axes
                                         const Vector<double>& scale) const {
   if (axes.nelements() != nWorldAxes()) {
     errMsg = "axes length is invalid";
-    return 0;
+    return nullptr;
   }
   if (crpix.nelements() != nWorldAxes()) {
     errMsg = "crpix length is invalid";
-    return 0;
+    return nullptr;
   }
   if (scale.nelements() != nWorldAxes()) {
     errMsg = "scale length is invalid";
-    return 0;
+    return nullptr;
   }
   //
   Matrix<double> pc0;
@@ -64,7 +64,7 @@ LinearXform* LinearXform::fourierInvert(String& errMsg, const Vector<bool>& axes
       errMsg =
           "Cannot invert non-diagonal PC matrix (probably a rotated CoordinateSystem) when some "
           "axes not being transformed";
-      return 0;
+      return nullptr;
     }
     //
     pc0 = invert(pc());

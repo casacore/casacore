@@ -42,19 +42,19 @@ template <class T>
 ExtendLattice<T>::ExtendLattice(const Lattice<T>& lattice, const IPosition& newShape,
                                 const IPosition& newAxes, const IPosition& stretchAxes)
     : itsExtendSpec(lattice.shape(), newShape, newAxes, stretchAxes) {
-  setPtr(lattice.clone(), 0);
+  setPtr(lattice.clone(), nullptr);
 }
 
 template <class T>
 ExtendLattice<T>::ExtendLattice(const MaskedLattice<T>& lattice, const IPosition& newShape,
                                 const IPosition& newAxes, const IPosition& stretchAxes)
     : itsExtendSpec(lattice.shape(), newShape, newAxes, stretchAxes) {
-  setPtr(0, lattice.cloneML());
+  setPtr(nullptr, lattice.cloneML());
 }
 
 template <class T>
 ExtendLattice<T>::ExtendLattice(const ExtendLattice<T>& other)
-    : MaskedLattice<T>(), itsLatticePtr(0), itsMaskLatPtr(0), itsPixelMask(0) {
+    : MaskedLattice<T>(), itsLatticePtr(nullptr), itsMaskLatPtr(nullptr), itsPixelMask(nullptr) {
   operator=(other);
 }
 
@@ -72,10 +72,10 @@ ExtendLattice<T>& ExtendLattice<T>::operator=(const ExtendLattice<T>& other) {
     delete itsLatticePtr;
     itsLatticePtr = other.itsLatticePtr;
     itsMaskLatPtr = other.itsMaskLatPtr;
-    if (itsMaskLatPtr != 0) {
+    if (itsMaskLatPtr != nullptr) {
       itsMaskLatPtr = itsMaskLatPtr->cloneML();
       itsLatticePtr = itsMaskLatPtr;
-    } else if (itsLatticePtr != 0) {
+    } else if (itsLatticePtr != nullptr) {
       itsLatticePtr = itsLatticePtr->clone();
     }
     delete itsPixelMask;
@@ -93,14 +93,14 @@ MaskedLattice<T>* ExtendLattice<T>::cloneML() const {
 template <class T>
 void ExtendLattice<T>::setPtr(Lattice<T>* latticePtr, MaskedLattice<T>* maskLatPtr) {
   itsHasPixelMask = false;
-  itsPixelMask = 0;
-  if (maskLatPtr == 0) {
+  itsPixelMask = nullptr;
+  if (maskLatPtr == nullptr) {
     itsLatticePtr = latticePtr;
-    itsMaskLatPtr = 0;
+    itsMaskLatPtr = nullptr;
   } else {
     itsLatticePtr = maskLatPtr;
     if (!maskLatPtr->isMasked()) {
-      itsMaskLatPtr = 0;
+      itsMaskLatPtr = nullptr;
     } else {
       itsMaskLatPtr = maskLatPtr;
       itsHasPixelMask = itsMaskLatPtr->hasPixelMask();
@@ -110,7 +110,7 @@ void ExtendLattice<T>::setPtr(Lattice<T>* latticePtr, MaskedLattice<T>* maskLatP
 
 template <class T>
 bool ExtendLattice<T>::isMasked() const {
-  return (itsMaskLatPtr != 0);
+  return (itsMaskLatPtr != nullptr);
 }
 
 template <class T>
@@ -176,7 +176,7 @@ Lattice<bool>& ExtendLattice<T>::pixelMask() {
   }
   // Construct the pixelmask (as an extension of the parent pixelmask)
   // if that is not done yet.
-  if (itsPixelMask == 0) {
+  if (itsPixelMask == nullptr) {
     Lattice<bool>& fullMask = itsMaskLatPtr->pixelMask();
     itsPixelMask = new ExtendLattice<bool>(fullMask, itsExtendSpec.newShape(),
                                            itsExtendSpec.newAxes(), itsExtendSpec.stretchAxes());
@@ -186,7 +186,7 @@ Lattice<bool>& ExtendLattice<T>::pixelMask() {
 
 template <class T>
 const LatticeRegion* ExtendLattice<T>::getRegionPtr() const {
-  return 0;
+  return nullptr;
 }
 
 template <class T>
@@ -257,7 +257,7 @@ IPosition ExtendLattice<T>::doNiceCursorShape(unsigned int maxPixels) const {
 template <class T>
 bool ExtendLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   // When lattice has no mask, set mask to true.
-  if (itsMaskLatPtr == 0) {
+  if (itsMaskLatPtr == nullptr) {
     buffer = true;
     return false;
   }

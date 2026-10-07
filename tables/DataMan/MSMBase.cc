@@ -128,7 +128,7 @@ DataManagerColumn* MSMBase::reallocateColumn(DataManagerColumn* column) {
       MSMColumn* ptr = colSet_p[i];
       if (ptr->isFixedShape()) {
         MSMIndColumn* col = dynamic_cast<MSMIndColumn*>(ptr);
-        if (col != 0) {
+        if (col != nullptr) {
           // Turn a fixed shaped indirect array into a direct array.
           MSMDirColumn* newcol = new MSMDirColumn(this, col->dataType());
           newcol->setShapeColumn(col->columnShape());

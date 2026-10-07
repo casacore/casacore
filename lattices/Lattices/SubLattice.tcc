@@ -38,30 +38,30 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 SubLattice<T>::SubLattice()
-    : itsLatticePtr(0),
-      itsMaskLatPtr(0),
+    : itsLatticePtr(nullptr),
+      itsMaskLatPtr(nullptr),
       itsWritable(false),
       itsHasLattPMask(false),
-      itsPixelMask(0),
-      itsOwnPixelMask(0) {}
+      itsPixelMask(nullptr),
+      itsOwnPixelMask(nullptr) {}
 
 template <class T>
 SubLattice<T>::SubLattice(const Lattice<T>& lattice, AxesSpecifier axesSpec) {
-  setPtr(lattice.clone(), 0, false);
+  setPtr(lattice.clone(), nullptr, false);
   setRegion();
   setAxesMap(axesSpec);
 }
 
 template <class T>
 SubLattice<T>::SubLattice(Lattice<T>& lattice, bool writableIfPossible, AxesSpecifier axesSpec) {
-  setPtr(lattice.clone(), 0, writableIfPossible);
+  setPtr(lattice.clone(), nullptr, writableIfPossible);
   setRegion();
   setAxesMap(axesSpec);
 }
 
 template <class T>
 SubLattice<T>::SubLattice(const MaskedLattice<T>& lattice, AxesSpecifier axesSpec) {
-  setPtr(0, lattice.cloneML(), false);
+  setPtr(nullptr, lattice.cloneML(), false);
   setRegion();
   setAxesMap(axesSpec);
 }
@@ -69,7 +69,7 @@ SubLattice<T>::SubLattice(const MaskedLattice<T>& lattice, AxesSpecifier axesSpe
 template <class T>
 SubLattice<T>::SubLattice(MaskedLattice<T>& lattice, bool writableIfPossible,
                           AxesSpecifier axesSpec) {
-  setPtr(0, lattice.cloneML(), writableIfPossible);
+  setPtr(nullptr, lattice.cloneML(), writableIfPossible);
   setRegion();
   setAxesMap(axesSpec);
 }
@@ -77,7 +77,7 @@ SubLattice<T>::SubLattice(MaskedLattice<T>& lattice, bool writableIfPossible,
 template <class T>
 SubLattice<T>::SubLattice(const Lattice<T>& lattice, const LatticeRegion& region,
                           AxesSpecifier axesSpec) {
-  setPtr(lattice.clone(), 0, false);
+  setPtr(lattice.clone(), nullptr, false);
   setRegion(region);
   setAxesMap(axesSpec);
 }
@@ -85,7 +85,7 @@ SubLattice<T>::SubLattice(const Lattice<T>& lattice, const LatticeRegion& region
 template <class T>
 SubLattice<T>::SubLattice(Lattice<T>& lattice, const LatticeRegion& region, bool writableIfPossible,
                           AxesSpecifier axesSpec) {
-  setPtr(lattice.clone(), 0, writableIfPossible);
+  setPtr(lattice.clone(), nullptr, writableIfPossible);
   setRegion(region);
   setAxesMap(axesSpec);
 }
@@ -93,7 +93,7 @@ SubLattice<T>::SubLattice(Lattice<T>& lattice, const LatticeRegion& region, bool
 template <class T>
 SubLattice<T>::SubLattice(const MaskedLattice<T>& lattice, const LatticeRegion& region,
                           AxesSpecifier axesSpec) {
-  setPtr(0, lattice.cloneML(), false);
+  setPtr(nullptr, lattice.cloneML(), false);
   setRegion(region);
   setAxesMap(axesSpec);
 }
@@ -101,14 +101,14 @@ SubLattice<T>::SubLattice(const MaskedLattice<T>& lattice, const LatticeRegion& 
 template <class T>
 SubLattice<T>::SubLattice(MaskedLattice<T>& lattice, const LatticeRegion& region,
                           bool writableIfPossible, AxesSpecifier axesSpec) {
-  setPtr(0, lattice.cloneML(), writableIfPossible);
+  setPtr(nullptr, lattice.cloneML(), writableIfPossible);
   setRegion(region);
   setAxesMap(axesSpec);
 }
 
 template <class T>
 SubLattice<T>::SubLattice(const Lattice<T>& lattice, const Slicer& slicer, AxesSpecifier axesSpec) {
-  setPtr(lattice.clone(), 0, false);
+  setPtr(lattice.clone(), nullptr, false);
   setRegion(slicer);
   setAxesMap(axesSpec);
 }
@@ -116,7 +116,7 @@ SubLattice<T>::SubLattice(const Lattice<T>& lattice, const Slicer& slicer, AxesS
 template <class T>
 SubLattice<T>::SubLattice(Lattice<T>& lattice, const Slicer& slicer, bool writableIfPossible,
                           AxesSpecifier axesSpec) {
-  setPtr(lattice.clone(), 0, writableIfPossible);
+  setPtr(lattice.clone(), nullptr, writableIfPossible);
   setRegion(slicer);
   setAxesMap(axesSpec);
 }
@@ -124,7 +124,7 @@ SubLattice<T>::SubLattice(Lattice<T>& lattice, const Slicer& slicer, bool writab
 template <class T>
 SubLattice<T>::SubLattice(const MaskedLattice<T>& lattice, const Slicer& slicer,
                           AxesSpecifier axesSpec) {
-  setPtr(0, lattice.cloneML(), false);
+  setPtr(nullptr, lattice.cloneML(), false);
   setRegion(slicer);
   setAxesMap(axesSpec);
 }
@@ -132,14 +132,18 @@ SubLattice<T>::SubLattice(const MaskedLattice<T>& lattice, const Slicer& slicer,
 template <class T>
 SubLattice<T>::SubLattice(MaskedLattice<T>& lattice, const Slicer& slicer, bool writableIfPossible,
                           AxesSpecifier axesSpec) {
-  setPtr(0, lattice.cloneML(), writableIfPossible);
+  setPtr(nullptr, lattice.cloneML(), writableIfPossible);
   setRegion(slicer);
   setAxesMap(axesSpec);
 }
 
 template <class T>
 SubLattice<T>::SubLattice(const SubLattice<T>& other)
-    : MaskedLattice<T>(), itsLatticePtr(0), itsMaskLatPtr(0), itsPixelMask(0), itsOwnPixelMask(0) {
+    : MaskedLattice<T>(),
+      itsLatticePtr(nullptr),
+      itsMaskLatPtr(nullptr),
+      itsPixelMask(nullptr),
+      itsOwnPixelMask(nullptr) {
   operator=(other);
 }
 
@@ -159,18 +163,18 @@ SubLattice<T>& SubLattice<T>::operator=(const SubLattice<T>& other) {
     delete itsLatticePtr;
     itsLatticePtr = other.itsLatticePtr;
     itsMaskLatPtr = other.itsMaskLatPtr;
-    if (itsMaskLatPtr != 0) {
+    if (itsMaskLatPtr != nullptr) {
       itsMaskLatPtr = itsMaskLatPtr->cloneML();
       itsLatticePtr = itsMaskLatPtr;
-    } else if (itsLatticePtr != 0) {
+    } else if (itsLatticePtr != nullptr) {
       itsLatticePtr = itsLatticePtr->clone();
     }
     itsWritable = other.itsWritable;
     delete itsPixelMask;
-    itsPixelMask = 0;
+    itsPixelMask = nullptr;
     delete itsOwnPixelMask;
-    itsOwnPixelMask = 0;
-    if (other.itsOwnPixelMask != 0) {
+    itsOwnPixelMask = nullptr;
+    if (other.itsOwnPixelMask != nullptr) {
       itsOwnPixelMask = other.itsOwnPixelMask->clone();
     }
     itsHasLattPMask = other.itsHasLattPMask;
@@ -188,15 +192,15 @@ template <class T>
 void SubLattice<T>::setPtr(Lattice<T>* latticePtr, MaskedLattice<T>* maskLatPtr,
                            bool writableIfPossible) {
   itsHasLattPMask = false;
-  itsPixelMask = 0;
-  itsOwnPixelMask = 0;
-  if (maskLatPtr == 0) {
+  itsPixelMask = nullptr;
+  itsOwnPixelMask = nullptr;
+  if (maskLatPtr == nullptr) {
     itsLatticePtr = latticePtr;
-    itsMaskLatPtr = 0;
+    itsMaskLatPtr = nullptr;
   } else {
     itsLatticePtr = maskLatPtr;
     if (!maskLatPtr->isMasked()) {
-      itsMaskLatPtr = 0;
+      itsMaskLatPtr = nullptr;
     } else {
       itsMaskLatPtr = maskLatPtr;
       itsHasLattPMask = itsMaskLatPtr->hasPixelMask();
@@ -236,7 +240,7 @@ void SubLattice<T>::setAxesMap(const AxesSpecifier& axesSpec) {
 
 template <class T>
 bool SubLattice<T>::isMasked() const {
-  return (itsMaskLatPtr != 0 || itsRegion.hasMask() || itsOwnPixelMask != 0);
+  return (itsMaskLatPtr != nullptr || itsRegion.hasMask() || itsOwnPixelMask != nullptr);
 }
 
 template <class T>
@@ -294,7 +298,7 @@ void SubLattice<T>::reopen() {
 
 template <class T>
 bool SubLattice<T>::hasPixelMask() const {
-  return itsHasLattPMask || itsOwnPixelMask != 0;
+  return itsHasLattPMask || itsOwnPixelMask != nullptr;
 }
 
 template <class T>
@@ -303,7 +307,7 @@ const Lattice<bool>& SubLattice<T>::pixelMask() const {
 }
 template <class T>
 Lattice<bool>& SubLattice<T>::pixelMask() {
-  if (itsPixelMask == 0) {
+  if (itsPixelMask == nullptr) {
     if (!hasPixelMask()) {
       throw(AipsError("SubLattice::pixelMask - no pixelmask available"));
     }
@@ -312,7 +316,7 @@ Lattice<bool>& SubLattice<T>::pixelMask() {
       Lattice<bool>& fullMask = itsMaskLatPtr->pixelMask();
       itsPixelMask = new SubLattice<bool>(fullMask, itsRegion, itsWritable, itsAxesSpec);
       // If there is an own pixelmask, and them.
-      if (itsOwnPixelMask != 0) {
+      if (itsOwnPixelMask != nullptr) {
         Lattice<bool>* pmask = itsPixelMask;
         itsPixelMask = new LatticeExpr<bool>(*pmask && *itsOwnPixelMask);
         delete pmask;
@@ -337,9 +341,9 @@ void SubLattice<T>::setPixelMask(const Lattice<bool>& pixelMask, bool mayExist) 
                   "shape of pixel mask mismatches sublattice"));
   }
   delete itsPixelMask;
-  itsPixelMask = 0;
+  itsPixelMask = nullptr;
   delete itsOwnPixelMask;
-  itsOwnPixelMask = 0;
+  itsOwnPixelMask = nullptr;
   itsOwnPixelMask = pixelMask.clone();
 }
 
@@ -448,8 +452,8 @@ void SubLattice<T>::putAt(const T& value, const IPosition& where) {
 template <class T>
 bool SubLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   // If the lattice has no mask, we can return the region and/or pixel mask.
-  if (itsMaskLatPtr == 0) {
-    if (itsOwnPixelMask == 0) {
+  if (itsMaskLatPtr == nullptr) {
+    if (itsOwnPixelMask == nullptr) {
       // Note that if the region has no mask, it will return all true.
       return getRegionDataSlice(buffer, section);
     }
@@ -464,7 +468,7 @@ bool SubLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   // The lattice has a mask.
   // If there are no other masks, we can return the lattice's mask.
   if (!itsRegion.hasMask()) {
-    if (itsOwnPixelMask == 0) {
+    if (itsOwnPixelMask == nullptr) {
       return getMaskDataSlice(buffer, section);
     }
     // Return AND of lattice and pixel mask.
@@ -477,7 +481,7 @@ bool SubLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   Array<bool> tmpbuf;
   getRegionDataSlice(tmpbuf, section);
   andMask(buffer, ref, tmpbuf);
-  if (itsOwnPixelMask != 0) {
+  if (itsOwnPixelMask != nullptr) {
     andMask(buffer, false, itsOwnPixelMask->getSlice(section));
   }
   return false;

@@ -96,7 +96,7 @@ void doit() {
   AlwaysAssertExit(bi1.empty());
   for (i = 0; i < 200; i++) {
     Block<int> bi(AllocSpec<AlignedAllocator<int, 32>>::value);
-    AlwaysAssertExit(0 == bi.storage());
+    AlwaysAssertExit(nullptr == bi.storage());
     bi.resize(3);
     AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
   }
@@ -253,7 +253,7 @@ void doit() {
     } catch (std::exception const &) {
       AlwaysAssertExit(false);
     }
-    AlwaysAssertExit(0 == p);
+    AlwaysAssertExit(nullptr == p);
 
     p = DefaultAllocator<int>::type().allocate(20);
     try {
@@ -261,7 +261,7 @@ void doit() {
     } catch (std::exception const &) {
       AlwaysAssertExit(false);
     }
-    AlwaysAssertExit(0 == p);
+    AlwaysAssertExit(nullptr == p);
   }
   Block<int> bi7(0);
   AlwaysAssertExit(bi7.nelements() == 0);
@@ -343,19 +343,19 @@ void doit() {
     int *in1 = new int[100];
     int *inkeep = in1;
     Block<int> bip(100, in1);
-    AlwaysAssertExit(in1 == 0);
+    AlwaysAssertExit(in1 == nullptr);
     AlwaysAssertExit(&bip[0] == inkeep && bip.nelements() == 100);
     int *in2 = new int[50];
     int *inkeep2 = in2;
     bip.replaceStorage(50, in2);
-    AlwaysAssertExit(in2 == 0);
+    AlwaysAssertExit(in2 == nullptr);
     AlwaysAssertExit(&bip[0] == inkeep2 && bip.nelements() == 50);
   }
 
   {
     int *stored = new int[10];
     Block<int> aliased(10, stored, false);
-    AlwaysAssertExit(stored != 0);
+    AlwaysAssertExit(stored != nullptr);
     stored[3] = 454;
     AlwaysAssertExit(aliased[3] == 454);
     int *stored2 = new int[10];

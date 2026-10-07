@@ -49,47 +49,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC
 #endif
 
-/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
-#if defined(AIPS_GCC2)
-#undef AIPS_GCC2
-#endif
-#if (defined(AIPS_GCC) && __GNUC_CC == 2)
-#define AIPS_GCC2
-#endif
-
-/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
-#if defined(AIPS_GCC295)
-#undef AIPS_GCC295
-#endif
-#if (defined(AIPS_GCC2) && __GNUC_MINOR__ == 95)
-#define AIPS_GCC295
-#endif
-
-/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
-#if defined(AIPS_GCC3)
-#undef AIPS_GCC3
-#endif
-#if (defined(AIPS_GCC) && __GNUC__ == 3)
-#define AIPS_GCC3
-#endif
-
-/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
-#if defined(AIPS_GCC4)
-#undef AIPS_GCC4
-#endif
-#if (defined(AIPS_GCC) && __GNUC__ == 4)
-#define AIPS_GCC4
-#endif
-
 // Alternate project compiler
-#if defined(AIPS_SGI)
-#undef AIPS_SGI
-#endif
 #if defined(__sgi)
-#define AIPS_SGI
 #if defined(_MIPS_SZPTR) && (_MIPS_SZPTR == 64)
 #define AIPS_64B
-#define SGI64
 #endif
 #endif
 

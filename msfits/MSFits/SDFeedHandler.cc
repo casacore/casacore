@@ -48,17 +48,32 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDFeedHandler::SDFeedHandler()
-    : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0) {
+    : index_p(nullptr),
+      msFeed_p(nullptr),
+      msFeedCols_p(nullptr),
+      feedId_p(-1),
+      nextFeedId_p(0),
+      nrecpt_p(0) {
   ;
 }
 
 SDFeedHandler::SDFeedHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0) {
+    : index_p(nullptr),
+      msFeed_p(nullptr),
+      msFeedCols_p(nullptr),
+      feedId_p(-1),
+      nextFeedId_p(0),
+      nrecpt_p(0) {
   initAll(ms, handledCols, row);
 }
 
 SDFeedHandler::SDFeedHandler(const SDFeedHandler &other)
-    : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0) {
+    : index_p(nullptr),
+      msFeed_p(nullptr),
+      msFeedCols_p(nullptr),
+      feedId_p(-1),
+      nextFeedId_p(0),
+      nrecpt_p(0) {
   *this = other;
 }
 
@@ -251,7 +266,7 @@ void SDFeedHandler::fill(const Record &, int antennaId, int spwinId, const Vecto
         if (msFeedCols_p->phasedFeedId().isNull() && *phasedFeedIdField_p >= 0) {
           // add this optional column when necessary
           delete msFeedCols_p;
-          msFeedCols_p = 0;
+          msFeedCols_p = nullptr;
           TableDesc td;
           MSFeed::addColumnToDesc(td, MSFeed::PHASED_FEED_ID);
           msFeed_p->addColumn(td[0]);
@@ -268,13 +283,13 @@ void SDFeedHandler::fill(const Record &, int antennaId, int spwinId, const Vecto
 
 void SDFeedHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete msFeed_p;
-  msFeed_p = 0;
+  msFeed_p = nullptr;
 
   delete msFeedCols_p;
-  msFeedCols_p = 0;
+  msFeedCols_p = nullptr;
 
   feedId_p = -1;
   nextFeedId_p = 0;

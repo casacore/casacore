@@ -60,7 +60,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
     : delete_writer_p(freeOutput),
       writer_p(file),
       nrows_written_p(0),
-      bintable_p(0),
+      bintable_p(nullptr),
       row_p(description),
       copiers_p(0) {
   unsigned int nfields = description.nfields();
@@ -72,7 +72,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
   Block<int> tdimMap(nfields, -1);
   Block<int> fieldSizes(nfields, 0);
   for (i = 0; i < nfields; i++) {
-    const char *comment = 0;
+    const char *comment = nullptr;
     if (description.comment(i) != "") {
       comment = description.comment(i).c_str();
     }
@@ -300,7 +300,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file, const RecordDesc &description
   unsigned int nkeys = extraKeywords.nfields();
   for (i = 0; i < nkeys; i++) {
     String name = extraKeywords.name(i);
-    const char *comment = 0;
+    const char *comment = nullptr;
     if (extraKeywords.comment(i) != "") {
       comment = extraKeywords.comment(i).c_str();
     }

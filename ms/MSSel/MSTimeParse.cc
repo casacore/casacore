@@ -36,17 +36,17 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSTimeParse* MSTimeParse::thisMSTParser = 0x0;  // Global pointer to the parser object
-TableExprNode* MSTimeParse::node_p = 0x0;
-MEpoch* MSTimeParse::yeartime = 0x0;
-MEpoch* MSTimeParse::daytime = 0x0;
-//  MSTimeParse      *thisMSTParser           = 0x0;
-MeasurementSet* MSTimeParse::ms_p = 0x0;
-TableExprNode* MSTimeParse::otherTens_p = 0x0;
+MSTimeParse* MSTimeParse::thisMSTParser = nullptr;  // Global pointer to the parser object
+TableExprNode* MSTimeParse::node_p = nullptr;
+MEpoch* MSTimeParse::yeartime = nullptr;
+MEpoch* MSTimeParse::daytime = nullptr;
+//  MSTimeParse      *thisMSTParser           = nullptr;
+MeasurementSet* MSTimeParse::ms_p = nullptr;
+TableExprNode* MSTimeParse::otherTens_p = nullptr;
 bool MSTimeParse::defaultTimeComputed = false;
 Matrix<double> MSTimeParse::timeList(3, 0);
 TableExprNode MSTimeParse::columnAsTEN_p;
-MSSelectableMainColumn* MSTimeParse::mainColumn_p = 0x0;
+MSSelectableMainColumn* MSTimeParse::mainColumn_p = nullptr;
 
 //-------------------------------------------------------------------
 // Constructor
@@ -57,8 +57,8 @@ MSTimeParse::MSTimeParse() : MSParse(), colName(MS::columnName(MS::TIME)) {
   defaultExposure = 1.0;
   if (node_p) delete node_p;
   node_p = new TableExprNode();
-  ms_p = 0x0;
-  otherTens_p = 0x0;
+  ms_p = nullptr;
+  otherTens_p = nullptr;
   defaultTimeComputed = false;
 }
 //-------------------------------------------------------------------

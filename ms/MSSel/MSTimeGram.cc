@@ -71,7 +71,7 @@ int MSTimeGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSTimeGram = 0;
+static const char* strpMSTimeGram = nullptr;
 static int posMSTimeGram = 0;
 extern MSTimeParse* thisMSTParser;
 

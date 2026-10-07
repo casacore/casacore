@@ -62,7 +62,7 @@ int MSAntennaGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSAntennaGram = 0;
+static const char* strpMSAntennaGram = nullptr;
 static int posMSAntennaGram = 0;
 
 // # Parse the command.

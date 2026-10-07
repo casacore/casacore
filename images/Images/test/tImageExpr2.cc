@@ -37,7 +37,7 @@ int main() {
       PagedImage<float> a(IPosition(4, 20, 20, 1, 20), CoordinateUtil::defaultCoords4D(), "A.im");
       PagedImage<float> b(IPosition(4, 20, 20, 1, 1), CoordinateUtil::defaultCoords4D(), "B.im");
     }
-    ImageRegion* reg = 0;
+    ImageRegion* reg = nullptr;
     reg = ImageRegion::fromLatticeExpression("(A.im + B.im) > 0");
     delete reg;
     reg = ImageRegion::fromLatticeExpression("A.im > 0 && B.im < 0");

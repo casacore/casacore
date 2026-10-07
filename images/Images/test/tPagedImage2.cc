@@ -68,7 +68,7 @@ int main() {
       pIm.defineRegion("reg1", box1, RegionHandler::Masks);
       ImageRegion reg = pIm.getRegion("reg1");
       AlwaysAssertExit(reg == ImageRegion(box1));
-      AlwaysAssertExit(pIm.getImageRegionPtr("reg1", RegionHandler::Regions, false) == 0);
+      AlwaysAssertExit(pIm.getImageRegionPtr("reg1", RegionHandler::Regions, false) == nullptr);
 
       // Define the region as the default.
       pIm.setDefaultMask("reg1");
@@ -88,7 +88,7 @@ int main() {
       AlwaysAssertExit(!pIm.hasPixelMask());
       AlwaysAssertExit(pIm.isWritable());
       AlwaysAssertExit(pIm.isPaged());
-      AlwaysAssertExit(pIm.getRegionPtr() != 0);
+      AlwaysAssertExit(pIm.getRegionPtr() != nullptr);
       ImageRegion reg = pIm.getRegion("reg1");
       AlwaysAssertExit(reg == ImageRegion(box1));
 
@@ -96,26 +96,26 @@ int main() {
       pIm.defineRegion("regr1", reg, RegionHandler::Regions);
       const ImageRegion* imregptr;
       imregptr = pIm.getImageRegionPtr("regr1", RegionHandler::Regions, false);
-      AlwaysAssertExit(imregptr != 0);
+      AlwaysAssertExit(imregptr != nullptr);
       delete imregptr;
-      AlwaysAssertExit(pIm.getImageRegionPtr("regr1", RegionHandler::Masks, false) == 0);
+      AlwaysAssertExit(pIm.getImageRegionPtr("regr1", RegionHandler::Masks, false) == nullptr);
       imregptr = pIm.getImageRegionPtr("regr1", RegionHandler::Any, false);
-      AlwaysAssertExit(imregptr != 0);
+      AlwaysAssertExit(imregptr != nullptr);
       delete imregptr;
 
       // Rename the region in the regions group and check it can be found.
       pIm.renameRegion("regr2", "regr1", RegionHandler::Regions);
       imregptr = pIm.getImageRegionPtr("regr2", RegionHandler::Regions, false);
-      AlwaysAssertExit(imregptr != 0);
+      AlwaysAssertExit(imregptr != nullptr);
       delete imregptr;
-      AlwaysAssertExit(pIm.getImageRegionPtr("regr2", RegionHandler::Masks, false) == 0);
+      AlwaysAssertExit(pIm.getImageRegionPtr("regr2", RegionHandler::Masks, false) == nullptr);
       imregptr = pIm.getImageRegionPtr("regr2", RegionHandler::Any, false);
-      AlwaysAssertExit(imregptr != 0);
+      AlwaysAssertExit(imregptr != nullptr);
       delete imregptr;
 
       pIm.setDefaultMask("");
       AlwaysAssertExit(!pIm.isMasked());
-      AlwaysAssertExit(pIm.getRegionPtr() == 0);
+      AlwaysAssertExit(pIm.getRegionPtr() == nullptr);
 
       Array<bool> mask(shape);
       mask = true;

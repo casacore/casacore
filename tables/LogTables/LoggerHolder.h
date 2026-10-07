@@ -349,7 +349,7 @@ class LoggerHolderRep {
 
 class LogHolderIterEntry {
  public:
-  LogHolderIterEntry() : itsSink(0), itsIndex(0) {}
+  LogHolderIterEntry() : itsSink(nullptr), itsIndex(0) {}
 
   LogHolderIterEntry(const LogSink* sink, unsigned int index) : itsSink(sink), itsIndex(index) {}
 
@@ -465,7 +465,7 @@ class LogHolderIter {
 
 class LoggerHolderIterator {
  public:
-  LoggerHolderIterator() : itsIter(0), itsNotAtEnd(false) {}
+  LoggerHolderIterator() : itsIter(nullptr), itsNotAtEnd(false) {}
 
   LoggerHolderIterator(const LoggerHolder*);
 

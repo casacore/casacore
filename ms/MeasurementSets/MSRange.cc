@@ -46,10 +46,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSRange::MSRange() : blockSize_p(10), ddId_p(0), constantShape_p(false), sel_p(0) {}
+MSRange::MSRange() : blockSize_p(10), ddId_p(0), constantShape_p(false), sel_p(nullptr) {}
 
 MSRange::MSRange(const MeasurementSet& ms)
-    : ms_p(ms), blockSize_p(10), constantShape_p(false), sel_p(0) {}
+    : ms_p(ms), blockSize_p(10), constantShape_p(false), sel_p(nullptr) {}
 
 MSRange::MSRange(const MSSelector& msSel)
     : ms_p(msSel.selectedTable()), blockSize_p(10), constantShape_p(false), sel_p(&msSel) {

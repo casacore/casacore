@@ -99,7 +99,10 @@ class FunctionParam {
   // Copy from different type (deep copy)
   template <class W>
   FunctionParam(const FunctionParam<W> &other)
-      : npar_p(other.getParameters().nelements()), param_p(npar_p), mask_p(npar_p), maskedPtr_p(0) {
+      : npar_p(other.getParameters().nelements()),
+        param_p(npar_p),
+        mask_p(npar_p),
+        maskedPtr_p(nullptr) {
     for (unsigned int i = 0; i < npar_p; ++i) {
       FunctionTraits<T>::setValue(param_p[i], FunctionTraits<W>::getValue(other.getParameters()[i]),
                                   npar_p, i);

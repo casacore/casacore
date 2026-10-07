@@ -212,8 +212,8 @@ Vector<String> RegionHandlerTable::regionNames(RegionHandler::GroupType type) co
   const Table& tab = table();
   unsigned int nreg = 0;
   unsigned int nmask = 0;
-  const RecordDesc* regs = 0;
-  const RecordDesc* masks = 0;
+  const RecordDesc* regs = nullptr;
+  const RecordDesc* masks = nullptr;
   const TableRecord& keys = tab.keywordSet();
   if (type != RegionHandler::Masks) {
     int field = keys.fieldNumber("regions");
@@ -251,7 +251,7 @@ ImageRegion* RegionHandlerTable::getRegion(const String& name, RegionHandler::Gr
       return ImageRegion::fromRecord(regs.subRecord(field), tab.tableName());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 int RegionHandlerTable::findRegionGroup(const String& regionName, RegionHandler::GroupType type,

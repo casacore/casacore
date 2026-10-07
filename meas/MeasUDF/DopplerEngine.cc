@@ -40,7 +40,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, unsigned int& argnr, b
   // If given as radial velocity or frequency, a measure type must be given,
   // thus 2 arguments with the 2nd as a string.
   // TODO: use TaQL attributes. so a single argument is possible!!
-  BaseEngine* enginePtr = 0;
+  BaseEngine* enginePtr = nullptr;
   bool restConst = true;
   if (args.size() >= argnr && !args[argnr]->unit().empty()) {
     if (allowRadVel) {
@@ -58,7 +58,7 @@ void DopplerEngine::handleDoppler(vector<TENShPtr>& args, unsigned int& argnr, b
       } catch (const AipsError&) {
       }
     }
-    if (enginePtr == 0 && allowFreq) {
+    if (enginePtr == nullptr && allowFreq) {
       // No radial velocity; try as frequency (if allowed).
       try {
         itsFreqEngine.reset(new FrequencyEngine());

@@ -241,7 +241,7 @@ class ColumnsIndex {
   // column and the sort step will not be done.
   // The default compare function is provided by this class. It simply
   // compares each field in the key.
-  ColumnsIndex(const Table&, const String& columnName, Compare* compareFunction = 0,
+  ColumnsIndex(const Table&, const String& columnName, Compare* compareFunction = nullptr,
                bool noSort = false);
 
   // Create an index on the given table for the given columns, thus
@@ -251,7 +251,7 @@ class ColumnsIndex {
   // columns and the sort step will not be done.
   // The default compare function is provided by this class. It simply
   // compares each field in the key.
-  ColumnsIndex(const Table&, const Vector<String>& columnNames, Compare* compareFunction = 0,
+  ColumnsIndex(const Table&, const Vector<String>& columnNames, Compare* compareFunction = nullptr,
                bool noSort = false);
 
   // Copy constructor (copy semantics).

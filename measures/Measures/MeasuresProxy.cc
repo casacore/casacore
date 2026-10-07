@@ -44,7 +44,7 @@
 
 #include <casacore/casa/namespace.h>
 
-MeasuresProxy::MeasuresProxy() : pcomet_p(0) { ; }
+MeasuresProxy::MeasuresProxy() : pcomet_p(nullptr) { ; }
 
 MeasuresProxy::~MeasuresProxy() { delete pcomet_p; }
 
@@ -70,7 +70,7 @@ bool MeasuresProxy::doFrame(const MeasureHolder &in) {
 bool MeasuresProxy::doFrame(const String &in) {
   try {
     delete pcomet_p;
-    pcomet_p = 0;
+    pcomet_p = nullptr;
     if (in.empty()) {
       pcomet_p = new MeasComet;
     } else {
@@ -78,7 +78,7 @@ bool MeasuresProxy::doFrame(const String &in) {
     }
     if (!pcomet_p->ok()) {
       delete pcomet_p;
-      pcomet_p = 0;
+      pcomet_p = nullptr;
       return false;
     }
     frame_p.set(*pcomet_p);

@@ -106,7 +106,7 @@ Table getTable(int tabnr, const String& name, const Table& ftab,
   } else {
     if (tabnr >= 0) {
       // Temporary table number (1-based) given.
-      if (tabnr < 1 || tabnr > int(tempTables.size()) || tempTables[tabnr - 1] == 0) {
+      if (tabnr < 1 || tabnr > int(tempTables.size()) || tempTables[tabnr - 1] == nullptr) {
         throw(TableInvExpr("Invalid temporary table number given in " + name));
       }
       table = *(tempTables[tabnr - 1]);

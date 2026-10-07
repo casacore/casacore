@@ -47,7 +47,7 @@ SSMColumn::SSMColumn(SSMBase* aParent, int aDataType, unsigned int aColNr)
       itsMaxLen(0),
       itsNrElem(1),
       itsNrCopy(0),
-      itsData(0) {
+      itsData(nullptr) {
   init();
 }
 

@@ -466,7 +466,7 @@ BOOST_AUTO_TEST_CASE(new_interface2) {
     ptr[i] = int(i);
   }
   ai.putStorage(ptr, deleteIt);
-  BOOST_CHECK(ptr == 0);
+  BOOST_CHECK(ptr == nullptr);
   for (size_t i = 0; i < nelems; ++i) {
     BOOST_CHECK(ai.data()[i] == int(i));
   }

@@ -46,21 +46,21 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class M>
 ScalarMeasColumn<M>::ScalarMeasColumn()
     : itsConvFlag(false),
-      itsArrDataCol(0),
-      itsScaDataCol(0),
-      itsRefIntCol(0),
-      itsRefStrCol(0),
-      itsOffsetCol(0) {}
+      itsArrDataCol(nullptr),
+      itsScaDataCol(nullptr),
+      itsRefIntCol(nullptr),
+      itsRefStrCol(nullptr),
+      itsOffsetCol(nullptr) {}
 
 template <class M>
 ScalarMeasColumn<M>::ScalarMeasColumn(const Table& tab, const String& columnName)
     : TableMeasColumn(tab, columnName),
       itsConvFlag(false),
-      itsArrDataCol(0),
-      itsScaDataCol(0),
-      itsRefIntCol(0),
-      itsRefStrCol(0),
-      itsOffsetCol(0) {
+      itsArrDataCol(nullptr),
+      itsScaDataCol(nullptr),
+      itsRefIntCol(nullptr),
+      itsRefStrCol(nullptr),
+      itsOffsetCol(nullptr) {
   TableMeasDescBase& tmDesc = measDesc();
   AlwaysAssert(M::showMe() == tmDesc.type(), AipsError);
 
@@ -104,7 +104,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn(const Table& tab, const String& columnName
 
   // Only need to convert (during a put) if some component of the reference
   // for the column is fixed.
-  itsConvFlag = (itsVarRefFlag == false) || (itsOffsetCol == 0);
+  itsConvFlag = (itsVarRefFlag == false) || (itsOffsetCol == nullptr);
   // For an old table write the reference codes and types.
   if (tab.isWritable()) {
     tmDesc.writeIfOld(tab);
@@ -114,11 +114,11 @@ ScalarMeasColumn<M>::ScalarMeasColumn(const Table& tab, const String& columnName
 template <class M>
 ScalarMeasColumn<M>::ScalarMeasColumn(const ScalarMeasColumn<M>& that)
     : TableMeasColumn(),
-      itsArrDataCol(0),
-      itsScaDataCol(0),
-      itsRefIntCol(0),
-      itsRefStrCol(0),
-      itsOffsetCol(0) {
+      itsArrDataCol(nullptr),
+      itsScaDataCol(nullptr),
+      itsRefIntCol(nullptr),
+      itsRefStrCol(nullptr),
+      itsOffsetCol(nullptr) {
   reference(that);
 }
 
@@ -147,19 +147,19 @@ void ScalarMeasColumn<M>::reference(const ScalarMeasColumn<M>& that) {
   itsRefStrCol = that.itsRefStrCol;
   itsOffsetCol = that.itsOffsetCol;
   itsMeasRef = that.itsMeasRef;
-  if (itsArrDataCol != 0) {
+  if (itsArrDataCol != nullptr) {
     itsArrDataCol = new ArrayColumn<double>(*itsArrDataCol);
   }
-  if (itsScaDataCol != 0) {
+  if (itsScaDataCol != nullptr) {
     itsScaDataCol = new ScalarColumn<double>(*itsScaDataCol);
   }
-  if (itsRefIntCol != 0) {
+  if (itsRefIntCol != nullptr) {
     itsRefIntCol = new ScalarColumn<int>(*itsRefIntCol);
   }
-  if (itsRefStrCol != 0) {
+  if (itsRefStrCol != nullptr) {
     itsRefStrCol = new ScalarColumn<String>(*itsRefStrCol);
   }
-  if (itsOffsetCol != 0) {
+  if (itsOffsetCol != nullptr) {
     itsOffsetCol = new ScalarMeasColumn<M>(*itsOffsetCol);
   }
 }
@@ -173,7 +173,7 @@ template <class M>
 void ScalarMeasColumn<M>::get(rownr_t rownr, M& meas) const {
   Vector<Quantum<double>> qvec(itsNvals);
   const Vector<Unit>& units = measDesc().getUnits();
-  if (itsScaDataCol != 0) {
+  if (itsScaDataCol != nullptr) {
     qvec(0).setValue((*itsScaDataCol)(rownr));
     qvec(0).setUnit(units(0));
   } else {
@@ -214,13 +214,13 @@ M ScalarMeasColumn<M>::operator()(rownr_t rownr) const {
 template <class M>
 MeasRef<M> ScalarMeasColumn<M>::makeMeasRef(rownr_t rownr) const {
   // Fixed reference can be returned immediately.
-  if (!itsVarRefFlag && itsOffsetCol == 0) {
+  if (!itsVarRefFlag && itsOffsetCol == nullptr) {
     return itsMeasRef;
   }
   MeasRef<M> locMRef(itsMeasRef);
   if (itsVarRefFlag) {
     // Get reference type as int (from a string or int column).
-    if (itsRefStrCol != 0) {
+    if (itsRefStrCol != nullptr) {
       typename M::Types tp;
       M::getType(tp, (*itsRefStrCol)(rownr));
       locMRef.set(tp);
@@ -228,7 +228,7 @@ MeasRef<M> ScalarMeasColumn<M>::makeMeasRef(rownr_t rownr) const {
       locMRef.set(measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
     }
   }
-  if (itsOffsetCol != 0) {
+  if (itsOffsetCol != nullptr) {
     locMRef.set((*itsOffsetCol)(rownr));
   }
   return locMRef;
@@ -329,15 +329,15 @@ void ScalarMeasColumn<M>::put(rownr_t rownr, const M& meas) {
   }
 
   if (itsVarRefFlag) {
-    if (itsRefStrCol != 0) {
+    if (itsRefStrCol != nullptr) {
       itsRefStrCol->put(rownr, M::showType(locMeas.getRef().getType()));
     } else {
       unsigned int tp = locMeas.getRef().getType();
       itsRefIntCol->put(rownr, measDesc().getRefDesc().cur2tab(tp));
     }
   }
-  if (itsOffsetCol != 0) {
-    if (locMeas.getRef().offset() != 0) {
+  if (itsOffsetCol != nullptr) {
+    if (locMeas.getRef().offset() != nullptr) {
       itsOffsetCol->put(rownr, M(locMeas.getRef().offset()));
     } else {
       itsOffsetCol->put(rownr, M());
@@ -346,7 +346,7 @@ void ScalarMeasColumn<M>::put(rownr_t rownr, const M& meas) {
 
   const Vector<Unit>& units = measDesc().getUnits();
   Vector<Quantum<double>> qvec = locMeas.getValue().getTMRecordValue();
-  if (itsScaDataCol != 0) {
+  if (itsScaDataCol != nullptr) {
     itsScaDataCol->put(rownr, qvec(0).getValue(units(0)));
   } else {
     Vector<double> d_vec(itsNvals);

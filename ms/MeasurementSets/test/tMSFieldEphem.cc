@@ -163,7 +163,7 @@ int main() {
       String tablePathName;
       {
         Table x;
-        Table* y = 0;
+        Table* y = nullptr;
         MeasIERS::findTab(x, y, " ", " ", "VTOP");
         tablePathName = Path(x.tableName()).absoluteName();
         // cout << "Found " << tablePathName  << std::endl;
@@ -174,7 +174,7 @@ int main() {
       String tablePathName2;
       {
         Table x2;
-        Table* y2 = 0;
+        Table* y2 = nullptr;
         MeasIERS::findTab(x2, y2, " ", " ", "VGEO");
         tablePathName2 = Path(x2.tableName()).absoluteName();
         // cout << "Found " << tablePathName2 << std::endl;

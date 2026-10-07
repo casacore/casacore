@@ -44,18 +44,18 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDPolarizationHandler::SDPolarizationHandler()
-    : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msPol_p(nullptr), msPolCols_p(nullptr), rownr_p(-1) {
   ;
 }
 
 SDPolarizationHandler::SDPolarizationHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                              const Record &row)
-    : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msPol_p(nullptr), msPolCols_p(nullptr), rownr_p(-1) {
   initAll(ms, handledCols, row);
 }
 
 SDPolarizationHandler::SDPolarizationHandler(const SDPolarizationHandler &other)
-    : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msPol_p(nullptr), msPolCols_p(nullptr), rownr_p(-1) {
   *this = other;
 }
 
@@ -160,13 +160,13 @@ void SDPolarizationHandler::fill(const Record &, const Vector<int> &stokes) {
 
 void SDPolarizationHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete msPol_p;
-  msPol_p = 0;
+  msPol_p = nullptr;
 
   delete msPolCols_p;
-  msPolCols_p = 0;
+  msPolCols_p = nullptr;
 
   clearRow();
 }

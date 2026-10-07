@@ -61,7 +61,7 @@ static int stderr_creation_function(double min, double max, const String &t, con
   stderr_max[n - 1] = max;
   stderr_last[n - 1] = min;
   stderr_title[n - 1] = t;
-  stderr_time[n - 1] = time(0);
+  stderr_time[n - 1] = time(nullptr);
   stderr_startflag[n - 1] = false;
   // cerr << "\n0%";
   return n;

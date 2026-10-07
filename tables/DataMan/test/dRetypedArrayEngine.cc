@@ -46,7 +46,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void* RetypedArrayEx1::newCopyInfo(const TableRecord&, const IPosition&) { return 0; }
+void* RetypedArrayEx1::newCopyInfo(const TableRecord&, const IPosition&) { return nullptr; }
 void RetypedArrayEx1::deleteCopyInfo(void*) {}
 void RetypedArrayEx1::set(void*, void* vout, const Array<float>& in, const IPosition& shape) {
   Array<RetypedArrayEx1>& out = *(Array<RetypedArrayEx1>*)vout;

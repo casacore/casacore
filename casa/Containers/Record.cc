@@ -32,29 +32,31 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Record::Record() : RecordInterface(), rep_p(new RecordRep), parent_p(0) {}
+Record::Record() : RecordInterface(), rep_p(new RecordRep), parent_p(nullptr) {}
 
 Record::Record(RecordType type, CheckFieldFunction* func, const void* checkArgument)
-    : RecordInterface(type, func, checkArgument), rep_p(new RecordRep), parent_p(0) {}
+    : RecordInterface(type, func, checkArgument), rep_p(new RecordRep), parent_p(nullptr) {}
 
 Record::Record(const RecordDesc& description, RecordType type, CheckFieldFunction* func,
                const void* checkArgument)
-    : RecordInterface(type, func, checkArgument), rep_p(new RecordRep(description)), parent_p(0) {}
+    : RecordInterface(type, func, checkArgument),
+      rep_p(new RecordRep(description)),
+      parent_p(nullptr) {}
 
 // When description is empty, Record structure is variable.
 Record::Record(RecordRep* parent, const RecordDesc& description)
-    : RecordInterface(description.nfields() == 0 ? Variable : Fixed, 0, 0),
+    : RecordInterface(description.nfields() == 0 ? Variable : Fixed, nullptr, nullptr),
       rep_p(new RecordRep(description)),
       parent_p(parent) {}
 
 Record::Record(RecordRep* parent, RecordType type)
-    : RecordInterface(type, 0, 0), rep_p(new RecordRep), parent_p(parent) {}
+    : RecordInterface(type, nullptr, nullptr), rep_p(new RecordRep), parent_p(parent) {}
 
 Record::Record(const Record& other)
     : RecordInterface(other), rep_p(other.rep_p), parent_p(other.parent_p) {}
 
 Record::Record(const RecordInterface& other)
-    : RecordInterface(other), rep_p(new RecordRep(other.description())), parent_p(0) {
+    : RecordInterface(other), rep_p(new RecordRep(other.description())), parent_p(nullptr) {
   unsigned int n = other.nfields();
   const RecordDesc& desc = description();
   for (unsigned int i = 0; i < n; i++) {

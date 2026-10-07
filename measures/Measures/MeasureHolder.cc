@@ -458,10 +458,10 @@ bool MeasureHolder::getType(String &error, const String &in) {
 void MeasureHolder::createMV(unsigned int n) {
   for (unsigned int i = 0; i < mvhold_p.nelements(); i++) {
     delete mvhold_p[i];
-    mvhold_p[i] = 0;
+    mvhold_p[i] = nullptr;
   }
   mvhold_p.resize(n);
-  for (unsigned int i = 0; i < mvhold_p.nelements(); i++) mvhold_p[i] = 0;
+  for (unsigned int i = 0; i < mvhold_p.nelements(); i++) mvhold_p[i] = nullptr;
 }
 
 }  // namespace casacore

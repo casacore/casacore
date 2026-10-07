@@ -57,38 +57,38 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 MeasMath::MeasMath()
     : inOK_p(false),
       outOK_p(false),
-      inFrame_p(0),
-      outFrame_p(0),
-      SOLPOSIAU(0),
-      ABERIAU(0),
-      ABERB1950(0),
-      NUTATIAU(0),
-      NUTATB1950(0),
-      PRECESIAU(0),
-      PRECESB1950(0) {
+      inFrame_p(nullptr),
+      outFrame_p(nullptr),
+      SOLPOSIAU(nullptr),
+      ABERIAU(nullptr),
+      ABERB1950(nullptr),
+      NUTATIAU(nullptr),
+      NUTATB1950(nullptr),
+      PRECESIAU(nullptr),
+      PRECESB1950(nullptr) {
   for (unsigned int i = 0; i < N_FrameType; i++) {
     frameOK_p[i] = false;
-    applyFrame_p[i] = 0;
-    deapplyFrame_p[i] = 0;
+    applyFrame_p[i] = nullptr;
+    deapplyFrame_p[i] = nullptr;
   }
 }
 
 // # Destructor
 MeasMath::~MeasMath() {
   delete SOLPOSIAU;
-  SOLPOSIAU = 0;
+  SOLPOSIAU = nullptr;
   delete ABERIAU;
-  ABERIAU = 0;
+  ABERIAU = nullptr;
   delete ABERB1950;
-  ABERB1950 = 0;
+  ABERB1950 = nullptr;
   delete NUTATIAU;
-  NUTATIAU = 0;
+  NUTATIAU = nullptr;
   delete NUTATB1950;
-  NUTATB1950 = 0;
+  NUTATB1950 = nullptr;
   delete PRECESIAU;
-  PRECESIAU = 0;
+  PRECESIAU = nullptr;
   delete PRECESB1950;
-  PRECESB1950 = 0;
+  PRECESB1950 = nullptr;
 }
 
 // # Operators

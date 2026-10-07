@@ -115,10 +115,10 @@ LatticeBase* ImageOpener::openPagedImage(const String& fileName, const MaskSpeci
   Table table(fileName);
   String type = table.tableInfo().type();
   if (type != TableInfo::type(TableInfo::PAGEDIMAGE)) {
-    return 0;
+    return nullptr;
   }
   if (table.nrow() != 1) {
-    return 0;
+    return nullptr;
   }
   DataType dtype = TpOther;
   String colName;
@@ -137,17 +137,17 @@ LatticeBase* ImageOpener::openPagedImage(const String& fileName, const MaskSpeci
     case TpDComplex:
       return new PagedImage<DComplex>(table, spec);
     default:
-      return 0;
+      return nullptr;
   }
 }
 
 LatticeBase* ImageOpener::openHDF5Image(const String& fileName, const MaskSpecifier& spec) {
   if (!HDF5File::isHDF5(fileName)) {
-    return 0;
+    return nullptr;
   }
   // See if it is an image or just an array.
   if (!isHDF5Image(fileName)) {
-    return 0;
+    return nullptr;
   }
   DataType dtype = hdf5imagePixelType(fileName);
   switch (dtype) {
@@ -160,7 +160,7 @@ LatticeBase* ImageOpener::openHDF5Image(const String& fileName, const MaskSpecif
     case TpDComplex:
       return new HDF5Image<DComplex>(fileName, spec);
     default:
-      return 0;
+      return nullptr;
   }
 }
 
@@ -170,7 +170,7 @@ LatticeBase* ImageOpener::openImageConcat(const String& fileName) {
   JsonKVMap jmap = JsonParser::parseFile(fileName + "/imageconcat.json");
   String dtype = jmap.get("DataType").getString();
   ToLowerCaseInPlace(dtype);
-  LatticeBase* img = 0;
+  LatticeBase* img = nullptr;
   if (dtype == "float") {
     img = new ImageConcat<float>(jmap, fileName);
   } else if (dtype == "double") {
@@ -198,7 +198,7 @@ LatticeBase* ImageOpener::openExpr(const String& expr, const Block<LatticeExprNo
 
 LatticeBase* ImageOpener::openExpr(const String& expr, const Block<LatticeExprNode>& nodes,
                                    const String& fileName, const JsonKVMap& jmap) {
-  LatticeBase* lattice = 0;
+  LatticeBase* lattice = nullptr;
   Block<const ImageRegion*> regions;
   LatticeExprNode node = ImageExprParse::command(expr, nodes, regions);
   switch (node.dataType()) {
@@ -222,7 +222,7 @@ LatticeBase* ImageOpener::openExpr(const String& expr, const Block<LatticeExprNo
 
 LatticeBase* ImageOpener::openImage(const String& fileName, const MaskSpecifier& spec) {
   if (fileName.empty()) {
-    return 0;
+    return nullptr;
   }
 
   ImageOpener::ImageTypes type = ImageOpener::imageType(fileName);
@@ -250,7 +250,7 @@ LatticeBase* ImageOpener::openImage(const String& fileName, const MaskSpecifier&
   MIRIADImage::registerOpenFunction();
   // Try to open a foreign image.
   if (theirOpenFuncMap.find(type) == theirOpenFuncMap.end()) {
-    return 0;
+    return nullptr;
   }
   return theirOpenFuncMap[type](fileName, spec);
 }

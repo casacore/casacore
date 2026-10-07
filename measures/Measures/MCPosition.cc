@@ -41,7 +41,7 @@ unsigned int MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
 std::once_flag MCPosition::theirInitOnceFlag;
 
 // # Constructors
-MCPosition::MCPosition() : DVEC1(0) { std::call_once(theirInitOnceFlag, doFillState); }
+MCPosition::MCPosition() : DVEC1(nullptr) { std::call_once(theirInitOnceFlag, doFillState); }
 
 // # Destructor
 MCPosition::~MCPosition() { clearConvert(); }
@@ -64,7 +64,7 @@ void MCPosition::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase 
 
 void MCPosition::clearConvert() {
   delete DVEC1;
-  DVEC1 = 0;
+  DVEC1 = nullptr;
 }
 
 // # Conversion routines

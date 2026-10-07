@@ -38,7 +38,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TiledFileAccess::TiledFileAccess(const String& fileName, int64_t fileOffset, const IPosition& shape,
                                  const IPosition& tileShape, DataType dataType,
                                  const TSMOption& tsmOpt, bool writable)
-    : itsCube(0), itsTSM(0), itsWritable(writable), itsDataType(dataType) {
+    : itsCube(nullptr), itsTSM(nullptr), itsWritable(writable), itsDataType(dataType) {
   itsLocalPixelSize = ValType::getTypeSize(dataType);
   itsTSM = new TiledFileHelper(fileName, shape, dataType, tsmOpt, writable, HostInfo::bigEndian());
   itsCube = itsTSM->makeTSMCube(itsTSM->file(), shape, tileShape, Record(), fileOffset);
@@ -47,7 +47,7 @@ TiledFileAccess::TiledFileAccess(const String& fileName, int64_t fileOffset, con
 TiledFileAccess::TiledFileAccess(const String& fileName, int64_t fileOffset, const IPosition& shape,
                                  const IPosition& tileShape, DataType dataType,
                                  const TSMOption& tsmOpt, bool writable, bool bigEndian)
-    : itsCube(0), itsTSM(0), itsWritable(writable), itsDataType(dataType) {
+    : itsCube(nullptr), itsTSM(nullptr), itsWritable(writable), itsDataType(dataType) {
   itsLocalPixelSize = ValType::getTypeSize(dataType);
   itsTSM = new TiledFileHelper(fileName, shape, dataType, tsmOpt, writable, bigEndian);
   itsCube = itsTSM->makeTSMCube(itsTSM->file(), shape, tileShape, Record(), fileOffset);

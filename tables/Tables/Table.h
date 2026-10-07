@@ -465,7 +465,7 @@ class Table {
 
   // Test if the object is null, i.e. does not reference a proper table.
   // This is the case if the default constructor is used.
-  bool isNull() const { return (baseTabPtr_p == 0 ? true : baseTabPtr_p->isNull()); }
+  bool isNull() const { return (baseTabPtr_p == nullptr ? true : baseTabPtr_p->isNull()); }
 
   // Throw an exception if the object is null, i.e.
   // if function isNull() is true.

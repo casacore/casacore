@@ -31,8 +31,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSFieldParse* MSFieldParse::thisMSFParser = 0x0;  // Global pointer to the parser object
-TableExprNode* MSFieldParse::node_p = 0x0;
+MSFieldParse* MSFieldParse::thisMSFParser = nullptr;  // Global pointer to the parser object
+TableExprNode* MSFieldParse::node_p = nullptr;
 TableExprNode MSFieldParse::columnAsTEN_p;
 Vector<int> MSFieldParse::idList;
 
@@ -52,8 +52,8 @@ MSFieldParse::MSFieldParse(const MSField& msFieldSubTable, const TableExprNode& 
 }
 
 void MSFieldParse::reset() {
-  if (MSFieldParse::node_p != 0x0) delete MSFieldParse::node_p;
-  MSFieldParse::node_p = 0x0;
+  if (MSFieldParse::node_p != nullptr) delete MSFieldParse::node_p;
+  MSFieldParse::node_p = nullptr;
   if (node_p) delete node_p;
   node_p = new TableExprNode();
   idList.resize(0);

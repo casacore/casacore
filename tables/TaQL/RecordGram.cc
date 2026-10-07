@@ -67,14 +67,14 @@ int RecordGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpRecordGram = 0;
+static const char* strpRecordGram = nullptr;
 static int posRecordGram = 0;
 
 // # Static pointer to the record when parsing the fields.
 // # Static pointer to the node holding the final expression tree.
-const RecordInterface* RecordGram::theirRecPtr = 0;
-TableExprNode* RecordGram::theirNodePtr = 0;
-const Table* RecordGram::theirTabPtr = 0;
+const RecordInterface* RecordGram::theirRecPtr = nullptr;
+TableExprNode* RecordGram::theirNodePtr = nullptr;
+const Table* RecordGram::theirTabPtr = nullptr;
 TaQLStyle RecordGram::theirTaQLStyle;
 std::mutex RecordGram::theirMutex;
 
@@ -300,13 +300,13 @@ Array<MVTime> RecordGram::expr2ArrayDate(const String& expr, const Record& vars)
 TableExprNode RecordGram::parse(const RecordInterface& record, const String& expression) {
   std::lock_guard<std::mutex> lock(theirMutex);
   theirRecPtr = &record;
-  theirTabPtr = 0;
+  theirTabPtr = nullptr;
   return doParse(expression);
 }
 
 TableExprNode RecordGram::parse(const Table& table, const String& expression) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  theirRecPtr = 0;
+  theirRecPtr = nullptr;
   theirTabPtr = &table;
   return doParse(expression);
 }
@@ -388,7 +388,7 @@ TableExprNode RecordGram::handleLiteral(RecordGramVal* val) {
 }
 
 TableExprNode RecordGram::handleField(const String& name) {
-  if (theirTabPtr == 0) {
+  if (theirTabPtr == nullptr) {
     return makeRecordExpr(*theirRecPtr, name);
   }
   return TableExprNode::keyCol(TableExprInfo(*theirTabPtr), name, Vector<String>());
@@ -396,12 +396,12 @@ TableExprNode RecordGram::handleField(const String& name) {
 
 TableExprNode RecordGram::handleFunc(const String& name, const TableExprNodeSet& arguments) {
   // The ROWNR function can only be used with tables.
-  if (theirTabPtr == 0) {
+  if (theirTabPtr == nullptr) {
     Vector<int> ignoreFuncs(1, TableExprFuncNode::rownrFUNC);
-    return TableParseFunc::makeFuncNode(0, name, arguments, ignoreFuncs, TableExprInfo(),
+    return TableParseFunc::makeFuncNode(nullptr, name, arguments, ignoreFuncs, TableExprInfo(),
                                         theirTaQLStyle);
   }
-  return TableParseFunc::makeFuncNode(0, name, arguments, Vector<int>(),
+  return TableParseFunc::makeFuncNode(nullptr, name, arguments, Vector<int>(),
                                       TableExprInfo(*theirTabPtr), theirTaQLStyle);
 }
 

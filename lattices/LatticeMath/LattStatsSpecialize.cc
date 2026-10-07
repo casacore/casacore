@@ -200,11 +200,11 @@ bool LattStatsSpecialize::minMax(float& dataMin, float& dataMax,
   dataMin = 1.e30;
   dataMax = -1.0e30;
   //
-  const float* pData = 0;
+  const float* pData = nullptr;
   bool deleteData;
   //
   if (pLattice->isMasked()) {
-    const bool* pMask = 0;
+    const bool* pMask = nullptr;
     bool deleteMask;
     //
     for (it.reset(); !it.atEnd(); it++) {

@@ -123,10 +123,10 @@ unsigned int LatticeFit::fitProfiles(MaskedLattice<float>* pFit, MaskedLattice<f
   LogIO os(LogOrigin("LatticeFit", "fitProfiles"));
   //
   IPosition inShape = in.shape();
-  if (pFit != 0) {
+  if (pFit != nullptr) {
     AlwaysAssert(inShape.isEqual(pFit->shape()), AipsError);
   }
-  if (pResid != 0) {
+  if (pResid != nullptr) {
     AlwaysAssert(inShape.isEqual(pResid->shape()), AipsError);
   }
 
@@ -136,10 +136,10 @@ unsigned int LatticeFit::fitProfiles(MaskedLattice<float>* pFit, MaskedLattice<f
   TiledLineStepper stepper(in.shape(), inTileShape, axis);
   RO_MaskedLatticeIterator<float> inIter(in, stepper);
   //
-  LatticeIterator<float>* pFitIter = 0;
-  LatticeIterator<bool>* pFitMaskIter = 0;
-  LatticeIterator<float>* pResidIter = 0;
-  LatticeIterator<bool>* pResidMaskIter = 0;
+  LatticeIterator<float>* pFitIter = nullptr;
+  LatticeIterator<bool>* pFitMaskIter = nullptr;
+  LatticeIterator<float>* pResidIter = nullptr;
+  LatticeIterator<bool>* pResidMaskIter = nullptr;
   //
   if (pFit) {
     pFitIter = new LatticeIterator<float>(*pFit, stepper);
@@ -155,7 +155,7 @@ unsigned int LatticeFit::fitProfiles(MaskedLattice<float>* pFit, MaskedLattice<f
   }
   //
   int nProfiles = inShape.product() / inIter.vectorCursor().nelements();
-  ProgressMeter* pProgress = 0;
+  ProgressMeter* pProgress = nullptr;
   double meterValue = 0.0;
   if (showProgress) {
     pProgress = new ProgressMeter(0.0, double(nProfiles), "Profile fitting", "Profiles fitted", "",

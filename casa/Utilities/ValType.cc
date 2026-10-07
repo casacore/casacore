@@ -286,8 +286,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         writeFunc = CanonicalConversion::getFromLocal(static_cast<double*>(0));
         break;
       default:
-        readFunc = 0;
-        writeFunc = 0;
+        readFunc = nullptr;
+        writeFunc = nullptr;
     }
   } else {
     switch (dt) {
@@ -350,8 +350,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         writeFunc = LECanonicalConversion::getFromLocal(static_cast<double*>(0));
         break;
       default:
-        readFunc = 0;
-        writeFunc = 0;
+        readFunc = nullptr;
+        writeFunc = nullptr;
     }
   }
 }
@@ -429,7 +429,7 @@ ObjCompareFunc* ValType::getCmpFunc(DataType dt) {
     default:
       break;
   }
-  return 0;
+  return nullptr;
 }
 
 // # Get the comparison object.

@@ -185,7 +185,8 @@ class Record : public RecordInterface {
   // That function can check the name and of data type of the new field
   // (for instance, the Table system uses it to ensure that table columns
   // and keywords have different names).
-  explicit Record(RecordType type, CheckFieldFunction* = 0, const void* checkArgument = 0);
+  explicit Record(RecordType type, CheckFieldFunction* = nullptr,
+                  const void* checkArgument = nullptr);
 
   // Create a record with the given description. If it is not possible to
   // create all fields (for example, if a field with an unsupported data
@@ -194,8 +195,8 @@ class Record : public RecordInterface {
   // All fields are checked by the field checking function (if defined)
   // (for instance, the Table system uses it to ensure that table columns
   // and keywords have different names).
-  explicit Record(const RecordDesc& description, RecordType type = Fixed, CheckFieldFunction* = 0,
-                  const void* checkArgument = 0);
+  explicit Record(const RecordDesc& description, RecordType type = Fixed,
+                  CheckFieldFunction* = nullptr, const void* checkArgument = nullptr);
 
   // Create a copy of other using copy semantics.
   Record(const Record& other);

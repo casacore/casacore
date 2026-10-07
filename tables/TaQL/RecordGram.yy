@@ -615,18 +615,18 @@ subscripts: subscripts COMMA subsrange {
 	   }
          | subscripts COMMA {
                $$ = $1;
-	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	       $$->add (TableExprNodeSetElem (nullptr, nullptr, nullptr));
 	   }
          | COMMA {
 	       $$ = new TableExprNodeSet;
                RecordGram::addToken ($$);
-	       $$->add (TableExprNodeSetElem (0, 0, 0));
-	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	       $$->add (TableExprNodeSetElem (nullptr, nullptr, nullptr));
+	       $$->add (TableExprNodeSetElem (nullptr, nullptr, nullptr));
 	   }
          | COMMA subsrange {
 	       $$ = new TableExprNodeSet;
                RecordGram::addToken ($$);
-	       $$->add (TableExprNodeSetElem (0, 0, 0));
+	       $$->add (TableExprNodeSetElem (nullptr, nullptr, nullptr));
 	       $$->add (*$2);
 	       RecordGram::deleteToken ($2);
 	   }
@@ -649,7 +649,7 @@ subsrange: arithexpr {
          ;
 
 colonrange: arithexpr COLON arithexpr {
-               $$ = new TableExprNodeSetElem ($1, $3, 0);
+               $$ = new TableExprNodeSetElem ($1, $3, nullptr);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
@@ -663,29 +663,29 @@ colonrange: arithexpr COLON arithexpr {
             }
          |  arithexpr COLON {
 	       TableExprNode incr(1);
-               $$ = new TableExprNodeSetElem ($1, 0, &incr);
+               $$ = new TableExprNodeSetElem ($1, nullptr, &incr);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
             }
          |  arithexpr COLON COLON arithexpr {
-               $$ = new TableExprNodeSetElem ($1, 0, $4);
+               $$ = new TableExprNodeSetElem ($1, nullptr, $4);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($4);
             }
          |  COLON arithexpr {
-               $$ = new TableExprNodeSetElem (0, $2, 0);
+               $$ = new TableExprNodeSetElem (nullptr, $2, nullptr);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
             }
          |  COLON arithexpr COLON arithexpr {
-               $$ = new TableExprNodeSetElem (0, $2, $4);
+               $$ = new TableExprNodeSetElem (nullptr, $2, $4);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
             }
          |  COLON COLON arithexpr {
-               $$ = new TableExprNodeSetElem (0, 0, $3);
+               $$ = new TableExprNodeSetElem (nullptr, nullptr, $3);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($3);
             }

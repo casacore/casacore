@@ -121,7 +121,7 @@ void BaseTable::changeTiledDataOnly() {
 }
 
 void BaseTable::scratchCallback(bool isScratch, const String& oldName) const {
-  if (Table::scratchCallback_p != 0) {
+  if (Table::scratchCallback_p != nullptr) {
     if (isScratch) {
       if (oldName == name_p) {
         Table::scratchCallback_p(name_p, isScratch, "");

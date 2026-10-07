@@ -189,7 +189,7 @@ class MeasIERS {
   static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
                        RORecordFieldPtr<double> rfp[], String &vs, double &dt, int N,
                        const String rfn[], const String &name, const String &rc, const String &dir,
-                       const Table *tabin = 0);
+                       const Table *tabin = nullptr);
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // reqcols gives the names (in order) of the columns which must be present.
@@ -206,7 +206,7 @@ class MeasIERS {
   static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
                        Vector<RORecordFieldPtr<double>> &rfp, String &vs, double &dt,
                        const Vector<String> &reqcols, Vector<String> &optcols, const String &name,
-                       const String &rc, const String &dir, const Table *tabin = 0);
+                       const String &rc, const String &dir, const Table *tabin = nullptr);
 
   // A helper function for getTable() which is conceivably usable outside it,
   // for finding a table in the same way, but not requiring it to fit the IERS

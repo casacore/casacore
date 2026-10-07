@@ -66,7 +66,7 @@ class ProgressMeter;
 class LatticeHistProgress : public LatticeProgress {
  public:
   // Constructor makes a null object
-  LatticeHistProgress() : itsMeter(0) {};
+  LatticeHistProgress() : itsMeter(nullptr) {};
 
   // Destructor deletes the ProgressMeter pointer
   virtual ~LatticeHistProgress();

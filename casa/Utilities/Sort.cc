@@ -136,11 +136,11 @@ uint64_t SortKey::tryGenSort(Vector<uint64_t>& indexVector, uint64_t nrrec, int 
   return 0;
 }
 
-Sort::Sort() : nrkey_p(0), data_p(0), size_p(0), order_p(0) {}
+Sort::Sort() : nrkey_p(0), data_p(nullptr), size_p(0), order_p(0) {}
 
 Sort::Sort(const void* dat, unsigned int sz) : nrkey_p(0), data_p(dat), size_p(sz), order_p(0) {}
 
-Sort::Sort(const Sort& that) : nrkey_p(0), data_p(0), size_p(0), order_p(0) { copy(that); }
+Sort::Sort(const Sort& that) : nrkey_p(0), data_p(nullptr), size_p(0), order_p(0) { copy(that); }
 
 Sort::~Sort() {
   for (size_t i = 0; i < nrkey_p; i++) {
@@ -177,13 +177,13 @@ void Sort::sortKey(const void* dat, const std::shared_ptr<BaseCompare>& cmp, uns
   addKey(new SortKey(dat, cmp, inc, ord));
 }
 void Sort::sortKey(unsigned int off, DataType dt, Order ord) {
-  if (data_p == 0) {
+  if (data_p == nullptr) {
     throw SortNoData();
   }
   addKey((char*)data_p + off, dt, size_p, ord);
 }
 void Sort::sortKey(unsigned int off, const std::shared_ptr<BaseCompare>& cmp, Order ord) {
-  if (data_p == 0) {
+  if (data_p == nullptr) {
     throw SortNoData();
   }
   addKey(new SortKey((char*)data_p + off, cmp, size_p, ord));

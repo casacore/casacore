@@ -659,10 +659,10 @@ class Array : public ArrayBase {
     // It also acts as the default constructor.
     explicit BaseIteratorSTL(const T* end = 0)
         : itsPos(end),
-          itsLineEnd(0),
+          itsLineEnd(nullptr),
           itsLineIncr(0),
           itsLineAxis(0),
-          itsArray(0),
+          itsArray(nullptr),
           itsContig(false) {}
 
     void nextElem() {
@@ -931,7 +931,7 @@ class Array : public ArrayBase {
   // Set the end iterator.
   void setEndIter() {
     end_p = (nels_p == 0
-                 ? 0
+                 ? nullptr
                  : (contiguous_p ? begin_p + nels_p
                                  : begin_p + size_t(length_p(ndim() - 1)) * steps_p(ndim() - 1)));
   }

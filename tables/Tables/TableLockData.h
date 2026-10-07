@@ -67,7 +67,8 @@ class TableLockData : public TableLock {
   typedef MemoryIO* ReleaseCallBack(void* parentObject, bool always);
 
   // Construct from the given TableLock object.
-  TableLockData(const TableLock& lockOptions, ReleaseCallBack* = 0, void* releaseParentObject = 0);
+  TableLockData(const TableLock& lockOptions, ReleaseCallBack* = nullptr,
+                void* releaseParentObject = nullptr);
 
   ~TableLockData();
 
@@ -122,7 +123,7 @@ class TableLockData : public TableLock {
 };
 
 inline bool TableLockData::hasLock(FileLocker::LockType type) const {
-  return (itsLock == 0 ? true : itsLock->hasLock(type));
+  return (itsLock == nullptr ? true : itsLock->hasLock(type));
 }
 inline void TableLockData::autoRelease(bool always) {
   if (option() == AutoLocking && itsLock->inspect(always)) {

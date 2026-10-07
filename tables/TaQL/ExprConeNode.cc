@@ -110,7 +110,7 @@ bool TableExprConeNode::getBool(const TableExprId& id) {
       // Radius can be a single value or an array.
       int nrrad = 1;
       double radval;
-      const double* rad = 0;
+      const double* rad = nullptr;
       Array<double> radArr;
       if (operands()[2]->valueType() == VTArray) {
         radArr = operands()[2]->getArrayDouble(id).array();
@@ -233,7 +233,7 @@ int64_t TableExprConeNode::getInt(const TableExprId& id) {
       // Radius can be a single value or an array.
       int nrrad = 1;
       double radval;
-      const double* rad = 0;
+      const double* rad = nullptr;
       Array<double> radArr;
       if (operands()[2]->valueType() == VTArray) {
         radArr = operands()[2]->getArrayDouble(id).array();
@@ -416,7 +416,7 @@ MArray<bool> TableExprConeNodeArray::getArrayBool(const TableExprId& id) {
       // Radius can be a single value or an array.
       int nrrad = 1;
       double radval;
-      const double* rad = 0;
+      const double* rad = nullptr;
       Array<double> radArr;
       if (operands()[2]->valueType() == VTArray) {
         radArr = operands()[2]->getArrayDouble(id).array();

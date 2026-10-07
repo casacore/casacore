@@ -981,17 +981,17 @@ limitoff:  {   /* no limit,offset */
 	   }
          | LIMIT colonrangeinterval {
 	       $$ = new TaQLNode(
-	            new TaQLLimitOffNodeRep (*$2, 0));
+	            new TaQLLimitOffNodeRep (*$2, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | LIMIT orexpr {
 	       $$ = new TaQLNode(
-	            new TaQLLimitOffNodeRep (*$2, 0));
+	            new TaQLLimitOffNodeRep (*$2, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | OFFSET orexpr {
 	       $$ = new TaQLNode(
-	            new TaQLLimitOffNodeRep (0, *$2));
+	            new TaQLLimitOffNodeRep (nullptr, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | LIMIT orexpr OFFSET orexpr {
@@ -2067,20 +2067,20 @@ subscripts: subscripts COMMA subsrange {
 	   }
          | subscripts COMMA {
                $$ = $1;
-	       $$->add (new TaQLIndexNodeRep(0, 0, 0));
+	       $$->add (new TaQLIndexNodeRep(nullptr, nullptr, nullptr));
 	   }
          | COMMA {
 	       $$ = new TaQLMultiNode(false);
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	       $$->setPPFix ("[", "]");
-	       $$->add (new TaQLIndexNodeRep(0, 0, 0));
-	       $$->add (new TaQLIndexNodeRep(0, 0, 0));
+	       $$->add (new TaQLIndexNodeRep(nullptr, nullptr, nullptr));
+	       $$->add (new TaQLIndexNodeRep(nullptr, nullptr, nullptr));
 	   }
          | COMMA subsrange {
 	       $$ = new TaQLMultiNode(false);
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	       $$->setPPFix ("[", "]");
-	       $$->add (new TaQLIndexNodeRep(0, 0, 0));
+	       $$->add (new TaQLIndexNodeRep(nullptr, nullptr, nullptr));
 	       $$->add (*$2);
 	   }
          | subsingle {
@@ -2095,7 +2095,7 @@ subscripts: subscripts COMMA subsrange {
    giving a boolean mask. Hence it accepts an orexpr instead of arithexpr. */
 subsingle: orexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, 0));
+                    new TaQLIndexNodeRep (*$1, nullptr, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | colonrangeindex {
@@ -2106,7 +2106,7 @@ subsingle: orexpr {
 /* An array axis subscript is a single value or a range */
 subsrange: arithexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, 0));
+                    new TaQLIndexNodeRep (*$1, nullptr, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | colonrangeindex {
@@ -2123,17 +2123,17 @@ colonrangeinterval: colonrange {
            }
          | arithexpr COLON {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, 0));
+                    new TaQLIndexNodeRep (*$1, nullptr, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr COLON COLON {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, 0));
+                    new TaQLIndexNodeRep (*$1, nullptr, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr COLON COLON arithexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, *$4));
+                    new TaQLIndexNodeRep (*$1, nullptr, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -2145,12 +2145,12 @@ colonrangeindex: colonrange {
            }
          | arithexpr COLON {
 	       $$ = new TaQLNode (new TaQLIndexNodeRep
-                    (*$1, TaQLConstNode(new TaQLConstNodeRep(int64_t(Slicer::MimicSource))), 0));
+                    (*$1, TaQLConstNode(new TaQLConstNodeRep(int64_t(Slicer::MimicSource))), nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr COLON COLON {
 	       $$ = new TaQLNode (new TaQLIndexNodeRep
-                    (*$1, TaQLConstNode(new TaQLConstNodeRep(int64_t(Slicer::MimicSource))), 0));
+                    (*$1, TaQLConstNode(new TaQLConstNodeRep(int64_t(Slicer::MimicSource))), nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr COLON COLON arithexpr {
@@ -2164,12 +2164,12 @@ colonrangeindex: colonrange {
    the last colon if end and/or step is not given. */
 colonrange: arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, *$3, 0));
+                    new TaQLIndexNodeRep (*$1, *$3, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr COLON arithexpr COLON {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, *$3, 0));
+                    new TaQLIndexNodeRep (*$1, *$3, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr COLON arithexpr COLON arithexpr {
@@ -2179,22 +2179,22 @@ colonrange: arithexpr COLON arithexpr {
            }
          | COLON arithexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (0, *$2, 0));
+                    new TaQLIndexNodeRep (nullptr, *$2, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | COLON arithexpr COLON {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (0, *$2, 0));
+                    new TaQLIndexNodeRep (nullptr, *$2, nullptr));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | COLON arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (0, *$2, *$4));
+                    new TaQLIndexNodeRep (nullptr, *$2, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | COLON COLON arithexpr {
 	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (0, 0, *$3));
+                    new TaQLIndexNodeRep (nullptr, nullptr, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;

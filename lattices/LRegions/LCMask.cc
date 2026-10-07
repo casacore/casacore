@@ -36,14 +36,14 @@ LCMask::LCMask() {}
 LCMask::LCMask(const IPosition& lattShape)
     : LCRegionSingle(lattShape),
       itsBox(IPosition(lattShape.nelements(), 0), lattShape - 1, lattShape),
-      itsMask(0) {
+      itsMask(nullptr) {
   setBoundingBox(itsBox.boundingBox());
   itsMask = new TempLattice<bool>(lattShape);
   setMaskPtr(*itsMask);
 }
 
 LCMask::LCMask(const IPosition& maskShape, const LCBox& box)
-    : LCRegionSingle(box.latticeShape()), itsBox(box), itsMask(0) {
+    : LCRegionSingle(box.latticeShape()), itsBox(box), itsMask(nullptr) {
   // Check if box shape and mask shape are equal.
   if (itsBox.shape() != maskShape) {
     throw(
@@ -58,7 +58,7 @@ LCMask::LCMask(const IPosition& maskShape, const LCBox& box)
 LCMask::LCMask(Lattice<bool>& mask)
     : LCRegionSingle(mask.shape()),
       itsBox(IPosition(mask.shape().nelements(), 0), mask.shape() - 1, mask.shape()),
-      itsMask(0) {
+      itsMask(nullptr) {
   setBoundingBox(itsBox.boundingBox());
   itsMask = mask.clone();
   setMaskPtr(*itsMask);
@@ -77,7 +77,8 @@ LCMask::LCMask(Lattice<bool>& mask, const LCBox& box)
   setMaskPtr(*itsMask);
 }
 
-LCMask::LCMask(const LCMask& other) : LCRegionSingle(other), itsBox(other.itsBox), itsMask(0) {
+LCMask::LCMask(const LCMask& other)
+    : LCRegionSingle(other), itsBox(other.itsBox), itsMask(nullptr) {
   itsMask = other.itsMask->clone();
   setMaskPtr(*itsMask);
 }
@@ -89,7 +90,7 @@ LCMask& LCMask::operator=(const LCMask& that) {
     LCRegionSingle::operator=(that);
     itsBox = that.itsBox;
     delete itsMask;
-    itsMask = 0;
+    itsMask = nullptr;
     itsMask = that.itsMask->clone();
     setMaskPtr(*itsMask);
   }
@@ -158,7 +159,7 @@ void LCMask::reopen() { itsMask->reopen(); }
 LCRegion* LCMask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCMask cannot be translated.
   throw(AipsError("LCMask::translate is not supported"));
-  return 0;
+  return nullptr;
 }
 
 String LCMask::className() { return "LCMask"; }

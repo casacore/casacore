@@ -42,7 +42,7 @@ template <class T>
 ObjectStack<T>::~ObjectStack() {
   for (unsigned int i = 0; i < stack_p.size(); ++i) {
     delete stack_p[i];
-    stack_p[i] = 0;
+    stack_p[i] = nullptr;
   }
 }
 

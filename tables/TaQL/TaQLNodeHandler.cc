@@ -309,10 +309,10 @@ TaQLNodeResult TaQLNodeHandler::visitIndexNode(const TaQLIndexNodeRep& node) {
   TaQLNodeResult start = visitNode(node.itsStart);
   TaQLNodeResult end = visitNode(node.itsEnd);
   TaQLNodeResult incr = visitNode(node.itsIncr);
-  const TableExprNode* se = start.isValid() ? &(getHR(start).getExpr()) : 0;
-  const TableExprNode* ee = end.isValid() ? &(getHR(end).getExpr()) : 0;
-  const TableExprNode* ie = incr.isValid() ? &(getHR(incr).getExpr()) : 0;
-  TableExprNodeSetElem* elem = 0;
+  const TableExprNode* se = start.isValid() ? &(getHR(start).getExpr()) : nullptr;
+  const TableExprNode* ee = end.isValid() ? &(getHR(end).getExpr()) : nullptr;
+  const TableExprNode* ie = incr.isValid() ? &(getHR(incr).getExpr()) : nullptr;
+  TableExprNodeSetElem* elem = nullptr;
   // A single boolean node indicates a mask.
   if (se && !ee && !ie && se->dataType() == TpBool) {
     elem = new TableExprNodeSetElem(*se);
@@ -717,7 +717,7 @@ TaQLNodeResult TaQLNodeHandler::visitRecFldNode(const TaQLRecFldNodeRep& node) {
   } else if (!node.itsValues.isValid()) {
     // Invalid node means an empty vector.
     vh = ValueHolder(1, true);
-  } else if (node.itsValues.nodeType() == TaQLNode_Multi && node.itsValues.getRep() != 0 &&
+  } else if (node.itsValues.nodeType() == TaQLNode_Multi && node.itsValues.getRep() != nullptr &&
              !((const TaQLMultiNodeRep*)(node.itsValues.getRep()))->itsIsSetOrArray) {
     vh = ValueHolder(handleMultiRecFld(node.itsValues));
   } else {

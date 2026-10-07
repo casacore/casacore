@@ -59,8 +59,8 @@ BucketFile::BucketFile(const String& fileName, unsigned int bufSizeFile, bool ma
       bufSize_p(bufSizeFile),
       fd_p(-1),
       file_p(),
-      mappedFile_p(0),
-      bufferedFile_p(0),
+      mappedFile_p(nullptr),
+      bufferedFile_p(nullptr),
       mfile_p(mfile) {
   // Create the file.
   if (mfile_p) {
@@ -82,8 +82,8 @@ BucketFile::BucketFile(const String& fileName, bool isWritable, unsigned int buf
       bufSize_p(bufSizeFile),
       fd_p(-1),
       file_p(),
-      mappedFile_p(0),
-      bufferedFile_p(0),
+      mappedFile_p(nullptr),
+      bufferedFile_p(nullptr),
       mfile_p(mfile) {
   if (mfile_p) {
     isMapped_p = false;
@@ -135,9 +135,9 @@ void BucketFile::createMapBuf() {
 
 void BucketFile::deleteMapBuf() {
   delete mappedFile_p;
-  mappedFile_p = 0;
+  mappedFile_p = nullptr;
   delete bufferedFile_p;
-  bufferedFile_p = 0;
+  bufferedFile_p = nullptr;
 }
 
 void BucketFile::remove() {
@@ -184,7 +184,7 @@ unsigned int BucketFile::write(const void* buffer, unsigned int length) {
 }
 
 void BucketFile::seek(int64_t offset) {
-  AlwaysAssert(bufferedFile_p == 0, AipsError);
+  AlwaysAssert(bufferedFile_p == nullptr, AipsError);
   file_p->seek(offset, ByteIO::Begin);
 }
 

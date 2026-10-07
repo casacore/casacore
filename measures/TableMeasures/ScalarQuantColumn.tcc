@@ -41,18 +41,19 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-ScalarQuantColumn<T>::ScalarQuantColumn() : itsDataCol(0), itsUnitsCol(0), itsConvOut(false) {}
+ScalarQuantColumn<T>::ScalarQuantColumn()
+    : itsDataCol(nullptr), itsUnitsCol(nullptr), itsConvOut(false) {}
 
 template <class T>
 ScalarQuantColumn<T>::ScalarQuantColumn(const Table& tab, const String& columnName)
-    : itsDataCol(0), itsUnitsCol(0), itsConvOut(false) {
+    : itsDataCol(nullptr), itsUnitsCol(nullptr), itsConvOut(false) {
   init(tab, columnName);
   itsUnitOut = itsUnit;
 }
 
 template <class T>
 ScalarQuantColumn<T>::ScalarQuantColumn(const Table& tab, const String& columnName, const Unit& u)
-    : itsDataCol(0), itsUnitsCol(0) {
+    : itsDataCol(nullptr), itsUnitsCol(nullptr) {
   init(tab, columnName);
   itsUnitOut = u;
   itsConvOut = (!itsUnitOut.getName().empty());
@@ -66,14 +67,14 @@ ScalarQuantColumn<T>::~ScalarQuantColumn() {
 template <class T>
 void ScalarQuantColumn<T>::cleanUp() {
   delete itsDataCol;
-  itsDataCol = 0;
+  itsDataCol = nullptr;
   delete itsUnitsCol;
-  itsUnitsCol = 0;
+  itsUnitsCol = nullptr;
 }
 
 template <class T>
 ScalarQuantColumn<T>::ScalarQuantColumn(const ScalarQuantColumn<T>& that)
-    : itsDataCol(0), itsUnitsCol(0) {
+    : itsDataCol(nullptr), itsUnitsCol(nullptr) {
   reference(that);
 }
 
@@ -102,10 +103,10 @@ void ScalarQuantColumn<T>::reference(const ScalarQuantColumn<T>& that) {
   itsUnit = that.itsUnit;
   itsUnitOut = that.itsUnitOut;
   itsConvOut = that.itsConvOut;
-  if (that.itsDataCol != 0) {
+  if (that.itsDataCol != nullptr) {
     itsDataCol = new ScalarColumn<T>(*that.itsDataCol);
   }
-  if (that.itsUnitsCol != 0) {
+  if (that.itsUnitsCol != nullptr) {
     itsUnitsCol = new ScalarColumn<String>(*that.itsUnitsCol);
   }
 }
@@ -132,7 +133,7 @@ void ScalarQuantColumn<T>::getData(rownr_t rownr, Quantum<T>& q) const {
   // Quantums are created from Ts stored in itsDataCol and Units
   // in itsUnitsCol, if units are variable, or itsUnit if non-variable.
   q.setValue((*itsDataCol)(rownr));
-  if (itsUnitsCol != 0) {
+  if (itsUnitsCol != nullptr) {
     q.setUnit((*itsUnitsCol)(rownr));
   } else {
     q.setUnit(itsUnit);
@@ -186,7 +187,7 @@ void ScalarQuantColumn<T>::put(rownr_t rownr, const Quantum<T>& q) {
   // unit component in itsUnitsCol unless Units are non-variable in
   // which case the Unit component is ignored (i.e., the Quantum's unit
   // is not checked against the Column's unit).
-  if (itsUnitsCol != 0) {
+  if (itsUnitsCol != nullptr) {
     itsUnitsCol->put(rownr, q.getUnit());
     itsDataCol->put(rownr, q.getValue());
   } else {

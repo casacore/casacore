@@ -42,7 +42,7 @@ FilebufIO::FilebufIO()
       itsFile(-1),
       itsBufSize(0),
       itsBufLen(0),
-      itsBuffer(0),
+      itsBuffer(nullptr),
       itsBufOffset(-1),
       itsOffset(-1),
       itsSeekOffset(-1),
@@ -52,7 +52,7 @@ FilebufIO::FilebufIO(int fd, unsigned int bufferSize)
     : itsFile(-1),
       itsBufSize(0),
       itsBufLen(0),
-      itsBuffer(0),
+      itsBuffer(nullptr),
       itsBufOffset(-1),
       itsOffset(-1),
       itsSeekOffset(-1),
@@ -77,7 +77,7 @@ void FilebufIO::setBuffer(int64_t bufSize) {
   if (itsBuffer) {
     flush();
     delete[] itsBuffer;
-    itsBuffer = 0;
+    itsBuffer = nullptr;
     itsBufSize = 0;
     itsBufLen = 0;
     itsBufOffset = -1;

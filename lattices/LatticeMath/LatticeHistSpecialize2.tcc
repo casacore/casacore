@@ -60,7 +60,7 @@ void LatticeHistSpecialize::process(const T* pInData, const bool* pInMask, Block
   unsigned int rBin;
   unsigned int index;
   //
-  if (pInMask == 0) {
+  if (pInMask == nullptr) {
     for (unsigned int i = 0; i < nrval; i++) {
       datum = *pInData;
       if (LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum) > 0.5) {

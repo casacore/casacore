@@ -59,9 +59,9 @@ ISMBucket::ISMBucket(ISMBase* parent, const char* bucketStorage)
   indexLeng_p = uIntSize_p + nrcol * uIntSize_p;
   // Allocate a buffer for the data.
   data_p = new char[stmanPtr_p->bucketSize()];
-  AlwaysAssert(data_p != 0, AipsError);
+  AlwaysAssert(data_p != nullptr, AipsError);
   // Read the row index for all columns (for an existing bucket).
-  if (bucketStorage != 0) {
+  if (bucketStorage != nullptr) {
     read(bucketStorage);
   }
 }
@@ -257,7 +257,7 @@ unsigned int ISMBucket::insertData(const char* data, unsigned int leng) {
 
 char* ISMBucket::readCallBack(void* owner, const char* bucketStorage) {
   ISMBucket* bucket = new ISMBucket((ISMBase*)owner, bucketStorage);
-  AlwaysAssert(bucket != 0, AipsError);
+  AlwaysAssert(bucket != nullptr, AipsError);
   return (char*)bucket;
 }
 void ISMBucket::writeCallBack(void*, char* bucketStorage, const char* local) {
@@ -265,8 +265,8 @@ void ISMBucket::writeCallBack(void*, char* bucketStorage, const char* local) {
 }
 void ISMBucket::deleteCallBack(void*, char* bucket) { delete (ISMBucket*)bucket; }
 char* ISMBucket::initCallBack(void* owner) {
-  ISMBucket* bucket = new ISMBucket((ISMBase*)owner, 0);
-  AlwaysAssert(bucket != 0, AipsError);
+  ISMBucket* bucket = new ISMBucket((ISMBase*)owner, nullptr);
+  AlwaysAssert(bucket != nullptr, AipsError);
   return (char*)bucket;
 }
 
@@ -405,8 +405,8 @@ rownr_t ISMBucket::split(ISMBucket*& left, ISMBucket*& right, Block<bool>& dupli
   AlwaysAssert(bucketNrrow > 1, AipsError);
   unsigned int nrcol = stmanPtr_p->ncolumn();
   duplicated.resize(nrcol);
-  left = new ISMBucket(stmanPtr_p, 0);
-  right = new ISMBucket(stmanPtr_p, 0);
+  left = new ISMBucket(stmanPtr_p, nullptr);
+  right = new ISMBucket(stmanPtr_p, nullptr);
   rownr_t splitRownr;
   // Try a simple split if the current bucket is the last one.
   // (Then we usually add to the end of the file).

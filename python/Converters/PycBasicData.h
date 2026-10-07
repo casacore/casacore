@@ -81,7 +81,7 @@ struct casa_string_from_python_str {
 
   static void* convertible(PyObject* obj_ptr) {
 #ifdef IS_PY3K
-    if (!PyUnicode_Check(obj_ptr)) return 0;
+    if (!PyUnicode_Check(obj_ptr)) return nullptr;
 #else
     if (!PyString_Check(obj_ptr) && !PyUnicode_Check(obj_ptr)) return 0;
 #endif
@@ -110,7 +110,7 @@ struct casa_string_from_python_str {
     } else {
       boost::python::throw_error_already_set();
     }
-    if (value == 0) boost::python::throw_error_already_set();
+    if (value == nullptr) boost::python::throw_error_already_set();
     void* storage =
         ((boost::python::converter::rvalue_from_python_storage<String>*)data)->storage.bytes;
     new (storage) String(value);
@@ -371,7 +371,7 @@ struct from_python_sequence {
     handle<> py_hdl(obj_ptr);
     if (PyErr_Occurred()) {
       PyErr_Clear();
-      return 0;
+      return nullptr;
     }
     object py_obj(py_hdl);
     incref(obj_ptr);  // incr refcount, because ~object decrements it
@@ -383,7 +383,7 @@ struct from_python_sequence {
 #endif
         || PyUnicode_Check(obj_ptr)) {
       extract<container_element_type> elem_proxy(py_obj);
-      if (!elem_proxy.check()) return 0;
+      if (!elem_proxy.check()) return nullptr;
       return obj_ptr;
     }
     // An array scalar is accepted.
@@ -394,17 +394,17 @@ struct from_python_sequence {
     // It can be a numarray/numpy scalar in which case
     // it fills py_obj with a flattened array.
     if (!getSeqObject(py_obj)) {
-      return 0;
+      return nullptr;
     }
     // Check the sequence.
     // It must be convertible to an iterator.
     handle<> obj_iter(allow_null(PyObject_GetIter(py_obj.ptr())));
     if (!obj_iter.get()) {
       PyErr_Clear();
-      return 0;
+      return nullptr;
     }
     if (!check_convertibility(py_obj.ptr())) {
-      return 0;
+      return nullptr;
     }
     return obj_ptr;
   }

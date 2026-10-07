@@ -43,18 +43,18 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn()
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0), itsConvOut(false) {}
+    : itsDataCol(nullptr), itsArrUnitsCol(nullptr), itsScaUnitsCol(nullptr), itsConvOut(false) {}
 
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName)
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0), itsConvOut(false) {
+    : itsDataCol(nullptr), itsArrUnitsCol(nullptr), itsScaUnitsCol(nullptr), itsConvOut(false) {
   init(tab, columnName);
   itsUnitOut = itsUnit;
 }
 
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName, const Unit& u)
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0) {
+    : itsDataCol(nullptr), itsArrUnitsCol(nullptr), itsScaUnitsCol(nullptr) {
   init(tab, columnName);
   itsUnitOut.resize(1);
   itsUnitOut(0) = u;
@@ -64,7 +64,7 @@ ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName,
                                       const Vector<Unit>& u)
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0) {
+    : itsDataCol(nullptr), itsArrUnitsCol(nullptr), itsScaUnitsCol(nullptr) {
   init(tab, columnName);
   itsUnitOut.resize(u.nelements());
   itsUnitOut = u;
@@ -79,7 +79,7 @@ ArrayQuantColumn<T>::ArrayQuantColumn(const Table& tab, const String& columnName
 
 template <class T>
 ArrayQuantColumn<T>::ArrayQuantColumn(const ArrayQuantColumn<T>& that)
-    : itsDataCol(0), itsArrUnitsCol(0), itsScaUnitsCol(0) {
+    : itsDataCol(nullptr), itsArrUnitsCol(nullptr), itsScaUnitsCol(nullptr) {
   reference(that);
 }
 
@@ -91,11 +91,11 @@ ArrayQuantColumn<T>::~ArrayQuantColumn() {
 template <class T>
 void ArrayQuantColumn<T>::cleanUp() {
   delete itsDataCol;
-  itsDataCol = 0;
+  itsDataCol = nullptr;
   delete itsArrUnitsCol;
-  itsArrUnitsCol = 0;
+  itsArrUnitsCol = nullptr;
   delete itsScaUnitsCol;
-  itsScaUnitsCol = 0;
+  itsScaUnitsCol = nullptr;
 }
 
 template <class T>
@@ -128,13 +128,13 @@ void ArrayQuantColumn<T>::reference(const ArrayQuantColumn<T>& that) {
   itsUnit = that.itsUnit;
   itsUnitOut = that.itsUnitOut;
   itsConvOut = that.itsConvOut;
-  if (that.itsDataCol != 0) {
+  if (that.itsDataCol != nullptr) {
     itsDataCol = new ArrayColumn<T>(*that.itsDataCol);
   }
-  if (that.itsArrUnitsCol != 0) {
+  if (that.itsArrUnitsCol != nullptr) {
     itsArrUnitsCol = new ArrayColumn<String>(*that.itsArrUnitsCol);
   }
-  if (that.itsScaUnitsCol != 0) {
+  if (that.itsScaUnitsCol != nullptr) {
     itsScaUnitsCol = new ScalarColumn<String>(*that.itsScaUnitsCol);
   }
 }
@@ -187,15 +187,15 @@ void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, bool resi
   bool deleteQuant;
   Quantum<T>* q_p = q.getStorage(deleteQuant);
 
-  const String* u_p = 0;
+  const String* u_p = nullptr;
   bool deleteUnits;
   Array<String> tmpUnitsCol;
   Vector<Unit> localUnit(itsUnit);
-  if (itsArrUnitsCol != 0) {
+  if (itsArrUnitsCol != nullptr) {
     Array<String> tmp = (*itsArrUnitsCol)(rownr);
     tmpUnitsCol.reference(tmp);
     u_p = tmpUnitsCol.getStorage(deleteUnits);
-  } else if (itsScaUnitsCol != 0) {
+  } else if (itsScaUnitsCol != nullptr) {
     localUnit.resize(1);
     localUnit(0) = (*itsScaUnitsCol)(rownr);
   }
@@ -204,7 +204,7 @@ void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, bool resi
   unsigned int n = tmpDataCol.nelements();
   for (unsigned int i = 0; i < n; i++) {
     q_p[i].setValue(d_p[i]);
-    if (itsArrUnitsCol != 0) {
+    if (itsArrUnitsCol != nullptr) {
       q_p[i].setUnit(u_p[i]);
     } else {
       q_p[i].setUnit(localUnit(i % nrun));
@@ -213,7 +213,7 @@ void ArrayQuantColumn<T>::getData(rownr_t rownr, Array<Quantum<T>>& q, bool resi
 
   tmpDataCol.freeStorage(d_p, deleteData);
   q.putStorage(q_p, deleteQuant);
-  if (itsArrUnitsCol != 0) {
+  if (itsArrUnitsCol != nullptr) {
     tmpUnitsCol.freeStorage(u_p, deleteUnits);
   }
 }
@@ -323,10 +323,10 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   if (n == 0) {
     Array<T> arr;
     itsDataCol->put(rownr, arr);
-    if (itsArrUnitsCol != 0) {
+    if (itsArrUnitsCol != nullptr) {
       Array<String> arru;
       itsArrUnitsCol->put(rownr, arru);
-    } else if (itsScaUnitsCol != 0) {
+    } else if (itsScaUnitsCol != nullptr) {
       itsScaUnitsCol->put(rownr, String());
     }
     return;
@@ -348,10 +348,10 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   String* u_p;
   Array<String> unitsArr;
   Vector<Unit> localUnit(itsUnit);
-  if (itsArrUnitsCol != 0) {
+  if (itsArrUnitsCol != nullptr) {
     unitsArr.resize(q.shape());
     u_p = unitsArr.getStorage(deleteUnits);
-  } else if (itsScaUnitsCol != 0) {
+  } else if (itsScaUnitsCol != nullptr) {
     // Take the value for unit from the first entry in q.  This
     // is safe because we know here that q contains at least 1 entry.
     localUnit.resize(1);
@@ -363,7 +363,7 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   // Copy the value component of each quantum into the local data array.
   // If using an array to store units, copy quantum unit to local unit array
   for (unsigned int i = 0; i < n; i++) {
-    if (itsArrUnitsCol != 0) {
+    if (itsArrUnitsCol != nullptr) {
       u_p[i] = q_p[i].getFullUnit().getName();
       d_p[i] = q_p[i].getValue();
     } else {
@@ -375,7 +375,7 @@ void ArrayQuantColumn<T>::put(rownr_t rownr, const Array<Quantum<T>>& q) {
   // update the real columns.
   dataArr.putStorage(d_p, deleteData);
   itsDataCol->put(rownr, dataArr);
-  if (itsArrUnitsCol != 0) {
+  if (itsArrUnitsCol != nullptr) {
     unitsArr.putStorage(u_p, deleteUnits);
     itsArrUnitsCol->put(rownr, unitsArr);
   }

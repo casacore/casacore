@@ -85,7 +85,7 @@ int main(int argc, const char* argv[]) {
     int maxMBInMemory = -1;
     if (onDisk) maxMBInMemory = 0;
     //
-    ImageInterface<float>* pIm = 0;
+    ImageInterface<float>* pIm = nullptr;
 
     IPosition shapeIn;
     if (in.empty()) {
@@ -151,7 +151,7 @@ int main(int argc, const char* argv[]) {
     //
     ImageRegrid<float> regridder;
     {
-      ImageInterface<float>* pImOut = 0;
+      ImageInterface<float>* pImOut = nullptr;
       if (save) {
         pImOut = new PagedImage<float>(shapeOut, cSysOut, String("outFile"));
       } else {
@@ -167,7 +167,7 @@ int main(int argc, const char* argv[]) {
     }
     //
     if (reuse) {
-      ImageInterface<float>* pImOut = 0;
+      ImageInterface<float>* pImOut = nullptr;
       if (save) {
         pImOut = new PagedImage<float>(shapeOut, cSysOut, String("outFileReused"));
       } else {

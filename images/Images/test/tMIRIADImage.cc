@@ -98,7 +98,7 @@ int main(int argc, const char* argv[]) {
       AlwaysAssert(pMask.shape()==mirImage.shape(), AipsError);
    }
 #endif
-    AlwaysAssert(mirImage.getRegionPtr() == 0, AipsError);
+    AlwaysAssert(mirImage.getRegionPtr() == nullptr, AipsError);
     AlwaysAssert(mirImage.isWritable() == false, AipsError);
     AlwaysAssert(mirImage.name(false) == p.absoluteName(), AipsError);
     AlwaysAssert(mirImage.ok(), AipsError);
@@ -117,7 +117,7 @@ int main(int argc, const char* argv[]) {
     // Convert from MIRIAD as a comparison
 
     String error;
-    ImageInterface<float>* pTempImage = 0;
+    ImageInterface<float>* pTempImage = nullptr;
     String imageName;
 #if 1
     if (!ImageFITSConverter::FITSToImage(pTempImage, error, imageName, in + ".fits", 0)) {

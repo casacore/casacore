@@ -64,7 +64,15 @@ class ArrayBaseAccessor {
   // # Constructors
   //  <group>
   //  Default constructor (for use in e.g. containers)
-  ArrayBaseAccessor() : arrayPtr_p(0), axis_p(0), ptr_p(0), step_p(0), begin_p(0), end_p(0) { ; }
+  ArrayBaseAccessor()
+      : arrayPtr_p(nullptr),
+        axis_p(0),
+        ptr_p(nullptr),
+        step_p(0),
+        begin_p(nullptr),
+        end_p(nullptr) {
+    ;
+  }
   // Construct from an Array
   // <group>
   explicit ArrayBaseAccessor(const Array<T> &arr)
@@ -72,8 +80,8 @@ class ArrayBaseAccessor {
         axis_p(0),
         ptr_p(const_cast<T *>(arrayPtr_p->data())),
         step_p(0),
-        begin_p(0),
-        end_p(0) {
+        begin_p(nullptr),
+        end_p(nullptr) {
     ;
   }
   ArrayBaseAccessor(const Array<T> &arr, const size_t ax)
@@ -81,8 +89,8 @@ class ArrayBaseAccessor {
         axis_p(ax),
         ptr_p(const_cast<T *>(arrayPtr_p->data())),
         step_p(0),
-        begin_p(0),
-        end_p(0) {
+        begin_p(nullptr),
+        end_p(nullptr) {
     ;
   }
   // </group>
@@ -133,9 +141,9 @@ class ArrayBaseAccessor {
     ptr_p = const_cast<T *>(arrayPtr_p->data());
   }
   void init(const size_t ax) {
-    arrayPtr_p = 0;
+    arrayPtr_p = nullptr;
     axis_p = ax;
-    ptr_p = 0;
+    ptr_p = nullptr;
   }
   // </group>
 

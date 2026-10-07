@@ -90,7 +90,7 @@ void RecordRep::addDataPtr(void* ptr) {
     datavec_p.resize(nused_p + 16);
     data_p.resize(nused_p + 16);
   }
-  datavec_p[nused_p] = 0;
+  datavec_p[nused_p] = nullptr;
   data_p[nused_p++] = ptr;
 }
 
@@ -397,8 +397,8 @@ void RecordRep::delete_myself(unsigned int nfields) {
   }
   for (unsigned int i = 0; i < nfields; i++) {
     removeData(i, data_p[i], datavec_p[i]);
-    data_p[i] = 0;
-    datavec_p[i] = 0;
+    data_p[i] = nullptr;
+    datavec_p[i] = nullptr;
   }
 }
 
@@ -631,7 +631,7 @@ void* RecordRep::get_pointer(int whichField, DataType type) const {
                   ValType::getTypeStr(type) + " used for field " + desc_p.name(whichField) +
                   " with type " + ValType::getTypeStr(descDtype)));
   }
-  if (datavec_p[whichField] == 0) {
+  if (datavec_p[whichField] == nullptr) {
     const_cast<RecordRep*>(this)->makeDataVec(whichField, descDtype);
   }
   return datavec_p[whichField];

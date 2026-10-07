@@ -41,7 +41,7 @@ void translate_iterexcp(const casacore::IterError& e) {
 
 // # Note that the most general exception must be registered first.
 void register_convert_excp() {
-  boost::python::register_exception_translator<casacore::IterError>(&translate_iterexcp);
+  boost::python::register_exception_translator<casacore::IterError>(&translate_iterexcp, nullptr);
 }
 
 }  // namespace python

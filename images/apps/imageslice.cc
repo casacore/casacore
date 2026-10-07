@@ -100,11 +100,11 @@ int main(int argc, const char* argv[]) {
       String errMsg;
       ImageFITSConverter::ImageToFITS(errMsg, subim, out, 128, false, false);
     } else {
-      ImageInterface<float>* pim = 0;
-      if (dynamic_cast<HDF5Image<float>*>(pImage) != 0) {
+      ImageInterface<float>* pim = nullptr;
+      if (dynamic_cast<HDF5Image<float>*>(pImage) != nullptr) {
         pim = new HDF5Image<float>(subim.shape(), subim.coordinates(), out);
       }
-      if (pim == 0) {
+      if (pim == nullptr) {
         pim = new PagedImage<float>(subim.shape(), subim.coordinates(), out);
       }
       pim->copyData(subim);

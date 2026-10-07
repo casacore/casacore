@@ -454,7 +454,7 @@ void ImageBeamSet::summarize(LogIO& log, bool verbose, const CoordinateSystem& c
   bool hasSpectral = csys.hasSpectralAxis();
   bool hasStokes = csys.hasPolarizationCoordinate();
   log.output() << "Restoring Beams " << endl;
-  const SpectralCoordinate* spCoord = 0;
+  const SpectralCoordinate* spCoord = nullptr;
   IPosition beamsShape = _beams.shape();
   unsigned int chanWidth = 0;
   unsigned int freqWidth = 0;
@@ -464,7 +464,7 @@ void ImageBeamSet::summarize(LogIO& log, bool verbose, const CoordinateSystem& c
   unsigned int polWidth = 3;
   unsigned int typeWidth = 6;
   bool myverbose = verbose || !hasSpectral || (hasSpectral && beamsShape[0] <= 3);
-  const StokesCoordinate* polCoord = hasStokes ? &csys.stokesCoordinate() : 0;
+  const StokesCoordinate* polCoord = hasStokes ? &csys.stokesCoordinate() : nullptr;
   if (hasSpectral) {
     spCoord = &csys.spectralCoordinate();
     chanWidth = max(4, int(log10(beamsShape[0])) + 1);

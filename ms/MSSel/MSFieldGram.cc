@@ -67,7 +67,7 @@ int MSFieldGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSFieldGram = 0;
+static const char* strpMSFieldGram = nullptr;
 static int posMSFieldGram = 0;
 // MSFieldGramwrap out of namespace
 

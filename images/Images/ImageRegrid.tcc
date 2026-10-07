@@ -172,9 +172,9 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage, typename Interpolate2D:
 
   // Specify input and output lattices for each regridding pass
 
-  MaskedLattice<T>* inPtr = 0;
+  MaskedLattice<T>* inPtr = nullptr;
   CoordinateSystem inCoords2(inCoords);
-  MaskedLattice<T>* outPtr = 0;
+  MaskedLattice<T>* outPtr = nullptr;
   MaskedLattice<T>* finalOutPtr = &outImage;
   Vector<bool> doneOutPixelAxes(outCoords.nPixelAxes(), true);
   for (unsigned int i = 0; i < nOutRegridPixelAxes; i++) {
@@ -199,7 +199,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage, typename Interpolate2D:
 
         if (inPtr) delete inPtr;
         inPtr = outPtr;
-        outPtr = 0;
+        outPtr = nullptr;
       }
       // Regrid one Coordinate, pertaining to this axis. If the axis
       // belongs to a DirectionCoordinate or 2-axis LinearCoordinate,
@@ -227,7 +227,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage, typename Interpolate2D:
     }
   }
   delete inPtr;
-  inPtr = 0;
+  inPtr = nullptr;
   if (itsShowLevel > 0) {
     cerr << "Function regrid took " << t0.all() << endl;
   }
@@ -321,7 +321,7 @@ void ImageRegrid<T>::_regridOneCoordinate(
         LatticeUtilities::copyDataAndMask(os, *finalOutPtr, *inPtr);
       } else {
         outPtr = inPtr;
-        inPtr = 0;
+        inPtr = nullptr;
       }
       return;
     }
@@ -388,7 +388,7 @@ void ImageRegrid<T>::_regridOneCoordinate(
         LatticeUtilities::copyDataAndMask(os, *finalOutPtr, *inPtr);
       } else {
         outPtr = inPtr;
-        inPtr = 0;
+        inPtr = nullptr;
       }
       return;
     }
@@ -733,7 +733,7 @@ void ImageRegrid<T>::regridTwoAxisCoordinate(
 
   // Deal with mask.  Stepper will make a reference copy of the mask
 
-  LatticeIterator<bool>* outMaskIterPtr = 0;
+  LatticeIterator<bool>* outMaskIterPtr = nullptr;
   if (outIsMasked) {
     Lattice<bool>& outMask = outLattice.pixelMask();
     outMaskIterPtr = new LatticeIterator<bool>(outMask, outStepper);
@@ -836,7 +836,7 @@ void ImageRegrid<T>::regridTwoAxisCoordinate(
   }
   // Progress meter
 
-  ProgressMeter* pProgressMeter = 0;
+  ProgressMeter* pProgressMeter = nullptr;
   if (showProgress) {
     double nMin = 0.0;
     double nMax = double(outLattice.shape().product());
@@ -920,7 +920,7 @@ void ImageRegrid<T>::regridTwoAxisCoordinate(
       // Get the input data and mask
 
       Array<T> inDataChunk = inLattice.getSlice(inChunkBlc, inChunkShape);
-      Array<bool>* inMaskChunkPtr = 0;
+      Array<bool>* inMaskChunkPtr = nullptr;
       if (inIsMasked) {
         inMaskChunkPtr = new Array<bool>(inLattice.getMaskSlice(inChunkBlc, inChunkShape));
       }
@@ -1436,8 +1436,8 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<bool>
                                       axisPath);
   LatticeIterator<T> outCursorIter(outCursor, outCursorIterStepper);
   //
-  LatticeIterator<bool>* outMaskCursorIterPtr = 0;
-  Lattice<bool>* outMaskCursorPtr = 0;
+  LatticeIterator<bool>* outMaskCursorIterPtr = nullptr;
+  Lattice<bool>* outMaskCursorPtr = nullptr;
   if (outIsMasked) {
     outMaskCursorPtr = new ArrayLattice<bool>(outMaskIterPtr->rwCursor());
     outMaskCursorIterPtr = new LatticeIterator<bool>(*outMaskCursorPtr, outCursorIterStepper);
@@ -1473,7 +1473,7 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<bool>
     };
     //
     const Matrix<T>& inDataChunk2D = inDataChunk(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape);
-    Matrix<bool>* inMaskChunk2DPtr = 0;
+    Matrix<bool>* inMaskChunk2DPtr = nullptr;
     if (inIsMasked) {
       inMaskChunk2DPtr =
           new Matrix<bool>((*inMaskChunkPtr)(inChunkBlc2D, inChunkTrc2D).reform(inChunk2DShape));
@@ -1484,7 +1484,7 @@ void ImageRegrid<T>::regrid2DMatrix(Lattice<T>& outCursor, LatticeIterator<bool>
     unsigned int nCol = outCursorIter.matrixCursor().ncolumn();
     unsigned int nRow = outCursorIter.matrixCursor().nrow();
     Matrix<T>& outMCursor = outCursorIter.rwMatrixCursor();
-    Matrix<bool>* outMaskMCursor = 0;
+    Matrix<bool>* outMaskMCursor = nullptr;
     if (outIsMasked) {
       outMaskMCursor = &(outMaskCursorIterPtr->rwMatrixCursor());
     };
@@ -1635,7 +1635,7 @@ void ImageRegrid<T>::regrid1D(MaskedLattice<T>& outLattice, const MaskedLattice<
   TiledLineStepper outStepper(outShape, niceShape, outPixelAxis);
   LatticeIterator<T> outIter(outLattice, outStepper);
   //
-  LatticeIterator<bool>* outMaskIterPtr = 0;
+  LatticeIterator<bool>* outMaskIterPtr = nullptr;
   if (outIsMasked) {
     Lattice<bool>& outMask = outLattice.pixelMask();
     TiledLineStepper outMaskStepper(outShape, niceShape, outPixelAxis);
@@ -1674,7 +1674,7 @@ void ImageRegrid<T>::regrid1D(MaskedLattice<T>& outLattice, const MaskedLattice<
 
   // Progress meter
 
-  ProgressMeter* pProgressMeter = 0;
+  ProgressMeter* pProgressMeter = nullptr;
   if (showProgress) {
     double nMin = 0.0;
     double nMax = double(outLattice.shape().product()) / double(outIter.cursorShape().product());

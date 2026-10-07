@@ -39,7 +39,7 @@ TableParseUpdate::TableParseUpdate(const String& columnName, const String& colum
     : columnName_p(columnName),
       columnNameMask_p(columnNameMask),
       maskFirst_p(false),
-      indexPtr_p(0),
+      indexPtr_p(nullptr),
       node_p(node) {
   if (checkAggr) {
     TableParseGroupby::checkAggrFuncs(node);
@@ -52,11 +52,11 @@ TableParseUpdate::TableParseUpdate(const String& columnName, const String& colum
     : columnName_p(columnName),
       columnNameMask_p(columnNameMask),
       maskFirst_p(false),
-      indexPtr_p(0),
+      indexPtr_p(nullptr),
       node_p(node) {
   TableParseGroupby::checkAggrFuncs(node);
   handleIndices(indices, style);
-  if (indexPtr_p == 0) {
+  if (indexPtr_p == nullptr) {
     if (!columnNameMask_p.empty()) {
       throw TableInvExpr(
           "No mask column name can be given if the update "
@@ -73,13 +73,13 @@ TableParseUpdate::TableParseUpdate(const String& columnName, const String& colum
     : columnName_p(columnName),
       columnNameMask_p(columnNameMask),
       maskFirst_p(false),
-      indexPtr_p(0),
+      indexPtr_p(nullptr),
       node_p(node) {
   // The grammar does not allow a column mask name, but you can never tell.
   AlwaysAssert(columnNameMask.empty(), AipsError);
   TableParseGroupby::checkAggrFuncs(node);
   handleIndices(indices1, style);
-  maskFirst_p = indexPtr_p == 0;
+  maskFirst_p = indexPtr_p == nullptr;
   handleIndices(indices2, style);
 }
 
@@ -306,8 +306,8 @@ void TableParseUpdate::checkMaskColumn(bool hasMask, const ArrayColumn<bool>& ma
 void TableParseUpdate::updateColumn(TableColumn& col, ArrayColumn<bool>& maskCol, rownr_t row,
                                     const TableExprId& rowid) {
   // Get possible subscripts.
-  const Slicer* slicerPtr = 0;
-  if (indexPtr_p != 0) {
+  const Slicer* slicerPtr = nullptr;
+  if (indexPtr_p != nullptr) {
     slicerPtr = &(indexPtr_p->getSlicer(rowid));
   }
   // Evaluate a possible mask.
@@ -478,7 +478,7 @@ void TableParseUpdate::check(const Table& origTable, const Table& updTable) cons
         "UPDATE expr of column " +
         columnName_p + " (mismatches first table)");
   }
-  if (indexPtr_p != 0) {
+  if (indexPtr_p != nullptr) {
     if (!indexNode_p.checkTableSize(updTable, true)) {
       throw TableInvExpr(
           "Table(s) with incorrect size used in the "
@@ -519,7 +519,7 @@ void TableParseUpdate::check(const Table& origTable, const Table& updTable) cons
     }
   }
   // An index expression can only be given for an array column.
-  if (indexPtr_p != 0) {
+  if (indexPtr_p != nullptr) {
     if (isScalar) {
       throw TableInvExpr(
           "Index value cannot be given in UPDATE of "

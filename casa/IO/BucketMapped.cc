@@ -34,7 +34,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 BucketMapped::BucketMapped(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
                            unsigned int nrOfBuckets)
     : BucketBase(file, startOffset, bucketSize, nrOfBuckets) {
-  AlwaysAssert(itsFile->mappedFile() != 0, AipsError);
+  AlwaysAssert(itsFile->mappedFile() != nullptr, AipsError);
 }
 
 BucketMapped::~BucketMapped() {}

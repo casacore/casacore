@@ -62,7 +62,7 @@ int ImageExprGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpImageExprGram = 0;
+static const char* strpImageExprGram = nullptr;
 static int posImageExprGram = 0;
 
 // Define a class to delete the yy_buffer in case of an exception.
@@ -73,7 +73,7 @@ class ImageExprGramState {
   void clear() {
     if (itsState) {
       ImageExprGram_delete_buffer(itsState);
-      itsState = 0;
+      itsState = nullptr;
     }
   }
   YY_BUFFER_STATE state() const { return itsState; }

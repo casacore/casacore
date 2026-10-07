@@ -118,25 +118,27 @@ void CoordinateSystem::copy(const CoordinateSystem& other) {
     world_maps_p[i] = new Block<int>(*(other.world_maps_p[i]));
     world_tmps_p[i] = new Vector<double>(other.world_tmps_p[i]->copy());
     world_replacement_values_p[i] = new Vector<double>(other.world_replacement_values_p[i]->copy());
-    AlwaysAssert(world_maps_p[i] != 0 && world_tmps_p[i] != 0 && world_replacement_values_p[i] != 0,
+    AlwaysAssert(world_maps_p[i] != nullptr && world_tmps_p[i] != nullptr &&
+                     world_replacement_values_p[i] != nullptr,
                  AipsError);
     pixel_maps_p[i] = new Block<int>(*(other.pixel_maps_p[i]));
     pixel_tmps_p[i] = new Vector<double>(other.pixel_tmps_p[i]->copy());
     pixel_replacement_values_p[i] = new Vector<double>(other.pixel_replacement_values_p[i]->copy());
-    AlwaysAssert(pixel_maps_p[i] != 0 && pixel_tmps_p[i] != 0 && pixel_replacement_values_p[i] != 0,
+    AlwaysAssert(pixel_maps_p[i] != nullptr && pixel_tmps_p[i] != nullptr &&
+                     pixel_replacement_values_p[i] != nullptr,
                  AipsError);
     //
     worldAxes_tmps_p[i] = new Vector<bool>(other.worldAxes_tmps_p[i]->copy());
     pixelAxes_tmps_p[i] = new Vector<bool>(other.pixelAxes_tmps_p[i]->copy());
-    AlwaysAssert(worldAxes_tmps_p[i] != 0 && pixelAxes_tmps_p[i] != 0, AipsError);
+    AlwaysAssert(worldAxes_tmps_p[i] != nullptr && pixelAxes_tmps_p[i] != nullptr, AipsError);
     //
     worldOut_tmps_p[i] = new Vector<double>(other.worldOut_tmps_p[i]->copy());
     pixelOut_tmps_p[i] = new Vector<double>(other.pixelOut_tmps_p[i]->copy());
-    AlwaysAssert(worldOut_tmps_p[i] != 0 && pixelOut_tmps_p[i] != 0, AipsError);
+    AlwaysAssert(worldOut_tmps_p[i] != nullptr && pixelOut_tmps_p[i] != nullptr, AipsError);
     //
     worldMin_tmps_p[i] = new Vector<double>(other.worldMin_tmps_p[i]->copy());
     worldMax_tmps_p[i] = new Vector<double>(other.worldMax_tmps_p[i]->copy());
-    AlwaysAssert(worldMin_tmps_p[i] != 0 && worldMax_tmps_p[i] != 0, AipsError);
+    AlwaysAssert(worldMin_tmps_p[i] != nullptr && worldMax_tmps_p[i] != nullptr, AipsError);
   }
 }
 
@@ -146,7 +148,7 @@ void CoordinateSystem::clear() {
   for (unsigned int i = 0; i < n; i++) {
     deleteTemps(i);
     delete coordinates_p[i];
-    coordinates_p[i] = 0;
+    coordinates_p[i] = nullptr;
   }
 }
 
@@ -188,7 +190,7 @@ void CoordinateSystem::addCoordinate(const Coordinate& coord) {
   const unsigned int n = coordinates_p.nelements();  // "before" n, index of new coord
   coordinates_p.resize(n + 1);
   coordinates_p[n] = coord.clone();
-  AlwaysAssert(coordinates_p[n] != 0, AipsError);
+  AlwaysAssert(coordinates_p[n] != nullptr, AipsError);
   //
   // world_maps_p
   //
@@ -1800,7 +1802,7 @@ bool CoordinateSystem::convert(Matrix<double>& coordsOut, const Matrix<double>& 
           if (!absIn(i)) {
             if (unitsIn(i) == sPix) {
               absPixelIn(i) = absPixelIn2(i);
-            } else if (specCoordsIn[i] == 0) {
+            } else if (specCoordsIn[i] == nullptr) {
               absWorldIn(i) = absWorldIn2(i);
             }
           }
@@ -2519,7 +2521,7 @@ bool CoordinateSystem::save(RecordInterface& container, const String& fieldName)
 
 CoordinateSystem* CoordinateSystem::restore(const RecordInterface& container,
                                             const String& fieldName) {
-  CoordinateSystem* retval = 0;
+  CoordinateSystem* retval = nullptr;
 
   // Handle an empty field name
 
@@ -2573,7 +2575,7 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface& container,
     } else {
       break;
     }
-    AlwaysAssert(coords[nc - 1] != 0, AipsError);
+    AlwaysAssert(coords[nc - 1] != nullptr, AipsError);
   }
   nc = coords.nelements();
   //
@@ -2582,7 +2584,7 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface& container,
   for (i = 0; i < nc; i++) {
     retval->addCoordinate(*(coords[i]));
     delete coords[i];
-    coords[i] = 0;
+    coords[i] = nullptr;
   }
   for (i = 0; i < nc; i++) {
     //
@@ -2787,7 +2789,7 @@ Coordinate* CoordinateSystem::makeFourierCoordinate(const Vector<bool>& axes,
     }
   }
   //
-  pCS = 0;
+  pCS = nullptr;
   return pC;
 }
 
@@ -3886,13 +3888,13 @@ void CoordinateSystem::cleanUpSpecCoord(Block<SpectralCoordinate*>& in,
   for (unsigned int i = 0; i < in.nelements(); i++) {
     if (in[i]) {
       delete in[i];
-      in[i] = 0;
+      in[i] = nullptr;
     }
   }
   for (unsigned int i = 0; i < out.nelements(); i++) {
     if (out[i]) {
       delete out[i];
-      out[i] = 0;
+      out[i] = nullptr;
     }
   }
 }
@@ -4133,40 +4135,40 @@ bool CoordinateSystem::mapOne(Vector<int>& worldAxisMap, Vector<int>& worldAxisT
 
 void CoordinateSystem::deleteTemps(const unsigned int which) {
   delete world_maps_p[which];
-  world_maps_p[which] = 0;
+  world_maps_p[which] = nullptr;
   //
   delete world_tmps_p[which];
-  world_tmps_p[which] = 0;
+  world_tmps_p[which] = nullptr;
   //
   delete world_replacement_values_p[which];
-  world_replacement_values_p[which] = 0;
+  world_replacement_values_p[which] = nullptr;
   //
   delete pixel_maps_p[which];
-  pixel_maps_p[which] = 0;
+  pixel_maps_p[which] = nullptr;
   //
   delete pixel_tmps_p[which];
-  pixel_tmps_p[which] = 0;
+  pixel_tmps_p[which] = nullptr;
   //
   delete pixel_replacement_values_p[which];
-  pixel_replacement_values_p[which] = 0;
+  pixel_replacement_values_p[which] = nullptr;
   //
   delete worldAxes_tmps_p[which];
-  worldAxes_tmps_p[which] = 0;
+  worldAxes_tmps_p[which] = nullptr;
   //
   delete pixelAxes_tmps_p[which];
-  pixelAxes_tmps_p[which] = 0;
+  pixelAxes_tmps_p[which] = nullptr;
   //
   delete worldOut_tmps_p[which];
-  worldOut_tmps_p[which] = 0;
+  worldOut_tmps_p[which] = nullptr;
   //
   delete pixelOut_tmps_p[which];
-  pixelOut_tmps_p[which] = 0;
+  pixelOut_tmps_p[which] = nullptr;
   //
   delete worldMin_tmps_p[which];
-  worldMin_tmps_p[which] = 0;
+  worldMin_tmps_p[which] = nullptr;
   //
   delete worldMax_tmps_p[which];
-  worldMax_tmps_p[which] = 0;
+  worldMax_tmps_p[which] = nullptr;
 }
 
 bool CoordinateSystem::hasSpectralAxis() const {

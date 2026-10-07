@@ -857,7 +857,7 @@ class FitsKeyword {
 ostream &operator<<(ostream &, const FitsKeyword &);
 
 inline FitsKeyword::FitsKeyword(const FitsKeyword &k)
-    : next_(0), prev_(0), name_(0), kw_(0), comm_(0), val(0) {
+    : next_(nullptr), prev_(nullptr), name_(nullptr), kw_(nullptr), comm_(nullptr), val(nullptr) {
   init(k);
 }
 inline FitsKeyword &FitsKeyword::operator=(const FitsKeyword &k) {
@@ -999,11 +999,11 @@ class FitsKeywordList {
   // String values must be less than 69 characters.  String values longer than
   // that will result in an ERROR keyword instead of the desired keyword.
   // <group>
-  void mk(FITS::ReservedName k, bool v, const char *c = 0);
-  void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
-  void mk(FITS::ReservedName k, int v, const char *c = 0);
-  void mk(FITS::ReservedName k, long v, const char *c = 0);
-  void mk(FITS::ReservedName k, double v, const char *c = 0);
+  void mk(FITS::ReservedName k, bool v, const char *c = nullptr);
+  void mk(FITS::ReservedName k, const char *v = nullptr, const char *c = nullptr);
+  void mk(FITS::ReservedName k, int v, const char *c = nullptr);
+  void mk(FITS::ReservedName k, long v, const char *c = nullptr);
+  void mk(FITS::ReservedName k, double v, const char *c = nullptr);
   // </group>
 
   // Add (make) an indexed reserved keyword with the given value and optional comment
@@ -1011,11 +1011,11 @@ class FitsKeywordList {
   // String values must be less than 69 characters.  String values longer than
   // that will result in an ERROR keyword instead of the desired keyword.
   // <group>
-  void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, int v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, long v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
+  void mk(int n, FITS::ReservedName k, bool v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, const char *v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, int v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, long v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, double v, const char *c = nullptr);
   // </group>
 
   // Add (make) a user defined keyword with the given name, value and optional comment.
@@ -1025,25 +1025,25 @@ class FitsKeywordList {
   // String values must no longer than 69 characters.  String values longer than
   // that will result in an ERROR keyword instead of the desired keyword.
   // <group>
-  void mk(const char *n, bool v, const char *c = 0);
-  void mk(const char *n, const char *v = 0, const char *c = 0);
-  void mk(const char *n, int v, const char *c = 0);
-  void mk(const char *n, long v, const char *c = 0);
-  void mk(const char *n, float v, const char *c = 0);
-  void mk(const char *n, double v, const char *c = 0);
-  void mk(const char *n, int r, int i, const char *c = 0);
-  void mk(const char *n, float r, float i, const char *c = 0);
-  void mk(const char *n, double r, double i, const char *c = 0);
+  void mk(const char *n, bool v, const char *c = nullptr);
+  void mk(const char *n, const char *v = nullptr, const char *c = nullptr);
+  void mk(const char *n, int v, const char *c = nullptr);
+  void mk(const char *n, long v, const char *c = nullptr);
+  void mk(const char *n, float v, const char *c = nullptr);
+  void mk(const char *n, double v, const char *c = nullptr);
+  void mk(const char *n, int r, int i, const char *c = nullptr);
+  void mk(const char *n, float r, float i, const char *c = nullptr);
+  void mk(const char *n, double r, double i, const char *c = nullptr);
   // </group>
 
   // add a spaces line
-  void spaces(const char *n = 0, const char *c = 0);
+  void spaces(const char *n = nullptr, const char *c = nullptr);
 
   // add a comment card
-  void comment(const char *n = 0, const char *c = 0);
+  void comment(const char *n = nullptr, const char *c = nullptr);
 
   // add a history card
-  void history(const char *c = 0);
+  void history(const char *c = nullptr);
 
   // add the end card.  This must be at the end of the list.
   void end();
@@ -1111,7 +1111,8 @@ class FitsKeywordList {
 
 ostream &operator<<(ostream &o, FitsKeywordList &);  // print the entire list
 
-inline FitsKeywordList::FitsKeywordList() : beg_(0), end_(0), pos(0), total(0), cursor(0) {}
+inline FitsKeywordList::FitsKeywordList()
+    : beg_(nullptr), end_(nullptr), pos(nullptr), total(0), cursor(0) {}
 inline FitsKeywordList::~FitsKeywordList() { delete_all(); }
 inline bool FitsKeywordList::isempty() const { return total == 0 ? true : false; }
 inline void FitsKeywordList::first() {
@@ -1208,19 +1209,19 @@ inline void FitsKeywordList::mk(const char *n, double r, double i, const char *c
 }
 // Additional keyword constructors for commentary, etc.
 inline void FitsKeywordList::spaces(const char *n, const char *c) {
-  insert((n == 0
-              ? make(FITS::SPACES, FITS::NOVALUE, 0, c)
-              : (c == 0 ? make(FITS::SPACES, FITS::NOVALUE, 0, n) : make(n, FITS::NOVALUE, 0, c))));
+  insert((n == nullptr ? make(FITS::SPACES, FITS::NOVALUE, nullptr, c)
+                       : (c == nullptr ? make(FITS::SPACES, FITS::NOVALUE, nullptr, n)
+                                       : make(n, FITS::NOVALUE, nullptr, c))));
 }
 inline void FitsKeywordList::comment(const char *n, const char *c) {
-  insert((
-      n == 0 ? make(FITS::COMMENT, FITS::NOVALUE, 0, c)
-             : (c == 0 ? make(FITS::COMMENT, FITS::NOVALUE, 0, n) : make(n, FITS::NOVALUE, 0, c))));
+  insert((n == nullptr ? make(FITS::COMMENT, FITS::NOVALUE, nullptr, c)
+                       : (c == nullptr ? make(FITS::COMMENT, FITS::NOVALUE, nullptr, n)
+                                       : make(n, FITS::NOVALUE, nullptr, c))));
 }
 inline void FitsKeywordList::history(const char *c) {
-  insert(make(FITS::HISTORY, FITS::NOVALUE, 0, c));
+  insert(make(FITS::HISTORY, FITS::NOVALUE, nullptr, c));
 }
-inline void FitsKeywordList::end() { insert(make(FITS::END, FITS::NOVALUE, 0, 0)); }
+inline void FitsKeywordList::end() { insert(make(FITS::END, FITS::NOVALUE, nullptr, nullptr)); }
 
 //<summary> list of read-only FITS keywords </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

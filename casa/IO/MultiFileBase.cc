@@ -382,7 +382,7 @@ int64_t MultiFileBase::fileSize(int fileId) const {
 
 MultiFileInfo::MultiFileInfo() : curBlock(-1), fsize(0), nested(false), dirty(false) {}
 
-MultiFileBuffer::MultiFileBuffer(size_t bufSize, bool useODirect) : itsData(0) {
+MultiFileBuffer::MultiFileBuffer(size_t bufSize, bool useODirect) : itsData(nullptr) {
   const size_t align = 4096;
   if (bufSize > 0) {
     if (useODirect && bufSize % align != 0) {

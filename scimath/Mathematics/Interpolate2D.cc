@@ -74,7 +74,7 @@ Interpolate2D &Interpolate2D::operator=(const Interpolate2D &other) {
 
 bool Interpolate2D::interp(float &result, const Vector<double> &where,
                            const Matrix<float> &data) const {
-  const Matrix<bool> *maskPtr(0);
+  const Matrix<bool> *maskPtr(nullptr);
   return ((*this).*itsFuncPtrFloat)(result, where, data, maskPtr);
 }
 
@@ -88,7 +88,7 @@ bool Interpolate2D::interp(float &result, const Vector<double> &where, const Mat
 
 bool Interpolate2D::interp(double &result, const Vector<double> &where,
                            const Matrix<double> &data) const {
-  const Matrix<bool> *maskPtr(0);
+  const Matrix<bool> *maskPtr(nullptr);
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
 }
 
@@ -104,7 +104,7 @@ bool Interpolate2D::interp(Complex &result, const Vector<double> &where,
   float realRes, imagRes;
   Matrix<float> realData = (Matrix<float>)real(data);
   Matrix<float> imagData = (Matrix<float>)imag(data);
-  const Matrix<bool> *maskPtr(0);
+  const Matrix<bool> *maskPtr(nullptr);
   bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
   if (!realFunc) {
     return false;
@@ -141,7 +141,7 @@ bool Interpolate2D::interp(DComplex &result, const Vector<double> &where,
   double realRes, imagRes;
   Matrix<double> realData = (Matrix<double>)real(data);
   Matrix<double> imagData = (Matrix<double>)imag(data);
-  const Matrix<bool> *maskPtr(0);
+  const Matrix<bool> *maskPtr(nullptr);
   bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
   if (!realFunc) {
     return false;

@@ -52,13 +52,13 @@ PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, FITS::HDUType t, FITSErrorHandler
 //============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITSErrorHandler errhandler)
-    : HeaderDataUnit(k, FITS::PrimaryArrayHDU, errhandler, 0) {
+    : HeaderDataUnit(k, FITS::PrimaryArrayHDU, errhandler, nullptr) {
   pa_assign();  // assign values from keyword list
 }
 //============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITS::HDUType t, FITSErrorHandler errhandler)
-    : HeaderDataUnit(k, t, errhandler, 0) {
+    : HeaderDataUnit(k, t, errhandler, nullptr) {
   pa_assign();  // assign values from keyword list
 }
 //=============================================================================
@@ -99,22 +99,22 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
   int i;
   bscale_x = 1.0;  // first, initialize everything
   bzero_x = 0.0;
-  bunit_x = 0;
+  bunit_x = nullptr;
   isablank_x = false;
   blank_x = FITS::minInt;
-  ctype_x = 0;
-  crpix_x = 0;
-  crota_x = 0;
-  crval_x = 0;
-  cdelt_x = 0;
+  ctype_x = nullptr;
+  crpix_x = nullptr;
+  crota_x = nullptr;
+  crval_x = nullptr;
+  cdelt_x = nullptr;
   datamax_x = FITS::maxdouble;
   datamin_x = FITS::mindouble;
   totsize = 0;
-  factor = 0;
+  factor = nullptr;
   alloc_elems = 0;
   beg_elem = 0;
   end_elem = 0;
-  array = 0;
+  array = nullptr;
   if (err_status != OK)  // check for error in HDU construction
     return;
   if (FITS::getfitstype(NoConvert<TYPE>()) != datatype()) {
@@ -125,7 +125,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
   bscale_x = asgdbl(FITS::BSCALE, 1.0);
   bzero_x = asgdbl(FITS::BZERO, 0.0);
 
-  if (kwlist_(FITS::BLANK) == 0)
+  if (kwlist_(FITS::BLANK) == nullptr)
     blank_x = Int_null;
   else {
     blank_x = kwlist_.curr()->asInt();
@@ -141,7 +141,8 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
     crval_x = new double[no_dims];
     cdelt_x = new double[no_dims];
     ctype_x = new char *[no_dims];
-    if (crpix_x == 0 || crota_x == 0 || crval_x == 0 || cdelt_x == 0 || ctype_x == 0) {
+    if (crpix_x == nullptr || crota_x == nullptr || crval_x == nullptr || cdelt_x == nullptr ||
+        ctype_x == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -158,7 +159,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
     for (i = 1; i < no_dims; i++) totsize *= dimn[i];
     factor = new int[3 * no_dims];
     // We need a little extra space for CtoF and FtoC conversions.
-    if (factor == 0) {
+    if (factor == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -167,15 +168,15 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
       factor[i] = factor[i - 1] * dimn[i - 1];
     }
   } else {
-    crpix_x = 0;
-    crota_x = 0;
-    crval_x = 0;
-    cdelt_x = 0;
-    ctype_x = 0;
-    factor = 0;
+    crpix_x = nullptr;
+    crota_x = nullptr;
+    crval_x = nullptr;
+    cdelt_x = nullptr;
+    ctype_x = nullptr;
+    factor = nullptr;
     totsize = 0;
   }
-  array = 0;  // no space allocated for array
+  array = nullptr;  // no space allocated for array
   alloc_elems = 0;
   beg_elem = 0;
   end_elem = -1;
@@ -739,10 +740,10 @@ ImageExtension<TYPE>::~ImageExtension() {
 //====================================================================================
 template <class TYPE>
 void ImageExtension<TYPE>::ie_assign() {
-  extver_x = kwlist_(FITS::EXTVER) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  extlevel_x = kwlist_(FITS::EXTLEVEL) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  pcount_x = kwlist_(FITS::PCOUNT) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  gcount_x = kwlist_(FITS::GCOUNT) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
+  extver_x = kwlist_(FITS::EXTVER) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  extlevel_x = kwlist_(FITS::EXTLEVEL) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  pcount_x = kwlist_(FITS::PCOUNT) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  gcount_x = kwlist_(FITS::GCOUNT) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
   xtension_x = assign(FITS::XTENSION);
   extname_x = assign(FITS::EXTNAME);
 }
@@ -889,7 +890,7 @@ PrimaryGroup<TYPE>::~PrimaryGroup() {
     delete[] pscal_x;
   }
   delete[] group_parm;
-  array = 0;  // reset array to 0 so PrimaryArray won't delete anything
+  array = nullptr;  // reset array to 0 so PrimaryArray won't delete anything
 }
 //===================================================================================================
 // write the required keyword for promaryGroup( random groups)
@@ -984,12 +985,12 @@ int PrimaryGroup<TYPE>::write_priGrp_hdr(
 template <class TYPE>
 void PrimaryGroup<TYPE>::pg_assign() {
   int i;
-  ptype_x = 0;
-  pscal_x = 0;
-  pzero_x = 0;
+  ptype_x = nullptr;
+  pscal_x = nullptr;
+  pzero_x = nullptr;
   pcount_x = 0;
   gcount_x = 0;
-  group_parm = 0;
+  group_parm = nullptr;
   current_group = 0;
   if (err_status != OK)  // check for previous errors
     return;
@@ -1001,7 +1002,7 @@ void PrimaryGroup<TYPE>::pg_assign() {
     pscal_x = new double[pcount_x];
     pzero_x = new double[pcount_x];
     ptype_x = new char *[pcount_x];
-    if (pscal_x == 0 || pzero_x == 0 || ptype_x == 0) {
+    if (pscal_x == nullptr || pzero_x == nullptr || ptype_x == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -1033,7 +1034,7 @@ void PrimaryGroup<TYPE>::pg_assign() {
 
   // allocate buffer space for an entire group
   group_parm = new TYPE[pcount() + nelements()];
-  if (group_parm == 0) {
+  if (group_parm == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }

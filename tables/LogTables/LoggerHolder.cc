@@ -69,12 +69,18 @@ void LoggerHolder::removeParents() { itsRep->removeParents(); }
 void LoggerHolder::clear() { itsRep->clear(); }
 
 LoggerHolderRep::LoggerHolderRep(bool nullSink)
-    : itsSink(LogFilter(), nullSink), itsTablePtr(0), itsIsWritable(true), itsIsClosed(false) {
+    : itsSink(LogFilter(), nullSink),
+      itsTablePtr(nullptr),
+      itsIsWritable(true),
+      itsIsClosed(false) {
   itsLogger = LogIO(itsSink);
 }
 
 LoggerHolderRep::LoggerHolderRep(const String& logTableName, bool isWritable)
-    : itsTableName(logTableName), itsTablePtr(0), itsIsWritable(isWritable), itsIsClosed(true) {
+    : itsTableName(logTableName),
+      itsTablePtr(nullptr),
+      itsIsWritable(isWritable),
+      itsIsClosed(true) {
   // Open the log table.
   doReopen();
 }
@@ -115,7 +121,7 @@ void LoggerHolderRep::append(const LoggerHolder& other) {
 void LoggerHolderRep::reopenRW() {
   // Only needed if a table is used and if not already open for rw.
   if (!itsTableName.empty()) {
-    if (itsTablePtr == 0 || !itsIsWritable) {
+    if (itsTablePtr == nullptr || !itsIsWritable) {
       // Temporarily close table possibly opened for readonly.
       tempClose(false);
       // Reopen temporarily closed table for rw (if possible).
@@ -128,7 +134,7 @@ void LoggerHolderRep::reopenRW() {
 }
 
 void LoggerHolderRep::doReopen() {
-  if (itsIsClosed && itsTablePtr == 0 && !itsTableName.empty()) {
+  if (itsIsClosed && itsTablePtr == nullptr && !itsTableName.empty()) {
     if (itsIsWritable) {
       itsTablePtr = new TableLogSink(LogFilter(), itsTableName);
     } else {
@@ -150,11 +156,11 @@ void LoggerHolderRep::addParent(const LoggerHolder& logger) {
 }
 
 void LoggerHolderRep::tempClose(bool closeParents) {
-  if (itsTablePtr != 0) {
+  if (itsTablePtr != nullptr) {
     itsTablePtr->table().unlock();
     itsSink = LogSink();
     itsLogger = LogIO();
-    itsTablePtr = 0;
+    itsTablePtr = nullptr;
     itsIsClosed = true;
   }
   if (closeParents) {
@@ -165,19 +171,19 @@ void LoggerHolderRep::tempClose(bool closeParents) {
 }
 
 void LoggerHolderRep::unlock() {
-  if (itsTablePtr != 0) {
+  if (itsTablePtr != nullptr) {
     itsTablePtr->table().unlock();
   }
 }
 
 void LoggerHolderRep::flush() {
-  if (itsTablePtr != 0) {
+  if (itsTablePtr != nullptr) {
     itsTablePtr->table().flush();
   }
 }
 
 void LoggerHolderRep::resync() {
-  if (itsTablePtr != 0 && !itsTablePtr->table().hasLock(FileLocker::Read)) {
+  if (itsTablePtr != nullptr && !itsTablePtr->table().hasLock(FileLocker::Read)) {
     itsTablePtr->table().unlock();
   }
 }
@@ -203,7 +209,10 @@ void LoggerHolderRep::clear() {
 }
 
 LogHolderIter::LogHolderIter(const LoggerHolder* logger)
-    : itsLogger(logger), itsTempClosed(logger->isTempClosed()), itsParentIter(0), itsCounter(0) {
+    : itsLogger(logger),
+      itsTempClosed(logger->isTempClosed()),
+      itsParentIter(nullptr),
+      itsCounter(0) {
   const Block<LoggerHolder>& par = itsLogger->parents();
   if (par.nelements() > 0) {
     itsParentIter = new LogHolderIter(&par[0]);
@@ -219,9 +228,9 @@ LogHolderIter::~LogHolderIter() {
 }
 
 bool LogHolderIter::next() {
-  while (itsParentIter != 0 && !itsParentIter->next()) {
+  while (itsParentIter != nullptr && !itsParentIter->next()) {
     delete itsParentIter;
-    itsParentIter = 0;
+    itsParentIter = nullptr;
     const Block<LoggerHolder>& par = itsLogger->parents();
     if (par.nelements() > itsCounter) {
       itsParentIter = new LogHolderIter(&par[itsCounter]);
@@ -230,7 +239,7 @@ bool LogHolderIter::next() {
       itsCounter = 0;
     }
   }
-  if (itsParentIter != 0) {
+  if (itsParentIter != nullptr) {
     itsEntry = itsParentIter->getEntry();
   } else {
     const LogSink& sink = itsLogger->sink();
@@ -244,13 +253,13 @@ bool LogHolderIter::next() {
   return true;
 }
 
-LoggerHolderIterator::LoggerHolderIterator(const LoggerHolder* logger) : itsIter(0) {
+LoggerHolderIterator::LoggerHolderIterator(const LoggerHolder* logger) : itsIter(nullptr) {
   itsIter = new LogHolderIter(logger);
   next();
 }
 
-LoggerHolderIterator::LoggerHolderIterator(const LoggerHolderIterator& that) : itsIter(0) {
-  if (that.itsIter != 0) {
+LoggerHolderIterator::LoggerHolderIterator(const LoggerHolderIterator& that) : itsIter(nullptr) {
+  if (that.itsIter != nullptr) {
     itsIter = new LogHolderIter(&(that.logger()));
     next();
   }
@@ -259,8 +268,8 @@ LoggerHolderIterator::LoggerHolderIterator(const LoggerHolderIterator& that) : i
 LoggerHolderIterator& LoggerHolderIterator::operator=(const LoggerHolderIterator& that) {
   if (this != &that) {
     delete itsIter;
-    itsIter = 0;
-    if (that.itsIter != 0) {
+    itsIter = nullptr;
+    if (that.itsIter != nullptr) {
       itsIter = new LogHolderIter(&(that.logger()));
       next();
     }

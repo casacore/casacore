@@ -79,10 +79,11 @@ class LCUnion : public LCRegionMulti {
   // When <src>takeOver</src> is true, the destructor will delete the
   // given regions. Otherwise a copy of the regions is made.
   // <group>
-  LCUnion(bool takeOver, const LCRegion* region1, const LCRegion* region2 = 0,
-          const LCRegion* region3 = 0, const LCRegion* region4 = 0, const LCRegion* region5 = 0,
-          const LCRegion* region6 = 0, const LCRegion* region7 = 0, const LCRegion* region8 = 0,
-          const LCRegion* region9 = 0, const LCRegion* region10 = 0);
+  LCUnion(bool takeOver, const LCRegion* region1, const LCRegion* region2 = nullptr,
+          const LCRegion* region3 = nullptr, const LCRegion* region4 = nullptr,
+          const LCRegion* region5 = nullptr, const LCRegion* region6 = nullptr,
+          const LCRegion* region7 = nullptr, const LCRegion* region8 = nullptr,
+          const LCRegion* region9 = nullptr, const LCRegion* region10 = nullptr);
   LCUnion(bool takeOver, const Block<const LCRegion*>& regions);
   // </group>
 

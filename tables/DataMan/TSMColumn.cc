@@ -37,7 +37,7 @@ TSMColumn::TSMColumn(TiledStMan* stman, int dataType, const String& columnName)
       stmanPtr_p(stman),
       dtype_p(dataType),
       name_p(columnName),
-      colPtr_p(0) {}
+      colPtr_p(nullptr) {}
 
 TSMColumn::TSMColumn(const TSMColumn& that)
     : StManColumnBase(that.dtype_p),
@@ -45,7 +45,7 @@ TSMColumn::TSMColumn(const TSMColumn& that)
       dtype_p(that.dtype_p),
       name_p(that.name_p),
       columnShape_p(that.columnShape_p),
-      colPtr_p(0) {}
+      colPtr_p(nullptr) {}
 
 TSMColumn::~TSMColumn() { delete colPtr_p; }
 
@@ -71,7 +71,7 @@ TSMIdColumn* TSMColumn::makeIdColumn() {
 
 TSMColumn* TSMColumn::unlink() {
   TSMColumn* ptr = colPtr_p;
-  colPtr_p = 0;  // do not delete linked object in destructor
+  colPtr_p = nullptr;  // do not delete linked object in destructor
   return ptr;
 }
 

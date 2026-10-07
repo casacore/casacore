@@ -137,7 +137,7 @@ void checkLazy(const TableExprNode& expr, const vector<Record>& recs, double exp
   // Get the aggregation node.
   TableExprAggrNode& aggr =
       const_cast<TableExprAggrNode&>(dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  TableExprGroupExprId funcid(0);
+  TableExprGroupExprId funcid(nullptr);
   for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);

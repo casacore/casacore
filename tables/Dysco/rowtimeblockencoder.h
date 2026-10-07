@@ -26,7 +26,7 @@ class RowTimeBlockEncoder : public TimeBlockEncoder {
   virtual void EncodeWithoutDithering(const dyscostman::StochasticEncoder<float> &gausEncoder,
                                       FBuffer &buffer, float *metaBuffer, symbol_t *symbolBuffer,
                                       size_t antennaCount) final override {
-    encode<false>(gausEncoder, buffer, metaBuffer, symbolBuffer, antennaCount, 0);
+    encode<false>(gausEncoder, buffer, metaBuffer, symbolBuffer, antennaCount, nullptr);
   }
 
   virtual void InitializeDecode(const float *metaBuffer, size_t nRow,

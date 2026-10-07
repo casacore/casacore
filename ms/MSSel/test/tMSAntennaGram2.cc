@@ -71,7 +71,7 @@ int main(int argc, const char* argv[]) {
     }
     TableExprNode node = mss.toTableExprNode(&ms);
 
-    MeasurementSet* mssel = 0;
+    MeasurementSet* mssel = nullptr;
     cout << "Original table has rows " << ms.nrow() << std::endl;
     if (node.isNull()) {
       cout << "NULL node " << std::endl;

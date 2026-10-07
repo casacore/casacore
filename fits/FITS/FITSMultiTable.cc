@@ -46,7 +46,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
                                FITSTabular *(*tabMaker)(const String &))
-    : table_p(0),
+    : table_p(nullptr),
       file_names_p(fileNames.copy()),
       nfiles_p(fileNames.nelements()),
       which_file_p(0),
@@ -71,7 +71,7 @@ FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
 
 FITSMultiTable::~FITSMultiTable() {
   delete table_p;
-  table_p = 0;
+  table_p = nullptr;
 }
 
 bool FITSMultiTable::isValid() const { return table_p->isValid(); }

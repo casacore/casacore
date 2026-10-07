@@ -48,11 +48,11 @@ ISMBase::ISMBase(unsigned int bucketSize, bool checkBucketSize, unsigned int cac
     : DataManager(),
       ///  dataManName_p     ("ISM0"),
       version_p(3),
-      iosfile_p(0),
+      iosfile_p(nullptr),
       uniqnr_p(0),
-      cache_p(0),
-      file_p(0),
-      index_p(0),
+      cache_p(nullptr),
+      file_p(nullptr),
+      index_p(nullptr),
       persCacheSize_p(cacheSize),
       cacheSize_p(0),
       nbucketInit_p(1),
@@ -61,18 +61,18 @@ ISMBase::ISMBase(unsigned int bucketSize, bool checkBucketSize, unsigned int cac
       bucketSize_p(bucketSize),
       checkBucketSize_p(checkBucketSize),
       dataChanged_p(false),
-      tempBuffer_p(0) {}
+      tempBuffer_p(nullptr) {}
 
 ISMBase::ISMBase(const String& dataManagerName, unsigned int bucketSize, bool checkBucketSize,
                  unsigned int cacheSize)
     : DataManager(),
       dataManName_p(dataManagerName),
       version_p(3),
-      iosfile_p(0),
+      iosfile_p(nullptr),
       uniqnr_p(0),
-      cache_p(0),
-      file_p(0),
-      index_p(0),
+      cache_p(nullptr),
+      file_p(nullptr),
+      index_p(nullptr),
       persCacheSize_p(cacheSize),
       cacheSize_p(0),
       nbucketInit_p(1),
@@ -81,17 +81,17 @@ ISMBase::ISMBase(const String& dataManagerName, unsigned int bucketSize, bool ch
       bucketSize_p(bucketSize),
       checkBucketSize_p(checkBucketSize),
       dataChanged_p(false),
-      tempBuffer_p(0) {}
+      tempBuffer_p(nullptr) {}
 
 ISMBase::ISMBase(const String& dataManagerName, const Record& spec)
     : DataManager(),
       dataManName_p(dataManagerName),
       version_p(3),
-      iosfile_p(0),
+      iosfile_p(nullptr),
       uniqnr_p(0),
-      cache_p(0),
-      file_p(0),
-      index_p(0),
+      cache_p(nullptr),
+      file_p(nullptr),
+      index_p(nullptr),
       persCacheSize_p(1),
       cacheSize_p(0),
       nbucketInit_p(1),
@@ -100,7 +100,7 @@ ISMBase::ISMBase(const String& dataManagerName, const Record& spec)
       bucketSize_p(32768),
       checkBucketSize_p(false),
       dataChanged_p(false),
-      tempBuffer_p(0) {
+      tempBuffer_p(nullptr) {
   if (spec.isDefined("BUCKETSIZE")) {
     bucketSize_p = spec.asInt("BUCKETSIZE");
   }
@@ -116,11 +116,11 @@ ISMBase::ISMBase(const ISMBase& that)
     : DataManager(),
       dataManName_p(that.dataManName_p),
       version_p(that.version_p),
-      iosfile_p(0),
+      iosfile_p(nullptr),
       uniqnr_p(0),
-      cache_p(0),
-      file_p(0),
-      index_p(0),
+      cache_p(nullptr),
+      file_p(nullptr),
+      index_p(nullptr),
       persCacheSize_p(that.persCacheSize_p),
       cacheSize_p(that.cacheSize_p),
       nbucketInit_p(1),
@@ -129,7 +129,7 @@ ISMBase::ISMBase(const ISMBase& that)
       bucketSize_p(that.bucketSize_p),
       checkBucketSize_p(that.checkBucketSize_p),
       dataChanged_p(false),
-      tempBuffer_p(0) {}
+      tempBuffer_p(nullptr) {}
 
 ISMBase::~ISMBase() {
   for (unsigned int i = 0; i < ncolumn(); i++) {
@@ -169,13 +169,13 @@ void ISMBase::setProperties(const Record& rec) {
 }
 
 void ISMBase::clearCache() {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->clear();
   }
 }
 
 void ISMBase::showCacheStatistics(ostream& os) const {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     os << ">>> IncrementalStMan cache statistics:" << endl;
     cache_p->showStatistics(os);
     os << "<<<" << endl;
@@ -183,7 +183,7 @@ void ISMBase::showCacheStatistics(ostream& os) const {
 }
 
 void ISMBase::showIndexStatistics(ostream& os) {
-  if (index_p != 0) {
+  if (index_p != nullptr) {
     index_p->show(os);
   }
 }
@@ -234,13 +234,13 @@ void ISMBase::setCacheSize(unsigned int cacheSize, bool canExceedNrBuckets) {
   if (!canExceedNrBuckets && cacheSize_p > getCache().nBucket()) {
     cacheSize_p = cache_p->nBucket();
   }
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->resize(cacheSize_p);
   }
 }
 
 void ISMBase::makeCache() {
-  if (cache_p == 0) {
+  if (cache_p == nullptr) {
     makeIndex();
     // Set cache size to persistent cache size if not set explicitly yet.
     if (cacheSize_p == 0) {
@@ -251,14 +251,14 @@ void ISMBase::makeCache() {
                               ISMBucket::initCallBack, ISMBucket::deleteCallBack);
     cache_p->resync(nbucketInit_p, nFreeBucket_p, firstFree_p);
     // Allocate a buffer for temporary storage by all ISM classes.
-    if (tempBuffer_p == 0) {
+    if (tempBuffer_p == nullptr) {
       tempBuffer_p = new char[bucketSize_p];
     }
   }
 }
 
 void ISMBase::makeIndex() {
-  if (index_p != 0) {
+  if (index_p != nullptr) {
     return;
   }
   index_p = new ISMIndex();
@@ -316,7 +316,7 @@ void ISMBase::readIndex() {
 }
 
 void ISMBase::writeIndex() {
-  if (index_p == 0) {
+  if (index_p == nullptr) {
     return;
   }
   unsigned int nbuckets = getCache().nBucket();
@@ -365,7 +365,7 @@ ISMBucket* ISMBase::nextBucket(unsigned int& cursor, rownr_t& bucketStartRow,
   if (getIndex().nextBucketNr(cursor, bucketStartRow, bucketNrrow, bucketNr)) {
     return (ISMBucket*)(getCache().getBucket(bucketNr));
   }
-  return 0;
+  return nullptr;
 }
 
 void ISMBase::setBucketDirty() {
@@ -461,13 +461,13 @@ void ISMBase::removeColumn(DataManagerColumn* colp) {
 
 void ISMBase::recreate() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
   delete cache_p;
-  cache_p = 0;
+  cache_p = nullptr;
   delete file_p;
-  file_p = 0;
+  file_p = nullptr;
   delete iosfile_p;
-  iosfile_p = 0;
+  iosfile_p = nullptr;
   nbucketInit_p = 1;
   nFreeBucket_p = 0;
   firstFree_p = -1;
@@ -493,7 +493,7 @@ bool ISMBase::flush(AipsIO& ios, bool fsync) {
       changed = true;
     }
   }
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->flush();
   }
   if (dataChanged_p) {
@@ -512,17 +512,17 @@ bool ISMBase::flush(AipsIO& ios, bool fsync) {
 
 rownr_t ISMBase::resync64(rownr_t nrrow) {
   nrrow_p = nrrow;
-  if (index_p != 0) {
+  if (index_p != nullptr) {
     readIndex();
   }
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->resync(nbucketInit_p, nFreeBucket_p, firstFree_p);
   }
   unsigned int nrcol = ncolumn();
   for (unsigned int i = 0; i < nrcol; i++) {
     colSet_p[i]->resync(nrrow_p);
   }
-  if (iosfile_p != 0) {
+  if (iosfile_p != nullptr) {
     iosfile_p->resync();
   }
   return nrrow_p;
@@ -560,7 +560,7 @@ rownr_t ISMBase::open64(rownr_t tabNrrow, AipsIO& ios) {
 }
 
 StManArrayFile* ISMBase::openArrayFile(ByteIO::OpenOption opt) {
-  if (iosfile_p == 0) {
+  if (iosfile_p == nullptr) {
     iosfile_p = new StManArrayFile(fileName() + 'i', opt, 1, asBigEndian(), 0, multiFile());
   }
   return iosfile_p;
@@ -576,15 +576,15 @@ void ISMBase::reopenRW() {
 
 void ISMBase::deleteManager() {
   delete iosfile_p;
-  iosfile_p = 0;
+  iosfile_p = nullptr;
   // Clear cache without flushing.
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->clear(0, false);
   }
-  if (file_p != 0) {
+  if (file_p != nullptr) {
     file_p->remove();
     delete file_p;
-    file_p = 0;
+    file_p = nullptr;
   }
 }
 

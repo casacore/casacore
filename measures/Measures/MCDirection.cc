@@ -92,7 +92,13 @@ std::once_flag MCDirection::theirInitOnceFlag;
 
 // # Constructors
 MCDirection::MCDirection()
-    : MVPOS1(0), MVPOS2(0), MVPOS3(0), VEC61(0), VEC62(0), VEC63(0), measMath() {
+    : MVPOS1(nullptr),
+      MVPOS2(nullptr),
+      MVPOS3(nullptr),
+      VEC61(nullptr),
+      VEC62(nullptr),
+      VEC63(nullptr),
+      measMath() {
   std::call_once(theirInitOnceFlag, doFillState);
 }
 
@@ -152,17 +158,17 @@ void MCDirection::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase
 
 void MCDirection::clearConvert() {
   delete MVPOS1;
-  MVPOS1 = 0;
+  MVPOS1 = nullptr;
   delete MVPOS2;
-  MVPOS2 = 0;
+  MVPOS2 = nullptr;
   delete MVPOS3;
-  MVPOS3 = 0;
+  MVPOS3 = nullptr;
   delete VEC61;
-  VEC61 = 0;
+  VEC61 = nullptr;
   delete VEC62;
-  VEC62 = 0;
+  VEC62 = nullptr;
   delete VEC63;
-  VEC63 = 0;
+  VEC63 = nullptr;
 }
 
 // # Conversion routines

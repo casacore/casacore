@@ -99,7 +99,7 @@ MSIter::MSIter(const MeasurementSet& ms,
       interval_p(0),
       prevFirstTimeStamp_p(-1.0),
       allBeamOffsetsZero_p(true),
-      timeComp_p(0) {
+      timeComp_p(nullptr) {
   This = (MSIter*)this;
   bms_p.resize(1);
   bms_p[0] = ms;
@@ -126,7 +126,7 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
       interval_p(0),
       prevFirstTimeStamp_p(-1.0),
       allBeamOffsetsZero_p(true),
-      timeComp_p(0) {
+      timeComp_p(nullptr) {
   This = (MSIter*)this;
   construct(sortColumns);
 }

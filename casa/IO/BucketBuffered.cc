@@ -35,8 +35,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 BucketBuffered::BucketBuffered(BucketFile* file, int64_t startOffset, unsigned int bucketSize,
                                unsigned int nrOfBuckets)
-    : BucketBase(file, startOffset, bucketSize, nrOfBuckets), itsBuffer(0) {
-  AlwaysAssert(itsFile->bufferedFile() != 0, AipsError);
+    : BucketBase(file, startOffset, bucketSize, nrOfBuckets), itsBuffer(nullptr) {
+  AlwaysAssert(itsFile->bufferedFile() != nullptr, AipsError);
   // Allocate a buffer that can hold a bucket.
   itsBuffer = new char[bucketSize];
 }

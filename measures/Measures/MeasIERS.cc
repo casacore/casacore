@@ -60,7 +60,7 @@ Vector<double> MeasIERS::ldat[MeasIERS::N_Files][MeasIERS::N_Types];
 const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
 unsigned int MeasIERS::sizeNote = 0;
 unsigned int MeasIERS::nNote = 0;
-MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
+MeasIERS::CLOSEFUN *MeasIERS::toclose = nullptr;
 
 // # Member functions
 bool MeasIERS::get(double &returnValue, MeasIERS::Files file, MeasIERS::Types type, double date) {
@@ -206,7 +206,7 @@ void MeasIERS::openNote(CLOSEFUN fun) {
   if (nNote >= sizeNote) {
     CLOSEFUN *tmp = new CLOSEFUN[sizeNote + 10];
     for (unsigned int i = 0; i < sizeNote; ++i) tmp[i] = toclose[i];
-    for (unsigned int i = sizeNote; i < sizeNote + 10; ++i) tmp[i] = 0;
+    for (unsigned int i = sizeNote; i < sizeNote + 10; ++i) tmp[i] = nullptr;
     delete[] toclose;
     toclose = tmp;
     sizeNote += 10;
@@ -216,13 +216,13 @@ void MeasIERS::openNote(CLOSEFUN fun) {
 
 void MeasIERS::closeTables() {
   for (unsigned int i = nNote; i > 0; --i) {
-    if (toclose[i - 1] != 0) {
+    if (toclose[i - 1] != nullptr) {
       toclose[i - 1]();
-      toclose[i - 1] = 0;
+      toclose[i - 1] = nullptr;
     }
   }
   delete[] toclose;
-  toclose = 0;
+  toclose = nullptr;
   sizeNote = 0;
   nNote = 0;
 }

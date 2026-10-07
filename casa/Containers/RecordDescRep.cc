@@ -69,7 +69,7 @@ RecordDescRep::~RecordDescRep() {
   for (unsigned int i = 0; i < n_p; i++) {
     if (sub_records_p[i]) {
       delete sub_records_p[i];
-      sub_records_p[i] = 0;
+      sub_records_p[i] = nullptr;
     }
   }
 }
@@ -83,7 +83,7 @@ void RecordDescRep::addFieldName(const String& fieldName, DataType type) {
   types_p[n] = type;
   names_p[n] = fieldName;
   name_map_p.insert(std::make_pair(fieldName, n));
-  sub_records_p[n] = 0;
+  sub_records_p[n] = nullptr;
   is_array_p[n] = false;
   shapes_p[n].resize(1);
   shapes_p[n] = IPosition(1, 1);
@@ -216,7 +216,7 @@ void RecordDescRep::addFieldArray(DataType type, const IPosition& shape) {
 unsigned int RecordDescRep::addRecord(const String& fieldName, const RecordDesc& subDesc) {
   addFieldName(fieldName, TpRecord);
   sub_records_p[n_p - 1] = new RecordDesc(subDesc);
-  AlwaysAssert(sub_records_p[n_p - 1] != 0, AipsError);
+  AlwaysAssert(sub_records_p[n_p - 1] != nullptr, AipsError);
   return n_p;
 }
 
@@ -293,7 +293,7 @@ unsigned int RecordDescRep::removeField(int whichField) {
   AlwaysAssert(whichField >= 0 && whichField < int(n_p), AipsError);
   if (sub_records_p[whichField]) {
     delete sub_records_p[whichField];
-    sub_records_p[whichField] = 0;
+    sub_records_p[whichField] = nullptr;
   }
   n_p--;
   // Remove the field from the name map.
@@ -460,7 +460,7 @@ void RecordDescRep::copy_other(const RecordDescRep& other) {
   for (i = 0; i < n_p; i++) {
     if (sub_records_p[i]) {
       delete sub_records_p[i];
-      sub_records_p[i] = 0;
+      sub_records_p[i] = nullptr;
     }
   }
   // Then copy
@@ -477,7 +477,7 @@ void RecordDescRep::copy_other(const RecordDescRep& other) {
   for (i = 0; i < n_p; i++) {
     if (sub_records_p[i]) {
       sub_records_p[i] = new RecordDesc(*sub_records_p[i]);
-      AlwaysAssert(sub_records_p[i] != 0, AipsError);
+      AlwaysAssert(sub_records_p[i] != nullptr, AipsError);
     }
   }
 }
@@ -498,7 +498,7 @@ void RecordDescRep::increment_length() {
     IPosition scalarShape(1, 1);
     for (unsigned int i = n_p; i < types_p.nelements(); i++) {
       types_p[i] = 0;
-      sub_records_p[i] = 0;
+      sub_records_p[i] = nullptr;
       is_array_p[i] = false;
       shapes_p[i].resize(scalarShape.nelements());
       shapes_p[i] = scalarShape;

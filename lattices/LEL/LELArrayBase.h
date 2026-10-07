@@ -57,7 +57,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class LELArrayBase {
  public:
   // Default constructor sets to mask all true.
-  LELArrayBase() : itsMaskPtr(0) {}
+  LELArrayBase() : itsMaskPtr(nullptr) {}
 
   // Constructor takes mask.
   LELArrayBase(const Array<bool>& mask) : itsMaskPtr(new Array<bool>(mask)) {}
@@ -71,7 +71,7 @@ class LELArrayBase {
   LELArrayBase& operator=(const LELArrayBase& other);
 
   // Does the value have a mask?
-  bool isMasked() const { return (itsMaskPtr != 0); }
+  bool isMasked() const { return (itsMaskPtr != nullptr); }
 
   // Get mask.
   // <group>

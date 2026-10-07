@@ -480,7 +480,7 @@ class TableRow : public ROTableRow {
   bool namesConform(const TableRecord& that) const;
 };
 
-inline bool ROTableRow::isAttached() const { return (itsRecord != 0); }
+inline bool ROTableRow::isAttached() const { return (itsRecord != nullptr); }
 inline const Table& ROTableRow::table() const { return itsTable; }
 inline int64_t ROTableRow::rowNumber() const { return itsLastRow; }
 inline const TableRecord& ROTableRow::record() const { return *itsRecord; }

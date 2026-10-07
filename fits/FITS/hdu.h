@@ -148,25 +148,25 @@ class HeaderDataUnit {
   const FitsKeyword *nextkw(FITS::ReservedName &n, int i) { return kwlist_.next(n, i); }
   const FitsKeyword *kw(const char *n) { return kwlist_(n); }
   const FitsKeyword *nextkw(const char *n) { return kwlist_.next(n); }
-  void mk(FITS::ReservedName k, bool v, const char *c = 0);
-  void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
-  void mk(FITS::ReservedName k, int v, const char *c = 0);
-  void mk(FITS::ReservedName k, double v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, int v, const char *c = 0);
-  void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
-  void mk(const char *n, bool v, const char *c = 0);
-  void mk(const char *n, const char *v = 0, const char *c = 0);
-  void mk(const char *n, int v, const char *c = 0);
-  void mk(const char *n, float v, const char *c = 0);
-  void mk(const char *n, double v, const char *c = 0);
-  void mk(const char *n, int r, int i, const char *c = 0);
-  void mk(const char *n, float r, float i, const char *c = 0);
-  void mk(const char *n, double r, double i, const char *c = 0);
-  void spaces(const char *n = 0, const char *c = 0);
-  void comment(const char *n = 0, const char *c = 0);
-  void history(const char *c = 0);
+  void mk(FITS::ReservedName k, bool v, const char *c = nullptr);
+  void mk(FITS::ReservedName k, const char *v = nullptr, const char *c = nullptr);
+  void mk(FITS::ReservedName k, int v, const char *c = nullptr);
+  void mk(FITS::ReservedName k, double v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, bool v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, const char *v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, int v, const char *c = nullptr);
+  void mk(int n, FITS::ReservedName k, double v, const char *c = nullptr);
+  void mk(const char *n, bool v, const char *c = nullptr);
+  void mk(const char *n, const char *v = nullptr, const char *c = nullptr);
+  void mk(const char *n, int v, const char *c = nullptr);
+  void mk(const char *n, float v, const char *c = nullptr);
+  void mk(const char *n, double v, const char *c = nullptr);
+  void mk(const char *n, int r, int i, const char *c = nullptr);
+  void mk(const char *n, float r, float i, const char *c = nullptr);
+  void mk(const char *n, double r, double i, const char *c = nullptr);
+  void spaces(const char *n = nullptr, const char *c = nullptr);
+  void comment(const char *n = nullptr, const char *c = nullptr);
+  void history(const char *c = nullptr);
   //</group>
 
   bool notnull(double x) const { return double_null < x ? true : false; }
@@ -182,12 +182,12 @@ class HeaderDataUnit {
   //              FitsKeywordList, and should delete it.  The kwflag
   //              comments above are not important now.
   HeaderDataUnit(FitsKeywordList &, FITS::HDUType,
-                 FITSErrorHandler errhandler = FITSError::defaultHandler, FitsInput * = 0);
+                 FITSErrorHandler errhandler = FITSError::defaultHandler, FitsInput * = nullptr);
   // constructor for objects that write only required keyword to fits file.
   // the write method to call by these object should be those for the specific
   // hdu, such as write_bintbl_hdr().
   HeaderDataUnit(FITS::HDUType, FITSErrorHandler errhandler = FITSError::defaultHandler,
-                 FitsInput * = 0);
+                 FitsInput * = nullptr);
   // for write required keywords only to use.
   bool init_data_unit(FITS::HDUType t);
 

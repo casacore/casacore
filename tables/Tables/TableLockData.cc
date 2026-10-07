@@ -34,7 +34,7 @@ TableLockData::TableLockData(const TableLock& lockOptions,
                              TableLockData::ReleaseCallBack* releaseCallBack,
                              void* releaseParentObject)
     : TableLock(lockOptions),
-      itsLock(0),
+      itsLock(nullptr),
       itsReleaseCallBack(releaseCallBack),
       itsReleaseParent(releaseParentObject) {}
 
@@ -45,7 +45,7 @@ void TableLockData::makeLock(const String& name, bool create, FileLocker::LockTy
   // # Create lock file object only when not created yet.
   // # It is acceptable that no lock file exists for a readonly table
   // # (to be able to read older tables).
-  if (itsLock == 0) {
+  if (itsLock == nullptr) {
     itsLock = new LockFile(name + "/table.lock", interval(), create, true, false, locknr,
                            isPermanent(), option() == NoLocking);
   }
@@ -109,9 +109,9 @@ bool TableLockData::acquire(MemoryIO* info, FileLocker::LockType type, unsigned 
 void TableLockData::release(bool always) {
   // # Only release if not permanently locked.
   if (always || !isPermanent()) {
-    MemoryIO* memIO = 0;
+    MemoryIO* memIO = nullptr;
     if (hasLock(FileLocker::Write)) {
-      if (itsReleaseCallBack != 0) {
+      if (itsReleaseCallBack != nullptr) {
         memIO = itsReleaseCallBack(itsReleaseParent, always);
       }
     }

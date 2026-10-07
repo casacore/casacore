@@ -42,14 +42,14 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 TempImage<T>::TempImage()
-    : ImageInterface<T>(RegionHandlerMemory()), mapPtr_p(new TempLattice<T>), maskPtr_p(0) {}
+    : ImageInterface<T>(RegionHandlerMemory()), mapPtr_p(new TempLattice<T>), maskPtr_p(nullptr) {}
 
 template <class T>
 TempImage<T>::TempImage(const TiledShape& mapShape, const CoordinateSystem& coordinateInfo,
                         double maxMemoryInMb)
     : ImageInterface<T>(RegionHandlerMemory()),
       mapPtr_p(new TempLattice<T>(mapShape, maxMemoryInMb)),
-      maskPtr_p(0) {
+      maskPtr_p(nullptr) {
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
 }
 
@@ -58,14 +58,14 @@ TempImage<T>::TempImage(const TiledShape& mapShape, const CoordinateSystem& coor
                         int maxMemoryInMb)
     : ImageInterface<T>(RegionHandlerMemory()),
       mapPtr_p(new TempLattice<T>(mapShape, maxMemoryInMb)),
-      maskPtr_p(0) {
+      maskPtr_p(nullptr) {
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
 }
 
 template <class T>
 TempImage<T>::TempImage(const TempImage<T>& other)
-    : ImageInterface<T>(other), mapPtr_p(new TempLattice<T>(*other.mapPtr_p)), maskPtr_p(0) {
-  if (other.maskPtr_p != 0) {
+    : ImageInterface<T>(other), mapPtr_p(new TempLattice<T>(*other.mapPtr_p)), maskPtr_p(nullptr) {
+  if (other.maskPtr_p != nullptr) {
     maskPtr_p = other.maskPtr_p->clone();
   }
 }
@@ -74,12 +74,12 @@ template <class T>
 TempImage<T>& TempImage<T>::operator=(const TempImage<T>& other) {
   if (this != &other) {
     delete mapPtr_p;
-    mapPtr_p = 0;
+    mapPtr_p = nullptr;
     delete maskPtr_p;
-    maskPtr_p = 0;
+    maskPtr_p = nullptr;
     ImageInterface<T>::operator=(other);
     mapPtr_p = new TempLattice<T>(*other.mapPtr_p);
-    if (other.maskPtr_p != 0) {
+    if (other.maskPtr_p != nullptr) {
       maskPtr_p = other.maskPtr_p->clone();
     }
   }
@@ -164,7 +164,7 @@ void TempImage<T>::applyMask(const String& maskName) {
   // No region if no mask name is given.
   if (maskName.empty()) {
     delete maskPtr_p;
-    maskPtr_p = 0;
+    maskPtr_p = nullptr;
     return;
   }
   // Reconstruct the ImageRegion object.
@@ -192,7 +192,7 @@ void TempImage<T>::attachMask(const Lattice<bool>& mask) {
   }
   if (maskPtr_p) {
     delete maskPtr_p;
-    maskPtr_p = 0;
+    maskPtr_p = nullptr;
   }
   maskPtr_p = mask.clone();
 }
@@ -209,17 +209,17 @@ void TempImage<T>::removeRegion(const String& name, RegionHandler::GroupType typ
 
 template <class T>
 bool TempImage<T>::isMasked() const {
-  return (maskPtr_p != 0);
+  return (maskPtr_p != nullptr);
 }
 
 template <class T>
 bool TempImage<T>::hasPixelMask() const {
-  return (maskPtr_p != 0);
+  return (maskPtr_p != nullptr);
 }
 
 template <class T>
 const Lattice<bool>& TempImage<T>::pixelMask() const {
-  if (maskPtr_p == 0) {
+  if (maskPtr_p == nullptr) {
     throw(AipsError("TempImage::pixelMask - no mask attached"));
   }
   return *maskPtr_p;
@@ -227,7 +227,7 @@ const Lattice<bool>& TempImage<T>::pixelMask() const {
 
 template <class T>
 Lattice<bool>& TempImage<T>::pixelMask() {
-  if (maskPtr_p == 0) {
+  if (maskPtr_p == nullptr) {
     throw(AipsError("TempImage::pixelMask - no mask attached"));
   }
   return *maskPtr_p;
@@ -236,7 +236,7 @@ Lattice<bool>& TempImage<T>::pixelMask() {
 template <class T>
 bool TempImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
   // If no mask, base implementation returns a true mask.
-  if (maskPtr_p == 0) {
+  if (maskPtr_p == nullptr) {
     return MaskedLattice<T>::doGetMaskSlice(buffer, section);
   }
   return maskPtr_p->doGetSlice(buffer, section);
@@ -244,7 +244,7 @@ bool TempImage<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section) {
 
 template <class T>
 const LatticeRegion* TempImage<T>::getRegionPtr() const {
-  return 0;
+  return nullptr;
 }
 
 template <class T>

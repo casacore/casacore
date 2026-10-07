@@ -89,7 +89,7 @@ void doExpr(const String& expr, const Record& regions) {
 
   LatticeExpr<float> latEx(node);
   ImageInterface<float>* pImage = new ImageExpr<float>(latEx, exprName);
-  if (pImage == 0) {
+  if (pImage == nullptr) {
     os << "Failed to create PagedImage" << LogIO::EXCEPTION;
   }
 }

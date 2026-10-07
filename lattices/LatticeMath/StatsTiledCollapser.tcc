@@ -108,7 +108,7 @@ void StatsTiledCollapser<T, U>::process(unsigned int index1, unsigned int index3
   typename vector<std::pair<U, U>>::const_iterator beginRange = ranges.begin();
   typename vector<std::pair<U, U>>::const_iterator endRange = ranges.end();
   int64_t i = 0;
-  if (pInMask == 0) {
+  if (pInMask == nullptr) {
     // All pixels are unmasked
     if (hasRange) {
       for (i = 0; i < (int64_t)nrval; ++i) {

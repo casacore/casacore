@@ -82,14 +82,14 @@ LELSpectralIndex<T>::LELSpectralIndex(const Block<LatticeExprNode>& expr) {
     // left is subset of right, so extend left.
     const LELLattCoordBase* cbptr = &(attr0.coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
-    AlwaysAssert(cptr != 0, AipsError);
+    AlwaysAssert(cptr != nullptr, AipsError);
     arg0_p = cptr->makeExtendLattice(arg0_p, attr1.shape(), attr1.coordinates().coordinates());
     itsFreqAxis = freqAxis1;
   } else if (result == 1) {
     // right is subset of left, so extend right.
     const LELLattCoordBase* cbptr = &(attr1.coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
-    AlwaysAssert(cptr != 0, AipsError);
+    AlwaysAssert(cptr != nullptr, AipsError);
     arg1_p = cptr->makeExtendLattice(arg1_p, attr0.shape(), attr0.coordinates().coordinates());
   } else {
     throw AipsError("LELSpectralIndex - coordinates of operands mismatch");

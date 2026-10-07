@@ -264,7 +264,7 @@ class LogSink : public LogSinkInterface {
 
   class LsiIntermediate {
    public:
-    LsiIntermediate() : logSinkInterface_p(0) {}
+    LsiIntermediate() : logSinkInterface_p(nullptr) {}
     LsiIntermediate(LogSinkInterface *lsi) : logSinkInterface_p(lsi) {}
     ~LsiIntermediate() { delete logSinkInterface_p; }
 

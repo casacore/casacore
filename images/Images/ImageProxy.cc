@@ -61,30 +61,30 @@ using namespace std;
 namespace casacore {  // # name space casa begins
 
 ImageProxy::ImageProxy()
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {}
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {}
 
 ImageProxy::ImageProxy(LatticeBase* lattice)
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   setup(lattice);
 }
 
 ImageProxy::ImageProxy(const String& name, const String& mask, const vector<ImageProxy>& images)
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   // Register the functions to create a FITSImage or MIRIADImage object.
   FITSImage::registerOpenFunction();
   MIRIADImage::registerOpenFunction();
@@ -95,12 +95,12 @@ ImageProxy::ImageProxy(const String& name, const String& mask, const vector<Imag
 ImageProxy::ImageProxy(const ValueHolder& values, const ValueHolder& mask,
                        const Record& coordinates, const String& fileName, bool overwrite,
                        bool asHDF5, const String& maskName, const IPosition& tileShape)
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   if (!overwrite) {
     File file(fileName);
     if (file.exists()) {
@@ -137,12 +137,12 @@ ImageProxy::ImageProxy(const ValueHolder& values, const ValueHolder& mask,
 ImageProxy::ImageProxy(const IPosition& shape, const ValueHolder& value, const Record& coordinates,
                        const String& fileName, bool overwrite, bool asHDF5, const String& maskName,
                        const IPosition& tileShape, int)
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   if (!overwrite) {
     File file(fileName);
     if (file.exists()) {
@@ -177,12 +177,12 @@ ImageProxy::ImageProxy(const IPosition& shape, const ValueHolder& value, const R
 }
 
 ImageProxy::ImageProxy(const Vector<String>& names, int axis)
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   vector<ImageProxy> images;
   images.reserve(names.size());
   for (unsigned int i = 0; i < names.size(); ++i) {
@@ -192,23 +192,23 @@ ImageProxy::ImageProxy(const Vector<String>& names, int axis)
 }
 
 ImageProxy::ImageProxy(const vector<ImageProxy>& images, int axis, int, int)
-    : itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+    : itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   concatImages(images, axis);
 }
 
 ImageProxy::ImageProxy(const std::shared_ptr<LatticeBase>& image)
     : itsLattice(image),
-      itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+      itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   if (itsLattice) {
     setup();
   }
@@ -216,12 +216,12 @@ ImageProxy::ImageProxy(const std::shared_ptr<LatticeBase>& image)
 
 ImageProxy::ImageProxy(const ImageProxy& that)
     : itsLattice(that.itsLattice),
-      itsImageFloat(0),
-      itsImageDouble(0),
-      itsImageComplex(0),
-      itsImageDComplex(0),
-      itsCoordSys(0),
-      itsAttrHandler(0) {
+      itsImageFloat(nullptr),
+      itsImageDouble(nullptr),
+      itsImageComplex(nullptr),
+      itsImageDComplex(nullptr),
+      itsCoordSys(nullptr),
+      itsAttrHandler(nullptr) {
   if (itsLattice) {
     setup();
   }
@@ -255,14 +255,14 @@ LatticeBase* ImageProxy::openImage(const String& name, const String& mask,
     tempNodes[i] = images[i].makeNode();
   }
   String msg;
-  LatticeBase* lattice = 0;
+  LatticeBase* lattice = nullptr;
   try {
     lattice = openImageOrExpr(name, maskSp, tempNodes);
   } catch (const std::exception& x) {
     msg = x.what();
-    lattice = 0;
+    lattice = nullptr;
   }
-  if (lattice == 0) {
+  if (lattice == nullptr) {
     throw AipsError(name + " cannot be opened as image (expression): " + msg);
   }
   return lattice;
@@ -271,7 +271,7 @@ LatticeBase* ImageProxy::openImage(const String& name, const String& mask,
 LatticeBase* ImageProxy::openImageOrExpr(const String& str, const MaskSpecifier& spec,
                                          const Block<LatticeExprNode>& nodes) {
   LatticeBase* lattice = ImageOpener::openImage(str, spec);
-  if (lattice == 0) {
+  if (lattice == nullptr) {
     lattice = ImageOpener::openExpr(str, nodes);
   }
   return lattice;
@@ -279,12 +279,12 @@ LatticeBase* ImageProxy::openImageOrExpr(const String& str, const MaskSpecifier&
 
 void ImageProxy::close() {
   itsLattice.reset();
-  itsImageFloat = 0;
-  itsImageDouble = 0;
-  itsImageComplex = 0;
-  itsImageDComplex = 0;
-  itsCoordSys = 0;
-  itsAttrHandler = 0;
+  itsImageFloat = nullptr;
+  itsImageDouble = nullptr;
+  itsImageComplex = nullptr;
+  itsImageDComplex = nullptr;
+  itsCoordSys = nullptr;
+  itsAttrHandler = nullptr;
 }
 
 void ImageProxy::checkNull() const {
@@ -329,7 +329,7 @@ void ImageProxy::makeImage(const Array<T>& array, const Array<bool>& mask, const
   } else {
     cSys = makeCoordinateSystem(coordinates, shp);
   }
-  ImageInterface<T>* image = 0;
+  ImageInterface<T>* image = nullptr;
   if (name.empty()) {
     image = new TempImage<T>(shp, cSys, 1000);
   } else if (asHDF5) {

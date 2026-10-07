@@ -38,9 +38,9 @@ EarthMagneticEngine::EarthMagneticEngine()
       itsAsLong(false),
       itsUseModel(false),
       itsConvertModel(false),
-      itsEpochEngine(0),
-      itsPositionEngine(0),
-      itsDirectionEngine(0) {
+      itsEpochEngine(nullptr),
+      itsPositionEngine(nullptr),
+      itsDirectionEngine(nullptr) {
   itsRefType = MEarthMagnetic::ITRF;
 }
 
@@ -208,7 +208,7 @@ void EarthMagneticEngine::handleValues(TableExprNode& operand, const TableExprId
 }
 
 void EarthMagneticEngine::setEpochEngine(EpochEngine& engine) {
-  AlwaysAssert(itsEpochEngine == 0, AipsError);
+  AlwaysAssert(itsEpochEngine == nullptr, AipsError);
   itsEpochEngine = &engine;
   extendBase(engine, false);
   // Define the frame part, so it can be reset later.
@@ -216,7 +216,7 @@ void EarthMagneticEngine::setEpochEngine(EpochEngine& engine) {
 }
 
 void EarthMagneticEngine::setPositionEngine(PositionEngine& engine) {
-  AlwaysAssert(itsPositionEngine == 0, AipsError);
+  AlwaysAssert(itsPositionEngine == nullptr, AipsError);
   itsPositionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.
@@ -224,7 +224,7 @@ void EarthMagneticEngine::setPositionEngine(PositionEngine& engine) {
 }
 
 void EarthMagneticEngine::setDirectionEngine(DirectionEngine& engine) {
-  AlwaysAssert(itsDirectionEngine == 0, AipsError);
+  AlwaysAssert(itsDirectionEngine == nullptr, AipsError);
   itsDirectionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.
@@ -285,9 +285,9 @@ Array<double> EarthMagneticEngine::getArrayDouble(const TableExprId& id) {
   Array<MEarthMagnetic> ems;
   Array<MDirection> dirs;
   Array<double> heights;
-  const MEarthMagnetic* ePtr = 0;
-  const MDirection* dPtr = 0;
-  const double* hPtr = 0;
+  const MEarthMagnetic* ePtr = nullptr;
+  const MDirection* dPtr = nullptr;
+  const double* hPtr = nullptr;
   size_t nval1 = 1;
   size_t nval2 = 1;
   if (itsUseModel) {

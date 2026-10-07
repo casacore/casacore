@@ -44,7 +44,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TableMeasRefDesc::TypesFunc* TableMeasRefDesc::theirTypesFunc = TableMeasRefDesc::defaultTypesFunc;
 
 TableMeasRefDesc::TableMeasRefDesc(unsigned int referenceCode)
-    : itsRefCode(referenceCode), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {}
+    : itsRefCode(referenceCode), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(nullptr) {}
 
 TableMeasRefDesc::TableMeasRefDesc(unsigned int referenceCode, const TableMeasOffsetDesc& offset)
     : itsRefCode(referenceCode),
@@ -53,7 +53,11 @@ TableMeasRefDesc::TableMeasRefDesc(unsigned int referenceCode, const TableMeasOf
       itsOffset(new TableMeasOffsetDesc(offset)) {}
 
 TableMeasRefDesc::TableMeasRefDesc(const TableDesc& td, const String& column)
-    : itsRefCode(0), itsColumn(column), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {
+    : itsRefCode(0),
+      itsColumn(column),
+      itsRefCodeColInt(false),
+      itsHasRefTab(true),
+      itsOffset(nullptr) {
   checkColumn(td);
 }
 
@@ -67,7 +71,9 @@ TableMeasRefDesc::TableMeasRefDesc(const TableDesc& td, const String& column,
   checkColumn(td);
 }
 
-TableMeasRefDesc::TableMeasRefDesc(const TableMeasRefDesc& that) : itsOffset(0) { operator=(that); }
+TableMeasRefDesc::TableMeasRefDesc(const TableMeasRefDesc& that) : itsOffset(nullptr) {
+  operator=(that);
+}
 
 TableMeasRefDesc& TableMeasRefDesc::operator=(const TableMeasRefDesc& that) {
   if (this != &that) {
@@ -77,7 +83,7 @@ TableMeasRefDesc& TableMeasRefDesc::operator=(const TableMeasRefDesc& that) {
     itsRefCodeColInt = that.itsRefCodeColInt;
     itsHasRefTab = that.itsHasRefTab;
     itsOffset = that.itsOffset;
-    if (itsOffset != 0) {
+    if (itsOffset != nullptr) {
       itsOffset = new TableMeasOffsetDesc(*itsOffset);
     }
     itsTabRefTypes = that.itsTabRefTypes;
@@ -92,7 +98,7 @@ TableMeasRefDesc::~TableMeasRefDesc() { delete itsOffset; }
 
 TableMeasRefDesc::TableMeasRefDesc(const TableRecord& measInfo, const Table& tab,
                                    const MeasureHolder& measHolder, const TableMeasDescBase& mDesc)
-    : itsRefCode(0), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(0) {
+    : itsRefCode(0), itsRefCodeColInt(false), itsHasRefTab(true), itsOffset(nullptr) {
   int fnr;
   fnr = measInfo.fieldNumber("Ref");
   // Read back. The refcode is fixed or variable.
@@ -217,14 +223,14 @@ unsigned int TableMeasRefDesc::cur2tab(unsigned int curRefCode) const {
 void TableMeasRefDesc::write(TableDesc& td, TableRecord& measInfo,
                              const TableMeasDescBase& measDesc) {
   writeKeys(measInfo, measDesc);
-  if (itsOffset != 0) {
+  if (itsOffset != nullptr) {
     itsOffset->write(td, measInfo, "RefOff");
   }
 }
 
 void TableMeasRefDesc::write(Table& tab, TableRecord& measInfo, const TableMeasDescBase& measDesc) {
   writeKeys(measInfo, measDesc);
-  if (itsOffset != 0) {
+  if (itsOffset != nullptr) {
     itsOffset->write(tab, measInfo, "RefOff");
   }
 }
@@ -267,7 +273,7 @@ void TableMeasRefDesc::resetRefCode(unsigned int refCode) {
 }
 
 void TableMeasRefDesc::resetOffset(const Measure& offset) {
-  if (itsOffset == 0) {
+  if (itsOffset == nullptr) {
     itsOffset = new TableMeasOffsetDesc(offset);
   } else {
     itsOffset->resetOffset(offset);

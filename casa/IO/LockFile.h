@@ -327,18 +327,18 @@ class LockFile {
 };
 
 inline bool LockFile::acquire(FileLocker::LockType type, unsigned int nattempts) {
-  return acquire(0, type, nattempts);
+  return acquire(nullptr, type, nattempts);
 }
 inline bool LockFile::acquire(MemoryIO& info, FileLocker::LockType type, unsigned int nattempts) {
   return acquire(&info, type, nattempts);
 }
-inline bool LockFile::release() { return release(0); }
+inline bool LockFile::release() { return release(nullptr); }
 inline bool LockFile::release(const MemoryIO& info) { return release(&info); }
 inline bool LockFile::canLock(FileLocker::LockType type) {
-  return (itsFileIO == 0 ? true : itsLocker.canLock(type));
+  return (itsFileIO == nullptr ? true : itsLocker.canLock(type));
 }
 inline bool LockFile::hasLock(FileLocker::LockType type) const {
-  return (itsFileIO == 0 ? true : itsLocker.hasLock(type));
+  return (itsFileIO == nullptr ? true : itsLocker.hasLock(type));
 }
 inline int LockFile::lastError() const { return itsLocker.lastError(); }
 inline String LockFile::lastMessage() const { return itsLocker.lastMessage(); }

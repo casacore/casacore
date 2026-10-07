@@ -158,8 +158,8 @@ class LattRegionHolder {
   unsigned int itsNdim;
 };
 
-inline bool LattRegionHolder::isLCRegion() const { return (itsLC != 0); }
-inline bool LattRegionHolder::isLCSlicer() const { return (itsSlicer != 0); }
+inline bool LattRegionHolder::isLCRegion() const { return (itsLC != nullptr); }
+inline bool LattRegionHolder::isLCSlicer() const { return (itsSlicer != nullptr); }
 inline bool LattRegionHolder::operator!=(const LattRegionHolder& other) const {
   return (!operator==(other));
 }

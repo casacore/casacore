@@ -972,7 +972,7 @@ bool FITSKeywordUtil::getKeywords(RecordInterface &out, ConstFitsKeywordList &in
       }
     }
 
-    if (out.isDefined(fullName) && key->comm() != 0 && key->commlen() > 0) {
+    if (out.isDefined(fullName) && key->comm() != nullptr && key->commlen() > 0) {
       out.setComment(fullName, key->comm());
     }
 

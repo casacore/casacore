@@ -47,8 +47,8 @@ unsigned int Measure::giveMe(const String &in, int N_name, const String tname[])
 const String *Measure::allTypes(int &nall, int &nextra, const unsigned int *&typ) const {
   static const int N_name = 0;
   static const int N_extra = 0;
-  static const String *tname = 0;
-  static const unsigned int *oname = 0;
+  static const String *tname = nullptr;
+  static const unsigned int *oname = nullptr;
 
   nall = N_name;
   nextra = N_extra;

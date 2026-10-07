@@ -45,8 +45,8 @@ CompressFloat::CompressFloat(const String& virtualColumnName, const String& stor
       offset_p(offset),
       fixed_p(true),
       autoScale_p(false),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {}
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {}
 
 CompressFloat::CompressFloat(const String& virtualColumnName, const String& storedColumnName,
                              const String& scaleColumnName, const String& offsetColumnName,
@@ -58,8 +58,8 @@ CompressFloat::CompressFloat(const String& virtualColumnName, const String& stor
       offset_p(0.0),
       fixed_p(false),
       autoScale_p(autoScale),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {}
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {}
 
 CompressFloat::CompressFloat(const Record& spec)
     : BaseMappedArrayEngine<float, short>(),
@@ -67,8 +67,8 @@ CompressFloat::CompressFloat(const Record& spec)
       offset_p(0.0),
       fixed_p(true),
       autoScale_p(false),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
     setNames(spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
     if (spec.isDefined("SCALE") && spec.isDefined("OFFSET")) {
@@ -93,8 +93,8 @@ CompressFloat::CompressFloat(const CompressFloat& that)
       offset_p(that.offset_p),
       fixed_p(that.fixed_p),
       autoScale_p(that.autoScale_p),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {}
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {}
 
 CompressFloat::~CompressFloat() {
   delete scaleColumn_p;

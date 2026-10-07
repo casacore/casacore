@@ -267,7 +267,7 @@ int main() {
   void** va2 = new void*[size];
   objset(va, static_cast<void*>(0), size);
   objmove(va2, va, size);
-  for (i = 0; i < size; i++) AlwaysAssertExit(va2[i] == 0);
+  for (i = 0; i < size; i++) AlwaysAssertExit(va2[i] == nullptr);
 
   // Block uses objcopy.
   // Somewhere Block<void*> and Block<const void*> are used.

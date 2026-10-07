@@ -44,8 +44,8 @@ VirtualTaQLColumn::VirtualTaQLColumn(const String& expr, const String& style)
       itsTempWritable(false),
       itsExpr(expr),
       itsStyle(style),
-      itsNode(0),
-      itsCurArray(0),
+      itsNode(nullptr),
+      itsCurArray(nullptr),
       itsCurRow(-1) {}
 
 VirtualTaQLColumn::VirtualTaQLColumn(const Record& spec)
@@ -53,8 +53,8 @@ VirtualTaQLColumn::VirtualTaQLColumn(const Record& spec)
       itsIsArray(false),
       itsIsConst(false),
       itsTempWritable(false),
-      itsNode(0),
-      itsCurArray(0),
+      itsNode(nullptr),
+      itsCurArray(nullptr),
       itsCurRow(-1) {
   if (spec.isDefined("TAQLCALCEXPR")) {
     itsExpr = spec.asString("TAQLCALCEXPR");
@@ -71,7 +71,7 @@ VirtualTaQLColumn::~VirtualTaQLColumn() {
 
 void VirtualTaQLColumn::makeCurArray() {
   delete itsCurArray;
-  itsCurArray = 0;
+  itsCurArray = nullptr;
   switch (itsDataType) {
     case TpBool:
       itsCurArray = new Array<bool>();

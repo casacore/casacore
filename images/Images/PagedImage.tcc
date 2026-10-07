@@ -71,7 +71,7 @@ PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coord
                           Table& table, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)),
       map_p(shape, table, "map", rowNumber),
-      regionPtr_p(0) {
+      regionPtr_p(nullptr) {
   attach_logtable();
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
@@ -81,7 +81,7 @@ template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
                           const String& filename, TableLock::LockOption lockMode,
                           unsigned int rowNumber)
-    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(nullptr) {
   makePagedImage(shape, coordinateInfo, filename, TableLock(lockMode), rowNumber);
 }
 
@@ -89,7 +89,7 @@ template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
                           const String& filename, const TableLock& lockOptions,
                           unsigned int rowNumber)
-    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(nullptr) {
   makePagedImage(shape, coordinateInfo, filename, lockOptions, rowNumber);
 }
 
@@ -108,7 +108,7 @@ void PagedImage<T>::makePagedImage(const TiledShape& shape, const CoordinateSyst
 template <class T>
 PagedImage<T>::PagedImage(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
                           const String& filename, unsigned int rowNumber)
-    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(nullptr) {
   SetupNewTable newtab(filename, TableDesc(), Table::New);
   Table tab(newtab);
   map_p = PagedArray<T>(shape, tab, "map", rowNumber);
@@ -121,7 +121,7 @@ template <class T>
 PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, unsigned int rowNumber)
     : ImageInterface<T>(RegionHandlerTable(getTable, this)),
       map_p(table, "map", rowNumber),
-      regionPtr_p(0) {
+      regionPtr_p(nullptr) {
   attach_logtable();
   restoreAll(table.keywordSet());
   applyMaskSpecifier(spec);
@@ -129,7 +129,7 @@ PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, unsigned int rowNumb
 
 template <class T>
 PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec, unsigned int rowNumber)
-    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(nullptr) {
   Table tab(filename);
   map_p = PagedArray<T>(tab, "map", rowNumber);
   attach_logtable();
@@ -140,14 +140,14 @@ PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec, unsigned i
 template <class T>
 PagedImage<T>::PagedImage(const String& filename, const TableLock& lockOptions, MaskSpecifier spec,
                           unsigned int rowNumber)
-    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(nullptr) {
   makePagedImage(filename, lockOptions, spec, rowNumber);
 }
 
 template <class T>
 PagedImage<T>::PagedImage(const String& filename, TableLock::LockOption lockMode,
                           MaskSpecifier spec, unsigned int rowNumber)
-    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerTable(getTable, this)), regionPtr_p(nullptr) {
   makePagedImage(filename, TableLock(lockMode), spec, rowNumber);
 }
 
@@ -163,8 +163,8 @@ void PagedImage<T>::makePagedImage(const String& filename, const TableLock& lock
 
 template <class T>
 PagedImage<T>::PagedImage(const PagedImage<T>& other)
-    : ImageInterface<T>(other), map_p(other.map_p), regionPtr_p(0) {
-  if (other.regionPtr_p != 0) {
+    : ImageInterface<T>(other), map_p(other.map_p), regionPtr_p(nullptr) {
+  if (other.regionPtr_p != nullptr) {
     regionPtr_p = new LatticeRegion(*other.regionPtr_p);
   }
 }
@@ -182,8 +182,8 @@ PagedImage<T>& PagedImage<T>::operator=(const PagedImage<T>& other) {
     ImageInterface<T>::operator=(other);
     map_p = other.map_p;
     delete regionPtr_p;
-    regionPtr_p = 0;
-    if (other.regionPtr_p != 0) {
+    regionPtr_p = nullptr;
+    if (other.regionPtr_p != nullptr) {
       regionPtr_p = new LatticeRegion(*other.regionPtr_p);
     }
   }
@@ -199,7 +199,7 @@ template <class T>
 void PagedImage<T>::restoreAll(const TableRecord& rec) {
   // Restore the coordinates.
   CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
-  AlwaysAssert(restoredCoords != 0, AipsError);
+  AlwaysAssert(restoredCoords != nullptr, AipsError);
   setCoordsMember(*restoredCoords);
   delete restoredCoords;
   // Restore the image info.
@@ -242,19 +242,19 @@ void PagedImage<T>::reopenRW() {
 
 template <class T>
 bool PagedImage<T>::hasPixelMask() const {
-  return (regionPtr_p != 0 && regionPtr_p->hasMask());
+  return (regionPtr_p != nullptr && regionPtr_p->hasMask());
 }
 
 template <class T>
 const Lattice<bool>& PagedImage<T>::pixelMask() const {
-  if (regionPtr_p == 0) {
+  if (regionPtr_p == nullptr) {
     throw(AipsError("PagedImage::pixelMask - no pixelmask used"));
   }
   return *regionPtr_p;
 }
 template <class T>
 Lattice<bool>& PagedImage<T>::pixelMask() {
-  if (regionPtr_p == 0) {
+  if (regionPtr_p == nullptr) {
     throw(AipsError("PagedImage::pixelMask - no pixelmask used"));
   }
   return *regionPtr_p;
@@ -299,7 +299,7 @@ void PagedImage<T>::applyMask(const String& maskName) {
   // No region if no mask name is given.
   if (maskName.empty()) {
     delete regionPtr_p;
-    regionPtr_p = 0;
+    regionPtr_p = nullptr;
     return;
   }
   // Reconstruct the ImageRegion object.
@@ -566,7 +566,7 @@ unsigned int PagedImage<T>::maximumCacheSize() const {
 template <class T>
 void PagedImage<T>::setMaximumCacheSize(unsigned int howManyPixels) {
   map_p.setMaximumCacheSize(howManyPixels);
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->setMaximumCacheSize(howManyPixels);
   }
 }
@@ -575,7 +575,7 @@ template <class T>
 void PagedImage<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPosition& windowStart,
                                          const IPosition& windowLength, const IPosition& axisPath) {
   map_p.setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
   }
 }
@@ -583,7 +583,7 @@ void PagedImage<T>::setCacheSizeFromPath(const IPosition& sliceShape, const IPos
 template <class T>
 void PagedImage<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
   map_p.setCacheSizeInTiles(howManyTiles);
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->setCacheSizeInTiles(howManyTiles);
   }
 }
@@ -591,7 +591,7 @@ void PagedImage<T>::setCacheSizeInTiles(unsigned int howManyTiles) {
 template <class T>
 void PagedImage<T>::clearCache() {
   map_p.clearCache();
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->clearCache();
   }
 }
@@ -600,7 +600,7 @@ template <class T>
 void PagedImage<T>::showCacheStatistics(ostream& os) const {
   os << "Pixel statistics : ";
   map_p.showCacheStatistics(os);
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     os << "Pixelmask statistics : ";
     regionPtr_p->showCacheStatistics(os);
   }
@@ -646,7 +646,7 @@ template <class T>
 void PagedImage<T>::unlock() {
   map_p.unlock();
   logger().unlock();
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->unlock();
   }
 }
@@ -659,7 +659,7 @@ template <class T>
 void PagedImage<T>::resync() {
   map_p.resync();
   logger().resync();
-  if (regionPtr_p != 0 && !regionPtr_p->hasLock(FileLocker::Read)) {
+  if (regionPtr_p != nullptr && !regionPtr_p->hasLock(FileLocker::Read)) {
     regionPtr_p->resync();
   }
 }
@@ -669,7 +669,7 @@ void PagedImage<T>::flush() {
   itsAttrHandler.flush();
   map_p.flush();
   logger().flush();
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->flush();
   }
 }
@@ -678,7 +678,7 @@ template <class T>
 void PagedImage<T>::tempClose() {
   map_p.tempClose();
   logger().tempClose();
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->tempClose();
   }
 }
@@ -686,7 +686,7 @@ void PagedImage<T>::tempClose() {
 template <class T>
 void PagedImage<T>::reopen() {
   map_p.reopen();
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->reopen();
   }
 }

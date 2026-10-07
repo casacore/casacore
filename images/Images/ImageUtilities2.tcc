@@ -243,7 +243,7 @@ void ImageUtilities::openImage(ImageInterface<T>*& pImage, const String& fileNam
             " has a different data type than the data type of the requested object");
   }
   pImage = dynamic_cast<ImageInterface<T>*>(lattPtr);
-  if (pImage == 0) {
+  if (pImage == nullptr) {
     delete lattPtr;
     ThrowCc(
         "Unrecognized image data type, "
@@ -253,14 +253,14 @@ void ImageUtilities::openImage(ImageInterface<T>*& pImage, const String& fileNam
 
 template <typename T>
 void ImageUtilities::openImage(std::unique_ptr<ImageInterface<T>>& image, const String& fileName) {
-  ImageInterface<T>* p = 0;
+  ImageInterface<T>* p = nullptr;
   ImageUtilities::openImage(p, fileName);
   image.reset(p);
 }
 
 template <typename T>
 std::shared_ptr<ImageInterface<T>> ImageUtilities::openImage(const String& fileName) {
-  ImageInterface<T>* p = 0;
+  ImageInterface<T>* p = nullptr;
   ImageUtilities::openImage(p, fileName);
   return std::shared_ptr<ImageInterface<T>>(p);
 }

@@ -389,7 +389,7 @@ WCPolygon* WCPolygon::fromRecord(const TableRecord& rec, const String&) {
 
   // Make WCPolygon
 
-  WCPolygon* pPoly = 0;
+  WCPolygon* pPoly = nullptr;
   pPoly = new WCPolygon(xQ, yQ, pixelAxes, *pCSys, absRel);
   //
   delete pCSys;

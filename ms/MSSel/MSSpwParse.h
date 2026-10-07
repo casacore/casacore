@@ -117,7 +117,7 @@ class MSSpwParse : public MSParse {
   };
   static void cleanupNode() {
     if (node_p) delete node_p;
-    node_p = 0x0;
+    node_p = nullptr;
   }
   static void cleanupErrorHandler() { thisMSSpwErrorHandler.reset(); }
   static void cleanup() {

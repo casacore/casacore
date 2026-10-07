@@ -38,7 +38,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LatticeAddNoise::LatticeAddNoise() : itsParameters(0), itsNoise(0) {}
+LatticeAddNoise::LatticeAddNoise() : itsParameters(0), itsNoise(nullptr) {}
 
 LatticeAddNoise::LatticeAddNoise(Random::Types type, const Vector<double>& parameters, int seed1,
                                  int seed2)
@@ -68,7 +68,7 @@ LatticeAddNoise& LatticeAddNoise::operator=(const LatticeAddNoise& other) {
 LatticeAddNoise::~LatticeAddNoise() {
   if (itsNoise) {
     delete itsNoise;
-    itsNoise = 0;
+    itsNoise = nullptr;
   }
 }
 
@@ -124,13 +124,13 @@ void LatticeAddNoise::addNoiseToArray(Array<DComplex>& data) {
 void LatticeAddNoise::makeDistribution() {
   if (itsNoise) {
     delete itsNoise;
-    itsNoise = 0;
+    itsNoise = nullptr;
   }
   itsNoise = Random::construct(itsType, &itsGen);
   if (itsNoise) {
     if (!itsNoise->checkParameters(itsParameters)) {
       delete itsNoise;
-      itsNoise = 0;
+      itsNoise = nullptr;
       LogIO os(LogOrigin("LatticeAddNoise", "makeDistribution", WHERE));
       os << "The distribution parameters are illegal" << LogIO::EXCEPTION;
     } else {

@@ -100,7 +100,7 @@ class MSStateParse : public MSParse {
   static void reset() { idList.resize(0); };
   static void cleanupNode() {
     if (node_p) delete node_p;
-    node_p = 0x0;
+    node_p = nullptr;
   }
   static void cleanupErrorHandler() { thisMSSErrorHandler.reset(); }
   static void cleanup() {

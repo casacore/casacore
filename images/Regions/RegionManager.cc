@@ -70,7 +70,7 @@ RegionManager::RegionManager(const CoordinateSystem& csys) : itsCSys(new Coordin
   // setcoordsys(csys);
 }
 RegionManager::~RegionManager() {
-  if (itsLog != 0) delete itsLog;
+  if (itsLog != nullptr) delete itsLog;
 }
 
 /*************************************************************
@@ -313,7 +313,7 @@ ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, const Vector<Qua
   } else {
     throw(AipsError("CoordinateSystem not set in RegionManager tool"));
   }
-  return 0;
+  return nullptr;
 }
 
 ImageRegion* RegionManager::wellipse(const Quantity& xc, const Quantity& yc, const Quantity& a,
@@ -565,7 +565,7 @@ ImageRegion* RegionManager::doConcatenation(const Record& regions, const TableRe
     throw(AipsError(String("No regions have been supplied to concatenation")));
 
   Block<const ImageRegion*> imageRegions(regions.nfields());
-  ImageRegion* reg = 0;
+  ImageRegion* reg = nullptr;
   TableRecord tblRec;
   for (unsigned int i = 0; i < (regions.nfields()); i++) {
     tblRec.assign(regions.asRecord(casacore::RecordFieldId(0)));
@@ -693,14 +693,14 @@ String RegionManager::recordToTable(const String& tabName, const RecordInterface
 Record* RegionManager::tableToRecord(const String& tabName, const String& regname) {
   if (!Table::isReadable(tabName)) {
     *itsLog << LogIO::WARN << tabName << " is not a valid or readable table" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   tab_p = Table(tabName, Table::Old);
   RegionHandlerTable regtab(getTable, this);
   if (!regtab.hasRegion(regname)) {
     *itsLog << LogIO::WARN << tabName << " does not have region " << regname << LogIO::POST;
     tab_p = Table();
-    return 0;
+    return nullptr;
   }
   ImageRegion* imreg = regtab.getRegion(regname, RegionHandler::Any, false);
   Record* leRecord = new Record();

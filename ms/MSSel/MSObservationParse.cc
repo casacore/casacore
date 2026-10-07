@@ -32,7 +32,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSObservationParse* MSObservationParse::thisMSObsParser =
-    0x0;  // Global pointer to the parser object
+    nullptr;  // Global pointer to the parser object
 TableExprNode MSObservationParse::columnAsTEN_p;
 // TableExprNode* MSObservationParse::node_p = 0x0;
 // Vector<Int> MSObservationParse::idList;

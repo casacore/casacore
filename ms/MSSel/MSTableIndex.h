@@ -86,7 +86,7 @@ class MSTableIndex {
   // columns.  TIME and INTERVAL will be used when present.  A compare function
   // can be provided to over-ride literal matching of column values.
   MSTableIndex(const Table &subTable, const Vector<String> &indexCols,
-               ColumnsIndex::Compare *compareFunction = 0);
+               ColumnsIndex::Compare *compareFunction = nullptr);
 
   // construct one from another
   MSTableIndex(const MSTableIndex &other);
@@ -98,7 +98,7 @@ class MSTableIndex {
 
   // attach this to a subtable using indexCols
   void attach(const Table &subTable, const Vector<String> &indexCols,
-              ColumnsIndex::Compare *compareFunction = 0);
+              ColumnsIndex::Compare *compareFunction = nullptr);
 
   // Call this when an index in an existing row has changed.  There is no need to
   // call this when new rows are added to the table

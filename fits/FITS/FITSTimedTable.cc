@@ -34,9 +34,9 @@ FITSTimedTable::FITSTimedTable()
     : atStart_p(true),
       hasChanged_p(false),
       changePending_p(false),
-      table_p(0),
-      row_now_p(0),
-      row_next_p(0),
+      table_p(nullptr),
+      row_now_p(nullptr),
+      row_next_p(nullptr),
       how_past_end_p(0),
       timeColumn_p(0) {
   rowDesc_p.addField("Time", TpDouble);
@@ -59,8 +59,8 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, unsigned int whichCol
       hasChanged_p(false),
       changePending_p(false),
       table_p(originalTable),
-      row_now_p(0),
-      row_next_p(0),
+      row_now_p(nullptr),
+      row_next_p(nullptr),
       rowDesc_p(table_p->description()),
       how_past_end_p(0),
       timeColumn_p(whichColumnIsTime) {
@@ -68,7 +68,7 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, unsigned int whichCol
 
   if (!table_p->isValid()) {
     // as if this had been created with the default constructor
-    table_p = 0;
+    table_p = nullptr;
     RecordDesc tmp;
     rowDesc_p = tmp;
     rowDesc_p.addField("Time", TpDouble);
@@ -99,9 +99,9 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, unsigned int whichCol
 
 FITSTimedTable::~FITSTimedTable() {
   if (row_now_p) delete row_now_p;
-  row_now_p = 0;
+  row_now_p = nullptr;
   if (row_next_p) delete row_next_p;
-  row_next_p = 0;
+  row_next_p = nullptr;
 }
 
 bool FITSTimedTable::isValid() const {

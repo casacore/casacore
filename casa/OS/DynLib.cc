@@ -47,13 +47,13 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 DynLib::DynLib(const std::string& library, const std::string& prefix, const std::string& funcName,
                bool closeOnDestruction)
-    : itsHandle(0), itsDoClose(closeOnDestruction) {
+    : itsHandle(nullptr), itsDoClose(closeOnDestruction) {
   attach(library, prefix, std::string(), funcName);
 }
 
 DynLib::DynLib(const std::string& library, const std::string& prefix, const std::string& version,
                const std::string& funcName, bool closeOnDestruction)
-    : itsHandle(0), itsDoClose(closeOnDestruction) {
+    : itsHandle(nullptr), itsDoClose(closeOnDestruction) {
   // Add a dot to the version if needed.
   std::string vers(version);
   if (!vers.empty() && vers[0] != '.') {
@@ -64,7 +64,7 @@ DynLib::DynLib(const std::string& library, const std::string& prefix, const std:
 
 DynLib::DynLib(const std::string& library, bool closeOnDestruction, const std::string& prefix,
                const std::string& suffix)
-    : itsHandle(0), itsDoClose(closeOnDestruction) {
+    : itsHandle(nullptr), itsDoClose(closeOnDestruction) {
   open(prefix + library + suffix);
 }
 
@@ -79,19 +79,19 @@ void* DynLib::getFunc(const std::string& funcName) {
 #ifdef HAVE_DLOPEN
   if (itsHandle) {
     void* fptr = dlsym(itsHandle, funcName.c_str());
-    if (fptr == 0) {
+    if (fptr == nullptr) {
       itsError = dlerror();
     }
     return fptr;
   }
 #endif
-  return 0;
+  return nullptr;
 }
 
 void DynLib::open(const std::string& name) {
 #ifdef HAVE_DLOPEN
   itsHandle = dlopen(name.c_str(), RTLD_NOW | RTLD_GLOBAL);
-  if (itsHandle == 0) {
+  if (itsHandle == nullptr) {
     itsError += string(dlerror()) + '\n';
   }
 #endif
@@ -102,7 +102,7 @@ void DynLib::close() {
 #ifdef HAVE_DLOPEN
     dlclose(itsHandle);
 #endif
-    itsHandle = 0;
+    itsHandle = nullptr;
   }
 }
 
@@ -113,7 +113,7 @@ std::string DynLib::tryOpen(const std::string& library, const std::string& dir,
   std::string fullName;
   // Try a maximum 4 times (1 or 2 prefix, 1 or 2 version, 1 ext).
   int i = 0;
-  while (i < 4 && itsHandle == 0) {
+  while (i < 4 && itsHandle == nullptr) {
 #ifdef __APPLE__
     fullName = dir + pref + library + vers + ".dylib";
 #else
@@ -132,7 +132,7 @@ std::string DynLib::tryOpen(const std::string& library, const std::string& dir,
       vers = version;
     }
   }
-  return (itsHandle == 0 ? std::string() : fullName);
+  return (itsHandle == nullptr ? std::string() : fullName);
 }
 
 void DynLib::attach(const std::string& library, const std::string& prefix,
@@ -141,7 +141,7 @@ void DynLib::attach(const std::string& library, const std::string& prefix,
   if (fullName.empty()) {
     fullName = tryOpen(library, string(), prefix, version);
   }
-  if (itsHandle == 0) {
+  if (itsHandle == nullptr) {
     throw AipsError("Shared library " + library +
                     " not found in CASACORE_LDPATH or (DY)LD_LIBRARY_PATH\n" + itsError);
   }

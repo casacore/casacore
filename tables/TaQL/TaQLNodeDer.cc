@@ -210,7 +210,7 @@ TaQLNode TaQLConstNodeRep::restore(AipsIO& aio) {
       return new TaQLConstNodeRep(MVTime(v));
     }
   }
-  return 0;
+  return nullptr;
 }
 
 TaQLRegexNodeRep::TaQLRegexNodeRep(const String& regex)

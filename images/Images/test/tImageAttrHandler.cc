@@ -103,7 +103,7 @@ void testUpdate(const String& imageName) {
 void testCopy(const String& nameIn, const String& nameOut, bool hdf5) {
   cout << endl << "testCopy " << nameIn << " to " << nameOut << endl;
   ImageInterface<float>* image = doOpen(nameIn);
-  ImageInterface<float>* newImage = 0;
+  ImageInterface<float>* newImage = nullptr;
   if (hdf5) {
     cout << ">>> to HDF5<<<" << endl;
     newImage = new HDF5Image<float>(image->shape(), image->coordinates(), nameOut);
@@ -122,7 +122,7 @@ void testSub(const String& nameIn, const String& nameOut, bool hdf5) {
   ImageInterface<float>* image = doOpen(nameIn);
   IPosition shp = image->shape();
   SubImage<float> subimg(*image, Slicer(IPosition(shp.size(), 0), (shp + 1) / 2));
-  ImageInterface<float>* newImage = 0;
+  ImageInterface<float>* newImage = nullptr;
   if (hdf5) {
     cout << ">>> to HDF5<<<" << endl;
     newImage = new HDF5Image<float>(subimg.shape(), subimg.coordinates(), nameOut);

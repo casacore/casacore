@@ -49,13 +49,13 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDSpWindowHandler::SDSpWindowHandler()
-    : fNCachePtr_p(0),
-      f0CachePtr_p(0),
-      bwCachePtr_p(0),
-      index_p(0),
-      theCache_p(0),
-      msSpWin_p(0),
-      msSpWinCols_p(0),
+    : fNCachePtr_p(nullptr),
+      f0CachePtr_p(nullptr),
+      bwCachePtr_p(nullptr),
+      index_p(nullptr),
+      theCache_p(nullptr),
+      msSpWin_p(nullptr),
+      msSpWinCols_p(nullptr),
       nextCacheRow_p(0),
       cacheSize_p(1000),
       rownr_p(-1),
@@ -66,13 +66,13 @@ SDSpWindowHandler::SDSpWindowHandler()
 
 SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                      const Record &row)
-    : fNCachePtr_p(0),
-      f0CachePtr_p(0),
-      bwCachePtr_p(0),
-      index_p(0),
-      theCache_p(0),
-      msSpWin_p(0),
-      msSpWinCols_p(0),
+    : fNCachePtr_p(nullptr),
+      f0CachePtr_p(nullptr),
+      bwCachePtr_p(nullptr),
+      index_p(nullptr),
+      theCache_p(nullptr),
+      msSpWin_p(nullptr),
+      msSpWinCols_p(nullptr),
       nextCacheRow_p(0),
       cacheSize_p(1000),
       rownr_p(-1),
@@ -82,13 +82,13 @@ SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<bool> &handledCo
 }
 
 SDSpWindowHandler::SDSpWindowHandler(const SDSpWindowHandler &other)
-    : fNCachePtr_p(0),
-      f0CachePtr_p(0),
-      bwCachePtr_p(0),
-      index_p(0),
-      theCache_p(0),
-      msSpWin_p(0),
-      msSpWinCols_p(0),
+    : fNCachePtr_p(nullptr),
+      f0CachePtr_p(nullptr),
+      bwCachePtr_p(nullptr),
+      index_p(nullptr),
+      theCache_p(nullptr),
+      msSpWin_p(nullptr),
+      msSpWinCols_p(nullptr),
       nextCacheRow_p(0),
       cacheSize_p(1000),
       rownr_p(-1),
@@ -321,22 +321,22 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<double> &frequency,
 
 void SDSpWindowHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete theCache_p;
-  theCache_p = 0;
+  theCache_p = nullptr;
 
   fNCache_p.putStorage(fNCachePtr_p, deleteItFN_p);
   f0Cache_p.putStorage(f0CachePtr_p, deleteItF0_p);
   bwCache_p.putStorage(bwCachePtr_p, deleteItBw_p);
 
-  fNCachePtr_p = f0CachePtr_p = bwCachePtr_p = 0;
+  fNCachePtr_p = f0CachePtr_p = bwCachePtr_p = nullptr;
 
   delete msSpWin_p;
-  msSpWin_p = 0;
+  msSpWin_p = nullptr;
 
   delete msSpWinCols_p;
-  msSpWinCols_p = 0;
+  msSpWinCols_p = nullptr;
 
   nextCacheRow_p = 0;
 

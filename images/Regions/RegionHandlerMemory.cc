@@ -58,11 +58,11 @@ RegionHandlerMemory& RegionHandlerMemory::operator=(const RegionHandlerMemory& t
 void RegionHandlerMemory::clear() {
   for (auto& x : itsMaps[0]) {
     delete static_cast<ImageRegion*>(x.second);
-    x.second = 0;
+    x.second = nullptr;
   }
   for (auto& x : itsMaps[1]) {
     delete static_cast<ImageRegion*>(x.second);
-    x.second = 0;
+    x.second = nullptr;
   }
 }
 
@@ -207,10 +207,10 @@ Vector<String> RegionHandlerMemory::regionNames(RegionHandler::GroupType type) c
 ImageRegion* RegionHandlerMemory::getRegion(const String& name, RegionHandler::GroupType type,
                                             bool throwIfUnknown) const {
   ImageRegion* regPtr = findRegion(name, type, throwIfUnknown);
-  if (regPtr != 0) {
+  if (regPtr != nullptr) {
     return regPtr->clone();
   }
-  return 0;
+  return nullptr;
 }
 
 ImageRegion* RegionHandlerMemory::findRegion(const String& name, RegionHandler::GroupType type,
@@ -219,7 +219,7 @@ ImageRegion* RegionHandlerMemory::findRegion(const String& name, RegionHandler::
   if (groupField >= 0) {
     return static_cast<ImageRegion*>(itsMaps[groupField].at(name));
   }
-  return 0;
+  return nullptr;
 }
 
 int RegionHandlerMemory::findRegionGroup(const String& regionName, RegionHandler::GroupType type,

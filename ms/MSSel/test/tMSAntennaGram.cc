@@ -68,7 +68,7 @@ int main(int argc, const char* argv[]) {
     mss.setAntennaExpr(String(argv[2]));
     TableExprNode node = mss.toTableExprNode(&ms);
 
-    MeasurementSet* mssel = 0;
+    MeasurementSet* mssel = nullptr;
     cout << "Original table has rows " << ms.nrow() << std::endl;
     Vector<int> selectedAnt1, selectedAnt2;
     Matrix<int> selectedBaselines;

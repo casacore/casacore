@@ -45,8 +45,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDPointingHandler::SDPointingHandler()
-    : msPointing_p(0),
-      msPointingCols_p(0),
+    : msPointing_p(nullptr),
+      msPointingCols_p(nullptr),
       time_p(0.0),
       antId_p(-1),
       directionRate_p(2),
@@ -57,8 +57,8 @@ SDPointingHandler::SDPointingHandler()
 
 SDPointingHandler::SDPointingHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                      const Record &row)
-    : msPointing_p(0),
-      msPointingCols_p(0),
+    : msPointing_p(nullptr),
+      msPointingCols_p(nullptr),
       time_p(0.0),
       antId_p(-1),
       directionRate_p(2),
@@ -68,8 +68,8 @@ SDPointingHandler::SDPointingHandler(MeasurementSet &ms, Vector<bool> &handledCo
 }
 
 SDPointingHandler::SDPointingHandler(const SDPointingHandler &other)
-    : msPointing_p(0),
-      msPointingCols_p(0),
+    : msPointing_p(nullptr),
+      msPointingCols_p(nullptr),
       time_p(0.0),
       antId_p(-1),
       directionRate_p(2),
@@ -222,10 +222,10 @@ void SDPointingHandler::fill(const Record &, int antennaId, double time,
 
 void SDPointingHandler::clearAll() {
   delete msPointing_p;
-  msPointing_p = 0;
+  msPointing_p = nullptr;
 
   delete msPointingCols_p;
-  msPointingCols_p = 0;
+  msPointingCols_p = nullptr;
 
   clearRow();
 }

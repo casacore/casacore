@@ -33,7 +33,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-CompiledParam<T>::CompiledParam() : Function<T>(), ndim_p(0), msg_p(), text_p(), functionPtr_p(0) {}
+CompiledParam<T>::CompiledParam()
+    : Function<T>(), ndim_p(0), msg_p(), text_p(), functionPtr_p(nullptr) {}
 
 template <class T>
 CompiledParam<T>::CompiledParam(const CompiledParam<T> &other)
@@ -46,7 +47,7 @@ CompiledParam<T>::CompiledParam(const CompiledParam<T> &other)
 template <class T>
 CompiledParam<T>::~CompiledParam() {
   if (functionPtr_p) delete functionPtr_p;
-  functionPtr_p = 0;
+  functionPtr_p = nullptr;
 }
 
 template <class T>
@@ -66,7 +67,7 @@ template <class T>
 bool CompiledParam<T>::setFunction(const String &newFunction) {
   // Add the function
   if (functionPtr_p) delete functionPtr_p;
-  functionPtr_p = 0;
+  functionPtr_p = nullptr;
   functionPtr_p = new FuncExpression();
   ndim_p = 0;
   msg_p = "";
@@ -75,7 +76,7 @@ bool CompiledParam<T>::setFunction(const String &newFunction) {
     this->param_p = FunctionParam<T>(0);
     msg_p = functionPtr_p->errorMessage();
     delete functionPtr_p;
-    functionPtr_p = 0;
+    functionPtr_p = nullptr;
     return false;
   }
   ndim_p = functionPtr_p->getNdim();

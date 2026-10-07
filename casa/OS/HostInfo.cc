@@ -231,7 +231,7 @@ ptrdiff_t HostInfo::swapFree() { return -1; }
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-HostMachineInfo *HostInfo::info = 0;
+HostMachineInfo *HostInfo::info = nullptr;
 ptrdiff_t HostInfo::resources_memory = 0;
 int HostInfo::resources_memfrac = 0;
 int HostInfo::resources_numCPUs = 0;

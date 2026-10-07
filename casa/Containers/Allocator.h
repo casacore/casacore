@@ -99,11 +99,11 @@ struct casacore_allocator : public std11_allocator<T> {
 
   ~casacore_allocator() noexcept = default;
 
-  pointer allocate(size_type elements, const void * = 0) {
+  pointer allocate(size_type elements, const void * = nullptr) {
     if (elements > std::allocator_traits<casacore_allocator>::max_size(*this)) {
       throw std::bad_alloc();
     }
-    void *memptr = 0;
+    void *memptr = nullptr;
     int result = posix_memalign(&memptr, ALIGNMENT, sizeof(T) * elements);
     if (result != 0) {
       throw std::bad_alloc();
@@ -205,7 +205,7 @@ class Allocator_private {
     using pointer = T2 *;
     using const_pointer = const T2 *;
 
-    virtual pointer allocate(size_type elements, const void *ptr = 0) = 0;
+    virtual pointer allocate(size_type elements, const void *ptr = nullptr) = 0;
     virtual void deallocate(pointer ptr, size_type size) = 0;
 
     virtual void construct(pointer ptr, size_type n, const_pointer src) = 0;

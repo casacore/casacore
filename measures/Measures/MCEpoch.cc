@@ -52,7 +52,9 @@ unsigned int MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
 std::once_flag MCEpoch::theirInitOnceFlag;
 
 // # Constructors
-MCEpoch::MCEpoch() : NUTATFROM(0), NUTATTO(0) { std::call_once(theirInitOnceFlag, doFillState); }
+MCEpoch::MCEpoch() : NUTATFROM(nullptr), NUTATTO(nullptr) {
+  std::call_once(theirInitOnceFlag, doFillState);
+}
 
 // # Destructor
 MCEpoch::~MCEpoch() { clearConvert(); }
@@ -81,9 +83,9 @@ void MCEpoch::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase &ou
 
 void MCEpoch::clearConvert() {
   delete NUTATFROM;
-  NUTATFROM = 0;
+  NUTATFROM = nullptr;
   delete NUTATTO;
-  NUTATTO = 0;
+  NUTATTO = nullptr;
 }
 
 // # Conversion routines

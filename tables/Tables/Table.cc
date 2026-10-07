@@ -52,7 +52,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-Table::ScratchCallback* Table::scratchCallback_p = 0;
+Table::ScratchCallback* Table::scratchCallback_p = nullptr;
 
 Table::ScratchCallback* Table::setScratchCallback(Table::ScratchCallback* fptr) {
   Table::ScratchCallback* cur = scratchCallback_p;
@@ -60,35 +60,35 @@ Table::ScratchCallback* Table::setScratchCallback(Table::ScratchCallback* fptr) 
   return cur;
 }
 
-Table::Table() : baseTabPtr_p(0), lastModCounter_p(0) {
+Table::Table() : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   countedTabPtr_p = std::make_shared<NullTable>();
   baseTabPtr_p = countedTabPtr_p.get();
 }
 
 Table::Table(const String& name, TableOption option, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   open(name, "", option, TableLock(), tsmOpt);
 }
 
 Table::Table(const String& name, const TableLock& lockOptions, TableOption option,
              const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   open(name, "", option, lockOptions, tsmOpt);
 }
 
 Table::Table(const String& name, const String& type, TableOption option, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   open(name, type, option, TableLock(), tsmOpt);
 }
 
 Table::Table(const String& name, const String& type, const TableLock& lockOptions,
              TableOption option, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   open(name, type, option, lockOptions, tsmOpt);
 }
 
 Table::Table(Table::TableType type, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   SetupNewTable newtab("", TableDesc(), Table::Scratch);
   BaseTable* ptr;
   if (type == Table::Memory) {
@@ -101,12 +101,12 @@ Table::Table(Table::TableType type, Table::EndianFormat endianFormat, const TSMO
 
 Table::Table(SetupNewTable& newtab, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   initBasePtr(new PlainTable(newtab, nrrow, initialize, TableLock(), endianFormat, tsmOpt));
 }
 Table::Table(SetupNewTable& newtab, Table::TableType type, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   BaseTable* ptr;
   if (type == Table::Memory) {
     ptr = new MemoryTable(newtab, nrrow, initialize);
@@ -118,7 +118,7 @@ Table::Table(SetupNewTable& newtab, Table::TableType type, rownr_t nrrow, bool i
 Table::Table(SetupNewTable& newtab, Table::TableType type, const TableLock& lockOptions,
              rownr_t nrrow, bool initialize, Table::EndianFormat endianFormat,
              const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   BaseTable* ptr;
   if (type == Table::Memory) {
     ptr = new MemoryTable(newtab, nrrow, initialize);
@@ -129,13 +129,13 @@ Table::Table(SetupNewTable& newtab, Table::TableType type, const TableLock& lock
 }
 Table::Table(SetupNewTable& newtab, TableLock::LockOption lockOption, rownr_t nrrow,
              bool initialize, Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   initBasePtr(
       new PlainTable(newtab, nrrow, initialize, TableLock(lockOption), endianFormat, tsmOpt));
 }
 Table::Table(SetupNewTable& newtab, const TableLock& lockOptions, rownr_t nrrow, bool initialize,
              Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   initBasePtr(new PlainTable(newtab, nrrow, initialize, lockOptions, endianFormat, tsmOpt));
 }
 
@@ -204,25 +204,25 @@ Table::Table(MPI_Comm mpiComm, SetupNewTable& newtab, const TableLock& lockOptio
 #endif
 
 Table::Table(const Block<Table>& tables, const Block<String>& subTables, const String& subDirName)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   initBasePtr(new ConcatTable(tables, subTables, subDirName));
 }
 
 Table::Table(const Block<String>& tableNames, const Block<String>& subTables, TableOption option,
              const TSMOption& tsmOpt, const String& subDirName)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   initBasePtr(new ConcatTable(tableNames, subTables, subDirName, option, TableLock(), tsmOpt));
 }
 
 Table::Table(const Block<String>& tableNames, const Block<String>& subTables,
              const TableLock& lockOptions, TableOption option, const TSMOption& tsmOpt)
-    : baseTabPtr_p(0), lastModCounter_p(0) {
+    : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   initBasePtr(new ConcatTable(tableNames, subTables, String(), option, lockOptions, tsmOpt));
 }
 
 Table::Table(BaseTable* btp) : baseTabPtr_p(btp), lastModCounter_p(0) {}
 
-Table::Table(const std::shared_ptr<BaseTable>& shptr) : baseTabPtr_p(0), lastModCounter_p(0) {
+Table::Table(const std::shared_ptr<BaseTable>& shptr) : baseTabPtr_p(nullptr), lastModCounter_p(0) {
   baseTabPtr_p = shptr.get();
   AlwaysAssert(baseTabPtr_p, AipsError);
   countedTabPtr_p = shptr;
@@ -325,7 +325,7 @@ void Table::open(const String& name, const String& type, int tableOption,
   // # Look if the table is already in the cache.
   // # If so, link to it.
   BaseTable* btp = lookCache(absName, tableOption, lockOptions);
-  if (btp != 0) {
+  if (btp != nullptr) {
     countedTabPtr_p = btp->shared_from_this();
   } else {
     // # Check if the table directory exists.
@@ -416,7 +416,7 @@ void Table::throwIfNull() const {
 }
 
 bool Table::isOpened(const String& tableName) {
-  return (PlainTable::tableCache()(Path(tableName).absoluteName()) != 0);
+  return (PlainTable::tableCache()(Path(tableName).absoluteName()) != nullptr);
 }
 
 // Check if the table data has changed.

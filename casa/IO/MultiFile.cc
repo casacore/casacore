@@ -144,7 +144,7 @@ void MultiFile::close() {
   // Clear all file info.
   itsInfo.clear();
   // Delete the file object.
-  itsIO.reset(0);
+  itsIO.reset(nullptr);
 }
 
 void MultiFile::reopenRW() {

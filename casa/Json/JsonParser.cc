@@ -65,8 +65,8 @@ namespace casacore {
 
 // Initialize statics.
 int JsonParser::theirPosition = 0;
-const char* JsonParser::theirCommand = 0;
-JsonKVMap* JsonParser::theirJsonMap = 0;
+const char* JsonParser::theirCommand = nullptr;
+JsonKVMap* JsonParser::theirJsonMap = nullptr;
 
 JsonKVMap JsonParser::parseFile(const String& fileName) {
   String command;
@@ -101,11 +101,11 @@ JsonKVMap JsonParser::parse(const String& command) {
   theirCommand = command.c_str();  // get pointer to command string
   theirPosition = 0;               // initialize string position
   delete theirJsonMap;
-  theirJsonMap = 0;
+  theirJsonMap = nullptr;
   JsonGramparse();  // parse command string
   JsonKVMap map(*theirJsonMap);
   delete theirJsonMap;
-  theirJsonMap = 0;
+  theirJsonMap = nullptr;
   return map;
 }
 

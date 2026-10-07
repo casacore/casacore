@@ -41,8 +41,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDMainHandler::SDMainHandler()
-    : ms_p(0),
-      msCols_p(0),
+    : ms_p(nullptr),
+      msCols_p(nullptr),
       scanNumberId_p(-1),
       arrayIdId_p(-1),
       sigmaId_p(-1),
@@ -55,8 +55,8 @@ SDMainHandler::SDMainHandler()
 }
 
 SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : ms_p(0),
-      msCols_p(0),
+    : ms_p(nullptr),
+      msCols_p(nullptr),
       scanNumberId_p(-1),
       arrayIdId_p(-1),
       sigmaId_p(-1),
@@ -69,8 +69,8 @@ SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<bool> &handledCols, cons
 }
 
 SDMainHandler::SDMainHandler(const SDMainHandler &other)
-    : ms_p(0),
-      msCols_p(0),
+    : ms_p(nullptr),
+      msCols_p(nullptr),
       scanNumberId_p(-1),
       arrayIdId_p(-1),
       sigmaId_p(-1),
@@ -200,10 +200,10 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, int antennaId, i
 
 void SDMainHandler::clearAll() {
   delete ms_p;
-  ms_p = 0;
+  ms_p = nullptr;
 
   delete msCols_p;
-  msCols_p = 0;
+  msCols_p = nullptr;
 
   clearRow();
 }

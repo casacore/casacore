@@ -34,7 +34,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 RODataManAccessor::RODataManAccessor(const Table& table, const String& name, bool byColumn)
-    : itsDataManager(0) {
+    : itsDataManager(nullptr) {
   itsDataManager = table.findDataManager(name, byColumn);
 }
 

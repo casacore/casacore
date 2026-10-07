@@ -100,7 +100,7 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   // Split the box into the extend and the stretch part.
   // The IPositions give the axis numbers in the extend box.
   const WCBox* bptr = dynamic_cast<const WCBox*>(regions()[1]);
-  AlwaysAssert(bptr != 0, AipsError);
+  AlwaysAssert(bptr != nullptr, AipsError);
   IPosition extendBoxAxes;
   IPosition stretchBoxAxes;
   IPosition stretchRegAxes;
@@ -182,7 +182,7 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   if (ndstr > 0) {
     LCRegion* boxptr = strbox.toLCRegionAxes(cSys, shape, strPixMap, strOutOrd);
     LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
-    AlwaysAssert(dboxptr != 0, AipsError);
+    AlwaysAssert(dboxptr != nullptr, AipsError);
     LCStretch* extptr = new LCStretch(true, regptr, stretchRegAxes, *dboxptr);
     delete boxptr;
     regptr = extptr;
@@ -190,7 +190,7 @@ LCRegion* WCExtension::doToLCRegion(const CoordinateSystem& cSys, const IPositio
   if (ndext > 0) {
     LCRegion* boxptr = extbox.toLCRegionAxes(cSys, shape, extPixMap, extOutOrd);
     LCBox* dboxptr = dynamic_cast<LCBox*>(boxptr);
-    AlwaysAssert(dboxptr != 0, AipsError);
+    AlwaysAssert(dboxptr != nullptr, AipsError);
     LCExtension* extptr = new LCExtension(true, regptr, extendAxes, *dboxptr);
     delete boxptr;
     regptr = extptr;

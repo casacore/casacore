@@ -63,7 +63,7 @@ StManArrayFile::StManArrayFile(const String& fname, ByteIO::OpenOption fop, unsi
   } else {
     iofil_p.reset(new LECanonicalIO(file_p));
   }
-  AlwaysAssert(iofil_p != 0, AipsError);
+  AlwaysAssert(iofil_p != nullptr, AipsError);
   swput_p = iofil_p->isWritable();
   // # Get the version and length for an existing file.
   // # Otherwise set put-flag.

@@ -40,7 +40,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableExprNode* MSCorrParse::node_p = 0x0;
+TableExprNode* MSCorrParse::node_p = nullptr;
 
 // # Constructor
 MSCorrParse::MSCorrParse() : MSParse() {}

@@ -186,7 +186,7 @@ class UnitVal {
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  UnitVal(double factor, const String &s, UMaps * = 0);
+  UnitVal(double factor, const String &s, UMaps * = nullptr);
 
   // Construct a value with a single unit at position specified
   UnitVal(double factor, int pos) { init(factor, pos); }
@@ -275,8 +275,8 @@ class UnitVal {
 
   // Convert (and check) a unit string to an SI value representation
   // <group>
-  static bool create(const String &s, UnitVal &res, UMaps * = 0);
-  static bool create(MUString &str, UnitVal &res, UMaps * = 0);
+  static bool create(const String &s, UnitVal &res, UMaps * = nullptr);
+  static bool create(MUString &str, UnitVal &res, UMaps * = nullptr);
   // </group>
 
   // Determine sign of unit power (i.e. if '.' or '/')

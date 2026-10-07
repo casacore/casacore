@@ -146,7 +146,7 @@ bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, unsigned int n
   // # If no lock file, lock requests always succeed,
   // # but we cannot return any info.
   if (!itsFileIO) {
-    if (info != 0) {
+    if (info != nullptr) {
       info->clear();
     }
     return true;
@@ -165,14 +165,14 @@ bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, unsigned int n
   }
   // # Do not read info if we did not acquire the lock.
   if (!succ) {
-    info = 0;
+    info = nullptr;
   }
   // # Read the info when needed.
   // # This also reads the request id's.
   // # If no info is needed, read req id's only when needed.
   // # Note that each IO-operation is quite expensive, so do as few
   // # IO's as possible.
-  if (info != 0) {
+  if (info != nullptr) {
     getInfo(*info);
   } else if (added) {
     getReqId();
@@ -192,7 +192,7 @@ bool LockFile::release(const MemoryIO* info) {
   if (!itsFileIO) {
     return true;
   }
-  if (info != 0) {
+  if (info != nullptr) {
     putInfo(*info);
   }
   return itsLocker.release();

@@ -640,12 +640,12 @@ TableExprNodeSetElemCont::TableExprNodeSetElemCont(bool isLeftClosed, const Tabl
 }
 
 TableExprNodeSetElemCont::TableExprNodeSetElemCont(bool isLeftClosed, const TableExprNode& start) {
-  setup(isLeftClosed, &start, 0, false);
+  setup(isLeftClosed, &start, nullptr, false);
 }
 
 TableExprNodeSetElemCont::TableExprNodeSetElemCont(const TableExprNode& end, bool isRightClosed)
     : TableExprNodeSetElemBase() {
-  setup(false, 0, &end, isRightClosed);
+  setup(false, nullptr, &end, isRightClosed);
 }
 
 TableExprNodeSetElemCont::TableExprNodeSetElemCont(const TableExprNode& mid,

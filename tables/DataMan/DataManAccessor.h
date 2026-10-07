@@ -74,7 +74,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 class RODataManAccessor {
  public:
   // Construct an empty object.
-  RODataManAccessor() : itsDataManager(0) {}
+  RODataManAccessor() : itsDataManager(nullptr) {}
 
   // Construct the accessor object for a data manager in the table.
   // An exception is thrown if the name of the data manager or column is

@@ -35,7 +35,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Global pointer to the parser object
-MSAntennaParse* MSAntennaParse::thisMSAParser = 0;
+MSAntennaParse* MSAntennaParse::thisMSAParser = nullptr;
 TableExprNode MSAntennaParse::column1AsTEN_p, MSAntennaParse::column2AsTEN_p;
 std::shared_ptr<MSSelectionErrorHandler> MSAntennaParse::thisMSAErrorHandler;
 

@@ -111,7 +111,8 @@ void a(bool) {
   // Create the file.
   BucketFile file("tBucketCache_tmp.data");
   file.open();
-  BucketCache cache(&file, 512, 32768, 5, 10, 0, aToLocal, aFromLocal, aInitBuffer, aDeleteBuffer);
+  BucketCache cache(&file, 512, 32768, 5, 10, nullptr, aToLocal, aFromLocal, aInitBuffer,
+                    aDeleteBuffer);
   unsigned int i;
   union {
     char buf[32768];
@@ -156,7 +157,7 @@ void b(bool) {
       cout << "Error in rec pos " << i << endl;
     }
   }
-  BucketCache cache(&file, 512, 32768, rec[0], 10, 0, aToLocal, aFromLocal, aInitBuffer,
+  BucketCache cache(&file, 512, 32768, rec[0], 10, nullptr, aToLocal, aFromLocal, aInitBuffer,
                     aDeleteBuffer);
   cache.get((char*)rec, 512, 512 + cache.nBucket() * 32768);
   for (i = 1; i < 128; i++) {
@@ -201,7 +202,7 @@ void c(unsigned int) {
   unsigned int i;
   int rec[128];
   file.read((char*)rec, 512);
-  BucketCache cache(&file, 512, 32768, rec[0], 10, 0, aToLocal, aFromLocal, aInitBuffer,
+  BucketCache cache(&file, 512, 32768, rec[0], 10, nullptr, aToLocal, aFromLocal, aInitBuffer,
                     aDeleteBuffer);
   cache.get((char*)rec, 512, 512 + cache.nBucket() * 32768);
   for (unsigned int j = 0; j < 25; j++) {
@@ -223,7 +224,7 @@ void d(unsigned int) {
   unsigned int i;
   int rec[128];
   file.read((char*)rec, 512);
-  BucketCache cache(&file, 512, 32768, rec[0], 10, 0, bToLocal, bFromLocal, aInitBuffer,
+  BucketCache cache(&file, 512, 32768, rec[0], 10, nullptr, bToLocal, bFromLocal, aInitBuffer,
                     aDeleteBuffer);
   cache.get((char*)rec, 512, 512 + cache.nBucket() * 32768);
   for (unsigned int j = 0; j < 50; j++) {

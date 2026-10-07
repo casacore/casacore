@@ -383,14 +383,14 @@ inline unsigned int ISMBase::rownrSize() const { return rownrSize_p; }
 inline char* ISMBase::tempBuffer() const { return tempBuffer_p; }
 
 inline BucketCache& ISMBase::getCache() {
-  if (cache_p == 0) {
+  if (cache_p == nullptr) {
     makeCache();
   }
   return *cache_p;
 }
 
 inline ISMIndex& ISMBase::getIndex() {
-  if (index_p == 0) {
+  if (index_p == nullptr) {
     makeIndex();
   }
   return *index_p;

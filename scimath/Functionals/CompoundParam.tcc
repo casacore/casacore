@@ -57,7 +57,7 @@ template <class T>
 CompoundParam<T>::~CompoundParam() {
   for (unsigned int i = 0; i < functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i];
-    functionPtr_p[i] = 0;
+    functionPtr_p[i] = nullptr;
   }
 }
 
@@ -68,7 +68,7 @@ CompoundParam<T> &CompoundParam<T>::operator=(const CompoundParam<T> &other) {
     ndim_p = other.ndim_p;
     for (unsigned int i = 0; i < functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i];
-      functionPtr_p[i] = 0;
+      functionPtr_p[i] = nullptr;
     }
     functionPtr_p = Block<Function<T> *>(other.functionPtr_p.nelements());
     paroff_p = Block<unsigned int>(other.paroff_p.nelements());

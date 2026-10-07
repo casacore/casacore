@@ -41,15 +41,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSFeedIndex::MSFeedIndex() : MSTableIndex(), msFeedCols_p(0) { ; }
+MSFeedIndex::MSFeedIndex() : MSTableIndex(), msFeedCols_p(nullptr) { ; }
 
 MSFeedIndex::MSFeedIndex(const MSFeed& feed)
     : MSTableIndex(feed, stringToVector("ANTENNA_ID,FEED_ID,SPECTRAL_WINDOW_ID"), compare),
-      msFeedCols_p(0) {
+      msFeedCols_p(nullptr) {
   attachIds();
 }
 
-MSFeedIndex::MSFeedIndex(const MSFeedIndex& other) : MSTableIndex(other), msFeedCols_p(0) {
+MSFeedIndex::MSFeedIndex(const MSFeedIndex& other) : MSTableIndex(other), msFeedCols_p(nullptr) {
   attachIds();
 }
 

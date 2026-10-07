@@ -53,7 +53,7 @@ VACExampleVACEngine::~VACExampleVACEngine() {}
 DataManager* VACExampleVACEngine::clone() const {
   DataManager* dmPtr =
       new VACExampleVACEngine(sourceColumnName(), xTargetName_p, yTargetName_p, zTargetName_p);
-  if (dmPtr == 0) {
+  if (dmPtr == nullptr) {
     throw(AllocError("VACExampleVACEngine::clone()", 1));
   }
   return dmPtr;
@@ -121,7 +121,7 @@ void VACExampleVACEngine::putArray(rownr_t rownr, const Array<VACExample>& value
 
 DataManager* VACExampleVACEngine::makeObject(const String&, const Record&) {
   DataManager* dmPtr = new VACExampleVACEngine();
-  if (dmPtr == 0) {
+  if (dmPtr == nullptr) {
     throw(AllocError("VACExampleVACEngine::makeObject()", 1));
   }
   return dmPtr;

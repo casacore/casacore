@@ -49,12 +49,12 @@ void VirtualColumnEngine::deleteManager() {}
 DataManagerColumn* VirtualColumnEngine::makeScalarColumn(const String& columnName, int,
                                                          const String&) {
   throw(DataManUnknownVirtualColumn(columnName, dataManagerType()));
-  return 0;
+  return nullptr;
 }
 DataManagerColumn* VirtualColumnEngine::makeIndArrColumn(const String& columnName, int,
                                                          const String&) {
   throw(DataManUnknownVirtualColumn(columnName, dataManagerType()));
-  return 0;
+  return nullptr;
 }
 
 // # Creating a direct array is by default the same as creating

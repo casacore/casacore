@@ -30,7 +30,7 @@
 
 namespace casacore {
 
-DirectionEngine::DirectionEngine() : itsEpochEngine(0), itsPositionEngine(0) {}
+DirectionEngine::DirectionEngine() : itsEpochEngine(nullptr), itsPositionEngine(nullptr) {}
 
 DirectionEngine::~DirectionEngine() {}
 
@@ -251,7 +251,7 @@ void DirectionEngine::handleValues(TableExprNode& operand, const TableExprId& id
 }
 
 void DirectionEngine::setEpochEngine(EpochEngine& engine) {
-  AlwaysAssert(itsEpochEngine == 0, AipsError);
+  AlwaysAssert(itsEpochEngine == nullptr, AipsError);
   itsEpochEngine = &engine;
   extendBase(engine, false);
   // Define the frame part, so it can be reset later.
@@ -259,7 +259,7 @@ void DirectionEngine::setEpochEngine(EpochEngine& engine) {
 }
 
 void DirectionEngine::setPositionEngine(PositionEngine& engine) {
-  AlwaysAssert(itsPositionEngine == 0, AipsError);
+  AlwaysAssert(itsPositionEngine == nullptr, AipsError);
   itsPositionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.
@@ -381,9 +381,9 @@ void DirectionEngine::calcRiseSet(const MDirection& dir, const MPosition& pos, c
     if (set < rise) set += 1;
     // Iterate a few times for a better rise and set time.
     for (int i = 0; i < 2; ++i) {
-      fillRiseSet(rise, dir, lat, h, off, &rise, 0);
+      fillRiseSet(rise, dir, lat, h, off, &rise, nullptr);
       if (rise < start) rise += 1 - 236. / 86400;
-      fillRiseSet(set, dir, lat, h, off, 0, &set);
+      fillRiseSet(set, dir, lat, h, off, nullptr, &set);
       if (set < start) set += 1 - 236. / 86400;
       if (set < rise) set += 1;
     }

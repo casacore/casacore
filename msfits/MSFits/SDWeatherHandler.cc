@@ -40,8 +40,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDWeatherHandler::SDWeatherHandler()
-    : msWeather_p(0),
-      msWeatherCols_p(0),
+    : msWeather_p(nullptr),
+      msWeatherCols_p(nullptr),
       rownr_p(-1),
       humidityId_p(-1),
       tambientId_p(-1),
@@ -53,8 +53,8 @@ SDWeatherHandler::SDWeatherHandler()
 }
 
 SDWeatherHandler::SDWeatherHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : msWeather_p(0),
-      msWeatherCols_p(0),
+    : msWeather_p(nullptr),
+      msWeatherCols_p(nullptr),
       rownr_p(-1),
       humidityId_p(-1),
       tambientId_p(-1),
@@ -66,8 +66,8 @@ SDWeatherHandler::SDWeatherHandler(MeasurementSet &ms, Vector<bool> &handledCols
 }
 
 SDWeatherHandler::SDWeatherHandler(const SDWeatherHandler &other)
-    : msWeather_p(0),
-      msWeatherCols_p(0),
+    : msWeather_p(nullptr),
+      msWeatherCols_p(nullptr),
       rownr_p(-1),
       humidityId_p(-1),
       tambientId_p(-1),
@@ -245,7 +245,7 @@ void SDWeatherHandler::fill(const Record &row, int antennaId, double time,
           if (!isNaN(*H2OField_p) && !isInf(*H2OField_p)) {
             // need to add this column
             delete msWeatherCols_p;
-            msWeatherCols_p = 0;
+            msWeatherCols_p = nullptr;
             TableDesc td;
             MSWeather::addColumnToDesc(td, MSWeather::H2O);
             MSWeather::addColumnToDesc(td, MSWeather::H2O_FLAG);
@@ -266,7 +266,7 @@ void SDWeatherHandler::fill(const Record &row, int antennaId, double time,
           if (!isNaN(*ionosElectronField_p) && !isInf(*ionosElectronField_p)) {
             // need to add this column
             delete msWeatherCols_p;
-            msWeatherCols_p = 0;
+            msWeatherCols_p = nullptr;
             TableDesc td;
             MSWeather::addColumnToDesc(td, MSWeather::IONOS_ELECTRON);
             MSWeather::addColumnToDesc(td, MSWeather::IONOS_ELECTRON_FLAG);
@@ -298,10 +298,10 @@ void SDWeatherHandler::fill(const Record &row, int antennaId, double time,
 
 void SDWeatherHandler::clearAll() {
   delete msWeather_p;
-  msWeather_p = 0;
+  msWeather_p = nullptr;
 
   delete msWeatherCols_p;
-  msWeatherCols_p = 0;
+  msWeatherCols_p = nullptr;
 
   clearRow();
 }

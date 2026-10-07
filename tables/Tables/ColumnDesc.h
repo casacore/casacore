@@ -153,7 +153,7 @@ class ColumnDesc {
   ColumnDesc(const ColumnDesc& that);
 
   // Default constructor (needed for ColumnDescSet).
-  ColumnDesc() : colPtr_p(0), allocated_p(false) {}
+  ColumnDesc() : colPtr_p(nullptr), allocated_p(false) {}
 
   ~ColumnDesc();
 

@@ -112,7 +112,7 @@ class JsonValue {
   ~JsonValue();
 
   // Is the value a null value?
-  bool isNull() const { return itsValuePtr == 0; }
+  bool isNull() const { return itsValuePtr == nullptr; }
 
   // Is the value a vector?
   bool isVector() const { return itsDataType == TpOther; }

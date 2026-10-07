@@ -1177,7 +1177,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS, const unsigned int han
 
   //////////////////////////////////////////////////////
 
-  MeasurementSet* destMS = 0;
+  MeasurementSet* destMS = nullptr;
   MeasurementSet tempMS;
 
   if (destMSName.empty()) {  // no destination MS was given, write to the first MS

@@ -48,8 +48,8 @@ LatticeConvolver<T>::LatticeConvolver(const Lattice<T>& psf, bool doFast)
       itsModelShape(itsPsfShape),
       itsType(ConvEnums::CIRCULAR),
       itsFFTShape(psf.ndim(), 0),
-      itsXfr(0),
-      itsPsf(0),
+      itsXfr(nullptr),
+      itsPsf(nullptr),
       itsCachedPsf(false) {
   DebugAssert(itsPsfShape.product() != 0, AipsError);
   doFast_p = doFast;
@@ -63,8 +63,8 @@ LatticeConvolver<T>::LatticeConvolver(const Lattice<T>& psf, const IPosition& mo
       itsModelShape(modelShape),
       itsType(ConvEnums::LINEAR),
       itsFFTShape(psf.ndim(), 0),
-      itsXfr(0),
-      itsPsf(0),
+      itsXfr(nullptr),
+      itsPsf(nullptr),
       itsCachedPsf(false) {
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
@@ -125,11 +125,11 @@ template <class T>
 LatticeConvolver<T>::~LatticeConvolver() {
   if (itsPsf) {
     delete itsPsf;
-    itsPsf = 0;
+    itsPsf = nullptr;
   }
   if (itsXfr) {
     delete itsXfr;
-    itsXfr = 0;
+    itsXfr = nullptr;
   }
 }
 
@@ -183,8 +183,8 @@ void LatticeConvolver<T>::convolve(Lattice<T>& result, const Lattice<T>& model) 
   // Copy the model into a larger Lattice that has the appropriate padding.
   // (if necessary)
   bool doPadding = false;
-  const Lattice<T>* modelPtr = 0;
-  Lattice<T>* resultPtr = 0;
+  const Lattice<T>* modelPtr = nullptr;
+  Lattice<T>* resultPtr = nullptr;
   if (!(itsFFTShape <= modelShape)) {
     doPadding = true;
     resultPtr = new TempLattice<T>(itsFFTShape, maxLatSize);
@@ -258,7 +258,7 @@ void LatticeConvolver<T>::convolve(Lattice<T>& result, const Lattice<T>& model) 
   }
   if (doPadding) {  // cleanup the TempLattice used for padding.
     delete resultPtr;
-    modelPtr = resultPtr = 0;
+    modelPtr = resultPtr = nullptr;
   }
   //  cerr << "convolve" << endl;
 }
@@ -369,7 +369,7 @@ void LatticeConvolver<T>::makeXfr(const Lattice<T>& psf) {
     //    XFRShape(1) = (XFRShape(1)/2+1)*2;
     if (itsXfr) {
       delete itsXfr;
-      itsXfr = 0;
+      itsXfr = nullptr;
     }
     itsXfr = new TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, maxLatSize);
     if (itsFFTShape == itsPsfShape) {  // no need to pad the psf
@@ -385,7 +385,7 @@ void LatticeConvolver<T>::makeXfr(const Lattice<T>& psf) {
   if (itsFFTShape < itsPsfShape) {
     if (itsPsf) {
       delete itsPsf;
-      itsPsf = 0;
+      itsPsf = nullptr;
     }
     itsPsf = new TempLattice<T>(itsPsfShape, 1);  // Prefer to put this on disk
     itsPsf->copyData(psf);
@@ -393,7 +393,7 @@ void LatticeConvolver<T>::makeXfr(const Lattice<T>& psf) {
   } else {
     if (itsPsf) {
       delete itsPsf;
-      itsPsf = 0;
+      itsPsf = nullptr;
     }
     itsPsf = new TempLattice<T>();
     itsCachedPsf = false;

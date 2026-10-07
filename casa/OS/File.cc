@@ -250,7 +250,7 @@ void File::touch() {
   // Uses the function utime to set the access time and the
   // modification time on the current time.
   if (isWritable()) {
-    utime((itsPath.expandedName()).c_str(), 0);
+    utime((itsPath.expandedName()).c_str(), nullptr);
   }
 }
 

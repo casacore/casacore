@@ -60,7 +60,7 @@ class ArrayColumn;
 
 class TableParseUpdate {
  public:
-  TableParseUpdate() : indexPtr_p(0) {}
+  TableParseUpdate() : indexPtr_p(nullptr) {}
 
   // Construct from a column name and expression.
   // By default it checks if no aggregate functions are used.

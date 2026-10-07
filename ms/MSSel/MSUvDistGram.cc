@@ -66,7 +66,7 @@ int MSUvDistGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSUvDistGram = 0;
+static const char* strpMSUvDistGram = nullptr;
 static int posMSUvDistGram = 0;
 
 // # Parse the command.

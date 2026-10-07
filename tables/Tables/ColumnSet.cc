@@ -48,8 +48,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 ColumnSet::ColumnSet(TableDesc* tdesc, const StorageOption& opt)
     : tdescPtr_p(tdesc),
       storageOpt_p(opt),
-      baseTablePtr_p(0),
-      lockPtr_p(0),
+      baseTablePtr_p(nullptr),
+      lockPtr_p(nullptr),
       seqCount_p(0),
       blockDataMan_p(0) {
   // # Loop through all columns in the description and create
@@ -349,7 +349,7 @@ void ColumnSet::doAddColumn(const ColumnDesc& columnDesc, DataManager* dataManPt
   // # Rethrow the exception by getting the message and throwing it.
   bool error = false;
   String msg;
-  DataManagerColumn* dmcol = 0;
+  DataManagerColumn* dmcol = nullptr;
   unsigned int nrcol = dataManPtr->ncolumn();
   try {
     col->createDataManagerColumn();
@@ -826,7 +826,7 @@ rownr_t ColumnSet::getFile(AipsIO& ios, Table& tab, rownr_t nrrow, bool bigEndia
 
 // # Find the data manager with the given sequence number.
 DataManager* ColumnSet::getDataManager(unsigned int seqnr) const {
-  DataManager* dmp = 0;
+  DataManager* dmp = nullptr;
   for (unsigned int i = 0; i < blockDataMan_p.nelements(); i++) {
     dmp = BLOCKDATAMANVAL(i);
     if (seqnr == dmp->sequenceNr()) {
@@ -834,7 +834,7 @@ DataManager* ColumnSet::getDataManager(unsigned int seqnr) const {
     }
   }
   throw(TableInternalError("ColumnSet::getDataManager"));
-  return 0;
+  return nullptr;
 }
 
 bool ColumnSet::userLock(FileLocker::LockType type, bool wait) {

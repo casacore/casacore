@@ -344,7 +344,7 @@ bool testQualImg(FITSQualityImage &fitsQI, const String &in, const unsigned int 
   }
   {
     // make sure the region pointer returned is 0
-    if (fitsQI.getRegionPtr() != 0) {
+    if (fitsQI.getRegionPtr() != nullptr) {
       String msg = String("The object MUST return a 0 as region pointer!");
       throw(AipsError(msg));
     }

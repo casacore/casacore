@@ -684,8 +684,8 @@ void LELFunctionND<T>::eval(LELArray<T>& result, const Slicer& section) const {
         const bool* tmpbData = tmpb.value().getStorage(deleteTmpb);
         size_t n = tmpb.value().nelements();
         bool deleteRes, deleteMask;
-        T* resData = 0;
-        bool* maskData = 0;
+        T* resData = nullptr;
+        bool* maskData = nullptr;
         T tmp1, tmp2;
         // The combination of left and right gets a mask if either
         // of them has a mask.
@@ -822,10 +822,10 @@ void LELFunctionND<T>::eval(LELArray<T>& result, const Slicer& section) const {
           }
         }
         tmpb.value().freeStorage(tmpbData, deleteTmpb);
-        if (resData != 0) {
+        if (resData != nullptr) {
           result.value().putStorage(resData, deleteRes);
         }
-        if (maskData != 0) {
+        if (maskData != nullptr) {
           newMask.putStorage(maskData, deleteMask);
         }
         result.setMask(tmpb);

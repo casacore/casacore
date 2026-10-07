@@ -485,16 +485,16 @@ const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(FITS::ReservedName
                                                               FITS::ValueType t, const void *v,
                                                               int v_len, const char *&msg) const {
   int i;
-  msg = 0;
+  msg = nullptr;
   for (i = 0; i < no_items; ++i)
     if (resword[i].name() == nm) break;
-  return match(i, 0, 0, n, t, v, v_len, msg);
+  return match(i, nullptr, 0, n, t, v, v_len, msg);
 }
 
 const ReservedFitsKeyword &ReservedFitsKeywordCollection::get(const char *s, int s_len, bool n,
                                                               FITS::ValueType t, const void *v,
                                                               int v_len, const char *&msg) const {
-  msg = 0;
+  msg = nullptr;
   int i;  // The index into the table.
   if (!FITS::isa_letter(*s))
     return rules(user_def_item, s, s_len, n, t, v, v_len, msg) == -1 ? error_item : user_def_item;
@@ -693,7 +693,7 @@ const ReservedFitsKeyword &ReservedFitsKeywordCollection::get_essential(int i, b
                                                                         const void *v, int v_len,
                                                                         const char *&msg) const {
   // This index i must be to an essential name in the table.
-  msg = 0;
+  msg = nullptr;
   if (i <= 0 || i >= no_items) {
     msg = "Internal error!  Invalid index into ResWord.";
     return error_item;
@@ -729,7 +729,7 @@ const ReservedFitsKeyword &ReservedFitsKeywordCollection::get_essential(int i, b
       return error_item;
     }
   }
-  return rules(resword[i], 0, 0, n, t, v, v_len, msg) == -1 ? error_item : resword[i];
+  return rules(resword[i], nullptr, 0, n, t, v, v_len, msg) == -1 ? error_item : resword[i];
 }
 
 // Instantiate the reserved keyword collection
@@ -824,7 +824,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
   result.isa_point = false;
   result.pointpos = 0;
   result.no_sig = 0;
-  result.errmsg = 0;
+  result.errmsg = nullptr;
   for (i = 0; *s == ' ' && (i < len); ++s, ++i);  // skip spaces
   if (i == len)                                   // The field is all blanks.
     return;
@@ -977,7 +977,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
   const char *p;  // utility valiable, confined to local context
 
   result.type = NOVALUE;  // Initialize result
-  result.errmsg = 0;
+  result.errmsg = nullptr;
   result.l = 0;  // It may not be nessary to init the rest of these.
   result.begpos = 0;
   result.endpos = 0;
@@ -1414,7 +1414,7 @@ void FITS::parse_vatform(const char *s, FITS::ValueType &valType, int &maxelem) 
 FitsParse::FitsParse(int max) : no_errs_(0), max_errs(max) {
   err_ = new const char *[max_errs];
   // check for storage allocation errors
-  if (err_ == 0) {
+  if (err_ == nullptr) {
     cerr << "FitsParse cannot allocate storage -- exiting\n";
     exit(1);
   }
@@ -1423,7 +1423,7 @@ FitsParse::FitsParse(int max) : no_errs_(0), max_errs(max) {
 FitsKeyword &FitsParse::mkerr(const char *s, int len) {
   int comm_len = FITS::trim_comment(s, len);
   if (FITS::chk_comment(s, comm_len)) seterr("Comment contains non-ASCII_text.");
-  return *new FitsKeyword("ERROR", 5, FITS::NOVALUE, 0, 0, s, comm_len);
+  return *new FitsKeyword("ERROR", 5, FITS::NOVALUE, nullptr, 0, s, comm_len);
 }
 
 FitsKeyword &FitsParse::parse(const char *s, int len) {
@@ -1443,7 +1443,8 @@ FitsKeyword &FitsParse::parse(const char *s, int len) {
     if (kword.begpos >= 8) {
       comm_len = FITS::trim_comment(&s[8], (len - 8));
       if (FITS::chk_comment(&s[8], comm_len)) seterr("Comment contains non-ASCII_text.");
-      return *new FitsKeyword(&FITS::ResWord.spaces(), 0, FITS::NOVALUE, 0, 0, &s[8], comm_len);
+      return *new FitsKeyword(&FITS::ResWord.spaces(), 0, FITS::NOVALUE, nullptr, 0, &s[8],
+                              comm_len);
     } else {
       seterr("Invalid name field.");
       return mkerr(s, len);
@@ -1463,12 +1464,14 @@ FitsKeyword &FitsParse::parse(const char *s, int len) {
   if (strncmp(s, "COMMENT", namelen) == 0) {
     comm_len = FITS::trim_comment(&s[8], (len - 8));
     if (FITS::chk_comment(&s[8], comm_len)) seterr("Comment contains non-ASCII_text.");
-    return *new FitsKeyword(&FITS::ResWord.comment(), 0, FITS::NOVALUE, 0, 0, &s[8], comm_len);
+    return *new FitsKeyword(&FITS::ResWord.comment(), 0, FITS::NOVALUE, nullptr, 0, &s[8],
+                            comm_len);
   }
   if (strncmp(s, "HISTORY", namelen) == 0) {
     comm_len = FITS::trim_comment(&s[8], (len - 8));
     if (FITS::chk_comment(&s[8], comm_len)) seterr("Comment contains non-ASCII_text.");
-    return *new FitsKeyword(&FITS::ResWord.history(), 0, FITS::NOVALUE, 0, 0, &s[8], comm_len);
+    return *new FitsKeyword(&FITS::ResWord.history(), 0, FITS::NOVALUE, nullptr, 0, &s[8],
+                            comm_len);
   }
 
   // At this point we have eliminated SPACES, HISTORY, and COMMENT
@@ -1489,19 +1492,20 @@ must have a value.");
     }
     comm_len = FITS::trim_comment(&s[pos], (len - pos));
     const char *comerr;
-    const ReservedFitsKeyword *com =
-        &FITS::ResWord.get(&s[kword.begpos], namelen, kword.isaindex, FITS::NOVALUE, 0, 0, comerr);
+    const ReservedFitsKeyword *com = &FITS::ResWord.get(&s[kword.begpos], namelen, kword.isaindex,
+                                                        FITS::NOVALUE, nullptr, 0, comerr);
     if (comerr) seterr(comerr);
     if (com->name() == FITS::ERRWORD) return mkerr(s, len);
     if (FITS::chk_comment(&s[pos], comm_len)) seterr("Comment contains non-ASCII_text.");
     if (com->name() == FITS::USER_DEF)
-      return *new FitsKeyword(&s[kword.begpos], namelen, FITS::NOVALUE, 0, 0, &s[pos], comm_len);
+      return *new FitsKeyword(&s[kword.begpos], namelen, FITS::NOVALUE, nullptr, 0, &s[pos],
+                              comm_len);
     else
-      return *new FitsKeyword(com, 0, FITS::NOVALUE, 0, 0, &s[pos], comm_len);
+      return *new FitsKeyword(com, 0, FITS::NOVALUE, nullptr, 0, &s[pos], comm_len);
   };
   if (strncmp(s, "END", namelen) == 0) {
     seterr("END keyword has a value indicator -- corrected");
-    return *new FitsKeyword(&FITS::ResWord.end_item(), 0, FITS::NOVALUE, 0, 0, 0, 0);
+    return *new FitsKeyword(&FITS::ResWord.end_item(), 0, FITS::NOVALUE, nullptr, 0, nullptr, 0);
   }
   pos += value_id_pos;
   if ((pos++) != 8) seterr("Value indicator does not conform to FITS standard.");
@@ -1542,7 +1546,7 @@ must have a value.");
   }
 
   // Now, see if name, index, type, value matches a reserved word
-  const char *reserr = 0;
+  const char *reserr = nullptr;
   const ReservedFitsKeyword *res = &FITS::ResWord.get(&s[kword.begpos], kword.len, kword.isaindex,
                                                       val.type, addrval, val.s[1], reserr);
   if (reserr) {
@@ -1557,7 +1561,7 @@ must have a value.");
         val.type = FITS::DOUBLE;
         val.d = (double)val.l;
         seterr("... converted to type double.");
-        reserr = 0;
+        reserr = nullptr;
         res = &FITS::ResWord.get(&s[kword.begpos], kword.len, kword.isaindex, val.type, addrval,
                                  val.s[1], reserr);
         if (reserr) seterr(reserr);
@@ -1632,9 +1636,9 @@ FitsKeyword &FitsKeyword::operator=(const char *v) {
 }
 
 void FitsKeyword::comm(const char *c) {
-  if (c == 0) {
+  if (c == nullptr) {
     delete[] comm_;
-    comm_ = 0;
+    comm_ = nullptr;
     commlen_ = 0;
     return;
   }
@@ -1660,7 +1664,7 @@ void FitsKeyword::name(const char *n) {
     err(name(), type(), val, "Cannot change name of reserved word");
     return;
   }
-  if (n == 0) {
+  if (n == nullptr) {
     err(name(), type(), val, "User-defined name cannot be null");
     return;
   }
@@ -1682,7 +1686,7 @@ void FitsKeyword::name(const char *n) {
 }
 
 void FitsKeyword::memchk(void *p) {
-  if (p == 0) {
+  if (p == nullptr) {
     cout << "Keyword: could not allocate memory.\n";
     exit(-1);
   }
@@ -1711,7 +1715,7 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
     type_ = FITS::STRING;
   } else {
     type_ = ty;
-    val = 0;
+    val = nullptr;
     vallen = 0;
     switch (type_) {
       case FITS::LOGICAL:
@@ -1753,8 +1757,8 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
 }
 
 void FitsKeyword::setcomm(const char *c, int clen) {
-  if (c == 0) {
-    comm_ = 0;
+  if (c == nullptr) {
+    comm_ = nullptr;
     commlen_ = 0;
     return;
   }
@@ -1766,8 +1770,8 @@ void FitsKeyword::setcomm(const char *c, int clen) {
 }
 
 void FitsKeyword::init(const FitsKeyword &k) {
-  next_ = 0;
-  prev_ = 0;
+  next_ = nullptr;
+  prev_ = nullptr;
   setval(k.type_, k.value(), k.vallen);
   setcomm(k.comm_, k.commlen_);
   kw_ = k.kw_;
@@ -1784,8 +1788,8 @@ void FitsKeyword::init(const FitsKeyword &k) {
 FitsKeyword::FitsKeyword(const char *nm, int nmlen, FITS::ValueType ty, const void *v, int vlen,
                          const char *cm, int cmlen) {
   // Construct a user-defined keyword
-  next_ = 0;
-  prev_ = 0;
+  next_ = nullptr;
+  prev_ = nullptr;
   kw_ = &FITS::ResWord.userdef_item();
   ndx = 0;
   namelen_ = nmlen;
@@ -1800,18 +1804,18 @@ FitsKeyword::FitsKeyword(const char *nm, int nmlen, FITS::ValueType ty, const vo
 FitsKeyword::FitsKeyword(const ReservedFitsKeyword *r, int nd, FITS::ValueType ty, const void *v,
                          int vlen, const char *cm, int cmlen) {
   // Construct a reserved keyword
-  next_ = 0;
-  prev_ = 0;
+  next_ = nullptr;
+  prev_ = nullptr;
   kw_ = r;
   ndx = nd;
   namelen_ = r->namesize();
-  name_ = 0;
+  name_ = nullptr;
   setval(ty, v, vlen);
   setcomm(cm, cmlen);
 }
 
 void FitsKeyword::del_val() {
-  if (val == 0) return;
+  if (val == nullptr) return;
 
   switch (type_) {
     case FITS::STRING:
@@ -1875,7 +1879,7 @@ FitsKeyword &FitsKeywordList::make(const char *nm, FITS::ValueType ty, const voi
   if (cm) cmlen = strlen(cm);
   int vallen = 0;
   if (ty == FITS::STRING) {
-    if (val == 0)
+    if (val == nullptr)
       ty = FITS::NOVALUE;
     else {
       vallen = strlen((char *)val);
@@ -1885,7 +1889,7 @@ FitsKeyword &FitsKeywordList::make(const char *nm, FITS::ValueType ty, const voi
     }
   }
   int valsize = (vallen < 8) ? 8 : vallen;
-  const char *errmsg = 0;
+  const char *errmsg = nullptr;
   const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, nmlen, false, ty, val, valsize, errmsg);
   if (errmsg) FitsKeyword::err(nm, ty, val, errmsg);
   if (rw->name() == FITS::USER_DEF)
@@ -1903,7 +1907,7 @@ FitsKeyword &FitsKeywordList::make(FITS::ReservedName nm, FITS::ValueType ty, co
   if (cm) cmlen = strlen(cm);
   int vallen = 0;
   if (ty == FITS::STRING) {
-    if (val == 0)
+    if (val == nullptr)
       ty = FITS::NOVALUE;
     else {
       vallen = strlen((char *)val);
@@ -1914,7 +1918,7 @@ FitsKeyword &FitsKeywordList::make(FITS::ReservedName nm, FITS::ValueType ty, co
     }
   }
   int valsize = (vallen < 8) ? 8 : vallen;
-  const char *errmsg = 0;
+  const char *errmsg = nullptr;
   const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, false, ty, val, valsize, errmsg);
   if (errmsg) FitsKeyword::err(FITS::ResWord.aname(nm), ty, val, errmsg);
   if (rw->name() == FITS::USER_DEF) {
@@ -1934,7 +1938,7 @@ FitsKeyword &FitsKeywordList::make(int ind, FITS::ReservedName nm, FITS::ValueTy
   if (cm) cmlen = strlen(cm);
   int vallen = 0;
   if (ty == FITS::STRING) {
-    if (val == 0)
+    if (val == nullptr)
       ty = FITS::NOVALUE;
     else {
       vallen = strlen((char *)val);
@@ -1945,7 +1949,7 @@ FitsKeyword &FitsKeywordList::make(int ind, FITS::ReservedName nm, FITS::ValueTy
     }
   }
   int valsize = (vallen < 8) ? 8 : vallen;
-  const char *errmsg = 0;
+  const char *errmsg = nullptr;
   const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm, true, ty, val, valsize, errmsg);
   if (errmsg) FitsKeyword::err(FITS::ResWord.aname(nm), ty, val, errmsg);
   if (rw->name() == FITS::USER_DEF) {
@@ -1961,7 +1965,8 @@ FitsKeyword &FitsKeywordList::make(int ind, FITS::ReservedName nm, FITS::ValueTy
 FitsKeyword &FitsKeywordList::makeErrKeyword(const char *name, FITS::ValueType type,
                                              const void *val, const char *errmsg) {
   FitsKeyword::err(name, type, val, errmsg);
-  FitsKeyword *kw = new FitsKeyword(&FITS::ResWord.err_item(), 0, FITS::NOVALUE, 0, 0, 0, 0);
+  FitsKeyword *kw =
+      new FitsKeyword(&FITS::ResWord.err_item(), 0, FITS::NOVALUE, nullptr, 0, nullptr, 0);
   FitsKeyword::memchk(kw);
   return *kw;
 }
@@ -1969,14 +1974,14 @@ FitsKeyword &FitsKeywordList::makeErrKeyword(const char *name, FITS::ValueType t
 ostream &operator<<(ostream &o, FitsKeywordList &w) {
   w.first();
   FitsKeyword *x = w.next();
-  for (int i = 1; x != 0; ++i, x = w.next()) o << i << ". " << *x;
+  for (int i = 1; x != nullptr; ++i, x = w.next()) o << i << ". " << *x;
   return o;
 }
 
 FitsKeywordList::FitsKeywordList(const FitsKeywordList &w)
-    : beg_(0), end_(0), pos(0), total(0), cursor(0) {
+    : beg_(nullptr), end_(nullptr), pos(nullptr), total(0), cursor(0) {
   FitsKeyword *k;
-  for (FitsKeyword *x = w.beg_; x != 0; x = x->next_) {
+  for (FitsKeyword *x = w.beg_; x != nullptr; x = x->next_) {
     k = new FitsKeyword(*x);
     FitsKeyword::memchk(k);
     insert(*k);
@@ -1984,10 +1989,10 @@ FitsKeywordList::FitsKeywordList(const FitsKeywordList &w)
 }
 
 FitsKeywordList::FitsKeywordList(ConstFitsKeywordList &w)
-    : beg_(0), end_(0), pos(0), total(0), cursor(0) {
+    : beg_(nullptr), end_(nullptr), pos(nullptr), total(0), cursor(0) {
   FitsKeyword *k;
   w.first();
-  for (const FitsKeyword *x = w.next(); x != 0; x = w.next()) {
+  for (const FitsKeyword *x = w.next(); x != nullptr; x = w.next()) {
     k = new FitsKeyword(*x);
     FitsKeyword::memchk(k);
     insert(*k);
@@ -1997,7 +2002,7 @@ FitsKeywordList::FitsKeywordList(ConstFitsKeywordList &w)
 FitsKeywordList &FitsKeywordList::operator=(const FitsKeywordList &w) {
   delete_all();
   FitsKeyword *k;
-  for (FitsKeyword *x = w.beg_; x != 0; x = x->next_) {
+  for (FitsKeyword *x = w.beg_; x != nullptr; x = x->next_) {
     k = new FitsKeyword(*x);
     FitsKeyword::memchk(k);
     insert(*k);
@@ -2010,7 +2015,7 @@ std::string FitsKeywordList::toString() const {
   s.resize(80 * total);
   std::fill(s.begin(), s.end(), ' ');
   char *sptr = &(s[0]);
-  for (FitsKeyword *x = beg_; x != 0; x = x->next_) {
+  for (FitsKeyword *x = beg_; x != nullptr; x = x->next_) {
     FitsKeyCardTranslator::fmtcard(sptr, *x);
     sptr += 80;
   }
@@ -2019,7 +2024,7 @@ std::string FitsKeywordList::toString() const {
 
 FitsKeyword *FitsKeywordList::next() {
   if (cursor == total) {
-    return 0;
+    return nullptr;
   }
   if (cursor == 0) {
     ++cursor;
@@ -2032,7 +2037,7 @@ FitsKeyword *FitsKeywordList::next() {
 
 FitsKeyword *FitsKeywordList::prev() {
   if (cursor == 0) {
-    return 0;
+    return nullptr;
   }
   FitsKeyword *x = pos;
   if (pos->prev_) pos = pos->prev_;
@@ -2042,7 +2047,7 @@ FitsKeyword *FitsKeywordList::prev() {
 
 // Return the i-th keyword -- keyword numbering starts with 0
 FitsKeyword *FitsKeywordList::operator()(int n) {
-  if (n < 0 || n >= total) return 0;
+  if (n < 0 || n >= total) return nullptr;
   first();
   while (n--) next();
   return curr();
@@ -2072,13 +2077,13 @@ void FitsKeywordList::del() {
   if (isempty()) return;
   if (cursor == 0) {
     pos = beg_->next_;
-    pos ? (pos->prev_ = 0) : (end_ = 0);
+    pos ? (pos->prev_ = nullptr) : (end_ = nullptr);
     delete beg_;
     beg_ = pos;
     --total;
   } else if (cursor == total) {
     pos = end_->prev_;
-    pos ? (pos->next_ = 0) : (beg_ = 0);
+    pos ? (pos->next_ = nullptr) : (beg_ = nullptr);
     delete end_;
     end_ = pos;
     --total;
@@ -2107,23 +2112,23 @@ void FitsKeywordList::delete_all() {
 
 FitsKeyword *FitsKeywordList::next(const FITS::ReservedName &n) {
   FitsKeyword *x;
-  for (x = next(); x != 0; x = next())
+  for (x = next(); x != nullptr; x = next())
     if (x->isreserved() && !(x->isindexed()) && (n == x->kw().name())) break;
-  return x ? curr() : 0;
+  return x ? curr() : nullptr;
 }
 
 FitsKeyword *FitsKeywordList::next(const FITS::ReservedName &n, int ndx) {
   FitsKeyword *x;
-  for (x = next(); x != 0; x = next())
+  for (x = next(); x != nullptr; x = next())
     if (x->isreserved() && (x->index() == ndx) && (n == x->kw().name())) break;
-  return x ? curr() : 0;
+  return x ? curr() : nullptr;
 }
 
 FitsKeyword *FitsKeywordList::next(const char *w) {
   FitsKeyword *x;
-  for (x = next(); x != 0; x = next())
+  for (x = next(); x != nullptr; x = next())
     if (strcmp(w, x->name()) == 0) break;
-  return x ? curr() : 0;
+  return x ? curr() : nullptr;
 }
 
 int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
@@ -2137,7 +2142,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
   switch (x.kw().name()) {
     case FITS::NAXIS:
       if (x.isindexed()) {
-        if ((*this)(FITS::NAXIS) == 0) {
+        if ((*this)(FITS::NAXIS) == nullptr) {
           errhandler("There is no NAXIS keyword", FITSError::SEVERE);
           return -1;
         } else {
@@ -2161,7 +2166,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
       break;
     case FITS::TBCOL:
       // for index between 1 and TFIELDS, value must be >= 0
-      if ((*this)(FITS::TFIELDS) == 0) {
+      if ((*this)(FITS::TFIELDS) == nullptr) {
         errhandler("There is no TFIELDS keyword", FITSError::SEVERE);
         return -1;
       } else {
@@ -2177,7 +2182,7 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
       }
       break;
     case FITS::BLANK:  // BITPIX must exist and be positive
-      if ((*this)(FITS::BITPIX) == 0) {
+      if ((*this)(FITS::BITPIX) == nullptr) {
         errhandler("There is no BITPIX keyword", FITSError::SEVERE);
         return -1;
       } else {
@@ -2202,10 +2207,10 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 int FitsKeywordList::rules(FITSErrorHandler errhandler) {
   int rtn = 0;
   int n;
-  FitsKeyword *endkey = 0;
+  FitsKeyword *endkey = nullptr;
   // first();
   FitsKeyword *x;
-  for (x = beg_; x != 0; x = x->next_) {
+  for (x = beg_; x != nullptr; x = x->next_) {
     n = rules(*x, errhandler);
     if (n != 0 && (rtn == 0 || (rtn == 1 && n == -1))) rtn = n;
     if (x->isreserved() && (x->kw().name() == FITS::END)) {
@@ -2217,7 +2222,7 @@ int FitsKeywordList::rules(FITSErrorHandler errhandler) {
     errhandler("Keyword list has no END keyword.", FITSError::SEVERE);
     rtn = -1;
   } else {
-    for (x = x->next_; x != 0; x = x->next_) {
+    for (x = x->next_; x != nullptr; x = x->next_) {
       if (!(x->isreserved() && (x->kw().name() == FITS::SPACES) && x->commlen() == 0)) {
         errhandler("END keyword is not the last keyword.", FITSError::SEVERE);
         rtn = -1;
@@ -2229,11 +2234,11 @@ int FitsKeywordList::rules(FITSErrorHandler errhandler) {
 
 bool FitsKeywordList::basic_rules() {
   int rtn = 0;
-  const char *msg = 0;
-  for (FitsKeyword *x = beg_; x != 0; x = x->next_) {
+  const char *msg = nullptr;
+  for (FitsKeyword *x = beg_; x != nullptr; x = x->next_) {
     rtn = FITS::ResWord.rules(x->kw(), x->name(), x->namelen(), x->isindexed(), x->type(),
                               x->value(), x->valStrlen(), msg);
-    if (rtn != 0 || msg != 0) return false;
+    if (rtn != 0 || msg != nullptr) return false;
   }
   return true;
 }
@@ -2298,7 +2303,8 @@ int FitsKeyCardTranslator::build(char *rec, FitsKeywordList &kw) {
   memcpy(rec, blanks, FitsRecSize);
   char *card = rec;
   FitsKeyword *x = kw.curr();
-  for (cardno = 0; cardno < FitsMaxCard && x != 0; ++cardno, card += FitsCardSize, x = kw.next())
+  for (cardno = 0; cardno < FitsMaxCard && x != nullptr;
+       ++cardno, card += FitsCardSize, x = kw.next())
     fmtcard(card, *x);
   return (x ? 1 : 0);
 }

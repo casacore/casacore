@@ -43,7 +43,7 @@ boost::python::dict casa_record_to_python::makeobject(Record const& rec) {
 }
 
 void* casa_record_from_python::convertible(PyObject* obj_ptr) {
-  if (!(PyDict_Check(obj_ptr))) return 0;
+  if (!(PyDict_Check(obj_ptr))) return nullptr;
   return obj_ptr;
 }
 

@@ -28,7 +28,7 @@
 
 namespace casacore {
 
-EpochEngine::EpochEngine() : itsPositionEngine(0) {}
+EpochEngine::EpochEngine() : itsPositionEngine(nullptr) {}
 
 EpochEngine::~EpochEngine() {}
 
@@ -84,7 +84,7 @@ String EpochEngine::stripMeasType(const String& type) {
 }
 
 void EpochEngine::setPositionEngine(PositionEngine& engine) {
-  AlwaysAssert(itsPositionEngine == 0, AipsError);
+  AlwaysAssert(itsPositionEngine == nullptr, AipsError);
   itsPositionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.

@@ -40,9 +40,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDSourceHandler::SDSourceHandler()
-    : index_p(0),
-      msSource_p(0),
-      msSourceCols_p(0),
+    : index_p(nullptr),
+      msSource_p(nullptr),
+      msSourceCols_p(nullptr),
       sourceId_p(-1),
       nextSourceId_p(0),
       restfreq_p(-1),
@@ -55,9 +55,9 @@ SDSourceHandler::SDSourceHandler()
 }
 
 SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : index_p(0),
-      msSource_p(0),
-      msSourceCols_p(0),
+    : index_p(nullptr),
+      msSource_p(nullptr),
+      msSourceCols_p(nullptr),
       sourceId_p(-1),
       nextSourceId_p(0),
       restfreq_p(-1),
@@ -70,9 +70,9 @@ SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<bool> &handledCols, 
 }
 
 SDSourceHandler::SDSourceHandler(const SDSourceHandler &other)
-    : index_p(0),
-      msSource_p(0),
-      msSourceCols_p(0),
+    : index_p(nullptr),
+      msSource_p(nullptr),
+      msSourceCols_p(nullptr),
       sourceId_p(-1),
       nextSourceId_p(0),
       restfreq_p(-1),
@@ -305,7 +305,7 @@ void SDSourceHandler::fill(const Record &row, int spectralWindowId) {
           if (msSourceCols_p->pulsarId().isNull()) {
             // add this column
             delete msSourceCols_p;
-            msSourceCols_p = 0;
+            msSourceCols_p = nullptr;
             TableDesc td;
             MSSource::addColumnToDesc(td, MSSource::PULSAR_ID);
             msSource_p->addColumn(td[0]);
@@ -327,13 +327,13 @@ void SDSourceHandler::fill(const Record &row, int spectralWindowId) {
 
 void SDSourceHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete msSource_p;
-  msSource_p = 0;
+  msSource_p = nullptr;
 
   delete msSourceCols_p;
-  msSourceCols_p = 0;
+  msSourceCols_p = nullptr;
 
   sourceId_p = -1;
   nextSourceId_p = 0;

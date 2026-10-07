@@ -30,8 +30,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSUvDistParse* MSUvDistParse::thisMSUParser = 0x0;  // Global pointer to the parser object
-TableExprNode* MSUvDistParse::node_p = 0x0;
+MSUvDistParse* MSUvDistParse::thisMSUParser = nullptr;  // Global pointer to the parser object
+TableExprNode* MSUvDistParse::node_p = nullptr;
 Matrix<double> MSUvDistParse::selectedUV_p(2, 0);
 Vector<bool> MSUvDistParse::meterUnits_p(0, false);
 

@@ -46,7 +46,7 @@ StManColumnIndArrayAipsIO::StManColumnIndArrayAipsIO(StManAipsIO* smptr, int dat
       seqnr_p(smptr->uniqueNr()),
       shapeIsFixed_p(false),
       version_p(2),
-      iosfile_p(0) {}
+      iosfile_p(nullptr) {}
 
 // # Delete all objects created.
 StManColumnIndArrayAipsIO::~StManColumnIndArrayAipsIO() {
@@ -77,7 +77,7 @@ void StManColumnIndArrayAipsIO::openFile(ByteIO::OpenOption opt) {
     iosfile_p = staioPtr_p->openArrayFile(opt);
   } else {
     // # Open/create the file holding the arrays in the column.
-    if (iosfile_p == 0) {
+    if (iosfile_p == nullptr) {
       char strc[8];
       snprintf(strc, sizeof(strc), "i%i", seqnr_p);
       iosfile_p = new StManArrayFile(stmanPtr_p->fileName() + strc, opt);
@@ -107,7 +107,7 @@ void StManColumnIndArrayAipsIO::addRow(rownr_t nrnew, rownr_t nrold) {
 
 void StManColumnIndArrayAipsIO::setShape(rownr_t rownr, const IPosition& shape) {
   StIndArray* ptr = STMANINDGETBLOCK(rownr);
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     ptr = new StIndArray(0);
   }
   // # Put the new shape (if changed).
@@ -121,7 +121,7 @@ void StManColumnIndArrayAipsIO::setShape(rownr_t rownr, const IPosition& shape) 
 // # Read shape if not read yet.
 StIndArray* StManColumnIndArrayAipsIO::getShape(rownr_t rownr) {
   StIndArray* ptr = STMANINDGETBLOCK(rownr);
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     throw(DataManInvOper("ASM: no array in row " + String(std::to_string(rownr)) + " of " +
                          stmanPtr_p->fileName()));
   }
@@ -130,7 +130,7 @@ StIndArray* StManColumnIndArrayAipsIO::getShape(rownr_t rownr) {
 }
 
 bool StManColumnIndArrayAipsIO::isShapeDefined(rownr_t rownr) {
-  return (STMANINDGETBLOCK(rownr) == 0 ? false : true);
+  return (STMANINDGETBLOCK(rownr) == nullptr ? false : true);
 }
 
 unsigned int StManColumnIndArrayAipsIO::ndim(rownr_t rownr) {
@@ -185,7 +185,7 @@ void StManColumnIndArrayAipsIO::putFile(rownr_t nrval, AipsIO& ios) {
 void StManColumnIndArrayAipsIO::putData(void* dp, unsigned int nrval, AipsIO& ios) {
   StIndArray** dpa = (StIndArray**)dp;
   while (nrval--) {
-    if (*dpa == 0) {
+    if (*dpa == nullptr) {
       ios << (unsigned int)0;
     } else {
       int64_t off = (*dpa)->fileOffset();
@@ -225,7 +225,7 @@ void StManColumnIndArrayAipsIO::getData(void* dp, unsigned int inx, unsigned int
       offset = off;
     }
     if (offset == 0) {
-      *dpa = 0;
+      *dpa = nullptr;
     } else {
       *dpa = new StIndArray(offset);
     }

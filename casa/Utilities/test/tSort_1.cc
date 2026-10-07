@@ -60,7 +60,8 @@ int main(int argc, const char* argv[]) {
   int* a5 = new int[nr];
   int* a6 = new int[nr];
   int* a7 = new int[nr];
-  if (a1 == 0 || a2 == 0 || a3 == 0 || a4 == 0 || a5 == 0 || a6 == 0 || a7 == 0) {
+  if (a1 == nullptr || a2 == nullptr || a3 == nullptr || a4 == nullptr || a5 == nullptr ||
+      a6 == nullptr || a7 == nullptr) {
     cout << "Allocation error" << endl;
   }
   for (unsigned int i = 0; i < nr; i++) {
@@ -181,7 +182,7 @@ bool sortall(int* arr, unsigned int nr, unsigned int type) {
       (type == 10 && nr <= 100000)) {
     cout << "qsort     ";
     unsigned int* inx = new unsigned int[nr];
-    if (inx == 0) {
+    if (inx == nullptr) {
       cout << "Allocation Error" << endl;
       return false;
     }
@@ -203,7 +204,7 @@ bool sortall(int* arr, unsigned int nr, unsigned int type) {
   cout << "qksort    ";
   tim.mark();
   unsigned int* inx = new unsigned int[nr];
-  if (inx == 0) {
+  if (inx == nullptr) {
     cout << "Allocation Error" << endl;
     return false;
   }

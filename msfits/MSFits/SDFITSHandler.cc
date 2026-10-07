@@ -50,14 +50,16 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SDFITSHandler::SDFITSHandler() : tab_p(0), copier_p(0) { ; }
+SDFITSHandler::SDFITSHandler() : tab_p(nullptr), copier_p(nullptr) { ; }
 
 SDFITSHandler::SDFITSHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : tab_p(0), copier_p(0) {
+    : tab_p(nullptr), copier_p(nullptr) {
   initAll(ms, handledCols, row);
 }
 
-SDFITSHandler::SDFITSHandler(const SDFITSHandler &other) : tab_p(0), copier_p(0) { *this = other; }
+SDFITSHandler::SDFITSHandler(const SDFITSHandler &other) : tab_p(nullptr), copier_p(nullptr) {
+  *this = other;
+}
 
 SDFITSHandler &SDFITSHandler::operator=(const SDFITSHandler &other) {
   if (this != &other) {
@@ -90,14 +92,14 @@ void SDFITSHandler::fill(const Record &, const MEpoch &time, const double &inter
 
 void SDFITSHandler::clearAll() {
   delete tab_p;
-  tab_p = 0;
+  tab_p = nullptr;
 
   clearRow();
 }
 
 void SDFITSHandler::clearRow() {
   delete copier_p;
-  copier_p = 0;
+  copier_p = nullptr;
 }
 
 void SDFITSHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) {

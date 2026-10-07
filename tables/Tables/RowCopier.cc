@@ -63,8 +63,8 @@ ColumnHolder::~ColumnHolder() {
   for (unsigned int colNum = 0; colNum < inTabCol.nelements(); colNum++) {
     delete inTabCol[colNum];
     delete outTabCol[colNum];
-    inTabCol[colNum] = 0;
-    outTabCol[colNum] = 0;
+    inTabCol[colNum] = nullptr;
+    outTabCol[colNum] = nullptr;
   }
 }
 

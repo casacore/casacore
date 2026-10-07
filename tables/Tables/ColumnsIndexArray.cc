@@ -41,7 +41,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ColumnsIndexArray::ColumnsIndexArray(const Table& table, const String& columnName)
-    : itsLowerKeyPtr(0), itsUpperKeyPtr(0) {
+    : itsLowerKeyPtr(nullptr), itsUpperKeyPtr(nullptr) {
   itsTable = table;
   itsNrrow = itsTable.nrow();
   // Add column to the RecordDesc.
@@ -52,7 +52,7 @@ ColumnsIndexArray::ColumnsIndexArray(const Table& table, const String& columnNam
 }
 
 ColumnsIndexArray::ColumnsIndexArray(const ColumnsIndexArray& that)
-    : itsLowerKeyPtr(0), itsUpperKeyPtr(0) {
+    : itsLowerKeyPtr(nullptr), itsUpperKeyPtr(nullptr) {
   copy(that);
 }
 
@@ -112,14 +112,14 @@ void ColumnsIndexArray::deleteObjects() {
     default:
       throw(TableError("ColumnsIndexArray: unsupported data type"));
   }
-  itsLowerField = 0;
-  itsUpperField = 0;
-  itsDataVector = 0;
-  itsData = 0;
+  itsLowerField = nullptr;
+  itsUpperField = nullptr;
+  itsDataVector = nullptr;
+  itsData = nullptr;
   delete itsLowerKeyPtr;
   delete itsUpperKeyPtr;
-  itsLowerKeyPtr = 0;
-  itsUpperKeyPtr = 0;
+  itsLowerKeyPtr = nullptr;
+  itsUpperKeyPtr = nullptr;
 }
 
 void ColumnsIndexArray::addColumnToDesc(RecordDesc& description, const TableColumn& column) {
@@ -138,10 +138,10 @@ void ColumnsIndexArray::makeObjects(const RecordDesc& description) {
   itsLowerKeyPtr = new Record(description);
   itsUpperKeyPtr = new Record(description);
   // Initialize the column and field block.
-  itsDataVector = 0;
-  itsData = 0;
-  itsLowerField = 0;
-  itsUpperField = 0;
+  itsDataVector = nullptr;
+  itsData = nullptr;
+  itsLowerField = nullptr;
+  itsUpperField = nullptr;
   itsChanged = true;
   // Create the correct column object for each field.
   // Also create a RecordFieldPtr object for each Key.

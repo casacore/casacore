@@ -162,7 +162,7 @@ void cvt_table(AsciiTableExtension &x, FitsOutput &fout) {
   for (i = 0; i < bt.ncols(); ++i) {
     // this makes a field exactly like the table field
     fb[i] = FitsBase::make(bt.field(i));
-    if (fb[i] == 0) exit(-1);
+    if (fb[i] == nullptr) exit(-1);
     // and bind the FitsField to the column
     bt.bind(i, *fb[i]);
   }

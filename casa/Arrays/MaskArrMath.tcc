@@ -1446,7 +1446,7 @@ T median(const MaskedArray<T> &left, bool sorted, bool takeEvenMean) {
     if (takeEvenMean) {
       n2++;
     }
-    const T *prev = 0;
+    const T *prev = nullptr;
     for (;;) {
       if (*leftmaskS) {
         if (n2 == 0) break;

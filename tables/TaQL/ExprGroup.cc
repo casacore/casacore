@@ -125,7 +125,7 @@ TableExprGroupResult::TableExprGroupResult(
 }
 
 TableExprGroupFuncBase::TableExprGroupFuncBase(TableExprNodeRep* node)
-    : itsNode(node), itsOperand(0), itsSeqnr(0) {
+    : itsNode(node), itsOperand(nullptr), itsSeqnr(0) {
   if (node) {
     TableExprAggrNode* snode = dynamic_cast<TableExprAggrNode*>(node);
     if (snode) {

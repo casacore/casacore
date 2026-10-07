@@ -45,10 +45,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 FITSGroupWriter::FITSGroupWriter(const String &fileName, const RecordDesc &description,
                                  unsigned int nrows, const Record &extraKeywords, bool freeOutput)
     : delete_writer_p(freeOutput),
-      writer_p(0),
+      writer_p(nullptr),
       nrows_written_p(0),
       nrows_total_p(nrows),
-      group_p(0),
+      group_p(nullptr),
       error_count_p(0) {
   LogIO log(LogOrigin("FITSGroupWriter", "FITSGroupWriter", WHERE));
 
@@ -165,9 +165,9 @@ FITSGroupWriter::~FITSGroupWriter() {
   if (delete_writer_p) {
     delete writer_p;
   }
-  writer_p = 0;
+  writer_p = nullptr;
   delete group_p;
-  group_p = 0;
+  group_p = nullptr;
 }
 
 void FITSGroupWriter::write() {

@@ -169,7 +169,7 @@ void UDFBase::registerUDF(const String& name, MakeUDFObject* func) {
   // it does not contain dots.
   iter = theirRegistry.find(libname);
   if (iter == theirRegistry.end()) {
-    theirRegistry[libname] = 0;
+    theirRegistry[libname] = nullptr;
   }
 }
 
@@ -210,7 +210,7 @@ UDFBase* UDFBase::createUDF(const String& name, const TaQLStyle& style) {
                 std::string("register_") + libname, false);
       if (dl.getHandle()) {
         // Add to map to indicate library has been loaded.
-        theirRegistry[libname] = 0;
+        theirRegistry[libname] = nullptr;
       }
     }
     // Try to find the function.

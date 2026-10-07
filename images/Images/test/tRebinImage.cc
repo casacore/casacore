@@ -58,7 +58,7 @@ int main(int argc, const char* argv[]) {
     const Block<int> shapeU(inputs.getIntArray("shape"));
     //
     int maxMBInMemory = -1;
-    ImageInterface<float>* pIm = 0;
+    ImageInterface<float>* pIm = nullptr;
 
     IPosition shapeIn;
     if (in.empty()) {
@@ -103,7 +103,7 @@ int main(int argc, const char* argv[]) {
     CoordinateSystem cSysOut = rebinner.coordinates();
     //
     {
-      ImageInterface<float>* pImOut = 0;
+      ImageInterface<float>* pImOut = nullptr;
       if (save) {
         pImOut = new PagedImage<float>(shapeOut, cSysOut, String("outFile"));
       } else {

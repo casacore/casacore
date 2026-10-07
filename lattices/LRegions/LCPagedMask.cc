@@ -171,7 +171,7 @@ void LCPagedMask::reopen() { itsMask.reopen(); }
 LCRegion* LCPagedMask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCPagedMask cannot be translated.
   throw(AipsError("LCPagedMask::translate is not supported"));
-  return 0;
+  return nullptr;
 }
 
 String LCPagedMask::className() { return "LCPagedMask"; }

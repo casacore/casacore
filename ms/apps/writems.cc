@@ -581,7 +581,7 @@ void MSCreate::fillBaseLines(const Matrix<double>& antPos) {
   }
 }
 
-MSCreateCasa::MSCreateCasa() : itsNrRow(0), itsMSCol(0) {}
+MSCreateCasa::MSCreateCasa() : itsNrRow(0), itsMSCol(nullptr) {}
 
 MSCreateCasa::~MSCreateCasa() {
   if (!itsMS.isNull()) {

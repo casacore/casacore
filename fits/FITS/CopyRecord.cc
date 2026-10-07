@@ -109,94 +109,94 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable, const RecordInterface &
         case TpBool:
           record_bool[which].attachToRecord(inputBuffer, i);
           table_bool[which] = new ScalarColumn<bool>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_bool[which] != 0, AipsError);
+          AlwaysAssert(table_bool[which] != nullptr, AipsError);
           break;
         case TpUChar:
           record_char[which].attachToRecord(inputBuffer, i);
           table_char[which] = new ScalarColumn<unsigned char>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_char[which] != 0, AipsError);
+          AlwaysAssert(table_char[which] != nullptr, AipsError);
           break;
         case TpShort:
           record_short[which].attachToRecord(inputBuffer, i);
           table_short[which] = new ScalarColumn<short>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_short[which] != 0, AipsError);
+          AlwaysAssert(table_short[which] != nullptr, AipsError);
           break;
         case TpInt:
           record_int[which].attachToRecord(inputBuffer, i);
           table_int[which] = new ScalarColumn<int>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_int[which] != 0, AipsError);
+          AlwaysAssert(table_int[which] != nullptr, AipsError);
           break;
         case TpFloat:
           record_float[which].attachToRecord(inputBuffer, i);
           table_float[which] = new ScalarColumn<float>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_float[which] != 0, AipsError);
+          AlwaysAssert(table_float[which] != nullptr, AipsError);
           break;
         case TpDouble:
           record_double[which].attachToRecord(inputBuffer, i);
           table_double[which] = new ScalarColumn<double>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_double[which] != 0, AipsError);
+          AlwaysAssert(table_double[which] != nullptr, AipsError);
           break;
         case TpComplex:
           record_complex[which].attachToRecord(inputBuffer, i);
           table_complex[which] = new ScalarColumn<Complex>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_complex[which] != 0, AipsError);
+          AlwaysAssert(table_complex[which] != nullptr, AipsError);
           break;
         case TpDComplex:
           record_dcomplex[which].attachToRecord(inputBuffer, i);
           table_dcomplex[which] = new ScalarColumn<DComplex>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_dcomplex[which] != 0, AipsError);
+          AlwaysAssert(table_dcomplex[which] != nullptr, AipsError);
           break;
         case TpString:
           record_string[which].attachToRecord(inputBuffer, i);
           table_string[which] = new ScalarColumn<String>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_string[which] != 0, AipsError);
+          AlwaysAssert(table_string[which] != nullptr, AipsError);
           break;
         case TpArrayBool:
           record_array_bool[which].attachToRecord(inputBuffer, i);
           table_array_bool[which] = new ArrayColumn<bool>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_bool[which] != 0, AipsError);
+          AlwaysAssert(table_array_bool[which] != nullptr, AipsError);
           break;
         case TpArrayUChar:
           record_array_char[which].attachToRecord(inputBuffer, i);
           table_array_char[which] =
               new ArrayColumn<unsigned char>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_char[which] != 0, AipsError);
+          AlwaysAssert(table_array_char[which] != nullptr, AipsError);
           break;
         case TpArrayShort:
           record_array_short[which].attachToRecord(inputBuffer, i);
           table_array_short[which] = new ArrayColumn<short>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_short[which] != 0, AipsError);
+          AlwaysAssert(table_array_short[which] != nullptr, AipsError);
           break;
         case TpArrayInt:
           record_array_int[which].attachToRecord(inputBuffer, i);
           table_array_int[which] = new ArrayColumn<int>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_int[which] != 0, AipsError);
+          AlwaysAssert(table_array_int[which] != nullptr, AipsError);
           break;
         case TpArrayFloat:
           record_array_float[which].attachToRecord(inputBuffer, i);
           table_array_float[which] = new ArrayColumn<float>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_float[which] != 0, AipsError);
+          AlwaysAssert(table_array_float[which] != nullptr, AipsError);
           break;
         case TpArrayDouble:
           record_array_double[which].attachToRecord(inputBuffer, i);
           table_array_double[which] = new ArrayColumn<double>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_double[which] != 0, AipsError);
+          AlwaysAssert(table_array_double[which] != nullptr, AipsError);
           break;
         case TpArrayComplex:
           record_array_complex[which].attachToRecord(inputBuffer, i);
           table_array_complex[which] = new ArrayColumn<Complex>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_complex[which] != 0, AipsError);
+          AlwaysAssert(table_array_complex[which] != nullptr, AipsError);
           break;
         case TpArrayDComplex:
           record_array_dcomplex[which].attachToRecord(inputBuffer, i);
           table_array_dcomplex[which] =
               new ArrayColumn<DComplex>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_dcomplex[which] != 0, AipsError);
+          AlwaysAssert(table_array_dcomplex[which] != nullptr, AipsError);
           break;
         case TpArrayString:
           record_array_string[which].attachToRecord(inputBuffer, i);
           table_array_string[which] = new ArrayColumn<String>(outputTable, colnames(inputMap(i)));
-          AlwaysAssert(table_array_string[which] != 0, AipsError);
+          AlwaysAssert(table_array_string[which] != nullptr, AipsError);
           break;
         default:
           throw(AipsError("CopyRecordToTable::CopyRecordToTable - unknown type"));

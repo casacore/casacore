@@ -387,7 +387,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &TAI_UTC,
      TAI_UTCCol,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -396,7 +396,7 @@ const tableProperties allProperties[] = {
      false,
      "",
      vector<String>(),
-     0,
+     nullptr,
      vector<formatDescr>(),
      {"maia.usno.navy.mil", "ser7", "tai-utc.dat"}},
 
@@ -413,7 +413,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &IERSeop97,
      IERSeop97Col,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -422,7 +422,7 @@ const tableProperties allProperties[] = {
      true,
      "",
      vector<String>(),
-     0,
+     nullptr,
      vector<formatDescr>(),
      {"hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.dPsi_dEps.IAU1980.1962-now"}},
 
@@ -439,7 +439,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &IERSeop2000,
      IERSeop2000Col,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -448,7 +448,7 @@ const tableProperties allProperties[] = {
      true,
      "",
      vector<String>(),
-     0,
+     nullptr,
      vector<formatDescr>(),
      {"hpiers.obspm.fr", "iers/eop/eopc04", "eopc04_IAU2000.62-now"}},
 
@@ -465,7 +465,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &IERSpredict,
      IERSpredictCol,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -491,7 +491,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &IERSpredict2000,
      IERSpredict2000Col,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -517,7 +517,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &IGRF,
      IGRFCol,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -543,7 +543,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &DE200,
      DE200Col,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -552,7 +552,7 @@ const tableProperties allProperties[] = {
      true,
      "header.200 ascp****.200",
      vector<String>(),
-     0,
+     nullptr,
      vector<formatDescr>(),
      {"ssd.jpl.nasa.gov", "pub/eph/planets/ascii/de200", ""}},
 
@@ -569,7 +569,7 @@ const tableProperties allProperties[] = {
      "ascii",
      &DE405,
      DE405Col,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -578,7 +578,7 @@ const tableProperties allProperties[] = {
      true,
      "header.405 ascp****.405",
      vector<String>(),
-     0,
+     nullptr,
      vector<formatDescr>(),
      {"ssd.jpl.nasa.gov", "pub/eph/planets/ascii/de405", ""}},
 
@@ -593,9 +593,9 @@ const tableProperties allProperties[] = {
      "",
      "",
      "",
-     0,
+     nullptr,
      DE405Col,
-     0,
+     nullptr,
      vector<String>(),
      vector<unsigned int>(),
      vector<TableColumn *>(),
@@ -604,7 +604,7 @@ const tableProperties allProperties[] = {
      true,
      "",
      vector<String>(),
-     0,
+     nullptr,
      vector<formatDescr>(),
      {"", "", ""}}  // last table
 };
@@ -663,7 +663,7 @@ void makeProperties() {
       if (allProperties[i].cdesc[j].colName.empty()) break;
       properties[allProperties[i].type].colnames.push_back(allProperties[i].cdesc[j].colName);
       properties[allProperties[i].type].colids.push_back(allProperties[i].cdesc[j].colId);
-      BaseColumnDesc *tcd = 0;
+      BaseColumnDesc *tcd = nullptr;
       switch (allProperties[i].cdesc[j].colType) {
         case columnDescr::CTD:
           tcd = new ScalarColumnDesc<double>(allProperties[i].cdesc[j].colName, "",
@@ -699,7 +699,7 @@ void makeProperties() {
       };
       properties[allProperties[i].type].td->addColumn(*tcd);
       delete tcd;
-      tcd = 0;
+      tcd = nullptr;
     };
   };
 
@@ -752,7 +752,7 @@ void makeProperties() {
 void rmColumns(Table *, tableProperties &tprop) {
   for (unsigned int j = 0; j < tprop.columns.size(); ++j) {
     delete tprop.columns[j];
-    tprop.columns[j] = 0;
+    tprop.columns[j] = nullptr;
   };
   tprop.columns.resize(0);
 }
@@ -958,7 +958,7 @@ bool testu_table(const tableProperties &tprop, inputValues &inVal) {
     };
     close_table(tprop.tnam, tab, 0, false);
     delete tab;
-    tab = 0;
+    tab = nullptr;
   };
   // Find if forced refresh asked
   if (inVal.noup && !inVal.x__rep && inVal.refresh) inVal.noup = false;
@@ -1033,7 +1033,7 @@ bool close_table(const String &tnam, Table *&tab, double vsup, bool timup, bool 
   };
   if (timup) put_vsdate(tab);
   delete tab;
-  tab = 0;
+  tab = nullptr;
   cout << tnam << " table " << version_string(vs);
   if (timup)
     cout << " now " << n << " entries";

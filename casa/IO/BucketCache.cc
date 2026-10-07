@@ -53,7 +53,7 @@ BucketCache::BucketCache(BucketFile* file, int64_t startOffset, unsigned int buc
       its_Dirty(cacheSize, static_cast<unsigned int>(0)),
       its_LRU(cacheSize, static_cast<unsigned int>(0)),
       its_LRUCounter(0),
-      its_Buffer(0),
+      its_Buffer(nullptr),
       its_NrOfFree(0),
       its_FirstFree(-1) {
   initStatistics();
@@ -97,7 +97,7 @@ void BucketCache::clear(unsigned int fromSlot, bool doFlush) {
   }
   for (unsigned int i = fromSlot; i < its_CacheSizeUsed; i++) {
     its_DeleteCallBack(its_Owner, its_Cache[i]);
-    its_Cache[i] = 0;
+    its_Cache[i] = nullptr;
     its_SlotNr[its_BucketNr[i]] = -1;
   }
   if (fromSlot == 0) {
@@ -142,7 +142,7 @@ void BucketCache::resize(unsigned int cacheSize) {
   its_Dirty.resize(cacheSize);
   // Initialize the new part of the cache.
   for (unsigned int i = its_CacheSize; i < cacheSize; i++) {
-    its_Cache[i] = 0;
+    its_Cache[i] = nullptr;
     its_BucketNr[i] = 0;
     its_LRU[i] = 0;
     its_Dirty[i] = 0;
@@ -262,7 +262,7 @@ void BucketCache::removeBucket() {
   // Delete the stuff for this bucket.
   // Set the LRU to zero, so it will be reused first.
   its_DeleteCallBack(its_Owner, its_Cache[its_ActualSlot]);
-  its_Cache[its_ActualSlot] = 0;
+  its_Cache[its_ActualSlot] = nullptr;
   its_SlotNr[bucketNr] = -1;
   its_LRU[its_ActualSlot] = 0;
   its_ActualSlot = 0;
@@ -301,9 +301,9 @@ void BucketCache::getSlot(unsigned int bucketNr) {
     if (its_Dirty[its_ActualSlot]) {
       writeBucket(its_ActualSlot);
     }
-    if (its_Cache[its_ActualSlot] != 0) {
+    if (its_Cache[its_ActualSlot] != nullptr) {
       its_DeleteCallBack(its_Owner, its_Cache[its_ActualSlot]);
-      its_Cache[its_ActualSlot] = 0;
+      its_Cache[its_ActualSlot] = nullptr;
       its_SlotNr[its_BucketNr[its_ActualSlot]] = -1;
     }
   }

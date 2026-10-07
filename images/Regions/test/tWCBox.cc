@@ -90,7 +90,7 @@ int main() {
     WCRegion* pWCRegion = box.cloneRegion();
     const WCBox* pBox = (const WCBox*)pWCRegion;
     AlwaysAssert(*pBox == box, AipsError);
-    if (pWCRegion != 0) delete pWCRegion;
+    if (pWCRegion != nullptr) delete pWCRegion;
 
     // Test splitBox
     {
@@ -125,7 +125,7 @@ int main() {
       //     list (rec);
       WCBox* pWCBox = WCBox::fromRecord(rec, "");
       AlwaysAssert(*pWCBox == box, AipsError);
-      if (pWCBox != 0) delete pWCBox;
+      if (pWCBox != nullptr) delete pWCBox;
     }
 
     // Can extend is true
@@ -190,7 +190,7 @@ int main() {
       trc3(2) = shape3(2) - 1;
       LCBox checkBox3(blc3, trc3, shape3);
       AlwaysAssert(*pLCRegion == checkBox3, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      if (pLCRegion != nullptr) delete pLCRegion;
     }
     //   cout << endl;
 
@@ -216,7 +216,7 @@ int main() {
       trc2(1) = shape2(1) - 1;
       LCBox checkBox2(blc2, trc2, shape2);
       AlwaysAssert(*pLCRegion == checkBox2, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      if (pLCRegion != nullptr) delete pLCRegion;
     }
     //   cout << endl;
 
@@ -235,7 +235,7 @@ int main() {
       bool ok = false;
       try {
         LCRegion* pLCRegion = box3.toLCRegion(cSys2, shape2);
-        if (pLCRegion != 0) delete pLCRegion;
+        if (pLCRegion != nullptr) delete pLCRegion;
       } catch (std::exception& x) {
         //         cout << "aipserror: caught error " << x.what() << endl;
         ok = true;
@@ -258,12 +258,12 @@ int main() {
       sCoord.setFrequencySystem(MFrequency::TOPO);
       cSys2.replaceCoordinate(sCoord, iSpec2);
 
-      LCRegion* pLCRegion = 0;
+      LCRegion* pLCRegion = nullptr;
       //      cout << "toLCRegion called with shape = " << shape << endl;
       bool ok = false;
       try {
         pLCRegion = box.toLCRegion(cSys2, shape);
-        if (pLCRegion != 0) delete pLCRegion;
+        if (pLCRegion != nullptr) delete pLCRegion;
       } catch (std::exception& x) {
         //         cout << "aipserror: caught error " << x.what() << endl;
         ok = true;
@@ -290,7 +290,7 @@ int main() {
       shape4(2) = 4;         // Stokes
       shape4(3) = shape(2);  // Spectral
                              //
-      LCRegion* pLCRegion = 0;
+      LCRegion* pLCRegion = nullptr;
       //      cout << "toLCRegion called with shape = " << shape4 << endl;
       pLCRegion = box3.toLCRegion(cSys4, shape4);
       //
@@ -306,7 +306,7 @@ int main() {
       trc4(3) = trcI(2);
       LCBox checkBox4(blc4, trc4, shape4);
       AlwaysAssert(*pLCRegion == checkBox4, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      if (pLCRegion != nullptr) delete pLCRegion;
     }
     //   cout << endl;
 
@@ -330,11 +330,11 @@ int main() {
       for (unsigned int i = 0; i < std::min(shape.nelements(), shape2.nelements()); i++) {
         shape2(i) = shape(i);
       }
-      LCRegion* pLCRegion = 0;
+      LCRegion* pLCRegion = nullptr;
       //      cout << "toLCRegion called with shape = " << shape2 << endl;
       pLCRegion = box1.toLCRegion(cSys2, shape2);
       AlwaysAssert(*pLCRegion == checkBox, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      if (pLCRegion != nullptr) delete pLCRegion;
     }
     //   cout << endl;
 
@@ -349,12 +349,12 @@ int main() {
       CoordinateUtil::addFreqAxis(cSys2);
       IPosition shape2(cSys2.nPixelAxes(), 10);
 
-      LCRegion* pLCRegion = 0;
+      LCRegion* pLCRegion = nullptr;
       //      cout << "toLCRegion called with shape = " << shape2 << endl;
       bool ok = false;
       try {
         pLCRegion = box1.toLCRegion(cSys2, shape2);
-        if (pLCRegion != 0) delete pLCRegion;
+        if (pLCRegion != nullptr) delete pLCRegion;
       } catch (std::exception& x) {
         //          cout << "aipserror: caught error " << x.what() << endl;
         ok = true;
@@ -375,13 +375,13 @@ int main() {
 
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
       IPosition shape2(cSys2.nPixelAxes() + 1, 10);
-      LCRegion* pLCRegion = 0;
+      LCRegion* pLCRegion = nullptr;
 
       bool ok = false;
       try {
         //         cout << "toLCRegion called with shape = " << shape2 << endl;
         pLCRegion = box1.toLCRegion(cSys2, shape2);
-        if (pLCRegion != 0) delete pLCRegion;
+        if (pLCRegion != nullptr) delete pLCRegion;
       } catch (std::exception& x) {
         //         cout << "aipserror: caught expected error " << x.what() << endl;
         ok = true;
@@ -423,7 +423,7 @@ int main() {
       trcI(0) = shape(0) - 1;
       LCBox checkBox2(blcI, trcI, shape);
       AlwaysAssert(*pLCRegion == checkBox2, AipsError);
-      if (pLCRegion != 0) delete pLCRegion;
+      if (pLCRegion != nullptr) delete pLCRegion;
     }
     //   cout << endl;
 
@@ -438,7 +438,7 @@ int main() {
 }
 
 void listBB(const LCRegion* pLCRegion) {
-  if (pLCRegion == 0) {
+  if (pLCRegion == nullptr) {
     cout << "You gave me a null pointer" << endl;
     return;
   }

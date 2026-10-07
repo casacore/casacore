@@ -158,7 +158,7 @@ bool MSFitsOutputAstron::writeFitsFile(const String& fitsfile, const Measurement
       writeMain(refPixelFreq, refFreq, refFreq1, chanbw, outfile, ms, column, spwidMap, nrspw,
                 startchan, nchan, stepchan, fieldidMap, asMultiSource, combineSpw);
 
-  bool ok = (fitsOutput != 0);
+  bool ok = (fitsOutput != nullptr);
   if (!ok) {
     os << LogIO::SEVERE << "Could not write main table\n" << LogIO::POST;
   } else {
@@ -223,12 +223,12 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
                                           const Block<int>& spwidMap, int nrspw, int chanstart,
                                           int nchan, int chanstep, const Block<int>& fieldidMap,
                                           bool asMultiSource, bool combineSpw) {
-  FitsOutput* outfile = 0;
+  FitsOutput* outfile = nullptr;
   LogIO os(LogOrigin("MSFitsOutputAstron", "writeMain"));
   const unsigned int nrow = rawms.nrow();
   if (nrow == 0) {
     os << LogIO::SEVERE << "Empty measurement set!" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
 
   bool doWsrt = false;
@@ -261,15 +261,15 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
   const unsigned int npol = polTable.nrow();
   if (ndds == 0) {
     os << LogIO::SEVERE << "No data description table in MS" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   if (nspec == 0) {
     os << LogIO::SEVERE << "No spectral window table in MS" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   if (npol == 0) {
     os << LogIO::SEVERE << "No polarization table in MS" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   ScalarColumn<int> spwId(ddTable,
                           MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
@@ -317,7 +317,7 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
         numchan0 = numchan(s);
         if (numcorr0 <= 0 || numchan0 <= 0) {
           os << LogIO::SEVERE << "Number of correlations or channels is zero" << LogIO::POST;
-          return 0;
+          return nullptr;
         }
         f0 = freqs(0);
         bw0 = delta;
@@ -359,7 +359,7 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
           sel = tmsParm(tmsParm.col("NAME") == "FW1.GeoSkyFreq");
           if (sel.nrow() == 0) {
             cout << "ERROR - FW1.GeoSkyFreq not found - cannot process this MS.\n";
-            return 0;
+            return nullptr;
           } else {
             String aValue;
             aValue = ScalarColumn<String>(sel, "VALUE")(0);
@@ -392,24 +392,24 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
       // Check if values match.
       if (numcorr(p) != numcorr0) {
         os << LogIO::SEVERE << "Number of correlations varies in the MS" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (numchan(s) != numchan0) {
         os << LogIO::SEVERE << "Number of channels varies in the MS" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (!allEQ(stokes, stokesTypes(p))) {
         os << LogIO::SEVERE << "Stokes types vary for different spectral windows" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (!near(abs(delta), chanbw, 1.0e-5)) {
         os << LogIO::SEVERE << "Bandwidth varies across spectral windows" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       for (unsigned int j = 1; j < freqs.nelements(); j++) {
         if (!near(delta, freqs(j) - freqs(j - 1), 1.0e-5)) {
           os << LogIO::SEVERE << "Channel width varies across the band" << LogIO::POST;
-          return 0;
+          return nullptr;
         }
       }
     }
@@ -446,7 +446,7 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
     for (i = 2; i < stokes.nelements(); i++) {
       if (stokes(stokesIndex(i)) - stokes(stokesIndex(i - 1)) != delta) {
         os << LogIO::SEVERE << "These STOKES are not representable in FITS" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
     }
   }
@@ -649,7 +649,7 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
   MSObservationColumns obsC(rawms.observation());
   if (obsC.nrow() == 0) {
     os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   ek.define("telescop", obsC.telescopeName()(0));
   ek.define("instrume", obsC.telescopeName()(0));
@@ -669,7 +669,7 @@ FitsOutput* MSFitsOutputAstron::writeMain(int& refPixelFreq, double& refFreq, do
          << "The number of rows per spectral-window varies;"
             " cannot combine spectral windows"
          << LogIO::POST;
-      return 0;
+      return nullptr;
     }
   }
 
@@ -1279,10 +1279,10 @@ bool MSFitsOutputAstron::writeSU(FitsOutput* output, const MeasurementSet& ms,
 
   // This is for case where SOURCE may not exist:
   //   (doesn't work yet!)
-  MSSource* sourceTable = 0;
-  MSSourceColumns* sourceColumns = 0;
-  ColumnsIndex* srcInx = 0;
-  RecordFieldPtr<int>* srcInxFld = 0;
+  MSSource* sourceTable = nullptr;
+  MSSourceColumns* sourceColumns = nullptr;
+  ColumnsIndex* srcInx = nullptr;
+  RecordFieldPtr<int>* srcInxFld = nullptr;
   if (!ms.source().isNull()) {
     sourceTable = new MSSource(ms.source());
     sourceColumns = new MSSourceColumns(*sourceTable);

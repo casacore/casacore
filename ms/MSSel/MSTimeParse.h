@@ -141,7 +141,7 @@ class MSTimeParse : public MSParse {
   static void reset() { timeList.resize(3, 0); }
   static void cleanup() {
     if (node_p) delete node_p;
-    node_p = 0x0;
+    node_p = nullptr;
   }
 
   static TableExprNode* node_p;

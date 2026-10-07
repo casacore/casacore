@@ -41,7 +41,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-SubImage<T>::SubImage() : itsImagePtr(0), itsSubLatPtr(0) {}
+SubImage<T>::SubImage() : itsImagePtr(nullptr), itsSubLatPtr(nullptr) {}
 
 template <class T>
 SubImage<T>::SubImage(const ImageInterface<T>& image, AxesSpecifier axesSpec,

@@ -28,10 +28,12 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LogFilterTaql::LogFilterTaql(const String& expr) : expr_p(0) { expr_p = new LogFilterExpr(expr); }
+LogFilterTaql::LogFilterTaql(const String& expr) : expr_p(nullptr) {
+  expr_p = new LogFilterExpr(expr);
+}
 
-LogFilterTaql::LogFilterTaql(const LogFilterTaql& other) : LogFilterInterface(), expr_p(0) {
-  if (other.expr_p != 0) {
+LogFilterTaql::LogFilterTaql(const LogFilterTaql& other) : LogFilterInterface(), expr_p(nullptr) {
+  if (other.expr_p != nullptr) {
     expr_p = new LogFilterExpr(*other.expr_p);
   }
 }
@@ -39,8 +41,8 @@ LogFilterTaql::LogFilterTaql(const LogFilterTaql& other) : LogFilterInterface(),
 LogFilterTaql& LogFilterTaql::operator=(const LogFilterTaql& other) {
   if (this != &other) {
     delete expr_p;
-    expr_p = 0;
-    if (other.expr_p != 0) {
+    expr_p = nullptr;
+    if (other.expr_p != nullptr) {
       expr_p = new LogFilterExpr(*other.expr_p);
     }
   }

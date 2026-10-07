@@ -347,7 +347,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
   const unsigned int nrow = _ms.nrow();
   if (nrow == 0) {
     os << LogIO::SEVERE << "Empty measurement set!" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   Record ek;  // ek == extra keys
   Vector<double> radec;
@@ -403,15 +403,15 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
   const unsigned int npol = polTable.nrow();
   if (ndds == 0) {
     os << LogIO::SEVERE << "No data description table in MS" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   if (nspec == 0) {
     os << LogIO::SEVERE << "No spectral window table in MS" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   if (npol == 0) {
     os << LogIO::SEVERE << "No polarization table in MS" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   ScalarColumn<int> spwId(ddTable,
                           MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID));
@@ -474,7 +474,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
         numchan0 = numchan(s);
         if (numcorr0 <= 0 || numchan0 <= 0) {
           os << LogIO::SEVERE << "Number of correlations or channels is zero" << LogIO::POST;
-          return 0;
+          return nullptr;
         }
         f0 = freqs(0);
         bw0 = delta;
@@ -495,21 +495,21 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
       // Check if values match.
       if (numcorr(p) != numcorr0) {
         os << LogIO::SEVERE << "Number of correlations varies in the MS" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (numchan(s) != numchan0) {
         os << LogIO::SEVERE
            << "Number of channels varies in the MS, i.e. the is more than one SPW shape!" << endl
            << "Please split out SPWs of identical shape and export them separately." << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (!allEQ(stokes, stokesTypes(p))) {
         os << LogIO::SEVERE << "Stokes types vary for different spectral windows" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (!near(abs(delta), chanbw, 1.0e-5)) {
         os << LogIO::SEVERE << "Bandwidth varies across spectral windows" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
       if (nchan > 1) {
         Vector<double> selChans(nchan);
@@ -521,13 +521,13 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
         for (unsigned int j = 1; j < selChans.nelements(); ++j) {
           if (!near(delta, selChans(j) - selChans(j - 1), 1.0e-5)) {
             os << LogIO::SEVERE << "Channel width varies across the band" << LogIO::POST;
-            return 0;
+            return nullptr;
           }
         }
       }
       if (measFreq(s) != measFreq0) {
         os << LogIO::SEVERE << "Frequency frame varies in the MS" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
     }
   }
@@ -563,7 +563,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
     for (i = 2; i < stokes.nelements(); i++) {
       if (stokes(stokesIndex(i)) - stokes(stokesIndex(i - 1)) != delta) {
         os << LogIO::SEVERE << "These STOKES are not representable in FITS" << LogIO::POST;
-        return 0;
+        return nullptr;
       }
     }
   }
@@ -738,7 +738,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
   MSObservationColumns obsC(_ms.observation());
   if (obsC.nrow() == 0) {
     os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
-    return 0;
+    return nullptr;
   }
   ek.define("telescop", obsC.telescopeName()(0));
   ek.define("instrume", obsC.telescopeName()(0));
@@ -939,7 +939,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
           for (unsigned int m = 0; m < nif; ++m)
             os << "    " << m << "       " << nperIF[m] << "\n";
           os << " the spectral windows cannot be combined without padwithflags." << LogIO::POST;
-          return 0;
+          return nullptr;
         }
       } else {
         os << LogIO::NORMAL << outFITSFile << " will be "
@@ -1055,7 +1055,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(int& refPixelFreq, double& 
           os << LogIO::SEVERE << "A DATA_DESC_ID appeared out of the expected order.\n"
              << "MSes with multiple tunings (i.e. spw varies with time) cannot"
              << "\nbe exported with combinespw.  Export each tuning separately." << LogIO::POST;
-          return 0;
+          return nullptr;
         }
       } else {                // The spw is present, use it.
         if (rownr >= nrow) {  // Shouldn't happen, but just in case...
@@ -1807,10 +1807,10 @@ bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
 
   // This is for case where SOURCE may not exist:
   //   (doesn't work yet!)
-  MSSource* sourceTable = 0;
-  MSSourceColumns* sourceColumns = 0;
-  ColumnsIndex* srcInx = 0;
-  RecordFieldPtr<int>* srcInxFld = 0;
+  MSSource* sourceTable = nullptr;
+  MSSourceColumns* sourceColumns = nullptr;
+  ColumnsIndex* srcInx = nullptr;
+  RecordFieldPtr<int>* srcInxFld = nullptr;
   if (!ms.source().isNull()) {
     sourceTable = new MSSource(ms.source());
     sourceColumns = new MSSourceColumns(*sourceTable);

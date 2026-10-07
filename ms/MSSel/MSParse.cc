@@ -30,8 +30,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MeasurementSet* MSParse::ms_p = 0;
-MSSelectableTable* MSParse::msInterface_p = 0;
+MeasurementSet* MSParse::ms_p = nullptr;
+MSSelectableTable* MSParse::msInterface_p = nullptr;
 
 // # Default constructor.
 MSParse::MSParse() : tempMSInterface_p(NULL) { tempMSInterface_p = new MSInterface(); }

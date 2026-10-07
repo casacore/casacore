@@ -243,14 +243,14 @@ int main(int argc, const char* argv[]) {
       // Construct image
 
       PagedImage<float> inImage(in, true);
-      SubImage<float>* pSubImage2 = 0;
+      SubImage<float>* pSubImage2 = nullptr;
 
       if (validInputs(REGION)) {
         LCBox::verify(blc, trc, inc, inImage.shape());
         cout << "Selected region : " << blc + 1 << " to " << trc + 1 << endl;
         const LCSlicer region(blc, trc);
         //
-        SubImage<float>* pSubImage = 0;
+        SubImage<float>* pSubImage = nullptr;
         if (inImage.isMasked()) {
           ImageRegion mask = inImage.getRegion(inImage.getDefaultMask(), RegionHandler::Masks);
           pSubImage = new SubImage<float>(inImage, mask);
@@ -275,7 +275,7 @@ int main(int argc, const char* argv[]) {
       // Clean up SUbImage pointers
 
       int nDim = pSubImage2->ndim();
-      if (pSubImage2 != 0) delete pSubImage2;
+      if (pSubImage2 != nullptr) delete pSubImage2;
 
       // Set state
       if (validInputs(AXES)) {
@@ -360,14 +360,14 @@ int main(int argc, const char* argv[]) {
       // COnstruct image
 
       PagedImage<Complex> inImage(in, true);
-      SubImage<Complex>* pSubImage2 = 0;
+      SubImage<Complex>* pSubImage2 = nullptr;
 
       if (validInputs(REGION)) {
         LCBox::verify(blc, trc, inc, inImage.shape());
         cout << "Selected region : " << blc + 1 << " to " << trc + 1 << endl;
         const LCSlicer region(blc, trc);
         //
-        SubImage<Complex>* pSubImage = 0;
+        SubImage<Complex>* pSubImage = nullptr;
         if (inImage.isMasked()) {
           ImageRegion mask = inImage.getRegion(inImage.getDefaultMask(), RegionHandler::Masks);
           pSubImage = new SubImage<Complex>(inImage, mask);
@@ -391,7 +391,7 @@ int main(int argc, const char* argv[]) {
 
       // Clean up SUbImage pointers
 
-      if (pSubImage2 != 0) delete pSubImage2;
+      if (pSubImage2 != nullptr) delete pSubImage2;
 
       // Set state
 

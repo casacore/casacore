@@ -54,7 +54,7 @@ void LatticeHistSpecialize::process(const Complex* pInData, const bool* pInMask,
   unsigned int rbin;
   unsigned int index;
   //
-  if (pInMask == 0) {
+  if (pInMask == nullptr) {
     for (unsigned int i = 0; i < nrval; i++) {
       datum = *pInData;
       useIt = LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum);

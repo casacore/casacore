@@ -47,7 +47,7 @@ std::mutex ColumnDesc::theirMutex;
 ColumnDesc::ColumnDesc(const BaseColumnDesc& cold) : colPtr_p(cold.clone()), allocated_p(true) {}
 
 ColumnDesc::ColumnDesc(const ColumnDesc& that) : colPtr_p(that.colPtr_p), allocated_p(true) {
-  if (colPtr_p != 0) {
+  if (colPtr_p != nullptr) {
     colPtr_p = colPtr_p->clone();
   }
 }
@@ -66,7 +66,7 @@ ColumnDesc& ColumnDesc::operator=(const ColumnDesc& that) {
       delete colPtr_p;
     }
     colPtr_p = that.colPtr_p;
-    if (colPtr_p != 0) {
+    if (colPtr_p != nullptr) {
       colPtr_p = colPtr_p->clone();
     }
     allocated_p = true;

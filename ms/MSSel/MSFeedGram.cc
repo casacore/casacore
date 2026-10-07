@@ -62,7 +62,7 @@ int MSFeedGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSFeedGram = 0;
+static const char* strpMSFeedGram = nullptr;
 static int posMSFeedGram = 0;
 
 // # Parse the command.

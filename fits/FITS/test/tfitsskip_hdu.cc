@@ -125,7 +125,7 @@ void do_binary_table(BinaryTableExtension &x) {
   cout << " [do_binary_table()] x.nrows() = " << x.nrows() << endl;
   x.read(x.nrows());  // read all the table rows
   // any heap to read?
-  char *theheap = 0;
+  char *theheap = nullptr;
   if (x.pcount()) {
     // offset of start of heap from current position, end of last row
     if (x.notnull(x.theap())) {
@@ -144,7 +144,7 @@ void do_binary_table(BinaryTableExtension &x) {
   VADescFitsField *va = new VADescFitsField[x.ncols()];
   // decode the TFORMs of any VADESC columns
   for (i = 0; i < x.ncols(); ++i) {
-    vaptr[i] = 0;
+    vaptr[i] = nullptr;
     if (x.field(i).fieldtype() == FITS::VADESC) {
       int maxsize;
       FITS::parse_vatform(x.tform(i), vatypes[i], maxsize);

@@ -136,7 +136,7 @@ int main() {
       AlwaysAssertExit(lc.isPersistent());
       LatticeBase* latt = ImageOpener::openImage("tImageConcat_tmp.imgconc");
       ImageConcat<float>* lc3 = dynamic_cast<ImageConcat<float>*>(latt);
-      AlwaysAssertExit(lc3 != 0);
+      AlwaysAssertExit(lc3 != nullptr);
       AlwaysAssertExit(allEQ(lc3->get(), lc.get()));
       AlwaysAssertExit(allEQ(lc3->getMask(), lc.getMask()));
       checkMiscInfo(*lc3, false);

@@ -102,7 +102,7 @@ class MSUvDistParse : public MSParse {
   }
   static void cleanup() {
     if (node_p) delete node_p;
-    node_p = 0x0;
+    node_p = nullptr;
   }
 
   // Get table expression node object.

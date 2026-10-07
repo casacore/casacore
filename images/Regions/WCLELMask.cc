@@ -36,20 +36,20 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-WCLELMask::WCLELMask() : itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {}
+WCLELMask::WCLELMask() : itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {}
 
 WCLELMask::WCLELMask(const String& command)
-    : itsCommand(command), itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
+    : itsCommand(command), itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {
   processCommand();
 }
 
 WCLELMask::WCLELMask(const char* command)
-    : itsCommand(command), itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
+    : itsCommand(command), itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {
   processCommand();
 }
 
 WCLELMask::WCLELMask(const ImageExpr<bool>& expr)
-    : itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
+    : itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {
   itsImageExpr = new ImageExpr<bool>(expr);
   const CoordinateSystem& cSys = itsImageExpr->coordinates();
   unsigned int naxes = itsImageExpr->ndim();
@@ -59,17 +59,17 @@ WCLELMask::WCLELMask(const ImageExpr<bool>& expr)
 }
 
 WCLELMask::WCLELMask(const LatticeExpr<bool>& expr)
-    : itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
+    : itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {
   itsLattExpr = new LatticeExpr<bool>(expr);
 }
 
 WCLELMask::WCLELMask(const LatticeExprNode& expr)
-    : itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
+    : itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {
   init(expr);
 }
 
 WCLELMask::WCLELMask(const WCLELMask& that)
-    : WCRegion(), itsImageExpr(0), itsLattExpr(0), itsLattNode(0) {
+    : WCRegion(), itsImageExpr(nullptr), itsLattExpr(nullptr), itsLattNode(nullptr) {
   operator=(that);
 }
 
@@ -117,19 +117,19 @@ WCLELMask& WCLELMask::operator=(const WCLELMask& that) {
   if (this != &that) {
     WCRegion::operator=(that);
     delete itsImageExpr;
-    itsImageExpr = 0;
+    itsImageExpr = nullptr;
     delete itsLattExpr;
-    itsLattExpr = 0;
+    itsLattExpr = nullptr;
     delete itsLattNode;
-    itsLattNode = 0;
+    itsLattNode = nullptr;
     itsCommand = that.itsCommand;
-    if (that.itsImageExpr != 0) {
+    if (that.itsImageExpr != nullptr) {
       itsImageExpr = new ImageExpr<bool>(*that.itsImageExpr);
     }
-    if (that.itsLattExpr != 0) {
+    if (that.itsLattExpr != nullptr) {
       itsLattExpr = new LatticeExpr<bool>(*that.itsLattExpr);
     }
-    if (that.itsLattNode != 0) {
+    if (that.itsLattNode != nullptr) {
       itsLattNode = new LatticeExprNode(*that.itsLattNode);
     }
   }
@@ -156,10 +156,10 @@ bool WCLELMask::operator==(const WCRegion& that) const {
 WCRegion* WCLELMask::cloneRegion() const { return new WCLELMask(*this); }
 
 unsigned int WCLELMask::ndim() const {
-  if (itsLattExpr != 0) {
+  if (itsLattExpr != nullptr) {
     return itsLattExpr->ndim();
   }
-  if (itsImageExpr != 0) {
+  if (itsImageExpr != nullptr) {
     return itsImageExpr->ndim();
   }
   return 0;
@@ -182,10 +182,10 @@ WCLELMask* WCLELMask::fromRecord(const TableRecord& rec, const String&) {
 bool WCLELMask::canExtend() const { return false; }
 
 LCRegion* WCLELMask::toLCRegion(const CoordinateSystem& cSys, const IPosition& latticeShape) const {
-  if (itsImageExpr != 0) {
+  if (itsImageExpr != nullptr) {
     return WCRegion::toLCRegion(cSys, latticeShape);
   }
-  if (itsLattNode != 0) {
+  if (itsLattNode != nullptr) {
     return new LCLELMask(LatticeExpr<bool>(*itsLattNode, latticeShape));
   }
   if (!latticeShape.isEqual(itsLattExpr->shape())) {
@@ -198,7 +198,7 @@ LCRegion* WCLELMask::toLCRegion(const CoordinateSystem& cSys, const IPosition& l
 
 LCRegion* WCLELMask::doToLCRegion(const CoordinateSystem&, const IPosition& latticeShape,
                                   const IPosition& pixelAxesMap, const IPosition& outOrder) const {
-  AlwaysAssert(itsImageExpr != 0, AipsError);
+  AlwaysAssert(itsImageExpr != nullptr, AipsError);
   const unsigned int naxes = pixelAxesMap.nelements();
   const IPosition& shape = itsImageExpr->shape();
   AlwaysAssert(naxes == shape.nelements(), AipsError);

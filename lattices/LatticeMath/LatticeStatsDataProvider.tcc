@@ -36,7 +36,7 @@ LatticeStatsDataProvider<T>::LatticeStatsDataProvider()
     : LatticeStatsDataProviderBase<T>(),
       _iter(),
       _currentSlice(),
-      _currentPtr(0),
+      _currentPtr(nullptr),
       _delData(false),
       _atEnd(false),
       _nMaxThreads(0) {}
@@ -47,7 +47,7 @@ LatticeStatsDataProvider<T>::LatticeStatsDataProvider(const Lattice<T>& lattice,
     : LatticeStatsDataProviderBase<T>(),
       _iter(),
       _currentSlice(),
-      _currentPtr(0),
+      _currentPtr(nullptr),
       _delData(false),
       _atEnd(false) {
   setLattice(lattice, iteratorLimitBytes);

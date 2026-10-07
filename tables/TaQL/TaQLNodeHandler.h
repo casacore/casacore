@@ -239,9 +239,9 @@ class TaQLNodeHandler : public TaQLNodeVisitor {
 
 class TaQLNodeHRValue : public TaQLNodeResultRep {
  public:
-  TaQLNodeHRValue() : itsInt(-1), itsElem(0), itsSet(0), itsNames(0) {}
+  TaQLNodeHRValue() : itsInt(-1), itsElem(nullptr), itsSet(nullptr), itsNames(0) {}
   TaQLNodeHRValue(const TableExprNode& expr)
-      : itsInt(-1), itsExpr(expr), itsElem(0), itsSet(0), itsNames(0) {}
+      : itsInt(-1), itsExpr(expr), itsElem(nullptr), itsSet(nullptr), itsNames(0) {}
   ~TaQLNodeHRValue() override = default;
 
   // Get the values.

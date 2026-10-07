@@ -83,7 +83,7 @@ class MaskedLattice;
 template <class T>
 class CLInterpolator2D {
  public:
-  CLInterpolator2D() : itsLatticePtr(0) { ; }
+  CLInterpolator2D() : itsLatticePtr(nullptr) { ; }
 
   virtual ~CLInterpolator2D();
 

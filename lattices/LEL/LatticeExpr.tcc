@@ -38,11 +38,11 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-LatticeExpr<T>::LatticeExpr() : lastChunkPtr_p(0) {}
+LatticeExpr<T>::LatticeExpr() : lastChunkPtr_p(nullptr) {}
 
 template <class T>
 LatticeExpr<T>::LatticeExpr(const LatticeExprNode& expr)
-    : shape_p(expr.shape()), lastChunkPtr_p(0) {
+    : shape_p(expr.shape()), lastChunkPtr_p(nullptr) {
   // Check if an expression array has a shape.
   if (!expr.isScalar() && shape_p.nelements() == 0) {
     throw AipsError(
@@ -55,7 +55,7 @@ LatticeExpr<T>::LatticeExpr(const LatticeExprNode& expr)
 template <class T>
 LatticeExpr<T>::LatticeExpr(const LatticeExprNode& expr, const IPosition& latticeShape)
     : shape_p(latticeShape),
-      lastChunkPtr_p(0)
+      lastChunkPtr_p(nullptr)
 //
 // Construct from a LatticeExprNode object.  The LEN type is
 // converted to match the template type if possible
@@ -110,7 +110,7 @@ LatticeExpr<T>::~LatticeExpr() {
 
 template <class T>
 LatticeExpr<T>::LatticeExpr(const LatticeExpr<T>& other)
-    : MaskedLattice<T>(), expr_p(other.expr_p), shape_p(other.shape_p), lastChunkPtr_p(0) {}
+    : MaskedLattice<T>(), expr_p(other.expr_p), shape_p(other.shape_p), lastChunkPtr_p(nullptr) {}
 
 template <class T>
 LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other) {
@@ -118,7 +118,7 @@ LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other) {
     expr_p = other.expr_p;
     shape_p = other.shape_p;
     delete lastChunkPtr_p;
-    lastChunkPtr_p = 0;
+    lastChunkPtr_p = nullptr;
     lastSlicer_p = Slicer();
   }
   return *this;
@@ -136,7 +136,7 @@ bool LatticeExpr<T>::isMasked() const {
 
 template <class T>
 const LatticeRegion* LatticeExpr<T>::getRegionPtr() const {
-  return 0;
+  return nullptr;
 }
 
 template <class T>

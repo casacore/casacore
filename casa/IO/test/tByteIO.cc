@@ -260,7 +260,7 @@ int main() {
 
     MemoryIO file3(file2.getBuffer(), file2.length());
     try {
-      file3.write(0, 0);
+      file3.write(0, nullptr);
     } catch (std::exception& x) {
       cout << x.what() << endl;  // readonly
     }

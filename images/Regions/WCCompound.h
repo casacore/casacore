@@ -84,11 +84,11 @@ class WCCompound : public WCRegion {
   // exception is thrown.
   // <group>
   WCCompound(const ImageRegion& region1, const ImageRegion& region2);
-  WCCompound(const ImageRegion* region1, const ImageRegion* region2 = 0,
-             const ImageRegion* region3 = 0, const ImageRegion* region4 = 0,
-             const ImageRegion* region5 = 0, const ImageRegion* region6 = 0,
-             const ImageRegion* region7 = 0, const ImageRegion* region8 = 0,
-             const ImageRegion* region9 = 0, const ImageRegion* region10 = 0);
+  WCCompound(const ImageRegion* region1, const ImageRegion* region2 = nullptr,
+             const ImageRegion* region3 = nullptr, const ImageRegion* region4 = nullptr,
+             const ImageRegion* region5 = nullptr, const ImageRegion* region6 = nullptr,
+             const ImageRegion* region7 = nullptr, const ImageRegion* region8 = nullptr,
+             const ImageRegion* region9 = nullptr, const ImageRegion* region10 = nullptr);
   WCCompound(const Block<const ImageRegion*>& regions);
   // </group>
 

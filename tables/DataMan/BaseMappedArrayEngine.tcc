@@ -56,7 +56,7 @@ BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine(
       tempWritable_p(false),
       initialNrrow_p(0),
       arrayIsFixed_p(false),
-      column_p(0) {}
+      column_p(nullptr) {}
 
 template <class VirtualType, class StoredType>
 BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine(
@@ -69,7 +69,7 @@ BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine(
       tempWritable_p(false),
       initialNrrow_p(0),
       arrayIsFixed_p(false),
-      column_p(0) {}
+      column_p(nullptr) {}
 
 template <class VirtualType, class StoredType>
 BaseMappedArrayEngine<VirtualType, StoredType>::~BaseMappedArrayEngine() {
@@ -211,7 +211,7 @@ IPosition BaseMappedArrayEngine<VirtualType, StoredType>::shape(rownr_t rownr) {
 
 template <class VirtualType, class StoredType>
 bool BaseMappedArrayEngine<VirtualType, StoredType>::canChangeShape() const {
-  return (column_p == 0 ? false : column_p->canChangeShape());
+  return (column_p == nullptr ? false : column_p->canChangeShape());
 }
 
 template <class VirtualType, class StoredType>

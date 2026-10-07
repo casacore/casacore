@@ -76,7 +76,7 @@ double PrecTimer::get_CPU_speed_in_MHz() {
     }
 #else
     char* colon;
-    if (strncmp("cpu MHz", buffer, 7) == 0 && (colon = strchr(buffer, ':')) != 0) {
+    if (strncmp("cpu MHz", buffer, 7) == 0 && (colon = strchr(buffer, ':')) != nullptr) {
       return atof(colon + 2);
     }
 #endif

@@ -119,7 +119,7 @@ LatticeExprNode LELImageCoord::makeExtendLattice(const LatticeExprNode& expr,
                                                  const LELLattCoordBase& newCoord) const {
   // Get new coordinate system.
   const LELImageCoord* cptr = dynamic_cast<const LELImageCoord*>(&newCoord);
-  AlwaysAssert(cptr != 0, AipsError);
+  AlwaysAssert(cptr != nullptr, AipsError);
   const CoordinateSystem& newCsys = cptr->coordinates();
   switch (expr.dataType()) {
     case TpFloat:

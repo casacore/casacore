@@ -436,7 +436,7 @@ void showTable(const Table& tab, const Vector<String>& colnam, bool printMeasure
           !tableColumns[nrcol]->columnDesc().isArray()) {
         os << "Column " << colnam(i) << " contains neither scalars nor arrays" << endl;
         delete tableColumns[nrcol];
-        tableColumns[nrcol] = 0;
+        tableColumns[nrcol] = nullptr;
       } else {
         // Get possible units.
         const TableRecord& keys = tableColumns[nrcol]->keywordSet();
@@ -525,7 +525,7 @@ void showExpr(const TableExprNode& expr, ostream& os) {
   // Get internal node.
   const TableExprNodeArrayPart* nodePtr =
       dynamic_cast<const TableExprNodeArrayPart*>(expr.getNodeRep());
-  if (nodePtr != 0) {
+  if (nodePtr != nullptr) {
     // The node represents a part of an array; get its index node.
     const TableExprNodeIndex* inxNode = nodePtr->getIndexNode();
     // If a constant index accessing a single element,
