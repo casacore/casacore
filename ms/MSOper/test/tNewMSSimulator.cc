@@ -81,7 +81,7 @@ class NewMSSimulatorTester {
 
   ~NewMSSimulatorTester() {
     // We have to delete the underlying ms before removing the directory
-    simulator_p.reset(0);
+    simulator_p.reset(nullptr);
     // This will recursively remove everything in the MS directory
     nftw(msName_p.c_str(), removeFile, 64, FTW_DEPTH | FTW_PHYS);
   }
@@ -110,7 +110,7 @@ void test_NewMSSimulator_Constructors() {
   std::shared_ptr<casacore::MeasurementSet> ms2 = simulatorTester.simulator_p->getMs();
 
   // simulator is destroyed, but we keep a shared_ptr of the ms, so it should be fine
-  simulatorTester2.simulator_p.reset(0);
+  simulatorTester2.simulator_p.reset(nullptr);
 }
 
 /*

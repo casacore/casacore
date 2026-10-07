@@ -53,7 +53,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableExprNode::TableExprNode() : node_p(0) {}
+TableExprNode::TableExprNode() : node_p(nullptr) {}
 
 // # Constructors for the various constants.
 // # These objects are created as temporaries by the compiler.
@@ -271,7 +271,7 @@ TENShPtr TableExprNode::setBinaryNodeInfo(TableExprNodeBinary* tsnptr,
 TENShPtr TableExprNode::newPlus(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtPlus);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -319,7 +319,7 @@ TENShPtr TableExprNode::newPlus(const TENShPtr& right) const {
 TENShPtr TableExprNode::newMinus(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtMinus);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -361,7 +361,7 @@ TENShPtr TableExprNode::newMinus(const TENShPtr& right) const {
 TENShPtr TableExprNode::newTimes(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtTimes);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -399,7 +399,7 @@ TENShPtr TableExprNode::newDivide(const TENShPtr& right) const {
   // a double.
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtDivide);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTDouble:
@@ -429,7 +429,7 @@ TENShPtr TableExprNode::newDivide(const TENShPtr& right) const {
 TENShPtr TableExprNode::newModulo(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtModulo);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -459,7 +459,7 @@ TENShPtr TableExprNode::newModulo(const TENShPtr& right) const {
 TENShPtr TableExprNode::newBitAnd(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtBitAnd);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -483,7 +483,7 @@ TENShPtr TableExprNode::newBitAnd(const TENShPtr& right) const {
 TENShPtr TableExprNode::newBitOr(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtBitOr);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -507,7 +507,7 @@ TENShPtr TableExprNode::newBitOr(const TENShPtr& right) const {
 TENShPtr TableExprNode::newBitXor(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtBitXor);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -531,7 +531,7 @@ TENShPtr TableExprNode::newBitXor(const TENShPtr& right) const {
 TENShPtr TableExprNode::newEQ(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtEQ);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTBool:
@@ -591,7 +591,7 @@ TENShPtr TableExprNode::newEQ(const TENShPtr& right) const {
 TENShPtr TableExprNode::newNE(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtNE);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTBool:
@@ -651,7 +651,7 @@ TENShPtr TableExprNode::newNE(const TENShPtr& right) const {
 TENShPtr TableExprNode::newGT(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtGT);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -699,7 +699,7 @@ TENShPtr TableExprNode::newGT(const TENShPtr& right) const {
 TENShPtr TableExprNode::newGE(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtGE);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -791,7 +791,7 @@ TENShPtr TableExprNode::newIN(const TENShPtr& right, const TaQLStyle& style) con
                         extype, node_p->ndim(), node_p->shape());
   // Create the correct IN object depending on data type
   // and if the left hand operand is scalar or array.
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTInt:
@@ -839,7 +839,7 @@ TENShPtr TableExprNode::newIN(const TENShPtr& right, const TaQLStyle& style) con
 TENShPtr TableExprNode::newOR(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtOR);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTBool:
@@ -863,7 +863,7 @@ TENShPtr TableExprNode::newOR(const TENShPtr& right) const {
 TENShPtr TableExprNode::newAND(const TENShPtr& right) const {
   TableExprNodeRep node =
       TableExprNodeBinary::getCommonTypes(node_p, right, TableExprNodeRep::OtAND);
-  TableExprNodeBinary* tsnptr = 0;
+  TableExprNodeBinary* tsnptr = nullptr;
   if (node.valueType() == TableExprNodeRep::VTScalar) {
     switch (node.dataType()) {
       case TableExprNodeRep::NTBool:

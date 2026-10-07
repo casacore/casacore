@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
     // Get the auto-shape (if given).
     Vector<int> vec;
     std::istringstream is(autoshp);
-    if (!read(is, vec, 0, false)) {
+    if (!read(is, vec, nullptr, false)) {
       throw AipsError(" '" + autoshp + "' is an invalid autoshape (maybe enclose in [])");
     }
     IPosition shp(vec);

@@ -303,9 +303,9 @@ void c(bool doExcp) {
   // The error occurs at the very end of the program.
   // #//    TableDesc td("tTableDesc_tmp");
   // #//    td.show();
-  TableDesc* td1 = 0;
-  TableDesc* td2 = 0;
-  TableDesc* td3 = 0;
+  TableDesc* td1 = nullptr;
+  TableDesc* td2 = nullptr;
+  TableDesc* td3 = nullptr;
 
   if (doExcp) {
     try {
@@ -313,7 +313,7 @@ void c(bool doExcp) {
       td1 = new TableDesc("tTableDescXX_tmp", TableDesc::Update);
     } catch (std::exception& x) {
       cout << x.what() << endl;
-      td1 = 0;
+      td1 = nullptr;
     }
 
     try {
@@ -321,7 +321,7 @@ void c(bool doExcp) {
       td2 = new TableDesc("tTableDescXX_tmp", TableDesc::Old);
     } catch (std::exception& x) {
       cout << x.what() << endl;
-      td2 = 0;
+      td2 = nullptr;
     }
 
     try {
@@ -329,7 +329,7 @@ void c(bool doExcp) {
       td3 = new TableDesc("tTableDesc_tmp", TableDesc::NewNoReplace);
     } catch (std::exception& x) {
       cout << x.what() << endl;
-      td3 = 0;
+      td3 = nullptr;
     }
   }
 
@@ -387,8 +387,8 @@ void d(bool doExcp) {
   td.rwKeywordSet().define("tab_key1", "this is a string");
 
   // Register engines.
-  DataManager::registerCtor("c1_engine", 0);
-  DataManager::registerCtor("c2_engine", 0);
+  DataManager::registerCtor("c1_engine", nullptr);
+  DataManager::registerCtor("c2_engine", nullptr);
 
   // Define a virtual column.
   td.addColumn(ScalarColumnDesc<int>("c1", "c1-comment", "c1_engine", ""));

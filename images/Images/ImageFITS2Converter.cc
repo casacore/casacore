@@ -78,7 +78,7 @@ bool ImageFITSConverter::FITSToImage(ImageInterface<float>*& newImage, String& e
                                      bool allowOverwrite, bool zeroBlanks) {
   LogIO os(LogOrigin("ImageFITSConverter"));
 
-  newImage = 0;
+  newImage = nullptr;
   error = "";
   // First make sure that imageName is writable and does not already
   // exist.  Optionally remove it if it does.  If imageName is empty,
@@ -280,7 +280,7 @@ bool ImageFITSConverter::ImageToFITS(String& error, ImageInterface<float>& image
   os << LogOrigin("ImageFitsConverter", __FUNCTION__, WHERE);
   //
   error = "";
-  FitsOutput* outfile = 0;
+  FitsOutput* outfile = nullptr;
   // create the FITS output
   if (!ImageFITSConverter::openFitsOutput(error, outfile, fitsName, allowOverwrite)) {
     return false;
@@ -1224,7 +1224,7 @@ bool ImageFITSConverter::ImageToFITSOut(
     int nIter = max(1, shape.product() / newCursorShape.product());
     int iUpdate = max(1, nIter / 20);
     //
-    ProgressMeter* pMeter = 0;
+    ProgressMeter* pMeter = nullptr;
     if (verbose)
       pMeter = new ProgressMeter(0.0, 1.0 * shape.product(), "Image to FITS", "Pixels copied", "",
                                  "", true, iUpdate);
@@ -1235,8 +1235,8 @@ bool ImageFITSConverter::ImageToFITSOut(
     RO_MaskedLatticeIterator<float> iter(image, stepper);
     const int bufferSize = newCursorShape.product();
 
-    PrimaryArray<float>* fits32 = 0;
-    PrimaryArray<short>* fits16 = 0;
+    PrimaryArray<float>* fits32 = nullptr;
+    PrimaryArray<short>* fits16 = nullptr;
 
     if (BITPIX == -32) {
       if (primHead) {
@@ -1244,7 +1244,7 @@ bool ImageFITSConverter::ImageToFITSOut(
       } else {
         fits32 = new ImageExtension<float>(fhi.kw);
       }
-      if (fits32 == 0 || fits32->err()) {
+      if (fits32 == nullptr || fits32->err()) {
         error = "Error creating FITS file from keywords";
         return false;
       }
@@ -1259,7 +1259,7 @@ bool ImageFITSConverter::ImageToFITSOut(
       } else {
         fits16 = new ImageExtension<short>(fhi.kw);
       }
-      if (fits16 == 0 || fits16->err()) {
+      if (fits16 == nullptr || fits16->err()) {
         error = "Error creating FITS file from keywords";
         return false;
       }
@@ -1272,7 +1272,7 @@ bool ImageFITSConverter::ImageToFITSOut(
       AlwaysAssert(0, AipsError);  // NOTREACHED
     }
 
-    short* buffer16 = 0;  // Use this to write the scaled shorts into
+    short* buffer16 = nullptr;  // Use this to write the scaled shorts into
     if (fits16) {
       buffer16 = new short[bufferSize];
       AlwaysAssert(buffer16, AipsError);
@@ -1285,7 +1285,7 @@ bool ImageFITSConverter::ImageToFITSOut(
       bool deletePtr;
       const float* ptr = cursor.getStorage(deletePtr);
       //
-      const bool* maskPtr = 0;
+      const bool* maskPtr = nullptr;
       bool deleteMaskPtr;
       if (fhi.applyMask) {
         if (!fhi.pMask->shape().isEqual(cursor.shape())) {
@@ -1396,12 +1396,12 @@ bool ImageFITSConverter::ImageToFITSOut(
     }
     if (fits32) {
       delete fits32;
-      fits32 = 0;
+      fits32 = nullptr;
     } else if (fits16) {
       delete fits16;
-      fits16 = 0;
+      fits16 = nullptr;
       delete buffer16;
-      buffer16 = 0;
+      buffer16 = nullptr;
     } else {
       AlwaysAssert(0, AipsError);  // NOTREACHED
     }
@@ -1496,7 +1496,7 @@ bool ImageFITSConverter::QualImgToFITSOut(String& error, LogIO& os, ImageInterfa
       return false;
     }
     delete fitsImg;
-    fitsImg = 0;
+    fitsImg = nullptr;
 
     // load the error extension
     fitsImg = new FITSImage(fitsQI->name(false), 0, fitsQI->whichErrorHDU());
@@ -1610,11 +1610,11 @@ bool ImageFITSConverter::openFitsOutput(String& error, FitsOutput*(&fitsOut),
     fitsOut = new FitsOutput(fitsfile.path().expandedName().c_str(), FITS::Disk);
   }
   //
-  if (fitsOut == 0 || fitsOut->err()) {
+  if (fitsOut == nullptr || fitsOut->err()) {
     error = String("Cannot open file for writing: ") + fitsName;
-    if (fitsOut != 0) {
+    if (fitsOut != nullptr) {
       delete fitsOut;
-      fitsOut = 0;
+      fitsOut = nullptr;
     }
     return false;
   }

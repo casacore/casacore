@@ -64,10 +64,10 @@ PlainTable::PlainTable(MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow, b
 void PlainTable::PlainTableCommon(SetupNewTable& newtab, rownr_t nrrow, bool initialize,
                                   const TableLock& lockOptions, int endianFormat,
                                   const TSMOption& tsmOption) {
-  colSetPtr_p = 0;
+  colSetPtr_p = nullptr;
   tableChanged_p = true;
   addToCache_p = true;
-  lockPtr_p = 0;
+  lockPtr_p = nullptr;
   tsmOption_p = tsmOption;
   try {
     // Determine and set the endian option.
@@ -84,7 +84,7 @@ void PlainTable::PlainTableCommon(SetupNewTable& newtab, rownr_t nrrow, bool ini
       throw(TableInvOper("SetupNewTable object already used for another Table"));
     }
     // # Check if a table with this name is not in the table cache.
-    if (tableCache()(name_p) != 0) {
+    if (tableCache()(name_p) != nullptr) {
       // OK it's in the cache but is it really there?
       if (File(name_p).exists()) {
         throw(
@@ -121,7 +121,7 @@ void PlainTable::PlainTableCommon(SetupNewTable& newtab, rownr_t nrrow, bool ini
     // # Acquire a write lock.
     lockPtr_p = new TableLockData(lockOptions, releaseCallBack, this);
     lockPtr_p->makeLock(name_p, true, FileLocker::Write);
-    lockPtr_p->acquire(0, FileLocker::Write, 1);
+    lockPtr_p->acquire(nullptr, FileLocker::Write, 1);
     colSetPtr_p->linkToLockObject(lockPtr_p);
     // # Initialize the data managers.
     Table tab(this);
@@ -151,7 +151,7 @@ void PlainTable::PlainTableCommon(SetupNewTable& newtab, rownr_t nrrow, bool ini
     itsTraceId = TableTrace::traceTable(name_p, 'n');
   } catch (std::exception&) {
     delete lockPtr_p;
-    lockPtr_p = 0;
+    lockPtr_p = nullptr;
     throw;
   }
 }
@@ -162,7 +162,7 @@ PlainTable::PlainTable(AipsIO&, unsigned int version, const String& tabname, con
     : BaseTable(tabname, opt, nrrow),
       tableChanged_p(false),
       addToCache_p(addToCache),
-      lockPtr_p(0),
+      lockPtr_p(nullptr),
       tsmOption_p(tsmOption),
       changeTiledDataOnly_(false) {
   // Replace default TSM option for existing table.
@@ -311,7 +311,7 @@ void PlainTable::closeObject() {
                          " the table or a subtable is still used"
                          " in another process"));
       }
-      nanosleep(&timet, 0);  // nanosleep works well with signals
+      nanosleep(&timet, nullptr);  // nanosleep works well with signals
       --nTrys;
     }
   }
@@ -532,10 +532,10 @@ MemoryIO* PlainTable::doReleaseCallBack(bool always) {
   colSetPtr_p->invalidateColumnCaches();
   // # Data does not need to be written when not opened for write.
   if (!openedForWrite()) {
-    return 0;
+    return nullptr;
   }
   putFile(always);
-  return 0;
+  return nullptr;
 }
 
 // # Test if the table is writable.

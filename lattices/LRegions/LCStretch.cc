@@ -118,9 +118,9 @@ TableRecord LCStretch::toRecord(const String& tableName) const {
 
 LCStretch* LCStretch::fromRecord(const TableRecord& rec, const String& tableName) {
   // Initialize pointers to 0 to get rid of gcc-2.95 warnings.
-  LCRegion* regPtr = 0;
+  LCRegion* regPtr = nullptr;
   regPtr = LCRegion::fromRecord(rec.asRecord("region"), tableName);
-  LCBox* boxPtr = 0;
+  LCBox* boxPtr = nullptr;
   boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
   LCStretch* extPtr = new LCStretch(true, regPtr, Vector<int>(rec.toArrayInt("axes")), *boxPtr);
   delete boxPtr;

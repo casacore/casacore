@@ -54,7 +54,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSSelector::MSSelector()
-    : msIter_p(0),
+    : msIter_p(nullptr),
       initSel_p(false),
       dataDescId_p(0),
       lastDataDescId_p(1, -1),
@@ -68,7 +68,7 @@ MSSelector::MSSelector(MeasurementSet& ms)
     : ms_p(ms),
       selms_p(ms),
       savems_p(ms),
-      msIter_p(0),
+      msIter_p(nullptr),
       initSel_p(false),
       dataDescId_p(0),
       lastDataDescId_p(1, -1),
@@ -78,7 +78,7 @@ MSSelector::MSSelector(MeasurementSet& ms)
       convert_p(false),
       useIfrDefault_p(true) {}
 
-MSSelector::MSSelector(const MSSelector& other) : msIter_p(0) { operator=(other); }
+MSSelector::MSSelector(const MSSelector& other) : msIter_p(nullptr) { operator=(other); }
 
 MSSelector& MSSelector::operator=(const MSSelector& other) {
   if (this == &other) return *this;
@@ -87,7 +87,7 @@ MSSelector& MSSelector::operator=(const MSSelector& other) {
   savems_p = other.savems_p;
   lastDataDescId_p = other.lastDataDescId_p;
   if (msIter_p) delete msIter_p;
-  msIter_p = 0;
+  msIter_p = nullptr;
   if (other.msIter_p) msIter_p = new MSIter(*other.msIter_p);
   initSel_p = other.initSel_p;
   dataDescId_p = other.dataDescId_p;
@@ -102,7 +102,7 @@ MSSelector& MSSelector::operator=(const MSSelector& other) {
 
 MSSelector::~MSSelector() {
   if (msIter_p) delete msIter_p;
-  msIter_p = 0;
+  msIter_p = nullptr;
 }
 
 void MSSelector::setMS(MeasurementSet& ms) {
@@ -110,7 +110,7 @@ void MSSelector::setMS(MeasurementSet& ms) {
   selms_p = ms;
   savems_p = ms;
   if (msIter_p) delete msIter_p;
-  msIter_p = 0;
+  msIter_p = nullptr;
   initSel_p = false;
   dataDescId_p = -1;
   useSlicer_p = false;

@@ -96,7 +96,7 @@ class MSFieldParse : public MSParse {
   static void reset();
   static void cleanup() {
     if (node_p) delete node_p;
-    node_p = 0x0;
+    node_p = nullptr;
   }
   MSField& subTable() { return msFieldSubTable_p; }
 

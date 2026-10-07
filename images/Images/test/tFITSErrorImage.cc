@@ -122,7 +122,7 @@ int main(int argc, const char* argv[]) {
 
     // Check some simple methods, mostly implemented
     // in the base classes
-    AlwaysAssert(fitsErrImage.getRegionPtr() == 0, AipsError);
+    AlwaysAssert(fitsErrImage.getRegionPtr() == nullptr, AipsError);
     AlwaysAssert(fitsErrImage.isWritable() == false, AipsError);
     AlwaysAssert(fitsErrImage.name(false) == p.absoluteName(), AipsError);
     AlwaysAssert(fitsErrImage.ok(), AipsError);
@@ -134,7 +134,7 @@ int main(int argc, const char* argv[]) {
 
     // Convert from FITS as a comparison
     String error;
-    ImageInterface<float>* pTempImage = 0;
+    ImageInterface<float>* pTempImage = nullptr;
     String imageName;
     if (!ImageFITSConverter::FITSToImage(pTempImage, error, imageName, in, 0, hdunum)) {
       os << error << LogIO::EXCEPTION;

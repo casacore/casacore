@@ -29,7 +29,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSArrayParse* MSArrayParse::thisMSAParser = 0x0;  // Global pointer to the parser object
+MSArrayParse* MSArrayParse::thisMSAParser = nullptr;  // Global pointer to the parser object
 // TableExprNode* MSArrayParse::node_p = 0x0;
 // std::vector<Int> MSArrayParse::parsedIDList_p;
 // Vector<Int> MSArrayParse::idList;

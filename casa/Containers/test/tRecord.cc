@@ -77,7 +77,7 @@ bool nameCallBack(const String& name, DataType, const void* extraArgument, Strin
     message = "no uppercase";
     return false;
   }
-  if (extraArgument != 0 && *(const int*)extraArgument == 10) {
+  if (extraArgument != nullptr && *(const int*)extraArgument == 10) {
     message = "extra==10";
     return false;
   }

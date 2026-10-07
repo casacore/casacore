@@ -33,7 +33,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TiledDataStManAccessor::TiledDataStManAccessor(const Table& table, const String& dataManagerName)
-    : ROTiledStManAccessor(table, dataManagerName), tiledDataManPtr_p(0) {
+    : ROTiledStManAccessor(table, dataManagerName), tiledDataManPtr_p(nullptr) {
   DataManager* dmptr = getDataManager();
   TiledDataStMan dataMan;
   if (dmptr->dataManagerType() != dataMan.dataManagerType()) {

@@ -385,7 +385,7 @@ class TSMCube {
 };
 
 inline BucketCache* TSMCube::getCache() {
-  if (cache_p == 0) {
+  if (cache_p == nullptr) {
     makeCache();
   }
   return cache_p;

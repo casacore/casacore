@@ -47,7 +47,7 @@ WCRegion* WCRegion::fromRecord(const TableRecord& rec, const String& tableName) 
                   "record does not contain an WC region"));
   }
   const String& name = rec.asString("name");
-  WCRegion* regPtr = 0;
+  WCRegion* regPtr = nullptr;
   if (name == WCBox::className()) {
     regPtr = WCBox::fromRecord(rec, tableName);
     ///    } else if (name == WCEllipsoid::className()) {

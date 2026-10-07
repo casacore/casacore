@@ -188,13 +188,13 @@ void StManColumnAipsIO::getData(void* datap, unsigned int inx, unsigned int nrva
   }
 }
 
-StManAipsIO::StManAipsIO() : MSMBase(), uniqnr_p(0), iosfile_p(0) {}
+StManAipsIO::StManAipsIO() : MSMBase(), uniqnr_p(0), iosfile_p(nullptr) {}
 
 StManAipsIO::StManAipsIO(const String& storageManagerName)
-    : MSMBase(storageManagerName), uniqnr_p(0), iosfile_p(0) {}
+    : MSMBase(storageManagerName), uniqnr_p(0), iosfile_p(nullptr) {}
 
 StManAipsIO::StManAipsIO(const String& storageManagerName, const Record& rec)
-    : MSMBase(storageManagerName, rec), uniqnr_p(0), iosfile_p(0) {}
+    : MSMBase(storageManagerName, rec), uniqnr_p(0), iosfile_p(nullptr) {}
 
 StManAipsIO::~StManAipsIO() { delete iosfile_p; }
 
@@ -286,7 +286,7 @@ void StManAipsIO::create64(rownr_t nrrow) {
 
 rownr_t StManAipsIO::open64(rownr_t tabNrrow, AipsIO&) { return resync64(tabNrrow); }
 rownr_t StManAipsIO::resync64(rownr_t nrrow) {
-  if (iosfile_p != 0) {
+  if (iosfile_p != nullptr) {
     iosfile_p->resync();
   }
   AipsIO ios(fileName());
@@ -341,7 +341,7 @@ rownr_t StManAipsIO::resync64(rownr_t nrrow) {
 }
 
 StManArrayFile* StManAipsIO::openArrayFile(ByteIO::OpenOption opt) {
-  if (iosfile_p == 0) {
+  if (iosfile_p == nullptr) {
     iosfile_p = new StManArrayFile(fileName() + 'i', opt);
   }
   return iosfile_p;
@@ -355,7 +355,7 @@ void StManAipsIO::reopenRW() {
 
 void StManAipsIO::deleteManager() {
   delete iosfile_p;
-  iosfile_p = 0;
+  iosfile_p = nullptr;
   DOos::remove(fileName() + 'i', false, false);
   DOos::remove(fileName(), false, false);
 }

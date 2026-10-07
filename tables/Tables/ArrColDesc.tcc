@@ -36,40 +36,40 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, int ndim, int opt)
-    : ArrayColumnDescBase(name, "", "", "", ValType::getType(static_cast<T*>(0)),
-                          valDataTypeId(static_cast<T*>(0)), opt, ndim, IPosition()) {}
+    : ArrayColumnDescBase(name, "", "", "", ValType::getType(static_cast<T*>(nullptr)),
+                          valDataTypeId(static_cast<T*>(nullptr)), opt, ndim, IPosition()) {}
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment, int ndim, int opt)
-    : ArrayColumnDescBase(name, comment, "", "", ValType::getType(static_cast<T*>(0)),
-                          valDataTypeId(static_cast<T*>(0)), opt, ndim, IPosition()) {}
+    : ArrayColumnDescBase(name, comment, "", "", ValType::getType(static_cast<T*>(nullptr)),
+                          valDataTypeId(static_cast<T*>(nullptr)), opt, ndim, IPosition()) {}
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment,
                                     const String& dataManName, const String& dataManGroup, int ndim,
                                     int opt)
     : ArrayColumnDescBase(name, comment, dataManName, dataManGroup,
-                          ValType::getType(static_cast<T*>(0)), valDataTypeId(static_cast<T*>(0)),
-                          opt, ndim, IPosition()) {}
+                          ValType::getType(static_cast<T*>(nullptr)),
+                          valDataTypeId(static_cast<T*>(nullptr)), opt, ndim, IPosition()) {}
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const IPosition& shp, int opt)
-    : ArrayColumnDescBase(name, "", "", "", ValType::getType(static_cast<T*>(0)),
-                          valDataTypeId(static_cast<T*>(0)), opt, shp.nelements(), shp) {}
+    : ArrayColumnDescBase(name, "", "", "", ValType::getType(static_cast<T*>(nullptr)),
+                          valDataTypeId(static_cast<T*>(nullptr)), opt, shp.nelements(), shp) {}
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment, const IPosition& shp,
                                     int opt)
-    : ArrayColumnDescBase(name, comment, "", "", ValType::getType(static_cast<T*>(0)),
-                          valDataTypeId(static_cast<T*>(0)), opt, shp.nelements(), shp) {}
+    : ArrayColumnDescBase(name, comment, "", "", ValType::getType(static_cast<T*>(nullptr)),
+                          valDataTypeId(static_cast<T*>(nullptr)), opt, shp.nelements(), shp) {}
 
 template <class T>
 ArrayColumnDesc<T>::ArrayColumnDesc(const String& name, const String& comment,
                                     const String& dataManName, const String& dataManGroup,
                                     const IPosition& shp, int opt, int ndim)
     : ArrayColumnDescBase(name, comment, dataManName, dataManGroup,
-                          ValType::getType(static_cast<T*>(0)), valDataTypeId(static_cast<T*>(0)),
-                          opt, shp.nelements(), shp) {
+                          ValType::getType(static_cast<T*>(nullptr)),
+                          valDataTypeId(static_cast<T*>(nullptr)), opt, shp.nelements(), shp) {
   if (ndim > 0) {
     if (nrdim_p > 0 && ndim != nrdim_p) {
       throw(TableInvColumnDesc(name, "Shape length mismatches ndim"));

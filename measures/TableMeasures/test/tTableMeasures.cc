@@ -576,7 +576,7 @@ void testMain(bool doExcep) {
       timeColRead.get(i, tm);
       AlwaysAssertExit(tm.getRef().getType() == MEpoch::GAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm.getRef().offset());
-      AlwaysAssertExit(offptr != 0);
+      AlwaysAssertExit(offptr != nullptr);
       AlwaysAssertExit(near(offptr->get("s"), obsTime.get("s"), 1.e-10));
       tm = MEpoch::Convert(tm, MEpoch::UTC)();
       AlwaysAssertExit(near(tm.get("s"), MEpoch(MVEpoch(1234. + i / 10.0)).get("s"), 1.e-10));
@@ -642,7 +642,7 @@ void testMain(bool doExcep) {
       AlwaysAssertExit(near(tm.get("s"), Quantum<double>(timeColSimple(i), "s"), 1.e-10));
       AlwaysAssertExit(tm.getRef().getType() == MEpoch::GAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm.getRef().offset());
-      AlwaysAssertExit(offptr != 0);
+      AlwaysAssertExit(offptr != nullptr);
       AlwaysAssertExit(near(offptr->get("s"), obsTime.get("s"), 1.e-10));
       tm = MEpoch::Convert(tm, MEpoch::UTC)();
       AlwaysAssertExit(near(tm.get("s"), MEpoch(MVEpoch(1234. + i / 10.0)).get("s"), 1.e-10));
@@ -650,13 +650,13 @@ void testMain(bool doExcep) {
       MEpoch tm1 = timeColRead.convert(i, MEpoch::UTC);
       AlwaysAssertExit(tm1.getRef().getType() == MEpoch::UTC);
       offptr = dynamic_cast<const MEpoch*>(tm1.getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       AlwaysAssertExit(near(tm1.get("s"), MEpoch(MVEpoch(1234. + i / 10.0)).get("s"), 1.e-10));
 
       MEpoch tm2 = timeColRead.convert(i, tm1);
       AlwaysAssertExit(tm2.getRef().getType() == MEpoch::UTC);
       offptr = dynamic_cast<const MEpoch*>(tm2.getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       AlwaysAssertExit(near(tm2.get("s"), MEpoch(MVEpoch(1234. + i / 10.0)).get("s"), 1.e-10));
 
       MPosition mpobs;
@@ -665,14 +665,14 @@ void testMain(bool doExcep) {
       MEpoch tm3 = timeColRead.convert(i, mref);
       AlwaysAssertExit(tm3.getRef().getType() == MEpoch::LAST);
       offptr = dynamic_cast<const MEpoch*>(tm3.getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       MEpoch tm4 = MEpoch::Convert(tm3, mref)();
       AlwaysAssertExit(near(tm3.get("s"), tm4.get("s"), 1.e-10));
 
       MEpoch tm5 = timeColRead.convert(i, tm4);
       AlwaysAssertExit(tm5.getRef().getType() == MEpoch::LAST);
       offptr = dynamic_cast<const MEpoch*>(tm5.getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       AlwaysAssertExit(near(tm5.get("s"), tm4.get("s"), 1.e-10));
     }
   }
@@ -729,7 +729,7 @@ void testMain(bool doExcep) {
     AlwaysAssertExit(mtmp.getRef().getType() == MEpoch::GMST1);
     AlwaysAssertExit(near(mtmp.get("s"), me.get("s"), 1.e-10));
     offptr = dynamic_cast<const MEpoch*>(mtmp.getRef().offset());
-    AlwaysAssertExit(offptr != 0);
+    AlwaysAssertExit(offptr != nullptr);
     AlwaysAssertExit(near(offptr->get("s"), offset.get("s"), 1.e-10));
 
     offset.set(MVEpoch(1234.1));
@@ -740,7 +740,7 @@ void testMain(bool doExcep) {
     AlwaysAssertExit(mtmp.getRef().getType() == MEpoch::UTC);
     AlwaysAssertExit(near(mtmp.get("s"), me.get("s"), 1.e-10));
     offptr = dynamic_cast<const MEpoch*>(mtmp.getRef().offset());
-    AlwaysAssertExit(offptr != 0);
+    AlwaysAssertExit(offptr != nullptr);
     AlwaysAssertExit(near(offptr->get("s"), offset.get("s"), 1.e-10));
 
     offset.set(MVEpoch(1234.2));
@@ -751,7 +751,7 @@ void testMain(bool doExcep) {
     AlwaysAssertExit(mtmp.getRef().getType() == MEpoch::TAI);
     AlwaysAssertExit(near(mtmp.get("s"), me.get("s"), 1.e-10));
     offptr = dynamic_cast<const MEpoch*>(mtmp.getRef().offset());
-    AlwaysAssertExit(offptr != 0);
+    AlwaysAssertExit(offptr != nullptr);
     AlwaysAssertExit(near(offptr->get("s"), offset.get("s"), 1.e-10));
 
     offset.set(MVEpoch(1234.3));
@@ -762,7 +762,7 @@ void testMain(bool doExcep) {
     AlwaysAssertExit(mtmp.getRef().getType() == MEpoch::UTC);
     AlwaysAssertExit(near(mtmp.get("s"), me.get("s"), 1.e-10));
     offptr = dynamic_cast<const MEpoch*>(mtmp.getRef().offset());
-    AlwaysAssertExit(offptr != 0);
+    AlwaysAssertExit(offptr != nullptr);
     AlwaysAssertExit(near(offptr->get("s"), offset.get("s"), 1.e-10));
 
     // put one in with no offset
@@ -774,7 +774,7 @@ void testMain(bool doExcep) {
     AlwaysAssertExit(mtmp.getRef().getType() == MEpoch::GMST1);
     AlwaysAssertExit(near(mtmp.get("s"), me.get("s"), 1.e-10));
     offptr = dynamic_cast<const MEpoch*>(mtmp.getRef().offset());
-    AlwaysAssertExit(offptr != 0);
+    AlwaysAssertExit(offptr != nullptr);
     AlwaysAssertExit(near(offptr->get("s"), offset.get("s"), 1.e-10));
 
     // Test of exception. Try putting a reference with a frame into
@@ -835,7 +835,7 @@ void testMain(bool doExcep) {
     for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(ew(i).getRef().getType() == MEpoch::TAI);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(ew(i).getRef().offset());
-      AlwaysAssertExit(offptr != 0);
+      AlwaysAssertExit(offptr != nullptr);
       AlwaysAssertExit(near(offptr->get("s"), mjdToday.get("s"), 1.e-10));
       MEpoch tmp = MEpoch::Convert(ew(i), MEpoch::TAI)();
       AlwaysAssertExit(near(tmp.get("s"), ev(i).get("s"), 1.e-10));
@@ -845,7 +845,7 @@ void testMain(bool doExcep) {
     for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm1(i).getRef().getType() == MEpoch::UTC);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm1(i).getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       MEpoch tmp = MEpoch::Convert(ev(i), MEpoch::UTC)();
       AlwaysAssertExit(near(tmp.get("s"), tm1(i).get("s"), 1.e-10));
     }
@@ -854,7 +854,7 @@ void testMain(bool doExcep) {
     for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm2(i).getRef().getType() == MEpoch::UTC);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm2(i).getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       MEpoch tmp = MEpoch::Convert(ev(i), MEpoch::UTC)();
       AlwaysAssertExit(near(tmp.get("s"), tm2(i).get("s"), 1.e-10));
     }
@@ -866,7 +866,7 @@ void testMain(bool doExcep) {
     for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm3(i).getRef().getType() == MEpoch::LAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm3(i).getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       MEpoch tmp = MEpoch::Convert(ev(i), mref)();
       AlwaysAssertExit(near(tmp.get("s"), tm3(i).get("s"), 1.e-10));
     }
@@ -875,7 +875,7 @@ void testMain(bool doExcep) {
     for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(tm5(i).getRef().getType() == MEpoch::LAST);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(tm5(i).getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       AlwaysAssertExit(near(tm5(i).get("s"), tm3(i).get("s"), 1.e-10));
     }
 
@@ -903,7 +903,7 @@ void testMain(bool doExcep) {
     for (unsigned int i = 0; i < 10; i++) {
       AlwaysAssertExit(ew(i).getRef().getType() == MEpoch::TAI);
       const MEpoch* offptr = dynamic_cast<const MEpoch*>(ew(i).getRef().offset());
-      AlwaysAssertExit(offptr != 0);
+      AlwaysAssertExit(offptr != nullptr);
       AlwaysAssertExit(near(offptr->get("s"), mjdToday.get("s"), 1.e-10));
       MEpoch tmp = MEpoch::Convert(ew(i), MEpoch::TAI)();
       AlwaysAssertExit(near(tmp.get("s"), ev(i).get("s"), 1.e-10));
@@ -950,7 +950,7 @@ void testMain(bool doExcep) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(i).getRef().getType());
       AlwaysAssertExit(near(outArr(i).get("s"), inArr(i).get("s"), 1.e-10));
       offptr = dynamic_cast<const MEpoch*>(outArr(i).getRef().offset());
-      AlwaysAssertExit(offptr != 0);
+      AlwaysAssertExit(offptr != nullptr);
       offptrin = dynamic_cast<const MEpoch*>(inArr(i).getRef().offset());
       AlwaysAssertExit(near(offptr->get("s"), offptrin->get("s"), 1.e-10));
     }
@@ -991,7 +991,7 @@ void testMain(bool doExcep) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(i).getRef().getType());
       offptrin = dynamic_cast<const MEpoch*>(inArr(i).getRef().offset());
       offptr = dynamic_cast<const MEpoch*>(outArr(i).getRef().offset());
-      AlwaysAssertExit(offptr == 0);
+      AlwaysAssertExit(offptr == nullptr);
       MEpoch tmp = MEpoch::Convert(outArr(i), inArr(i).getRef())();
       AlwaysAssertExit(near(tmp.get("s"), inArr(i).get("s"), 1.e-10));
     }
@@ -1020,7 +1020,7 @@ void testMain(bool doExcep) {
       AlwaysAssertExit(outArr(i).getRef().getType() == inArr(0).getRef().getType());
       offptrin = dynamic_cast<const MEpoch*>(inArr(0).getRef().offset());
       offptr = dynamic_cast<const MEpoch*>(outArr(i).getRef().offset());
-      AlwaysAssertExit(offptr != 0);
+      AlwaysAssertExit(offptr != nullptr);
       AlwaysAssertExit(near(offptr->get("s"), offptrin->get("s"), 1.e-10));
       MEpoch tmp = MEpoch::Convert(outArr(i), inArr(i).getRef())();
       AlwaysAssertExit(near(tmp.get("s"), inArr(i).get("s"), 1.e-10));

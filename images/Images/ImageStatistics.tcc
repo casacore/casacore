@@ -60,7 +60,7 @@ template <class T>
 ImageStatistics<T>::ImageStatistics(const ImageInterface<T>& image, LogIO& os, bool showProgress,
                                     bool forceDisk, bool clone)
     : LatticeStatistics<T>(image, os, showProgress, forceDisk, clone),
-      pInImage_p(0),
+      pInImage_p(nullptr),
       blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
       precision_(-1),
       _showRobust(false),
@@ -74,7 +74,7 @@ template <class T>
 ImageStatistics<T>::ImageStatistics(const ImageInterface<T>& image, bool showProgress,
                                     bool forceDisk, bool clone)
     : LatticeStatistics<T>(image, showProgress, forceDisk, clone),
-      pInImage_p(0),
+      pInImage_p(nullptr),
       blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
       precision_(-1),
       _showRobust(false),
@@ -90,7 +90,7 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T>& other)
     // Copy constructor.  Storage image is not copied.
     //
     : LatticeStatistics<T>(other),
-      pInImage_p(0),
+      pInImage_p(nullptr),
       blc_(other.getBlc()),
       precision_(other.getPrecision()),
       _showRobust(other._showRobust) {

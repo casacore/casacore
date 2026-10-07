@@ -39,12 +39,12 @@ VirtualScalarColumn<T>::~VirtualScalarColumn() {}
 
 template <class T>
 int VirtualScalarColumn<T>::dataType() const {
-  return ValType::getType(static_cast<T*>(0));
+  return ValType::getType(static_cast<T*>(nullptr));
 }
 
 template <class T>
 String VirtualScalarColumn<T>::dataTypeId() const {
-  return valDataTypeId(static_cast<T*>(0));
+  return valDataTypeId(static_cast<T*>(nullptr));
 }
 
 template <class T>

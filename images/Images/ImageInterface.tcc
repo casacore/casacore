@@ -53,12 +53,12 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-ImageInterface<T>::ImageInterface() : regHandPtr_p(0) {
+ImageInterface<T>::ImageInterface() : regHandPtr_p(nullptr) {
   regHandPtr_p = new RegionHandler();
 }
 
 template <class T>
-ImageInterface<T>::ImageInterface(const RegionHandler& regHand) : regHandPtr_p(0) {
+ImageInterface<T>::ImageInterface(const RegionHandler& regHand) : regHandPtr_p(nullptr) {
   regHandPtr_p = regHand.clone();
   regHandPtr_p->setObjectPtr(this);
 }
@@ -71,7 +71,7 @@ ImageInterface<T>::ImageInterface(const ImageInterface& other)
       imageInfo_p(other.imageInfo_p),
       unit_p(other.unit_p),
       miscInfo_p(other.miscInfo_p),
-      regHandPtr_p(0) {
+      regHandPtr_p(nullptr) {
   regHandPtr_p = other.regHandPtr_p->clone();
   regHandPtr_p->setObjectPtr(this);
 }
@@ -86,7 +86,7 @@ ImageInterface<T>& ImageInterface<T>::operator=(const ImageInterface& other) {
     unit_p = other.unit_p;
     miscInfo_p = other.miscInfo_p;
     delete regHandPtr_p;
-    regHandPtr_p = 0;
+    regHandPtr_p = nullptr;
     regHandPtr_p = other.regHandPtr_p->clone();
     regHandPtr_p->setObjectPtr(this);
   }

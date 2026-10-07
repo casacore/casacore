@@ -311,7 +311,7 @@ String FITSImage::className() {
 
 bool FITSImage::isMasked() const { return hasBlanks_p; }
 
-const LatticeRegion* FITSImage::getRegionPtr() const { return 0; }
+const LatticeRegion* FITSImage::getRegionPtr() const { return nullptr; }
 
 IPosition FITSImage::shape() const { return shape_p.shape(); }
 
@@ -571,7 +571,7 @@ void FITSImage::open() {
 
   // Shares the pTiledFile_p pointer. Scale factors for integers
 
-  FITSMask* fitsMask = 0;
+  FITSMask* fitsMask = nullptr;
   if (hasBlanks_p) {
     if (dataType_p == TpFloat) {
       fitsMask = new FITSMask(pTiledFile_p.get());

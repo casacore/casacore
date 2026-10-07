@@ -120,7 +120,7 @@ bool TiledCellStMan::flush(AipsIO&, bool fsync) {
   // A zero pointer is returned when nothing has changed, thus nothing
   // has to be written.
   AipsIO* headerFile = headerFileCreate();
-  if (headerFile == 0) {
+  if (headerFile == nullptr) {
     return false;
   }
   headerFile->putstart("TiledCellStMan", 1);
@@ -153,7 +153,7 @@ void TiledCellStMan::addRow64(rownr_t nrow) {
     }
     cubeSet_p.resize(size);
     for (uint64_t i = nrrow_p; i < cubeSet_p.nelements(); i++) {
-      cubeSet_p[i] = 0;
+      cubeSet_p[i] = nullptr;
     }
   }
   for (rownr_t i = nrrow_p; i < nrrow_p + nrow; i++) {

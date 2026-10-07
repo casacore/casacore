@@ -124,7 +124,7 @@ void TableExprNodeSet::add(const TENSEBShPtr& elemIn, bool adaptType) {
       itsDiscrete = false;
       itsBounded = false;
     } else {
-      if (elem->end() == 0) {
+      if (elem->end() == nullptr) {
         // Note that an undefined start defaults to 0, this is bounded.
         itsBounded = false;
       }
@@ -213,7 +213,7 @@ TENShPtr TableExprNodeSet::setOrArray() const {
   if (itsDiscrete) {
     size_t n = size();
     for (size_t i = 0; i < n; i++) {
-      if (itsElems[i]->start() == 0) {
+      if (itsElems[i]->start() == nullptr) {
         throw(TableInvExpr("no start value in discrete interval"));
       }
     }

@@ -33,8 +33,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSSpwParse* MSSpwParse::thisMSSParser = 0x0;  // Global pointer to the parser object
-TableExprNode* MSSpwParse::node_p = 0x0;
+MSSpwParse* MSSpwParse::thisMSSParser = nullptr;  // Global pointer to the parser object
+TableExprNode* MSSpwParse::node_p = nullptr;
 Vector<int> MSSpwParse::idList;
 Vector<int> MSSpwParse::ddidList;
 Matrix<int> MSSpwParse::chanList;
@@ -45,8 +45,8 @@ std::shared_ptr<MSSelectionErrorHandler> MSSpwParse::thisMSSpwErrorHandler;
 //------------------------------------------------------------------
 //
 MSSpwParse::MSSpwParse() : MSParse() {
-  if (MSSpwParse::node_p != 0x0) delete MSSpwParse::node_p;
-  MSSpwParse::node_p = 0x0;
+  if (MSSpwParse::node_p != nullptr) delete MSSpwParse::node_p;
+  MSSpwParse::node_p = nullptr;
   node_p = new TableExprNode();
 }
 //

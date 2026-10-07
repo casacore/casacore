@@ -27,15 +27,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LELArrayBase::LELArrayBase(const LELArrayBase& other) : itsMaskPtr(0) { operator=(other); }
+LELArrayBase::LELArrayBase(const LELArrayBase& other) : itsMaskPtr(nullptr) { operator=(other); }
 
 LELArrayBase::~LELArrayBase() { delete itsMaskPtr; }
 
 LELArrayBase& LELArrayBase::operator=(const LELArrayBase& other) {
   if (this != &other) {
     delete itsMaskPtr;
-    itsMaskPtr = 0;
-    if (other.itsMaskPtr != 0) {
+    itsMaskPtr = nullptr;
+    if (other.itsMaskPtr != nullptr) {
       itsMaskPtr = new Array<bool>(*other.itsMaskPtr);
     }
   }
@@ -44,7 +44,7 @@ LELArrayBase& LELArrayBase::operator=(const LELArrayBase& other) {
 
 void LELArrayBase::removeMask() {
   delete itsMaskPtr;
-  itsMaskPtr = 0;
+  itsMaskPtr = nullptr;
 }
 
 void LELArrayBase::setMask(const Array<bool>& mask) {
@@ -87,7 +87,7 @@ void LELArrayBase::combineOrAnd(bool desiredValue, const Array<bool>& value) {
   bool deleteValue, deleteMask;
   const bool* val = value.getStorage(deleteValue);
   unsigned int nr = value.nelements();
-  if (itsMaskPtr == 0) {
+  if (itsMaskPtr == nullptr) {
     // Entire mask is true, so create one.
     itsMaskPtr = new Array<bool>(value.shape());
     *itsMaskPtr = true;
@@ -115,7 +115,7 @@ void LELArrayBase::combineOrAnd(bool desiredValue, Array<bool>& value, const Arr
   bool* val = value.getStorage(deleteValue);
   const bool* tmp = temp.getStorage(deleteTemp);
   unsigned int nr = value.nelements();
-  if (itsMaskPtr == 0) {
+  if (itsMaskPtr == nullptr) {
     for (unsigned int i = 0; i < nr; i++) {
       if (tmp[i] == desiredValue) {
         val[i] = desiredValue;
@@ -149,7 +149,7 @@ void LELArrayBase::combineOrAnd(bool desiredValue, Array<bool>& value, const Arr
   const bool* tmp = temp.getStorage(deleteTemp);
   const bool* tm = tempMask.getStorage(deleteTempMask);
   unsigned int nr = value.nelements();
-  if (itsMaskPtr == 0) {
+  if (itsMaskPtr == nullptr) {
     itsMaskPtr = new Array<bool>(value.shape());
     *itsMaskPtr = true;
   }

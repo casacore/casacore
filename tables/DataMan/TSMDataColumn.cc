@@ -276,7 +276,7 @@ void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& ar
   uint64_t chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uint64_t nrinc = 0;
   int64_t lastRowPos = 0;
-  TSMCube* lastCube = 0;
+  TSMCube* lastCube = nullptr;
   IPosition rowpos;
   IPosition start(lastAxis + 1);
   IPosition end(lastAxis + 1);
@@ -309,7 +309,7 @@ void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& ar
       }
       if (doIt) {
         AlwaysAssert(hypercube, AipsError);
-        if (lastCube != 0) {
+        if (lastCube != nullptr) {
           accessFullCells(lastCube, data, writeFlag, start, end, incr);
           data += (nrinc + 1) * chunkSize;
         } else {
@@ -342,7 +342,7 @@ void TSMDataColumn::accessColumnCells(const RefRows& rownrs, const IPosition& ar
     }
     iter++;
   }
-  if (lastCube != 0) {
+  if (lastCube != nullptr) {
     accessFullCells(lastCube, data, writeFlag, start, end, incr);
   }
 }
@@ -355,7 +355,7 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
   uint64_t chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uint64_t nrinc = 0;
   int64_t lastRowPos = 0;
-  TSMCube* lastCube = 0;
+  TSMCube* lastCube = nullptr;
   IPosition rowpos;
   IPosition start(lastAxis + 1);
   IPosition end(lastAxis + 1);
@@ -387,7 +387,7 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
         }
       }
       if (doIt) {
-        if (lastCube != 0) {
+        if (lastCube != nullptr) {
           accessSlicedCells(lastCube, data, writeFlag, start, end, incr);
           data += (nrinc + 1) * chunkSize;
         } else {
@@ -413,7 +413,7 @@ void TSMDataColumn::accessColumnSliceCells(const RefRows& rownrs, const Slicer& 
     }
     iter++;
   }
-  if (lastCube != 0) {
+  if (lastCube != nullptr) {
     accessSlicedCells(lastCube, data, writeFlag, start, end, incr);
   }
 }

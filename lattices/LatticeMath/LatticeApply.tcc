@@ -113,11 +113,11 @@ void LatticeApply<T, U>::lineApply(MaskedLattice<U>& latticeOut, const MaskedLat
   // See if the output lattice has a writable pixelmask.
   // If so, it will later be used to write the resulting mask to.
 
-  Lattice<bool>* maskOut = 0;
+  Lattice<bool>* maskOut = nullptr;
   if (latticeOut.hasPixelMask()) {
     maskOut = &(latticeOut.pixelMask());
     if (!maskOut->isWritable()) {
-      maskOut = 0;
+      maskOut = nullptr;
     }
   }
 
@@ -130,7 +130,7 @@ void LatticeApply<T, U>::lineApply(MaskedLattice<U>& latticeOut, const MaskedLat
   int nResult = latticeOut.shape().product() / nLine;
   AlwaysAssert(nResult == 1, AipsError);
   collapser.init(nResult);
-  if (tellProgress != 0) tellProgress->init(nLine);
+  if (tellProgress != nullptr) tellProgress->init(nLine);
 
   // Iterate through all the lines.
   // Per tile the lines (in the collapseAxis direction) are
@@ -179,16 +179,16 @@ void LatticeApply<T, U>::lineApply(MaskedLattice<U>& latticeOut, const MaskedLat
       }
       collapser.process(result[i], resultMask[i], inIter.vectorCursor(), mask, pos);
       ++inIter;
-      if (tellProgress != 0) tellProgress->nstepsDone(inIter.nsteps());
+      if (tellProgress != nullptr) tellProgress->nstepsDone(inIter.nsteps());
     }
     array.putStorage(result, deleteIt);
     arrayMask.putStorage(resultMask, deleteMask);
     latticeOut.putSlice(array, outPos);
-    if (maskOut != 0) {
+    if (maskOut != nullptr) {
       maskOut->putSlice(arrayMask, outPos);
     }
   }
-  if (tellProgress != 0) tellProgress->done();
+  if (tellProgress != nullptr) tellProgress->done();
 }
 
 template <class T, class U>
@@ -294,12 +294,12 @@ void LatticeApply<T, U>::lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
         }
       }
     }
-    if (tellProgress != 0) {
+    if (tellProgress != nullptr) {
       ++nDone;
       tellProgress->nstepsDone(nDone);
     }
   }
-  if (tellProgress != 0) {
+  if (tellProgress != nullptr) {
     tellProgress->done();
   }
 }
@@ -393,11 +393,11 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
   // See if the output lattice has a writable pixelmask.
   // If so, it will later be used to write the resulting mask to.
 
-  Lattice<bool>* maskOut = 0;
+  Lattice<bool>* maskOut = nullptr;
   if (latticeOut.hasPixelMask()) {
     maskOut = &(latticeOut.pixelMask());
     if (!maskOut->isWritable()) {
-      maskOut = 0;
+      maskOut = nullptr;
     }
   }
 
@@ -411,7 +411,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
     nsteps *= 1 + trc(j) / inTileShape(j) - blc(j) / inTileShape(j);
   }
   collapser.init(outShape.product());
-  if (tellProgress != 0) {
+  if (tellProgress != nullptr) {
     tellProgress->init(nsteps);
   }
 
@@ -468,7 +468,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
         Array<bool> resultMask;
         collapser.endAccumulator(result, resultMask, outShape);
         latticeOut.putSlice(result, outPos);
-        if (maskOut != 0) {
+        if (maskOut != nullptr) {
           maskOut->putSlice(resultMask, outPos);
         }
       }
@@ -524,8 +524,8 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
           collapser.process(index1, index3, &(cursor(curPos)), &(mask(curPos)), dataIncr, maskIncr,
                             nval, latPos, chunkShape);
         } else {
-          collapser.process(index1, index3, &(cursor(curPos)), 0, dataIncr, maskIncr, nval, latPos,
-                            chunkShape);
+          collapser.process(index1, index3, &(cursor(curPos)), nullptr, dataIncr, maskIncr, nval,
+                            latPos, chunkShape);
         }
         // Increment a collapse axis until all axes are handled.
         for (j = collStart; j < collDim; ++j) {
@@ -563,7 +563,7 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
       }
     }
     ++inIter;
-    if (tellProgress != 0) {
+    if (tellProgress != nullptr) {
       tellProgress->nstepsDone(inIter.nsteps());
     }
   }
@@ -573,10 +573,10 @@ void LatticeApply<T, U>::tiledApply(MaskedLattice<U>& latticeOut, const MaskedLa
   Array<bool> resultMask;
   collapser.endAccumulator(result, resultMask, outShape);
   latticeOut.putSlice(result, outPos);
-  if (maskOut != 0) {
+  if (maskOut != nullptr) {
     maskOut->putSlice(resultMask, outPos);
   }
-  if (tellProgress != 0) tellProgress->done();
+  if (tellProgress != nullptr) tellProgress->done();
 }
 
 template <class T, class U>

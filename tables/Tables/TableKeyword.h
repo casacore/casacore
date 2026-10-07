@@ -168,7 +168,7 @@ class TableKeyword {
   // It will be opened when necessary.
   // If given, the lockOptions will be used instead of the ones in
   // the table attributes.
-  Table table(const TableLock* lockOptions = 0) const;
+  Table table(const TableLock* lockOptions = nullptr) const;
 
   // Get the table attributes.
   const TableAttr& tableAttributes() const { return attr_p; }

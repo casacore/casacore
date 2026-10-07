@@ -379,19 +379,19 @@ QualityCoordinate *QualityCoordinate::restore(const RecordInterface &container,
                                               const String &fieldName) {
   // tested: tQualityCoordinate: 275
   if (!container.isDefined(fieldName)) {
-    return 0;
+    return nullptr;
   }
 
   Record subrec(container.asRecord(fieldName));
 
   if (!subrec.isDefined("axes")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> axes;
   subrec.get("axes", axes);
   //
   if (!subrec.isDefined("quality")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> quality;
   subrec.get("quality", quality);

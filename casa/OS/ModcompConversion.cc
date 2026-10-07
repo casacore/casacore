@@ -347,9 +347,9 @@ size_t ModcompConversion::fromLocal(void* to, const float* from, size_t nr) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (nr == 0) {
   }
-  if (from == 0) {
+  if (from == nullptr) {
   }
-  if (to != 0) {
+  if (to != nullptr) {
   }
   throw(
       AipsError("ModcompConversion::fromLocal(Float&, const void*) - "
@@ -361,9 +361,9 @@ size_t ModcompConversion::fromLocal(void* to, const double* from, size_t nr) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (nr == 0) {
   }
-  if (from == 0) {
+  if (from == nullptr) {
   }
-  if (to != 0) {
+  if (to != nullptr) {
   }
   throw(
       AipsError("ModcompConversion::fromLocal(Double&, const void*) - "

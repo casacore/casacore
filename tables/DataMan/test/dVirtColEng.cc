@@ -51,7 +51,7 @@ DummyVirtualEngine::~DummyVirtualEngine() {}
 // Clone the engine object.
 DataManager* DummyVirtualEngine::clone() const {
   DataManager* dmPtr = new DummyVirtualEngine(data1_p.scale(), data2_p.scale());
-  if (dmPtr == 0) {
+  if (dmPtr == nullptr) {
     throw(AllocError("DummyVirtualEngine::clone()", 1));
   }
   return dmPtr;
@@ -83,7 +83,7 @@ void DummyVirtualEngine::prepare() {
 
 DataManager* DummyVirtualEngine::makeObject(const String&, const Record&) {
   DataManager* dmPtr = new DummyVirtualEngine();
-  if (dmPtr == 0) {
+  if (dmPtr == nullptr) {
     throw(AllocError("DummyVirtualEngine::makeObject()", 1));
   }
   return dmPtr;
@@ -94,7 +94,7 @@ void DummyVirtualEngine::registerClass() {
 String DummyVirtualEngine::dataManagerType() const { return "DummyVirtualEngine"; }
 
 DummyVirtualScalar::DummyVirtualScalar(DummyVirtualEngine* dve, double scale)
-    : enginePtr_p(dve), scale_p(scale), writable_p(0), column_p(0) {}
+    : enginePtr_p(dve), scale_p(scale), writable_p(0), column_p(nullptr) {}
 
 // # This copy constructor should only be called by VirtualColumnEngine::clone,
 // # when writable_p and the column_p variables are not filled yet.
@@ -104,7 +104,7 @@ DummyVirtualScalar::DummyVirtualScalar(const DummyVirtualScalar& that)
       enginePtr_p(that.enginePtr_p),
       scale_p(that.scale_p),
       writable_p(0),
-      column_p(0) {
+      column_p(nullptr) {
   if (that.writable_p || that.column_p) {
     throw(DataManInternalError("DummyVirtualScalar copy ctor"));
   }
@@ -151,7 +151,7 @@ void DummyVirtualScalar::put(rownr_t rownr, const double& data) {
 }
 
 DummyVirtualArray::DummyVirtualArray(DummyVirtualEngine* dve, double scale)
-    : enginePtr_p(dve), scale_p(scale), writable_p(0), column_p(0) {}
+    : enginePtr_p(dve), scale_p(scale), writable_p(0), column_p(nullptr) {}
 
 // # This copy constructor should only be called by VirtualColumnEngine::clone,
 // # when writable_p and the column_p variables are not filled yet.
@@ -161,7 +161,7 @@ DummyVirtualArray::DummyVirtualArray(const DummyVirtualArray& that)
       enginePtr_p(that.enginePtr_p),
       scale_p(that.scale_p),
       writable_p(0),
-      column_p(0) {
+      column_p(nullptr) {
   if (that.writable_p || that.column_p) {
     throw(DataManInternalError("DummyVirtualArray copy ctor"));
   }

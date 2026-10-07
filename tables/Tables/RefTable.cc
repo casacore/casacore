@@ -399,7 +399,7 @@ void RefTable::makeDesc(TableDesc& desc, const TableDesc& rootDesc,
         desc.renameColumn(name, mapVal);
       }
     } else {
-      unknownCol.insert(std::make_pair(name, static_cast<void*>(0)));
+      unknownCol.insert(std::make_pair(name, static_cast<void*>(nullptr)));
     }
   }
   // # Remove the unknown columns from the map.
@@ -413,7 +413,7 @@ void RefTable::makeDesc(TableDesc& desc, const TableDesc& rootDesc,
 // # Make RefColumn objects and initialize TableInfo.
 void RefTable::setup(BaseTable* btp, const Vector<String>& columnNames) {
   RefTable* rtp = dynamic_cast<RefTable*>(btp);
-  if (rtp != 0) {
+  if (rtp != nullptr) {
     // The table is already a RefTable, so copy its nameMap.
     if (columnNames.nelements() == 0) {
       nameMap_p = rtp->nameMap_p;

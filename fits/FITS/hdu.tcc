@@ -52,20 +52,20 @@ PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, FITS::HDUType t, FITSErrorHandler
 //============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITSErrorHandler errhandler)
-    : HeaderDataUnit(k, FITS::PrimaryArrayHDU, errhandler, 0) {
+    : HeaderDataUnit(k, FITS::PrimaryArrayHDU, errhandler, nullptr) {
   pa_assign();  // assign values from keyword list
 }
 //============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITS::HDUType t, FITSErrorHandler errhandler)
-    : HeaderDataUnit(k, t, errhandler, 0) {
+    : HeaderDataUnit(k, t, errhandler, nullptr) {
   pa_assign();  // assign values from keyword list
 }
 //=============================================================================
 // constructor does not require a FitsKeywordList. call write_priArr_hdr() after construction.
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FITSErrorHandler errhandler)
-    : HeaderDataUnit(FITS::PrimaryArrayHDU, errhandler, 0) {
+    : HeaderDataUnit(FITS::PrimaryArrayHDU, errhandler, nullptr) {
   // pa_assign();
   // in the case when user is not required to provide a kerword list object,
   // pa_assign() must be called from write_priArr_hdr().
@@ -74,7 +74,7 @@ PrimaryArray<TYPE>::PrimaryArray(FITSErrorHandler errhandler)
 // protected, for ImageExention and PrimaryGroup to use
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FITS::HDUType t, FITSErrorHandler errhandler)
-    : HeaderDataUnit(t, errhandler, 0) {}
+    : HeaderDataUnit(t, errhandler, nullptr) {}
 //=================================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::~PrimaryArray() {
@@ -99,22 +99,22 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
   int i;
   bscale_x = 1.0;  // first, initialize everything
   bzero_x = 0.0;
-  bunit_x = 0;
+  bunit_x = nullptr;
   isablank_x = false;
   blank_x = FITS::minInt;
-  ctype_x = 0;
-  crpix_x = 0;
-  crota_x = 0;
-  crval_x = 0;
-  cdelt_x = 0;
+  ctype_x = nullptr;
+  crpix_x = nullptr;
+  crota_x = nullptr;
+  crval_x = nullptr;
+  cdelt_x = nullptr;
   datamax_x = FITS::maxdouble;
   datamin_x = FITS::mindouble;
   totsize = 0;
-  factor = 0;
+  factor = nullptr;
   alloc_elems = 0;
   beg_elem = 0;
   end_elem = 0;
-  array = 0;
+  array = nullptr;
   if (err_status != OK)  // check for error in HDU construction
     return;
   if (FITS::getfitstype(NoConvert<TYPE>()) != datatype()) {
@@ -125,7 +125,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
   bscale_x = asgdbl(FITS::BSCALE, 1.0);
   bzero_x = asgdbl(FITS::BZERO, 0.0);
 
-  if (kwlist_(FITS::BLANK) == 0)
+  if (kwlist_(FITS::BLANK) == nullptr)
     blank_x = Int_null;
   else {
     blank_x = kwlist_.curr()->asInt();
@@ -141,7 +141,8 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
     crval_x = new double[no_dims];
     cdelt_x = new double[no_dims];
     ctype_x = new char *[no_dims];
-    if (crpix_x == 0 || crota_x == 0 || crval_x == 0 || cdelt_x == 0 || ctype_x == 0) {
+    if (crpix_x == nullptr || crota_x == nullptr || crval_x == nullptr || cdelt_x == nullptr ||
+        ctype_x == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -158,7 +159,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
     for (i = 1; i < no_dims; i++) totsize *= dimn[i];
     factor = new int[3 * no_dims];
     // We need a little extra space for CtoF and FtoC conversions.
-    if (factor == 0) {
+    if (factor == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -167,15 +168,15 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
       factor[i] = factor[i - 1] * dimn[i - 1];
     }
   } else {
-    crpix_x = 0;
-    crota_x = 0;
-    crval_x = 0;
-    cdelt_x = 0;
-    ctype_x = 0;
-    factor = 0;
+    crpix_x = nullptr;
+    crota_x = nullptr;
+    crval_x = nullptr;
+    cdelt_x = nullptr;
+    ctype_x = nullptr;
+    factor = nullptr;
     totsize = 0;
   }
-  array = 0;  // no space allocated for array
+  array = nullptr;  // no space allocated for array
   alloc_elems = 0;
   beg_elem = 0;
   end_elem = -1;
@@ -513,7 +514,7 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const {
 
   float scale = bscale();
   float zero = bzero();
-  if (!isablank() || FitsFPUtil::isFP((TYPE *)0)) {
+  if (!isablank() || FitsFPUtil::isFP((TYPE *)nullptr)) {
     // No blanks or we are FP
     for (int i = 0; i < npixels; i++) {
       target[i] = scale * array[i] + zero;
@@ -739,10 +740,10 @@ ImageExtension<TYPE>::~ImageExtension() {
 //====================================================================================
 template <class TYPE>
 void ImageExtension<TYPE>::ie_assign() {
-  extver_x = kwlist_(FITS::EXTVER) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  extlevel_x = kwlist_(FITS::EXTLEVEL) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  pcount_x = kwlist_(FITS::PCOUNT) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  gcount_x = kwlist_(FITS::GCOUNT) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
+  extver_x = kwlist_(FITS::EXTVER) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  extlevel_x = kwlist_(FITS::EXTLEVEL) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  pcount_x = kwlist_(FITS::PCOUNT) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  gcount_x = kwlist_(FITS::GCOUNT) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
   xtension_x = assign(FITS::XTENSION);
   extname_x = assign(FITS::EXTNAME);
 }
@@ -784,7 +785,7 @@ int ImageExtension<TYPE>::write_imgExt_hdr(FitsOutput &fout,  // I - FITS output
   // Since the original file pointer does not have the hdu info about the hdu created by
   // write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
   // This may cause some loss of efficiency. But so far I have not found a better way.
-  fitsfile *l_newfptr = 0;
+  fitsfile *l_newfptr = nullptr;
   l_status = 0;
   //(fout.getfout()).close_file( fout.getfptr(), &l_status);
   // file_close( (fout.getfptr()->Fptr)->filehandle);
@@ -889,7 +890,7 @@ PrimaryGroup<TYPE>::~PrimaryGroup() {
     delete[] pscal_x;
   }
   delete[] group_parm;
-  array = 0;  // reset array to 0 so PrimaryArray won't delete anything
+  array = nullptr;  // reset array to 0 so PrimaryArray won't delete anything
 }
 //===================================================================================================
 // write the required keyword for promaryGroup( random groups)
@@ -984,12 +985,12 @@ int PrimaryGroup<TYPE>::write_priGrp_hdr(
 template <class TYPE>
 void PrimaryGroup<TYPE>::pg_assign() {
   int i;
-  ptype_x = 0;
-  pscal_x = 0;
-  pzero_x = 0;
+  ptype_x = nullptr;
+  pscal_x = nullptr;
+  pzero_x = nullptr;
   pcount_x = 0;
   gcount_x = 0;
-  group_parm = 0;
+  group_parm = nullptr;
   current_group = 0;
   if (err_status != OK)  // check for previous errors
     return;
@@ -1001,7 +1002,7 @@ void PrimaryGroup<TYPE>::pg_assign() {
     pscal_x = new double[pcount_x];
     pzero_x = new double[pcount_x];
     ptype_x = new char *[pcount_x];
-    if (pscal_x == 0 || pzero_x == 0 || ptype_x == 0) {
+    if (pscal_x == nullptr || pzero_x == nullptr || ptype_x == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -1033,7 +1034,7 @@ void PrimaryGroup<TYPE>::pg_assign() {
 
   // allocate buffer space for an entire group
   group_parm = new TYPE[pcount() + nelements()];
-  if (group_parm == 0) {
+  if (group_parm == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
@@ -1190,7 +1191,7 @@ int PrimaryTable<TYPE>::write_priTable_hdr(FitsOutput &fout,  // I - FITS output
   // Since the original file pointer does not have the hdu info about the hdu created by
   // write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
   // This may cause some loss of efficiency. But so far I have not found a better way.
-  fitsfile *l_newfptr = 0;
+  fitsfile *l_newfptr = nullptr;
   l_status = 0;
   //(fout.getfout()).close_file( fout.getfptr(), &l_status);
   // file_close( (fout.getfptr()->Fptr)->filehandle);
@@ -1322,8 +1323,8 @@ FitsArray<TYPE>::FitsArray(int n, const int *d) : FitsField<TYPE>(1) {
     for (i = 1; i < no_dims; ++i) factor[i] = factor[i - 1] * dimn[i - 1];
   } else {
     no_dims = 1;
-    dimn = 0;
-    factor = 0;
+    dimn = nullptr;
+    factor = nullptr;
     no_elements = 1;
   }
 }

@@ -30,13 +30,13 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Default is no choice function, thus return first choice.
-Choice::ChoiceFunc* Choice::theirChoiceFunc = 0;
+Choice::ChoiceFunc* Choice::theirChoiceFunc = nullptr;
 
 String Choice::choice(const String& descriptiveText, const Vector<String>& choices) {
   if (choices.nelements() == 0) {
     return "";
   }
-  if (theirChoiceFunc == 0) {
+  if (theirChoiceFunc == nullptr) {
     return choices[0];
   }
   return theirChoiceFunc(descriptiveText, choices);

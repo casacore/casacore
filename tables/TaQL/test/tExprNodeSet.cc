@@ -80,7 +80,7 @@ void doSetInt() {
   AlwaysAssertExit(!set.contains(0, 2));
   AlwaysAssertExit(set.contains(0, 3));
   AlwaysAssertExit(!set.contains(0, 4));
-  set.add(TableExprNodeSetElem(&st, 0, 0, true));
+  set.add(TableExprNodeSetElem(&st, nullptr, nullptr, true));
   AlwaysAssertExit(!set.isSingle());
   AlwaysAssertExit(set.isDiscrete());
   AlwaysAssertExit(!set.isBounded());
@@ -116,7 +116,7 @@ void doSetDouble() {
   AlwaysAssertExit(!set.contains(0, 2.));
   AlwaysAssertExit(set.contains(0, 3.));
   AlwaysAssertExit(!set.contains(0, 4.));
-  set.add(TableExprNodeSetElem(&st, 0, 0, true));
+  set.add(TableExprNodeSetElem(&st, nullptr, nullptr, true));
   AlwaysAssertExit(!set.isSingle());
   AlwaysAssertExit(set.isDiscrete());
   AlwaysAssertExit(!set.isBounded());
@@ -221,7 +221,7 @@ void doSetDate() {
   AlwaysAssertExit(!set.contains(0, 54927.5));
   AlwaysAssertExit(set.contains(0, 54929.5));
   AlwaysAssertExit(!set.contains(0, 54957.5));
-  set.add(TableExprNodeSetElem(&st, 0, 0, true));
+  set.add(TableExprNodeSetElem(&st, nullptr, nullptr, true));
   AlwaysAssertExit(!set.isSingle());
   AlwaysAssertExit(set.isDiscrete());
   AlwaysAssertExit(!set.isBounded());

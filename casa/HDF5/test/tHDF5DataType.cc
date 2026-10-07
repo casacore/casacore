@@ -33,7 +33,7 @@ using namespace casacore;
 template <typename T>
 void testDT(DataType dt, DataType arrdt, unsigned int sz, bool isC = false) {
   // Test scalar.
-  HDF5DataType hdt((T*)0);
+  HDF5DataType hdt((T*)nullptr);
   AlwaysAssertExit(hdt.size() == sz);
   AlwaysAssertExit(HDF5DataType::getDataType(hdt.getHidMem()) == dt);
   AlwaysAssertExit(HDF5DataType::getDataType(hdt.getHidFile()) == dt);
@@ -55,9 +55,9 @@ void testCompound() {
   names[0] = "f1";
   names[1] = "f2";
   names[2] = "f3";
-  types[0] = HDF5DataType((Complex*)0);
-  types[1] = HDF5DataType((int*)0);
-  types[2] = HDF5DataType((float*)0);
+  types[0] = HDF5DataType((Complex*)nullptr);
+  types[1] = HDF5DataType((int*)nullptr);
+  types[2] = HDF5DataType((float*)nullptr);
   HDF5DataType dtcom1(names, types);
   AlwaysAssertExit(dtcom1.size() == 16);
   AlwaysAssertExit(HDF5DataType::getDataType(dtcom1.getHidMem()) == TpRecord);
@@ -65,8 +65,8 @@ void testCompound() {
   names.push_back("fa1");
   names.push_back("fa2");
   names.push_back("fc");
-  types.push_back(HDF5DataType(HDF5DataType((bool*)0), IPosition(1, 8)));
-  types.push_back(HDF5DataType(HDF5DataType((DComplex*)0), IPosition(2, 1, 2)));
+  types.push_back(HDF5DataType(HDF5DataType((bool*)nullptr), IPosition(1, 8)));
+  types.push_back(HDF5DataType(HDF5DataType((DComplex*)nullptr), IPosition(2, 1, 2)));
   types.push_back(dtcom1);
   HDF5DataType dtcom2(names, types);
   AlwaysAssertExit(dtcom2.size() == 16 + 8 + 2 * 16 + 16);

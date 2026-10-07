@@ -63,7 +63,7 @@ int MSObservationGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSObservationGram = 0;
+static const char* strpMSObservationGram = nullptr;
 static int posMSObservationGram = 0;
 
 // # Parse the command.

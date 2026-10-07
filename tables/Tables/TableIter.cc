@@ -31,10 +31,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableIterator::TableIterator() : tabIterPtr_p(0) {}
+TableIterator::TableIterator() : tabIterPtr_p(nullptr) {}
 
 TableIterator::TableIterator(const Table& tab, const String& key, Order order, Option option)
-    : tabIterPtr_p(0) {
+    : tabIterPtr_p(nullptr) {
   Block<String> keys(1, key);
   Block<int> ord(1, order);
   Block<std::shared_ptr<BaseCompare>> cmpObj(1);
@@ -44,7 +44,7 @@ TableIterator::TableIterator(const Table& tab, const String& key, Order order, O
 
 TableIterator::TableIterator(const Table& tab, const Block<String>& keys, Order order,
                              Option option)
-    : tabIterPtr_p(0) {
+    : tabIterPtr_p(nullptr) {
   Block<int> ord(keys.nelements(), order);
   Block<std::shared_ptr<BaseCompare>> cmpObj(keys.nelements());
   tabIterPtr_p = tab.baseTablePtr()->makeIterator(keys, cmpObj, ord, option);
@@ -53,7 +53,7 @@ TableIterator::TableIterator(const Table& tab, const Block<String>& keys, Order 
 
 TableIterator::TableIterator(const Table& tab, const Block<String>& keys, const Block<int>& orders,
                              Option option)
-    : tabIterPtr_p(0) {
+    : tabIterPtr_p(nullptr) {
   Block<std::shared_ptr<BaseCompare>> cmpObj(keys.nelements());
   tabIterPtr_p = tab.baseTablePtr()->makeIterator(keys, cmpObj, orders, option);
   next();  // get first subtable
@@ -62,19 +62,19 @@ TableIterator::TableIterator(const Table& tab, const Block<String>& keys, const 
 TableIterator::TableIterator(const Table& tab, const Block<String>& keys,
                              const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
                              const Block<int>& orders, Option option, bool cacheIterationBoundaries)
-    : tabIterPtr_p(0) {
+    : tabIterPtr_p(nullptr) {
   tabIterPtr_p =
       tab.baseTablePtr()->makeIterator(keys, cmpObjs, orders, option, cacheIterationBoundaries);
   next();  // get first subtable
 }
 
-TableIterator::TableIterator(const TableIterator& iter) : tabIterPtr_p(0) { operator=(iter); }
+TableIterator::TableIterator(const TableIterator& iter) : tabIterPtr_p(nullptr) { operator=(iter); }
 
 TableIterator& TableIterator::operator=(const TableIterator& iter) {
   delete tabIterPtr_p;
-  tabIterPtr_p = 0;
+  tabIterPtr_p = nullptr;
   subTable_p = Table();
-  if (iter.tabIterPtr_p != 0) {
+  if (iter.tabIterPtr_p != nullptr) {
     tabIterPtr_p = iter.tabIterPtr_p->clone();
     subTable_p = iter.table();
     next();  // Get first subtable, as in constructor

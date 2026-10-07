@@ -175,7 +175,7 @@ bool VanVleck::setEquiSpaced(double xlev, double ylev, double xmean, double ymea
 
 void VanVleck::initInterpolator() {
   delete itsInterp;
-  itsInterp = 0;
+  itsInterp = nullptr;
 
   Vector<double> rs(itsSize);
   Vector<double> rhos(itsSize);

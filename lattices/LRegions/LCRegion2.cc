@@ -50,7 +50,7 @@ LCRegion* LCRegion::fromRecord(const TableRecord& rec, const String& tableName) 
                   "record does not contain an LC region"));
   }
   const String& name = rec.asString("name");
-  LCRegion* regPtr = 0;
+  LCRegion* regPtr = nullptr;
   if (name == LCBox::className()) {
     regPtr = LCBox::fromRecord(rec, tableName);
   } else if (name == LCEllipsoid::className()) {

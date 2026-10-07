@@ -52,8 +52,8 @@ TabularCoordinate::TabularCoordinate()
       matrix_p(1.0),
       unit_p(""),
       name_p("Tabular"),
-      channel_corrector_p(0),
-      channel_corrector_rev_p(0) {
+      channel_corrector_p(nullptr),
+      channel_corrector_rev_p(nullptr) {
   setDefaultWorldMixRanges();
 }
 
@@ -66,8 +66,8 @@ TabularCoordinate::TabularCoordinate(double refval, double inc, double refpix, c
       matrix_p(1.0),
       unit_p(unit),
       name_p(axisName),
-      channel_corrector_p(0),
-      channel_corrector_rev_p(0) {
+      channel_corrector_p(nullptr),
+      channel_corrector_rev_p(nullptr) {
   setDefaultWorldMixRanges();
 }
 
@@ -77,8 +77,8 @@ TabularCoordinate::TabularCoordinate(const Quantum<double> &refval, const Quantu
       crpix_p(refpix),
       matrix_p(1.0),
       name_p(axisName),
-      channel_corrector_p(0),
-      channel_corrector_rev_p(0) {
+      channel_corrector_p(nullptr),
+      channel_corrector_rev_p(nullptr) {
   // Check and assign
 
   if (refval.isConform(inc)) {
@@ -105,8 +105,8 @@ TabularCoordinate::TabularCoordinate(const Vector<double> &pixelValues,
       matrix_p(0.0),
       unit_p(unit),
       name_p(axisName),
-      channel_corrector_p(0),
-      channel_corrector_rev_p(0) {
+      channel_corrector_p(nullptr),
+      channel_corrector_rev_p(nullptr) {
   makeNonLinearTabularCoordinate(pixelValues, worldValues);
   setDefaultWorldMixRanges();
 }
@@ -120,8 +120,8 @@ TabularCoordinate::TabularCoordinate(const Vector<double> &pixelValues,
       crpix_p(0.0),
       matrix_p(0.0),
       name_p(axisName),
-      channel_corrector_p(0),
-      channel_corrector_rev_p(0) {
+      channel_corrector_p(nullptr),
+      channel_corrector_rev_p(nullptr) {
   unit_p = worldValues.getUnit();
   Vector<double> world = worldValues.getValue();
   makeNonLinearTabularCoordinate(pixelValues, world);
@@ -136,7 +136,7 @@ void TabularCoordinate::clear_self() {
     delete channel_corrector_p;
     delete channel_corrector_rev_p;
   }
-  channel_corrector_p = channel_corrector_rev_p = 0;
+  channel_corrector_p = channel_corrector_rev_p = nullptr;
 }
 
 TabularCoordinate::TabularCoordinate(const TabularCoordinate &other)
@@ -147,8 +147,8 @@ TabularCoordinate::TabularCoordinate(const TabularCoordinate &other)
       matrix_p(0.0),
       unit_p("UNSET"),
       name_p("UNSET"),
-      channel_corrector_p(0),
-      channel_corrector_rev_p(0) {
+      channel_corrector_p(nullptr),
+      channel_corrector_rev_p(nullptr) {
   copy(other);
 }
 
@@ -168,10 +168,10 @@ void TabularCoordinate::copy(const TabularCoordinate &other) {
   unit_p = other.unit_p;
   name_p = other.name_p;
   matrix_p = other.matrix_p;
-  if (other.channel_corrector_p != 0) {
+  if (other.channel_corrector_p != nullptr) {
     channel_corrector_p = new Interpolate1D<double, double>(*other.channel_corrector_p);
     channel_corrector_rev_p = new Interpolate1D<double, double>(*other.channel_corrector_rev_p);
-    AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0, AipsError);
+    AlwaysAssert(channel_corrector_p != nullptr && channel_corrector_rev_p != nullptr, AipsError);
   }
 }
 
@@ -522,50 +522,50 @@ bool TabularCoordinate::save(RecordInterface &container, const String &fieldName
 TabularCoordinate *TabularCoordinate::restore(const RecordInterface &container,
                                               const String &fieldName) {
   if (!container.isDefined(fieldName)) {
-    return 0;
+    return nullptr;
   }
 
   Record subrec(container.asRecord(fieldName));
 
   if (!subrec.isDefined("crval")) {
-    return 0;
+    return nullptr;
   }
   Vector<double> crval(subrec.toArrayDouble("crval"));
 
   if (!subrec.isDefined("crpix")) {
-    return 0;
+    return nullptr;
   }
   Vector<double> crpix(subrec.toArrayDouble("crpix"));
 
   if (!subrec.isDefined("cdelt")) {
-    return 0;
+    return nullptr;
   }
   Vector<double> cdelt(subrec.toArrayDouble("cdelt"));
 
   if (!subrec.isDefined("pc")) {
-    return 0;
+    return nullptr;
   }
   Matrix<double> pc(subrec.toArrayDouble("pc"));
 
   if (!subrec.isDefined("axes")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> axes;
   subrec.get("axes", axes);
 
   if (!subrec.isDefined("units")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> units;
   subrec.get("units", units);
 
   if (!subrec.isDefined("pixelvalues") || !subrec.isDefined("worldvalues")) {
-    return 0;
+    return nullptr;
   }
   Vector<double> pixels(subrec.toArrayDouble("pixelvalues"));
   Vector<double> world(subrec.toArrayDouble("worldvalues"));
 
-  TabularCoordinate *retval = 0;
+  TabularCoordinate *retval = nullptr;
   if (pixels.nelements() > 0) {
     retval = new TabularCoordinate(pixels, world, units(0), axes(0));
   } else {
@@ -586,24 +586,24 @@ Coordinate *TabularCoordinate::makeFourierCoordinate(const Vector<bool> &axes,
 {
   if (channel_corrector_p) {
     set_error("Cannot Fourier Transform a non-linear TabularCoordinate");
-    return 0;
+    return nullptr;
   }
   //
   if (axes.nelements() != nPixelAxes()) {
     set_error("Invalid number of specified axes");
-    return 0;
+    return nullptr;
   }
   unsigned int nT = 0;
   for (unsigned int i = 0; i < nPixelAxes(); i++)
     if (axes(i)) nT++;
   if (nT == 0) {
     set_error("You have not specified any axes to transform");
-    return 0;
+    return nullptr;
   }
   //
   if (shape.nelements() != nPixelAxes()) {
     set_error("Invalid number of elements in shape");
-    return 0;
+    return nullptr;
   }
   //
   const Vector<String> &units = worldAxisUnits();
@@ -626,7 +626,7 @@ Coordinate *TabularCoordinate::makeFourierCoordinate(const Vector<bool> &axes,
   TabularCoordinate tc = *this;
   if (!tc.setWorldAxisUnits(unitsCanon)) {
     set_error("Could not set world axis units");
-    return 0;
+    return nullptr;
   }
 
   // Set the Fourier coordinate parameters.
@@ -673,7 +673,7 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<double> &pix
     ScalarSampledFunctional<double> in(pixelValues), avg(averagePixel);
     channel_corrector_p = new Interpolate1D<double, double>(in, avg, true, true);
     channel_corrector_rev_p = new Interpolate1D<double, double>(avg, in, true, true);
-    AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0, AipsError);
+    AlwaysAssert(channel_corrector_p != nullptr && channel_corrector_rev_p != nullptr, AipsError);
 
     channel_corrector_p->setMethod(Interpolate1D<double, double>::nearestNeighbour);
     channel_corrector_rev_p->setMethod(Interpolate1D<double, double>::nearestNeighbour);
@@ -721,7 +721,7 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<double> &pix
     ScalarSampledFunctional<double> in(pixelValues), avg(averagePixel);
     channel_corrector_p = new Interpolate1D<double, double>(in, avg, true, true);
     channel_corrector_rev_p = new Interpolate1D<double, double>(avg, in, true, true);
-    AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0, AipsError);
+    AlwaysAssert(channel_corrector_p != nullptr && channel_corrector_rev_p != nullptr, AipsError);
 
     channel_corrector_p->setMethod(Interpolate1D<double, double>::linear);
     channel_corrector_rev_p->setMethod(Interpolate1D<double, double>::linear);

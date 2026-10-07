@@ -34,9 +34,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ROIncrementalStManAccessor::ROIncrementalStManAccessor(const Table& table, const String& name,
                                                        bool byColumn)
-    : RODataManAccessor(table, name, byColumn), dataManPtr_p(0) {
+    : RODataManAccessor(table, name, byColumn), dataManPtr_p(nullptr) {
   dataManPtr_p = dynamic_cast<ISMBase*>(baseDataManager());
-  if (dataManPtr_p == 0) {
+  if (dataManPtr_p == nullptr) {
     throw(DataManError("ROIncrementalStManAccessor " + name +
                        " constructed for data manager type " +
                        baseDataManager()->dataManagerType() + "; expected IncrementalStMan"));

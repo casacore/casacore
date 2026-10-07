@@ -37,7 +37,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, bool initialize)
-    : BaseTable(newtab.name(), newtab.option(), 0), colSetPtr_p(0), lockPtr_p(0) {
+    : BaseTable(newtab.name(), newtab.option(), 0), colSetPtr_p(nullptr), lockPtr_p(nullptr) {
   // # Check if another Table was already constructed using this
   // # SetupNewTable (which is invalid).
   if (newtab.isUsed()) {
@@ -62,7 +62,7 @@ MemoryTable::MemoryTable(SetupNewTable& newtab, rownr_t nrrow, bool initialize)
   colSetPtr_p->linkToTable(this);
   newtab.setInUse();
   // # Create the lock object.
-  lockPtr_p = new TableLockData(TableLock(TableLock::PermanentLocking), 0, this);
+  lockPtr_p = new TableLockData(TableLock(TableLock::PermanentLocking), nullptr, this);
   colSetPtr_p->linkToLockObject(lockPtr_p);
   // # Initialize the data managers.
   Table tab(this);

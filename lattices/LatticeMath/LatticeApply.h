@@ -147,10 +147,10 @@ class LatticeApply {
   // <group>
   static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                         LineCollapser<T, U>& collapser, unsigned int collapseAxis,
-                        LatticeProgress* tellProgress = 0);
+                        LatticeProgress* tellProgress = nullptr);
   static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                         const LatticeRegion& region, LineCollapser<T, U>& collapser,
-                        unsigned int collapseAxis, LatticeProgress* tellProgress = 0);
+                        unsigned int collapseAxis, LatticeProgress* tellProgress = nullptr);
   // </group>
 
   // This function iterates line by line through an input lattice and applies
@@ -163,12 +163,12 @@ class LatticeApply {
   // <group>
   static void lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                              const MaskedLattice<T>& latticeIn, LineCollapser<T, U>& collapser,
-                             unsigned int collapseAxis, LatticeProgress* tellProgress = 0);
+                             unsigned int collapseAxis, LatticeProgress* tellProgress = nullptr);
 
   static void lineMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                              const MaskedLattice<T>& latticeIn, const LatticeRegion& region,
                              LineCollapser<T, U>& collapser, unsigned int collapseAxis,
-                             LatticeProgress* tellProgress = 0);
+                             LatticeProgress* tellProgress = nullptr);
   // </group>
 
   // This function iterates tile by tile through an input lattice and applies
@@ -184,11 +184,11 @@ class LatticeApply {
   // <group>
   static void tiledApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                          TiledCollapser<T, U>& collapser, const IPosition& collapseAxes,
-                         int newOutAxis = -1, LatticeProgress* tellProgress = 0);
+                         int newOutAxis = -1, LatticeProgress* tellProgress = nullptr);
   static void tiledApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                          const LatticeRegion& region, TiledCollapser<T, U>& collapser,
                          const IPosition& collapseAxes, int newOutAxis = -1,
-                         LatticeProgress* tellProgress = 0);
+                         LatticeProgress* tellProgress = nullptr);
   // </group>
 
   // This function iterates tile by tile through an input lattice and applies
@@ -207,11 +207,12 @@ class LatticeApply {
   // <group>
   static void tiledMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                               const MaskedLattice<T>& latticeIn, TiledCollapser<T, U>& collapser,
-                              const IPosition& collapseAxes, LatticeProgress* tellProgress = 0);
+                              const IPosition& collapseAxes,
+                              LatticeProgress* tellProgress = nullptr);
   static void tiledMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                               const MaskedLattice<T>& latticeIn, const LatticeRegion& region,
                               TiledCollapser<T, U>& collapser, const IPosition& collapseAxes,
-                              LatticeProgress* tellProgress = 0);
+                              LatticeProgress* tellProgress = nullptr);
   // </group>
 
  private:

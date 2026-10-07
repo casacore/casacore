@@ -135,7 +135,7 @@ void doDiscreteBool() {
   TableExprNode st(true);
   bool failed = false;
   try {
-    TableExprNodeSetElem tset(&st, 0, 0, false);
+    TableExprNodeSetElem tset(&st, nullptr, nullptr, false);
   } catch (std::exception& x) {
     cout << "Expected: " << x.what() << endl;
     failed = true;
@@ -188,7 +188,7 @@ void doDiscreteInt() {
     checkMatchInt(tset, -10, false);
   }
   {
-    TableExprNodeSetElem tset(&stn, 0, &incrn, false);
+    TableExprNodeSetElem tset(&stn, nullptr, &incrn, false);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTInt, true, false, true, true, false));
     Vector<int64_t> vec;
     int64_t cnt = 0;
@@ -211,7 +211,7 @@ void doDiscreteInt() {
     AlwaysAssertExit(allEQ(exp, vec));
   }
   {
-    TableExprNodeSetElem tset(&st, &end, 0, true);
+    TableExprNodeSetElem tset(&st, &end, nullptr, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTInt, true, true, false, true, false));
     Vector<int64_t> vec(98);
     int64_t cnt = 0;
@@ -222,7 +222,7 @@ void doDiscreteInt() {
     AlwaysAssertExit(allEQ(exp, vec));
   }
   {
-    TableExprNodeSetElem tset(&st, 0, 0, true);
+    TableExprNodeSetElem tset(&st, nullptr, nullptr, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTInt, true, false, false, true, false));
     Vector<int64_t> vec;
     int64_t cnt = 0;
@@ -231,7 +231,7 @@ void doDiscreteInt() {
     AlwaysAssertExit(allEQ(Vector<int64_t>(), vec));
   }
   {
-    TableExprNodeSetElem tset(0, &end, 0, false);
+    TableExprNodeSetElem tset(nullptr, &end, nullptr, false);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTInt, false, true, false, true, false));
     Vector<int64_t> vec;
     int64_t cnt = 0;
@@ -242,7 +242,7 @@ void doDiscreteInt() {
     AlwaysAssertExit(allEQ(exp, vec));
   }
   {
-    TableExprNodeSetElem tset(0, 0, 0, true);
+    TableExprNodeSetElem tset(nullptr, nullptr, nullptr, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTInt, false, false, false, true, false));
     Vector<int64_t> vec;
     int64_t cnt = 0;
@@ -303,7 +303,7 @@ void doDiscreteDouble() {
     checkMatchDouble(tset, 10., false);
   }
   {
-    TableExprNodeSetElem tset(&stn, 0, &incrn, true);
+    TableExprNodeSetElem tset(&stn, nullptr, &incrn, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTDouble, true, false, true, true, false));
     Vector<double> vec;
     int64_t cnt = 0;
@@ -329,7 +329,7 @@ void doDiscreteDouble() {
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, &end, 0, true);
+    TableExprNodeSetElem tset(&st, &end, nullptr, true);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, true, false, true, false, "dm"));
     Vector<double> vec;
@@ -341,7 +341,7 @@ void doDiscreteDouble() {
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, 0, 0, true);
+    TableExprNodeSetElem tset(&st, nullptr, nullptr, true);
     AlwaysAssertExit(
         testAttr(tset, TableExprNodeRep::NTDouble, true, false, false, true, false, "dm"));
     Vector<double> vec;
@@ -368,7 +368,7 @@ void doDiscreteDComplex() {
   TableExprNode st(DComplex(1, 2));
   bool failed = false;
   try {
-    TableExprNodeSetElem tset(&st, 0, 0, false);
+    TableExprNodeSetElem tset(&st, nullptr, nullptr, false);
   } catch (std::exception& x) {
     cout << "Expected: " << x.what() << endl;
     failed = true;
@@ -391,7 +391,7 @@ void doDiscreteString() {
   TableExprNode st("abcd");
   bool failed = false;
   try {
-    TableExprNodeSetElem tset(&st, 0, 0, false);
+    TableExprNodeSetElem tset(&st, nullptr, nullptr, false);
   } catch (std::exception& x) {
     cout << "Expected: " << x.what() << endl;
     failed = true;
@@ -444,7 +444,7 @@ void doDiscreteDate() {
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, &end, 0, true);
+    TableExprNodeSetElem tset(&st, &end, nullptr, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTDate, true, true, false, true, false));
     Vector<MVTime> vect;
     int64_t cnt = 0;
@@ -457,7 +457,7 @@ void doDiscreteDate() {
     AlwaysAssertExit(allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, 0, 0, true);
+    TableExprNodeSetElem tset(&st, nullptr, nullptr, true);
     AlwaysAssertExit(testAttr(tset, TableExprNodeRep::NTDate, true, false, false, true, false));
     Vector<MVTime> vect;
     int64_t cnt = 0;

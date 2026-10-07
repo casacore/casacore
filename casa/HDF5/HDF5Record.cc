@@ -266,7 +266,7 @@ void HDF5Record::readArrString(hid_t attrId, const IPosition& shape, const Strin
                                RecordInterface& rec) {
   Array<String> value(shape);
   std::vector<char*> ptrs(value.nelements());
-  HDF5DataType dtype((String*)0);
+  HDF5DataType dtype((String*)nullptr);
   AlwaysAssert(H5Aread(attrId, dtype.getHidMem(), &(ptrs[0])) >= 0, AipsError);
   // Copy the strings to the Array and delete the strings.
   Array<String>::iterator aiter = value.begin();
@@ -451,7 +451,7 @@ void HDF5Record::writeArrString(hid_t groupHid, const String& name, const Array<
   HDF5HidDataSpace dsid(H5Screate_simple(rank, ls.storage(), NULL));
   AlwaysAssert(dsid.getHid() >= 0, AipsError);
   // Create the attribute.
-  HDF5DataType dtype((String*)0);
+  HDF5DataType dtype((String*)nullptr);
   HDF5HidAttribute id(
       H5Acreate2(groupHid, name.c_str(), dtype.getHidFile(), dsid, H5P_DEFAULT, H5P_DEFAULT));
   AlwaysAssert(id.getHid() >= 0, AipsError);

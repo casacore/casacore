@@ -85,7 +85,7 @@ unsigned int MCEarthMagnetic::FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::
 std::once_flag MCEarthMagnetic::theirInitOnceFlag;
 
 // # Constructors
-MCEarthMagnetic::MCEarthMagnetic() : MVPOS1(0), EFIELD(0), measMath() {
+MCEarthMagnetic::MCEarthMagnetic() : MVPOS1(nullptr), EFIELD(nullptr), measMath() {
   std::call_once(theirInitOnceFlag, doFillState);
 }
 
@@ -122,9 +122,9 @@ void MCEarthMagnetic::getConvert(MConvertBase &mc, const MRBase &inref, const MR
 
 void MCEarthMagnetic::clearConvert() {
   delete MVPOS1;
-  MVPOS1 = 0;
+  MVPOS1 = nullptr;
   delete EFIELD;
-  EFIELD = 0;
+  EFIELD = nullptr;
 }
 
 // # Conversion routines

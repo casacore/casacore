@@ -217,7 +217,7 @@ class TableVector {
 
 template <class T>
 inline bool TableVector<T>::isNull() const {
-  return (tabVecPtr_p == 0 ? true : false);
+  return (tabVecPtr_p == nullptr ? true : false);
 }
 
 template <class T>

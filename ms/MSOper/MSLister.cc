@@ -50,7 +50,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 //
 // Null constructor merely sets private formatting string
 //
-MSLister::MSLister() : dashline_p(replicate('-', 80)), mss_p() { pMSSel_p = 0; }
+MSLister::MSLister() : dashline_p(replicate('-', 80)), mss_p() { pMSSel_p = nullptr; }
 
 //
 // Constructor assigns pointer (if MS goes out of scope you will get rubbish),
@@ -78,7 +78,7 @@ MSLister::MSLister(const MeasurementSet& ms, LogIO& os)
   // initialize list params
   initList();
 
-  pMSSel_p = 0;
+  pMSSel_p = nullptr;
 }
 
 //
@@ -323,7 +323,7 @@ void MSLister::selectvis(const String& timerange, const String& spw, const Strin
 
     if (pMSSel_p) {
       delete pMSSel_p;
-      pMSSel_p = 0;
+      pMSSel_p = nullptr;
     }
 
     // Assume no selection, for starters

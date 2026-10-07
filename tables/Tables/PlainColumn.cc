@@ -38,8 +38,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 PlainColumn::PlainColumn(const BaseColumnDesc* cdp, ColumnSet* csp)
     : BaseColumn(cdp),
-      dataManPtr_p(0),
-      dataColPtr_p(0),
+      dataManPtr_p(nullptr),
+      dataColPtr_p(nullptr),
       colSetPtr_p(csp),
       originalName_p(cdp->name()) {
   int trace = TableTrace::traceColumn(columnDesc());
@@ -72,7 +72,7 @@ void PlainColumn::setShapeColumn(const IPosition&) {
   throw(TableInvOper("setShapeColumn not allowed for column " + colDescPtr_p->name()));
 }
 
-bool PlainColumn::isBound() const { return (dataManPtr_p == 0 ? false : true); }
+bool PlainColumn::isBound() const { return (dataManPtr_p == nullptr ? false : true); }
 void PlainColumn::bind(DataManager* dataManPtr) { dataManPtr_p = dataManPtr; }
 
 bool PlainColumn::isWritable() const { return dataColPtr_p->isWritable(); }

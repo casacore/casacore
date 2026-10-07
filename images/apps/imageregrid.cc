@@ -172,11 +172,11 @@ int main(int argc, const char* argv[]) {
         cerr << errMsg << endl;
       }
     } else {
-      ImageInterface<float>* pim = 0;
-      if (dynamic_cast<HDF5Image<float>*>(pImage) != 0) {
+      ImageInterface<float>* pim = nullptr;
+      if (dynamic_cast<HDF5Image<float>*>(pImage) != nullptr) {
         pim = new HDF5Image<float>(itsTmp->shape(), itsTmp->coordinates(), out);
       }
-      if (pim == 0) {
+      if (pim == nullptr) {
         pim = new PagedImage<float>(itsTmp->shape(), itsTmp->coordinates(), out);
       }
       pim->copyData(*itsTmp);

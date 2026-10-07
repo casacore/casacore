@@ -59,7 +59,7 @@ template <typename T>
 std::istream &operator>>(std::istream &s, Array<T> &x);
 
 template <typename T>
-bool read(std::istream &s, Array<T> &x, const IPosition *ip = 0, bool it = false);
+bool read(std::istream &s, Array<T> &x, const IPosition *ip = nullptr, bool it = false);
 // </group>
 
 // General read support function for matrices.
@@ -77,7 +77,7 @@ bool read(std::istream &s, Array<T> &x, const IPosition *ip = 0, bool it = false
 // trans will be true if transpose asked by user; or if forced by it.
 template <typename T>
 bool readArrayBlock(std::istream &s, bool &trans, IPosition &p, std::vector<T> &x,
-                    const IPosition *ip = 0, bool it = false);
+                    const IPosition *ip = nullptr, bool it = false);
 
 // <summary>
 // Global functions for Matrix/Vector input/output using ASCII format.

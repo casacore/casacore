@@ -90,7 +90,7 @@ static std::shared_ptr<HDF5File> theLastHDF5;
 void imageExprParse_clear() {
   theNrNodes = 0;
   theLastTable = Table();
-  theLastHDF5 = 0;
+  theLastHDF5 = nullptr;
 }
 
 // Is there no last table or HDF5 file?
@@ -615,17 +615,17 @@ LatticeExprNode ImageExprParse::makeLRNode() const {
     }
   }
   // Now try to find the region in the file.
-  ImageRegion* regPtr = 0;
+  ImageRegion* regPtr = nullptr;
   int index = (names.size() == 1 ? 0 : 2);
   if (!theLastTable.isNull()) {
-    RegionHandlerTable regHand(getRegionTable, 0);
+    RegionHandlerTable regHand(getRegionTable, nullptr);
     regPtr = regHand.getRegion(names[index], RegionHandler::Any, false);
   }
   if (theLastHDF5) {
-    RegionHandlerHDF5 regHand(getRegionHDF5, 0);
+    RegionHandlerHDF5 regHand(getRegionHDF5, nullptr);
     regPtr = regHand.getRegion(names[index], RegionHandler::Any, false);
   }
-  if (regPtr == 0) {
+  if (regPtr == nullptr) {
     if (index == 0) {
       throw(AipsError("ImageExprParse: '" + itsSval + "' is an unknown lattice, image, or region"));
     } else {
@@ -663,28 +663,28 @@ bool ImageExprParse::tryLatticeNode(LatticeExprNode& node, const String& name) c
     switch (pLatt->dataType()) {
       case TpFloat: {
         ImageInterface<float>* img = dynamic_cast<ImageInterface<float>*>(pLatt);
-        AlwaysAssert(img != 0, AipsError);
+        AlwaysAssert(img != nullptr, AipsError);
         node = LatticeExprNode(*img);
         type = img->imageType();
         break;
       }
       case TpDouble: {
         ImageInterface<double>* img = dynamic_cast<ImageInterface<double>*>(pLatt);
-        AlwaysAssert(img != 0, AipsError);
+        AlwaysAssert(img != nullptr, AipsError);
         node = LatticeExprNode(*img);
         type = img->imageType();
         break;
       }
       case TpComplex: {
         ImageInterface<Complex>* img = dynamic_cast<ImageInterface<Complex>*>(pLatt);
-        AlwaysAssert(img != 0, AipsError);
+        AlwaysAssert(img != nullptr, AipsError);
         node = LatticeExprNode(*img);
         type = img->imageType();
         break;
       }
       case TpDComplex: {
         ImageInterface<DComplex>* img = dynamic_cast<ImageInterface<DComplex>*>(pLatt);
-        AlwaysAssert(img != 0, AipsError);
+        AlwaysAssert(img != nullptr, AipsError);
         node = LatticeExprNode(*img);
         type = img->imageType();
         break;
@@ -768,11 +768,11 @@ LatticeExprNode ImageExprParse::makeImageNode(const String& name, const String& 
   LatticeExprNode node;
   if (!Table::isReadable(name)) {
     LatticeBase* lattPtr = ImageOpener::openImage(name, spec);
-    ImageInterface<float>* img = 0;
-    if (lattPtr != 0) {
+    ImageInterface<float>* img = nullptr;
+    if (lattPtr != nullptr) {
       img = dynamic_cast<ImageInterface<float>*>(lattPtr);
     }
-    if (img == 0) {
+    if (img == nullptr) {
       throw AipsError("ImageExprParse: " + name + " has an unknown image type");
     }
     node = LatticeExprNode(*img);

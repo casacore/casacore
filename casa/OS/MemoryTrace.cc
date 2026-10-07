@@ -40,8 +40,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 bool MemoryTrace::theirDoTrace = false;
 std::ofstream MemoryTrace::theirFile;
 Timer MemoryTrace::theirTimer;
-void* (*MemoryTrace::theirOldMallocHook)(size_t, const void*) = 0;
-void (*MemoryTrace::theirOldFreeHook)(void*, const void*) = 0;
+void* (*MemoryTrace::theirOldMallocHook)(size_t, const void*) = nullptr;
+void (*MemoryTrace::theirOldFreeHook)(void*, const void*) = nullptr;
 
 void MemoryTrace::open() {
   if (!theirFile.is_open()) {

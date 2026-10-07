@@ -67,7 +67,7 @@ int MSStateGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSStateGram = 0;
+static const char* strpMSStateGram = nullptr;
 static int posMSStateGram = 0;
 // MSStateGramwrap out of namespace
 

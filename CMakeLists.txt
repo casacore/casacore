@@ -175,11 +175,20 @@ endif ()
 # Casacore uses longlong, so no warnings for it.
 # Clang gives warning on bison generated code; disable unneeded-internal-declaration.
 if (NOT CMAKE_CXX_FLAGS)
-    set (CMAKE_CXX_FLAGS "-Wextra -Wall -W -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic")
-#SET(CMAKE_CXX_FLAGS="-g -O0 -Wall -Wextra -Wshadow -Wunused-variable
-# -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers
-# -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs
-# -ftest-coverage -Wold-style-cast -Weffc++ -Wconversion")
+   set (CMAKE_CXX_FLAGS
+  "-Wextra \
+  -Wall \
+  -W \
+  -Wpointer-arith \
+  -Woverloaded-virtual \
+  -Wwrite-strings \
+  -pedantic \
+  -Wzero-as-null-pointer-constant \
+  -Wundef \
+  -Wvla \
+  -Wpointer-arith \
+  -Wno-unused-parameter \
+  -Wno-psabi")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unneeded-internal-declaration")
     endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

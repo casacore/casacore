@@ -183,8 +183,8 @@ void ScalarRecordColumnData::allocIterBuf(void*&, void*&, std::shared_ptr<BaseCo
 }
 
 void ScalarRecordColumnData::freeIterBuf(void*& lastVal, void*& curVal) {
-  lastVal = 0;
-  curVal = 0;
+  lastVal = nullptr;
+  curVal = nullptr;
 }
 
 // # It was felt that putstart takes too much space, so therefore

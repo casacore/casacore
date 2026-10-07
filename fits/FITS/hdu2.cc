@@ -35,7 +35,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 //== FitsBit specializations ==================================================
-FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT, n), field(0) {}
+FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT, n), field(nullptr) {}
 FitsField<FitsBit>::~FitsField() {}
 //=============================================================================
 int FitsField<FitsBit>::fitsfieldsize() const {
@@ -529,7 +529,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, FITSErrorHandler e
       errfn(errhandler),
       err_status(OK),
       no_dims(0),
-      dimn(0),
+      dimn(nullptr),
       fits_data_size(0),
       data_type(FITS::NOVALUE),
       fits_item_size(0),
@@ -571,7 +571,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, FITSErrorHandler e
   //      << "fits_item_size=" << fits_item_size
   //      << "local_item_size=" << local_item_size
   //      << endl;
-  if (kwlist_(FITS::NAXIS) != 0) {
+  if (kwlist_(FITS::NAXIS) != nullptr) {
     // cout << "kwlist_(FITS::NAXIS) " << *kwlist_(FITS::NAXIS) << endl;
     no_dims = kwlist_(FITS::NAXIS)->asInt();
   } else {
@@ -581,7 +581,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, FITSErrorHandler e
   // cout << "[HeaderDataUnit::HeaderDataUnit] no_dims=" << no_dims << endl;
 
   if (no_dims > 0) {
-    if ((dimn = new int[no_dims]) == 0) {
+    if ((dimn = new int[no_dims]) == nullptr) {
       errmsg(NOMEM, "[HeaderDataUnit::HeaderDataUnit] Cannot allocate memory.");
       no_dims = 0;
       return;
@@ -602,7 +602,7 @@ HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, FITSErrorHan
       errfn(errhandler),
       err_status(OK),
       no_dims(0),
-      dimn(0),
+      dimn(nullptr),
       fits_data_size(0),
       data_type(FITS::NOVALUE),
       fits_item_size(0),
@@ -627,7 +627,7 @@ HeaderDataUnit::HeaderDataUnit(FITS::HDUType, FITSErrorHandler errhandler, FitsI
       errfn(errhandler),
       err_status(OK),
       no_dims(0),
-      dimn(0),
+      dimn(nullptr),
       fits_data_size(0),
       data_type(FITS::NOVALUE),
       fits_item_size(0),
@@ -647,7 +647,7 @@ bool HeaderDataUnit::init_data_unit(FITS::HDUType t) {
   // kwlist_ is initialized in the constuctor or methods like write_bintbl_hdr()
   kwlist_.first();
   FitsKeyword *fkw = kwlist_.curr();
-  if (fkw == 0) {
+  if (fkw == nullptr) {
     errmsg(BADRULES, "Header is not constructed/written yet![HeaderDataUnit::init_data_unit]");
     return false;
   } else {
@@ -681,7 +681,7 @@ bool HeaderDataUnit::init_data_unit(FITS::HDUType t) {
     return false;
   }
   if (no_dims > 0) {
-    if ((dimn = new int[no_dims]) == 0) {
+    if ((dimn = new int[no_dims]) == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory[HeaderDataUnit::init_data_unit]");
       no_dims = 0;
       return false;
@@ -704,8 +704,8 @@ void HeaderDataUnit::posEnd() {
 //==============================================================================
 char *HeaderDataUnit::assign(FITS::ReservedName nm) {
   char *s;
-  if (kwlist_(nm) != 0) {
-    if ((s = new char[kwlist_.curr()->valStrlen() + 1]) == 0)
+  if (kwlist_(nm) != nullptr) {
+    if ((s = new char[kwlist_.curr()->valStrlen() + 1]) == nullptr)
       errmsg(NOMEM, "Cannot allocate memory");
     else {
       memcpy(s, kwlist_.curr()->asString(), kwlist_.curr()->valStrlen());
@@ -718,8 +718,8 @@ char *HeaderDataUnit::assign(FITS::ReservedName nm) {
 //==============================================================================
 char *HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
   char *s;
-  if (kwlist_(nm, ndx) != 0) {
-    if ((s = new char[kwlist_.curr()->valStrlen() + 1]) == 0)
+  if (kwlist_(nm, ndx) != nullptr) {
+    if ((s = new char[kwlist_.curr()->valStrlen() + 1]) == nullptr)
       errmsg(NOMEM, "Cannot allocate memory");
     else {
       memcpy(s, kwlist_.curr()->asString(), kwlist_.curr()->valStrlen());
@@ -767,7 +767,7 @@ int HeaderDataUnit::get_hdr(FITS::HDUType t, FitsKeywordList &kw) {
 }
 //=============================================================================
 double HeaderDataUnit::asgdbl(FITS::ReservedName n, double x) {
-  if (kwlist_(n) == 0)
+  if (kwlist_(n) == nullptr)
     return x;
   else if (kwlist_.curr()->type() == FITS::DOUBLE)
     return kwlist_.curr()->asDouble();
@@ -776,7 +776,7 @@ double HeaderDataUnit::asgdbl(FITS::ReservedName n, double x) {
 }
 //=============================================================================
 double HeaderDataUnit::asgdbl(FITS::ReservedName n, int i, double x) {
-  if (kwlist_(n, i) == 0)
+  if (kwlist_(n, i) == nullptr)
     return x;
   else if (kwlist_.curr()->type() == FITS::DOUBLE)
     return kwlist_.curr()->asDouble();
@@ -798,18 +798,18 @@ ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsInput &f, FITS::HDUType t,
 }
 //============================================================================
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsKeywordList &k, FITSErrorHandler errhandler)
-    : HeaderDataUnit(k, FITS::UnknownExtensionHDU, errhandler, 0) {
+    : HeaderDataUnit(k, FITS::UnknownExtensionHDU, errhandler, nullptr) {
   ex_assign();
 }
 //============================================================================
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsKeywordList &k, FITS::HDUType t,
                                                  FITSErrorHandler errhandler)
-    : HeaderDataUnit(k, t, errhandler, 0) {
+    : HeaderDataUnit(k, t, errhandler, nullptr) {
   ex_assign();
 }
 //============================================================================
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FITS::HDUType t, FITSErrorHandler errhandler)
-    : HeaderDataUnit(t, errhandler, 0) {
+    : HeaderDataUnit(t, errhandler, nullptr) {
   ex_assign();
 }
 //============================================================================
@@ -819,10 +819,10 @@ ExtensionHeaderDataUnit::~ExtensionHeaderDataUnit() {
 }
 //====================================================================================
 void ExtensionHeaderDataUnit::ex_assign() {
-  extver_x = kwlist_(FITS::EXTVER) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  extlevel_x = kwlist_(FITS::EXTLEVEL) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  pcount_x = kwlist_(FITS::PCOUNT) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
-  gcount_x = kwlist_(FITS::GCOUNT) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
+  extver_x = kwlist_(FITS::EXTVER) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  extlevel_x = kwlist_(FITS::EXTLEVEL) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  pcount_x = kwlist_(FITS::PCOUNT) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
+  gcount_x = kwlist_(FITS::GCOUNT) == nullptr ? FITS::minInt : kwlist_.curr()->asInt();
   xtension_x = assign(FITS::XTENSION);
   extname_x = assign(FITS::EXTNAME);
 }
@@ -869,7 +869,7 @@ FitsBase *FitsBase::make(const FITS::ValueType &type, int n) {
       assert(0);
       break;
   }
-  return 0;
+  return nullptr;
 }
 //========================================================================================
 FitsBase *FitsBase::make(const FITS::ValueType &type, int n, int *d) {
@@ -906,7 +906,7 @@ FitsBase *FitsBase::make(const FITS::ValueType &type, int n, int *d) {
       assert(0);
       break;
   }
-  return 0;
+  return nullptr;
 }
 //=======================================================================================
 FitsBase *FitsBase::make(FitsBase &x) {
@@ -955,29 +955,29 @@ void AsciiTableExtension::at_assign() {
   char typecode;
 
   tfields_x = 0;  // first initialize everything
-  tbcol_x = 0;
-  tform_x = 0;
-  tscal_x = 0;
-  tzero_x = 0;
-  isatnull_x = 0;
-  tnull_x = 0;
-  tnulla_x = 0;
-  ttype_x = 0;
-  tunit_x = 0;
-  tdisp_x = 0;
-  tdim_x = 0;
+  tbcol_x = nullptr;
+  tform_x = nullptr;
+  tscal_x = nullptr;
+  tzero_x = nullptr;
+  isatnull_x = nullptr;
+  tnull_x = nullptr;
+  tnulla_x = nullptr;
+  ttype_x = nullptr;
+  tunit_x = nullptr;
+  tdisp_x = nullptr;
+  tdim_x = nullptr;
   theap_x = 0;
-  author_x = 0;
-  referenc_x = 0;
-  fld = 0;
-  fits_offset = 0;
-  fits_width = 0;
-  format = 0;
-  table_offset = 0;
-  data_addr = 0;
+  author_x = nullptr;
+  referenc_x = nullptr;
+  fld = nullptr;
+  fits_offset = nullptr;
+  fits_width = nullptr;
+  format = nullptr;
+  table_offset = nullptr;
+  data_addr = nullptr;
   alloc_row = 0;
-  table = 0;
-  fitsrow = 0;
+  table = nullptr;
+  fitsrow = nullptr;
   tablerowsize = 0;
   fitsrowsize = 0;
   isoptimum = false;
@@ -987,7 +987,7 @@ void AsciiTableExtension::at_assign() {
   if (err_status != OK) return;
 
   // Assign values from keywords
-  if (kwlist_(FITS::TFIELDS) == 0) {
+  if (kwlist_(FITS::TFIELDS) == nullptr) {
     errmsg(MISSKEY, "Missing required TFIELDS keyword");
     tfields_x = 0;
   } else
@@ -1011,22 +1011,22 @@ void AsciiTableExtension::at_assign() {
   tunit_x = new char *[tfields_x];
   tdisp_x = new char *[tfields_x];
   tdim_x = new char *[tfields_x];
-  if (tbcol_x == 0 || tform_x == 0 || tscal_x == 0 || tzero_x == 0 || isatnull_x == 0 ||
-      tnull_x == 0 || tnulla_x == 0 || ttype_x == 0 || tunit_x == 0 || tdisp_x == 0 ||
-      tdim_x == 0) {
+  if (tbcol_x == nullptr || tform_x == nullptr || tscal_x == nullptr || tzero_x == nullptr ||
+      isatnull_x == nullptr || tnull_x == nullptr || tnulla_x == nullptr || ttype_x == nullptr ||
+      tunit_x == nullptr || tdisp_x == nullptr || tdim_x == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
   for (i = 0; i < tfields_x; i++) {
-    tbcol_x[i] = kwlist_(FITS::TBCOL, (i + 1)) == 0 ? Int_null : kwlist_.curr()->asInt();
+    tbcol_x[i] = kwlist_(FITS::TBCOL, (i + 1)) == nullptr ? Int_null : kwlist_.curr()->asInt();
     tform_x[i] = assign(FITS::TFORM, (i + 1));
     tscal_x[i] = asgdbl(FITS::TSCAL, (i + 1), 1.0);
     tzero_x[i] = asgdbl(FITS::TZERO, (i + 1), 0.0);
     isatnull_x[i] = false;
     tnull_x[i] = Int_null;
-    if (kwlist_(FITS::TNULL, (i + 1)) != 0) {
+    if (kwlist_(FITS::TNULL, (i + 1)) != nullptr) {
       if (kwlist_.curr()->type() == FITS::STRING) {
-        if ((tnulla_x[i] = new char[kwlist_.curr()->valStrlen() + 1]) == 0)
+        if ((tnulla_x[i] = new char[kwlist_.curr()->valStrlen() + 1]) == nullptr)
           errmsg(NOMEM, "Cannot allocate memory");
         else {
           memcpy(tnulla_x[i], kwlist_.curr()->asString(), kwlist_.curr()->valStrlen());
@@ -1051,14 +1051,14 @@ void AsciiTableExtension::at_assign() {
   format = new char *[tfields()];
   table_offset = new unsigned int[tfields()];
   data_addr = new void *[tfields()];
-  if (fld == 0 || fits_offset == 0 || fits_width == 0 || format == 0 || table_offset == 0 ||
-      data_addr == 0) {
+  if (fld == nullptr || fits_offset == nullptr || fits_width == nullptr || format == nullptr ||
+      table_offset == nullptr || data_addr == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
   for (i = 0; i < tfields(); ++i) {
     format[i] = new char[strlen(tform(i)) + 3];  // the new format
-    if (format[i] == 0) {
+    if (format[i] == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -1106,14 +1106,14 @@ void AsciiTableExtension::at_assign() {
         break;
       default:
         errmsg(BADRULES, "Invalid type code for TFORM");
-        fld[i] = 0;
+        fld[i] = nullptr;
         break;
     }
     format[i][n] = '\0';  // formats are converted
   }
   for (i = 0; i < tfields(); ++i)
-    if (fld[i] == 0)  // if any fields were not constructed
-      return;         // bail out
+    if (fld[i] == nullptr)  // if any fields were not constructed
+      return;               // bail out
 
   for (i = 0; i < tfields(); ++i) fld[i]->setaddr(&data_addr[i]);  // set field addresses
 
@@ -1172,7 +1172,7 @@ void AsciiTableExtension::at_assign() {
 
   // set data buffers and associated bounds markers
   fitsrow = new unsigned char[fitsrowsize];
-  if (fitsrow == 0) {
+  if (fitsrow == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
@@ -1324,7 +1324,7 @@ int AsciiTableExtension::write_ascTbl_hdr(
   if (ffflnm(fout.getfptr(), l_filename, &l_status)) {
     errmsg(BADOPER, "[AsciiTableExtension::write_ascTbl_hdr()] fflnm() failed!");
   }
-  fitsfile *l_newfptr = 0;
+  fitsfile *l_newfptr = nullptr;
   l_status = 0;
   if (ffopen(&l_newfptr, l_filename, READWRITE, &l_status)) {
     errmsg(BADOPER, "[AsciiTableExtension::write_ascTbl_hdr()] ffreopen() CHDU failed!");
@@ -1474,25 +1474,25 @@ void BinaryTableExtension::bt_assign() {
   int nd;
 
   tfields_x = 0;  // first initialize everything
-  tform_x = 0;
-  tscal_x = 0;
-  tzero_x = 0;
-  isatnull_x = 0;
-  tnull_x = 0;
-  ttype_x = 0;
-  tunit_x = 0;
-  tdisp_x = 0;
-  tdim_x = 0;
+  tform_x = nullptr;
+  tscal_x = nullptr;
+  tzero_x = nullptr;
+  isatnull_x = nullptr;
+  tnull_x = nullptr;
+  ttype_x = nullptr;
+  tunit_x = nullptr;
+  tdisp_x = nullptr;
+  tdim_x = nullptr;
   theap_x = 0;
-  author_x = 0;
-  referenc_x = 0;
-  fld = 0;
-  fits_offset = 0;
-  table_offset = 0;
-  data_addr = 0;
+  author_x = nullptr;
+  referenc_x = nullptr;
+  fld = nullptr;
+  fits_offset = nullptr;
+  table_offset = nullptr;
+  data_addr = nullptr;
   alloc_row = 0;
-  table = 0;
-  fitsrow = 0;
+  table = nullptr;
+  fitsrow = nullptr;
   tablerowsize = 0;
   fitsrowsize = 0;
   isoptimum = false;
@@ -1501,7 +1501,7 @@ void BinaryTableExtension::bt_assign() {
   curr_row = 0;
   if (err_status != OK) return;
 
-  if (kwlist_(FITS::TFIELDS) == 0) {
+  if (kwlist_(FITS::TFIELDS) == nullptr) {
     errmsg(MISSKEY, "Missing required TFIELDS keyword");
     tfields_x = 0;
   } else
@@ -1510,7 +1510,7 @@ void BinaryTableExtension::bt_assign() {
     errmsg(BADSIZE, "Invalid value for TFIELDS keyword");
     tfields_x = 0;
   }
-  theap_x = kwlist_(FITS::THEAP) == 0 ? Int_null : kwlist_.curr()->asInt();
+  theap_x = kwlist_(FITS::THEAP) == nullptr ? Int_null : kwlist_.curr()->asInt();
   author_x = assign(FITS::AUTHOR);
   referenc_x = assign(FITS::REFERENC);
   if (tfields_x == 0) return;
@@ -1523,8 +1523,9 @@ void BinaryTableExtension::bt_assign() {
   tunit_x = new char *[tfields_x];
   tdisp_x = new char *[tfields_x];
   tdim_x = new char *[tfields_x];
-  if (tform_x == 0 || tscal_x == 0 || tzero_x == 0 || isatnull_x == 0 || tnull_x == 0 ||
-      ttype_x == 0 || tunit_x == 0 || tdisp_x == 0 || tdim_x == 0) {
+  if (tform_x == nullptr || tscal_x == nullptr || tzero_x == nullptr || isatnull_x == nullptr ||
+      tnull_x == nullptr || ttype_x == nullptr || tunit_x == nullptr || tdisp_x == nullptr ||
+      tdim_x == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
@@ -1532,7 +1533,7 @@ void BinaryTableExtension::bt_assign() {
     tform_x[i] = assign(FITS::TFORM, (i + 1));
     tscal_x[i] = asgdbl(FITS::TSCAL, (i + 1), 1.0);
     tzero_x[i] = asgdbl(FITS::TZERO, (i + 1), 0.0);
-    if (kwlist_(FITS::TNULL, (i + 1)) == 0) {
+    if (kwlist_(FITS::TNULL, (i + 1)) == nullptr) {
       isatnull_x[i] = false;
       tnull_x[i] = Int_null;
     } else {
@@ -1556,7 +1557,7 @@ void BinaryTableExtension::bt_assign() {
   fits_offset = new unsigned int[tfields()];
   table_offset = new unsigned int[tfields()];
   data_addr = new void *[tfields()];
-  if (fld == 0 || fits_offset == 0 || table_offset == 0 || data_addr == 0) {
+  if (fld == nullptr || fits_offset == nullptr || table_offset == nullptr || data_addr == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
@@ -1583,7 +1584,7 @@ void BinaryTableExtension::bt_assign() {
         if (p[j] == ',') ++nd;
       ++nd;
       dd = new int[nd];
-      if (dd == 0) {
+      if (dd == nullptr) {
         errmsg(NOMEM, "Could not allocate memory");
         return;
       }
@@ -1641,11 +1642,11 @@ void BinaryTableExtension::bt_assign() {
           break;
         default:
           errmsg(BADRULES, "Invalid type code for TFORM");
-          fld[i] = 0;
+          fld[i] = nullptr;
           break;
       }
       delete[] dd;
-      if (fld[i] == 0) {
+      if (fld[i] == nullptr) {
         errmsg(NOMEM, "Cannot allocate memory");
         return;
       }
@@ -1690,10 +1691,10 @@ void BinaryTableExtension::bt_assign() {
           break;
         default:
           errmsg(BADRULES, "Invalid type code for TFORM");
-          fld[i] = 0;
+          fld[i] = nullptr;
           break;
       }
-      if (fld[i] == 0) {
+      if (fld[i] == nullptr) {
         errmsg(NOMEM, "Cannot allocate memory");
         return;
       }
@@ -1826,13 +1827,13 @@ void BinaryTableExtension::bt_assign() {
 
   // set data buffers and associated bounds markers
   alloc_row = 0;
-  table = 0;
-  for (i = 0; i < tfields(); ++i) data_addr[i] = 0;
+  table = nullptr;
+  for (i = 0; i < tfields(); ++i) data_addr[i] = nullptr;
   if (isoptimum)
     fitsrow = table;
   else {
     fitsrow = new unsigned char[fitsrowsize];
-    if (fitsrow == 0) {
+    if (fitsrow == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return;
     }
@@ -1955,7 +1956,7 @@ int BinaryTableExtension::set_next(int n) {
   if (n > (int)alloc_row) {
     delete[] table;  // must allocate more rows
     table = new unsigned char[n * tablerowsize];
-    if (table == 0) {
+    if (table == nullptr) {
       errmsg(NOMEM, "Cannot allocate memory");
       return -1;
     }
@@ -2058,7 +2059,7 @@ int BinaryTableExtension::write_binTbl_hdr(
   if (ffflnm(fout.getfptr(), l_filename, &l_status)) {
     errmsg(BADOPER, "[BinaryTableExtension::write_bintbl_hdr()] fflnm() failed!");
   }
-  fitsfile *l_newfptr = 0;
+  fitsfile *l_newfptr = nullptr;
   l_status = 0;
   if (ffopen(&l_newfptr, l_filename, READWRITE, &l_status)) {
     errmsg(BADOPER, "[BinaryTableExtension::write_bintbl_hdr()] ffreopen() CHDU failed!");
@@ -2221,8 +2222,8 @@ FitsArray<FitsBit>::FitsArray(int n, const int *d) : FitsField<FitsBit>(1) {
     for (i = 1; i < no_dims; ++i) factor[i] = factor[i - 1] * dimn[i - 1];
   } else {
     no_dims = 1;
-    dimn = 0;
-    factor = 0;
+    dimn = nullptr;
+    factor = nullptr;
     no_elements = 1;
   }
 }

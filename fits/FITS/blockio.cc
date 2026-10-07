@@ -36,7 +36,7 @@ void BlockIO::errmsg(IOErrs e, const char *s) {
   static char msgstring[180];  // storage for composing error messages
   ostringstream msgline;
   msgline << "BlockIO:  ";
-  if (m_filename == 0 || *m_filename == '\0')
+  if (m_filename == nullptr || *m_filename == '\0')
     msgline << "File Descriptor " << m_fd;
   else
     msgline << "File " << m_filename;
@@ -50,7 +50,7 @@ void BlockIO::errmsg(IOErrs e, const char *s) {
 //========================================================================================
 // wrap the constructor with cfitsio of NASA. GYL
 BlockIO::BlockIO(const char *f, int o, int r, int n, FITSErrorHandler errhandler)
-    : m_filename(0),
+    : m_filename(nullptr),
       m_options(o),
       m_recsize(r),
       m_nrec(n),
@@ -58,23 +58,23 @@ BlockIO::BlockIO(const char *f, int o, int r, int n, FITSErrorHandler errhandler
       m_errfn(errhandler),
       m_err_status(OK),
       m_fd(-1),
-      m_buffer(0),
+      m_buffer(nullptr),
       m_block_no(0),
       m_rec_no(0),
       m_current(0),
       m_iosize(0) {
-  if (f == 0 || (*f == '\0')) {
+  if (f == nullptr || (*f == '\0')) {
     errmsg(NOSUCHFILE, "No filename was specified");
     return;
   }
-  if ((m_filename = new char[strlen(f) + 1]) == 0) {
+  if ((m_filename = new char[strlen(f) + 1]) == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
-  if ((m_buffer = new char[m_blocksize]) == 0) {
+  if ((m_buffer = new char[m_blocksize]) == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     delete[] m_filename;
-    m_filename = 0;
+    m_filename = nullptr;
     return;
   }
   strcpy(m_filename, f);
@@ -93,8 +93,8 @@ BlockIO::BlockIO(const char *f, int o, int r, int n, FITSErrorHandler errhandler
       errmsg(OPENERR, "File exists already!");
       delete[] m_filename;
       delete[] m_buffer;
-      m_filename = 0;
-      m_buffer = 0;
+      m_filename = nullptr;
+      m_buffer = nullptr;
     } else {
       if (((m_fptr->Fptr)->io_pos) != 0) {
         (m_fptr->Fptr)->io_pos = 0;
@@ -108,12 +108,13 @@ BlockIO::BlockIO(const char *f, int o, int r, int n, FITSErrorHandler errhandler
       errmsg(OPENERR, "Open file error!");
       delete[] m_filename;
       delete[] m_buffer;
-      m_filename = 0;
-      m_buffer = 0;
+      m_filename = nullptr;
+      m_buffer = nullptr;
     } else {
       // fits_open_file() puts the bytepos at the beginning of the data unit, so move it back to
       // beginning of HDU.
-      if (m_fptr == 0) cout << "[BlockIO::BlockIO()] m_fptr is null, open file failed." << endl;
+      if (m_fptr == nullptr)
+        cout << "[BlockIO::BlockIO()] m_fptr is null, open file failed." << endl;
       // cout<<"[BlockIO::BlockIO()] filesize = "<< (m_fptr->Fptr)->filesize << endl;
       if (((m_fptr->Fptr)->bytepos) != 0) {
         if (ffmbyt(m_fptr, 0, REPORT_EOF, &l_status) != 0) {
@@ -128,7 +129,7 @@ BlockIO::BlockIO(const char *f, int o, int r, int n, FITSErrorHandler errhandler
 // Can we get the file name from the file descriptor fd? No. However, this constructor
 // is only used for standard io. So we do not have to worry about it.
 BlockIO::BlockIO(int f, int r, int n, FITSErrorHandler errhandler)
-    : m_filename(0),
+    : m_filename(nullptr),
       m_options(0),
       m_recsize(r),
       m_nrec(n),
@@ -140,7 +141,7 @@ BlockIO::BlockIO(int f, int r, int n, FITSErrorHandler errhandler)
       m_rec_no(0),
       m_current(0),
       m_iosize(0) {
-  if ((m_buffer = new char[m_blocksize]) == 0) {
+  if ((m_buffer = new char[m_blocksize]) == nullptr) {
     errmsg(NOMEM, "Cannot allocate memory");
     return;
   }
@@ -148,7 +149,7 @@ BlockIO::BlockIO(int f, int r, int n, FITSErrorHandler errhandler)
 //======================================================================================
 // close fits file with cfitsio function
 BlockIO::~BlockIO() {
-  if (m_filename != 0 && strlen(m_filename) > 0) {
+  if (m_filename != nullptr && strlen(m_filename) > 0) {
     // For writing node, fits_close_file() damages the output file!
     int l_status = 0;
     if (m_options == O_RDONLY) {
@@ -206,7 +207,7 @@ int BlockIO::close_file(fitsfile *fptr, int *status) {
 #endif
     free((fptr->Fptr)->headstart);  // free memory for headstart array
     free((fptr->Fptr)->filename);   // free memory for the filename
-    (fptr->Fptr)->filename = 0;
+    (fptr->Fptr)->filename = nullptr;
     (fptr->Fptr)->validcode = 0;  // magic value to indicate invalid fptr
     free(fptr->Fptr);             // free memory for the FITS file structure
     free(fptr);                   // free memory for the FITS file structure
@@ -261,7 +262,7 @@ char *BlockInput::read() {
            &l_status);  // IO - error status
     if (l_status) {
       fits_report_error(stderr, l_status); /* print error report */
-      return (0);
+      return (nullptr);
     }
 
     // try to move on to the next record

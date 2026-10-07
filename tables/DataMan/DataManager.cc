@@ -71,7 +71,7 @@ DataManager::DataManager()
       seqnr_p(0),
       asBigEndian_p(false),
       tsmOption_p(TSMOption::Buffer, 0, 0),
-      clone_p(0) {
+      clone_p(nullptr) {
   table_p = new Table;
 }
 

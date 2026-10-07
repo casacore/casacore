@@ -85,7 +85,7 @@ class PGPlotter;
 
 class LatticeCleanProgress {
  public:
-  LatticeCleanProgress(PGPlotter* pgplotter = 0);
+  LatticeCleanProgress(PGPlotter* pgplotter = nullptr);
 
   virtual ~LatticeCleanProgress();
 

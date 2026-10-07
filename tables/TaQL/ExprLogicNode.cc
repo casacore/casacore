@@ -283,7 +283,7 @@ bool TableExprNodeNOT::getBool(const TableExprId& id) { return !lnode_p->getBool
 
 void TableExprNodeEQDouble::ranges(Block<TableExprRange>& blrange) {
   double dval = 0;
-  TENShPtr tsncol = 0;
+  TENShPtr tsncol = nullptr;
   // # We can store a range if there is a scalar column and constant
   // # (left or right).
   if (lnode_p->operType() == TableExprNodeRep::OtColumn &&
@@ -308,7 +308,7 @@ void TableExprNodeEQDouble::ranges(Block<TableExprRange>& blrange) {
 void TableExprNodeGEDouble::ranges(Block<TableExprRange>& blrange) {
   double st = 0;
   double end = 0;
-  TENShPtr tsncol = 0;
+  TENShPtr tsncol = nullptr;
   // # We can store a range if there is a scalar column and constant
   // # (left or right).
   if (lnode_p->operType() == TableExprNodeRep::OtColumn &&
@@ -334,7 +334,7 @@ void TableExprNodeGEDouble::ranges(Block<TableExprRange>& blrange) {
 void TableExprNodeGTDouble::ranges(Block<TableExprRange>& blrange) {
   double st = 0;
   double end = 0;
-  TENShPtr tsncol = 0;
+  TENShPtr tsncol = nullptr;
   // # We can store a range if there is a scalar column and constant
   // # (left or right).
   if (lnode_p->operType() == TableExprNodeRep::OtColumn &&

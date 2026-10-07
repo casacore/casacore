@@ -45,7 +45,7 @@ MSMColumn::MSMColumn(MSMBase* smptr, int dataType, bool byPtr)
       byPtr_p(byPtr),
       nralloc_p(0),
       nrext_p(0),
-      data_p(EXTBLSZ, static_cast<void*>(0)),
+      data_p(EXTBLSZ, static_cast<void*>(nullptr)),
       ncum_p(EXTBLSZ, (rownr_t)0) {}
 
 MSMColumn::~MSMColumn() { deleteAll(); }
@@ -449,7 +449,7 @@ bool MSMColumn::ok() const {
   // # Their first elements must be zero.
   if (data_p.nelements() == 0 || data_p.nelements() < nrext_p) return false;
   if (data_p.nelements() != ncum_p.nelements()) return false;
-  if (data_p[0] != 0 || ncum_p[0] != 0) return false;
+  if (data_p[0] != nullptr || ncum_p[0] != 0) return false;
   // # If no points, there should be no extensions (and vice versa).
   if ((nralloc_p == 0) != (nrext_p == 0)) return false;
   // # If no extensions, first length must also be zero.
@@ -457,7 +457,7 @@ bool MSMColumn::ok() const {
   // # All extension pointers must be filled in.
   // # The ncum_p array must be increasing.
   for (unsigned int i = 1; i <= nrext_p; i++) {
-    if (data_p[i] == 0 || ncum_p[i] <= ncum_p[i - 1]) return false;
+    if (data_p[i] == nullptr || ncum_p[i] <= ncum_p[i - 1]) return false;
   }
   return true;
 }
@@ -479,11 +479,11 @@ void MSMColumn::deleteData(void* datap, bool byPtr) {
   } else {
     delete[] static_cast<char*>(datap);
   }
-  datap = 0;
+  datap = nullptr;
 }
 
 void* MSMColumn::allocData(rownr_t nrval, bool byPtr) {
-  void* datap = 0;
+  void* datap = nullptr;
   if (byPtr) {
     datap = new void*[nrval];
     memset(datap, 0, nrval * sizeof(void*));

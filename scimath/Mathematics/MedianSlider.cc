@@ -30,7 +30,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MedianSlider::MedianSlider() : buf(0), index(0), valid(0) {}
+MedianSlider::MedianSlider() : buf(nullptr), index(nullptr), valid(nullptr) {}
 
 MedianSlider::MedianSlider(int hw) {
   halfwin = hw;
@@ -46,7 +46,8 @@ MedianSlider::MedianSlider(int hw) {
   ibuf = nind = 0;
 }
 
-MedianSlider::MedianSlider(const MedianSlider &other) : buf(0), index(0), valid(0) {
+MedianSlider::MedianSlider(const MedianSlider &other)
+    : buf(nullptr), index(nullptr), valid(nullptr) {
   *this = other;
 }
 
@@ -69,9 +70,9 @@ void MedianSlider::cleanup() {
   if (buf) delete[] buf;
   if (index) delete[] index;
   if (valid) delete[] valid;
-  buf = 0;
-  index = 0;
-  valid = 0;
+  buf = nullptr;
+  index = nullptr;
+  valid = nullptr;
 }
 
 MedianSlider::~MedianSlider() { cleanup(); }

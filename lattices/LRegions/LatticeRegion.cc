@@ -31,7 +31,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LatticeRegion::LatticeRegion() : itsRegion(0), itsHasRegionMask(false) {}
+LatticeRegion::LatticeRegion() : itsRegion(nullptr), itsHasRegionMask(false) {}
 
 LatticeRegion::LatticeRegion(const LCRegion& region)
     : itsRegion(region.cloneRegion()),
@@ -42,7 +42,7 @@ LatticeRegion::LatticeRegion(LCRegion* region)
     : itsRegion(region), itsSlicer(region->boundingBox()), itsHasRegionMask(region->hasMask()) {}
 
 LatticeRegion::LatticeRegion(const Slicer& slicer, const IPosition& latticeShape)
-    : itsRegion(0), itsHasRegionMask(false) {
+    : itsRegion(nullptr), itsHasRegionMask(false) {
   // Make sure that the slicer has blc,trc filled in.
   IPosition blc, trc, inc;
   slicer.inferShapeFromSource(latticeShape, blc, trc, inc);
@@ -62,7 +62,7 @@ LatticeRegion& LatticeRegion::operator=(const LatticeRegion& other) {
   if (this != &other) {
     delete itsRegion;
     itsRegion = other.itsRegion;
-    if (itsRegion != 0) {
+    if (itsRegion != nullptr) {
       itsRegion = itsRegion->cloneRegion();
     }
     itsSlicer = other.itsSlicer;

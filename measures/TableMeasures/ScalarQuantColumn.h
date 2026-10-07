@@ -175,14 +175,14 @@ class ScalarQuantColumn {
   void put(rownr_t rownr, const Quantum<T>& q);
 
   // Test whether the Quantum column has variable units
-  bool isUnitVariable() const { return (itsUnitsCol != 0); }
+  bool isUnitVariable() const { return (itsUnitsCol != nullptr); }
 
   // Returns the column's value for Units as a string.
   // An empty string is returned if the column has variable units.
   const String& getUnits() const { return itsUnit.getName(); }
 
   // Test if the object is null.
-  bool isNull() const { return (itsDataCol == 0); }
+  bool isNull() const { return (itsDataCol == nullptr); }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;

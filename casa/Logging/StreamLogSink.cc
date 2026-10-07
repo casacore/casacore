@@ -35,21 +35,21 @@ String StreamLogSink::id() const { return String("StreamLogSink"); }
 
 StreamLogSink::StreamLogSink(ostream *theStream, bool del)
     : stream_p(theStream), deleteStream(del) {
-  if (stream_p == 0) {
+  if (stream_p == nullptr) {
     stream_p = &cerr;
   }
 }
 
 StreamLogSink::StreamLogSink(LogMessage::Priority filter, ostream *theStream, bool del)
     : LogSinkInterface(LogFilter(filter)), stream_p(theStream), deleteStream(del) {
-  if (stream_p == 0) {
+  if (stream_p == nullptr) {
     stream_p = &cerr;
   }
 }
 
 StreamLogSink::StreamLogSink(const LogFilterInterface &filter, ostream *theStream, bool del)
     : LogSinkInterface(filter), stream_p(theStream), deleteStream(del) {
-  if (stream_p == 0) {
+  if (stream_p == nullptr) {
     stream_p = &cerr;
   }
 }
@@ -71,7 +71,7 @@ StreamLogSink &StreamLogSink::operator=(const StreamLogSink &other) {
 
 StreamLogSink::~StreamLogSink() {
   if (deleteStream) delete stream_p;
-  stream_p = 0;
+  stream_p = nullptr;
 }
 
 bool StreamLogSink::postLocally(const LogMessage &message) {

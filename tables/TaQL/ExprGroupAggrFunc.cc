@@ -42,7 +42,7 @@ TableExprGroupCountAll::~TableExprGroupCountAll() {}
 void TableExprGroupCountAll::apply(const TableExprId&) { itsValue++; }
 
 TableExprGroupCount::TableExprGroupCount(TableExprNodeRep* node)
-    : TableExprGroupFuncInt(node), itsColumn(0) {
+    : TableExprGroupFuncInt(node), itsColumn(nullptr) {
   // Get the TableColumn object from the argument of the gcount node.
   itsColumn = dynamic_cast<TableExprNodeArrayColumn*>(itsOperand);
   if (!itsColumn) {

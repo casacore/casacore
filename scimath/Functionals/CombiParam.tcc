@@ -46,7 +46,7 @@ template <class T>
 CombiParam<T>::~CombiParam() {
   for (unsigned int i = 0; i < functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i];
-    functionPtr_p[i] = 0;
+    functionPtr_p[i] = nullptr;
   }
 }
 
@@ -57,7 +57,7 @@ CombiParam<T> &CombiParam<T>::operator=(const CombiParam<T> &other) {
     ndim_p = other.ndim_p;
     for (unsigned int i = 0; i < functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i];
-      functionPtr_p[i] = 0;
+      functionPtr_p[i] = nullptr;
     }
     functionPtr_p = Block<Function<T> *>(other.functionPtr_p.nelements());
     for (unsigned int i = 0; i < functionPtr_p.nelements(); ++i) {

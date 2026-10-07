@@ -69,9 +69,9 @@ LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, LogIO& 
     : os_p(os),
       goodParameterStatus_p(true),
       error_p(""),
-      pInLattice_p(0),
-      pStoreLattice_p(0),
-      pStats_p(0),
+      pInLattice_p(nullptr),
+      pStoreLattice_p(nullptr),
+      pStats_p(nullptr),
       binAll_p(true),
       needStorageLattice_p(true),
       doCumu_p(false),
@@ -105,9 +105,9 @@ LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, bool sh
                                         bool forceDisk)
     : goodParameterStatus_p(true),
       error_p(""),
-      pInLattice_p(0),
-      pStoreLattice_p(0),
-      pStats_p(0),
+      pInLattice_p(nullptr),
+      pStoreLattice_p(nullptr),
+      pStats_p(nullptr),
       binAll_p(true),
       needStorageLattice_p(true),
       doCumu_p(false),
@@ -138,9 +138,9 @@ LatticeHistograms<T>::LatticeHistograms(const MaskedLattice<T>& lattice, bool sh
 
 template <class T>
 LatticeHistograms<T>::LatticeHistograms(const LatticeHistograms<T>& other)
-    : pInLattice_p(0),
-      pStoreLattice_p(0),
-      pStats_p(0)
+    : pInLattice_p(nullptr),
+      pStoreLattice_p(nullptr),
+      pStats_p(nullptr)
 //
 // Copy constructor.  Storage lattice not copied.
 //
@@ -157,19 +157,19 @@ LatticeHistograms<T>& LatticeHistograms<T>::operator=(const LatticeHistograms<T>
   if (this != &other) {
     // Deal with pointer
 
-    if (pInLattice_p != 0) delete pInLattice_p;
+    if (pInLattice_p != nullptr) delete pInLattice_p;
     pInLattice_p = other.pInLattice_p->cloneML();
 
     // Delete storage and statistics objects.
 
-    if (pStoreLattice_p != 0) {
+    if (pStoreLattice_p != nullptr) {
       delete pStoreLattice_p;
-      pStoreLattice_p = 0;
+      pStoreLattice_p = nullptr;
     }
     //
-    if (pStats_p != 0) {
+    if (pStats_p != nullptr) {
       delete pStats_p;
-      pStats_p = 0;
+      pStats_p = nullptr;
     }
     needStorageLattice_p = true;
 
@@ -204,14 +204,14 @@ LatticeHistograms<T>::~LatticeHistograms()
 //
 {
   delete pInLattice_p;
-  pInLattice_p = 0;
-  if (pStoreLattice_p != 0) {
+  pInLattice_p = nullptr;
+  if (pStoreLattice_p != nullptr) {
     delete pStoreLattice_p;
-    pStoreLattice_p = 0;
+    pStoreLattice_p = nullptr;
   }
-  if (pStats_p != 0) {
+  if (pStats_p != nullptr) {
     delete pStats_p;
-    pStats_p = 0;
+    pStats_p = nullptr;
   }
 }
 
@@ -428,13 +428,13 @@ bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
     oss << "Lattices of type " << latticeType << " are not currently supported" << endl;
     error_p = oss.str();
     goodParameterStatus_p = false;
-    pInLattice_p = 0;
+    pInLattice_p = nullptr;
     return false;
   }
 
   // Clone pointer
 
-  if (pInLattice_p != 0) delete pInLattice_p;
+  if (pInLattice_p != nullptr) delete pInLattice_p;
   pInLattice_p = lattice.cloneML();
 
   // This is the location of the input SubLattice in
@@ -927,7 +927,7 @@ template <class T>
 bool LatticeHistograms<T>::makeStatistics() {
   // Create LatticeStatistics object.  Show progress meter.
 
-  if (pStats_p != 0) delete pStats_p;
+  if (pStats_p != nullptr) delete pStats_p;
   pStats_p = new LatticeStatistics<T>(*pInLattice_p, os_p, showProgress_p, forceDisk_p);
 
   // Set state.  Make sure that the min/max is set to the
@@ -975,7 +975,7 @@ void LatticeHistograms<T>::makeHistograms() {
 
   // Delete old histogram storage lattice
 
-  if (pStoreLattice_p != 0) delete pStoreLattice_p;
+  if (pStoreLattice_p != nullptr) delete pStoreLattice_p;
 
   // Create storage lattice
 
@@ -987,7 +987,7 @@ void LatticeHistograms<T>::makeHistograms() {
   // Create collapser for LatticeApply
 
   HistTiledCollapser<T> collapser(pStats_p, nBins_p);
-  LatticeHistProgress* pProgressMeter = 0;
+  LatticeHistProgress* pProgressMeter = nullptr;
   if (showProgress_p) pProgressMeter = new LatticeHistProgress();
 
   // This is the first output axis (there is only one in IH) getting
@@ -1001,9 +1001,9 @@ void LatticeHistograms<T>::makeHistograms() {
   SubLattice<T> outLatt(*pStoreLattice_p, true);
   LatticeApply<T, T>::tiledApply(outLatt, *pInLattice_p, collapser, IPosition(cursorAxes_p),
                                  newOutAxis, pProgressMeter);
-  if (pProgressMeter != 0) {
+  if (pProgressMeter != nullptr) {
     delete pProgressMeter;
-    pProgressMeter = 0;
+    pProgressMeter = nullptr;
   }
 }
 

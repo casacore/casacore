@@ -346,12 +346,12 @@ QBase *Quantum<Qtype>::clone() const {
 
 template <class Qtype>
 unsigned int Quantum<Qtype>::type() const {
-  return quantumType(static_cast<Quantum<Qtype> *>(0));
+  return quantumType(static_cast<Quantum<Qtype> *>(nullptr));
 }
 
 template <class Qtype>
 unsigned int Quantum<Qtype>::myType() {
-  return quantumType(static_cast<Quantum<Qtype> *>(0));
+  return quantumType(static_cast<Quantum<Qtype> *>(nullptr));
 }
 
 }  // namespace casacore

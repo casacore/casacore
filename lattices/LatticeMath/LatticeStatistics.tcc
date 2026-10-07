@@ -85,8 +85,8 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, LogIO& 
       doRobust_p(false),
       doList_p(false),
       error_p(""),
-      pInLattice_p(0),
-      pStoreLattice_p(0),
+      pInLattice_p(nullptr),
+      pStoreLattice_p(nullptr),
       noInclude_p(true),
       noExclude_p(true),
       needStorageLattice_p(true),
@@ -127,8 +127,8 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, bool sh
       doRobust_p(false),
       doList_p(false),
       error_p(""),
-      pInLattice_p(0),
-      pStoreLattice_p(0),
+      pInLattice_p(nullptr),
+      pStoreLattice_p(nullptr),
       noInclude_p(true),
       noExclude_p(true),
       needStorageLattice_p(true),
@@ -159,8 +159,8 @@ LatticeStatistics<T>::LatticeStatistics(const MaskedLattice<T>& lattice, bool sh
 
 template <class T>
 LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T>& other)
-    : pInLattice_p(0),
-      pStoreLattice_p(0),
+    : pInLattice_p(nullptr),
+      pStoreLattice_p(nullptr),
       _saf(other._saf),
       _chauvIters(other._chauvIters),
       _aOld(other._aOld),

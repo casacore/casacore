@@ -588,7 +588,7 @@ bool FITSCoordinateUtil::fromFITSHeader(int& stokesFITSValue, CoordinateSystem& 
 
   // Parse FITS header cards with wcs and remove wcs cards from char header
 
-  ::wcsprm* wcsPtr = 0;
+  ::wcsprm* wcsPtr = nullptr;
   int relax = WCSHDR_all;
   int nrej = 0;
   int nwcs = 0;

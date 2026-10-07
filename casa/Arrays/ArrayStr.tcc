@@ -317,7 +317,7 @@ void writeAsciiVector(const Vector<T>& vect, const char* fileout) {
 
 template <typename T>
 std::istream& operator>>(std::istream& s, Array<T>& x) {
-  if (!read(s, x, 0, false)) {
+  if (!read(s, x, nullptr, false)) {
     s.clear(std::ios::failbit | s.rdstate());
   }
   return s;
@@ -413,7 +413,7 @@ bool readArrayBlock(std::istream& s, bool& trans, IPosition& p, std::vector<T>& 
   char ch;
   size_t cnt = 0;
   p.resize(0);
-  if (ip == 0) {
+  if (ip == nullptr) {
     p = IPosition(0);
   } else {
     p = *ip;
@@ -434,7 +434,7 @@ bool readArrayBlock(std::istream& s, bool& trans, IPosition& p, std::vector<T>& 
       bool lpt;
       IPosition lpp, lpq;
       std::vector<size_t> lpx;
-      if (!readArrayBlock(s, lpt, lpp, lpx, 0, false) || lpp.nelements() != 1) {
+      if (!readArrayBlock(s, lpt, lpp, lpx, nullptr, false) || lpp.nelements() != 1) {
         how = false;
       } else {
         lpq.resize(lpp(0));

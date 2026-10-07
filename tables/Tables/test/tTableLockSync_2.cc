@@ -199,7 +199,7 @@ void c(const TableLock& lockMode, unsigned int wait, unsigned int lastWait, bool
   ArrayColumn<float> pol(tab, "Pol");
   ArrayColumn<float> data(tab, "Data");
   Block<unsigned int> count;
-  Time* lastTime = 0;
+  Time* lastTime = nullptr;
 
   Vector<float> freqValues;
   Vector<float> polValues;
@@ -259,7 +259,7 @@ void c(const TableLock& lockMode, unsigned int wait, unsigned int lastWait, bool
     }
     // When no more rows in last wait, stop the program.
     if (nrrow == oldNrrow) {
-      if (lastTime != 0) {
+      if (lastTime != nullptr) {
         if (lastTime->age() > lastWait) {
           break;
         }
@@ -268,7 +268,7 @@ void c(const TableLock& lockMode, unsigned int wait, unsigned int lastWait, bool
       }
     } else {
       delete lastTime;
-      lastTime = 0;
+      lastTime = nullptr;
       oldNrrow = nrrow;
     }
   }

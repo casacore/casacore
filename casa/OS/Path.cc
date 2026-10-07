@@ -126,7 +126,7 @@ const String& Path::absoluteName() const {
 String Path::resolvedName() const {
   char name[PATH_MAX + 1];
   char* ptr = realpath(absoluteName().c_str(), name);
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     throw AipsError("resolvedName(" + absoluteName() + ") failed: " + strerror(errno));
   }
   return String(name);
@@ -298,7 +298,7 @@ String Path::expandName(const String& inString) const {
         tempString.prepend("~");
 #else
         passwd* passWd = getpwnam(temp.c_str());
-        if (passWd != 0) {
+        if (passWd != nullptr) {
           tempString.erase(0, cursor);
           tempString.insert(0, passWd->pw_dir);
           cursor = 0;

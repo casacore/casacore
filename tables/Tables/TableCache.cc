@@ -44,7 +44,7 @@ PlainTable* TableCache::operator()(const String& tableName) const {
 PlainTable* TableCache::getTable(const String& tableName) const {
   std::map<String, void*>::const_iterator iter = tableMap_p.find(tableName);
   if (iter == tableMap_p.end()) {
-    return 0;
+    return nullptr;
   }
   return static_cast<PlainTable*>(iter->second);
 }
@@ -153,7 +153,7 @@ PlainTable* TableCache::lookCache(const String& name, int tableOption,
                                   const TableLock& lockOptions) {
   // # Exit if table is not in cache yet.
   PlainTable* btp = this->operator()(name);
-  if (btp == 0) {
+  if (btp == nullptr) {
     return btp;
   }
   // # Check if option matches. It does if equal.

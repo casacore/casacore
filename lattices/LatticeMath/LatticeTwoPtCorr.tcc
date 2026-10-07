@@ -58,7 +58,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
 
   // Set up function pointer
 
-  FuncPtr funcPtr = 0;
+  FuncPtr funcPtr = nullptr;
   if (method == STRUCTUREFUNCTION) {
     funcPtr = &LatticeTwoPtCorr<T>::structureFunction;
   } else {
@@ -141,7 +141,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation(MaskedLattice<T>& latOut, const Masked
   LatticeStepper stepOut(shapeOut, cursorShapeOut, axes, axisPath);
   LatticeIterator<T> itOut(latOut, stepOut);
   bool outIsMasked = latOut.hasPixelMask() && latOut.pixelMask().isWritable();
-  LatticeIterator<bool>* itOutMaskPtr = 0;
+  LatticeIterator<bool>* itOutMaskPtr = nullptr;
   if (outIsMasked) {
     Lattice<bool>& outMask = latOut.pixelMask();
     itOutMaskPtr = new LatticeIterator<bool>(outMask, stepOut);

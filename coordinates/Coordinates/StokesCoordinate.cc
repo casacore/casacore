@@ -357,19 +357,19 @@ bool StokesCoordinate::save(RecordInterface &container, const String &fieldName)
 StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
                                             const String &fieldName) {
   if (!container.isDefined(fieldName)) {
-    return 0;
+    return nullptr;
   }
 
   Record subrec(container.asRecord(fieldName));
 
   if (!subrec.isDefined("axes")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> axes;
   subrec.get("axes", axes);
   //
   if (!subrec.isDefined("stokes")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> stokes;
   subrec.get("stokes", stokes);

@@ -35,6 +35,9 @@
 
 #undef YY_DECL
 #define YY_DECL int RecordGramlex (YYSTYPE* lvalp)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 
@@ -330,3 +333,4 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 .         { return YYERRCODE; }
 
 %%
+#pragma GCC diagnostic pop

@@ -35,7 +35,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Global pointer to the parser object
-MSFeedParse* MSFeedParse::thisMSFParser = 0;
+MSFeedParse* MSFeedParse::thisMSFParser = nullptr;
 TableExprNode MSFeedParse::column1AsTEN_p, MSFeedParse::column2AsTEN_p;
 std::shared_ptr<MSSelectionErrorHandler> MSFeedParse::thisMSFErrorHandler;
 

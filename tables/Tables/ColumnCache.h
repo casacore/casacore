@@ -119,7 +119,7 @@ class ColumnCache {
 
 inline void ColumnCache::setIncrement(rownr_t increment) { itsIncr = increment; }
 
-inline void ColumnCache::invalidate() { set(1, 0, 0); }
+inline void ColumnCache::invalidate() { set(1, 0, nullptr); }
 
 inline int64_t ColumnCache::offset(rownr_t rownr) const {
   if (rownr < itsStart || rownr > itsEnd) {

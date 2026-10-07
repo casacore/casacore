@@ -43,7 +43,7 @@ AipsIOReaderWriter::~AipsIOReaderWriter() {}
 // the file.  It would be nice to be able to have multiple
 // regions in a single file.
 bool AipsIOReaderWriter::read(Record& region) {
-  ImageRegion* leImgReg = 0;
+  ImageRegion* leImgReg = nullptr;
   read(leImgReg);
 
   try {

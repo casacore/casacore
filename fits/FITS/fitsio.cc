@@ -76,7 +76,7 @@ void FitsInput::errmsg(FitsErrs e, const char *s) {
   static char msgstring[180];
   ostringstream msgline;
   // msgline << "FitsInput Error: ";
-  if (m_fin.fname() == 0 || *m_fin.fname() == '\0')
+  if (m_fin.fname() == nullptr || *m_fin.fname() == '\0')
     msgline << "File Descriptor " << m_fin.fdes();
   else
     msgline << "File " << m_fin.fname();
@@ -103,7 +103,7 @@ char *FitsDiskInput::skip(int n) {  // skip n logical records and read
   int l_totalrow = ((m_fptr->Fptr)->filesize) / m_recsize;
   if (l_endrow >= l_totalrow) {
     errmsg(READERR, "Attempt to read past end of file [FitsdiskInput::skip()]");
-    return (0);
+    return (nullptr);
   }
 
   // move the i/o pointer to the end position of the skipped block.
@@ -116,7 +116,7 @@ char *FitsDiskInput::skip(int n) {  // skip n logical records and read
   if (l_status) {
     fits_report_error(stderr, l_status); /* print error report */
     errmsg(READERR, "bytepos setting error [FitsdiskInput::skip()]");
-    return (0);
+    return (nullptr);
   } else {
     // (m_iosize-m_current) is in the previous m_block_no already.
     int l_phy_rec = (n - (m_iosize - m_current) / m_recsize) / m_nrec;
@@ -131,7 +131,7 @@ char *FitsDiskInput::skip(int n) {  // skip n logical records and read
 //===============================================================================================
 BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d, int b,
                                   FITSErrorHandler errhandler) {
-  BlockInput *bptr = 0;
+  BlockInput *bptr = nullptr;
 
   switch (d) {
     case FITS::Disk:
@@ -153,7 +153,7 @@ void FitsOutput::errmsg(FitsErrs e, const char *s) {
   static char msgstring[180];
   ostringstream msgline;
   msgline << "FitsOutput error:  ";
-  if (m_fout.fname() == 0 || *m_fout.fname() == '\0')
+  if (m_fout.fname() == nullptr || *m_fout.fname() == '\0')
     msgline << "File Descriptor " << m_fout.fdes();
   else
     msgline << "File " << m_fout.fname();
@@ -169,7 +169,7 @@ BlockOutput &FitsOutput::make_output(const char *n, const FITS::FitsDevice &d, i
                                      FITSErrorHandler errhandler)
 
 {
-  BlockOutput *bptr = 0;
+  BlockOutput *bptr = nullptr;
   switch (d) {
     case FITS::Disk:
       bptr = new FitsDiskOutput(n, m_recsize, b, errhandler);
@@ -364,7 +364,7 @@ char *FitsInput::read_sp() {
     if (!m_curr) {
       m_rec_type = FITS::EndOfFile;
       m_got_rec = true;
-      return 0;
+      return nullptr;
     }
     if (m_fin.err()) {
       errmsg(IOERR, "[FitsInput::read_sp()] Failed to read a sp record.");
@@ -396,7 +396,7 @@ char *FitsInput::read_sp() {
     }
     m_rec_type = FITS::HDURecord;
     m_got_rec = true;
-    return 0;
+    return nullptr;
   } else if (m_rec_type == FITS::UnrecognizableRecord) {
     if (m_got_rec) {
       m_got_rec = false;
@@ -406,7 +406,7 @@ char *FitsInput::read_sp() {
     if (!m_curr) {
       m_rec_type = FITS::EndOfFile;
       m_got_rec = true;
-      return 0;
+      return nullptr;
     }
     if (m_fin.err()) {
       errmsg(IOERR, "[FitsInput::read_sp()] Failed to read a unrecognizable record.");
@@ -420,7 +420,7 @@ char *FitsInput::read_sp() {
     }
     m_rec_type = FITS::HDURecord;
     m_got_rec = true;
-    return 0;
+    return nullptr;
   } else if (m_rec_type == FITS::SpecialRecord) {
     if (m_got_rec) {
       m_got_rec = false;
@@ -431,7 +431,7 @@ char *FitsInput::read_sp() {
       m_rec_type = FITS::EndOfFile;
       m_got_rec = true;
       m_err_status = OK;
-      return 0;
+      return nullptr;
     }
     if (m_fin.err()) {
       errmsg(IOERR, "[FitsInput::read_sp()] Failed to read a sp record.");
@@ -440,7 +440,7 @@ char *FitsInput::read_sp() {
     m_err_status = OK;
     return m_curr;
   }
-  return 0;
+  return nullptr;
 }
 //========================================================================================================
 // implement read_head_rec() with CFITSIO of NASA
@@ -1288,7 +1288,7 @@ FitsIO::FitsIO(FITSErrorHandler errhandler)
       m_hdu_type(FITS::NotAHDU),
       m_errfn(errhandler),
       m_err_status(OK),
-      m_curr(0),
+      m_curr(nullptr),
       m_bytepos(0),
       m_item_size(0),
       m_data_type(FITS::NOVALUE),

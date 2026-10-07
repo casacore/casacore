@@ -33,8 +33,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 DirectoryIterator::DirectoryIterator()
-    : itsDirectoryDescriptor(0),
-      itsDirectoryEntry(0),
+    : itsDirectoryDescriptor(nullptr),
+      itsDirectoryEntry(nullptr),
       itsEnd(false),
       itsDirectory(),
       itsExpression(".*") {
@@ -42,8 +42,8 @@ DirectoryIterator::DirectoryIterator()
 }
 
 DirectoryIterator::DirectoryIterator(const Directory& dir)
-    : itsDirectoryDescriptor(0),
-      itsDirectoryEntry(0),
+    : itsDirectoryDescriptor(nullptr),
+      itsDirectoryEntry(nullptr),
       itsEnd(false),
       itsDirectory(dir),
       itsExpression(".*") {
@@ -51,8 +51,8 @@ DirectoryIterator::DirectoryIterator(const Directory& dir)
 }
 
 DirectoryIterator::DirectoryIterator(const Directory& dir, const Regex& regExpression)
-    : itsDirectoryDescriptor(0),
-      itsDirectoryEntry(0),
+    : itsDirectoryDescriptor(nullptr),
+      itsDirectoryEntry(nullptr),
       itsEnd(false),
       itsDirectory(dir),
       itsExpression(regExpression) {
@@ -60,8 +60,8 @@ DirectoryIterator::DirectoryIterator(const Directory& dir, const Regex& regExpre
 }
 
 DirectoryIterator::DirectoryIterator(const DirectoryIterator& that)
-    : itsDirectoryDescriptor(0),
-      itsDirectoryEntry(0),
+    : itsDirectoryDescriptor(nullptr),
+      itsDirectoryEntry(nullptr),
       itsEnd(false),
       itsDirectory(that.itsDirectory),
       itsExpression(that.itsExpression) {
@@ -85,8 +85,8 @@ DirectoryIterator::~DirectoryIterator() {
 DirectoryIterator& DirectoryIterator::operator=(const DirectoryIterator& that) {
   if (this != &that) {
     closedir(itsDirectoryDescriptor);
-    itsDirectoryDescriptor = 0;
-    itsDirectoryEntry = 0;
+    itsDirectoryDescriptor = nullptr;
+    itsDirectoryEntry = nullptr;
     itsEnd = false;
     itsDirectory = that.itsDirectory;
     itsExpression = that.itsExpression;
@@ -109,7 +109,7 @@ void DirectoryIterator::init() {
   // Set the private directory on the current working directory
   // Open the directory, if this is not possible throw an exception
   itsDirectoryDescriptor = opendir(itsDirectory.path().expandedName().c_str());
-  if (itsDirectoryDescriptor == 0) {
+  if (itsDirectoryDescriptor == nullptr) {
     throw(AipsError("DirectoryIterator: error on directory " + itsDirectory.path().expandedName() +
                     ": " + strerror(errno)));
   }
@@ -135,7 +135,7 @@ void DirectoryIterator::operator++() {
 #else
     itsDirectoryEntry = readdir(itsDirectoryDescriptor);
 #endif
-    if (itsDirectoryEntry == 0) {
+    if (itsDirectoryEntry == nullptr) {
       itsEnd = true;
       break;
     }

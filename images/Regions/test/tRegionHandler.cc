@@ -60,7 +60,7 @@ void doIt(RegionHandler& reghand) {
   AlwaysAssertExit(reghand.hasRegion("reg1"));
   AlwaysAssertExit(!reghand.hasRegion("reg2"));
   regptr = reghand.getRegion("reg1");
-  AlwaysAssertExit(regptr != 0);
+  AlwaysAssertExit(regptr != nullptr);
   AlwaysAssertExit(*regptr == ImageRegion(box1));
   delete regptr;
 
@@ -71,12 +71,12 @@ void doIt(RegionHandler& reghand) {
   // Define the region in the regions group and check it can be found.
   reghand.defineRegion("regr1", box1, RegionHandler::Regions);
   regptr = reghand.getRegion("regr1", RegionHandler::Regions, false);
-  AlwaysAssertExit(regptr != 0);
+  AlwaysAssertExit(regptr != nullptr);
   delete regptr;
   regptr = reghand.getRegion("regr1", RegionHandler::Masks, false);
-  AlwaysAssertExit(regptr == 0);
+  AlwaysAssertExit(regptr == nullptr);
   regptr = reghand.getRegion("regr1", RegionHandler::Any, false);
-  AlwaysAssertExit(regptr != 0);
+  AlwaysAssertExit(regptr != nullptr);
   delete regptr;
 
   // Get all region names.
@@ -94,15 +94,15 @@ void doIt(RegionHandler& reghand) {
   // Rename the region in the regions group and check it can be found.
   reghand.renameRegion("regr2", "regr1", RegionHandler::Regions);
   regptr = reghand.getRegion("regr2", RegionHandler::Regions, false);
-  AlwaysAssertExit(regptr != 0);
+  AlwaysAssertExit(regptr != nullptr);
   delete regptr;
   regptr = reghand.getRegion("regr2", RegionHandler::Masks, false);
-  AlwaysAssertExit(regptr == 0);
+  AlwaysAssertExit(regptr == nullptr);
   regptr = reghand.getRegion("regr2", RegionHandler::Any, false);
-  AlwaysAssertExit(regptr != 0);
+  AlwaysAssertExit(regptr != nullptr);
   delete regptr;
   regptr = reghand.getRegion("regr1", RegionHandler::Any, false);
-  AlwaysAssertExit(regptr == 0);
+  AlwaysAssertExit(regptr == nullptr);
 
   // Create a lattice and mask and make it default region.
   PagedArray<float> lattice(shape, "tRegionHandler_tmp.lat");
@@ -123,7 +123,7 @@ void doIt(RegionHandler& reghand) {
 
   // Now get the mask as a region and check it is correct.
   regptr = reghand.getRegion(reghand.getDefaultMask());
-  AlwaysAssertExit(regptr != 0);
+  AlwaysAssertExit(regptr != nullptr);
   AlwaysAssertExit(regptr->isLCRegion());
   delete regptr;
 
@@ -142,13 +142,13 @@ int main() {
 
     SetupNewTable newtab("tRegionHandler_tmp.data", TableDesc(), Table::New);
     theTable = Table(newtab);
-    RegionHandlerTable regtab(getTable, 0);
+    RegionHandlerTable regtab(getTable, nullptr);
     doIt(regtab);
     AlwaysAssertExit(!File("tRegionHandler_tmp.lat/reg2n").exists());
     // Test regions in HDF5 only if supported.
     if (HDF5Object::hasHDF5Support()) {
       theHDF5File = std::make_shared<HDF5File>("tRegionHandler_tmp.hdf5", ByteIO::New);
-      RegionHandlerHDF5 reghdf5(getHDF5File, 0);
+      RegionHandlerHDF5 reghdf5(getHDF5File, nullptr);
       doIt(reghdf5);
     }
   } catch (std::exception& x) {

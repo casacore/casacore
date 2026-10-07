@@ -54,11 +54,11 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 SSMBase::SSMBase(int aBucketSize, unsigned int aCacheSize)
     : DataManager(),
       itsDataManName("SSM"),
-      itsIosFile(0),
+      itsIosFile(nullptr),
       itsNrRows(0),
-      itsCache(0),
-      itsFile(0),
-      itsStringHandler(0),
+      itsCache(nullptr),
+      itsFile(nullptr),
+      itsStringHandler(nullptr),
       itsPersCacheSize(std::max(aCacheSize, static_cast<unsigned int>(2))),
       itsCacheSize(0),
       itsNrBuckets(0),
@@ -84,11 +84,11 @@ SSMBase::SSMBase(int aBucketSize, unsigned int aCacheSize)
 SSMBase::SSMBase(const String& aDataManName, int aBucketSize, unsigned int aCacheSize)
     : DataManager(),
       itsDataManName(aDataManName),
-      itsIosFile(0),
+      itsIosFile(nullptr),
       itsNrRows(0),
-      itsCache(0),
-      itsFile(0),
-      itsStringHandler(0),
+      itsCache(nullptr),
+      itsFile(nullptr),
+      itsStringHandler(nullptr),
       itsPersCacheSize(std::max(aCacheSize, static_cast<unsigned int>(2))),
       itsCacheSize(0),
       itsNrBuckets(0),
@@ -114,11 +114,11 @@ SSMBase::SSMBase(const String& aDataManName, int aBucketSize, unsigned int aCach
 SSMBase::SSMBase(const String& aDataManName, const Record& spec)
     : DataManager(),
       itsDataManName(aDataManName),
-      itsIosFile(0),
+      itsIosFile(nullptr),
       itsNrRows(0),
-      itsCache(0),
-      itsFile(0),
-      itsStringHandler(0),
+      itsCache(nullptr),
+      itsFile(nullptr),
+      itsStringHandler(nullptr),
       itsPersCacheSize(2),
       itsCacheSize(0),
       itsNrBuckets(0),
@@ -154,11 +154,11 @@ SSMBase::SSMBase(const String& aDataManName, const Record& spec)
 SSMBase::SSMBase(const SSMBase& that)
     : DataManager(),
       itsDataManName(that.itsDataManName),
-      itsIosFile(0),
+      itsIosFile(nullptr),
       itsNrRows(0),
-      itsCache(0),
-      itsFile(0),
-      itsStringHandler(0),
+      itsCache(nullptr),
+      itsFile(nullptr),
+      itsStringHandler(nullptr),
       itsPersCacheSize(that.itsPersCacheSize),
       itsCacheSize(0),
       itsNrBuckets(0),
@@ -215,7 +215,7 @@ void SSMBase::setProperties(const Record& rec) {
 }
 
 void SSMBase::clearCache() {
-  if (itsCache != 0) {
+  if (itsCache != nullptr) {
     itsStringHandler->flush();
     itsCache->clear();
   }
@@ -242,7 +242,7 @@ void SSMBase::showBaseStatistics(ostream& anOs) const {
 }
 
 void SSMBase::showCacheStatistics(ostream& anOs) const {
-  if (itsCache != 0) {
+  if (itsCache != nullptr) {
     anOs << "StandardStMan cache statistics:" << endl;
     itsCache->showStatistics(anOs);
     anOs << endl;
@@ -305,13 +305,13 @@ void SSMBase::setCacheSize(unsigned int aCacheSize, bool canExceedNrBuckets) {
   if (!canExceedNrBuckets && itsCacheSize > getCache().nBucket()) {
     itsCacheSize = itsCache->nBucket();
   }
-  if (itsCache != 0) {
+  if (itsCache != nullptr) {
     itsCache->resize(itsCacheSize);
   }
 }
 
 void SSMBase::makeCache() {
-  if (itsCache == 0) {
+  if (itsCache == nullptr) {
     bool forceFill = false;
 
     if (itsPtrIndex.nelements() == 0) {
@@ -386,7 +386,7 @@ void SSMBase::readHeader() {
   unsigned int nrinx;
   anOs >> nrinx;  // Nr of indices
 
-  if (itsStringHandler == 0) {
+  if (itsStringHandler == nullptr) {
     itsStringHandler = new SSMStringHandler(this);
     itsStringHandler->init();
   }
@@ -399,7 +399,7 @@ void SSMBase::readHeader() {
     delete itsPtrIndex[i];
   }
   itsPtrIndex.resize(nrinx, true, false);
-  itsPtrIndex = 0;
+  itsPtrIndex = nullptr;
 }
 
 void SSMBase::readIndexBuckets() {
@@ -548,7 +548,7 @@ void SSMBase::writeIndex() {
 
   itsNrIdxBuckets = aNrBuckets;
 
-  AlwaysAssert(itsStringHandler != 0, AipsError);
+  AlwaysAssert(itsStringHandler != nullptr, AipsError);
   itsLastStringBucket = itsStringHandler->lastStringBucket();
 
   itsStringHandler->flush();
@@ -661,7 +661,7 @@ void SSMBase::addColumn(DataManagerColumn* aColumn) {
   getCache();
 
   SSMColumn* aSSMC = dynamic_cast<SSMColumn*>(aColumn);
-  AlwaysAssert(aSSMC != 0, AipsError);
+  AlwaysAssert(aSSMC != nullptr, AipsError);
 
   aSSMC->doCreate(0);
 
@@ -741,7 +741,7 @@ void SSMBase::removeColumn(DataManagerColumn* aColumn) {
   getCache();
 
   SSMColumn* aSSMC = dynamic_cast<SSMColumn*>(aColumn);
-  AlwaysAssert(aSSMC != 0, AipsError);
+  AlwaysAssert(aSSMC != nullptr, AipsError);
 
   unsigned int aNrCol = ncolumn();
   unsigned int aColNr = aSSMC->getColNr();
@@ -824,13 +824,13 @@ char* SSMBase::find(rownr_t aRowNr, unsigned int aColNr, rownr_t& aStartRow, row
 
 void SSMBase::recreate() {
   delete itsCache;
-  itsCache = 0;
+  itsCache = nullptr;
   delete itsFile;
-  itsFile = 0;
+  itsFile = nullptr;
   delete itsIosFile;
-  itsIosFile = 0;
+  itsIosFile = nullptr;
   delete itsStringHandler;
-  itsStringHandler = 0;
+  itsStringHandler = nullptr;
   itsNrBuckets = 0;
   itsFirstIdxBucket = -1;
   itsFreeBucketsNr = 0;
@@ -890,18 +890,18 @@ rownr_t SSMBase::resync64(rownr_t aNrRows) {
   if (itsPtrIndex.nelements() != 0) {
     readHeader();
   }
-  if (itsCache != 0) {
+  if (itsCache != nullptr) {
     itsCache->resync(itsNrBuckets, itsFreeBucketsNr, itsFirstFreeBucket);
   }
   if (itsPtrIndex.nelements() != 0) {
     readIndexBuckets();
   }
-  if (itsStringHandler != 0) {
+  if (itsStringHandler != nullptr) {
     itsStringHandler->resync();
   }
 
   unsigned int aNrCol = ncolumn();
-  if (itsIosFile != 0) {
+  if (itsIosFile != nullptr) {
     itsIosFile->resync();
   }
   for (unsigned int i = 0; i < aNrCol; i++) {
@@ -926,7 +926,7 @@ rownr_t SSMBase::open64(rownr_t aRowNr, AipsIO& ios) {
   ios.getend();
 
   itsFile = new BucketFile(fileName(), table().isWritable(), 0, false, multiFile());
-  AlwaysAssert(itsFile != 0, AipsError);
+  AlwaysAssert(itsFile != nullptr, AipsError);
 
   // Let the column object initialize themselves (if needed)
   unsigned int aNrCol = ncolumn();
@@ -937,32 +937,32 @@ rownr_t SSMBase::open64(rownr_t aRowNr, AipsIO& ios) {
 }
 
 StManArrayFile* SSMBase::openArrayFile(ByteIO::OpenOption anOpt) {
-  if (itsIosFile == 0) {
+  if (itsIosFile == nullptr) {
     itsIosFile = new StManArrayFile(fileName() + 'i', anOpt, 0, asBigEndian(), 0, multiFile());
   }
   return itsIosFile;
 }
 
 void SSMBase::reopenRW() {
-  if (itsFile != 0) {
+  if (itsFile != nullptr) {
     itsFile->setRW();
   }
-  if (itsIosFile != 0) {
+  if (itsIosFile != nullptr) {
     itsIosFile->reopenRW();
   }
 }
 
 void SSMBase::deleteManager() {
   delete itsIosFile;
-  itsIosFile = 0;
+  itsIosFile = nullptr;
   // Clear cache without flushing.
-  if (itsCache != 0) {
+  if (itsCache != nullptr) {
     itsCache->clear(0, false);
   }
-  if (itsFile != 0) {
+  if (itsFile != nullptr) {
     itsFile->remove();
     delete itsFile;
-    itsFile = 0;
+    itsFile = nullptr;
   }
 }
 

@@ -267,7 +267,7 @@ inline unsigned int SSMColumn::getExternalSizeBytes() const { return itsExternal
 inline unsigned int SSMColumn::getExternalSizeBits() const { return itsExternalSizeBits; }
 
 inline char* SSMColumn::getDataPtr() {
-  if (itsData == 0) {
+  if (itsData == nullptr) {
     itsData = new char[itsSSMPtr->getRowsPerBucket(itsColNr) * itsLocalSize];
   }
   return static_cast<char*>(itsData);

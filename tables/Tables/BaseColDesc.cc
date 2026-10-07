@@ -220,7 +220,7 @@ void BaseColumnDesc::setMaxLength(unsigned int maxLength) {
 // # By default no table description gets returned.
 TableDesc* BaseColumnDesc::tableDesc() {
   throw(TableInvOper("tableDesc(): column " + colName_p + " is no subtable"));
-  return 0;
+  return nullptr;
 }
 
 // # Put the XXXColumnDesc object.

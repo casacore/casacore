@@ -47,24 +47,24 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class M>
 ArrayMeasColumn<M>::ArrayMeasColumn()
-    : itsDataCol(0),
-      itsRefIntCol(0),
-      itsArrRefIntCol(0),
-      itsRefStrCol(0),
-      itsArrRefStrCol(0),
-      itsOffsetCol(0),
-      itsArrOffsetCol(0) {}
+    : itsDataCol(nullptr),
+      itsRefIntCol(nullptr),
+      itsArrRefIntCol(nullptr),
+      itsRefStrCol(nullptr),
+      itsArrRefStrCol(nullptr),
+      itsOffsetCol(nullptr),
+      itsArrOffsetCol(nullptr) {}
 
 template <class M>
 ArrayMeasColumn<M>::ArrayMeasColumn(const Table& tab, const String& columnName)
     : TableMeasColumn(tab, columnName),
-      itsDataCol(0),
-      itsRefIntCol(0),
-      itsArrRefIntCol(0),
-      itsRefStrCol(0),
-      itsArrRefStrCol(0),
-      itsOffsetCol(0),
-      itsArrOffsetCol(0) {
+      itsDataCol(nullptr),
+      itsRefIntCol(nullptr),
+      itsArrRefIntCol(nullptr),
+      itsRefStrCol(nullptr),
+      itsArrRefStrCol(nullptr),
+      itsOffsetCol(nullptr),
+      itsArrOffsetCol(nullptr) {
   const TableMeasDescBase& tmDesc = measDesc();
   AlwaysAssert(M::showMe() == tmDesc.type(), AipsError);
   itsDataCol = new ArrayColumn<double>(tab, columnName);
@@ -116,13 +116,13 @@ ArrayMeasColumn<M>::ArrayMeasColumn(const Table& tab, const String& columnName)
 template <class M>
 ArrayMeasColumn<M>::ArrayMeasColumn(const ArrayMeasColumn<M>& that)
     : TableMeasColumn(),
-      itsDataCol(0),
-      itsRefIntCol(0),
-      itsArrRefIntCol(0),
-      itsRefStrCol(0),
-      itsArrRefStrCol(0),
-      itsOffsetCol(0),
-      itsArrOffsetCol(0) {
+      itsDataCol(nullptr),
+      itsRefIntCol(nullptr),
+      itsArrRefIntCol(nullptr),
+      itsRefStrCol(nullptr),
+      itsArrRefStrCol(nullptr),
+      itsOffsetCol(nullptr),
+      itsArrOffsetCol(nullptr) {
   reference(that);
 }
 
@@ -154,25 +154,25 @@ void ArrayMeasColumn<M>::reference(const ArrayMeasColumn<M>& that) {
   itsOffsetCol = that.itsOffsetCol;
   itsArrOffsetCol = that.itsArrOffsetCol;
   itsMeasRef = that.itsMeasRef;
-  if (itsDataCol != 0) {
+  if (itsDataCol != nullptr) {
     itsDataCol = new ArrayColumn<double>(*itsDataCol);
   }
-  if (itsRefIntCol != 0) {
+  if (itsRefIntCol != nullptr) {
     itsRefIntCol = new ScalarColumn<int>(*itsRefIntCol);
   }
-  if (itsArrRefIntCol != 0) {
+  if (itsArrRefIntCol != nullptr) {
     itsArrRefIntCol = new ArrayColumn<int>(*itsArrRefIntCol);
   }
-  if (itsRefStrCol != 0) {
+  if (itsRefStrCol != nullptr) {
     itsRefStrCol = new ScalarColumn<String>(*itsRefStrCol);
   }
-  if (itsArrRefStrCol != 0) {
+  if (itsArrRefStrCol != nullptr) {
     itsArrRefStrCol = new ArrayColumn<String>(*itsArrRefStrCol);
   }
-  if (itsOffsetCol != 0) {
+  if (itsOffsetCol != nullptr) {
     itsOffsetCol = new ScalarMeasColumn<M>(*itsOffsetCol);
   }
-  if (itsArrOffsetCol != 0) {
+  if (itsArrOffsetCol != nullptr) {
     itsArrOffsetCol = new ArrayMeasColumn<M>(*itsArrOffsetCol);
   }
 }
@@ -221,12 +221,12 @@ void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, bool resize) const {
   // or int.
 
   MeasRef<M> locMRef = itsMeasRef;
-  bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
-  bool strRefs = (itsArrRefStrCol != 0);
+  bool refPerElem = ((itsArrRefIntCol != nullptr) || (itsArrRefStrCol != nullptr));
+  bool strRefs = (itsArrRefStrCol != nullptr);
   Array<int> intRefArr;
   Array<String> strRefArr;
-  const int* r_p = 0;
-  const String* sr_p = 0;
+  const int* r_p = nullptr;
+  const String* sr_p = nullptr;
   bool deleteRef;
   if (refPerElem) {
     if (strRefs) {
@@ -237,9 +237,9 @@ void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, bool resize) const {
       r_p = intRefArr.getStorage(deleteRef);
     }
   } else {
-    if (itsRefIntCol != 0) {
+    if (itsRefIntCol != nullptr) {
       locMRef.set(measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
-    } else if (itsRefStrCol != 0) {
+    } else if (itsRefStrCol != nullptr) {
       typename M::Types tp;
       M::getType(tp, (*itsRefStrCol)(rownr));
       locMRef.set(tp);
@@ -247,15 +247,15 @@ void ArrayMeasColumn<M>::get(rownr_t rownr, Array<M>& meas, bool resize) const {
   }
 
   // Setup for offset component of MeasRef.
-  bool offsetPerElem = (itsArrOffsetCol != 0);
+  bool offsetPerElem = (itsArrOffsetCol != nullptr);
   Array<M> offsetArr;
-  const M* os_p = 0;
+  const M* os_p = nullptr;
   bool deleteOffset;
   if (offsetPerElem) {
     itsArrOffsetCol->get(rownr, offsetArr, true);
     os_p = offsetArr.getStorage(deleteOffset);
   } else {
-    if (itsOffsetCol != 0) {
+    if (itsOffsetCol != nullptr) {
       locMRef.set((*itsOffsetCol)(rownr));
     }
   }
@@ -415,8 +415,8 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
   //   3. Ref varies per element of array. An array of references is written.
   // With 2 and 3 references are stored as either Strings or Ints.
   MeasRef<M> locMRef = itsMeasRef;
-  bool refPerElem = ((itsArrRefIntCol != 0) || (itsArrRefStrCol != 0));
-  bool strRefs = (itsArrRefStrCol != 0);
+  bool refPerElem = ((itsArrRefIntCol != nullptr) || (itsArrRefStrCol != nullptr));
+  bool strRefs = (itsArrRefStrCol != nullptr);
   Array<int> intRefArr;
   Array<String> strRefArr;
   int* r_p;
@@ -440,16 +440,16 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
       tp = meas_p->getRef().getType();
       locMRef.set(tp);
     }
-    if (itsRefIntCol != 0) {
+    if (itsRefIntCol != nullptr) {
       unsigned int tabRefCode = measDesc().getRefDesc().cur2tab(tp);
       itsRefIntCol->put(rownr, tabRefCode);
-    } else if (itsRefStrCol != 0) {
+    } else if (itsRefStrCol != nullptr) {
       itsRefStrCol->put(rownr, M::showType(tp));
     }
   }
 
   // Setup for offset.
-  bool offsetPerElem = (itsArrOffsetCol != 0);
+  bool offsetPerElem = (itsArrOffsetCol != nullptr);
   Array<M> offsetArr;
   M* os_p;
   bool deleteOffset;
@@ -460,11 +460,11 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
   } else if (itsVarOffFlag) {
     // Offsets are variable per row only.
     // Use the offset from the first measure (if any).
-    const Measure* offptr = 0;
+    const Measure* offptr = nullptr;
     if (n > 0) {
       offptr = meas_p->getRef().offset();
     }
-    if (offptr != 0) {
+    if (offptr != nullptr) {
       M moff(offptr);
       locMRef.set(moff);
       itsOffsetCol->put(rownr, moff);
@@ -488,7 +488,7 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
         locMRef.set(refCode);
       }
       if (offsetPerElem) {
-        if (offptr != 0) {
+        if (offptr != nullptr) {
           locMRef.set(M(offptr));
         } else {
           locMRef.set(M());
@@ -507,7 +507,7 @@ void ArrayMeasColumn<M>::put(rownr_t rownr, const Array<M>& meas) {
       }
     }
     if (offsetPerElem) {
-      if (offptr != 0) {
+      if (offptr != nullptr) {
         os_p[i] = M(offptr);
       }
     }

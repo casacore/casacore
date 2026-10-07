@@ -172,7 +172,7 @@ ImageConcat<T>::ImageConcat(const JsonKVMap& jmap, const String& fileName)
     String name = Path::addDirectory(names[i], fileName_p);
     LatticeBase* latt = ImageOpener::openImage(name);
     ImageInterface<T>* img = dynamic_cast<ImageInterface<T>*>(latt);
-    if (img == 0) {
+    if (img == nullptr) {
       delete latt;
       throw AipsError("ImageConcat " + fileName + " contains image " + names[i] +
                       " of another data type");

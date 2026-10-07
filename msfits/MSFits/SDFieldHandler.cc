@@ -42,15 +42,18 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SDFieldHandler::SDFieldHandler() : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0) { ; }
+SDFieldHandler::SDFieldHandler()
+    : msField_p(nullptr), msFieldCols_p(nullptr), rownr_p(-1), index_p(nullptr) {
+  ;
+}
 
 SDFieldHandler::SDFieldHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0) {
+    : msField_p(nullptr), msFieldCols_p(nullptr), rownr_p(-1), index_p(nullptr) {
   initAll(ms, handledCols, row);
 }
 
 SDFieldHandler::SDFieldHandler(const SDFieldHandler &other)
-    : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0) {
+    : msField_p(nullptr), msFieldCols_p(nullptr), rownr_p(-1), index_p(nullptr) {
   *this = other;
 }
 
@@ -265,13 +268,13 @@ void SDFieldHandler::fill(const Record &, const String &name, int directionRefTy
 
 void SDFieldHandler::clearAll() {
   delete msField_p;
-  msField_p = 0;
+  msField_p = nullptr;
 
   delete msFieldCols_p;
-  msFieldCols_p = 0;
+  msFieldCols_p = nullptr;
 
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   clearRow();
 }

@@ -36,6 +36,9 @@
 #undef YY_DECL
 #define YY_DECL int MSSpwGramlex (YYSTYPE* lvalp)
 static std::string                qstr;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*
@@ -174,3 +177,4 @@ SIDENTIFIER  ({NAMES}+"*")
 {WHITE}   { msSpwGramPosition() += yyleng;} /* Eat white spaces */
 .         { msSpwGramPosition() += yyleng;return MSSpwGramtext[0];}
 %%
+#pragma GCC diagnostic pop

@@ -43,18 +43,19 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SDObservationHandler::SDObservationHandler() : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1) {
+SDObservationHandler::SDObservationHandler()
+    : index_p(nullptr), msObs_p(nullptr), msObsCols_p(nullptr), rownr_p(-1) {
   ;
 }
 
 SDObservationHandler::SDObservationHandler(MeasurementSet &ms, Vector<bool> &handledCols,
                                            const Record &row)
-    : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msObs_p(nullptr), msObsCols_p(nullptr), rownr_p(-1) {
   initAll(ms, handledCols, row);
 }
 
 SDObservationHandler::SDObservationHandler(const SDObservationHandler &other)
-    : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msObs_p(nullptr), msObsCols_p(nullptr), rownr_p(-1) {
   *this = other;
 }
 
@@ -206,13 +207,13 @@ void SDObservationHandler::fill(const Record &, const String &telescopeName,
 
 void SDObservationHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete msObs_p;
-  msObs_p = 0;
+  msObs_p = nullptr;
 
   delete msObsCols_p;
-  msObsCols_p = 0;
+  msObsCols_p = nullptr;
 
   clearRow();
 }
@@ -247,7 +248,7 @@ void SDObservationHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols
 void SDObservationHandler::makeIndex() {
   // ensure that any existing index is first deleted
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   int nKeys = 5;
   if (!nsObsIdCol_p.isNull()) nKeys++;

@@ -46,7 +46,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TSMCubeMMap::TSMCubeMMap(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
                          const IPosition& tileShape, const Record& values, int64_t fileOffset)
-    : TSMCube(stman, file, cubeShape, tileShape, values, fileOffset, true), cache_p(0) {
+    : TSMCube(stman, file, cubeShape, tileShape, values, fileOffset, true), cache_p(nullptr) {
   // Note that the TSMCube constructor can call setShape.
   // However, because it is in the constructor TSMCube's setShape is called.
   // Hence we have to make the cache here.
@@ -55,12 +55,13 @@ TSMCubeMMap::TSMCubeMMap(TiledStMan* stman, TSMFile* file, const IPosition& cube
   }
 }
 
-TSMCubeMMap::TSMCubeMMap(TiledStMan* stman, AipsIO& ios) : TSMCube(stman, ios, true), cache_p(0) {}
+TSMCubeMMap::TSMCubeMMap(TiledStMan* stman, AipsIO& ios)
+    : TSMCube(stman, ios, true), cache_p(nullptr) {}
 
 TSMCubeMMap::~TSMCubeMMap() { delete cache_p; }
 
 void TSMCubeMMap::showCacheStatistics(ostream& os) const {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     os << ">>> No TSMCube cache statistics (uses mmap)" << endl;
     os << "<<<" << endl;
   }
@@ -68,26 +69,26 @@ void TSMCubeMMap::showCacheStatistics(ostream& os) const {
 
 void TSMCubeMMap::makeCache() {
   // If there is no cache, make one.
-  if (cache_p == 0) {
+  if (cache_p == nullptr) {
     cache_p = new BucketMapped(filePtr_p->bucketFile(), fileOffset_p, bucketSize_p, nrTiles_p);
   }
 }
 
 void TSMCubeMMap::flushCache() {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->flush();
   }
 }
 
 void TSMCubeMMap::resyncCache() {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->resync(nrTiles_p);
   }
 }
 
 void TSMCubeMMap::deleteCache() {
   delete cache_p;
-  cache_p = 0;
+  cache_p = nullptr;
 }
 
 void TSMCubeMMap::setShape(const IPosition& cubeShape, const IPosition& tileShape) {
@@ -111,7 +112,7 @@ void TSMCubeMMap::extend(uint64_t nr, const Record& coordValues, const TSMColumn
   getCache()->extend(nrTiles_p - nrold);
   filePtr_p->extend((nrTiles_p - nrold) * bucketSize_p);
   // Update the last coordinate (if there).
-  if (lastCoordColumn != 0) {
+  if (lastCoordColumn != nullptr) {
     extendCoordinates(coordValues, lastCoordColumn->columnName(), cubeShape_p(lastDim));
   }
 }

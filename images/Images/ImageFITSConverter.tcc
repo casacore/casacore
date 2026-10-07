@@ -107,11 +107,11 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
     if (pNewImage) {
       delete pNewImage;
     }
-    pNewImage = 0;
+    pNewImage = nullptr;
     error = String("Error creating or writing file ") + newImageName + ":" + x.getMesg();
     return;
   }
-  if (pNewImage == 0) {
+  if (pNewImage == nullptr) {
     error = String("Unknown error writing ") + newImageName;
     return;
   }
@@ -221,7 +221,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
       if (fitsImage.err()) {
         error = "Error reading from FITS image";
         delete pNewImage;
-        pNewImage = 0;
+        pNewImage = nullptr;
         return;
       }
 
@@ -283,7 +283,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
   } catch (const AipsError& x) {
     error = String("Error writing pixel values to image: ") + x.getMesg();
     delete pNewImage;
-    pNewImage = 0;
+    pNewImage = nullptr;
   }
   // ImageInfo (removes any consumed keywords)
   ImageInfo imageInfo = ImageFITSConverter::getImageInfo(headerRec);

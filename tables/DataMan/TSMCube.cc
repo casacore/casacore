@@ -77,7 +77,7 @@ static void TSMCube_MoveData(char* a, char* b, int n) {
 TSMCube::TSMCube(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
                  const IPosition& tileShape, const Record& values, int64_t fileOffset,
                  bool useDerived)
-    : cachedTile_p(0),
+    : cachedTile_p(nullptr),
       stmanPtr_p(stman),
       useDerived_p(useDerived),
       values_p(values),
@@ -87,7 +87,7 @@ TSMCube::TSMCube(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
       tileSize_p(0),
       filePtr_p(file),
       fileOffset_p(0),
-      cache_p(0),
+      cache_p(nullptr),
       userSetCache_p(false),
       lastColAccess_p(NoAccess) {
   if (fileOffset < 0) {
@@ -108,11 +108,11 @@ TSMCube::TSMCube(TiledStMan* stman, TSMFile* file, const IPosition& cubeShape,
 }
 
 TSMCube::TSMCube(TiledStMan* stman, AipsIO& ios, bool useDerived)
-    : cachedTile_p(0),
+    : cachedTile_p(nullptr),
       stmanPtr_p(stman),
       useDerived_p(useDerived),
-      filePtr_p(0),
-      cache_p(0),
+      filePtr_p(nullptr),
+      cache_p(nullptr),
       userSetCache_p(false),
       lastColAccess_p(NoAccess) {
   int fileSeqnr = getObject(ios);
@@ -132,12 +132,12 @@ void TSMCube::clearCache(bool doFlush) {
   if (doFlush) {
     flushCache();
   }
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->clear(0, false);
   }
 }
 void TSMCube::emptyCache() {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->resize(0);
   }
   userSetCache_p = false;
@@ -145,7 +145,7 @@ void TSMCube::emptyCache() {
 }
 
 void TSMCube::showCacheStatistics(ostream& os) const {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     os << ">>> TSMCube cache statistics:" << endl;
     os << "cubeShape: " << cubeShape_p << endl;
     os << "tileShape: " << tileShape_p << endl;
@@ -276,7 +276,7 @@ void TSMCube::putObject(AipsIO& ios) {
   ios << cubeShape_p;
   ios << tileShape_p;
   int seqnr = -1;
-  if (filePtr_p != 0) {
+  if (filePtr_p != nullptr) {
     seqnr = filePtr_p->sequenceNumber();
   }
   ios << seqnr;
@@ -345,27 +345,27 @@ void TSMCube::setupNrTiles() {
 
 void TSMCube::makeCache() {
   // If there is no cache, make one with initially 1 slot.
-  if (cache_p == 0) {
+  if (cache_p == nullptr) {
     cache_p = new BucketCache(filePtr_p->bucketFile(), fileOffset_p, bucketSize_p, nrTiles_p, 1,
                               this, readCallBack, writeCallBack, initCallBack, deleteCallBack);
   }
 }
 
 void TSMCube::flushCache() {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->flush();
   }
 }
 
 void TSMCube::resyncCache() {
-  if (cache_p != 0) {
+  if (cache_p != nullptr) {
     cache_p->resync(nrTiles_p, 0, -1);
   }
 }
 
 void TSMCube::deleteCache() {
   delete cache_p;
-  cache_p = 0;
+  cache_p = nullptr;
 }
 
 bool TSMCube::isExtensible() const { return extensible_p; }
@@ -384,7 +384,7 @@ void TSMCube::extend(uint64_t nr, const Record& coordValues, const TSMColumn* la
   getCache()->extend(nrTiles_p - nrold);
   filePtr_p->extend((nrTiles_p - nrold) * bucketSize_p);
   // Update the last coordinate (if there).
-  if (lastCoordColumn != 0) {
+  if (lastCoordColumn != nullptr) {
     extendCoordinates(coordValues, lastCoordColumn->columnName(), cubeShape_p(lastDim));
   }
 }
@@ -599,11 +599,11 @@ char* TSMCube::readCallBack(void* owner, const char* external) {
   return ((TSMCube*)owner)->readTile(external);
 }
 char* TSMCube::readTile(const char* external) {
-  char* local = 0;
+  char* local = nullptr;
 
-  if (cachedTile_p != 0) {
+  if (cachedTile_p != nullptr) {
     local = cachedTile_p;
-    cachedTile_p = 0;
+    cachedTile_p = nullptr;
   } else {
     local = new char[localTileLength_p];
   }
@@ -619,7 +619,7 @@ void TSMCube::writeTile(char* external, const char* local) {
 }
 void TSMCube::deleteCallBack(void* owner, char* buffer) {
   TSMCube* tsmCube = ((TSMCube*)owner);
-  if (tsmCube->cachedTile_p == 0) {
+  if (tsmCube->cachedTile_p == nullptr) {
     tsmCube->cachedTile_p = buffer;
   } else {
     delete[] buffer;
@@ -633,7 +633,7 @@ char* TSMCube::initCallBack(void* owner) {
 }
 
 unsigned int TSMCube::cacheSize() const {
-  if (cache_p == 0) {
+  if (cache_p == nullptr) {
     return 0;
   }
   return cache_p->cacheSize();

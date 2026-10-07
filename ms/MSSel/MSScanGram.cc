@@ -63,7 +63,7 @@ int MSScanGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpMSScanGram = 0;
+static const char* strpMSScanGram = nullptr;
 static int posMSScanGram = 0;
 
 // # Parse the command.

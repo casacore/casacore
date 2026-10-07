@@ -108,7 +108,7 @@ void ForwardColumnEngine::removeColumn(DataManagerColumn* colp) {
       for (; i < ncolumn(); i++) {
         refColumns_p[i] = refColumns_p[i + 1];
       }
-      refColumns_p[i] = 0;
+      refColumns_p[i] = nullptr;
       return;
     }
   }
@@ -187,7 +187,7 @@ ForwardColumn::ForwardColumn(ForwardColumnEngine* enginePtr, const String& name,
       colName_p(name),
       dataType_p(dataType),
       dataTypeId_p(dataTypeId),
-      colPtr_p(0) {
+      colPtr_p(nullptr) {
   if (!refTable.isNull()) {
     refCol_p.attach(refTable, name);
   }
@@ -297,7 +297,7 @@ IPosition ForwardColumn::shape(rownr_t rownr) { return colPtr_p->shape(rownr); }
 bool ForwardColumn::isShapeDefined(rownr_t rownr) { return colPtr_p->isDefined(rownr); }
 
 bool ForwardColumn::canChangeShape() const {
-  return (colPtr_p == 0 ? false : colPtr_p->canChangeShape());
+  return (colPtr_p == nullptr ? false : colPtr_p->canChangeShape());
 }
 
 void ForwardColumn::getArrayV(rownr_t rownr, ArrayBase& dataPtr) {

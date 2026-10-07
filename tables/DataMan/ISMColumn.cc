@@ -46,7 +46,7 @@ ISMColumn::ISMColumn(ISMBase* parent, int dataType, unsigned int colnr)
       nrelem_p(1),
       startRow_p(1),
       endRow_p(0),
-      lastValue_p(0),
+      lastValue_p(nullptr),
       lastRowPut_p(0) {
   // # The increment in the column cache is always 0,
   // # because multiple rows refer to the same value.
@@ -96,7 +96,7 @@ void ISMColumn::clear() {
     default:
       AlwaysAssert(0, AipsError);
   }
-  lastValue_p = 0;
+  lastValue_p = nullptr;
 }
 
 void ISMColumn::setShapeColumn(const IPosition& shape) {
@@ -859,7 +859,7 @@ void ISMColumn::init() {
     default:
       AlwaysAssert(0, AipsError);
   }
-  AlwaysAssert(lastValue_p != 0, AipsError);
+  AlwaysAssert(lastValue_p != nullptr, AipsError);
 }
 
 void ISMColumn::doCreate(ISMBucket* bucket) {
@@ -885,27 +885,27 @@ void ISMColumn::reopenRW() {}
 
 Conversion::ValueFunction* ISMColumn::getReaduInt(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getToLocal(static_cast<unsigned int*>(0));
+    return CanonicalConversion::getToLocal(static_cast<unsigned int*>(nullptr));
   }
-  return LECanonicalConversion::getToLocal(static_cast<unsigned int*>(0));
+  return LECanonicalConversion::getToLocal(static_cast<unsigned int*>(nullptr));
 }
 Conversion::ValueFunction* ISMColumn::getReadRownr(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getToLocal(static_cast<rownr_t*>(0));
+    return CanonicalConversion::getToLocal(static_cast<rownr_t*>(nullptr));
   }
-  return LECanonicalConversion::getToLocal(static_cast<rownr_t*>(0));
+  return LECanonicalConversion::getToLocal(static_cast<rownr_t*>(nullptr));
 }
 Conversion::ValueFunction* ISMColumn::getWriteuInt(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getFromLocal(static_cast<unsigned int*>(0));
+    return CanonicalConversion::getFromLocal(static_cast<unsigned int*>(nullptr));
   }
-  return LECanonicalConversion::getFromLocal(static_cast<unsigned int*>(0));
+  return LECanonicalConversion::getFromLocal(static_cast<unsigned int*>(nullptr));
 }
 Conversion::ValueFunction* ISMColumn::getWriteRownr(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getFromLocal(static_cast<rownr_t*>(0));
+    return CanonicalConversion::getFromLocal(static_cast<rownr_t*>(nullptr));
   }
-  return LECanonicalConversion::getFromLocal(static_cast<rownr_t*>(0));
+  return LECanonicalConversion::getFromLocal(static_cast<rownr_t*>(nullptr));
 }
 
 size_t ISMColumn::fromString(void* out, const void* in, size_t n,

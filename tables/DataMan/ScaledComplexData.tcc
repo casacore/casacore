@@ -53,8 +53,8 @@ ScaledComplexData<S, T>::ScaledComplexData(const String& virtualColumnName,
       offset_p(offset),
       fixedScale_p(true),
       fixedOffset_p(true),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {}
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {}
 
 template <class S, class T>
 ScaledComplexData<S, T>::ScaledComplexData(const String& virtualColumnName,
@@ -66,8 +66,8 @@ ScaledComplexData<S, T>::ScaledComplexData(const String& virtualColumnName,
       offset_p(offset),
       fixedScale_p(false),
       fixedOffset_p(true),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {}
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {}
 
 template <class S, class T>
 ScaledComplexData<S, T>::ScaledComplexData(const String& virtualColumnName,
@@ -93,8 +93,8 @@ ScaledComplexData<S, T>::ScaledComplexData(const ScaledComplexData<S, T>& that)
       offset_p(that.offset_p),
       fixedScale_p(that.fixedScale_p),
       fixedOffset_p(that.fixedOffset_p),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {}
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {}
 
 template <class S, class T>
 ScaledComplexData<S, T>::ScaledComplexData(const Record& spec)
@@ -103,8 +103,8 @@ ScaledComplexData<S, T>::ScaledComplexData(const Record& spec)
       offset_p(S(0.0, 0.0)),
       fixedScale_p(true),
       fixedOffset_p(true),
-      scaleColumn_p(0),
-      offsetColumn_p(0) {
+      scaleColumn_p(nullptr),
+      offsetColumn_p(nullptr) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
     setNames(spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
     if (spec.isDefined("SCALE")) {
@@ -144,7 +144,7 @@ String ScaledComplexData<S, T>::dataManagerType() const {
 // # Get the data type names using class ValType.
 template <class S, class T>
 String ScaledComplexData<S, T>::className() {
-  return "ScaledComplexData<" + valDataTypeId((S*)0) + "," + valDataTypeId((T*)0) + ">";
+  return "ScaledComplexData<" + valDataTypeId((S*)nullptr) + "," + valDataTypeId((T*)nullptr) + ">";
 }
 
 template <class S, class T>

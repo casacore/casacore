@@ -36,7 +36,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TSMFile::TSMFile(const TiledStMan* stman, unsigned int fileSequenceNr, const TSMOption& tsmOpt,
                  const std::shared_ptr<MultiFileBase>& mfile)
-    : fileSeqnr_p(fileSequenceNr), file_p(0), length_p(0) {
+    : fileSeqnr_p(fileSequenceNr), file_p(nullptr), length_p(0) {
   // Create the file.
   char strc[8];
   snprintf(strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
@@ -51,7 +51,7 @@ TSMFile::TSMFile(const TiledStMan* stman, unsigned int fileSequenceNr, const TSM
 
 TSMFile::TSMFile(const String& fileName, bool writable, const TSMOption& tsmOpt,
                  const std::shared_ptr<MultiFileBase>& mfile)
-    : fileSeqnr_p(0), file_p(0), length_p(0) {
+    : fileSeqnr_p(0), file_p(nullptr), length_p(0) {
   // Create the file.
   bool mapOpt = tsmOpt.option() == TSMOption::MMap;
   unsigned int bufSize = 0;
@@ -63,7 +63,7 @@ TSMFile::TSMFile(const String& fileName, bool writable, const TSMOption& tsmOpt,
 
 TSMFile::TSMFile(const TiledStMan* stman, AipsIO& ios, unsigned int seqnr, const TSMOption& tsmOpt,
                  const std::shared_ptr<MultiFileBase>& mfile)
-    : file_p(0) {
+    : file_p(nullptr) {
   getObject(ios);
   if (seqnr != fileSeqnr_p) {
     throw DataManInternalError("TSMFile::TSMFile " + stman->dataManagerName());

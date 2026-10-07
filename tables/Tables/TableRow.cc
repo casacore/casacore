@@ -39,20 +39,20 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ROTableRow::ROTableRow() : itsRecord(0) { init(); }
+ROTableRow::ROTableRow() : itsRecord(nullptr) { init(); }
 
-ROTableRow::ROTableRow(const Table& table, bool storedColumnsOnly) : itsRecord(0) {
+ROTableRow::ROTableRow(const Table& table, bool storedColumnsOnly) : itsRecord(nullptr) {
   init();
   create(table, storedColumnsOnly, false);
 }
 
 ROTableRow::ROTableRow(const Table& table, const Vector<String>& columnNames, bool exclude)
-    : itsRecord(0) {
+    : itsRecord(nullptr) {
   init();
   create(table, columnNames, exclude, false);
 }
 
-ROTableRow::ROTableRow(const ROTableRow& that) : itsRecord(0) {
+ROTableRow::ROTableRow(const ROTableRow& that) : itsRecord(nullptr) {
   init();
   copy(that);
 }
@@ -76,7 +76,7 @@ void ROTableRow::copy(const ROTableRow& that) {
     itsNrused = that.itsNrused;
     itsLastRow = that.itsLastRow;
     itsReread = that.itsReread;
-    if (that.itsRecord != 0) {
+    if (that.itsRecord != nullptr) {
       makeObjects(that.itsRecord->description());
     }
   }
@@ -93,7 +93,7 @@ Vector<String> ROTableRow::columnNames() const {
 }
 
 void ROTableRow::deleteObjects() {
-  if (itsRecord == 0) {
+  if (itsRecord == nullptr) {
     return;
   }
   const RecordDesc& description = itsRecord->description();
@@ -195,12 +195,12 @@ void ROTableRow::deleteObjects() {
       default:
         throw(TableError("TableRow: unknown data type"));
     }
-    itsTabCols[i] = 0;
-    itsColumns[i] = 0;
-    itsFields[i] = 0;
+    itsTabCols[i] = nullptr;
+    itsColumns[i] = nullptr;
+    itsFields[i] = nullptr;
   }
   delete itsRecord;
-  itsRecord = 0;
+  itsRecord = nullptr;
 }
 
 void ROTableRow::addColumnToDesc(RecordDesc& description, const TableColumn& column,
@@ -287,11 +287,11 @@ void ROTableRow::makeObjects(const RecordDesc& description) {
   itsRecord = new TableRecord(description);
   // Initialize the column and field block.
   itsTabCols.resize(itsNrused, false, false);
-  itsTabCols.set(static_cast<void*>(0));
+  itsTabCols.set(static_cast<void*>(nullptr));
   itsColumns.resize(itsNrused, false, false);
-  itsColumns.set(static_cast<void*>(0));
+  itsColumns.set(static_cast<void*>(nullptr));
   itsFields.resize(itsNrused, false, false);
-  itsFields.set(static_cast<void*>(0));
+  itsFields.set(static_cast<void*>(nullptr));
   itsDefined.resize(itsNrused, false, false);
   itsDefined.set(true);
   // Create the correct column object for each field.

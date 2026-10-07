@@ -101,7 +101,7 @@ void* casa_value_from_python::convertible(PyObject* obj_ptr) {
         PySequence_Check(obj_ptr) || PycArrayCheck(obj_ptr) || PycArrayScalarCheck(obj_ptr))) {
     // An empty numarray is Py_None, so accept that.
     if (obj_ptr != Py_None) {
-      return 0;
+      return nullptr;
     }
   }
   return obj_ptr;

@@ -32,16 +32,16 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableColumn::TableColumn()
-    : baseTabPtr_p(0),
-      baseColPtr_p(0),
-      colCachePtr_p(0),
+    : baseTabPtr_p(nullptr),
+      baseColPtr_p(nullptr),
+      colCachePtr_p(nullptr),
       canChangeShape_p(false),
       isColWritable_p(false) {}
 
-TableColumn::TableColumn(const Table& tab, const String& columnName) : baseColPtr_p(0) {
+TableColumn::TableColumn(const Table& tab, const String& columnName) : baseColPtr_p(nullptr) {
   // # Get base table and base column.
   baseTabPtr_p = tab.baseTablePtr();
-  if (baseTabPtr_p == 0) {
+  if (baseTabPtr_p == nullptr) {
     throw(TableInvOper("TableColumn: no table in Table object"));
   }
   baseColPtr_p = baseTabPtr_p->getColumn(columnName);
@@ -50,10 +50,10 @@ TableColumn::TableColumn(const Table& tab, const String& columnName) : baseColPt
   isColWritable_p = baseColPtr_p->isWritable();
 }
 
-TableColumn::TableColumn(const Table& tab, unsigned int columnIndex) : baseColPtr_p(0) {
+TableColumn::TableColumn(const Table& tab, unsigned int columnIndex) : baseColPtr_p(nullptr) {
   // # Get base table and base column.
   baseTabPtr_p = tab.baseTablePtr();
-  if (baseTabPtr_p == 0) {
+  if (baseTabPtr_p == nullptr) {
     throw(TableInvOper("TableColumn: no table in Table object"));
   }
   baseColPtr_p = baseTabPtr_p->getColumn(columnIndex);

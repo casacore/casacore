@@ -108,7 +108,7 @@ rownr_t TableExprNodeRep::nrow() {
 }
 
 void TableExprNodeRep::fillExprType(const TableExprNodeRep* node) {
-  if (node != 0 && !node->isConstant()) {
+  if (node != nullptr && !node->isConstant()) {
     exprtype_p = Variable;
   }
 }
@@ -126,7 +126,7 @@ void TableExprNodeRep::createRange(Block<TableExprRange>& blrange) { blrange.res
 
 void TableExprNodeRep::createRange(Block<TableExprRange>& blrange, TableExprNodeColumn* tsn,
                                    double st, double end) {
-  if (tsn == 0) {
+  if (tsn == nullptr) {
     blrange.resize(0, true);
   } else {
     blrange.resize(1, true);
@@ -506,10 +506,10 @@ TableExprNodeBinary::TableExprNodeBinary(NodeDataType tp, const TableExprNodeRep
 
 void TableExprNodeBinary::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
-  if (lnode_p != 0) {
+  if (lnode_p != nullptr) {
     lnode_p->show(os, indent + 2);
   }
-  if (rnode_p != 0) {
+  if (rnode_p != nullptr) {
     rnode_p->show(os, indent + 2);
   }
 }
@@ -808,7 +808,7 @@ TableExprNodeMulti::TableExprNodeMulti(NodeDataType tp, ValueType vtype, OperTyp
 void TableExprNodeMulti::show(ostream& os, unsigned int indent) const {
   TableExprNodeRep::show(os, indent);
   for (unsigned int j = 0; j < operands_p.size(); j++) {
-    if (operands_p[j] != 0) {
+    if (operands_p[j] != nullptr) {
       operands_p[j]->show(os, indent + 2);
     }
   }
@@ -817,7 +817,7 @@ void TableExprNodeMulti::show(ostream& os, unsigned int indent) const {
 void TableExprNodeMulti::flattenTree(std::vector<TableExprNodeRep*>& nodes) {
   nodes.push_back(this);
   for (unsigned int j = 0; j < operands_p.size(); j++) {
-    if (operands_p[j] != 0) {
+    if (operands_p[j] != nullptr) {
       operands_p[j]->flattenTree(nodes);
     }
   }

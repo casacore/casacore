@@ -219,10 +219,10 @@ class UnitMap {
   //  Check if a unit name is known, and return its value if true
   //  <group name="find">
   //  Get a prefix definition from key
-  static bool getPref(const String &s, UnitName &name, UMaps *maps = 0);
+  static bool getPref(const String &s, UnitName &name, UMaps *maps = nullptr);
 
   // Get a standard unit definition (search order: User, Customary, SI)
-  static bool getUnit(const String &s, UnitName &name, UMaps *maps = 0);
+  static bool getUnit(const String &s, UnitName &name, UMaps *maps = nullptr);
 
   // Get a cached definition
   static bool getCache(const String &s, UnitVal &val);

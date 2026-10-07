@@ -346,7 +346,7 @@ void doit4(RebinLattice<float>& rb, const IPosition& shape, const IPosition& fac
   rb.tempClose();
   rb.reopen();
   //
-  AlwaysAssert(rb.getRegionPtr() == 0, AipsError);
+  AlwaysAssert(rb.getRegionPtr() == nullptr, AipsError);
   AlwaysAssert(rb.shape()(0) == shape(0) / factors(0), AipsError);
   rb.name();
   rb.advisedMaxPixels();

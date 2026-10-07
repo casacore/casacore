@@ -678,7 +678,7 @@ TableExprNode MSSelection::toTableExprNode(MSSelectableTable* msLike) {
     //
     selectedTimesList_p.resize(3, 0);
 
-    const TableExprNode* timeNode = 0x0;
+    const TableExprNode* timeNode = nullptr;
     TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::TIME));
     MSSelectableMainColumn* mainColInterface = msLike->mainColumns();
     // MSMainColInterface msMainColInterface;

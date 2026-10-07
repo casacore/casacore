@@ -33,7 +33,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MemoryIO::MemoryIO(uint64_t initialSize, uint64_t expandSize)
-    : itsBuffer(0),
+    : itsBuffer(nullptr),
       itsAlloc(initialSize),
       itsExpandSize(expandSize),
       itsUsed(0),
@@ -43,7 +43,7 @@ MemoryIO::MemoryIO(uint64_t initialSize, uint64_t expandSize)
       itsCanDelete(true) {
   if (itsAlloc > 0) {
     itsBuffer = new unsigned char[itsAlloc];
-    AlwaysAssert(itsBuffer != 0, AipsError);
+    AlwaysAssert(itsBuffer != nullptr, AipsError);
   }
 }
 
@@ -69,7 +69,7 @@ MemoryIO::MemoryIO(void* buffer, uint64_t size, ByteIO::OpenOption option, uint6
       itsCanDelete(canDelete) {
   // Make sure there is a buffer.
   if (itsAlloc > 0) {
-    AlwaysAssert(itsBuffer != 0, AipsError);
+    AlwaysAssert(itsBuffer != nullptr, AipsError);
   }
   // Adapt position, etc. from the option.
   switch (option) {
@@ -203,9 +203,9 @@ bool MemoryIO::expand(uint64_t minSize) {
   }
   // Allocate new buffer, copy contents and delete old buffer (if possible).
   unsigned char* newBuffer = new unsigned char[minsz];
-  AlwaysAssert(newBuffer != 0, AipsError);
+  AlwaysAssert(newBuffer != nullptr, AipsError);
   // Copy the old contents (if any).
-  if (itsBuffer != 0) {
+  if (itsBuffer != nullptr) {
     memcpy(newBuffer, itsBuffer, itsUsed);
     if (itsCanDelete) {
       delete[] itsBuffer;

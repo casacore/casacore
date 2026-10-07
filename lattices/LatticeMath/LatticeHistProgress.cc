@@ -60,7 +60,7 @@ void LatticeHistProgress::nstepsDone(unsigned int nsteps)
 
 void LatticeHistProgress::done() {
   delete itsMeter;
-  itsMeter = 0;
+  itsMeter = nullptr;
 }
 
 }  // namespace casacore

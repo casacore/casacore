@@ -79,10 +79,10 @@ class StreamLogSink : public LogSinkInterface {
   // lives at least as long as this sink. If not filter is supplied,
   // <src>NORMAL</src> is used.
   // <group>
-  explicit StreamLogSink(ostream *theStream = 0, bool deleteStream = false);
-  explicit StreamLogSink(LogMessage::Priority filter, ostream *theStream = 0,
+  explicit StreamLogSink(ostream *theStream = nullptr, bool deleteStream = false);
+  explicit StreamLogSink(LogMessage::Priority filter, ostream *theStream = nullptr,
                          bool deleteStream = false);
-  explicit StreamLogSink(const LogFilterInterface &filter, ostream *theStream = 0,
+  explicit StreamLogSink(const LogFilterInterface &filter, ostream *theStream = nullptr,
                          bool deleteStream = false);
   // </group>
 

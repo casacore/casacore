@@ -39,7 +39,10 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SSMIndColumn::SSMIndColumn(SSMBase* aParent, int aDataType, unsigned int aColNr)
-    : SSMColumn(aParent, aDataType, aColNr), isShapeFixed(false), itsIosFile(0), itsIndArray(0) {
+    : SSMColumn(aParent, aDataType, aColNr),
+      isShapeFixed(false),
+      itsIosFile(nullptr),
+      itsIndArray(0) {
   init();
 }
 
@@ -95,7 +98,7 @@ void SSMIndColumn::setShapeColumn(const IPosition& aShape) {
 void SSMIndColumn::setShape(rownr_t aRowNr, const IPosition& aShape) {
   // Get the current entry. If none, make empty one.
   StIndArray* aPtr = getArrayPtr(aRowNr);
-  if (aPtr == 0) {
+  if (aPtr == nullptr) {
     itsIndArray = StIndArray(0);
   } else {
     // Note that getArrayPtr sets itsIndArray (which is equal to aPtr).
@@ -122,7 +125,7 @@ StIndArray* SSMIndColumn::getArrayPtr(rownr_t aRowNr) {
     itsIndArray = StIndArray(anOffset);
     return &itsIndArray;
   } else {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -130,7 +133,7 @@ StIndArray* SSMIndColumn::getArrayPtr(rownr_t aRowNr) {
 // # Read shape if not read yet.
 StIndArray* SSMIndColumn::getShape(rownr_t aRowNr) {
   StIndArray* aPtr = getArrayPtr(aRowNr);
-  if (aPtr == 0) {
+  if (aPtr == nullptr) {
     throw DataManInvOper("SSMIndColumn::getShape: no array in row " +
                          String(std::to_string(aRowNr)) + " in column " + columnName() +
                          " of table " + itsSSMPtr->table().tableName());
@@ -140,7 +143,7 @@ StIndArray* SSMIndColumn::getShape(rownr_t aRowNr) {
 }
 
 bool SSMIndColumn::isShapeDefined(rownr_t aRowNr) {
-  return (getArrayPtr(aRowNr) == 0 ? false : true);
+  return (getArrayPtr(aRowNr) == nullptr ? false : true);
 }
 
 unsigned int SSMIndColumn::ndim(rownr_t aRowNr) { return getShape(aRowNr)->shape().nelements(); }
@@ -181,13 +184,13 @@ void SSMIndColumn::putSliceV(rownr_t aRowNr, const Slicer& ns, const ArrayBase& 
 void SSMIndColumn::init() {
   DebugAssert(itsNrElem == 1, AipsError);
   if (itsSSMPtr->asBigEndian()) {
-    itsReadFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    itsReadFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
   } else {
-    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
   }
   itsNrCopy = 1;
   itsExternalSizeBits = 8 * itsExternalSizeBytes;

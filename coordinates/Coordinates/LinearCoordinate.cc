@@ -512,7 +512,7 @@ bool LinearCoordinate::save(RecordInterface& container, const String& fieldName)
 LinearCoordinate* LinearCoordinate::restore(const RecordInterface& container,
                                             const String& fieldName) {
   if (!container.isDefined(fieldName)) {
-    return 0;
+    return nullptr;
   }
   //
   Record subrec(container.asRecord(fieldName));
@@ -523,28 +523,28 @@ LinearCoordinate* LinearCoordinate::restore(const RecordInterface& container,
   Vector<double> crval(subrec.toArrayDouble("crval"));
   //
   if (!subrec.isDefined("crpix")) {
-    return 0;
+    return nullptr;
   }
   Vector<double> crpix(subrec.toArrayDouble("crpix"));
   //
   if (!subrec.isDefined("cdelt")) {
-    return 0;
+    return nullptr;
   }
   Vector<double> cdelt(subrec.toArrayDouble("cdelt"));
   //
   if (!subrec.isDefined("pc")) {
-    return 0;
+    return nullptr;
   }
   Matrix<double> pc(subrec.toArrayDouble("pc"));
   //
   if (!subrec.isDefined("axes")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> axes;
   subrec.get("axes", axes);
   //
   if (!subrec.isDefined("units")) {
-    return 0;
+    return nullptr;
   }
   Vector<String> units;
   subrec.get("units", units);
@@ -565,19 +565,19 @@ Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
 {
   if (axes.nelements() != nPixelAxes()) {
     set_error("Invalid number of specified axes");
-    return 0;
+    return nullptr;
   }
   unsigned int nT = 0;
   for (unsigned int i = 0; i < nPixelAxes(); i++)
     if (axes[i]) nT++;
   if (nT == 0) {
     set_error("You have not specified any axes to transform");
-    return 0;
+    return nullptr;
   }
   //
   if (shape.nelements() != nPixelAxes()) {
     set_error("Invalid number of elements in shape");
-    return 0;
+    return nullptr;
   }
 
   // Find the canonical input units that we should convert to.
@@ -610,7 +610,7 @@ Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
   LinearCoordinate lc = *this;
   if (!lc.setWorldAxisUnits(unitsCanon)) {
     set_error("Could not set world axis units");
-    return 0;
+    return nullptr;
   }
 
   // Now create the new LinearCoordinate, using the LinearXform class
@@ -620,9 +620,9 @@ Coordinate* LinearCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
   //
   String errMsg;
   LinearXform* pLinearF = linear.fourierInvert(errMsg, axes, crpix, scale);
-  if (pLinearF == 0) {
+  if (pLinearF == nullptr) {
     set_error(errMsg);
-    return 0;
+    return nullptr;
   }
   //
   LinearCoordinate* pLinear = new LinearCoordinate(namesOut, unitsOut, crval2, pLinearF->cdelt(),

@@ -39,7 +39,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 std::once_flag TableTrace::theirCallOnceFlag;
 std::mutex TableTrace::theirMutex;
 std::ofstream TableTrace::theirTraceFile;
-std::ostream* TableTrace::theirStream = 0;
+std::ostream* TableTrace::theirStream = nullptr;
 int TableTrace::theirDoTrace = 0;
 int TableTrace::theirOper = 0;
 int TableTrace::theirColType = 0;

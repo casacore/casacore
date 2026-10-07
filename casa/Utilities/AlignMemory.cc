@@ -30,7 +30,7 @@
 namespace casacore {  // #Begin casa namespace
 
 void* AlignMemory::alloc(size_t size) const {
-  void* ptr = 0;
+  void* ptr = nullptr;
   if (size > 0) {
     // posix_memalign alignment must be at least sizeof(void*).
     if (itsAlign >= sizeof(void*)) {
@@ -41,7 +41,7 @@ void* AlignMemory::alloc(size_t size) const {
       }
     } else {
       ptr = malloc(size);
-      if (ptr == 0) {
+      if (ptr == nullptr) {
         throw AllocError("malloc failed for " + String::toString(size) + " bytes", size);
       }
     }

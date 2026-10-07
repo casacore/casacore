@@ -41,7 +41,7 @@
 // Create the lattice cube.
 void makeCube(bool useHDF, const IPosition& cubeShape, const IPosition& tileShape) {
   TiledShape tshape(cubeShape, tileShape);
-  Lattice<float>* lattice = 0;
+  Lattice<float>* lattice = nullptr;
   if (useHDF) {
     cout << "Creating tLatticePerf_tmp.hdf with shape " << cubeShape << " and tile shape "
          << tileShape << endl;

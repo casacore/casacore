@@ -97,7 +97,7 @@ int main(int argc, const char* argv[]) {
       Lattice<bool>& pMask = fitsImage.pixelMask();
       AlwaysAssert(pMask.shape() == fitsImage.shape(), AipsError);
     }
-    AlwaysAssert(fitsImage.getRegionPtr() == 0, AipsError);
+    AlwaysAssert(fitsImage.getRegionPtr() == nullptr, AipsError);
     AlwaysAssert(fitsImage.isWritable() == false, AipsError);
     AlwaysAssert(fitsImage.name(false) == p.absoluteName(), AipsError);
     AlwaysAssert(fitsImage.ok(), AipsError);
@@ -117,7 +117,7 @@ int main(int argc, const char* argv[]) {
     // Convert from FITS as a comparison
 
     String error;
-    ImageInterface<float>* pTempImage = 0;
+    ImageInterface<float>* pTempImage = nullptr;
     String imageName;
     if (!ImageFITSConverter::FITSToImage(pTempImage, error, imageName, FITSImage::get_fitsname(in),
                                          0, hdunum)) {

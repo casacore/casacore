@@ -1003,7 +1003,7 @@ Array<T>::BaseIteratorSTL::BaseIteratorSTL(const Array<T> &arr)
     : itsLineIncr(0), itsCurPos(arr.ndim(), 0), itsArray(&arr), itsContig(arr.contiguousStorage()) {
   // An empty array has to be handled.
   if (arr.nelements() == 0) {
-    itsPos = 0;
+    itsPos = nullptr;
     itsContig = true;
   } else {
     // Set the last cursor position.

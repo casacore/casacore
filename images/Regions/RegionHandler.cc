@@ -86,7 +86,7 @@ ImageRegion* RegionHandler::getRegion(const String&, RegionHandler::GroupType,
         "RegionHandler::findRegionGroup"
         " cannot be used for this image type");
   }
-  return 0;
+  return nullptr;
 }
 
 ImageRegion RegionHandler::makeMask(const LatticeBase&, const String&) {

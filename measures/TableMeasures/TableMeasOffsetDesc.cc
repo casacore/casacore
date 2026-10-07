@@ -37,9 +37,9 @@ TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasDescBase& column, bool a
     : itsTMDesc(column.clone()), itsVarPerArr(asArray) {}
 
 TableMeasOffsetDesc::TableMeasOffsetDesc(const Measure& measure)
-    : itsTMDesc(0), itsMeasure(measure), itsVarPerArr(false) {}
+    : itsTMDesc(nullptr), itsMeasure(measure), itsVarPerArr(false) {}
 
-TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasOffsetDesc& that) : itsTMDesc(0) {
+TableMeasOffsetDesc::TableMeasOffsetDesc(const TableMeasOffsetDesc& that) : itsTMDesc(nullptr) {
   *this = that;
 }
 
@@ -47,7 +47,7 @@ TableMeasOffsetDesc::~TableMeasOffsetDesc() { delete itsTMDesc; }
 
 TableMeasOffsetDesc* TableMeasOffsetDesc::reconstruct(const TableRecord& measInfo,
                                                       const String& prefix, const Table& tab) {
-  TableMeasOffsetDesc* p = 0;
+  TableMeasOffsetDesc* p = nullptr;
   if ((measInfo.fieldNumber(prefix + "Msr") >= 0) || (measInfo.fieldNumber(prefix + "Col") >= 0)) {
     p = new TableMeasOffsetDesc(measInfo, prefix, tab);
   }
@@ -56,7 +56,7 @@ TableMeasOffsetDesc* TableMeasOffsetDesc::reconstruct(const TableRecord& measInf
 
 TableMeasOffsetDesc::TableMeasOffsetDesc(const TableRecord& measInfo, const String& prefix,
                                          const Table& tab)
-    : itsTMDesc(0) {
+    : itsTMDesc(nullptr) {
   int fnr;
   fnr = measInfo.fieldNumber(prefix + "Msr");
   if (fnr >= 0) {
@@ -88,7 +88,7 @@ TableMeasOffsetDesc& TableMeasOffsetDesc::operator=(const TableMeasOffsetDesc& t
     itsMeasure = that.itsMeasure;
     itsVarColName = that.itsVarColName;
     itsVarPerArr = that.itsVarPerArr;
-    if (itsTMDesc != 0) {
+    if (itsTMDesc != nullptr) {
       itsTMDesc = itsTMDesc->clone();
     }
   }
@@ -106,14 +106,14 @@ const Measure& TableMeasOffsetDesc::getOffset() const {
 
 void TableMeasOffsetDesc::write(TableDesc& td, TableRecord& measInfo, const String& prefix) {
   writeKeys(measInfo, prefix);
-  if (itsTMDesc != 0) {
+  if (itsTMDesc != nullptr) {
     itsTMDesc->write(td);
   }
 }
 
 void TableMeasOffsetDesc::write(Table& tab, TableRecord& measInfo, const String& prefix) {
   writeKeys(measInfo, prefix);
-  if (itsTMDesc != 0) {
+  if (itsTMDesc != nullptr) {
     itsTMDesc->write(tab);
   }
 }
@@ -125,7 +125,7 @@ void TableMeasOffsetDesc::writeKeys(TableRecord& measInfo, const String& prefix)
     itsMeasure.toRecord(error, measRec);
     measInfo.defineRecord(prefix + "Msr", measRec);
   }
-  if (itsTMDesc != 0) {
+  if (itsTMDesc != nullptr) {
     measInfo.define(prefix + "Col", itsTMDesc->columnName());
     measInfo.define(prefix + "varPerArr", itsVarPerArr);
   }

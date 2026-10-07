@@ -32,26 +32,26 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSStateParse* MSStateParse::thisMSSIParser = 0x0;  // Global pointer to the parser object
-TableExprNode* MSStateParse::node_p = 0x0;
+MSStateParse* MSStateParse::thisMSSIParser = nullptr;  // Global pointer to the parser object
+TableExprNode* MSStateParse::node_p = nullptr;
 Vector<int> MSStateParse::idList;
 std::shared_ptr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
 // MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler=NULL;
 
 // # Constructor
 MSStateParse::MSStateParse() : MSParse(), colName(MS::columnName(MS::STATE_ID)) {
-  if (MSStateParse::node_p != 0x0) delete MSStateParse::node_p;
-  MSStateParse::node_p = 0x0;
-  // if (MSStateParse::thisMSSErrorHandler!=0x0) delete MSStateParse::thisMSSErrorHandler;
-  // MSStateParse::thisMSSErrorHandler=0x0;
+  if (MSStateParse::node_p != nullptr) delete MSStateParse::node_p;
+  MSStateParse::node_p = nullptr;
+  // if (MSStateParse::thisMSSErrorHandler!=nullptr) delete MSStateParse::thisMSSErrorHandler;
+  // MSStateParse::thisMSSErrorHandler=nullptr;
   node_p = new TableExprNode();
 }
 
 // # Constructor with given ms name.
 MSStateParse::MSStateParse(const MeasurementSet* ms)
     : MSParse(ms, "State"), colName(MS::columnName(MS::STATE_ID)) {
-  if (MSStateParse::node_p != 0x0) delete MSStateParse::node_p;
-  MSStateParse::node_p = 0x0;
+  if (MSStateParse::node_p != nullptr) delete MSStateParse::node_p;
+  MSStateParse::node_p = nullptr;
   // if (MSStateParse::thisMSSErrorHandler!=0x0) delete MSStateParse::thisMSSErrorHandler;
   // MSStateParse::thisMSSErrorHandler=0x0;
   node_p = new TableExprNode();

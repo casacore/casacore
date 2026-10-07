@@ -78,7 +78,7 @@ void ImageExpr<T>::init(const LatticeExpr<T>& latticeExpr, const String& expr,
   }
   // Cast to get at LELImageCoord
   const LELImageCoord* pImCoord = dynamic_cast<const LELImageCoord*>(pLattCoord);
-  AlwaysAssert(pImCoord != 0, AipsError);
+  AlwaysAssert(pImCoord != nullptr, AipsError);
   this->setCoordsMember(pImCoord->coordinates());
   this->setImageInfoMember(pImCoord->imageInfo());
   if (jmap.isDefined("MiscInfo")) {

@@ -139,7 +139,7 @@ struct array_scalar_from_python {
     if (PycArrayScalarCheck(obj_ptr, type)) {
       return obj_ptr;
     }
-    return 0;
+    return nullptr;
   }
 
   // Constructs a T from a Python array scalar object.

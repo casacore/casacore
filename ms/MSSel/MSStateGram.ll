@@ -37,6 +37,9 @@
 #define YY_DECL int MSStateGramlex (YYSTYPE* lvalp)
 static std::string                qstrState;
 #include <casacore/ms/MSSel/MSSelectionTools.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*
@@ -128,3 +131,4 @@ SIDENTIFIER ({WHITE}[A-Za-z0-9_\+\-\{\}=;@#$%:!'*''?' ]+{WHITE})
 ")"       { msStateGramPosition() += yyleng; return RPAREN;}
 .         { msStateGramPosition() += yyleng; return MSStateGramtext[0];}
 %%
+#pragma GCC diagnostic pop

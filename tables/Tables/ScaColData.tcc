@@ -204,8 +204,8 @@ void ScalarColumnData<T>::allocIterBuf(void*& lastVal, void*& curVal,
 template <class T>
 void ScalarColumnData<T>::freeIterBuf(void*& lastVal, void*& curVal) {
   delete[] static_cast<T*>(lastVal);
-  lastVal = 0;
-  curVal = 0;
+  lastVal = nullptr;
+  curVal = nullptr;
 }
 
 // # It was felt that putstart takes too much space, so therefore

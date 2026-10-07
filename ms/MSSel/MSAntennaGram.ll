@@ -35,6 +35,9 @@
 
 #undef YY_DECL
 #define YY_DECL int MSAntennaGramlex (YYSTYPE* lvalp)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*
@@ -157,3 +160,4 @@ PATTERN   {PATT1}|{PATT2}
 .         { return YYERRCODE; }
 
 %%
+#pragma GCC diagnostic pop

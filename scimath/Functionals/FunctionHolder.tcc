@@ -166,10 +166,10 @@ void FunctionHolder<T>::init() const {
 template <class T>
 bool FunctionHolder<T>::fromRecord(String &error, const RecordInterface &in) {
   hold_p.reset();
-  Function<T> *fn(0);
+  Function<T> *fn(nullptr);
   if (!getRecord(error, fn, in)) {
     delete fn;
-    fn = 0;
+    fn = nullptr;
     return false;
   }
   hold_p.reset(fn);
@@ -190,10 +190,10 @@ bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn, const RecordI
       for (int i = 0; i < nfunc; ++i) {
         Record fnr = fnsrec.asRecord(i);
         FunctionHolder<T> fnch;
-        Function<U> *fnc(0);
+        Function<U> *fnc(nullptr);
         if (!fnch.getRecord(error, fnc, fnr)) {
           delete fnc;
-          fnc = 0;
+          fnc = nullptr;
           return false;
         }
         if (nf_p == COMBINE) {
@@ -202,7 +202,7 @@ bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn, const RecordI
           dynamic_cast<CompoundFunction<U> *>(fn)->addFunction(*fnc);
         }
         delete fnc;
-        fnc = 0;
+        fnc = nullptr;
       }
     }
     if (in.isDefined(String("params"))) {
@@ -234,13 +234,13 @@ bool FunctionHolder<T>::fromString(String &error, const String &in) {
   init();
   nf = MUString::minimaxNC(in, nam_p);
   nf_p = static_cast<Types>(nf);
-  Function<T> *fn(0);
+  Function<T> *fn(nullptr);
   if (getType(error, fn)) {
     hold_p.reset(fn);
     return true;
   }
   delete fn;
-  fn = 0;
+  fn = nullptr;
   return false;
 }
 

@@ -271,7 +271,7 @@ WCEllipsoid* WCEllipsoid::fromRecord(const TableRecord& rec, const String&) {
 
   Vector<Quantity> center(pixelAxes.size());
   String error, units;
-  WCEllipsoid* ellipsoid = 0;
+  WCEllipsoid* ellipsoid = nullptr;
   Vector<Quantity> radii(pixelAxes.size());
   Quantity radius, theta;
   {

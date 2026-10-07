@@ -1527,14 +1527,14 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
 
 /* Win32 MMAP via VirtualAlloc */
 static FORCEINLINE void* win32mmap(size_t size) {
-  void* ptr = VirtualAlloc(0, size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-  return (ptr != 0) ? ptr : MFAIL;
+  void* ptr = VirtualAlloc(nullptr, size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+  return (ptr != nullptr) ? ptr : MFAIL;
 }
 
 /* For direct MMAP, use MEM_TOP_DOWN to minimize interference */
 static FORCEINLINE void* win32direct_mmap(size_t size) {
-  void* ptr = VirtualAlloc(0, size, MEM_RESERVE | MEM_COMMIT | MEM_TOP_DOWN, PAGE_READWRITE);
-  return (ptr != 0) ? ptr : MFAIL;
+  void* ptr = VirtualAlloc(nullptr, size, MEM_RESERVE | MEM_COMMIT | MEM_TOP_DOWN, PAGE_READWRITE);
+  return (ptr != nullptr) ? ptr : MFAIL;
 }
 
 /* This function supports releasing coalesed segments */
@@ -5277,8 +5277,8 @@ int mspace_mallopt(int param_number, int value) { return change_mparam(param_num
 
   void *osMoreCore(int size)
   {
-    void *ptr = 0;
-    static void *sbrk_top = 0;
+    void *ptr = nullptr;
+    static void *sbrk_top = nullptr;
 
     if (size > 0)
     {
@@ -5286,7 +5286,7 @@ int mspace_mallopt(int param_number, int value) { return change_mparam(param_num
          size = MINIMUM_MORECORE_SIZE;
       if (CurrentExecutionLevel() == kTaskLevel)
          ptr = PoolAllocateResident(size + RM_PAGE_SIZE, 0);
-      if (ptr == 0)
+      if (ptr == nullptr)
       {
         return (void *) MFAIL;
       }

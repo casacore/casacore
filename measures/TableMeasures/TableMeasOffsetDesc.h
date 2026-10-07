@@ -167,7 +167,7 @@ class TableMeasOffsetDesc {
   const Measure& getOffset() const;
 
   // Returns true if the offset varies per row.
-  bool isVariable() const { return (itsTMDesc != 0); }
+  bool isVariable() const { return (itsTMDesc != nullptr); }
 
   // Returns true if the offset varies per array element.
   bool isArray() const { return (isVariable() && itsVarPerArr); }

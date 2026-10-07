@@ -86,7 +86,7 @@ int main(int argc, const char* argv[]) {
     }
 
     // construct the FITS table of the appropriate type
-    FITSTable* infits = 0;
+    FITSTable* infits = nullptr;
     if (sdfits) {
       infits = new SDFITSTable(inputFilename, whichHDU);
     } else {

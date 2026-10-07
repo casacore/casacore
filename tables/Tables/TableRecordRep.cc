@@ -64,7 +64,7 @@ void TableRecordRep::restructure(const RecordDesc& newDescription, bool recursiv
   desc_p = newDescription;
   nused_p = desc_p.nfields();
   datavec_p.resize(nused_p);
-  datavec_p = static_cast<void*>(0);
+  datavec_p = static_cast<void*>(nullptr);
   data_p.resize(nused_p);
   for (unsigned int i = 0; i < nused_p; i++) {
     if (desc_p.type(i) == TpRecord) {

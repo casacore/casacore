@@ -96,7 +96,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar() {
         break;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 IPosition TableExprNodeArray::validateIndex(const IPosition& index, const ArrayBase& arr) const {
@@ -965,7 +965,7 @@ void TableExprNodeIndex::fillSlicer(const TableExprId& id) {
     }
     j++;
     if (varIndex_p[j]) {
-      if (operands_p[j] == 0) {
+      if (operands_p[j] == nullptr) {
         end_p(i) = start_p(i);
       } else {
         int64_t val = operands_p[j]->getInt(id);
@@ -1028,7 +1028,7 @@ void TableExprNodeIndex::fillIndex(const TableExprNodeSet& indices) {
   // Check if all indices have data type Int, are scalars, and don't
   // use aggregate functions.
   for (unsigned int i = 0; i < j; i++) {
-    if (operands_p[i] != 0) {
+    if (operands_p[i] != nullptr) {
       if (operands_p[i]->dataType() != NTInt || operands_p[i]->valueType() != VTScalar) {
         throw(TableInvExpr("Index value must be an integer scalar"));
       }
@@ -1054,7 +1054,7 @@ void TableExprNodeIndex::convertConstIndex() {
     // If no start value is given, it is 0.
     rep = operands_p[j];
     start_p(i) = 0;
-    if (rep != 0) {
+    if (rep != nullptr) {
       if (rep->isConstant()) {
         int64_t val = rep->getInt(0);
         if (val < 0) {
@@ -1072,7 +1072,7 @@ void TableExprNodeIndex::convertConstIndex() {
     // A negative end means till the end.
     rep = operands_p[j];
     end_p(i) = Slicer::MimicSource;
-    if (rep != 0) {
+    if (rep != nullptr) {
       if (rep->isConstant()) {
         int64_t val = rep->getInt(0);
         if (val != Slicer::MimicSource) {
@@ -1086,7 +1086,7 @@ void TableExprNodeIndex::convertConstIndex() {
         varIndex_p[j] = true;
       }
     } else {
-      if (operands_p[j - 1] != 0) {
+      if (operands_p[j - 1] != nullptr) {
         end_p(i) = start_p(i);
         varIndex_p[j] = varIndex_p[j - 1];
       }
@@ -1096,7 +1096,7 @@ void TableExprNodeIndex::convertConstIndex() {
     // If no increment value is given, it is 1.
     rep = operands_p[j];
     incr_p(i) = 1;
-    if (rep != 0) {
+    if (rep != nullptr) {
       if (rep->isConstant()) {
         incr_p(i) = rep->getInt(0);
       } else {
@@ -1111,7 +1111,7 @@ void TableExprNodeIndex::convertConstIndex() {
 // TableExprNodeArrayPart
 // ----------------------
 TableExprNodeArrayPart::TableExprNodeArrayPart(const TENShPtr& arrayNode, const TENShPtr& indexNode)
-    : TableExprNodeArray(arrayNode->dataType(), OtSlice), colNode_p(0) {
+    : TableExprNodeArray(arrayNode->dataType(), OtSlice), colNode_p(nullptr) {
   // Keep nodes and cast them to the array and index node.
   lnode_p = arrayNode;
   rnode_p = indexNode;
@@ -1221,73 +1221,73 @@ MArray<MVTime> TableExprNodeArrayPart::getArrayDate(const TableExprId& id) {
 }
 
 Array<bool> TableExprNodeArrayPart::getColumnBool(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnBool(rownrs);
   }
   return colNode_p->getElemColumnBool(rownrs, inxNode_p->getSlicer(0));
 }
 Array<unsigned char> TableExprNodeArrayPart::getColumnuChar(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnuChar(rownrs);
   }
   return colNode_p->getElemColumnuChar(rownrs, inxNode_p->getSlicer(0));
 }
 Array<short> TableExprNodeArrayPart::getColumnShort(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnShort(rownrs);
   }
   return colNode_p->getElemColumnShort(rownrs, inxNode_p->getSlicer(0));
 }
 Array<unsigned short> TableExprNodeArrayPart::getColumnuShort(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnuShort(rownrs);
   }
   return colNode_p->getElemColumnuShort(rownrs, inxNode_p->getSlicer(0));
 }
 Array<int> TableExprNodeArrayPart::getColumnInt(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnInt(rownrs);
   }
   return colNode_p->getElemColumnInt(rownrs, inxNode_p->getSlicer(0));
 }
 Array<unsigned int> TableExprNodeArrayPart::getColumnuInt(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnuInt(rownrs);
   }
   return colNode_p->getElemColumnuInt(rownrs, inxNode_p->getSlicer(0));
 }
 Array<int64_t> TableExprNodeArrayPart::getColumnInt64(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnInt64(rownrs);
   }
   return colNode_p->getElemColumnInt64(rownrs, inxNode_p->getSlicer(0));
 }
 Array<float> TableExprNodeArrayPart::getColumnFloat(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnFloat(rownrs);
   }
   return colNode_p->getElemColumnFloat(rownrs, inxNode_p->getSlicer(0));
 }
 Array<double> TableExprNodeArrayPart::getColumnDouble(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnDouble(rownrs);
   }
   return colNode_p->getElemColumnDouble(rownrs, inxNode_p->getSlicer(0));
 }
 Array<Complex> TableExprNodeArrayPart::getColumnComplex(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnComplex(rownrs);
   }
   return colNode_p->getElemColumnComplex(rownrs, inxNode_p->getSlicer(0));
 }
 Array<DComplex> TableExprNodeArrayPart::getColumnDComplex(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnDComplex(rownrs);
   }
   return colNode_p->getElemColumnDComplex(rownrs, inxNode_p->getSlicer(0));
 }
 Array<String> TableExprNodeArrayPart::getColumnString(const Vector<rownr_t>& rownrs) {
-  if (colNode_p == 0) {
+  if (colNode_p == nullptr) {
     return TableExprNodeRep::getColumnString(rownrs);
   }
   return colNode_p->getElemColumnString(rownrs, inxNode_p->getSlicer(0));

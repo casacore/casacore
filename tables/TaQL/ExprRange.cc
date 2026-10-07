@@ -31,18 +31,18 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableExprRange::TableExprRange() : tabColPtr_p(0) {}
+TableExprRange::TableExprRange() : tabColPtr_p(nullptr) {}
 
 TableExprRange::TableExprRange(const TableColumn& col, double stval, double endval)
-    : sval_p(1), eval_p(1), tabColPtr_p(0) {
+    : sval_p(1), eval_p(1), tabColPtr_p(nullptr) {
   tabColPtr_p = new TableColumn(col);
   sval_p(0) = stval;
   eval_p(0) = endval;
 }
 
 TableExprRange::TableExprRange(const TableExprRange& that)
-    : sval_p(that.sval_p), eval_p(that.eval_p), tabColPtr_p(0) {
-  if (that.tabColPtr_p != 0) {
+    : sval_p(that.sval_p), eval_p(that.eval_p), tabColPtr_p(nullptr) {
+  if (that.tabColPtr_p != nullptr) {
     tabColPtr_p = new TableColumn(*(that.tabColPtr_p));
   }
 }
@@ -54,7 +54,7 @@ TableExprRange& TableExprRange::operator=(const TableExprRange& that) {
     sval_p = that.sval_p;
     eval_p = that.eval_p;
     delete tabColPtr_p;
-    if (that.tabColPtr_p != 0) {
+    if (that.tabColPtr_p != nullptr) {
       tabColPtr_p = new TableColumn(*(that.tabColPtr_p));
     }
   }

@@ -131,9 +131,9 @@ TableRecord LCExtension::toRecord(const String& tableName) const {
 
 LCExtension* LCExtension::fromRecord(const TableRecord& rec, const String& tableName) {
   // Initialize pointers to 0 to get rid of gcc-2.95 warnings.
-  LCRegion* regPtr = 0;
+  LCRegion* regPtr = nullptr;
   regPtr = LCRegion::fromRecord(rec.asRecord("region"), tableName);
-  LCBox* boxPtr = 0;
+  LCBox* boxPtr = nullptr;
   boxPtr = (LCBox*)(LCRegion::fromRecord(rec.asRecord("box"), tableName));
   LCExtension* extPtr = new LCExtension(true, regPtr, Vector<int>(rec.toArrayInt("axes")), *boxPtr);
   delete boxPtr;

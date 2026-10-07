@@ -44,18 +44,18 @@ ISMIndColumn::ISMIndColumn(ISMBase* smptr, int dataType, unsigned int colnr)
     : ISMColumn(smptr, dataType, colnr),
       seqnr_p(smptr->uniqueNr()),
       shapeIsFixed_p(false),
-      iosfile_p(0),
+      iosfile_p(nullptr),
       indArray_p(0) {}
 
 ISMIndColumn::~ISMIndColumn() { clear(); }
 
 void ISMIndColumn::clear() {
   delete (int64_t*)lastValue_p;
-  lastValue_p = 0;
+  lastValue_p = nullptr;
   if (stmanPtr_p->version() < 3) {
     delete iosfile_p;
   }
-  iosfile_p = 0;
+  iosfile_p = nullptr;
 }
 
 // # Create the array file (for a new column).
@@ -102,10 +102,10 @@ void ISMIndColumn::setShapeColumn(const IPosition& shape) {
 
 void ISMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
   StIndArray* ptr = getArrayPtr(rownr);
-  if (ptr != 0) {
+  if (ptr != nullptr) {
     ptr->getShape(*iosfile_p);
   }
-  if (ptr == 0 || !shape.isEqual(ptr->shape())) {
+  if (ptr == nullptr || !shape.isEqual(ptr->shape())) {
     putShape(rownr, shape);
   }
 }
@@ -126,14 +126,14 @@ StIndArray* ISMIndColumn::getArrayPtr(rownr_t rownr) {
   if (foundArray_p) {
     return &indArray_p;
   }
-  return 0;
+  return nullptr;
 }
 
 // # Get the shape for the array (if any) in the given row.
 // # Read shape if not read yet.
 StIndArray* ISMIndColumn::getShape(rownr_t rownr) {
   StIndArray* ptr = getArrayPtr(rownr);
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     throw DataManInvOper("ISM: no array in row " + String(std::to_string(rownr)) + " in column " +
                          columnName() + " of " + stmanPtr_p->fileName());
   }
@@ -163,7 +163,7 @@ StIndArray* ISMIndColumn::putShapeSliced(rownr_t rownr) {
 }
 
 bool ISMIndColumn::isShapeDefined(rownr_t rownr) {
-  return (getArrayPtr(rownr) == 0 ? false : true);
+  return (getArrayPtr(rownr) == nullptr ? false : true);
 }
 
 unsigned int ISMIndColumn::ndim(rownr_t rownr) { return getShape(rownr)->shape().nelements(); }
@@ -180,7 +180,7 @@ StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, boo
   // when the shape is equal. This is needed to get correct behaviour
   // when an array is put. Putting an array calls setShape and then
   // putXXXV resulting in two calls to putShape.
-  if (ptr != 0 && rownr + 1 == lastRowPut_p) {
+  if (ptr != nullptr && rownr + 1 == lastRowPut_p) {
     ptr->getShape(*iosfile_p);
     if (shape.isEqual(ptr->shape())) {
       return ptr;
@@ -188,7 +188,7 @@ StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, boo
   }
   // When the interval contains a single row, we can do a simple replace
   // if the value is not shared.
-  if (ptr != 0 && startRow_p == endRow_p) {
+  if (ptr != nullptr && startRow_p == endRow_p) {
     if (ptr->refCount(*iosfile_p) <= 1) {
       // The value is not shared, so we can replace it.
       ptr->setShape(*iosfile_p, dataType(), shape);
@@ -232,14 +232,14 @@ void ISMIndColumn::init(ByteIO::OpenOption fileOption) {
   DebugAssert(nrelem_p == 1, AipsError);
   bool asBigEndian = stmanPtr_p->asBigEndian();
   if (asBigEndian) {
-    readFunc_p = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    writeFunc_p = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    fixedLength_p = CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    readFunc_p = CanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    writeFunc_p = CanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    fixedLength_p = CanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
     nrcopy_p = 1;
   } else {
-    readFunc_p = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    writeFunc_p = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    fixedLength_p = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    readFunc_p = LECanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    writeFunc_p = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    fixedLength_p = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
     nrcopy_p = 1;
   }
   lastValue_p = new int64_t;

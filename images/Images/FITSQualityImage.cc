@@ -67,9 +67,9 @@ FITSQualityImage::FITSQualityImage(const String& name)
     : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
-      fitsdata_p(0),
-      fitserror_p(0),
-      pPixelMask_p(0),
+      fitsdata_p(nullptr),
+      fitserror_p(nullptr),
+      pPixelMask_p(nullptr),
       whichDataHDU_p(0),
       whichErrorHDU_p(0),
       whichMaskHDU_p(0),
@@ -85,8 +85,8 @@ FITSQualityImage::FITSQualityImage(const String& name, unsigned int whichDataHDU
     : ImageInterface<float>(),
       name_p(name),
       fullname_p(name),
-      fitsdata_p(0),
-      fitserror_p(0),
+      fitsdata_p(nullptr),
+      fitserror_p(nullptr),
       whichDataHDU_p(whichDataHDU),
       whichErrorHDU_p(whichErrorHDU),
       whichMaskHDU_p(0),
@@ -100,8 +100,8 @@ FITSQualityImage::FITSQualityImage(const String& name, unsigned int whichDataHDU
 FITSQualityImage::FITSQualityImage(const FITSQualityImage& other)
     : ImageInterface<float>(other),
       name_p(other.name_p),
-      fitsdata_p(0),
-      fitserror_p(0),
+      fitsdata_p(nullptr),
+      fitserror_p(nullptr),
       shape_p(other.shape_p),
       whichDataHDU_p(other.whichDataHDU_p),
       whichErrorHDU_p(other.whichErrorHDU_p),
@@ -110,13 +110,13 @@ FITSQualityImage::FITSQualityImage(const FITSQualityImage& other)
       isClosed_p(other.isClosed_p),
       isDataClosed_p(other.isDataClosed_p),
       isErrorClosed_p(other.isErrorClosed_p) {
-  if (other.fitsdata_p != 0) {
+  if (other.fitsdata_p != nullptr) {
     fitsdata_p = dynamic_cast<FITSImage*>(other.fitsdata_p->cloneII());
   }
-  if (other.fitserror_p != 0) {
+  if (other.fitserror_p != nullptr) {
     fitserror_p = dynamic_cast<FITSErrorImage*>(other.fitserror_p->cloneII());
   }
-  if (fitsdata_p != 0 && fitserror_p != 0 && fitsdata_p->isMasked())
+  if (fitsdata_p != nullptr && fitserror_p != nullptr && fitsdata_p->isMasked())
     pPixelMask_p = new FITSQualityMask(fitsdata_p, fitserror_p);
 }
 
@@ -128,16 +128,16 @@ FITSQualityImage& FITSQualityImage::operator=(const FITSQualityImage& other)
   if (this != &other) {
     ImageInterface<float>::operator=(other);
     delete fitsdata_p;
-    fitsdata_p = 0;
-    if (other.fitsdata_p != 0) {
+    fitsdata_p = nullptr;
+    if (other.fitsdata_p != nullptr) {
       fitsdata_p = dynamic_cast<FITSImage*>(other.fitsdata_p->cloneII());
     }
     delete fitserror_p;
-    fitserror_p = 0;
-    if (other.fitserror_p != 0) {
+    fitserror_p = nullptr;
+    if (other.fitserror_p != nullptr) {
       fitserror_p = dynamic_cast<FITSErrorImage*>(other.fitserror_p->cloneII());
     }
-    if (fitsdata_p != 0 && fitserror_p != 0 && fitsdata_p->isMasked())
+    if (fitsdata_p != nullptr && fitserror_p != nullptr && fitsdata_p->isMasked())
       pPixelMask_p = new FITSQualityMask(fitsdata_p, fitserror_p);
     name_p = other.name_p;
     shape_p = other.shape_p;
@@ -154,11 +154,11 @@ FITSQualityImage& FITSQualityImage::operator=(const FITSQualityImage& other)
 
 FITSQualityImage::~FITSQualityImage() {
   delete fitsdata_p;
-  fitsdata_p = 0;
+  fitsdata_p = nullptr;
   delete fitserror_p;
-  fitserror_p = 0;
+  fitserror_p = nullptr;
   delete pPixelMask_p;
-  pPixelMask_p = 0;
+  pPixelMask_p = nullptr;
 }
 
 ImageInterface<float>* FITSQualityImage::cloneII() const { return new FITSQualityImage(*this); }
@@ -274,7 +274,7 @@ Lattice<bool>& FITSQualityImage::pixelMask() {
   return *pPixelMask_p;
 }
 
-const LatticeRegion* FITSQualityImage::getRegionPtr() const { return 0; }
+const LatticeRegion* FITSQualityImage::getRegionPtr() const { return nullptr; }
 
 bool FITSQualityImage::doGetSlice(Array<float>& buffer, const Slicer& section) {
   // get the section dimension

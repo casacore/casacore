@@ -76,7 +76,7 @@ SparseDiff<T>::SparseDiff(const SparseDiff<T> &other)
 template <class T>
 SparseDiff<T>::~SparseDiff() {
   ObjectStack<SparseDiffRep<T>>::stack().put(rep_p);
-  rep_p = 0;
+  rep_p = nullptr;
 }
 
 template <class T>

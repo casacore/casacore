@@ -41,8 +41,8 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDSysCalHandler::SDSysCalHandler()
-    : msSysCal_p(0),
-      msSysCalCols_p(0),
+    : msSysCal_p(nullptr),
+      msSysCalCols_p(nullptr),
       rownr_p(-1),
       nrecpt_p(0),
       tcalId_p(-1),
@@ -55,8 +55,8 @@ SDSysCalHandler::SDSysCalHandler()
 }
 
 SDSysCalHandler::SDSysCalHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : msSysCal_p(0),
-      msSysCalCols_p(0),
+    : msSysCal_p(nullptr),
+      msSysCalCols_p(nullptr),
       rownr_p(-1),
       nrecpt_p(0),
       tcalId_p(-1),
@@ -69,8 +69,8 @@ SDSysCalHandler::SDSysCalHandler(MeasurementSet &ms, Vector<bool> &handledCols, 
 }
 
 SDSysCalHandler::SDSysCalHandler(const SDSysCalHandler &other)
-    : msSysCal_p(0),
-      msSysCalCols_p(0),
+    : msSysCal_p(nullptr),
+      msSysCalCols_p(nullptr),
       rownr_p(-1),
       nrecpt_p(0),
       tcalId_p(-1),
@@ -226,7 +226,7 @@ void SDSysCalHandler::fill(const Record &row, int antennaId, int feedId, int spe
               !isInf(*phaseDiffField_p)) {
             // need to add this column
             delete msSysCalCols_p;
-            msSysCalCols_p = 0;
+            msSysCalCols_p = nullptr;
             TableDesc td;
             MSSysCal::addColumnToDesc(td, MSSysCal::PHASE_DIFF);
             MSSysCal::addColumnToDesc(td, MSSysCal::PHASE_DIFF_FLAG);
@@ -266,10 +266,10 @@ void SDSysCalHandler::fill(const Record &row, int antennaId, int feedId, int spe
 
 void SDSysCalHandler::clearAll() {
   delete msSysCal_p;
-  msSysCal_p = 0;
+  msSysCal_p = nullptr;
 
   delete msSysCalCols_p;
-  msSysCalCols_p = 0;
+  msSysCalCols_p = nullptr;
 
   clearRow();
 }

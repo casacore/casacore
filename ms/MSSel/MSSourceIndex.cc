@@ -34,7 +34,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSSourceIndex::MSSourceIndex() : MSTableIndex(), msSourceCols_p(0) { ; }
+MSSourceIndex::MSSourceIndex() : MSTableIndex(), msSourceCols_p(nullptr) { ; }
 
 MSSourceIndex::MSSourceIndex(const MSSource& source)
     : MSTableIndex(source, stringToVector("SOURCE_ID,SPECTRAL_WINDOW_ID"), compare) {

@@ -63,7 +63,7 @@ int TableGramwrap() { return 1; }
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Declare a file global pointer to a char* for the input string.
-static const char* strpTableGram = 0;
+static const char* strpTableGram = nullptr;
 static int posTableGram = 0;
 
 // Define a class to delete the yy_buffer in case of an exception.
@@ -76,7 +76,7 @@ class TableGramState {
   void clear() {
     if (itsState) {
       TableGram_delete_buffer(itsState);
-      itsState = 0;
+      itsState = nullptr;
     }
   }
   YY_BUFFER_STATE state() const { return itsState; }

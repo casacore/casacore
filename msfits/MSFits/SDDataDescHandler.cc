@@ -39,17 +39,17 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDDataDescHandler::SDDataDescHandler()
-    : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msDataDesc_p(nullptr), msDataDescCols_p(nullptr), rownr_p(-1) {
   ;
 }
 
 SDDataDescHandler::SDDataDescHandler(MeasurementSet &ms)
-    : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msDataDesc_p(nullptr), msDataDescCols_p(nullptr), rownr_p(-1) {
   initAll(ms);
 }
 
 SDDataDescHandler::SDDataDescHandler(const SDDataDescHandler &other)
-    : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1) {
+    : index_p(nullptr), msDataDesc_p(nullptr), msDataDescCols_p(nullptr), rownr_p(-1) {
   *this = other;
 }
 
@@ -101,13 +101,13 @@ void SDDataDescHandler::fill(const Record &, int spwinId, int polId) {
 
 void SDDataDescHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete msDataDesc_p;
-  msDataDesc_p = 0;
+  msDataDesc_p = nullptr;
 
   delete msDataDescCols_p;
-  msDataDescCols_p = 0;
+  msDataDescCols_p = nullptr;
 }
 
 void SDDataDescHandler::initAll(MeasurementSet &ms) {

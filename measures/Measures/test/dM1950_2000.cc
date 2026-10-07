@@ -46,7 +46,7 @@ void fk45(double R1950, double D1950, double BEPOCH, double &R2000, double &D200
           Vector<double> V2000[]);
 
 void conB1950(const MVDirection &b1950, const MVDirection &j2000, double epo = 2000.0,
-              MeasFrame *frame = 0);
+              MeasFrame *frame = nullptr);
 
 void fk45(double R1950, double D1950, double BEPOCH, double &R2000, double &D2000, double X2000[3],
           Vector<double> V2000[]) {

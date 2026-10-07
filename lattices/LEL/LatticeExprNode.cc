@@ -51,7 +51,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // Default constructor
-LatticeExprNode::LatticeExprNode() : donePrepare_p(false), isInvalid_p(true), pAttr_p(0) {
+LatticeExprNode::LatticeExprNode() : donePrepare_p(false), isInvalid_p(true), pAttr_p(nullptr) {
 #if defined(AIPS_TRACE)
   cout << "LatticeExprNode::default constructor; pExpr_p.nrefs() = " << pExprDouble_p.nrefs()
        << endl;
@@ -1222,7 +1222,7 @@ LatticeExprNode rebin(const LatticeExprNode& lat, const LatticeExprNode& bin) {
   const IPosition& binning = bin.getIPosition();
   const LELLattCoordBase* cbptr = &(lat.getAttribute().coordinates().coordinates());
   const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
-  AlwaysAssert(cptr != 0, AipsError);
+  AlwaysAssert(cptr != nullptr, AipsError);
   return cptr->makeRebinLattice(lat, binning);
 }
 
@@ -1443,7 +1443,7 @@ LatticeExprNode LatticeExprNode::operator[](const LatticeExprNode& cond) const {
     AlwaysAssert(!isRegion(), AipsError);
     const LELLattCoordBase* cbptr = &(getAttribute().coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
-    AlwaysAssert(cptr != 0, AipsError);
+    AlwaysAssert(cptr != nullptr, AipsError);
     return cptr->makeSubLattice(*this, region.region());
   }
   switch (dataType()) {
@@ -2079,13 +2079,13 @@ int LatticeExprNode::makeEqualDim(LatticeExprNode& expr0, LatticeExprNode& expr1
     // left is subset of right, so extend left.
     const LELLattCoordBase* cbptr = &(attr0.coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
-    AlwaysAssert(cptr != 0, AipsError);
+    AlwaysAssert(cptr != nullptr, AipsError);
     expr0 = cptr->makeExtendLattice(expr0, attr1.shape(), attr1.coordinates().coordinates());
   } else if (result == 1) {
     // right is subset of left, so extend right.
     const LELLattCoordBase* cbptr = &(attr1.coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
-    AlwaysAssert(cptr != 0, AipsError);
+    AlwaysAssert(cptr != nullptr, AipsError);
     expr1 = cptr->makeExtendLattice(expr1, attr0.shape(), attr0.coordinates().coordinates());
   } else if (result == 9) {
     throw AipsError("LatticeExprNode - coordinates of operands mismatch");

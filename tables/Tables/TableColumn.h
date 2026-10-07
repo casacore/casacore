@@ -150,7 +150,7 @@ class TableColumn {
   // </group>
 
   // Test if the object is null, i.e. does not reference a column.
-  bool isNull() const { return (baseColPtr_p == 0 ? true : false); }
+  bool isNull() const { return (baseColPtr_p == nullptr ? true : false); }
 
   // Throw an exception if the object is null, i.e.
   // if function isNull() is true.

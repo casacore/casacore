@@ -680,7 +680,8 @@ std::vector<int64_t> doHDF5(int seqnr, const String& name) {
     std::shared_ptr<HDF5DataSet> hdata;
     std::shared_ptr<HDF5DataSet> hfloatdata;
     std::shared_ptr<HDF5DataSet> hweightspectrum;
-    std::shared_ptr<HDF5DataSet> hflag = std::make_shared<HDF5DataSet>(hspw, "FLAG", (bool*)0);
+    std::shared_ptr<HDF5DataSet> hflag =
+        std::make_shared<HDF5DataSet>(hspw, "FLAG", (bool*)nullptr);
     IPosition shape = hflag->shape();
     IPosition tileShape = hflag->tileShape();
     unsigned int tileSize = 0;
@@ -689,7 +690,7 @@ std::vector<int64_t> doHDF5(int seqnr, const String& name) {
       hflag->setCacheSize(myCacheSizeFlag == 0 ? cacheSize : myCacheSizeFlag);
     }
     try {
-      hdata = std::make_shared<HDF5DataSet>(hspw, "DATA", (Complex*)0);
+      hdata = std::make_shared<HDF5DataSet>(hspw, "DATA", (Complex*)nullptr);
       tileShape = hdata->tileShape();
       if (myReadData) {
         hdata->setCacheSize(myCacheSizeData == 0 ? cacheSize : myCacheSizeData);
@@ -701,7 +702,7 @@ std::vector<int64_t> doHDF5(int seqnr, const String& name) {
     }
     if (!myReadData) {
       try {
-        hfloatdata = std::make_shared<HDF5DataSet>(hspw, "FLOAT_DATA", (Complex*)0);
+        hfloatdata = std::make_shared<HDF5DataSet>(hspw, "FLOAT_DATA", (Complex*)nullptr);
         tileShape = hdata->tileShape();
         if (myReadFloatData) {
           hfloatdata->setCacheSize(myCacheSizeData == 0 ? cacheSize : myCacheSizeData);
@@ -712,7 +713,7 @@ std::vector<int64_t> doHDF5(int seqnr, const String& name) {
       }
     }
     if (myReadWeightSpectrum) {
-      hweightspectrum = std::make_shared<HDF5DataSet>(hspw, "WEIGHT_SPECTRUM", (float*)0);
+      hweightspectrum = std::make_shared<HDF5DataSet>(hspw, "WEIGHT_SPECTRUM", (float*)nullptr);
       hweightspectrum->setCacheSize(myCacheSizeWeight == 0 ? cacheSize : myCacheSizeWeight);
     }
     // Show some parms for the very first spw.

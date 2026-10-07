@@ -61,8 +61,8 @@ DirectionCoordinate::DirectionCoordinate()
       conversionType_p(type_p),
       projection_p(Projection(Projection::CAR)),
       names_p(axisNames(type_p, false).copy()),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0) {
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr) {
   Matrix<double> xform(2, 2);
   xform = 0.0;
   xform.diagonal() = 1.0;
@@ -82,8 +82,8 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
       projection_p(projection),
       names_p(axisNames(directionType, false).copy()),
       units_p(2),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0) {
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr) {
   makeDirectionCoordinate(type_p, projection_p, refLong, refLat, incLong, incLat, xform, refX, refY,
                           longPole, latPole);
   setDefaultWorldMixRanges();
@@ -96,8 +96,8 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType, const 
       type_p(directionType),
       conversionType_p(type_p),
       names_p(axisNames(type_p, false).copy()),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0) {
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr) {
   // Check wcs structure
 
   if (wcs.naxis != 2) {
@@ -144,8 +144,8 @@ DirectionCoordinate::DirectionCoordinate(
       projection_p(projection),
       names_p(axisNames(directionType, false).copy()),
       units_p(2),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0) {
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr) {
   Unit rad("rad");
   //
   if (!refLong.isConform(rad)) {
@@ -189,7 +189,7 @@ DirectionCoordinate::DirectionCoordinate(
 }
 
 DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate& other)
-    : Coordinate(other), pConversionMachineTo_p(0), pConversionMachineFrom_p(0) {
+    : Coordinate(other), pConversionMachineTo_p(nullptr), pConversionMachineFrom_p(nullptr) {
   wcs_p.flag = -1;  // Says not initialized
   copy(other);
 }
@@ -209,11 +209,11 @@ DirectionCoordinate::~DirectionCoordinate() {
   //
   if (pConversionMachineTo_p) {
     delete pConversionMachineTo_p;
-    pConversionMachineTo_p = 0;
+    pConversionMachineTo_p = nullptr;
   }
   if (pConversionMachineFrom_p) {
     delete pConversionMachineFrom_p;
-    pConversionMachineFrom_p = 0;
+    pConversionMachineFrom_p = nullptr;
   }
 }
 
@@ -236,11 +236,11 @@ void DirectionCoordinate::setReferenceConversion(MDirection::Types type) {
   conversionType_p = type;
   if (pConversionMachineTo_p) {
     delete pConversionMachineTo_p;
-    pConversionMachineTo_p = 0;
+    pConversionMachineTo_p = nullptr;
   }
   if (pConversionMachineFrom_p) {
     delete pConversionMachineFrom_p;
-    pConversionMachineFrom_p = 0;
+    pConversionMachineFrom_p = nullptr;
   }
   if (conversionType_p == type_p) return;
 
@@ -1457,15 +1457,15 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
 
   if (axes.nelements() != 2) {
     set_error("Invalid number of specified axes");
-    return 0;
+    return nullptr;
   }
   if (!axes[0] || !axes[1]) {
     set_error("You must specify both axes of the DirectionCoordinate to transform");
-    return 0;
+    return nullptr;
   }
   if (shape.nelements() != 2) {
     set_error("Invalid number of elements in shape");
-    return 0;
+    return nullptr;
   }
 
   // Find names and units for Fourier coordinate and units to set
@@ -1487,7 +1487,7 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
   DirectionCoordinate dc = *this;
   if (!dc.setWorldAxisUnits(unitsCanon)) {
     set_error("Could not set world axis units");
-    return 0;
+    return nullptr;
   }
   // Create a LinearXform to do the inversion
   Vector<double> cdelt = dc.increment().copy();
@@ -1505,9 +1505,9 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
 
   String errMsg;
   std::unique_ptr<LinearXform> pLinearF(linear.fourierInvert(errMsg, axes, crpix, scale));
-  if (pLinearF == 0) {
+  if (pLinearF == nullptr) {
     set_error(errMsg);
-    return 0;
+    return nullptr;
   }
   return new LinearCoordinate(namesOut, unitsOut, crval, pLinearF->cdelt(), pLinearF->pc(),
                               pLinearF->crpix());
@@ -1971,11 +1971,11 @@ void DirectionCoordinate::copy(const DirectionCoordinate& other) {
 
   if (pConversionMachineTo_p) {
     delete pConversionMachineTo_p;
-    pConversionMachineTo_p = 0;
+    pConversionMachineTo_p = nullptr;
   }
   if (pConversionMachineFrom_p) {
     delete pConversionMachineFrom_p;
-    pConversionMachineFrom_p = 0;
+    pConversionMachineFrom_p = nullptr;
   }
   makeConversionMachines();
 }

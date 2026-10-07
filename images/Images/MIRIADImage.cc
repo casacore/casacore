@@ -72,7 +72,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 MIRIADImage::MIRIADImage(const String& name)
     : ImageInterface<float>(),
       name_p(name),
-      pPixelMask_p(0),
+      pPixelMask_p(nullptr),
       hasBlanks_p(false),
       dataType_p(TpOther),
       fileOffset_p(0),
@@ -84,7 +84,7 @@ MIRIADImage::MIRIADImage(const String& name, const MaskSpecifier& maskSpec)
     : ImageInterface<float>(),
       name_p(name),
       maskSpec_p(maskSpec),
-      pPixelMask_p(0),
+      pPixelMask_p(nullptr),
       hasBlanks_p(false),
       dataType_p(TpOther),
       fileOffset_p(0),
@@ -99,13 +99,13 @@ MIRIADImage::MIRIADImage(const MIRIADImage& other)
       unit_p(other.unit_p),
       rec_p(other.rec_p),
       pTiledFile_p(other.pTiledFile_p),
-      pPixelMask_p(0),
+      pPixelMask_p(nullptr),
       shape_p(other.shape_p),
       hasBlanks_p(other.hasBlanks_p),
       dataType_p(other.dataType_p),
       fileOffset_p(other.fileOffset_p),
       isClosed_p(other.isClosed_p) {
-  if (other.pPixelMask_p != 0) {
+  if (other.pPixelMask_p != nullptr) {
     pPixelMask_p = other.pPixelMask_p->clone();
   }
 }
@@ -121,8 +121,8 @@ MIRIADImage& MIRIADImage::operator=(const MIRIADImage& other)
     pTiledFile_p = other.pTiledFile_p;  // Counted pointer
                                         //
     delete pPixelMask_p;
-    pPixelMask_p = 0;
-    if (other.pPixelMask_p != 0) {
+    pPixelMask_p = nullptr;
+    if (other.pPixelMask_p != nullptr) {
       pPixelMask_p = other.pPixelMask_p->clone();
     }
     //
@@ -155,7 +155,7 @@ String MIRIADImage::imageType() const { return "MIRIADImage"; }
 
 bool MIRIADImage::isMasked() const { return hasBlanks_p; }
 
-const LatticeRegion* MIRIADImage::getRegionPtr() const { return 0; }
+const LatticeRegion* MIRIADImage::getRegionPtr() const { return nullptr; }
 
 IPosition MIRIADImage::shape() const { return shape_p.shape(); }
 

@@ -32,7 +32,8 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-RecordInterface::RecordInterface() : checkFunction_p(0), checkArgument_p(0), type_p(Variable) {}
+RecordInterface::RecordInterface()
+    : checkFunction_p(nullptr), checkArgument_p(nullptr), type_p(Variable) {}
 
 RecordInterface::RecordInterface(RecordType type, CheckFieldFunction* funcPtr,
                                  const void* checkArgument)
@@ -59,7 +60,7 @@ void RecordInterface::throwIfFixed() const {
 }
 
 void RecordInterface::checkName(const String& fieldName, DataType type) const {
-  if (checkFunction_p != 0) {
+  if (checkFunction_p != nullptr) {
     String message;
     if (!checkFunction_p(fieldName, type, checkArgument_p, message)) {
       throw(AipsError("Record field " + fieldName + " cannot be added: " + message));

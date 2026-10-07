@@ -93,7 +93,7 @@ template <class MSEnum>
 MSTableMaps& MSTable<MSEnum>::getMaps() {
   // Create the static and fill it.
   // Note that C++11 guarantees that it is called once and is thread-safe.
-  static MSTableMaps maps(MSTableImpl::initMaps(static_cast<MSEnum*>(0)));
+  static MSTableMaps maps(MSTableImpl::initMaps(static_cast<MSEnum*>(nullptr)));
   return maps;
 }
 

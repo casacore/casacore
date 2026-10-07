@@ -37,7 +37,7 @@ namespace casacore {
 
 JsonValue::JsonValue()
     : itsDataType(TpNumberOfTypes),  // use a non-existing type
-      itsValuePtr(0) {}
+      itsValuePtr(nullptr) {}
 
 JsonValue::JsonValue(bool value) : itsDataType(TpBool), itsValuePtr(new bool(value)) {}
 
@@ -60,7 +60,7 @@ JsonValue::JsonValue(const vector<JsonValue>& value)
 JsonValue::JsonValue(const JsonKVMap& value)
     : itsDataType(TpRecord), itsValuePtr(new JsonKVMap(value)) {}
 
-JsonValue::JsonValue(const JsonValue& that) : itsValuePtr(0) { copyValue(that); }
+JsonValue::JsonValue(const JsonValue& that) : itsValuePtr(nullptr) { copyValue(that); }
 
 JsonValue& JsonValue::operator=(const JsonValue& that) {
   if (this != &that) {
@@ -100,7 +100,7 @@ void JsonValue::clear() {
         throw JsonError("JsonValue::clear - invalid data type");
     }
   }
-  itsValuePtr = 0;
+  itsValuePtr = nullptr;
 }
 
 void JsonValue::copyValue(const JsonValue& that) {

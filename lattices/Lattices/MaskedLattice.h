@@ -219,7 +219,7 @@ class MaskedLattice : public Lattice<T> {
 
  public:
   // Default constructor.
-  MaskedLattice() : itsDefRegPtr(0) { ; }
+  MaskedLattice() : itsDefRegPtr(nullptr) { ; }
 
   // Copy constructor.
   MaskedLattice(const MaskedLattice<T>&);

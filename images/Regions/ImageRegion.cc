@@ -45,23 +45,23 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-ImageRegion::ImageRegion() : LattRegionHolder(static_cast<unsigned int>(0)), itsWC(0) {}
+ImageRegion::ImageRegion() : LattRegionHolder(static_cast<unsigned int>(0)), itsWC(nullptr) {}
 
-ImageRegion::ImageRegion(const LCRegion& region) : LattRegionHolder(region), itsWC(0) {}
+ImageRegion::ImageRegion(const LCRegion& region) : LattRegionHolder(region), itsWC(nullptr) {}
 
-ImageRegion::ImageRegion(const LCSlicer& slicer) : LattRegionHolder(slicer), itsWC(0) {}
+ImageRegion::ImageRegion(const LCSlicer& slicer) : LattRegionHolder(slicer), itsWC(nullptr) {}
 
 ImageRegion::ImageRegion(const WCRegion& region)
     : LattRegionHolder(region.ndim()), itsWC(region.cloneRegion()) {}
 
-ImageRegion::ImageRegion(LCRegion* region) : LattRegionHolder(region), itsWC(0) {}
+ImageRegion::ImageRegion(LCRegion* region) : LattRegionHolder(region), itsWC(nullptr) {}
 
-ImageRegion::ImageRegion(LCSlicer* slicer) : LattRegionHolder(slicer), itsWC(0) {}
+ImageRegion::ImageRegion(LCSlicer* slicer) : LattRegionHolder(slicer), itsWC(nullptr) {}
 
 ImageRegion::ImageRegion(WCRegion* region) : LattRegionHolder(region->ndim()), itsWC(region) {}
 
 ImageRegion::ImageRegion(const ImageRegion& other) : LattRegionHolder(other), itsWC(other.itsWC) {
-  if (itsWC != 0) {
+  if (itsWC != nullptr) {
     itsWC = itsWC->cloneRegion();
   }
 }
@@ -73,7 +73,7 @@ ImageRegion& ImageRegion::operator=(const ImageRegion& other) {
     LattRegionHolder::operator=(other);
     delete itsWC;
     itsWC = other.itsWC;
-    if (itsWC != 0) {
+    if (itsWC != nullptr) {
       itsWC = itsWC->cloneRegion();
     }
   }
@@ -86,7 +86,7 @@ bool ImageRegion::operator==(const LattRegionHolder& other) const {
   if (!LattRegionHolder::operator==(other)) {
     return false;
   }
-  if (itsWC != 0) {
+  if (itsWC != nullptr) {
     return (*itsWC == *other.asWCRegionPtr());
   }
   return true;
@@ -94,7 +94,7 @@ bool ImageRegion::operator==(const LattRegionHolder& other) const {
 
 ImageRegion* ImageRegion::fromLatticeExpression(const String& latticeExpression) {
   if (latticeExpression.empty()) {
-    return 0;
+    return nullptr;
   }
   // Get LatticeExprNode (tree) from parser.
   LatticeExprNode node = ImageExprParse::command(latticeExpression);
@@ -104,16 +104,16 @@ ImageRegion* ImageRegion::fromLatticeExpression(const String& latticeExpression)
 
 ImageRegion* ImageRegion::fromRecord(LogIO* logger, const CoordinateSystem& coords,
                                      const IPosition& imShape, const Record& regionRecord) {
-  if (logger != 0) {
+  if (logger != nullptr) {
     *logger << LogOrigin("ImageRegion", __FUNCTION__);
   }
-  ImageRegion* pRegion = 0;
+  ImageRegion* pRegion = nullptr;
   if (regionRecord.nfields() == 0) {
     IPosition blc(imShape.nelements(), 0);
     IPosition trc(imShape - 1);
     LCSlicer slicer(blc, trc, RegionType::Abs);
     pRegion = new ImageRegion(slicer);
-    if (logger != 0) {
+    if (logger != nullptr) {
       *logger << LogIO::NORMAL << "Selected bounding box : " << endl;
       *logger << LogIO::NORMAL << "    " << blc << " to " << trc << "  ("
               << CoordinateUtil::formatCoordinate(blc, coords) << " to "
@@ -121,7 +121,7 @@ ImageRegion* ImageRegion::fromRecord(LogIO* logger, const CoordinateSystem& coor
     }
   } else {
     pRegion = ImageRegion::fromRecord(TableRecord(regionRecord), "");
-    if (logger != 0) {
+    if (logger != nullptr) {
       LatticeRegion latRegion = pRegion->toLatticeRegion(coords, imShape);
       Slicer sl = latRegion.slicer();
       *logger << LogIO::NORMAL << "Selected bounding box : " << endl;
@@ -133,7 +133,7 @@ ImageRegion* ImageRegion::fromRecord(LogIO* logger, const CoordinateSystem& coor
   return pRegion;
 }
 
-bool ImageRegion::isWCRegion() const { return (itsWC != 0); }
+bool ImageRegion::isWCRegion() const { return (itsWC != nullptr); }
 
 const WCRegion* ImageRegion::asWCRegionPtr() const {
   AlwaysAssert(isWCRegion(), AipsError);
@@ -163,7 +163,7 @@ LatticeRegion ImageRegion::toLatticeRegion(const CoordinateSystem& cSys,
 
 LCRegion* ImageRegion::toLCRegion(const CoordinateSystem& cSys, const IPosition& shape) const {
   // Convert the region to an LCRegion.
-  LCRegion* region = 0;
+  LCRegion* region = nullptr;
   if (isLCRegion()) {
     region = asLCRegion().cloneRegion();
   } else if (isWCRegion()) {

@@ -49,11 +49,11 @@ namespace casacore {
 
 bool Casarc::initialized = false;
 
-map<ino_t, Casarc *> *Casarc::rcfiles = 0;
-map<string, Casarc *> *Casarc::filenames = 0;
-std::list<Casarc *> *Casarc::rclist = 0;
+map<ino_t, Casarc *> *Casarc::rcfiles = nullptr;
+map<string, Casarc *> *Casarc::filenames = nullptr;
+std::list<Casarc *> *Casarc::rclist = nullptr;
 
-std::string *Casarc::default_path = 0;
+std::string *Casarc::default_path = nullptr;
 
 unsigned int CasarcCleanup::creation_count = 0;
 
@@ -78,7 +78,7 @@ void Casarc::setDefaultPath(const std::string &path) { default_path = new std::s
 
 void Casarc::clearDefaultPath() {
   delete default_path;
-  default_path = 0;
+  default_path = nullptr;
 }
 
 Casarc &Casarc::instance() {
@@ -90,7 +90,7 @@ Casarc &Casarc::instance() {
     return instance(*default_path);
   } else {
     const char *home = getenv("HOME");
-    if (home == 0) return instance("casarc");
+    if (home == nullptr) return instance("casarc");
     struct stat statbuf;
     char buf[2048];
     snprintf(buf, sizeof(buf), "%s/.casa", home);
@@ -141,7 +141,7 @@ void Casarc::put(const std::string &keyword, const std::string &value) {
   sync();
 
   struct timeval tv = {0, 0};
-  gettimeofday(&tv, 0);
+  gettimeofday(&tv, nullptr);
 
   std::map<std::string, std::string>::iterator mapping = rcmap.find(keyword);
   char buf[512];
@@ -221,7 +221,7 @@ void Casarc::put(const std::string &keyword, const std::string &value) {
 #endif
 
     munmap(mapped_file, mapped_file_size);
-    mapped_file = 0;
+    mapped_file = nullptr;
     mapped_file_size = 0;
 
     int fd = lock(WRITE);
@@ -237,7 +237,7 @@ void Casarc::put(const std::string &keyword, const std::string &value) {
 }
 
 const std::list<Casarc *> &Casarc::list() {
-  if (rclist == 0) {
+  if (rclist == nullptr) {
     rclist = new std::list<Casarc *>();
   }
   return *rclist;
@@ -268,7 +268,7 @@ void Casarc::sync() {
     }
   }
 
-  if (mapped_file == 0 || mapped_file_size != buf.st_size ||
+  if (mapped_file == nullptr || mapped_file_size != buf.st_size ||
       current_modification_time(buf) != timestamp) {
 #if CASARC_DEBUG >= 1
     fprintf(stderr, "casarc update: %ld => ", size());
@@ -386,7 +386,7 @@ Casarc::iterator Casarc::end() {
 }
 
 Casarc::Casarc(const std::string &path)
-    : mapped_file(0), mapped_file_size(0), have_lock(0), filename(path), inode(0) {
+    : mapped_file(nullptr), mapped_file_size(0), have_lock(0), filename(path), inode(0) {
   struct stat buf;
 
   if (initialized == false) {
@@ -492,10 +492,10 @@ void Casarc::read_file() {
   rcmap.erase(rcmap.begin(), rcmap.end());
   rcmetamap.erase(rcmetamap.begin(), rcmetamap.end());
 
-  if (mapped_file != 0) munmap(mapped_file, mapped_file_size);
+  if (mapped_file != nullptr) munmap(mapped_file, mapped_file_size);
 
   mapped_file_size = buf.st_size;
-  if ((mapped_file = (char *)mmap(0, mapped_file_size, PROT_READ, MAP_SHARED, fd, 0)) ==
+  if ((mapped_file = (char *)mmap(nullptr, mapped_file_size, PROT_READ, MAP_SHARED, fd, 0)) ==
       (void *)-1) {
     perror("casarc");
     throw("Casarc::read_file, could not memory map casarc file");
@@ -625,13 +625,13 @@ void Casarc::shutdown() {
     }
 
     delete rcfiles;
-    rcfiles = 0;
+    rcfiles = nullptr;
     delete filenames;
-    filenames = 0;
+    filenames = nullptr;
     delete rclist;
-    rclist = 0;
+    rclist = nullptr;
     delete default_path;
-    default_path = 0;
+    default_path = nullptr;
   }
 }
 

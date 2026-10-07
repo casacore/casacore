@@ -88,7 +88,7 @@ class MSCorrParse : public MSParse {
   // Associate the ms and the shorthand.
   MSCorrParse(const MeasurementSet* ms);
 
-  //  ~MSCorrParse() {if (node_p) delete node_p;node_p=0x0;}
+  //  ~MSCorrParse() {if (node_p) delete node_p;node_p=nullptr;}
   // MS selection
   const TableExprNode* selectCorrType(const String& corrType);
 
@@ -96,7 +96,7 @@ class MSCorrParse : public MSParse {
   static const TableExprNode* node();
   static void cleanup() {
     if (node_p) delete node_p;
-    node_p = 0x0;
+    node_p = nullptr;
   }
 
  private:

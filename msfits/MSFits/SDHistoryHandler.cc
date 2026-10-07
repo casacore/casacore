@@ -41,15 +41,16 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-SDHistoryHandler::SDHistoryHandler() : msHis_p(0), msHisCols_p(0) { ; }
+SDHistoryHandler::SDHistoryHandler() : msHis_p(nullptr), msHisCols_p(nullptr) { ; }
 
 SDHistoryHandler::SDHistoryHandler(MeasurementSet &ms, const Vector<bool> &handledCols,
                                    const Record &row)
-    : msHis_p(0), msHisCols_p(0) {
+    : msHis_p(nullptr), msHisCols_p(nullptr) {
   initAll(ms, handledCols, row);
 }
 
-SDHistoryHandler::SDHistoryHandler(const SDHistoryHandler &other) : msHis_p(0), msHisCols_p(0) {
+SDHistoryHandler::SDHistoryHandler(const SDHistoryHandler &other)
+    : msHis_p(nullptr), msHisCols_p(nullptr) {
   *this = other;
 }
 
@@ -102,10 +103,10 @@ void SDHistoryHandler::fill(const Record &, int observationId, const String &mes
 
 void SDHistoryHandler::clearAll() {
   delete msHis_p;
-  msHis_p = 0;
+  msHis_p = nullptr;
 
   delete msHisCols_p;
-  msHisCols_p = 0;
+  msHisCols_p = nullptr;
 
   clearRow();
 }

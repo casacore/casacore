@@ -107,7 +107,7 @@ void TSMCubeBuff::extend(uint64_t nr, const Record& coordValues, const TSMColumn
   getCache()->extend(nrTiles_p - nrold);
   filePtr_p->extend((nrTiles_p - nrold) * bucketSize_p);
   // Update the last coordinate (if there).
-  if (lastCoordColumn != 0) {
+  if (lastCoordColumn != nullptr) {
     extendCoordinates(coordValues, lastCoordColumn->columnName(), cubeShape_p(lastDim));
   }
 }

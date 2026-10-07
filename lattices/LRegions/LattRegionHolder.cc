@@ -40,21 +40,23 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LattRegionHolder::LattRegionHolder(unsigned int ndim) : itsLC(0), itsSlicer(0), itsNdim(ndim) {}
+LattRegionHolder::LattRegionHolder(unsigned int ndim)
+    : itsLC(nullptr), itsSlicer(nullptr), itsNdim(ndim) {}
 
 LattRegionHolder::LattRegionHolder(const LCRegion& region)
-    : itsLC(region.cloneRegion()), itsSlicer(0), itsNdim(region.ndim()) {}
+    : itsLC(region.cloneRegion()), itsSlicer(nullptr), itsNdim(region.ndim()) {}
 
 LattRegionHolder::LattRegionHolder(const LCSlicer& slicer)
-    : itsLC(0), itsSlicer(new LCSlicer(slicer)), itsNdim(slicer.ndim()) {}
+    : itsLC(nullptr), itsSlicer(new LCSlicer(slicer)), itsNdim(slicer.ndim()) {}
 
 LattRegionHolder::LattRegionHolder(LCRegion* region)
-    : itsLC(region), itsSlicer(0), itsNdim(region->ndim()) {}
+    : itsLC(region), itsSlicer(nullptr), itsNdim(region->ndim()) {}
 
 LattRegionHolder::LattRegionHolder(LCSlicer* slicer)
-    : itsLC(0), itsSlicer(slicer), itsNdim(slicer->ndim()) {}
+    : itsLC(nullptr), itsSlicer(slicer), itsNdim(slicer->ndim()) {}
 
-LattRegionHolder::LattRegionHolder(const LattRegionHolder& other) : itsLC(0), itsSlicer(0) {
+LattRegionHolder::LattRegionHolder(const LattRegionHolder& other)
+    : itsLC(nullptr), itsSlicer(nullptr) {
   operator=(other);
 }
 
@@ -70,10 +72,10 @@ LattRegionHolder& LattRegionHolder::operator=(const LattRegionHolder& other) {
     itsLC = other.itsLC;
     itsSlicer = other.itsSlicer;
     itsNdim = other.itsNdim;
-    if (itsLC != 0) {
+    if (itsLC != nullptr) {
       itsLC = itsLC->cloneRegion();
     }
-    if (itsSlicer != 0) {
+    if (itsSlicer != nullptr) {
       itsSlicer = new LCSlicer(*itsSlicer);
     }
   }
@@ -108,7 +110,7 @@ const LCSlicer* LattRegionHolder::asLCSlicerPtr() const {
   return itsSlicer;
 }
 
-const WCRegion* LattRegionHolder::asWCRegionPtr() const { return 0; }
+const WCRegion* LattRegionHolder::asWCRegionPtr() const { return nullptr; }
 
 LatticeRegion LattRegionHolder::toLatticeRegion(const CoordinateSystem&,
                                                 const IPosition& shape) const {

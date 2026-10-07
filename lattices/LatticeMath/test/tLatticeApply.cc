@@ -101,7 +101,7 @@ void MyLineCollapser::multiProcess(Vector<int>& result, Vector<bool>& resultMask
 
 class MyTiledCollapser : public TiledCollapser<int> {
  public:
-  MyTiledCollapser() : itsSum1(0), itsSum2(0), itsNpts(0) {}
+  MyTiledCollapser() : itsSum1(nullptr), itsSum2(nullptr), itsNpts(nullptr) {}
   virtual ~MyTiledCollapser();
   virtual void init(unsigned int nOutPixelsPerCollapse);
   virtual bool canHandleNullMask() const;
@@ -185,16 +185,16 @@ void MyTiledCollapser::endAccumulator(Array<int>& result, Array<bool>& resultMas
   result.putStorage(res, deleteRes);
   resultMask.putStorage(mask, deleteMask);
   delete itsSum1;
-  itsSum1 = 0;
+  itsSum1 = nullptr;
   delete itsSum2;
-  itsSum2 = 0;
+  itsSum2 = nullptr;
   delete itsNpts;
-  itsNpts = 0;
+  itsNpts = nullptr;
 }
 
 class MyLatticeProgress : public LatticeProgress {
  public:
-  MyLatticeProgress() : itsMeter(0) {}
+  MyLatticeProgress() : itsMeter(nullptr) {}
   virtual ~MyLatticeProgress();
   virtual void initDerived();
   virtual void nstepsDone(unsigned int nsteps);
@@ -212,7 +212,7 @@ void MyLatticeProgress::initDerived() {
 void MyLatticeProgress::nstepsDone(unsigned int nsteps) { itsMeter->update(nsteps); }
 void MyLatticeProgress::done() {
   delete itsMeter;
-  itsMeter = 0;
+  itsMeter = nullptr;
 }
 
 void doIt(int argc, const char* argv[]) {

@@ -29,7 +29,7 @@
 
 namespace casacore {
 
-AppState *AppStateSource::user_state = 0;
+AppState *AppStateSource::user_state = nullptr;
 
 struct FOR_GCC_4_8_DEFECTS {
   std::string operator()(std::string s, std::string dir) {

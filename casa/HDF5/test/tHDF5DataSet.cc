@@ -47,9 +47,9 @@ void testCompound() {
   names[0] = "f1";
   names[1] = "f2";
   names[2] = "f3";
-  types[0] = HDF5DataType((Complex*)0);
-  types[1] = HDF5DataType((int*)0);
-  types[2] = HDF5DataType(HDF5DataType((float*)0), IPosition(1, 2));
+  types[0] = HDF5DataType((Complex*)nullptr);
+  types[1] = HDF5DataType((int*)nullptr);
+  types[2] = HDF5DataType(HDF5DataType((float*)nullptr), IPosition(1, 2));
   HDF5DataType dtcom(names, types);
   IPosition shape(1, 3);
   {
@@ -108,7 +108,7 @@ int main() {
       // Create the file.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::New);
       // Create a data set in it.
-      HDF5DataSet dset(file, "array", IPosition(2, 0, shape[1]), ts, (int*)0);
+      HDF5DataSet dset(file, "array", IPosition(2, 0, shape[1]), ts, (int*)nullptr);
       AlwaysAssertExit(dset.getName() == "array");
       AlwaysAssertExit(dset.shape() == IPosition(2, 0, shape[1]));
       AlwaysAssertExit(dset.tileShape() == shape);
@@ -121,7 +121,7 @@ int main() {
     {
       // Open the file and data set.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::Old);
-      HDF5DataSet dset(file, "array", (int*)0);
+      HDF5DataSet dset(file, "array", (int*)nullptr);
       AlwaysAssertExit(dset.getName() == "array");
       AlwaysAssertExit(dset.shape() == shape);
       AlwaysAssertExit(dset.tileShape() == shape);
@@ -142,12 +142,12 @@ int main() {
       IPosition ash(3, 5, 6, 2);
       IPosition tsh(3, 4, 5, 2);
       {
-        HDF5DataSet dset(file, "carray", ash, tsh, (Complex*)0);
+        HDF5DataSet dset(file, "carray", ash, tsh, (Complex*)nullptr);
         AlwaysAssertExit(dset.shape() == ash);
         AlwaysAssertExit(dset.tileShape() == tsh);
       }
       {
-        HDF5DataSet dset(file, "carray", (Complex*)0);
+        HDF5DataSet dset(file, "carray", (Complex*)nullptr);
         AlwaysAssertExit(dset.shape() == ash);
         AlwaysAssertExit(dset.tileShape() == tsh);
       }
@@ -155,7 +155,7 @@ int main() {
     {
       // Yet another with boolean values.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::Update);
-      HDF5DataSet dset(file, "mask", shape, ts, (bool*)0);
+      HDF5DataSet dset(file, "mask", shape, ts, (bool*)nullptr);
       AlwaysAssertExit(dset.shape() == shape);
       AlwaysAssertExit(dset.tileShape() == shape);
     }

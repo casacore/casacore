@@ -467,7 +467,7 @@ class FITSGroupWriter {
   int error_count_p;
 
   // Checks error status of writer_p and group_p. Cleans up and throws an exception if bad.
-  void check_error(const char *extra_info = 0);
+  void check_error(const char *extra_info = nullptr);
 };
 
 }  // namespace casacore

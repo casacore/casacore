@@ -847,7 +847,7 @@ template <class S, class T>
 class C2R4Doddoddoddeven1 {
  public:
   static Array<S> input() {
-#if PERFORMANCE_TEST
+#ifdef PERFORMANCE_TEST
     // Useful to test how the use of threads effects CPU usage
     Array<S> input(IPosition(4, 20, 500, 70, 20), S(0, 0));
 #else
@@ -858,7 +858,7 @@ class C2R4Doddoddoddeven1 {
   }
 
   static Array<T> expectedResult() {
-#if PERFORMANCE_TEST
+#ifdef PERFORMANCE_TEST
     Array<T> expectedResult(IPosition(4, 38, 500, 70, 20));
 #else
     Array<T> expectedResult(IPosition(4, 3, 5, 7, 2), T(1.0));
@@ -1219,7 +1219,7 @@ class Test {
     Array<S> result(expectedResult.shape());
 
     int iterations = 1;
-#if PERFORMANCE_TEST
+#ifdef PERFORMANCE_TEST
     iterations = 10;
 #endif
     for (int i = 0; i < iterations; i++) {
@@ -1671,7 +1671,7 @@ class TestFFTShift {
     rexpectb(IPosition(2, 1, 8)) = 70.;
     rexpectb(IPosition(2, 1, 9)) = 80.;
 
-#if PERFORMANCE_TEST
+#ifdef PERFORMANCE_TEST
     iterations = 10;
 #endif
     for (int it = 0; it < iterations; it++) {

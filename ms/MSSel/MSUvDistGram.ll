@@ -35,6 +35,9 @@
 
 #undef YY_DECL
 #define YY_DECL int MSUvDistGramlex (YYSTYPE* lvalp)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*
@@ -86,3 +89,4 @@ UNIT      ({DISTANCEUNIT}|{WAVELENGTHUNIT})
 {WHITE}   { msUvDistGramPosition() += yyleng;} /* Eat white spaces */
 .         { msUvDistGramPosition() += yyleng;return MSUvDistGramtext[0];}
 %%
+#pragma GCC diagnostic pop

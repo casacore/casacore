@@ -95,7 +95,7 @@ int main(int argc, const char* argv[]) {
         int64_t nrBytes = size + offset - pageStartOffset;
         // Do mmap
         int protect = PROT_READ | PROT_WRITE;
-        void* pageStart = ::mmap(0, nrBytes, protect, MAP_SHARED, fd, pageStartOffset);
+        void* pageStart = ::mmap(nullptr, nrBytes, protect, MAP_SHARED, fd, pageStartOffset);
         if (pageStart == MAP_FAILED) {
           cout << "MMap::MMap - mmap failed: " << strerror(errno) << endl;
           return 1;
@@ -125,7 +125,7 @@ int main(int argc, const char* argv[]) {
         int64_t nrBytes = size + offset - pageStartOffset;
         // Do mmap
         int protect = PROT_READ;
-        void* pageStart = ::mmap(0, nrBytes, protect, MAP_SHARED, fd, pageStartOffset);
+        void* pageStart = ::mmap(nullptr, nrBytes, protect, MAP_SHARED, fd, pageStartOffset);
         if (pageStart == MAP_FAILED) {
           cout << "MMap::MMap - mmap failed: " << strerror(errno) << endl;
           return 1;

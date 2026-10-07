@@ -190,8 +190,8 @@ bool RegionHandlerHDF5::removeRegion(const String& name, RegionHandler::GroupTyp
 Vector<String> RegionHandlerHDF5::regionNames(RegionHandler::GroupType type) const {
   unsigned int nreg = 0;
   unsigned int nmask = 0;
-  const RecordDesc* regs = 0;
-  const RecordDesc* masks = 0;
+  const RecordDesc* regs = nullptr;
+  const RecordDesc* masks = nullptr;
   if (type != RegionHandler::Masks) {
     int field = itsRecord.fieldNumber("regions");
     if (field >= 0) {
@@ -227,7 +227,7 @@ ImageRegion* RegionHandlerHDF5::getRegion(const String& name, RegionHandler::Gro
       return ImageRegion::fromRecord(regs.subRecord(field), file()->getName());
     }
   }
-  return 0;
+  return nullptr;
 }
 
 int RegionHandlerHDF5::findRegionGroup(const String& regionName, RegionHandler::GroupType type,

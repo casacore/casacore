@@ -93,7 +93,7 @@ Vector<double> FunctionalProxy::fdf(const Vector<double>& val) {
   // this is a workaround until I understand AutoDiff
   FunctionHolder<double> fnh;
   Record rec = fhd2rec();
-  Function<AutoDiff<double>>* fn(0);
+  Function<AutoDiff<double>>* fn(nullptr);
   if (!fnh.getRecord(errmsg, fn, rec)) throw(AipsError(errmsg));
   //
   int nd = 1;
@@ -134,7 +134,7 @@ Vector<DComplex> FunctionalProxy::fdfc(const Vector<double>& val) {
   // this is a workaround until I understand AutoDiff
   FunctionHolder<DComplex> fnh;
   Record rec = fhd2rec();
-  Function<AutoDiff<DComplex>>* fn(0);
+  Function<AutoDiff<DComplex>>* fn(nullptr);
   if (!fnh.getRecord(errmsg, fn, rec)) throw(AipsError(errmsg));
   //
   int nd = 1;

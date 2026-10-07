@@ -455,7 +455,7 @@ inline rownr_t SSMBase::getNRow() const { return itsNrRows; }
 inline unsigned int SSMBase::getBucketSize() const { return itsBucketSize; }
 
 inline BucketCache& SSMBase::getCache() {
-  if (itsCache == 0) {
+  if (itsCache == nullptr) {
     makeCache();
   }
   return *itsCache;

@@ -35,6 +35,9 @@
 
 #undef YY_DECL
 #define YY_DECL int MSCorrGramlex (YYSTYPE* lvalp)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*
@@ -131,4 +134,4 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
            }
 
 %%
-
+#pragma GCC diagnostic pop

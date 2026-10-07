@@ -189,7 +189,7 @@ class MeasComet {
  private:
   // # General member functions
   //  Initialise table from the name given
-  bool initMeas(const String &which, const Table *tabin = 0);
+  bool initMeas(const String &which, const Table *tabin = nullptr);
   // Fill Table lines
   bool fillMeas(double utf) const;
 

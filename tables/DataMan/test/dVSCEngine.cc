@@ -58,7 +58,7 @@ VSCExampleVSCEngine::~VSCExampleVSCEngine() {}
 DataManager* VSCExampleVSCEngine::clone() const {
   DataManager* dmPtr =
       new VSCExampleVSCEngine(sourceColumnName(), xTargetName_p, yTargetName_p, zTargetName_p);
-  if (dmPtr == 0) {
+  if (dmPtr == nullptr) {
     throw(AllocError("VSCExampleVSCEngine::clone()", 1));
   }
   return dmPtr;
@@ -98,7 +98,7 @@ void VSCExampleVSCEngine::put(rownr_t rownr, const VSCExample& value) {
 
 DataManager* VSCExampleVSCEngine::makeObject(const String&, const Record&) {
   DataManager* dmPtr = new VSCExampleVSCEngine();
-  if (dmPtr == 0) {
+  if (dmPtr == nullptr) {
     throw(AllocError("VSCExampleVSCEngine::makeObject()", 1));
   }
   return dmPtr;

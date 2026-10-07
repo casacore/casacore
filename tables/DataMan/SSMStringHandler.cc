@@ -40,8 +40,8 @@ SSMStringHandler::SSMStringHandler(SSMBase* aBase)
       itsNDeleted(0),
       itsUsedLength(0),
       itsNextBucket(-1),
-      itsData(0),
-      itsIntBuf(0),
+      itsData(nullptr),
+      itsIntBuf(nullptr),
       isChanged(false),
       itsLastBucket(-1) {}
 
@@ -52,9 +52,9 @@ SSMStringHandler::~SSMStringHandler() {
 
 void SSMStringHandler::init() {
   delete[] itsData;
-  itsData = 0;
+  itsData = nullptr;
   delete[] itsIntBuf;
-  itsIntBuf = 0;
+  itsIntBuf = nullptr;
 
   itsIntSize = CanonicalConversion::canonicalSize(&itsUsedLength);
   itsStart = 4 * itsIntSize;

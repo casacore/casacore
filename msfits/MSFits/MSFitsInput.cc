@@ -137,9 +137,11 @@ static int getIndexContains(Vector<String>& map, const String& key, unsigned int
   return -1;
 }
 
-MSPrimaryGroupHolder::MSPrimaryGroupHolder() : hdu_p(0), ps(0), pl(0), pf(0) {}
+MSPrimaryGroupHolder::MSPrimaryGroupHolder()
+    : hdu_p(nullptr), ps(nullptr), pl(nullptr), pf(nullptr) {}
 
-MSPrimaryGroupHolder::MSPrimaryGroupHolder(FitsInput& infile) : ps(0), pl(0), pf(0) {
+MSPrimaryGroupHolder::MSPrimaryGroupHolder(FitsInput& infile)
+    : ps(nullptr), pl(nullptr), pf(nullptr) {
   attach(infile);
 }
 
@@ -169,14 +171,16 @@ void MSPrimaryGroupHolder::detach() {
   if (ps) delete ps;
   if (pl) delete pl;
   if (pf) delete pf;
-  ps = 0;
-  pl = 0;
-  pf = 0;
+  ps = nullptr;
+  pl = nullptr;
+  pf = nullptr;
 }
 //----------------------------
-MSPrimaryTableHolder::MSPrimaryTableHolder() : hdu_p(0), ps(0), pl(0), pf(0), pb(0) {}
+MSPrimaryTableHolder::MSPrimaryTableHolder()
+    : hdu_p(nullptr), ps(nullptr), pl(nullptr), pf(nullptr), pb(nullptr) {}
 
-MSPrimaryTableHolder::MSPrimaryTableHolder(FitsInput& infile) : ps(0), pl(0), pf(0), pb(0) {
+MSPrimaryTableHolder::MSPrimaryTableHolder(FitsInput& infile)
+    : ps(nullptr), pl(nullptr), pf(nullptr), pb(nullptr) {
   attach(infile);
 }
 
@@ -211,16 +215,16 @@ void MSPrimaryTableHolder::detach() {
   if (pl) delete pl;
   if (pf) delete pf;
   if (pb) delete pb;
-  ps = 0;
-  pl = 0;
-  pf = 0;
-  pb = 0;
+  ps = nullptr;
+  pl = nullptr;
+  pf = nullptr;
+  pb = nullptr;
 }
 
 //------------------------------------------------------------
 MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile, const bool useNewStyle)
-    : _infile(0),
-      _msc(0),
+    : _infile(nullptr),
+      _msc(nullptr),
       _uniqueAnts(),
       _nAntRow(0),
       _restfreq(0),
@@ -437,7 +441,7 @@ void MSFitsInput::readPrimaryTableUVFits(int obsType) {
       _log << LogOrigin("MSFitsInput", __func__) << LogIO::DEBUG1 << "Binary Table HDU ------>>>"
            << LogIO::POST;
 
-      BinaryTable* fqTab = 0;
+      BinaryTable* fqTab = nullptr;
       while (moreToDo && _infile->hdutype() == FITS::BinaryTableHDU) {
         _log << LogOrigin("MSFitsInput", __func__) << LogIO::DEBUG1 << "Found binary table of type "
              << _infile->rectype() << " following data" << LogIO::POST;

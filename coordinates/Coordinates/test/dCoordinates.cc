@@ -207,7 +207,7 @@ int main() {
       return 1;
     }
     CoordinateSystem* pCoordSys = CoordinateSystem::restore(rec, "CS");
-    if (pCoordSys == 0) {
+    if (pCoordSys == nullptr) {
       cout << "Failed to restore from record" << endl;
       return 1;
     } else {

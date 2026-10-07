@@ -72,7 +72,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
-  TableExprGroupExprId funcid(0);
+  TableExprGroupExprId funcid(nullptr);
   for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
@@ -92,7 +92,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
-  TableExprGroupExprId funcid(0);
+  TableExprGroupExprId funcid(nullptr);
   for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
@@ -124,7 +124,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
-  TableExprGroupExprId funcid(0);
+  TableExprGroupExprId funcid(nullptr);
   for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);
@@ -144,7 +144,7 @@ void checkLazy(const TableExprNode& expr, const std::vector<Record>& recs,
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>(
       dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
-  TableExprGroupExprId funcid(0);
+  TableExprGroupExprId funcid(nullptr);
   for (unsigned int i = 0; i < recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply(id);

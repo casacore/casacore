@@ -32,11 +32,12 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-FunctionParam<T>::FunctionParam() : npar_p(0), param_p(npar_p), mask_p(npar_p), maskedPtr_p(0) {}
+FunctionParam<T>::FunctionParam()
+    : npar_p(0), param_p(npar_p), mask_p(npar_p), maskedPtr_p(nullptr) {}
 
 template <class T>
 FunctionParam<T>::FunctionParam(const unsigned int n)
-    : npar_p(n), param_p(npar_p), mask_p(npar_p, true), maskedPtr_p(0) {
+    : npar_p(n), param_p(npar_p), mask_p(npar_p, true), maskedPtr_p(nullptr) {
   for (unsigned int i = 0; i < npar_p; ++i) param_p[i] = T(0);
 }
 
@@ -48,7 +49,7 @@ FunctionParam<T>::FunctionParam(const Vector<T> &in)
 
 template <class T>
 FunctionParam<T>::FunctionParam(const FunctionParam<T> &other)
-    : npar_p(other.param_p.nelements()), param_p(npar_p), mask_p(npar_p), maskedPtr_p(0) {
+    : npar_p(other.param_p.nelements()), param_p(npar_p), mask_p(npar_p), maskedPtr_p(nullptr) {
   for (unsigned int i = 0; i < npar_p; ++i) param_p[i] = other.param_p[i];
   mask_p = other.mask_p;
 }
@@ -143,7 +144,7 @@ void FunctionParam<T>::createMaskedPtr() const {
 template <class T>
 void FunctionParam<T>::clearMaskedPtr() const {
   delete maskedPtr_p;
-  maskedPtr_p = 0;
+  maskedPtr_p = nullptr;
 }
 
 // # Global functions

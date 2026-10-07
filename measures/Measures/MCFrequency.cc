@@ -62,7 +62,7 @@ unsigned int MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
 std::once_flag MCFrequency::theirInitOnceFlag;
 
 // # Constructors
-MCFrequency::MCFrequency() : MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
+MCFrequency::MCFrequency() : MVPOS1(nullptr), MVDIR1(nullptr), ABERFROM(nullptr), ABERTO(nullptr) {
   std::call_once(theirInitOnceFlag, doFillState);
 }
 
@@ -90,13 +90,13 @@ void MCFrequency::getConvert(MConvertBase &mc, const MRBase &inref, const MRBase
 
 void MCFrequency::clearConvert() {
   delete MVPOS1;
-  MVPOS1 = 0;
+  MVPOS1 = nullptr;
   delete MVDIR1;
-  MVDIR1 = 0;
+  MVDIR1 = nullptr;
   delete ABERFROM;
-  ABERFROM = 0;
+  ABERFROM = nullptr;
   delete ABERTO;
-  ABERTO = 0;
+  ABERTO = nullptr;
 }
 
 // # Conversion routines

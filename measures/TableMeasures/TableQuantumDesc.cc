@@ -92,7 +92,7 @@ TableQuantumDesc& TableQuantumDesc::operator=(const TableQuantumDesc& that) {
 }
 
 TableQuantumDesc* TableQuantumDesc::reconstruct(const TableDesc& td, const String& columnName) {
-  TableQuantumDesc* p = 0;
+  TableQuantumDesc* p = nullptr;
   const TableRecord& columnKeyset = td[columnName].keywordSet();
   String refString;
   int fnr = columnKeyset.fieldNumber("VariableUnits");

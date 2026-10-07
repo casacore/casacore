@@ -168,14 +168,16 @@ void ConcatColumn::freeIterBuf(void*& lastVal, void*& curVal) {
   refColPtr_p[0]->freeIterBuf(lastVal, curVal);
 }
 
-void ConcatColumn::getArrayColumn(ArrayBase& arr) const { accessColumn(0, arr, &getColumnPart); }
+void ConcatColumn::getArrayColumn(ArrayBase& arr) const {
+  accessColumn(nullptr, arr, &getColumnPart);
+}
 
 void ConcatColumn::getColumnSlice(const Slicer& ns, ArrayBase& arr) const {
   accessColumn(&ns, arr, &getColumnSlicePart);
 }
 
 void ConcatColumn::getArrayColumnCells(const RefRows& rownrs, ArrayBase& arr) const {
-  accessRows(rownrs, 0, arr, &getRowsPart);
+  accessRows(rownrs, nullptr, arr, &getRowsPart);
 }
 
 void ConcatColumn::getColumnSliceCells(const RefRows& rownrs, const Slicer& ns,
@@ -184,7 +186,7 @@ void ConcatColumn::getColumnSliceCells(const RefRows& rownrs, const Slicer& ns,
 }
 
 void ConcatColumn::putArrayColumn(const ArrayBase& arr) {
-  accessColumn(0, const_cast<ArrayBase&>(arr), &putColumnPart);
+  accessColumn(nullptr, const_cast<ArrayBase&>(arr), &putColumnPart);
 }
 
 void ConcatColumn::putColumnSlice(const Slicer& ns, const ArrayBase& arr) {
@@ -192,7 +194,7 @@ void ConcatColumn::putColumnSlice(const Slicer& ns, const ArrayBase& arr) {
 }
 
 void ConcatColumn::putArrayColumnCells(const RefRows& rownrs, const ArrayBase& arr) {
-  accessRows(rownrs, 0, const_cast<ArrayBase&>(arr), &putRowsPart);
+  accessRows(rownrs, nullptr, const_cast<ArrayBase&>(arr), &putRowsPart);
 }
 
 void ConcatColumn::putColumnSliceCells(const RefRows& rownrs, const Slicer& ns,

@@ -265,7 +265,7 @@ int main() {
 
     LatticeStepper method(IPosition(3, 4, 5, 6), IPosition(2, 4, 5));
     LatticeNavigator* clonePtr = method.clone();
-    AlwaysAssert(clonePtr != 0, AipsError);
+    AlwaysAssert(clonePtr != nullptr, AipsError);
 
     AlwaysAssert(clonePtr->ok() == true, AipsError);
     AlwaysAssert(clonePtr->latticeShape() == method.latticeShape(), AipsError);

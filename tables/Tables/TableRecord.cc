@@ -35,33 +35,33 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableRecord::TableRecord() : RecordInterface(), rep_p(new TableRecordRep), parent_p(0) {}
+TableRecord::TableRecord() : RecordInterface(), rep_p(new TableRecordRep), parent_p(nullptr) {}
 
 TableRecord::TableRecord(RecordType type, CheckFieldFunction* func, const void* checkArgument)
-    : RecordInterface(type, func, checkArgument), rep_p(new TableRecordRep), parent_p(0) {}
+    : RecordInterface(type, func, checkArgument), rep_p(new TableRecordRep), parent_p(nullptr) {}
 
 TableRecord::TableRecord(const RecordDesc& description, RecordType type, CheckFieldFunction* func,
                          const void* checkArgument)
     : RecordInterface(type, func, checkArgument),
       rep_p(new TableRecordRep(description)),
-      parent_p(0) {}
+      parent_p(nullptr) {}
 
 // When description is empty, TableRecord is not fixed.
 TableRecord::TableRecord(TableRecordRep* parent, const RecordDesc& description)
-    : RecordInterface(description.nfields() == 0 ? Variable : Fixed, 0, 0),
+    : RecordInterface(description.nfields() == 0 ? Variable : Fixed, nullptr, nullptr),
       rep_p(new TableRecordRep(description)),
       parent_p(parent) {}
 
 TableRecord::TableRecord(TableRecordRep* parent, RecordType type)
-    : RecordInterface(type, 0, 0), rep_p(new TableRecordRep), parent_p(parent) {}
+    : RecordInterface(type, nullptr, nullptr), rep_p(new TableRecordRep), parent_p(parent) {}
 
 TableRecord::TableRecord(const TableRecord& other)
     : RecordInterface(other), rep_p(other.rep_p), parent_p(other.parent_p) {}
 
-TableRecord::TableRecord(const RecordInterface& other) : RecordInterface(other), parent_p(0) {
+TableRecord::TableRecord(const RecordInterface& other) : RecordInterface(other), parent_p(nullptr) {
   // If the RecordInterface is a TableRecord, assign it immediately.
   const TableRecord* trecp = dynamic_cast<const TableRecord*>(&other);
-  if (trecp != 0) {
+  if (trecp != nullptr) {
     rep_p = trecp->rep_p;
   } else {
     rep_p.set(new TableRecordRep(other.description()));

@@ -80,7 +80,7 @@ void LCLELMask::reopen() { itsExpr.reopen(); }
 LCRegion* LCLELMask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCLELMask cannot be translated.
   throw(AipsError("LCLELMask::translate is not supported"));
-  return 0;
+  return nullptr;
 }
 
 String LCLELMask::className() { return "LCLELMask"; }

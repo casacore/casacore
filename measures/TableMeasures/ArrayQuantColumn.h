@@ -197,7 +197,7 @@ class ArrayQuantColumn {
   Vector<String> getUnits() const;
 
   // Test if the object is null.
-  bool isNull() const { return (itsDataCol == 0); }
+  bool isNull() const { return (itsDataCol == nullptr); }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;

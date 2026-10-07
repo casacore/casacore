@@ -33,7 +33,10 @@
 namespace casacore {
 
 RadialVelocityEngine::RadialVelocityEngine()
-    : itsDopplerEngine(0), itsDirectionEngine(0), itsEpochEngine(0), itsPositionEngine(0) {}
+    : itsDopplerEngine(nullptr),
+      itsDirectionEngine(nullptr),
+      itsEpochEngine(nullptr),
+      itsPositionEngine(nullptr) {}
 
 void RadialVelocityEngine::handleRadialVelocity(vector<TENShPtr>& args, unsigned int& argnr) {
   // Initialize type to unknown.
@@ -95,7 +98,7 @@ void RadialVelocityEngine::handleValues(TableExprNode& operand, const TableExprI
 }
 
 void RadialVelocityEngine::setDopplerEngine(DopplerEngine& engine) {
-  AlwaysAssert(itsDopplerEngine == 0, AipsError);
+  AlwaysAssert(itsDopplerEngine == nullptr, AipsError);
   itsDopplerEngine = &engine;
   if (engine.isConstant()) {
     handleValues(itsExprNode, 0, itsConstants);
@@ -108,7 +111,7 @@ void RadialVelocityEngine::setDopplerEngine(DopplerEngine& engine) {
 }
 
 void RadialVelocityEngine::setDirectionEngine(DirectionEngine& engine) {
-  AlwaysAssert(itsDirectionEngine == 0, AipsError);
+  AlwaysAssert(itsDirectionEngine == nullptr, AipsError);
   itsDirectionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.
@@ -116,7 +119,7 @@ void RadialVelocityEngine::setDirectionEngine(DirectionEngine& engine) {
 }
 
 void RadialVelocityEngine::setEpochEngine(EpochEngine& engine) {
-  AlwaysAssert(itsEpochEngine == 0, AipsError);
+  AlwaysAssert(itsEpochEngine == nullptr, AipsError);
   itsEpochEngine = &engine;
   extendBase(engine, false);
   // Define the frame part, so it can be reset later.
@@ -124,7 +127,7 @@ void RadialVelocityEngine::setEpochEngine(EpochEngine& engine) {
 }
 
 void RadialVelocityEngine::setPositionEngine(PositionEngine& engine) {
-  AlwaysAssert(itsPositionEngine == 0, AipsError);
+  AlwaysAssert(itsPositionEngine == nullptr, AipsError);
   itsPositionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.

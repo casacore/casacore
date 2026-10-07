@@ -178,7 +178,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const int&
       itsCorrelat(correlat),
       itsCorVer(corVer),
       itsVanVleck(vanVleck),
-      msc_p(0) {
+      msc_p(nullptr) {
   itsLog = new LogIO();
 
   //
@@ -3958,7 +3958,7 @@ void FITSIDItoMS1::updateTables(const String& MStmpDir) {
 
   delete msc_p;
 
-  msc_p = 0;
+  msc_p = nullptr;
 }
 
 bool FITSIDItoMS1::readFitsFile(const String& msFile) {

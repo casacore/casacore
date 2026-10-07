@@ -428,7 +428,7 @@ void doit4(QualityCoordinate& lc, bool verbose) {
   Vector<bool> axes(lc.nWorldAxes(), true);
   Vector<int> shape(lc.nPixelAxes(), 10);
   bool failed = false;
-  Coordinate* pC = 0;
+  Coordinate* pC = nullptr;
   try {
     pC = lc.makeFourierCoordinate(axes, shape);
   } catch (std::exception& x) {

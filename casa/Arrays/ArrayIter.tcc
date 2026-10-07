@@ -91,12 +91,12 @@ void ArrayIterator<T>::init(const Array<T>& a) {
 // </thrown>
 template <typename T>
 void ArrayIterator<T>::apSetPointer(int stepDim) {
-  if (ap_p == 0)
+  if (ap_p == nullptr)
     throw(
         ArrayIteratorError("ArrayIterator<T>::apSetPointer()"
                            " - no iteration array!"));
   if (pastEnd()) {
-    ap_p->begin_p = 0;  // Mark it "invalid"
+    ap_p->begin_p = nullptr;  // Mark it "invalid"
   } else {
     if (stepDim < 0) {
       dataPtr_p = pOriginalArray_p.begin_p;
@@ -128,7 +128,7 @@ void ArrayIterator<T>::set(const IPosition& cursorPos) {
         ArrayIteratorError("ArrayIterator<T>::apSetPointer()"
                            " - no iteration array!"));
   if (pastEnd()) {
-    ap_p->begin_p = 0;  // Mark it "invalid"
+    ap_p->begin_p = nullptr;  // Mark it "invalid"
   } else {
     dataPtr_p = &(pOriginalArray_p(pos()));
     ap_p->begin_p = dataPtr_p;

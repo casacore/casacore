@@ -2264,7 +2264,7 @@ void doit6() {
   cSys.addCoordinate(spC);
   DirectionCoordinate dC = makeDirectionCoordinate();  // 1 & 2
   cSys.addCoordinate(dC);
-  Coordinate* pC = 0;
+  Coordinate* pC = nullptr;
   //
   Vector<bool> axes(cSys.nPixelAxes(), false);
   Vector<int> shape(cSys.nPixelAxes(), 0);

@@ -48,9 +48,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 SDAntennaHandler::SDAntennaHandler()
-    : index_p(0),
-      msAnt_p(0),
-      msAntCols_p(0),
+    : index_p(nullptr),
+      msAnt_p(nullptr),
+      msAntCols_p(nullptr),
       rownr_p(-1),
       siteLongFldNum_p(-1),
       siteLatFldNum_p(-1),
@@ -59,9 +59,9 @@ SDAntennaHandler::SDAntennaHandler()
 }
 
 SDAntennaHandler::SDAntennaHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
-    : index_p(0),
-      msAnt_p(0),
-      msAntCols_p(0),
+    : index_p(nullptr),
+      msAnt_p(nullptr),
+      msAntCols_p(nullptr),
       rownr_p(-1),
       siteLongFldNum_p(-1),
       siteLatFldNum_p(-1),
@@ -70,9 +70,9 @@ SDAntennaHandler::SDAntennaHandler(MeasurementSet &ms, Vector<bool> &handledCols
 }
 
 SDAntennaHandler::SDAntennaHandler(const SDAntennaHandler &other)
-    : index_p(0),
-      msAnt_p(0),
-      msAntCols_p(0),
+    : index_p(nullptr),
+      msAnt_p(nullptr),
+      msAntCols_p(nullptr),
       rownr_p(-1),
       siteLongFldNum_p(-1),
       siteLatFldNum_p(-1),
@@ -270,13 +270,13 @@ void SDAntennaHandler::fill(const Record &row) {
 
 void SDAntennaHandler::clearAll() {
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
 
   delete msAnt_p;
-  msAnt_p = 0;
+  msAnt_p = nullptr;
 
   delete msAntCols_p;
-  msAntCols_p = 0;
+  msAntCols_p = nullptr;
 
   clearRow();
 }
@@ -416,9 +416,9 @@ void SDAntennaHandler::addPhasedArrayIdColumn() {
   if (!phasedIdKey_p.isAttached() && index_p) {
     Vector<String> indexNames = index_p->columnNames();
     delete index_p;
-    index_p = 0;
+    index_p = nullptr;
     delete msAntCols_p;
-    msAntCols_p = 0;
+    msAntCols_p = nullptr;
     // we need to add a new column to the ANTENNA table
     TableDesc td;
     MSAntenna::addColumnToDesc(td, MSAntenna::PHASED_ARRAY_ID);
@@ -455,9 +455,9 @@ void SDAntennaHandler::addOrbitIdColumn() {
   if (!orbitIdKey_p.isAttached() && index_p) {
     Vector<String> indexNames = index_p->columnNames();
     delete index_p;
-    index_p = 0;
+    index_p = nullptr;
     delete msAntCols_p;
-    msAntCols_p = 0;
+    msAntCols_p = nullptr;
     // we need to add a new column to the ANTENNA table
     TableDesc td;
     MSAntenna::addColumnToDesc(td, MSAntenna::ORBIT_ID);

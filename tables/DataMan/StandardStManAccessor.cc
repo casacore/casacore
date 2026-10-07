@@ -35,9 +35,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ROStandardStManAccessor::ROStandardStManAccessor(const Table& table, const String& name,
                                                  bool byColumn)
-    : RODataManAccessor(table, name, byColumn), itsSSMPtr(0) {
+    : RODataManAccessor(table, name, byColumn), itsSSMPtr(nullptr) {
   itsSSMPtr = dynamic_cast<SSMBase*>(baseDataManager());
-  if (itsSSMPtr == 0) {
+  if (itsSSMPtr == nullptr) {
     throw(DataManError("ROStandardStManAccessor " + name + " constructed for data manager type " +
                        baseDataManager()->dataManagerType() + "; expected StandardStMan"));
   }

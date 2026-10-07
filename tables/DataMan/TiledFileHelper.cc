@@ -92,11 +92,11 @@ void TiledFileHelper::create64(rownr_t) {
 }
 TSMCube* TiledFileHelper::getHypercube(rownr_t) {
   throw AipsError("TileFileHelper::getHypercube - not implemented");
-  return 0;
+  return nullptr;
 }
 TSMCube* TiledFileHelper::getHypercube(rownr_t, IPosition&) {
   throw AipsError("TileFileHelper:getHypercube: - not implemented");
-  return 0;
+  return nullptr;
 }
 void TiledFileHelper::readHeader(rownr_t, bool) {
   throw AipsError("TileFileHelper::readHeader - not implemented");

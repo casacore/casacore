@@ -226,7 +226,7 @@ const double *MeasJPL::fillMeas(double &intv, MeasJPL::Files which, const MVEpoc
   // Get UT day and check if within range.
   int ut = int(utf.getDay());
   if (ut < mjd0[which] + dmjd[which] || ut >= mjdl[which] + dmjd[which]) {
-    return 0;
+    return nullptr;
   }
   // Turn day into interval (intervals are dmjd wide) plus fraction
   ut = (ut - mjd0[which]) / dmjd[which];

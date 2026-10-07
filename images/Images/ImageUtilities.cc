@@ -196,7 +196,7 @@ void ImageUtilities::writeImage(const TiledShape& mapShape, const CoordinateSyst
     }
   }
   PagedImage<float>* newImage = new PagedImage<float>(mapShape, coordinateInfo, imageName);
-  if (newImage == 0) {
+  if (newImage == nullptr) {
     log << "Failed to create image " << imageName << LogIO::EXCEPTION;
   }
   newImage->put(pixels);

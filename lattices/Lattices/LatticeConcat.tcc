@@ -48,7 +48,7 @@ LatticeConcat<T>::LatticeConcat()
       isMasked_p(false),
       dimUpOne_p(false),
       tempClose_p(true),
-      pPixelMask_p(0) {}
+      pPixelMask_p(nullptr) {}
 
 template <class T>
 LatticeConcat<T>::LatticeConcat(unsigned int axis, bool tempClose)
@@ -57,7 +57,7 @@ LatticeConcat<T>::LatticeConcat(unsigned int axis, bool tempClose)
       isMasked_p(false),
       dimUpOne_p(false),
       tempClose_p(tempClose),
-      pPixelMask_p(0) {}
+      pPixelMask_p(nullptr) {}
 
 template <class T>
 LatticeConcat<T>::LatticeConcat(const LatticeConcat<T>& other)
@@ -68,13 +68,13 @@ LatticeConcat<T>::LatticeConcat(const LatticeConcat<T>& other)
       isMasked_p(other.isMasked_p),
       dimUpOne_p(other.dimUpOne_p),
       tempClose_p(other.tempClose_p),
-      pPixelMask_p(0) {
+      pPixelMask_p(nullptr) {
   const unsigned int n = lattices_p.nelements();
   for (unsigned int i = 0; i < n; i++) {
     lattices_p[i] = other.lattices_p[i]->cloneML();
     if (tempClose_p) lattices_p[i]->tempClose();
   }
-  if (other.pPixelMask_p != 0) {
+  if (other.pPixelMask_p != nullptr) {
     pPixelMask_p = other.pPixelMask_p->cloneML();
   }
 }
@@ -84,7 +84,7 @@ LatticeConcat<T>::~LatticeConcat() {
   const unsigned int n = lattices_p.nelements();
   for (unsigned int i = 0; i < n; i++) {
     delete lattices_p[i];
-    lattices_p[i] = 0;
+    lattices_p[i] = nullptr;
   }
   delete pPixelMask_p;
 }
@@ -101,7 +101,7 @@ LatticeConcat<T>& LatticeConcat<T>::operator=(const LatticeConcat<T>& other) {
     unsigned int n = lattices_p.nelements();
     for (unsigned int j = 0; j < n; j++) {
       delete lattices_p[j];
-      lattices_p[j] = 0;
+      lattices_p[j] = nullptr;
     }
     //
     lattices_p.resize(other.lattices_p.nelements(), true);
@@ -112,8 +112,8 @@ LatticeConcat<T>& LatticeConcat<T>::operator=(const LatticeConcat<T>& other) {
     }
     //
     delete pPixelMask_p;
-    pPixelMask_p = 0;
-    if (other.pPixelMask_p != 0) {
+    pPixelMask_p = nullptr;
+    if (other.pPixelMask_p != nullptr) {
       pPixelMask_p = other.pPixelMask_p->cloneML();
     }
   }
@@ -186,7 +186,7 @@ void LatticeConcat<T>::setLattice(MaskedLattice<T>& lattice) {
   // Note that this makes the pixelmask readonly.
 
   if (lattice.hasPixelMask()) {
-    if (pPixelMask_p == 0) {
+    if (pPixelMask_p == nullptr) {
       pPixelMask_p = new LatticeConcat<bool>(axis_p, tempClose_p);
       for (unsigned int i = 0; i < n; i++) {
         SubLattice<bool> tmp = LCBox(lattices_p[i]->shape());
@@ -196,7 +196,7 @@ void LatticeConcat<T>::setLattice(MaskedLattice<T>& lattice) {
     SubLattice<bool> tmp(lattice.pixelMask(), true);
     pPixelMask_p->setLattice(tmp);
   } else {
-    if (pPixelMask_p != 0) {
+    if (pPixelMask_p != nullptr) {
       SubLattice<bool> tmp = LCBox(lattice.shape());
       pPixelMask_p->setLattice(tmp);
     }
@@ -235,7 +235,7 @@ bool LatticeConcat<T>::isMasked() const {
 
 template <class T>
 const LatticeRegion* LatticeConcat<T>::getRegionPtr() const {
-  return 0;
+  return nullptr;
 }
 
 template <class T>
@@ -249,12 +249,12 @@ bool LatticeConcat<T>::isWritable() const {
 
 template <class T>
 bool LatticeConcat<T>::hasPixelMask() const {
-  return pPixelMask_p != 0;
+  return pPixelMask_p != nullptr;
 }
 
 template <class T>
 const Lattice<bool>& LatticeConcat<T>::pixelMask() const {
-  if (pPixelMask_p == 0) {
+  if (pPixelMask_p == nullptr) {
     throw(AipsError("LatticeConcat::pixelMask - no mask attached"));
   }
   return (*pPixelMask_p);
@@ -262,7 +262,7 @@ const Lattice<bool>& LatticeConcat<T>::pixelMask() const {
 
 template <class T>
 Lattice<bool>& LatticeConcat<T>::pixelMask() {
-  if (pPixelMask_p == 0) {
+  if (pPixelMask_p == nullptr) {
     throw(AipsError("LatticeConcat::pixelMask - no mask attached"));
   }
   return (*pPixelMask_p);

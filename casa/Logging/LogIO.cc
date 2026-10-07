@@ -32,15 +32,15 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LogIO::LogIO() : sink_p(), text_p(0) {}
+LogIO::LogIO() : sink_p(), text_p(nullptr) {}
 
-LogIO::LogIO(LogSink &sink) : sink_p(sink), text_p(0) {}
+LogIO::LogIO(LogSink &sink) : sink_p(sink), text_p(nullptr) {}
 
-LogIO::LogIO(const LogOrigin &OR) : sink_p(), msg_p(OR), text_p(0) {}
+LogIO::LogIO(const LogOrigin &OR) : sink_p(), msg_p(OR), text_p(nullptr) {}
 
-LogIO::LogIO(const LogOrigin &OR, LogSink &sink) : sink_p(sink), msg_p(OR), text_p(0) {}
+LogIO::LogIO(const LogOrigin &OR, LogSink &sink) : sink_p(sink), msg_p(OR), text_p(nullptr) {}
 
-LogIO::LogIO(const LogIO &other) : sink_p(other.sink_p), msg_p(other.msg_p), text_p(0) {}
+LogIO::LogIO(const LogIO &other) : sink_p(other.sink_p), msg_p(other.msg_p), text_p(nullptr) {}
 
 LogIO &LogIO::operator=(const LogIO &other) {
   if (this != &other) {
@@ -55,7 +55,7 @@ LogIO::~LogIO() {
   if (text_p) {
     post();
   }
-  text_p = 0;
+  text_p = nullptr;
 }
 
 void LogIO::post(LogMessage &amess) {
@@ -66,7 +66,7 @@ void LogIO::post() {
   if (text_p) {
     msg_p.message(text_p->str());
     delete text_p;
-    text_p = 0;
+    text_p = nullptr;
     sink_p.post(msg_p);
   }
   // Reset priority.
@@ -77,7 +77,7 @@ void LogIO::postLocally() {
   if (text_p) {
     msg_p.message(text_p->str());
     delete text_p;
-    text_p = 0;
+    text_p = nullptr;
     sink_p.postLocally(msg_p);
   }
   // Reset priority.
@@ -88,7 +88,7 @@ void LogIO::preparePostThenThrow(const AipsError &x) {
   if (!String(x.what()).empty()) {
     output() << "; " << x.what();
   }
-  if (text_p == 0) {
+  if (text_p == nullptr) {
     output() << "Unknown error!";
   }
   msg_p.message(text_p->str());
@@ -96,7 +96,7 @@ void LogIO::preparePostThenThrow(const AipsError &x) {
   // thereafter throw an exception.
   msg_p.priority(LogMessage::NORMAL);
   delete text_p;
-  text_p = 0;
+  text_p = nullptr;
 }
 
 void LogIO::priority(LogMessage::Priority which) { msg_p.priority(which); }
@@ -110,7 +110,7 @@ void LogIO::origin(const LogOrigin &OR) { msg_p.origin(OR); }
 ostream &LogIO::output() {
   if (!text_p) {
     text_p = new ostringstream;
-    AlwaysAssert(text_p != 0, AipsError);
+    AlwaysAssert(text_p != nullptr, AipsError);
   }
   return *text_p;
 }

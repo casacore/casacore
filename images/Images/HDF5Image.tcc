@@ -62,7 +62,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 template <class T>
 HDF5Image<T>::HDF5Image(const TiledShape& shape, const CoordinateSystem& coordinateInfo,
                         const String& fileName)
-    : ImageInterface<T>(RegionHandlerHDF5(getFile, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerHDF5(getFile, this)), regionPtr_p(nullptr) {
   map_p = HDF5Lattice<T>(shape, fileName, "map", "/");
   attach_logtable();
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
@@ -70,7 +70,7 @@ HDF5Image<T>::HDF5Image(const TiledShape& shape, const CoordinateSystem& coordin
 
 template <class T>
 HDF5Image<T>::HDF5Image(const String& fileName, MaskSpecifier spec)
-    : ImageInterface<T>(RegionHandlerHDF5(getFile, this)), regionPtr_p(0) {
+    : ImageInterface<T>(RegionHandlerHDF5(getFile, this)), regionPtr_p(nullptr) {
   map_p = HDF5Lattice<T>(fileName, "map", "/");
   attach_logtable();
   restoreAll();
@@ -79,8 +79,8 @@ HDF5Image<T>::HDF5Image(const String& fileName, MaskSpecifier spec)
 
 template <class T>
 HDF5Image<T>::HDF5Image(const HDF5Image<T>& other)
-    : ImageInterface<T>(other), map_p(other.map_p), regionPtr_p(0) {
-  if (other.regionPtr_p != 0) {
+    : ImageInterface<T>(other), map_p(other.map_p), regionPtr_p(nullptr) {
+  if (other.regionPtr_p != nullptr) {
     regionPtr_p = new LatticeRegion(*other.regionPtr_p);
   }
 }
@@ -97,8 +97,8 @@ HDF5Image<T>& HDF5Image<T>::operator=(const HDF5Image<T>& other) {
     ImageInterface<T>::operator=(other);
     map_p = other.map_p;
     delete regionPtr_p;
-    regionPtr_p = 0;
-    if (other.regionPtr_p != 0) {
+    regionPtr_p = nullptr;
+    if (other.regionPtr_p != nullptr) {
       regionPtr_p = new LatticeRegion(*other.regionPtr_p);
     }
   }
@@ -132,19 +132,19 @@ bool HDF5Image<T>::isWritable() const {
 
 template <class T>
 bool HDF5Image<T>::hasPixelMask() const {
-  return (regionPtr_p != 0 && regionPtr_p->hasMask());
+  return (regionPtr_p != nullptr && regionPtr_p->hasMask());
 }
 
 template <class T>
 const Lattice<bool>& HDF5Image<T>::pixelMask() const {
-  if (regionPtr_p == 0) {
+  if (regionPtr_p == nullptr) {
     throw(AipsError("HDF5Image::pixelMask - no pixelmask used"));
   }
   return *regionPtr_p;
 }
 template <class T>
 Lattice<bool>& HDF5Image<T>::pixelMask() {
-  if (regionPtr_p == 0) {
+  if (regionPtr_p == nullptr) {
     throw(AipsError("HDF5Image::pixelMask - no pixelmask used"));
   }
   return *regionPtr_p;
@@ -187,7 +187,7 @@ void HDF5Image<T>::applyMask(const String& maskName) {
   // No region if no mask name is given.
   if (maskName.empty()) {
     delete regionPtr_p;
-    regionPtr_p = 0;
+    regionPtr_p = nullptr;
     return;
   }
   // Reconstruct the ImageRegion object.
@@ -313,7 +313,7 @@ void HDF5Image<T>::restoreAll() {
   // Restore the coordinates.
   Record rec = HDF5Record::readRecord(*map_p.group(), "coordinfo");
   CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
-  AlwaysAssert(restoredCoords != 0, AipsError);
+  AlwaysAssert(restoredCoords != nullptr, AipsError);
   setCoordsMember(*restoredCoords);
   delete restoredCoords;
   // Restore the image info.
@@ -460,7 +460,7 @@ template <class T>
 void HDF5Image<T>::flush() {
   map_p.flush();
   logger().flush();
-  if (regionPtr_p != 0) {
+  if (regionPtr_p != nullptr) {
     regionPtr_p->flush();
   }
   itsAttrHandler.flush();

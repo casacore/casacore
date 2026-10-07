@@ -382,9 +382,9 @@ flip(Array<S> & cData, const bool toZero, const bool isHermitian)
   bool dataIsAcopy;
   S * dataPtr = cData.getStorage(dataIsAcopy);
   S * buffPtr = itsBuffer.storage();
-  S * rowPtr = 0;
-  S * rowPtr2 = 0;
-  S * rowPtr2o = 0;
+  S * rowPtr = nullptr;
+  S * rowPtr2 = nullptr;
+  S * rowPtr2o = nullptr;
   unsigned int rowLen, rowLen2, rowLen2o;
   unsigned int nFlips;
   unsigned int stride = 1;
@@ -446,9 +446,9 @@ flip(Array<T> & rData, const bool toZero, const bool isHermitian)
   bool dataIsAcopy;
   T * dataPtr = rData.getStorage(dataIsAcopy);
   T * buffPtr = (T *) itsBuffer.storage();
-  T * rowPtr = 0;
-  T * rowPtr2 = 0;
-  T * rowPtr2o = 0;
+  T * rowPtr = nullptr;
+  T * rowPtr2 = nullptr;
+  T * rowPtr2o = nullptr;
   unsigned int rowLen, rowLen2, rowLen2o;
   unsigned int nFlips;
   unsigned int stride = 1;

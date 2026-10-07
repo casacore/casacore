@@ -65,7 +65,7 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out, const M
   // output if an output mask exists.
 
   bool doMask = out.isMasked() && out.hasPixelMask();
-  Lattice<bool>* pMaskOut = 0;
+  Lattice<bool>* pMaskOut = nullptr;
   if (doMask) {
     pMaskOut = &out.pixelMask();
     if (!pMaskOut->isWritable()) {

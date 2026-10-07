@@ -41,7 +41,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-LatticeSlice1D<T>::LatticeSlice1D() : itsLatticePtr(0), itsInterpPtr(0) {}
+LatticeSlice1D<T>::LatticeSlice1D() : itsLatticePtr(nullptr), itsInterpPtr(nullptr) {}
 
 template <class T>
 LatticeSlice1D<T>::LatticeSlice1D(const MaskedLattice<T>& lattice, Method method)
@@ -52,17 +52,17 @@ LatticeSlice1D<T>::LatticeSlice1D(const MaskedLattice<T>& lattice, Method method
 
 template <class T>
 LatticeSlice1D<T>::LatticeSlice1D(const LatticeSlice1D<T>& other)
-    : itsLatticePtr(0), itsInterpPtr(0) {
+    : itsLatticePtr(nullptr), itsInterpPtr(nullptr) {
   operator=(other);
 }
 
 template <class T>
 LatticeSlice1D<T>::~LatticeSlice1D() {
   delete itsLatticePtr;
-  itsLatticePtr = 0;
+  itsLatticePtr = nullptr;
   //
   delete itsInterpPtr;
-  itsInterpPtr = 0;
+  itsInterpPtr = nullptr;
 }
 
 template <class T>

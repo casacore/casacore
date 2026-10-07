@@ -41,9 +41,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 MSTableIndex::MSTableIndex()
-    : timeVals_p(0),
-      intervalVals_p(0),
-      key_p(0),
+    : timeVals_p(nullptr),
+      intervalVals_p(nullptr),
+      key_p(nullptr),
       time_p(0.0),
       interval_p(0.0),
       lastTime_p(0.0),
@@ -53,7 +53,7 @@ MSTableIndex::MSTableIndex()
       nearestReady_p(false),
       nrows_p(0),
       hasChanged_p(true),
-      index_p(0),
+      index_p(nullptr),
       hasTime_p(false),
       hasInterval_p(false) {
   ;
@@ -61,9 +61,9 @@ MSTableIndex::MSTableIndex()
 
 MSTableIndex::MSTableIndex(const Table &subTable, const Vector<String> &indexCols,
                            ColumnsIndex::Compare *compareFunction)
-    : timeVals_p(0),
-      intervalVals_p(0),
-      key_p(0),
+    : timeVals_p(nullptr),
+      intervalVals_p(nullptr),
+      key_p(nullptr),
       time_p(0.0),
       interval_p(0.0),
       lastTime_p(0.0),
@@ -73,16 +73,16 @@ MSTableIndex::MSTableIndex(const Table &subTable, const Vector<String> &indexCol
       nearestReady_p(false),
       nrows_p(0),
       hasChanged_p(true),
-      index_p(0),
+      index_p(nullptr),
       hasTime_p(false),
       hasInterval_p(false) {
   attach(subTable, indexCols, compareFunction);
 }
 
 MSTableIndex::MSTableIndex(const MSTableIndex &other)
-    : timeVals_p(0),
-      intervalVals_p(0),
-      key_p(0),
+    : timeVals_p(nullptr),
+      intervalVals_p(nullptr),
+      key_p(nullptr),
       time_p(0.0),
       interval_p(0.0),
       lastTime_p(0.0),
@@ -92,7 +92,7 @@ MSTableIndex::MSTableIndex(const MSTableIndex &other)
       nearestReady_p(false),
       nrows_p(0),
       hasChanged_p(true),
-      index_p(0),
+      index_p(nullptr),
       hasTime_p(false),
       hasInterval_p(false) {
   *this = other;
@@ -348,11 +348,11 @@ void MSTableIndex::makeKeys() {
 void MSTableIndex::clear() {
   hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = false;
   delete index_p;
-  index_p = 0;
+  index_p = nullptr;
   indexKeys_p.resize(0);
 
   delete key_p;
-  key_p = 0;
+  key_p = nullptr;
   intKeys_p.resize(0);
 
   nrows_p = 0;

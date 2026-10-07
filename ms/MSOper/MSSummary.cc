@@ -123,7 +123,7 @@ String MSSummary::name() const {
 bool MSSummary::setMS(const MeasurementSet& ms, float maxCacheMB) {
   const MeasurementSet* pTemp;
   pTemp = &ms;
-  if (pTemp == 0) {
+  if (pTemp == nullptr) {
     return false;
   } else {
     pMS = pTemp;

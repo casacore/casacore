@@ -97,7 +97,7 @@ void AipsIO::open(const std::shared_ptr<ByteIO>& file) {
   openInit(ByteIO::New);
   file_p.reset();
   io_p.reset(new CanonicalIO(file));
-  AlwaysAssert(io_p != 0, AipsError);
+  AlwaysAssert(io_p != nullptr, AipsError);
   seekable_p = io_p->isSeekable();
   if (!io_p->isReadable()) {
     swget_p = -1;
@@ -113,7 +113,7 @@ void AipsIO::open(const std::shared_ptr<TypeIO>& file) {
   openInit(ByteIO::New);
   file_p.reset();
   io_p = file;
-  AlwaysAssert(io_p != 0, AipsError);
+  AlwaysAssert(io_p != nullptr, AipsError);
   seekable_p = io_p->isSeekable();
   if (!io_p->isReadable()) {
     swget_p = -1;

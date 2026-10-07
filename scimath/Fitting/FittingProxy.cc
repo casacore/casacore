@@ -49,8 +49,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // FitType
 // Constructor
 FittingProxy::FitType::FitType()
-    : fitter_p(0),
-      fitterCX_p(0),
+    : fitter_p(nullptr),
+      fitterCX_p(nullptr),
       n_p(0),
       nceq_p(0),
       nreal_p(0),
@@ -62,25 +62,25 @@ FittingProxy::FitType::FitType()
 
 FittingProxy::FitType::~FitType() {
   delete fitter_p;
-  fitter_p = 0;
+  fitter_p = nullptr;
   delete fitterCX_p;
-  fitterCX_p = 0;
+  fitterCX_p = nullptr;
 }
 
 // Methods
 void FittingProxy::FitType::setFitter(GenericL2Fit<double>* ptr) {
   delete fitter_p;
-  fitter_p = 0;
+  fitter_p = nullptr;
   delete fitterCX_p;
-  fitterCX_p = 0;
+  fitterCX_p = nullptr;
   fitter_p = ptr;
 }
 
 void FittingProxy::FitType::setFitterCX(GenericL2Fit<DComplex>* ptr) {
   delete fitter_p;
-  fitter_p = 0;
+  fitter_p = nullptr;
   delete fitterCX_p;
-  fitterCX_p = 0;
+  fitterCX_p = nullptr;
   fitterCX_p = ptr;
 }
 
@@ -101,13 +101,13 @@ void FittingProxy::FitType::setSolved(bool solved) { soldone_p = solved; }
 
 // FittingProxy
 // Constructors
-FittingProxy::FittingProxy() : nFitter_p(0), list_p(0) {}
+FittingProxy::FittingProxy() : nFitter_p(0), list_p(nullptr) {}
 
 // Destructor
 FittingProxy::~FittingProxy() {
   for (unsigned int i = 0; i < nFitter_p; i++) {
     delete list_p[i];
-    list_p[i] = 0;
+    list_p[i] = nullptr;
   }
   delete[] list_p;
 }
@@ -131,7 +131,7 @@ int FittingProxy::getid() {
       FitType** list = list_p;
       list_p = new FitType*[nFitter_p];
       for (unsigned int i = 0; i < nFitter_p; i++) {
-        list_p[i] = 0;
+        list_p[i] = nullptr;
         if (i < n) list_p[i] = list[i];
       }
       delete[] list;
@@ -176,7 +176,7 @@ bool FittingProxy::done(int id) {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to undo a non-existing fitter"));
   }
-  list_p[id]->setFitter(0);
+  list_p[id]->setFitter(nullptr);
   return true;
 }
 
@@ -228,7 +228,7 @@ Record FittingProxy::functional(int id, const Record& fnc, const Vector<double>&
   fitter.setMaxIter(mxit);
   fitter.asWeight(true);
   FunctionHolder<double> fnh;
-  Function<AutoDiff<double>>* fn(0);
+  Function<AutoDiff<double>>* fn(nullptr);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim() * yval.nelements()) {
@@ -308,7 +308,7 @@ Record FittingProxy::linear(int id, const Record& fnc, const Vector<double>& xva
   LinearFitSVD<double> fitter;
   fitter.asWeight(true);
   FunctionHolder<double> fnh;
-  Function<AutoDiff<double>>* fn(0);
+  Function<AutoDiff<double>>* fn(nullptr);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim() * yval.nelements()) {
@@ -389,7 +389,7 @@ Record FittingProxy::cxfunctional(int id, const Record& fnc, const Vector<DCompl
   fitter.setMaxIter(mxit);
   fitter.asWeight(true);
   FunctionHolder<DComplex> fnh;
-  Function<AutoDiff<DComplex>>* fn(0);
+  Function<AutoDiff<DComplex>>* fn(nullptr);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim() * yval.nelements()) {
@@ -470,7 +470,7 @@ Record FittingProxy::cxlinear(int id, const Record& fnc, const Vector<DComplex>&
   LinearFitSVD<DComplex> fitter;
   fitter.asWeight(true);
   FunctionHolder<DComplex> fnh;
-  Function<AutoDiff<DComplex>>* fn(0);
+  Function<AutoDiff<DComplex>>* fn(nullptr);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim() * yval.nelements()) {

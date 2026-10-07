@@ -49,15 +49,15 @@ WCCompound::WCCompound(const ImageRegion* region1, const ImageRegion* region2,
   Block<const ImageRegion*> regions(10);
   unsigned int n = 0;
   regions[n++] = region1;
-  if (region2 != 0) regions[n++] = region2;
-  if (region3 != 0) regions[n++] = region3;
-  if (region4 != 0) regions[n++] = region4;
-  if (region5 != 0) regions[n++] = region5;
-  if (region6 != 0) regions[n++] = region6;
-  if (region7 != 0) regions[n++] = region7;
-  if (region8 != 0) regions[n++] = region8;
-  if (region9 != 0) regions[n++] = region9;
-  if (region10 != 0) regions[n++] = region10;
+  if (region2 != nullptr) regions[n++] = region2;
+  if (region3 != nullptr) regions[n++] = region3;
+  if (region4 != nullptr) regions[n++] = region4;
+  if (region5 != nullptr) regions[n++] = region5;
+  if (region6 != nullptr) regions[n++] = region6;
+  if (region7 != nullptr) regions[n++] = region7;
+  if (region8 != nullptr) regions[n++] = region8;
+  if (region9 != nullptr) regions[n++] = region9;
+  if (region10 != nullptr) regions[n++] = region10;
   regions.resize(n, true, true);
   makeWCRegion(regions);
   init(false);
@@ -190,7 +190,7 @@ void WCCompound::init(bool takeOver) {
   unsigned int nr = itsRegions.nelements();
   itsAxesUsed.resize(nr);
   for (unsigned int i = 0; i < nr; i++) {
-    AlwaysAssert(itsRegions[i] != 0, AipsError);
+    AlwaysAssert(itsRegions[i] != nullptr, AipsError);
     // Clone the object if needed.
     if (!takeOver) {
       itsRegions[i] = itsRegions[i]->cloneRegion();

@@ -54,7 +54,8 @@ unsigned int MCRadialVelocity::FromTo_p[MRadialVelocity::N_Types][MRadialVelocit
 std::once_flag MCRadialVelocity::theirInitOnceFlag;
 
 // # Constructors
-MCRadialVelocity::MCRadialVelocity() : MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
+MCRadialVelocity::MCRadialVelocity()
+    : MVPOS1(nullptr), MVDIR1(nullptr), ABERFROM(nullptr), ABERTO(nullptr) {
   std::call_once(theirInitOnceFlag, doFillState);
 }
 
@@ -79,13 +80,13 @@ void MCRadialVelocity::getConvert(MConvertBase &mc, const MRBase &inref, const M
 
 void MCRadialVelocity::clearConvert() {
   delete MVPOS1;
-  MVPOS1 = 0;
+  MVPOS1 = nullptr;
   delete MVDIR1;
-  MVDIR1 = 0;
+  MVDIR1 = nullptr;
   delete ABERFROM;
-  ABERFROM = 0;
+  ABERFROM = nullptr;
   delete ABERTO;
-  ABERTO = 0;
+  ABERTO = nullptr;
 }
 
 // # Conversion routines

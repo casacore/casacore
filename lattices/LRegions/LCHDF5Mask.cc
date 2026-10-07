@@ -116,7 +116,7 @@ void LCHDF5Mask::flush() { itsMask.flush(); }
 LCRegion* LCHDF5Mask::doTranslate(const Vector<float>&, const IPosition&) const {
   // An LCHDF5Mask cannot be translated.
   throw(AipsError("LCHDF5Mask::translate is not supported"));
-  return 0;
+  return nullptr;
 }
 
 String LCHDF5Mask::className() { return "LCHDF5Mask"; }

@@ -65,7 +65,7 @@ int main(int argc, const char* argv[]) {
     }
 
     // First try to open as a normal image.
-    ImageInterface<float>* img = 0;
+    ImageInterface<float>* img = nullptr;
     String error;
     bool res = true;
     LatticeBase* lattice = ImageOpener::openImage(imgin);
@@ -80,7 +80,7 @@ int main(int argc, const char* argv[]) {
         delete lattice;
       }
     }
-    if (img == 0) {
+    if (img == nullptr) {
       // Try to interpret it as a LEL expression.
       LatticeExpr<float> lat(ImageExprParse::command(imgin));
       img = new ImageExpr<float>(lat, imgin);

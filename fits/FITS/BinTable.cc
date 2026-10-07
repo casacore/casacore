@@ -65,13 +65,13 @@ bool isSDFitsColumn(FITS::ReservedName name) {
 BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, bool useIncrSM,
                          bool sdfits)
     : BinaryTableExtension(fitsin, errhandler),
-      currRowTab(0),
-      nelem(0),
-      colNames(0),
-      vatypes_p(0),
-      vaptr_p(0),
-      va_p(0),
-      theheap_p(0) {
+      currRowTab(nullptr),
+      nelem(nullptr),
+      colNames(nullptr),
+      vatypes_p(nullptr),
+      vaptr_p(nullptr),
+      va_p(nullptr),
+      theheap_p(nullptr) {
   AlwaysAssert(err() == HeaderDataUnit::OK, AipsError);
 
   // is there a heap
@@ -98,7 +98,7 @@ BinaryTable::BinaryTable(FitsInput &fitsin, FITSErrorHandler errhandler, bool us
     va_p = new VADescFitsField[ncol];
     AlwaysAssert(va_p, AipsError);
     for (unsigned int i = 0; i < ncol; ++i) {
-      vaptr_p[i] = 0;
+      vaptr_p[i] = nullptr;
       if (field(i).fieldtype() == FITS::VADESC) {
         int maxsize;
         FITS::parse_vatform(tform(i), vatypes_p[i], maxsize);
@@ -918,9 +918,9 @@ BinaryTable::~BinaryTable() {
   delete currRowTab;
   delete[] nelem;
   delete colNames;
-  currRowTab = 0;
-  nelem = 0;
-  colNames = 0;
+  currRowTab = nullptr;
+  nelem = nullptr;
+  colNames = nullptr;
 }
 
 Table BinaryTable::fullTable(const String &tabname, const Table::TableOption taboptn,

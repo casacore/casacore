@@ -99,7 +99,7 @@ TaQLNode TaQLNode::restoreNode(AipsIO& aio) {
   aio >> nodeType;
   switch (nodeType) {
     case TaQLNode_Null:
-      return 0;
+      return nullptr;
     case TaQLNode_Const:
       return TaQLConstNodeRep::restore(aio);
     case TaQLNode_Unary:
@@ -186,7 +186,7 @@ TaQLMultiNode TaQLNode::restoreMultiNode(AipsIO& aio) {
   aio >> nodeType;
   switch (nodeType) {
     case TaQLNode_Null:
-      return 0;
+      return nullptr;
     case TaQLNode_Multi:
       return TaQLMultiNodeRep::restore(aio);
     default:
@@ -208,7 +208,7 @@ bool TaQLRegexNode::caseInsensitive() const { return itsNRep->itsCaseInsensitive
 
 bool TaQLRegexNode::negate() const { return itsNRep->itsNegate; }
 
-TaQLMultiNode::TaQLMultiNode() : TaQLNode(0), itsNRep(0) {}
+TaQLMultiNode::TaQLMultiNode() : TaQLNode(nullptr), itsNRep(nullptr) {}
 
 TaQLMultiNode::TaQLMultiNode(bool isSetOrArray) : TaQLNode(new TaQLMultiNodeRep(isSetOrArray)) {
   itsNRep = (TaQLMultiNodeRep*)(TaQLNode::itsRep.get());

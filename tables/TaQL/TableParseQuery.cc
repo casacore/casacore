@@ -69,13 +69,13 @@ TableParseQuery::TableParseQuery(CommandType commandType)
       resultCreated_p(false),
       endianFormat_p(Table::AipsrcEndian),
       overwrite_p(true),
-      resultSet_p(0),
+      resultSet_p(nullptr),
       distinct_p(false),
       limit_p(0),
       endrow_p(0),
       offset_p(0),
       stride_p(1),
-      insSel_p(0),
+      insSel_p(nullptr),
       noDupl_p(false),
       order_p(Sort::Ascending) {}
 
@@ -374,7 +374,7 @@ TableExprNode TableParseQuery::doSubQuery(bool showTimings) {
   // Execute the nested command.
   execute(false, true, true, 0);
   TableExprNode result;
-  if (resultSet_p != 0) {
+  if (resultSet_p != nullptr) {
     // A set specification was given, so make the set.
     result = makeSubSet();
   } else {
@@ -1071,14 +1071,14 @@ void TableParseQuery::execute(bool showTimings, bool setInGiving, bool mustSelec
   }
   // # Give an error if no command part has been given.
   if (mustSelect && commandType_p == PSELECT && node_p.isNull() && sort_p.size() == 0 &&
-      tableProject_p.getColumnNames().empty() && resultSet_p == 0 && limit_p == 0 &&
+      tableProject_p.getColumnNames().empty() && resultSet_p == nullptr && limit_p == 0 &&
       endrow_p == 0 && stride_p == 1 && offset_p == 0) {
     throw(
         TableInvExpr("TableParse error: no projection, selection, sorting, "
                      "limit, offset, or giving-set given in SELECT command"));
   }
   // Test if a "giving set" is possible.
-  if (resultSet_p != 0 && !setInGiving) {
+  if (resultSet_p != nullptr && !setInGiving) {
     throw TableInvExpr(
         "A query in a FROM can only have "
         "'GIVING tablename'");

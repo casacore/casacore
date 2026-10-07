@@ -2838,7 +2838,7 @@ bool checkFloatRepl(const LatticeExprNode& expr, const float result, const IPosi
     bool delres, delmask, delrepl;
     const bool* mask = Arr.mask().getStorage(delmask);
     const float* res = Arr.value().getStorage(delres);
-    const float* repl = 0;
+    const float* repl = nullptr;
     if (!isReplScalar) {
       repl = replArray.getStorage(delrepl);
     }
@@ -3098,7 +3098,7 @@ bool checkBoolRepl(const LatticeExprNode& expr, const bool result, const IPositi
     bool delres, delmask, delrepl;
     const bool* mask = Arr.mask().getStorage(delmask);
     const bool* res = Arr.value().getStorage(delres);
-    const bool* repl = 0;
+    const bool* repl = nullptr;
     if (!isReplScalar) {
       repl = replArray.getStorage(delrepl);
     }

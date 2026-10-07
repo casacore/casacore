@@ -33,7 +33,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-LogFilterExpr::LogFilterExpr(const String& expr) : itsExpr(0) {
+LogFilterExpr::LogFilterExpr(const String& expr) : itsExpr(nullptr) {
   // Make a description for the parser.
   RecordDesc desc;
   desc.addField("TIME", TpDouble);
@@ -44,8 +44,8 @@ LogFilterExpr::LogFilterExpr(const String& expr) : itsExpr(0) {
   itsExpr = new TableExprNode(RecordGram::parse(Record(desc), expr));
 }
 
-LogFilterExpr::LogFilterExpr(const LogFilterExpr& that) : TableExprData(), itsExpr(0) {
-  if (that.itsExpr != 0) {
+LogFilterExpr::LogFilterExpr(const LogFilterExpr& that) : TableExprData(), itsExpr(nullptr) {
+  if (that.itsExpr != nullptr) {
     itsExpr = new TableExprNode(*that.itsExpr);
   }
 }
@@ -55,8 +55,8 @@ LogFilterExpr::~LogFilterExpr() { delete itsExpr; }
 LogFilterExpr& LogFilterExpr::operator=(const LogFilterExpr& that) {
   if (this != &that) {
     delete itsExpr;
-    itsExpr = 0;
-    if (that.itsExpr != 0) {
+    itsExpr = nullptr;
+    if (that.itsExpr != nullptr) {
       itsExpr = new TableExprNode(*that.itsExpr);
     }
   }

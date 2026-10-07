@@ -30,22 +30,28 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Constructors
-LSQMatrix::LSQMatrix() : n_p(0), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {}
+LSQMatrix::LSQMatrix() : n_p(0), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(nullptr) {}
 
 LSQMatrix::LSQMatrix(unsigned int n)
-    : n_p(n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {
+    : n_p(n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(nullptr) {
   init();
   clear();
 }
 
 LSQMatrix::LSQMatrix(unsigned int n, bool)
-    : n_p(2 * n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {
+    : n_p(2 * n), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(nullptr) {
   init();
   clear();
 }
 
 LSQMatrix::LSQMatrix(const LSQMatrix &other)
-    : RecordTransformable(), n_p(other.n_p), len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0), trian_p(0) {
+    : RecordTransformable(),
+      n_p(other.n_p),
+      len_p(0),
+      nm1_p(0),
+      n2m1_p(0),
+      n2p1_p(0),
+      trian_p(nullptr) {
   init();
   copy(other);
 }
@@ -75,7 +81,7 @@ void LSQMatrix::init() {
     nm1_p = 0;
     n2m1_p = 0;
     n2p1_p = 0;
-    trian_p = 0;
+    trian_p = nullptr;
   }
 }
 
@@ -83,7 +89,7 @@ void LSQMatrix::clear() { std::fill_n(trian_p, len_p, 0.0); }
 
 void LSQMatrix::deinit() {
   delete[] trian_p;
-  trian_p = 0;
+  trian_p = nullptr;
 }
 
 void LSQMatrix::set(unsigned int n) {

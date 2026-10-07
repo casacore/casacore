@@ -109,7 +109,7 @@ ValueHolderRep::ValueHolderRep(const Record& value)
     : itsNdim(0), itsType(TpRecord), itsPtr(new Record(value)) {}
 
 ValueHolderRep::ValueHolderRep(unsigned int ndim, bool)
-    : itsNdim(ndim), itsType(TpOther), itsPtr(0) {}
+    : itsNdim(ndim), itsType(TpOther), itsPtr(nullptr) {}
 
 ValueHolderRep::~ValueHolderRep() {
   switch (itsType) {

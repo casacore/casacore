@@ -35,11 +35,11 @@
 namespace casacore {
 
 FrequencyEngine::FrequencyEngine()
-    : itsEpochEngine(0),
-      itsPositionEngine(0),
-      itsDirectionEngine(0),
-      itsDopplerEngine(0),
-      itsRadVelEngine(0) {}
+    : itsEpochEngine(nullptr),
+      itsPositionEngine(nullptr),
+      itsDirectionEngine(nullptr),
+      itsDopplerEngine(nullptr),
+      itsRadVelEngine(nullptr) {}
 
 FrequencyEngine::~FrequencyEngine() {}
 
@@ -87,13 +87,13 @@ void FrequencyEngine::handleValues(TableExprNode& operand, const TableExprId& id
 }
 
 void FrequencyEngine::setDopplerEngine(DopplerEngine& engine) {
-  AlwaysAssert(itsDopplerEngine == 0, AipsError);
+  AlwaysAssert(itsDopplerEngine == nullptr, AipsError);
   itsDopplerEngine = &engine;
   extendBase(engine, false);
 }
 
 void FrequencyEngine::setRadVelEngine(RadialVelocityEngine& engine) {
-  AlwaysAssert(itsRadVelEngine == 0, AipsError);
+  AlwaysAssert(itsRadVelEngine == nullptr, AipsError);
   itsRadVelEngine = &engine;
   extendBase(engine, false);
   // Define the frame part, so it can be reset later.
@@ -101,7 +101,7 @@ void FrequencyEngine::setRadVelEngine(RadialVelocityEngine& engine) {
 }
 
 void FrequencyEngine::setDirectionEngine(DirectionEngine& engine) {
-  AlwaysAssert(itsDirectionEngine == 0, AipsError);
+  AlwaysAssert(itsDirectionEngine == nullptr, AipsError);
   itsDirectionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.
@@ -110,7 +110,7 @@ void FrequencyEngine::setDirectionEngine(DirectionEngine& engine) {
 }
 
 void FrequencyEngine::setEpochEngine(EpochEngine& engine) {
-  AlwaysAssert(itsEpochEngine == 0, AipsError);
+  AlwaysAssert(itsEpochEngine == nullptr, AipsError);
   itsEpochEngine = &engine;
   extendBase(engine, false);
   // Define the frame part, so it can be reset later.
@@ -119,7 +119,7 @@ void FrequencyEngine::setEpochEngine(EpochEngine& engine) {
 }
 
 void FrequencyEngine::setPositionEngine(PositionEngine& engine) {
-  AlwaysAssert(itsPositionEngine == 0, AipsError);
+  AlwaysAssert(itsPositionEngine == nullptr, AipsError);
   itsPositionEngine = &engine;
   extendBase(engine, true);
   // Define the frame part, so it can be reset later.

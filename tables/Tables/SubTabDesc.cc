@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 SubTableDesc::SubTableDesc(const String& name, const String& comment, const String& descname,
                            int opt)
     : BaseColumnDesc(name, comment, "", "", TpTable, "", opt, 1, IPosition(), false, false, true),
-      tabDescPtr_p(0),
+      tabDescPtr_p(nullptr),
       tabDescTyp_p(descname),
       byName_p(true),
       allocSelf_p(true),
@@ -62,7 +62,7 @@ SubTableDesc::SubTableDesc(const String& name, const String& comment, TableDesc*
       shallowCopy_p(true) {}
 
 SubTableDesc::SubTableDesc(const SubTableDesc& that)
-    : BaseColumnDesc(that), tabDescPtr_p(0), tabDescTyp_p(""), allocSelf_p(false) {
+    : BaseColumnDesc(that), tabDescPtr_p(nullptr), tabDescTyp_p(""), allocSelf_p(false) {
   operator=(that);
 }
 
@@ -83,7 +83,7 @@ SubTableDesc& SubTableDesc::operator=(const SubTableDesc& that) {
   if (allocSelf_p) {
     delete tabDescPtr_p;
   }
-  tabDescPtr_p = 0;
+  tabDescPtr_p = nullptr;
   tabDescTyp_p = that.tabDescTyp_p;
   byName_p = that.byName_p;
   allocSelf_p = true;
@@ -93,7 +93,7 @@ SubTableDesc& SubTableDesc::operator=(const SubTableDesc& that) {
     allocSelf_p = false;
   } else if (byName_p) {
     readTableDesc();
-  } else if (that.tabDescPtr_p != 0) {
+  } else if (that.tabDescPtr_p != nullptr) {
     tabDescPtr_p = new TableDesc(*that.tabDescPtr_p, "", "", TableDesc::Scratch);
   }
   return *this;
@@ -131,7 +131,7 @@ void SubTableDesc::getDesc(AipsIO& ios) {
   if (allocSelf_p) {
     delete tabDescPtr_p;
   }
-  tabDescPtr_p = 0;
+  tabDescPtr_p = nullptr;
   if (byName_p) {
     readTableDesc();
   } else {
@@ -143,7 +143,7 @@ void SubTableDesc::getDesc(AipsIO& ios) {
 // # Get the table description.
 // # Throw exception if not there.
 TableDesc* SubTableDesc::tableDesc() {
-  if (tabDescPtr_p == 0) {
+  if (tabDescPtr_p == nullptr) {
     throw(TableNoFile("desc. " + tabDescTyp_p));
   }
   return tabDescPtr_p;
@@ -156,7 +156,7 @@ bool SubTableDesc::readTableDesc() {
     if (allocSelf_p) {
       delete tabDescPtr_p;
     }
-    tabDescPtr_p = 0;
+    tabDescPtr_p = nullptr;
     if (TableDesc::isReadable(tabDescTyp_p)) {
       tabDescPtr_p = new TableDesc(tabDescTyp_p);
     } else {
@@ -184,6 +184,6 @@ void SubTableDesc::show(ostream& os) const {
   os << "   Comment = " << comment() << endl;
 }
 
-PlainColumn* SubTableDesc::makeColumn(ColumnSet*) const { return 0; }
+PlainColumn* SubTableDesc::makeColumn(ColumnSet*) const { return nullptr; }
 
 }  // namespace casacore

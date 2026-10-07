@@ -39,9 +39,9 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // # Constructors
 ParAngleMachine::ParAngleMachine()
-    : indir_p(0),
-      convdir_p(0),
-      frame_p(0),
+    : indir_p(nullptr),
+      convdir_p(nullptr),
+      frame_p(nullptr),
       zenith_p(),
       mvdir_p(),
       lastep_p(-1.1e20),
@@ -52,8 +52,8 @@ ParAngleMachine::ParAngleMachine()
 
 ParAngleMachine::ParAngleMachine(const MDirection &in)
     : indir_p(new MDirection(in)),
-      convdir_p(0),
-      frame_p(0),
+      convdir_p(nullptr),
+      frame_p(nullptr),
       zenith_p(),
       mvdir_p(),
       lastep_p(-1.1e20),
@@ -63,9 +63,9 @@ ParAngleMachine::ParAngleMachine(const MDirection &in)
 }
 
 ParAngleMachine::ParAngleMachine(const ParAngleMachine &other)
-    : indir_p(0),
-      convdir_p(0),
-      frame_p(0),
+    : indir_p(nullptr),
+      convdir_p(nullptr),
+      frame_p(nullptr),
       zenith_p(),
       mvdir_p(),
       lastep_p(-1.1e20),
@@ -80,11 +80,11 @@ ParAngleMachine::ParAngleMachine(const ParAngleMachine &other)
 ParAngleMachine &ParAngleMachine::operator=(const ParAngleMachine &other) {
   if (this != &other) {
     delete indir_p;
-    indir_p = 0;
+    indir_p = nullptr;
     delete convdir_p;
-    convdir_p = 0;
+    convdir_p = nullptr;
     delete frame_p;
-    frame_p = 0;
+    frame_p = nullptr;
     if (other.indir_p) indir_p = new MDirection(*other.indir_p);
     if (other.frame_p) frame_p = new MeasFrame(*other.frame_p);
     defintvl_p = other.defintvl_p;
@@ -95,11 +95,11 @@ ParAngleMachine &ParAngleMachine::operator=(const ParAngleMachine &other) {
 
 ParAngleMachine::~ParAngleMachine() {
   delete indir_p;
-  indir_p = 0;
+  indir_p = nullptr;
   delete convdir_p;
-  convdir_p = 0;
+  convdir_p = nullptr;
   delete frame_p;
-  frame_p = 0;
+  frame_p = nullptr;
 }
 
 // # Operators
@@ -177,22 +177,22 @@ Quantum<Vector<double>> ParAngleMachine::operator()(const Vector<MEpoch> &ep) co
 // # Member functions
 void ParAngleMachine::set(const MDirection &in) {
   delete indir_p;
-  indir_p = 0;
+  indir_p = nullptr;
   delete convdir_p;
-  convdir_p = 0;
+  convdir_p = nullptr;
   indir_p = new MDirection(in);
   if (!in.getRef().getFrame().empty()) {
     delete frame_p;
-    frame_p = 0;
+    frame_p = nullptr;
   }
   init();
 }
 
 void ParAngleMachine::set(const MeasFrame &frame) {
   delete convdir_p;
-  convdir_p = 0;
+  convdir_p = nullptr;
   delete frame_p;
-  frame_p = 0;
+  frame_p = nullptr;
   frame_p = new MeasFrame(frame);
   init();
 }

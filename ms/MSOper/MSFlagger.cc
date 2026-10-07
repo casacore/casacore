@@ -53,7 +53,7 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-MSFlagger::MSFlagger() : msSel_p(0) {}
+MSFlagger::MSFlagger() : msSel_p(nullptr) {}
 
 MSFlagger::MSFlagger(MSSelector& msSel) : msSel_p(&msSel) {}
 
@@ -64,7 +64,7 @@ MSFlagger& MSFlagger::operator=(const MSFlagger& other) {
   return *this;
 }
 
-MSFlagger::~MSFlagger() { msSel_p = 0; }
+MSFlagger::~MSFlagger() { msSel_p = nullptr; }
 
 void MSFlagger::setMSSelector(MSSelector& msSel) {
   msSel_p = &msSel;

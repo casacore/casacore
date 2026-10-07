@@ -657,12 +657,12 @@ class Array : public ArrayBase {
     explicit BaseIteratorSTL(const Array<T>&);
     // Create the end const_iterator object for an Array.
     // It also acts as the default constructor.
-    explicit BaseIteratorSTL(const T* end = 0)
+    explicit BaseIteratorSTL(const T* end = nullptr)
         : itsPos(end),
-          itsLineEnd(0),
+          itsLineEnd(nullptr),
           itsLineIncr(0),
           itsLineAxis(0),
-          itsArray(0),
+          itsArray(nullptr),
           itsContig(false) {}
 
     void nextElem() {
@@ -717,7 +717,7 @@ class Array : public ArrayBase {
     explicit IteratorSTL(Array<T>& arr) : BaseIteratorSTL(arr) {}
     // Create the end iterator object for an Array.
     // It also acts as the default constructor.
-    explicit IteratorSTL(const T* end = 0) : BaseIteratorSTL(end) {}
+    explicit IteratorSTL(const T* end = nullptr) : BaseIteratorSTL(end) {}
 
     const IteratorSTL& operator++() {
       this->nextElem();
@@ -748,7 +748,7 @@ class Array : public ArrayBase {
     explicit ConstIteratorSTL(const Array<T>& arr) : BaseIteratorSTL(arr) {}
     // Create the end const_iterator object for an Array.
     // It also acts as the default constructor.
-    explicit ConstIteratorSTL(const T* end = 0) : BaseIteratorSTL(end) {}
+    explicit ConstIteratorSTL(const T* end = nullptr) : BaseIteratorSTL(end) {}
     // Create from a non-const iterator.
     ConstIteratorSTL(const IteratorSTL& iter) : BaseIteratorSTL(iter) {}
 
@@ -931,7 +931,7 @@ class Array : public ArrayBase {
   // Set the end iterator.
   void setEndIter() {
     end_p = (nels_p == 0
-                 ? 0
+                 ? nullptr
                  : (contiguous_p ? begin_p + nels_p
                                  : begin_p + size_t(length_p(ndim() - 1)) * steps_p(ndim() - 1)));
   }

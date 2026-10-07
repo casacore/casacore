@@ -31,10 +31,10 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-TableMeasType::TableMeasType() : itsNtypes(0), itsStypes(0), itsTyps(0) {}
+TableMeasType::TableMeasType() : itsNtypes(0), itsStypes(nullptr), itsTyps(nullptr) {}
 
 TableMeasType::TableMeasType(const Measure& meas)
-    : itsNtypes(0), itsStypes(0), itsTyps(0), itsMeasHolder(meas) {
+    : itsNtypes(0), itsStypes(nullptr), itsTyps(nullptr), itsMeasHolder(meas) {
   int nextras;
   itsStypes = itsMeasHolder.asMeasure().allTypes(itsNtypes, nextras, itsTyps);
 }

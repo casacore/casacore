@@ -265,18 +265,18 @@ int main() {
 
   void** va = new void*[size];
   void** va2 = new void*[size];
-  objset(va, static_cast<void*>(0), size);
+  objset(va, static_cast<void*>(nullptr), size);
   objmove(va2, va, size);
-  for (i = 0; i < size; i++) AlwaysAssertExit(va2[i] == 0);
+  for (i = 0; i < size; i++) AlwaysAssertExit(va2[i] == nullptr);
 
   // Block uses objcopy.
   // Somewhere Block<void*> and Block<const void*> are used.
   // See if they compile and link well.
-  Block<const void*> cbl(10, static_cast<const void*>(0));
+  Block<const void*> cbl(10, static_cast<const void*>(nullptr));
   Block<const void*> cbl2(cbl);
-  Block<void*> bl(10, static_cast<void*>(0));
+  Block<void*> bl(10, static_cast<void*>(nullptr));
   Block<void*> bl2(bl);
-  Block<void*> bvl(10, static_cast<void*>(0));
+  Block<void*> bvl(10, static_cast<void*>(nullptr));
   Block<void*> bvl2(bvl);
 
   delete[] ia;

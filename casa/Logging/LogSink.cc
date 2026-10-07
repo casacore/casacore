@@ -186,7 +186,7 @@ LogSinkInterface &LogSink::localSink() { return *(local_sink_p); }
 
 LogSink &LogSink::localSink(LogSinkInterface *&fromNew) {
   local_sink_p.reset(fromNew);
-  fromNew = 0;
+  fromNew = nullptr;
   AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
   return *this;
 }
@@ -201,7 +201,7 @@ LogSinkInterface &LogSink::globalSink() {
 void LogSink::globalSink(LogSinkInterface *&fromNew) {
   std::call_once(theirCallOnceFlag, createGlobalSink);
   global_sink_p->replace(fromNew);  // racy with use of global_sink_p as noted in .h
-  fromNew = 0;
+  fromNew = nullptr;
   AlwaysAssert(static_cast<bool>(global_sink_p), AipsError);
 }
 

@@ -581,7 +581,7 @@ void MSCreate::fillBaseLines(const Matrix<double>& antPos) {
   }
 }
 
-MSCreateCasa::MSCreateCasa() : itsNrRow(0), itsMSCol(0) {}
+MSCreateCasa::MSCreateCasa() : itsNrRow(0), itsMSCol(nullptr) {}
 
 MSCreateCasa::~MSCreateCasa() {
   if (!itsMS.isNull()) {
@@ -1323,30 +1323,30 @@ void MSCreateHDF5::createMS(const String& msName, int ntimeField, int /*useMulti
     unsigned int cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
     cout << "HDF5 cacheSize = " << cacheSize << std::endl;
     if (itsWriteFloatData) {
-      spw.floatData =
-          std::make_shared<HDF5DataSet>(*spw.spw, "FLOAT_DATA", shape, itsDataTileShape, (float*)0);
+      spw.floatData = std::make_shared<HDF5DataSet>(*spw.spw, "FLOAT_DATA", shape, itsDataTileShape,
+                                                    (float*)nullptr);
       spw.floatData->setCacheSize(cacheSize);
     } else {
-      spw.data =
-          std::make_shared<HDF5DataSet>(*spw.spw, "DATA", shape, itsDataTileShape, (Complex*)0);
+      spw.data = std::make_shared<HDF5DataSet>(*spw.spw, "DATA", shape, itsDataTileShape,
+                                               (Complex*)nullptr);
       spw.data->setCacheSize(cacheSize);
     }
     IPosition tileShape(itsDataTileShape);
     tileShape[2] *= 8;
-    spw.flag = std::make_shared<HDF5DataSet>(*spw.spw, "FLAG", shape, tileShape, (bool*)0);
+    spw.flag = std::make_shared<HDF5DataSet>(*spw.spw, "FLAG", shape, tileShape, (bool*)nullptr);
     spw.flag->setCacheSize(cacheSize);
     if (itsWriteWeightSpectrum) {
       spw.weightSpectrum = std::make_shared<HDF5DataSet>(*spw.spw, "WEIGHT_SPECTRUM", shape,
-                                                         itsDataTileShape, (float*)0);
+                                                         itsDataTileShape, (float*)nullptr);
       spw.weightSpectrum->setCacheSize(cacheSize);
     }
     spw.metaData =
         std::make_shared<HDF5DataSet>(*spw.spw, "METADATA", shape1, tileShape1, itsMetaType);
     if (createImagerColumns) {
-      spw.modelData =
-          std::make_shared<HDF5DataSet>(*spw.spw, "MODEL_DATA", shape, tileShape, (Complex*)0);
-      spw.corrData =
-          std::make_shared<HDF5DataSet>(*spw.spw, "CORRECTED_DATA", shape, tileShape, (Complex*)0);
+      spw.modelData = std::make_shared<HDF5DataSet>(*spw.spw, "MODEL_DATA", shape, tileShape,
+                                                    (Complex*)nullptr);
+      spw.corrData = std::make_shared<HDF5DataSet>(*spw.spw, "CORRECTED_DATA", shape, tileShape,
+                                                   (Complex*)nullptr);
       // Not written, so no need to set their cache sizes.
     }
     itsSpws.push_back(spw);
@@ -1357,43 +1357,43 @@ void MSCreateHDF5::makeMetaType() {
   // Push the fields in the same order as defined in the HDF5MetaData struct.
   vector<HDF5DataType> types;
   vector<String> names;
-  types.push_back(HDF5DataType((double*)0));
+  types.push_back(HDF5DataType((double*)nullptr));
   names.push_back("time");
-  types.push_back(HDF5DataType((double*)0));
+  types.push_back(HDF5DataType((double*)nullptr));
   names.push_back("timeCentroid");
-  types.push_back(HDF5DataType((double*)0));
+  types.push_back(HDF5DataType((double*)nullptr));
   names.push_back("interval");
-  types.push_back(HDF5DataType((double*)0));
+  types.push_back(HDF5DataType((double*)nullptr));
   names.push_back("exposure");
-  types.push_back(HDF5DataType(HDF5DataType((double*)0), IPosition(1, 3)));
+  types.push_back(HDF5DataType(HDF5DataType((double*)nullptr), IPosition(1, 3)));
   names.push_back("uvw");
-  types.push_back(HDF5DataType(HDF5DataType((float*)0), IPosition(1, 4)));
+  types.push_back(HDF5DataType(HDF5DataType((float*)nullptr), IPosition(1, 4)));
   names.push_back("weight");
-  types.push_back(HDF5DataType(HDF5DataType((float*)0), IPosition(1, 4)));
+  types.push_back(HDF5DataType(HDF5DataType((float*)nullptr), IPosition(1, 4)));
   names.push_back("sigma");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("antenna1");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("antenna2");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("arrayId");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("fieldId");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("dataDescId");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("stateId");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("flagRow");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("feed1");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("feed2");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("processorId");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("scanNumber");
-  types.push_back(HDF5DataType((int*)0));
+  types.push_back(HDF5DataType((int*)nullptr));
   names.push_back("observationId");
   itsMetaType = HDF5DataType(names, types);
 }

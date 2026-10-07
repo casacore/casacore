@@ -78,7 +78,8 @@ LockFile::LockFile(const String& fileName, double inspectInterval, bool create, 
       itsHostId(0),
       itsReqId(SIZEREQID / SIZEINT, (int)0),
       itsInspectCount(0) {
-  AlwaysAssert(SIZEINT == CanonicalConversion::canonicalSize(static_cast<int*>(0)), AipsError);
+  AlwaysAssert(SIZEINT == CanonicalConversion::canonicalSize(static_cast<int*>(nullptr)),
+               AipsError);
   itsName = Path(fileName).absoluteName();
   // # If needed, create the file if it does not exist yet.
   // # If the flag is set, it is allowed that the file does not
@@ -146,7 +147,7 @@ bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, unsigned int n
   // # If no lock file, lock requests always succeed,
   // # but we cannot return any info.
   if (!itsFileIO) {
-    if (info != 0) {
+    if (info != nullptr) {
       info->clear();
     }
     return true;
@@ -165,14 +166,14 @@ bool LockFile::acquire(MemoryIO* info, FileLocker::LockType type, unsigned int n
   }
   // # Do not read info if we did not acquire the lock.
   if (!succ) {
-    info = 0;
+    info = nullptr;
   }
   // # Read the info when needed.
   // # This also reads the request id's.
   // # If no info is needed, read req id's only when needed.
   // # Note that each IO-operation is quite expensive, so do as few
   // # IO's as possible.
-  if (info != 0) {
+  if (info != nullptr) {
     getInfo(*info);
   } else if (added) {
     getReqId();
@@ -192,7 +193,7 @@ bool LockFile::release(const MemoryIO* info) {
   if (!itsFileIO) {
     return true;
   }
-  if (info != 0) {
+  if (info != nullptr) {
     putInfo(*info);
   }
   return itsLocker.release();

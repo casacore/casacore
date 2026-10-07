@@ -35,9 +35,9 @@
 
 namespace casacore {
 
-MMapfdIO::MMapfdIO() : itsFileSize(0), itsPosition(0), itsPtr(0), itsIsWritable(false) {}
+MMapfdIO::MMapfdIO() : itsFileSize(0), itsPosition(0), itsPtr(nullptr), itsIsWritable(false) {}
 
-MMapfdIO::MMapfdIO(int fd, const String& fileName) : itsPtr(0) { map(fd, fileName); }
+MMapfdIO::MMapfdIO(int fd, const String& fileName) : itsPtr(nullptr) { map(fd, fileName); }
 
 void MMapfdIO::map(int fd, const String& fileName) {
   attach(fd, fileName);
@@ -54,7 +54,7 @@ MMapfdIO::~MMapfdIO() { unmapFile(); }
 
 void MMapfdIO::mapFile() {
   // Unmap file if still mapped.
-  if (itsPtr != 0) {
+  if (itsPtr != nullptr) {
     unmapFile();
   }
   int prot = PROT_READ;
@@ -62,7 +62,7 @@ void MMapfdIO::mapFile() {
     prot = PROT_READ | PROT_WRITE;
   }
   // Do mmap of entire file.
-  itsPtr = static_cast<char*>(::mmap(0, itsFileSize, prot, MAP_SHARED, fd(), 0));
+  itsPtr = static_cast<char*>(::mmap(nullptr, itsFileSize, prot, MAP_SHARED, fd(), 0));
   if (itsPtr == MAP_FAILED) {
     throw AipsError("MMapfdIO::MMapfdIO - mmap of " + fileName() + " failed: " + strerror(errno));
   }
@@ -71,18 +71,18 @@ void MMapfdIO::mapFile() {
 }
 
 void MMapfdIO::unmapFile() {
-  if (itsPtr != 0) {
+  if (itsPtr != nullptr) {
     int res = ::munmap(itsPtr, itsFileSize);
     if (res != 0) {
       throw AipsError("MMapfdIO::unmapFile - munmap of " + fileName() +
                       " failed: " + strerror(errno));
     }
-    itsPtr = 0;
+    itsPtr = nullptr;
   }
 }
 
 void MMapfdIO::flush() {
-  if (itsIsWritable && itsPtr != 0) {
+  if (itsIsWritable && itsPtr != nullptr) {
     int res = ::msync(itsPtr, itsFileSize, MS_SYNC);
     if (res != 0) {
       throw AipsError("MMapfdIO::flush - msync of " + fileName() + " failed: " + strerror(errno));

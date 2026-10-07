@@ -37,10 +37,10 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 LCRegionSingle::LCRegionSingle() {}
 
 LCRegionSingle::LCRegionSingle(const IPosition& latticeShape)
-    : LCRegion(latticeShape), itsHasMask(false), itsMaskPtr(0) {}
+    : LCRegion(latticeShape), itsHasMask(false), itsMaskPtr(nullptr) {}
 
 LCRegionSingle::LCRegionSingle(const LCRegionSingle& other)
-    : LCRegion(other), itsHasMask(false), itsMaskPtr(0) {}
+    : LCRegion(other), itsHasMask(false), itsMaskPtr(nullptr) {}
 
 LCRegionSingle::~LCRegionSingle() {}
 

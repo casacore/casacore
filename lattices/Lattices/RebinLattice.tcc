@@ -40,7 +40,7 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-RebinLattice<T>::RebinLattice() : itsLatticePtr(0), itsAllUnity(false) {}
+RebinLattice<T>::RebinLattice() : itsLatticePtr(nullptr), itsAllUnity(false) {}
 
 template <class T>
 RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& bin)
@@ -69,7 +69,8 @@ RebinLattice<T>::RebinLattice(const MaskedLattice<T>& lattice, const IPosition& 
 }
 
 template <class T>
-RebinLattice<T>::RebinLattice(const RebinLattice<T>& other) : MaskedLattice<T>(), itsLatticePtr(0) {
+RebinLattice<T>::RebinLattice(const RebinLattice<T>& other)
+    : MaskedLattice<T>(), itsLatticePtr(nullptr) {
   operator=(other);
 }
 
@@ -82,7 +83,7 @@ template <class T>
 RebinLattice<T>& RebinLattice<T>::operator=(const RebinLattice<T>& other) {
   if (this != &other) {
     delete itsLatticePtr;
-    itsLatticePtr = 0;
+    itsLatticePtr = nullptr;
     if (other.itsLatticePtr) {
       itsLatticePtr = other.itsLatticePtr->cloneML();
     }
@@ -154,7 +155,7 @@ void RebinLattice<T>::reopen() {
 
 template <class T>
 const LatticeRegion* RebinLattice<T>::getRegionPtr() const {
-  return 0;
+  return nullptr;
 }
 
 template <class T>

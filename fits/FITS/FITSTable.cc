@@ -537,8 +537,8 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular) {
 FITSTable::FITSTable(unsigned int whichHDU, bool allKeywords)
     : hdu_nr_p(whichHDU),
       row_nr_p(-1),
-      raw_table_p(0),
-      io_p(0),
+      raw_table_p(nullptr),
+      io_p(nullptr),
       row_p(RecordInterface::Variable),
       allKeys_p(allKeywords),
       nfields_p(0),
@@ -546,16 +546,16 @@ FITSTable::FITSTable(unsigned int whichHDU, bool allKeywords)
       field_types_p(0),
       vatypes_p(0),
       vaptr_p(0),
-      va_p(0),
-      theheap_p(0) {
+      va_p(nullptr),
+      theheap_p(nullptr) {
   isValid_p = false;
 }
 
 FITSTable::FITSTable(const String &fileName, unsigned int whichHDU, bool allKeywords)
     : hdu_nr_p(whichHDU),
       row_nr_p(-1),
-      raw_table_p(0),
-      io_p(0),
+      raw_table_p(nullptr),
+      io_p(nullptr),
       row_p(RecordInterface::Variable),
       allKeys_p(allKeywords),
       nfields_p(0),
@@ -563,8 +563,8 @@ FITSTable::FITSTable(const String &fileName, unsigned int whichHDU, bool allKeyw
       field_types_p(0),
       vatypes_p(0),
       vaptr_p(0),
-      va_p(0),
-      theheap_p(0) {
+      va_p(nullptr),
+      theheap_p(nullptr) {
   isValid_p = reopen(fileName);
 }
 
@@ -785,7 +785,7 @@ bool FITSTable::reopen(const String &fileName) {
       default:
         throw(AipsError("FITSTable::reopen() - unknown field type"));
     }
-    AlwaysAssert(row_fields_p[i] != 0, AipsError);
+    AlwaysAssert(row_fields_p[i] != nullptr, AipsError);
     field_types_p[i] = description_p.type(i);
   }
 
@@ -799,7 +799,7 @@ bool FITSTable::reopen(const String &fileName) {
     va_p = new VADescFitsField[ncols];
     AlwaysAssert(va_p, AipsError);
     for (i = 0; i < static_cast<unsigned int>(raw_table_p->ncols()); i++) {
-      vaptr_p[i] = 0;
+      vaptr_p[i] = nullptr;
       vatypes_p[i] = FITS::NOVALUE;
       if (raw_table_p->field(i).fieldtype() == FITS::VADESC) {
         int maxsize;
@@ -1554,10 +1554,10 @@ void FITSTable::clear_self() {
   row_nr_p = -1;
 
   delete raw_table_p;
-  raw_table_p = 0;
+  raw_table_p = nullptr;
 
   delete io_p;
-  io_p = 0;
+  io_p = nullptr;
 
   unsigned int i;
   for (i = 0; i < nfields_p; i++) {
@@ -1619,7 +1619,7 @@ void FITSTable::clear_self() {
       default:
         throw(AipsError("FITSTable::clear_self() - unknown field type"));
     }
-    row_fields_p[i] = 0;
+    row_fields_p[i] = nullptr;
   }
   for (i = 0; i < vatypes_p.nelements(); i++) {
     if (vaptr_p[i]) {
@@ -1661,9 +1661,9 @@ void FITSTable::clear_self() {
   vatypes_p.resize(0);
   vaptr_p.resize(0);
   delete[] va_p;
-  va_p = 0;
+  va_p = nullptr;
   delete[] theheap_p;
-  theheap_p = 0;
+  theheap_p = nullptr;
   row_fields_p.resize(0);
   RecordDesc tmp;
   description_p = tmp;
@@ -1783,7 +1783,7 @@ bool FITSTable::virtualColumns(const Vector<String> &keyNames) {
 
 void FITSTable::reopenAtFirstHDU(const String &name) {
   delete io_p;
-  io_p = 0;
+  io_p = nullptr;
   io_p = new FitsInput(name.c_str(), FITS::Disk);
   AlwaysAssert(io_p, AipsError);
   // no need to check for err here, presumably

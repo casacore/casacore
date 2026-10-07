@@ -161,7 +161,7 @@ void TiledShapeStMan::create64(rownr_t nrrow) {
   setup(1);
   // Create a cubeset (with no file attached) for undefined cells.
   cubeSet_p.resize(1);
-  cubeSet_p[0] = new TSMCube(this, 0, IPosition(), IPosition(), Record(), -1);
+  cubeSet_p[0] = new TSMCube(this, nullptr, IPosition(), IPosition(), Record(), -1);
   // Add the rows for the given number of rows.
   addRow64(nrrow);
 }
@@ -209,7 +209,7 @@ void TiledShapeStMan::addRow64(rownr_t nrow) {
   nrrow_p += nrow;
   if (fixedCellShape_p.nelements() > 0) {
     for (rownr_t i = oldnrrow; i < oldnrrow + nrow; i++) {
-      setShape(i, 0, fixedCellShape_p, defaultTileShape_p);
+      setShape(i, nullptr, fixedCellShape_p, defaultTileShape_p);
     }
   }
   setDataChanged();

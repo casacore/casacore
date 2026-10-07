@@ -48,15 +48,15 @@ LCRegionMulti::LCRegionMulti(bool takeOver, const LCRegion* region1, const LCReg
     : LCRegion(region1->latticeShape()), itsRegions(10) {
   unsigned int n = 0;
   itsRegions[n++] = region1;
-  if (region2 != 0) itsRegions[n++] = region2;
-  if (region3 != 0) itsRegions[n++] = region3;
-  if (region4 != 0) itsRegions[n++] = region4;
-  if (region5 != 0) itsRegions[n++] = region5;
-  if (region6 != 0) itsRegions[n++] = region6;
-  if (region7 != 0) itsRegions[n++] = region7;
-  if (region8 != 0) itsRegions[n++] = region8;
-  if (region9 != 0) itsRegions[n++] = region9;
-  if (region10 != 0) itsRegions[n++] = region10;
+  if (region2 != nullptr) itsRegions[n++] = region2;
+  if (region3 != nullptr) itsRegions[n++] = region3;
+  if (region4 != nullptr) itsRegions[n++] = region4;
+  if (region5 != nullptr) itsRegions[n++] = region5;
+  if (region6 != nullptr) itsRegions[n++] = region6;
+  if (region7 != nullptr) itsRegions[n++] = region7;
+  if (region8 != nullptr) itsRegions[n++] = region8;
+  if (region9 != nullptr) itsRegions[n++] = region9;
+  if (region10 != nullptr) itsRegions[n++] = region10;
   itsRegions.resize(n, true, true);
   init(takeOver);
 }
@@ -94,7 +94,7 @@ LCRegionMulti& LCRegionMulti::operator=(const LCRegionMulti& other) {
     unsigned int nr = itsRegions.nelements();
     for (unsigned int j = 0; j < nr; j++) {
       delete itsRegions[j];
-      itsRegions[j] = 0;
+      itsRegions[j] = nullptr;
     }
     itsRegions.resize(other.itsRegions.nelements(), true);
     nr = itsRegions.nelements();
@@ -152,7 +152,7 @@ bool LCRegionMulti::equals(const LCRegion& other) const {
 void LCRegionMulti::init(bool takeOver) {
   itsHasMask = 0;
   for (unsigned int i = 0; i < itsRegions.nelements(); i++) {
-    AlwaysAssert(itsRegions[i] != 0, AipsError);
+    AlwaysAssert(itsRegions[i] != nullptr, AipsError);
     if (itsRegions[i]->latticeShape() != latticeShape()) {
       throw(
           AipsError("LCRegionMulti::init - "

@@ -211,8 +211,8 @@ static inline unsigned int LCG(unsigned int x) { return x * LC_A + LC_C; }
 ACG::ACG(unsigned int seed, int size)
     : itsInitSeed(seed),
       itsInitTblEntry(0),
-      itsStatePtr(0),
-      itsAuxStatePtr(0),
+      itsStatePtr(nullptr),
+      itsAuxStatePtr(nullptr),
       itsStateSize(0),
       itsAuxSize(0),
       lcgRecurr(0),
@@ -233,7 +233,7 @@ ACG::ACG(unsigned int seed, int size)
 
   //    Allocate the state table & the auxillary table in a single malloc
   itsStatePtr = new unsigned int[itsStateSize + itsAuxSize];
-  AlwaysAssert(itsStatePtr != 0, AipsError);
+  AlwaysAssert(itsStatePtr != nullptr, AipsError);
   itsAuxStatePtr = &itsStatePtr[itsStateSize];
 
   reset();
@@ -272,7 +272,7 @@ void ACG::reset() {
 ACG::~ACG() {
   delete[] itsStatePtr;
   // don't delete itsAuxStatePtr, it's really an alias for itsStatePtr.
-  itsAuxStatePtr = itsStatePtr = 0;
+  itsAuxStatePtr = itsStatePtr = nullptr;
 }
 
 unsigned int ACG::asuInt() {
@@ -432,7 +432,7 @@ Random* Random::construct(Random::Types type, RNG* gen) {
     case UNKNOWN:
     case NUMBER_TYPES:
     default:
-      return 0;
+      return nullptr;
   }
 }
 

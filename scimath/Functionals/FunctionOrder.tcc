@@ -54,7 +54,7 @@ template <class T>
 FunctionOrder<T>::~FunctionOrder() {
   for (unsigned int i = 0; i < function_p.nelements(); ++i) {
     delete function_p[i];
-    function_p[i] = 0;
+    function_p[i] = nullptr;
   }
 }
 

@@ -60,7 +60,7 @@ void showHDU(HeaderDataUnit *h) {
 
   h->firstkw();
   ostringstream oss;
-  for (const FitsKeyword *x = h->nextkw(); x != 0; x = h->nextkw()) {
+  for (const FitsKeyword *x = h->nextkw(); x != nullptr; x = h->nextkw()) {
     int m = 0;
     if (x->kw().name() == FITS::ERRWORD) {
       oss << "ERROR!";
@@ -258,7 +258,7 @@ void showBinaryTable(BinaryTableExtension &x) {
 
   oss.str("");
   x.read(x.nrows());
-  char *theheap = 0;
+  char *theheap = nullptr;
   if (x.pcount()) {
     if (x.notnull(x.theap())) {
       int heapOffset = x.theap() - x.rowsize() * x.nrows();
@@ -273,7 +273,7 @@ void showBinaryTable(BinaryTableExtension &x) {
   void **vaptr = new void *[x.ncols()];
   VADescFitsField *va = new VADescFitsField[x.ncols()];
   for (i = 0; i < x.ncols(); ++i) {
-    vaptr[i] = 0;
+    vaptr[i] = nullptr;
     if (x.field(i).fieldtype() == FITS::VADESC) {
       int maxsize;
       FITS::parse_vatform(x.tform(i), vatypes[i], maxsize);

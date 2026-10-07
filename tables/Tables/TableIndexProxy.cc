@@ -31,7 +31,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 TableIndexProxy::TableIndexProxy(const TableProxy& tablep, const Vector<String>& columnNames,
                                  bool noSort)
-    : scaIndex_p(0), arrIndex_p(0) {
+    : scaIndex_p(nullptr), arrIndex_p(nullptr) {
   if (columnNames.nelements() == 1) {
     const String& colName = columnNames(0);
     const TableDesc& td = tablep.table().tableDesc();
@@ -40,14 +40,15 @@ TableIndexProxy::TableIndexProxy(const TableProxy& tablep, const Vector<String>&
       return;
     }
   }
-  scaIndex_p = new ColumnsIndex(tablep.table(), columnNames, 0, noSort);
+  scaIndex_p = new ColumnsIndex(tablep.table(), columnNames, nullptr, noSort);
 }
 
-TableIndexProxy::TableIndexProxy(const TableIndexProxy& that) : scaIndex_p(0), arrIndex_p(0) {
-  if (that.scaIndex_p != 0) {
+TableIndexProxy::TableIndexProxy(const TableIndexProxy& that)
+    : scaIndex_p(nullptr), arrIndex_p(nullptr) {
+  if (that.scaIndex_p != nullptr) {
     scaIndex_p = new ColumnsIndex(*that.scaIndex_p);
   }
-  if (that.arrIndex_p != 0) {
+  if (that.arrIndex_p != nullptr) {
     arrIndex_p = new ColumnsIndexArray(*that.arrIndex_p);
   }
 }
@@ -58,14 +59,14 @@ TableIndexProxy::~TableIndexProxy() {
 }
 
 bool TableIndexProxy::isUnique() const {
-  if (scaIndex_p != 0) {
+  if (scaIndex_p != nullptr) {
     return scaIndex_p->isUnique();
   }
   return arrIndex_p->isUnique();
 }
 
 Vector<String> TableIndexProxy::columnNames() const {
-  if (scaIndex_p != 0) {
+  if (scaIndex_p != nullptr) {
     return scaIndex_p->columnNames();
   }
   Vector<String> names(1);
@@ -75,14 +76,14 @@ Vector<String> TableIndexProxy::columnNames() const {
 
 void TableIndexProxy::setChanged(const Vector<String>& columnNames) {
   if (columnNames.nelements() == 0) {
-    if (scaIndex_p != 0) {
+    if (scaIndex_p != nullptr) {
       scaIndex_p->setChanged();
     } else {
       arrIndex_p->setChanged();
     }
   } else {
     for (unsigned int i = 0; i < columnNames.nelements(); i++) {
-      if (scaIndex_p != 0) {
+      if (scaIndex_p != nullptr) {
         scaIndex_p->setChanged(columnNames(i));
       } else {
         arrIndex_p->setChanged(columnNames(i));
@@ -94,7 +95,7 @@ void TableIndexProxy::setChanged(const Vector<String>& columnNames) {
 int64_t TableIndexProxy::getRowNumber(const Record& key) {
   bool found;
   int64_t rownr;
-  if (scaIndex_p != 0) {
+  if (scaIndex_p != nullptr) {
     rownr = scaIndex_p->getRowNumber(found, key);
   } else {
     rownr = arrIndex_p->getRowNumber(found, key);
@@ -107,7 +108,7 @@ int64_t TableIndexProxy::getRowNumber(const Record& key) {
 
 Vector<int64_t> TableIndexProxy::getRowNumbers(const Record& key) {
   RowNumbers rows;
-  if (scaIndex_p != 0) {
+  if (scaIndex_p != nullptr) {
     rows = scaIndex_p->getRowNumbers(key);
   } else {
     rows = arrIndex_p->getRowNumbers(key);
@@ -120,7 +121,7 @@ Vector<int64_t> TableIndexProxy::getRowNumbers(const Record& key) {
 Vector<int64_t> TableIndexProxy::getRowNumbersRange(const Record& lower, const Record& upper,
                                                     bool lowerInclusive, bool upperInclusive) {
   RowNumbers rows;
-  if (scaIndex_p != 0) {
+  if (scaIndex_p != nullptr) {
     rows = scaIndex_p->getRowNumbers(lower, upper, lowerInclusive, upperInclusive);
   } else {
     rows = arrIndex_p->getRowNumbers(lower, upper, lowerInclusive, upperInclusive);

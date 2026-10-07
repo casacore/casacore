@@ -96,7 +96,7 @@ HDF5DataType::HDF5DataType(const double*) : itsSize(sizeof(double)) {
 HDF5DataType::HDF5DataType(const Complex*) : itsSize(sizeof(Complex)) {
   itsHidFile = H5Tcreate(H5T_COMPOUND, sizeof(Complex));
   itsHidMem = H5Tcreate(H5T_COMPOUND, sizeof(Complex));
-  HDF5DataType dtype((float*)0);
+  HDF5DataType dtype((float*)nullptr);
   addToCompound("re", 0, dtype);
   addToCompound("im", sizeof(float), dtype);
 }
@@ -104,7 +104,7 @@ HDF5DataType::HDF5DataType(const Complex*) : itsSize(sizeof(Complex)) {
 HDF5DataType::HDF5DataType(const DComplex*) : itsSize(sizeof(DComplex)) {
   itsHidFile = H5Tcreate(H5T_COMPOUND, sizeof(DComplex));
   itsHidMem = H5Tcreate(H5T_COMPOUND, sizeof(DComplex));
-  HDF5DataType dtype((double*)0);
+  HDF5DataType dtype((double*)nullptr);
   addToCompound("re", 0, dtype);
   addToCompound("im", sizeof(double), dtype);
 }
@@ -127,7 +127,7 @@ HDF5DataType::HDF5DataType(int, int) {
   // without having to test on field names.
   itsHidFile = H5Tcreate(H5T_COMPOUND, 3 * sizeof(int));
   itsHidMem = H5Tcreate(H5T_COMPOUND, 3 * sizeof(int));
-  HDF5DataType dtype((int*)0);
+  HDF5DataType dtype((int*)nullptr);
   addToCompound("emptyarray", 0, dtype);
   addToCompound("rank", sizeof(int), dtype);
   addToCompound("casatype", 2 * sizeof(int), dtype);

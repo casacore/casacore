@@ -205,7 +205,7 @@ void showExpr(const TableExprNode& expr) {
   // Get internal node.
   const TableExprNodeArrayPart* nodePtr =
       dynamic_cast<const TableExprNodeArrayPart*>(expr.getRep().get());
-  if (nodePtr != 0) {
+  if (nodePtr != nullptr) {
     // The node represents a part of an array; get its index node.
     const TableExprNodeIndex* inxNode = nodePtr->getIndexNode();
     // If a constant index accessing a single element,
@@ -332,7 +332,7 @@ void seltab(const String& str) {
   cout << strc << endl;
   // Parse and execute the command.
   TaQLResult result;
-  Table* tabp = 0;
+  Table* tabp = nullptr;
   Vector<String> vecstr;
   String cmd;
   // A semicolon can be used to specify a possible table after it (for $1).

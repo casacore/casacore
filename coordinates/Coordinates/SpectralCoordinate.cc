@@ -57,9 +57,9 @@ SpectralCoordinate::SpectralCoordinate()
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -85,9 +85,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, double refVal, do
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -116,9 +116,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, const Quantum<dou
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -158,9 +158,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, const Vector<doub
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -186,9 +186,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, const Quantum<Vec
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -223,9 +223,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType, MDoppler::Typ
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(velType),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -265,9 +265,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -311,9 +311,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, const ::wcsprm& w
       conversionType_p(type_p),
       restfreqs_p(0),
       restfreqIdx_p(0),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0),
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr),
       velType_p(MDoppler::RADIO),
       velUnit_p("km/s"),
       waveUnit_p("mm"),
@@ -354,9 +354,9 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, const ::wcsprm& w
 
 SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate& other)
     : Coordinate(other),
-      pConversionMachineTo_p(0),
-      pConversionMachineFrom_p(0),
-      pVelocityMachine_p(0) {
+      pConversionMachineTo_p(nullptr),
+      pConversionMachineFrom_p(nullptr),
+      pVelocityMachine_p(nullptr) {
   wcs_p.flag = -1;  // Uninitialized
   copy(other);
 }
@@ -1242,7 +1242,7 @@ SpectralCoordinate* SpectralCoordinate::restore(const RecordInterface& container
 //
 {
   if (!container.isDefined(fieldName)) {
-    return 0;
+    return nullptr;
   }
   Record subrec(container.asRecord(fieldName));
   //
@@ -1254,7 +1254,7 @@ SpectralCoordinate* SpectralCoordinate::restore(const RecordInterface& container
     if (v == 2) {
       return restoreVersion2(subrec);  // Current  V 2
     } else {
-      return 0;
+      return nullptr;
     }
   }
 }
@@ -1266,7 +1266,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1(const RecordInterface& s
   // for existence of the fields.
 
   if (!subrec.isDefined("system")) {
-    return 0;
+    return nullptr;
   }
   //
   String system;
@@ -1279,11 +1279,11 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1(const RecordInterface& s
 
     freqSys = MFrequency::LSRK;
   } else {
-    if (!MFrequency::getType(freqSys, system)) return 0;
+    if (!MFrequency::getType(freqSys, system)) return nullptr;
   }
   //
   if (!subrec.isDefined("restfreq")) {
-    return 0;
+    return nullptr;
   }
   double restfreq;
   subrec.get("restfreq", restfreq);
@@ -1291,10 +1291,10 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1(const RecordInterface& s
   // Get TC
 
   if (!subrec.isDefined("tabular")) {
-    return 0;
+    return nullptr;
   }
   TabularCoordinate* pTabular = TabularCoordinate::restore(subrec, "tabular");
-  if (pTabular == 0) return 0;
+  if (pTabular == nullptr) return nullptr;
 
   // Get stuff
 
@@ -1302,7 +1302,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1(const RecordInterface& s
 
   // Create new SpectralCoordinate  (will be in Hz regarldess of unit)
 
-  SpectralCoordinate* pSpectral = 0;
+  SpectralCoordinate* pSpectral = nullptr;
   Unit qUnit(unit);
   Quantum<double> qRestFreq(restfreq, qUnit);
   const Vector<double>& worlds = pTabular->worldValues();
@@ -1333,7 +1333,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1(const RecordInterface& s
 
   pSpectral->setWorldAxisNames(pTabular->worldAxisNames());
   delete pTabular;
-  pTabular = 0;
+  pTabular = nullptr;
   //
   String formatUnit("");
   if (subrec.isDefined("formatUnit")) {  // optional
@@ -1363,7 +1363,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
   // for existence of the fields.
 
   if (!subrec.isDefined("system")) {
-    return 0;
+    return nullptr;
   }
   //
   String system;
@@ -1376,11 +1376,11 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
 
     freqSys = MFrequency::LSRK;
   } else {
-    if (!MFrequency::getType(freqSys, system)) return 0;
+    if (!MFrequency::getType(freqSys, system)) return nullptr;
   }
   //
   if (!subrec.isDefined("restfreq")) {
-    return 0;
+    return nullptr;
   }
   double restfreq;
   subrec.get("restfreq", restfreq);
@@ -1389,7 +1389,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
 
   String unit;
   if (!subrec.isDefined("unit")) {
-    return 0;
+    return nullptr;
   }
   subrec.get("unit", unit);
 
@@ -1397,7 +1397,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
 
   String name;
   if (!subrec.isDefined("name")) {
-    return 0;
+    return nullptr;
   }
   subrec.get("name", name);
 
@@ -1406,12 +1406,12 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
   Unit qUnit(unit);
   Quantum<double> qRestFreq(restfreq, qUnit);
   //
-  SpectralCoordinate* pSpectral = 0;
+  SpectralCoordinate* pSpectral = nullptr;
   if (subrec.isDefined("tabular")) {
     // Reconstitute the TC (will be Hz)
 
     TabularCoordinate* pTabular = TabularCoordinate::restore(subrec, "tabular");
-    if (pTabular == 0) return 0;
+    if (pTabular == nullptr) return nullptr;
 
     // Create SC (will be in Hz regardless of units)
 
@@ -1423,11 +1423,11 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
     pSpectral->setReferenceValue(pTabular->referenceValue());  // Hz
     pSpectral->setLinearTransform(pTabular->linearTransform());
     delete pTabular;
-    pTabular = 0;
+    pTabular = nullptr;
   } else if (subrec.isDefined("wcs")) {
     double crval, crpix, cdelt, pc;
     String ctype;
-    if (!wcsRestore(crval, crpix, cdelt, pc, ctype, subrec.asRecord("wcs"))) return 0;
+    if (!wcsRestore(crval, crpix, cdelt, pc, ctype, subrec.asRecord("wcs"))) return nullptr;
 
     // Make SC, will be in Hz regardless of units
 
@@ -1440,7 +1440,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2(const RecordInterface& s
     xform = pc;
     pSpectral->setLinearTransform(xform);
   } else {
-    return 0;
+    return nullptr;
   }
 
   // Now set the actual units which will reset all of the (correct ?) internals
@@ -1808,21 +1808,21 @@ Coordinate* SpectralCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
 {
   if (_tabular) {
     set_error("Cannot Fourier Transform a non-linear SpectralCoordinate");
-    return 0;
+    return nullptr;
   }
   //
   if (axes.nelements() != 1) {
     set_error("Invalid number of specified axes");
-    return 0;
+    return nullptr;
   }
   if (shape.nelements() != 1) {
     set_error("Invalid number of elements in shape");
-    return 0;
+    return nullptr;
   }
   //
   if (!axes[0]) {
     set_error("You have not specified any axes to transform");
-    return 0;
+    return nullptr;
   }
   //
   const Vector<String>& units = worldAxisUnits();
@@ -1841,7 +1841,7 @@ Coordinate* SpectralCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
   SpectralCoordinate sc(*this);
   if (!sc.setWorldAxisUnits(unitsCanon)) {
     set_error("Could not set world axis units");
-    return 0;
+    return nullptr;
   }
 
   // Set the Fourier coordinate parameters.  This does not yet handle
@@ -1865,19 +1865,19 @@ Coordinate* SpectralCoordinate::makeFourierCoordinate(const Vector<bool>& axes,
 void SpectralCoordinate::deleteVelocityMachine() {
   if (pVelocityMachine_p) {
     delete pVelocityMachine_p;
-    pVelocityMachine_p = 0;
+    pVelocityMachine_p = nullptr;
   }
 }
 
 void SpectralCoordinate::deleteConversionMachines() {
   if (pConversionMachineTo_p) {
     delete pConversionMachineTo_p;
-    pConversionMachineTo_p = 0;
+    pConversionMachineTo_p = nullptr;
   }
   //
   if (pConversionMachineFrom_p) {
     delete pConversionMachineFrom_p;
-    pConversionMachineFrom_p = 0;
+    pConversionMachineFrom_p = nullptr;
   }
 }
 

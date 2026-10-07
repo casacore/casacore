@@ -145,7 +145,7 @@ class Block : public BlockTrace {
       : allocator_p(get_allocator<typename DefaultAllocator<T>::type>()),
         capacity_p(0),
         used_p(0),
-        array(0),
+        array(nullptr),
         destroyPointer(true) {}
   // Create a zero-length Block. Note that any index into this Block
   // is an error.
@@ -154,7 +154,7 @@ class Block : public BlockTrace {
       : allocator_p(get_allocator<typename Allocator::type>()),
         capacity_p(0),
         used_p(0),
-        array(0),
+        array(nullptr),
         destroyPointer(true) {}
 
   // Create a Block with the given number of points. The values in Block
@@ -239,7 +239,7 @@ class Block : public BlockTrace {
         used_p(n),
         array(storagePointer),
         destroyPointer(takeOverStorage) {
-    if (destroyPointer) storagePointer = 0;
+    if (destroyPointer) storagePointer = nullptr;
   }
   // Create a <src>Block</src> from a C-array (i.e. pointer). If
   // <src>takeOverStorage</src> is <src>true</src>, The Block assumes that
@@ -253,7 +253,7 @@ class Block : public BlockTrace {
         used_p(n),
         array(storagePointer),
         destroyPointer(takeOverStorage) {
-    if (destroyPointer) storagePointer = 0;
+    if (destroyPointer) storagePointer = nullptr;
   }
 
   // Copy the other block into this one. Uses copy, not reference, semantics.
@@ -360,7 +360,7 @@ class Block : public BlockTrace {
       set_size(n);
       return;
     }
-    T *tp = n > 0 ? allocator_p->allocate(n) : 0;
+    T *tp = n > 0 ? allocator_p->allocate(n) : nullptr;
     traceAlloc(tp, n);
     if (n > 0) {
       size_t start = 0;
@@ -422,7 +422,7 @@ class Block : public BlockTrace {
     }
     size_t n = get_size() - 1;
     if (forceSmaller == true) {
-      T *tp = n > 0 ? allocator_p->allocate(n) : 0;
+      T *tp = n > 0 ? allocator_p->allocate(n) : nullptr;
       traceAlloc(array, n);
       if (initPolicy == ArrayInitPolicies::INIT && n > 0) {
         try {
@@ -452,7 +452,7 @@ class Block : public BlockTrace {
         traceFree(array, get_capacity());
         allocator_p->destroy(array, get_size());
         allocator_p->deallocate(array, get_capacity());
-        array = 0;
+        array = nullptr;
       };
       set_capacity(n);
       set_size(n);
@@ -488,14 +488,14 @@ class Block : public BlockTrace {
       traceFree(array, get_capacity());
       allocator_p->destroy(array, get_size());
       allocator_p->deallocate(array, get_capacity());
-      array = 0;
+      array = nullptr;
     };
     set_capacity(n);
     set_size(n);
     allocator_p = get_allocator<typename Allocator::type>();
     array = storagePointer;
     destroyPointer = takeOverStorage;
-    if (destroyPointer) storagePointer = 0;
+    if (destroyPointer) storagePointer = nullptr;
   }
   // </group>
 
@@ -633,7 +633,7 @@ class Block : public BlockTrace {
         }
       }
     } else {
-      array = 0;
+      array = nullptr;
     }
   }
 
@@ -647,7 +647,7 @@ class Block : public BlockTrace {
     if (array && destroyPointer) {
       traceFree(array, get_capacity());
       allocator_p->deallocate(array, get_capacity());
-      array = 0;
+      array = nullptr;
     }
   }
 

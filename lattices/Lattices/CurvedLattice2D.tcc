@@ -54,7 +54,7 @@ CurvedLattice2D<T>::CurvedLattice2D(const MaskedLattice<T>& lattice,
 
 template <class T>
 CurvedLattice2D<T>::CurvedLattice2D(const CurvedLattice2D<T>& other)
-    : MaskedLattice<T>(), itsLatticePtr(0), itsInterpolator(0) {
+    : MaskedLattice<T>(), itsLatticePtr(nullptr), itsInterpolator(nullptr) {
   operator=(other);
 }
 
@@ -163,7 +163,7 @@ void CurvedLattice2D<T>::reopen() {
 
 template <class T>
 const LatticeRegion* CurvedLattice2D<T>::getRegionPtr() const {
-  return 0;
+  return nullptr;
 }
 
 template <class T>

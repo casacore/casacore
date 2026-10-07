@@ -37,8 +37,9 @@
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
-MaskedLattice<T>::MaskedLattice(const MaskedLattice<T>& that) : Lattice<T>(), itsDefRegPtr(0) {
-  if (that.itsDefRegPtr != 0) {
+MaskedLattice<T>::MaskedLattice(const MaskedLattice<T>& that)
+    : Lattice<T>(), itsDefRegPtr(nullptr) {
+  if (that.itsDefRegPtr != nullptr) {
     itsDefRegPtr = new LatticeRegion(*that.itsDefRegPtr);
   }
 }
@@ -52,8 +53,8 @@ template <class T>
 MaskedLattice<T>& MaskedLattice<T>::operator=(const MaskedLattice<T>& that) {
   if (this != &that) {
     delete itsDefRegPtr;
-    itsDefRegPtr = 0;
-    if (that.itsDefRegPtr != 0) {
+    itsDefRegPtr = nullptr;
+    if (that.itsDefRegPtr != nullptr) {
       itsDefRegPtr = new LatticeRegion(*that.itsDefRegPtr);
     }
   }
@@ -68,7 +69,7 @@ Lattice<T>* MaskedLattice<T>::clone() const {
 template <class T>
 bool MaskedLattice<T>::isMasked() const {
   const LatticeRegion* ptr = getRegionPtr();
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     return false;
   }
   return ptr->hasMask();
@@ -96,18 +97,18 @@ template <class T>
 const LatticeRegion& MaskedLattice<T>::region() const {
   // If there is a region, return it.
   const LatticeRegion* ptr = getRegionPtr();
-  if (ptr != 0) {
+  if (ptr != nullptr) {
     return *ptr;
   }
   // No region, so use the one in the MaskedLattice itself which
   // describes the entire lattice. Create it if it does not exist yet.
   // Check if its shape still matches.
-  if (itsDefRegPtr != 0) {
+  if (itsDefRegPtr != nullptr) {
     if (itsDefRegPtr->slicer().length().isEqual(shape())) {
       return *itsDefRegPtr;
     }
     delete itsDefRegPtr;
-    itsDefRegPtr = 0;
+    itsDefRegPtr = nullptr;
   }
   itsDefRegPtr = new LatticeRegion(LCBox(shape()));
   return *itsDefRegPtr;
@@ -227,7 +228,7 @@ bool MaskedLattice<T>::doGetMaskSlice(Array<bool>& buffer, const Slicer& section
   // Note that Slicer::inferShapeFromSource has already been called
   // by getMaskSlice.
   const LatticeRegion* ptr = getRegionPtr();
-  if (ptr == 0) {
+  if (ptr == nullptr) {
     buffer.resize(section.length());
     buffer = true;
     return false;

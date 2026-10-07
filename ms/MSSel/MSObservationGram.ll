@@ -37,6 +37,9 @@
 #define YY_DECL int MSObservationGramlex (YYSTYPE* lvalp)
 static std::string                qstr;
 #include <casacore/ms/MSSel/MSSelectionTools.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*
@@ -80,3 +83,4 @@ INT       ({WHITE}{DIGIT}+{WHITE})
 {WHITE}   { msObservationGramPosition() += yyleng;} /* Eat white spaces */
 .         { msObservationGramPosition() += yyleng;return MSObservationGramtext[0];}
 %%
+#pragma GCC diagnostic pop

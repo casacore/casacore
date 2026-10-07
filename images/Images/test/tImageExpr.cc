@@ -71,7 +71,7 @@ void testExpr() {
     // Reopen the expression from the file.
     LatticeBase* latt = ImageOpener::openImageExpr("tImageExpr_tmp.imgexpr");
     ImageExpr<float>* img = dynamic_cast<ImageExpr<float>*>(latt);
-    AlwaysAssertExit(img != 0);
+    AlwaysAssertExit(img != nullptr);
     AlwaysAssertExit(allEQ(img->get(), arr + arr));
     AlwaysAssertExit(img->isPersistent());
     AlwaysAssertExit(ImageExprParse::getImageNames().size() == 2 &&
@@ -95,7 +95,7 @@ void testExpr() {
     // Reopen the 2nd expression from the file.
     LatticeBase* latt = ImageOpener::openImageExpr("tImageExpr_tmp:imgexpr2");
     ImageExpr<float>* img = dynamic_cast<ImageExpr<float>*>(latt);
-    AlwaysAssertExit(img != 0);
+    AlwaysAssertExit(img != nullptr);
     AlwaysAssertExit(allEQ(img->get(), arr + arr + arr));
     AlwaysAssertExit(img->isPersistent());
     delete img;
@@ -109,7 +109,7 @@ void testExpr() {
     // Reopen as an expression from the file. Escape the colon.
     LatticeBase* latt = ImageOpener::openExpr("float('tImageExpr_tmp\\:imgexpr2')", nodes);
     ImageExpr<float>* img = dynamic_cast<ImageExpr<float>*>(latt);
-    AlwaysAssertExit(img != 0);
+    AlwaysAssertExit(img != nullptr);
     AlwaysAssertExit(allEQ(img->get(), arr + arr + arr));
     AlwaysAssertExit(!img->isPersistent());
     delete img;

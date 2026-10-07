@@ -40,7 +40,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 ColumnsIndex::ColumnsIndex(const Table& table, const String& columnName, Compare* compareFunction,
                            bool noSort)
-    : itsLowerKeyPtr(0), itsUpperKeyPtr(0) {
+    : itsLowerKeyPtr(nullptr), itsUpperKeyPtr(nullptr) {
   Vector<String> columnNames(1);
   columnNames(0) = columnName;
   create(table, columnNames, compareFunction, noSort);
@@ -51,7 +51,8 @@ ColumnsIndex::ColumnsIndex(const Table& table, const Vector<String>& columnNames
   create(table, columnNames, compareFunction, noSort);
 }
 
-ColumnsIndex::ColumnsIndex(const ColumnsIndex& that) : itsLowerKeyPtr(0), itsUpperKeyPtr(0) {
+ColumnsIndex::ColumnsIndex(const ColumnsIndex& that)
+    : itsLowerKeyPtr(nullptr), itsUpperKeyPtr(nullptr) {
   copy(that);
 }
 
@@ -145,15 +146,15 @@ void ColumnsIndex::deleteObjects() {
       default:
         throw(TableError("ColumnsIndex: unknown data type"));
     }
-    itsLowerFields[i] = 0;
-    itsUpperFields[i] = 0;
-    itsDataVectors[i] = 0;
-    itsData[i] = 0;
+    itsLowerFields[i] = nullptr;
+    itsUpperFields[i] = nullptr;
+    itsDataVectors[i] = nullptr;
+    itsData[i] = nullptr;
   }
   delete itsLowerKeyPtr;
   delete itsUpperKeyPtr;
-  itsLowerKeyPtr = 0;
-  itsUpperKeyPtr = 0;
+  itsLowerKeyPtr = nullptr;
+  itsUpperKeyPtr = nullptr;
 }
 
 void ColumnsIndex::addColumnToDesc(RecordDesc& description, const TableColumn& column) {
@@ -169,7 +170,7 @@ void ColumnsIndex::create(const Table& table, const Vector<String>& columnNames,
                           Compare* compareFunction, bool noSort) {
   itsTable = table;
   itsNrrow = itsTable.nrow();
-  itsCompare = (compareFunction == 0 ? compare : compareFunction);
+  itsCompare = (compareFunction == nullptr ? compare : compareFunction);
   itsNoSort = noSort;
   // Loop through all column names.
   // Always add it to the RecordDesc.
@@ -190,13 +191,13 @@ void ColumnsIndex::makeObjects(const RecordDesc& description) {
   unsigned int nrfield = description.nfields();
   itsDataTypes.resize(nrfield, false, false);
   itsDataVectors.resize(nrfield, false, false);
-  itsDataVectors.set(static_cast<void*>(0));
+  itsDataVectors.set(static_cast<void*>(nullptr));
   itsData.resize(nrfield, false, false);
-  itsData.set(static_cast<void*>(0));
+  itsData.set(static_cast<void*>(nullptr));
   itsLowerFields.resize(nrfield, false, false);
-  itsLowerFields.set(static_cast<void*>(0));
+  itsLowerFields.set(static_cast<void*>(nullptr));
   itsUpperFields.resize(nrfield, false, false);
-  itsUpperFields.set(static_cast<void*>(0));
+  itsUpperFields.set(static_cast<void*>(nullptr));
   itsColumnChanged.resize(nrfield, false, false);
   itsColumnChanged.set(true);
   itsChanged = true;
