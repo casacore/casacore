@@ -117,7 +117,7 @@ class HDF5Record {
   template <typename T>
   static void readSca(hid_t attrId, const String& name, RecordInterface& rec) {
     T value;
-    HDF5DataType dtype((T*)0);
+    HDF5DataType dtype((T*)nullptr);
     read(attrId, &value, dtype);
     rec.define(name, value);
   }
@@ -127,7 +127,7 @@ class HDF5Record {
   static void readArr(hid_t attrId, const IPosition& shape, const String& name,
                       RecordInterface& rec) {
     Array<T> value(shape);
-    HDF5DataType dtype((T*)0);
+    HDF5DataType dtype((T*)nullptr);
     read(attrId, value.data(), dtype);
     rec.define(name, value);
   }
@@ -161,7 +161,7 @@ class HDF5Record {
   static void writeSca(hid_t parentHid, const String& name, const RecordInterface& rec, int i) {
     T value;
     rec.get(i, value);
-    HDF5DataType dtype((T*)0);
+    HDF5DataType dtype((T*)nullptr);
     writeScalar(parentHid, name, &value, dtype);
   }
 
@@ -170,7 +170,7 @@ class HDF5Record {
   static void writeArr(hid_t parentHid, const String& name, const RecordInterface& rec, int i) {
     Array<T> value;
     rec.get(i, value);
-    HDF5DataType dtype((T*)0);
+    HDF5DataType dtype((T*)nullptr);
     writeArray(parentHid, name, value.data(), value.shape(), dtype);
   }
 };
