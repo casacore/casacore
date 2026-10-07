@@ -34,22 +34,22 @@ MeasurementSet* MSParse::ms_p = nullptr;
 MSSelectableTable* MSParse::msInterface_p = nullptr;
 
 // # Default constructor.
-MSParse::MSParse() : tempMSInterface_p(NULL) { tempMSInterface_p = new MSInterface(); }
+MSParse::MSParse() : tempMSInterface_p(nullptr) { tempMSInterface_p = new MSInterface(); }
 
 // # Constructor with given ms name.
 MSParse::MSParse(const MeasurementSet* ms, const String& shorthand)
-    : shorthand_p(shorthand), tempMSInterface_p(NULL) {
+    : shorthand_p(shorthand), tempMSInterface_p(nullptr) {
   ms_p = const_cast<MeasurementSet*>(ms);
   tempMSInterface_p = new MSInterface(*ms);
 }
 
 MSParse::MSParse(const MSSelectableTable* msLike, const String& shorthand)
-    : shorthand_p(shorthand), tempMSInterface_p(NULL) {
+    : shorthand_p(shorthand), tempMSInterface_p(nullptr) {
   msInterface_p = const_cast<MSSelectableTable*>(msLike);
 }
 
 MSParse::~MSParse() {
-  if (tempMSInterface_p != NULL) delete tempMSInterface_p;
+  if (tempMSInterface_p != nullptr) delete tempMSInterface_p;
 }
 
 MSParse::MSParse(const MSParse& that) : shorthand_p(that.shorthand_p) {}
@@ -65,16 +65,16 @@ bool MSParse::test(const String& str) const { return (shorthand_p == str ? true 
 String& MSParse::shorthand() { return shorthand_p; }
 
 MeasurementSet* MSParse::ms() {
-  if (msInterface_p != NULL)
+  if (msInterface_p != nullptr)
     return (MeasurementSet*)msInterface()->asMS();
   else
     return ms_p;
 }
 
 MSSelectableTable* MSParse::msInterface() {
-  if (msInterface_p != NULL)
+  if (msInterface_p != nullptr)
     return msInterface_p;  // If constructed with MSInterface
-  else if (tempMSInterface_p != NULL)
+  else if (tempMSInterface_p != nullptr)
     return tempMSInterface_p;  // If constructed with MS
   else
     throw(AipsError("Internal error in MSParse::msInterface()"));
