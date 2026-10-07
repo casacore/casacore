@@ -150,7 +150,7 @@ struct new_del_allocator : public std11_allocator<T> {
 
   ~new_del_allocator() noexcept {}
 
-  pointer allocate(size_type elements, const void * = 0) {
+  pointer allocate(size_type elements, const void * = nullptr) {
     if (elements > std::allocator_traits<new_del_allocator>::max_size(*this)) {
       throw std::bad_alloc();
     }
@@ -222,7 +222,7 @@ class Allocator_private {
     typedef typename Allocator::pointer pointer;
     typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::value_type value_type;
-    virtual pointer allocate(size_type elements, const void *ptr = 0) override {
+    virtual pointer allocate(size_type elements, const void *ptr = nullptr) override {
       return allocator.allocate(elements, ptr);
     }
     virtual void deallocate(pointer ptr, size_type size) override {

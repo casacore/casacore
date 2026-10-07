@@ -35,6 +35,9 @@
 
 #undef YY_DECL
 #define YY_DECL int TableGramlex (YYSTYPE* lvalp)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 /* States to distinguish how some tokens are recognized */

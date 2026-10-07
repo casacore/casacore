@@ -46,7 +46,7 @@ BucketCache::BucketCache(BucketFile* file, int64_t startOffset, unsigned int buc
       its_NewNrOfBuckets(nrOfBuckets),
       its_CacheSize(cacheSize),
       its_CacheSizeUsed(0),
-      its_Cache(cacheSize, static_cast<char*>(0)),
+      its_Cache(cacheSize, static_cast<char*>(nullptr)),
       its_ActualSlot(0),
       its_SlotNr(nrOfBuckets, int(-1)),
       its_BucketNr(cacheSize, static_cast<unsigned int>(0)),
@@ -229,7 +229,7 @@ unsigned int BucketCache::addBucket(char* data) {
     // There is a free list, so get the first bucket from it.
     bucketNr = its_FirstFree;
     its_file->seek(its_StartOffset + int64_t(bucketNr) * its_BucketSize);
-    its_file->read(its_Buffer, CanonicalConversion::canonicalSize(static_cast<int*>(0)));
+    its_file->read(its_Buffer, CanonicalConversion::canonicalSize(static_cast<int*>(nullptr)));
     CanonicalConversion::toLocal(its_FirstFree, its_Buffer);
     its_NrOfFree--;
   } else {

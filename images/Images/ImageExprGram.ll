@@ -35,6 +35,9 @@
 
 #undef YY_DECL
 #define YY_DECL int ImageExprGramlex (YYSTYPE* lvalp)
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 /*

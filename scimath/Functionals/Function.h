@@ -244,7 +244,7 @@ class Function : public Functional<typename FunctionTraits<T>::ArgType, U>,
   // <group>
   virtual U operator()() const {
     DebugAssert(ndim() == 0, AipsError);
-    return eval(FunctionArg(0));
+    return eval(FunctionArg(nullptr));
   }
   virtual U operator()(const ArgType &x) const {
     DebugAssert(ndim() <= 1, AipsError);

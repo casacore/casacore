@@ -144,7 +144,7 @@ String ScaledComplexData<S, T>::dataManagerType() const {
 // # Get the data type names using class ValType.
 template <class S, class T>
 String ScaledComplexData<S, T>::className() {
-  return "ScaledComplexData<" + valDataTypeId((S*)0) + "," + valDataTypeId((T*)0) + ">";
+  return "ScaledComplexData<" + valDataTypeId((S*)nullptr) + "," + valDataTypeId((T*)nullptr) + ">";
 }
 
 template <class S, class T>

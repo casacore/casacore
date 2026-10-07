@@ -145,37 +145,37 @@ int ValType::getCanonicalSize(DataType dt, bool BECanonical) {
     switch (dt) {
       case TpChar:
       case TpArrayChar:
-        return CanonicalConversion::canonicalSize(static_cast<char*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<char*>(nullptr));
       case TpUChar:
       case TpArrayUChar:
-        return CanonicalConversion::canonicalSize(static_cast<unsigned char*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<unsigned char*>(nullptr));
       case TpShort:
       case TpArrayShort:
-        return CanonicalConversion::canonicalSize(static_cast<short*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<short*>(nullptr));
       case TpUShort:
       case TpArrayUShort:
-        return CanonicalConversion::canonicalSize(static_cast<unsigned short*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<unsigned short*>(nullptr));
       case TpInt:
       case TpArrayInt:
-        return CanonicalConversion::canonicalSize(static_cast<int*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<int*>(nullptr));
       case TpUInt:
       case TpArrayUInt:
-        return CanonicalConversion::canonicalSize(static_cast<unsigned int*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<unsigned int*>(nullptr));
       case TpInt64:
       case TpArrayInt64:
-        return CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
       case TpFloat:
       case TpArrayFloat:
-        return CanonicalConversion::canonicalSize(static_cast<float*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<float*>(nullptr));
       case TpDouble:
       case TpArrayDouble:
-        return CanonicalConversion::canonicalSize(static_cast<double*>(0));
+        return CanonicalConversion::canonicalSize(static_cast<double*>(nullptr));
       case TpComplex:
       case TpArrayComplex:
-        return 2 * CanonicalConversion::canonicalSize(static_cast<float*>(0));
+        return 2 * CanonicalConversion::canonicalSize(static_cast<float*>(nullptr));
       case TpDComplex:
       case TpArrayDComplex:
-        return 2 * CanonicalConversion::canonicalSize(static_cast<double*>(0));
+        return 2 * CanonicalConversion::canonicalSize(static_cast<double*>(nullptr));
       default:
         break;
     }
@@ -183,37 +183,37 @@ int ValType::getCanonicalSize(DataType dt, bool BECanonical) {
     switch (dt) {
       case TpChar:
       case TpArrayChar:
-        return LECanonicalConversion::canonicalSize(static_cast<char*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<char*>(nullptr));
       case TpUChar:
       case TpArrayUChar:
-        return LECanonicalConversion::canonicalSize(static_cast<unsigned char*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<unsigned char*>(nullptr));
       case TpShort:
       case TpArrayShort:
-        return LECanonicalConversion::canonicalSize(static_cast<short*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<short*>(nullptr));
       case TpUShort:
       case TpArrayUShort:
-        return LECanonicalConversion::canonicalSize(static_cast<unsigned short*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<unsigned short*>(nullptr));
       case TpInt:
       case TpArrayInt:
-        return LECanonicalConversion::canonicalSize(static_cast<int*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<int*>(nullptr));
       case TpUInt:
       case TpArrayUInt:
-        return LECanonicalConversion::canonicalSize(static_cast<unsigned int*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<unsigned int*>(nullptr));
       case TpInt64:
       case TpArrayInt64:
-        return LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
       case TpFloat:
       case TpArrayFloat:
-        return LECanonicalConversion::canonicalSize(static_cast<float*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<float*>(nullptr));
       case TpDouble:
       case TpArrayDouble:
-        return LECanonicalConversion::canonicalSize(static_cast<double*>(0));
+        return LECanonicalConversion::canonicalSize(static_cast<double*>(nullptr));
       case TpComplex:
       case TpArrayComplex:
-        return 2 * LECanonicalConversion::canonicalSize(static_cast<float*>(0));
+        return 2 * LECanonicalConversion::canonicalSize(static_cast<float*>(nullptr));
       case TpDComplex:
       case TpArrayDComplex:
-        return 2 * LECanonicalConversion::canonicalSize(static_cast<double*>(0));
+        return 2 * LECanonicalConversion::canonicalSize(static_cast<double*>(nullptr));
       default:
         break;
     }
@@ -234,38 +234,38 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         break;
       case TpChar:
       case TpArrayChar:
-        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned char*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned char*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned char*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned char*>(nullptr));
         break;
       case TpUChar:
       case TpArrayUChar:
-        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned char*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned char*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned char*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned char*>(nullptr));
         break;
       case TpShort:
       case TpArrayShort:
-        readFunc = CanonicalConversion::getToLocal(static_cast<short*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<short*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<short*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<short*>(nullptr));
         break;
       case TpUShort:
       case TpArrayUShort:
-        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned short*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned short*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned short*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned short*>(nullptr));
         break;
       case TpInt:
       case TpArrayInt:
-        readFunc = CanonicalConversion::getToLocal(static_cast<int*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<int*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<int*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<int*>(nullptr));
         break;
       case TpUInt:
       case TpArrayUInt:
-        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned int*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned int*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<unsigned int*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<unsigned int*>(nullptr));
         break;
       case TpInt64:
       case TpArrayInt64:
-        readFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
         break;
       case TpComplex:
       case TpArrayComplex:
@@ -273,8 +273,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         CASACORE_FALLTHROUGH;
       case TpFloat:
       case TpArrayFloat:
-        readFunc = CanonicalConversion::getToLocal(static_cast<float*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<float*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<float*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<float*>(nullptr));
         break;
       case TpDComplex:
       case TpArrayDComplex:
@@ -282,8 +282,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         CASACORE_FALLTHROUGH;
       case TpDouble:
       case TpArrayDouble:
-        readFunc = CanonicalConversion::getToLocal(static_cast<double*>(0));
-        writeFunc = CanonicalConversion::getFromLocal(static_cast<double*>(0));
+        readFunc = CanonicalConversion::getToLocal(static_cast<double*>(nullptr));
+        writeFunc = CanonicalConversion::getFromLocal(static_cast<double*>(nullptr));
         break;
       default:
         readFunc = nullptr;
@@ -298,38 +298,38 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         break;
       case TpChar:
       case TpArrayChar:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned char*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned char*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned char*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned char*>(nullptr));
         break;
       case TpUChar:
       case TpArrayUChar:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned char*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned char*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned char*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned char*>(nullptr));
         break;
       case TpShort:
       case TpArrayShort:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<short*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<short*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<short*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<short*>(nullptr));
         break;
       case TpUShort:
       case TpArrayUShort:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned short*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned short*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned short*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned short*>(nullptr));
         break;
       case TpInt:
       case TpArrayInt:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<int*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<int*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<int*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<int*>(nullptr));
         break;
       case TpUInt:
       case TpArrayUInt:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned int*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned int*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<unsigned int*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<unsigned int*>(nullptr));
         break;
       case TpInt64:
       case TpArrayInt64:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
         break;
       case TpComplex:
       case TpArrayComplex:
@@ -337,8 +337,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         CASACORE_FALLTHROUGH;
       case TpFloat:
       case TpArrayFloat:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<float*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<float*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<float*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<float*>(nullptr));
         break;
       case TpDComplex:
       case TpArrayDComplex:
@@ -346,8 +346,8 @@ void ValType::getCanonicalFunc(DataType dt, Conversion::ValueFunction*& readFunc
         CASACORE_FALLTHROUGH;
       case TpDouble:
       case TpArrayDouble:
-        readFunc = LECanonicalConversion::getToLocal(static_cast<double*>(0));
-        writeFunc = LECanonicalConversion::getFromLocal(static_cast<double*>(0));
+        readFunc = LECanonicalConversion::getToLocal(static_cast<double*>(nullptr));
+        writeFunc = LECanonicalConversion::getFromLocal(static_cast<double*>(nullptr));
         break;
       default:
         readFunc = nullptr;

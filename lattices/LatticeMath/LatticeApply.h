@@ -147,7 +147,7 @@ class LatticeApply {
   // <group>
   static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                         LineCollapser<T, U>& collapser, unsigned int collapseAxis,
-                        LatticeProgress* tellProgress = 0);
+                        LatticeProgress* tellProgress = nullptr);
   static void lineApply(MaskedLattice<U>& latticeOut, const MaskedLattice<T>& latticeIn,
                         const LatticeRegion& region, LineCollapser<T, U>& collapser,
                         unsigned int collapseAxis, LatticeProgress* tellProgress = nullptr);
@@ -207,11 +207,12 @@ class LatticeApply {
   // <group>
   static void tiledMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                               const MaskedLattice<T>& latticeIn, TiledCollapser<T, U>& collapser,
-                              const IPosition& collapseAxes, LatticeProgress* tellProgress = 0);
+                              const IPosition& collapseAxes,
+                              LatticeProgress* tellProgress = nullptr);
   static void tiledMultiApply(Block<MaskedLattice<U>*>& latticeOut,
                               const MaskedLattice<T>& latticeIn, const LatticeRegion& region,
                               TiledCollapser<T, U>& collapser, const IPosition& collapseAxes,
-                              LatticeProgress* tellProgress = 0);
+                              LatticeProgress* tellProgress = nullptr);
   // </group>
 
  private:

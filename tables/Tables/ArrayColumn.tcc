@@ -82,13 +82,13 @@ void ArrayColumn<T>::checkDataType() const {
   // # Check if the data type matches.
   const ColumnDesc& cd = baseColPtr_p->columnDesc();
   DataType dtype = cd.dataType();
-  if (dtype != ValType::getType(static_cast<T*>(0)) || !cd.isArray()) {
+  if (dtype != ValType::getType(static_cast<T*>(nullptr)) || !cd.isArray()) {
     throw(TableInvDT(" in ArrayColumn ctor for column " + cd.name()));
   }
   if (dtype == TpOther) {
-    if (cd.dataTypeId() != valDataTypeId(static_cast<T*>(0))) {
+    if (cd.dataTypeId() != valDataTypeId(static_cast<T*>(nullptr))) {
       throw(TableInvDT(" in ArrayColumn ctor for column " + cd.name() + "; using data type id " +
-                       valDataTypeId(static_cast<T*>(0)) + ", expected " + cd.dataTypeId()));
+                       valDataTypeId(static_cast<T*>(nullptr)) + ", expected " + cd.dataTypeId()));
     }
   }
 }

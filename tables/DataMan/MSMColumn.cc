@@ -45,7 +45,7 @@ MSMColumn::MSMColumn(MSMBase* smptr, int dataType, bool byPtr)
       byPtr_p(byPtr),
       nralloc_p(0),
       nrext_p(0),
-      data_p(EXTBLSZ, static_cast<void*>(0)),
+      data_p(EXTBLSZ, static_cast<void*>(nullptr)),
       ncum_p(EXTBLSZ, (rownr_t)0) {}
 
 MSMColumn::~MSMColumn() { deleteAll(); }

@@ -191,13 +191,13 @@ void ColumnsIndex::makeObjects(const RecordDesc& description) {
   unsigned int nrfield = description.nfields();
   itsDataTypes.resize(nrfield, false, false);
   itsDataVectors.resize(nrfield, false, false);
-  itsDataVectors.set(static_cast<void*>(0));
+  itsDataVectors.set(static_cast<void*>(nullptr));
   itsData.resize(nrfield, false, false);
-  itsData.set(static_cast<void*>(0));
+  itsData.set(static_cast<void*>(nullptr));
   itsLowerFields.resize(nrfield, false, false);
-  itsLowerFields.set(static_cast<void*>(0));
+  itsLowerFields.set(static_cast<void*>(nullptr));
   itsUpperFields.resize(nrfield, false, false);
-  itsUpperFields.set(static_cast<void*>(0));
+  itsUpperFields.set(static_cast<void*>(nullptr));
   itsColumnChanged.resize(nrfield, false, false);
   itsColumnChanged.set(true);
   itsChanged = true;

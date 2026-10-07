@@ -258,7 +258,7 @@ void HDF5Lattice<T>::openArray(const String& arrayName, const String& groupName)
     itsGroup = std::make_shared<HDF5Group>(*itsFile, groupName, true);
   }
   // Open the data set.
-  itsDataSet = std::make_shared<HDF5DataSet>(*itsGroup, arrayName, (const T*)0);
+  itsDataSet = std::make_shared<HDF5DataSet>(*itsGroup, arrayName, (const T*)nullptr);
   // Calculate tile shape if default tile shape is empty
   itsTileShape = itsDataSet->tileShape();
   if (itsTileShape.empty()) {
@@ -280,7 +280,7 @@ void HDF5Lattice<T>::makeArray(const TiledShape& shape, const String& arrayName,
   }
   // Create the data set.
   itsDataSet = std::make_shared<HDF5DataSet>(*itsGroup, arrayName, shape.shape(), shape.tileShape(),
-                                             (const T*)0);
+                                             (const T*)nullptr);
   // Calculate tile shape if default tile shape is empty
   itsTileShape = itsDataSet->tileShape();
   if (itsTileShape.empty()) {

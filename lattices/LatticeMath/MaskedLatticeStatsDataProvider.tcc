@@ -50,7 +50,7 @@ MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider(MaskedLattice<
       _currentSlice(),
       _currentMaskSlice(),
       _currentPtr(0),
-      _currentMaskPtr(0),
+      _currentMaskPtr(nullptr),
       _delData(false),
       _delMask(false) {
   setLattice(lattice);

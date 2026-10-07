@@ -36,7 +36,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ExtendLattice<T>::ExtendLattice()
-    : itsLatticePtr(0), itsMaskLatPtr(0), itsHasPixelMask(false), itsPixelMask(0) {}
+    : itsLatticePtr(0), itsMaskLatPtr(0), itsHasPixelMask(false), itsPixelMask(nullptr) {}
 
 template <class T>
 ExtendLattice<T>::ExtendLattice(const Lattice<T>& lattice, const IPosition& newShape,

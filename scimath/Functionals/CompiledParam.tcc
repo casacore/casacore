@@ -54,7 +54,7 @@ template <class T>
 CompiledParam<T> &CompiledParam<T>::operator=(const CompiledParam<T> &other) {
   if (this != &other) {
     if (functionPtr_p) delete functionPtr_p;
-    functionPtr_p = 0;
+    functionPtr_p = nullptr;
     ndim_p = other.ndim_p;
     msg_p = other.msg_p;
     text_p = other.text_p;

@@ -79,7 +79,7 @@ MultiHDF5::~MultiHDF5() { close(); }
 void MultiHDF5::doOpenFile(MultiFileInfo& info) {
   DebugAssert(!info.group, AipsError);
   info.group.reset(new HDF5Group(*itsHDF5, info.name, true, false));
-  info.dataSet.reset(new HDF5DataSet(*info.group, "FileData", (const unsigned char*)0));
+  info.dataSet.reset(new HDF5DataSet(*info.group, "FileData", (const unsigned char*)nullptr));
 }
 
 void MultiHDF5::doCloseFile(MultiFileInfo& info) {
@@ -148,7 +148,7 @@ void MultiHDF5::doAddFile(MultiFileInfo& info) {
   // Create a group and dataset for the file.
   info.group.reset(new HDF5Group(*itsHDF5, info.name, false, true));
   info.dataSet.reset(new HDF5DataSet(*info.group, "FileData", IPosition(2, itsBlockSize, 0),
-                                     IPosition(2, itsBlockSize, 1), (const unsigned char*)0));
+                                     IPosition(2, itsBlockSize, 1), (const unsigned char*)nullptr));
 }
 
 void MultiHDF5::doDeleteFile(MultiFileInfo& info) {

@@ -90,40 +90,40 @@ bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& sh
   // Store the shape in the file and allocate storage for the array.
   switch (dataType) {
     case TpBool:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<bool*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<bool*>(nullptr));
       break;
     case TpUChar:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned char*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned char*>(nullptr));
       break;
     case TpShort:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<short*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<short*>(nullptr));
       break;
     case TpUShort:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned short*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned short*>(nullptr));
       break;
     case TpInt:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<int*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<int*>(nullptr));
       break;
     case TpUInt:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned int*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<unsigned int*>(nullptr));
       break;
     case TpInt64:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<int64_t*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<int64_t*>(nullptr));
       break;
     case TpFloat:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<float*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<float*>(nullptr));
       break;
     case TpDouble:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<double*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<double*>(nullptr));
       break;
     case TpComplex:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<Complex*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<Complex*>(nullptr));
       break;
     case TpDComplex:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<DComplex*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<DComplex*>(nullptr));
       break;
     case TpString:
-      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<String*>(0));
+      arrOffset_p = ios.putShape(shape_p, fileOffset_p, static_cast<String*>(nullptr));
       break;
   }
   return true;

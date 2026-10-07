@@ -65,7 +65,7 @@ PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITS::HDUType t, FITSErrorH
 // constructor does not require a FitsKeywordList. call write_priArr_hdr() after construction.
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FITSErrorHandler errhandler)
-    : HeaderDataUnit(FITS::PrimaryArrayHDU, errhandler, 0) {
+    : HeaderDataUnit(FITS::PrimaryArrayHDU, errhandler, nullptr) {
   // pa_assign();
   // in the case when user is not required to provide a kerword list object,
   // pa_assign() must be called from write_priArr_hdr().
@@ -74,7 +74,7 @@ PrimaryArray<TYPE>::PrimaryArray(FITSErrorHandler errhandler)
 // protected, for ImageExention and PrimaryGroup to use
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FITS::HDUType t, FITSErrorHandler errhandler)
-    : HeaderDataUnit(t, errhandler, 0) {}
+    : HeaderDataUnit(t, errhandler, nullptr) {}
 //=================================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::~PrimaryArray() {
@@ -514,7 +514,7 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const {
 
   float scale = bscale();
   float zero = bzero();
-  if (!isablank() || FitsFPUtil::isFP((TYPE *)0)) {
+  if (!isablank() || FitsFPUtil::isFP((TYPE *)nullptr)) {
     // No blanks or we are FP
     for (int i = 0; i < npixels; i++) {
       target[i] = scale * array[i] + zero;
@@ -785,7 +785,7 @@ int ImageExtension<TYPE>::write_imgExt_hdr(FitsOutput &fout,  // I - FITS output
   // Since the original file pointer does not have the hdu info about the hdu created by
   // write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
   // This may cause some loss of efficiency. But so far I have not found a better way.
-  fitsfile *l_newfptr = 0;
+  fitsfile *l_newfptr = nullptr;
   l_status = 0;
   //(fout.getfout()).close_file( fout.getfptr(), &l_status);
   // file_close( (fout.getfptr()->Fptr)->filehandle);
@@ -1191,7 +1191,7 @@ int PrimaryTable<TYPE>::write_priTable_hdr(FitsOutput &fout,  // I - FITS output
   // Since the original file pointer does not have the hdu info about the hdu created by
   // write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
   // This may cause some loss of efficiency. But so far I have not found a better way.
-  fitsfile *l_newfptr = 0;
+  fitsfile *l_newfptr = nullptr;
   l_status = 0;
   //(fout.getfout()).close_file( fout.getfptr(), &l_status);
   // file_close( (fout.getfptr()->Fptr)->filehandle);
@@ -1323,8 +1323,8 @@ FitsArray<TYPE>::FitsArray(int n, const int *d) : FitsField<TYPE>(1) {
     for (i = 1; i < no_dims; ++i) factor[i] = factor[i - 1] * dimn[i - 1];
   } else {
     no_dims = 1;
-    dimn = 0;
-    factor = 0;
+    dimn = nullptr;
+    factor = nullptr;
     no_elements = 1;
   }
 }

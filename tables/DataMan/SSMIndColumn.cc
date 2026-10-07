@@ -184,13 +184,13 @@ void SSMIndColumn::putSliceV(rownr_t aRowNr, const Slicer& ns, const ArrayBase& 
 void SSMIndColumn::init() {
   DebugAssert(itsNrElem == 1, AipsError);
   if (itsSSMPtr->asBigEndian()) {
-    itsReadFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    itsReadFunc = CanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    itsWriteFunc = CanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    itsExternalSizeBytes = CanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
   } else {
-    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    itsReadFunc = LECanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    itsWriteFunc = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    itsExternalSizeBytes = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
   }
   itsNrCopy = 1;
   itsExternalSizeBits = 8 * itsExternalSizeBytes;

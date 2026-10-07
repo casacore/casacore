@@ -412,7 +412,7 @@ MeasValue *MeasureHolder::getMV(unsigned int pos) const {
   if (mvhold_p.nelements() > pos)
     return mvhold_p[pos];
   else
-    return static_cast<MeasValue *>(0);
+    return static_cast<MeasValue *>(nullptr);
 }
 
 bool MeasureHolder::putType(String &, RecordInterface &out) const {

@@ -399,7 +399,7 @@ void RefTable::makeDesc(TableDesc& desc, const TableDesc& rootDesc,
         desc.renameColumn(name, mapVal);
       }
     } else {
-      unknownCol.insert(std::make_pair(name, static_cast<void*>(0)));
+      unknownCol.insert(std::make_pair(name, static_cast<void*>(nullptr)));
     }
   }
   // # Remove the unknown columns from the map.

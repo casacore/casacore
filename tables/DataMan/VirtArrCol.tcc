@@ -43,12 +43,12 @@ VirtualArrayColumn<T>::~VirtualArrayColumn() {}
 
 template <class T>
 int VirtualArrayColumn<T>::dataType() const {
-  return ValType::getType(static_cast<T*>(0));
+  return ValType::getType(static_cast<T*>(nullptr));
 }
 
 template <class T>
 String VirtualArrayColumn<T>::dataTypeId() const {
-  return valDataTypeId(static_cast<T*>(0));
+  return valDataTypeId(static_cast<T*>(nullptr));
 }
 
 template <class T>

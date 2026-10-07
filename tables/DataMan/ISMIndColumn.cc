@@ -232,14 +232,14 @@ void ISMIndColumn::init(ByteIO::OpenOption fileOption) {
   DebugAssert(nrelem_p == 1, AipsError);
   bool asBigEndian = stmanPtr_p->asBigEndian();
   if (asBigEndian) {
-    readFunc_p = CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    writeFunc_p = CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    fixedLength_p = CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    readFunc_p = CanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    writeFunc_p = CanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    fixedLength_p = CanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
     nrcopy_p = 1;
   } else {
-    readFunc_p = LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
-    writeFunc_p = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
-    fixedLength_p = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
+    readFunc_p = LECanonicalConversion::getToLocal(static_cast<int64_t*>(nullptr));
+    writeFunc_p = LECanonicalConversion::getFromLocal(static_cast<int64_t*>(nullptr));
+    fixedLength_p = LECanonicalConversion::canonicalSize(static_cast<int64_t*>(nullptr));
     nrcopy_p = 1;
   }
   lastValue_p = new int64_t;

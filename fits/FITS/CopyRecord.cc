@@ -425,92 +425,92 @@ void CopyRecordToTable::clearAll() {
   for (i = 0; i < table_bool.nelements(); i++) {
     delete table_bool[i];
   }
-  table_bool.set(static_cast<ScalarColumn<bool> *>(0));
+  table_bool.set(static_cast<ScalarColumn<bool> *>(nullptr));
 
   for (i = 0; i < table_char.nelements(); i++) {
     delete table_char[i];
   }
-  table_char.set(static_cast<ScalarColumn<unsigned char> *>(0));
+  table_char.set(static_cast<ScalarColumn<unsigned char> *>(nullptr));
 
   for (i = 0; i < table_short.nelements(); i++) {
     delete table_short[i];
   }
-  table_short.set(static_cast<ScalarColumn<short> *>(0));
+  table_short.set(static_cast<ScalarColumn<short> *>(nullptr));
 
   for (i = 0; i < table_int.nelements(); i++) {
     delete table_int[i];
   }
-  table_int.set(static_cast<ScalarColumn<int> *>(0));
+  table_int.set(static_cast<ScalarColumn<int> *>(nullptr));
 
   for (i = 0; i < table_float.nelements(); i++) {
     delete table_float[i];
   }
-  table_float.set(static_cast<ScalarColumn<float> *>(0));
+  table_float.set(static_cast<ScalarColumn<float> *>(nullptr));
 
   for (i = 0; i < table_double.nelements(); i++) {
     delete table_double[i];
   }
-  table_double.set(static_cast<ScalarColumn<double> *>(0));
+  table_double.set(static_cast<ScalarColumn<double> *>(nullptr));
 
   for (i = 0; i < table_complex.nelements(); i++) {
     delete table_complex[i];
   }
-  table_complex.set(static_cast<ScalarColumn<Complex> *>(0));
+  table_complex.set(static_cast<ScalarColumn<Complex> *>(nullptr));
 
   for (i = 0; i < table_dcomplex.nelements(); i++) {
     delete table_dcomplex[i];
   }
-  table_dcomplex.set(static_cast<ScalarColumn<DComplex> *>(0));
+  table_dcomplex.set(static_cast<ScalarColumn<DComplex> *>(nullptr));
 
   for (i = 0; i < table_string.nelements(); i++) {
     delete table_string[i];
   }
-  table_string.set(static_cast<ScalarColumn<String> *>(0));
+  table_string.set(static_cast<ScalarColumn<String> *>(nullptr));
 
   for (i = 0; i < table_array_bool.nelements(); i++) {
     delete table_array_bool[i];
   }
-  table_array_bool.set(static_cast<ArrayColumn<bool> *>(0));
+  table_array_bool.set(static_cast<ArrayColumn<bool> *>(nullptr));
 
   for (i = 0; i < table_array_char.nelements(); i++) {
     delete table_array_char[i];
   }
-  table_array_char.set(static_cast<ArrayColumn<unsigned char> *>(0));
+  table_array_char.set(static_cast<ArrayColumn<unsigned char> *>(nullptr));
 
   for (i = 0; i < table_array_short.nelements(); i++) {
     delete table_array_short[i];
   }
-  table_array_short.set(static_cast<ArrayColumn<short> *>(0));
+  table_array_short.set(static_cast<ArrayColumn<short> *>(nullptr));
 
   for (i = 0; i < table_array_int.nelements(); i++) {
     delete table_array_int[i];
   }
-  table_array_int.set(static_cast<ArrayColumn<int> *>(0));
+  table_array_int.set(static_cast<ArrayColumn<int> *>(nullptr));
 
   for (i = 0; i < table_array_float.nelements(); i++) {
     delete table_array_float[i];
   }
-  table_array_float.set(static_cast<ArrayColumn<float> *>(0));
+  table_array_float.set(static_cast<ArrayColumn<float> *>(nullptr));
 
   for (i = 0; i < table_array_double.nelements(); i++) {
     delete table_array_double[i];
   }
-  table_array_double.set(static_cast<ArrayColumn<double> *>(0));
+  table_array_double.set(static_cast<ArrayColumn<double> *>(nullptr));
 
   for (i = 0; i < table_array_complex.nelements(); i++) {
     delete table_array_complex[i];
   }
-  table_array_complex.set(static_cast<ArrayColumn<Complex> *>(0));
+  table_array_complex.set(static_cast<ArrayColumn<Complex> *>(nullptr));
 
   for (i = 0; i < table_array_dcomplex.nelements(); i++) {
     delete table_array_dcomplex[i];
   }
-  table_array_dcomplex.set(static_cast<ArrayColumn<DComplex> *>(0));
+  table_array_dcomplex.set(static_cast<ArrayColumn<DComplex> *>(nullptr));
 
   for (i = 0; i < table_array_string.nelements(); i++) {
     delete table_array_string[i];
   }
-  table_array_string.set(static_cast<ArrayColumn<String> *>(0));
+  table_array_string.set(static_cast<ArrayColumn<String> *>(nullptr));
 }
 
 void addRecordDesc(TableDesc &tableDescription, const RecordDesc &recDesc, const String &prefix) {

@@ -287,11 +287,11 @@ void ROTableRow::makeObjects(const RecordDesc& description) {
   itsRecord = new TableRecord(description);
   // Initialize the column and field block.
   itsTabCols.resize(itsNrused, false, false);
-  itsTabCols.set(static_cast<void*>(0));
+  itsTabCols.set(static_cast<void*>(nullptr));
   itsColumns.resize(itsNrused, false, false);
-  itsColumns.set(static_cast<void*>(0));
+  itsColumns.set(static_cast<void*>(nullptr));
   itsFields.resize(itsNrused, false, false);
-  itsFields.set(static_cast<void*>(0));
+  itsFields.set(static_cast<void*>(nullptr));
   itsDefined.resize(itsNrused, false, false);
   itsDefined.set(true);
   // Create the correct column object for each field.

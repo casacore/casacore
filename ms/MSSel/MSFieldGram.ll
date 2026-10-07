@@ -37,6 +37,9 @@
 #define YY_DECL int MSFieldGramlex (YYSTYPE* lvalp)
 static std::string                qstr;
 #include <casacore/ms/MSSel/MSSelectionTools.h>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 %}
 
 WHITE     [ \t\n]*

@@ -885,27 +885,27 @@ void ISMColumn::reopenRW() {}
 
 Conversion::ValueFunction* ISMColumn::getReaduInt(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getToLocal(static_cast<unsigned int*>(0));
+    return CanonicalConversion::getToLocal(static_cast<unsigned int*>(nullptr));
   }
-  return LECanonicalConversion::getToLocal(static_cast<unsigned int*>(0));
+  return LECanonicalConversion::getToLocal(static_cast<unsigned int*>(nullptr));
 }
 Conversion::ValueFunction* ISMColumn::getReadRownr(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getToLocal(static_cast<rownr_t*>(0));
+    return CanonicalConversion::getToLocal(static_cast<rownr_t*>(nullptr));
   }
-  return LECanonicalConversion::getToLocal(static_cast<rownr_t*>(0));
+  return LECanonicalConversion::getToLocal(static_cast<rownr_t*>(nullptr));
 }
 Conversion::ValueFunction* ISMColumn::getWriteuInt(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getFromLocal(static_cast<unsigned int*>(0));
+    return CanonicalConversion::getFromLocal(static_cast<unsigned int*>(nullptr));
   }
-  return LECanonicalConversion::getFromLocal(static_cast<unsigned int*>(0));
+  return LECanonicalConversion::getFromLocal(static_cast<unsigned int*>(nullptr));
 }
 Conversion::ValueFunction* ISMColumn::getWriteRownr(bool asBigEndian) {
   if (asBigEndian) {
-    return CanonicalConversion::getFromLocal(static_cast<rownr_t*>(0));
+    return CanonicalConversion::getFromLocal(static_cast<rownr_t*>(nullptr));
   }
-  return LECanonicalConversion::getFromLocal(static_cast<rownr_t*>(0));
+  return LECanonicalConversion::getFromLocal(static_cast<rownr_t*>(nullptr));
 }
 
 size_t ISMColumn::fromString(void* out, const void* in, size_t n,

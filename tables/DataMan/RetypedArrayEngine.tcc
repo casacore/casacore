@@ -49,7 +49,7 @@ RetypedArrayEngine<S, T>::RetypedArrayEngine(const String& virtualColumnName,
     : BaseMappedArrayEngine<S, T>(virtualColumnName, storedColumnName),
       shape_p(S::shape()),
       isVirtualFixedShape_p(false),
-      copyInfo_p(0) {}
+      copyInfo_p(nullptr) {}
 
 template <class S, class T>
 RetypedArrayEngine<S, T>::RetypedArrayEngine(const String& virtualColumnName,
@@ -60,11 +60,11 @@ RetypedArrayEngine<S, T>::RetypedArrayEngine(const String& virtualColumnName,
       shape_p(virtualShape),
       isVirtualFixedShape_p(false),
       record_p(extraInformation),
-      copyInfo_p(0) {}
+      copyInfo_p(nullptr) {}
 
 template <class S, class T>
 RetypedArrayEngine<S, T>::RetypedArrayEngine(const Record& spec)
-    : BaseMappedArrayEngine<S, T>(), isVirtualFixedShape_p(false), copyInfo_p(0) {
+    : BaseMappedArrayEngine<S, T>(), isVirtualFixedShape_p(false), copyInfo_p(nullptr) {
   if (spec.isDefined("SOURCENAME") && spec.isDefined("TARGETNAME")) {
     setNames(spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
     if (spec.isDefined("SHAPE")) {
@@ -84,7 +84,7 @@ RetypedArrayEngine<S, T>::RetypedArrayEngine(const RetypedArrayEngine<S, T>& tha
       shape_p(that.shape_p),
       isVirtualFixedShape_p(false),
       record_p(that.record_p),
-      copyInfo_p(0) {}
+      copyInfo_p(nullptr) {}
 
 template <class S, class T>
 RetypedArrayEngine<S, T>::~RetypedArrayEngine() {

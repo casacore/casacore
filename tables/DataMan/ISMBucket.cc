@@ -45,8 +45,8 @@ ISMBucket::ISMBucket(ISMBase* parent, const char* bucketStorage)
       rownrSize_p(parent->rownrSize()),
       dataLeng_p(0),
       indexLeng_p(0),
-      rowIndex_p(parent->ncolumn(), static_cast<Block<rownr_t>*>(0)),
-      offIndex_p(parent->ncolumn(), static_cast<Block<unsigned int>*>(0)),
+      rowIndex_p(parent->ncolumn(), static_cast<Block<rownr_t>*>(nullptr)),
+      offIndex_p(parent->ncolumn(), static_cast<Block<unsigned int>*>(nullptr)),
       indexUsed_p(parent->ncolumn(), (unsigned int)0) {
   unsigned int nrcol = stmanPtr_p->ncolumn();
   for (unsigned int i = 0; i < nrcol; i++) {

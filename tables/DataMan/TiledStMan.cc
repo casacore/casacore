@@ -51,7 +51,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 TiledStMan::TiledStMan()
     : DataManager(),
       nrrow_p(0),
-      fileSet_p(1, static_cast<TSMFile*>(0)),
+      fileSet_p(1, static_cast<TSMFile*>(nullptr)),
       persMaxCacheSize_p(0),
       maxCacheSize_p(0),
       nrdim_p(0),
@@ -62,7 +62,7 @@ TiledStMan::TiledStMan(const String& hypercolumnName, unsigned int maximumCacheS
     : DataManager(),
       hypercolumnName_p(hypercolumnName),
       nrrow_p(0),
-      fileSet_p(1, static_cast<TSMFile*>(0)),
+      fileSet_p(1, static_cast<TSMFile*>(nullptr)),
       persMaxCacheSize_p(maximumCacheSize),
       maxCacheSize_p(maximumCacheSize),
       nrdim_p(0),
@@ -727,7 +727,7 @@ void TiledStMan::initCoordinates(TSMCube* hypercube) {
 
 unsigned int TiledStMan::getBindings(const Vector<String>& columnNames, Block<TSMColumn*>& colSet,
                                      bool mustExist) const {
-  colSet = static_cast<TSMColumn*>(0);
+  colSet = static_cast<TSMColumn*>(nullptr);
   unsigned int nrfound = 0;
   unsigned int j;
   bool found = false;

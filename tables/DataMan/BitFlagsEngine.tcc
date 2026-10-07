@@ -100,7 +100,7 @@ String BitFlagsEngine<T>::dataManagerType() const {
 // # Get the data type names using class ValType.
 template <typename T>
 String BitFlagsEngine<T>::className() {
-  return "BitFlagsEngine<" + valDataTypeId(static_cast<T*>(0));
+  return "BitFlagsEngine<" + valDataTypeId(static_cast<T*>(nullptr));
 }
 
 template <typename T>

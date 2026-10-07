@@ -36,26 +36,29 @@
 // This program tests the data conversion classes.
 
 void showConv(const DataConversion& conv) {
-  cout << "  Char externalSize = " << conv.externalSize(static_cast<char*>(0)) << endl;
-  cout << " uChar externalSize = " << conv.externalSize(static_cast<unsigned char*>(0)) << endl;
-  cout << " Short externalSize = " << conv.externalSize(static_cast<short*>(0)) << endl;
-  cout << "uShort externalSize = " << conv.externalSize(static_cast<unsigned short*>(0)) << endl;
-  cout << "   Int externalSize = " << conv.externalSize(static_cast<int*>(0)) << endl;
-  cout << "  uInt externalSize = " << conv.externalSize(static_cast<unsigned int*>(0)) << endl;
-  cout << " Int64 externalSize = " << conv.externalSize(static_cast<int64_t*>(0)) << endl;
-  cout << "uInt64 externalSize = " << conv.externalSize(static_cast<uint64_t*>(0)) << endl;
-  cout << " Float externalSize = " << conv.externalSize(static_cast<float*>(0)) << endl;
-  cout << "Double externalSize = " << conv.externalSize(static_cast<double*>(0)) << endl;
-  cout << "  Char canCopy = " << conv.canCopy(static_cast<char*>(0)) << endl;
-  cout << " uChar canCopy = " << conv.canCopy(static_cast<unsigned char*>(0)) << endl;
-  cout << " Short canCopy = " << conv.canCopy(static_cast<short*>(0)) << endl;
-  cout << "uShort canCopy = " << conv.canCopy(static_cast<unsigned short*>(0)) << endl;
-  cout << "   Int canCopy = " << conv.canCopy(static_cast<int*>(0)) << endl;
-  cout << "  uInt canCopy = " << conv.canCopy(static_cast<unsigned int*>(0)) << endl;
-  cout << " Int64 canCopy = " << conv.canCopy(static_cast<int64_t*>(0)) << endl;
-  cout << "uInt64 canCopy = " << conv.canCopy(static_cast<uint64_t*>(0)) << endl;
-  cout << " Float canCopy = " << conv.canCopy(static_cast<float*>(0)) << endl;
-  cout << "Double canCopy = " << conv.canCopy(static_cast<double*>(0)) << endl;
+  cout << "  Char externalSize = " << conv.externalSize(static_cast<char*>(nullptr)) << endl;
+  cout << " uChar externalSize = " << conv.externalSize(static_cast<unsigned char*>(nullptr))
+       << endl;
+  cout << " Short externalSize = " << conv.externalSize(static_cast<short*>(nullptr)) << endl;
+  cout << "uShort externalSize = " << conv.externalSize(static_cast<unsigned short*>(nullptr))
+       << endl;
+  cout << "   Int externalSize = " << conv.externalSize(static_cast<int*>(nullptr)) << endl;
+  cout << "  uInt externalSize = " << conv.externalSize(static_cast<unsigned int*>(nullptr))
+       << endl;
+  cout << " Int64 externalSize = " << conv.externalSize(static_cast<int64_t*>(nullptr)) << endl;
+  cout << "uInt64 externalSize = " << conv.externalSize(static_cast<uint64_t*>(nullptr)) << endl;
+  cout << " Float externalSize = " << conv.externalSize(static_cast<float*>(nullptr)) << endl;
+  cout << "Double externalSize = " << conv.externalSize(static_cast<double*>(nullptr)) << endl;
+  cout << "  Char canCopy = " << conv.canCopy(static_cast<char*>(nullptr)) << endl;
+  cout << " uChar canCopy = " << conv.canCopy(static_cast<unsigned char*>(nullptr)) << endl;
+  cout << " Short canCopy = " << conv.canCopy(static_cast<short*>(nullptr)) << endl;
+  cout << "uShort canCopy = " << conv.canCopy(static_cast<unsigned short*>(nullptr)) << endl;
+  cout << "   Int canCopy = " << conv.canCopy(static_cast<int*>(nullptr)) << endl;
+  cout << "  uInt canCopy = " << conv.canCopy(static_cast<unsigned int*>(nullptr)) << endl;
+  cout << " Int64 canCopy = " << conv.canCopy(static_cast<int64_t*>(nullptr)) << endl;
+  cout << "uInt64 canCopy = " << conv.canCopy(static_cast<uint64_t*>(nullptr)) << endl;
+  cout << " Float canCopy = " << conv.canCopy(static_cast<float*>(nullptr)) << endl;
+  cout << "Double canCopy = " << conv.canCopy(static_cast<double*>(nullptr)) << endl;
 }
 
 int main() {

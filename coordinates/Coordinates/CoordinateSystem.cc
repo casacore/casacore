@@ -304,8 +304,8 @@ void CoordinateSystem::transpose(const Vector<int>& newWorldOrder,
   //
   Block<Block<int>*> newWorldMaps(nc);
   Block<Block<int>*> newPixelMaps(nc);
-  newWorldMaps.set(static_cast<Block<int>*>(0));
-  newPixelMaps.set(static_cast<Block<int>*>(0));
+  newWorldMaps.set(static_cast<Block<int>*>(nullptr));
+  newPixelMaps.set(static_cast<Block<int>*>(nullptr));
 
   // copy the maps (because the deleted axes will be staying put)
 
@@ -1569,8 +1569,8 @@ bool CoordinateSystem::convert(Matrix<double>& coordsOut, const Matrix<double>& 
 
   IPosition velAxesIn(n);
   IPosition velAxesOut(n);
-  Block<SpectralCoordinate*> specCoordsIn(n, (SpectralCoordinate*)0);
-  Block<SpectralCoordinate*> specCoordsOut(n, (SpectralCoordinate*)0);
+  Block<SpectralCoordinate*> specCoordsIn(n, (SpectralCoordinate*)nullptr);
+  Block<SpectralCoordinate*> specCoordsOut(n, (SpectralCoordinate*)nullptr);
   //
   Vector<String> unitsIn2(cSysIn.worldAxisUnits().copy());
   Vector<String> unitsOut2(cSysOut.worldAxisUnits().copy());
