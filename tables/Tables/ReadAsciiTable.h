@@ -352,8 +352,8 @@ class ReadAsciiTable {
   static int getNext(const char* string, int strlen, char* result, int& at, char separator);
 
   // Derive the types from the values in the first data line.
-  static void getTypes(const IPosition& shape, const char* in, int leng, char* string1,
-                       char* string2, char separator);
+  static void getTypes(const IPosition& shape, const char* in, int leng, char* string1, int leng1,
+                       char* string2, int leng2, char separator);
 
   // Turn the string into a Bool value.
   // Empty string, value 0 and any value starting with f, F, n or N are false.
