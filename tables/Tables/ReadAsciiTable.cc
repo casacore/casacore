@@ -155,7 +155,7 @@ void ReadAsciiTable::getTypes(const IPosition& shape, const char* in, int leng, 
   char* const end2 = string2 + leng2;
   int at = 0;
   int i = 0;
-  String str;
+  std::string str;
   char token[lineSize];
   while (getNext(in, leng, token, at, separator) >= 0) {
     if (end1 - string1 < 1) {
@@ -191,7 +191,7 @@ void ReadAsciiTable::getTypes(const IPosition& shape, const char* in, int leng, 
         }
         ostr << shape(i);
       }
-      const String shp = ostr.str();
+      const std::string shp = ostr.str();
       if (size_t(end1 - string1) < shp.size() + 1) {
         throw AipsError("ReadAsciiTable: too many columns on the first line");
       }
