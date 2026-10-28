@@ -27,6 +27,7 @@
 #include <casacore/tables/DataMan/ISMBucket.h>
 #include <casacore/tables/DataMan/ISMBase.h>
 #include <casacore/tables/DataMan/ISMColumn.h>
+#include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/BlockIO.h>
 #include <casacore/casa/Utilities/BinarySearch.h>
@@ -331,6 +332,9 @@ void ISMBucket::read(const char* bucketStorage) {
   // See if old version, thus rownrs use 32 bits.
   bool use32 = (type == 0);
   // Copy the data, which are just before the index.
+  if (offset < uIntSize_p || offset > stmanPtr_p->bucketSize()) {
+    throw DataManError("ISMBucket: bucket index offset out of range");
+  }
   dataLeng_p = offset - uIntSize_p;
   memcpy(data_p, bucketStorage + uIntSize_p, dataLeng_p);
   // Read the index.
