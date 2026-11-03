@@ -176,7 +176,7 @@ class MVEarthMagnetic : public MVPosition {
   virtual void readjust(double res);
   // </group>
   // Get modulus of EarthMagnetic
-  virtual double radius();
+  double radius() const override;
   // Generate a 3-vector of coordinates (length(T), angles(rad))
   Vector<double> get() const;
   // Generate a 3-vector of x,y,z in tesla

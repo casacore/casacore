@@ -182,7 +182,7 @@ class MVuvw : public MVPosition {
   virtual void readjust(double res);
   // </group>
   // Get radius(i.e. length of vector, in m) of uvw
-  virtual double radius();
+  double radius() const override;
   // Generate a 3-vector of coordinates (length(m), angles(rad))
   Vector<double> get() const;
   // Generate a 3-vector of x,y,z in m

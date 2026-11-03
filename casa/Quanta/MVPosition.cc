@@ -290,7 +290,7 @@ void MVPosition::readjust(double res) {
   }
 }
 
-double MVPosition::radius() { return (std::sqrt(operator*(*this))); }
+double MVPosition::radius() const { return (std::sqrt(operator*(*this))); }
 
 Vector<double> MVPosition::get() const {
   Vector<double> tmp(3);

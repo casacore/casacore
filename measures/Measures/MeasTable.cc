@@ -2675,46 +2675,61 @@ void MeasTable::calcPlanetaryConstants(double cn[MeasTable::N_JPLconst]) {
 void MeasTable::initObservatories() { std::call_once(theirObsInitOnceFlag, doInitObservatories); }
 
 void MeasTable::doInitObservatories() {
-  Table t;
+  Table table;
   ROTableRow row;
-  TableRecord kws;
-  String rfn[3] = {"Long", "Lat", "Height"};
-  RORecordFieldPtr<double> rfp[3];
-  double dt;
-  String vs;
-  if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 3, rfn, "Observatories",
-                          "measures.observatory.directory", "geodetic")) {
+  TableRecord keyword_set;
+  constexpr size_t kNColumns = 6;
+  const String row_field_names[kNColumns] = {"Long", "Lat", "Height", "X", "Y", "Z"};
+  RORecordFieldPtr<double> row_records[kNColumns];
+  double date;
+  String version;
+  if (!MeasIERS::getTable(table, keyword_set, row, row_records, version, date, kNColumns,
+                          row_field_names, "Observatories", "measures.observatory.directory",
+                          "geodetic")) {
     LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
     os << "Cannot read table of Observatories" << LogIO::EXCEPTION;
   }
-  int N = t.nrow();
-  if (N < 1) {
+  const int n_rows = table.nrow();
+  if (n_rows < 1) {
     LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
     os << "No entries in table of Observatories" << LogIO::EXCEPTION;
   }
-  obsNams.resize(N);
-  obsPos.resize(N);
-  antResponsesPath.resize(N);
+  obsNams.resize(n_rows);
+  obsPos.resize(n_rows);
+  antResponsesPath.resize(n_rows);
   bool hasAntResp = false;
   if (row.record().isDefined("AntennaResponses")) {
     hasAntResp = true;
   }
 
-  MPosition::Ref mr;
+  MPosition::Ref reference_system;
   MPosition tmp;
-  for (int i = 0; i < N; i++) {
+  for (int i = 0; i < n_rows; i++) {
     row.get(i);
     obsNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
     if (hasAntResp) {
       antResponsesPath(i) = *RORecordFieldPtr<String>(row.record(), "AntennaResponses");
     }
-    if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
+    if (!tmp.giveMe(reference_system, *RORecordFieldPtr<String>(row.record(), "Type"))) {
       LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
       os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
     }
-    obsPos(i) = MPosition(MVPosition(Quantity(*(rfp[2]), "m"), Quantity(*(rfp[0]), "deg"),
-                                     Quantity(*(rfp[1]), "deg")),
-                          mr);
+    switch (reference_system.getType()) {
+      case MPosition::ITRF:
+        obsPos(i) = MPosition(MVPosition(*row_records[3], *row_records[4], *row_records[5]),
+                              reference_system);
+        break;
+      case MPosition::WGS84:
+        obsPos(i) =
+            MPosition(MVPosition(Quantity(*row_records[2], "m"), Quantity(*row_records[0], "deg"),
+                                 Quantity(*row_records[1], "deg")),
+                      reference_system);
+        break;
+      default:
+        LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
+        os << "Position type in Observatories table should be WGS84 or ITRF." << LogIO::EXCEPTION;
+        break;
+    }
   }
 }
 
@@ -2723,9 +2738,9 @@ const Vector<String> &MeasTable::Observatories() {
   return MeasTable::obsNams;
 }
 
-bool MeasTable::Observatory(MPosition &obs, const String &nam) {
+bool MeasTable::Observatory(MPosition &obs, const String &name) {
   std::call_once(theirObsInitOnceFlag, doInitObservatories);
-  unsigned int i = MUString::minimaxNC(nam, MeasTable::obsNams);
+  unsigned int i = MUString::minimaxNC(name, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos[i];
     return true;
