@@ -5,8 +5,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-using casacore::MPosition;
 using casacore::MeasTable;
+using casacore::MPosition;
 
 BOOST_AUTO_TEST_SUITE(meas_table)
 
@@ -18,7 +18,8 @@ BOOST_AUTO_TEST_CASE(wgs84_observatory_position) {
   MPosition result_position;
   BOOST_CHECK(MeasTable::Observatory(result_position, "ALMA"));
   BOOST_CHECK_EQUAL(result_position.getRef().getType(), MPosition::WGS84);
-  const casacore::Quantum<casacore::Vector<double>> angles = result_position.getValue().getAngle("deg");
+  const casacore::Quantum<casacore::Vector<double>> angles =
+      result_position.getValue().getAngle("deg");
   BOOST_CHECK_CLOSE_FRACTION(angles.getValue()[0], kAlmaPosition[0], 1e-5);
   BOOST_CHECK_CLOSE_FRACTION(angles.getValue()[1], kAlmaPosition[1], 1e-5);
   BOOST_CHECK_CLOSE_FRACTION(result_position.getValue().radius(), kAlmaPosition[2], 1e-5);
