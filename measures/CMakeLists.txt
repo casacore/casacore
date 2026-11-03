@@ -167,24 +167,5 @@ install (FILES ${top_level_headers}
 DESTINATION include/casacore/measures
 )
 
-set (unittestfiles
-  Measures/test/tMeasTable.cc
-)
-
-find_package(Boost 1.73 COMPONENTS unit_test_framework)
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIR})
-
-  add_executable (measurestests ${unittestfiles})
-  add_pch_support(measurestests)
-  target_link_libraries(measurestests
-    PRIVATE
-      casa_measures
-      Boost::unit_test_framework
-  )
-  add_test (measurestests ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./measurestests)
-  add_dependencies(check measurestests)
-endif(Boost_FOUND)
-
 add_subdirectory (Measures/test ${EXCL_ALL})
 add_subdirectory (TableMeasures/test ${EXCL_ALL})

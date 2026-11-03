@@ -2714,22 +2714,10 @@ void MeasTable::doInitObservatories() {
       LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
       os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
     }
-    switch (reference_system.getType()) {
-      case MPosition::ITRF:
-        obsPos(i) = MPosition(MVPosition(*row_records[3], *row_records[4], *row_records[5]),
-                              reference_system);
-        break;
-      case MPosition::WGS84:
-        obsPos(i) =
-            MPosition(MVPosition(Quantity(*row_records[2], "m"), Quantity(*row_records[0], "deg"),
-                                 Quantity(*row_records[1], "deg")),
-                      reference_system);
-        break;
-      default:
-        LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
-        os << "Position type in Observatories table should be WGS84 or ITRF." << LogIO::EXCEPTION;
-        break;
-    }
+    obsPos(i) =
+        MPosition(MVPosition(Quantity(*row_records[2], "m"), Quantity(*row_records[0], "deg"),
+                             Quantity(*row_records[1], "deg")),
+                  reference_system);
   }
 }
 
