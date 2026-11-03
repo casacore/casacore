@@ -171,9 +171,9 @@ class MVEarthMagnetic : public MVPosition {
 
   // Normalise direction aspects by adjusting the length to 1
   // <group>
-  virtual void adjust();
-  virtual void adjust(double &res);
-  virtual void readjust(double res);
+  void adjust() override;
+  void adjust(double &res) override;
+  void readjust(double res) override;
   // </group>
   // Get modulus of EarthMagnetic
   double radius() const override;
@@ -204,21 +204,21 @@ class MVEarthMagnetic : public MVPosition {
   MVEarthMagnetic crossProduct(const MVEarthMagnetic &other) const;
 
   // Print data
-  virtual void print(ostream &os) const;
+  void print(ostream &os) const override;
   // Clone
-  virtual MeasValue *clone() const;
+  MeasValue *clone() const override;
   // Get the value in internal units
-  virtual Vector<double> getVector() const;
+  Vector<double> getVector() const override;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<double> &in);
+  void putVector(const Vector<double> &in) override;
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<double>> getRecordValue() const;
+  Vector<Quantum<double>> getRecordValue() const override;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual bool putValue(const Vector<Quantum<double>> &in);
+  bool putValue(const Vector<Quantum<double>> &in) override;
 };
 
 // # Global functions
