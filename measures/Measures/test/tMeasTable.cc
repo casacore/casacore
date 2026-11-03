@@ -36,9 +36,6 @@ BOOST_AUTO_TEST_CASE(itrf_observatory_position) {
   BOOST_CHECK_CLOSE_FRACTION(result_position.getValue()(1), kEVlaPosition[1], 1e-6);
   BOOST_CHECK_CLOSE_FRACTION(result_position.getValue()(2), kEVlaPosition[2], 1e-6);
 
-  // LOFAR and ELVA use an ITRF position. If LOFAR's position were to be updated in the observatory
-  // table, the next line should be updated as well.
-  // These are X, Y, Z:
   BOOST_CHECK(MeasTable::Observatory(result_position, "LOFAR"));
   BOOST_CHECK_EQUAL(result_position.getRef().getType(), MPosition::ITRF);
   BOOST_CHECK_CLOSE_FRACTION(result_position.getValue()(0), kLofarPosition[0], 1e-6);
