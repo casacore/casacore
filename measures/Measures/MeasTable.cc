@@ -2714,10 +2714,41 @@ void MeasTable::doInitObservatories() {
       LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
       os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
     }
-    obsPos(i) =
-        MPosition(MVPosition(Quantity(*row_records[2], "m"), Quantity(*row_records[0], "deg"),
-                             Quantity(*row_records[1], "deg")),
-                  reference_system);
+    const Quantity longitude(*row_records[0], "deg");
+    const Quantity lattitude(*row_records[1], "deg");
+    const Quantity height(*row_records[2], "m");
+    const bool has_spherical = std::isfinite(longitude.getValue()) &&
+                               std::isfinite(lattitude.getValue()) &&
+                               std::isfinite(height.getValue());
+    // It is generally preferred to use the cartesian coordinates for ITRF, because it avoids an
+    // extra conversion and loss in accuracy as a result. However, up to Nov 2026 the code
+    // unconditionally uses the spherical coordinates (including for ITRF) and switching these to
+    // cartesian would change the position of some telescopes slightly (e.g. EVLA), which was deemed
+    // undesirable. We therefore allow the spherical coordinates to be removed from the observatory
+    // table when ITRF is used, such that it is possible to explicitly chose the cartesian value on
+    // a per-observatory basis.
+    //
+    // The observatory table contains invalid spherical coordinates for the LOFAR observatory.
+    // Therefore, LOFAR is hardcoded to use the cartesian coordinates. LOFAR's spherical coordinates
+    // are removed Nov 2026, and so once this fixed table has been rolled out widely enough this
+    // manual override may be removed.
+    const bool use_cartesian = !has_spherical || obsNams(i) == "LOFAR";
+    if (use_cartesian) {
+      if (reference_system.getType() != MPosition::ITRF) {
+        LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
+        os << "Invalid row in observatories table: telescope '" << obsNams(i)
+           << "' does not use ITRF reference frame and does not contain spherical coordinates, but "
+              "these can only be omitted when using ITRF."
+           << LogIO::EXCEPTION;
+      }
+      const double x = *row_records[3];
+      const double y = *row_records[4];
+      const double z = *row_records[5];
+      obsPos(i) = MPosition(MVPosition(x, y, z), reference_system);
+      std::cout << "USING CARTESIAN!n\n";
+    } else {
+      obsPos(i) = MPosition(MVPosition(height, longitude, lattitude), reference_system);
+    }
   }
 }
 
