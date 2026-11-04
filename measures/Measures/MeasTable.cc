@@ -2745,7 +2745,6 @@ void MeasTable::doInitObservatories() {
       const double y = *row_records[4];
       const double z = *row_records[5];
       obsPos(i) = MPosition(MVPosition(x, y, z), reference_system);
-      std::cout << "USING CARTESIAN!n\n";
     } else {
       obsPos(i) = MPosition(MVPosition(height, longitude, lattitude), reference_system);
     }
