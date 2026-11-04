@@ -209,7 +209,7 @@ class MVPosition : public MeasValue {
   virtual void readjust(double res);
   // </group>
   // Get radius of position
-  virtual double radius();
+  virtual double radius() const;
   // Generate a 3-vector of coordinates (length(m), angles(rad))
   Vector<double> get() const;
   // Generate a 3-vector of x,y,z in m

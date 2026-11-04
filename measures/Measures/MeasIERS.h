@@ -180,14 +180,14 @@ class MeasIERS {
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
   // Returned are an open table, the table keywordset (kws), a row record,
-  // pointers (rfp) to row data, the table version (vs), dt, and, directly,
+  // pointers (rfp) to row data, the table version, date, and, directly,
   // whether or not it was successful.
   // Lookup for name is bypassed if the Table address tabin is provided.
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, columns, or they type is not IERS.
   // </thrown>
   static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-                       RORecordFieldPtr<double> rfp[], String &vs, double &dt, int N,
+                       RORecordFieldPtr<double> rfp[], String &version, double &date, int N,
                        const String rfn[], const String &name, const String &rc, const String &dir,
                        const Table *tabin = nullptr);
 
