@@ -249,6 +249,7 @@ inline void Decompress2D(int level, CompressorState& state, std::span<std::byte>
  * This function is tailored for the Predict functions, and expects value to be
  * matched.
  */
+[[gnu::always_inline]]
 inline constexpr BitFloat PredictThreshold(const BitFloat& value) {
   if (value.Mantissa() & 0xFE000000)
     return BitFloat(0, value.Exponent(), false);

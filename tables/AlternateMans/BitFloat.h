@@ -206,6 +206,7 @@ class BitFloat {
    * if it can do prediction to reconstruct the mantissa. Hence, the only
    * information available is the exponent.
    */
+  [[gnu::always_inline]]
   static constexpr bool AllowsMath(int8_t exponent) {
     return exponent != static_cast<int8_t>(128u) && exponent != -127;
   }
@@ -235,6 +236,8 @@ class BitFloat {
    * is returned, but with the 'unnormalized' exponent still set to the
    * requested exponent, meaning that it can be used in operations.
    */
+  // Always inline is used because it was found this improves performance.
+  [[gnu::always_inline]]
   friend constexpr std::optional<BitFloat> Match(const BitFloat& input, int8_t value_exponent) {
     if (input.Exponent() == value_exponent) {
       return input;
