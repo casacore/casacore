@@ -123,9 +123,7 @@ class OneByOneLane {
   /** @brief Destructor.
    * @details The destructor is not synchronized.
    */
-  ~OneByOneLane() {
-    delete[] _buffer;
-  }
+  ~OneByOneLane() { delete[] _buffer; }
 
   OneByOneLane<Tp>& operator=(const OneByOneLane<Tp>& source) = delete;
 
@@ -329,7 +327,6 @@ class OneByOneLane {
   }
 
   size_t free_read_space() const noexcept { return _capacity - _free_write_space; }
-
 };
 
 template <typename Tp>
