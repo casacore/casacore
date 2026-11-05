@@ -95,7 +95,7 @@ class SiscoWriter {
   int predict_level_ = 2;
   int deflate_level_ = 9;
   ConditionalQueue<PreprocessingTask> preprocessing_tasks_{4096};
-  aocommon::Lane<WriteTask> write_tasks_{10};
+  aocommon::OneByOneLane<WriteTask> write_tasks_{10};
 
   std::mutex mutex_;
   std::condition_variable chunk_finished_condition_;
