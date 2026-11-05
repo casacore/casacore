@@ -62,7 +62,7 @@ namespace casacore::aocommon {
  *
  * This class is a simplification of the Lane class, which allows
  * multi-item reads and writes. By allowing only one item at a time,
- * it is more efficiency (notify_one instead of all). This one-by-one
+ * it is more efficient (notify_one instead of all). This one-by-one
  * behaviour is quite common, hence a special class for this.
  *
  * @author Andre Offringa
