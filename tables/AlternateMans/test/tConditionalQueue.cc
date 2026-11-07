@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(single_threaded) {
   BOOST_CHECK_EQUAL(result, 0);
   BOOST_CHECK_EQUAL(queue.Size(lock), 9);
 
-  queue.NotifyOneChange();  // shouldn't do anything
+  queue.NotifyChange();  // shouldn't do anything
 
   for (size_t i = 0; i != 5; ++i) {
     // Pop odd values

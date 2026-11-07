@@ -116,7 +116,7 @@ class SiscoReader {
   aocommon::OneByOneLane<Chunk> read_lane_{4};
   aocommon::OneByOneLane<Chunk> decompress_lane_;
   aocommon::OneByOneLane<Result> result_lane_{kRequestBufferSize};
-  ConditionalQueue<RequestData> request_queue_{kRequestBufferSize};
+  ConditionalQueue<RequestData, true> request_queue_{kRequestBufferSize};
   std::set<Result> result_queue;
 
   std::thread read_thread_;

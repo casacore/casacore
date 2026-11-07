@@ -15,8 +15,13 @@ namespace casacore::sisco {
  * The reason for this is that if the condition requires
  * locking, the same lock can be used for the queue operations
  * and the condition.
+ *
+ * @param SameCondition If all threads call PopIf() with the same
+ * condition, this value can be set to @c true to increase the
+ * performance of the queue. When true, any waiting thread can take
+ * a new value, so only one thread needs to be woken up per value.
  */
-template <typename T>
+template <typename T, bool SameCondition = false>
 class ConditionalQueue {
  public:
   ConditionalQueue(size_t max_size) : max_size_(max_size) {}
@@ -37,10 +42,7 @@ class ConditionalQueue {
       pop_condition_.wait(lock);
     }
     values_.emplace_back(std::move(value));
-    // We need to notify all, because if only one thread is awoken that
-    // is looking for a specific condition that is not met, the signal
-    // is lost while another nother thread's condition may be met.
-    push_condition_.notify_all();
+    NotifyPush();
   }
 
   /**
@@ -53,10 +55,7 @@ class ConditionalQueue {
       pop_condition_.wait(lock);
     }
     values_.emplace_back(std::forward<Args>(args)...);
-    // We need to notify all, because if only one thread is awoken that
-    // is looking for a specific condition that is not met, the signal
-    // is lost while another nother thread's condition may be met.
-    push_condition_.notify_all();
+    NotifyPush();
   }
 
   /**
@@ -95,7 +94,7 @@ class ConditionalQueue {
   /**
    * Notify the queue that the condition for values might have changed.
    */
-  void NotifyOneChange() { push_condition_.notify_all(); }
+  void NotifyChange() { NotifyPush(); }
 
   /**
    * Makes PopIf return false once the queue is empty.
@@ -120,6 +119,17 @@ class ConditionalQueue {
       if (condition(*i)) return i;
     }
     return values_.end();
+  }
+
+  void NotifyPush() {
+    if constexpr (SameCondition) {
+      push_condition_.notify_one();
+    } else {
+      // We need to notify all, because if only one thread is awoken that
+      // is looking for a specific condition that is not met, the signal
+      // is lost while another nother thread's condition may be met.
+      push_condition_.notify_all();
+    }
   }
 
   std::list<T> values_;
