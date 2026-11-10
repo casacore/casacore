@@ -15,8 +15,13 @@ namespace casacore::sisco {
  * The reason for this is that if the condition requires
  * locking, the same lock can be used for the queue operations
  * and the condition.
+ *
+ * @param SameCondition If all threads call PopIf() with the same
+ * condition, this value can be set to @c true to increase the
+ * performance of the queue. When true, any waiting thread can take
+ * a new value, so only one thread needs to be woken up per value.
  */
-template <typename T>
+template <typename T, bool SameCondition = false>
 class ConditionalQueue {
  public:
   ConditionalQueue(size_t max_size) : max_size_(max_size) {}
@@ -37,10 +42,7 @@ class ConditionalQueue {
       pop_condition_.wait(lock);
     }
     values_.emplace_back(std::move(value));
-    // We need to notify all, because if only one thread is awoken that
-    // is looking for a specific condition that is not met, the signal
-    // is lost while another nother thread's condition may be met.
-    push_condition_.notify_all();
+    NotifyPush();
   }
 
   /**
@@ -53,10 +55,7 @@ class ConditionalQueue {
       pop_condition_.wait(lock);
     }
     values_.emplace_back(std::forward<Args>(args)...);
-    // We need to notify all, because if only one thread is awoken that
-    // is looking for a specific condition that is not met, the signal
-    // is lost while another nother thread's condition may be met.
-    push_condition_.notify_all();
+    NotifyPush();
   }
 
   /**
@@ -94,8 +93,23 @@ class ConditionalQueue {
 
   /**
    * Notify the queue that the condition for values might have changed.
+   *
+   * When SameCondition=true, this will wake up only one waiting thread, and
+   * so: i) the change must affect all threads equally; and ii) the change
+   * may cause at most one queued item to become available.
    */
-  void NotifyOneChange() { push_condition_.notify_all(); }
+  void NotifyChange() { NotifyPush(); }
+
+  /**
+   * Notify the queue that the condition for multiple values might have changed.
+   *
+   * This will unconditionally wake up all threads. This implies that, unlike
+   * @ref NotifyChange(), the change may affect different threads differently,
+   * and the change may affect multiple queued items, even with SameCondition=true.
+   *
+   * Because of this, this method is slower compared to @ref NotifyChange().
+   */
+  void NotifyMultipleChanges() { push_condition_.notify_all(); }
 
   /**
    * Makes PopIf return false once the queue is empty.
@@ -120,6 +134,17 @@ class ConditionalQueue {
       if (condition(*i)) return i;
     }
     return values_.end();
+  }
+
+  void NotifyPush() {
+    if constexpr (SameCondition) {
+      push_condition_.notify_one();
+    } else {
+      // We need to notify all, because if only one thread is awoken that
+      // is looking for a specific condition that is not met, the signal
+      // is lost while another nother thread's condition may be met.
+      push_condition_.notify_all();
+    }
   }
 
   std::list<T> values_;

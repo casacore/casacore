@@ -205,7 +205,7 @@ void SiscoWriter::Preprocess(SiscoWriter::PreprocessingTask& task,
 
     lock.lock();
     busy_baselines_.erase(task.baseline_index);
-    preprocessing_tasks_.NotifyOneChange();
+    preprocessing_tasks_.NotifyChange();
   }
 
   // NB: Lock is and must be still owned.

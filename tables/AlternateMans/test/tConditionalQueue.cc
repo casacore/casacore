@@ -1,6 +1,7 @@
 #include <casacore/tables/AlternateMans/ConditionalQueue.h>
 
 #include <boost/test/unit_test.hpp>
+#include <boost/mpl/list.hpp>
 
 #include <cmath>
 #include <complex>
@@ -8,10 +9,13 @@
 
 namespace casacore::sisco {
 
+template <typename T>
+using QueueTypes = boost::mpl::list<ConditionalQueue<T, false>, ConditionalQueue<T, true>>;
+
 BOOST_AUTO_TEST_SUITE(conditional_queue)
 
-BOOST_AUTO_TEST_CASE(single_threaded) {
-  ConditionalQueue<int> queue(10);
+BOOST_AUTO_TEST_CASE_TEMPLATE(single_threaded, QueueType, QueueTypes<int>) {
+  QueueType queue(10);
   BOOST_CHECK_EQUAL(queue.MaxSize(), 10);
 
   std::mutex mutex;
@@ -26,7 +30,7 @@ BOOST_AUTO_TEST_CASE(single_threaded) {
   BOOST_CHECK_EQUAL(result, 0);
   BOOST_CHECK_EQUAL(queue.Size(lock), 9);
 
-  queue.NotifyOneChange();  // shouldn't do anything
+  queue.NotifyChange();  // shouldn't do anything
 
   for (size_t i = 0; i != 5; ++i) {
     // Pop odd values
@@ -47,7 +51,34 @@ BOOST_AUTO_TEST_CASE(single_threaded) {
   BOOST_CHECK_EQUAL(result, 1000);
 }
 
-BOOST_AUTO_TEST_CASE(multi_threaded) {
+BOOST_AUTO_TEST_CASE_TEMPLATE(multi_threaded_same_condition, QueueType, QueueTypes<int>) {
+  QueueType queue(3);
+  int counter = 0;
+  std::mutex mutex;
+  auto ThreadFunction = [&]() {
+    std::unique_lock lock(mutex);
+    int value;
+    while (queue.PopIf(value, lock, [&counter](int value) { return value == counter; })) {
+      BOOST_CHECK(value == counter);
+      ++counter;
+    }
+  };
+  std::thread a(ThreadFunction);
+  std::thread b(ThreadFunction);
+
+  for (int i = 0; i != 1000; ++i) {
+    std::unique_lock lock(mutex);
+    queue.Push(std::move(i), lock);
+  }
+  {
+    std::unique_lock lock(mutex);
+    queue.Finish(lock);
+  }
+  a.join();
+  b.join();
+}
+
+BOOST_AUTO_TEST_CASE(multi_threaded_different_conditions) {
   ConditionalQueue<int> queue(3);
   size_t even_count = 0;
   size_t odd_count = 0;
