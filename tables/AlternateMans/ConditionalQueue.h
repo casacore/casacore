@@ -93,8 +93,23 @@ class ConditionalQueue {
 
   /**
    * Notify the queue that the condition for values might have changed.
+   *
+   * When SameCondition=true, this will wake up only one waiting thread, and
+   * so: i) the change must affect all threads equally; and ii) the change
+   * may cause at most one queued item to become available.
    */
   void NotifyChange() { NotifyPush(); }
+
+  /**
+   * Notify the queue that the condition for multiple values might have changed.
+   *
+   * This will unconditionally wake up all threads. This implies that, unlike
+   * @ref NotifyChange(), the change may affect different threads differently,
+   * and the change may affect multiple queued items, even with SameCondition=true.
+   *
+   * Because of this, this method is slower compared to @ref NotifyChange().
+   */
+  void NotifyMultipleChanges() { push_condition_.notify_all(); }
 
   /**
    * Makes PopIf return false once the queue is empty.

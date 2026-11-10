@@ -1,6 +1,7 @@
 #include <casacore/tables/AlternateMans/ConditionalQueue.h>
 
 #include <boost/test/unit_test.hpp>
+#include <boost/mpl/list.hpp>
 
 #include <cmath>
 #include <complex>
@@ -8,10 +9,13 @@
 
 namespace casacore::sisco {
 
+template <typename T>
+using QueueTypes = boost::mpl::list<ConditionalQueue<T, false>, ConditionalQueue<T, true>>;
+
 BOOST_AUTO_TEST_SUITE(conditional_queue)
 
-BOOST_AUTO_TEST_CASE(single_threaded) {
-  ConditionalQueue<int> queue(10);
+BOOST_AUTO_TEST_CASE_TEMPLATE(single_threaded, QueueType, QueueTypes<int>) {
+  QueueType queue(10);
   BOOST_CHECK_EQUAL(queue.MaxSize(), 10);
 
   std::mutex mutex;
@@ -47,8 +51,8 @@ BOOST_AUTO_TEST_CASE(single_threaded) {
   BOOST_CHECK_EQUAL(result, 1000);
 }
 
-BOOST_AUTO_TEST_CASE(multi_threaded) {
-  ConditionalQueue<int> queue(3);
+BOOST_AUTO_TEST_CASE_TEMPLATE(multi_threaded, QueueType, QueueTypes<int>) {
+  QueueType queue(3);
   size_t even_count = 0;
   size_t odd_count = 0;
   std::mutex mutex;
