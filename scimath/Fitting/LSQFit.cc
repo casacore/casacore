@@ -26,6 +26,7 @@
 // # Includes
 #include <casacore/scimath/Fitting/LSQFit.h>
 #include <algorithm>
+#include <cmath>
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
@@ -425,13 +426,15 @@ void LSQFit::solveIt() {
     // solution
     for (unsigned int i1 = 0; i1 < nnc_p; ++i1) wsol_p[piv_p[i1]] = sol_p[i1];
   }
-  double halfChi2 = 0.5 * error_p[SUMLL];
+  double q = 0;
   for (unsigned int i = 0; i < nun_p; ++i) {
     const double *ni = norm_p->row(i);
-    double t = 0.5 * ni[i] * wsol_p[i] - known_p[i];
+    const double nx = ni[i] * wsol_p[i];
+    double t = (std::isfinite(nx) ? 0.5 * nx : 0.5 * ni[i] * wsol_p[i]) - known_p[i];
     for (unsigned int j = i + 1; j < nun_p; ++j) t += ni[j] * wsol_p[j];
-    halfChi2 += wsol_p[i] * t;
+    q += wsol_p[i] * t;
   }
+  const double halfChi2 = 0.5 * error_p[SUMLL] + q;
   error_p[CHI2] = sqrt(std::max(0.0, 2 * halfChi2 / std::max(1.0, error_p[NC] - nun_p)));
 }
 

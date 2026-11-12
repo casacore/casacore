@@ -1486,6 +1486,39 @@ int main() {
       cout << "Sol: " << sol[0] << "; sd: " << fit.getSD() << endl;
     }
     cout << "---------------------------------------------------" << endl;
+    cout << "Real -- 1 unknown, 1 constraint --- subnormal normal equation ---" << endl;
+    {
+      LSQFit fit(1, 1);
+      double ce[1] = {0x1p-537};
+      double zero[1] = {0};
+      double con[1] = {1};
+      fit.makeNorm(&ce[0], 1.0, 1.0);
+      fit.makeNorm(&zero[0], 1.0, 0.0);
+      fit.setConstraint(0, &con[0], 0x1p538);
+      unsigned int rank;
+      fit.invert(rank);
+      double sol[1];
+      fit.solve(sol);
+      cout << "Sol: " << sol[0] << "; sd: " << fit.getSD() << endl;
+    }
+    cout << "---------------------------------------------------" << endl;
+    cout << "Real -- 2 unknowns, 2 constraints --- large cancelling solution ---" << endl;
+    {
+      LSQFit fit(2, 2);
+      double ce[2] = {1, 1};
+      double con0[2] = {1, 0};
+      double con1[2] = {0, 1};
+      for (unsigned int i = 0; i < 4; i++) fit.makeNorm(&ce[0], 1.0, i % 2 ? -1.0 : 1.0);
+      fit.setConstraint(0, &con0[0], 0x1p30);
+      fit.setConstraint(1, &con1[0], -0x1p30);
+      unsigned int rank;
+      fit.invert(rank);
+      double sol[2];
+      fit.solve(sol);
+      cout << "Sol: " << sol[0] << ", " << sol[1] << "; sd: " << fit.getSD()
+           << "; chi2: " << fit.getChi2() << endl;
+    }
+    cout << "---------------------------------------------------" << endl;
   } catch (std::exception &x) {
     cout << x.what() << endl;
   }

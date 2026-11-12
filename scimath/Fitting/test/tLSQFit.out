@@ -590,3 +590,9 @@ me:        3.2312e-08, 0
 Real -- 1 unknown --- values near overflow ---
 Sol: 1; sd: 4.74038e+153
 ---------------------------------------------------
+Real -- 1 unknown, 1 constraint --- subnormal normal equation ---
+Sol: 8.99783e+161; sd: 1
+---------------------------------------------------
+Real -- 2 unknowns, 2 constraints --- large cancelling solution ---
+Sol: 1.07374e+09, -1.07374e+09; sd: 1.41421; chi2: 4
+---------------------------------------------------
