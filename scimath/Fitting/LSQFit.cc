@@ -436,10 +436,11 @@ void LSQFit::solveIt() {
     xb += wsol_p[i] * known_p[i];
     xr += wsol_p[i] * (nx - known_p[i]);
   }
-  double lc = 0;
-  for (unsigned int i = nun_p; i < nnc_p; ++i) lc += wsol_p[i] * known_p[i];
   double chi2 = error_p[SUMLL] - xb + xr;
-  if (!std::isfinite(chi2)) chi2 = error_p[SUMLL] - xb - lc;
+  if (!std::isfinite(chi2)) {
+    chi2 = error_p[SUMLL] - xb;
+    for (unsigned int i = nun_p; i < nnc_p; ++i) chi2 -= wsol_p[i] * known_p[i];
+  }
   error_p[CHI2] = sqrt(std::max(0.0, chi2 / std::max(1.0, error_p[NC] - nun_p)));
 }
 
