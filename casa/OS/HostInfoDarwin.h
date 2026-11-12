@@ -46,7 +46,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#if defined(__GNUC__) && !defined(__clang__)
+#define _Static_assert static_assert
 #include <mach/mach.h>
+#undef _Static_assert
+#else
+#include <mach/mach.h>
+#endif
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 

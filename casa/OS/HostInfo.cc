@@ -23,7 +23,9 @@
 // #                        520 Edgemont Road
 // #                        Charlottesville, VA 22903-2475 USA
 
+#ifndef __APPLE__
 #define _XOPEN_SOURCE 600  // For clock_gettime
+#endif
 
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/HostInfo.h>
