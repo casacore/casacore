@@ -596,3 +596,12 @@ Sol: 8.99783e+161; sd: 1
 Real -- 2 unknowns, 2 constraints --- large cancelling solution ---
 Sol: 1.07374e+09, -1.07374e+09; sd: 1.41421; chi2: 4
 ---------------------------------------------------
+Real -- 2 unknowns, 2 constraints --- overflowing cancelling solution ---
+Sol: 1.34078e+154, -1.34078e+154; sd: 1.41421; chi2: 4
+---------------------------------------------------
+Real -- 3 unknowns, 3 constraints --- cancelling rows ---
+Sol: 1.07374e+09, 1, -1.07374e+09; sd: 1.58114; chi2: 5
+---------------------------------------------------
+Real -- 1 unknown --- subnormal residual ---
+Sol: 0; sd: 2.22276e-162
+---------------------------------------------------

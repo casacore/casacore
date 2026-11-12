@@ -1519,6 +1519,58 @@ int main() {
            << "; chi2: " << fit.getChi2() << endl;
     }
     cout << "---------------------------------------------------" << endl;
+    cout << "Real -- 2 unknowns, 2 constraints --- overflowing cancelling solution ---" << endl;
+    {
+      LSQFit fit(2, 2);
+      double ce[2] = {1, 1};
+      double con0[2] = {1, 0};
+      double con1[2] = {0, 1};
+      for (unsigned int i = 0; i < 4; i++) fit.makeNorm(&ce[0], 1.0, i % 2 ? -1.0 : 1.0);
+      fit.setConstraint(0, &con0[0], 0x1p512);
+      fit.setConstraint(1, &con1[0], -0x1p512);
+      unsigned int rank;
+      fit.invert(rank);
+      double sol[2];
+      fit.solve(sol);
+      cout << "Sol: " << sol[0] << ", " << sol[1] << "; sd: " << fit.getSD()
+           << "; chi2: " << fit.getChi2() << endl;
+    }
+    cout << "---------------------------------------------------" << endl;
+    cout << "Real -- 3 unknowns, 3 constraints --- cancelling rows ---" << endl;
+    {
+      LSQFit fit(3, 3);
+      double ce[3] = {1, 0, 1};
+      double ce1[3] = {0, 1, 0};
+      double con0[3] = {1, 0, 0};
+      double con1[3] = {0, 1, 0};
+      double con2[3] = {0, 0, 1};
+      for (unsigned int i = 0; i < 4; i++) fit.makeNorm(&ce[0], 1.0, i % 2 ? -1.0 : 1.0);
+      fit.makeNorm(&ce1[0], 1.0, 0.0);
+      fit.setConstraint(0, &con0[0], 0x1p30);
+      fit.setConstraint(1, &con1[0], 1.0);
+      fit.setConstraint(2, &con2[0], -0x1p30);
+      unsigned int rank;
+      fit.invert(rank);
+      double sol[3];
+      fit.solve(sol);
+      cout << "Sol: " << sol[0] << ", " << sol[1] << ", " << sol[2] << "; sd: " << fit.getSD()
+           << "; chi2: " << fit.getChi2() << endl;
+    }
+    cout << "---------------------------------------------------" << endl;
+    cout << "Real -- 1 unknown --- subnormal residual ---" << endl;
+    {
+      LSQFit fit(1);
+      double ce[1] = {1};
+      double zero[1] = {0};
+      fit.makeNorm(&ce[0], 1.0, 0.0);
+      fit.makeNorm(&zero[0], 1.0, 0x1p-537);
+      unsigned int rank;
+      fit.invert(rank);
+      double sol[1];
+      fit.solve(sol);
+      cout << "Sol: " << sol[0] << "; sd: " << fit.getSD() << endl;
+    }
+    cout << "---------------------------------------------------" << endl;
   } catch (std::exception &x) {
     cout << x.what() << endl;
   }
