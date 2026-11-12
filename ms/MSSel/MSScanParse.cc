@@ -64,13 +64,7 @@ std::vector<int>& MSScanParse::accumulateIDs(const int id0, const int id1) {
 
 // # Constructor with given ms name.
 MSScanParse::MSScanParse(const MeasurementSet* ms)
-    : MSParse(ms, "Scan"),
-      colName(MS::columnName(MS::SCAN_NUMBER)),
-      //      maxScans_p(std::numeric_limits<Int>::max())
-      maxScans_p(1000) {
-  idList.resize(0);
-  parsedIDList_p.resize(0);
-}
+    : MSScanParse(ms, ms->col(MS::columnName(MS::SCAN_NUMBER))) {}
 
 // # Constructor with given ms and main-column of interest supplied
 // # as a TEN.  This allows making the parser generic to work for

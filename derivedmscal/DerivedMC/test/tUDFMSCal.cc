@@ -43,12 +43,18 @@ void createTable() {
   ms.createDefaultSubtables(Table::New);
   ScalarColumn<int> a1col(ms, "ANTENNA1");
   ScalarColumn<int> a2col(ms, "ANTENNA2");
+  ScalarColumn<int> scancol(ms, "SCAN_NUMBER");
+  ScalarColumn<double> timecol(ms, "TIME");
+  ScalarColumn<double> expcol(ms, "EXPOSURE");
   int row = 0;
   for (unsigned int i = 0; i < nant; ++i) {
     for (unsigned int j = i; j < nant; ++j) {
       ms.addRow();
       a1col.put(row, i);
       a2col.put(row, j);
+      scancol.put(row, row / 5);
+      timecol.put(row, 4.8e9 + row);
+      expcol.put(row, 1.);
       ++row;
     }
   }
@@ -61,6 +67,17 @@ void createTable() {
     ostr << "RT" << i;
     namecol.put(i, ostr.str());
   }
+}
+
+void showSelection(const String& where) {
+  Table tab = tableCommand("select from tUDFMSCal_tmp.tab where " + where).table();
+  Vector<int> a1(ScalarColumn<int>(tab, "ANTENNA1").getColumn());
+  Vector<int> a2(ScalarColumn<int>(tab, "ANTENNA2").getColumn());
+  cout << where << ':';
+  for (unsigned int i = 0; i < tab.nrow(); ++i) {
+    cout << ' ' << a1[i] << '-' << a2[i];
+  }
+  cout << endl;
 }
 
 void testUDF() {
@@ -82,6 +99,8 @@ void testUDF() {
   } catch (const AipsError& x) {
     cout << x.what() << endl;
   }
+  showSelection("mscal.scan('1')");
+  showSelection("mscal.time('>13:20:10')");
 }
 
 int main() {
