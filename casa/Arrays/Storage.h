@@ -59,9 +59,9 @@ class Storage {
 
   // Construct a Storage with uninitialized data.
   // This will skip the constructor of the elements. This is only allowed for
-  // trivial types.
+  // trivially copyable types.
   static std::unique_ptr<Storage<T>> MakeUninitialized(size_t n) {
-    static_assert(std::is_trivial<T>::value, "Only trivial types can be constructed uninitialized");
+    static_assert(std::is_trivially_copyable<T>::value, "Only trivially copyable types can be constructed uninitialized");
     std::unique_ptr<Storage<T>> newStorage = std::unique_ptr<Storage>(new Storage<T>());
     if (n == 0)
       newStorage->_data = nullptr;
