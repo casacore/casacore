@@ -83,11 +83,12 @@ bool testZenithInApparent() {
   MPosition vla(MVPosition(-1601087.19, -5041339.84, 3555815.86), MPosition::ITRF);
   for (double hours : {10.36, 16.0, 25.5}) {
     MeasFrame frame(MEpoch(Quantity(56529 + hours / 24, "d"), MEpoch::UTC), vla);
-    double last, lng, lat, tdb;
+    double last, lng, lat, tdb, radius;
     frame.getLASTr(last);
     frame.getLong(lng);
     frame.getLat(lat);
     frame.getTDB(tdb);
+    frame.getRadius(radius);
     Euler pm = MeasTable::polarMotion(tdb);
     double x = -pm(0);
     double y = -pm(1);
@@ -97,7 +98,8 @@ bool testZenithInApparent() {
     double dRA = remainder(app.getLong() - last, 2.0 * M_PI);
     double dDec = app.getLat() - lat;
     AlwaysAssertExit(abs(dDec - (x * cos(lng) - y * sin(lng))) < 1e-10);
-    AlwaysAssertExit(abs(dRA - (x * sin(lng) + y * cos(lng)) * tan(lat)) < 1e-10);
+    double diurnal = MeasTable::diurnalAber(radius, tdb);
+    AlwaysAssertExit(abs(dRA - (x * sin(lng) + y * cos(lng)) * tan(lat) + diurnal) < 1e-10);
   }
   return true;
 }

@@ -582,9 +582,8 @@ void MeasMath::applyTOPOtoHADEC(MVPosition &in, bool doin) {
   getInfo(RADIUS);
   getInfo(LAT);
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
-  // MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
-  updatePosition(info_p[LASTR], info_p[LAT], MVPOS1);
-  MVPOS1.readjust(g2);
+  updatePosition(info_p[LASTR] + M_PI_2, 0.0, MVPOS1);
+  MVPOS1.readjust(g2 * cos(info_p[LAT]));
   /// Really should use topo for planets
   rotateShift(in, MVPOS1, APPLONG, APPLAT, doin);
   deapplyPolarMotion(in);
@@ -596,9 +595,8 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, bool doin) {
   getInfo(RADIUS);
   getInfo(LAT);
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
-  // MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
-  updatePosition(info_p[LASTR], info_p[LAT], MVPOS1);
-  MVPOS1.readjust(g2);
+  updatePosition(info_p[LASTR] + M_PI_2, 0.0, MVPOS1);
+  MVPOS1.readjust(g2 * cos(info_p[LAT]));
   applyPolarMotion(in);
   /// Really use topo for planets
   rotateShift(in, -MVPOS1, APPLONG, APPLAT, doin);
