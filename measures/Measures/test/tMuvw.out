@@ -57,15 +57,15 @@ Frame: Epoch: 50927::22:18:12.3840 (TDB = 50927.9, UT1 = 50927.9, TT = 50927.9)
        Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
         (Longitude = 2.61014 Latitude = -0.526138)
        Direction: [0.17101, 0.0301537, 0.984808]
-        (J2000 = [-33.1687, 80.0127] deg)
+        (J2000 = [-33.1697, 80.0126] deg)
 uvw reference: Reference for an uvw with Type: J2000
 Test uvw conversion ...
 --------------------------------------
 Converted uvw: [100, 10, 0]
  to Reference for an uvw with Type: J2000
- as uvw: [99.9944, 10.0562, -1.50948e-07]
+ as uvw: [99.9942, 10.058, -1.50946e-07]
 Back      uvw: [100, 10, 0] : not ok
- as uvw: [100, 10, -1.50877e-07]
+ as uvw: [100, 10, -1.50875e-07]
 --------------------------------------
 Make uvw from Baseline
 Baseline: [100, 10, 1][5.71059, 0.570096] deg

@@ -57,13 +57,13 @@ Frame: Epoch: 50927::22:18:12.3840 (TDB = 50927.9, UT1 = 50927.9, TT = 50927.9)
        Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
         (Longitude = 2.61014 Latitude = -0.526138)
        Direction: [0.17101, 0.0301537, 0.984808]
-        (J2000 = [-33.1687, 80.0127] deg)
+        (J2000 = [-33.1697, 80.0126] deg)
 Baseline reference: Reference for an Baseline with Type: J2000
 Test Baseline conversion ...
 --------------------------------------
 Converted Baseline: [100, 10, 1e-08]
  to Reference for an Baseline with Type: J2000
- as Baseline: [-97.9137, -22.6474, -0.0224705]
+ as Baseline: [-97.9137, -22.6474, -0.0226292]
 Back      Baseline: [100, 10, 1e-08] : ok
 --------------------------------------
 Testing all conversions forward/backward

@@ -607,17 +607,21 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, bool doin) {
 void MeasMath::applyPolarMotion(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
+  getInfo(LONG);
   in(1) = -in(1);
   Euler EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR];
+  EULER1(2) = info_p[LONG];
   in = RotMatrix(EULER1) * in;
+  in = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], 3u)) * in;
 }
 
 void MeasMath::deapplyPolarMotion(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
+  getInfo(LONG);
+  in *= RotMatrix(Euler(info_p[LASTR] - info_p[LONG], 3u));
   Euler EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR];
+  EULER1(2) = info_p[LONG];
   in *= RotMatrix(EULER1);
   in(1) = -in(1);
 }
