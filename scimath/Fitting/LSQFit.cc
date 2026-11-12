@@ -403,14 +403,6 @@ void LSQFit::solveIt() {
         sol_p[i1] += j0[i2] * known_p[i2];
       }
     }
-    double dmu = 0;
-    for (unsigned int i1 = 0; i1 < r_p; i1++) {
-      dmu += sol_p[i1] * known_p[i1];  // make rms
-    }
-    dmu = error_p[SUMLL] - dmu;  // chi**2
-    // error per observation
-    dmu = sqrt(std::max(0.0, dmu / std::max(1.0, error_p[NC] - nun_p)));
-    error_p[CHI2] = dmu;                      // save
     std::copy(sol_p, sol_p + nnc_p, wsol_p);  // return solution
     // solve
   } else {                                       // normal
@@ -428,18 +420,19 @@ void LSQFit::solveIt() {
       }
       sol_p[i1] /= i3[i1];
     }
-    double dmu = 0;
-    for (unsigned int i1 = 0; i1 < r_p; i1++) {
-      dmu += sol_p[i1] * known_p[piv_p[i1]];  // make rms
-    }
-    dmu = error_p[SUMLL] - dmu;  // chi**2
-    dmu = sqrt(std::max(0.0, dmu / std::max(1.0, error_p[NC] - nun_p)));
-    error_p[CHI2] = dmu;  // save
     // Missing rank
     solveMR(nnc_p);
     // solution
     for (unsigned int i1 = 0; i1 < nnc_p; ++i1) wsol_p[piv_p[i1]] = sol_p[i1];
   }
+  double halfChi2 = 0.5 * error_p[SUMLL];
+  for (unsigned int i = 0; i < nun_p; ++i) {
+    const double *ni = norm_p->row(i);
+    double t = 0.5 * ni[i] * wsol_p[i] - known_p[i];
+    for (unsigned int j = i + 1; j < nun_p; ++j) t += ni[j] * wsol_p[j];
+    halfChi2 += wsol_p[i] * t;
+  }
+  error_p[CHI2] = sqrt(std::max(0.0, 2 * halfChi2 / std::max(1.0, error_p[NC] - nun_p)));
 }
 
 bool LSQFit::solveItLoop(double &fit, unsigned int &nRank, bool doSVD) {

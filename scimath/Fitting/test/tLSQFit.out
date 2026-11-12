@@ -587,3 +587,6 @@ Ready:      Incremental solution too small
 Sol:       20, 25, 4
 me:        3.2312e-08, 0
 ---------------------------------------------------
+Real -- 1 unknown --- values near overflow ---
+Sol: 1; sd: 4.74038e+153
+---------------------------------------------------

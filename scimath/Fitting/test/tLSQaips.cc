@@ -232,14 +232,15 @@ int main() {
     sd1 = lsq5.getSD();
     mu1 = lsq5.getWeightedSD();
     for (unsigned int i = 0; i < 6; i++) {
-      cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+      cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-4) << ", "
+           << Y(mu1, 1e-4) << endl;
     }
-    cout << "Chi2: " << lsq5.getChi() << endl;
+    cout << "Chi2: " << Y(lsq5.getChi(), 1e-4) << endl;
     lsq5.getErrors(err1);
     cout << "Errors: ";
     for (unsigned int i = 0; i < 6; i++) {
       if (i != 0) cout << ", ";
-      cout << err1[i];
+      cout << Y(err1[i], 1e-4);
     }
     cout << endl;
     lsq5.getCovariance(cv1);
@@ -292,8 +293,8 @@ int main() {
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (unsigned int i = 0; i < 6; i++) {
-        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-5) << ", "
-             << Y(mu1, 1e-5) << endl;
+        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-4) << ", "
+             << Y(mu1, 1e-4) << endl;
       }
     }
     cout << "---------------------------------------------------" << endl;
@@ -324,8 +325,8 @@ int main() {
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (unsigned int i = 0; i < 6; i++) {
-        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-5) << ", "
-             << Y(mu1, 1e-5) << endl;
+        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-4) << ", "
+             << Y(mu1, 1e-4) << endl;
       }
     }
     cout << "---------------------------------------------------" << endl;
@@ -346,7 +347,8 @@ int main() {
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (unsigned int i = 0; i < 6; i++) {
-        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-4) << ", "
+             << Y(mu1, 1e-4) << endl;
       }
     }
     cout << "---------------------------------------------------" << endl;
@@ -399,8 +401,8 @@ int main() {
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (unsigned int i = 0; i < 3; i++) {
-        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 8e-7) << ", "
-             << Y(mu1, 8e-7) << endl;
+        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-4) << ", "
+             << Y(mu1, 1e-4) << endl;
       }
     }
     cout << "---------------------------------------------------" << endl;
@@ -431,7 +433,8 @@ int main() {
       sd1 = lsq5.getSD();
       mu1 = lsq5.getWeightedSD();
       for (unsigned int i = 0; i < 3; i++) {
-        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << sd1 << ", " << mu1 << endl;
+        cout << "Sol" << i << ": " << Y(sol1[i], 1e-12) << ", " << Y(sd1, 1e-4) << ", "
+             << Y(mu1, 1e-4) << endl;
       }
     }
 
@@ -455,7 +458,7 @@ int main() {
       cout << ": " << sol[i4];
     }
 
-    cout << endl << "mu: " << mu << ", me: " << me << endl;
+    cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
     {
       Matrix<double> cv(2 * N, 2 * N);
       lsqc1.getCovariance(cv);
@@ -487,7 +490,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < 2 * N; i4++) {
         cout << ": " << sol[i4];
       }
-      cout << endl << "mu: " << mu << ", me: " << me << endl;
+      cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
       lsqc1.solve(csol);
       muf = lsqc1.getSD();
       sdf = lsqc1.getWeightedSD();
@@ -495,7 +498,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < N; i4++) {
         cout << ": " << csol[i4];
       }
-      cout << endl << "mu: " << muf << ", me: " << sdf << endl;
+      cout << endl << "mu: " << Y(muf, 1e-4) << ", me: " << Y(sdf, 1e-4) << endl;
       Vector<DComplex> dcsol(N1);
       lsqc1.solve(dcsol);
       mu = lsqc1.getSD();
@@ -504,7 +507,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < N; i4++) {
         cout << ": " << dcsol[i4];
       }
-      cout << endl << "mu: " << mu << ", me: " << me << endl;
+      cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
       {
         Matrix<double> cv(2 * N, 2 * N);
         Matrix<Complex> ccv(N, N);
@@ -565,7 +568,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < 2 * N; i4++) {
         cout << ": " << sol[i4];
       }
-      cout << endl << "mu: " << mu << ", me: " << me << endl;
+      cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
       {
         for (unsigned int i = 0; i < M; i++) {
           DComplex cd1(0, 0);
@@ -653,7 +656,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < 2 * N; i4++) {
         cout << ": " << sol[i4];
       }
-      cout << endl << "mu: " << mu << ", me: " << me << endl;
+      cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
       {
         Matrix<double> cv(2 * N, 2 * N);
         lsqc1.getCovariance(cv);
@@ -690,7 +693,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < 2 * N; i4++) {
         cout << ": " << sol[i4];
       }
-      cout << endl << "mu: " << mu << ", me: " << me << endl;
+      cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
       {
         Matrix<double> cv(2 * N, 2 * N);
         lsqc1.getCovariance(cv);
@@ -727,7 +730,7 @@ int main() {
       for (unsigned int i4 = 0; i4 < 2 * N; i4++) {
         cout << ": " << sol[i4];
       }
-      cout << endl << "mu: " << mu << ", me: " << me << endl;
+      cout << endl << "mu: " << Y(mu, 1e-4) << ", me: " << Y(me, 1e-4) << endl;
       {
         Matrix<double> cv(2 * N, 2 * N);
         lsqc1.getCovariance(cv);
