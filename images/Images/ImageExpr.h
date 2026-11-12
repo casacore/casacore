@@ -172,6 +172,8 @@ class ImageExpr : public ImageInterface<T> {
   // Do the actual get of the data.
   virtual bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
 
+  virtual bool canReferenceArray() const;
+
   // putSlice is not possible on an expression, so it throws an exception.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,
                           const IPosition& stride);
