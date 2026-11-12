@@ -23,8 +23,6 @@
 // #                        520 Edgemont Road
 // #                        Charlottesville, VA 22903-2475 USA
 
-#define _XOPEN_SOURCE 600  // For clock_gettime
-
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/System/Aipsrc.h>
@@ -33,8 +31,7 @@
 #include <unistd.h>
 #include <sys/utsname.h>
 
-// Time related includes
-#include <time.h>
+#include <chrono>
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
@@ -60,11 +57,8 @@ String HostInfo::hostName() {
 int HostInfo::processID() { return getpid(); }
 
 double HostInfo::secondsFrom1970() {
-  struct timespec tp;
-  AlwaysAssert(clock_gettime(CLOCK_REALTIME, &tp) == 0, AipsError);
-  double total = tp.tv_sec;
-  total += tp.tv_nsec * 1.e-9;
-  return total;
+  using clock = std::chrono::system_clock;
+  return std::chrono::duration<double>(clock::now().time_since_epoch()).count();
 }
 
 #define HOSTINFO_IMPLEMENT_MEMBERS                                                      \
