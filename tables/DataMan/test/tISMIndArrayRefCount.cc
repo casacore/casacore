@@ -38,16 +38,27 @@ BOOST_AUTO_TEST_CASE(repeated_same_shape_put_reuses_indirect_array) {
 
   const std::string arrayFile = tableName + "/table.f0i";
   const size_t initialSize = std::filesystem::file_size(arrayFile);
+
+  // Changing the shape allocates a new record. Its initial reference count
+  // must remain one so subsequent puts can reuse it.
+  value1.resize(32);
+  value1 = 3.0f;
+  column.put(1, value1);
+  table.flush(true);
+  const size_t changedShapeSize = std::filesystem::file_size(arrayFile);
+  BOOST_CHECK_GT(changedShapeSize, initialSize);
+
   for (int i = 0; i < 20; ++i) {
     value1 = static_cast<float>(i);
     column.put(1, value1);
   }
   table.flush(true);
 
-  BOOST_CHECK_EQUAL(std::filesystem::file_size(arrayFile), initialSize);
+  BOOST_CHECK_EQUAL(std::filesystem::file_size(arrayFile), changedShapeSize);
   Vector<float> result;
   column.get(1, result);
   BOOST_CHECK_EQUAL(result(0), 19.0f);
+  BOOST_CHECK_EQUAL(result.nelements(), 32);
 
   table = Table();
   std::filesystem::remove_all(tableName);

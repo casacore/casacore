@@ -194,7 +194,6 @@ StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, boo
       ptr->setShape(*iosfile_p, dataType(), shape);
       int64_t offset = ptr->fileOffset();
       if (offset != *reinterpret_cast<int64_t*>(lastValue_p)) {
-        ptr->incrementRefCount(*iosfile_p);
         putValue(rownr, &offset);
       }
       return ptr;
