@@ -52,7 +52,9 @@ MSMColumn::~MSMColumn() { deleteAll(); }
 
 void MSMColumn::doCreate(rownr_t nrrow) {
   addRow(nrrow, 0);
-  initData(data_p[1], nrrow);
+  if (!byPtr_p) {
+    initData(data_p[1], nrrow);
+  }
 }
 
 void MSMColumn::addRow(rownr_t nrnew, rownr_t) {
@@ -510,13 +512,10 @@ void MSMColumn::removeData(void* dp, rownr_t inx, rownr_t nrvalAfter) {
 }
 
 void MSMColumn::initData(void* datap, rownr_t nrval) {
-  // Pointers are already initialized by allocData.
-  if (!byPtr_p) {
-    if (dtype() == TpBool) {
-      objset(static_cast<bool*>(datap), true, nrval);
-    } else if (dtype() != TpString) {
-      memset(datap, 0, nrval * elemSize());
-    }
+  if (dtype() == TpBool) {
+    objset(static_cast<bool*>(datap), true, nrval);
+  } else if (dtype() != TpString) {
+    memset(datap, 0, nrval * elemSize());
   }
 }
 

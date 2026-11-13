@@ -682,7 +682,10 @@ void reopenFixedShapeArray() {
   }
   Table tab("tMemoryStMan_tmp.reopen", Table::Update);
   ArrayColumn<double> col(tab, "D");
-  AlwaysAssertExit(col.getColumn().shape().isEqual(IPosition(2, 3, 5)));
+  Array<double> values = col.getColumn();
+  AlwaysAssertExit(values.shape().isEqual(IPosition(2, 3, 5)));
+  AlwaysAssertExit(allEQ(values, 0.));
   col.put(2, Vector<double>(3, 1.5));
   AlwaysAssertExit(allEQ(col(2), 1.5));
+  AlwaysAssertExit(allEQ(col(3), 0.));
 }
