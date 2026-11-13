@@ -1,6 +1,7 @@
 #ifndef CASACORE_STORAGE_2_H
 #define CASACORE_STORAGE_2_H
 
+#include <complex>
 #include <cstring>
 #include <memory>
 
@@ -59,9 +60,11 @@ class Storage {
 
   // Construct a Storage with uninitialized data.
   // This will skip the constructor of the elements. This is only allowed for
-  // trivial types.
+  // trivial types and std::complex.
   static std::unique_ptr<Storage<T>> MakeUninitialized(size_t n) {
-    static_assert(std::is_trivial<T>::value, "Only trivial types can be constructed uninitialized");
+    static_assert(std::is_trivial<T>::value || std::is_same<T, std::complex<float>>::value ||
+                      std::is_same<T, std::complex<double>>::value,
+                  "Only trivial and complex types can be constructed uninitialized");
     std::unique_ptr<Storage<T>> newStorage = std::unique_ptr<Storage>(new Storage<T>());
     if (n == 0)
       newStorage->_data = nullptr;

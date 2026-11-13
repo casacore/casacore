@@ -36,6 +36,12 @@
 #include <casacore/images/Images/ImageExprParse.h>
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/lattices/Lattices/CurvedLattice2D.h>
+#include <casacore/lattices/LatticeMath/CLIPNearest2D.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/namespace.h>
@@ -137,9 +143,22 @@ void testExpr() {
   AlwaysAssertExit(exc);
 }
 
+void testCurved() {
+  TempImage<float> img(TiledShape(IPosition(2, 16, 12)), CoordinateUtil::defaultCoords2D());
+  Array<float> arr(IPosition(2, 16, 12));
+  indgen(arr);
+  img.put(arr);
+  ImageExpr<float> expr(LatticeExpr<float>(LatticeExprNode(img) * 2.0f), "img*2");
+  PixelCurve1D pc(1, 0, 11, 10, 11);
+  CurvedLattice2D<float> cexpr(expr, CLIPNearest2D<float>(), pc, 0, 1, 0);
+  CurvedLattice2D<float> cimg(img, CLIPNearest2D<float>(), pc, 0, 1, 0);
+  AlwaysAssertExit(allEQ(cexpr.get(), cimg.get() * 2.0f));
+}
+
 int main() {
   try {
     testExpr();
+    testCurved();
   } catch (const std::exception& x) {
     cerr << x.what() << endl;
     return 1;

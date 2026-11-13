@@ -171,6 +171,8 @@ class LatticeExpr : public MaskedLattice<T> {
   // Returns false, as the LatticeExpr lattice is not writable.
   virtual bool isWritable() const;
 
+  virtual bool canReferenceArray() const;
+
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
   // <br>hasLock() is true if all parts of the expression return true.
   // <br>It is strongly recommended to use class
@@ -202,13 +204,13 @@ class LatticeExpr : public MaskedLattice<T> {
   virtual LELCoordinates lelCoordinates() const;
 
   // Do the actual get of the data.
-  // The return value is always false, thus the buffer does not reference
-  // another array.
+  // The return value is always true, thus the buffer references the
+  // evaluated chunk.
   virtual bool doGetSlice(Array<T>& buffer, const Slicer& section);
 
   // Do the actual get of the mask data.
-  // The return value is always false, thus the buffer does not reference
-  // another array.
+  // The return value is true if the evaluated chunk has a mask, thus the
+  // buffer references that mask.
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // An expression is not writable so this functions throws an exception.

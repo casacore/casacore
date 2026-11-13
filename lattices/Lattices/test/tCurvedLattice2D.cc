@@ -30,6 +30,8 @@
 #include <casacore/lattices/Lattices/ArrayLattice.h>
 #include <casacore/lattices/Lattices/PagedArray.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -150,6 +152,16 @@ int main(int argc, const char* argv[]) {
       PagedArray<int> pa(latticeShape, "tCurvedLattice2D_tmp.pa");
       pa.put(arr);
       doIt3(pa);
+    }
+    {
+      Array<float> arr(IPosition(2, 16, 12));
+      indgen(arr);
+      ArrayLattice<float> lattice(arr);
+      LatticeExpr<float> expr(LatticeExprNode(lattice) * 2.0f);
+      PixelCurve1D pc(1, 0, 11, 10, 11);
+      CurvedLattice2D<float> cexpr(SubLattice<float>(expr), CLIPNearest2D<float>(), pc, 0, 1, 0);
+      CurvedLattice2D<float> clat(SubLattice<float>(lattice), CLIPNearest2D<float>(), pc, 0, 1, 0);
+      AlwaysAssertExit(allEQ(cexpr.get(), clat.get() * 2.0f));
     }
 
     {

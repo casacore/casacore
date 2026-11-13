@@ -145,6 +145,11 @@ bool LatticeExpr<T>::isWritable() const {
 }
 
 template <class T>
+bool LatticeExpr<T>::canReferenceArray() const {
+  return true;
+}
+
+template <class T>
 bool LatticeExpr<T>::lock(FileLocker::LockType type, unsigned int nattempts) {
   return expr_p.lock(type, nattempts);
 }

@@ -198,6 +198,11 @@ bool ImageExpr<T>::doGetSlice(Array<T>& buffer, const Slicer& section) {
 }
 
 template <class T>
+bool ImageExpr<T>::canReferenceArray() const {
+  return latticeExpr_p.canReferenceArray();
+}
+
+template <class T>
 void ImageExpr<T>::doPutSlice(const Array<T>&, const IPosition&, const IPosition&) {
   throw(
       AipsError("ImageExpr::putSlice - "
