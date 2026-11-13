@@ -95,6 +95,7 @@ void restoreData(const Table aTable);
 
 // put/putColumn cache test
 void putColumnTest();
+void reopenFixedShapeArray();
 
 int main() {
   try {
@@ -132,6 +133,7 @@ int main() {
       aNewNrRows(i) = i;
     }
     deleteRows(aNewNrRows);
+    reopenFixedShapeArray();
 
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;
@@ -666,4 +668,24 @@ void putColumnTest() {
   ab.putColumn(ab.getColumn() + 1);
   AlwaysAssertExit(ab(5) == 4);
   saveData(aTable);
+}
+
+void reopenFixedShapeArray() {
+  {
+    TableDesc td;
+    td.addColumn(ArrayColumnDesc<double>("D", IPosition(1, 3), ColumnDesc::FixedShape));
+    td.addColumn(ScalarColumnDesc<int>("S"));
+    SetupNewTable newtab("tMemoryStMan_tmp.reopen", td, Table::New);
+    MemoryStMan msm("MSM");
+    newtab.bindColumn("D", msm);
+    Table tab(newtab, 5);
+  }
+  Table tab("tMemoryStMan_tmp.reopen", Table::Update);
+  ArrayColumn<double> col(tab, "D");
+  Array<double> values = col.getColumn();
+  AlwaysAssertExit(values.shape().isEqual(IPosition(2, 3, 5)));
+  AlwaysAssertExit(allEQ(values, 0.));
+  col.put(2, Vector<double>(3, 1.5));
+  AlwaysAssertExit(allEQ(col(2), 1.5));
+  AlwaysAssertExit(allEQ(col(3), 0.));
 }
