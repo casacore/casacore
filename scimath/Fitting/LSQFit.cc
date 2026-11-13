@@ -26,6 +26,7 @@
 // # Includes
 #include <casacore/scimath/Fitting/LSQFit.h>
 #include <algorithm>
+#include <cmath>
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
@@ -403,14 +404,6 @@ void LSQFit::solveIt() {
         sol_p[i1] += j0[i2] * known_p[i2];
       }
     }
-    double dmu = 0;
-    for (unsigned int i1 = 0; i1 < r_p; i1++) {
-      dmu += sol_p[i1] * known_p[i1];  // make rms
-    }
-    dmu = error_p[SUMLL] - dmu;  // chi**2
-    // error per observation
-    dmu = sqrt(std::max(0.0, dmu / std::max(1.0, error_p[NC] - nun_p)));
-    error_p[CHI2] = dmu;                      // save
     std::copy(sol_p, sol_p + nnc_p, wsol_p);  // return solution
     // solve
   } else {                                       // normal
@@ -428,18 +421,27 @@ void LSQFit::solveIt() {
       }
       sol_p[i1] /= i3[i1];
     }
-    double dmu = 0;
-    for (unsigned int i1 = 0; i1 < r_p; i1++) {
-      dmu += sol_p[i1] * known_p[piv_p[i1]];  // make rms
-    }
-    dmu = error_p[SUMLL] - dmu;  // chi**2
-    dmu = sqrt(std::max(0.0, dmu / std::max(1.0, error_p[NC] - nun_p)));
-    error_p[CHI2] = dmu;  // save
     // Missing rank
     solveMR(nnc_p);
     // solution
     for (unsigned int i1 = 0; i1 < nnc_p; ++i1) wsol_p[piv_p[i1]] = sol_p[i1];
   }
+  double xb = 0;
+  double xr = 0;
+  for (unsigned int i = 0; i < nun_p; ++i) {
+    double nx = 0;
+    for (unsigned int j = 0; j < i; ++j) nx += norm_p->row(j)[i] * wsol_p[j];
+    const double *ni = norm_p->row(i);
+    for (unsigned int j = i; j < nun_p; ++j) nx += ni[j] * wsol_p[j];
+    xb += wsol_p[i] * known_p[i];
+    xr += wsol_p[i] * (nx - known_p[i]);
+  }
+  double chi2 = error_p[SUMLL] - xb + xr;
+  if (!std::isfinite(chi2)) {
+    chi2 = error_p[SUMLL] - xb;
+    for (unsigned int i = nun_p; i < nnc_p; ++i) chi2 -= wsol_p[i] * known_p[i];
+  }
+  error_p[CHI2] = sqrt(std::max(0.0, chi2 / std::max(1.0, error_p[NC] - nun_p)));
 }
 
 bool LSQFit::solveItLoop(double &fit, unsigned int &nRank, bool doSVD) {
