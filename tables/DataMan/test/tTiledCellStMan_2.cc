@@ -44,7 +44,8 @@ BOOST_AUTO_TEST_SUITE(tiled_cell_stman_2)
 
 BOOST_AUTO_TEST_CASE(row_range_access) {
   casacore::TableDesc td("", "1", casacore::TableDesc::Scratch);
-  td.addColumn(casacore::ArrayColumnDesc<float>("A", IPosition(2, 4, 2), casacore::ColumnDesc::FixedShape));
+  td.addColumn(
+      casacore::ArrayColumnDesc<float>("A", IPosition(2, 4, 2), casacore::ColumnDesc::FixedShape));
   td.defineHypercolumn("TSMExample", 2, casacore::stringToVector("A"));
   casacore::SetupNewTable newtab("tTiledCellStMan_2_tmp.data", td, casacore::Table::New);
   casacore::TiledCellStMan sm("TSMExample", IPosition(2, 4, 2));
