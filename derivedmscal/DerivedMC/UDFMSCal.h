@@ -76,7 +76,7 @@ namespace casacore {
 //  <li> STOKES makes it possible to convert Stokes of data, flag, or weight.
 //  <li> BASELINE is baseline selection using CASA syntax.
 //  <li> CORR is correlation selection using CASA syntax.
-//  <li> TIME is baseline selection using CASA syntax.
+//  <li> TIME is time selection using CASA syntax.
 //  <li> UVDIST is UV-distance selection using CASA syntax.
 //  <li> SPW is spectral window selection using CASA syntax.
 //  <li> FIELD is field selection using CASA syntax.
