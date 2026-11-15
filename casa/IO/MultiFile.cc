@@ -207,10 +207,11 @@ void MultiFile::writeHeader() {
   // Allocate a temp buffer if header too large or if O_DIRECT.
   // This buffer is used by writeRemainder and
   bool hasRemainder = (totalSize > itsBlockSize);
-  MultiFileBuffer mfbuf(itsUseODirect || hasRemainder ? itsBlockSize : 0, itsUseODirect);
+  MultiFileBuffer multi_file_buffer(itsUseODirect || hasRemainder ? itsBlockSize : 0,
+                                    itsUseODirect);
   // First write the remainder and adjust the header as needed.
   if (hasRemainder) {
-    writeRemainder(*mio, *cio, mfbuf);
+    writeRemainder(*mio, *cio, multi_file_buffer);
   } else {
     // No remainder, so write the continuation blocknrs here.
     // None are used in the current set.
@@ -229,9 +230,10 @@ void MultiFile::writeHeader() {
     CanonicalConversion::fromLocal(buf + 28, crc);
   }
   writeHeaderTest();  // hook for tMultiFileLarge.cc
+  std::fill(buf + mio->length(), buf + itsBlockSize, 0);
   if (itsUseODirect) {
-    char* iobuf = mfbuf.data();
-    memcpy(iobuf, buf, itsBlockSize);
+    char* iobuf = multi_file_buffer.data();
+    std::copy_n(buf, itsBlockSize, iobuf);
     itsIO->pwrite(itsBlockSize, 0, iobuf);
   } else {
     itsIO->pwrite(itsBlockSize, 0, buf);
@@ -283,7 +285,13 @@ void MultiFile::writeRemainder(MemoryIO& mio, CanonicalIO& cio, MultiFileBuffer&
   for (int64_t i = 0; i < ncont; ++i) {
     int64_t next = (i == ncont - 1 ? int64_t(0) : hdrContNrs[i + 1]);
     CanonicalConversion::fromLocal(iobuf, next);
-    memcpy(iobuf + sizeof(int64_t), remHdr, std::min(todo, contBlkSize));
+    char* iobuffer_position = iobuf + sizeof(int64_t);
+    if (todo < contBlkSize) {
+      memcpy(iobuffer_position, remHdr, todo);
+      std::fill(iobuffer_position + todo, iobuffer_position + contBlkSize, 0);
+    } else {
+      memcpy(iobuffer_position, remHdr, contBlkSize);
+    }
     remHdr += contBlkSize;
     todo -= contBlkSize;
     itsIO->pwrite(itsBlockSize, hdrContNrs[i] * itsBlockSize, iobuf);
