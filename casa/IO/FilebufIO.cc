@@ -60,7 +60,7 @@ void FilebufIO::setBuffer(int64_t bufSize) {
     itsBufOffset = -1;
   }
   if (bufSize > 0) {
-    itsBuffer.resize(bufSize);
+    itsBuffer.assign(bufSize, 0);
     itsBufOffset = -int(bufferSize() + 1);
   }
 }
