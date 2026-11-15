@@ -274,7 +274,10 @@ void FilebufIO::writeBlock(int64_t size, const char* buf) {
     }
     // Read the new buffer.
     itsBufOffset = itsOffset / bufferSize() * bufferSize();
-    itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
+itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
+if (itsBufLen >= 0 && itsBufLen < bufferSize()) {
+  memset(itsBuffer.data() + itsBufLen, 0, bufferSize() - itsBufLen);
+}
   }
   int64_t st = itsOffset - itsBufOffset;
   memcpy(&itsBuffer[st], buf, size);
