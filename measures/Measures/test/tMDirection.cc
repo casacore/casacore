@@ -92,6 +92,7 @@ bool testZenithInApparent() {
     Euler pm = MeasTable::polarMotion(tdb);
     double x = -pm(0);
     double y = -pm(1);
+    AlwaysAssertExit(abs(x) + abs(y) > 1e-8);
     MDirection zenith(MVDirection(0, lat), MDirection::Ref(MDirection::HADEC, frame));
     MVDirection app =
         MDirection::Convert(zenith, MDirection::Ref(MDirection::APP, frame))().getValue();
