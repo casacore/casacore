@@ -441,7 +441,7 @@ void LSQFit::solveIt() {
     chi2 = error_p[SUMLL] - xb;
     for (unsigned int i = nun_p; i < nnc_p; ++i) chi2 -= wsol_p[i] * known_p[i];
   }
-  error_p[CHI2] = sqrt(std::max(0.0, chi2 / std::max(1.0, error_p[NC] - nun_p)));
+  error_p[CHI2] = std::sqrt(std::max(0.0, chi2 / std::max(1.0, error_p[NC] - nun_p)));
 }
 
 bool LSQFit::solveItLoop(double &fit, unsigned int &nRank, bool doSVD) {
