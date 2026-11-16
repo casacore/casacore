@@ -165,12 +165,14 @@ class ImageExpr : public ImageInterface<T> {
   virtual void resize(const TiledShape& newShape);
 
   // Do the actual get of the mask data.
-  // The return value is always false, thus the buffer does not reference
-  // another array.
+  // The return value is true if the evaluated chunk has a mask, thus the
+  // buffer references that mask.
   virtual bool doGetMaskSlice(Array<bool>& buffer, const Slicer& section);
 
   // Do the actual get of the data.
   virtual bool doGetSlice(Array<T>& buffer, const Slicer& theSlice);
+
+  virtual bool canReferenceArray() const;
 
   // putSlice is not possible on an expression, so it throws an exception.
   virtual void doPutSlice(const Array<T>& sourceBuffer, const IPosition& where,

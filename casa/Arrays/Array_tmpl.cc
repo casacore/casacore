@@ -40,4 +40,6 @@ template class Array<unsigned int>;
 template class Array<long long>;
 template class Array<float>;
 template class Array<double>;
+template class Array<std::complex<float>>;
+template class Array<std::complex<double>>;
 }  // namespace casacore

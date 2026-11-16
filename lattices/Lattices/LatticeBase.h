@@ -100,7 +100,7 @@ class LatticeBase {
   virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  // That is the case for an ArrayLattice or a Temp/SubLattice using it.
+  // That is the case for an ArrayLattice, a LatticeExpr, or a Temp/SubLattice using one.
   // It is used by LatticeIterInterface.
   // <br>The default implementation returns false.
   virtual bool canReferenceArray() const;

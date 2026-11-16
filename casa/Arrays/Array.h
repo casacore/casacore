@@ -954,6 +954,8 @@ extern template class Array<int>;
 extern template class Array<long long>;
 extern template class Array<float>;
 extern template class Array<double>;
+extern template class Array<std::complex<float>>;
+extern template class Array<std::complex<double>>;
 
 }  // namespace casacore
 
