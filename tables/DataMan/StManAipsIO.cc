@@ -305,15 +305,8 @@ rownr_t StManAipsIO::resync64(rownr_t nrrow) {
     throw(DataManInternalError("StManAipsIO::open: mismatch in seqnr,#col"));
   }
   if (nrrow != nrr) {
-#if defined(TABLEREPAIR)
-    cerr << "StManAipsIO::open: mismatch in #row (expected " << nrrow << ", found " << nrr << ")"
-         << endl;
-    cerr << "Remainder will be added or discarded" << endl;
-    setHasPut();
-#else
     throw(DataManInternalError("StManAipsIO::open: mismatch in #row; expected " +
                                std::to_string(nrrow) + ", found " + std::to_string(nrr)));
-#endif
   }
   for (i = 0; i < ncolumn(); i++) {
     ios >> dt;

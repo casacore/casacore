@@ -983,14 +983,8 @@ unsigned int TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, boo
     // #}
   }
   if (nrrow != nrrow_p) {
-#if defined(TABLEREPAIR)
-    cerr << "TiledStMan::headerFileGet: mismatch in #row (expected " << nrrow_p << ", found "
-         << nrrow << ")" << endl;
-    dataChanged_p = true;
-#else
     throw(DataManInternalError("TiledStMan::headerFileGet: mismatch in #row; expected " +
                                std::to_string(nrrow_p) + ", found " + std::to_string(nrrow)));
-#endif
   }
   for (unsigned int i = 0; i < ncolumn(); i++) {
     headerFile >> dtype;

@@ -145,11 +145,6 @@ int64_t FilebufIO::readBuffer(int64_t offset, char* buf, int64_t size, bool thro
         fileName());
   }
   if (bytesRead != int(size) && throwException == true) {
-    // # In case of a table reparation the remainder has to be filled with 0.
-#if defined(TABLEREPAIR)
-    memset((char*)buf + bytesRead, 0, size - bytesRead);
-    bytesRead = size;
-#endif
     if (bytesRead < 0) {
       itsSeekOffset = -1;
       throw AipsError(String("FilebufIO::read error for file ") + fileName() + ": " +
@@ -299,14 +294,9 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
     // Read the new buffer.
     itsBufOffset = itsOffset / bufferSize() * bufferSize();
     itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
+    memset(&itsBuffer[itsBufLen], 0, bufferSize() - itsBufLen);
   }
-  int64_t st = itsOffset - itsBufOffset;
-#if defined(TABLEREPAIR)
-  if (st + size > itsBufLen) {
-    memset(&itsBuffer[itsBufLen], 0, st + size - itsBufLen);
-    itsBufLen = st + size;
-  }
-#endif
+  const int64_t st = itsOffset - itsBufOffset;
   if (st + size > itsBufLen) {
     if (throwException) {
       throw AipsError(
