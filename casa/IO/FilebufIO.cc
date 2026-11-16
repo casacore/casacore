@@ -35,30 +35,9 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
-FilebufIO::FilebufIO()
-    : itsSeekable(false),
-      itsReadable(false),
-      itsWritable(false),
-      itsFile(-1),
-      itsBufSize(0),
-      itsBufLen(0),
-      itsBuffer(nullptr),
-      itsBufOffset(-1),
-      itsOffset(-1),
-      itsSeekOffset(-1),
-      itsDirty(false) {}
+FilebufIO::FilebufIO() = default;
 
-FilebufIO::FilebufIO(int fd, unsigned int bufferSize)
-    : itsFile(-1),
-      itsBufSize(0),
-      itsBufLen(0),
-      itsBuffer(nullptr),
-      itsBufOffset(-1),
-      itsOffset(-1),
-      itsSeekOffset(-1),
-      itsDirty(false) {
-  attach(fd, bufferSize);
-}
+FilebufIO::FilebufIO(int fd, unsigned int bufferSize) { attach(fd, bufferSize); }
 
 FilebufIO::~FilebufIO() { detach(); }
 
@@ -74,18 +53,15 @@ void FilebufIO::attach(int fd, unsigned int bufSize) {
 }
 
 void FilebufIO::setBuffer(int64_t bufSize) {
-  if (itsBuffer) {
+  if (!itsBuffer.empty()) {
     flush();
-    delete[] itsBuffer;
-    itsBuffer = nullptr;
-    itsBufSize = 0;
+    itsBuffer.clear();
     itsBufLen = 0;
     itsBufOffset = -1;
   }
   if (bufSize > 0) {
-    itsBuffer = new char[bufSize];
-    itsBufSize = bufSize;
-    itsBufOffset = -int(itsBufSize + 1);
+    itsBuffer.resize(bufSize);
+    itsBufOffset = -int(bufferSize() + 1);
   }
 }
 
@@ -121,7 +97,7 @@ String FilebufIO::fileName() const { return ""; }
 
 void FilebufIO::flush() {
   if (itsDirty) {
-    writeBuffer(itsBufOffset, itsBuffer, itsBufLen);
+    writeBuffer(itsBufOffset, itsBuffer.data(), itsBufLen);
     itsDirty = false;
   }
 }
@@ -133,7 +109,7 @@ void FilebufIO::truncate(int64_t size) {
 void FilebufIO::resync() {
   AlwaysAssert(!itsDirty, AipsError);
   itsBufLen = 0;
-  itsBufOffset = -int(itsBufSize + 1);
+  itsBufOffset = -int(bufferSize() + 1);
   itsOffset = 0;
   itsSeekOffset = -1;
 }
@@ -196,19 +172,19 @@ void FilebufIO::write(int64_t size, const void* buf) {
   }
   const char* bufc = static_cast<const char*>(buf);
   // Determine blocknr of first and last full block.
-  int64_t st = (itsOffset + itsBufSize - 1) / itsBufSize;
-  int64_t end = (itsOffset + size) / itsBufSize;
-  int64_t blkst = st * itsBufSize - itsOffset;
+  int64_t st = (itsOffset + bufferSize() - 1) / bufferSize();
+  int64_t end = (itsOffset + size) / bufferSize();
+  int64_t blkst = st * bufferSize() - itsOffset;
   int64_t sz = 0;
   if (st < end) {
-    sz = (end - st) * itsBufSize;
+    sz = (end - st) * bufferSize();
     // There are one or more full blocks.
     // Write them all.
-    writeBuffer(st * itsBufSize, bufc + blkst, sz);
+    writeBuffer(st * bufferSize(), bufc + blkst, sz);
     // Discard the current buffer if within these full blocks.
-    if (st * itsBufSize <= itsBufOffset && end * itsBufSize >= itsBufOffset + itsBufSize) {
+    if (st * bufferSize() <= itsBufOffset && end * bufferSize() >= itsBufOffset + bufferSize()) {
       itsDirty = false;
-      itsBufOffset = -int(itsBufSize + 1);
+      itsBufOffset = -int(bufferSize() + 1);
       itsBufLen = 0;
     }
   }
@@ -239,30 +215,30 @@ int64_t FilebufIO::read(int64_t size, void* buf, bool throwException) {
   }
   char* bufc = static_cast<char*>(buf);
   // Determine blocknr of first and last full block.
-  int64_t st = (itsOffset + itsBufSize - 1) / itsBufSize;
-  int64_t end = (itsOffset + size) / itsBufSize;
-  int64_t blkst = st * itsBufSize - itsOffset;
+  int64_t st = (itsOffset + bufferSize() - 1) / bufferSize();
+  int64_t end = (itsOffset + size) / bufferSize();
+  int64_t blkst = st * bufferSize() - itsOffset;
   int64_t sz = 0;
   if (st < end) {
     // There are one or more full blocks.
     // Read them all.
     // Handle the case that one of them is the current buffer.
-    int64_t stoff = st * itsBufSize;
-    int64_t endoff = end * itsBufSize;
+    int64_t stoff = st * bufferSize();
+    int64_t endoff = end * bufferSize();
     char* bufp = bufc + blkst;
-    if (stoff <= itsBufOffset && endoff >= itsBufOffset + itsBufSize) {
+    if (stoff <= itsBufOffset && endoff >= itsBufOffset + bufferSize()) {
       if (stoff < itsBufOffset) {
         sz = itsBufOffset - stoff;
         AlwaysAssert(readBuffer(stoff, bufp, sz, throwException) == sz, AipsError);
         bufp += sz;
       }
       // Do the get of the current block via readBlock to handle
-      // the (hardly possible) case that itsBufSize!=itsBufLen.
+      // the (hardly possible) case that bufferSize()!=itsBufLen.
       int64_t savoff = itsOffset;
       itsOffset = itsBufOffset;
-      sz += readBlock(itsBufSize, bufp, throwException);
+      sz += readBlock(bufferSize(), bufp, throwException);
       itsOffset = savoff;
-      stoff = itsBufOffset + itsBufSize;
+      stoff = itsBufOffset + bufferSize();
     }
     // Read the remaining full blocks.
     sz += readBuffer(stoff, bufp, endoff - stoff, throwException);
@@ -292,16 +268,16 @@ void FilebufIO::writeBlock(int64_t size, const char* buf) {
   // It is ensured that the buffer fits in a single block and that it
   // is not a full block.
   // Flush current buffer if needed.
-  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + itsBufSize) {
+  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + bufferSize()) {
     if (itsDirty) {
       flush();
     }
     // Read the new buffer.
-    itsBufOffset = itsOffset / itsBufSize * itsBufSize;
-    itsBufLen = readBuffer(itsBufOffset, itsBuffer, itsBufSize, false);
+    itsBufOffset = itsOffset / bufferSize() * bufferSize();
+    itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
   }
   int64_t st = itsOffset - itsBufOffset;
-  memcpy(itsBuffer + st, buf, size);
+  memcpy(&itsBuffer[st], buf, size);
   itsDirty = true;
   if (st + size > itsBufLen) {
     itsBufLen = st + size;
@@ -313,18 +289,18 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
   // It is ensured that the buffer fits in a single block and that it
   // is not a full block.
   // Read current buffer if needed. Flush if current block is dirty.
-  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + itsBufSize) {
+  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + bufferSize()) {
     if (itsDirty) {
       flush();
     }
     // Read the new buffer.
-    itsBufOffset = itsOffset / itsBufSize * itsBufSize;
-    itsBufLen = readBuffer(itsBufOffset, itsBuffer, itsBufSize, false);
+    itsBufOffset = itsOffset / bufferSize() * bufferSize();
+    itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
   }
   int64_t st = itsOffset - itsBufOffset;
 #if defined(TABLEREPAIR)
   if (st + size > itsBufLen) {
-    memset(itsBuffer + itsBufLen, 0, st + size - itsBufLen);
+    memset(&itsBuffer[itsBufLen], 0, st + size - itsBufLen);
     itsBufLen = st + size;
   }
 #endif
@@ -341,7 +317,7 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
       size = 0;
     }
   }
-  memcpy(buf, itsBuffer + st, size);
+  memcpy(buf, &itsBuffer[0] + st, size);
   return size;
 }
 

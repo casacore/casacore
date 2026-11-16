@@ -31,6 +31,8 @@
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
 
+#include <vector>
+
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 // <summary> Class for buffered IO on a file.</summary>
@@ -104,44 +106,44 @@ class FilebufIO : public ByteIO {
 
   // The destructor closes the file when it was owned and opened and not
   // closed yet.
-  virtual ~FilebufIO();
+  ~FilebufIO() override;
 
   // Write the number of bytes.
-  virtual void write(int64_t size, const void* buf);
+  void write(int64_t size, const void* buf) override;
 
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
   // false. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
-  virtual int64_t read(int64_t size, void* buf, bool throwException = true);
+  int64_t read(int64_t size, void* buf, bool throwException = true) override;
 
   // Flush the current buffer.
-  virtual void flush();
+  void flush() override;
 
   // Resync the file (i.e. empty the current buffer).
-  virtual void resync();
+  void resync() override;
 
   // Truncate the file to the given size.
-  virtual void truncate(int64_t size);
+  void truncate(int64_t size) override;
 
   // Get the length of the byte stream.
-  virtual int64_t length();
+  int64_t length() override;
 
   // Is the IO stream readable?
-  virtual bool isReadable() const;
+  bool isReadable() const override;
 
   // Is the IO stream writable?
-  virtual bool isWritable() const;
+  bool isWritable() const override;
 
   // Is the IO stream seekable?
-  virtual bool isSeekable() const;
+  bool isSeekable() const override;
 
   // Get the file name of the file attached.
-  virtual String fileName() const;
+  String fileName() const override;
 
   // Get the buffer size.
-  unsigned int bufferSize() const { return itsBufSize; }
+  unsigned int bufferSize() const { return itsBuffer.size(); }
 
  protected:
   // Detach the FILE. Close it when needed.
@@ -155,7 +157,7 @@ class FilebufIO : public ByteIO {
 
   // Reset the position pointer to the given value. It returns the
   // new position.
-  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
+  int64_t doSeek(int64_t offset, ByteIO::SeekOption) override;
 
   // Set a new buffer size.
   // If a buffer was already existing, flush and delete it.
@@ -176,23 +178,19 @@ class FilebufIO : public ByteIO {
   int64_t readBlock(int64_t size, char* buf, bool throwException);
 
  private:
-  bool itsSeekable;
-  bool itsReadable;
-  bool itsWritable;
-  int itsFile;
-  int64_t itsBufSize;  // the buffer size
-  int64_t itsBufLen;   // the current buffer length used
-  char* itsBuffer;
-  int64_t itsBufOffset;   // file offset of current buffer
-  int64_t itsOffset;      // current file offset
-  int64_t itsSeekOffset;  // offset last seeked
-  bool itsDirty;          // data written into current buffer?
+  bool itsSeekable = false;
+  bool itsReadable = false;
+  bool itsWritable = false;
+  int itsFile = -1;
+  int64_t itsBufLen = 0;  // the current buffer length used
+  std::vector<char> itsBuffer;
+  int64_t itsBufOffset = -1;   // file offset of current buffer
+  int64_t itsOffset = -1;      // current file offset
+  int64_t itsSeekOffset = -1;  // offset last seeked
+  bool itsDirty = false;       // data written into current buffer?
 
-  // Copy constructor, should not be used.
-  FilebufIO(const FilebufIO& that);
-
-  // Assignment, should not be used.
-  FilebufIO& operator=(const FilebufIO& that);
+  FilebufIO(const FilebufIO& that) = delete;
+  FilebufIO& operator=(const FilebufIO& that) = delete;
 };
 
 }  // namespace casacore
