@@ -103,7 +103,13 @@ void FilebufIO::flush() {
 }
 
 void FilebufIO::truncate(int64_t size) {
-  if (::ftruncate(itsFile, size) == -1) throw std::runtime_error("ftruncate reported an error");
+  if (!itsBuffer.empty()) {
+    flush();
+    itsBuffer.clear();
+    itsBufLen = 0;
+    itsBufOffset = -1;
+  }
+  if (ftruncate(itsFile, size) == -1) throw std::runtime_error("ftruncate reported an error");
 }
 
 void FilebufIO::resync() {

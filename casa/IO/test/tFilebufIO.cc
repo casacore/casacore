@@ -100,30 +100,24 @@ BOOST_AUTO_TEST_CASE(read_with_cached_middle_block) {
   BOOST_REQUIRE(fd >= 0);
   BOOST_REQUIRE_EQUAL(write(fd, write_data, kFileSize), kFileSize);
 
-  {
-    TestFilebufIO fio(fd, kBufferSize);
+  FilebufIO fio(fd, kBufferSize);
 
-    // Load block 1 into the internal buffer.
-    constexpr int64_t kBlock1Offset = kBufferSize;
-    fio.seek(kBlock1Offset);
-    char cached;
-    BOOST_REQUIRE_EQUAL(fio.read(1, &cached, true), 1);
-    BOOST_REQUIRE_EQUAL(cached, write_data[kBlock1Offset]);
+  // Load block 1 into the internal buffer.
+  constexpr int64_t kBlock1Offset = kBufferSize;
+  fio.seek(kBlock1Offset);
+  char cached;
+  BOOST_REQUIRE_EQUAL(fio.read(1, &cached, true), 1);
+  BOOST_REQUIRE_EQUAL(cached, write_data[kBlock1Offset]);
 
-    // Read blocks 0, 1 and 2. Block 1 is cached, while
-    // blocks 0 and 2 need to be read directly.
-    fio.seek(0);
-    char buffer[3 * kBufferSize];
-    BOOST_REQUIRE_EQUAL(fio.read(sizeof(buffer), buffer, true), sizeof(buffer));
+  // Read blocks 0, 1 and 2. Block 1 is cached, while
+  // blocks 0 and 2 need to be read directly.
+  fio.seek(0);
+  char buffer[3 * kBufferSize];
+  BOOST_REQUIRE_EQUAL(fio.read(sizeof(buffer), buffer, true), sizeof(buffer));
 
-    for (size_t i = 0; i < sizeof(buffer); ++i) {
-      BOOST_CHECK_EQUAL(buffer[i], write_data[i]);
-    }
-
-    fio.detach(false);
+  for (size_t i = 0; i < sizeof(buffer); ++i) {
+    BOOST_CHECK_EQUAL(buffer[i], write_data[i]);
   }
-
-  close(fd);
 }
 
 BOOST_AUTO_TEST_CASE(truncate_with_dirty_buffer) {
@@ -161,7 +155,6 @@ BOOST_AUTO_TEST_CASE(truncate_with_dirty_buffer) {
 }
 
 BOOST_AUTO_TEST_CASE(non_throwing_read_at_eof) {
-  constexpr size_t kBufferSize = 4;
   constexpr size_t kFileSize = 10;
 
   char write_data[kFileSize];
@@ -171,34 +164,22 @@ BOOST_AUTO_TEST_CASE(non_throwing_read_at_eof) {
 
   int fd = open("tFilebufIO_eof.dat", O_CREAT | O_TRUNC | O_RDWR, 0600);
   BOOST_REQUIRE(fd >= 0);
-  BOOST_REQUIRE_EQUAL(::write(fd, write_data, kFileSize), kFileSize);
+  BOOST_REQUIRE_EQUAL(write(fd, write_data, kFileSize), kFileSize);
 
-  {
-    class TestFilebufIO : public FilebufIO {
-     public:
-      TestFilebufIO(int fd) : FilebufIO(fd, kBufferSize) {}
-      using FilebufIO::detach;
-    };
+  FilebufIO fio(fd);
 
-    TestFilebufIO fio(fd);
+  char buffer[16] = {};
 
-    char buffer[16] = {};
+  // Request more bytes than are available.
+  fio.seek(0);
+  BOOST_CHECK_EQUAL(fio.read(sizeof(buffer), buffer, false), kFileSize);
 
-    // Request more bytes than are available.
-    fio.seek(0);
-    BOOST_CHECK_EQUAL(fio.read(sizeof(buffer), buffer, false), kFileSize);
-
-    for (size_t i = 0; i < kFileSize; ++i) {
-      BOOST_CHECK_EQUAL(buffer[i], write_data[i]);
-    }
-
-    // Reading again at EOF should return zero.
-    BOOST_CHECK_EQUAL(fio.read(1, buffer, false), 0);
-
-    fio.detach(false);
+  for (size_t i = 0; i < kFileSize; ++i) {
+    BOOST_CHECK_EQUAL(buffer[i], write_data[i]);
   }
 
-  close(fd);
+  // Reading again at EOF should return zero.
+  BOOST_CHECK_EQUAL(fio.read(1, buffer, false), 0);
 }
 
 BOOST_AUTO_TEST_CASE(detach_resets_access_flags) {
