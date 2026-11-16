@@ -177,12 +177,12 @@ class MVuvw : public MVPosition {
 
   // Normalise direction aspects by adjusting the length to 1
   // <group>
-  virtual void adjust();
-  virtual void adjust(double &res);
-  virtual void readjust(double res);
+  void adjust() override;
+  void adjust(double &res) override;
+  void readjust(double res) override;
   // </group>
   // Get radius(i.e. length of vector, in m) of uvw
-  virtual double radius();
+  double radius() const override;
   // Generate a 3-vector of coordinates (length(m), angles(rad))
   Vector<double> get() const;
   // Generate a 3-vector of x,y,z in m
@@ -210,24 +210,24 @@ class MVuvw : public MVPosition {
   MVuvw crossProduct(const MVuvw &other) const;
 
   // Print data
-  virtual void print(ostream &os) const;
+  void print(ostream &os) const override;
   // Clone
-  virtual MeasValue *clone() const;
+  MeasValue *clone() const override;
 
   // Get the value in internal units
-  virtual Vector<double> getVector() const;
+  Vector<double> getVector() const override;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<double> &in);
+  void putVector(const Vector<double> &in) override;
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<double>> getRecordValue() const;
-  virtual Vector<Quantum<double>> getXRecordValue() const;
-  virtual Vector<Quantum<double>> getTMRecordValue() const { return getXRecordValue(); };
+  Vector<Quantum<double>> getRecordValue() const override;
+  Vector<Quantum<double>> getXRecordValue() const override;
+  Vector<Quantum<double>> getTMRecordValue() const override { return getXRecordValue(); };
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual bool putValue(const Vector<Quantum<double>> &in);
+  bool putValue(const Vector<Quantum<double>> &in) override;
 };
 
 // # Global functions

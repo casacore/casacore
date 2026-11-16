@@ -34,7 +34,7 @@ find_package(Boost 1.73 COMPONENTS unit_test_framework)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
 
-    add_executable (measurestest test.cc tCyclicPtr.cc)
+    add_executable (measurestest test.cc tCyclicPtr.cc tMeasTable.cc)
     add_pch_support(measurestest)
     target_link_libraries(measurestest casa_measures ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
     add_test (measurestest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./measurestest)

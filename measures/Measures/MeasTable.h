@@ -240,8 +240,8 @@ class MeasTable {
   static void initObservatories();
   // Get list of all observatories
   static const Vector<String> &Observatories();
-  // Get position of observatory nam (false if not present)
-  static bool Observatory(MPosition &obs, const String &nam);
+  // Get position of observatory with the given name (false if not present)
+  static bool Observatory(MPosition &obs, const String &name);
 
   // Get _absolute_ path to AntennaResponses table of observatory
   // <src>nam</src>. It returns false if no _valid_ path can be found or the

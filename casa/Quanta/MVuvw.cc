@@ -158,7 +158,7 @@ void MVuvw::readjust(double res) {
   }
 }
 
-double MVuvw::radius() { return (std::sqrt(operator*(*this))); }
+double MVuvw::radius() const { return (std::sqrt(operator*(*this))); }
 
 Vector<double> MVuvw::get() const {
   Vector<double> tmp(3);

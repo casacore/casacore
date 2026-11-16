@@ -152,7 +152,7 @@ void MVBaseline::readjust(double res) {
   }
 }
 
-double MVBaseline::radius() { return (std::sqrt(operator*(*this))); }
+double MVBaseline::radius() const { return (std::sqrt(operator*(*this))); }
 
 Vector<double> MVBaseline::get() const {
   Vector<double> tmp(3);
