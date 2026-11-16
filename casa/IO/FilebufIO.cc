@@ -67,23 +67,29 @@ void FilebufIO::setBuffer(int64_t bufSize) {
 
 void FilebufIO::detach(bool closeFile) {
   setBuffer(0);
+
   if (closeFile && itsFile >= 0) {
     ::traceCLOSE(itsFile);
   }
   itsFile = -1;
+  itsSeekable = false;
+  itsReadable = false;
+  itsWritable = false;
 }
 
 void FilebufIO::fillRWFlags(int fd) {
   itsReadable = false;
   itsWritable = false;
-  int flags = fcntl(fd, F_GETFL);
-  if ((flags & O_RDWR) == O_RDWR) {
-    itsReadable = true;
-    itsWritable = true;
-  } else if ((flags & O_WRONLY) == O_WRONLY) {
-    itsWritable = true;
-  } else {
-    itsReadable = true;
+  const int flags = fcntl(fd, F_GETFL);
+  if(flags >= 0) {
+    if ((flags & O_RDWR) == O_RDWR) {
+      itsReadable = true;
+      itsWritable = true;
+    } else if ((flags & O_WRONLY) == O_WRONLY) {
+      itsWritable = true;
+    } else {
+      itsReadable = true;
+    }
   }
 }
 
