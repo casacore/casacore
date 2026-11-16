@@ -150,18 +150,21 @@ int ReadAsciiTable::getNext(const char* string, int strlen, char* result, int& a
 }
 
 void ReadAsciiTable::getTypes(const IPosition& shape, const char* in, int leng, char* string1,
-                              char* string2, char separator) {
+                              int leng1, char* string2, int leng2, char separator) {
+  char* const end1 = string1 + leng1;
+  char* const end2 = string2 + leng2;
   int at = 0;
   int i = 0;
-  // # When constructing str in the while loop (in the else branch),
-  // # a compiler bug appeared on RH systems.
-  // # Therefore assignment is used instead.
-  String str;
-  while (getNext(in, leng, string2, at, separator) >= 0) {
-    if (string2[0] == '\0') {
+  std::string str;
+  char token[lineSize];
+  while (getNext(in, leng, token, at, separator) >= 0) {
+    if (end1 - string1 < 1) {
+      throw AipsError("ReadAsciiTable: too many columns on the first line");
+    }
+    if (token[0] == '\0') {
       string1[0] = 'A';
     } else {
-      str = string2;
+      str = token;
       if (RegexMatches(str, RXint)) {
         string1[0] = 'I';
       } else if (RegexMatches(str, RXdouble)) {
@@ -174,9 +177,12 @@ void ReadAsciiTable::getTypes(const IPosition& shape, const char* in, int leng, 
     char name[24];
     i++;
     snprintf(name, sizeof(name), " Column%i", i);
-    strcpy(string2, name);
-    string2 += strlen(name);
-    string2[0] = '\0';
+    const size_t nameLen = strlen(name);
+    if (size_t(end2 - string2) < nameLen + 1) {
+      throw AipsError("ReadAsciiTable: too many columns on the first line");
+    }
+    memcpy(string2, name, nameLen + 1);
+    string2 += nameLen;
     if (shape.nelements() > 0) {
       ostringstream ostr;
       for (unsigned int i = 0; i < shape.nelements(); i++) {
@@ -185,10 +191,15 @@ void ReadAsciiTable::getTypes(const IPosition& shape, const char* in, int leng, 
         }
         ostr << shape(i);
       }
-      // There is probably a way to attach the char * to the ostringstream
-      // but I'm not going to worry about it. wky 2003/02/27
-      strcpy(string1, ostr.str().data());
+      const std::string shp = ostr.str();
+      if (size_t(end1 - string1) < shp.size() + 1) {
+        throw AipsError("ReadAsciiTable: too many columns on the first line");
+      }
+      memcpy(string1, shp.data(), shp.size() + 1);
       break;
+    }
+    if (end1 - string1 < 2) {
+      throw AipsError("ReadAsciiTable: too many columns on the first line");
     }
     string1[0] = ' ';
     string1++;
@@ -1037,7 +1048,7 @@ Table ReadAsciiTable::makeTab(String& formatString, Table::TableType tableType,
   stringsav[0] = '\0';
   if (autoHeader) {
     strcpy(stringsav, string1);
-    getTypes(autoShape, string1, lineSize, string2, first, separator);
+    getTypes(autoShape, string1, lineSize, string2, lineSize, first, lineSize, separator);
     strcpy(string1, first);
   } else if (hdrGiven) {
     strcpy(stringsav, string1);
