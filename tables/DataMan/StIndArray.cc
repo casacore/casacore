@@ -34,6 +34,8 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/DataMan/DataManError.h>
 
+#include <cassert>
+
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 StIndArray::StIndArray(int64_t fileOffset) : fileOffset_p(fileOffset), arrOffset_p(0) {}
@@ -72,6 +74,7 @@ void StIndArray::incrementRefCount(StManArrayFile& ios) {
 
 void StIndArray::decrementRefCount(StManArrayFile& ios) {
   unsigned int refCount = ios.getRefCount(fileOffset_p);
+  assert(refCount > 0);
   refCount--;
   ios.putRefCount(refCount, fileOffset_p);
 #ifdef AIPS_TRACE

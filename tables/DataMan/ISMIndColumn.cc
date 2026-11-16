@@ -50,7 +50,7 @@ ISMIndColumn::ISMIndColumn(ISMBase* smptr, int dataType, unsigned int colnr)
 ISMIndColumn::~ISMIndColumn() { clear(); }
 
 void ISMIndColumn::clear() {
-  delete (int64_t*)lastValue_p;
+  delete reinterpret_cast<int64_t*>(lastValue_p);
   lastValue_p = nullptr;
   if (stmanPtr_p->version() < 3) {
     delete iosfile_p;
@@ -66,7 +66,7 @@ void ISMIndColumn::doCreate(ISMBucket* bucket) {
   init(ByteIO::New);
   // Insert a dummy zero offset as the first value.
   lastRowPut_p = 0;
-  *(int64_t*)lastValue_p = 0;
+  *reinterpret_cast<int64_t*>(lastValue_p) = 0;
   char* buffer = stmanPtr_p->tempBuffer();
   unsigned int leng = writeFunc_p(buffer, lastValue_p, 1);
   bucket->addData(colnr_p, 0, 0, buffer, leng);
@@ -115,7 +115,7 @@ void ISMIndColumn::setShape(rownr_t rownr, const IPosition& shape) {
 StIndArray* ISMIndColumn::getArrayPtr(rownr_t rownr) {
   if (isLastValueInvalid(rownr)) {
     getValue(rownr, lastValue_p, false);
-    int64_t offset = *(int64_t*)lastValue_p;
+    int64_t offset = *reinterpret_cast<int64_t*>(lastValue_p);
     if (offset != 0) {
       indArray_p = StIndArray(offset);
       foundArray_p = true;
@@ -193,7 +193,9 @@ StIndArray* ISMIndColumn::putArrayPtr(rownr_t rownr, const IPosition& shape, boo
       // The value is not shared, so we can replace it.
       ptr->setShape(*iosfile_p, dataType(), shape);
       int64_t offset = ptr->fileOffset();
-      putValue(rownr, &offset);
+      if (offset != *reinterpret_cast<int64_t*>(lastValue_p)) {
+        putValue(rownr, &offset);
+      }
       return ptr;
     }
   }

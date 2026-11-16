@@ -555,6 +555,7 @@ foreach (casa_module Tables AlternateMans DataMan TaQL LogTables)
 endforeach (casa_module)
 
 set (unittestfiles
+  DataMan/test/tISMIndArrayRefCount.cc
   DataMan/test/tTiledCellStMan_2.cc
   TaQL/test/tTableParseUtil.cc
 )

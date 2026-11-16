@@ -66,12 +66,7 @@ jobs:
       - name: run tests
         run: |
           cd build
-          export ctest_args=""
-          # disable tests on amd64 https://github.com/casacore/casacore/issues/1352
-          if [[ "$(uname -m)" == "arm64" ]]; then
-            export ctest_args="-E tLSQaips|tLSQFit"
-          fi
-          CTEST_OUTPUT_ON_FAILURE=1 ctest $ctest_args
+          CTEST_OUTPUT_ON_FAILURE=1 ctest
 
       - name: install
         run: |
