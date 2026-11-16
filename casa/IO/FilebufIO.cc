@@ -81,7 +81,7 @@ void FilebufIO::fillRWFlags(int fd) {
   itsReadable = false;
   itsWritable = false;
   const int flags = fcntl(fd, F_GETFL);
-  if(flags >= 0) {
+  if (flags >= 0) {
     if ((flags & O_RDWR) == O_RDWR) {
       itsReadable = true;
       itsWritable = true;
