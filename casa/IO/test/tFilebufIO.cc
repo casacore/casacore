@@ -42,12 +42,12 @@ namespace {
 constexpr size_t kWriteSize = 2000;
 
 class TestFilebufIO : public FilebufIO {
-public:
+ public:
   TestFilebufIO(int fd, size_t buffer_size) : FilebufIO(fd, buffer_size) {}
   using FilebufIO::detach;
 };
 
-}
+}  // namespace
 
 BOOST_AUTO_TEST_SUITE(file_buf_io)
 
@@ -75,17 +75,17 @@ BOOST_AUTO_TEST_CASE(various_read_sizes) {
     write_data[i] = i;
   }
   {
-    casacore::RegularFileIO file(casacore::RegularFile("tFilebufIO_tmp.dat"), casacore::ByteIO::New);
+    casacore::RegularFileIO file(casacore::RegularFile("tFilebufIO_tmp.dat"),
+                                 casacore::ByteIO::New);
     file.write(kWriteSize, write_data);
   }
   int fd = open("tFilebufIO_tmp.dat", O_RDONLY);
-  constexpr size_t kReadSizes[] = { 2000, 100, 1, 3, 101, 2001, 10000 };
-  for(size_t read_size : kReadSizes) {
+  constexpr size_t kReadSizes[] = {2000, 100, 1, 3, 101, 2001, 10000};
+  for (size_t read_size : kReadSizes) {
     checkRead(fd, read_size, write_data);
   }
   close(fd);
 }
-
 
 BOOST_AUTO_TEST_CASE(read_with_cached_middle_block) {
   constexpr int64_t kBufferSize = 4;
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(truncate_with_dirty_buffer) {
     fio.detach(false);
   }
 
-  struct stat st {};
+  struct stat st{};
   BOOST_REQUIRE_EQUAL(fstat(fd, &st), 0);
 
   // The dirty buffer must not extend the file again.
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(non_throwing_read_at_eof) {
 
   {
     class TestFilebufIO : public FilebufIO {
-    public:
+     public:
       TestFilebufIO(int fd) : FilebufIO(fd, kBufferSize) {}
       using FilebufIO::detach;
     };

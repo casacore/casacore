@@ -233,7 +233,9 @@ int64_t FilebufIO::read(int64_t size, void* buf, bool throwException) {
       // the (hardly possible) case that bufferSize()!=itsBufLen.
       int64_t savoff = itsOffset;
       itsOffset = itsBufOffset;
-      full_blocks_size += readBlock(bufferSize(), buffer_ptr, throwException);
+      const int64_t bytes_read = readBlock(bufferSize(), buffer_ptr, throwException);
+      full_blocks_size += bytes_read;
+      buffer_ptr += bytes_read;
       itsOffset = savoff;
       start_offset = itsBufOffset + bufferSize();
     }
