@@ -430,10 +430,10 @@ void UDFMSCal::setupSelection(const Table& table, vector<TENShPtr>& operands) {
     } break;
     case TIME: {
       MeasurementSet ms(table);
-      TableExprNode node(table.col("TIME"));
+      TableExprNode colAsTEN(table.col("TIME"));
       Matrix<double> times;
-      MSMainColInterface tmp;
-      if (msTimeGramParseCommand(&ms, selStr, TableExprNode(), tmp, node, times) == 0) {
+      MSMainColInterface mainCols(table);
+      if (msTimeGramParseCommand(&ms, selStr, colAsTEN, mainCols, TableExprNode(), times) == 0) {
         itsDataNode = *(msTimeGramParseNode());
       }
       msTimeGramParseDeleteNode();
