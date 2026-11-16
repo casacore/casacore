@@ -556,6 +556,7 @@ endforeach (casa_module)
 
 set (unittestfiles
   DataMan/test/tISMIndArrayRefCount.cc
+  DataMan/test/tIndArrayPutColumn.cc
   DataMan/test/tTiledCellStMan_2.cc
   TaQL/test/tTableParseUtil.cc
 )

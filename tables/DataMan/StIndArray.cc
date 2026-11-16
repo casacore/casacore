@@ -83,6 +83,9 @@ void StIndArray::decrementRefCount(StManArrayFile& ios) {
 }
 
 bool StIndArray::setShape(StManArrayFile& ios, int dataType, const IPosition& shape) {
+  if (fileOffset_p != 0) {
+    getShape(ios);
+  }
   // Return immediately if the shape is defined and is the same.
   if (arrOffset_p != 0 && shape_p.isEqual(shape)) {
     return false;
