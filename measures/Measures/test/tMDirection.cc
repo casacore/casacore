@@ -24,7 +24,14 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/measures/Measures/MCDirection.h>
 #include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/namespace.h>
 
 bool testShiftAngle() {
@@ -72,10 +79,37 @@ bool testShiftAngle() {
   return true;
 }
 
+bool testZenithInApparent() {
+  MPosition vla(MVPosition(-1601087.19, -5041339.84, 3555815.86), MPosition::ITRF);
+  for (double hours : {10.36, 16.0, 25.5}) {
+    MeasFrame frame(MEpoch(Quantity(56529 + hours / 24, "d"), MEpoch::UTC), vla);
+    double last, lng, lat, tdb, radius;
+    frame.getLASTr(last);
+    frame.getLong(lng);
+    frame.getLat(lat);
+    frame.getTDB(tdb);
+    frame.getRadius(radius);
+    Euler pm = MeasTable::polarMotion(tdb);
+    double x = -pm(0);
+    double y = -pm(1);
+    AlwaysAssertExit(abs(x) + abs(y) > 1e-8);
+    MDirection zenith(MVDirection(0, lat), MDirection::Ref(MDirection::HADEC, frame));
+    MVDirection app =
+        MDirection::Convert(zenith, MDirection::Ref(MDirection::APP, frame))().getValue();
+    double dRA = remainder(app.getLong() - last, 2.0 * M_PI);
+    double dDec = app.getLat() - lat;
+    AlwaysAssertExit(abs(dDec - (x * cos(lng) - y * sin(lng))) < 1e-10);
+    double diurnal = MeasTable::diurnalAber(radius, tdb);
+    AlwaysAssertExit(abs(dRA - (x * sin(lng) + y * cos(lng)) * tan(lat) + diurnal) < 1e-10);
+  }
+  return true;
+}
+
 int main() {
   try {
     bool success = true;
     success = success && testShiftAngle();
+    success = success && testZenithInApparent();
 
     if (success) {
       cout << "tMDirection succeeded" << endl;
