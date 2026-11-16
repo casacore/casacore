@@ -97,12 +97,8 @@ void SSMIndColumn::setShapeColumn(const IPosition& aShape) {
 
 void SSMIndColumn::setShape(rownr_t aRowNr, const IPosition& aShape) {
   // Get the current entry. If none, make empty one.
-  StIndArray* aPtr = getArrayPtr(aRowNr);
-  if (aPtr == nullptr) {
+  if (getArrayPtr(aRowNr) == nullptr) {
     itsIndArray = StIndArray(0);
-  } else {
-    // Note that getArrayPtr sets itsIndArray (which is equal to aPtr).
-    aPtr->getShape(*itsIosFile);
   }
   // put the new shape (if changed)
   // when changed put the file offset
