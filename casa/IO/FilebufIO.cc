@@ -275,7 +275,7 @@ void FilebufIO::writeBlock(int64_t size, const char* buf) {
     itsBufOffset = itsOffset / bufferSize() * bufferSize();
     itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
     if (itsBufLen < 0) {
-      memset(itsBuffer.data() + itsBufLen, 0, bufferSize());
+      itsBuffer.assign(bufferSize(), 0);
     } else if (itsBufLen < bufferSize()) {
       memset(itsBuffer.data() + itsBufLen, 0, bufferSize() - itsBufLen);
     }
@@ -301,7 +301,7 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
     itsBufOffset = itsOffset / bufferSize() * bufferSize();
     itsBufLen = readBuffer(itsBufOffset, itsBuffer.data(), bufferSize(), false);
     if (itsBufLen < 0) {
-      memset(&itsBuffer[itsBufLen], 0, bufferSize());
+      itsBuffer.assign(bufferSize(), 0);
     } else if (itsBufLen < bufferSize()) {
       memset(&itsBuffer[itsBufLen], 0, bufferSize() - itsBufLen);
     }

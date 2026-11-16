@@ -317,16 +317,6 @@ rownr_t StManAipsIO::resync64(rownr_t nrrow) {
   // # Now read in all the columns.
   for (i = 0; i < ncolumn(); i++) {
     colSet_p[i]->getFile(nrr, ios);
-    // # The following can only be executed in case of TABLEREPAIR.
-    // # Add rows if storage manager has fewer rows than table.
-    // # Remove rows if storage manager has more rows than table.
-    if (nrrow > nrr) {
-      colSet_p[i]->addRow(nrrow, nrr);
-    } else if (nrrow < nrr) {
-      for (unsigned int r = nrrow; r < nrr; r++) {
-        colSet_p[i]->remove(nrrow);
-      }
-    }
   }
   nrrow_p = nrrow;
   ios.getend();

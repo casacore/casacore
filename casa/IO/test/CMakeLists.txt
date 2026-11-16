@@ -8,7 +8,6 @@ tBucketMapped
 tByteIO
 tByteSink
 tByteSinkSource
-tFilebufIO
 tFileIO
 tFileUnbufferedIO
 tLargeFileIO
