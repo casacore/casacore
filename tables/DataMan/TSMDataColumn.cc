@@ -40,6 +40,17 @@
 
 namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
+namespace {
+// The optimized accessColumnCells and accessColumnSliceCells assume that the
+// row number is mapped to the last axis of a hypercube, i.e. that the
+// hypercube has exactly one axis more than the cell (the row axis).
+// That is not the case for TiledCellStMan (no row axis at all) and for
+// TiledDataStMan with extra axes. They must use the generic implementation.
+bool canUseOptimizedCellAccess(const TiledStMan& stman, const ArrayBase& data) {
+  return stman.nrdim() == stman.nrCoordVector() + 1 && data.ndim() == stman.nrCoordVector() + 1;
+}
+}  // namespace
+
 TSMDataColumn::TSMDataColumn(const TSMColumn& column) : TSMColumn(column) {
   DataType dt = DataType(dataType());
   localPixelSize_p = ValType::getTypeSize(dt);
@@ -540,7 +551,7 @@ void TSMDataColumn::putColumnSliceV(const Slicer& ns, const ArrayBase& dataPtr) 
 void TSMDataColumn::getArrayColumnCellsV(const RefRows& rownrs, ArrayBase& dataPtr) {
   // Only use optimized accessColumnCells for hypercubes where the rows
   // are mapped to a single axis.
-  if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
+  if (canUseOptimizedCellAccess(*stmanPtr_p, dataPtr)) {
     bool deleteIt;
     void* data = dataPtr.getVStorage(deleteIt);
     accessColumnCells(rownrs, dataPtr.shape(), data, false);
@@ -553,7 +564,7 @@ void TSMDataColumn::getArrayColumnCellsV(const RefRows& rownrs, ArrayBase& dataP
 void TSMDataColumn::putArrayColumnCellsV(const RefRows& rownrs, const ArrayBase& dataPtr) {
   // Only use optimized accessColumnCells for hypercubes where the rows
   // are mapped to a single axis.
-  if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
+  if (canUseOptimizedCellAccess(*stmanPtr_p, dataPtr)) {
     bool deleteIt;
     const void* data = dataPtr.getVStorage(deleteIt);
     accessColumnCells(rownrs, dataPtr.shape(), data, true);
@@ -567,7 +578,7 @@ void TSMDataColumn::getColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns
                                          ArrayBase& dataPtr) {
   // Only use optimized accessColumnSliceCells for hypercubes where the rows
   // are mapped to a single axis.
-  if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
+  if (canUseOptimizedCellAccess(*stmanPtr_p, dataPtr)) {
     bool deleteIt;
     void* data = dataPtr.getVStorage(deleteIt);
     accessColumnSliceCells(rownrs, ns, dataPtr.shape(), data, false);
@@ -581,7 +592,7 @@ void TSMDataColumn::putColumnSliceCellsV(const RefRows& rownrs, const Slicer& ns
                                          const ArrayBase& dataPtr) {
   // Only use optimized accessColumnSliceCells for hypercubes where the rows
   // are mapped to a single axis.
-  if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
+  if (canUseOptimizedCellAccess(*stmanPtr_p, dataPtr)) {
     bool deleteIt;
     const void* data = dataPtr.getVStorage(deleteIt);
     accessColumnSliceCells(rownrs, ns, dataPtr.shape(), data, true);

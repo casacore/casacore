@@ -261,6 +261,12 @@ class TiledStMan : public DataManager {
   // Get the number of coordinate vectors.
   unsigned int nrCoordVector() const;
 
+  // Get the dimensionality of the hypercubes.
+  // For TiledCellStMan this equals nrCoordVector() (a hypercube has no row
+  // axis); for TiledColumnStMan and TiledShapeStMan it is nrCoordVector()+1
+  // (rows are mapped to a single axis); TiledDataStMan can have more.
+  unsigned int nrdim() const;
+
   // Get the nr of rows in this storage manager.
   rownr_t nrow() const;
 
@@ -500,6 +506,8 @@ class TiledStMan : public DataManager {
 inline unsigned int TiledStMan::maximumCacheSize() const { return maxCacheSize_p; }
 
 inline unsigned int TiledStMan::nrCoordVector() const { return nrCoordVector_p; }
+
+inline unsigned int TiledStMan::nrdim() const { return nrdim_p; }
 
 inline rownr_t TiledStMan::nrow() const { return nrrow_p; }
 
