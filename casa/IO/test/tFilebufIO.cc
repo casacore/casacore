@@ -265,4 +265,57 @@ BOOST_AUTO_TEST_CASE(read_and_write_after_truncate) {
   BOOST_CHECK_EQUAL(result[1], 'B');
 }
 
+BOOST_AUTO_TEST_CASE(short_reload_then_write_past_buflen) {
+  // Buffer larger than the initial file so that a reload produces
+  // itsBufLen < bufferSize().
+  constexpr size_t kBufferSize = 8;
+  constexpr size_t kInitialSize = 5;  // file initially contains bytes 0..4
+
+  const char* filename = "tFilebufIO_short_reload.dat";
+  int fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0600);
+  BOOST_REQUIRE(fd >= 0);
+
+  char initial[kInitialSize];
+  for (size_t i = 0; i < kInitialSize; ++i) {
+    initial[i] = static_cast<char>(i);
+  }
+  BOOST_REQUIRE_EQUAL(write(fd, initial, kInitialSize), kInitialSize);
+
+  FilebufIO fio(fd, kBufferSize);
+
+  // Force a short reload of the first (and only) buffer block.
+  // After this call itsBufOffset == 0 and itsBufLen == 5.
+  char tmp[4];
+  BOOST_CHECK_EQUAL(fio.read(4, tmp, true), 4);
+  BOOST_CHECK_EQUAL(tmp[0], 0);
+  BOOST_CHECK_EQUAL(tmp[3], 3);
+  BOOST_CHECK_EQUAL(fio.seek(0, casacore::ByteIO::Current), 4);
+
+  constexpr const char extension[] = {'X', 'Y', 'Z'};
+  // Write starting at offset 4 → new data occupies positions 4,5,6
+  // so itsBufLen must become 7.
+  fio.write(3, extension);
+  BOOST_CHECK_EQUAL(fio.seek(0, casacore::ByteIO::Current), 7);
+
+  // Verify the in-memory view and the final file contents.
+
+  // Seek back to the beginning and read everything we expect.
+  BOOST_CHECK_EQUAL(fio.seek(0, casacore::ByteIO::Begin), 0);
+
+  char result[16];
+  BOOST_CHECK_EQUAL(fio.read(16, result, false), 7);
+
+  constexpr const char expected[] = {0, 1, 2, 3, 'X', 'Y', 'Z'};
+  BOOST_CHECK_EQUAL_COLLECTIONS(result, result + 7, std::begin(expected), std::end(expected));
+
+  fio.flush();
+
+  // Check with a raw pread that the file on disk really grew
+  // and contains the expected data.
+  char disk[16] = {};
+  const ssize_t n = pread(fd, disk, sizeof(disk), 0);
+  BOOST_CHECK_EQUAL(n, 7);
+  BOOST_CHECK_EQUAL_COLLECTIONS(disk, disk + 7, std::begin(expected), std::end(expected));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
