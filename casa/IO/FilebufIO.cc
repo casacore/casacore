@@ -327,9 +327,8 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
     if (throwException) {
       throw AipsError(
           "FilebufIO::readBlock - incorrect number of bytes"
-          " read for file '" +
-          std::string(fileName()) + "', start=" + std::to_string(start) +
-          ", read size=" + std::to_string(size));
+          " read for file " +
+          fileName());
     }
     if (itsBufLen > start) {
       size = itsBufLen - start;
