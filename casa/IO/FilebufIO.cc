@@ -141,7 +141,6 @@ void FilebufIO::writeBuffer(int64_t offset, const char* buf, int64_t size) {
 }
 
 int64_t FilebufIO::readBuffer(int64_t offset, char* buf, int64_t size, bool throwException) {
-  std::cout << "readBuffer " << offset << " size=" << size << '\n';
   if (offset != itsSeekOffset) {
     checkedSeek(offset, SEEK_SET);
   }
