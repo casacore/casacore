@@ -1067,10 +1067,6 @@ unsigned int TiledStMan::headerFileGet(AipsIO& headerFile, rownr_t tabNrrow, boo
     }
   }
   headerFile.getend();
-  // # The following can only be executed in case of TABLEREPAIR.
-  if (nrrow < nrrow_p) {
-    cubeSet_p[0]->extend(nrrow_p - nrrow, Record(), coordColSet_p[nrdim_p - 1]);
-  }
   return version;
 }
 
