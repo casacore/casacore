@@ -233,7 +233,7 @@ int64_t FilebufIO::read(int64_t size, void* buf, bool throwException) {
         const int64_t result =
             readBuffer(start_offset, buffer_ptr, full_blocks_size, throwException);
         if (throwException) AlwaysAssert(result == full_blocks_size, AipsError);
-        buffer_ptr += result;
+        if (result > 0) buffer_ptr += result;
       }
       // Do the get of the current block via readBlock to handle
       // the (hardly possible) case that bufferSize()!=itsBufLen.
@@ -246,8 +246,10 @@ int64_t FilebufIO::read(int64_t size, void* buf, bool throwException) {
       start_offset = itsBufOffset + bufferSize();
     }
     // Read the remaining full blocks.
-    full_blocks_size +=
+
+    const int64_t result =
         readBuffer(start_offset, buffer_ptr, end_offset - start_offset, throwException);
+    if (result > 0) full_blocks_size += result;
   }
   // Read the start of the user buffer (if needed).
   int64_t total = full_blocks_size;
