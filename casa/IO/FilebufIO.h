@@ -53,7 +53,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // of file accesses as much as possible.
 // It is part of the entire IO framework. It can for
 // instance be used to store data in canonical format in a file
-// in an IO-efficient way
+// in an IO-efficient way.
 // <br>
 // The buffer size is dynamic, so any time it can be set as needed.
 // <p>
@@ -82,7 +82,7 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 // </example>
 
 // <motivation>
-// The stdio package was used, but it proved to be very slow on SOlaris.
+// The stdio package was used, but it proved to be very slow on Solaris.
 // After a seek the buffer was refreshed, which increased the number
 // of file accesses enormously.
 // Also the interaction between reads and writes in stdio was poor.
@@ -90,6 +90,8 @@ namespace casacore {  // # NAMESPACE CASACORE - BEGIN
 
 class FilebufIO : public ByteIO {
  public:
+  static constexpr unsigned int kDefaultBufferSize = 16384;
+
   // Default constructor.
   // A stream can be attached using the attach function.
   FilebufIO();
@@ -97,12 +99,12 @@ class FilebufIO : public ByteIO {
   // Construct from the given file descriptor.
   // Note that the destructor and the detach function implicitly close
   // the file descriptor.
-  explicit FilebufIO(int fd, unsigned int bufferSize = 16384);
+  explicit FilebufIO(int fd, unsigned int bufferSize = kDefaultBufferSize);
 
   // Attach to the given file descriptor.
   // Note that the destructor and the detach function implicitly close
   // the file descriptor.
-  void attach(int fd, unsigned int bufferSize = 16384);
+  void attach(int fd, unsigned int bufferSize = kDefaultBufferSize);
 
   // The destructor closes the file when it was owned and opened and not
   // closed yet.
@@ -169,15 +171,17 @@ class FilebufIO : public ByteIO {
   // Read a buffer of given length from the file at given offset.
   int64_t readBuffer(int64_t offset, char* buf, int64_t size, bool throwException);
 
-  // Write a block into the stream at the current offset.
-  // It is guaranteed that the block fits in a single buffer.
+  // Write a partial block into the stream at the current offset.
+  // It is guaranteed by the caller that the block fits in a single buffer.
   void writeBlock(int64_t size, const char* buf);
 
-  // Read a block from the stream at the current offset.
-  // It is guaranteed that the block fits in a single buffer.
+  // Read a partial block from the stream at the current offset.
+  // It is guaranteed by the caller that the block fits in a single buffer.
   int64_t readBlock(int64_t size, char* buf, bool throwException);
 
  private:
+  void checkedSeek(int64_t offset, int whence);
+
   bool itsSeekable = false;
   bool itsReadable = false;
   bool itsWritable = false;

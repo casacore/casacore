@@ -111,9 +111,8 @@ void FilebufIO::flush() {
 void FilebufIO::truncate(int64_t size) {
   if (!itsBuffer.empty()) {
     flush();
-    itsBuffer.clear();
     itsBufLen = 0;
-    itsBufOffset = -1;
+    itsBufOffset = -int(bufferSize() + 1);
   }
   if (ftruncate(itsFile, size) == -1) throw std::runtime_error("ftruncate reported an error");
 }
@@ -129,8 +128,7 @@ void FilebufIO::resync() {
 void FilebufIO::writeBuffer(int64_t offset, const char* buf, int64_t size) {
   if (size > 0) {
     if (offset != itsSeekOffset) {
-      ::traceLSEEK(itsFile, offset, SEEK_SET);
-      itsSeekOffset = offset;
+      checkedSeek(offset, SEEK_SET);
     }
     if (::traceWRITE(itsFile, const_cast<char*>(buf), size) != size) {
       int error = errno;
@@ -143,32 +141,27 @@ void FilebufIO::writeBuffer(int64_t offset, const char* buf, int64_t size) {
 }
 
 int64_t FilebufIO::readBuffer(int64_t offset, char* buf, int64_t size, bool throwException) {
+  std::cout << "readBuffer " << offset << " size=" << size << '\n';
   if (offset != itsSeekOffset) {
-    ::traceLSEEK(itsFile, offset, SEEK_SET);
-    itsSeekOffset = offset;
+    checkedSeek(offset, SEEK_SET);
   }
   int64_t bytesRead = ::traceREAD(itsFile, buf, size);
-  int error = errno;
-  if (bytesRead > int(size)) {  // Should never be executed
-    itsSeekOffset = -1;
-    throw AipsError(
-        "FilebufIO::read - read returned a bad value"
-        " for file " +
-        fileName());
-  }
-  if (bytesRead != int(size) && throwException == true) {
+  if (bytesRead != size && throwException) {
     if (bytesRead < 0) {
+      const int error = errno;
       itsSeekOffset = -1;
       throw AipsError(String("FilebufIO::read error for file ") + fileName() + ": " +
                       strerror(error));
-    } else if (bytesRead < int(size)) {
+    } else if (bytesRead < size) {
       itsSeekOffset = -1;
       throw AipsError("FilebufIO::read - incorrect number of bytes (" + std::to_string(bytesRead) +
                       " out of " + std::to_string(size) + ") read for file " +
                       std::string(fileName()));
     }
   }
-  itsSeekOffset += bytesRead;
+  if (bytesRead >= 0) {
+    itsSeekOffset += bytesRead;
+  }
   return bytesRead;
 }
 
@@ -230,20 +223,22 @@ int64_t FilebufIO::read(int64_t size, void* buf, bool throwException) {
     // There are one or more full blocks.
     // Read them all.
     // Handle the case that one of them is the current buffer.
+    char* buffer_ptr = static_cast<char*>(buf) + first_block_offset;
     int64_t start_offset = start_block * bufferSize();
     int64_t end_offset = end_block * bufferSize();
-    char* buffer_ptr = static_cast<char*>(buf) + first_block_offset;
-    if (start_offset <= itsBufOffset && end_offset >= itsBufOffset + bufferSize()) {
+    const bool contains_buffer =
+        start_offset <= itsBufOffset && end_offset >= itsBufOffset + bufferSize();
+    if (contains_buffer) {
       if (start_offset < itsBufOffset) {
         full_blocks_size = itsBufOffset - start_offset;
-        AlwaysAssert(readBuffer(start_offset, buffer_ptr, full_blocks_size, throwException) ==
-                         full_blocks_size,
-                     AipsError);
-        buffer_ptr += full_blocks_size;
+        const int64_t result =
+            readBuffer(start_offset, buffer_ptr, full_blocks_size, throwException);
+        if (throwException) AlwaysAssert(result == full_blocks_size, AipsError);
+        buffer_ptr += result;
       }
       // Do the get of the current block via readBlock to handle
       // the (hardly possible) case that bufferSize()!=itsBufLen.
-      int64_t savoff = itsOffset;
+      const int64_t savoff = itsOffset;
       itsOffset = itsBufOffset;
       const int64_t bytes_read = readBlock(bufferSize(), buffer_ptr, throwException);
       full_blocks_size += bytes_read;
@@ -261,17 +256,24 @@ int64_t FilebufIO::read(int64_t size, void* buf, bool throwException) {
     if (first_block_offset > size) {
       first_block_offset = size;
     }
-    total += readBlock(first_block_offset, static_cast<char*>(buf), throwException);
+    const int64_t n = readBlock(first_block_offset, static_cast<char*>(buf), throwException);
+    total += n;
+    // If we got a short read here we are already at EOF; no need to continue.
+    if (n < first_block_offset) {
+      itsOffset += n;
+      return total;
+    }
   }
+
   // Read the remainder of the user buffer (if needed).
-  // First update the offset in the stream.
   first_block_offset += full_blocks_size;
-  itsOffset += first_block_offset;
+  itsOffset += first_block_offset;  // this part was fully satisfied
   if (first_block_offset < size) {
-    const uint64_t remaining_size = size - first_block_offset;
-    total +=
+    const int64_t remaining_size = size - first_block_offset;
+    const int64_t n =
         readBlock(remaining_size, static_cast<char*>(buf) + first_block_offset, throwException);
-    itsOffset += remaining_size;
+    total += n;
+    itsOffset += n;
   }
   return total;
 }
@@ -307,7 +309,8 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
   // It is ensured that the buffer fits in a single block and that it
   // is not a full block.
   // Read current buffer if needed. Flush if current block is dirty.
-  if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + bufferSize()) {
+  const bool outside_buffer = itsOffset < itsBufOffset || itsOffset >= itsBufOffset + bufferSize();
+  if (outside_buffer) {
     if (itsDirty) {
       flush();
     }
@@ -320,22 +323,31 @@ int64_t FilebufIO::readBlock(int64_t size, char* buf, bool throwException) {
       memset(&itsBuffer[itsBufLen], 0, bufferSize() - itsBufLen);
     }
   }
-  const int64_t st = itsOffset - itsBufOffset;
-  if (st + size > itsBufLen) {
+  const int64_t start = itsOffset - itsBufOffset;
+  if (start + size > itsBufLen) {
     if (throwException) {
       throw AipsError(
           "FilebufIO::readBlock - incorrect number of bytes"
-          " read for file " +
-          fileName());
+          " read for file '" +
+          std::string(fileName()) + "', start=" + std::to_string(start) +
+          ", read size=" + std::to_string(size));
     }
-    if (itsBufLen > st) {
-      size = itsBufLen - st;
+    if (itsBufLen > start) {
+      size = itsBufLen - start;
     } else {
       size = 0;
     }
   }
-  memcpy(buf, &itsBuffer[0] + st, size);
+  memcpy(buf, &itsBuffer[0] + start, size);
   return size;
+}
+
+void FilebufIO::checkedSeek(int64_t offset, int whence) {
+  const int64_t result = ::traceLSEEK(itsFile, offset, whence);
+  itsSeekOffset = result;
+  if (result < 0) {
+    throw AipsError("FilebufIO: seek error (offset=" + std::to_string(offset) + ")");
+  }
 }
 
 int64_t FilebufIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
@@ -355,7 +367,7 @@ int64_t FilebufIO::doSeek(int64_t offset, ByteIO::SeekOption dir) {
 }
 
 int64_t FilebufIO::length() {
-  itsSeekOffset = ::traceLSEEK(itsFile, 0, SEEK_END);
+  checkedSeek(0, SEEK_END);
   int64_t len = itsBufOffset + itsBufLen;
   if (len < itsSeekOffset) {
     len = itsSeekOffset;

@@ -210,4 +210,59 @@ BOOST_AUTO_TEST_CASE(invalid_file_descriptor) {
   BOOST_CHECK(!fio.isSeekable());
 }
 
+BOOST_AUTO_TEST_CASE(read_position_after_short_read) {
+  constexpr size_t kBufferSize = 4;
+  constexpr size_t kFileSize = 10;
+
+  int fd = open("tFilebufIO_position.dat", O_CREAT | O_TRUNC | O_RDWR, 0600);
+  BOOST_REQUIRE(fd >= 0);
+
+  char data[kFileSize];
+  for (size_t i = 0; i < kFileSize; ++i) {
+    data[i] = static_cast<char>(i);
+  }
+  BOOST_REQUIRE_EQUAL(write(fd, data, kFileSize), kFileSize);
+
+  FilebufIO fio(fd, kBufferSize);
+  char buffer[16];
+
+  // Try to read 16 bytes from a 10 byte file.
+  BOOST_CHECK_EQUAL(fio.read(sizeof(buffer), buffer, false), kFileSize);
+
+  // A short read must advance the logical position by 10,
+  // not by the requested 16 bytes.
+  uint64_t position = fio.seek(-1, casacore::ByteIO::Current);
+  BOOST_CHECK_EQUAL(position, 9);
+
+  char last_byte = 0;
+  BOOST_CHECK_EQUAL(fio.read(1, &last_byte, true), 1);
+  BOOST_CHECK_EQUAL(last_byte, data[kFileSize - 1]);
+}
+
+BOOST_AUTO_TEST_CASE(read_and_write_after_truncate) {
+  constexpr size_t kBufferSize = 8;
+
+  int fd = open("tFilebufIO_truncate_buffer.dat", O_CREAT | O_TRUNC | O_RDWR, 0600);
+  BOOST_REQUIRE(fd >= 0);
+
+  char data[16] = {};
+  BOOST_REQUIRE_EQUAL(::write(fd, data, sizeof(data)), sizeof(data));
+
+  FilebufIO fio(fd, kBufferSize);
+
+  fio.truncate(4);
+
+  // The buffer allocation must still exist after truncation.
+  char replacement[] = {'A', 'B'};
+  fio.seek(0);
+  fio.write(sizeof(replacement), replacement);
+  fio.flush();
+
+  char result[2] = {};
+  fio.seek(0);
+  BOOST_CHECK_EQUAL(fio.read(sizeof(result), result, true), sizeof(result));
+  BOOST_CHECK_EQUAL(result[0], 'A');
+  BOOST_CHECK_EQUAL(result[1], 'B');
+}
+
 BOOST_AUTO_TEST_SUITE_END()
