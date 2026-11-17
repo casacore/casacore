@@ -97,13 +97,11 @@ class FilebufIO : public ByteIO {
   FilebufIO();
 
   // Construct from the given file descriptor.
-  // Note that the destructor and the detach function implicitly close
-  // the file descriptor.
+  // The destructor does not automatically close the file descriptor.
   explicit FilebufIO(int fd, unsigned int bufferSize = kDefaultBufferSize);
 
   // Attach to the given file descriptor.
-  // Note that the destructor and the detach function implicitly close
-  // the file descriptor.
+  // The destructor does not automatically close the file descriptor.
   void attach(int fd, unsigned int bufferSize = kDefaultBufferSize);
 
   // The destructor closes the file when it was owned and opened and not

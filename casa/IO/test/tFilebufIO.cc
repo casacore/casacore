@@ -41,9 +41,13 @@ using casacore::FilebufIO;
 namespace {
 constexpr size_t kWriteSize = 2000;
 
+/**
+ * Automatically closes the file and exposes the detach() member.
+ */
 class TestFilebufIO : public FilebufIO {
  public:
   TestFilebufIO(int fd, size_t buffer_size) : FilebufIO(fd, buffer_size) {}
+  ~TestFilebufIO() { detach(true); }
   using FilebufIO::detach;
 };
 
@@ -100,7 +104,7 @@ BOOST_AUTO_TEST_CASE(read_with_cached_middle_block) {
   BOOST_REQUIRE(fd >= 0);
   BOOST_REQUIRE_EQUAL(write(fd, write_data, kFileSize), kFileSize);
 
-  FilebufIO fio(fd, kBufferSize);
+  TestFilebufIO fio(fd, kBufferSize);
 
   // Load block 1 into the internal buffer.
   constexpr int64_t kBlock1Offset = kBufferSize;
@@ -223,7 +227,7 @@ BOOST_AUTO_TEST_CASE(read_position_after_short_read) {
   }
   BOOST_REQUIRE_EQUAL(write(fd, data, kFileSize), kFileSize);
 
-  FilebufIO fio(fd, kBufferSize);
+  TestFilebufIO fio(fd, kBufferSize);
   char buffer[16];
 
   // Try to read 16 bytes from a 10 byte file.
@@ -281,7 +285,7 @@ BOOST_AUTO_TEST_CASE(short_reload_then_write_past_buflen) {
   }
   BOOST_REQUIRE_EQUAL(write(fd, initial, kInitialSize), kInitialSize);
 
-  FilebufIO fio(fd, kBufferSize);
+  TestFilebufIO fio(fd, kBufferSize);
 
   // Force a short reload of the first (and only) buffer block.
   // After this call itsBufOffset == 0 and itsBufLen == 5.

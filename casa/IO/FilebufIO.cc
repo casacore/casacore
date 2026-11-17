@@ -39,7 +39,7 @@ FilebufIO::FilebufIO() = default;
 
 FilebufIO::FilebufIO(int fd, unsigned int bufferSize) { attach(fd, bufferSize); }
 
-FilebufIO::~FilebufIO() { detach(true); }
+FilebufIO::~FilebufIO() { detach(); }
 
 void FilebufIO::attach(int fd, unsigned int bufSize) {
   AlwaysAssert(itsFile == -1, AipsError);
