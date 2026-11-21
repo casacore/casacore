@@ -145,22 +145,19 @@ int64_t FilebufIO::readBuffer(int64_t offset, char* buf, int64_t size, bool thro
     checkedSeek(offset, SEEK_SET);
   }
   int64_t bytesRead = ::traceREAD(itsFile, buf, size);
+  if (bytesRead < 0) {
+    const int error = errno;
+    itsSeekOffset = -1;
+    throw AipsError(String("FilebufIO::read error for file ") + fileName() + ": " +
+                    strerror(error));
+  }
   if (bytesRead != size && throwException) {
-    if (bytesRead < 0) {
-      const int error = errno;
-      itsSeekOffset = -1;
-      throw AipsError(String("FilebufIO::read error for file ") + fileName() + ": " +
-                      strerror(error));
-    } else if (bytesRead < size) {
-      itsSeekOffset = -1;
-      throw AipsError("FilebufIO::read - incorrect number of bytes (" + std::to_string(bytesRead) +
-                      " out of " + std::to_string(size) + ") read for file " +
-                      std::string(fileName()));
-    }
+    itsSeekOffset = -1;
+    throw AipsError("FilebufIO::read - incorrect number of bytes (" + std::to_string(bytesRead) +
+                    " out of " + std::to_string(size) + ") read for file " +
+                    std::string(fileName()));
   }
-  if (bytesRead >= 0) {
-    itsSeekOffset += bytesRead;
-  }
+  itsSeekOffset += bytesRead;
   return bytesRead;
 }
 
