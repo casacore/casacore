@@ -216,14 +216,6 @@ PlainTable::PlainTable(AipsIO&, unsigned int version, const String& tabname, con
   if (nrrow_p == 0) {
     nrrow_p = nrrow;
   }
-#if defined(TABLEREPAIR)
-  cerr << "tableRepair: found " << nrrow << " rows; give new number: ";
-  cin >> nrrow_p;
-  if (nrrow != nrrow_p) {
-    cerr << "Number of rows set to " << nrrow_p << endl;
-    tableChanged_p = true;
-  }
-#endif
 
   TableAttr attr(tableName(), PlainTable::isWritable(), lockOptions);
   tdescPtr_p->getFile(ios, attr);  // read description

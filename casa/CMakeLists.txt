@@ -697,6 +697,7 @@ set (unittestfiles
   Arrays/test/tVector.cc
   Arrays/test/tVectorSTLIterator.cc
   BasicSL/test/tString.cc
+  IO/test/tFilebufIO.cc
 )
 
 find_package(Boost 1.73 COMPONENTS unit_test_framework)
