@@ -582,9 +582,8 @@ void MeasMath::applyTOPOtoHADEC(MVPosition &in, bool doin) {
   getInfo(RADIUS);
   getInfo(LAT);
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
-  // MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
-  updatePosition(info_p[LASTR], info_p[LAT], MVPOS1);
-  MVPOS1.readjust(g2);
+  updatePosition(info_p[LASTR] + M_PI_2, 0.0, MVPOS1);
+  MVPOS1.readjust(g2 * cos(info_p[LAT]));
   /// Really should use topo for planets
   rotateShift(in, MVPOS1, APPLONG, APPLAT, doin);
   deapplyPolarMotion(in);
@@ -596,9 +595,8 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, bool doin) {
   getInfo(RADIUS);
   getInfo(LAT);
   g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
-  // MVPOS1 = MVDirection(info_p[LASTR], info_p[LAT]);
-  updatePosition(info_p[LASTR], info_p[LAT], MVPOS1);
-  MVPOS1.readjust(g2);
+  updatePosition(info_p[LASTR] + M_PI_2, 0.0, MVPOS1);
+  MVPOS1.readjust(g2 * cos(info_p[LAT]));
   applyPolarMotion(in);
   /// Really use topo for planets
   rotateShift(in, -MVPOS1, APPLONG, APPLAT, doin);
@@ -607,17 +605,21 @@ void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, bool doin) {
 void MeasMath::applyPolarMotion(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
+  getInfo(LONG);
   in(1) = -in(1);
   Euler EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR];
+  EULER1(2) = info_p[LONG];
   in = RotMatrix(EULER1) * in;
+  in = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], 3u)) * in;
 }
 
 void MeasMath::deapplyPolarMotion(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
+  getInfo(LONG);
+  in *= RotMatrix(Euler(info_p[LASTR] - info_p[LONG], 3u));
   Euler EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR];
+  EULER1(2) = info_p[LONG];
   in *= RotMatrix(EULER1);
   in(1) = -in(1);
 }
